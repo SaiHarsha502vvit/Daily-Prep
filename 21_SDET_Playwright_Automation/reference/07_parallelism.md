@@ -43,12 +43,12 @@ By default, files run in parallel across workers; tests within a file run serial
 
 ### 1.2 The state model
 
-| State scope | Lives in |
-|---|---|
-| Module-level variables (in a spec file) | One worker's memory; NOT shared across workers |
-| Worker-scoped fixtures | One worker's memory; shared by tests in that worker |
-| Test-scoped fixtures | One test's memory; fresh per test |
-| Filesystem / DB / external APIs | Shared across ALL workers (collision risk) |
+| State scope                             | Lives in                                            |
+| --------------------------------------- | --------------------------------------------------- |
+| Module-level variables (in a spec file) | One worker's memory; NOT shared across workers      |
+| Worker-scoped fixtures                  | One worker's memory; shared by tests in that worker |
+| Test-scoped fixtures                    | One test's memory; fresh per test                   |
+| Filesystem / DB / external APIs         | Shared across ALL workers (collision risk)          |
 
 ### 1.3 Worker lifecycle
 
@@ -81,19 +81,20 @@ The main process aggregates results and produces reports.
 
 A worker is a forked Node.js process. Concretely:
 
-| Component | Memory | CPU |
-|---|---|---|
-| Node.js process | ~50 MB | 1 thread (Node single-threaded for JS) |
-| Test framework | ~50 MB | shared with Node |
-| Loaded modules (POMs, fixtures, deps) | ~100 MB | shared |
-| Browser process (separately spawned) | 150–500 MB | 1+ thread |
-| Browser context | 50–150 MB | shared with browser |
+| Component                             | Memory     | CPU                                    |
+| ------------------------------------- | ---------- | -------------------------------------- |
+| Node.js process                       | ~50 MB     | 1 thread (Node single-threaded for JS) |
+| Test framework                        | ~50 MB     | shared with Node                       |
+| Loaded modules (POMs, fixtures, deps) | ~100 MB    | shared                                 |
+| Browser process (separately spawned)  | 150–500 MB | 1+ thread                              |
+| Browser context                       | 50–150 MB  | shared with browser                    |
 
 Total per worker: ~400–800 MB, 1 dedicated CPU thread, 1+ shared browser thread.
 
 ### 2.1 Worker inter-process model
 
 Workers don't share JS heap. To communicate:
+
 - Filesystem (locks, JSON files)
 - External services (DB, Redis, message queue)
 - Coordinator process (Playwright's main process — but it only sends test assignments, not arbitrary messages)
@@ -103,6 +104,7 @@ There is NO way for two test bodies in two workers to share JS objects.
 ### 2.2 Worker assignment
 
 By default, Playwright assigns FILES to workers. A 4-worker run with 12 files:
+
 - Worker 1: file_a.spec.ts → file_e.spec.ts → file_i.spec.ts
 - Worker 2: file_b.spec.ts → file_f.spec.ts → file_j.spec.ts
 - ... etc.
@@ -112,6 +114,7 @@ Files are processed in alphabetical order by default. Long files don't load-bala
 ### 2.3 `fullyParallel: true` changes assignment
 
 With `fullyParallel: true`, Playwright assigns INDIVIDUAL TESTS to workers. Better load balancing:
+
 - Worker 1: file_a/test_1 → file_e/test_3 → ...
 - Worker 2: file_a/test_2 → file_f/test_1 → ...
 
@@ -119,9 +122,9 @@ Tests within a file run on different workers. File-level beforeAll hooks run mul
 
 ### 2.4 The "files vs tests" cost trade-off
 
-| Strategy | Cost | Best when |
-|---|---|---|
-| Files in parallel | Per-file beforeAll runs once | Files have heavy beforeAll, low test count |
+| Strategy                            | Cost                                      | Best when                                         |
+| ----------------------------------- | ----------------------------------------- | ------------------------------------------------- |
+| Files in parallel                   | Per-file beforeAll runs once              | Files have heavy beforeAll, low test count        |
 | Tests in parallel (`fullyParallel`) | Per-file beforeAll may run multiple times | Files have many tests, no shared file-level state |
 
 For most modern suites without heavy `beforeAll`, `fullyParallel: true` is correct.
@@ -139,6 +142,7 @@ For most modern suites without heavy `beforeAll`, `fullyParallel: true` is corre
 ```
 
 With both:
+
 - Tests within a file run in parallel.
 - File-level `beforeAll` runs in each worker that touches the file (i.e., potentially N times for N workers).
 - File-level state (module-level `let x` outside any test) is per-worker.
@@ -146,14 +150,14 @@ With both:
 ### 3.1 What this breaks
 
 ```typescript
-let createdCustomerId: string;            // ← module-level
+let createdCustomerId: string; // ← module-level
 
-test('Create customer', async ({ api }) => {
+test("Create customer", async ({ api }) => {
   const customer = await api.createCustomer();
-  createdCustomerId = customer.id;        // ← writes worker A's memory
+  createdCustomerId = customer.id; // ← writes worker A's memory
 });
 
-test('Verify customer', async ({ api }) => {
+test("Verify customer", async ({ api }) => {
   // ← may run in worker B; createdCustomerId is undefined here
   expect(await api.getCustomer(createdCustomerId)).toBeDefined();
 });
@@ -166,13 +170,13 @@ This passes with `fullyParallel: false, workers: 1`. It fails intermittently wit
 **Fix A — Use `test.describe.serial`:**
 
 ```typescript
-test.describe.serial('customer lifecycle', () => {
-  const data = { customerId: '' };
+test.describe.serial("customer lifecycle", () => {
+  const data = { customerId: "" };
 
-  test('Create', async ({ api }) => {
+  test("Create", async ({ api }) => {
     data.customerId = (await api.createCustomer()).id;
   });
-  test('Verify', async ({ api }) => {
+  test("Verify", async ({ api }) => {
     expect(await api.getCustomer(data.customerId)).toBeDefined();
   });
 });
@@ -183,7 +187,7 @@ test.describe.serial('customer lifecycle', () => {
 **Fix B — Make tests independent:**
 
 ```typescript
-test('verify customer can be created and read', async ({ api }) => {
+test("verify customer can be created and read", async ({ api }) => {
   const customer = await api.createCustomer();
   expect(await api.getCustomer(customer.id)).toBeDefined();
 });
@@ -198,17 +202,25 @@ One test, no shared state. Always preferable when feasible.
 
 ```typescript
 // fullyParallel: false (default)
-test.describe.parallel('these can run in parallel', () => {
-  test('A', async ({}) => { /* ... */ });
-  test('B', async ({}) => { /* ... */ });
+test.describe.parallel("these can run in parallel", () => {
+  test("A", async ({}) => {
+    /* ... */
+  });
+  test("B", async ({}) => {
+    /* ... */
+  });
 });
 ```
 
 ```typescript
 // fullyParallel: true
-test.describe.serial('these must run in order', () => {
-  test('A', async ({}) => { /* ... */ });   // always before B
-  test('B', async ({}) => { /* ... */ });
+test.describe.serial("these must run in order", () => {
+  test("A", async ({}) => {
+    /* ... */
+  }); // always before B
+  test("B", async ({}) => {
+    /* ... */
+  });
 });
 ```
 
@@ -229,6 +241,7 @@ npx playwright test --workers=8
 ### 4.1 Default behaviour
 
 If `workers` is undefined:
+
 - Locally: half of CPU cores (e.g., 4 on an 8-core machine).
 - CI (detected via `process.env.CI`): default unchanged, but most teams cap explicitly.
 
@@ -247,17 +260,18 @@ workers: process.env.CI ? Math.min(os.cpus().length, 4) : undefined,
 ```
 
 Caps at 4 even on a 32-core runner. Useful when:
+
 - Tests are I/O-bound (DB, API) — more workers don't help past the I/O ceiling.
 - Memory is limited.
 - Per-test setup is expensive — more workers = more setup overhead.
 
 ### 4.4 Workers vs CPU cores
 
-| Workers | CPU cores | Effect |
-|---|---|---|
-| `cores / 2` | N | Conservative, leaves headroom for browser threads |
-| `cores` | N | Aggressive; can be optimal for CPU-bound tests |
-| `2 * cores` | N | Almost always bad — context switching dominates |
+| Workers     | CPU cores | Effect                                            |
+| ----------- | --------- | ------------------------------------------------- |
+| `cores / 2` | N         | Conservative, leaves headroom for browser threads |
+| `cores`     | N         | Aggressive; can be optimal for CPU-bound tests    |
+| `2 * cores` | N         | Almost always bad — context switching dominates   |
 
 In practice: `workers = min(cores, RAM / 600MB)`. Memory is usually the binding constraint.
 
@@ -266,6 +280,7 @@ In practice: `workers = min(cores, RAM / 600MB)`. Memory is usually the binding 
 Workers parallelise within ONE Playwright invocation. Sharding parallelises across MULTIPLE invocations (on multiple machines).
 
 For a 4-machine matrix CI:
+
 - Each machine runs `--shard=N/4` with `--workers=4`.
 - Total parallelism: 16 (4 machines × 4 workers).
 - Wall-clock = (total runtime / 16) + per-shard ramp-up.
@@ -277,22 +292,23 @@ For a 4-machine matrix CI:
 ### 5.1 `test.describe.serial`
 
 ```typescript
-test.describe.serial('order lifecycle', () => {
-  const data = { orderId: '' };
+test.describe.serial("order lifecycle", () => {
+  const data = { orderId: "" };
 
-  test('create order', async ({ api }) => {
+  test("create order", async ({ api }) => {
     data.orderId = (await api.createOrder()).id;
   });
-  test('add line item', async ({ api }) => {
-    await api.addLineItem(data.orderId, { sku: 'X' });
+  test("add line item", async ({ api }) => {
+    await api.addLineItem(data.orderId, { sku: "X" });
   });
-  test('checkout', async ({ api }) => {
+  test("checkout", async ({ api }) => {
     await api.checkout(data.orderId);
   });
 });
 ```
 
 Properties:
+
 - All three tests run on the same worker.
 - They run in the order declared.
 - If "create order" fails, "add line item" and "checkout" are SKIPPED (not run, not failed — short-circuited).
@@ -319,9 +335,13 @@ This is correct: a sequence is atomic. You can't retry just "checkout" if "creat
 ```typescript
 // playwright.config.ts: fullyParallel: false
 
-test.describe.parallel('independent tests', () => {
-  test('A', async ({}) => { /* ... */ });
-  test('B', async ({}) => { /* ... */ });
+test.describe.parallel("independent tests", () => {
+  test("A", async ({}) => {
+    /* ... */
+  });
+  test("B", async ({}) => {
+    /* ... */
+  });
 });
 ```
 
@@ -330,10 +350,15 @@ Useful when most of your suite needs `fullyParallel: false` but a specific block
 ### 5.5 Nesting
 
 ```typescript
-test.describe.serial('serial outer', () => {
-  test.describe.parallel('parallel inner', () => {     // ← contradiction
-    test('A', async ({}) => { /* ... */ });
-    test('B', async ({}) => { /* ... */ });
+test.describe.serial("serial outer", () => {
+  test.describe.parallel("parallel inner", () => {
+    // ← contradiction
+    test("A", async ({}) => {
+      /* ... */
+    });
+    test("B", async ({}) => {
+      /* ... */
+    });
   });
 });
 ```
@@ -366,6 +391,7 @@ The split is by count, not weight. A shard with 50 small tests has the same nomi
 A 200-test suite with shards 1/4, 2/4, 3/4, 4/4 each gets 50 tests. But if shard 1 has all the slow tests, it takes 30 minutes while shard 4 finishes in 5 minutes.
 
 Mitigation:
+
 - Use `test.slow()` to tag known-slow tests; Playwright groups them across shards.
 - Profile and balance manually.
 - Use `--last-failed` for re-runs to skip passing tests.
@@ -388,9 +414,9 @@ Each shard manages its own retries. If shard 1's test fails twice with `retries:
 
 ```typescript
 projects: [
-  { name: 'setup', testMatch: /setup\.ts$/ },
-  { name: 'main', dependencies: ['setup'], testDir: './tests' },
-]
+  { name: "setup", testMatch: /setup\.ts$/ },
+  { name: "main", dependencies: ["setup"], testDir: "./tests" },
+];
 ```
 
 `setup` runs in EVERY shard, not just shard 1. Each shard independently runs its setup.
@@ -405,13 +431,13 @@ The #1 source of flakiness in parallel runs.
 
 ### 7.1 The classes of collision
 
-| Collision type | Example |
-|---|---|
-| Same record ID | Tests A and B both create customer "test-001" |
-| Same shared resource | Tests A and B both modify global app settings |
-| Same external system state | Tests A and B both send email to `test@example.com` |
-| Race on read/write | Test A updates field; Test B reads it before A's update completes |
-| Filesystem | Tests A and B both write to `/tmp/output.json` |
+| Collision type             | Example                                                           |
+| -------------------------- | ----------------------------------------------------------------- |
+| Same record ID             | Tests A and B both create customer "test-001"                     |
+| Same shared resource       | Tests A and B both modify global app settings                     |
+| Same external system state | Tests A and B both send email to `test@example.com`               |
+| Race on read/write         | Test A updates field; Test B reads it before A's update completes |
+| Filesystem                 | Tests A and B both write to `/tmp/output.json`                    |
 
 ### 7.2 The fixes
 
@@ -446,7 +472,7 @@ For tests that need real, authenticated user accounts (not arbitrary IDs).
 **Per-test output dir:**
 
 ```typescript
-const outputFile = testInfo.outputPath('result.json');
+const outputFile = testInfo.outputPath("result.json");
 ```
 
 `testInfo.outputPath` returns a path inside the test's unique output directory. No cross-test collision.
@@ -455,25 +481,26 @@ const outputFile = testInfo.outputPath('result.json');
 
 For systems with shared state (e.g., a single staging email inbox):
 
-| Mitigation | When |
-|---|---|
-| Per-test email aliases (`+suffix@example.com`) | Email systems that support sub-addressing |
-| Mailosaur / MailHog with per-test mailbox | When the test needs full mailbox access |
-| Stub the external system | When the test doesn't actually need the external integration |
-| Serialise via `describe.serial` | When you can't avoid shared state |
+| Mitigation                                     | When                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------ |
+| Per-test email aliases (`+suffix@example.com`) | Email systems that support sub-addressing                    |
+| Mailosaur / MailHog with per-test mailbox      | When the test needs full mailbox access                      |
+| Stub the external system                       | When the test doesn't actually need the external integration |
+| Serialise via `describe.serial`                | When you can't avoid shared state                            |
 
 ### 7.4 DB-level isolation
 
 For tests against a shared DB:
 
-| Strategy | How |
-|---|---|
-| Schema-per-worker | Each worker uses `worker_${index}_schema`; created at start, dropped at end |
-| Truncation between tests | `BEGIN; ROLLBACK;` wrapper, with tests in a single transaction |
-| Tagged data + cleanup | All test data has `testFlag=true`; nightly sweep deletes old |
-| Real isolation (test-only DBs) | Each test claims a Docker DB from a pool |
+| Strategy                       | How                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| Schema-per-worker              | Each worker uses `worker_${index}_schema`; created at start, dropped at end |
+| Truncation between tests       | `BEGIN; ROLLBACK;` wrapper, with tests in a single transaction              |
+| Tagged data + cleanup          | All test data has `testFlag=true`; nightly sweep deletes old                |
+| Real isolation (test-only DBs) | Each test claims a Docker DB from a pool                                    |
 
 Choose based on:
+
 - DB type (Postgres supports schemas; MongoDB collections; etc.)
 - Test count
 - Cost of provisioning
@@ -487,17 +514,17 @@ What workers DO and DO NOT share.
 
 ### 8.1 What's isolated
 
-| Aspect | Per-worker | Shared |
-|---|---|---|
-| JS heap | ✅ Isolated | — |
-| Module-level variables | ✅ Per-worker copy | — |
-| Stdout/stderr | ✅ Per-worker capture | Merged in reports |
-| Worker-scoped fixtures | ✅ Per-worker instance | — |
-| Browser instance | ✅ Per-worker | — |
-| `process.env` | ✅ Per-worker process | Initially shared from parent |
-| File system | — | ✅ Shared |
-| Database | — | ✅ Shared (unless isolated by app design) |
-| External APIs | — | ✅ Shared |
+| Aspect                 | Per-worker             | Shared                                    |
+| ---------------------- | ---------------------- | ----------------------------------------- |
+| JS heap                | ✅ Isolated            | —                                         |
+| Module-level variables | ✅ Per-worker copy     | —                                         |
+| Stdout/stderr          | ✅ Per-worker capture  | Merged in reports                         |
+| Worker-scoped fixtures | ✅ Per-worker instance | —                                         |
+| Browser instance       | ✅ Per-worker          | —                                         |
+| `process.env`          | ✅ Per-worker process  | Initially shared from parent              |
+| File system            | —                      | ✅ Shared                                 |
+| Database               | —                      | ✅ Shared (unless isolated by app design) |
+| External APIs          | —                      | ✅ Shared                                 |
 
 ### 8.2 The `process.env` subtlety
 
@@ -526,6 +553,7 @@ Naming includes test path + project + retry. No cross-test collision.
 ### 8.4 Crash isolation
 
 If one worker crashes (OOM, segfault, uncaught exception in fixture):
+
 - That worker's tests are marked failed.
 - Other workers continue.
 - The main process exits with non-zero if any test failed.
@@ -538,20 +566,21 @@ A single bad fixture doesn't take down the whole run.
 
 ### 9.1 Memory per worker
 
-| Component | Idle | Active |
-|---|---|---|
-| Node process | 50 MB | 100 MB |
-| Test framework | 50 MB | 100 MB |
-| Loaded modules | 100 MB | 200 MB |
-| Browser process | 200 MB | 500 MB |
-| Browser context | 100 MB | 300 MB |
-| **Total** | **500 MB** | **~1.2 GB** |
+| Component       | Idle       | Active      |
+| --------------- | ---------- | ----------- |
+| Node process    | 50 MB      | 100 MB      |
+| Test framework  | 50 MB      | 100 MB      |
+| Loaded modules  | 100 MB     | 200 MB      |
+| Browser process | 200 MB     | 500 MB      |
+| Browser context | 100 MB     | 300 MB      |
+| **Total**       | **500 MB** | **~1.2 GB** |
 
 For a heavy SPA with lots of DOM, browser memory can hit 1+ GB.
 
 ### 9.2 CPU per worker
 
 A worker uses:
+
 - 1 thread for the Node test framework.
 - 1+ threads for the browser process (main, renderer, GPU, network — separate threads per process).
 
@@ -568,6 +597,7 @@ Disk I/O similarly shared. Trace writes, screenshots, video segments all contend
 Symptom: 4 workers → 8 minutes. 16 workers → 12 minutes.
 
 Diagnosis:
+
 - Memory exhaustion → OS swaps to disk → 100× slowdown
 - CPU contention → context switching dominates
 - I/O saturation → DB or API rate limits
@@ -591,19 +621,19 @@ If `%mem` totals near 100%, you've over-provisioned workers. Reduce.
 
 ## 10. Optimal counts by CI tier
 
-| CI tier | RAM | Cores | Recommended workers | Notes |
-|---|---|---|---|---|
-| GitHub Actions free (ubuntu-latest) | 7 GB | 2 | 2 | OOM at 4+ workers |
-| GitHub Actions Linux X4 | 16 GB | 4 | 4 | Sweet spot |
-| GitHub Actions Linux X8 | 32 GB | 8 | 8 | Or shard instead |
-| Azure DevOps Linux Standard | 7 GB | 2 | 2 | Same as GHA free |
-| Azure DevOps Linux Premium | 16 GB | 4 | 4 | |
-| Self-hosted m5.xlarge | 16 GB | 4 | 4 | |
-| Self-hosted m5.2xlarge | 32 GB | 8 | 6 | Leave room for OS |
-| Self-hosted m5.4xlarge | 64 GB | 16 | 8 | Beyond 8, returns diminish; shard |
-| GitLab.com small | 4 GB | 1 | 1 | Can't really parallelise |
-| Local M2 MacBook Air | 16 GB | 8 (4P + 4E) | 4 | Performance cores only |
-| Local M2 Pro MacBook Pro | 32 GB | 10 (6P + 4E) | 6 | |
+| CI tier                             | RAM   | Cores        | Recommended workers | Notes                             |
+| ----------------------------------- | ----- | ------------ | ------------------- | --------------------------------- |
+| GitHub Actions free (ubuntu-latest) | 7 GB  | 2            | 2                   | OOM at 4+ workers                 |
+| GitHub Actions Linux X4             | 16 GB | 4            | 4                   | Sweet spot                        |
+| GitHub Actions Linux X8             | 32 GB | 8            | 8                   | Or shard instead                  |
+| Azure DevOps Linux Standard         | 7 GB  | 2            | 2                   | Same as GHA free                  |
+| Azure DevOps Linux Premium          | 16 GB | 4            | 4                   |                                   |
+| Self-hosted m5.xlarge               | 16 GB | 4            | 4                   |                                   |
+| Self-hosted m5.2xlarge              | 32 GB | 8            | 6                   | Leave room for OS                 |
+| Self-hosted m5.4xlarge              | 64 GB | 16           | 8                   | Beyond 8, returns diminish; shard |
+| GitLab.com small                    | 4 GB  | 1            | 1                   | Can't really parallelise          |
+| Local M2 MacBook Air                | 16 GB | 8 (4P + 4E)  | 4                   | Performance cores only            |
+| Local M2 Pro MacBook Pro            | 32 GB | 10 (6P + 4E) | 6                   |                                   |
 
 ### 10.1 The rule of thumb
 
@@ -620,6 +650,7 @@ For a 7 GB / 2-core runner: `min(2, 8.75) = 2`. CPU-bound.
 ### 10.2 Shard when workers alone aren't enough
 
 A 500-test suite that takes 8 minutes with 4 workers:
+
 - Add more workers: hits memory wall.
 - Shard across 4 CI jobs: 4 × 8 min wall-clock = 2 min wall-clock (with 4 workers per shard).
 
@@ -633,44 +664,44 @@ Measured on `mcr.microsoft.com/playwright:v1.49.0-jammy` in GitHub Actions.
 
 ### 11.1 OrangeHRM smoke (5 tests, simple SPA)
 
-| Config | Wall-clock |
-|---|---|
-| `workers: 1, fullyParallel: false` | 38 s |
-| `workers: 1, fullyParallel: true` | 38 s (fully parallel needs >1 worker) |
-| `workers: 2, fullyParallel: true` | 22 s |
-| `workers: 4, fullyParallel: true` | 14 s |
-| `workers: 8, fullyParallel: true` | 13 s (diminishing returns) |
+| Config                             | Wall-clock                            |
+| ---------------------------------- | ------------------------------------- |
+| `workers: 1, fullyParallel: false` | 38 s                                  |
+| `workers: 1, fullyParallel: true`  | 38 s (fully parallel needs >1 worker) |
+| `workers: 2, fullyParallel: true`  | 22 s                                  |
+| `workers: 4, fullyParallel: true`  | 14 s                                  |
+| `workers: 8, fullyParallel: true`  | 13 s (diminishing returns)            |
 
 ### 11.2 API smoke (50 tests, no browser)
 
-| Config | Wall-clock |
-|---|---|
-| `workers: 1` | 78 s |
-| `workers: 4` | 24 s |
-| `workers: 8` | 16 s |
-| `workers: 16` | 11 s |
+| Config        | Wall-clock                |
+| ------------- | ------------------------- |
+| `workers: 1`  | 78 s                      |
+| `workers: 4`  | 24 s                      |
+| `workers: 8`  | 16 s                      |
+| `workers: 16` | 11 s                      |
 | `workers: 32` | 13 s (network contention) |
 
 API tests scale better than browser tests because each worker is lighter.
 
 ### 11.3 Sharded run (500 tests)
 
-| Config | Wall-clock |
-|---|---|
-| 1 job × workers=4 | 18 min |
-| 2 jobs × workers=4 (shard 1/2, 2/2) | 9.5 min |
-| 4 jobs × workers=4 (shard 1/4...4/4) | 5 min |
-| 8 jobs × workers=4 | 3.2 min (limited by ramp-up) |
+| Config                               | Wall-clock                   |
+| ------------------------------------ | ---------------------------- |
+| 1 job × workers=4                    | 18 min                       |
+| 2 jobs × workers=4 (shard 1/2, 2/2)  | 9.5 min                      |
+| 4 jobs × workers=4 (shard 1/4...4/4) | 5 min                        |
+| 8 jobs × workers=4                   | 3.2 min (limited by ramp-up) |
 
 Beyond 8 shards, ramp-up dominates and wall-clock barely improves.
 
 ### 11.4 Trace overhead
 
-| Trace mode | Wall-clock | Disk |
-|---|---|---|
-| `'off'` | 14 m 00 s | 0 |
-| `'retain-on-failure'` | 14 m 30 s (+4%) | ~50 MB (only failures) |
-| `'on'` | 16 m 00 s (+14%) | ~2.5 GB |
+| Trace mode            | Wall-clock       | Disk                   |
+| --------------------- | ---------------- | ---------------------- |
+| `'off'`               | 14 m 00 s        | 0                      |
+| `'retain-on-failure'` | 14 m 30 s (+4%)  | ~50 MB (only failures) |
+| `'on'`                | 16 m 00 s (+14%) | ~2.5 GB                |
 
 For 500 tests, `'on'` adds 2 minutes and 2.5 GB of artifacts. Always `'retain-on-failure'` in CI.
 
@@ -742,13 +773,13 @@ Don't.
 
 ### 13.2 The right answers
 
-| Need | Solution |
-|---|---|
-| Rate limit budget | Configure the IdP / API for higher limit, OR shard fewer ways |
-| Cross-worker aggregation | Use the `Reporter` interface — runs in main process, sees all workers |
-| Coordinated cleanup | `globalTeardown` runs after all workers, in main process |
-| Shared cache (e.g., OAuth token) | File cache with `proper-lockfile` |
-| Real-time status | Custom reporter posting to a dashboard |
+| Need                             | Solution                                                              |
+| -------------------------------- | --------------------------------------------------------------------- |
+| Rate limit budget                | Configure the IdP / API for higher limit, OR shard fewer ways         |
+| Cross-worker aggregation         | Use the `Reporter` interface — runs in main process, sees all workers |
+| Coordinated cleanup              | `globalTeardown` runs after all workers, in main process              |
+| Shared cache (e.g., OAuth token) | File cache with `proper-lockfile`                                     |
+| Real-time status                 | Custom reporter posting to a dashboard                                |
 
 ### 13.3 The wrong answers
 
@@ -770,7 +801,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false                       # don't cancel siblings on first failure
+      fail-fast: false # don't cancel siblings on first failure
       matrix:
         shard: [1, 2, 3, 4]
     steps:
@@ -975,23 +1006,23 @@ The `merge` job runs after all shards, regardless of pass/fail. Final report has
 
 ## 17. Anti-pattern catalog
 
-| ❌ Anti-pattern | ✅ Fix |
-|---|---|
-| Module-level `let createdId: string` shared across tests | Use `describe.serial` + an object accumulator |
-| Hardcoded test data IDs | UUIDs or per-test scoping |
-| `workers: 16` on a 4-core CI | Cap workers to CPU cores |
-| `fullyParallel: false` "for safety" without diagnosing flakes | Diagnose flakes; `fullyParallel: true` is the right default |
-| Sharding a 20-test suite | Don't shard small suites; ramp-up dominates |
-| Per-worker DB schema cleanup at start (not teardown) | Cleanup at teardown so failures don't poison next run |
-| `describe.serial` for tests that are independent | Make tests independent; let parallel do its job |
-| Mixed retries between serial steps | Serial = atomic; retry the whole block |
-| `process.env` mutation expecting other workers to see it | Workers are isolated; use globalSetup |
-| `--workers=1` permanently to "fix" CI flakiness | Diagnose the real cause |
-| Shard count exceeds CI parallel limit | Check CI's actual concurrent job cap |
-| Same `outputDir` for multiple workers | Use `testInfo.outputPath()` |
-| Same test names across describe blocks | Title collisions confuse reports |
-| Storing test results in a global array | Use the `Reporter` interface in the main process |
-| `await Promise.all([test1, test2])` (treating tests as values) | Use Playwright's parallel model, not manual coordination |
+| ❌ Anti-pattern                                                | ✅ Fix                                                      |
+| -------------------------------------------------------------- | ----------------------------------------------------------- |
+| Module-level `let createdId: string` shared across tests       | Use `describe.serial` + an object accumulator               |
+| Hardcoded test data IDs                                        | UUIDs or per-test scoping                                   |
+| `workers: 16` on a 4-core CI                                   | Cap workers to CPU cores                                    |
+| `fullyParallel: false` "for safety" without diagnosing flakes  | Diagnose flakes; `fullyParallel: true` is the right default |
+| Sharding a 20-test suite                                       | Don't shard small suites; ramp-up dominates                 |
+| Per-worker DB schema cleanup at start (not teardown)           | Cleanup at teardown so failures don't poison next run       |
+| `describe.serial` for tests that are independent               | Make tests independent; let parallel do its job             |
+| Mixed retries between serial steps                             | Serial = atomic; retry the whole block                      |
+| `process.env` mutation expecting other workers to see it       | Workers are isolated; use globalSetup                       |
+| `--workers=1` permanently to "fix" CI flakiness                | Diagnose the real cause                                     |
+| Shard count exceeds CI parallel limit                          | Check CI's actual concurrent job cap                        |
+| Same `outputDir` for multiple workers                          | Use `testInfo.outputPath()`                                 |
+| Same test names across describe blocks                         | Title collisions confuse reports                            |
+| Storing test results in a global array                         | Use the `Reporter` interface in the main process            |
+| `await Promise.all([test1, test2])` (treating tests as values) | Use Playwright's parallel model, not manual coordination    |
 
 ---
 

@@ -8,19 +8,15 @@
 └── Weakly consistent iterators
 ```
 
-
-
 // Lock-Free Hash Tables
+
 ```
 └── Use CAS (Compare-and-Swap) operations
 └── Higher throughput under contention
 └── More complex implementation
 ```
 
-
-
 #### 6. Hash Set (Unique Elements)
-
 
 ```java
 // Hash table where value doesn't matter, only keys
@@ -162,7 +158,6 @@ Use Cases:
    └── Distributed hash tables (DHT)
    └── Content-addressable storage
 ```
-
 
 ---
 
@@ -606,7 +601,6 @@ Modern Alternative: Suffix Array + LCP Array (less space)
    └── Device trees
 ```
 
-
 ---
 
 ## Heaps - Complete Guide
@@ -656,7 +650,6 @@ Parent(i) = (i-1) / 2
 LeftChild(i) = 2*i + 1
 RightChild(i) = 2*i + 2
 ```
-
 
 ### Heap Operations
 
@@ -899,7 +892,6 @@ Median = (5 + 6) / 2 = 5.5
    └── Top-K queries
 ```
 
-
 ---
 
 ## Graphs - Complete Guide
@@ -919,7 +911,6 @@ Real-World Modeled by Graphs:
 ├── Dependencies (tasks, prerequisites)
 └── Molecules (atoms, bonds)
 ```
-
 
 ### Graph Representations
 
@@ -1371,10 +1362,7 @@ Use Cases: Network design, clustering
    └── Drug discovery
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Graphs - Complete Guide**
 
@@ -1749,11 +1737,7 @@ Kubernetes:
 └── ConfigMaps (hash maps)
 ```
 
-
 ---
-
-
-
 
 ## Learning Roadmap
 
@@ -1792,11 +1776,7 @@ Weekly:
 ├── Review and revise weak areas
 ```
 
-
 ---
-
-
-
 
 ## Key Takeaways
 
@@ -1830,12 +1810,9 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ╚═══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
-
 ---
 
 **Next**: [Part 2: Advanced Algorithms & Interview Patterns](09_Ultimate_DSA_Advanced.md)
-
 
 ---
 

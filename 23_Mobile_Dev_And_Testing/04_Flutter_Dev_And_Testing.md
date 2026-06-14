@@ -34,7 +34,7 @@
     - [The `mounted` Check — Critical Async Pattern](#the-mounted-check--critical-async-pattern)
   - [6. Navigation — Routing Between Screens](#6-navigation--routing-between-screens)
     - [Navigator 1.0 (Imperative — Simple Apps)](#navigator-10-imperative--simple-apps)
-    - [go\_router (Recommended for Most Apps)](#go_router-recommended-for-most-apps)
+    - [go_router (Recommended for Most Apps)](#go_router-recommended-for-most-apps)
   - [7. State Management — From Simple to Enterprise](#7-state-management--from-simple-to-enterprise)
     - [Level 1 (Simple): setState](#level-1-simple-setstate)
     - [Level 2 (Intermediate): Provider](#level-2-intermediate-provider)
@@ -301,6 +301,7 @@ void main() {
 <details><summary>Answer</summary>
 
 **Output:**
+
 ```
 A
 C
@@ -310,12 +311,14 @@ B
 **Why**: Dart is **single-threaded** with an **event loop**, exactly like JavaScript. `Future.delayed(Duration.zero, ...)` schedules the callback to run AFTER the current synchronous code completes — even though the delay is zero milliseconds.
 
 The execution order:
+
 1. `print('A')` — synchronous, runs immediately
 2. `Future.delayed(Duration.zero, callback)` — schedules `callback` to be called in the future (puts it in the event queue), but does NOT run it now
 3. `print('C')` — synchronous, runs immediately
 4. Main finishes → event loop picks up the scheduled callback → `print('B')` runs
 
 **Why this matters for Flutter testing**: In widget tests, you often need to pump the event loop to let futures complete:
+
 ```dart
 await tester.pump();           // pump one frame
 await tester.pumpAndSettle();  // pump until all animations and futures settle
@@ -1069,6 +1072,7 @@ final count = context.watch<CartNotifier>().itemCount;
 **`BLoC`: Also works, but is overkill** for a simple counter. BLoC adds a lot of boilerplate (CartEvent, CartState, CartBloc) where ChangeNotifier+Provider is 10x simpler.
 
 **When BLoC IS the right choice here**: If adding to cart involves:
+
 - An async API call (inventory check)
 - Multiple possible outcomes (success, out of stock, network error)
 - Undo functionality
@@ -1076,7 +1080,8 @@ final count = context.watch<CartNotifier>().itemCount;
 
 Then BLoC's explicit Event → State mapping makes the complexity manageable and testable.
 
-**The rule**: 
+**The rule**:
+
 - Local UI state → `setState`
 - Shared state, mostly sync → `Provider` (ChangeNotifier)
 - Complex async flows, multiple outcomes, enterprise teams → `BLoC`
@@ -1266,12 +1271,12 @@ Flutter has an extra testing layer compared to Android/iOS:
            / _______________________ \
 ```
 
-| Layer | Tool | Runs On | Speed | Cost |
-|---|---|---|---|---|
-| Unit | `flutter_test` | JVM/Dart VM, no device | ~10ms | Cheapest |
-| Widget | `flutter_test` with `WidgetTester` | Dart VM, no device | ~100ms | Cheap |
-| Integration | `integration_test` package | Real device or emulator | ~5-30s | Medium |
-| E2E | Appium Flutter Driver | Real device or emulator | ~30-120s | Expensive |
+| Layer       | Tool                               | Runs On                 | Speed    | Cost      |
+| ----------- | ---------------------------------- | ----------------------- | -------- | --------- |
+| Unit        | `flutter_test`                     | JVM/Dart VM, no device  | ~10ms    | Cheapest  |
+| Widget      | `flutter_test` with `WidgetTester` | Dart VM, no device      | ~100ms   | Cheap     |
+| Integration | `integration_test` package         | Real device or emulator | ~5-30s   | Medium    |
+| E2E         | Appium Flutter Driver              | Real device or emulator | ~30-120s | Expensive |
 
 ---
 
@@ -1506,6 +1511,7 @@ void main() {
 ### 🎯 Practice — Level 3 (Advanced)
 
 **Challenge**: Write a widget test for a payment form with these requirements:
+
 1. Submit button disabled when amount field is empty
 2. Submit button enabled when amount > 0 is entered
 3. Tapping Submit shows a confirmation dialog
@@ -1635,6 +1641,7 @@ void main() {
 ```
 
 Run on a connected device or emulator:
+
 ```bash
 # Run integration tests on Android
 flutter test integration_test/ --device-id emulator-5554
@@ -1776,6 +1783,7 @@ driver.findElement(FlutterBy.key("citationTile_CIT-050")).click();
 ```
 
 **In the Flutter app**: For this to work, each `CitationTile` must have a `Key`:
+
 ```dart
 CitationTile(
   key: Key('citationTile_${citation.id}'),
@@ -1784,6 +1792,7 @@ CitationTile(
 ```
 
 **The broader lesson**: Always assign `Key` values to widgets that are:
+
 - Items in a scrollable list
 - Buttons the tests need to tap
 - Text fields
@@ -1825,12 +1834,15 @@ This is the Flutter equivalent of Android's `contentDescription` / iOS's `access
 ## 16. Interview Questions on Flutter
 
 **Q: "What is the difference between StatelessWidget and StatefulWidget?"**
+
 > "A `StatelessWidget` is immutable — it takes configuration from its parent and renders it. It never changes itself. A `StatefulWidget` has a `State` object that persists across rebuilds and can call `setState()` to trigger re-renders. The rule: use StatelessWidget by default. Use StatefulWidget only when the widget needs local state that changes over time — like an expanded/collapsed toggle, or form field tracking. If the state needs to be shared with other widgets, it belongs in a ViewModel or state management solution, not inside a StatefulWidget."
 
 **Q: "Why can't Appium UIAutomator2 find widgets in a Flutter app?"**
+
 > "UIAutomator2 queries Android's accessibility tree — the system-level UI hierarchy built from native Views. Flutter doesn't create native Android Views; it uses a single SurfaceView as a canvas and draws everything itself with its own rendering engine. From UIAutomator2's perspective, the entire app is one opaque canvas with no accessible children. The correct tool is either the `integration_test` package (which runs inside the Flutter engine) or the Appium Flutter Driver (which connects to Flutter's Dart VM service to query the Flutter widget tree directly)."
 
 **Q: "Compare Provider, Riverpod, and BLoC — when would you use each?"**
+
 > "Provider is Flutter's recommended package for small-to-medium apps — simple ChangeNotifier-based state, low boilerplate, good for shared widget state. Riverpod is Provider's evolution — it's compile-time safe, providers are global and testable without BuildContext, and it handles async natively. I'd choose Riverpod for most new apps. BLoC is the most structured option: explicit Events, States, and a BLoC that maps one to the other. It generates a lot of boilerplate but is extremely testable and predictable for complex async flows with multiple outcomes — like multi-step checkout, real-time order tracking, or large team projects where consistency matters more than brevity."
 
 ---

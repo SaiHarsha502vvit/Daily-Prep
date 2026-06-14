@@ -8,14 +8,14 @@
 
 # PART 0: The 5W+H Framework
 
-| Question | MLOps Context |
-| :--- | :--- |
-| **WHAT** | ML + DevOps: practices and tools to deploy, monitor, and maintain ML models reliably at scale. |
-| **WHY** | 87% of ML models never make it to production (VentureBeat). The gap between "works in notebook" and "runs in production" is enormous. MLOps closes that gap. |
-| **WHEN** | As soon as you have a model that delivers value. Even a simple linear regression serving predictions via API needs monitoring. |
-| **WHERE** | Cloud (AWS SageMaker, GCP Vertex, Azure ML), Kubernetes clusters, edge devices. |
-| **WHO** | Emerged 2018 as term. Key players: MLflow (Databricks), Kubeflow (Google), SageMaker (AWS), Weights & Biases, DVC. |
-| **HOW** | Versioning → Packaging → Serving → Monitoring → Retraining pipeline. |
+| Question  | MLOps Context                                                                                                                                                |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | ML + DevOps: practices and tools to deploy, monitor, and maintain ML models reliably at scale.                                                               |
+| **WHY**   | 87% of ML models never make it to production (VentureBeat). The gap between "works in notebook" and "runs in production" is enormous. MLOps closes that gap. |
+| **WHEN**  | As soon as you have a model that delivers value. Even a simple linear regression serving predictions via API needs monitoring.                               |
+| **WHERE** | Cloud (AWS SageMaker, GCP Vertex, Azure ML), Kubernetes clusters, edge devices.                                                                              |
+| **WHO**   | Emerged 2018 as term. Key players: MLflow (Databricks), Kubeflow (Google), SageMaker (AWS), Weights & Biases, DVC.                                           |
+| **HOW**   | Versioning → Packaging → Serving → Monitoring → Retraining pipeline.                                                                                         |
 
 ---
 
@@ -26,14 +26,14 @@
 ```
 ANALOGY: Building software vs building a power plant.
   Writing a model = designing a generator (engineers can do this well)
-  
+
   PRODUCTION ML = the full power plant:
   • Power lines (serving infrastructure)
   • Meters (monitoring)
   • Maintenance schedules (retraining)
   • Grid stability (reliability SLAs)
   • Safety systems (model governance, fairness)
-  
+
   One generator in a lab ≠ stable power for a city.
   One model in a notebook ≠ reliable ML in production.
 
@@ -42,20 +42,20 @@ WHAT CAN GO WRONG IN PRODUCTION?
   1. DATA DRIFT: Input distribution changes over time
      Training data: emails from 2022. Deployed 2024. New spam tactics evolved.
      Model was trained on historical patterns that no longer hold.
-  
+
   2. CONCEPT DRIFT: The relationship between X and y changes
      COVID example: "number of flights" used to predict "demand for hotels."
      In 2020, this correlation broke completely. Model learned wrong patterns.
-  
+
   3. TRAINING-SERVING SKEW: Different code paths produce different features
      Training: Python, pandas, offline batch job
      Serving:  Java, real-time, different preprocessing code
      → Same input → different features → wrong predictions!
-  
+
   4. FEEDBACK LOOPS: Model outputs affect future training data
      Content recommendation → users click what model shows → more data
      about these items → model doubles down → filter bubble!
-  
+
   5. SILENT FAILURES: Model still returns predictions but they're wrong
      No exceptions thrown. Just gradually worse business outcomes.
      Only caught if you're ACTIVELY monitoring prediction quality.
@@ -70,7 +70,7 @@ WHAT CAN GO WRONG IN PRODUCTION?
 ```
 PROBLEM : "Which model was best? What parameters did I use for run #47?"
            Notebooks don't version models. Excel sheets get lost.
-           
+
 SOLUTION: Experiment Tracking — log everything, compare systematically.
 
 WITH MLFLOW you track:
@@ -137,12 +137,12 @@ DEPLOYMENT OPTIONS:
   Pattern: Run predictions on a large dataset at regular intervals.
   When: recommendations computed overnight, risk scores computed weekly.
   Stack: Apache Spark, AWS Batch, scheduled Kubernetes jobs.
-  
+
   REAL-TIME INFERENCE (Online Serving):
   Pattern: HTTP API endpoint — request arrives, prediction returned in <100ms.
   When: fraud detection, recommendation at page load, NLP features.
   Stack: FastAPI, Flask, TensorFlow Serving, ONNX Runtime.
-  
+
   STREAMING INFERENCE:
   Pattern: Process events from a stream (Kafka, Kinesis) continuously.
   When: real-time anomaly detection, live feed ranking.
@@ -194,9 +194,9 @@ async def predict(request: PredictionRequest):
 
     proba = model.predict_proba(features)[0]
     pred_class = int(proba.argmax())
-    
+
     inference_ms = (time.time() - start) * 1000
-    
+
     return PredictionResponse(
         predicted_class=pred_class,
         class_name=CLASSES[pred_class],
@@ -238,12 +238,12 @@ For NUMERIC features:
   PSI < 0.1: No drift
   PSI 0.1-0.2: Minor drift (investigate)
   PSI > 0.2: Significant drift (action needed)
-  
+
   Method 2: Kolmogorov-Smirnov (KS) test
   Statistical test: "Are these two samples from the same distribution?"
   D = max|F₁(x) - F₂(x)|  (max difference between CDFs)
   p-value < 0.05 → distributions are different → drift detected!
-  
+
   Method 3: Wasserstein Distance (Earth Mover's Distance)
   "How much work to transform one distribution into the other?"
   More intuitive than KS for detecting magnitude of drift.
@@ -270,23 +270,23 @@ def detect_drift_ks(reference_data: np.ndarray,
     current_data:   production data (subset from last hour/day)
     """
     drift_report = {}
-    
+
     for i, feature in enumerate(feature_names):
         ks_stat, p_value = stats.ks_2samp(
             reference_data[:, i],
             current_data[:, i]
         )
-        
+
         drift_detected = p_value < p_threshold
         severity = "high" if ks_stat > 0.2 else "medium" if ks_stat > 0.1 else "low"
-        
+
         drift_report[feature] = {
             "ks_statistic": round(ks_stat, 4),
             "p_value": round(p_value, 4),
             "drift_detected": drift_detected,
             "severity": severity if drift_detected else "none"
         }
-    
+
     drifting = [f for f, r in drift_report.items() if r["drift_detected"]]
     print(f"Drift detected in: {drifting or 'No features'}")
     return drift_report
@@ -297,14 +297,14 @@ def compute_psi(reference: np.ndarray, current: np.ndarray, bins: int = 10) -> f
     # Create bins from reference distribution
     breakpoints = np.percentile(reference, np.linspace(0, 100, bins+1))
     breakpoints[0] = -np.inf; breakpoints[-1] = np.inf
-    
+
     ref_counts = np.histogram(reference, breakpoints)[0] / len(reference)
     cur_counts = np.histogram(current, breakpoints)[0] / len(current)
-    
+
     # Avoid division by zero
     ref_counts = np.where(ref_counts == 0, 1e-8, ref_counts)
     cur_counts = np.where(cur_counts == 0, 1e-8, cur_counts)
-    
+
     psi = np.sum((cur_counts - ref_counts) * np.log(cur_counts / ref_counts))
     status = "severe" if psi > 0.2 else "warning" if psi > 0.1 else "stable"
     print(f"PSI = {psi:.4f} ({status})")
@@ -319,28 +319,28 @@ def compute_psi(reference: np.ndarray, current: np.ndarray, bins: int = 10) -> f
 
 ```
 PROBLEM WITHOUT A FEATURE STORE:
-  
+
   Training pipeline: pandas joins + feature computation → training features
   Serving pipeline: Java/C++ + feature computation → serving features
-  
+
   Result: TRAINING-SERVING SKEW — same raw data, different features!
   Root cause: duplicate, inconsistent feature computation logic.
   ("Age was computed differently in offline vs online code")
-  
+
 FEATURE STORE SOLUTION:
   Single source of truth for feature computation.
   Write feature logic ONCE → use for both training and serving.
-  
+
   COMPONENTS:
-  
+
   Offline Store (batch):
   • Historical feature values for training
   • Usually: Parquet files, Delta Lake, Hive
-  
+
   Online Store (real-time serving):
   • Latest feature values for low-latency inference (<10ms)
   • Usually: Redis, DynamoDB, Cassandra
-  
+
   Feature Registry:
   • Central catalog: what features exist, who owns them, how computed
   • Enables feature REUSE across teams and models
@@ -417,13 +417,13 @@ def test_inference_latency():
     import time
     model = load_model()
     X = np.random.random((1, 4))
-    
+
     latencies = []
     for _ in range(100):
         start = time.time()
         model.predict(X)
         latencies.append((time.time() - start) * 1000)
-    
+
     p99 = np.percentile(latencies, 99)
     assert p99 < 100, f"P99 latency {p99:.1f}ms exceeds 100ms SLA!"
 
@@ -432,7 +432,7 @@ def test_challenger_beats_champion(champion_model, challenger_model, test_data):
     X_test, y_test = test_data
     champion_acc = champion_model.score(X_test, y_test)
     challenger_acc = challenger_model.score(X_test, y_test)
-    
+
     # challenger must be at least 0.5% better to justify rollout
     assert challenger_acc > champion_acc - 0.005, \
            f"Challenger ({challenger_acc:.3f}) not better than champion ({champion_acc:.3f})"
@@ -468,7 +468,7 @@ MATURITY LEVEL 3 — Full MLOps (elite):
   Active learning / human-in-the-loop for edge cases
   Multi-region deployment with automatic failover
   Full audit trail for regulatory compliance (GDPR, CCPA)
-  
+
   Examples at Level 3: Google, Meta, Netflix, Spotify
 
 WHERE TO START:
@@ -481,10 +481,9 @@ WHERE TO START:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Model training** | [ML Algorithms](06_ML_Algorithms.md), [Deep Learning](07_Deep_Learning_Fundamentals.md) |
-| **Containers (Docker/K8s)** | [DevOps Guide](../22_DevOps/00_DevOps_Fundamentals.md) |
-| **API development** | [React Frontend](../15_React_Frontend/08_React_Performance.md) |
-| **Feature engineering** | [ML Fundamentals](05_ML_Fundamentals.md) |
-
+| Topic                       | Related Content                                                                         |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| **Model training**          | [ML Algorithms](06_ML_Algorithms.md), [Deep Learning](07_Deep_Learning_Fundamentals.md) |
+| **Containers (Docker/K8s)** | [DevOps Guide](../22_DevOps/00_DevOps_Fundamentals.md)                                  |
+| **API development**         | [React Frontend](../15_React_Frontend/08_React_Performance.md)                          |
+| **Feature engineering**     | [ML Fundamentals](05_ML_Fundamentals.md)                                                |

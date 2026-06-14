@@ -28,6 +28,12 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+### Historical Evolution
+
+Backtracking as a systematic search technique traces its roots to **Charles Babbage's analytical engine** (1830s) and the early constraint satisfaction problems in combinatorial mathematics, but the formal "choose-explore-unchoose" framework emerged from **John McCarthy's LISP in 1958** — LISP's explicit list structure and first-class functions made it natural to express state exploration as recursive tree traversal. The N-Queens problem, which became a canonical backtracking benchmark, dates to **Max Bezzel's 1848 chess puzzle** and was later studied by **Gauss** in 1850 — the eight-queens problem on an 8x8 board has 92 solutions and was one of the first problems where exhaustive backtracking search was explicitly analyzed. **Donald Knuth's 1965 work on "Algorithm 245" (Treesort)** and subsequent work on recursive tree algorithms formalized the recursive state management patterns used in modern backtracking. Modern practice (post-2010) applies backtracking to constraint solvers (SAT solvers, SMT solvers), game AI (minimax with alpha-beta pruning), and combinatorial optimization — the same choose-explore-unchoose structure that LISP pioneered.
+
+---
+
 ## PART 9: Advanced Recursion Patterns
 
 ### Pattern 1: Include/Exclude Pattern
@@ -197,9 +203,11 @@ public void sumArray(int[] arr, int index) {
 🔬 **Section Challenge — PART 9: Advanced Recursion Patterns**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -208,12 +216,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## PART 10: Recursion to Iteration Conversion
 
@@ -374,6 +384,7 @@ public List<List<Integer>> subsetsCascade(int[] nums) {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -382,12 +393,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## PART 11: Classic Recursion Problems with Full Solutions
 
@@ -622,6 +635,7 @@ private void helper(String num, int target, int index,
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -630,12 +644,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## PART 12: Recursion Complexity Analysis
 
@@ -661,7 +677,6 @@ SPACE COMPLEXITY:
 - For subsets/permutations: O(n) for the path being built
 - Plus any data structures passed/returned
 ```
-
 
 ### Counting Recursive Calls
 
@@ -697,6 +712,7 @@ public int fib(int n) {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -705,12 +721,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## PART 13: Recursion Mental Models
 
@@ -729,7 +747,6 @@ You don't care HOW factorial(4) got 24.
 You just trust that it did its job correctly.
 ```
 
-
 ### Model 2: The Smaller Copy Model
 
 ```
@@ -745,7 +762,6 @@ Sort smaller: Sort [8, 1, 9]
 
 Then combine results back up.
 ```
-
 
 ### Model 3: The Trust Model
 
@@ -764,7 +780,6 @@ Now just attach node 1:
 Don't trace through every call!
 Just trust the smaller call works.
 ```
-
 
 ### Model 4: The Leap of Faith
 
@@ -795,6 +810,7 @@ Example: Check if tree is balanced
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -803,12 +819,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## PART 14: Common Recursion Mistakes and Fixes
 
@@ -926,6 +944,7 @@ public long factorial(int n) {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -934,12 +953,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 # 🚀 PART FINAL: ADVANCED RECURSION PATTERNS & TECHNIQUES
 
@@ -960,7 +981,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ## 🔁 Mutual Recursion
 
 ```
@@ -980,7 +1000,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 │  EXAMPLE: Check if a number is even or odd using mutual recursion               │
 │  ────────────────────────────────────────────────────────                       │
 ```
-
 
 ```java
 // Mutually recursive functions
@@ -1068,7 +1087,6 @@ class Parser {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🔁 Mutual Recursion**
 
 **Challenge 1 (Termination Proof):** `isEven(n)` calls `isOdd(n-1)` and vice versa. **Who** ensures this TERMINATES? **When** does mutual recursion cause infinite loop? **What** is the specific base case structure needed for both functions?
@@ -1080,6 +1098,7 @@ class Parser {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1088,12 +1107,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## 📌 Continuation Passing Style (cps)
 
@@ -1113,7 +1134,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 │ EXAMPLE: Factorial in CPS                                                       │
 │ ───────────────────────────                                                     │
 ```
-
 
 ```java
 // Traditional recursive factorial
@@ -1161,7 +1181,6 @@ factorialCPS(5, result -> System.out.println(result));  // Prints 120
 │  ─────────────────                                                              │
 ```
 
-
 ```java
 void fibCPS(int n, Continuation<Integer> k) {
     if (n <= 1) {
@@ -1186,7 +1205,6 @@ void fibCPS(int n, Continuation<Integer> k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🔁 Y — Combinator — Anonymous Recursion
 
 ```
@@ -1205,7 +1223,6 @@ void fibCPS(int n, Continuation<Integer> k) {
 │ JAVA IMPLEMENTATION:                                                            │
 │ ─────────────────────                                                           │
 ```
-
 
 ```java
 // Function that takes itself and returns a function
@@ -1263,7 +1280,6 @@ Function<Integer, Integer> factorial = new Function<>() {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**
 
 **Challenge 1 (Lambda Recursion):** In Java, a lambda cannot directly call itself by name. `f -> f.apply(n-1)` doesn't work because `f` isn't in scope. **Who** provides the self-reference in the Y-combinator pattern? **What** is the key structural trick that enables self-application?
@@ -1275,6 +1291,7 @@ Function<Integer, Integer> factorial = new Function<>() {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1283,12 +1300,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## 🚀 Advanced Backtracking Optimizations
 
@@ -1507,7 +1526,6 @@ class SudokuSolver {
 
 ```
 
-
 ```
 │                                                                                 │
 │                                                                                 │
@@ -1613,7 +1631,6 @@ int[][] strassen(int[][] A, int[][] B) {
 
 ```
 
-
 ```
 │                                                                                 │
 │                                                                                 │
@@ -1667,6 +1684,7 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1675,12 +1693,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## RECURSION PERFORMANCE COMPARISON
 
@@ -1738,18 +1758,18 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-
 🔬 **Section Challenge — RECURSION PERFORMANCE COMPARISON**
 
 **Challenge 1 (Benchmark Read):** The benchmark shows `TreeInorder(1K nodes)` recursive=45,000ns vs iterative=52,000ns — recursion is FASTER. **Who** makes recursion faster here? **Why** does the pattern flip for `Factorial(1000)`? **What** is the JVM threshold for stack overflow in these benchmarks?
 
 <details><summary>Answer</summary>
 
-**Who makes recursion faster for trees:** The JIT compiler. Tree traversal has irregular branching (left vs right, null checks) that is hard to vectorize or unroll. The recursive code is SIMPLER, giving the JIT a cleaner view to optimize (e.g., inlining leaf calls). The iterative version with an explicit stack adds heap allocation overhead (push/pop `Stack<TreeNode>`) that the JIT can't optimize as aggressively. **Why pattern flips for `Factorial(1000)`:** Factorial is a SIMPLE linear recursion. The iterative version is 8 bytes (two variables) vs. recursive's 32KB of stack frames (each frame holds: return address, local variables, parameter n). 1000 method frames * 32 bytes/frame = 32KB — all on the JVM call stack which is NOT the heap. Every frame is a cache miss relative to the tiny iterative loop. **JVM StackOverflow threshold:** Default JVM stack size = 512KB-1MB (JVM flag: `-Xss`). A typical Java stack frame = 32-128 bytes. So: `512KB / 64 bytes/frame ≈ 8,192 frames` — about 8K recursive calls before `StackOverflowError`. `Factorial(100000)` = 100,000 frames = overflow. `Factorial(1000)` = 1,000 frames = fine (10x safety margin).
+**Who makes recursion faster for trees:** The JIT compiler. Tree traversal has irregular branching (left vs right, null checks) that is hard to vectorize or unroll. The recursive code is SIMPLER, giving the JIT a cleaner view to optimize (e.g., inlining leaf calls). The iterative version with an explicit stack adds heap allocation overhead (push/pop `Stack<TreeNode>`) that the JIT can't optimize as aggressively. **Why pattern flips for `Factorial(1000)`:** Factorial is a SIMPLE linear recursion. The iterative version is 8 bytes (two variables) vs. recursive's 32KB of stack frames (each frame holds: return address, local variables, parameter n). 1000 method frames \* 32 bytes/frame = 32KB — all on the JVM call stack which is NOT the heap. Every frame is a cache miss relative to the tiny iterative loop. **JVM StackOverflow threshold:** Default JVM stack size = 512KB-1MB (JVM flag: `-Xss`). A typical Java stack frame = 32-128 bytes. So: `512KB / 64 bytes/frame ≈ 8,192 frames` — about 8K recursive calls before `StackOverflowError`. `Factorial(100000)` = 100,000 frames = overflow. `Factorial(1000)` = 1,000 frames = fine (10x safety margin).
 
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1758,12 +1778,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## COMPLETE RECURSION PROBLEM TAXONOMY
 
@@ -1823,7 +1845,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-
 🔬 **Section Challenge — COMPLETE RECURSION PROBLEM TAXONOMY**
 
 **Challenge 1 (Taxonomy Routing):** Classify these problems by recursion type from the taxonomy (Linear/Binary/Multiple/Mutual/Tail): (A) `mergeSort(arr, 0, n-1)`. (B) `fibonacci(n)` naive. (C) `generatePermutations(str, 0)`. (D) `sumTail(list, 0, 0)`. **What** distinguishes each and **what** strategy does each type demand?
@@ -1835,6 +1856,7 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1843,12 +1865,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## MASTER CHECKLIST FOR WRITING RECURSION
 
@@ -1896,7 +1920,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-
 ---
 
 _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
@@ -1914,6 +1937,7 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1922,12 +1946,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## QUICK REFERENCE CARD
 
@@ -1968,7 +1994,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-
 ---
 
 # CURATED PRACTICE PROBLEMS — RECURSION & BACKTRACKING
@@ -1980,16 +2005,16 @@ Every backtracking problem is recursion + choice/undo. Master the base first.
 
 ## Section 1: Pure Recursion (Build Your Foundation)
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Fibonacci Number (LC 509) | LeetCode | Easy | Classic recursion → optimize with memo |
-| 2 | Climbing Stairs (LC 70) | LeetCode | Easy | Recurrence relation, base cases |
-| 3 | Power of Two (LC 231) | LeetCode | Easy | Divide by 2 recursively |
-| 4 | Reverse String (LC 344) | LeetCode | Easy | Two-pointer recursion |
-| 5 | Merge Two Sorted Lists (LC 21) | LeetCode | Easy | Recursive merge — elegant base case |
-| 6 | Maximum Depth of Binary Tree (LC 104) | LeetCode | Easy | 1 + max(left, right) |
-| 7 | Pow(x, n) (LC 50) | LeetCode | Medium | Fast exponentiation: x^n = (x^(n/2))^2 |
-| 8 | Flatten Nested List Iterator (LC 341) | LeetCode | Medium | Recursive flatten + iterator |
+| #   | Problem                               | Platform | Difficulty | Key Technique                          |
+| --- | ------------------------------------- | -------- | ---------- | -------------------------------------- |
+| 1   | Fibonacci Number (LC 509)             | LeetCode | Easy       | Classic recursion → optimize with memo |
+| 2   | Climbing Stairs (LC 70)               | LeetCode | Easy       | Recurrence relation, base cases        |
+| 3   | Power of Two (LC 231)                 | LeetCode | Easy       | Divide by 2 recursively                |
+| 4   | Reverse String (LC 344)               | LeetCode | Easy       | Two-pointer recursion                  |
+| 5   | Merge Two Sorted Lists (LC 21)        | LeetCode | Easy       | Recursive merge — elegant base case    |
+| 6   | Maximum Depth of Binary Tree (LC 104) | LeetCode | Easy       | 1 + max(left, right)                   |
+| 7   | Pow(x, n) (LC 50)                     | LeetCode | Medium     | Fast exponentiation: x^n = (x^(n/2))^2 |
+| 8   | Flatten Nested List Iterator (LC 341) | LeetCode | Medium     | Recursive flatten + iterator           |
 
 ---
 
@@ -2004,6 +2029,7 @@ Every backtracking problem is recursion + choice/undo. Master the base first.
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -2012,63 +2038,59 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## Section 2: Backtracking — Subsets / Combinations / Permutations
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Subsets (LC 78) | LeetCode | Medium | Include/exclude pattern |
-| 2 | Subsets II (LC 90) | LeetCode | Medium | Skip duplicates in sorted array |
-| 3 | Combinations (LC 77) | LeetCode | Medium | Choose k from n, prune early |
-| 4 | Combination Sum (LC 39) | LeetCode | Medium | Reuse elements, target decreasing |
-| 5 | Combination Sum II (LC 40) | LeetCode | Medium | No reuse + skip duplicates |
-| 6 | Permutations (LC 46) | LeetCode | Medium | Swap or visited-array approach |
-| 7 | Permutations II (LC 47) | LeetCode | Medium | Sort + skip same element at same level |
-| 8 | Letter Combinations of Phone (LC 17) | LeetCode | Medium | Mapping + recursive build |
+| #   | Problem                              | Platform | Difficulty | Key Technique                          |
+| --- | ------------------------------------ | -------- | ---------- | -------------------------------------- |
+| 1   | Subsets (LC 78)                      | LeetCode | Medium     | Include/exclude pattern                |
+| 2   | Subsets II (LC 90)                   | LeetCode | Medium     | Skip duplicates in sorted array        |
+| 3   | Combinations (LC 77)                 | LeetCode | Medium     | Choose k from n, prune early           |
+| 4   | Combination Sum (LC 39)              | LeetCode | Medium     | Reuse elements, target decreasing      |
+| 5   | Combination Sum II (LC 40)           | LeetCode | Medium     | No reuse + skip duplicates             |
+| 6   | Permutations (LC 46)                 | LeetCode | Medium     | Swap or visited-array approach         |
+| 7   | Permutations II (LC 47)              | LeetCode | Medium     | Sort + skip same element at same level |
+| 8   | Letter Combinations of Phone (LC 17) | LeetCode | Medium     | Mapping + recursive build              |
 
 ---
-
-
-
 
 ## Section 3: Backtracking — Constraint Satisfaction
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | N-Queens (LC 51) | LeetCode | Hard | Column + diagonal constraint tracking |
-| 2 | N-Queens II (LC 52) | LeetCode | Hard | Count only (simpler than LC 51) |
-| 3 | Sudoku Solver (LC 37) | LeetCode | Hard | Row/col/box constraint sets |
-| 4 | Valid Sudoku (LC 36) | LeetCode | Medium | Constraint check without solving |
-| 5 | Word Search (LC 79) | LeetCode | Medium | Grid backtracking with visited |
-| 6 | Word Search II (LC 212) | LeetCode | Hard | Trie + backtracking on grid |
-| 7 | Palindrome Partitioning (LC 131) | LeetCode | Medium | Partition string into palindromes |
-| 8 | Restore IP Addresses (LC 93) | LeetCode | Medium | 4 segments, each 0-255 |
-| 9 | Generate Parentheses (LC 22) | LeetCode | Medium | open < n, close < open |
-| 10 | Expression Add Operators (LC 282) | LeetCode | Hard | Insert +,-,* between digits |
+| #   | Problem                           | Platform | Difficulty | Key Technique                         |
+| --- | --------------------------------- | -------- | ---------- | ------------------------------------- |
+| 1   | N-Queens (LC 51)                  | LeetCode | Hard       | Column + diagonal constraint tracking |
+| 2   | N-Queens II (LC 52)               | LeetCode | Hard       | Count only (simpler than LC 51)       |
+| 3   | Sudoku Solver (LC 37)             | LeetCode | Hard       | Row/col/box constraint sets           |
+| 4   | Valid Sudoku (LC 36)              | LeetCode | Medium     | Constraint check without solving      |
+| 5   | Word Search (LC 79)               | LeetCode | Medium     | Grid backtracking with visited        |
+| 6   | Word Search II (LC 212)           | LeetCode | Hard       | Trie + backtracking on grid           |
+| 7   | Palindrome Partitioning (LC 131)  | LeetCode | Medium     | Partition string into palindromes     |
+| 8   | Restore IP Addresses (LC 93)      | LeetCode | Medium     | 4 segments, each 0-255                |
+| 9   | Generate Parentheses (LC 22)      | LeetCode | Medium     | open < n, close < open                |
+| 10  | Expression Add Operators (LC 282) | LeetCode | Hard       | Insert +,-,\* between digits          |
 
 ---
 
-
-
-
 ## HIDDEN GEMS — Recursion & Backtracking
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Different Ways to Add Parentheses (LC 241) | LeetCode | Divide-and-conquer recursion on expressions |
-| 2 | Strobogrammatic Number II (LC 247) | LeetCode | Build from outside-in recursively |
-| 3 | Additive Number (LC 306) | LeetCode | String backtracking with BigInteger |
-| 4 | Beautiful Arrangement (LC 526) | LeetCode | Permutation with divisibility constraint |
-| 5 | Matchsticks to Square (LC 473) | LeetCode | Partition into 4 equal subsets — pruning critical |
-| 6 | Partition to K Equal Sum Subsets (LC 698) | LeetCode | Generalized partition — bitmask or backtrack |
-| 7 | Increasing Subsequences (LC 491) | LeetCode | Backtrack without sorting — use set at each level |
-| 8 | Split Array into Fibonacci Sequence (LC 842) | LeetCode | Fibonacci constraint + string splitting |
+| #   | Problem                                      | Platform | Why It's Valuable                                 |
+| --- | -------------------------------------------- | -------- | ------------------------------------------------- |
+| 1   | Different Ways to Add Parentheses (LC 241)   | LeetCode | Divide-and-conquer recursion on expressions       |
+| 2   | Strobogrammatic Number II (LC 247)           | LeetCode | Build from outside-in recursively                 |
+| 3   | Additive Number (LC 306)                     | LeetCode | String backtracking with BigInteger               |
+| 4   | Beautiful Arrangement (LC 526)               | LeetCode | Permutation with divisibility constraint          |
+| 5   | Matchsticks to Square (LC 473)               | LeetCode | Partition into 4 equal subsets — pruning critical |
+| 6   | Partition to K Equal Sum Subsets (LC 698)    | LeetCode | Generalized partition — bitmask or backtrack      |
+| 7   | Increasing Subsequences (LC 491)             | LeetCode | Backtrack without sorting — use set at each level |
+| 8   | Split Array into Fibonacci Sequence (LC 842) | LeetCode | Fibonacci constraint + string splitting           |
 
 ---
 
@@ -2085,6 +2107,7 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 </details>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -2093,8 +2116,11 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+
 </details>

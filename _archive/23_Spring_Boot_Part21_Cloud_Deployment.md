@@ -1,4 +1,5 @@
 # Spring Boot Part 21: Cloud Deployment
+
 ## AWS, Azure, and GCP Integration Complete Guide
 
 > **"The cloud is not just about cost savings—it's about speed, scale, and innovation"** - Deploy anywhere, scale everywhere
@@ -50,6 +51,7 @@
 ---
 
 ## 📚 Table of Contents
+
 1. [Cloud Native Principles](#cloud-native-principles)
 2. [Containerization with Docker](#containerization-with-docker)
 3. [Kubernetes Deployment](#kubernetes-deployment)
@@ -93,14 +95,14 @@
 
 ### Cloud Provider Comparison
 
-| Feature | AWS | Azure | GCP |
-|---------|-----|-------|-----|
-| Compute | EC2, ECS, EKS, Lambda | VMs, AKS, Functions | Compute Engine, GKE, Cloud Run |
-| Database | RDS, DynamoDB | SQL Database, Cosmos DB | Cloud SQL, Firestore |
-| Storage | S3 | Blob Storage | Cloud Storage |
-| Messaging | SQS, SNS, Kinesis | Service Bus, Event Hubs | Pub/Sub |
-| Container Registry | ECR | ACR | GCR, Artifact Registry |
-| Config | Parameter Store, Secrets Manager | Key Vault | Secret Manager |
+| Feature            | AWS                              | Azure                   | GCP                            |
+| ------------------ | -------------------------------- | ----------------------- | ------------------------------ |
+| Compute            | EC2, ECS, EKS, Lambda            | VMs, AKS, Functions     | Compute Engine, GKE, Cloud Run |
+| Database           | RDS, DynamoDB                    | SQL Database, Cosmos DB | Cloud SQL, Firestore           |
+| Storage            | S3                               | Blob Storage            | Cloud Storage                  |
+| Messaging          | SQS, SNS, Kinesis                | Service Bus, Event Hubs | Pub/Sub                        |
+| Container Registry | ECR                              | ACR                     | GCR, Artifact Registry         |
+| Config             | Parameter Store, Secrets Manager | Key Vault               | Secret Manager                 |
 
 ---
 
@@ -200,7 +202,7 @@ ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 ### Docker Compose for Local Development
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -222,7 +224,14 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "-q",
+          "http://localhost:8080/actuator/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -657,7 +666,7 @@ spec:
 ```java
 @Configuration
 public class AWSConfig {
-    
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
@@ -665,7 +674,7 @@ public class AWSConfig {
             .credentialsProvider(DefaultCredentialsProvider.create())
             .build();
     }
-    
+
     @Bean
     public SqsAsyncClient sqsClient() {
         return SqsAsyncClient.builder()
@@ -679,12 +688,12 @@ public class AWSConfig {
 @RequiredArgsConstructor
 @Slf4j
 public class S3StorageService {
-    
+
     private final S3Client s3Client;
-    
+
     @Value("${aws.s3.bucket}")
     private String bucketName;
-    
+
     public String uploadFile(MultipartFile file, String key) {
         try {
             PutObjectRequest request = PutObjectRequest.builder()
@@ -692,48 +701,48 @@ public class S3StorageService {
                 .key(key)
                 .contentType(file.getContentType())
                 .build();
-            
-            s3Client.putObject(request, 
+
+            s3Client.putObject(request,
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            
+
             return String.format("https://%s.s3.amazonaws.com/%s", bucketName, key);
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload file", e);
         }
     }
-    
+
     public byte[] downloadFile(String key) {
         GetObjectRequest request = GetObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
-        
+
         return s3Client.getObjectAsBytes(request).asByteArray();
     }
-    
+
     public String getPresignedUrl(String key, Duration expiration) {
         try (S3Presigner presigner = S3Presigner.create()) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build();
-            
+
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
                 .signatureDuration(expiration)
                 .getObjectRequest(getObjectRequest)
                 .build();
-            
+
             return presigner.presignGetObject(presignRequest).url().toString();
         }
     }
-    
+
     public void deleteFile(String key) {
         DeleteObjectRequest request = DeleteObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
-        
+
         s3Client.deleteObject(request);
     }
 }
@@ -746,31 +755,31 @@ public class S3StorageService {
 @RequiredArgsConstructor
 @Slf4j
 public class SQSMessageService {
-    
+
     private final SqsAsyncClient sqsClient;
-    
+
     @Value("${aws.sqs.order-queue-url}")
     private String orderQueueUrl;
-    
+
     public CompletableFuture<String> sendMessage(Object message) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(message);
-            
+
             SendMessageRequest request = SendMessageRequest.builder()
                 .queueUrl(orderQueueUrl)
                 .messageBody(messageBody)
                 .messageGroupId("orders")  // For FIFO queues
                 .messageDeduplicationId(UUID.randomUUID().toString())
                 .build();
-            
+
             return sqsClient.sendMessage(request)
                 .thenApply(SendMessageResponse::messageId);
-                
+
         } catch (JsonProcessingException e) {
             throw new MessageException("Failed to serialize message", e);
         }
     }
-    
+
     @Scheduled(fixedDelay = 5000)
     public void pollMessages() {
         ReceiveMessageRequest request = ReceiveMessageRequest.builder()
@@ -779,39 +788,39 @@ public class SQSMessageService {
             .waitTimeSeconds(20)  // Long polling
             .visibilityTimeout(30)
             .build();
-        
+
         sqsClient.receiveMessage(request)
             .thenAccept(response -> {
                 response.messages().forEach(this::processMessage);
             });
     }
-    
+
     private void processMessage(Message message) {
         try {
             log.info("Processing message: {}", message.messageId());
-            
+
             // Process the message
             OrderEvent event = new ObjectMapper()
                 .readValue(message.body(), OrderEvent.class);
-            
+
             // Handle the event
             handleOrderEvent(event);
-            
+
             // Delete message after successful processing
             deleteMessage(message.receiptHandle());
-            
+
         } catch (Exception e) {
             log.error("Failed to process message: {}", message.messageId(), e);
             // Message will become visible again after visibility timeout
         }
     }
-    
+
     private void deleteMessage(String receiptHandle) {
         DeleteMessageRequest request = DeleteMessageRequest.builder()
             .queueUrl(orderQueueUrl)
             .receiptHandle(receiptHandle)
             .build();
-        
+
         sqsClient.deleteMessage(request);
     }
 }
@@ -822,7 +831,7 @@ public class SQSMessageService {
 ```java
 @Configuration
 public class SecretsManagerConfig {
-    
+
     @Bean
     public SecretsManagerClient secretsManagerClient() {
         return SecretsManagerClient.builder()
@@ -834,29 +843,29 @@ public class SecretsManagerConfig {
 @Service
 @RequiredArgsConstructor
 public class SecretsService {
-    
+
     private final SecretsManagerClient secretsClient;
     private final Map<String, CachedSecret> cache = new ConcurrentHashMap<>();
-    
+
     public String getSecret(String secretName) {
         CachedSecret cached = cache.get(secretName);
-        
+
         if (cached != null && !cached.isExpired()) {
             return cached.getValue();
         }
-        
+
         GetSecretValueRequest request = GetSecretValueRequest.builder()
             .secretId(secretName)
             .build();
-        
+
         GetSecretValueResponse response = secretsClient.getSecretValue(request);
         String secretValue = response.secretString();
-        
+
         cache.put(secretName, new CachedSecret(secretValue, Duration.ofMinutes(5)));
-        
+
         return secretValue;
     }
-    
+
     public <T> T getSecretAs(String secretName, Class<T> type) {
         String secretJson = getSecret(secretName);
         try {
@@ -865,18 +874,18 @@ public class SecretsService {
             throw new SecretRetrievalException("Failed to parse secret", e);
         }
     }
-    
+
     @Data
     @AllArgsConstructor
     private static class CachedSecret {
         private String value;
         private Instant expiresAt;
-        
+
         public CachedSecret(String value, Duration ttl) {
             this.value = value;
             this.expiresAt = Instant.now().plus(ttl);
         }
-        
+
         public boolean isExpired() {
             return Instant.now().isAfter(expiresAt);
         }
@@ -886,24 +895,24 @@ public class SecretsService {
 // Database password from Secrets Manager
 @Configuration
 public class DataSourceConfig {
-    
+
     @Autowired
     private SecretsService secretsService;
-    
+
     @Bean
     @Primary
     public DataSource dataSource() {
         DatabaseCredentials creds = secretsService
             .getSecretAs("prod/database/credentials", DatabaseCredentials.class);
-        
+
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(creds.getHost());
         dataSource.setUsername(creds.getUsername());
         dataSource.setPassword(creds.getPassword());
-        
+
         return dataSource;
     }
-    
+
     @Data
     public static class DatabaseCredentials {
         private String host;
@@ -1072,52 +1081,52 @@ spring:
 @RequiredArgsConstructor
 @Slf4j
 public class AzureBlobStorageService {
-    
+
     private final BlobServiceClient blobServiceClient;
-    
+
     @Value("${spring.cloud.azure.storage.blob.container-name}")
     private String containerName;
-    
+
     public String uploadFile(MultipartFile file, String blobName) {
         try {
             BlobContainerClient containerClient = blobServiceClient
                 .getBlobContainerClient(containerName);
-            
+
             BlobClient blobClient = containerClient.getBlobClient(blobName);
-            
+
             blobClient.upload(file.getInputStream(), file.getSize(), true);
-            
+
             return blobClient.getBlobUrl();
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload to Azure Blob", e);
         }
     }
-    
+
     public byte[] downloadFile(String blobName) {
         BlobClient blobClient = blobServiceClient
             .getBlobContainerClient(containerName)
             .getBlobClient(blobName);
-        
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         blobClient.downloadStream(outputStream);
-        
+
         return outputStream.toByteArray();
     }
-    
+
     public String generateSasUrl(String blobName, Duration expiration) {
         BlobClient blobClient = blobServiceClient
             .getBlobContainerClient(containerName)
             .getBlobClient(blobName);
-        
+
         OffsetDateTime expiryTime = OffsetDateTime.now().plus(expiration);
-        
+
         BlobSasPermission permission = new BlobSasPermission()
             .setReadPermission(true);
-        
+
         BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
             expiryTime, permission);
-        
+
         return blobClient.getBlobUrl() + "?" + blobClient.generateSas(sasValues);
     }
 }
@@ -1128,24 +1137,24 @@ public class AzureBlobStorageService {
 ```java
 @Configuration
 public class AzureKeyVaultConfig {
-    
+
     // Key Vault values are automatically injected when using spring-cloud-azure
     @Value("${database-password}")  // From Key Vault
     private String databasePassword;
-    
+
     @Value("${jwt-secret}")  // From Key Vault
     private String jwtSecret;
-    
+
     @Bean
     public DataSource dataSource(
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username) {
-        
+
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(databasePassword);
-        
+
         return dataSource;
     }
 }
@@ -1339,44 +1348,44 @@ jwt:
 @RequiredArgsConstructor
 @Slf4j
 public class CloudStorageService {
-    
+
     private final Storage storage;
-    
+
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
-    
+
     public String uploadFile(MultipartFile file, String objectName) {
         try {
             BlobId blobId = BlobId.of(bucketName, objectName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(file.getContentType())
                 .build();
-            
+
             storage.create(blobInfo, file.getBytes());
-            
+
             return String.format("gs://%s/%s", bucketName, objectName);
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload to GCS", e);
         }
     }
-    
+
     public byte[] downloadFile(String objectName) {
         Blob blob = storage.get(BlobId.of(bucketName, objectName));
         return blob.getContent();
     }
-    
+
     public String getSignedUrl(String objectName, Duration expiration) {
         BlobInfo blobInfo = BlobInfo.newBuilder(
             BlobId.of(bucketName, objectName)).build();
-        
+
         URL signedUrl = storage.signUrl(
             blobInfo,
             expiration.toMinutes(),
             TimeUnit.MINUTES,
             Storage.SignUrlOption.withV4Signature()
         );
-        
+
         return signedUrl.toString();
     }
 }
@@ -1387,12 +1396,12 @@ public class CloudStorageService {
 ```java
 @Configuration
 public class PubSubConfig {
-    
+
     @Bean
     public MessageChannel orderInputChannel() {
         return new PublishSubscribeChannel();
     }
-    
+
     @Bean
     public MessageChannel orderOutputChannel() {
         return new DirectChannel();
@@ -1403,23 +1412,23 @@ public class PubSubConfig {
 @RequiredArgsConstructor
 @Slf4j
 public class PubSubService {
-    
+
     private final PubSubTemplate pubSubTemplate;
-    
+
     @Value("${gcp.pubsub.order-topic}")
     private String orderTopic;
-    
+
     public CompletableFuture<String> publishOrder(OrderEvent event) {
         try {
             String message = new ObjectMapper().writeValueAsString(event);
-            
+
             return pubSubTemplate.publish(orderTopic, message)
                 .completable()
                 .thenApply(id -> {
                     log.info("Published message to {}: {}", orderTopic, id);
                     return id;
                 });
-                
+
         } catch (JsonProcessingException e) {
             throw new MessagingException("Failed to serialize order event", e);
         }
@@ -1430,24 +1439,24 @@ public class PubSubService {
 @Component
 @Slf4j
 public class OrderSubscriber {
-    
+
     @Bean
     public Consumer<Message<String>> orderMessageConsumer() {
         return message -> {
             log.info("Received order message: {}", message.getPayload());
-            
+
             try {
                 OrderEvent event = new ObjectMapper()
                     .readValue(message.getPayload(), OrderEvent.class);
                 processOrder(event);
-                
+
             } catch (Exception e) {
                 log.error("Failed to process order message", e);
                 throw new RuntimeException(e);
             }
         };
     }
-    
+
     private void processOrder(OrderEvent event) {
         // Process the order
     }
@@ -1460,41 +1469,41 @@ public class OrderSubscriber {
 # cloudbuild.yaml for Cloud Run
 steps:
   # Build the container
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
-      - '.'
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
+      - "."
 
   # Push to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
+      - "push"
+      - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
 
   # Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
-      - 'run'
-      - 'deploy'
-      - 'order-service'
-      - '--image=gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
-      - '--memory=1Gi'
-      - '--cpu=1'
-      - '--min-instances=1'
-      - '--max-instances=10'
-      - '--concurrency=80'
-      - '--set-env-vars=SPRING_PROFILES_ACTIVE=gcp'
-      - '--set-secrets=DB_PASSWORD=database-password:latest'
-      - '--vpc-connector=vpc-connector'
+      - "run"
+      - "deploy"
+      - "order-service"
+      - "--image=gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
+      - "--region=us-central1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
+      - "--memory=1Gi"
+      - "--cpu=1"
+      - "--min-instances=1"
+      - "--max-instances=10"
+      - "--concurrency=80"
+      - "--set-env-vars=SPRING_PROFILES_ACTIVE=gcp"
+      - "--set-secrets=DB_PASSWORD=database-password:latest"
+      - "--vpc-connector=vpc-connector"
 
 images:
-  - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
+  - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
 ```
 
 ---
@@ -1522,17 +1531,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'gradle'
-      
+          java-version: "21"
+          distribution: "temurin"
+          cache: "gradle"
+
       - name: Run tests
         run: ./gradlew test
-      
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -1546,20 +1555,20 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -1569,7 +1578,7 @@ jobs:
             type=sha,prefix=
             type=ref,event=branch
             type=semver,pattern={{version}}
-      
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -1584,18 +1593,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: staging
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Configure kubectl
         uses: azure/setup-kubectl@v3
-      
+
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
-      
+
       - name: Deploy to staging
         run: |
           kubectl set image deployment/order-service \
@@ -1607,18 +1616,18 @@ jobs:
     needs: deploy-staging
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Configure kubectl
         uses: azure/setup-kubectl@v3
-      
+
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
-      
+
       - name: Deploy to production
         run: |
           kubectl set image deployment/order-service \
@@ -1855,7 +1864,7 @@ prometheus:
           resources:
             requests:
               storage: 100Gi
-    
+
     serviceMonitorSelector:
       matchLabels:
         prometheus: main
@@ -1865,13 +1874,13 @@ grafana:
   persistence:
     enabled: true
     size: 10Gi
-  
+
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-        - name: 'spring-boot'
-          folder: 'Spring Boot'
+        - name: "spring-boot"
+          folder: "Spring Boot"
           type: file
           options:
             path: /var/lib/grafana/dashboards/spring-boot
@@ -1879,17 +1888,17 @@ grafana:
 alertmanager:
   config:
     route:
-      receiver: 'slack'
+      receiver: "slack"
       routes:
         - match:
             severity: critical
-          receiver: 'pagerduty'
+          receiver: "pagerduty"
     receivers:
-      - name: 'slack'
+      - name: "slack"
         slack_configs:
-          - channel: '#alerts'
+          - channel: "#alerts"
             send_resolved: true
-      - name: 'pagerduty'
+      - name: "pagerduty"
         pagerduty_configs:
           - service_key: ${PAGERDUTY_KEY}
 ```
@@ -2025,6 +2034,7 @@ spec:
 ### Basic
 
 **Q1: What is the difference between IaaS, PaaS, and SaaS?**
+
 ```
 IaaS (Infrastructure as a Service):
 - Raw infrastructure: VMs, storage, networking
@@ -2043,6 +2053,7 @@ SaaS (Software as a Service):
 ```
 
 **Q2: What are the benefits of using containers?**
+
 ```
 Benefits:
 - Consistency across environments
@@ -2054,6 +2065,7 @@ Benefits:
 ```
 
 **Q3: Explain the difference between EKS, AKS, and GKE**
+
 ```
 EKS (Elastic Kubernetes Service - AWS):
 - AWS managed Kubernetes
@@ -2074,6 +2086,7 @@ GKE (Google Kubernetes Engine):
 ### Advanced
 
 **Q4: How do you handle secrets in cloud deployments?**
+
 ```
 Best practices:
 1. Never store secrets in code or config files
@@ -2088,6 +2101,7 @@ Best practices:
 ```
 
 **Q5: Explain blue-green vs canary deployments**
+
 ```
 Blue-Green:
 - Two identical environments
@@ -2111,6 +2125,7 @@ Use canary for:
 ```
 
 **Q6: How do you ensure high availability in cloud?**
+
 ```
 Strategies:
 1. Multi-AZ deployment
@@ -2186,4 +2201,4 @@ Cloud deployment requires understanding:
 
 ---
 
-*This completes the Spring Boot Cloud Deployment guide - you're now ready to deploy anywhere!*
+_This completes the Spring Boot Cloud Deployment guide - you're now ready to deploy anywhere!_

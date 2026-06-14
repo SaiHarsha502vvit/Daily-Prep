@@ -23,6 +23,12 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+### Historical Evolution
+
+Balanced binary search trees emerged from the need to guarantee $O(\log n)$ operations in the worst case. **AVL Trees** were invented by **Georgy Adelson-Velsky and Evgenii Landis in 1962** — the paper "An algorithm for the organization of information" introduced the balance factor (left subtree height minus right subtree height must be $\{-1, 0, 1\}$) and proved that AVL trees maintain $O(\log n)$ search, insertion, and deletion. AVL trees were the first balanced BST, but their strict rebalancing requirement (single or double rotation per insert) made them less common in practice until **Red-Black trees** (Guibas and Sedgewick, 1978) offered a more relaxed balance. **B-Trees** were invented by **Rudolf Bayer and Edward McCreight in 1972** at Boeing Scientific Research Labs specifically for disk-based storage systems — the key insight was that by allowing nodes to have many children (not just 2), B-Trees minimize disk I/O operations (a disk seek costs ~10ms vs ~10ns for RAM access), making them the backbone of virtually all modern database indexes (InnoDB, PostgreSQL) and file systems (NTFS, ext4). Modern practice (post-2010) combines these insights: Java's `HashMap` switches from linked-list to Red-Black tree buckets at 8 entries (Treesort, 2010 Java 8) to prevent HashDoS attacks, and B+ Tree variants remain the dominant index structure in distributed databases like Cassandra and Google Spanner.
+
+---
+
 ## From Binary Trees to Advanced Tree Algorithms
 
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning
@@ -36,12 +42,12 @@ See also: [Graphs](05b_Graphs_Internals.md) | [Index](../00_MASTER_INDEX.md)
 TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS
 
 Understanding the PHYSICAL reality of trees and graphs:
+
 - How nodes are stored in memory
 - What happens during tree traversal at CPU level
 - Recursion stack deep dive
 - Why tree operations are often cache-unfriendly
 - Graph representation memory comparison
-
 
 ## 🧠 Tree Node Memory Layout
 
@@ -102,7 +108,6 @@ Understanding the PHYSICAL reality of trees and graphs:
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## 📚 Recursion Stack — What Actually Happens
 
@@ -206,9 +211,11 @@ Understanding the PHYSICAL reality of trees and graphs:
 🔬 **Section Challenge — 📚 Recursion Stack — What Actually Happens**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -217,28 +224,28 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+
 </details>
 
-
 ## 📚 Iterative Traversal — Explicit Stack
-
-
 
 🔬 **Section Challenge — 📚 Iterative Traversal — Explicit Stack**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+
 </details>
 
-
 ## Iterative Vs Recursive - Memory Comparison
-
 
 **Recursive Inorder**:
 void inorder(TreeNode root) {
@@ -270,6 +277,7 @@ MEMORY COMPARISON (tree height h = 20):
 | Recursive | 20 × 48 = 960 B | Uses call stack (limited) |
 | Iterative | 20 × 8 = 160 B | Uses heap (flexible) |
 For SKEWED tree (h = 100,000):
+
 - Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack
 - Iterative: 100,000 × 8 = 800 KB → Works fine on heap
 
@@ -332,7 +340,6 @@ For SKEWED tree (h = 100,000):
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🧠 Graph Representation — Memory Deep Dive
 
 ---
@@ -340,17 +347,20 @@ For SKEWED tree (h = 100,000):
 🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 # 🌳 Part 1: Binary Tree Fundamentals
 
@@ -531,7 +541,6 @@ TERMINOLOGY:
 • Depth: Distance from root (depth of 4 is 2)
 • Subtree: Any node and its descendants
 ```
-
 
 ## Tree Node Structure
 
@@ -1646,7 +1655,6 @@ public class TreeSerializer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Trees and graphs are everywhere - master them and unlock many problems!_
@@ -1657,57 +1665,56 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 
 ### Binary Tree Fundamentals
 
-| # | Problem | Difficulty | Source | Pattern |
-|---|---------|-----------|--------|---------|
-| 1 | Maximum Depth of Binary Tree | Easy | LC 104 | Recursion — base pattern |
-| 2 | Invert Binary Tree | Easy | LC 226 | Swap left/right |
-| 3 | Same Tree | Easy | LC 100 | Parallel recursion |
-| 4 | Symmetric Tree | Easy | LC 101 | Mirror check |
-| 5 | Diameter of Binary Tree | Easy | LC 543 | maxDepth + global variable |
-| 6 | Balanced Binary Tree | Easy | LC 110 | Height comparison |
-| 7 | Subtree of Another Tree | Easy | LC 572 | isSameTree at each node |
-| 8 | Path Sum | Easy | LC 112 | Target subtract |
-| 9 | Count Good Nodes | Medium | LC 1448 | Pass max so far |
-| 10 | Merge Two Binary Trees | Easy | LC 617 | Parallel build |
+| #   | Problem                      | Difficulty | Source  | Pattern                    |
+| --- | ---------------------------- | ---------- | ------- | -------------------------- |
+| 1   | Maximum Depth of Binary Tree | Easy       | LC 104  | Recursion — base pattern   |
+| 2   | Invert Binary Tree           | Easy       | LC 226  | Swap left/right            |
+| 3   | Same Tree                    | Easy       | LC 100  | Parallel recursion         |
+| 4   | Symmetric Tree               | Easy       | LC 101  | Mirror check               |
+| 5   | Diameter of Binary Tree      | Easy       | LC 543  | maxDepth + global variable |
+| 6   | Balanced Binary Tree         | Easy       | LC 110  | Height comparison          |
+| 7   | Subtree of Another Tree      | Easy       | LC 572  | isSameTree at each node    |
+| 8   | Path Sum                     | Easy       | LC 112  | Target subtract            |
+| 9   | Count Good Nodes             | Medium     | LC 1448 | Pass max so far            |
+| 10  | Merge Two Binary Trees       | Easy       | LC 617  | Parallel build             |
 
 ### Binary Tree — Medium/Hard
 
-| # | Problem | Difficulty | Source | Pattern |
-|---|---------|-----------|--------|---------|
-| 1 | Binary Tree Level Order Traversal | Medium | LC 102 | BFS + level size |
-| 2 | Binary Tree Right Side View | Medium | LC 199 | BFS → last of each level |
-| 3 | Flatten Binary Tree to LL | Medium | LC 114 | Morris-like rewire |
-| 4 | Construct Tree from Preorder + Inorder | Medium | LC 105 | Recursive partitioning |
-| 5 | Path Sum III | Medium | LC 437 | Prefix sum on paths |
-| 6 | Lowest Common Ancestor | Medium | LC 236 | Post-order check both sides |
-| 7 | Serialize and Deserialize Binary Tree | Hard | LC 297 | BFS/DFS encoding |
-| 8 | Binary Tree Maximum Path Sum | Hard | LC 124 | Post-order + global max |
-| 9 | Vertical Order Traversal | Hard | LC 987 | BFS + column tracking |
-| 10 | Populating Next Right Pointers | Medium | LC 116 | BFS level connection |
+| #   | Problem                                | Difficulty | Source | Pattern                     |
+| --- | -------------------------------------- | ---------- | ------ | --------------------------- |
+| 1   | Binary Tree Level Order Traversal      | Medium     | LC 102 | BFS + level size            |
+| 2   | Binary Tree Right Side View            | Medium     | LC 199 | BFS → last of each level    |
+| 3   | Flatten Binary Tree to LL              | Medium     | LC 114 | Morris-like rewire          |
+| 4   | Construct Tree from Preorder + Inorder | Medium     | LC 105 | Recursive partitioning      |
+| 5   | Path Sum III                           | Medium     | LC 437 | Prefix sum on paths         |
+| 6   | Lowest Common Ancestor                 | Medium     | LC 236 | Post-order check both sides |
+| 7   | Serialize and Deserialize Binary Tree  | Hard       | LC 297 | BFS/DFS encoding            |
+| 8   | Binary Tree Maximum Path Sum           | Hard       | LC 124 | Post-order + global max     |
+| 9   | Vertical Order Traversal               | Hard       | LC 987 | BFS + column tracking       |
+| 10  | Populating Next Right Pointers         | Medium     | LC 116 | BFS level connection        |
 
 ### BST Problems
 
-| # | Problem | Difficulty | Source | Pattern |
-|---|---------|-----------|--------|---------|
-| 1 | Search in a BST | Easy | LC 700 | Go left/right |
-| 2 | Validate BST | Medium | LC 98 | Inorder check or bounds |
-| 3 | Kth Smallest in BST | Medium | LC 230 | Inorder counting |
-| 4 | Delete Node in BST | Medium | LC 450 | Three cases |
-| 5 | Convert Sorted Array to BST | Easy | LC 108 | Mid-point recursion |
-| 6 | LCA of BST | Medium | LC 235 | Split point |
-| 7 | BST Iterator | Medium | LC 173 | Controlled inorder (stack) |
-| 8 | Recover Binary Search Tree | Medium | LC 99 | Inorder find 2 swapped |
-| 9 | Trim a BST | Medium | LC 669 | Recursive prune |
-| 10 | Range Sum of BST | Easy | LC 938 | Pruned DFS |
+| #   | Problem                     | Difficulty | Source | Pattern                    |
+| --- | --------------------------- | ---------- | ------ | -------------------------- |
+| 1   | Search in a BST             | Easy       | LC 700 | Go left/right              |
+| 2   | Validate BST                | Medium     | LC 98  | Inorder check or bounds    |
+| 3   | Kth Smallest in BST         | Medium     | LC 230 | Inorder counting           |
+| 4   | Delete Node in BST          | Medium     | LC 450 | Three cases                |
+| 5   | Convert Sorted Array to BST | Easy       | LC 108 | Mid-point recursion        |
+| 6   | LCA of BST                  | Medium     | LC 235 | Split point                |
+| 7   | BST Iterator                | Medium     | LC 173 | Controlled inorder (stack) |
+| 8   | Recover Binary Search Tree  | Medium     | LC 99  | Inorder find 2 swapped     |
+| 9   | Trim a BST                  | Medium     | LC 669 | Recursive prune            |
+| 10  | Range Sum of BST            | Easy       | LC 938 | Pruned DFS                 |
 
 **Hidden Gems:**
 
-| Problem | Source | Why It's Great |
-|---------|--------|---------------|
-| All Nodes Distance K in Binary Tree | LC 863 | Convert tree to graph + BFS |
-| Binary Tree Cameras | LC 968 | Greedy post-order (Hard, elegant) |
-| House Robber III | LC 337 | DP on tree — two states per node |
-| Sum of Distances in Tree | LC 834 | Re-rooting technique (Hard, teaches re-root) |
-| Check Completeness of Binary Tree | LC 958 | BFS — null before value = incomplete |
-| Count Complete Tree Nodes | LC 222 | O(log²n) using height comparison |
-
+| Problem                             | Source | Why It's Great                               |
+| ----------------------------------- | ------ | -------------------------------------------- |
+| All Nodes Distance K in Binary Tree | LC 863 | Convert tree to graph + BFS                  |
+| Binary Tree Cameras                 | LC 968 | Greedy post-order (Hard, elegant)            |
+| House Robber III                    | LC 337 | DP on tree — two states per node             |
+| Sum of Distances in Tree            | LC 834 | Re-rooting technique (Hard, teaches re-root) |
+| Check Completeness of Binary Tree   | LC 958 | BFS — null before value = incomplete         |
+| Count Complete Tree Nodes           | LC 222 | O(log²n) using height comparison             |

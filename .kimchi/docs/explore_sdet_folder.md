@@ -1,8 +1,9 @@
 # Exploration of 21_SDET_Playwright_Automation
 
 ## 1. Markdown Files
+
 - **Count**: 55 Markdown files
-- **List**: 
+- **List**:
   ```
   00_INDEX.md
   00_Start_Here.md
@@ -62,6 +63,7 @@
   ```
 
 ## 2. Chapter Structure
+
 - **Sequential Numbering**: Yes, chapters use two-digit sequential numbering (00 to 45).
 - **Folder Grouping**: Chapters are grouped into thematic folders:
   - `01_Foundations` (chapters 00-04): SDET mindset, setup, basics, locators, console scripting, JS/TS
@@ -75,6 +77,7 @@
 - **Note**: Chapter numbers are not strictly contiguous within folders (e.g., chapter 20 is in folder 08, chapters 21-24 in folder 04), but the overall sequence 00-45 is maintained.
 
 ## 3. Topics Covered vs Missing
+
 - **Covered Topics** (by chapter):
   - Foundations: Testing fundamentals, environment setup, Playwright/TS basics, locators, console scripting, JS/TS for automation
   - Core Architecture: POM deep dive, custom fixtures, E2E test architecture, browser internals, parallel execution
@@ -87,6 +90,7 @@
 - **Missing Topics**: No obvious gaps in the sequence (00-45 all present). The curriculum appears comprehensive for enterprise SDET with Playwright/TS, covering web, API, database, performance, security, and career progression.
 
 ## 4. POM, API, Fixture, Utility Examples
+
 - **POM Examples**:
   - `05_POM_Architecture_Deep_Dive.md` – MasterSearchPage dissected, lazy evaluation, typed dictionaries
   - `18_Mega_POM_Architecture.md` – Component POM pattern, locator dictionary, 7-step refactoring strategy
@@ -105,14 +109,16 @@
   - `42_Polling_Async_Data_Patterns.md` – Polling patterns for async data
 
 ## 5. Pedagogy Style
+
 Based on examination of `00_Start_Here.md`, `01_Playwright_TS_Basics.md`, and `05_POM_Architecture_Deep_Dive.md`:
+
 - **Consistent Template**: Each chapter follows:
   1. Title and navigation links (← Previous, Index, → Next)
   2. **5W1H Framework**: WHAT, WHY, WHO, WHEN, HOW sections at start
   3. Numbered sections with clear headings (e.g., "1. The JavaScript Event Loop")
   4. **Code-First Examples**: Real TypeScript code snippets with explanations
   5. **Real-World References**: Uses actual codebase examples (e.g., MasterSearchPage, CustomerDetailsTab)
-  6. **Deep Dive Focus**: Explains *why* things work, not just *how*; emphasizes understanding internals
+  6. **Deep Dive Focus**: Explains _why_ things work, not just _how_; emphasizes understanding internals
   7. **Cross-Links**: Explicit references to related chapters and external modules (e.g., `17_TypeScript/01_TS_Foundations.md`)
 - **Style Characteristics**:
   - Professional, enterprise-oriented tone
@@ -121,4 +127,3 @@ Based on examination of `00_Start_Here.md`, `01_Playwright_TS_Basics.md`, and `0
   - Uses visual aids (tables, diagrams in text, code blocks)
   - Progressive disclosure: starts with foundations, advances to complex patterns
   - Practical: Includes war stories, interview prep, quizzes, problem sets
-

@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [→ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)
 
 **Cross-links:**
+
 - [`22_Headers_Payloads_Endpoints_Factory.md`](./22_Headers_Payloads_Endpoints_Factory.md) — The data factories that feed into APIUtils
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — How APIUtils is injected as a fixture
 - [`24_Test_Script_Architecture.md`](./24_Test_Script_Architecture.md) — How tests call APIUtils without seeing raw HTTP
@@ -44,10 +45,14 @@ With `APIUtils` / a client class:
 
 ```typescript
 // ✅ test-1:
-const citation = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
+const citation = await citationsClient.create(
+  PayloadsCitation.pending({ customerId: account.userId }),
+);
 
 // ✅ test-2: identical call, no HTTP details anywhere
-const citation = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
+const citation = await citationsClient.create(
+  PayloadsCitation.pending({ customerId: account.userId }),
+);
 ```
 
 ---
@@ -70,9 +75,9 @@ graph TD
     subgraph "Pattern B: Generic Wrapper"
         Test2[Spec File] --> Util2[APIUtils]
     end
-    
+
     HTTP[Playwright request]
-    
+
     Util1 --> HTTP
     Util2 --> HTTP
 ```
@@ -113,14 +118,14 @@ Both are valid. Most enterprise teams use Pattern A for large suites and Pattern
 //   - Typed response parsing
 //   - Request/response logging for debugging
 
-import { type APIRequestContext } from '@playwright/test';
+import { type APIRequestContext } from "@playwright/test";
 
 export interface RequestOptions {
   headers?: Record<string, string>;
   data?: unknown;
   params?: Record<string, string>;
   timeoutMs?: number;
-  ignoreStatuses?: number[];  // statuses NOT to throw on (e.g. 404 in a "not found" test)
+  ignoreStatuses?: number[]; // statuses NOT to throw on (e.g. 404 in a "not found" test)
 }
 
 export interface ApiResponse<T = unknown> {
@@ -138,86 +143,101 @@ export class APIUtils {
   constructor(
     request: APIRequestContext,
     accessToken: string,
-    defaultHeaders: Record<string, string> = {}
+    defaultHeaders: Record<string, string> = {},
   ) {
     this.request = request;
     this.accessToken = accessToken;
     // Build default headers once — merged into every request
     this.defaultHeaders = {
-      'Authorization': `Bearer ${this.accessToken}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,
-      'X-Request-Source': 'playwright-automation',
-      ...defaultHeaders,  // allow caller to override/extend
+      Authorization: `Bearer ${this.accessToken}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!,
+      "X-Request-Source": "playwright-automation",
+      ...defaultHeaders, // allow caller to override/extend
     };
   }
 
   // ─── GET ────────────────────────────────────────────────────────────────────
-  async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  async get<T = unknown>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ApiResponse<T>> {
     const response = await this.request.get(url, {
       headers: { ...this.defaultHeaders, ...options.headers },
       timeout: options.timeoutMs ?? 30_000,
     });
 
-    return this.processResponse<T>(response, 'GET', url, options);
+    return this.processResponse<T>(response, "GET", url, options);
   }
 
   // ─── POST ───────────────────────────────────────────────────────────────────
-  async post<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  async post<T = unknown>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ApiResponse<T>> {
     const response = await this.request.post(url, {
       headers: { ...this.defaultHeaders, ...options.headers },
       data: options.data,
       timeout: options.timeoutMs ?? 30_000,
     });
 
-    return this.processResponse<T>(response, 'POST', url, options);
+    return this.processResponse<T>(response, "POST", url, options);
   }
 
   // ─── PATCH ──────────────────────────────────────────────────────────────────
-  async patch<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  async patch<T = unknown>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ApiResponse<T>> {
     const response = await this.request.patch(url, {
       headers: { ...this.defaultHeaders, ...options.headers },
       data: options.data,
       timeout: options.timeoutMs ?? 30_000,
     });
 
-    return this.processResponse<T>(response, 'PATCH', url, options);
+    return this.processResponse<T>(response, "PATCH", url, options);
   }
 
   // ─── DELETE ─────────────────────────────────────────────────────────────────
-  async delete<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  async delete<T = unknown>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ApiResponse<T>> {
     const response = await this.request.delete(url, {
       headers: { ...this.defaultHeaders, ...options.headers },
       timeout: options.timeoutMs ?? 30_000,
     });
 
-    return this.processResponse<T>(response, 'DELETE', url, options);
+    return this.processResponse<T>(response, "DELETE", url, options);
   }
 
   // ─── PUT ────────────────────────────────────────────────────────────────────
-  async put<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+  async put<T = unknown>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ApiResponse<T>> {
     const response = await this.request.put(url, {
       headers: { ...this.defaultHeaders, ...options.headers },
       data: options.data,
       timeout: options.timeoutMs ?? 30_000,
     });
 
-    return this.processResponse<T>(response, 'PUT', url, options);
+    return this.processResponse<T>(response, "PUT", url, options);
   }
 
   // ─── PRIVATE: response processing ───────────────────────────────────────────
   private async processResponse<T>(
-    response: Awaited<ReturnType<APIRequestContext['get']>>,
+    response: Awaited<ReturnType<APIRequestContext["get"]>>,
     method: string,
     url: string,
-    options: RequestOptions
+    options: RequestOptions,
   ): Promise<ApiResponse<T>> {
     const status = response.status();
     const ignoreStatuses = options.ignoreStatuses ?? [];
 
     // Log every request (helps debug in CI where you can't open DevTools)
-    if (process.env.PLAYWRIGHT_API_LOGGING === 'true') {
+    if (process.env.PLAYWRIGHT_API_LOGGING === "true") {
       console.log(`[APIUtils] ${method} ${url} → ${status}`);
     }
 
@@ -226,22 +246,22 @@ export class APIUtils {
       const body = await response.text();
       throw new Error(
         `[APIUtils] ${method} ${url}\n` +
-        `  Status: ${status} ${response.statusText()}\n` +
-        `  Response: ${body.substring(0, 500)}` +
-        (body.length > 500 ? `... [truncated]` : '')
+          `  Status: ${status} ${response.statusText()}\n` +
+          `  Response: ${body.substring(0, 500)}` +
+          (body.length > 500 ? `... [truncated]` : ""),
       );
     }
 
     // Parse body — handle empty responses (204 No Content)
     let body: T;
-    const contentType = response.headers()['content-type'] ?? '';
+    const contentType = response.headers()["content-type"] ?? "";
 
-    if (contentType.includes('application/json')) {
-      body = await response.json() as T;
+    if (contentType.includes("application/json")) {
+      body = (await response.json()) as T;
     } else if (status === 204) {
-      body = undefined as T;  // No Content — intentionally empty
+      body = undefined as T; // No Content — intentionally empty
     } else {
-      body = await response.text() as T;
+      body = (await response.text()) as T;
     }
 
     return {
@@ -265,11 +285,11 @@ APIs in staging environments are inherently flaky. A 502 Bad Gateway or 503 Serv
 
   // Wrapper method for retries
   private async executeWithRetry<T>(
-    operation: () => Promise<ApiResponse<T>>, 
+    operation: () => Promise<ApiResponse<T>>,
     maxRetries = 3
   ): Promise<ApiResponse<T>> {
     let attempt = 0;
-    
+
     while (attempt < maxRetries) {
       try {
         const response = await operation();
@@ -283,7 +303,7 @@ APIs in staging environments are inherently flaky. A 502 Bad Gateway or 503 Serv
         if (attempt >= maxRetries) {
           throw error; // Retries exhausted
         }
-        
+
         // Exponential backoff: 1s, 2s, 4s...
         const delayMs = Math.pow(2, attempt - 1) * 1000;
         console.warn(`[APIUtils] Retry ${attempt}/${maxRetries} after ${delayMs}ms due to: ${error.message}`);
@@ -314,43 +334,49 @@ Not all API errors are the same. A 401 means your token is dead, a 404 means the
 ```typescript
 // utils/api-errors.ts
 export class ApiError extends Error {
-  constructor(public status: number, public url: string, message: string) {
+  constructor(
+    public status: number,
+    public url: string,
+    message: string,
+  ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
 export class AuthenticationError extends ApiError {
   constructor(url: string, message: string) {
     super(401, url, message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
 export class ServerError extends ApiError {
   constructor(status: number, url: string, message: string) {
     super(status, url, message);
-    this.name = 'ServerError';
+    this.name = "ServerError";
   }
 }
 ```
 
 In `APIUtils.ts`, throw these specific errors:
+
 ```typescript
-    if (!response.ok() && !ignoreStatuses.includes(status)) {
-      const body = await response.text();
-      const message = `[APIUtils] ${method} ${url} - ${status} ${response.statusText()}\n${body}`;
-      
-      if (status === 401 || status === 403) {
-        throw new AuthenticationError(url, message);
-      } else if (status >= 500) {
-        throw new ServerError(status, url, message);
-      } else {
-        throw new ApiError(status, url, message);
-      }
-    }
+if (!response.ok() && !ignoreStatuses.includes(status)) {
+  const body = await response.text();
+  const message = `[APIUtils] ${method} ${url} - ${status} ${response.statusText()}\n${body}`;
+
+  if (status === 401 || status === 403) {
+    throw new AuthenticationError(url, message);
+  } else if (status >= 500) {
+    throw new ServerError(status, url, message);
+  } else {
+    throw new ApiError(status, url, message);
+  }
+}
 ```
-*Benefit*: Your fixtures can catch `AuthenticationError` specifically and attempt a token refresh mid-test!
+
+_Benefit_: Your fixtures can catch `AuthenticationError` specifically and attempt a token refresh mid-test!
 
 ---
 
@@ -361,14 +387,17 @@ Pattern B clients extend or compose `APIUtils`:
 ```typescript
 // clients/CitationsApiClient.ts — using APIUtils as the HTTP engine
 
-import { type APIRequestContext } from '@playwright/test';
-import { APIUtils } from '../utils/APIUtils';
-import { Endpoints } from '../config/endpoints';
-import type { CreateCitationPayload, UpdateCitationPayload } from '../data/payloads/PayloadsCitation';
-import type { CitationApiResponse } from '../types/api-responses.types';
+import { type APIRequestContext } from "@playwright/test";
+import { APIUtils } from "../utils/APIUtils";
+import { Endpoints } from "../config/endpoints";
+import type {
+  CreateCitationPayload,
+  UpdateCitationPayload,
+} from "../data/payloads/PayloadsCitation";
+import type { CitationApiResponse } from "../types/api-responses.types";
 
 export class CitationsApiClient {
-  private readonly api: APIUtils;  // ← composition, not inheritance
+  private readonly api: APIUtils; // ← composition, not inheritance
 
   constructor(request: APIRequestContext, accessToken: string) {
     this.api = new APIUtils(request, accessToken);
@@ -377,7 +406,7 @@ export class CitationsApiClient {
   async create(payload: CreateCitationPayload): Promise<CitationApiResponse> {
     const result = await this.api.post<CitationApiResponse>(
       Endpoints.citations.create(),
-      { data: payload }
+      { data: payload },
     );
     // api.post already validates status and throws with good messages
     // Here we just return the typed body
@@ -386,15 +415,18 @@ export class CitationsApiClient {
 
   async getById(citationId: string): Promise<CitationApiResponse> {
     const result = await this.api.get<CitationApiResponse>(
-      Endpoints.citations.getById(citationId)
+      Endpoints.citations.getById(citationId),
     );
     return result.body;
   }
 
-  async updateStatus(citationId: string, payload: UpdateCitationPayload): Promise<CitationApiResponse> {
+  async updateStatus(
+    citationId: string,
+    payload: UpdateCitationPayload,
+  ): Promise<CitationApiResponse> {
     const result = await this.api.patch<CitationApiResponse>(
       Endpoints.citations.update(citationId),
-      { data: payload }
+      { data: payload },
     );
     return result.body;
   }
@@ -402,7 +434,7 @@ export class CitationsApiClient {
   async delete(citationId: string): Promise<void> {
     await this.api.delete(
       Endpoints.citations.delete(citationId),
-      { ignoreStatuses: [404] }  // ignore 404 in teardown (citation may already be gone)
+      { ignoreStatuses: [404] }, // ignore 404 in teardown (citation may already be gone)
     );
   }
 
@@ -413,22 +445,24 @@ export class CitationsApiClient {
   async waitForStatus(
     citationId: string,
     expectedStatus: string,
-    timeoutMs = 30_000
+    timeoutMs = 30_000,
   ): Promise<CitationApiResponse> {
-    const { expect } = await import('@playwright/test');
+    const { expect } = await import("@playwright/test");
     let lastCitation!: CitationApiResponse;
 
-    await expect.poll(
-      async () => {
-        lastCitation = await this.getById(citationId);
-        return lastCitation.status;
-      },
-      {
-        message: `Waiting for citation ${citationId} to reach status '${expectedStatus}'`,
-        timeout: timeoutMs,
-        intervals: [500, 1000, 2000, 5000],
-      }
-    ).toBe(expectedStatus);
+    await expect
+      .poll(
+        async () => {
+          lastCitation = await this.getById(citationId);
+          return lastCitation.status;
+        },
+        {
+          message: `Waiting for citation ${citationId} to reach status '${expectedStatus}'`,
+          timeout: timeoutMs,
+          intervals: [500, 1000, 2000, 5000],
+        },
+      )
+      .toBe(expectedStatus);
 
     return lastCitation;
   }
@@ -442,15 +476,15 @@ export class CitationsApiClient {
 ```typescript
 // tests/fixtures/index.ts — adding citationsClient to the fixture system
 
-import { test as base, expect } from '@playwright/test';
-import { CitationsApiClient } from '../clients/CitationsApiClient';
-import { NotificationsClient } from '../clients/NotificationsClient';
+import { test as base, expect } from "@playwright/test";
+import { CitationsApiClient } from "../clients/CitationsApiClient";
+import { NotificationsClient } from "../clients/NotificationsClient";
 
 interface AuthAccount {
   accessToken: string;
   userId: string;
   email: string;
-  role: 'ADMIN' | 'AGENT' | 'SUPERVISOR';
+  role: "ADMIN" | "AGENT" | "SUPERVISOR";
 }
 
 interface TestFixtures {
@@ -463,7 +497,6 @@ interface WorkerFixtures {
 }
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
-
   // ── WORKER-SCOPED: auth account, created once per worker ──────────────────
   account: [
     async ({}, use) => {
@@ -471,10 +504,10 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
         accessToken: process.env.ADMIN_ACCESS_TOKEN!,
         userId: process.env.ADMIN_USER_ID!,
         email: process.env.ADMIN_EMAIL!,
-        role: 'ADMIN',
+        role: "ADMIN",
       });
     },
-    { scope: 'worker' },
+    { scope: "worker" },
   ],
 
   // ── TEST-SCOPED: clients, created fresh per test ───────────────────────────
@@ -508,16 +541,16 @@ flowchart TD
     classDef test fill:#dcfce7,stroke:#16a34a,stroke-width:2px
 
     PW["Playwright Framework<br/>request: APIRequestContext"]:::playwright
-    
+
     Acc["Worker Fixture<br/>account: AuthAccount"]:::fixture
-    
+
     Cit["Test Fixture<br/>citationsClient: CitationsApiClient"]:::fixture
-    
+
     Test["Test Spec<br/>receives: { citationsClient, account }"]:::test
-    
+
     PW -->|injects request| Cit
     Acc -->|injects account| Cit
-    
+
     Acc -->|injects account| Test
     Cit -->|injects citationsClient| Test
 ```
@@ -530,38 +563,48 @@ flowchart TD
 // tests/specs/citations/citation-lifecycle.spec.ts
 
 // ✅ This is the ONLY import — your fixtures file
-import { test, expect } from '../../fixtures';
+import { test, expect } from "../../fixtures";
 
 // ✅ Business-level data, not HTTP data
-import { PayloadsCitation } from '../../data/payloads/PayloadsCitation';
-import { CitationStatus } from '../../data/enums/citation.enums';
+import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import { CitationStatus } from "../../data/enums/citation.enums";
 
-test.describe('Citation lifecycle @smoke @citations', () => {
-
-  test('Create → Pay → Verify notification', async ({ citationsClient, notificationsClient, account }) => {
-
+test.describe("Citation lifecycle @smoke @citations", () => {
+  test("Create → Pay → Verify notification", async ({
+    citationsClient,
+    notificationsClient,
+    account,
+  }) => {
     // Step 1: Create (no URL, no headers, no JSON — just method call)
     const citation = await citationsClient.create(
-      PayloadsCitation.pending({ customerId: account.userId })
+      PayloadsCitation.pending({ customerId: account.userId }),
     );
     expect(citation.status).toBe(CitationStatus.PENDING);
     expect(citation.citationId).toMatch(/^CIT-/);
 
     // Step 2: Pay
-    const paid = await citationsClient.updateStatus(
-      citation.citationId,
-      { status: CitationStatus.PAID }
-    );
+    const paid = await citationsClient.updateStatus(citation.citationId, {
+      status: CitationStatus.PAID,
+    });
     expect(paid.status).toBe(CitationStatus.PAID);
 
     // Step 3: Wait for notification (async event processing)
-    await expect.poll(
-      async () => {
-        const notifs = await notificationsClient.getByUser(account.userId);
-        return notifs.some(n => n.type === 'PAYMENT_RECEIVED' && n.referenceId === citation.citationId);
-      },
-      { timeout: 15_000, message: 'PAYMENT_RECEIVED notification must arrive' }
-    ).toBe(true);
+    await expect
+      .poll(
+        async () => {
+          const notifs = await notificationsClient.getByUser(account.userId);
+          return notifs.some(
+            (n) =>
+              n.type === "PAYMENT_RECEIVED" &&
+              n.referenceId === citation.citationId,
+          );
+        },
+        {
+          timeout: 15_000,
+          message: "PAYMENT_RECEIVED notification must arrive",
+        },
+      )
+      .toBe(true);
 
     // Step 4: Cleanup (fixture teardown would also call this via afterEach)
     await citationsClient.delete(citation.citationId);
@@ -570,6 +613,7 @@ test.describe('Citation lifecycle @smoke @citations', () => {
 ```
 
 **What the test does NOT contain:**
+
 - No URLs (`https://staging-api.company.com/api/v2/citations`)
 - No header construction (`{ 'Authorization': 'Bearer ...' }`)
 - No raw JSON (`{ customerId: 'USR-001', amount: 150, ... }`)
@@ -577,6 +621,7 @@ test.describe('Citation lifecycle @smoke @citations', () => {
 - No `await response.json()` calls
 
 **What the test DOES contain:**
+
 - Business intent: `citationsClient.create(...)`, `updateStatus(...)`, `getByUser(...)`
 - Business data: `CitationStatus.PAID`, `PayloadsCitation.pending(...)`
 - Business assertions: `expect(citation.status).toBe(CitationStatus.PAID)`
@@ -596,12 +641,13 @@ PLAYWRIGHT_API_LOGGING=true
 
 ```typescript
 // In APIUtils.processResponse():
-if (process.env.PLAYWRIGHT_API_LOGGING === 'true') {
+if (process.env.PLAYWRIGHT_API_LOGGING === "true") {
   console.log(`[APIUtils] ${method} ${url} → ${status}`);
 }
 ```
 
 In CI logs you'll see:
+
 ```
 [APIUtils] POST https://staging-api.company.com/api/v2/citations → 201
 [APIUtils] PATCH https://staging-api.company.com/api/v2/citations/CIT-001 → 200
@@ -621,13 +667,14 @@ This tells you EXACTLY which API call failed without any code changes.
 A) TypeScript doesn't support inheritance for classes with constructors  
 B) Composition lets `CitationsApiClient` have only citation-specific methods; inheritance would expose ALL of APIUtils's generic methods (`get`, `post`, etc.) as public methods of the client  
 C) Inheritance is slower at runtime  
-D) Composition allows multiple inheritance  
+D) Composition allows multiple inheritance
 
 <details><summary>Answer</summary>
 
 **B** — With inheritance, `new CitationsApiClient().get(someUrl)` would be valid TypeScript — a test could bypass the client's typed methods and make raw HTTP calls. With composition (`this.api.get(...)` is private), only the client's typed methods are exposed. Tests are forced to use the clean API, not the raw HTTP layer.
 
 This enforces the abstraction: tests talk to `CitationsApiClient`, not to `APIUtils`.
+
 </details>
 
 ---
@@ -654,6 +701,7 @@ The token is read directly from `process.env.ADMIN_ACCESS_TOKEN` instead of from
 2. **No multi-role support**: If a test needs a CUSTOMER token instead of ADMIN, it can't override it — the client always uses the ADMIN token from env.
 
 Fix:
+
 ```typescript
 citationsClient: async ({ request, account }, use) => {
   //                                    ↑ always request from the fixture
@@ -661,6 +709,7 @@ citationsClient: async ({ request, account }, use) => {
   await use(client);
 },
 ```
+
 </details>
 
 ---
@@ -668,6 +717,7 @@ citationsClient: async ({ request, account }, use) => {
 ### Challenge 3 [Write It Yourself]
 
 Write a `NotificationsClient` class (using `APIUtils` via composition) with:
+
 - `getByUser(userId: string)` — GET notifications for a user
 - `pollForNotification(userId: string, type: string, timeoutMs?)` — polls until a notification of that type exists, returns it
 
@@ -676,10 +726,10 @@ Write a `NotificationsClient` class (using `APIUtils` via composition) with:
 ```typescript
 // clients/NotificationsClient.ts
 
-import { type APIRequestContext, expect } from '@playwright/test';
-import { APIUtils } from '../utils/APIUtils';
-import { Endpoints } from '../config/endpoints';
-import type { NotificationSummary } from '../types/api-responses.types';
+import { type APIRequestContext, expect } from "@playwright/test";
+import { APIUtils } from "../utils/APIUtils";
+import { Endpoints } from "../config/endpoints";
+import type { NotificationSummary } from "../types/api-responses.types";
 
 interface NotificationsListResponse {
   notifications: NotificationSummary[];
@@ -694,7 +744,7 @@ export class NotificationsClient {
 
   async getByUser(userId: string): Promise<NotificationSummary[]> {
     const result = await this.api.get<NotificationsListResponse>(
-      Endpoints.notifications.byUser(userId)
+      Endpoints.notifications.byUser(userId),
     );
     return result.body.notifications ?? [];
   }
@@ -702,27 +752,30 @@ export class NotificationsClient {
   async pollForNotification(
     userId: string,
     type: string,
-    timeoutMs = 30_000
+    timeoutMs = 30_000,
   ): Promise<NotificationSummary> {
     let found: NotificationSummary | undefined;
 
-    await expect.poll(
-      async () => {
-        const notifs = await this.getByUser(userId);
-        found = notifs.find(n => n.type === type);
-        return found !== undefined;
-      },
-      {
-        message: `Expected notification of type '${type}' for user ${userId}`,
-        timeout: timeoutMs,
-        intervals: [500, 1000, 2000, 5000],
-      }
-    ).toBe(true);
+    await expect
+      .poll(
+        async () => {
+          const notifs = await this.getByUser(userId);
+          found = notifs.find((n) => n.type === type);
+          return found !== undefined;
+        },
+        {
+          message: `Expected notification of type '${type}' for user ${userId}`,
+          timeout: timeoutMs,
+          intervals: [500, 1000, 2000, 5000],
+        },
+      )
+      .toBe(true);
 
     return found!;
   }
 }
 ```
+
 </details>
 
 ---
@@ -764,6 +817,7 @@ D) Neither — the test should always clean up before deletion to prevent this s
 `ignoreStatuses: [404]` tells the HTTP library "a 404 here is expected and acceptable." If the server returns 500 instead, `processResponse` still throws. You only silence the one status you consciously decided to allow.
 
 The pattern in `APIUtils.processResponse`:
+
 ```typescript
 if (!response.ok() && !ignoreStatuses.includes(status)) {
   throw new Error(...)  // only throws for statuses NOT in the ignore list
@@ -771,6 +825,7 @@ if (!response.ok() && !ignoreStatuses.includes(status)) {
 ```
 
 Practical difference:
+
 - Option A: delete returns 500 Internal Server Error, caught by try/catch, SILENTLY IGNORED — teardown masked a real infrastructure problem
 - Option B: delete returns 500, NOT in ignoreStatuses, THROWN — test infrastructure failure visible in CI logs
 
@@ -802,6 +857,7 @@ Three problems with this implementation compared to `expect.poll`. Find all thre
 
 **Problem 2 — Error message has no context about the last received value**
 The thrown error says "did not reach status PAID in 20s" but does not include what status the citation DID have on the last poll. `expect.poll` automatically shows:
+
 ```
 Waiting for citation CIT-001 to reach status 'PAID'
 Expected: "PAID"
@@ -812,6 +868,7 @@ Received: "PENDING"
 Changing the interval from 2000ms to 3000ms silently changes the total timeout from 20s to 30s. With `expect.poll({ timeout: 30_000 })`, the timeout is an explicit, named value independent of the polling interval.
 
 Correct implementation:
+
 ```typescript
 async waitForStatus(
   citationId: string,
@@ -840,4 +897,5 @@ async waitForStatus(
 </details>
 
 ---
+
 **Navigation**: [← Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [→ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)

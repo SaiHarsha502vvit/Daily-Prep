@@ -915,8 +915,8 @@ if (!found) {
 - [ ] Rewrite from scratch
 - [ ] Test with examples + edge cases: [4,4,5], [1,100,7]
 - [ ] Practice boundary conditions:
-    - When to use `<=` vs `<`
-    - When to start at `start` vs `start+1`
+  - When to use `<=` vs `<`
+  - When to start at `start` vs `start+1`
 
 **Practice:**
 
@@ -995,9 +995,9 @@ Goal: Understand the structure, not perfect implementation
 - [ ] Practice ArrayList methods (add, remove, get)
 - [ ] Practice HashMap (put, get, containsKey)
 - [ ] Do 10 quick drills:
-    - Create ArrayList, add 5 elements, remove middle
-    - Create HashMap, count frequency of array
-    - StringBuilder: build string from array
+  - Create ArrayList, add 5 elements, remove middle
+  - Create HashMap, count frequency of array
+  - StringBuilder: build string from array
 
 ---
 
@@ -1498,27 +1498,27 @@ Output: "No Second Largest" if not possible
 After completing mock exam:
 
 1. **Immediate Review (30 min)**
-    - [ ] Compile both solutions
-    - [ ] Test with provided examples
-    - [ ] Test with edge cases: 0, 1, N, negative
-    - [ ] Check validation code
+   - [ ] Compile both solutions
+   - [ ] Test with provided examples
+   - [ ] Test with edge cases: 0, 1, N, negative
+   - [ ] Check validation code
 2. **Mistake Analysis (20 min)**
-    - [ ] List every bug found
-    - [ ] Categorize: boundary, validation, logic, syntax
-    - [ ] Mark in Mistake Pattern Analysis table above
+   - [ ] List every bug found
+   - [ ] Categorize: boundary, validation, logic, syntax
+   - [ ] Mark in Mistake Pattern Analysis table above
 3. **Redo Wrong Parts (30 min)**
-    - [ ] Fix bugs one by one
-    - [ ] Retest after each fix
-    - [ ] Compare with optimal solution
+   - [ ] Fix bugs one by one
+   - [ ] Retest after each fix
+   - [ ] Compare with optimal solution
 4. **Pattern Recognition (10 min)**
-    - [ ] What pattern did 1A use? (Two pointers / HashMap)
-    - [ ] What pattern did 1B use? (Array rotation / Reversal)
-    - [ ] Could you recognize them faster next time?
+   - [ ] What pattern did 1A use? (Two pointers / HashMap)
+   - [ ] What pattern did 1B use? (Array rotation / Reversal)
+   - [ ] Could you recognize them faster next time?
 
 5. **Time Reflection (10 min)**
-    - [ ] Did you spend too long on one problem?
-    - [ ] Did you read constraints carefully?
-    - [ ] Did you test before submitting?
+   - [ ] Did you spend too long on one problem?
+   - [ ] Did you read constraints carefully?
+   - [ ] Did you test before submitting?
 
 ---
 

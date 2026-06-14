@@ -6,11 +6,11 @@
 
 ## 5W1H — Why This Chapter?
 
-* **WHAT**: The fundamental architecture of REST and SOAP APIs, and how to test them using Playwright.
-* **WHY**: Before you can handle deeply nested JSON arrays or complex authentication headers, you must understand how data travels over the network.
-* **WHO**: SDETs moving from UI automation into API testing.
-* **WHEN**: Before writing any backend or integration tests.
-* **HOW**: By dissecting HTTP methods, status codes, and the Playwright `request` context.
+- **WHAT**: The fundamental architecture of REST and SOAP APIs, and how to test them using Playwright.
+- **WHY**: Before you can handle deeply nested JSON arrays or complex authentication headers, you must understand how data travels over the network.
+- **WHO**: SDETs moving from UI automation into API testing.
+- **WHEN**: Before writing any backend or integration tests.
+- **HOW**: By dissecting HTTP methods, status codes, and the Playwright `request` context.
 
 ---
 
@@ -29,16 +29,18 @@ In the previous module, we learned that UI tests are slow and brittle. API tests
 Enterprise systems like Dynamics 365 often use a mix of both.
 
 ### REST (Representational State Transfer)
-* **Format:** Usually JSON (JavaScript Object Notation), which looks exactly like TypeScript objects.
-* **Architecture:** Uses standard HTTP Methods (`GET`, `POST`, `PUT`, `DELETE`).
-* **State:** Stateless. The server forgets you exist between requests (unless you pass an Auth token).
-* **Modernity:** The standard for almost all modern web applications.
+
+- **Format:** Usually JSON (JavaScript Object Notation), which looks exactly like TypeScript objects.
+- **Architecture:** Uses standard HTTP Methods (`GET`, `POST`, `PUT`, `DELETE`).
+- **State:** Stateless. The server forgets you exist between requests (unless you pass an Auth token).
+- **Modernity:** The standard for almost all modern web applications.
 
 ### SOAP (Simple Object Access Protocol)
-* **Format:** STRICTLY XML (Extensible Markup Language).
-* **Architecture:** Everything is usually a `POST` request sent to a single endpoint (e.g., `/api/Service.svc`). You tell the server what to do inside the XML body (the "Envelope").
-* **Rigidity:** Extremely strict. It uses a WSDL (Web Services Description Language) file to define exactly what requests must look like. If you miss a single tag, it fails.
-* **Modernity:** Legacy, but incredibly common in banking, ERPs (like older SAP/Dynamics versions), and massive enterprise systems.
+
+- **Format:** STRICTLY XML (Extensible Markup Language).
+- **Architecture:** Everything is usually a `POST` request sent to a single endpoint (e.g., `/api/Service.svc`). You tell the server what to do inside the XML body (the "Envelope").
+- **Rigidity:** Extremely strict. It uses a WSDL (Web Services Description Language) file to define exactly what requests must look like. If you miss a single tag, it fails.
+- **Modernity:** Legacy, but incredibly common in banking, ERPs (like older SAP/Dynamics versions), and massive enterprise systems.
 
 ---
 
@@ -47,16 +49,18 @@ Enterprise systems like Dynamics 365 often use a mix of both.
 When your browser (or Playwright script) talks to an API, it sends a package of text.
 
 ### The Request (What you send)
+
 1. **Method/Verb:** What action are you taking? (`GET` = Read, `POST` = Create, `PUT` = Update, `DELETE` = Delete).
 2. **URL/Endpoint:** Where are you sending it? (`https://api.dynamics.com/users`)
 3. **Headers:** Metadata. (e.g., `Authorization: Bearer xyz123`, `Content-Type: application/json`).
 4. **Body:** The actual data payload (only used in `POST` and `PUT`).
 
 ### The Response (What the server replies)
-1. **Status Code:** Was it successful? 
-   * `2xx`: Success (e.g., `200 OK`, `201 Created`).
-   * `4xx`: Client Error — YOU messed up. (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`).
-   * `5xx`: Server Error — THEY messed up. (e.g., `500 Internal Server Error`).
+
+1. **Status Code:** Was it successful?
+   - `2xx`: Success (e.g., `200 OK`, `201 Created`).
+   - `4xx`: Client Error — YOU messed up. (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`).
+   - `5xx`: Server Error — THEY messed up. (e.g., `500 Internal Server Error`).
 2. **Headers:** Metadata (e.g., `Set-Cookie`).
 3. **Body:** The requested data (usually JSON or XML).
 
@@ -67,12 +71,15 @@ When your browser (or Playwright script) talks to an API, it sends a package of 
 Playwright isn't just for UI testing. It has a built-in API testing library that is incredibly fast and powerful. It uses the `request` fixture instead of the `page` fixture.
 
 ### A Basic REST GET Request
-```typescript
-import { test, expect } from '@playwright/test';
 
-test('Should fetch a user successfully', async ({ request }) => {
+```typescript
+import { test, expect } from "@playwright/test";
+
+test("Should fetch a user successfully", async ({ request }) => {
   // 1. Send the GET request
-  const response = await request.get('https://jsonplaceholder.typicode.com/users/1');
+  const response = await request.get(
+    "https://jsonplaceholder.typicode.com/users/1",
+  );
 
   // 2. Verify the Status Code
   expect(response.status()).toBe(200);
@@ -81,25 +88,29 @@ test('Should fetch a user successfully', async ({ request }) => {
   const responseBody = await response.json();
 
   // 4. Assert the data
-  expect(responseBody.name).toBe('Leanne Graham');
-  expect(responseBody.email).toContain('@');
+  expect(responseBody.name).toBe("Leanne Graham");
+  expect(responseBody.email).toContain("@");
 });
 ```
 
 ### A Basic REST POST Request
+
 When creating data, you must send a payload in the `data` object. Playwright automatically sets the `Content-Type: application/json` header for you!
 
 ```typescript
-test('Should create a new user', async ({ request }) => {
-  const response = await request.post('https://jsonplaceholder.typicode.com/users', {
-    data: {
-      name: 'John Doe',
-      job: 'SDET'
-    }
-  });
+test("Should create a new user", async ({ request }) => {
+  const response = await request.post(
+    "https://jsonplaceholder.typicode.com/users",
+    {
+      data: {
+        name: "John Doe",
+        job: "SDET",
+      },
+    },
+  );
 
   expect(response.status()).toBe(201); // 201 = Created
-  
+
   const responseBody = await response.json();
   expect(responseBody.id).toBeDefined(); // The server should generate an ID
 });
@@ -113,19 +124,20 @@ If every single API request requires an authentication token and a specific base
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   use: {
-    baseURL: 'https://api.dynamics-test-env.com/v1.0/',
+    baseURL: "https://api.dynamics-test-env.com/v1.0/",
     extraHTTPHeaders: {
-      'Accept': 'application/json',
-      'Authorization': `Bearer ${process.env.TEST_TOKEN}`,
-      'x-client-version': '2.4.1'
+      Accept: "application/json",
+      Authorization: `Bearer ${process.env.TEST_TOKEN}`,
+      "x-client-version": "2.4.1",
     },
-  }
+  },
 });
 ```
+
 Now, in your tests, you just write: `request.get('users/1')` and Playwright handles the base URL and headers automatically!
 
 ---
@@ -133,23 +145,28 @@ Now, in your tests, you just write: `request.get('users/1')` and Playwright hand
 ## ðŸ‹ï¸ Practice & Interview Questions
 
 **Q1.** What is the primary difference between how REST and SOAP handle actions?
+
 <details><summary>Answer</summary>
 
 REST uses standard HTTP methods (GET, POST, PUT, DELETE) on different URLs to signify actions. SOAP typically uses a single endpoint and sends all requests as POST methods, defining the action inside the XML body Envelope.
+
 </details>
 
 **Q2.** You send a POST request to create a user and receive a `400 Bad Request` status code. Whose fault is it, the client (your test) or the server?
+
 <details><summary>Answer</summary>
 
 The client (your test). A 4xx series error indicates a client error. A 400 Bad Request usually means your JSON payload was malformed, missing a required field, or violated a validation rule (e.g., sending an integer when a string was expected).
+
 </details>
 
 **Q3.** Why should you use `request.post()` instead of writing your own `fetch()` calls inside a Playwright test?
+
 <details><summary>Answer</summary>
 
 Playwright's `request` context automatically handles cookies, respects the `baseURL` and headers defined in `playwright.config.ts`, automatically parses JSON, and integrates perfectly with Playwright's reporting and tracing tools.
-</details>
 
+</details>
 
 ---
 
@@ -172,12 +189,12 @@ D) PATCH
 - **No body**: GET requests MUST NOT include a body (RFC 7231 §4.3.1). Some servers silently ignore it; strict servers return 400.
 
 | Method | Idempotent? | Has body? | Safe? |
-|---|---|---|---|
-| GET | ✅ | ❌ | ✅ |
-| POST | ❌ | ✅ | ❌ |
-| PUT | ✅ | ✅ | ❌ |
-| PATCH | ❌ | ✅ | ❌ |
-| DELETE | ✅ | Rarely | ❌ |
+| ------ | ----------- | --------- | ----- |
+| GET    | ✅          | ❌        | ✅    |
+| POST   | ❌          | ✅        | ❌    |
+| PUT    | ✅          | ✅        | ❌    |
+| PATCH  | ❌          | ✅        | ❌    |
+| DELETE | ✅          | Rarely    | ❌    |
 
 **SDET impact**: If a PUT or DELETE is accidentally re-run in cleanup, it should be safe. A POST must NOT be re-run without deliberate intent.
 
@@ -188,9 +205,9 @@ D) PATCH
 ### Challenge 2 [Spot the Bug — Status Code Assertion]
 
 ```typescript
-test('Create citation returns success', async ({ request }) => {
-  const response = await request.post('/api/citations', {
-    data: { customerId: 'USR-001', amount: 150 }
+test("Create citation returns success", async ({ request }) => {
+  const response = await request.post("/api/citations", {
+    data: { customerId: "USR-001", amount: 150 },
   });
   expect(response.ok()).toBe(true);
 });
@@ -203,6 +220,7 @@ The test passes. Two months later a developer changes the API to return `202 Acc
 **`response.ok()` returns `true` for any 2xx status** — it does not distinguish between 200, 201, 202, 204, etc. If the API semantics changed from synchronous creation (`201`) to async queue (`202`), the behaviour contract changed but the test kept passing silently.
 
 **Fix**: Assert the exact status code that matches the documented API contract:
+
 ```typescript
 expect(response.status()).toBe(201); // precise: fails if contract changes to 202
 ```
@@ -216,6 +234,7 @@ This forces a deliberate test update when the contract changes — which is the 
 ### Challenge 3 [Write It Yourself — Error Shape Assertion]
 
 The API returns this body on a `400 Bad Request`:
+
 ```json
 { "code": "VALIDATION_ERROR", "fields": ["amount", "customerId"] }
 ```
@@ -225,9 +244,11 @@ Write a Playwright assertion that: (a) checks the status is 400, (b) checks `cod
 <details><summary>Answer</summary>
 
 ```typescript
-test('Missing required fields return 400 with validation shape', async ({ request }) => {
-  const response = await request.post('/api/citations', {
-    data: {}  // deliberately empty — triggers validation error
+test("Missing required fields return 400 with validation shape", async ({
+  request,
+}) => {
+  const response = await request.post("/api/citations", {
+    data: {}, // deliberately empty — triggers validation error
   });
 
   // (a) status
@@ -235,9 +256,9 @@ test('Missing required fields return 400 with validation shape', async ({ reques
 
   // (b) + (c) parse and assert
   const body = await response.json();
-  expect(body.code).toBe('VALIDATION_ERROR');
-  expect(body.fields).toContain('amount');
-  expect(body.fields).toContain('customerId');
+  expect(body.code).toBe("VALIDATION_ERROR");
+  expect(body.fields).toContain("amount");
+  expect(body.fields).toContain("customerId");
 });
 ```
 
@@ -262,10 +283,11 @@ D) Only requests to the configured `baseURL`
 **C** — `extraHTTPHeaders` in `playwright.config.ts > use` is injected into **all requests** made by that project — both the API `request` context and browser-level `page` requests.
 
 This is both powerful and dangerous:
+
 - ✅ Power: you set the tenant ID once and every test and every navigation includes it.
 - ⚠️ Risk: if a third-party CDN request inadvertently picks up your auth header, you're leaking credentials.
 
-For headers that should only go to *your* API, set them in your `ApiClient` class or per-request rather than globally.
+For headers that should only go to _your_ API, set them in your `ApiClient` class or per-request rather than globally.
 
 </details>
 
@@ -275,9 +297,12 @@ For headers that should only go to *your* API, set them in your `ApiClient` clas
 
 ```typescript
 // global.setup.ts
-setup('Authenticate', async ({ request }) => {
-  const res = await request.post('/auth/token', {
-    data: { client_id: process.env.CLIENT_ID, client_secret: process.env.CLIENT_SECRET }
+setup("Authenticate", async ({ request }) => {
+  const res = await request.post("/auth/token", {
+    data: {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+    },
   });
   const { access_token } = await res.json();
   process.env.TEST_TOKEN = access_token;
@@ -287,9 +312,9 @@ setup('Authenticate', async ({ request }) => {
 export default defineConfig({
   use: {
     extraHTTPHeaders: {
-      Authorization: `Bearer ${process.env.TEST_TOKEN}`  // ← evaluated HERE
-    }
-  }
+      Authorization: `Bearer ${process.env.TEST_TOKEN}`, // ← evaluated HERE
+    },
+  },
 });
 ```
 
@@ -306,17 +331,18 @@ The Authorization header is always `Bearer undefined` in tests. Explain why.
 export default defineConfig({
   use: {
     // Don't interpolate here. Instead inject per-request in your ApiClient fixture.
-  }
+  },
 });
 
 // fixtures/api.fixture.ts
 apiClient: async ({ request }, use) => {
   const token = process.env.TEST_TOKEN; // read lazily at fixture time, after global setup
   await use(new ApiClient(request, token!));
-}
+};
 ```
 
 </details>
 
 ---
+
 **Navigation**: [Index](../00_MASTER_INDEX.md) | [Next: Complex JSON & SOAP →](02_Complex_JSON_and_SOAP.md)

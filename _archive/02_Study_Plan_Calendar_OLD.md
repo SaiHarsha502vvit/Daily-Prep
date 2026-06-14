@@ -63,12 +63,12 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 
 ### 📁 05_Problem_Solving/ - PRACTICE
 
-| File                      | Content                | When to Study |
-| ------------------------- | ---------------------- | ------------- |
+| File                    | Content                | When to Study |
+| ----------------------- | ---------------------- | ------------- |
 | `01_Intro_Checklist.md` | 210+ practice problems | Ongoing       |
-| `23_Edge_Cases.md`        | Edge case handling     | Week 2-4      |
-| `24_Common_Mistakes.md`   | Avoid these errors     | Ongoing       |
-| `25_Problem_Origins.md`   | Real-world origins     | Reference     |
+| `23_Edge_Cases.md`      | Edge case handling     | Week 2-4      |
+| `24_Common_Mistakes.md` | Avoid these errors     | Ongoing       |
+| `25_Problem_Origins.md` | Real-world origins     | Reference     |
 
 ### 📁 06_OOP_Design/ - DESIGN SKILLS
 
@@ -81,10 +81,10 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 
 ### 📁 07_Modern_Java/ - ADVANCED JAVA
 
-| File                           | Content                    | When to Study |
-| ------------------------------ | -------------------------- | ------------- |
+| File                             | Content                    | When to Study |
+| -------------------------------- | -------------------------- | ------------- |
 | `Ch06_Functional_Programming.md` | Streams, Lambdas, Optional | Week 7-8      |
-| `02_Algorithm_Engineering.md`  | Algorithm optimization     | Week 7-8      |
+| `02_Algorithm_Engineering.md`    | Algorithm optimization     | Week 7-8      |
 
 ### 📁 08_SQL/ - SQL MASTERY
 
@@ -125,21 +125,21 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 | Day 2 | Strings Basics      | `02_Data_Structures/01_DataStructures_Complete.md` | 5 easy problems |
 | Day 3 | Two Pointers        | `04_Patterns_Templates/01_Sliding_Window.md`       | 5 problems      |
 | Day 4 | Sliding Window      | `04_Patterns_Templates/01_Sliding_Window.md`       | 5 problems      |
-| Day 5 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md`       | 10 problems     |
+| Day 5 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md`         | 10 problems     |
 | Day 6 | Collections Java    | `02_Data_Structures/03_Collections_Java.md`        | Practice        |
 | Day 7 | Review & Rest       | `09_Career_Reference/11_Quick_Reference.md`        | Light practice  |
 
 #### Week 2: Recursion & Matrices
 
-| Day   | Topic              | Files to Study                               | Practice       |
-| ----- | ------------------ | -------------------------------------------- | -------------- |
-| Day 1 | Recursion Basics   | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 2 | Recursion Patterns | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 3 | Backtracking Intro | `03_Algorithms/03_Recursion_Complete.md`     | 5 problems     |
-| Day 4 | 2D Arrays/Matrix   | `02_Data_Structures/04_2D_Arrays_Matrix.md`  | 5 problems     |
-| Day 5 | Matrix Patterns    | `02_Data_Structures/04_2D_Arrays_Matrix.md`  | 5 problems     |
-| Day 6 | Practice Day       | `05_Problem_Solving/01_Intro_Checklist.md` | 10 problems    |
-| Day 7 | Review & Rest      | `05_Problem_Solving/23_Edge_Cases.md`        | Light practice |
+| Day   | Topic              | Files to Study                              | Practice       |
+| ----- | ------------------ | ------------------------------------------- | -------------- |
+| Day 1 | Recursion Basics   | `03_Algorithms/03_Recursion_Complete.md`    | 5 problems     |
+| Day 2 | Recursion Patterns | `03_Algorithms/03_Recursion_Complete.md`    | 5 problems     |
+| Day 3 | Backtracking Intro | `03_Algorithms/03_Recursion_Complete.md`    | 5 problems     |
+| Day 4 | 2D Arrays/Matrix   | `02_Data_Structures/04_2D_Arrays_Matrix.md` | 5 problems     |
+| Day 5 | Matrix Patterns    | `02_Data_Structures/04_2D_Arrays_Matrix.md` | 5 problems     |
+| Day 6 | Practice Day       | `05_Problem_Solving/01_Intro_Checklist.md`  | 10 problems    |
+| Day 7 | Review & Rest      | `05_Problem_Solving/23_Edge_Cases.md`       | Light practice |
 
 #### Week 3: Sorting & Searching
 
@@ -148,22 +148,22 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 | Day 1 | Basic Sorting            | `03_Algorithms/02_Sorting_Algorithms.md`       | Implement all  |
 | Day 2 | Advanced Sorting         | `03_Algorithms/02_Sorting_Algorithms.md`       | 5 problems     |
 | Day 3 | Binary Search            | `09_Career_Reference/02_Ultimate_DSA_Guide.md` | 5 problems     |
-| Day 4 | Binary Search Variations | `05_Problem_Solving/01_Intro_Checklist.md`   | 5 problems     |
+| Day 4 | Binary Search Variations | `05_Problem_Solving/01_Intro_Checklist.md`     | 5 problems     |
 | Day 5 | Divide & Conquer         | `03_Algorithms/06_Advanced_Algorithms.md`      | 5 problems     |
-| Day 6 | Practice Day             | `05_Problem_Solving/01_Intro_Checklist.md`   | 10 problems    |
+| Day 6 | Practice Day             | `05_Problem_Solving/01_Intro_Checklist.md`     | 10 problems    |
 | Day 7 | Review & Rest            | `09_Career_Reference/11_Quick_Reference.md`    | Light practice |
 
 #### Week 4: Dynamic Programming Intro
 
-| Day   | Topic                 | Files to Study                               | Practice        |
-| ----- | --------------------- | -------------------------------------------- | --------------- |
-| Day 1 | DP Introduction       | `03_Algorithms/04_Dynamic_Programming.md`    | 3 problems      |
-| Day 2 | 1D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
-| Day 3 | 2D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
-| Day 4 | Classic DP (LCS, LIS) | `03_Algorithms/04_Dynamic_Programming.md`    | 5 problems      |
+| Day   | Topic                 | Files to Study                             | Practice        |
+| ----- | --------------------- | ------------------------------------------ | --------------- |
+| Day 1 | DP Introduction       | `03_Algorithms/04_Dynamic_Programming.md`  | 3 problems      |
+| Day 2 | 1D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`  | 5 problems      |
+| Day 3 | 2D DP Problems        | `03_Algorithms/04_Dynamic_Programming.md`  | 5 problems      |
+| Day 4 | Classic DP (LCS, LIS) | `03_Algorithms/04_Dynamic_Programming.md`  | 5 problems      |
 | Day 5 | DP Practice           | `05_Problem_Solving/01_Intro_Checklist.md` | 5 problems      |
-| Day 6 | OOP Concepts          | `06_OOP_Design/01_OOPS_Principles.md`        | Read + Practice |
-| Day 7 | Review Week 1-4       | All basics                                   | Assessment      |
+| Day 6 | OOP Concepts          | `06_OOP_Design/01_OOPS_Principles.md`      | Read + Practice |
+| Day 7 | Review Week 1-4       | All basics                                 | Assessment      |
 
 ---
 
@@ -176,9 +176,9 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 | Day 1 | Binary Trees        | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
 | Day 2 | BST Operations      | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
 | Day 3 | Tree Traversals     | `03_Algorithms/05_Trees_Graphs.md`            | 5 problems     |
-| Day 4 | Tree Problems       | `05_Problem_Solving/01_Intro_Checklist.md`  | 5 problems     |
+| Day 4 | Tree Problems       | `05_Problem_Solving/01_Intro_Checklist.md`    | 5 problems     |
 | Day 5 | Heap/Priority Queue | `03_Algorithms/07_Advanced_DataStructures.md` | 5 problems     |
-| Day 6 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md`  | 10 problems    |
+| Day 6 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md`    | 10 problems    |
 | Day 7 | Review & Rest       | `09_Career_Reference/11_Quick_Reference.md`   | Light practice |
 
 #### Week 6: Graphs
@@ -190,20 +190,20 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 | Day 3 | Shortest Path    | `03_Algorithms/06_Advanced_Algorithms.md`     | 5 problems     |
 | Day 4 | Topological Sort | `03_Algorithms/06_Advanced_Algorithms.md`     | 5 problems     |
 | Day 5 | Union Find       | `03_Algorithms/07_Advanced_DataStructures.md` | 5 problems     |
-| Day 6 | Practice Day     | `05_Problem_Solving/01_Intro_Checklist.md`  | 10 problems    |
+| Day 6 | Practice Day     | `05_Problem_Solving/01_Intro_Checklist.md`    | 10 problems    |
 | Day 7 | Review & Rest    | `09_Career_Reference/11_Quick_Reference.md`   | Light practice |
 
 #### Week 7: Advanced DS & Design Patterns
 
-| Day   | Topic                | Files to Study                                 | Practice         |
-| ----- | -------------------- | ---------------------------------------------- | ---------------- |
-| Day 1 | Tries                | `03_Algorithms/07_Advanced_DataStructures.md`  | 5 problems       |
-| Day 2 | Segment Trees Intro  | `03_Algorithms/07_Advanced_DataStructures.md`  | 3 problems       |
-| Day 3 | Design Patterns      | `06_OOP_Design/02_Design_Patterns.md`          | Read + Implement |
-| Day 4 | More Design Patterns | `06_OOP_Design/02_Design_Patterns.md`          | Implement        |
-| Day 5 | System Design Basics | `06_OOP_Design/03_System_Design.md`            | Read             |
-| Day 6 | Functional Java      | `07_Modern_Java/Ch06_Functional_Programming.md`  | Practice         |
-| Day 7 | Review Week 5-7      | `09_Career_Reference/02_Ultimate_DSA_Guide.md` | Assessment       |
+| Day   | Topic                | Files to Study                                  | Practice         |
+| ----- | -------------------- | ----------------------------------------------- | ---------------- |
+| Day 1 | Tries                | `03_Algorithms/07_Advanced_DataStructures.md`   | 5 problems       |
+| Day 2 | Segment Trees Intro  | `03_Algorithms/07_Advanced_DataStructures.md`   | 3 problems       |
+| Day 3 | Design Patterns      | `06_OOP_Design/02_Design_Patterns.md`           | Read + Implement |
+| Day 4 | More Design Patterns | `06_OOP_Design/02_Design_Patterns.md`           | Implement        |
+| Day 5 | System Design Basics | `06_OOP_Design/03_System_Design.md`             | Read             |
+| Day 6 | Functional Java      | `07_Modern_Java/Ch06_Functional_Programming.md` | Practice         |
+| Day 7 | Review Week 5-7      | `09_Career_Reference/02_Ultimate_DSA_Guide.md`  | Assessment       |
 
 #### Week 8: System Design & Integration
 
@@ -214,7 +214,7 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 | Day 3 | Algorithm Eng.      | `07_Modern_Java/02_Algorithm_Engineering.md` | Practice        |
 | Day 4 | Integration         | All previous                                 | Mixed problems  |
 | Day 5 | Mock Interview Prep | `09_Career_Reference/11_Quick_Reference.md`  | Practice        |
-| Day 6 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md` | 5 hard problems |
+| Day 6 | Practice Day        | `05_Problem_Solving/01_Intro_Checklist.md`   | 5 hard problems |
 | Day 7 | Assessment          | Full review                                  | Self-test       |
 
 ---
@@ -223,51 +223,51 @@ This repository contains **EVERYTHING** you need to become a strong developer:
 
 #### Week 9: SQL Fundamentals
 
-| Day   | Topic                   | Files to Study                             | Practice      |
-| ----- | ----------------------- | ------------------------------------------ | ------------- |
+| Day   | Topic                   | Files to Study                    | Practice      |
+| ----- | ----------------------- | --------------------------------- | ------------- |
 | Day 1 | Database Basics, DDL    | `08_SQL/01_SQL_Complete_Guide.md` | Create tables |
 | Day 2 | Data Types, Constraints | `08_SQL/01_SQL_Complete_Guide.md` | Practice      |
 | Day 3 | SELECT, WHERE, ORDER    | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries    |
 | Day 4 | INSERT, UPDATE, DELETE  | `08_SQL/01_SQL_Complete_Guide.md` | Practice DML  |
 | Day 5 | Aggregate Functions     | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries    |
 | Day 6 | GROUP BY, HAVING        | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries    |
-| Day 7 | Review & Practice       | Week 9 topics                              | 20 queries    |
+| Day 7 | Review & Practice       | Week 9 topics                     | 20 queries    |
 
 #### Week 10: Intermediate SQL
 
-| Day   | Topic                     | Files to Study                             | Practice   |
-| ----- | ------------------------- | ------------------------------------------ | ---------- |
+| Day   | Topic                     | Files to Study                    | Practice   |
+| ----- | ------------------------- | --------------------------------- | ---------- |
 | Day 1 | INNER, LEFT, RIGHT JOIN   | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
 | Day 2 | FULL, CROSS, SELF JOIN    | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
 | Day 3 | Subqueries                | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
 | Day 4 | CTEs (WITH clause)        | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
 | Day 5 | Window Functions Intro    | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
 | Day 6 | Window Functions Advanced | `08_SQL/01_SQL_Complete_Guide.md` | 10 queries |
-| Day 7 | Review & Practice         | Week 10 topics                             | 20 queries |
+| Day 7 | Review & Practice         | Week 10 topics                    | 20 queries |
 
 #### Week 11: Advanced SQL
 
-| Day   | Topic                     | Files to Study                             | Practice         |
-| ----- | ------------------------- | ------------------------------------------ | ---------------- |
+| Day   | Topic                     | Files to Study                    | Practice         |
+| ----- | ------------------------- | --------------------------------- | ---------------- |
 | Day 1 | Normalization (1NF-BCNF)  | `08_SQL/01_SQL_Complete_Guide.md` | Design exercises |
 | Day 2 | Indexes & Performance     | `08_SQL/01_SQL_Complete_Guide.md` | Analyze queries  |
 | Day 3 | Views & Stored Procedures | `08_SQL/01_SQL_Complete_Guide.md` | Create views     |
 | Day 4 | Triggers & Functions      | `08_SQL/01_SQL_Complete_Guide.md` | Create triggers  |
 | Day 5 | Transactions & ACID       | `08_SQL/01_SQL_Complete_Guide.md` | Practice         |
 | Day 6 | Query Optimization        | `08_SQL/01_SQL_Complete_Guide.md` | Optimize queries |
-| Day 7 | Review & Practice         | Week 11 topics                             | Complex queries  |
+| Day 7 | Review & Practice         | Week 11 topics                    | Complex queries  |
 
 #### Week 12: Expert SQL & Projects
 
-| Day   | Topic                     | Files to Study                             | Practice      |
-| ----- | ------------------------- | ------------------------------------------ | ------------- |
-| Day 1 | Analytics Functions       | `08_SQL/01_SQL_Complete_Guide.md` | Data analysis |
-| Day 2 | Real-World Analytics      | `08_SQL/01_SQL_Complete_Guide.md` | Case studies  |
-| Day 3 | Data Engineering Patterns | `08_SQL/01_SQL_Complete_Guide.md` | ETL basics    |
-| Day 4 | Mini Project 1            | Build from scratch                         | Build         |
-| Day 5 | Mini Project 2            | Build from scratch                         | Build         |
-| Day 6 | Interview Prep            | `09_Career_Reference/01_Career_Guide.md`   | 50 questions  |
-| Day 7 | Final Assessment          | Everything                                 | Self-test     |
+| Day   | Topic                     | Files to Study                           | Practice      |
+| ----- | ------------------------- | ---------------------------------------- | ------------- |
+| Day 1 | Analytics Functions       | `08_SQL/01_SQL_Complete_Guide.md`        | Data analysis |
+| Day 2 | Real-World Analytics      | `08_SQL/01_SQL_Complete_Guide.md`        | Case studies  |
+| Day 3 | Data Engineering Patterns | `08_SQL/01_SQL_Complete_Guide.md`        | ETL basics    |
+| Day 4 | Mini Project 1            | Build from scratch                       | Build         |
+| Day 5 | Mini Project 2            | Build from scratch                       | Build         |
+| Day 6 | Interview Prep            | `09_Career_Reference/01_Career_Guide.md` | 50 questions  |
+| Day 7 | Final Assessment          | Everything                               | Self-test     |
 
 ---
 

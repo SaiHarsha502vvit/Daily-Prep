@@ -54,7 +54,7 @@ interface SingleUserResponse {
 
 export async function fetchTypedUsers(
   request: Parameters<Parameters<typeof test>[1]>[0]['request'],
-  pageNum: number
+  pageNum: number,
 ): Promise<UsersListResponse> {
   const response = await request.get(`https://reqres.in/api/users?page=${pageNum}`);
   expect(response.status()).toBe(200);
@@ -119,7 +119,7 @@ function isUsersListResponse(obj: unknown): obj is UsersListResponse {
 
 export async function fetchValidatedUsers(
   request: Parameters<Parameters<typeof test>[1]>[0]['request'],
-  pageNum: number
+  pageNum: number,
 ): Promise<UsersListResponse> {
   const response = await request.get(`https://reqres.in/api/users?page=${pageNum}`);
   const body = await response.json();
@@ -127,7 +127,7 @@ export async function fetchValidatedUsers(
   // Runtime validation: if the API changes shape, we fail fast with a clear message.
   if (!isUsersListResponse(body)) {
     throw new Error(
-      `API response shape changed! Expected UsersListResponse, got: ${JSON.stringify(body).slice(0, 200)}`
+      `API response shape changed! Expected UsersListResponse, got: ${JSON.stringify(body).slice(0, 200)}`,
     );
   }
 
@@ -147,7 +147,7 @@ test('quiz-02-ch12: runtime-validated typed response', async ({ request }) => {
 export async function fetchTyped<T>(
   request: Parameters<Parameters<typeof test>[1]>[0]['request'],
   url: string,
-  validator?: (obj: unknown) => obj is T
+  validator?: (obj: unknown) => obj is T,
 ): Promise<T> {
   const response = await request.get(url);
   expect(response.ok()).toBe(true);
@@ -162,10 +162,7 @@ export async function fetchTyped<T>(
 }
 
 test('quiz-02-ch12: generic typed fetch', async ({ request }) => {
-  const single = await fetchTyped<SingleUserResponse>(
-    request,
-    'https://reqres.in/api/users/2'
-  );
+  const single = await fetchTyped<SingleUserResponse>(request, 'https://reqres.in/api/users/2');
 
   expect(single.data.id).toBe(2);
   expect(single.data.email).toContain('@');

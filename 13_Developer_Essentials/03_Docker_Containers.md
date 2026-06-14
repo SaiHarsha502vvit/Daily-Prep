@@ -17,7 +17,7 @@ WHY? Because your machine has:
   - MySQL 8.0, but server has 5.7
   - Ubuntu 22, but server has CentOS 7
   - 50 environment variables you forgot to document
-  
+
 The SAME code behaves differently in different environments.
 This is the #1 cause of deployment failures in the industry.
 ```
@@ -47,18 +47,15 @@ This container runs IDENTICALLY on:
   ✅ Kubernetes cluster
 ```
 
-
-
-
 🔬 **Section Challenge — The Solution: Containers**
 
 **Challenge 1 (Reasoning):** The diagram shows a container includes Ubuntu 22.04 as the base. But the host machine is also running Linux. If containers share the host kernel, why do you need a base OS image at all?
+
 <details><summary>Answer</summary>
 
 The base image doesn't provide a kernel — it provides the **userspace**: system libraries (glibc, libssl), package managers (apt, yum), shell utilities (bash, ls, cat), and filesystem layout (/etc, /usr, /var). Your application links against specific versions of these libraries at compile time. If your app was compiled against Ubuntu 22.04's glibc 2.35 but the host has Alpine's musl-libc, it will crash with missing symbol errors. The base image guarantees the correct userspace environment regardless of the host. This is why `alpine` images are so small (~5MB) — they use musl-libc and BusyBox instead of full GNU coreutils, but some applications aren't compatible with musl.
+
 </details>
-
-
 
 ## Container vs Virtual Machine
 
@@ -73,7 +70,7 @@ The base image doesn't provide a kernel — it provides the **userspace**: syste
 │      Host OS              │    │      Hardware             │
 │      Hardware             │    └───────────────────────────┘
 └────────────────────────────────────────────────────────────┘
-                                  
+
 VM:        Heavy (GB), 30s startup, full OS per app
 Container: Light (MB), 1s startup, shared OS kernel
 
@@ -82,17 +79,15 @@ Analogy:
   Container = APARTMENTS (shared building, private units)
 ```
 
-
-
-
 🔬 **Section Challenge — Container vs Virtual Machine**
 
 **Challenge 1 (Reasoning):** The diagram shows containers are "lighter" than VMs. But a container running a compromised application shares the host kernel. If an attacker escapes the container (kernel exploit), they own the entire host and ALL other containers. How do VMs prevent this, and what are "gVisor" and "Kata Containers"?
+
 <details><summary>Answer</summary>
 
 VMs have **hardware-level isolation**: each VM runs its own kernel on virtualized hardware (CPU ring separation via VT-x). A kernel exploit in VM1 only compromises VM1's kernel — the hypervisor is a separate security boundary. Container isolation relies on **software-only** mechanisms (namespaces, cgroups, seccomp) enforced by the SHARED host kernel. **gVisor** (Google) adds a user-space kernel that intercepts syscalls — the container never touches the real kernel, but at ~30% performance overhead. **Kata Containers** run each container inside a lightweight VM (micro-VM), getting VM-level isolation with near-container performance. Production rule: use gVisor/Kata for untrusted workloads (multi-tenant SaaS), standard containers for trusted internal services.
-</details>
 
+</details>
 
 ## WHO: Origin
 
@@ -105,19 +100,17 @@ Based on: Linux cgroups + namespaces (existed since 2008)
 Docker's genius = Made containers EASY to use
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — WHO: Origin**
 
 **Challenge 1 (Reasoning):** Docker is built on Linux namespaces (2002) and cgroups (2008). If these kernel features existed for years before Docker (2013), why didn't containers become mainstream until Docker? What was Docker's actual innovation?
+
 <details><summary>Answer</summary>
 
 Pre-Docker container tools (LXC, OpenVZ) existed but required deep Linux sysadmin knowledge — manually configuring cgroups, writing namespace syscall wrappers, building rootfs from scratch. Docker's innovations were: (1) **The Dockerfile** — a declarative, reproducible build format anyone could read. (2) **Docker Hub** — a public registry of pre-built images (like npm/Maven for OS environments). (3) **Layered image format** — only transfer the diff, not the entire OS. (4) **Simple CLI** — `docker run nginx` vs. paragraphs of LXC config. Docker didn't invent containerization — it made it **accessible**. The same way Git didn't invent version control, but made it practical for everyone.
-</details>
 
+</details>
 
 # WHAT: Core Concepts
 
@@ -141,17 +134,15 @@ One image → Many containers:
     → Container 3 (port 8082)
 ```
 
-
-
-
 🔬 **Section Challenge — Images vs Containers**
 
 **Challenge 1 (Reasoning):** The text says "One image → Many containers." If 10 containers run from the same image, do they share the image's filesystem or does each get a copy? What happens when Container 3 writes a file?
+
 <details><summary>Answer</summary>
 
 All 10 containers share the SAME read-only image layers (they are mounted read-only). Each container gets its own thin **writable layer** on top (Copy-on-Write). When Container 3 writes a file, the storage driver (OverlayFS) copies that specific file from the read-only layer into Container 3's writable layer, then modifies the copy. The other 9 containers are unaffected — they still see the original file. This means 10 containers from a 500MB image use ~500MB + (10 × ~5MB writable layers) = ~550MB total, NOT 5GB. When a container is deleted, only its writable layer is removed — the shared image layers remain. This is why `docker commit` captures a container's writable layer as a new image layer.
-</details>
 
+</details>
 
 ## Layers (How Images are Efficient)
 
@@ -166,7 +157,6 @@ Key insight: Layers are CACHED and SHARED
   - 10 apps using Java 17? → Java layer downloaded ONCE
   - Change only your code? → Only Layer 3 rebuilds
 ```
-
 
 ---
 
@@ -186,11 +176,12 @@ sudo usermod -aG docker $USER
 🔬 **Section Challenge — Installation**
 
 **Challenge 1 (Reasoning):** After installing Docker on Linux, you must run `sudo usermod -aG docker $USER` and then log out/in. Why can't you just use `sudo docker run` instead? What security risk does adding your user to the `docker` group create?
+
 <details><summary>Answer</summary>
 
 The Docker daemon runs as **root** and exposes a Unix socket (`/var/run/docker.sock`). Anyone with access to this socket effectively has root access to the host — they can mount the host filesystem (`docker run -v /:/host`), access the host network, and escalate privileges. Adding your user to the `docker` group grants **unsupervised root-equivalent access** without needing `sudo` (no password prompt, no audit log). Using `sudo docker` is actually MORE secure because it logs the command and requires authentication. In production, use **rootless Docker** (`dockerd-rootless`) which runs the daemon as an unprivileged user, or use Podman (daemonless, rootless by default).
-</details>
 
+</details>
 
 ## Level 1: Running Containers (Day 1)
 
@@ -306,7 +297,7 @@ With Compose: ONE yaml file, ONE command
 ### docker-compose.yml Example
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   # Spring Boot Application
@@ -334,7 +325,7 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=secret
     volumes:
-      - pgdata:/var/lib/postgresql/data    # Persistent storage!
+      - pgdata:/var/lib/postgresql/data # Persistent storage!
 
   # Redis Cache
   cache:
@@ -353,7 +344,7 @@ services:
       - app
 
 volumes:
-  pgdata:    # Named volume for database persistence
+  pgdata: # Named volume for database persistence
 ```
 
 ### Compose Commands
@@ -395,13 +386,12 @@ volumes:
 Docker creates internal networks:
   app ←──────→ db       ← communicate by SERVICE NAME
   app ←──────→ cache    ← no need for IP addresses!
-  
+
   nginx ←────→ internet ← only nginx exposed to outside
 
 This is WHY your Spring Boot connects to "db:5432"
 instead of "localhost:5432" inside Docker
 ```
-
 
 ---
 
@@ -417,10 +407,10 @@ services:
   app:
     build: .
     volumes:
-      - ./src:/app/src      # Hot reload! Edit code → changes instantly
+      - ./src:/app/src # Hot reload! Edit code → changes instantly
     ports:
       - "8080:8080"
-      - "5005:5005"         # Debug port
+      - "5005:5005" # Debug port
     environment:
       - SPRING_PROFILES_ACTIVE=dev
 ```
@@ -459,6 +449,27 @@ DON'T use Docker when:
 
 ---
 
+### Historical Evolution
+
+**Container technology has evolved from kernel primitives (2002) to a universal deployment unit (2015+):**
+
+- **2002** — Linux kernel namespace support merged, introducing the first isolation primitives for processes (PID, mount, network, UTS, IPC namespaces). Namespaces are the foundation that all container runtimes build on.
+- **2007** — Linux cgroups (control groups) merged into the mainline kernel (2.6.24). Cgroups provided resource metering and hard limiting (CPU, memory, I/O) for process groups — enabling containers to have guaranteed resource allocations, not just isolation.
+- **2008** — LXC (Linux Containers) released, combining cgroups and namespaces into a userspace tool. LXC was the first production-ready container system, but it required significant sysadmin knowledge to configure and operate.
+- **2013** — Solomon Hykes at dotCloud open-sourced Docker at PyCon US (March 2013). Docker's innovations: the Dockerfile declarative build format, Docker Hub image registry, and layered image storage — making containers accessible to every developer.
+- **2015** — OCI (Open Container Initiative) founded by Docker, CoreOS, and others under the Linux Foundation. OCI published the Container Runtime Specification (runtime-spec) and Image Specification (image-spec), ensuring that container images built with Docker would be portable to any OCI-compliant runtime.
+- **2015** — Kubernetes 1.0 released. Built on Docker as its default container runtime, Kubernetes extended containers from a developer convenience to the universal deployment unit for production cloud infrastructure.
+
+**Key references:**
+- Solomon Hykes (dotCloud) — Docker open-source (2013, PyCon US) — Docker's layered image model, Dockerfile syntax, and Docker Hub registry made containerization a mainstream developer practice. The Dockerfile became the universal build artifact for cloud-native applications.
+- Linux Kernel Community — cgroups (merged 2.6.24, 2007) + namespaces (2002) — The kernel primitives that Docker, LXC, and all container runtimes ultimately depend on; cgroups enforce resource limits, namespaces enforce isolation.
+- OCI (Docker + CoreOS + Linux Foundation) — Open Container Initiative specifications (2015) — The portability standard ensuring that container images built with Docker, Podman, or containerd are interchangeable across runtimes and cloud providers.
+- Google — Kubernetes (2015, based on Borg/Omega internal systems) — Kubernetes elevated containers from a developer tool to the standard unit of orchestration for cloud-native production deployments.
+
+**Why this matters for Docker:** Docker did not invent containerization — it made it accessible. Understanding the kernel primitives (cgroups 2007, namespaces 2002) explains WHY containers work: resource metering and isolation are built into the Linux kernel, Docker just exposed them through a developer-friendly CLI. The OCI standard (2015) explains WHY your Docker image runs identically on Kubernetes, local Docker Desktop, and GitHub Actions.
+
+---
+
 # 🧭 Docker Cheat Sheet
 
 ```
@@ -475,6 +486,7 @@ CLEANUP:     system prune | image prune | container prune
 # 🏋️ Practice Exercises
 
 ## Exercise 1: Run & Explore
+
 ```
 1. Run an nginx container with port mapping
 2. Run a MySQL container with environment variables
@@ -483,6 +495,7 @@ CLEANUP:     system prune | image prune | container prune
 ```
 
 ## Exercise 2: Build Custom Image
+
 ```
 1. Create a simple Spring Boot app (or any Java app)
 2. Write a Dockerfile with multi-stage build
@@ -490,22 +503,22 @@ CLEANUP:     system prune | image prune | container prune
 4. Push to Docker Hub
 ```
 
-
-
 🔬 **Section Challenge — Exercise 2: Build Custom Image**
 
 **Challenge 1 (Reasoning):** The multi-stage Dockerfile uses `eclipse-temurin:17-jre-alpine` (JRE) for the run stage, not `eclipse-temurin:17-jdk-alpine` (JDK). The build stage uses the full Maven+JDK image. Why is this separation critical for production, and what specific tools in the JDK become security liabilities in production?
+
 <details><summary>Answer</summary>
 
 The JDK includes: `javac` (compiler), `jdb` (debugger), `jcmd`/`jmap`/`jstack` (diagnostic tools), `jar` (packager), and the entire `tools.jar`. In production, none of these are needed — your app runs from a pre-compiled JAR. But if an attacker gains shell access to the container, these tools become weapons: `jmap` can dump heap memory (containing passwords, tokens, PII), `jdb` can attach to the JVM and modify running code, `javac` can compile malicious code on the spot. The JRE image also drops ~200MB of unnecessary files, reducing: (1) image size (faster pulls, less storage), (2) attack surface (fewer binaries = fewer CVE vectors), (3) startup time. **Alpine** further reduces the base from ~300MB (Debian) to ~5MB by using musl-libc and BusyBox. The multi-stage pattern: build with everything you need, deploy with only what you need.
+
 </details>
 
-
 ## Exercise 3: Compose Full Stack
+
 ```
 1. Create docker-compose.yml with:
    - Spring Boot app
-   - PostgreSQL 
+   - PostgreSQL
    - Adminer (DB web UI)
 2. Connect app to PostgreSQL
 3. Verify data persistence after container restart
@@ -513,26 +526,54 @@ The JDK includes: `javac` (compiler), `jdb` (debugger), `jcmd`/`jmap`/`jstack` (
 
 ---
 
+### Production Reality
+
+**Docker and container operations fail in production in these named ways:**
+
+- **Container escape via privileged mode** — `docker run --privileged` disables all container isolation, giving the container kernel-level access to the host. CVE-2019-5736: a malicious container could overwrite the host's Docker binary by writing to `/proc/self/exe`, escaping to root on the host. Privileged containers bypass cgroup namespace isolation and can access host devices directly. Always use `--cap-drop=ALL` and add only required capabilities (`--cap-add=NET_ADMIN` only when needed).
+- **Image layer bloat slowing CI** — a Dockerfile that copies the entire source tree before `RUN mvn install` creates image layers where every code change invalidates the Maven dependency cache. Each CI build downloads 500MB of dependencies. Multi-stage builds that don't use `--mount=type=cache` for Maven/Gradle caches lose minutes per build. A 200MB Docker image vs a 1.2GB image means 6x faster pod startup on Kubernetes.
+- **Registry auth token expiration blocking deploys** — `docker login` stores credentials in `~/.docker/config.json` with an expiration (typically 12-24 hours). CI/CD pipelines that don't refresh credentials fail at the worst time: during an incident when you need to push an emergency image. AWS ECR tokens expire after 12 hours; GitHub Container Registry tokens expire when the GitHub token used to obtain them expires.
+- **OOM-killed container loses logs** — when the Linux OOM killer terminates a container (memory limit exceeded), all stdout logs in the kernel ring buffer are lost if they haven't been flushed to a remote log aggregator. `docker logs` returns nothing. The postmortem has no evidence of what happened in the final seconds. Kubernetes liveness probe also fails, restarting the container before logs are preserved. Fix: ship logs to a remote store (Fluentd, Fluent Bit) before the container terminates.
+
+**Debug workflow:** For container escapes: audit running containers with `docker ps --format '{{.ID}} {{.Privileged}}'`; privileged containers show `true`. For image bloat: `docker history <image>` shows layer sizes; identify large COPY or RUN layers. For registry auth: check `~/.docker/config.json` token expiry; use `AWS ECR get-login-password` in CI.
+**Mitigation discipline:** Run containers with `--security-opt no-new-privileges` and drop all capabilities; use multi-stage builds with small run-time images (alpine or distroless); use Kubernetes podDisruptionBudgets to ensure logshipping sidecars are prioritized for graceful shutdown before application containers; rotate registry credentials automatically via Kubernetes external secrets operators.
+
 **Next Chapter**: [CI/CD Pipelines →](04_CICD_Pipelines.md)
 
-
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Exercise 3: Compose Full Stack**
 
 **Challenge 1 (Reasoning):** In the multi-stage Dockerfile, `COPY pom.xml .` and `RUN mvn dependency:resolve` appear BEFORE `COPY src/ ./src/`. Why does this specific ordering matter, and what happens to build times if you reverse them?
+
 <details><summary>Answer</summary>
 
 Docker builds images **layer by layer**, and each layer is **cached**. If a layer's input hasn't changed, Docker reuses the cached result instead of re-executing it. Dependencies (`pom.xml`) change rarely — maybe once a week when you add a new library. Source code (`src/`) changes on every commit. By copying `pom.xml` FIRST and resolving dependencies, Docker creates a cached layer containing all downloaded JARs (~200-500MB). On subsequent builds where only `src/` changed, Docker skips the dependency download entirely (cache hit on layers 1-2) and only rebuilds from `COPY src/` onward. **If reversed** (`COPY . .` then `RUN mvn dependency:resolve`), ANY change to ANY file (even a one-line code fix) invalidates the COPY layer, which invalidates ALL subsequent layers — forcing a full `mvn dependency:resolve` on every build. This turns a 10-second rebuild into a 3-5 minute rebuild. **The general rule:** In Dockerfiles, order instructions from **least frequently changing to most frequently changing**. This is called **layer cache optimization** and is the single most impactful Docker performance technique.
+
 </details>
 
 > [!NOTE]
 > **Open Source Reference: Docker Layer Caching (BuildKit)**
-> * [moby/buildkit](https://github.com/moby/buildkit) -> **Invariant:** Layer invalidation cascades downwards. A change in layer $N$ invalidates layers $N$ through the end of the Dockerfile.
-> * **Local rewrite:** While the standard `COPY pom.xml` trick caches dependencies as an image layer, BuildKit's `RUN --mount=type=cache,target=/root/.m2` mounts a persistent compiler cache directory directly into the build container, skipping dependency downloads even if the `pom.xml` layer itself is invalidated.
-> * **Constraint warning:** BuildKit cache mounts are build-time only. They are not persisted in the final image, and they don't share cache automatically across distributed CI runners without explicit registry cache-export configuration.
+>
+> - [moby/buildkit](https://github.com/moby/buildkit) -> **Invariant:** Layer invalidation cascades downwards. A change in layer $N$ invalidates layers $N$ through the end of the Dockerfile.
+> - **Local rewrite:** While the standard `COPY pom.xml` trick caches dependencies as an image layer, BuildKit's `RUN --mount=type=cache,target=/root/.m2` mounts a persistent compiler cache directory directly into the build container, skipping dependency downloads even if the `pom.xml` layer itself is invalidated.
+> - **Constraint warning:** BuildKit cache mounts are build-time only. They are not persisted in the final image, and they don't share cache automatically across distributed CI runners without explicit registry cache-export configuration.
+
+---
+
+### Trade-off: Container Runtime Variants
+
+| Aspect              | Docker           | Podman            | containerd        | CRI-O             |
+|---------------------|------------------|-------------------|-------------------|-------------------|
+| Architecture        | daemon-based     | daemonless        | daemon-based      | daemon-based      |
+| Root required       | yes              | rootless option   | yes               | yes               |
+| Compose support     | native           | podman-compose    | no (use nerdctl)  | no                |
+| Systemd integration | weak             | strong (quadlets) | medium            | strong            |
+| Kubernetes fit      | poor             | poor              | excellent (CRI)   | excellent (CRI)   |
+| Year introduced     | 2013             | 2018 (Red Hat)    | 2015 (Docker)     | 2016 (Red Hat)    |
+| License             | Apache 2 (CE)    | Apache 2          | Apache 2          | Apache 2          |
+| Best for            | local dev, CI    | rootless prod     | K8s container rt  | OpenShift K8s     |
+
+**Selection rule:** Docker for developer experience and CI; containerd for production Kubernetes nodes; Podman for rootless security-sensitive deployments; CRI-O for OpenShift-specific environments.

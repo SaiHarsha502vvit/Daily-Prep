@@ -1,11 +1,11 @@
 # Semester 7 — Advanced Topics
 
-| Code | Course | Hours |
-|------|--------|-------|
-| CSE701 | Compilers & Language Processing | ~25h |
-| CSE702 | Distributed Systems | ~25h |
-| CSE703 | Machine Learning | ~25h |
-| CSE704 | Advanced Algorithms | ~20h |
+| Code   | Course                          | Hours |
+| ------ | ------------------------------- | ----- |
+| CSE701 | Compilers & Language Processing | ~25h  |
+| CSE702 | Distributed Systems             | ~25h  |
+| CSE703 | Machine Learning                | ~25h  |
+| CSE704 | Advanced Algorithms             | ~20h  |
 
 **Prerequisites:** [Semester 5 — Frontend & DevEx](../S05/README.md) + [Semester 6 — Backend & DevOps](../S06/README.md)
 

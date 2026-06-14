@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 21: Enterprise Project Structure](./21_Enterprise_Project_Structure.md) | [Index](../00_INDEX.md) | [→ Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md)
 
 **Cross-links:**
+
 - [`21_Enterprise_Project_Structure.md`](./21_Enterprise_Project_Structure.md) — Why the folders exist
 - [`23_APIUtils_HTTP_Library.md`](./23_APIUtils_HTTP_Library.md) — How headers + payloads combine in a client
 - [`04_JS_TS_For_Automation.md`](../01_Foundations/04_JS_TS_For_Automation.md) — TypeScript static classes, enums
@@ -63,15 +64,13 @@ const CITATIONS_URL = () => `${process.env.API_BASE_URL}/api/v2/citations`;
 
 ```typescript
 // config/endpoints.ts
-import { config } from './environments';
+import { config } from "./environments";
 
 export const Endpoints = {
-
   // ─── Citation Service ───────────────────────────────────────────────────────
   citations: {
     // No parameters — POST to the collection
-    create: () =>
-      `${config.apiBaseUrl}/api/v2/citations`,
+    create: () => `${config.apiBaseUrl}/api/v2/citations`,
 
     // ID parameter — required by TypeScript, checked at compile time
     getById: (citationId: string) =>
@@ -85,11 +84,15 @@ export const Endpoints = {
       `${config.apiBaseUrl}/api/v2/citations/${citationId}`,
 
     // Query parameters — encoded in the URL
-    search: (filters: { userId?: string; status?: string; dateFrom?: string }) => {
+    search: (filters: {
+      userId?: string;
+      status?: string;
+      dateFrom?: string;
+    }) => {
       const params = new URLSearchParams();
-      if (filters.userId) params.set('userId', filters.userId);
-      if (filters.status) params.set('status', filters.status);
-      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+      if (filters.userId) params.set("userId", filters.userId);
+      if (filters.status) params.set("status", filters.status);
+      if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
       return `${config.apiBaseUrl}/api/v2/citations/search?${params.toString()}`;
     },
   },
@@ -99,8 +102,7 @@ export const Endpoints = {
     byUser: (userId: string) =>
       `${config.notificationServiceUrl}/api/notifications?userId=${userId}`,
 
-    send: () =>
-      `${config.notificationServiceUrl}/api/notifications`,
+    send: () => `${config.notificationServiceUrl}/api/notifications`,
 
     getById: (notifId: string) =>
       `${config.notificationServiceUrl}/api/notifications/${notifId}`,
@@ -108,8 +110,7 @@ export const Endpoints = {
 
   // ─── IVR / Transit System (legacy — different URL pattern) ──────────────────
   ivr: {
-    triggerAlert: () =>
-      `${config.ivrServiceUrl}/ivr/v1/alerts`,
+    triggerAlert: () => `${config.ivrServiceUrl}/ivr/v1/alerts`,
 
     getAlertsByAccount: (transitAccountId: string) =>
       `${config.ivrServiceUrl}/ivr/v1/alerts?accountId=${transitAccountId}`,
@@ -117,11 +118,9 @@ export const Endpoints = {
 
   // ─── User Service ────────────────────────────────────────────────────────────
   users: {
-    create: () =>
-      `${config.apiBaseUrl}/api/v1/users`,
+    create: () => `${config.apiBaseUrl}/api/v1/users`,
 
-    getById: (userId: string) =>
-      `${config.apiBaseUrl}/api/v1/users/${userId}`,
+    getById: (userId: string) => `${config.apiBaseUrl}/api/v1/users/${userId}`,
 
     updateRole: (userId: string) =>
       `${config.apiBaseUrl}/api/v1/users/${userId}/role`,
@@ -160,18 +159,17 @@ Because **different services have different auth mechanisms**. The CRM uses Bear
 // Covers: Citation API, User API, Account API (all under the same auth system)
 
 export class HeadersCrm {
-
   /**
    * Standard auth headers for most CRM API calls.
    * @param accessToken - From the `account` fixture, NOT hardcoded.
    */
   static auth(accessToken: string): Record<string, string> {
     return {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,
-      'X-Request-Source': 'playwright-tests',  // ← helps ops filter test traffic in logs
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!,
+      "X-Request-Source": "playwright-tests", // ← helps ops filter test traffic in logs
     };
   }
 
@@ -180,7 +178,7 @@ export class HeadersCrm {
    */
   static authGet(accessToken: string): Record<string, string> {
     const headers = HeadersCrm.auth(accessToken);
-    const { 'Content-Type': _, ...rest } = headers;  // remove Content-Type for GETs
+    const { "Content-Type": _, ...rest } = headers; // remove Content-Type for GETs
     return rest;
   }
 
@@ -189,8 +187,8 @@ export class HeadersCrm {
    */
   static authMultipart(accessToken: string): Record<string, string> {
     return {
-      'Authorization': `Bearer ${accessToken}`,
-      'X-Tenant-ID': process.env.TENANT_ID!,
+      Authorization: `Bearer ${accessToken}`,
+      "X-Tenant-ID": process.env.TENANT_ID!,
       // NO Content-Type — FormData sets it with the multipart boundary
     };
   }
@@ -200,9 +198,9 @@ export class HeadersCrm {
    */
   static apiKey(): Record<string, string> {
     return {
-      'X-API-Key': process.env.CRM_SERVICE_API_KEY!,
-      'Content-Type': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,
+      "X-API-Key": process.env.CRM_SERVICE_API_KEY!,
+      "Content-Type": "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!,
     };
   }
 }
@@ -215,9 +213,9 @@ export class HeadersCrm {
 export class HeadersNotifications {
   static auth(): Record<string, string> {
     return {
-      'X-Service-Key': process.env.NOTIFICATION_SERVICE_KEY!,  // API key, NOT Bearer
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      "X-Service-Key": process.env.NOTIFICATION_SERVICE_KEY!, // API key, NOT Bearer
+      "Content-Type": "application/json",
+      Accept: "application/json",
     };
   }
 }
@@ -230,12 +228,12 @@ export class HeadersNotifications {
 export class HeadersIvr {
   static auth(): Record<string, string> {
     const credentials = Buffer.from(
-      `${process.env.IVR_USERNAME}:${process.env.IVR_PASSWORD}`
-    ).toString('base64');
+      `${process.env.IVR_USERNAME}:${process.env.IVR_PASSWORD}`,
+    ).toString("base64");
 
     return {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/json',
+      Authorization: `Basic ${credentials}`,
+      "Content-Type": "application/json",
     };
   }
 }
@@ -249,22 +247,22 @@ Instead of `if (env === 'local')` statements cluttering your spec files, handle 
 
 ```typescript
 // data/headers/HeadersCrm.ts
-import { currentEnv } from '../../config/environments';
+import { currentEnv } from "../../config/environments";
 
 export class HeadersCrm {
   static auth(accessToken: string): Record<string, string> {
     const baseHeaders = {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!,
     };
 
     // Environment-specific header injection
-    if (currentEnv === 'local' || currentEnv === 'dev') {
+    if (currentEnv === "local" || currentEnv === "dev") {
       return {
         ...baseHeaders,
-        'X-Bypass-Rate-Limit': 'true',  // Only allowed in lower environments
-        'X-Mock-External-Systems': 'true',
+        "X-Bypass-Rate-Limit": "true", // Only allowed in lower environments
+        "X-Mock-External-Systems": "true",
       };
     }
 
@@ -272,6 +270,7 @@ export class HeadersCrm {
   }
 }
 ```
+
 This ensures your tests seamlessly transition between environments without modifying test logic.
 
 ---
@@ -306,14 +305,15 @@ classDiagram
 ### The Override Pattern — The Key to Flexibility
 
 Every payload factory method accepts `Partial<TheInterface>`. This means:
+
 - Call with no args → get sensible test defaults
 - Call with overrides → get defaults PLUS your specific values
 
 ```typescript
 // data/payloads/PayloadsCitation.ts
 
-import { CitationStatus, CitationType } from '../enums/citation.enums';
-import { DateUtils } from '../../utils/date.utils';
+import { CitationStatus, CitationType } from "../enums/citation.enums";
+import { DateUtils } from "../../utils/date.utils";
 
 // ── 1. The TypeScript interface (single source of truth for the API contract) ──
 
@@ -340,7 +340,6 @@ export interface UpdateCitationPayload {
 // ── 2. The factory class ──────────────────────────────────────────────────────
 
 export class PayloadsCitation {
-
   /**
    * Standard PENDING citation for happy-path tests.
    * Always override `customerId` with the actual test user's ID.
@@ -348,25 +347,29 @@ export class PayloadsCitation {
    * Example:
    *   PayloadsCitation.pending({ customerId: account.userId })
    */
-  static pending(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
+  static pending(
+    overrides: Partial<CreateCitationPayload> = {},
+  ): CreateCitationPayload {
     return {
-      customerId: overrides.customerId ?? 'TEST-CUSTOMER-001',
-      amount: 150.00,
+      customerId: overrides.customerId ?? "TEST-CUSTOMER-001",
+      amount: 150.0,
       status: CitationStatus.PENDING,
       citationType: CitationType.PARKING,
       issueDate: DateUtils.today(),
       dueDate: DateUtils.daysFromNow(30),
-      ...overrides,  // ← spread LAST so overrides win
+      ...overrides, // ← spread LAST so overrides win
     };
   }
 
   /**
    * An already-PAID citation — for testing payment-related workflows.
    */
-  static paid(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
+  static paid(
+    overrides: Partial<CreateCitationPayload> = {},
+  ): CreateCitationPayload {
     return PayloadsCitation.pending({
       status: CitationStatus.PAID,
-      amount: 200.00,
+      amount: 200.0,
       ...overrides,
     });
   }
@@ -374,10 +377,12 @@ export class PayloadsCitation {
   /**
    * A DISPUTED citation — for testing dispute workflows.
    */
-  static disputed(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
+  static disputed(
+    overrides: Partial<CreateCitationPayload> = {},
+  ): CreateCitationPayload {
     return PayloadsCitation.pending({
       status: CitationStatus.DISPUTED,
-      notes: 'Auto-test: customer disputes this citation',
+      notes: "Auto-test: customer disputes this citation",
       ...overrides,
     });
   }
@@ -386,12 +391,14 @@ export class PayloadsCitation {
    * An OVERDUE citation — for testing collection workflows.
    * Note: issueDate in the past, dueDate already passed.
    */
-  static overdue(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
+  static overdue(
+    overrides: Partial<CreateCitationPayload> = {},
+  ): CreateCitationPayload {
     return PayloadsCitation.pending({
       status: CitationStatus.OVERDUE,
       issueDate: DateUtils.daysAgo(60),
       dueDate: DateUtils.daysAgo(30),
-      amount: 300.00,  // overdue usually has penalty amount
+      amount: 300.0, // overdue usually has penalty amount
       ...overrides,
     });
   }
@@ -399,7 +406,10 @@ export class PayloadsCitation {
   /**
    * For UPDATE (PATCH) calls — only the fields being changed.
    */
-  static updateStatus(status: CitationStatus, notes?: string): UpdateCitationPayload {
+  static updateStatus(
+    status: CitationStatus,
+    notes?: string,
+  ): UpdateCitationPayload {
     return { status, ...(notes ? { notes } : {}) };
   }
 }
@@ -410,15 +420,15 @@ export class PayloadsCitation {
 ```typescript
 // Wrong order:
 return {
-  ...overrides,          // ← spread first
-  status: CitationStatus.PENDING,  // ← this OVERWRITES the override!
+  ...overrides, // ← spread first
+  status: CitationStatus.PENDING, // ← this OVERWRITES the override!
 };
 // If caller passes { status: CitationStatus.PAID }, it gets PENDING anyway.
 
 // Correct order:
 return {
-  status: CitationStatus.PENDING,  // ← default
-  ...overrides,                    // ← override wins if provided
+  status: CitationStatus.PENDING, // ← default
+  ...overrides, // ← override wins if provided
 };
 ```
 
@@ -431,14 +441,16 @@ return {
 ```typescript
 // clients/CitationsApiClient.ts — where headers + payloads + endpoints meet
 
-import { type APIRequestContext } from '@playwright/test';
-import { Endpoints } from '../config/endpoints';
-import { HeadersCrm } from '../data/headers/HeadersCrm';
-import type { CreateCitationPayload, UpdateCitationPayload } from '../data/payloads/PayloadsCitation';
-import type { CitationApiResponse } from '../types/api-responses.types';
+import { type APIRequestContext } from "@playwright/test";
+import { Endpoints } from "../config/endpoints";
+import { HeadersCrm } from "../data/headers/HeadersCrm";
+import type {
+  CreateCitationPayload,
+  UpdateCitationPayload,
+} from "../data/payloads/PayloadsCitation";
+import type { CitationApiResponse } from "../types/api-responses.types";
 
 export class CitationsApiClient {
-
   // Constructor: the two things that vary per test — request context and token
   constructor(
     private readonly request: APIRequestContext,
@@ -448,22 +460,22 @@ export class CitationsApiClient {
   // CREATE: POST to /api/v2/citations
   async create(payload: CreateCitationPayload): Promise<CitationApiResponse> {
     const response = await this.request.post(
-      Endpoints.citations.create(),           // ← from endpoints.ts
+      Endpoints.citations.create(), // ← from endpoints.ts
       {
-        headers: HeadersCrm.auth(this.accessToken),  // ← from HeadersCrm.ts
-        data: payload,                        // ← from PayloadsCitation factory
-      }
+        headers: HeadersCrm.auth(this.accessToken), // ← from HeadersCrm.ts
+        data: payload, // ← from PayloadsCitation factory
+      },
     );
 
-    this.assertStatus(response, 201, 'create citation');
+    this.assertStatus(response, 201, "create citation");
     return response.json() as Promise<CitationApiResponse>;
   }
 
   // READ: GET /api/v2/citations/:id
   async getById(citationId: string): Promise<CitationApiResponse> {
     const response = await this.request.get(
-      Endpoints.citations.getById(citationId),       // ← function call, not string concat
-      { headers: HeadersCrm.authGet(this.accessToken) }  // ← GET-specific headers
+      Endpoints.citations.getById(citationId), // ← function call, not string concat
+      { headers: HeadersCrm.authGet(this.accessToken) }, // ← GET-specific headers
     );
 
     this.assertStatus(response, 200, `get citation ${citationId}`);
@@ -471,13 +483,16 @@ export class CitationsApiClient {
   }
 
   // UPDATE: PATCH /api/v2/citations/:id
-  async updateStatus(citationId: string, payload: UpdateCitationPayload): Promise<CitationApiResponse> {
+  async updateStatus(
+    citationId: string,
+    payload: UpdateCitationPayload,
+  ): Promise<CitationApiResponse> {
     const response = await this.request.patch(
       Endpoints.citations.update(citationId),
       {
         headers: HeadersCrm.auth(this.accessToken),
         data: payload,
-      }
+      },
     );
 
     this.assertStatus(response, 200, `update citation ${citationId}`);
@@ -488,19 +503,23 @@ export class CitationsApiClient {
   async delete(citationId: string): Promise<void> {
     const response = await this.request.delete(
       Endpoints.citations.delete(citationId),
-      { headers: HeadersCrm.auth(this.accessToken) }
+      { headers: HeadersCrm.auth(this.accessToken) },
     );
 
     this.assertStatus(response, 204, `delete citation ${citationId}`);
   }
 
   // PRIVATE: centralised status checking so every method doesn't repeat try/catch
-  private assertStatus(response: { ok(): boolean; status(): number; statusText(): string }, expectedStatus: number, operation: string): void {
+  private assertStatus(
+    response: { ok(): boolean; status(): number; statusText(): string },
+    expectedStatus: number,
+    operation: string,
+  ): void {
     if (response.status() !== expectedStatus) {
       throw new Error(
         `${operation} failed:\n` +
-        `  Expected: ${expectedStatus}\n` +
-        `  Got: ${response.status()} ${response.statusText()}`
+          `  Expected: ${expectedStatus}\n` +
+          `  Got: ${response.status()} ${response.statusText()}`,
       );
     }
   }
@@ -512,9 +531,10 @@ export class CitationsApiClient {
 ## 6. The Complete Call Chain (Traced)
 
 When a test calls:
+
 ```typescript
 const citation = await citationsClient.create(
-  PayloadsCitation.pending({ customerId: account.userId })
+  PayloadsCitation.pending({ customerId: account.userId }),
 );
 ```
 
@@ -554,7 +574,7 @@ Here is exactly what happens, step by step:
 
 ```typescript
 const payload = PayloadsCitation.pending({
-  customerId: 'USR-999',
+  customerId: "USR-999",
   status: CitationStatus.PAID,
 });
 ```
@@ -564,18 +584,20 @@ What is `payload.status`?
 A) `CitationStatus.PENDING` (the default wins)  
 B) `CitationStatus.PAID` (the override wins)  
 C) TypeScript compile error — cannot override status  
-D) `undefined`  
+D) `undefined`
 
 <details><summary>Answer</summary>
 
 **B** — The override wins because of `...overrides` at the END of the object:
+
 ```typescript
 return {
-  status: CitationStatus.PENDING,  // default
-  ...overrides,                    // { customerId: 'USR-999', status: CitationStatus.PAID } — overrides status
+  status: CitationStatus.PENDING, // default
+  ...overrides, // { customerId: 'USR-999', status: CitationStatus.PAID } — overrides status
 };
 // Result: status = CitationStatus.PAID
 ```
+
 </details>
 
 ---
@@ -589,8 +611,8 @@ export class HeadersCrm {
 
   static auth(): Record<string, string> {
     return {
-      'Authorization': `Bearer ${HeadersCrm.token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${HeadersCrm.token}`,
+      "Content-Type": "application/json",
     };
   }
 }
@@ -607,6 +629,7 @@ export class HeadersCrm {
 If a test needs an Admin token AND a Customer token (dual context), both would use the same hardcoded token. The parameter-accepting pattern `static auth(accessToken: string)` is essential for multi-role tests.
 
 Fix:
+
 ```typescript
 static auth(accessToken: string): Record<string, string> {
   return {
@@ -616,6 +639,7 @@ static auth(accessToken: string): Record<string, string> {
   };
 }
 ```
+
 </details>
 
 ---
@@ -623,6 +647,7 @@ static auth(accessToken: string): Record<string, string> {
 ### Challenge 3 [Write It Yourself]
 
 Write a `PayloadsNotification` factory class with:
+
 - `sendEmail(userId: string, template: 'CITATION_CREATED' | 'PAYMENT_RECEIVED')` — creates an email notification payload
 - `sendSms(userId: string, message: string)` — creates an SMS notification payload
 
@@ -633,27 +658,26 @@ Use the `NotificationType` enum for the `type` field.
 ```typescript
 // data/payloads/PayloadsNotification.ts
 
-import { NotificationType } from '../enums/citation.enums';
+import { NotificationType } from "../enums/citation.enums";
 
 export interface SendNotificationPayload {
   userId: string;
   type: NotificationType;
-  channel: 'email' | 'sms' | 'push';
+  channel: "email" | "sms" | "push";
   template?: string;
   message?: string;
   metadata?: Record<string, string>;
 }
 
 export class PayloadsNotification {
-
   static sendEmail(
     userId: string,
-    template: 'CITATION_CREATED' | 'PAYMENT_RECEIVED'
+    template: "CITATION_CREATED" | "PAYMENT_RECEIVED",
   ): SendNotificationPayload {
     return {
       userId,
-      type: NotificationType[template],   // map string literal to enum value
-      channel: 'email',
+      type: NotificationType[template], // map string literal to enum value
+      channel: "email",
       template,
     };
   }
@@ -661,8 +685,8 @@ export class PayloadsNotification {
   static sendSms(userId: string, message: string): SendNotificationPayload {
     return {
       userId,
-      type: NotificationType.CITATION_CREATED,  // adjust to match your use case
-      channel: 'sms',
+      type: NotificationType.CITATION_CREATED, // adjust to match your use case
+      channel: "sms",
       message,
     };
   }
@@ -672,6 +696,7 @@ export class PayloadsNotification {
 // notificationsClient.send(PayloadsNotification.sendEmail(account.userId, 'CITATION_CREATED'))
 // notificationsClient.send(PayloadsNotification.sendSms(account.userId, 'Your citation is ready.'))
 ```
+
 </details>
 
 ---
@@ -683,18 +708,20 @@ export class PayloadsNotification {
 A) GET requests are faster without headers so omitting Content-Type improves performance  
 B) RFC 7231 specifies that GET requests have no defined body semantics — some servers reject GET requests that include `Content-Type` because it implies a body exists  
 C) Playwright automatically adds the correct Content-Type for GET requests  
-D) Content-Type only applies to HTML responses, not JSON  
+D) Content-Type only applies to HTML responses, not JSON
 
 <details><summary>Answer</summary>
 
 **B** — RFC 7231 Section 4.3.1 specifies that a GET request "SHOULD NOT include a body." Some strict REST frameworks (Spring Boot, ASP.NET, Django REST) will return `400 Bad Request` or ignore the body if they see `Content-Type: application/json` on a GET — because `Content-Type` signals that a body is present. Sending it on a bodyless request is at minimum ambiguous and at worst rejected.
 
 The practical rule:
-- `POST`, `PUT`, `PATCH` — always send `Content-Type: application/json` (body is present)  
-- `GET`, `DELETE` (no body) — omit `Content-Type` to be RFC-compliant  
+
+- `POST`, `PUT`, `PATCH` — always send `Content-Type: application/json` (body is present)
+- `GET`, `DELETE` (no body) — omit `Content-Type` to be RFC-compliant
 - `DELETE` with a body — include `Content-Type` only if the API explicitly documents that it reads the DELETE body (rare)
 
 The `authGet()` pattern makes this distinction automatic:
+
 ```typescript
 static authGet(accessToken: string): Record<string, string> {
   const headers = HeadersCrm.auth(accessToken);    // start from full headers
@@ -715,7 +742,7 @@ Your team is migrating citations from `/api/v1/citations` to `/api/v2/citations`
 // config/endpoints.ts
 export const Endpoints = {
   citations: {
-    create: () => `${config.apiBaseUrl}/api/v2/citations`,  // ← upgraded to v2
+    create: () => `${config.apiBaseUrl}/api/v2/citations`, // ← upgraded to v2
     // ... other methods
   },
 } as const;
@@ -741,15 +768,15 @@ export const Endpoints = {
   citations: {
     // ── v1 (legacy) — kept for backward-compat tests during migration ──────────
     v1: {
-      create:  () => `${config.apiBaseUrl}/api/v1/citations`,
+      create: () => `${config.apiBaseUrl}/api/v1/citations`,
       getById: (id: string) => `${config.apiBaseUrl}/api/v1/citations/${id}`,
     },
 
     // ── v2 (current) — new tests use this ─────────────────────────────────────
     v2: {
-      create:  () => `${config.apiBaseUrl}/api/v2/citations`,
+      create: () => `${config.apiBaseUrl}/api/v2/citations`,
       getById: (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
-      search:  (filters: { status?: string }) => {
+      search: (filters: { status?: string }) => {
         const params = new URLSearchParams(filters as Record<string, string>);
         return `${config.apiBaseUrl}/api/v2/citations/search?${params}`;
       },
@@ -758,7 +785,7 @@ export const Endpoints = {
     // ── Convenience aliases pointing to the CURRENT stable version ─────────────
     // Existing tests that used Endpoints.citations.create() still work unchanged.
     // When v3 ships: change ONLY these two lines — all existing callers update.
-    create:  () => Endpoints.citations.v2.create(),
+    create: () => Endpoints.citations.v2.create(),
     getById: (id: string) => Endpoints.citations.v2.getById(id),
   },
 } as const;
@@ -776,4 +803,5 @@ export const Endpoints = {
 </details>
 
 ---
+
 **Navigation**: [← Chapter 21: Enterprise Project Structure](./21_Enterprise_Project_Structure.md) | [Index](../00_INDEX.md) | [→ Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md)

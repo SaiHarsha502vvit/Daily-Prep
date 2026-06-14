@@ -1,7 +1,7 @@
 const INGESTER_URL =
-  typeof window !== 'undefined'
-    ? (process.env.NEXT_PUBLIC_INGESTER_URL || 'http://localhost:3001')
-    : (process.env.NEXT_PUBLIC_INGESTER_URL || 'http://localhost:3001');
+  typeof window !== "undefined"
+    ? process.env.NEXT_PUBLIC_INGESTER_URL || "http://localhost:3001"
+    : process.env.NEXT_PUBLIC_INGESTER_URL || "http://localhost:3001";
 
 async function fetcher<T>(path: string): Promise<T> {
   const res = await fetch(`${INGESTER_URL}${path}`);
@@ -72,9 +72,11 @@ export interface RunsList {
 }
 
 export const api = {
-  getOverview: () => fetcher<OverviewData>('/api/overview'),
-  getTestDetail: (name: string) => fetcher<TestDetailData>(`/api/tests/${encodeURIComponent(name)}`),
-  getOwnerSummary: (name: string) => fetcher<OwnerSummary>(`/api/owners/${encodeURIComponent(name)}`),
-  getOwners: () => fetcher<OwnerList>('/api/owners'),
+  getOverview: () => fetcher<OverviewData>("/api/overview"),
+  getTestDetail: (name: string) =>
+    fetcher<TestDetailData>(`/api/tests/${encodeURIComponent(name)}`),
+  getOwnerSummary: (name: string) =>
+    fetcher<OwnerSummary>(`/api/owners/${encodeURIComponent(name)}`),
+  getOwners: () => fetcher<OwnerList>("/api/owners"),
   getRuns: (limit = 20) => fetcher<RunsList>(`/api/runs?limit=${limit}`),
 };

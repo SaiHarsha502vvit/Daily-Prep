@@ -1,5 +1,5 @@
-import type { Page } from '@playwright/test';
-import { openTabFrom } from '../../../utilities/browser/tab-manager';
+import type { Page } from "@playwright/test";
+import { openTabFrom } from "../../../utilities/browser/tab-manager";
 
 /**
  * Page Object Model for https://the-internet.herokuapp.com/windows
@@ -8,7 +8,7 @@ export class WindowsPage {
   constructor(private readonly page: Page) {}
 
   private get openWindowLink() {
-    return this.page.locator('#redirect');
+    return this.page.locator("#redirect");
   }
 
   /**

@@ -1,4 +1,4 @@
-import { type FrameLocator, type Locator } from '@playwright/test';
+import { type FrameLocator, type Locator } from "@playwright/test";
 
 /**
  * ─── INVOICE TAB CONTENT (iframe-scoped) ──────────────────────────────────
@@ -16,18 +16,20 @@ export class InvoiceTabContent {
   constructor(frame: FrameLocator) {
     this.frame = frame;
     this.searchField = frame.getByPlaceholder(/search invoices/i);
-    this.resultsTable = frame.locator('.ag-center-cols-viewport');
-    this.rows = frame.locator('.ag-row');
-    this.noResultsMessage = frame.getByText(/no (invoices|records|results) found/i);
-    this.payButton = frame.getByRole('button', { name: 'Pay' });
+    this.resultsTable = frame.locator(".ag-center-cols-viewport");
+    this.rows = frame.locator(".ag-row");
+    this.noResultsMessage = frame.getByText(
+      /no (invoices|records|results) found/i,
+    );
+    this.payButton = frame.getByRole("button", { name: "Pay" });
   }
 
   async searchForInvoice(query: string): Promise<void> {
     await this.searchField.fill(query);
     await this.frame.waitForResponse(
-      resp => resp.url().includes('/api/invoices') && resp.status() === 200,
+      (resp) => resp.url().includes("/api/invoices") && resp.status() === 200,
     );
-    const spinner = this.frame.locator('.spinner-overlay');
+    const spinner = this.frame.locator(".spinner-overlay");
     if ((await spinner.count()) > 0) {
       await expect(spinner).toHaveCount(0, { timeout: 15_000 });
     }
@@ -38,4 +40,4 @@ export class InvoiceTabContent {
   }
 }
 
-import { expect } from '@playwright/test';
+import { expect } from "@playwright/test";

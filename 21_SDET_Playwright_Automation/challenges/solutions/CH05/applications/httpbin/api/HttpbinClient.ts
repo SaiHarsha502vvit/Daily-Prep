@@ -1,4 +1,4 @@
-import type { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext } from "@playwright/test";
 
 export interface HttpbinAnythingResponse {
   args: Record<string, unknown>;
@@ -24,9 +24,9 @@ export interface HttpbinPostResponse extends HttpbinAnythingResponse {
  * for validating that data produced in one service can be consumed by another.
  */
 export class HttpbinClient {
-  private static readonly BASE_URL = 'https://httpbin.org';
+  private static readonly BASE_URL = "https://httpbin.org";
   private static readonly endpoints = {
-    anything: (): string => '/anything',
+    anything: (): string => "/anything",
   } as const;
 
   constructor(private readonly request: APIRequestContext) {}
@@ -40,7 +40,9 @@ export class HttpbinClient {
     const response = await this.request.post(url, { data: body });
 
     if (!response.ok()) {
-      throw new Error(`HttpbinClient.postAnything: Expected 200, got ${response.status()} at ${url}`);
+      throw new Error(
+        `HttpbinClient.postAnything: Expected 200, got ${response.status()} at ${url}`,
+      );
     }
 
     return (await response.json()) as HttpbinPostResponse;

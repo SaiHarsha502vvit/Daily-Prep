@@ -38,12 +38,11 @@ AFTER Spring Boot:
   → "Hello World" in 5 MINUTES
 ```
 
-
 #### WHO uses Spring Boot?
 
 ```
 COMPANIES: Netflix, Amazon, Google (internal tools), Uber, LinkedIn, Intuit
-WHY: 
+WHY:
   - Fastest way to build production-ready Java microservices
   - Massive ecosystem (security, data, cloud, messaging)
   - Convention over configuration — sensible defaults
@@ -76,12 +75,11 @@ LAYERED ARCHITECTURE:
   Service    → contains business logic
   Repository → talks to database
 
-WHY layers? 
+WHY layers?
   - Separation of concerns (each layer has ONE job)
   - Testability (mock one layer, test another)
   - Maintainability (change database without touching controller)
 ```
-
 
 ### Part 2: Core Concepts (30 min)
 
@@ -97,7 +95,7 @@ WITHOUT DI (tight coupling):
 WITH DI (loose coupling):
   class OrderService {
       private DatabaseConnection db;
-      
+
       OrderService(DatabaseConnection db) {   // Injected from outside!
           this.db = db;
       }
@@ -115,7 +113,6 @@ IoC CONTAINER:
     MENU (annotations) = @Component, @Service, @Repository
     ORDER (injection) = @Autowired, constructor injection
 ```
-
 
 #### Annotations you must know
 
@@ -135,23 +132,23 @@ public class ProductController {
 
     // 3. @Autowired — inject dependency (constructor injection preferred)
     private final ProductService productService;
-    
+
     public ProductController(ProductService productService) {
         this.productService = productService;  // Spring injects this
     }
-    
+
     // 4. @GetMapping — handle GET /api/products
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.findAll();
     }
-    
+
     // 5. @PostMapping — handle POST /api/products
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
         return productService.save(product);
     }
-    
+
     // 6. @PathVariable — extract from URL
     @GetMapping("/{id}")
     public Product getById(@PathVariable Long id) {
@@ -186,7 +183,6 @@ STEP 2: Project structure generated:
         templates/                  ← HTML templates
 ```
 
-
 #### Complete Hello World API
 
 ```java
@@ -206,7 +202,7 @@ public class Product {
     private Long id;
     private String name;
     private double price;
-    
+
     // Getters, setters, constructors (or use @Data from Lombok)
 }
 
@@ -222,15 +218,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 @Service
 public class ProductService {
     private final ProductRepository repo;
-    
+
     public ProductService(ProductRepository repo) {
         this.repo = repo;
     }
-    
+
     public List<Product> findAll() {
         return repo.findAll();
     }
-    
+
     public Product save(Product product) {
         if (product.getPrice() <= 0) {
             throw new RuntimeException("Price must be positive");
@@ -244,17 +240,17 @@ public class ProductService {
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductService service;
-    
+
     public ProductController(ProductService service) {
         this.service = service;
     }
-    
+
     @GetMapping
     public List<Product> getAll() { return service.findAll(); }
-    
+
     @PostMapping
     public Product create(@RequestBody Product p) { return service.save(p); }
-    
+
     @GetMapping("/{id}")
     public Product getById(@PathVariable Long id) {
         return service.findById(id).orElseThrow();
@@ -286,7 +282,6 @@ GET http://localhost:8080/api/products/1
   → Returns: {"id": 1, "name": "Laptop", "price": 999.99}
 ```
 
-
 ---
 
 ## BLOCK 2: SQL PRACTICE (45 min)
@@ -298,6 +293,7 @@ GET http://localhost:8080/api/products/1
 #### Exercise 1: DDL + DML Combined
 
 Write SQL to:
+
 1. Create a `categories` table with `id`, `name`, and `description`
 2. Insert 3 categories
 3. Add a `category_id` foreign key to the `products` table
@@ -321,16 +317,17 @@ INSERT INTO categories (name, description) VALUES
 
 -- 3. Add foreign key to products (replaces the category VARCHAR)
 ALTER TABLE products ADD COLUMN category_id INT;
-ALTER TABLE products ADD CONSTRAINT fk_product_category 
+ALTER TABLE products ADD CONSTRAINT fk_product_category
     FOREIGN KEY (category_id) REFERENCES categories(category_id);
 ```
+
 </details>
 
 #### Exercise 2: SELECT Challenge
 
 ```sql
 -- Write ONE query that returns:
--- Product name, price, a column showing "Expensive" if price > 100 
+-- Product name, price, a column showing "Expensive" if price > 100
 -- or "Affordable" otherwise, sorted by price descending.
 ```
 
@@ -338,9 +335,9 @@ ALTER TABLE products ADD CONSTRAINT fk_product_category
 <summary>Solution</summary>
 
 ```sql
-SELECT product_name, 
+SELECT product_name,
        price,
-       CASE 
+       CASE
            WHEN price > 100 THEN 'Expensive'
            ELSE 'Affordable'
        END AS price_category
@@ -349,6 +346,7 @@ ORDER BY price DESC;
 
 -- CASE is SQL's if-else — extremely powerful for data classification
 ```
+
 </details>
 
 #### Exercise 3: Data Integrity
@@ -369,6 +367,7 @@ ORDER BY price DESC;
 -- 3. SUCCEEDS but stock = 200 - 500 = -300 (negative!)
 --    FIX: Add CHECK (stock >= 0) or use: WHERE stock >= 500
 ```
+
 </details>
 
 ---
@@ -379,23 +378,23 @@ ORDER BY price DESC;
 
 Rate yourself 1-5 for each topic (5 = can solve without looking):
 
-| Topic | Rating | Notes |
-|-------|--------|-------|
-| Array creation & traversal | /5 | |
-| Array rotation (reverse trick) | /5 | |
-| Prefix sum + range query | /5 | |
-| Selection Sort trace | /5 | |
-| Insertion Sort trace | /5 | |
-| Bubble Sort trace + optimization | /5 | |
-| Merge Sort trace + code | /5 | |
-| String immutability | /5 | |
-| Frequency array technique | /5 | |
-| Kadane's Algorithm | /5 | |
-| 2D array traversal | /5 | |
-| Spiral order traversal | /5 | |
-| SQL: CREATE TABLE with constraints | /5 | |
-| SQL: INSERT / UPDATE / DELETE safely | /5 | |
-| SQL: SELECT with LIKE, BETWEEN, IN | /5 | |
+| Topic                                | Rating | Notes |
+| ------------------------------------ | ------ | ----- |
+| Array creation & traversal           | /5     |       |
+| Array rotation (reverse trick)       | /5     |       |
+| Prefix sum + range query             | /5     |       |
+| Selection Sort trace                 | /5     |       |
+| Insertion Sort trace                 | /5     |       |
+| Bubble Sort trace + optimization     | /5     |       |
+| Merge Sort trace + code              | /5     |       |
+| String immutability                  | /5     |       |
+| Frequency array technique            | /5     |       |
+| Kadane's Algorithm                   | /5     |       |
+| 2D array traversal                   | /5     |       |
+| Spiral order traversal               | /5     |       |
+| SQL: CREATE TABLE with constraints   | /5     |       |
+| SQL: INSERT / UPDATE / DELETE safely | /5     |       |
+| SQL: SELECT with LIKE, BETWEEN, IN   | /5     |       |
 
 ### Key patterns from this week:
 
@@ -411,15 +410,16 @@ Rate yourself 1-5 for each topic (5 = can solve without looking):
 
 ### Problems solved this week:
 
-| Day | Q1 | Q2 |
-|-----|----|----|
-| 1 | LC 268 Missing Number | XOR Find Single Element |
-| 2 | LC 189 Rotate Array | Max Sum Subarray Size K |
-| 3 | LC 125 Valid Palindrome | First Non-Repeating Char |
-| 4 | LC 53 Maximum Subarray | Equilibrium Index |
-| 5 | LC 48 Rotate Image | Saddle Point in Matrix |
+| Day | Q1                      | Q2                       |
+| --- | ----------------------- | ------------------------ |
+| 1   | LC 268 Missing Number   | XOR Find Single Element  |
+| 2   | LC 189 Rotate Array     | Max Sum Subarray Size K  |
+| 3   | LC 125 Valid Palindrome | First Non-Repeating Char |
+| 4   | LC 53 Maximum Subarray  | Equilibrium Index        |
+| 5   | LC 48 Rotate Image      | Saddle Point in Matrix   |
 
 ### Weak spots to revisit:
+
 > Write down any topic where you rated yourself < 3. Plan to revisit during tomorrow's review session.
 
 ---
@@ -440,10 +440,9 @@ Sunday:    Review + weak spot practice
 
 ---
 
-> **Mentor Note:** Rate yourself honestly. If any topic is below 3, spend 
-> tomorrow's review time re-reading that section and solving the problem AGAIN 
+> **Mentor Note:** Rate yourself honestly. If any topic is below 3, spend
+> tomorrow's review time re-reading that section and solving the problem AGAIN
 > without looking at the solution. Struggle leads to learning.
-
 
 ---
 

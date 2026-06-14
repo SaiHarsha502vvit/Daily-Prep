@@ -44,7 +44,6 @@ KEY DIMENSIONS:
   cols = matrix[0].length
 ```
 
-
 #### HOW: Traversal patterns
 
 ```java
@@ -84,13 +83,12 @@ Matrix:    1  2  3  4       Spiral output: 1→2→3→4→8→12→11→10
 Direction: RIGHT → DOWN → LEFT → UP → repeat (shrinking boundaries)
 ```
 
-
 ```java
 public List<Integer> spiralOrder(int[][] matrix) {
     List<Integer> result = new ArrayList<>();
     int top = 0, bottom = matrix.length - 1;
     int left = 0, right = matrix[0].length - 1;
-    
+
     while (top <= bottom && left <= right) {
         // Go right
         for (int j = left; j <= right; j++) result.add(matrix[top][j]);
@@ -149,13 +147,12 @@ MERGE phase (combine sorted halves):
  [3, 27, 38, 43] + [9, 10, 82] → [3, 9, 10, 27, 38, 43, 82]
 ```
 
-
 #### Code
 
 ```java
 public static void mergeSort(int[] arr, int left, int right) {
     if (left >= right) return;  // Base case: 0 or 1 element
-    
+
     int mid = left + (right - left) / 2;  // Avoid overflow
     mergeSort(arr, left, mid);       // Sort left half
     mergeSort(arr, mid + 1, right);  // Sort right half
@@ -165,7 +162,7 @@ public static void mergeSort(int[] arr, int left, int right) {
 private static void merge(int[] arr, int left, int mid, int right) {
     int[] temp = new int[right - left + 1];
     int i = left, j = mid + 1, k = 0;
-    
+
     while (i <= mid && j <= right) {
         if (arr[i] <= arr[j]) {  // <= for STABILITY
             temp[k++] = arr[i++];
@@ -175,7 +172,7 @@ private static void merge(int[] arr, int left, int mid, int right) {
     }
     while (i <= mid) temp[k++] = arr[i++];
     while (j <= right) temp[k++] = arr[j++];
-    
+
     // Copy back
     System.arraycopy(temp, 0, arr, left, temp.length);
 }
@@ -193,11 +190,10 @@ WHY O(n log n)?
   - Total = O(n) × O(log n) = O(n log n)
 
 Level 0:  [-------n-------]               → n work
-Level 1:  [---n/2---][---n/2---]           → n work  
+Level 1:  [---n/2---][---n/2---]           → n work
 Level 2:  [n/4][n/4][n/4][n/4]            → n work
    ...    log₂(n) levels total             → n × log₂(n) total
 ```
-
 
 ---
 
@@ -215,7 +211,6 @@ target = 3 → true
 target = 13 → false
 ```
 
-
 **KEY INSIGHT:** Treat the 2D matrix as a 1D sorted array.
 
 ```
@@ -225,10 +220,9 @@ Flattened: [1, 3, 5, 7, 10, 11, 16, 20, 23, 30, 34, 60]
 Convert 1D index to 2D:
   row = index / cols
   col = index % cols
-  
+
 Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 → matrix[1][1]=11
 ```
-
 
 <details>
 <summary>Solution</summary>
@@ -237,11 +231,11 @@ Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 → matrix[1][1]=11
 public boolean searchMatrix(int[][] matrix, int target) {
     int rows = matrix.length, cols = matrix[0].length;
     int lo = 0, hi = rows * cols - 1;
-    
+
     while (lo <= hi) {
         int mid = lo + (hi - lo) / 2;
         int val = matrix[mid / cols][mid % cols];  // 1D → 2D conversion
-        
+
         if (val == target) return true;
         else if (val < target) lo = mid + 1;
         else hi = mid - 1;
@@ -251,6 +245,7 @@ public boolean searchMatrix(int[][] matrix, int target) {
 // Time: O(log(m*n)) | Space: O(1)
 // Binary search on a virtual 1D array!
 ```
+
 </details>
 
 ---
@@ -260,6 +255,7 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ### Scenario: Cinema Seat Reservation
 
 **Problem:** A cinema has `rows × cols` seats (2D array). Design functions to:
+
 1. Display available seats (0 = empty, 1 = booked)
 2. Book a block of N adjacent seats in any row
 3. Find the row with most available seats
@@ -268,13 +264,13 @@ public boolean searchMatrix(int[][] matrix, int target) {
 public class CinemaHall {
     private int[][] seats;
     private int rows, cols;
-    
+
     public CinemaHall(int rows, int cols) {
         this.rows = rows;
         this.cols = cols;
         this.seats = new int[rows][cols]; // All 0 (empty)
     }
-    
+
     // Display seat map
     public void display() {
         System.out.println("  " + "1 ".repeat(cols));
@@ -286,7 +282,7 @@ public class CinemaHall {
             System.out.println();
         }
     }
-    
+
     // Book N adjacent seats — returns row or -1
     public int bookAdjacent(int n) {
         for (int i = 0; i < rows; i++) {
@@ -306,7 +302,7 @@ public class CinemaHall {
         }
         return -1; // No row has N adjacent seats
     }
-    
+
     // Row with most available seats
     public int bestRow() {
         int maxFree = 0, bestRow = 0;
@@ -382,12 +378,13 @@ SELECT product_name, IFNULL(category, 'Uncategorized') FROM products;
 <summary>Answer</summary>
 
 ```sql
-SELECT product_name, price 
-FROM products 
+SELECT product_name, price
+FROM products
 WHERE LOWER(product_name) LIKE '%o%'
 ORDER BY price;
 -- Returns: Notebook (4.99), Mouse (29.99), Headphones (149.99)
 ```
+
 </details>
 
 **Q2:** Write a query to find all orders placed between March 1 and March 3, 2026.
@@ -396,10 +393,11 @@ ORDER BY price;
 <summary>Answer</summary>
 
 ```sql
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE order_date BETWEEN '2026-03-01' AND '2026-03-03';
 -- Returns orders by Harsha (Mar 1), Alice (Mar 2), Bob (Mar 3)
 ```
+
 </details>
 
 **Q3 (Challenge):** Write a query showing product name, price, stock, and a calculated column 'inventory_value' (price × stock), for products where inventory value exceeds $1000, sorted by inventory value descending.
@@ -408,9 +406,9 @@ WHERE order_date BETWEEN '2026-03-01' AND '2026-03-03';
 <summary>Answer</summary>
 
 ```sql
-SELECT product_name, 
-       price, 
-       stock, 
+SELECT product_name,
+       price,
+       stock,
        price * stock AS inventory_value
 FROM products
 WHERE price * stock > 1000
@@ -421,6 +419,7 @@ ORDER BY inventory_value DESC;
 -- Notebook: 4.99 * 500 = 2495.00
 -- Pen: 1.99 * 1000 = 1990.00
 ```
+
 </details>
 
 > **Read more:** [08_SQL/05_Queries_SELECT_WHERE.md](../../08_SQL/05_Queries_SELECT_WHERE.md)
@@ -453,14 +452,13 @@ Step 2 — Reverse each row:
    [9,6,3]]  ← Done!
 ```
 
-
 <details>
 <summary>Solution</summary>
 
 ```java
 public void rotate(int[][] matrix) {
     int n = matrix.length;
-    
+
     // Transpose
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {  // j = i+1 to avoid double-swap
@@ -469,7 +467,7 @@ public void rotate(int[][] matrix) {
             matrix[j][i] = temp;
         }
     }
-    
+
     // Reverse each row
     for (int i = 0; i < n; i++) {
         int left = 0, right = n - 1;
@@ -484,6 +482,7 @@ public void rotate(int[][] matrix) {
 }
 // Time: O(n²) | Space: O(1) — in-place!
 ```
+
 </details>
 
 ---
@@ -507,14 +506,13 @@ Let's verify: row 0 min=1 → col 0 max=3 → not 1. row 0 min=1→ fail.
               row 1: min=3 at col=0. Col 0 max=3. 3==3 → YES! Saddle=3.
 ```
 
-
 <details>
 <summary>Solution</summary>
 
 ```java
 public int findSaddlePoint(int[][] matrix) {
     int rows = matrix.length, cols = matrix[0].length;
-    
+
     for (int i = 0; i < rows; i++) {
         // Find min in row i and its column index
         int minVal = matrix[i][0], minCol = 0;
@@ -524,7 +522,7 @@ public int findSaddlePoint(int[][] matrix) {
                 minCol = j;
             }
         }
-        
+
         // Check if this element is max in its column
         boolean isSaddle = true;
         for (int k = 0; k < rows; k++) {
@@ -533,13 +531,14 @@ public int findSaddlePoint(int[][] matrix) {
                 break;
             }
         }
-        
+
         if (isSaddle) return minVal;
     }
     return -1; // No saddle point (possible in some matrices)
 }
 // Time: O(rows × cols) | Space: O(1)
 ```
+
 </details>
 
 ---
@@ -547,6 +546,7 @@ public int findSaddlePoint(int[][] matrix) {
 ## End of Day 5
 
 ### What you learned today:
+
 1. **2D arrays** — row/col traversal, diagonal, spiral order
 2. **Merge Sort** — O(n log n) guaranteed, divide and conquer, stable
 3. **Binary search on matrix** — treat 2D as virtual 1D sorted array
@@ -558,10 +558,9 @@ public int findSaddlePoint(int[][] matrix) {
 
 ---
 
-> **Mentor Note:** You now know 4 sorting algorithms (Selection, Insertion, 
-> Bubble, Merge). Next week adds Quick Sort and Counting Sort. At that point 
+> **Mentor Note:** You now know 4 sorting algorithms (Selection, Insertion,
+> Bubble, Merge). Next week adds Quick Sort and Counting Sort. At that point
 > you'll have a complete sorting toolkit for any interview.
-
 
 ---
 

@@ -172,7 +172,7 @@
 //
 // ═══════════════════════════════════════════════════════════════════════
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function ProfileEditor() {
   // This state shape mirrors a real backend DTO:
@@ -180,14 +180,14 @@ export default function ProfileEditor() {
   // In SQL: users table (name, age) + addresses table (street, city, country) + user_skills table (user_id, skill)
   // Notice: ONE JS object = data from THREE database tables joined together.
   const [profile, setProfile] = useState({
-    name: 'Harsha',
+    name: "Harsha",
     age: 24,
     address: {
-      street: '123 Main St',
-      city: 'Hyderabad',
-      country: 'India'
+      street: "123 Main St",
+      city: "Hyderabad",
+      country: "India",
     },
-    skills: ['Java', 'Spring Boot', 'SQL']
+    skills: ["Java", "Spring Boot", "SQL"],
   });
 
   // ─── BUG 1: Shallow spread corrupts nested objects ──────────────
@@ -196,7 +196,7 @@ export default function ProfileEditor() {
     // BUG: nextProfile.address === profile.address (same pointer!)
     // Both point to the SAME heap address (0x200).
     // Mutating .city here changes it for BOTH old and new state.
-    nextProfile.address.city = 'Bangalore';
+    nextProfile.address.city = "Bangalore";
     setProfile(nextProfile);
   };
   // TODO: Fix using nested spread:
@@ -234,19 +234,22 @@ export default function ProfileEditor() {
   //   });
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
+    <div style={{ padding: "2rem", fontFamily: "monospace" }}>
       <h2>Profile Editor</h2>
       <pre>{JSON.stringify(profile, null, 2)}</pre>
 
       <button onClick={updateCity}>Change City to Bangalore</button>
-      <button onClick={() => addSkill('React')}>Add React Skill</button>
+      <button onClick={() => addSkill("React")}>Add React Skill</button>
 
       <h3>Skills:</h3>
       <ul>
         {profile.skills.map((skill, i) => (
           <li key={i}>
             {skill}
-            <button onClick={() => removeSkill(i)} style={{ marginLeft: '1rem' }}>
+            <button
+              onClick={() => removeSkill(i)}
+              style={{ marginLeft: "1rem" }}
+            >
               Remove
             </button>
           </li>

@@ -43,7 +43,12 @@ export class ResourcesClient {
 
 function validateListResourcesResponse(data: unknown): ListResourcesResponse {
   if (typeof data !== 'object' || data === null) {
-    throw new ValidationError('ListResourcesResponse: expected object', '', data, 'Expected object');
+    throw new ValidationError(
+      'ListResourcesResponse: expected object',
+      '',
+      data,
+      'Expected object',
+    );
   }
   const d = data as Record<string, unknown>;
 
@@ -60,7 +65,7 @@ function validateListResourcesResponse(data: unknown): ListResourcesResponse {
         `ListResourcesResponse: data[${idx}] expected object`,
         '',
         item,
-        `data[${idx}] not an object`
+        `data[${idx}] not an object`,
       );
     }
     const r = item as Record<string, unknown>;

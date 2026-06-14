@@ -11,7 +11,7 @@
 ## Starter Code Skeleton
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // TODO: Define test data for the checkout scenario
 const TEST_PRODUCT = {
@@ -35,12 +35,12 @@ async function seedInventory(page, productId: string, quantity: number) {
  * 6. Submit order
  * 7. Assert order confirmation and inventory reduced
  */
-test('complete checkout with valid inventory', async ({ page }) => {
+test("complete checkout with valid inventory", async ({ page }) => {
   // TODO: implement
 });
 
 // TODO: Write a negative test for out-of-stock scenario
-test('checkout fails when item is out of stock', async ({ page }) => {
+test("checkout fails when item is out of stock", async ({ page }) => {
   // TODO: implement
 });
 ```
@@ -50,21 +50,21 @@ test('checkout fails when item is out of stock', async ({ page }) => {
 ## Expected Completed Solution
 
 ```typescript
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page } from "@playwright/test";
 
 const TEST_PRODUCT = {
-  id: 'SKU-BOOK-001',
-  name: 'Test Automation Handbook',
+  id: "SKU-BOOK-001",
+  name: "Test Automation Handbook",
   price: 4999, // cents
   initialStock: 10,
 };
 
-const BASE_URL = process.env.APP_URL || 'http://localhost:3000';
+const BASE_URL = process.env.APP_URL || "http://localhost:3000";
 
 async function seedInventory(productId: string, quantity: number) {
   const res = await fetch(`${BASE_URL}/api/inventory/seed`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ productId, quantity }),
   });
   if (!res.ok) throw new Error(`Failed to seed inventory: ${await res.text()}`);
@@ -79,34 +79,34 @@ async function getInventory(productId: string): Promise<number> {
 
 async function addToCart(page: Page, productId: string) {
   await page.goto(`${BASE_URL}/product/${productId}`);
-  await page.getByRole('button', { name: /add to cart/i }).click();
+  await page.getByRole("button", { name: /add to cart/i }).click();
   await page.waitForURL(/\/cart/);
 }
 
 async function fillShipping(page: Page) {
-  await page.getByLabel(/first name/i).fill('Jane');
-  await page.getByLabel(/last name/i).fill('Doe');
-  await page.getByLabel(/address/i).fill('123 Test Lane');
-  await page.getByLabel(/city/i).fill('Testville');
-  await page.getByLabel(/zip/i).fill('12345');
+  await page.getByLabel(/first name/i).fill("Jane");
+  await page.getByLabel(/last name/i).fill("Doe");
+  await page.getByLabel(/address/i).fill("123 Test Lane");
+  await page.getByLabel(/city/i).fill("Testville");
+  await page.getByLabel(/zip/i).fill("12345");
 }
 
-test.describe('Checkout Flow', () => {
+test.describe("Checkout Flow", () => {
   test.beforeEach(async () => {
     await seedInventory(TEST_PRODUCT.id, TEST_PRODUCT.initialStock);
   });
 
-  test('complete checkout with valid inventory', async ({ page }) => {
+  test("complete checkout with valid inventory", async ({ page }) => {
     const stockBefore = await getInventory(TEST_PRODUCT.id);
     expect(stockBefore).toBe(TEST_PRODUCT.initialStock);
 
     await addToCart(page, TEST_PRODUCT.id);
-    await page.getByRole('button', { name: /checkout/i }).click();
+    await page.getByRole("button", { name: /checkout/i }).click();
 
     await page.waitForURL(/\/checkout/);
     await fillShipping(page);
 
-    await page.getByRole('button', { name: /place order/i }).click();
+    await page.getByRole("button", { name: /place order/i }).click();
 
     await expect(page.getByText(/order confirmed/i)).toBeVisible();
 
@@ -114,7 +114,7 @@ test.describe('Checkout Flow', () => {
     expect(stockAfter).toBe(stockBefore - 1);
   });
 
-  test('checkout fails when item is out of stock', async ({ page }) => {
+  test("checkout fails when item is out of stock", async ({ page }) => {
     await seedInventory(TEST_PRODUCT.id, 0);
 
     await page.goto(`${BASE_URL}/product/${TEST_PRODUCT.id}`);
@@ -122,17 +122,19 @@ test.describe('Checkout Flow', () => {
     const message = await page.getByText(/out of stock/i);
     if (await message.isVisible().catch(() => false)) {
       // UI gracefully handles out-of-stock
-      await expect(page.getByRole('button', { name: /add to cart/i })).toBeDisabled();
+      await expect(
+        page.getByRole("button", { name: /add to cart/i }),
+      ).toBeDisabled();
       return;
     }
 
     // Race condition: product went out of stock between add-to-cart and checkout
     await addToCart(page, TEST_PRODUCT.id);
-    await page.getByRole('button', { name: /checkout/i }).click();
+    await page.getByRole("button", { name: /checkout/i }).click();
     await page.waitForURL(/\/checkout/);
     await fillShipping(page);
 
-    await page.getByRole('button', { name: /place order/i }).click();
+    await page.getByRole("button", { name: /place order/i }).click();
 
     await expect(page.getByText(/item no longer available/i)).toBeVisible();
 
@@ -140,7 +142,10 @@ test.describe('Checkout Flow', () => {
     expect(stockAfter).toBe(0);
   });
 
-  test('multiple concurrent checkouts do not oversell', async ({ page, browser }) => {
+  test("multiple concurrent checkouts do not oversell", async ({
+    page,
+    browser,
+  }) => {
     await seedInventory(TEST_PRODUCT.id, 1);
 
     const shopperA = page;
@@ -152,24 +157,34 @@ test.describe('Checkout Flow', () => {
       addToCart(shopperB, TEST_PRODUCT.id),
     ]);
 
-    await shopperA.getByRole('button', { name: /checkout/i }).click();
+    await shopperA.getByRole("button", { name: /checkout/i }).click();
     await shopperA.waitForURL(/\/checkout/);
     await fillShipping(shopperA);
 
-    await shopperB.getByRole('button', { name: /checkout/i }).click();
+    await shopperB.getByRole("button", { name: /checkout/i }).click();
     await shopperB.waitForURL(/\/checkout/);
     await fillShipping(shopperB);
 
-    const confirmA = shopperA.getByRole('button', { name: /place order/i }).click();
-    const confirmB = shopperB.getByRole('button', { name: /place order/i }).click();
+    const confirmA = shopperA
+      .getByRole("button", { name: /place order/i })
+      .click();
+    const confirmB = shopperB
+      .getByRole("button", { name: /place order/i })
+      .click();
 
     // Wait for both to finish handling
     await Promise.all([confirmA, confirmB]);
 
     const successCount = await Promise.all([
-      shopperA.locator('text=/order confirmed/i').isVisible().catch(() => false),
-      shopperB.locator('text=/order confirmed/i').isVisible().catch(() => false),
-    ]).then(results => results.filter(Boolean).length);
+      shopperA
+        .locator("text=/order confirmed/i")
+        .isVisible()
+        .catch(() => false),
+      shopperB
+        .locator("text=/order confirmed/i")
+        .isVisible()
+        .catch(() => false),
+    ]).then((results) => results.filter(Boolean).length);
 
     const stockAfter = await getInventory(TEST_PRODUCT.id);
     expect(successCount + stockAfter).toBe(1);
@@ -183,13 +198,13 @@ test.describe('Checkout Flow', () => {
 
 ## Evaluation Rubric
 
-| Dimension | Exceeds Expectations | Meets Expectations | Below Expectations |
-|-----------|----------------------|--------------------|--------------------|
-| **Correctness** | Happy path and negative path both tested; oversell race condition covered with multi-page approach | Happy path works; at least one negative test exists | Only happy path; no negative coverage |
-| **Test Design** | Clear helper functions; beforeEach for setup; logical grouping with test.describe | Some helpers or grouping but inconsistent | Single long test or no helpers; duplicated code |
-| **Error Handling** | Seeds inventory before each test; validates pre-condition (stockBefore); handles API failures | Basic setup but no pre-condition assertions | No setup/teardown; assumes external state |
-| **Assertions** | Asserts on UI confirmation AND backend state (inventory count) | Asserts UI confirmation only | Assertions missing or trivial |
-| **TypeScript Quality** | Types on helpers (Page param); strong typing on inventory API; no any | Some types but inconsistencies or implicit any | Heavy use of any; missing types on key functions |
+| Dimension              | Exceeds Expectations                                                                               | Meets Expectations                                  | Below Expectations                               |
+| ---------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
+| **Correctness**        | Happy path and negative path both tested; oversell race condition covered with multi-page approach | Happy path works; at least one negative test exists | Only happy path; no negative coverage            |
+| **Test Design**        | Clear helper functions; beforeEach for setup; logical grouping with test.describe                  | Some helpers or grouping but inconsistent           | Single long test or no helpers; duplicated code  |
+| **Error Handling**     | Seeds inventory before each test; validates pre-condition (stockBefore); handles API failures      | Basic setup but no pre-condition assertions         | No setup/teardown; assumes external state        |
+| **Assertions**         | Asserts on UI confirmation AND backend state (inventory count)                                     | Asserts UI confirmation only                        | Assertions missing or trivial                    |
+| **TypeScript Quality** | Types on helpers (Page param); strong typing on inventory API; no any                              | Some types but inconsistencies or implicit any      | Heavy use of any; missing types on key functions |
 
 ---
 
@@ -228,7 +243,7 @@ The sections above are the **artifacts** — what's on the screen at the end. Th
 **C:** [opens a new file, types]
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 ```
 
 **C:** Two test cases minimum: happy path (item in stock → checkout succeeds), and negative (out of stock → checkout fails gracefully). I might add a third for the race condition where two people try to buy the last item. Let me write the happy path first.
@@ -245,14 +260,17 @@ I'll need helpers: `seedInventory(productId, qty)`, `addToCart(page, productId)`
 
 ```typescript
 const TEST_PRODUCT = {
-  id: 'SKU-BOOK-001',
-  name: 'Test Automation Handbook',
+  id: "SKU-BOOK-001",
+  name: "Test Automation Handbook",
   price: 4999,
   initialStock: 10,
 };
 
 async function seedInventory(productId: string, qty: number) {
-  const res = await fetch(`/api/inventory/seed`, { method: 'POST', body: JSON.stringify({ productId, quantity: qty }) });
+  const res = await fetch(`/api/inventory/seed`, {
+    method: "POST",
+    body: JSON.stringify({ productId, quantity: qty }),
+  });
 }
 ```
 
@@ -263,12 +281,14 @@ async function seedInventory(productId: string, qty: number) {
 ```typescript
 async function seedInventory(productId: string, qty: number) {
   const res = await fetch(`${BASE_URL}/api/inventory/seed`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ productId, quantity: qty }),
   });
   if (!res.ok) {
-    throw new Error(`Failed to seed inventory: ${res.status} ${await res.text()}`);
+    throw new Error(
+      `Failed to seed inventory: ${res.status} ${await res.text()}`,
+    );
   }
 }
 ```
@@ -280,24 +300,24 @@ async function seedInventory(productId: string, qty: number) {
 **C:** [writes]
 
 ```typescript
-test('complete checkout with valid inventory', async ({ page }) => {
+test("complete checkout with valid inventory", async ({ page }) => {
   await seedInventory(TEST_PRODUCT.id, TEST_PRODUCT.initialStock);
 
   await page.goto(`${BASE_URL}/product/${TEST_PRODUCT.id}`);
-  await page.getByRole('button', { name: /add to cart/i }).click();
+  await page.getByRole("button", { name: /add to cart/i }).click();
   await page.waitForURL(/\/cart/);
 
-  await page.getByRole('button', { name: /checkout/i }).click();
+  await page.getByRole("button", { name: /checkout/i }).click();
   await page.waitForURL(/\/checkout/);
 
   // shipping form
-  await page.getByLabel(/first name/i).fill('Jane');
-  await page.getByLabel(/last name/i).fill('Doe');
-  await page.getByLabel(/address/i).fill('123 Test Lane');
-  await page.getByLabel(/city/i).fill('Testville');
-  await page.getByLabel(/zip/i).fill('12345');
+  await page.getByLabel(/first name/i).fill("Jane");
+  await page.getByLabel(/last name/i).fill("Doe");
+  await page.getByLabel(/address/i).fill("123 Test Lane");
+  await page.getByLabel(/city/i).fill("Testville");
+  await page.getByLabel(/zip/i).fill("12345");
 
-  await page.getByRole('button', { name: /place order/i }).click();
+  await page.getByRole("button", { name: /place order/i }).click();
 
   await expect(page.getByText(/order confirmed/i)).toBeVisible();
 });
@@ -336,11 +356,13 @@ expect(stockAfter).toBe(stockBefore - 1);
 **C:** [writes the negative test]
 
 ```typescript
-test('checkout fails when item is out of stock', async ({ page }) => {
+test("checkout fails when item is out of stock", async ({ page }) => {
   await seedInventory(TEST_PRODUCT.id, 0);
 
   await page.goto(`${BASE_URL}/product/${TEST_PRODUCT.id}`);
-  await expect(page.getByRole('button', { name: /add to cart/i })).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: /add to cart/i }),
+  ).toBeDisabled();
 });
 ```
 
@@ -355,21 +377,23 @@ test('checkout fails when item is out of stock', async ({ page }) => {
 So this test should actually exercise the checkout-validation path. Let me rewrite it to seed stock=1, add to cart, then seed stock=0 right before submitting, and confirm the checkout shows an error.
 
 ```typescript
-test('checkout fails when item goes out of stock mid-flow', async ({ page }) => {
+test("checkout fails when item goes out of stock mid-flow", async ({
+  page,
+}) => {
   await seedInventory(TEST_PRODUCT.id, 1);
 
   await page.goto(`${BASE_URL}/product/${TEST_PRODUCT.id}`);
-  await page.getByRole('button', { name: /add to cart/i }).click();
+  await page.getByRole("button", { name: /add to cart/i }).click();
   await page.waitForURL(/\/cart/);
 
-  await page.getByRole('button', { name: /checkout/i }).click();
+  await page.getByRole("button", { name: /checkout/i }).click();
   await page.waitForURL(/\/checkout/);
 
   // Simulate another buyer draining inventory
   await seedInventory(TEST_PRODUCT.id, 0);
 
   await fillShipping(page);
-  await page.getByRole('button', { name: /place order/i }).click();
+  await page.getByRole("button", { name: /place order/i }).click();
 
   await expect(page.getByText(/item no longer available/i)).toBeVisible();
   expect(await getInventory(TEST_PRODUCT.id)).toBe(0);
@@ -387,7 +411,7 @@ test('checkout fails when item goes out of stock mid-flow', async ({ page }) => 
 **C:** Now the multi-user race. I need two browser contexts because they need independent cookies.
 
 ```typescript
-test('concurrent checkouts do not oversell', async ({ page, browser }) => {
+test("concurrent checkouts do not oversell", async ({ page, browser }) => {
   await seedInventory(TEST_PRODUCT.id, 1);
 
   const shopperA = page;
@@ -399,22 +423,28 @@ test('concurrent checkouts do not oversell', async ({ page, browser }) => {
     addToCart(shopperB, TEST_PRODUCT.id),
   ]);
 
-  await shopperA.getByRole('button', { name: /checkout/i }).click();
+  await shopperA.getByRole("button", { name: /checkout/i }).click();
   await shopperA.waitForURL(/\/checkout/);
   await fillShipping(shopperA);
 
-  await shopperB.getByRole('button', { name: /checkout/i }).click();
+  await shopperB.getByRole("button", { name: /checkout/i }).click();
   await shopperB.waitForURL(/\/checkout/);
   await fillShipping(shopperB);
 
   // race the submits
   await Promise.all([
-    shopperA.getByRole('button', { name: /place order/i }).click(),
-    shopperB.getByRole('button', { name: /place order/i }).click(),
+    shopperA.getByRole("button", { name: /place order/i }).click(),
+    shopperB.getByRole("button", { name: /place order/i }).click(),
   ]);
 
-  const aConfirmed = await shopperA.locator('text=/order confirmed/i').isVisible().catch(() => false);
-  const bConfirmed = await shopperB.locator('text=/order confirmed/i').isVisible().catch(() => false);
+  const aConfirmed = await shopperA
+    .locator("text=/order confirmed/i")
+    .isVisible()
+    .catch(() => false);
+  const bConfirmed = await shopperB
+    .locator("text=/order confirmed/i")
+    .isVisible()
+    .catch(() => false);
 
   const successCount = [aConfirmed, bConfirmed].filter(Boolean).length;
   expect(successCount).toBe(1);
@@ -433,8 +463,16 @@ test('concurrent checkouts do not oversell', async ({ page, browser }) => {
 
 ```typescript
 await Promise.all([
-  shopperA.getByRole('button', { name: /checkout/i }).click().then(() => shopperA.waitForURL(/\/checkout/)).then(() => fillShipping(shopperA)),
-  shopperB.getByRole('button', { name: /checkout/i }).click().then(() => shopperB.waitForURL(/\/checkout/)).then(() => fillShipping(shopperB)),
+  shopperA
+    .getByRole("button", { name: /checkout/i })
+    .click()
+    .then(() => shopperA.waitForURL(/\/checkout/))
+    .then(() => fillShipping(shopperA)),
+  shopperB
+    .getByRole("button", { name: /checkout/i })
+    .click()
+    .then(() => shopperB.waitForURL(/\/checkout/))
+    .then(() => fillShipping(shopperB)),
 ]);
 ```
 
@@ -451,7 +489,7 @@ Now both shoppers reach the place-order step at roughly the same time. The actua
 **C:** [adds]
 
 ```typescript
-test.describe('Checkout Flow', () => {
+test.describe("Checkout Flow", () => {
   test.beforeEach(async () => {
     await seedInventory(TEST_PRODUCT.id, TEST_PRODUCT.initialStock);
   });
@@ -483,7 +521,7 @@ async function getInventory(productId: string): Promise<number> {
 
 **I:** Scenario one — the inventory API is unreliable in CI. Sometimes it takes 5 seconds to respond. How do you make your test resilient without making it flaky?
 
-**C:** Two options. Option A: bake a sensible timeout into `seedInventory` — say 10 seconds. If it exceeds, fail with a clear message about the API, not the test. Option B: add a retry with exponential backoff (3 attempts, 200ms / 1s / 5s) at the seedInventory level — but with the *important caveat* that retry is only safe on idempotent operations. Seeding to a known absolute quantity is idempotent. So retry is fine here.
+**C:** Two options. Option A: bake a sensible timeout into `seedInventory` — say 10 seconds. If it exceeds, fail with a clear message about the API, not the test. Option B: add a retry with exponential backoff (3 attempts, 200ms / 1s / 5s) at the seedInventory level — but with the _important caveat_ that retry is only safe on idempotent operations. Seeding to a known absolute quantity is idempotent. So retry is fine here.
 
 I'd go with B: retry + clear error. The framework's `ApiCore.ts` already does this for application API calls; for test infrastructure calls like seed, you want the same pattern.
 
@@ -528,17 +566,20 @@ Then PR jobs filter `--grep @smoke`, nightly jobs filter `--grep @nightly`. The 
 ## Calibration notes for the candidate
 
 What the interviewer rewarded:
+
 - **The course correction at minute 18** — when challenged on the wrong test interpretation, the candidate didn't defend; they re-thought and rewrote. That earned more points than a perfect first-pass would have.
 - **The "success theatre" callback** — naming a known anti-pattern shows you've internalized the curriculum, not just memorized syntax.
 - **The race-test pushback** — admitting Playwright isn't the right tool for production race-condition coverage shows judgment.
 - **`Promise<void>` justification** — small details signal seriousness about types.
 
 What the interviewer pushed on:
+
 - **Inlined helpers** — the candidate self-corrected after one nudge.
 - **Missing backend assertion** — single biggest signal, caught early.
 - **The disabled-button vs race interpretation** — checks whether the candidate reads the spec literally vs interprets intent.
 
 Common ways this round goes wrong:
+
 - Candidate writes the happy path, the interviewer asks "is that enough?", and the candidate adds a `expect(page).toHaveURL` — that's a UI assertion masquerading as backend validation. Not the same thing.
 - Candidate doesn't factor helpers out, then re-writes the same shipping fill three times, then runs out of time on the race test.
 - Candidate writes the race test with a single page object, doesn't realize cookies are shared, doesn't catch why both shoppers always win or both always lose.

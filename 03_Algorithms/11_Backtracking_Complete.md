@@ -20,25 +20,30 @@ The Art of "Try Everything, Undo, Try Next"
 
 ---
 
+### Historical Evolution
+
+Backtracking as a systematic algorithmic technique evolved from early constraint satisfaction work in mathematics and chess programming. The **N-Queens problem** — the canonical backtracking benchmark — was posed by **Max Bezzel in 1848** as a chess puzzle, with **Franz Nauck solving it in 1850** and later attracting **Carl Friedrich Gauss** himself, who enumerated 72 of the 92 solutions by hand. The **choice-explore-unchoose (backtracking) framework** was formalized in **John McCarthy's LISP (1958)**, which made recursion and state restoration the natural expression of tree search — LISP's first-class functions and list structures made it straightforward to express "try this, then undo it if it doesn't work." **Donald Knuth's 1965 Algorithm 245 (Treesort)** and subsequent work on recursive tree traversal algorithms formalized the state management patterns used in modern backtracking. **The eight-queens problem as a programming benchmark** became standard after **Guy Bowl's 1979 survey** of algorithmic approaches, showing that backtracking outperformed all previous search strategies. Modern practice (post-2010) applies backtracking in SAT solvers (CDCL algorithms), game AI (minimax with alpha-beta pruning), and constraint programming (CP-SAT in OR-Tools) — the same choose-explore-unchoose structure that Gauss and McCarthy pioneered.
+
+---
+
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
 ### What Problem Does Backtracking Solve?
 
 ```
 THE FUNDAMENTAL PROBLEM:
-Some problems have SO MANY possible solutions that you can't 
+Some problems have SO MANY possible solutions that you can't
 list them all upfront. But you need to find ONE (or ALL) valid ones.
 
 Examples:
   - How many ways to place 8 queens on a chessboard? (92 solutions out of 4B+)
-  - What are all valid combinations of parentheses? 
+  - What are all valid combinations of parentheses?
   - Solve this Sudoku puzzle
   - Find a path through this maze
 
 BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions
 BACKTRACKING prunes early → only explore VALID partial solutions
 ```
-
 
 ### The Mental Model: Exploring a Tree of Choices
 
@@ -61,7 +66,6 @@ BACKTRACKING = DFS through this tree, BUT:
   - If dead end → UNDO last choice (backtrack) → try next option
 ```
 
-
 ### The Universal 3-Step Framework: Choose → Explore → Unchoose
 
 ```
@@ -75,7 +79,6 @@ return to the same state to try the NEXT branch. Like hiking:
 you go down a trail, hit a dead end, walk BACK to the fork,
 then try the other trail.
 ```
-
 
 ### When to Use Backtracking vs Other Approaches
 
@@ -92,11 +95,10 @@ then try the other trail.
   - The state space is too large even with pruning (n > 20-25)
   - There's a mathematical formula (combinations = n! / (k! * (n-k)!))
 
-  BACKTRACKING = "I need to enumerate" 
+  BACKTRACKING = "I need to enumerate"
   DP = "I need to optimize"
   GREEDY = "I can make local choices that are globally optimal"
 ```
-
 
 ### Historical Context
 
@@ -137,7 +139,6 @@ When you hit a dead end, GO BACK and try a different path.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Visual: Decision Tree
 
 ```
@@ -174,7 +175,6 @@ Result: [[], [1], [2], [1,2]]
 Time Complexity usually: O(2^n) or O(n!) - exponential
 That's OK! Problem asks for ALL solutions.
 ```
-
 
 ---
 
@@ -267,7 +267,6 @@ public class BacktrackingTemplate {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Subsets Pattern <a name="subsets-pattern"></a>
@@ -280,7 +279,6 @@ Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 
 Each element: include OR exclude → 2^n subsets
 ```
-
 
 ### Solution
 
@@ -343,7 +341,6 @@ backtrack(start=0, current=[])
 
 Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
 ```
-
 
 ### Subsets II - With Duplicates (LeetCode 90)
 
@@ -482,7 +479,6 @@ Level 0: Fix position 0
     └── Level 1: ...
         → Add [3,2,1], [3,1,2]
 ```
-
 
 ### Permutations II - With Duplicates (LeetCode 47)
 
@@ -762,7 +758,6 @@ Anti-diagonal (r + c is constant):
     . . ↙ . .   (2,2): r+c = 4
 ```
 
-
 ### Sudoku Solver (LeetCode 37) ⭐⭐⭐
 
 ```java
@@ -973,21 +968,27 @@ private boolean isPalindrome(String s) {
 
 ### 1. Pruning Strategies Hierarchy (Skiena's Approach)
 
-In *The Algorithm Design Manual*, Steven Skiena categorizes backtracking optimization (pruning) into a clear hierarchy. When your backtracking algorithm is too slow (TLE), apply these strategies in order:
+In _The Algorithm Design Manual_, Steven Skiena categorizes backtracking optimization (pruning) into a clear hierarchy. When your backtracking algorithm is too slow (TLE), apply these strategies in order:
 
 #### A. Look-Ahead (Feasibility Pruning)
-Can the current partial solution *ever* be completed to form a valid solution?
-*   **Example:** In Sudoku, if placing a '5' leaves another cell with no possible valid numbers (e.g., all 1-9 are blocked in its row/col/box), prune immediately. Don't wait until you actually reach that empty cell.
-*   *Implementation:* Often requires maintaining additional state (like remaining capacity or available elements).
+
+Can the current partial solution _ever_ be completed to form a valid solution?
+
+- **Example:** In Sudoku, if placing a '5' leaves another cell with no possible valid numbers (e.g., all 1-9 are blocked in its row/col/box), prune immediately. Don't wait until you actually reach that empty cell.
+- _Implementation:_ Often requires maintaining additional state (like remaining capacity or available elements).
 
 #### B. Symmetry Breaking
+
 Are you exploring a branch that is mathematically identical to one you already explored?
-*   **Example:** In generating combinations, `[1, 2, 3]` is the same as `[2, 1, 3]`. By enforcing an ordering (e.g., `start = i + 1` and skipping duplicates `nums[i] == nums[i-1]`), you break the symmetry and eliminate redundant branches.
-*   **Example 2:** In N-Queens, the board is symmetrical. You can cut the search space in half by only exploring the first half of the first row and mirroring the results.
+
+- **Example:** In generating combinations, `[1, 2, 3]` is the same as `[2, 1, 3]`. By enforcing an ordering (e.g., `start = i + 1` and skipping duplicates `nums[i] == nums[i-1]`), you break the symmetry and eliminate redundant branches.
+- **Example 2:** In N-Queens, the board is symmetrical. You can cut the search space in half by only exploring the first half of the first row and mirroring the results.
 
 #### C. Heuristic Ordering
-Which choice should you make *first* to find a solution quickly or prune faster?
-*   **Fail-First Principle (Most Constrained Variable):** Pick the decision that has the *fewest* valid options. In Sudoku, pick the empty cell that only has 1 or 2 valid numbers left, rather than just the next cell left-to-right. This forces failures (and thus pruning) as high up in the decision tree as possible.
+
+Which choice should you make _first_ to find a solution quickly or prune faster?
+
+- **Fail-First Principle (Most Constrained Variable):** Pick the decision that has the _fewest_ valid options. In Sudoku, pick the empty cell that only has 1 or 2 valid numbers left, rather than just the next cell left-to-right. This forces failures (and thus pruning) as high up in the decision tree as possible.
 
 ### 2. Basic Pruning - Code Example
 
@@ -1094,7 +1095,6 @@ for (int end = 0; end < n; end++) {
 │                                                                   │
 └───────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Restore IP Addresses (LeetCode 93) ⭐⭐
 
@@ -1229,7 +1229,6 @@ private List<String> backtrack(String s, int start,
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Skip Duplicates Cheat Sheet
 
 ```java
@@ -1258,7 +1257,6 @@ Arrays.sort(nums);
 
 Space: O(n) for recursion stack (excluding output)
 ```
-
 
 ### Debug Tips
 
@@ -1308,7 +1306,6 @@ Space: O(n) for recursion stack (excluding output)
 All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
 
-
 **Pro Tip:** When solving a new backtracking problem, first identify which of these 3 patterns it maps to. Then adapt the template!
 
 ---
@@ -1318,8 +1315,9 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 🔬 **Section Challenge — Summary: Master These 3 Templates**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>

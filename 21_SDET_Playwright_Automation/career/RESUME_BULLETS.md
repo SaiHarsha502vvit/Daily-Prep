@@ -6,8 +6,8 @@ Turn what you build here into résumé lines that pass a 6-second skim and a 30-
 
 > [Verb] [thing built] [scale / tech] [outcome with number]
 
-Bad: *"Wrote Playwright tests for the app"*
-Good: *"Built parallel-safe Playwright/TS framework for 4-app enterprise suite; cut PR feedback from 38 min to 9 min."*
+Bad: _"Wrote Playwright tests for the app"_
+Good: _"Built parallel-safe Playwright/TS framework for 4-app enterprise suite; cut PR feedback from 38 min to 9 min."_
 
 The number is what makes interviewers ask follow-ups. Volunteer numbers.
 
@@ -59,12 +59,12 @@ The number is what makes interviewers ask follow-ups. Volunteer numbers.
 
 Each project also needs a 1-line story for the spoken interview:
 
-| Project | Spoken summary (15s) |
-|---|---|
-| Framework | "I shipped an enterprise Playwright framework with seven explicit laws — no locators in specs, file-locked accounts, typed APIs. It's the scaffolding I'd want on any new team." |
-| Flaky-Test Detector | "Most teams react to flakes with retries. I built a tool that turns flake into a number you can fix — pass-rate-based score, quarantine ranking, CI gate." |
-| Analytics Dashboard | "I treated test data as production data — Postgres schema, idempotent ingestion, an actual dashboard. It made me think like a platform engineer." |
-| OSS PR | "I picked the issue, read the contribution guide, iterated with maintainers across N rounds. It taught me what code review looks like at scale." |
+| Project             | Spoken summary (15s)                                                                                                                                                             |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework           | "I shipped an enterprise Playwright framework with seven explicit laws — no locators in specs, file-locked accounts, typed APIs. It's the scaffolding I'd want on any new team." |
+| Flaky-Test Detector | "Most teams react to flakes with retries. I built a tool that turns flake into a number you can fix — pass-rate-based score, quarantine ranking, CI gate."                       |
+| Analytics Dashboard | "I treated test data as production data — Postgres schema, idempotent ingestion, an actual dashboard. It made me think like a platform engineer."                                |
+| OSS PR              | "I picked the issue, read the contribution guide, iterated with maintainers across N rounds. It taught me what code review looks like at scale."                                 |
 
 ## Numbers checklist before sending the CV
 

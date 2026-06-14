@@ -70,15 +70,13 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ### Pod Scheduling - How It Works
 
 WHAT HAPPENS WHEN YOU CREATE A DEPLOYMENT:
+
 ```
 ═════════════════════════════════════════
 ```
-
 
 kubectl apply -f deployment.yaml
 
@@ -132,29 +130,25 @@ Kubelet on Node 4 watches for pods assigned to it
 
 **Total Time**: 2-30 seconds (depending on image pull)
 
-
 ### Kubernetes Service Networking
 
 HOW SERVICES ROUTE TRAFFIC:
+
 ```
 ══════════════════════════
 ```
 
-
 Service: myapp-service (ClusterIP: 10.96.45.123, Port: 80)
 Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
-
-
-
-
-
 
 > 🔬 **Section Challenge — Pod Scheduling Flow**
 
 **Challenge 1 (Reasoning):** The K8s scheduler assigns Pods to Nodes. If you have a Pod that MUST run on the same node as another specific Pod (e.g., a logging sidecar), and another Pod that must NEVER run on the same node as a replica of itself, what K8s primitives do you use?
+
 <details><summary>Answer</summary>
 
 **Pod Affinity** (`podAffinity`) ensures co-location: `requiredDuringSchedulingIgnoredDuringExecution` with `topologyKey: kubernetes.io/hostname` places the sidecar on the same node as its target Pod. **Pod Anti-Affinity** (`podAntiAffinity`) prevents co-location: with the same `topologyKey`, it ensures no two replicas of the same Deployment land on the same node — critical for high availability (if the node dies, you don't lose all replicas). `required` vs `preferred`: `required` is a hard constraint (Pod stays Pending if unsatisfiable). `preferred` is a soft hint (scheduler tries but doesn't block). **Common mistake:** Using `topologyKey: topology.kubernetes.io/zone` instead of `hostname` — this spreads across AZs, not nodes. Two replicas could still land on the same node in different zones.
+
 </details>
 
 ## Service Networking
@@ -170,32 +164,34 @@ IPTABLES RULES
 
 **Rule**: If destination = 10.96.45.123:80
 → DNAT to one of:
+
 - 10.244.1.5:8080 (50% probability)
 - 10.244.2.8:8080 (50% probability)
-This is random load balancing!
-STEP 3: PACKET ROUTING
-Client Pod ──► 10.96.45.123:80 (Service IP)
-│
-│ iptables DNAT
-▼
-10.244.2.8:8080 (Pod IP - selected randomly)
-│
-│ If pod on same node: direct delivery
-│ If pod on different node: route via overlay
-▼
-myapp-def Pod receives request
+  This is random load balancing!
+  STEP 3: PACKET ROUTING
+  Client Pod ──► 10.96.45.123:80 (Service IP)
+  │
+  │ iptables DNAT
+  ▼
+  10.244.2.8:8080 (Pod IP - selected randomly)
+  │
+  │ If pod on same node: direct delivery
+  │ If pod on different node: route via overlay
+  ▼
+  myapp-def Pod receives request
 
 **Service Types**:
 ClusterIP (default):
+
 - Internal cluster IP only
 - Not accessible from outside
-NodePort:
+  NodePort:
 - Exposes on each node's IP at static port (30000-32767)
 - curl http://node-ip:30123
-LoadBalancer:
+  LoadBalancer:
 - Creates cloud load balancer (AWS ELB, GCP LB)
 - Gets external IP
-Ingress:
+  Ingress:
 - HTTP/HTTPS routing
 - Path-based routing (/api → service1, /web → service2)
 - TLS termination
@@ -222,6 +218,7 @@ Ingress:
 ### The Three Pillars
 
 ```
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │              OBSERVABILITY - THREE PILLARS                       │
@@ -251,10 +248,7 @@ Ingress:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ### Prometheus + Grafana Setup
-
 
 ```yaml
 
@@ -324,7 +318,7 @@ groups:
       rules:
           - alert: HighErrorRate
             expr: |
-                sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) 
+                sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m]))
                 / sum(rate(http_server_requests_seconds_count[5m])) > 0.05
             for: 5m
             labels:
@@ -335,7 +329,7 @@ groups:
 
           - alert: HighLatency
             expr: |
-                histogram_quantile(0.95, 
+                histogram_quantile(0.95,
                   sum(rate(http_server_requests_seconds_bucket[5m])) by (le)
                 ) > 2
             for: 5m
@@ -629,7 +623,6 @@ Trace ID: abc123
     └── Email Service (200ms)
 ```
 
-
 ---
 
 _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
@@ -683,7 +676,6 @@ _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 #### Transaction Service - Double Entry Ledger
 
@@ -940,7 +932,6 @@ public class FinancialCalculations {
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 #### Cart Service with Redis
 
@@ -1313,7 +1304,6 @@ public class ProductSearchService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 #### WebSocket Chat Server (Node.js/Socket.io)
 
 ```typescript
@@ -1328,10 +1318,10 @@ import jwt from "jsonwebtoken";
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-    cors: {
-        origin: process.env.CLIENT_URL,
-        credentials: true,
-    },
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
 });
 
 // Redis adapter for multi-server support
@@ -1339,167 +1329,164 @@ const pubClient = createClient({ url: process.env.REDIS_URL });
 const subClient = pubClient.duplicate();
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
-    io.adapter(createAdapter(pubClient, subClient));
+  io.adapter(createAdapter(pubClient, subClient));
 });
 
 // Authentication middleware
 io.use(async (socket, next) => {
-    try {
-        const token = socket.handshake.auth.token;
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET!,
-        ) as JwtPayload;
-        socket.data.userId = decoded.userId;
-        socket.data.username = decoded.username;
-        next();
-    } catch (err) {
-        next(new Error("Authentication failed"));
-    }
+  try {
+    const token = socket.handshake.auth.token;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    socket.data.userId = decoded.userId;
+    socket.data.username = decoded.username;
+    next();
+  } catch (err) {
+    next(new Error("Authentication failed"));
+  }
 });
 
 // Connection handler
 io.on("connection", (socket: Socket) => {
-    const userId = socket.data.userId;
-    console.log(`User connected: ${userId}`);
+  const userId = socket.data.userId;
+  console.log(`User connected: ${userId}`);
 
-    // Join user's personal room (for direct messages)
-    socket.join(`user:${userId}`);
+  // Join user's personal room (for direct messages)
+  socket.join(`user:${userId}`);
 
-    // Update online status
+  // Update online status
+  pubClient.hSet(
+    "online_users",
+    userId,
+    JSON.stringify({
+      socketId: socket.id,
+      lastSeen: new Date().toISOString(),
+    }),
+  );
+
+  // Notify friends user is online
+  broadcastPresence(userId, "online");
+
+  // Join chat room
+  socket.on("join_room", async (roomId: string) => {
+    // Verify user has access to room
+    const hasAccess = await verifyRoomAccess(userId, roomId);
+    if (!hasAccess) {
+      socket.emit("error", { message: "Access denied" });
+      return;
+    }
+
+    socket.join(`room:${roomId}`);
+
+    // Load recent messages
+    const messages = await loadRecentMessages(roomId, 50);
+    socket.emit("room_history", { roomId, messages });
+
+    // Notify room
+    socket.to(`room:${roomId}`).emit("user_joined", {
+      userId,
+      username: socket.data.username,
+      roomId,
+    });
+  });
+
+  // Send message
+  socket.on(
+    "send_message",
+    async (data: {
+      roomId: string;
+      content: string;
+      type: "text" | "image" | "file";
+      replyTo?: string;
+    }) => {
+      const message = {
+        id: generateId(),
+        roomId: data.roomId,
+        senderId: userId,
+        senderName: socket.data.username,
+        content: data.content,
+        type: data.type,
+        replyTo: data.replyTo,
+        timestamp: new Date().toISOString(),
+        status: "sent",
+      };
+
+      // Save to database
+      await saveMessage(message);
+
+      // Broadcast to room (including sender for confirmation)
+      io.to(`room:${data.roomId}`).emit("new_message", message);
+    },
+  );
+
+  // Typing indicator
+  socket.on("typing_start", (roomId: string) => {
+    socket.to(`room:${roomId}`).emit("user_typing", {
+      userId,
+      username: socket.data.username,
+      roomId,
+    });
+  });
+
+  socket.on("typing_stop", (roomId: string) => {
+    socket.to(`room:${roomId}`).emit("user_stopped_typing", {
+      userId,
+      roomId,
+    });
+  });
+
+  // Direct message
+  socket.on(
+    "direct_message",
+    async (data: { recipientId: string; content: string }) => {
+      const message = {
+        id: generateId(),
+        senderId: userId,
+        recipientId: data.recipientId,
+        content: data.content,
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+
+      await saveDirectMessage(message);
+
+      // Send to recipient (if online)
+      io.to(`user:${data.recipientId}`).emit("direct_message", message);
+
+      // Confirm to sender
+      socket.emit("message_sent", { messageId: message.id });
+    },
+  );
+
+  // Message read receipt
+  socket.on(
+    "message_read",
+    async (data: { messageId: string; roomId: string }) => {
+      await markMessageRead(data.messageId, userId);
+
+      io.to(`room:${data.roomId}`).emit("message_read_receipt", {
+        messageId: data.messageId,
+        readBy: userId,
+        readAt: new Date().toISOString(),
+      });
+    },
+  );
+
+  // Disconnect
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${userId}`);
+
+    // Update last seen
     pubClient.hSet(
-        "online_users",
-        userId,
-        JSON.stringify({
-            socketId: socket.id,
-            lastSeen: new Date().toISOString(),
-        }),
+      "online_users",
+      userId,
+      JSON.stringify({
+        socketId: null,
+        lastSeen: new Date().toISOString(),
+      }),
     );
 
-    // Notify friends user is online
-    broadcastPresence(userId, "online");
-
-    // Join chat room
-    socket.on("join_room", async (roomId: string) => {
-        // Verify user has access to room
-        const hasAccess = await verifyRoomAccess(userId, roomId);
-        if (!hasAccess) {
-            socket.emit("error", { message: "Access denied" });
-            return;
-        }
-
-        socket.join(`room:${roomId}`);
-
-        // Load recent messages
-        const messages = await loadRecentMessages(roomId, 50);
-        socket.emit("room_history", { roomId, messages });
-
-        // Notify room
-        socket.to(`room:${roomId}`).emit("user_joined", {
-            userId,
-            username: socket.data.username,
-            roomId,
-        });
-    });
-
-    // Send message
-    socket.on(
-        "send_message",
-        async (data: {
-            roomId: string;
-            content: string;
-            type: "text" | "image" | "file";
-            replyTo?: string;
-        }) => {
-            const message = {
-                id: generateId(),
-                roomId: data.roomId,
-                senderId: userId,
-                senderName: socket.data.username,
-                content: data.content,
-                type: data.type,
-                replyTo: data.replyTo,
-                timestamp: new Date().toISOString(),
-                status: "sent",
-            };
-
-            // Save to database
-            await saveMessage(message);
-
-            // Broadcast to room (including sender for confirmation)
-            io.to(`room:${data.roomId}`).emit("new_message", message);
-        },
-    );
-
-    // Typing indicator
-    socket.on("typing_start", (roomId: string) => {
-        socket.to(`room:${roomId}`).emit("user_typing", {
-            userId,
-            username: socket.data.username,
-            roomId,
-        });
-    });
-
-    socket.on("typing_stop", (roomId: string) => {
-        socket.to(`room:${roomId}`).emit("user_stopped_typing", {
-            userId,
-            roomId,
-        });
-    });
-
-    // Direct message
-    socket.on(
-        "direct_message",
-        async (data: { recipientId: string; content: string }) => {
-            const message = {
-                id: generateId(),
-                senderId: userId,
-                recipientId: data.recipientId,
-                content: data.content,
-                timestamp: new Date().toISOString(),
-                read: false,
-            };
-
-            await saveDirectMessage(message);
-
-            // Send to recipient (if online)
-            io.to(`user:${data.recipientId}`).emit("direct_message", message);
-
-            // Confirm to sender
-            socket.emit("message_sent", { messageId: message.id });
-        },
-    );
-
-    // Message read receipt
-    socket.on(
-        "message_read",
-        async (data: { messageId: string; roomId: string }) => {
-            await markMessageRead(data.messageId, userId);
-
-            io.to(`room:${data.roomId}`).emit("message_read_receipt", {
-                messageId: data.messageId,
-                readBy: userId,
-                readAt: new Date().toISOString(),
-            });
-        },
-    );
-
-    // Disconnect
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${userId}`);
-
-        // Update last seen
-        pubClient.hSet(
-            "online_users",
-            userId,
-            JSON.stringify({
-                socketId: null,
-                lastSeen: new Date().toISOString(),
-            }),
-        );
-
-        broadcastPresence(userId, "offline");
-    });
+    broadcastPresence(userId, "offline");
+  });
 });
 
 // React client hook
@@ -1508,63 +1495,63 @@ import { useEffect, useState, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 
 export function useChat(token: string) {
-    const [socket, setSocket] = useState<Socket | null>(null);
-    const [connected, setConnected] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [typingUsers, setTypingUsers] = useState<Map<string, string>>(
-        new Map(),
-    );
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [connected, setConnected] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(
+    new Map(),
+  );
 
-    useEffect(() => {
-        const newSocket = io(process.env.NEXT_PUBLIC_WS_URL!, {
-            auth: { token },
-            transports: ["websocket"],
-        });
+  useEffect(() => {
+    const newSocket = io(process.env.NEXT_PUBLIC_WS_URL!, {
+      auth: { token },
+      transports: ["websocket"],
+    });
 
-        newSocket.on("connect", () => setConnected(true));
-        newSocket.on("disconnect", () => setConnected(false));
+    newSocket.on("connect", () => setConnected(true));
+    newSocket.on("disconnect", () => setConnected(false));
 
-        newSocket.on("new_message", (message: Message) => {
-            setMessages((prev) => [...prev, message]);
-        });
+    newSocket.on("new_message", (message: Message) => {
+      setMessages((prev) => [...prev, message]);
+    });
 
-        newSocket.on("room_history", ({ messages }) => {
-            setMessages(messages);
-        });
+    newSocket.on("room_history", ({ messages }) => {
+      setMessages(messages);
+    });
 
-        newSocket.on("user_typing", ({ userId, username }) => {
-            setTypingUsers((prev) => new Map(prev).set(userId, username));
-        });
+    newSocket.on("user_typing", ({ userId, username }) => {
+      setTypingUsers((prev) => new Map(prev).set(userId, username));
+    });
 
-        newSocket.on("user_stopped_typing", ({ userId }) => {
-            setTypingUsers((prev) => {
-                const next = new Map(prev);
-                next.delete(userId);
-                return next;
-            });
-        });
+    newSocket.on("user_stopped_typing", ({ userId }) => {
+      setTypingUsers((prev) => {
+        const next = new Map(prev);
+        next.delete(userId);
+        return next;
+      });
+    });
 
-        setSocket(newSocket);
-        return () => {
-            newSocket.close();
-        };
-    }, [token]);
+    setSocket(newSocket);
+    return () => {
+      newSocket.close();
+    };
+  }, [token]);
 
-    const sendMessage = useCallback(
-        (roomId: string, content: string) => {
-            socket?.emit("send_message", { roomId, content, type: "text" });
-        },
-        [socket],
-    );
+  const sendMessage = useCallback(
+    (roomId: string, content: string) => {
+      socket?.emit("send_message", { roomId, content, type: "text" });
+    },
+    [socket],
+  );
 
-    const joinRoom = useCallback(
-        (roomId: string) => {
-            socket?.emit("join_room", roomId);
-        },
-        [socket],
-    );
+  const joinRoom = useCallback(
+    (roomId: string) => {
+      socket?.emit("join_room", roomId);
+    },
+    [socket],
+  );
 
-    return { connected, messages, typingUsers, sendMessage, joinRoom };
+  return { connected, messages, typingUsers, sendMessage, joinRoom };
 }
 ```
 
@@ -1617,7 +1604,6 @@ export function useChat(token: string) {
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 #### Resilience4j Implementation
 
@@ -2058,17 +2044,14 @@ public void processOutbox() {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 🔬 QUICK REFERENCE: Deep Internals Summary**
 
 **Challenge 1 (Reasoning):** The Browser Rendering Pipeline shows: DOM + CSSOM → Render Tree → Layout → Paint → Composite. The summary says "transform animations = GPU only (fast)" and "layout changes = Full pipeline (slow)". Why does changing `width` trigger the ENTIRE pipeline while `transform: translateX()` only triggers Composite?
+
 <details><summary>Answer</summary>
 
 Changing `width` modifies the element's **box model** — the browser must recalculate the position of EVERY sibling and descendant element (Layout). This triggers a **reflow**: Layout → Paint → Composite for potentially hundreds of elements. `transform: translateX()` doesn't change the element's position in the document flow — the element keeps its original Layout box, but the GPU moves its **composited layer** independently. The browser creates a separate texture for the element and sends it to the GPU, which translates it without involving the CPU at all. This is why `transform` and `opacity` are the ONLY two properties you should animate for 60fps — they skip Layout and Paint entirely. **Triggering Layout:** width, height, margin, padding, top/left, font-size. **Triggering Paint only:** background-color, box-shadow, border-radius, color. **Composite only:** transform, opacity. Use `will-change: transform` to hint the browser to pre-create a GPU layer.
+
 </details>
 
 ## 🎯 Summary: Your Complete Learning Path
@@ -2139,20 +2122,16 @@ DAILY PRACTICE:
 □ 30 min cloud hands-on
 ```
 
-
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — 🎯 Summary: Your Complete Learning Path**
 
 **Challenge 1 (Reasoning):** The learning path allocates 6 months across 6 phases. A developer with 2 YOE has strong DSA (Phase 1) but zero cloud/DevOps experience. They have an interview in 6 weeks for a role requiring "cloud deployment experience." Should they follow the path linearly, or skip ahead? What's the minimum viable cloud skill set for that interview?
+
 <details><summary>Answer</summary>
 
 Skip ahead to Phase 4 (Cloud & DevOps) immediately. The minimum viable skill set for "cloud deployment experience" in 6 weeks: **Week 1-2:** Docker (Dockerfile, docker-compose, multi-stage builds) + deploy ONE app to AWS EC2 manually. **Week 3-4:** CI/CD (GitHub Actions: build → push Docker image to ECR → deploy to ECS). **Week 5:** AWS fundamentals (VPC, ALB, RDS, S3) — just enough to explain architecture. **Week 6:** Practice explaining your deployment pipeline in behavioral format ("I containerized X, deployed to Y, monitored with Z"). Skip Kubernetes entirely — 6 weeks isn't enough and most 2-3 YOE roles don't require it. **Key insight:** Interviewers for cloud roles want to hear: (1) you've deployed something real to production, (2) you understand why containers exist, (3) you can draw a basic architecture diagram. They do NOT expect you to configure VPC peering or write Terraform.
+
 </details>
 
 ## 🏁 Final Checklist: Are You Ready?
@@ -2191,7 +2170,6 @@ READY FOR:
 □ Building your own products
 ```
 
-
 ---
 
 **🎉 CONGRATULATIONS!**
@@ -2216,19 +2194,16 @@ You now have a complete guide covering:
 
 _"The goal is not to become a better coder. It's to become a better problem solver who happens to use code."_
 
-
 ---
 
 > **Navigation**: [< Previous](05_Career_Projects_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_DSA_Guide_Foundations.md)
 
-
-
-
 > 🔬 **Section Challenge — 🏁 Final Checklist: Are You Ready?**
 
 **Challenge 1 (Reasoning):** The Distributed System section shows an Outbox Pattern for reliable event publishing. Why can't you just publish to Kafka inside the same `@Transactional` method that saves to the database? What specific failure mode does the Outbox Pattern prevent?
+
 <details><summary>Answer</summary>
 
 The failure mode is **dual-write inconsistency**. If your `@Transactional` method does: (1) `orderRepository.save(order)`, (2) `kafkaTemplate.send("order_created", event)` — two things can go wrong: **Scenario A:** Database save succeeds, Kafka send fails (network timeout). Now the database has the order but no event was published — downstream services (inventory, notifications) never know about it. **Scenario B:** Kafka send succeeds, but the database transaction rolls back (constraint violation on a later query in the same transaction). Now Kafka has an event for an order that doesn't exist — consumers process a phantom order. The root cause is that **the database transaction and Kafka publish are two separate distributed systems** — there is no atomic transaction spanning both (this would require 2PC/XA, which Kafka doesn't support). The Outbox Pattern solves this: (1) Save the order AND write the event to an `outbox` table in the **same database transaction** — atomically guaranteed. (2) A separate process (polling or CDC via Debezium) reads the outbox and publishes to Kafka. If the publisher crashes, it retries from the outbox — no data loss. If it publishes twice, consumers use the event's idempotency key to deduplicate. **Key insight:** Never write to two different systems in one "logical transaction" without a coordination mechanism.
-</details>
 
+</details>

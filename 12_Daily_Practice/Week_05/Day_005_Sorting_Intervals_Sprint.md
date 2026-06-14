@@ -1,12 +1,14 @@
 # Day 05 - Sorting and Intervals (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 252 - Meeting Rooms
 2. LeetCode Medium: 56 - Merge Intervals
 3. Codeforces: 1208B - Uniqueness
 4. Codeforces: 1490A - Dense Array
 
 ## Problem Links
+
 - LC 252 (Premium): Locked on LeetCode (no public official statement page)
 - LC 56: https://leetcode.com/problems/merge-intervals/
 - CF 1208B: https://codeforces.com/problemset/problem/1208/B
@@ -15,17 +17,21 @@
 ## Problem 1 - LC 252 (Premium): Meeting Rooms
 
 ### Problem Restatement
+
 Given meeting intervals `[start, end]`, determine if one person can attend all meetings.
 
 ### Constraints
+
 - `1 <= n <= 10000`
 - `0 <= start < end <= 10^6`
 
 ### Sample
+
 Input: `[[0,30],[5,10],[15,20]]`  
 Output: `false`
 
 ### Approach A - Brute Force (O(n^2), O(1))
+
 Compare all pairs for overlap.
 
 ```java
@@ -40,6 +46,7 @@ static boolean canAttendBrute(int[][] a) {
 ```
 
 ### Approach B - Better (Sort by Start) (O(n log n), O(1))
+
 Only adjacent intervals in sorted order can conflict.
 
 ```java
@@ -53,6 +60,7 @@ static boolean canAttendBetter(int[][] a) {
 ```
 
 ### Approach C - Optimal (Sweep Events) (O(n log n), O(n))
+
 Generalizes to "how many rooms needed".
 
 ```java
@@ -80,16 +88,20 @@ static boolean canAttendOptimal(int[][] a) {
 ## Problem 2 - LC 56: Merge Intervals
 
 ### Problem Restatement
+
 Merge all overlapping intervals and return disjoint merged intervals.
 
 ### Constraints
+
 - `1 <= n <= 10000`
 
 ### Sample
+
 Input: `[[1,3],[2,6],[8,10],[15,18]]`  
 Output: `[[1,6],[8,10],[15,18]]`
 
 ### Approach A - Brute Force Merge-Until-Stable (O(n^2), O(n))
+
 Repeatedly find and merge any overlap pair.
 
 ```java
@@ -148,16 +160,20 @@ static int[][] mergeOptimal(int[][] a) {
 ## Problem 3 - CF 1208B: Uniqueness
 
 ### Problem Restatement
+
 Remove one contiguous subarray of minimum length so that remaining elements are all distinct.
 
 ### Constraints
+
 - `1 <= n <= 2000`
 
 ### Sample
+
 Input: `[1,2,3,1,2]`  
 Output: `2`
 
 ### Approach A - Brute Force (O(n^3), O(n))
+
 Try every removed segment `[l..r]` and validate uniqueness.
 
 ```java
@@ -179,6 +195,7 @@ static int uniquenessBrute(int[] a) {
 ```
 
 ### Approach B - Better (Prefix + Suffix Sets) (O(n^2), O(n))
+
 Fix left kept part, grow right kept part while maintaining disjoint uniqueness.
 
 ```java
@@ -203,6 +220,7 @@ static int uniquenessBetter(int[] a) {
 ```
 
 ### Approach C - Optimal (Two Pointers + Frequency Invariant) (O(n), O(n))
+
 Maintain unique suffix and unique prefix; shrink middle greedily.
 
 ```java
@@ -230,6 +248,7 @@ static int uniquenessOptimal(int[] a) {
 ```
 
 ### Interview Notes
+
 - This is an excellent invariant design problem.
 - Always reason in terms of "kept prefix + kept suffix".
 
@@ -238,16 +257,20 @@ static int uniquenessOptimal(int[] a) {
 ## Problem 4 - CF 1490A: Dense Array
 
 ### Problem Restatement
+
 Insert minimum numbers so each adjacent pair satisfies `max(a,b) <= 2 * min(a,b)`.
 
 ### Constraints
+
 - Total `n` over tests up to about `2e5`
 
 ### Sample
+
 Input pair: `4 19`  
 Output insertions for this pair: `2` (`4,8,16,19`)
 
 ### Approach A - Brute Force Simulation (O(insertions), O(1))
+
 Repeatedly insert middle-like values.
 
 ```java
@@ -272,6 +295,7 @@ static int denseBetter(int[] arr) {
 ```
 
 ### Approach C - Optimal (Formula with log2) (O(n), O(1))
+
 For pair `(a,b)` with `a<=b`, additions are `ceil(log2(b/a)) - 1`.
 
 ```java
@@ -290,5 +314,6 @@ static int denseOptimal(int[] arr) {
 ```
 
 ### Pattern Takeaways
+
 - Sorting converts overlap problems to local adjacency checks.
 - Many CF greedy problems become simple after ratio/invariant reformulation.

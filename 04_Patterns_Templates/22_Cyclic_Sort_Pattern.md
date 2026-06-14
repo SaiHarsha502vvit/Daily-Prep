@@ -4,17 +4,58 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Cyclic sort is used since the 1960s. Abdi Edalat (1997) formalized the cycle decomposition. Related to Floyd's cycle detection (1967). Hadian (1969) studied sorting under permutation.
+
+**Predecessor context:** Sorting required comparison-based algorithms (O(n log n)). When values are in a known range, cyclic sort's O(n) time and O(1) space was known but not widely taught.
+
+**Evolution narrative:** Cyclic sort leverages the fact that if elements are in range [1, n] (or can be mapped), each element belongs to exactly one position. By swapping until the position is correct, we achieve O(n) with O(1) space.
+
+**Modern practice:** Cyclic sort is ideal for "find missing number" and "find duplicate" problems where values are in range [1, n]. It's commonly asked in interviews.
+
+- **Floyd cycle detection — 1967**: Foundational insight that cycles can be detected with two pointers
+- **Hadian 1969**: "Sorting under permutation" — theoretical study of cycle-based sorting
+- **Cycle decomposition — 1997**: Formal analysis of permutation cycles in sorting
+- **Modern practice**: LeetCode "find duplicate" and "find missing number" problems
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Cyclic sort assumes all elements in range [0, n] or [1, n]** — Elements outside the valid range break the algorithm (index out of bounds or infinite loop). Detection: test with element = n+1; verify bounds checking before entering cyclic sort.
+
+- **Duplicates cause infinite loop — guard with `while (nums[i] != i && nums[i] != nums[nums[i]])`** — With duplicates, `nums[nums[i]]` may reference the same element, causing the condition to never become false. Detection: test with duplicate values; the loop must include the duplicate check.
+
+- **Out-of-range elements break the algorithm** — Elements < 0 or > n cause negative indexing or index out of bounds. Detection: verify all elements are in [1, n] before cyclic sort.
+
+**Production Selection Heuristic:** Use cyclic sort only when elements are guaranteed to be in range [1, n] and the problem explicitly asks for O(n) time with O(1) space. Otherwise, use sorting or hash set.
+
+---
+
 # 📚 CYCLIC SORT — THE MISSING PATTERN
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| values are exactly in `[1..N]` or `[0..N-1]` | cyclic sort is possible |
-| need `O(1)` extra space | cyclic sort fits |
-| values are arbitrary/huge | use hashmap/sort instead |
-| duplicates exist | guard swaps to avoid infinite loops |
-| input cannot be mutated | use hashmap/boolean array instead |
+| Given Constraints                            | Do This                             |
+| -------------------------------------------- | ----------------------------------- |
+| values are exactly in `[1..N]` or `[0..N-1]` | cyclic sort is possible             |
+| need `O(1)` extra space                      | cyclic sort fits                    |
+| values are arbitrary/huge                    | use hashmap/sort instead            |
+| duplicates exist                             | guard swaps to avoid infinite loops |
+| input cannot be mutated                      | use hashmap/boolean array instead   |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -38,7 +79,6 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -124,7 +164,6 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PROBLEM 1: Find the Missing Number (LC 268)
@@ -151,18 +190,17 @@ VISUAL (n=3, range [0..3]):
 SOLUTION:
 ```
 
-
 ```java
 public int missingNumber(int[] nums) {
     int n = nums.length;
-    
+
     // Cyclic sort: place each num at index = num (range [0..n])
     for (int i = 0; i < n; i++) {
         while (nums[i] < n && nums[i] != i) {
             swap(nums, i, nums[i]);
         }
     }
-    
+
     // Scan for mismatch
     for (int i = 0; i < n; i++) {
         if (nums[i] != i) return i;
@@ -185,9 +223,6 @@ NOTE: Gauss formula (n*(n+1)/2 - sum) also works for Easy version.
 
 ---
 
-
-
-
 ## PROBLEM 2: Find All Numbers Disappeared in Array (LC 448)
 
 ```
@@ -201,18 +236,17 @@ PROBLEM: Find ALL missing numbers in [1..n].
 SOLUTION:
 ```
 
-
 ```java
 public List<Integer> findDisappearedNumbers(int[] nums) {
     int n = nums.length;
-    
+
     // Cyclic sort: place nums[i] at index nums[i]-1
     for (int i = 0; i < n; i++) {
         while (nums[i] != nums[nums[i] - 1]) {
             swap(nums, i, nums[i] - 1);
         }
     }
-    
+
     // Collect all positions where nums[i] != i+1
     List<Integer> result = new ArrayList<>();
     for (int i = 0; i < n; i++) {
@@ -228,9 +262,6 @@ COMPLEXITY: Time O(n) | Space O(1) excluding output
 
 ---
 
-
-
-
 ## PROBLEM 3: Find All Duplicates in Array (LC 442)
 
 ```
@@ -244,18 +275,17 @@ PROBLEM: Find all duplicates in [1..n] where each appears at most twice.
 SOLUTION:
 ```
 
-
 ```java
 public List<Integer> findDuplicates(int[] nums) {
     int n = nums.length;
-    
+
     // Cyclic sort
     for (int i = 0; i < n; i++) {
         while (nums[i] != nums[nums[i] - 1]) {
             swap(nums, i, nums[i] - 1);
         }
     }
-    
+
     // Where nums[i] != i+1, nums[i] is the duplicate
     List<Integer> result = new ArrayList<>();
     for (int i = 0; i < n; i++) {
@@ -272,9 +302,6 @@ KEY INSIGHT: After sort, duplicates end up at "wrong" positions.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 4: First Missing Positive (LC 41) — THE HARD ONE
 
@@ -305,18 +332,17 @@ VISUAL:
 SOLUTION:
 ```
 
-
 ```java
 public int firstMissingPositive(int[] nums) {
     int n = nums.length;
-    
+
     for (int i = 0; i < n; i++) {
         // Only place values in valid range [1..n]
         while (nums[i] > 0 && nums[i] <= n && nums[i] != nums[nums[i] - 1]) {
             swap(nums, i, nums[i] - 1);
         }
     }
-    
+
     for (int i = 0; i < n; i++) {
         if (nums[i] != i + 1) return i + 1;
     }
@@ -331,9 +357,6 @@ is what makes it work with arbitrary input.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 5: Find the Duplicate Number (LC 287)
 
@@ -370,7 +393,6 @@ APPROACH 2: Floyd's Cycle Detection (O(1) space, no modification)
   Duplicate creates a cycle. Find cycle entry = duplicate.
 ```
 
-
 ```java
 public int findDuplicate(int[] nums) {
     int slow = nums[0], fast = nums[0];
@@ -378,7 +400,7 @@ public int findDuplicate(int[] nums) {
         slow = nums[slow];
         fast = nums[nums[fast]];
     } while (slow != fast);
-    
+
     slow = nums[0];
     while (slow != fast) {
         slow = nums[slow];
@@ -394,9 +416,6 @@ COMPLEXITY: Both O(n) | Floyd's uses O(1) space without modification
 
 ---
 
-
-
-
 ## PROBLEM 6: Set Mismatch (LC 645)
 
 ```
@@ -410,17 +429,16 @@ PROBLEM: Array [1..n] with one duplicate and one missing. Find both.
 SOLUTION:
 ```
 
-
 ```java
 public int[] findErrorNums(int[] nums) {
     int n = nums.length;
-    
+
     for (int i = 0; i < n; i++) {
         while (nums[i] != nums[nums[i] - 1]) {
             swap(nums, i, nums[i] - 1);
         }
     }
-    
+
     for (int i = 0; i < n; i++) {
         if (nums[i] != i + 1) {
             return new int[]{nums[i], i + 1};  // [duplicate, missing]
@@ -465,30 +483,27 @@ COMPLEXITY: Time O(n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔄 Summary: Cyclic Sort Decision Table**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 📋 CURATED PRACTICE PROBLEMS
 
-| # | Problem | LC# | Difficulty | Key Twist |
-|---|---------|-----|-----------|-----------|
-| 1 | [Missing Number](https://leetcode.com/problems/missing-number/) | 268 | Easy | Range [0..n] |
-| 2 | [Find All Disappeared Numbers](https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/) | 448 | Easy | Multiple missing |
-| 3 | [Find All Duplicates](https://leetcode.com/problems/find-all-duplicates-in-an-array/) | 442 | Medium | Multiple duplicates |
-| 4 | [First Missing Positive](https://leetcode.com/problems/first-missing-positive/) | 41 | Hard | Range filtering |
-| 5 | [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/) | 287 | Medium | Floyd's alt |
-| 6 | [Set Mismatch](https://leetcode.com/problems/set-mismatch/) | 645 | Easy | Dup + missing |
-| 7 | [Couples Holding Hands](https://leetcode.com/problems/couples-holding-hands/) | 765 | Hard | Cyclic swap variant |
-| 8 | [Kth Missing Positive](https://leetcode.com/problems/kth-missing-positive-number/) | 1539 | Easy | Binary search variant |
-
+| #   | Problem                                                                                                 | LC#  | Difficulty | Key Twist             |
+| --- | ------------------------------------------------------------------------------------------------------- | ---- | ---------- | --------------------- |
+| 1   | [Missing Number](https://leetcode.com/problems/missing-number/)                                         | 268  | Easy       | Range [0..n]          |
+| 2   | [Find All Disappeared Numbers](https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/) | 448  | Easy       | Multiple missing      |
+| 3   | [Find All Duplicates](https://leetcode.com/problems/find-all-duplicates-in-an-array/)                   | 442  | Medium     | Multiple duplicates   |
+| 4   | [First Missing Positive](https://leetcode.com/problems/first-missing-positive/)                         | 41   | Hard       | Range filtering       |
+| 5   | [Find the Duplicate Number](https://leetcode.com/problems/find-the-duplicate-number/)                   | 287  | Medium     | Floyd's alt           |
+| 6   | [Set Mismatch](https://leetcode.com/problems/set-mismatch/)                                             | 645  | Easy       | Dup + missing         |
+| 7   | [Couples Holding Hands](https://leetcode.com/problems/couples-holding-hands/)                           | 765  | Hard       | Cyclic swap variant   |
+| 8   | [Kth Missing Positive](https://leetcode.com/problems/kth-missing-positive-number/)                      | 1539 | Easy       | Binary search variant |

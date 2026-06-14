@@ -60,6 +60,7 @@ com.mycompany.myapp
 ```
 
 Identical concept to Android's package name. Used in:
+
 - Appium selectors: `bundleId: 'com.mycompany.myapp'`
 - App Store (must be globally unique)
 - Deep links: `myapp://citation/CIT-001`
@@ -68,6 +69,7 @@ Identical concept to Android's package name. Used in:
 ### Key Difference from Android: No Sideloading Without Trust
 
 On Android, you can install any APK if you enable "Unknown Sources". On iOS, every app must be:
+
 1. Signed with an Apple developer certificate
 2. Installed via TestFlight (for testers) or the App Store (for users)
 3. Or: registered devices can install debug builds from Xcode directly
@@ -97,6 +99,7 @@ XCUITestOptions options = new XCUITestOptions()
 ```
 
 Then in CI:
+
 ```bash
 # Production test run
 mvn test -Dapp.bundleId=com.mycompany.myapp
@@ -242,6 +245,7 @@ func showCitationAmount(citation: Citation?) {
 **The bug**: Force unwrap (`citation!`) will crash the app with a fatal error if `citation` is `nil`. This is the Swift equivalent of a `NullPointerException`.
 
 **The fix** using optional binding:
+
 ```swift
 func showCitationAmount(citation: Citation?) {
     // Safe unwrap — only execute if citation is not nil
@@ -254,6 +258,7 @@ func showCitationAmount(citation: Citation?) {
 ```
 
 Or with nil coalescing for the label:
+
 ```swift
 func showCitationAmount(citation: Citation?) {
     let displayAmount = citation.map { "$\($0.amount)" } ?? "Amount unavailable"
@@ -272,6 +277,7 @@ func showCitationAmount(citation: Citation?) {
 ### What Is a UIViewController?
 
 A `UIViewController` manages one screen (or a portion of a screen). It is the iOS equivalent of Android's `Activity`. It owns:
+
 - A `view` (the root `UIView` of the screen)
 - The layout of that view (Auto Layout or SwiftUI)
 - The logic that responds to user interaction
@@ -610,6 +616,7 @@ public void paymentModal_confirmSuccessfulPayment() throws Exception {
 ```
 
 **The key patterns**:
+
 - Always wait for modal to appear (`presenceOfElementLocated`) before interacting
 - Always wait for modal to disappear (`invisibilityOfElementLocated`) before asserting home state
 - Use `accessibilityId` not XPath — iOS's XPath is fragile because the class hierarchy changes with UI updates
@@ -908,7 +915,8 @@ struct ProfileView: View {
 }
 ```
 
-**The rule**: 
+**The rule**:
+
 - `@State` → one view owns the data, no other view needs it
 - `@StateObject/@ObservedObject` → one view tree owns data, child views observe it
 - `@EnvironmentObject` → multiple branches of the view tree need the same data
@@ -1112,6 +1120,7 @@ struct CitationListView: View {
 <details><summary>Answer</summary>
 
 **SQL equivalent**:
+
 ```sql
 SELECT * FROM citations WHERE status = 'PENDING' AND amount > 100.0;
 ```
@@ -1120,7 +1129,7 @@ SELECT * FROM citations WHERE status = 'PENDING' AND amount > 100.0;
 
 ```swift
 // Core Data — NSPredicate syntax
-let predicate = NSPredicate(format: "status == %@ AND amount > %@", 
+let predicate = NSPredicate(format: "status == %@ AND amount > %@",
                             "PENDING", 100.0)
 request.predicate = predicate
 ```
@@ -1133,16 +1142,17 @@ fun getCitationsByStatusAndMinAmount(status: String, minAmount: Double): Flow<Li
 
 **Key differences**:
 
-| Aspect | Core Data NSPredicate | Room @Query |
-|---|---|---|
-| Query language | NSPredicate format string | Raw SQL |
-| Type safety | Runtime only | Compile-time checked |
-| Readability | Harder (format strings) | Easier (familiar SQL) |
-| Joins | Via relationship properties | Explicit SQL JOIN |
-| Relationships | `relationship.property` | JOIN statement |
-| Auto-update | `@FetchRequest` in SwiftUI | `Flow<T>` in Kotlin |
+| Aspect         | Core Data NSPredicate       | Room @Query           |
+| -------------- | --------------------------- | --------------------- |
+| Query language | NSPredicate format string   | Raw SQL               |
+| Type safety    | Runtime only                | Compile-time checked  |
+| Readability    | Harder (format strings)     | Easier (familiar SQL) |
+| Joins          | Via relationship properties | Explicit SQL JOIN     |
+| Relationships  | `relationship.property`     | JOIN statement        |
+| Auto-update    | `@FetchRequest` in SwiftUI  | `Flow<T>` in Kotlin   |
 
 **Relationship query in Core Data**:
+
 ```swift
 // "Find citations where the user's city is 'Austin'"
 // Core Data traverses the relationship automatically
@@ -1179,11 +1189,11 @@ fun getCitationsByUserCity(city: String): Flow<List<Citation>>
               /___________________\
 ```
 
-| Layer | Tool | Runs On | Speed | Count |
-|---|---|---|---|---|
-| Unit | XCTest | macOS (no device) | ~10-100ms | Many |
-| UI | XCUITest | Simulator or real device | ~2-15s | Medium |
-| E2E | Appium XCUITest Driver | Simulator or real device | ~30-120s | Few |
+| Layer | Tool                   | Runs On                  | Speed     | Count  |
+| ----- | ---------------------- | ------------------------ | --------- | ------ |
+| Unit  | XCTest                 | macOS (no device)        | ~10-100ms | Many   |
+| UI    | XCUITest               | Simulator or real device | ~2-15s    | Medium |
+| E2E   | Appium XCUITest Driver | Simulator or real device | ~30-120s  | Few    |
 
 ---
 
@@ -1320,6 +1330,7 @@ func test_fetchCitations_publishesResultsToSubscribers() {
 ### 🎯 Practice — Level 2
 
 **Challenge**: Write XCTest unit tests for a `PaymentViewModel` that has:
+
 - `func pay(amount: Double)` — calls the API and updates state
 - State: `.idle`, `.loading`, `.success(receiptId: String)`, `.error(String)`
 - Validation: amount must be > 0 and ≤ 10,000
@@ -1801,6 +1812,7 @@ public void faceIdFailure_showsErrorMessage() throws Exception {
 ```
 
 **Why this only works on Simulator, not real device**: The `mobile: enrollBiometric` command is a Simulator-specific API. On a real device, you cannot programmatically simulate biometric authentication — this is a security design decision by Apple. For real device testing, either:
+
 1. Use a physical person to perform the authentication in a supervised test session
 2. Use a test flag (`--uitesting`) in the app to bypass biometric in test mode (common pattern)
 3. Test biometric failure by tapping "Cancel" on the system dialog
@@ -1846,12 +1858,15 @@ public void faceIdFailure_showsErrorMessage() throws Exception {
 ## 15. Interview Questions on iOS
 
 **Q: "What is the difference between `viewDidLoad` and `viewWillAppear`?"**
+
 > "`viewDidLoad` is called exactly once when the view controller's view is first loaded into memory. It's the right place for one-time setup: adding subviews, configuring auto layout, initializing the ViewModel. `viewWillAppear` is called every time the screen becomes visible — including when returning from a pushed view controller. Data fetching that needs to be fresh every time the screen appears belongs in `viewWillAppear`, not `viewDidLoad`. A common bug is loading feed data in `viewDidLoad` — the feed becomes stale when the user navigates away and comes back."
 
 **Q: "What is `@StateObject` vs `@ObservedObject`?"**
+
 > "Both are used with `ObservableObject` ViewModels. `@StateObject` means this view OWNS the ViewModel — iOS creates it once and keeps it alive for the view's lifetime. `@ObservedObject` means the view is OBSERVING a ViewModel created elsewhere — it doesn't own it. If you use `@ObservedObject` for a ViewModel that should be owned by that view, SwiftUI might recreate it on redraws, losing state. The rule: if the view creates the ViewModel, use `@StateObject`. If the parent creates it and passes it in, use `@ObservedObject`."
 
 **Q: "How do you test Face ID with Appium on iOS?"**
+
 > "On the iOS Simulator, Appium exposes the `mobile: enrollBiometric` and `mobile: sendBiometricMatch` commands. I enroll biometric in the Simulator via `enrollBiometric`, trigger the authentication screen, then send `match: true` for success or `match: false` for failure. On a real device this isn't possible programmatically — Apple locks that down for security. So on real devices, I use a test launch argument that bypasses biometric in a test-only code path, verifying the post-authentication state directly."
 
 ---

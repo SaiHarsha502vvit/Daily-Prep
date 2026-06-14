@@ -444,11 +444,10 @@ DELIMITER ;
 
 ---
 
-
-
-
 # ═══════════════════════════════════════════════════════════════════
+
 # MERGED FROM: 04_SQL_Practice_Projects.md (WHY-HOW Framework Edition)
+
 # ═══════════════════════════════════════════════════════════════════
 
 # 🎯 SQL Practice Projects & Interview Questions
@@ -480,16 +479,15 @@ You're a data analyst at an e-commerce company. The CEO wants a dashboard showin
 - Customer retention rates
 - Conversion funnel analysis
 
-
-
 🔬 **Section Challenge — 🏢 Business Context**
 
 **Challenge 1 (Reasoning):** The conversion funnel query uses `MAX(CASE WHEN page_type = 'cart' THEN 1 ELSE 0 END)` per session. Why not `COUNT(CASE WHEN page_type = 'cart' ...)` instead? When would the results differ?
+
 <details><summary>Answer</summary>
 
-`MAX(CASE...)` produces 0 or 1 — "did this session visit cart at all?" (boolean per session). `COUNT(CASE...)` counts *how many cart page views* per session. If a user visits the cart 5 times in one session, MAX gives 1, COUNT gives 5. For funnel analysis, you want MAX because you're asking "what fraction of sessions reached this stage" — counting page views would inflate the numbers. This is the difference between **session-level** (MAX) and **event-level** (COUNT) aggregation — a critical distinction in analytics queries.
-</details>
+`MAX(CASE...)` produces 0 or 1 — "did this session visit cart at all?" (boolean per session). `COUNT(CASE...)` counts _how many cart page views_ per session. If a user visits the cart 5 times in one session, MAX gives 1, COUNT gives 5. For funnel analysis, you want MAX because you're asking "what fraction of sessions reached this stage" — counting page views would inflate the numbers. This is the difference between **session-level** (MAX) and **event-level** (COUNT) aggregation — a critical distinction in analytics queries.
 
+</details>
 
 ## 📊 Schema Setup
 
@@ -865,16 +863,15 @@ You're analyzing HR data to help with:
 - Performance analysis
 - Diversity reporting
 
-
-
 🔬 **Section Challenge — 🏢 Business Context**
 
 **Challenge 1 (Reasoning):** The salary benchmarking query uses `NTILE(4) OVER (PARTITION BY department ORDER BY salary)` to assign quartiles. Why can NTILE give misleading results when departments have very few employees (e.g., 3 people in 4 quartiles)?
+
 <details><summary>Answer</summary>
 
-`NTILE(4)` divides rows into *exactly* 4 buckets as evenly as possible. With 3 employees, you get buckets of size 1, 1, 1, 0 — one quartile is empty, and the "top 25%" is just 1 person. This makes percentile comparisons meaningless for small groups. **Fix**: use `PERCENT_RANK()` or `CUME_DIST()` instead, which compute actual percentile positions regardless of group size. Alternatively, only compute quartiles for departments with ≥ 20 employees (statistical minimum for meaningful distribution analysis). This is why real HR analytics platforms use `PERCENT_RANK` for salary benchmarking, not `NTILE`.
-</details>
+`NTILE(4)` divides rows into _exactly_ 4 buckets as evenly as possible. With 3 employees, you get buckets of size 1, 1, 1, 0 — one quartile is empty, and the "top 25%" is just 1 person. This makes percentile comparisons meaningless for small groups. **Fix**: use `PERCENT_RANK()` or `CUME_DIST()` instead, which compute actual percentile positions regardless of group size. Alternatively, only compute quartiles for departments with ≥ 20 employees (statistical minimum for meaningful distribution analysis). This is why real HR analytics platforms use `PERCENT_RANK` for salary benchmarking, not `NTILE`.
 
+</details>
 
 ## 📊 Schema Setup
 
@@ -1048,16 +1045,15 @@ You're analyzing financial transactions for:
 - Budget vs Actual reporting
 - Expense categorization
 
-
-
 🔬 **Section Challenge — 🏢 Business Context**
 
 **Challenge 1 (Reasoning):** For fraud detection, you flag transactions where a customer's spending is > 3 standard deviations above their average. Why is this approach dangerous with `AVG()` and `STDDEV()` window functions on raw transaction data?
+
 <details><summary>Answer</summary>
 
-The fraudulent transactions themselves are *included* in the AVG and STDDEV calculation, inflating both values. A single $10,000 fraud on an account with typical $50 transactions raises the average and standard deviation, making the fraud appear *less* anomalous than it actually is. **Fix**: use a *rolling* window that excludes the current row: `AVG(amount) OVER (PARTITION BY customer_id ORDER BY txn_date ROWS BETWEEN 90 PRECEDING AND 1 PRECEDING)` — this computes the baseline from historical data only. Alternatively, use `MEDIAN` (via `PERCENTILE_CONT(0.5)`) which is robust to outliers, unlike `AVG`.
-</details>
+The fraudulent transactions themselves are _included_ in the AVG and STDDEV calculation, inflating both values. A single $10,000 fraud on an account with typical $50 transactions raises the average and standard deviation, making the fraud appear _less_ anomalous than it actually is. **Fix**: use a _rolling_ window that excludes the current row: `AVG(amount) OVER (PARTITION BY customer_id ORDER BY txn_date ROWS BETWEEN 90 PRECEDING AND 1 PRECEDING)` — this computes the baseline from historical data only. Alternatively, use `MEDIAN` (via `PERCENTILE_CONT(0.5)`) which is robust to outliers, unlike `AVG`.
 
+</details>
 
 ## 📊 Schema Setup
 
@@ -1216,3 +1212,32 @@ LEFT JOIN monthly_actuals ma
 ORDER BY b.department, b.category, b.budget_month;
 ```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **SQLite** (2000): D. Richard Hipp created the most widely deployed database engine, enabling project-based SQL learning without server setup
+- **PostgreSQL** (1996): University of California Berkeley's open-source descendant of Ingres, providing a full-featured learning environment
+- **MySQL** (1995): TcX/Monty Program's creation became the LAMP stack's default database, powering millions of web applications
+- **Dewey** (1938): John Dewey's experiential learning theory—"learning by doing"—validated project-based pedagogy decades before SQL existed
+- **Sakila Sample Database** (2005): MySQL's canonical sample database, demonstrating normalized design for learning purposes
+
+**Evolution narrative:**
+Project-based SQL learning emerged from the recognition that abstract syntax drills fail to build real proficiency. Early learners struggled with disconnected exercises until sample databases like Sakila (MySQL) and DVD Rental (PostgreSQL) provided cohesive schemas with realistic data. SQLite's zero-configuration nature made it ideal for beginners to practice locally. The modern curriculum approach (e-commerce analytics, HR dashboards, financial reporting) mirrors actual job responsibilities, making the transition from practice to production seamless.
+
+**Modern practice anchor:**
+Beginner SQL projects (e-commerce analysis, HR dashboards, inventory management) directly translate to data analyst and junior data engineer roles, where similar schemas and queries appear daily.
+
+### Production Reality
+
+**Failure modes:**
+1. **Orphan rows from missing FK constraints**: Projects using `INT REFERENCES` without `ON DELETE` clauses leave `customer_key` NULL for deleted customers. A `LEFT JOIN` then silently returns NULL matches, collapsing revenue to 0 for those orders.
+2. **Unindexed FK columns on large tables**: Adding `FOREIGN KEY (customer_key) REFERENCES dim_customer(customer_key)` without a corresponding index causes sequential scans on `fact_orders` (often 10M+ rows) during every analytics view. Queries that ran in ms on 1,000 rows take 45+ seconds in production.
+3. **NULL-handling gaps**: `SUM(total_amount)` silently drops NULL order amounts. Projects that work on clean sample data fail when real integrations produce NULL amounts (payment pending, fraud hold). The fix: `COALESCE(SUM(total_amount), 0)`.
+
+**Debug workflow:**
+1. Check `pg_constraint` for unindexed FKs: `SELECT conrelid::regclass, conname FROM pg_constraint WHERE contype = 'f' AND conindid = 0;`
+2. Verify all dimension tables have `NOT NULL` constraints on natural keys via `INFORMATION_SCHEMA.column_constraints`
+3. Run queries with `WHERE amount IS NULL` to surface unhandled NULL cases before they hit production
+
+**Modern practice anchor:**
+Production beginner projects require `FOREIGN KEY ... ON DELETE SET NULL` or `ON DELETE CASCADE` explicit clauses and composite indexes on FK + timestamp columns to handle real-world data volumes.

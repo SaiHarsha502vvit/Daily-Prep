@@ -15,22 +15,20 @@ npx playwright install-deps         # Linux only: installs OS dependencies
 ## Minimal `playwright.config.ts`
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   fullyParallel: true,
   timeout: 60_000,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [["list"], ["html", { open: "never" }]],
   use: {
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });
 ```
 
@@ -38,11 +36,13 @@ export default defineConfig({
 
 ```typescript
 // tests/smoke.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('playwright.dev loads and has expected heading', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Playwright');
+test("playwright.dev loads and has expected heading", async ({ page }) => {
+  await page.goto("https://playwright.dev/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "Playwright",
+  );
 });
 ```
 
@@ -79,6 +79,7 @@ framework/
 ```
 
 Why this shape:
+
 - **Config** at the root — one source of truth for runner behaviour.
 - **`fixtures/` separate from `tests/`** — tests import from a fixtures barrel, not from `@playwright/test`.
 - **POMs in `websites/{app}/pages/`** — when you support 4 apps, each has its own page object family.
@@ -88,22 +89,22 @@ Full architecture rationale: [`learn/06_enterprise_structure.md`](../learn/06_en
 
 ## Where to go next
 
-| You want to… | Open |
-|---|---|
-| Configure timeouts, retries, projects, reporters | [02_config.md](./02_config.md) |
-| Pick the right locator (`getByRole` vs CSS) | [03_locators.md](./03_locators.md) |
-| Set up shared test setup (auth, account pool) | [04_fixtures.md](./04_fixtures.md) |
-| Authenticate with OAuth / SAML / MFA | [05_auth.md](./05_auth.md) |
-| Run tests in parallel + CI shards | [07_parallelism.md](./07_parallelism.md) |
-| Run inside Docker | [10_ci_docker.md](./10_ci_docker.md) |
-| Learn architecture from scratch | [../learn/01_mindset.md](../learn/01_mindset.md) |
+| You want to…                                     | Open                                             |
+| ------------------------------------------------ | ------------------------------------------------ |
+| Configure timeouts, retries, projects, reporters | [02_config.md](./02_config.md)                   |
+| Pick the right locator (`getByRole` vs CSS)      | [03_locators.md](./03_locators.md)               |
+| Set up shared test setup (auth, account pool)    | [04_fixtures.md](./04_fixtures.md)               |
+| Authenticate with OAuth / SAML / MFA             | [05_auth.md](./05_auth.md)                       |
+| Run tests in parallel + CI shards                | [07_parallelism.md](./07_parallelism.md)         |
+| Run inside Docker                                | [10_ci_docker.md](./10_ci_docker.md)             |
+| Learn architecture from scratch                  | [../learn/01_mindset.md](../learn/01_mindset.md) |
 
 ## Common day-one gotchas
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| `Cannot find module '@playwright/test'` | Missing install | `npm i -D @playwright/test` |
-| `Executable doesn't exist at ...` | Browsers not downloaded | `npx playwright install` |
-| Tests pass locally, fail on Linux CI | Missing OS libs | `npx playwright install-deps` or use Docker (see [10_ci_docker.md](./10_ci_docker.md)) |
-| `TypeError: page.locator(...).click is not a function` | Wrong import (`@playwright/test/lib/...`) | Always `import { test } from '@playwright/test'` |
-| Test times out at 30 s with no clear reason | Default action timeout exceeded | Increase `use.actionTimeout` or fix the underlying selector |
+| Symptom                                                | Cause                                     | Fix                                                                                    |
+| ------------------------------------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| `Cannot find module '@playwright/test'`                | Missing install                           | `npm i -D @playwright/test`                                                            |
+| `Executable doesn't exist at ...`                      | Browsers not downloaded                   | `npx playwright install`                                                               |
+| Tests pass locally, fail on Linux CI                   | Missing OS libs                           | `npx playwright install-deps` or use Docker (see [10_ci_docker.md](./10_ci_docker.md)) |
+| `TypeError: page.locator(...).click is not a function` | Wrong import (`@playwright/test/lib/...`) | Always `import { test } from '@playwright/test'`                                       |
+| Test times out at 30 s with no clear reason            | Default action timeout exceeded           | Increase `use.actionTimeout` or fix the underlying selector                            |

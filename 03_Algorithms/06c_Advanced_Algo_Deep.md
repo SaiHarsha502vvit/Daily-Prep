@@ -15,6 +15,12 @@
 
 ---
 
+### Historical Evolution
+
+The theory of NP-Completeness represents one of the most consequential intellectual achievements in computer science. **Stephen Cook** published the Cook-Levin theorem in **1971** (STOC 1971, SIAM J. Computing 1971), proving that the Boolean satisfiability problem (SAT) was the first known NP-Complete problem — any problem in NP could be reduced to SAT in polynomial time. The following year, **Richard Karp** published his landmark 1972 paper "Reducibility Among Combinatorial Problems" identifying 21 NP-Complete problems including 3-SAT, Vertex Cover, Hamiltonian Path, and Subset Sum — this paper transformed the theoretical result into a practical toolkit for algorithm classification. **Branch and Bound** as an exact optimization technique traces to **A. H. Land and G. D. Doig in 1960** in the context of operations research for mixed integer programming, where splitting the problem space and computing lower bounds enabled exact solutions to NP-Hard problems that were previously intractable. Approximation algorithms were systematized in the 1990s following **Vazirani's 2001** textbook, with the 2-approximation for Vertex Cover using maximum matching. Modern practice (post-2010) applies NP-Completeness analysis to guide algorithm selection in production: recognizing a problem is NP-Hard triggers heuristic/approximation strategies rather than exact search.
+
+---
+
 # 🎯 Advanced Algorithms Deep Dive: Implementations
 
 ### Fractional Knapsack Problem
@@ -525,9 +531,11 @@ public int editDistance(String s1, String s2) {
 🔬 **Section Challenge — Dynamic Programming**
 
 **Challenge 1 (State Reduction):** For Edit Distance, we allocate an $O(M \times N)$ array. How can this be optimized to $O(\min(M, N))$ space, and what is the trade-off if we need to reconstruct the actual sequence of operations (not just the minimum count)?
+
 <details><summary>Answer</summary>
 
-Because `dp[i][j]` only depends on `dp[i-1][j]`, `dp[i][j-1]`, and `dp[i-1][j-1]`, we only need the *current row* and *previous row* at any given time, reducing space to $O(\min(M, N))$. However, the trade-off is we lose the historical paths. If we need to reconstruct the actual edits (the alignment), we *must* keep the full $O(M \times N)$ table (or use Hirschberg's algorithm, which achieves $O(M \times N)$ time and $O(M)$ space for both score and alignment via Divide & Conquer).
+Because `dp[i][j]` only depends on `dp[i-1][j]`, `dp[i][j-1]`, and `dp[i-1][j-1]`, we only need the _current row_ and _previous row_ at any given time, reducing space to $O(\min(M, N))$. However, the trade-off is we lose the historical paths. If we need to reconstruct the actual edits (the alignment), we _must_ keep the full $O(M \times N)$ table (or use Hirschberg's algorithm, which achieves $O(M \times N)$ time and $O(M)$ space for both score and alignment via Divide & Conquer).
+
 </details>
 
 ---
@@ -807,9 +815,11 @@ private boolean isSafe(int[][] graph, int[] path, int pos, int v) {
 🔬 **Section Challenge — Backtracking**
 
 **Challenge 1 (Symmetry Pruning):** In the N-Queens problem, finding all solutions for $N=8$ takes 92 iterations. However, we can cut the search space nearly in half. How?
+
 <details><summary>Answer</summary>
 
 Symmetry. A chessboard is symmetric horizontally, vertically, and diagonally. Instead of searching all columns for the first row (`row = 0`), we only need to place the first queen in the first half of the columns ($0$ to $N/2 - 1$). Any valid board found can be mirrored horizontally to produce another valid board. For odd $N$, the middle column requires a full search but cannot be mirrored. This dramatically cuts the branches of the state space tree at the very top.
+
 </details>
 
 ---
@@ -1144,9 +1154,11 @@ SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
 🔬 **Section Challenge — NP-Completeness**
 
 **Challenge 1 (Reduction Logic):** If someone discovers an $O(N^3)$ algorithm for 3-SAT, why does this automatically mean TSP (Optimization) is solvable in polynomial time?
+
 <details><summary>Answer</summary>
 
 Because 3-SAT is NP-Complete, and TSP (Decision version) is in NP. By Cook's Theorem and Karp's reductions, any instance of TSP can be mathematically translated (reduced) into an instance of 3-SAT in polynomial time. If 3-SAT is solvable in $O(N^3)$, we can just translate TSP to 3-SAT, solve it, and translate the answer back, all in polynomial time. Therefore $P = NP$, and every problem in NP is solvable in polynomial time.
+
 </details>
 
 ---

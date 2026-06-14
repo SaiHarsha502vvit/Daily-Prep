@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 11: Sequential Flow](./11_CrossSite_Pattern1_Sequential_Flow.md) | [Index](../00_INDEX.md) | [→ Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md)
 
 **Cross-links:**
+
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — `Promise.all` for new tab events
 - [`08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — BrowserContext vs Page
 - [`10_Dynamics365_CRM_Testing.md`](./10_Dynamics365_CRM_Testing.md) — D365 tab load timing
@@ -60,7 +61,7 @@ BrowserContext (the browser "profile")
 const newTabCookies = await newTab.context().cookies();
 const originalCookies = await page.context().cookies();
 // Should be identical (same context → same cookie jar)
-expect(newTabCookies.some(c => c.name === 'sessionid')).toBe(true);
+expect(newTabCookies.some((c) => c.name === "sessionid")).toBe(true);
 ```
 
 ---
@@ -71,10 +72,10 @@ This is the most common mistake when handling new tabs:
 
 ```typescript
 // ❌ WRONG — race condition
-await page.click('#openOrderInNewTab');
+await page.click("#openOrderInNewTab");
 // What if the new tab opens and the 'page' event fires BETWEEN these two lines?
 // Then waitForEvent never catches it and hangs until timeout!
-const newTab = await page.context().waitForEvent('page');
+const newTab = await page.context().waitForEvent("page");
 ```
 
 **The race visualised:**
@@ -93,7 +94,7 @@ sequenceDiagram
     Playwright-->>Playwright: Event missed (no listener yet)
     Test->>Playwright: await waitForEvent('page')
     Playwright-->>Test: ⏳ HANGS (timeout after 30s)
-    
+
     Note over Test, Playwright: ✅ CORRECT: Promise.all
     Test->>Playwright: Promise.all([ waitForEvent, click ])
     Playwright->>Playwright: Registers listener immediately
@@ -114,12 +115,12 @@ The event loop processes microtasks before the next I/O callback. When you `awai
 ```typescript
 // ✅ CORRECT — Promise.all guarantees listener starts before click
 const [newTab] = await Promise.all([
-  page.context().waitForEvent('page'),  // start listening FIRST
-  page.click('#openOrderInNewTab'),     // then trigger the click
+  page.context().waitForEvent("page"), // start listening FIRST
+  page.click("#openOrderInNewTab"), // then trigger the click
 ]);
 
 // newTab is a Page object — same API as page
-await newTab.waitForLoadState('domcontentloaded');
+await newTab.waitForLoadState("domcontentloaded");
 ```
 
 ### Why `Promise.all` works
@@ -132,21 +133,21 @@ await newTab.waitForLoadState('domcontentloaded');
 // When you need to listen for ANY new tab throughout the entire test:
 const openedTabs: Page[] = [];
 
-context.on('page', (newPage) => {
+context.on("page", (newPage) => {
   openedTabs.push(newPage);
   console.log(`New tab opened: ${newPage.url()}`);
 });
 
 // Now click — the listener is already registered
-await page.click('#openOrderInNewTab');
+await page.click("#openOrderInNewTab");
 
 // Wait for at least one tab to open
 await expect.poll(() => openedTabs.length).toBeGreaterThan(0);
 const orderTab = openedTabs[0];
-await orderTab.waitForLoadState('domcontentloaded');
+await orderTab.waitForLoadState("domcontentloaded");
 
 // Cleanup
-context.removeAllListeners('page');
+context.removeAllListeners("page");
 ```
 
 ### The `waitForEvent` Timeout and Predicate
@@ -154,17 +155,17 @@ context.removeAllListeners('page');
 ```typescript
 // With timeout:
 const [newTab] = await Promise.all([
-  page.context().waitForEvent('page', { timeout: 30_000 }),
-  page.click('#openInNewTab'),
+  page.context().waitForEvent("page", { timeout: 30_000 }),
+  page.click("#openInNewTab"),
 ]);
 
 // With predicate — wait for a SPECIFIC new tab (when multiple might open):
 const [invoiceTab] = await Promise.all([
-  page.context().waitForEvent('page', {
-    predicate: (page) => page.url().includes('billing.company.com'),
+  page.context().waitForEvent("page", {
+    predicate: (page) => page.url().includes("billing.company.com"),
     timeout: 30_000,
   }),
-  page.click('#viewInvoice'),
+  page.click("#viewInvoice"),
 ]);
 // This resolves only when a new tab matching the URL predicate opens
 // Other new tabs opened simultaneously are ignored
@@ -175,7 +176,7 @@ const [invoiceTab] = await Promise.all([
 ## 4. After the New Tab Opens — Complete Workflow
 
 ```typescript
-test('order tracking opens in new tab', async ({ page, context }) => {
+test("order tracking opens in new tab", async ({ page, context }) => {
   const customerPortal = new CustomerPortalPage(page);
   await customerPortal.goto();
   await customerPortal.login(testAccount);
@@ -183,11 +184,11 @@ test('order tracking opens in new tab', async ({ page, context }) => {
   // Get the order ID we'll track — store in accumulator
   const data = {
     orderId: null as string | null,
-    newTabPage: null as import('@playwright/test').Page | null,
+    newTabPage: null as import("@playwright/test").Page | null,
     orderStatus: null as string | null,
   };
 
-  await test.step('Navigate to orders list', async () => {
+  await test.step("Navigate to orders list", async () => {
     await customerPortal.navigateToOrders();
     data.orderId = await customerPortal.getFirstOrderId();
     expect(data.orderId).not.toBeNull();
@@ -195,7 +196,7 @@ test('order tracking opens in new tab', async ({ page, context }) => {
 
   await test.step('Click "Track Order" — opens Order Portal in new tab', async () => {
     const [orderTab] = await Promise.all([
-      context.waitForEvent('page'),
+      context.waitForEvent("page"),
       customerPortal.clickTrackOrder(data.orderId!),
     ]);
 
@@ -204,19 +205,21 @@ test('order tracking opens in new tab', async ({ page, context }) => {
 
     // Wait for the new tab to load
     // D365: use spinner wait; JSP: use domcontentloaded
-    await orderTab.waitForLoadState('domcontentloaded');
+    await orderTab.waitForLoadState("domcontentloaded");
 
     // For D365-based order portal:
-    await expect(orderTab.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
+    await expect(orderTab.locator(".ms-Spinner")).toHaveCount(0, {
+      timeout: 30000,
+    });
   });
 
-  await test.step('New tab shows correct order ID', async () => {
+  await test.step("New tab shows correct order ID", async () => {
     const orderTracking = new OrderTrackingPage(data.newTabPage!);
     await orderTracking.waitForLoad();
     await expect(orderTracking.orderIdDisplay).toHaveText(data.orderId!);
   });
 
-  await test.step('New tab: user is already logged in (session shared via cookies)', async () => {
+  await test.step("New tab: user is already logged in (session shared via cookies)", async () => {
     const orderTracking = new OrderTrackingPage(data.newTabPage!);
     // No login required — cookies are shared with the original page
     await expect(orderTracking.userNameDisplay).toBeVisible();
@@ -224,10 +227,10 @@ test('order tracking opens in new tab', async ({ page, context }) => {
     // If this fails: the sites use different domains/auth systems → see Pattern 3
   });
 
-  await test.step('Extract order status from new tab', async () => {
+  await test.step("Extract order status from new tab", async () => {
     const orderTracking = new OrderTrackingPage(data.newTabPage!);
     data.orderStatus = await orderTracking.getStatus();
-    expect(['PROCESSING', 'SHIPPED', 'DELIVERED']).toContain(data.orderStatus);
+    expect(["PROCESSING", "SHIPPED", "DELIVERED"]).toContain(data.orderStatus);
   });
 
   // Always clean up new tabs
@@ -242,40 +245,40 @@ test('order tracking opens in new tab', async ({ page, context }) => {
 ```typescript
 // websites/order-portal/pages/OrderTrackingPage.ts
 
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class OrderTrackingPage {
   private readonly page: Page;
-  readonly orderIdDisplay:   Locator;
-  readonly statusBadge:      Locator;
-  readonly userNameDisplay:  Locator;
-  readonly logoutButton:     Locator;
+  readonly orderIdDisplay: Locator;
+  readonly statusBadge: Locator;
+  readonly userNameDisplay: Locator;
+  readonly logoutButton: Locator;
   readonly trackingTimeline: Locator;
   readonly estimatedDelivery: Locator;
 
   constructor(page: Page) {
     // This constructor receives the new tab's Page object — same API, different DOM
-    this.page            = page;
-    this.orderIdDisplay  = page.locator('[data-testid="order-id-display"]');
-    this.statusBadge     = page.locator('.order-status-badge');
-    this.userNameDisplay = page.locator('.user-name-header');
-    this.logoutButton    = page.locator('#logoutBtn');
-    this.trackingTimeline = page.locator('.tracking-timeline');
-    this.estimatedDelivery = page.locator('.estimated-delivery-date');
+    this.page = page;
+    this.orderIdDisplay = page.locator('[data-testid="order-id-display"]');
+    this.statusBadge = page.locator(".order-status-badge");
+    this.userNameDisplay = page.locator(".user-name-header");
+    this.logoutButton = page.locator("#logoutBtn");
+    this.trackingTimeline = page.locator(".tracking-timeline");
+    this.estimatedDelivery = page.locator(".estimated-delivery-date");
   }
 
   async waitForLoad(): Promise<void> {
-    await this.orderIdDisplay.waitFor({ state: 'visible', timeout: 20000 });
+    await this.orderIdDisplay.waitFor({ state: "visible", timeout: 20000 });
   }
 
   async getStatus(): Promise<string> {
     await expect(this.statusBadge).toBeVisible();
-    return (await this.statusBadge.textContent() ?? '').trim();
+    return ((await this.statusBadge.textContent()) ?? "").trim();
   }
 
   async getEstimatedDelivery(): Promise<string> {
     await expect(this.estimatedDelivery).toBeVisible();
-    return (await this.estimatedDelivery.textContent() ?? '').trim();
+    return ((await this.estimatedDelivery.textContent()) ?? "").trim();
   }
 
   async close(): Promise<void> {
@@ -293,43 +296,43 @@ export class OrderTrackingPage {
 When a user might have 3 tabs open at the same time:
 
 ```typescript
-test('user manages 3 open tabs simultaneously', async ({ page, context }) => {
+test("user manages 3 open tabs simultaneously", async ({ page, context }) => {
   const data = {
-    ordersTab:     page,                                              // original tab
-    orderDetailTab: null as import('@playwright/test').Page | null,
-    supportChatTab: null as import('@playwright/test').Page | null,
+    ordersTab: page, // original tab
+    orderDetailTab: null as import("@playwright/test").Page | null,
+    supportChatTab: null as import("@playwright/test").Page | null,
   };
 
-  await test.step('Open order detail in tab 2', async () => {
+  await test.step("Open order detail in tab 2", async () => {
     const [tab2] = await Promise.all([
-      context.waitForEvent('page'),
-      page.click('#viewOrderDetail'),
+      context.waitForEvent("page"),
+      page.click("#viewOrderDetail"),
     ]);
     data.orderDetailTab = tab2;
-    await tab2.waitForLoadState('domcontentloaded');
+    await tab2.waitForLoadState("domcontentloaded");
   });
 
-  await test.step('Open support chat in tab 3', async () => {
+  await test.step("Open support chat in tab 3", async () => {
     // Click on the ORIGINAL tab (data.ordersTab), not the detail tab
     const [tab3] = await Promise.all([
-      context.waitForEvent('page'),
-      data.ordersTab.click('#openSupportChat'),
+      context.waitForEvent("page"),
+      data.ordersTab.click("#openSupportChat"),
     ]);
     data.supportChatTab = tab3;
-    await tab3.waitForLoadState('domcontentloaded');
+    await tab3.waitForLoadState("domcontentloaded");
   });
 
-  await test.step('Interact with tab 2 (order detail)', async () => {
+  await test.step("Interact with tab 2 (order detail)", async () => {
     // Bring tab 2 into focus for Playwright (optional — Playwright doesn't require focus)
     await data.orderDetailTab!.bringToFront();
     const orderDetail = new OrderDetailPage(data.orderDetailTab!);
     await expect(orderDetail.orderStatus).toBeVisible();
   });
 
-  await test.step('Interact with tab 3 (support chat)', async () => {
+  await test.step("Interact with tab 3 (support chat)", async () => {
     await data.supportChatTab!.bringToFront();
     const chat = new SupportChatPage(data.supportChatTab!);
-    await chat.sendMessage('I need help with my order');
+    await chat.sendMessage("I need help with my order");
   });
 
   // Teardown — always close all extra tabs
@@ -340,21 +343,21 @@ test('user manages 3 open tabs simultaneously', async ({ page, context }) => {
 
 ---
 
-## 7. Related: Handling Popups (window.open vs target="_blank")
+## 7. Related: Handling Popups (window.open vs target="\_blank")
 
 `target="_blank"` opens a new tab. `window.open()` may open a popup window (a separate, smaller browser window). Both emit the `'page'` event on the context:
 
 ```typescript
 // Same Pattern — works for both new tabs AND popup windows
 const [popup] = await Promise.all([
-  page.context().waitForEvent('page'),
-  page.locator('#openPaymentPopup').click(),
+  page.context().waitForEvent("page"),
+  page.locator("#openPaymentPopup").click(),
 ]);
 
 // Check what type it is (tab vs popup)
 const popupViewport = popup.viewportSize();
 if (popupViewport && popupViewport.width < 800) {
-  console.log('This is a popup window, not a tab');
+  console.log("This is a popup window, not a tab");
 }
 
 // Playwright provides a convenience method for popups:
@@ -366,14 +369,14 @@ if (popupViewport && popupViewport.width < 800) {
 ```typescript
 // page.waitForEvent('popup') — fires on the PAGE that triggers the popup:
 const [popup] = await Promise.all([
-  page.waitForEvent('popup'),          // listens on the triggering PAGE
-  page.click('#openTermsAndConditions'),
+  page.waitForEvent("popup"), // listens on the triggering PAGE
+  page.click("#openTermsAndConditions"),
 ]);
 
 // context.waitForEvent('page') — fires on the CONTEXT for ANY new page:
 const [newPage] = await Promise.all([
-  context.waitForEvent('page'),        // catches tabs opened by ANY page in the context
-  page.click('#openTermsAndConditions'),
+  context.waitForEvent("page"), // catches tabs opened by ANY page in the context
+  page.click("#openTermsAndConditions"),
 ]);
 
 // Which to use?
@@ -392,12 +395,12 @@ When clicking a button triggers a file download (not a new tab), use `page.waitF
 ```typescript
 // Pattern: wait for download BEFORE click
 const [download] = await Promise.all([
-  page.waitForEvent('download'),          // ← same race condition applies
+  page.waitForEvent("download"), // ← same race condition applies
   page.locator('[data-testid="export-csv"]').click(),
 ]);
 
 // Get download info
-const suggestedFilename = download.suggestedFilename();  // 'citations-export-2026-05-28.csv'
+const suggestedFilename = download.suggestedFilename(); // 'citations-export-2026-05-28.csv'
 expect(suggestedFilename).toMatch(/^citations-export-.*\.csv$/);
 
 // Save the file to disk (in a temp location)
@@ -405,11 +408,11 @@ const downloadPath = `./test-results/downloads/${suggestedFilename}`;
 await download.saveAs(downloadPath);
 
 // Verify file content
-import { readFileSync } from 'fs';
-const csvContent = readFileSync(downloadPath, 'utf-8');
-const lines = csvContent.split('\n');
-expect(lines[0]).toContain('Citation ID,Customer ID,Status,Amount');  // header row
-expect(lines.length).toBeGreaterThan(1);  // at least one data row
+import { readFileSync } from "fs";
+const csvContent = readFileSync(downloadPath, "utf-8");
+const lines = csvContent.split("\n");
+expect(lines[0]).toContain("Citation ID,Customer ID,Status,Amount"); // header row
+expect(lines.length).toBeGreaterThan(1); // at least one data row
 
 // Or: read without saving
 const stream = await download.createReadStream();
@@ -420,7 +423,7 @@ const failure = await download.failure();
 if (failure) throw new Error(`Download failed: ${failure}`);
 
 // Cleanup
-await download.delete();  // remove from Playwright's temp storage
+await download.delete(); // remove from Playwright's temp storage
 ```
 
 ---
@@ -431,23 +434,27 @@ D365 new tabs are notoriously slow because each new tab re-initialises the entir
 
 ```typescript
 // ❌ Naive wait — too early, D365 shell loads but data isn't there
-await newTab.waitForLoadState('load'); // ~1s
+await newTab.waitForLoadState("load"); // ~1s
 
 // ✅ Correct D365 new tab wait:
-await newTab.waitForLoadState('domcontentloaded');   // DOM structure ready (~1-2s)
+await newTab.waitForLoadState("domcontentloaded"); // DOM structure ready (~1-2s)
 
 // Wait for spinner to appear (confirms data fetch started)
 try {
-  await newTab.locator('.ms-Spinner').waitFor({ state: 'visible', timeout: 3000 });
+  await newTab
+    .locator(".ms-Spinner")
+    .waitFor({ state: "visible", timeout: 3000 });
 } catch {
   // Spinner appeared and disappeared before we checked — that's fine
 }
 
 // Wait for spinner to disappear (confirms data fetch finished)
-await expect(newTab.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45000 });
+await expect(newTab.locator(".ms-Spinner")).toHaveCount(0, { timeout: 45000 });
 
 // Wait for actual data to appear
-await expect(newTab.locator('.ms-DetailsList-row').first()).toBeVisible({ timeout: 30000 });
+await expect(newTab.locator(".ms-DetailsList-row").first()).toBeVisible({
+  timeout: 30000,
+});
 ```
 
 ### D365 Tab Timing by Action Type
@@ -469,8 +476,8 @@ Never use: waitForLoadState('networkidle') — D365 has background polling
 ## 10. Tab Management via `afterEach` — Prevent Tab Leaks
 
 ```typescript
-test.describe('New Tab Tests', () => {
-  let newTabPages: import('@playwright/test').Page[] = [];
+test.describe("New Tab Tests", () => {
+  let newTabPages: import("@playwright/test").Page[] = [];
 
   test.afterEach(async () => {
     // Close all new tabs opened during the test
@@ -482,10 +489,10 @@ test.describe('New Tab Tests', () => {
     newTabPages = [];
   });
 
-  test('track order in new tab', async ({ page, context }) => {
+  test("track order in new tab", async ({ page, context }) => {
     const [orderTab] = await Promise.all([
-      context.waitForEvent('page'),
-      page.click('#trackOrder'),
+      context.waitForEvent("page"),
+      page.click("#trackOrder"),
     ]);
     newTabPages.push(orderTab); // register for cleanup
     // ... rest of test
@@ -498,15 +505,15 @@ test.describe('New Tab Tests', () => {
 ```typescript
 // fixtures/tab-manager.fixture.ts
 
-import { test as base } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import { test as base } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 interface TabManager {
   /** Open a new tab by clicking a locator. Auto-registers for cleanup. */
   click: (
     triggerPage: Page,
-    locatorOrAction: import('@playwright/test').Locator | (() => Promise<void>),
-    opts?: { timeout?: number; urlPattern?: string }
+    locatorOrAction: import("@playwright/test").Locator | (() => Promise<void>),
+    opts?: { timeout?: number; urlPattern?: string },
   ) => Promise<Page>;
 
   /** All tabs opened through this manager */
@@ -519,24 +526,30 @@ export const test = base.extend<{ tabManager: TabManager }>({
 
     const click = async (
       triggerPage: Page,
-      locatorOrAction: import('@playwright/test').Locator | (() => Promise<void>),
-      opts: { timeout?: number; urlPattern?: string } = {}
+      locatorOrAction:
+        | import("@playwright/test").Locator
+        | (() => Promise<void>),
+      opts: { timeout?: number; urlPattern?: string } = {},
     ): Promise<Page> => {
-      const action = typeof locatorOrAction === 'function'
-        ? locatorOrAction
-        : () => locatorOrAction.click();
+      const action =
+        typeof locatorOrAction === "function"
+          ? locatorOrAction
+          : () => locatorOrAction.click();
 
       const predicate = opts.urlPattern
         ? (p: Page) => p.url().includes(opts.urlPattern!)
         : undefined;
 
       const [newTab] = await Promise.all([
-        context.waitForEvent('page', { predicate, timeout: opts.timeout ?? 30_000 }),
+        context.waitForEvent("page", {
+          predicate,
+          timeout: opts.timeout ?? 30_000,
+        }),
         action(),
       ]);
 
       openedTabs.push(newTab);
-      await newTab.waitForLoadState('domcontentloaded');
+      await newTab.waitForLoadState("domcontentloaded");
       return newTab;
     };
 
@@ -550,15 +563,15 @@ export const test = base.extend<{ tabManager: TabManager }>({
 });
 
 // Usage:
-test('order tracking', async ({ page, tabManager }) => {
+test("order tracking", async ({ page, tabManager }) => {
   const orderTab = await tabManager.click(
     page,
     page.locator('[data-testid="track-order-btn"]'),
-    { urlPattern: 'order-portal.company.com' }
+    { urlPattern: "order-portal.company.com" },
   );
 
   const orderPage = new OrderTrackingPage(orderTab);
-  await expect(orderPage.statusBadge).toHaveText('SHIPPED');
+  await expect(orderPage.statusBadge).toHaveText("SHIPPED");
   // No manual cleanup needed — fixture handles it
 });
 ```
@@ -569,29 +582,71 @@ test('order tracking', async ({ page, tabManager }) => {
 
 ```typescript
 // BrowserContext emits these events:
-context.on('page', (page) => { /* new tab or popup opened */ });
-context.on('backgroundpage', (page) => { /* Chrome extension background page */ });
-context.on('serviceworker', (worker) => { /* service worker registered */ });
-context.on('request', (request) => { /* any request from any page in the context */ });
-context.on('response', (response) => { /* any response to any page in the context */ });
-context.on('requestfailed', (request) => { /* any failed request */ });
-context.on('requestfinished', (request) => { /* request completed */ });
-context.on('close', () => { /* context closed */ });
+context.on("page", (page) => {
+  /* new tab or popup opened */
+});
+context.on("backgroundpage", (page) => {
+  /* Chrome extension background page */
+});
+context.on("serviceworker", (worker) => {
+  /* service worker registered */
+});
+context.on("request", (request) => {
+  /* any request from any page in the context */
+});
+context.on("response", (response) => {
+  /* any response to any page in the context */
+});
+context.on("requestfailed", (request) => {
+  /* any failed request */
+});
+context.on("requestfinished", (request) => {
+  /* request completed */
+});
+context.on("close", () => {
+  /* context closed */
+});
 
 // Page emits these events:
-page.on('popup', (popup) => { /* popup opened FROM THIS page */ });
-page.on('download', (download) => { /* download started from this page */ });
-page.on('dialog', (dialog) => { /* alert/confirm/prompt dialog opened */ });
-page.on('filechooser', (chooser) => { /* file input dialog opened */ });
-page.on('framenavigated', (frame) => { /* frame navigated */ });
-page.on('load', () => { /* page load event */ });
-page.on('domcontentloaded', () => { /* DOMContentLoaded fired */ });
-page.on('close', () => { /* page closed */ });
-page.on('crash', () => { /* page crashed */ });
-page.on('console', (msg) => { /* console.log/warn/error in the page */ });
-page.on('pageerror', (error) => { /* uncaught exception in the page */ });
-page.on('requestfailed', (request) => { /* request failed on THIS page */ });
-page.on('websocket', (ws) => { /* WebSocket opened on THIS page */ });
+page.on("popup", (popup) => {
+  /* popup opened FROM THIS page */
+});
+page.on("download", (download) => {
+  /* download started from this page */
+});
+page.on("dialog", (dialog) => {
+  /* alert/confirm/prompt dialog opened */
+});
+page.on("filechooser", (chooser) => {
+  /* file input dialog opened */
+});
+page.on("framenavigated", (frame) => {
+  /* frame navigated */
+});
+page.on("load", () => {
+  /* page load event */
+});
+page.on("domcontentloaded", () => {
+  /* DOMContentLoaded fired */
+});
+page.on("close", () => {
+  /* page closed */
+});
+page.on("crash", () => {
+  /* page crashed */
+});
+page.on("console", (msg) => {
+  /* console.log/warn/error in the page */
+});
+page.on("pageerror", (error) => {
+  /* uncaught exception in the page */
+});
+page.on("requestfailed", (request) => {
+  /* request failed on THIS page */
+});
+page.on("websocket", (ws) => {
+  /* WebSocket opened on THIS page */
+});
 ```
 
 ### Listening for Console Errors in the New Tab
@@ -601,23 +656,28 @@ page.on('websocket', (ws) => { /* WebSocket opened on THIS page */ });
 const newTabErrors: string[] = [];
 
 const [newTab] = await Promise.all([
-  context.waitForEvent('page'),
-  page.click('#openReport'),
+  context.waitForEvent("page"),
+  page.click("#openReport"),
 ]);
 
 // Start listening immediately after we have the tab reference
-newTab.on('pageerror', (error) => {
+newTab.on("pageerror", (error) => {
   newTabErrors.push(error.message);
 });
-newTab.on('console', (msg) => {
-  if (msg.type() === 'error') newTabErrors.push(msg.text());
+newTab.on("console", (msg) => {
+  if (msg.type() === "error") newTabErrors.push(msg.text());
 });
 
-await newTab.waitForLoadState('domcontentloaded');
-await expect(newTab.locator('.report-content')).toBeVisible({ timeout: 30_000 });
+await newTab.waitForLoadState("domcontentloaded");
+await expect(newTab.locator(".report-content")).toBeVisible({
+  timeout: 30_000,
+});
 
 // Assert no errors occurred
-expect(newTabErrors, `Console errors in new tab: ${newTabErrors.join(', ')}`).toHaveLength(0);
+expect(
+  newTabErrors,
+  `Console errors in new tab: ${newTabErrors.join(", ")}`,
+).toHaveLength(0);
 ```
 
 ---
@@ -646,6 +706,7 @@ D) const newTab = await page.waitForEvent('page');
 <details><summary>Answer</summary>
 
 **C** — The only correct pattern. `Promise.all` ensures `waitForEvent` starts listening BEFORE `click()` fires. Option A has the race condition (click before listener). Option B fires click first then starts listening. Option D is wrong — `page` doesn't emit `'page'` events, `context` does. `page` emits `'popup'` events.
+
 </details>
 
 ---
@@ -654,11 +715,11 @@ D) const newTab = await page.waitForEvent('page');
 
 ```typescript
 const [newTab] = await Promise.all([
-  page.context().waitForEvent('page'),
-  page.locator('#openDetails').click(),
+  page.context().waitForEvent("page"),
+  page.locator("#openDetails").click(),
 ]);
 
-await newTab.waitForLoadState('networkidle'); // waiting for network idle
+await newTab.waitForLoadState("networkidle"); // waiting for network idle
 
 const details = new OrderDetailsPage(newTab);
 await expect(details.titleLocator).toBeVisible();
@@ -669,12 +730,14 @@ await expect(details.titleLocator).toBeVisible();
 `waitForLoadState('networkidle')` waits for no network activity for 500ms. On D365 or any SPA with background polling (session keep-alive, telemetry, real-time updates), `networkidle` NEVER fires because there's always some background request. The test will hang until timeout.
 
 Fix:
+
 ```typescript
-await newTab.waitForLoadState('domcontentloaded');
-await expect(newTab.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
+await newTab.waitForLoadState("domcontentloaded");
+await expect(newTab.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
 // Then assert on actual content:
 await expect(details.titleLocator).toBeVisible({ timeout: 30000 });
 ```
+
 </details>
 
 ---
@@ -682,6 +745,7 @@ await expect(details.titleLocator).toBeVisible({ timeout: 30000 });
 ### Challenge 3 [Write It Yourself]
 
 A billing portal page has a button that downloads a CSV export. Write a test that:
+
 1. Clicks the export button
 2. Captures the download
 3. Asserts the filename matches `citations-export-YYYY-MM-DD.csv`
@@ -691,12 +755,12 @@ A billing portal page has a button that downloads a CSV export. Write a test tha
 <details><summary>Answer</summary>
 
 ```typescript
-test('Citations CSV export downloads correctly', async ({ page }) => {
-  await page.goto('/billing/citations');
-  await expect(page.locator('.citations-grid')).toBeVisible();
+test("Citations CSV export downloads correctly", async ({ page }) => {
+  await page.goto("/billing/citations");
+  await expect(page.locator(".citations-grid")).toBeVisible();
 
   const [download] = await Promise.all([
-    page.waitForEvent('download'),
+    page.waitForEvent("download"),
     page.locator('[data-testid="export-csv-btn"]').click(),
   ]);
 
@@ -712,20 +776,23 @@ test('Citations CSV export downloads correctly', async ({ page }) => {
   const savePath = `./test-results/downloads/${filename}`;
   await download.saveAs(savePath);
 
-  const { readFileSync } = await import('fs');
-  const csvContent = readFileSync(savePath, 'utf-8');
-  const lines = csvContent.trim().split('\n');
+  const { readFileSync } = await import("fs");
+  const csvContent = readFileSync(savePath, "utf-8");
+  const lines = csvContent.trim().split("\n");
 
   // 4. Assert header row
-  expect(lines[0]).toBe('Citation ID,Customer ID,Status,Amount,Issue Date,Due Date');
-  expect(lines.length, 'CSV must have at least 1 data row').toBeGreaterThan(1);
+  expect(lines[0]).toBe(
+    "Citation ID,Customer ID,Status,Amount,Issue Date,Due Date",
+  );
+  expect(lines.length, "CSV must have at least 1 data row").toBeGreaterThan(1);
 
   // 5. Assert first data row structure
-  const firstDataRow = lines[1].split(',');
-  expect(firstDataRow[0]).toMatch(/^CIT-/);  // Citation ID format
-  expect(firstDataRow[2]).toMatch(/^(PENDING|PAID|OVERDUE|DISPUTED)$/);  // Valid status
+  const firstDataRow = lines[1].split(",");
+  expect(firstDataRow[0]).toMatch(/^CIT-/); // Citation ID format
+  expect(firstDataRow[2]).toMatch(/^(PENDING|PAID|OVERDUE|DISPUTED)$/); // Valid status
 });
 ```
+
 </details>
 
 ---
@@ -741,15 +808,18 @@ Explain why `sessionStorage` is NOT shared between two tabs in the same `Browser
 This is by design — `sessionStorage` was intended for single-tab workflows (e.g., a multi-step form) where you don't want the data leaking to other tabs of the same site.
 
 In contrast:
+
 - **Cookies** are sent by the browser with every HTTP request to the matching domain — they're tied to the network layer, not to any specific tab
 - **localStorage** is a persistent, origin-level store explicitly designed to be shared across all browsing contexts for that origin
 
 **Practical implication for tests:**
 If your app uses `sessionStorage` to track a user flow state (e.g., `sessionStorage.setItem('onboardingStep', '3')`), that state is NOT in the new tab. The new tab starts with empty `sessionStorage`. This can cause bugs where:
+
 - Tab 1: user is on step 3 of onboarding
 - Tab 2: user opens a new tab → sees step 1 (sessionStorage is empty)
 
 Tests should verify this behavior explicitly if the app uses sessionStorage for state management.
+
 </details>
 
 ---
@@ -759,20 +829,20 @@ Tests should verify this behavior explicitly if the app uses sessionStorage for 
 The hardest new-tab pattern: you need to interact with Tab 1 and Tab 2 in an interleaved sequence. A real example: the agent creates a note in the CRM tab, and the customer sees it immediately in the portal tab (testing real-time sync).
 
 ```typescript
-test('Real-time sync: agent adds note → customer sees it within 3s', async ({
-  page,    // Tab 1: Agent CRM tab
+test("Real-time sync: agent adds note → customer sees it within 3s", async ({
+  page, // Tab 1: Agent CRM tab
   context,
 }) => {
   const data = {
-    noteId:    null as string | null,
-    noteText:  `Sync test note ${Date.now()}`,
-    customerTab: null as import('@playwright/test').Page | null,
+    noteId: null as string | null,
+    noteText: `Sync test note ${Date.now()}`,
+    customerTab: null as import("@playwright/test").Page | null,
   };
 
   // ── Tab 1: Agent logs into CRM and opens customer record ──────────────────
   const agentCRM = new AgentCRMPage(page);
   await agentCRM.goto();
-  await agentCRM.searchCustomer('CUST-001');
+  await agentCRM.searchCustomer("CUST-001");
   await agentCRM.openCustomerRecord();
 
   // ── Tab 2: Open customer portal in a second tab ────────────────────────────
@@ -785,7 +855,7 @@ test('Real-time sync: agent adds note → customer sees it within 3s', async ({
   await customerPortal.loginWith(data.email!, data.tempPassword!);
 
   // ── Tab 1 (Agent): Add a note to the customer record ──────────────────────
-  await test.step('Agent adds note in CRM (Tab 1)', async () => {
+  await test.step("Agent adds note in CRM (Tab 1)", async () => {
     const agentNotes = new AgentNotesComponent(page);
     await agentNotes.addNote(data.noteText);
     data.noteId = await agentNotes.getLastNoteId();
@@ -793,21 +863,25 @@ test('Real-time sync: agent adds note → customer sees it within 3s', async ({
   });
 
   // ── Tab 2 (Customer): Note should appear within 3 seconds ─────────────────
-  await test.step('Customer sees note in portal within 3s (Tab 2)', async () => {
-    const customerNotifications = new CustomerNotificationsComponent(customerTab);
+  await test.step("Customer sees note in portal within 3s (Tab 2)", async () => {
+    const customerNotifications = new CustomerNotificationsComponent(
+      customerTab,
+    );
 
     // poll() retries the condition until it's true or times out
-    await expect.poll(
-      async () => {
-        const latestNote = await customerNotifications.getLatestNoteText();
-        return latestNote;
-      },
-      {
-        message: `Expected note "${data.noteText}" to appear within 3s`,
-        timeout: 3_000,
-        intervals: [200, 500, 1_000],  // check every 200ms, then 500ms, then 1s
-      }
-    ).toContain(data.noteText);
+    await expect
+      .poll(
+        async () => {
+          const latestNote = await customerNotifications.getLatestNoteText();
+          return latestNote;
+        },
+        {
+          message: `Expected note "${data.noteText}" to appear within 3s`,
+          timeout: 3_000,
+          intervals: [200, 500, 1_000], // check every 200ms, then 500ms, then 1s
+        },
+      )
+      .toContain(data.noteText);
   });
 
   // Cleanup
@@ -841,27 +915,31 @@ const cookies = await newTab.context().cookies();
 **Not required for automation.** Playwright does NOT require a tab to be in the foreground to interact with it. All Playwright commands are sent directly via the CDP (Chrome DevTools Protocol) to the specific page object — regardless of which tab the user is "looking at" in the browser window.
 
 `bringToFront()` does two things:
+
 1. Brings the tab to the foreground in the actual browser window (makes it the active/visible tab)
 2. Triggers the `visibilitychange` browser event on that page (fires `document.visibilityState === 'visible'`)
 
 **When you NEED it:**
+
 - Your app has code that pauses activity when the tab is in the background (`document.addEventListener('visibilitychange', ...)`) — common in video players, real-time dashboards, chat apps
 - You are recording a video and want to show which tab is active
 - A component uses the Page Visibility API and only renders in the foreground tab
 
 **When you DON'T need it:**
+
 - Almost all standard form interactions, clicks, and API calls
 - Reading text, asserting visibility, filling inputs
 
 ```typescript
 // ✅ This works WITHOUT bringToFront():
-await agentTab.locator('#noteInput').fill('Test note');
-await agentTab.locator('#saveNote').click();
+await agentTab.locator("#noteInput").fill("Test note");
+await agentTab.locator("#saveNote").click();
 
 // bringToFront() is only needed if the app pauses when backgrounded:
-await agentTab.bringToFront();  // triggers visibilitychange → app resumes
-await agentTab.locator('#liveDataFeed').waitFor({ state: 'visible' });
+await agentTab.bringToFront(); // triggers visibilitychange → app resumes
+await agentTab.locator("#liveDataFeed").waitFor({ state: "visible" });
 ```
+
 </details>
 
 ---
@@ -872,36 +950,43 @@ await agentTab.locator('#liveDataFeed').waitFor({ state: 'visible' });
 Enterprise apps often integrate with SharePoint. A user clicks "View Document" in D365, which opens a new tab to `company.sharepoint.com`. Because SharePoint uses Microsoft SSO, the user is authenticated, but SharePoint employs a notorious multi-redirect sequence before rendering the document.
 
 **The Trap:**
+
 ```typescript
 const [sharepointTab] = await Promise.all([
-  context.waitForEvent('page'),
-  page.locator('text=View Document').click(),
+  context.waitForEvent("page"),
+  page.locator("text=View Document").click(),
 ]);
 
-await sharepointTab.waitForLoadState('domcontentloaded'); // ❌ Flaky!
-await expect(sharepointTab.locator('.sp-DocumentViewer')).toBeVisible(); // ❌ Fails!
+await sharepointTab.waitForLoadState("domcontentloaded"); // ❌ Flaky!
+await expect(sharepointTab.locator(".sp-DocumentViewer")).toBeVisible(); // ❌ Fails!
 ```
-The `domcontentloaded` state fires on the *first* redirect page (an empty shell), not the final destination. The locator assertion then fails because the final app hasn't loaded yet.
+
+The `domcontentloaded` state fires on the _first_ redirect page (an empty shell), not the final destination. The locator assertion then fails because the final app hasn't loaded yet.
 
 **The Solution:**
 Wait for the URL to stabilize onto the final destination route before asserting on the DOM.
 
 ```typescript
 const [sharepointTab] = await Promise.all([
-  context.waitForEvent('page'),
-  page.locator('text=View Document').click(),
+  context.waitForEvent("page"),
+  page.locator("text=View Document").click(),
 ]);
 
 // ✅ 1. Wait for the URL to reach the final SharePoint destination pattern
 // This handles the N-number of SSO redirects transparently
-await sharepointTab.waitForURL('**/sharepoint.com/**/Doc.aspx**', { timeout: 30000 });
+await sharepointTab.waitForURL("**/sharepoint.com/**/Doc.aspx**", {
+  timeout: 30000,
+});
 
 // ✅ 2. Now wait for the heavy SPA to load
-await sharepointTab.waitForLoadState('domcontentloaded');
+await sharepointTab.waitForLoadState("domcontentloaded");
 
 // ✅ 3. Finally, wait for the actual content
-await expect(sharepointTab.locator('.sp-DocumentViewer')).toBeVisible({ timeout: 20000 });
+await expect(sharepointTab.locator(".sp-DocumentViewer")).toBeVisible({
+  timeout: 20000,
+});
 ```
+
 Never rely purely on `waitForLoadState` when SSO redirects are involved in a new tab.
 
 ---
@@ -909,11 +994,13 @@ Never rely purely on `waitForLoadState` when SSO redirects are involved in a new
 ## 📚 References & Further Reading
 
 ### Official Documentation
+
 - [Playwright Pages (Tabs)](https://playwright.dev/docs/pages) — Official guide on handling multiple pages and tabs
 - [Playwright Events (`waitForEvent`)](https://playwright.dev/docs/events) — Detailed API for event listeners
 - [Playwright `waitForURL`](https://playwright.dev/docs/api/class-page#page-wait-for-url) — Handling redirects reliably
 
 ### Deep Dives
+
 - [MDN: Window `postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) — How complex apps communicate between tabs (useful when testing real-time tab sync)
 - [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) — The strict differences between `sessionStorage` and `localStorage` scopes across tabs
 

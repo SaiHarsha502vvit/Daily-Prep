@@ -1,11 +1,11 @@
 # Semester 5 — Frontend & Developer Experience
 
-| Code | Course | Hours |
-|------|--------|-------|
-| CSE501 | JavaScript & TypeScript Deep Dive | ~20h |
-| CSE502 | React & Frontend Architecture | ~25h |
-| CSE503 | CSS & Design Systems | ~15h |
-| CSE504 | Frontend Integration & Performance | ~15h |
+| Code   | Course                             | Hours |
+| ------ | ---------------------------------- | ----- |
+| CSE501 | JavaScript & TypeScript Deep Dive  | ~20h  |
+| CSE502 | React & Frontend Architecture      | ~25h  |
+| CSE503 | CSS & Design Systems               | ~15h  |
+| CSE504 | Frontend Integration & Performance | ~15h  |
 
 **Prerequisites:** [Semester 3 — Software Engineering Core](../S03/README.md)
 

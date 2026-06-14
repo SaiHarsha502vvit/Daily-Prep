@@ -51,7 +51,6 @@ _"Secure your data from the ground up"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Table of Contents
@@ -76,7 +75,6 @@ _"Secure your data from the ground up"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -114,7 +112,6 @@ _"Secure your data from the ground up"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Entity Classes
 
@@ -156,7 +153,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     // ==================== ACCOUNT STATUS FLAGS ====================
-    
+
     @Column(name = "account_non_expired")
     @Builder.Default
     private boolean accountNonExpired = true;
@@ -173,7 +170,7 @@ public class User implements UserDetails {
     private boolean enabled = true;
 
     // ==================== SECURITY TRACKING ====================
-    
+
     @Column(name = "failed_login_attempts")
     @Builder.Default
     private int failedLoginAttempts = 0;
@@ -191,7 +188,7 @@ public class User implements UserDetails {
     private String lastLoginIp;
 
     // ==================== ROLES ====================
-    
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
@@ -202,7 +199,7 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     // ==================== AUDIT FIELDS ====================
-    
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -220,22 +217,22 @@ public class User implements UserDetails {
     private String updatedBy;
 
     // ==================== UserDetails Implementation ====================
-    
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        
+
         // Add roles as authorities (prefixed with ROLE_)
         roles.forEach(role -> {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-            
+
             // Add permissions from each role
-            role.getPermissions().forEach(permission -> 
+            role.getPermissions().forEach(permission ->
                 authorities.add(new SimpleGrantedAuthority(permission.getName()))
             );
         });
-        
+
         return authorities;
     }
 
@@ -260,7 +257,7 @@ public class User implements UserDetails {
     }
 
     // ==================== HELPER METHODS ====================
-    
+
     public void incrementFailedLoginAttempts() {
         this.failedLoginAttempts++;
     }
@@ -373,7 +370,7 @@ public class Permission {
     public static String createName(String resource, String action) {
         return resource + ":" + action;
     }
-    
+
     // Common permission patterns
     public static final String READ = "read";
     public static final String WRITE = "write";
@@ -476,11 +473,11 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r, permissions p WHERE r.name = 'ADMIN';
 
 INSERT INTO role_permissions (role_id, permission_id)
-SELECT r.id, p.id FROM roles r, permissions p 
+SELECT r.id, p.id FROM roles r, permissions p
 WHERE r.name = 'USER' AND p.name IN ('users:read', 'orders:read', 'orders:write', 'products:read');
 
 INSERT INTO role_permissions (role_id, permission_id)
-SELECT r.id, p.id FROM roles r, permissions p 
+SELECT r.id, p.id FROM roles r, permissions p
 WHERE r.name = 'MODERATOR' AND p.name IN ('users:read', 'users:write', 'orders:read', 'products:read', 'products:write');
 ```
 
@@ -505,19 +502,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String usernameOrEmail) 
+    public UserDetails loadUserByUsername(String usernameOrEmail)
             throws UsernameNotFoundException {
-        
+
         log.debug("Loading user by username or email: {}", usernameOrEmail);
-        
+
         // Check if user is blocked due to too many failed attempts
         if (loginAttemptService.isBlocked(usernameOrEmail)) {
-            log.warn("User {} is blocked due to too many failed login attempts", 
+            log.warn("User {} is blocked due to too many failed login attempts",
                 usernameOrEmail);
             throw new LockedException("Account is temporarily locked due to " +
                 "too many failed login attempts. Try again later.");
         }
-        
+
         // Find user by username or email
         User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
             .orElseThrow(() -> {
@@ -526,10 +523,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                     "User not found with username or email: " + usernameOrEmail
                 );
             });
-        
+
         // Check account status
         validateAccountStatus(user);
-        
+
         return user;
     }
 
@@ -537,15 +534,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (!user.isEnabled()) {
             throw new DisabledException("Account is disabled. Please contact support.");
         }
-        
+
         if (!user.isAccountNonLocked()) {
             throw new LockedException("Account is locked. Please contact support.");
         }
-        
+
         if (!user.isAccountNonExpired()) {
             throw new AccountExpiredException("Account has expired.");
         }
-        
+
         if (!user.isCredentialsNonExpired()) {
             throw new CredentialsExpiredException("Password has expired. Please reset.");
         }
@@ -608,10 +605,10 @@ public class AuthenticationEventListener {
     @EventListener
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {
         String username = event.getAuthentication().getName();
-        
+
         log.info("Successful login for user: {}", username);
         loginAttemptService.loginSucceeded(username);
-        
+
         // Update last login info
         userRepository.findByUsername(username).ifPresent(user -> {
             user.resetFailedLoginAttempts();
@@ -624,28 +621,28 @@ public class AuthenticationEventListener {
     @EventListener
     public void onAuthenticationFailure(AuthenticationFailureBadCredentialsEvent event) {
         String username = (String) event.getAuthentication().getPrincipal();
-        
+
         log.warn("Failed login attempt for user: {}", username);
         loginAttemptService.loginFailed(username);
-        
+
         // Update failed attempts in database
         userRepository.findByUsername(username).ifPresent(user -> {
             user.incrementFailedLoginAttempts();
-            
+
             if (user.getFailedLoginAttempts() >= 5) {
                 user.lockAccount();
-                log.warn("Account locked for user: {} after {} failed attempts", 
+                log.warn("Account locked for user: {} after {} failed attempts",
                     username, user.getFailedLoginAttempts());
             }
-            
+
             userRepository.save(user);
         });
     }
 
     private String getClientIp() {
-        ServletRequestAttributes attributes = 
+        ServletRequestAttributes attributes =
             (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        
+
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
             String ip = request.getHeader("X-Forwarded-For");
@@ -661,16 +658,15 @@ public class AuthenticationEventListener {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 2: Implementing UserDetailsService**
 
 **Challenge 1 (Reasoning):** Why does indexing a boolean column (e.g., `is_active`) usually result in terrible query performance and a bloated database?
+
 <details><summary>Answer</summary>
 
 Low Cardinality. A B-Tree index is efficient when it can rapidly eliminate large chunks of data (high cardinality, like unique IDs). A boolean column only has two possible values. If 90% of your users are `is_active=true`, the database optimizer will realize the index provides almost no filtering power and will completely ignore it, performing a Full Table Scan anyway. You just wasted disk space and slowed down every `INSERT`/`UPDATE` operation for an index that is never used.
-</details>
 
+</details>
 
 # 🔒 Section 3: Password Security
 
@@ -719,20 +715,20 @@ public class PasswordConfig {
     @Profile("migration")
     public PasswordEncoder delegatingPasswordEncoder() {
         String defaultEncoder = "bcrypt";
-        
+
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder(12));
         encoders.put("argon2", new Argon2PasswordEncoder());
         encoders.put("scrypt", new SCryptPasswordEncoder());
         // Legacy encoders for migration
         encoders.put("sha256", new StandardPasswordEncoder());  // Deprecated
-        
-        DelegatingPasswordEncoder encoder = 
+
+        DelegatingPasswordEncoder encoder =
             new DelegatingPasswordEncoder(defaultEncoder, encoders);
-        
+
         // For encoding passwords without prefix (when upgrading)
         encoder.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder(12));
-        
+
         return encoder;
     }
 }
@@ -761,7 +757,7 @@ public class PasswordValidationService {
         if (password.length() < MIN_LENGTH) {
             errors.add("Password must be at least " + MIN_LENGTH + " characters");
         }
-        
+
         if (password.length() > MAX_LENGTH) {
             errors.add("Password must not exceed " + MAX_LENGTH + " characters");
         }
@@ -794,12 +790,12 @@ public class PasswordValidationService {
 
     private boolean containsPersonalInfo(String password, User user) {
         String lowerPassword = password.toLowerCase();
-        
+
         return lowerPassword.contains(user.getUsername().toLowerCase()) ||
                lowerPassword.contains(user.getEmail().split("@")[0].toLowerCase()) ||
-               (user.getFirstName() != null && 
+               (user.getFirstName() != null &&
                 lowerPassword.contains(user.getFirstName().toLowerCase())) ||
-               (user.getLastName() != null && 
+               (user.getLastName() != null &&
                 lowerPassword.contains(user.getLastName().toLowerCase()));
     }
 
@@ -831,7 +827,7 @@ public class PasswordValidationService {
             );
 
             // Check if suffix exists in response
-            return response != null && 
+            return response != null &&
                    Arrays.stream(response.split("\n"))
                        .anyMatch(line -> line.startsWith(suffix));
 
@@ -880,7 +876,7 @@ public class PasswordExpiryChecker {
         expiredUsers.forEach(user -> {
             user.setCredentialsNonExpired(false);
             userRepository.save(user);
-            
+
             // Send reminder email
             notificationService.sendPasswordExpiryNotification(user);
         });
@@ -890,16 +886,15 @@ public class PasswordExpiryChecker {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 3: Password Encoding & Validation**
 
 **Challenge 1 (Reasoning):** Why does indexing a boolean column (e.g., `is_active`) usually result in terrible query performance and a bloated database?
+
 <details><summary>Answer</summary>
 
 Low Cardinality. A B-Tree index is efficient when it can rapidly eliminate large chunks of data (high cardinality, like unique IDs). A boolean column only has two possible values. If 90% of your users are `is_active=true`, the database optimizer will realize the index provides almost no filtering power and will completely ignore it, performing a Full Table Scan anyway. You just wasted disk space and slowed down every `INSERT`/`UPDATE` operation for an index that is never used.
-</details>
 
+</details>
 
 # 🔒 Section 4: Method — Level Security
 
@@ -917,11 +912,11 @@ Low Cardinality. A B-Tree index is efficient when it can rapidly eliminate large
     prePostEnabled = true       // Enable @PreAuthorize/@PostAuthorize
 )
 public class MethodSecurityConfig {
-    
+
     // Custom permission evaluator for complex authorization
     @Bean
     public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler handler = 
+        DefaultMethodSecurityExpressionHandler handler =
             new DefaultMethodSecurityExpressionHandler();
         handler.setPermissionEvaluator(new CustomPermissionEvaluator());
         return handler;
@@ -995,7 +990,7 @@ public class UserService {
      * Multiple conditions
      */
     @PreAuthorize("""
-        hasRole('ADMIN') or 
+        hasRole('ADMIN') or
         (hasRole('MANAGER') and @securityService.isManager(#departmentId, authentication)) or
         (hasAuthority('users:read') and #departmentId == authentication.principal.departmentId)
     """)
@@ -1049,21 +1044,18 @@ public class SecurityService {
 
     public boolean belongsToSameOrganization(Long targetUserId, Authentication auth) {
         User currentUser = (User) auth.getPrincipal();
-        
+
         return userRepository.findById(targetUserId)
 ```
 
-
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 4: @PreAuthorize, @Secured, and Custom Expressions**
 
 **Challenge 1 (Selection):** A method needs row-level access control: admins can update any user, but normal users can update only their own profile. Should you use `@Secured`, plain `hasRole`, or a custom expression?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
@@ -1074,5 +1066,5 @@ public void updateUser(Long userId, UpdateUserRequest request) {
 ```
 
 Use `@Secured` for simple role gates only. Use `@PreAuthorize` when the rule depends on method arguments, ownership, tenant, or entity state. Put reusable row-level checks behind `@authz` so controllers/services do not duplicate repository lookups and security logic.
-</details>
 
+</details>

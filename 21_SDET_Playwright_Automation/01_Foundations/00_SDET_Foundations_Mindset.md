@@ -42,13 +42,13 @@ That changes everything about how you design it:
 
 ### The Manual QA → SDET → SDE Progression
 
-| Dimension | Manual QA | SDET | SDE (target) |
-|---|---|---|---|
-| **Output** | Test cases, bug reports | Test framework, CI pipeline | Production features |
-| **Thinking** | "What might break?" | "How do I prove this works at scale?" | "How do I build this to be correct?" |
-| **Core skill** | Domain knowledge | Engineering + domain | Engineering |
-| **Daily question** | "Did this scenario pass?" | "Is my test suite trustworthy?" | "Is my system correct?" |
-| **Failure mode** | Miss edge cases | Flaky tests, slow CI | Bugs in production |
+| Dimension          | Manual QA                 | SDET                                  | SDE (target)                         |
+| ------------------ | ------------------------- | ------------------------------------- | ------------------------------------ |
+| **Output**         | Test cases, bug reports   | Test framework, CI pipeline           | Production features                  |
+| **Thinking**       | "What might break?"       | "How do I prove this works at scale?" | "How do I build this to be correct?" |
+| **Core skill**     | Domain knowledge          | Engineering + domain                  | Engineering                          |
+| **Daily question** | "Did this scenario pass?" | "Is my test suite trustworthy?"       | "Is my system correct?"              |
+| **Failure mode**   | Miss edge cases           | Flaky tests, slow CI                  | Bugs in production                   |
 
 The SDET who also thinks like an SDE is rare and extremely valuable. That is the target of this curriculum.
 
@@ -56,7 +56,7 @@ The SDET who also thinks like an SDE is rare and extremely valuable. That is the
 
 ## 2. The Testing Pyramid — The Most Important Mental Model
 
-The Testing Pyramid (originally described by Mike Cohn in *Succeeding with Agile*, 2009) is the foundational framework for all test strategy decisions.
+The Testing Pyramid (originally described by Mike Cohn in _Succeeding with Agile_, 2009) is the foundational framework for all test strategy decisions.
 
 ```
                      ╔══════════════╗
@@ -76,6 +76,7 @@ The Testing Pyramid (originally described by Mike Cohn in *Succeeding with Agile
 ### The 3 Layers Explained
 
 **Layer 1 — Unit Tests (the foundation)**
+
 - Written by: developers
 - What they test: a single function, class, or component in complete isolation
 - Mocking: everything external is mocked (database, network, time)
@@ -84,6 +85,7 @@ The Testing Pyramid (originally described by Mike Cohn in *Succeeding with Agile
 - Your role as SDET: review them, sometimes write them for shared utilities
 
 **Layer 2 — Integration / API Tests (the middle)**
+
 - Written by: SDETs and developers
 - What they test: two or more real components interacting (API + database, service A + service B)
 - Mocking: minimal — you want to test real interactions
@@ -92,6 +94,7 @@ The Testing Pyramid (originally described by Mike Cohn in *Succeeding with Agile
 - Your role as SDET: own this layer — it gives the highest ROI
 
 **Layer 3 — E2E / UI Tests (the tip)**
+
 - Written by: SDETs
 - What they test: the complete user journey through a real browser
 - Mocking: none (tests real system) or minimal (isolate third parties)
@@ -115,6 +118,7 @@ The Testing Pyramid (originally described by Mike Cohn in *Succeeding with Agile
 ```
 
 This is how most companies start. The consequences:
+
 - CI pipeline takes 4 hours on every PR
 - Tests fail 30% of the time due to timing issues
 - A single DOM change breaks 50 tests
@@ -136,10 +140,11 @@ Every flaky test, every "it works on my machine" failure, every mysteriously pas
 **Definition:** A test is idempotent if running it once gives the same result as running it 100 times. The test does not depend on any state left by a previous run.
 
 **The violation:**
+
 ```typescript
 // ❌ NOT idempotent — fails on second run
-test('Create a citation for customer John Doe', async () => {
-  await citationsClient.create({ customerId: 'USR-FIXED-001', amount: 150 });
+test("Create a citation for customer John Doe", async () => {
+  await citationsClient.create({ customerId: "USR-FIXED-001", amount: 150 });
   // Run 1: creates CIT-001 for USR-FIXED-001 → passes
   // Run 2: USR-FIXED-001 already has a citation → duplicate error → fails
   // Run 3: database constraint blocks → fails
@@ -147,12 +152,13 @@ test('Create a citation for customer John Doe', async () => {
 ```
 
 **The fix — unique identity + cleanup:**
+
 ```typescript
 // ✅ Idempotent — passes every time regardless of how many times it's run
-test('Create a citation', async ({ account, citationsClient }) => {
+test("Create a citation", async ({ account, citationsClient }) => {
   // account.userId is unique per test run — no collision possible
   const citation = await citationsClient.create(
-    PayloadsCitation.pending({ customerId: account.userId })
+    PayloadsCitation.pending({ customerId: account.userId }),
   );
   expect(citation.citationId).toMatch(/^CIT-/);
   // Cleanup happens in the fixture's finally block — slate is clean for next run
@@ -168,33 +174,39 @@ test('Create a citation', async ({ account, citationsClient }) => {
 **Definition:** A test must not depend on any state created, modified, or deleted by another test. The ORDER tests run in must not matter.
 
 **The violation:**
+
 ```typescript
 // ❌ Test B depends on Test A having run first
-test('A: Create citation CIT-SHARED', async () => {
-  await db.insert('citations', { id: 'CIT-SHARED', status: 'PENDING' });
+test("A: Create citation CIT-SHARED", async () => {
+  await db.insert("citations", { id: "CIT-SHARED", status: "PENDING" });
 });
 
-test('B: Dispute citation CIT-SHARED', async () => {
-  await page.goto('/citations/CIT-SHARED');          // what if A ran second?
-  await disputeForm.submit('Wrong amount');           // what if A failed?
-  await expect(statusBadge).toHaveText('DISPUTED');
+test("B: Dispute citation CIT-SHARED", async () => {
+  await page.goto("/citations/CIT-SHARED"); // what if A ran second?
+  await disputeForm.submit("Wrong amount"); // what if A failed?
+  await expect(statusBadge).toHaveText("DISPUTED");
 });
 ```
 
 Run tests in random order → Test B fails. Run tests in parallel → both tests operate on the same record → race condition. Move Test A to a different file → Test B breaks immediately.
 
 **The fix:**
+
 ```typescript
 // ✅ Each test creates its own data
-test('Dispute a pending citation', async ({ account, citationsClient, page }) => {
+test("Dispute a pending citation", async ({
+  account,
+  citationsClient,
+  page,
+}) => {
   // Create MY OWN citation — don't share with other tests
   const citation = await citationsClient.create(
-    PayloadsCitation.pending({ customerId: account.userId })
+    PayloadsCitation.pending({ customerId: account.userId }),
   );
   // Now test against MY citation — cannot be affected by any other test
   await page.goto(`/citations/${citation.citationId}`);
-  await disputeForm.submit('Wrong amount');
-  await expect(statusBadge).toHaveText('DISPUTED');
+  await disputeForm.submit("Wrong amount");
+  await expect(statusBadge).toHaveText("DISPUTED");
 });
 ```
 
@@ -207,11 +219,12 @@ The test-data isolation (unique per-test data) is YOUR responsibility as SDET �
 **Definition:** Never use `page.waitForTimeout(N)`. Instead, wait for the application to reach a specific observable state.
 
 **The violation:**
+
 ```typescript
 // ❌ Hard sleep — the silent killer of test reliability
-await page.click('#saveBtn');
-await page.waitForTimeout(3000);  // "the page usually loads in 2s, so 3s should work"
-await expect(page.locator('.success')).toBeVisible();
+await page.click("#saveBtn");
+await page.waitForTimeout(3000); // "the page usually loads in 2s, so 3s should work"
+await expect(page.locator(".success")).toBeVisible();
 
 // What happens:
 // Normal day: save takes 1.2s → you wait 1.8s unnecessarily (slow)
@@ -221,23 +234,29 @@ await expect(page.locator('.success')).toBeVisible();
 ```
 
 **The fix — wait for observable state:**
+
 ```typescript
 // ✅ Wait for what the user would observe
-await page.click('#saveBtn');
+await page.click("#saveBtn");
 
 // Wait for: loading spinner to disappear (D365 pattern)
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30_000 });
 
 // Wait for: success notification to appear
-await expect(page.locator('.notification-success')).toBeVisible({ timeout: 15_000 });
+await expect(page.locator(".notification-success")).toBeVisible({
+  timeout: 15_000,
+});
 
 // Wait for: navigation to complete (SPA pattern)
-await page.waitForURL('**/citations/*/detail', { timeout: 15_000 });
+await page.waitForURL("**/citations/*/detail", { timeout: 15_000 });
 
 // Wait for: API call to complete (network-level wait)
 const [saveResponse] = await Promise.all([
-  page.waitForResponse(res => res.url().includes('/api/citations') && res.request().method() === 'POST'),
-  page.click('#saveBtn'),
+  page.waitForResponse(
+    (res) =>
+      res.url().includes("/api/citations") && res.request().method() === "POST",
+  ),
+  page.click("#saveBtn"),
 ]);
 expect(saveResponse.status()).toBe(201);
 ```
@@ -439,6 +458,7 @@ In CI, Playwright runs tests in parallel across multiple workers. There is no gu
 Additionally, CI often runs tests in a different order than your local machine. `playwright.config.ts` can randomise test order. If tests are order-dependent, the suite is non-deterministic — it passes sometimes and fails sometimes with no code changes. This breaks trust in the entire test suite.
 
 The fix: every test creates ALL the data it needs (setup in `beforeEach` or fixtures) and cleans up in `afterEach` or fixture teardown. No test should rely on another test's side effects.
+
 </details>
 
 ---
@@ -450,31 +470,39 @@ The fix: every test creates ALL the data it needs (setup in `beforeEach` or fixt
 This is a **flaky test** — likely a timing issue or shared state problem. Systematic approach:
 
 **1. Check CI vs local differences:**
+
 - CI machines are slower (less CPU, shared I/O) → timeouts that work locally might not hold in CI
 - Increase assertion timeouts to 30s for network-dependent assertions
 
 **2. Check for shared state:**
+
 - Is the test using a shared account or shared test data?
 - Do parallel workers write to the same record?
 - Does the test depend on data from a previous test?
 
 **3. Check for race conditions:**
+
 - Is there a `Promise.all` where the listener might miss the event?
 - Is the test checking a value that might still be loading (two-phase render)?
 
 **4. Use `--repeat-each=20` to reproduce locally:**
+
 ```bash
 npx playwright test tests/specs/myflakytest.spec.ts --repeat-each=20
 ```
+
 Run it 20 times in a row. If it fails even once → race condition. Examine the failures.
 
 **5. Check the trace:**
+
 ```bash
 npx playwright test --trace on
 ```
+
 The trace shows the page state at every step. You can see if the element existed but wasn't yet text-filled, or if the page navigated away.
 
 **6. Fix strategies by flakiness type:**
+
 - Timing: replace `waitForTimeout` with `expect(locator).toHaveText(value, { timeout: 30_000 })`
 - Shared state: give each test a unique account and unique data
 - Race condition: use `Promise.all([listener, action])` pattern
@@ -489,6 +517,7 @@ The trace shows the page state at every step. You can see if the element existed
 "I won't automate all 300 in Playwright, because that would give us the most expensive, slowest, and most fragile test suite possible. Here's my proposal instead:"
 
 **Step 1 — Classify the 300 tests by pyramid layer:**
+
 - Which test cases are verifying business logic? → API test (10x faster, 10x more reliable)
 - Which test cases are verifying data persistence? → DB test or API + DB test
 - Which test cases are verifying UI rendering of known data? → Playwright
@@ -501,6 +530,7 @@ Typically: 120 cases can become API tests, 60 become DB verifications, 80 become
 Which 20 UI tests, if broken, would cause a production incident? Automate those first. Don't automate low-risk admin screens that change monthly.
 
 **Result:** 80 fast, reliable automated tests that catch 95% of regressions, instead of 300 slow, brittle UI tests that catch 60% of regressions after a 4-hour CI run.
+
 </details>
 
 ---
@@ -521,9 +551,9 @@ graph TD
 
 **What each transition requires:**
 
-| Transition | You Must Learn | You Must Stop Doing |
-|---|---|---|
-| Manual QA → SDET | TypeScript, Playwright, Git, CI/CD, POM design, API testing | Writing test cases in spreadsheets, manual execution, "it works on my machine" |
+| Transition         | You Must Learn                                                                                  | You Must Stop Doing                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Manual QA → SDET   | TypeScript, Playwright, Git, CI/CD, POM design, API testing                                     | Writing test cases in spreadsheets, manual execution, "it works on my machine"               |
 | SDET → SDE in Test | Algorithms, system design, type systems, architectural patterns, cross-team framework ownership | Copy-pasting test patterns, avoiding code reviews, treating the test repo as "not real code" |
 
 ---
@@ -532,15 +562,15 @@ graph TD
 
 Every item below is something working SDETs do in production. Knowing these will save you months of debugging.
 
-| # | Anti-Pattern | What It Looks Like | Why It Fails | Fix |
-|---|---|---|---|---|
-| 1 | **Test-Order Dependency** | Test B relies on Test A creating data first. Tests pass locally in file order, fail in parallel CI. | Playwright runs tests in parallel across workers. No ordering guarantee exists. Workers don't share memory. | Each test creates ALL its own data via fixtures. No test reads another test's side effects. |
-| 2 | **Hardcoded Sleeps** | `await page.waitForTimeout(5000)` scattered throughout the test suite. CI runs take 45 minutes. | Sleeps are either too short (flaky on slow CI) or too long (waste minutes per test × hundreds of tests). They encode YOUR machine's timing, not the application's actual state. | `expect(locator).toBeVisible()`, `page.waitForURL()`, `page.waitForResponse()` — wait for observable state, not clock time. |
-| 3 | **Global Shared Test Accounts** | All 200 tests use `user: 'test-admin@company.com'`. Two workers log in simultaneously — cookie collision, 50% flakiness. | Shared accounts create race conditions: Worker 1 changes a setting, Worker 2 sees it mid-test. Password changes break everything. Session conflicts cause random 401s. | One unique account per worker (worker-scoped fixture). Account credentials stored in environment config, not hardcoded. |
-| 4 | **Assertion-Less Tests** | `test('Create citation', async () => { await page.goto(url); await form.fill(); await form.submit(); });` — no `expect()` anywhere. | The test passes even when the form submission silently fails. It tests "does the code run without throwing?" not "does the feature work correctly?" A 500 error from the server won't fail this test unless it causes a navigation error. | Every test must have at least one `expect()` that verifies business-meaningful state: `expect(statusBadge).toHaveText('PAID')`. |
-| 5 | **Testing Implementation, Not Behaviour** | `expect(page.locator('.css-1a2b3c.MuiButton-root')).toBeVisible()` — asserting on generated CSS class names. | The CSS class changes every build (CSS Modules, Styled Components). The test breaks even though the feature still works perfectly. You tested the framework's internal naming, not the user's experience. | Assert on behaviour: `expect(page.getByRole('button', { name: 'Save' })).toBeEnabled()`. Assert on visible text: `expect(heading).toHaveText('Citation Created')`. Never assert on generated class names. |
-| 6 | **Mega Test Files** | A single `spec.ts` file with 40 tests covering login, citations, payments, and admin. Takes 8 minutes. | One failure requires re-running all 40 tests. Can't parallelise within a file. Can't skip unrelated tests when only the login flow changed. Merge conflicts are constant. | One spec file per feature area. Max 8-10 tests per file. Group by business domain, not by "what I wrote this week." |
-| 7 | **Copy-Paste Locators** | The same `page.locator('[data-testid="citation-grid"]')` appears in 15 test files. Grid redesign breaks all 15. | Violates DRY (Don't Repeat Yourself). The fix for a locator change touches 15 files instead of 1. Review burden multiplies. | POM or Component Object: `citationsPage.grid` encapsulates the locator. Change it in one place, all 15 tests work. |
+| #   | Anti-Pattern                              | What It Looks Like                                                                                                                  | Why It Fails                                                                                                                                                                                                                              | Fix                                                                                                                                                                                                       |
+| --- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Test-Order Dependency**                 | Test B relies on Test A creating data first. Tests pass locally in file order, fail in parallel CI.                                 | Playwright runs tests in parallel across workers. No ordering guarantee exists. Workers don't share memory.                                                                                                                               | Each test creates ALL its own data via fixtures. No test reads another test's side effects.                                                                                                               |
+| 2   | **Hardcoded Sleeps**                      | `await page.waitForTimeout(5000)` scattered throughout the test suite. CI runs take 45 minutes.                                     | Sleeps are either too short (flaky on slow CI) or too long (waste minutes per test × hundreds of tests). They encode YOUR machine's timing, not the application's actual state.                                                           | `expect(locator).toBeVisible()`, `page.waitForURL()`, `page.waitForResponse()` — wait for observable state, not clock time.                                                                               |
+| 3   | **Global Shared Test Accounts**           | All 200 tests use `user: 'test-admin@company.com'`. Two workers log in simultaneously — cookie collision, 50% flakiness.            | Shared accounts create race conditions: Worker 1 changes a setting, Worker 2 sees it mid-test. Password changes break everything. Session conflicts cause random 401s.                                                                    | One unique account per worker (worker-scoped fixture). Account credentials stored in environment config, not hardcoded.                                                                                   |
+| 4   | **Assertion-Less Tests**                  | `test('Create citation', async () => { await page.goto(url); await form.fill(); await form.submit(); });` — no `expect()` anywhere. | The test passes even when the form submission silently fails. It tests "does the code run without throwing?" not "does the feature work correctly?" A 500 error from the server won't fail this test unless it causes a navigation error. | Every test must have at least one `expect()` that verifies business-meaningful state: `expect(statusBadge).toHaveText('PAID')`.                                                                           |
+| 5   | **Testing Implementation, Not Behaviour** | `expect(page.locator('.css-1a2b3c.MuiButton-root')).toBeVisible()` — asserting on generated CSS class names.                        | The CSS class changes every build (CSS Modules, Styled Components). The test breaks even though the feature still works perfectly. You tested the framework's internal naming, not the user's experience.                                 | Assert on behaviour: `expect(page.getByRole('button', { name: 'Save' })).toBeEnabled()`. Assert on visible text: `expect(heading).toHaveText('Citation Created')`. Never assert on generated class names. |
+| 6   | **Mega Test Files**                       | A single `spec.ts` file with 40 tests covering login, citations, payments, and admin. Takes 8 minutes.                              | One failure requires re-running all 40 tests. Can't parallelise within a file. Can't skip unrelated tests when only the login flow changed. Merge conflicts are constant.                                                                 | One spec file per feature area. Max 8-10 tests per file. Group by business domain, not by "what I wrote this week."                                                                                       |
+| 7   | **Copy-Paste Locators**                   | The same `page.locator('[data-testid="citation-grid"]')` appears in 15 test files. Grid redesign breaks all 15.                     | Violates DRY (Don't Repeat Yourself). The fix for a locator change touches 15 files instead of 1. Review burden multiplies.                                                                                                               | POM or Component Object: `citationsPage.grid` encapsulates the locator. Change it in one place, all 15 tests work.                                                                                        |
 
 ---
 
@@ -593,19 +623,22 @@ When I'd choose NOT to use it: (1) for a one-off test that will never be expande
 ## 📚 References & Further Reading
 
 ### Official Documentation
+
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices) — Playwright's own guide to writing stable, reliable tests
 - [Playwright Test Assertions](https://playwright.dev/docs/test-assertions) — Auto-retrying vs one-shot assertions explained
 - [Playwright Test Retries](https://playwright.dev/docs/test-retries) — How retry mechanisms work and when to use them
 - [Playwright Trace Viewer](https://playwright.dev/docs/trace-viewer-intro) — Debug failed tests with full page state replay
 
 ### Foundational Articles
+
 - [The Test Pyramid — Martin Fowler](https://martinfowler.com/bliki/TestPyramid.html) — The original description of the testing pyramid concept by the person who popularised it
 - [The Practical Test Pyramid — Ham Vocke](https://martinfowler.com/articles/practical-test-pyramid.html) — A modern, detailed walkthrough of each pyramid layer with real code examples
 - [Testing Library Query Priority](https://testing-library.com/docs/queries/about/#priority) — The semantic locator priority hierarchy that Playwright's `getByRole` strategy is based on
 
 ### Books
-- *Succeeding with Agile* — Mike Cohn (2009) — Chapter 16 introduces the Testing Pyramid
-- *Software Engineering at Google* — Winters, Manshreck, Wright (2020) — Chapter 11 "Testing Overview" covers test flakiness, test size, and pyramid strategy at scale
+
+- _Succeeding with Agile_ — Mike Cohn (2009) — Chapter 16 introduces the Testing Pyramid
+- _Software Engineering at Google_ — Winters, Manshreck, Wright (2020) — Chapter 11 "Testing Overview" covers test flakiness, test size, and pyramid strategy at scale
 
 ---
 

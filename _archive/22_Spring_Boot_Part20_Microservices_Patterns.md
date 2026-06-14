@@ -1,4 +1,5 @@
 # Spring Boot Part 20: Microservices Patterns
+
 ## Service Discovery, API Gateway, Circuit Breakers, and More
 
 > **"Microservices are about doing one thing well, and integrating elegantly"** - Distributed systems done right
@@ -53,6 +54,7 @@
 ---
 
 ## 📚 Table of Contents
+
 1. [Microservices Architecture Overview](#microservices-architecture-overview)
 2. [Service Discovery](#service-discovery)
 3. [API Gateway Pattern](#api-gateway-pattern)
@@ -112,13 +114,13 @@
 
 ### Key Principles
 
-| Principle | Description | Example |
-|-----------|-------------|---------|
+| Principle             | Description                           | Example                           |
+| --------------------- | ------------------------------------- | --------------------------------- |
 | Single Responsibility | One service = one business capability | Order Service only handles orders |
-| Decentralized Data | Each service owns its data | Order DB separate from User DB |
-| Design for Failure | Expect and handle failures | Circuit breakers, retries |
-| Loose Coupling | Minimize dependencies | Event-driven communication |
-| High Cohesion | Related functions together | All order logic in Order Service |
+| Decentralized Data    | Each service owns its data            | Order DB separate from User DB    |
+| Design for Failure    | Expect and handle failures            | Circuit breakers, retries         |
+| Loose Coupling        | Minimize dependencies                 | Event-driven communication        |
+| High Cohesion         | Related functions together            | All order logic in Order Service  |
 
 ### Spring Cloud Ecosystem
 
@@ -214,8 +216,8 @@ eureka:
   instance:
     hostname: localhost
   client:
-    register-with-eureka: false   # Server doesn't register itself
-    fetch-registry: false         # Server doesn't fetch registry
+    register-with-eureka: false # Server doesn't register itself
+    fetch-registry: false # Server doesn't fetch registry
   server:
     enable-self-preservation: true
     eviction-interval-timer-in-ms: 5000
@@ -245,7 +247,7 @@ public class OrderServiceApplication {
 # application.yml for Order Service (Eureka Client)
 spring:
   application:
-    name: order-service   # This name is used for service discovery
+    name: order-service # This name is used for service discovery
 
 eureka:
   client:
@@ -265,25 +267,25 @@ eureka:
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final DiscoveryClient discoveryClient;
     private final RestTemplate restTemplate;
-    
+
     // Method 1: Manual Discovery
     public User getUserManually(Long userId) {
         List<ServiceInstance> instances = discoveryClient
             .getInstances("user-service");
-        
+
         if (instances.isEmpty()) {
             throw new ServiceUnavailableException("user-service not available");
         }
-        
+
         ServiceInstance instance = instances.get(0); // Simple selection
         String url = instance.getUri() + "/api/users/" + userId;
-        
+
         return restTemplate.getForObject(url, User.class);
     }
-    
+
     // Method 2: Using @LoadBalanced RestTemplate (Recommended)
     public User getUserWithLoadBalancer(Long userId) {
         // Uses logical service name - load balancer resolves it
@@ -296,7 +298,7 @@ public class OrderService {
 
 @Configuration
 public class RestTemplateConfig {
-    
+
     @Bean
     @LoadBalanced  // Enables service discovery and load balancing
     public RestTemplate restTemplate() {
@@ -310,7 +312,7 @@ public class RestTemplateConfig {
 ```java
 @Configuration
 public class WebClientConfig {
-    
+
     @Bean
     @LoadBalanced
     public WebClient.Builder loadBalancedWebClientBuilder() {
@@ -321,9 +323,9 @@ public class WebClientConfig {
 @Service
 @RequiredArgsConstructor
 public class OrderServiceReactive {
-    
+
     private final WebClient.Builder webClientBuilder;
-    
+
     public Mono<User> getUser(Long userId) {
         return webClientBuilder.build()
             .get()
@@ -356,16 +358,16 @@ public class OrderServiceApplication {
 // Feign Client Interface
 @FeignClient(name = "user-service", fallback = UserClientFallback.class)
 public interface UserClient {
-    
+
     @GetMapping("/api/users/{id}")
     User getUser(@PathVariable("id") Long id);
-    
+
     @GetMapping("/api/users")
     List<User> getAllUsers();
-    
+
     @PostMapping("/api/users")
     User createUser(@RequestBody CreateUserRequest request);
-    
+
     @GetMapping("/api/users/search")
     List<User> searchUsers(@RequestParam("query") String query,
                           @RequestParam("page") int page);
@@ -374,7 +376,7 @@ public interface UserClient {
 // Fallback implementation for resilience
 @Component
 public class UserClientFallback implements UserClient {
-    
+
     @Override
     public User getUser(Long id) {
         return User.builder()
@@ -382,17 +384,17 @@ public class UserClientFallback implements UserClient {
             .name("Unknown (Service Unavailable)")
             .build();
     }
-    
+
     @Override
     public List<User> getAllUsers() {
         return Collections.emptyList();
     }
-    
+
     @Override
     public User createUser(CreateUserRequest request) {
         throw new ServiceUnavailableException("Cannot create user - service down");
     }
-    
+
     @Override
     public List<User> searchUsers(String query, int page) {
         return Collections.emptyList();
@@ -403,13 +405,13 @@ public class UserClientFallback implements UserClient {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final UserClient userClient;
-    
+
     public Order createOrder(OrderRequest request) {
         // Feign handles service discovery, load balancing, and serialization
         User user = userClient.getUser(request.getUserId());
-        
+
         return Order.builder()
             .user(user)
             .items(request.getItems())
@@ -495,19 +497,19 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true           # Auto-discover routes from Eureka
+          enabled: true # Auto-discover routes from Eureka
           lower-case-service-id: true
-      
+
       routes:
         # User Service Routes
         - id: user-service
-          uri: lb://user-service  # lb:// enables load balancing
+          uri: lb://user-service # lb:// enables load balancing
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
             - AddRequestHeader=X-Gateway-Source, API-Gateway
-            
+
         # Order Service Routes
         - id: order-service
           uri: lb://order-service
@@ -519,7 +521,7 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/fallback/orders
-                
+
         # Payment Service Routes (with rate limiting)
         - id: payment-service
           uri: lb://payment-service
@@ -533,7 +535,7 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 redis-rate-limiter.requestedTokens: 1
-                
+
         # Route with retry
         - id: inventory-service
           uri: lb://inventory-service
@@ -561,7 +563,7 @@ eureka:
 ```java
 @Configuration
 public class GatewayConfig {
-    
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -576,7 +578,7 @@ public class GatewayConfig {
                         .setFallbackUri("forward:/fallback/users"))
                 )
                 .uri("lb://user-service"))
-            
+
             // Order service with custom filter
             .route("order-service", r -> r
                 .path("/api/orders/**")
@@ -589,14 +591,14 @@ public class GatewayConfig {
                         .setRetries(3)
                         .setStatuses(HttpStatus.BAD_GATEWAY)))
                 .uri("lb://order-service"))
-            
+
             // Path rewriting
             .route("legacy-service", r -> r
                 .path("/old-api/**")
                 .filters(f -> f
                     .rewritePath("/old-api/(?<segment>.*)", "/api/${segment}"))
                 .uri("lb://new-service"))
-            
+
             .build();
     }
 }
@@ -609,21 +611,21 @@ public class GatewayConfig {
 @Component
 @Slf4j
 public class LoggingFilter implements GlobalFilter, Ordered {
-    
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         long startTime = System.currentTimeMillis();
         String requestId = UUID.randomUUID().toString();
-        
+
         ServerHttpRequest request = exchange.getRequest().mutate()
             .header("X-Request-ID", requestId)
             .build();
-        
-        log.info("Request: {} {} [{}]", 
-            request.getMethod(), 
-            request.getPath(), 
+
+        log.info("Request: {} {} [{}]",
+            request.getMethod(),
+            request.getPath(),
             requestId);
-        
+
         return chain.filter(exchange.mutate().request(request).build())
             .then(Mono.fromRunnable(() -> {
                 long duration = System.currentTimeMillis() - startTime;
@@ -633,7 +635,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
                     requestId);
             }));
     }
-    
+
     @Override
     public int getOrder() {
         return -1; // High priority
@@ -644,72 +646,72 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter implements GlobalFilter, Ordered {
-    
+
     private final JwtTokenProvider tokenProvider;
-    
+
     private static final List<String> PUBLIC_PATHS = List.of(
         "/api/auth/login",
         "/api/auth/register",
         "/api/public"
     );
-    
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().toString();
-        
+
         // Skip authentication for public paths
         if (isPublicPath(path)) {
             return chain.filter(exchange);
         }
-        
+
         String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return onError(exchange, "Missing or invalid Authorization header", 
+            return onError(exchange, "Missing or invalid Authorization header",
                 HttpStatus.UNAUTHORIZED);
         }
-        
+
         String token = authHeader.substring(7);
-        
+
         try {
             if (!tokenProvider.validateToken(token)) {
                 return onError(exchange, "Invalid token", HttpStatus.UNAUTHORIZED);
             }
-            
+
             // Add user info to headers for downstream services
             String userId = tokenProvider.getUserId(token);
             String roles = tokenProvider.getRoles(token);
-            
+
             ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-ID", userId)
                 .header("X-User-Roles", roles)
                 .build();
-            
+
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
-            
+
         } catch (Exception e) {
             return onError(exchange, "Token validation failed", HttpStatus.UNAUTHORIZED);
         }
     }
-    
+
     private boolean isPublicPath(String path) {
         return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
     }
-    
-    private Mono<Void> onError(ServerWebExchange exchange, String message, 
+
+    private Mono<Void> onError(ServerWebExchange exchange, String message,
                                HttpStatus status) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        
+
         String body = String.format("{\"error\": \"%s\"}", message);
         DataBuffer buffer = response.bufferFactory()
             .wrap(body.getBytes(StandardCharsets.UTF_8));
-        
+
         return response.writeWith(Mono.just(buffer));
     }
-    
+
     @Override
     public int getOrder() {
         return -2; // Before logging filter
@@ -718,31 +720,31 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
 // Rate Limiting Filter Factory
 @Component
-public class CustomRateLimiterFilterFactory extends 
+public class CustomRateLimiterFilterFactory extends
         AbstractGatewayFilterFactory<CustomRateLimiterFilterFactory.Config> {
-    
+
     private final RateLimiter rateLimiter;
-    
+
     public CustomRateLimiterFilterFactory(RateLimiter rateLimiter) {
         super(Config.class);
         this.rateLimiter = rateLimiter;
     }
-    
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String clientIp = Objects.requireNonNull(
                 exchange.getRequest().getRemoteAddress()).getHostString();
-            
+
             if (!rateLimiter.tryAcquire(clientIp, config.getRequestsPerSecond())) {
                 exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
                 return exchange.getResponse().setComplete();
             }
-            
+
             return chain.filter(exchange);
         };
     }
-    
+
     @Data
     public static class Config {
         private int requestsPerSecond = 10;
@@ -756,7 +758,7 @@ public class CustomRateLimiterFilterFactory extends
 @RestController
 @RequestMapping("/fallback")
 public class FallbackController {
-    
+
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> userServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -766,7 +768,7 @@ public class FallbackController {
                 "timestamp", Instant.now()
             ));
     }
-    
+
     @GetMapping("/orders")
     public ResponseEntity<Map<String, Object>> orderServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -776,7 +778,7 @@ public class FallbackController {
                 "timestamp", Instant.now()
             ));
     }
-    
+
     @PostMapping("/payments")
     public ResponseEntity<Map<String, Object>> paymentServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -886,10 +888,10 @@ resilience4j:
           - feign.FeignException
         ignore-exceptions:
           - com.example.BusinessException
-      
+
       paymentService:
         sliding-window-type: TIME_BASED
-        sliding-window-size: 60           # 60 seconds
+        sliding-window-size: 60 # 60 seconds
         minimum-number-of-calls: 10
         failure-rate-threshold: 60
         slow-call-rate-threshold: 80
@@ -937,11 +939,11 @@ resilience4j:
 @RequiredArgsConstructor
 @Slf4j
 public class OrderService {
-    
+
     private final UserClient userClient;
     private final PaymentClient paymentClient;
     private final InventoryClient inventoryClient;
-    
+
     // Using annotations
     @CircuitBreaker(name = "userService", fallbackMethod = "getUserFallback")
     @Retry(name = "userService")
@@ -950,7 +952,7 @@ public class OrderService {
         log.info("Calling user service for user: {}", userId);
         return userClient.getUser(userId);
     }
-    
+
     private User getUserFallback(Long userId, Exception e) {
         log.warn("Fallback triggered for user {} due to: {}", userId, e.getMessage());
         return User.builder()
@@ -958,16 +960,16 @@ public class OrderService {
             .name("Unknown User (Service Unavailable)")
             .build();
     }
-    
+
     // Circuit breaker with bulkhead
     @CircuitBreaker(name = "paymentService", fallbackMethod = "processPaymentFallback")
     @Bulkhead(name = "paymentService", type = Bulkhead.Type.SEMAPHORE)
     @TimeLimiter(name = "paymentService")
     public CompletableFuture<PaymentResult> processPayment(PaymentRequest request) {
-        return CompletableFuture.supplyAsync(() -> 
+        return CompletableFuture.supplyAsync(() ->
             paymentClient.processPayment(request));
     }
-    
+
     private CompletableFuture<PaymentResult> processPaymentFallback(
             PaymentRequest request, Exception e) {
         log.error("Payment fallback for request: {}", request, e);
@@ -978,36 +980,36 @@ public class OrderService {
                 .build()
         );
     }
-    
+
     // Multiple patterns combined
     @CircuitBreaker(name = "orderService", fallbackMethod = "createOrderFallback")
     @Retry(name = "orderService", fallbackMethod = "createOrderRetryFallback")
     @Bulkhead(name = "orderService")
     public Order createOrder(OrderRequest request) {
         User user = getUser(request.getUserId());
-        
+
         if (!inventoryClient.checkAvailability(request.getItems())) {
             throw new InsufficientInventoryException("Items not available");
         }
-        
+
         Order order = Order.builder()
             .user(user)
             .items(request.getItems())
             .status(OrderStatus.PENDING)
             .build();
-        
+
         // Process payment
         PaymentResult payment = paymentClient.processPayment(
             new PaymentRequest(order.getId(), order.getTotalAmount())
         );
-        
+
         if (payment.isSuccess()) {
             order.setStatus(OrderStatus.CONFIRMED);
         }
-        
+
         return order;
     }
-    
+
     private Order createOrderFallback(OrderRequest request, Exception e) {
         log.error("Order creation failed", e);
         return Order.builder()
@@ -1024,19 +1026,19 @@ public class OrderService {
 @Service
 @RequiredArgsConstructor
 public class ProgrammaticCircuitBreakerExample {
-    
+
     private final CircuitBreakerRegistry circuitBreakerRegistry;
     private final RetryRegistry retryRegistry;
     private final BulkheadRegistry bulkheadRegistry;
     private final UserClient userClient;
-    
+
     public User getUserWithProgrammaticCircuitBreaker(Long userId) {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry
             .circuitBreaker("programmaticUserService");
-        
+
         Retry retry = retryRegistry.retry("programmaticUserService");
         Bulkhead bulkhead = bulkheadRegistry.bulkhead("programmaticUserService");
-        
+
         Supplier<User> decoratedSupplier = Decorators
             .ofSupplier(() -> userClient.getUser(userId))
             .withCircuitBreaker(circuitBreaker)
@@ -1047,22 +1049,22 @@ public class ProgrammaticCircuitBreakerExample {
                 Exception.class
             ), e -> getFallbackUser(userId))
             .decorate();
-        
+
         return decoratedSupplier.get();
     }
-    
+
     private User getFallbackUser(Long userId) {
         return User.builder()
             .id(userId)
             .name("Fallback User")
             .build();
     }
-    
+
     // Monitoring circuit breaker state
     public Map<String, Object> getCircuitBreakerStatus(String name) {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(name);
         CircuitBreaker.Metrics metrics = circuitBreaker.getMetrics();
-        
+
         return Map.of(
             "state", circuitBreaker.getState().name(),
             "failureRate", metrics.getFailureRate(),
@@ -1082,13 +1084,13 @@ public class ProgrammaticCircuitBreakerExample {
 @Component
 @Slf4j
 public class CircuitBreakerEventListener {
-    
+
     public CircuitBreakerEventListener(CircuitBreakerRegistry registry) {
         registry.getAllCircuitBreakers().forEach(this::registerEventListeners);
         registry.getEventPublisher()
             .onEntryAdded(event -> registerEventListeners(event.getAddedEntry()));
     }
-    
+
     private void registerEventListeners(CircuitBreaker circuitBreaker) {
         circuitBreaker.getEventPublisher()
             .onStateTransition(event -> {
@@ -1096,7 +1098,7 @@ public class CircuitBreakerEventListener {
                     circuitBreaker.getName(),
                     event.getStateTransition().getFromState(),
                     event.getStateTransition().getToState());
-                
+
                 // Send alert on state changes
                 if (event.getStateTransition().getToState() == CircuitBreaker.State.OPEN) {
                     sendAlert(circuitBreaker.getName(), "Circuit OPENED");
@@ -1117,7 +1119,7 @@ public class CircuitBreakerEventListener {
                     circuitBreaker.getName());
             });
     }
-    
+
     private void sendAlert(String circuitBreakerName, String message) {
         // Send to monitoring system (e.g., Slack, PagerDuty)
         log.error("ALERT: {} - {}", circuitBreakerName, message);
@@ -1134,13 +1136,13 @@ public class CircuitBreakerEventListener {
 ```java
 @Configuration
 public class LoadBalancerConfig {
-    
+
     @Bean
     @LoadBalanced
     public RestTemplate loadBalancedRestTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
     @LoadBalanced
     public WebClient.Builder loadBalancedWebClientBuilder() {
@@ -1154,7 +1156,7 @@ public class LoadBalancerConfig {
 ```java
 @Configuration
 public class CustomLoadBalancerConfig {
-    
+
     @Bean
     public ServiceInstanceListSupplier serviceInstanceListSupplier(
             ConfigurableApplicationContext context) {
@@ -1169,7 +1171,7 @@ public class CustomLoadBalancerConfig {
 
 // Custom load balancer for specific service
 @LoadBalancerClient(
-    name = "user-service", 
+    name = "user-service",
     configuration = UserServiceLoadBalancerConfig.class
 )
 public class LoadBalancerClients {
@@ -1177,7 +1179,7 @@ public class LoadBalancerClients {
 
 @Configuration
 public class UserServiceLoadBalancerConfig {
-    
+
     @Bean
     public ReactorLoadBalancer<ServiceInstance> roundRobinLoadBalancer(
             Environment environment,
@@ -1254,7 +1256,7 @@ spring:
         git:
           uri: https://github.com/company/config-repo
           default-label: main
-          search-paths: '{application}'
+          search-paths: "{application}"
           clone-on-start: true
           force-pull: true
         encrypt:
@@ -1307,13 +1309,13 @@ config-repo/
 @RefreshScope  // Enables dynamic refresh
 @RequiredArgsConstructor
 public class ConfigController {
-    
+
     @Value("${app.feature.enabled:false}")
     private boolean featureEnabled;
-    
+
     @Value("${app.rate.limit:100}")
     private int rateLimit;
-    
+
     @GetMapping("/config")
     public Map<String, Object> getConfig() {
         return Map.of(
@@ -1405,42 +1407,42 @@ ORCHESTRATION-BASED SAGA:
 @RequiredArgsConstructor
 @Slf4j
 public class OrderSagaOrchestrator {
-    
+
     private final OrderService orderService;
     private final PaymentClient paymentClient;
     private final InventoryClient inventoryClient;
     private final NotificationClient notificationClient;
-    
+
     @Transactional
     public OrderResult executeOrderSaga(OrderRequest request) {
         SagaContext context = new SagaContext();
-        
+
         try {
             // Step 1: Create Order
             Order order = createOrder(request, context);
-            
+
             // Step 2: Reserve Inventory
             reserveInventory(order, context);
-            
+
             // Step 3: Process Payment
             processPayment(order, context);
-            
+
             // Step 4: Confirm Order
             confirmOrder(order);
-            
+
             // Step 5: Send Notification
             sendNotification(order);
-            
+
             log.info("Saga completed successfully for order: {}", order.getId());
             return OrderResult.success(order);
-            
+
         } catch (Exception e) {
             log.error("Saga failed, initiating compensation", e);
             compensate(context);
             return OrderResult.failure(e.getMessage());
         }
     }
-    
+
     private Order createOrder(OrderRequest request, SagaContext context) {
         log.info("Step 1: Creating order");
         Order order = orderService.create(request);
@@ -1448,37 +1450,37 @@ public class OrderSagaOrchestrator {
         context.addCompensation(() -> orderService.cancel(order.getId()));
         return order;
     }
-    
+
     private void reserveInventory(Order order, SagaContext context) {
         log.info("Step 2: Reserving inventory for order: {}", order.getId());
         InventoryReservation reservation = inventoryClient.reserve(
             new ReservationRequest(order.getId(), order.getItems())
         );
         context.setReservation(reservation);
-        context.addCompensation(() -> 
+        context.addCompensation(() ->
             inventoryClient.cancelReservation(reservation.getId()));
     }
-    
+
     private void processPayment(Order order, SagaContext context) {
         log.info("Step 3: Processing payment for order: {}", order.getId());
         PaymentResult payment = paymentClient.process(
             new PaymentRequest(order.getId(), order.getTotalAmount())
         );
-        
+
         if (!payment.isSuccess()) {
             throw new PaymentFailedException(payment.getMessage());
         }
-        
+
         context.setPayment(payment);
-        context.addCompensation(() -> 
+        context.addCompensation(() ->
             paymentClient.refund(payment.getTransactionId()));
     }
-    
+
     private void confirmOrder(Order order) {
         log.info("Step 4: Confirming order: {}", order.getId());
         orderService.confirm(order.getId());
     }
-    
+
     private void sendNotification(Order order) {
         log.info("Step 5: Sending notification for order: {}", order.getId());
         try {
@@ -1488,7 +1490,7 @@ public class OrderSagaOrchestrator {
             log.warn("Failed to send notification, will retry later", e);
         }
     }
-    
+
     private void compensate(SagaContext context) {
         log.info("Starting compensation for failed saga");
         context.executeCompensations();
@@ -1502,11 +1504,11 @@ public class SagaContext {
     private InventoryReservation reservation;
     private PaymentResult payment;
     private final Deque<Runnable> compensations = new ArrayDeque<>();
-    
+
     public void addCompensation(Runnable compensation) {
         compensations.push(compensation);
     }
-    
+
     public void executeCompensations() {
         while (!compensations.isEmpty()) {
             try {
@@ -1538,21 +1540,21 @@ public class OrderCreatedEvent {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final StreamBridge streamBridge;
-    
+
     public Order createOrder(OrderRequest request) {
         Order order = Order.builder()
             .customerId(request.getCustomerId())
             .items(request.getItems())
             .status(OrderStatus.PENDING)
             .build();
-        
+
         Order savedOrder = orderRepository.save(order);
-        
+
         // Publish event
-        streamBridge.send("order-events-out-0", 
+        streamBridge.send("order-events-out-0",
             new OrderCreatedEvent(
                 savedOrder.getId(),
                 savedOrder.getCustomerId(),
@@ -1560,21 +1562,21 @@ public class OrderService {
                 savedOrder.getTotalAmount()
             )
         );
-        
+
         return savedOrder;
     }
-    
+
     @Bean
     public Consumer<PaymentCompletedEvent> handlePaymentCompleted() {
         return event -> {
             log.info("Payment completed for order: {}", event.getOrderId());
             orderRepository.updateStatus(event.getOrderId(), OrderStatus.PAID);
-            
+
             streamBridge.send("inventory-reserve-out-0",
                 new ReserveInventoryCommand(event.getOrderId()));
         };
     }
-    
+
     @Bean
     public Consumer<PaymentFailedEvent> handlePaymentFailed() {
         return event -> {
@@ -1588,21 +1590,21 @@ public class OrderService {
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    
+
     private final PaymentGateway paymentGateway;
     private final StreamBridge streamBridge;
-    
+
     @Bean
     public Consumer<OrderCreatedEvent> handleOrderCreated() {
         return event -> {
             log.info("Processing payment for order: {}", event.getOrderId());
-            
+
             try {
                 PaymentResult result = paymentGateway.process(
                     event.getOrderId(),
                     event.getTotalAmount()
                 );
-                
+
                 if (result.isSuccess()) {
                     streamBridge.send("payment-events-out-0",
                         new PaymentCompletedEvent(
@@ -1697,9 +1699,9 @@ spring:
 @Service
 @RequiredArgsConstructor
 public class EventPublisher {
-    
+
     private final StreamBridge streamBridge;
-    
+
     public void publishOrderCreated(Order order) {
         OrderCreatedEvent event = new OrderCreatedEvent(
             order.getId(),
@@ -1708,8 +1710,8 @@ public class EventPublisher {
             order.getTotalAmount(),
             Instant.now()
         );
-        
-        streamBridge.send("order-events-out-0", 
+
+        streamBridge.send("order-events-out-0",
             MessageBuilder.withPayload(event)
                 .setHeader("partitionKey", order.getCustomerId())
                 .setHeader("eventType", "OrderCreated")
@@ -1721,22 +1723,22 @@ public class EventPublisher {
 // Event Consumer
 @Configuration
 public class EventConsumers {
-    
+
     @Bean
     public Consumer<Message<OrderCreatedEvent>> orderCreatedConsumer(
             InventoryService inventoryService) {
         return message -> {
             OrderCreatedEvent event = message.getPayload();
             log.info("Received OrderCreatedEvent: {}", event.getOrderId());
-            
+
             inventoryService.reserveInventory(
                 event.getOrderId(),
                 event.getItems()
             );
         };
     }
-    
-    @Bean  
+
+    @Bean
     public Function<OrderCreatedEvent, PaymentRequestEvent> orderToPayment() {
         return order -> new PaymentRequestEvent(
             order.getOrderId(),
@@ -1757,14 +1759,14 @@ public class StoredEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     private String aggregateId;
     private String aggregateType;
     private String eventType;
-    
+
     @Lob
     private String payload;
-    
+
     private int version;
     private Instant timestamp;
 }
@@ -1779,23 +1781,23 @@ public interface EventStoreRepository extends JpaRepository<StoredEvent, String>
 @Service
 @RequiredArgsConstructor
 public class EventStore {
-    
+
     private final EventStoreRepository repository;
     private final ObjectMapper objectMapper;
-    
-    public void append(String aggregateId, String aggregateType, 
+
+    public void append(String aggregateId, String aggregateType,
                        Object event, int expectedVersion) {
         Optional<StoredEvent> lastEvent = repository
             .findTopByAggregateIdOrderByVersionDesc(aggregateId);
-        
+
         int currentVersion = lastEvent.map(StoredEvent::getVersion).orElse(0);
-        
+
         if (currentVersion != expectedVersion) {
             throw new OptimisticLockingException(
                 "Expected version " + expectedVersion + " but found " + currentVersion
             );
         }
-        
+
         StoredEvent storedEvent = new StoredEvent();
         storedEvent.setAggregateId(aggregateId);
         storedEvent.setAggregateType(aggregateType);
@@ -1803,17 +1805,17 @@ public class EventStore {
         storedEvent.setPayload(serialize(event));
         storedEvent.setVersion(currentVersion + 1);
         storedEvent.setTimestamp(Instant.now());
-        
+
         repository.save(storedEvent);
     }
-    
+
     public List<Object> getEvents(String aggregateId) {
         return repository.findByAggregateIdOrderByVersionAsc(aggregateId)
             .stream()
             .map(this::deserialize)
             .collect(Collectors.toList());
     }
-    
+
     private String serialize(Object event) {
         try {
             return objectMapper.writeValueAsString(event);
@@ -1821,7 +1823,7 @@ public class EventStore {
             throw new EventSerializationException(e);
         }
     }
-    
+
     private Object deserialize(StoredEvent storedEvent) {
         try {
             Class<?> eventClass = Class.forName(
@@ -1843,7 +1845,7 @@ public class OrderAggregate {
     private OrderStatus status;
     private BigDecimal totalAmount;
     private int version;
-    
+
     // Apply events to rebuild state
     public void apply(Object event) {
         if (event instanceof OrderCreatedEvent e) {
@@ -1861,7 +1863,7 @@ public class OrderAggregate {
         }
         this.version++;
     }
-    
+
     // Rebuild from events
     public static OrderAggregate fromEvents(List<Object> events) {
         OrderAggregate aggregate = new OrderAggregate();
@@ -1908,18 +1910,18 @@ public class OrderAggregate {
 ```java
 // Commands
 public sealed interface OrderCommand {
-    record CreateOrder(String customerId, List<OrderItem> items) 
+    record CreateOrder(String customerId, List<OrderItem> items)
         implements OrderCommand {}
-    record CancelOrder(String orderId, String reason) 
+    record CancelOrder(String orderId, String reason)
         implements OrderCommand {}
-    record UpdateOrderStatus(String orderId, OrderStatus status) 
+    record UpdateOrderStatus(String orderId, OrderStatus status)
         implements OrderCommand {}
 }
 
 // Queries
 public sealed interface OrderQuery {
     record GetOrderById(String orderId) implements OrderQuery {}
-    record GetOrdersByCustomer(String customerId, int page, int size) 
+    record GetOrdersByCustomer(String customerId, int page, int size)
         implements OrderQuery {}
     record SearchOrders(OrderSearchCriteria criteria) implements OrderQuery {}
 }
@@ -1928,13 +1930,13 @@ public sealed interface OrderQuery {
 @Service
 @RequiredArgsConstructor
 public class OrderCommandHandler {
-    
+
     private final EventStore eventStore;
     private final ApplicationEventPublisher eventPublisher;
-    
+
     public String handle(OrderCommand.CreateOrder command) {
         String orderId = UUID.randomUUID().toString();
-        
+
         OrderCreatedEvent event = new OrderCreatedEvent(
             orderId,
             command.customerId(),
@@ -1942,30 +1944,30 @@ public class OrderCommandHandler {
             calculateTotal(command.items()),
             Instant.now()
         );
-        
+
         eventStore.append(orderId, "Order", event, 0);
         eventPublisher.publishEvent(event);  // For read model update
-        
+
         return orderId;
     }
-    
+
     public void handle(OrderCommand.CancelOrder command) {
         OrderAggregate order = loadAggregate(command.orderId());
-        
+
         if (order.getStatus() == OrderStatus.SHIPPED) {
             throw new BusinessException("Cannot cancel shipped order");
         }
-        
+
         OrderCancelledEvent event = new OrderCancelledEvent(
             command.orderId(),
             command.reason(),
             Instant.now()
         );
-        
+
         eventStore.append(command.orderId(), "Order", event, order.getVersion());
         eventPublisher.publishEvent(event);
     }
-    
+
     private OrderAggregate loadAggregate(String orderId) {
         List<Object> events = eventStore.getEvents(orderId);
         if (events.isEmpty()) {
@@ -1979,21 +1981,21 @@ public class OrderCommandHandler {
 @Service
 @RequiredArgsConstructor
 public class OrderQueryHandler {
-    
+
     private final OrderReadRepository readRepository;
-    
+
     public OrderView handle(OrderQuery.GetOrderById query) {
         return readRepository.findById(query.orderId())
             .orElseThrow(() -> new OrderNotFoundException(query.orderId()));
     }
-    
+
     public Page<OrderView> handle(OrderQuery.GetOrdersByCustomer query) {
         return readRepository.findByCustomerId(
             query.customerId(),
             PageRequest.of(query.page(), query.size())
         );
     }
-    
+
     public Page<OrderView> handle(OrderQuery.SearchOrders query) {
         return readRepository.search(query.criteria());
     }
@@ -2012,7 +2014,7 @@ public class OrderView {
     private BigDecimal totalAmount;
     private Instant createdAt;
     private Instant updatedAt;
-    
+
     @Data
     public static class OrderItemView {
         private String productId;
@@ -2027,15 +2029,15 @@ public class OrderView {
 @Component
 @RequiredArgsConstructor
 public class OrderReadModelUpdater {
-    
+
     private final OrderReadRepository readRepository;
     private final UserClient userClient;
     private final ProductClient productClient;
-    
+
     @EventListener
     public void on(OrderCreatedEvent event) {
         UserDTO user = userClient.getUser(event.getCustomerId());
-        
+
         List<OrderView.OrderItemView> itemViews = event.getItems().stream()
             .map(item -> {
                 ProductDTO product = productClient.getProduct(item.getProductId());
@@ -2048,7 +2050,7 @@ public class OrderReadModelUpdater {
                 return view;
             })
             .collect(Collectors.toList());
-        
+
         OrderView view = new OrderView();
         view.setId(event.getOrderId());
         view.setCustomerId(event.getCustomerId());
@@ -2058,10 +2060,10 @@ public class OrderReadModelUpdater {
         view.setTotalAmount(event.getTotalAmount());
         view.setCreatedAt(event.getTimestamp());
         view.setUpdatedAt(event.getTimestamp());
-        
+
         readRepository.save(view);
     }
-    
+
     @EventListener
     public void on(OrderCancelledEvent event) {
         readRepository.updateStatus(event.getOrderId(), OrderStatus.CANCELLED);
@@ -2197,7 +2199,7 @@ spec:
 @Configuration
 @EnableWebFluxSecurity
 public class GatewaySecurityConfig {
-    
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
@@ -2214,14 +2216,14 @@ public class GatewaySecurityConfig {
             )
             .build();
     }
-    
+
     @Bean
     public ReactiveJwtDecoder jwtDecoder(@Value("${jwt.secret}") String secret) {
         return NimbusReactiveJwtDecoder.withSecretKey(
             new SecretKeySpec(secret.getBytes(), "HmacSHA256")
         ).build();
     }
-    
+
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthConverter() {
         return jwt -> {
             Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
@@ -2230,7 +2232,7 @@ public class GatewaySecurityConfig {
             );
         };
     }
-    
+
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
         List<String> roles = jwt.getClaimAsStringList("roles");
         if (roles == null) {
@@ -2277,7 +2279,7 @@ public class GatewaySecurityConfig {
 ```java
 @Configuration
 public class MetricsConfig {
-    
+
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() {
         return registry -> registry.config()
@@ -2289,11 +2291,11 @@ public class MetricsConfig {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final MeterRegistry meterRegistry;
     private final Counter orderCounter;
     private final Timer orderProcessingTimer;
-    
+
     public OrderService(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
         this.orderCounter = Counter.builder("orders.created")
@@ -2303,16 +2305,16 @@ public class OrderService {
             .description("Time to process orders")
             .register(meterRegistry);
     }
-    
+
     public Order createOrder(OrderRequest request) {
         return orderProcessingTimer.record(() -> {
             Order order = processOrder(request);
             orderCounter.increment();
-            
+
             // Custom metrics
-            meterRegistry.gauge("orders.pending", 
+            meterRegistry.gauge("orders.pending",
                 orderRepository.countByStatus(OrderStatus.PENDING));
-            
+
             return order;
         });
     }
@@ -2384,8 +2386,9 @@ public class OrderService {
 ### Beginner
 
 **Q1: What is service discovery and why is it needed?**
+
 ```
-Service discovery allows services to find each other dynamically without 
+Service discovery allows services to find each other dynamically without
 hard-coded URLs. It's needed because:
 - Services can scale up/down
 - IP addresses change
@@ -2394,6 +2397,7 @@ hard-coded URLs. It's needed because:
 ```
 
 **Q2: What is an API Gateway?**
+
 ```
 API Gateway is a single entry point for all clients that:
 - Routes requests to appropriate services
@@ -2403,6 +2407,7 @@ API Gateway is a single entry point for all clients that:
 ```
 
 **Q3: Explain the Circuit Breaker pattern**
+
 ```
 Circuit breaker prevents cascading failures:
 - CLOSED: Normal operation, requests pass through
@@ -2418,6 +2423,7 @@ Benefits:
 ### Advanced
 
 **Q4: Compare choreography vs orchestration saga**
+
 ```
 Choreography:
 - Services communicate via events
@@ -2435,6 +2441,7 @@ Orchestration:
 ```
 
 **Q5: What is CQRS and when to use it?**
+
 ```
 Command Query Responsibility Segregation separates read and write operations.
 
@@ -2451,6 +2458,7 @@ Don't use when:
 ```
 
 **Q6: How do you handle distributed transactions?**
+
 ```
 Options:
 1. Saga Pattern - Compensating transactions
@@ -2521,4 +2529,4 @@ Microservices patterns solve distributed system challenges:
 
 ---
 
-*Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)*
+_Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)_

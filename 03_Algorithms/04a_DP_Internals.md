@@ -35,9 +35,11 @@
 🔬 **Section Challenge — From Recursion to Optimal Solutions**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -46,12 +48,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 # 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
@@ -276,7 +280,6 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🖥️ Memoization vs Tabulation — CPU Perspective
 
 ```
@@ -347,7 +350,6 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🧠 State Representation — Memory Efficiency
 
 ```
@@ -385,7 +387,6 @@ return dp[n];
 │                                                                                 │
 ```
 
-
 ```java
 // Compress coordinates
 int[] values = {5, 1000000000, 3, 500000000, 7};
@@ -412,7 +413,6 @@ for (int i = 0; i < sorted.length; i++) {
 │ • speed: 0-9 │
 │ │
 ```
-
 
 ```java
 // Instead of: int[][][] dp = new int[1000][4][10];
@@ -469,7 +469,6 @@ int decodeSpd(int state) { return state % 10; }
 │                                                                                 │
 ```
 
-
 ```java
 // SLOW: Modulo on every operation
 for (int i = 2; i <= n; i++) {
@@ -501,7 +500,6 @@ for (int i = 2; i <= n; i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🧠 Memory Allocation Patterns
 
 ```
@@ -512,7 +510,6 @@ for (int i = 2; i <= n; i++) {
 │ STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)                            │
 │ ────────────────────────────────────────────────────                            │
 ```
-
 
 ```java
 // GOOD: Single allocation
@@ -546,7 +543,6 @@ for (int i = 0; i < tests; i++) {
 │ ───────────────────────────────────────────── │
 ```
 
-
 ```java
 // When most values stay at default, don't fill!
 int[] dp = new int[n + 1];  // Already all zeros in Java!
@@ -579,16 +575,18 @@ int[] dp = new int[n + 1];
 
 ## 🔍 Reconstructing the Solution (Traceback)
 
-In *The Algorithm Design Manual*, Skiena points out a common pitfall: Dynamic Programming natively computes the *value* of the optimal solution (e.g., "The longest path is 15"), but often the interviewer actually wants the *path itself* (e.g., "The items to pick are A, C, and F").
+In _The Algorithm Design Manual_, Skiena points out a common pitfall: Dynamic Programming natively computes the _value_ of the optimal solution (e.g., "The longest path is 15"), but often the interviewer actually wants the _path itself_ (e.g., "The items to pick are A, C, and F").
 
 To reconstruct the solution, you must walk backward through your DP table, tracing the sequence of optimal decisions.
 
 ### Two Ways to Traceback
 
 #### 1. The "Parent Pointer" Array (Explicit Tracking)
+
 Store the optimal decision at each step in a separate array/table.
-*   **Pros:** Very easy to write the traceback loop.
-*   **Cons:** Doubles your memory usage.
+
+- **Pros:** Very easy to write the traceback loop.
+- **Cons:** Doubles your memory usage.
 
 ```java
 // Example: Longest Increasing Subsequence (LIS)
@@ -613,10 +611,11 @@ Collections.reverse(path);
 ```
 
 #### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
-You don't need a `parent` array! The DP table already contains all the information needed to deduce *which* choice was optimal. You just check which subproblem + transition equals the current cell's value.
 
-*   **Pros:** Saves memory. Shows deep understanding of the recurrence relation.
-*   **Cons:** Slightly more complex to write the traceback logic.
+You don't need a `parent` array! The DP table already contains all the information needed to deduce _which_ choice was optimal. You just check which subproblem + transition equals the current cell's value.
+
+- **Pros:** Saves memory. Shows deep understanding of the recurrence relation.
+- **Cons:** Slightly more complex to write the traceback logic.
 
 ```java
 // Example: 0/1 Knapsack Traceback
@@ -630,7 +629,7 @@ while (i > 0 && w > 0) {
     // If the value is the same as the row above, we DID NOT pick item i
     if (dp[i][w] == dp[i-1][w]) {
         i--;
-    } 
+    }
     // Otherwise, we MUST have picked item i
     else {
         itemsPicked.add(i);
@@ -641,5 +640,3 @@ while (i > 0 && w > 0) {
 ```
 
 **Rule of Thumb:** Always use Implicit Tracking unless the transition logic is extremely complex or depends on non-deterministic ties where you must remember the exact tie-breaker you chose.
-
-

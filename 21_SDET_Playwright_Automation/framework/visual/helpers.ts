@@ -28,9 +28,7 @@ export async function maskDynamicElements(page: Page): Promise<void> {
  *   const opts = buildScreenshotOptions({ maxDiffPixels: 50 });
  *   await expect(page).toHaveScreenshot('login.png', opts);
  */
-export function buildScreenshotOptions(
-  overrides?: PageScreenshotOptions,
-): PageScreenshotOptions {
+export function buildScreenshotOptions(overrides?: PageScreenshotOptions): PageScreenshotOptions {
   return {
     animations: 'disabled',
     ...overrides,

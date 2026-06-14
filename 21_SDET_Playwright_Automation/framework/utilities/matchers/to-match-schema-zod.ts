@@ -10,7 +10,12 @@
 export function toMatchSchemaZod(
   received: unknown,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  schema: { safeParse: (data: unknown) => { success: boolean; error?: { message: string; issues?: unknown[] } } }
+  schema: {
+    safeParse: (data: unknown) => {
+      success: boolean;
+      error?: { message: string; issues?: unknown[] };
+    };
+  },
 ): { pass: boolean; message: () => string } {
   const result = schema.safeParse(received);
 

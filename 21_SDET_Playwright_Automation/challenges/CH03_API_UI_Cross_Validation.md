@@ -18,6 +18,7 @@ challenges/solutions/CH03/
 ## Acceptance criteria
 
 ### `UsersClient.ts`
+
 - Constructor takes a Playwright `APIRequestContext`.
 - Methods:
   - `create(payload: ReqresCreateUserPayload): Promise<ReqresCreateUserResponse>`
@@ -27,6 +28,7 @@ challenges/solutions/CH03/
 - All URLs come from a single `endpoints.reqres` object — not string-concatenated inline.
 
 ### Test
+
 - Generate a unique name + job via your `uniqueId` helper (timestamp + random suffix).
 - POST to create the user. Assert `id`, `createdAt`, and that the echoed name/job match.
 - Then GET the listing — assert your typed shape (`page`, `per_page`, `data[]`).
@@ -53,7 +55,7 @@ A cast is fine for now. Chapter 44 (Zod validation) will harden this.
 
 <details><summary>Hint 2 — unique data</summary>
 
-Reqres is a mock — it always returns success. The real lesson is *the assertion pattern*. Apply it to your own backend at work.
+Reqres is a mock — it always returns success. The real lesson is _the assertion pattern_. Apply it to your own backend at work.
 
 </details>
 

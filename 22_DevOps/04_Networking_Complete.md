@@ -20,7 +20,7 @@
   Alexander Graham Bell. Analog voice over copper.
   "Network" now means a mesh of connections between any two parties.
   The SWITCH was born: operators manually connecting calls.
-  
+
   ANALOGY: Early telephone = early internet routing.
   Operator: "Who would you like to speak to?" (DNS lookup)
   Plugs in cable (routing)
@@ -29,16 +29,16 @@
 1969 — ARPANET (the internet's ancestor):
   4 nodes: UCLA, Stanford, UCSB, University of Utah.
   Concept: PACKET SWITCHING (instead of circuit switching).
-  
+
   Circuit switching (telephone): dedicated line for entire call.
-    Benefits: guaranteed bandwidth. 
+    Benefits: guaranteed bandwidth.
     Problem: if you're silent, the line is WASTED.
-  
+
   Packet switching (internet): data split into packets, each routed independently.
     Benefits: shared infrastructure, efficient.
     Problem: packets can arrive out of order → need reassembly.
-  
-  THIS DECISION — packet switching vs circuit switching — 
+
+  THIS DECISION — packet switching vs circuit switching —
   is the single most important design decision in networking history.
   It's why the internet works the way it does today.
 
@@ -57,7 +57,7 @@
   Not the internet itself — a protocol ON TOP of the internet.
   The internet existed for 20 years before the web!
 
-1991 — HTTP/0.9: 
+1991 — HTTP/0.9:
   Simple. One request, one response, connection closed.
   Only GET method. Only HTML responses.
 
@@ -120,17 +120,17 @@ Answer: It depends on the MEDIUM:
 HOW IT WORKS:
   A network interface card (NIC) changes voltage levels on the wire.
   High voltage = 1. Low voltage = 0.
-  
+
   But it's more complex than that. Modern Ethernet uses ENCODING SCHEMES:
-  
+
   Manchester encoding (old, 10 Mbps):
     1 = transition HIGH→LOW  within the bit period
     0 = transition LOW→HIGH  within the bit period
     Self-clocking: receiver can detect timing from transitions.
-  
+
   4B/5B + NRZI (Fast Ethernet, 100 Mbps):
     Encode 4 data bits as 5 signal bits (avoids long sequences of same voltage).
-  
+
   PAM-5 (Gigabit Ethernet):
     5 voltage levels: -2, -1, 0, +1, +2
     Each symbol carries more than 1 bit → higher data rate on same wire.
@@ -142,13 +142,13 @@ CABLE CATEGORIES:
   Cat 6a:  10 Gbps at full 100m, 500 MHz
   Cat 7:   10 Gbps, 600 MHz, individually shielded pairs (datacenter)
   Cat 8:   25-40 Gbps, 2000 MHz, 30m max (datacenter short runs)
-  
+
 TWISTED PAIRS — Why Are They Twisted?
   Each pair of wires carries a signal and its INVERSE.
   External electromagnetic interference (EMI) affects BOTH wires equally.
   The receiver subtracts the two → interference cancels out!
   Tighter twists = better noise cancellation.
-  
+
   ANALOGY: Noise-cancelling headphones.
   Microphone picks up ambient noise → produces INVERSE wave → noise cancels.
   Same principle: twisted pair picks up EMI → subtraction cancels EMI.
@@ -156,11 +156,11 @@ TWISTED PAIRS — Why Are They Twisted?
 RJ-45 CONNECTOR:
   The plug at the end of an Ethernet cable. 8 pins.
   Pin assignments follow T-568A or T-568B standard.
-  
+
   Pins 1,2:   Transmit (TX) — data SENT from this device
   Pins 3,6:   Receive (RX) — data RECEIVED by this device
   Pins 4,5,7,8: Power (PoE) or unused (Gigabit uses all 4 pairs)
-  
+
   Straight-through: PC → Switch (TX connects to RX on other end)
   Crossover: PC → PC (TX connects to TX → swap manually)
   Modern switches auto-detect with Auto-MDIX (crossover cable no longer needed).
@@ -170,7 +170,7 @@ PoE (POWER OVER ETHERNET):
   PoE (802.3af):  15.4W — enough for WiFi access points, IP phones
   PoE+ (802.3at): 30W — enough for PTZ cameras, advanced APs
   PoE++ (802.3bt): 60-100W — enough for laptops, TVs, thin clients
-  
+
   HOW: Power flows on unused pairs (Cat 5e) or phantom power on data pairs.
   PoE SWITCH: A switch that can supply power on its ports.
 ```
@@ -191,7 +191,7 @@ TWO TYPES:
     One path of light (one "mode").
     Distance: up to 80 km without amplification.
     Used for: long-haul, datacenter interconnects, ISP backbones.
-    
+
   Multi-Mode Fiber (MMF):
     Core diameter: 50 or 62.5 μm.
     Multiple paths of light (modes) bounce at different angles.
@@ -208,10 +208,10 @@ WAVELENGTH DIVISION MULTIPLEXING (WDM):
   PROBLEM: One fiber can carry one light signal. Want more bandwidth?
   SOLUTION: Send MULTIPLE colors of light simultaneously!
   Each wavelength (color) carries a separate data channel.
-  
+
   DWDM (Dense WDM): 80+ channels on one fiber. 100+ Gbps per channel.
   Total: 8+ Tbps on a SINGLE STRAND of glass!
-  
+
   This is how submarine cables carry ALL of the internet across oceans.
   A single cable (like MAREA, Microsoft-Facebook) has 8 fiber pairs → 200+ Tbps.
 
@@ -227,7 +227,7 @@ CONNECTORS:
 HOW IT WORKS:
   Data is MODULATED onto radio waves.
   The WiFi chip varies the wave's amplitude, frequency, or phase to encode bits.
-  
+
   MODULATION TYPES (progressive complexity = more bits per symbol):
   BPSK:   1 bit per symbol (Binary Phase Shift Keying) — most robust, slowest
   QPSK:   2 bits per symbol
@@ -236,7 +236,7 @@ HOW IT WORKS:
   256-QAM: 8 bits per symbol
   1024-QAM: 10 bits per symbol (WiFi 6) — very fast but needs strong signal
   4096-QAM: 12 bits per symbol (WiFi 7) — maximum speed, requires near-perfect signal
-  
+
   ANALOGY: Morse code vs language.
   BPSK = Morse code: only 2 symbols (dot, dash). Slow but works over noisy line.
   1024-QAM = spoken language: thousands of distinct sounds. Fast but unclear if noisy.
@@ -270,19 +270,19 @@ KEY INNOVATION PER GENERATION:
     Also: 4096-QAM (12 bits/symbol), 320 MHz channel width.
 
 2.4 GHz vs 5 GHz vs 6 GHz:
-  2.4 GHz: 
+  2.4 GHz:
     ✓ Penetrates walls (longer wavelength → better diffraction)
     ✓ Longer range (100m+ outdoors)
     ✗ Only 3 non-overlapping channels (1, 6, 11)
     ✗ Crowded (Bluetooth, microwaves, baby monitors use 2.4 GHz)
     ✗ Slower (max 40 MHz channel width)
-  
+
   5 GHz:
     ✓ 25 non-overlapping channels → less interference
     ✓ Wider channels (80 or 160 MHz) → faster
     ✗ Shorter range (absorbed by walls more)
     ✗ Not as many channels as 6 GHz
-  
+
   6 GHz (WiFi 6E / WiFi 7):
     ✓ 59 non-overlapping channels → practically zero interference
     ✓ 320 MHz channels (WiFi 7) → maximum speed
@@ -308,26 +308,26 @@ LATENCY: Time for ONE bit to travel from A to B (milliseconds).
   "How LONG is the highway?"
   Measured in: ms (milliseconds).
   Ping google.com: ~20ms from your city, ~200ms from another continent.
-  
+
   Components of latency:
   1. Propagation delay: speed of signal through medium
      Light in fiber: ~5 μs per km (200,000 km/s)
      Electrical in copper: ~5 μs per km
      Radio: ~3.3 μs per km (speed of light in air)
-     
+
   2. Transmission delay: time to push bits onto the wire
      1,500 bytes on 100 Mbps link = 0.12 ms
-     
+
   3. Queuing delay: waiting in router buffers
      Can be 0ms (no queue) to 500ms+ (congested router)
-     
+
   4. Processing delay: router looks up routing table
      Modern routers: ~1 μs (negligible)
 
 THROUGHPUT: Actual bits transferred per second (real-world).
   "How many CARS actually pass per hour?" (not theoretical max)
   Always LOWER than bandwidth.
-  
+
   WHY THROUGHPUT < BANDWIDTH:
   • Protocol overhead: headers, handshakes, ACKs consume bandwidth
   • Congestion: shared links, other users
@@ -336,10 +336,10 @@ THROUGHPUT: Actual bits transferred per second (real-world).
 
 THE BANDWIDTH-LATENCY PRODUCT:
   How many bits are "in flight" between source and destination.
-  
-  100 Mbps bandwidth × 50ms latency = 
+
+  100 Mbps bandwidth × 50ms latency =
   100,000,000 × 0.050 = 5,000,000 bits = 625 KB in flight
-  
+
   TCP's receive window must be AT LEAST this large.
   If window is smaller → link is underutilized!
   This is why high-bandwidth, high-latency connections (satellite)
@@ -357,11 +357,11 @@ PRACTICAL EXAMPLES:
   │ Datacenter (10GbE)   │ 10 Gbps  │ 0.1ms   │ Server↔server│
   │ Datacenter (InfiniBand)│100 Gbps│ 0.002ms │ HPC, GPU↔GPU │
   └──────────────────────┴──────────┴─────────┴──────────────┘
-  
+
   Note: Satellite GEO has 600ms latency because the satellite is 35,786 km away.
   Signal travels: Earth → satellite → Earth = 71,572 km at speed of light ≈ 238ms ONE WAY.
   Round trip (request + response) = ~600ms. TCP handshake alone takes 3 × 238ms!
-  
+
   Starlink LEO: satellites at 550 km → latency ~30ms. Game-changer for rural areas.
 ```
 
@@ -375,17 +375,17 @@ PRACTICAL EXAMPLES:
 WHY DO WE NEED LAYERS?
   A single protocol can't do everything.
   You need: physical signaling, addressing, routing, reliability, encryption, application logic.
-  
+
   LAYERS = separation of concerns (just like software architecture!)
   Each layer does ONE job and provides a SERVICE to the layer above.
-  
+
   ANALOGY: Sending a letter.
   You write a letter (application layer).
   Put it in an envelope with address (transport layer).
   Post office routes it through cities (network layer).
   Mail truck drives on roads (data link layer).
   Roads exist as physical asphalt (physical layer).
-  
+
   Each layer adds its own HEADER (like nesting envelopes).
 
 OSI MODEL (7 layers — theoretical reference, used for teaching):
@@ -439,9 +439,9 @@ ENCAPSULATION — How Data Gets Wrapped:
   Network adds IP HEADER: src_ip=192.168.1.100, dst_ip=54.123.45.67, TTL=64
   Data Link adds ETHERNET HEADER: src_mac=AA:BB:CC:DD:EE:FF, dst_mac=...
   Physical: everything above converted to electrical signals and sent
-  
+
   Each layer wraps the previous layer's data like a RUSSIAN NESTING DOLL.
-  
+
   → On the receiving end, each layer STRIPS its header and passes data UP.
   Physical → Data Link → Network → Transport → Application → your JSON!
 ```
@@ -450,7 +450,7 @@ ENCAPSULATION — How Data Gets Wrapped:
 MNEMONIC FOR OSI LAYERS:
   "All People Seem To Need Data Processing"
   Application, Presentation, Session, Transport, Network, Data Link, Physical
-  
+
   Or bottom-up:
   "Please Do Not Throw Sausage Pizza Away"
   Physical, Data Link, Network, Transport, Session, Presentation, Application
@@ -474,14 +474,14 @@ HUB (Layer 1 — Physical):
 SWITCH (Layer 2 — Data Link):
   Smart. Learns which MAC addresses are on which ports.
   Forwards frames ONLY to the correct port.
-  
+
   HOW A SWITCH LEARNS:
   1. Device A sends a frame from port 1.
   2. Switch reads source MAC address → stores: "MAC_A is on port 1."
   3. If destination MAC is unknown → FLOOD to all ports (just this once).
   4. Destination device responds → switch learns its MAC too.
   5. Future frames between A and B → sent ONLY on their ports.
-  
+
   MAC ADDRESS TABLE (CAM table):
   ┌────────────────────┬──────┐
   │ MAC Address         │ Port │
@@ -490,7 +490,7 @@ SWITCH (Layer 2 — Data Link):
   │ AA:BB:CC:DD:EE:02  │ 3    │
   │ AA:BB:CC:DD:EE:03  │ 7    │
   └────────────────────┴──────┘
-  
+
   ANALOGY: A hotel receptionist who remembers which room each guest is in.
   First visit: "I don't know where Mr. Smith is. Let me page all rooms."
   Second visit: "Mr. Smith is in room 307" → delivers message directly.
@@ -499,11 +499,11 @@ ROUTER (Layer 3 — Network):
   Connects DIFFERENT networks together.
   Makes forwarding decisions based on IP addresses (not MAC).
   Maintains a ROUTING TABLE: "To reach 10.0.2.0/24, send via interface eth1."
-  
+
   DIFFERENCE:
   Switch: connects devices on the SAME network (LAN).
   Router: connects DIFFERENT networks (your home to the internet).
-  
+
   Your home "router" is actually a ROUTER + SWITCH + AP + FIREWALL + DHCP server.
 
 LAYER 3 SWITCH (L3 switch):
@@ -571,7 +571,7 @@ STEP 2 — DNS RESOLUTION:
 STEP 3 — TCP CONNECTION (Transport Layer):
   Source: 192.168.1.100:49872 (your machine, random ephemeral port)
   Dest:   54.123.45.67:443 (server, HTTPS port)
-  
+
   SYN  →  (I want to connect, my seq # is 1000)
        ← SYN-ACK (OK, my seq # is 2000, I ACK your 1000+1)
   ACK  →  (I ACK your 2000+1. Connection established!)
@@ -625,12 +625,12 @@ TOTAL TIME: ~50-200ms depending on distance and server processing.
 WHAT IS A VLAN?
   A Virtual LAN. Logically divides ONE physical switch into MULTIPLE separate networks.
   Devices in VLAN 10 can't talk to devices in VLAN 20, even if plugged into the same switch.
-  
+
   WHY?
   1. SECURITY: HR department can't sniff traffic from Finance department.
   2. BROADCAST CONTROL: broadcasts stay within the VLAN (ARP storms don't spread).
   3. ORGANIZATION: group devices logically, not physically.
-  
+
   ANALOGY: A building with locked floors.
   Floor 1 (VLAN 10): Engineering. Floor 2 (VLAN 20): Finance.
   To go between floors, you must go through the lobby (router).
@@ -641,12 +641,12 @@ TRUNK PORT vs ACCESS PORT:
     Port 1: VLAN 10 (Engineering)
     Port 2: VLAN 10 (Engineering)
     Port 5: VLAN 20 (Finance)
-  
+
   TRUNK PORT: Carries MULTIPLE VLANs between switches.
     Uses 802.1Q tagging: each frame gets a 4-byte VLAN tag.
     Switch A port 24 (trunk) ←→ Switch B port 24 (trunk)
     Both switches share VLANs 10, 20, 30.
-  
+
   NATIVE VLAN: Frames without a tag on a trunk port belong to the native VLAN.
     Default: VLAN 1. Change it for security!
 
@@ -662,14 +662,13 @@ INTER-VLAN ROUTING:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **IP Addressing deep dive** | [Ch 05: IP & Subnets](05_IP_Addressing_Subnets.md) — CIDR math, NAT, ARP |
-| **TCP/UDP mechanics** | [Ch 06: TCP/UDP Deep Dive](06_TCP_UDP_Deep_Dive.md) — handshake, state machine |
-| **DNS resolution** | [Ch 07: DNS Complete](07_DNS_Complete.md) — record types, DNSSEC |
-| **Queue (TCP buffer)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — ring buffers |
-| **Hash table (ARP, MAC table)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
-| **Graph algorithms (routing)** | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — Dijkstra |
-| **HTTP protocol** | [Ch 08: HTTP Complete](08_HTTP_Complete.md) |
-| **Kubernetes networking** | [Networking & Security](02_Networking_Security.md) — kube-proxy, Ingress |
-
+| Topic                           | Related Content                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| **IP Addressing deep dive**     | [Ch 05: IP & Subnets](05_IP_Addressing_Subnets.md) — CIDR math, NAT, ARP               |
+| **TCP/UDP mechanics**           | [Ch 06: TCP/UDP Deep Dive](06_TCP_UDP_Deep_Dive.md) — handshake, state machine         |
+| **DNS resolution**              | [Ch 07: DNS Complete](07_DNS_Complete.md) — record types, DNSSEC                       |
+| **Queue (TCP buffer)**          | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — ring buffers        |
+| **Hash table (ARP, MAC table)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                       |
+| **Graph algorithms (routing)**  | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — Dijkstra |
+| **HTTP protocol**               | [Ch 08: HTTP Complete](08_HTTP_Complete.md)                                            |
+| **Kubernetes networking**       | [Networking & Security](02_Networking_Security.md) — kube-proxy, Ingress               |

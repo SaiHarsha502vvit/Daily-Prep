@@ -29,17 +29,17 @@
 
 ## 1. The four tools
 
-| | Playwright | Cypress | Selenium 4 | WebdriverIO |
-|---|---|---|---|---|
-| Vendor | Microsoft | Cypress.io | Apache Foundation | Community (no single vendor) |
-| First release | Jan 2020 | Oct 2017 | 2004 (Selenium 1) | 2015 |
-| License | Apache 2.0 | MIT (core) / commercial (Cloud) | Apache 2.0 | MIT |
-| Languages | JS/TS, Python, Java, C# | JS/TS only | Java, Python, C#, Ruby, JS | JS/TS only |
-| Cross-browser | Chromium, Firefox, WebKit | Chromium primarily, FF/WK experimental | All major | All major |
-| W3C WebDriver compliance | No (uses CDP) | No (proprietary) | Yes | Configurable |
-| Github stars | ~65k | ~46k | ~30k | ~9k |
-| Weekly npm downloads | ~5M | ~5M | ~3M (per language) | ~700k |
-| Active commits | Very active | Active | Steady | Moderate |
+|                          | Playwright                | Cypress                                | Selenium 4                 | WebdriverIO                  |
+| ------------------------ | ------------------------- | -------------------------------------- | -------------------------- | ---------------------------- |
+| Vendor                   | Microsoft                 | Cypress.io                             | Apache Foundation          | Community (no single vendor) |
+| First release            | Jan 2020                  | Oct 2017                               | 2004 (Selenium 1)          | 2015                         |
+| License                  | Apache 2.0                | MIT (core) / commercial (Cloud)        | Apache 2.0                 | MIT                          |
+| Languages                | JS/TS, Python, Java, C#   | JS/TS only                             | Java, Python, C#, Ruby, JS | JS/TS only                   |
+| Cross-browser            | Chromium, Firefox, WebKit | Chromium primarily, FF/WK experimental | All major                  | All major                    |
+| W3C WebDriver compliance | No (uses CDP)             | No (proprietary)                       | Yes                        | Configurable                 |
+| Github stars             | ~65k                      | ~46k                                   | ~30k                       | ~9k                          |
+| Weekly npm downloads     | ~5M                       | ~5M                                    | ~3M (per language)         | ~700k                        |
+| Active commits           | Very active               | Active                                 | Steady                     | Moderate                     |
 
 ### 1.1 The market positioning
 
@@ -110,11 +110,13 @@ Test (Java / Python / C# / Ruby / JS)
 Two modes:
 
 **WebDriver mode (default):**
+
 ```
 Test → W3C HTTP → ChromeDriver → Browser
 ```
 
 **DevTools mode (via `@wdio/devtools-service`):**
+
 ```
 Test → CDP WebSocket → Chromium
 ```
@@ -123,13 +125,13 @@ Pluggable transport. Default is WebDriver (Selenium-style) but can switch to CDP
 
 ### 2.5 Architectural implications
 
-| Property | Playwright | Cypress | Selenium 4 | WDIO |
-|---|---|---|---|---|
-| Per-command latency | Low (WebSocket) | Very low (in-process) | High (HTTP roundtrip) | Variable |
-| Cross-domain support | Native | Limited (cy.origin) | Native | Native |
-| Multiple tabs / contexts | First-class | Limited | First-class | First-class |
-| Test isolation | Strong (separate processes) | Weak (shared event loop) | Strong | Strong |
-| Browser-driver maintenance | Bundled | Bundled | Manual | Manual |
+| Property                   | Playwright                  | Cypress                  | Selenium 4            | WDIO        |
+| -------------------------- | --------------------------- | ------------------------ | --------------------- | ----------- |
+| Per-command latency        | Low (WebSocket)             | Very low (in-process)    | High (HTTP roundtrip) | Variable    |
+| Cross-domain support       | Native                      | Limited (cy.origin)      | Native                | Native      |
+| Multiple tabs / contexts   | First-class                 | Limited                  | First-class           | First-class |
+| Test isolation             | Strong (separate processes) | Weak (shared event loop) | Strong                | Strong      |
+| Browser-driver maintenance | Bundled                     | Bundled                  | Manual                | Manual      |
 
 ---
 
@@ -138,8 +140,8 @@ Pluggable transport. Default is WebDriver (Selenium-style) but can switch to CDP
 ### 3.1 Playwright
 
 ```typescript
-const btn = page.getByRole('button', { name: 'Save' });  // lazy
-await btn.click();                                        // queries + auto-waits + clicks
+const btn = page.getByRole("button", { name: "Save" }); // lazy
+await btn.click(); // queries + auto-waits + clicks
 ```
 
 - Lazy `Locator` objects.
@@ -151,9 +153,9 @@ await btn.click();                                        // queries + auto-wait
 ### 3.2 Cypress
 
 ```javascript
-cy.get('button.save').should('be.visible').click();
-cy.contains('button', 'Save').click();
-cy.findByRole('button', { name: 'Save' }).click();  // @testing-library/cypress
+cy.get("button.save").should("be.visible").click();
+cy.contains("button", "Save").click();
+cy.findByRole("button", { name: "Save" }).click(); // @testing-library/cypress
 ```
 
 - Commands chain.
@@ -175,9 +177,9 @@ btn.click();
 ### 3.4 WebdriverIO
 
 ```javascript
-const btn = $('button.save');           // lazy
+const btn = $("button.save"); // lazy
 await btn.click();
-await $('my-card').shadow$('button').click();  // shadow DOM piercing
+await $("my-card").shadow$("button").click(); // shadow DOM piercing
 ```
 
 - Lazy `$()` and `$$()` — similar to Playwright.
@@ -186,12 +188,12 @@ await $('my-card').shadow$('button').click();  // shadow DOM piercing
 
 ### 3.5 Decision
 
-| Need | Best |
-|---|---|
-| Most stable locators | Playwright (lazy + strict mode) |
-| Smallest learning curve | Cypress (`cy.get`) |
-| Native shadow DOM | WebdriverIO |
-| Language portability | Selenium |
+| Need                    | Best                            |
+| ----------------------- | ------------------------------- |
+| Most stable locators    | Playwright (lazy + strict mode) |
+| Smallest learning curve | Cypress (`cy.get`)              |
+| Native shadow DOM       | WebdriverIO                     |
+| Language portability    | Selenium                        |
 
 ---
 
@@ -200,9 +202,9 @@ await $('my-card').shadow$('button').click();  // shadow DOM piercing
 ### 4.1 Playwright
 
 ```typescript
-await page.goto('https://app.example.com');
+await page.goto("https://app.example.com");
 // Redirect to https://auth.example.com — Playwright follows transparently
-await page.fill('#email', 'user@example.com');
+await page.fill("#email", "user@example.com");
 // Redirect back — transparent
 ```
 
@@ -211,14 +213,15 @@ await page.fill('#email', 'user@example.com');
 ### 4.2 Cypress
 
 ```javascript
-cy.visit('https://app.example.com');
+cy.visit("https://app.example.com");
 // SP redirects to IdP
-cy.origin('https://auth.example.com', () => {
-  cy.get('#email').type('user@example.com');
+cy.origin("https://auth.example.com", () => {
+  cy.get("#email").type("user@example.com");
 });
 ```
 
 ⚠️ Requires `cy.origin()` (v11+). Has limitations:
+
 - Isolated scope — can't share variables.
 - No browser cookies in some scenarios.
 - Multiple cross-origin redirects in one flow are fragile.
@@ -239,12 +242,12 @@ Same as Selenium in WebDriver mode. CDP mode has the same limitations as Playwri
 
 ### 4.5 IFrame support
 
-| | IFrame API | Limitations |
-|---|---|---|
-| Playwright | `page.frameLocator('iframe').locator(...)` | Cross-origin frames mostly work |
-| Cypress | `cy.iframe()` (plugin) | Same-origin only without workarounds |
-| Selenium 4 | `driver.switchTo().frame(...)` | All frames, including cross-origin |
-| WDIO | `browser.switchToFrame(...)` | Like Selenium |
+|            | IFrame API                                 | Limitations                          |
+| ---------- | ------------------------------------------ | ------------------------------------ |
+| Playwright | `page.frameLocator('iframe').locator(...)` | Cross-origin frames mostly work      |
+| Cypress    | `cy.iframe()` (plugin)                     | Same-origin only without workarounds |
+| Selenium 4 | `driver.switchTo().frame(...)`             | All frames, including cross-origin   |
+| WDIO       | `browser.switchToFrame(...)`               | Like Selenium                        |
 
 For complex multi-frame apps (D365 form-in-iframe, legacy CRM portals), Selenium and Playwright handle well; Cypress struggles.
 
@@ -300,12 +303,12 @@ maxInstances: 4,
 
 ### 5.5 Comparison
 
-| | Built-in parallel | Sharding | Multi-machine | Cost |
-|---|---|---|---|---|
-| Playwright | ✅ | ✅ `--shard` | ✅ matrix CI | Free |
-| Cypress | ⚠️ Cloud only | ⚠️ Manual | ⚠️ Cloud only | $67-150/mo |
-| Selenium 4 | ⚠️ Framework | ⚠️ Manual | ✅ Grid | Free (Grid self-host) |
-| WebdriverIO | ✅ | ⚠️ Manual | ✅ Custom | Free |
+|             | Built-in parallel | Sharding     | Multi-machine | Cost                  |
+| ----------- | ----------------- | ------------ | ------------- | --------------------- |
+| Playwright  | ✅                | ✅ `--shard` | ✅ matrix CI  | Free                  |
+| Cypress     | ⚠️ Cloud only     | ⚠️ Manual    | ⚠️ Cloud only | $67-150/mo            |
+| Selenium 4  | ⚠️ Framework      | ⚠️ Manual    | ✅ Grid       | Free (Grid self-host) |
+| WebdriverIO | ✅                | ⚠️ Manual    | ✅ Custom     | Free                  |
 
 For free + capable parallelism: Playwright wins.
 
@@ -316,12 +319,13 @@ For free + capable parallelism: Playwright wins.
 ### 6.1 Playwright
 
 ```typescript
-const response = await request.post('/citations', { data: payload });
+const response = await request.post("/citations", { data: payload });
 expect(response.ok()).toBeTruthy();
 const body = await response.json();
 ```
 
 First-class `APIRequestContext`:
+
 - Shares cookies with browser.
 - Typed JSON.
 - Built-in HAR recording.
@@ -330,10 +334,11 @@ First-class `APIRequestContext`:
 ### 6.2 Cypress
 
 ```javascript
-cy.request({ method: 'POST', url: '/citations', body: payload })
-  .then(response => {
+cy.request({ method: "POST", url: "/citations", body: payload }).then(
+  (response) => {
     expect(response.status).to.eq(201);
-  });
+  },
+);
 ```
 
 - Basic HTTP client.
@@ -344,6 +349,7 @@ cy.request({ method: 'POST', url: '/citations', body: payload })
 ### 6.3 Selenium
 
 No built-in API client. Teams use:
+
 - Java: RestAssured.
 - Python: requests.
 - C#: HttpClient.
@@ -354,12 +360,12 @@ Limited. Teams use axios or fetch alongside WDIO commands.
 
 ### 6.5 Decision
 
-| Need | Best |
-|---|---|
-| UI + API in one framework | Playwright |
-| Strong typed API client | Playwright |
-| Postman-grade API tests | Postman (specialised) |
-| Java REST testing | Selenium + RestAssured |
+| Need                      | Best                   |
+| ------------------------- | ---------------------- |
+| UI + API in one framework | Playwright             |
+| Strong typed API client   | Playwright             |
+| Postman-grade API tests   | Postman (specialised)  |
+| Java REST testing         | Selenium + RestAssured |
 
 For "one framework for UI + API": Playwright.
 
@@ -370,8 +376,8 @@ For "one framework for UI + API": Playwright.
 ### 7.1 Playwright
 
 ```typescript
-await page.route('**/api/**', route => route.fulfill({ status: 500 }));
-await page.waitForResponse('**/api/x');
+await page.route("**/api/**", (route) => route.fulfill({ status: 500 }));
+await page.waitForResponse("**/api/x");
 ```
 
 - `page.route` with continue/fulfill/abort.
@@ -382,9 +388,9 @@ await page.waitForResponse('**/api/x');
 ### 7.2 Cypress
 
 ```javascript
-cy.intercept('POST', '/api/citations', { statusCode: 201, body: {} });
-cy.intercept('POST', '/api/citations').as('save');
-cy.wait('@save');
+cy.intercept("POST", "/api/citations", { statusCode: 201, body: {} });
+cy.intercept("POST", "/api/citations").as("save");
+cy.wait("@save");
 ```
 
 - `cy.intercept` powerful — declarative.
@@ -395,6 +401,7 @@ cy.wait('@save');
 ### 7.3 Selenium
 
 No native interception. Workarounds:
+
 - BrowserMob Proxy
 - Selenium 4 + CDP (Chromium only)
 - BrowserStack Web Inspector
@@ -406,23 +413,23 @@ No native interception. Workarounds:
 
 ### 7.5 Decision
 
-| Need | Best |
-|---|---|
+| Need                       | Best                             |
+| -------------------------- | -------------------------------- |
 | Most flexible interception | Playwright (or Cypress for SPAs) |
-| Cleanest mock syntax | Cypress (`cy.intercept`) |
-| Cross-browser interception | Playwright |
-| Legacy Selenium suite | Selenium + BrowserMob |
+| Cleanest mock syntax       | Cypress (`cy.intercept`)         |
+| Cross-browser interception | Playwright                       |
+| Legacy Selenium suite      | Selenium + BrowserMob            |
 
 ---
 
 ## 8. Component testing
 
-| Tool | Component support | Frameworks |
-|---|---|---|
-| Playwright | `@playwright/experimental-ct-*` | React, Vue, Svelte, Solid |
-| Cypress | First-class, mature | React, Vue, Svelte, Angular |
-| Selenium | None (E2E only) | — |
-| WebdriverIO | Via Stencil/Vue extension | Limited |
+| Tool        | Component support               | Frameworks                  |
+| ----------- | ------------------------------- | --------------------------- |
+| Playwright  | `@playwright/experimental-ct-*` | React, Vue, Svelte, Solid   |
+| Cypress     | First-class, mature             | React, Vue, Svelte, Angular |
+| Selenium    | None (E2E only)                 | —                           |
+| WebdriverIO | Via Stencil/Vue extension       | Limited                     |
 
 For component-level testing alongside E2E: Cypress or Playwright. Cypress's component testing is more polished today.
 
@@ -456,12 +463,12 @@ For component-level testing alongside E2E: Cypress or Playwright. Cypress's comp
 
 ### 9.5 Decision
 
-| Need | Best |
-|---|---|
-| Mobile web emulation | Playwright |
-| Native mobile, JS team | WebdriverIO + Appium |
-| Native mobile, Java team | Selenium + Appium |
-| Mobile web with real Safari | Playwright (WebKit) |
+| Need                        | Best                 |
+| --------------------------- | -------------------- |
+| Mobile web emulation        | Playwright           |
+| Native mobile, JS team      | WebdriverIO + Appium |
+| Native mobile, Java team    | Selenium + Appium    |
+| Mobile web with real Safari | Playwright (WebKit)  |
 
 ---
 
@@ -529,23 +536,23 @@ For debugging UX: Playwright or Cypress. Selenium is dramatically behind.
 
 ### 11.5 CI
 
-| | Native CI support | Docker images |
-|---|---|---|
-| Playwright | ✅ Excellent | Official MS image |
-| Cypress | ✅ Excellent | Official image |
-| Selenium | ✅ via Grid | Selenium Grid images |
-| WebdriverIO | ✅ Good | Community images |
+|             | Native CI support | Docker images        |
+| ----------- | ----------------- | -------------------- |
+| Playwright  | ✅ Excellent      | Official MS image    |
+| Cypress     | ✅ Excellent      | Official image       |
+| Selenium    | ✅ via Grid       | Selenium Grid images |
+| WebdriverIO | ✅ Good           | Community images     |
 
 ---
 
 ## 12. Language support
 
-| | JS/TS | Python | Java | C# | Ruby | Go |
-|---|---|---|---|---|---|---|
-| Playwright | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
-| Cypress | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Selenium | ✅ | ✅ | ✅ | ✅ | ✅ | (unofficial) |
-| WebdriverIO | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+|             | JS/TS | Python | Java | C#  | Ruby | Go           |
+| ----------- | ----- | ------ | ---- | --- | ---- | ------------ |
+| Playwright  | ✅    | ✅     | ✅   | ✅  | ❌   | ❌           |
+| Cypress     | ✅    | ❌     | ❌   | ❌  | ❌   | ❌           |
+| Selenium    | ✅    | ✅     | ✅   | ✅  | ✅   | (unofficial) |
+| WebdriverIO | ✅    | ❌     | ❌   | ❌  | ❌   | ❌           |
 
 Java and Python teams typically pick Selenium. Python's Playwright SDK is solid; Java is somewhat behind but usable.
 
@@ -596,33 +603,33 @@ For 10-year horizon: Selenium and Playwright are safest bets. Cypress depends on
 
 ### 14.1 License costs
 
-| | Open-source | Commercial add-ons |
-|---|---|---|
-| Playwright | Free | None |
-| Cypress | Free | Cloud: $67-150/user/month |
-| Selenium | Free | Sauce Labs, BrowserStack |
-| WebdriverIO | Free | Sauce, BrowserStack |
+|             | Open-source | Commercial add-ons        |
+| ----------- | ----------- | ------------------------- |
+| Playwright  | Free        | None                      |
+| Cypress     | Free        | Cloud: $67-150/user/month |
+| Selenium    | Free        | Sauce Labs, BrowserStack  |
+| WebdriverIO | Free        | Sauce, BrowserStack       |
 
 ### 14.2 Infrastructure costs
 
-| | CI cost driver |
-|---|---|
-| Playwright | CI minutes + storage (traces) |
-| Cypress | CI minutes + Cypress Cloud (for parallel) |
-| Selenium | CI minutes + Grid hosting |
-| WebdriverIO | CI minutes |
+|             | CI cost driver                            |
+| ----------- | ----------------------------------------- |
+| Playwright  | CI minutes + storage (traces)             |
+| Cypress     | CI minutes + Cypress Cloud (for parallel) |
+| Selenium    | CI minutes + Grid hosting                 |
+| WebdriverIO | CI minutes                                |
 
 For free parallel: Playwright wins.
 
 ### 14.3 Engineer time
 
-| Activity | Playwright | Cypress | Selenium | WDIO |
-|---|---|---|---|---|
-| Initial setup | 1 hour | 1 hour | 4 hours | 2 hours |
-| Writing first 10 tests | 2 hours | 2 hours | 5 hours | 3 hours |
-| Debugging flaky test | 30 min | 30 min | 2 hours | 1 hour |
-| Cross-browser config | 30 min | (paid feature) | 2 hours | 1 hour |
-| CI integration | 2 hours | 2 hours | 4 hours | 2 hours |
+| Activity               | Playwright | Cypress        | Selenium | WDIO    |
+| ---------------------- | ---------- | -------------- | -------- | ------- |
+| Initial setup          | 1 hour     | 1 hour         | 4 hours  | 2 hours |
+| Writing first 10 tests | 2 hours    | 2 hours        | 5 hours  | 3 hours |
+| Debugging flaky test   | 30 min     | 30 min         | 2 hours  | 1 hour  |
+| Cross-browser config   | 30 min     | (paid feature) | 2 hours  | 1 hour  |
+| CI integration         | 2 hours    | 2 hours        | 4 hours  | 2 hours |
 
 For onboarding speed: Playwright and Cypress tie. Selenium is slowest.
 
@@ -630,12 +637,12 @@ For onboarding speed: Playwright and Cypress tie. Selenium is slowest.
 
 Estimating engineering cost at $150/hour fully-loaded, plus license/infra:
 
-| | License | Engineering | Total |
-|---|---|---|---|
-| Playwright | $0 | ~$200k | ~$200k |
-| Cypress (with Cloud) | ~$200k | ~$200k | ~$400k |
-| Selenium | $0 | ~$300k | ~$300k |
-| WebdriverIO | $0 | ~$220k | ~$220k |
+|                      | License | Engineering | Total  |
+| -------------------- | ------- | ----------- | ------ |
+| Playwright           | $0      | ~$200k      | ~$200k |
+| Cypress (with Cloud) | ~$200k  | ~$200k      | ~$400k |
+| Selenium             | $0      | ~$300k      | ~$300k |
+| WebdriverIO          | $0      | ~$220k      | ~$220k |
 
 (Highly approximate. Real numbers depend on suite size, complexity, churn.)
 
@@ -744,6 +751,7 @@ These are the concise answers interviewers expect when asking about tool selecti
 ### 18.1 "Is Playwright really faster than Selenium?"
 
 Per-command, yes — WebSocket has lower latency than HTTP for many small calls. For a 50-action test:
+
 - Selenium 4 (HTTP): ~2.5 seconds of WebDriver round-trips.
 - Playwright (CDP): ~0.5 seconds.
 

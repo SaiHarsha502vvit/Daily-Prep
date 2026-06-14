@@ -5,11 +5,13 @@
 ## Why This File Exists
 
 This chapter fills the exact gap you pointed out:
+
 - Strong SQL problem-solving was already present
 - But core SQL fundamentals from your handwritten notes were scattered
 - Interviews need both: strong analytics + clear fundamentals + syntax alternatives
 
 This file follows your requested order:
+
 1. Logic in plain human language
 2. Math/decision reasoning
 3. SQL syntax (multiple alternatives)
@@ -21,14 +23,14 @@ This file follows your requested order:
 
 When interviewer gives a SQL problem, speak in this order:
 
-1. **Result Definition**: "The output should have one row per ___ and columns ___."
-2. **Row Scope**: "First I will filter rows based on ___."
-3. **Join Logic**: "Then I need table A with table B using key ___."
-4. **Group Logic**: "If aggregate is required, group by ___."
+1. **Result Definition**: "The output should have one row per **_ and columns _**."
+2. **Row Scope**: "First I will filter rows based on \_\_\_."
+3. **Join Logic**: "Then I need table A with table B using key \_\_\_."
+4. **Group Logic**: "If aggregate is required, group by \_\_\_."
 5. **Condition Level**:
    - row condition -> `WHERE`
    - group condition -> `HAVING`
-6. **Output Polish**: "Finally sort by ___ and limit to ___."
+6. **Output Polish**: "Finally sort by **_ and limit to _**."
 7. **Alternative**: "I can also solve this using window function / subquery / CTE."
 
 Mini script:
@@ -123,9 +125,6 @@ SELECT no FROM t1 GROUP BY no;
 
 ---
 
-
-
-
 ## 4) `UPDATE`, `ALTER`, `MODIFY`, `RENAME`, `DROP`, `TRUNCATE`, `DELETE`
 
 ## 4.1 `UPDATE` (change row values)
@@ -162,8 +161,6 @@ PostgreSQL alternative:
 ALTER TABLE t1 ALTER COLUMN marks TYPE NUMERIC(10,2);
 ```
 
-
-
 🔬 **Section Challenge — 4.3 Modify datatype**
 
 **Challenge 1 (Debug — Who/When/What):** You run `ALTER TABLE employee MODIFY COLUMN salary DECIMAL(12,2)` in MySQL on a 50M-row production table. **Who** is blocked? **When?** **What** is the safer alternative?
@@ -173,7 +170,6 @@ ALTER TABLE t1 ALTER COLUMN marks TYPE NUMERIC(10,2);
 **Who is blocked?** ALL reads AND writes on the `employee` table. MySQL 5.x performs a **table-level lock** for most DDL — it copies the entire table to a temp file with the new schema, then swaps. **When?** For the full duration of the copy — on a 50M-row table with slow disk, this could be 30-60 minutes of complete table unavailability. **Safer alternative:** (1) **MySQL 5.6+ Online DDL**: `ALTER TABLE ... ALGORITHM=INPLACE, LOCK=NONE` — for supported operations (changing column length, adding indexes), MySQL allows concurrent reads/writes during the operation. (2) **pt-online-schema-change** (Percona Toolkit): creates shadow table, copies data in batches, uses triggers to sync writes, then atomically swaps. Zero downtime. (3) **gh-ost** (GitHub): trigger-free online schema change tool — more reliable for high-traffic tables.
 
 </details>
-
 
 ## 4.4 Rename column/table
 
@@ -217,11 +213,11 @@ DROP DATABASE company;
 
 ### Interview comparison table
 
-| Operation | Filterable | Logs row-by-row | Resets identity often | Structure kept |
-|---|---|---|---|---|
-| DELETE | Yes | Usually yes | Usually no | Yes |
-| TRUNCATE | No | Minimal/metadata heavy | Often yes | Yes |
-| DROP | No | Metadata | N/A | No |
+| Operation | Filterable | Logs row-by-row        | Resets identity often | Structure kept |
+| --------- | ---------- | ---------------------- | --------------------- | -------------- |
+| DELETE    | Yes        | Usually yes            | Usually no            | Yes            |
+| TRUNCATE  | No         | Minimal/metadata heavy | Often yes             | Yes            |
+| DROP      | No         | Metadata               | N/A                   | No             |
 
 ---
 
@@ -272,9 +268,6 @@ Subquery form:
 SELECT * FROM t1 WHERE marks IN (SELECT cutoff FROM c1);
 ```
 
-
-
-
 ## 5.4 `IS NULL` / `IS NOT NULL`
 
 ```sql
@@ -302,8 +295,6 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 
 `%` = any length, `_` = single character.
 
-
-
 🔬 **Section Challenge — 5.5 `LIKE` with wildcards**
 
 **Challenge 1 (LIKE Pattern Matching Performance):** `SELECT * FROM users WHERE name LIKE '%john%'`. **Who** can't use an index? **When** does `LIKE 'john%'` perform better? **What** is the production alternative for full-text search?
@@ -316,9 +307,11 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 <details><summary>Answer</summary>
 
 No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
+
 </details>
 
 **Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
+
 <details><summary>Answer</summary>
 
 ```java
@@ -326,9 +319,10 @@ No. The compiler doesn't know the actual type — it could be `List<Integer>`, `
     for (T item : src) dst.add(item);
 }
 ```
-PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
-</details>
 
+PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
+
+</details>
 
 ## 5.6 `EXISTS`
 
@@ -376,9 +370,6 @@ SELECT * FROM t1 WHERE marks > (SELECT MAX(cutoff) FROM c1); -- > ALL
 ## 6) Aggregate Functions + `GROUP BY` + `HAVING`
 
 From your notes: `COUNT`, `SUM`, `MIN`, `MAX`, `AVG`, `COALESCE`, `ROUND`.
-
-
-
 
 ## 6.1 Core aggregate syntax
 
@@ -435,9 +426,6 @@ Interview line:
 "I use WHERE before grouping, HAVING after grouping. Aggregate conditions belong in HAVING."
 
 ---
-
-
-
 
 ## 7) `CASE` Expressions and Aliases
 
@@ -528,8 +516,6 @@ Equivalent (older style):
 SELECT * FROM t1, t2 WHERE t1.no = t2.no;
 ```
 
-
-
 🔬 **Section Challenge — 9.1 `INNER JOIN`**
 
 **Challenge 1 (Debug — Who/When/What):** `SELECT orders.id, items.name FROM orders, order_items items WHERE orders.id = items.order_id AND orders.status = 'PENDING'` — **who** executes the join? **What** implicit join type is this? **What** catastrophic query results if you delete the WHERE clause?
@@ -539,7 +525,6 @@ SELECT * FROM t1, t2 WHERE t1.no = t2.no;
 **Who executes:** The SQL query optimizer — it converts the comma-syntax to an implicit INNER JOIN. **What join type:** Implicit INNER JOIN, functionally identical to `orders INNER JOIN order_items ON orders.id = items.order_id`. **What catastrophe without WHERE:** A full CROSS JOIN (Cartesian product) — every order row paired with EVERY item row. If `orders` has 10,000 rows and `order_items` has 50,000, you get 500,000,000 rows (500M). This can crash the DB server or consume all memory. **Why this matters:** Always use explicit `JOIN ... ON` syntax — the intent is clear, the ON clause is co-located with the join, and accidental cross joins are much harder to write by mistake.
 
 </details>
-
 
 ## 9.2 `LEFT JOIN`
 
@@ -551,22 +536,23 @@ LEFT JOIN t2 ON t1.no = t2.no;
 
 Use when: keep all left rows even if right missing.
 
-
-
 🔬 **Section Challenge — 9.2 `LEFT JOIN`**
 
 **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+
 <details><summary>Answer</summary>
 
 When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+
 <details><summary>Answer</summary>
 
 It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-</details>
 
+</details>
 
 ## 9.3 `RIGHT JOIN`
 
@@ -578,8 +564,6 @@ RIGHT JOIN t2 ON t1.no = t2.no;
 
 Equivalent by swapping table order with LEFT JOIN.
 
-
-
 🔬 **Section Challenge — 9.3 `RIGHT JOIN`**
 
 **Challenge 1 (Reasoning — Who/When/What):** `departments RIGHT JOIN employees` returns all employees including those without a department. **Who** is null? **When** would you prefer this over `employees LEFT JOIN departments`? **What** does the convention say?
@@ -590,7 +574,6 @@ Equivalent by swapping table order with LEFT JOIN.
 
 </details>
 
-
 ## 9.4 `CROSS JOIN`
 
 ```sql
@@ -598,8 +581,6 @@ SELECT * FROM t1 CROSS JOIN t2;
 ```
 
 Pure Cartesian product (every row with every row).
-
-
 
 🔬 **Section Challenge — 9.4 `CROSS JOIN`**
 
@@ -611,7 +592,6 @@ Pure Cartesian product (every row with every row).
 
 </details>
 
-
 ## 9.5 `NATURAL JOIN` (usually avoid in production)
 
 ```sql
@@ -621,8 +601,6 @@ SELECT * FROM t1 NATURAL JOIN t2;
 Interview line:
 
 "I avoid NATURAL JOIN in production because schema changes can silently change join behavior. I prefer explicit ON conditions."
-
-
 
 🔬 **Section Challenge — 9.5 `NATURAL JOIN` (usually avoid in production)**
 
@@ -634,7 +612,6 @@ Interview line:
 
 </details>
 
-
 ## 9.6 `SELF JOIN`
 
 ```sql
@@ -645,8 +622,6 @@ LEFT JOIN employee m ON e.manager_id = m.emp_id;
 
 ---
 
-
-
 🔬 **Section Challenge — 9.6 `SELF JOIN`**
 
 **Challenge 1 (Design — Who/When/What):** The org chart SELF JOIN works for a flat manager hierarchy. Your company now has 8 levels of management. **Who** should you call to get the full reporting chain for an employee? **When** does SELF JOIN break down? **What** replaces it?
@@ -656,7 +631,6 @@ LEFT JOIN employee m ON e.manager_id = m.emp_id;
 **Who:** The database engine — but it needs the right tool. **When SELF JOIN breaks:** SELF JOIN is a fixed-depth join — you join the table to itself N times for N levels. `employee e JOIN employee m ON e.manager_id = m.emp_id` gives you 1 level up (direct manager). For 8 levels you'd need 8 joins — and the depth must be known at query-write time. If an employee is at level 3 and another is at level 7, a 4-level join returns wrong results for the shallower one (NULLs). **What replaces it:** A **Recursive CTE** (WITH RECURSIVE): Start with the root, then repeatedly join employees to their managers until the chain terminates. Works for ANY depth. Supported in MySQL 8+, PostgreSQL, SQL Server. `WITH RECURSIVE chain AS (SELECT id, name, manager_id FROM employee WHERE id = ? UNION ALL SELECT e.id, e.name, e.manager_id FROM employee e JOIN chain c ON e.id = c.manager_id) SELECT * FROM chain;`
 
 </details>
-
 
 ## 10) Set Operators
 
@@ -679,9 +653,6 @@ Interview line:
 ---
 
 ## 11) String, Math, and Date Functions (from your notes)
-
-
-
 
 ## 11.1 String functions
 
@@ -718,9 +689,6 @@ FROM t1
 GROUP BY branch;
 ```
 
-
-
-
 ## 11.2 Math functions
 
 ```sql
@@ -731,8 +699,6 @@ SELECT CEIL(12.5);
 SELECT FLOOR(12.5);
 SELECT ROUND(25.678, 2);
 ```
-
-
 
 🔬 **Section Challenge — 11.2 Math functions**
 
@@ -746,14 +712,16 @@ SELECT ROUND(25.678, 2);
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 11.3 Date functions
 
@@ -765,8 +733,6 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 11.3 Date functions**
 
@@ -780,14 +746,16 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 12) Datatypes and Constraints (Practical Interview View)
 
@@ -808,12 +776,9 @@ Interview line:
 
 "I choose DECIMAL for financial values to avoid floating-point precision errors."
 
-
-
 🔬 **Section Challenge — 12.1 Datatypes**
 
 **Challenge 1 (Debug — Who/When/What):** You store a price as `DECIMAL(10,2)`. A user inputs `12345678901.99`. **Who** rejects it? **When?** **What** is the maximum value `DECIMAL(10,2)` can store?\n\n<details><summary>Answer</summary>\n\n**Who rejects?** The database engine, not the application. MySQL raises `ERROR 1264: Out of range value`. **When?** At INSERT/UPDATE time — after the application sends the value, before it's committed. **Max value:** `DECIMAL(10,2)` = 10 total digits, 2 after decimal point = 8 digits before decimal. Max: `99999999.99` (~$100M). **Common mistake:** DECIMAL(10,2) on an e-commerce price column seems large, but if you need to store values above $99,999,999.99 (international orders, B2B), you'll hit this. **Fix:** Use `DECIMAL(15,2)` for financial data by default (handles up to $9.9 trillion). For cryptocurrency: `DECIMAL(18,8)` (8 decimal places for satoshi-level precision). Never use FLOAT/DOUBLE for money — floating point representation causes cents-level rounding errors.\n\n</details>
-
 
 ## 12.2 Constraints
 
@@ -869,9 +834,6 @@ Candidate key note:
 
 ---
 
-
-
-
 ## 13) Indexes: Clustered vs Non-Clustered and Interview Reality
 
 ## 13.1 Core idea
@@ -897,11 +859,13 @@ Interview-safe phrasing:
 ## 13.4 When to create index
 
 Create when:
+
 - frequent `WHERE`, `JOIN`, `ORDER BY`
 - high-selectivity column
 - read-heavy workload
 
 Avoid when:
+
 - tiny table
 - low-cardinality only column
 - heavy write workload without read benefit
@@ -909,8 +873,6 @@ Avoid when:
 ---
 
 ## 14) CTE and Window Functions as Readability + Power Tools
-
-
 
 🔬 **Section Challenge — 14) CTE and Window Functions as Readability + Power Tools**
 
@@ -924,14 +886,16 @@ Avoid when:
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 14.1 CTE
 
@@ -969,8 +933,6 @@ SELECT *, ROW_NUMBER() OVER (PARTITION BY branch ORDER BY marks DESC) AS branch_
 FROM t1;
 ```
 
-
-
 🔬 **Section Challenge — 14.2 Ranking window functions**
 
 **Challenge 1 (RANK vs DENSE_RANK vs ROW_NUMBER):** Three employees have salaries: Alice=90k, Bob=90k, Carol=70k. **Who** gets rank 2 with `RANK()`, `DENSE_RANK()`, and `ROW_NUMBER()`?
@@ -983,14 +945,16 @@ FROM t1;
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 14.3 Value window functions
 
@@ -1012,8 +976,6 @@ FROM t1;
 
 ---
 
-
-
 🔬 **Section Challenge — 14.3 Value window functions**
 
 **Challenge 1 (LAG and LEAD for Period Comparisons):** `LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)` returns the previous month's revenue. **Who** computes the value? **When** does `LAG` return NULL? **What** is the default value syntax and the common MoM growth calculation?
@@ -1026,19 +988,18 @@ FROM t1;
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+
 </details>
 
-
 ## 15) Real-World Mini Scenarios with Multiple SQL Styles
-
-
-
 
 ## Scenario A: Restaurant analytics
 
@@ -1115,9 +1076,6 @@ FROM revised;
 
 ---
 
-
-
-
 ## 16) Interview Communication Scripts (Use Verbatim)
 
 ### Script 1: Aggregate + filter
@@ -1151,4 +1109,3 @@ FROM revised;
 5. Did I explain one alternative approach?
 6. Did I mention performance/index thought briefly?
 7. Is output ordering/limit consistent with prompt?
-

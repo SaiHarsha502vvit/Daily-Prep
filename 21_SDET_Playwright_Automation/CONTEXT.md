@@ -12,22 +12,22 @@ Current count: ~248 `.md` files across the module. The original 52-chapter
 plan has grown with Phase 2–5 work; see `00_INDEX.md` for the authoritative
 chapter list and `SITEMAP.md` for the folder breakdown.
 
-| Range | Theme |
-|---|---|
-| 00 | Foundations & mindset — testing pyramid, 3 pillars, professional vocabulary |
-| 01–09 | Core Playwright — async/await, locators, POM, fixtures, E2E, browser internals, parallel |
-| 10–19 | D365 & cross-site patterns — IFrames, Fluent UI, dual-context, token/magic-link, security |
-| 20 | Practice resources & 10-week challenge map |
-| 21–24 | Enterprise architecture — project structure, factory pattern, APIUtils, test script architecture |
-| 25–31 | Production quality — CI/CD, flakiness, advanced TypeScript, test data, visual regression, DB, mocking |
-| 32 | SDET interview prep |
-| 33–36 | SDET→SDE bridge — CS thinking, algorithms, OOP patterns, TypeScript type system |
-| 37–41 | Open-source specialised tools — Lighthouse/k6, Pact, axe-core, OWASP ZAP, GraphQL/WebSocket |
-| 42–45 | Real-world depth — polling, war stories, enterprise API client library, AI/MCP |
+| Range | Theme                                                                                                                                     |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 00    | Foundations & mindset — testing pyramid, 3 pillars, professional vocabulary                                                               |
+| 01–09 | Core Playwright — async/await, locators, POM, fixtures, E2E, browser internals, parallel                                                  |
+| 10–19 | D365 & cross-site patterns — IFrames, Fluent UI, dual-context, token/magic-link, security                                                 |
+| 20    | Practice resources & 10-week challenge map                                                                                                |
+| 21–24 | Enterprise architecture — project structure, factory pattern, APIUtils, test script architecture                                          |
+| 25–31 | Production quality — CI/CD, flakiness, advanced TypeScript, test data, visual regression, DB, mocking                                     |
+| 32    | SDET interview prep                                                                                                                       |
+| 33–36 | SDET→SDE bridge — CS thinking, algorithms, OOP patterns, TypeScript type system                                                           |
+| 37–41 | Open-source specialised tools — Lighthouse/k6, Pact, axe-core, OWASP ZAP, GraphQL/WebSocket                                               |
+| 42–45 | Real-world depth — polling, war stories, enterprise API client library, AI/MCP                                                            |
 | 46–54 | Framework engineering — config semantics, BDD, Allure, sharding, feature flags, email, secrets, mutation, component, synthetic monitoring |
-| 55–59 | Reader-requested fills — inspector/trace viewer, config deep-dive, auth taxonomy, file I/O, Docker |
-| 60–69 | Principal-SDET extension (a.k.a. P1–P10) — analytics, leadership, FinOps, SLOs, healing, ADRs, PII, test impact, chaos, observability |
-| Q1–Q2 | MCQ quiz, code challenge quiz |
+| 55–59 | Reader-requested fills — inspector/trace viewer, config deep-dive, auth taxonomy, file I/O, Docker                                        |
+| 60–69 | Principal-SDET extension (a.k.a. P1–P10) — analytics, leadership, FinOps, SLOs, healing, ADRs, PII, test impact, chaos, observability     |
+| Q1–Q2 | MCQ quiz, code challenge quiz                                                                                                             |
 
 **Before writing any new file:** check this map. If the concept is already covered, APPEND to the existing file — do not create a duplicate.
 
@@ -55,6 +55,7 @@ chapter list and `SITEMAP.md` for the folder breakdown.
 ## Codebase Context (For All Agents)
 
 The user's real codebase uses:
+
 - `MasterSearchPage.ts`, `CustomerDetailsTab.ts` — Page Object Model classes
 - `APIUtils.ts` — generic HTTP wrapper around Playwright's `APIRequestContext`
 - `HeadersCrm.ts` — static factory: `HeadersCrm.auth(accessToken, testId)`
@@ -66,6 +67,7 @@ The user's real codebase uses:
 ## Update Triggers
 
 Update this file when:
+
 - A new chapter family is added (e.g., Chapter 45+).
 - The real codebase architecture changes (new fixture, new POM base class).
 - A new boundary is established between this folder and another.

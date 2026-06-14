@@ -34,25 +34,26 @@
 
 Every testing type answers a **different question about a different risk**. They were not invented arbitrarily — each one emerged because a certain category of bugs was being missed.
 
-| Question | Test Type That Answers It |
-| --- | --- |
-| Does this one function work? | Unit Testing |
-| Do two components work together? | Integration Testing |
-| Does this UI widget render correctly? | Component / Widget Testing |
-| Does the full user journey work? | End-to-End (E2E) Testing |
-| Did the latest build even start? | Smoke Testing |
-| Did this one bug fix actually work? | Sanity Testing |
-| Did my new code break old features? | Regression Testing |
-| What bugs are we NOT thinking about? | Exploratory Testing |
-| Does the app do what the client asked? | User Acceptance Testing (UAT) |
-| Can it handle real traffic load? | Performance Testing |
-| Is the data / communication safe? | Security Testing |
-| Can everyone use it? | Accessibility Testing |
-| Does the UI look exactly right? | Visual Regression Testing |
-| Does our API match what consumers expect? | Contract Testing |
-| Are our tests actually catching bugs? | Mutation Testing |
+| Question                                  | Test Type That Answers It     |
+| ----------------------------------------- | ----------------------------- |
+| Does this one function work?              | Unit Testing                  |
+| Do two components work together?          | Integration Testing           |
+| Does this UI widget render correctly?     | Component / Widget Testing    |
+| Does the full user journey work?          | End-to-End (E2E) Testing      |
+| Did the latest build even start?          | Smoke Testing                 |
+| Did this one bug fix actually work?       | Sanity Testing                |
+| Did my new code break old features?       | Regression Testing            |
+| What bugs are we NOT thinking about?      | Exploratory Testing           |
+| Does the app do what the client asked?    | User Acceptance Testing (UAT) |
+| Can it handle real traffic load?          | Performance Testing           |
+| Is the data / communication safe?         | Security Testing              |
+| Can everyone use it?                      | Accessibility Testing         |
+| Does the UI look exactly right?           | Visual Regression Testing     |
+| Does our API match what consumers expect? | Contract Testing              |
+| Are our tests actually catching bugs?     | Mutation Testing              |
 
 **The key insight**: No single test type covers all risks. A codebase with 100% unit test coverage can still have:
+
 - Integration failures (components don't fit together)
 - Performance problems (each unit is fast but the sum is slow)
 - UX failures (all functions work but the user journey is broken)
@@ -89,17 +90,20 @@ The Testing Pyramid is the most important concept in test strategy. It tells you
 ### The Pyramid Rules
 
 **Write MANY unit tests** because they:
+
 - Run in milliseconds
 - Require no infrastructure (no database, no network, no device)
 - Pinpoint exactly which function broke
 - Cost almost nothing to maintain when properly isolated
 
 **Write SOME integration tests** because they:
+
 - Take seconds to run
 - Require some infrastructure (test database, mock server)
 - Catch contract mismatches between components
 
 **Write FEW E2E tests** because they:
+
 - Take minutes to run
 - Require full infrastructure (device/emulator, running app, live or mock backend)
 - Are fragile — any UI change can break them
@@ -208,13 +212,13 @@ test('calculateTax returns correct amount for standard rate', () {
 
 ### Tools
 
-| Platform | Primary | Mock Library |
-|---|---|---|
-| Android/Java | JUnit 5 | Mockito, MockK |
-| iOS/Swift | XCTest (built-in) | — (use protocols) |
+| Platform     | Primary                 | Mock Library      |
+| ------------ | ----------------------- | ----------------- |
+| Android/Java | JUnit 5                 | Mockito, MockK    |
+| iOS/Swift    | XCTest (built-in)       | — (use protocols) |
 | Flutter/Dart | flutter_test (built-in) | mocktail, mockito |
-| Node.js | Jest, Mocha | Jest mocks |
-| Python | pytest | unittest.mock |
+| Node.js      | Jest, Mocha             | Jest mocks        |
+| Python       | pytest                  | unittest.mock     |
 
 ---
 
@@ -279,17 +283,20 @@ PaymentViewModel                    PaymentViewModel
 ### The Three Levels of Integration Testing
 
 **Level 1: Module Integration** — Two classes in the same module:
+
 ```
 ViewModel ←→ Repository  (both your code, test them together)
 ```
 
 **Level 2: Service Integration** — Your code + external service:
+
 ```
 Repository ←→ Real Database (SQLite in-memory, or test Postgres)
 APIClient  ←→ Mock HTTP server (WireMock, MockServer)
 ```
 
 **Level 3: System Integration** — Multiple services together:
+
 ```
 Mobile App ←→ Backend API ←→ Database
 ```
@@ -351,12 +358,12 @@ class CitationRepositoryIntegrationTest {
 
 ### Tools
 
-| Need | Tool |
-|---|---|
-| Mock HTTP server | WireMock (Java), MockServer, nock (Node) |
-| In-memory database (Android) | Room `inMemoryDatabaseBuilder` |
-| Test database (iOS) | Core Data in-memory store |
-| Contract testing | Pact |
+| Need                         | Tool                                     |
+| ---------------------------- | ---------------------------------------- |
+| Mock HTTP server             | WireMock (Java), MockServer, nock (Node) |
+| In-memory database (Android) | Room `inMemoryDatabaseBuilder`           |
+| Test database (iOS)          | Core Data in-memory store                |
+| Contract testing             | Pact                                     |
 
 ---
 
@@ -369,6 +376,7 @@ class CitationRepositoryIntegrationTest {
 In an integration test you replace the real API with a **local mock HTTP server** (WireMock, MockWebServer, or similar). You do NOT use a mock object (Mockito) because that would just be a unit test again.
 
 **Why a mock server instead of the real API?**
+
 - The real API is out of your control — it can go down, change responses, be slow
 - You want deterministic responses ("for this URL, always return this JSON")
 - You want to test error paths (401, 500) without actually causing server errors
@@ -411,6 +419,7 @@ class CitationAPIClientIntegrationTest {
 ```
 
 This is an integration test because:
+
 - Real HTTP is happening (OkHttp is making actual TCP connections)
 - Real JSON deserialization is happening
 - Real error handling is happening
@@ -682,6 +691,7 @@ Result: Go/No-Go for build          Result: Fix verified / not verified
 **Fix**: Developer fixes the amount formatting for values > 999.
 
 **Sanity test** (not the full regression suite):
+
 ```
 1. Pay a citation with amount = $1,000.00 → confirm success screen shows "$1,000.00" ✓
 2. Pay a citation with amount = $1,500.00 → confirm success screen shows "$1,500.00" ✓
@@ -757,13 +767,13 @@ public class PaymentRegressionTest {
 
 ### When to Run
 
-| Trigger | Test Type Run |
-|---|---|
-| Every commit to feature branch | Unit + Integration + Smoke |
-| PR to `develop` or `main` | + Critical regression tests |
-| After merge to `develop` | + Full regression (or nightly) |
-| Before release candidate | Full regression |
-| After a hotfix | Sanity + Smoke + affected-area regression |
+| Trigger                        | Test Type Run                             |
+| ------------------------------ | ----------------------------------------- |
+| Every commit to feature branch | Unit + Integration + Smoke                |
+| PR to `develop` or `main`      | + Critical regression tests               |
+| After merge to `develop`       | + Full regression (or nightly)            |
+| Before release candidate       | Full regression                           |
+| After a hotfix                 | Sanity + Smoke + affected-area regression |
 
 ---
 
@@ -786,6 +796,7 @@ Run the smoke suite against `v2.4.1`. Verify: app launches, login works, home sc
 
 **Step 2: Sanity Test on the Bug Fix** (~15 minutes, QA-run)
 Verify that CIT-4521 is actually fixed:
+
 - Pay citation for $1,000.00 → success screen shows "$1,000.00" ✓
 - Pay citation for $5,000.00 → success screen shows "$5,000.00" ✓
 - Pay citation for $999.99 → success screen shows "$999.99" (not broken) ✓
@@ -799,6 +810,7 @@ Verify that CIT-4521 is actually fixed:
 
 **Step 3: Regression Test on Payment Area** (~30-60 minutes, automated)
 Since this build touched the payment module (bug fix), run ALL payment regression tests to ensure nothing else in payment broke:
+
 ```bash
 mvn test -Dgroups="payment,regression"
 ```
@@ -871,12 +883,12 @@ FOCUS AREAS TO EXPLORE:
 
 ### What It Finds That Automation Misses
 
-| Automation finds | Exploratory finds |
-|---|---|
-| Known regression bugs | Unknown interaction bugs |
-| Data-driven edge cases | Hardware/OS interaction bugs |
+| Automation finds       | Exploratory finds                |
+| ---------------------- | -------------------------------- |
+| Known regression bugs  | Unknown interaction bugs         |
+| Data-driven edge cases | Hardware/OS interaction bugs     |
 | Navigation flow breaks | UI inconsistencies across states |
-| API error responses | Usability and UX problems |
+| API error responses    | Usability and UX problems        |
 
 ### When to Run
 
@@ -916,6 +928,7 @@ correctly per the formula"          $500 need manager approval — where is that
 ### In Mobile Development
 
 For mobile apps, UAT typically means:
+
 1. Distributing an internal build to stakeholders via **TestFlight** (iOS) or **Firebase App Distribution** (Android/iOS)
 2. Providing a test data sheet with accounts and scenarios to test
 3. Stakeholders use the app manually and report issues via a shared tracker (Jira, Linear)
@@ -1011,16 +1024,19 @@ Security testing verifies that the application **protects data, resists attacks,
 ### Types of Security Testing
 
 **SAST (Static Application Security Testing)**
+
 - Analyzes source code without running it
 - Tools: SonarQube, Checkmarx, CodeQL
 - When: On every commit (automated)
 
 **DAST (Dynamic Application Security Testing)**
+
 - Tests the running application by simulating attacks
 - Tools: OWASP ZAP, Burp Suite
 - When: In CI against staging
 
 **Penetration Testing (Pen Test)**
+
 - Humans attempt to compromise the system using real attack techniques
 - Who: Security specialists (internal or contracted)
 - When: Before major releases, annually
@@ -1029,18 +1045,18 @@ Security testing verifies that the application **protects data, resists attacks,
 
 The OWASP Mobile Top 10 is the standard checklist for mobile security:
 
-| # | Risk | What to test |
-|---|---|---|
-| M1 | Improper Platform Usage | Are permissions over-granted? |
-| M2 | Insecure Data Storage | Is sensitive data in plaintext on device? |
-| M3 | Insecure Communication | Is HTTPS enforced? Is certificate pinning used? |
-| M4 | Insecure Authentication | Can authentication be bypassed? |
-| M5 | Insufficient Cryptography | Is weak encryption used? |
-| M6 | Insecure Authorization | Can user A access user B's data? |
-| M7 | Client Code Quality | SQL injection in local queries? |
-| M8 | Code Tampering | Can the app be modified and re-run? |
-| M9 | Reverse Engineering | Are API keys hardcoded? |
-| M10 | Extraneous Functionality | Are debug endpoints still active? |
+| #   | Risk                      | What to test                                    |
+| --- | ------------------------- | ----------------------------------------------- |
+| M1  | Improper Platform Usage   | Are permissions over-granted?                   |
+| M2  | Insecure Data Storage     | Is sensitive data in plaintext on device?       |
+| M3  | Insecure Communication    | Is HTTPS enforced? Is certificate pinning used? |
+| M4  | Insecure Authentication   | Can authentication be bypassed?                 |
+| M5  | Insufficient Cryptography | Is weak encryption used?                        |
+| M6  | Insecure Authorization    | Can user A access user B's data?                |
+| M7  | Client Code Quality       | SQL injection in local queries?                 |
+| M8  | Code Tampering            | Can the app be modified and re-run?             |
+| M9  | Reverse Engineering       | Are API keys hardcoded?                         |
+| M10 | Extraneous Functionality  | Are debug endpoints still active?               |
 
 ---
 
@@ -1116,12 +1132,12 @@ A developer changes a shared stylesheet. All unit tests pass — functions still
 
 ### Tools
 
-| Tool | Best For |
-|---|---|
-| Percy (BrowserStack) | Web + mobile visual testing |
-| Applitools | AI-powered cross-platform |
-| Playwright screenshot assertions | Web |
-| Flutter golden tests | Flutter widget visual testing |
+| Tool                             | Best For                      |
+| -------------------------------- | ----------------------------- |
+| Percy (BrowserStack)             | Web + mobile visual testing   |
+| Applitools                       | AI-powered cross-platform     |
+| Playwright screenshot assertions | Web                           |
+| Flutter golden tests             | Flutter widget visual testing |
 
 ```dart
 // Flutter — Golden Test (visual regression for a widget)
@@ -1175,6 +1191,7 @@ WITH CONTRACT TESTING (Pact):
 ### When to Use
 
 Essential when:
+
 - Mobile team and backend team work independently
 - Microservices with separate deployment cycles
 - API versioning is in use

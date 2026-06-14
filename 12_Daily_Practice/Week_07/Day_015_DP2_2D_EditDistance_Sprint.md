@@ -1,18 +1,21 @@
 # Day 15 - Dynamic Programming II (2D DP and Edit Distance) (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 265 - Paint House II
 2. LeetCode Hard: 72 - Edit Distance
 3. Codeforces: 431C - k-Tree
 4. Codeforces: 189A - Cut Ribbon
 
 ## Problem Links
+
 - LC 265 (Premium): Locked on LeetCode (no public official statement page)
 - LC 72: https://leetcode.com/problems/edit-distance/
 - CF 431C: https://codeforces.com/problemset/problem/431/C
 - CF 189A: https://codeforces.com/problemset/problem/189/A
 
 ## Why This Day Matters
+
 2D DP appears when state depends on two dimensions (position and budget, source and target prefixes, etc.).
 
 ---
@@ -20,13 +23,16 @@
 ## Problem 1 - LC 265 (Premium): Paint House II
 
 ### Problem Statement
+
 There are `n` houses and `k` colors. Cost matrix `costs[i][c]` gives cost of painting house `i` color `c`. Adjacent houses cannot share the same color. Return minimum total cost.
 
 ### Why This DS/Algo
+
 - State needs both index and chosen color.
 - Transition needs minimum previous cost among all colors except current.
 
 ### Approach A - Brute Force recursion (O(k^n), O(n))
+
 Try all color assignments with adjacency constraint.
 
 ### Approach B - Better (DP table naive transition) (O(n*k^2), O(n*k))
@@ -57,7 +63,8 @@ static int paint2Better(int[][] costs) {
 }
 ```
 
-### Approach C - Optimal (track min1/min2 from previous row) (O(n*k), O(k))
+### Approach C - Optimal (track min1/min2 from previous row) (O(n\*k), O(k))
+
 For each row, only two values matter from previous row: smallest and second smallest.
 
 ```java
@@ -95,6 +102,7 @@ static int paint2Optimal(int[][] costs) {
 ```
 
 ### Interview Notes
+
 - Mention the optimization from O(k^2) to O(k) transition by maintaining top-2 minima.
 
 ---
@@ -102,9 +110,11 @@ static int paint2Optimal(int[][] costs) {
 ## Problem 2 - LC 72: Edit Distance
 
 ### Problem Statement
+
 Given strings `word1` and `word2`, return minimum operations (insert, delete, replace) to convert `word1` into `word2`.
 
 ### Why This DS/Algo
+
 - State depends on prefix of `word1` and prefix of `word2`.
 - Classic 2D DP with three transitions.
 
@@ -139,6 +149,7 @@ static int editDistanceOptimal(String a, String b) {
 ```
 
 ### Space Optimization (optional)
+
 Can optimize to O(n) using rolling rows.
 
 ---
@@ -146,14 +157,16 @@ Can optimize to O(n) using rolling rows.
 ## Problem 3 - CF 431C: k-Tree
 
 ### Problem Statement
+
 Count ways to sum to `n` using numbers `1..k` such that at least one chosen number is `>= d`. Answer modulo `1e9+7`.
 
 ### Why This DS/Algo
+
 Need two-state DP: whether we already used a large edge (`>= d`).
 
 ### Approach A - Brute Force recursion (exponential)
 
-### Approach B - Better (2D DP by sum and flag) (O(n*k), O(n))
+### Approach B - Better (2D DP by sum and flag) (O(n\*k), O(n))
 
 ```java
 static final int MOD = 1_000_000_007;
@@ -179,16 +192,19 @@ static int kTreeBetter(int n, int k, int d) {
 ```
 
 ### Approach C - Optimal
-This O(n*k) DP is optimal for constraints and accepted in CF.
+
+This O(n\*k) DP is optimal for constraints and accepted in CF.
 
 ---
 
 ## Problem 4 - CF 189A: Cut Ribbon
 
 ### Problem Statement
+
 Given ribbon length `n` and cut sizes `a,b,c`, maximize number of pieces.
 
 ### Why This DS/Algo
+
 Unbounded cut choices and maximizing objective over total length -> 1D DP.
 
 ### Approach A - Brute Force recursion
@@ -214,5 +230,6 @@ static int cutRibbonOptimal(int n, int a, int b, int c) {
 ```
 
 ### Pattern Takeaways
+
 - 2D DP state is about choosing the right dimensions, not blindly building big tables.
 - Many CF counting DP problems require a boolean condition dimension (`usedBig`, `tight`, `parity`, etc.).

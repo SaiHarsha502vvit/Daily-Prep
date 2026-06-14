@@ -48,46 +48,46 @@ Both store date and time, but they differ in one critical way:
 
 #### Numeric Types
 
-| Type | Range | Storage | Use Case |
-|------|-------|---------|----------|
-| `TINYINT` | 0 to 255 (unsigned) | 1 byte | Age, small counts |
-| `SMALLINT` | -32,768 to 32,767 | 2 bytes | Year, small IDs |
-| `INT`/`INTEGER` | -2.1B to 2.1B | 4 bytes | IDs, counts |
-| `BIGINT` | -9.2Q to 9.2Q | 8 bytes | Large IDs, counters |
-| `DECIMAL(p,s)` | Exact precision | Varies | Money, precise calc |
-| `FLOAT` | ~7 decimal digits | 4 bytes | Scientific data |
-| `DOUBLE` | ~15 decimal digits | 8 bytes | Scientific data |
+| Type            | Range               | Storage | Use Case            |
+| --------------- | ------------------- | ------- | ------------------- |
+| `TINYINT`       | 0 to 255 (unsigned) | 1 byte  | Age, small counts   |
+| `SMALLINT`      | -32,768 to 32,767   | 2 bytes | Year, small IDs     |
+| `INT`/`INTEGER` | -2.1B to 2.1B       | 4 bytes | IDs, counts         |
+| `BIGINT`        | -9.2Q to 9.2Q       | 8 bytes | Large IDs, counters |
+| `DECIMAL(p,s)`  | Exact precision     | Varies  | Money, precise calc |
+| `FLOAT`         | ~7 decimal digits   | 4 bytes | Scientific data     |
+| `DOUBLE`        | ~15 decimal digits  | 8 bytes | Scientific data     |
 
 #### String Types
 
-| Type | Max Length | Storage | Use Case |
-|------|-----------|---------|----------|
-| `CHAR(n)` | 255 | Fixed n bytes | Fixed-length (country code) |
-| `VARCHAR(n)` | 65,535 | Length + 1-2 | Variable (names, emails) |
-| `TEXT` | 65,535 | Length + 2 | Long text, descriptions |
-| `MEDIUMTEXT` | 16 MB | Length + 3 | Articles, documents |
-| `LONGTEXT` | 4 GB | Length + 4 | Large documents |
-| `ENUM` | 65,535 values | 1-2 bytes | Fixed set of values |
+| Type         | Max Length    | Storage       | Use Case                    |
+| ------------ | ------------- | ------------- | --------------------------- |
+| `CHAR(n)`    | 255           | Fixed n bytes | Fixed-length (country code) |
+| `VARCHAR(n)` | 65,535        | Length + 1-2  | Variable (names, emails)    |
+| `TEXT`       | 65,535        | Length + 2    | Long text, descriptions     |
+| `MEDIUMTEXT` | 16 MB         | Length + 3    | Articles, documents         |
+| `LONGTEXT`   | 4 GB          | Length + 4    | Large documents             |
+| `ENUM`       | 65,535 values | 1-2 bytes     | Fixed set of values         |
 
 #### Date & Time Types
 
-| Type | Format | Range |
-|------|--------|-------|
-| `DATE` | `'YYYY-MM-DD'` | 1000-01-01 to 9999-12-31 |
-| `TIME` | `'HH:MM:SS'` | -838:59:59 to 838:59:59 |
-| `DATETIME` | `'YYYY-MM-DD HH:MM:SS'` | 1000 to 9999 |
+| Type        | Format                  | Range                        |
+| ----------- | ----------------------- | ---------------------------- |
+| `DATE`      | `'YYYY-MM-DD'`          | 1000-01-01 to 9999-12-31     |
+| `TIME`      | `'HH:MM:SS'`            | -838:59:59 to 838:59:59      |
+| `DATETIME`  | `'YYYY-MM-DD HH:MM:SS'` | 1000 to 9999                 |
 | `TIMESTAMP` | `'YYYY-MM-DD HH:MM:SS'` | 1970 to 2038 (auto timezone) |
-| `YEAR` | `YYYY` | 1901 to 2155 |
+| `YEAR`      | `YYYY`                  | 1901 to 2155                 |
 
 #### Other Types
 
-| Type | Description |
-|------|-------------|
-| `BOOLEAN` | TRUE/FALSE (stored as TINYINT 1/0) |
-| `BLOB` | Binary Large Object (images, files) |
-| `JSON` | JSON documents (MySQL 5.7+, PostgreSQL) |
-| `UUID` | Universally Unique Identifier |
-| `ARRAY` | Array of values (PostgreSQL) |
+| Type      | Description                             |
+| --------- | --------------------------------------- |
+| `BOOLEAN` | TRUE/FALSE (stored as TINYINT 1/0)      |
+| `BLOB`    | Binary Large Object (images, files)     |
+| `JSON`    | JSON documents (MySQL 5.7+, PostgreSQL) |
+| `UUID`    | Universally Unique Identifier           |
+| `ARRAY`   | Array of values (PostgreSQL)            |
 
 ### Choosing the Right Data Type
 
@@ -147,11 +147,11 @@ Consider this scenario: You build an e-commerce app. Your frontend validates tha
 
 Constraints enforce **three types of data integrity**:
 
-| Integrity Type | What It Protects | Constraint Used |
-|----------------|-----------------|-----------------|
-| **Entity Integrity** | Every row is uniquely identifiable | `PRIMARY KEY` |
-| **Referential Integrity** | Relationships between tables remain valid | `FOREIGN KEY` |
-| **Domain Integrity** | Column values stay within valid ranges | `CHECK`, `NOT NULL`, `UNIQUE`, `DEFAULT` |
+| Integrity Type            | What It Protects                          | Constraint Used                          |
+| ------------------------- | ----------------------------------------- | ---------------------------------------- |
+| **Entity Integrity**      | Every row is uniquely identifiable        | `PRIMARY KEY`                            |
+| **Referential Integrity** | Relationships between tables remain valid | `FOREIGN KEY`                            |
+| **Domain Integrity**      | Column values stay within valid ranges    | `CHECK`, `NOT NULL`, `UNIQUE`, `DEFAULT` |
 
 💡 **Design Philosophy:** Never rely only on your application to validate data. Constraints are **declarative** — you state the rule once, and the database enforces it forever, regardless of which application, script, or manual SQL query touches the data.
 
@@ -193,13 +193,13 @@ CREATE TABLE orders (
 );
 ```
 
-| Action | Behavior |
-|--------|----------|
-| `CASCADE` | Delete/update child rows too |
-| `SET NULL` | Set foreign key to NULL |
-| `SET DEFAULT` | Set to default value |
-| `RESTRICT` | Prevent delete/update (default) |
-| `NO ACTION` | Same as RESTRICT in most DBs |
+| Action        | Behavior                        |
+| ------------- | ------------------------------- |
+| `CASCADE`     | Delete/update child rows too    |
+| `SET NULL`    | Set foreign key to NULL         |
+| `SET DEFAULT` | Set to default value            |
+| `RESTRICT`    | Prevent delete/update (default) |
+| `NO ACTION`   | Same as RESTRICT in most DBs    |
 
 #### 3. UNIQUE
 
@@ -263,8 +263,39 @@ CREATE TABLE logs (
 🔬 **Section Challenge — Chapter 2: Data Types & Constraints**
 
 **Challenge 1 (Reasoning):** A junior developer creates a `prices` table using `FLOAT` instead of `DECIMAL(10,2)`. After inserting 10 million transactions, the accounting team reports that the sum of all transaction amounts is off by ₹347.52 compared to the source system. Why did this happen, and why can't you just "round at the end" to fix it?
+
 <details><summary>Answer</summary>
 
-IEEE 754 floating-point cannot represent most decimal fractions exactly. `0.10` in binary is `0.0001100110011...` (repeating), so the database stores an approximation like `0.10000000149011612`. Each individual rounding error is tiny (~10⁻⁷), but over 10M records, errors **accumulate non-deterministically** — sometimes they cancel out, sometimes they compound. You can't "round at the end" because: (1) `SUM()` of 10M floats compounds errors throughout the summation (the order of addition matters due to floating-point associativity violations), (2) intermediate calculations (tax = price × 0.18) introduce new rounding errors that multiply, (3) the accumulated error varies depending on the *specific values* and *order of insertion* — it's unpredictable. `DECIMAL(10,2)` stores each digit as a BCD (Binary-Coded Decimal) value — `0.10` is stored as exactly the digits `1` and `0`. No approximation, no accumulation, deterministic arithmetic. **Rule: ANY column involved in money, accounting, or financial calculations MUST be DECIMAL.**
+IEEE 754 floating-point cannot represent most decimal fractions exactly. `0.10` in binary is `0.0001100110011...` (repeating), so the database stores an approximation like `0.10000000149011612`. Each individual rounding error is tiny (~10⁻⁷), but over 10M records, errors **accumulate non-deterministically** — sometimes they cancel out, sometimes they compound. You can't "round at the end" because: (1) `SUM()` of 10M floats compounds errors throughout the summation (the order of addition matters due to floating-point associativity violations), (2) intermediate calculations (tax = price × 0.18) introduce new rounding errors that multiply, (3) the accumulated error varies depending on the _specific values_ and _order of insertion_ — it's unpredictable. `DECIMAL(10,2)` stores each digit as a BCD (Binary-Coded Decimal) value — `0.10` is stored as exactly the digits `1` and `0`. No approximation, no accumulation, deterministic arithmetic. **Rule: ANY column involved in money, accounting, or financial calculations MUST be DECIMAL.**
+
 </details>
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Edgar F. Codd** (1970): Introduced the domain concept in his relational model — formally defining column types as named domains with atomic values, the conceptual ancestor of every SQL data type.
+- **E.F. Codd** (1971): Defined 1NF/2NF/3NF; introduced the concept of key constraints and functional dependencies as the formal basis for data integrity rules.
+- **Raymond Boyce & Codd** (1974): Created Boyce-Codd Normal Form (BCNF), the strictest normal form addressing anomalies where 3NF was insufficient — the theoretical foundation for PRIMARY KEY and UNIQUE constraints.
+- **Chris Date** (1986): In "The Relational Model for Database Management Version 2," formalized NOT NULL, CHECK, and domain-level integrity rules, influencing the SQL-92 standard's constraint specifications.
+- **Oracle Corporation** (1979): First commercial RDBMS with a concrete type system — INT, VARCHAR, DATE — proving that data types weren't just theoretical constructs but necessary for physical implementation.
+- **SQL-92**: First major ANSI/ISO standard to comprehensively standardize data type names, sizes, and behaviors across vendors, enabling portable DDL scripts.
+
+**Evolution narrative:**
+Codd's 1970 relational model defined tables abstractly but did not specify how column values should be represented. Early implementations diverged wildly: System R used INTEGER, FLOAT, VARCHAR while Oracle used NUMBER, VARCHAR2 — making DDL scripts non-portable. The domain concept in Codd's model (each column takes values from a defined set with semantic meaning) was the first articulation of type constraints, but it took commercial pressure from Oracle and IBM to force standardization. SQL-92 finally codified CHAR, VARCHAR, INT, DECIMAL, DATE, TIMESTAMP as universally supported, but even then DECIMAL precision rules varied across vendors. The CHECK constraint — allowing arbitrary domain rules like `price > 0` — was a direct implementation of Codd's domain-integrity idea. Modern data types like JSON and UUID are the latest additions, as NoSQL influence pushed semi-structured data back into the SQL world.
+
+**Modern practice anchor:**
+Today, every SQL interview tests your understanding of DECIMAL vs FLOAT for money and your knowledge of PRIMARY KEY/FOREIGN KEY semantics — direct descendants of Codd's key constraint theory and the SQL-92 standardization effort that made cross-vendor schema portability a reality.
+
+### Production Reality
+
+**Failure modes:**
+1. **DECIMAL vs FLOAT precision bug in financial calculations**: The 1970s Penn Central accounting scandal (before modern databases but using the same floating-point principle) showed that aggregating many small rounding errors in floating-point arithmetic produced irreconcilable discrepancies in financial reports. In 2013, a Knight Capital Group rogue trading algorithm used floating-point for share counts and lost $440M in 45 minutes. Always use DECIMAL(p,s) for financial columns.
+2. **VARCHAR(255) truncation in real-world fields**: A `VARCHAR(255)` limit on the `email` column was set in 2005 when emails were rarely over 50 chars. By 2020, Microsoft 365 and Google Workspace both issue emails with long routing paths exceeding 254 characters. An `INSERT` of a valid RFC-compliant email fails with data truncation, blocking sign-up flows. Fix: use `VARCHAR(320)` for emails (254 + domain) and never assume a fixed upper bound.
+
+**Debug workflow:**
+(1) Trace data types from the application layer to the database — check ORM model definitions (Django, Hibernate, Prisma) for mismatches with the actual schema.
+(2) Run `LENGTH()` analysis on VARCHAR columns to find actual max lengths: `SELECT MAX(LENGTH(col)) FROM table` — compare to the defined column limit.
+(3) For financial columns, verify DECIMAL precision: query `NUMERIC_PRECISION` from `INFORMATION_SCHEMA.COLUMNS` to confirm DECIMAL(10,2) instead of FLOAT/DOUBLE.
+
+**Modern practice anchor:**
+Today, schema validation tools (Liquibase, Flyway, Prisma Migrate) enforce column types in CI/CD, and application-layer libraries like Stripe's decimal.js handle currency arithmetic before it reaches the database — catching FLOAT/DECIMAL mismatches before deployment.

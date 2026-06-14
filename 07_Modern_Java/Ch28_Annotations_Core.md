@@ -2,7 +2,27 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Java 5 (Tiger) — annotations were introduced as JSR 175 by Joshua Bloch and Mark Reinhold (2004).
+
+**Predecessor context:** Pre-Java 5 (2004), metadata was handled by XDoclet (JavaDoc tags like `@ejb:bean`), XML deployment descriptors, or `package-info.java` comments. J2EE used deployment descriptors for EJB 2.x — verbose and error-prone. JavaDoc tags were the closest thing to metadata but were only parseable by documentation tools, not by the compiler or runtime.
+
+**Evolution narrative:** JSR 175 (Java 5, 2004) introduced annotations as first-class language metadata: `@Override`, `@Deprecated`, `@SuppressWarnings`. `@Override` became immediately idiomatic for catching refactoring bugs. Spring 1.x (2004) used XML; Spring 2.0 (2006) added `@Transactional`, `@Required` — annotation-driven AOP. Spring 2.5 (2007) brought `@Autowired`, `@Qualifier`, `@Component` — full annotation-based DI. JPA 1.0 (2006, JSR 220) mapped entities via annotations (`@Entity`, `@Id`, `@Column`) — replacing Hibernate XML mappings. Lombok (2014, by Reinier Stevens) added compile-time annotations (`@Data`, `@Getter`, `@Setter`) via annotation processing. Java 16 (2021) brought `record` as a language-level annotation target. Spring 6.x (2023) uses `@Nullable`, `@NotNull` from Jakarta annotations (`jakarta.annotation.*`).
+
+**Modern practice:** Spring Boot uses annotations for DI (`@Service`, `@Repository`, `@Controller`, `@Configuration`), AOP (`@Transactional`, `@Cacheable`, `@Async`), and web (`@GetMapping`, `@PostMapping`). JPA/Hibernate entities use `@Entity`, `@Table`, `@Column`. Validation uses `jakarta.validation.*`. Compose UI uses `@Composable`. Annotation processing is built into the Java compiler via `javax.annotation.processing`.
+
+- **JSR 175 (Annotations) — Java 5 (2004)**: Joshua Bloch, Mark Reinhold. `@Override`, `@Deprecated`, `@Target`, `@Retention`.
+- **`@Transactional` — Spring 2.0 (2006)**: Annotation-driven AOP. Proxy-based transaction management.
+- **JPA 1.0 (JSR 220) — 2006**: `@Entity`, `@Id`, `@Column`, `@Table`. Replaces Hibernate XML mapping files.
+- **Spring 2.5 — 2007**: `@Autowired`, `@Component`, `@Service`, `@Repository`. Full annotation DI.
+- **Lombok 1.14 — 2014**: Reinier Stevens. Compile-time annotation processing. `@Data`, `@Builder`, `@Slf4j`.
+- **Jakarta EE 9 — 2021**: `javax.*` → `jakarta.*`. Spring 6.x / Spring Boot 3.x namespace migration.
+
+---
+
 # Spring Boot Part 22: Complete Annotations Reference
+
 ## Every Important Annotation You Need to Know
 
 **"Annotations are the DNA of Spring Boot - they define behavior without boilerplate"**
@@ -51,10 +71,10 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📚 Table of Contents
+
 1. [JPA Entity Lifecycle Annotations](#jpa-entity-lifecycle-annotations)
 2. [JPA Mapping Annotations](#jpa-mapping-annotations)
 3. [Spring Data Auditing](#spring-data-auditing)
@@ -123,40 +143,39 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Complete Entity Lifecycle Example
 
 ```java
 @Entity
 @Table(name = "users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String email;
     private String password;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
-    
+
     @Transient  // Not persisted to database
     private String fullNameCache;
-    
+
     // ═══════════════════════════════════════════════════════════
     // LIFECYCLE CALLBACKS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @PrePersist - Called BEFORE entity is inserted
-     * 
+     *
      * USE CASES:
      * - Set creation timestamp
      * - Generate UUID
@@ -168,22 +187,22 @@ public class User {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        
+
         // Example: Hash password before saving
         if (this.password != null && !this.password.startsWith("$2a$")) {
             this.password = BCrypt.hashpw(this.password, BCrypt.gensalt());
         }
     }
-    
+
     /**
      * @PostPersist - Called AFTER entity is inserted
-     * 
+     *
      * USE CASES:
      * - Send notification (email, event)
      * - Audit logging
      * - Update related entities
      * - Trigger async processes
-     * 
+     *
      * NOTE: ID is now available!
      */
     @PostPersist
@@ -191,10 +210,10 @@ public class User {
         System.out.println("User created with ID: " + this.id);
         // Could trigger: eventPublisher.publish(new UserCreatedEvent(this));
     }
-    
+
     /**
      * @PreUpdate - Called BEFORE entity is updated
-     * 
+     *
      * USE CASES:
      * - Update modification timestamp
      * - Validate changes
@@ -205,10 +224,10 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    
+
     /**
      * @PostUpdate - Called AFTER entity is updated
-     * 
+     *
      * USE CASES:
      * - Send change notifications
      * - Invalidate caches
@@ -218,10 +237,10 @@ public class User {
     protected void afterUpdate() {
         System.out.println("User " + this.id + " updated at " + this.updatedAt);
     }
-    
+
     /**
      * @PreRemove - Called BEFORE entity is deleted
-     * 
+     *
      * USE CASES:
      * - Validate deletion is allowed
      * - Clean up related resources (files, etc.)
@@ -234,10 +253,10 @@ public class User {
         // Could throw exception to prevent deletion
         // throw new IllegalStateException("Cannot delete active user");
     }
-    
+
     /**
      * @PostRemove - Called AFTER entity is deleted
-     * 
+     *
      * USE CASES:
      * - Send deletion notification
      * - Clean up external resources
@@ -247,10 +266,10 @@ public class User {
     protected void afterDelete() {
         System.out.println("User " + this.id + " has been deleted");
     }
-    
+
     /**
      * @PostLoad - Called AFTER entity is loaded from database
-     * 
+     *
      * USE CASES:
      * - Decrypt sensitive data
      * - Calculate transient fields
@@ -261,11 +280,11 @@ public class User {
     protected void onLoad() {
         // Calculate transient field after loading
         this.fullNameCache = calculateFullName();
-        
+
         // Could decrypt fields here
         // this.ssn = decrypt(this.encryptedSsn);
     }
-    
+
     private String calculateFullName() {
         return "User: " + this.email;
     }
@@ -277,7 +296,7 @@ public class User {
 ```java
 /**
  * @EntityListeners - Externalize lifecycle logic
- * 
+ *
  * WHY USE THIS:
  * - Separation of concerns
  * - Reusable across entities
@@ -287,28 +306,28 @@ public class User {
 @Entity
 @EntityListeners({AuditingEntityListener.class, CustomEntityListener.class})
 public class Order {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private BigDecimal amount;
-    
+
     @CreatedDate
     private LocalDateTime createdAt;
-    
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }
 
 // Custom Listener
 public class CustomEntityListener {
-    
+
     @PrePersist
     public void prePersist(Object entity) {
         System.out.println("About to persist: " + entity.getClass().getSimpleName());
     }
-    
+
     @PostPersist
     public void postPersist(Object entity) {
         // Publish event
@@ -316,7 +335,7 @@ public class CustomEntityListener {
             // applicationEventPublisher.publishEvent(new OrderCreatedEvent(order));
         }
     }
-    
+
     @PreUpdate
     public void preUpdate(Object entity) {
         System.out.println("About to update: " + entity.getClass().getSimpleName());
@@ -326,11 +345,10 @@ public class CustomEntityListener {
 
 ---
 
-
-
 🔬 **Section Challenge — JPA Entity Lifecycle Annotations**
 
 **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -346,9 +364,10 @@ List<Order> findAllWithCustomer();
 @EntityGraph(attributePaths = "customer")
 List<Order> findAll();
 ```
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-</details>
 
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+
+</details>
 
 ## JPA Mapping Annotations
 
@@ -383,7 +402,7 @@ public class User {
 ```java
 @Entity
 public class Order {
-    
+
     /**
      * @Id - Marks primary key
      * @GeneratedValue - ID generation strategy
@@ -391,9 +410,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-increment
     private Long id;
-    
+
     // --- OR ---
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
     @SequenceGenerator(
@@ -402,15 +421,15 @@ public class Order {
         allocationSize = 50  // Performance: pre-allocate 50 IDs
     )
     private Long id;
-    
+
     // --- OR ---
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)  // Java 21+
     private UUID id;
-    
+
     // --- OR for Composite Keys ---
-    
+
     @EmbeddedId
     private OrderItemId id;
 }
@@ -420,13 +439,13 @@ public class Order {
  */
 @Embeddable
 public class OrderItemId implements Serializable {
-    
+
     @Column(name = "order_id")
     private Long orderId;
-    
+
     @Column(name = "product_id")
     private Long productId;
-    
+
     // equals() and hashCode() REQUIRED!
 }
 ```
@@ -436,11 +455,11 @@ public class OrderItemId implements Serializable {
 ```java
 @Entity
 public class Product {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @Column - Customize column mapping
      */
@@ -454,47 +473,47 @@ public class Product {
         updatable = true            // Include in UPDATE
     )
     private String name;
-    
+
     /**
      * @Basic - Basic type mapping (optional for simple types)
      */
     @Basic(fetch = FetchType.LAZY, optional = false)
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     /**
      * @Lob - Large Object (BLOB/CLOB)
      */
     @Lob
     @Column(name = "image_data")
     private byte[] image;
-    
+
     /**
      * @Enumerated - Enum mapping
      */
     @Enumerated(EnumType.STRING)  // Store as "ACTIVE", not 0
     @Column(name = "status", length = 20)
     private ProductStatus status;
-    
+
     /**
      * @Temporal - Date/Time mapping (pre-Java 8)
      * NOTE: Not needed for LocalDate, LocalDateTime, Instant
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Date legacyDate;
-    
+
     /**
      * @Transient - NOT persisted to database
      */
     @Transient
     private BigDecimal calculatedDiscount;
-    
+
     /**
      * @Formula - Hibernate: calculated column from SQL
      */
     @Formula("(SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = id)")
     private Integer orderCount;
-    
+
     /**
      * @Generated - Value generated by database
      */
@@ -509,14 +528,14 @@ public class Product {
 ```java
 @Entity
 public class Order {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @ManyToOne - Many orders belong to one user
-     * 
+     *
      * FETCH TYPES:
      * - EAGER: Load immediately (default for @ManyToOne)
      * - LAZY: Load when accessed
@@ -528,10 +547,10 @@ public class Order {
         foreignKey = @ForeignKey(name = "fk_order_user")
     )
     private User user;
-    
+
     /**
      * @OneToMany - One order has many items
-     * 
+     *
      * CASCADE TYPES:
      * - PERSIST: Save children when parent saved
      * - MERGE: Update children when parent updated
@@ -539,7 +558,7 @@ public class Order {
      * - REFRESH: Refresh children when parent refreshed
      * - DETACH: Detach children when parent detached
      * - ALL: All of above
-     * 
+     *
      * ORPHAN REMOVAL: Delete children removed from collection
      */
     @OneToMany(
@@ -550,7 +569,7 @@ public class Order {
     )
     @OrderBy("createdAt DESC")        // Default ordering
     private List<OrderItem> items = new ArrayList<>();
-    
+
     /**
      * @OneToOne - One order has one payment
      */
@@ -561,13 +580,13 @@ public class Order {
         fetch = FetchType.LAZY
     )
     private Payment payment;
-    
+
     // Helper methods for bidirectional relationship
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
     }
-    
+
     public void removeItem(OrderItem item) {
         items.remove(item);
         item.setOrder(null);
@@ -576,15 +595,15 @@ public class Order {
 
 @Entity
 public class OrderItem {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    
+
     /**
      * @ManyToMany - Many-to-many relationship
      */
@@ -599,11 +618,11 @@ public class OrderItem {
 
 @Entity
 public class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @OneToOne - Owning side with foreign key
      */
@@ -621,52 +640,52 @@ public class Payment {
  */
 @Embeddable
 public class Address {
-    
+
     @Column(name = "street", length = 200)
     private String street;
-    
+
     @Column(name = "city", length = 100)
     private String city;
-    
+
     @Column(name = "zip_code", length = 20)
     private String zipCode;
-    
+
     @Column(name = "country", length = 50)
     private String country;
 }
 
 @Entity
 public class Customer {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String name;
-    
+
     /**
      * @Embedded - Embed the Address component
      */
     @Embedded
     private Address billingAddress;
-    
+
     /**
      * @AttributeOverrides - Customize embedded column names
      * (Required when embedding same type multiple times)
      */
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "street", 
+        @AttributeOverride(name = "street",
             column = @Column(name = "shipping_street")),
-        @AttributeOverride(name = "city", 
+        @AttributeOverride(name = "city",
             column = @Column(name = "shipping_city")),
-        @AttributeOverride(name = "zipCode", 
+        @AttributeOverride(name = "zipCode",
             column = @Column(name = "shipping_zip")),
-        @AttributeOverride(name = "country", 
+        @AttributeOverride(name = "country",
             column = @Column(name = "shipping_country"))
     })
     private Address shippingAddress;
-    
+
     /**
      * @ElementCollection - Collection of embeddables or basic types
      */
@@ -685,7 +704,7 @@ public class Customer {
 ```java
 /**
  * @Inheritance - Entity inheritance strategy
- * 
+ *
  * STRATEGIES:
  * - SINGLE_TABLE: All classes in one table (default, best performance)
  * - JOINED: Each class has own table with foreign keys
@@ -698,11 +717,11 @@ public class Customer {
     discriminatorType = DiscriminatorType.STRING
 )
 public abstract class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private BigDecimal amount;
     private LocalDateTime paymentDate;
 }
@@ -710,10 +729,10 @@ public abstract class Payment {
 @Entity
 @DiscriminatorValue("CREDIT_CARD")
 public class CreditCardPayment extends Payment {
-    
+
     @Column(name = "card_number")
     private String cardNumber;
-    
+
     @Column(name = "expiry_date")
     private String expiryDate;
 }
@@ -721,10 +740,10 @@ public class CreditCardPayment extends Payment {
 @Entity
 @DiscriminatorValue("BANK_TRANSFER")
 public class BankTransferPayment extends Payment {
-    
+
     @Column(name = "bank_account")
     private String bankAccount;
-    
+
     @Column(name = "routing_number")
     private String routingNumber;
 }
@@ -748,16 +767,15 @@ public class Car extends Vehicle {
 
 ---
 
-
-
 🔬 **Section Challenge — JPA Mapping Annotations**
 
 **Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
+
 <details><summary>Answer</summary>
 
 Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
-</details>
 
+</details>
 
 ## Spring Data Auditing
 
@@ -770,7 +788,7 @@ Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally ju
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaConfig {
-    
+
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> {
@@ -794,35 +812,35 @@ public class JpaConfig {
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable {
-    
+
     /**
      * @CreatedDate - Automatically set on entity creation
      */
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
     /**
      * @LastModifiedDate - Automatically updated on entity modification
      */
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     /**
      * @CreatedBy - Who created this entity
      */
     @CreatedBy
     @Column(name = "created_by", updatable = false)
     private String createdBy;
-    
+
     /**
      * @LastModifiedBy - Who last modified this entity
      */
     @LastModifiedBy
     @Column(name = "updated_by")
     private String updatedBy;
-    
+
     /**
      * @Version - Optimistic locking
      * Prevents lost updates in concurrent scenarios
@@ -830,7 +848,7 @@ public abstract class Auditable {
     @Version
     @Column(name = "version")
     private Long version;
-    
+
     // Getters and setters
 }
 
@@ -838,30 +856,29 @@ public abstract class Auditable {
 @Entity
 @Table(name = "products")
 public class Product extends Auditable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String name;
     private BigDecimal price;
-    
+
     // All audit fields inherited!
 }
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — Spring Data Auditing**
 
 **Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
+
 <details><summary>Answer</summary>
 
 Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
-</details>
 
+</details>
 
 ## Validation Annotations
 
@@ -872,60 +889,60 @@ import jakarta.validation.constraints.*;
 
 @Entity
 public class UserRegistration {
-    
+
     // ═══════════════════════════════════════════════════════════
     // NULL CHECKS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @NotNull - Field cannot be null
      */
     @NotNull(message = "ID is required")
     private Long id;
-    
+
     /**
      * @NotEmpty - Not null AND not empty (for collections, strings)
      */
     @NotEmpty(message = "Roles cannot be empty")
     private List<String> roles;
-    
+
     /**
      * @NotBlank - Not null AND not empty AND not whitespace only
      * Use for business fields that need actual content
      */
     @NotBlank(message = "Name is required")
     private String name;
-    
+
     // ═══════════════════════════════════════════════════════════
     // SIZE CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Size - String length or collection size
      */
     @Size(min = 3, max = 50, message = "Username must be 3-50 characters")
     private String username;
-    
+
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
-    
+
     /**
      * @Length - Hibernate validator (same as @Size for strings)
      */
     @Length(min = 2, max = 100)
     private String bio;
-    
+
     // ═══════════════════════════════════════════════════════════
     // NUMERIC CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Min / @Max - Numeric bounds (inclusive)
      */
     @Min(value = 0, message = "Age cannot be negative")
     @Max(value = 150, message = "Age is too high")
     private Integer age;
-    
+
     /**
      * @Positive - Must be > 0
      * @PositiveOrZero - Must be >= 0
@@ -934,34 +951,34 @@ public class UserRegistration {
      */
     @Positive(message = "Price must be positive")
     private BigDecimal price;
-    
+
     @PositiveOrZero(message = "Quantity cannot be negative")
     private Integer quantity;
-    
+
     /**
      * @Digits - Digit constraints for decimals
      */
     @Digits(integer = 10, fraction = 2, message = "Invalid amount format")
     private BigDecimal amount;
-    
+
     /**
      * @DecimalMin / @DecimalMax - Decimal bounds
      */
     @DecimalMin(value = "0.01", message = "Minimum price is 0.01")
     @DecimalMax(value = "999999.99", message = "Maximum price exceeded")
     private BigDecimal unitPrice;
-    
+
     // ═══════════════════════════════════════════════════════════
     // STRING PATTERNS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Email - Valid email format
      */
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
-    
+
     /**
      * @Pattern - Regular expression validation
      */
@@ -970,62 +987,62 @@ public class UserRegistration {
         message = "Invalid phone number format"
     )
     private String phoneNumber;
-    
+
     @Pattern(
         regexp = "^[A-Z]{2}[0-9]{6}$",
         message = "Invalid passport format"
     )
     private String passportNumber;
-    
+
     // ═══════════════════════════════════════════════════════════
     // DATE/TIME CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Past - Must be in the past
      * @PastOrPresent - Must be in past or now
      */
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
-    
+
     @PastOrPresent(message = "Registration date cannot be in future")
     private LocalDateTime registrationDate;
-    
+
     /**
      * @Future - Must be in the future
      * @FutureOrPresent - Must be in future or now
      */
     @Future(message = "Expiry date must be in the future")
     private LocalDate expiryDate;
-    
+
     @FutureOrPresent(message = "Start date cannot be in the past")
     private LocalDateTime startDate;
-    
+
     // ═══════════════════════════════════════════════════════════
     // BOOLEAN CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @AssertTrue - Must be true
      * @AssertFalse - Must be false
      */
     @AssertTrue(message = "You must accept the terms")
     private Boolean termsAccepted;
-    
+
     @AssertFalse(message = "User must not be blocked")
     private Boolean isBlocked;
-    
+
     // ═══════════════════════════════════════════════════════════
     // NESTED/CASCADED VALIDATION
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Valid - Triggers validation of nested object
      */
     @Valid
     @NotNull(message = "Address is required")
     private Address address;
-    
+
     @Valid
     @NotEmpty(message = "At least one contact is required")
     private List<Contact> contacts;
@@ -1052,18 +1069,18 @@ public @interface ValidPassword {
  * Validator Implementation
  */
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
-    
+
     @Override
     public void initialize(ValidPassword constraintAnnotation) {
         // Initialize if needed
     }
-    
+
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
         if (password == null) {
             return false;
         }
-        
+
         // At least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
         return password.length() >= 8
             && password.matches(".*[A-Z].*")
@@ -1075,7 +1092,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
 
 // Usage
 public class User {
-    
+
     @ValidPassword
     private String password;
 }
@@ -1094,23 +1111,23 @@ public @interface PasswordMatch {
     String message() default "Passwords do not match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    
+
     String password();
     String confirmPassword();
 }
 
-public class PasswordMatchValidator 
+public class PasswordMatchValidator
     implements ConstraintValidator<PasswordMatch, Object> {
-    
+
     private String passwordField;
     private String confirmField;
-    
+
     @Override
     public void initialize(PasswordMatch annotation) {
         this.passwordField = annotation.password();
         this.confirmField = annotation.confirmPassword();
     }
-    
+
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
         try {
@@ -1118,7 +1135,7 @@ public class PasswordMatchValidator
                 .getReadMethod().invoke(obj);
             Object confirm = BeanUtils.getPropertyDescriptor(obj.getClass(), confirmField)
                 .getReadMethod().invoke(obj);
-            
+
             return password != null && password.equals(confirm);
         } catch (Exception e) {
             return false;
@@ -1144,14 +1161,14 @@ public interface OnCreate {}
 public interface OnUpdate {}
 
 public class User {
-    
+
     @Null(groups = OnCreate.class, message = "ID must be null for new users")
     @NotNull(groups = OnUpdate.class, message = "ID is required for updates")
     private Long id;
-    
+
     @NotBlank(groups = {OnCreate.class, OnUpdate.class})
     private String name;
-    
+
     @NotBlank(groups = OnCreate.class, message = "Password required for registration")
     private String password;
 }
@@ -1226,7 +1243,7 @@ public class UserApiController {
  */
 @Configuration
 public class AppConfig {
-    
+
     /**
      * @Bean - Method produces a Spring bean
      */
@@ -1236,7 +1253,7 @@ public class AppConfig {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
-    
+
     /**
      * @Bean with dependencies (injected via method parameters)
      */
@@ -1252,52 +1269,52 @@ public class AppConfig {
 ```java
 @Service
 public class OrderService {
-    
+
     // ═══════════════════════════════════════════════════════════
     // CONSTRUCTOR INJECTION (RECOMMENDED)
     // ═══════════════════════════════════════════════════════════
-    
+
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
-    
+
     /**
      * @Autowired - Not required on single constructor (Spring 4.3+)
      */
-    public OrderService(UserRepository userRepository, 
+    public OrderService(UserRepository userRepository,
                         OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
-    
+
     // ═══════════════════════════════════════════════════════════
     // FIELD INJECTION (NOT RECOMMENDED for production code)
     // ═══════════════════════════════════════════════════════════
-    
+
     @Autowired
     private EmailService emailService;  // Hard to test!
-    
+
     // ═══════════════════════════════════════════════════════════
     // SETTER INJECTION
     // ═══════════════════════════════════════════════════════════
-    
+
     private NotificationService notificationService;
-    
+
     @Autowired
     public void setNotificationService(NotificationService service) {
         this.notificationService = service;
     }
-    
+
     // ═══════════════════════════════════════════════════════════
     // QUALIFIER & PRIMARY
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Qualifier - Select specific bean by name
      */
     @Autowired
     @Qualifier("emailNotificationService")
     private NotificationService emailNotification;
-    
+
     /**
      * @Primary - Used on bean definition to make it the default
      */
@@ -1354,7 +1371,7 @@ public class RequestScopedWithProxy {
 ```java
 @Component
 public class DatabaseInitializer {
-    
+
     /**
      * @PostConstruct - Called after dependency injection
      * Use for initialization logic
@@ -1364,7 +1381,7 @@ public class DatabaseInitializer {
         System.out.println("Bean initialized, dependencies injected");
         // Initialize resources, validate configuration, etc.
     }
-    
+
     /**
      * @PreDestroy - Called before bean destruction
      * Use for cleanup logic
@@ -1383,21 +1400,40 @@ public class DatabaseInitializer {
 @Component
 @ConfigurationProperties(prefix = "app.mail")
 public class MailProperties {
-    
+
     private String host;
 ```
-
 
 ---
 
 **Navigation**: [< Previous](Ch64_SB_Cloud_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch29_Annotations_Advanced.md)
 
+### Production Reality
+
+Annotations are compile-time promises that have runtime consequences. These are the failure modes that annotations enable or fail to prevent.
+
+**Named failure modes:**
+
+- **`SQL injection via JPQL/HQL `LIKE '%' || :input || '%'`** — Using string concatenation in JPQL creates SQL injection vulnerability. Even with `@PreAuthorize`, the database query runs inside the `@Transactional` method. **Debug workflow:** Check your repository/JPQL methods for string concatenation with `:input`. Run `spring.jpa.show-sql=true` and look for raw parameter values in the SQL. Use parameterized `LIKE CONCAT('%', :input, '%')` instead. Penetration-test with inputs like `' OR '1'='1`.
+
+- **`BeanDefinitionOverrideException` — duplicate annotation-driven bean** — Two `@Configuration` classes or multiple `spring.factories` entries produce beans with the same name. Spring Boot 2.1+ disallows override by default. **Debug workflow:** The error lists both bean definition sources. Enable `logging.level.org.springframework=DEBUG` during startup to see which configuration class loaded second. Fix by renaming the method or disabling override in dev only.
+
+- **`ConfigurationProperties` validation failure on startup** — A `@ConfigurationProperties` class bound to `application.yml` with a missing or type-mismatched property fails the entire application startup. **Debug workflow:** The startup exception prints the exact property path (e.g., `app.mail.host`). Add `spring.config.import=optional:file:./local.yml` for local overrides. Add `@Validated` to the class and `spring.jpa.properties.hibernate.validator.auto_startup=false` to isolate the failure.
+
+- **`@Async` void return — swallowed exception** — A method annotated `@Async` returning `void` runs in a separate thread. Any exception thrown is caught by `AsyncExecutionInterceptor` and silently discarded. **Debug workflow:** Return `CompletableFuture<Void>` and chain `.exceptionally(...)`. Or configure `SimpleAsyncUncaughtExceptionHandler` to at least log the exception. Check `SimpleAsyncTaskExecutor` concurrency logs.
+
+- **`@Transactional` proxy self-invocation** — Calling a `@Transactional` method from within the same class (same bean) bypasses the proxy — the method runs without a transaction. **Debug workflow:** `jstack` during the call shows no transaction thread-local. Fix by injecting the bean into itself (self-injection) or using `TransactionSynchronizationManager` programmatically. Add `@EnableAspectJAutoProxy(exposeProxy=true)` and call `((MyService) AopContext.currentProxy()).method()`.
+
+- **`@PreAuthorize` does not protect data-level access** — `@PreAuthorize("hasRole('ADMIN')")` checks role at method entry but the underlying query (`SELECT * FROM users`) still executes inside the transaction. An admin can still access any user's data if the query doesn't filter. **Debug workflow:** Add data-level authorization in the query: `WHERE owner_id = :currentUserId`. Use `@Query` with explicit `WHERE` clauses rather than trusting method-level security alone.
+
+---
+
 🔬 **Section Challenge — Spring Core Annotations**
 
 **Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
+
 <details><summary>Answer</summary>
 
 Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
+
 </details>
-
-

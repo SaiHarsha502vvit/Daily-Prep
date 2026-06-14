@@ -8,19 +8,18 @@
 
 **When to use Stack vs Queue?**
 
-
-| Trigger Words | Structure | Sub-type |
-|---|---|---|
-| `match brackets / valid expression` | Stack | Push open, pop close |
-| `next greater / next smaller element` | Monotonic Stack | Decreasing stack |
-| `largest rectangle / area in histogram` | Monotonic Stack | Ascending stack |
-| `evaluate arithmetic expression` | Two Stacks | Nums + operators |
-| `BFS / level-by-level traversal` | Queue | Standard BFS |
-| `sliding window max / min` | Monotonic Deque | Decreasing deque |
-| `design min/max stack` | Stack + tracking | Pair (val, minSoFar) |
-
+| Trigger Words                           | Structure        | Sub-type             |
+| --------------------------------------- | ---------------- | -------------------- |
+| `match brackets / valid expression`     | Stack            | Push open, pop close |
+| `next greater / next smaller element`   | Monotonic Stack  | Decreasing stack     |
+| `largest rectangle / area in histogram` | Monotonic Stack  | Ascending stack      |
+| `evaluate arithmetic expression`        | Two Stacks       | Nums + operators     |
+| `BFS / level-by-level traversal`        | Queue            | Standard BFS         |
+| `sliding window max / min`              | Monotonic Deque  | Decreasing deque     |
+| `design min/max stack`                  | Stack + tracking | Pair (val, minSoFar) |
 
 **The Core Mental Models:**
+
 ```
 STACK → "What's the LAST (most recent) unresolved thing?"
 QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
@@ -31,8 +30,6 @@ QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
-
-
 
 # 📚 SECTION 7: STACK & QUEUE PROBLEMS
 
@@ -54,7 +51,6 @@ QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
 │  [5, 3, 1] ← Decreasing          Used for sliding window max    │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -284,7 +280,6 @@ QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Examples:**
 
 - Input: `"()"` → Output: `true`
@@ -346,7 +341,6 @@ public boolean isValid(String s) {
 │          (val, minSoFar)                                       │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Operations:**
 
@@ -417,7 +411,6 @@ class MinStack {
 │  - popMax and pop called only when stack not empty             │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution (Using TreeMap + Doubly Linked List for O(log n)):**
 
@@ -529,7 +522,6 @@ class MaxStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Examples:**
 
 - Input: `"3[a]2[bc]"` → Output: `"aaabcbc"`
@@ -598,7 +590,6 @@ public String decodeString(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Examples:**
 
 - Input: `["2","1","+","3","*"]` → Output: `9` (((2+1)\*3))
@@ -658,7 +649,6 @@ public int evalRPN(String[] tokens) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -704,16 +694,15 @@ private int helper(Queue<Character> queue) {
 
 ---
 
-
-
 🔬 **Section Challenge — 7.1 Basic Stack Problems**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 7.2 Monotonic Stack Problems
 
@@ -742,7 +731,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 │  Same concept, but pop when current < stack top                │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -773,7 +761,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 │  Output: [1, 1, 4, 2, 1, 1, 0, 0]                              │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -822,7 +809,6 @@ public int[] dailyTemperatures(int[] temperatures) {
 │  Output: [-1, 3, -1]                                           │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -880,7 +866,6 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 │  Output: [2, -1, 2]                                            │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -941,7 +926,6 @@ public int[] nextGreaterElements(int[] nums) {
 │  ...                                                           │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Key Insight:** For each bar, find how far it can extend left and right.
 
@@ -1018,7 +1002,6 @@ public int largestRectangleArea(int[] heights) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1088,7 +1071,6 @@ private int largestRectangleArea(int[] heights) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution 1: Two Pointers (O(n) time, O(1) space)**
 
 ```java
@@ -1146,16 +1128,15 @@ public int trapStack(int[] height) {
 
 ---
 
-
-
 🔬 **Section Challenge — 7.2 Monotonic Stack Problems**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 7.3 Queue Problems
 
@@ -1188,7 +1169,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 │  Now outputStack has correct order for FIFO                    │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1249,7 +1229,6 @@ class MyQueue {
 │  top() → returns 2                                             │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1316,7 +1295,6 @@ class MyStack {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1374,7 +1352,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 │  prefix[j] - prefix[i] >= k means subarray (i,j] has sum >= k  │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1451,7 +1428,6 @@ public int shortestSubarray(int[] nums, int k) {
 │  - isFull(): Check if full                                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1539,7 +1515,6 @@ class MyCircularQueue {
 │  - At most 2000 calls to operations                            │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1643,7 +1618,6 @@ class MyCircularDeque {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1711,7 +1685,6 @@ public String removeKdigits(String num, int k) {
 │  Wait... let me redo: Final = "acdb"                           │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1781,7 +1754,6 @@ public String removeDuplicateLetters(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1840,7 +1812,6 @@ public boolean find132pattern(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1867,16 +1838,15 @@ class StockSpanner {
 
 ---
 
-
-
 🔬 **Section Challenge — 7.4 Advanced Stack Problems**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 7.5 HackerEarth & Codeforces Stack/Queue Problems
 
@@ -1902,7 +1872,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 │  - String contains alphanumeric and bracket characters         │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1963,7 +1932,6 @@ public String isBalanced(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -2021,7 +1989,6 @@ public void processQueries(int[][] queries) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -2074,7 +2041,6 @@ public int[] nearestSmallerElement(int[] arr) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -2104,42 +2070,38 @@ public String prefixToPostfix(String prefix) {
 
 ---
 
-
-
 🔬 **Section Challenge — 7.5 HackerEarth & Codeforces Stack/Queue Problems**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
-| Problem | Link | Technique | Difficulty |
-|---|---|---|---|
-| Longest Regular Bracket Sequence | [CF 5C](https://codeforces.com/problemset/problem/5/C) | Stack → longest valid bracket span | ⭐⭐ Medium |
-| Queue on Segments | [CF 566E](https://codeforces.com/problemset/problem/566/E) | Deque + segment tree | ⭐⭐⭐ Hard |
-| Constructing Streets | [CF 1264C](https://codeforces.com/problemset/problem/1264/C) | Monotonic stack application | ⭐⭐ Medium |
-| Stock Market | [CF 865C](https://codeforces.com/problemset/problem/865/C) | Stack-based price calculation | ⭐⭐ Medium |
-| Towers | [CF 37B](https://codeforces.com/problemset/problem/37/B) | Priority queue ordering | ⭐ Easy |
+| Problem                          | Link                                                         | Technique                          | Difficulty  |
+| -------------------------------- | ------------------------------------------------------------ | ---------------------------------- | ----------- |
+| Longest Regular Bracket Sequence | [CF 5C](https://codeforces.com/problemset/problem/5/C)       | Stack → longest valid bracket span | ⭐⭐ Medium |
+| Queue on Segments                | [CF 566E](https://codeforces.com/problemset/problem/566/E)   | Deque + segment tree               | ⭐⭐⭐ Hard |
+| Constructing Streets             | [CF 1264C](https://codeforces.com/problemset/problem/1264/C) | Monotonic stack application        | ⭐⭐ Medium |
+| Stock Market                     | [CF 865C](https://codeforces.com/problemset/problem/865/C)   | Stack-based price calculation      | ⭐⭐ Medium |
+| Towers                           | [CF 37B](https://codeforces.com/problemset/problem/37/B)     | Priority queue ordering            | ⭐ Easy     |
 
 ---
 
-
-
-
 ## 🌍 Real-World Applications of Stack & Queue
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Stack (LIFO)** | JVM call stack | Every method call pushes a frame; return pops it — StackOverflowError when limit exceeded |
-| **Stack (undo/redo)** | VS Code / Photoshop | Action stack; undo = pop; redo = push to redo stack |
-| **Monotonic Stack** | Financial systems | "Next day price is higher than today?" = monotonic stack for stock span |
-| **Queue (FIFO)** | Kafka, RabbitMQ | Message queue ensures FIFO delivery between microservices |
-| **Deque (double-ended)** | Browser back/forward | Deque for page history; can push/pop from either end |
-| **Priority Queue** | OS task scheduler | Always run highest-priority ready thread |
+| Technique                | Real-World System    | How It's Used                                                                             |
+| ------------------------ | -------------------- | ----------------------------------------------------------------------------------------- |
+| **Stack (LIFO)**         | JVM call stack       | Every method call pushes a frame; return pops it — StackOverflowError when limit exceeded |
+| **Stack (undo/redo)**    | VS Code / Photoshop  | Action stack; undo = pop; redo = push to redo stack                                       |
+| **Monotonic Stack**      | Financial systems    | "Next day price is higher than today?" = monotonic stack for stock span                   |
+| **Queue (FIFO)**         | Kafka, RabbitMQ      | Message queue ensures FIFO delivery between microservices                                 |
+| **Deque (double-ended)** | Browser back/forward | Deque for page history; can push/pop from either end                                      |
+| **Priority Queue**       | OS task scheduler    | Always run highest-priority ready thread                                                  |
 
 ```
 🔥 MONOTONIC STACK = MOST UNDERRATED INTERVIEW PATTERN:
@@ -2151,17 +2113,34 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Stack & Queue**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+
 </details>
 
+---
 
+### Historical Evolution
+
+**Stack and queue abstractions** originated with **1946 (Alan Turing, John von Neumann)** who formalized the call stack and memory model in early computer architecture, where return addresses pushed on call and popped on return created the LIFO pattern. **1961 (Edsger Dijkstra)** solved the infix expression parsing problem with the shunting-yard algorithm, using a stack to convert expressions like "3 + 4 * 2" into postfix notation for evaluation without parentheses. The technique demonstrated that stack-based evaluation eliminated the need for operator precedence parsing at runtime. **1975 (Aho, Sethi, Ullman)** formalized stack state management in compiler theory, while **1980s computational geometry researchers** independently discovered monotonic stack techniques for problems like longest increasing subsequence and histogram area maximization. The CLRS textbook **1990 (Cormen, Leiserson, Rivest, Stein)** provided the canonical treatment and asymptotic analysis that standardized stack/queue complexity in computer science education. Modern practice anchors these structures in ubiquitous tools: expression evaluators power calculator apps and spreadsheet formulas, the browser's history.back() uses an explicit stack for navigation, and every major text editor (VS Code, Vim, Emacs) implements undo/redo via dual-stack architecture. Competitive programming platforms like LeetCode have featured hundreds of stack/queue problems since 2012, making these structures essential interview preparation.
+
+---
+
+### Production Reality
+
+**Stack and Queue** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Monotonicity assumption violated in production data.** Monotonic stack guarantees O(n) only when the predicate (next greater, next smaller) holds monotonically. Financial time-series data often has oscillating volatility or repeating values that break monotonicity, causing O(n^2) behavior. Production impact: a risk calculation service at a hedge fund used monotonic stack for sliding window maximum on 1-minute price data. During high-frequency oscillation periods (common in pre-market trading), the stack never shrank, causing 100x slowdown on datasets of 10,000+ ticks and triggering SLA breaches for real-time risk reporting.
+
+**Failure mode 2: Stack overflow from recursive expression parser.** Recursive descent parsers for arithmetic expressions (a common interview pattern) recursively descend for each parenthesis depth. Production input like deeply nested formulas from Excel spreadsheets or LISP code can exceed default stack sizes. Production impact: a financial reporting tool crashed when parsing a formula with 10,000+ nested IF statements (legal in Excel), causing a stack overflow that propagated as a silent failure, producing incorrect tax calculations for 2,000 corporate clients.
+
+**Debug workflow:** (1) Verify monotonicity holds by sampling production data: check if `strictly decreasing` holds, not just `decreasing`. (2) Use iterative stack instead of recursion for parsers: explicitly manage your own stack with while loop. (3) Set explicit stack size in containerized environments: `--thread-stack-size=2MB` in JVM. (4) Profile both worst-case (all ascending for decreasing-stack) and average-case inputs. (5) Add `maxStackDepth` instrumentation: alert if depth exceeds 90% of expected maximum.
+
+**Real-world anchor:** Cloudflare's 2019 outage was caused by a stack overflow in their Lua webhook processing when parsing deeply nested JSON configurations from enterprise customers, taking down 12% of the internet for 27 minutes.

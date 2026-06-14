@@ -13,26 +13,26 @@ THE ERA OF BLOCKING CODE (pre-2010):
   Python used threads (threading module) for concurrent I/O.
   Problem: GIL (Global Interpreter Lock) = only ONE thread executes Python
   bytecode at a time. Threads switch on I/O, but CPU-bound? No parallelism.
-  
+
   REAL-WORLD ANALOGY: One cashier with 10 checkout lanes.
-  Threads = 10 lanes, but only 1 cashier. When lane 1 waits for card 
+  Threads = 10 lanes, but only 1 cashier. When lane 1 waits for card
   approval (I/O), cashier goes to lane 2. But for bagging (CPU), still 1 cashier.
 
 THE CALLBACK ERA (2010-2014):
   Tornado, Twisted → event-loop based, but "callback hell":
-  
+
   def handle_request(request):
       db.query(request.user_id, callback=on_db_result)
-  
+
   def on_db_result(user):
       cache.get(user.id, callback=on_cache_result)
-  
+
   def on_cache_result(data):
       http_client.fetch(url, callback=on_http_result)
-  
+
   def on_http_result(response):
       # finally! 4 levels deep
-  
+
   → Hard to read, hard to debug, error handling is a nightmare.
 
 THE GENERATOR ERA (2014 — PEP 3156):
@@ -47,7 +47,7 @@ THE ASYNC/AWAIT ERA (2015 — PEP 492, Python 3.5+):
   async def fetch():
       response = await aiohttp.get('http://example.com')
       return await response.text()
-  
+
   This is what we use today. Clean, readable, no callbacks, no generators.
 
 2024 STATE OF THE ART:
@@ -65,14 +65,14 @@ THE ASYNC/AWAIT ERA (2015 — PEP 492, Python 3.5+):
 ```
 ANALOGY: A CHEF WITH A TIMER AND A CLIPBOARD.
   The chef (event loop) has ONE set of hands (single thread).
-  
+
   Instead of standing at the oven watching water boil (blocking),
   the chef:
   1. Puts water on to boil → sets a timer (registers I/O callback)
   2. Starts chopping vegetables (runs another coroutine)
   3. Timer rings → water is boiling → adds pasta (resumes coroutine)
   4. Checks clipboard for new orders (polls pending I/O)
-  
+
   The chef NEVER stands idle waiting — always doing something productive.
   ONE chef, NO parallelism, but maximum throughput!
 
@@ -90,7 +90,7 @@ UNDER THE HOOD — what "await" does:
   async def fetch_data():
       response = await aiohttp.get('http://api.com')  # ← here
       return response.json()
-  
+
   At the "await" line:
   1. aiohttp.get() returns a COROUTINE OBJECT (not a result!)
   2. "await" SUSPENDS this coroutine and yields control back to event loop
@@ -99,7 +99,7 @@ UNDER THE HOOD — what "await" does:
   5. When socket receives data (OS signals readiness via epoll):
      Event loop RESUMES this coroutine with the response
   6. Continues execution after the "await" line
-  
+
   KEY INSIGHT: "await" does NOT block the thread!
   It says "I'll go to sleep — wake me when this I/O is ready."
   The event loop keeps running other things in the meantime.
@@ -166,23 +166,23 @@ asyncio.run(cook_concurrent())
 ```
 LEVEL 1 — COROUTINE OBJECT:
   Created when you call an async function (WITHOUT await):
-  
+
   coro = fetch_data()  # Does NOT execute! Returns a coroutine object.
-  
+
   A coroutine is like a recipe: it describes WHAT to do,
   but hasn't been put in the oven yet.
-  
+
   To actually run it: await coro, or asyncio.run(coro)
 
 LEVEL 2 — TASK:
   A coroutine WRAPPER that schedules it for execution on the event loop.
   Created with asyncio.create_task().
-  
+
   task = asyncio.create_task(fetch_data())
   # NOW it starts executing! Event loop will run it.
   # You can await it later to get the result:
   result = await task
-  
+
   TASKS vs DIRECT AWAIT:
   await fetch_data()       → runs NOW, blocks THIS coroutine
   task = create_task(...)  → schedules to run, continues immediately
@@ -212,37 +212,37 @@ async def main():
     # ── Method 1: Sequential awaits (SLOW) ──
     user1 = await fetch_user(1)   # 0.5s
     user2 = await fetch_user(2)   # 0.5s — total 1.0s
-    
+
     # ── Method 2: asyncio.gather (CONCURRENT, preferred for known tasks) ──
     user1, user2 = await asyncio.gather(
         fetch_user(1),
         fetch_user(2)
     )
     # Total: 0.5s (concurrent!)
-    
+
     # ── Method 3: create_task (CONCURRENT, more control) ──
     task1 = asyncio.create_task(fetch_user(1))  # starts immediately
     task2 = asyncio.create_task(fetch_user(2))  # starts immediately
-    
+
     # Do other work while tasks are running...
     print("Tasks are running in the background!")
-    
+
     user1 = await task1  # get result (already done or wait)
     user2 = await task2
-    
+
     # ── Method 4: as_completed (CONCURRENT, process results as they finish) ──
     tasks = [fetch_user(i) for i in range(10)]
     for coro in asyncio.as_completed(tasks):
         result = await coro
         print(f"Got: {result}")  # prints in order of completion, not creation!
-    
+
     # ── Method 5: TaskGroup (Python 3.11+ — structured concurrency) ──
     async with asyncio.TaskGroup() as tg:
         task1 = tg.create_task(fetch_user(1))
         task2 = tg.create_task(fetch_user(2))
         # If ANY task raises an exception → ALL tasks in group are cancelled!
         # Much safer than gather (which requires return_exceptions=True for safety)
-    
+
     print(task1.result(), task2.result())
 
 asyncio.run(main())
@@ -282,7 +282,7 @@ async def fetch():
 async def main():
     fetch()         # ⚠️ RuntimeWarning: coroutine 'fetch' was never awaited
     # This does NOTHING. The coroutine object is created and immediately garbage collected.
-    
+
     await fetch()   # ✓ Correct — actually runs the coroutine
 
 
@@ -336,7 +336,7 @@ async def fetch_url(session, url, semaphore):
 
 async def main():
     semaphore = asyncio.Semaphore(50)  # max 50 concurrent requests
-    
+
     async with aiohttp.ClientSession() as session:
         tasks = [fetch_url(session, url, semaphore) for url in urls]
         results = await asyncio.gather(*tasks)
@@ -393,7 +393,7 @@ async def get_dashboard(user_id: int):
             conn.fetch("SELECT * FROM orders WHERE user_id = $1 LIMIT 10", user_id),
             fetch_recommendations(user_id)  # external API call
         )
-    
+
     return {
         "profile": dict(profile),
         "recent_orders": [dict(o) for o in orders],
@@ -411,10 +411,9 @@ async def fetch_recommendations(user_id: int):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **GIL (Global Interpreter Lock)** | [Python Advanced](02_Python_Advanced.md) — threading, GIL, multiprocessing |
-| **JavaScript Event Loop** | [JS V8 Internals](../16_JavaScript/06_JS_Modern_ES6Plus.md) — same single-thread model |
-| **FastAPI (async framework)** | [MLOps Production](13_MLOps_Production.md) — model serving with FastAPI |
-| **Database async (asyncpg)** | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — connection pooling |
-
+| Topic                             | Related Content                                                                        |
+| --------------------------------- | -------------------------------------------------------------------------------------- |
+| **GIL (Global Interpreter Lock)** | [Python Advanced](02_Python_Advanced.md) — threading, GIL, multiprocessing             |
+| **JavaScript Event Loop**         | [JS V8 Internals](../16_JavaScript/06_JS_Modern_ES6Plus.md) — same single-thread model |
+| **FastAPI (async framework)**     | [MLOps Production](13_MLOps_Production.md) — model serving with FastAPI                |
+| **Database async (asyncpg)**      | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — connection pooling               |

@@ -15,13 +15,13 @@
   Written in C (Ritchie invented C for this purpose!).
   Design philosophy: "Do one thing and do it well."
   Small, composable tools piped together.
-  
+
 1991 — LINUX (Linus Torvalds, 21-year-old Finnish student):
   "I'm doing a (free) operating system (just a hobby, won't be big)."
   Now powers: 96.3% of the world's top 1 million web servers,
   100% of the top 500 supercomputers, all Android phones,
   and every major cloud provider (AWS, GCP, Azure).
-  
+
 WHY LINUX DOMINATES SERVERS:
   1. FREE and open source (no license costs for thousands of servers).
   2. STABLE: Linux servers run for YEARS without rebooting.
@@ -93,7 +93,7 @@ LINUX IS MULTI-USER. Every file has an OWNER and PERMISSIONS.
 FILE PERMISSIONS:
   ls -la /var/www/index.html
   -rw-r--r-- 1 www-data www-data 4096 Mar 24 10:00 index.html
-  
+
   BREAKDOWN:
   - rw- r-- r--
   │ │   │   │
@@ -101,12 +101,12 @@ FILE PERMISSIONS:
   │ │   └────── GROUP (www-data group): read only
   │ └────────── OWNER (www-data user): read + write
   └──────────── FILE TYPE: - = file, d = directory, l = symlink
-  
+
   PERMISSION VALUES:
   r (read)    = 4
   w (write)   = 2
   x (execute) = 1
-  
+
   OCTAL NOTATION:
   rwxr-xr-- = 754
   Owner: 7 (4+2+1 = rwx)
@@ -119,7 +119,7 @@ COMMON PERMISSION PATTERNS:
   600 (rw-------): Private files (SSH keys!). Owner only.
   700 (rwx------): Private directories (.ssh/).
   777 (rwxrwxrwx): EVERYONE can do EVERYTHING. NEVER use in production!
-  
+
   SSH KEY FILES MUST BE:
   ~/.ssh/             → 700 (drwx------)
   ~/.ssh/id_ed25519   → 600 (-rw-------)
@@ -364,7 +364,7 @@ lsblk                            # list all block devices (disks, partitions)
 # ├─sda2      200G  /
 # └─sda3       49G  swap
 # sdb          500G disk       (unattached disk — EBS volume?)
-# └─sdb1      500G  
+# └─sdb1      500G
 
 # Mount a disk
 sudo mkdir /mnt/data
@@ -523,13 +523,12 @@ ss -s                            # socket statistics summary
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Docker (runs ON Linux)** | [Ch 17: Docker](17_Docker_Complete.md) — cgroups, namespaces |
-| **K8s nodes** | [Ch 18: Kubernetes](18_Kubernetes_Complete.md) — kubelet on Linux |
-| **SSH** | [Ch 14: SSH](14_SSH_Remote_Access.md) — remote Linux access |
-| **iptables (firewall)** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — Linux firewall |
-| **TCP kernel tuning** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — sysctl parameters |
-| **Filesystem (containers)** | [Ch 17: Docker](17_Docker_Complete.md) — overlay2, layers |
-| **Process isolation** | [Ch 17: Docker](17_Docker_Complete.md) — namespaces, cgroups |
-
+| Topic                       | Related Content                                                     |
+| --------------------------- | ------------------------------------------------------------------- |
+| **Docker (runs ON Linux)**  | [Ch 17: Docker](17_Docker_Complete.md) — cgroups, namespaces        |
+| **K8s nodes**               | [Ch 18: Kubernetes](18_Kubernetes_Complete.md) — kubelet on Linux   |
+| **SSH**                     | [Ch 14: SSH](14_SSH_Remote_Access.md) — remote Linux access         |
+| **iptables (firewall)**     | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — Linux firewall |
+| **TCP kernel tuning**       | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — sysctl parameters       |
+| **Filesystem (containers)** | [Ch 17: Docker](17_Docker_Complete.md) — overlay2, layers           |
+| **Process isolation**       | [Ch 17: Docker](17_Docker_Complete.md) — namespaces, cgroups        |

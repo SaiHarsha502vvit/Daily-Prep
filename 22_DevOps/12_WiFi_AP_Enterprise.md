@@ -67,7 +67,7 @@ DEPLOYMENT MODELS:
    Pushes config: SSID, channel, power level, security.
    Dynamic adjustments: AP detects interference → controller changes channel.
    Roaming: client moves between APs → controller handles handoff seamlessly.
-   
+
    Vendors:
    Cisco WLC + Cisco APs (enterprise, expensive)
    Aruba HPE + Aruba APs (enterprise, strong AI optimization)
@@ -85,11 +85,11 @@ PHYSICAL DEPLOYMENT:
   PoE (Power over Ethernet):
   AP needs ONE cable: Ethernet (data + power from PoE switch).
   No separate power adapter! Makes deployment easy.
-  
+
   Mounting: ceiling-mount (most common), wall-mount, outdoor.
   Coverage: 1 AP per 2,000-5,000 sq ft (depends on walls, density).
   Density: 1 AP per 25-50 users (for active workloads).
-  
+
   SITE SURVEY:
   Before installing, do a WiFi site survey (tools: Ekahau, NetSpot).
   Map the building → identify dead zones → plan AP placement.
@@ -99,10 +99,10 @@ CHANNEL PLANNING:
   2.4 GHz: Only 3 non-overlapping channels: 1, 6, 11.
   If two neighboring APs both use channel 1 → INTERFERENCE.
   Plan: AP1=ch1, AP2=ch6, AP3=ch11, AP4=ch1 (repeat pattern).
-  
+
   5 GHz: 25 non-overlapping channels. Much easier to plan.
   Use 80 MHz wide channels (4 non-overlapping) or 40 MHz (8+).
-  
+
   6 GHz: 59 non-overlapping 20 MHz channels. Almost no planning needed.
 ```
 
@@ -126,11 +126,11 @@ WPA2-Personal vs WPA2-Enterprise:
     One password for everyone. Everyone shares the same key.
     Problem: employee leaves → must change password for EVERYONE.
     Acceptable for: home, small office.
-  
+
   ENTERPRISE (802.1X):
     Each user has UNIQUE credentials. No shared password.
     Uses RADIUS server for authentication.
-    
+
     FLOW:
     1. Client connects to SSID.
     2. AP blocks all traffic except 802.1X auth (Extensible Authentication Protocol).
@@ -149,12 +149,12 @@ WPA2-Personal vs WPA2-Enterprise:
 
 VLAN ASSIGNMENT VIA RADIUS:
   This is how enterprise WiFi provides NETWORK SEGMENTATION via WiFi:
-  
+
   One SSID: "CorpWiFi"
   Employee logs in: RADIUS assigns VLAN 10 → full access → internal servers.
   Contractor logs in: RADIUS assigns VLAN 20 → limited access → only specific servers.
   Guest logs in: RADIUS assigns VLAN 30 → internet only → no internal access.
-  
+
   All on the SAME SSID! RADIUS dynamically segments users.
 ```
 
@@ -194,13 +194,13 @@ netsh wlan show networks mode=bssid  # nearby networks with signal
 COMMON WIFI PROBLEMS:
   Slow speed but strong signal → channel interference.
     Fix: change to less crowded channel (or use 5/6 GHz).
-  
+
   Intermittent drops → AP overloaded or roaming issue.
     Fix: add more APs, enable fast roaming (802.11r).
-  
+
   Good signal but can't connect → authentication failure.
     Fix: check RADIUS server logs, client certificates.
-  
+
   Dead zones → physical obstruction.
     Fix: add AP or WiFi extender/mesh node.
 ```
@@ -209,12 +209,11 @@ COMMON WIFI PROBLEMS:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Physical layer** | [Ch 04: Fundamentals](04_Networking_Complete.md) — WiFi standards, modulation |
-| **VLANs** | [Ch 04: Fundamentals](04_Networking_Complete.md) — VLAN trunking, 802.1Q |
-| **DHCP** | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — DORA process |
-| **TLS/certificates** | [Ch 09: TLS](09_TLS_Encryption.md) — EAP-TLS client certs |
-| **Firewall zones** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — VLAN firewalling |
-| **Cloud WiFi** | [Cloud Networking](13_Cloud_Networking_VPC.md) — virtual networks |
-
+| Topic                | Related Content                                                               |
+| -------------------- | ----------------------------------------------------------------------------- |
+| **Physical layer**   | [Ch 04: Fundamentals](04_Networking_Complete.md) — WiFi standards, modulation |
+| **VLANs**            | [Ch 04: Fundamentals](04_Networking_Complete.md) — VLAN trunking, 802.1Q      |
+| **DHCP**             | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — DORA process            |
+| **TLS/certificates** | [Ch 09: TLS](09_TLS_Encryption.md) — EAP-TLS client certs                     |
+| **Firewall zones**   | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — VLAN firewalling         |
+| **Cloud WiFi**       | [Cloud Networking](13_Cloud_Networking_VPC.md) — virtual networks             |

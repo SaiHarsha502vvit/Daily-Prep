@@ -45,10 +45,7 @@ test('demo ch02: popup listener before click', async ({ page }) => {
    ─────────────────────────────────────────────────────────────────────────── */
 test('demo ch10: helper opens new tab', async ({ page }) => {
   await page.goto('https://demoqa.com/links');
-  const { popup } = await openNewTab(
-    page,
-    page.getByRole('link', { name: 'Home', exact: true })
-  );
+  const { popup } = await openNewTab(page, page.getByRole('link', { name: 'Home', exact: true }));
   await expect(popup.locator('body')).toBeVisible();
   await popup.close();
 });
@@ -88,7 +85,7 @@ test('demo ch12: typed API response', async ({ request }) => {
   }
   const book = await fetchTyped<Book>(
     request,
-    'https://fakerestapi.azurewebsites.net/api/v1/Books/1'
+    'https://fakerestapi.azurewebsites.net/api/v1/Books/1',
   );
   expect(book.id).toBe(1);
   expect(typeof book.title).toBe('string');
@@ -111,7 +108,7 @@ test('demo ch13: partial object match', async ({ page }) => {
     expect.objectContaining({
       name: 'Test',
       metadata: expect.objectContaining({ version: expect.any(Number) }),
-    })
+    }),
   );
 });
 

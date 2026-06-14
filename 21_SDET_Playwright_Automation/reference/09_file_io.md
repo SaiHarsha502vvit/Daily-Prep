@@ -32,19 +32,19 @@
 
 Playwright file I/O has three primary APIs:
 
-| API | For | Returns |
-|---|---|---|
-| `locator.setInputFiles(...)` | Uploads via `<input type="file">` | `Promise<void>` |
+| API                                | For                                                      | Returns                |
+| ---------------------------------- | -------------------------------------------------------- | ---------------------- |
+| `locator.setInputFiles(...)`       | Uploads via `<input type="file">`                        | `Promise<void>`        |
 | `page.waitForEvent('filechooser')` | Uploads via custom UI that triggers `<input>` indirectly | `Promise<FileChooser>` |
-| `page.waitForEvent('download')` | Downloads triggered by clicks, links, or window.open | `Promise<Download>` |
+| `page.waitForEvent('download')`    | Downloads triggered by clicks, links, or window.open     | `Promise<Download>`    |
 
 Plus a couple of supporting capabilities:
 
-| API | For |
-|---|---|
-| `page.evaluateHandle(... DataTransfer ...)` | Simulating drag-and-drop |
-| `request.post({ multipart })` | API-level uploads (bypass UI) — see [`./06_api_testing.md`](./06_api_testing.md) |
-| `acceptDownloads: true` (default) | Without this, downloads error |
+| API                                         | For                                                                              |
+| ------------------------------------------- | -------------------------------------------------------------------------------- |
+| `page.evaluateHandle(... DataTransfer ...)` | Simulating drag-and-drop                                                         |
+| `request.post({ multipart })`               | API-level uploads (bypass UI) — see [`./06_api_testing.md`](./06_api_testing.md) |
+| `acceptDownloads: true` (default)           | Without this, downloads error                                                    |
 
 ### 1.1 The mental model
 
@@ -59,17 +59,19 @@ Playwright never sends files through Node's main thread. Uploads pass directly t
 
 ## 2. Uploads — the 4 modalities
 
-| Modality | When to use |
-|---|---|
-| Path on disk | The simplest case — file already exists |
-| Array of paths | Multi-file inputs (`<input multiple>`) |
-| In-memory buffer | Generated test data; no disk write |
-| `null` / `[]` | Clear an input — useful for the "re-upload" scenarios |
+| Modality         | When to use                                           |
+| ---------------- | ----------------------------------------------------- |
+| Path on disk     | The simplest case — file already exists               |
+| Array of paths   | Multi-file inputs (`<input multiple>`)                |
+| In-memory buffer | Generated test data; no disk write                    |
+| `null` / `[]`    | Clear an input — useful for the "re-upload" scenarios |
 
 ### 2.1 Path on disk
 
 ```typescript
-await page.locator('#csv-input').setInputFiles(path.resolve('test-data/sample.csv'));
+await page
+  .locator("#csv-input")
+  .setInputFiles(path.resolve("test-data/sample.csv"));
 ```
 
 Resolves the path against `process.cwd()` (or current dir). Use absolute paths to avoid surprise.
@@ -77,10 +79,12 @@ Resolves the path against `process.cwd()` (or current dir). Use absolute paths t
 ### 2.2 Array of paths
 
 ```typescript
-await page.locator('#multi').setInputFiles([
-  path.resolve('test-data/a.csv'),
-  path.resolve('test-data/b.csv'),
-]);
+await page
+  .locator("#multi")
+  .setInputFiles([
+    path.resolve("test-data/a.csv"),
+    path.resolve("test-data/b.csv"),
+  ]);
 ```
 
 The element must have `multiple` attribute. Without it, only the first file is uploaded.
@@ -88,14 +92,15 @@ The element must have `multiple` attribute. Without it, only the first file is u
 ### 2.3 In-memory buffer
 
 ```typescript
-await page.locator('#csv-input').setInputFiles({
-  name: 'inline.csv',
-  mimeType: 'text/csv',
-  buffer: Buffer.from('id,name\n1,Alice\n2,Bob\n', 'utf8'),
+await page.locator("#csv-input").setInputFiles({
+  name: "inline.csv",
+  mimeType: "text/csv",
+  buffer: Buffer.from("id,name\n1,Alice\n2,Bob\n", "utf8"),
 });
 ```
 
 Use cases:
+
 - Generated test data (no disk write)
 - Synthetic files of specific sizes (1KB, 1MB, 100MB)
 - Edge cases (empty file, file with BOM, binary)
@@ -103,7 +108,7 @@ Use cases:
 ### 2.4 Clearing the input
 
 ```typescript
-await page.locator('#input').setInputFiles([]);   // empty array
+await page.locator("#input").setInputFiles([]); // empty array
 ```
 
 Resets the input to no file selected. Useful when testing the "re-upload" flow.
@@ -113,11 +118,11 @@ Resets the input to no file selected. Useful when testing the "re-upload" flow.
 If your test doesn't need the UI behaviour, just send via API:
 
 ```typescript
-await request.post('/api/upload', {
+await request.post("/api/upload", {
   multipart: {
     file: {
-      name: 'sample.csv',
-      mimeType: 'text/csv',
+      name: "sample.csv",
+      mimeType: "text/csv",
       buffer: csvBuffer,
     },
   },
@@ -144,7 +149,7 @@ locator.setInputFiles(
 ### 3.2 `timeout` option
 
 ```typescript
-await page.locator('#input').setInputFiles('big.csv', { timeout: 60_000 });
+await page.locator("#input").setInputFiles("big.csv", { timeout: 60_000 });
 ```
 
 For very large uploads (100+ MB) where the browser needs time to read the file.
@@ -152,7 +157,7 @@ For very large uploads (100+ MB) where the browser needs time to read the file.
 ### 3.3 `noWaitAfter` option
 
 ```typescript
-await page.locator('#input').setInputFiles('file.csv', { noWaitAfter: true });
+await page.locator("#input").setInputFiles("file.csv", { noWaitAfter: true });
 ```
 
 By default, `setInputFiles` waits for the resulting `change` event to fire on the input. If the app behaves oddly (no change event), `noWaitAfter: true` skips that wait.
@@ -163,7 +168,7 @@ By default, `setInputFiles` waits for the resulting `change` event to fire on th
 
 ```typescript
 // Works even if the <input> is display:none
-await page.locator('input[type="file"]').setInputFiles('file.csv');
+await page.locator('input[type="file"]').setInputFiles("file.csv");
 ```
 
 This is essential because most modern UIs hide the native input behind a styled button.
@@ -192,7 +197,7 @@ Most modern UIs don't expose a native `<input type="file">`. Instead:
 
 ```html
 <button type="button" id="upload-btn">Upload CSV</button>
-<input id="csv-input" type="file" style="display:none">
+<input id="csv-input" type="file" style="display:none" />
 ```
 
 The button triggers `csv-input.click()` via JavaScript. Native browser opens the OS picker.
@@ -201,7 +206,7 @@ The button triggers `csv-input.click()` via JavaScript. Native browser opens the
 
 ```typescript
 // The button is what the user clicks, but Playwright can bypass it
-await page.locator('#csv-input').setInputFiles('file.csv');
+await page.locator("#csv-input").setInputFiles("file.csv");
 ```
 
 `setInputFiles` works directly on the hidden input. No need to click the button. No OS picker.
@@ -213,10 +218,10 @@ If you want to test that the button TRIGGERS the input (not just hardcode the in
 ```typescript
 // Click the button; intercept the file chooser
 const [fileChooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
-  page.locator('#upload-btn').click(),
+  page.waitForEvent("filechooser"),
+  page.locator("#upload-btn").click(),
 ]);
-await fileChooser.setFiles('file.csv');
+await fileChooser.setFiles("file.csv");
 ```
 
 This verifies the button-to-input wiring works. See §5.
@@ -229,10 +234,10 @@ In that case, `setInputFiles` fails because the locator doesn't match. Use the f
 
 ```typescript
 const [fileChooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
-  page.locator('#choose-file-btn').click(),
+  page.waitForEvent("filechooser"),
+  page.locator("#choose-file-btn").click(),
 ]);
-await fileChooser.setFiles('file.csv');
+await fileChooser.setFiles("file.csv");
 ```
 
 ---
@@ -245,11 +250,11 @@ For UIs that create file inputs dynamically or for tests that verify the button-
 
 ```typescript
 const [fileChooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
-  page.locator('#upload').click(),
+  page.waitForEvent("filechooser"),
+  page.locator("#upload").click(),
 ]);
 
-await fileChooser.setFiles('test-data/sample.csv');
+await fileChooser.setFiles("test-data/sample.csv");
 ```
 
 The `Promise.all` is essential — see [`./08_reliability.md#12-race-conditions`](./08_reliability.md#12-race-conditions).
@@ -258,12 +263,16 @@ The `Promise.all` is essential — see [`./08_reliability.md#12-race-conditions`
 
 ```typescript
 interface FileChooser {
-  element(): Locator;            // the <input> that triggered
-  isMultiple(): boolean;         // whether <input multiple> is set
+  element(): Locator; // the <input> that triggered
+  isMultiple(): boolean; // whether <input multiple> is set
   page(): Page;
   setFiles(
-    files: string | string[] | { name, mimeType, buffer } | { name, mimeType, buffer }[],
-    options?: { timeout?: number; noWaitAfter?: boolean }
+    files:
+      | string
+      | string[]
+      | { name; mimeType; buffer }
+      | { name; mimeType; buffer }[],
+    options?: { timeout?: number; noWaitAfter?: boolean },
   ): Promise<void>;
 }
 ```
@@ -272,14 +281,14 @@ interface FileChooser {
 
 ```typescript
 const [fileChooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
-  page.locator('#upload').click(),
+  page.waitForEvent("filechooser"),
+  page.locator("#upload").click(),
 ]);
 
 if (fileChooser.isMultiple()) {
-  await fileChooser.setFiles(['a.csv', 'b.csv', 'c.csv']);
+  await fileChooser.setFiles(["a.csv", "b.csv", "c.csv"]);
 } else {
-  await fileChooser.setFiles('a.csv');
+  await fileChooser.setFiles("a.csv");
 }
 ```
 
@@ -302,7 +311,11 @@ Some apps have a drag-and-drop file zone. `setInputFiles` doesn't work because t
 ### 6.1 The DataTransfer trick
 
 ```typescript
-async function dragAndDropFile(page: Page, target: Locator, file: { name: string; mimeType: string; buffer: Buffer }) {
+async function dragAndDropFile(
+  page: Page,
+  target: Locator,
+  file: { name: string; mimeType: string; buffer: Buffer },
+) {
   const dataTransfer = await page.evaluateHandle(
     ({ name, mimeType, base64 }) => {
       const binary = atob(base64);
@@ -315,10 +328,14 @@ async function dragAndDropFile(page: Page, target: Locator, file: { name: string
       dt.items.add(f);
       return dt;
     },
-    { name: file.name, mimeType: file.mimeType, base64: file.buffer.toString('base64') },
+    {
+      name: file.name,
+      mimeType: file.mimeType,
+      base64: file.buffer.toString("base64"),
+    },
   );
 
-  await target.dispatchEvent('drop', { dataTransfer });
+  await target.dispatchEvent("drop", { dataTransfer });
   await dataTransfer.dispose();
 }
 ```
@@ -326,10 +343,10 @@ async function dragAndDropFile(page: Page, target: Locator, file: { name: string
 ### 6.2 Usage
 
 ```typescript
-await dragAndDropFile(page, page.locator('.drop-zone'), {
-  name: 'sample.csv',
-  mimeType: 'text/csv',
-  buffer: Buffer.from('id,name\n1,Alice\n'),
+await dragAndDropFile(page, page.locator(".drop-zone"), {
+  name: "sample.csv",
+  mimeType: "text/csv",
+  buffer: Buffer.from("id,name\n1,Alice\n"),
 });
 ```
 
@@ -342,9 +359,9 @@ For UIs that respond to `dragover`, `dragenter`, `dragleave` (e.g., showing a vi
 ```typescript
 async function simulateDrag(page: Page, target: Locator, file: InMemoryFile) {
   const dt = await createDataTransfer(page, file);
-  await target.dispatchEvent('dragenter', { dataTransfer: dt });
-  await target.dispatchEvent('dragover',  { dataTransfer: dt });
-  await target.dispatchEvent('drop',      { dataTransfer: dt });
+  await target.dispatchEvent("dragenter", { dataTransfer: dt });
+  await target.dispatchEvent("dragover", { dataTransfer: dt });
+  await target.dispatchEvent("drop", { dataTransfer: dt });
   await dt.dispose();
 }
 ```
@@ -379,19 +396,19 @@ If `acceptDownloads: false`, the `download` event fires but the file is NOT save
 
 ```typescript
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.locator('#export-csv').click(),
+  page.waitForEvent("download"),
+  page.locator("#export-csv").click(),
 ]);
 
-const path = await download.path();          // temp path
-console.log('Downloaded to:', path);
+const path = await download.path(); // temp path
+console.log("Downloaded to:", path);
 ```
 
 ### 7.3 `download.suggestedFilename()`
 
 ```typescript
 const filename = download.suggestedFilename();
-console.log('Server suggested:', filename);   // e.g., "report-2026-01-01.csv"
+console.log("Server suggested:", filename); // e.g., "report-2026-01-01.csv"
 ```
 
 Comes from `Content-Disposition: attachment; filename=...` header. Use to assert the server is returning the expected filename.
@@ -399,9 +416,9 @@ Comes from `Content-Disposition: attachment; filename=...` header. Use to assert
 ### 7.4 `download.saveAs(path)`
 
 ```typescript
-const saveAsPath = testInfo.outputPath('report.csv');
+const saveAsPath = testInfo.outputPath("report.csv");
 await download.saveAs(saveAsPath);
-console.log('Saved to:', saveAsPath);
+console.log("Saved to:", saveAsPath);
 ```
 
 Moves the temp file to your specified path. Use `testInfo.outputPath` so the file lands in the test's output dir (auto-cleaned per Playwright's lifecycle).
@@ -423,7 +440,7 @@ Always check failure before reading the file — `path()` on a failed download m
 
 ```typescript
 const url = download.url();
-console.log('Source URL:', url);
+console.log("Source URL:", url);
 ```
 
 The URL the download came from. Useful for verifying the right endpoint produced the file.
@@ -431,9 +448,13 @@ The URL the download came from. Useful for verifying the right endpoint produced
 ### 7.7 The complete download helper
 
 ```typescript
-async function downloadAndRead(page: Page, trigger: Locator, saveAsPath: string): Promise<string> {
+async function downloadAndRead(
+  page: Page,
+  trigger: Locator,
+  saveAsPath: string,
+): Promise<string> {
   const [download] = await Promise.all([
-    page.waitForEvent('download'),
+    page.waitForEvent("download"),
     trigger.click(),
   ]);
 
@@ -442,7 +463,7 @@ async function downloadAndRead(page: Page, trigger: Locator, saveAsPath: string)
 
   await fs.mkdirSync(path.dirname(saveAsPath), { recursive: true });
   await download.saveAs(saveAsPath);
-  return fs.readFileSync(saveAsPath, 'utf8');
+  return fs.readFileSync(saveAsPath, "utf8");
 }
 ```
 
@@ -450,16 +471,16 @@ async function downloadAndRead(page: Page, trigger: Locator, saveAsPath: string)
 
 ## 8. `download` methods
 
-| Method | Returns | Use |
-|---|---|---|
-| `path()` | `Promise<string \| null>` | Temp path (`/tmp/playwright-artifacts/...`) |
-| `saveAs(path)` | `Promise<void>` | Copy to a specified location |
-| `suggestedFilename()` | `string` | Server-suggested filename |
-| `url()` | `string` | Source URL |
-| `failure()` | `Promise<string \| null>` | Error if any |
-| `cancel()` | `Promise<void>` | Abort the download mid-flight |
-| `createReadStream()` | `Promise<Readable>` | Node stream for large files |
-| `delete()` | `Promise<void>` | Explicit cleanup |
+| Method                | Returns                   | Use                                         |
+| --------------------- | ------------------------- | ------------------------------------------- |
+| `path()`              | `Promise<string \| null>` | Temp path (`/tmp/playwright-artifacts/...`) |
+| `saveAs(path)`        | `Promise<void>`           | Copy to a specified location                |
+| `suggestedFilename()` | `string`                  | Server-suggested filename                   |
+| `url()`               | `string`                  | Source URL                                  |
+| `failure()`           | `Promise<string \| null>` | Error if any                                |
+| `cancel()`            | `Promise<void>`           | Abort the download mid-flight               |
+| `createReadStream()`  | `Promise<Readable>`       | Node stream for large files                 |
+| `delete()`            | `Promise<void>`           | Explicit cleanup                            |
 
 ### 8.1 Streaming large downloads
 
@@ -467,37 +488,37 @@ For files >500 MB, avoid `path()` + `readFileSync` (loads into memory). Use stre
 
 ```typescript
 const stream = await download.createReadStream();
-const hash = crypto.createHash('sha256');
+const hash = crypto.createHash("sha256");
 for await (const chunk of stream) {
   hash.update(chunk);
 }
-const sha = hash.digest('hex');
-expect(sha).toBe('expected-sha256...');
+const sha = hash.digest("hex");
+expect(sha).toBe("expected-sha256...");
 ```
 
 ### 8.2 Cancellation
 
 ```typescript
-const downloadPromise = page.waitForEvent('download');
-await page.locator('#big-download').click();
+const downloadPromise = page.waitForEvent("download");
+await page.locator("#big-download").click();
 const download = await downloadPromise;
 
 // Decide based on something — maybe the user clicked Cancel
 await download.cancel();
 
 const failure = await download.failure();
-expect(failure).toContain('cancel');
+expect(failure).toContain("cancel");
 ```
 
 For testing the UI's "cancel" UX path.
 
 ### 8.3 `saveAs` vs `path` — which to use
 
-| Use `saveAs` when | Use `path` when |
-|---|---|
-| You need the file to persist after the test | Quick one-shot read in the test |
-| You're attaching the file to the test report | You just need to verify content |
-| You're checking the file from another process | Single-test read |
+| Use `saveAs` when                             | Use `path` when                 |
+| --------------------------------------------- | ------------------------------- |
+| You need the file to persist after the test   | Quick one-shot read in the test |
+| You're attaching the file to the test report  | You just need to verify content |
+| You're checking the file from another process | Single-test read                |
 
 `saveAs(testInfo.outputPath(...))` is the canonical pattern — the file lands in the test's output dir, gets cleaned up automatically per the `preserveOutput` setting.
 
@@ -511,8 +532,8 @@ The classic mistake — registering `waitForEvent` after triggering.
 
 ```typescript
 // ❌ waitForEvent registered AFTER click
-await page.locator('#export').click();
-const download = await page.waitForEvent('download');
+await page.locator("#export").click();
+const download = await page.waitForEvent("download");
 // If the download fires immediately (small file), the event is missed.
 // waitForEvent hangs until timeout.
 ```
@@ -522,12 +543,13 @@ const download = await page.waitForEvent('download');
 ```typescript
 // ✅ Promise.all — register listener FIRST
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.locator('#export').click(),
+  page.waitForEvent("download"),
+  page.locator("#export").click(),
 ]);
 ```
 
 Mechanics:
+
 - `Promise.all` evaluates its array left-to-right.
 - `page.waitForEvent('download')` registers the listener SYNCHRONOUSLY.
 - `page.locator('#export').click()` starts asynchronously.
@@ -538,19 +560,19 @@ Mechanics:
 ```typescript
 // New tab
 const [newPage] = await Promise.all([
-  context.waitForEvent('page'),
+  context.waitForEvent("page"),
   trigger.click(),
 ]);
 
 // File chooser
 const [chooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
+  page.waitForEvent("filechooser"),
   trigger.click(),
 ]);
 
 // Download
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
+  page.waitForEvent("download"),
   trigger.click(),
 ]);
 
@@ -565,13 +587,16 @@ const [response] = await Promise.all([
 
 ```typescript
 // ❌ This swallows errors
-Promise.all([page.waitForEvent('download'), trigger.click()]);
+Promise.all([page.waitForEvent("download"), trigger.click()]);
 
 // ✅ Always await
-await Promise.all([page.waitForEvent('download'), trigger.click()]);
+await Promise.all([page.waitForEvent("download"), trigger.click()]);
 
 // ✅ Destructure to get the event result
-const [download] = await Promise.all([page.waitForEvent('download'), trigger.click()]);
+const [download] = await Promise.all([
+  page.waitForEvent("download"),
+  trigger.click(),
+]);
 ```
 
 Without destructuring, you have the event listener result but no variable to use it. Without `await`, errors are swallowed.
@@ -585,38 +610,38 @@ After downloading, you'll often want to verify the file content.
 ### 10.1 Reading as bytes
 
 ```typescript
-import * as fs from 'node:fs';
+import * as fs from "node:fs";
 
 const buf = fs.readFileSync(savedPath);
-console.log(buf.length, 'bytes');
-console.log(buf.slice(0, 4).toString('hex'));  // first 4 bytes (file signature)
+console.log(buf.length, "bytes");
+console.log(buf.slice(0, 4).toString("hex")); // first 4 bytes (file signature)
 ```
 
 ### 10.2 File signatures (magic numbers)
 
-| File type | Hex signature | ASCII |
-|---|---|---|
-| PDF | `25 50 44 46` | `%PDF` |
-| ZIP / XLSX / DOCX | `50 4B 03 04` | `PK..` |
-| PNG | `89 50 4E 47 0D 0A 1A 0A` | `.PNG....` |
-| JPEG | `FF D8 FF E0` | `....` |
-| GIF | `47 49 46 38` | `GIF8` |
-| BMP | `42 4D` | `BM` |
-| CSV with BOM | `EF BB BF` then text | `﻿...` |
+| File type         | Hex signature             | ASCII      |
+| ----------------- | ------------------------- | ---------- |
+| PDF               | `25 50 44 46`             | `%PDF`     |
+| ZIP / XLSX / DOCX | `50 4B 03 04`             | `PK..`     |
+| PNG               | `89 50 4E 47 0D 0A 1A 0A` | `.PNG....` |
+| JPEG              | `FF D8 FF E0`             | `....`     |
+| GIF               | `47 49 46 38`             | `GIF8`     |
+| BMP               | `42 4D`                   | `BM`       |
+| CSV with BOM      | `EF BB BF` then text      | `﻿...`     |
 
 Assert on signature for a fast "is this the right file type":
 
 ```typescript
-const signature = buf.slice(0, 4).toString('hex').toUpperCase();
-expect(signature).toBe('25504446');   // PDF
+const signature = buf.slice(0, 4).toString("hex").toUpperCase();
+expect(signature).toBe("25504446"); // PDF
 ```
 
 ### 10.3 Reading as text (with BOM handling)
 
 ```typescript
 function readTextNormalised(filePath: string): string {
-  const raw = fs.readFileSync(filePath, 'utf8');
-  return raw.replace(/^﻿/, '');   // strip BOM if present
+  const raw = fs.readFileSync(filePath, "utf8");
+  return raw.replace(/^﻿/, ""); // strip BOM if present
 }
 ```
 
@@ -624,20 +649,20 @@ BOM (Byte Order Mark) is invisible but breaks string matching:
 
 ```typescript
 // File starts with BOM + "id,name"
-const text = fs.readFileSync(path, 'utf8');
-expect(text.startsWith('id,name')).toBe(false);   // BOM in the way!
+const text = fs.readFileSync(path, "utf8");
+expect(text.startsWith("id,name")).toBe(false); // BOM in the way!
 
 const clean = readTextNormalised(path);
-expect(clean.startsWith('id,name')).toBe(true);
+expect(clean.startsWith("id,name")).toBe(true);
 ```
 
 ### 10.4 Line endings
 
-| OS | Default |
-|---|---|
-| Windows | `\r\n` (CRLF) |
-| Unix / macOS / Linux | `\n` (LF) |
-| Old Mac (pre-OSX) | `\r` (CR) |
+| OS                   | Default       |
+| -------------------- | ------------- |
+| Windows              | `\r\n` (CRLF) |
+| Unix / macOS / Linux | `\n` (LF)     |
+| Old Mac (pre-OSX)    | `\r` (CR)     |
 
 Servers running on Linux often write LF; Windows users often see CRLF after a copy step. Normalise:
 
@@ -657,31 +682,43 @@ Use a real CSV library for production. For tests with simple data, a small parse
 
 ```typescript
 function parseCsv<T extends Record<string, string>>(text: string): T[] {
-  const lines = text.split(/\r?\n/).filter(l => l.length > 0);
+  const lines = text.split(/\r?\n/).filter((l) => l.length > 0);
   const [header, ...rest] = lines;
   if (!header) return [];
   const headers = splitCsvRow(header);
-  return rest.map(line => {
+  return rest.map((line) => {
     const cells = splitCsvRow(line);
     const row: Record<string, string> = {};
-    headers.forEach((h, i) => { row[h] = cells[i] ?? ''; });
+    headers.forEach((h, i) => {
+      row[h] = cells[i] ?? "";
+    });
     return row as T;
   });
 }
 
 function splitCsvRow(line: string): string[] {
   const cells: string[] = [];
-  let current = '';
+  let current = "";
   let inQuotes = false;
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
     if (inQuotes) {
-      if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
-      else if (ch === '"') { inQuotes = false; }
-      else { current += ch; }
-    } else if (ch === '"') { inQuotes = true; }
-    else if (ch === ',') { cells.push(current); current = ''; }
-    else { current += ch; }
+      if (ch === '"' && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        current += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ",") {
+      cells.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
   }
   cells.push(current);
   return cells;
@@ -695,27 +732,27 @@ This handles quoted cells and escaped quotes.
 ```typescript
 const rows = parseCsv<{ id: string; name: string; role: string }>(text);
 expect(rows).toHaveLength(3);
-expect(rows[0]).toEqual({ id: '1', name: 'Alice', role: 'admin' });
-expect(rows.find(r => r.role === 'admin')?.name).toBe('Alice');
+expect(rows[0]).toEqual({ id: "1", name: "Alice", role: "admin" });
+expect(rows.find((r) => r.role === "admin")?.name).toBe("Alice");
 ```
 
 ### 11.3 Column-level assertions
 
 ```typescript
-const ids = rows.map(r => r.id);
-expect(ids).toEqual(['1', '2', '3']);
-expect(ids).not.toContain(''); // no empty IDs
+const ids = rows.map((r) => r.id);
+expect(ids).toEqual(["1", "2", "3"]);
+expect(ids).not.toContain(""); // no empty IDs
 ```
 
 ### 11.4 Production-grade CSV with `papaparse`
 
 ```typescript
-import Papa from 'papaparse';
+import Papa from "papaparse";
 
 const parsed = Papa.parse<{ id: string; name: string }>(text, {
   header: true,
   skipEmptyLines: true,
-  transform: v => v.trim(),
+  transform: (v) => v.trim(),
 });
 expect(parsed.errors).toHaveLength(0);
 expect(parsed.data).toHaveLength(3);
@@ -736,14 +773,14 @@ npm i -D pdf-parse
 ```
 
 ```typescript
-import pdf from 'pdf-parse';
+import pdf from "pdf-parse";
 
 const buf = fs.readFileSync(savedPath);
 const result = await pdf(buf);
 
 expect(result.numpages).toBe(2);
-expect(result.text).toContain('Invoice #INV-001');
-expect(result.text).toContain('Amount: $150.00');
+expect(result.text).toContain("Invoice #INV-001");
+expect(result.text).toContain("Amount: $150.00");
 ```
 
 `result.text` is all text extracted, with newlines between pages. Whitespace is preserved.
@@ -752,10 +789,10 @@ expect(result.text).toContain('Amount: $150.00');
 
 ```typescript
 const result = await pdf(buf);
-const pages = result.text.split('\f');   // form feed character between pages
+const pages = result.text.split("\f"); // form feed character between pages
 
-expect(pages[0]).toContain('Page 1 header');
-expect(pages[1]).toContain('Page 2 body');
+expect(pages[0]).toContain("Page 1 header");
+expect(pages[1]).toContain("Page 2 body");
 ```
 
 ### 12.3 Font and layout assertions
@@ -773,7 +810,7 @@ Or use a visual regression approach — convert PDF to image, screenshot-compare
 For production legal/financial PDFs:
 
 ```typescript
-import { pdfA } from 'pdf-lib-extensions';
+import { pdfA } from "pdf-lib-extensions";
 
 const isCompliant = await pdfA.checkCompliance(buf);
 expect(isCompliant).toBe(true);
@@ -787,8 +824,8 @@ PDFs start with `%PDF-1.x`. Quick sanity:
 
 ```typescript
 const buf = fs.readFileSync(savedPath);
-expect(buf.slice(0, 5).toString()).toBe('%PDF-');
-expect(buf.slice(5, 8).toString()).toMatch(/^1\.\d$/);  // %PDF-1.4 to 1.7
+expect(buf.slice(0, 5).toString()).toBe("%PDF-");
+expect(buf.slice(5, 8).toString()).toMatch(/^1\.\d$/); // %PDF-1.4 to 1.7
 ```
 
 ---
@@ -804,13 +841,15 @@ npm i -D xlsx
 ```
 
 ```typescript
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const workbook = XLSX.readFile(savedPath);
-expect(workbook.SheetNames).toEqual(['Summary', 'Details']);
+expect(workbook.SheetNames).toEqual(["Summary", "Details"]);
 
-const summary = workbook.Sheets['Summary'];
-const json = XLSX.utils.sheet_to_json<{ Category: string; Total: number }>(summary);
+const summary = workbook.Sheets["Summary"];
+const json = XLSX.utils.sheet_to_json<{ Category: string; Total: number }>(
+  summary,
+);
 
 expect(json).toHaveLength(5);
 expect(json[0].Total).toBe(150);
@@ -819,10 +858,10 @@ expect(json[0].Total).toBe(150);
 ### 13.2 Cell-level assertions
 
 ```typescript
-const sheet = workbook.Sheets['Details'];
-expect(sheet['A1'].v).toBe('Header');
-expect(sheet['B2'].v).toBe(150);
-expect(sheet['C3'].t).toBe('s');     // type: 's' = string, 'n' = number, 'd' = date
+const sheet = workbook.Sheets["Details"];
+expect(sheet["A1"].v).toBe("Header");
+expect(sheet["B2"].v).toBe(150);
+expect(sheet["C3"].t).toBe("s"); // type: 's' = string, 'n' = number, 'd' = date
 ```
 
 ### 13.3 Date cells
@@ -830,8 +869,8 @@ expect(sheet['C3'].t).toBe('s');     // type: 's' = string, 'n' = number, 'd' = 
 XLSX dates are serial numbers (days since 1900). Use the helper:
 
 ```typescript
-const cell = sheet['A5'];
-expect(XLSX.utils.format_cell(cell)).toBe('1/1/2026');
+const cell = sheet["A5"];
+expect(XLSX.utils.format_cell(cell)).toBe("1/1/2026");
 ```
 
 Or compare the underlying number to an expected serial date.
@@ -843,16 +882,16 @@ Or compare the underlying number to an expected serial date.
 ### 14.1 JSON
 
 ```typescript
-const text = fs.readFileSync(path, 'utf8');
+const text = fs.readFileSync(path, "utf8");
 const json = JSON.parse(text);
 expect(json.orders).toHaveLength(3);
-expect(json.orders[0].id).toBe('ORD-001');
+expect(json.orders[0].id).toBe("ORD-001");
 ```
 
 For complex shapes, use Zod or a JSON schema validator:
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const Schema = z.object({
   orders: z.array(z.object({ id: z.string(), amount: z.number() })),
@@ -869,14 +908,14 @@ npm i -D fast-xml-parser
 ```
 
 ```typescript
-import { XMLParser } from 'fast-xml-parser';
+import { XMLParser } from "fast-xml-parser";
 
-const text = fs.readFileSync(path, 'utf8');
+const text = fs.readFileSync(path, "utf8");
 const parser = new XMLParser();
 const obj = parser.parse(text);
 
 expect(obj.report.orders.order).toHaveLength(3);
-expect(obj.report.orders.order[0]['@_id']).toBe('ORD-001');
+expect(obj.report.orders.order[0]["@_id"]).toBe("ORD-001");
 ```
 
 `@_` prefix denotes XML attributes (vs child elements).
@@ -888,6 +927,7 @@ expect(obj.report.orders.order[0]['@_id']).toBe('ORD-001');
 ### 15.1 The memory problem
 
 `Buffer.from('file content')` for a 1 GB file:
+
 - Allocates 1 GB in JS heap.
 - Plus 1 GB copy during transfer to the browser.
 - Plus 1 GB in browser memory.
@@ -897,7 +937,7 @@ For very large files, you'll OOM the worker.
 ### 15.2 Upload via path (streaming)
 
 ```typescript
-await page.locator('#input').setInputFiles('/path/to/big.bin');
+await page.locator("#input").setInputFiles("/path/to/big.bin");
 // Playwright streams from disk; no buffer in JS memory
 ```
 
@@ -907,13 +947,13 @@ For files >100 MB, always use the path form.
 
 ```typescript
 const stream = await download.createReadStream();
-const hash = crypto.createHash('sha256');
+const hash = crypto.createHash("sha256");
 
 for await (const chunk of stream) {
   hash.update(chunk);
 }
 
-expect(hash.digest('hex')).toBe('expected-sha256');
+expect(hash.digest("hex")).toBe("expected-sha256");
 ```
 
 No memory accumulation. Even multi-GB downloads work.
@@ -921,11 +961,11 @@ No memory accumulation. Even multi-GB downloads work.
 ### 15.4 Synthesising large test files
 
 ```typescript
-import * as fs from 'node:fs';
+import * as fs from "node:fs";
 
 function makeSyntheticFile(path: string, sizeMB: number): void {
-  const fd = fs.openSync(path, 'w');
-  const chunk = Buffer.alloc(1024 * 1024, 0xAA);   // 1 MB of repeating 0xAA
+  const fd = fs.openSync(path, "w");
+  const chunk = Buffer.alloc(1024 * 1024, 0xaa); // 1 MB of repeating 0xAA
   for (let i = 0; i < sizeMB; i++) {
     fs.writeSync(fd, chunk);
   }
@@ -933,8 +973,8 @@ function makeSyntheticFile(path: string, sizeMB: number): void {
 }
 
 // Use in test setup
-makeSyntheticFile('/tmp/big.bin', 100);  // 100 MB
-await page.locator('#input').setInputFiles('/tmp/big.bin');
+makeSyntheticFile("/tmp/big.bin", 100); // 100 MB
+await page.locator("#input").setInputFiles("/tmp/big.bin");
 ```
 
 Don't commit large files to the repo — generate at test time.
@@ -942,7 +982,9 @@ Don't commit large files to the repo — generate at test time.
 ### 15.5 Timeout for large uploads
 
 ```typescript
-await page.locator('#input').setInputFiles('/tmp/big.bin', { timeout: 120_000 });
+await page
+  .locator("#input")
+  .setInputFiles("/tmp/big.bin", { timeout: 120_000 });
 ```
 
 Default 30s. A 1 GB upload over a slow network can take longer.
@@ -955,10 +997,12 @@ Default 30s. A 1 GB upload over a slow network can take longer.
 
 ```typescript
 // ❌ Broken on Windows
-await page.locator('#input').setInputFiles('test-data/sample.csv');
+await page.locator("#input").setInputFiles("test-data/sample.csv");
 
 // ✅ Always
-await page.locator('#input').setInputFiles(path.resolve('test-data', 'sample.csv'));
+await page
+  .locator("#input")
+  .setInputFiles(path.resolve("test-data", "sample.csv"));
 ```
 
 `path.resolve` produces native separators (`\` on Windows, `/` elsewhere).
@@ -968,19 +1012,19 @@ await page.locator('#input').setInputFiles(path.resolve('test-data', 'sample.csv
 Filenames with spaces, accents, or symbols:
 
 ```typescript
-await page.locator('#input').setInputFiles('/tmp/résumé file.pdf');
+await page.locator("#input").setInputFiles("/tmp/résumé file.pdf");
 ```
 
 Playwright handles them correctly on all OSs, but the server may not. Test with `setInputFiles({ name: 'résumé.pdf', buffer })` to verify the server.
 
 ### 16.3 Filename length limits
 
-| OS | Max filename | Max path |
-|---|---|---|
-| Linux | 255 chars | 4096 chars |
-| macOS | 255 chars | 1024 chars typical |
-| Windows (default) | 255 chars | 260 chars |
-| Windows (long path enabled) | 255 chars | 32,767 chars |
+| OS                          | Max filename | Max path           |
+| --------------------------- | ------------ | ------------------ |
+| Linux                       | 255 chars    | 4096 chars         |
+| macOS                       | 255 chars    | 1024 chars typical |
+| Windows (default)           | 255 chars    | 260 chars          |
+| Windows (long path enabled) | 255 chars    | 32,767 chars       |
 
 If your test generates long names, you may hit `ENAMETOOLONG` on Windows.
 
@@ -989,22 +1033,22 @@ If your test generates long names, you may hit `ENAMETOOLONG` on Windows.
 Linux/Mac: `chmod 600` for test files containing credentials. Windows: NTFS ACLs.
 
 ```typescript
-import * as fs from 'node:fs';
-fs.chmodSync('/tmp/creds.key', 0o600);
+import * as fs from "node:fs";
+fs.chmodSync("/tmp/creds.key", 0o600);
 ```
 
 ### 16.5 Temp directory paths
 
-| OS | Default temp |
-|---|---|
-| Linux | `/tmp` |
-| macOS | `/private/var/folders/...` |
+| OS      | Default temp                         |
+| ------- | ------------------------------------ |
+| Linux   | `/tmp`                               |
+| macOS   | `/private/var/folders/...`           |
 | Windows | `C:\Users\<user>\AppData\Local\Temp` |
 
 Use `os.tmpdir()`:
 
 ```typescript
-import * as os from 'node:os';
+import * as os from "node:os";
 const tempFile = path.join(os.tmpdir(), `playwright-test-${Date.now()}.bin`);
 ```
 
@@ -1014,13 +1058,13 @@ const tempFile = path.join(os.tmpdir(), `playwright-test-${Date.now()}.bin`);
 
 ### 17.1 Upload size vs time
 
-| Size | Path-based | Buffer-based | API-direct |
-|---|---|---|---|
-| 1 KB | ~30 ms | ~25 ms | ~10 ms |
-| 100 KB | ~50 ms | ~45 ms | ~20 ms |
-| 1 MB | ~150 ms | ~200 ms | ~80 ms |
-| 10 MB | ~800 ms | ~1500 ms | ~400 ms |
-| 100 MB | ~6 s | OOM risk | ~2 s |
+| Size   | Path-based | Buffer-based | API-direct |
+| ------ | ---------- | ------------ | ---------- |
+| 1 KB   | ~30 ms     | ~25 ms       | ~10 ms     |
+| 100 KB | ~50 ms     | ~45 ms       | ~20 ms     |
+| 1 MB   | ~150 ms    | ~200 ms      | ~80 ms     |
+| 10 MB  | ~800 ms    | ~1500 ms     | ~400 ms    |
+| 100 MB | ~6 s       | OOM risk     | ~2 s       |
 
 API-direct (no UI) is always fastest. Use it when the test isn't testing the UI behavior.
 
@@ -1032,11 +1076,11 @@ Roughly mirrors upload, plus the time `saveAs` takes to copy.
 
 Uploaded/downloaded files in `trace: 'on'` mode go into the trace zip:
 
-| Trace mode | File capture? |
-|---|---|
-| `'off'` | No |
-| `'retain-on-failure'` | Yes, only on failure |
-| `'on'` | Yes — adds upload size × tests to trace |
+| Trace mode            | File capture?                           |
+| --------------------- | --------------------------------------- |
+| `'off'`               | No                                      |
+| `'retain-on-failure'` | Yes, only on failure                    |
+| `'on'`                | Yes — adds upload size × tests to trace |
 
 A 100 MB upload × 50 tests with `trace: 'on'` = 5 GB of traces. Disable trace for file-heavy tests or use `'retain-on-failure'`.
 
@@ -1045,6 +1089,7 @@ A 100 MB upload × 50 tests with `trace: 'on'` = 5 GB of traces. Disable trace f
 The path-based upload still transfers through the browser's network stack. Local Docker = fast. Cross-region = slow.
 
 If many tests upload, consider:
+
 - Mounting a local volume in Docker for the test data files.
 - Generating in-memory buffers (no disk I/O on the test side).
 
@@ -1136,22 +1181,22 @@ If many tests upload, consider:
 
 ## 19. Anti-pattern catalog
 
-| ❌ | ✅ |
-|---|---|
-| `setInputFiles` then read the file immediately | Wait for upload completion via UI signal (`expect(loc).toContainText('Uploaded')`) |
-| Click button THEN `waitForEvent` | `Promise.all([waitForEvent, click])` |
-| `setInputFiles({ buffer })` for >50 MB | Use path-based: write to temp file first |
-| `fs.readFileSync(buf)` for downloaded GB-files | `createReadStream` |
-| Hardcoded forward-slash paths | `path.resolve` |
-| Assuming downloads work without `acceptDownloads: true` | Set explicitly in config |
-| Asserting on PDF text positions | Verify content via the source data API; PDF assertions stay structural |
-| Cleanup downloaded file with `fs.unlink` in afterEach | Use `testInfo.outputPath` — Playwright cleans up |
-| `download.path()` without `failure()` check | Always check failure first |
-| Stripping BOM only sometimes | Always normalise reads via a helper |
-| `setInputFiles` with relative path | Absolute or `path.resolve` |
-| Custom temp dir without cleanup | Use `os.tmpdir()` + `testInfo.outputPath` |
-| `setInputFiles` on a `<button>` element | Must be `<input type="file">` |
-| Test that uploads a real production file from repo | Synthesise at test time |
+| ❌                                                      | ✅                                                                                 |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `setInputFiles` then read the file immediately          | Wait for upload completion via UI signal (`expect(loc).toContainText('Uploaded')`) |
+| Click button THEN `waitForEvent`                        | `Promise.all([waitForEvent, click])`                                               |
+| `setInputFiles({ buffer })` for >50 MB                  | Use path-based: write to temp file first                                           |
+| `fs.readFileSync(buf)` for downloaded GB-files          | `createReadStream`                                                                 |
+| Hardcoded forward-slash paths                           | `path.resolve`                                                                     |
+| Assuming downloads work without `acceptDownloads: true` | Set explicitly in config                                                           |
+| Asserting on PDF text positions                         | Verify content via the source data API; PDF assertions stay structural             |
+| Cleanup downloaded file with `fs.unlink` in afterEach   | Use `testInfo.outputPath` — Playwright cleans up                                   |
+| `download.path()` without `failure()` check             | Always check failure first                                                         |
+| Stripping BOM only sometimes                            | Always normalise reads via a helper                                                |
+| `setInputFiles` with relative path                      | Absolute or `path.resolve`                                                         |
+| Custom temp dir without cleanup                         | Use `os.tmpdir()` + `testInfo.outputPath`                                          |
+| `setInputFiles` on a `<button>` element                 | Must be `<input type="file">`                                                      |
+| Test that uploads a real production file from repo      | Synthesise at test time                                                            |
 
 ---
 

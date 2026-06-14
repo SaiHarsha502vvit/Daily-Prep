@@ -27,11 +27,9 @@
 > | **ALGO: Two Pointers Pattern** | [Two Pointers Complete](../../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
 > | **SQL: Subqueries & EXISTS** | [SQL: Subqueries & CTEs](../../08_SQL/08_Subqueries_CTEs.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## BLOCK 1: DATA STRUCTURE (30 min)
 
@@ -65,7 +63,6 @@ remove(x)       O(1)      set.remove("apple")
 contains(x)     O(1)      set.contains("apple")
 size()          O(1)      set.size()
 ```
-
 
 ```java
 // Common patterns
@@ -129,7 +126,6 @@ TWO VARIANTS:
 │   Result: [1, 2, 3, _, _]  return slow+1 = 3             │
 └──────────────────────────────────────────────────────────┘
 ```
-
 
 #### 📐 Templates
 
@@ -228,7 +224,6 @@ WHY HashMap + HashSet?
   LinkedHashMap can auto-evict old entries (removeEldestEntry)
 ```
 
-
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -317,7 +312,7 @@ public boolean containsDuplicate(int[] nums) {
 Given heights[i], find two lines that form container holding most water.
 
 Input:  [1, 8, 6, 2, 5, 4, 8, 3, 7]
-Output: 49 (between heights 8 and 7, width = 7-1 = 6... wait, 8*7? No: min(8,7)*6 = 42... 
+Output: 49 (between heights 8 and 7, width = 7-1 = 6... wait, 8*7? No: min(8,7)*6 = 42...
 Actually: indices 1 and 8, width=7, min(8,7)=7, area=49 ✓)
 
 TWO POINTERS (opposite direction):
@@ -361,7 +356,6 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW (SAT): Spring Boot Day #2 — Dependency Injection Deep + SQL Practice
 ```
-
 
 ---
 

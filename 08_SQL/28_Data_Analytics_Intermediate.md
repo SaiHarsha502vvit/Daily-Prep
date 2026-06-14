@@ -3,6 +3,7 @@
 # Chapter 28 — Data Analytics: Intermediate
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Data analysts, product managers, growth hackers, business intelligence devs
 - **WHAT** is it? → Using SQL + Python to answer business questions: segmentation, funnels, retention, KPIs
 - **WHEN** to use? → Weekly/monthly reporting, product decisions, marketing optimization, exec dashboards
@@ -15,6 +16,7 @@
 ## Part 1 — Cohort Analysis
 
 ### 1.1 What Is Cohort Analysis?
+
 ```
 COHORT = A group of users who share a common starting event in a time period.
 
@@ -33,10 +35,11 @@ Reading: "Of users who signed up in Jan, 45% came back in month 1"
 ```
 
 ### 1.2 Cohort Retention Query
+
 ```sql
 -- Step 1: Find each user's cohort (first purchase month)
 WITH user_cohorts AS (
-    SELECT 
+    SELECT
         user_id,
         DATE_TRUNC('month', MIN(order_date)) AS cohort_month
     FROM orders
@@ -45,7 +48,7 @@ WITH user_cohorts AS (
 
 -- Step 2: Calculate month number for each subsequent activity
 user_activities AS (
-    SELECT 
+    SELECT
         uc.user_id,
         uc.cohort_month,
         DATE_TRUNC('month', o.order_date) AS activity_month,
@@ -58,7 +61,7 @@ user_activities AS (
 
 -- Step 3: Count unique users per cohort per month
 cohort_data AS (
-    SELECT 
+    SELECT
         cohort_month,
         month_number,
         COUNT(DISTINCT user_id) AS users
@@ -74,7 +77,7 @@ cohort_sizes AS (
 )
 
 -- Step 5: Calculate retention percentage
-SELECT 
+SELECT
     cd.cohort_month,
     cd.month_number,
     cd.users,
@@ -86,17 +89,18 @@ ORDER BY cd.cohort_month, cd.month_number;
 ```
 
 ### 1.3 Python Visualization
+
 ```python
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Assume df has: cohort_month, month_number, retention_pct
-pivot = df.pivot_table(index='cohort_month', columns='month_number', 
+pivot = df.pivot_table(index='cohort_month', columns='month_number',
                        values='retention_pct')
 
 fig, ax = plt.subplots(figsize=(14, 8))
-sns.heatmap(pivot, annot=True, fmt='.0f', cmap='YlGnBu', 
+sns.heatmap(pivot, annot=True, fmt='.0f', cmap='YlGnBu',
             vmin=0, vmax=100, linewidths=0.5, ax=ax)
 ax.set_title('Monthly User Retention by Cohort (%)', fontsize=16, fontweight='bold')
 ax.set_xlabel('Months Since First Purchase')
@@ -110,6 +114,7 @@ plt.show()
 ## Part 2 — Funnel Analysis
 
 ### 2.1 What Is a Funnel?
+
 ```
 A funnel tracks users through sequential steps.
 Each step has DROP-OFF — users who don't continue.
@@ -139,6 +144,7 @@ Biggest leak: Step 4→5 (75% drop-off) → Focus retention efforts here!
 ```
 
 ### 2.2 Funnel Query
+
 ```sql
 WITH funnel AS (
     SELECT
@@ -150,7 +156,7 @@ WITH funnel AS (
     FROM user_events
     WHERE event_date BETWEEN '2026-02-01' AND '2026-02-28'
 )
-SELECT 
+SELECT
     'Visit' AS step, step1_visit AS users, 100.0 AS pct FROM funnel
 UNION ALL
 SELECT 'Signup', step2_signup, ROUND(100.0 * step2_signup / step1_visit, 1) FROM funnel
@@ -163,13 +169,14 @@ SELECT 'Purchase', step5_purchase, ROUND(100.0 * step5_purchase / step1_visit, 1
 ```
 
 ### 2.3 Python Funnel Visualization
+
 ```python
 import plotly.express as px
 
 steps = ['Visit', 'Signup', 'Add to Cart', 'Checkout', 'Purchase']
 users = [10000, 6000, 4000, 2500, 2000]
 
-fig = px.funnel(y=steps, x=users, 
+fig = px.funnel(y=steps, x=users,
                 title='E-Commerce Conversion Funnel — Feb 2026')
 fig.update_traces(textinfo='value+percent initial')
 fig.show()
@@ -180,6 +187,7 @@ fig.show()
 ## Part 3 — RFM Segmentation
 
 ### 3.1 What Is RFM?
+
 ```
 RFM = Recency × Frequency × Monetary
 
@@ -199,9 +207,10 @@ Score 111 → Lost (haven't bought, rarely did, little spent)
 ```
 
 ### 3.2 RFM Query
+
 ```sql
 WITH rfm_raw AS (
-    SELECT 
+    SELECT
         customer_id,
         -- Recency: days since last purchase (lower = more recent)
         CURRENT_DATE - MAX(order_date)::date AS recency_days,
@@ -220,7 +229,7 @@ rfm_scores AS (
         NTILE(5) OVER (ORDER BY monetary ASC) AS m_score         -- 5=highest spend
     FROM rfm_raw
 )
-SELECT 
+SELECT
     customer_id,
     recency_days, frequency, monetary,
     r_score, f_score, m_score,
@@ -241,6 +250,7 @@ ORDER BY monetary DESC;
 ```
 
 ### 3.3 Python Visualization
+
 ```python
 import matplotlib.pyplot as plt
 
@@ -250,14 +260,14 @@ segment_counts = df['segment_name'].value_counts()
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 
 # Bar chart of segment sizes
-colors = ['#2ecc71', '#3498db', '#9b59b6', '#e74c3c', '#f39c12', 
+colors = ['#2ecc71', '#3498db', '#9b59b6', '#e74c3c', '#f39c12',
           '#1abc9c', '#e67e22', '#95a5a6', '#34495e']
 axes[0].barh(segment_counts.index, segment_counts.values, color=colors[:len(segment_counts)])
 axes[0].set_title('Customers per RFM Segment', fontweight='bold')
 axes[0].set_xlabel('Number of Customers')
 
 # Scatter: Recency vs Monetary, colored by segment
-scatter = axes[1].scatter(df['recency_days'], df['monetary'], 
+scatter = axes[1].scatter(df['recency_days'], df['monetary'],
                           c=df['r_score'], cmap='RdYlGn', alpha=0.6, s=30)
 axes[1].set_xlabel('Recency (Days Since Last Purchase)')
 axes[1].set_ylabel('Total Monetary Value ($)')
@@ -273,18 +283,19 @@ plt.show()
 ## Part 4 — Moving Averages & Trend Analysis
 
 ### 4.1 Moving Averages in SQL
+
 ```sql
-SELECT 
+SELECT
     date,
     daily_revenue,
     -- Simple Moving Average (7-day)
     AVG(daily_revenue) OVER (
-        ORDER BY date 
+        ORDER BY date
         ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
     ) AS sma_7,
     -- Simple Moving Average (30-day)
     AVG(daily_revenue) OVER (
-        ORDER BY date 
+        ORDER BY date
         ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
     ) AS sma_30,
     -- Exponential-like weighted (approximate)
@@ -299,15 +310,16 @@ ORDER BY date;
 ```
 
 ### 4.2 Year-over-Year Comparison
+
 ```sql
-SELECT 
+SELECT
     DATE_TRUNC('month', order_date) AS month,
     SUM(amount) AS revenue,
     -- Same month last year
     LAG(SUM(amount), 12) OVER (ORDER BY DATE_TRUNC('month', order_date)) AS revenue_last_year,
     -- YoY Growth %
     ROUND(
-        100.0 * (SUM(amount) - LAG(SUM(amount), 12) OVER (ORDER BY DATE_TRUNC('month', order_date))) 
+        100.0 * (SUM(amount) - LAG(SUM(amount), 12) OVER (ORDER BY DATE_TRUNC('month', order_date)))
         / NULLIF(LAG(SUM(amount), 12) OVER (ORDER BY DATE_TRUNC('month', order_date)), 0),
         1
     ) AS yoy_growth_pct
@@ -317,12 +329,13 @@ ORDER BY month;
 ```
 
 ### 4.3 Python Trend Visualization
+
 ```python
 fig, ax = plt.subplots(figsize=(14, 6))
 ax.plot(df['date'], df['daily_revenue'], alpha=0.3, label='Daily Revenue')
 ax.plot(df['date'], df['sma_7'], linewidth=2, label='7-day MA')
 ax.plot(df['date'], df['sma_30'], linewidth=2, label='30-day MA')
-ax.fill_between(df['date'], df['sma_7'], df['sma_30'], alpha=0.1, 
+ax.fill_between(df['date'], df['sma_7'], df['sma_30'], alpha=0.1,
                 where=df['sma_7'] > df['sma_30'], color='green', label='Bullish')
 ax.fill_between(df['date'], df['sma_7'], df['sma_30'], alpha=0.1,
                 where=df['sma_7'] <= df['sma_30'], color='red', label='Bearish')
@@ -334,12 +347,10 @@ plt.show()
 
 ---
 
-
-
-
 ## Part 5 — Customer Lifetime Value (CLV)
 
 ### 5.1 What Is CLV?
+
 ```
 CLV = How much total revenue a customer will generate over their lifetime
 
@@ -355,9 +366,10 @@ Example:          $50/order     ×      4x/year       ×     3 years     = $600 
 ```
 
 ### 5.2 CLV Query
+
 ```sql
 WITH customer_metrics AS (
-    SELECT 
+    SELECT
         customer_id,
         COUNT(DISTINCT order_id) AS total_orders,
         SUM(amount) AS total_revenue,
@@ -367,7 +379,7 @@ WITH customer_metrics AS (
         -- Customer lifespan in months
         EXTRACT(EPOCH FROM (MAX(order_date) - MIN(order_date))) / (30*86400) AS lifespan_months,
         -- Average days between purchases
-        CASE WHEN COUNT(*) > 1 
+        CASE WHEN COUNT(*) > 1
             THEN EXTRACT(EPOCH FROM (MAX(order_date) - MIN(order_date))) / (COUNT(*) - 1) / 86400
             ELSE NULL
         END AS avg_days_between_purchases
@@ -375,7 +387,7 @@ WITH customer_metrics AS (
     GROUP BY customer_id
     HAVING COUNT(*) >= 2  -- Need at least 2 purchases to calculate frequency
 )
-SELECT 
+SELECT
     customer_id,
     total_orders,
     ROUND(total_revenue::numeric, 2) AS total_revenue,
@@ -385,7 +397,7 @@ SELECT
     -- Simple CLV projection (project 3 years)
     ROUND((avg_order_value * (365.0 / NULLIF(avg_days_between_purchases, 0)) * 3)::numeric, 2) AS projected_clv_3yr,
     -- CLV tier
-    CASE 
+    CASE
         WHEN total_revenue > 1000 THEN 'Platinum'
         WHEN total_revenue > 500 THEN 'Gold'
         WHEN total_revenue > 200 THEN 'Silver'
@@ -397,24 +409,24 @@ ORDER BY total_revenue DESC;
 
 ---
 
-
-
 🔬 **Section Challenge — Part 5 — Customer Lifetime Value (CLV)**
 
 **Challenge 1 (Reasoning):** A CLV query classifies customers into Bronze/Silver/Gold/Platinum tiers. Which constraints can make those tiers misleading?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Raw revenue tiers can mislead when returns, discounts, shipping, taxes, one-time bulk purchases, or different customer ages are ignored. A fair CLV model should define the time window, use net revenue or margin when possible, normalize by customer age/cohort, and separate active customers from churned customers before assigning tiers.
-</details>
 
+</details>
 
 ## Part 6 — Churn Analysis
 
 ### 6.1 Churn Detection
+
 ```sql
 -- Define churn: no purchase in last 90 days (for a business with ~monthly purchases)
 WITH customer_activity AS (
-    SELECT 
+    SELECT
         customer_id,
         MAX(order_date) AS last_purchase,
         COUNT(*) AS total_orders,
@@ -423,7 +435,7 @@ WITH customer_activity AS (
     FROM orders
     GROUP BY customer_id
 )
-SELECT 
+SELECT
     customer_id,
     last_purchase,
     days_since_last,
@@ -440,36 +452,37 @@ ORDER BY days_since_last DESC;
 ```
 
 ### 6.2 Churn Rate Over Time
+
 ```sql
 WITH monthly_active AS (
-    SELECT 
+    SELECT
         DATE_TRUNC('month', order_date) AS month,
         COUNT(DISTINCT customer_id) AS active_customers
     FROM orders
     GROUP BY DATE_TRUNC('month', order_date)
 ),
 monthly_new AS (
-    SELECT 
+    SELECT
         DATE_TRUNC('month', MIN(order_date)) AS month,
         COUNT(DISTINCT customer_id) AS new_customers
     FROM orders
     GROUP BY customer_id
 )
-SELECT 
+SELECT
     ma.month,
     ma.active_customers,
     COALESCE(mn.new_customers, 0) AS new_customers,
     LAG(ma.active_customers) OVER (ORDER BY ma.month) AS prev_month_active,
     -- Churn rate: (prev_active + new - current_active) / prev_active
     ROUND(
-        100.0 * (LAG(ma.active_customers) OVER (ORDER BY ma.month) 
-                 + COALESCE(mn.new_customers, 0) 
+        100.0 * (LAG(ma.active_customers) OVER (ORDER BY ma.month)
+                 + COALESCE(mn.new_customers, 0)
                  - ma.active_customers)
-        / NULLIF(LAG(ma.active_customers) OVER (ORDER BY ma.month), 0), 
+        / NULLIF(LAG(ma.active_customers) OVER (ORDER BY ma.month), 0),
         1
     ) AS churn_rate_pct
 FROM monthly_active ma
-LEFT JOIN (SELECT month, SUM(new_customers) AS new_customers FROM monthly_new GROUP BY month) mn 
+LEFT JOIN (SELECT month, SUM(new_customers) AS new_customers FROM monthly_new GROUP BY month) mn
     ON ma.month = mn.month
 ORDER BY ma.month;
 ```
@@ -479,21 +492,22 @@ ORDER BY ma.month;
 ## Part 7 — Market Basket Analysis
 
 ### 7.1 What Products Are Bought Together?
+
 ```sql
 -- Find product pairs frequently bought together
 WITH order_products AS (
     SELECT DISTINCT order_id, product_id, product_name
     FROM order_items
 )
-SELECT 
+SELECT
     a.product_name AS product_a,
     b.product_name AS product_b,
     COUNT(*) AS times_bought_together,
     -- Support: % of all orders containing this pair
     ROUND(100.0 * COUNT(*) / (SELECT COUNT(DISTINCT order_id) FROM orders), 2) AS support_pct,
     -- Confidence: if bought A, probability of also buying B
-    ROUND(100.0 * COUNT(*) / 
-        (SELECT COUNT(DISTINCT order_id) FROM order_items WHERE product_name = a.product_name), 
+    ROUND(100.0 * COUNT(*) /
+        (SELECT COUNT(DISTINCT order_id) FROM order_items WHERE product_name = a.product_name),
         2) AS confidence_a_to_b
 FROM order_products a
 JOIN order_products b ON a.order_id = b.order_id AND a.product_id < b.product_id
@@ -508,6 +522,7 @@ LIMIT 20;
 ## Part 8 — KPI Dashboard Queries
 
 ### 8.1 Essential Business KPIs
+
 ```sql
 -- All-in-one KPI query
 SELECT
@@ -515,16 +530,16 @@ SELECT
     SUM(amount) AS total_revenue,
     AVG(amount) AS avg_order_value,
     COUNT(DISTINCT order_id) AS total_orders,
-    
+
     -- Customer KPIs
     COUNT(DISTINCT customer_id) AS unique_customers,
     SUM(amount) / COUNT(DISTINCT customer_id) AS revenue_per_customer,
-    
+
     -- Growth KPIs (vs last month)
     SUM(CASE WHEN order_date >= DATE_TRUNC('month', CURRENT_DATE) THEN amount ELSE 0 END) AS mtd_revenue,
     SUM(CASE WHEN order_date >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
              AND order_date < DATE_TRUNC('month', CURRENT_DATE) THEN amount ELSE 0 END) AS last_month_revenue,
-    
+
     -- New vs returning
     COUNT(DISTINCT CASE WHEN is_first_order THEN customer_id END) AS new_customers,
     COUNT(DISTINCT CASE WHEN NOT is_first_order THEN customer_id END) AS returning_customers
@@ -533,8 +548,9 @@ WHERE order_date >= CURRENT_DATE - INTERVAL '2 months';
 ```
 
 ### 8.2 Daily Metrics Trend
+
 ```sql
-SELECT 
+SELECT
     order_date::date AS date,
     COUNT(*) AS orders,
     COUNT(DISTINCT customer_id) AS customers,
@@ -555,14 +571,41 @@ ORDER BY date;
 
 ## Real-World Practice — Build These Dashboards
 
-| # | Dashboard | Key Metrics | Charts |
-|---|-----------|-------------|--------|
-| 1 | **Executive Dashboard** | Revenue, Orders, AOV, Customers | Line trends + KPI cards |
-| 2 | **Customer Health** | Cohort retention, Churn rate, CLV distribution | Heatmap + funnel |
-| 3 | **Product Performance** | Top sellers, Revenue by category, Basket analysis | Bar + treemap |
-| 4 | **Marketing Funnel** | Conversion rates per stage, Drop-off analysis | Funnel + waterfall |
-| 5 | **Regional Analysis** | Revenue by region, Growth rates, Market penetration | Choropleth + bar |
+| #   | Dashboard               | Key Metrics                                         | Charts                  |
+| --- | ----------------------- | --------------------------------------------------- | ----------------------- |
+| 1   | **Executive Dashboard** | Revenue, Orders, AOV, Customers                     | Line trends + KPI cards |
+| 2   | **Customer Health**     | Cohort retention, Churn rate, CLV distribution      | Heatmap + funnel        |
+| 3   | **Product Performance** | Top sellers, Revenue by category, Basket analysis   | Bar + treemap           |
+| 4   | **Marketing Funnel**    | Conversion rates per stage, Drop-off analysis       | Funnel + waterfall      |
+| 5   | **Regional Analysis**   | Revenue by region, Growth rates, Market penetration | Choropleth + bar        |
 
 ---
 
-**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](27_Python_SQL_Visualization.md) | [Next >](29_Data_Analytics_Advanced.md)
+### Historical Evolution
+
+**Predecessors (with years):**
+- **OLAP (Codd)** (1993): E.F. Codd defined online analytical processing with 12 rules distinguishing OLAP from OLTP systems
+- **RFM Analysis** (1960s): Recency, Frequency, Monetary analysis emerged in direct marketing to predict customer response patterns
+- **Cohort Analysis** (2000s): Emerged from academic retention studies, later adopted by SaaS companies to track user behavior over time
+- **KPI Dashboards** (2000s): Business intelligence tools like Business Objects and MicroStrategy formalized metric monitoring for executives
+
+**Evolution narrative:**
+Business analytics evolved from simple reporting (what happened) toward diagnostic analysis (why it happened). RFM analysis from direct marketing pioneered customer segmentation by behavior, while cohort analysis added the temporal dimension of tracking groups over time. The OLAP cube model (Codd 1993) formalized multi-dimensional analysis, and KPI dashboards emerged as organizations recognized that raw data without interpretive context was insufficient for decision-making. SQL aggregation functions became the practical tool implementing these analytical frameworks.
+
+**Modern practice anchor:**
+Modern intermediate analytics combines SQL aggregations for KPI computation, cohort analysis with window functions for retention tracking, and funnel analysis for conversion optimization—all powered by modern BI tools that connect directly to data warehouses.
+
+### Production Reality
+
+**Failure modes:**
+1. **Cohort miscalculation across timezone boundaries**: `DATE_TRUNC('month', signup_date)` stores UTC dates. A user in UTC+8 who signs up at 2024-01-31 23:00 UTC (2024-02-01 07:00 in their timezone) gets assigned to February cohort in UTC but expects January cohort. With 30% of users in Asia-Pacific, monthly cohort reports show 8-12% of users in the wrong cohort month, distorting retention curves.
+2. **CLV formula errors on short-history customers**: `avg_order_value * (365.0 / avg_days_between) * 3` projects CLV for all customers using the same formula. A customer with 2 orders in 1 day (avg gap = 0.5 days) gets projected CLV = $500 × 730 × 3 = $1.1M — absurd. The formula treats zero-day gaps as infinite purchase frequency.
+3. **RFM scoring outliers distort quintiles**: NTILE(5) on `monetary` puts a $500K customer in the top 20% (score=5) alongside a $10K customer. When segments are used for campaign budgets, both get the same treatment, wasting spend on the $500K customer who would have purchased anyway.
+
+**Debug workflow:**
+1. Normalize all dates to a single timezone before cohort assignment: `DATE_TRUNC('month', signup_date AT TIME ZONE 'UTC' AT TIME ZONE user_timezone)`. Validate by checking min/max signup_date per cohort — if cohorts span more than one calendar month, timezone mismatch is likely.
+2. Add a minimum observation window before CLV projection: `HAVING AVG(days_between) >= 7 AND total_orders >= 2` — this excludes customers with insufficient purchase history for reliable frequency estimation.
+3. After RFM scoring, validate quintile boundaries: `SELECT monetary_quintile, MIN(monetary), MAX(monetary), COUNT(*) FROM rfm_scores GROUP BY monetary_quintile ORDER BY monetary_quintile` — if top quintile spans $10K-$500K, use `PERCENTILE_CONT(0.8)` within group boundaries instead of global NTILE.
+
+**Modern practice anchor:**
+Production analytics requires timezone-aware cohort assignment, minimum observation windows before CLV projection, and segment boundary validation (not just score distribution) before campaign deployment.

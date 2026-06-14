@@ -2,8 +2,8 @@
 
 # THE COMPLETE SOFTWARE ENGINEER — Preface & Reading Guide
 
-> *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, JavaScript, React, TypeScript, CSS, System Design, and Career Development.*
-> 
+> _A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, JavaScript, React, TypeScript, CSS, System Design, and Career Development._
+>
 > **For:** Self-taught engineers building from fundamentals to production-ready skills.
 > **Style:** MIT/KTH academic — WHY before WHAT, theory before code, diagrams before proofs.
 > **Estimated Total Study Time:** ~400 hours across 14 weeks.
@@ -61,7 +61,6 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
-
 ### Phase 2: Core Patterns (Weeks 4-6)
 
 ```
@@ -99,7 +98,6 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
-
 ### Phase 3: Advanced (Weeks 7-10)
 
 ```
@@ -134,7 +132,6 @@ This repository is organized as a **progressive textbook** — each folder is a 
   │ JPA, Security, Auth, Testing, Microservices.            │
   └─────────────────────────────────────────────────────────┘
 ```
-
 
 ### Phase 4: Integration (Week 11)
 
@@ -172,7 +169,6 @@ This repository is organized as a **progressive textbook** — each folder is a 
   │ The comprehensive reference — DSA + JVM + career.       │
   └─────────────────────────────────────────────────────────┘
 ```
-
 
 ### Phase 5: Frontend & Deep Reasoning (Weeks 12-14)
 
@@ -243,7 +239,6 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Prerequisites Map
@@ -286,7 +281,6 @@ Concurrency Track:
   Java Threads → Virtual Threads → Coroutines → Event Loop → Goroutines
 ```
 
-
 ---
 
 ## Difficulty Progression
@@ -310,57 +304,56 @@ Concurrency Track:
                     "Each week builds on the last"
 ```
 
-
 ---
 
 ## Conventions Used Throughout
 
-| Convention | Meaning |
-|-----------|---------|
-| **WHY?** | Motivation — why this matters in real engineering |
-| **WHAT?** | Definitions, properties, mental models |
-| **HOW?** | Implementation with step-by-step code |
-| **WHERE?** | Where this appears in real systems |
-| **WHEN?** | When to use this vs alternatives |
-| ASCII diagrams | Visual walkthroughs (no images needed) |
-| `TEMPLATE:` | Copy-paste-ready code patterns |
-| `TRACE:` | Step-by-step execution walkthrough |
-| `EDGE CASES:` | Boundary conditions to handle |
-| LC ### | LeetCode problem number |
+| Convention     | Meaning                                           |
+| -------------- | ------------------------------------------------- |
+| **WHY?**       | Motivation — why this matters in real engineering |
+| **WHAT?**      | Definitions, properties, mental models            |
+| **HOW?**       | Implementation with step-by-step code             |
+| **WHERE?**     | Where this appears in real systems                |
+| **WHEN?**      | When to use this vs alternatives                  |
+| ASCII diagrams | Visual walkthroughs (no images needed)            |
+| `TEMPLATE:`    | Copy-paste-ready code patterns                    |
+| `TRACE:`       | Step-by-step execution walkthrough                |
+| `EDGE CASES:`  | Boundary conditions to handle                     |
+| LC ###         | LeetCode problem number                           |
 
 ---
 
 ## Quick Access by Situation
 
-| I need to... | Go to |
-|-------------|-------|
-| Start my daily practice | [12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
-| Review a data structure | [02_Data_Structures/](02_Data_Structures/) |
-| Learn an algorithm | [03_Algorithms/](03_Algorithms/) |
-| Find a coding pattern | [04_Patterns_Templates/](04_Patterns_Templates/) |
-| Solve practice problems | [05_Problem_Solving/](05_Problem_Solving/) |
-| Study Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
-| Learn SQL from scratch | [08_SQL/01_Foundations_Database_Basics.md](08_SQL/01_Foundations_Database_Basics.md) |
-| Learn Git/Docker/CI-CD | [13_Developer_Essentials/00_INDEX.md](13_Developer_Essentials/00_INDEX.md) |
-| Quick reference before interview | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
-| Understand JVM internals | [09_Career_Reference/10_Ultimate_DSA_JVM.md](09_Career_Reference/10_Ultimate_DSA_JVM.md) |
-| See how DSA is used in production | [10_Enterprise_Systems/](10_Enterprise_Systems/) |
-| Learn JavaScript from scratch | [16_JavaScript/01_JS_Foundations.md](16_JavaScript/01_JS_Foundations.md) |
-| Learn React | [15_React_Frontend/01_React_Fundamentals.md](15_React_Frontend/01_React_Fundamentals.md) |
-| Learn TypeScript | [17_TypeScript/01_TS_Foundations.md](17_TypeScript/01_TS_Foundations.md) |
-| Learn CSS properly | [18_CSS_Complete/01_CSS_Foundations.md](18_CSS_Complete/01_CSS_Foundations.md) |
-| **Stop freezing in JS interviews** | [16_JavaScript/08_JS_Deep_Reasoning.md](16_JavaScript/08_JS_Deep_Reasoning.md) |
-| **Stop freezing in React interviews** | [15_React_Frontend/09_React_Deep_Reasoning.md](15_React_Frontend/09_React_Deep_Reasoning.md) |
-| **Stop freezing in Java interviews** | [07_Modern_Java/Ch22_Java_Deep_Reasoning.md](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) |
-| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/Ch58_SB_Deep_Reasoning.md](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) |
-| **Stop freezing in DSA interviews** | [03_Algorithms/16_DSA_Deep_Reasoning.md](03_Algorithms/16_DSA_Deep_Reasoning.md) |
-| **Master Java DSA implementation** | [03_Algorithms/17_DSA_Java_Implementation_Mastery.md](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) |
-| **Stop freezing in SQL interviews** | [08_SQL/23_SQL_Deep_Reasoning.md](08_SQL/23_SQL_Deep_Reasoning.md) |
-| **Become intermediate Data Analyst** | [08_SQL/24_SQL_Data_Analyst_RealWorld.md](08_SQL/24_SQL_Data_Analyst_RealWorld.md) |
-| **Master Streams internals** | [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) |
-| **JVM object headers & lock escalation** | [07_Modern_Java/Ch19_JVM_Object_Model.md](07_Modern_Java/Ch19_JVM_Object_Model.md) |
-| **Semaphore, CountDownLatch, Phaser** | [07_Modern_Java/Ch17_Concurrency_Synchronizers.md](07_Modern_Java/Ch17_Concurrency_Synchronizers.md) |
-| **Understand Coroutines & Concurrency** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
+| I need to...                                | Go to                                                                                                                      |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Start my daily practice                     | [12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md)                               |
+| Review a data structure                     | [02_Data_Structures/](02_Data_Structures/)                                                                                 |
+| Learn an algorithm                          | [03_Algorithms/](03_Algorithms/)                                                                                           |
+| Find a coding pattern                       | [04_Patterns_Templates/](04_Patterns_Templates/)                                                                           |
+| Solve practice problems                     | [05_Problem_Solving/](05_Problem_Solving/)                                                                                 |
+| Study Spring Boot                           | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md)                                   |
+| Learn SQL from scratch                      | [08_SQL/01_Foundations_Database_Basics.md](08_SQL/01_Foundations_Database_Basics.md)                                       |
+| Learn Git/Docker/CI-CD                      | [13_Developer_Essentials/00_INDEX.md](13_Developer_Essentials/00_INDEX.md)                                                 |
+| Quick reference before interview            | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md)                                     |
+| Understand JVM internals                    | [09_Career_Reference/10_Ultimate_DSA_JVM.md](09_Career_Reference/10_Ultimate_DSA_JVM.md)                                   |
+| See how DSA is used in production           | [10_Enterprise_Systems/](10_Enterprise_Systems/)                                                                           |
+| Learn JavaScript from scratch               | [16_JavaScript/01_JS_Foundations.md](16_JavaScript/01_JS_Foundations.md)                                                   |
+| Learn React                                 | [15_React_Frontend/01_React_Fundamentals.md](15_React_Frontend/01_React_Fundamentals.md)                                   |
+| Learn TypeScript                            | [17_TypeScript/01_TS_Foundations.md](17_TypeScript/01_TS_Foundations.md)                                                   |
+| Learn CSS properly                          | [18_CSS_Complete/01_CSS_Foundations.md](18_CSS_Complete/01_CSS_Foundations.md)                                             |
+| **Stop freezing in JS interviews**          | [16_JavaScript/08_JS_Deep_Reasoning.md](16_JavaScript/08_JS_Deep_Reasoning.md)                                             |
+| **Stop freezing in React interviews**       | [15_React_Frontend/09_React_Deep_Reasoning.md](15_React_Frontend/09_React_Deep_Reasoning.md)                               |
+| **Stop freezing in Java interviews**        | [07_Modern_Java/Ch22_Java_Deep_Reasoning.md](07_Modern_Java/Ch22_Java_Deep_Reasoning.md)                                   |
+| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/Ch58_SB_Deep_Reasoning.md](07_Modern_Java/Ch58_SB_Deep_Reasoning.md)                                       |
+| **Stop freezing in DSA interviews**         | [03_Algorithms/16_DSA_Deep_Reasoning.md](03_Algorithms/16_DSA_Deep_Reasoning.md)                                           |
+| **Master Java DSA implementation**          | [03_Algorithms/17_DSA_Java_Implementation_Mastery.md](03_Algorithms/17_DSA_Java_Implementation_Mastery.md)                 |
+| **Stop freezing in SQL interviews**         | [08_SQL/23_SQL_Deep_Reasoning.md](08_SQL/23_SQL_Deep_Reasoning.md)                                                         |
+| **Become intermediate Data Analyst**        | [08_SQL/24_SQL_Data_Analyst_RealWorld.md](08_SQL/24_SQL_Data_Analyst_RealWorld.md)                                         |
+| **Master Streams internals**                | [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md)                             |
+| **JVM object headers & lock escalation**    | [07_Modern_Java/Ch19_JVM_Object_Model.md](07_Modern_Java/Ch19_JVM_Object_Model.md)                                         |
+| **Semaphore, CountDownLatch, Phaser**       | [07_Modern_Java/Ch17_Concurrency_Synchronizers.md](07_Modern_Java/Ch17_Concurrency_Synchronizers.md)                       |
+| **Understand Coroutines & Concurrency**     | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 
 ---
 
@@ -387,10 +380,9 @@ Concurrency Track:
 
 ---
 
-> *"The purpose of computing is insight, not numbers."* — Richard Hamming
-> 
-> *"First, solve the problem. Then, write the code."* — John Johnson
-
+> _"The purpose of computing is insight, not numbers."_ — Richard Hamming
+>
+> _"First, solve the problem. Then, write the code."_ — John Johnson
 
 ---
 

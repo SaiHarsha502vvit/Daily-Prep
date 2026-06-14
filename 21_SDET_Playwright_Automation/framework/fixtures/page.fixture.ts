@@ -8,7 +8,6 @@ import { LoginPage } from '../websites/orangehrm/pages/LoginPage';
 
 import { acquireAccount, releaseAccount } from './auth.fixture';
 
-
 type AppFixtures = {
   loginPage: LoginPage;
   dashboardPage: DashboardPage;

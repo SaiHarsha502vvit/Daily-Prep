@@ -3,6 +3,7 @@
 **Navigation**: [← Mock Interview Simulations](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md)
 
 **Cross-links:**
+
 - [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/) — API testing patterns used in Part C problems
 - [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals referenced in Part B problems
 - [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns in Part C solutions
@@ -12,6 +13,7 @@
 > These are **Staff / Senior Engineer level** problems. Each round gives you one **real production scenario** and demands simultaneous reasoning across DSA, Spring Boot, and SDET. A candidate who answers all three parts fluently is in the top 5%.
 >
 > **Format per round:**
+>
 > - **Part A — DSA**: the algorithmic/data-structure thinking underneath the problem
 > - **Part B — Spring Boot**: the production implementation
 > - **Part C — SDET**: how you would test it to a professional standard
@@ -129,6 +131,7 @@ public class SlidingWindowRateLimitFilter extends OncePerRequestFilter {
 ```
 
 **Key decisions**:
+
 - `@Order(1)`: runs before security filters — fail fast before JWT validation overhead.
 - Redis pipeline: 4 commands, 1 network round-trip (~0.2ms vs ~0.8ms for 4 separate calls).
 - `Retry-After` is RFC 6585 compliant — tells clients exactly when to retry.
@@ -144,31 +147,36 @@ Write a Playwright API test that fires **11 concurrent requests** from the same 
 <details><summary>Answer</summary>
 
 ```typescript
-test('Rate limiter: 11th concurrent request returns 429 with Retry-After', async ({ request }) => {
+test("Rate limiter: 11th concurrent request returns 429 with Retry-After", async ({
+  request,
+}) => {
   const userId = `RATE-TEST-${Date.now()}`; // unique per run — prevents cross-test leakage
 
   // Fire 11 requests IN PARALLEL — critical: sequential loop would never trigger the limit
   const responses = await Promise.all(
     Array.from({ length: 11 }, () =>
-      request.get('/api/citations', { headers: { 'X-User-Id': userId } })
-    )
+      request.get("/api/citations", { headers: { "X-User-Id": userId } }),
+    ),
   );
 
-  const statuses = responses.map(r => r.status());
-  const count200 = statuses.filter(s => s === 200).length;
-  const count429 = statuses.filter(s => s === 429).length;
+  const statuses = responses.map((r) => r.status());
+  const count200 = statuses.filter((s) => s === 200).length;
+  const count429 = statuses.filter((s) => s === 429).length;
 
-  expect(count200, 'Expected exactly 10 successful requests').toBe(10);
-  expect(count429, 'Expected at least 1 throttled request').toBeGreaterThanOrEqual(1);
+  expect(count200, "Expected exactly 10 successful requests").toBe(10);
+  expect(
+    count429,
+    "Expected at least 1 throttled request",
+  ).toBeGreaterThanOrEqual(1);
 
   // Verify the 429 response shape
-  const throttled = responses.find(r => r.status() === 429)!;
-  const retryAfter = throttled.headers()['retry-after'];
+  const throttled = responses.find((r) => r.status() === 429)!;
+  const retryAfter = throttled.headers()["retry-after"];
   const body = await throttled.json();
 
-  expect(retryAfter, 'Retry-After header must be present').toBeDefined();
+  expect(retryAfter, "Retry-After header must be present").toBeDefined();
   expect(Number(retryAfter)).toBeGreaterThan(0);
-  expect(body.error).toBe('RATE_LIMIT_EXCEEDED');
+  expect(body.error).toBe("RATE_LIMIT_EXCEEDED");
   expect(body.retryAfterMs).toBeGreaterThan(0);
 });
 ```
@@ -253,6 +261,7 @@ Identify the trigger. Write three different fixes ordered by trade-off.
 **Trigger**: `a.getCitations()` — accessing a `LAZY` collection outside the Hibernate session causes Hibernate to issue a separate `SELECT` per account.
 
 **Fix 1 — JPQL `JOIN FETCH` (best for always-needed associations)**
+
 ```java
 @Query("SELECT a FROM Account a LEFT JOIN FETCH a.citations")
 List<Account> findAllWithCitations();
@@ -261,6 +270,7 @@ List<Account> findAllWithCitations();
 ```
 
 **Fix 2 — `@EntityGraph` (declarative, no JPQL)**
+
 ```java
 @EntityGraph(attributePaths = {"citations"})
 List<Account> findAll();
@@ -269,6 +279,7 @@ List<Account> findAll();
 ```
 
 **Fix 3 — `@BatchSize` (best for optional/conditional loading)**
+
 ```java
 @OneToMany(fetch = FetchType.LAZY)
 @BatchSize(size = 50)
@@ -295,32 +306,36 @@ List<Citation> citations;
 
 ```typescript
 // Using Spring Actuator's datasource metrics endpoint:
-test('GET /api/accounts triggers ≤2 SQL queries (N+1 regression guard)', async ({ request }) => {
+test("GET /api/accounts triggers ≤2 SQL queries (N+1 regression guard)", async ({
+  request,
+}) => {
   // Baseline — read current DB call count from Actuator
-  const beforeRes = await request.get('/actuator/metrics/jdbc.connections.active');
+  const beforeRes = await request.get(
+    "/actuator/metrics/jdbc.connections.active",
+  );
   // Use a custom counter exposed via Micrometer instead:
   const counterBefore = await request
-    .get('/actuator/metrics/db.query.count')
-    .then(r => r.json())
-    .then(j => j.measurements[0].value as number);
+    .get("/actuator/metrics/db.query.count")
+    .then((r) => r.json())
+    .then((j) => j.measurements[0].value as number);
 
   // Execute the API call
-  const res = await request.get('/api/accounts?limit=50');
+  const res = await request.get("/api/accounts?limit=50");
   expect(res.status()).toBe(200);
   const body = await res.json();
   expect(body.accounts).toHaveLength(50);
 
   // Read the counter AFTER
   const counterAfter = await request
-    .get('/actuator/metrics/db.query.count')
-    .then(r => r.json())
-    .then(j => j.measurements[0].value as number);
+    .get("/actuator/metrics/db.query.count")
+    .then((r) => r.json())
+    .then((j) => j.measurements[0].value as number);
 
   const queriesExecuted = counterAfter - counterBefore;
 
   expect(
     queriesExecuted,
-    `N+1 detected: fetching 50 accounts fired ${queriesExecuted} queries (expected ≤2)`
+    `N+1 detected: fetching 50 accounts fired ${queriesExecuted} queries (expected ≤2)`,
   ).toBeLessThanOrEqual(2);
 });
 ```
@@ -357,6 +372,7 @@ Consumer committed offsets:
 ```
 
 **At-least-once flow**:
+
 ```
 1. Consumer reads offset 1 (PaymentProcessed PAY-001)
 2. Consumer processes → sends email ✓
@@ -438,6 +454,7 @@ public class NotificationKafkaConsumer {
 ```
 
 **The three idempotency layers**:
+
 1. **Redis** (fast, O(1)): handles 99% of duplicates in <1ms
 2. **DB** (durable): survives Redis evictions/restarts; provides audit trail
 3. **Manual `ack.acknowledge()`**: never auto-commit — commit only after confirmed success
@@ -453,28 +470,42 @@ public class NotificationKafkaConsumer {
 <details><summary>Answer</summary>
 
 ```typescript
-test('Duplicate PaymentProcessed events send exactly one email', async ({
+test("Duplicate PaymentProcessed events send exactly one email", async ({
   kafkaProducer,
   emailInbox,
 }) => {
   const paymentId = `PAY-DEDUP-${Date.now()}`;
-  const event = JSON.stringify({ paymentId, userId: 'USR-001', amount: 150 });
+  const event = JSON.stringify({ paymentId, userId: "USR-001", amount: 150 });
 
   // Publish the SAME event 3 times — simulates Kafka redelivery
   await Promise.all([
-    kafkaProducer.send({ topic: 'payment-processed', messages: [{ value: event }] }),
-    kafkaProducer.send({ topic: 'payment-processed', messages: [{ value: event }] }),
-    kafkaProducer.send({ topic: 'payment-processed', messages: [{ value: event }] }),
+    kafkaProducer.send({
+      topic: "payment-processed",
+      messages: [{ value: event }],
+    }),
+    kafkaProducer.send({
+      topic: "payment-processed",
+      messages: [{ value: event }],
+    }),
+    kafkaProducer.send({
+      topic: "payment-processed",
+      messages: [{ value: event }],
+    }),
   ]);
 
   // Poll the email inbox — must receive EXACTLY 1 email, not 3
-  await expect.poll(async () => {
-    const emails = await emailInbox.getEmailsFor('USR-001');
-    return emails.filter(e => e.subject.includes(paymentId)).length;
-  }, { timeout: 8000, intervals: [500] }).toBe(1);
+  await expect
+    .poll(
+      async () => {
+        const emails = await emailInbox.getEmailsFor("USR-001");
+        return emails.filter((e) => e.subject.includes(paymentId)).length;
+      },
+      { timeout: 8000, intervals: [500] },
+    )
+    .toBe(1);
 });
 
-test('Malformed event routes to DLT after 3 retry attempts', async ({
+test("Malformed event routes to DLT after 3 retry attempts", async ({
   kafkaProducer,
   kafkaConsumer,
 }) => {
@@ -482,19 +513,26 @@ test('Malformed event routes to DLT after 3 retry attempts', async ({
   const badEvent = JSON.stringify({ broken: true, missingPaymentId: true });
 
   await kafkaProducer.send({
-    topic: 'payment-processed',
+    topic: "payment-processed",
     messages: [{ value: badEvent }],
   });
 
   // DLT message must appear after: retry-0 (1s) + retry-1 (2s) + retry-2 (4s) = 7s minimum
-  const dltMsg = await expect.poll(async () => {
-    const msgs = await kafkaConsumer.getMessages('payment-processed-dlt', { maxMessages: 1 });
-    return msgs.length > 0 ? msgs[0] : null;
-  }, { timeout: 30_000, intervals: [1000] }).not.toBeNull();
+  const dltMsg = await expect
+    .poll(
+      async () => {
+        const msgs = await kafkaConsumer.getMessages("payment-processed-dlt", {
+          maxMessages: 1,
+        });
+        return msgs.length > 0 ? msgs[0] : null;
+      },
+      { timeout: 30_000, intervals: [1000] },
+    )
+    .not.toBeNull();
 
   // DLT message headers carry retry provenance
-  expect(dltMsg.headers['kafka_dlt-original-topic']).toBe('payment-processed');
-  expect(Number(dltMsg.headers['kafka_dlt-exception-fqcn'])).toBeDefined();
+  expect(dltMsg.headers["kafka_dlt-original-topic"]).toBe("payment-processed");
+  expect(Number(dltMsg.headers["kafka_dlt-exception-fqcn"])).toBeDefined();
 });
 ```
 
@@ -592,8 +630,8 @@ resilience4j:
     instances:
       dynamics365:
         slidingWindowSize: 10
-        failureRateThreshold: 50              # open if >50% of last 10 calls fail
-        minimumNumberOfCalls: 5               # need at least 5 calls before evaluating
+        failureRateThreshold: 50 # open if >50% of last 10 calls fail
+        minimumNumberOfCalls: 5 # need at least 5 calls before evaluating
         waitDurationInOpenState: 30s
         permittedNumberOfCallsInHalfOpenState: 1
         recordExceptions:
@@ -617,57 +655,67 @@ resilience4j:
 <details><summary>Answer</summary>
 
 ```typescript
-test('Circuit breaker: trips OPEN, probes via HALF_OPEN, recovers to CLOSED', async ({
+test("Circuit breaker: trips OPEN, probes via HALF_OPEN, recovers to CLOSED", async ({
   request,
-  dynamicsStub,  // WireMock instance stubbing Dynamics 365
+  dynamicsStub, // WireMock instance stubbing Dynamics 365
 }) => {
   // ── Phase 1: Trip the circuit (force 10 failures) ──────────────────────
   await dynamicsStub.stubFor({
-    request:  { method: 'GET', urlPathMatching: '/api/v2/citations/.*' },
+    request: { method: "GET", urlPathMatching: "/api/v2/citations/.*" },
     response: { status: 503, body: '{"error":"Service Unavailable"}' },
   });
 
   for (let i = 0; i < 10; i++) {
-    await request.get(`/api/citations/CIT-${String(i).padStart(3,'0')}`);
+    await request.get(`/api/citations/CIT-${String(i).padStart(3, "0")}`);
     // Our API returns 200 with fallback sentinel — that's expected and correct
   }
 
   // ── Phase 2: Assert OPEN — fail-fast, no network call to Dynamics ───────
   const t0 = Date.now();
-  const openRes = await request.get('/api/citations/CIT-PROBE');
+  const openRes = await request.get("/api/citations/CIT-PROBE");
   const elapsed = Date.now() - t0;
 
   // OPEN state returns fallback immediately — should be < 50ms (no network)
-  expect(elapsed, 'Circuit should fail-fast — no network call').toBeLessThan(50);
+  expect(elapsed, "Circuit should fail-fast — no network call").toBeLessThan(
+    50,
+  );
   const openBody = await openRes.json();
   expect(openBody.isEmpty).toBe(true); // sentinel value
 
   // Verify via Actuator
-  const cbState = await request.get('/actuator/circuitbreakers/dynamics365');
-  expect((await cbState.json()).circuitBreakers.dynamics365.state).toBe('OPEN');
+  const cbState = await request.get("/actuator/circuitbreakers/dynamics365");
+  expect((await cbState.json()).circuitBreakers.dynamics365.state).toBe("OPEN");
 
   // ── Phase 3: Stub D365 to return 200 (API recovered) ───────────────────
   await dynamicsStub.stubFor({
-    request:  { method: 'GET', urlPathMatching: '/api/v2/citations/.*' },
-    response: { status: 200, jsonBody: { citationId: 'CIT-PROBE', status: 'PENDING' } },
+    request: { method: "GET", urlPathMatching: "/api/v2/citations/.*" },
+    response: {
+      status: 200,
+      jsonBody: { citationId: "CIT-PROBE", status: "PENDING" },
+    },
     priority: 1,
   });
 
   // ── Phase 4: Wait for waitDurationInOpenState (30s in prod; use short in test env) ─
   // In test: override waitDurationInOpenState=2s via application-test.yml
-  await new Promise(r => setTimeout(r, 2500));
+  await new Promise((r) => setTimeout(r, 2500));
 
   // ── Phase 5: Probe request (HALF_OPEN → CLOSED) ─────────────────────────
-  const probeRes = await request.get('/api/citations/CIT-PROBE');
+  const probeRes = await request.get("/api/citations/CIT-PROBE");
   expect(probeRes.status()).toBe(200);
   const probeBody = await probeRes.json();
   expect(probeBody.isEmpty).toBeUndefined(); // real response, not fallback
 
   // ── Phase 6: Verify CLOSED state via Actuator ───────────────────────────
-  await expect.poll(async () => {
-    const s = await request.get('/actuator/circuitbreakers/dynamics365');
-    return (await s.json()).circuitBreakers.dynamics365.state;
-  }, { timeout: 5000 }).toBe('CLOSED');
+  await expect
+    .poll(
+      async () => {
+        const s = await request.get("/actuator/circuitbreakers/dynamics365");
+        return (await s.json()).circuitBreakers.dynamics365.state;
+      },
+      { timeout: 5000 },
+    )
+    .toBe("CLOSED");
 });
 ```
 
@@ -705,6 +753,7 @@ Concurrent insert problem:
 ```
 
 **Keyset (cursor-based) pagination**:
+
 ```
 Page 1: SELECT * FROM citations WHERE id < ∞ ORDER BY id DESC LIMIT 50
   → Returns IDs [1000..951]. Cursor = 951.
@@ -788,7 +837,7 @@ public class CitationPageService {
 <details><summary>Answer</summary>
 
 ```typescript
-test('Keyset pagination: no duplicates or skips under concurrent writes', async ({
+test("Keyset pagination: no duplicates or skips under concurrent writes", async ({
   request,
   citationFactory,
 }) => {
@@ -801,13 +850,15 @@ test('Keyset pagination: no duplicates or skips under concurrent writes', async 
 
   // Start concurrent inserts WHILE paginating — this would corrupt OFFSET pagination
   const concurrentInserts = (async () => {
-    await new Promise(r => setTimeout(r, 150)); // let pagination start first
+    await new Promise((r) => setTimeout(r, 150)); // let pagination start first
     await citationFactory.createBulk(userId, 30); // insert 30 new rows mid-pagination
   })();
 
   // Paginate through all items
   do {
-    const url = `/api/citations?userId=${userId}&limit=25` + (cursor ? `&cursor=${cursor}` : '');
+    const url =
+      `/api/citations?userId=${userId}&limit=25` +
+      (cursor ? `&cursor=${cursor}` : "");
     const res = await request.get(url);
     expect(res.status()).toBe(200);
     const body = await res.json();
@@ -817,7 +868,7 @@ test('Keyset pagination: no duplicates or skips under concurrent writes', async 
     cursor = body.nextCursor ?? null;
     pageCount++;
 
-    await new Promise(r => setTimeout(r, 60)); // pace pages to allow inserts to interleave
+    await new Promise((r) => setTimeout(r, 60)); // pace pages to allow inserts to interleave
   } while (cursor !== null);
 
   await concurrentInserts;
@@ -827,7 +878,7 @@ test('Keyset pagination: no duplicates or skips under concurrent writes', async 
   const unique = new Set(collected);
   expect(
     unique.size,
-    `DUPLICATE detected: collected ${collected.length} but only ${unique.size} unique`
+    `DUPLICATE detected: collected ${collected.length} but only ${unique.size} unique`,
   ).toBe(collected.length);
 
   // 2. All original 100 records collected (concurrent inserts have higher IDs = above cursor)
@@ -943,7 +994,9 @@ public class CitationPaymentService {
 <details><summary>Answer</summary>
 
 ```typescript
-test('Concurrent payment attempts on same citation: one succeeds, one gets 409', async ({ request }) => {
+test("Concurrent payment attempts on same citation: one succeeds, one gets 409", async ({
+  request,
+}) => {
   const citationId = `CIT-LOCK-${Date.now()}`;
 
   // Simulate the slow payment by stubbing the downstream to take 2 seconds
@@ -952,10 +1005,10 @@ test('Concurrent payment attempts on same citation: one succeeds, one gets 409',
   // Fire two concurrent payment requests for the SAME citation
   const [res1, res2] = await Promise.all([
     request.post(`/api/citations/${citationId}/payment`, {
-      data: { amount: 150, method: 'CREDIT_CARD' }
+      data: { amount: 150, method: "CREDIT_CARD" },
     }),
     request.post(`/api/citations/${citationId}/payment`, {
-      data: { amount: 150, method: 'CREDIT_CARD' }
+      data: { amount: 150, method: "CREDIT_CARD" },
     }),
   ]);
 
@@ -965,31 +1018,35 @@ test('Concurrent payment attempts on same citation: one succeeds, one gets 409',
   expect(statuses).toEqual([200, 409]); // or [201, 409]
 
   // The 409 response should explain what happened
-  const conflictRes = [res1, res2].find(r => r.status() === 409)!;
+  const conflictRes = [res1, res2].find((r) => r.status() === 409)!;
   const conflictBody = await conflictRes.json();
-  expect(conflictBody.error).toContain('already being processed');
+  expect(conflictBody.error).toContain("already being processed");
   expect(conflictBody.retryAfterSeconds).toBeDefined();
 });
 
-test('Lock auto-releases after lease time if holder crashes', async ({ request }) => {
+test("Lock auto-releases after lease time if holder crashes", async ({
+  request,
+}) => {
   // In test env, leaseTime=2s (overridden via application-test.yml)
   const citationId = `CIT-CRASH-${Date.now()}`;
 
   // First request acquires lock and then "crashes" (request times out / connection reset)
   // Simulate by hitting an endpoint that acquires lock and hangs:
-  const hangingPromise = request.post(`/api/citations/${citationId}/payment/slow`, {
-    timeout: 500, // client-side timeout — simulates pod crash
-    data: { amount: 150 },
-  }).catch(() => null); // absorb the expected timeout error
+  const hangingPromise = request
+    .post(`/api/citations/${citationId}/payment/slow`, {
+      timeout: 500, // client-side timeout — simulates pod crash
+      data: { amount: 150 },
+    })
+    .catch(() => null); // absorb the expected timeout error
 
   await hangingPromise;
 
   // Wait for lease to expire (2s in test, 30s in prod)
-  await new Promise(r => setTimeout(r, 2500));
+  await new Promise((r) => setTimeout(r, 2500));
 
   // After lease expires, a new request should succeed — NOT timeout waiting for the lock
   const retryRes = await request.post(`/api/citations/${citationId}/payment`, {
-    data: { amount: 150, method: 'CREDIT_CARD' }
+    data: { amount: 150, method: "CREDIT_CARD" },
   });
   expect(retryRes.status()).toBe(200);
 });
@@ -1046,6 +1103,7 @@ Race condition in Spring @CacheEvict + @Transactional:
 <details><summary>Answer</summary>
 
 **Buggy code**:
+
 ```java
 @Service
 public class CitationService {
@@ -1062,6 +1120,7 @@ public class CitationService {
 ```
 
 **Fix 1 — `@TransactionalEventListener` (evict AFTER commit)**:
+
 ```java
 @Service
 @Transactional
@@ -1095,6 +1154,7 @@ public class CitationCacheInvalidator {
 ```
 
 **Fix 2 — `@CacheEvict(afterInvocation = true)` + outer non-transactional coordinator**:
+
 ```java
 // Non-transactional facade
 @Service
@@ -1130,16 +1190,20 @@ public class CitationFacade {
 
 ```typescript
 // Test 1: Proves the race condition EXISTS (run against BUGGY code)
-test.skip('(Demonstrates bug) Stale cache after update — buggy implementation', async ({ request }) => {
+test.skip("(Demonstrates bug) Stale cache after update — buggy implementation", async ({
+  request,
+}) => {
   // Seed: create a citation with status PENDING
-  const createRes = await request.post('/api/citations', { data: { amount: 100 } });
+  const createRes = await request.post("/api/citations", {
+    data: { amount: 100 },
+  });
   const { id } = await createRes.json();
 
   // Warm the cache
   await request.get(`/api/citations/${id}`);
 
   // Update the citation status
-  await request.put(`/api/citations/${id}`, { data: { status: 'PAID' } });
+  await request.put(`/api/citations/${id}`, { data: { status: "PAID" } });
 
   // Immediately read — with the bug, @CacheEvict fires BEFORE commit,
   // then our read re-populates cache with stale data from an in-flight transaction
@@ -1147,33 +1211,39 @@ test.skip('(Demonstrates bug) Stale cache after update — buggy implementation'
   const body = await immediateRead.json();
 
   // This assertion FAILS with the bug: body.status is 'PENDING' (stale)
-  expect(body.status).toBe('PAID');
+  expect(body.status).toBe("PAID");
 });
 
 // Test 2: Proves the FIXED code is correct
-test('After update, GET always returns fresh data with no stale window', async ({ request }) => {
-  const createRes = await request.post('/api/citations', { data: { amount: 100 } });
+test("After update, GET always returns fresh data with no stale window", async ({
+  request,
+}) => {
+  const createRes = await request.post("/api/citations", {
+    data: { amount: 100 },
+  });
   const { id } = await createRes.json();
 
   // Warm the cache
   await request.get(`/api/citations/${id}`);
 
   // Update
-  const updateRes = await request.put(`/api/citations/${id}`, { data: { status: 'PAID' } });
+  const updateRes = await request.put(`/api/citations/${id}`, {
+    data: { status: "PAID" },
+  });
   expect(updateRes.status()).toBe(200);
 
   // With @TransactionalEventListener + AFTER_COMMIT:
   // By the time PUT returns 200, the transaction has committed AND the cache is evicted.
   // The next GET MUST return PAID — no polling needed.
   const freshRead = await request.get(`/api/citations/${id}`);
-  expect((await freshRead.json()).status).toBe('PAID');
+  expect((await freshRead.json()).status).toBe("PAID");
 
   // Run 10 rapid GETs in parallel — none should return stale data
   const rapidReads = await Promise.all(
-    Array.from({ length: 10 }, () => request.get(`/api/citations/${id}`))
+    Array.from({ length: 10 }, () => request.get(`/api/citations/${id}`)),
   );
   for (const r of rapidReads) {
-    expect((await r.json()).status).toBe('PAID');
+    expect((await r.json()).status).toBe("PAID");
   }
 });
 ```
@@ -1296,30 +1366,34 @@ public CitationV1Response getCitationV1(@PathVariable String id) { ... }
 // This runs in the CONSUMER's test suite and publishes a "contract" (pact file)
 // that the PROVIDER (citation API) must verify before any deployment.
 
-test('v1 citation response contract: amount field must always be present as number', async ({ request }) => {
+test("v1 citation response contract: amount field must always be present as number", async ({
+  request,
+}) => {
   // Test against real v1 endpoint (or a provider stub)
-  const res = await request.get('/api/v1/citations/CIT-CONTRACT-001');
+  const res = await request.get("/api/v1/citations/CIT-CONTRACT-001");
   expect(res.status()).toBe(200);
 
   const body = await res.json();
 
   // CONTRACT: these fields MUST exist and MUST be these types
   // Any v2 change that removes or renames these will fail THIS test
-  expect(typeof body.id).toBe('string');
-  expect(typeof body.amount).toBe('number');   // NOT string, NOT object
+  expect(typeof body.id).toBe("string");
+  expect(typeof body.amount).toBe("number"); // NOT string, NOT object
 
   // CONTRACT: these fields must NOT appear in v1 (no accidental field leakage)
-  expect(body.currency).toBeUndefined();       // v2 field must not bleed into v1
-  expect(body.amountInCents).toBeUndefined();  // v2 field must not bleed into v1
+  expect(body.currency).toBeUndefined(); // v2 field must not bleed into v1
+  expect(body.amountInCents).toBeUndefined(); // v2 field must not bleed into v1
 
   // CONTRACT: HTTP semantics
-  expect(res.headers()['content-type']).toContain('application/json');
+  expect(res.headers()["content-type"]).toContain("application/json");
 });
 
-test('v2 citation response is a strict superset of v1 (backward-compatible extension)', async ({ request }) => {
+test("v2 citation response is a strict superset of v1 (backward-compatible extension)", async ({
+  request,
+}) => {
   const [v1Res, v2Res] = await Promise.all([
-    request.get('/api/v1/citations/CIT-CONTRACT-001'),
-    request.get('/api/v2/citations/CIT-CONTRACT-001'),
+    request.get("/api/v1/citations/CIT-CONTRACT-001"),
+    request.get("/api/v2/citations/CIT-CONTRACT-001"),
   ]);
 
   const v1Body = await v1Res.json();
@@ -1331,8 +1405,8 @@ test('v2 citation response is a strict superset of v1 (backward-compatible exten
 
   // v2 must have its additional fields
   expect(v2Body.currency).toBeDefined();
-  expect(typeof v2Body.currency).toBe('string');
-  expect(typeof v2Body.amountInCents).toBe('number');
+  expect(typeof v2Body.currency).toBe("string");
+  expect(typeof v2Body.amountInCents).toBe("number");
   expect(v2Body.amountInCents).toBe(v1Body.amount * 100); // derived correctly
 });
 ```

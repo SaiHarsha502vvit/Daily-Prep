@@ -26,15 +26,14 @@
 > | **COMBO: Tree + DFS Problems** | [Trees Complete Guide](../../03_Algorithms/05_Trees.md) |
 > | **SQL: CTEs (WITH clause)** | [SQL: Subqueries & CTEs](../../08_SQL/08_Subqueries_CTEs.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## 1. ALGO DEEP DIVE: Sliding Window (30 min)
 
 ### WHY?
+
 Any time you need to find something in a **contiguous subarray/substring**, sliding window reduces brute force O(n²) or O(n³) to O(n). It's one of the top 3 most common interview patterns.
 
 ### WHAT — Two Types
@@ -63,20 +62,19 @@ TYPE 2: VARIABLE-SIZE WINDOW
                ├───┤    sum=7 ≥ 7 ← smallest! (len=2)
 ```
 
-
 ### TEMPLATE: Fixed-Size Window
 
 ```java
 int maxSumSubarray(int[] arr, int k) {
     int windowSum = 0, maxSum = 0;
-    
+
     for (int i = 0; i < arr.length; i++) {
         windowSum += arr[i];           // Expand: add right element
-        
+
         if (i >= k) {
             windowSum -= arr[i - k];   // Shrink: remove left element
         }
-        
+
         if (i >= k - 1) {
             maxSum = Math.max(maxSum, windowSum);
         }
@@ -90,10 +88,10 @@ int maxSumSubarray(int[] arr, int k) {
 ```java
 int minSubArrayLen(int target, int[] nums) {
     int left = 0, sum = 0, minLen = Integer.MAX_VALUE;
-    
+
     for (int right = 0; right < nums.length; right++) {
         sum += nums[right];            // Expand
-        
+
         while (sum >= target) {        // Try to shrink
             minLen = Math.min(minLen, right - left + 1);
             sum -= nums[left++];       // Shrink from left
@@ -110,18 +108,18 @@ int minSubArrayLen(int target, int[] nums) {
 int lengthOfLongestSubstringKDistinct(String s, int k) {
     Map<Character, Integer> window = new HashMap<>();
     int left = 0, maxLen = 0;
-    
+
     for (int right = 0; right < s.length(); right++) {
         char c = s.charAt(right);
         window.merge(c, 1, Integer::sum);     // Add to window
-        
+
         while (window.size() > k) {          // Window invalid
             char leftChar = s.charAt(left);
             window.merge(leftChar, -1, Integer::sum);
             if (window.get(leftChar) == 0) window.remove(leftChar);
             left++;
         }
-        
+
         maxLen = Math.max(maxLen, right - left + 1);
     }
     return maxLen;
@@ -148,11 +146,11 @@ int maxDepth(TreeNode root) {
 // LC 226 — "Google's most asked interview question" legend
 TreeNode invertTree(TreeNode root) {
     if (root == null) return null;
-    
+
     TreeNode temp = root.left;
     root.left = invertTree(root.right);
     root.right = invertTree(temp);
-    
+
     return root;
 }
 ```
@@ -173,8 +171,8 @@ Before:           After:
 boolean isSameTree(TreeNode p, TreeNode q) {
     if (p == null && q == null) return true;
     if (p == null || q == null) return false;
-    return p.val == q.val 
-        && isSameTree(p.left, q.left) 
+    return p.val == q.val
+        && isSameTree(p.left, q.left)
         && isSameTree(p.right, q.right);
 }
 ```
@@ -185,23 +183,23 @@ boolean isSameTree(TreeNode p, TreeNode q) {
 TREE PROBLEM PATTERNS:
   1. "Return a value"     → return something from recursion
      Examples: maxDepth, isBalanced, diameter
-  
+
   2. "Modify the tree"    → return modified node
      Examples: invertTree, pruneTree, deleteNode
-  
+
   3. "Collect values"     → pass list as parameter
      Examples: traversals, pathSum, leafValues
-  
+
   4. "Check a property"   → return boolean
      Examples: isSameTree, isSymmetric, isValidBST
 ```
-
 
 ---
 
 ## 3. SQL LESSON: CTEs — WITH Clause (40 min)
 
 ### WHY?
+
 CTEs make complex queries readable by naming subqueries. Instead of deeply nested subqueries, you build step-by-step. Many interview queries become trivial with CTEs.
 
 ### Basic CTE Syntax
@@ -236,9 +234,9 @@ WHERE e.salary > d.avg_salary;
 
 ```sql
 -- Chain CTEs for complex analytics
-WITH 
+WITH
 monthly_sales AS (
-    SELECT 
+    SELECT
         MONTH(order_date) AS month,
         SUM(amount) AS total
     FROM orders
@@ -248,12 +246,12 @@ monthly_sales AS (
 sales_with_growth AS (
     SELECT month, total,
         LAG(total) OVER (ORDER BY month) AS prev_month,
-        ROUND((total - LAG(total) OVER (ORDER BY month)) * 100.0 
+        ROUND((total - LAG(total) OVER (ORDER BY month)) * 100.0
               / LAG(total) OVER (ORDER BY month), 2) AS growth_pct
     FROM monthly_sales
 )
-SELECT *, 
-    CASE 
+SELECT *,
+    CASE
         WHEN growth_pct > 10 THEN 'Growing'
         WHEN growth_pct < -10 THEN 'Declining'
         ELSE 'Stable'
@@ -325,14 +323,14 @@ class Solution {
     public int lengthOfLongestSubstring(String s) {
         Map<Character, Integer> lastSeen = new HashMap<>();
         int maxLen = 0, left = 0;
-        
+
         for (int right = 0; right < s.length(); right++) {
             char c = s.charAt(right);
-            
+
             if (lastSeen.containsKey(c) && lastSeen.get(c) >= left) {
                 left = lastSeen.get(c) + 1;  // Jump past duplicate
             }
-            
+
             lastSeen.put(c, right);
             maxLen = Math.max(maxLen, right - left + 1);
         }
@@ -352,14 +350,14 @@ class Solution {
         if (root == null) return 0;
         return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
     }
-    
+
     // BFS approach — count levels
     public int maxDepthBFS(TreeNode root) {
         if (root == null) return 0;
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         int depth = 0;
-        
+
         while (!queue.isEmpty()) {
             int size = queue.size();
             depth++;
@@ -382,13 +380,13 @@ class Solution {
 class Solution {
     public TreeNode invertTree(TreeNode root) {
         if (root == null) return null;
-        
+
         TreeNode left = invertTree(root.left);
         TreeNode right = invertTree(root.right);
-        
+
         root.left = right;
         root.right = left;
-        
+
         return root;
     }
 }
@@ -411,8 +409,6 @@ WHICH TYPE:
   Variable: "smallest/longest that..." → two pointers, expand+shrink
   HashMap:  "...distinct/unique..." → track counts in map
 ```
-
-
 
 ---
 

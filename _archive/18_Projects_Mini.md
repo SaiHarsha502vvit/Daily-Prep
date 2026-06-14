@@ -442,12 +442,12 @@ DELIMITER ;
 
 ---
 
-
-
 ---
 
 # ═══════════════════════════════════════════════════════════════════
+
 # MERGED FROM: 04_SQL_Practice_Projects.md (WHY-HOW Framework Edition)
+
 # ═══════════════════════════════════════════════════════════════════
 
 # 🎯 SQL Practice Projects & Interview Questions

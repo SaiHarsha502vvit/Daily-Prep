@@ -143,7 +143,7 @@
 //
 // ═══════════════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 // ─── MOCK API — DO NOT CHANGE THIS ──────────────────────────────────
 // It deliberately returns responses with random delays to simulate
@@ -161,7 +161,9 @@ import React, { useState, useEffect } from 'react';
 const fetchResults = (query) => {
   return new Promise((resolve) => {
     const randomDelay = Math.random() * 2000;
-    console.log(`[API] Request for "${query}" will take ${Math.round(randomDelay)}ms`);
+    console.log(
+      `[API] Request for "${query}" will take ${Math.round(randomDelay)}ms`,
+    );
     setTimeout(() => {
       console.log(`[API] Response for "${query}" arrived`);
       resolve([`${query} result 1`, `${query} result 2`, `${query} result 3`]);
@@ -171,7 +173,7 @@ const fetchResults = (query) => {
 // ─────────────────────────────────────────────────────────────────────
 
 export default function SearchComponent() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
   // DATA FLOW:
@@ -182,7 +184,7 @@ export default function SearchComponent() {
   // The last one to RESOLVE wins, not the last one FIRED.
 
   useEffect(() => {
-    if (query === '') {
+    if (query === "") {
       setResults([]);
       return;
     }
@@ -222,21 +224,22 @@ export default function SearchComponent() {
 
     // TODO: Return a cleanup function here
     // ───────────────────────────────────────────────────────────────
-
   }, [query]);
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
+    <div style={{ padding: "2rem", fontFamily: "monospace" }}>
       <h3>Search (Type slowly and watch the console)</h3>
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Type to search..."
-        style={{ padding: '0.5rem', fontSize: '1rem', width: '300px' }}
+        style={{ padding: "0.5rem", fontSize: "1rem", width: "300px" }}
       />
-      <p style={{ color: '#888' }}>Current query: "{query}"</p>
+      <p style={{ color: "#888" }}>Current query: "{query}"</p>
       <ul>
-        {results.map((r, i) => <li key={i}>{r}</li>)}
+        {results.map((r, i) => (
+          <li key={i}>{r}</li>
+        ))}
       </ul>
     </div>
   );

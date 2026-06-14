@@ -9,34 +9,33 @@ This part focuses on how production systems behave under load, during build, and
 Use these reasoning anchors while reading:
 
 1. Connection pooling is queue management.
-It shifts cost from connection setup to bounded concurrency and wait-time behavior.
+   It shifts cost from connection setup to bounded concurrency and wait-time behavior.
 
 2. Classloading is type identity + isolation.
-Class name alone is not enough; classloader identity changes runtime compatibility.
+   Class name alone is not enough; classloader identity changes runtime compatibility.
 
 3. Build tools are graph resolution engines.
-Lifecycle phases and dependency scopes determine final classpath and runtime behavior.
+   Lifecycle phases and dependency scopes determine final classpath and runtime behavior.
 
 4. HTTP semantics drive reliability.
-Correct method, status, and header semantics are prerequisites for stable retries, caching, and gateway behavior.
+   Correct method, status, and header semantics are prerequisites for stable retries, caching, and gateway behavior.
 
 5. Design patterns are controlled variability.
-Spring patterns are mechanisms for change isolation, not interview vocabulary.
+   Spring patterns are mechanisms for change isolation, not interview vocabulary.
 
 6. Threading is resource budgeting.
-Thread pools, queues, and blocking points determine tail latency more than average latency.
+   Thread pools, queues, and blocking points determine tail latency more than average latency.
 
 7. Type erasure and bytecode tooling explain "invisible" framework behavior.
-What is not visible in source can still be deterministically explained by runtime metadata and instrumentation phases.
+   What is not visible in source can still be deterministically explained by runtime metadata and instrumentation phases.
 
 Treat every section as: mechanism -> trade-off -> failure mode -> tuning strategy.
 
-
 ```java
 public class MoneyDeserializer extends JsonDeserializer<BigDecimal> {
-    
+
     @Override
-    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) 
+    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException {
         String value = p.getValueAsString();
         if (value != null && value.startsWith("$")) {
@@ -54,8 +53,6 @@ public class Product {
 }
 ```
 
-
-
 🔬 **Section Challenge — Theory-First Master Lens (Part 2: Infrastructure to Runtime Behavior)**
 
 **Challenge 1 (Trace — Who/When/What):** When Spring Boot returns JSON from a `@RestController`, **who** does the serialization? **When** does it happen in the request lifecycle? **What** annotation on the response triggers it?
@@ -65,7 +62,6 @@ public class Product {
 **Who?** `MappingJackson2HttpMessageConverter` using an `ObjectMapper` instance. **When?** After the controller method returns, the `DispatcherServlet` delegates to `RequestResponseBodyMethodProcessor`, which iterates registered `HttpMessageConverter`s and selects Jackson based on the `Accept: application/json` header + `@ResponseBody` (implicit in `@RestController`). **What triggers it?** `@ResponseBody` (present on every method in `@RestController`). Without it, Spring tries to resolve a view template instead of serializing the return value.
 
 </details>
-
 
 ## E.4 Polymorphic Type Handling
 
@@ -97,8 +93,6 @@ public class Cat extends Animal {
 // Jackson knows to create Dog instance when type="dog"
 ```
 
-
-
 🔬 **Section Challenge — E.4 Polymorphic Type Handling**
 
 **Challenge 1 (Debug — Who/When/What):** Jackson deserializes `{"type":"DOG","name":"Rex"}` into an `Animal` field. **Who** reads the `"type"` discriminator? **When** must `@JsonTypeInfo` be configured? **What** happens if the discriminator is missing?
@@ -109,33 +103,32 @@ public class Cat extends Animal {
 
 </details>
 
-
 ## E.5 Configuring ObjectMapper in Spring Boot
 
 ```java
 @Configuration
 public class JacksonConfig {
-    
+
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        
+
         // Don't fail on unknown properties
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        
+
         // Include only non-null values
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        
+
         // Pretty print
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        
+
         // Date handling
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        
+
         // Snake case
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        
+
         return mapper;
     }
 }
@@ -158,8 +151,6 @@ spring:
 
 ---
 
-
-
 🔬 **Section Challenge — E.5 Configuring ObjectMapper in Spring Boot**
 
 **Challenge 1 (Debug — Who/When/What):** You register a custom `ObjectMapper` bean but Jackson still uses default settings. **What** is the most likely cause? **Who** has higher priority — your bean or Spring Boot auto-configuration?
@@ -169,7 +160,6 @@ spring:
 **Most likely cause:** You created a `new ObjectMapper()` in a `@Bean` method but Spring Boot's `JacksonAutoConfiguration` already registered one. If you use `@Bean` for ObjectMapper, Spring Boot backs off (your bean wins). BUT: if you registered a `Jackson2ObjectMapperBuilderCustomizer` instead, it customizes the AUTO-CONFIGURED ObjectMapper. The two approaches conflict if mixed. **Fix:** Use ONE approach: either provide your own `@Bean ObjectMapper` (full control), or use `Jackson2ObjectMapperBuilderCustomizer` (additive customization). Check with: `context.getBeansOfType(ObjectMapper.class)` — if there are 2, that's the bug.
 
 </details>
-
 
 # SECTION F: CONNECTION POOLING - DATABASE CONNECTIONS AREN'T FREE
 
@@ -240,8 +230,6 @@ spring:
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — F.1 How Connection Pooling Works**
 
 **Challenge 1 (Trace — Who/When/What):** When your `@Repository` method calls `jdbcTemplate.query(...)`, **who** gives it a database connection? **When** is the connection returned to the pool? **What** happens if you forget to close it?
@@ -251,7 +239,6 @@ spring:
 **Who?** HikariCP's `HikariDataSource.getConnection()` — it returns a wrapped `Connection` from its pool. **When returned?** When `connection.close()` is called — but HikariCP intercepts `close()` and RETURNS the connection to the pool instead of actually closing it. `JdbcTemplate` handles this automatically in its `execute()` method's `finally` block. **Forgot to close?** Connection leak. The connection stays "borrowed" forever. Eventually all pool connections are leaked, new requests block waiting for `connectionTimeout` (default 30s), then throw `SQLTransientConnectionException`. HikariCP has leak detection: `spring.datasource.hikari.leak-detection-threshold=2000` logs a warning if a connection isn't returned within 2 seconds.
 
 </details>
-
 
 ## F.2 HikariCP Configuration
 
@@ -263,20 +250,20 @@ spring:
     url: jdbc:postgresql://localhost:5432/mydb
     username: user
     password: pass
-    
+
     hikari:
       # Pool sizing
-      minimum-idle: 5           # Minimum connections to keep in pool
-      maximum-pool-size: 10     # Maximum connections in pool
-      
+      minimum-idle: 5 # Minimum connections to keep in pool
+      maximum-pool-size: 10 # Maximum connections in pool
+
       # Timeouts
-      connection-timeout: 30000      # Max wait for connection (30s)
-      idle-timeout: 600000          # How long idle connection lives (10min)
-      max-lifetime: 1800000         # Max age of connection (30min)
-      
+      connection-timeout: 30000 # Max wait for connection (30s)
+      idle-timeout: 600000 # How long idle connection lives (10min)
+      max-lifetime: 1800000 # Max age of connection (30min)
+
       # Validation
-      validation-timeout: 5000      # Time to validate connection
-      
+      validation-timeout: 5000 # Time to validate connection
+
       # Performance
       auto-commit: true
       pool-name: MyHikariPool
@@ -308,8 +295,6 @@ spring:
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — F.3 Connection Pool Sizing**
 
 **Challenge 1 (Reasoning — Who/When/What):** The HikariCP wiki says optimal pool size ≈ `(core_count * 2) + disk_spindles`. For a 4-core server with SSD, that's ~9 connections. **Why** is BIGGER not better? **What** happens with 100 connections?
@@ -319,7 +304,6 @@ spring:
 **Why not bigger?** Database connections compete for shared resources: CPU cores, disk I/O, memory, and PostgreSQL's `max_connections` (default 100). With 100 connections on a 4-core DB server: massive context switching. Each connection holds a backend process (~5-10MB RAM). 100 connections trying to write simultaneously thrash the disk scheduler. **Result:** WORSE throughput than 10 connections. The 10-connection pool queues requests efficiently, each connection gets full CPU time slices. **The formula works** because: 2 connections per core (one computes while the other waits on I/O) + spindle count (parallel disk access). SSDs have no seek time, so `spindles` ≈ 1.
 
 </details>
-
 
 ## F.4 Common Connection Pool Problems
 
@@ -364,20 +348,20 @@ spring:
   datasource:
     hikari:
       leak-detection-threshold: 60000  # Log if connection held > 60s
-      
+
 // In code, check pool stats
 @Autowired
 private HikariDataSource dataSource;
 
 public void checkPool() {
     HikariPoolMXBean poolProxy = dataSource.getHikariPoolMXBean();
-    
+
     int active = poolProxy.getActiveConnections();
     int idle = poolProxy.getIdleConnections();
     int total = poolProxy.getTotalConnections();
     int waiting = poolProxy.getThreadsAwaitingConnection();
-    
-    log.info("Active: {}, Idle: {}, Total: {}, Waiting: {}", 
+
+    log.info("Active: {}, Idle: {}, Total: {}, Waiting: {}",
              active, idle, total, waiting);
 }
 ```
@@ -397,11 +381,10 @@ spring:
 
 ---
 
-
-
 🔬 **Section Challenge — F.4 Common Connection Pool Problems**
 
 **Challenge 1 (Connection Leak Trace — Who/When/What):** A Spring service method manually calls `dataSource.getConnection()` inside a loop but never calls `close()`. The app runs fine for 10 minutes, then every new request hangs for 30 seconds before throwing `SQLTransientConnectionException`. **Who** is holding the connections? **When** does HikariCP give up? **What** single config property would have caught this in logs 28 minutes earlier?
+
 <details><summary>Answer</summary>
 
 **Who is holding?** Each loop iteration borrowed a connection and never returned it. HikariCP treats a borrowed connection as "in use" until `close()` (or `try-with-resources`) is called. With a pool of 10, after 10 loop invocations all connections are permanently borrowed (leaked). **When does HikariCP give up?** After `connectionTimeout` (default 30,000ms / 30s). New threads wait in a queue; after 30s they throw `SQLTransientConnectionException: Connection is not available, request timed out after 30000ms`. **What config catches it early?** `spring.datasource.hikari.leak-detection-threshold=2000` — if any connection is held for > 2s without being returned, HikariCP logs a WARN with the full stack trace of where the connection was borrowed. This would have printed the leak location on the first invocation, not after 10 minutes of degradation.
@@ -409,13 +392,12 @@ spring:
 </details>
 
 **Challenge 2 (Pool Exhaustion vs Leak — Who/When/What):** Pool exhaustion and connection leak both result in `SQLTransientConnectionException`. **What** is the diagnostic difference in HikariCP metrics? **When** should you increase pool size vs fix a leak?
+
 <details><summary>Answer</summary>
 
 **Diagnostic difference:** `HikariPoolMXBean.getThreadsAwaitingConnection()` > 0 with `getActiveConnections() == maximumPoolSize` → exhaustion (all connections legitimately in use but more requests are coming). `getActiveConnections() == maximumPoolSize` with low actual request concurrency → leak (connections never returned). Enable `leak-detection-threshold` to confirm: if warnings fire with stack traces pointing to the same location, it's a leak. **When to increase pool size:** When `getThreadsAwaitingConnection()` spikes during legitimate traffic peaks AND connections are returned normally. **Never** increase pool size to mask a leak — it just delays the inevitable by extending the leak window.
 
 </details>
-
-
 
 # SECTION G: CLASSLOADING - HOW YOUR CODE RUNS
 
@@ -476,11 +458,10 @@ spring:
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — G.1 Classloader Hierarchy**
 
 **Challenge 1 (Parent Delegation Trace — Who/When/What):** Your app references `org.springframework.web.bind.annotation.RestController`. **Who** loads this class? **When** in the JVM startup does the first load happen? **What** would cause `ClassNotFoundException` for this annotation even with the correct Spring JAR on the classpath?
+
 <details><summary>Answer</summary>
 
 **Who loads it:** The Application ClassLoader (system classloader). It first delegates to Platform ClassLoader, which delegates to Bootstrap ClassLoader. Neither of those have Spring on their classpath, so the class bubbles back down to Application ClassLoader, which finds it in the Spring JAR on the classpath. **When is the first load?** The first time any class in the JVM references `@RestController` — typically during `ApplicationContext` startup when Spring component-scans and reads annotations via reflection. **What causes CNFE even with JAR present?** Most common: Spring JAR is in `<scope>provided</scope>` and you're running the JAR standalone (Tomcat not included). Or the JAR is on the compile classpath but excluded from the fat JAR (check `spring-boot-maven-plugin`'s `<excludes>`). Or you're testing with a custom ClassLoader that doesn't delegate to the parent (common in OSGi, Tomcat web apps with isolated class spaces).
@@ -488,13 +469,12 @@ spring:
 </details>
 
 **Challenge 2 (ClassCastException Mystery):** You load a class `UserService` from two different plugins at runtime. Casting `plugin1UserService` to the `UserService` type throws `ClassCastException` — even though both are `UserService`. **Who** is the culprit? **What** rule explains this?
+
 <details><summary>Answer</summary>
 
 **Who is culprit:** Two different `ClassLoader` instances, each loading their own copy of `UserService.class`. **The rule:** Java class identity = (binary name) + (classloader). A class loaded by `ClassLoaderA` is a DIFFERENT type than the same class loaded by `ClassLoaderB`, even if the `.class` bytecode is byte-for-byte identical. The JVM `instanceof` and cast checks compare classloader identity, not bytecode. **Fix pattern:** Move the shared `UserService` interface to a parent classloader that both plugins share. Plugins load their own implementations; the interface lives in the shared parent — both sides reference the same classloader's definition. This is how Tomcat's `WebAppClassLoader` isolation works: servlet API in parent, app code in isolated child.
 
 </details>
-
-
 
 ## G.2 Parent Delegation Model
 
@@ -569,8 +549,6 @@ user1 = (User) user2;  // ClassCastException!
 // They're loaded by different classloaders
 ```
 
-
-
 🔬 **Section Challenge — G.3 Common Classloading Problems**
 
 **Challenge 1 (Debug — Who/When/What):** `NoClassDefFoundError` vs `ClassNotFoundException` — they sound the same but have DIFFERENT causes. **When** does each occur? **Who** throws each one?
@@ -580,7 +558,6 @@ user1 = (User) user2;  // ClassCastException!
 **ClassNotFoundException:** Thrown by `Class.forName("com.Foo")` or `ClassLoader.loadClass()` when the `.class` file is NOT on the classpath at all. **Who throws?** The ClassLoader itself. Cause: missing dependency, wrong Maven scope. **NoClassDefFoundError:** The class WAS found during compilation but is MISSING at runtime. Often caused by: static initializer failure (the class loaded once, its `<clinit>` threw, now all future loads fail with NCDFE), or transitive dependency excluded. **Key difference:** CNFE = never found. NCDFE = found once but failed to initialize. Check static blocks and `@PostConstruct` methods for hidden exceptions.
 
 </details>
-
 
 ## G.4 Spring DevTools Hot Reload
 
@@ -609,8 +586,6 @@ user1 = (User) user2;  // ClassCastException!
 
 ---
 
-
-
 🔬 **Section Challenge — G.4 Spring DevTools Hot Reload**
 
 **Challenge 1 (Reasoning — Who/When/What):** Spring DevTools uses TWO classloaders: a "base" classloader for libraries and a "restart" classloader for your code. **Why** two instead of one? **What** does this enable that a full JVM restart doesn't?
@@ -620,7 +595,6 @@ user1 = (User) user2;  // ClassCastException!
 **Why two?** Libraries (Spring, Jackson, etc.) don't change during development — reloading them wastes 5-10 seconds per restart. By keeping them in the base classloader and only reloading YOUR code in a new restart classloader, DevTools achieves sub-second restarts. **What it enables:** Incremental class reloading. Change a controller → save → restart classloader is discarded and recreated with new classes in ~300ms. Without DevTools: full JVM restart = 10-15 seconds. **Limitation:** Changes to library versions, resource files, or `@Configuration` classes still require a full restart because those are in the base classloader.
 
 </details>
-
 
 # SECTION H: BUILD TOOLS INTERNALS - MAVEN/GRADLE
 
@@ -700,11 +674,10 @@ user1 = (User) user2;  // ClassCastException!
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — H.2 Dependency Scopes**
 
 **Challenge 1 (Scope Trace — Who/When/What):** A `mysql-connector-java` JDBC driver is declared in `pom.xml` with `<scope>runtime</scope>`. **Who** is allowed to use it? **When** does it appear on the classpath? **What** breaks if you change it to `<scope>compile</scope>`?
+
 <details><summary>Answer</summary>
 
 **Who can use it:** Only your application at runtime. With `runtime` scope, the driver is NOT on the compile-time classpath — source code cannot reference `com.mysql.cj.jdbc.Driver` directly. **When it appears:** During `mvn test` (test classpath includes runtime) and when running the packaged JAR. It is absent during `mvn compile`. **What breaks if changed to compile:** Nothing functionally — the driver still loads at runtime. But you now CAN accidentally write code that directly imports MySQL-specific classes, coupling your code to a specific vendor. `runtime` scope enforces the abstraction: use `java.sql.DataSource` (compile-time), let the JDBC driver SPI auto-register itself at runtime. **Transitive difference:** `compile` scope propagates to dependents. `runtime` does NOT — dependents don't get the JDBC driver on their compile classpath either, which is the correct behavior for drivers.
@@ -712,13 +685,12 @@ user1 = (User) user2;  // ClassCastException!
 </details>
 
 **Challenge 2 (Scope Design):** Why is Lombok declared with `<scope>provided</scope>` in some projects? Why does it still need to be `<scope>compile</scope>` in others?
+
 <details><summary>Answer</summary>
 
 **Provided scope for Lombok:** Lombok runs as an annotation processor at compile time — it generates getter/setter/builder code directly into `.class` files. The Lombok JAR itself is NOT needed at runtime (the generated code is already in your `.class` files). So `provided` is technically correct: present at compile time, absent from the packaged JAR. **But why compile scope in practice?** Some build toolchains (Gradle, certain IDEs without annotation processor config) need `compile` scope to activate the processor correctly. Spring Initializr generates `<scope>provided</scope>` which is the precise correct scope. `<optional>true</optional>` further prevents transitive propagation.
 
 </details>
-
-
 
 ## H.3 Transitive Dependencies
 
@@ -817,11 +789,10 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 ---
 
-
-
 🔬 **Section Challenge — H.4 Dependency Conflicts**
 
 **Challenge 1 (Conflict Trace — Who/When/What):** Your app uses `spring-boot-starter-web` and explicitly adds `jackson-databind:2.12.0`. Maven resolves to `2.15.2` (from the BOM). **Who** wins? **When** does Maven's nearest-wins rule fire? **What** command shows you the final resolved tree?
+
 <details><summary>Answer</summary>
 
 **Who wins:** The explicitly declared version wins — `jackson-databind:2.12.0` — because Maven's nearest-wins rule selects the dependency closest to the root `pom.xml` in the dependency graph. Your explicit declaration is at depth 1; the BOM's transitive is at depth 2. **When nearest-wins fires:** During the dependency resolution phase (`mvn dependency:resolve`). If two declarations are at the same depth, the first one declared wins. **Command to see result:** `mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind` — shows only the Jackson subtree with the winning version and why others were omitted. Or `mvn dependency:tree -Dverbose` to see ALL candidates including those omitted due to conflict. **Problem with this:** Spring Boot 3.x requires Jackson 2.15+. Pinning to 2.12.0 will cause `ClassNotFoundException` or `NoSuchMethodError` at runtime when Spring tries to use newer Jackson APIs.
@@ -829,13 +800,12 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 </details>
 
 **Challenge 2 (Bug Hunt):** `mvn dependency:tree` shows two versions of the same library: `[INFO] +- com.example:lib:jar:1.0.0:compile` and `[INFO] | \- com.example:lib:jar:2.0.0:compile (omitted for conflict)`. The app crashes with `NoSuchMethodError` at runtime. **Who** caused this? **What** is the fix?
+
 <details><summary>Answer</summary>
 
 **Who caused it:** The code (or a transitive dependency) calls a method present in `lib:2.0.0` but absent in `lib:1.0.0` (the resolved winner). Maven selected 1.0.0 (nearest-wins), but the calling code was compiled against 2.0.0. **Fix:** Add an explicit `<dependencyManagement>` entry: `<dependency><groupId>com.example</groupId><artifactId>lib</artifactId><version>2.0.0</version></dependency>` — this forces all transitive references to resolve to 2.0.0. Never use `<exclusion>` to drop a transitive dep without re-adding the correct version explicitly, as that causes `ClassNotFoundException` instead.
 
 </details>
-
-
 
 # SECTION I: HTTP FUNDAMENTALS - BELOW THE FRAMEWORK
 
@@ -889,12 +859,9 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — I.1 HTTP Message Format**
 
 **Challenge 1 (Trace — Who/When/What):** A Spring Boot response for a large JSON payload uses `Transfer-Encoding: chunked` instead of `Content-Length`. **Who** decides to use chunked encoding? **When?** **What** is the advantage?\n\n<details><summary>Answer</summary>\n\n**Who decides?** Tomcat's `Response` object — when the response body size is not known before writing begins (no `Content-Length` set). Jackson serializes the object to Tomcat's output buffer incrementally. **When decided?** When the first write exceeds the response buffer (default 8KB) before the response is committed — Tomcat automatically switches to `Transfer-Encoding: chunked`. **Advantage:** You can start sending data to the client BEFORE you know the total size. Each chunk has its own size header, followed by data, terminated by a zero-length chunk. **Client impact:** The client receives and processes chunks as they arrive — better latency for large payloads. **Spring control:** `ResponseEntity.ok().body(data)` with known size sets `Content-Length`. `StreamingResponseBody` or `ResponseBodyEmitter` explicitly stream chunks.\n\n</details>
-
 
 ## I.2 HTTP Methods - Semantic Meaning
 
@@ -925,8 +892,6 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — I.2 HTTP Methods - Semantic Meaning**
 
 **Challenge 1 (Reasoning — Who/When/What):** `DELETE /orders/1` is idempotent but `POST /orders` is not. Your client retries a failed POST request due to a timeout. **What** problem can this cause? **What** header pattern prevents duplicate creation?
@@ -936,7 +901,6 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 **Problem:** Duplicate resource creation — the first POST may have succeeded (server processed it) but the response was lost in transit. Client retries → second order created. **Fix:** Idempotency keys. Client generates a unique `Idempotency-Key: uuid-1234` header. Server stores (key → response) in a cache. On retry with same key, server returns the cached response without re-processing. Stripe, PayPal, and most payment APIs require this. Alternative: use `PUT /orders/{client-generated-id}` which IS idempotent — multiple PUTs with same ID update (not create) the same resource.
 
 </details>
-
 
 ## I.3 HTTP Status Codes - Complete Reference
 
@@ -986,8 +950,6 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — I.3 HTTP Status Codes**
 
 **Challenge 1 (Debug — Who/When/What):** Your Spring Boot app returns 500 for a validation error that should be 400. **Who** decides the status code? **When** does Spring auto-map exceptions to codes? **What** annotation fixes this?
@@ -997,7 +959,6 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 **Who decides?** Spring's `DefaultHandlerExceptionResolver` for known exceptions, or your `@ControllerAdvice` for custom handling. **When auto-mapped?** `@Valid` failures → 400 automatically. `NoHandlerFoundException` → 404. Unhandled exceptions → 500 (the catch-all). **Fix:** If your custom exception should be 400, annotate it: `@ResponseStatus(HttpStatus.BAD_REQUEST) class InvalidOrderException extends RuntimeException {}`. Or use `@ExceptionHandler` in `@ControllerAdvice` to return `ResponseEntity.badRequest().body(errorDto)`. Never let validation errors bubble to 500 — it signals server bugs to clients and triggers alerting.
 
 </details>
-
 
 ## I.4 Keep-Alive and Connection Management
 
@@ -1036,7 +997,7 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 // Request headers:
 Accept: application/json                    // I want JSON
-Accept: application/xml                     // I want XML  
+Accept: application/xml                     // I want XML
 Accept: text/html, application/json;q=0.9  // HTML preferred, JSON acceptable
 Accept: */*                                 // Anything is fine
 
@@ -1083,14 +1044,14 @@ public class UserService { }  // One instance in entire application
 // Behind the scenes:
 public class SingletonBeanFactory {
     private Map<String, Object> singletonCache = new ConcurrentHashMap<>();
-    
+
     public Object getBean(String name, Class<?> type) {
         // Check cache first
         Object singleton = singletonCache.get(name);
         if (singleton != null) {
             return singleton;
         }
-        
+
         // Create and cache
         synchronized(singletonCache) {
             singleton = type.getDeclaredConstructor().newInstance();
@@ -1105,8 +1066,6 @@ public class SingletonBeanFactory {
 // - Beans are shared across ALL requests!
 ```
 
-
-
 🔬 **Section Challenge — J.1 Singleton Pattern**
 
 **Challenge 1 (Debug — Who/When/What):** A `@Service` bean has a `List<String> log = new ArrayList<>()` field. Requests add to it. After 1000 requests, **what** does the list contain? **Who** is responsible for this bug? **What** is the fix?
@@ -1116,7 +1075,6 @@ public class SingletonBeanFactory {
 **What does it contain?** All 1000 entries from ALL requests — the log grows forever and is SHARED across every request. **Who is responsible?** The developer. Spring beans are Singleton by default — ONE instance shared across ALL requests. Mutable instance fields are shared state. **Fix options:** (1) Don't store request state in beans at all — pass it as method parameters. (2) Use `ThreadLocal<List<String>>` for request-scoped storage (clear in finally). (3) For true per-request beans, use `@Scope("request")` — but this creates a new bean per HTTP request via a proxy, which has performance overhead. Rule: `@Service`/`@Repository` should be **stateless**. All data flows through method parameters and return values.
 
 </details>
-
 
 ## J.2 Factory Pattern
 
@@ -1129,15 +1087,13 @@ UserService service = context.getBean(UserService.class);  // Factory creates/re
 // @Bean methods are factory methods
 @Configuration
 public class AppConfig {
-    
+
     @Bean  // This IS a factory method
     public UserService userService(UserRepository repo) {
         return new UserServiceImpl(repo);
     }
 }
 ```
-
-
 
 ## J.3 Proxy Pattern
 
@@ -1154,8 +1110,6 @@ public class UserService {
 // All calls go through proxy first
 ```
 
-
-
 ## J.4 Template Method Pattern
 
 ```java
@@ -1168,7 +1122,7 @@ public abstract class AbstractTemplate {
         doSpecificWork();  // Subclass implements
         cleanup();         // Fixed step
     }
-    
+
     protected void setup() { /* default */ }
     protected void cleanup() { /* default */ }
     protected abstract void doSpecificWork();  // Hook for subclass
@@ -1180,8 +1134,6 @@ public abstract class AbstractTemplate {
 // 3. Handle results (your code)
 // 4. Close connection (fixed)
 ```
-
-
 
 ## J.5 Strategy Pattern
 
@@ -1205,8 +1157,6 @@ PlatformTransactionManager jpa = new JpaTransactionManager();
 PlatformTransactionManager jdbc = new DataSourceTransactionManager();
 ```
 
-
-
 ## J.6 Observer Pattern (Events)
 
 ```java
@@ -1215,7 +1165,7 @@ PlatformTransactionManager jdbc = new DataSourceTransactionManager();
 // Define event
 public class UserCreatedEvent extends ApplicationEvent {
     private final User user;
-    
+
     public UserCreatedEvent(Object source, User user) {
         super(source);
         this.user = user;
@@ -1227,7 +1177,7 @@ public class UserCreatedEvent extends ApplicationEvent {
 public class UserService {
     @Autowired
     private ApplicationEventPublisher publisher;
-    
+
     public User createUser(User user) {
         // Save user...
         publisher.publishEvent(new UserCreatedEvent(this, user));  // Notify observers
@@ -1238,7 +1188,7 @@ public class UserService {
 // Observer/Listener
 @Component
 public class EmailNotificationListener {
-    
+
     @EventListener
     public void onUserCreated(UserCreatedEvent event) {
         // Send welcome email
@@ -1247,7 +1197,7 @@ public class EmailNotificationListener {
 
 @Component
 public class AuditLogListener {
-    
+
     @EventListener
     public void onUserCreated(UserCreatedEvent event) {
         // Log to audit trail
@@ -1257,8 +1207,6 @@ public class AuditLogListener {
 // Multiple observers, decoupled from publisher!
 ```
 
-
-
 ## J.7 Decorator Pattern
 
 ```java
@@ -1266,7 +1214,7 @@ public class AuditLogListener {
 
 @Component
 public class LoggingBeanPostProcessor implements BeanPostProcessor {
-    
+
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         // Wrap/decorate every bean with logging
@@ -1281,8 +1229,6 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 // Each filter wraps the next, adding behavior
 ```
 
-
-
 🔬 **Section Challenge — J.7 Decorator Pattern**
 
 **Challenge 1 (Trace — Who/When/What):** The code shows `BeanPostProcessor` wrapping beans. **When** in Spring's bean lifecycle does `postProcessAfterInitialization` run? **What** has already happened to the bean at that point? **Who** calls it?
@@ -1292,7 +1238,6 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 **When?** After: (1) constructor injection, (2) setter/field injection, (3) `@PostConstruct` method, (4) `InitializingBean.afterPropertiesSet()`, (5) custom `init-method`. **What already happened?** The bean is FULLY initialized — all dependencies are injected, all init callbacks have run. **Who calls?** `AbstractAutowireCapableBeanFactory.initializeBean()` iterates ALL registered BeanPostProcessors and calls `postProcessAfterInitialization()` on each bean. This is how `@Transactional` proxies are created — the BeanPostProcessor wraps the fully-initialized bean in a proxy AFTER all initialization is complete.
 
 </details>
-
 
 ## J.8 Chain of Responsibility
 
@@ -1313,8 +1258,6 @@ public interface Filter {
 
 ---
 
-
-
 🔬 **Section Challenge — J.8 Chain of Responsibility**
 
 **Challenge 1 (Debug — Who/When/What):** In Spring Security's filter chain, a custom `AuthFilter` calls `chain.doFilter(req, res)` to pass to the next filter. **What** happens if you forget to call `chain.doFilter()`? **Who** never executes?
@@ -1324,7 +1267,6 @@ public interface Filter {
 **What happens?** The request STOPS at your filter. No subsequent filters execute, and the Controller never receives the request. The client gets a blank response (or whatever your filter wrote to the response). **Who never executes?** All downstream filters + the DispatcherServlet + your Controller. This is called "short-circuiting" the chain — it's intentional for auth failures (return 401 without proceeding), but a bug if you forgot the call. **Key pattern:** Always call `chain.doFilter()` in the success path. Only skip it when you intentionally want to block the request (e.g., invalid token → write 401 → return).
 
 </details>
-
 
 # SECTION K: THREADS & EXECUTORS
 
@@ -1431,7 +1373,7 @@ String result = future.get();  // Blocks until complete
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-    
+
     @Bean
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -1446,13 +1388,13 @@ public class AsyncConfig {
 
 @Service
 public class EmailService {
-    
+
     @Async  // Runs on separate thread!
     public void sendEmail(String to, String body) {
         // This method returns immediately to caller
         // Email sending happens in background
     }
-    
+
     @Async
     public CompletableFuture<String> sendEmailAsync(String to, String body) {
         // Return a Future if you need the result
@@ -1460,8 +1402,6 @@ public class EmailService {
     }
 }
 ```
-
-
 
 🔬 **Section Challenge — K.3 @Async in Spring**
 
@@ -1473,7 +1413,6 @@ public class EmailService {
 
 </details>
 
-
 ## K.4 ThreadLocal - Request-Scoped Storage
 
 ```java
@@ -1481,15 +1420,15 @@ public class EmailService {
 
 public class RequestContext {
     private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
-    
+
     public static void setUser(User user) {
         currentUser.set(user);
     }
-    
+
     public static User getUser() {
         return currentUser.get();
     }
-    
+
     public static void clear() {
         currentUser.remove();  // IMPORTANT: Prevent memory leaks!
     }
@@ -1497,9 +1436,9 @@ public class RequestContext {
 
 // Usage in filter:
 public class AuthFilter implements Filter {
-    
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, 
+    public void doFilter(ServletRequest request, ServletResponse response,
                         FilterChain chain) throws IOException, ServletException {
         try {
             User user = authenticate(request);
@@ -1514,7 +1453,7 @@ public class AuthFilter implements Filter {
 // Anywhere in your code:
 @Service
 public class OrderService {
-    
+
     public Order createOrder(OrderRequest request) {
         User user = RequestContext.getUser();  // Get current user
         // No need to pass user through every method!
@@ -1528,14 +1467,14 @@ public class OrderService {
 // MDC stores logging context per thread
 
 public class RequestLoggingFilter implements Filter {
-    
-    public void doFilter(ServletRequest request, ServletResponse response, 
+
+    public void doFilter(ServletRequest request, ServletResponse response,
                         FilterChain chain) {
         try {
             String requestId = UUID.randomUUID().toString();
             MDC.put("requestId", requestId);
             MDC.put("userId", getCurrentUserId());
-            
+
             chain.doFilter(request, response);
         } finally {
             MDC.clear();
@@ -1574,7 +1513,6 @@ public class RequestLoggingFilter implements Filter {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## L.1 What Is Type Erasure?
 
 ```java
@@ -1594,12 +1532,9 @@ if (obj instanceof List<String>) { }  // Compile error!
 // Because at runtime, it's just "List"
 ```
 
-
-
 🔬 **Section Challenge — L.1 What Is Type Erasure?**
 
 **Challenge 1 (Reasoning — Who/When/What):** Generics were erased for backward compatibility with Java 1.4. **Who** generates bridge methods? **When?** **What** is a bridge method?\n\n<details><summary>Answer</summary>\n\n**Who generates?** `javac` — the Java compiler, not the JVM. **When?** During compilation of a class that overrides a generic method. **What is a bridge method?** When you implement `Comparable<String>.compareTo(String)`, the compiler generates TWO methods in the bytecode: your actual `compareTo(String)` AND a synthetic bridge `compareTo(Object)` that casts and delegates. The bridge satisfies the erased `Comparable.compareTo(Object)` contract — required because older JVM bytecode expects `compareTo(Object)`. You can see bridge methods with `javap -verbose`. **Why it matters:** Bridge methods can cause unexpected method resolution in reflection — `getDeclaredMethods()` returns bridge methods too. Filter with `Method.isBridge()` to exclude them.\n\n</details>
-
 
 ## L.2 Problems Caused by Type Erasure
 
@@ -1607,7 +1542,7 @@ if (obj instanceof List<String>) { }  // Compile error!
 // Problem 1: Can't create generic type
 public class Box<T> {
     private T item;
-    
+
     public void createItem() {
         item = new T();  // COMPILE ERROR! T doesn't exist at runtime
     }
@@ -1616,11 +1551,11 @@ public class Box<T> {
 // Solution: Pass Class<T>
 public class Box<T> {
     private final Class<T> type;
-    
+
     public Box(Class<T> type) {
         this.type = type;
     }
-    
+
     public T createItem() throws Exception {
         return type.getDeclaredConstructor().newInstance();
     }
@@ -1632,8 +1567,6 @@ public <T> void process(List<T> list) {
 }
 ```
 
-
-
 🔬 **Section Challenge — L.2 Problems Caused by Type Erasure**
 
 **Challenge 1 (Design — Who/When/What):** The code shows `new T()` fails. The solution is `Class<T> type` passed to the constructor. **Why** can't the JVM just "remember" T? **What** specifically is lost at compile time?
@@ -1643,7 +1576,6 @@ public <T> void process(List<T> list) {
 **What's lost?** The compiler replaces `T` with its upper bound (usually `Object`) during erasure. `Box<String>` and `Box<Integer>` compile to identical bytecode: `Box<Object>`. The JVM sees ONE class, not two parameterized versions. **Why not keep it?** Backward compatibility. Generics were added in Java 5 (2004) but the JVM spec couldn't break existing bytecode. Reified generics (like C# has) would require JVM changes that break all existing .class files. **The `Class<T>` trick works** because `Class` objects DO exist at runtime — `String.class` is a real object. You're passing the type info explicitly rather than relying on generic metadata.
 
 </details>
-
 
 ## L.3 TypeReference - Jackson's Solution
 
@@ -1669,8 +1601,6 @@ List<User> users = objectMapper.readValue(
 // Jackson reads it via reflection: getGenericSuperclass()
 ```
 
-
-
 🔬 **Section Challenge — L.3 TypeReference - Jackson's Solution**
 
 **Challenge 1 (Trace — Who/When/What):** `new TypeReference<List<User>>() {}` uses an anonymous class. **Why** does this trick preserve generic type info when normal generics are erased? **What** reflection method does Jackson call to extract it?
@@ -1680,7 +1610,6 @@ List<User> users = objectMapper.readValue(
 **Why preserved?** Anonymous classes are compiled to actual `.class` files (e.g., `MyClass$1.class`). The EXTENDS clause (`extends TypeReference<List<User>>`) is baked into the bytecode as the generic superclass — this is structural type info that survives erasure. Only TYPE VARIABLES (like `T`) are erased; CONCRETE parameterized types in class hierarchies are retained. **Jackson calls:** `getClass().getGenericSuperclass()` which returns `ParameterizedType`, then `getActualTypeArguments()[0]` to get `List<User>`. This is the "Super Type Token" pattern invented by Neal Gafter.
 
 </details>
-
 
 ## L.4 ResolvableType - Spring's Solution
 
@@ -1702,8 +1631,6 @@ Class<?> entityClass = listType.resolve();  // User.class
 
 ---
 
-
-
 🔬 **Section Challenge — L.4 ResolvableType - Spring's Solution**
 
 **Challenge 1 (Reasoning — Who/When/What):** `ResolvableType` lets Spring resolve `JpaRepository<User, Long>` to know the entity is `User`. **When** does Spring need this? **What** would fail without it?
@@ -1713,7 +1640,6 @@ Class<?> entityClass = listType.resolve();  // User.class
 **When?** During auto-configuration. Spring Data needs to know the entity type to: (1) generate the `SimpleJpaRepository` implementation, (2) configure the correct `EntityManager`, (3) validate `@Query` method return types. **What fails?** Without type resolution, `findAll()` would return `List<Object>` instead of `List<User>`. Custom query methods like `findByEmail(String)` couldn't be auto-implemented because Spring wouldn't know WHICH table to query. `ResolvableType` uses the same "generic superclass preservation" trick as TypeReference, but wraps it in a Spring-friendly API with caching and hierarchical resolution.
 
 </details>
-
 
 # SECTION M: BYTECODE & INSTRUMENTATION
 
@@ -1734,7 +1660,6 @@ Class<?> entityClass = listType.resolve();  // User.class
 │                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## M.1 Java Bytecode Basics
 
@@ -1764,7 +1689,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 // Spring Data generates AT RUNTIME:
 public class UserRepositoryImpl implements UserRepository {
-    
+
     @Override
     public List<User> findByLastName(String lastName) {
         // Generated query execution code
@@ -1773,7 +1698,7 @@ public class UserRepositoryImpl implements UserRepository {
             .setParameter("lastName", lastName)
             .getResultList();
     }
-    
+
     // All JpaRepository methods also implemented...
 }
 
@@ -1782,8 +1707,6 @@ public class UserRepositoryImpl implements UserRepository {
 // 2. Method name parsing ("findBy" + "LastName")
 // 3. Query generation
 ```
-
-
 
 🔬 **Section Challenge — M.2 How Spring Data Generates Repository Implementations**
 
@@ -1795,7 +1718,6 @@ public class UserRepositoryImpl implements UserRepository {
 
 </details>
 
-
 ## M.3 Hibernate Bytecode Enhancement
 
 ```java
@@ -1803,7 +1725,7 @@ public class UserRepositoryImpl implements UserRepository {
 public class User {
     @Id
     private Long id;
-    
+
     @OneToMany(fetch = FetchType.LAZY)
     private List<Order> orders;  // Lazy loaded
 }
@@ -1811,7 +1733,7 @@ public class User {
 // Hibernate enhances bytecode to add:
 public class User$HibernateProxy extends User {
     private boolean ordersLoaded = false;
-    
+
     @Override
     public List<Order> getOrders() {
         if (!ordersLoaded) {
@@ -1824,11 +1746,10 @@ public class User$HibernateProxy extends User {
 }
 ```
 
-
-
 🔬 **Section Challenge — M.3 Hibernate Bytecode Enhancement**
 
 **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -1844,9 +1765,10 @@ List<Order> findAllWithCustomer();
 @EntityGraph(attributePaths = "customer")
 List<Order> findAll();
 ```
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-</details>
 
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+
+</details>
 
 ## M.4 Java Agents
 
@@ -1855,7 +1777,7 @@ Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL l
 
 // Agent class (requires premain method)
 public class MyAgent {
-    
+
     public static void premain(String args, Instrumentation inst) {
         inst.addTransformer(new ClassFileTransformer() {
             @Override
@@ -1934,7 +1856,6 @@ public class MyAgent {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 🎯 INTERVIEW QUESTIONS ON HIDDEN FOUNDATIONS
@@ -1967,7 +1888,6 @@ public class MyAgent {
 ---
 
 _This foundation makes Spring LOGICAL instead of MAGICAL!_
-
 
 ---
 

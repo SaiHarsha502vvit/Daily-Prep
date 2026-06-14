@@ -1,4 +1,5 @@
 # Spring Boot Part 22: Complete Annotations Reference
+
 ## Every Important Annotation You Need to Know
 
 > **"Annotations are the DNA of Spring Boot - they define behavior without boilerplate"**
@@ -50,6 +51,7 @@
 ---
 
 ## 📚 Table of Contents
+
 1. [JPA Entity Lifecycle Annotations](#jpa-entity-lifecycle-annotations)
 2. [JPA Mapping Annotations](#jpa-mapping-annotations)
 3. [Spring Data Auditing](#spring-data-auditing)
@@ -124,33 +126,33 @@
 @Entity
 @Table(name = "users")
 public class User {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String email;
     private String password;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
-    
+
     @Transient  // Not persisted to database
     private String fullNameCache;
-    
+
     // ═══════════════════════════════════════════════════════════
     // LIFECYCLE CALLBACKS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @PrePersist - Called BEFORE entity is inserted
-     * 
+     *
      * USE CASES:
      * - Set creation timestamp
      * - Generate UUID
@@ -162,22 +164,22 @@ public class User {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        
+
         // Example: Hash password before saving
         if (this.password != null && !this.password.startsWith("$2a$")) {
             this.password = BCrypt.hashpw(this.password, BCrypt.gensalt());
         }
     }
-    
+
     /**
      * @PostPersist - Called AFTER entity is inserted
-     * 
+     *
      * USE CASES:
      * - Send notification (email, event)
      * - Audit logging
      * - Update related entities
      * - Trigger async processes
-     * 
+     *
      * NOTE: ID is now available!
      */
     @PostPersist
@@ -185,10 +187,10 @@ public class User {
         System.out.println("User created with ID: " + this.id);
         // Could trigger: eventPublisher.publish(new UserCreatedEvent(this));
     }
-    
+
     /**
      * @PreUpdate - Called BEFORE entity is updated
-     * 
+     *
      * USE CASES:
      * - Update modification timestamp
      * - Validate changes
@@ -199,10 +201,10 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-    
+
     /**
      * @PostUpdate - Called AFTER entity is updated
-     * 
+     *
      * USE CASES:
      * - Send change notifications
      * - Invalidate caches
@@ -212,10 +214,10 @@ public class User {
     protected void afterUpdate() {
         System.out.println("User " + this.id + " updated at " + this.updatedAt);
     }
-    
+
     /**
      * @PreRemove - Called BEFORE entity is deleted
-     * 
+     *
      * USE CASES:
      * - Validate deletion is allowed
      * - Clean up related resources (files, etc.)
@@ -228,10 +230,10 @@ public class User {
         // Could throw exception to prevent deletion
         // throw new IllegalStateException("Cannot delete active user");
     }
-    
+
     /**
      * @PostRemove - Called AFTER entity is deleted
-     * 
+     *
      * USE CASES:
      * - Send deletion notification
      * - Clean up external resources
@@ -241,10 +243,10 @@ public class User {
     protected void afterDelete() {
         System.out.println("User " + this.id + " has been deleted");
     }
-    
+
     /**
      * @PostLoad - Called AFTER entity is loaded from database
-     * 
+     *
      * USE CASES:
      * - Decrypt sensitive data
      * - Calculate transient fields
@@ -255,11 +257,11 @@ public class User {
     protected void onLoad() {
         // Calculate transient field after loading
         this.fullNameCache = calculateFullName();
-        
+
         // Could decrypt fields here
         // this.ssn = decrypt(this.encryptedSsn);
     }
-    
+
     private String calculateFullName() {
         return "User: " + this.email;
     }
@@ -271,7 +273,7 @@ public class User {
 ```java
 /**
  * @EntityListeners - Externalize lifecycle logic
- * 
+ *
  * WHY USE THIS:
  * - Separation of concerns
  * - Reusable across entities
@@ -281,28 +283,28 @@ public class User {
 @Entity
 @EntityListeners({AuditingEntityListener.class, CustomEntityListener.class})
 public class Order {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private BigDecimal amount;
-    
+
     @CreatedDate
     private LocalDateTime createdAt;
-    
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }
 
 // Custom Listener
 public class CustomEntityListener {
-    
+
     @PrePersist
     public void prePersist(Object entity) {
         System.out.println("About to persist: " + entity.getClass().getSimpleName());
     }
-    
+
     @PostPersist
     public void postPersist(Object entity) {
         // Publish event
@@ -310,7 +312,7 @@ public class CustomEntityListener {
             // applicationEventPublisher.publishEvent(new OrderCreatedEvent(order));
         }
     }
-    
+
     @PreUpdate
     public void preUpdate(Object entity) {
         System.out.println("About to update: " + entity.getClass().getSimpleName());
@@ -353,7 +355,7 @@ public class User {
 ```java
 @Entity
 public class Order {
-    
+
     /**
      * @Id - Marks primary key
      * @GeneratedValue - ID generation strategy
@@ -361,9 +363,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-increment
     private Long id;
-    
+
     // --- OR ---
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
     @SequenceGenerator(
@@ -372,15 +374,15 @@ public class Order {
         allocationSize = 50  // Performance: pre-allocate 50 IDs
     )
     private Long id;
-    
+
     // --- OR ---
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)  // Java 21+
     private UUID id;
-    
+
     // --- OR for Composite Keys ---
-    
+
     @EmbeddedId
     private OrderItemId id;
 }
@@ -390,13 +392,13 @@ public class Order {
  */
 @Embeddable
 public class OrderItemId implements Serializable {
-    
+
     @Column(name = "order_id")
     private Long orderId;
-    
+
     @Column(name = "product_id")
     private Long productId;
-    
+
     // equals() and hashCode() REQUIRED!
 }
 ```
@@ -406,11 +408,11 @@ public class OrderItemId implements Serializable {
 ```java
 @Entity
 public class Product {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @Column - Customize column mapping
      */
@@ -424,47 +426,47 @@ public class Product {
         updatable = true            // Include in UPDATE
     )
     private String name;
-    
+
     /**
      * @Basic - Basic type mapping (optional for simple types)
      */
     @Basic(fetch = FetchType.LAZY, optional = false)
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     /**
      * @Lob - Large Object (BLOB/CLOB)
      */
     @Lob
     @Column(name = "image_data")
     private byte[] image;
-    
+
     /**
      * @Enumerated - Enum mapping
      */
     @Enumerated(EnumType.STRING)  // Store as "ACTIVE", not 0
     @Column(name = "status", length = 20)
     private ProductStatus status;
-    
+
     /**
      * @Temporal - Date/Time mapping (pre-Java 8)
      * NOTE: Not needed for LocalDate, LocalDateTime, Instant
      */
     @Temporal(TemporalType.TIMESTAMP)
     private Date legacyDate;
-    
+
     /**
      * @Transient - NOT persisted to database
      */
     @Transient
     private BigDecimal calculatedDiscount;
-    
+
     /**
      * @Formula - Hibernate: calculated column from SQL
      */
     @Formula("(SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = id)")
     private Integer orderCount;
-    
+
     /**
      * @Generated - Value generated by database
      */
@@ -479,14 +481,14 @@ public class Product {
 ```java
 @Entity
 public class Order {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @ManyToOne - Many orders belong to one user
-     * 
+     *
      * FETCH TYPES:
      * - EAGER: Load immediately (default for @ManyToOne)
      * - LAZY: Load when accessed
@@ -498,10 +500,10 @@ public class Order {
         foreignKey = @ForeignKey(name = "fk_order_user")
     )
     private User user;
-    
+
     /**
      * @OneToMany - One order has many items
-     * 
+     *
      * CASCADE TYPES:
      * - PERSIST: Save children when parent saved
      * - MERGE: Update children when parent updated
@@ -509,7 +511,7 @@ public class Order {
      * - REFRESH: Refresh children when parent refreshed
      * - DETACH: Detach children when parent detached
      * - ALL: All of above
-     * 
+     *
      * ORPHAN REMOVAL: Delete children removed from collection
      */
     @OneToMany(
@@ -520,7 +522,7 @@ public class Order {
     )
     @OrderBy("createdAt DESC")        // Default ordering
     private List<OrderItem> items = new ArrayList<>();
-    
+
     /**
      * @OneToOne - One order has one payment
      */
@@ -531,13 +533,13 @@ public class Order {
         fetch = FetchType.LAZY
     )
     private Payment payment;
-    
+
     // Helper methods for bidirectional relationship
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
     }
-    
+
     public void removeItem(OrderItem item) {
         items.remove(item);
         item.setOrder(null);
@@ -546,15 +548,15 @@ public class Order {
 
 @Entity
 public class OrderItem {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
-    
+
     /**
      * @ManyToMany - Many-to-many relationship
      */
@@ -569,11 +571,11 @@ public class OrderItem {
 
 @Entity
 public class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * @OneToOne - Owning side with foreign key
      */
@@ -591,52 +593,52 @@ public class Payment {
  */
 @Embeddable
 public class Address {
-    
+
     @Column(name = "street", length = 200)
     private String street;
-    
+
     @Column(name = "city", length = 100)
     private String city;
-    
+
     @Column(name = "zip_code", length = 20)
     private String zipCode;
-    
+
     @Column(name = "country", length = 50)
     private String country;
 }
 
 @Entity
 public class Customer {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String name;
-    
+
     /**
      * @Embedded - Embed the Address component
      */
     @Embedded
     private Address billingAddress;
-    
+
     /**
      * @AttributeOverrides - Customize embedded column names
      * (Required when embedding same type multiple times)
      */
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "street", 
+        @AttributeOverride(name = "street",
             column = @Column(name = "shipping_street")),
-        @AttributeOverride(name = "city", 
+        @AttributeOverride(name = "city",
             column = @Column(name = "shipping_city")),
-        @AttributeOverride(name = "zipCode", 
+        @AttributeOverride(name = "zipCode",
             column = @Column(name = "shipping_zip")),
-        @AttributeOverride(name = "country", 
+        @AttributeOverride(name = "country",
             column = @Column(name = "shipping_country"))
     })
     private Address shippingAddress;
-    
+
     /**
      * @ElementCollection - Collection of embeddables or basic types
      */
@@ -655,7 +657,7 @@ public class Customer {
 ```java
 /**
  * @Inheritance - Entity inheritance strategy
- * 
+ *
  * STRATEGIES:
  * - SINGLE_TABLE: All classes in one table (default, best performance)
  * - JOINED: Each class has own table with foreign keys
@@ -668,11 +670,11 @@ public class Customer {
     discriminatorType = DiscriminatorType.STRING
 )
 public abstract class Payment {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private BigDecimal amount;
     private LocalDateTime paymentDate;
 }
@@ -680,10 +682,10 @@ public abstract class Payment {
 @Entity
 @DiscriminatorValue("CREDIT_CARD")
 public class CreditCardPayment extends Payment {
-    
+
     @Column(name = "card_number")
     private String cardNumber;
-    
+
     @Column(name = "expiry_date")
     private String expiryDate;
 }
@@ -691,10 +693,10 @@ public class CreditCardPayment extends Payment {
 @Entity
 @DiscriminatorValue("BANK_TRANSFER")
 public class BankTransferPayment extends Payment {
-    
+
     @Column(name = "bank_account")
     private String bankAccount;
-    
+
     @Column(name = "routing_number")
     private String routingNumber;
 }
@@ -729,7 +731,7 @@ public class Car extends Vehicle {
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaConfig {
-    
+
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> {
@@ -753,35 +755,35 @@ public class JpaConfig {
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable {
-    
+
     /**
      * @CreatedDate - Automatically set on entity creation
      */
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
     /**
      * @LastModifiedDate - Automatically updated on entity modification
      */
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    
+
     /**
      * @CreatedBy - Who created this entity
      */
     @CreatedBy
     @Column(name = "created_by", updatable = false)
     private String createdBy;
-    
+
     /**
      * @LastModifiedBy - Who last modified this entity
      */
     @LastModifiedBy
     @Column(name = "updated_by")
     private String updatedBy;
-    
+
     /**
      * @Version - Optimistic locking
      * Prevents lost updates in concurrent scenarios
@@ -789,7 +791,7 @@ public abstract class Auditable {
     @Version
     @Column(name = "version")
     private Long version;
-    
+
     // Getters and setters
 }
 
@@ -797,14 +799,14 @@ public abstract class Auditable {
 @Entity
 @Table(name = "products")
 public class Product extends Auditable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String name;
     private BigDecimal price;
-    
+
     // All audit fields inherited!
 }
 ```
@@ -820,60 +822,60 @@ import jakarta.validation.constraints.*;
 
 @Entity
 public class UserRegistration {
-    
+
     // ═══════════════════════════════════════════════════════════
     // NULL CHECKS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @NotNull - Field cannot be null
      */
     @NotNull(message = "ID is required")
     private Long id;
-    
+
     /**
      * @NotEmpty - Not null AND not empty (for collections, strings)
      */
     @NotEmpty(message = "Roles cannot be empty")
     private List<String> roles;
-    
+
     /**
      * @NotBlank - Not null AND not empty AND not whitespace only
      * Use for business fields that need actual content
      */
     @NotBlank(message = "Name is required")
     private String name;
-    
+
     // ═══════════════════════════════════════════════════════════
     // SIZE CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Size - String length or collection size
      */
     @Size(min = 3, max = 50, message = "Username must be 3-50 characters")
     private String username;
-    
+
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
-    
+
     /**
      * @Length - Hibernate validator (same as @Size for strings)
      */
     @Length(min = 2, max = 100)
     private String bio;
-    
+
     // ═══════════════════════════════════════════════════════════
     // NUMERIC CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Min / @Max - Numeric bounds (inclusive)
      */
     @Min(value = 0, message = "Age cannot be negative")
     @Max(value = 150, message = "Age is too high")
     private Integer age;
-    
+
     /**
      * @Positive - Must be > 0
      * @PositiveOrZero - Must be >= 0
@@ -882,34 +884,34 @@ public class UserRegistration {
      */
     @Positive(message = "Price must be positive")
     private BigDecimal price;
-    
+
     @PositiveOrZero(message = "Quantity cannot be negative")
     private Integer quantity;
-    
+
     /**
      * @Digits - Digit constraints for decimals
      */
     @Digits(integer = 10, fraction = 2, message = "Invalid amount format")
     private BigDecimal amount;
-    
+
     /**
      * @DecimalMin / @DecimalMax - Decimal bounds
      */
     @DecimalMin(value = "0.01", message = "Minimum price is 0.01")
     @DecimalMax(value = "999999.99", message = "Maximum price exceeded")
     private BigDecimal unitPrice;
-    
+
     // ═══════════════════════════════════════════════════════════
     // STRING PATTERNS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Email - Valid email format
      */
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
-    
+
     /**
      * @Pattern - Regular expression validation
      */
@@ -918,62 +920,62 @@ public class UserRegistration {
         message = "Invalid phone number format"
     )
     private String phoneNumber;
-    
+
     @Pattern(
         regexp = "^[A-Z]{2}[0-9]{6}$",
         message = "Invalid passport format"
     )
     private String passportNumber;
-    
+
     // ═══════════════════════════════════════════════════════════
     // DATE/TIME CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Past - Must be in the past
      * @PastOrPresent - Must be in past or now
      */
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
-    
+
     @PastOrPresent(message = "Registration date cannot be in future")
     private LocalDateTime registrationDate;
-    
+
     /**
      * @Future - Must be in the future
      * @FutureOrPresent - Must be in future or now
      */
     @Future(message = "Expiry date must be in the future")
     private LocalDate expiryDate;
-    
+
     @FutureOrPresent(message = "Start date cannot be in the past")
     private LocalDateTime startDate;
-    
+
     // ═══════════════════════════════════════════════════════════
     // BOOLEAN CONSTRAINTS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @AssertTrue - Must be true
      * @AssertFalse - Must be false
      */
     @AssertTrue(message = "You must accept the terms")
     private Boolean termsAccepted;
-    
+
     @AssertFalse(message = "User must not be blocked")
     private Boolean isBlocked;
-    
+
     // ═══════════════════════════════════════════════════════════
     // NESTED/CASCADED VALIDATION
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Valid - Triggers validation of nested object
      */
     @Valid
     @NotNull(message = "Address is required")
     private Address address;
-    
+
     @Valid
     @NotEmpty(message = "At least one contact is required")
     private List<Contact> contacts;
@@ -1000,18 +1002,18 @@ public @interface ValidPassword {
  * Validator Implementation
  */
 public class PasswordValidator implements ConstraintValidator<ValidPassword, String> {
-    
+
     @Override
     public void initialize(ValidPassword constraintAnnotation) {
         // Initialize if needed
     }
-    
+
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
         if (password == null) {
             return false;
         }
-        
+
         // At least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
         return password.length() >= 8
             && password.matches(".*[A-Z].*")
@@ -1023,7 +1025,7 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
 
 // Usage
 public class User {
-    
+
     @ValidPassword
     private String password;
 }
@@ -1042,23 +1044,23 @@ public @interface PasswordMatch {
     String message() default "Passwords do not match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-    
+
     String password();
     String confirmPassword();
 }
 
-public class PasswordMatchValidator 
+public class PasswordMatchValidator
     implements ConstraintValidator<PasswordMatch, Object> {
-    
+
     private String passwordField;
     private String confirmField;
-    
+
     @Override
     public void initialize(PasswordMatch annotation) {
         this.passwordField = annotation.password();
         this.confirmField = annotation.confirmPassword();
     }
-    
+
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
         try {
@@ -1066,7 +1068,7 @@ public class PasswordMatchValidator
                 .getReadMethod().invoke(obj);
             Object confirm = BeanUtils.getPropertyDescriptor(obj.getClass(), confirmField)
                 .getReadMethod().invoke(obj);
-            
+
             return password != null && password.equals(confirm);
         } catch (Exception e) {
             return false;
@@ -1092,14 +1094,14 @@ public interface OnCreate {}
 public interface OnUpdate {}
 
 public class User {
-    
+
     @Null(groups = OnCreate.class, message = "ID must be null for new users")
     @NotNull(groups = OnUpdate.class, message = "ID is required for updates")
     private Long id;
-    
+
     @NotBlank(groups = {OnCreate.class, OnUpdate.class})
     private String name;
-    
+
     @NotBlank(groups = OnCreate.class, message = "Password required for registration")
     private String password;
 }
@@ -1174,7 +1176,7 @@ public class UserApiController {
  */
 @Configuration
 public class AppConfig {
-    
+
     /**
      * @Bean - Method produces a Spring bean
      */
@@ -1184,7 +1186,7 @@ public class AppConfig {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
-    
+
     /**
      * @Bean with dependencies (injected via method parameters)
      */
@@ -1200,52 +1202,52 @@ public class AppConfig {
 ```java
 @Service
 public class OrderService {
-    
+
     // ═══════════════════════════════════════════════════════════
     // CONSTRUCTOR INJECTION (RECOMMENDED)
     // ═══════════════════════════════════════════════════════════
-    
+
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
-    
+
     /**
      * @Autowired - Not required on single constructor (Spring 4.3+)
      */
-    public OrderService(UserRepository userRepository, 
+    public OrderService(UserRepository userRepository,
                         OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
-    
+
     // ═══════════════════════════════════════════════════════════
     // FIELD INJECTION (NOT RECOMMENDED for production code)
     // ═══════════════════════════════════════════════════════════
-    
+
     @Autowired
     private EmailService emailService;  // Hard to test!
-    
+
     // ═══════════════════════════════════════════════════════════
     // SETTER INJECTION
     // ═══════════════════════════════════════════════════════════
-    
+
     private NotificationService notificationService;
-    
+
     @Autowired
     public void setNotificationService(NotificationService service) {
         this.notificationService = service;
     }
-    
+
     // ═══════════════════════════════════════════════════════════
     // QUALIFIER & PRIMARY
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @Qualifier - Select specific bean by name
      */
     @Autowired
     @Qualifier("emailNotificationService")
     private NotificationService emailNotification;
-    
+
     /**
      * @Primary - Used on bean definition to make it the default
      */
@@ -1302,7 +1304,7 @@ public class RequestScopedWithProxy {
 ```java
 @Component
 public class DatabaseInitializer {
-    
+
     /**
      * @PostConstruct - Called after dependency injection
      * Use for initialization logic
@@ -1312,7 +1314,7 @@ public class DatabaseInitializer {
         System.out.println("Bean initialized, dependencies injected");
         // Initialize resources, validate configuration, etc.
     }
-    
+
     /**
      * @PreDestroy - Called before bean destruction
      * Use for cleanup logic
@@ -1331,36 +1333,36 @@ public class DatabaseInitializer {
 @Component
 @ConfigurationProperties(prefix = "app.mail")
 public class MailProperties {
-    
+
     private String host;
     private int port;
     private String username;
     private String password;
-    
+
     // Getters and setters required for @ConfigurationProperties
 }
 
 @Service
 public class EmailService {
-    
+
     /**
      * @Value - Inject property values
      */
     @Value("${app.name}")
     private String appName;
-    
+
     @Value("${app.mail.host:localhost}")  // With default value
     private String mailHost;
-    
+
     @Value("${app.feature.enabled:false}")
     private boolean featureEnabled;
-    
+
     @Value("#{${app.servers}}")  // SpEL for lists: app.servers=server1,server2
     private List<String> servers;
-    
+
     @Value("#{systemProperties['user.home']}")  // System property
     private String userHome;
-    
+
     @Value("#{environment['PATH']}")  // Environment variable
     private String path;
 }
@@ -1375,7 +1377,7 @@ public class EmailService {
 @Configuration
 @Profile("dev")
 public class DevConfig {
-    
+
     @Bean
     public DataSource dataSource() {
         // H2 in-memory database for development
@@ -1388,7 +1390,7 @@ public class DevConfig {
 @Configuration
 @Profile("prod")
 public class ProdConfig {
-    
+
     @Bean
     public DataSource dataSource() {
         // PostgreSQL for production
@@ -1417,7 +1419,7 @@ public class NonProdConfig {}
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
-    
+
     /**
      * @GetMapping - HTTP GET
      */
@@ -1425,12 +1427,12 @@ public class UserController {
     public List<User> findAll() {
         return userService.findAll();
     }
-    
+
     @GetMapping("/{id}")
     public User findById(@PathVariable Long id) {
         return userService.findById(id);
     }
-    
+
     /**
      * @PostMapping - HTTP POST
      */
@@ -1439,16 +1441,16 @@ public class UserController {
     public User create(@Valid @RequestBody CreateUserRequest request) {
         return userService.create(request);
     }
-    
+
     /**
      * @PutMapping - HTTP PUT (full update)
      */
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, 
+    public User update(@PathVariable Long id,
                        @Valid @RequestBody UpdateUserRequest request) {
         return userService.update(id, request);
     }
-    
+
     /**
      * @PatchMapping - HTTP PATCH (partial update)
      */
@@ -1457,7 +1459,7 @@ public class UserController {
                               @RequestBody Map<String, Object> updates) {
         return userService.partialUpdate(id, updates);
     }
-    
+
     /**
      * @DeleteMapping - HTTP DELETE
      */
@@ -1466,11 +1468,11 @@ public class UserController {
     public void delete(@PathVariable Long id) {
         userService.delete(id);
     }
-    
+
     // ═══════════════════════════════════════════════════════════
     // PARAMETER ANNOTATIONS
     // ═══════════════════════════════════════════════════════════
-    
+
     /**
      * @PathVariable - Extract from URL path
      */
@@ -1480,7 +1482,7 @@ public class UserController {
             @PathVariable("orderId") Long orderId) {  // Custom name
         return orderService.findByUserAndId(userId, orderId);
     }
-    
+
     /**
      * @RequestParam - Extract from query string
      */
@@ -1492,7 +1494,7 @@ public class UserController {
             @RequestParam(name = "sort", defaultValue = "id") String sortField) {
         return userService.search(name, PageRequest.of(page, size, Sort.by(sortField)));
     }
-    
+
     /**
      * @RequestHeader - Extract from HTTP header
      */
@@ -1502,7 +1504,7 @@ public class UserController {
             @RequestHeader(value = "X-Request-ID", required = false) String requestId) {
         return userService.getCurrentUser(authHeader);
     }
-    
+
     /**
      * @CookieValue - Extract from cookie
      */
@@ -1511,7 +1513,7 @@ public class UserController {
             @CookieValue(value = "session-id", required = false) String sessionId) {
         return preferencesService.getBySession(sessionId);
     }
-    
+
     /**
      * @RequestBody - Deserialize JSON body
      */
@@ -1519,7 +1521,7 @@ public class UserController {
     public List<User> createBulk(@Valid @RequestBody List<CreateUserRequest> requests) {
         return userService.createAll(requests);
     }
-    
+
     /**
      * @ModelAttribute - Form data binding (for MVC)
      */
@@ -1540,7 +1542,7 @@ public class UserController {
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-    
+
     /**
      * @ExceptionHandler - Handle specific exception
      */
@@ -1550,7 +1552,7 @@ public class GlobalExceptionHandler {
         log.warn("Resource not found: {}", ex.getMessage());
         return new ErrorResponse("NOT_FOUND", ex.getMessage());
     }
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(MethodArgumentNotValidException ex) {
@@ -1562,10 +1564,10 @@ public class GlobalExceptionHandler {
                 FieldError::getDefaultMessage,
                 (a, b) -> a  // Handle duplicates
             ));
-        
+
         return new ErrorResponse("VALIDATION_FAILED", "Validation failed", errors);
     }
-    
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGeneric(Exception ex) {
@@ -1580,7 +1582,7 @@ public class GlobalExceptionHandler {
 ```java
 @RestController
 public class FileController {
-    
+
     /**
      * @ResponseBody - Return value is response body (default in @RestController)
      */
@@ -1589,7 +1591,7 @@ public class FileController {
     public Data getData() {
         return new Data();
     }
-    
+
     /**
      * @ResponseStatus - Set HTTP status code
      */
@@ -1598,7 +1600,7 @@ public class FileController {
     public Item createItem(@RequestBody Item item) {
         return itemService.create(item);
     }
-    
+
     @DeleteMapping("/items/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)  // 204
     public void deleteItem(@PathVariable Long id) {
@@ -1623,7 +1625,7 @@ public class SecurityConfig {}
 
 @Service
 public class UserService {
-    
+
     /**
      * @PreAuthorize - Check before method execution
      * SpEL expressions supported
@@ -1632,27 +1634,27 @@ public class UserService {
     public void deleteUser(Long userId) {
         // Only admins can delete
     }
-    
+
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public List<User> getAllUsers() {
         // Admin or Manager
     }
-    
+
     @PreAuthorize("hasAuthority('user:read')")
     public User getUser(Long id) {
         // Has specific authority
     }
-    
+
     @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public User getUserProfile(Long userId) {
         // Own profile or admin
     }
-    
+
     @PreAuthorize("@securityService.canAccessUser(#userId)")
     public User getSecuredUser(Long userId) {
         // Custom security check via bean method
     }
-    
+
     /**
      * @PostAuthorize - Check after method execution
      * Can use 'returnObject'
@@ -1661,7 +1663,7 @@ public class UserService {
     public Document getDocument(Long id) {
         return documentRepository.findById(id).orElseThrow();
     }
-    
+
     /**
      * @PreFilter - Filter collection parameter before execution
      */
@@ -1669,7 +1671,7 @@ public class UserService {
     public void deleteDocuments(List<Document> documents) {
         // Only deletes documents owned by current user
     }
-    
+
     /**
      * @PostFilter - Filter collection result after execution
      */
@@ -1677,16 +1679,16 @@ public class UserService {
     public List<Document> getDocuments() {
         return documentRepository.findAll();
     }
-    
+
     /**
      * @Secured - Simpler role check (no SpEL)
      */
     @Secured("ROLE_ADMIN")
     public void adminOnly() {}
-    
+
     @Secured({"ROLE_ADMIN", "ROLE_MANAGER"})
     public void adminOrManager() {}
-    
+
     /**
      * @RolesAllowed - JSR-250 standard
      */
@@ -1705,7 +1707,7 @@ public class UserService {
 @Configuration
 @EnableCaching
 public class CacheConfig {
-    
+
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager manager = new CaffeineCacheManager();
@@ -1722,7 +1724,7 @@ public class CacheConfig {
 ```java
 @Service
 public class ProductService {
-    
+
     /**
      * @Cacheable - Cache method result
      * Next call with same params returns cached value
@@ -1732,7 +1734,7 @@ public class ProductService {
         // Only called if not in cache
         return productRepository.findById(id).orElseThrow();
     }
-    
+
     @Cacheable(
         value = "products",
         key = "#root.methodName + '_' + #name",
@@ -1742,7 +1744,7 @@ public class ProductService {
     public Product findByName(String name) {
         return productRepository.findByName(name);
     }
-    
+
     /**
      * @CachePut - Always execute and update cache
      */
@@ -1751,7 +1753,7 @@ public class ProductService {
         // Always executed, result cached
         return productRepository.save(product);
     }
-    
+
     /**
      * @CacheEvict - Remove from cache
      */
@@ -1759,23 +1761,23 @@ public class ProductService {
     public void delete(Long id) {
         productRepository.deleteById(id);
     }
-    
+
     @CacheEvict(value = "products", allEntries = true)
     public void clearCache() {
         // Clears entire cache
     }
-    
+
     @CacheEvict(value = "products", allEntries = true, beforeInvocation = true)
     public void refreshAll() {
         // Clears cache before method executes (even if exception thrown)
     }
-    
+
     /**
      * @Caching - Multiple cache operations
      */
     @Caching(
         put = { @CachePut(value = "products", key = "#product.id") },
-        evict = { 
+        evict = {
             @CacheEvict(value = "productList", allEntries = true),
             @CacheEvict(value = "productCount", allEntries = true)
         }
@@ -1796,7 +1798,7 @@ public class ProductService {
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
-    
+
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -1807,7 +1809,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.initialize();
         return executor;
     }
-    
+
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return (ex, method, params) -> {
@@ -1822,7 +1824,7 @@ public class AsyncConfig implements AsyncConfigurer {
 ```java
 @Service
 public class NotificationService {
-    
+
     /**
      * @Async - Execute method asynchronously
      * Method must be public and called from another bean!
@@ -1832,7 +1834,7 @@ public class NotificationService {
         // Runs in separate thread
         emailSender.send(to, subject, body);
     }
-    
+
     /**
      * @Async with Future return type
      */
@@ -1841,7 +1843,7 @@ public class NotificationService {
         boolean result = smsSender.send(phone, message);
         return CompletableFuture.completedFuture(result);
     }
-    
+
     /**
      * @Async with specific executor
      */
@@ -1862,10 +1864,10 @@ public class SchedulingConfig {}
 @Component
 @Slf4j
 public class ScheduledTasks {
-    
+
     /**
      * @Scheduled - Execute periodically
-     * 
+     *
      * fixedRate: Run every N ms (may overlap)
      * fixedDelay: Wait N ms after completion before next run
      * initialDelay: Wait before first execution
@@ -1874,12 +1876,12 @@ public class ScheduledTasks {
     public void checkHealthEveryMinute() {
         log.info("Health check at {}", LocalDateTime.now());
     }
-    
+
     @Scheduled(fixedDelay = 30000, initialDelay = 10000)
     public void cleanupWithDelay() {
         // First run 10s after startup, then 30s after each completion
     }
-    
+
     /**
      * Cron expressions (second minute hour day month weekday)
      */
@@ -1887,22 +1889,22 @@ public class ScheduledTasks {
     public void nightlyCleanup() {
         log.info("Running nightly cleanup");
     }
-    
+
     @Scheduled(cron = "0 */15 * * * *")  // Every 15 minutes
     public void quarterHourTask() {}
-    
+
     @Scheduled(cron = "0 0 9 * * MON-FRI")  // 9 AM weekdays
     public void weekdayMorningReport() {}
-    
+
     @Scheduled(cron = "0 0 0 1 * *")  // First day of each month
     public void monthlyReport() {}
-    
+
     /**
      * Externalized cron
      */
     @Scheduled(cron = "${app.cleanup.cron:0 0 3 * * *}")
     public void configurableTask() {}
-    
+
     /**
      * @Schedules - Multiple schedules
      */
@@ -2006,10 +2008,10 @@ public class ScheduledTasks {
 @Service
 @Transactional  // Class-level: all public methods are transactional
 public class OrderService {
-    
+
     /**
      * @Transactional - Method-level overrides class-level
-     * 
+     *
      * PROPAGATION:
      * - REQUIRED (default): Join existing or create new
      * - REQUIRES_NEW: Always create new (suspend current)
@@ -2023,13 +2025,13 @@ public class OrderService {
     public Order createOrder(Order order) {
         return orderRepository.save(order);
     }
-    
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void logAction(String action) {
         // New transaction - commits even if calling tx rolls back
         auditRepository.save(new AuditLog(action));
     }
-    
+
     /**
      * ISOLATION LEVELS:
      * - DEFAULT: Database default
@@ -2042,12 +2044,12 @@ public class OrderService {
     public void transferMoney(Long fromId, Long toId, BigDecimal amount) {
         // Highest isolation for financial operations
     }
-    
+
     /**
      * ROLLBACK RULES:
      * - rollbackFor: Rollback on these exceptions
      * - noRollbackFor: Don't rollback on these exceptions
-     * 
+     *
      * Default: Rollback on RuntimeException & Error
      *          NO rollback on checked exceptions
      */
@@ -2059,7 +2061,7 @@ public class OrderService {
         // Rolls back on BusinessException or IOException
         // Does NOT rollback on NonCriticalException
     }
-    
+
     /**
      * READ-ONLY:
      * Optimization hint - can skip dirty checking
@@ -2068,7 +2070,7 @@ public class OrderService {
     public List<Order> getOrders() {
         return orderRepository.findAll();
     }
-    
+
     /**
      * TIMEOUT:
      * Transaction timeout in seconds
@@ -2101,17 +2103,17 @@ class ApplicationTests {
  */
 @WebMvcTest(UserController.class)
 class UserControllerTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @MockBean  // Mock service layer
     private UserService userService;
-    
+
     @Test
     void shouldReturnUser() throws Exception {
         given(userService.findById(1L)).willReturn(new User(1L, "John"));
-        
+
         mockMvc.perform(get("/api/users/1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name").value("John"));
@@ -2123,20 +2125,20 @@ class UserControllerTest {
  */
 @DataJpaTest
 class UserRepositoryTest {
-    
+
     @Autowired
     private TestEntityManager entityManager;
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @Test
     void shouldFindByEmail() {
         User user = new User("john@email.com", "John");
         entityManager.persistAndFlush(user);
-        
+
         Optional<User> found = userRepository.findByEmail("john@email.com");
-        
+
         assertThat(found).isPresent();
     }
 }
@@ -2146,10 +2148,10 @@ class UserRepositoryTest {
  */
 @SpringBootTest
 class ServiceTest {
-    
+
     @MockBean  // Full mock - all methods return defaults
     private ExternalService externalService;
-    
+
     @SpyBean  // Partial mock - real methods unless stubbed
     private UserService userService;
 }
@@ -2159,56 +2161,56 @@ class ServiceTest {
 
 ```java
 class UserServiceTest {
-    
+
     @BeforeAll
     static void setupClass() {
         // Run once before all tests
     }
-    
+
     @AfterAll
     static void teardownClass() {
         // Run once after all tests
     }
-    
+
     @BeforeEach
     void setup() {
         // Run before each test
     }
-    
+
     @AfterEach
     void cleanup() {
         // Run after each test
     }
-    
+
     @Test
     void shouldDoSomething() {}
-    
+
     @Test
     @DisplayName("Should create user when valid data provided")
     void createUserTest() {}
-    
+
     @Test
     @Disabled("Fix in next sprint")
     void brokenTest() {}
-    
+
     @RepeatedTest(5)
     void shouldBeConsistent() {}
-    
+
     @ParameterizedTest
     @ValueSource(strings = {"john@email.com", "jane@email.com"})
     void shouldAcceptValidEmails(String email) {}
-    
+
     @ParameterizedTest
     @CsvSource({"1, John", "2, Jane"})
     void shouldHandleMultipleParams(Long id, String name) {}
-    
+
     @Nested
     @DisplayName("When user exists")
     class WhenUserExists {
-        
+
         @Test
         void shouldReturnUser() {}
-        
+
         @Test
         void shouldUpdateUser() {}
     }
@@ -2220,26 +2222,26 @@ class UserServiceTest {
 ```java
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    
+
     @Mock  // Create mock
     private UserRepository userRepository;
-    
+
     @Spy  // Partial mock
     private EmailService emailService;
-    
+
     @InjectMocks  // Inject mocks into this
     private UserService userService;
-    
+
     @Captor  // Capture arguments
     private ArgumentCaptor<User> userCaptor;
-    
+
     @Test
     void shouldSaveUser() {
         User user = new User("test@email.com");
         when(userRepository.save(any(User.class))).thenReturn(user);
-        
+
         userService.create(user);
-        
+
         verify(userRepository).save(userCaptor.capture());
         assertThat(userCaptor.getValue().getEmail()).isEqualTo("test@email.com");
     }
@@ -2276,10 +2278,10 @@ public class CreateUserRequest {
 @AllArgsConstructor
 public class Order {
     private Long id;
-    
+
     @Builder.Default  // Default value in builder
     private OrderStatus status = OrderStatus.PENDING;
-    
+
     @Singular  // For collections: addItem(), items()
     private List<OrderItem> items;
 }
@@ -2307,7 +2309,7 @@ public class User {
  */
 @Slf4j
 public class UserService {
-    
+
     public void process() {
         log.info("Processing...");
         log.debug("Debug: {}", data);
@@ -2364,13 +2366,13 @@ public void processFile() {
 @ToString(exclude = "orders")  // Avoid lazy loading issues
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
-    
+
     @Id
     @EqualsAndHashCode.Include  // Only use ID for equals/hashCode
     private Long id;
-    
+
     private String name;
-    
+
     @OneToMany(mappedBy = "user")
     private List<Order> orders;  // Excluded from toString
 }
@@ -2383,7 +2385,7 @@ public class User {
 ```java
 @Configuration
 public class ConditionalConfig {
-    
+
     /**
      * @ConditionalOnProperty - Based on property value
      */
@@ -2396,7 +2398,7 @@ public class ConditionalConfig {
     public FeatureService featureService() {
         return new FeatureService();
     }
-    
+
     /**
      * @ConditionalOnMissingBean - Only if bean doesn't exist
      */
@@ -2405,7 +2407,7 @@ public class ConditionalConfig {
     public DataSource defaultDataSource() {
         return new EmbeddedDatabaseBuilder().build();
     }
-    
+
     /**
      * @ConditionalOnBean - Only if bean exists
      */
@@ -2414,7 +2416,7 @@ public class ConditionalConfig {
     public CacheManager redisCacheManager(RedisConnectionFactory factory) {
         return RedisCacheManager.builder(factory).build();
     }
-    
+
     /**
      * @ConditionalOnClass - Only if class is on classpath
      */
@@ -2423,7 +2425,7 @@ public class ConditionalConfig {
     public DataSource postgresDataSource() {
         return new HikariDataSource();
     }
-    
+
     /**
      * @ConditionalOnMissingClass - Only if class is NOT on classpath
      */
@@ -2432,7 +2434,7 @@ public class ConditionalConfig {
     public DataSource nonOracleDataSource() {
         return new EmbeddedDatabaseBuilder().build();
     }
-    
+
     /**
      * @ConditionalOnExpression - SpEL expression
      */
@@ -2441,7 +2443,7 @@ public class ConditionalConfig {
     public AdvancedFeature advancedFeature() {
         return new AdvancedFeature();
     }
-    
+
     /**
      * @ConditionalOnWebApplication - Only in web context
      * @ConditionalOnNotWebApplication - Only in non-web context
@@ -2461,7 +2463,7 @@ public class ConditionalConfig {
 ```java
 @Entity
 public class Product {
-    
+
     /**
      * @NaturalId - Business key (unique, immutable)
      * Enables naturalId() queries
@@ -2469,33 +2471,33 @@ public class Product {
     @NaturalId
     @Column(nullable = false, unique = true, updatable = false)
     private String sku;
-    
+
     /**
      * @Formula - Calculated field using SQL
      * Not stored in database
      */
     @Formula("(SELECT COUNT(*) FROM order_items WHERE product_id = id)")
     private Integer totalOrders;
-    
+
     @Formula("price * (1 - discount_percent / 100)")
     private BigDecimal effectivePrice;
-    
+
     /**
      * @Where - Default WHERE clause for entity/collection
      */
     @Where(clause = "deleted = false")  // Soft delete filter
     @OneToMany(mappedBy = "product")
     private List<Review> reviews;
-    
+
     /**
      * @Filter - Dynamic, parameterized filter
      */
-    @FilterDef(name = "statusFilter", 
+    @FilterDef(name = "statusFilter",
                parameters = @ParamDef(name = "status", type = String.class))
     @Filter(name = "statusFilter", condition = "status = :status")
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems;
-    
+
     /**
      * @DynamicUpdate - Only include changed columns in UPDATE
      * Reduces SQL size, better for auditing
@@ -2503,7 +2505,7 @@ public class Product {
     @DynamicUpdate
     @DynamicInsert  // Only non-null columns in INSERT
     private String description;
-    
+
     /**
      * @BatchSize - Batch loading for collections
      * Reduces N+1 queries
@@ -2511,36 +2513,36 @@ public class Product {
     @BatchSize(size = 25)
     @OneToMany(mappedBy = "product")
     private Set<Image> images;
-    
+
     /**
      * @Fetch - Fetch strategy
      */
     @Fetch(FetchMode.SUBSELECT)  // One subselect for all collections
     @OneToMany(mappedBy = "product")
     private List<Tag> tags;
-    
+
     /**
      * @Immutable - Entity cannot be updated
      */
     // @Immutable on class level
-    
+
     /**
      * @CreationTimestamp / @UpdateTimestamp
      * Hibernate-managed timestamps
      */
     @CreationTimestamp
     private LocalDateTime createdAt;
-    
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
+
     /**
      * @Type - Custom type mapping (Hibernate 6+)
      */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> metadata;
-    
+
     /**
      * @ColumnTransformer - Read/write transformations
      */
@@ -2619,6 +2621,7 @@ public class Product {
 ## Interview Questions
 
 **Q1: What's the difference between @PrePersist and @CreatedDate?**
+
 ```
 @PrePersist:
 - JPA standard callback
@@ -2634,6 +2637,7 @@ public class Product {
 ```
 
 **Q2: Why doesn't @Transactional work on private methods?**
+
 ```
 Because Spring uses proxies for @Transactional:
 - JDK proxy or CGLIB creates wrapper around your bean
@@ -2643,6 +2647,7 @@ Because Spring uses proxies for @Transactional:
 ```
 
 **Q3: @NotNull vs @NotEmpty vs @NotBlank?**
+
 ```
 @NotNull: value != null
   - null ❌, "" ✅, "  " ✅, "abc" ✅
@@ -2655,6 +2660,7 @@ Because Spring uses proxies for @Transactional:
 ```
 
 **Q4: When to use @EntityListeners vs inline callbacks?**
+
 ```
 Inline callbacks (@PrePersist on entity):
 - Simple, entity-specific logic
@@ -2670,4 +2676,4 @@ Inline callbacks (@PrePersist on entity):
 
 ---
 
-*This completes the Spring Boot Annotations Reference - bookmark this for quick lookup!*
+_This completes the Spring Boot Annotations Reference - bookmark this for quick lookup!_

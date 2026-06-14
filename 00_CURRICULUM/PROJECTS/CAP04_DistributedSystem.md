@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*Design "PulseNews" — a social news feed platform where 10 million users can post articles, follow other users, and receive a personalized ranked feed. Target: P99 feed load < 200ms, 99.99% availability, support 50k writes/second at peak.*
+_Design "PulseNews" — a social news feed platform where 10 million users can post articles, follow other users, and receive a personalized ranked feed. Target: P99 feed load < 200ms, 99.99% availability, support 50k writes/second at peak._
 
 ---
 
@@ -104,10 +104,12 @@ CREATE TABLE articles (
 ### 1.4 Feed Delivery Strategy: Hybrid Fan-Out
 
 **Problem:** Two extremes fail at scale:
+
 - **Pure Push (Fan-Out-on-Write):** On every article post, write to all N followers' feed lists. If a celebrity has 10M followers, 1 post = 10M Redis writes — catastrophic.
 - **Pure Pull (Fan-Out-on-Read):** On every feed read, query all followees for recent articles. If a user follows 1000 people, 1 feed load = 1000 DB queries — catastrophic.
 
 **Solution: Hybrid Fan-Out**
+
 1. Regular users (<10k followers): Fan-out-on-write. When they post, FanoutService writes to all followers' Redis sorted sets.
 2. Celebrities (>10k followers): Fan-out-on-read. Their articles are fetched directly and merged with the pre-computed feed at read time.
 
@@ -125,12 +127,12 @@ import math
 def rank_score(article, viewer, current_time):
     recency_hours = (current_time - article.published_at).total_seconds() / 3600
     recency_decay = math.exp(-recency_hours / 24)   # half-life of 24 hours
-    
+
     affinity = viewer.author_affinity.get(article.author_id, 0.5)  # 0-1
-    
+
     engagement = (article.likes + 3 * article.comments + 0.5 * article.views) \
                  / max(1, (current_time - article.published_at).total_seconds() / 3600)
-    
+
     return (0.4 * recency_decay) + (0.4 * affinity) + (0.2 * min(engagement / 100, 1))
 ```
 
@@ -138,12 +140,12 @@ def rank_score(article, viewer, current_time):
 
 ### 1.6 Caching Strategy
 
-| Layer | Cache | TTL | What is cached |
-|---|---|---|---|
-| API Gateway | CDN (CloudFront) | 5 min | Public article content |
-| Feed Service | Redis Sorted Set | 24h | Per-user feed list (article IDs) |
-| Article Service | Redis Hash | 1h | Article metadata (title, author, likes) |
-| User Service | Redis String | 15 min | User profile (follower count, etc.) |
+| Layer           | Cache            | TTL    | What is cached                          |
+| --------------- | ---------------- | ------ | --------------------------------------- |
+| API Gateway     | CDN (CloudFront) | 5 min  | Public article content                  |
+| Feed Service    | Redis Sorted Set | 24h    | Per-user feed list (article IDs)        |
+| Article Service | Redis Hash       | 1h     | Article metadata (title, author, likes) |
+| User Service    | Redis String     | 15 min | User profile (follower count, etc.)     |
 
 **Cache invalidation:** On article update, delete Redis key. On like/view count update, use `HINCRBY` (atomic increment — no delete needed).
 
@@ -174,14 +176,14 @@ import java.util.*;
 
 @Service
 public class FeedService {
-    
+
     private static final String FEED_KEY_PREFIX = "feed:";
     private static final int FEED_SIZE = 50; // articles per feed
-    
+
     private final RedisTemplate<String, String> redis;
     private final ArticleServiceClient articleClient;
     private final UserServiceClient userClient;
-    
+
     public FeedService(RedisTemplate<String, String> redis,
                        ArticleServiceClient articleClient,
                        UserServiceClient userClient) {
@@ -189,7 +191,7 @@ public class FeedService {
         this.articleClient = articleClient;
         this.userClient = userClient;
     }
-    
+
     /**
      * Returns the ranked feed for a user.
      * Strategy: read pre-computed Redis feed; merge in celebrity posts; rank.
@@ -197,16 +199,16 @@ public class FeedService {
      */
     public List<ArticleDto> getFeed(UUID userId, int page, int pageSize) {
         String feedKey = FEED_KEY_PREFIX + userId;
-        
+
         // TODO: 1. Read top 100 article IDs from Redis sorted set (ZREVRANGE)
         // TODO: 2. Fetch metadata for each article from ArticleService (batch call)
         // TODO: 3. Merge in celebrity articles (users with >10k followers) via fan-out-on-read
         // TODO: 4. Apply ML ranking score (call Python ranking service via HTTP or compute inline)
         // TODO: 5. Return paginated slice [page*pageSize, (page+1)*pageSize]
-        
+
         return List.of(); // placeholder
     }
-    
+
     /**
      * Fan-out: when an article is published by a regular user, push to all followers' feeds.
      * Called by Kafka consumer on ArticlePosted event.
@@ -235,19 +237,19 @@ import java.util.UUID;
 
 @Component
 public class ArticlePostedConsumer {
-    
+
     private final FeedService feedService;
     public ArticlePostedConsumer(FeedService feedService) { this.feedService = feedService; }
-    
+
     @KafkaListener(topics = "article-posted", groupId = "feed-fanout-service")
     public void consume(ConsumerRecord<String, ArticlePostedEvent> record) {
         var event = record.value();
-        
+
         // Idempotency check: have we already processed this event?
         // TODO: check Redis "processed:{event.eventId}" — if exists, skip
-        
+
         feedService.fanoutToFollowers(event.authorId(), event.articleId(), event.publishedAt());
-        
+
         // Mark as processed
         // TODO: redis.opsForValue().set("processed:" + event.eventId(), "1", Duration.ofDays(7));
     }
@@ -260,25 +262,25 @@ record ArticlePostedEvent(String eventId, UUID authorId, String articleId, long 
 
 ## 🔴 Key Design Decisions & Trade-offs
 
-| Decision | Option A | Option B Chosen | Why |
-|---|---|---|---|
-| Feed delivery | Pure pull (fan-out-on-read) | **Hybrid** | Pure pull = N queries per load; pure push = celebrity storm |
-| Feed storage | SQL table | **Redis Sorted Set** | O(log n) insert, O(1) range read; feeds are ephemeral |
-| Article ranking | Chronological | **ML score** | Engagement-weighted ranking = 3x higher time-on-platform |
-| DB sharding key | Timestamp (natural) | **author_id hash** | Timestamp creates hot partition (all new articles in one shard) |
-| Celebrity threshold | 1k followers | **10k followers** | Balance: too low = unnecessary pull queries; too high = fan-out storms |
+| Decision            | Option A                    | Option B Chosen      | Why                                                                    |
+| ------------------- | --------------------------- | -------------------- | ---------------------------------------------------------------------- |
+| Feed delivery       | Pure pull (fan-out-on-read) | **Hybrid**           | Pure pull = N queries per load; pure push = celebrity storm            |
+| Feed storage        | SQL table                   | **Redis Sorted Set** | O(log n) insert, O(1) range read; feeds are ephemeral                  |
+| Article ranking     | Chronological               | **ML score**         | Engagement-weighted ranking = 3x higher time-on-platform               |
+| DB sharding key     | Timestamp (natural)         | **author_id hash**   | Timestamp creates hot partition (all new articles in one shard)        |
+| Celebrity threshold | 1k followers                | **10k followers**    | Balance: too low = unnecessary pull queries; too high = fan-out storms |
 
 ---
 
 ## 📊 Self-Assessment Rubric
 
-| Criterion | 0 | 1 | 2 | 3 |
-|---|---|---|---|---|
-| Capacity estimation | Not done | Numbers present but wrong | Reasonable estimates | Accurate with justification |
-| Fan-out strategy | Not addressed | Naive push or pull only | Hybrid with threshold | Hybrid + celebrity identified |
-| Caching layers | No cache | Redis mentioned | Per-layer strategy | TTL + invalidation strategy |
-| Kafka idempotency | Not addressed | Mentioned | At-least-once handling | Exactly-once with dedup key |
-| Partial implementation | Nothing | Stubs | FeedService + Kafka consumer | + Integration test |
+| Criterion              | 0             | 1                         | 2                            | 3                             |
+| ---------------------- | ------------- | ------------------------- | ---------------------------- | ----------------------------- |
+| Capacity estimation    | Not done      | Numbers present but wrong | Reasonable estimates         | Accurate with justification   |
+| Fan-out strategy       | Not addressed | Naive push or pull only   | Hybrid with threshold        | Hybrid + celebrity identified |
+| Caching layers         | No cache      | Redis mentioned           | Per-layer strategy           | TTL + invalidation strategy   |
+| Kafka idempotency      | Not addressed | Mentioned                 | At-least-once handling       | Exactly-once with dedup key   |
+| Partial implementation | Nothing       | Stubs                     | FeedService + Kafka consumer | + Integration test            |
 
 ---
 

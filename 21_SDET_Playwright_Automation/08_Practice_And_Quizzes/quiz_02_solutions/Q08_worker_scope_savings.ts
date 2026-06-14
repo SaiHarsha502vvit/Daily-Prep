@@ -17,7 +17,7 @@
  *   How many times WITHOUT scope:'worker'?
  */
 
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 // ============================================================
 // ANSWER — with scope: 'worker'
@@ -48,7 +48,7 @@ interface Account {
 
 async function createTestAccount(_creds: object): Promise<Account> {
   // Simulate 3-second API call
-  return { id: 'acc-1', email: 'test@example.com', role: 'standard' };
+  return { id: "acc-1", email: "test@example.com", role: "standard" };
 }
 
 async function deleteTestAccount(_id: string): Promise<void> {
@@ -56,7 +56,10 @@ async function deleteTestAccount(_id: string): Promise<void> {
 }
 
 // ✅ WORKER-SCOPED (4 calls for 40 tests with 4 workers)
-const testWithWorkerAccount = base.extend<Record<string, never>, { account: Account }>({
+const testWithWorkerAccount = base.extend<
+  Record<string, never>,
+  { account: Account }
+>({
   account: [
     async ({}, use) => {
       // Runs ONCE when this worker starts.
@@ -69,7 +72,7 @@ const testWithWorkerAccount = base.extend<Record<string, never>, { account: Acco
       await deleteTestAccount(acc.id);
       console.log(`[worker] Account deleted: ${acc.id}`);
     },
-    { scope: 'worker' }, // ← the key
+    { scope: "worker" }, // ← the key
   ],
 });
 
@@ -90,17 +93,14 @@ const testWithTestAccount = base.extend<{ account: Account }>({
 });
 
 // Demo tests showing usage:
-testWithWorkerAccount(
-  'test A uses the worker account',
-  async ({ account }) => {
-    console.log('Test A sees account:', account.id); // same acc as Test B in same worker
-  },
-);
+testWithWorkerAccount("test A uses the worker account", async ({ account }) => {
+  console.log("Test A sees account:", account.id); // same acc as Test B in same worker
+});
 
 testWithTestAccount(
-  'test B gets its own fresh account',
+  "test B gets its own fresh account",
   async ({ account }) => {
-    console.log('Test B sees account:', account.id); // different from every other test
+    console.log("Test B sees account:", account.id); // different from every other test
   },
 );
 

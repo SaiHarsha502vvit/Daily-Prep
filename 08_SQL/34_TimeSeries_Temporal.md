@@ -3,6 +3,7 @@
 # Chapter 34 — Time Series & Temporal Data
 
 ## 5W-H Framework
+
 - **WHO** needs this? → IoT devs, financial analysts, DevOps (metrics), data engineers
 - **WHAT** is it? → Storing and querying data indexed by time — logs, stock prices, sensor readings
 - **WHEN** to use? → Monitoring dashboards, financial analysis, IoT telemetry, user activity tracking
@@ -15,6 +16,7 @@
 ## Part 1 — Time-Series Table Design
 
 ### 1.1 Schema Patterns
+
 ```sql
 -- Pattern 1: Wide table (metrics as columns)
 CREATE TABLE server_metrics (
@@ -43,10 +45,11 @@ CREATE TABLE metric_values (
 ```
 
 ### 1.2 Indexing for Time-Series
+
 ```sql
 -- BRIN index: perfect for time-ordered append-only data
 -- 1000x smaller than B-tree, almost as fast for range scans
-CREATE INDEX idx_metrics_time_brin ON server_metrics 
+CREATE INDEX idx_metrics_time_brin ON server_metrics
     USING BRIN (timestamp);
 
 -- Composite index for common queries
@@ -59,16 +62,15 @@ CREATE INDEX idx_metrics_recent ON server_metrics (timestamp DESC)
 
 ---
 
-
-
 ## Part 2 — Essential Time-Series Queries
 
 ### 2.1 Downsampling (Bucketing)
+
 ```sql
 -- Raw data: 1 reading per second (86,400 per day per server)
 -- Downsample to 5-minute averages
-SELECT 
-    date_trunc('hour', timestamp) 
+SELECT
+    date_trunc('hour', timestamp)
         + (extract(minute FROM timestamp)::int / 5) * interval '5 min' AS bucket,
     server_id,
     AVG(cpu_percent) AS avg_cpu,
@@ -82,7 +84,7 @@ GROUP BY bucket, server_id
 ORDER BY bucket DESC;
 
 -- PostgreSQL: generate_series for regular time buckets
-SELECT 
+SELECT
     bucket,
     COALESCE(AVG(sm.cpu_percent), 0) AS avg_cpu
 FROM generate_series(
@@ -90,8 +92,8 @@ FROM generate_series(
     NOW(),
     INTERVAL '1 hour'
 ) AS bucket
-LEFT JOIN server_metrics sm 
-    ON sm.timestamp >= bucket 
+LEFT JOIN server_metrics sm
+    ON sm.timestamp >= bucket
     AND sm.timestamp < bucket + INTERVAL '1 hour'
     AND sm.server_id = 1
 GROUP BY bucket
@@ -99,9 +101,10 @@ ORDER BY bucket;
 ```
 
 ### 2.2 Moving Averages & Smoothing
+
 ```sql
 -- Simple Moving Average (SMA)
-SELECT 
+SELECT
     timestamp,
     price,
     AVG(price) OVER (ORDER BY timestamp ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS sma_7,
@@ -130,28 +133,30 @@ FROM ema ORDER BY timestamp;
 ```
 
 ### 2.3 Rate of Change & Derivatives
+
 ```sql
-SELECT 
+SELECT
     timestamp,
     value,
     -- Absolute change from previous reading
     value - LAG(value) OVER (ORDER BY timestamp) AS delta,
     -- Rate of change per second
     (value - LAG(value) OVER (ORDER BY timestamp)) /
-    EXTRACT(EPOCH FROM timestamp - LAG(timestamp) OVER (ORDER BY timestamp)) 
+    EXTRACT(EPOCH FROM timestamp - LAG(timestamp) OVER (ORDER BY timestamp))
         AS rate_per_second,
     -- Percentage change
-    100.0 * (value - LAG(value) OVER (ORDER BY timestamp)) / 
+    100.0 * (value - LAG(value) OVER (ORDER BY timestamp)) /
         NULLIF(LAG(value) OVER (ORDER BY timestamp), 0) AS pct_change
 FROM sensor_readings
 WHERE sensor_id = 42;
 ```
 
 ### 2.4 Gap Detection
+
 ```sql
 -- Find gaps where expected data is missing
 WITH reading_gaps AS (
-    SELECT 
+    SELECT
         timestamp,
         LEAD(timestamp) OVER (
             PARTITION BY server_id ORDER BY timestamp
@@ -163,7 +168,7 @@ WITH reading_gaps AS (
     FROM server_metrics
     WHERE timestamp >= NOW() - INTERVAL '7 days'
 )
-SELECT 
+SELECT
     server_id,
     timestamp AS gap_start,
     next_timestamp AS gap_end,
@@ -179,6 +184,7 @@ ORDER BY gap_duration DESC;
 ## Part 3 — Temporal Tables (System-Versioned)
 
 ### 3.1 What Are Temporal Tables?
+
 ```
 Temporal table = automatically maintains FULL HISTORY of every row change.
 
@@ -198,6 +204,7 @@ Temporal table:  UPDATE product SET price = 20 → old price preserved with time
 ```
 
 ### 3.2 SQL Server: System-Versioned Temporal Tables
+
 ```sql
 -- SQL Server has native temporal table support
 CREATE TABLE products (
@@ -219,12 +226,12 @@ CREATE TABLE products (
 SELECT * FROM products WHERE id = 1;
 
 -- Data at a specific point in time
-SELECT * FROM products 
+SELECT * FROM products
     FOR SYSTEM_TIME AS OF '2026-02-15 12:00:00'
     WHERE id = 1;
 
 -- Full history of changes
-SELECT * FROM products 
+SELECT * FROM products
     FOR SYSTEM_TIME ALL
     WHERE id = 1
     ORDER BY valid_from;
@@ -236,6 +243,7 @@ SELECT * FROM products
 ```
 
 ### 3.3 PostgreSQL: Manual Temporal Pattern
+
 ```sql
 -- PostgreSQL doesn't have built-in system versioning, but we can implement it
 CREATE TABLE products (
@@ -253,11 +261,11 @@ BEGIN
     -- Close the old version
     UPDATE products SET valid_to = NOW()
     WHERE id = OLD.id AND valid_to = 'infinity';
-    
+
     -- Insert new version
     INSERT INTO products (id, name, price, valid_from, valid_to)
     VALUES (OLD.id, NEW.name, NEW.price, NOW(), 'infinity');
-    
+
     RETURN NULL;  -- Suppress the original UPDATE
 END;
 $$ LANGUAGE plpgsql;
@@ -280,6 +288,7 @@ AND valid_to > '2026-02-15'::timestamptz;
 ## Part 4 — Slowly Changing Dimensions (SCD)
 
 ### 4.1 SCD Types Overview
+
 ```
 ┌──────────┬───────────────────────────────────────────────────┐
 │ SCD Type │ Description                                        │
@@ -303,6 +312,7 @@ AND valid_to > '2026-02-15'::timestamptz;
 ```
 
 ### 4.2 SCD Type 2 Implementation
+
 ```sql
 -- Customer dimension with SCD Type 2
 CREATE TABLE dim_customer (
@@ -326,18 +336,18 @@ BEGIN
     -- Get current version
     SELECT * INTO v_current FROM dim_customer
     WHERE customer_id = p_customer_id AND is_current = TRUE;
-    
+
     IF NOT FOUND THEN
         -- New customer: insert first version
         INSERT INTO dim_customer (customer_id, name, city, tier, effective_from)
         VALUES (p_customer_id, p_name, p_city, p_tier, CURRENT_DATE);
     ELSIF v_current.name != p_name OR v_current.city != p_city OR v_current.tier != p_tier THEN
         -- Changed: close current, insert new version
-        UPDATE dim_customer SET 
+        UPDATE dim_customer SET
             effective_to = CURRENT_DATE - 1,
             is_current = FALSE
         WHERE surrogate_key = v_current.surrogate_key;
-        
+
         INSERT INTO dim_customer (customer_id, name, city, tier, effective_from)
         VALUES (p_customer_id, p_name, p_city, p_tier, CURRENT_DATE);
     END IF;
@@ -348,9 +358,6 @@ $$ LANGUAGE plpgsql;
 
 ---
 
-
-
-
 ## Part 5 — Python Time-Series Visualization
 
 ```python
@@ -360,7 +367,7 @@ import matplotlib.dates as mdates
 
 # Load time-series from SQL
 df = pd.read_sql("""
-    SELECT 
+    SELECT
         date_trunc('hour', timestamp) AS hour,
         AVG(cpu_percent) AS avg_cpu,
         MAX(cpu_percent) AS max_cpu,
@@ -422,7 +429,7 @@ END $$;
 
 -- Continuous aggregate (materialized view refreshed on schedule)
 CREATE MATERIALIZED VIEW metrics_hourly AS
-SELECT 
+SELECT
     date_trunc('hour', timestamp) AS hour,
     server_id,
     AVG(cpu_percent) AS avg_cpu,
@@ -438,4 +445,32 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY metrics_hourly;
 
 ---
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](33_SQL_Security_Injection.md) | [Next >](35_Database_Migration_Schema.md)
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Temporal databases (Snodgrass)** (1995): Richard Snodgrass formalized temporal data management in SQL, establishing the theoretical foundation for bi-temporal modeling
+- **Slowly Changing Dimensions (Kimball)** (1996): Ralph Kimball documented SCD Type 2 and other dimension history tracking patterns for data warehousing
+- **BRIN index (PostgreSQL)** (2013): Block Range Indexes provided efficient indexing for naturally-ordered time-series data with minimal storage overhead
+- **SQL:2011 temporal extensions** (2011): The SQL standard added temporal data types and period predicates, formalizing time-series support in relational databases
+- **InfluxDB** (2013): Time-series database built specifically for metrics and events, pioneering the purpose-built TSDB category
+- **TimescaleDB** (2017): Hybrid approach combining PostgreSQL with time-series optimizations, bringing TSDB capabilities to existing SQL ecosystems
+
+**Evolution narrative:**
+Temporal data management was formalized by Snodgrass (1995) before most databases supported it natively. Data warehousing needs drove practical adoption with Kimball's SCD patterns (1996), teaching analysts how to track dimension changes. PostgreSQL's BRIN index (2013) enabled efficient time-series storage without the overhead of B-tree indexes. SQL:2011 finally standardized temporal features, while purpose-built time-series databases (InfluxDB 2013, TimescaleDB 2017) emerged to handle the massive scale of IoT and monitoring use cases.
+
+**Modern practice anchor:**
+Today's time-series SQL combines native date/time types with window functions for sliding metrics, BRIN or partitioning for performance, and SCD Type 2 patterns for dimension history—while specialized TSDBs handle extreme scale IoT workloads.
+### Production Reality
+
+**Failure modes:**
+1. **Time-series hypertable missing chunk interval**: TimescaleDB hypertable created without explicit chunking — default 7-day chunks on 100M rows/day causes 700M row chunks, query performance degrades to 45s from 200ms
+2. **Gap detection false positives from DST**: Sensor data gap detection query flags 2:30-3:00 AM as missing — actually a 1-hour gap during spring forward DST transition, alert fired unnecessarily
+3. **Retention policy not enforced**: `drop_chunks(older_than => interval '30 days')` policy configured but disabled during backup window — 90 days of data accumulates, disk fills to 95% capacity
+
+**Debug workflow:**
+1. Check hypertable chunk stats: `SELECT hypertable_name, num_chunks, chunk_interval FROM timescaledb_information.hypertables`
+2. Verify retention policy: `SELECT policy_name, hypertable_name, config FROM timescaledb_information.jobs WHERE policy_name LIKE '%retention%'`
+3. Handle DST in gap detection: use `WITH TIME ZONE` types and explicit `timezone` parameter — `SELECT timezone('UTC', ts) FROM metrics` before gap analysis
+
+**Modern practice anchor:**
+TimescaleDB requires explicit chunk interval tuning based on data volume — auto-tuning often produces suboptimal chunk sizes in production.

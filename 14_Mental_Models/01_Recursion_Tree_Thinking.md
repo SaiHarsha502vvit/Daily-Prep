@@ -541,6 +541,74 @@ While managing your own `Stack` object on the heap prevents the JVM's `StackOver
 
 </details>
 
+## NEW DIAGRAM — Fibonacci(5) Call Stack with Frame Numbering
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  DIAGRAM: fib(5) RECURSION TREE — Step-by-Step Frame Expansion               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ①  Frame 0 (root): fib(5) called                                           │
+│      │                                                                       │
+│      ├── Frame 1a: fib(4) called ─────────────────────────────────┐          │
+│      │       │                                                         │          │
+│      │       ├── Frame 2a: fib(3) called ───────────────────┐      │          │
+│      │       │       │                                       │      │          │
+│      │       │       ├── Frame 3a: fib(2) called ──────┐   │      │          │
+│      │       │       │       │                         │   │      │          │
+│      │       │       │       ├── Frame 4a: fib(1)       │   │      │          │
+│      │       │       │       │   → returns 1 (BASE)     │   │      │          │
+│      │       │       │       │                          │   │      │          │
+│      │       │       │       └── Frame 4b: fib(0)       │   │      │          │
+│      │       │       │           → returns 0 (BASE)     │   │      │          │
+│      │       │       │                          ↓           │      │          │
+│      │       │       │               fib(2) = fib(1)+fib(0) = 1+0 = 1   │          │
+│      │       │       │       ───────────────────────────────────────────┘          │
+│      │       │       │                                                              │
+│      │       │       └── Frame 3b: fib(1)                                           │
+│      │       │               → returns 1 (BASE)                                     │
+│      │       │                          ↓                                           │
+│      │       │              fib(3) = fib(2)+fib(1) = 1+1 = 2                        │
+│      │       │       ─────────────────────────────────────────────────────────────┘ │
+│      │       │                                                                              │
+│      │       └── Frame 2b: fib(2) called ─────────────────────────────────────┐   │          │
+│      │               │                                                    │   │          │
+│      │               ├── Frame 3c: fib(1)                                     │   │          │
+│      │               │   → returns 1 (BASE)                                  │   │          │
+│      │               │                                                     │   │          │
+│      │               └── Frame 3d: fib(0)                                     │   │          │
+│      │                   → returns 0 (BASE)                                  │   │          │
+│      │                          ↓                                             │   │          │
+│      │               fib(2) = fib(1)+fib(0) = 1+0 = 1                        │   │          │
+│      │               ───────────────────────────────────────────────────────┘   │          │
+│      │                                                                                  │
+│      └── Frame 1b: fib(3) called ───────────────────────────────────────────┐          │
+│              │                                                               │          │
+│              ├── Frame 2c: fib(2) called ───────────────────────────┐       │          │
+│              │       │                                                   │       │          │
+│              │       ├── Frame 3e: fib(1) → returns 1 (BASE)          │       │          │
+│              │       └── Frame 3f: fib(0) → returns 0 (BASE)          │       │          │
+│              │                    ↓                                     │       │          │
+│              │         fib(2) = 1+0 = 1                                 │       │          │
+│              │         ───────────────────────────────────────────────┘       │          │
+│              │                                                                     │          │
+│              └── Frame 2d: fib(1) → returns 1 (BASE)                               │          │
+│                         ↓                                                           │          │
+│              fib(3) = fib(2)+fib(1) = 1+1 = 2                                          │          │
+│              ────────────────────────────────────────────────────────────────────────────┘          │
+│                                                                                                       │
+│  RETURN VALUES (bottom-up):                                                                          │
+│  fib(0)=0, fib(1)=1 → fib(2)=1 → fib(3)=2 → fib(4)=3 → fib(5)=5                                       │
+│                                                                                                       │
+│  KEY OBSERVATIONS:                                                                                   │
+│  ① fib(3) is computed TWICE (frames 2a and 2b) → overlapping subproblem!                            │
+│  ② fib(2) is computed THREE times → exponential waste without memoization                          │
+│  ③ Without memo: O(2^n) nodes = ~32 nodes for fib(5)                                               │
+│  ④ With memo: O(n) = 6 unique states, each computed once                                            │
+│  ⑤ Frame numbering shows depth: Frame 0(root) → Frame 1 → Frame 2 → Frame 3 → BASE               │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Part 7: Complexity from Recursion Trees
 
 ### Formula: Total work = (number of nodes) × (work per node)
@@ -644,3 +712,33 @@ Subsets:   h=n, b=2 → 2^n leaves → O(2^n)
 - **`orjson` (Python)**: Non-recursive JSON parser that handles arbitrarily nested JSON without stack overflow. Default choice for any API service parsing external JSON.
 - **JVM `-Xss` tuning**: Adjust stack size via `-Xss4m` for deep-recursive services, combined with `-XX:+UseStackBasingBlues` for better diagnostics.
 - **`async-profiler` (Java)**: Captures flame graphs showing call stack depth distribution. Filter by `stack frames > 1000` to identify deep recursion hot spots.
+
+## Conceptual Depth & Topical Breadth
+
+> **Why this section**: this mental model rests on a specific invariant, and its variants cover a spectrum of trade-offs. Knowing the invariant and the variants lets you apply the model correctly across problems.
+
+### Invariant
+
+Recursion works when the problem has **self-similar substructure** and a **clear base case**. Self-similarity means the problem can be expressed in terms of smaller versions of itself — the same rule applied at every scale. The base case provides the termination condition that stops the recursion. The invariant is the **combination** of these two properties: if either is missing, recursion fails. Self-similarity without a base case causes infinite recursion (stack overflow); base case without self-similarity means the problem cannot be decomposed. The internal mechanism is the **call stack** — each recursive call pushes a new frame, and each return pops one. This stack-based execution order (depth-first, last-in-first-out) determines traversal order, memory usage, and which subproblems are computed first. Understanding this mechanism reveals why recursion tree diagrams show the exact call sequence and why memoization eliminates redundant computation by storing results at each node.
+
+### Variants Comparison
+
+| Variant | Mechanism | Space Complexity | When to Use |
+| --- | --- | --- | --- |
+| Naive recursion | Pure call stack, no caching | O(n) stack frames | Small depth (< 1000), no overlapping subproblems |
+| Memoization (top-down DP) | HashMap/dict caches each result | O(n) stack + O(n) cache | Overlapping subproblems, unknown traversal order |
+| Tabulation (bottom-up DP) | Iterative loop, fills table | O(n) table, O(1) stack | Known traversal order, need O(1) space option |
+| Tail-call recursion | Compiler optimizes last call | O(1) effective stack | Languages with TCO (Scheme, Scala), deep chains |
+| Trampoline | Manual stack simulation iteratively | O(1) stack, explicit heap | Languages without TCO, very deep recursion |
+| Accumulator passing | State carried as parameter | O(1) stack | Linear recursion needing tail-call form |
+| Explicit stack (iterative) | Manual push/pop on heap | O(n) heap, O(1) stack | Tree traversals, avoid stack overflow |
+
+### Decision Table
+
+| Problem Feature | Default Choice | When to Switch |
+| --- | --- | --- |
+| Tree traversal, bounded depth | Recursion (DFS) | Depth > 1000 → explicit stack |
+| Fibonacci, counting, overlapping subproblems | Memoization (top-down DP) | Large n, memory pressure → tabulation |
+| Known order, need space optimization | Tabulation (bottom-up DP) | O(1) needed → rolling array |
+| Graph with deep paths | Explicit stack DFS | BFS needed for shortest path |
+| Permutations/combinations, backtracking | Recursion + choose/unchoose | Many pruning opportunities → add memo |

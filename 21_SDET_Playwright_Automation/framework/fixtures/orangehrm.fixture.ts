@@ -70,47 +70,53 @@ export const test = base.extend<OrangeHRMFixtures>({
     }
   },
 
-  testEmployee: [async ({ loginPage, employeeListPage, addEmployeePage, bridge }, use) => {
-    const { generateEmployeeData } = await import('../utilities/data/employee.factory');
-    const employee = generateEmployeeData();
+  testEmployee: [
+    async ({ loginPage, employeeListPage, addEmployeePage, bridge }, use) => {
+      const { generateEmployeeData } = await import('../utilities/data/employee.factory');
+      const employee = generateEmployeeData();
 
-    // Setup: create employee via UI
-    await loginPage.navigate();
-    await loginPage.loginWith({
-      username: process.env.ORANGEHRM_DEMO_USERNAME ?? 'Admin',
-      password: process.env.ORANGEHRM_DEMO_PASSWORD ?? 'admin123',
-    });
-    await employeeListPage.navigate();
-    await employeeListPage.clickAddEmployee();
-    await addEmployeePage.expectLoaded();
-    await addEmployeePage.fillEmployeeDetails(employee);
-    await addEmployeePage.save();
-
-    // Store employeeId if available from the page after redirect
-    try {
-      const id = await addEmployeePage.page.locator('.orangehrm-employee-card .oxd-input').first().inputValue();
-      if (id) employee.employeeId = id;
-    } catch {
-      // keep generated id if not found
-    }
-
-    bridge.set(BridgeKeys.CREATED_RECORD, employee);
-
-    await use(employee);
-
-    // Teardown: attempt to delete the created employee
-    try {
+      // Setup: create employee via UI
+      await loginPage.navigate();
+      await loginPage.loginWith({
+        username: process.env.ORANGEHRM_DEMO_USERNAME ?? 'Admin',
+        password: process.env.ORANGEHRM_DEMO_PASSWORD ?? 'admin123',
+      });
       await employeeListPage.navigate();
-      await employeeListPage.searchForm.searchById(employee.employeeId);
-      const count = await employeeListPage.resultsGrid.getRecordsCount();
-      if (count > 0) {
-        await employeeListPage.resultsGrid.deleteFirstRecord();
-        await employeeListPage.resultsGrid.confirmDeletion();
+      await employeeListPage.clickAddEmployee();
+      await addEmployeePage.expectLoaded();
+      await addEmployeePage.fillEmployeeDetails(employee);
+      await addEmployeePage.save();
+
+      // Store employeeId if available from the page after redirect
+      try {
+        const id = await addEmployeePage.page
+          .locator('.orangehrm-employee-card .oxd-input')
+          .first()
+          .inputValue();
+        if (id) employee.employeeId = id;
+      } catch {
+        // keep generated id if not found
       }
-    } catch {
-      // Best-effort cleanup; don't fail the test on teardown issues
-    }
-  }, { scope: 'test', auto: false }],
+
+      bridge.set(BridgeKeys.CREATED_RECORD, employee);
+
+      await use(employee);
+
+      // Teardown: attempt to delete the created employee
+      try {
+        await employeeListPage.navigate();
+        await employeeListPage.searchForm.searchById(employee.employeeId);
+        const count = await employeeListPage.resultsGrid.getRecordsCount();
+        if (count > 0) {
+          await employeeListPage.resultsGrid.deleteFirstRecord();
+          await employeeListPage.resultsGrid.confirmDeletion();
+        }
+      } catch {
+        // Best-effort cleanup; don't fail the test on teardown issues
+      }
+    },
+    { scope: 'test', auto: false },
+  ],
 });
 
 export { expect } from '@playwright/test';

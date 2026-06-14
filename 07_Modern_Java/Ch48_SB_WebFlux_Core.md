@@ -57,7 +57,6 @@ _"Handle millions of connections with minimal resources"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Table of Contents
@@ -80,7 +79,6 @@ _"Handle millions of connections with minimal resources"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -120,7 +118,6 @@ _"Handle millions of connections with minimal resources"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Reactive Manifesto Principles
 
@@ -225,7 +222,6 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Maven Dependencies
 
@@ -636,22 +632,23 @@ public class ReactorOperators {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 3: Operators - Transforming Reactive Streams**
 
 **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+
 <details><summary>Answer</summary>
 
 Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+
 <details><summary>Answer</summary>
 
 `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-</details>
 
+</details>
 
 # 🌱 Section 3: Spring Webflux
 
@@ -964,16 +961,15 @@ public class UserHandler {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: Functional Endpoints (RouterFunction)**
 
 **Challenge 1 (Reasoning):** What is the core difference between `flatMap()` and `concatMap()` in Project Reactor when processing a `Flux`?
+
 <details><summary>Answer</summary>
 
 Concurrency vs Ordering. `flatMap()` eagerly subscribes to the inner publishers as they arrive, merging their results concurrently. This maximizes speed but destroys the original ordering of the elements. `concatMap()` explicitly waits for the current inner publisher to complete before subscribing to the next one. This guarantees strict sequential ordering but completely sacrifices concurrency.
-</details>
 
+</details>
 
 # ⚛️ Section 4: Reactive Data Access (r2dbc)
 
@@ -1004,7 +1000,6 @@ Concurrency vs Ordering. `flatMap()` eagerly subscribes to the inner publishers 
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Dependencies and Configuration
 
@@ -1037,14 +1032,14 @@ Concurrency vs Ordering. `flatMap()` eagerly subscribes to the inner publishers 
 ```yaml
 # application.yml
 spring:
-    r2dbc:
-        url: r2dbc:postgresql://localhost:5432/mydb
-        username: user
-        password: password
-        pool:
-            initial-size: 5
-            max-size: 20
-            max-idle-time: 30m
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/mydb
+    username: user
+    password: password
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
 ```
 
 ### Entity and Repository
@@ -1202,7 +1197,6 @@ public class UserDatabaseService {
             .count();
     }
 ```
-
 
 ---
 

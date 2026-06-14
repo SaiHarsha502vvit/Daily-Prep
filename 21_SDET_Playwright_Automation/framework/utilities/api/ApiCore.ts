@@ -40,10 +40,7 @@ export class ApiCore {
   }
 
   /** Performs a typed GET request. */
-  async get<T>(
-    endpoint: string,
-    headers?: Record<string, string>
-  ): Promise<ApiClientResponse<T>> {
+  async get<T>(endpoint: string, headers?: Record<string, string>): Promise<ApiClientResponse<T>> {
     return this.executeWithRetry<T>('GET', endpoint, { headers });
   }
 
@@ -51,7 +48,7 @@ export class ApiCore {
   async post<T>(
     endpoint: string,
     payload: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<ApiClientResponse<T>> {
     return this.executeWithRetry<T>('POST', endpoint, { headers, payload });
   }
@@ -60,7 +57,7 @@ export class ApiCore {
   async put<T>(
     endpoint: string,
     payload: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<ApiClientResponse<T>> {
     return this.executeWithRetry<T>('PUT', endpoint, { headers, payload });
   }
@@ -69,7 +66,7 @@ export class ApiCore {
   async patch<T>(
     endpoint: string,
     payload: unknown,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<ApiClientResponse<T>> {
     return this.executeWithRetry<T>('PATCH', endpoint, { headers, payload });
   }
@@ -77,7 +74,7 @@ export class ApiCore {
   /** Performs a typed DELETE request. */
   async delete<T>(
     endpoint: string,
-    headers?: Record<string, string>
+    headers?: Record<string, string>,
   ): Promise<ApiClientResponse<T>> {
     return this.executeWithRetry<T>('DELETE', endpoint, { headers });
   }
@@ -92,7 +89,7 @@ export class ApiCore {
     options: {
       headers?: Record<string, string>;
       payload?: unknown;
-    }
+    },
   ): Promise<ApiClientResponse<T>> {
     let lastError: unknown;
     const attempts = this.maxRetries + 1;
@@ -127,7 +124,7 @@ export class ApiCore {
     options: {
       headers?: Record<string, string>;
       payload?: unknown;
-    }
+    },
   ): Promise<ApiClientResponse<T>> {
     const span = createApiSpan(this.tracer, `http.${method.toLowerCase()}`, {
       'http.method': method,
@@ -155,7 +152,10 @@ export class ApiCore {
 
       switch (method) {
         case 'GET':
-          pwResponse = await this.request.get(endpoint, { headers: mergedHeaders, timeout: this.defaultTimeoutMs });
+          pwResponse = await this.request.get(endpoint, {
+            headers: mergedHeaders,
+            timeout: this.defaultTimeoutMs,
+          });
           break;
         case 'POST':
           pwResponse = await this.request.post(endpoint, requestOptions);
@@ -167,7 +167,10 @@ export class ApiCore {
           pwResponse = await this.request.patch(endpoint, requestOptions);
           break;
         case 'DELETE':
-          pwResponse = await this.request.delete(endpoint, { headers: mergedHeaders, timeout: this.defaultTimeoutMs });
+          pwResponse = await this.request.delete(endpoint, {
+            headers: mergedHeaders,
+            timeout: this.defaultTimeoutMs,
+          });
           break;
         default:
           // Exhaustive check — this branch is unreachable at runtime for valid HttpMethod values
@@ -177,10 +180,16 @@ export class ApiCore {
 
       span.setAttribute('http.status_code', pwResponse.status());
     } catch (networkErr) {
-      span.recordException(networkErr instanceof Error ? networkErr : new Error(String(networkErr)));
+      span.recordException(
+        networkErr instanceof Error ? networkErr : new Error(String(networkErr)),
+      );
       span.setAttribute('error', true);
       const errMsg = networkErr instanceof Error ? networkErr.message : String(networkErr);
-      throw new NetworkError(errMsg, endpoint, networkErr instanceof Error ? networkErr : new Error(errMsg));
+      throw new NetworkError(
+        errMsg,
+        endpoint,
+        networkErr instanceof Error ? networkErr : new Error(errMsg),
+      );
     } finally {
       span.end();
     }
@@ -207,9 +216,10 @@ export class ApiCore {
 
     // Throw typed errors for non-success codes
     if (status < AppConstants.HTTP_OK || status >= 300) {
-      const message = typeof body === 'object' && body !== null && 'error' in body
-        ? String((body as Record<string, unknown>).error)
-        : `HTTP ${status}`;
+      const message =
+        typeof body === 'object' && body !== null && 'error' in body
+          ? String((body as Record<string, unknown>).error)
+          : `HTTP ${status}`;
       throw createStatusError(status, message, endpoint, body);
     }
 
@@ -255,7 +265,7 @@ export class ApiCore {
     endpoint: string,
     status: number,
     ms: number,
-    _headers: Record<string, string>
+    _headers: Record<string, string>,
   ): void {
     // Unused `headers` parameter suffix prevents noUnusedParameters lint while keeping signature extensible
     void _headers;
@@ -269,12 +279,12 @@ export class ApiCore {
     endpoint: string,
     attempt: number,
     delayMs: number,
-    error: unknown
+    error: unknown,
   ): void {
     const ts = new Date().toISOString();
     const errorName = error instanceof Error ? error.name : 'Error';
     console.log(
-      `[${ts}] [API] RETRY  attempt=${attempt} delay=${Math.round(delayMs)}ms reason=${errorName} | ${method} ${endpoint}`
+      `[${ts}] [API] RETRY  attempt=${attempt} delay=${Math.round(delayMs)}ms reason=${errorName} | ${method} ${endpoint}`,
     );
   }
 }

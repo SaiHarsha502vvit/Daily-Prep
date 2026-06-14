@@ -44,20 +44,19 @@ String Pool (special memory area):
   String a = "hello";  // Goes to pool
   String b = "hello";  // Reuses from pool (same object!)
   String c = new String("hello");  // NOT from pool (new object on heap)
-  
+
   a == b     → true  (same reference)
   a == c     → false (different references)
   a.equals(c)→ true  (same content)
-  
+
   RULE: ALWAYS use .equals() for String comparison, NEVER ==
 ```
-
 
 #### HOW: Essential String operations
 
 ```java
 public class StringOperations {
-    
+
     // 1. Reverse a string (without StringBuilder)
     public static String reverse(String s) {
         char[] chars = s.toCharArray();
@@ -71,7 +70,7 @@ public class StringOperations {
         }
         return new String(chars);
     }
-    
+
     // 2. Count character frequencies
     public static int[] countFrequencies(String s) {
         int[] freq = new int[26];  // Assuming lowercase a-z
@@ -80,7 +79,7 @@ public class StringOperations {
         }
         return freq;
     }
-    
+
     // 3. Check palindrome
     public static boolean isPalindrome(String s) {
         int left = 0, right = s.length() - 1;
@@ -91,7 +90,7 @@ public class StringOperations {
         }
         return true;
     }
-    
+
     // 4. Remove duplicates preserving order
     public static String removeDuplicates(String s) {
         boolean[] seen = new boolean[256];  // ASCII
@@ -156,7 +155,6 @@ Pass 4:
   (1,2) → ok:   [1, 2, 3, 5, 8]  ← DONE
 ```
 
-
 #### Optimized Bubble Sort (early termination)
 
 ```java
@@ -209,8 +207,8 @@ Two strings are anagrams if they contain the same characters in different order.
 "anagram" and "nagaram" → true
 ```
 
-
 **Three approaches:**
+
 1. Sort both, compare → O(n log n)
 2. Frequency count array → O(n) time, O(1) space (26 letters)
 3. Single frequency array, increment for s1, decrement for s2 → O(n)
@@ -221,13 +219,13 @@ Two strings are anagrams if they contain the same characters in different order.
 ```java
 public boolean isAnagram(String s, String t) {
     if (s.length() != t.length()) return false;  // Quick reject
-    
+
     int[] freq = new int[26];
     for (int i = 0; i < s.length(); i++) {
         freq[s.charAt(i) - 'a']++;
         freq[t.charAt(i) - 'a']--;
     }
-    
+
     for (int count : freq) {
         if (count != 0) return false;
     }
@@ -237,6 +235,7 @@ public boolean isAnagram(String s, String t) {
 
 // FOLLOW-UP: What if input has Unicode? Use HashMap<Character, Integer>.
 ```
+
 </details>
 
 ---
@@ -250,16 +249,17 @@ public boolean isAnagram(String s, String t) {
 Example: `"2026-03-05T10:15:30 ERROR Database connection timeout"`
 
 Write a function to:
+
 1. Parse all logs into structured data
 2. Count logs by level (INFO, WARN, ERROR)
 3. Find all ERROR logs (for the on-call engineer)
 
 ```java
 public class LogParser {
-    
+
     public static Map<String, Integer> countByLevel(String[] logs) {
         Map<String, Integer> counts = new HashMap<>();
-        
+
         for (String log : logs) {
             // Split: "2026-03-05T10:15:30 ERROR Database timeout"
             //         ↑ timestamp        ↑ level ↑ message
@@ -269,7 +269,7 @@ public class LogParser {
         }
         return counts;
     }
-    
+
     public static List<String> getErrorLogs(String[] logs) {
         List<String> errors = new ArrayList<>();
         for (String log : logs) {
@@ -368,10 +368,11 @@ INSERT INTO orders (customer_name, product_id, quantity, order_date) VALUES
 <summary>Answer</summary>
 
 ```sql
-ALTER TABLE products 
-ADD COLUMN discount_percent DECIMAL(5,2) DEFAULT 0 
+ALTER TABLE products
+ADD COLUMN discount_percent DECIMAL(5,2) DEFAULT 0
 CHECK (discount_percent >= 0 AND discount_percent <= 100);
 ```
+
 </details>
 
 **Q2:** List all products in the Electronics category with stock less than 100.
@@ -380,11 +381,12 @@ CHECK (discount_percent >= 0 AND discount_percent <= 100);
 <summary>Answer</summary>
 
 ```sql
-SELECT product_name, price, stock 
-FROM products 
+SELECT product_name, price, stock
+FROM products
 WHERE category = 'Electronics' AND stock < 100;
 -- Returns: Laptop (50), Headphones (75)
 ```
+
 </details>
 
 **Q3 (Challenge):** What happens if you try `DROP TABLE products;` while orders references it via FOREIGN KEY?
@@ -394,7 +396,7 @@ WHERE category = 'Electronics' AND stock < 100;
 
 ```sql
 DROP TABLE products;
--- ERROR: Cannot drop table 'products' referenced by a foreign key 
+-- ERROR: Cannot drop table 'products' referenced by a foreign key
 -- constraint on table 'orders'
 
 -- You must either:
@@ -402,6 +404,7 @@ DROP TABLE products;
 -- 2. Remove the foreign key constraint first
 -- 3. Use: DROP TABLE orders, products;  (drops in dependency order)
 ```
+
 </details>
 
 > **Read more:** [08_SQL/03_DDL_Creating_Structure.md](../../08_SQL/03_DDL_Creating_Structure.md)
@@ -428,7 +431,7 @@ Output: false
 ```java
 public boolean isPalindrome(String s) {
     int left = 0, right = s.length() - 1;
-    
+
     while (left < right) {
         // Skip non-alphanumeric from left
         while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
@@ -438,7 +441,7 @@ public boolean isPalindrome(String s) {
         while (left < right && !Character.isLetterOrDigit(s.charAt(right))) {
             right--;
         }
-        
+
         if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
             return false;
         }
@@ -450,6 +453,7 @@ public boolean isPalindrome(String s) {
 // Time: O(n) | Space: O(1)
 // Pattern: TWO POINTERS — converging from both ends
 ```
+
 </details>
 
 ---
@@ -472,12 +476,12 @@ Output: -1
 ```java
 public int firstUniqChar(String s) {
     int[] freq = new int[26];
-    
+
     // Pass 1: count frequencies
     for (char c : s.toCharArray()) {
         freq[c - 'a']++;
     }
-    
+
     // Pass 2: find first with count == 1
     for (int i = 0; i < s.length(); i++) {
         if (freq[s.charAt(i) - 'a'] == 1) {
@@ -490,6 +494,7 @@ public int firstUniqChar(String s) {
 // KEY INSIGHT: Two passes is fine! First count, then scan left-to-right.
 // The left-to-right scan guarantees we find the FIRST unique one.
 ```
+
 </details>
 
 ---
@@ -497,6 +502,7 @@ public int firstUniqChar(String s) {
 ## End of Day 3
 
 ### What you learned today:
+
 1. **String immutability** — why `==` fails, always use `.equals()`
 2. **StringBuilder** — mandatory for concatenation in loops (O(n) vs O(n²))
 3. **Frequency array technique** — appears in anagram, palindrome, unique char problems
@@ -508,10 +514,9 @@ public int firstUniqChar(String s) {
 
 ---
 
-> **Mentor Note:** The frequency array pattern (int[26] for lowercase) is one of 
-> the most reusable tricks in string problems. Master it — it appears in 15+ 
+> **Mentor Note:** The frequency array pattern (int[26] for lowercase) is one of
+> the most reusable tricks in string problems. Master it — it appears in 15+
 > LeetCode problems.
-
 
 ---
 

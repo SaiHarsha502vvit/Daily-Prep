@@ -35,7 +35,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY Sorting — The Foundation Every Algorithm Stands On
@@ -135,16 +134,15 @@
 
 ---
 
-
-
 🔬 **Section Challenge — PART 0: WHY Sorting — The Foundation Every Algorithm Stands On**
 
 **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+
 <details><summary>Answer</summary>
 
 Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-</details>
 
+</details>
 
 ## PROBLEM 1: Sort an Array (LC 912) — Implement Merge Sort
 
@@ -185,7 +183,6 @@ WHY MERGE SORT? (MIT 6.006 Reasoning)
 SOLUTION:
 ```
 
-
 ```java
 public int[] sortArray(int[] nums) {
     if (nums.length <= 1) return nums;
@@ -195,7 +192,7 @@ public int[] sortArray(int[] nums) {
 
 private void mergeSort(int[] nums, int left, int right) {
     if (left >= right) return;
-    
+
     int mid = left + (right - left) / 2;
     mergeSort(nums, left, mid);
     mergeSort(nums, mid + 1, right);
@@ -205,7 +202,7 @@ private void mergeSort(int[] nums, int left, int right) {
 private void merge(int[] nums, int left, int mid, int right) {
     int[] temp = new int[right - left + 1];
     int i = left, j = mid + 1, k = 0;
-    
+
     while (i <= mid && j <= right) {
         if (nums[i] <= nums[j]) {  // <= for stability
             temp[k++] = nums[i++];
@@ -215,7 +212,7 @@ private void merge(int[] nums, int left, int mid, int right) {
     }
     while (i <= mid) temp[k++] = nums[i++];
     while (j <= right) temp[k++] = nums[j++];
-    
+
     System.arraycopy(temp, 0, nums, left, temp.length);
 }
 ```
@@ -255,7 +252,6 @@ ALGORITHM (Lomuto Partition):
 SOLUTION:
 ```
 
-
 ```java
 private Random rand = new Random();
 
@@ -266,11 +262,11 @@ public int[] sortArray(int[] nums) {
 
 private void quickSort(int[] nums, int lo, int hi) {
     if (lo >= hi) return;
-    
+
     // 3-way partition for handling duplicates (Dutch National Flag)
     int pivot = nums[lo + rand.nextInt(hi - lo + 1)];
     int lt = lo, gt = hi, i = lo;
-    
+
     while (i <= gt) {
         if (nums[i] < pivot) {
             swap(nums, lt++, i++);
@@ -327,7 +323,6 @@ WHY QUICKSELECT? (KTH Royal Institute Style)
 SOLUTION (QuickSelect):
 ```
 
-
 ```java
 public int findKthLargest(int[] nums, int k) {
     int target = nums.length - k;  // Convert to kth smallest
@@ -338,7 +333,7 @@ private int quickSelect(int[] nums, int lo, int hi, int target) {
     int pivotIdx = lo + new Random().nextInt(hi - lo + 1);
     int pivot = nums[pivotIdx];
     swap(nums, pivotIdx, hi);  // Move pivot to end
-    
+
     int store = lo;
     for (int i = lo; i < hi; i++) {
         if (nums[i] < pivot) {
@@ -346,7 +341,7 @@ private int quickSelect(int[] nums, int lo, int hi, int target) {
         }
     }
     swap(nums, store, hi);  // Pivot to final position
-    
+
     if (store == target) return nums[store];
     else if (store < target) return quickSelect(nums, store + 1, hi, target);
     else return quickSelect(nums, lo, store - 1, target);
@@ -364,9 +359,6 @@ makes probability negligible. For guaranteed O(n), mention median-of-medians.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 4: Merge Intervals (LC 56)
 
@@ -394,14 +386,13 @@ APPROACH (MIT 6.006 Style):
 SOLUTION:
 ```
 
-
 ```java
 public int[][] merge(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
-    
+
     List<int[]> merged = new ArrayList<>();
     merged.add(intervals[0]);
-    
+
     for (int i = 1; i < intervals.length; i++) {
         int[] last = merged.get(merged.size() - 1);
         if (intervals[i][0] <= last[1]) {
@@ -421,11 +412,7 @@ EDGE CASE: All overlapping → returns single interval
 VARIANT: Insert Interval (LC 57) — same idea, but insert first then merge
 ```
 
-
 ---
-
-
-
 
 ## PROBLEM 5: Sort Colors — Dutch National Flag (LC 75)
 
@@ -467,11 +454,10 @@ TRACE for [2, 0, 2, 1, 1, 0]:
 SOLUTION:
 ```
 
-
 ```java
 public void sortColors(int[] nums) {
     int lo = 0, mid = 0, hi = nums.length - 1;
-    
+
     while (mid <= hi) {
         if (nums[mid] == 0) {
             swap(nums, lo++, mid++);
@@ -515,17 +501,16 @@ INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 public String largestNumber(int[] nums) {
     String[] strs = new String[nums.length];
     for (int i = 0; i < nums.length; i++) strs[i] = String.valueOf(nums[i]);
-    
+
     // Custom comparator: which concatenation is larger?
     Arrays.sort(strs, (a, b) -> (b + a).compareTo(a + b));
-    
+
     if (strs[0].equals("0")) return "0";  // Edge: all zeros
-    
+
     StringBuilder sb = new StringBuilder();
     for (String s : strs) sb.append(s);
     return sb.toString();
@@ -537,7 +522,6 @@ COMPLEXITY: Time O(n log n · k) where k = avg digit length | Space O(n)
 PROOF OF CORRECTNESS: The comparator defines a total order.
   If a○b > b○a and b○c > c○b, then a○c > c○a (transitivity).
 ```
-
 
 ---
 
@@ -560,11 +544,10 @@ WHY MERGE SORT FOR LINKED LISTS?
 SOLUTION:
 ```
 
-
 ```java
 public ListNode sortList(ListNode head) {
     if (head == null || head.next == null) return head;
-    
+
     // Split in half using slow/fast pointers
     ListNode slow = head, fast = head.next;
     while (fast != null && fast.next != null) {
@@ -573,11 +556,11 @@ public ListNode sortList(ListNode head) {
     }
     ListNode mid = slow.next;
     slow.next = null;  // Cut the list
-    
+
     // Recursively sort both halves
     ListNode left = sortList(head);
     ListNode right = sortList(mid);
-    
+
     // Merge sorted halves
     return mergeTwoLists(left, right);
 }
@@ -606,9 +589,6 @@ BOTTOM-UP VARIANT: Can do iteratively for true O(1) space
 ```
 
 ---
-
-
-
 
 ## PROBLEM 8: Top K Frequent Elements (LC 347)
 
@@ -642,13 +622,12 @@ THREE APPROACHES:
 SOLUTION:
 ```
 
-
 ```java
 public int[] topKFrequent(int[] nums, int k) {
     // Count frequencies
     Map<Integer, Integer> freq = new HashMap<>();
     for (int n : nums) freq.merge(n, 1, Integer::sum);
-    
+
     // Bucket sort: index = frequency
     List<Integer>[] buckets = new List[nums.length + 1];
     for (var entry : freq.entrySet()) {
@@ -656,7 +635,7 @@ public int[] topKFrequent(int[] nums, int k) {
         if (buckets[f] == null) buckets[f] = new ArrayList<>();
         buckets[f].add(entry.getKey());
     }
-    
+
     // Collect top k from highest frequency
     int[] result = new int[k];
     int idx = 0;
@@ -696,11 +675,10 @@ TWO APPROACHES:
 SOLUTION:
 ```
 
-
 ```java
 public boolean isAnagram(String s, String t) {
     if (s.length() != t.length()) return false;
-    
+
     int[] count = new int[26];
     for (int i = 0; i < s.length(); i++) {
         count[s.charAt(i) - 'a']++;
@@ -738,7 +716,7 @@ SOLUTION (Bucket Sort):
 public String frequencySort(String s) {
     int[] freq = new int[128];
     for (char c : s.toCharArray()) freq[c]++;
-    
+
     // Bucket sort: index = frequency
     List<Character>[] buckets = new List[s.length() + 1];
     for (int i = 0; i < 128; i++) {
@@ -747,7 +725,7 @@ public String frequencySort(String s) {
             buckets[freq[i]].add((char) i);
         }
     }
-    
+
     StringBuilder sb = new StringBuilder();
     for (int i = buckets.length - 1; i >= 0; i--) {
         if (buckets[i] != null) {
@@ -785,11 +763,11 @@ SOLUTION:
 public int hIndex(int[] citations) {
     int n = citations.length;
     int[] count = new int[n + 1];
-    
+
     for (int c : citations) {
         count[Math.min(c, n)]++;  // Cap at n (anything >= n counts same)
     }
-    
+
     int papers = 0;
     for (int h = n; h >= 0; h--) {
         papers += count[h];
@@ -824,12 +802,11 @@ APPROACH:
 SOLUTION:
 ```
 
-
 ```java
 public void wiggleSort(int[] nums) {
     int n = nums.length;
     int median = findKthLargest(nums, (n + 1) / 2);
-    
+
     // Virtual index mapping: maps 0,1,2,3,4,5 → 1,3,5,0,2,4
     // Odd positions first, then even — spreads medians apart
     int left = 0, right = n - 1, i = 0;
@@ -873,7 +850,7 @@ PROBLEM: Find max difference between successive elements in sorted form.
 INSIGHT (Pigeonhole):
   n numbers in range [min, max]
   Average gap = (max - min) / (n - 1)
-  Answer must be >= average gap  
+  Answer must be >= average gap
   Create n-1 buckets of size = average gap
   Track min/max in each bucket
   Answer = max(next_bucket_min - prev_bucket_max)
@@ -885,24 +862,24 @@ SOLUTION:
 public int maximumGap(int[] nums) {
     int n = nums.length;
     if (n < 2) return 0;
-    
+
     int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
     for (int num : nums) { min = Math.min(min, num); max = Math.max(max, num); }
     if (min == max) return 0;
-    
+
     int bucketSize = Math.max(1, (max - min) / (n - 1));
     int bucketCount = (max - min) / bucketSize + 1;
     int[] bucketMin = new int[bucketCount];
     int[] bucketMax = new int[bucketCount];
     Arrays.fill(bucketMin, Integer.MAX_VALUE);
     Arrays.fill(bucketMax, Integer.MIN_VALUE);
-    
+
     for (int num : nums) {
         int idx = (num - min) / bucketSize;
         bucketMin[idx] = Math.min(bucketMin[idx], num);
         bucketMax[idx] = Math.max(bucketMax[idx], num);
     }
-    
+
     int maxGap = 0, prevMax = bucketMax[0];
     for (int i = 1; i < bucketCount; i++) {
         if (bucketMin[i] == Integer.MAX_VALUE) continue;  // Empty bucket
@@ -924,40 +901,47 @@ KEY INSIGHT: Max gap is BETWEEN buckets, never within a bucket.
 
 ### Easy
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Valid Anagram](https://leetcode.com/problems/valid-anagram/) | 242 | Counting | Amazon, Google |
-| 2 | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) | 88 | Two Pointers Merge | Facebook |
-| 3 | [Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | 350 | Sort + Two Pointers | Facebook |
-| 4 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | 217 | Sort / HashSet | Amazon |
-| 5 | [Majority Element](https://leetcode.com/problems/majority-element/) | 169 | Boyer-Moore / Sort | Amazon, Google |
-| 6 | [Missing Number](https://leetcode.com/problems/missing-number/) | 268 | Sort / XOR / Math | Microsoft |
-| 7 | [Squares of a Sorted Array](https://leetcode.com/problems/squares-of-a-sorted-array/) | 977 | Two Pointer Merge | Facebook |
+| #   | Problem                                                                                       | LC# | Pattern             | Company        |
+| --- | --------------------------------------------------------------------------------------------- | --- | ------------------- | -------------- |
+| 1   | [Valid Anagram](https://leetcode.com/problems/valid-anagram/)                                 | 242 | Counting            | Amazon, Google |
+| 2   | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)                       | 88  | Two Pointers Merge  | Facebook       |
+| 3   | [Intersection of Two Arrays II](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | 350 | Sort + Two Pointers | Facebook       |
+| 4   | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)                       | 217 | Sort / HashSet      | Amazon         |
+| 5   | [Majority Element](https://leetcode.com/problems/majority-element/)                           | 169 | Boyer-Moore / Sort  | Amazon, Google |
+| 6   | [Missing Number](https://leetcode.com/problems/missing-number/)                               | 268 | Sort / XOR / Math   | Microsoft      |
+| 7   | [Squares of a Sorted Array](https://leetcode.com/problems/squares-of-a-sorted-array/)         | 977 | Two Pointer Merge   | Facebook       |
 
 ### Medium
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Sort Colors](https://leetcode.com/problems/sort-colors/) | 75 | Dutch Flag 3-Way | Microsoft, Amazon |
-| 2 | [Kth Largest Element](https://leetcode.com/problems/kth-largest-element-in-an-array/) | 215 | QuickSelect | Facebook, Google |
-| 3 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | 347 | Bucket Sort | Amazon, Facebook |
-| 4 | [Merge Intervals](https://leetcode.com/problems/merge-intervals/) | 56 | Sort + Merge | Google, Facebook |
-| 5 | [Sort List](https://leetcode.com/problems/sort-list/) | 148 | Merge Sort LL | Amazon |
-| 6 | [Largest Number](https://leetcode.com/problems/largest-number/) | 179 | Custom Comparator | Amazon |
-| 7 | [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/) | 451 | Bucket Sort | Amazon |
-| 8 | [H-Index](https://leetcode.com/problems/h-index/) | 274 | Counting Sort | Google |
-| 9 | [Wiggle Sort II](https://leetcode.com/problems/wiggle-sort-ii/) | 324 | QuickSelect + Virtual | Google |
-| 10 | [Queue Reconstruction by Height](https://leetcode.com/problems/queue-reconstruction-by-height/) | 406 | Custom Sort + Insert | Google |
-| 11 | [Custom Sort String](https://leetcode.com/problems/custom-sort-string/) | 791 | Custom Comparator | Facebook |
-| 12 | [Pancake Sorting](https://leetcode.com/problems/pancake-sorting/) | 969 | Selection Sort | Microsoft |
+| #   | Problem                                                                                         | LC# | Pattern               | Company           |
+| --- | ----------------------------------------------------------------------------------------------- | --- | --------------------- | ----------------- |
+| 1   | [Sort Colors](https://leetcode.com/problems/sort-colors/)                                       | 75  | Dutch Flag 3-Way      | Microsoft, Amazon |
+| 2   | [Kth Largest Element](https://leetcode.com/problems/kth-largest-element-in-an-array/)           | 215 | QuickSelect           | Facebook, Google  |
+| 3   | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)               | 347 | Bucket Sort           | Amazon, Facebook  |
+| 4   | [Merge Intervals](https://leetcode.com/problems/merge-intervals/)                               | 56  | Sort + Merge          | Google, Facebook  |
+| 5   | [Sort List](https://leetcode.com/problems/sort-list/)                                           | 148 | Merge Sort LL         | Amazon            |
+| 6   | [Largest Number](https://leetcode.com/problems/largest-number/)                                 | 179 | Custom Comparator     | Amazon            |
+| 7   | [Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/)     | 451 | Bucket Sort           | Amazon            |
+| 8   | [H-Index](https://leetcode.com/problems/h-index/)                                               | 274 | Counting Sort         | Google            |
+| 9   | [Wiggle Sort II](https://leetcode.com/problems/wiggle-sort-ii/)                                 | 324 | QuickSelect + Virtual | Google            |
+| 10  | [Queue Reconstruction by Height](https://leetcode.com/problems/queue-reconstruction-by-height/) | 406 | Custom Sort + Insert  | Google            |
+| 11  | [Custom Sort String](https://leetcode.com/problems/custom-sort-string/)                         | 791 | Custom Comparator     | Facebook          |
+| 12  | [Pancake Sorting](https://leetcode.com/problems/pancake-sorting/)                               | 969 | Selection Sort        | Microsoft         |
 
 ### Hard
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Maximum Gap](https://leetcode.com/problems/maximum-gap/) | 164 | Bucket Sort | Google |
-| 2 | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | 315 | Merge Sort + Count | Google |
-| 3 | [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/) | 493 | Merge Sort + Count | Google |
-| 4 | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) | 327 | Merge Sort | Google |
-| 5 | [Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/) | 4 | Binary Search | Google, Amazon |
+| #   | Problem                                                                                                   | LC# | Pattern            | Company        |
+| --- | --------------------------------------------------------------------------------------------------------- | --- | ------------------ | -------------- |
+| 1   | [Maximum Gap](https://leetcode.com/problems/maximum-gap/)                                                 | 164 | Bucket Sort        | Google         |
+| 2   | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | 315 | Merge Sort + Count | Google         |
+| 3   | [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/)                                             | 493 | Merge Sort + Count | Google         |
+| 4   | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/)                                   | 327 | Merge Sort         | Google         |
+| 5   | [Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/)                 | 4   | Binary Search      | Google, Amazon |
 
+---
+
+### Historical Evolution
+
+**Sorting Algorithms** originated with **John von Neumann (1945)** at the Institute for Advanced Study, who developed merge sort on the EDVAC computer while collaborating with Herman Goldstine. Von Neumann recognized that the divide-and-conquer paradigm — recursively splitting data, sorting halves, then merging — perfectly matched the block-transfer capabilities of magnetic tape storage, reducing the number of tape passes required for large datasets. Following this, **C.A.R. Hoare (1959/1961)** at Elliott Brothers in London invented QuickSort, motivated by the need to efficiently sort data within the ALGOL compiler's symbol table; his in-place partitioning approach using two pointers scanning from opposite ends became the foundation for nearly all modern comparison-based sorting implementations.
+
+**J.W.J. Williams (1964)** at the University of Cambridge developed heap sort while working on combinatorial optimization problems, introducing the binary heap as an elegant priority queue structure with O(log n) insertions and deletions. **Tim Peters (2002)** then created TimSort for Python's standard library at Google, motivated by the empirical observation that real-world data contains abundant pre-sorted runs; his hybrid algorithm combining insertion sort (for small runs) with merge sort (for combining runs) achieved dramatically better performance on natural data distributions. Modern practice anchors this work in database and language internals: PostgreSQL and MySQL implement optimized merge sorts for ORDER BY clauses processing terabyte-scale result sets, Python's TimSort has been adopted by Java (Arrays.sort for objects) and Android, and **Vladimir Yaroslavskiy (2009)** at Google introduced Dual-Pivot QuickSort as the new standard for Java's primitive array sorts, achieving 10-20% fewer comparisons than classic single-pivot approaches on real-world benchmarks.

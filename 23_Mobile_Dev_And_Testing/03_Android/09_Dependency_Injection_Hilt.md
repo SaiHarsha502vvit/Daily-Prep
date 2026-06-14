@@ -558,7 +558,7 @@ class MyFragment : Fragment() {
 ### Error 3: Scope Mismatch — Using a Scoped Dependency in a Wider Scope
 
 ```
-ERROR: "com.myapp.SomeFragmentScopedClass cannot be provided without an 
+ERROR: "com.myapp.SomeFragmentScopedClass cannot be provided without an
         @Inject constructor or @Provides-annotated method"
 CAUSE: A @Singleton dependency tries to inject a @FragmentScoped dependency.
        @FragmentScoped lives shorter than @Singleton — Hilt prevents this.
@@ -573,7 +573,7 @@ RULE: A dependency can only inject things that live at LEAST as long as it does.
 ### Error 4: Missing Module — Hilt Cannot Provide Type
 
 ```
-ERROR: "[Dagger/MissingBinding] com.myapp.CitationRepository cannot be provided 
+ERROR: "[Dagger/MissingBinding] com.myapp.CitationRepository cannot be provided
         without an @Provides-annotated method or @Inject constructor"
 CAUSE: CitationRepository is an interface. Hilt doesn't know which implementation to use.
 FIX:  Add a @Binds method in a module:
@@ -586,7 +586,7 @@ abstract fun bindCitationRepository(impl: CitationRepositoryImpl): CitationRepos
 ### Error 5: ViewModel Not @HiltViewModel
 
 ```
-ERROR: "CitationListViewModel must have a factory that provides it, 
+ERROR: "CitationListViewModel must have a factory that provides it,
         but CitationListViewModel is not a @HiltViewModel"
 CAUSE: ViewModel has @Inject constructor but is missing @HiltViewModel.
 FIX:  @HiltViewModel class CitationListViewModel @Inject constructor(...) : ViewModel()
@@ -597,12 +597,15 @@ FIX:  @HiltViewModel class CitationListViewModel @Inject constructor(...) : View
 ## 11. Interview Q&A
 
 **Q: "What is Dependency Injection and why is it used in Android?"**
+
 > "Dependency Injection is a design pattern where an object receives its dependencies from the outside rather than creating them itself. In Android, the main reasons to use DI are: first, testability — a ViewModel that receives a `CitationRepository` interface can work with a `FakeCitationRepository` in tests, eliminating real network and database calls. Second, singleton management — you want exactly one OkHttp client, one Room database, one Retrofit instance across the entire app; DI frameworks handle this automatically. Third, modularity — you can swap an implementation (e.g., switch from Retrofit to Ktor for networking) by changing one module, not every class that creates the dependency."
 
 **Q: "What is the difference between @Singleton, @ViewModelScoped, and @ActivityScoped in Hilt?"**
+
 > "These are scope annotations that control an instance's lifetime. `@Singleton` means one instance for the entire application process — used for expensive shared objects like databases and API clients. `@ViewModelScoped` means one instance per ViewModel instance — scoped things are shared between all classes the ViewModel creates, but each ViewModel gets its own instances. `@ActivityScoped` means one instance per Activity instance — destroyed on rotation (unlike `@ActivityRetainedScoped` which survives rotation). The rule: a dependency can only inject things that live at least as long as it does. A `@Singleton` cannot hold a `@FragmentScoped` dependency because the fragment dies first, leaving the singleton with a dangling reference."
 
 **Q: "How do you replace a real API with a fake in Hilt tests?"**
+
 > "I use `@TestInstallIn` to create a test-specific Hilt module that replaces the production module. The test module provides a `FakeCitationApiService` — a class implementing `CitationApiService` that stores responses in memory. Tests inject the fake and configure it per test: `fakeCitationApi.setCitations(testData)` or `fakeCitationApi.setError(networkException)`. The key point: unit tests don't use Hilt at all — they manually construct the ViewModel with fake use cases and repositories. Only instrumented tests that need a real Activity and full Compose tree use Hilt's test support. The `HiltTestRunner` replaces the default `AndroidJUnitRunner` to register Hilt's component factory before any test runs."
 
 ---

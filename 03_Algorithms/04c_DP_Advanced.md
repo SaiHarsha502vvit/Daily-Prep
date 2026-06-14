@@ -28,6 +28,12 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+### Historical Evolution
+
+Advanced DP variants emerged from the need to handle state spaces that simple 1D/2D tables cannot efficiently represent. **Digit DP** (counting numbers with digit constraints) was formalized in the context of **automatic theorem proving and formal verification** in the 1970s-80s, where counting valid encodings required traversing digit-by-digit state machines. **Bitmask DP** leverages the fact that $n \le 20$ fits within a 32-bit integer, a technique that became standard after **Cook's 1971 NP-Completeness paper** and subsequent competitive programming competitions demonstrated that TSP and other subset problems were tractable via bitmask enumeration. **Knuth Optimization**, discovered by **Donald Knuth in 1971** and formalized in his 1975 paper, exploits a quadrangle inequality property ($c[i][j-1] \le c[i][j]$) in certain Interval DP recurrences to reduce complexity from $O(n^3)$ to $O(n^2)$ — this optimization applies to optimal binary search tree construction and matrix chain multiplication. **Monotonic queue optimization** for DP on sliding windows traces its roots to **deque-based sliding window algorithms** from the 1970s. Modern practice (post-2010) applies these techniques in competitive programming (Codeforces, AtCoder) and in production systems like network routing where TSP variants appear in logistics optimization.
+
+---
+
 ## PART 11: Advanced DP Patterns
 
 ---
@@ -35,15 +41,19 @@
 🔬 **Section Challenge — Advanced DP Concepts**
 
 **Challenge 1 (Reasoning):** Why is Bitmask DP usually constrained to $N \le 20$?
+
 <details><summary>Answer</summary>
 
 Bitmask DP relies on representing subsets as integers (e.g., $1 \ll N$). An integer of $N$ bits takes $2^N$ states. For $N = 20$, $2^{20} \approx 10^6$ states, which easily fits in memory and time limits (especially if the transition takes $O(N)$, leading to $O(N \cdot 2^N) \approx 2 \times 10^7$ operations). Beyond $N=20$, say $N=30$, $2^{30} \approx 10^9$, which exceeds standard time (1-2 seconds) and memory (256MB) limits.
+
 </details>
 
 **Challenge 2 (Pattern Recognition):** You are given a string and need to find the minimum number of cuts such that every substring is a palindrome. Which advanced DP pattern is this?
+
 <details><summary>Answer</summary>
 
 Interval DP. The state typically involves $dp[i][j]$, representing the optimal answer for the substring $S[i..j]$. We transition by trying all possible split points $k$ between $i$ and $j$, combining the results of $dp[i][k]$ and $dp[k+1][j]$ plus any merge cost. (This specific problem can also be optimized to 1D DP $dp[i]$ representing min cuts for prefix of length $i$, but the core reasoning is Interval DP).
+
 </details>
 
 ---
@@ -843,7 +853,6 @@ MISTAKE 6: Redundant states
 │  ───────────                                                                    │
 ```
 
-
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
 Long[][] memo;  // [position][sum][tight]
@@ -946,7 +955,6 @@ long solve(String N, int pos, int prev, boolean tight) {
 │ TRAVELING SALESMAN PROBLEM (TSP):                                               │
 │ ──────────────────────────────────                                              │
 ```
-
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -1061,7 +1069,6 @@ int assignmentProblem(int[][] cost) {
 │ TEMPLATE:                                                                       │
 │ ───────────                                                                     │
 ```
-
 
 ```java
 // dp[i][j] = optimal solution for interval [i, j]
@@ -1244,7 +1251,6 @@ int minCost(int n, int[] cuts) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🌳 DP on Trees
 
 ```
@@ -1260,7 +1266,6 @@ int minCost(int n, int[] cuts) {
 │ BASIC TREE DP - MAXIMUM INDEPENDENT SET:                                        │
 │ ─────────────────────────────────────────                                       │
 ```
-
 
 ```java
 // Select maximum weight of non-adjacent nodes
@@ -1422,7 +1427,6 @@ void dfs2(int v, int parent) {
 │ ─────────────────────────────────────────────                                   │
 ```
 
-
 ```java
 class ConvexHullTrick {
     Deque<long[]> hull = new ArrayDeque<>();  // [slope, intercept]
@@ -1491,7 +1495,6 @@ for (int i = 1; i < n; i++) {
 │ IMPLEMENTATION:                                                                 │
 │ ───────────────                                                                 │
 ```
-
 
 ```java
 // dp[i][j] = optimal value using exactly i partitions ending at j
@@ -1589,7 +1592,6 @@ long cost(int l, int r) {
 │ ──────────────────────────────────────────────────────────────                  │
 ```
 
-
 ```java
 // Count ways to tile n×m grid with dominoes
 long dominoTiling(int n, int m) {
@@ -1648,10 +1650,10 @@ long dominoTiling(int n, int m) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🎨 DP Pattern Quick Reference
 
- DP PATTERNS QUICK REFERENCE
+DP PATTERNS QUICK REFERENCE
+
 ```
 ──────────────────────────────────────────────────
 
@@ -1674,64 +1676,62 @@ long dominoTiling(int n, int m) {
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
 
-
 ---
 
 ## PRACTICE PROBLEMS — Dynamic Programming (Progressive)
 
 ### Level 1: 1D DP (Start Here)
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Climbing Stairs | Easy | LC 70 | Fibonacci variant |
-| 2 | House Robber | Medium | LC 198 | Take/skip |
-| 3 | Min Cost Climbing Stairs | Easy | LC 746 | Forward/backward DP |
-| 4 | Maximum Subarray | Medium | LC 53 | Kadane's |
-| 5 | Decode Ways | Medium | LC 91 | String DP |
-| 6 | Coin Change | Medium | LC 322 | Unbounded knapsack |
-| 7 | Longest Increasing Subsequence | Medium | LC 300 | LIS (O(n log n) optimization) |
-| 8 | Word Break | Medium | LC 139 | Prefix matching DP |
-| 9 | Perfect Squares | Medium | LC 279 | Min decomposition |
-| 10 | Jump Game | Medium | LC 55 | Greedy or DP |
+| #   | Problem                        | Difficulty | Source | DP Type                       |
+| --- | ------------------------------ | ---------- | ------ | ----------------------------- |
+| 1   | Climbing Stairs                | Easy       | LC 70  | Fibonacci variant             |
+| 2   | House Robber                   | Medium     | LC 198 | Take/skip                     |
+| 3   | Min Cost Climbing Stairs       | Easy       | LC 746 | Forward/backward DP           |
+| 4   | Maximum Subarray               | Medium     | LC 53  | Kadane's                      |
+| 5   | Decode Ways                    | Medium     | LC 91  | String DP                     |
+| 6   | Coin Change                    | Medium     | LC 322 | Unbounded knapsack            |
+| 7   | Longest Increasing Subsequence | Medium     | LC 300 | LIS (O(n log n) optimization) |
+| 8   | Word Break                     | Medium     | LC 139 | Prefix matching DP            |
+| 9   | Perfect Squares                | Medium     | LC 279 | Min decomposition             |
+| 10  | Jump Game                      | Medium     | LC 55  | Greedy or DP                  |
 
 ### Level 2: 2D DP
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Unique Paths | Medium | LC 62 | Grid DP |
-| 2 | Minimum Path Sum | Medium | LC 64 | Grid DP |
-| 3 | Longest Common Subsequence | Medium | LC 1143 | Classic LCS |
-| 4 | Edit Distance | Medium | LC 72 | String to string |
-| 5 | 0/1 Knapsack | Medium | Classic | Weight/value table |
-| 6 | Coin Change 2 | Medium | LC 518 | Count combinations |
-| 7 | Target Sum | Medium | LC 494 | Subset sum variant |
-| 8 | Interleaving String | Medium | LC 97 | Two-string matching |
-| 9 | Maximal Square | Medium | LC 221 | 2D min expansion |
-| 10 | Longest Palindromic Subsequence | Medium | LC 516 | Reverse + LCS |
+| #   | Problem                         | Difficulty | Source  | DP Type             |
+| --- | ------------------------------- | ---------- | ------- | ------------------- |
+| 1   | Unique Paths                    | Medium     | LC 62   | Grid DP             |
+| 2   | Minimum Path Sum                | Medium     | LC 64   | Grid DP             |
+| 3   | Longest Common Subsequence      | Medium     | LC 1143 | Classic LCS         |
+| 4   | Edit Distance                   | Medium     | LC 72   | String to string    |
+| 5   | 0/1 Knapsack                    | Medium     | Classic | Weight/value table  |
+| 6   | Coin Change 2                   | Medium     | LC 518  | Count combinations  |
+| 7   | Target Sum                      | Medium     | LC 494  | Subset sum variant  |
+| 8   | Interleaving String             | Medium     | LC 97   | Two-string matching |
+| 9   | Maximal Square                  | Medium     | LC 221  | 2D min expansion    |
+| 10  | Longest Palindromic Subsequence | Medium     | LC 516  | Reverse + LCS       |
 
 ### Level 3: Advanced DP
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Longest Palindromic Substring | Medium | LC 5 | Expand center or DP |
-| 2 | Regular Expression Matching | Hard | LC 10 | Two-string with wildcards |
-| 3 | Burst Balloons | Hard | LC 312 | Interval DP |
-| 4 | Partition Equal Subset Sum | Medium | LC 416 | Subset sum |
-| 5 | House Robber III | Medium | LC 337 | Tree DP |
-| 6 | Stone Game | Medium | LC 877 | Game theory DP |
-| 7 | Minimum Cost to Cut a Stick | Hard | LC 1547 | Interval DP |
-| 8 | Distinct Subsequences | Hard | LC 115 | Counting DP |
-| 9 | Best Time Buy Sell Stock w/ Cooldown | Medium | LC 309 | State machine DP |
-| 10 | Palindrome Partitioning II | Hard | LC 132 | Min cuts DP |
+| #   | Problem                              | Difficulty | Source  | DP Type                   |
+| --- | ------------------------------------ | ---------- | ------- | ------------------------- |
+| 1   | Longest Palindromic Substring        | Medium     | LC 5    | Expand center or DP       |
+| 2   | Regular Expression Matching          | Hard       | LC 10   | Two-string with wildcards |
+| 3   | Burst Balloons                       | Hard       | LC 312  | Interval DP               |
+| 4   | Partition Equal Subset Sum           | Medium     | LC 416  | Subset sum                |
+| 5   | House Robber III                     | Medium     | LC 337  | Tree DP                   |
+| 6   | Stone Game                           | Medium     | LC 877  | Game theory DP            |
+| 7   | Minimum Cost to Cut a Stick          | Hard       | LC 1547 | Interval DP               |
+| 8   | Distinct Subsequences                | Hard       | LC 115  | Counting DP               |
+| 9   | Best Time Buy Sell Stock w/ Cooldown | Medium     | LC 309  | State machine DP          |
+| 10  | Palindrome Partitioning II           | Hard       | LC 132  | Min cuts DP               |
 
 **Hidden Gems:**
 
-| Problem | Source | Why It's Great |
-|---------|--------|---------------|
-| Minimum Falling Path Sum | LC 931 | Simple 2D DP — great for building intuition |
+| Problem                          | Source | Why It's Great                              |
+| -------------------------------- | ------ | ------------------------------------------- |
+| Minimum Falling Path Sum         | LC 931 | Simple 2D DP — great for building intuition |
 | Delete Operation for Two Strings | LC 583 | LCS variant — easier entry to edit distance |
-| Ones and Zeroes | LC 474 | 2D knapsack with two weight dimensions |
-| Maximum Length of Pair Chain | LC 646 | Greedy or DP — compare both approaches |
-| Largest Divisible Subset | LC 368 | LIS variant with divisibility |
-| Counting Bits | LC 338 | DP on bits — beautiful O(n) pattern |
-
+| Ones and Zeroes                  | LC 474 | 2D knapsack with two weight dimensions      |
+| Maximum Length of Pair Chain     | LC 646 | Greedy or DP — compare both approaches      |
+| Largest Divisible Subset         | LC 368 | LIS variant with divisibility               |
+| Counting Bits                    | LC 338 | DP on bits — beautiful O(n) pattern         |

@@ -332,9 +332,11 @@ YOU (Level 3 — MIT level):
 🔬 **Section Challenge — 3. Recurrence Relations — When Recursion Gets Mathematical**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -346,9 +348,11 @@ fib(50) // takes forever
 ```
 
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+
 </details>
 
 ## 4. Amortized Analysis — When Average Matters More
@@ -356,10 +360,10 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 ### Why Amortized Analysis Matters
 
 PROBLEM: ArrayList.add() is O(n) worst case (when resizing).
-         Does this mean n additions take O(n²)?
+Does this mean n additions take O(n²)?
 
 ANSWER: NO! Most additions are O(1). Resizing happens rarely.
-        Over n operations, total cost is O(n) → amortized O(1) per operation.
+Over n operations, total cost is O(n) → amortized O(1) per operation.
 
 ### The Three Methods
 
@@ -588,14 +592,14 @@ TECHNIQUE 5: MODIFY INPUT (if allowed)
 
 ## INTERVIEW QUESTIONS
 
-  "Why does Java use Quicksort for primitives and TimSort for objects?"
-  → Primitives: no stability needed, Quicksort has better cache behavior
-  → Objects: stability matters (equal objects keep original order)
-  → TimSort exploits existing runs → great on partially sorted data
+"Why does Java use Quicksort for primitives and TimSort for objects?"
+→ Primitives: no stability needed, Quicksort has better cache behavior
+→ Objects: stability matters (equal objects keep original order)
+→ TimSort exploits existing runs → great on partially sorted data
 
-  "When would you use Counting Sort over Comparison Sort?"
-  → When the range of values (k) is O(n) or smaller
-  → e.g., sorting ages (0-150), grades (0-100), ASCII characters (0-127)
+"When would you use Counting Sort over Comparison Sort?"
+→ When the range of values (k) is O(n) or smaller
+→ e.g., sorting ages (0-150), grades (0-100), ASCII characters (0-127)
 
 ---
 
@@ -813,7 +817,9 @@ THE CONSTRAINT → COMPLEXITY SHORTCUT:
 🔬 **Section Challenge — Summary Complexity Cheat Sheet**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>

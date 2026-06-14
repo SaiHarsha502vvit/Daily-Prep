@@ -11,6 +11,7 @@
 > WHY THIS FILE EXISTS
 >
 > GCD, LCM, Primes, Modular Arithmetic → appear in:
+>
 > - 40% of coding interviews (number theory questions)
 > - Encryption systems (RSA uses GCD, primes, modular exponentiation)
 > - Database sharding (hash % shard_count needs coprime understanding)
@@ -19,6 +20,12 @@
 > - Pattern programs → builds loop thinking essential for ALL DSA
 >
 > START DATE: February 10, 2026
+
+---
+
+### Historical Evolution
+
+Number theory algorithms trace back to the ancient world, with **Euclid's algorithm for GCD (circa 300 BC)** appearing in Euclid's Elements (Book VII, Proposition 2) — remarkably, the Euclidean algorithm for finding the greatest common divisor using repeated division remains essentially unchanged and is still the most efficient practical method for computing GCD, over 2,300 years later. The **Sieve of Eratosthenes** (circa 240 BC) was the first systematic method for finding all prime numbers up to a given limit — Eratosthenes, the chief librarian of Alexandria, described the method as crossing out multiples of each prime like crossing threads in a woven fabric (hence "sieve"). **Fermat's Little Theorem (1640)** established that $a^p \equiv a \pmod{p}$ for prime $p$, foundational to modern primality testing and the entire field of cryptography. **Euler (1760s)** generalized this to $\phi(n)$ (Euler's totient function), proving that the number of integers less than $n$ that are coprime to $n$ follows $n \prod(1 - 1/p)$. **Miller and Rabin (1976/1977)** transformed Euler's theoretical work into a practical randomized primality test that runs in $O(k \log^3 n)$ time. Modern practice (post-2010): RSA encryption, Bitcoin address generation, and hash-based commitments all rely on the intractability of integer factorization — the same mathematical foundation Euclid discovered.
 
 ---
 
@@ -47,7 +54,6 @@ Each group must have equal number of shards
 Maximum groups possible? GCD helps!
 ```
 
-
 ---
 
 ## Algorithm 1: Brute Force GCD
@@ -56,19 +62,19 @@ Maximum groups possible? GCD helps!
 /**
  * WHY: Understand what GCD means before optimizing
  * HOW: Check every number from min(a,b) down to 1
- * 
+ *
  * Time: O(min(a,b))
  * Space: O(1)
  */
 public static int gcdBruteForce(int a, int b) {
     int smaller = Math.min(a, b);
-    
+
     for (int i = smaller; i >= 1; i--) {
         if (a % i == 0 && b % i == 0) {
             return i; // First one we find (going down) is GCD
         }
     }
-    
+
     return 1; // Coprime
 }
 
@@ -86,7 +92,7 @@ public static int gcdBruteForce(int a, int b) {
 /**
  * WHY: Euclid realized: GCD(a, b) = GCD(a-b, b) when a > b
  * HOW: Keep subtracting smaller from larger until equal
- * 
+ *
  * VISUAL:
  *   GCD(48, 18)
  *   48 - 18 = 30 → GCD(30, 18)
@@ -94,7 +100,7 @@ public static int gcdBruteForce(int a, int b) {
  *   18 - 12 = 6  → GCD(12, 6)
  *   12 - 6  = 6  → GCD(6, 6)
  *   Equal! GCD = 6
- * 
+ *
  * Time: O(max(a,b)) worst case
  * Space: O(1)
  */
@@ -119,13 +125,13 @@ public static int gcdSubtraction(int a, int b) {
  * WHY: Subtraction is slow for large numbers. GCD(1000000, 3) takes forever!
  *      Modulo is like doing ALL subtractions at once
  * HOW: GCD(a, b) = GCD(b, a % b) until b becomes 0
- * 
+ *
  * VISUAL:
  *   GCD(48, 18)
  *   48 % 18 = 12 → GCD(18, 12)
  *   18 % 12 = 6  → GCD(12, 6)
  *   12 % 6  = 0  → GCD(6, 0) = 6 ✓
- * 
+ *
  * Time: O(log(min(a,b)))  ← VERY FAST!
  * Space: O(1) iterative, O(log(min(a,b))) recursive
  */
@@ -168,22 +174,22 @@ public static int gcdOneLine(int a, int b) {
 /**
  * WHY: On CPUs, bit operations are faster than division
  * HOW: Use only subtraction and bit shifts
- * 
+ *
  * RULES:
  *   1. gcd(0, b) = b, gcd(a, 0) = a
  *   2. Both even: gcd(a, b) = 2 * gcd(a/2, b/2)
  *   3. a even, b odd: gcd(a, b) = gcd(a/2, b)
  *   4. Both odd: gcd(a, b) = gcd(|a-b|/2, min(a,b))
- * 
+ *
  * Time: O(log(a) * log(b))
  * Space: O(1)
- * 
+ *
  * REAL WORLD: Used in Java's BigInteger.gcd() for large numbers
  */
 public static int binaryGCD(int a, int b) {
     if (a == 0) return b;
     if (b == 0) return a;
-    
+
     // Count common factors of 2
     int shift = 0;
     while (((a | b) & 1) == 0) { // Both even
@@ -191,13 +197,13 @@ public static int binaryGCD(int a, int b) {
         b >>= 1;
         shift++;
     }
-    
+
     // Remove remaining factors of 2 from a
     while ((a & 1) == 0) a >>= 1;
-    
+
     do {
         while ((b & 1) == 0) b >>= 1;
-        
+
         if (a > b) {
             int temp = a;
             a = b;
@@ -205,7 +211,7 @@ public static int binaryGCD(int a, int b) {
         }
         b -= a;
     } while (b != 0);
-    
+
     return a << shift;
 }
 ```
@@ -231,19 +237,19 @@ public static int binaryGCD(int a, int b) {
 ```java
 /**
  * WHY: LCM is needed when you want SYNCHRONIZATION
- * 
+ *
  * REAL LIFE:
  *   Bus A comes every 12 minutes
  *   Bus B comes every 18 minutes
  *   Both arrive together now. When will they be together again?
  *   LCM(12, 18) = 36 minutes
- * 
+ *
  * PRODUCTION:
  *   Cron job A runs every 12 hours
  *   Cron job B runs every 18 hours
  *   When will they conflict (run at same time)?
  *   LCM(12, 18) = 36 hours
- * 
+ *
  * FORMULA: LCM(a, b) = (a * b) / GCD(a, b)
  */
 public static long lcm(int a, int b) {
@@ -278,14 +284,14 @@ public static long lcmOfArray(int[] arr) {
  * PROBLEM: You have a rectangular paper of size W × H
  * Cut it into the LARGEST possible square pieces with NO waste
  * What is the side length of each square?
- * 
+ *
  * WHY GCD: The answer is GCD(W, H)!
- * 
+ *
  * VISUAL for 12 × 18:
  *   GCD(12, 18) = 6
  *   Square side = 6
  *   You get: (12/6) × (18/6) = 2 × 3 = 6 squares
- * 
+ *
  *   ┌──────┬──────┬──────┐
  *   │      │      │      │ 6
  *   │  6×6 │  6×6 │  6×6 │
@@ -296,7 +302,7 @@ public static long lcmOfArray(int[] arr) {
  *   │      │      │      │
  *   └──────┴──────┴──────┘
  *       6      6      6
- * 
+ *
  * REAL INCIDENT (Tile Manufacturing):
  * Factory needed to cut 120cm × 84cm marble slabs into square tiles
  * GCD(120, 84) = 12cm tiles → 10 × 7 = 70 tiles per slab
@@ -317,10 +323,10 @@ public static int numberOfSquares(int width, int height) {
 /**
  * PROBLEM: You have two jugs of capacity A and B liters.
  * Can you measure exactly C liters?
- * 
+ *
  * MATH: Possible if and only if C is divisible by GCD(A, B)
  *       AND C <= max(A, B)
- * 
+ *
  * REAL LIFE: Die Hard 3 movie puzzle!
  * Bruce Willis had 3-gallon and 5-gallon jugs, needed exactly 4 gallons
  * GCD(3, 5) = 1, 4 % 1 == 0 → YES, possible!
@@ -337,19 +343,19 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
     Set<String> visited = new HashSet<>();
     Queue<int[]> queue = new LinkedList<>();
     Map<String, String> parent = new HashMap<>();
-    
+
     queue.offer(new int[]{0, 0});
     visited.add("0,0");
-    
+
     while (!queue.isEmpty()) {
         int[] state = queue.poll();
         int a = state[0], b = state[1];
-        
+
         if (a == target || b == target || a + b == target) {
             // Reconstruct path
             return reconstructPath(parent, a + "," + b);
         }
-        
+
         // All possible operations:
         int[][] nextStates = {
             {jug1Cap, b},           // Fill jug 1
@@ -359,7 +365,7 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
             {Math.max(0, a - (jug2Cap - b)), Math.min(jug2Cap, a + b)},  // Pour 1→2
             {Math.min(jug1Cap, a + b), Math.max(0, b - (jug1Cap - a))}   // Pour 2→1
         };
-        
+
         for (int[] next : nextStates) {
             String key = next[0] + "," + next[1];
             if (!visited.contains(key)) {
@@ -369,7 +375,7 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
             }
         }
     }
-    
+
     return Collections.emptyList(); // Not possible
 }
 ```
@@ -379,26 +385,26 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
 ```java
 /**
  * PROBLEM: Simplify fraction a/b to lowest terms
- * 
+ *
  * PRODUCTION USE: Financial systems display simplified ratios
  * Stock split 100:25 → 4:1
- * 
+ *
  * HOW: Divide both by GCD
  */
 public static int[] simplifyFraction(int numerator, int denominator) {
     if (denominator == 0) throw new ArithmeticException("Denominator cannot be 0");
-    
+
     int g = gcd(Math.abs(numerator), Math.abs(denominator));
-    
+
     int num = numerator / g;
     int den = denominator / g;
-    
+
     // Keep negative sign in numerator only
     if (den < 0) {
         num = -num;
         den = -den;
     }
-    
+
     return new int[]{num, den};
 }
 
@@ -440,7 +446,7 @@ public static int countCoprimePairs(int[] arr) {
 // TEST:
 // arrayGCD([12, 18, 24]) → 6
 // arrayGCD([7, 13, 25]) → 1
-// countCoprimePairs([3, 5, 7, 10]) → 5 pairs  
+// countCoprimePairs([3, 5, 7, 10]) → 5 pairs
 //   (3,5)=1✓ (3,7)=1✓ (3,10)=1✓ (5,7)=1✓ (7,10)=1✓  (5,10)=5✗
 ```
 
@@ -475,8 +481,8 @@ DATABASE:
 ## Algorithm P1: Check if Prime
 
 ```java
-/** 
- * Brute Force: O(n) 
+/**
+ * Brute Force: O(n)
  */
 public static boolean isPrimeBrute(int n) {
     if (n <= 1) return false;
@@ -488,7 +494,7 @@ public static boolean isPrimeBrute(int n) {
 
 /**
  * Optimized: O(√n) ← Interview standard
- * 
+ *
  * WHY √n? If n = a × b, one of them must be ≤ √n
  * Example: 36 = 1×36 = 2×18 = 3×12 = 4×9 = 6×6
  *          After √36 = 6, factors repeat!
@@ -497,7 +503,7 @@ public static boolean isPrime(int n) {
     if (n <= 1) return false;
     if (n <= 3) return true;
     if (n % 2 == 0 || n % 3 == 0) return false;
-    
+
     // Check only 6k±1 pattern (all primes > 3 are of form 6k±1)
     for (int i = 5; i * i <= n; i += 6) {
         if (n % i == 0 || n % (i + 2) == 0) {
@@ -523,12 +529,12 @@ public static boolean isPrime(int n) {
 ```java
 /**
  * PROBLEM: Find ALL primes up to N
- * 
+ *
  * WHY: Checking each number one by one is O(N√N)
  *      Sieve does it in O(N log log N) ← nearly linear!
- * 
+ *
  * HOW: Mark multiples of each prime as composite
- * 
+ *
  * VISUAL (N = 30):
  *   Start: 2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
  *   Cross out 2's multiples:   4     6     8     10    12    14    16    18    20    22    24    26    28    30
@@ -540,7 +546,7 @@ public static boolean[] sieveOfEratosthenes(int n) {
     boolean[] isPrime = new boolean[n + 1];
     Arrays.fill(isPrime, true);
     isPrime[0] = isPrime[1] = false;
-    
+
     for (int i = 2; i * i <= n; i++) {
         if (isPrime[i]) {
             // Mark all multiples of i as composite
@@ -549,7 +555,7 @@ public static boolean[] sieveOfEratosthenes(int n) {
             }
         }
     }
-    
+
     return isPrime;
 }
 
@@ -585,23 +591,23 @@ public static int countPrimes(int n) {
 ```java
 /**
  * PROBLEM: Break a number into its prime factors
- * 
+ *
  * PRODUCTION USE:
  *   - RSA key generation
  *   - Simplifying hash functions
  *   - Database partition sizing
- * 
+ *
  * 60 = 2 × 2 × 3 × 5 = 2² × 3 × 5
  */
 public static List<Integer> primeFactors(int n) {
     List<Integer> factors = new ArrayList<>();
-    
+
     // Extract all 2's
     while (n % 2 == 0) {
         factors.add(2);
         n /= 2;
     }
-    
+
     // Check odd numbers from 3 to √n
     for (int i = 3; i * i <= n; i += 2) {
         while (n % i == 0) {
@@ -609,19 +615,19 @@ public static List<Integer> primeFactors(int n) {
             n /= i;
         }
     }
-    
+
     // If n is still > 1, then it's a prime factor
     if (n > 1) {
         factors.add(n);
     }
-    
+
     return factors;
 }
 
 // With counts (for display)
 public static Map<Integer, Integer> primeFactorization(int n) {
     Map<Integer, Integer> factorMap = new LinkedHashMap<>();
-    
+
     for (int i = 2; i * i <= n; i++) {
         while (n % i == 0) {
             factorMap.merge(i, 1, Integer::sum);
@@ -629,7 +635,7 @@ public static Map<Integer, Integer> primeFactorization(int n) {
         }
     }
     if (n > 1) factorMap.merge(n, 1, Integer::sum);
-    
+
     return factorMap;
 }
 
@@ -645,10 +651,10 @@ public static Map<Integer, Integer> primeFactorization(int n) {
 ```java
 /**
  * PROBLEM: How many divisors does N have?
- * 
- * FORMULA: If N = p1^a1 × p2^a2 × ... 
+ *
+ * FORMULA: If N = p1^a1 × p2^a2 × ...
  *          Divisors = (a1+1) × (a2+1) × ...
- * 
+ *
  * Example: 60 = 2² × 3¹ × 5¹
  *          Divisors = (2+1)(1+1)(1+1) = 3 × 2 × 2 = 12
  *          The 12 divisors: 1,2,3,4,5,6,10,12,15,20,30,60 ✓
@@ -704,45 +710,44 @@ public static List<Integer> getAllDivisors(int n) {
 WHY MODULAR ARITHMETIC?
 ───────────────────────
 1. Avoid integer overflow in competitive programming
-2. Cryptography (RSA, Diffie-Hellman)  
+2. Cryptography (RSA, Diffie-Hellman)
 3. Hash functions (hashCode % tableSize)
 4. Circular data structures (circular queue: index % capacity)
 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
 ```
 
-
 ```java
 /**
  * MODULAR ARITHMETIC RULES:
- * 
+ *
  * (a + b) % m = ((a % m) + (b % m)) % m
  * (a - b) % m = ((a % m) - (b % m) + m) % m  ← Note the +m!
  * (a * b) % m = ((a % m) * (b % m)) % m
  * (a / b) % m ≠ ((a % m) / (b % m)) % m      ← Division is special!
- * 
+ *
  * For division: (a / b) % m = (a * modInverse(b, m)) % m
  */
 
 public class ModularArithmetic {
-    
+
     static final int MOD = 1_000_000_007; // 10^9 + 7 (common in contests)
-    
+
     // Modular addition (safe from overflow)
     public static long modAdd(long a, long b) {
         return ((a % MOD) + (b % MOD)) % MOD;
     }
-    
+
     // Modular multiplication
     public static long modMul(long a, long b) {
         return ((a % MOD) * (b % MOD)) % MOD;
     }
-    
+
     // Modular exponentiation: (base^exp) % mod
     // FAST: O(log exp) using binary exponentiation
     public static long modPow(long base, long exp, long mod) {
         long result = 1;
         base %= mod;
-        
+
         while (exp > 0) {
             if ((exp & 1) == 1) { // exp is odd
                 result = (result * base) % mod;
@@ -750,42 +755,42 @@ public class ModularArithmetic {
             exp >>= 1;        // exp /= 2
             base = (base * base) % mod;
         }
-        
+
         return result;
     }
-    
+
     // Modular inverse using Fermat's little theorem
     // Only works when mod is prime!
     // a^(-1) ≡ a^(mod-2) (mod p)
     public static long modInverse(long a, long mod) {
         return modPow(a, mod - 2, mod);
     }
-    
+
     // Modular division: (a / b) % mod
     public static long modDiv(long a, long b, long mod) {
         return modMul(a, modInverse(b, mod));
     }
-    
+
     // REAL PRODUCTION USE: Count large combinations
     // nCr % MOD (needed because nCr can be astronomically large)
     public static long nCrMod(int n, int r) {
         if (r > n) return 0;
         if (r == 0 || r == n) return 1;
-        
+
         // Precompute factorials
         long[] fact = new long[n + 1];
         fact[0] = 1;
         for (int i = 1; i <= n; i++) {
             fact[i] = modMul(fact[i - 1], i);
         }
-        
+
         // nCr = n! / (r! * (n-r)!)
         long numerator = fact[n];
         long denominator = modMul(fact[r], fact[n - r]);
-        
+
         return modDiv(numerator, denominator, MOD);
     }
-    
+
     // TEST
     public static void main(String[] args) {
         System.out.println("2^10 mod 1000 = " + modPow(2, 10, 1000));     // 24
@@ -819,7 +824,6 @@ public class ModularArithmetic {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Pattern 1: Right Triangle
 
 ```java
@@ -830,7 +834,7 @@ public class ModularArithmetic {
  * * * *
  * * * * *
  * * * * * *
- * 
+ *
  * FORMULA: Row i has (i+1) stars
  */
 public static void rightTriangle(int n) {
@@ -853,7 +857,7 @@ public static void rightTriangle(int n) {
  * * * *
  * * *
  * *
- * 
+ *
  * FORMULA: Row i has (n-i) stars
  */
 public static void invertedTriangle(int n) {
@@ -876,7 +880,7 @@ public static void invertedTriangle(int n) {
  *     * * * * *
  *   * * * * * * *
  * * * * * * * * * *
- * 
+ *
  * FORMULA: Row i has (2*i+1) stars, (n-1-i) leading spaces
  */
 public static void pyramid(int n) {
@@ -908,7 +912,7 @@ public static void pyramid(int n) {
  *   *****
  *    ***
  *     *
- * 
+ *
  * TRICK: Upper half pyramid + inverted lower half
  */
 public static void diamond(int n) {
@@ -957,10 +961,10 @@ public static void numberPyramid(int n) {
  *     1   2   1
  *   1   3   3   1
  * 1   4   6   4   1
- * 
+ *
  * FORMULA: Each number = sum of two numbers above it
  * OR: C(row, col) = row! / (col! * (row-col)!)
- * 
+ *
  * REAL USE:
  *   - Binomial coefficients
  *   - Probability calculations
@@ -970,7 +974,7 @@ public static void pascalsTriangle(int n) {
     for (int i = 0; i < n; i++) {
         // Leading spaces
         for (int s = 0; s < n - 1 - i; s++) System.out.print("  ");
-        
+
         int val = 1;
         for (int j = 0; j <= i; j++) {
             System.out.printf("%4d", val);
@@ -991,7 +995,7 @@ public static void pascalsTriangle(int n) {
  * 4  5  6
  * 7  8  9  10
  * 11 12 13 14 15
- * 
+ *
  * Numbers flow continuously
  */
 public static void floydsTriangle(int n) {
@@ -1050,7 +1054,7 @@ public static void butterfly(int n) {
  * *       *
  * *       *
  * * * * * *
- * 
+ *
  * Print star only at edges: i==0, i==n-1, j==0, j==n-1
  */
 public static void hollowSquare(int n) {
@@ -1076,34 +1080,34 @@ public static void hollowSquare(int n) {
  * 12 13 14  5
  * 11 16 15  6
  * 10  9  8  7
- * 
+ *
  * REAL USE: This pattern appears in matrix traversal interview questions!
- * 
+ *
  * DSA Connection: Spiral Matrix traversal (LeetCode 54)
  */
 public static void spiralMatrix(int n) {
     int[][] matrix = new int[n][n];
     int num = 1;
     int top = 0, bottom = n - 1, left = 0, right = n - 1;
-    
+
     while (num <= n * n) {
         // Go right
         for (int j = left; j <= right; j++) matrix[top][j] = num++;
         top++;
-        
+
         // Go down
         for (int i = top; i <= bottom; i++) matrix[i][right] = num++;
         right--;
-        
+
         // Go left
         for (int j = right; j >= left; j--) matrix[bottom][j] = num++;
         bottom--;
-        
+
         // Go up
         for (int i = bottom; i >= top; i--) matrix[i][left] = num++;
         left++;
     }
-    
+
     // Print
     for (int[] row : matrix) {
         for (int val : row) {
@@ -1180,29 +1184,29 @@ public static void alphabetDiamond(int n) {
  * P   A   H   N
  * A P L S I I G
  * Y   I   R
- * 
+ *
  * REAL USE: This is LeetCode Problem #6 (ZigZag Conversion)!
  * Used in some encryption methods
  */
 public static String zigzagConvert(String s, int numRows) {
     if (numRows == 1) return s;
-    
+
     StringBuilder[] rows = new StringBuilder[numRows];
     for (int i = 0; i < numRows; i++) rows[i] = new StringBuilder();
-    
+
     int currentRow = 0;
     boolean goingDown = false;
-    
+
     for (char c : s.toCharArray()) {
         rows[currentRow].append(c);
-        
+
         if (currentRow == 0 || currentRow == numRows - 1) {
             goingDown = !goingDown;
         }
-        
+
         currentRow += goingDown ? 1 : -1;
     }
-    
+
     StringBuilder result = new StringBuilder();
     for (StringBuilder row : rows) result.append(row);
     return result.toString();

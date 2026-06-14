@@ -19,6 +19,7 @@
 ```
 
 ### Dry Run Example: Binary Search
+
 ```java
 int binarySearch(int[] arr, int target) {
     int left = 0, right = arr.length - 1;
@@ -43,8 +44,8 @@ Iteration | left | right | mid | arr[mid] | Action
   3       |  5   |   5   |  5  |   23     | 23 == 23 → return 5 ✅
 ```
 
-
 ### Dry Run for Recursion — Use Call Stack Notation
+
 ```
 fibonacci(4)
 ├── fibonacci(3)
@@ -61,12 +62,12 @@ fibonacci(4)
 return 2 + 1 = 3 ✅
 ```
 
-
 ---
 
 ## Part 2: The Debugging Process — 5 Steps
 
 ### Step 1: REPRODUCE the Bug
+
 ```
 □ What input causes the bug?
 □ What output do I get vs what I expect?
@@ -79,8 +80,8 @@ Example: "My sorting fails for [3, 1, 2, 1]"
 The smaller the failing input, the easier to trace.
 ```
 
-
 ### Step 2: ISOLATE Where the Bug Is
+
 ```
 Strategy A: "Halfway check"
   → Print/check the state at HALFWAY point of your algorithm
@@ -92,14 +93,14 @@ Strategy A: "Halfway check"
 Strategy B: "Check invariants"
   → What should be TRUE at each step?
   → Add assertions/prints to verify
-  
+
 Strategy C: "Simplest failing case"
   → Reduce input until bug disappears
   → The last input that bugs = exact trigger
 ```
 
-
 ### Step 3: IDENTIFY the Root Cause
+
 ```
 Common root causes (check these FIRST):
 1. Off-by-one error (wrong loop bound)
@@ -115,6 +116,7 @@ Common root causes (check these FIRST):
 ```
 
 ### Step 4: FIX the Bug
+
 ```
 Rules for fixing:
 □ Fix ONLY the identified root cause
@@ -122,8 +124,8 @@ Rules for fixing:
 □ Understand WHY the fix works (not just that it works)
 ```
 
-
 ### Step 5: VERIFY the Fix
+
 ```
 □ Original failing input now passes
 □ All previously passing inputs still pass
@@ -131,15 +133,12 @@ Rules for fixing:
 □ No new bugs introduced
 ```
 
-
 ---
-
-
-
 
 ## Part 3: Common Bug Patterns & How to Spot Them
 
 ### Pattern 1: "Works on examples, fails on edge cases"
+
 ```
 Typical causes:
 - Empty array/string not handled
@@ -152,6 +151,7 @@ Fix: Add explicit edge case handling at the START of your function
 ```
 
 ### Pattern 2: "Almost correct answer, off by 1"
+
 ```
 Typical causes:
 - Loop runs one too many or one too few times
@@ -164,6 +164,7 @@ Fix: Check loop bounds with smallest input (n=1, n=2)
 ```
 
 ### Pattern 3: "Works for small input, wrong for large"
+
 ```
 Typical causes:
 - Integer overflow (int → long)
@@ -174,8 +175,8 @@ Fix: Use long for large sums/products
      Check if n * n > Integer.MAX_VALUE
 ```
 
-
 ### Pattern 4: "Works sometimes, fails randomly"
+
 ```
 Typical causes:
 - Uninitialized variables
@@ -189,6 +190,7 @@ Fix: Initialize everything explicitly
 ```
 
 ### Pattern 5: "Infinite loop or stack overflow"
+
 ```
 Typical causes:
 - Loop condition never becomes false
@@ -203,11 +205,10 @@ Fix: Verify loop variable changes each iteration
 
 ---
 
-
-
 ## Part 4: Strategic Print Debugging
 
 ### What to Print and Where
+
 ```java
 // Print LOOP STATE at start of each iteration:
 for (int i = 0; i < n; i++) {
@@ -236,6 +237,7 @@ return result;
 ```
 
 ### Print Formatting Tips
+
 ```
 // For arrays:
 System.out.println(Arrays.toString(arr));
@@ -256,12 +258,10 @@ System.out.println(map);
 
 ---
 
-
-
-
 ## Part 5: Debugging DP Problems
 
 ### Common DP Bugs
+
 ```
 Bug 1: Wrong base case
 → Print dp[0], dp[1] — do they match expected base values?
@@ -279,8 +279,8 @@ Bug 4: Wrong answer extraction
 → Check what dp[i] REPRESENTS
 ```
 
-
 ### DP Table Visualization
+
 ```
 Problem: Climbing Stairs (ways to reach step n, can take 1 or 2 steps)
 
@@ -295,12 +295,10 @@ dp:   [1] [1] [2] [3] [5] [8]
 
 ---
 
-
-
-
 ## Part 6: Debugging Graph/Tree Problems
 
 ### Common Graph Bugs
+
 ```
 Bug 1: Not marking visited → infinite loop
 → Symptom: Program hangs or stack overflow
@@ -318,8 +316,8 @@ Bug 4: Directed vs undirected confusion
 → Directed: add edge ONE way only
 ```
 
-
 ### Tree Debugging: Print Traversals
+
 ```java
 // Inorder (for BST, should be sorted):
 void inorder(TreeNode node) {
@@ -347,15 +345,13 @@ void levelOrder(TreeNode root) {
 
 ---
 
-
-
 🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
 
-**Challenge 1 (Trace):** You are implementing BFS to find the shortest path in an unweighted grid. Your queue logic pushes a node, pops it, checks its neighbors, and pushes the valid neighbors. You mark a node as `visited = true` the moment you *pop* it from the queue. Why will this cause `Time Limit Exceeded` (TLE) on large grids?
+**Challenge 1 (Trace):** You are implementing BFS to find the shortest path in an unweighted grid. Your queue logic pushes a node, pops it, checks its neighbors, and pushes the valid neighbors. You mark a node as `visited = true` the moment you _pop_ it from the queue. Why will this cause `Time Limit Exceeded` (TLE) on large grids?
 
 <details><summary>Answer</summary>
 
-Because you are marking nodes as visited too late! If a node is added to the queue but not yet popped, it is not marked as visited. As a result, other neighboring nodes currently being processed might see it as "unvisited" and push *duplicate* copies of the same node onto the queue. This causes the queue size to explode exponentially, leading to TLE. **Fix:** Always mark nodes as visited the exact moment you *push* them into the queue.
+Because you are marking nodes as visited too late! If a node is added to the queue but not yet popped, it is not marked as visited. As a result, other neighboring nodes currently being processed might see it as "unvisited" and push _duplicate_ copies of the same node onto the queue. This causes the queue size to explode exponentially, leading to TLE. **Fix:** Always mark nodes as visited the exact moment you _push_ them into the queue.
 
 </details>
 
@@ -363,7 +359,7 @@ Because you are marking nodes as visited too late! If a node is added to the que
 
 <details><summary>Answer</summary>
 
-The output `[10, 5, 2, 7, 15]` corresponds to a **Pre-order traversal** (Root → Left → Right), not an In-order traversal. To get a sorted array from a BST, you must use **In-order traversal** (Left → Root → Right). The debugging output immediately isolates the root cause: you placed the `list.add(node.val)` or `print` statement *before* the recursive call to `node.left`, instead of *between* the calls to `node.left` and `node.right`.
+The output `[10, 5, 2, 7, 15]` corresponds to a **Pre-order traversal** (Root → Left → Right), not an In-order traversal. To get a sorted array from a BST, you must use **In-order traversal** (Left → Root → Right). The debugging output immediately isolates the root cause: you placed the `list.add(node.val)` or `print` statement _before_ the recursive call to `node.left`, instead of _between_ the calls to `node.left` and `node.right`.
 
 </details>
 
@@ -382,20 +378,188 @@ When your code fails:
 □ Remove debug prints before submitting
 ```
 
-
 ---
 
-📖 **Related Files:**
-- [06_Implementation_Checklist.md](06_Implementation_Checklist.md) — Avoid bugs in the first place
-- [05_Problem_Solving/23_Edge_Cases.md](../05_Problem_Solving/23_Edge_Cases.md) — Edge case catalog
-- [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md) — Common mistakes
+## NEW DIAGRAM — Debugging Decision Tree (When Code Fails)
 
----
-[← 07 SQL Mental Pipeline](07_SQL_Mental_Pipeline.md) | [09 Complexity Intuition →](09_Complexity_Intuition.md)
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  DIAGRAM: Debugging Decision Tree — Follow when code produces wrong output  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ① SYMPTOM: Code produces wrong output / TLE / crash / wrong answer?        │
+│     │                                                                        │
+│     └── Can you REPRODUCE it consistently?                                  │
+│         │                                                                    │
+│         ├── YES → Minimize the failing input (see step ②)                  │
+│         │                                                                    │
+│         └── NO  → Heisenbug (observation changes behavior)                  │
+│                   • Remove profiler/observer and try again                  │
+│                   • Use continuous profiler (< 5% overhead)                │
+│                   • Check for race conditions (ThreadSanitizer)            │
+│                                                                              │
+│  ② MINIMIZE INPUT → smallest failing case                                   │
+│     │                                                                        │
+│     ├── n=1 fails? → Try n=0 (empty)                                       │
+│     ├── n=2 fails? → Try [first_element], [second_element] separately      │
+│     ├── Try duplicates, negative numbers, max values                       │
+│     └── The smaller the failing input, the easier the trace                │
+│                                                                              │
+│  ③ DRY RUN ON PAPER (most powerful technique)                               │
+│     │                                                                        │
+│     ├── Draw table with columns = all variables                            │
+│     ├── Execute ONE line at a time, update table                           │
+│     ├── For loops: one row per iteration                                   │
+│     ├── For recursion: draw call stack / tree                              │
+│     │                                                                    │
+│     ├── Dry run matches expected? → Bug is NOT here, check caller/callee │
+│     │                                                                    │
+│     └── Dry run mismatches expected? → ROOT CAUSE FOUND at mismatch point │
+│                                                                              │
+│  ④ ADD PRINT / LOG STATEMENTS (if dry run inconclusive)                    │
+│     │                                                                        │
+│     ├── Loop: print state at start of each iteration                       │
+│     ├── Function entry: print ALL args                                     │
+│     ├── Decision points: print which branch + condition values             │
+│     ├── Before return: print return value                                  │
+│     │                                                                    │
+│     └── Still not found → Go to ⑤                                         │
+│                                                                              │
+│  ⑤ USE DEBUGGER (step through, not prints)                                 │
+│     │                                                                        │
+│     ├── Set breakpoint near suspected code                                 │
+│     ├── Step through line by line                                         │
+│     ├── Watch variables, compare to dry-run table                          │
+│     ├── Bisect: add assertion at midpoint                                  │
+│     │   → "If state correct here, bug is in second half"                  │
+│     │   → "If state wrong here, bug is in first half"                     │
+│     │                                                                    │
+│     └── Still not found → Go to ⑥                                         │
+│                                                                              │
+│  ⑥ BINARY SEARCH ON CODE (comment half, binary search)                     │
+│     │                                                                        │
+│     ├── Comment out ~50% of the function                                  │
+│     │   → Bug gone?    → Bug was in the commented half                    │
+│     │   → Bug present? → Bug is in the kept half                          │
+│     ├── Repeat on remaining half until 1-5 lines isolated                 │
+│     │                                                                    │
+│     └── ROOT CAUSE ISOLATED → Go to ⑦                                     │
+│                                                                              │
+│  ⑦ FIX + VERIFY + REGRESS                                                   │
+│     │                                                                        │
+│     ├── Fix only the root cause (not surrounding code)                     │
+│     ├── Verify: original failing case passes?                              │
+│     ├── Verify: all previously passing cases still pass?                   │
+│     ├── Verify: edge cases (empty, single, negative, max)                  │
+│     └── Add regression test so it never comes back                        │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────────┐    │
+│  │  THE "60-SECOND" DEBUG SCAN (check these first):                       │    │
+│  │                                                                      │    │
+│  │  □ Off-by-one: loop bound < vs <= ?                                  │    │
+│  │  □ Null check: did you check for null before accessing?              │    │
+│  │  □ Return statement: is the recursive call returned?                 │    │
+│  │  □ Visited marking (BFS): marked on enqueue, not dequeue?            │    │
+│  │  □ Integer overflow: long for large sums?                            │    │
+│  │  □ Reference vs value: deep copy in result list?                     │    │
+│  │  □ = vs ==: assignment instead of comparison?                        │    │
+│  └──────────────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
 
+## Historical Evolution
 
----
+> **Why this section**: mental-model pedagogy requires knowing the prior art. The frameworks below all have named predecessors — naming them prevents reinventing the wheel and connects your reasoning to decades of computer-science practice.
 
-**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+| Year | Predecessor | Contribution |
+| --- | --- | --- |
+| 1974 | Kernighan & Plauger | *Elements of Programming Style* — systematic debugging discipline |
+| 1975 | Dijkstra | Self-stabilizing systems — systematic fault recovery |
+| 1988 | Dijkstra | *A Discipline of Programming* — formal reasoning about programs |
+| 1989 | Penrose | *The Emperor's New Mind* — computational debugging philosophy |
+| 2009 | Zeller | *Why Programs Fail* — systematic debugging methodology |
 
+**Evolution narrative**: Systematic debugging methodology evolved from two traditions: theoretical program correctness and practical programming discipline. Dijkstra's 1975 paper on self-stabilizing systems introduced the concept that a system can recover from any arbitrary initial state — the theoretical foundation for systematic fault isolation. His 1988 *A Discipline of Programming* extended formal reasoning to the debugging process itself. Kernighan and Plauger's 1974 *Elements of Programming Style* represented the practical side: the systematic use of print statements, test cases, and code inspection. Roger Penrose's 1989 *The Emperor's New Mind* contributed the philosophical framework for understanding that bugs are not random accidents but consequences of logical limitations — that systematic approaches (like dry running) address the fundamental problem of human reasoning about formal systems. Andreas Zeller's 2009 *Why Programs Fail* synthesized these traditions into a modern systematic debugging methodology with trace analysis, delta debugging, and automated test generation.
 
+**Modern practice anchor**: Today's debugging practice (IDE debuggers, logging frameworks, observability tools like Datadog, Sentry) descends from the Kernighan/Zeller lineage of systematic debugging, while Dijkstra's self-stabilization principles inform modern resilience patterns like circuit breakers and graceful degradation.
+
+## Production Reality
+
+> **Why this section**: a mental model is only useful if it predicts what breaks in production. Below are named failure modes tied to this mental model, with debug workflows and modern observability tools.
+
+### Failure Mode 1: Heisenbug — Bug Disappears When Profiler Is Attached
+
+**What goes wrong**: A production latency spike appears in metrics. You attach a profiler (async-profiler, py-spy, `perf`). The spike vanishes. This is a Heisenbug: the act of observation changes the system's behavior. Profiler overhead slows down execution, changing thread timing, which changes cache coherence patterns, which can mask race conditions and timing-dependent logic.
+
+**Cost**: MTTR spikes from hours to days. Engineers waste days trying to reproduce a bug that only manifests under production load conditions.
+
+**Debug workflow**:
+1. Use always-on lightweight profiling (Continues Profiling): Pyroscope, Datadog APM Continuous Profiler, or Parca. These have <5% overhead and are safe in production.
+2. If you must attach an interactive profiler, reproduce the issue with production-like load first (not synthetic benchmarks), then profile the same live system.
+3. Add structured logging with correlation IDs at decision points before instrumenting: verify the bug exists in logs, then attach the profiler.
+4. For timing bugs, use `perf stat` (low overhead) or flame graphs from eBPF (`bpftrace`) — both are production-safe without full instrumentation.
+
+### Failure Mode 2: Instrumentation-Specific Failure — Debug Logging Breaks the System
+
+**What goes wrong**: Adding debug logging to a hot path (e.g., inside a lock or in a 100K ops/sec loop) increases latency enough to trigger timeouts. The logging itself causes cascading failures: requests back up behind the slow log call, connection pools exhaust, and the system crashes. This is the instrumentation-specific failure.
+
+**Cost**: Systematic degradation. Adding observability made the system worse than having no observability. Production incident worsens during investigation.
+
+**Debug workflow**:
+1. Run always-on logging in production with log levels (ERROR/WARN/INFO/DEBUG). Benchmark the hot path with logging enabled vs disabled.
+2. Use async/non-blocking loggers (Logback with `discardingThreshold`, Python's `logging.handlers.QueueHandler`) — log to an in-memory ring buffer, drain asynchronously.
+3. Set maximum log rate per second per service; drop DEBUG logs if the service is under load.
+4. Instrument critical path with `Histogram` metrics (Prometheus) instead of logs — metrics are lower overhead than structured logs at high throughput.
+
+### Failure Mode 3: Race Conditions Invisible in Dry Run
+
+**What goes wrong**: A concurrency bug manifests once in every 10,000 requests. It only occurs under specific thread timing: thread A reads state, thread B modifies it before A writes, and the result is corrupted. Dry-running the code with a single thread never reproduces it. The bug ships to production and causes rare but catastrophic data corruption.
+
+**Cost**: Silent data corruption. User trust damage. Postmortem identifies the bug only after months of accumulated incorrect state.
+
+**Debug workflow**:
+1. Run with `ThreadSanitizer` (TSAN) enabled for C/C++/Go or `jracecheck` for Java in staging CI — they detect race conditions by monitoring memory access patterns.
+2. Add `stress testing` to CI: run the service under 10x normal concurrency for 30 minutes. If it fails in CI, it will fail in production.
+3. Use immutable data structures (final/const fields, copy-on-write) to eliminate shared mutable state — the root cause of most race conditions.
+4. Add concurrency unit tests using `java.util.concurrent.CountDownLatch` and `Phaser` to simulate interleaving explicitly.
+
+### Failure Mode 4: Async/Await Ordering Bugs — Invisible Without Timeline Debugging
+
+**What goes wrong**: An async function awaits three API calls in a loop. The results are processed in completion order (not call order) because each await resolves at a different time. A downstream database write assumes the results are in the same order as the input array. When the third API returns first, the write happens in the wrong order, corrupting the database.
+
+**Cost**: Database corruption. Requires manual data repair. The bug only manifests with variable network latency, so it disappears in local dev (fast network) but appears in production.
+
+**Debug workflow**:
+1. Use async timeline debuggers: Chrome DevTools async stack traces, Node.js `--experimental-async_context_frame` flag, or the `AsyncProfiler` flame graph with async mode.
+2. Verify async order explicitly in code: if order matters, collect results in an array keyed by index and process after all promises resolve, not in `.then()` order.
+3. Add integration tests with artificial latency injection (e.g., `await delay(randomMs())` before each mock response) to expose ordering assumptions.
+4. Use structured concurrency primitives (`Promise.all` with indexed results, or structured concurrency libraries like `kotlinx.coroutines`) to prevent unordered interleaving.
+
+### Modern Production Tools
+
+- **Datadog Continuous Profiler**: Always-on, production-safe profiling with flame graphs. Identifies hot functions without Heisenbug risk (overhead ~1-5%).
+- **Jaeger / Zipkin**: Distributed tracing that records the async timeline across service boundaries. Shows which span completed when, making async ordering violations visible.
+- **Pyroscope + Parca**: Open-source continuous profiling. Profile production at <5% overhead without instrumenting code.
+- **ThreadSanitizer (TSAN)**: Compile-time race detection for C/C++/Go. Detects data races in CI before they reach production.
+- **Temporal / Conductor**: Workflow orchestration engines that make async order explicit and auditable — eliminates implicit ordering assumptions in distributed async code.
+
+## Conceptual Depth & Topical Breadth
+
+> **Why this section**: this mental model rests on a specific invariant, and its variants cover a spectrum of trade-offs. Knowing the invariant and the variants lets you apply the model correctly across problems.
+
+### Invariant
+
+State evolves **predictably when traced step-by-step**. The invariant is that a program's behavior is deterministic given the same inputs — if you know the initial state and the operation at each step, you can predict the final state. This is the basis of dry-running: manually executing code with concrete inputs to verify the expected output. The internal mechanism is that variables hold values, operations transform values, and control flow changes which operations execute. When the observed state diverges from the expected state, the divergence point identifies the bug. The power of dry-running is that it replaces the question "why is this wrong?" with "at what step does my mental model diverge from the actual execution?" — a much more tractable problem.
+
+### Variants Comparison
+
+| Strategy | Cost | Applicability | Output |
+| --- | --- | --- | --- |
+| Dry run on paper | Free | All code, especially logic | Trace of all state changes |
+| Print debugging | Low | Quick verification, loops | Output at specific points |
+| Structured logging | Medium | Production, async flows | Searchable event history |
+| Interactive debugger | Medium-high | Complex state, step-through | Full state at each step |
+| Binary search (bisect) | Low | Large codebase, unknown location | Minimal steps to isolate |
+| Postmortem analysis | High | After incident, root cause | System-level understanding |
+| Log replay | High | Production issues, distributed | Reconstructed timeline |
+| Flame graphs | Medium-high | Performance bugs, CPU profiling | Call hierarchy with time |

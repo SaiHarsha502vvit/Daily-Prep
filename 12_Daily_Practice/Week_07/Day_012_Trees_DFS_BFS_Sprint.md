@@ -1,18 +1,21 @@
 # Day 12 - Trees, DFS, and BFS (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 270 - Closest Binary Search Tree Value
 2. LeetCode Medium: 102 - Binary Tree Level Order Traversal
 3. Codeforces: 580C - Kefa and Park
 4. Codeforces: 763A - Timofey and a Tree
 
 ## Problem Links
+
 - LC 270 (Premium): Locked on LeetCode (no public official statement page)
 - LC 102: https://leetcode.com/problems/binary-tree-level-order-traversal/
 - CF 580C: https://codeforces.com/problemset/problem/580/C
 - CF 763A: https://codeforces.com/problemset/problem/763/A
 
 ## Why This Day Matters
+
 Tree problems are solved by exploiting structure: BST ordering or parent-child hierarchy.
 
 ---
@@ -20,9 +23,11 @@ Tree problems are solved by exploiting structure: BST ordering or parent-child h
 ## Problem 1 - LC 270 (Premium)
 
 ### Problem Statement
+
 Given BST root and target (double), return value in BST closest to target.
 
 ### Why This DS/Algo
+
 BST order allows directional search (left/right) reducing exploration to one path.
 
 ### Approach A - Brute Force DFS all nodes (O(n), O(h))
@@ -57,6 +62,7 @@ static int closestBetter(TreeNode root, double target) {
 ```
 
 ### Approach C - Optimal
+
 BST directed walk is optimal for BST model.
 
 ---
@@ -64,9 +70,11 @@ BST directed walk is optimal for BST model.
 ## Problem 2 - LC 102: Level Order Traversal
 
 ### Problem Statement
+
 Return node values level by level.
 
 ### Why This DS/Algo
+
 BFS queue naturally groups nodes by distance from root (levels).
 
 ### Approach A - Brute Force DFS by depth with repeated scans (inefficient)
@@ -118,9 +126,11 @@ static void dfs(TreeNode node, int d, List<List<Integer>> ans) {
 ## Problem 3 - CF 580C: Kefa and Park
 
 ### Problem Statement
+
 Tree rooted at 1, each node may have cat. Count leaf restaurants reachable without more than `m` consecutive cat nodes on path.
 
 ### Why This DS/Algo
+
 Need path constraint from root to leaf -> DFS/BFS with state (`consecutiveCats`).
 
 ### Approach A - Brute Force root-to-leaf path extraction (O(n^2))
@@ -148,6 +158,7 @@ static int dfsKefa(int u, int p, int consec, List<Integer>[] g, int[] cat, int m
 ```
 
 ### Approach C - Optimal
+
 Linear DFS/BFS is optimal since every node must be checked at least once.
 
 ---
@@ -155,10 +166,13 @@ Linear DFS/BFS is optimal since every node must be checked at least once.
 ## Problem 4 - CF 763A: Timofey and a Tree
 
 ### Problem Statement
+
 Given tree with colors, find root such that every edge connecting different colors is incident to root.
 
 ### Why This DS/Algo
+
 Observation-based graph analysis:
+
 - collect all bad edges `(u,v)` with different colors
 - valid root must be one endpoint of first bad edge
 - verify both candidates via linear pass
@@ -189,8 +203,10 @@ static int timofeyBetter(int[][] edges, int[] color) {
 ```
 
 ### Approach C - Optimal
+
 Two-candidate proof gives linear-time optimal solution.
 
 ### Pattern Takeaways
+
 - Tree DP is not always needed; many tasks are solved by structural observations.
 - Carry path state in DFS for root-to-leaf constraints.

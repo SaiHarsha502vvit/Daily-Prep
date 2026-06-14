@@ -8,18 +8,19 @@
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** Traditional programming is like giving someone a recipe (rules) to cook a dish. Machine Learning is like giving them a thousand photos of finished dishes and letting them *figure out* the recipe themselves.
+> **Mental Model:** Traditional programming is like giving someone a recipe (rules) to cook a dish. Machine Learning is like giving them a thousand photos of finished dishes and letting them _figure out_ the recipe themselves.
 
-| Question | Machine Learning Context |
-| :--- | :--- |
-| **WHAT** | A field of AI where algorithms learn patterns from data to make predictions or decisions, without being explicitly programmed for each case. |
-| **WHY** | Because some problems are too complex for manual rule-writing. No human can write a rule for every possible spam email, every handwriting style, or every road condition for self-driving cars. |
-| **WHEN** | When you have (1) a large dataset, (2) a pattern exists in the data, (3) the pattern can't be easily described with simple rules, (4) the data is representative of future inputs. |
-| **WHERE** | Deployed everywhere: search engines, recommendation systems, fraud detection, medical diagnosis, autonomous vehicles, language translation, voice assistants. |
-| **WHO** | Originated with Arthur Samuel (1959, checkers program). Modern ML driven by Andrew Ng (Stanford/Coursera), Geoffrey Hinton (deep learning), Yann LeCun (CNNs), and the entire open-source community (scikit-learn, PyTorch). |
-| **HOW** | By defining a model with parameters, a loss function that measures error, and an optimization algorithm (gradient descent) that adjusts parameters to minimize error on training data. |
+| Question  | Machine Learning Context                                                                                                                                                                                                     |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | A field of AI where algorithms learn patterns from data to make predictions or decisions, without being explicitly programmed for each case.                                                                                 |
+| **WHY**   | Because some problems are too complex for manual rule-writing. No human can write a rule for every possible spam email, every handwriting style, or every road condition for self-driving cars.                              |
+| **WHEN**  | When you have (1) a large dataset, (2) a pattern exists in the data, (3) the pattern can't be easily described with simple rules, (4) the data is representative of future inputs.                                           |
+| **WHERE** | Deployed everywhere: search engines, recommendation systems, fraud detection, medical diagnosis, autonomous vehicles, language translation, voice assistants.                                                                |
+| **WHO**   | Originated with Arthur Samuel (1959, checkers program). Modern ML driven by Andrew Ng (Stanford/Coursera), Geoffrey Hinton (deep learning), Yann LeCun (CNNs), and the entire open-source community (scikit-learn, PyTorch). |
+| **HOW**   | By defining a model with parameters, a loss function that measures error, and an optimization algorithm (gradient descent) that adjusts parameters to minimize error on training data.                                       |
 
 ### Where It's Used in Real World
+
 - **Google Search**: RankBrain uses ML to understand ambiguous queries and return relevant results.
 - **Netflix**: Recommends shows using collaborative filtering on viewing history of 200M+ users.
 - **Banks (JPMorgan)**: Fraud detection systems analyze transaction patterns in real-time to flag suspicious activity.
@@ -28,12 +29,12 @@
 
 ### Difficulty Patterns
 
-| Common Struggle | Solution |
-|---|---|
-| "Too many algorithms, which one to use?" | Start with the **ML Algorithm Selection Flowchart** in Part 5 |
-| "My model has 95% accuracy but fails in production" | Learn about **data leakage**, **distribution shift**, and proper **evaluation** |
-| "I can run sklearn but don't understand what's happening" | Study the **Math for ML** guide first (Ch 04) |
-| "What are all these hyperparameters?" | Learn **cross-validation** and **grid search** (Part 4) |
+| Common Struggle                                           | Solution                                                                        |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| "Too many algorithms, which one to use?"                  | Start with the **ML Algorithm Selection Flowchart** in Part 5                   |
+| "My model has 95% accuracy but fails in production"       | Learn about **data leakage**, **distribution shift**, and proper **evaluation** |
+| "I can run sklearn but don't understand what's happening" | Study the **Math for ML** guide first (Ch 04)                                   |
+| "What are all these hyperparameters?"                     | Learn **cross-validation** and **grid search** (Part 4)                         |
 
 ---
 
@@ -101,27 +102,24 @@ REGRESSION (Continuous output):
 
 THE FUNDAMENTAL EQUATION:
   ŷ = f(X; θ)
-  
+
   Where:
   • X = input features
   • θ = model parameters (weights, biases)
   • f = the model function (linear, tree, neural network)
   • ŷ = predicted output
-  
+
   Training = finding θ that minimizes |y - ŷ| on training data
 ```
-
-
-
-
-
 
 > 🔬 **Section Challenge — 1.2 Supervised Learning — Learning from Labeled Data**
 
 **Challenge 1 (Reasoning):** You train a classifier on 10,000 labeled examples and get 99% test accuracy. In production, accuracy drops to 60%. The data looks identical. What went wrong?
+
 <details><summary>Answer</summary>
 
 **Data leakage** — the most common production ML failure. Scenarios: (1) **Temporal leakage:** Training data included future information. Example: predicting stock price using features that include next-day volume. Fix: always split by TIME, not randomly. (2) **Target leakage:** A feature is derived from the target. Example: "doctor_prescribed_insulin" as a feature when predicting diabetes — it's a consequence, not a cause. (3) **Train-test contamination:** Scaling/normalization was fit on the ENTIRE dataset (including test), so the model "saw" test statistics during training. Fix: `fit_transform(train)`, then `transform(test)` only. (4) **Distribution shift:** Training data was collected under different conditions than production. Example: model trained on professional photos, deployed on user selfies. **Debug:** Always check if any feature has suspiciously high correlation with the target (≥0.95).
+
 </details>
 
 ## 1.3 Unsupervised Learning — Finding Hidden Structure
@@ -133,13 +131,13 @@ INPUT: Dataset of features ONLY (no labels)
 CLUSTERING:
   "Group these 10,000 customers into segments based on behavior"
   → Algorithm discovers: Budget shoppers, Impulse buyers, Premium members
-  
+
   Used for: Customer segmentation, image grouping, gene expression analysis
 
 DIMENSIONALITY REDUCTION:
   "Reduce these 1000 features to the 10 most important ones"
   → PCA, t-SNE, UMAP
-  
+
   Used for: Visualization, noise reduction, speeding up other algorithms
 
 ANOMALY DETECTION:
@@ -147,17 +145,14 @@ ANOMALY DETECTION:
   → Network intrusion detection, manufacturing defect detection
 ```
 
-
-
-
-
-
 > 🔬 **Section Challenge — 1.3 Unsupervised Learning — Finding Hidden Structure**
 
 **Challenge 1 (Reasoning):** K-Means finds 3 clean clusters on your data. You deploy it. New data arrives with a crescent-shaped cluster and scattered outliers. K-Means assigns every point to a cluster, including outliers. What's fundamentally wrong?
+
 <details><summary>Answer</summary>
 
 K-Means assumes clusters are **spherical (isotropic), equally-sized, and exhaustive** (every point belongs somewhere). It minimizes within-cluster SSE, which draws Voronoi boundaries (straight lines equidistant from centroids). **Crescent-shaped clusters** violate the spherical assumption — K-Means will split the crescent into two halves. **Outliers** get force-assigned to the nearest centroid, pulling it toward them and distorting all cluster boundaries. **Fixes:** (1) DBSCAN: finds arbitrary-shaped clusters AND identifies outliers as noise (-1 label). (2) GMM: fits elliptical Gaussians, gives soft probabilities (low-probability points = potential outliers). (3) Hierarchical + dendrogram: lets you visually choose the natural cut point. **Key insight:** K-Means is a convex optimization (guaranteed convergence) but assumes a non-convex world. The algorithm always converges, but to the wrong answer when assumptions are violated.
+
 </details>
 
 ## 1.4 Reinforcement Learning — Learning by Trial and Error
@@ -168,7 +163,7 @@ AGENT interacts with ENVIRONMENT:
   2. Agent takes an ACTION
   3. Environment gives a REWARD and new state
   4. Agent learns a POLICY: state → best action
-  
+
   Goal: Maximize CUMULATIVE reward over time
 
 EXAMPLES:
@@ -179,17 +174,14 @@ EXAMPLES:
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 1.4 Reinforcement Learning — Learning by Trial and Error**
 
 **Challenge 1 (Reasoning):** An RL agent learns to play a boat-racing game. It discovers that driving in circles and collecting small power-ups gives more cumulative reward than actually finishing the race. What went wrong, and how does this relate to ChatGPT?
+
 <details><summary>Answer</summary>
 
 **Reward hacking** (Goodhart's Law: "when a measure becomes a target, it ceases to be a good measure"). The agent optimizes the reward function LITERALLY, not the designer's INTENT. The reward function rewards points per time step; collecting power-ups in circles maximizes this, even though finishing the race was the goal. **Fix:** Reward shaping — add sparse reward for race completion, penalize time, or use **inverse RL** (learn reward function from expert demonstrations). **ChatGPT connection:** RLHF (Reinforcement Learning from Human Feedback) is the same challenge at scale. GPT-4 is trained with human preference rankings as reward. Risks: (1) **Sycophancy** — the model learns that agreeing with the user gets higher ratings, even when the user is wrong. (2) **Verbosity bias** — longer answers get higher ratings, so the model becomes unnecessarily verbose. OpenAI addresses this with careful reward model calibration and Constitutional AI techniques.
+
 </details>
 
 # PART 2: The ML Pipeline — From Raw Data to Deployed Model
@@ -305,10 +297,10 @@ WHAT: Creating new features from raw data to help the model learn better.
 EXAMPLES:
   Raw: date_of_birth = "1995-03-15"
   Engineered: age = 2024 - 1995 = 29, is_millennial = True
-  
+
   Raw: latitude, longitude
   Engineered: distance_to_city_center = haversine(lat, lon, city_lat, city_lon)
-  
+
   Raw: text = "I love this amazing product!"
   Engineered: word_count = 6, sentiment_score = 0.9, has_exclamation = True
 
@@ -316,20 +308,20 @@ WHY IT MATTERS:
   "Better features beat better algorithms."
   A simple linear model with great features often outperforms
   a complex neural network with poor features.
-  
+
   The Kaggle winners' secret: 80% feature engineering, 20% model tuning.
 ```
 
 ---
 
-
-
 > 🔬 **Section Challenge — 2.2 Feature Engineering**
 
 **Challenge 1 (Reasoning):** You're predicting loan defaults. You engineer a feature `months_since_last_missed_payment`. Your model gets 98% AUC. Your manager is suspicious. Why?
+
 <details><summary>Answer</summary>
 
 **Target leakage.** `months_since_last_missed_payment` is derived FROM the target variable. A person who has never defaulted has this feature as NaN or very large; a person who defaulted recently has it as 0 or small. The feature is essentially ENCODING the target. The model learns: "if this feature is small → default" — which is circular reasoning. In production, you wouldn't HAVE this feature for future predictions (you're trying to predict IF they'll default, but this feature requires knowing they already did). **Rules for detecting target leakage:** (1) Would this feature be available BEFORE the prediction is needed? (2) Is this feature a CONSEQUENCE of the target rather than a CAUSE? (3) Does any single feature give suspiciously high predictive power (AUC > 0.95)? If yes to any → investigate. **Good features:** income, credit score, employment length — these are CAUSES that exist before the outcome.
+
 </details>
 
 # PART 3: The Bias-Variance Tradeoff
@@ -344,11 +336,11 @@ THE MOST IMPORTANT CONCEPT IN ML:
   BIAS: Error from wrong assumptions (model too simple)
     High Bias → UNDERFITTING
     Example: Fitting a straight line to curved data
-    
+
   VARIANCE: Error from sensitivity to noise (model too complex)
     High Variance → OVERFITTING
     Example: Decision tree that memorizes every training point
-    
+
   IRREDUCIBLE NOISE: Natural randomness in data (can't fix)
 
   ┌──────────────────────────────────────────────────────────────┐
@@ -368,7 +360,7 @@ THE MOST IMPORTANT CONCEPT IN ML:
   │   └──────────────────────────────────────────── →             │
   │            Simple                    Complex                  │
   └──────────────────────────────────────────────────────────────┘
-  
+
   ANALOGY:
   Underfitting = studying only chapter titles before an exam
   Overfitting = memorizing the practice test word-for-word
@@ -395,11 +387,11 @@ for degree in [1, 4, 15]:
     poly = PolynomialFeatures(degree=degree)
     X_poly = poly.fit_transform(X)
     X_test_poly = poly.transform(X_test)
-    
+
     model = LinearRegression().fit(X_poly, y)
     y_pred = model.predict(X_test_poly)
     mse = mean_squared_error(y_test, y_pred)
-    
+
     label = {1: "UNDERFITTING", 4: "JUST RIGHT", 15: "OVERFITTING"}
     print(f"Degree {degree:2d} ({label[degree]:>12s}): MSE = {mse:.4f}")
 
@@ -441,7 +433,7 @@ METRICS:
 WHEN ACCURACY FAILS:
   Dataset: 99 healthy, 1 cancer patient.
   Model: always predicts "healthy" → 99% accuracy! But it MISSED the cancer.
-  
+
   → Use Precision/Recall/F1 for IMBALANCED datasets
 
 PRECISION vs RECALL TRADEOFF:
@@ -450,7 +442,7 @@ PRECISION vs RECALL TRADEOFF:
 ```
 
 ```python
-from sklearn.metrics import (accuracy_score, precision_score, 
+from sklearn.metrics import (accuracy_score, precision_score,
                              recall_score, f1_score, classification_report,
                              confusion_matrix, roc_auc_score)
 
@@ -492,13 +484,13 @@ PROBLEM: Train-test split is a SINGLE evaluation. What if the split was unlucky?
 SOLUTION: K-FOLD CROSS-VALIDATION
 
   Data: [████████████████████]
-  
+
   Fold 1: [TEST][TRAIN  TRAIN  TRAIN  TRAIN]   → Score₁
   Fold 2: [TRAIN][TEST][TRAIN  TRAIN  TRAIN]   → Score₂
   Fold 3: [TRAIN  TRAIN][TEST][TRAIN  TRAIN]   → Score₃
   Fold 4: [TRAIN  TRAIN  TRAIN][TEST][TRAIN]   → Score₄
   Fold 5: [TRAIN  TRAIN  TRAIN  TRAIN][TEST]   → Score₅
-  
+
   Final Score = average(Score₁...Score₅)  ← Much more reliable!
 
   Standard: k=5 or k=10
@@ -576,11 +568,10 @@ flowchart TD
 
 ## 🔗 Cross-References
 
-| Topic in This Guide | Related Content |
-|---|---|
-| Decision Trees | [Trees & Heaps](../02_Data_Structures/01f_Trees_Heaps.md), [Tree Algorithms](../03_Algorithms/05_Trees.md) |
-| Clustering (Graphs) | [Graph Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md) |
-| Feature Hashing | [HashTable](../02_Data_Structures/01e_HashTable.md) |
-| Sorting for Preprocessing | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| Binary Search in Hyperparameter Tuning | [Binary Search Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
-
+| Topic in This Guide                    | Related Content                                                                                            |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Decision Trees                         | [Trees & Heaps](../02_Data_Structures/01f_Trees_Heaps.md), [Tree Algorithms](../03_Algorithms/05_Trees.md) |
+| Clustering (Graphs)                    | [Graph Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md)                                          |
+| Feature Hashing                        | [HashTable](../02_Data_Structures/01e_HashTable.md)                                                        |
+| Sorting for Preprocessing              | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md)                                       |
+| Binary Search in Hyperparameter Tuning | [Binary Search Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md)                            |

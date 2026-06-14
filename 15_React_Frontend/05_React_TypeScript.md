@@ -19,10 +19,51 @@
 🔬 **Section Challenge — Part 1: Why TypeScript with React?**
 
 **Challenge 1 (Reasoning):** TypeScript uses **structural typing** ("duck typing"), not nominal typing like Java. If two interfaces have the same shape but different names, TypeScript considers them compatible. Why is this a feature for React, and when does it cause problems?
+
 <details><summary>Answer</summary>
 
 Structural typing is a feature for React because components don't care about type NAMES — they care about SHAPE. If `UserCard` expects `{ name: string, age: number }`, you can pass ANY object with those fields, even if it came from a completely different interface. This enables seamless composition: a `UserFromAPI` type and a `UserFromForm` type both work as props without explicit casting or adapter patterns. **Problem:** It can cause false compatibility. If `CartItem` has `{ id: string, name: string, quantity: number }` and `Product` has `{ id: string, name: string, quantity: number }`, TypeScript treats them as identical — you could accidentally pass a `Product` where a `CartItem` is expected. Fix: use **branded types** (`type CartItemId = string & { __brand: 'CartItem' }`) to make structurally identical types nominally distinct.
+
 </details>
+
+### Historical Evolution
+
+TypeScript's adoption in React moved from third-party type definitions to first-class support, driven by React's own type-safety needs and the community's demand for compile-time guarantees.
+
+| Year | Milestone |
+|------|-----------|
+| 2015 | DefinitelyTyped publishes React type definitions — community-maintained React+TS begins |
+| 2020 | React 17 improves TypeScript support and DX; TS becomes the de facto standard for new React projects |
+| 2024 | React 19 ships ref-as-prop and Actions with updated TypeScript types |
+
+Early React+TS development required manual type definitions and frequently broke on React updates. As the ecosystem matured, TypeScript became the default choice for production React — the React team now ships type definitions alongside releases, and most hiring managers expect TS fluency.
+
+**Predecessor:** PropTypes (2015) — runtime prop validation, the pre-TypeScript standard for catching prop-type errors
+**Modern anchor:** Today TypeScript is the industry standard for production React; React 19's type changes are a major upgrade for async transitions
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Ref forward mis-attachment** | Typed `forwardRef` component wraps a div instead of the input; focus management breaks | Use `ComponentPropsWithoutRef` and forward directly to the underlying DOM element; test with tab navigation |
+| **Bundle bloat** | Importing types at runtime (`import React from 'react'`) or full utility libraries for single helpers | Use `import type` declarations; configure `verbatimModuleSyntax` to strip types at build time; tree-shake utils |
+
+TypeScript adds compile-time safety but introduces new failure modes when type-driven ref patterns are wrong — a mis-typed `forwardRef` compiles fine but breaks focus at runtime.
+
+---
+
+### Variant Trade-offs: JavaScript vs TypeScript in React
+
+| Approach | Compile-Time Safety | Bundle Impact | Team Velocity | Best For |
+|----------|-------------------|---------------|---------------|----------|
+| **Plain JavaScript** | None (runtime only) | 0 KB overhead | Fast for solo devs, slower at scale | Prototypes, one-off scripts, rapid experiments |
+| **JSDoc + TS Check** | Partial (via `// @ts-check` or `tsc --allowJs`) | 0 KB overhead | Medium — types in comments | Migrating legacy JS gradually |
+| **TypeScript (strict)** | Full — catches nullish values, prop mismatches, ref errors before runtime | Types stripped at build (0 KB) | Slower initial setup, faster long-term refactoring | Production apps, team > 1, maintainability > 6 months |
+| **PropTypes (legacy)** | Runtime warnings only | ~2 KB | Minimal — discouraged today | Legacy React codebases pre-2020 |
+
+**Selection rule:** Choose **TypeScript** for any production React app that will be maintained for more than a month or by more than one developer. The upfront cost of typing props and state pays dividends in refactoring safety, IDE autocompletion, and onboarding speed. Use JSDoc only as a migration stepping stone from legacy JS. Avoid PropTypes in new projects.
+
+---
 
 ## Part 2: Typing Components & Props
 
@@ -31,15 +72,17 @@ Structural typing is a feature for React because components don't care about typ
 interface UserCardProps {
   name: string;
   age: number;
-  email?: string;               // optional
-  role: 'admin' | 'user';      // union literal type
-  onDelete: (id: string) => void;  // callback
+  email?: string; // optional
+  role: "admin" | "user"; // union literal type
+  onDelete: (id: string) => void; // callback
 }
 
 function UserCard({ name, age, email, role, onDelete }: UserCardProps) {
   return (
     <div>
-      <h3>{name} ({age})</h3>
+      <h3>
+        {name} ({age})
+      </h3>
       {email && <p>{email}</p>}
       <span>{role}</span>
     </div>
@@ -49,11 +92,16 @@ function UserCard({ name, age, email, role, onDelete }: UserCardProps) {
 // ── Children Props ──
 interface CardProps {
   title: string;
-  children: React.ReactNode;   // ← accepts any renderable content
+  children: React.ReactNode; // ← accepts any renderable content
 }
 
 function Card({ title, children }: CardProps) {
-  return <div className="card"><h3>{title}</h3>{children}</div>;
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      {children}
+    </div>
+  );
 }
 
 // ── Props with generics (reusable list component) ──
@@ -64,7 +112,13 @@ interface ListProps<T> {
 }
 
 function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
-  return <ul>{items.map(item => <li key={keyExtractor(item)}>{renderItem(item)}</li>)}</ul>;
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={keyExtractor(item)}>{renderItem(item)}</li>
+      ))}
+    </ul>
+  );
 }
 
 // Usage:
@@ -72,7 +126,7 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
   items={users}
   renderItem={(user) => <span>{user.name}</span>}
   keyExtractor={(user) => user.id}
-/>
+/>;
 ```
 
 ---
@@ -81,26 +135,31 @@ function List<T>({ items, renderItem, keyExtractor }: ListProps<T>) {
 
 ```tsx
 // ── useState ──
-const [count, setCount] = useState(0);               // inferred as number
-const [user, setUser] = useState<User | null>(null);  // explicit when initially null
+const [count, setCount] = useState(0); // inferred as number
+const [user, setUser] = useState<User | null>(null); // explicit when initially null
 
 // ── useRef ──
-const inputRef = useRef<HTMLInputElement>(null);       // DOM element type
-const countRef = useRef<number>(0);                    // mutable value
+const inputRef = useRef<HTMLInputElement>(null); // DOM element type
+const countRef = useRef<number>(0); // mutable value
 
 // ── useReducer ──
-type Action = 
-  | { type: 'INCREMENT' }
-  | { type: 'DECREMENT' }
-  | { type: 'SET'; payload: number };       // discriminated union
+type Action =
+  | { type: "INCREMENT" }
+  | { type: "DECREMENT" }
+  | { type: "SET"; payload: number }; // discriminated union
 
-interface State { count: number }
+interface State {
+  count: number;
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'INCREMENT': return { count: state.count + 1 };
-    case 'DECREMENT': return { count: state.count - 1 };
-    case 'SET': return { count: action.payload };
+    case "INCREMENT":
+      return { count: state.count + 1 };
+    case "DECREMENT":
+      return { count: state.count - 1 };
+    case "SET":
+      return { count: action.payload };
   }
 }
 
@@ -115,7 +174,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be within AuthProvider');
+  if (!context) throw new Error("useAuth must be within AuthProvider");
   return context;
 }
 ```
@@ -161,10 +220,10 @@ function Form() {
 
 ```tsx
 // Pick only some props
-type UserName = Pick<User, 'firstName' | 'lastName'>;
+type UserName = Pick<User, "firstName" | "lastName">;
 
 // Omit specific props
-type UserWithoutId = Omit<User, 'id'>;
+type UserWithoutId = Omit<User, "id">;
 
 // Make all props optional
 type PartialUser = Partial<User>;
@@ -177,11 +236,16 @@ type ButtonProps = React.ComponentProps<typeof Button>;
 
 // Extend HTML element props
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: 'primary' | 'secondary';
+  variant: "primary" | "secondary";
   isLoading?: boolean;
 }
 
-function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonProps) {
+function CustomButton({
+  variant,
+  isLoading,
+  children,
+  ...rest
+}: CustomButtonProps) {
   return (
     <button className={`btn-${variant}`} disabled={isLoading} {...rest}>
       {isLoading ? <Spinner /> : children}
@@ -196,9 +260,11 @@ function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonPro
 🔬 **Section Challenge — Part 5: Utility Types for React**
 
 **Challenge 1 (Reasoning):** The `CustomButton` extends `React.ButtonHTMLAttributes<HTMLButtonElement>` and spreads `...rest`. If a parent passes `className="external"` and `CustomButton` also sets `className={\`btn-${variant}\`}` internally, which one wins? How do design systems solve this?
+
 <details><summary>Answer</summary>
 
-In the current code, `{...rest}` is spread AFTER the internal className in the JSX props. But JSX doesn't "merge" className — the LAST one wins. So `...rest` overwrites the internal className. The parent's `className="external"` replaces `btn-primary` entirely. **Fix:** Design systems use explicit merging: `className={clsx(\`btn-${variant}\`, rest.className)}` using a utility like `clsx` or `tailwind-merge`. This concatenates both classes. Libraries like Radix and Shadcn/ui use a`cn()`utility for this. **Deeper issue:** This is why the spread pattern (`...rest`) is dangerous — it passes ALL HTML attributes, including`style`,`className`, and event handlers that might conflict with internal behavior. Some design systems use`Omit<React.ButtonHTMLAttributes, 'className'>` to prevent external className, forcing users to use the component's own `variant`/`size` props instead.
+In the current code, `{...rest}` is spread AFTER the internal className in the JSX props. But JSX doesn't "merge" className — the LAST one wins. So `...rest` overwrites the internal className. The parent's `className="external"` replaces `btn-primary` entirely. **Fix:** Design systems use explicit merging: `className={clsx(\`btn-${variant}\`, rest.className)}`using a utility like`clsx`or`tailwind-merge`. This concatenates both classes. Libraries like Radix and Shadcn/ui use a`cn()`utility for this. **Deeper issue:** This is why the spread pattern (`...rest`) is dangerous — it passes ALL HTML attributes, including`style`,`className`, and event handlers that might conflict with internal behavior. Some design systems use`Omit<React.ButtonHTMLAttributes, 'className'>`to prevent external className, forcing users to use the component's own`variant`/`size` props instead.
+
 </details>
 
 ## Quick Reference: Common Types
@@ -218,15 +284,16 @@ In the current code, `{...rest}` is spread AFTER the internal className in the J
 └────────────────────────────────┴──────────────────────────────────────────────┘
 ```
 
-
 ---
 
 🔬 **Section Challenge — Quick Reference: Common Types**
 
 **Challenge 1 (Reasoning):** The Quick Reference lists `React.ReactNode` for children and `React.ReactElement` for single element child. What is the EXACT difference, and why does typing children as `ReactElement` instead of `ReactNode` break common patterns?
+
 <details><summary>Answer</summary>
 
 `ReactNode = ReactElement | string | number | boolean | null | undefined | Iterable<ReactNode>`. It accepts ANYTHING renderable. `ReactElement` is ONLY a JSX element (`<div>`, `<Component />`). If you type children as `ReactElement`, these break: `<Card>Hello</Card>` (string child), `<Card>{count}</Card>` (number), `<Card>{isAdmin && <Admin />}</Card>` (boolean | ReactElement), `<Card>{items.map(...)}</Card>` (array). All of these are valid React children but NOT `ReactElement`. **Rule:** Use `ReactNode` for children (99% of cases). Use `ReactElement` only when you need to clone/inspect the child (e.g., `React.cloneElement(children)` — which requires a single element, not a string). `JSX.Element` is the return type of JSX expressions — it's `ReactElement<any, any>` with less type information. Prefer `ReactElement` or `ReactNode` over `JSX.Element`.
+
 </details>
 
 ## Advanced TypeScript Patterns for React
@@ -237,15 +304,15 @@ THE HISTORY OF TYPING REACT:
   2018: TypeScript won. React 16.8+ (hooks) + TypeScript = standard.
   2023: Next.js, Remix, all major frameworks ship with TS by default.
   2025: React 19 types rewritten to be stricter, forwardRef deprecated.
-  
+
   WHY DID TYPESCRIPT WIN over Flow?
   → Microsoft invested heavily in tooling (VS Code autocomplete)
   → Better community adoption → more @types/* packages
   → DefinitelyTyped repository: 10,000+ type definitions
-  
+
   ANALOGY: TypeScript is a BLUEPRINT for your code.
   Without TS: You hand someone building materials and say "build a house."
-  With TS:    You hand them blueprints + materials. 
+  With TS:    You hand them blueprints + materials.
   Mistakes are caught at the drawing board, not when the roof collapses.
 ```
 
@@ -266,24 +333,34 @@ interface BadState {
 
 // GOOD: Discriminated union — mutually exclusive states
 type RequestState<T> =
-  | { status: 'idle' }                            // nothing happened yet
-  | { status: 'loading' }                         // no data, no error
-  | { status: 'success'; data: T }                // data guaranteed!
-  | { status: 'error'; error: string; retryCount: number };
+  | { status: "idle" } // nothing happened yet
+  | { status: "loading" } // no data, no error
+  | { status: "success"; data: T } // data guaranteed!
+  | { status: "error"; error: string; retryCount: number };
 
 function UserList() {
-  const [state, setState] = useState<RequestState<User[]>>({ status: 'idle' });
+  const [state, setState] = useState<RequestState<User[]>>({ status: "idle" });
 
   // TypeScript narrows the type based on status check:
-  if (state.status === 'success') {
+  if (state.status === "success") {
     // TypeScript KNOWS state.data exists here! No optional chaining needed.
-    return <ul>{state.data.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+    return (
+      <ul>
+        {state.data.map((u) => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+      </ul>
+    );
   }
-  if (state.status === 'error') {
+  if (state.status === "error") {
     // TypeScript KNOWS state.error and state.retryCount exist here!
-    return <div>Error: {state.error} (retried {state.retryCount}x)</div>;
+    return (
+      <div>
+        Error: {state.error} (retried {state.retryCount}x)
+      </div>
+    );
   }
-  if (state.status === 'loading') {
+  if (state.status === "loading") {
     return <Spinner />;
     // state.data → TypeScript ERROR: Property 'data' does not exist
   }
@@ -308,17 +385,25 @@ interface SelectProps<T> {
   getValue: (item: T) => string | number;
 }
 
-function Select<T>({ items, value, onChange, getLabel, getValue }: SelectProps<T>) {
+function Select<T>({
+  items,
+  value,
+  onChange,
+  getLabel,
+  getValue,
+}: SelectProps<T>) {
   return (
     <select
-      value={value ? String(getValue(value)) : ''}
-      onChange={e => {
-        const selected = items.find(i => String(getValue(i)) === e.target.value);
+      value={value ? String(getValue(value)) : ""}
+      onChange={(e) => {
+        const selected = items.find(
+          (i) => String(getValue(i)) === e.target.value,
+        );
         if (selected) onChange(selected);
       }}
     >
       <option value="">Select...</option>
-      {items.map(item => (
+      {items.map((item) => (
         <option key={String(getValue(item))} value={String(getValue(item))}>
           {getLabel(item)}
         </option>
@@ -329,16 +414,16 @@ function Select<T>({ items, value, onChange, getLabel, getValue }: SelectProps<T
 
 // Usage: TypeScript infers T from the items array!
 <Select
-  items={users}                    // T is inferred as User
+  items={users} // T is inferred as User
   value={selectedUser}
-  onChange={user => console.log(user.id)}  // user is typed as User!
-  getLabel={u => u.name}
-  getValue={u => u.id}
-/>
+  onChange={(user) => console.log(user.id)} // user is typed as User!
+  getLabel={(u) => u.name}
+  getValue={(u) => u.id}
+/>;
 
 // LEVEL 2: Generic Table Component
 interface Column<T> {
-  key: keyof T;                          // column must be a key of T!
+  key: keyof T; // column must be a key of T!
   header: string;
   render?: (value: T[keyof T], row: T) => React.ReactNode;
 }
@@ -350,19 +435,27 @@ interface TableProps<T> {
 }
 
 function Table<T extends { id: string | number }>({
-  data, columns, onRowClick
+  data,
+  columns,
+  onRowClick,
 }: TableProps<T>) {
   return (
     <table>
       <thead>
-        <tr>{columns.map(c => <th key={String(c.key)}>{c.header}</th>)}</tr>
+        <tr>
+          {columns.map((c) => (
+            <th key={String(c.key)}>{c.header}</th>
+          ))}
+        </tr>
       </thead>
       <tbody>
-        {data.map(row => (
+        {data.map((row) => (
           <tr key={row.id} onClick={() => onRowClick?.(row)}>
-            {columns.map(col => (
+            {columns.map((col) => (
               <td key={String(col.key)}>
-                {col.render ? col.render(row[col.key], row) : String(row[col.key])}
+                {col.render
+                  ? col.render(row[col.key], row)
+                  : String(row[col.key])}
               </td>
             ))}
           </tr>
@@ -376,30 +469,32 @@ function Table<T extends { id: string | number }>({
 <Table
   data={users}
   columns={[
-    { key: 'name', header: 'Name' },           // ✓ key must exist on User
-    { key: 'email', header: 'Email' },          // ✓ 
-    { key: 'role', header: 'Role', render: (v) => <Badge>{v}</Badge> },
+    { key: "name", header: "Name" }, // ✓ key must exist on User
+    { key: "email", header: "Email" }, // ✓
+    { key: "role", header: "Role", render: (v) => <Badge>{v}</Badge> },
     // { key: 'nonexistent', header: 'X' }      // ✗ TypeScript ERROR!
   ]}
-/>
+/>;
 
 // LEVEL 3: Generic API Hook
 function useQuery<T>(url: string) {
-  const [state, setState] = useState<RequestState<T>>({ status: 'idle' });
-  
+  const [state, setState] = useState<RequestState<T>>({ status: "idle" });
+
   useEffect(() => {
-    setState({ status: 'loading' });
+    setState({ status: "loading" });
     fetch(url)
-      .then(r => r.json())
-      .then((data: T) => setState({ status: 'success', data }))
-      .catch(e => setState({ status: 'error', error: e.message, retryCount: 0 }));
+      .then((r) => r.json())
+      .then((data: T) => setState({ status: "success", data }))
+      .catch((e) =>
+        setState({ status: "error", error: e.message, retryCount: 0 }),
+      );
   }, [url]);
-  
+
   return state;
 }
 
 // Usage: T is inferred or explicitly set
-const usersState = useQuery<User[]>('/api/users');  // state.data is User[]!
+const usersState = useQuery<User[]>("/api/users"); // state.data is User[]!
 ```
 
 ### Utility Types — TypeScript's Power Tools
@@ -410,16 +505,16 @@ interface User {
   name: string;
   email: string;
   avatar: string;
-  role: 'admin' | 'editor' | 'viewer';
+  role: "admin" | "editor" | "viewer";
   createdAt: Date;
 }
 
 // PICK: Select specific keys from a type
-type UserPreview = Pick<User, 'id' | 'name' | 'avatar'>;
+type UserPreview = Pick<User, "id" | "name" | "avatar">;
 // = { id: string; name: string; avatar: string }
 
 // OMIT: Remove specific keys
-type CreateUserDTO = Omit<User, 'id' | 'createdAt'>;
+type CreateUserDTO = Omit<User, "id" | "createdAt">;
 // = { name: string; email: string; avatar: string; role: ... }
 
 // PARTIAL: Make ALL fields optional
@@ -428,26 +523,28 @@ type UpdateUserDTO = Partial<User>;
 // Perfect for PATCH requests where only some fields are sent
 
 // REQUIRED: Make ALL fields required (opposite of Partial)
-type StrictUser = Required<User>;  // no optional fields
+type StrictUser = Required<User>; // no optional fields
 
 // RECORD: Map keys to a value type
-type RolePermissions = Record<User['role'], string[]>;
+type RolePermissions = Record<User["role"], string[]>;
 // = { admin: string[]; editor: string[]; viewer: string[] }
 const permissions: RolePermissions = {
-  admin: ['read', 'write', 'delete'],
-  editor: ['read', 'write'],
-  viewer: ['read'],
+  admin: ["read", "write", "delete"],
+  editor: ["read", "write"],
+  viewer: ["read"],
 };
 
 // EXTRACT / EXCLUDE: Filter union types
-type AdminOrEditor = Extract<User['role'], 'admin' | 'editor'>;
+type AdminOrEditor = Extract<User["role"], "admin" | "editor">;
 // = 'admin' | 'editor'
 
-type NonAdmin = Exclude<User['role'], 'admin'>;
+type NonAdmin = Exclude<User["role"], "admin">;
 // = 'editor' | 'viewer'
 
 // RETURNTYPE: Get the return type of a function
-async function fetchUsers(): Promise<User[]> { /* ... */ }
+async function fetchUsers(): Promise<User[]> {
+  /* ... */
+}
 type FetchResult = ReturnType<typeof fetchUsers>;
 // = Promise<User[]>
 // Awaited<FetchResult> = User[]
@@ -501,9 +598,11 @@ function Box<E extends React.ElementType = 'div'>({
 🔬 **Section Challenge — Advanced TypeScript Patterns for React**
 
 **Challenge 1 (Reasoning):** The polymorphic `Box` component uses `React.ComponentPropsWithoutRef<E>` to infer valid props based on the `as` prop. Why does this use `WithoutRef` instead of `WithRef`, and what would break if you used `React.ComponentProps<E>` (which includes ref)?
+
 <details><summary>Answer</summary>
 
 `React.ComponentProps<E>` includes the `ref` prop in its type. But refs work differently for different element types: `ref` for `<div>` is `React.Ref<HTMLDivElement>`, for `<input>` it's `React.Ref<HTMLInputElement>`, and for a custom component it's whatever `forwardRef` exposes. If you include `ref` in the spread `...rest`, TypeScript can't reconcile the ref type across all possible `E` values — you get a type error because the ref from the parent doesn't match the ref the inner component expects. `ComponentPropsWithoutRef<E>` strips the ref from the type, avoiding this conflict. If you DO need to forward refs in a polymorphic component, you must use a **separate generic ref type** with `forwardRef` and explicitly type it: `React.forwardRef(<E extends React.ElementType>(props: PolymorphicProps<E>, ref: React.Ref<React.ElementRef<E>>) => ...)`. This is why React 19 deprecated `forwardRef` entirely — refs are now regular props, eliminating this complexity. **Key insight:** The polymorphic `as` pattern is one of the hardest TypeScript patterns because it requires **higher-kinded type inference** — the type of valid props depends on the VALUE of another prop (`as`), which TypeScript handles via conditional types.
+
 </details>
 
 ---
@@ -517,38 +616,40 @@ Junior developers treat TypeScript as a validation layer that protects their app
 When fetching data from an API, putting `as User` or `<User>` on the response is a lie you tell the compiler. If the backend changes the JSON schema, TypeScript will not save you, and your React app will crash with `TypeError: Cannot read properties of undefined`.
 
 **The Broken Junior Code:**
+
 ```tsx
 // BUG: We told TS this is `User[]`, but what if the API changed?
 // What if `user.address` is now null instead of an object?
-const res = await fetch('/api/users');
-const data = await res.json() as User[]; 
+const res = await fetch("/api/users");
+const data = (await res.json()) as User[];
 
 // CRASH: data.map runs, user.address.city throws in production.
-return data.map(user => <div>{user.address.city}</div>); 
+return data.map((user) => <div>{user.address.city}</div>);
 ```
 
 **The Systems Fix: Zod/Zodios Runtime Validation**
 You must parse data at the boundary. If it fails validation, it should reject the promise, not crash the UI components.
+
 ```tsx
-import { z } from 'zod';
+import { z } from "zod";
 
 const UserSchema = z.object({
   id: z.number(),
   name: z.string(),
-  address: z.object({ city: z.string() })
+  address: z.object({ city: z.string() }),
 });
 
-// Infer the TS type directly from the runtime schema! 
+// Infer the TS type directly from the runtime schema!
 // ZERO duplication of types.
 type User = z.infer<typeof UserSchema>;
 
 const fetchUsers = async (): Promise<User[]> => {
-  const res = await fetch('/api/users');
+  const res = await fetch("/api/users");
   const json = await res.json();
-  
+
   // PARSE IT: If the API is broken, this throws a safe ZodError immediately,
   // which can be caught by an ErrorBoundary, protecting the React tree.
-  const data = z.array(UserSchema).parse(json); 
+  const data = z.array(UserSchema).parse(json);
   return data;
 };
 ```
@@ -557,17 +658,22 @@ const fetchUsers = async (): Promise<User[]> => {
 
 Using `any` turns off the TypeScript compiler for that variable and everything it touches. It is contagious and disables all auto-completions, type checking, and renaming refactors.
 
-**The Systems Rule:** Never use `any`. Use `unknown` for data whose shape you don't know yet (like `try/catch` errors or raw API payloads). `unknown` *forces* you to do a runtime check before you can use it, combining type safety with runtime safety.
+**The Systems Rule:** Never use `any`. Use `unknown` for data whose shape you don't know yet (like `try/catch` errors or raw API payloads). `unknown` _forces_ you to do a runtime check before you can use it, combining type safety with runtime safety.
 
 **The Fix in Catch Blocks:**
+
 ```tsx
 // ❌ Dangerous (React 18 throws `unknown` by default for errors)
-try { doSomething(); } catch (error: any) { alert(error.message); }
+try {
+  doSomething();
+} catch (error: any) {
+  alert(error.message);
+}
 
 // ✅ Safe (Systems level)
-try { 
-  doSomething(); 
-} catch (error: unknown) { 
+try {
+  doSomething();
+} catch (error: unknown) {
   if (error instanceof Error) {
     alert(error.message); // TS now knows it's a real Error object
   }

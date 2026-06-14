@@ -121,10 +121,7 @@ test('quiz-02-ch09: safe access in Playwright eval', async ({ page }) => {
 
 type ResponseMap = Record<string, APIResponse | undefined>;
 
-function getUserNameFromMap(
-  map: ResponseMap,
-  key: string
-): string {
+function getUserNameFromMap(map: ResponseMap, key: string): string {
   // `?.[key]` is the bracket-notation form of optional chaining.
   return map[key]?.data?.users?.[0]?.name ?? 'Not Found';
 }

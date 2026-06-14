@@ -857,12 +857,15 @@ QA TEST:
 ## 11. Interview Q&A
 
 **Q: "What is Retrofit and how does it work?"**
+
 > "Retrofit is an HTTP client for Android that turns annotated Kotlin interfaces into actual HTTP calls. You define an interface with annotations describing the HTTP method, URL, parameters, and return type — Retrofit uses reflection and code generation at runtime to create an implementation that delegates to OkHttp for actual networking. The key advantage: you describe WHAT you want (`@GET("citations")`) and Retrofit handles HOW (building the request, executing it on a background thread, parsing the response via a converter). The suspend function support means the call integrates naturally with coroutines — no callbacks needed."
 
 **Q: "What is an OkHttp interceptor and what can you use them for?"**
+
 > "An interceptor is a function that sits in the request/response chain and can observe, modify, or short-circuit both requests and responses. Common uses: an authentication interceptor adds the Bearer token to every request header without duplicating that logic everywhere; a logging interceptor logs all HTTP traffic in debug builds; a retry interceptor automatically retries on transient network errors; a caching interceptor adds Cache-Control headers. Interceptors are added to OkHttpClient and apply to every call made through that client — they are the correct abstraction for cross-cutting concerns like auth, rather than adding it to each API interface method."
 
 **Q: "How would you test an API repository without hitting the real server?"**
+
 > "I use OkHttp's MockWebServer — a real local HTTP server that runs in the test JVM. MockWebServer accepts `MockResponse` objects that define what status code and body to return for each request. I point Retrofit's baseUrl at `server.url('/')` — the real OkHttp makes actual TCP connections to the local mock server. This means I'm testing real HTTP request serialization, real response deserialization, real error handling for HTTP status codes, real timeout behavior, and even the request body content via `server.takeRequest()`. It's the gold standard for networking integration tests because it tests the real code path without external dependencies."
 
 ---

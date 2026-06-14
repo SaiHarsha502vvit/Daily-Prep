@@ -8,7 +8,7 @@ export function loadTestData<T>(relativePath: string): T {
   if (!fs.existsSync(fullPath)) {
     throw new Error(
       `[data.loader] Test data not found: ${fullPath}\n` +
-        `→ Pass a path relative to test-data/, without .json extension.`
+        `→ Pass a path relative to test-data/, without .json extension.`,
     );
   }
   const raw = fs.readFileSync(fullPath, 'utf-8');

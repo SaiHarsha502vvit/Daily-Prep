@@ -6,11 +6,10 @@
 
 ## 5W1H — Why This Chapter?
 
-
 > WHAT: The invisible tools that transform your code into what
 > the browser actually runs.
 >
-> WHY:  You write JSX, TypeScript, CSS Modules, ES2024+.
+> WHY: You write JSX, TypeScript, CSS Modules, ES2024+.
 > Browsers understand HTML, JS (ES5+), plain CSS.
 > Something must TRANSLATE your code → browser code.
 > That "something" is the build tool chain.
@@ -19,11 +18,10 @@
 > to French → post office delivers optimized package.
 > Babel = translator, Webpack/Vite = post office.
 >
-> WHO:  All frontend developers — even if you "just use Vite",
+> WHO: All frontend developers — even if you "just use Vite",
 > understanding the chain helps debug build issues.
 >
 > WHEN: At build time (before deployment) and dev time.
-
 
 ---
 
@@ -64,58 +62,56 @@ Source Code
 └─────────────┘
 ```
 
-
 ---
 
 ## 2. npm — The Package Manager
 
 ### What Is It?
 
-
 > npm = Node Package Manager
 >
 > ANALOGY: npm is like an App Store for JavaScript code.
+>
 > - Want a date library? → npm install date-fns
 > - Want React? → npm install react react-dom
 > - 2 million+ packages available
 >
 > KEY FILES:
 >
-> package.json         → The "menu" (what packages you ordered)
-> package-lock.json    → The "receipt" (exact versions installed)
-> node_modules/        → The "kitchen" (actual code, 100s of MB)
-
+> package.json → The "menu" (what packages you ordered)
+> package-lock.json → The "receipt" (exact versions installed)
+> node_modules/ → The "kitchen" (actual code, 100s of MB)
 
 ### package.json Anatomy
 
 ```json
 {
-    "name": "my-app",
-    "version": "1.0.0",
-    "private": true,
+  "name": "my-app",
+  "version": "1.0.0",
+  "private": true,
 
-    "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
-        "preview": "vite preview",
-        "lint": "eslint . --ext .ts,.tsx",
-        "test": "vitest"
-    },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "vitest"
+  },
 
-    "dependencies": {
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "react-router-dom": "^6.23.0",
-        "@tanstack/react-query": "^5.40.0"
-    },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0",
+    "@tanstack/react-query": "^5.40.0"
+  },
 
-    "devDependencies": {
-        "typescript": "^5.4.0",
-        "vite": "^5.2.0",
-        "@types/react": "^18.3.0",
-        "eslint": "^9.0.0",
-        "vitest": "^1.6.0"
-    }
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0",
+    "@types/react": "^18.3.0",
+    "eslint": "^9.0.0",
+    "vitest": "^1.6.0"
+  }
 }
 ```
 
@@ -146,7 +142,6 @@ npm run dev          → Execute the "dev" script
 npx create-vite      → Run a package without installing
 ```
 
-
 ---
 
 ## 3. Babel — The Translator
@@ -176,7 +171,6 @@ npx create-vite      → Run a package without installing
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### What Babel Does with JSX
 
 ```
@@ -200,7 +194,6 @@ npx create-vite      → Run a package without installing
 │   but same concept — JSX → function calls)                           │
 └──────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -237,7 +230,6 @@ dist/
 └── images/ (optimized)
 ```
 
-
 ### Webpack — The Veteran
 
 ```
@@ -263,7 +255,6 @@ PROS:                         CONS:
 ├── Battle-tested            ├── Slow HMR on large projects
 └── Works with anything      └── Steep learning curve
 ```
-
 
 ### Vite — The Modern Standard
 
@@ -298,7 +289,6 @@ RESULT:
 └── Production builds are fully optimized
 ```
 
-
 ### Comparison Table
 
 ```
@@ -317,7 +307,6 @@ RESULT:
 │  Used by           │ CRA, Next(old) │ Remix, Astro, SvelteKit        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -347,7 +336,6 @@ RESULT:
 │       at build time what's used and what's not.                      │
 └──────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Code Splitting
 
@@ -380,7 +368,6 @@ RESULT:
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Source Maps
 
 ```
@@ -402,7 +389,6 @@ RESULT:
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 6. Vite Configuration Explained
@@ -414,47 +400,42 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-    plugins: [react()],  // Enables JSX + Fast Refresh
+  plugins: [react()], // Enables JSX + Fast Refresh
 
-    server: {
-        port: 3000,      // Dev server port
-        proxy: {
-            // Proxy API calls to backend (avoids CORS in dev!)
-            "/api": {
-                target: "http://localhost:8080",
-                changeOrigin: true,
-            },
-        },
+  server: {
+    port: 3000, // Dev server port
+    proxy: {
+      // Proxy API calls to backend (avoids CORS in dev!)
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+      },
     },
+  },
 
-    build: {
-        outDir: "dist",           // Output directory
-        sourcemap: true,          // Generate source maps
-        rollupOptions: {
-            output: {
-                // Manual chunk splitting for better caching
-                manualChunks: {
-                    vendor: ["react", "react-dom"],
-                    router: ["react-router-dom"],
-                },
-            },
+  build: {
+    outDir: "dist", // Output directory
+    sourcemap: true, // Generate source maps
+    rollupOptions: {
+      output: {
+        // Manual chunk splitting for better caching
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          router: ["react-router-dom"],
         },
+      },
     },
+  },
 
-    resolve: {
-        alias: {
-            "@": "/src",          // @/components instead of ../../components
-        },
+  resolve: {
+    alias: {
+      "@": "/src", // @/components instead of ../../components
     },
+  },
 });
 ```
 
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 6. Vite Configuration Explained**
 
@@ -494,11 +475,8 @@ Q: What's the difference between Babel and TypeScript compiler?
   Vite uses esbuild/SWC for speed + TSC for type checking separately.
 ```
 
-
 ---
 
 > [← Debugging](02_Frontend_Debugging.md) | [Index](../00_MASTER_INDEX.md) | [Next → Mental Models](04_Frontend_Mental_Models_UI.md)
 
-
 ---
-

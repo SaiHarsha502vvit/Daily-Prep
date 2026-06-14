@@ -60,10 +60,7 @@ test('fixed: use filter with hasText for employee row', async ({ page }) => {
   await page.waitForURL(/pim\/viewEmployeeList/);
 
   // FIXED: One-shot locator that finds the row by content, not index.
-  const charlieRow = page
-    .locator('.oxd-table-row')
-    .filter({ hasText: 'Charlie' })
-    .first();
+  const charlieRow = page.locator('.oxd-table-row').filter({ hasText: 'Charlie' }).first();
 
   // This is stable even if the table re-sorts or lazy-loads additional rows.
   await expect(charlieRow).toBeVisible();

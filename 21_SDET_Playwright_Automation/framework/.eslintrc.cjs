@@ -131,7 +131,10 @@ module.exports = {
     curly: ['warn', 'multi-line'],
     'no-debugger': 'error',
     'no-alert': 'error',
-    'no-irregular-whitespace': ['error', { skipStrings: true, skipComments: true, skipTemplates: true }],
+    'no-irregular-whitespace': [
+      'error',
+      { skipStrings: true, skipComments: true, skipTemplates: true },
+    ],
   },
   overrides: [
     {

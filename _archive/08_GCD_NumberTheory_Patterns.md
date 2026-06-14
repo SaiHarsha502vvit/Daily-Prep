@@ -23,7 +23,9 @@
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 1: GCD (Greatest Common Divisor) - COMPLETE
+
 # ═══════════════════════════════════════════════════════════
 
 ## 🎯 WHY GCD Matters
@@ -53,19 +55,19 @@ Maximum groups possible? GCD helps!
 /**
  * WHY: Understand what GCD means before optimizing
  * HOW: Check every number from min(a,b) down to 1
- * 
+ *
  * Time: O(min(a,b))
  * Space: O(1)
  */
 public static int gcdBruteForce(int a, int b) {
     int smaller = Math.min(a, b);
-    
+
     for (int i = smaller; i >= 1; i--) {
         if (a % i == 0 && b % i == 0) {
             return i; // First one we find (going down) is GCD
         }
     }
-    
+
     return 1; // Coprime
 }
 
@@ -83,7 +85,7 @@ public static int gcdBruteForce(int a, int b) {
 /**
  * WHY: Euclid realized: GCD(a, b) = GCD(a-b, b) when a > b
  * HOW: Keep subtracting smaller from larger until equal
- * 
+ *
  * VISUAL:
  *   GCD(48, 18)
  *   48 - 18 = 30 → GCD(30, 18)
@@ -91,7 +93,7 @@ public static int gcdBruteForce(int a, int b) {
  *   18 - 12 = 6  → GCD(12, 6)
  *   12 - 6  = 6  → GCD(6, 6)
  *   Equal! GCD = 6
- * 
+ *
  * Time: O(max(a,b)) worst case
  * Space: O(1)
  */
@@ -116,13 +118,13 @@ public static int gcdSubtraction(int a, int b) {
  * WHY: Subtraction is slow for large numbers. GCD(1000000, 3) takes forever!
  *      Modulo is like doing ALL subtractions at once
  * HOW: GCD(a, b) = GCD(b, a % b) until b becomes 0
- * 
+ *
  * VISUAL:
  *   GCD(48, 18)
  *   48 % 18 = 12 → GCD(18, 12)
  *   18 % 12 = 6  → GCD(12, 6)
  *   12 % 6  = 0  → GCD(6, 0) = 6 ✓
- * 
+ *
  * Time: O(log(min(a,b)))  ← VERY FAST!
  * Space: O(1) iterative, O(log(min(a,b))) recursive
  */
@@ -165,22 +167,22 @@ public static int gcdOneLine(int a, int b) {
 /**
  * WHY: On CPUs, bit operations are faster than division
  * HOW: Use only subtraction and bit shifts
- * 
+ *
  * RULES:
  *   1. gcd(0, b) = b, gcd(a, 0) = a
  *   2. Both even: gcd(a, b) = 2 * gcd(a/2, b/2)
  *   3. a even, b odd: gcd(a, b) = gcd(a/2, b)
  *   4. Both odd: gcd(a, b) = gcd(|a-b|/2, min(a,b))
- * 
+ *
  * Time: O(log(a) * log(b))
  * Space: O(1)
- * 
+ *
  * REAL WORLD: Used in Java's BigInteger.gcd() for large numbers
  */
 public static int binaryGCD(int a, int b) {
     if (a == 0) return b;
     if (b == 0) return a;
-    
+
     // Count common factors of 2
     int shift = 0;
     while (((a | b) & 1) == 0) { // Both even
@@ -188,13 +190,13 @@ public static int binaryGCD(int a, int b) {
         b >>= 1;
         shift++;
     }
-    
+
     // Remove remaining factors of 2 from a
     while ((a & 1) == 0) a >>= 1;
-    
+
     do {
         while ((b & 1) == 0) b >>= 1;
-        
+
         if (a > b) {
             int temp = a;
             a = b;
@@ -202,7 +204,7 @@ public static int binaryGCD(int a, int b) {
         }
         b -= a;
     } while (b != 0);
-    
+
     return a << shift;
 }
 ```
@@ -214,19 +216,19 @@ public static int binaryGCD(int a, int b) {
 ```java
 /**
  * WHY: LCM is needed when you want SYNCHRONIZATION
- * 
+ *
  * REAL LIFE:
  *   Bus A comes every 12 minutes
  *   Bus B comes every 18 minutes
  *   Both arrive together now. When will they be together again?
  *   LCM(12, 18) = 36 minutes
- * 
+ *
  * PRODUCTION:
  *   Cron job A runs every 12 hours
  *   Cron job B runs every 18 hours
  *   When will they conflict (run at same time)?
  *   LCM(12, 18) = 36 hours
- * 
+ *
  * FORMULA: LCM(a, b) = (a * b) / GCD(a, b)
  */
 public static long lcm(int a, int b) {
@@ -261,14 +263,14 @@ public static long lcmOfArray(int[] arr) {
  * PROBLEM: You have a rectangular paper of size W × H
  * Cut it into the LARGEST possible square pieces with NO waste
  * What is the side length of each square?
- * 
+ *
  * WHY GCD: The answer is GCD(W, H)!
- * 
+ *
  * VISUAL for 12 × 18:
  *   GCD(12, 18) = 6
  *   Square side = 6
  *   You get: (12/6) × (18/6) = 2 × 3 = 6 squares
- * 
+ *
  *   ┌──────┬──────┬──────┐
  *   │      │      │      │ 6
  *   │  6×6 │  6×6 │  6×6 │
@@ -279,7 +281,7 @@ public static long lcmOfArray(int[] arr) {
  *   │      │      │      │
  *   └──────┴──────┴──────┘
  *       6      6      6
- * 
+ *
  * REAL INCIDENT (Tile Manufacturing):
  * Factory needed to cut 120cm × 84cm marble slabs into square tiles
  * GCD(120, 84) = 12cm tiles → 10 × 7 = 70 tiles per slab
@@ -300,10 +302,10 @@ public static int numberOfSquares(int width, int height) {
 /**
  * PROBLEM: You have two jugs of capacity A and B liters.
  * Can you measure exactly C liters?
- * 
+ *
  * MATH: Possible if and only if C is divisible by GCD(A, B)
  *       AND C <= max(A, B)
- * 
+ *
  * REAL LIFE: Die Hard 3 movie puzzle!
  * Bruce Willis had 3-gallon and 5-gallon jugs, needed exactly 4 gallons
  * GCD(3, 5) = 1, 4 % 1 == 0 → YES, possible!
@@ -320,19 +322,19 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
     Set<String> visited = new HashSet<>();
     Queue<int[]> queue = new LinkedList<>();
     Map<String, String> parent = new HashMap<>();
-    
+
     queue.offer(new int[]{0, 0});
     visited.add("0,0");
-    
+
     while (!queue.isEmpty()) {
         int[] state = queue.poll();
         int a = state[0], b = state[1];
-        
+
         if (a == target || b == target || a + b == target) {
             // Reconstruct path
             return reconstructPath(parent, a + "," + b);
         }
-        
+
         // All possible operations:
         int[][] nextStates = {
             {jug1Cap, b},           // Fill jug 1
@@ -342,7 +344,7 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
             {Math.max(0, a - (jug2Cap - b)), Math.min(jug2Cap, a + b)},  // Pour 1→2
             {Math.min(jug1Cap, a + b), Math.max(0, b - (jug1Cap - a))}   // Pour 2→1
         };
-        
+
         for (int[] next : nextStates) {
             String key = next[0] + "," + next[1];
             if (!visited.contains(key)) {
@@ -352,7 +354,7 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
             }
         }
     }
-    
+
     return Collections.emptyList(); // Not possible
 }
 ```
@@ -362,26 +364,26 @@ public static List<String> waterJugSteps(int jug1Cap, int jug2Cap, int target) {
 ```java
 /**
  * PROBLEM: Simplify fraction a/b to lowest terms
- * 
+ *
  * PRODUCTION USE: Financial systems display simplified ratios
  * Stock split 100:25 → 4:1
- * 
+ *
  * HOW: Divide both by GCD
  */
 public static int[] simplifyFraction(int numerator, int denominator) {
     if (denominator == 0) throw new ArithmeticException("Denominator cannot be 0");
-    
+
     int g = gcd(Math.abs(numerator), Math.abs(denominator));
-    
+
     int num = numerator / g;
     int den = denominator / g;
-    
+
     // Keep negative sign in numerator only
     if (den < 0) {
         num = -num;
         den = -den;
     }
-    
+
     return new int[]{num, den};
 }
 
@@ -423,14 +425,16 @@ public static int countCoprimePairs(int[] arr) {
 // TEST:
 // arrayGCD([12, 18, 24]) → 6
 // arrayGCD([7, 13, 25]) → 1
-// countCoprimePairs([3, 5, 7, 10]) → 5 pairs  
+// countCoprimePairs([3, 5, 7, 10]) → 5 pairs
 //   (3,5)=1✓ (3,7)=1✓ (3,10)=1✓ (5,7)=1✓ (7,10)=1✓  (5,10)=5✗
 ```
 
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 2: PRIME NUMBERS - COMPLETE
+
 # ═══════════════════════════════════════════════════════════
 
 ## Why Primes Matter
@@ -456,8 +460,8 @@ DATABASE:
 ## Algorithm P1: Check if Prime
 
 ```java
-/** 
- * Brute Force: O(n) 
+/**
+ * Brute Force: O(n)
  */
 public static boolean isPrimeBrute(int n) {
     if (n <= 1) return false;
@@ -469,7 +473,7 @@ public static boolean isPrimeBrute(int n) {
 
 /**
  * Optimized: O(√n) ← Interview standard
- * 
+ *
  * WHY √n? If n = a × b, one of them must be ≤ √n
  * Example: 36 = 1×36 = 2×18 = 3×12 = 4×9 = 6×6
  *          After √36 = 6, factors repeat!
@@ -478,7 +482,7 @@ public static boolean isPrime(int n) {
     if (n <= 1) return false;
     if (n <= 3) return true;
     if (n % 2 == 0 || n % 3 == 0) return false;
-    
+
     // Check only 6k±1 pattern (all primes > 3 are of form 6k±1)
     for (int i = 5; i * i <= n; i += 6) {
         if (n % i == 0 || n % (i + 2) == 0) {
@@ -504,12 +508,12 @@ public static boolean isPrime(int n) {
 ```java
 /**
  * PROBLEM: Find ALL primes up to N
- * 
+ *
  * WHY: Checking each number one by one is O(N√N)
  *      Sieve does it in O(N log log N) ← nearly linear!
- * 
+ *
  * HOW: Mark multiples of each prime as composite
- * 
+ *
  * VISUAL (N = 30):
  *   Start: 2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
  *   Cross out 2's multiples:   4     6     8     10    12    14    16    18    20    22    24    26    28    30
@@ -521,7 +525,7 @@ public static boolean[] sieveOfEratosthenes(int n) {
     boolean[] isPrime = new boolean[n + 1];
     Arrays.fill(isPrime, true);
     isPrime[0] = isPrime[1] = false;
-    
+
     for (int i = 2; i * i <= n; i++) {
         if (isPrime[i]) {
             // Mark all multiples of i as composite
@@ -530,7 +534,7 @@ public static boolean[] sieveOfEratosthenes(int n) {
             }
         }
     }
-    
+
     return isPrime;
 }
 
@@ -566,23 +570,23 @@ public static int countPrimes(int n) {
 ```java
 /**
  * PROBLEM: Break a number into its prime factors
- * 
+ *
  * PRODUCTION USE:
  *   - RSA key generation
  *   - Simplifying hash functions
  *   - Database partition sizing
- * 
+ *
  * 60 = 2 × 2 × 3 × 5 = 2² × 3 × 5
  */
 public static List<Integer> primeFactors(int n) {
     List<Integer> factors = new ArrayList<>();
-    
+
     // Extract all 2's
     while (n % 2 == 0) {
         factors.add(2);
         n /= 2;
     }
-    
+
     // Check odd numbers from 3 to √n
     for (int i = 3; i * i <= n; i += 2) {
         while (n % i == 0) {
@@ -590,19 +594,19 @@ public static List<Integer> primeFactors(int n) {
             n /= i;
         }
     }
-    
+
     // If n is still > 1, then it's a prime factor
     if (n > 1) {
         factors.add(n);
     }
-    
+
     return factors;
 }
 
 // With counts (for display)
 public static Map<Integer, Integer> primeFactorization(int n) {
     Map<Integer, Integer> factorMap = new LinkedHashMap<>();
-    
+
     for (int i = 2; i * i <= n; i++) {
         while (n % i == 0) {
             factorMap.merge(i, 1, Integer::sum);
@@ -610,7 +614,7 @@ public static Map<Integer, Integer> primeFactorization(int n) {
         }
     }
     if (n > 1) factorMap.merge(n, 1, Integer::sum);
-    
+
     return factorMap;
 }
 
@@ -626,10 +630,10 @@ public static Map<Integer, Integer> primeFactorization(int n) {
 ```java
 /**
  * PROBLEM: How many divisors does N have?
- * 
- * FORMULA: If N = p1^a1 × p2^a2 × ... 
+ *
+ * FORMULA: If N = p1^a1 × p2^a2 × ...
  *          Divisors = (a1+1) × (a2+1) × ...
- * 
+ *
  * Example: 60 = 2² × 3¹ × 5¹
  *          Divisors = (2+1)(1+1)(1+1) = 3 × 2 × 2 = 12
  *          The 12 divisors: 1,2,3,4,5,6,10,12,15,20,30,60 ✓
@@ -662,14 +666,16 @@ public static List<Integer> getAllDivisors(int n) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 3: MODULAR ARITHMETIC
+
 # ═══════════════════════════════════════════════════════════
 
 ```
 WHY MODULAR ARITHMETIC?
 ───────────────────────
 1. Avoid integer overflow in competitive programming
-2. Cryptography (RSA, Diffie-Hellman)  
+2. Cryptography (RSA, Diffie-Hellman)
 3. Hash functions (hashCode % tableSize)
 4. Circular data structures (circular queue: index % capacity)
 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
@@ -678,35 +684,35 @@ WHY MODULAR ARITHMETIC?
 ```java
 /**
  * MODULAR ARITHMETIC RULES:
- * 
+ *
  * (a + b) % m = ((a % m) + (b % m)) % m
  * (a - b) % m = ((a % m) - (b % m) + m) % m  ← Note the +m!
  * (a * b) % m = ((a % m) * (b % m)) % m
  * (a / b) % m ≠ ((a % m) / (b % m)) % m      ← Division is special!
- * 
+ *
  * For division: (a / b) % m = (a * modInverse(b, m)) % m
  */
 
 public class ModularArithmetic {
-    
+
     static final int MOD = 1_000_000_007; // 10^9 + 7 (common in contests)
-    
+
     // Modular addition (safe from overflow)
     public static long modAdd(long a, long b) {
         return ((a % MOD) + (b % MOD)) % MOD;
     }
-    
+
     // Modular multiplication
     public static long modMul(long a, long b) {
         return ((a % MOD) * (b % MOD)) % MOD;
     }
-    
+
     // Modular exponentiation: (base^exp) % mod
     // FAST: O(log exp) using binary exponentiation
     public static long modPow(long base, long exp, long mod) {
         long result = 1;
         base %= mod;
-        
+
         while (exp > 0) {
             if ((exp & 1) == 1) { // exp is odd
                 result = (result * base) % mod;
@@ -714,42 +720,42 @@ public class ModularArithmetic {
             exp >>= 1;        // exp /= 2
             base = (base * base) % mod;
         }
-        
+
         return result;
     }
-    
+
     // Modular inverse using Fermat's little theorem
     // Only works when mod is prime!
     // a^(-1) ≡ a^(mod-2) (mod p)
     public static long modInverse(long a, long mod) {
         return modPow(a, mod - 2, mod);
     }
-    
+
     // Modular division: (a / b) % mod
     public static long modDiv(long a, long b, long mod) {
         return modMul(a, modInverse(b, mod));
     }
-    
+
     // REAL PRODUCTION USE: Count large combinations
     // nCr % MOD (needed because nCr can be astronomically large)
     public static long nCrMod(int n, int r) {
         if (r > n) return 0;
         if (r == 0 || r == n) return 1;
-        
+
         // Precompute factorials
         long[] fact = new long[n + 1];
         fact[0] = 1;
         for (int i = 1; i <= n; i++) {
             fact[i] = modMul(fact[i - 1], i);
         }
-        
+
         // nCr = n! / (r! * (n-r)!)
         long numerator = fact[n];
         long denominator = modMul(fact[r], fact[n - r]);
-        
+
         return modDiv(numerator, denominator, MOD);
     }
-    
+
     // TEST
     public static void main(String[] args) {
         System.out.println("2^10 mod 1000 = " + modPow(2, 10, 1000));     // 24
@@ -762,7 +768,9 @@ public class ModularArithmetic {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 4: PATTERN PROGRAMS ⭐ (Loop Mastery)
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -791,7 +799,7 @@ public class ModularArithmetic {
  * * * *
  * * * * *
  * * * * * *
- * 
+ *
  * FORMULA: Row i has (i+1) stars
  */
 public static void rightTriangle(int n) {
@@ -814,7 +822,7 @@ public static void rightTriangle(int n) {
  * * * *
  * * *
  * *
- * 
+ *
  * FORMULA: Row i has (n-i) stars
  */
 public static void invertedTriangle(int n) {
@@ -837,7 +845,7 @@ public static void invertedTriangle(int n) {
  *     * * * * *
  *   * * * * * * *
  * * * * * * * * * *
- * 
+ *
  * FORMULA: Row i has (2*i+1) stars, (n-1-i) leading spaces
  */
 public static void pyramid(int n) {
@@ -869,7 +877,7 @@ public static void pyramid(int n) {
  *   *****
  *    ***
  *     *
- * 
+ *
  * TRICK: Upper half pyramid + inverted lower half
  */
 public static void diamond(int n) {
@@ -918,10 +926,10 @@ public static void numberPyramid(int n) {
  *     1   2   1
  *   1   3   3   1
  * 1   4   6   4   1
- * 
+ *
  * FORMULA: Each number = sum of two numbers above it
  * OR: C(row, col) = row! / (col! * (row-col)!)
- * 
+ *
  * REAL USE:
  *   - Binomial coefficients
  *   - Probability calculations
@@ -931,7 +939,7 @@ public static void pascalsTriangle(int n) {
     for (int i = 0; i < n; i++) {
         // Leading spaces
         for (int s = 0; s < n - 1 - i; s++) System.out.print("  ");
-        
+
         int val = 1;
         for (int j = 0; j <= i; j++) {
             System.out.printf("%4d", val);
@@ -952,7 +960,7 @@ public static void pascalsTriangle(int n) {
  * 4  5  6
  * 7  8  9  10
  * 11 12 13 14 15
- * 
+ *
  * Numbers flow continuously
  */
 public static void floydsTriangle(int n) {
@@ -1011,7 +1019,7 @@ public static void butterfly(int n) {
  * *       *
  * *       *
  * * * * * *
- * 
+ *
  * Print star only at edges: i==0, i==n-1, j==0, j==n-1
  */
 public static void hollowSquare(int n) {
@@ -1037,34 +1045,34 @@ public static void hollowSquare(int n) {
  * 12 13 14  5
  * 11 16 15  6
  * 10  9  8  7
- * 
+ *
  * REAL USE: This pattern appears in matrix traversal interview questions!
- * 
+ *
  * DSA Connection: Spiral Matrix traversal (LeetCode 54)
  */
 public static void spiralMatrix(int n) {
     int[][] matrix = new int[n][n];
     int num = 1;
     int top = 0, bottom = n - 1, left = 0, right = n - 1;
-    
+
     while (num <= n * n) {
         // Go right
         for (int j = left; j <= right; j++) matrix[top][j] = num++;
         top++;
-        
+
         // Go down
         for (int i = top; i <= bottom; i++) matrix[i][right] = num++;
         right--;
-        
+
         // Go left
         for (int j = right; j >= left; j--) matrix[bottom][j] = num++;
         bottom--;
-        
+
         // Go up
         for (int i = bottom; i >= top; i--) matrix[i][left] = num++;
         left++;
     }
-    
+
     // Print
     for (int[] row : matrix) {
         for (int val : row) {
@@ -1141,29 +1149,29 @@ public static void alphabetDiamond(int n) {
  * P   A   H   N
  * A P L S I I G
  * Y   I   R
- * 
+ *
  * REAL USE: This is LeetCode Problem #6 (ZigZag Conversion)!
  * Used in some encryption methods
  */
 public static String zigzagConvert(String s, int numRows) {
     if (numRows == 1) return s;
-    
+
     StringBuilder[] rows = new StringBuilder[numRows];
     for (int i = 0; i < numRows; i++) rows[i] = new StringBuilder();
-    
+
     int currentRow = 0;
     boolean goingDown = false;
-    
+
     for (char c : s.toCharArray()) {
         rows[currentRow].append(c);
-        
+
         if (currentRow == 0 || currentRow == numRows - 1) {
             goingDown = !goingDown;
         }
-        
+
         currentRow += goingDown ? 1 : -1;
     }
-    
+
     StringBuilder result = new StringBuilder();
     for (StringBuilder row : rows) result.append(row);
     return result.toString();
@@ -1173,7 +1181,9 @@ public static String zigzagConvert(String s, int numRows) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 5: MORE ESSENTIAL ALGORITHMS
+
 # ═══════════════════════════════════════════════════════════
 
 ## Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐
@@ -1182,26 +1192,26 @@ public static String zigzagConvert(String s, int numRows) {
 /**
  * WHY: One of the most asked interview questions
  * WHERE: Stock profit analysis, signal processing, network traffic
- * 
+ *
  * REAL INCIDENT:
  *   Amazon retail team needed to find peak sales window
  *   Daily profit/loss: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
  *   Best contiguous period: [4, -1, 2, 1] = 6 profit
- * 
+ *
  * HOW: Track current sum, reset when it goes negative
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static int kadane(int[] arr) {
     int maxSum = arr[0];
     int currentSum = arr[0];
-    
+
     for (int i = 1; i < arr.length; i++) {
         // Either extend current subarray or start fresh
         currentSum = Math.max(arr[i], currentSum + arr[i]);
         maxSum = Math.max(maxSum, currentSum);
     }
-    
+
     return maxSum;
 }
 
@@ -1209,7 +1219,7 @@ public static int kadane(int[] arr) {
 public static int[] kadaneWithIndices(int[] arr) {
     int maxSum = arr[0], currentSum = arr[0];
     int start = 0, end = 0, tempStart = 0;
-    
+
     for (int i = 1; i < arr.length; i++) {
         if (arr[i] > currentSum + arr[i]) {
             currentSum = arr[i];
@@ -1217,14 +1227,14 @@ public static int[] kadaneWithIndices(int[] arr) {
         } else {
             currentSum += arr[i];
         }
-        
+
         if (currentSum > maxSum) {
             maxSum = currentSum;
             start = tempStart;
             end = i;
         }
     }
-    
+
     return new int[]{maxSum, start, end};
 }
 
@@ -1242,24 +1252,24 @@ public static int[] kadaneWithIndices(int[] arr) {
 /**
  * WHY: Sort array with only 3 distinct values in ONE pass
  * WHERE: Sorting 0s, 1s, 2s  |  Red, White, Blue balls
- * 
+ *
  * REAL INCIDENT:
  *   Priority queue at hospital ER:
  *   Priority 0 (Critical) → front
- *   Priority 1 (Urgent) → middle  
+ *   Priority 1 (Urgent) → middle
  *   Priority 2 (Normal) → end
  *   Need to sort patients in O(n) single pass
- * 
+ *
  * HOW: Three pointers - low, mid, high
  *   - 0s go to low region
  *   - 1s stay in middle
  *   - 2s go to high region
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static void dutchNationalFlag(int[] arr) {
     int low = 0, mid = 0, high = arr.length - 1;
-    
+
     while (mid <= high) {
         switch (arr[mid]) {
             case 0:
@@ -1299,25 +1309,25 @@ private static void swap(int[] arr, int i, int j) {
 /**
  * WHY: Find element that appears more than n/2 times
  * WHERE: Election vote counting, consensus in distributed systems
- * 
+ *
  * REAL INCIDENT:
  *   Online poll with millions of votes
  *   Need to find winner (if exists) without storing all counts
  *   Memory constraint: Only O(1) extra space!
- * 
+ *
  * HOW: Maintain candidate and count
  *   - Same as candidate → count++
  *   - Different → count--
  *   - Count reaches 0 → new candidate
- * 
+ *
  * INTUITION: Majority element will "survive" all the cancellations
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static int majorityElement(int[] nums) {
     int candidate = nums[0];
     int count = 1;
-    
+
     // Phase 1: Find candidate
     for (int i = 1; i < nums.length; i++) {
         if (count == 0) {
@@ -1329,13 +1339,13 @@ public static int majorityElement(int[] nums) {
             count--;
         }
     }
-    
+
     // Phase 2: Verify (optional, needed if majority not guaranteed)
     count = 0;
     for (int num : nums) {
         if (num == candidate) count++;
     }
-    
+
     return count > nums.length / 2 ? candidate : -1;
 }
 
@@ -1353,54 +1363,54 @@ public static int majorityElement(int[] nums) {
 /**
  * WHY: Detect cycles in linked lists or arrays
  * WHERE: Deadlock detection, finding duplicates, infinite loop detection
- * 
+ *
  * REAL INCIDENT:
  *   Database had circular foreign key references
  *   A → B → C → A (cycle!)
  *   Floyd's algorithm detected it without extra memory
- * 
+ *
  * HOW: Two pointers - slow (1 step) and fast (2 steps)
  *   If cycle exists, they WILL meet
  *   Finding start of cycle: Reset slow to head, both move 1 step
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static boolean hasCycle(ListNode head) {
     if (head == null) return false;
-    
+
     ListNode slow = head;
     ListNode fast = head;
-    
+
     while (fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
-        
+
         if (slow == fast) return true; // Cycle detected!
     }
-    
+
     return false; // No cycle
 }
 
 // Find WHERE the cycle starts
 public static ListNode findCycleStart(ListNode head) {
     ListNode slow = head, fast = head;
-    
+
     // Phase 1: Detect cycle
     while (fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
         if (slow == fast) break;
     }
-    
+
     if (fast == null || fast.next == null) return null; // No cycle
-    
+
     // Phase 2: Find start
     slow = head;
     while (slow != fast) {
         slow = slow.next;
         fast = fast.next;
     }
-    
+
     return slow; // Start of cycle
 }
 
@@ -1409,20 +1419,20 @@ public static ListNode findCycleStart(ListNode head) {
 public static int findDuplicate(int[] nums) {
     int slow = nums[0];
     int fast = nums[0];
-    
+
     // Phase 1: Find meeting point
     do {
         slow = nums[slow];
         fast = nums[nums[fast]];
     } while (slow != fast);
-    
+
     // Phase 2: Find duplicate
     slow = nums[0];
     while (slow != fast) {
         slow = nums[slow];
         fast = nums[fast];
     }
-    
+
     return slow;
 }
 ```
@@ -1435,15 +1445,15 @@ public static int findDuplicate(int[] nums) {
 /**
  * WHY: Find next greater/smaller element efficiently
  * WHERE: Stock price analysis, histogram problems, building skylines
- * 
+ *
  * REAL INCIDENT:
  *   Weather app needed "next warmer day" feature
- *   Given daily temperatures, for each day find how many days 
+ *   Given daily temperatures, for each day find how many days
  *   until a warmer temperature
- * 
+ *
  * HOW: Stack stores indices, maintain decreasing order
  *   When we find larger element, pop everything smaller
- * 
+ *
  * Time: O(n), Space: O(n)
  */
 
@@ -1452,9 +1462,9 @@ public static int[] nextGreaterElement(int[] arr) {
     int n = arr.length;
     int[] result = new int[n];
     Arrays.fill(result, -1); // Default: no greater element
-    
+
     Stack<Integer> stack = new Stack<>(); // Stores indices
-    
+
     for (int i = 0; i < n; i++) {
         // Pop elements smaller than current
         while (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
@@ -1462,7 +1472,7 @@ public static int[] nextGreaterElement(int[] arr) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 
@@ -1470,9 +1480,9 @@ public static int[] nextGreaterElement(int[] arr) {
 public static int[] dailyTemperatures(int[] temps) {
     int n = temps.length;
     int[] result = new int[n];
-    
+
     Stack<Integer> stack = new Stack<>();
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && temps[stack.peek()] < temps[i]) {
             int prevDay = stack.pop();
@@ -1480,7 +1490,7 @@ public static int[] dailyTemperatures(int[] temps) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 
@@ -1488,19 +1498,19 @@ public static int[] dailyTemperatures(int[] temps) {
 public static int largestRectangleInHistogram(int[] heights) {
     Stack<Integer> stack = new Stack<>();
     int maxArea = 0;
-    
+
     for (int i = 0; i <= heights.length; i++) {
         int currentHeight = (i == heights.length) ? 0 : heights[i];
-        
+
         while (!stack.isEmpty() && currentHeight < heights[stack.peek()]) {
             int height = heights[stack.pop()];
             int width = stack.isEmpty() ? i : (i - stack.peek() - 1);
             maxArea = Math.max(maxArea, height * width);
         }
-        
+
         stack.push(i);
     }
-    
+
     return maxArea;
 }
 
@@ -1518,12 +1528,12 @@ public static int largestRectangleInHistogram(int[] heights) {
 /**
  * WHY: Answer range sum queries in O(1) after O(n) preprocessing
  * WHERE: Financial reports, analytics dashboards, image processing
- * 
+ *
  * REAL INCIDENT:
  *   Flipkart analytics: "Total revenue between day 50 and day 100?"
  *   Without prefix sum: scan 50 entries every query
  *   With prefix sum: ONE subtraction!
- * 
+ *
  * Time: Build O(n), Query O(1)
  */
 
@@ -1545,16 +1555,16 @@ public static long rangeSum(long[] prefix, int left, int right) {
 public static long[][] build2DPrefixSum(int[][] matrix) {
     int m = matrix.length, n = matrix[0].length;
     long[][] prefix = new long[m + 1][n + 1];
-    
+
     for (int i = 1; i <= m; i++) {
         for (int j = 1; j <= n; j++) {
-            prefix[i][j] = matrix[i-1][j-1] 
-                         + prefix[i-1][j] 
-                         + prefix[i][j-1] 
+            prefix[i][j] = matrix[i-1][j-1]
+                         + prefix[i-1][j]
+                         + prefix[i][j-1]
                          - prefix[i-1][j-1];
         }
     }
-    
+
     return prefix;
 }
 
@@ -1581,7 +1591,9 @@ public static int[] reconstructFromDiff(int[] diff) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 6: DATA STRUCTURE PROBLEMS WITH WHY-HOW
+
 # ═══════════════════════════════════════════════════════════
 
 ## Stack Problems
@@ -1592,7 +1604,7 @@ public static int[] reconstructFromDiff(int[] diff) {
 /**
  * WHY: Compilers use this to check code syntax
  * WHERE: IDE error highlighting, JSON/XML validation
- * 
+ *
  * REAL INCIDENT:
  *   A production config file had mismatched braces
  *   System crashed at midnight. Stack-based validator
@@ -1600,20 +1612,20 @@ public static int[] reconstructFromDiff(int[] diff) {
  */
 public static boolean isValidParentheses(String s) {
     Stack<Character> stack = new Stack<>();
-    
+
     for (char c : s.toCharArray()) {
         if (c == '(' || c == '{' || c == '[') {
             stack.push(c);
         } else {
             if (stack.isEmpty()) return false;
-            
+
             char top = stack.pop();
             if (c == ')' && top != '(') return false;
             if (c == '}' && top != '{') return false;
             if (c == ']' && top != '[') return false;
         }
     }
-    
+
     return stack.isEmpty();
 }
 
@@ -1629,25 +1641,25 @@ public static boolean isValidParentheses(String s) {
 /**
  * WHY: Need to track minimum while supporting push/pop
  * WHERE: Real-time min price tracker, job scheduler priority
- * 
+ *
  * TRICK: Store pairs (value, currentMin) or use two stacks
  */
 class MinStack {
     private Stack<int[]> stack = new Stack<>(); // [value, currentMin]
-    
+
     public void push(int val) {
         int min = stack.isEmpty() ? val : Math.min(val, stack.peek()[1]);
         stack.push(new int[]{val, min});
     }
-    
+
     public void pop() {
         stack.pop();
     }
-    
+
     public int top() {
         return stack.peek()[0];
     }
-    
+
     public int getMin() {
         return stack.peek()[1]; // O(1)!
     }
@@ -1664,12 +1676,12 @@ class MinStack {
 /**
  * WHY: Find maximum in every window of size k
  * WHERE: Stock market (max price in last k days), network monitoring
- * 
+ *
  * REAL INCIDENT:
- *   Network monitoring: Alert if max latency in any 5-minute 
+ *   Network monitoring: Alert if max latency in any 5-minute
  *   window exceeds 500ms. Need to compute this sliding max
  *   efficiently for millions of data points.
- * 
+ *
  * DSA: Monotonic Deque
  * Time: O(n), Space: O(k)
  */
@@ -1677,26 +1689,26 @@ public static int[] maxSlidingWindow(int[] nums, int k) {
     int n = nums.length;
     int[] result = new int[n - k + 1];
     Deque<Integer> deque = new ArrayDeque<>(); // Stores indices
-    
+
     for (int i = 0; i < n; i++) {
         // Remove elements outside current window
         while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
             deque.pollFirst();
         }
-        
+
         // Remove elements smaller than current (they'll never be max)
         while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
             deque.pollLast();
         }
-        
+
         deque.offerLast(i);
-        
+
         // Window is full, record result
         if (i >= k - 1) {
             result[i - k + 1] = nums[deque.peekFirst()];
         }
     }
-    
+
     return result;
 }
 
@@ -1717,17 +1729,17 @@ public static int[] maxSlidingWindow(int[] nums, int k) {
  */
 public static int[] twoSum(int[] nums, int target) {
     Map<Integer, Integer> map = new HashMap<>();
-    
+
     for (int i = 0; i < nums.length; i++) {
         int complement = target - nums[i];
-        
+
         if (map.containsKey(complement)) {
             return new int[]{map.get(complement), i};
         }
-        
+
         map.put(nums[i], i);
     }
-    
+
     return new int[]{-1, -1};
 }
 ```
@@ -1738,7 +1750,7 @@ public static int[] twoSum(int[] nums, int target) {
 /**
  * WHY: Count subarrays with given sum using prefix sum + hashmap
  * WHERE: Analytics - find all date ranges where revenue = target
- * 
+ *
  * TRICK: If prefix[j] - prefix[i] = k, subarray (i, j] has sum k
  * So we need: prefix[j] - k = prefix[i]
  * Count how many prefix[i] values we've seen
@@ -1746,19 +1758,19 @@ public static int[] twoSum(int[] nums, int target) {
 public static int subarraySum(int[] nums, int k) {
     Map<Integer, Integer> prefixCount = new HashMap<>();
     prefixCount.put(0, 1); // Empty subarray
-    
+
     int count = 0;
     int currentSum = 0;
-    
+
     for (int num : nums) {
         currentSum += num;
-        
+
         // How many prefix sums equal (currentSum - k)?
         count += prefixCount.getOrDefault(currentSum - k, 0);
-        
+
         prefixCount.merge(currentSum, 1, Integer::sum);
     }
-    
+
     return count;
 }
 
@@ -1773,34 +1785,34 @@ public static int subarraySum(int[] nums, int k) {
 /**
  * WHY: Find longest streak of consecutive numbers in O(n)
  * WHERE: Identify continuous time ranges in logs, find gaps in data
- * 
+ *
  * REAL INCIDENT:
  *   Server log had timestamps. Needed to find longest period
  *   of continuous minute-by-minute data (no gaps).
- * 
+ *
  * TRICK: Only start counting from sequence START (no num-1 in set)
  */
 public static int longestConsecutive(int[] nums) {
     Set<Integer> set = new HashSet<>();
     for (int num : nums) set.add(num);
-    
+
     int maxLength = 0;
-    
+
     for (int num : set) {
         // Only start counting if this is the START of a sequence
         if (!set.contains(num - 1)) {
             int current = num;
             int length = 1;
-            
+
             while (set.contains(current + 1)) {
                 current++;
                 length++;
             }
-            
+
             maxLength = Math.max(maxLength, length);
         }
     }
-    
+
     return maxLength;
 }
 
@@ -1818,21 +1830,21 @@ public static int longestConsecutive(int[] nums) {
 ```java
 /**
  * WHY: Find common parent of two nodes
- * WHERE: 
+ * WHERE:
  *   - Organization chart: "Who supervises both person A and person B?"
  *   - File system: common parent directory
  *   - Git: merge base of two branches
- * 
+ *
  * REAL INCIDENT:
  *   HR system needed to find lowest-level manager who oversees
  *   both Employee X and Employee Y for conflict resolution
  */
 public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
     if (root == null || root == p || root == q) return root;
-    
+
     TreeNode left = lowestCommonAncestor(root.left, p, q);
     TreeNode right = lowestCommonAncestor(root.right, p, q);
-    
+
     if (left != null && right != null) return root; // Split point = LCA
     return left != null ? left : right;
 }
@@ -1843,14 +1855,14 @@ public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode 
 ```java
 /**
  * WHY: Convert tree to string and back
- * WHERE: 
+ * WHERE:
  *   - Send tree data over network (API responses)
  *   - Store tree in database
  *   - Cache tree structures in Redis
- * 
+ *
  * REAL INCIDENT:
  *   Menu hierarchy stored as tree in DB. Needed to cache
- *   in Redis (string storage). Serialize tree → store → 
+ *   in Redis (string storage). Serialize tree → store →
  *   deserialize on read.
  */
 public static String serialize(TreeNode root) {
@@ -1866,7 +1878,7 @@ public static TreeNode deserialize(String data) {
 private static TreeNode deserializeHelper(Queue<String> queue) {
     String val = queue.poll();
     if ("null".equals(val)) return null;
-    
+
     TreeNode node = new TreeNode(Integer.parseInt(val));
     node.left = deserializeHelper(queue);
     node.right = deserializeHelper(queue);
@@ -1877,7 +1889,9 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 7: REAL-LIFE INCIDENT → DSA MAPPING TABLE
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -1919,12 +1933,14 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 
 ---
 
-*This file is Part 1. See PART 8 (Study Plan) at the end of this guide*
+_This file is Part 1. See PART 8 (Study Plan) at the end of this guide_
 
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 8: STUDY PLAN (Starting Feb 10, 2026)
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -1941,7 +1957,7 @@ Day 1 (Mon Feb 10): GCD algorithms (all 4 versions)
   → Write each from scratch 3 times
   → Solve: Rectangle cutting, Water jug
 
-Day 2 (Tue Feb 11): LCM + Prime checking  
+Day 2 (Tue Feb 11): LCM + Prime checking
   → isPrime (brute + optimized)
   → Solve: Fraction simplify, Array GCD
 
@@ -1971,7 +1987,7 @@ Day 8 (Mon Feb 17): Kadane's Algorithm
   → Basic + with indices
   → Solve 3 variants on LeetCode
 
-Day 9 (Tue Feb 18): Dutch National Flag + Boyer-Moore  
+Day 9 (Tue Feb 18): Dutch National Flag + Boyer-Moore
   → Sort colors, Majority element
   → Real-world: ER triage sorting
 
@@ -2021,7 +2037,7 @@ Day 20 (Sat Mar 1): Graph Problems
   → BFS, DFS, Topological Sort
   → Detect Cycle, Connected Components
 
-Day 21 (Sun Mar 2): REVISION 
+Day 21 (Sun Mar 2): REVISION
   → One problem from each DS category
   → Time yourself (30 min per problem)
 
@@ -2030,7 +2046,7 @@ WEEK 4 (Mar 3-9): REAL-WORLD PROBLEMS + MOCK
 Day 22 (Mon Mar 3): E-commerce problems (Part 1)
 Day 23 (Tue Mar 4): Banking + Finance problems
 Day 24 (Wed Mar 5): Food Delivery + Social Media
-Day 25 (Thu Mar 6): Streaming + Healthcare  
+Day 25 (Thu Mar 6): Streaming + Healthcare
 Day 26 (Fri Mar 7): Travel + Logistics
 Day 27 (Sat Mar 8): Payment + Gaming + Search
 Day 28 (Sun Mar 9): FULL MOCK INTERVIEW
@@ -2061,54 +2077,54 @@ DAILY ROUTINE (apply 6 learning techniques):
 
 ## Section 1: GCD, LCM & Basic Math
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Greatest Common Divisor of Strings (LC 1071) | LeetCode | Easy | GCD on string lengths |
-| 2 | Count Primes (LC 204) | LeetCode | Medium | Sieve of Eratosthenes |
-| 3 | Power of Three (LC 326) | LeetCode | Easy | Modular arithmetic or log |
-| 4 | Happy Number (LC 202) | LeetCode | Easy | Cycle detection (Floyd's) |
-| 5 | Ugly Number II (LC 264) | LeetCode | Medium | 3-pointer merge (2,3,5 multiples) |
-| 6 | Nth Digit (LC 400) | LeetCode | Medium | Digit counting pattern |
-| 7 | Excel Sheet Column Number (LC 171) | LeetCode | Easy | Base-26 conversion |
-| 8 | Factorial Trailing Zeroes (LC 172) | LeetCode | Medium | Count factors of 5 |
+| #   | Problem                                      | Platform | Difficulty | Key Technique                     |
+| --- | -------------------------------------------- | -------- | ---------- | --------------------------------- |
+| 1   | Greatest Common Divisor of Strings (LC 1071) | LeetCode | Easy       | GCD on string lengths             |
+| 2   | Count Primes (LC 204)                        | LeetCode | Medium     | Sieve of Eratosthenes             |
+| 3   | Power of Three (LC 326)                      | LeetCode | Easy       | Modular arithmetic or log         |
+| 4   | Happy Number (LC 202)                        | LeetCode | Easy       | Cycle detection (Floyd's)         |
+| 5   | Ugly Number II (LC 264)                      | LeetCode | Medium     | 3-pointer merge (2,3,5 multiples) |
+| 6   | Nth Digit (LC 400)                           | LeetCode | Medium     | Digit counting pattern            |
+| 7   | Excel Sheet Column Number (LC 171)           | LeetCode | Easy       | Base-26 conversion                |
+| 8   | Factorial Trailing Zeroes (LC 172)           | LeetCode | Medium     | Count factors of 5                |
 
 ---
 
 ## Section 2: Modular Arithmetic & Combinatorics
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Pow(x, n) (LC 50) | LeetCode | Medium | Fast exponentiation (binary) |
-| 2 | Super Pow (LC 372) | LeetCode | Medium | Modular exponentiation |
-| 3 | Unique Paths (LC 62) | LeetCode | Medium | C(m+n-2, m-1) or DP |
-| 4 | Integer Break (LC 343) | LeetCode | Medium | Math: maximize product with 3s |
-| 5 | Perfect Squares (LC 279) | LeetCode | Medium | Lagrange's 4-square theorem or BFS |
-| 6 | Water and Jug Problem (LC 365) | LeetCode | Medium | GCD: solvable iff z % gcd(x,y) == 0 |
-| 7 | Smallest Good Base (LC 483) | LeetCode | Hard | Math + binary search |
+| #   | Problem                        | Platform | Difficulty | Key Technique                       |
+| --- | ------------------------------ | -------- | ---------- | ----------------------------------- |
+| 1   | Pow(x, n) (LC 50)              | LeetCode | Medium     | Fast exponentiation (binary)        |
+| 2   | Super Pow (LC 372)             | LeetCode | Medium     | Modular exponentiation              |
+| 3   | Unique Paths (LC 62)           | LeetCode | Medium     | C(m+n-2, m-1) or DP                 |
+| 4   | Integer Break (LC 343)         | LeetCode | Medium     | Math: maximize product with 3s      |
+| 5   | Perfect Squares (LC 279)       | LeetCode | Medium     | Lagrange's 4-square theorem or BFS  |
+| 6   | Water and Jug Problem (LC 365) | LeetCode | Medium     | GCD: solvable iff z % gcd(x,y) == 0 |
+| 7   | Smallest Good Base (LC 483)    | LeetCode | Hard       | Math + binary search                |
 
 ---
 
 ## Section 3: Advanced Math / Competitive
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Fraction to Recurring Decimal (LC 166) | LeetCode | Medium | Long division + cycle detection |
-| 2 | Largest Component Size by Common Factor (LC 952) | LeetCode | Hard | Union-Find by prime factors |
-| 3 | Count Primes (Sieve variants) | Codeforces | Medium | Segmented sieve, linear sieve |
-| 4 | Mirror Reflection (LC 858) | LeetCode | Medium | LCM to find which corner |
-| 5 | Broken Calculator (LC 991) | LeetCode | Medium | Work backwards (greedy + math) |
-| 6 | Reaching Points (LC 780) | LeetCode | Hard | Work backwards with modulo |
+| #   | Problem                                          | Platform   | Difficulty | Key Technique                   |
+| --- | ------------------------------------------------ | ---------- | ---------- | ------------------------------- |
+| 1   | Fraction to Recurring Decimal (LC 166)           | LeetCode   | Medium     | Long division + cycle detection |
+| 2   | Largest Component Size by Common Factor (LC 952) | LeetCode   | Hard       | Union-Find by prime factors     |
+| 3   | Count Primes (Sieve variants)                    | Codeforces | Medium     | Segmented sieve, linear sieve   |
+| 4   | Mirror Reflection (LC 858)                       | LeetCode   | Medium     | LCM to find which corner        |
+| 5   | Broken Calculator (LC 991)                       | LeetCode   | Medium     | Work backwards (greedy + math)  |
+| 6   | Reaching Points (LC 780)                         | LeetCode   | Hard       | Work backwards with modulo      |
 
 ---
 
 ## HIDDEN GEMS — Number Theory
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | X of a Kind in a Deck of Cards (LC 914) | LeetCode | GCD of all frequencies |
-| 2 | Bulb Switcher (LC 319) | LeetCode | Perfect squares insight — pure math |
-| 3 | Minimum Moves to Equal Array Elements (LC 453) | LeetCode | sum - n*min (math reduction) |
-| 4 | Valid Perfect Square (LC 367) | LeetCode | Binary search or 1+3+5+... series |
-| 5 | Distribute Candies to People (LC 1103) | LeetCode | Simulation with modular index |
+| #   | Problem                                        | Platform | Why It's Valuable                   |
+| --- | ---------------------------------------------- | -------- | ----------------------------------- |
+| 1   | X of a Kind in a Deck of Cards (LC 914)        | LeetCode | GCD of all frequencies              |
+| 2   | Bulb Switcher (LC 319)                         | LeetCode | Perfect squares insight — pure math |
+| 3   | Minimum Moves to Equal Array Elements (LC 453) | LeetCode | sum - n\*min (math reduction)       |
+| 4   | Valid Perfect Square (LC 367)                  | LeetCode | Binary search or 1+3+5+... series   |
+| 5   | Distribute Candies to People (LC 1103)         | LeetCode | Simulation with modular index       |
 
 ---

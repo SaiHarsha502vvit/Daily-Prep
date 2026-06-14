@@ -1,6 +1,6 @@
-import { Pool, PoolClient } from 'pg';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Pool, PoolClient } from "pg";
+import * as fs from "fs";
+import * as path from "path";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -9,18 +9,18 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
+pool.on("error", (err) => {
+  console.error("Unexpected error on idle client", err);
 });
 
 export async function initDatabase(): Promise<void> {
-  const schemaPath = path.join(__dirname, 'schema.sql');
-  const schema = fs.readFileSync(schemaPath, 'utf-8');
+  const schemaPath = path.join(__dirname, "schema.sql");
+  const schema = fs.readFileSync(schemaPath, "utf-8");
 
   const client = await pool.connect();
   try {
     await client.query(schema);
-    console.log('Database schema initialized');
+    console.log("Database schema initialized");
   } finally {
     client.release();
   }

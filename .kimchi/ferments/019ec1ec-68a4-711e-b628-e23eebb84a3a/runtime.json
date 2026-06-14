@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "stepStartCounts": {},
+  "blockRetries": {},
+  "lastBlockHashes": {},
+  "stepCompleteAttempts": {
+    "phase-1:step-1": 1,
+    "phase-1:step-2": 1,
+    "phase-1:step-3": 1,
+    "phase-1:step-4": 1,
+    "phase-1:step-5": 1,
+    "phase-2:step-1": 1,
+    "phase-2:step-2": 1,
+    "phase-2:step-3": 1,
+    "phase-2:step-4": 1,
+    "phase-3:step-1": 1,
+    "phase-3:step-2": 1,
+    "phase-3:step-3": 1,
+    "phase-3:step-4": 1
+  },
+  "phaseStartRefs": {
+    "phase-1": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-2": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-3": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c"
+  },
+  "stepStartRefs": {
+    "phase-1:step-1": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-1:step-2": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-1:step-3": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-1:step-4": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-1:step-5": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-2:step-1": "fae2d84d24279513c70d682d264fa9c8cac880eb",
+    "phase-2:step-2": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-2:step-3": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-2:step-4": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-3:step-1": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-3:step-2": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-3:step-3": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c",
+    "phase-3:step-4": "5fb1da0ccdad1fb122f5a07aeff1a7d89bfcbf5c"
+  }
+}

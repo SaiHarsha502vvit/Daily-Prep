@@ -28,14 +28,14 @@
 ```
   WHAT IT DOES:
   Efficiently detects when an element enters or exits the viewport.
-  
+
   USE CASES:
   • Lazy loading images
   • Infinite scroll (load more when bottom visible)
   • Animate elements on scroll
   • Track ad impressions
   • Sticky header visibility detection
-  
+
   WHY NOT scroll events?
   • scroll fires 100s of times/sec → performance killer
   • IntersectionObserver is async, batched, GPU-accelerated
@@ -43,41 +43,48 @@
 
 ```javascript
 // Basic: Lazy load images
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const img = entry.target;
-      img.src = img.dataset.src;       // Load real image
-      observer.unobserve(img);          // Stop watching
-    }
-  });
-}, {
-  rootMargin: '200px',  // Start loading 200px before visible
-  threshold: 0           // Trigger as soon as 1px is visible
-});
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src; // Load real image
+        observer.unobserve(img); // Stop watching
+      }
+    });
+  },
+  {
+    rootMargin: "200px", // Start loading 200px before visible
+    threshold: 0, // Trigger as soon as 1px is visible
+  },
+);
 
-document.querySelectorAll('img[data-src]').forEach(img => {
+document.querySelectorAll("img[data-src]").forEach((img) => {
   observer.observe(img);
 });
 
-
 // Infinite scroll trigger:
-const sentinel = document.getElementById('load-more-trigger');
-const scrollObserver = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting) {
-    loadMoreItems();  // Fetch next page
-  }
-}, { threshold: 1.0 });  // 100% visible
+const sentinel = document.getElementById("load-more-trigger");
+const scrollObserver = new IntersectionObserver(
+  (entries) => {
+    if (entries[0].isIntersecting) {
+      loadMoreItems(); // Fetch next page
+    }
+  },
+  { threshold: 1.0 },
+); // 100% visible
 
 scrollObserver.observe(sentinel);
 
-
 // Animate on scroll:
-const animObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    entry.target.classList.toggle('visible', entry.isIntersecting);
-  });
-}, { threshold: 0.2 });  // 20% visible triggers animation
+const animObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle("visible", entry.isIntersecting);
+    });
+  },
+  { threshold: 0.2 },
+); // 20% visible triggers animation
 ```
 
 ```jsx
@@ -88,7 +95,7 @@ function useIntersectionObserver(ref, options = {}) {
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    
+
     const observer = new IntersectionObserver(([entry]) => {
       setIsVisible(entry.isIntersecting);
     }, options);
@@ -103,15 +110,12 @@ function useIntersectionObserver(ref, options = {}) {
 
 ---
 
-
-
-
 ## 2. Resize Observer — Element Size Changes
 
 ```
   WHAT IT DOES:
   Watches elements for size changes. NOT the same as window resize!
-  
+
   USE CASES:
   • Responsive component that adapts to its container size
   • Chart/canvas that redraws when container resizes
@@ -123,18 +127,18 @@ function useIntersectionObserver(ref, options = {}) {
 const resizeObserver = new ResizeObserver((entries) => {
   for (const entry of entries) {
     const { width, height } = entry.contentRect;
-    
+
     if (width < 400) {
-      entry.target.classList.add('compact');
+      entry.target.classList.add("compact");
     } else {
-      entry.target.classList.remove('compact');
+      entry.target.classList.remove("compact");
     }
-    
+
     console.log(`Element is now ${width}x${height}`);
   }
 });
 
-resizeObserver.observe(document.getElementById('chart-container'));
+resizeObserver.observe(document.getElementById("chart-container"));
 
 // IMPORTANT: Disconnect when done
 // resizeObserver.disconnect();
@@ -152,7 +156,7 @@ function useResizeObserver(ref) {
     const observer = new ResizeObserver(([entry]) => {
       setDimensions({
         width: entry.contentRect.width,
-        height: entry.contentRect.height
+        height: entry.contentRect.height,
       });
     });
 
@@ -167,7 +171,7 @@ function useResizeObserver(ref) {
 function ResponsiveChart() {
   const ref = useRef(null);
   const { width, height } = useResizeObserver(ref);
-  
+
   return (
     <div ref={ref}>
       <Chart width={width} height={height} data={data} />
@@ -184,7 +188,7 @@ function ResponsiveChart() {
   WHAT IT DOES:
   Watches for DOM changes: child additions/removals, attribute changes,
   text content changes.
-  
+
   USE CASES:
   • Third-party script detection (did an ad inject elements?)
   • Rich text editor change tracking
@@ -195,30 +199,30 @@ function ResponsiveChart() {
 ```javascript
 const mutationObserver = new MutationObserver((mutations) => {
   for (const mutation of mutations) {
-    if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach(node => {
+    if (mutation.type === "childList") {
+      mutation.addedNodes.forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
-          console.log('Element added:', node.tagName);
+          console.log("Element added:", node.tagName);
           // Auto-initialize tooltips, etc.
-          if (node.matches('[data-tooltip]')) {
+          if (node.matches("[data-tooltip]")) {
             initTooltip(node);
           }
         }
       });
     }
-    
-    if (mutation.type === 'attributes') {
+
+    if (mutation.type === "attributes") {
       console.log(`${mutation.attributeName} changed on`, mutation.target);
     }
   }
 });
 
 mutationObserver.observe(document.body, {
-  childList: true,     // Watch for child additions/removals
-  subtree: true,       // Watch ALL descendants, not just direct children
-  attributes: true,    // Watch attribute changes
-  attributeFilter: ['class', 'data-theme'],  // Only specific attributes
-  characterData: true  // Watch text content changes
+  childList: true, // Watch for child additions/removals
+  subtree: true, // Watch ALL descendants, not just direct children
+  attributes: true, // Watch attribute changes
+  attributeFilter: ["class", "data-theme"], // Only specific attributes
+  characterData: true, // Watch text content changes
 });
 
 // Stop watching:
@@ -246,21 +250,21 @@ mutationObserver.observe(document.body, {
 
 ```javascript
 // Basic usage:
-localStorage.setItem('theme', 'dark');
-const theme = localStorage.getItem('theme');  // 'dark'
-localStorage.removeItem('theme');
-localStorage.clear();  // Remove ALL items
+localStorage.setItem("theme", "dark");
+const theme = localStorage.getItem("theme"); // 'dark'
+localStorage.removeItem("theme");
+localStorage.clear(); // Remove ALL items
 
 // Storing objects (MUST serialize):
-const user = { name: 'Harsha', role: 'dev' };
-localStorage.setItem('user', JSON.stringify(user));
-const stored = JSON.parse(localStorage.getItem('user'));
+const user = { name: "Harsha", role: "dev" };
+localStorage.setItem("user", JSON.stringify(user));
+const stored = JSON.parse(localStorage.getItem("user"));
 
 // Storage event — detect changes from OTHER tabs:
-window.addEventListener('storage', (e) => {
+window.addEventListener("storage", (e) => {
   console.log(`Key "${e.key}" changed from "${e.oldValue}" to "${e.newValue}"`);
-  if (e.key === 'theme') {
-    applyTheme(e.newValue);  // Sync theme across tabs!
+  if (e.key === "theme") {
+    applyTheme(e.newValue); // Sync theme across tabs!
   }
 });
 ```
@@ -290,7 +294,7 @@ window.addEventListener('storage', (e) => {
   • Offline-first apps with sync
   • Caching API responses with complex queries
   • Storing blobs (images, files)
-  
+
   localStorage: Simple key-value, 5MB, synchronous
   IndexedDB:    Full database, 100s of MB, asynchronous
 ```
@@ -299,21 +303,21 @@ window.addEventListener('storage', (e) => {
 // Open/create database:
 function openDB() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('MyAppDB', 1);  // name, version
+    const request = indexedDB.open("MyAppDB", 1); // name, version
 
     // Called when version increases or DB is new:
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      
+
       // Create object store (like a table):
-      const store = db.createObjectStore('products', { 
-        keyPath: 'id',           // Primary key field
-        autoIncrement: true 
+      const store = db.createObjectStore("products", {
+        keyPath: "id", // Primary key field
+        autoIncrement: true,
       });
-      
+
       // Create indexes (for searching):
-      store.createIndex('category', 'category', { unique: false });
-      store.createIndex('name', 'name', { unique: true });
+      store.createIndex("category", "category", { unique: false });
+      store.createIndex("name", "name", { unique: true });
     };
 
     request.onsuccess = () => resolve(request.result);
@@ -324,18 +328,18 @@ function openDB() {
 // CRUD operations:
 async function addProduct(product) {
   const db = await openDB();
-  const tx = db.transaction('products', 'readwrite');
-  const store = tx.objectStore('products');
+  const tx = db.transaction("products", "readwrite");
+  const store = tx.objectStore("products");
   store.add(product);
   return tx.complete;
 }
 
 async function getProductsByCategory(category) {
   const db = await openDB();
-  const tx = db.transaction('products', 'readonly');
-  const store = tx.objectStore('products');
-  const index = store.index('category');
-  
+  const tx = db.transaction("products", "readonly");
+  const store = tx.objectStore("products");
+  const index = store.index("category");
+
   return new Promise((resolve) => {
     const request = index.getAll(category);
     request.onsuccess = () => resolve(request.result);
@@ -343,8 +347,8 @@ async function getProductsByCategory(category) {
 }
 
 // Usage:
-await addProduct({ name: 'Laptop', category: 'electronics', price: 999 });
-const electronics = await getProductsByCategory('electronics');
+await addProduct({ name: "Laptop", category: "electronics", price: 999 });
+const electronics = await getProductsByCategory("electronics");
 ```
 
 ---
@@ -353,13 +357,13 @@ const electronics = await getProductsByCategory('electronics');
 
 ```
   HTTP vs WebSocket:
-  
+
   HTTP:       Client → Request → Server → Response → Done
               (new connection each time)
-  
+
   WebSocket:  Client ←→ Server  (persistent bidirectional connection)
               Both sides can send messages at any time.
-  
+
   USE CASES:
   • Chat applications
   • Live notifications
@@ -371,36 +375,37 @@ const electronics = await getProductsByCategory('electronics');
 
 ```javascript
 // Client side:
-const ws = new WebSocket('wss://api.example.com/ws');
+const ws = new WebSocket("wss://api.example.com/ws");
 
 ws.onopen = () => {
-  console.log('Connected!');
-  ws.send(JSON.stringify({ type: 'subscribe', channel: 'prices' }));
+  console.log("Connected!");
+  ws.send(JSON.stringify({ type: "subscribe", channel: "prices" }));
 };
 
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log('Received:', data);
+  console.log("Received:", data);
   updateUI(data);
 };
 
 ws.onclose = (event) => {
   console.log(`Disconnected: ${event.code} ${event.reason}`);
   // Reconnect logic:
-  if (event.code !== 1000) {  // 1000 = normal closure
+  if (event.code !== 1000) {
+    // 1000 = normal closure
     setTimeout(() => connectWebSocket(), 3000);
   }
 };
 
 ws.onerror = (error) => {
-  console.error('WebSocket error:', error);
+  console.error("WebSocket error:", error);
 };
 
 // Send message:
-ws.send(JSON.stringify({ type: 'chat', message: 'Hello!' }));
+ws.send(JSON.stringify({ type: "chat", message: "Hello!" }));
 
 // Close connection:
-ws.close(1000, 'User logged out');
+ws.close(1000, "User logged out");
 ```
 
 ```jsx
@@ -440,7 +445,7 @@ function useWebSocket(url) {
 ```
   WebSocket: Bidirectional (client ↔ server)
   SSE:       Server → Client only (one-way push)
-  
+
   WHY USE SSE OVER WEBSOCKET?
   • Simpler (just HTTP!)
   • Auto-reconnect built-in
@@ -450,24 +455,24 @@ function useWebSocket(url) {
 
 ```javascript
 // Client:
-const eventSource = new EventSource('/api/notifications');
+const eventSource = new EventSource("/api/notifications");
 
 eventSource.onmessage = (event) => {
-  console.log('Notification:', event.data);
+  console.log("Notification:", event.data);
 };
 
 // Named events:
-eventSource.addEventListener('price-update', (event) => {
+eventSource.addEventListener("price-update", (event) => {
   const data = JSON.parse(event.data);
   updatePrice(data.symbol, data.price);
 });
 
-eventSource.addEventListener('alert', (event) => {
+eventSource.addEventListener("alert", (event) => {
   showAlert(event.data);
 });
 
 eventSource.onerror = () => {
-  console.log('Connection lost, auto-reconnecting...');
+  console.log("Connection lost, auto-reconnecting...");
   // EventSource automatically reconnects!
 };
 
@@ -477,22 +482,21 @@ eventSource.close();
 
 ---
 
-
-
 🔬 **Section Challenge — 7. Server-Sent Events — One-Way Streaming**
 
 **Challenge 1 (Design):** You are building a live stock ticker using Server-Sent Events (SSE). If the user loses internet connection for 10 seconds and reconnects, how do you ensure they don't miss any price updates that occurred during the outage?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Handling connection drops in a one-way SSE stream.
 **Trace:** `EventSource` automatically attempts to reconnect when the connection drops. However, simply reconnecting doesn't recover lost messages unless the server knows what the client missed. The SSE protocol handles this natively via the `Last-Event-ID` header.
 **Debug/Design Fix:**
+
 1. **Server:** When sending events, include an `id` field: `id: 1045\ndata: {"price": 150}\n\n`.
 2. **Client Drop:** Connection breaks.
 3. **Client Reconnect:** The browser automatically reconnects and includes the `Last-Event-ID: 1045` HTTP header in the new request.
 4. **Server Recovery:** The server reads the header, retrieves all events with an ID > 1045 from its cache/database, and streams them immediately before resuming real-time events.
 </details>
-
 
 ## 8. Fetch API — Advanced Patterns
 
@@ -502,17 +506,16 @@ const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), 5000);
 
 try {
-  const response = await fetch('/api/data', {
-    signal: controller.signal
+  const response = await fetch("/api/data", {
+    signal: controller.signal,
   });
   clearTimeout(timeoutId);
   const data = await response.json();
 } catch (error) {
-  if (error.name === 'AbortError') {
-    console.log('Request timed out');
+  if (error.name === "AbortError") {
+    console.log("Request timed out");
   }
 }
-
 
 // Retry with exponential backoff:
 async function fetchWithRetry(url, options = {}, maxRetries = 3) {
@@ -526,37 +529,33 @@ async function fetchWithRetry(url, options = {}, maxRetries = 3) {
     } catch (error) {
       if (attempt === maxRetries) throw error;
       const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
-      await new Promise(r => setTimeout(r, delay));
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 }
 
-
 // Parallel requests:
 const [users, products, orders] = await Promise.all([
-  fetch('/api/users').then(r => r.json()),
-  fetch('/api/products').then(r => r.json()),
-  fetch('/api/orders').then(r => r.json())
+  fetch("/api/users").then((r) => r.json()),
+  fetch("/api/products").then((r) => r.json()),
+  fetch("/api/orders").then((r) => r.json()),
 ]);
 
-
 // Stream response (large files):
-const response = await fetch('/api/large-data');
+const response = await fetch("/api/large-data");
 const reader = response.body.getReader();
 const decoder = new TextDecoder();
-let result = '';
+let result = "";
 
 while (true) {
   const { done, value } = await reader.read();
   if (done) break;
   result += decoder.decode(value, { stream: true });
-  updateProgress(result.length / response.headers.get('Content-Length'));
+  updateProgress(result.length / response.headers.get("Content-Length"));
 }
 ```
 
 ---
-
-
 
 ## 9. Clipboard API — Copy/Paste Programmatically
 
@@ -565,16 +564,16 @@ while (true) {
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
-    showToast('Copied!');
+    showToast("Copied!");
   } catch (err) {
     // Fallback for older browsers:
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
     document.body.appendChild(textarea);
     textarea.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(textarea);
   }
 }
@@ -587,10 +586,8 @@ async function pasteFromClipboard() {
 
 // Copy rich content (HTML, images):
 async function copyRichContent() {
-  const blob = new Blob(['<b>Bold text</b>'], { type: 'text/html' });
-  await navigator.clipboard.write([
-    new ClipboardItem({ 'text/html': blob })
-  ]);
+  const blob = new Blob(["<b>Bold text</b>"], { type: "text/html" });
+  await navigator.clipboard.write([new ClipboardItem({ "text/html": blob })]);
 }
 ```
 
@@ -603,18 +600,18 @@ async function copyRichContent() {
 async function enableNotifications() {
   const permission = await Notification.requestPermission();
   // 'granted', 'denied', or 'default'
-  return permission === 'granted';
+  return permission === "granted";
 }
 
 // Show notification:
 function showNotification(title, body) {
-  if (Notification.permission === 'granted') {
+  if (Notification.permission === "granted") {
     const notification = new Notification(title, {
       body,
-      icon: '/icon-192.png',
-      badge: '/badge-72.png',
-      tag: 'message',       // Replace previous notification with same tag
-      requireInteraction: true  // Don't auto-dismiss
+      icon: "/icon-192.png",
+      badge: "/badge-72.png",
+      tag: "message", // Replace previous notification with same tag
+      requireInteraction: true, // Don't auto-dismiss
     });
 
     notification.onclick = () => {
@@ -625,9 +622,9 @@ function showNotification(title, body) {
 }
 
 // Vibration (mobile):
-navigator.vibrate(200);           // Vibrate 200ms
+navigator.vibrate(200); // Vibrate 200ms
 navigator.vibrate([100, 50, 100]); // Pattern: vibrate, pause, vibrate
-navigator.vibrate(0);             // Stop vibration
+navigator.vibrate(0); // Stop vibration
 ```
 
 ---
@@ -638,35 +635,35 @@ navigator.vibrate(0);             // Stop vibration
 // Get current position (one-time):
 navigator.geolocation.getCurrentPosition(
   (position) => {
-    console.log('Lat:', position.coords.latitude);
-    console.log('Lng:', position.coords.longitude);
-    console.log('Accuracy:', position.coords.accuracy, 'meters');
+    console.log("Lat:", position.coords.latitude);
+    console.log("Lng:", position.coords.longitude);
+    console.log("Accuracy:", position.coords.accuracy, "meters");
   },
   (error) => {
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        console.log('User denied geolocation');
+        console.log("User denied geolocation");
         break;
       case error.POSITION_UNAVAILABLE:
-        console.log('Location unavailable');
+        console.log("Location unavailable");
         break;
       case error.TIMEOUT:
-        console.log('Request timed out');
+        console.log("Request timed out");
         break;
     }
   },
   {
-    enableHighAccuracy: true,  // GPS (slower, more battery)
-    timeout: 10000,            // Max wait time
-    maximumAge: 60000          // Accept cached position up to 1min old
-  }
+    enableHighAccuracy: true, // GPS (slower, more battery)
+    timeout: 10000, // Max wait time
+    maximumAge: 60000, // Accept cached position up to 1min old
+  },
 );
 
 // Watch position (continuous tracking):
 const watchId = navigator.geolocation.watchPosition(
   (position) => updateMap(position.coords),
   (error) => handleError(error),
-  { enableHighAccuracy: true }
+  { enableHighAccuracy: true },
 );
 
 // Stop tracking:
@@ -684,33 +681,33 @@ navigator.geolocation.clearWatch(watchId);
 
 ```javascript
 // Create channel (same name = same channel):
-const authChannel = new BroadcastChannel('auth');
+const authChannel = new BroadcastChannel("auth");
 
 // Tab 1 — Send logout:
 function logout() {
   clearSession();
-  authChannel.postMessage({ type: 'LOGOUT' });
-  window.location.href = '/login';
+  authChannel.postMessage({ type: "LOGOUT" });
+  window.location.href = "/login";
 }
 
 // Tab 2 — Listen for logout:
 authChannel.onmessage = (event) => {
-  if (event.data.type === 'LOGOUT') {
+  if (event.data.type === "LOGOUT") {
     clearSession();
-    window.location.href = '/login';
+    window.location.href = "/login";
   }
 };
 
 // Theme sync across tabs:
-const themeChannel = new BroadcastChannel('theme');
+const themeChannel = new BroadcastChannel("theme");
 
 function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute("data-theme", theme);
   themeChannel.postMessage({ theme });
 }
 
 themeChannel.onmessage = (event) => {
-  document.documentElement.setAttribute('data-theme', event.data.theme);
+  document.documentElement.setAttribute("data-theme", event.data.theme);
 };
 
 // Close when component unmounts:

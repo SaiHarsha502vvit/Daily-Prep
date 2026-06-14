@@ -135,3 +135,96 @@ Before finishing content work:
 [ ] Registry and manifest regenerated after meaningful edits.
 [ ] Parallel agent stale check passed before final commit.
 ```
+
+## Combined Lens: Depth + Breadth
+
+This lens extends the existing standards with the first-principles persona dimensions defined in this curriculum. It is additive — all existing rules (Core Teaching Shape, Challenge Block Standard, etc.) remain canonical. Each dimension is scored 0–3 per file or folder; the threshold rule below determines when upgrade ferments are triggered.
+
+> **Preservation Guarantees — DO NOT REMOVE OR DOWNGRADE**
+>
+> The following are the **canonical pedagogical backbone** of this curriculum and MUST be preserved verbatim across all upgrades, audits, and cleanups:
+>
+> 1. **5W1H methodology** — the WHAT/WHY/WHO/WHEN/WHERE/HOW framing block at the top of every chapter. This is the _primary_ scaffold readers use to orient. Removing it would break the curriculum's pedagogical identity. Upgrades may add new dimensions _alongside_ 5W1H but MUST NOT replace, shrink, or move it.
+> 2. **Existing standards** — Core Teaching Shape, Challenge Block Standard, Constraint-First DSA Standard, contamination-free Challenge Blocks, and all canonical homes (D006). The Combined Lens is layered ON TOP, not in place of these.
+> 3. **Open-source anchor format (D012)** — stable permalinks with the `📎 Reference Anchor` shape. Upgrades that add new references MUST follow this exact format.
+>
+> **Verification for any upgrade PR:** if a file loses its 5W1H block or its existing pedagogy sections are shortened/replaced, the upgrade is rejected (see D014).
+
+> **Scoring scale (0–3 per dimension):**
+>
+> - 0 = absent / no sub-checks met
+> - 1 = partial / one sub-check met
+> - 2 = most sub-checks met (3 of 4–5)
+> - 3 = all sub-checks met with concrete examples
+
+> **Upgrade-trigger threshold:** A file is flagged for upgrade if its average score across all 5 dimensions is **< 2.0** OR any single dimension scores **0**. See `00_CONTEXT/PEDAGOGY_AUDIT_2026.md` for the operationalized audit and flagged-files list.
+
+### Conceptual Depth (first principles, why)
+
+Teaching the _why_ behind mechanisms — not just what they do, but why the invariant holds and why this approach dominates alternatives.
+
+1. **Mental model paragraph** — verify: section opens with a `why` framing statement (contains "why", "because", or "the reason") within the first 3 sentences.
+
+2. **Invariant stated explicitly** — verify: contains the word `invariant` followed by a noun phrase, or an equivalent statement of the conserved property.
+
+3. **Underlying mechanism explained** — verify: contains a paragraph that names the internal representation, allocation pattern, or algorithmic trick driving the behavior.
+
+4. **Why-this-not-that framing** — verify: contains an explicit comparison paragraph explaining why this approach is chosen over at least one alternative.
+
+5. **Constraint-driven selection logic** — verify: follows the `constraints -> bottleneck -> data structure/algorithm` chain from the Constraint-First DSA Standard.
+
+### Topical Breadth (variants, alternatives, trade-offs)
+
+Covering the variant space so learners can select the right tool for a given context.
+
+1. **Variant space enumerated** — verify: section names or lists at least 2 variants of the concept (e.g., array vs. linked list, BFS vs. DFS, stateless vs. stateful).
+
+2. **Side-by-side comparison present** — verify: a comparison table or structured list exists with at least 2 rows and 2 columns, contrasting variants on a specific property.
+
+3. **Explicit trade-off discussion** — verify: contains the word `trade-off` (or `tradeoff`) followed by a named trade-off between two approaches.
+
+4. **Selection criteria given** — verify: contains a paragraph or list stating which constraint or use case favors which variant.
+
+### Production Reality (debugging, perf, security, scale)
+
+Connecting concepts to real-world failure modes, debugging workflows, and production concerns.
+
+1. **Production failure mode named** — verify: contains a section titled or paragraph containing `failure mode`, `bug`, `debug`, `incident`, or `production`.
+
+2. **Performance characteristic stated** — verify: contains a paragraph mentioning time complexity, space complexity, or latency with a concrete metric (e.g., `O(n log n)`, `O(1)` lookup, `100ms p99`).
+
+3. **Security or correctness implication** — verify: contains `security`, `vulnerability`, `correctness`, `race condition`, `deadlock`, or `TOCTOU` in context of the topic.
+
+4. **Scalability concern addressed** — verify: contains a paragraph or bullet naming a scale-related constraint (e.g., data volume, concurrency, sharding, memory pressure).
+
+5. **Debug workflow or fix pattern shown** — verify: contains a concrete debugging step, error message, or fix pattern for the topic (not generic "be careful").
+
+### Historical Evolution (how we got here)
+
+Teaching the lineage and motivation so learners understand why the concept exists in its current form.
+
+1. **Historical timeline or year referenced** — verify: contains a 4-digit year between 1940 and 2030 in context of the concept's evolution.
+
+2. **Predecessor or alternative named** — verify: names at least one prior approach, older algorithm, or abandoned design that preceded the current solution.
+
+3. **Evolution or motivation stated** — verify: contains a paragraph explaining why the concept was introduced or changed (e.g., "introduced to solve X", "replaced Y due to Z").
+
+4. **Modern practice anchored** — verify: contains a reference to current production use, modern library support, or contemporary standard (post-2010).
+
+### Pedagogical Craft (challenges, edges, invariants)
+
+Structured practice that builds durable reasoning through challenge design.
+
+1. **Section challenge present and local** — verify: contains `🔬 **Section Challenge**` (or `## Challenge` / `### Challenge`) and the challenge text references the local topic by name.
+
+2. **Edge case or breaking case explored** — verify: contains a named edge case (e.g., "empty input", "single element", "overflow", "null") and explains the failure or fix.
+
+3. **Constraint trigger explicitly named** — verify: contains a constraint that changes the solution (e.g., "when n > 10^5", "if values are negative", "on concurrent access").
+
+4. **Common mistake warned against** — verify: contains a paragraph or bullet naming a frequent learner error (e.g., "a common mistake is to...", "students often forget...").
+
+5. **Answer block present and concise** — verify: contains exactly one `<details><summary>Answer</summary>` block per challenge, with a non-empty answer body.
+
+---
+
+_See `00_CONTEXT/PEDAGOGY_AUDIT_2026.md` for the curriculum-wide audit results that operationalize this rubric._

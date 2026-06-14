@@ -1,4 +1,4 @@
-import { TestSummary, GroupScore } from '../analyse/flake-score';
+import { TestSummary, GroupScore } from "../analyse/flake-score";
 
 export interface JsonReport {
   metadata: {
@@ -33,11 +33,13 @@ export function buildJsonReport(
   tests: TestSummary[],
   groups: GroupScore[],
   criticalThreshold: number,
-  quarantineThreshold: number
+  quarantineThreshold: number,
 ): JsonReport {
   const sorted = [...tests].sort((a, b) => b.flakeScore - a.flakeScore);
-  const critical = sorted.filter(t => t.isCritical);
-  const quar = sorted.filter(t => !t.isCritical && t.flakeScore > quarantineThreshold);
+  const critical = sorted.filter((t) => t.isCritical);
+  const quar = sorted.filter(
+    (t) => !t.isCritical && t.flakeScore > quarantineThreshold,
+  );
 
   const totalRuns = tests.reduce((s, t) => s + t.totalRuns, 0);
   const totalPasses = tests.reduce((s, t) => s + t.passes, 0);
@@ -52,7 +54,7 @@ export function buildJsonReport(
       totalRuns,
       overallPassRate,
     },
-    tests: sorted.map(t => ({
+    tests: sorted.map((t) => ({
       name: t.name,
       totalRuns: t.totalRuns,
       passes: t.passes,

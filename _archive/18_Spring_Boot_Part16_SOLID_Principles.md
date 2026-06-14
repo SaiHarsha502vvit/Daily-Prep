@@ -134,7 +134,7 @@ public class OrderService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -142,17 +142,17 @@ public class OrderService {
         // Business logic
         double total = calculateTotalPrice(order);
         order.setTotal(total);
-        
+
         // Database logic
         saveToDatabase(order);
-        
+
         // Notification logic
         sendConfirmationEmail(order);
-        
+
         // Reporting logic
         generateReport(order);
     }
-    
+
     private double calculateTotalPrice(Order order) {
         double subtotal = order.getItems().stream()
             .mapToDouble(item -> item.getPrice() * item.getQuantity())
@@ -161,20 +161,20 @@ public class OrderService {
         double discount = calculateDiscount(order);
         return subtotal + tax - discount;
     }
-    
+
     private double calculateDiscount(Order order) {
         if (order.getCustomer().isPremium()) {
             return order.getTotal() * 0.15;
         }
         return 0;
     }
-    
+
     private void saveToDatabase(Order order) {
         jdbcTemplate.update(
             "INSERT INTO orders (id, customer_id, total, status) VALUES (?, ?, ?, ?)",
             order.getId(), order.getCustomer().getId(), order.getTotal(), "PENDING"
         );
-        
+
         for (OrderItem item : order.getItems()) {
             jdbcTemplate.update(
                 "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)",
@@ -182,7 +182,7 @@ public class OrderService {
             );
         }
     }
-    
+
     private void sendConfirmationEmail(Order order) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getCustomer().getEmail());
@@ -190,7 +190,7 @@ public class OrderService {
         message.setText("Thank you for your order. Total: $" + order.getTotal());
         mailSender.send(message);
     }
-    
+
     private void generateReport(Order order) {
         // Generate PDF report...
         String html = "<html><body><h1>Order Report</h1>...</body></html>";
@@ -222,26 +222,26 @@ public class OrderService {
     @Transactional
     public OrderResponse processOrder(CreateOrderRequest request) {
         log.info("Processing order for customer: {}", request.getCustomerId());
-        
+
         // Delegate to specialized services
         Order order = createOrder(request);
-        
+
         // Calculate pricing (delegated)
         OrderPricing pricing = pricingService.calculatePricing(order);
         order.applyPricing(pricing);
-        
+
         // Persist (delegated)
         Order savedOrder = orderRepository.save(order);
-        
+
         // Notifications (delegated, async)
         notificationService.sendOrderConfirmation(savedOrder);
-        
+
         // Reporting (delegated, async)
         reportService.generateOrderReport(savedOrder);
-        
+
         return OrderResponse.from(savedOrder);
     }
-    
+
     private Order createOrder(CreateOrderRequest request) {
         return Order.builder()
             .customerId(request.getCustomerId())
@@ -252,7 +252,7 @@ public class OrderService {
             .createdAt(LocalDateTime.now())
             .build();
     }
-    
+
     private OrderItem toOrderItem(OrderItemRequest request) {
         return OrderItem.builder()
             .productId(request.getProductId())
@@ -278,7 +278,7 @@ public class OrderPricingService {
         BigDecimal discount = discountService.calculateDiscount(order, subtotal);
         BigDecimal tax = taxService.calculateTax(subtotal.subtract(discount));
         BigDecimal total = subtotal.subtract(discount).add(tax);
-        
+
         return OrderPricing.builder()
             .subtotal(subtotal)
             .discount(discount)
@@ -286,7 +286,7 @@ public class OrderPricingService {
             .total(total)
             .build();
     }
-    
+
     private BigDecimal calculateSubtotal(Order order) {
         return order.getItems().stream()
             .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -307,13 +307,13 @@ public class DiscountService {
     public BigDecimal calculateDiscount(Order order, BigDecimal subtotal) {
         Customer customer = customerRepository.findById(order.getCustomerId())
             .orElseThrow(() -> new CustomerNotFoundException(order.getCustomerId()));
-        
+
         if (customer.getTier() == CustomerTier.PREMIUM) {
             return subtotal.multiply(BigDecimal.valueOf(0.15));
         } else if (customer.getTier() == CustomerTier.GOLD) {
             return subtotal.multiply(BigDecimal.valueOf(0.10));
         }
-        
+
         return BigDecimal.ZERO;
     }
 }
@@ -348,7 +348,7 @@ public class NotificationService {
     public void sendOrderConfirmation(Order order) {
         try {
             emailService.sendOrderConfirmationEmail(order);
-            
+
             if (order.getCustomer().isSmsEnabled()) {
                 smsService.sendOrderConfirmationSms(order);
             }
@@ -372,12 +372,12 @@ public class EmailService {
 
     public void sendOrderConfirmationEmail(Order order) {
         String body = templateService.generateOrderConfirmationBody(order);
-        
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getCustomer().getEmail());
         message.setSubject("Order Confirmation #" + order.getId());
         message.setText(body);
-        
+
         mailSender.send(message);
     }
 }
@@ -396,13 +396,13 @@ public class ReportService {
     @Async
     public void generateOrderReport(Order order) {
         byte[] pdfContent = pdfGenerator.generateOrderReport(order);
-        
+
         Report report = Report.builder()
             .orderId(order.getId())
             .content(pdfContent)
             .generatedAt(LocalDateTime.now())
             .build();
-        
+
         reportRepository.save(report);
     }
 }
@@ -447,19 +447,19 @@ public class PaymentService {
 
     @Autowired
     private StripeClient stripeClient;
-    
+
     @Autowired
     private PayPalClient payPalClient;
 
     public PaymentResult processPayment(Order order, PaymentMethod method) {
-        
+
         if (method == PaymentMethod.CREDIT_CARD) {
             // Credit card logic
             return stripeClient.charge(
                 order.getTotal(),
                 order.getCreditCardToken()
             );
-        } 
+        }
         else if (method == PaymentMethod.PAYPAL) {
             // PayPal logic
             return payPalClient.executePayment(
@@ -475,10 +475,10 @@ public class PaymentService {
             return processCrypto(order);
         }
         // Every new payment method = more modification!
-        
+
         throw new UnsupportedPaymentMethodException(method);
     }
-    
+
     private PaymentResult processBankTransfer(Order order) { ... }
     private PaymentResult processCrypto(Order order) { ... }
 }
@@ -495,17 +495,17 @@ public class PaymentService {
  * The PaymentService never needs to change!
  */
 public interface PaymentProcessor {
-    
+
     /**
      * @return true if this processor can handle the payment request
      */
     boolean supports(PaymentRequest request);
-    
+
     /**
      * Process the payment
      */
     PaymentResult process(PaymentRequest request);
-    
+
     /**
      * Get the payment method this processor handles
      */
@@ -529,18 +529,18 @@ public class CreditCardPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing credit card payment: {}", request.getOrderId());
-        
+
         CreditCardDetails details = (CreditCardDetails) request.getPaymentDetails();
-        
+
         StripeChargeRequest stripeRequest = StripeChargeRequest.builder()
             .amount(request.getAmount())
             .currency(request.getCurrency())
             .token(details.getToken())
             .description("Order #" + request.getOrderId())
             .build();
-        
+
         StripeChargeResponse response = stripeClient.charge(stripeRequest);
-        
+
         return PaymentResult.builder()
             .success(response.isSuccessful())
             .transactionId(response.getChargeId())
@@ -569,14 +569,14 @@ public class PayPalPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing PayPal payment: {}", request.getOrderId());
-        
+
         PayPalDetails details = (PayPalDetails) request.getPaymentDetails();
-        
+
         PayPalExecuteResponse response = payPalClient.executePayment(
             details.getPaymentId(),
             details.getPayerId()
         );
-        
+
         return PaymentResult.builder()
             .success(response.getState().equals("approved"))
             .transactionId(response.getId())
@@ -609,15 +609,15 @@ public class CryptoPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing crypto payment: {}", request.getOrderId());
-        
+
         CryptoDetails details = (CryptoDetails) request.getPaymentDetails();
-        
+
         CryptoPaymentResponse response = cryptoClient.processPayment(
             details.getWalletAddress(),
             details.getCryptoCurrency(),
             request.getAmount()
         );
-        
+
         return PaymentResult.builder()
             .success(response.isConfirmed())
             .transactionId(response.getTxHash())
@@ -646,14 +646,14 @@ public class PaymentService {
     private final List<PaymentProcessor> paymentProcessors;
 
     public PaymentResult processPayment(PaymentRequest request) {
-        log.info("Processing payment for order {} with method {}", 
+        log.info("Processing payment for order {} with method {}",
             request.getOrderId(), request.getMethod());
-        
+
         PaymentProcessor processor = findProcessor(request);
-        
+
         return processor.process(request);
     }
-    
+
     private PaymentProcessor findProcessor(PaymentRequest request) {
         return paymentProcessors.stream()
             .filter(p -> p.supports(request))
@@ -662,7 +662,7 @@ public class PaymentService {
                 "No processor found for: " + request.getMethod()
             ));
     }
-    
+
     public List<PaymentMethod> getAvailablePaymentMethods() {
         return paymentProcessors.stream()
             .map(PaymentProcessor::getPaymentMethod)
@@ -696,7 +696,7 @@ public interface NotificationSender {
 // Base implementation
 @Component("emailNotificationSender")
 public class EmailNotificationSender implements NotificationSender {
-    
+
     @Override
     public void send(Notification notification) {
         // Send email
@@ -720,9 +720,9 @@ public class LoggingNotificationDecorator implements NotificationSender {
     public void send(Notification notification) {
         log.info("About to send notification: {}", notification.getId());
         long startTime = System.currentTimeMillis();
-        
+
         delegate.send(notification);
-        
+
         long duration = System.currentTimeMillis() - startTime;
         log.info("Notification sent in {}ms", duration);
     }
@@ -796,29 +796,29 @@ public class RetryableNotificationDecorator implements NotificationSender {
 public class Rectangle {
     protected int width;
     protected int height;
-    
+
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
     public void setHeight(int height) {
         this.height = height;
     }
-    
+
     public int getArea() {
         return width * height;
     }
 }
 
 public class Square extends Rectangle {
-    
+
     @Override
     public void setWidth(int width) {
         // Violates LSP - changes behavior unexpectedly
         this.width = width;
         this.height = width;  // Also changes height!
     }
-    
+
     @Override
     public void setHeight(int height) {
         // Violates LSP - changes behavior unexpectedly
@@ -831,7 +831,7 @@ public class Square extends Rectangle {
 public void testRectangle(Rectangle rect) {
     rect.setWidth(5);
     rect.setHeight(4);
-    
+
     // Expected: 20
     // With Rectangle: 20 ✓
     // With Square: 16 ✗ (5*5 then 4*4 = 16)
@@ -853,17 +853,17 @@ public interface UserRepository {
 
 @Repository
 public class JpaUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         return entityManager.merge(user);
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
-    
+
     @Override
     public void delete(Long id) {
         User user = entityManager.find(User.class, id);
@@ -880,17 +880,17 @@ public class JpaUserRepository implements UserRepository {
  */
 @Repository
 public class ReadOnlyUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         throw new UnsupportedOperationException("Read-only repository!");
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         // This works...
     }
-    
+
     @Override
     public void delete(Long id) {
         throw new UnsupportedOperationException("Read-only repository!");
@@ -900,7 +900,7 @@ public class ReadOnlyUserRepository implements UserRepository {
 // Any code using UserRepository will break with ReadOnlyUserRepository
 public class UserService {
     private final UserRepository userRepository;
-    
+
     public void createUser(User user) {
         userRepository.save(user);  // BOOM! UnsupportedOperationException
     }
@@ -932,17 +932,17 @@ public interface UserRepository extends UserReader, UserWriter {
 
 @Repository
 public class JpaUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         return entityManager.merge(user);
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
-    
+
     @Override
     public void delete(Long id) {
         User user = entityManager.find(User.class, id);
@@ -950,13 +950,13 @@ public class JpaUserRepository implements UserRepository {
             entityManager.remove(user);
         }
     }
-    
+
     @Override
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM User u", User.class)
             .getResultList();
     }
-    
+
     @Override
     public boolean existsById(Long id) {
         return findById(id).isPresent();
@@ -967,11 +967,11 @@ public class JpaUserRepository implements UserRepository {
 @Service
 public class UserQueryService {
     private final UserReader userReader;  // Only needs read operations
-    
+
     public UserQueryService(UserReader userReader) {
         this.userReader = userReader;
     }
-    
+
     public UserDto findUser(Long id) {
         return userReader.findById(id)
             .map(this::toDto)
@@ -983,11 +983,11 @@ public class UserQueryService {
 @Service
 public class UserCommandService {
     private final UserRepository userRepository;  // Needs both read and write
-    
+
     public UserCommandService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
         User user = toEntity(request);
@@ -1026,7 +1026,7 @@ public class ProcessingException extends RuntimeException {
     public ProcessingException(String message) {
         super(message);
     }
-    
+
     public ProcessingException(String message, Throwable cause) {
         super(message, cause);
     }
@@ -1112,23 +1112,23 @@ public class HumanWorker implements Worker {
 // Robot worker - forced to implement methods that don't apply!
 public class RobotWorker implements Worker {
     @Override public void work() { /* Working */ }
-    
-    @Override public void eat() { 
+
+    @Override public void eat() {
         throw new UnsupportedOperationException("Robots don't eat!");
     }
-    
-    @Override public void sleep() { 
+
+    @Override public void sleep() {
         throw new UnsupportedOperationException("Robots don't sleep!");
     }
-    
+
     @Override public void attendMeeting() {
         throw new UnsupportedOperationException("Robots can't attend meetings!");
     }
-    
+
     @Override public void submitTimesheet() {
         throw new UnsupportedOperationException("Robots don't have timesheets!");
     }
-    
+
     @Override public void codeReview() { /* Can do */ }
     @Override public void deployToProduction() { /* Can do */ }
 }
@@ -1173,9 +1173,9 @@ public interface Deployer {
  * Human implements all relevant interfaces
  */
 @Component
-public class HumanDeveloper implements 
+public class HumanDeveloper implements
         Workable, Feedable, Meetable, Trackable, CodeReviewer, Deployer {
-    
+
     @Override public void work() { log.info("Coding..."); }
     @Override public void eat() { log.info("Lunch break"); }
     @Override public void sleep() { log.info("Zzz..."); }
@@ -1190,7 +1190,7 @@ public class HumanDeveloper implements
  */
 @Component
 public class RobotWorker implements Workable, CodeReviewer, Deployer {
-    
+
     @Override public void work() { log.info("Automated task running"); }
     @Override public void codeReview() { log.info("Static analysis complete"); }
     @Override public void deployToProduction() { log.info("CI/CD pipeline triggered"); }
@@ -1201,7 +1201,7 @@ public class RobotWorker implements Workable, CodeReviewer, Deployer {
  */
 @Component
 public class Contractor implements Workable, Trackable, CodeReviewer {
-    
+
     @Override public void work() { log.info("Working on task"); }
     @Override public void submitTimesheet() { log.info("Invoice submitted"); }
     @Override public void codeReview() { log.info("Reviewing..."); }
@@ -1215,11 +1215,11 @@ public class Contractor implements Workable, Trackable, CodeReviewer {
 @Service
 public class MeetingScheduler {
     private final List<Meetable> meetableWorkers;
-    
+
     public MeetingScheduler(List<Meetable> meetableWorkers) {
         this.meetableWorkers = meetableWorkers;
     }
-    
+
     public void scheduleDailyStandup() {
         meetableWorkers.forEach(Meetable::attendMeeting);
     }
@@ -1231,11 +1231,11 @@ public class MeetingScheduler {
 @Service
 public class DeploymentService {
     private final List<Deployer> deployers;
-    
+
     public DeploymentService(List<Deployer> deployers) {
         this.deployers = deployers;
     }
-    
+
     public void deployAll() {
         deployers.forEach(Deployer::deployToProduction);
     }
@@ -1247,11 +1247,11 @@ public class DeploymentService {
 @Service
 public class TimesheetService {
     private final List<Trackable> trackableWorkers;
-    
+
     public TimesheetService(List<Trackable> trackableWorkers) {
         this.trackableWorkers = trackableWorkers;
     }
-    
+
     public void collectTimesheets() {
         trackableWorkers.forEach(Trackable::submitTimesheet);
     }
@@ -1352,10 +1352,10 @@ public class OrderService {
 
     // Direct dependency on concrete implementation!
     private final MySQLOrderRepository repository = new MySQLOrderRepository();
-    
+
     // Direct dependency on concrete email client!
     private final SmtpEmailClient emailClient = new SmtpEmailClient();
-    
+
     // Direct dependency on concrete payment gateway!
     private final StripePaymentGateway paymentGateway = new StripePaymentGateway();
 
@@ -1365,7 +1365,7 @@ public class OrderService {
         // Can't swap SMTP for SendGrid
         // Can't swap Stripe for PayPal
         // Can't unit test without real MySQL, SMTP, Stripe!
-        
+
         repository.save(order);
         emailClient.send(order.getCustomerEmail(), "Order confirmed");
         paymentGateway.charge(order.getTotal(), order.getCardToken());
@@ -1396,24 +1396,24 @@ public interface PaymentGateway {
 
 @Repository
 public class JpaOrderRepository implements OrderRepository {
-    
+
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
     public Order save(Order order) {
         return em.merge(order);
     }
-    
+
     @Override
     public Optional<Order> findById(Long id) {
         return Optional.ofNullable(em.find(Order.class, id));
     }
-    
+
     @Override
     public List<Order> findByCustomerId(Long customerId) {
         return em.createQuery(
-            "SELECT o FROM Order o WHERE o.customerId = :customerId", 
+            "SELECT o FROM Order o WHERE o.customerId = :customerId",
             Order.class)
             .setParameter("customerId", customerId)
             .getResultList();
@@ -1423,16 +1423,16 @@ public class JpaOrderRepository implements OrderRepository {
 @Component
 @Profile("sendgrid")  // Use in production
 public class SendGridEmailSender implements EmailSender {
-    
+
     private final SendGrid sendGridClient;
-    
+
     @Override
     public void send(String to, String subject, String body) {
         Email from = new Email("noreply@myapp.com");
         Email toEmail = new Email(to);
         Content content = new Content("text/plain", body);
         Mail mail = new Mail(from, subject, toEmail, content);
-        
+
         sendGridClient.api(new Request())
             .method(Method.POST)
             .endpoint("mail/send")
@@ -1443,14 +1443,14 @@ public class SendGridEmailSender implements EmailSender {
 @Component
 @Profile("test")  // Use in tests
 public class MockEmailSender implements EmailSender {
-    
+
     private final List<SentEmail> sentEmails = new ArrayList<>();
-    
+
     @Override
     public void send(String to, String subject, String body) {
         sentEmails.add(new SentEmail(to, subject, body));
     }
-    
+
     public List<SentEmail> getSentEmails() {
         return sentEmails;
     }
@@ -1459,7 +1459,7 @@ public class MockEmailSender implements EmailSender {
 @Component
 @ConditionalOnProperty(name = "payment.gateway", havingValue = "stripe")
 public class StripePaymentGateway implements PaymentGateway {
-    
+
     @Override
     public PaymentResult charge(BigDecimal amount, PaymentDetails details) {
         // Stripe implementation
@@ -1469,7 +1469,7 @@ public class StripePaymentGateway implements PaymentGateway {
 @Component
 @ConditionalOnProperty(name = "payment.gateway", havingValue = "paypal")
 public class PayPalPaymentGateway implements PaymentGateway {
-    
+
     @Override
     public PaymentResult charge(BigDecimal amount, PaymentDetails details) {
         // PayPal implementation
@@ -1491,33 +1491,33 @@ public class OrderService {
     @Transactional
     public OrderResponse processOrder(CreateOrderRequest request) {
         log.info("Processing order for customer: {}", request.getCustomerId());
-        
+
         // Create order
         Order order = createOrderFromRequest(request);
-        
+
         // Charge payment (doesn't know if it's Stripe, PayPal, etc.)
         PaymentResult paymentResult = paymentGateway.charge(
             order.getTotal(),
             request.getPaymentDetails()
         );
-        
+
         if (!paymentResult.isSuccess()) {
             throw new PaymentFailedException(paymentResult.getMessage());
         }
-        
+
         order.setPaymentTransactionId(paymentResult.getTransactionId());
         order.setStatus(OrderStatus.PAID);
-        
+
         // Save (doesn't know if it's MySQL, PostgreSQL, MongoDB, etc.)
         Order savedOrder = orderRepository.save(order);
-        
+
         // Send notification (doesn't know if it's SMTP, SendGrid, etc.)
         emailSender.send(
             request.getCustomerEmail(),
             "Order Confirmation",
             "Your order #" + savedOrder.getId() + " has been confirmed"
         );
-        
+
         return OrderResponse.from(savedOrder);
     }
 }
@@ -1529,13 +1529,13 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-    
+
     @Mock
     private EmailSender emailSender;
-    
+
     @Mock
     private PaymentGateway paymentGateway;
-    
+
     @InjectMocks
     private OrderService orderService;
 
@@ -1544,32 +1544,32 @@ class OrderServiceTest {
         // Arrange
         CreateOrderRequest request = createTestRequest();
         Order savedOrder = createTestOrder();
-        
+
         when(paymentGateway.charge(any(), any()))
             .thenReturn(PaymentResult.success("txn-123"));
         when(orderRepository.save(any()))
             .thenReturn(savedOrder);
-        
+
         // Act
         OrderResponse response = orderService.processOrder(request);
-        
+
         // Assert
         assertThat(response.getId()).isEqualTo(savedOrder.getId());
         verify(emailSender).send(anyString(), anyString(), anyString());
     }
-    
+
     @Test
     void processOrder_PaymentFails_ThrowsException() {
         // Arrange
         CreateOrderRequest request = createTestRequest();
-        
+
         when(paymentGateway.charge(any(), any()))
             .thenReturn(PaymentResult.failure("Insufficient funds"));
-        
+
         // Act & Assert
-        assertThrows(PaymentFailedException.class, 
+        assertThrows(PaymentFailedException.class,
             () -> orderService.processOrder(request));
-        
+
         verify(orderRepository, never()).save(any());
         verify(emailSender, never()).send(anyString(), anyString(), anyString());
     }
@@ -1586,19 +1586,19 @@ class OrderServiceTest {
 public class AppConfig {
 
     // Different implementations for different environments
-    
+
     @Bean
     @Profile("prod")
     public EmailSender prodEmailSender(SendGridProperties properties) {
         return new SendGridEmailSender(properties);
     }
-    
+
     @Bean
     @Profile("dev")
     public EmailSender devEmailSender() {
         return new ConsoleEmailSender();  // Just logs to console
     }
-    
+
     @Bean
     @Profile("test")
     public EmailSender testEmailSender() {
@@ -1609,7 +1609,7 @@ public class AppConfig {
 // application-prod.yml
 payment:
   gateway: stripe
-  
+
 // application-dev.yml
 payment:
   gateway: mock
@@ -1674,32 +1674,32 @@ src/main/java/com/example/ecommerce/
 @AllArgsConstructor
 @Builder
 public class Order {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private Long customerId;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id")
     private List<OrderItem> items = new ArrayList<>();
-    
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    
+
     private BigDecimal subtotal;
     private BigDecimal discount;
     private BigDecimal tax;
     private BigDecimal shippingCost;
     private BigDecimal total;
-    
+
     private String paymentTransactionId;
-    
+
     @CreatedDate
     private LocalDateTime createdAt;
-    
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 }
@@ -1714,14 +1714,14 @@ public interface PaymentProcessor {
 @Component
 @RequiredArgsConstructor
 public class CreditCardProcessor implements PaymentProcessor {
-    
+
     private final StripeClient stripeClient;
-    
+
     @Override
     public boolean supports(PaymentMethod method) {
         return method == PaymentMethod.CREDIT_CARD;
     }
-    
+
     @Override
     public PaymentResult process(PaymentRequest request) {
         // Stripe-specific implementation
@@ -1731,14 +1731,14 @@ public class CreditCardProcessor implements PaymentProcessor {
 @Component
 @RequiredArgsConstructor
 public class PayPalProcessor implements PaymentProcessor {
-    
+
     private final PayPalClient payPalClient;
-    
+
     @Override
     public boolean supports(PaymentMethod method) {
         return method == PaymentMethod.PAYPAL;
     }
-    
+
     @Override
     public PaymentResult process(PaymentRequest request) {
         // PayPal-specific implementation
@@ -1754,14 +1754,14 @@ public interface ShippingCalculator {
 
 @Component
 public class StandardShipping implements ShippingCalculator {
-    
+
     private static final BigDecimal RATE_PER_ITEM = BigDecimal.valueOf(2.99);
-    
+
     @Override
     public boolean supports(ShippingMethod method) {
         return method == ShippingMethod.STANDARD;
     }
-    
+
     @Override
     public BigDecimal calculate(Order order) {
         int totalItems = order.getItems().stream()
@@ -1773,14 +1773,14 @@ public class StandardShipping implements ShippingCalculator {
 
 @Component
 public class ExpressShipping implements ShippingCalculator {
-    
+
     private static final BigDecimal FLAT_RATE = BigDecimal.valueOf(15.99);
-    
+
     @Override
     public boolean supports(ShippingMethod method) {
         return method == ShippingMethod.EXPRESS;
     }
-    
+
     @Override
     public BigDecimal calculate(Order order) {
         return FLAT_RATE;
@@ -1789,14 +1789,14 @@ public class ExpressShipping implements ShippingCalculator {
 
 @Component
 public class FreeShipping implements ShippingCalculator {
-    
+
     private static final BigDecimal FREE_SHIPPING_THRESHOLD = BigDecimal.valueOf(100);
-    
+
     @Override
     public boolean supports(ShippingMethod method) {
         return method == ShippingMethod.FREE;
     }
-    
+
     @Override
     public BigDecimal calculate(Order order) {
         if (order.getSubtotal().compareTo(FREE_SHIPPING_THRESHOLD) >= 0) {
@@ -1813,9 +1813,9 @@ public class FreeShipping implements ShippingCalculator {
 @Service
 @RequiredArgsConstructor
 public class ShippingService {
-    
+
     private final List<ShippingCalculator> shippingCalculators;
-    
+
     public BigDecimal calculateShipping(Order order, ShippingMethod method) {
         return shippingCalculators.stream()
             .filter(calc -> calc.supports(method))
@@ -1828,9 +1828,9 @@ public class ShippingService {
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    
+
     private final List<PaymentProcessor> paymentProcessors;
-    
+
     public PaymentResult processPayment(PaymentRequest request) {
         return paymentProcessors.stream()
             .filter(p -> p.supports(request.getMethod()))
@@ -1843,11 +1843,11 @@ public class PaymentService {
 @Service
 @RequiredArgsConstructor
 public class PricingService {
-    
+
     private final DiscountService discountService;
     private final TaxService taxService;
     private final ShippingService shippingService;
-    
+
     public OrderPricing calculatePricing(Order order, ShippingMethod shippingMethod) {
         BigDecimal subtotal = calculateSubtotal(order);
         BigDecimal discount = discountService.calculateDiscount(order);
@@ -1855,7 +1855,7 @@ public class PricingService {
         BigDecimal tax = taxService.calculateTax(taxableAmount);
         BigDecimal shipping = shippingService.calculateShipping(order, shippingMethod);
         BigDecimal total = taxableAmount.add(tax).add(shipping);
-        
+
         return OrderPricing.builder()
             .subtotal(subtotal)
             .discount(discount)
@@ -1864,7 +1864,7 @@ public class PricingService {
             .total(total)
             .build();
     }
-    
+
     private BigDecimal calculateSubtotal(Order order) {
         return order.getItems().stream()
             .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -1879,30 +1879,30 @@ public class PricingService {
 @Slf4j
 @Transactional
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final InventoryService inventoryService;
     private final PricingService pricingService;
     private final PaymentService paymentService;
     private final NotificationService notificationService;
     private final OrderMapper orderMapper;
-    
+
     public OrderResponse createOrder(CreateOrderRequest request) {
         log.info("Creating order for customer: {}", request.getCustomerId());
-        
+
         // 1. Validate and reserve inventory
         inventoryService.reserveItems(request.getItems());
-        
+
         try {
             // 2. Create order entity
             Order order = orderMapper.toEntity(request);
-            
+
             // 3. Calculate pricing
             OrderPricing pricing = pricingService.calculatePricing(
                 order, request.getShippingMethod()
             );
             order.applyPricing(pricing);
-            
+
             // 4. Process payment
             PaymentResult paymentResult = paymentService.processPayment(
                 PaymentRequest.builder()
@@ -1912,25 +1912,25 @@ public class OrderService {
                     .details(request.getPaymentDetails())
                     .build()
             );
-            
+
             if (!paymentResult.isSuccess()) {
                 throw new PaymentFailedException(paymentResult.getMessage());
             }
-            
+
             order.setPaymentTransactionId(paymentResult.getTransactionId());
             order.setStatus(OrderStatus.PAID);
-            
+
             // 5. Save order
             Order savedOrder = orderRepository.save(order);
-            
+
             // 6. Confirm inventory
             inventoryService.confirmReservation(savedOrder.getId());
-            
+
             // 7. Send notifications (async)
             notificationService.sendOrderConfirmation(savedOrder);
-            
+
             return orderMapper.toResponse(savedOrder);
-            
+
         } catch (Exception e) {
             // Release inventory reservation on failure
             inventoryService.releaseReservation(request.getItems());
@@ -1949,15 +1949,15 @@ public interface NotificationSender {
 @Component
 @RequiredArgsConstructor
 public class EmailNotificationSender implements NotificationSender {
-    
+
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    
+
     @Override
     public void send(NotificationRequest request) {
         // Email implementation
     }
-    
+
     @Override
     public NotificationType getType() {
         return NotificationType.EMAIL;
@@ -1967,14 +1967,14 @@ public class EmailNotificationSender implements NotificationSender {
 @Component
 @RequiredArgsConstructor
 public class SmsNotificationSender implements NotificationSender {
-    
+
     private final TwilioClient twilioClient;
-    
+
     @Override
     public void send(NotificationRequest request) {
         // SMS implementation
     }
-    
+
     @Override
     public NotificationType getType() {
         return NotificationType.SMS;
@@ -1984,22 +1984,22 @@ public class SmsNotificationSender implements NotificationSender {
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    
+
     private final List<NotificationSender> notificationSenders;
     private final CustomerPreferenceRepository preferenceRepository;
-    
+
     @Async
     public void sendOrderConfirmation(Order order) {
         CustomerPreferences prefs = preferenceRepository
             .findByCustomerId(order.getCustomerId())
             .orElse(CustomerPreferences.defaults());
-        
+
         NotificationRequest request = NotificationRequest.builder()
             .customerId(order.getCustomerId())
             .orderId(order.getId())
             .message(buildConfirmationMessage(order))
             .build();
-        
+
         // Send to all enabled channels
         notificationSenders.stream()
             .filter(sender -> prefs.isEnabled(sender.getType()))
@@ -2007,7 +2007,7 @@ public class NotificationService {
                 try {
                     sender.send(request);
                 } catch (Exception e) {
-                    log.error("Failed to send {} notification for order {}", 
+                    log.error("Failed to send {} notification for order {}",
                         sender.getType(), order.getId(), e);
                 }
             });
@@ -2030,14 +2030,14 @@ public interface OrderQueryRepository {
 @Repository
 @RequiredArgsConstructor
 public class OrderQueryRepositoryImpl implements OrderQueryRepository {
-    
+
     private final EntityManager em;
-    
+
     @Override
     public List<OrderSummary> findOrderSummaries(Long customerId, LocalDateTime since) {
         // Complex query implementation
     }
-    
+
     @Override
     public OrderStatistics getStatistics(Long customerId) {
         // Statistics query implementation
@@ -2093,24 +2093,24 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 ```
 Q1: Why is SRP important?
-A: SRP ensures each class has one reason to change, making code easier to 
-   understand, test, and maintain. Changes to one responsibility don't 
+A: SRP ensures each class has one reason to change, making code easier to
+   understand, test, and maintain. Changes to one responsibility don't
    affect others.
 
 Q2: How does Spring help implement DIP?
-A: Spring's IoC container manages dependencies through interfaces. We code 
-   against abstractions (@Autowired interfaces), and Spring injects concrete 
-   implementations. We can swap implementations via configuration without 
+A: Spring's IoC container manages dependencies through interfaces. We code
+   against abstractions (@Autowired interfaces), and Spring injects concrete
+   implementations. We can swap implementations via configuration without
    changing business code.
 
 Q3: What's the relationship between OCP and DIP?
-A: They work together. DIP says depend on abstractions. OCP says extend 
-   through abstractions. By depending on interfaces (DIP), we can add new 
+A: They work together. DIP says depend on abstractions. OCP says extend
+   through abstractions. By depending on interfaces (DIP), we can add new
    implementations without modifying existing code (OCP).
 
 Q4: Give an example of ISP in Spring.
 A: Spring Data repositories: CrudRepository, PagingRepository, JpaRepository.
-   Each adds functionality. You extend only what you need instead of one 
+   Each adds functionality. You extend only what you need instead of one
    massive interface.
 
 Q5: How do you test code that follows SOLID?

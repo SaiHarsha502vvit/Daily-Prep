@@ -60,28 +60,28 @@ public enum HttpStatus {
     FORBIDDEN(403, "Not Authorized"),
     NOT_FOUND(404, "Resource Not Found"),
     INTERNAL_ERROR(500, "Server Error");
-    
+
     private final int code;
     private final String message;
-    
+
     // Constructor MUST be private (or package-private)
     HttpStatus(int code, String message) {
         this.code = code;
         this.message = message;
     }
-    
+
     public int getCode() { return code; }
     public String getMessage() { return message; }
-    
+
     public boolean isSuccess() { return code >= 200 && code < 300; }
     public boolean isClientError() { return code >= 400 && code < 500; }
     public boolean isServerError() { return code >= 500; }
-    
+
     // Reverse lookup: code → enum
-    private static final Map<Integer, HttpStatus> BY_CODE = 
+    private static final Map<Integer, HttpStatus> BY_CODE =
         Arrays.stream(values())
               .collect(Collectors.toMap(HttpStatus::getCode, s -> s));
-    
+
     public static HttpStatus fromCode(int code) {
         return Optional.ofNullable(BY_CODE.get(code))
             .orElseThrow(() -> new IllegalArgumentException("Unknown: " + code));
@@ -120,13 +120,13 @@ public enum Operation {
             return a / b;
         }
     };
-    
+
     private final String symbol;
-    
+
     Operation(String symbol) { this.symbol = symbol; }
-    
+
     public String getSymbol() { return symbol; }
-    
+
     // Abstract method — each constant MUST implement
     public abstract double apply(double a, double b);
 }
@@ -138,8 +138,6 @@ System.out.println(op.getSymbol());  // "+"
 ```
 
 ---
-
-
 
 ## 4. Enum as State Machine
 
@@ -175,10 +173,10 @@ public enum OrderState {
         @Override
         public boolean canCancel() { return false; }
     };
-    
+
     public abstract OrderState next();
     public abstract boolean canCancel();
-    
+
     public OrderState cancel() {
         if (!canCancel()) {
             throw new IllegalStateException("Cannot cancel from " + this);
@@ -211,16 +209,15 @@ State Machine:
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Enum as State Machine**
 
 **Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
+
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee
 
@@ -228,19 +225,19 @@ Immutability and Boilerplate Elimination. A `Record` is a specialized class desi
 // The SIMPLEST and SAFEST singleton in Java
 public enum DatabaseConnection {
     INSTANCE;
-    
+
     private Connection connection;
-    
+
     // Called once when enum is first loaded
     DatabaseConnection() {
         // Initialize your resource
         this.connection = createConnection();
     }
-    
+
     public Connection getConnection() {
         return connection;
     }
-    
+
     private Connection createConnection() {
         // ... setup connection
         return null;
@@ -269,8 +266,6 @@ Why enum singleton is BEST:
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
 
 **Challenge 1 (Enum Singleton Thread Safety):** An enum-based singleton `enum Config { INSTANCE; }`. **Who** guarantees thread safety? **When** is the singleton initialized? **What** happens if someone calls `Config.INSTANCE` from 10 threads simultaneously at startup?
@@ -283,8 +278,8 @@ Why enum singleton is BEST:
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## 6. EnumSet and EnumMap — Specialized Collections
 
@@ -337,17 +332,17 @@ public final class Color extends Enum<Color> {
     public static final Color RED = new Color("RED", 0);
     public static final Color GREEN = new Color("GREEN", 1);
     public static final Color BLUE = new Color("BLUE", 2);
-    
+
     private static final Color[] VALUES = { RED, GREEN, BLUE };
-    
+
     private Color(String name, int ordinal) {
         super(name, ordinal);
     }
-    
+
     public static Color[] values() {
         return VALUES.clone();  // ← defensive copy!
     }
-    
+
     public static Color valueOf(String name) {
         // lookup by name
     }
@@ -362,13 +357,12 @@ public final class Color extends Enum<Color> {
 
 **⚠️ Performance Note**: `values()` creates a new array every call.
 If you call it in a loop, cache the result:
+
 ```java
 private static final Color[] VALUES = Color.values(); // Cache once
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
 
@@ -382,8 +376,8 @@ private static final Color[] VALUES = Color.values(); // Cache once
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## PART 2: RECORDS — Immutable Data Carriers (Java 16+)
 
@@ -397,17 +391,17 @@ public class User {
     private final String name;
     private final String email;
     private final int age;
-    
+
     public User(String name, String email, int age) {
         this.name = name;
         this.email = email;
         this.age = age;
     }
-    
+
     public String getName() { return name; }
     public String getEmail() { return email; }
     public int getAge() { return age; }
-    
+
     @Override
     public boolean equals(Object o) { ... }
     @Override
@@ -478,12 +472,12 @@ public record Point(double x, double y) {
         double dy = this.y - other.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
-    
+
     // Static factory methods
     public static Point origin() {
         return new Point(0, 0);
     }
-    
+
     // You CAN implement interfaces
     // Records CAN'T extend classes (they already extend Record)
 }
@@ -584,8 +578,6 @@ public record UserResponse(Long id, String name) {}
 
 ---
 
-
-
 🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
 
 **Challenge 1 (Record + Jackson):** You have `record User(String name, int age) {}`. Jackson fails to deserialize: `Cannot construct instance of User`. **Who** causes the failure? **When** does this happen? **What** two annotations fix it?
@@ -598,14 +590,12 @@ public record UserResponse(Long id, String name) {}
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)
 
 ---
-
-
 
 🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
 
@@ -619,8 +609,8 @@ Immutability and Boilerplate Elimination. A `Record` is a specialized class desi
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## 12. Sealed Classes — The Problem They Solve
 
@@ -661,33 +651,33 @@ public sealed class Shape permits Circle, Rectangle, Triangle {
 // Permitted subclasses must be: final, sealed, or non-sealed
 public final class Circle extends Shape {
     private final double radius;
-    
+
     public Circle(double radius) { this.radius = radius; }
-    
+
     @Override
     public double area() { return Math.PI * radius * radius; }
 }
 
 public final class Rectangle extends Shape {
     private final double width, height;
-    
+
     public Rectangle(double width, double height) {
         this.width = width;
         this.height = height;
     }
-    
+
     @Override
     public double area() { return width * height; }
 }
 
 public final class Triangle extends Shape {
     private final double base, height;
-    
+
     public Triangle(double base, double height) {
         this.base = base;
         this.height = height;
     }
-    
+
     @Override
     public double area() { return 0.5 * base * height; }
 }
@@ -722,8 +712,6 @@ public static String classify(Shape shape) {
 
 ---
 
-
-
 🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
 
 **Challenge 1 (Pattern Matching Exhaustiveness):** `sealed interface Expr permits Num, Add, Mul {}`. You write `switch (expr) { case Num n -> ...; case Add a -> ...; }` without a `Mul` case. **Who** reports the error? **When** does the switch compile without error despite missing cases?
@@ -736,8 +724,8 @@ public static String classify(Shape shape) {
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## 14. Sealed Interfaces + Records = Algebraic Data Types
 
@@ -777,7 +765,7 @@ public sealed interface PaymentMethod {
     record CreditCard(String number, String expiry, String cvv) implements PaymentMethod {}
     record BankTransfer(String iban, String bic) implements PaymentMethod {}
     record DigitalWallet(String walletId, WalletType type) implements PaymentMethod {}
-    
+
     enum WalletType { PAYPAL, GOOGLE_PAY, APPLE_PAY }
 }
 
@@ -795,7 +783,7 @@ public double processPayment(PaymentMethod method, double amount) {
 // API response — type-safe union
 public sealed interface ApiResponse<T> {
     record Ok<T>(T data, int statusCode) implements ApiResponse<T> {}
-    record Error<T>(String message, int statusCode, List<String> details) 
+    record Error<T>(String message, int statusCode, List<String> details)
         implements ApiResponse<T> {}
     record Loading<T>() implements ApiResponse<T> {}
 }
@@ -803,18 +791,17 @@ public sealed interface ApiResponse<T> {
 
 ---
 
-
-
 🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
 
 **Challenge 1 (Debug — Who/When/What):** You have a `sealed interface Shape permits Circle, Rectangle, Triangle`. A `switch(shape)` expression covers only `Circle` and `Rectangle`. **Who** detects the missing case? **When?** **What** error is thrown?\n\n<details><summary>Answer</summary>\n\n**Who detects?** The Java compiler (`javac`) at compile time. Sealed classes make the set of permitted subtypes KNOWN at compile time — the compiler can check switch exhaustiveness. **When?** During compilation, before the code ever runs. **Error:** `compile error: the switch expression does not cover all possible input values` — specifically naming `Triangle` as unhandled. **Why this matters:** Without sealed, you'd need a `default` case and could only get runtime failures. With sealed + pattern matching, you get compile-time exhaustiveness checking — the compiler FORCES you to handle every subtype. If you add `Diamond` to the sealed hierarchy later, every switch breaks at compile time — no silent bugs.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## 15. The Three Keywords Comparison
 
@@ -849,21 +836,21 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 // State machine with enum
 public enum OrderStatus {
     PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED;
-    
+
     public boolean isFinal() {
         return this == DELIVERED || this == CANCELLED;
     }
 }
 
 // Sealed type hierarchy for payment
-public sealed interface Payment permits 
+public sealed interface Payment permits
     Payment.CardPayment, Payment.CashPayment, Payment.OnlinePayment {
-    
+
     double amount();
-    
+
     record CardPayment(String cardNumber, double amount) implements Payment {}
     record CashPayment(double amount, double change) implements Payment {}
-    record OnlinePayment(String provider, String transactionId, double amount) 
+    record OnlinePayment(String provider, String transactionId, double amount)
         implements Payment {}
 }
 
@@ -873,7 +860,7 @@ public record OrderItem(String productId, String name, int quantity, double pric
         if (quantity <= 0) throw new IllegalArgumentException("Quantity must be positive");
         if (price < 0) throw new IllegalArgumentException("Price can't be negative");
     }
-    
+
     public double total() {
         return quantity * price;
     }
@@ -881,14 +868,14 @@ public record OrderItem(String productId, String name, int quantity, double pric
 
 // Using everything together
 public class OrderProcessor {
-    
+
     public String processPayment(Payment payment) {
         return switch (payment) {
-            case Payment.CardPayment cp -> 
+            case Payment.CardPayment cp ->
                 "Charging card ending in " + cp.cardNumber().substring(cp.cardNumber().length() - 4);
-            case Payment.CashPayment cash -> 
+            case Payment.CashPayment cash ->
                 String.format("Cash: $%.2f, Change: $%.2f", cash.amount(), cash.change());
-            case Payment.OnlinePayment op -> 
+            case Payment.OnlinePayment op ->
                 "Online via " + op.provider() + " (TX: " + op.transactionId() + ")";
         };
     }
@@ -896,8 +883,6 @@ public class OrderProcessor {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
 
@@ -911,8 +896,8 @@ public class OrderProcessor {
 <details><summary>Answer</summary>
 
 Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
-</details>
 
+</details>
 
 ## 17. Interview Questions & Answers
 
@@ -936,9 +921,9 @@ A sealed interface + records. Like `sealed interface Result<T> { record Success<
 
 ---
 
-**Key Takeaway**: Modern Java (16-21) gives you `enum` for fixed constants 
-with behavior, `record` for immutable data, and `sealed` for controlled 
-hierarchies. Combined with pattern matching, they eliminate entire categories 
+**Key Takeaway**: Modern Java (16-21) gives you `enum` for fixed constants
+with behavior, `record` for immutable data, and `sealed` for controlled
+hierarchies. Combined with pattern matching, they eliminate entire categories
 of bugs by making illegal states unrepresentable.
 
 **Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)

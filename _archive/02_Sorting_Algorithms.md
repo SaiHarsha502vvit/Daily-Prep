@@ -2294,44 +2294,44 @@ _Master sorting and you master a huge portion of algorithm problems!_
 
 ### Sorting Problems
 
-| # | Problem | Difficulty | Source | Which Sort / Technique |
-|---|---------|-----------|--------|----------------------|
-| 1 | Sort an Array | Medium | LC 912 | Implement merge/quick sort |
-| 2 | Sort Colors | Medium | LC 75 | Dutch National Flag (3-way) |
-| 3 | Kth Largest Element | Medium | LC 215 | QuickSelect or heap |
-| 4 | Merge Intervals | Medium | LC 56 | Sort by start + merge |
-| 5 | Meeting Rooms II | Medium | LC 253 | Sort events + count |
-| 6 | Largest Number | Medium | LC 179 | Custom comparator |
-| 7 | Sort List | Medium | LC 148 | Merge sort on linked list |
-| 8 | Wiggle Sort II | Medium | LC 324 | Median + 3-way partition |
-| 9 | H-Index | Medium | LC 274 | Counting sort |
-| 10 | Maximum Gap | Medium | LC 164 | Bucket sort — O(n)! |
-| 11 | Pancake Sorting | Medium | LC 969 | Selection sort variant |
-| 12 | Top K Frequent Words | Medium | LC 692 | Sort + tiebreak |
+| #   | Problem              | Difficulty | Source | Which Sort / Technique      |
+| --- | -------------------- | ---------- | ------ | --------------------------- |
+| 1   | Sort an Array        | Medium     | LC 912 | Implement merge/quick sort  |
+| 2   | Sort Colors          | Medium     | LC 75  | Dutch National Flag (3-way) |
+| 3   | Kth Largest Element  | Medium     | LC 215 | QuickSelect or heap         |
+| 4   | Merge Intervals      | Medium     | LC 56  | Sort by start + merge       |
+| 5   | Meeting Rooms II     | Medium     | LC 253 | Sort events + count         |
+| 6   | Largest Number       | Medium     | LC 179 | Custom comparator           |
+| 7   | Sort List            | Medium     | LC 148 | Merge sort on linked list   |
+| 8   | Wiggle Sort II       | Medium     | LC 324 | Median + 3-way partition    |
+| 9   | H-Index              | Medium     | LC 274 | Counting sort               |
+| 10  | Maximum Gap          | Medium     | LC 164 | Bucket sort — O(n)!         |
+| 11  | Pancake Sorting      | Medium     | LC 969 | Selection sort variant      |
+| 12  | Top K Frequent Words | Medium     | LC 692 | Sort + tiebreak             |
 
 ### Binary Search Problems
 
-| # | Problem | Difficulty | Source | BS Variant |
-|---|---------|-----------|--------|-----------|
-| 1 | Binary Search | Easy | LC 704 | Standard template |
-| 2 | Search Insert Position | Easy | LC 35 | Lower bound |
-| 3 | First Bad Version | Easy | LC 278 | Left boundary |
-| 4 | Search in Rotated Sorted Array | Medium | LC 33 | Modified BS |
-| 5 | Find Minimum in Rotated Array | Medium | LC 153 | Inflection point |
-| 6 | Search a 2D Matrix | Medium | LC 74 | Flatten + BS |
-| 7 | Find Peak Element | Medium | LC 162 | Gradient BS |
-| 8 | Koko Eating Bananas | Medium | LC 875 | BS on answer |
-| 9 | Capacity to Ship Packages | Medium | LC 1011 | BS on answer |
-| 10 | Split Array Largest Sum | Hard | LC 410 | BS + greedy check |
-| 11 | Median of Two Sorted Arrays | Hard | LC 4 | BS on partition |
-| 12 | Aggressive Cows (SPOJ) | Medium | SPOJ | BS on answer (classic!) |
+| #   | Problem                        | Difficulty | Source  | BS Variant              |
+| --- | ------------------------------ | ---------- | ------- | ----------------------- |
+| 1   | Binary Search                  | Easy       | LC 704  | Standard template       |
+| 2   | Search Insert Position         | Easy       | LC 35   | Lower bound             |
+| 3   | First Bad Version              | Easy       | LC 278  | Left boundary           |
+| 4   | Search in Rotated Sorted Array | Medium     | LC 33   | Modified BS             |
+| 5   | Find Minimum in Rotated Array  | Medium     | LC 153  | Inflection point        |
+| 6   | Search a 2D Matrix             | Medium     | LC 74   | Flatten + BS            |
+| 7   | Find Peak Element              | Medium     | LC 162  | Gradient BS             |
+| 8   | Koko Eating Bananas            | Medium     | LC 875  | BS on answer            |
+| 9   | Capacity to Ship Packages      | Medium     | LC 1011 | BS on answer            |
+| 10  | Split Array Largest Sum        | Hard       | LC 410  | BS + greedy check       |
+| 11  | Median of Two Sorted Arrays    | Hard       | LC 4    | BS on partition         |
+| 12  | Aggressive Cows (SPOJ)         | Medium     | SPOJ    | BS on answer (classic!) |
 
 **Hidden Gems:**
 
-| Problem | Source | Why It's Great |
-|---------|--------|---------------|
-| Custom Sort String | LC 791 | Custom ordering — tests comparator understanding |
-| Relative Sort Array | LC 1122 | Counting sort with custom order |
-| Minimum Number of Arrows | LC 452 | Sort intervals + greedy |
-| Count of Smaller Numbers After Self | Hard LC 315 | Merge sort + counting inversions |
-| Magnetic Force Between Two Balls | Medium LC 1552 | Binary search on answer (like Aggressive Cows) |
+| Problem                             | Source         | Why It's Great                                   |
+| ----------------------------------- | -------------- | ------------------------------------------------ |
+| Custom Sort String                  | LC 791         | Custom ordering — tests comparator understanding |
+| Relative Sort Array                 | LC 1122        | Counting sort with custom order                  |
+| Minimum Number of Arrows            | LC 452         | Sort intervals + greedy                          |
+| Count of Smaller Numbers After Self | Hard LC 315    | Merge sort + counting inversions                 |
+| Magnetic Force Between Two Balls    | Medium LC 1552 | Binary search on answer (like Aggressive Cows)   |

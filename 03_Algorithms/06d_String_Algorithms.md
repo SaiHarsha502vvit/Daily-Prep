@@ -20,6 +20,12 @@
 
 ---
 
+### Historical Evolution
+
+Efficient string pattern matching emerged as critical with the rise of large text corpora in the 1970s. Before efficient algorithms, **naive pattern matching** ($O(nm)$) was the only option — comparing every position of a text of length $n$ with a pattern of length $m$, performing $O(nm)$ character comparisons in the worst case. **Knuth, Morris, and Pratt (1977)** published KMP in the SIAM Journal of Computing, introducing the preprocessing of the pattern into a failure function (also independently discovered by **J. H. Morris** for text editor applications at the same time) — KMP reduces worst-case to $O(n+m)$ by ensuring no character of the text is examined more than once. **Rabin and Karp (1987)** (though the hash-based approach was known earlier) proposed using rolling hash for pattern matching, enabling $O(n+m)$ average case with randomization — this was particularly important because it extended naturally to multi-pattern matching and 2D pattern matching. **Z-Algorithm** was developed by **Gusfield (1997)** building on the work of **Crochemore and Perrin (1991)** — the Z-array captures the longest prefix match at each position and achieves $O(n+m)$ without a DFA. **Manacher's algorithm (1975)** for longest palindromic substring discovered the elegant trick of tracking the "center" and "radius" of palindromes in a single pass. Modern practice (post-2010) includes suffix arrays (Manber-Myers 1990, also known in 1991), used in full-text indices of bioinformatics tools (BWA, Bowtie), and Aho-Corasick (1975) for multi-pattern matching in network intrusion detection systems.
+
+---
+
 ## PART 12: Advanced Algorithm Patterns for Interviews
 
 ### Pattern 1: Meet in the Middle
@@ -597,7 +603,7 @@ public class SuffixArray {
 
 ---
 
-> **Note:** Graph algorithms (Tarjan's SCC, Kosaraju's, 2-SAT, A*, Bridges)
+> **Note:** Graph algorithms (Tarjan's SCC, Kosaraju's, 2-SAT, A\*, Bridges)
 > have been moved to their proper home:
 > [05d_Graphs_Advanced_Algos.md](05d_Graphs_Advanced_Algos.md)
 
@@ -605,10 +611,12 @@ public class SuffixArray {
 
 > 🔬 **Section Challenge — PART 13: String Algorithms Deep Dive**
 
-**Challenge 1 (Reasoning):** In Manacher's algorithm, when `i < R`, we set `P[i] = Math.min(R - i, P[mirror])`. Why do we take the *minimum* of these two values instead of just `P[mirror]`?
+**Challenge 1 (Reasoning):** In Manacher's algorithm, when `i < R`, we set `P[i] = Math.min(R - i, P[mirror])`. Why do we take the _minimum_ of these two values instead of just `P[mirror]`?
+
 <details><summary>Answer</summary>
 
-The mirror palindrome `P[mirror]` might extend *beyond* the left boundary of the current known palindrome centered at `C`. If `mirror - P[mirror] < L` (where L = 2*C - R), the mirror's palindrome reaches past what our current center `C` can guarantee. Beyond the boundary `R`, we have no information — the characters are unverified. So `R - i` caps how much we can "trust" from the mirror. After this initialization, we still try to expand outward, character by character. This is why Manacher's is O(N): the cap ensures each character is compared at most once across all expansions.
+The mirror palindrome `P[mirror]` might extend _beyond_ the left boundary of the current known palindrome centered at `C`. If `mirror - P[mirror] < L` (where L = 2\*C - R), the mirror's palindrome reaches past what our current center `C` can guarantee. Beyond the boundary `R`, we have no information — the characters are unverified. So `R - i` caps how much we can "trust" from the mirror. After this initialization, we still try to expand outward, character by character. This is why Manacher's is O(N): the cap ensures each character is compared at most once across all expansions.
+
 </details>
 
 ## PART 15: Competitive Programming Tricks
@@ -827,9 +835,11 @@ public class BitTricks {
 > 🔬 **Section Challenge — PART 15: Competitive Programming Tricks**
 
 **Challenge 1 (Reasoning):** `modInverse(a, mod)` uses `power(a, mod - 2, mod)` (Fermat's little theorem). This only works when `mod` is prime. What happens if you call `modInverse(6, 12)` and why? What's the alternative for non-prime moduli?
+
 <details><summary>Answer</summary>
 
-Fermat's little theorem states `a^(p-1) ≡ 1 (mod p)` only when p is prime and `gcd(a, p) = 1`. For `modInverse(6, 12)`: `gcd(6, 12) = 6 ≠ 1`, so 6 has **no** multiplicative inverse mod 12. The function silently returns a wrong value. For non-prime moduli, use the **Extended Euclidean Algorithm**: compute `gcd(a, mod)` and if it equals 1, extract the inverse from the Bézout coefficients. If `gcd(a, mod) ≠ 1`, no inverse exists. In competitive programming, the modulus is almost always `10^9 + 7` (prime), so Fermat's is standard — but knowing *why* it fails for composites separates understanding from memorization.
+Fermat's little theorem states `a^(p-1) ≡ 1 (mod p)` only when p is prime and `gcd(a, p) = 1`. For `modInverse(6, 12)`: `gcd(6, 12) = 6 ≠ 1`, so 6 has **no** multiplicative inverse mod 12. The function silently returns a wrong value. For non-prime moduli, use the **Extended Euclidean Algorithm**: compute `gcd(a, mod)` and if it equals 1, extract the inverse from the Bézout coefficients. If `gcd(a, mod) ≠ 1`, no inverse exists. In competitive programming, the modulus is almost always `10^9 + 7` (prime), so Fermat's is standard — but knowing _why_ it fails for composites separates understanding from memorization.
+
 </details>
 
 ## PART 16: Algorithm Complexity Analysis Deep Dive
@@ -867,7 +877,6 @@ EXAMPLES:
 │ T(n) = 2T(n-1) + 1                │ O(2^n)          │
 └───────────────────────────────────┴─────────────────┘
 ```
-
 
 ### Amortized Analysis
 
@@ -1208,7 +1217,22 @@ public class FenwickTree {
 > 🔬 **Section Challenge — PART 18: Essential Templates for Competitive Programming**
 
 **Challenge 1 (Reasoning):** The `FastIO` template uses `BufferedReader + StringTokenizer` instead of `Scanner`. In a problem reading 10^6 integers, `Scanner` TLEs but `BufferedReader` doesn't. Where exactly does `Scanner` waste time?
+
 <details><summary>Answer</summary>
 
-`Scanner.nextInt()` internally: (1) compiles a regex pattern for integer matching, (2) reads character-by-character through its internal buffer (1024 bytes default), (3) applies locale-aware parsing, (4) does regex matching on the token. `BufferedReader.readLine()` reads in 8192-byte chunks (8× larger buffer), `StringTokenizer` splits by whitespace with zero regex, and `Integer.parseInt()` is a tight loop of digit multiplication. For 10^6 integers, Scanner does ~10^6 regex compilations + tiny buffer I/O calls. BufferedReader does ~500 read syscalls + zero regex. The difference is ~10×. **Key insight**: Scanner is *convenience*, not *performance*. In contests, always use the BufferedReader template.
+`Scanner.nextInt()` internally: (1) compiles a regex pattern for integer matching, (2) reads character-by-character through its internal buffer (1024 bytes default), (3) applies locale-aware parsing, (4) does regex matching on the token. `BufferedReader.readLine()` reads in 8192-byte chunks (8× larger buffer), `StringTokenizer` splits by whitespace with zero regex, and `Integer.parseInt()` is a tight loop of digit multiplication. For 10^6 integers, Scanner does ~10^6 regex compilations + tiny buffer I/O calls. BufferedReader does ~500 read syscalls + zero regex. The difference is ~10×. **Key insight**: Scanner is _convenience_, not _performance_. In contests, always use the BufferedReader template.
+
 </details>
+
+### Topical Breadth — String Matching Selection Trade-offs
+
+The string matching algorithms in this chapter form a clear trade-off space along three axes: worst-case guarantee, preprocessing cost, and space. **KMP** pays O(m) preprocessing to build the longest-prefix-suffix (LPS) array, then searches in O(n+m) worst-case time with O(m) space — the trade-off is worth it when the pattern is reused (streaming, repeated searches) or when the text is adversarial (no pathological worst case). **Rabin-Karp** uses rolling hash for O(m) preprocessing and O(n+m) average search but degrades to O(nm) worst-case when hash collisions occur; this is the only algorithm where an adversarial input can trigger the worst case, so it is unsafe without verification on match. **Z-Algorithm** achieves O(n+m) without the LPS complexity, but requires concatenating pattern + "$" + text (adding O(n+m) space) and is conceptually simpler — it is preferred when you also need period detection or longest-prefix-that-is-also-suffix properties. **Naive search** has O(1) preprocessing and O(1) space but O(nm) worst-case; in practice, on short patterns (m < 10) or random English text, the inner loop exits early so naive often beats KMP because it avoids the O(m) preprocessing overhead entirely.
+
+| Algorithm   | Preprocessing | Search (Worst) | Search (Average)                      | Space  | Best For                                      |
+| ----------- | ------------- | -------------- | ------------------------------------- | ------ | --------------------------------------------- |
+| Naive       | O(1)          | O(nm)          | O(nm) / often O(n) for short patterns | O(1)   | Short patterns, random text, one-off searches |
+| KMP         | O(m)          | O(n+m)         | O(n+m)                                | O(m)   | Repeated pattern, streaming, adversarial text |
+| Rabin-Karp  | O(m)          | O(nm)          | O(n+m)                                | O(m)   | Multiple patterns, 2D matching, randomized    |
+| Z-Algorithm | O(m)          | O(n+m)         | O(n+m)                                | O(n+m) | When Z-array needed for other purposes        |
+
+Select **KMP** when you need a guaranteed O(n+m) bound and the pattern is known upfront. Select **Rabin-Karp** when searching multiple patterns against the same text (precompute text hash once). Select **Z-Algorithm** when you also need period detection or prefix-suffix properties. Default to **KMP** for single-pattern interviews unless the problem hints at hashing.

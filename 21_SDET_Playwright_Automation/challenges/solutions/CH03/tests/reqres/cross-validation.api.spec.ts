@@ -1,12 +1,15 @@
-import { test, expect, type APIRequestContext } from '@playwright/test';
-import { UsersClient } from '../../../applications/reqres-service/api/UsersClient';
-import type { ReqresCreateUserPayload } from '../../types/reqres.types';
+import { test, expect, type APIRequestContext } from "@playwright/test";
+import { UsersClient } from "../../../applications/reqres-service/api/UsersClient";
+import type { ReqresCreateUserPayload } from "../../types/reqres.types";
 
 /**
  * Generate a unique name + job for test isolation.
  * Uses timestamp + random suffix to avoid collisions between test runs.
  */
-function generateUniqueData(prefix = 'TestUser'): { name: string; job: string } {
+function generateUniqueData(prefix = "TestUser"): {
+  name: string;
+  job: string;
+} {
   const timestamp = Date.now();
   const randomSuffix = Math.random().toString(36).slice(2, 8);
   return {
@@ -15,14 +18,18 @@ function generateUniqueData(prefix = 'TestUser'): { name: string; job: string } 
   };
 }
 
-test.describe('Users API Cross-Validation', { tag: ['@e2e', '@api'] }, () => {
+test.describe("Users API Cross-Validation", { tag: ["@e2e", "@api"] }, () => {
   /**
    * POST /api/users → assert id, createdAt, echoed name/job.
    * Reqres.in is a mock; created users won't appear in list, but we still validate shape.
    */
-  test('create user and validate response shape', async ({ request }: { request: APIRequestContext }) => {
+  test("create user and validate response shape", async ({
+    request,
+  }: {
+    request: APIRequestContext;
+  }) => {
     const client = new UsersClient(request);
-    const payload: ReqresCreateUserPayload = generateUniqueData('CreateTest');
+    const payload: ReqresCreateUserPayload = generateUniqueData("CreateTest");
 
     const createResponse = await client.create(payload);
 
@@ -36,13 +43,19 @@ test.describe('Users API Cross-Validation', { tag: ['@e2e', '@api'] }, () => {
 
     // Verify id is non-empty and createdAt is a valid ISO timestamp
     expect(createResponse.id.length).toBeGreaterThan(0);
-    expect(new Date(createResponse.createdAt).toISOString()).toBe(createResponse.createdAt);
+    expect(new Date(createResponse.createdAt).toISOString()).toBe(
+      createResponse.createdAt,
+    );
   });
 
   /**
    * GET /api/users?page=1 → assert pagination fields and data[] item shape.
    */
-  test('list users and validate response shape', async ({ request }: { request: APIRequestContext }) => {
+  test("list users and validate response shape", async ({
+    request,
+  }: {
+    request: APIRequestContext;
+  }) => {
     const client = new UsersClient(request);
 
     const listResponse = await client.list(1);
@@ -76,7 +89,11 @@ test.describe('Users API Cross-Validation', { tag: ['@e2e', '@api'] }, () => {
   /**
    * GET /api/users/{id} → assert single user shape matches data[] item shape.
    */
-  test('get user by id and validate response shape', async ({ request }: { request: APIRequestContext }) => {
+  test("get user by id and validate response shape", async ({
+    request,
+  }: {
+    request: APIRequestContext;
+  }) => {
     const client = new UsersClient(request);
 
     // Seed: grab a known ID from the list
@@ -100,9 +117,13 @@ test.describe('Users API Cross-Validation', { tag: ['@e2e', '@api'] }, () => {
   /**
    * Full flow: create → list (mock limitation: user won't appear, but shape validates correctly).
    */
-  test('create then list — validate shape across calls', async ({ request }: { request: APIRequestContext }) => {
+  test("create then list — validate shape across calls", async ({
+    request,
+  }: {
+    request: APIRequestContext;
+  }) => {
     const client = new UsersClient(request);
-    const payload: ReqresCreateUserPayload = generateUniqueData('FlowTest');
+    const payload: ReqresCreateUserPayload = generateUniqueData("FlowTest");
 
     const createResponse = await client.create(payload);
     expect(createResponse.name).toBe(payload.name);
@@ -119,7 +140,7 @@ test.describe('Users API Cross-Validation', { tag: ['@e2e', '@api'] }, () => {
 
     // reqres.in is a mock: created users don't persist in list
     const createdInList = listResponse.data.find(
-      (u) => u.first_name === payload.name || u.last_name === payload.name
+      (u) => u.first_name === payload.name || u.last_name === payload.name,
     );
     expect(createdInList).toBeUndefined(); // documents mock behavior
   });

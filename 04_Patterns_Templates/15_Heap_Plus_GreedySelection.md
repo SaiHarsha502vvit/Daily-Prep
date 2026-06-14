@@ -6,14 +6,57 @@
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| top `K`, `K << N` | heap of size `K` |
-| exact kth in static array | quickselect can be faster average `O(N)` |
-| streaming median | two heaps |
-| repeatedly choose min/max | priority queue |
-| need remove arbitrary item | TreeMap/multiset or lazy deletion |
-| greedy choice lacks proof | switch to DP/search |
+### Historical Evolution
+
+**Inventor / Originator:** Binary heap invented by J.W.J. Williams (1964). Heapify by Floyd (1964). Huffman coding (1952), Kruskal (1956), Prim (1957), and Dijkstra (1959) built greedy selection on heaps.
+
+**Predecessor context:** Priority queues before heaps used sorted arrays or linked lists — O(n) insertion or removal. Greedy algorithms like Prim's required such data structures.
+
+**Evolution narrative:** Williams' binary heap provided O(log n) insertion and deletion. Floyd's in-place heapify enabled O(n) heap construction. These structures enabled efficient implementations of Dijkstra, Prim, Huffman, and other greedy algorithms.
+
+**Modern practice:** Priority queues in every language use heap implementations (Java PriorityQueue, C++ priority_queue, Python heapq). Dijkstra's algorithm with a binary heap is the standard for shortest path.
+
+- **Huffman coding — Huffman 1952**: Greedy optimal prefix code construction using a min-heap
+- **Williams binary heap — 1964**: O(log n) insert/delete for priority queues
+- **Floyd heapify — 1964**: O(n) in-place heap construction
+- **Modern practice**: Dijkstra with binary heap for shortest path; Huffman in compression (JPEG, MP3)
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **PriorityQueue.remove(Object) is O(n), not O(log n) — use decrease-key or indexed heap** — Java's `PriorityQueue.remove(Object)` performs linear search before removal, making it O(n). This defeats the purpose of using a heap. Detection: test with 100,000 elements and repeated removals; profile the operation count.
+
+- **Max-heap overflow on Integer.MAX_VALUE + 1** — When computing `max - min` or similar operations on values near Integer.MAX_VALUE, overflow wraps to negative. Detection: test with values at extreme range (e.g., `Integer.MAX_VALUE - 5`).
+
+- **Greedy fails when local optimum ≠ global (e.g., fractional knapsack works but 0/1 doesn't)** — Greedy works for fractional knapsack but produces wrong answers for 0/1 knapsack. The same pattern name hides different algorithms. Detection: verify problem statement explicitly; if items cannot be fractional, use DP.
+
+- **Heap ordering reversed for min vs max** — Forgetting to negate values when switching between min-heap and max-heap produces completely inverted results. Detection: test with `[1, 5, 3]` — max should return 5, min should return 1.
+
+**Production Selection Heuristic:** Use heap when you need repeated min/max extraction. For decrease-key operations, use indexed heap or TreeMap. Verify greedy correctness proof exists before applying greedy to optimization problems.
+
+---
+
+| Given Constraints          | Do This                                  |
+| -------------------------- | ---------------------------------------- |
+| top `K`, `K << N`          | heap of size `K`                         |
+| exact kth in static array  | quickselect can be faster average `O(N)` |
+| streaming median           | two heaps                                |
+| repeatedly choose min/max  | priority queue                           |
+| need remove arbitrary item | TreeMap/multiset or lazy deletion        |
+| greedy choice lacks proof  | switch to DP/search                      |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -26,6 +69,7 @@ A heap is a **complete binary tree** stored in an array. "Complete" means every 
 #### Why Min-Heap for K-Largest (The Counterintuitive Trick)
 
 This confuses everyone at first. To find the K largest elements, you maintain a **min-heap of size K**. Why? Because the min-heap's top is the smallest of the K elements you've kept. When a new element arrives:
+
 - If it's **larger** than the heap top → it belongs in the top K; evict the current minimum
 - If it's **smaller** → it certainly doesn't belong in the top K; skip it
 
@@ -34,6 +78,7 @@ At the end, the heap contains exactly the K largest elements, and `heap.peek()` 
 #### When Is Greedy Correct?
 
 Greedy algorithms make the locally optimal choice at each step, hoping to reach the globally optimal solution. They're correct when two conditions hold:
+
 1. **Greedy choice property**: A locally optimal choice leads to a globally optimal solution (you never need to "undo" a choice)
 2. **Optimal substructure**: After making the greedy choice, the remaining problem is a smaller instance of the same problem
 
@@ -54,8 +99,8 @@ IF the problem says:
 THEN → Heap (Priority Queue) + Greedy
 ```
 
-
 ### Min-Heap vs Max-Heap
+
 ```
 Min-Heap (default PQ):          Max-Heap:
    1                               9
@@ -67,12 +112,12 @@ Use for: K largest              Use for: K smallest
  gets popped)                    gets popped)
 ```
 
-
 ---
 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Top K Elements
+
 ```java
 // K largest elements → use MIN-heap of size k
 PriorityQueue<Integer> minHeap = new PriorityQueue<>();
@@ -86,6 +131,7 @@ return minHeap.peek();  // kth largest
 ```
 
 ### Template 2: Merge K Sorted Lists
+
 ```java
 PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
 for (ListNode head : lists) {
@@ -102,6 +148,7 @@ return dummy.next;
 ```
 
 ### Template 3: Running Median (Two Heaps)
+
 ```java
 PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder()); // left half
 PriorityQueue<Integer> minHeap = new PriorityQueue<>();                            // right half
@@ -152,11 +199,7 @@ Time: O(n log k) | Space: O(k)
 Why not sort? Sorting is O(n log n). Heap is O(n log k) — better when k << n.
 ```
 
-
 ---
-
-
-
 
 ## 🔬 FULL WALKTHROUGH 2: Find Median from Data Stream (Two Heaps)
 
@@ -193,25 +236,25 @@ Step-by-step:
 Time: addNum O(log n), findMedian O(1) | Space: O(n)
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Find Median from Data Stream (Two Heaps)**
 
 **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+
 <details><summary>Answer</summary>
 
 Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+
 <details><summary>Answer</summary>
 
 `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-</details>
 
+</details>
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
@@ -239,80 +282,81 @@ COMMON MISTAKES:
    Deque = O(n) total. Heap = O(n log n). Big difference!
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Problem | Approach | Time | Space |
-|---------|----------|------|-------|
-| Kth Largest | Min-heap size k | O(n log k) | O(k) |
-| Kth Largest | Quickselect | O(n) avg, O(n²) worst | O(1) |
-| Top K Frequent | HashMap + heap | O(n log k) | O(n) |
-| Find Median | Two heaps | O(log n) per add, O(1) median | O(n) |
-| Merge K Sorted | Min-heap of k heads | O(n log k) | O(k) |
-| Sliding Window Max | Monotonic DEQUE (not heap!) | O(n) | O(k) |
+| Problem            | Approach                    | Time                          | Space |
+| ------------------ | --------------------------- | ----------------------------- | ----- |
+| Kth Largest        | Min-heap size k             | O(n log k)                    | O(k)  |
+| Kth Largest        | Quickselect                 | O(n) avg, O(n²) worst         | O(1)  |
+| Top K Frequent     | HashMap + heap              | O(n log k)                    | O(n)  |
+| Find Median        | Two heaps                   | O(log n) per add, O(1) median | O(n)  |
+| Merge K Sorted     | Min-heap of k heads         | O(n log k)                    | O(k)  |
+| Sliding Window Max | Monotonic DEQUE (not heap!) | O(n)                          | O(k)  |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
 
-
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 1 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | HashMap freq + Min-heap of size k |
-| 2 | [Kth Largest Element](https://leetcode.com/problems/kth-largest-element-in-an-array/) | Min-heap of size k OR Quickselect |
-| 3 | [Ugly Number II](https://leetcode.com/problems/ugly-number-ii/) | Min-heap generate next ugly |
-| 4 | [Furthest Building](https://leetcode.com/problems/furthest-building-you-can-reach/) | Min-heap: ladders for biggest, bricks for rest |
-| 5 | [Kth Smallest in Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/) | Min-heap BFS from [0,0] |
-| 6 | [Reorganize String](https://leetcode.com/problems/reorganize-string/) | Max-heap: pick most frequent, alternate |
-| 7 | [Most Competitive Subsequence](https://leetcode.com/problems/find-the-most-competitive-subsequence/) | Monotonic stack (not heap) |
-| 8 | [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | Max-heap of size k by distance |
-| 9 | [Smallest Positive Missing](https://practice.geeksforgeeks.org/problems/smallest-positive-missing-number-1587115621/1/) | Index marking (no heap needed) |
-| 10 | [Largest Subarray 0 Sum](https://practice.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1/) | Prefix sum + HashMap |
+
+| #   | Problem                                                                                                                 | Key Insight                                    |
+| --- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 1   | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)                                       | HashMap freq + Min-heap of size k              |
+| 2   | [Kth Largest Element](https://leetcode.com/problems/kth-largest-element-in-an-array/)                                   | Min-heap of size k OR Quickselect              |
+| 3   | [Ugly Number II](https://leetcode.com/problems/ugly-number-ii/)                                                         | Min-heap generate next ugly                    |
+| 4   | [Furthest Building](https://leetcode.com/problems/furthest-building-you-can-reach/)                                     | Min-heap: ladders for biggest, bricks for rest |
+| 5   | [Kth Smallest in Sorted Matrix](https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/)                 | Min-heap BFS from [0,0]                        |
+| 6   | [Reorganize String](https://leetcode.com/problems/reorganize-string/)                                                   | Max-heap: pick most frequent, alternate        |
+| 7   | [Most Competitive Subsequence](https://leetcode.com/problems/find-the-most-competitive-subsequence/)                    | Monotonic stack (not heap)                     |
+| 8   | [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/)                                 | Max-heap of size k by distance                 |
+| 9   | [Smallest Positive Missing](https://practice.geeksforgeeks.org/problems/smallest-positive-missing-number-1587115621/1/) | Index marking (no heap needed)                 |
+| 10  | [Largest Subarray 0 Sum](https://practice.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1/)                    | Prefix sum + HashMap                           |
 
 ### Hard
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 11 | [Minimum Refueling Stops](https://leetcode.com/problems/minimum-number-of-refueling-stops/) | Max-heap: greedily use best stations |
-| 12 | [Minimum Cost to Hire K Workers](https://leetcode.com/problems/minimum-cost-to-hire-k-workers/) | Sort by ratio + max-heap |
-| 13 | [Swim in Rising Water](https://leetcode.com/problems/swim-in-rising-water/) | Min-heap BFS (Dijkstra on grid) |
-| 14 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Monotonic deque (heap is O(n log n)) |
+
+| #   | Problem                                                                                         | Key Insight                          |
+| --- | ----------------------------------------------------------------------------------------------- | ------------------------------------ |
+| 11  | [Minimum Refueling Stops](https://leetcode.com/problems/minimum-number-of-refueling-stops/)     | Max-heap: greedily use best stations |
+| 12  | [Minimum Cost to Hire K Workers](https://leetcode.com/problems/minimum-cost-to-hire-k-workers/) | Sort by ratio + max-heap             |
+| 13  | [Swim in Rising Water](https://leetcode.com/problems/swim-in-rising-water/)                     | Min-heap BFS (Dijkstra on grid)      |
+| 14  | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)                 | Monotonic deque (heap is O(n log n)) |
 
 ### Additional — Greedy Problems from Excel
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 15 | [Gas Station](https://leetcode.com/problems/gas-station/) | Greedy: track deficit |
-| 16 | [Task Scheduler](https://leetcode.com/problems/task-scheduler/) | Greedy: most frequent first |
-| 17 | [Remove K Digits](https://leetcode.com/problems/remove-k-digits/) | Monotonic stack greedy |
-| 18 | [Non-Overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) | Sort by end, greedy pick |
-| 19 | [Minimum Deletion Cost](https://leetcode.com/problems/minimum-deletion-cost-to-avoid-repeating-letters/) | Greedy: keep max cost in group |
-| 20 | [Minimum Coins](https://www.geeksforgeeks.org/minimum-cost-for-acquiring-all-coins-with-k-extra-coins-allowed-with-every-coin/) | Sort + pick cheapest |
-| 21 | [Chocola (Cutting Board)](https://www.spoj.com/problems/CHOCOLA/) | Greedy: most expensive cuts first |
-| 22 | [Pancake Sorting](https://www.geeksforgeeks.org/pancake-sorting/) | Greedy: find max, flip |
-| 23 | Maximize array sum after k-negation | Sort + flip most negatives |
-| 24 | SJF CPU Scheduling | Min-heap by burst time |
+
+| #   | Problem                                                                                                                         | Key Insight                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| 15  | [Gas Station](https://leetcode.com/problems/gas-station/)                                                                       | Greedy: track deficit             |
+| 16  | [Task Scheduler](https://leetcode.com/problems/task-scheduler/)                                                                 | Greedy: most frequent first       |
+| 17  | [Remove K Digits](https://leetcode.com/problems/remove-k-digits/)                                                               | Monotonic stack greedy            |
+| 18  | [Non-Overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/)                                           | Sort by end, greedy pick          |
+| 19  | [Minimum Deletion Cost](https://leetcode.com/problems/minimum-deletion-cost-to-avoid-repeating-letters/)                        | Greedy: keep max cost in group    |
+| 20  | [Minimum Coins](https://www.geeksforgeeks.org/minimum-cost-for-acquiring-all-coins-with-k-extra-coins-allowed-with-every-coin/) | Sort + pick cheapest              |
+| 21  | [Chocola (Cutting Board)](https://www.spoj.com/problems/CHOCOLA/)                                                               | Greedy: most expensive cuts first |
+| 22  | [Pancake Sorting](https://www.geeksforgeeks.org/pancake-sorting/)                                                               | Greedy: find max, flip            |
+| 23  | Maximize array sum after k-negation                                                                                             | Sort + flip most negatives        |
+| 24  | SJF CPU Scheduling                                                                                                              | Min-heap by burst time            |
 
 ---
 
 ## 🔥 KEY TRICKS
 
-| Trick | When | Why |
-|-------|------|-----|
-| Min-heap for K largest | Seems counterintuitive | Smallest of the k-largest gets evicted |
-| Two heaps for median | Stream median | Max-heap(left) + Min-heap(right) |
-| Custom comparator | Complex objects | `new PQ<>((a,b) -> a.cost - b.cost)` |
-| Lazy deletion | When can't easily remove | Mark deleted, skip on poll |
-| Heap + HashMap | Frequency-aware | Count freq → heap by freq |
+| Trick                  | When                     | Why                                    |
+| ---------------------- | ------------------------ | -------------------------------------- |
+| Min-heap for K largest | Seems counterintuitive   | Smallest of the k-largest gets evicted |
+| Two heaps for median   | Stream median            | Max-heap(left) + Min-heap(right)       |
+| Custom comparator      | Complex objects          | `new PQ<>((a,b) -> a.cost - b.cost)`   |
+| Lazy deletion          | When can't easily remove | Mark deleted, skip on poll             |
+| Heap + HashMap         | Frequency-aware          | Count freq → heap by freq              |
 
 ---
 
@@ -326,16 +370,19 @@ COMMON MISTAKES:
 "At each step, I make the locally optimal choice. This works here because the greedy choice property holds — swapping any decision for the greedy decision never makes the solution worse. I can show this with an exchange argument."
 
 **Key mathematical justification:**
-- "Min-heap for K-largest is counterintuitive. The heap top is the *smallest* of the K we kept. If a new element beats the smallest, it replaces it. At the end, heap contains exactly the K largest."
-- "Greedy correctness requires proof. The *exchange argument*: take any optimal solution, swap one element for the greedy choice, show it doesn't get worse."
+
+- "Min-heap for K-largest is counterintuitive. The heap top is the _smallest_ of the K we kept. If a new element beats the smallest, it replaces it. At the end, heap contains exactly the K largest."
+- "Greedy correctness requires proof. The _exchange argument_: take any optimal solution, swap one element for the greedy choice, show it doesn't get worse."
 - "Heap insert/extract is O(log n) because the heap is a complete binary tree of height ⌊log₂ n⌋. Bubbling up/down traverses at most h levels."
 
 **Common mistakes to proactively mention:**
-- ❌ "Min-heap for K-largest, Max-heap for K-smallest — it's always the *opposite* of what you're finding."
+
+- ❌ "Min-heap for K-largest, Max-heap for K-smallest — it's always the _opposite_ of what you're finding."
 - ❌ "Greedy fails for many problems (e.g., 0/1 Knapsack, coin change with arbitrary denominations). Always check with a counterexample first."
 - ❌ "PriorityQueue in Java is a min-heap by default. For max-heap: `new PriorityQueue<>(Comparator.reverseOrder())`."
 
 **Real-world applications:**
+
 - OS/Kubernetes task schedulers (process priority queue)
 - Dijkstra's algorithm in GPS/map routing
 - Merge K sorted log streams in distributed systems
@@ -345,10 +392,10 @@ COMMON MISTAKES:
 ---
 
 📖 **Related Chapters:**
+
 - [02_Data_Structures/01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md) — Heap internals
 - [03_Algorithms/12_Greedy_Algorithms_Complete.md](../03_Algorithms/12_Greedy_Algorithms_Complete.md) — Greedy deep dive
 
 ---
+
 [← 14 Graph+Traversal](14_Graph_Plus_Traversal.md) | [16 DP Patterns →](16_DP_Pattern_Recognition.md)
-
-

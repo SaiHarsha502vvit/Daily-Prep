@@ -15,7 +15,7 @@
   Tim Berners-Lee at CERN. The simplest possible protocol.
   Only ONE method: GET. Only ONE response type: HTML.
   No headers. No status codes.
-  
+
   Request:  GET /index.html
   Response: <html>Hello World</html>
   Connection closes immediately.
@@ -36,12 +36,12 @@
   • Range requests: resume interrupted downloads
   • Cache-Control, ETag, If-Modified-Since: sophisticated caching
   • PUT, DELETE, PATCH, OPTIONS methods
-  
+
   PROBLEM: Head-of-line blocking.
   HTTP/1.1 can pipeline (send multiple requests without waiting for responses).
-  BUT responses must be in order! If request 1 takes 5 seconds, 
+  BUT responses must be in order! If request 1 takes 5 seconds,
   requests 2-10 wait 5 seconds even though their responses are ready.
-  
+
   WORKAROUND: Browsers open 6 TCP connections per domain.
   6 parallel connections × multiple requests each = reasonable performance.
   But 6 × TCP handshakes + TLS handshakes = still wasteful.
@@ -59,7 +59,7 @@
   • Server push: server can send resources BEFORE client requests them.
     Server knows client will need style.css → pushes it proactively.
   • Stream prioritization: client tells server which resources matter most.
-  
+
   BUT: still uses TCP underneath → TCP head-of-line blocking remains.
   If ONE TCP segment is lost → ALL HTTP/2 streams wait for retransmission.
 
@@ -68,7 +68,7 @@
   No TCP head-of-line blocking: each stream is independent at transport level.
   0-RTT connection establishment (for repeat connections).
   Connection migration (WiFi → cellular without reconnection).
-  
+
   ~30% of all web traffic uses HTTP/3 as of 2024.
 ```
 
@@ -384,15 +384,14 @@ PRINCIPLES:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **TCP transport** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — HTTP rides on TCP (or QUIC) |
-| **DNS resolution** | [Ch 07: DNS](07_DNS_Complete.md) — first step before any HTTP request |
-| **TLS encryption** | [Ch 09: TLS](09_TLS_Encryption.md) — HTTPS = HTTP + TLS |
-| **REST API in FastAPI** | [Python Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) |
-| **React fetching** | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md) — useEffect, Suspense |
-| **JS fetch API** | [JavaScript Modern](../16_JavaScript/06_JS_Modern_ES6Plus.md) |
-| **SQL injection via HTTP** | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) |
-| **Load balancing HTTP** | [Networking & Security](02_Networking_Security.md) — L7 load balancers |
-| **Caching (ETag)** | [Browser Rendering](../16_JavaScript/09_Browser_Internals_Rendering.md) |
-
+| Topic                      | Related Content                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| **TCP transport**          | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — HTTP rides on TCP (or QUIC)         |
+| **DNS resolution**         | [Ch 07: DNS](07_DNS_Complete.md) — first step before any HTTP request           |
+| **TLS encryption**         | [Ch 09: TLS](09_TLS_Encryption.md) — HTTPS = HTTP + TLS                         |
+| **REST API in FastAPI**    | [Python Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md)        |
+| **React fetching**         | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md) — useEffect, Suspense |
+| **JS fetch API**           | [JavaScript Modern](../16_JavaScript/06_JS_Modern_ES6Plus.md)                   |
+| **SQL injection via HTTP** | [SQL Security](../08_SQL/33_SQL_Security_Injection.md)                          |
+| **Load balancing HTTP**    | [Networking & Security](02_Networking_Security.md) — L7 load balancers          |
+| **Caching (ETag)**         | [Browser Rendering](../16_JavaScript/09_Browser_Internals_Rendering.md)         |

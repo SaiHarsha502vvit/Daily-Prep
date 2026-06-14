@@ -25,6 +25,7 @@ Databases are the backbone of every software system. This course covers SQL from
 ## Existing Content
 
 **Prerequisite reading / builds on:**
+
 - [SQL (08_SQL)](../../08_SQL/)
 
 ## Subdirectories

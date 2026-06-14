@@ -22,11 +22,9 @@
 > | **Spring Boot: Bean Scopes & DI** | [Spring Boot: IoC & Beans](../../07_Modern_Java/Ch32_SB_Data_Part2.md) |
 > | **SQL: JOINs + Aggregate Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## BLOCK 1: SPRING BOOT (90 min)
 
@@ -62,7 +60,6 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Chapter 2: Dependency Injection — The 3 Ways
 
 ```java
@@ -76,7 +73,7 @@ public class OrderService {
 
     // Spring automatically injects dependencies
     // @Autowired is optional if only one constructor
-    public OrderService(OrderRepository orderRepo, 
+    public OrderService(OrderRepository orderRepo,
                         NotificationService notifier) {
         this.orderRepo = orderRepo;
         this.notifier = notifier;
@@ -209,7 +206,6 @@ public class ProductController {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## BLOCK 2: SQL PRACTICE (45 min)
@@ -292,7 +288,6 @@ PATTERNS:
   • Merge logic (arrays, lists)
 ```
 
-
 ### Self-Test (try without looking at notes)
 
 ```
@@ -320,7 +315,6 @@ WEEK 2 CONFIDENCE:
 
 AREAS TO REVISIT: _______________
 ```
-
 
 ---
 

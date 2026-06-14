@@ -9,10 +9,48 @@
 ## 5W1H — Why React Deep Reasoning?
 
 - **WHAT**: Understanding the underlying mechanics of React (Fiber, batching, synthetic events) rather than just memorizing APIs.
-- **WHY**: When standard components break, memory leaks occur, or UIs freeze, you cannot fix them without knowing *why* React chose to render.
+- **WHY**: When standard components break, memory leaks occur, or UIs freeze, you cannot fix them without knowing _why_ React chose to render.
 - **WHO**: Senior engineers who architect large-scale applications and conduct technical interviews.
 - **WHEN**: When transitioning from a mid-level feature developer to a senior systems architect.
 - **HOW**: By studying the React Fiber reconciliation algorithm, the Snapshot principle of state, and the true cost of memoization.
+
+---
+
+### Historical Evolution
+
+React's internal architecture — from stack reconciler to Fiber to concurrent rendering — reshaped how developers reason about component lifecycle, state updates, and rendering guarantees.
+
+| Year | Milestone |
+|------|-----------|
+| 2013 | React open-sourced with stack reconciler — synchronous, blocking renders |
+| 2017 | React 16.0 ships Fiber — a rewrite enabling async rendering and priority scheduling |
+| 2022 | React 18 releases Concurrent Mode with automatic batching and Suspense |
+| 2024 | React 19 ships Actions, useActionState, and async transitions |
+
+The stack reconciler in React 15 and earlier rendered the entire component tree synchronously — a large update could block the browser for hundreds of milliseconds. Fiber split rendering into units of work that can be paused, resumed, and prioritized. This architectural shift is what makes React 18's concurrent features and React 19's Actions possible.
+
+**Predecessor:** Stack reconciler (2013-2017) — synchronous rendering that processed the entire component tree in one pass
+**Modern anchor:** Understanding Fiber and concurrent rendering is the difference between junior and senior React interviews today
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Concurrent tearing** | External store (Redux, Zustand) read outside `useSyncExternalStore` shows stale data during React 18 concurrent render | Wrap all external store reads in `useSyncExternalStore`; never read store values directly in render without subscription |
+| **Suspense boundary misconfiguration** | Missing `<Suspense>` around lazy-loaded route causes white-screen flash; misplaced boundary shows spinner on every keystroke | Place boundaries at route level and around heavy data-fetching components; never wrap individual inputs in Suspense |
+| **Hydration mismatch** | Server Component renders different HTML than client due to `Date.now()` or `Math.random()` in render | Move non-deterministic values to `useEffect` or use `useSyncExternalStore` with server snapshot; never call random during SSR render |
+
+Deep-reasoning failures occur at the boundary between React's concurrent scheduler and imperative code — tearing, hydration mismatches, and Suspense flashes all stem from code that assumes synchronous, single-pass rendering.
+
+---
+
+### Invariant: Reconciliation is O(n)
+
+> **Invariant:** React's reconciliation algorithm is O(n) where n is the number of elements in the tree, achieved through heuristic diffing that sacrifices optimal minimal-edit distance for predictable linear-time performance.
+
+**Why this must hold:** A true minimal-diff algorithm (finding the fewest operations to transform one tree into another) is O(n³) — computationally infeasible for DOM trees with thousands of nodes. React's three heuristics — (1) different element types trigger full subtree replacement, (2) same types preserve DOM nodes and update only changed props, and (3) keys enable identity-based list reconciliation — together guarantee O(n) worst case. These heuristics are baked into the Fiber architecture.
+
+**If violated:** If React attempted true minimal diffing, renders of large component trees (500+ nodes) would block the main thread for hundreds of milliseconds, freezing the UI. The O(n) heuristic is the engineering trade-off that makes React's declarative model practical at scale. Understanding this invariant explains why keys must be stable and why changing a component's root element type destroys its entire subtree.
 
 ---
 
@@ -20,20 +58,19 @@
 
 THE FREEZE PATTERN IN REACT INTERVIEWS
 
-Junior:   "useState manages component state"
+Junior: "useState manages component state"
 Interviewer: "Can a component have more than one state?"
-Junior:   "...yes?"
+Junior: "...yes?"
 Interviewer: "What happens when you call setState 3 times?"
-Junior:   *freezes*
+Junior: _freezes_
 
-Senior:   "Yes, a component can have unlimited states — each
+Senior: "Yes, a component can have unlimited states — each
 useState call manages an independent piece. When you
 call setState 3 times IN an event handler, React
 BATCHES them — one re-render, not three. But OUTSIDE
 an event handler (before React 18), each setState
 caused a separate re-render. React 18's automatic
 batching fixed this for ALL cases."
-
 
 ---
 
@@ -63,12 +100,12 @@ batching fixed this for ALL cases."
 
 ```jsx
 function UserProfile() {
-  const [name, setName] = useState('');        // State #1
-  const [age, setAge] = useState(0);           // State #2
+  const [name, setName] = useState(""); // State #1
+  const [age, setAge] = useState(0); // State #2
   const [isAdmin, setIsAdmin] = useState(false); // State #3
-  const [errors, setErrors] = useState([]);    // State #4
+  const [errors, setErrors] = useState([]); // State #4
   // Unlimited! Each is tracked independently.
-  
+
   // React tracks them by ORDER OF CALLS (not by name).
   // This is WHY hooks can't be inside if/else — order must be stable.
   return <div>...</div>;
@@ -82,13 +119,13 @@ function UserProfile() {
 ```jsx
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   function handleClick() {
-    setCount(count + 2);  // count is 0 at this moment
-    setCount(count + 3);  // count is STILL 0 at this moment
-    setCount(count + 4);  // count is STILL 0 at this moment
+    setCount(count + 2); // count is 0 at this moment
+    setCount(count + 3); // count is STILL 0 at this moment
+    setCount(count + 4); // count is STILL 0 at this moment
   }
-  
+
   return <button onClick={handleClick}>{count}</button>;
 }
 // After clicking: count = 4 (NOT 9!)
@@ -114,19 +151,19 @@ function Counter() {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### The Fix: Updater Function Pattern
 
 ```jsx
 function handleClick() {
-  setCount(prev => prev + 2);  // prev = 0 → returns 2
-  setCount(prev => prev + 3);  // prev = 2 → returns 5
-  setCount(prev => prev + 4);  // prev = 5 → returns 9
+  setCount((prev) => prev + 2); // prev = 0 → returns 2
+  setCount((prev) => prev + 3); // prev = 2 → returns 5
+  setCount((prev) => prev + 4); // prev = 5 → returns 9
 }
 // After clicking: count = 9 ✅
 ```
 
 **WHY this works:**
+
 - The arrow function receives the LATEST pending state, not the snapshot
 - Each updater function chains: output of previous becomes input of next
 - It's like a relay race — each runner passes the baton (latest value) to the next
@@ -145,7 +182,6 @@ function handleClick() {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Freeze Question #3: "Does each setState cause a re-render?"
 
 **Before React 18:** Batched only inside React event handlers.
@@ -154,49 +190,51 @@ function handleClick() {
 ```jsx
 // React 18 batching — ONE re-render for all three
 function handleClick() {
-  setName('Alice');     // queued
-  setAge(25);           // queued
-  setIsAdmin(true);     // queued
+  setName("Alice"); // queued
+  setAge(25); // queued
+  setIsAdmin(true); // queued
   // React batches → ONE re-render with all three updates
 }
 
 // Even in async code (React 18+):
 async function handleSubmit() {
   const user = await fetchUser();
-  setName(user.name);   // queued
-  setAge(user.age);     // queued  
+  setName(user.name); // queued
+  setAge(user.age); // queued
   // React 18: still batched → ONE re-render
   // React 17: NOT batched → TWO re-renders (bug)
 }
 
 // Force immediate flush if needed (rare):
-import { flushSync } from 'react-dom';
+import { flushSync } from "react-dom";
 flushSync(() => setCount(1)); // renders immediately
 flushSync(() => setFlag(true)); // renders immediately
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 1. useState: Batching, Stale State, and the Updater Pattern**
 
 **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+
 <details><summary>Answer</summary>
 
 Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+
 <details><summary>Answer</summary>
 
 `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-</details>
 
+</details>
 
 ## 2. Why Re-renders Happen (The REAL Trigger)
 
 ### The Freeze Question
+
 "Why does my child component re-render even though its props didn't change?"
 
 ### Deep Reasoning
@@ -222,14 +260,13 @@ Both calls use the SAME `state` closure value captured at render time. Both comp
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```jsx
 function Parent() {
   const [count, setCount] = useState(0);
-  
+
   return (
     <div>
-      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
       {/* ExpensiveChild re-renders EVERY TIME Parent re-renders */}
       {/* Even though it receives NO props! */}
       <ExpensiveChild />
@@ -239,7 +276,7 @@ function Parent() {
 
 // Fix 1: React.memo — skip re-render if props are same
 const ExpensiveChild = React.memo(function ExpensiveChild() {
-  console.log('rendered'); // only logs on first render
+  console.log("rendered"); // only logs on first render
   return <div>I'm expensive</div>;
 });
 
@@ -258,8 +295,9 @@ function Parent({ children }) {
   const [count, setCount] = useState(0);
   return (
     <div>
-      <button onClick={() => setCount(c => c + 1)}>{count}</button>
-      {children} {/* children don't re-render! Already created by grandparent */}
+      <button onClick={() => setCount((c) => c + 1)}>{count}</button>
+      {children}{" "}
+      {/* children don't re-render! Already created by grandparent */}
     </div>
   );
 }
@@ -273,6 +311,7 @@ function Parent({ children }) {
 ## 3. Virtual DOM: It's Not About Speed
 
 ### The Freeze Question
+
 "Why is Virtual DOM fast?"
 
 ### Deep Reasoning
@@ -300,26 +339,26 @@ function Parent({ children }) {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 **How diffing actually works:**
+
 ```
 Old VDOM:           New VDOM:           DOM Operations:
-<ul>                <ul>                
+<ul>                <ul>
   <li>A</li>         <li>A</li>        (no change)
   <li>B</li>         <li>B</li>        (no change)
   <li>C</li>         <li>D</li>        update text: C → D
-</ul>               </ul>              
+</ul>               </ul>
 
 Only ONE DOM operation instead of re-rendering entire list.
 React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 ```
-
 
 ---
 
 ## 4. useEffect: The Lifecycle Mental Model is WRONG
 
 ### The Freeze Question
+
 "Is useEffect the same as componentDidMount?"
 
 ### Deep Reasoning
@@ -345,19 +384,18 @@ React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### The Tricky Behavior Most People Get Wrong
 
 ```jsx
 // What does this print?
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
-    console.log('effect:', count);
-    return () => console.log('cleanup:', count);
+    console.log("effect:", count);
+    return () => console.log("cleanup:", count);
   }, [count]);
-  
+
   // Click button 3 times:
   // Render 1: "effect: 0"
   // Click → Render 2: "cleanup: 0" then "effect: 1"
@@ -387,38 +425,37 @@ const total = items.reduce((sum, item) => sum + item.price, 0); // computed
 
 // ❌ DON'T: Transform data on prop change
 useEffect(() => {
-  setFilteredList(list.filter(item => item.active));
+  setFilteredList(list.filter((item) => item.active));
 }, [list]);
 
 // ✅ DO: Compute in render, memo if expensive
-const filteredList = useMemo(
-  () => list.filter(item => item.active),
-  [list]
-);
+const filteredList = useMemo(() => list.filter((item) => item.active), [list]);
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 4. useEffect: The Lifecycle Mental Model is WRONG**
 
 **Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+
 <details><summary>Answer</summary>
 
 React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
+
 </details>
 
 **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
+
 <details><summary>Answer</summary>
 
 Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
-</details>
 
+</details>
 
 ## 5. Keys: Why Index as Key Breaks Things
 
 ### The Freeze Question
+
 "Why can't I use array index as a key?"
 
 ### Deep Reasoning
@@ -444,8 +481,8 @@ Cleanup runs: (1) before the effect runs again (when deps change), (2) when the 
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 **When index keys BREAK things — visual proof:**
+
 ```jsx
 // List: [Alice (input: "hello"), Bob (input: "world"), Charlie (input: "")]
 // Delete Bob...
@@ -456,6 +493,7 @@ Cleanup runs: (1) before the effect runs again (when deps change), (2) when the 
 ```
 
 **When index IS acceptable:**
+
 - List never reorders
 - List never filters/deletes items
 - Items have no state (no inputs, no selections)
@@ -466,6 +504,7 @@ Cleanup runs: (1) before the effect runs again (when deps change), (2) when the 
 ## 6. useRef vs useState: When to Use Which
 
 ### The Freeze Question
+
 "What's the difference? Both persist values across renders."
 
 ### Deep Reasoning
@@ -491,7 +530,6 @@ Cleanup runs: (1) before the effect runs again (when deps change), (2) when the 
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```jsx
 // USE CASE: Tracking previous value (no UI update needed)
 function usePrevious(value) {
@@ -505,11 +543,11 @@ function usePrevious(value) {
 // USE CASE: setInterval reference (need to clear later)
 function Timer() {
   const intervalRef = useRef(null);
-  
+
   function startTimer() {
     intervalRef.current = setInterval(() => tick(), 1000);
   }
-  
+
   function stopTimer() {
     clearInterval(intervalRef.current); // need the reference!
   }
@@ -528,26 +566,28 @@ function Component() {
 
 ---
 
-
-
 🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
 
 **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+
 <details><summary>Answer</summary>
 
 Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+
 <details><summary>Answer</summary>
 
 `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-</details>
 
+</details>
 
 ## 7. useMemo/useCallback: When They Hurt Performance
 
 ### The Freeze Question
+
 "Should I wrap everything in useMemo for performance?"
 
 ### Deep Reasoning
@@ -571,7 +611,6 @@ Both calls use the SAME `state` closure value captured at render time. Both comp
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```jsx
 // ❌ UNNECESSARY: Simple computation
 const fullName = useMemo(() => `${first} ${last}`, [first, last]);
@@ -581,7 +620,7 @@ const fullName = useMemo(() => `${first} ${last}`, [first, last]);
 // ✅ NECESSARY: Expensive computation
 const sortedItems = useMemo(
   () => items.slice().sort((a, b) => complexSort(a, b)),
-  [items]
+  [items],
 ); // Sorting 10,000 items is expensive. Worth memoizing.
 
 // ✅ NECESSARY: Preventing child re-renders
@@ -599,6 +638,7 @@ const handleClick = useCallback(() => doSomething(), []);
 ```
 
 **Decision tree:**
+
 ```
 Need to memoize?
 ├── Is the computation > 1ms? → YES → useMemo
@@ -607,12 +647,12 @@ Need to memoize?
 └── None of the above? → DON'T MEMOIZE
 ```
 
-
 ---
 
 ## 8. Context: Why It's NOT a State Manager
 
 ### The Freeze Question
+
 "Why do people say Context isn't good for state management?"
 
 ### Deep Reasoning
@@ -637,45 +677,51 @@ Need to memoize?
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Context IS good for:**
+
 - Rarely-changing values (theme, locale, auth user)
 - Dependency injection (services, config)
 - Avoiding prop drilling for 2-3 level trees
 
 **Context is BAD for:**
+
 - Frequently-updating values (form state, animations)
 - Large objects where subsets change often
 - Shopping cart (items change frequently)
 
 ```jsx
 // ❌ BAD: One giant context
-const AppContext = createContext({ user: null, theme: 'light', cart: [], notifications: [] });
+const AppContext = createContext({
+  user: null,
+  theme: "light",
+  cart: [],
+  notifications: [],
+});
 // Every consumer re-renders on ANY change
 
 // ✅ GOOD: Split into focused contexts
 const UserContext = createContext(null);
-const ThemeContext = createContext('light');
+const ThemeContext = createContext("light");
 const CartContext = createContext([]);
 // Only cart consumers re-render when cart changes
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Context: Why It's NOT a State Manager**
 
 **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+
 <details><summary>Answer</summary>
 
 Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-</details>
 
+</details>
 
 ## 9. Controlled vs Uncontrolled: The Real Difference
 
 ### The Freeze Question
+
 "What is a controlled component and WHY would I use one?"
 
 ```
@@ -694,15 +740,14 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```jsx
 // Controlled: React drives the input
 function Controlled() {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
   return (
-    <input 
-      value={value}                    // React says what to display
-      onChange={e => setValue(e.target.value)} // React updates on change
+    <input
+      value={value} // React says what to display
+      onChange={(e) => setValue(e.target.value)} // React updates on change
     />
   );
   // Benefits: instant validation, formatting, conditional updates
@@ -725,6 +770,7 @@ function Uncontrolled() {
 ## 10. React Fiber: How React Actually Renders
 
 ### The Freeze Question
+
 "How does React rendering work internally?"
 
 ### Deep Reasoning
@@ -757,12 +803,43 @@ function Uncontrolled() {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+---
+
+### Fiber Scheduler — Work Loop with Lane Priorities
+
+```
+                 ┌─────────────────────────────┐
+                 │   SCHEDULER (per frame 16ms)│
+                 └──────────────┬──────────────┘
+                                │
+        ┌───────────────────────┼───────────────────────┐
+        │                       │                       │
+   ┌────▼─────┐           ┌─────▼────┐            ┌─────▼─────┐
+   │ SYNC LANE│           │INPUT LANE │           │ IDLE LANE  │
+   │ (urgent) │           │(transitions)│         │(low prio)  │
+   │ click,   │           │startTrans- │         │prefetch,   │
+   │ keypress │           │ition wraps │         │analytics   │
+   └────┬─────┘           └─────┬────┘            └─────┬──────┘
+        │                       │                       │
+        └───────────────────────┴───────────────────────┘
+                                │
+                 ┌──────────────▼──────────────┐
+                 │  FIBER WORK LOOP            │
+                 │  while (work && timeLeft):  │
+                 │    performUnitOfWork(unit)  │
+                 │    if (frameDeadline - now  │
+                 │        < 5ms): yield()      │
+                 └─────────────────────────────┘
+```
+
+**Why lanes?** React 18+ uses lane priorities instead of fixed expiration times. Sync work (clicks) MUST finish before paint; transitions can defer; idle work can be paused entirely.
 
 ---
 
 ## 11. Suspense & Concurrent Mode: The Future Model
 
 ### The Freeze Question
+
 "What is Suspense and why does it matter?"
 
 ```
@@ -784,7 +861,6 @@ function Uncontrolled() {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```jsx
 // React 18+ with Suspense
 function App() {
@@ -797,19 +873,19 @@ function App() {
 
 // Transitions: Mark updates as non-urgent
 function SearchPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
-  
+
   function handleChange(e) {
     // Urgent: update input immediately
     setQuery(e.target.value);
-    
+
     // Non-urgent: can be interrupted by more typing
     startTransition(() => {
       setSearchResults(filterResults(e.target.value));
     });
   }
-  
+
   return (
     <>
       <input value={query} onChange={handleChange} />
@@ -821,9 +897,33 @@ function SearchPage() {
 
 ---
 
+### Suspense Boundary Flow
+
+```
+<Suspense fallback={<Spinner />}>
+  │
+  ├─ Child throws Promise (data not ready)
+  │   │
+  │   └─ React catches, renders Spinner
+  │      │
+  │      └─ Promise resolves
+  │         │
+  │         └─ React re-renders with data
+  │            (Spinner unmounts, real UI shows)
+  │
+  └─ If no Suspense ancestor:
+      └─ React 18: bubble up to nearest boundary
+      └─ React 17-: uncaught error in console
+```
+
+**Misconfiguration trap:** Suspense boundary too high → entire page spinner on small async piece. Too low → unnecessary boundary overhead. Place at meaningful loading boundaries (page, route, large list).
+
+---
+
 ## 12. Server Components: Why They Exist
 
 ### The Freeze Question
+
 "Why did React create Server Components?"
 
 ```
@@ -848,12 +948,12 @@ function SearchPage() {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 13. Common Anti-Patterns Seniors Catch Instantly
 
 ### Anti-Pattern 1: Initializing State from Props
+
 ```jsx
 // ❌ BUG: State initializes ONCE. If prop changes, state doesn't update.
 function UserForm({ user }) {
@@ -862,7 +962,7 @@ function UserForm({ user }) {
 }
 
 // ✅ FIX 1: Use key to force remount
-<UserForm key={user.id} user={user} />
+<UserForm key={user.id} user={user} />;
 // When key changes, React treats it as a NEW component → fresh state
 
 // ✅ FIX 2: Use the prop directly (if you don't need editable copy)
@@ -878,32 +978,34 @@ function UserForm({ user }) {
 ```
 
 ### Anti-Pattern 2: Object/Array State Mutation
+
 ```jsx
 // ❌ BUG: Mutating state directly — React doesn't "see" it
-const [user, setUser] = useState({ name: 'Alice', age: 25 });
+const [user, setUser] = useState({ name: "Alice", age: 25 });
 function birthday() {
-  user.age = 26;    // MUTATION! Same reference. No re-render.
-  setUser(user);    // React sees same reference → thinks nothing changed
+  user.age = 26; // MUTATION! Same reference. No re-render.
+  setUser(user); // React sees same reference → thinks nothing changed
 }
 
 // ✅ FIX: Create new object (immutable update)
 function birthday() {
-  setUser(prev => ({ ...prev, age: prev.age + 1 })); // new object
+  setUser((prev) => ({ ...prev, age: prev.age + 1 })); // new object
   // React sees different reference → re-renders
 }
 
 // ❌ BUG: Array mutation
 const [items, setItems] = useState([1, 2, 3]);
-items.push(4);      // MUTATION! Same array reference.
-setItems(items);     // React ignores it.
+items.push(4); // MUTATION! Same array reference.
+setItems(items); // React ignores it.
 
 // ✅ FIX: Create new array
-setItems(prev => [...prev, 4]); // new array reference
+setItems((prev) => [...prev, 4]); // new array reference
 ```
 
 **WHY immutability matters:** React uses `Object.is()` (shallow comparison) to check if state changed. Same reference = "nothing changed" = no re-render. You must create a new reference for React to notice.
 
 ### Anti-Pattern 3: useEffect as Event Handler
+
 ```jsx
 // ❌ WRONG: Using effect to respond to a button click
 const [submitted, setSubmitted] = useState(false);
@@ -922,28 +1024,23 @@ function handleSubmit() {
 
 ---
 
-
-
-
 ## Interview Quick-Fire: React Freeze Busters
 
-| Freeze Question | Senior-Level Answer |
-|----------------|-------------------|
-| "What triggers a re-render?" | setState, parent re-render, context change. NOT prop change. |
-| "What is reconciliation?" | React's diffing algorithm that compares old and new VDOM trees to find minimal DOM updates. O(n) heuristic: different type = replace subtree; same type = update props; keys identify which children moved. |
-| "Explain React's rendering phases" | **Render phase** (pure, interruptible): call components, build Fiber tree. **Commit phase** (synchronous): apply DOM changes, run effects. |
-| "Why hooks can't be in conditions?" | React tracks hooks by CALL ORDER, not by name. Conditional hooks change the order → wrong hook gets wrong state. Like numbered lockers — skip one, every locker after is wrong. |
-| "What is hydration?" | Server sends HTML (fast display). React then "hydrates" it — attaches event handlers and makes it interactive. Like building a house → adding electrical wiring. |
-| "Why `useLayoutEffect` over `useEffect`?" | `useLayoutEffect` runs BEFORE browser paint (blocking). Use for DOM measurements/mutations that must happen before user sees anything. `useEffect` runs AFTER paint (non-blocking). |
-| "What is a stale closure in React?" | A closure that captures an OLD state value. Happens in setTimeout, setInterval, event listeners. Fix: use updater function `setState(prev => ...)` or useRef. |
-| "What is prop drilling?" | Passing props through 5+ intermediate components that don't use them. Solutions: Context (for rare changes), composition (children pattern), state management library. |
-| "Can useState hold any type?" | Yes: number, string, boolean, object, array, null, function (but don't store functions — use useCallback). For objects/arrays, always return NEW reference when updating. |
-| "What is a Higher-Order Component?" | A function that takes a component and returns a NEW component with extra props/behavior. Like a decorator. Largely replaced by hooks (custom hooks do the same thing more clearly). |
+| Freeze Question                           | Senior-Level Answer                                                                                                                                                                                         |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "What triggers a re-render?"              | setState, parent re-render, context change. NOT prop change.                                                                                                                                                |
+| "What is reconciliation?"                 | React's diffing algorithm that compares old and new VDOM trees to find minimal DOM updates. O(n) heuristic: different type = replace subtree; same type = update props; keys identify which children moved. |
+| "Explain React's rendering phases"        | **Render phase** (pure, interruptible): call components, build Fiber tree. **Commit phase** (synchronous): apply DOM changes, run effects.                                                                  |
+| "Why hooks can't be in conditions?"       | React tracks hooks by CALL ORDER, not by name. Conditional hooks change the order → wrong hook gets wrong state. Like numbered lockers — skip one, every locker after is wrong.                             |
+| "What is hydration?"                      | Server sends HTML (fast display). React then "hydrates" it — attaches event handlers and makes it interactive. Like building a house → adding electrical wiring.                                            |
+| "Why `useLayoutEffect` over `useEffect`?" | `useLayoutEffect` runs BEFORE browser paint (blocking). Use for DOM measurements/mutations that must happen before user sees anything. `useEffect` runs AFTER paint (non-blocking).                         |
+| "What is a stale closure in React?"       | A closure that captures an OLD state value. Happens in setTimeout, setInterval, event listeners. Fix: use updater function `setState(prev => ...)` or useRef.                                               |
+| "What is prop drilling?"                  | Passing props through 5+ intermediate components that don't use them. Solutions: Context (for rare changes), composition (children pattern), state management library.                                      |
+| "Can useState hold any type?"             | Yes: number, string, boolean, object, array, null, function (but don't store functions — use useCallback). For objects/arrays, always return NEW reference when updating.                                   |
+| "What is a Higher-Order Component?"       | A function that takes a component and returns a NEW component with extra props/behavior. Like a decorator. Largely replaced by hooks (custom hooks do the same thing more clearly).                         |
 
 ---
 
 ← Previous: [Chapter 8 — React Performance](08_React_Performance.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [TypeScript Deep Reasoning →](../17_TypeScript/04_TS_Deep_Reasoning.md)
-
-

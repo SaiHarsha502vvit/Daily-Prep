@@ -3,6 +3,7 @@
 ---
 
 # Spring Boot Part 20: Microservices Patterns
+
 ## Service Discovery, API Gateway, Circuit Breakers, and More
 
 **"Microservices are about doing one thing well, and integrating elegantly"** - Distributed systems done right
@@ -54,10 +55,10 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📚 Table of Contents
+
 1. [Microservices Architecture Overview](#microservices-architecture-overview)
 2. [Service Discovery](#service-discovery)
 3. [API Gateway Pattern](#api-gateway-pattern)
@@ -115,16 +116,15 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Key Principles
 
-| Principle | Description | Example |
-|-----------|-------------|---------|
+| Principle             | Description                           | Example                           |
+| --------------------- | ------------------------------------- | --------------------------------- |
 | Single Responsibility | One service = one business capability | Order Service only handles orders |
-| Decentralized Data | Each service owns its data | Order DB separate from User DB |
-| Design for Failure | Expect and handle failures | Circuit breakers, retries |
-| Loose Coupling | Minimize dependencies | Event-driven communication |
-| High Cohesion | Related functions together | All order logic in Order Service |
+| Decentralized Data    | Each service owns its data            | Order DB separate from User DB    |
+| Design for Failure    | Expect and handle failures            | Circuit breakers, retries         |
+| Loose Coupling        | Minimize dependencies                 | Event-driven communication        |
+| High Cohesion         | Related functions together            | All order logic in Order Service  |
 
 ### Spring Cloud Ecosystem
 
@@ -152,19 +152,17 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Microservices Architecture Overview**
 
 **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+
 <details><summary>Answer</summary>
 
 Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-</details>
 
+</details>
 
 ## Service Discovery
 
@@ -187,7 +185,6 @@ With Service Discovery:
 │  ✅ Dynamic scaling without config changes                       │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Eureka Server Setup
 
@@ -233,8 +230,8 @@ eureka:
   instance:
     hostname: localhost
   client:
-    register-with-eureka: false   # Server doesn't register itself
-    fetch-registry: false         # Server doesn't fetch registry
+    register-with-eureka: false # Server doesn't register itself
+    fetch-registry: false # Server doesn't fetch registry
   server:
     enable-self-preservation: true
     eviction-interval-timer-in-ms: 5000
@@ -264,7 +261,7 @@ public class OrderServiceApplication {
 # application.yml for Order Service (Eureka Client)
 spring:
   application:
-    name: order-service   # This name is used for service discovery
+    name: order-service # This name is used for service discovery
 
 eureka:
   client:
@@ -284,25 +281,25 @@ eureka:
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final DiscoveryClient discoveryClient;
     private final RestTemplate restTemplate;
-    
+
     // Method 1: Manual Discovery
     public User getUserManually(Long userId) {
         List<ServiceInstance> instances = discoveryClient
             .getInstances("user-service");
-        
+
         if (instances.isEmpty()) {
             throw new ServiceUnavailableException("user-service not available");
         }
-        
+
         ServiceInstance instance = instances.get(0); // Simple selection
         String url = instance.getUri() + "/api/users/" + userId;
-        
+
         return restTemplate.getForObject(url, User.class);
     }
-    
+
     // Method 2: Using @LoadBalanced RestTemplate (Recommended)
     public User getUserWithLoadBalancer(Long userId) {
         // Uses logical service name - load balancer resolves it
@@ -315,7 +312,7 @@ public class OrderService {
 
 @Configuration
 public class RestTemplateConfig {
-    
+
     @Bean
     @LoadBalanced  // Enables service discovery and load balancing
     public RestTemplate restTemplate() {
@@ -329,7 +326,7 @@ public class RestTemplateConfig {
 ```java
 @Configuration
 public class WebClientConfig {
-    
+
     @Bean
     @LoadBalanced
     public WebClient.Builder loadBalancedWebClientBuilder() {
@@ -340,9 +337,9 @@ public class WebClientConfig {
 @Service
 @RequiredArgsConstructor
 public class OrderServiceReactive {
-    
+
     private final WebClient.Builder webClientBuilder;
-    
+
     public Mono<User> getUser(Long userId) {
         return webClientBuilder.build()
             .get()
@@ -375,16 +372,16 @@ public class OrderServiceApplication {
 // Feign Client Interface
 @FeignClient(name = "user-service", fallback = UserClientFallback.class)
 public interface UserClient {
-    
+
     @GetMapping("/api/users/{id}")
     User getUser(@PathVariable("id") Long id);
-    
+
     @GetMapping("/api/users")
     List<User> getAllUsers();
-    
+
     @PostMapping("/api/users")
     User createUser(@RequestBody CreateUserRequest request);
-    
+
     @GetMapping("/api/users/search")
     List<User> searchUsers(@RequestParam("query") String query,
                           @RequestParam("page") int page);
@@ -393,7 +390,7 @@ public interface UserClient {
 // Fallback implementation for resilience
 @Component
 public class UserClientFallback implements UserClient {
-    
+
     @Override
     public User getUser(Long id) {
         return User.builder()
@@ -401,17 +398,17 @@ public class UserClientFallback implements UserClient {
             .name("Unknown (Service Unavailable)")
             .build();
     }
-    
+
     @Override
     public List<User> getAllUsers() {
         return Collections.emptyList();
     }
-    
+
     @Override
     public User createUser(CreateUserRequest request) {
         throw new ServiceUnavailableException("Cannot create user - service down");
     }
-    
+
     @Override
     public List<User> searchUsers(String query, int page) {
         return Collections.emptyList();
@@ -422,13 +419,13 @@ public class UserClientFallback implements UserClient {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final UserClient userClient;
-    
+
     public Order createOrder(OrderRequest request) {
         // Feign handles service discovery, load balancing, and serialization
         User user = userClient.getUser(request.getUserId());
-        
+
         return Order.builder()
             .user(user)
             .items(request.getItems())
@@ -479,7 +476,6 @@ With API Gateway:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Spring Cloud Gateway Setup
 
 ```xml
@@ -515,19 +511,19 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true           # Auto-discover routes from Eureka
+          enabled: true # Auto-discover routes from Eureka
           lower-case-service-id: true
-      
+
       routes:
         # User Service Routes
         - id: user-service
-          uri: lb://user-service  # lb:// enables load balancing
+          uri: lb://user-service # lb:// enables load balancing
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
             - AddRequestHeader=X-Gateway-Source, API-Gateway
-            
+
         # Order Service Routes
         - id: order-service
           uri: lb://order-service
@@ -539,7 +535,7 @@ spring:
               args:
                 name: orderCircuitBreaker
                 fallbackUri: forward:/fallback/orders
-                
+
         # Payment Service Routes (with rate limiting)
         - id: payment-service
           uri: lb://payment-service
@@ -553,7 +549,7 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 redis-rate-limiter.requestedTokens: 1
-                
+
         # Route with retry
         - id: inventory-service
           uri: lb://inventory-service
@@ -581,7 +577,7 @@ eureka:
 ```java
 @Configuration
 public class GatewayConfig {
-    
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -596,7 +592,7 @@ public class GatewayConfig {
                         .setFallbackUri("forward:/fallback/users"))
                 )
                 .uri("lb://user-service"))
-            
+
             // Order service with custom filter
             .route("order-service", r -> r
                 .path("/api/orders/**")
@@ -609,14 +605,14 @@ public class GatewayConfig {
                         .setRetries(3)
                         .setStatuses(HttpStatus.BAD_GATEWAY)))
                 .uri("lb://order-service"))
-            
+
             // Path rewriting
             .route("legacy-service", r -> r
                 .path("/old-api/**")
                 .filters(f -> f
                     .rewritePath("/old-api/(?<segment>.*)", "/api/${segment}"))
                 .uri("lb://new-service"))
-            
+
             .build();
     }
 }
@@ -629,21 +625,21 @@ public class GatewayConfig {
 @Component
 @Slf4j
 public class LoggingFilter implements GlobalFilter, Ordered {
-    
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         long startTime = System.currentTimeMillis();
         String requestId = UUID.randomUUID().toString();
-        
+
         ServerHttpRequest request = exchange.getRequest().mutate()
             .header("X-Request-ID", requestId)
             .build();
-        
-        log.info("Request: {} {} [{}]", 
-            request.getMethod(), 
-            request.getPath(), 
+
+        log.info("Request: {} {} [{}]",
+            request.getMethod(),
+            request.getPath(),
             requestId);
-        
+
         return chain.filter(exchange.mutate().request(request).build())
             .then(Mono.fromRunnable(() -> {
                 long duration = System.currentTimeMillis() - startTime;
@@ -653,7 +649,7 @@ public class LoggingFilter implements GlobalFilter, Ordered {
                     requestId);
             }));
     }
-    
+
     @Override
     public int getOrder() {
         return -1; // High priority
@@ -664,72 +660,72 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter implements GlobalFilter, Ordered {
-    
+
     private final JwtTokenProvider tokenProvider;
-    
+
     private static final List<String> PUBLIC_PATHS = List.of(
         "/api/auth/login",
         "/api/auth/register",
         "/api/public"
     );
-    
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().toString();
-        
+
         // Skip authentication for public paths
         if (isPublicPath(path)) {
             return chain.filter(exchange);
         }
-        
+
         String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return onError(exchange, "Missing or invalid Authorization header", 
+            return onError(exchange, "Missing or invalid Authorization header",
                 HttpStatus.UNAUTHORIZED);
         }
-        
+
         String token = authHeader.substring(7);
-        
+
         try {
             if (!tokenProvider.validateToken(token)) {
                 return onError(exchange, "Invalid token", HttpStatus.UNAUTHORIZED);
             }
-            
+
             // Add user info to headers for downstream services
             String userId = tokenProvider.getUserId(token);
             String roles = tokenProvider.getRoles(token);
-            
+
             ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-ID", userId)
                 .header("X-User-Roles", roles)
                 .build();
-            
+
             return chain.filter(exchange.mutate().request(modifiedRequest).build());
-            
+
         } catch (Exception e) {
             return onError(exchange, "Token validation failed", HttpStatus.UNAUTHORIZED);
         }
     }
-    
+
     private boolean isPublicPath(String path) {
         return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
     }
-    
-    private Mono<Void> onError(ServerWebExchange exchange, String message, 
+
+    private Mono<Void> onError(ServerWebExchange exchange, String message,
                                HttpStatus status) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        
+
         String body = String.format("{\"error\": \"%s\"}", message);
         DataBuffer buffer = response.bufferFactory()
             .wrap(body.getBytes(StandardCharsets.UTF_8));
-        
+
         return response.writeWith(Mono.just(buffer));
     }
-    
+
     @Override
     public int getOrder() {
         return -2; // Before logging filter
@@ -738,31 +734,31 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
 // Rate Limiting Filter Factory
 @Component
-public class CustomRateLimiterFilterFactory extends 
+public class CustomRateLimiterFilterFactory extends
         AbstractGatewayFilterFactory<CustomRateLimiterFilterFactory.Config> {
-    
+
     private final RateLimiter rateLimiter;
-    
+
     public CustomRateLimiterFilterFactory(RateLimiter rateLimiter) {
         super(Config.class);
         this.rateLimiter = rateLimiter;
     }
-    
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String clientIp = Objects.requireNonNull(
                 exchange.getRequest().getRemoteAddress()).getHostString();
-            
+
             if (!rateLimiter.tryAcquire(clientIp, config.getRequestsPerSecond())) {
                 exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
                 return exchange.getResponse().setComplete();
             }
-            
+
             return chain.filter(exchange);
         };
     }
-    
+
     @Data
     public static class Config {
         private int requestsPerSecond = 10;
@@ -776,7 +772,7 @@ public class CustomRateLimiterFilterFactory extends
 @RestController
 @RequestMapping("/fallback")
 public class FallbackController {
-    
+
     @GetMapping("/users")
     public ResponseEntity<Map<String, Object>> userServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -786,7 +782,7 @@ public class FallbackController {
                 "timestamp", Instant.now()
             ));
     }
-    
+
     @GetMapping("/orders")
     public ResponseEntity<Map<String, Object>> orderServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -796,7 +792,7 @@ public class FallbackController {
                 "timestamp", Instant.now()
             ));
     }
-    
+
     @PostMapping("/payments")
     public ResponseEntity<Map<String, Object>> paymentServiceFallback() {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -811,8 +807,6 @@ public class FallbackController {
 ```
 
 ---
-
-
 
 ## Circuit Breaker Pattern
 
@@ -871,7 +865,6 @@ With Circuit Breaker:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Resilience4j Setup
 
 ```xml
@@ -888,8 +881,6 @@ With Circuit Breaker:
 ### Circuit Breaker Configuration
 
 ```yaml
-
-
 # application.yml
 resilience4j:
   circuitbreaker:
@@ -909,10 +900,10 @@ resilience4j:
           - feign.FeignException
         ignore-exceptions:
           - com.example.BusinessException
-      
+
       paymentService:
         sliding-window-type: TIME_BASED
-        sliding-window-size: 60           # 60 seconds
+        sliding-window-size: 60 # 60 seconds
         minimum-number-of-calls: 10
         failure-rate-threshold: 60
         slow-call-rate-threshold: 80
@@ -960,11 +951,11 @@ resilience4j:
 @RequiredArgsConstructor
 @Slf4j
 public class OrderService {
-    
+
     private final UserClient userClient;
     private final PaymentClient paymentClient;
     private final InventoryClient inventoryClient;
-    
+
     // Using annotations
     @CircuitBreaker(name = "userService", fallbackMethod = "getUserFallback")
     @Retry(name = "userService")
@@ -973,7 +964,7 @@ public class OrderService {
         log.info("Calling user service for user: {}", userId);
         return userClient.getUser(userId);
     }
-    
+
     private User getUserFallback(Long userId, Exception e) {
         log.warn("Fallback triggered for user {} due to: {}", userId, e.getMessage());
         return User.builder()
@@ -981,16 +972,16 @@ public class OrderService {
             .name("Unknown User (Service Unavailable)")
             .build();
     }
-    
+
     // Circuit breaker with bulkhead
     @CircuitBreaker(name = "paymentService", fallbackMethod = "processPaymentFallback")
     @Bulkhead(name = "paymentService", type = Bulkhead.Type.SEMAPHORE)
     @TimeLimiter(name = "paymentService")
     public CompletableFuture<PaymentResult> processPayment(PaymentRequest request) {
-        return CompletableFuture.supplyAsync(() -> 
+        return CompletableFuture.supplyAsync(() ->
             paymentClient.processPayment(request));
     }
-    
+
     private CompletableFuture<PaymentResult> processPaymentFallback(
             PaymentRequest request, Exception e) {
         log.error("Payment fallback for request: {}", request, e);
@@ -1001,36 +992,36 @@ public class OrderService {
                 .build()
         );
     }
-    
+
     // Multiple patterns combined
     @CircuitBreaker(name = "orderService", fallbackMethod = "createOrderFallback")
     @Retry(name = "orderService", fallbackMethod = "createOrderRetryFallback")
     @Bulkhead(name = "orderService")
     public Order createOrder(OrderRequest request) {
         User user = getUser(request.getUserId());
-        
+
         if (!inventoryClient.checkAvailability(request.getItems())) {
             throw new InsufficientInventoryException("Items not available");
         }
-        
+
         Order order = Order.builder()
             .user(user)
             .items(request.getItems())
             .status(OrderStatus.PENDING)
             .build();
-        
+
         // Process payment
         PaymentResult payment = paymentClient.processPayment(
             new PaymentRequest(order.getId(), order.getTotalAmount())
         );
-        
+
         if (payment.isSuccess()) {
             order.setStatus(OrderStatus.CONFIRMED);
         }
-        
+
         return order;
     }
-    
+
     private Order createOrderFallback(OrderRequest request, Exception e) {
         log.error("Order creation failed", e);
         return Order.builder()
@@ -1047,19 +1038,19 @@ public class OrderService {
 @Service
 @RequiredArgsConstructor
 public class ProgrammaticCircuitBreakerExample {
-    
+
     private final CircuitBreakerRegistry circuitBreakerRegistry;
     private final RetryRegistry retryRegistry;
     private final BulkheadRegistry bulkheadRegistry;
     private final UserClient userClient;
-    
+
     public User getUserWithProgrammaticCircuitBreaker(Long userId) {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry
             .circuitBreaker("programmaticUserService");
-        
+
         Retry retry = retryRegistry.retry("programmaticUserService");
         Bulkhead bulkhead = bulkheadRegistry.bulkhead("programmaticUserService");
-        
+
         Supplier<User> decoratedSupplier = Decorators
             .ofSupplier(() -> userClient.getUser(userId))
             .withCircuitBreaker(circuitBreaker)
@@ -1070,22 +1061,22 @@ public class ProgrammaticCircuitBreakerExample {
                 Exception.class
             ), e -> getFallbackUser(userId))
             .decorate();
-        
+
         return decoratedSupplier.get();
     }
-    
+
     private User getFallbackUser(Long userId) {
         return User.builder()
             .id(userId)
             .name("Fallback User")
             .build();
     }
-    
+
     // Monitoring circuit breaker state
     public Map<String, Object> getCircuitBreakerStatus(String name) {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(name);
         CircuitBreaker.Metrics metrics = circuitBreaker.getMetrics();
-        
+
         return Map.of(
             "state", circuitBreaker.getState().name(),
             "failureRate", metrics.getFailureRate(),
@@ -1105,13 +1096,13 @@ public class ProgrammaticCircuitBreakerExample {
 @Component
 @Slf4j
 public class CircuitBreakerEventListener {
-    
+
     public CircuitBreakerEventListener(CircuitBreakerRegistry registry) {
         registry.getAllCircuitBreakers().forEach(this::registerEventListeners);
         registry.getEventPublisher()
             .onEntryAdded(event -> registerEventListeners(event.getAddedEntry()));
     }
-    
+
     private void registerEventListeners(CircuitBreaker circuitBreaker) {
         circuitBreaker.getEventPublisher()
             .onStateTransition(event -> {
@@ -1119,7 +1110,7 @@ public class CircuitBreakerEventListener {
                     circuitBreaker.getName(),
                     event.getStateTransition().getFromState(),
                     event.getStateTransition().getToState());
-                
+
                 // Send alert on state changes
                 if (event.getStateTransition().getToState() == CircuitBreaker.State.OPEN) {
                     sendAlert(circuitBreaker.getName(), "Circuit OPENED");
@@ -1140,7 +1131,7 @@ public class CircuitBreakerEventListener {
                     circuitBreaker.getName());
             });
     }
-    
+
     private void sendAlert(String circuitBreakerName, String message) {
         // Send to monitoring system (e.g., Slack, PagerDuty)
         log.error("ALERT: {} - {}", circuitBreakerName, message);
@@ -1157,13 +1148,13 @@ public class CircuitBreakerEventListener {
 ```java
 @Configuration
 public class LoadBalancerConfig {
-    
+
     @Bean
     @LoadBalanced
     public RestTemplate loadBalancedRestTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
     @LoadBalanced
     public WebClient.Builder loadBalancedWebClientBuilder() {
@@ -1177,7 +1168,7 @@ public class LoadBalancerConfig {
 ```java
 @Configuration
 public class CustomLoadBalancerConfig {
-    
+
     @Bean
     public ServiceInstanceListSupplier serviceInstanceListSupplier(
             ConfigurableApplicationContext context) {
@@ -1192,7 +1183,7 @@ public class CustomLoadBalancerConfig {
 
 // Custom load balancer for specific service
 @LoadBalancerClient(
-    name = "user-service", 
+    name = "user-service",
     configuration = UserServiceLoadBalancerConfig.class
 )
 public class LoadBalancerClients {
@@ -1200,7 +1191,7 @@ public class LoadBalancerClients {
 
 @Configuration
 public class UserServiceLoadBalancerConfig {
-    
+
     @Bean
     public ReactorLoadBalancer<ServiceInstance> roundRobinLoadBalancer(
             Environment environment,
@@ -1239,16 +1230,15 @@ public class UserServiceLoadBalancerConfig {
 
 ---
 
-
-
 🔬 **Section Challenge — Load Balancing**
 
 **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+
 <details><summary>Answer</summary>
 
 Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-</details>
 
+</details>
 
 ## Configuration Management
 
@@ -1271,7 +1261,6 @@ public class ConfigServerApplication {
     }
 }
 ```
-
 
 ---
 

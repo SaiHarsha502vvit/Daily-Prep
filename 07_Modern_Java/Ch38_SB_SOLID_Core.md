@@ -51,7 +51,6 @@ _"Write maintainable, flexible, and robust code"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Table of Contents
@@ -72,7 +71,6 @@ _"Write maintainable, flexible, and robust code"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -100,7 +98,6 @@ _"Write maintainable, flexible, and robust code"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📐 Section 1: Single Responsibility Principle (srp)
@@ -126,7 +123,6 @@ _"Write maintainable, flexible, and robust code"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### ❌ VIOLATING SRP
 
 ```java
@@ -142,7 +138,7 @@ public class OrderService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -150,17 +146,17 @@ public class OrderService {
         // Business logic
         double total = calculateTotalPrice(order);
         order.setTotal(total);
-        
+
         // Database logic
         saveToDatabase(order);
-        
+
         // Notification logic
         sendConfirmationEmail(order);
-        
+
         // Reporting logic
         generateReport(order);
     }
-    
+
     private double calculateTotalPrice(Order order) {
         double subtotal = order.getItems().stream()
             .mapToDouble(item -> item.getPrice() * item.getQuantity())
@@ -169,20 +165,20 @@ public class OrderService {
         double discount = calculateDiscount(order);
         return subtotal + tax - discount;
     }
-    
+
     private double calculateDiscount(Order order) {
         if (order.getCustomer().isPremium()) {
             return order.getTotal() * 0.15;
         }
         return 0;
     }
-    
+
     private void saveToDatabase(Order order) {
         jdbcTemplate.update(
             "INSERT INTO orders (id, customer_id, total, status) VALUES (?, ?, ?, ?)",
             order.getId(), order.getCustomer().getId(), order.getTotal(), "PENDING"
         );
-        
+
         for (OrderItem item : order.getItems()) {
             jdbcTemplate.update(
                 "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)",
@@ -190,7 +186,7 @@ public class OrderService {
             );
         }
     }
-    
+
     private void sendConfirmationEmail(Order order) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getCustomer().getEmail());
@@ -198,7 +194,7 @@ public class OrderService {
         message.setText("Thank you for your order. Total: $" + order.getTotal());
         mailSender.send(message);
     }
-    
+
     private void generateReport(Order order) {
         // Generate PDF report...
         String html = "<html><body><h1>Order Report</h1>...</body></html>";
@@ -230,26 +226,26 @@ public class OrderService {
     @Transactional
     public OrderResponse processOrder(CreateOrderRequest request) {
         log.info("Processing order for customer: {}", request.getCustomerId());
-        
+
         // Delegate to specialized services
         Order order = createOrder(request);
-        
+
         // Calculate pricing (delegated)
         OrderPricing pricing = pricingService.calculatePricing(order);
         order.applyPricing(pricing);
-        
+
         // Persist (delegated)
         Order savedOrder = orderRepository.save(order);
-        
+
         // Notifications (delegated, async)
         notificationService.sendOrderConfirmation(savedOrder);
-        
+
         // Reporting (delegated, async)
         reportService.generateOrderReport(savedOrder);
-        
+
         return OrderResponse.from(savedOrder);
     }
-    
+
     private Order createOrder(CreateOrderRequest request) {
         return Order.builder()
             .customerId(request.getCustomerId())
@@ -260,7 +256,7 @@ public class OrderService {
             .createdAt(LocalDateTime.now())
             .build();
     }
-    
+
     private OrderItem toOrderItem(OrderItemRequest request) {
         return OrderItem.builder()
             .productId(request.getProductId())
@@ -286,7 +282,7 @@ public class OrderPricingService {
         BigDecimal discount = discountService.calculateDiscount(order, subtotal);
         BigDecimal tax = taxService.calculateTax(subtotal.subtract(discount));
         BigDecimal total = subtotal.subtract(discount).add(tax);
-        
+
         return OrderPricing.builder()
             .subtotal(subtotal)
             .discount(discount)
@@ -294,7 +290,7 @@ public class OrderPricingService {
             .total(total)
             .build();
     }
-    
+
     private BigDecimal calculateSubtotal(Order order) {
         return order.getItems().stream()
             .map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -315,13 +311,13 @@ public class DiscountService {
     public BigDecimal calculateDiscount(Order order, BigDecimal subtotal) {
         Customer customer = customerRepository.findById(order.getCustomerId())
             .orElseThrow(() -> new CustomerNotFoundException(order.getCustomerId()));
-        
+
         if (customer.getTier() == CustomerTier.PREMIUM) {
             return subtotal.multiply(BigDecimal.valueOf(0.15));
         } else if (customer.getTier() == CustomerTier.GOLD) {
             return subtotal.multiply(BigDecimal.valueOf(0.10));
         }
-        
+
         return BigDecimal.ZERO;
     }
 }
@@ -356,7 +352,7 @@ public class NotificationService {
     public void sendOrderConfirmation(Order order) {
         try {
             emailService.sendOrderConfirmationEmail(order);
-            
+
             if (order.getCustomer().isSmsEnabled()) {
                 smsService.sendOrderConfirmationSms(order);
             }
@@ -380,12 +376,12 @@ public class EmailService {
 
     public void sendOrderConfirmationEmail(Order order) {
         String body = templateService.generateOrderConfirmationBody(order);
-        
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(order.getCustomer().getEmail());
         message.setSubject("Order Confirmation #" + order.getId());
         message.setText(body);
-        
+
         mailSender.send(message);
     }
 }
@@ -404,13 +400,13 @@ public class ReportService {
     @Async
     public void generateOrderReport(Order order) {
         byte[] pdfContent = pdfGenerator.generateOrderReport(order);
-        
+
         Report report = Report.builder()
             .orderId(order.getId())
             .content(pdfContent)
             .generatedAt(LocalDateTime.now())
             .build();
-        
+
         reportRepository.save(report);
     }
 }
@@ -443,7 +439,6 @@ public class ReportService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### ❌ VIOLATING OCP
 
 ```java
@@ -456,19 +451,19 @@ public class PaymentService {
 
     @Autowired
     private StripeClient stripeClient;
-    
+
     @Autowired
     private PayPalClient payPalClient;
 
     public PaymentResult processPayment(Order order, PaymentMethod method) {
-        
+
         if (method == PaymentMethod.CREDIT_CARD) {
             // Credit card logic
             return stripeClient.charge(
                 order.getTotal(),
                 order.getCreditCardToken()
             );
-        } 
+        }
         else if (method == PaymentMethod.PAYPAL) {
             // PayPal logic
             return payPalClient.executePayment(
@@ -484,10 +479,10 @@ public class PaymentService {
             return processCrypto(order);
         }
         // Every new payment method = more modification!
-        
+
         throw new UnsupportedPaymentMethodException(method);
     }
-    
+
     private PaymentResult processBankTransfer(Order order) { ... }
     private PaymentResult processCrypto(Order order) { ... }
 }
@@ -504,17 +499,17 @@ public class PaymentService {
  * The PaymentService never needs to change!
  */
 public interface PaymentProcessor {
-    
+
     /**
      * @return true if this processor can handle the payment request
      */
     boolean supports(PaymentRequest request);
-    
+
     /**
      * Process the payment
      */
     PaymentResult process(PaymentRequest request);
-    
+
     /**
      * Get the payment method this processor handles
      */
@@ -538,18 +533,18 @@ public class CreditCardPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing credit card payment: {}", request.getOrderId());
-        
+
         CreditCardDetails details = (CreditCardDetails) request.getPaymentDetails();
-        
+
         StripeChargeRequest stripeRequest = StripeChargeRequest.builder()
             .amount(request.getAmount())
             .currency(request.getCurrency())
             .token(details.getToken())
             .description("Order #" + request.getOrderId())
             .build();
-        
+
         StripeChargeResponse response = stripeClient.charge(stripeRequest);
-        
+
         return PaymentResult.builder()
             .success(response.isSuccessful())
             .transactionId(response.getChargeId())
@@ -578,14 +573,14 @@ public class PayPalPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing PayPal payment: {}", request.getOrderId());
-        
+
         PayPalDetails details = (PayPalDetails) request.getPaymentDetails();
-        
+
         PayPalExecuteResponse response = payPalClient.executePayment(
             details.getPaymentId(),
             details.getPayerId()
         );
-        
+
         return PaymentResult.builder()
             .success(response.getState().equals("approved"))
             .transactionId(response.getId())
@@ -618,15 +613,15 @@ public class CryptoPaymentProcessor implements PaymentProcessor {
     @Override
     public PaymentResult process(PaymentRequest request) {
         log.info("Processing crypto payment: {}", request.getOrderId());
-        
+
         CryptoDetails details = (CryptoDetails) request.getPaymentDetails();
-        
+
         CryptoPaymentResponse response = cryptoClient.processPayment(
             details.getWalletAddress(),
             details.getCryptoCurrency(),
             request.getAmount()
         );
-        
+
         return PaymentResult.builder()
             .success(response.isConfirmed())
             .transactionId(response.getTxHash())
@@ -655,14 +650,14 @@ public class PaymentService {
     private final List<PaymentProcessor> paymentProcessors;
 
     public PaymentResult processPayment(PaymentRequest request) {
-        log.info("Processing payment for order {} with method {}", 
+        log.info("Processing payment for order {} with method {}",
             request.getOrderId(), request.getMethod());
-        
+
         PaymentProcessor processor = findProcessor(request);
-        
+
         return processor.process(request);
     }
-    
+
     private PaymentProcessor findProcessor(PaymentRequest request) {
         return paymentProcessors.stream()
             .filter(p -> p.supports(request))
@@ -671,7 +666,7 @@ public class PaymentService {
                 "No processor found for: " + request.getMethod()
             ));
     }
-    
+
     public List<PaymentMethod> getAvailablePaymentMethods() {
         return paymentProcessors.stream()
             .map(PaymentProcessor::getPaymentMethod)
@@ -705,7 +700,7 @@ public interface NotificationSender {
 // Base implementation
 @Component("emailNotificationSender")
 public class EmailNotificationSender implements NotificationSender {
-    
+
     @Override
     public void send(Notification notification) {
         // Send email
@@ -729,9 +724,9 @@ public class LoggingNotificationDecorator implements NotificationSender {
     public void send(Notification notification) {
         log.info("About to send notification: {}", notification.getId());
         long startTime = System.currentTimeMillis();
-        
+
         delegate.send(notification);
-        
+
         long duration = System.currentTimeMillis() - startTime;
         log.info("Notification sent in {}ms", duration);
     }
@@ -795,7 +790,6 @@ public class RetryableNotificationDecorator implements NotificationSender {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### ❌ CLASSIC LSP VIOLATION
 
 ```java
@@ -806,29 +800,29 @@ public class RetryableNotificationDecorator implements NotificationSender {
 public class Rectangle {
     protected int width;
     protected int height;
-    
+
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
     public void setHeight(int height) {
         this.height = height;
     }
-    
+
     public int getArea() {
         return width * height;
     }
 }
 
 public class Square extends Rectangle {
-    
+
     @Override
     public void setWidth(int width) {
         // Violates LSP - changes behavior unexpectedly
         this.width = width;
         this.height = width;  // Also changes height!
     }
-    
+
     @Override
     public void setHeight(int height) {
         // Violates LSP - changes behavior unexpectedly
@@ -841,7 +835,7 @@ public class Square extends Rectangle {
 public void testRectangle(Rectangle rect) {
     rect.setWidth(5);
     rect.setHeight(4);
-    
+
     // Expected: 20
     // With Rectangle: 20 ✓
     // With Square: 16 ✗ (5*5 then 4*4 = 16)
@@ -863,17 +857,17 @@ public interface UserRepository {
 
 @Repository
 public class JpaUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         return entityManager.merge(user);
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
-    
+
     @Override
     public void delete(Long id) {
         User user = entityManager.find(User.class, id);
@@ -890,17 +884,17 @@ public class JpaUserRepository implements UserRepository {
  */
 @Repository
 public class ReadOnlyUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         throw new UnsupportedOperationException("Read-only repository!");
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         // This works...
     }
-    
+
     @Override
     public void delete(Long id) {
         throw new UnsupportedOperationException("Read-only repository!");
@@ -910,7 +904,7 @@ public class ReadOnlyUserRepository implements UserRepository {
 // Any code using UserRepository will break with ReadOnlyUserRepository
 public class UserService {
     private final UserRepository userRepository;
-    
+
     public void createUser(User user) {
         userRepository.save(user);  // BOOM! UnsupportedOperationException
     }
@@ -942,17 +936,17 @@ public interface UserRepository extends UserReader, UserWriter {
 
 @Repository
 public class JpaUserRepository implements UserRepository {
-    
+
     @Override
     public User save(User user) {
         return entityManager.merge(user);
     }
-    
+
     @Override
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
     }
-    
+
     @Override
     public void delete(Long id) {
         User user = entityManager.find(User.class, id);
@@ -960,13 +954,13 @@ public class JpaUserRepository implements UserRepository {
             entityManager.remove(user);
         }
     }
-    
+
     @Override
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM User u", User.class)
             .getResultList();
     }
-    
+
     @Override
     public boolean existsById(Long id) {
         return findById(id).isPresent();
@@ -977,11 +971,11 @@ public class JpaUserRepository implements UserRepository {
 @Service
 public class UserQueryService {
     private final UserReader userReader;  // Only needs read operations
-    
+
     public UserQueryService(UserReader userReader) {
         this.userReader = userReader;
     }
-    
+
     public UserDto findUser(Long id) {
         return userReader.findById(id)
             .map(this::toDto)
@@ -993,11 +987,11 @@ public class UserQueryService {
 @Service
 public class UserCommandService {
     private final UserRepository userRepository;  // Needs both read and write
-    
+
     public UserCommandService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    
+
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
         User user = toEntity(request);
@@ -1036,7 +1030,7 @@ public class ProcessingException extends RuntimeException {
     public ProcessingException(String message) {
         super(message);
     }
-    
+
     public ProcessingException(String message, Throwable cause) {
         super(message, cause);
     }
@@ -1067,19 +1061,16 @@ public class DatabaseDataProcessor implements DataProcessor {
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 3: "Subtypes must be substitutable for their base types"**
 
 **Challenge 1 (Design — Who/When/What):** A `Square extends Rectangle` fails LSP. **Who** is the caller that breaks? **What** invariant does `Square` violate? **When** at runtime does the failure manifest?\n\n<details><summary>Answer</summary>\n\n**Who breaks?** Any caller relying on Rectangle's contract: `rect.setWidth(5); rect.setHeight(4); assert rect.area() == 20`. With `Square`, `setWidth(5)` also sets height to 5 → area = 25, not 20 — assertion fails. **What invariant violated?** Rectangle's pre/post-condition: setting width independently of height. Square CANNOT honor this because width == height always. **When at runtime?** Whenever a `Square` is passed where `Rectangle` is expected and the caller sets dimensions independently. **Fix:** Don't use inheritance here. Use composition: `Shape` interface with `area()`. Both `Rectangle` and `Square` implement it independently. No subtype relationship. LSP rule: if you override a method, you must keep the postconditions of the parent OR strengthen them (never weaken).\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+
 </details>
-
-

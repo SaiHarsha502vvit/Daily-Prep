@@ -1,11 +1,11 @@
 # Semester 6 — Backend & DevOps
 
-| Code | Course | Hours |
-|------|--------|-------|
-| CSE601 | Spring Boot & Microservices | ~30h |
-| CSE602 | API Design & Testing | ~20h |
-| CSE603 | DevOps & CI/CD | ~20h |
-| CSE604 | Java Concurrency & JVM Internals | ~20h |
+| Code   | Course                           | Hours |
+| ------ | -------------------------------- | ----- |
+| CSE601 | Spring Boot & Microservices      | ~30h  |
+| CSE602 | API Design & Testing             | ~20h  |
+| CSE603 | DevOps & CI/CD                   | ~20h  |
+| CSE604 | Java Concurrency & JVM Internals | ~20h  |
 
 **Prerequisites:** [Semester 3 — Software Engineering Core](../S03/README.md) + [Semester 4 — Systems & Networking](../S04/README.md) (S04 can be taken concurrently with S06)
 

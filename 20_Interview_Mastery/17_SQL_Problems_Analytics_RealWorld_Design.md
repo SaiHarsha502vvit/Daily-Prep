@@ -18,10 +18,12 @@
 **WHAT**: Calculate the percentage of users who return 1, 7, and 30 days after signup.
 
 **WHY this is a core product analytics question**:
+
 - Every tech company tracks retention
 - Tests your ability to self-join on date math
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Identify each user's signup date (first activity)
 Step 2: Check if activity exists on signup + N days
@@ -31,14 +33,14 @@ WITH signups AS (
   SELECT user_id, MIN(activity_date) AS signup_date
   FROM UserActivity GROUP BY user_id
 )
-SELECT 
-  ROUND(100.0 * COUNT(DISTINCT CASE 
+SELECT
+  ROUND(100.0 * COUNT(DISTINCT CASE
     WHEN DATEDIFF(a.activity_date, s.signup_date) = 1 THEN a.user_id END)
     / COUNT(DISTINCT s.user_id), 2) AS day1_retention,
-  ROUND(100.0 * COUNT(DISTINCT CASE 
+  ROUND(100.0 * COUNT(DISTINCT CASE
     WHEN DATEDIFF(a.activity_date, s.signup_date) = 7 THEN a.user_id END)
     / COUNT(DISTINCT s.user_id), 2) AS day7_retention,
-  ROUND(100.0 * COUNT(DISTINCT CASE 
+  ROUND(100.0 * COUNT(DISTINCT CASE
     WHEN DATEDIFF(a.activity_date, s.signup_date) = 30 THEN a.user_id END)
     / COUNT(DISTINCT s.user_id), 2) AS day30_retention
 FROM signups s
@@ -54,8 +56,9 @@ LEFT JOIN UserActivity a ON s.user_id = a.user_id
 **WHAT**: How many users reach each stage: visit → signup → purchase?
 
 **WHY conditional counting in a single scan**:
+
 ```
-SELECT 
+SELECT
   COUNT(DISTINCT CASE WHEN event = 'visit' THEN user_id END) AS visitors,
   COUNT(DISTINCT CASE WHEN event = 'signup' THEN user_id END) AS signups,
   COUNT(DISTINCT CASE WHEN event = 'purchase' THEN user_id END) AS purchasers,
@@ -75,6 +78,7 @@ FROM Events
 **WHAT**: Revenue breakdown by signup month cohort over subsequent months.
 
 **WHY cohort thinking requires two date dimensions**:
+
 ```
 WITH cohorts AS (
   SELECT user_id, DATE_FORMAT(MIN(order_date), '%Y-%m') AS cohort_month
@@ -99,6 +103,7 @@ ORDER BY c.cohort_month, month_number
 **WHAT**: Daily, weekly, and monthly active users.
 
 **WHY COUNT DISTINCT with date ranges**:
+
 ```
 -- DAU on a specific date
 SELECT activity_date, COUNT(DISTINCT user_id) AS DAU
@@ -109,7 +114,7 @@ GROUP BY activity_date
 SELECT a1.activity_date,
        COUNT(DISTINCT a2.user_id) AS WAU
 FROM (SELECT DISTINCT activity_date FROM Activity) a1
-JOIN Activity a2 
+JOIN Activity a2
   ON a2.activity_date BETWEEN DATE_SUB(a1.activity_date, INTERVAL 6 DAY) AND a1.activity_date
 GROUP BY a1.activity_date
 
@@ -122,7 +127,7 @@ FROM (
          COUNT(DISTINCT CASE WHEN a2.activity_date = a1.activity_date THEN a2.user_id END) AS DAU,
          COUNT(DISTINCT a2.user_id) AS MAU
   FROM (SELECT DISTINCT activity_date FROM Activity) a1
-  JOIN Activity a2 
+  JOIN Activity a2
     ON a2.activity_date BETWEEN DATE_SUB(a1.activity_date, INTERVAL 29 DAY) AND a1.activity_date
   GROUP BY a1.activity_date
 ) metrics
@@ -135,6 +140,7 @@ FROM (
 **WHAT**: Monthly revenue with MoM growth percentage.
 
 **WHY LAG for temporal comparisons**:
+
 ```
 WITH monthly AS (
   SELECT DATE_FORMAT(order_date, '%Y-%m') AS month,
@@ -150,9 +156,6 @@ FROM monthly
 
 ---
 
-
-
-
 ## REAL-WORLD SCENARIO PROBLEMS
 
 ---
@@ -162,6 +165,7 @@ FROM monthly
 **WHAT**: Recommend friends of friends who aren't already friends.
 
 **WHY two-hop join minus existing connections**:
+
 ```
 -- Find friends-of-friends
 SELECT DISTINCT f1.user_id, f2.friend_id AS recommended_friend
@@ -176,6 +180,7 @@ AND (f1.user_id, f2.friend_id) NOT IN (
 **Logic**: "My friends are in f1. Their friends are in f2. If f2's friend isn't already MY friend, recommend them."
 
 **With mutual friend count** (stronger recommendation):
+
 ```
 SELECT f1.user_id, f2.friend_id AS recommended, COUNT(*) AS mutual_friends
 FROM Friendships f1
@@ -193,6 +198,7 @@ ORDER BY f1.user_id, mutual_friends DESC
 **WHAT**: Find each user's longest consecutive login streak.
 
 **WHY islands technique with date - ROW_NUMBER**:
+
 ```
 WITH numbered AS (
   SELECT user_id, login_date,
@@ -217,6 +223,7 @@ GROUP BY user_id
 **WHAT**: Given stock_in and stock_out events, find stock level on any date.
 
 **WHY running sum of signed quantities**:
+
 ```
 SELECT product_id, event_date,
        SUM(CASE WHEN event_type = 'in' THEN quantity ELSE -quantity END)
@@ -233,6 +240,7 @@ FROM StockEvents
 **WHAT**: Calculate median salary across the company.
 
 **WHY position-based approach**:
+
 ```
 SELECT AVG(salary) AS median FROM (
   SELECT salary,
@@ -252,6 +260,7 @@ WHERE rn IN (FLOOR((total+1)/2.0), CEIL((total+1)/2.0))
 **WHAT**: Flag transactions where the same card has 2+ charges within 10 minutes.
 
 **WHY LEAD/LAG to compare timestamps**:
+
 ```
 SELECT * FROM (
   SELECT *,
@@ -262,11 +271,12 @@ WHERE TIMESTAMPDIFF(MINUTE, txn_time, next_txn_time) <= 10
 ```
 
 **With self-join approach** (find ALL pairs, not just adjacent):
+
 ```
 SELECT DISTINCT t1.txn_id, t2.txn_id AS suspicious_pair
 FROM Transactions t1
-JOIN Transactions t2 
-  ON t1.card_id = t2.card_id 
+JOIN Transactions t2
+  ON t1.card_id = t2.card_id
   AND t1.txn_id < t2.txn_id
   AND TIMESTAMPDIFF(MINUTE, t1.txn_time, t2.txn_time) <= 10
 ```
@@ -278,10 +288,11 @@ JOIN Transactions t2
 **WHAT**: Group user clicks into sessions (30-minute inactivity gap).
 
 **WHY LAG to detect gaps, then running sum to assign session IDs**:
+
 ```
 WITH gaps AS (
   SELECT *,
-         CASE WHEN TIMESTAMPDIFF(MINUTE, 
+         CASE WHEN TIMESTAMPDIFF(MINUTE,
            LAG(click_time) OVER (PARTITION BY user_id ORDER BY click_time),
            click_time) > 30 THEN 1 ELSE 0 END AS new_session
   FROM Clicks
@@ -292,6 +303,7 @@ FROM gaps
 ```
 
 **The two-step pattern**:
+
 1. Mark "new session start" when gap > threshold (LAG comparison)
 2. Running SUM of those flags = session counter
 
@@ -306,6 +318,7 @@ FROM gaps
 **WHAT**: Design tables for products, orders, users, payments.
 
 **WHY normalization + practical trade-offs**:
+
 ```
 Users(user_id PK, email UNIQUE, name, created_at)
 Products(product_id PK, name, description, price, category_id FK, stock)
@@ -316,6 +329,7 @@ Payments(payment_id PK, order_id FK, amount, method, status, paid_at)
 ```
 
 **Key design decisions**:
+
 - `unit_price` in OrderItems → captures price AT TIME OF ORDER (product price may change later)
 - `total_amount` in Orders → denormalized for performance (avoid recalculating on every read)
 - `parent_id` in Categories → allows hierarchical categories
@@ -328,6 +342,7 @@ Payments(payment_id PK, order_id FK, amount, method, status, paid_at)
 **WHAT**: Design tables for users, posts, follows, likes, comments.
 
 **WHY**:
+
 ```
 Users(user_id PK, username UNIQUE, email UNIQUE, bio, created_at)
 Posts(post_id PK, user_id FK, content, media_url, created_at)
@@ -337,6 +352,7 @@ Comments(comment_id PK, post_id FK, user_id FK, parent_comment_id FK NULLABLE, c
 ```
 
 **Design decisions**:
+
 - Follows: Composite PK prevents duplicate follows. No self-follow enforced via CHECK constraint.
 - Likes: Composite PK prevents double-likes. A user can only like a post once.
 - Comments: `parent_comment_id` enables threaded/nested comments.
@@ -349,6 +365,7 @@ Comments(comment_id PK, post_id FK, user_id FK, parent_comment_id FK NULLABLE, c
 **WHAT**: Implement deletion without losing data.
 
 **WHY "deleted_at" column instead of hard DELETE**:
+
 ```
 ALTER TABLE Users ADD deleted_at TIMESTAMP NULL DEFAULT NULL;
 
@@ -363,6 +380,7 @@ CREATE VIEW ActiveUsers AS SELECT * FROM Users WHERE deleted_at IS NULL;
 ```
 
 **Trade-offs**:
+
 - Pros: Audit trail, easy undo, data recovery
 - Cons: Every query needs `WHERE deleted_at IS NULL`, index overhead
 - Alternative: Move deleted rows to archive table
@@ -374,13 +392,14 @@ CREATE VIEW ActiveUsers AS SELECT * FROM Users WHERE deleted_at IS NULL;
 **WHAT**: Prevent lost updates in concurrent environments.
 
 **WHY version column detects conflicts**:
+
 ```
 -- Read
 SELECT product_id, stock, version FROM Products WHERE product_id = 1;
 -- App reads: stock=10, version=5
 
 -- Update with version check
-UPDATE Products 
+UPDATE Products
 SET stock = stock - 1, version = version + 1
 WHERE product_id = 1 AND version = 5;
 
@@ -400,11 +419,13 @@ WHERE product_id = 1 AND version = 5;
 **WHAT**: `SELECT * FROM Orders WHERE YEAR(order_date) = 2024` is slow. Why?
 
 **WHY function on column prevents index use**:
+
 - `YEAR(order_date)` applies a function → MySQL can't use the index on order_date
 - Fix: `WHERE order_date >= '2024-01-01' AND order_date < '2025-01-01'`
 - This is a "sargable" expression (Search ARGument ABLE = can use index)
 
 **Common non-sargable patterns to avoid**:
+
 ```
 BAD:  WHERE YEAR(date_col) = 2024        → function on column
 GOOD: WHERE date_col >= '2024-01-01'     → range scan on index
@@ -428,18 +449,21 @@ GOOD: WHERE id = 123                      → native type comparison
 **WHY — The Decision Framework**:
 
 **Add index when**:
+
 - Column appears in WHERE, JOIN, ORDER BY frequently
 - High cardinality (many distinct values)
 - Table has many rows
 - Read-heavy workload
 
 **Don't add index when**:
+
 - Table is small (full scan is fine)
 - Low cardinality (e.g., boolean column with 50/50 split)
 - Write-heavy (indexes slow down INSERT/UPDATE/DELETE)
 - Column rarely appears in queries
 
 **Composite index ordering**: Put EQUALITY columns first, then RANGE columns.
+
 ```
 -- Query: WHERE status = 'active' AND created_at > '2024-01-01'
 -- Best index: (status, created_at) → equality first, then range
@@ -450,29 +474,27 @@ GOOD: WHERE id = 123                      → native type comparison
 
 ## MASTER PROBLEM MAP — Analytics, Real-World, Design
 
-| # | Problem | Core Technique | Category |
-|---|---------|---------------|----------|
-| 1 | Retention Rate | Self-join on signup + N days | Analytics |
-| 2 | Funnel Analysis | COUNT(DISTINCT CASE WHEN) | Analytics |
-| 3 | Cohort Revenue | CTE + date diff grouping | Analytics |
-| 4 | DAU/WAU/MAU | Rolling date range joins | Analytics |
-| 5 | MoM Revenue Growth | LAG on monthly aggregation | Analytics |
-| 6 | Friend Recommendations | 2-hop join minus existing | Real-World |
-| 7 | Login Streaks | date - ROW_NUMBER() islands | Real-World |
-| 8 | Stock Level | Running sum of signed events | Real-World |
-| 9 | Median Calculation | ROW_NUMBER + FLOOR/CEIL position | Real-World |
-| 10 | Fraud Detection | LEAD/LAG on timestamps | Real-World |
-| 11 | Session Analysis | LAG gap detect + running SUM | Real-World |
-| 12 | E-commerce Schema | Normalization + denormalization trade-offs | Design |
-| 13 | Social Network Schema | Composite PKs, self-ref FKs | Design |
-| 14 | Soft Delete | deleted_at column + views | Design |
-| 15 | Optimistic Locking | version column + conditional update | Design |
-| 16 | Slow Query Fix | Sargable expressions + index awareness | Performance |
-| 17 | Index Strategy | Cardinality, composite ordering, trade-offs | Performance |
+| #   | Problem                | Core Technique                              | Category    |
+| --- | ---------------------- | ------------------------------------------- | ----------- |
+| 1   | Retention Rate         | Self-join on signup + N days                | Analytics   |
+| 2   | Funnel Analysis        | COUNT(DISTINCT CASE WHEN)                   | Analytics   |
+| 3   | Cohort Revenue         | CTE + date diff grouping                    | Analytics   |
+| 4   | DAU/WAU/MAU            | Rolling date range joins                    | Analytics   |
+| 5   | MoM Revenue Growth     | LAG on monthly aggregation                  | Analytics   |
+| 6   | Friend Recommendations | 2-hop join minus existing                   | Real-World  |
+| 7   | Login Streaks          | date - ROW_NUMBER() islands                 | Real-World  |
+| 8   | Stock Level            | Running sum of signed events                | Real-World  |
+| 9   | Median Calculation     | ROW_NUMBER + FLOOR/CEIL position            | Real-World  |
+| 10  | Fraud Detection        | LEAD/LAG on timestamps                      | Real-World  |
+| 11  | Session Analysis       | LAG gap detect + running SUM                | Real-World  |
+| 12  | E-commerce Schema      | Normalization + denormalization trade-offs  | Design      |
+| 13  | Social Network Schema  | Composite PKs, self-ref FKs                 | Design      |
+| 14  | Soft Delete            | deleted_at column + views                   | Design      |
+| 15  | Optimistic Locking     | version column + conditional update         | Design      |
+| 16  | Slow Query Fix         | Sargable expressions + index awareness      | Performance |
+| 17  | Index Strategy         | Cardinality, composite ordering, trade-offs | Performance |
 
 ---
-
-
 
 ## SQL Interview Quick Decision Tree
 
@@ -488,4 +510,3 @@ GOOD: WHERE id = 123                      → native type comparison
 "Pivot rows to columns"             → SUM(CASE WHEN col = 'X' THEN val END)
 "First/last per group"              → MIN/MAX or FIRST_VALUE/LAST_VALUE window
 ```
-

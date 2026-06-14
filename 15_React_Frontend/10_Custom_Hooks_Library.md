@@ -16,7 +16,47 @@
 
 ---
 
+### Historical Evolution
+
+Custom Hooks emerged as React's definitive answer to logic reuse, replacing the wrapper-hell patterns of the class-component era with simple function composition.
+
+| Year | Milestone |
+|------|-----------|
+| 2018 | Hooks RFC introduced at React Conf |
+| 2019 | React 16.8 ships Hooks — custom hooks become possible immediately |
+| 2019-2020 | Custom hook libraries proliferate (react-use, ahooks, Mantine hooks) |
+
+Hooks were designed around the observation that logic reuse in React was harder than UI reuse. HOCs and render props required restructuring component trees; custom hooks let developers extract stateful logic without touching the tree at all. Within a year of release, the community produced dozens of open-source hook libraries.
+
+**Predecessor:** Higher-Order Components (2015-2018) — the dominant pattern for logic reuse that created deeply nested component wrappers
+**Modern anchor:** Every production React codebase today uses custom hooks for data fetching, form handling, event listeners, and reusable logic
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Stale closure** | Custom hook returns a callback that captures stale state; consumer gets old value days after deployment | Use `useCallback` with exhaustive deps inside hooks; expose ref-based getters for values that must stay fresh |
+| **Hook rule violation** | Custom hook internally calls another hook conditionally based on a prop; crashes in production builds | Validate hook call order with ESLint `react-hooks/rules-of-hooks`; always call hooks at top level, branch inside if needed |
+| **Memory leak** | Custom hook with `useEffect` adds event listeners but cleanup misses edge cases (iframe unload, StrictMode double-mount) | Double-check cleanup functions; test with React StrictMode enabled; use `AbortSignal` for fetch-based hooks |
+
+Custom hook failures are dangerous because the bug is hidden inside an abstraction — a stale closure in `useDebounce` silently drops user input, and a missing cleanup in `useEventListener` leaks DOM references across hundreds of components.
+
+---
+
+### Variant Trade-offs: Debounce vs Throttle vs Polling
+
+| Pattern | Trigger Behavior | Best For | Trade-off |
+|---------|-----------------|----------|-----------|
+| **Debounce** | Fires once after user STOPS for delay | Search inputs, form validation, resize-end events | Delayed feedback; may feel unresponsive if delay is too long |
+| **Throttle** | Fires at most once per interval while active | Scroll handlers, mousemove, real-time drag | Misses intermediate values; can feel "janky" at low intervals |
+| **Custom Polling (useInterval)** | Fires repeatedly on a fixed timer | Live dashboards, chat updates, heartbeat checks | Wastes requests when data hasn't changed; battery drain on mobile |
+
+**Selection rule:** Choose **Debounce** when the final state matters more than intermediate states (search queries). Choose **Throttle** when you need regular updates but must cap the rate (scroll position, game input). Choose **Polling** only when real-time push (WebSocket/SSE) is unavailable; prefer WebSockets for live data. Never use throttling for search — it fires mid-typing. Never use debouncing for scroll — it waits until scrolling stops.
+
+---
+
 ## Table of Contents
+
 1. [useLocalStorage — Persistent State](#1-uselocalstorage--persistent-state)
 2. [useFetch — Data Fetching with Loading & Error](#2-usefetch--data-fetching-with-loading--error)
 3. [useDebounce — Debounced Values](#3-usedebounce--debounced-values)
@@ -44,7 +84,7 @@
 ```
 
 ```jsx
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 function useLocalStorage(key, initialValue) {
   // Initialize from localStorage or use default
@@ -59,16 +99,20 @@ function useLocalStorage(key, initialValue) {
   });
 
   // Wrapped setter that also writes to localStorage
-  const setValue = useCallback((value) => {
-    try {
-      // Allow value to be a function (like useState)
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+  const setValue = useCallback(
+    (value) => {
+      try {
+        // Allow value to be a function (like useState)
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue],
+  );
 
   const removeValue = useCallback(() => {
     try {
@@ -84,10 +128,12 @@ function useLocalStorage(key, initialValue) {
 
 // ─── USAGE ───
 function ThemeSelector() {
-  const [theme, setTheme] = useLocalStorage('theme', 'light');
+  const [theme, setTheme] = useLocalStorage("theme", "light");
 
   return (
-    <button onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}>
+    <button
+      onClick={() => setTheme((prev) => (prev === "light" ? "dark" : "light"))}
+    >
       Current: {theme}
     </button>
   );
@@ -99,7 +145,7 @@ function ThemeSelector() {
 ## 2. useFetch — Data Fetching with Loading & Error
 
 ```jsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 function useFetch(url, options = {}) {
   const [data, setData] = useState(null);
@@ -137,7 +183,7 @@ function useFetch(url, options = {}) {
         const json = await response.json();
         setData(json);
       } catch (err) {
-        if (err.name !== 'AbortError') {
+        if (err.name !== "AbortError") {
           setError(err);
         }
       } finally {
@@ -169,15 +215,12 @@ function UserProfile({ userId }) {
 
 ---
 
-
-
-
 ## 3. useDebounce — Debounced Values
 
 ```
   WHY: Prevent firing expensive operations on every keystroke.
   WHEN: Search input, form validation, resize handlers.
-  
+
   Timeline:
   User types:  H  E  L  L  O
   Raw value:   H→ HE→ HEL→ HELL→ HELLO
@@ -186,7 +229,7 @@ function UserProfile({ userId }) {
 ```
 
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useDebounce(value, delay = 300) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -204,15 +247,21 @@ function useDebounce(value, delay = 300) {
 
 // ─── USAGE ───
 function SearchBar() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
   const { data: results } = useFetch(
-    debouncedQuery ? `/api/search?q=${encodeURIComponent(debouncedQuery)}` : null
+    debouncedQuery
+      ? `/api/search?q=${encodeURIComponent(debouncedQuery)}`
+      : null,
   );
 
   return (
     <div>
-      <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search..." />
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
       {results && <SearchResults items={results} />}
     </div>
   );
@@ -226,19 +275,19 @@ function SearchBar() {
 ```
   DEBOUNCE vs THROTTLE:
   ─────────────────────
-  
+
   Debounce: Wait until user STOPS, then fire.
             ___________fire
-  
+
   Throttle: Fire at most once per interval, even while user continues.
             fire___fire___fire___fire
-  
+
   Use throttle for: scroll position, mouse position, resize, drag.
   Use debounce for: search input, form validation, API calls.
 ```
 
 ```jsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 function useThrottle(value, interval = 200) {
   const [throttledValue, setThrottledValue] = useState(value);
@@ -251,10 +300,13 @@ function useThrottle(value, interval = 200) {
       lastUpdated.current = now;
       setThrottledValue(value);
     } else {
-      const timer = setTimeout(() => {
-        lastUpdated.current = Date.now();
-        setThrottledValue(value);
-      }, interval - (now - lastUpdated.current));
+      const timer = setTimeout(
+        () => {
+          lastUpdated.current = Date.now();
+          setThrottledValue(value);
+        },
+        interval - (now - lastUpdated.current),
+      );
 
       return () => clearTimeout(timer);
     }
@@ -270,12 +322,14 @@ function ScrollTracker() {
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Analytics/UI updates use throttledScroll (fires at most every 100ms)
-  return <ProgressBar progress={throttledScroll / document.body.scrollHeight} />;
+  return (
+    <ProgressBar progress={throttledScroll / document.body.scrollHeight} />
+  );
 }
 ```
 
@@ -288,7 +342,7 @@ function ScrollTracker() {
 ```
 
 ```jsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 function useClickOutside(handler) {
   const ref = useRef(null);
@@ -302,12 +356,12 @@ function useClickOutside(handler) {
       handler(event);
     };
 
-    document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
 
     return () => {
-      document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
     };
   }, [handler]);
 
@@ -335,11 +389,11 @@ function Dropdown({ onClose }) {
 ## 6. useMediaQuery — Responsive JavaScript
 
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useMediaQuery(query) {
   const [matches, setMatches] = useState(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       return window.matchMedia(query).matches;
     }
     return false;
@@ -349,11 +403,11 @@ function useMediaQuery(query) {
     const mediaQuery = window.matchMedia(query);
     const handler = (event) => setMatches(event.matches);
 
-    mediaQuery.addEventListener('change', handler);
+    mediaQuery.addEventListener("change", handler);
     // Sync initial state
     setMatches(mediaQuery.matches);
 
-    return () => mediaQuery.removeEventListener('change', handler);
+    return () => mediaQuery.removeEventListener("change", handler);
   }, [query]);
 
   return matches;
@@ -361,9 +415,11 @@ function useMediaQuery(query) {
 
 // ─── USAGE ───
 function NavigationBar() {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)");
+  const prefersReducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)",
+  );
 
   if (isMobile) {
     return <HamburgerMenu />;
@@ -377,12 +433,12 @@ function NavigationBar() {
 ## 7. useWindowSize — Track Viewport Dimensions
 
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useWindowSize() {
   const [size, setSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
 
   useEffect(() => {
@@ -395,9 +451,9 @@ function useWindowSize() {
       }, 150);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       clearTimeout(timeoutId);
     };
   }, []);
@@ -411,8 +467,15 @@ function ResponsiveGrid({ items }) {
   const columns = width > 1200 ? 4 : width > 768 ? 3 : width > 480 ? 2 : 1;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-      {items.map(item => <Card key={item.id} {...item} />)}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+      }}
+    >
+      {items.map((item) => (
+        <Card key={item.id} {...item} />
+      ))}
     </div>
   );
 }
@@ -420,15 +483,12 @@ function ResponsiveGrid({ items }) {
 
 ---
 
-
-
-
 ## 8. useIntersectionObserver — Lazy Loading & Infinite Scroll
 
 ```
   Intersection Observer detects when an element enters/exits the viewport.
   MUCH more performant than scroll event listeners!
-  
+
   USE CASES:
   • Lazy load images
   • Infinite scroll (load more when bottom reached)
@@ -437,7 +497,7 @@ function ResponsiveGrid({ items }) {
 ```
 
 ```jsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
 function useIntersectionObserver(options = {}) {
   const [entry, setEntry] = useState(null);
@@ -448,14 +508,11 @@ function useIntersectionObserver(options = {}) {
     if (observer.current) observer.current.disconnect();
     if (!node) return;
 
-    observer.current = new IntersectionObserver(
-      ([entry]) => setEntry(entry),
-      {
-        root: options.root ?? null,
-        rootMargin: options.rootMargin ?? '0px',
-        threshold: options.threshold ?? 0,
-      }
-    );
+    observer.current = new IntersectionObserver(([entry]) => setEntry(entry), {
+      root: options.root ?? null,
+      rootMargin: options.rootMargin ?? "0px",
+      threshold: options.threshold ?? 0,
+    });
 
     observer.current.observe(node);
 
@@ -468,18 +525,14 @@ function useIntersectionObserver(options = {}) {
 // ─── USAGE 1: Lazy Load Images ───
 function LazyImage({ src, alt }) {
   const { ref, isIntersecting } = useIntersectionObserver({
-    rootMargin: '200px', // Start loading 200px before visible
+    rootMargin: "200px", // Start loading 200px before visible
   });
   const [loaded, setLoaded] = useState(false);
 
   return (
     <div ref={ref}>
       {(isIntersecting || loaded) && (
-        <img 
-          src={src} 
-          alt={alt} 
-          onLoad={() => setLoaded(true)} 
-        />
+        <img src={src} alt={alt} onLoad={() => setLoaded(true)} />
       )}
     </div>
   );
@@ -493,19 +546,21 @@ function InfiniteList() {
 
   useEffect(() => {
     if (isIntersecting) {
-      setPage(prev => prev + 1); // Load next page
+      setPage((prev) => prev + 1); // Load next page
     }
   }, [isIntersecting]);
 
   useEffect(() => {
     fetch(`/api/items?page=${page}`)
-      .then(r => r.json())
-      .then(newItems => setItems(prev => [...prev, ...newItems]));
+      .then((r) => r.json())
+      .then((newItems) => setItems((prev) => [...prev, ...newItems]));
   }, [page]);
 
   return (
     <div>
-      {items.map(item => <ItemCard key={item.id} item={item} />)}
+      {items.map((item) => (
+        <ItemCard key={item.id} item={item} />
+      ))}
       <div ref={ref} style={{ height: 1 }} /> {/* Sentinel element */}
     </div>
   );
@@ -514,13 +569,10 @@ function InfiniteList() {
 
 ---
 
-
-
-
 ## 9. usePrevious — Access Previous Render's Value
 
 ```jsx
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 function usePrevious(value) {
   const ref = useRef();
@@ -536,15 +588,19 @@ function usePrevious(value) {
 function PriceDisplay({ price }) {
   const previousPrice = usePrevious(price);
 
-  const direction = previousPrice !== undefined
-    ? price > previousPrice ? 'up' : price < previousPrice ? 'down' : 'same'
-    : 'same';
+  const direction =
+    previousPrice !== undefined
+      ? price > previousPrice
+        ? "up"
+        : price < previousPrice
+          ? "down"
+          : "same"
+      : "same";
 
   return (
     <span className={`price price--${direction}`}>
-      {direction === 'up' && '▲'}
-      {direction === 'down' && '▼'}
-      ${price.toFixed(2)}
+      {direction === "up" && "▲"}
+      {direction === "down" && "▼"}${price.toFixed(2)}
     </span>
   );
 }
@@ -555,7 +611,7 @@ function PriceDisplay({ price }) {
 ## 10. useAsync — Generic Async Operation Handler
 
 ```jsx
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 function useAsync(asyncFunction) {
   const [state, setState] = useState({
@@ -564,18 +620,21 @@ function useAsync(asyncFunction) {
     loading: false,
   });
 
-  const execute = useCallback(async (...args) => {
-    setState({ data: null, error: null, loading: true });
+  const execute = useCallback(
+    async (...args) => {
+      setState({ data: null, error: null, loading: true });
 
-    try {
-      const data = await asyncFunction(...args);
-      setState({ data, error: null, loading: false });
-      return data;
-    } catch (error) {
-      setState({ data: null, error, loading: false });
-      throw error;
-    }
-  }, [asyncFunction]);
+      try {
+        const data = await asyncFunction(...args);
+        setState({ data, error: null, loading: false });
+        return data;
+      } catch (error) {
+        setState({ data: null, error, loading: false });
+        throw error;
+      }
+    },
+    [asyncFunction],
+  );
 
   return { ...state, execute };
 }
@@ -583,12 +642,12 @@ function useAsync(asyncFunction) {
 // ─── USAGE ───
 function SubmitForm() {
   const { data, error, loading, execute } = useAsync(async (formData) => {
-    const res = await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    if (!res.ok) throw new Error('Submission failed');
+    if (!res.ok) throw new Error("Submission failed");
     return res.json();
   });
 
@@ -601,9 +660,7 @@ function SubmitForm() {
     <form onSubmit={handleSubmit}>
       <input name="name" required />
       <input name="email" type="email" required />
-      <button disabled={loading}>
-        {loading ? 'Submitting...' : 'Submit'}
-      </button>
+      <button disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
       {error && <p className="error">{error.message}</p>}
       {data && <p className="success">Submitted!</p>}
     </form>
@@ -613,27 +670,28 @@ function SubmitForm() {
 
 ---
 
-
-
 🔬 **Section Challenge — 10. useAsync — Generic Async Operation Handler**
 
 **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+
 <details><summary>Answer</summary>
 
 `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+
 <details><summary>Answer</summary>
 
 Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-</details>
 
+</details>
 
 ## 11. useEventListener — Declarative Event Binding
 
 ```jsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 function useEventListener(eventName, handler, element) {
   const savedHandler = useRef(handler);
@@ -657,13 +715,13 @@ function useEventListener(eventName, handler, element) {
 
 // ─── USAGE ───
 function App() {
-  useEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-    if (e.ctrlKey && e.key === 'k') openCommandPalette();
+  useEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+    if (e.ctrlKey && e.key === "k") openCommandPalette();
   });
 
-  useEventListener('online', () => showToast('Back online!'));
-  useEventListener('offline', () => showToast('You are offline'));
+  useEventListener("online", () => showToast("Back online!"));
+  useEventListener("offline", () => showToast("You are offline"));
 
   return <div>...</div>;
 }
@@ -671,13 +729,10 @@ function App() {
 
 ---
 
-
-
-
 ## 12. useKeyPress — Keyboard Shortcut Handler
 
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useKeyPress(targetKey) {
   const [isPressed, setIsPressed] = useState(false);
@@ -690,12 +745,12 @@ function useKeyPress(targetKey) {
       if (e.key === targetKey) setIsPressed(false);
     };
 
-    window.addEventListener('keydown', downHandler);
-    window.addEventListener('keyup', upHandler);
+    window.addEventListener("keydown", downHandler);
+    window.addEventListener("keyup", upHandler);
 
     return () => {
-      window.removeEventListener('keydown', downHandler);
-      window.removeEventListener('keyup', upHandler);
+      window.removeEventListener("keydown", downHandler);
+      window.removeEventListener("keyup", upHandler);
     };
   }, [targetKey]);
 
@@ -704,16 +759,19 @@ function useKeyPress(targetKey) {
 
 // ─── USAGE ───
 function Game() {
-  const up = useKeyPress('ArrowUp');
-  const down = useKeyPress('ArrowDown');
-  const left = useKeyPress('ArrowLeft');
-  const right = useKeyPress('ArrowRight');
+  const up = useKeyPress("ArrowUp");
+  const down = useKeyPress("ArrowDown");
+  const left = useKeyPress("ArrowLeft");
+  const right = useKeyPress("ArrowRight");
 
   return (
     <div className="game">
-      <div className="player" style={{
-        transform: `translate(${right ? 10 : left ? -10 : 0}px, ${down ? 10 : up ? -10 : 0}px)`
-      }} />
+      <div
+        className="player"
+        style={{
+          transform: `translate(${right ? 10 : left ? -10 : 0}px, ${down ? 10 : up ? -10 : 0}px)`,
+        }}
+      />
     </div>
   );
 }
@@ -724,7 +782,7 @@ function Game() {
 ## 13. useCopyToClipboard — Copy Text
 
 ```jsx
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 function useCopyToClipboard() {
   const [copiedText, setCopiedText] = useState(null);
@@ -737,7 +795,7 @@ function useCopyToClipboard() {
       setTimeout(() => setCopiedText(null), 2000);
       return true;
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
       setCopiedText(null);
       return false;
     }
@@ -754,7 +812,7 @@ function CodeBlock({ code }) {
     <div className="code-block">
       <pre>{code}</pre>
       <button onClick={() => copy(code)}>
-        {copiedText ? '✓ Copied!' : 'Copy'}
+        {copiedText ? "✓ Copied!" : "Copy"}
       </button>
     </div>
   );
@@ -766,12 +824,12 @@ function CodeBlock({ code }) {
 ## 14. useToggle — Boolean State Toggle
 
 ```jsx
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue);
 
-  const toggle = useCallback(() => setValue(v => !v), []);
+  const toggle = useCallback(() => setValue((v) => !v), []);
   const setTrue = useCallback(() => setValue(true), []);
   const setFalse = useCallback(() => setValue(false), []);
 
@@ -801,9 +859,9 @@ function Sidebar() {
 ## 15. useOnScreen — Is Element Visible
 
 ```jsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-function useOnScreen(ref, rootMargin = '0px') {
+function useOnScreen(ref, rootMargin = "0px") {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -812,7 +870,7 @@ function useOnScreen(ref, rootMargin = '0px') {
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
-      { rootMargin }
+      { rootMargin },
     );
 
     observer.observe(element);
@@ -825,12 +883,12 @@ function useOnScreen(ref, rootMargin = '0px') {
 // ─── USAGE: Animate on scroll into view ───
 function AnimatedSection({ children }) {
   const ref = useRef(null);
-  const isVisible = useOnScreen(ref, '-100px');
+  const isVisible = useOnScreen(ref, "-100px");
 
   return (
     <section
       ref={ref}
-      className={`section ${isVisible ? 'section--visible' : ''}`}
+      className={`section ${isVisible ? "section--visible" : ""}`}
     >
       {children}
     </section>
@@ -848,14 +906,14 @@ function AnimatedSection({ children }) {
 
 ```
   THE POWER OF HOOKS: They compose!
-  
+
   You can build complex hooks from simpler hooks:
-  
+
   useSearchWithDebounce
     ├── useDebounce (delay search query)
     ├── useFetch (fetch results)
     └── useLocalStorage (cache recent searches)
-  
+
   useInfiniteScroll
     ├── useIntersectionObserver (detect scroll bottom)
     ├── useState (items + page number)
@@ -865,20 +923,26 @@ function AnimatedSection({ children }) {
 ```jsx
 // COMPOSED HOOK — Search with debounce + cache
 function useSearch(endpoint) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
-  const [recentSearches, setRecentSearches] = useLocalStorage('recent-searches', []);
+  const [recentSearches, setRecentSearches] = useLocalStorage(
+    "recent-searches",
+    [],
+  );
   const { data, error, loading } = useFetch(
-    debouncedQuery.length >= 2 
-      ? `${endpoint}?q=${encodeURIComponent(debouncedQuery)}` 
-      : null
+    debouncedQuery.length >= 2
+      ? `${endpoint}?q=${encodeURIComponent(debouncedQuery)}`
+      : null,
   );
 
   // Save to recent searches when results arrive
   useEffect(() => {
     if (data && debouncedQuery) {
-      setRecentSearches(prev => {
-        const updated = [debouncedQuery, ...prev.filter(s => s !== debouncedQuery)];
+      setRecentSearches((prev) => {
+        const updated = [
+          debouncedQuery,
+          ...prev.filter((s) => s !== debouncedQuery),
+        ];
         return updated.slice(0, 10); // Keep last 10
       });
     }
@@ -896,15 +960,19 @@ function useSearch(endpoint) {
 
 // ─── USAGE ───
 function SearchPage() {
-  const { query, setQuery, results, loading, recentSearches } = useSearch('/api/products');
+  const { query, setQuery, results, loading, recentSearches } =
+    useSearch("/api/products");
 
   return (
     <div>
-      <input value={query} onChange={e => setQuery(e.target.value)} />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
       {loading && <Spinner />}
-      {!query && recentSearches.map(s => (
-        <button key={s} onClick={() => setQuery(s)}>{s}</button>
-      ))}
+      {!query &&
+        recentSearches.map((s) => (
+          <button key={s} onClick={() => setQuery(s)}>
+            {s}
+          </button>
+        ))}
       {results && <ResultsList items={results} />}
     </div>
   );
@@ -931,6 +999,3 @@ function SearchPage() {
 ---
 
 **Next Chapter**: [Complex UI Pages & Patterns →](11_Complex_UI_Pages_Patterns.md)
-
-
-

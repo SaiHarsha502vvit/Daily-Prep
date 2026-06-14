@@ -1,11 +1,11 @@
 # Semester 8 — Capstone & Career
 
-| Code | Course | Hours |
-|------|--------|-------|
-| CSE801 | Capstone Project | ~40h |
-| CSE802 | Human-Computer Interaction | ~15h |
-| CSE803 | Ethics & Professional Practice | ~10h |
-| CSE804 | Career Mastery & Interview Readiness | ~20h |
+| Code   | Course                               | Hours |
+| ------ | ------------------------------------ | ----- |
+| CSE801 | Capstone Project                     | ~40h  |
+| CSE802 | Human-Computer Interaction           | ~15h  |
+| CSE803 | Ethics & Professional Practice       | ~10h  |
+| CSE804 | Career Mastery & Interview Readiness | ~20h  |
 
 **Prerequisites:** [Semester 7 — Advanced Topics](../S07/README.md)
 

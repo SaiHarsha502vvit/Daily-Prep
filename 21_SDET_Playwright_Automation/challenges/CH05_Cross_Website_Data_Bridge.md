@@ -22,11 +22,13 @@ challenges/solutions/CH05/
 ## Acceptance criteria
 
 ### Bridge
+
 - `TestDataBridge` has `set<T>`, `get<T>`, `has`, `clear`, `snapshot`.
 - `get` throws a clear error if the key was never set (no silent `undefined`).
 - Keys are an enum (`BridgeKeys`), not strings.
 
 ### Test
+
 - Three distinct `test.step()` blocks: "Create user via reqres", "Bridge stores values", "Echo via httpbin asserts equality".
 - Bridge is fixture-injected via `page.fixture.ts` and **auto-cleared** after the test.
 - No variable like `let userId: string` in the spec — all data flows through the bridge.
@@ -42,6 +44,7 @@ challenges/solutions/CH05/
 <details><summary>Why a bridge instead of let-variables?</summary>
 
 Three reasons:
+
 1. Discipline — letting steps share data via `let` makes it harder to refactor steps into reusable helpers.
 2. Visibility — `snapshot()` makes failure diagnosis 10× faster.
 3. Type safety — `get<T>` forces you to declare the expected type at every read site.

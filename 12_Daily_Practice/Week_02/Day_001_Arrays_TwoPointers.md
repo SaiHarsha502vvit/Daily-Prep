@@ -65,12 +65,14 @@ nums[i] + nums[j] + nums[k] < target
 ```
 
 **Constraints:**
+
 - `n == nums.length`
 - `0 <= n <= 3500`
 - `-100 <= nums[i] <= 100`
 - `-100 <= target <= 100`
 
 **Examples:**
+
 ```
 Example 1:
   Input:  nums = [-2, 0, 1, 3], target = 2
@@ -225,11 +227,13 @@ Final count = 2 ✅
 ---
 
 ### ⚡ Edge Cases
+
 - `n < 3` → return 0 immediately (can't form triplet)
 - All elements same → still works correctly
 - All sums larger than target → count stays 0
 
 ### 💡 Key Interview Insight
+
 > **"When array is sorted and you need pairs/triplets satisfying sum condition,
 > two pointers gives O(n) inner loop instead of O(n²). The trick is: when
 > sum < target with rightmost pointer, ALL in-between elements also satisfy."**
@@ -360,6 +364,7 @@ Answer: 49 ✅
 ---
 
 ### 💡 Key Insight
+
 > **"Two pointers from both ends. Always move the shorter wall. Why? Because
 > moving the taller wall provably cannot increase area — width shrinks AND
 > height is still limited by the shorter wall."**
@@ -380,30 +385,39 @@ Your task is to find the minimum number of flagstones needed to pave
 the Theatre Square. Note that flagstones may not be cut.
 
 **Input Format:**
+
 ```
 Three positive integers n, m, a on a single line.
 ```
 
 **Constraints:**
+
 ```
 1 ≤ n, m, a ≤ 10⁹
 ```
 
 **Sample Input 1:**
+
 ```
 6 6 4
 ```
+
 **Sample Output 1:**
+
 ```
 4
 ```
+
 **Explanation:** You need ⌈6/4⌉ × ⌈6/4⌉ = 2 × 2 = 4 flagstones.
 
 **Sample Input 2:**
+
 ```
 1 1 1
 ```
+
 **Sample Output 2:**
+
 ```
 1
 ```
@@ -412,14 +426,15 @@ Three positive integers n, m, a on a single line.
 
 ### Approach 1 — Brute Force (Wrong / Impractical)
 
-Simulating tile placement would take O(n*m/a²) time — with 10⁹ inputs that's
+Simulating tile placement would take O(n\*m/a²) time — with 10⁹ inputs that's
 impossible. This is NOT the way.
 
 ---
 
 ### Approach 2 — Math: Ceiling Division — O(1)
 
-**Key Insight:** 
+**Key Insight:**
+
 ```
   Along the n-axis: you need ⌈n/a⌉ tiles
   Along the m-axis: you need ⌈m/a⌉ tiles
@@ -481,11 +496,13 @@ Visualization:
 ---
 
 ### ⚡ Edge Cases
+
 - `n=1, m=1, a=1` → `1×1 = 1`
 - `n=1000000000, m=1000000000, a=1` → `10¹⁸` — needs `long`
 - `n=a, m=a` → exactly `1×1 = 1` tile
 
 ### 💡 Key Insight
+
 > **"Ceiling division ⌈x/y⌉ = (x + y - 1) / y in integer arithmetic.
 > Always check for overflow when dimensions can be 10⁹ — use long."**
 
@@ -509,6 +526,7 @@ each other).
 Find the number of restaurants Kefa can visit.
 
 **Input Format:**
+
 ```
 Line 1: two integers n m
 Line 2: a[1], a[2], ..., a[n]  (0 or 1)
@@ -516,6 +534,7 @@ Next n-1 lines: edges u v
 ```
 
 **Constraints:**
+
 ```
 2 ≤ n ≤ 10⁵
 0 ≤ m ≤ n
@@ -523,6 +542,7 @@ Next n-1 lines: edges u v
 ```
 
 **Sample Input 1:**
+
 ```
 4 1
 1 1 0 0
@@ -530,17 +550,22 @@ Next n-1 lines: edges u v
 1 3
 1 4
 ```
+
 **Sample Output 1:**
+
 ```
 2
 ```
-**Explanation:** Restaurants are nodes 2, 3, 4. 
+
+**Explanation:** Restaurants are nodes 2, 3, 4.
+
 - Path to 2: 1→2. Node 1 has cat, node 2 has cat → 2 consecutive cats > m=1. ❌
 - Path to 3: 1→3. Node 1 has cat → 1 cat = m=1. ✅
 - Path to 4: 1→4. Node 1 has cat → 1 cat = m=1. ✅
-Count = 2.
+  Count = 2.
 
 **Sample Input 2:**
+
 ```
 7 1
 1 0 1 1 0 0 0
@@ -551,7 +576,9 @@ Count = 2.
 3 6
 3 7
 ```
+
 **Sample Output 2:**
+
 ```
 2
 ```
@@ -568,6 +595,7 @@ cats. O(n²) in worst case (star graph).
 ### Approach 2 — Better: DFS keeping track of current consecutive cats
 
 **Key Insight:** During DFS, pass a counter of consecutive cats.
+
 ```
 - If current node has a cat:       catsInRow = catsInRow + 1
 - If current node has no cat:       catsInRow = 0    (streak broken!)
@@ -695,12 +723,14 @@ static void bfs(int root) {
 ---
 
 ### ⚡ Edge Cases
+
 - All nodes are leaves → only root exists, but n ≥ 2 so root has at least one child
 - `m = 0` → no cats allowed at all, any cat on path blocks it
 - `m = n` → all paths valid since max consecutive cats ≤ n
 - Chain (linear tree): DFS can hit stack overflow for n=10⁵ → BFS safer
 
 ### 💡 Key Insight
+
 > **"Tree DFS with state propagation: carry a counter (catsInRow) that resets
 > when the condition breaks. Prune entire subtrees when limit exceeded — this
 > is what makes it O(n) instead of O(n²)."**
@@ -709,14 +739,15 @@ static void bfs(int root) {
 
 ## 📊 Day 01 Summary
 
-| Problem | Pattern | Time | Space | Difficulty |
-|---------|---------|------|-------|------------|
-| LC 259 3Sum Smaller | Sort + Two Pointers | O(n²) | O(1) | Medium |
-| LC 11 Container Water | Two Pointers | O(n) | O(1) | Medium |
-| CF 1A Theatre Square | Math + Ceiling Division | O(1) | O(1) | Easy |
-| CF 580C Kefa and Park | DFS/BFS on Tree | O(n) | O(n) | Medium |
+| Problem               | Pattern                 | Time  | Space | Difficulty |
+| --------------------- | ----------------------- | ----- | ----- | ---------- |
+| LC 259 3Sum Smaller   | Sort + Two Pointers     | O(n²) | O(1)  | Medium     |
+| LC 11 Container Water | Two Pointers            | O(n)  | O(1)  | Medium     |
+| CF 1A Theatre Square  | Math + Ceiling Division | O(1)  | O(1)  | Easy       |
+| CF 580C Kefa and Park | DFS/BFS on Tree         | O(n)  | O(n)  | Medium     |
 
 ### 🎯 Patterns to Remember
+
 1. **3Sum pattern:** Fix 1 element, two-pointer the rest
 2. **Container pattern:** Move the shorter wall (greedy proof!)
 3. **Ceiling division:** `(x + y - 1) / y` — use `long` for large inputs

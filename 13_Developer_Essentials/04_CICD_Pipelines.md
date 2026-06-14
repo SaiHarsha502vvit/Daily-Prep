@@ -22,7 +22,7 @@ Problems:
   - Human errors at every step
   - "It worked when I tested locally"
   - Friday 5 PM deployments → weekend debugging
-  
+
 Companies like Google, Netflix, Amazon deploy 100+ TIMES PER DAY.
 How? → CI/CD
 ```
@@ -32,11 +32,11 @@ How? → CI/CD
 ```
 CI = Continuous Integration
      "Every code push → automatically build + test"
-     
+
 CD = Continuous Delivery
      "Build artifact is READY to deploy at any time"
      (human clicks button to deploy)
-     
+
 CD = Continuous Deployment
      "Every successful build → automatically deploys to production"
      (no human needed)
@@ -59,45 +59,45 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       # 1. Get the code
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       # 2. Setup Java
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      
+          java-version: "17"
+          distribution: "temurin"
+
       # 3. Cache Maven dependencies (faster builds)
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      
+
       # 4. Build
       - name: Build with Maven
         run: mvn clean compile
-      
+
       # 5. Run Tests
       - name: Run Tests
         run: mvn test
-      
+
       # 6. Package
       - name: Package JAR
         run: mvn package -DskipTests
-      
+
       # 7. Upload artifact
       - name: Upload JAR
         uses: actions/upload-artifact@v4
@@ -129,15 +129,19 @@ jobs:
 🔬 **Section Challenge — Full Pipeline: Build → Test → Docker → Deploy**
 
 **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+
 <details><summary>Answer</summary>
 
 In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+
 </details>
 
 **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+
 <details><summary>Answer</summary>
 
 `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+
 </details>
 
 ```yaml
@@ -146,7 +150,7 @@ name: Build, Test & Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   # === JOB 1: Build & Test ===
@@ -156,23 +160,23 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      - run: mvn verify   # compile + test + integration tests
+          java-version: "17"
+          distribution: "temurin"
+      - run: mvn verify # compile + test + integration tests
 
   # === JOB 2: Build Docker Image ===
   docker:
-    needs: test            # Only runs if tests pass
+    needs: test # Only runs if tests pass
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Build and Push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -181,7 +185,7 @@ jobs:
 
   # === JOB 3: Deploy to Production ===
   deploy:
-    needs: docker          # Only runs if Docker build succeeds
+    needs: docker # Only runs if Docker build succeeds
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to server
@@ -224,6 +228,75 @@ Code Push to main
   🎉 Live in Production
 ```
 
+### Diagram: GitHub Actions Workflow Sequence
+
+```
+TRIGGER (push to main)
+       │
+       ▼
+┌─────────────────┐
+│ 1. CHECKOUT     │ → git checkout (5s)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 2. SETUP-JAVA   │ → actions/setup-java@v4 (15s, cached)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 3. CACHE MAVEN  │ → ~/.m2 cached (10s hit / 60s miss)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 4. BUILD        │ → mvn -B -V verify (120s)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 5. TEST         │ → mvn test (90s, parallel)
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 6. DEPLOY       │ → aws s3 sync (30s)
+└────────┬────────┘
+         ▼
+       DONE ✓
+```
+
+### Diagram: CI vs CD Decision Tree
+
+```
+COMMIT (git push)
+       │
+       ▼
+┌─────────────────┐
+│     CI GATE     │
+│  Build + Test   │
+│  Fail → Stop    │
+└────────┬────────┘
+         │ Pass
+         ▼
+┌─────────────────┐
+│  STAGING        │
+│  Deploy         │
+│  Smoke Tests    │
+└────────┬────────┘
+         │ Pass
+         ▼
+┌─────────────────┐
+│    CD GATE      │
+│ (Delivery vs    │
+│  Deployment)    │
+└────────┬────────┘
+    ┌────┴────┐
+    │         │
+Manual     Auto
+Deploy     Deploy
+    │         │
+    ▼         ▼
+  READY    PRODUCTION ✓
+  FOR
+  PROD
+```
+
 ---
 
 # WHAT: Key CI/CD Concepts
@@ -233,12 +306,12 @@ Code Push to main
 ```yaml
 # When to run the pipeline:
 on:
-  push:                    # On every push
-    branches: [main]       # Only main branch
-  pull_request:            # On PRs
-  schedule:                # Cron job
-    - cron: '0 6 * * 1'   # Every Monday 6 AM
-  workflow_dispatch:       # Manual trigger button
+  push: # On every push
+    branches: [main] # Only main branch
+  pull_request: # On PRs
+  schedule: # Cron job
+    - cron: "0 6 * * 1" # Every Monday 6 AM
+  workflow_dispatch: # Manual trigger button
 ```
 
 🔬 **Section Challenge — Pipeline Triggers**
@@ -266,7 +339,7 @@ on:
 # Store in GitHub Settings → Secrets
 
 env:
-  JAVA_VERSION: '17'
+  JAVA_VERSION: "17"
 
 jobs:
   deploy:
@@ -303,7 +376,7 @@ Settings → Branches → main:
   ✅ Require status checks to pass (CI must be green)
   ✅ Require branches to be up to date
   ✅ No direct pushes to main
-  
+
 Result: NOBODY can push broken code to main
 ```
 
@@ -319,6 +392,28 @@ CircleCI        → Cloud-based, fast
 AWS CodePipeline→ Best for AWS deployments
 Azure DevOps    → Best for Microsoft ecosystem
 ```
+
+---
+
+### Historical Evolution
+
+**CI/CD has evolved through several distinct eras:**
+
+- **2009** — DevOps movement coined at the first DevOpsDays conference in Ghent, Belgium (organized by Patrick Debois, Ben Rockwood, and Andrew Shafer). This established the cultural bridge between development and operations that CI/CD pipelines would later automate.
+- **2010** — Jez Humble and David Farley's "Continuous Delivery" book (Addison-Wesley) formalized the principles of automated build, test, and deployment pipelines as a discipline separate from continuous deployment.
+- **2011** — Jenkins forked from Hudson (Kohsuke Kawaguchi, originally at Sun Microsystems). Travis CI launched as the first hosted CI service integrated with GitHub, popularizing CI-as-a-service for open-source projects. CircleCI also launched in 2011, pioneering container-based CI.
+- **2014** — GitLab introduced integrated CI/CD, merging the pipeline into the source control platform and enabling DevOps without toolchain fragmentation.
+- **2015** — Fielding's REST dissertation (2000) provided the architectural foundation that modern APIs are built on; container orchestration begins, enabling reliable CD across distributed systems.
+- **2018** — GitHub Actions announced at GitHub Universe. 2019 — GitHub Actions reached general availability, rapidly becoming the dominant CI platform for GitHub-hosted projects.
+
+**Key references:**
+- Jez Humble & David Farley — *Continuous Delivery* (2010) — Formalized automated deployment pipelines and the concept of a continuous delivery pipeline as a first-class engineering artifact.
+- Adam Wiggins (Heroku, 2011) — **The Twelve-Factor App** — Factor V (Build, Release, Run) and Factor VI (Processes) formalized the CI/CD separation: build = compile, release = bundle with config, run = execute the release. This strict separation is the conceptual foundation of every modern CI/CD pipeline, making it impossible to change code at runtime without a new release.
+- Patrick Debois et al. — DevOpsDays Ghent (2009) — Invented the DevOps term and catalyzed the culture of treating infrastructure as code and deployments as routine.
+- Roy Fielding — "Architectural Styles and the Design of Network-based Software Architectures" dissertation (2000) — REST constraints underpin modern API design, enabling the standardized integration that CD pipelines depend on.
+- Kohsuke Kawaguchi — Jenkins/Hudson fork (2011) — The fork made Jenkins the dominant open-source CI engine; the plugin ecosystem established the extensibility model still used today.
+
+**Why this matters for CI/CD:** Understanding the 2009-2019 arc explains why modern pipelines emphasize GitOps, declarative configuration, and container-native execution — these emerged from the convergence of REST architecture, DevOps culture, and cloud container platforms. The 12-Factor App (Adam Wiggins, Heroku, 2011) added the build/release/run separation that is now the universal CI/CD stage structure.
 
 ---
 
@@ -342,7 +437,54 @@ Azure DevOps    → Best for Microsoft ecosystem
 4. Add deployment step
 ```
 
+### Production Reality
+
+**CI/CD pipeline practices fail in production in these named ways:**
+
+- **Pipeline race conditions on artifact promotion** — two developers push commits within 30 seconds of each other. The first build creates `myapp:abc1234`, passes, and is promoted to staging. The second build creates `myapp:def5678`, passes, and overwrites the staging artifact before the first developer can run smoke tests. Staging now has the second developer's code, not the approved first build. Fix: use immutable artifact tags (git SHA) not `latest` or sequential numbers.
+- **Flaky tests blocking 30% of merges** — a test that fails 20% of the time due to timing/race conditions is retried until green, masking the flake. The test eventually passes but the underlying race condition is never fixed. Teams learn to re-run CI until it passes and merges anyway. The flaky test is now a permanent blocker. Fix: track flaky test rate as a CI metric; a test that flakes >5% goes into quarantine and must be fixed before re-activation.
+- **Secret leakage via build logs** — `AWS_SECRET_ACCESS_KEY=AKIA...` is printed in a GitHub Actions step. GitHub Actions logs are stored for 90 days and accessible to anyone with repository read access. Automated scanners scrape GitHub for exposed AWS keys. The key must be rotated immediately. Fix: use GitHub Secrets for all sensitive environment variables; mask values explicitly with `::add-mask::`.
+- **Missing deployment smoke test** — the pipeline deploys to production and marks success if the deploy command returns 0. But the application is down (503s) post-deploy. The pipeline shows green. Users discover the outage first. Fix: add a post-deploy smoke test: `curl -f https://api.myapp.com/health` must return 200 before the pipeline reports success.
+
+**Debug workflow:** For artifact promotion race: audit the pipeline artifact tagging strategy; use `IMAGE_TAG=${{ github.sha }}` (immutable git SHA). For flaky tests: use `git bisect` to identify the commit that introduced the timing dependency.
+**Mitigation discipline:** Use GitHub's cache action with `save-always: false` to prevent stale cache on failure; require at least one approval + passing CI before merge; add post-deploy smoke tests as pipeline gates; run `secrets scan` (Trufflehog) on every push.
+
+---
+
+### Conceptual Depth: The Pipeline Invariant
+
+**Core invariant:** Every commit should pass through the same automated gate from code to production. No manual steps. No snowflake deploys.
+
+**Why this matters:** The "it works on my machine" problem is fundamentally a reproducibility problem. A pipeline that runs the same tests, builds the same artifact, and deploys via the same mechanism every time eliminates whole categories of bugs.
+
+**The deep pattern:** The pipeline encodes institutional knowledge — every failure mode that's been debugged once becomes a check that runs forever. Each new check is a tax on future regressions:
+- Lint check → catches syntax style drift
+- Unit test → catches logic regression
+- Integration test → catches API contract regression
+- Security scan → catches dependency vulnerabilities
+- Smoke test → catches deploy failures
+- Canary deploy → catches runtime regressions in production
+
+**Constraint that breaks the invariant:** Manual approval gates ("deploy requires DevOps team to click a button") reintroduce snowflake-deploy risk. The fix: replace human gates with automated policy gates (e.g., Open Policy Agent).
+
+**Practical signal:** If your "automated" pipeline has 3+ manual steps that vary by environment, you have a CI theater, not a CI pipeline.
+
+---
+
+### Trade-off: CI/CD Tool Variants
+
+| Aspect              | GitHub Actions    | Jenkins           | GitLab CI         | CircleCI          |
+|---------------------|-------------------|-------------------|-------------------|-------------------|
+| Hosting             | SaaS (or self)    | Self-hosted       | SaaS or self      | SaaS              |
+| Config format       | YAML in repo      | Groovy/Pipeline   | YAML in repo      | YAML in repo      |
+| Marketplace         | 20K+ actions      | 1,800+ plugins    | Built-in          | Orbs (~3K)        |
+| Free tier           | 2,000 min/mo      | none (OSS only)   | 400 min/mo        | 6,000 min/mo      |
+| Runner model        | ephemeral VM      | persistent agent  | ephemeral         | ephemeral Docker  |
+| Year introduced     | 2018/2019         | 2011 (Hudson fork)| 2014              | 2011              |
+| Best for            | GitHub repos      | complex pipelines | GitLab repos      | Docker-heavy CI   |
+
+**Selection rule:** GitHub Actions for GitHub-centric teams; GitLab CI for self-hosted GitLab shops; Jenkins for legacy enterprise with complex Groovy pipelines; CircleCI for performance-sensitive Docker builds.
+
 ---
 
 **Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
-

@@ -1,4 +1,5 @@
 # 📝 SDET & Test Automation — Problem Sets
+
 ## `21_SDET_Playwright_Automation` Module | JUnit5 · Mockito · Playwright · Performance
 
 > **How to use:** Write the test code BEFORE looking. Tests go in `JavaSolutions/ps/sdet/`. All Playwright code in TypeScript.
@@ -17,12 +18,12 @@
 
 <details><summary>Answer</summary>
 
-| | `@Mock` | `@Spy` |
-|---|---|---|
-| Object | Fully synthetic proxy — no real object created | Wraps a REAL object |
-| Methods | All methods return default values unless stubbed | Real methods execute unless stubbed |
-| Use case | Isolate the class under test from dependencies | Partially override behavior of a real object |
-| When unstubbed | Returns `null` / `0` / `false` | Calls the real method |
+|                | `@Mock`                                          | `@Spy`                                       |
+| -------------- | ------------------------------------------------ | -------------------------------------------- |
+| Object         | Fully synthetic proxy — no real object created   | Wraps a REAL object                          |
+| Methods        | All methods return default values unless stubbed | Real methods execute unless stubbed          |
+| Use case       | Isolate the class under test from dependencies   | Partially override behavior of a real object |
+| When unstubbed | Returns `null` / `0` / `false`                   | Calls the real method                        |
 
 ```java
 @Mock
@@ -37,11 +38,13 @@ doReturn(true).when(emailValidator).isValidDomain("test.com");
 ```
 
 🔴 **Erklärung:** Overusing `@Spy` is a code smell — it usually means the class under test has too many responsibilities. If you need to spy on the class you're TESTING (not a dependency), the class probably needs to be split.
+
 </details>
 
 ---
 
 **A2 (Medium).** What's wrong with this test?
+
 ```java
 @Test
 void testUserService() {
@@ -62,21 +65,22 @@ void testUserService() {
 3. **Only testing non-null** — This assertion is too weak. You should verify the actual returned user's ID, name etc.
 
 **Fixed version:**
+
 ```java
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock UserRepository repo;
     @InjectMocks UserService service;
-    
+
     @Test
     void getUserById_whenUserExists_returnsCorrectUser() {
         // Arrange
         var user = new User(1L, "Alice", "alice@test.com");
         when(repo.findById(1L)).thenReturn(Optional.of(user));
-        
+
         // Act
         var result = service.getUserById(1L);
-        
+
         // Assert
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("Alice");
@@ -86,6 +90,7 @@ class UserServiceTest {
 ```
 
 🔴 **Erklärung:** The **AAA pattern** (Arrange-Act-Assert) is mandatory for readable tests. Test method names follow **methodName_condition_expectedResult** convention. Each test should test ONE behaviour.
+
 </details>
 
 ---
@@ -99,7 +104,7 @@ class UserServiceTest {
 class LoanService {
     LoanRepository loanRepo;
     BlacklistService blacklistService;
-    
+
     LoanResult approveLoan(Customer customer, BigDecimal amount) { /* ... */ }
 }
 ```
@@ -112,9 +117,9 @@ class LoanServiceTest {
     @Mock LoanRepository loanRepo;
     @Mock BlacklistService blacklistService;
     @InjectMocks LoanService service;
-    
+
     private Customer goodCustomer;
-    
+
     @BeforeEach void setup() {
         goodCustomer = Customer.builder()
             .id(1L).creditScore(750)
@@ -122,7 +127,7 @@ class LoanServiceTest {
             .build();
         when(blacklistService.isBlacklisted(any())).thenReturn(false);
     }
-    
+
     @Test
     void approveLoan_whenAllCriteriaMet_returnsApproved() {
         var amount = new BigDecimal("50000"); // < 3 × 60000 = 180000
@@ -130,7 +135,7 @@ class LoanServiceTest {
         assertThat(result.isApproved()).isTrue();
         verify(loanRepo).save(any(Loan.class));
     }
-    
+
     @Test
     void approveLoan_whenCreditScoreTooLow_throwsRejection() {
         goodCustomer.setCreditScore(650); // below 700
@@ -138,7 +143,7 @@ class LoanServiceTest {
             .isInstanceOf(LoanRejectedException.class)
             .hasMessageContaining("credit score");
     }
-    
+
     @Test
     void approveLoan_whenAmountExceedsLimit_throwsRejection() {
         var amount = new BigDecimal("200000"); // > 3 × 60000 = 180000
@@ -146,7 +151,7 @@ class LoanServiceTest {
             .isInstanceOf(LoanRejectedException.class)
             .hasMessageContaining("amount");
     }
-    
+
     @Test
     void approveLoan_whenCustomerBlacklisted_throwsRejection() {
         when(blacklistService.isBlacklisted(goodCustomer)).thenReturn(true);
@@ -154,7 +159,7 @@ class LoanServiceTest {
             .isInstanceOf(LoanRejectedException.class)
             .hasMessageContaining("blacklisted");
     }
-    
+
     @ParameterizedTest
     @CsvSource({ "700,true", "699,false", "850,true", "300,false" })
     void approveLoan_creditScoreBoundary(int score, boolean shouldApprove) {
@@ -168,6 +173,7 @@ class LoanServiceTest {
     }
 }
 ```
+
 </details>
 
 ---
@@ -181,11 +187,12 @@ class LoanServiceTest {
 ### Part A: Locate Bugs
 
 **A1 (Medium).** This Playwright test is flaky. Why?
+
 ```typescript
-test('user can add item to cart', async ({ page }) => {
-  await page.goto('http://localhost:3000');
-  await page.click('#add-to-cart');
-  expect(await page.textContent('#cart-count')).toBe('1');
+test("user can add item to cart", async ({ page }) => {
+  await page.goto("http://localhost:3000");
+  await page.click("#add-to-cart");
+  expect(await page.textContent("#cart-count")).toBe("1");
 });
 ```
 
@@ -200,23 +207,25 @@ test('user can add item to cart', async ({ page }) => {
 3. **`page.textContent()` is one-shot** — doesn't wait for the count to update. If the cart update is async (API call + state update), the count might still be `0` when read.
 
 **Fixed version:**
+
 ```typescript
-test('user can add item to cart', async ({ page }) => {
-  await page.goto('http://localhost:3000');
-  
+test("user can add item to cart", async ({ page }) => {
+  await page.goto("http://localhost:3000");
+
   // Wait for page to be ready
-  await page.waitForLoadState('networkidle');
-  
+  await page.waitForLoadState("networkidle");
+
   // Use locator API (auto-wait)
-  const addButton = page.locator('#add-to-cart');
+  const addButton = page.locator("#add-to-cart");
   await addButton.click();
-  
+
   // waitFor auto-retries until assertion passes or timeout
-  await expect(page.locator('#cart-count')).toHaveText('1');
+  await expect(page.locator("#cart-count")).toHaveText("1");
 });
 ```
 
 🔴 **Erklärung:** **Never use `page.textContent()` to assert dynamic values.** Use `await expect(locator).toHaveText()` — this has built-in retry logic, waits up to `timeout` ms for the assertion to pass. `page.textContent()` is a one-shot read — it reads whatever is there at THAT moment.
+
 </details>
 
 ---
@@ -225,67 +234,67 @@ test('user can add item to cart', async ({ page }) => {
 
 ```typescript
 // pages/LoginPage.ts
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator } from "@playwright/test";
 
 export class LoginPage {
   private readonly emailInput: Locator;
   private readonly passwordInput: Locator;
   private readonly submitButton: Locator;
   private readonly errorMessage: Locator;
-  
+
   constructor(private page: Page) {
-    this.emailInput    = page.getByLabel('Email');
-    this.passwordInput = page.getByLabel('Password');
-    this.submitButton  = page.getByRole('button', { name: 'Sign In' });
-    this.errorMessage  = page.getByRole('alert');
+    this.emailInput = page.getByLabel("Email");
+    this.passwordInput = page.getByLabel("Password");
+    this.submitButton = page.getByRole("button", { name: "Sign In" });
+    this.errorMessage = page.getByRole("alert");
   }
-  
+
   async goto(): Promise<void> {
-    await this.page.goto('/login');
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.goto("/login");
+    await this.page.waitForLoadState("domcontentloaded");
   }
-  
+
   async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.submitButton.click();
   }
-  
+
   async getErrorMessage(): Promise<string | null> {
     return this.errorMessage.textContent();
   }
 }
 
 // tests/login.spec.ts
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { DashboardPage } from '../pages/DashboardPage';
+import { test, expect } from "@playwright/test";
+import { LoginPage } from "../pages/LoginPage";
+import { DashboardPage } from "../pages/DashboardPage";
 
-test.describe('Login', () => {
-  test('valid credentials → dashboard', async ({ page }) => {
+test.describe("Login", () => {
+  test("valid credentials → dashboard", async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('alice@example.com', 'Password1!');
-    
+    await loginPage.login("alice@example.com", "Password1!");
+
     const dashboard = new DashboardPage(page);
-    await expect(dashboard.heading).toHaveText('Welcome, Alice');
+    await expect(dashboard.heading).toHaveText("Welcome, Alice");
   });
-  
-  test('invalid password → error message', async ({ page }) => {
+
+  test("invalid password → error message", async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('alice@example.com', 'wrong');
-    
-    await expect(page.getByRole('alert')).toContainText('Invalid credentials');
-    await expect(page).toHaveURL('/login'); // still on login page
+    await loginPage.login("alice@example.com", "wrong");
+
+    await expect(page.getByRole("alert")).toContainText("Invalid credentials");
+    await expect(page).toHaveURL("/login"); // still on login page
   });
-  
-  test('empty email → validation error', async ({ page }) => {
+
+  test("empty email → validation error", async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login('', 'Password1!');
-    
-    await expect(page.getByText('Email is required')).toBeVisible();
+    await loginPage.login("", "Password1!");
+
+    await expect(page.getByText("Email is required")).toBeVisible();
   });
 });
 ```
@@ -312,6 +321,7 @@ Test Pyramid for Food Delivery:
 ```
 
 **Unit Tests (JUnit 5 + Mockito):**
+
 - `Order.deliver("correct-otp")` → status DELIVERED, event fired
 - `Order.deliver("wrong-otp")` → IllegalArgumentException
 - `Order.cancel()` after PICKED_UP → IllegalStateException
@@ -319,11 +329,13 @@ Test Pyramid for Food Delivery:
 - `Money.add()` with mismatched currencies → IllegalArgumentException
 
 **Integration Tests (Spring + Testcontainers):**
+
 - POST `/api/orders` → Order saved to PostgreSQL → `OrderPlaced` event in Kafka
 - `FanoutService` consumes `OrderPlaced` → assigns driver
 - Full order lifecycle via REST API (PLACED → ACCEPTED → PREPARING → READY → DELIVERED)
 
 **E2E Tests (Playwright):**
+
 - Customer places order → restaurant accepts → driver delivers → order marked delivered
 - Payment failure → order cancelled → inventory released
 - OTP verification flow
@@ -333,13 +345,13 @@ Test Pyramid for Food Delivery:
 
 🔴 **SDET Erklärung Summary:**
 
-| Mistake | Why | Fix |
-|---|---|---|
-| Testing implementation details | Brittle — breaks on refactor without behaviour change | Test observable behaviour: return values, events, DB state |
-| One giant test method | Hard to debug — which assertion failed? | One behaviour per test, descriptive name |
-| `Thread.sleep(1000)` for async | Slow + still flaky on CI | Use `await expect(locator).toHaveText()` (auto-retry) |
-| All happy-path tests | Production bugs are edge cases | Test boundary conditions: null, empty, max, min, concurrent |
-| Mocking the class under test | You're testing the mock, not the code | Only mock DEPENDENCIES — never mock the class you're testing |
+| Mistake                        | Why                                                   | Fix                                                          |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------ |
+| Testing implementation details | Brittle — breaks on refactor without behaviour change | Test observable behaviour: return values, events, DB state   |
+| One giant test method          | Hard to debug — which assertion failed?               | One behaviour per test, descriptive name                     |
+| `Thread.sleep(1000)` for async | Slow + still flaky on CI                              | Use `await expect(locator).toHaveText()` (auto-retry)        |
+| All happy-path tests           | Production bugs are edge cases                        | Test boundary conditions: null, empty, max, min, concurrent  |
+| Mocking the class under test   | You're testing the mock, not the code                 | Only mock DEPENDENCIES — never mock the class you're testing |
 
 ---
 

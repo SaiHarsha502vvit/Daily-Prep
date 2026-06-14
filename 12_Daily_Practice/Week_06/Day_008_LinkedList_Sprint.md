@@ -1,18 +1,21 @@
 # Day 08 - Linked List and Pointer Reasoning (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 708 - Insert into a Sorted Circular Linked List
 2. LeetCode Medium: 142 - Linked List Cycle II
 3. Codeforces: 1389C - Good String
 4. Codeforces: 61A - Ultra-Fast Mathematician
 
 ## Problem Links
+
 - LC 708 (Premium): Locked on LeetCode (no public official statement page)
 - LC 142: https://leetcode.com/problems/linked-list-cycle-ii/
 - CF 1389C: https://codeforces.com/problemset/problem/1389/C
 - CF 61A: https://codeforces.com/problemset/problem/61/A
 
 ## Why This Day Matters
+
 Linked-list interviews are about pointer invariants and safe case analysis, not fancy data structures.
 
 ---
@@ -20,13 +23,16 @@ Linked-list interviews are about pointer invariants and safe case analysis, not 
 ## Problem 1 - LC 708 (Premium)
 
 ### Problem Statement
+
 Given a node in a sorted circular linked list, insert value `insertVal` so list remains sorted circularly.
 
 ### Why This DS/Algo
+
 - Data is already linked and circular; array conversion wastes memory and complexity.
 - Correctness depends on identifying local insertion segment while traversing once around circle.
 
 ### Approach A - Brute Force (Extract + Sort + Rebuild) (O(n log n), O(n))
+
 Educational only.
 
 ```java
@@ -40,9 +46,11 @@ class Node {
 ```
 
 ### Approach B - Better (One pass with explicit cases) (O(n), O(1))
+
 Insertion when either:
-1) normal order interval `cur.val <= x <= cur.next.val`, or
-2) turning point max->min where `x >= max` or `x <= min`.
+
+1. normal order interval `cur.val <= x <= cur.next.val`, or
+2. turning point max->min where `x >= max` or `x <= min`.
 
 ```java
 static Node insertBetter(Node head, int x) {
@@ -73,9 +81,11 @@ static Node insertBetter(Node head, int x) {
 ```
 
 ### Approach C - Optimal
+
 Same O(n)/O(1) is asymptotically optimal; list traversal is unavoidable.
 
 ### Edge Cases
+
 - Empty list.
 - All values equal.
 - Insert value smaller than min or larger than max.
@@ -85,9 +95,11 @@ Same O(n)/O(1) is asymptotically optimal; list traversal is unavoidable.
 ## Problem 2 - LC 142: Linked List Cycle II
 
 ### Problem Statement
+
 Return node where cycle begins, or `null` if no cycle.
 
 ### Why This DS/Algo
+
 - Floyd's tortoise-hare uses pointer speed difference to detect cycle without extra memory.
 - Mathematical property gives entry node by resetting one pointer to head.
 
@@ -132,9 +144,11 @@ static ListNode detectCycleBetter(ListNode head) {
 ```
 
 ### Approach C - Optimal
+
 Floyd is optimal in both time and space for this model.
 
 ### Reasoning Snapshot
+
 If head->entry distance is `a`, meeting point offset gives relation that moving both pointers one step converges at entry.
 
 ---
@@ -142,13 +156,16 @@ If head->entry distance is `a`, meeting point offset gives relation that moving 
 ## Problem 3 - CF 1389C: Good String
 
 ### Problem Statement
+
 Delete minimum chars so resulting string is either all one digit or alternates between two digits.
 
 ### Why This DS/Algo
+
 - Output pattern is very constrained: only 10 single-digit patterns + 90 alternating ordered pairs.
 - Brute over pattern space is tiny and exact.
 
 ### Approach A - Brute Force (Enumerate all subsequences)
+
 Exponential and infeasible.
 
 ### Approach B - Better (Try all digit pairs, greedy count) (O(100n), O(1))
@@ -183,6 +200,7 @@ static int goodStringBetter(String s) {
 ```
 
 ### Approach C - Optimal
+
 The above is already optimal for fixed alphabet size 10.
 
 ---
@@ -190,12 +208,15 @@ The above is already optimal for fixed alphabet size 10.
 ## Problem 4 - CF 61A: Ultra-Fast Mathematician
 
 ### Problem Statement
+
 Given two equal-length binary strings, output bitwise XOR as string.
 
 ### Why This DS/Algo
+
 - Direct character comparison models XOR truth table.
 
 ### Approach A - Brute Force with Integer Conversion
+
 Parse huge binary numbers, xor, convert back. Risky for large lengths.
 
 ### Approach B - Better (Char compare) (O(n), O(n))
@@ -211,8 +232,10 @@ static String xorBetter(String a, String b) {
 ```
 
 ### Approach C - Optimal
+
 Char compare is already optimal.
 
 ### Pattern Takeaways
+
 - Linked-list success comes from case partitioning and invariant proofs.
 - For constrained pattern strings, exhaustive pattern enumeration beats generic DP.

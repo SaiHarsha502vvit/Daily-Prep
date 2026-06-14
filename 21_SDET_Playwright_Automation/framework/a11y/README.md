@@ -37,6 +37,7 @@ const results = await runAxe(page, { tags: ['wcag2a', 'wcag2aa'] });
 ```
 
 Common axe-core tags:
+
 - `wcag2a` - WCAG 2.0 Level A
 - `wcag2aa` - WCAG 2.0 Level AA
 - `wcag21a` - WCAG 2.1 Level A
@@ -75,6 +76,7 @@ Found 3 accessibility violation(s):
 ```
 
 Each violation includes:
+
 - **Impact level**: critical, serious, moderate, minor
 - **Rule ID**: e.g., `color-contrast`, `region`
 - **Description**: What the issue is

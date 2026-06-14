@@ -1,4 +1,5 @@
 # CSE401 — Operating Systems
+
 ## Semester 4 · Computer Science Core
 
 > **Total estimated time:** ~130 hours (16 weeks, ~8h/week)
@@ -9,20 +10,20 @@
 
 ## Navigation
 
-| Course | Description |
-|--------|-------------|
-| **[CSE401 — Operating Systems](CSE401_Operating_Systems/README.md)** | This course |
-| **[CSE402 — Computer Networks](CSE402_Computer_Networks/README.md)** | S04 sibling |
+| Course                                                                             | Description |
+| ---------------------------------------------------------------------------------- | ----------- |
+| **[CSE401 — Operating Systems](CSE401_Operating_Systems/README.md)**               | This course |
+| **[CSE402 — Computer Networks](CSE402_Computer_Networks/README.md)**               | S04 sibling |
 | **[CSE403 — Cryptography & Security](CSE403_Cryptography_And_Security/README.md)** | S04 sibling |
-| **[CSE404 — Information Retrieval](CSE404_Information_Retrieval/README.md)** | S04 sibling |
+| **[CSE404 — Information Retrieval](CSE404_Information_Retrieval/README.md)**       | S04 sibling |
 
-| Related Modules | Cross-Reference |
-|----------------|-----------------|
-| `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` | Concurrency patterns |
-| `07_Modern_Java/` | Java threads, `java.util.concurrent` |
-| `22_DevOps/` | Container runtime, cgroups, namespaces |
-| `02_Data_Structures/` | Queue, heap, tree structures used in OS |
-| `14_Mental_Models/` | System-level reasoning frameworks |
+| Related Modules                                               | Cross-Reference                         |
+| ------------------------------------------------------------- | --------------------------------------- |
+| `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` | Concurrency patterns                    |
+| `07_Modern_Java/`                                             | Java threads, `java.util.concurrent`    |
+| `22_DevOps/`                                                  | Container runtime, cgroups, namespaces  |
+| `02_Data_Structures/`                                         | Queue, heap, tree structures used in OS |
+| `14_Mental_Models/`                                           | System-level reasoning frameworks       |
 
 ---
 
@@ -42,6 +43,7 @@
 ### UNIT 1 — Processes & Threads (Weeks 1–3)
 
 **Learning Outcomes:**
+
 - Explain the life cycle of a process from `fork()` to `exec()` to `wait()`
 - Implement a simple shell that spawns processes and pipelines them
 - Analyze scheduling algorithms: FCFS, SJF, Round Robin, MLFQ — knowing their tradeoffs
@@ -51,14 +53,14 @@
 
 #### Week 1 — Process Model & System Calls
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | What is an OS? Kernel vs user space, system call interface | `02_Data_Structures/01a_Memory_Foundations.md` §1-2 | Draw kernel/user mode boundary diagram |
-| 2 | Process Control Block (PCB): what the kernel tracks | `02_Data_Structures/01c_LinkedList.md` §1 (as state machine) | Trace PCB fields through `fork()` |
-| 3 | `fork()` — copy-on-write semantics, parent/child split | Linux `fork(2)` man page | Implement: count how many processes `fork()` creates before `exec()` |
-| 4 | `exec()` family — replacing process image | Linux `execve(2)` man page | Write: `my-shell.c` that runs `ls -la` via `fork()+exec()` |
-| 5 | Lab Session | — | **Lab:** Build a minimal shell with `fork/exec/wait`, handle `Ctrl+C` |
-| 6–7 | Review + Problem Set OS-PS1 | — | `CSE401_Operating_Systems/01_PROBLEM_SETS.md` PS-1 |
+| Day | Topic                                                      | Read                                                         | Do                                                                    |
+| --- | ---------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------- |
+| 1   | What is an OS? Kernel vs user space, system call interface | `02_Data_Structures/01a_Memory_Foundations.md` §1-2          | Draw kernel/user mode boundary diagram                                |
+| 2   | Process Control Block (PCB): what the kernel tracks        | `02_Data_Structures/01c_LinkedList.md` §1 (as state machine) | Trace PCB fields through `fork()`                                     |
+| 3   | `fork()` — copy-on-write semantics, parent/child split     | Linux `fork(2)` man page                                     | Implement: count how many processes `fork()` creates before `exec()`  |
+| 4   | `exec()` family — replacing process image                  | Linux `execve(2)` man page                                   | Write: `my-shell.c` that runs `ls -la` via `fork()+exec()`            |
+| 5   | Lab Session                                                | —                                                            | **Lab:** Build a minimal shell with `fork/exec/wait`, handle `Ctrl+C` |
+| 6–7 | Review + Problem Set OS-PS1                                | —                                                            | `CSE401_Operating_Systems/01_PROBLEM_SETS.md` PS-1                    |
 
 **Section Challenge (fork/exec):**
 
@@ -105,14 +107,14 @@ Why `wait(NULL)` matters: without it, the parent could exit before children prin
 
 #### Week 2 — Scheduling Algorithms
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | CPU scheduler: dispatcher, scheduler, preemption | Linux kernel scheduler overview (`kernel/sched/`) | Trace scheduler invocation on `fork()` |
-| 2 | FCFS (First-Come-First-Served) — convoy effect | `14_Mental_Models/` (throughput reasoning) | Compute avg wait time for `[P1=24, P2=3, P3=3]` FCFS |
-| 3 | SJF (Shortest Job First) — optimal avg wait, impossible to implement | `03_Algorithms/05_Trees.md` (priority reasoning) | Prove SJF optimality for non-preemptive case |
-| 4 | Round Robin — time quantum, context switch overhead | `02_Data_Structures/01d_Stack_Queue.md` §5 (queue semantics) | Simulate RR with quantum=4 on `[6,3,1,7]` |
-| 5 | MLFQ (Multi-Level Feedback Queue) — the dominant Linux scheduler | `14_Mental_Models/03_Graph_Tree_Thinking.md` (decision trees) | Trace a CPU-bound vs I/O-bound job through MLFQ |
-| 6–7 | Review + Problem Set OS-PS2 | — | PS-2 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                | Read                                                          | Do                                                    |
+| --- | -------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| 1   | CPU scheduler: dispatcher, scheduler, preemption                     | Linux kernel scheduler overview (`kernel/sched/`)             | Trace scheduler invocation on `fork()`                |
+| 2   | FCFS (First-Come-First-Served) — convoy effect                       | `14_Mental_Models/` (throughput reasoning)                    | Compute avg wait time for `[P1=24, P2=3, P3=3]` FCFS  |
+| 3   | SJF (Shortest Job First) — optimal avg wait, impossible to implement | `03_Algorithms/05_Trees.md` (priority reasoning)              | Prove SJF optimality for non-preemptive case          |
+| 4   | Round Robin — time quantum, context switch overhead                  | `02_Data_Structures/01d_Stack_Queue.md` §5 (queue semantics)  | Simulate RR with quantum=4 on `[6,3,1,7]`             |
+| 5   | MLFQ (Multi-Level Feedback Queue) — the dominant Linux scheduler     | `14_Mental_Models/03_Graph_Tree_Thinking.md` (decision trees) | Trace a CPU-bound vs I/O-bound job through MLFQ       |
+| 6–7 | Review + Problem Set OS-PS2                                          | —                                                             | PS-2 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
 
 **Section Challenge (MLFQ):**
 
@@ -127,6 +129,7 @@ Why `wait(NULL)` matters: without it, the parent could exit before children prin
 <summary>Answer</summary>
 
 **MLFQ trace:**
+
 - A starts in Q0 (quantum=8). Uses full 8ms → demoted to Q1.
 - A in Q1 (quantum=16). Uses 16ms → demoted to Q2 (FCFS). Remaining 6ms in Q2.
 - B starts in Q0. Runs 2ms, blocks for I/O (5ms). When B wakes, it is **boosted** back to Q0 (typical CFS behavior).
@@ -182,6 +185,7 @@ Version A creates N processes. Each `fork()` duplicates the address space (copy-
 Version B creates N threads in the **same process**. They share the address space, page table, and TLB entries. Context switches between threads only save/restore registers and stack pointer — no MMU remapping.
 
 **Measured cost breakdown:**
+
 - Thread context switch (Linux): ~0.5–1.5 µs
 - Process context switch: ~5–25 µs (depends on cache state)
 
@@ -196,6 +200,7 @@ Version B creates N threads in the **same process**. They share the address spac
 ### UNIT 2 — Virtual Memory (Weeks 4–6)
 
 **Learning Outcomes:**
+
 - Explain paging, page tables, TLB, and inverted page tables
 - Handle page faults; understand demand paging and working-set model
 - Diagnose thrashing and OOM conditions in production Linux systems
@@ -205,14 +210,14 @@ Version B creates N threads in the **same process**. They share the address spac
 
 #### Week 4 — Paging & Address Translation
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Logical vs physical addresses, segmentation tradeoff | `02_Data_Structures/01a_Memory_Foundations.md` §4 | Draw address translation: VA 0x00402004 → PA |
-| 2 | Page tables: single-level, multi-level (hierarchical) | `02_Data_Structures/01f_Trees_Heaps.md` §1-2 (tree representation) | Compute: 4KB pages, 32-bit VA, 2-level PT — how many entries per level? |
-| 3 | TLB — hardware cache for page table entries | `04_Patterns_Templates/06_Binary_Search_Patterns.md` (cache reasoning) | Trace TLB hit/miss ratio for sequential vs random access |
-| 4 | Inverted page tables, radix tree (x86-64) | Linux kernel `mm/` directory | Explain why x86-64 uses 4-level page tables |
-| 5 | Lab | — | **Lab:** Use `strace -f` on a program to observe `mmap/munmap` syscalls |
-| 6–7 | Review + Problem Set OS-PS4 | — | PS-4 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                 | Read                                                                   | Do                                                                      |
+| --- | ----------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1   | Logical vs physical addresses, segmentation tradeoff  | `02_Data_Structures/01a_Memory_Foundations.md` §4                      | Draw address translation: VA 0x00402004 → PA                            |
+| 2   | Page tables: single-level, multi-level (hierarchical) | `02_Data_Structures/01f_Trees_Heaps.md` §1-2 (tree representation)     | Compute: 4KB pages, 32-bit VA, 2-level PT — how many entries per level? |
+| 3   | TLB — hardware cache for page table entries           | `04_Patterns_Templates/06_Binary_Search_Patterns.md` (cache reasoning) | Trace TLB hit/miss ratio for sequential vs random access                |
+| 4   | Inverted page tables, radix tree (x86-64)             | Linux kernel `mm/` directory                                           | Explain why x86-64 uses 4-level page tables                             |
+| 5   | Lab                                                   | —                                                                      | **Lab:** Use `strace -f` on a program to observe `mmap/munmap` syscalls |
+| 6–7 | Review + Problem Set OS-PS4                           | —                                                                      | PS-4 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                   |
 
 **Section Challenge (TLB):**
 
@@ -225,12 +230,14 @@ A program accesses an array of 4096 integers (16KB total) sequentially in a loop
 <summary>Answer</summary>
 
 **4-page array, 8-entry TLB:**
+
 - Sequential access: first access to each page causes 1 TLB miss, 3 subsequent accesses to that page hit.
 - 4 pages × 4 bytes × 1024 elements per page? Actually: 16KB / 4 bytes = 4096 integers. Page size = 4KB. So 4 pages, each holding 1024 integers.
 - Sequential scan hits the same page 1024 times before moving to next page.
 - TLB hit rate: (1024 - 1) / 1024 ≈ **99.9% per page**. Overall ~99.9%.
 
 **1MB array (256 pages):**
+
 - 8-entry TLB can only hold 8 entries simultaneously.
 - After scanning page 0 (1 miss), page 1 (1 miss), ... page 8 → page 0's entry is evicted.
 - Revisiting page 0 causes another miss. TLB hit rate drops to **7/8 = 87.5%** in the steady-state (working set > TLB size).
@@ -244,14 +251,14 @@ A program accesses an array of 4096 integers (16KB total) sequentially in a loop
 
 #### Week 5 — Page Faults & Demand Paging
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Page fault handler — what the OS does on a miss | Linux `mm/filemap.c`, `mm/memory.c` | Trace: `mmap` a file, touch one byte, watch page fault count |
-| 2 | Demand paging vs prepaging — when does prepaging help? | `02_Data_Structures/01e_HashTable.md` §2 (cache analogy) | Write: simulate demand paging with a trace file |
-| 3 | Copy-on-write fork — pages marked read-only until write | Linux `mm/cow.c` | Prove COW reduces memory usage with `fork()` + `ps aux` |
-| 4 | Memory-mapped files — `mmap`, `munmap`, `msync` | `22_DevOps/00_DevOps_Fundamentals.md` §5 (memory constraints) | Implement: memory-map a 100MB file and search it without `read()` |
-| 5 | Lab | — | **Lab:** Build a demand paging simulator in Java — track page faults |
-| 6–7 | Review + Problem Set OS-PS5 | — | PS-5 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                   | Read                                                          | Do                                                                   |
+| --- | ------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 1   | Page fault handler — what the OS does on a miss         | Linux `mm/filemap.c`, `mm/memory.c`                           | Trace: `mmap` a file, touch one byte, watch page fault count         |
+| 2   | Demand paging vs prepaging — when does prepaging help?  | `02_Data_Structures/01e_HashTable.md` §2 (cache analogy)      | Write: simulate demand paging with a trace file                      |
+| 3   | Copy-on-write fork — pages marked read-only until write | Linux `mm/cow.c`                                              | Prove COW reduces memory usage with `fork()` + `ps aux`              |
+| 4   | Memory-mapped files — `mmap`, `munmap`, `msync`         | `22_DevOps/00_DevOps_Fundamentals.md` §5 (memory constraints) | Implement: memory-map a 100MB file and search it without `read()`    |
+| 5   | Lab                                                     | —                                                             | **Lab:** Build a demand paging simulator in Java — track page faults |
+| 6–7 | Review + Problem Set OS-PS5                             | —                                                             | PS-5 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                |
 
 **Section Challenge (copy-on-write fork):**
 
@@ -275,6 +282,7 @@ How many distinct physical pages does this program use? Walk through the COW mec
 **Answer: 1 physical page (4KB)** — all processes share the same read-only copy.
 
 **Step-by-step COW mechanics:**
+
 1. Parent writes `buf` with `A`s → kernel marks the page as read-only in parent's page table.
 2. `fork()` → child gets a **copy** of the parent's page table entry, also pointing to the same physical page, both marked read-only (COW).
 3. Neither parent nor child ever write to `buf` after fork. The kernel marks both PTEs as pointing to the same physical page in the "shared page" list.
@@ -290,14 +298,14 @@ How many distinct physical pages does this program use? Walk through the COW mec
 
 #### Week 6 — Thrashing & Working Set Model
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Thrashing — when paging activity dominates useful work | Linux `mm/vmscan.c` (kswapd, page reclaim) | Monitor: `vmstat 1` during `stress --vm 2 --vm-bytes 90%` |
-| 2 | Working-set model — W(t, τ), locality of reference | `14_Mental_Models/09_Complexity_Intuition.md` (throughput reasoning) | Compute working set for a trace: [1,2,1,3,1,2,4,1,2] with τ=3 |
-| 3 | Page replacement algorithms: FIFO, LRU, Optimal, Clock (Second Chance) | `02_Data_Structures/01f_Trees_Heaps.md` §5 (heap for LRU) | Implement LRU page replacement; compare hit rates |
-| 4 | Allocator design: slab, slub, buddy system | Linux `mm/slab.c`, `mm/slub.c` | Trace `kmalloc` sizes and alignment |
-| 5 | Lab | — | **Lab:** Implement a page replacement visualizer (FIFO vs LRU vs Clock) |
-| 6–7 | Review + Problem Set OS-PS6 | — | PS-6 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                  | Read                                                                 | Do                                                                      |
+| --- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1   | Thrashing — when paging activity dominates useful work                 | Linux `mm/vmscan.c` (kswapd, page reclaim)                           | Monitor: `vmstat 1` during `stress --vm 2 --vm-bytes 90%`               |
+| 2   | Working-set model — W(t, τ), locality of reference                     | `14_Mental_Models/09_Complexity_Intuition.md` (throughput reasoning) | Compute working set for a trace: [1,2,1,3,1,2,4,1,2] with τ=3           |
+| 3   | Page replacement algorithms: FIFO, LRU, Optimal, Clock (Second Chance) | `02_Data_Structures/01f_Trees_Heaps.md` §5 (heap for LRU)            | Implement LRU page replacement; compare hit rates                       |
+| 4   | Allocator design: slab, slub, buddy system                             | Linux `mm/slab.c`, `mm/slub.c`                                       | Trace `kmalloc` sizes and alignment                                     |
+| 5   | Lab                                                                    | —                                                                    | **Lab:** Implement a page replacement visualizer (FIFO vs LRU vs Clock) |
+| 6–7 | Review + Problem Set OS-PS6                                            | —                                                                    | PS-6 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                   |
 
 **Section Challenge (thrashing):**
 
@@ -305,12 +313,12 @@ A Linux server has 16GB RAM. You deploy 12 containers, each configured with 2GB 
 
 **5WHY Analysis:**
 
-| Why | Answer |
-|-----|--------|
-| WHY 1 | The 12 JVMs collectively try to use 21.6GB, exceeding the 16GB physical host memory. |
-| WHY 2 | cgroup `memory.limit_in_bytes` only limits the container's view of memory, not the host's total. No host-level overcommit guard exists between containers. |
-| WHY 3 | The JVM's `+HeapDumpOnOutOfMemoryError` triggers a heap dump (writing 1.8GB to disk) which itself requires memory (direct I/O buffer) during the dump, pushing the cgroup over limit. |
-| WHY 4 | The OS has no per-container swap enforcement (cgroup `memory.memsw.limit_in_bytes` is unset). Swap is global to the host. |
+| Why   | Answer                                                                                                                                                                                                                                                                              |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| WHY 1 | The 12 JVMs collectively try to use 21.6GB, exceeding the 16GB physical host memory.                                                                                                                                                                                                |
+| WHY 2 | cgroup `memory.limit_in_bytes` only limits the container's view of memory, not the host's total. No host-level overcommit guard exists between containers.                                                                                                                          |
+| WHY 3 | The JVM's `+HeapDumpOnOutOfMemoryError` triggers a heap dump (writing 1.8GB to disk) which itself requires memory (direct I/O buffer) during the dump, pushing the cgroup over limit.                                                                                               |
+| WHY 4 | The OS has no per-container swap enforcement (cgroup `memory.memsw.limit_in_bytes` is unset). Swap is global to the host.                                                                                                                                                           |
 | WHY 5 | Kubernetes does not set `memory.memsw.limit_in_bytes` by default (requires explicit `--feature-gates=MemorySwappiness=false` on some setups). The solution is to set `--kubelet-flags` or use `v1.ResourceMemory` with a limit that accounts for heap + native memory + page cache. |
 
 **Constraint violation:** Setting `memory.limit_in_bytes` equal to the JVM heap size is wrong. JVM needs: heap + native memory (native code, JNI) + Metaspace + thread stacks + page cache for I/O + room for heap dump. Rule of thumb: set memory limit to `1.5 × heap size` minimum.
@@ -332,6 +340,7 @@ resources:
 ### UNIT 3 — Concurrency & Synchronization (Weeks 7–9)
 
 **Learning Outcomes:**
+
 - Implement mutual exclusion using mutexes, semaphores, and monitor objects
 - Reason about deadlock: the four necessary conditions, detection vs prevention
 - Solve classic synchronization problems: Dining Philosophers, Readers-Writers
@@ -341,14 +350,14 @@ resources:
 
 #### Week 7 — Mutual Exclusion & Synchronization Primitives
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Race conditions — why `counter++` is not atomic | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §1-2 | Write: 10 threads increment shared counter; measure final value |
-| 2 | Mutexes & spinlocks — test-and-set, ticket lock | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §2 | Implement `Mutex` using `pthread_mutex_init` |
-| 3 | Semaphores — `sem_init`, `sem_wait`, `sem_post` | `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` §1-2 | Solve producer-consumer with bounded buffer |
-| 4 | Monitors — Java `synchronized`, `wait/notify` | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §3-4 | Implement a monitor-based bounded queue |
-| 5 | Lab | — | **Lab:** Fix 5 intentional race conditions in a provided C program |
-| 6–7 | Review + Problem Set OS-PS7 | — | PS-7 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                           | Read                                                             | Do                                                                 |
+| --- | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1   | Race conditions — why `counter++` is not atomic | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §1-2                        | Write: 10 threads increment shared counter; measure final value    |
+| 2   | Mutexes & spinlocks — test-and-set, ticket lock | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §2 | Implement `Mutex` using `pthread_mutex_init`                       |
+| 3   | Semaphores — `sem_init`, `sem_wait`, `sem_post` | `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` §1-2             | Solve producer-consumer with bounded buffer                        |
+| 4   | Monitors — Java `synchronized`, `wait/notify`   | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §3-4                        | Implement a monitor-based bounded queue                            |
+| 5   | Lab                                             | —                                                                | **Lab:** Fix 5 intentional race conditions in a provided C program |
+| 6–7 | Review + Problem Set OS-PS7                     | —                                                                | PS-7 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`              |
 
 **Section Challenge (mutex deadlock):**
 
@@ -390,14 +399,14 @@ Thread B:                lock(m2) ───► waiting for m1
 
 #### Week 8 — Classic Synchronization Problems
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Dining Philosophers — resource hierarchy solution | `14_Mental_Models/05_Universal_Problem_Framework.md` | Implement DP with 5 philosophers in C using semaphores |
-| 2 | Readers-Writers Problem — readers-preference, writers-preference, fair | `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` §3 | Implement RW lock in Java; measure reader throughput |
-| 3 | Condition variables — signal vs broadcast, spurious wakeups | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §4 | Implement a barrier: N threads wait, then all proceed |
-| 4 | Lamport's bakery algorithm — lock-free ordering | `03_Algorithms/18_Bitwise_Trie_Java_Complete.md` (ordering logic) | Implement bakery algorithm; why is it rarely used? |
-| 5 | Lab | — | **Lab:** Implement Dining Philosophers with resource hierarchy AND try-lock fallback |
-| 6–7 | Review + Problem Set OS-PS8 | — | PS-8 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                  | Read                                                              | Do                                                                                   |
+| --- | ---------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| 1   | Dining Philosophers — resource hierarchy solution                      | `14_Mental_Models/05_Universal_Problem_Framework.md`              | Implement DP with 5 philosophers in C using semaphores                               |
+| 2   | Readers-Writers Problem — readers-preference, writers-preference, fair | `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` §3                | Implement RW lock in Java; measure reader throughput                                 |
+| 3   | Condition variables — signal vs broadcast, spurious wakeups            | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §4                           | Implement a barrier: N threads wait, then all proceed                                |
+| 4   | Lamport's bakery algorithm — lock-free ordering                        | `03_Algorithms/18_Bitwise_Trie_Java_Complete.md` (ordering logic) | Implement bakery algorithm; why is it rarely used?                                   |
+| 5   | Lab                                                                    | —                                                                 | **Lab:** Implement Dining Philosophers with resource hierarchy AND try-lock fallback |
+| 6–7 | Review + Problem Set OS-PS8                                            | —                                                                 | PS-8 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                                |
 
 **Section Challenge (readers-writers):**
 
@@ -454,14 +463,14 @@ Fix: Use `notify()` (wakes exactly one waiter) for `readUnlock()` when you know 
 
 #### Week 9 — Deadlock, Memory Ordering & the Java Memory Model
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Deadlock conditions: mutual exclusion, hold-and-wait, no preemption, circular wait | `14_Mental_Models/08_Debugging_DryRun.md` | Prove: breaking any one condition prevents deadlock |
-| 2 | Banker's algorithm — deadlock avoidance with known maximum claims | `03_Algorithms/14_Union_Find_DSU_Complete.md` (graph cycle detection) | Implement Banker's algorithm in C |
-| 3 | Live-lock — non-blocking butprogressless execution | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §3 | Implement: two threads trying to pass each other in a hallway |
-| 4 | Java Memory Model — happens-before, volatile, `synchronized` | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §5-6 | Trace: why `volatile boolean flag` fixes visibility |
-| 5 | Lab | — | **Lab:** Build a deadlock detector using a wait-for graph |
-| 6–7 | Review + Problem Set OS-PS9 | — | PS-9 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                              | Read                                                                  | Do                                                            |
+| --- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 1   | Deadlock conditions: mutual exclusion, hold-and-wait, no preemption, circular wait | `14_Mental_Models/08_Debugging_DryRun.md`                             | Prove: breaking any one condition prevents deadlock           |
+| 2   | Banker's algorithm — deadlock avoidance with known maximum claims                  | `03_Algorithms/14_Union_Find_DSU_Complete.md` (graph cycle detection) | Implement Banker's algorithm in C                             |
+| 3   | Live-lock — non-blocking butprogressless execution                                 | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §3      | Implement: two threads trying to pass each other in a hallway |
+| 4   | Java Memory Model — happens-before, volatile, `synchronized`                       | `07_Modern_Java/Ch18_JMM_GC_Deep.md` §5-6                             | Trace: why `volatile boolean flag` fixes visibility           |
+| 5   | Lab                                                                                | —                                                                     | **Lab:** Build a deadlock detector using a wait-for graph     |
+| 6–7 | Review + Problem Set OS-PS9                                                        | —                                                                     | PS-9 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`         |
 
 **Section Challenge (happens-before):**
 
@@ -490,6 +499,7 @@ Is `consumer()` guaranteed to return `42`? What is the happens-before chain? Wha
 **Yes, `consumer()` always returns `42`.** The `volatile` on `ready` establishes a happens-before edge between `producer()` and `consumer()`.
 
 **Happens-before chain:**
+
 ```
 A (write value=42) → program order within producer → B (write ready=true, volatile write)
                                                                  │
@@ -507,12 +517,12 @@ Without `volatile`, the JVM is allowed to reorder the writes in `producer()`: `r
 
 **5WHY: Why does this matter for OS developers?**
 
-| Why | Answer |
-|-----|--------|
-| WHY 1 | OS kernels use lock-free data structures for per-CPU data (Linux per-CPU variables use `smp_wmb()`/`smp_rmb()` barriers). |
-| WHY 2 | Without memory barriers, a CPU could observe a write to a data structure before seeing the write that initialised it, causing crashes or data corruption. |
-| WHY 3 | Linux uses `volatile` only for I/O registers (MMIO). For synchronization, it uses `smp_*_mb()` explicit memory barriers. |
-| WHY 4 | Go's memory model is similar to C11 — explicit `sync/atomic` or `sync.Mutex` is required for cross-goroutine communication. |
+| Why   | Answer                                                                                                                                                                                 |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| WHY 1 | OS kernels use lock-free data structures for per-CPU data (Linux per-CPU variables use `smp_wmb()`/`smp_rmb()` barriers).                                                              |
+| WHY 2 | Without memory barriers, a CPU could observe a write to a data structure before seeing the write that initialised it, causing crashes or data corruption.                              |
+| WHY 3 | Linux uses `volatile` only for I/O registers (MMIO). For synchronization, it uses `smp_*_mb()` explicit memory barriers.                                                               |
+| WHY 4 | Go's memory model is similar to C11 — explicit `sync/atomic` or `sync.Mutex` is required for cross-goroutine communication.                                                            |
 | WHY 5 | Understanding memory ordering is the difference between code that works on a single-core development machine and code that fails intermittently in production on multi-socket servers. |
 
 </details>
@@ -522,6 +532,7 @@ Without `volatile`, the JVM is allowed to reorder the writes in `producer()`: `r
 ### UNIT 4 — File Systems & I/O (Weeks 10–12)
 
 **Learning Outcomes:**
+
 - Explain inode structure, directory entries, and free space management
 - Implement a simple file system using FUSE or in-memory block layer
 - Understand journaling (ext4) and how it guarantees consistency after crash
@@ -531,14 +542,14 @@ Without `volatile`, the JVM is allowed to reorder the writes in `producer()`: `r
 
 #### Week 10 — File System Structure
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Files, directories, file descriptors, open file table | `02_Data_Structures/01d_Stack_Queue.md` §4 (file descriptor as resource handle) | Use `lsof` to trace open file descriptors of a process |
-| 2 | Inodes — direct/indirect blocks, `stat`, `inode` structure | Linux `fs/ext4/ext4.h` | Compute: 4KB block, 4-byte block pointers, 12 direct + 1 indirect → max file size |
-| 3 | Directory implementation — linear list vs hash table vs B+ tree | `02_Data_Structures/01f_Trees_Heaps.md` §3 (B+ tree) | Trace: `ext4` directory indexing with `debugfs` |
-| 4 | Free space management — bitmap vs linked list | `02_Data_Structures/01e_HashTable.md` §2 (bitmap for free slots) | Implement a simple block bitmap allocator |
-| 5 | Lab | — | **Lab:** Use `debugfs` / ` dumpe2fs` to inspect an ext4 filesystem |
-| 6–7 | Review + Problem Set OS-PS10 | — | PS-10 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                           | Read                                                                            | Do                                                                                |
+| --- | --------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 1   | Files, directories, file descriptors, open file table           | `02_Data_Structures/01d_Stack_Queue.md` §4 (file descriptor as resource handle) | Use `lsof` to trace open file descriptors of a process                            |
+| 2   | Inodes — direct/indirect blocks, `stat`, `inode` structure      | Linux `fs/ext4/ext4.h`                                                          | Compute: 4KB block, 4-byte block pointers, 12 direct + 1 indirect → max file size |
+| 3   | Directory implementation — linear list vs hash table vs B+ tree | `02_Data_Structures/01f_Trees_Heaps.md` §3 (B+ tree)                            | Trace: `ext4` directory indexing with `debugfs`                                   |
+| 4   | Free space management — bitmap vs linked list                   | `02_Data_Structures/01e_HashTable.md` §2 (bitmap for free slots)                | Implement a simple block bitmap allocator                                         |
+| 5   | Lab                                                             | —                                                                               | **Lab:** Use `debugfs` / ` dumpe2fs` to inspect an ext4 filesystem                |
+| 6–7 | Review + Problem Set OS-PS10                                    | —                                                                               | PS-10 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                            |
 
 **Section Challenge (inode capacity):**
 
@@ -551,6 +562,7 @@ An ext4 filesystem uses 4KB blocks. Each block pointer is 4 bytes. An inode is 2
 <summary>Answer</summary>
 
 **Traditional block pointer calculation:**
+
 - **Direct blocks:** 12 × 4KB = 48KB
 - **Single indirect:** 1 block × (4KB / 4 bytes) entries × 4KB = 1 × 1024 × 4KB = **4MB**
 - **Double indirect:** 1 block × (4KB / 4 bytes)² × 4KB = 1 × 1024² × 4KB = **4GB**
@@ -574,14 +586,14 @@ Extents replaces the traditional block pointer tree with an **extent tree** — 
 
 #### Week 11 — Journaling & Crash Consistency
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | The crash consistency problem — update-in-place vs journaling | `22_DevOps/00_DevOps_Fundamentals.md` §5 | Run: `sync; echo c > /proc/sysrq-trigger` (in VM!) to observe fsck |
-| 2 | Journaling (write-ahead log): tx journal, commit block, checkpoint | Linux `fs/jbd2/` | Trace a `write()` system call through ext4's journal |
-| 3 | Journal modes: journal, ordered, writeback — the consistency/speed tradeoff | `22_DevOps/01_DevOps_Advanced.md` §3 | Compare: `data=journal` vs `data=ordered` on the same workload |
-| 4 | RAID levels 0–6 — striping, mirroring, parity, rebuild time | `03_Algorithms/05d_Graphs_Advanced_Algos.md` §MST (redundancy reasoning) | Compute: RAID-5 with 5 disks, one fails — what's the rebuild time? |
-| 5 | Lab | — | **Lab:** Use `dtrace` / `perf` to trace ext4 journal commits under load |
-| 6–7 | Review + Problem Set OS-PS11 | — | PS-11 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                       | Read                                                                     | Do                                                                      |
+| --- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| 1   | The crash consistency problem — update-in-place vs journaling               | `22_DevOps/00_DevOps_Fundamentals.md` §5                                 | Run: `sync; echo c > /proc/sysrq-trigger` (in VM!) to observe fsck      |
+| 2   | Journaling (write-ahead log): tx journal, commit block, checkpoint          | Linux `fs/jbd2/`                                                         | Trace a `write()` system call through ext4's journal                    |
+| 3   | Journal modes: journal, ordered, writeback — the consistency/speed tradeoff | `22_DevOps/01_DevOps_Advanced.md` §3                                     | Compare: `data=journal` vs `data=ordered` on the same workload          |
+| 4   | RAID levels 0–6 — striping, mirroring, parity, rebuild time                 | `03_Algorithms/05d_Graphs_Advanced_Algos.md` §MST (redundancy reasoning) | Compute: RAID-5 with 5 disks, one fails — what's the rebuild time?      |
+| 5   | Lab                                                                         | —                                                                        | **Lab:** Use `dtrace` / `perf` to trace ext4 journal commits under load |
+| 6–7 | Review + Problem Set OS-PS11                                                | —                                                                        | PS-11 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                  |
 
 **Section Challenge (journaling):**
 
@@ -591,6 +603,7 @@ A database writes 3 blocks: A (data block), B (index block), C (journal commit).
 <summary>Answer</summary>
 
 **Write order in `data=ordered` mode:**
+
 1. A (data block) — written to disk first
 2. B (index block) — written to disk second
 3. C (journal commit) — written last
@@ -600,6 +613,7 @@ A database writes 3 blocks: A (data block), B (index block), C (journal commit).
 **Guarantee provided:** After a crash, `e2fsck` (ext4 fsck) can replay the journal or detect inconsistencies and repair them. The filesystem is guaranteed to be in a consistent state — either the full transaction is present (A, B, C all written) or none of it is (journal rolled back).
 
 **What it does NOT guarantee:**
+
 - **Application-level durability:** `data=ordered` only guarantees filesystem consistency, NOT application-level durability. The application may have written to a write-ahead log in the database, but if the application crashes after A,B are on disk but before its own commit record, data may be lost.
 - **Power-fail durability:** If the drive has a volatile write cache (common in enterprise HDDs), A,B may be in the drive's cache but not on persistent media even after the OS reports the write as complete. Use `fsync()` or `data=journal` + battery-backed RAID controller.
 - **Cross-filesystem atomicity:** Moving a file across filesystems (rename across directories) is not atomic in ext4.
@@ -612,24 +626,24 @@ A database writes 3 blocks: A (data block), B (index block), C (journal commit).
 
 #### Week 12 — Async I/O, epoll & the VFS Layer
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Synchronous vs asynchronous I/O — `read`/`write` vs `aio_read`/`aio_write` | `07_Modern_Java/Ch05_DateTime_Regex.md` §NIO (async patterns) | Compare: `sync read 1GB` vs `aio_read 1GB` with `libaio` |
-| 2 | `select`/`poll` — fd_set, O(n) scan, FD limits | `22_DevOps/06_TCP_UDP_Deep_Dive.md` §5 (event loop) | Write: echo server using `select()` on 1000 FDs |
-| 3 | `epoll` — red-black tree + wait queue, O(1) notification | Linux `fs/eventpoll.c` | Rewrite the echo server with `epoll_create1()` + `EPOLLET` edge-triggered |
-| 4 | VFS (Virtual File System) — superblock, inode, dentry, file abstraction | Linux `fs/` | Trace: `open("test.txt")` through VFS layers to ext4 |
-| 5 | Lab | — | **Lab:** Build a high-performance echo server using epoll; benchmark with `wrk` |
-| 6–7 | Review + Problem Set OS-PS12 | — | PS-12 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                      | Read                                                          | Do                                                                              |
+| --- | -------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1   | Synchronous vs asynchronous I/O — `read`/`write` vs `aio_read`/`aio_write` | `07_Modern_Java/Ch05_DateTime_Regex.md` §NIO (async patterns) | Compare: `sync read 1GB` vs `aio_read 1GB` with `libaio`                        |
+| 2   | `select`/`poll` — fd_set, O(n) scan, FD limits                             | `22_DevOps/06_TCP_UDP_Deep_Dive.md` §5 (event loop)           | Write: echo server using `select()` on 1000 FDs                                 |
+| 3   | `epoll` — red-black tree + wait queue, O(1) notification                   | Linux `fs/eventpoll.c`                                        | Rewrite the echo server with `epoll_create1()` + `EPOLLET` edge-triggered       |
+| 4   | VFS (Virtual File System) — superblock, inode, dentry, file abstraction    | Linux `fs/`                                                   | Trace: `open("test.txt")` through VFS layers to ext4                            |
+| 5   | Lab                                                                        | —                                                             | **Lab:** Build a high-performance echo server using epoll; benchmark with `wrk` |
+| 6–7 | Review + Problem Set OS-PS12                                               | —                                                             | PS-12 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                          |
 
 **Section Challenge (epoll vs select):**
 
 You are building a chat server that handles 100,000 concurrent connections. You are deciding between `select()`, `poll()`, and `epoll()`.
 
-| Approach | Max FDs | Scalability | Edge/Level Triggered |
-|----------|---------|-------------|----------------------|
-| `select()` | FD_SETSIZE (typically 1024) | O(n) scan per call | Level-triggered |
-| `poll()` | Unlimited (array-based) | O(n) scan per call | Level-triggered |
-| `epoll()` | Unlimited (red-black tree) | O(1) per ready event | Edge-triggered (default) or level |
+| Approach   | Max FDs                     | Scalability          | Edge/Level Triggered              |
+| ---------- | --------------------------- | -------------------- | --------------------------------- |
+| `select()` | FD_SETSIZE (typically 1024) | O(n) scan per call   | Level-triggered                   |
+| `poll()`   | Unlimited (array-based)     | O(n) scan per call   | Level-triggered                   |
+| `epoll()`  | Unlimited (red-black tree)  | O(1) per ready event | Edge-triggered (default) or level |
 
 Write the code for an `epoll`-based echo server handling 100k connections. Why does `select()` fail at this scale?
 
@@ -693,18 +707,19 @@ if (events[i].events & EPOLLIN) {
 ```
 
 **Why `select()` fails at 100k connections:**
+
 - `select()` uses `FD_SET` (a bitset of size `FD_SETSIZE`, often 1024). Even if you recompile the kernel with a larger limit, `select()` copies the entire bitset to kernel space and scans it linearly — O(n) per call where n = 100,000.
 - At 100k FDs and 10k events/second, this is 1 billion operations/second just for the kernel scan.
 - `epoll` uses a red-black tree for FD registration (O(log n) insert/remove) and a wait queue for sleeping threads — only O(1) per event notification. The scanning cost is amortised to only the ready FDs.
 
 **5WHY: Why does this matter?**
 
-| Why | Answer |
-|-----|--------|
-| WHY 1 | High-throughput servers (Nginx, Redis, Envoy) use `epoll`/`kqueue` specifically to handle 100k+ connections without O(n) scan overhead. |
-| WHY 2 | C10k problem (and now C10M) describes the transition from select/poll to event-driven I/O. |
-| WHY 3 | Go's netpoller and Java NIO's `Selector` are higher-level abstractions built on epoll/kqueue. |
-| WHY 4 | Misusing `select()` on a high-concurrency server causes latency spikes and CPU saturation from constant O(n) scanning. |
+| Why   | Answer                                                                                                                                                 |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| WHY 1 | High-throughput servers (Nginx, Redis, Envoy) use `epoll`/`kqueue` specifically to handle 100k+ connections without O(n) scan overhead.                |
+| WHY 2 | C10k problem (and now C10M) describes the transition from select/poll to event-driven I/O.                                                             |
+| WHY 3 | Go's netpoller and Java NIO's `Selector` are higher-level abstractions built on epoll/kqueue.                                                          |
+| WHY 4 | Misusing `select()` on a high-concurrency server causes latency spikes and CPU saturation from constant O(n) scanning.                                 |
 | WHY 5 | Connection pool exhaustion (too many FDs) also causes "too many open files" errors — always set `ulimit -n` and `/proc/sys/fs/file-max` appropriately. |
 
 </details>
@@ -714,6 +729,7 @@ if (events[i].events & EPOLLIN) {
 ### UNIT 5 — OS Security & Containers (Weeks 13–14)
 
 **Learning Outcomes:**
+
 - Explain cgroups and namespaces: what isolation each provides and what it does NOT provide
 - Implement seccomp profiles and understand Linux capabilities
 - Compare containers vs VMs: the security tradeoff, attack surface, and escape vulnerabilities
@@ -723,18 +739,19 @@ if (events[i].events & EPOLLIN) {
 
 #### Week 13 — cgroups & Namespace Isolation
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | cgroups v2 hierarchy — memory, CPU, I/O controllers | `22_DevOps/03_Docker_Containers.md` §1-2 | List your current cgroups: `cat /sys/fs/cgroup/cgroup.controllers` |
-| 2 | Namespace types — PID, network, mount, user, UTS, IPC | `13_Developer_Essentials/03_Docker_Containers.md` §3 | Run `unshare -p -f --mount-proc` and observe isolated PID namespace |
-| 3 | Container memory limits — `memory.max`, `memory.high`, OOM events | `22_DevOps/01_DevOps_Advanced.md` §5 | Trigger OOM in a container: `stress --vm 1 --vm-bytes 90%` |
-| 4 | CPU cgroup — CPUacct, CFS bandwidth control, CPU throttle | `13_Developer_Essentials/03_Docker_Containers.md` §2 | Measure: `docker run --cpus=0.5` actual CPU usage with `top` |
-| 5 | Lab | — | **Lab:** Build a custom container using `unshare` + `runc` from scratch |
-| 6–7 | Review + Problem Set OS-PS13 | — | PS-13 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                             | Read                                                 | Do                                                                      |
+| --- | ----------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1   | cgroups v2 hierarchy — memory, CPU, I/O controllers               | `22_DevOps/03_Docker_Containers.md` §1-2             | List your current cgroups: `cat /sys/fs/cgroup/cgroup.controllers`      |
+| 2   | Namespace types — PID, network, mount, user, UTS, IPC             | `13_Developer_Essentials/03_Docker_Containers.md` §3 | Run `unshare -p -f --mount-proc` and observe isolated PID namespace     |
+| 3   | Container memory limits — `memory.max`, `memory.high`, OOM events | `22_DevOps/01_DevOps_Advanced.md` §5                 | Trigger OOM in a container: `stress --vm 1 --vm-bytes 90%`              |
+| 4   | CPU cgroup — CPUacct, CFS bandwidth control, CPU throttle         | `13_Developer_Essentials/03_Docker_Containers.md` §2 | Measure: `docker run --cpus=0.5` actual CPU usage with `top`            |
+| 5   | Lab                                                               | —                                                    | **Lab:** Build a custom container using `unshare` + `runc` from scratch |
+| 6–7 | Review + Problem Set OS-PS13                                      | —                                                    | PS-13 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                  |
 
 **Section Challenge (cgroup OOM):**
 
 A Kubernetes pod has:
+
 ```yaml
 resources:
   limits:
@@ -749,6 +766,7 @@ The container runs a Node.js process with `--max-old-space-size=400m`. Under wha
 <summary>Answer</summary>
 
 **Conditions for OOMKill:**
+
 - The container's cgroup memory usage exceeds `memory.max` (set to 512Mi by the limit).
 - The container's cgroup memory usage exceeds `memory.high` (soft limit, set slightly above `requests` = 256Mi by Kubernetes' pod cgroup settings).
 - The kernel's global memory is also under pressure (cgroup v2 `memory.max` only limits the container; if the host is not in OOM, the container process may just be throttled via `memory.high`).
@@ -780,14 +798,14 @@ The container runs a Node.js process with `--max-old-space-size=400m`. Under wha
 
 #### Week 14 — Linux Capabilities, seccomp & Container Security
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Privileged vs unprivileged — capability sets (CAP_SYS_ADMIN, etc.) | `13_Developer_Essentials/08_Security_Fundamentals.md` | List your capabilities: `capsh --print` |
-| 2 | seccomp — whitelist syscalls, `SECCOMP_RET_ERRNO` | Linux `seccomp(2)` man page | Write: seccomp filter that allows only `read,write,exit,_exit` |
-| 3 | Container vs VM security — side-channel attacks, hypervisor isolation | `22_DevOps/03_Docker_Containers.md` §4-5 | Draw: attack surface comparison table |
-| 4 | Rootless containers — user namespaces, `newuidmap` | `13_Developer_Essentials/03_Docker_Containers.md` §6 | Run `docker --userns=host` and verify no CAP_SYS_ADMIN in container |
-| 5 | Lab | — | **Lab:** Build a minimal seccomp profile for nginx using `libseccomp` |
-| 6–7 | Review + Problem Set OS-PS14 | — | PS-14 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md` |
+| Day | Topic                                                                 | Read                                                  | Do                                                                    |
+| --- | --------------------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- |
+| 1   | Privileged vs unprivileged — capability sets (CAP_SYS_ADMIN, etc.)    | `13_Developer_Essentials/08_Security_Fundamentals.md` | List your capabilities: `capsh --print`                               |
+| 2   | seccomp — whitelist syscalls, `SECCOMP_RET_ERRNO`                     | Linux `seccomp(2)` man page                           | Write: seccomp filter that allows only `read,write,exit,_exit`        |
+| 3   | Container vs VM security — side-channel attacks, hypervisor isolation | `22_DevOps/03_Docker_Containers.md` §4-5              | Draw: attack surface comparison table                                 |
+| 4   | Rootless containers — user namespaces, `newuidmap`                    | `13_Developer_Essentials/03_Docker_Containers.md` §6  | Run `docker --userns=host` and verify no CAP_SYS_ADMIN in container   |
+| 5   | Lab                                                                   | —                                                     | **Lab:** Build a minimal seccomp profile for nginx using `libseccomp` |
+| 6–7 | Review + Problem Set OS-PS14                                          | —                                                     | PS-14 in `CSE401_Operating_Systems/01_PROBLEM_SETS.md`                |
 
 **Section Challenge (capability least privilege):**
 
@@ -800,11 +818,11 @@ Which capabilities does it actually need? List the minimum set. For each, state 
 
 **Minimum capabilities:**
 
-| Capability | Required For | Rationale |
-|------------|-------------|-----------|
-| `CAP_NET_BIND_SERVICE` | Bind to port < 1024 | Linux requires this to bind ports below 1024 as non-root |
-| `CAP_NET_RAW` | Send raw UDP packets to port 53 | Required for DNS resolution; `CAP_NET_RAW` also allows forging any IP packet |
-| `CAP_SYS_ADMIN` | Mount tmpfs | Required for `mount(2)`. This is the most dangerous capability. |
+| Capability             | Required For                    | Rationale                                                                    |
+| ---------------------- | ------------------------------- | ---------------------------------------------------------------------------- |
+| `CAP_NET_BIND_SERVICE` | Bind to port < 1024             | Linux requires this to bind ports below 1024 as non-root                     |
+| `CAP_NET_RAW`          | Send raw UDP packets to port 53 | Required for DNS resolution; `CAP_NET_RAW` also allows forging any IP packet |
+| `CAP_SYS_ADMIN`        | Mount tmpfs                     | Required for `mount(2)`. This is the most dangerous capability.              |
 
 **What it does NOT need:** `CAP_DAC_OVERRIDE` (bypass file permission checks) — root in a user namespace can read `/etc/passwd` normally. `CAP_SYS_PTRACE` — not needed for DNS. `CAP_NET_ADMIN` — not needed (only for interface configuration, not raw sockets).
 
@@ -828,8 +846,8 @@ securityContext:
     drop:
       - ALL
     add:
-      - NET_BIND_SERVICE   # only this for web server on port 80
-      - NET_RAW            # only this for DNS
+      - NET_BIND_SERVICE # only this for web server on port 80
+      - NET_RAW # only this for DNS
   privileged: false
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
@@ -837,12 +855,12 @@ securityContext:
 
 **5WHY: Why does this matter?**
 
-| Why | Answer |
-|-----|--------|
-| WHY 1 | Container escapes (runC CVE-2019-5736, CVE-2021-30465) leverage `CAP_SYS_ADMIN` to escape to the host. |
+| Why   | Answer                                                                                                                      |
+| ----- | --------------------------------------------------------------------------------------------------------------------------- |
+| WHY 1 | Container escapes (runC CVE-2019-5736, CVE-2021-30465) leverage `CAP_SYS_ADMIN` to escape to the host.                      |
 | WHY 2 | The principle of least privilege means if a microservice doesn't need to mount filesystems, it should drop `CAP_SYS_ADMIN`. |
-| WHY 3 | A compromised pod with `CAP_NET_RAW` can launchARP spoofing attacks against the cluster pod network. |
-| WHY 4 | Kubernetes Pod Security Standards (PSS) enforce capability restrictions at the cluster level. |
+| WHY 3 | A compromised pod with `CAP_NET_RAW` can launchARP spoofing attacks against the cluster pod network.                        |
+| WHY 4 | Kubernetes Pod Security Standards (PSS) enforce capability restrictions at the cluster level.                               |
 | WHY 5 | Defense in depth: capabilities are one layer; seccomp, AppArmor/SELinux, and network policies provide additional isolation. |
 
 </details>
@@ -852,6 +870,7 @@ securityContext:
 ### UNIT 6 — Capstone & Review (Weeks 15–16)
 
 **Learning Outcomes:**
+
 - Build a complete MLFQ scheduler from scratch with syscall tracing
 - Trace program execution through OS subsystems (process creation → scheduling → memory allocation → I/O)
 - Integrate knowledge across all 5 units in one project
@@ -860,20 +879,21 @@ securityContext:
 
 #### Week 15 — Capstone: Build a Toy MLFQ Scheduler
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | MLFQ design — queue count, quantum sizes, priority boosting | Linux `kernel/sched/deadline.c`, `kernel/sched/fair.c` | Read CFS scheduler source; note key data structures |
-| 2 | Implementing the MLFQ — PCB, queue structure, timer interrupt | `02_Data_Structures/01d_Stack_Queue.md` §5 (priority queue) | Design: PCB fields needed for MLFQ state tracking |
-| 3 | Syscall tracing — `ptrace`, `strace`, `perf` | `22_DevOps/04_Networking_Complete.md` §Performance tracing | Trace: run MLFQ simulator under `strace -c`; count `waitpid` calls |
-| 4 | MLFQ implementation — round-robin within queue, aging | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §2 | Implement: `mlfq_run()` with aging after N ticks in lower queue |
-| 5 | Lab | — | **Capstone Lab Part A:** MLFQ scheduler skeleton in C with test harness |
-| 6–7 | Capstone Lab Part B | — | Implement `mlfq_enqueue`, `mlfq_dequeue`, `mlfq_tick`, `mlfq_boost` |
+| Day | Topic                                                         | Read                                                             | Do                                                                      |
+| --- | ------------------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1   | MLFQ design — queue count, quantum sizes, priority boosting   | Linux `kernel/sched/deadline.c`, `kernel/sched/fair.c`           | Read CFS scheduler source; note key data structures                     |
+| 2   | Implementing the MLFQ — PCB, queue structure, timer interrupt | `02_Data_Structures/01d_Stack_Queue.md` §5 (priority queue)      | Design: PCB fields needed for MLFQ state tracking                       |
+| 3   | Syscall tracing — `ptrace`, `strace`, `perf`                  | `22_DevOps/04_Networking_Complete.md` §Performance tracing       | Trace: run MLFQ simulator under `strace -c`; count `waitpid` calls      |
+| 4   | MLFQ implementation — round-robin within queue, aging         | `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` §2 | Implement: `mlfq_run()` with aging after N ticks in lower queue         |
+| 5   | Lab                                                           | —                                                                | **Capstone Lab Part A:** MLFQ scheduler skeleton in C with test harness |
+| 6–7 | Capstone Lab Part B                                           | —                                                                | Implement `mlfq_enqueue`, `mlfq_dequeue`, `mlfq_tick`, `mlfq_boost`     |
 
 **Capstone Project: MLFQ Scheduler in C**
 
 **Specification file:** `CSE401_Operating_Systems/CAPSTONE_MLFQ.md`
 
 **Core requirements:**
+
 ```c
 // PCB structure for MLFQ
 typedef struct {
@@ -941,6 +961,7 @@ trace_syscall(p->pid, "io_complete", p->pid, 0, 0, 0);
 ```
 
 **Acceptance criteria:**
+
 - [ ] All 4 queues with correct quantums implemented
 - [ ] Processes demote to lower queue after exhausting quantum
 - [ ] Priority boost every `boost_counter` ticks
@@ -952,6 +973,7 @@ trace_syscall(p->pid, "io_complete", p->pid, 0, 0, 0);
 - [ ] Unit tests pass for each queue operation
 
 **Challenge extensions (for extra credit):**
+
 1. Implement **stride scheduling** (proportional-share) as an alternative to MLFQ and compare fairness.
 2. Add **energy-aware scheduling**: track CPU frequency (`cpufreq`) and adjust quantum based on power budget.
 3. Implement the scheduler as a **loadable kernel module** (LKM) that intercepts `schedule()`.
@@ -960,15 +982,15 @@ trace_syscall(p->pid, "io_complete", p->pid, 0, 0, 0);
 
 #### Week 16 — Integration Review & Exam Prep
 
-| Day | Topic | Read | Do |
-|-----|-------|------|-----|
-| 1 | Cross-unit integration: process → memory → I/O → network | All unit README sections | Draw the complete flow: `fork()` → memory allocation → I/O → `wait()` |
-| 2 | OS in production — reading kernel logs, `dmesg`, `strace`, `perf` | `13_Developer_Essentials/12_Monitoring_Observability.md` | Profile a real program with `perf record -g ./my_program` |
-| 3 | Review: scheduling algorithms (table comparison) | Weeks 1–3 | Create a decision matrix: when to use each scheduler |
-| 4 | Review: memory management (table comparison) | Weeks 4–6 | Draw TLB + page table + physical memory diagram end-to-end |
-| 5 | Review: synchronization (when to use which primitive) | Weeks 7–9 | Create a flowchart: mutex vs semaphore vs monitor vs condition variable |
-| 6 | Review: file system & I/O (decision guide) | Weeks 10–12 | Compare: ext4 vs XFS vs Btrfs vs ZFS for specific workloads |
-| 7 | Capstone presentations + Exam review | — | Submit MLFQ capstone; review all problem sets |
+| Day | Topic                                                             | Read                                                     | Do                                                                      |
+| --- | ----------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1   | Cross-unit integration: process → memory → I/O → network          | All unit README sections                                 | Draw the complete flow: `fork()` → memory allocation → I/O → `wait()`   |
+| 2   | OS in production — reading kernel logs, `dmesg`, `strace`, `perf` | `13_Developer_Essentials/12_Monitoring_Observability.md` | Profile a real program with `perf record -g ./my_program`               |
+| 3   | Review: scheduling algorithms (table comparison)                  | Weeks 1–3                                                | Create a decision matrix: when to use each scheduler                    |
+| 4   | Review: memory management (table comparison)                      | Weeks 4–6                                                | Draw TLB + page table + physical memory diagram end-to-end              |
+| 5   | Review: synchronization (when to use which primitive)             | Weeks 7–9                                                | Create a flowchart: mutex vs semaphore vs monitor vs condition variable |
+| 6   | Review: file system & I/O (decision guide)                        | Weeks 10–12                                              | Compare: ext4 vs XFS vs Btrfs vs ZFS for specific workloads             |
+| 7   | Capstone presentations + Exam review                              | —                                                        | Submit MLFQ capstone; review all problem sets                           |
 
 **Final Review: Complete System Call Flow**
 
@@ -999,65 +1021,68 @@ User space
 
 **5WHY: End-to-end production trace-back**
 
-| Why | Answer |
-|-----|--------|
-| WHY 1 | A slow `read()` on a database file traced back to: NVMe drive firmware bug (DMA not completing), resolved by `hdparm -W0 /dev/nvme0n1` (disable write cache). |
+| Why   | Answer                                                                                                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| WHY 1 | A slow `read()` on a database file traced back to: NVMe drive firmware bug (DMA not completing), resolved by `hdparm -W0 /dev/nvme0n1` (disable write cache).      |
 | WHY 2 | The I/O scheduler (cfq) was causing latency spikes for the database's fsync pattern. Switched to `deadline` scheduler: removed the 40ms latency percentile spikes. |
-| WHY 3 | ext4's `data=journal` was causing 2× write amplification. Switched to `data=ordered` + battery-backed RAID controller write cache. |
-| WHY 4 | The page cache was being evicted by a log rotation process (another container on the same host). Moved database to a dedicated cgroup with `memory.min=8G`. |
-| WHY 5 | The kernel parameter `vm.dirty_ratio` was too aggressive (20%), causing writeback to block reads. Tuned to `vm.dirty_ratio=5, vm.dirty_background_ratio=2`. |
+| WHY 3 | ext4's `data=journal` was causing 2× write amplification. Switched to `data=ordered` + battery-backed RAID controller write cache.                                 |
+| WHY 4 | The page cache was being evicted by a log rotation process (another container on the same host). Moved database to a dedicated cgroup with `memory.min=8G`.        |
+| WHY 5 | The kernel parameter `vm.dirty_ratio` was too aggressive (20%), causing writeback to block reads. Tuned to `vm.dirty_ratio=5, vm.dirty_background_ratio=2`.        |
 
 ---
 
 ## 📋 Assessment Overview
 
-| Assessment | Unit | Weight | Type |
-|-----------|------|--------|------|
-| Problem Set OS-PS1 (Processes & System Calls) | 1 | 5% | Written + code |
-| Problem Set OS-PS2 (Scheduling) | 1 | 5% | Written |
-| Problem Set OS-PS3 (Threads & Context Switch) | 1 | 5% | Code + analysis |
-| Problem Set OS-PS4 (Paging & Address Translation) | 2 | 5% | Written + trace |
-| Problem Set OS-PS5 (Page Faults & Demand Paging) | 2 | 5% | Code simulation |
-| Problem Set OS-PS6 (Thrashing & Replacement) | 2 | 5% | Written + simulation |
-| Problem Set OS-PS7 (Mutexes & Semaphores) | 3 | 5% | Code |
-| Problem Set OS-PS8 (Sync Problems) | 3 | 5% | Code + analysis |
-| Problem Set OS-PS9 (Deadlock & JMM) | 3 | 5% | Written + code |
-| Problem Set OS-PS10 (File System Structure) | 4 | 5% | Written |
-| Problem Set OS-PS11 (Journaling & RAID) | 4 | 5% | Written + analysis |
-| Problem Set OS-PS12 (Async I/O & epoll) | 4 | 5% | Code |
-| Problem Set OS-PS13 (cgroups & Namespaces) | 5 | 5% | Written + lab |
-| Problem Set OS-PS14 (Capabilities & seccomp) | 5 | 5% | Written + lab |
-| **MLFQ Capstone** | 6 | 15% | Full project |
-| **Final Exam** | All | 15% | Written + practical |
-| **Total** | | **100%** | |
+| Assessment                                        | Unit | Weight   | Type                 |
+| ------------------------------------------------- | ---- | -------- | -------------------- |
+| Problem Set OS-PS1 (Processes & System Calls)     | 1    | 5%       | Written + code       |
+| Problem Set OS-PS2 (Scheduling)                   | 1    | 5%       | Written              |
+| Problem Set OS-PS3 (Threads & Context Switch)     | 1    | 5%       | Code + analysis      |
+| Problem Set OS-PS4 (Paging & Address Translation) | 2    | 5%       | Written + trace      |
+| Problem Set OS-PS5 (Page Faults & Demand Paging)  | 2    | 5%       | Code simulation      |
+| Problem Set OS-PS6 (Thrashing & Replacement)      | 2    | 5%       | Written + simulation |
+| Problem Set OS-PS7 (Mutexes & Semaphores)         | 3    | 5%       | Code                 |
+| Problem Set OS-PS8 (Sync Problems)                | 3    | 5%       | Code + analysis      |
+| Problem Set OS-PS9 (Deadlock & JMM)               | 3    | 5%       | Written + code       |
+| Problem Set OS-PS10 (File System Structure)       | 4    | 5%       | Written              |
+| Problem Set OS-PS11 (Journaling & RAID)           | 4    | 5%       | Written + analysis   |
+| Problem Set OS-PS12 (Async I/O & epoll)           | 4    | 5%       | Code                 |
+| Problem Set OS-PS13 (cgroups & Namespaces)        | 5    | 5%       | Written + lab        |
+| Problem Set OS-PS14 (Capabilities & seccomp)      | 5    | 5%       | Written + lab        |
+| **MLFQ Capstone**                                 | 6    | 15%      | Full project         |
+| **Final Exam**                                    | All  | 15%      | Written + practical  |
+| **Total**                                         |      | **100%** |                      |
 
 ---
 
 ## 📚 Reference Stack
 
 ### Primary Texts
-- Silberschatz, Galvin, Gagne — *Operating System Concepts* (10th ed.)
-- Tanenbaum & Bos — *Modern Operating Systems* (4th ed.)
-- Love — *Linux Kernel Development* (3rd ed.)
+
+- Silberschatz, Galvin, Gagne — _Operating System Concepts_ (10th ed.)
+- Tanenbaum & Bos — _Modern Operating Systems_ (4th ed.)
+- Love — _Linux Kernel Development_ (3rd ed.)
 
 ### Online References
+
 - Linux kernel source: `kernel/sched/`, `mm/`, `fs/`, `net/`
 - Linux `man` pages: `fork(2)`, `execve(2)`, `mmap(2)`, `epoll_ctl(2)`, `seccomp(2)`, `cgroups(7)`
 - LWN.net kernel articles on CFS, memory management, cgroups
 
 ### Cross-References in This Course
-| Module | Relevant Sections |
-|--------|-------------------|
-| `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` | Goroutine scheduler model; compare with OS thread scheduler |
-| `07_Modern_Java/Ch18_JMM_GC_Deep.md` | JMM happens-before, volatile, synchronized — OS memory model applied to JVM |
-| `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` | Java concurrency problems — map to OS primitives |
-| `22_DevOps/03_Docker_Containers.md` | Container runtime; cgroup/namespace implementation |
-| `22_DevOps/01_DevOps_Advanced.md` | Memory limits, OOM, resource isolation in production |
-| `02_Data_Structures/01a_Memory_Foundations.md` | Memory layout — prerequisite for paging |
-| `02_Data_Structures/01d_Stack_Queue.md` | Queue — used in MLFQ, work queues, I/O scheduling |
-| `02_Data_Structures/01f_Trees_Heaps.md` | Heap — priority queue scheduling; B+ trees in file systems |
-| `14_Mental_Models/08_Debugging_DryRun.md` | Systematic debugging — trace OS subsystem failures |
-| `14_Mental_Models/09_Complexity_Intuition.md` | Throughput/latency reasoning for scheduler comparison |
+
+| Module                                                        | Relevant Sections                                                           |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` | Goroutine scheduler model; compare with OS thread scheduler                 |
+| `07_Modern_Java/Ch18_JMM_GC_Deep.md`                          | JMM happens-before, volatile, synchronized — OS memory model applied to JVM |
+| `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md`               | Java concurrency problems — map to OS primitives                            |
+| `22_DevOps/03_Docker_Containers.md`                           | Container runtime; cgroup/namespace implementation                          |
+| `22_DevOps/01_DevOps_Advanced.md`                             | Memory limits, OOM, resource isolation in production                        |
+| `02_Data_Structures/01a_Memory_Foundations.md`                | Memory layout — prerequisite for paging                                     |
+| `02_Data_Structures/01d_Stack_Queue.md`                       | Queue — used in MLFQ, work queues, I/O scheduling                           |
+| `02_Data_Structures/01f_Trees_Heaps.md`                       | Heap — priority queue scheduling; B+ trees in file systems                  |
+| `14_Mental_Models/08_Debugging_DryRun.md`                     | Systematic debugging — trace OS subsystem failures                          |
+| `14_Mental_Models/09_Complexity_Intuition.md`                 | Throughput/latency reasoning for scheduler comparison                       |
 
 ---
 

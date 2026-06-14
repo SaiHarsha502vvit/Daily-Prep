@@ -14,6 +14,48 @@ Everything you need to understand before writing production React — Components
 
 ---
 
+### Historical Evolution
+
+React's declarative component model evolved from Facebook's XHP framework into the dominant frontend paradigm, displacing imperative DOM libraries like jQuery.
+
+| Year | Milestone |
+|------|-----------|
+| 2006 | jQuery released — imperative DOM manipulation becomes the standard |
+| 2010 | XHP: Facebook's PHP component framework proves component-based UI scales |
+| 2011 | JSX created alongside the FaxJS prototype at Facebook |
+| 2013 | React open-sourced at JSConf US — virtual DOM and unidirectional data flow |
+| 2014 | Vue.js released, confirming the component model's cross-framework viability |
+
+Before React, jQuery developers manually traversed and mutated the DOM, which produced code that was hard to test and impossible to reason about at scale. XHP showed that composing UI from reusable components worked in production, and React brought that idea to JavaScript with an efficient virtual DOM diffing layer.
+
+**Predecessor:** XHP (2010) — Facebook's PHP component framework that introduced reusable UI components and XML-like syntax
+**Modern anchor:** Today every major framework — React, Vue, Angular, Svelte, Solid.js — uses the component model React popularized
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Hydration mismatch** | SSR app renders different HTML on server vs client; forms or counters show then disappear | Use `<ClientOnly>` wrapper or `suppressHydrationWarning` for deterministic content |
+| **Infinite render loop** | `useEffect` updates state it also reads, missing from deps array; page freezes | Audit every `setState` inside `useEffect`, use functional updates, lint with exhaustive-deps |
+| **Key prop misuse** | Using array index as `key` in sortable/filterable lists; state "jumps" between rows | Always use stable IDs from data; only use index for static, never-reordered lists |
+
+These failures cluster around React's fundamentals because juniors often learn JSX syntax before understanding React's reconciler contract (keys, state references, and SSR/client boundaries).
+
+---
+
+### Variant Trade-offs: React vs Vue vs Svelte vs Solid
+
+| Framework | Bundle Size | Mental Model | Best For | Trade-off |
+|-----------|------------|--------------|----------|-----------|
+| **React** | ~40 KB (react+react-dom) | Component tree with unidirectional flow | Large teams, complex SPAs, huge ecosystem | Boilerplate for state management; no built-in router/forms |
+| **Vue** | ~34 KB (vue.runtime) | Template-based with options/composition API | Rapid prototyping, small-to-medium apps, gradual adoption | JSX less natural; smaller enterprise ecosystem |
+| **Svelte** | ~5 KB compiler output | Compile-time reactivity, no virtual DOM | Performance-critical apps, embedded widgets | Smaller ecosystem; hiring pool is thinner |
+| **Solid** | ~7 KB | Fine-grained reactivity (signals), no VDOM | Maximum performance, real-time dashboards | Very new; tooling and ecosystem immature |
+
+**Selection rule:** Choose **React** when you need hiring velocity, massive ecosystem, and long-term maintainability. Choose **Vue** when you want gentler learning curve and fast prototyping. Choose **Svelte** for performance-constrained environments (low-end devices). Choose **Solid** only if you have a specialized performance need and can absorb ecosystem risk.
+
+---
+
 ## Section 0: War Stories — When React Basics Caused Production Bugs
 
 > Three incidents caused by misunderstanding React's fundamentals — not advanced hooks or performance, just the basics in this chapter.
@@ -804,6 +846,58 @@ THE FIBER ARCHITECTURE (React 16+):
   This is how React 18's concurrent features work:
   startTransition(), Suspense, useDeferredValue — all powered by Fiber.
 ```
+
+---
+
+### Reconciliation Algorithm (Diffing)
+
+```
+1. ELEMENT TYPE CHECK
+   └─ Old: <div>  →  New: <section>    → TEAR DOWN + rebuild subtree
+   └─ Old: <div>  →  New: <div>        → KEEP, recurse into children
+
+2. KEY MATCH (in lists)
+   └─ Old key=2  →  New key=2          → MOVE existing component, preserve state
+   └─ Old key=2  →  New key=3          → UNMOUNT old, MOUNT new (state lost)
+
+3. PROPS DIFF
+   └─ Old: {a:1} → New: {a:1}          → skip (same reference)
+   └─ Old: {a:1} → New: {a:2}          → call component (re-render)
+```
+
+**Invariant:** Reconciliation is O(n) where n = number of elements, achieved by:
+- Type-based subtree teardown (avoid deep diff)
+- Key-based list reuse (avoid re-mounting)
+- Heuristic for siblings: compare levels, not paths
+
+---
+
+### Hydration: Server HTML → Interactive React
+
+```
+1. SERVER: renderToString(<App />)
+   └─→ HTML: <div id="root"><header>...</header>...</div>
+   └─→ Streamed to browser
+
+2. BROWSER: paints HTML immediately
+   └─ User sees content (no JS yet)
+   └─→ Layout, fonts, images load
+
+3. BROWSER: downloads JS bundle
+   └─ React, ReactDOM, your code
+
+4. REACT: hydrateRoot(document.getElementById('root'), <App />)
+   └─ Walks server HTML, attaches event listeners
+   └─ Builds Fiber tree matching DOM structure
+   └─ Does NOT re-create DOM nodes (would lose state)
+
+5. ⚠️ HYDRATION MISMATCH (if server ≠ client)
+   └─ React tears down + re-renders client-side
+   └─ Console warning, lost interactivity briefly
+   └─ Cause: Date.now(), Math.random(), localStorage in render
+```
+
+**Invariant:** Server-rendered HTML MUST equal client-first-render output, or React re-renders. Solution: defer non-deterministic reads to useEffect.
 
 ---
 

@@ -113,36 +113,38 @@ public boolean isAllowed(String userId) {
 
 ```javascript
 // rateLimiter.boundary.spec.js — Playwright/Node test
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require("@playwright/test");
 
-test('sliding window blocks boundary exploit — 10+12 requests across second boundary', async ({ request }) => {
-    const userId = 'test-bot-boundary';
-    const responses = [];
+test("sliding window blocks boundary exploit — 10+12 requests across second boundary", async ({
+  request,
+}) => {
+  const userId = "test-bot-boundary";
+  const responses = [];
 
-    // Fire 10 requests at t=900ms (0.1s before the "second" boundary)
-    const firstBatch = Array.from({ length: 10 }, () =>
-        request.get(`/api/citations`, { headers: { 'X-User-Id': userId } })
-    );
-    const firstResults = await Promise.all(firstBatch);
-    responses.push(...firstResults);
+  // Fire 10 requests at t=900ms (0.1s before the "second" boundary)
+  const firstBatch = Array.from({ length: 10 }, () =>
+    request.get(`/api/citations`, { headers: { "X-User-Id": userId } }),
+  );
+  const firstResults = await Promise.all(firstBatch);
+  responses.push(...firstResults);
 
-    // Simulate the boundary: wait 200ms (now at t=1100ms)
-    await new Promise(resolve => setTimeout(resolve, 200));
+  // Simulate the boundary: wait 200ms (now at t=1100ms)
+  await new Promise((resolve) => setTimeout(resolve, 200));
 
-    // Fire 12 more requests (in a new fixed-window "second" — but same sliding window)
-    const secondBatch = Array.from({ length: 12 }, () =>
-        request.get(`/api/citations`, { headers: { 'X-User-Id': userId } })
-    );
-    const secondResults = await Promise.all(secondBatch);
-    responses.push(...secondResults);
+  // Fire 12 more requests (in a new fixed-window "second" — but same sliding window)
+  const secondBatch = Array.from({ length: 12 }, () =>
+    request.get(`/api/citations`, { headers: { "X-User-Id": userId } }),
+  );
+  const secondResults = await Promise.all(secondBatch);
+  responses.push(...secondResults);
 
-    const allowed = responses.filter(r => r.status() === 200).length;
-    const throttled = responses.filter(r => r.status() === 429).length;
+  const allowed = responses.filter((r) => r.status() === 200).length;
+  const throttled = responses.filter((r) => r.status() === 429).length;
 
-    // Sliding window: only 10 total allowed across the full rolling second
-    // The 11th through 22nd (12 in the second batch) must all be throttled
-    expect(allowed).toBeLessThanOrEqual(10);
-    expect(throttled).toBeGreaterThanOrEqual(12);
+  // Sliding window: only 10 total allowed across the full rolling second
+  // The 11th through 22nd (12 in the second batch) must all be throttled
+  expect(allowed).toBeLessThanOrEqual(10);
+  expect(throttled).toBeGreaterThanOrEqual(12);
 });
 ```
 
@@ -165,12 +167,13 @@ test('sliding window blocks boundary exploit — 10+12 requests across second bo
 **Question it answers:** "Tell me about a time you debugged a performance or security issue in production."
 
 **Signal it sends:**
+
 - You understand algorithm invariants, not just API surface.
 - You know the fixed-window / sliding-window / sliding-counter tradeoff spectrum.
 - You reach for Redis as a production primitive and understand ZSET semantics.
 - You write tests that simulate real attack patterns, not just happy-path flows.
 
-**Opening line:** *"We had a P2 incident where a bot script discovered our rate limiter was a fixed-window counter. They sent 10 requests at 0.999 seconds and 10 more at 1.001 seconds — 20 requests in 2 milliseconds, both windows technically valid. Here's what we changed and why..."*
+**Opening line:** _"We had a P2 incident where a bot script discovered our rate limiter was a fixed-window counter. They sent 10 requests at 0.999 seconds and 10 more at 1.001 seconds — 20 requests in 2 milliseconds, both windows technically valid. Here's what we changed and why..."_
 
 ---
 
@@ -220,11 +223,11 @@ T+60min: Fix deployed: READ_WRITE strategy + TTL + collection cache annotation.
 
 Hibernate Second-Level Cache (L2C) stores entity state between sessions. The cache strategy controls what happens on write:
 
-| Strategy | On Update | On Delete | Safe for mutable data? |
-|---|---|---|---|
-| `READ_ONLY` | Never evicts | Never evicts | No |
-| `NONSTRICT_READ_WRITE` | Evicts after tx commit | Evicts after tx commit | Only if stale reads are acceptable |
-| `READ_WRITE` | Locks + updates atomically | Evicts | Yes |
+| Strategy               | On Update                  | On Delete              | Safe for mutable data?             |
+| ---------------------- | -------------------------- | ---------------------- | ---------------------------------- |
+| `READ_ONLY`            | Never evicts               | Never evicts           | No                                 |
+| `NONSTRICT_READ_WRITE` | Evicts after tx commit     | Evicts after tx commit | Only if stale reads are acceptable |
+| `READ_WRITE`           | Locks + updates atomically | Evicts                 | Yes                                |
 
 The team chose `READ_ONLY` for performance (no lock overhead) without realizing that a data migration would populate the cache with pre-migration `status` values. After migration, every cache hit returned the old status.
 
@@ -394,12 +397,13 @@ class CitationCacheIntegrationTest {
 **Question it answers:** "Describe a production bug that was hard to debug. What was the root cause?"
 
 **Signal it sends:**
+
 - You understand ORM internals beyond `@Cacheable`.
 - You think in layers: L1 (session) → L2 (process/Redis) → DB.
 - You can trace a user-visible symptom (double charge) to a data structure contract violation (wrong cache strategy).
 - You write integration tests that simulate multi-transaction scenarios.
 
-**Opening line:** *"We had a P1 where users were double-charged because our Hibernate L2C was configured READ_ONLY on a mutable status field. The cache never evicted after payments updated the DB. Users saw PENDING, panicked, paid again. Here's what the divergence looked like in the trace logs..."*
+**Opening line:** _"We had a P1 where users were double-charged because our Hibernate L2C was configured READ_ONLY on a mutable status field. The cache never evicted after payments updated the DB. Users saw PENDING, panicked, paid again. Here's what the divergence looked like in the trace logs..."_
 
 ---
 
@@ -595,12 +599,13 @@ class PaymentEventConsumerIdempotencyTest {
 **Question it answers:** "How do you handle duplicate message processing in a Kafka consumer?" or "Tell me about a distributed systems bug you fixed."
 
 **Signal it sends:**
+
 - You understand Kafka's delivery guarantees at the contract level.
 - You know that rolling deploys are a source of rebalance-triggered duplicate delivery.
 - You reach for Redis SETNX as an idempotency tool.
 - You test async consumers with EmbeddedKafka + CountDownLatch — not mocked queues.
 
-**Opening line:** *"During a routine rolling deploy, 15,000 users received duplicate payment confirmation emails. No double charges — but the support panic was real. The root cause was Kafka's at-least-once guarantee colliding with a rebalance window. Here's the idempotency pattern we added..."*
+**Opening line:** _"During a routine rolling deploy, 15,000 users received duplicate payment confirmation emails. No double charges — but the support panic was real. The root cause was Kafka's at-least-once guarantee colliding with a rebalance window. Here's the idempotency pattern we added..."_
 
 ---
 
@@ -797,12 +802,13 @@ class AccountRepositoryQueryCountTest {
 **Question it answers:** "Have you ever caused or fixed a database performance incident?" or "Explain the N+1 problem and how you solve it."
 
 **Signal it sends:**
+
 - You can trace a 5xx cascade to its root cause at the ORM layer.
 - You understand why lazy loading is dangerous in batch contexts.
 - You quantify the problem mathematically: 200 accounts × 50 citations = 10,200 queries.
 - You write query-count tests — not just functional tests — to prevent regression.
 
-**Opening line:** *"We had a P1 where the entire DB hit 100% CPU and every endpoint 504'd for 8 minutes. The root cause was a dashboard page that lazy-loaded 200 accounts' worth of citations — 10,200 queries per page load, 100 concurrent users, 1 million queries per minute. Here's what we fixed and the regression test we added..."*
+**Opening line:** _"We had a P1 where the entire DB hit 100% CPU and every endpoint 504'd for 8 minutes. The root cause was a dashboard page that lazy-loaded 200 accounts' worth of citations — 10,200 queries per page load, 100 concurrent users, 1 million queries per minute. Here's what we fixed and the regression test we added..."_
 
 ---
 
@@ -861,7 +867,7 @@ A distributed lock prevents concurrent modification of the same resource across 
 **Without a lease (TTL), a distributed lock is a potential deadlock:**
 
 ```
-Process A acquires lock → Process A crashes → Lock remains → 
+Process A acquires lock → Process A crashes → Lock remains →
 Process B waits → Process C waits → ... → Thread pool exhausted → System dead
 ```
 
@@ -1071,12 +1077,13 @@ class DistributedLockLeaseTest {
 **Question it answers:** "What is a distributed lock and what can go wrong with a naive implementation?" or "Tell me about a production outage you were part of."
 
 **Signal it sends:**
+
 - You understand distributed systems failure modes, not just happy-path usage.
 - You can map `OOMKill → no finally → immortal lock → thread pool exhaustion → full outage` as a causal chain.
 - You know Redisson and its `tryLock` API by name.
 - You write tests that simulate crash scenarios — not just normal operation.
 
-**Opening line:** *"We had a P1 where $120K of payments sat unprocessed for 45 minutes. One pod was OOMKilled mid-payment. It held a Redis lock with no TTL. The lock stayed forever. All 20 thread-pool threads queued waiting for that one lock key — and new payments couldn't be processed. The fix was two parameters: waitTime and leaseTime on Redisson's tryLock. Here's why both matter..."*
+**Opening line:** _"We had a P1 where $120K of payments sat unprocessed for 45 minutes. One pod was OOMKilled mid-payment. It held a Redis lock with no TTL. The lock stayed forever. All 20 thread-pool threads queued waiting for that one lock key — and new payments couldn't be processed. The fix was two parameters: waitTime and leaseTime on Redisson's tryLock. Here's why both matter..."_
 
 ---
 
@@ -1084,13 +1091,13 @@ class DistributedLockLeaseTest {
 
 ## Summary Table
 
-| # | Title | P-Level | Bug Type | Domain | What Would Have Caught It |
-|---|---|---|---|---|---|
-| 1 | The Boundary Attack | P2 | Algorithm invariant violation (fixed-window exploitable at boundary) | DSA + Spring Boot | Playwright test firing 22 requests across second boundary; assert ≤10 succeed |
-| 2 | The Ghost Cache | P1 | Wrong cache strategy (READ_ONLY on mutable entity) + missing collection annotation | Spring Boot + DSA | Integration test: update in separate tx → clear L1 → reload → assert fresh value |
-| 3 | The Kafka Déjà Vu | P2 | Missing idempotency key on at-least-once consumer | Spring Boot + SDET | EmbeddedKafka test: publish same event 3× → verify emailService called exactly 1× |
-| 4 | The Cascade | P1 | N+1 query problem (lazy-loaded collection in loop under load) | Spring Boot + DSA | datasource-proxy integration test: assert ≤2 SELECT queries for 100 accounts |
-| 5 | The Immortal Lock | P1 | Distributed lock with no lease time (immortal key on pod crash) | Spring Boot + DSA | Redisson lock test: simulate crash → wait leaseTime → assert new acquire succeeds |
+| #   | Title               | P-Level | Bug Type                                                                           | Domain             | What Would Have Caught It                                                         |
+| --- | ------------------- | ------- | ---------------------------------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------- |
+| 1   | The Boundary Attack | P2      | Algorithm invariant violation (fixed-window exploitable at boundary)               | DSA + Spring Boot  | Playwright test firing 22 requests across second boundary; assert ≤10 succeed     |
+| 2   | The Ghost Cache     | P1      | Wrong cache strategy (READ_ONLY on mutable entity) + missing collection annotation | Spring Boot + DSA  | Integration test: update in separate tx → clear L1 → reload → assert fresh value  |
+| 3   | The Kafka Déjà Vu   | P2      | Missing idempotency key on at-least-once consumer                                  | Spring Boot + SDET | EmbeddedKafka test: publish same event 3× → verify emailService called exactly 1× |
+| 4   | The Cascade         | P1      | N+1 query problem (lazy-loaded collection in loop under load)                      | Spring Boot + DSA  | datasource-proxy integration test: assert ≤2 SELECT queries for 100 accounts      |
+| 5   | The Immortal Lock   | P1      | Distributed lock with no lease time (immortal key on pod crash)                    | Spring Boot + DSA  | Redisson lock test: simulate crash → wait leaseTime → assert new acquire succeeds |
 
 ---
 
@@ -1098,9 +1105,9 @@ class DistributedLockLeaseTest {
 
 These incidents are credibility amplifiers. When an interviewer asks about rate limiting, caching, Kafka, N+1, or distributed locks — you are not answering from theory. You are answering from experience.
 
-**The opening pattern:** Begin with *"I've seen this in production."* Then deliver the alert, the investigation timeline in abbreviated form, the root cause in one or two sentences, and the fix. Close with what you added to prevent recurrence. This arc — alert → investigation → root cause → fix → prevention — is the structure of every strong system design and debugging answer.
+**The opening pattern:** Begin with _"I've seen this in production."_ Then deliver the alert, the investigation timeline in abbreviated form, the root cause in one or two sentences, and the fix. Close with what you added to prevent recurrence. This arc — alert → investigation → root cause → fix → prevention — is the structure of every strong system design and debugging answer.
 
-**What it signals:** Interviewers at senior and staff levels are evaluating whether you have *encountered* hard problems, not just *studied* them. A candidate who says "we had a P1 where the entire DB hit 100% CPU and every endpoint 504'd for 8 minutes — here's the exact query count trace" is demonstrating a different depth than one who says "N+1 is when you have too many database queries."
+**What it signals:** Interviewers at senior and staff levels are evaluating whether you have _encountered_ hard problems, not just _studied_ them. A candidate who says "we had a P1 where the entire DB hit 100% CPU and every endpoint 504'd for 8 minutes — here's the exact query count trace" is demonstrating a different depth than one who says "N+1 is when you have too many database queries."
 
 **When to use each incident:**
 

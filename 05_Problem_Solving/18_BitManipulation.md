@@ -29,7 +29,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY Bit Manipulation — MIT/KTH Style
@@ -269,27 +268,28 @@
 
 ## Single Number — Every Element Appears Twice Except One
 
-Input:  [4, 1, 2, 1, 2]
+Input: [4, 1, 2, 1, 2]
 Output: 4
 
 **Approach**: XOR all elements together.
 
 **Why**: XOR properties guarantee:
-- a ^ a = 0  (pairs cancel)
-- a ^ 0 = a  (identity)
+
+- a ^ a = 0 (pairs cancel)
+- a ^ 0 = a (identity)
 - Commutative + associative → order doesn't matter
 
 **Trace**:
 4 ^ 1 ^ 2 ^ 1 ^ 2
-= 4 ^ (1 ^ 1) ^ (2 ^ 2)     ← rearrange (commutative)
+= 4 ^ (1 ^ 1) ^ (2 ^ 2) ← rearrange (commutative)
 = 4 ^ 0 ^ 0
-= 4                           ← answer!
+= 4 ← answer!
 
 **Proof Of Correctness**:
 Let S = {a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x} where x is unique
 XOR(S) = a₁⊕a₁ ⊕ a₂⊕a₂ ⊕ ... ⊕ aₖ⊕aₖ ⊕ x
-= 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x  ∎
-Time: O(n)   Space: O(1)
+= 0 ⊕ 0 ⊕ ... ⊕ 0 ⊕ x = x ∎
+Time: O(n) Space: O(1)
 
 **Full Solution:**
 
@@ -336,7 +336,6 @@ public int singleNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -382,7 +381,6 @@ public int missingNumber(int[] nums) {
 │  Time: O(32n) = O(n)   Space: O(1)                             │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Full Solution (Bit Counting):**
 
@@ -459,7 +457,6 @@ public int singleNumberStateMachine(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -486,11 +483,6 @@ public int[] singleNumber(int[] nums) {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — Single Number — Every Element Appears Twice Except One**
 
 **Challenge 1 (Trace — XOR semantics):** Given `nums=[7, 3, 5, 3, 7]`, manually trace the XOR accumulation step by step. What is the binary representation after each XOR, and what is the final answer?
@@ -514,7 +506,6 @@ Step 1: `0 ^ 7 = 7` (0000...0111). Step 2: `7 ^ 3 = 4` (0111 ^ 0011 = 0100). Ste
 </details>
 
 ## 16.2 Power & Counting (Easy-Medium)
-
 
 ### Problem #290: [Power of Two](https://leetcode.com/problems/power-of-two/) (LC 231)
 
@@ -546,7 +537,6 @@ Step 1: `0 ^ 7 = 7` (0000...0111). Step 2: `7 ^ 3 = 4` (0111 ^ 0011 = 0100). Ste
 │  Time: O(1)   Space: O(1)                                      │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Full Solution:**
 
@@ -589,7 +579,6 @@ public boolean isPowerOfTwo(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -629,7 +618,6 @@ public int[] countBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -668,7 +656,6 @@ public int hammingWeight(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 public int reverseBits(int n) {
     int result = 0;
@@ -702,7 +689,6 @@ public int reverseBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 public int hammingDistance(int x, int y) {
     return Integer.bitCount(x ^ y);
@@ -711,11 +697,6 @@ public int hammingDistance(int x, int y) {
 ```
 
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — 16.2 Power & Counting (Easy-Medium)**
 
@@ -740,7 +721,6 @@ When `n=0`: `0 & (0-1) = 0 & (-1)`. In two's complement, `-1` is all 1s. So `0 &
 </details>
 
 ## 16.3 Math Problems (Easy-Medium)
-
 
 ### Problem #295: [Reverse Integer](https://leetcode.com/problems/reverse-integer/) (LC 7)
 
@@ -772,7 +752,6 @@ When `n=0`: `0 & (0-1) = 0 & (-1)`. In two's complement, `-1` is all 1s. So `0 &
 │  Time: O(log₁₀(x))   Space: O(1)                               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Full Solution:**
 
@@ -828,7 +807,6 @@ public int reverse(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -873,7 +851,6 @@ public boolean isPalindrome(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Solution:**
 
 ```java
@@ -915,7 +892,6 @@ public String addBinary(String a, String b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 public String convertToTitle(int n) {
     StringBuilder sb = new StringBuilder();
@@ -951,7 +927,6 @@ public String convertToTitle(int n) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 public int maximumProduct(int[] nums) {
     Arrays.sort(nums);
@@ -981,7 +956,6 @@ public int maximumProduct(int[] nums) {
 │  Time: O(√n)   Space: O(1)                                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 public int kthFactor(int n, int k) {
@@ -1017,7 +991,6 @@ public int kthFactor(int n, int k) {
 │  Time: O(log n)   Space: O(1) with Floyd's                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 public boolean isHappy(int n) {
@@ -1058,7 +1031,6 @@ private int step(int n) {
 │  Time: O(1)   Space: O(1)                                      │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 public boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
@@ -1104,7 +1076,6 @@ private int dist(int[] a, int[] b) {
 │  Time: O(n²)   Space: O(n) for the map                         │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Full Solution:**
 
@@ -1191,7 +1162,6 @@ private int gcd(int a, int b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Full Walkthrough Implementation:**
 
 ```java
@@ -1244,7 +1214,6 @@ public List<List<Integer>> subsets(int[] nums) {
 │  num=5: dp = [1, 1, 1, 2, 2, 3]  → answer = dp[5] = 3  ✓       │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Full Solutions:**
 
@@ -1300,7 +1269,6 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ### Problem #307: Ones and Zeroes (LC 474)
@@ -1323,7 +1291,6 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 │  See Dynamic Programming section for full solution.            │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -1364,7 +1331,6 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 ╚════════════════════════════════════╩══════════════════════╩══════════════════╝
 ```
 
-
 ---
 
 ## 📊 SUBSET MATHEMATICS
@@ -1402,7 +1368,6 @@ PROOFS:
   • Sum of subset sizes: Each element appears in 2ⁿ⁻¹ subsets. Summed over n elements → n × 2ⁿ⁻¹.
   • C(n,k) identity: (1+1)ⁿ = Σ C(n,k) × 1ᵏ × 1ⁿ⁻ᵏ = Σ C(n,k) = 2ⁿ.
 ```
-
 
 ---
 
@@ -1466,12 +1431,16 @@ PROOFS:
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 > **End of Section 16** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Matrix.md)
 
-
 ---
 
 > **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
+
+---
+
+### Historical Evolution
+
+**Bit Manipulation** originated with Claude Shannon's groundbreaking **1937 master's thesis** at MIT, which demonstrated that Boolean algebra could implement electrical circuits for logical operations, establishing the theoretical foundation for all digital computation. Morris Strecker formalized two's complement representation in a **1970 paper** (also attributed to IBM's design team), solving the asymmetric range problem in binary arithmetic and enabling efficient signed integer representation that remains the universal standard today. Bitmask dynamic programming techniques emerged in **1960s-70s combinatorial optimization**, where researchers used bit vectors to efficiently represent and traverse exponential state spaces in problems like the traveling salesman and set covering. Modern bit manipulation powers cryptographic standards including AES (Advanced Encryption Standard, 2001) and SHA-256 hash functions, network protocol implementations for TCP/IP packet processing, and embedded systems programming where every bit of memory and every clock cycle matters. From optimizing GPU shaders to implementing fast hash functions and compression algorithms, bit-level operations remain essential knowledge for systems programmers, security engineers, and anyone working at the intersection of hardware and software.

@@ -10,14 +10,14 @@ _"System design is not about finding the perfect solution — it's about making 
 
 **Mental Model:** System design is like being an architect for a skyscraper. You don't start by choosing the color of the walls — you start with load-bearing capacity, foundation type, earthquake resistance, and fire codes. Similarly, you start with **scalability, availability, consistency, and latency** before worrying about specific technologies.
 
-| Question | System Design Context |
-| :--- | :--- |
-| **WHAT** | The process of defining the architecture, components, modules, interfaces, and data flow of a system to satisfy specified requirements at scale. |
-| **WHY** | Because building for 100 users is completely different from building for 100 million users. Every decision at scale involves trade-offs between consistency, availability, partition tolerance (CAP), cost, and complexity. |
-| **WHEN** | Senior/Staff engineering interviews, greenfield system architecture, scaling existing systems, and post-mortem analysis of outages. |
-| **WHERE** | Every large tech company (FAANG, startups, fintech). Systems like Netflix (video streaming), Uber (real-time dispatch), Twitter (fanout), WhatsApp (messaging at billions-scale). |
-| **WHO** | Pioneered by distributed systems researchers (Lamport, Brewer, DeCandia/Amazon Dynamo). Popularized by Grokking System Design Interview. |
-| **HOW** | Use the **RESHADED** framework: **R**equirements → **E**stimation → **S**torage Schema → **H**igh-level design → **A**PI design → **D**etailed design → **E**valuation → **D**istinctive component deep-dive. |
+| Question  | System Design Context                                                                                                                                                                                                       |
+| :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | The process of defining the architecture, components, modules, interfaces, and data flow of a system to satisfy specified requirements at scale.                                                                            |
+| **WHY**   | Because building for 100 users is completely different from building for 100 million users. Every decision at scale involves trade-offs between consistency, availability, partition tolerance (CAP), cost, and complexity. |
+| **WHEN**  | Senior/Staff engineering interviews, greenfield system architecture, scaling existing systems, and post-mortem analysis of outages.                                                                                         |
+| **WHERE** | Every large tech company (FAANG, startups, fintech). Systems like Netflix (video streaming), Uber (real-time dispatch), Twitter (fanout), WhatsApp (messaging at billions-scale).                                           |
+| **WHO**   | Pioneered by distributed systems researchers (Lamport, Brewer, DeCandia/Amazon Dynamo). Popularized by Grokking System Design Interview.                                                                                    |
+| **HOW**   | Use the **RESHADED** framework: **R**equirements → **E**stimation → **S**torage Schema → **H**igh-level design → **A**PI design → **D**etailed design → **E**valuation → **D**istinctive component deep-dive.               |
 
 ---
 
@@ -33,7 +33,7 @@ THE RESHADED APPROACH — A structured method for ANY system design problem:
 R — Requirements Gathering
     Functional:   "What should the system DO?"  (core features)
     Non-functional: "HOW should it perform?"  (scale, latency, availability)
-    
+
     ALWAYS ASK:
     • How many users? (DAU, MAU)
     • Read-heavy or write-heavy?
@@ -46,7 +46,7 @@ E — Estimation (Back-of-the-Envelope)
     • Storage = daily_new_data × retention_period
     • Bandwidth = QPS × avg_object_size
     • Memory (cache) = 20% of daily read requests (Pareto principle)
-    
+
     NAPKIN MATH CHEAT SHEET:
     1 million requests/day ≈ 12 QPS
     1 billion requests/day ≈ 12,000 QPS
@@ -99,7 +99,7 @@ _Enriched from Educative "Deep Dive SD" — Design a URL Shortening Service_
 
 ```
 REQUIREMENTS:
-  Functional: 
+  Functional:
     • Given a long URL → generate short URL (e.g., tiny.url/abc123)
     • Given short URL → redirect to original URL
     • Custom aliases (optional)
@@ -117,14 +117,14 @@ ESTIMATION:
 
 KEY GENERATION — The Core Challenge:
   Need 100M × 365 × 5 = ~180 billion unique short URLs
-  
+
   Option 1: Base62 encoding (a-z, A-Z, 0-9)
     6 chars → 62⁶ = 56.8 billion combinations
     7 chars → 62⁷ = 3.5 trillion combinations ✅
-  
+
   Option 2: MD5/SHA-256 hash → take first 7 chars
     Problem: collisions! Need collision resolution.
-  
+
   Option 3: Pre-generated Key Service (KGS)
     Generate all possible 7-char keys in advance
     Store in a Key-DB, mark as "used" when assigned
@@ -160,9 +160,6 @@ TRADE-OFFS:
 
 ---
 
-
-
-
 ## 2.2 Design Twitter / X
 
 _Enriched from Educative "Deep Dive SD" — Design Twitter_
@@ -187,19 +184,19 @@ THE CRITICAL DESIGN DECISION — Fanout:
     When user A posts a tweet:
     → Push tweet to ALL followers' timelines immediately
     → Store pre-computed timelines in cache (Redis)
-    
+
     ✅ Timeline read is O(1) — just fetch from cache
     ❌ Celebrity problem: user with 50M followers →
        50M writes per tweet! (write amplification)
-  
+
   FANOUT-ON-READ (Pull model):
     When user B opens timeline:
     → Fetch latest tweets from ALL users B follows
     → Merge and sort in real-time
-    
+
     ✅ No write amplification
     ❌ Slow: fetching from hundreds of users at read time
-  
+
   HYBRID (Twitter's actual approach):
     • Regular users (< 10K followers): fanout-on-write → push to followers
     • Celebrities (> 10K followers): fanout-on-read → pull at read time
@@ -215,7 +212,7 @@ DATA STORAGE:
 ARCHITECTURE:
   Client → LB → API Servers → {Tweet Service, Timeline Service,
                                  Search Service, Media Service}
-  
+
   Tweet Service: stores tweets, triggers fanout
   Timeline Service: reads/merges pre-built + celebrity timelines
   Fanout Service: async workers pushing tweets to follower timelines
@@ -223,8 +220,6 @@ ARCHITECTURE:
 ```
 
 ---
-
-
 
 ## 2.3 Design Instagram
 
@@ -248,7 +243,7 @@ MEDIA STORAGE ARCHITECTURE:
                           → CDN origin (for caching)
                           → Image Processing (resize, thumbnails, filters)
                           → Metadata DB (PostgreSQL)
-  
+
   Read flow:
   Client → CDN (cache hit: ~95%) → Object Storage (cache miss)
 
@@ -266,9 +261,6 @@ STORAGE ESTIMATES:
 ```
 
 ---
-
-
-
 
 ## 2.4 Design WhatsApp
 
@@ -291,7 +283,7 @@ REAL-TIME MESSAGING — WebSocket Architecture:
      → Session Service (Redis): maps user_id → server_id
   4. Route message to User B's chat server
   5. User B's server pushes via WebSocket
-  
+
   If User B is OFFLINE:
   → Store in message queue (persistent)
   → Deliver when User B reconnects
@@ -311,14 +303,12 @@ END-TO-END ENCRYPTION (Signal Protocol):
 GROUP CHAT DESIGN:
   Small groups (< 256): store messages per group
   Each member decrypts independently (sender encrypts N times)
-  
+
   Message ordering: Lamport timestamps per group
   Consistency: eventual (slight ordering differences between devices OK)
 ```
 
 ---
-
-
 
 ## 2.5 Design YouTube
 
@@ -347,23 +337,21 @@ ADAPTIVE BITRATE STREAMING (ABR):
   Video split into 2-10 second SEGMENTS
   Each segment available in multiple qualities
   Client dynamically switches quality based on bandwidth:
-  
+
   Buffering? → drop to 360p
   Fast connection? → upgrade to 1080p
-  
+
   Protocols: HLS (Apple) or DASH (standard)
 
 RECOMMENDATION ENGINE:
   Collaborative filtering: "Users who watched X also watched Y"
   Content-based: analyze video metadata, thumbnails, transcripts
   Deep learning: user watch history → neural network → ranked candidates
-  
+
   A/B testing: continuously experiment with ranking algorithms
 ```
 
 ---
-
-
 
 ## 2.6 Design Uber
 
@@ -380,20 +368,20 @@ REQUIREMENTS:
 
 GEOSPATIAL INDEXING — The Core Challenge:
   "Find all drivers within 3 km of this location"
-  
+
   Naive: scan all 5M drivers → O(n) per query → too slow
-  
+
   Solution 1: GEOHASHING
     Divide world into grid cells, each cell = a hash
     "9q8yy" = a specific ~150m × 150m area in San Francisco
     Adjacent cells have similar prefixes
     Query: find all drivers with geohash prefix "9q8y*"
-    
+
   Solution 2: QUADTREE
     Recursively divide space into 4 quadrants
     Each leaf node stores drivers in that area
     Search: traverse tree for nearby quadrants
-  
+
   Uber uses: H3 (Uber's hexagonal hierarchical indexing)
 
 MATCHING ALGORITHM:
@@ -406,9 +394,9 @@ MATCHING ALGORITHM:
 
 REAL-TIME LOCATION UPDATES:
   5M drivers × 1 update every 3 seconds = ~1.7M updates/sec
-  
+
   Architecture:
-  Driver app → WebSocket → Location Service → 
+  Driver app → WebSocket → Location Service →
     → Update driver's geohash in Redis (sorted set by geohash)
     → Push to rider's map (if in active trip)
     → Store in time-series DB (for ETA model, analytics)
@@ -419,8 +407,6 @@ FARE CALCULATION:
 ```
 
 ---
-
-
 
 ## 2.7 Design Google Maps
 
@@ -441,22 +427,22 @@ MAP TILE SYSTEM:
   Zoom 2: 16 tiles (4×4 grid)
   ...
   Zoom 20: ~1 trillion tiles (for street-level detail)
-  
+
   Each tile = 256×256 pixel PNG/WebP image
   Pre-rendered and stored on CDN
   Client requests tiles for visible viewport + buffer
 
 ROUTING — Shortest Path at Scale:
   Road network = GRAPH (intersections = nodes, roads = edges)
-  
+
   Dijkstra's?  → too slow for country-scale (millions of nodes)
-  
+
   CONTRACTION HIERARCHIES:
   1. Pre-process: rank nodes by importance
   2. Add "shortcut edges" between important nodes
   3. At query time: bidirectional search on simplified graph
   4. Result: continental-scale routing in < 1 second
-  
+
   A* SEARCH with landmarks (ALT algorithm):
   Use triangle inequality with pre-computed landmark distances
   for better heuristic guidance.
@@ -469,8 +455,6 @@ REAL-TIME TRAFFIC:
 ```
 
 ---
-
-
 
 ## 2.8 Design a Web Crawler
 
@@ -485,8 +469,8 @@ REQUIREMENTS:
   • Recrawl pages at appropriate frequency
 
 ARCHITECTURE:
-  URL Frontier (priority queue) → DNS Resolver → Fetcher → 
-  Content Parser → Duplicate Detector → URL Extractor → 
+  URL Frontier (priority queue) → DNS Resolver → Fetcher →
+  Content Parser → Duplicate Detector → URL Extractor →
   URL Filter → back to URL Frontier
 
 URL FRONTIER — Politeness + Priority:
@@ -494,18 +478,18 @@ URL FRONTIER — Politeness + Priority:
   1. Priority queue: rank URLs by importance (PageRank, freshness)
   2. Politeness queue: one queue per domain, rate-limited
      → Never more than 1 request/second to same domain
-  
+
   Backend: Redis sorted sets OR custom distributed queue
 
 DUPLICATE DETECTION:
   Can't store 5 billion full pages to compare!
-  
+
   Solution: SIMHASH / MINHASH
   Compute fingerprint (64-bit hash) of page content
   Compare fingerprints: if Hamming distance < threshold → duplicate
-  
+
   URL deduplication: Bloom filter (probabilistic, space-efficient)
-  "Have we seen this URL before?" → check bloom filter → 
+  "Have we seen this URL before?" → check bloom filter →
   99.99% accurate with much less memory than a hash set
 
 CRAWLER TRAPS:
@@ -515,8 +499,6 @@ CRAWLER TRAPS:
 ```
 
 ---
-
-
 
 ## 2.9 Design a Newsfeed System
 
@@ -530,17 +512,17 @@ REQUIREMENTS:
   Scale: 1B users, 500M DAU
 
 FEED GENERATION (same fanout problem as Twitter):
-  
+
   PUSH MODEL (fanout-on-write):
   Post created → Fan out to all friends' feed caches
   ✅ Fast reads (pre-computed)
   ❌ Expensive writes for popular users
-  
+
   PULL MODEL (fanout-on-read):
   User opens app → fetch latest posts from all friends → merge + rank
   ✅ Cheap writes
   ❌ Slow reads (merge N sources in real-time)
-  
+
   HYBRID (Facebook's approach):
   Push for friends with < 10K followers
   Pull for celebrities/pages at read time
@@ -550,7 +532,7 @@ RANKING ALGORITHM:
   Features: affinity score, post age, content type, past engagement
   Model: gradient-boosted trees or deep neural network
   Objective: maximize meaningful social interactions (not just clicks)
-  
+
   Edge Rank (original Facebook formula):
   Score = Σ (Affinity × Weight × Decay)
   Affinity = how close you are to the poster
@@ -559,8 +541,6 @@ RANKING ALGORITHM:
 ```
 
 ---
-
-
 
 ## 2.10 Design a Typeahead / Autocomplete System
 
@@ -574,7 +554,7 @@ REQUIREMENTS:
   Scale: 5 billion searches/day, 200K QPS at peak
 
 DATA STRUCTURE — TRIE (Prefix Tree):
-  
+
   Root
   ├── t
   │   ├── tr
@@ -585,15 +565,15 @@ DATA STRUCTURE — TRIE (Prefix Tree):
   └── u
       └── ub
           └── ube → "uber" (freq: 5000)
-  
+
   Each node stores: top-K results for that prefix
   Lookup "tw" → instantly return ["twitter", "twitch", "tweet"]
-  
+
   OPTIMIZATION:
   • Store top-K at each node (avoid traversing subtree)
   • Shard trie by first 2 chars: "aa"-"az" on server 1, etc.
   • Cache hot prefixes in Redis
-  
+
   TRIE UPDATE:
   • Don't update on every search (too expensive)
   • Batch update: aggregate search counts every 15 minutes
@@ -606,40 +586,36 @@ PERSONALIZATION:
 
 ---
 
-
-
 🔬 **Section Challenge — 2.10 Design a Typeahead / Autocomplete System**
 
 **Challenge 1 (Design — Who/When/What):** You shard the autocomplete Trie by first 2 chars. A user types "tw". **Who** routes the request? **When** does the top-K list get stale? **What** happens if the "tw" shard goes down?\n\n<details><summary>Answer</summary>\n\n**Who routes?** The API Gateway / Load Balancer — it hashes the 2-char prefix to determine the correct Trie shard. "tw" always maps to shard 3 (or whichever is assigned). **When stale?** Top-K counts are batch-updated every 15-30 minutes (real-time updates are too expensive for 200K QPS). So trending terms (viral tweet, breaking news) may not appear for 15 minutes. **If shard down?** All queries starting with "tw" fail — 1/676 (2-char combos) of all queries degrade. Mitigation: (1) Replica per shard for read failover. (2) Cache hot prefixes in Redis as a warm fallback — even if Redis has 5-minute-old top-K, it's better than empty results. (3) Graceful degradation: return empty suggestions rather than error.\n\n</details>
 
-
 # Quick Reference — System Design Cheat Sheet
 
-| System | Core Challenge | Key Pattern |
-|---|---|---|
-| **URL Shortener** | Key generation at scale | Pre-generated keys + NoSQL |
-| **Twitter** | Timeline at scale | Hybrid fanout (push + pull) |
-| **Instagram** | Media storage + ML feed | CDN + ML ranking |
-| **WhatsApp** | Real-time messaging | WebSocket + message queue |
-| **YouTube** | Video transcoding + streaming | Adaptive bitrate + CDN |
-| **Uber** | Geospatial matching | Geohashing + WebSocket |
-| **Google Maps** | Routing at scale | Contraction hierarchies |
-| **Web Crawler** | Scale + politeness | URL frontier + bloom filter |
-| **Newsfeed** | Personalized ranking | Hybrid fanout + ML ranking |
-| **Typeahead** | Low-latency prefix search | Trie + top-K caching |
+| System            | Core Challenge                | Key Pattern                 |
+| ----------------- | ----------------------------- | --------------------------- |
+| **URL Shortener** | Key generation at scale       | Pre-generated keys + NoSQL  |
+| **Twitter**       | Timeline at scale             | Hybrid fanout (push + pull) |
+| **Instagram**     | Media storage + ML feed       | CDN + ML ranking            |
+| **WhatsApp**      | Real-time messaging           | WebSocket + message queue   |
+| **YouTube**       | Video transcoding + streaming | Adaptive bitrate + CDN      |
+| **Uber**          | Geospatial matching           | Geohashing + WebSocket      |
+| **Google Maps**   | Routing at scale              | Contraction hierarchies     |
+| **Web Crawler**   | Scale + politeness            | URL frontier + bloom filter |
+| **Newsfeed**      | Personalized ranking          | Hybrid fanout + ML ranking  |
+| **Typeahead**     | Low-latency prefix search     | Trie + top-K caching        |
 
 ---
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Distributed system internals | [System Design Internals](06c_System_Design_Internals.md) |
-| System design fundamentals | [System Design Blueprint](06_System_Design_Blueprint.md) |
-| Caching patterns | [Spring Boot Caching](../07_Modern_Java/Ch44_SB_Caching_Scheduling.md) |
-| Message queues (Kafka) | [Message Queues](../07_Modern_Java/Ch54_Message_Queues_Kafka.md) |
-| Microservices patterns | [Microservices Patterns](../07_Modern_Java/Ch62_SB_Microservices_Patterns.md) |
-| Trie (typeahead) | [Advanced DS](../03_Algorithms/07a_Advanced_DS_Core.md) |
-| Graph algorithms (routing) | [Graph Algorithms](../03_Algorithms/05c_Graphs_Fundamentals.md) |
-| Hashing (consistent hashing) | [HashTable DS](../02_Data_Structures/01e_HashTable.md) |
-
+| Topic                        | Related Content                                                               |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| Distributed system internals | [System Design Internals](06c_System_Design_Internals.md)                     |
+| System design fundamentals   | [System Design Blueprint](06_System_Design_Blueprint.md)                      |
+| Caching patterns             | [Spring Boot Caching](../07_Modern_Java/Ch44_SB_Caching_Scheduling.md)        |
+| Message queues (Kafka)       | [Message Queues](../07_Modern_Java/Ch54_Message_Queues_Kafka.md)              |
+| Microservices patterns       | [Microservices Patterns](../07_Modern_Java/Ch62_SB_Microservices_Patterns.md) |
+| Trie (typeahead)             | [Advanced DS](../03_Algorithms/07a_Advanced_DS_Core.md)                       |
+| Graph algorithms (routing)   | [Graph Algorithms](../03_Algorithms/05c_Graphs_Fundamentals.md)               |
+| Hashing (consistent hashing) | [HashTable DS](../02_Data_Structures/01e_HashTable.md)                        |

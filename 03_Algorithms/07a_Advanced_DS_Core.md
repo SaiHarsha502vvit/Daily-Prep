@@ -15,6 +15,12 @@
 - **How**: By leveraging memory layouts, bit manipulation, amortized time bounds, and probabilistic guarantees to achieve optimal performance constraints.
 </details>
 
+### Historical Evolution
+
+The data structures in this chapter represent decades of engineering trade-offs at the intersection of hardware constraints and algorithmic theory. **Tries** (from "retrieval" or "tree") were independently invented by **René de la Briandais (1959)** and **Edward Fredkin (1960)** as a more efficient alternative to binary search trees for string retrieval — Fredkin coined the name "trie" and demonstrated that looking up a word of length $k$ in a dictionary of size $N$ could be done in $O(k)$ time regardless of $N$. **Fenwick Trees** (also called Binary Indexed Trees) were invented by **Peter Fenwick in 1964** at the University of Canterbury, New Zealand, as a space-efficient alternative to segment trees for prefix sum queries and updates — the key insight is that each index $i$ stores the sum of a range of size $i \land (-i)$, enabling both point updates and prefix queries in $O(\log n)$ with only $n$ integers. **Segment Trees** were formalized by **Bentley (1977)** in his paper "Solutions to Klee's rectangle problems" and became standard for range query problems. Modern practice (post-2010) combines these: Tries underpin autocomplete in browsers and routers, Fenwick trees power Fenwick tree arrays in competitive programming libraries and financial data structures (BIT for prefix sums in online trading), and Segment Trees with lazy propagation are used in interval scheduling systems.
+
+---
+
 ## Beyond Arrays and Trees - Structures That Power Modern Systems
 
 ---
@@ -24,11 +30,11 @@
 ADVANCED DATA STRUCTURES AT THE HARDWARE LEVEL - MINUTE DETAILS
 
 Understanding the PHYSICAL implementation of these powerful structures:
+
 - Memory layout and allocation patterns
 - Cache behavior and optimization techniques
 - Bit manipulation in Fenwick trees
 - Why certain structures are faster in practice
-
 
 ## 🧠 Trie Node Memory Layout
 
@@ -36,26 +42,26 @@ Understanding the PHYSICAL implementation of these powerful structures:
 
 BASIC TRIE NODE (Array-based):
 class TrieNode {
-TrieNode[] children = new TrieNode[26];  // 26 letters
+TrieNode[] children = new TrieNode[26]; // 26 letters
 boolean isEndOfWord;
 }
 MEMORY LAYOUT (64-bit JVM, compressed oops):
-| OFFSET | SIZE  | FIELD                | VALUE |
+| OFFSET | SIZE | FIELD | VALUE |
 ┼───────┼──────────────────────┼
-| 0      | 8     | Mark Word            | Object header |
-| 8      | 4     | Class Pointer        | → TrieNode.class |
-| 12     | 4     | children (ref)       | → Object[] array |
-| 16     | 1     | isEndOfWord          | true/false |
-| 17     | 7     | padding              | alignment to 8 bytes |
+| 0 | 8 | Mark Word | Object header |
+| 8 | 4 | Class Pointer | → TrieNode.class |
+| 12 | 4 | children (ref) | → Object[] array |
+| 16 | 1 | isEndOfWord | true/false |
+| 17 | 7 | padding | alignment to 8 bytes |
 ┴───────┴──────────────────────┴
 TrieNode object: 24 bytes
 PLUS the children array:
-| OFFSET | SIZE  | CONTENT |
+| OFFSET | SIZE | CONTENT |
 ┼───────┼
-| 0      | 8     | Mark Word (array header) |
-| 8      | 4     | Class Pointer |
-| 12     | 4     | Array length = 26 |
-| 16     | 104   | 26 × 4 bytes (references to child TrieNode) |
+| 0 | 8 | Mark Word (array header) |
+| 8 | 4 | Class Pointer |
+| 12 | 4 | Array length = 26 |
+| 16 | 104 | 26 × 4 bytes (references to child TrieNode) |
 ┴───────┴
 children[] array: 120 bytes
 
@@ -72,15 +78,15 @@ For sparse nodes (few children): Much smaller!
 Average children ≈ 3-4, so ~160 bytes vs 144 bytes but more flexible
 COMPRESSED TRIE (Patricia/Radix Tree):
 Instead of storing single characters, store strings:
-Standard Trie:          Patricia Trie:
-root                    root
-a                     "app"
-/   \
-p                  "le"  "lication"
+Standard Trie: Patricia Trie:
+root root
+a "app"
+/ \
+p "le" "lication"
 p
 / \
-l   l
-e   i
+l l
+e i
 c...
 Patricia: Fewer nodes, less memory, similar time complexity
 
@@ -92,29 +98,29 @@ For array of size n, segment tree needs array of size 4n (safe upper bound)
 Actually needs 2^⌈log₂(n)⌉+1 - 1 nodes, but 4n is simpler
 ARRAY-BASED INDEXING:
 Index i:
-Left child:  2*i + 1
+Left child: 2*i + 1
 Right child: 2*i + 2
-Parent:      (i-1) / 2
+Parent: (i-1) / 2
 OR (1-indexed, simpler):
-Left child:  2*i
+Left child: 2*i
 Right child: 2*i + 1
-Parent:      i / 2
+Parent: i / 2
 
 **Example**: Array [1, 3, 5, 7, 9, 11] - Sum Segment Tree
 
 **Logical Tree**:
-[36]                 (sum of all: index 1)
-/      \
-[9]        [27]           (index 2, 3)
-/    \     /    \
-[4]   [5]  [16]  [11]        (index 4, 5, 6, 7)
-/  \                /  \
-[1]  [3]  [5]  [7]  [9]  [11]   (index 8-13, leaves)
+[36] (sum of all: index 1)
+/ \
+[9] [27] (index 2, 3)
+/ \ / \
+[4] [5] [16] [11] (index 4, 5, 6, 7)
+/ \ / \
+[1] [3] [5] [7] [9] [11] (index 8-13, leaves)
 ARRAY STORAGE (1-indexed):
 ┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬
-| 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  |10  |11  |12  |13 |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |
 ┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼────┼
-| -- | 36 | 9  | 27 | 4  | 5  | 16 | 11 | 1  | 3  | 5  | 7  | 9  | 11 |
+| -- | 36 | 9 | 27 | 4 | 5 | 16 | 11 | 1 | 3 | 5 | 7 | 9 | 11 |
 ┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴────┴
 
 **Memory**: 4n × 4 bytes (int) = 16n bytes
@@ -144,50 +150,50 @@ For number i, LSB = i & (-i)
 **Why It Works**:
 -i = two's complement = invert all bits and add 1
 i = 12 = 1100 (binary)
-~i     = 0011
--i     = ~i + 1 = 0100
+~i = 0011
+-i = ~i + 1 = 0100
 i & -i = 1100 & 0100 = 0100 = 4 = LSB
 
 **Examples**:
 ┬──────────┬──────────┬───────────┬
-| i      | Binary   | -i       | i & (-i)  | Meaning |
+| i | Binary | -i | i & (-i) | Meaning |
 ┼──────────┼──────────┼───────────┼
-| 1      | 0001     | 1111     | 0001 = 1  | Covers index 1 only |
-| 2      | 0010     | 1110     | 0010 = 2  | Covers indices 1-2 |
-| 3      | 0011     | 1101     | 0001 = 1  | Covers index 3 only |
-| 4      | 0100     | 1100     | 0100 = 4  | Covers indices 1-4 |
-| 5      | 0101     | 1011     | 0001 = 1  | Covers index 5 only |
-| 6      | 0110     | 1010     | 0010 = 2  | Covers indices 5-6 |
-| 7      | 0111     | 1001     | 0001 = 1  | Covers index 7 only |
-| 8      | 1000     | 1000     | 1000 = 8  | Covers indices 1-8 |
+| 1 | 0001 | 1111 | 0001 = 1 | Covers index 1 only |
+| 2 | 0010 | 1110 | 0010 = 2 | Covers indices 1-2 |
+| 3 | 0011 | 1101 | 0001 = 1 | Covers index 3 only |
+| 4 | 0100 | 1100 | 0100 = 4 | Covers indices 1-4 |
+| 5 | 0101 | 1011 | 0001 = 1 | Covers index 5 only |
+| 6 | 0110 | 1010 | 0010 = 2 | Covers indices 5-6 |
+| 7 | 0111 | 1001 | 0001 = 1 | Covers index 7 only |
+| 8 | 1000 | 1000 | 1000 = 8 | Covers indices 1-8 |
 ┴──────────┴──────────┴───────────┴
 BIT[i] stores sum of elements from (i - LSB(i) + 1) to i
 
 **Visual**:
 Original: [1, 2, 3, 4, 5, 6, 7, 8] (1-indexed)
 BIT array stores:
-BIT[1] = arr[1]                               = 1        (covers 1)
-BIT[2] = arr[1] + arr[2]                      = 3        (covers 1-2)
-BIT[3] = arr[3]                               = 3        (covers 3)
-BIT[4] = arr[1] + arr[2] + arr[3] + arr[4]    = 10       (covers 1-4)
-BIT[5] = arr[5]                               = 5        (covers 5)
-BIT[6] = arr[5] + arr[6]                      = 11       (covers 5-6)
-BIT[7] = arr[7]                               = 7        (covers 7)
-BIT[8] = arr[1] + ... + arr[8]                = 36       (covers 1-8)
+BIT[1] = arr[1] = 1 (covers 1)
+BIT[2] = arr[1] + arr[2] = 3 (covers 1-2)
+BIT[3] = arr[3] = 3 (covers 3)
+BIT[4] = arr[1] + arr[2] + arr[3] + arr[4] = 10 (covers 1-4)
+BIT[5] = arr[5] = 5 (covers 5)
+BIT[6] = arr[5] + arr[6] = 11 (covers 5-6)
+BIT[7] = arr[7] = 7 (covers 7)
+BIT[8] = arr[1] + ... + arr[8] = 36 (covers 1-8)
 
 **Query**: Sum of [1, 7]
 sum = 0
-i = 7:  sum += BIT[7] = 7,  i -= LSB(7) = 7-1 = 6
-i = 6:  sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4
-i = 4:  sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0
-DONE!   sum = 7 + 11 + 10 = 28 ✓
+i = 7: sum += BIT[7] = 7, i -= LSB(7) = 7-1 = 6
+i = 6: sum += BIT[6] = 11, i -= LSB(6) = 6-2 = 4
+i = 4: sum += BIT[4] = 10, i -= LSB(4) = 4-4 = 0
+DONE! sum = 7 + 11 + 10 = 28 ✓
 Number of operations: Count of 1s in binary of 7 = 3 operations
 Maximum: log₂(n) operations
 
 **Update**: Add 5 to index 3
-i = 3:  BIT[3] += 5,  i += LSB(3) = 3+1 = 4
-i = 4:  BIT[4] += 5,  i += LSB(4) = 4+4 = 8
-i = 8:  BIT[8] += 5,  i += LSB(8) = 8+8 = 16 > n, STOP
+i = 3: BIT[3] += 5, i += LSB(3) = 3+1 = 4
+i = 4: BIT[4] += 5, i += LSB(4) = 4+4 = 8
+i = 8: BIT[8] += 5, i += LSB(8) = 8+8 = 16 > n, STOP
 Updates all ranges that include index 3!
 
 ## 📌 Union — Find — Path Compression Visualization
@@ -195,36 +201,37 @@ Updates all ranges that include index 3!
 🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
 
 **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+
 <details><summary>Answer</summary>
 
 Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-</details>
 
+</details>
 
 ## Union-Find - Path Compression Deep Dive
 
 INITIAL STATE (8 elements, each is own parent):
 parent[] = [0, 1, 2, 3, 4, 5, 6, 7]
-rank[]   = [0, 0, 0, 0, 0, 0, 0, 0]
+rank[] = [0, 0, 0, 0, 0, 0, 0, 0]
 AFTER union(0,1), union(2,3), union(4,5), union(6,7):
 parent[] = [0, 0, 2, 2, 4, 4, 6, 6]
-rank[]   = [1, 0, 1, 0, 1, 0, 1, 0]
-Trees:   0    2    4    6
-| |    | |
-1    3    5    7
+rank[] = [1, 0, 1, 0, 1, 0, 1, 0]
+Trees: 0 2 4 6
+| | | |
+1 3 5 7
 AFTER union(0,2), union(4,6):
 parent[] = [0, 0, 0, 2, 4, 4, 4, 6]
-rank[]   = [2, 0, 1, 0, 2, 0, 1, 0]
-Trees:       0           4
-/│          /
-1 2         5 6
-3           7
+rank[] = [2, 0, 1, 0, 2, 0, 1, 0]
+Trees: 0 4
+/│ /
+1 2 5 6
+3 7
 AFTER union(0,4):
 parent[] = [0, 0, 0, 2, 0, 4, 4, 6]
-rank[]   = [3, 0, 1, 0, 2, 0, 1, 0]
-Tree:           0
+rank[] = [3, 0, 1, 0, 2, 0, 1, 0]
+Tree: 0
 / | \
-1  2  4
+1 2 4
 /
 3 5 6
 7
@@ -240,13 +247,14 @@ return 0, set parent[6] = 0
 return 0, set parent[7] = 0
 AFTER path compression:
 parent[] = [0, 0, 0, 2, 0, 4, 0, 0]
-Tree:           0
+Tree: 0
 /|\ | \\ \
 1 2 4 5 6 7
 3
 Now find(7) is O(1)!
 
 **Complexity With Both Optimizations**:
+
 - Union by rank + Path compression
 - Amortized O(α(n)) per operation
 - α(n) = Inverse Ackermann function
@@ -256,11 +264,12 @@ Now find(7) is O(1)!
 🔬 **Section Challenge — Union-Find - Path Compression Deep Dive**
 
 **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+
 <details><summary>Answer</summary>
 
 Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-</details>
 
+</details>
 
 ## 🧠 Skip List — Probabilistic Memory Layout
 
@@ -332,15 +341,14 @@ Without path compression + union by rank: O(N) height possible (linear chain). W
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 📊 Bloom Filter — Bit Array Internals
 
 ## Bloom Filter - Probabilistic Membership
 
 **Memory Layout**:
 Bit array (m = 32 bits for example):
-Index:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 ...
-Bits:   0  0  1  0  1  0  0  1  0  0  1  0  0  0  1  0 ...
+Index: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 ...
+Bits: 0 0 1 0 1 0 0 1 0 0 1 0 0 0 1 0 ...
 Storage: In Java, long[] with 64 bits each
 m = 1M bits = 125 KB
 m = 1B bits = 125 MB
@@ -348,13 +356,13 @@ HASH FUNCTIONS (k = 3 in this example):
 h1(x) = hash(x) % m
 h2(x) = hash(x + seed1) % m
 h3(x) = hash(x + seed2) % m
-Or use double hashing: hi(x) = (h1(x) + i * h2(x)) % m
+Or use double hashing: hi(x) = (h1(x) + i \* h2(x)) % m
 INSERT "apple":
-h1("apple") = 2,  h2("apple") = 7,  h3("apple") = 14
-Before: 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-After:  0  0  1  0  0  0  0  1  0  0  0  0  0  0  1  0
-↑              ↑                    ↑
-h1             h2                   h3
+h1("apple") = 2, h2("apple") = 7, h3("apple") = 14
+Before: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+After: 0 0 1 0 0 0 0 1 0 0 0 0 0 0 1 0
+↑ ↑ ↑
+h1 h2 h3
 CHECK "apple": Look at positions 2, 7, 14 → all 1s → "PROBABLY IN SET"
 CHECK "grape": h1=3, h2=5, h3=10 → position 3 is 0 → "DEFINITELY NOT IN SET"
 
@@ -367,10 +375,10 @@ OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 **Example Calculations**:
 | n (elements) | m (bits) | m/n ratio | optimal k | FP rate |
 ┼──────────┼───────────┼───────────┼
-| 1,000        | 10,000   | 10        | 7         | 0.82% |
-| 1,000        | 20,000   | 20        | 14        | 0.00061% |
-| 1,000,000    | 10M      | 10        | 7         | 0.82% |
-| 1,000,000    | 100M     | 100       | 69        | ~0% |
+| 1,000 | 10,000 | 10 | 7 | 0.82% |
+| 1,000 | 20,000 | 20 | 14 | 0.00061% |
+| 1,000,000 | 10M | 10 | 7 | 0.82% |
+| 1,000,000 | 100M | 100 | 69 | ~0% |
 
 **Rule Of Thumb**: 10 bits per element with 7 hash functions → ~1% FP rate
 
@@ -379,43 +387,45 @@ OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 ## Lru Cache - O(1) Get And Put
 
 **Structure**:
+
 1. HashMap<Key, Node>: O(1) lookup by key
 2. Doubly Linked List: O(1) remove/insert for recency tracking
 
 **Memory Layout**:
 HashMap:
 ┌───────────────────────────────────────────┐
-| | key: "A" → Node(A)                        | |
-| | key: "B" → Node(B)                        | |
-| | key: "C" → Node(C)                        | |
+| | key: "A" → Node(A) | |
+| | key: "B" → Node(B) | |
+| | key: "C" → Node(C) | |
 └───────────────────────────────────────────┘
 Doubly Linked List (most recent at head):
 ┌──────────────────────────────────────────────────────────────────────┐
-| |                                                                      | |
-| |  HEAD ←→ Node(C) ←→ Node(B) ←→ Node(A) ←→ TAIL                      | |
-| |  (dummy)  (most     (middle)   (least    (dummy)                     | |
-| |           recent)              recent)                               | |
-| |                                                                      | |
+| | | |
+| | HEAD ←→ Node(C) ←→ Node(B) ←→ Node(A) ←→ TAIL | |
+| | (dummy) (most (middle) (least (dummy) | |
+| | recent) recent) | |
+| | | |
 └──────────────────────────────────────────────────────────────────────┘
 Each Node:
 ┌──────────────────────────────────────────────────┐
-| | key: "B"                                         | |
-| | value: 42                                        | |
-| | prev: → Node(C)                                  | |
-| | next: → Node(A)                                  | |
+| | key: "B" | |
+| | value: 42 | |
+| | prev: → Node(C) | |
+| | next: → Node(A) | |
 └──────────────────────────────────────────────────┘
 
 **Operations**:
 GET(key):
+
 1. Look up in HashMap: O(1)
 2. If found, move node to head: O(1)
 3. Return value
-PUT(key, value):
+   PUT(key, value):
 4. If key exists: update value, move to head
 5. If key doesn't exist:
-a. Create new node, add to head
-b. Add to HashMap
-c. If over capacity, remove tail node (LRU item)
+   a. Create new node, add to head
+   b. Add to HashMap
+   c. If over capacity, remove tail node (LRU item)
 
 **Memory Per Entry**:
 Node: ~48 bytes (key ref, value ref, prev, next, object header)
@@ -470,7 +480,6 @@ LRU CACHE:
 ├── Database query cache
 └── CPU cache management
 ```
-
 
 ---
 
@@ -782,23 +791,27 @@ public String longestCommonPrefix(String[] words) {
 🔬 **Section Challenge — Trie Architecture & GOOS Testing**
 
 **Challenge 1 (Architectural Trade-offs):** You are building an autocomplete service for a 1-million word English vocabulary. A standard `TrieNode` uses an array `TrieNode[] children = new TrieNode[26]`. A memory-optimized version uses a `HashMap<Character, TrieNode>`. Explain the exact performance degradation you will face if you switch to `HashMap` to save memory, specifically referencing CPU cache lines and memory indirection.
+
 <details><summary>Answer</summary>
 
 **The Performance Hit (Cache Misses):**
 An array of 26 pointers takes exactly `26 * 8 = 208 bytes`. This fits within just 4 CPU cache lines (64 bytes each). Accessing `children['c' - 'a']` is a single contiguous memory offset calculation (`O(1)` pointer math) that almost guarantees an L1/L2 cache hit.
 Conversely, a `HashMap` node forces an additional object instantiation, hashing overhead, and most importantly: **Memory Indirection**. Looking up a character in the `HashMap` requires jumping to a non-contiguous memory address on the heap to fetch the bucket. Each jump is a guaranteed cache miss (~100x slower than a cache hit). Thus, while `HashMap` saves RAM in sparse nodes, it destroys CPU cache locality, drastically slowing down traversal speed.
+
 </details>
 
-**Challenge 2 (TDD Boundary - GOOS):** Following *Growing Object-Oriented Software (GOOS)*, you want to drive the implementation of this Autocomplete Trie using "Outside-In TDD". What is the "Walking Skeleton" boundary interface you would define, and how would you verify it using a Mock Object before writing any Trie logic?
+**Challenge 2 (TDD Boundary - GOOS):** Following _Growing Object-Oriented Software (GOOS)_, you want to drive the implementation of this Autocomplete Trie using "Outside-In TDD". What is the "Walking Skeleton" boundary interface you would define, and how would you verify it using a Mock Object before writing any Trie logic?
+
 <details><summary>Answer</summary>
 
 **GOOS Outside-In Approach:**
 You start by defining the Port (Interface) required by the client (e.g., the REST Controller):
 `public interface AutocompleteService { List<String> getSuggestions(String prefix); }`
 You do not test the `TrieNode` directly. Instead:
+
 1. **The Test:** You write a test for the `SearchController`. You inject a **Mock** `AutocompleteService`.
 2. **The Verification:** You verify that when the Controller receives a request for `"app"`, it strictly passes exactly `"app"` to the `AutocompleteService.getSuggestions("app")` method, and properly serializes the mock's returned list.
-This forces you to design the API boundaries based on *messages passed* (Behavior) rather than *internal structure* (State). Once the boundary is proven, you step inward to implement the actual `Trie` class that implements `AutocompleteService`.
+This forces you to design the API boundaries based on _messages passed_ (Behavior) rather than _internal structure_ (State). Once the boundary is proven, you step inward to implement the actual `Trie` class that implements `AutocompleteService`.
 </details>
 
 ---
@@ -1085,17 +1098,21 @@ class SegmentTree {
 🔬 **Section Challenge — Segment Tree Mechanics & Spring Boot Integration**
 
 **Challenge 1 (Algorithmic Rigor):** Standard Segment Trees offer `O(log N)` point updates. However, if you need to perform a **Range Update** (e.g., add `+5` to all elements from index `100` to `50000`), a standard Segment Tree degrades to `O(N)`. Why? And how does "Lazy Propagation" restore `O(log N)`?
+
 <details><summary>Answer</summary>
 
 **The Problem:** A naive range update requires updating every single leaf node in the range `[100, 50000]`. Even though finding the covering segments takes `O(log N)`, pushing the update down to the individual leaves requires traversing the entire subtree, which is `O(K)` where `K` is the range size. In the worst case, this is `O(N)`.
-**Lazy Propagation (Deferred Resolution):** Instead of pushing the update to the leaves, Lazy Propagation updates only the highest possible covering nodes and marks them with a `lazy` flag. It *defers* updating the children. Only when a subsequent query or update forces traversal *through* that node do we push the lazy value down one level. By deferring work until absolutely necessary, we touch at most `4 * log(N)` nodes per range update, restoring the `O(log N)` bound.
+**Lazy Propagation (Deferred Resolution):** Instead of pushing the update to the leaves, Lazy Propagation updates only the highest possible covering nodes and marks them with a `lazy` flag. It _defers_ updating the children. Only when a subsequent query or update forces traversal _through_ that node do we push the lazy value down one level. By deferring work until absolutely necessary, we touch at most `4 * log(N)` nodes per range update, restoring the `O(log N)` bound.
+
 </details>
 
 **Challenge 2 (Spring Boot AutoConfiguration):** You have wrapped your highly optimized Segment Tree in a service class: `RangeQueryEngine`. How would you write a custom Spring Boot Starter that automatically provisions this engine into the ApplicationContext **only if** the user hasn't defined their own, and **only if** a specific property `engine.type=segment-tree` is set?
+
 <details><summary>Answer</summary>
 
 **AutoConfiguration Design:**
 Create a `@Configuration` class named `RangeQueryAutoConfiguration`. To enforce the conditions, you apply Spring Boot's conditional annotations:
+
 ```java
 @Configuration
 @ConditionalOnProperty(name = "engine.type", havingValue = "segment-tree")
@@ -1108,7 +1125,9 @@ public class RangeQueryAutoConfiguration {
     }
 }
 ```
+
 Register this class in `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` (Spring Boot 2.7/3.0+). When the application starts, Spring evaluates the environment. If the property matches, and no other `@Bean` of type `RangeQueryEngine` exists, it instantiates the Segment Tree. This is exactly how Spring Boot's internal caching (`@EnableCaching`) seamlessly provisions `ConcurrentHashMapCacheManager` by default.
+
 </details>
 
 ---

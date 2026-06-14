@@ -35,30 +35,35 @@
 ## Good Answer Skeleton: Key Architectural Decisions
 
 ### Decision 1: Ingestion Pipeline
+
 - CI runners publish test results (JUnit XML or JSON) to a message queue (Kafka / SQS)
 - Lightweight ingestion service normalizes, enriches (adds repo, branch, commit), and writes to time-series DB (InfluxDB or ClickHouse)
 - Idempotency: deduplicate by (run_id, test_id, attempt_number)
 
 ### Decision 2: Scoring Engine
+
 - Rolling window: last 50 executions on main branch (ignore feature branches for scoring)
-- Flakiness score = (number of status flips / total runs in window) * 100
+- Flakiness score = (number of status flips / total runs in window) \* 100
 - A flip = adjacent runs with different outcomes (pass->fail or fail->pass)
 - Thresholds: >10% score = flagged; >20% score = quarantine candidate
 - Separate scoring per (test, browser, OS) combo for parameterized tests
 
 ### Decision 3: Storage Strategy
+
 - Hot data (last 90 days): ClickHouse for fast analytical queries
 - Cold data (>90 days): S3 in Parquet format for historical trend analysis
 - Aggregated scores: Redis for real-time dashboard lookups (TTL 7 days, refreshed daily)
 - Test identity mapping: PostgreSQL stores test metadata, ownership, and aliases
 
 ### Decision 4: Alerting
+
 - Flaky test detected -> Slack DM to CODEOWNERS of the test file
 - Weekly digest to EM + TL with top 10 flaky tests and their owners
 - PagerDuty only when org-wide flakiness exceeds 5% (indicates systemic issue)
 - Auto-create Jira ticket for quarantine candidate with 48-hour SLA
 
 ### Decision 5: Quarantine & Dashboard
+
 - Quarantine: CI job fetches quarantine list from API before running tests
 - Quarantined tests run in a separate non-blocking job, their results logged but not gating
 - Auto-unquarantine if test passes 30 consecutive runs on main
@@ -68,19 +73,19 @@
 
 ## Evaluation Rubric
 
-| Dimension | Exceeds Expectations | Meets Expectations | Below Expectations |
-|-----------|----------------------|--------------------|--------------------|
-| **Data Model & Scale** | Chooses appropriate storage (time-series, columnar) for write-heavy ingestion; addresses TTL and cost | Picks a reasonable DB but misses scale or cost concerns | Proposes a single RDBMS for everything without indexing strategy |
-| **Algorithmic Correctness** | Defines flakiness rigorously (e.g., status flips vs simple pass rate); handles parameterized tests and retries | Uses a reasonable heuristic but misses edge cases | Vague "pass rate" with no definition of window or retries |
-| **Integration & Adoption** | Design integrates with existing CI; no forced migration; minimal test runner changes | Requires some CI changes but they are documented and reasonable | Requires teams to rewrite tests or switch runners |
-| **Operational Rigor** | Covers ownership, alerting SLAs, auto-unquarantine, and data retention policy | Has alerting but no SLA or ownership tracking | Missing operational story entirely |
-| **System Completeness** | End-to-end design from ingestion to action (quarantine, alert, dashboard) with clear component boundaries | Covers most components but one area is vague (e.g., no dashboard) | Large gaps; missing ingestion, storage, or action mechanism |
+| Dimension                   | Exceeds Expectations                                                                                           | Meets Expectations                                                | Below Expectations                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- |
+| **Data Model & Scale**      | Chooses appropriate storage (time-series, columnar) for write-heavy ingestion; addresses TTL and cost          | Picks a reasonable DB but misses scale or cost concerns           | Proposes a single RDBMS for everything without indexing strategy |
+| **Algorithmic Correctness** | Defines flakiness rigorously (e.g., status flips vs simple pass rate); handles parameterized tests and retries | Uses a reasonable heuristic but misses edge cases                 | Vague "pass rate" with no definition of window or retries        |
+| **Integration & Adoption**  | Design integrates with existing CI; no forced migration; minimal test runner changes                           | Requires some CI changes but they are documented and reasonable   | Requires teams to rewrite tests or switch runners                |
+| **Operational Rigor**       | Covers ownership, alerting SLAs, auto-unquarantine, and data retention policy                                  | Has alerting but no SLA or ownership tracking                     | Missing operational story entirely                               |
+| **System Completeness**     | End-to-end design from ingestion to action (quarantine, alert, dashboard) with clear component boundaries      | Covers most components but one area is vague (e.g., no dashboard) | Large gaps; missing ingestion, storage, or action mechanism      |
 
 ---
 
 ## Full Mock Transcript (Dialogue, ~35 min)
 
-The sections above are the *artifacts*. The transcript below is what the 35-minute dialogue between the interviewer (**I**) and candidate (**C**) actually sounds like — including the parts that go wrong, the clarifying detours, and the moment the candidate hedges. Use this to calibrate **pacing** more than content.
+The sections above are the _artifacts_. The transcript below is what the 35-minute dialogue between the interviewer (**I**) and candidate (**C**) actually sounds like — including the parts that go wrong, the clarifying detours, and the moment the candidate hedges. Use this to calibrate **pacing** more than content.
 
 ### [00:00–00:03] Setup and prompt
 
@@ -146,7 +151,7 @@ Flip rate > 10% → flagged. > 20% → quarantine candidate.
 
 **I:** Why flip rate instead of pass rate? A test that's 50% pass-rate but ordered pass-pass-pass-fail-fail-fail-fail-fail isn't flaky — it's broken. Your flip rate would call it flaky too.
 
-**C:** That's a great catch. Let me adjust. The simple flip-rate metric fails when the test transitions from working to broken. I'd add a secondary check: if the *last N consecutive runs* are all failures, classify as "broken" not "flaky." That changes the action — broken tests escalate to the on-call, not quietly quarantine.
+**C:** That's a great catch. Let me adjust. The simple flip-rate metric fails when the test transitions from working to broken. I'd add a secondary check: if the _last N consecutive runs_ are all failures, classify as "broken" not "flaky." That changes the action — broken tests escalate to the on-call, not quietly quarantine.
 
 **I:** OK. What about parameterized tests, where (test_name, browser, OS) is the real identity?
 
@@ -213,16 +218,19 @@ The biggest risk: **adoption**. The technical bits aren't hard. Getting 200 serv
 ## Calibration notes for the candidate (you, the reader)
 
 What the interviewer rewarded:
+
 - **Pushed back on the single-number metric** — showed product judgment, not just engineering.
 - **Acknowledged renaming was a hard problem** — hedged honestly, picked a pragmatic middle ground (content-similarity + manual override).
 - **Identified adoption as the biggest risk** — most candidates name a technical risk; the right answer in a 5000-engineer org is sociotechnical.
 
 What the interviewer pushed on:
+
 - **Why not Kafka?** — checking the candidate doesn't reach for the shiniest tool by default.
 - **The flip-rate vs broken-test definition** — checking that definitions are operational, not vague.
 - **The auto-unquarantine human confirmation** — checking the candidate understands self-healing isn't fixing.
 
 Common ways this round goes wrong:
+
 - Candidate jumps to architecture before defining "flaky" — interviewer pulls them back, time gets eaten.
 - Candidate proposes Kafka + Spark + ML + Kubernetes for v1 — interviewer asks "what do you cut?" and candidate has nothing to cut.
 - Candidate has no metric — when asked for "the number," they ramble. Have a metric ready (even one you'd push back on, like the example above).

@@ -101,7 +101,10 @@ const workerTest = base.extend<WorkerSharedFixtures>({
   userPool: [
     async ({ workerContext }, use) => {
       // Simulate loading users via the shared connection.
-      const pool = [`user-from-${workerContext.dbConnection}-1`, `user-from-${workerContext.dbConnection}-2`];
+      const pool = [
+        `user-from-${workerContext.dbConnection}-1`,
+        `user-from-${workerContext.dbConnection}-2`,
+      ];
       await use(pool);
     },
     { scope: 'worker' },

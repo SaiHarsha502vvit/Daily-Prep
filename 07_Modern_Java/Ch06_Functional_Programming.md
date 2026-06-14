@@ -6,16 +6,15 @@
 
 ---
 
-
-
 🔬 **Section Challenge — Thinking in Functions**
 
 **Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+
 <details><summary>Answer</summary>
 
 Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
-</details>
 
+</details>
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
@@ -38,46 +37,48 @@ Input requirements. A `Function<T, R>` represents a transformation. It takes exa
 ### When to Use Functional vs Imperative?
 
 **Use Functional** when:
+
 - Collection processing (filter, map, reduce)
 - Parallel processing is needed
 - Working with callbacks and event handlers
 
 **Use Imperative** when:
+
 - Complex control flow with `break`/`continue`
 - Performance-critical with primitive arrays
 - Stateful operations needing external mutation
 
 ### Which Functional Concepts to Master?
 
-| Priority | Concepts |
-|----------|----------|
+| Priority      | Concepts                                                 |
+| ------------- | -------------------------------------------------------- |
 | **Essential** | Lambda syntax, Stream API (filter/map/collect), Optional |
-| **Important** | Method references, Collectors, flatMap, reduce |
-| **Advanced** | Custom collectors, parallel streams, CompletableFuture |
+| **Important** | Method references, Collectors, flatMap, reduce           |
+| **Advanced**  | Custom collectors, parallel streams, CompletableFuture   |
 
 ---
 
 # 📚 Part 0: Complete Understanding of Functional Programming
 
-
 Functional programming is a paradigm where you build software by composing **pure functions** that avoid changing state and mutating data.
 
-💡 **Key Insight**: Instead of telling the computer *how* to do something step-by-step, you describe *what* result you want.
+💡 **Key Insight**: Instead of telling the computer _how_ to do something step-by-step, you describe _what_ result you want.
 
 **Analogy**:
-- **Imperative (OOP)**: A recipe — *"Heat pan, add oil, wait 2 min, add onions, stir for 5 min..."*
-- **Functional**: A transformation — *"Take raw ingredients → Apply cooking transformation → Get dish"*
+
+- **Imperative (OOP)**: A recipe — _"Heat pan, add oil, wait 2 min, add onions, stir for 5 min..."_
+- **Functional**: A transformation — _"Take raw ingredients → Apply cooking transformation → Get dish"_
 
 ### Historical Evolution
 
-| Era | Milestone | Significance |
-|-----|-----------|-------------|
-| 1930s | Lambda calculus (Alonzo Church) | Mathematical foundation |
-| 1958 | LISP | First functional programming language |
-| 1973 | ML language | Type inference |
-| 1990 | Haskell | Pure functional programming |
-| 2014 | **Java 8** | Lambdas and streams brought FP to Java |
-| Today | JS, Python, Scala | FP concepts in all major languages |
+| Era   | Milestone                       | Significance                           |
+| ----- | ------------------------------- | -------------------------------------- |
+| 1930s | Lambda calculus (Alonzo Church) | Mathematical foundation                |
+| 1958  | LISP                            | First functional programming language  |
+| 1973  | ML language                     | Type inference                         |
+| 1990  | Haskell                         | Pure functional programming            |
+| 2014  | **Java 8**                      | Lambdas and streams brought FP to Java |
+| Today | JS, Python, Scala               | FP concepts in all major languages     |
 
 ---
 
@@ -86,6 +87,7 @@ Functional programming is a paradigm where you build software by composing **pur
 **Problem 1: Bugs from shared mutable state**
 
 Imperative — risky (another thread could modify `total`):
+
 ```java
 int total = 0;
 for (Order o : orders) {
@@ -94,6 +96,7 @@ for (Order o : orders) {
 ```
 
 Functional — safe (no mutable state):
+
 ```java
 int total = orders.stream()
                    .mapToInt(Order::getAmount)
@@ -108,8 +111,6 @@ int total = orders.stream()
 
 ---
 
-
-
 🔬 **Section Challenge — What Problem Does Functional Programming Solve?**
 
 **Challenge 1 (Concurrency Safety):** The section shows an imperative `total += o.getAmount()` loop vs. a functional `mapToInt(...).sum()`. **Who** is the safety threat in the imperative version? **When** does the race condition manifest? **What** makes the stream version safe without explicit `synchronized`?
@@ -120,18 +121,15 @@ int total = orders.stream()
 
 </details>
 
-
 ## Why Learn Functional Programming?
 
 1. **Cleaner Code** — 10 lines of loop → 1 line of stream. More readable, less error-prone.
 2. **Parallel Processing** — `list.parallelStream()` instantly parallelizes! Critical for big data, multi-core CPUs.
 3. **Industry Demand** — React (JS) is functional, Spark (Big Data) is functional, modern Java uses streams extensively.
 4. **Better Abstractions** — `map`, `filter`, `reduce` work on ANY collection. Write once, use everywhere.
-5. **Interview Advantage** — *"Can you solve this with streams?"* Concise solutions impress interviewers.
+5. **Interview Advantage** — _"Can you solve this with streams?"_ Concise solutions impress interviewers.
 
 ---
-
-
 
 🔬 **Section Challenge — Why Learn Functional Programming?**
 
@@ -143,16 +141,17 @@ int total = orders.stream()
 
 </details>
 
-
 ## When to Use Functional vs Imperative
 
 **Use Functional when**:
+
 - Processing collections (filter, transform, aggregate)
 - Need parallel processing
 - Data transformations (pipelines)
 - Avoiding side effects is important
 
 **Use Imperative when**:
+
 - Need early termination with complex conditions
 - Modifying multiple variables in complex ways
 - Performance-critical loops (sometimes)
@@ -162,16 +161,15 @@ int total = orders.stream()
 
 ---
 
-
-
 🔬 **Section Challenge — When to Use Functional vs Imperative**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
+> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## Difficulties in Learning FP
 
@@ -183,8 +181,6 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 ---
 
-
-
 🔬 **Section Challenge — Difficulties in Learning FP**
 
 **Challenge 1 (Debug Trace):** You're debugging a stream pipeline but `peek()` shows no output. The stream runs silently and returns nothing. **Who** is responsible for triggering execution? **When** does `peek()` actually execute? **What** is the one thing missing from the pipeline that would make it work?
@@ -195,7 +191,6 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 </details>
 
-
 ## Expected Outcomes
 
 - ✅ **Concise Code**: Replace 10-line loops with 1-line streams
@@ -205,8 +200,7 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 - ✅ **Interview Ready**: Solve problems elegantly with streams
 - ✅ **Cross-Language**: Same concepts in JavaScript, Python, Scala
 
-🧠 **The Transformation**: FROM *"How do I iterate through this collection?"* → TO *"What transformation do I need to apply?"*
-
+🧠 **The Transformation**: FROM _"How do I iterate through this collection?"_ → TO _"What transformation do I need to apply?"_
 
 ---
 
@@ -214,9 +208,9 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 ## The Mental Shift
 
-**Imperative** (how to do it): *"Go to the store. Pick up milk. Go to checkout. Pay. Come back."*
+**Imperative** (how to do it): _"Go to the store. Pick up milk. Go to checkout. Pay. Come back."_
 
-**Functional** (what to do): *"Get milk from store."*
+**Functional** (what to do): _"Get milk from store."_
 
 Imperative code:
 
@@ -271,10 +265,7 @@ List<Integer> result = numbers.stream()
    - Describe WHAT you want, not HOW to get it
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Core Principles**
 
@@ -285,7 +276,6 @@ List<Integer> result = numbers.stream()
 **(A) PURE:** Same inputs always produce same output (`add(2,3)` always returns `5`). No side effects. **(B) IMPURE:** Side effect — persists to DB. Same call with same `User` object produces different DB state each time. Cannot be safely parallelized or memoized. **(C) PURE:** String concatenation is immutable. `format("Alice")` always returns `"Hello, Alice"`. No external state touched. Can be safely memoized, parallelized, tested in isolation. **(D) IMPURE:** Reads AND modifies `counter` (external mutable state). Two calls with no arguments return DIFFERENT values (n, n+1). Not safe to parallelize. Not safe to reorder. **Why this matters in FP:** Pure functions are the unit of composition. You can chain, memoize, parallelize, and test pure functions trivially. Impure functions require careful ordering, synchronization, and test setup.
 
 </details>
-
 
 # 📌 Part 2: Lambda Expressions
 
@@ -359,8 +349,6 @@ button.addActionListener(e -> handleClick(e));
 
 ---
 
-
-
 # 📌 Part 3: Functional Interfaces
 
 ## What Are They?
@@ -414,8 +402,6 @@ UnaryOperator<Integer> square = n -> n * n;
 square.apply(5);  // 25
 ```
 
-
-
 🔬 **Section Challenge — Built-in Functional Interfaces**
 
 **Challenge 1 (Interface Selection):** You need to: (A) Check if a user is an admin. (B) Get the current timestamp without any input. (C) Transform a user ID string to a `User` object. (D) Log a user to the console without returning anything. **What** functional interface fits each case, and **what** is the exact generic signature?
@@ -425,7 +411,6 @@ square.apply(5);  // 25
 **(A) Check if admin → `Predicate<User>`:** `Predicate<User> isAdmin = user -> user.getRole() == Role.ADMIN;`. Signature: `T -> boolean`. **(B) Current timestamp → `Supplier<LocalDateTime>`:** `Supplier<LocalDateTime> now = LocalDateTime::now;`. Signature: `() -> T`. No input, generates output. **(C) ID to User object → `Function<String, User>`:** `Function<String, User> findUser = id -> userRepo.findById(id);`. Signature: `T -> R`. **(D) Log user → `Consumer<User>`:** `Consumer<User> logger = user -> log.info(user.getName());`. Signature: `T -> void`. **Memory trick:** Supplier = factory (supplies things). Function = transform (in goes T, out comes R). Consumer = sink (eats T, produces nothing). Predicate = gate (in goes T, out comes boolean — true/false decision). BiFunction = two inputs, one output. UnaryOperator = Function<T,T> (same type in and out).
 
 </details>
-
 
 ## Chaining Predicates
 
@@ -449,8 +434,6 @@ isNotPositive.test(-5);  // true
 
 ---
 
-
-
 🔬 **Section Challenge — Chaining Predicates**
 
 **Challenge 1 (Short-Circuit Reasoning):** `Predicate.and(other)` chains two predicates. **Who** evaluates second when first is false? **When** does `or()` skip evaluation of its second predicate? **What** is the functional equivalent of Java's `&&` short-circuit vs. `&` eager-evaluation in predicate terms?
@@ -460,7 +443,6 @@ isNotPositive.test(-5);  // true
 **Who evaluates second when first is false:** NOBODY — `Predicate.and(other)` short-circuits. If `first.test(x)` returns `false`, `other.test(x)` is NEVER called. This is identical to Java's `&&` operator. **When `or()` skips second:** When the FIRST predicate returns `true`. `isAdmin.or(isSupervisor)` — if `isAdmin.test(u)` is `true`, `isSupervisor.test(u)` is skipped. **Functional equivalents of eager `&` vs. lazy `&&`:** Java's `Predicate` always short-circuits (lazy). There's no eager `Predicate.and()` equivalent. To force both evaluations (e.g., for side effects like logging), you must write: `p1 -> { boolean r1 = isAdmin.test(p1); boolean r2 = isSupervisor.test(p1); return r1 && r2; }`. **Why this matters:** If `other` predicate throws exceptions or has side effects, short-circuit means those effects may NOT happen. Design predicates as pure functions to avoid this issue entirely.
 
 </details>
-
 
 # 🔌 Part 4: Stream API
 
@@ -474,26 +456,28 @@ List   → stream() → filter, map   → collect     → List
 ```
 
 ⚠️ **Important**:
+
 - Streams are **NOT** data structures (they don't store data)
 - Streams are **lazy** (operations only run when terminal op is called)
 - Streams can only be consumed **once**
 
-
-
 🔬 **Section Challenge — What is a Stream?**
 
 **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+
 <details><summary>Answer</summary>
 
 Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+
 <details><summary>Answer</summary>
 
 `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-</details>
 
+</details>
 
 ## Creating Streams
 
@@ -518,8 +502,6 @@ IntStream range = IntStream.range(1, 10);      // 1 to 9
 IntStream rangeClosed = IntStream.rangeClosed(1, 10);  // 1 to 10
 ```
 
-
-
 🔬 **Section Challenge — Creating Streams**
 
 **Challenge 1 (Stream Source Types):** `Arrays.stream(intArr)` vs `Stream.of(intArr)` for `int[]`. **Who** returns an `IntStream`? **When** does `Stream.of(intArr)` give you `Stream<int[]>` (one element)? **What** is the correct way to get a range stream `[0, n)`?
@@ -530,13 +512,10 @@ IntStream rangeClosed = IntStream.rangeClosed(1, 10);  // 1 to 10
 
 </details>
 
-
 📎 **Reference Anchor:** [OpenJDK `ReferencePipeline.java`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/stream/ReferencePipeline.java#L165-L220)  
 **Invariant learned:** The `StatelessOp` and `StatefulOp` inner classes represent lazy intermediate operations. No element traversal occurs until a terminal operation calls `evaluate()`. Each op wraps the previous as a linked chain — the pipeline is built top-down but executed bottom-up.  
 **Local rewrite:** See Challenge 1 (Stream Source Types) — `Arrays.stream(int[])` returns a specialized `IntPipeline`, not a `ReferencePipeline`. Primitive pipelines skip boxing overhead via direct `Spliterator.OfInt`.  
 **Constraint warning:** This is OpenJDK's implementation. GraalVM's native image compiles stream pipelines at build time (partial evaluation). The laziness model holds, but profiling data may differ from JVM runtime.
-
-
 
 ## Intermediate Operations (Transform Stream)
 
@@ -582,8 +561,6 @@ numbers.stream()
     .filter(n -> n > 5)
 ```
 
-
-
 🔬 **Section Challenge — Intermediate Operations (Transform Stream)**
 
 **Challenge 1 (flatMap for Nested Collections):** You have `List<List<String>> nested`. **Who** flattens it? **When** is `flatMap` necessary vs `map`? **What** is the difference between `stream().flatMap(Collection::stream)` and `stream().map(List::stream)`?
@@ -593,9 +570,6 @@ numbers.stream()
 **Who flattens:** `flatMap`. It maps each element to a stream, then FLATTENS those streams into one stream. `nested.stream().flatMap(Collection::stream)` — each inner `List<String>` becomes a stream, all merged into one `Stream<String>`. **When flatMap is necessary:** Any time each element maps to ZERO-OR-MORE results (one-to-many). Splitting sentences into words: `sentences.stream().flatMap(s -> Arrays.stream(s.split(" ")))`. File lines to words: `lines.stream().flatMap(line -> Stream.of(line.split(" ")))`. Optional chain: `Optional<Optional<String>>` — `opt.flatMap(Function.identity())` flattens to `Optional<String>`. **`flatMap` vs `map` difference:** `map(List::stream)` returns `Stream<Stream<String>>` (nested streams). Each element is mapped to a stream but NOT merged. You'd need to iterate streams of streams. `flatMap(Collection::stream)` returns `Stream<String>` (merged). **Empty streams:** `flatMap` handles empty inner streams gracefully. If some sublists are null, add `.filter(Objects::nonNull)` before `flatMap`.
 
 </details>
-
-
-
 
 ## Terminal Operations (Produce Result)
 
@@ -647,8 +621,6 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 
 ---
 
-
-
 🔬 **Section Challenge — Terminal Operations (Produce Result)**
 
 **Challenge 1 (Reduce Deep Dive):** `numbers.stream().reduce(0, (a, b) -> a + b)` sums all numbers. **What** is the `0` called and why does it matter? **Who** gets called first? **What** breaks if you use `reduce(Integer::sum)` (no identity) on an empty stream?
@@ -658,7 +630,6 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 **What `0` is called:** The IDENTITY element. An identity element for an operation satisfies: `identity op x == x` for all x. For addition: `0 + x == x`. For multiplication: `1 * x == x`. For string concat: `"" + x == x`. **Why it matters:** It's the starting accumulator value AND the safe return value for empty streams. **Who gets called first:** `accumulator(0, first_element)` — the identity is the `a` in the first call. **What breaks with no-identity `reduce(Integer::sum)` on empty stream:** Returns `Optional.empty()` — not a crash, but you must handle the Optional. `reduce(0, ...)` always returns an `int` (never Optional), making it safe for guaranteed non-null results. **Real bug:** Using wrong identity: `reduce(1, (a, b) -> a + b)` on `[1,2,3]` returns `7` instead of `6` because the identity 1 is counted as an extra element. Always ensure: `identity op x == x` for your operation before using it.
 
 </details>
-
 
 # 🎨 Part 5: Common Stream Patterns
 
@@ -675,8 +646,6 @@ List<String> adultNames = people.stream()
     .map(Person::getName)              // Get names
     .collect(Collectors.toList());     // Collect to list
 ```
-
-
 
 ## Pattern 2: Grouping
 
@@ -697,8 +666,6 @@ Map<String, Long> countByCity = people.stream()
 // {"New York": 2, "LA": 1}
 ```
 
-
-
 🔬 **Section Challenge — Pattern 2: Grouping**
 
 **Challenge 1 (Grouping Internals):** `Collectors.groupingBy(Person::getCity)` returns a `Map<String, List<Person>>`. **Who** determines the insertion order of groups? **What** downstream collector makes it return `Map<String, Long>` (count per city)? **When** would you use `groupingBy(getCity, TreeMap::new, counting())` instead?
@@ -708,7 +675,6 @@ Map<String, Long> countByCity = people.stream()
 **Who determines insertion order:** The default groupingBy returns a `HashMap` — NO guaranteed order. Groups appear in arbitrary hash-bucket order. **What returns count per city:** `Collectors.groupingBy(Person::getCity, Collectors.counting())` — the second arg is the downstream collector that processes each group's elements. `counting()` is equivalent to `mapping(e -> 1L, summingLong(x -> x))`. **When to use `TreeMap::new`:** When you need groups in SORTED KEY ORDER. `groupingBy(Person::getCity, TreeMap::new, counting())` returns a `TreeMap<String, Long>` with cities in alphabetical order. Useful for: display order in UI, reproducible output in tests, range-based key queries (`headMap`, `tailMap`, `subMap`). **Alternative for LinkedHashMap (insertion order):** `groupingBy(Person::getCity, LinkedHashMap::new, toList())` preserves the order in which cities first appear in the stream.
 
 </details>
-
 
 ## Pattern 3: Partitioning
 
@@ -721,8 +687,6 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 // {true: [adults], false: [minors]}
 ```
 
-
-
 🔬 **Section Challenge — Pattern 3: Partitioning**
 
 **Challenge 1 (Partitioning vs Grouping):** `partitioningBy` always returns `Map<Boolean, List<T>>`. **What** is the ONE advantage of `partitioningBy` over `groupingBy(x -> predicate)` even though both split into two groups? **When** would you choose `groupingBy` with a boolean expression over `partitioningBy`?
@@ -732,7 +696,6 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 **ONE advantage of `partitioningBy`:** It ALWAYS returns both keys (`true` and `false`), even when one group is empty. `groupingBy(p -> p.getAge() >= 18)` on an all-adult list returns `{true: [...]}` — the `false` key is ABSENT. `partitioningBy(p -> p.getAge() >= 18)` always returns `{true: [...], false: []}` — the false group is an empty list, not missing. This means `map.get(false)` returns `[]` not `null`, preventing NPE. **When to use groupingBy with boolean:** When you need the DOWNSTREAM collector to be more complex than just `toList()`. `groupingBy(p -> p.isAdult(), Collectors.averagingInt(Person::getAge))` works. But `partitioningBy` also accepts a downstream collector: `partitioningBy(p -> p.isAdult(), Collectors.counting())`. Both approaches work equivalently with downstream collectors; `partitioningBy` wins for the null-safety guarantee on the result map.
 
 </details>
-
 
 ## Pattern 4: Joining Strings
 
@@ -750,8 +713,6 @@ String withPrefixSuffix = names.stream()
 // "[Alice, Bob, Charlie]"
 ```
 
-
-
 🔬 **Section Challenge — Pattern 4: Joining Strings**
 
 **Challenge 1 (Trace — Who/When/What):** `Collectors.joining(", ", "[", "]")` on an empty stream \u2014 **who** produces the result? **What** is the output? **When** does this differ from `String.join()`?
@@ -761,7 +722,6 @@ String withPrefixSuffix = names.stream()
 **Who produces?** The `Collectors.joining` collector \u2014 it accumulates via a `StringJoiner` internally. **What output on empty stream?** `"[]"` \u2014 the prefix `"["` and suffix `"]"` are ALWAYS included, even when there are no elements. This is intentional: an empty collection still produces valid bracket notation. **When differs from `String.join()`?** `String.join(", ", emptyList)` returns `""` (empty string, no prefix/suffix). **Practical gotcha:** If you want `""` for empty and `"[a, b]"` for non-empty, you must check `list.isEmpty()` separately before joining. **Performance note:** `Collectors.joining` is O(n) for n elements \u2014 it uses a single `StringBuilder`-like accumulation, not quadratic string concatenation.
 
 </details>
-
 
 ## Pattern 5: Statistics
 
@@ -780,8 +740,6 @@ stats.getCount();   // 5
 ```
 
 ---
-
-
 
 # 📖 Part 6: Method References
 
@@ -818,8 +776,6 @@ Function<Integer, int[]> arrayMaker = int[]::new;
 // Same as: size -> new int[size]
 ```
 
-
-
 🔬 **Section Challenge — The Four Types**
 
 **Challenge 1 (Debug — Who/When/What):** `list.sort(String::compareToIgnoreCase)` — which of the four method reference types is this? **Who** captures the comparison target? **What** does it compile to as a lambda?
@@ -829,7 +785,6 @@ Function<Integer, int[]> arrayMaker = int[]::new;
 **Type 3: Instance method of arbitrary object of particular type.** `String::compareToIgnoreCase` is a reference to an instance method, but no specific instance is captured. **Who is captured?** No object is captured at the reference site — instead the first argument of the `Comparator` interface becomes the receiver. **Lambda equivalent:** `(s1, s2) -> s1.compareToIgnoreCase(s2)`. The first lambda param becomes `this` (the receiver), the second becomes the argument. This is why it satisfies `Comparator<String>` — two `String` arguments, `String` is the type owning `compareToIgnoreCase`. **Type 2 (specific instance)** would be: `"prefix"::concat` — the specific String object `"prefix"` is captured.
 
 </details>
-
 
 ## When to Use Method References
 
@@ -907,16 +862,15 @@ Optional<String> result = optional
 
 ---
 
-
-
 🔬 **Section Challenge — Optional to the Rescue**
 
 **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+
 <details><summary>Answer</summary>
 
 `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-</details>
 
+</details>
 
 # 📌 Part 8: Functional DSA Examples
 
@@ -937,8 +891,6 @@ int max = numbers.stream()
     .orElse(Integer.MIN_VALUE);
 ```
 
-
-
 🔬 **Section Challenge — Example 1: Find Max Element**
 
 **Challenge 1 (Stream reduce vs max Terminal):** `list.stream().reduce(Integer.MIN_VALUE, Integer::max)` vs `list.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE)`. **Who** is more expressive? **When** does `reduce` return a different result than `max` for an EMPTY stream? **What** is the type difference?
@@ -951,8 +903,8 @@ int max = numbers.stream()
 <details><summary>Answer</summary>
 
 Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
-</details>
 
+</details>
 
 ## Example 2: Sum of Squares of Even Numbers
 
@@ -972,16 +924,16 @@ int sum = numbers.stream()
     .reduce(0, Integer::sum);
 ```
 
-
-
 > 🔬 **Section Challenge — Example 2: Sum of Squares of Even Numbers**
 >
 > **Challenge 1 (Performance):** In the functional approach `numbers.stream().map(n -> n * n)`, does it create a new `Integer` object for every mapped element (auto-boxing) leading to massive GC overhead? If so, how do you fix it for a stream of 1 million integers?
+>
 > <details><summary>Answer</summary>
 >
 > **Scenario:** JVM Memory Overhead in Streams.
-> **Trace:** Yes, if `numbers` is a `List<Integer>`, then `numbers.stream()` is a `Stream<Integer>`. The operation `map(n -> n * n)` unboxes the Integer, squares it, and *re-boxes* it into a new Integer object. For 1 million numbers, this creates 1,000,000 short-lived objects on the heap, thrashing the Garbage Collector.
+> **Trace:** Yes, if `numbers` is a `List<Integer>`, then `numbers.stream()` is a `Stream<Integer>`. The operation `map(n -> n * n)` unboxes the Integer, squares it, and _re-boxes_ it into a new Integer object. For 1 million numbers, this creates 1,000,000 short-lived objects on the heap, thrashing the Garbage Collector.
 > **Debug/Fix:** Use primitive streams! Replace `.map()` with `.mapToInt(n -> n * n)`. This converts the `Stream<Integer>` into an `IntStream` (a specialized stream of primitive `int`s), completely eliminating boxing overhead for the transformation and allowing a direct `.sum()`.
+>
 > </details>
 
 ## Example 3: First Duplicate
@@ -1027,13 +979,15 @@ List<Integer> flat = Arrays.stream(matrix)
 # 📌 Part 9: When to Use Functional Style
 
 **Use Functional when**:
+
 - ✓ Processing collections (filter, map, transform)
 - ✓ Parallel processing needed (`parallelStream`)
-- ✓ Code is about *what*, not *how*
+- ✓ Code is about _what_, not _how_
 - ✓ Chaining multiple operations
 - ✓ Working with `Optional` values
 
 **Use Imperative when**:
+
 - ✓ Performance is critical (streams have overhead)
 - ✓ Need to `break`/`continue` in loops
 - ✓ Modifying elements in place
@@ -1051,12 +1005,14 @@ List<Integer> flat = Arrays.stream(matrix)
 `var` lets the compiler **infer** the type from the right-hand side.
 
 **Before** (verbose):
+
 ```java
 Map<String, List<Employee>> departments = new HashMap<>();
 HttpServletRequest request = (HttpServletRequest) servletRequest;
 ```
 
 **After** (concise):
+
 ```java
 var departments = new HashMap<String, List<Employee>>();
 var request = (HttpServletRequest) servletRequest;
@@ -1100,16 +1056,15 @@ Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 ```
 
 **`var` Rules**:
+
 - ✓ Only for **local variables** (not fields, parameters, or return types)
 - ✓ Must have initializer on the same line
 - ✓ Type is determined at **compile time** (not runtime)
 - ✓ `var` is NOT a keyword — can still use as a variable name (not recommended)
 
-🎯 **Interview Tip**: *"var improves readability when type is obvious from context, but explicit types are better when they document intent."*
+🎯 **Interview Tip**: _"var improves readability when type is obvious from context, but explicit types are better when they document intent."_
 
 ---
-
-
 
 🔬 **Section Challenge — A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10**
 
@@ -1121,7 +1076,6 @@ Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 
 </details>
 
-
 ## B. JAVA RECORDS (Java 16+)
 
 A **record** is a concise way to declare classes that are "data carriers" — classes whose main purpose is to hold data, not behavior.
@@ -1129,6 +1083,7 @@ A **record** is a concise way to declare classes that are "data carriers" — cl
 **Problem**: Traditional "POJO" classes require lots of boilerplate — 50+ lines for a simple data class (constructor, getters, `equals()`, `hashCode()`, `toString()`).
 
 **Solution with Records**:
+
 ```java
 public record User(String name, int age) { }  // 1 line! That's it!
 ```
@@ -1179,7 +1134,7 @@ public record Point(int x, int y) {
     public double distanceFromOrigin() {
         return Math.sqrt(x * x + y * y);
     }
-    
+
     // Static factory methods
     public static Point origin() {
         return new Point(0, 0);
@@ -1215,7 +1170,7 @@ public record UserResponse(Long id, String name, String email) {
 // Controller using records
 @RestController
 public class UserController {
-    
+
     @PostMapping("/users")
     public ResponseEntity<UserResponse> create(
             @Valid @RequestBody CreateUserRequest request) {
@@ -1227,66 +1182,127 @@ public class UserController {
 
 ### Records vs Class vs Lombok
 
-| Feature | `class` | `record` | `@Data` (Lombok) |
-|---------|---------|----------|-------------------|
-| Immutable | Manual | Always | `@Value` for immutable |
-| Inheritance | Yes | No (final) | Yes |
-| Mutable fields | Yes | No | Yes |
-| Boilerplate | High | None | None |
-| External dependency | None | None | Lombok |
-| Serialization | Works | Works | Works |
-| JPA Entities | Yes | No (immutable) | Yes |
+| Feature             | `class` | `record`       | `@Data` (Lombok)       |
+| ------------------- | ------- | -------------- | ---------------------- |
+| Immutable           | Manual  | Always         | `@Value` for immutable |
+| Inheritance         | Yes     | No (final)     | Yes                    |
+| Mutable fields      | Yes     | No             | Yes                    |
+| Boilerplate         | High    | None           | None                   |
+| External dependency | None    | None           | Lombok                 |
+| Serialization       | Works   | Works          | Works                  |
+| JPA Entities        | Yes     | No (immutable) | Yes                    |
 
 **When to use records**:
+
 - ✓ DTOs (Request/Response objects)
 - ✓ Value objects (Money, Address, Coordinates)
 - ✓ Compound map keys
 - ✓ Return multiple values from a method
 
 **When NOT to use records**:
+
 - ✗ JPA Entities (need mutable setters, default constructor)
 - ✗ Classes with behavior more important than data
 - ✗ Classes that need inheritance
 
-🎯 **Interview Tip**: *"Records are perfect for DTOs because they're immutable, concise, and automatically implement equals/hashCode correctly."*
+🎯 **Interview Tip**: _"Records are perfect for DTOs because they're immutable, concise, and automatically implement equals/hashCode correctly."_
 
 ---
 
 # 💪 Part 11: Practice Exercises
 
 1. Write a stream pipeline to:
-    - Filter strings longer than 3 characters
-    - Convert to uppercase
-    - Sort alphabetically
-    - Collect to list
+   - Filter strings longer than 3 characters
+   - Convert to uppercase
+   - Sort alphabetically
+   - Collect to list
 
 2. Given a list of transactions, find:
-    - Total value of all transactions
-    - Transactions grouped by type
-    - The highest value transaction
+   - Total value of all transactions
+   - Transactions grouped by type
+   - The highest value transaction
 
 3. Implement these with streams:
-    - Find all prime numbers up to n
-    - Find anagrams in a list of words
-    - Merge two sorted lists
+   - Find all prime numbers up to n
+   - Find anagrams in a list of words
+   - Merge two sorted lists
 
 4. Convert imperative to functional:
-    ```java
-    List<String> result = new ArrayList<>();
-    for (Person p : people) {
-        if (p.getAge() > 20 && p.getAge() < 30) {
-            String name = p.getName().toUpperCase();
-            if (!result.contains(name)) {
-                result.add(name);
-            }
-        }
-    }
-    ```
+   ```java
+   List<String> result = new ArrayList<>();
+   for (Person p : people) {
+       if (p.getAge() > 20 && p.getAge() < 30) {
+           String name = p.getName().toUpperCase();
+           if (!result.contains(name)) {
+               result.add(name);
+           }
+       }
+   }
+   ```
 
 ---
 
 _Functional programming is about clarity and composability!_ 🎯
 
+---
+
+### Stream Pipeline Execution (Sequence Diagram)
+
+Java 8 (2014) Streams are **lazy** — intermediate operations build a pipeline, only a terminal operation triggers traversal. Crystal-clear visualization:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ STREAM PIPELINE — LAZY EVALUATION (Java 8 / 2014)                  │
+└─────────────────────────────────────────────────────────────────────┘
+
+  Caller Code
+     │
+     │  source.stream()                    ← Step 1: source (eager)
+     ▼
+  ┌──────────────┐
+  │  Stream<T>   │  ← no traversal yet
+  └──────┬───────┘
+         │
+         │  .filter(p -> p.getAge() > 18)  ← Step 2: intermediate (lazy)
+         ▼
+  ┌──────────────┐
+  │  Stream<T>   │  ← still no traversal
+  └──────┬───────┘
+         │
+         │  .map(Person::getName)          ← Step 3: intermediate (lazy)
+         ▼
+  ┌──────────────┐
+  │  Stream<R>   │  ← still no traversal
+  └──────┬───────┘
+         │
+         │  .collect(toList())             ← Step 4: terminal (EAGER trigger)
+         ▼
+  ╔══════════════╗
+  ║  List<String> ║  ← NOW pipeline runs: filter → map → collect
+  ╚══════════════╝
+
+  ▼ Failure mode: forgetting terminal op → pipeline never executes (no side effect)
+  ▼ Mitigation: always end chains with .collect() / .forEach() / .reduce()
+```
+
+**Vertical-sequence step ladder** (the canonical CL template — also used in 04_Patterns_Templates):
+
+```
+┌─ Step 1: Build pipeline (no execution) ─────────────────────────────────┐
+│   stream() / .filter() / .map() / .sorted() — all return Stream<T>      │
+│   Each stage wraps the previous, defers work.                          │
+└────────────────────────────────────────────────────────────────────────┘
+        ↓
+┌─ Step 2: Attach terminal operation ─────────────────────────────────────┐
+│   .collect() / .forEach() / .count() / .reduce()                        │
+│   Terminal op splits the pipeline into "vertical" stages.               │
+└────────────────────────────────────────────────────────────────────────┘
+        ↓
+┌─ Step 3: Spliterator drives traversal ──────────────────────────────────┐
+│   Each element pulled through: filter → map → sorted-buffer → collect   │
+│   Short-circuit operators (.findFirst(), .limit()) stop early.          │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 

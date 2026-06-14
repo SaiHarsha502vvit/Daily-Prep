@@ -17,6 +17,7 @@ Every problem: WHAT is it asking → WHY does this approach work → WHEN to rec
 **WHAT**: Reverse the direction of all pointers in a singly linked list.
 
 **WHY iterative pointer manipulation works**:
+
 - Each node points forward. We need it to point backward.
 - At each node, we need to remember three things: previous, current, next.
 - Before we change current's pointer, save next. Then point current to previous. Then advance.
@@ -26,6 +27,7 @@ Every problem: WHAT is it asking → WHY does this approach work → WHEN to rec
 **WHERE**: Every company. Fundamental building block.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: prev = null, curr = head
 Step 2: While curr ≠ null:
@@ -39,6 +41,7 @@ Step 3: Return prev (new head)
 **Why 3 variables**: You need `nextTemp` because once you do `curr.next = prev`, you lose access to the next node. It's like cutting a chain — you must hold the broken end first.
 
 **Recursive version logic**: "Reverse the rest, then point my next node back to me."
+
 ```
 Base: if head is null or head.next is null → return head
 Recursive: newHead = reverse(head.next)
@@ -56,6 +59,7 @@ Recursive: newHead = reverse(head.next)
 **WHAT**: Determine if a linked list has a cycle.
 
 **WHY Floyd's Tortoise & Hare works**:
+
 - Fast pointer moves 2 steps, slow moves 1 step
 - If there's a cycle, fast WILL eventually meet slow (like two runners on a track, the faster one laps the slower)
 - If there's no cycle, fast reaches null
@@ -63,6 +67,7 @@ Recursive: newHead = reverse(head.next)
 **WHEN**: "Cycle in linked list/graph" → Two pointers at different speeds.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: slow = head, fast = head
 Step 2: While fast ≠ null AND fast.next ≠ null:
@@ -75,6 +80,7 @@ Step 3: If loop ends → no cycle
 **Why they MUST meet**: In the cycle, the distance between slow and fast decreases by 1 each step. So they meet in at most `cycleLength` steps after both enter the cycle.
 
 **Finding the cycle START (Follow-up)**:
+
 ```
 After fast and slow meet:
 → Move slow back to head
@@ -91,10 +97,12 @@ After fast and slow meet:
 **WHAT**: Merge two sorted linked lists into one sorted list.
 
 **WHY compare-and-advance works**:
+
 - Both lists are sorted. At each step, the smaller head is the next element.
 - Take the smaller, advance that pointer, continue.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Create dummy head (simplifies edge cases)
 Step 2: While both lists non-empty:
@@ -107,6 +115,7 @@ Step 4: Return dummy.next
 **Why use a dummy node**: Without it, you need special handling for the first element. Dummy simplifies — just return `dummy.next` at the end.
 
 **Extension — Merge K Sorted Lists**:
+
 - **Approach 1**: Min-Heap with k nodes. Pop minimum, push its next. O(n log k).
 - **Approach 2**: Divide and conquer — merge pairs like merge sort. O(n log k).
 - **Approach 3**: Merge one by one — O(nk). Too slow.
@@ -120,10 +129,12 @@ Step 4: Return dummy.next
 **WHAT**: Remove the nth node from the end in one pass.
 
 **WHY the gap technique works**:
+
 - If fast is n steps ahead of slow, when fast reaches the end, slow is at the nth-from-end
 - We actually need slow to be ONE BEFORE the target (to rewire), so use a dummy head
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Create dummy → head
 Step 2: Advance fast pointer n+1 steps from dummy
@@ -142,11 +153,13 @@ Step 5: Return dummy.next
 **WHAT**: Reorder L0→L1→...→Ln to L0→Ln→L1→Ln-1→...
 
 **WHY this decomposes into 3 sub-problems**:
+
 1. Find the middle (fast/slow pointers)
 2. Reverse the second half
 3. Merge alternating from first and reversed second half
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Find middle using slow/fast pointers
         → slow ends at middle. Cut the list: slow.next = null
@@ -164,6 +177,7 @@ Step 3: Merge by alternating:
 **WHAT**: Design a data structure with O(1) get and put, evicting least recently used item.
 
 **WHY HashMap + Doubly Linked List**:
+
 - HashMap gives O(1) access by key
 - Doubly linked list maintains usage ORDER (most recent at head, least recent at tail)
 - On access: move node to head (O(1) in doubly linked list)
@@ -172,6 +186,7 @@ Step 3: Merge by alternating:
 **WHEN**: "Fixed capacity + eviction policy + O(1) operations" → LinkedHashMap or manual DLL + Map.
 
 **HOW — The Logic Chain**:
+
 ```
 GET(key):
   → Not in map → return -1
@@ -185,15 +200,13 @@ PUT(key, value):
 ```
 
 **Why doubly linked list (not singly)**:
+
 - To remove a node from the middle, we need to access its PREVIOUS node
 - Singly linked list → O(n) to find previous. Doubly linked list → O(1) via prev pointer.
 
 **Translation hint**: Use sentinel head and tail nodes to avoid null checks.
 
 ---
-
-
-
 
 ## STACK
 
@@ -204,6 +217,7 @@ PUT(key, value):
 **WHAT**: Check if bracket sequence is valid: `()[]{}`.
 
 **WHY stack is the natural choice**:
+
 - Opening brackets wait for their closing match
 - Most recent opening bracket must be closed FIRST → LIFO → Stack
 - Push opening brackets, pop on closing brackets, check match
@@ -211,12 +225,13 @@ PUT(key, value):
 **WHEN**: "Matching pairs", "nesting", "most recent first" → Stack.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: For each character:
         → Opening bracket → push
         → Closing bracket:
           → If stack empty → invalid
-          → If top doesn't match → invalid  
+          → If top doesn't match → invalid
           → Else pop
 Step 2: After all characters: stack must be empty
 ```
@@ -232,6 +247,7 @@ Step 2: After all characters: stack must be empty
 **WHAT**: Stack supporting O(1) push, pop, top, AND getMin.
 
 **WHY auxiliary stack works**:
+
 - Main stack handles normal operations
 - A second "min stack" tracks the minimum at each level
 - Push: also push `min(val, currentMin)` onto min stack
@@ -239,6 +255,7 @@ Step 2: After all characters: stack must be empty
 - getMin: peek min stack
 
 **HOW — The Logic Chain**:
+
 ```
 push(val):
   → mainStack.push(val)
@@ -263,6 +280,7 @@ getMin():
 **WHAT**: For each day, how many days until a warmer temperature?
 
 **WHY monotonic stack works**:
+
 - We need "next greater element" → classic monotonic stack pattern
 - Maintain a stack of INDICES where we haven't found any warmer day yet
 - When current temp > stack top's temp → we found the answer for stack top
@@ -270,6 +288,7 @@ getMin():
 **WHEN**: "Next greater/smaller element" → Monotonic stack.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Stack holds indices of days waiting for a warmer day
 Step 2: For each day i:
@@ -291,10 +310,12 @@ Step 3: Remaining indices in stack get answer 0 (no warmer day)
 **WHAT**: Evaluate a postfix expression like `["2","1","+","3","*"]` = 9.
 
 **WHY stack naturally handles postfix**:
+
 - Numbers are pushed. Operators pop two operands, compute, push result.
 - This is WHY stack-based languages (Forth) and calculators work this way.
 
 **HOW — The Logic Chain**:
+
 ```
 For each token:
   → If number → push
@@ -312,6 +333,7 @@ Return stack.pop() as final answer
 **WHAT**: Find the area of the largest rectangle that fits under the histogram bars.
 
 **WHY monotonic stack works here**:
+
 - For each bar, we need to know: how far LEFT and how far RIGHT it can extend
 - A bar can extend until it meets a SHORTER bar
 - Monotonic increasing stack: when a shorter bar arrives, all taller bars on the stack get their right boundary
@@ -319,6 +341,7 @@ Return stack.pop() as final answer
 **WHEN**: "Largest rectangle", "max area under constraints" → Monotonic stack.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Stack holds indices in increasing height order
 Step 2: For each bar i:
@@ -331,6 +354,7 @@ Step 3: Process remaining bars in stack (right boundary = n)
 ```
 
 **Width calculation logic**: When we pop bar j at position stack.peek()+1 to i-1:
+
 - Left boundary = stack.peek() + 1 (or 0 if stack empty)
 - Right boundary = i - 1
 - Width = i - stack.peek() - 1
@@ -339,16 +363,15 @@ Step 3: Process remaining bars in stack (right boundary = n)
 
 ---
 
-
-
 🔬 **Section Challenge — STACK**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## QUEUE
 
@@ -359,12 +382,14 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 **WHAT**: Build FIFO queue using only LIFO stacks.
 
 **WHY two stacks simulate a queue**:
+
 - Stack reverses order. Two reversals = original order
 - Push stack: where new elements go
 - Pop stack: where elements come out (reversed order = FIFO)
 - When pop stack empty, pour push stack into pop stack
 
 **HOW — The Logic Chain**:
+
 ```
 push(x): pushStack.push(x)
 
@@ -382,6 +407,7 @@ pop():
 **WHAT**: For each window of size k, find the maximum element.
 
 **WHY monotonic deque works**:
+
 - We need the max for each window position → brute force is O(nk)
 - Deque (double-ended queue) maintains indices of useful elements in DECREASING order
 - When new element is larger than deque's back → remove back (it's useless now)
@@ -390,6 +416,7 @@ pop():
 **WHEN**: "Maximum/minimum in sliding window" → Monotonic deque.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Deque holds indices in decreasing value order
 Step 2: For each element i:
@@ -414,6 +441,7 @@ Step 2: For each element i:
 **WHAT**: Find the kth largest element.
 
 **WHY min-heap of size k**:
+
 - Maintain a min-heap with exactly k elements
 - The root is always the kth largest among elements seen so far
 - For each new element: if larger than root, replace root
@@ -421,6 +449,7 @@ Step 2: For each element i:
 **WHEN**: "Kth largest/smallest" → Min-heap of size k or QuickSelect.
 
 **HOW — The Logic Chain**:
+
 ```
 Heap approach:
   Step 1: Add first k elements to min-heap
@@ -449,6 +478,7 @@ QuickSelect approach (O(n) average):
 **WHAT**: Design a structure that can add numbers and find median at any time.
 
 **WHY two heaps split the data**:
+
 - Max-heap holds the smaller half
 - Min-heap holds the larger half
 - Median = max-heap top (odd count) or average of both tops (even count)
@@ -456,6 +486,7 @@ QuickSelect approach (O(n) average):
 **WHEN**: "Median" + "streaming/dynamic data" → Two heaps.
 
 **HOW — The Logic Chain**:
+
 ```
 addNum(num):
   → Always add to maxHeap first
@@ -478,6 +509,7 @@ findMedian():
 **WHAT**: Schedule tasks with cooldown period n. Minimize total time.
 
 **WHY greedy with max-frequency works**:
+
 - Most frequent task dictates the structure
 - Arrange most frequent task with n gaps between: `A _ _ A _ _ A`
 - Fill gaps with other tasks
@@ -487,13 +519,15 @@ findMedian():
 **WHEN**: "Schedule with cooldown/constraints" → Greedy by frequency.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Count frequencies of all tasks
 Step 2: Find maxFreq and how many tasks have maxFreq (= maxCount)
 Step 3: answer = max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount)
 ```
 
-**Why the formula**: 
+**Why the formula**:
+
 - `(maxFreq - 1)` intervals between max-frequency tasks
 - Each interval has `(n + 1)` slots (task + n cooldown)
 - `+ maxCount` for the last group of max-frequency tasks
@@ -506,10 +540,12 @@ Step 3: answer = max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount)
 **WHAT**: Rearrange string so no two adjacent characters are the same.
 
 **WHY max-heap + greedy works**:
+
 - Always place the most frequent character that ISN'T the previously placed one
 - If any character has frequency > (n+1)/2 → impossible
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Count frequencies
 Step 2: Check feasibility: if any freq > (n+1)/2 → return ""
@@ -526,30 +562,27 @@ Step 4: Loop:
 
 ## MASTER PROBLEM MAP — LinkedList, Stack, Queue, Heap
 
-| # | Problem | Core Logic | Pattern | Key Insight |
-|---|---------|------------|---------|-------------|
-| 1 | Reverse LL | 3 pointers: prev/curr/next | Pointer Reversal | Save next before redirecting |
-| 2 | LL Cycle | fast/slow meet in cycle | Floyd's Algorithm | After meet, reset slow to head |
-| 3 | Merge 2 Sorted | compare heads, advance smaller | Merge Technique | Dummy node avoids edge cases |
-| 4 | Remove Nth End | gap of n between pointers | Two Pointers | Dummy node handles head removal |
-| 5 | Reorder List | find mid + reverse + merge | Decomposition | 3 known subproblems combined |
-| 6 | LRU Cache | map + doubly linked list | Map + DLL | O(1) remove needs prev pointer |
-| 7 | Valid Parens | push open, pop on close | Stack Matching | Stack must be empty at end |
-| 8 | Min Stack | auxiliary min tracking | Two Stacks | Push min alongside each value |
-| 9 | Daily Temperatures | resolve when warmer found | Monotonic Stack | Stack stores indices, not values |
-| 10 | Eval RPN | push nums, pop on operator | Stack Evaluation | Pop order: b first, then a |
-| 11 | Histogram Rect | extend until shorter bar | Monotonic Stack | Width = right_bound - left_bound - 1 |
-| 12 | Queue w/ Stacks | two reversals = original | Two Stacks | Amortized O(1) via lazy transfer |
-| 13 | Sliding Window Max | remove useless elements | Monotonic Deque | Remove from back (dominated) + front (expired) |
-| 14 | Kth Largest | min-heap of size k | Heap Top-K | Root = kth largest at all times |
-| 15 | Stream Median | split into two halves | Two Heaps | Max-heap small half + min-heap large half |
-| 16 | Task Scheduler | fill gaps around most frequent | Greedy + Freq | Formula: (maxF-1)*(n+1) + maxCount |
-| 17 | Reorganize String | place most freq, skip prev | Heap + Cooldown | hold-back trick prevents adjacent same |
+| #   | Problem            | Core Logic                     | Pattern           | Key Insight                                    |
+| --- | ------------------ | ------------------------------ | ----------------- | ---------------------------------------------- |
+| 1   | Reverse LL         | 3 pointers: prev/curr/next     | Pointer Reversal  | Save next before redirecting                   |
+| 2   | LL Cycle           | fast/slow meet in cycle        | Floyd's Algorithm | After meet, reset slow to head                 |
+| 3   | Merge 2 Sorted     | compare heads, advance smaller | Merge Technique   | Dummy node avoids edge cases                   |
+| 4   | Remove Nth End     | gap of n between pointers      | Two Pointers      | Dummy node handles head removal                |
+| 5   | Reorder List       | find mid + reverse + merge     | Decomposition     | 3 known subproblems combined                   |
+| 6   | LRU Cache          | map + doubly linked list       | Map + DLL         | O(1) remove needs prev pointer                 |
+| 7   | Valid Parens       | push open, pop on close        | Stack Matching    | Stack must be empty at end                     |
+| 8   | Min Stack          | auxiliary min tracking         | Two Stacks        | Push min alongside each value                  |
+| 9   | Daily Temperatures | resolve when warmer found      | Monotonic Stack   | Stack stores indices, not values               |
+| 10  | Eval RPN           | push nums, pop on operator     | Stack Evaluation  | Pop order: b first, then a                     |
+| 11  | Histogram Rect     | extend until shorter bar       | Monotonic Stack   | Width = right_bound - left_bound - 1           |
+| 12  | Queue w/ Stacks    | two reversals = original       | Two Stacks        | Amortized O(1) via lazy transfer               |
+| 13  | Sliding Window Max | remove useless elements        | Monotonic Deque   | Remove from back (dominated) + front (expired) |
+| 14  | Kth Largest        | min-heap of size k             | Heap Top-K        | Root = kth largest at all times                |
+| 15  | Stream Median      | split into two halves          | Two Heaps         | Max-heap small half + min-heap large half      |
+| 16  | Task Scheduler     | fill gaps around most frequent | Greedy + Freq     | Formula: (maxF-1)\*(n+1) + maxCount            |
+| 17  | Reorganize String  | place most freq, skip prev     | Heap + Cooldown   | hold-back trick prevents adjacent same         |
 
 ---
-
-
-
 
 ## Interview Quick-Fire: LinkedList / Stack / Queue / Heap
 
@@ -562,4 +595,3 @@ Step 4: Loop:
 **Q: "Max-heap or min-heap?"** → For kth LARGEST → min-heap of size k (root is the answer). For kth SMALLEST → max-heap of size k. Counter-intuitive but correct.
 
 **Q: "Why doubly linked list for LRU and not singly?"** → Need O(1) removal from middle. Singly linked list requires traversal to find predecessor. Doubly linked list has prev pointer → O(1) unlink.
-

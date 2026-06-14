@@ -2956,62 +2956,62 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 
 ## Section 1: Pure Recursion (Build Your Foundation)
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Fibonacci Number (LC 509) | LeetCode | Easy | Classic recursion → optimize with memo |
-| 2 | Climbing Stairs (LC 70) | LeetCode | Easy | Recurrence relation, base cases |
-| 3 | Power of Two (LC 231) | LeetCode | Easy | Divide by 2 recursively |
-| 4 | Reverse String (LC 344) | LeetCode | Easy | Two-pointer recursion |
-| 5 | Merge Two Sorted Lists (LC 21) | LeetCode | Easy | Recursive merge — elegant base case |
-| 6 | Maximum Depth of Binary Tree (LC 104) | LeetCode | Easy | 1 + max(left, right) |
-| 7 | Pow(x, n) (LC 50) | LeetCode | Medium | Fast exponentiation: x^n = (x^(n/2))^2 |
-| 8 | Flatten Nested List Iterator (LC 341) | LeetCode | Medium | Recursive flatten + iterator |
+| #   | Problem                               | Platform | Difficulty | Key Technique                          |
+| --- | ------------------------------------- | -------- | ---------- | -------------------------------------- |
+| 1   | Fibonacci Number (LC 509)             | LeetCode | Easy       | Classic recursion → optimize with memo |
+| 2   | Climbing Stairs (LC 70)               | LeetCode | Easy       | Recurrence relation, base cases        |
+| 3   | Power of Two (LC 231)                 | LeetCode | Easy       | Divide by 2 recursively                |
+| 4   | Reverse String (LC 344)               | LeetCode | Easy       | Two-pointer recursion                  |
+| 5   | Merge Two Sorted Lists (LC 21)        | LeetCode | Easy       | Recursive merge — elegant base case    |
+| 6   | Maximum Depth of Binary Tree (LC 104) | LeetCode | Easy       | 1 + max(left, right)                   |
+| 7   | Pow(x, n) (LC 50)                     | LeetCode | Medium     | Fast exponentiation: x^n = (x^(n/2))^2 |
+| 8   | Flatten Nested List Iterator (LC 341) | LeetCode | Medium     | Recursive flatten + iterator           |
 
 ---
 
 ## Section 2: Backtracking — Subsets / Combinations / Permutations
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Subsets (LC 78) | LeetCode | Medium | Include/exclude pattern |
-| 2 | Subsets II (LC 90) | LeetCode | Medium | Skip duplicates in sorted array |
-| 3 | Combinations (LC 77) | LeetCode | Medium | Choose k from n, prune early |
-| 4 | Combination Sum (LC 39) | LeetCode | Medium | Reuse elements, target decreasing |
-| 5 | Combination Sum II (LC 40) | LeetCode | Medium | No reuse + skip duplicates |
-| 6 | Permutations (LC 46) | LeetCode | Medium | Swap or visited-array approach |
-| 7 | Permutations II (LC 47) | LeetCode | Medium | Sort + skip same element at same level |
-| 8 | Letter Combinations of Phone (LC 17) | LeetCode | Medium | Mapping + recursive build |
+| #   | Problem                              | Platform | Difficulty | Key Technique                          |
+| --- | ------------------------------------ | -------- | ---------- | -------------------------------------- |
+| 1   | Subsets (LC 78)                      | LeetCode | Medium     | Include/exclude pattern                |
+| 2   | Subsets II (LC 90)                   | LeetCode | Medium     | Skip duplicates in sorted array        |
+| 3   | Combinations (LC 77)                 | LeetCode | Medium     | Choose k from n, prune early           |
+| 4   | Combination Sum (LC 39)              | LeetCode | Medium     | Reuse elements, target decreasing      |
+| 5   | Combination Sum II (LC 40)           | LeetCode | Medium     | No reuse + skip duplicates             |
+| 6   | Permutations (LC 46)                 | LeetCode | Medium     | Swap or visited-array approach         |
+| 7   | Permutations II (LC 47)              | LeetCode | Medium     | Sort + skip same element at same level |
+| 8   | Letter Combinations of Phone (LC 17) | LeetCode | Medium     | Mapping + recursive build              |
 
 ---
 
 ## Section 3: Backtracking — Constraint Satisfaction
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | N-Queens (LC 51) | LeetCode | Hard | Column + diagonal constraint tracking |
-| 2 | N-Queens II (LC 52) | LeetCode | Hard | Count only (simpler than LC 51) |
-| 3 | Sudoku Solver (LC 37) | LeetCode | Hard | Row/col/box constraint sets |
-| 4 | Valid Sudoku (LC 36) | LeetCode | Medium | Constraint check without solving |
-| 5 | Word Search (LC 79) | LeetCode | Medium | Grid backtracking with visited |
-| 6 | Word Search II (LC 212) | LeetCode | Hard | Trie + backtracking on grid |
-| 7 | Palindrome Partitioning (LC 131) | LeetCode | Medium | Partition string into palindromes |
-| 8 | Restore IP Addresses (LC 93) | LeetCode | Medium | 4 segments, each 0-255 |
-| 9 | Generate Parentheses (LC 22) | LeetCode | Medium | open < n, close < open |
-| 10 | Expression Add Operators (LC 282) | LeetCode | Hard | Insert +,-,* between digits |
+| #   | Problem                           | Platform | Difficulty | Key Technique                         |
+| --- | --------------------------------- | -------- | ---------- | ------------------------------------- |
+| 1   | N-Queens (LC 51)                  | LeetCode | Hard       | Column + diagonal constraint tracking |
+| 2   | N-Queens II (LC 52)               | LeetCode | Hard       | Count only (simpler than LC 51)       |
+| 3   | Sudoku Solver (LC 37)             | LeetCode | Hard       | Row/col/box constraint sets           |
+| 4   | Valid Sudoku (LC 36)              | LeetCode | Medium     | Constraint check without solving      |
+| 5   | Word Search (LC 79)               | LeetCode | Medium     | Grid backtracking with visited        |
+| 6   | Word Search II (LC 212)           | LeetCode | Hard       | Trie + backtracking on grid           |
+| 7   | Palindrome Partitioning (LC 131)  | LeetCode | Medium     | Partition string into palindromes     |
+| 8   | Restore IP Addresses (LC 93)      | LeetCode | Medium     | 4 segments, each 0-255                |
+| 9   | Generate Parentheses (LC 22)      | LeetCode | Medium     | open < n, close < open                |
+| 10  | Expression Add Operators (LC 282) | LeetCode | Hard       | Insert +,-,\* between digits          |
 
 ---
 
 ## HIDDEN GEMS — Recursion & Backtracking
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Different Ways to Add Parentheses (LC 241) | LeetCode | Divide-and-conquer recursion on expressions |
-| 2 | Strobogrammatic Number II (LC 247) | LeetCode | Build from outside-in recursively |
-| 3 | Additive Number (LC 306) | LeetCode | String backtracking with BigInteger |
-| 4 | Beautiful Arrangement (LC 526) | LeetCode | Permutation with divisibility constraint |
-| 5 | Matchsticks to Square (LC 473) | LeetCode | Partition into 4 equal subsets — pruning critical |
-| 6 | Partition to K Equal Sum Subsets (LC 698) | LeetCode | Generalized partition — bitmask or backtrack |
-| 7 | Increasing Subsequences (LC 491) | LeetCode | Backtrack without sorting — use set at each level |
-| 8 | Split Array into Fibonacci Sequence (LC 842) | LeetCode | Fibonacci constraint + string splitting |
+| #   | Problem                                      | Platform | Why It's Valuable                                 |
+| --- | -------------------------------------------- | -------- | ------------------------------------------------- |
+| 1   | Different Ways to Add Parentheses (LC 241)   | LeetCode | Divide-and-conquer recursion on expressions       |
+| 2   | Strobogrammatic Number II (LC 247)           | LeetCode | Build from outside-in recursively                 |
+| 3   | Additive Number (LC 306)                     | LeetCode | String backtracking with BigInteger               |
+| 4   | Beautiful Arrangement (LC 526)               | LeetCode | Permutation with divisibility constraint          |
+| 5   | Matchsticks to Square (LC 473)               | LeetCode | Partition into 4 equal subsets — pruning critical |
+| 6   | Partition to K Equal Sum Subsets (LC 698)    | LeetCode | Generalized partition — bitmask or backtrack      |
+| 7   | Increasing Subsequences (LC 491)             | LeetCode | Backtrack without sorting — use set at each level |
+| 8   | Split Array into Fibonacci Sequence (LC 842) | LeetCode | Fibonacci constraint + string splitting           |
 
 ---

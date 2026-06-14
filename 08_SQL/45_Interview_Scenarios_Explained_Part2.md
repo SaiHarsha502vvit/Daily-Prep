@@ -22,12 +22,10 @@
 
 ---
 
-
-
-
 ## S11: Deadlock Between Two Transactions
 
 ### 🎤 Interview Question
+
 "Explain how deadlocks happen and what you'd do to prevent them."
 
 ### ✅ Professional Answer
@@ -63,11 +61,11 @@ public void transfer(Long fromId, Long toId, BigDecimal amount) {
     // Determine lock order: always lock lower ID first
     Long firstLock = Math.min(fromId, toId);
     Long secondLock = Math.max(fromId, toId);
-    
+
     // Acquire locks in deterministic order
     Account first = accountRepo.findByIdForUpdate(firstLock);   // SELECT ... FOR UPDATE
     Account second = accountRepo.findByIdForUpdate(secondLock);
-    
+
     // Now perform the transfer
     if (fromId.equals(firstLock)) {
         first.setBalance(first.getBalance().subtract(amount));
@@ -105,6 +103,7 @@ Deadlock Detection:
 ### 🔄 Variants
 
 **Variant A: Application-level deadlock (not database)**
+
 ```java
 // Thread 1:
 synchronized(lockA) {
@@ -120,6 +119,7 @@ synchronized(lockB) {
 ```
 
 **Variant B: Multi-table deadlock**
+
 ```sql
 -- Transaction 1: INSERT order → UPDATE inventory
 INSERT INTO orders (...);                    -- Lock on orders table
@@ -134,12 +134,13 @@ INSERT INTO orders (...);                     -- Waiting for orders lock
 ```
 
 **Variant C: Interview follow-up — "How do you monitor deadlocks?"**
+
 ```sql
 -- PostgreSQL: Enable deadlock logging
 -- postgresql.conf: log_lock_waits = on, deadlock_timeout = 1s
 -- Then check logs for: "deadlock detected"
 
--- MySQL: 
+-- MySQL:
 SHOW ENGINE INNODB STATUS;
 -- Look for "LATEST DETECTED DEADLOCK" section
 -- Shows exact queries and row locks involved
@@ -147,20 +148,20 @@ SHOW ENGINE INNODB STATUS;
 
 ---
 
-
-
 🔬 **Section Challenge — S11: Deadlock Between Two Transactions**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## S12: Lost Update (Read-Modify-Write Race Condition)
 
 ### 🎤 Interview Question
+
 "How do you handle concurrent updates to the same data?"
 
 ### ✅ Professional Answer
@@ -179,7 +180,7 @@ T4: User B sets balance = 1000 - 300 = 700 ← B withdraws 300
 RESULT: balance = 700
 CORRECT: balance = 500 (1000 - 200 - 300)
 
-User A's withdrawal was SILENTLY LOST because User B's write 
+User A's withdrawal was SILENTLY LOST because User B's write
 was based on a stale read.
 ```
 
@@ -191,7 +192,7 @@ was based on a stale read.
 public class Account {
     @Id private Long id;
     private BigDecimal balance;
-    
+
     @Version  // JPA adds WHERE version = ? to every UPDATE
     private Long version;
 }
@@ -245,12 +246,13 @@ Atomic SQL: O(1) always
 ### 🔄 Variants
 
 **Variant A: Lost update in inventory management**
+
 ```java
 // Two customers buy the last item simultaneously:
 // Both read stock = 1
 // Both compute 1 - 1 = 0
 // Both update stock = 0
-// Result: TWO customers charged for ONE item. 
+// Result: TWO customers charged for ONE item.
 // One order will fail at shipping.
 
 // Fix with atomic update + check:
@@ -261,6 +263,7 @@ int decrementStock(@Param("id") Long id);
 ```
 
 **Variant B: Lost update across microservices**
+
 ```java
 // Service A and Service B both read user profile from User Service
 // Both modify different fields (A changes email, B changes phone)
@@ -277,6 +280,7 @@ int decrementStock(@Param("id") Long id);
 ## S13: Phantom Reads in Financial Reports
 
 ### 🎤 Interview Question
+
 "Explain isolation levels with a real production example."
 
 ### ✅ Professional Answer
@@ -326,7 +330,7 @@ COMMIT;
 
 ```
 | Level            | Dirty Read | Non-Repeatable Read | Phantom Read |
-|-----------------|-----------|--------------------|--------------| 
+|-----------------|-----------|--------------------|--------------|
 | READ UNCOMMITTED | Possible  | Possible           | Possible     |
 | READ COMMITTED   | ✗         | Possible           | Possible     |
 | REPEATABLE READ  | ✗         | ✗                  | Possible*    |
@@ -356,6 +360,7 @@ PostgreSQL MVCC Implementation:
 ### 🔄 Variants
 
 **Variant A: Choosing isolation level in Spring Boot**
+
 ```java
 // For financial reports (must be consistent):
 @Transactional(isolation = Isolation.REPEATABLE_READ)
@@ -375,6 +380,7 @@ public List<Order> getRecentOrders() {
 ```
 
 **Variant B: Serialization failure handling**
+
 ```java
 // SERIALIZABLE can throw serialization failures on conflict:
 @Retryable(value = {SerializationFailureException.class}, maxAttempts = 3)
@@ -387,12 +393,10 @@ public void reconcile() {
 
 ---
 
-
-
-
 ## S14: Long Transaction Blocking Schema Migration
 
 ### 🎤 Interview Question
+
 "How do you run database migrations in production without downtime?"
 
 ### ✅ Professional Answer
@@ -467,20 +471,20 @@ PostgreSQL 11+ "Virtual Column" Trick:
 
 ---
 
-
-
 🔬 **Section Challenge — S14: Long Transaction Blocking Schema Migration**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## S15: Distributed Transaction Failure (Saga Pattern)
 
 ### 🎤 Interview Question
+
 "How do you maintain data consistency across microservices?"
 
 ### ✅ Professional Answer
@@ -492,7 +496,7 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ```
 Order flow across services:
 1. Order Service:     Create order        (order DB)
-2. Payment Service:   Charge customer     (payment DB)  
+2. Payment Service:   Charge customer     (payment DB)
 3. Inventory Service: Reserve stock       (inventory DB)
 
 What if Payment succeeds but Inventory fails?
@@ -509,33 +513,33 @@ What if Payment succeeds but Inventory fails?
 // OrderSagaOrchestrator — knows the entire flow
 @Service
 public class OrderSagaOrchestrator {
-    
+
     public OrderResult createOrder(OrderRequest request) {
         String sagaId = UUID.randomUUID().toString();
-        
+
         try {
             // Step 1: Create order (pending)
             Order order = orderService.createPending(request, sagaId);
-            
+
             // Step 2: Reserve payment
             PaymentReservation payment = paymentService.reserve(order);
-            
+
             // Step 3: Reserve inventory
             InventoryReservation inventory = inventoryService.reserve(order);
-            
+
             // Step 4: Confirm all
             orderService.confirm(order.getId());
             paymentService.confirm(payment.getId());
             inventoryService.confirm(inventory.getId());
-            
+
             return OrderResult.success(order);
-            
+
         } catch (InventoryException e) {
             // Inventory failed → compensate payment
             paymentService.refund(sagaId);
             orderService.cancel(sagaId, "Out of stock");
             return OrderResult.failed("Out of stock");
-            
+
         } catch (PaymentException e) {
             // Payment failed → only need to cancel order
             orderService.cancel(sagaId, "Payment failed");
@@ -588,26 +592,26 @@ Each compensating action must be idempotent because:
 - Network failures → retries → same action executes multiple times
 - "Refund order #123" must be safe to call 3 times
 - Achieve with: idempotency key on every operation
-  INSERT INTO refunds (saga_id, amount) 
+  INSERT INTO refunds (saga_id, amount)
   ON CONFLICT (saga_id) DO NOTHING;  -- Second call is harmless
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — S15: Distributed Transaction Failure (Saga Pattern)**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## S16: Optimistic vs Pessimistic Locking (Deep Dive)
 
 ### 🎤 Interview Question
+
 "When would you choose optimistic vs pessimistic locking?"
 
 ### ✅ Professional Answer
@@ -654,12 +658,10 @@ public void updateStock(Long productId, int quantity) {
 
 ---
 
-
-
-
 ## S17: Queue Table Hot Row Problem
 
 ### 🎤 Interview Question
+
 "How would you implement a reliable job queue using a database?"
 
 ### ✅ Professional Answer
@@ -681,12 +683,12 @@ LIMIT 1
 FOR UPDATE SKIP LOCKED;  -- Skip rows already locked by other workers
 
 -- Process the job...
-UPDATE jobs SET status = 'processing', worker_id = 'worker-3', 
+UPDATE jobs SET status = 'processing', worker_id = 'worker-3',
                started_at = NOW()
 WHERE id = <selected_id>;
 COMMIT;
 
--- SKIP LOCKED is the key: 
+-- SKIP LOCKED is the key:
 -- Worker A locks row 1
 -- Worker B skips row 1, grabs row 2
 -- Worker C skips rows 1&2, grabs row 3
@@ -697,7 +699,7 @@ COMMIT;
 // Spring Boot implementation:
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
-    
+
     @Query(value = "SELECT * FROM jobs WHERE status = 'pending' " +
                    "ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED",
            nativeQuery = true)
@@ -710,7 +712,7 @@ public void processNextJob(String workerId) {
         job.setStatus("processing");
         job.setWorkerId(workerId);
         job.setStartedAt(Instant.now());
-        
+
         try {
             jobProcessor.process(job);
             job.setStatus("completed");
@@ -729,6 +731,7 @@ public void processNextJob(String workerId) {
 ## S18: Gap Lock Surprises in MySQL InnoDB
 
 ### 🎤 Interview Question
+
 "Have you encountered unexpected locking behavior?"
 
 ### ✅ Professional Answer
@@ -751,18 +754,17 @@ INSERT INTO items (id, name) VALUES (8, 'Widget');
 **Why this matters:** An innocent-looking range SELECT can block inserts on rows that don't exist, leading to unexpected deadlocks and performance issues.
 
 **Solutions:**
+
 1. Use READ COMMITTED isolation (disables gap locks — trade phantom reads)
 2. Reduce range of FOR UPDATE queries (narrow the gap)
 3. Use PostgreSQL (uses MVCC, no gap locks)"
 
 ---
 
-
-
-
 ## S19: Connection Leak (Unreturned Connections)
 
 ### 🎤 Interview Question
+
 "What causes intermittent connection timeouts that are hard to reproduce?"
 
 ### ✅ Professional Answer
@@ -824,6 +826,7 @@ spring:
 ## S20: Retry Storm After Partial Failure
 
 ### 🎤 Interview Question
+
 "How do you handle retries without causing cascading failures?"
 
 ### ✅ Professional Answer
@@ -910,16 +913,26 @@ Strategy Comparison:
 
 ## 🧠 Concurrency Interview Cheat Sheet
 
-| Concept | One-Liner for Interview | When to Mention |
-|---------|------------------------|-----------------|
-| Deadlock | "Circular wait between transactions — prevented by consistent lock ordering" | Any concurrency question |
-| Lost update | "Stale read → blind write — fixed with optimistic locking or atomic SQL" | Data integrity questions |
-| Phantom read | "Same query, different rows — fixed with REPEATABLE READ" | Isolation level questions |
-| SKIP LOCKED | "Worker queue pattern — each worker grabs next unlocked row" | Queue/worker design questions |
-| Circuit breaker | "Fail-fast pattern — stops retry storms during outages" | Resilience/microservice questions |
-| Saga pattern | "Distributed compensation — each step has a reverse operation" | Microservice consistency questions |
-| Connection leak | "Unreturned connections — always use try-with-resources" | Intermittent timeout questions |
+| Concept         | One-Liner for Interview                                                      | When to Mention                    |
+| --------------- | ---------------------------------------------------------------------------- | ---------------------------------- |
+| Deadlock        | "Circular wait between transactions — prevented by consistent lock ordering" | Any concurrency question           |
+| Lost update     | "Stale read → blind write — fixed with optimistic locking or atomic SQL"     | Data integrity questions           |
+| Phantom read    | "Same query, different rows — fixed with REPEATABLE READ"                    | Isolation level questions          |
+| SKIP LOCKED     | "Worker queue pattern — each worker grabs next unlocked row"                 | Queue/worker design questions      |
+| Circuit breaker | "Fail-fast pattern — stops retry storms during outages"                      | Resilience/microservice questions  |
+| Saga pattern    | "Distributed compensation — each step has a reverse operation"               | Microservice consistency questions |
+| Connection leak | "Unreturned connections — always use try-with-resources"                     | Intermittent timeout questions     |
 
 ---
 
 [⬅ Previous: 44_Interview_Scenarios_Part1](44_Interview_Scenarios_Explained_Part1.md) | [📚 Index](00_INDEX.md) | [Next: 46_Interview_Scenarios_Part3 ➡](46_Interview_Scenarios_Explained_Part3.md)
+
+### Historical Evolution (Extended)
+
+**Additional predecessors:**
+- **Edgar F. Codd (1970)**: Published "A Relational Model of Data for Large Shared Data Banks" — introduced the 12 rules that define relational databases and the theoretical foundation for ACID
+- **David Reed (1978)**: Coined "Multi-Version Concurrency Control" at MIT — the foundational paper enabling readers to never block writers, now used in PostgreSQL, Oracle, SQL Server
+- **ANSI/ISO (1992)**: SQL-92 standard formalized four isolation levels (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE) — providing the vocabulary still used today
+
+**Brief evolution note:**
+Deadlock theory predates databases — Dijkstra's semaphore work (1965) addressed mutual exclusion in concurrent systems, later formalized as the Coffman conditions (1971). Isolation levels were initially an academic abstraction until Oracle 7 (1992) implemented READ COMMITTED as default, and PostgreSQL (1995 onward) pioneered REPEATABLE READ with MVCC snapshot isolation that prevents phantoms. The SQL-92 standard gave practitioners vocabulary to discuss isolation precisely rather than guessing.

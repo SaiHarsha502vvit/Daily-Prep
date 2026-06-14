@@ -27,10 +27,10 @@
 ## 1. Pass By Value: Java NEVER Passes By Reference
 
 ### The Freeze Question
+
 "Is Java pass by value or pass by reference?"
 
 ### Deep Reasoning
-
 
 THE HOUSE ADDRESS ANALOGY
 
@@ -48,7 +48,6 @@ Java ALWAYS passes a COPY of the value.
 For primitives: copy of the value (5, true, 'a')
 For objects: copy of the REFERENCE (the address), not the
 object itself. The reference is passed BY VALUE.
-
 
 ```java
 public class PassByValueDemo {
@@ -82,6 +81,7 @@ public class PassByValueDemo {
 ## 2. String Pool & Immutability: Why Strings Behave Strangely
 
 ### The Freeze Question
+
 "Why is String immutable? What's the String pool?"
 
 ```
@@ -109,7 +109,6 @@ public class PassByValueDemo {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 String s1 = "hello";                    // Pool lookup → creates "hello" in pool
 String s2 = "hello";                    // Pool lookup → reuses same object
@@ -131,26 +130,28 @@ System.out.println(original); // "hello" — unchanged!
 
 ---
 
-
-
 🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
 
 **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+
 <details><summary>Answer</summary>
 
 First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+
 </details>
 
 **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+
 <details><summary>Answer</summary>
 
 Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-</details>
 
+</details>
 
 ## 3. `==` vs `.equals()`: The Identity vs Equality Trap
 
 ### The Freeze Question
+
 "When do I use == and when do I use .equals()?"
 
 ```
@@ -175,7 +176,6 @@ Security: strings are used as HashMap keys, class names, file paths. If mutable,
 ║  (HashMap depends on this contract)                              ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Classic gotcha:
@@ -212,6 +212,7 @@ class Point {
 ## 4. Integer Cache: Why 127 == 127 But 128 != 128
 
 ### The Freeze Question
+
 "Why does `Integer a = 127; Integer b = 127; a == b` return true, but with 128 it returns false?"
 
 ```
@@ -234,7 +235,6 @@ class Point {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 Integer a = 127, b = 127;
 System.out.println(a == b);      // true  — cached range [-128, 127]
@@ -251,8 +251,6 @@ System.out.println(c.equals(d)); // true  — always use this
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Integer Cache: Why 127 == 127 But 128 != 128**
 
 **Challenge 1 (Integer Cache Boundary):** `Integer a = 127; Integer b = 127; a == b` is `true`. `Integer a = 128; Integer b = 128; a == b` is `false`. **Who** creates the cache? **When** is `==` safe for Integer comparison? **What** is the JVM spec's minimum required cache range?
@@ -265,12 +263,13 @@ System.out.println(c.equals(d)); // true  — always use this
 <details><summary>Answer</summary>
 
 Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-</details>
 
+</details>
 
 ## 5. Generics Type Erasure: Why You Can't Do `new T()`
 
 ### The Freeze Question
+
 "Why can't I write `new T()` or `instanceof T` in generics?"
 
 ```
@@ -297,7 +296,6 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ║  ❌ catch T            — can't catch generic exceptions           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // What you write:
@@ -326,8 +324,6 @@ Dog dog = create(Dog.class); // Works!
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Generics Type Erasure: Why You Can't Do `new T()`**
 
 **Challenge 1 (Trace — Who/When/What):** `@SafeVarargs` suppresses heap pollution warnings on `static <T> List<T> asList(T... elements)`. **What** is heap pollution? **Who** detects it? **When** does the actual error occur?
@@ -339,15 +335,17 @@ Dog dog = create(Dog.class); // Works!
 </details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## 6. HashMap Internals: Not Just "Key-Value Store"
 
 ### The Freeze Question
+
 "How does HashMap work internally? What happens on collision?"
 
 ```
@@ -381,7 +379,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // The contract: If a.equals(b), then a.hashCode() == b.hashCode()
 // Reverse is NOT required: same hashCode doesn't mean equals
@@ -400,26 +397,28 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 
 ---
 
-
-
 🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-</details>
 
+</details>
 
 ## 7. `final` Keyword: Three Different Meanings
 
 ### The Freeze Question
+
 "What does `final` do?"
 
 ```
@@ -443,10 +442,7 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
 
@@ -460,12 +456,13 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 <details><summary>Answer</summary>
 
 Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-</details>
 
+</details>
 
 ## 8. Checked vs Unchecked Exceptions: The Design Philosophy
 
 ### The Freeze Question
+
 "What's the difference? Why does Java have both?"
 
 ```
@@ -493,29 +490,29 @@ argue checked exceptions are too verbose. Spring uses unchecked
 exceptions extensively. The debate continues.
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
 
 **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+
 <details><summary>Answer</summary>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
-
 
 ## 9. Autoboxing Traps: Where Performance Silently Degrades
 
 ### The Freeze Question
+
 "What's autoboxing and when is it a problem?"
 
 ```java
@@ -548,8 +545,6 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
 
 **Challenge 1 (Autoboxing Loop Penalty):** `Long sum = 0L; for (int i = 0; i < 1_000_000; i++) sum += i;` **Who** creates 1 million objects? **When** does autoboxing become a GC problem? **What** is the fix?
@@ -562,12 +557,13 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 <details><summary>Answer</summary>
 
 Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-</details>
 
+</details>
 
 ## 10. ConcurrentModificationException: Why Iterating + Modifying Fails
 
 ### The Freeze Question
+
 "Why does this throw ConcurrentModificationException?"
 
 ```java
@@ -594,7 +590,6 @@ for (String s : list) {
 ║  corrupt results.                                                ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // SOLUTIONS:
@@ -624,8 +619,6 @@ list.removeAll(toRemove);
 
 ---
 
-
-
 🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
 
 **Challenge 1 (Fail-Fast Iterator):** You iterate a `HashMap` with `for (Map.Entry<K,V> e : map.entrySet())` and call `map.put(newKey, val)` inside the loop. **Who** throws `ConcurrentModificationException`? **When** is it detected? **What** are two safe modification patterns?
@@ -638,12 +631,13 @@ list.removeAll(toRemove);
 <details><summary>Answer</summary>
 
 Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-</details>
 
+</details>
 
 ## 11. `synchronized`, `volatile`, `Atomic`: Three Levels of Thread Safety
 
 ### The Freeze Question
+
 "What's the difference between synchronized, volatile, and Atomic?"
 
 ```
@@ -667,7 +661,6 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // volatile: visibility but NOT atomic
 volatile boolean running = true;         // ✅ Thread sees update
@@ -689,6 +682,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ## 12. Abstract Class vs Interface: The Post-Java-8 Reality
 
 ### The Freeze Question
+
 "When do you use abstract class vs interface?"
 
 ```
@@ -719,10 +713,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
 
@@ -736,12 +727,13 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 <details><summary>Answer</summary>
 
 Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
-</details>
 
+</details>
 
 ## 13. Garbage Collection: What Actually Happens
 
 ### The Freeze Question
+
 "How does garbage collection work?"
 
 ```
@@ -774,26 +766,24 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 ## Interview Quick-Fire: Java Freeze Busters
 
-| Freeze Question | Senior-Level Answer |
-|----------------|-------------------|
-| "Is Java pass by reference?" | NO. Java is ALWAYS pass by value. For objects, it passes a COPY of the reference. You can modify the object through the copy, but can't reassign the caller's variable. |
-| "Why override hashCode with equals?" | HashMap uses hashCode to find the bucket, then equals to find the entry. If equal objects have different hashCodes, HashMap puts them in different buckets — you'll never find the entry. |
-| "What's the diamond problem?" | Multiple inheritance conflict: class inherits same method from two parents. Java avoids it with single class inheritance. For interfaces with default methods, you must override and explicitly choose. |
-| "Why is String final?" | Prevents subclasses from breaking immutability. If you could extend String, you could create a MutableString — breaking the String pool, security, and hashCode caching contracts. |
-| "Stack vs Heap?" | Stack: method calls, local variables, primitives — fast, automatic, thread-local. Heap: objects — slower, GC-managed, shared across threads. Reference on stack, object on heap. |
-| "What's a memory leak in Java?" | Objects that are still technically reachable (have references) but will never be used again. Common: static collections growing forever, unclosed resources, inner class references. GC can't collect them because references exist. |
+| Freeze Question                      | Senior-Level Answer                                                                                                                                                                                                                  |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| "Is Java pass by reference?"         | NO. Java is ALWAYS pass by value. For objects, it passes a COPY of the reference. You can modify the object through the copy, but can't reassign the caller's variable.                                                              |
+| "Why override hashCode with equals?" | HashMap uses hashCode to find the bucket, then equals to find the entry. If equal objects have different hashCodes, HashMap puts them in different buckets — you'll never find the entry.                                            |
+| "What's the diamond problem?"        | Multiple inheritance conflict: class inherits same method from two parents. Java avoids it with single class inheritance. For interfaces with default methods, you must override and explicitly choose.                              |
+| "Why is String final?"               | Prevents subclasses from breaking immutability. If you could extend String, you could create a MutableString — breaking the String pool, security, and hashCode caching contracts.                                                   |
+| "Stack vs Heap?"                     | Stack: method calls, local variables, primitives — fast, automatic, thread-local. Heap: objects — slower, GC-managed, shared across threads. Reference on stack, object on heap.                                                     |
+| "What's a memory leak in Java?"      | Objects that are still technically reachable (have references) but will never be used again. Common: static collections growing forever, unclosed resources, inner class references. GC can't collect them because references exist. |
 
 ---
 
 ← Previous: [Chapter 30 — Spring Boot Dependencies Map](Ch30_Dependencies_Annotations_Map.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Spring Boot Deep Reasoning →](Ch58_SB_Deep_Reasoning.md)
-
 
 ---
 

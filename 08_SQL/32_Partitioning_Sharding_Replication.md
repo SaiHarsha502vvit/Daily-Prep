@@ -3,6 +3,7 @@
 # Chapter 32 — Partitioning, Sharding & Replication
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Senior backend devs, DBAs, system architects scaling beyond a single DB
 - **WHAT** is it? → Strategies to split data across partitions/servers for performance & availability
 - **WHEN** to use? → Tables > 100M rows, read-heavy apps needing replicas, global apps needing locality
@@ -15,6 +16,7 @@
 ## Part 1 — Table Partitioning
 
 ### 1.1 What Is Partitioning?
+
 ```
 Without partitioning:                    With partitioning:
 ┌──────────────────────┐        ┌──────────────┐ ┌──────────────┐
@@ -25,7 +27,7 @@ Without partitioning:                    With partitioning:
                                 │ orders_2026  │ │ orders_2027  │
    Query for 2026 data:         │  (100M rows) │ │  (20M rows)  │
    scans ALL 500M rows          └──────────────┘ └──────────────┘
-                                
+
                                 Query for 2026 data:
                                 scans ONLY 100M rows = 5x faster!
 
@@ -33,6 +35,7 @@ This is PARTITION PRUNING — the DB skips irrelevant partitions.
 ```
 
 ### 1.2 Range Partitioning (Most Common)
+
 ```sql
 -- PostgreSQL: Declarative partitioning (v10+)
 CREATE TABLE orders (
@@ -66,6 +69,7 @@ EXPLAIN SELECT * FROM orders WHERE order_date BETWEEN '2026-01-01' AND '2026-06-
 ```
 
 ### 1.3 List Partitioning
+
 ```sql
 -- Partition by region
 CREATE TABLE customers (
@@ -82,6 +86,7 @@ CREATE TABLE customers_default  PARTITION OF customers DEFAULT;  -- Catch-all
 ```
 
 ### 1.4 Hash Partitioning
+
 ```sql
 -- Even distribution when no natural range/list exists
 CREATE TABLE sessions (
@@ -99,6 +104,7 @@ CREATE TABLE sessions_p3 PARTITION OF sessions FOR VALUES WITH (MODULUS 4, REMAI
 ```
 
 ### 1.5 MySQL Partitioning
+
 ```sql
 -- MySQL uses different syntax
 CREATE TABLE logs (
@@ -120,6 +126,7 @@ ALTER TABLE logs DROP PARTITION p2024;
 ```
 
 ### 1.6 Partition Maintenance
+
 ```sql
 -- PostgreSQL: Add new partition for next year
 CREATE TABLE orders_2027 PARTITION OF orders
@@ -136,22 +143,23 @@ ALTER TABLE orders ATTACH PARTITION orders_archive
 
 ---
 
-
 > 🔬 **Section Challenge — Part 1 — Table Partitioning**
 >
-> **Challenge 1 (Partition Pruning Failure):** You partitioned a massive `orders` table by `RANGE (order_date)`. A developer writes the following query to find orders in Q1: `SELECT * FROM orders WHERE EXTRACT(MONTH FROM order_date) IN (1,2,3);`. The DBA notices this is causing a full table scan across *all* partitions. Why did partition pruning fail, and how do you fix the query?
+> **Challenge 1 (Partition Pruning Failure):** You partitioned a massive `orders` table by `RANGE (order_date)`. A developer writes the following query to find orders in Q1: `SELECT * FROM orders WHERE EXTRACT(MONTH FROM order_date) IN (1,2,3);`. The DBA notices this is causing a full table scan across _all_ partitions. Why did partition pruning fail, and how do you fix the query?
 >
 > <details><summary>Answer</summary>
 >
 > Partition pruning relies on the database optimizer being able to statically evaluate the boundaries during the query planning phase. Wrapping the partition key (`order_date`) inside a function like `EXTRACT()` makes the condition non-sargable (Search Argument Able). The optimizer cannot evaluate the function against the partition boundaries without executing it on every single row, forcing a full scan across all partitions.
-> 
+>
 > **The Fix:** Query against the raw column values so the optimizer can prune:
 > `WHERE order_date >= '2024-01-01' AND order_date < '2024-04-01';`
+>
 > </details>
 
 ## Part 2 — Database Sharding
 
 ### 2.1 What Is Sharding?
+
 ```
 Partitioning = ONE server, multiple table segments
 Sharding     = MULTIPLE servers, each holds a slice of data
@@ -171,6 +179,7 @@ Sharding     = MULTIPLE servers, each holds a slice of data
 ```
 
 ### 2.2 Sharding Strategies
+
 ```
 ┌─────────────────┬──────────────────────────────────────┐
 │ Strategy        │ Description                           │
@@ -194,6 +203,7 @@ Sharding     = MULTIPLE servers, each holds a slice of data
 ```
 
 ### 2.3 Application-Level Sharding (Python)
+
 ```python
 import hashlib
 
@@ -221,8 +231,8 @@ def get_connection(user_id: int):
 >
 > <details><summary>Answer</summary>
 >
-> This violates the rule of **Even Data/Compute Distribution** by failing to account for "Whale Tenants" (the Hot Shard problem). 
-> 
+> This violates the rule of **Even Data/Compute Distribution** by failing to account for "Whale Tenants" (the Hot Shard problem).
+>
 > A static hash of `tenant_id` assumes all tenants have roughly equal load. To resolve this, you must migrate from Hash-based to **Directory-based (Lookup) Sharding**. The enterprise tenant is isolated onto their own dedicated shard (or multiple shards if you shard by `tenant_id + user_id`), while the lookup table routes the smaller tenants to shared shards.
 > </details>
 
@@ -244,6 +254,7 @@ def count_all_users():
 ```
 
 ### 2.4 Cross-Shard Challenges
+
 ```
 Problem                    | Solution
 ───────────────────────────┼──────────────────────────────
@@ -260,6 +271,7 @@ Foreign keys               | Not enforceable across shards
 ## Part 3 — Database Replication
 
 ### 3.1 Replication Types
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │ SYNCHRONOUS REPLICATION                                   │
@@ -282,6 +294,7 @@ Foreign keys               | Not enforceable across shards
 ```
 
 ### 3.2 Read Replica Architecture
+
 ```sql
 -- PostgreSQL: Set up streaming replication
 
@@ -301,7 +314,7 @@ Foreign keys               | Not enforceable across shards
 SELECT pg_create_physical_replication_slot('replica_slot');
 
 -- Check replication lag
-SELECT 
+SELECT
     client_addr,
     state,
     sent_lsn,
@@ -313,6 +326,7 @@ FROM pg_stat_replication;
 ```
 
 ### 3.3 Python: Read/Write Splitting
+
 ```python
 from sqlalchemy import create_engine
 from contextlib import contextmanager
@@ -358,9 +372,10 @@ with write_connection() as conn:
 ## Part 4 — Monitoring & Troubleshooting
 
 ### 4.1 Partition Performance
+
 ```sql
 -- Check partition sizes
-SELECT 
+SELECT
     schemaname,
     tablename,
     pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename)) AS total_size,
@@ -371,12 +386,13 @@ WHERE tablename LIKE 'orders_%'
 ORDER BY pg_total_relation_size(schemaname || '.' || tablename) DESC;
 
 -- Verify partition pruning is working
-EXPLAIN (ANALYZE, BUFFERS) 
+EXPLAIN (ANALYZE, BUFFERS)
 SELECT * FROM orders WHERE order_date = '2026-06-15';
 -- Look for: "Partitions pruned: 2" or "Subplans Removed: 2"
 ```
 
 ### 4.2 Python: Shard Health Dashboard
+
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -413,18 +429,18 @@ plt.show()
 
 ---
 
-
 > 🔬 **Section Challenge — Part 4 — Monitoring & Troubleshooting**
 >
-> **Challenge 1 (Replication Lag Trap):** You have a Primary DB for writes and a Read Replica for analytics. A user updates their profile picture (write to Primary), and the UI instantly redirects them to their profile page (read from Replica). The user sees their *old* picture and submits a bug report. What is this phenomenon called, and what are two standard architectural solutions?
+> **Challenge 1 (Replication Lag Trap):** You have a Primary DB for writes and a Read Replica for analytics. A user updates their profile picture (write to Primary), and the UI instantly redirects them to their profile page (read from Replica). The user sees their _old_ picture and submits a bug report. What is this phenomenon called, and what are two standard architectural solutions?
 >
 > <details><summary>Answer</summary>
 >
 > This is called **Read-After-Write Inconsistency**, caused by Asynchronous Replication Lag. The write reached the Primary, but the Read Replica hasn't replayed the WAL (Write-Ahead Log) yet.
-> 
+>
 > **Solutions:**
+>
 > 1. **Write-Path Caching:** When the user updates the profile, cache the new picture URL in Redis/Browser. The UI reads from the cache first, falling back to the replica.
-> 2. **Session Consistency (Sticky Routing):** Route all read queries from a user to the Primary for *N* seconds after they perform a write, then fall back to the Read Replica once replication has caught up.
+> 2. **Session Consistency (Sticky Routing):** Route all read queries from a user to the Primary for _N_ seconds after they perform a write, then fall back to the Read Replica once replication has caught up.
 > </details>
 
 ## Decision Matrix
@@ -455,4 +471,18 @@ When to use WHAT:
 
 ---
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](31_JSON_XML_Modern_SQL.md) | [Next >](33_SQL_Security_Injection.md)
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Partitioning (Oracle)** (1996): Oracle 8 introduced table partitioning for manageability and performance of large tables
+- **Master-slave replication (MySQL)** (2000): MySQL replication enabled read scaling and high availability using binary log shipping
+- **Sharding (Fowler)** (2003): Martin Fowler's writings formalized sharding patterns for horizontal database scaling
+- **MongoDB sharding** (2010): MongoDB pioneered automatic sharding with chunk distribution and rebalancing
+- **Semi-sync replication (MySQL)** (2007): MySQL introduced semi-synchronous replication for stronger consistency guarantees
+- **Vitess (YouTube)** (2013): YouTube open-sourced Vitess, proving sharding could work at massive scale with SQL compatibility
+
+**Evolution narrative:**
+Database scaling evolved from vertical growth (bigger servers) toward horizontal distribution. Oracle partitioning (1996) first addressed large table management by allowing logical sub-tables. MySQL replication (2000) enabled read scaling but faced consistency challenges. Fowler's sharding patterns (2003) formalized data distribution strategies, and MongoDB (2010) built automatic sharding into its distributed database. Vitess (2013) demonstrated that MySQL sharding could handle YouTube-scale workloads while maintaining SQL compatibility.
+
+**Modern practice anchor:**
+Modern database scaling combines partitioning for data lifecycle management, read replicas for read scaling, and application-level or proxy sharding for write scaling—often using cloud-native managed databases that handle distribution automatically.

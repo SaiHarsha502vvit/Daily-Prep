@@ -23,13 +23,13 @@
 
 BDD is a methodology, not a tool. Gherkin / Cucumber is the artifact.
 
-| Use BDD when | Don't use BDD when |
-|---|---|
-| Business stakeholders write/read scenarios | Engineers write scenarios for engineers |
-| Living documentation is a real goal | Specs live in JIRA; no one reads .feature files |
-| Acceptance criteria → tests is a tight loop | Tests are written after the fact |
-| Multiple personas share scenarios | Single team owns the whole stack |
-| Regulatory environment requires traceability | No traceability requirement |
+| Use BDD when                                 | Don't use BDD when                              |
+| -------------------------------------------- | ----------------------------------------------- |
+| Business stakeholders write/read scenarios   | Engineers write scenarios for engineers         |
+| Living documentation is a real goal          | Specs live in JIRA; no one reads .feature files |
+| Acceptance criteria → tests is a tight loop  | Tests are written after the fact                |
+| Multiple personas share scenarios            | Single team owns the whole stack                |
+| Regulatory environment requires traceability | No traceability requirement                     |
 
 If non-engineers don't touch the `.feature` files, you're paying BDD's overhead for none of its benefit. Use Playwright tests directly.
 
@@ -74,12 +74,12 @@ npm i -D @cucumber/cucumber playwright-bdd
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
-import { defineBddConfig } from 'playwright-bdd';
+import { defineConfig } from "@playwright/test";
+import { defineBddConfig } from "playwright-bdd";
 
 const testDir = defineBddConfig({
-  features: './features/*.feature',
-  steps: './step-definitions/*.ts',
+  features: "./features/*.feature",
+  steps: "./step-definitions/*.ts",
 });
 
 export default defineConfig({
@@ -96,39 +96,54 @@ export default defineConfig({
 
 ```typescript
 // step-definitions/payment.steps.ts
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { Given, When, Then } from "@cucumber/cucumber";
+import { expect } from "@playwright/test";
 
-Given('I am signed in as a customer', async function () {
-  await this.page.goto('/login');
-  await this.page.getByLabel('Email').fill(process.env.CUSTOMER_EMAIL!);
-  await this.page.getByLabel('Password').fill(process.env.CUSTOMER_PASSWORD!);
-  await this.page.getByRole('button', { name: 'Log in' }).click();
+Given("I am signed in as a customer", async function () {
+  await this.page.goto("/login");
+  await this.page.getByLabel("Email").fill(process.env.CUSTOMER_EMAIL!);
+  await this.page.getByLabel("Password").fill(process.env.CUSTOMER_PASSWORD!);
+  await this.page.getByRole("button", { name: "Log in" }).click();
   await this.page.waitForURL(/\/dashboard/);
 });
 
-Given('I have a pending citation worth ${int}', async function (amount: number) {
-  this.citationId = await this.api.createCitation({ status: 'PENDING', amount });
+Given(
+  "I have a pending citation worth ${int}",
+  async function (amount: number) {
+    this.citationId = await this.api.createCitation({
+      status: "PENDING",
+      amount,
+    });
+  },
+);
+
+When("I navigate to the citations page", async function () {
+  await this.page.goto("/citations");
 });
 
-When('I navigate to the citations page', async function () {
-  await this.page.goto('/citations');
-});
+When(
+  "I click {string} for citation {string}",
+  async function (action: string, citationId: string) {
+    await this.page
+      .getByRole("row", { name: citationId })
+      .getByRole("button", { name: action })
+      .click();
+  },
+);
 
-When('I click {string} for citation {string}', async function (action: string, citationId: string) {
-  await this.page.getByRole('row', { name: citationId }).getByRole('button', { name: action }).click();
-});
+When(
+  "I submit valid credit card {string}",
+  async function (cardNumber: string) {
+    await this.page.getByLabel("Card number").fill(cardNumber);
+    await this.page.getByRole("button", { name: "Submit payment" }).click();
+  },
+);
 
-When('I submit valid credit card {string}', async function (cardNumber: string) {
-  await this.page.getByLabel('Card number').fill(cardNumber);
-  await this.page.getByRole('button', { name: 'Submit payment' }).click();
-});
-
-Then('I should see {string}', async function (text: string) {
+Then("I should see {string}", async function (text: string) {
   await expect(this.page.getByText(text)).toBeVisible({ timeout: 30_000 });
 });
 
-Then('the citation status should be {string}', async function (status: string) {
+Then("the citation status should be {string}", async function (status: string) {
   const fresh = await this.api.getCitation(this.citationId);
   expect(fresh.status).toBe(status);
 });
@@ -139,17 +154,20 @@ Then('the citation status should be {string}', async function (status: string) {
 Gherkin's built-in `{string}` and `{int}` parameter types map to TypeScript types. Custom types:
 
 ```typescript
-import { defineParameterType } from '@cucumber/cucumber';
+import { defineParameterType } from "@cucumber/cucumber";
 
 defineParameterType({
-  name: 'citationStatus',
+  name: "citationStatus",
   regexp: /PENDING|PAID|DISPUTED|DELETED/,
-  transformer: s => s as CitationStatus,
+  transformer: (s) => s as CitationStatus,
 });
 
-Then('the status should be {citationStatus}', async function (status: CitationStatus) {
-  // status is typed as CitationStatus
-});
+Then(
+  "the status should be {citationStatus}",
+  async function (status: CitationStatus) {
+    // status is typed as CitationStatus
+  },
+);
 ```
 
 ---
@@ -160,9 +178,9 @@ Then('the status should be {citationStatus}', async function (status: CitationSt
 
 ```typescript
 // world.ts
-import { setWorldConstructor, World } from '@cucumber/cucumber';
-import { Page, BrowserContext } from '@playwright/test';
-import { ApiClient } from './api-client';
+import { setWorldConstructor, World } from "@cucumber/cucumber";
+import { Page, BrowserContext } from "@playwright/test";
+import { ApiClient } from "./api-client";
 
 interface CustomWorld extends World {
   page: Page;
@@ -171,12 +189,14 @@ interface CustomWorld extends World {
   citationId?: string;
 }
 
-setWorldConstructor(class extends World implements CustomWorld {
-  page!: Page;
-  context!: BrowserContext;
-  api!: ApiClient;
-  citationId?: string;
-});
+setWorldConstructor(
+  class extends World implements CustomWorld {
+    page!: Page;
+    context!: BrowserContext;
+    api!: ApiClient;
+    citationId?: string;
+  },
+);
 ```
 
 Each scenario gets a fresh world. State persists step → step within a scenario; doesn't bleed across scenarios.
@@ -186,8 +206,8 @@ Each scenario gets a fresh world. State persists step → step within a scenario
 ## 6. Hooks
 
 ```typescript
-import { Before, After, BeforeAll, AfterAll } from '@cucumber/cucumber';
-import { chromium, Browser } from '@playwright/test';
+import { Before, After, BeforeAll, AfterAll } from "@cucumber/cucumber";
+import { chromium, Browser } from "@playwright/test";
 
 let browser: Browser;
 
@@ -218,7 +238,7 @@ Per-scenario context — equivalent to a fresh Playwright test.
 ### 6.1 Tagged hooks
 
 ```typescript
-Before({ tags: '@admin' }, async function () {
+Before({ tags: "@admin" }, async function () {
   // Only runs for scenarios tagged @admin
   await loginAsAdmin(this.page);
 });
@@ -282,15 +302,15 @@ Or use playwright-bdd's Playwright HTML report — integrates with the normal Pl
 
 ## 10. Anti-patterns
 
-| ❌ | ✅ |
-|---|---|
-| Engineers writing Gherkin for themselves | Use Playwright directly; skip BDD overhead |
-| Step defs with raw selectors | POMs in step defs; selectors in page objects |
-| Long scenarios (50 steps) | Decompose into smaller scenarios |
-| Sharing `this.X` across scenarios | World is per-scenario by design |
-| Outline with 100 rows | Move to data-driven tests in JS, not Gherkin |
-| `.feature` file no one reads | Drop BDD — you're paying overhead for nothing |
-| Imperative steps ("I click the email field") | Declarative steps ("I fill in my email") |
+| ❌                                           | ✅                                            |
+| -------------------------------------------- | --------------------------------------------- |
+| Engineers writing Gherkin for themselves     | Use Playwright directly; skip BDD overhead    |
+| Step defs with raw selectors                 | POMs in step defs; selectors in page objects  |
+| Long scenarios (50 steps)                    | Decompose into smaller scenarios              |
+| Sharing `this.X` across scenarios            | World is per-scenario by design               |
+| Outline with 100 rows                        | Move to data-driven tests in JS, not Gherkin  |
+| `.feature` file no one reads                 | Drop BDD — you're paying overhead for nothing |
+| Imperative steps ("I click the email field") | Declarative steps ("I fill in my email")      |
 
 The declarative-vs-imperative split is crucial. Imperative steps couple to UI; rewriting breaks them. Declarative steps capture intent; UI changes only break the implementation.
 

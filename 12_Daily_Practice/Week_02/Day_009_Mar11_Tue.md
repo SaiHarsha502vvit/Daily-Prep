@@ -27,11 +27,9 @@
 > | **ALGO: Quick Sort** | [Sorting Fundamentals](../../03_Algorithms/02a_Sorting_Fundamentals.md) |
 > | **SQL: ORDER BY, LIMIT, OFFSET** | [SQL: SELECT & Filtering](../../08_SQL/05_Queries_SELECT_WHERE.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## BLOCK 1: DATA STRUCTURE (30 min)
 
@@ -62,7 +60,6 @@ TRADE-OFF:
   └────┴──────┴────┘    └────┴──────┴────┘    └────┴──────┴────┘
     prev data next       prev data next       prev data next
 ```
-
 
 #### 🔧 Implement
 
@@ -144,23 +141,21 @@ public class DoublyLinkedList {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 #### HOW: Partition then Recurse
 
 ```
 IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
 
     [3, 6, 8, 10, 1, 2, 1]   pivot = 3
-     
+
     PARTITION:
     Elements ≤ 3: [1, 2, 1]     |  Elements > 3: [6, 8, 10]
-    
+
     Result: [1, 2, 1, 3, 6, 8, 10]
                       ↑ pivot is in its FINAL position!
-    
+
     Now recursively sort [1, 2, 1] and [6, 8, 10]
 ```
-
 
 #### IMPLEMENT: Lomuto Partition Scheme
 
@@ -267,7 +262,6 @@ WHY DOUBLY LINKED LIST?
 This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
-
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -352,7 +346,6 @@ WHY does it work?
   Eventually fast "laps" slow → they meet inside the cycle.
 ```
 
-
 ```java
 public boolean hasCycle(ListNode head) {
     ListNode slow = head, fast = head;
@@ -383,13 +376,12 @@ TRICK: Two-pointer with gap of n
     1 → 2 → 3 → 4 → 5
     slow
 
-    Move both:               
+    Move both:
     1 → 2 → 3 → 4 → 5
               slow     fast(null)
-    
+
     slow.next = slow.next.next → removes node 4 ✓
 ```
-
 
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -426,7 +418,6 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Stack + Binary Search + SQL Aggregate Functions
 ```
-
 
 ---
 

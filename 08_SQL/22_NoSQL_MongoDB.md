@@ -28,7 +28,6 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
                   │                   │                │ fraud detection
 ```
 
-
 ---
 
 ## Part 2: SQL vs NoSQL Decision Framework
@@ -55,7 +54,6 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
 │  → MongoDB for product catalog                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -104,28 +102,25 @@ db.users.createIndex({ name: "text", bio: "text" })            // text search in
 db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL index
 ```
 
-
 ### Data Modeling: Embed vs Reference
 
-
-> EMBED (Denormalize):                      REFERENCE (Normalize):
-> Store related data in same document       Store ID, look up separately
+> EMBED (Denormalize): REFERENCE (Normalize):
+> Store related data in same document Store ID, look up separately
 >
-> // Embedded                               // Referenced
-> { name: "John",                           { name: "John",
-> address: { city: "NYC" } }                addressId: ObjectId("...") }
+> // Embedded // Referenced
+> { name: "John", { name: "John",
+> address: { city: "NYC" } } addressId: ObjectId("...") }
 >
-> ✅ Single read (fast)                     ✅ Data not duplicated
-> ✅ Atomic updates                         ✅ Many-to-many relationships
-> ❌ Document size limit (16MB)             ❌ Requires $lookup (JOIN)
-> ❌ Data duplication                       ❌ Multiple reads
+> ✅ Single read (fast) ✅ Data not duplicated
+> ✅ Atomic updates ✅ Many-to-many relationships
+> ❌ Document size limit (16MB) ❌ Requires $lookup (JOIN)
+> ❌ Data duplication ❌ Multiple reads
 >
 > RULE OF THUMB:
 > → 1:1 or 1:Few → EMBED (address in user)
 > → 1:Many (bounded) → EMBED (orders in user, if < 100)
 > → 1:Many (unbounded) → REFERENCE (comments on a viral post)
 > → Many:Many → REFERENCE (students ↔ courses)
-
 
 ---
 
@@ -164,7 +159,6 @@ SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 // NX = only if not exists (atomic)
 ```
 
-
 ---
 
 ## Part 4: Advanced Aggregation Framework
@@ -179,45 +173,46 @@ SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 db.orders.aggregate([
   {
     $lookup: {
-      from: "customers",           // Target collection
-      localField: "customerId",    // Field in 'orders'
-      foreignField: "_id",         // Field in 'customers'
-      as: "customerData"           // Output array field name
-    }
+      from: "customers", // Target collection
+      localField: "customerId", // Field in 'orders'
+      foreignField: "_id", // Field in 'customers'
+      as: "customerData", // Output array field name
+    },
   },
   // $lookup returns an array. Often we want an object, so we $unwind it:
   {
-    $unwind: "$customerData"
+    $unwind: "$customerData",
   },
   // Now we can project (SELECT) the exact fields we want:
   {
     $project: {
       orderTotal: 1,
       "customerData.name": 1,
-      "customerData.email": 1
-    }
-  }
-])
+      "customerData.email": 1,
+    },
+  },
+]);
 
 // ── 2. Complex Grouping metrics ($facet) ──
-// $facet allows you to run multiple aggregation pipelines in parallel 
+// $facet allows you to run multiple aggregation pipelines in parallel
 // within a single stage (e.g., building filters/facets for an e-commerce sidebar)
 db.products.aggregate([
   {
     $facet: {
-      "categories": [
-        { $group: { _id: "$category", count: { $sum: 1 } } }
-      ],
-      "priceRanges": [
-        { $bucket: {          // Bucketing! Perfect for price filters
+      categories: [{ $group: { _id: "$category", count: { $sum: 1 } } }],
+      priceRanges: [
+        {
+          $bucket: {
+            // Bucketing! Perfect for price filters
             groupBy: "$price",
             boundaries: [0, 50, 100, 500],
-            default: "Other"
-        }}
-      ]
-    }
-  }
-])
+            default: "Other",
+          },
+        },
+      ],
+    },
+  },
+]);
 ```
 
 ---
@@ -230,7 +225,7 @@ db.products.aggregate([
    Use the ESR Rule: Equality, Sort, Range. */
 
 // We want to query: "Find active users, sorted by age, whose score is > 50"
-db.users.find({ status: "active", score: { $gt: 50 } }).sort({ age: 1 })
+db.users.find({ status: "active", score: { $gt: 50 } }).sort({ age: 1 });
 
 // ❌ BAD INDEX 1: { score: 1, status: 1, age: 1 }
 // Why? Range field comes first. MongoDB stops using the rest of the index
@@ -240,7 +235,7 @@ db.users.find({ status: "active", score: { $gt: 50 } }).sort({ age: 1 })
 // Why? Range comes before Sort. It will filter quickly, but still sort in memory.
 
 // ✅ GOOD INDEX (The ESR Rule): { status: 1, age: 1, score: 1 }
-db.users.createIndex({ status: 1, age: 1, score: 1 })
+db.users.createIndex({ status: 1, age: 1, score: 1 });
 // Why this works:
 // 1. (E) Quality field 'status' instantly narrows down the tree.
 // 2. (S) Sort field 'age' means the results are ALREADY naturally sorted in the B-Tree.
@@ -250,8 +245,8 @@ db.users.createIndex({ status: 1, age: 1, score: 1 })
 // If you only project fields that exist IN THE INDEX, MongoDB never touches the disk!
 db.users.find(
   { status: "active", age: 30 },
-  { status: 1, age: 1, score: 1, _id: 0 } // Projecting only indexed fields
-) // → Time: 0ms. It found everything in RAM!
+  { status: 1, age: 1, score: 1, _id: 0 }, // Projecting only indexed fields
+); // → Time: 0ms. It found everything in RAM!
 ```
 
 ---
@@ -350,3 +345,33 @@ A: Redis: data structures (hashes, lists, sets, sorted sets), persistence,
    Redis wins for most use cases unless you need raw multi-threaded speed.
 ```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **NoSQL term** (1998): Carlo Strozzi coined "NoSQL" to describe his open-source relational database that didn't use SQL—but the modern usage started 2009
+- **Brewer's CAP Theorem** (2000): Eric Brewer's presentation formalized the trade-off between Consistency, Availability, and Partition tolerance, explaining why NoSQL exists
+- **Google BigTable** (2006): Published paper describing distributed sorted maps across commodity servers, inspiring HBase, Cassandra, and MongoDB
+- **Amazon Dynamo** (2007): Amazon's Dynamo paper introduced eventual consistency and quorum reads/writes for high-availability key-value stores
+- **Pritchett** (2008): Introduced BASE (Basically Available, Soft state, Eventual consistency) as the theoretical counterpart to ACID
+- **MongoDB** (2009): 10gen released MongoDB as the first document database combining JSON-like documents, horizontal scaling, and SQL-like query language accessibility
+
+**Evolution narrative:**
+NoSQL emerged as a reaction to the scalability limits of traditional databases during the Web 2.0 era. Google, Amazon, and Yahoo faced data volumes that sharding MySQL couldn't handle gracefully. BigTable (2006) proved that sacrificing strict consistency and SQL features enabled horizontal scaling across thousands of commodity servers. Dynamo (2007) demonstrated that eventual consistency was a valid trade-off for always-available systems. MongoDB (2009) cleverly chose to keep the query model familiar (ad-hoc queries, indexes) while offering flexible schemas and horizontal scaling—bridging the gap between NoSQL and traditional databases.
+
+**Modern practice anchor:**
+Today, hybrid multi-model databases (PostgreSQL with JSONB, Cosmos DB, FaunaDB) blur the NoSQL/SQL boundary, while understanding CAP theorem and BASE consistency remains essential for designing modern distributed data systems.
+
+### Production Reality
+
+**Failure modes:**
+1. **Hot shard key anti-pattern**: Using `createdAt` (timestamp) as the shard key sends all new writes to ONE shard (the one owning the current time range). At 10,000 writes/second, that shard saturates its CPU while others sit idle. Reads scatter normally, but write latency spikes to 5,000ms+.
+2. **Missing TTL index on unbounded collections**: `events` collection grows forever — no document deletion mechanism. At 1KB per event and 50M events/day, storage grows 50GB/day. After 6 months, the collection is 9TB and `$lookup` joins timeout even with indexes.
+3. **Oplog-based replica election race**: When the primary crashes, secondaries race to elect a new primary based on oplog freshness. If two secondaries have equal oplog depth but different clocks (clock skew > 100ms), the election fails or takes 30+ seconds (instead of milliseconds), causing write unavailability for all clients.
+
+**Debug workflow:**
+1. Check shard distribution: `db.currentOp().inprog.forEach(op => printjson(op.shard))` or `sh.status()` — look for one shard with 80%+ docs.
+2. Verify TTL index exists: `db.events.getIndexes().find(i => i.expireAfterSeconds !== undefined)` — if undefined, add: `db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 2592000 })` (30-day retention).
+3. Monitor replica election timing: `rs.status().electionTime` — if elections take > 5 seconds, check `选举超时` (election timeout) settings and clock sync via NTP.
+
+**Modern practice anchor:**
+Production MongoDB requires shard keys with high cardinality (e.g., `userId` hash), TTL indexes on all time-series collections, and NTP-synchronized clocks across all replica set members.

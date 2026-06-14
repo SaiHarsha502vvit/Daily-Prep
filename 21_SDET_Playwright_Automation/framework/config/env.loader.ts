@@ -9,7 +9,7 @@ function requireEnv(key: string): string {
   if (value === undefined || value.trim() === '') {
     throw new Error(
       `[env.loader] Missing required env variable: ${key}\n` +
-        `→ Copy .env.example to .env and fill in ${key}.`
+        `→ Copy .env.example to .env and fill in ${key}.`,
     );
   }
   return value;

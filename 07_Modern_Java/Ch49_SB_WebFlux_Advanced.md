@@ -463,16 +463,15 @@ public class ErrorResponse {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 8: Error Handling Operators**
 
 **Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
+
 <details><summary>Answer</summary>
 
-Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
-</details>
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what _should_ happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 
+</details>
 
 # SECTION 7: TESTING REACTIVE CODE
 
@@ -802,16 +801,15 @@ public class BackpressureExamples {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 10: Managing Backpressure**
 
 **Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
+
 <details><summary>Answer</summary>
 
-Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
-</details>
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what _should_ happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 
+</details>
 
 # SECTION 9: WHEN TO USE WEBFLUX vs MVC
 
@@ -1090,16 +1088,15 @@ public class ProductController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 11: Making the Right Choice**
 
 **Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
+
 <details><summary>Answer</summary>
 
-Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
-</details>
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what _should_ happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 
+</details>
 
 # SECTION 10: QUICK REFERENCE
 
@@ -1205,7 +1202,6 @@ A: Reactive Relational Database Connectivity - a non-blocking alternative
 **END OF PART 15: SPRING WEBFLUX & REACTIVE PROGRAMMING**
 
 ➡️ **Next: Part 16 - SOLID Principles with Spring Examples**
-
 
 ---
 

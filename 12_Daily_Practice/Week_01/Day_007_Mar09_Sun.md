@@ -18,6 +18,7 @@
 ## MORNING SESSION: Re-Attempt (60 min)
 
 ### Instructions
+
 1. Look at yesterday's self-assessment ratings
 2. Pick the 2-3 topics where you scored lowest
 3. Re-solve those problems **without looking at solutions**
@@ -56,6 +57,7 @@
 Code each of these in your IDE (or pen and paper). Only check the solutions after you're done.
 
 **1. Binary Search (5 min)**
+
 ```
 Input: sorted array, target value
 Output: index of target, or -1
@@ -76,9 +78,11 @@ int binarySearch(int[] arr, int target) {
     return -1;
 }
 ```
+
 </details>
 
 **2. Kadane's Algorithm (5 min)**
+
 ```
 Input: integer array (can have negatives)
 Output: maximum subarray sum
@@ -97,9 +101,11 @@ int maxSubArray(int[] nums) {
     return max;
 }
 ```
+
 </details>
 
 **3. Check Anagram (5 min)**
+
 ```
 Input: two strings s and t
 Output: true if anagram, false otherwise
@@ -120,9 +126,11 @@ boolean isAnagram(String s, String t) {
     return true;
 }
 ```
+
 </details>
 
 **4. Merge Sort (10 min)**
+
 ```
 Input: unsorted array
 Output: sorted array
@@ -152,6 +160,7 @@ void merge(int[] arr, int l, int m, int r) {
     System.arraycopy(temp, 0, arr, l, temp.length);
 }
 ```
+
 </details>
 
 **5. SQL: Create + Insert + Query (10 min)**
@@ -175,12 +184,13 @@ INSERT INTO employees (name, department, salary, hire_date) VALUES
     ('Charlie', 'Marketing', 70000, '2025-03-20');
 
 -- Above average salary
-SELECT name, salary 
-FROM employees 
+SELECT name, salary
+FROM employees
 WHERE salary > (SELECT AVG(salary) FROM employees);
 -- Average = (85000+95000+70000)/3 = 83333.33
 -- Returns: Alice (85000), Bob (95000)
 ```
+
 </details>
 
 ---
@@ -206,6 +216,7 @@ int secondLargest(int[] arr) {
     return second;
 }
 ```
+
 </details>
 
 **Speed 2:** Reverse a string without using built-in reverse functions.
@@ -221,6 +232,7 @@ String reverse(String s) {
     return new String(c);
 }
 ```
+
 </details>
 
 **Speed 3:** Count how many times a target appears in a sorted array using binary search (O(log n)).
@@ -237,6 +249,7 @@ int countOccurrences(int[] arr, int target) {
 }
 // findFirst/findLast from Day 1 — you should know this!
 ```
+
 </details>
 
 **Speed 4:** Write SQL to find the highest-priced product in each category.
@@ -249,9 +262,11 @@ SELECT category, MAX(price) as max_price
 FROM products
 GROUP BY category;
 ```
+
 </details>
 
 **Speed 5:** What is wrong with this code? Fix it.
+
 ```java
 String s = "hello";
 if (s == "hello") System.out.println("equal");
@@ -269,6 +284,7 @@ if (s.equals("hello")) System.out.println("equal");
 // Or even safer (handles null):
 if ("hello".equals(s)) System.out.println("equal");
 ```
+
 </details>
 
 **Speed 6:** Given `arr = [1, 2, 3, 4]`, what is the prefix sum array? What is `rangeSum(1, 3)`?
@@ -281,6 +297,7 @@ prefix = [1, 3, 6, 10]
 rangeSum(1, 3) = prefix[3] - prefix[0] = 10 - 1 = 9
 Verify: arr[1]+arr[2]+arr[3] = 2+3+4 = 9 ✓
 ```
+
 </details>
 
 ---
@@ -288,6 +305,7 @@ Verify: arr[1]+arr[2]+arr[3] = 2+3+4 = 9 ✓
 ## Week 1 Accomplishment Summary
 
 ### Topics Covered:
+
 ```
 DATA STRUCTURES:  Arrays (1D + 2D), Strings, Subarrays
 ALGORITHMS:       Selection Sort, Insertion Sort, Bubble Sort, Merge Sort,
@@ -302,6 +320,7 @@ PATTERNS:         Two Pointers, Frequency Array, Prefix Sum, Sliding Window,
 ### Problems Solved: 10 coding + 9 SQL exercises + 6 speed drills = 25 total
 
 ### Key Algorithms to remember forever:
+
 1. **Reverse trick** for array rotation
 2. **Kadane's** for maximum subarray
 3. **Frequency array** for character counting
@@ -311,12 +330,12 @@ PATTERNS:         Two Pointers, Frequency Array, Prefix Sum, Sliding Window,
 ---
 
 ## Week 2 starts Monday (March 10):
+
 **HashMap + LinkedList + Quick Sort — the next building blocks.**
 
-> **Mentor Note:** Week 1 wasn't about mastering everything — it was about 
-> building the FOUNDATIONS. If you can trace through Merge Sort and write 
+> **Mentor Note:** Week 1 wasn't about mastering everything — it was about
+> building the FOUNDATIONS. If you can trace through Merge Sort and write
 > Kadane's from memory, you're ahead of 80% of candidates. Keep going.
-
 
 ---
 

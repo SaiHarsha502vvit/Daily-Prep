@@ -2,22 +2,63 @@
 
 # HashMap + Frequency Counting — Combined Pattern Guide
 
-
-
 **WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
 
 ### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
 
+### Historical Evolution
+
+**Inventor / Originator:** Hash tables were analyzed by Donald Knuth in Vol 3 (1973). The birthday paradox was documented by Richard von Mises (1939). Gene Amdahl's law (1967) quantified parallel speedup limits.
+
+**Predecessor context:** Before hash tables, programmers used linear search or sorted arrays (binary search) for lookups. Counting problems required nested loops or sorting.
+
+**Evolution narrative:** Hash tables emerged from information retrieval research. Knuth's analysis in TAOCP Vol 3 proved average-case O(1) lookup. The birthday paradox illustrates collision probability — motivating bloom filters and hash function design.
+
+**Modern practice:** HashMap is the default data structure for O(1) lookups in all languages. Java's HashMap, Python's dict, and C++'s unordered_map all use variations of chaining or open addressing.
+
+- **Birthday paradox — von Mises 1939**: Documented collision probability in hash functions
+- **Knuth Vol 3 — 1973**: Formal analysis of hash table performance characteristics
+- **Amdahl 1967**: "Amdahl's Law" quantifying parallel processing limits from serial bottlenecks
+- **Modern practice**: HashMap in every language; foundation of cache design and deduplication
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **HashMap.get() returning null vs missing key — autoboxing bug** — In Java, `map.get(null)` returns `null` for a key that exists with value `null`. But `null` can also mean the key is missing. This confusion causes NullPointerException when you try to unbox. Detection: test with explicit `null` value insertion; use `containsKey()` before `get()`.
+
+- **ConcurrentHashMap needed for parallel streams (HashMap is not thread-safe)** — Using HashMap in parallel Java streams causes ConcurrentModificationException or data races. Detection: run with `-ea` assertions and parallel stream processing; HashMap will fail.
+
+- **Default initial capacity 16 with high load factor 0.75 causes resize storms** — If you pre-insert millions of entries without specifying initial capacity, HashMap resizes multiple times (each resize is O(n)). Detection: profile memory allocations; frequent resize shows as GC pressure.
+
+- **Hash collision DoS attack (use SHA-256 keyed hash, not String.hashCode)** — String.hashCode() in Java is deterministic and vulnerable to algorithmic complexity attacks. An attacker can craft inputs that all hash to the same bucket, degrading O(1) to O(n). Detection: use `HashMap` with randomized hash seed (Java 7u7+) or use `ConcurrentHashMap`.
+
+**Production Selection Heuristic:** Use HashMap for single-threaded lookup problems; use ConcurrentHashMap for any concurrent access; specify initial capacity for large datasets to avoid resize storms.
+
+---
+
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| unsorted lookup/complement | hashmap |
-| count subarrays with exact sum and negatives allowed | prefix sum + hashmap |
-| count subarrays divisible by `K` | prefix remainder frequency |
-| fixed alphabet lowercase only | `int[26]` instead of hashmap |
-| need sorted order/rank | TreeMap / TreeSet, not HashMap |
-| memory too high for huge key space | coordinate compression or sorting |
+| Given Constraints                                    | Do This                           |
+| ---------------------------------------------------- | --------------------------------- |
+| unsorted lookup/complement                           | hashmap                           |
+| count subarrays with exact sum and negatives allowed | prefix sum + hashmap              |
+| count subarrays divisible by `K`                     | prefix remainder frequency        |
+| fixed alphabet lowercase only                        | `int[26]` instead of hashmap      |
+| need sorted order/rank                               | TreeMap / TreeSet, not HashMap    |
+| memory too high for huge key space                   | coordinate compression or sorting |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -28,7 +69,8 @@ The fundamental idea: many O(n²) algorithms are slow because for each element, 
 #### The Complement Pattern — The Most Important Application
 
 Many problems follow this structure: "For each element A[i], does there exist A[j] such that A[i] + A[j] = target?" The brute force checks all pairs (O(n²)). The HashMap approach is:
-1. As you scan each element, compute what you *need* (the complement): `need = target - A[i]`
+
+1. As you scan each element, compute what you _need_ (the complement): `need = target - A[i]`
 2. Check if the HashMap already has it — O(1) lookup
 3. If not, add the current element to the HashMap for future lookups
 
@@ -38,7 +80,7 @@ This works because you're building the lookup table as you go. When you reach in
 
 The sliding window fails with negatives because shrinking doesn't reliably decrease the sum. Prefix sums bypass this entirely. If `prefix[j] - prefix[i] = k`, then the subarray `[i+1..j]` sums to `k`. By storing all previous prefix sums in a HashMap, you can check "has any previous prefix sum equal to `current_prefix - k`?" in O(1). This is mathematically equivalent to checking all possible subarrays but in linear time.
 
-💡 **Critical initialization:** Always start with `map.put(0, 1)` — this accounts for subarrays starting from index 0 (where the entire prefix *is* the subarray).
+💡 **Critical initialization:** Always start with `map.put(0, 1)` — this accounts for subarrays starting from index 0 (where the entire prefix _is_ the subarray).
 
 ---
 
@@ -55,14 +97,12 @@ IF the problem says:
 THEN → HashMap + Counting
 ```
 
-
 ---
-
-
 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Complement Lookup (Two Sum Pattern)
+
 ```java
 // "Does complement exist?" — O(n)
 Map<Integer, Integer> seen = new HashMap<>();  // value → index
@@ -76,6 +116,7 @@ for (int i = 0; i < nums.length; i++) {
 ```
 
 ### Template 2: Frequency Count + Check
+
 ```java
 // Count frequencies, then use them
 Map<Character, Integer> freq = new HashMap<>();
@@ -90,6 +131,7 @@ for (int i = 0; i < s.length(); i++) {
 ```
 
 ### Template 3: Group By Pattern (Anagrams)
+
 ```java
 // Group strings by sorted version
 Map<String, List<String>> groups = new HashMap<>();
@@ -103,6 +145,7 @@ return new ArrayList<>(groups.values());
 ```
 
 ### Template 4: Prefix Sum + HashMap (Subarray Sum = K)
+
 ```java
 // Count subarrays with sum = k — CRITICAL PATTERN
 Map<Integer, Integer> prefixCount = new HashMap<>();
@@ -140,29 +183,27 @@ i=4: prefix=7, need 7-4=3,  IN MAP(1)! → count=2, map={.., 7:1}
 Answer: 2
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔬 VISUAL: Prefix Sum + HashMap**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 🔥 KEY TRICKS
 
-| Trick | When | Example |
-|-------|------|---------|
-| Sort key for grouping | Anagram detection | Sort chars → same key |
-| Frequency array vs HashMap | When values are small ints | `int[26]` for lowercase letters |
-| `prefixCount.put(0, 1)` | Prefix sum + map | ALWAYS initialize with empty prefix |
-| Modulo for divisibility | "Divisible by K" | `(prefix % k + k) % k` handles negatives |
-| Two-pass counting | Majority, first unique | Pass 1: count, Pass 2: query |
+| Trick                      | When                       | Example                                  |
+| -------------------------- | -------------------------- | ---------------------------------------- |
+| Sort key for grouping      | Anagram detection          | Sort chars → same key                    |
+| Frequency array vs HashMap | When values are small ints | `int[26]` for lowercase letters          |
+| `prefixCount.put(0, 1)`    | Prefix sum + map           | ALWAYS initialize with empty prefix      |
+| Modulo for divisibility    | "Divisible by K"           | `(prefix % k + k) % k` handles negatives |
+| Two-pass counting          | Majority, first unique     | Pass 1: count, Pass 2: query             |
 
 ---
 
@@ -191,19 +232,17 @@ The KEY pattern (use for many problems):
 Time: O(n) | Space: O(n)
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — � FULL WALKTHROUGH: Two Sum (Complement Lookup)**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)
 
@@ -242,19 +281,17 @@ Time: O(n) | Space: O(n)
 CRITICAL: Always initialize map with {0: 1}!
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 🛡️ EDGE CASES
 
@@ -273,35 +310,34 @@ CRITICAL: Always initialize map with {0: 1}!
 └─────────────────────────────┴──────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Pattern | Time | Space | When |
-|---------|------|-------|------|
-| Complement Lookup (Two Sum) | O(n) | O(n) | Find pair with target sum |
-| Frequency Count | O(n) | O(n) | Count occurrences, find majority |
-| Group By (sorted key) | O(n·k log k) | O(nk) | Group anagrams, group by property |
-| Prefix Sum + HashMap | O(n) | O(n) | Subarray sum = k (with negatives!) |
-| Modulo + HashMap | O(n) | O(k) | Subarray sum divisible by k |
+| Pattern                     | Time         | Space | When                               |
+| --------------------------- | ------------ | ----- | ---------------------------------- |
+| Complement Lookup (Two Sum) | O(n)         | O(n)  | Find pair with target sum          |
+| Frequency Count             | O(n)         | O(n)  | Count occurrences, find majority   |
+| Group By (sorted key)       | O(n·k log k) | O(nk) | Group anagrams, group by property  |
+| Prefix Sum + HashMap        | O(n)         | O(n)  | Subarray sum = k (with negatives!) |
+| Modulo + HashMap            | O(n)         | O(k)  | Subarray sum divisible by k        |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
 ### Easy
+
 | 3 | [Missing Number](https://leetcode.com/problems/missing-number/) | Amazon | XOR trick or math sum |
 | 4 | [Happy Number](https://leetcode.com/problems/happy-number/) | Salesforce | HashSet for cycle detection |
 | 5 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | Salesforce | Stack + HashMap for matching |
@@ -309,26 +345,29 @@ CRITICAL: Always initialize map with {0: 1}!
 | 7 | [Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix/) | — | Trie or character-by-character |
 
 ### Medium
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 8 | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | Microsoft | Prefix Sum + HashMap |
-| 9 | [Subarray Sums Divisible by K](https://leetcode.com/problems/subarray-sums-divisible-by-k/) | — | Prefix modulo + HashMap |
-| 10 | [Group Anagrams](https://leetcode.com/problems/group-anagrams/) | — | Sort key grouping |
-| 11 | [Find All Duplicates in an Array](https://leetcode.com/problems/find-all-duplicates-in-an-array/) | Microsoft | Index marking or frequency |
-| 12 | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/) | — | HashMap + Heap or Bucket Sort |
+
+| #   | Problem                                                                                           | Companies | Key Insight                   |
+| --- | ------------------------------------------------------------------------------------------------- | --------- | ----------------------------- |
+| 8   | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/)                     | Microsoft | Prefix Sum + HashMap          |
+| 9   | [Subarray Sums Divisible by K](https://leetcode.com/problems/subarray-sums-divisible-by-k/)       | —         | Prefix modulo + HashMap       |
+| 10  | [Group Anagrams](https://leetcode.com/problems/group-anagrams/)                                   | —         | Sort key grouping             |
+| 11  | [Find All Duplicates in an Array](https://leetcode.com/problems/find-all-duplicates-in-an-array/) | Microsoft | Index marking or frequency    |
+| 12  | [Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)                 | —         | HashMap + Heap or Bucket Sort |
 
 ### Hard
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 13 | [Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/) | HashMap + ArrayList swap trick |
+
+| #   | Problem                                                                                                      | Key Insight                    |
+| --- | ------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| 13  | [Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/) | HashMap + ArrayList swap trick |
 
 ### Additional — From Heaps & Hashing Section
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 14 | [Check if array divisible into pairs with sum divisible by K](https://www.geeksforgeeks.org/check-if-an-array-can-be-divided-into-pairs-whose-sum-is-divisible-by-k/) | Modulo frequency counting |
-| 15 | [Find number of Employees Under every Manager](https://www.geeksforgeeks.org/find-number-of-employees-under-every-manager/) | HashMap tree traversal |
-| 16 | [Smallest Positive Missing Number](https://practice.geeksforgeeks.org/problems/smallest-positive-missing-number-1587115621/1/) | Index marking |
-| 17 | [Largest Subarray with 0 Sum](https://practice.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1/) | Prefix Sum + HashMap |
+
+| #   | Problem                                                                                                                                                               | Key Insight               |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| 14  | [Check if array divisible into pairs with sum divisible by K](https://www.geeksforgeeks.org/check-if-an-array-can-be-divided-into-pairs-whose-sum-is-divisible-by-k/) | Modulo frequency counting |
+| 15  | [Find number of Employees Under every Manager](https://www.geeksforgeeks.org/find-number-of-employees-under-every-manager/)                                           | HashMap tree traversal    |
+| 16  | [Smallest Positive Missing Number](https://practice.geeksforgeeks.org/problems/smallest-positive-missing-number-1587115621/1/)                                        | Index marking             |
+| 17  | [Largest Subarray with 0 Sum](https://practice.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1/)                                                             | Prefix Sum + HashMap      |
 
 ---
 
@@ -352,11 +391,13 @@ CRITICAL: Always initialize map with {0: 1}!
 "I maintain a running prefix sum. If `prefix[j] - prefix[i] = target`, then the subarray [i+1..j] sums to target. By storing all prefix sums in a HashMap, I check 'has any previous prefix equaled `current - target`?' in O(1)."
 
 **Common mistakes to proactively mention:**
+
 - ❌ "Always initialize `map.put(0, 1)` for prefix sum problems — it counts subarrays starting from index 0."
 - ❌ "Java's `%` can return negative! Use `((x % k) + k) % k` for modulo-based grouping."
 - ❌ "Don't use HashMap for < 30 elements — a simple array or linear scan is faster due to hashing overhead."
 
 **Real-world applications:**
+
 - API rate limiting (IP → request count per time window)
 - Session stores in web servers (sessionId → user data)
 - Feature flags (flagName → enabled/disabled)
@@ -366,10 +407,10 @@ CRITICAL: Always initialize map with {0: 1}!
 ---
 
 📖 **Related Chapters:**
+
 - [02_Data_Structures/01e_HashTable.md](../02_Data_Structures/01e_HashTable.md) — Hash table internals
 - [04_Patterns_Templates/04_Pattern_Recognition.md](04_Pattern_Recognition.md) — Pattern Recognition (Prefix Sum)
 
 ---
+
 [← 09 Array+SlidingWindow](09_Array_Plus_SlidingWindow.md) | [11 Stack+Monotonic →](11_Stack_Plus_MonotonicPattern.md)
-
-

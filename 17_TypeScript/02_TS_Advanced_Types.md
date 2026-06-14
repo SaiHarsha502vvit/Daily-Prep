@@ -6,26 +6,25 @@
 
 ## 5W1H — Why This Chapter?
 
-
 WHAT: Advanced type system features that make TS extremely
 powerful — generics, mapped types, conditional types,
 utility types, template literal types.
 
-WHY:  Real codebases need FLEXIBLE yet SAFE types:
+WHY: Real codebases need FLEXIBLE yet SAFE types:
+
 - A function that works with any array type
 - An API response wrapper generic over the data shape
 - Making some fields optional while keeping others required
 - Creating new types from existing ones automatically
 
-WHO:  Intermediate-to-advanced TS developers, library authors,
+WHO: Intermediate-to-advanced TS developers, library authors,
 anyone working with complex API types or state management.
 
 WHEN: After mastering basic types, interfaces, and unions.
 
-HOW:  Generics provide the "type variables." Utility types,
+HOW: Generics provide the "type variables." Utility types,
 mapped types, and conditional types build on that for
 sophisticated type transformations.
-
 
 ---
 
@@ -33,11 +32,10 @@ sophisticated type transformations.
 
 ### The Core Idea
 
-
 ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.
 
-Regular function:  function add(a: number, b: number) → number
-Generic function:  function first<T>(arr: T[]) → T
+Regular function: function add(a: number, b: number) → number
+Generic function: function first<T>(arr: T[]) → T
 
 `a` and `b` are VALUE parameters (filled with values at call).
 `T` is a TYPE parameter (filled with types at call).
@@ -45,28 +43,27 @@ Generic function:  function first<T>(arr: T[]) → T
 first<number>([1, 2, 3]) → T becomes number → returns number
 first<string>(["a", "b"]) → T becomes string → returns string
 
-
 ```typescript
 // GENERIC FUNCTION:
 function identity<T>(value: T): T {
-    return value;
+  return value;
 }
 identity<string>("hello"); // Explicit: T = string
-identity(42);              // Inferred: T = number
+identity(42); // Inferred: T = number
 
 // MULTIPLE TYPE PARAMETERS:
 function pair<K, V>(key: K, value: V): [K, V] {
-    return [key, value];
+  return [key, value];
 }
-pair("name", "Harsha");    // → [string, string]
-pair("age", 24);           // → [string, number]
+pair("name", "Harsha"); // → [string, string]
+pair("age", 24); // → [string, number]
 
 // GENERIC INTERFACE:
 interface ApiResponse<T> {
-    data: T;
-    status: number;
-    message: string;
-    timestamp: Date;
+  data: T;
+  status: number;
+  message: string;
+  timestamp: Date;
 }
 
 type UserResponse = ApiResponse<User>;
@@ -74,23 +71,23 @@ type ProductResponse = ApiResponse<Product[]>;
 
 // GENERIC CLASS:
 class Stack<T> {
-    private items: T[] = [];
+  private items: T[] = [];
 
-    push(item: T): void {
-        this.items.push(item);
-    }
+  push(item: T): void {
+    this.items.push(item);
+  }
 
-    pop(): T | undefined {
-        return this.items.pop();
-    }
+  pop(): T | undefined {
+    return this.items.pop();
+  }
 
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
 
-    get size(): number {
-        return this.items.length;
-    }
+  get size(): number {
+    return this.items.length;
+  }
 }
 
 const numStack = new Stack<number>();
@@ -104,30 +101,35 @@ numStack.pop(); // TS knows: number | undefined
 ```typescript
 // EXTENDS constraint — "T must have at least..."
 function getLength<T extends { length: number }>(item: T): number {
-    return item.length;
+  return item.length;
 }
-getLength("hello");   // ✅ string has .length
-getLength([1, 2]);    // ✅ array has .length  
+getLength("hello"); // ✅ string has .length
+getLength([1, 2]); // ✅ array has .length
 // getLength(42);     // ❌ number doesn't have .length
 
 // KEYOF constraint — "K must be a key of T"
 function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
-    return obj[key];
+  return obj[key];
 }
 const user = { name: "Harsha", age: 24 };
 getProperty(user, "name"); // TS knows: returns string
-getProperty(user, "age");  // TS knows: returns number
+getProperty(user, "age"); // TS knows: returns number
 // getProperty(user, "email"); // ❌ "email" is not a key of user
 
 // DEFAULT GENERIC TYPE:
 interface PaginatedResponse<T = unknown> {
-    items: T[];
-    total: number;
-    page: number;
-    pageSize: number;
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
 }
 // Can use without specifying T:
-const response: PaginatedResponse = { items: [], total: 0, page: 1, pageSize: 10 };
+const response: PaginatedResponse = {
+  items: [],
+  total: 0,
+  page: 1,
+  pageSize: 10,
+};
 ```
 
 ### Real-World Generic Patterns
@@ -135,30 +137,35 @@ const response: PaginatedResponse = { items: [], total: 0, page: 1, pageSize: 10
 ```typescript
 // PATTERN 1: API Fetcher
 async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise<ApiResponse<T>>;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<ApiResponse<T>>;
 }
 const users = await fetchData<User[]>("/api/users");
 // users.data is User[] — fully typed!
 
 // PATTERN 2: Event Emitter
 class TypedEmitter<Events extends Record<string, any[]>> {
-    private handlers: Partial<{ [K in keyof Events]: Array<(...args: Events[K]) => void> }> = {};
+  private handlers: Partial<{
+    [K in keyof Events]: Array<(...args: Events[K]) => void>;
+  }> = {};
 
-    on<K extends keyof Events>(event: K, handler: (...args: Events[K]) => void): void {
-        (this.handlers[event] ??= []).push(handler);
-    }
+  on<K extends keyof Events>(
+    event: K,
+    handler: (...args: Events[K]) => void,
+  ): void {
+    (this.handlers[event] ??= []).push(handler);
+  }
 
-    emit<K extends keyof Events>(event: K, ...args: Events[K]): void {
-        this.handlers[event]?.forEach(h => h(...args));
-    }
+  emit<K extends keyof Events>(event: K, ...args: Events[K]): void {
+    this.handlers[event]?.forEach((h) => h(...args));
+  }
 }
 
 const emitter = new TypedEmitter<{
-    login: [user: User];
-    error: [code: number, message: string];
-    logout: [];
+  login: [user: User];
+  error: [code: number, message: string];
+  logout: [];
 }>();
 
 emitter.on("login", (user) => console.log(user.name)); // user is typed!
@@ -167,28 +174,28 @@ emitter.emit("login", { id: 1, name: "Harsha", email: "" }); // Type-checked!
 
 // PATTERN 3: Builder Pattern
 class QueryBuilder<T> {
-    private conditions: string[] = [];
-    private selectedFields: (keyof T)[] = [];
+  private conditions: string[] = [];
+  private selectedFields: (keyof T)[] = [];
 
-    select(...fields: (keyof T)[]): this {
-        this.selectedFields = fields;
-        return this;
-    }
+  select(...fields: (keyof T)[]): this {
+    this.selectedFields = fields;
+    return this;
+  }
 
-    where(field: keyof T, value: T[keyof T]): this {
-        this.conditions.push(`${String(field)} = ${value}`);
-        return this;
-    }
+  where(field: keyof T, value: T[keyof T]): this {
+    this.conditions.push(`${String(field)} = ${value}`);
+    return this;
+  }
 
-    build(): string {
-        const fields = this.selectedFields.length
-            ? this.selectedFields.join(", ")
-            : "*";
-        const where = this.conditions.length
-            ? ` WHERE ${this.conditions.join(" AND ")}`
-            : "";
-        return `SELECT ${fields}${where}`;
-    }
+  build(): string {
+    const fields = this.selectedFields.length
+      ? this.selectedFields.join(", ")
+      : "*";
+    const where = this.conditions.length
+      ? ` WHERE ${this.conditions.join(" AND ")}`
+      : "";
+    return `SELECT ${fields}${where}`;
+  }
 }
 ```
 
@@ -206,14 +213,13 @@ class QueryBuilder<T> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```typescript
 interface User {
-    id: number;
-    name: string;
-    email: string;
-    age: number;
-    role: "admin" | "user";
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  role: "admin" | "user";
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -224,16 +230,16 @@ type UpdateUser = Partial<User>;
 // USE CASE: PATCH/update API — only send changed fields
 
 function updateUser(id: number, updates: Partial<User>): void {
-    // Can pass { name: "New" } or { age: 25 } or both
+  // Can pass { name: "New" } or { age: 25 } or both
 }
 
 // ═══════════════════════════════════════════════════════════
 // REQUIRED<T> — Makes ALL properties required (opposite of Partial)
 // ═══════════════════════════════════════════════════════════
 interface Config {
-    host?: string;
-    port?: number;
-    debug?: boolean;
+  host?: string;
+  port?: number;
+  debug?: boolean;
 }
 type FullConfig = Required<Config>;
 // { host: string; port: number; debug: boolean } — no optionals
@@ -242,7 +248,13 @@ type FullConfig = Required<Config>;
 // READONLY<T> — Makes ALL properties readonly
 // ═══════════════════════════════════════════════════════════
 type ImmutableUser = Readonly<User>;
-const frozenUser: ImmutableUser = { id: 1, name: "H", email: "", age: 24, role: "user" };
+const frozenUser: ImmutableUser = {
+  id: 1,
+  name: "H",
+  email: "",
+  age: 24,
+  role: "user",
+};
 // frozenUser.name = "New"; // ❌ Error — readonly!
 
 // ═══════════════════════════════════════════════════════════
@@ -265,8 +277,8 @@ type Permissions = Record<"read" | "write" | "delete", boolean>;
 
 type UserMap = Record<string, User>;
 const users: UserMap = {
-    "u1": { id: 1, name: "A", email: "", age: 24, role: "admin" },
-    "u2": { id: 2, name: "B", email: "", age: 25, role: "user" }
+  u1: { id: 1, name: "A", email: "", age: 24, role: "admin" },
+  u2: { id: 2, name: "B", email: "", age: 25, role: "user" },
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -290,7 +302,7 @@ type DefiniteString = NonNullable<MaybeString>; // string
 // RETURNTYPE<T> — Extract the return type of a function
 // ═══════════════════════════════════════════════════════════
 function fetchUsers() {
-    return Promise.resolve([{ id: 1, name: "A" }]);
+  return Promise.resolve([{ id: 1, name: "A" }]);
 }
 type FetchResult = ReturnType<typeof fetchUsers>;
 // Promise<{ id: number; name: string }[]>
@@ -328,19 +340,18 @@ type CreateUserParams = Parameters<typeof createUser>;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 2. Utility Types — Built-in Type Transformations**
 
 **Challenge 1 (Reasoning):** You have a generic function `function delay<T>(fn: () => T, ms: number)`. How do you extract the exact return type of the function passed in, so you can correctly type the `delay` function's return signature?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Building generic wrapper functions that preserve inner types.
 **Trace:** TypeScript provides the `ReturnType<T>` utility type, which uses `infer` under the hood to extract the return type of a function signature.
 **Design Fix:** You type the return value of `delay` as `Promise<ReturnType<typeof fn>>`. However, since `T` is already the return type in the generic definition `fn: () => T`, the return signature is simply `Promise<T>`. But if you didn't have `T`, or were extracting it from an existing function reference `const myFn = () => 42;`, you would use `type Res = ReturnType<typeof myFn>;`.
+
 </details>
 
 ## 3. Mapped Types — Type Algebra
@@ -351,17 +362,17 @@ type CreateUserParams = Parameters<typeof createUser>;
 
 // HOW Partial<T> works internally:
 type MyPartial<T> = {
-    [K in keyof T]?: T[K]; // For each key, make optional
+  [K in keyof T]?: T[K]; // For each key, make optional
 };
 
 // HOW Readonly<T> works internally:
 type MyReadonly<T> = {
-    readonly [K in keyof T]: T[K]; // For each key, add readonly
+  readonly [K in keyof T]: T[K]; // For each key, add readonly
 };
 
 // CUSTOM: Make all properties nullable
 type Nullable<T> = {
-    [K in keyof T]: T[K] | null;
+  [K in keyof T]: T[K] | null;
 };
 
 type NullableUser = Nullable<User>;
@@ -369,14 +380,12 @@ type NullableUser = Nullable<User>;
 
 // CUSTOM: Deep Readonly (recursive)
 type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends object
-        ? DeepReadonly<T[K]>
-        : T[K];
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
 };
 
 // REMAPPING KEYS (TS 4.1+):
 type Getters<T> = {
-    [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
+  [K in keyof T as `get${Capitalize<string & K>}`]: () => T[K];
 };
 
 type UserGetters = Getters<User>;
@@ -384,7 +393,7 @@ type UserGetters = Getters<User>;
 
 // FILTERING with key remapping:
 type OnlyStringProps<T> = {
-    [K in keyof T as T[K] extends string ? K : never]: T[K];
+  [K in keyof T as T[K] extends string ? K : never]: T[K];
 };
 
 type UserStrings = OnlyStringProps<User>;
@@ -393,20 +402,22 @@ type UserStrings = OnlyStringProps<User>;
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Mapped Types — Type Algebra**
 
 **Challenge 1 (Design):** You have an interface `DatabaseRow { id: string; createdAt: Date; name: string; age: number; }`. You want to write an update function where `id` and `createdAt` CANNOT be updated, and the rest of the fields are optional. How do you compose this using Mapped and Utility types?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Crafting precise API payload shapes.
 **Trace:** We need to split the type into two groups: the omitted properties and the partial properties.
 **Design Fix:**
+
 ```typescript
 type UpdatePayload = Partial<Omit<DatabaseRow, "id" | "createdAt">>;
 ```
+
 This evaluates to `{ name?: string; age?: number; }`. The ID and Date are completely removed from the payload type, ensuring the compiler rejects any accidental attempts to overwrite immutable database fields.
+
 </details>
 
 ## 4. Conditional Types — Type-Level If/Else
@@ -417,12 +428,12 @@ This evaluates to `{ name?: string; age?: number; }`. The ID and Date are comple
 // BASIC:
 type IsString<T> = T extends string ? true : false;
 type A = IsString<"hello">; // true
-type B = IsString<42>;      // false
+type B = IsString<42>; // false
 
 // INFER keyword — extract types from within:
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 type X = UnwrapPromise<Promise<string>>; // string
-type Y = UnwrapPromise<number>;          // number (not a promise)
+type Y = UnwrapPromise<number>; // number (not a promise)
 
 // Extract array element type:
 type ElementOf<T> = T extends (infer E)[] ? E : never;
@@ -448,40 +459,46 @@ type Result2 = ToArrayNonDist<string | number>; // (string | number)[]
 // API Response that varies by endpoint:
 type ApiEndpoint = "/users" | "/products" | "/orders";
 
-type ApiData<E extends ApiEndpoint> =
-    E extends "/users" ? User[] :
-    E extends "/products" ? Product[] :
-    E extends "/orders" ? Order[] :
-    never;
+type ApiData<E extends ApiEndpoint> = E extends "/users"
+  ? User[]
+  : E extends "/products"
+    ? Product[]
+    : E extends "/orders"
+      ? Order[]
+      : never;
 
-async function fetchApi<E extends ApiEndpoint>(endpoint: E): Promise<ApiData<E>> {
-    const res = await fetch(endpoint);
-    return res.json();
+async function fetchApi<E extends ApiEndpoint>(
+  endpoint: E,
+): Promise<ApiData<E>> {
+  const res = await fetch(endpoint);
+  return res.json();
 }
-const users = await fetchApi("/users");    // Type: User[]
+const users = await fetchApi("/users"); // Type: User[]
 const products = await fetchApi("/products"); // Type: Product[]
 
 // Event handler map:
-type EventPayload<E extends string> =
-    E extends "click" ? { x: number; y: number } :
-    E extends "keypress" ? { key: string; code: number } :
-    E extends "submit" ? { formData: FormData } :
-    Record<string, unknown>;
+type EventPayload<E extends string> = E extends "click"
+  ? { x: number; y: number }
+  : E extends "keypress"
+    ? { key: string; code: number }
+    : E extends "submit"
+      ? { formData: FormData }
+      : Record<string, unknown>;
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Conditional Types — Type-Level If/Else**
 
 **Challenge 1 (Trace):** Why does `type ToArray<T> = T extends any ? T[] : never;` when given `string | number` evaluate to `string[] | number[]`, instead of `(string | number)[]`?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Understanding Distributive Conditional Types.
 **Trace:** In TypeScript, conditional types are **distributive** by default when the checked type (`T`) is a bare type parameter. This means the compiler splits the union and applies the condition to each member individually. It evaluates `(string extends any ? string[] : never) | (number extends any ? number[] : never)`, resulting in `string[] | number[]`.
 **Debug/Fix:** If you want to disable distribution and evaluate the union as a single block, wrap both sides of the `extends` clause in tuples:
 `type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;`
+
 </details>
 
 ## 5. Template Literal Types
@@ -495,7 +512,8 @@ type ClassName = `${Size}-${Color}`;
 // "sm-red" | "sm-green" | "sm-blue" | "md-red" | "md-green" | ... (9 combos)
 
 // CSS-like property names:
-type CSSProperty = `${"margin" | "padding"}-${"top" | "right" | "bottom" | "left"}`;
+type CSSProperty =
+  `${"margin" | "padding"}-${"top" | "right" | "bottom" | "left"}`;
 // "margin-top" | "margin-right" | ... | "padding-left" (8 combos)
 
 // Event handler naming:
@@ -504,18 +522,18 @@ type HandlerName = `on${Capitalize<EventName>}`;
 // "onClick" | "onFocus" | "onBlur"
 
 // INTRINSIC STRING MANIPULATION TYPES:
-type Upper = Uppercase<"hello">;    // "HELLO"
-type Lower = Lowercase<"HELLO">;    // "hello"
-type Cap = Capitalize<"hello">;     // "Hello"
+type Upper = Uppercase<"hello">; // "HELLO"
+type Lower = Lowercase<"HELLO">; // "hello"
+type Cap = Capitalize<"hello">; // "Hello"
 type Uncap = Uncapitalize<"Hello">; // "hello"
 
 // PATTERN MATCHING with template literals:
 type ExtractRouteParams<T extends string> =
-    T extends `${string}:${infer Param}/${infer Rest}`
-        ? Param | ExtractRouteParams<`/${Rest}`>
-        : T extends `${string}:${infer Param}`
-            ? Param
-            : never;
+  T extends `${string}:${infer Param}/${infer Rest}`
+    ? Param | ExtractRouteParams<`/${Rest}`>
+    : T extends `${string}:${infer Param}`
+      ? Param
+      : never;
 
 type Params = ExtractRouteParams<"/users/:userId/posts/:postId">;
 // "userId" | "postId" — extracted from the route string!
@@ -523,22 +541,23 @@ type Params = ExtractRouteParams<"/users/:userId/posts/:postId">;
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Template Literal Types**
 
 **Challenge 1 (Design):** You are building a Tailwind CSS clone. You want to type a padding utility that accepts strings like `p-4`, `p-8`, or `pt-4`. How do you define this using Template Literal Types?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Generating highly specific string validation types.
 **Trace:** Template literal types allow you to multiply unions together to generate all possible string combinations at compile time.
 **Design Fix:**
+
 ```typescript
 type Prefix = "p" | "pt" | "pr" | "pb" | "pl" | "px" | "py";
 type Size = "0" | "1" | "2" | "4" | "8";
 type PaddingClass = `${Prefix}-${Size}`;
 // Generates "p-0" | "p-1" | ... | "py-8" (35 specific literal strings)
 ```
+
 </details>
 
 ## 6. Discriminated Unions — Advanced Patterns
@@ -546,103 +565,99 @@ type PaddingClass = `${Prefix}-${Size}`;
 ```typescript
 // STATE MACHINE (React reducer pattern):
 type AuthState =
-    | { status: "idle" }
-    | { status: "loading" }
-    | { status: "authenticated"; user: User; token: string }
-    | { status: "error"; error: string; retryCount: number };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "authenticated"; user: User; token: string }
+  | { status: "error"; error: string; retryCount: number };
 
 function renderAuth(state: AuthState): string {
-    switch (state.status) {
-        case "idle":
-            return "Please log in";
-        case "loading":
-            return "Loading...";
-        case "authenticated":
-            return `Welcome, ${state.user.name}`; // TS knows user exists
-        case "error":
-            return `Error: ${state.error} (${state.retryCount} retries)`;
-    }
+  switch (state.status) {
+    case "idle":
+      return "Please log in";
+    case "loading":
+      return "Loading...";
+    case "authenticated":
+      return `Welcome, ${state.user.name}`; // TS knows user exists
+    case "error":
+      return `Error: ${state.error} (${state.retryCount} retries)`;
+  }
 }
 
 // RESULT TYPE (inspired by Rust):
-type Result<T, E = Error> =
-    | { ok: true; value: T }
-    | { ok: false; error: E };
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
 
 function divide(a: number, b: number): Result<number, string> {
-    if (b === 0) return { ok: false, error: "Division by zero" };
-    return { ok: true, value: a / b };
+  if (b === 0) return { ok: false, error: "Division by zero" };
+  return { ok: true, value: a / b };
 }
 
 const result = divide(10, 3);
 if (result.ok) {
-    console.log(result.value.toFixed(2)); // TS knows: number
+  console.log(result.value.toFixed(2)); // TS knows: number
 } else {
-    console.error(result.error); // TS knows: string
+  console.error(result.error); // TS knows: string
 }
 
 // ACTION/REDUCER PATTERN (Redux-style):
 type Action =
-    | { type: "ADD_TODO"; payload: { text: string } }
-    | { type: "TOGGLE_TODO"; payload: { id: number } }
-    | { type: "DELETE_TODO"; payload: { id: number } }
-    | { type: "SET_FILTER"; payload: { filter: "all" | "active" | "done" } };
+  | { type: "ADD_TODO"; payload: { text: string } }
+  | { type: "TOGGLE_TODO"; payload: { id: number } }
+  | { type: "DELETE_TODO"; payload: { id: number } }
+  | { type: "SET_FILTER"; payload: { filter: "all" | "active" | "done" } };
 
 interface State {
-    todos: Array<{ id: number; text: string; done: boolean }>;
-    filter: "all" | "active" | "done";
+  todos: Array<{ id: number; text: string; done: boolean }>;
+  filter: "all" | "active" | "done";
 }
 
 function reducer(state: State, action: Action): State {
-    switch (action.type) {
-        case "ADD_TODO":
-            return {
-                ...state,
-                todos: [...state.todos, {
-                    id: Date.now(),
-                    text: action.payload.text, // TS knows: { text: string }
-                    done: false
-                }]
-            };
-        case "TOGGLE_TODO":
-            return {
-                ...state,
-                todos: state.todos.map(t =>
-                    t.id === action.payload.id ? { ...t, done: !t.done } : t
-                )
-            };
-        case "DELETE_TODO":
-            return {
-                ...state,
-                todos: state.todos.filter(t => t.id !== action.payload.id)
-            };
-        case "SET_FILTER":
-            return { ...state, filter: action.payload.filter };
-    }
+  switch (action.type) {
+    case "ADD_TODO":
+      return {
+        ...state,
+        todos: [
+          ...state.todos,
+          {
+            id: Date.now(),
+            text: action.payload.text, // TS knows: { text: string }
+            done: false,
+          },
+        ],
+      };
+    case "TOGGLE_TODO":
+      return {
+        ...state,
+        todos: state.todos.map((t) =>
+          t.id === action.payload.id ? { ...t, done: !t.done } : t,
+        ),
+      };
+    case "DELETE_TODO":
+      return {
+        ...state,
+        todos: state.todos.filter((t) => t.id !== action.payload.id),
+      };
+    case "SET_FILTER":
+      return { ...state, filter: action.payload.filter };
+  }
 }
 ```
 
 ---
-
-
-
 
 ## 7. Type Challenges — Practice Problems
 
 ```typescript
 // CHALLENGE 1: Implement DeepPartial
 type DeepPartial<T> = {
-    [K in keyof T]?: T[K] extends object
-        ? T[K] extends Function
-            ? T[K]
-            : DeepPartial<T[K]>
-        : T[K];
+  [K in keyof T]?: T[K] extends object
+    ? T[K] extends Function
+      ? T[K]
+      : DeepPartial<T[K]>
+    : T[K];
 };
 
 // CHALLENGE 2: Implement Flatten (one level)
-type Flatten<T> = T extends (infer U)[]
-    ? U
-    : T;
+type Flatten<T> = T extends (infer U)[] ? U : T;
 
 // CHALLENGE 3: Implement TupleToUnion
 type TupleToUnion<T extends readonly any[]> = T[number];
@@ -651,7 +666,7 @@ type Test = TupleToUnion<[string, number, boolean]>; // string | number | boolea
 // CHALLENGE 4: Implement NonEmptyArray
 type NonEmptyArray<T> = [T, ...T[]];
 function firstElement<T>(arr: NonEmptyArray<T>): T {
-    return arr[0]; // No undefined possible!
+  return arr[0]; // No undefined possible!
 }
 
 // CHALLENGE 5: Implement StrictOmit (errors on invalid keys)
@@ -694,9 +709,6 @@ Q: Explain conditional types distribution?
   over each member. string | number → IsString<string> | IsString<number>.
 ```
 
-
 ---
 
 [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
-
-

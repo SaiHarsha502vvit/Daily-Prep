@@ -25,7 +25,7 @@ TLS provides ALL THREE. Let's understand each building block.
 CONCEPT: Same key to ENCRYPT and DECRYPT.
   Encrypt(key, "hello") → "x8f2a..."
   Decrypt(key, "x8f2a...") → "hello"
-  
+
   ANALOGY: A locked box with one key.
   Both sender and receiver have a COPY of the same key.
   Anyone with the key can lock (encrypt) or unlock (decrypt).
@@ -35,13 +35,13 @@ ALGORITHMS:
     AES-128: 128-bit key.
     AES-256: 256-bit key (used by governments, banks, TLS).
     Block cipher: encrypts data in 128-bit blocks.
-    
+
     Modes:
     CBC (Cipher Block Chaining): each block depends on previous (serial).
     GCM (Galois/Counter Mode): parallelizable, provides AEAD.
       AEAD = Authenticated Encryption with Associated Data.
       Encryption + integrity check in ONE operation. THE standard for TLS 1.3.
-    
+
   ChaCha20-Poly1305:
     Google's alternative to AES-GCM. Faster on devices WITHOUT hardware AES.
     Used by: Android, Chrome on ARM, mobile devices.
@@ -62,10 +62,10 @@ THE PROBLEM: How do you SHARE the key securely?
 CONCEPT: TWO different keys. PUBLIC key and PRIVATE key.
   Encrypt(public_key, "hello") → "x8f2a..."
   Decrypt(private_key, "x8f2a...") → "hello"
-  
+
   Public key: shared with EVERYONE (literally public).
   Private key: kept SECRET by the owner (never shared!).
-  
+
   Anything encrypted with the public key → ONLY the private key can decrypt.
   Anything signed with the private key → ANYONE with the public key can verify.
 
@@ -75,7 +75,7 @@ ALGORITHMS:
     Key sizes: 2048-bit (minimum today), 4096-bit (recommended).
     Used for: certificate signing, key exchange (legacy TLS).
     Slow! ~1000x slower than AES.
-    
+
     math:
     Choose two large primes: p = 61, q = 53
     n = p × q = 3233  (this is the modulus)
@@ -84,19 +84,19 @@ ALGORITHMS:
     Find d where (d × e) mod φ(n) = 1 → d = 2753
     Public key: (n=3233, e=17)
     Private key: (n=3233, d=2753)
-    
+
     Encrypt: ciphertext = message^e mod n
     Decrypt: message = ciphertext^d mod n
-    
+
     Security: to derive d from e and n, you need to factor n into p × q.
     For 2048-bit keys: no known algorithm can do this in reasonable time.
-  
+
   Elliptic Curve (ECC, 1985):
     Based on: difficulty of the elliptic curve discrete logarithm problem.
     Key sizes: 256-bit (equivalent to RSA 3072-bit!)
     MUCH smaller keys, MUCH faster than RSA.
     Used for: TLS 1.3 key exchange, ECDSA signatures, SSH keys (ed25519).
-    
+
     WHY ECC IS WINNING:
     RSA 2048-bit key = 256 bytes. ECC 256-bit key = 32 bytes.
     Same security, 8× smaller → less bandwidth, faster handshakes.
@@ -106,19 +106,19 @@ THE HYBRID APPROACH (how TLS actually works):
   Problem: Asymmetric is SLOW (good for small data).
   Solution: Use asymmetric to exchange a SYMMETRIC key.
             Then use the fast symmetric key for actual data.
-  
+
   This is called KEY EXCHANGE.
   TLS 1.3: Diffie-Hellman key exchange → derive AES-256-GCM key → fast data encryption.
 ```
 
-
-
 🔬 **Section Challenge — Asymmetric Encryption — Two Keys**
 
 **Challenge 1 (Reasoning):** If asymmetric encryption (RSA/ECC) can encrypt data, why doesn't TLS just use it for ALL data instead of the hybrid approach (asymmetric for key exchange → symmetric for data)?
+
 <details><summary>Answer</summary>
 
 **Performance: ~1000× slower.** RSA-2048 encryption processes ~1 MB/s vs AES-256-GCM at ~5 GB/s (with AES-NI hardware). For a 100 MB file download: RSA-only = 100 seconds; AES = 0.02 seconds. **Also:** RSA can only encrypt data smaller than the key size (256 bytes for RSA-2048). Larger data requires chunking + padding overhead. **The hybrid solves both:** Use slow asymmetric crypto ONCE (key exchange: ~1ms) to agree on a symmetric key. Then use fast symmetric crypto for all subsequent data. **TLS 1.3 goes further:** It doesn't even use RSA for key exchange anymore — it uses ECDHE (Elliptic Curve Diffie-Hellman Ephemeral), which provides forward secrecy. RSA key exchange was removed because a compromised private key would decrypt ALL past recorded traffic.
+
 </details>
 
 ## Diffie-Hellman Key Exchange — The Magic
@@ -132,26 +132,26 @@ THE PROBLEM:
 
 THE MATH (simplified):
   Public parameters: prime p = 23, generator g = 5
-  
+
   Alice:
     Chooses secret a = 6 (private, never shared!)
     Computes A = g^a mod p = 5^6 mod 23 = 15625 mod 23 = 8
     Sends A = 8 to Bob (public, Eve sees this)
-  
+
   Bob:
     Chooses secret b = 15 (private, never shared!)
     Computes B = g^b mod p = 5^15 mod 23 = 30517578125 mod 23 = 19
     Sends B = 19 to Alice (public, Eve sees this)
-  
+
   Alice computes: shared_secret = B^a mod p = 19^6 mod 23 = 2
   Bob computes:   shared_secret = A^b mod p = 8^15 mod 23 = 2
-  
+
   SAME SECRET: 2! Without ever transmitting the secret itself.
-  
+
   Eve knows: p=23, g=5, A=8, B=19.
   To find the secret, Eve must solve: find a where 5^a mod 23 = 8.
   This is the DISCRETE LOGARITHM PROBLEM — computationally infeasible for large numbers.
-  
+
   ANALOGY: Paint mixing.
   Public color: yellow.
   Alice mixes yellow + her secret blue → sends green to Bob.
@@ -164,16 +164,16 @@ ECDHE (Elliptic Curve Diffie-Hellman Ephemeral):
   Same concept but using elliptic curve math instead of modular arithmetic.
   Much smaller numbers → faster computation, same security.
   "Ephemeral" = new keys for EVERY connection (forward secrecy!).
-  
+
   FORWARD SECRECY:
   If server's LONG-TERM private key is compromised LATER →
   past traffic is STILL secure because each session used a UNIQUE ephemeral key.
   The ephemeral key was discarded after the session ended.
-  
+
   Without forward secrecy (RSA key exchange):
   If attacker records encrypted traffic AND later steals the private key →
   attacker can decrypt ALL past recorded traffic! Terrible!
-  
+
   TLS 1.3 MANDATES forward secrecy. RSA key exchange is removed entirely.
 ```
 
@@ -186,14 +186,14 @@ ECDHE (Elliptic Curve Diffie-Hellman Ephemeral):
 ```
 HASH FUNCTION:
   Input: any-length data → Output: fixed-length "fingerprint."
-  
+
   Properties:
   1. Deterministic: same input → ALWAYS same output.
   2. Fast to compute.
   3. One-way: impossible to reverse (can't get input from output).
   4. Collision-resistant: extremely hard to find two inputs with same output.
   5. Avalanche effect: tiny input change → completely different output.
-  
+
   Algorithms:
   MD5: 128-bit output. BROKEN — collisions found. Never use for security.
   SHA-1: 160-bit. BROKEN — Google found a collision (2017). Legacy only.
@@ -205,16 +205,16 @@ HASH FUNCTION:
 HMAC (Hash-based Message Authentication Code):
   Combines a hash function with a SECRET KEY:
   HMAC(key, message) → tag
-  
+
   Verifier computes HMAC with same key → if tag matches → message is authentic AND unmodified.
-  
+
   Used in: TLS (data integrity), API authentication (HMAC-SHA256 signing),
   JWTs (HS256 = HMAC-SHA256).
 
 DIGITAL SIGNATURES (asymmetric version of MAC):
   Sign:    signature = Sign(private_key, hash(message))
   Verify:  Verify(public_key, hash(message), signature) → true/false
-  
+
   Anyone can verify (public key). Only signer can create (private key).
   Used for: TLS certificates, code signing, Git commits (GPG), JWTs (RS256, ES256).
 ```
@@ -273,7 +273,7 @@ TOTAL: 1 round trip! (TLS 1.2 required 2 round trips)
   Client has cached the server's pre-shared key from a previous session.
   Client sends data IN THE FIRST PACKET (with ClientHello).
   Server can process data immediately → 0 round trips for data!
-  
+
   RISK: 0-RTT data can be REPLAYED by an attacker.
   Only safe for IDEMPOTENT requests (GET, not POST).
 ```
@@ -288,7 +288,7 @@ TOTAL: 1 round trip! (TLS 1.2 required 2 round trips)
 THE TRUST PROBLEM:
   You visit https://bank.com. How do you know it's really your bank?
   Without certificates: attacker intercepts → shows THEIR site → steals your password!
-  
+
   SOLUTION: Certificate Authorities (CAs) — trusted third parties.
   CA says: "I verified that bank.com is owned by Bank Corp."
   CA signs a certificate with its private key.
@@ -298,12 +298,12 @@ THE CERTIFICATE CHAIN:
   Root CA (pre-installed in browser/OS: ~150 root CAs)
     → signs → Intermediate CA (reduces risk if root is compromised)
       → signs → YOUR DOMAIN CERTIFICATE
-  
+
   Chain example for api.myapp.com:
   1. Root: "DST Root CA X3" (pre-installed in browser)
   2. Intermediate: "Let's Encrypt R3" (signed by root)
   3. Leaf: "api.myapp.com" (signed by intermediate)
-  
+
   Browser validates: root signature on intermediate ✓ → intermediate signature on leaf ✓ → TRUSTED.
 
 WHAT'S IN A CERTIFICATE (X.509):
@@ -314,7 +314,7 @@ WHAT'S IN A CERTIFICATE (X.509):
   Subject Alternative Names (SAN): api.myapp.com, *.myapp.com
   Key Usage: Digital Signature, Key Agreement
   Certificate Signature Algorithm: sha256WithRSAEncryption
-  
+
   SAN (Subject Alternative Name): THE field browsers check for hostname.
   Wildcard cert: *.myapp.com → covers www.myapp.com, api.myapp.com (but NOT myapp.com itself!).
 
@@ -323,7 +323,7 @@ LET'S ENCRYPT — FREE TLS FOR EVERYONE:
   Issues free TLS certificates via automated ACME protocol.
   90-day validity (force automation → no forgotten expired certs!).
   ~400 million certificates issued. Changed the web from mostly HTTP to mostly HTTPS.
-  
+
   HOW ACME WORKS:
   1. certbot (client) requests cert for api.myapp.com.
   2. Let's Encrypt challenges: "Prove you control this domain."
@@ -380,8 +380,8 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-  - api.myapp.com
-  - www.myapp.com
+    - api.myapp.com
+    - www.myapp.com
 # cert-manager handles: domain verification, cert issuance, renewal.
 # The cert appears as a K8s Secret that Ingress can reference.
 ```
@@ -398,18 +398,18 @@ STANDARD TLS: Client verifies server's identity. Server doesn't verify client.
 
 MUTUAL TLS (mTLS): BOTH sides verify each other's certificates.
   Server verifies client AND client verifies server.
-  
+
   USE CASES:
   • Microservices: Service A proves identity to Service B (and vice versa).
   • Zero-trust networking: no implicit trust, even inside the datacenter.
   • API authentication: client certificate replaces API key.
   • IoT: devices authenticate to cloud services.
-  
+
   SERVICE MESH (Istio/Linkerd):
   Sidecar proxy automatically handles mTLS between ALL services.
   Your application code doesn't know about TLS.
   Certificate rotation happens automatically via Envoy → the CA (Citadel in Istio).
-  
+
   Without service mesh: each team manages their own certificates.
   With service mesh: zero-config mTLS everywhere. Zero trust. Automatically.
 ```
@@ -418,14 +418,13 @@ MUTUAL TLS (mTLS): BOTH sides verify each other's certificates.
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **TCP transport for TLS** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — TLS runs on TCP |
-| **HTTPS = HTTP + TLS** | [Ch 08: HTTP Complete](08_HTTP_Complete.md) |
-| **DevSecOps (certificates)** | [Networking & Security](02_Networking_Security.md) — cert pipeline |
-| **Service mesh mTLS** | [Cloud Native](03_ServiceMesh_CloudNative.md) — Istio/Linkerd |
-| **JWT tokens** | [Enterprise Auth](../10_Enterprise_Systems/06_Authentication_Security.md) |
-| **Python requests (TLS)** | [Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) — HTTPS calls |
-| **Math (modular arithmetic)** | [Math Behind Code](../21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md) |
-| **Hash tables (cert cache)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
-
+| Topic                         | Related Content                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| **TCP transport for TLS**     | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — TLS runs on TCP                     |
+| **HTTPS = HTTP + TLS**        | [Ch 08: HTTP Complete](08_HTTP_Complete.md)                                     |
+| **DevSecOps (certificates)**  | [Networking & Security](02_Networking_Security.md) — cert pipeline              |
+| **Service mesh mTLS**         | [Cloud Native](03_ServiceMesh_CloudNative.md) — Istio/Linkerd                   |
+| **JWT tokens**                | [Enterprise Auth](../10_Enterprise_Systems/06_Authentication_Security.md)       |
+| **Python requests (TLS)**     | [Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) — HTTPS calls |
+| **Math (modular arithmetic)** | [Math Behind Code](../21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md)          |
+| **Hash tables (cert cache)**  | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                |

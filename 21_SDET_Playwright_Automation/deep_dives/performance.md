@@ -25,19 +25,20 @@
 
 Performance testing in Playwright catches:
 
-| Bug class | Caught? |
-|---|---|
-| Page load >3s | Yes |
-| LCP regression | Yes |
-| INP regression | Yes |
-| CLS regression | Yes |
-| Memory leaks (long sessions) | Partial — need Chrome DevTools API |
-| Bundle size growth | Indirect (via timings) |
-| Render-blocking resource added | Yes |
-| Server-side latency | Yes (Navigation Timing) |
-| Database N+1 from UI | Indirect |
+| Bug class                      | Caught?                            |
+| ------------------------------ | ---------------------------------- |
+| Page load >3s                  | Yes                                |
+| LCP regression                 | Yes                                |
+| INP regression                 | Yes                                |
+| CLS regression                 | Yes                                |
+| Memory leaks (long sessions)   | Partial — need Chrome DevTools API |
+| Bundle size growth             | Indirect (via timings)             |
+| Render-blocking resource added | Yes                                |
+| Server-side latency            | Yes (Navigation Timing)            |
+| Database N+1 from UI           | Indirect                           |
 
 Performance testing in Playwright does NOT:
+
 - Replace dedicated load testing (k6, Gatling).
 - Replace synthetic monitoring (Checkly, Datadog Synthetics).
 - Replace RUM (real user monitoring).
@@ -50,27 +51,30 @@ Use Playwright for SYNTHETIC perf budgets in PR/CI. Use real tools for productio
 
 The three vitals Google ranks by:
 
-| Vital | Measures | Good | Needs Improvement | Poor |
-|---|---|---|---|---|
-| **LCP** (Largest Contentful Paint) | Time to render largest above-fold element | <2.5s | 2.5-4.0s | >4.0s |
-| **INP** (Interaction to Next Paint) | Responsiveness to user input | <200ms | 200-500ms | >500ms |
-| **CLS** (Cumulative Layout Shift) | Visual stability | <0.1 | 0.1-0.25 | >0.25 |
+| Vital                               | Measures                                  | Good   | Needs Improvement | Poor   |
+| ----------------------------------- | ----------------------------------------- | ------ | ----------------- | ------ |
+| **LCP** (Largest Contentful Paint)  | Time to render largest above-fold element | <2.5s  | 2.5-4.0s          | >4.0s  |
+| **INP** (Interaction to Next Paint) | Responsiveness to user input              | <200ms | 200-500ms         | >500ms |
+| **CLS** (Cumulative Layout Shift)   | Visual stability                          | <0.1   | 0.1-0.25          | >0.25  |
 
 INP replaced FID (First Input Delay) in March 2024 as the responsiveness vital.
 
 ### 2.1 Capturing in Playwright
 
 ```typescript
-test('homepage LCP is under 2.5s', async ({ page }) => {
-  await page.goto('/');
+test("homepage LCP is under 2.5s", async ({ page }) => {
+  await page.goto("/");
 
-  const lcp = await page.evaluate(() => new Promise<number>(resolve => {
-    new PerformanceObserver(list => {
-      const entries = list.getEntries();
-      const last = entries[entries.length - 1] as PerformanceEntry;
-      resolve(last.startTime);
-    }).observe({ type: 'largest-contentful-paint', buffered: true });
-  }));
+  const lcp = await page.evaluate(
+    () =>
+      new Promise<number>((resolve) => {
+        new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const last = entries[entries.length - 1] as PerformanceEntry;
+          resolve(last.startTime);
+        }).observe({ type: "largest-contentful-paint", buffered: true });
+      }),
+  );
 
   expect(lcp).toBeLessThan(2500);
 });
@@ -81,6 +85,7 @@ test('homepage LCP is under 2.5s', async ({ page }) => {
 CI is variable. CPU on shared runners is variable. Network is variable. The same page load can be 1.5s one run, 3.5s the next.
 
 Mitigations:
+
 - Run 5 times, take p75.
 - Use Lighthouse CI (which does this for you).
 - Compare to baseline, not absolute thresholds.
@@ -111,15 +116,15 @@ console.table(timing);
 
 ### 3.1 What each metric tells you
 
-| Metric | Tells you |
-|---|---|
-| DNS lookup | DNS performance / caching |
-| TCP connect | Network RTT |
-| Request | Server processing + TCP send |
-| Response | Server send + TCP receive |
-| domInteractive | HTML fully parsed |
-| domComplete | All blocking resources loaded |
-| loadEvent | window.onload fired |
+| Metric         | Tells you                     |
+| -------------- | ----------------------------- |
+| DNS lookup     | DNS performance / caching     |
+| TCP connect    | Network RTT                   |
+| Request        | Server processing + TCP send  |
+| Response       | Server send + TCP receive     |
+| domInteractive | HTML fully parsed             |
+| domComplete    | All blocking resources loaded |
+| loadEvent      | window.onload fired           |
 
 For diagnosing where time goes.
 
@@ -129,7 +134,9 @@ The `performance.timing` is deprecated. Use:
 
 ```typescript
 const navTiming = await page.evaluate(() => {
-  const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  const entry = performance.getEntriesByType(
+    "navigation",
+  )[0] as PerformanceNavigationTiming;
   return {
     fetchStart: entry.fetchStart,
     domainLookup: entry.domainLookupEnd - entry.domainLookupStart,
@@ -151,7 +158,7 @@ npm i -D web-vitals
 ```
 
 ```typescript
-import { onCLS, onFID, onLCP, onINP } from 'web-vitals';
+import { onCLS, onFID, onLCP, onINP } from "web-vitals";
 
 // Inject into the page
 await page.addInitScript(() => {
@@ -159,10 +166,10 @@ await page.addInitScript(() => {
   // Library injects via script tag separately
 });
 
-await page.goto('/');
+await page.goto("/");
 
 // Interact with the page to trigger INP
-await page.click('button');
+await page.click("button");
 
 // Collect
 const vitals = await page.evaluate(() => (window as any).__vitals);
@@ -188,19 +195,19 @@ npm i -D @lhci/cli
 module.exports = {
   ci: {
     collect: {
-      url: ['http://localhost:3000/'],
+      url: ["http://localhost:3000/"],
       numberOfRuns: 3,
     },
     assert: {
       assertions: {
-        'categories:performance': ['error', { minScore: 0.9 }],
-        'categories:accessibility': ['error', { minScore: 0.95 }],
-        'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
-        'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
+        "categories:performance": ["error", { minScore: 0.9 }],
+        "categories:accessibility": ["error", { minScore: 0.95 }],
+        "largest-contentful-paint": ["error", { maxNumericValue: 2500 }],
+        "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
       },
     },
     upload: {
-      target: 'temporary-public-storage',
+      target: "temporary-public-storage",
     },
   },
 };
@@ -216,6 +223,7 @@ module.exports = {
 ```
 
 Outputs:
+
 - Per-run scores.
 - Diff vs main branch (with --compare-with-base).
 - Public URL for the detailed report.
@@ -225,9 +233,9 @@ Outputs:
 Lighthouse and Playwright can coexist:
 
 ```typescript
-test('lighthouse audit', async ({ page }) => {
-  const { runLighthouse } = require('playwright-lighthouse');
-  await page.goto('/');
+test("lighthouse audit", async ({ page }) => {
+  const { runLighthouse } = require("playwright-lighthouse");
+  await page.goto("/");
   await runLighthouse(page, {
     thresholds: { performance: 90, accessibility: 95 },
   });
@@ -238,13 +246,13 @@ test('lighthouse audit', async ({ page }) => {
 
 ### 5.4 LH vs Playwright assertions
 
-| | Lighthouse CI | Playwright |
-|---|---|---|
-| Comprehensive scoring | Yes | No |
-| Per-vital threshold | Yes | Yes (manually) |
-| Visual audit | Yes (sniffer) | No |
-| Integration with E2E flow | Standalone | Integrated |
-| Best practices coverage | Extensive | None built-in |
+|                           | Lighthouse CI | Playwright     |
+| ------------------------- | ------------- | -------------- |
+| Comprehensive scoring     | Yes           | No             |
+| Per-vital threshold       | Yes           | Yes (manually) |
+| Visual audit              | Yes (sniffer) | No             |
+| Integration with E2E flow | Standalone    | Integrated     |
+| Best practices coverage   | Extensive     | None built-in  |
 
 Use LH for full audits; Playwright for focused per-page perf assertions.
 
@@ -256,24 +264,24 @@ For LOAD testing — many concurrent users.
 
 ```javascript
 // load-test.js
-import http from 'k6/http';
-import { check } from 'k6';
+import http from "k6/http";
+import { check } from "k6";
 
 export const options = {
   stages: [
-    { duration: '1m', target: 50 },     // ramp to 50 VUs
-    { duration: '5m', target: 50 },     // hold
-    { duration: '1m', target: 0 },      // ramp down
+    { duration: "1m", target: 50 }, // ramp to 50 VUs
+    { duration: "5m", target: 50 }, // hold
+    { duration: "1m", target: 0 }, // ramp down
   ],
   thresholds: {
-    'http_req_duration': ['p(95)<500'],   // 95% < 500ms
-    'http_req_failed': ['rate<0.01'],     // <1% failed
+    http_req_duration: ["p(95)<500"], // 95% < 500ms
+    http_req_failed: ["rate<0.01"], // <1% failed
   },
 };
 
 export default function () {
-  const res = http.get('https://api.example.com/citations');
-  check(res, { 'status was 200': r => r.status === 200 });
+  const res = http.get("https://api.example.com/citations");
+  check(res, { "status was 200": (r) => r.status === 200 });
 }
 ```
 
@@ -283,10 +291,10 @@ k6 run load-test.js
 
 ### 6.1 k6 vs Playwright
 
-| Tool | For |
-|---|---|
-| k6 | API load — many concurrent requests |
-| Playwright | UI / E2E — single user flows |
+| Tool       | For                                 |
+| ---------- | ----------------------------------- |
+| k6         | API load — many concurrent requests |
+| Playwright | UI / E2E — single user flows        |
 
 You can't load test with Playwright (each Playwright "user" requires its own Chromium — far too expensive). k6 sends HTTP directly.
 
@@ -316,9 +324,9 @@ A performance budget is a threshold beyond which builds fail.
 ### 7.1 Per-PR budget enforcement
 
 ```typescript
-test('performance budget', async ({ page }) => {
-  await page.goto('/');
-  
+test("performance budget", async ({ page }) => {
+  await page.goto("/");
+
   const lcp = await getLCP(page);
   expect(lcp, `LCP regression: ${lcp}ms (budget: 2500ms)`).toBeLessThan(2500);
 });
@@ -329,13 +337,13 @@ Failure blocks merge.
 ### 7.2 Soft budgets
 
 ```typescript
-test('performance soft check', async ({ page }, testInfo) => {
-  await page.goto('/');
+test("performance soft check", async ({ page }, testInfo) => {
+  await page.goto("/");
   const lcp = await getLCP(page);
-  
+
   if (lcp > 2500) {
     testInfo.annotations.push({
-      type: 'performance-regression',
+      type: "performance-regression",
       description: `LCP ${lcp}ms exceeds budget`,
     });
   }
@@ -346,12 +354,12 @@ Doesn't fail; surfaces in reports. For triage.
 
 ### 7.3 Setting realistic budgets
 
-| Page type | Realistic LCP | Realistic CLS |
-|---|---|---|
-| Marketing landing | <2.0s | <0.05 |
-| SPA dashboard | <2.5s | <0.1 |
-| Heavy form / admin | <3.0s | <0.15 |
-| Static blog | <1.5s | <0.05 |
+| Page type          | Realistic LCP | Realistic CLS |
+| ------------------ | ------------- | ------------- |
+| Marketing landing  | <2.0s         | <0.05         |
+| SPA dashboard      | <2.5s         | <0.1          |
+| Heavy form / admin | <3.0s         | <0.15         |
+| Static blog        | <1.5s         | <0.05         |
 
 Start lenient. Tighten as you optimise.
 
@@ -363,21 +371,21 @@ CI runs on fast machines; production users on slow ones. To simulate:
 
 ```typescript
 const client = await page.context().newCDPSession(page);
-await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+await client.send("Emulation.setCPUThrottlingRate", { rate: 4 });
 // 4× slower CPU
 
-await page.goto('/');
+await page.goto("/");
 // Measurements now reflect a mid-tier mobile device
 ```
 
 ### 8.1 CPU throttling rates
 
-| Rate | Approximates |
-|---|---|
-| 1× | Test runner (no throttling) |
-| 4× | Mid-tier mobile |
-| 6× | Low-end mobile |
-| 10× | Very low-end device |
+| Rate | Approximates                |
+| ---- | --------------------------- |
+| 1×   | Test runner (no throttling) |
+| 4×   | Mid-tier mobile             |
+| 6×   | Low-end mobile              |
+| 10×  | Very low-end device         |
 
 Lighthouse uses 4× by default (matches the "low-end mobile" persona).
 
@@ -387,23 +395,23 @@ Lighthouse uses 4× by default (matches the "low-end mobile" persona).
 
 ```typescript
 const client = await page.context().newCDPSession(page);
-await client.send('Network.enable');
-await client.send('Network.emulateNetworkConditions', {
+await client.send("Network.enable");
+await client.send("Network.emulateNetworkConditions", {
   offline: false,
-  downloadThroughput: (1.5 * 1024 * 1024) / 8,   // 1.5 Mbps
-  uploadThroughput: (750 * 1024) / 8,             // 750 Kbps
-  latency: 40,                                     // ms RTT
+  downloadThroughput: (1.5 * 1024 * 1024) / 8, // 1.5 Mbps
+  uploadThroughput: (750 * 1024) / 8, // 750 Kbps
+  latency: 40, // ms RTT
 });
 ```
 
 ### 9.1 Common profiles
 
-| Profile | Download | Upload | RTT |
-|---|---|---|---|
+| Profile | Download | Upload   | RTT   |
+| ------- | -------- | -------- | ----- |
 | Fast 3G | 1.6 Mbps | 750 Kbps | 150ms |
 | Slow 3G | 400 Kbps | 400 Kbps | 400ms |
-| 4G | 9 Mbps | 9 Mbps | 170ms |
-| WiFi | 30 Mbps | 15 Mbps | 2ms |
+| 4G      | 9 Mbps   | 9 Mbps   | 170ms |
+| WiFi    | 30 Mbps  | 15 Mbps  | 2ms   |
 
 For "is this loadable on 3G", emulate Slow 3G.
 
@@ -412,8 +420,10 @@ For "is this loadable on 3G", emulate Slow 3G.
 Real-world is BOTH slow CPU and slow network:
 
 ```typescript
-await client.send('Emulation.setCPUThrottlingRate', { rate: 4 });
-await client.send('Network.emulateNetworkConditions', { /* Slow 3G */ });
+await client.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+await client.send("Network.emulateNetworkConditions", {
+  /* Slow 3G */
+});
 ```
 
 ---
@@ -435,13 +445,13 @@ Each new context starts cold.
 ### 10.2 The two-load test
 
 ```typescript
-test('cold vs warm load', async ({ browser }) => {
+test("cold vs warm load", async ({ browser }) => {
   // Cold
   const cold = await browser.newContext();
   const coldPage = await cold.newPage();
   const coldStart = Date.now();
-  await coldPage.goto('/');
-  await coldPage.waitForLoadState('networkidle');
+  await coldPage.goto("/");
+  await coldPage.waitForLoadState("networkidle");
   const coldDuration = Date.now() - coldStart;
   await cold.close();
 
@@ -449,16 +459,16 @@ test('cold vs warm load', async ({ browser }) => {
   // Need actual warmup — load it once, then test
   const warm = await browser.newContext();
   const warmPage = await warm.newPage();
-  await warmPage.goto('/');  // warmup
-  
+  await warmPage.goto("/"); // warmup
+
   const warmStart = Date.now();
-  await warmPage.goto('/');  // measured
-  await warmPage.waitForLoadState('networkidle');
+  await warmPage.goto("/"); // measured
+  await warmPage.waitForLoadState("networkidle");
   const warmDuration = Date.now() - warmStart;
   await warm.close();
 
-  console.log('Cold:', coldDuration, 'Warm:', warmDuration);
-  expect(warmDuration).toBeLessThan(coldDuration);  // sanity
+  console.log("Cold:", coldDuration, "Warm:", warmDuration);
+  expect(warmDuration).toBeLessThan(coldDuration); // sanity
 });
 ```
 
@@ -473,20 +483,22 @@ Performance can degrade over time (memory leaks).
 ### 11.1 Memory growth test
 
 ```typescript
-test('no memory leak on repeated navigations', async ({ page }) => {
+test("no memory leak on repeated navigations", async ({ page }) => {
   const client = await page.context().newCDPSession(page);
-  await client.send('Performance.enable');
+  await client.send("Performance.enable");
 
   for (let i = 0; i < 20; i++) {
-    await page.goto('/page-a');
-    await page.goto('/page-b');
+    await page.goto("/page-a");
+    await page.goto("/page-b");
   }
 
-  const metrics = await client.send('Performance.getMetrics');
-  const heapSize = metrics.metrics.find(m => m.name === 'JSHeapUsedSize')?.value;
-  
+  const metrics = await client.send("Performance.getMetrics");
+  const heapSize = metrics.metrics.find(
+    (m) => m.name === "JSHeapUsedSize",
+  )?.value;
+
   // Memory should NOT grow linearly with navigations
-  expect(heapSize).toBeLessThan(100 * 1024 * 1024);  // 100 MB
+  expect(heapSize).toBeLessThan(100 * 1024 * 1024); // 100 MB
 });
 ```
 
@@ -502,18 +514,18 @@ Heap growth past a threshold suggests a leak.
 
 ## 12. Anti-patterns
 
-| ❌ | ✅ |
-|---|---|
-| Single-shot perf test on shared CI | Aggregate over multiple runs |
-| Hard-coded "<2000ms" threshold | Baseline-relative comparison |
-| Measuring perf with `trace: 'on'` | Trace adds overhead; turn off for perf tests |
-| Using Playwright for load testing | Use k6 |
-| Network throttling without CPU throttling | Both, for realism |
-| Measuring on idle dev machine | CI environment, or controlled |
-| LCP threshold of 1.5s for SPA dashboard | Match the page type |
-| Ignoring p75/p95 in favour of average | Long tail matters most |
-| Performance tests on every PR for every page | Critical paths only |
-| Skipping perf tests because flaky | Tighten with median-of-3 or median-of-5 |
+| ❌                                           | ✅                                           |
+| -------------------------------------------- | -------------------------------------------- |
+| Single-shot perf test on shared CI           | Aggregate over multiple runs                 |
+| Hard-coded "<2000ms" threshold               | Baseline-relative comparison                 |
+| Measuring perf with `trace: 'on'`            | Trace adds overhead; turn off for perf tests |
+| Using Playwright for load testing            | Use k6                                       |
+| Network throttling without CPU throttling    | Both, for realism                            |
+| Measuring on idle dev machine                | CI environment, or controlled                |
+| LCP threshold of 1.5s for SPA dashboard      | Match the page type                          |
+| Ignoring p75/p95 in favour of average        | Long tail matters most                       |
+| Performance tests on every PR for every page | Critical paths only                          |
+| Skipping perf tests because flaky            | Tighten with median-of-3 or median-of-5      |
 
 ---
 

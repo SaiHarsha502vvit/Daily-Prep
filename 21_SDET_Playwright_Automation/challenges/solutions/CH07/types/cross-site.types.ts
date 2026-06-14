@@ -23,7 +23,7 @@ export interface Order {
   customerId: number;
   product: string;
   amount: number;
-  status: 'pending' | 'confirmed' | 'shipped';
+  status: "pending" | "confirmed" | "shipped";
 }
 
 export interface CreateOrderPayload {
@@ -44,7 +44,7 @@ export interface CreateOrderResponse {
 export interface NotificationRecord {
   id: string;
   customerId: number;
-  type: 'ORDER_CONFIRMED' | 'ORDER_SHIPPED' | 'ORDER_CANCELLED';
+  type: "ORDER_CONFIRMED" | "ORDER_SHIPPED" | "ORDER_CANCELLED";
   message: string;
   read: boolean;
   createdAt: string;

@@ -21,11 +21,11 @@
 
 ## 1. Strategies
 
-| Strategy | When |
-|---|---|
-| Mailosaur SaaS | Production-grade, real SMTP, paid |
-| MailHog (self-hosted Docker) | Free, CI-friendly |
-| Ethereal (Nodemailer's test SMTP) | Free, shared inbox |
+| Strategy                                     | When                               |
+| -------------------------------------------- | ---------------------------------- |
+| Mailosaur SaaS                               | Production-grade, real SMTP, paid  |
+| MailHog (self-hosted Docker)                 | Free, CI-friendly                  |
+| Ethereal (Nodemailer's test SMTP)            | Free, shared inbox                 |
 | Production email service with test addresses | If your service supports test mode |
 
 For CI: MailHog (free) or Mailosaur (paid) are the workhorses.
@@ -37,31 +37,31 @@ For CI: MailHog (free) or Mailosaur (paid) are the workhorses.
 Configure your app's SMTP / email service to send to `*@<server-id>.mailosaur.net`. Each address gets a virtual inbox.
 
 ```typescript
-import { MailosaurClient } from 'mailosaur';
+import { MailosaurClient } from "mailosaur";
 
 const mailosaur = new MailosaurClient(process.env.MAILOSAUR_API_KEY!);
 const serverId = process.env.MAILOSAUR_SERVER_ID!;
 
-test('signup welcome email', async ({ page }) => {
+test("signup welcome email", async ({ page }) => {
   const testEmail = `user-${Date.now()}@${serverId}.mailosaur.net`;
 
-  await page.goto('/signup');
-  await page.getByLabel('Email').fill(testEmail);
-  await page.getByRole('button', { name: 'Sign up' }).click();
+  await page.goto("/signup");
+  await page.getByLabel("Email").fill(testEmail);
+  await page.getByRole("button", { name: "Sign up" }).click();
 
   // Poll Mailosaur — built-in poll, no manual loop
   const message = await mailosaur.messages.get(serverId, {
     sentTo: testEmail,
-    subject: 'Welcome',
+    subject: "Welcome",
   });
 
-  expect(message.subject).toBe('Welcome to Example.com');
-  expect(message.html?.body).toContain('Verify your email');
+  expect(message.subject).toBe("Welcome to Example.com");
+  expect(message.html?.body).toContain("Verify your email");
 
   const link = message.html?.links?.[0]?.href;
   expect(link).toBeDefined();
   await page.goto(link!);
-  await expect(page.getByText('Email verified')).toBeVisible();
+  await expect(page.getByText("Email verified")).toBeVisible();
 });
 ```
 
@@ -87,31 +87,34 @@ services:
   mailhog:
     image: mailhog/mailhog:latest
     ports:
-      - 1025:1025  # SMTP
-      - 8025:8025  # Web UI
+      - 1025:1025 # SMTP
+      - 8025:8025 # Web UI
 ```
 
 Configure your app to send via `smtp://mailhog:1025`. All emails captured.
 
 ```typescript
 async function getEmailsFromMailHog(to: string): Promise<MailHogMessage[]> {
-  const response = await fetch('http://mailhog:8025/api/v2/messages');
+  const response = await fetch("http://mailhog:8025/api/v2/messages");
   const data = await response.json();
-  return data.items.filter((m: any) => m.To.some((t: any) => t.Mailbox + '@' + t.Domain === to));
+  return data.items.filter((m: any) =>
+    m.To.some((t: any) => t.Mailbox + "@" + t.Domain === to),
+  );
 }
 
-test('password reset email arrives', async ({ page }) => {
+test("password reset email arrives", async ({ page }) => {
   const testEmail = `reset-${Date.now()}@test.com`;
-  
-  await page.goto('/reset');
-  await page.getByLabel('Email').fill(testEmail);
-  await page.getByRole('button', { name: 'Send reset link' }).click();
-  
-  await expect.poll(
-    async () => (await getEmailsFromMailHog(testEmail)).length,
-    { timeout: 30_000 },
-  ).toBeGreaterThan(0);
-  
+
+  await page.goto("/reset");
+  await page.getByLabel("Email").fill(testEmail);
+  await page.getByRole("button", { name: "Send reset link" }).click();
+
+  await expect
+    .poll(async () => (await getEmailsFromMailHog(testEmail)).length, {
+      timeout: 30_000,
+    })
+    .toBeGreaterThan(0);
+
   const [email] = await getEmailsFromMailHog(testEmail);
   const link = extractLink(email.Content.Body);
   await page.goto(link);
@@ -122,7 +125,7 @@ test('password reset email arrives', async ({ page }) => {
 
 ```typescript
 test.beforeEach(async () => {
-  await fetch('http://mailhog:8025/api/v1/messages', { method: 'DELETE' });
+  await fetch("http://mailhog:8025/api/v1/messages", { method: "DELETE" });
 });
 ```
 
@@ -133,7 +136,7 @@ Prevents stale emails from previous tests.
 ## 4. Ethereal
 
 ```typescript
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 const account = await nodemailer.createTestAccount();
 // account.user / account.pass / account.smtp.host
@@ -153,14 +156,16 @@ async function waitForEmail(opts: {
   subject: RegExp;
   timeoutMs: number;
 }): Promise<Message> {
-  return await expect.poll(
-    async () => {
-      const emails = await emailService.list({ to: opts.to });
-      const match = emails.find(e => opts.subject.test(e.subject));
-      return match;
-    },
-    { timeout: opts.timeoutMs, intervals: [500, 1000, 2000, 5000] },
-  ).not.toBeUndefined() as unknown as Message;
+  return (await expect
+    .poll(
+      async () => {
+        const emails = await emailService.list({ to: opts.to });
+        const match = emails.find((e) => opts.subject.test(e.subject));
+        return match;
+      },
+      { timeout: opts.timeoutMs, intervals: [500, 1000, 2000, 5000] },
+    )
+    .not.toBeUndefined()) as unknown as Message;
 }
 ```
 
@@ -173,13 +178,19 @@ Backoff intervals matter: short initial polls catch fast emails; longer later av
 ### 6.1 Link extraction
 
 ```typescript
-function extractLink(html: string, pattern: RegExp = /href="(https?:\/\/[^"]+)"/): string {
+function extractLink(
+  html: string,
+  pattern: RegExp = /href="(https?:\/\/[^"]+)"/,
+): string {
   const match = html.match(pattern);
   if (!match) throw new Error(`No link matching ${pattern} in:\n${html}`);
   return match[1];
 }
 
-const resetLink = extractLink(email.html, /href="(https:\/\/app\.example\.com\/reset[^"]+)"/);
+const resetLink = extractLink(
+  email.html,
+  /href="(https:\/\/app\.example\.com\/reset[^"]+)"/,
+);
 await page.goto(resetLink);
 ```
 
@@ -193,7 +204,7 @@ function extractOtp(text: string): string {
 }
 
 const otp = extractOtp(email.text);
-await page.getByLabel('Verification code').fill(otp);
+await page.getByLabel("Verification code").fill(otp);
 ```
 
 ---
@@ -203,7 +214,7 @@ await page.getByLabel('Verification code').fill(otp);
 Most transactional emails have both. Prefer text for parsing (no tags); HTML for visual assertions.
 
 ```typescript
-expect(email.text).toContain('Your verification code is: ');
+expect(email.text).toContain("Your verification code is: ");
 expect(email.html).toContain('<a href="');
 ```
 
@@ -215,9 +226,9 @@ expect(email.html).toContain('<a href="');
 const email = await emailService.get(messageId);
 const attachments = email.attachments ?? [];
 
-const pdf = attachments.find(a => a.contentType === 'application/pdf');
+const pdf = attachments.find((a) => a.contentType === "application/pdf");
 expect(pdf).toBeDefined();
-expect(pdf!.length).toBeGreaterThan(1000);   // size check
+expect(pdf!.length).toBeGreaterThan(1000); // size check
 
 // For full PDF inspection, download and parse
 const buffer = await emailService.downloadAttachment(messageId, pdf!.id);
@@ -229,6 +240,7 @@ const buffer = await emailService.downloadAttachment(messageId, pdf!.id);
 ## 9. Isolation
 
 Two parallel tests both wait for "the welcome email" — they may pick up each other's. Mitigations:
+
 - Unique recipient address per test (timestamp / UUID).
 - Filter by subject + recipient.
 - Use sub-addressing (`user+<unique>@example.com`).

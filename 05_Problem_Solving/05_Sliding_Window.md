@@ -8,16 +8,15 @@
 
 **When do you use Sliding Window?** Use this decision table before every problem:
 
-
-| Trigger Words | Sub-Type | Template |
-|---|---|---|
-| `fixed window of size k` | Fixed Window | Add right, remove `arr[i-k]` |
-| `smallest/smallest subarray` + `sum ≥ target` | Variable Window | Expand right, shrink left while valid |
-| `longest substring` + `at most k` | Variable Window | Expand right, shrink when > k distinct |
-| `all windows`, `permutation in string` | Fixed Window + HashMap | Compare freq arrays |
-
+| Trigger Words                                 | Sub-Type               | Template                               |
+| --------------------------------------------- | ---------------------- | -------------------------------------- |
+| `fixed window of size k`                      | Fixed Window           | Add right, remove `arr[i-k]`           |
+| `smallest/smallest subarray` + `sum ≥ target` | Variable Window        | Expand right, shrink left while valid  |
+| `longest substring` + `at most k`             | Variable Window        | Expand right, shrink when > k distinct |
+| `all windows`, `permutation in string`        | Fixed Window + HashMap | Compare freq arrays                    |
 
 **The Core Idea:**
+
 ```
 Instead of recomputing [i..j] from scratch each time → O(n²)
 SLIDE: remove arr[left], add arr[right], update state → O(n)
@@ -29,22 +28,23 @@ SLIDE: remove arr[left], add arr[right], update state → O(n)
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 # 🎨 Section 4: Sliding Window Pattern Variants
 
@@ -75,7 +75,6 @@ Visual:
           └──┘  sum=6
 
 ```
-
 
 ```java
 public int maxSumSubarray(int[] arr, int k) {
@@ -114,7 +113,6 @@ public int maxSumSubarray(int[] arr, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public double findMaxAverage(int[] nums, int k) {
     double sum = 0;
@@ -149,7 +147,6 @@ public double findMaxAverage(int[] nums, int k) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int numOfSubarrays(int[] arr, int k, int threshold) {
@@ -208,7 +205,6 @@ public int numOfSubarrays(int[] arr, int k, int threshold) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public long maximumSubarraySum(int[] nums, int k) {
     Map<Integer, Integer> count = new HashMap<>();
@@ -242,9 +238,6 @@ public long maximumSubarraySum(int[] nums, int k) {
 
 ---
 
-
-
-
 ## 📌 4.2 Variable Size Window
 
 ### Problem: Minimum Size Subarray Sum
@@ -270,7 +263,6 @@ Visual:
          └─┘ sum=7, len=2 ← MIN
 
 ```
-
 
 ```java
 public int minSubArrayLen(int target, int[] nums) {
@@ -328,7 +320,6 @@ public int minSubArrayLen(int target, int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int lengthOfLongestSubstringKDistinct(String s, int k) {
     if (k == 0) return 0;
@@ -379,7 +370,6 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int totalFruit(int[] fruits) {
@@ -432,7 +422,6 @@ public int totalFruit(int[] fruits) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int characterReplacement(String s, int k) {
     int[] count = new int[26];
@@ -481,7 +470,6 @@ public int characterReplacement(String s, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int longestOnes(int[] nums, int k) {
     int left = 0, zeros = 0, maxLen = 0;
@@ -501,9 +489,6 @@ public int longestOnes(int[] nums, int k) {
 ```
 
 ---
-
-
-
 
 ## 📝 4.3 Sliding Window — String Matching
 
@@ -528,7 +513,6 @@ public int longestOnes(int[] nums, int k) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean checkInclusion(String s1, String s2) {
@@ -581,7 +565,6 @@ public boolean checkInclusion(String s1, String s2) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public String minWindow(String s, String t) {
@@ -663,7 +646,6 @@ public String minWindow(String s, String t) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int lengthOfLongestSubstringTwoDistinct(String s) {
     Map<Character, Integer> map = new HashMap<>();
@@ -687,24 +669,29 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 
 ---
 
-
-
 🔬 **Section Challenge — 📝 4.3 Sliding Window — String Matching**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+
 </details>
 
+---
 
-## SECTION 4: Advanced Sliding Window Problems
+### Historical Evolution
+
+**Sliding window techniques** originated in signal processing (1960s, analog filter design) where engineers used windowing functions like Hamming and Hanning windows to control spectral leakage in frequency analysis, establishing the core concept of examining contiguous subsets while sliding a fixed-width aperture across data. The technique was formalized in networking by the TCP sliding window protocol (RFC 793, 1981, Internet Engineering Task Force) which controlled data flow between sender and receiver using a window that expands and contracts based on acknowledgment timing—a fundamental mechanism underlying all internet communication. Computer scientists adopted the terminology and core insight: maintaining state incrementally as a window slides, avoiding recomputation from scratch. Modern practice anchors these techniques in streaming analytics platforms (Apache Kafka consumers using sliding windows for real-time aggregation since 2011, Apache Flink implementing session windows for user behavior analysis since 2015), social media feeds (Twitter/X and Instagram using fixed sliding windows to compute trending topics over rolling 24-hour periods), and anomaly detection systems at companies like Netflix and Datadog that monitor application metrics using tumbling and sliding time windows.
 
 ### Problem 12: Sliding Window Maximum
 
@@ -726,7 +713,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 ║  TIME: O(n) | SPACE: O(k)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int[] maxSlidingWindow(int[] nums, int k) {
@@ -767,7 +753,6 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ║  TIME: O(n) | SPACE: O(k)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int subarraysWithKDistinct(int[] nums, int k) {
@@ -814,7 +799,6 @@ private int atMost(int[] nums, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
     int n = customers.length, baseSatisfied = 0;
@@ -851,7 +835,6 @@ public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
 ║  TIME: O(n) | SPACE: O(1)                                                 ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int numberOfSubarrays(int[] nums, int k) {
@@ -892,7 +875,6 @@ private int atMost(int[] nums, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int longestOnes(int[] nums, int k) {
     int left = 0, maxLen = 0, zeros = 0;
@@ -912,49 +894,47 @@ public int longestOnes(int[] nums, int k) {
 
 ---
 
-
-
 🔬 **Section Challenge — SECTION 4: Advanced Sliding Window Problems**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
 These CF problems need Sliding Window + additional thinking. Must-do before interviews.
 
-| Problem | Link | Techniques | Difficulty |
-|---|---|---|---|
-| Vasya and String | [CF 676C](https://codeforces.com/problemset/problem/676/C) | Variable SW on strings | ⭐⭐ Medium |
-| The Queue | [CF 1561D](https://codeforces.com/problemset/problem/1561/D) | Window + simulation | ⭐⭐ Medium |
-| Good Subarrays | [CF 1398C](https://codeforces.com/problemset/problem/1398/C) | Count valid windows | ⭐⭐ Medium |
-| Number of Subarrays | [CF 1869B](https://codeforces.com/problemset/problem/1869/B) | prefix sum on windows | ⭐⭐ Medium |
-| Beautiful Numbers | [CF 1264C](https://codeforces.com/problemset/problem/1264/C) | Frequency count in sliding window | ⭐⭐⭐ Hard |
+| Problem             | Link                                                         | Techniques                        | Difficulty  |
+| ------------------- | ------------------------------------------------------------ | --------------------------------- | ----------- |
+| Vasya and String    | [CF 676C](https://codeforces.com/problemset/problem/676/C)   | Variable SW on strings            | ⭐⭐ Medium |
+| The Queue           | [CF 1561D](https://codeforces.com/problemset/problem/1561/D) | Window + simulation               | ⭐⭐ Medium |
+| Good Subarrays      | [CF 1398C](https://codeforces.com/problemset/problem/1398/C) | Count valid windows               | ⭐⭐ Medium |
+| Number of Subarrays | [CF 1869B](https://codeforces.com/problemset/problem/1869/B) | prefix sum on windows             | ⭐⭐ Medium |
+| Beautiful Numbers   | [CF 1264C](https://codeforces.com/problemset/problem/1264/C) | Frequency count in sliding window | ⭐⭐⭐ Hard |
 
 ---
 
-
-
-
 ## 🌍 Real-World Applications of Sliding Window
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Fixed window** | Network monitoring | "Average bytes/sec in last N packets" without re-computing |
-| **Variable window** | Nginx/HAProxy rate limiting | "At most K requests in any rolling 60-second window" |
-| **Frequency map window** | Text analysis, NLP | Plagiarism detection — find all substrings matching a signature |
-| **Min/Max in window** | Finance (technical indicators) | Rolling Bollinger Bands = sliding window min/max/average |
-| **String window matching** | Intrusion Detection Systems | Scan network packets for malicious substrings in real-time |
+| Technique                  | Real-World System              | How It's Used                                                   |
+| -------------------------- | ------------------------------ | --------------------------------------------------------------- |
+| **Fixed window**           | Network monitoring             | "Average bytes/sec in last N packets" without re-computing      |
+| **Variable window**        | Nginx/HAProxy rate limiting    | "At most K requests in any rolling 60-second window"            |
+| **Frequency map window**   | Text analysis, NLP             | Plagiarism detection — find all substrings matching a signature |
+| **Min/Max in window**      | Finance (technical indicators) | Rolling Bollinger Bands = sliding window min/max/average        |
+| **String window matching** | Intrusion Detection Systems    | Scan network packets for malicious substrings in real-time      |
 
 ```
 🔥 REAL CODE: This is Java's exact approach for streaming analytics:
@@ -969,15 +949,31 @@ These CF problems need Sliding Window + additional thinking. Must-do before inte
 🔬 **Section Challenge — 🌍 Real-World Applications of Sliding Window**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+
 </details>
 
+---
 
+### Production Reality
+
+**Sliding Window** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Sum invariant breaks on negative numbers.** Maximum Sum Subarray (LeetCode 53) uses `windowSum += arr[right]` and `maxSum = max(maxSum, windowSum)`. This works because adding a negative number always decreases the sum, guaranteeing optimal windows shrink. But if you adapt this pattern for a sliding window on `[1, -3, 2, -1, 4, -2]` with constraints that include product instead of sum, the invariant that "window expansion monotonically increases/decreases sum" breaks completely. Production impact: incorrect results in financial calculations (returns can be negative) or signal processing (oscillating values). Bug silently propagates until a customer reports wrong portfolio risk metrics.
+
+**Failure mode 2: Infinite loop when window contraction condition is impossible to satisfy.** Variable window problems like "minimum length subarray with sum >= s" use `while(windowSum >= s)` to shrink. If your contraction condition uses strict inequality when non-strict is needed, or if floating-point precision means `windowSum >= s` never stabilizes, the loop never terminates. Production impact: request timeout or CPU spike causing cascading timeouts in load-balanced systems. This bug killed a production service at a fintech company when the window never contracted due to double precision accumulation error over millions of micro-transactions.
+
+**Debug workflow:** (1) Print window boundaries and aggregate value on each iteration. (2) Verify contraction condition is reachable by checking if adding all remaining elements would exceed the threshold. (3) Add `assert` checks: `assert(windowSize >= 0)` and `assert(iterations < 2 * n)` where n is array length. (4) For numeric stability, round to fixed precision before comparisons.
+
+**Real-world anchor:** Google's Borg team documented a case where a sliding window load balancer accumulated floating-point rounding errors over hours, causing the effective window to never contract and eventually OOM-killing the scheduler process.

@@ -28,18 +28,18 @@
 
 ## 1. OWASP Top 10 (2021)
 
-| Rank | Category | SDET can test? |
-|---|---|---|
-| A01 | Broken Access Control | ✅ Auth enforcement, IDOR |
-| A02 | Cryptographic Failures | ⚠️ Partial (header / cookie checks) |
-| A03 | Injection | ⚠️ Pattern-based — not exhaustive |
-| A04 | Insecure Design | ❌ Architecture review |
-| A05 | Security Misconfiguration | ✅ Header checks |
-| A06 | Vulnerable Components | ⚠️ Use `npm audit`, Snyk |
-| A07 | Identification / Auth | ✅ Session, login flow tests |
-| A08 | Software / Data Integrity | ⚠️ Pact (contract), dep checks |
-| A09 | Security Logging | ❌ Hard to test |
-| A10 | SSRF | ⚠️ URL fuzzing |
+| Rank | Category                  | SDET can test?                      |
+| ---- | ------------------------- | ----------------------------------- |
+| A01  | Broken Access Control     | ✅ Auth enforcement, IDOR           |
+| A02  | Cryptographic Failures    | ⚠️ Partial (header / cookie checks) |
+| A03  | Injection                 | ⚠️ Pattern-based — not exhaustive   |
+| A04  | Insecure Design           | ❌ Architecture review              |
+| A05  | Security Misconfiguration | ✅ Header checks                    |
+| A06  | Vulnerable Components     | ⚠️ Use `npm audit`, Snyk            |
+| A07  | Identification / Auth     | ✅ Session, login flow tests        |
+| A08  | Software / Data Integrity | ⚠️ Pact (contract), dep checks      |
+| A09  | Security Logging          | ❌ Hard to test                     |
+| A10  | SSRF                      | ⚠️ URL fuzzing                      |
 
 Goal: catch low-hanging fruit early. NOT replace dedicated security testing.
 
@@ -52,27 +52,35 @@ The most important class. Verify every endpoint requires the right auth.
 ### 2.1 Pattern — unauthenticated rejection
 
 ```typescript
-test('GET /api/admin/users without auth returns 401', async ({ request }) => {
-  const response = await request.get('/api/admin/users');
+test("GET /api/admin/users without auth returns 401", async ({ request }) => {
+  const response = await request.get("/api/admin/users");
   expect(response.status()).toBe(401);
 });
 
-test('GET /api/admin/users with invalid token returns 401', async ({ request }) => {
-  const response = await request.get('/api/admin/users', {
-    headers: { Authorization: 'Bearer invalid-token' },
+test("GET /api/admin/users with invalid token returns 401", async ({
+  request,
+}) => {
+  const response = await request.get("/api/admin/users", {
+    headers: { Authorization: "Bearer invalid-token" },
   });
   expect(response.status()).toBe(401);
 });
 
-test('GET /api/admin/users with non-admin token returns 403', async ({ request, userToken }) => {
-  const response = await request.get('/api/admin/users', {
+test("GET /api/admin/users with non-admin token returns 403", async ({
+  request,
+  userToken,
+}) => {
+  const response = await request.get("/api/admin/users", {
     headers: { Authorization: `Bearer ${userToken}` },
   });
   expect(response.status()).toBe(403);
 });
 
-test('GET /api/admin/users with admin token returns 200', async ({ request, adminToken }) => {
-  const response = await request.get('/api/admin/users', {
+test("GET /api/admin/users with admin token returns 200", async ({
+  request,
+  adminToken,
+}) => {
+  const response = await request.get("/api/admin/users", {
     headers: { Authorization: `Bearer ${adminToken}` },
   });
   expect(response.status()).toBe(200);
@@ -82,6 +90,7 @@ test('GET /api/admin/users with admin token returns 200', async ({ request, admi
 ### 2.2 The matrix sweep
 
 For each protected endpoint, test all four cases:
+
 - No auth
 - Invalid auth
 - Authorised user lacking permission
@@ -92,18 +101,18 @@ For 50 endpoints × 4 cases = 200 tests. Auto-generate from an endpoint inventor
 ### 2.3 Pattern — UI page protection
 
 ```typescript
-test('admin page redirects unauthenticated user to login', async ({ page }) => {
-  await page.goto('/admin/users');
+test("admin page redirects unauthenticated user to login", async ({ page }) => {
+  await page.goto("/admin/users");
   await page.waitForURL(/\/login/);
 });
 
-test('admin page rejects non-admin user', async ({ adminPage, userPage }) => {
+test("admin page rejects non-admin user", async ({ adminPage, userPage }) => {
   // adminPage logged in as admin — should access
-  await adminPage.goto('/admin/users');
-  await expect(adminPage).toHaveURL('/admin/users');
+  await adminPage.goto("/admin/users");
+  await expect(adminPage).toHaveURL("/admin/users");
 
   // userPage logged in as regular user — should redirect
-  await userPage.goto('/admin/users');
+  await userPage.goto("/admin/users");
   await expect(userPage).toHaveURL(/\/(?:forbidden|dashboard)/);
 });
 ```
@@ -117,11 +126,15 @@ Insecure Direct Object Reference — a user can access another user's data by ch
 ### 3.1 The pattern
 
 ```typescript
-test('user cannot access another user\'s order', async ({ request, userAToken, userBToken }) => {
+test("user cannot access another user's order", async ({
+  request,
+  userAToken,
+  userBToken,
+}) => {
   // User A creates an order
-  const createResponse = await request.post('/api/orders', {
+  const createResponse = await request.post("/api/orders", {
     headers: { Authorization: `Bearer ${userAToken}` },
-    data: { item: 'X', quantity: 1 },
+    data: { item: "X", quantity: 1 },
   });
   const orderId = (await createResponse.json()).id;
 
@@ -129,7 +142,7 @@ test('user cannot access another user\'s order', async ({ request, userAToken, u
   const response = await request.get(`/api/orders/${orderId}`, {
     headers: { Authorization: `Bearer ${userBToken}` },
   });
-  expect(response.status()).toBe(404);  // OR 403 — depends on app
+  expect(response.status()).toBe(404); // OR 403 — depends on app
 });
 ```
 
@@ -138,9 +151,11 @@ test('user cannot access another user\'s order', async ({ request, userAToken, u
 If your API uses sequential IDs (`/orders/1`, `/orders/2`, ...), it's easier to enumerate:
 
 ```typescript
-test('IDOR scan on /orders/:id', async ({ request, userAToken }) => {
+test("IDOR scan on /orders/:id", async ({ request, userAToken }) => {
   // User A has order #100
-  const myOrder = await request.post('/api/orders', { /* ... */ });
+  const myOrder = await request.post("/api/orders", {
+    /* ... */
+  });
   const myId = (await myOrder.json()).id;
 
   // Try to access neighbours
@@ -149,7 +164,9 @@ test('IDOR scan on /orders/:id', async ({ request, userAToken }) => {
     const response = await request.get(`/api/orders/${i}`, {
       headers: { Authorization: `Bearer ${userAToken}` },
     });
-    expect(response.status(), `Order ${i} should not be accessible`).not.toBe(200);
+    expect(response.status(), `Order ${i} should not be accessible`).not.toBe(
+      200,
+    );
   }
 });
 ```
@@ -167,11 +184,11 @@ UUIDs don't prevent IDOR — they just make enumeration harder. The CORRECT fix 
 User input echoed back into the page without escaping.
 
 ```typescript
-test('reflected XSS in search', async ({ page }) => {
-  await page.goto('/search?q=<script>window.__xss=true</script>');
-  
+test("reflected XSS in search", async ({ page }) => {
+  await page.goto("/search?q=<script>window.__xss=true</script>");
+
   const xssExecuted = await page.evaluate(() => (window as any).__xss === true);
-  expect(xssExecuted, 'XSS payload should NOT execute').toBe(false);
+  expect(xssExecuted, "XSS payload should NOT execute").toBe(false);
 });
 ```
 
@@ -180,14 +197,14 @@ test('reflected XSS in search', async ({ page }) => {
 Saved data executes when displayed.
 
 ```typescript
-test('stored XSS in profile bio', async ({ request, page, userToken }) => {
+test("stored XSS in profile bio", async ({ request, page, userToken }) => {
   const payload = '<img src=x onerror="window.__xss=true">';
-  await request.patch('/api/profile', {
+  await request.patch("/api/profile", {
     headers: { Authorization: `Bearer ${userToken}` },
     data: { bio: payload },
   });
 
-  await page.goto('/profile');
+  await page.goto("/profile");
   const xssExecuted = await page.evaluate(() => (window as any).__xss === true);
   expect(xssExecuted).toBe(false);
 });
@@ -198,9 +215,9 @@ test('stored XSS in profile bio', async ({ request, page, userToken }) => {
 JS reads URL fragment and writes to DOM.
 
 ```typescript
-test('DOM XSS in profile fragment', async ({ page }) => {
-  await page.goto('/profile#name=<img src=x onerror=window.__xss=true>');
-  
+test("DOM XSS in profile fragment", async ({ page }) => {
+  await page.goto("/profile#name=<img src=x onerror=window.__xss=true>");
+
   const xssExecuted = await page.evaluate(() => (window as any).__xss === true);
   expect(xssExecuted).toBe(false);
 });
@@ -212,10 +229,10 @@ Test multiple variants:
 
 ```typescript
 const XSS_PAYLOADS = [
-  '<script>__xss=true</script>',
-  '<img src=x onerror=__xss=true>',
-  '<svg onload=__xss=true>',
-  'javascript:__xss=true',
+  "<script>__xss=true</script>",
+  "<img src=x onerror=__xss=true>",
+  "<svg onload=__xss=true>",
+  "javascript:__xss=true",
   '<iframe src="javascript:__xss=true">',
   '"><script>__xss=true</script>',
 ];
@@ -234,9 +251,9 @@ for (const payload of XSS_PAYLOADS) {
 Best XSS mitigation. Test:
 
 ```typescript
-test('CSP header is set', async ({ request }) => {
-  const response = await request.get('/');
-  const csp = response.headers()['content-security-policy'];
+test("CSP header is set", async ({ request }) => {
+  const response = await request.get("/");
+  const csp = response.headers()["content-security-policy"];
   expect(csp).toBeDefined();
   expect(csp).toContain("default-src 'self'");
 });
@@ -251,24 +268,24 @@ Cross-Site Request Forgery — attacker tricks user into submitting requests fro
 ### 5.1 CSRF token testing
 
 ```typescript
-test('POST without CSRF token fails', async ({ request, userToken }) => {
-  const response = await request.post('/api/transfer', {
+test("POST without CSRF token fails", async ({ request, userToken }) => {
+  const response = await request.post("/api/transfer", {
     headers: { Authorization: `Bearer ${userToken}` },
-    data: { amount: 100, to: 'recipient' },
+    data: { amount: 100, to: "recipient" },
   });
-  expect(response.status()).toBe(403);   // CSRF check failed
+  expect(response.status()).toBe(403); // CSRF check failed
 });
 ```
 
 ### 5.2 SameSite cookie
 
 ```typescript
-test('session cookie has SameSite=Lax or Strict', async ({ page }) => {
-  await page.goto('/login');
+test("session cookie has SameSite=Lax or Strict", async ({ page }) => {
+  await page.goto("/login");
   await login(page);
 
   const cookies = await page.context().cookies();
-  const session = cookies.find(c => c.name === 'session');
+  const session = cookies.find((c) => c.name === "session");
   expect(session?.sameSite).toMatch(/Lax|Strict/);
 });
 ```
@@ -280,15 +297,15 @@ test('session cookie has SameSite=Lax or Strict', async ({ page }) => {
 ### 6.1 Session expiry
 
 ```typescript
-test('session expires after inactivity', async ({ page }) => {
-  await page.goto('/login');
+test("session expires after inactivity", async ({ page }) => {
+  await page.goto("/login");
   await login(page);
 
   // Simulate 30 minutes passing
   await page.clock.install({ time: new Date() });
-  await page.clock.fastForward('30:00');
+  await page.clock.fastForward("30:00");
 
-  await page.goto('/profile');
+  await page.goto("/profile");
   await expect(page).toHaveURL(/\/login/);
 });
 ```
@@ -296,37 +313,37 @@ test('session expires after inactivity', async ({ page }) => {
 ### 6.2 Session fixation
 
 ```typescript
-test('session ID rotates on login', async ({ page }) => {
-  await page.goto('/');
+test("session ID rotates on login", async ({ page }) => {
+  await page.goto("/");
   const cookiesBefore = await page.context().cookies();
-  const sessionBefore = cookiesBefore.find(c => c.name === 'session')?.value;
+  const sessionBefore = cookiesBefore.find((c) => c.name === "session")?.value;
 
-  await page.goto('/login');
+  await page.goto("/login");
   await login(page);
 
   const cookiesAfter = await page.context().cookies();
-  const sessionAfter = cookiesAfter.find(c => c.name === 'session')?.value;
+  const sessionAfter = cookiesAfter.find((c) => c.name === "session")?.value;
 
-  expect(sessionAfter).not.toBe(sessionBefore);  // rotated
+  expect(sessionAfter).not.toBe(sessionBefore); // rotated
 });
 ```
 
 ### 6.3 Logout invalidates session
 
 ```typescript
-test('logout invalidates session server-side', async ({ page, context }) => {
-  await page.goto('/login');
+test("logout invalidates session server-side", async ({ page, context }) => {
+  await page.goto("/login");
   await login(page);
   const cookies = await context.cookies();
-  const session = cookies.find(c => c.name === 'session')?.value;
+  const session = cookies.find((c) => c.name === "session")?.value;
 
-  await page.getByRole('button', { name: 'Log out' }).click();
+  await page.getByRole("button", { name: "Log out" }).click();
 
   // Try to use old session
-  const response = await page.request.get('/api/me', {
+  const response = await page.request.get("/api/me", {
     headers: { Cookie: `session=${session}` },
   });
-  expect(response.status()).toBe(401);  // server-side invalidated
+  expect(response.status()).toBe(401); // server-side invalidated
 });
 ```
 
@@ -337,13 +354,13 @@ test('logout invalidates session server-side', async ({ page, context }) => {
 ### 7.1 Secure cookies
 
 ```typescript
-test('session cookie has Secure, HttpOnly, SameSite', async ({ page }) => {
-  await page.goto('https://app.example.com/login');
+test("session cookie has Secure, HttpOnly, SameSite", async ({ page }) => {
+  await page.goto("https://app.example.com/login");
   await login(page);
 
   const cookies = await page.context().cookies();
-  const session = cookies.find(c => c.name === 'session')!;
-  
+  const session = cookies.find((c) => c.name === "session")!;
+
   expect(session.httpOnly).toBe(true);
   expect(session.secure).toBe(true);
   expect(session.sameSite).toMatch(/Lax|Strict/);
@@ -353,28 +370,28 @@ test('session cookie has Secure, HttpOnly, SameSite', async ({ page }) => {
 ### 7.2 Security headers
 
 ```typescript
-test('responses have security headers', async ({ request }) => {
-  const response = await request.get('/');
+test("responses have security headers", async ({ request }) => {
+  const response = await request.get("/");
   const headers = response.headers();
 
-  expect(headers['strict-transport-security']).toBeDefined();
-  expect(headers['content-security-policy']).toBeDefined();
-  expect(headers['x-frame-options']).toMatch(/DENY|SAMEORIGIN/);
-  expect(headers['x-content-type-options']).toBe('nosniff');
-  expect(headers['referrer-policy']).toBeDefined();
-  expect(headers['permissions-policy']).toBeDefined();
+  expect(headers["strict-transport-security"]).toBeDefined();
+  expect(headers["content-security-policy"]).toBeDefined();
+  expect(headers["x-frame-options"]).toMatch(/DENY|SAMEORIGIN/);
+  expect(headers["x-content-type-options"]).toBe("nosniff");
+  expect(headers["referrer-policy"]).toBeDefined();
+  expect(headers["permissions-policy"]).toBeDefined();
 });
 ```
 
 ### 7.3 Headers that should NOT be present
 
 ```typescript
-test('no information disclosure', async ({ request }) => {
-  const response = await request.get('/');
+test("no information disclosure", async ({ request }) => {
+  const response = await request.get("/");
   const headers = response.headers();
 
-  expect(headers['server']).toBeUndefined();      // server type
-  expect(headers['x-powered-by']).toBeUndefined(); // tech stack
+  expect(headers["server"]).toBeUndefined(); // server type
+  expect(headers["x-powered-by"]).toBeUndefined(); // tech stack
 });
 ```
 
@@ -385,10 +402,10 @@ test('no information disclosure', async ({ request }) => {
 A URL parameter that, if attacker-controlled, can redirect users off-site.
 
 ```typescript
-test('logout?next= is restricted to same origin', async ({ page }) => {
-  await page.goto('/logout?next=https://evil.example.com/phish');
-  await page.waitForLoadState('domcontentloaded');
-  
+test("logout?next= is restricted to same origin", async ({ page }) => {
+  await page.goto("/logout?next=https://evil.example.com/phish");
+  await page.waitForLoadState("domcontentloaded");
+
   // Should land on our login, NOT on evil.example.com
   expect(page.url()).toMatch(/^https:\/\/app\.example\.com\//);
 });
@@ -401,16 +418,19 @@ test('logout?next= is restricted to same origin', async ({ page }) => {
 Server-Side Request Forgery — server fetches a URL the attacker controls.
 
 ```typescript
-test('webhook URL cannot point to internal IP', async ({ request, adminToken }) => {
+test("webhook URL cannot point to internal IP", async ({
+  request,
+  adminToken,
+}) => {
   const internalUrls = [
-    'http://localhost:8080/admin',
-    'http://169.254.169.254/latest/meta-data/',  // AWS metadata
-    'http://10.0.0.1/private',
-    'file:///etc/passwd',
+    "http://localhost:8080/admin",
+    "http://169.254.169.254/latest/meta-data/", // AWS metadata
+    "http://10.0.0.1/private",
+    "file:///etc/passwd",
   ];
 
   for (const url of internalUrls) {
-    const response = await request.post('/api/webhooks', {
+    const response = await request.post("/api/webhooks", {
       headers: { Authorization: `Bearer ${adminToken}` },
       data: { url },
     });
@@ -434,12 +454,14 @@ const SQL_PAYLOADS = [
 
 for (const payload of SQL_PAYLOADS) {
   test(`SQL injection rejected: ${payload}`, async ({ request }) => {
-    const response = await request.get(`/api/search?q=${encodeURIComponent(payload)}`);
+    const response = await request.get(
+      `/api/search?q=${encodeURIComponent(payload)}`,
+    );
     // Should not return all data, leak schema, etc.
-    expect(response.status()).not.toBe(500);  // no crash
+    expect(response.status()).not.toBe(500); // no crash
     const body = await response.text();
-    expect(body).not.toContain('SQLSTATE');
-    expect(body).not.toContain('syntax error');
+    expect(body).not.toContain("SQLSTATE");
+    expect(body).not.toContain("syntax error");
   });
 }
 ```
@@ -447,17 +469,17 @@ for (const payload of SQL_PAYLOADS) {
 ### 10.2 Command injection
 
 ```typescript
-test('shell command rejected in upload filename', async ({ page }) => {
-  await page.goto('/upload');
+test("shell command rejected in upload filename", async ({ page }) => {
+  await page.goto("/upload");
   await page.locator('input[type="file"]').setInputFiles({
-    name: 'test; rm -rf /.txt',
-    mimeType: 'text/plain',
-    buffer: Buffer.from('content'),
+    name: "test; rm -rf /.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("content"),
   });
-  await page.getByRole('button', { name: 'Upload' }).click();
-  
+  await page.getByRole("button", { name: "Upload" }).click();
+
   // Server should reject the suspicious filename or sanitise it
-  await expect(page.getByText('Invalid filename')).toBeVisible();
+  await expect(page.getByText("Invalid filename")).toBeVisible();
 });
 ```
 
@@ -466,15 +488,15 @@ test('shell command rejected in upload filename', async ({ page }) => {
 ## 11. Rate limiting
 
 ```typescript
-test('login endpoint has rate limit', async ({ request }) => {
+test("login endpoint has rate limit", async ({ request }) => {
   for (let i = 0; i < 20; i++) {
-    const response = await request.post('/api/login', {
-      data: { email: 'fake@example.com', password: 'wrong' },
+    const response = await request.post("/api/login", {
+      data: { email: "fake@example.com", password: "wrong" },
     });
     if (i < 5) {
-      expect(response.status()).toBe(401);  // first attempts: normal failure
+      expect(response.status()).toBe(401); // first attempts: normal failure
     } else {
-      expect(response.status()).toBe(429);  // rate-limited
+      expect(response.status()).toBe(429); // rate-limited
       break;
     }
   }
@@ -486,19 +508,19 @@ test('login endpoint has rate limit', async ({ request }) => {
 ## 12. Secrets in client code
 
 ```typescript
-test('bundled JS does not contain secrets', async ({ page }) => {
-  await page.goto('/');
-  
-  const scripts = await page.locator('script[src]').evaluateAll(els => 
-    els.map(e => (e as HTMLScriptElement).src)
-  );
+test("bundled JS does not contain secrets", async ({ page }) => {
+  await page.goto("/");
+
+  const scripts = await page
+    .locator("script[src]")
+    .evaluateAll((els) => els.map((e) => (e as HTMLScriptElement).src));
 
   for (const src of scripts) {
     const response = await page.request.get(src);
     const content = await response.text();
-    
-    expect(content).not.toMatch(/sk_live_/);     // Stripe secret key
-    expect(content).not.toMatch(/AKIA[0-9A-Z]{16}/);  // AWS access key
+
+    expect(content).not.toMatch(/sk_live_/); // Stripe secret key
+    expect(content).not.toMatch(/AKIA[0-9A-Z]{16}/); // AWS access key
     expect(content).not.toMatch(/-----BEGIN.*PRIVATE KEY-----/);
     expect(content).not.toMatch(/password\s*[=:]\s*["'][^"']{8,}/i);
   }
@@ -517,9 +539,9 @@ OWASP ZAP is a dedicated DAST scanner. Integrate as a CI step:
 - name: ZAP Baseline Scan
   uses: zaproxy/action-baseline@v0.9.0
   with:
-    target: 'https://staging.example.com'
-    rules_file_name: '.zap/rules.tsv'
-    fail_action: false   # report but don't fail (avoid flake)
+    target: "https://staging.example.com"
+    rules_file_name: ".zap/rules.tsv"
+    fail_action: false # report but don't fail (avoid flake)
 ```
 
 ZAP runs alongside Playwright. Playwright drives flows; ZAP scans concurrently:
@@ -541,17 +563,17 @@ ZAP sees all the traffic Playwright generates, scans for vulnerabilities passive
 
 ## 14. What CI security testing doesn't catch
 
-| | CI can catch | Need security review |
-|---|---|---|
-| Hard-coded credentials | ✅ (gitleaks) | — |
-| Known CVEs in dependencies | ✅ (Snyk, npm audit) | — |
-| Missing HSTS | ✅ (header check) | — |
-| Authentication enforcement | ✅ (matrix tests) | — |
-| Insecure deserialization | ❌ | ✅ |
-| Race conditions in auth | ❌ | ✅ |
-| Business logic flaws | ❌ | ✅ |
-| Privilege escalation paths | ⚠️ Partial | ✅ |
-| Social engineering | ❌ | ✅ |
+|                            | CI can catch         | Need security review |
+| -------------------------- | -------------------- | -------------------- |
+| Hard-coded credentials     | ✅ (gitleaks)        | —                    |
+| Known CVEs in dependencies | ✅ (Snyk, npm audit) | —                    |
+| Missing HSTS               | ✅ (header check)    | —                    |
+| Authentication enforcement | ✅ (matrix tests)    | —                    |
+| Insecure deserialization   | ❌                   | ✅                   |
+| Race conditions in auth    | ❌                   | ✅                   |
+| Business logic flaws       | ❌                   | ✅                   |
+| Privilege escalation paths | ⚠️ Partial           | ✅                   |
+| Social engineering         | ❌                   | ✅                   |
 
 CI catches the easy, automatable, and high-volume. Manual security review catches design flaws.
 

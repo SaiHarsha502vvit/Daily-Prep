@@ -10,11 +10,9 @@
 
 ## Problem 1: Find Duplicate Orders (HashMap)
 
-
 COMPANY: Flipkart / Amazon
 SYSTEM: Order Management
 INCIDENT: Customer clicked "Place Order" twice due to slow network
-
 
 THE REAL PROBLEM:
 ─────────────────
@@ -23,6 +21,7 @@ Two orders were created for same items, same address, within 5 seconds.
 Customer was charged twice. ₹15,000 x 2 = ₹30,000
 
 BUSINESS IMPACT:
+
 - Customer complaint
 - Refund processing cost
 - Trust damage
@@ -98,9 +97,6 @@ public class DuplicateOrderDetector {
 
 ---
 
-
-
-
 ## Problem 2: Shopping Cart Price Calculator (Array + Conditions)
 
 ```
@@ -121,7 +117,6 @@ BUSINESS RULES:
 YOUR TASK:
 Write a function that calculates final price applying all applicable discounts
 ```
-
 
 ```java
 /**
@@ -219,9 +214,6 @@ public class CartCalculator {
 
 ---
 
-
-
-
 ## Problem 3: Product Search Autocomplete (Trie)
 
 ```
@@ -240,7 +232,6 @@ Must show most popular suggestions first
 YOUR TASK:
 Build autocomplete that returns top 5 suggestions for a prefix
 ```
-
 
 ```java
 /**
@@ -326,16 +317,16 @@ public class ProductAutocomplete {
 
 ---
 
-
-
 > 🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
 >
 > **Challenge 1 (System Design):** An autocomplete system using a standard Java Trie crashes with `OutOfMemoryError` in production when loaded with 50 million products. Trace the memory overhead of a `HashMap<Character, TrieNode> children` per node vs. `TrieNode[] children = new TrieNode[26]`. Why do standard heap-allocated Tries fail at scale, and what is the production alternative?
+>
 > <details><summary>Answer</summary>
 >
 > **Scenario:** Memory optimization for massive prefix trees.
-> **Trace:** A standard Java `HashMap` has massive object overhead: the `HashMap` object itself, the backing bucket array, the `Node` object for each entry, and the boxed `Character` object (since Java generics don't support primitives). This easily adds up to ~100+ bytes of overhead *per character* in the Trie. Alternatively, `TrieNode[26]` uses a fixed 104-byte pointer array per node, wasting memory for sparse nodes (where most characters don't have 26 children). 
+> **Trace:** A standard Java `HashMap` has massive object overhead: the `HashMap` object itself, the backing bucket array, the `Node` object for each entry, and the boxed `Character` object (since Java generics don't support primitives). This easily adds up to ~100+ bytes of overhead _per character_ in the Trie. Alternatively, `TrieNode[26]` uses a fixed 104-byte pointer array per node, wasting memory for sparse nodes (where most characters don't have 26 children).
 > **Debug/Fix:** Standard heap-allocated Tries are never used for 50M products. Production systems use **Radix Trees (Compressed Tries)** to merge single-child paths (e.g., merging 's'->'o'->'n'->'y' into a single "sony" edge). For ultimate scale, systems like Elasticsearch use FSTs (Finite State Transducers) or Double-Array Tries, which flatten the entire tree into a single contiguous byte array, completely eliminating JVM object overhead and pointer chasing.
+>
 > </details>
 
 # 🧩 Part 2: Banking & Finance Problems
@@ -358,7 +349,6 @@ FRAUD RULES:
 YOUR TASK:
 Given transaction stream, flag suspicious activity in real-time
 ```
-
 
 ```java
 /**
@@ -434,22 +424,23 @@ public class FraudDetector {
 
 ---
 
-
-
 🔬 **Section Challenge — Problem 4: Transaction Fraud Detection (Sliding Window)**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Problem 5: Loan EMI Calculator (Math + Loops)
 
@@ -466,7 +457,6 @@ REQUIREMENTS:
 2. Generate month-by-month breakdown (principal, interest, balance)
 3. Handle prepayment scenarios
 ```
-
 
 ```java
 /**
@@ -577,7 +567,6 @@ Account goes negative by ₹2,000
 YOUR TASK:
 Make transfer operation thread-safe
 ```
-
 
 ```java
 /**
@@ -703,7 +692,6 @@ REQUIREMENTS:
 - Calculate estimated time based on distance
 ```
 
-
 ```java
 /**
  * PROBLEM: Find K Nearest Delivery Partners
@@ -813,9 +801,6 @@ public class DeliveryPartnerFinder {
 
 ---
 
-
-
-
 ## Problem 8: Restaurant Rating Calculation (Weighted Average)
 
 ```
@@ -832,7 +817,6 @@ REQUIREMENTS:
 - Need weighted score considering number of reviews
 - Recent reviews should matter more
 ```
-
 
 ```java
 /**
@@ -926,9 +910,6 @@ public class RatingCalculator {
 
 ---
 
-
-
-
 # 🧩 Part 4: Social Media Problems
 
 ## Problem 9: Mutual Friends (Set Intersection)
@@ -940,7 +921,6 @@ public class RatingCalculator {
 ║ FEATURE: "You have 15 mutual friends with John"                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1035,9 +1015,6 @@ public class MutualFriendsFinder {
 
 ---
 
-
-
-
 ## Problem 10: News Feed Generation (Merge K Sorted Lists)
 
 ```
@@ -1047,7 +1024,6 @@ public class MutualFriendsFinder {
 ║ CHALLENGE: Merge posts from 500 friends, show most recent first              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1133,7 +1109,6 @@ public class NewsFeedGenerator {
 ║ FEATURE: Increase price when demand > supply                                 ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1228,9 +1203,6 @@ public class SurgePricingCalculator {
 
 ---
 
-
-
-
 ## Problem 12: Ride Matching - Driver Assignment (Bipartite Matching)
 
 ```
@@ -1240,7 +1212,6 @@ public class SurgePricingCalculator {
 ║ CHALLENGE: Match N riders with M drivers optimally                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1323,9 +1294,47 @@ _More problems in next part..._
 - Logistics (Delhivery)
 - Chat Systems (WhatsApp)
 
-
 ---
 
 **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
 
+---
+
+## Historical Evolution
+
+The DSA problems in this chapter (rate limiting, recommendations, sliding window, two pointers) all have canonical forms that predate ERP by 30-70 years. The PROBLEM framing (real enterprise systems at scale) is what's recent. Three threads:
+
+**1. The DSA Algorithms (1957-1990s)**
+
+- **George Dantzig — Integer Programming / 0/1 Knapsack, 1957**: Dantzig's 1957 RAND Corporation paper formalized integer programming, the foundation of the 0/1 Knapsack problem used in inventory allocation. Knapsack's NP-hard nature was established by Karp's 1972 paper (21 NP-complete problems).
+- **Joseph Kadane — Kadane's Algorithm (Maximum Subarray), 1984**: Kadane's 1984 Carnegie Mellon technical report introduced the O(n) single-pass algorithm for max-subarray. Today this is the algorithm behind every "best-selling product window" and "peak-hour revenue detection" report.
+- **Jon Bentley — Programming Pearls columns, 1983-1988 (CACM)**: Bentley's columns introduced sliding-window, two-pointers, and quickselect to a generation of working programmers. Many of the "trick" algorithms in this chapter are Programming Pearls originals.
+- **Vladimir Levenshtein — Levenshtein distance, 1965**: The edit-distance algorithm that powers fuzzy customer-name matching in ERP. Original 1965 Soviet-math journal paper.
+
+**2. The Enterprise Problem Framing (1990s-2010s)**
+
+- **Netflix Prize — 2006**: Catalyzed the "recommendation systems" field. The Netflix dataset (100M ratings) became the canonical ML benchmark. Today's recommendation systems in retail ERP (Amazon Personalize, SAP Leonardo) descend from 2006-era collaborative filtering.
+- **Google MapReduce paper — Dean & Ghemawat, 2004**: Made distributed data processing accessible. Every "process large CSV file" ERP integration pattern (EDI document batches, vendor catalogs) uses a MapReduce-style split-aggregate-combine pattern.
+- **Apache Hadoop — 2006 (Yahoo!)**: Doug Cutting's open-source MapReduce implementation. Now retired but its lineage lives on in Spark (2014), Flink (2014), and modern data-stack tools.
+
+**3. Modern Practice Anchored**
+
+When an ERP system uses Kadane's algorithm for revenue-window reporting, that's the 1984 Carnegie Mellon paper running on 2026 hardware. When an inventory system uses 0/1 Knapsack for fulfillment optimization, it's solving a problem Dantzig defined in 1957. The DSA hasn't changed in 30-40 years; what has changed is the SCALE (100M records vs 10K records) and the latency budget (100ms vs 1s). The pattern is the same; the engineering is harder.
+
+### Production Reality
+
+**Failure Mode 1 — HashMap Resize Storm at Peak Hours**: Java's HashMap doubles its internal array when load factor exceeds 0.75. When a million records are inserted at 9 AM (login rush), the resize operation pauses the application thread for 200-500ms — visible as a request-time spike. Fix: pre-size HashMap at construction (`new HashMap<>(expectedSize / 0.75 + 1)`), or use `ConcurrentHashMap` which has lock-striped resizing.
+
+**Failure Mode 2 — Sorting Algorithm Stability in Multi-Key Records**: Python's `sorted()` is stable; Java's `Collections.sort()` is stable; C#'s `OrderBy()` is stable. But unstable sorts (e.g., older C `qsort()`, Java's pre-1.7 `MergeSort`) break multi-key ordering. Symptom: records with equal sort-key appear in random order, breaking deterministic pagination. Fix: use a stable sort, or include a tie-breaker key (record ID) in the comparator.
+
+**Failure Mode 3 — Sliding Window Overflow on Long-Running Streams**: A sliding window over a 7-day event stream maintains per-day aggregates in memory. If the system runs for 30 days without checkpoint, the window grows to 30 days × 1M events/day = 30M in-memory tuples. Symptom: OOM at midnight on day 30. Fix: windowed aggregation with checkpoint + sliding compaction.
+
+**Debug Workflow**:
+1. **JVM heap dump** at peak time → analyze HashMap allocation patterns
+2. **GC logs** (`-Xlog:gc`) → identify long GC pauses during resize
+3. **jcmd Thread.print** → identify threads blocked on lock
+4. **Sliding-window memory profiler** → track aggregate-state retention
+5. **Deterministic-pagination test** → insert 100 records with same sort-key, verify same order on every run
+
+---
 

@@ -3,6 +3,7 @@
 # Chapter 31 — JSON, XML & Modern SQL
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Full-stack devs, API builders, anyone storing semi-structured data in SQL
 - **WHAT** is it? → Native JSON/XML functions built into modern SQL engines — query, create, modify
 - **WHEN** to use? → API responses, config storage, audit logs, flexible schemas, document-like data
@@ -15,6 +16,7 @@
 ## Part 1 — JSON in PostgreSQL (JSONB)
 
 ### 1.1 JSON vs JSONB
+
 ```
 ┌─────────────┬──────────────────────────────────────────────┐
 │ Type        │ Description                                   │
@@ -30,6 +32,7 @@ Rule: ALWAYS use JSONB unless you need exact text preservation.
 ```
 
 ### 1.2 Creating & Inserting JSON Data
+
 ```sql
 CREATE TABLE products (
     id          SERIAL PRIMARY KEY,
@@ -65,9 +68,10 @@ INSERT INTO products (name, price, metadata) VALUES
 ```
 
 ### 1.3 Querying JSON Data
+
 ```sql
 -- Extract a value (-> returns JSON, ->> returns TEXT)
-SELECT 
+SELECT
     name,
     metadata->>'brand' AS brand,                     -- text
     metadata->'specs'->>'ram' AS ram_gb,              -- nested text
@@ -77,7 +81,7 @@ SELECT
 FROM products;
 
 -- Deep path extraction with #> and #>>
-SELECT 
+SELECT
     name,
     metadata #>> '{specs, processor}' AS processor,  -- path extraction (text)
     metadata #> '{ratings}' AS ratings_obj            -- path extraction (JSON)
@@ -85,6 +89,7 @@ FROM products;
 ```
 
 ### 1.4 Filtering with JSON
+
 ```sql
 -- Find products by brand
 SELECT name, price FROM products
@@ -102,7 +107,7 @@ WHERE metadata->'tags' ? 'business';    -- Contains key/element
 SELECT name FROM products
 WHERE metadata->'tags' ?| ARRAY['creative', 'gaming'];  -- Any match
 
--- Check if ALL of these tags exist  
+-- Check if ALL of these tags exist
 SELECT name FROM products
 WHERE metadata->'tags' ?& ARRAY['laptop', 'professional'];  -- All match
 
@@ -116,6 +121,7 @@ WHERE metadata @> '{"ratings": {"average": 4.8}}'::jsonb;
 ```
 
 ### 1.5 Modifying JSON
+
 ```sql
 -- Set a value
 UPDATE products
@@ -145,6 +151,7 @@ WHERE metadata->>'brand' = 'Apple';
 ```
 
 ### 1.6 JSON Aggregation
+
 ```sql
 -- Build JSON from rows
 SELECT jsonb_agg(
@@ -162,16 +169,17 @@ FROM products;
 ```
 
 ### 1.7 Expanding JSON → Rows
+
 ```sql
 -- Expand array elements to rows
-SELECT 
+SELECT
     p.name,
     tag.value AS tag
 FROM products p,
      jsonb_array_elements_text(p.metadata->'tags') AS tag;
 
 -- Expand object to key-value pairs
-SELECT 
+SELECT
     p.name,
     kv.key,
     kv.value
@@ -180,6 +188,7 @@ FROM products p,
 ```
 
 ### 1.8 GIN Index for JSON Performance
+
 ```sql
 -- Index the ENTIRE jsonb column (supports @>, ?, ?&, ?|)
 CREATE INDEX idx_products_metadata ON products USING GIN (metadata);
@@ -197,12 +206,10 @@ CREATE INDEX idx_products_tags ON products USING GIN (
 
 ---
 
-
-
-
 ## Part 2 — JSON in MySQL
 
 ### 2.1 MySQL JSON Functions
+
 ```sql
 CREATE TABLE events (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -215,7 +222,7 @@ INSERT INTO events (event_type, payload) VALUES
 ('purchase', '{"user_id": 42, "items": [{"sku": "A1", "qty": 2}, {"sku": "B3", "qty": 1}]}');
 
 -- Extract values (MySQL uses JSON_EXTRACT or -> shorthand)
-SELECT 
+SELECT
     event_type,
     JSON_EXTRACT(payload, '$.user_id') AS user_id,
     payload->>'$.url' AS url,              -- Unquoted text (->>)
@@ -236,7 +243,7 @@ SET payload = JSON_SET(payload, '$.processed', true)
 WHERE id = 1;
 
 -- JSON table (MySQL 8.0+): JSON → relational rows
-SELECT 
+SELECT
     e.event_type,
     jt.*
 FROM events e,
@@ -249,12 +256,10 @@ WHERE e.event_type = 'purchase';
 
 ---
 
-
-
-
 ## Part 3 — JSON in SQL Server
 
 ### 3.1 SQL Server JSON (No JSON Data Type!)
+
 ```sql
 -- SQL Server stores JSON as NVARCHAR — no native JSON type
 CREATE TABLE api_logs (
@@ -264,14 +269,14 @@ CREATE TABLE api_logs (
 );
 
 -- Query JSON
-SELECT 
+SELECT
     JSON_VALUE(response, '$.status') AS status,        -- Scalar value
     JSON_QUERY(response, '$.data.items') AS items_arr, -- Object/array
     JSON_VALUE(response, '$.data.items[0].name') AS first_item
 FROM api_logs;
 
 -- OPENJSON: Expand JSON to rows (like JSON_TABLE in MySQL)
-SELECT 
+SELECT
     j.key,
     j.value,
     j.type  -- 0=null, 1=string, 2=number, 3=bool, 4=array, 5=object
@@ -297,12 +302,10 @@ FOR JSON PATH;  -- Returns JSON array
 
 ---
 
-
-
-
 ## Part 4 — XML in SQL
 
 ### 4.1 PostgreSQL XML
+
 ```sql
 CREATE TABLE invoices (
     id SERIAL PRIMARY KEY,
@@ -328,7 +331,7 @@ INSERT INTO invoices (invoice_xml) VALUES ('
 ');
 
 -- XPath queries
-SELECT 
+SELECT
     (xpath('//customer/text()', invoice_xml))[1]::text AS customer,
     (xpath('//total/text()', invoice_xml))[1]::text::numeric AS total,
     (xpath('count(//item)', invoice_xml))[1]::text::int AS item_count,
@@ -339,7 +342,7 @@ FROM invoices;
 SELECT xt.*
 FROM invoices i,
 XMLTABLE('//item' PASSING i.invoice_xml
-    COLUMNS 
+    COLUMNS
         sku     TEXT PATH '@sku',
         qty     INT  PATH '@qty',
         name    TEXT PATH 'name',
@@ -348,6 +351,7 @@ XMLTABLE('//item' PASSING i.invoice_xml
 ```
 
 ### 4.2 SQL Server XML
+
 ```sql
 -- SQL Server has native XML type
 DECLARE @xml XML = '
@@ -361,12 +365,12 @@ DECLARE @xml XML = '
 </employees>';
 
 -- XQuery methods
-SELECT 
+SELECT
     @xml.value('(/employees/employee[@id=1]/name)[1]', 'VARCHAR(50)') AS name,
     @xml.value('(/employees/employee[@id=1]/salary)[1]', 'INT') AS salary;
 
 -- Shred XML to rows
-SELECT 
+SELECT
     t.c.value('@id', 'INT') AS emp_id,
     t.c.value('@dept', 'VARCHAR(50)') AS department,
     t.c.value('(name)[1]', 'VARCHAR(50)') AS name,
@@ -381,12 +385,10 @@ FOR XML PATH('employee'), ROOT('employees');
 
 ---
 
-
-
-
 ## Part 5 — Array Operations (PostgreSQL)
 
 ### 5.1 PostgreSQL Arrays
+
 ```sql
 CREATE TABLE surveys (
     id SERIAL PRIMARY KEY,
@@ -421,7 +423,7 @@ SELECT ARRAY_AGG(DISTINCT skill ORDER BY skill) AS all_skills
 FROM surveys, UNNEST(skills) AS skill;
 
 -- Array operations
-SELECT 
+SELECT
     ARRAY_LENGTH(skills, 1) AS skill_count,
     ARRAY_APPEND(skills, 'Docker') AS with_docker,
     ARRAY_REMOVE(skills, 'Java') AS without_java,
@@ -434,6 +436,7 @@ FROM surveys WHERE id = 1;
 ## Part 6 — Real-World Patterns
 
 ### 6.1 Event Sourcing with JSON
+
 ```sql
 -- Store events as immutable JSON
 CREATE TABLE event_store (
@@ -454,7 +457,7 @@ WITH ordered_events AS (
     WHERE aggregate_id = 'abc-123'::uuid
     ORDER BY event_id
 )
-SELECT 
+SELECT
     jsonb_agg(payload) AS all_events,
     -- Merge all payloads (last write wins)
     (SELECT jsonb_object_agg(key, value)
@@ -463,6 +466,7 @@ FROM ordered_events;
 ```
 
 ### 6.2 Configuration Table
+
 ```sql
 -- Flexible config storage
 CREATE TABLE app_config (
@@ -487,6 +491,7 @@ WHERE config_key = 'feature_flags';
 ```
 
 ### 6.3 Audit Log with JSON Diff
+
 ```sql
 CREATE TABLE audit_log (
     id         BIGSERIAL PRIMARY KEY,
@@ -500,12 +505,12 @@ CREATE TABLE audit_log (
 );
 
 -- View what changed
-SELECT 
+SELECT
     changed_at,
     action,
     -- Show only changed fields
-    (SELECT jsonb_object_agg(key, value) 
-     FROM jsonb_each(new_data) 
+    (SELECT jsonb_object_agg(key, value)
+     FROM jsonb_each(new_data)
      WHERE NOT old_data ? key OR old_data->key != new_data->key) AS changes
 FROM audit_log
 WHERE table_name = 'users' AND record_id = 42
@@ -513,8 +518,6 @@ ORDER BY changed_at DESC;
 ```
 
 ---
-
-
 
 ## JSON vs XML Decision Guide
 
@@ -530,5 +533,36 @@ Need to choose? Ask:
 │ Is it a document interchange format?        → XML or JSON    │
 │ Default for new projects?                   → JSON (always)  │
 └─────────────────────────────────────────────────────────────┘
-```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **XML (W3C)** (1998): Extensible Markup Language became the standard for structured document interchange and web services
+- **JSON (Crockford)** (2001): Douglas Crockford specified JSON as a lighter alternative to XML for browser-server communication
+- **XML in SQL (SQL:2003)** (2003): SQL standard added XML type and XML_query functions for database-integrated XML processing
+- **PostgreSQL JSON type** (2012): First major RDBMS added native JSON support with text storage and basic extraction
+- **PostgreSQL JSONB** (2014): Binary JSON storage with full-text search indexing, dramatically improving query performance
+- **JSON in SQL (SQL:2016)** (2016): SQL standard added JSON functions, validating decades of vendor-specific extensions
+- **GIN indexes (PostgreSQL)** (2006): Generalized Inverted Index provided the indexing mechanism that made JSONB queries fast
+
+**Evolution narrative:**
+XML (1998) dominated web services and enterprise integration until JSON (2001) offered a simpler data interchange format favored by web developers. SQL databases initially treated these formats as blobs, but SQL:2003 added XML type and SQL:2016 added JSON support to the standard. PostgreSQL's JSONB (2014) combined flexible schema storage with binary representation and GIN indexing, achieving both flexibility and performance that made it a document database competitor.
+
+**Modern practice anchor:**
+Today's SQL databases treat JSON as a first-class citizen with JSONB storage, GIN indexing, and rich extraction functions—enabling schema-on-read patterns without sacrificing query performance.
+
+### Production Reality
+
+**Failure modes:**
+1. **JSONB indexing missing causing seq scan**: 50M row table with JSONB column `data` queried daily with `WHERE data->>'status' = 'active'` — no GIN index, full table scan takes 180s, blocks other queries
+2. **JSON path queries without operator class**: `WHERE jsonb_path_exists(data, '$.items[*] ? (@.price > 100)')` ignores available indexes — Postgres uses generic plan with sequential access
+3. **Large JSON documents bloating row size**: API responses storing full payload (avg 500KB) in JSONB column — table size grows from 2GB to 80GB, index size balloons, cache efficiency drops to 15%
+
+**Debug workflow:**
+1. Verify GIN index exists: `SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'my_table' AND indexdef LIKE '%jsonb%'`
+2. Check for bloat: `SELECT relname, pg_size_pretty(pg_total_relation_size(oid)) FROM pg_class WHERE relname LIKE '%json%'`
+3. Test query plan: `EXPLAIN (ANALYZE, BUFFERS)` on JSONB queries — verify index usage and look for `Seq Scan` which indicates missing index
+
+**Modern practice anchor:**
+JSONB requires explicit GIN indexing for query performance — storage flexibility does not mean query performance is free.
+```

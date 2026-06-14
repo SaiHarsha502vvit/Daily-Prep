@@ -7,10 +7,10 @@
 **Framework**: WHY → HOW → WHAT → WHEN → PRACTICE → REAL-WORLD
 
 ---
+
 **Navigation**: [Part 1: Data Structures] | [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
 
 ---
-
 
 # 🔬 PART 0: DEEP INTERNALS - CPU AND MEMORY FUNDAMENTALS FOR DSA
 
@@ -200,10 +200,7 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 🧠 Java Memory Model for Data Structures
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -263,11 +260,7 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 ## 📖 Operation Cost Reference Table
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -330,11 +323,7 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 ## 💪 Big — O in Practice — the Reality Check
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -387,8 +376,6 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
-
 
 ```
 
@@ -448,8 +435,6 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ```
 
 ---
@@ -475,18 +460,18 @@ Key Insight:
 Arrays solve the problem of managing COLLECTIONS of same-type data
 with O(1) random access using index-based addressing.
 
-
 ### HOW Arrays Work (Memory Model)
-
 
 Memory Layout (Contiguous Allocation):
 
 Address: 1000 1004 1008 1012 1016
+
 ```
 ┌───────┬───────┬───────┬───────┬───────┐
 ```
 
 int[] arr = │ 10 │ 20 │ 30 │ 40 │ 50 │
+
 ```
 └───────┴───────┴───────┴───────┴───────┘
 ```
@@ -691,7 +676,6 @@ class SparseArray<T> {
    └── Use: Max sum subarray and variants
 ```
 
-
 ### LeetCode Problems - Arrays
 
 | #   | Problem                         | Difficulty | Pattern         | Link                                                           |
@@ -731,7 +715,6 @@ class SparseArray<T> {
    └── Time Series Data: Arrays of price points
    └── Order Books: Arrays sorted by price
 ```
-
 
 ---
 
@@ -773,7 +756,6 @@ Key Insight:
 Each node knows ONLY where the next node is.
 No formula to calculate position - must traverse.
 ```
-
 
 ### Linked List Variants
 
@@ -1025,7 +1007,6 @@ class UnrolledNode {
    └── Combine lists
 ```
 
-
 ### LeetCode Problems - Linked Lists
 
 | #   | Problem                  | Difficulty | Pattern             | Link                                                            |
@@ -1068,11 +1049,7 @@ class UnrolledNode {
    └── Version control (Git commits)
 ```
 
-
 ---
-
-
-
 
 ## Stacks - Complete Guide
 
@@ -1109,7 +1086,6 @@ PEEK: View top element without removing
 
 All operations: O(1)
 ```
-
 
 ### Stack Implementations
 
@@ -1379,19 +1355,18 @@ class StackWithMiddle {
    └── Local variable storage
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Stacks - Complete Guide**
 
-**Challenge 1 (Engineering):** A highly concurrent event-driven server processes requests recursively via DFS parsing of JSON payloads. Under sudden load spikes, the application crashes with `StackOverflowError`. 
+**Challenge 1 (Engineering):** A highly concurrent event-driven server processes requests recursively via DFS parsing of JSON payloads. Under sudden load spikes, the application crashes with `StackOverflowError`.
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 **Scenario:** Complex nested JSON requests trigger deep recursion, exceeding the thread stack size limit (`-Xss`). This crashes the thread entirely.
 **Trace:** Recursive calls allocate a new stack frame for each nested level. With a default stack size (e.g., 1MB), processing deeply nested structures blows the stack. Because thread death might go unhandled by the global executor pool, this causes silent task drops.
 **Debug/Fix:** Replace recursion with **Iteration + Explicit Stack**. Move the memory burden from the JVM thread stack (limited) to the Heap (abundant) using `Deque<Node> stack = new ArrayDeque<>()`. This converts the `StackOverflowError` risk into a manageable `OutOfMemoryError` risk, which can be mitigated by rejecting payloads exceeding a max depth threshold.
+
 </details>
 
 ## Queues - Complete Guide
@@ -1412,7 +1387,6 @@ Key Insight:
 Queues ensure FAIRNESS - first request gets served first.
 Essential for ordering and buffering in systems.
 ```
-
 
 ### Queue Variants
 
@@ -1682,7 +1656,6 @@ Use Case: Sliding Window Maximum in O(n) instead of O(n*k)
    └── Interrupt handling
 ```
 
-
 ---
 
 ## Hash Tables - Complete Guide
@@ -1725,7 +1698,6 @@ Hash Function converts key to index:
 │                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Hash Table Variants
 
@@ -1867,7 +1839,6 @@ ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 Features:
 ├── Segment-level locking (not whole map)
 ```
-
 
 ---
 

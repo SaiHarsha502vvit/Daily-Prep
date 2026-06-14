@@ -13,15 +13,15 @@ Use this when you edit the repo.
 
 Classify the change:
 
-| Change Type | Required Context Update |
-|---|---|
-| Typo, formatting, small wording | Usually only regenerate registry/manifest. |
-| New section in existing style | Regenerate registry/manifest; journal if meaningful. |
-| New file | Add content, regenerate registry/manifest, journal. |
-| New folder | Add folder `CONTEXT.md`, update `REPO_MAP.md`, regenerate registry/manifest, journal. |
-| New permanent rule | Update `DECISIONS.md`, regenerate registry/manifest, journal. |
-| Cross-domain cleanup | Update `CONTAMINATION_GUARDS.md` if a new contamination family is found. |
-| Major restructuring | Update `REPO_MAP.md`, folder `CONTEXT.md`, journal, regenerate registry/manifest. |
+| Change Type                     | Required Context Update                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------- |
+| Typo, formatting, small wording | Usually only regenerate registry/manifest.                                            |
+| New section in existing style   | Regenerate registry/manifest; journal if meaningful.                                  |
+| New file                        | Add content, regenerate registry/manifest, journal.                                   |
+| New folder                      | Add folder `CONTEXT.md`, update `REPO_MAP.md`, regenerate registry/manifest, journal. |
+| New permanent rule              | Update `DECISIONS.md`, regenerate registry/manifest, journal.                         |
+| Cross-domain cleanup            | Update `CONTAMINATION_GUARDS.md` if a new contamination family is found.              |
+| Major restructuring             | Update `REPO_MAP.md`, folder `CONTEXT.md`, journal, regenerate registry/manifest.     |
 
 ## After Editing
 

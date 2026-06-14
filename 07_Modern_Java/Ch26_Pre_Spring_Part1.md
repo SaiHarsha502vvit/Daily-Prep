@@ -51,7 +51,6 @@ _The "invisible" knowledge gap between tutorials and real understanding_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Table of Contents
@@ -77,19 +76,19 @@ SECTION M: BYTECODE & INSTRUMENTATION - ULTIMATE FOUNDATION
 Before diving into snippets, anchor your reasoning in five foundational ideas:
 
 1. Reflection is late binding with metadata.
-Spring is not guessing at runtime; it is reading class metadata and applying deterministic container rules.
+   Spring is not guessing at runtime; it is reading class metadata and applying deterministic container rules.
 
 2. Annotation behavior depends on processing phase.
-Some annotations are compile-time only, some are bytecode metadata, and some drive runtime framework behavior.
+   Some annotations are compile-time only, some are bytecode metadata, and some drive runtime framework behavior.
 
 3. Proxies define cross-cutting boundaries.
-Transactions, caching, and async behavior work when calls pass through the proxy boundary, not when methods call themselves internally.
+   Transactions, caching, and async behavior work when calls pass through the proxy boundary, not when methods call themselves internally.
 
 4. Servlet pipeline is the mechanics layer.
-Controller methods are only one stage in a larger request flow involving container parsing, filters, dispatcher mapping, and response commit.
+   Controller methods are only one stage in a larger request flow involving container parsing, filters, dispatcher mapping, and response commit.
 
 5. JSON serialization is API contract design.
-Jackson configuration choices directly influence compatibility, client integration, and long-term version evolution.
+   Jackson configuration choices directly influence compatibility, client integration, and long-term version evolution.
 
 If you study each section by asking "what metadata is read", "what boundary is intercepted", and "what contract is emitted", the code examples become predictable instead of memorized.
 
@@ -118,7 +117,6 @@ If you study each section by asking "what metadata is read", "what boundary is i
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## A.1 What Is Reflection?
 
@@ -171,8 +169,6 @@ Modifier.isAbstract(modifiers);  // true/false
 Modifier.isFinal(modifiers);     // true/false
 ```
 
-
-
 🔬 **Section Challenge — A.2 The Class Object - Your Entry Point**
 
 **Challenge 1 (Reasoning — Who/When/What):** `Class.forName("com.example.UserService")` is used in frameworks like Spring. **When** does it load the class? **Who** pays the performance cost? **What** caches the result?
@@ -182,7 +178,6 @@ Modifier.isFinal(modifiers);     // true/false
 **When loaded?** On the first call — the classloader reads the bytecode from the JAR file and creates the `Class` object. **Who pays?** The calling thread blocks during class loading (disk I/O + bytecode parsing). **Caching:** The JVM caches loaded `Class` objects in the ClassLoader's internal table. Subsequent `Class.forName("com.example.UserService")` calls return the cached object instantly (no disk I/O). Spring exploits this: during startup it scans and loads all classes once, then caches references. At request time, bean instantiation uses the cached `Class` object — no repeated I/O.
 
 </details>
-
 
 ## A.3 Field Reflection - How @Autowired Works
 
@@ -197,26 +192,26 @@ public class UserService {
 
 ```java
 public class SpringFieldInjector {
-    
+
     public void injectDependencies(Object bean, ApplicationContext context) {
         Class<?> clazz = bean.getClass();
-        
+
         // Get ALL fields (including private!)
         Field[] fields = clazz.getDeclaredFields();
-        
+
         for (Field field : fields) {
             // Check if field has @Autowired
             if (field.isAnnotationPresent(Autowired.class)) {
-                
+
                 // Get the type Spring needs to inject
                 Class<?> fieldType = field.getType();  // UserRepository.class
-                
+
                 // Find a bean of that type
                 Object dependency = context.getBean(fieldType);
-                
+
                 // THE MAGIC: Make private field accessible!
                 field.setAccessible(true);  // Bypass private!
-                
+
                 // Inject the dependency
                 field.set(bean, dependency);
             }
@@ -260,7 +255,7 @@ nameField.set(user, "John");  // Sets user.name = "John"
 ```java
 @RestController
 public class UserController {
-    
+
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.findById(id);
@@ -275,13 +270,13 @@ public class UserController {
 
 ```java
 public class SimpleDispatcher {
-    
+
     private Map<String, MethodHandler> mappings = new HashMap<>();
-    
+
     // At startup: Scan for @RequestMapping
     public void registerController(Object controller) {
         Class<?> clazz = controller.getClass();
-        
+
         for (Method method : clazz.getDeclaredMethods()) {
             // Check for mapping annotations
             GetMapping getMapping = method.getAnnotation(GetMapping.class);
@@ -291,11 +286,11 @@ public class SimpleDispatcher {
             }
         }
     }
-    
+
     // At runtime: When HTTP request comes
     public Object handleRequest(String httpMethod, String path, Object... args) {
         MethodHandler handler = mappings.get(httpMethod + ":" + path);
-        
+
         // REFLECTION: Invoke the method!
         return handler.method.invoke(handler.controller, args);
     }
@@ -339,7 +334,7 @@ privateMethod.invoke(service);
 @Component
 public class UserService {
     private final UserRepository repo;
-    
+
     // Spring calls this constructor - but HOW?
     @Autowired
     public UserService(UserRepository repo) {
@@ -352,36 +347,36 @@ public class UserService {
 
 ```java
 public class SpringBeanFactory {
-    
+
     public Object createBean(Class<?> clazz) throws Exception {
         // Find constructors
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        
+
         // Strategy 1: Look for @Autowired constructor
         for (Constructor<?> constructor : constructors) {
             if (constructor.isAnnotationPresent(Autowired.class)) {
                 return createWithDependencies(constructor);
             }
         }
-        
+
         // Strategy 2: Use single constructor if only one exists
         if (constructors.length == 1) {
             return createWithDependencies(constructors[0]);
         }
-        
+
         // Strategy 3: Use no-arg constructor
         return clazz.getDeclaredConstructor().newInstance();
     }
-    
+
     private Object createWithDependencies(Constructor<?> constructor) throws Exception {
         Class<?>[] paramTypes = constructor.getParameterTypes();
         Object[] args = new Object[paramTypes.length];
-        
+
         // Resolve each dependency
         for (int i = 0; i < paramTypes.length; i++) {
             args[i] = applicationContext.getBean(paramTypes[i]);
         }
-        
+
         constructor.setAccessible(true);
         return constructor.newInstance(args);
     }
@@ -411,8 +406,6 @@ withRepo.setAccessible(true);  // If private
 UserService instance = withRepo.newInstance(repoInstance);
 ```
 
-
-
 🔬 **Section Challenge — A.5 Constructor Reflection - How Spring Creates Beans**
 
 **Challenge 1 (Trace — Who/When/What):** Spring uses `constructor.newInstance(args)` to create beans. **What** happens if the class has NO no-arg constructor and you don't use `@Autowired`? **Who** throws the exception and when?
@@ -423,17 +416,16 @@ UserService instance = withRepo.newInstance(repoInstance);
 
 </details>
 
-
 ## A.6 Annotation Reflection - How Spring Reads Configuration
 
 ```java
 @Service
 @Transactional
 public class OrderService {
-    
+
     @Autowired
     private OrderRepository repo;
-    
+
     @Cacheable("orders")
     public Order findById(Long id) { ... }
 }
@@ -478,8 +470,6 @@ for (Parameter param : params) {
 }
 ```
 
-
-
 🔬 **Section Challenge — A.6 Annotation Reflection - How Spring Reads Configuration**
 
 **Challenge 1 (Debug — Who/When/What):** You add `@Transactional` to a method. **Who** reads this annotation? **When** during startup? **What** would you see if you called `method.getAnnotation(Transactional.class)` at runtime on the PROXY vs the RAW bean?
@@ -489,7 +479,6 @@ for (Parameter param : params) {
 **Who reads?** `AnnotationTransactionAttributeSource`, called by `InfrastructureAdvisorAutoProxyCreator` (a `BeanPostProcessor`). **When?** After bean initialization, before the bean is stored in the singleton cache. **Proxy vs Raw:** On the RAW object: `method.getAnnotation(Transactional.class)` returns the annotation — it's there in bytecode. On a CGLIB PROXY class: the proxy is a generated subclass; calling `proxy.getClass().getMethod(...).getAnnotation(...)` may return `null` because CGLIB's generated subclass methods don't copy annotations. Spring handles this with `AnnotationUtils.findAnnotation()` which walks the class hierarchy to find inherited annotations — always use this instead of direct `getAnnotation()` in framework code.
 
 </details>
-
 
 ## A.7 Generic Type Information - The Advanced Stuff
 
@@ -510,13 +499,13 @@ Type[] genericInterfaces = clazz.getGenericInterfaces();
 for (Type type : genericInterfaces) {
     if (type instanceof ParameterizedType) {
         ParameterizedType pType = (ParameterizedType) type;
-        
+
         Type rawType = pType.getRawType();  // JpaRepository
         Type[] typeArgs = pType.getActualTypeArguments();  // [User, Long]
-        
+
         Class<?> entityClass = (Class<?>) typeArgs[0];  // User.class
         Class<?> idClass = (Class<?>) typeArgs[1];      // Long.class
-        
+
         // NOW Spring knows the entity type!
     }
 }
@@ -575,17 +564,17 @@ public Object handleRequest(String path) {
 public class CachedDispatcher {
     private final Map<String, Method> methodCache = new HashMap<>();
     private final Map<String, Object> instanceCache = new HashMap<>();
-    
+
     // Once at startup
     public void init() {
         Class<?> clazz = Class.forName("...");
         Method method = clazz.getMethod("handle");
         Object instance = clazz.newInstance();
-        
+
         methodCache.put("/path", method);
         instanceCache.put("/path", instance);
     }
-    
+
     // Fast at runtime
     public Object handleRequest(String path) {
         Method method = methodCache.get(path);      // O(1) lookup
@@ -616,7 +605,6 @@ public class CachedDispatcher {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## B.1 Creating Custom Annotations
 
@@ -689,12 +677,10 @@ public @interface RuntimeAvailable { }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 🔬 **Section Challenge — B.1 Creating Custom Annotations**
 
 **Challenge 1 (Design):** Build a custom annotation `@MeasureLatency` for service methods and decide how Spring will discover it. Which retention policy, target, and default attributes are required?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
@@ -707,8 +693,8 @@ public @interface MeasureLatency {
 ```
 
 The constraint is discovery time. Spring/AOP reads annotations while the app is running, so `RetentionPolicy.RUNTIME` is non-negotiable. Because the behavior wraps method execution, `ElementType.METHOD` keeps the annotation honest and prevents class/field usage that the aspect cannot process.
-</details>
 
+</details>
 
 ## B.2 Processing Annotations at Runtime (Spring's Way)
 
@@ -723,7 +709,7 @@ public @interface LogExecutionTime {
 // Usage
 @Service
 public class OrderService {
-    
+
     @LogExecutionTime("order-creation")
     public Order createOrder(OrderRequest request) {
         // business logic
@@ -737,14 +723,14 @@ public class OrderService {
 @Aspect
 @Component
 public class LoggingAspect {
-    
+
     // Intercept ALL methods with @LogExecutionTime
     @Around("@annotation(logAnnotation)")
-    public Object logTime(ProceedingJoinPoint joinPoint, 
+    public Object logTime(ProceedingJoinPoint joinPoint,
                           LogExecutionTime logAnnotation) throws Throwable {
-        
+
         String label = logAnnotation.value();  // "order-creation"
-        
+
         long start = System.currentTimeMillis();
         try {
             return joinPoint.proceed();  // Execute actual method
@@ -760,20 +746,20 @@ public class LoggingAspect {
 
 ```java
 public class AnnotationProcessor {
-    
+
     public void processAnnotations(Object bean) {
         Class<?> clazz = bean.getClass();
-        
+
         // Scan all methods
         for (Method method : clazz.getDeclaredMethods()) {
-            
+
             // Check for our annotation
             if (method.isAnnotationPresent(LogExecutionTime.class)) {
                 LogExecutionTime annotation = method.getAnnotation(LogExecutionTime.class);
-                
+
                 String label = annotation.value();
                 boolean showArgs = annotation.showArgs();
-                
+
                 // Now we know this method should be logged
                 // We could wrap it with a proxy...
             }
@@ -781,8 +767,6 @@ public class AnnotationProcessor {
     }
 }
 ```
-
-
 
 🔬 **Section Challenge — B.2 Processing Annotations at Runtime (Spring's Way)**
 
@@ -793,7 +777,6 @@ public class AnnotationProcessor {
 **Who triggers?** `ClassPathBeanDefinitionScanner`, invoked by `AnnotationConfigApplicationContext` when it processes `@ComponentScan`. **When?** Phase 1 of startup: BeanDefinition registration (before any beans are instantiated). **Output:** A `BeanDefinitionRegistry` — a map of `{beanName → BeanDefinition}`. Each `BeanDefinition` records the class, scope, init/destroy methods, dependencies — but no actual object is created yet. Object creation (Phase 2: bean instantiation) only begins after ALL BeanDefinitions are registered. This two-phase design allows circular dependency detection before wasting time constructing beans.
 
 </details>
-
 
 ## B.3 Compile-Time Annotation Processing (Lombok's Way)
 
@@ -812,7 +795,7 @@ public class User {
 
 public class User {
     private String name;
-    
+
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 }
@@ -847,8 +830,6 @@ public class User {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — B.3 Compile-Time Annotation Processing (Lombok's Way)**
 
 **Challenge 1 (Reasoning — Who/When/What):** Lombok generates code at **compile-time** while Spring reads annotations at **runtime**. **Why** did Lombok choose compile-time? **What** would break if Lombok used runtime reflection instead?
@@ -858,7 +839,6 @@ public class User {
 **Why compile-time?** Type safety. Lombok generates actual Java source (getters, constructors, builders) that the compiler validates. If your field type changes, the generated getter type updates automatically. **What breaks with runtime?** (1) IDE support dies — IDEs can't see generated methods, no autocomplete. (2) Performance — runtime reflection-generated proxies add overhead on every method call. (3) Debugging difficulty — stack traces go through proxy layers. (4) Serialization — Jackson, JPA, and other frameworks use reflection to discover fields; they'd see proxied methods, not plain Java. Compile-time generation produces real `.class` files indistinguishable from hand-written code.
 
 </details>
-
 
 ## B.4 Creating a Compile-Time Annotation Processor
 
@@ -872,11 +852,11 @@ public @interface GenerateBuilder { }
 @SupportedAnnotationTypes("com.example.GenerateBuilder")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class BuilderProcessor extends AbstractProcessor {
-    
+
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, 
+    public boolean process(Set<? extends TypeElement> annotations,
                           RoundEnvironment roundEnv) {
-        
+
         for (Element element : roundEnv.getElementsAnnotatedWith(GenerateBuilder.class)) {
             if (element.getKind() == ElementKind.CLASS) {
                 TypeElement classElement = (TypeElement) element;
@@ -885,15 +865,15 @@ public class BuilderProcessor extends AbstractProcessor {
         }
         return true;
     }
-    
+
     private void generateBuilderClass(TypeElement classElement) {
         String className = classElement.getSimpleName() + "Builder";
-        
+
         // Generate new Java file
         try {
             JavaFileObject file = processingEnv.getFiler()
                 .createSourceFile(className);
-            
+
             try (PrintWriter writer = new PrintWriter(file.openWriter())) {
                 writer.println("public class " + className + " {");
                 // Generate builder methods...
@@ -901,7 +881,7 @@ public class BuilderProcessor extends AbstractProcessor {
             }
         } catch (IOException e) {
             processingEnv.getMessager().printMessage(
-                Diagnostic.Kind.ERROR, 
+                Diagnostic.Kind.ERROR,
                 "Failed to generate builder: " + e.getMessage()
             );
         }
@@ -910,8 +890,6 @@ public class BuilderProcessor extends AbstractProcessor {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — B.4 Creating a Compile-Time Annotation Processor**
 
@@ -922,7 +900,6 @@ public class BuilderProcessor extends AbstractProcessor {
 **When it runs?** Between parse and bytecode generation. `javac` first parses source → invokes all processors → processors may generate new source → javac re-parses generated source → repeat ("rounds") until no new sources are generated → then emits bytecode. **Common mistakes:** (1) Not registering the processor in `META-INF/services/javax.annotation.processing.Processor` — javac never discovers it. (2) Using `processingEnv.getFiler().createSourceFile()` but swallowing the `IOException`. (3) The annotation has `@Retention(SOURCE)` — it's stripped before processors see it; use `@Retention(CLASS)` or `@Retention(RUNTIME)`. (4) Writing to `filer` in a round where `processingOver()` returns true — final round, new files won't be compiled.
 
 </details>
-
 
 # 🎨 Section C: Proxy Patterns — the Real Spring Magic
 
@@ -956,7 +933,6 @@ public class BuilderProcessor extends AbstractProcessor {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## C.1 JDK Dynamic Proxies - Interface-Based
 
 ```java
@@ -982,10 +958,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class TransactionProxyFactory {
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T createProxy(T target, Class<T> interfaceType) {
-        
+
         return (T) Proxy.newProxyInstance(
             interfaceType.getClassLoader(),
             new Class<?>[] { interfaceType },
@@ -996,14 +972,14 @@ public class TransactionProxyFactory {
 
 class TransactionHandler implements InvocationHandler {
     private final Object target;
-    
+
     public TransactionHandler(Object target) {
         this.target = target;
     }
-    
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        
+
         // Check if method has @Transactional
         if (method.isAnnotationPresent(Transactional.class)) {
             System.out.println("BEGIN TRANSACTION");
@@ -1016,7 +992,7 @@ class TransactionHandler implements InvocationHandler {
                 throw e;
             }
         }
-        
+
         // No transaction needed
         return method.invoke(target, args);
     }
@@ -1031,15 +1007,13 @@ UserService realService = new UserServiceImpl();
 
 // Wrap it in transaction proxy
 UserService proxiedService = TransactionProxyFactory.createProxy(
-    realService, 
+    realService,
     UserService.class
 );
 
 // Now every call goes through the proxy
 proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 ```
-
-
 
 🔬 **Section Challenge — C.1 JDK Dynamic Proxies - Interface-Based**
 
@@ -1051,7 +1025,6 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 </details>
 
-
 ## C.2 CGLIB Proxies - Class-Based (No Interface Needed)
 
 ```java
@@ -1060,7 +1033,7 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 @Service
 public class UserService {  // No interface!
-    
+
     @Transactional
     public void save(User user) { /* implementation */ }
 }
@@ -1074,24 +1047,24 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 public class CglibProxyFactory {
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T createProxy(Class<T> targetClass) {
-        
+
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(targetClass);  // CGLIB SUBCLASSES your class!
         enhancer.setCallback(new TransactionInterceptor());
-        
+
         return (T) enhancer.create();
     }
 }
 
 class TransactionInterceptor implements MethodInterceptor {
-    
+
     @Override
-    public Object intercept(Object obj, Method method, Object[] args, 
+    public Object intercept(Object obj, Method method, Object[] args,
                            MethodProxy proxy) throws Throwable {
-        
+
         if (method.isAnnotationPresent(Transactional.class)) {
             System.out.println("BEGIN TRANSACTION");
             try {
@@ -1104,7 +1077,7 @@ class TransactionInterceptor implements MethodInterceptor {
                 throw e;
             }
         }
-        
+
         return proxy.invokeSuper(obj, args);
     }
 }
@@ -1142,8 +1115,6 @@ class TransactionInterceptor implements MethodInterceptor {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — C.3 JDK vs CGLIB - When Spring Uses Which**
 
 **Challenge 1 (Reasoning — Who/When/What):** Spring Boot 2.x changed the default proxy strategy to **always use CGLIB** even when interfaces exist. **Why** was this change made? **What** problem did it fix?
@@ -1154,18 +1125,17 @@ class TransactionInterceptor implements MethodInterceptor {
 
 </details>
 
-
 ## C.4 The Famous @Transactional Self-Invocation Bug
 
 ```java
 @Service
 public class UserService {
-    
+
     @Transactional
     public void methodA() {
         // Transaction works here
     }
-    
+
     public void methodB() {
         methodA();  // ⚠️ NO TRANSACTION! Why?
     }
@@ -1202,10 +1172,10 @@ public class UserService {
 // Solution 1: Inject self (proxy)
 @Service
 public class UserService {
-    
+
     @Autowired
     private UserService self;  // This is the PROXY!
-    
+
     public void methodB() {
         self.methodA();  // Goes through proxy = transaction works!
     }
@@ -1214,10 +1184,10 @@ public class UserService {
 // Solution 2: Use ApplicationContext
 @Service
 public class UserService {
-    
+
     @Autowired
     private ApplicationContext context;
-    
+
     public void methodB() {
         context.getBean(UserService.class).methodA();  // Gets proxy
     }
@@ -1234,30 +1204,29 @@ public class UserServiceA {
 public class UserServiceB {
     @Autowired
     private UserServiceA serviceA;
-    
+
     public void methodB() {
         serviceA.methodA();  // Calls through proxy
     }
 }
 ```
 
-
-
 🔬 **Section Challenge — C.4 The Famous @Transactional Self-Invocation Bug**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## C.5 Why @Transactional Doesn't Work on Private Methods
 
 ```java
 @Service
 public class UserService {
-    
+
     @Transactional
     private void privateMethod() {  // ⚠️ Transaction NEVER works!
         // ...
@@ -1269,13 +1238,13 @@ public class UserService {
 CGLIB creates a SUBCLASS of your service:
 
 class UserService$CglibProxy extends UserService {
-    
+
     @Override
     public void publicMethod() {  // Can override public
         // Add transaction logic
         super.publicMethod();
     }
-    
+
     // CANNOT override private methods!
     // private methods are not inherited
     // So privateMethod() on proxy calls originalClass.privateMethod() directly
@@ -1286,16 +1255,15 @@ RESULT: Private methods bypass the proxy entirely
 
 ---
 
-
-
 🔬 **Section Challenge — C.5 Why @Transactional Doesn't Work on Private Methods**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 # 🌱 Section D: Servlet API — What Spring Boot Hides
 
@@ -1321,12 +1289,12 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## D.1 The Servlet Lifecycle
 
 A Servlet is the **original Java web component** — it existed before Spring, before frameworks, before REST APIs. The entire Java web ecosystem was built on Servlets. A servlet is a Java class that the **web container** (Tomcat, Jetty) manages. You don't instantiate it yourself — the container creates it, calls its methods when requests arrive, and destroys it when the application shuts down.
 
 The lifecycle has three phases:
+
 1. **`init()`** — Called **once** when the servlet is first loaded (on first request or at startup). Use this to load configuration, open database connections, or initialize resources.
 2. **`service()` / `doGet()` / `doPost()`** — Called for **every request**. This is where your request-handling logic lives. The container creates a new thread for each request, so `doGet()` must be thread-safe.
 3. **`destroy()`** — Called **once** when the container shuts down. Use this to release resources, close connections, flush caches.
@@ -1336,35 +1304,35 @@ Spring's `DispatcherServlet` is itself a servlet — it follows this exact lifec
 ```java
 // A Servlet is the ORIGINAL Java web component
 public class MyServlet extends HttpServlet {
-    
+
     // Called ONCE when servlet is created
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         // Load resources, initialize state
     }
-    
+
     // Called for EVERY request
     @Override
-    protected void doGet(HttpServletRequest request, 
-                        HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request,
+                        HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Read request
         String name = request.getParameter("name");
-        
+
         // Write response
         response.setContentType("text/html");
         response.getWriter().println("<h1>Hello, " + name + "</h1>");
     }
-    
+
     @Override
-    protected void doPost(HttpServletRequest request, 
-                         HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
         // Handle POST
     }
-    
+
     // Called ONCE when servlet is destroyed
     @Override
     public void destroy() {
@@ -1382,7 +1350,7 @@ Understanding `HttpServletRequest` explains **how Spring's parameter binding wor
 ```java
 @GetMapping("/debug")
 public void debugRequest(HttpServletRequest request) {
-    
+
     // === URL INFORMATION ===
     String method = request.getMethod();              // "GET", "POST"
     String uri = request.getRequestURI();             // "/api/users"
@@ -1390,38 +1358,36 @@ public void debugRequest(HttpServletRequest request) {
     String queryString = request.getQueryString();    // "page=1&size=10"
     String contextPath = request.getContextPath();    // "" or "/myapp"
     String servletPath = request.getServletPath();    // "/api/users"
-    
+
     // === PARAMETERS ===
     String page = request.getParameter("page");       // "1" (single value)
     String[] values = request.getParameterValues("ids"); // Multiple values
     Map<String, String[]> allParams = request.getParameterMap();
-    
+
     // === HEADERS ===
     String contentType = request.getHeader("Content-Type");
     String auth = request.getHeader("Authorization");
     Enumeration<String> headerNames = request.getHeaderNames();
-    
+
     // === BODY (for POST/PUT) ===
     BufferedReader reader = request.getReader();      // Text body
     InputStream stream = request.getInputStream();    // Binary body
-    
+
     // === SESSION ===
     HttpSession session = request.getSession();       // Creates if not exists
     HttpSession session2 = request.getSession(false); // Returns null if not exists
-    
+
     // === CLIENT INFO ===
     String remoteAddr = request.getRemoteAddr();      // Client IP
     String remoteHost = request.getRemoteHost();      // Client hostname
     int remotePort = request.getRemotePort();         // Client port
-    
+
     // === ATTRIBUTES (request-scoped storage) ===
     request.setAttribute("user", currentUser);        // Set
     Object user = request.getAttribute("user");       // Get
     request.removeAttribute("user");                  // Remove
 }
 ```
-
-
 
 🔬 **Section Challenge — D.2 HttpServletRequest - Everything About the Request**
 
@@ -1433,7 +1399,6 @@ public void debugRequest(HttpServletRequest request) {
 
 </details>
 
-
 ## D.3 HttpServletResponse - Controlling the Response
 
 `HttpServletResponse` is the counterpart to `HttpServletRequest` — it lets you **control exactly what is sent back to the client**: the HTTP status code, response headers, cookies, and the response body. Normally, Spring handles this for you — when you return an object from a `@RestController`, Jackson serializes it to JSON, Spring sets the `Content-Type` to `application/json`, and the status code to `200 OK`.
@@ -1443,18 +1408,18 @@ But there are cases where you need direct control: file downloads, setting custo
 ```java
 @GetMapping("/download")
 public void customResponse(HttpServletResponse response) throws IOException {
-    
+
     // === STATUS CODE ===
     response.setStatus(HttpServletResponse.SC_OK);           // 200
     response.setStatus(HttpServletResponse.SC_CREATED);      // 201
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);    // 404
-    
+
     // === HEADERS ===
     response.setHeader("X-Custom", "value");          // Set (replaces)
     response.addHeader("X-Custom", "value2");         // Add (appends)
     response.setContentType("application/json");      // Content-Type
     response.setCharacterEncoding("UTF-8");
-    
+
     // === COOKIES ===
     Cookie cookie = new Cookie("session", "abc123");
     cookie.setMaxAge(3600);       // 1 hour
@@ -1462,14 +1427,14 @@ public void customResponse(HttpServletResponse response) throws IOException {
     cookie.setSecure(true);       // HTTPS only
     cookie.setPath("/");
     response.addCookie(cookie);
-    
+
     // === BODY ===
     PrintWriter writer = response.getWriter();        // For text
     OutputStream stream = response.getOutputStream(); // For binary
-    
+
     // === REDIRECTS ===
     response.sendRedirect("/other");                  // 302 redirect
-    
+
     // === ERRORS ===
     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
 }
@@ -1532,28 +1497,28 @@ public void customResponse(HttpServletResponse response) throws IOException {
 @Component
 @Order(1)  // Lower = earlier in chain
 public class RequestLoggingFilter implements Filter {
-    
+
     @Override
-    public void doFilter(ServletRequest request, 
-                        ServletResponse response, 
+    public void doFilter(ServletRequest request,
+                        ServletResponse response,
                         FilterChain chain) throws IOException, ServletException {
-        
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        
+
         // BEFORE controller
         long startTime = System.currentTimeMillis();
         String requestId = UUID.randomUUID().toString();
-        
-        log.info("[{}] {} {} started", 
+
+        log.info("[{}] {} {} started",
                 requestId, httpRequest.getMethod(), httpRequest.getRequestURI());
-        
+
         // Pass to next filter (or controller)
         chain.doFilter(request, response);
-        
+
         // AFTER controller
         long duration = System.currentTimeMillis() - startTime;
-        log.info("[{}] completed in {} ms with status {}", 
+        log.info("[{}] completed in {} ms with status {}",
                 requestId, duration, httpResponse.getStatus());
     }
 }
@@ -1580,8 +1545,6 @@ public class RequestLoggingFilter implements Filter {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 🔬 **Section Challenge — D.4 Filters - The Pipeline Before Controllers**
 
 **Challenge 1 (Debug — Who/When/What):** You have a `LoggingFilter` and an `AuthFilter`. Logging must run BEFORE auth so every request — including rejected ones — is logged. **Who** controls the order? **What** annotation/config sets it?
@@ -1592,12 +1555,12 @@ public class RequestLoggingFilter implements Filter {
 
 </details>
 
-
 ## D.5 Understanding DispatcherServlet
 
 The `DispatcherServlet` is the **heart of Spring MVC** — it is the single entry point for all HTTP requests in a Spring web application. It implements the **Front Controller** design pattern: instead of having one servlet per URL (the old way), there is one central servlet that receives **all** requests and dispatches them to the appropriate controller method.
 
 When a request arrives, the `DispatcherServlet` performs these steps:
+
 1. **HandlerMapping** — Consults its registered `HandlerMapping` beans to find which `@Controller` method matches the request URL and HTTP method. Think of this as a routing table.
 2. **HandlerAdapter** — Converts the raw `HttpServletRequest` into the method parameters your controller expects (`@RequestParam`, `@PathVariable`, `@RequestBody`), calls your method, and captures the return value.
 3. **Interceptors** — Runs any registered `HandlerInterceptor` beans before (`preHandle`) and after (`postHandle`) the controller method — useful for logging, authorization, and audit trails.
@@ -1610,28 +1573,28 @@ You rarely interact with `DispatcherServlet` directly, but knowing its internals
 // ALL requests go through it
 
 public class DispatcherServlet extends FrameworkServlet {
-    
+
     // Simplified version of what it does
-    protected void doDispatch(HttpServletRequest request, 
+    protected void doDispatch(HttpServletRequest request,
                              HttpServletResponse response) throws Exception {
-        
+
         // 1. Find handler (controller method) for this request
         HandlerExecutionChain handler = getHandler(request);
-        
+
         // 2. Find adapter for the handler
         HandlerAdapter adapter = getHandlerAdapter(handler.getHandler());
-        
+
         // 3. Run interceptors (preHandle)
         if (!handler.applyPreHandle(request, response)) {
             return;
         }
-        
+
         // 4. Execute controller method
         ModelAndView mv = adapter.handle(request, response, handler.getHandler());
-        
+
         // 5. Run interceptors (postHandle)
         handler.applyPostHandle(request, response, mv);
-        
+
         // 6. Render view (or write JSON response)
         processDispatchResult(request, response, handler, mv);
     }
@@ -1639,8 +1602,6 @@ public class DispatcherServlet extends FrameworkServlet {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — D.5 Understanding DispatcherServlet**
 
@@ -1651,7 +1612,6 @@ public class DispatcherServlet extends FrameworkServlet {
 **Path through DispatcherServlet:** (1) Tomcat receives request → passes to `DispatcherServlet.service()`. (2) `HandlerMapping` (e.g., `RequestMappingHandlerMapping`) resolves the handler — matches `POST /api/users` to `UserController.createUser()` by scanning `@RequestMapping` metadata. (3) `HandlerAdapter` (e.g., `RequestMappingHandlerAdapter`) adapts the handler — deserializes request body via `HttpMessageConverter` (Jackson), resolves `@RequestBody`/`@PathVariable` etc. (4) Your controller method executes. (5) Return value processed — `@ResponseBody` → Jackson serializes to JSON. (6) Response written to HTTP socket. **What decides the method?** `RequestMappingHandlerMapping` uses a trie-based route table built at startup from all `@RequestMapping` annotations.
 
 </details>
-
 
 # 📌 Section E: Jackson & Serialization — JSON Isn't Magic
 
@@ -1678,7 +1638,6 @@ public class DispatcherServlet extends FrameworkServlet {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## E.1 ObjectMapper - The Core Component
 
@@ -1737,13 +1696,13 @@ User user = mapper.readValue(json, User.class);
 
 ```java
 public class User {
-    
+
     @JsonProperty("user_name")  // JSON: {"user_name": "John"}
     private String name;
-    
+
     @JsonProperty(access = Access.READ_ONLY)  // Only in response, ignored in request
     private LocalDateTime createdAt;
-    
+
     @JsonProperty(access = Access.WRITE_ONLY)  // Only in request, hidden in response
     private String password;
 }
@@ -1754,10 +1713,10 @@ public class User {
 ```java
 public class User {
     private String name;
-    
+
     @JsonIgnore  // Never serialized or deserialized
     private String password;
-    
+
     @JsonIgnore
     private transient String internalState;
 }
@@ -1767,13 +1726,13 @@ public class User {
 
 ```java
 public class Order {
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date birthDate;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)  // Serialize number as string
     private BigDecimal amount;
 }
@@ -1810,9 +1769,9 @@ public class UserProfile {
 public enum Status {
     ACTIVE("A"),
     INACTIVE("I");
-    
+
     private String code;
-    
+
     @JsonCreator  // How to deserialize
     public static Status fromCode(String code) {
         return Arrays.stream(values())
@@ -1820,7 +1779,7 @@ public enum Status {
             .findFirst()
             .orElseThrow();
     }
-    
+
     @JsonValue  // How to serialize
     public String getCode() {
         return code;
@@ -1835,9 +1794,9 @@ public enum Status {
 // When annotations aren't enough - full control
 
 public class MoneySerializer extends JsonSerializer<BigDecimal> {
-    
+
     @Override
-    public void serialize(BigDecimal value, JsonGenerator gen, 
+    public void serialize(BigDecimal value, JsonGenerator gen,
                          SerializerProvider provider) throws IOException {
         if (value != null) {
             gen.writeString("$" + value.setScale(2, RoundingMode.HALF_UP));
@@ -1846,7 +1805,6 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 }
 ```
 
-
 ---
 
 **Navigation**: [< Previous](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch27_Pre_Spring_Part2.md)
@@ -1854,6 +1812,7 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 🔬 **Section Challenge — E.3 Custom Serializers & Deserializers**
 
 **Challenge 1 (Design):** A finance API must serialize `BigDecimal amount` as `"INR 123.45"` for new clients but still deserialize numeric input from legacy clients. Where should the custom serializer/deserializer live, and what edge cases must it handle?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
@@ -1867,5 +1826,5 @@ public final class MoneySerializer extends JsonSerializer<BigDecimal> {
 ```
 
 Attach the serializer at the field/type/module boundary depending on blast radius: field for one DTO, module for a shared money format. Handle `null`, scale/rounding, locale/currency prefixes, and legacy numeric strings during deserialization; otherwise a formatting feature becomes a breaking API change.
-</details>
 
+</details>

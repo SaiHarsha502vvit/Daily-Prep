@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
+
 - All chapters — this chapter synthesises the entire curriculum into interview-ready answers
 
 ---
@@ -10,6 +11,7 @@
 ## Why This Chapter Exists
 
 SDETs are tested differently from developers. You need to answer:
+
 - **System design questions** ("Design an automation framework for a 10-app enterprise")
 - **Technical deep-dives** ("Why does `page.route()` register before the click?")
 - **Behavioral questions** ("Tell me about a time you fixed a flaky test")
@@ -275,7 +277,7 @@ Result:
 **The answer they expect from a senior SDET:**
 
 ```typescript
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class LoginPage {
   readonly page: Page;
@@ -290,16 +292,16 @@ export class LoginPage {
   constructor(page: Page) {
     this.page = page;
     // Use stable selectors — ID is most stable
-    this.usernameInput    = page.locator('#username');
-    this.passwordInput    = page.locator('#password');
-    this.loginButton      = page.locator('#loginBtn');
+    this.usernameInput = page.locator("#username");
+    this.passwordInput = page.locator("#password");
+    this.loginButton = page.locator("#loginBtn");
     // data-testid is more stable than class name for test-specific elements
-    this.errorMessage     = page.locator('[data-testid="login-error"]');
-    this.forgotPasswordLink = page.locator('#forgotPasswordLink');
+    this.errorMessage = page.locator('[data-testid="login-error"]');
+    this.forgotPasswordLink = page.locator("#forgotPasswordLink");
   }
 
   async goto(): Promise<void> {
-    await this.page.goto('/login');
+    await this.page.goto("/login");
     await expect(this.loginButton).toBeVisible({ timeout: 15_000 });
   }
 
@@ -314,18 +316,19 @@ export class LoginPage {
   async loginExpectingError(email: string, password: string): Promise<string> {
     await this.loginWith(email, password);
     await expect(this.errorMessage).toBeVisible({ timeout: 10_000 });
-    return (await this.errorMessage.textContent() ?? '').trim();
+    return ((await this.errorMessage.textContent()) ?? "").trim();
   }
 }
 
 // Usage in test:
 const loginPage = new LoginPage(page);
 await loginPage.goto();
-await loginPage.loginWith('admin@company.com', 'Admin@123!');
-await expect(page).toHaveURL('/dashboard');
+await loginPage.loginWith("admin@company.com", "Admin@123!");
+await expect(page).toHaveURL("/dashboard");
 ```
 
 **What makes this answer score full marks:**
+
 1. All locators in constructor (lazy eval explanation ready)
 2. Returns typed string from `loginExpectingError` (testable)
 3. Uses `data-testid` for the error (better than class)
@@ -340,17 +343,18 @@ await expect(page).toHaveURL('/dashboard');
 // Given — what's wrong?
 export const test = base.extend({
   citationData: async ({ request }, use) => {
-    const response = await request.post('/api/v2/citations', {
-      data: { customerId: 'USR-001', amount: 150, status: 'PENDING' }
+    const response = await request.post("/api/v2/citations", {
+      data: { customerId: "USR-001", amount: 150, status: "PENDING" },
     });
     const citation = await response.json();
-    use(citation);   // ← bug
+    use(citation); // ← bug
     await request.delete(`/api/v2/citations/${citation.citationId}`);
-  }
+  },
 });
 ```
 
 **Answer:**
+
 ```
 Three bugs:
 
@@ -466,14 +470,17 @@ one from a sequence that should be ["CIT-001","CIT-002","CIT-003","CIT-004","CIT
 // Solution: Use Set for O(n) time, O(n) space
 function findMissingIds(expected: string[], actual: string[]): string[] {
   const actualSet = new Set(actual);
-  return expected.filter(id => !actualSet.has(id));
+  return expected.filter((id) => !actualSet.has(id));
 }
 
 // Usage in test:
-const expectedIds = ['CIT-001', 'CIT-002', 'CIT-003', 'CIT-004', 'CIT-005'];
-const actualIds   = await citationsClient.getAllIds(); // from API
-const missing     = findMissingIds(expectedIds, actualIds);
-expect(missing, `These citations are missing from API response: ${missing.join(',')}`).toHaveLength(0);
+const expectedIds = ["CIT-001", "CIT-002", "CIT-003", "CIT-004", "CIT-005"];
+const actualIds = await citationsClient.getAllIds(); // from API
+const missing = findMissingIds(expectedIds, actualIds);
+expect(
+  missing,
+  `These citations are missing from API response: ${missing.join(",")}`,
+).toHaveLength(0);
 
 // Time: O(n)  Space: O(n)
 // Why this instead of nested loops O(n²): test suites with 10,000 records
@@ -488,7 +495,11 @@ Count by status and assert distribution.
 ```
 
 ```typescript
-interface TestResult { status: 'PASS' | 'FAIL' | 'SKIP'; duration: number; name: string }
+interface TestResult {
+  status: "PASS" | "FAIL" | "SKIP";
+  duration: number;
+  name: string;
+}
 
 function groupBy<T, K extends keyof T>(items: T[], key: K): Map<T[K], T[]> {
   return items.reduce((map, item) => {
@@ -501,17 +512,20 @@ function groupBy<T, K extends keyof T>(items: T[], key: K): Map<T[K], T[]> {
 
 // Usage:
 const results: TestResult[] = await getTestResults();
-const grouped = groupBy(results, 'status');
+const grouped = groupBy(results, "status");
 
-const passCount = grouped.get('PASS')?.length ?? 0;
-const failCount = grouped.get('FAIL')?.length ?? 0;
-const passRate  = passCount / results.length;
+const passCount = grouped.get("PASS")?.length ?? 0;
+const failCount = grouped.get("FAIL")?.length ?? 0;
+const passRate = passCount / results.length;
 
-expect(passRate, 'Pass rate must be above 95%').toBeGreaterThan(0.95);
+expect(passRate, "Pass rate must be above 95%").toBeGreaterThan(0.95);
 
 // If interviewer asks: "what if you had to do this without reduce?"
 // Iterator approach:
-function groupByIterator<T, K extends keyof T>(items: T[], key: K): Record<string, T[]> {
+function groupByIterator<T, K extends keyof T>(
+  items: T[],
+  key: K,
+): Record<string, T[]> {
   const result: Record<string, T[]> = {};
   for (const item of items) {
     const k = String(item[key]);
@@ -540,29 +554,38 @@ function findDuplicates<T>(items: T[]): T[] {
 
 // In test:
 const response = await citationsClient.getAll({ userId: account.userId });
-const ids = response.map(c => c.citationId);
+const ids = response.map((c) => c.citationId);
 const dupes = findDuplicates(ids);
 
-expect(dupes, `API returned duplicate citation IDs: ${dupes.join(',')}`).toHaveLength(0);
+expect(
+  dupes,
+  `API returned duplicate citation IDs: ${dupes.join(",")}`,
+).toHaveLength(0);
 
 // Time: O(n)  Space: O(n)
 // The interviewer follow-up: "How would you find the MOST duplicate entry?"
-const freq = ids.reduce((map, id) => map.set(id, (map.get(id) ?? 0) + 1), new Map<string, number>());
-const maxDupe = [...freq.entries()].reduce((max, curr) => curr[1] > max[1] ? curr : max, ['', 0]);
+const freq = ids.reduce(
+  (map, id) => map.set(id, (map.get(id) ?? 0) + 1),
+  new Map<string, number>(),
+);
+const maxDupe = [...freq.entries()].reduce(
+  (max, curr) => (curr[1] > max[1] ? curr : max),
+  ["", 0],
+);
 console.log(`Most duplicated: ${maxDupe[0]} appeared ${maxDupe[1]} times`);
 ```
 
 ### Pattern 4 — Sliding Window for Performance Metrics
 
 ```
-Problem: Your API tests collect response times. Find the maximum average 
+Problem: Your API tests collect response times. Find the maximum average
 response time across any consecutive window of K requests.
 ```
 
 ```typescript
 // Sliding window — O(n) time, O(1) space
 function maxAverageWindow(responseTimes: number[], windowSize: number): number {
-  if (windowSize > responseTimes.length) throw new Error('Window too large');
+  if (windowSize > responseTimes.length) throw new Error("Window too large");
 
   // Initialize first window sum
   let windowSum = responseTimes.slice(0, windowSize).reduce((a, b) => a + b, 0);
@@ -578,9 +601,11 @@ function maxAverageWindow(responseTimes: number[], windowSize: number): number {
 }
 
 // Usage in performance monitoring:
-const times = apiResults.map(r => r.duration);
-const maxAvgRt = maxAverageWindow(times, 10);  // worst 10-request window
-expect(maxAvgRt, 'Worst 10-request average must be under 2000ms').toBeLessThan(2000);
+const times = apiResults.map((r) => r.duration);
+const maxAvgRt = maxAverageWindow(times, 10); // worst 10-request window
+expect(maxAvgRt, "Worst 10-request average must be under 2000ms").toBeLessThan(
+  2000,
+);
 ```
 
 ---
@@ -596,13 +621,13 @@ expect(maxAvgRt, 'Worst 10-request average must be under 2000ms').toBeLessThan(2
 // ❌ Duplicated in every test:
 const citation = await response.json();
 expect(citation.citationId).toMatch(/^CIT-/);
-expect(citation.status).toBeOneOf(['PENDING', 'PAID', 'OVERDUE', 'DISPUTED']);
+expect(citation.status).toBeOneOf(["PENDING", "PAID", "OVERDUE", "DISPUTED"]);
 expect(citation.amount).toBeGreaterThan(0);
 expect(citation.customerId).toBeTruthy();
 
 // ✅ Custom matcher:
 // utils/matchers.ts
-import { expect as baseExpect } from '@playwright/test';
+import { expect as baseExpect } from "@playwright/test";
 
 export function createExpect() {
   return baseExpect.extend({
@@ -610,22 +635,38 @@ export function createExpect() {
       const citation = received as Record<string, unknown>;
       const errors: string[] = [];
 
-      if (typeof citation?.citationId !== 'string' || !citation.citationId.startsWith('CIT-')) {
-        errors.push(`citationId must start with 'CIT-', got: ${JSON.stringify(citation?.citationId)}`);
+      if (
+        typeof citation?.citationId !== "string" ||
+        !citation.citationId.startsWith("CIT-")
+      ) {
+        errors.push(
+          `citationId must start with 'CIT-', got: ${JSON.stringify(citation?.citationId)}`,
+        );
       }
-      const validStatuses = ['PENDING', 'PAID', 'OVERDUE', 'DISPUTED', 'CANCELLED'];
+      const validStatuses = [
+        "PENDING",
+        "PAID",
+        "OVERDUE",
+        "DISPUTED",
+        "CANCELLED",
+      ];
       if (!validStatuses.includes(citation?.status as string)) {
-        errors.push(`status must be one of ${validStatuses.join('|')}, got: ${JSON.stringify(citation?.status)}`);
+        errors.push(
+          `status must be one of ${validStatuses.join("|")}, got: ${JSON.stringify(citation?.status)}`,
+        );
       }
-      if (typeof citation?.amount !== 'number' || citation.amount <= 0) {
-        errors.push(`amount must be a positive number, got: ${JSON.stringify(citation?.amount)}`);
+      if (typeof citation?.amount !== "number" || citation.amount <= 0) {
+        errors.push(
+          `amount must be a positive number, got: ${JSON.stringify(citation?.amount)}`,
+        );
       }
       if (!citation?.customerId) {
-        errors.push('customerId must be present');
+        errors.push("customerId must be present");
       }
 
       return {
-        message: () => `Citation validation failed:\n${errors.map(e => `  • ${e}`).join('\n')}`,
+        message: () =>
+          `Citation validation failed:\n${errors.map((e) => `  • ${e}`).join("\n")}`,
         pass: errors.length === 0,
       };
     },
@@ -635,15 +676,18 @@ export function createExpect() {
 export const expect = createExpect();
 
 // Usage in tests — re-export expect from your matchers file:
-import { expect } from '../utils/matchers';
+import { expect } from "../utils/matchers";
 
-test('Citation API returns valid citation shape', async ({ citationsClient }) => {
-  const citation = await citationsClient.getById('CIT-001');
-  expect(citation).toBeValidCitation();  // single line, full validation
+test("Citation API returns valid citation shape", async ({
+  citationsClient,
+}) => {
+  const citation = await citationsClient.getById("CIT-001");
+  expect(citation).toBeValidCitation(); // single line, full validation
 });
 ```
 
 **What makes this answer excellent:**
+
 1. Returns `{ message, pass }` — required by Playwright's matcher contract
 2. Collects ALL errors (not just the first one) — better failure messages
 3. `message` formats errors clearly — instantly debuggable
@@ -671,7 +715,7 @@ async function withRetry<T>(
     initialDelayMs: 500,
     maxDelayMs: 5000,
     retryOn: (r) => r.status === 503 || r.status === 429,
-  }
+  },
 ): Promise<T> {
   let lastError: Error | null = null;
 
@@ -682,17 +726,19 @@ async function withRetry<T>(
       // Check if result is an API response with a retryable status
       if (
         result &&
-        typeof result === 'object' &&
-        'status' in result &&
-        typeof (result as any).status === 'number' &&
+        typeof result === "object" &&
+        "status" in result &&
+        typeof (result as any).status === "number" &&
         options.retryOn(result as { status: number })
       ) {
         const delay = Math.min(
-          options.initialDelayMs * Math.pow(2, attempt - 1),  // exponential backoff
-          options.maxDelayMs
+          options.initialDelayMs * Math.pow(2, attempt - 1), // exponential backoff
+          options.maxDelayMs,
         );
-        console.log(`Attempt ${attempt}/${options.maxAttempts}: retryable status, retrying in ${delay}ms`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        console.log(
+          `Attempt ${attempt}/${options.maxAttempts}: retryable status, retrying in ${delay}ms`,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
 
@@ -700,19 +746,30 @@ async function withRetry<T>(
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       if (attempt < options.maxAttempts) {
-        const delay = Math.min(options.initialDelayMs * Math.pow(2, attempt - 1), options.maxDelayMs);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        const delay = Math.min(
+          options.initialDelayMs * Math.pow(2, attempt - 1),
+          options.maxDelayMs,
+        );
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
 
-  throw lastError ?? new Error(`Operation failed after ${options.maxAttempts} attempts`);
+  throw (
+    lastError ??
+    new Error(`Operation failed after ${options.maxAttempts} attempts`)
+  );
 }
 
 // Usage in tests:
 const notif = await withRetry(
   () => notificationsClient.getByUserId(account.userId),
-  { maxAttempts: 5, initialDelayMs: 1000, maxDelayMs: 10000, retryOn: r => r.status === 503 }
+  {
+    maxAttempts: 5,
+    initialDelayMs: 1000,
+    maxDelayMs: 10000,
+    retryOn: (r) => r.status === 503,
+  },
 );
 ```
 
@@ -841,8 +898,8 @@ QUESTIONS TO ASK:
 ```
 
 ---
-**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
+**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
 ### Challenge: "Diagnose this CI failure without running the suite locally"
 
@@ -855,7 +912,7 @@ FAIL tests/citations/create-citation.spec.ts
     =========================== logs ===========================
     waiting for locator('.notification-badge').toHaveText('1')
     ============================================================
-    
+
 Worker process exited with code 1
 ```
 
@@ -868,24 +925,25 @@ Walk through exactly how you would diagnose this from the log alone.
 
 **Step 2 — Four root-cause hypotheses, ordered by likelihood:**
 
-| # | Hypothesis | Signal |
-|---|---|---|
-| 1 | Notification is async; the badge updates via WebSocket/polling but the service was slow or dead in CI | Check: was the notifications service healthy in CI? Was the WS connection established? |
-| 2 | Race condition — assertion fires before the badge re-renders (React batching) | Check: does the badge animate? Is there a loading spinner that hides it during update? |
-| 3 | Test data isolation failure — another test left stale badge count of `0` and this test's notification didn't fire | Check: does the test create its own isolated user with a fresh account? |
-| 4 | The `.notification-badge` selector changed in a recent PR | Check: last 24h commits to the frontend |
+| #   | Hypothesis                                                                                                        | Signal                                                                                 |
+| --- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 1   | Notification is async; the badge updates via WebSocket/polling but the service was slow or dead in CI             | Check: was the notifications service healthy in CI? Was the WS connection established? |
+| 2   | Race condition — assertion fires before the badge re-renders (React batching)                                     | Check: does the badge animate? Is there a loading spinner that hides it during update? |
+| 3   | Test data isolation failure — another test left stale badge count of `0` and this test's notification didn't fire | Check: does the test create its own isolated user with a fresh account?                |
+| 4   | The `.notification-badge` selector changed in a recent PR                                                         | Check: last 24h commits to the frontend                                                |
 
 **Step 3 — What I'd ask the interviewer next:**  
 "Is there a Playwright trace zip attached to this CI run? With the trace I can see the DOM state at every step including the exact millisecond the timeout occurred."
 
-**Step 4 — What the fix looks like:**  
+**Step 4 — What the fix looks like:**
+
 ```typescript
 // Before: fragile — no guard that badge exists before checking text
-await expect(page.locator('.notification-badge')).toHaveText('1');
+await expect(page.locator(".notification-badge")).toHaveText("1");
 
 // After: ensure badge is visible first, THEN check text
-await expect(page.locator('.notification-badge')).toBeVisible();
-await expect(page.locator('.notification-badge')).toHaveText('1');
+await expect(page.locator(".notification-badge")).toBeVisible();
+await expect(page.locator(".notification-badge")).toHaveText("1");
 // Or, if WebSocket driven, wait for the WS frame first, then assert UI
 ```
 
@@ -895,4 +953,5 @@ You read logs systematically, isolate hypotheses by likelihood, know where to fi
 </details>
 
 ---
+
 **Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)

@@ -90,6 +90,7 @@ PAGERANK                 │ • Original Google search ranking (Larry Page, 199
 **The Academic Problem:** Finding the minimum number of operations to transform one tree into another (Tree Edit Distance) is **O(N³)** algorithmically. If a React app has 1,000 components, an O(N³) algorithm would take 1,000,000,000 operations every single frame. The app would freeze.
 
 **The Production Reality:** React engineers realized they didn't need the _mathematically perfect_ shortest edit distance. They just needed a fast approximation. They created an **O(N) heuristic algorithm** based on two assumptions:
+
 1. Two elements of different types (e.g., `<div>` vs `<span>`) will produce completely different trees. (React tears down the old tree and builds a new one).
 2. Developers can hint at which child elements are stable across renders using a `key` prop.
 
@@ -99,9 +100,10 @@ By turning an O(N³) academic problem into an O(N) heuristic, React revolutioniz
 
 ### 2. Google Maps Routing (Contraction Hierarchies)
 
-**The Academic Problem:** Dijkstra's Algorithm finds the shortest path, but it searches _everywhere_ circularly. If you route from New York to LA, Dijkstra will search every small residential street in Chicago along the way. Even A* search (which biases toward the destination) is too slow for continental routing.
+**The Academic Problem:** Dijkstra's Algorithm finds the shortest path, but it searches _everywhere_ circularly. If you route from New York to LA, Dijkstra will search every small residential street in Chicago along the way. Even A\* search (which biases toward the destination) is too slow for continental routing.
 
 **The Production Reality:** Google Maps uses **Contraction Hierarchies (CH)**.
+
 1. **Preprocessing (The "Contraction" phase):** The algorithm assigns an "importance" rank to every road. High-speed interstates get high ranks. Small residential cul-de-sacs get low ranks. It pre-calculates the fastest routes between important nodes.
 2. **Querying (The "Hierarchy" phase):** When you ask for a route, the algorithm only looks at local roads near your house, then rapidly jumps up the hierarchy to search _ONLY_ highways, jumping back down to local roads only when near the destination.
 
@@ -114,6 +116,7 @@ This reduces a 3-second Dijkstra search across 50 million nodes into a 2-millise
 **The Academic Problem:** How do you track the exact history of millions of lines of code locally, branching instantly, and verifying absolute data integrity across distributed servers?
 
 **The Production Reality:** Git is merely a brilliant application of two data structures:
+
 1. **Directed Acyclic Graph (DAG):** Commits are nodes. Pointers to parent commits are directed edges. Branches are just lightweight stickers (pointers) sitting on specific nodes. This is why making a branch in Git is O(1) instantaneous, whereas SVN copied the whole repository (O(N)).
 2. **Merkle Trees (Hash Trees):** Every file content is hashed (SHA-1). Directory structures hash their contents. Commits hash their directory trees. If a single byte changes in a 3GB repository, the root commit hash changes completely. This guarantees absolute cryptographic integrity.
 
@@ -125,6 +128,7 @@ This reduces a 3-second Dijkstra search across 50 million nodes into a 2-millise
 
 **The Production Reality:** Netflix and Spotify use **Collaborative Filtering via Matrix Factorization** (specifically Singular Value Decomposition or Alternating Least Squares).
 Instead of keeping a 100M x 10M matrix, they use linear algebra to factor it into two much smaller, dense matrices:
+
 - **User Matrix:** 100M users mapped to 50 abstract "taste" vectors.
 - **Item Matrix:** 10M movies mapped to the same 50 abstract vectors.
 
@@ -187,11 +191,11 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 
 ## 🔗 Cross-References
 
-| Topic | Detailed Guide |
-|---|---|
-| **Binary Search patterns** | [Patterns — Binary Search](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
-| **Graph algorithms (BFS/DFS/Dijkstra)** | [Problem Solving — Graphs](../05_Problem_Solving/10_Graphs.md) |
-| **Sliding Window** | [Patterns — Sliding Window](../04_Patterns_Templates/01_Sliding_Window.md) |
-| **B-Tree (Binary Search in DB)** | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) |
-| **Consistent hashing** | [Enterprise Systems](../10_Enterprise_Systems/09_Distributed_Patterns.md) |
-| **PageRank → Graph algorithms** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
+| Topic                                   | Detailed Guide                                                                    |
+| --------------------------------------- | --------------------------------------------------------------------------------- |
+| **Binary Search patterns**              | [Patterns — Binary Search](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
+| **Graph algorithms (BFS/DFS/Dijkstra)** | [Problem Solving — Graphs](../05_Problem_Solving/10_Graphs.md)                    |
+| **Sliding Window**                      | [Patterns — Sliding Window](../04_Patterns_Templates/01_Sliding_Window.md)        |
+| **B-Tree (Binary Search in DB)**        | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md)                               |
+| **Consistent hashing**                  | [Enterprise Systems](../10_Enterprise_Systems/09_Distributed_Patterns.md)         |
+| **PageRank → Graph algorithms**         | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                  |

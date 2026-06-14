@@ -6,14 +6,55 @@
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| `N <= 20` and subset choices | bitmask enumeration / DP |
-| exactly one unique, others twice | XOR all |
-| count set bits many times | built-in bit count / DP bits |
-| need lowest set bit | `x & -x` |
-| values may exceed `int` | use `long` masks carefully |
-| `N > 63` subset mask | cannot fit in one long; use arrays/BitSet |
+### Historical Evolution
+
+**Inventor / Originator:** Claude Shannon (1948) founded information theory with bit-level reasoning. Maurice Karnaugh (1953) invented K-maps for boolean expression simplification. Richard Hamming (1950) developed error-correcting codes.
+
+**Predecessor context:** Before digital computers, computation used decimal or analog methods. Bit-level operations weren't a primary concern for most programmers.
+
+**Evolution narrative:** Shannon's master's thesis (1937, published 1948) showed that boolean algebra could implement digital circuits. Karnaugh's maps (1953) provided visual boolean minimization. Hamming codes (1950) enabled reliable data transmission over noisy channels.
+
+**Modern practice:** Bit manipulation is essential for flags, hash functions, compression, cryptography, and low-level systems programming. Hamming codes protect RAM and network packets.
+
+- **Shannon 1948**: "A Mathematical Theory of Communication" — founded information theory
+- **Karnaugh map — 1953**: Visual boolean expression minimization for circuit design
+- **Hamming codes — 1950**: Error-correcting codes; Hamming distance for nearest neighbor
+- **Modern practice**: Bit flags, hash functions, Hamming codes in RAM, cryptography
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Signed right shift `>>` vs unsigned `>>>` (sign extension bug)** — In Java, `>>` sign-extends (preserves sign bit) while `>>>` zero-fills. For negative numbers, `>>` produces different results than `>>>`. For example, `-8 >> 1 = -4` but `-8 >>> 1 = 2147483644`. Detection: test with negative numbers; use `>>>` for bit manipulation on raw bits.
+
+- **Integer overflow on shift past bit-width (e.g., `1 << 31` is negative)** — `1 << 31` evaluates to `Integer.MIN_VALUE` in Java (sign bit set). `1 << 32` equals `1` (mod 32 shift). Detection: test with edge values; use `1L << n` for large shifts.
+
+- **Bit width >32 for `long` requires masking** — When extracting bits from a long, operations may produce unexpected sign extension. Detection: mask with `0xFFFFFFFFL` when extracting int-sized chunks from long.
+
+**Production Selection Heuristic:** Use `>>>` for unsigned right shift. Use `1L` suffix for shifts on long values. Always verify bit operations with edge cases (0, -1, Integer.MIN_VALUE, Integer.MAX_VALUE).
+
+---
+
+| Given Constraints                | Do This                                   |
+| -------------------------------- | ----------------------------------------- |
+| `N <= 20` and subset choices     | bitmask enumeration / DP                  |
+| exactly one unique, others twice | XOR all                                   |
+| count set bits many times        | built-in bit count / DP bits              |
+| need lowest set bit              | `x & -x`                                  |
+| values may exceed `int`          | use `long` masks carefully                |
+| `N > 63` subset mask             | cannot fit in one long; use arrays/BitSet |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -26,6 +67,7 @@ Bit operations (AND, OR, XOR, shift) are executed in a **single CPU cycle** — 
 #### XOR — The Most Useful Bit Operation
 
 XOR has three magical properties that make it incredibly useful:
+
 1. **Self-inverse**: `a ^ a = 0` (any number XORed with itself is zero)
 2. **Identity**: `a ^ 0 = a` (XORing with zero leaves the number unchanged)
 3. **Commutative & Associative**: order doesn't matter, grouping doesn't matter
@@ -56,12 +98,12 @@ IF the problem says:
 THEN → Bit Manipulation
 ```
 
-
 ---
 
 ## 📐 ESSENTIAL BIT OPERATIONS
 
 ### Cheat Sheet
+
 ```
 Operation              Code                    Example (n=12 = 1100)
 ────────────────────────────────────────────────────────────────────
@@ -75,8 +117,8 @@ Is power of 2?         n > 0 && (n & (n-1)) == 0
 Count set bits         Integer.bitCount(n)     bitCount(1100) = 2
 ```
 
-
 ### Key Patterns
+
 ```java
 // XOR: a ^ a = 0, a ^ 0 = a
 // Find single number in array where all others appear twice:
@@ -121,11 +163,7 @@ Time: O(n) | Space: O(1)
 Why not HashMap? HashMap works but uses O(n) space. XOR uses O(1).
 ```
 
-
 ---
-
-
-
 
 ## 🔬 FULL WALKTHROUGH 2: Subset Generation Using Bitmask
 
@@ -161,11 +199,7 @@ Time: O(n × 2ⁿ) | Space: O(n × 2ⁿ) for output
 WARNING: Only works for n ≤ 20-25. Beyond that, 2ⁿ explodes.
 ```
 
-
 ---
-
-
-
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
@@ -183,113 +217,117 @@ COMMON MISTAKES:
    Be careful with right shift on negative numbers
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Problem | Approach | Time | Space |
-|---------|----------|------|-------|
-| Single Number | XOR all | O(n) | O(1) |
-| Missing Number | XOR or math | O(n) | O(1) |
-| Power of Two | n & (n-1) == 0 | O(1) | O(1) |
-| Count Set Bits | Brian Kernighan | O(k) k=set bits | O(1) |
-| Subset Generation | Bitmask | O(n × 2ⁿ) | O(2ⁿ) |
-| Bitmask DP (TSP) | DP on subsets | O(2ⁿ × n²) | O(2ⁿ × n) |
+| Problem           | Approach        | Time            | Space     |
+| ----------------- | --------------- | --------------- | --------- |
+| Single Number     | XOR all         | O(n)            | O(1)      |
+| Missing Number    | XOR or math     | O(n)            | O(1)      |
+| Power of Two      | n & (n-1) == 0  | O(1)            | O(1)      |
+| Count Set Bits    | Brian Kernighan | O(k) k=set bits | O(1)      |
+| Subset Generation | Bitmask         | O(n × 2ⁿ)       | O(2ⁿ)     |
+| Bitmask DP (TSP)  | DP on subsets   | O(2ⁿ × n²)      | O(2ⁿ × n) |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
 
-
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 1 | [Power of Two](https://leetcode.com/problems/power-of-two/) | `n & (n-1) == 0` |
-| 2 | [Missing Number](https://leetcode.com/problems/missing-number/) | XOR all indices and values |
-| 3 | [Counting Bits](https://leetcode.com/problems/counting-bits/) | `dp[i] = dp[i>>1] + (i&1)` |
-| 4 | [Reverse Integer](https://leetcode.com/problems/reverse-integer/) | Modulo + overflow check |
-| 5 | [Palindrome Number](https://leetcode.com/problems/palindrome-number/) | Compare half |
-| 6 | [Add Binary](https://leetcode.com/problems/add-binary/) | Simulate addition |
+
+| #   | Problem                                                               | Key Insight                |
+| --- | --------------------------------------------------------------------- | -------------------------- |
+| 1   | [Power of Two](https://leetcode.com/problems/power-of-two/)           | `n & (n-1) == 0`           |
+| 2   | [Missing Number](https://leetcode.com/problems/missing-number/)       | XOR all indices and values |
+| 3   | [Counting Bits](https://leetcode.com/problems/counting-bits/)         | `dp[i] = dp[i>>1] + (i&1)` |
+| 4   | [Reverse Integer](https://leetcode.com/problems/reverse-integer/)     | Modulo + overflow check    |
+| 5   | [Palindrome Number](https://leetcode.com/problems/palindrome-number/) | Compare half               |
+| 6   | [Add Binary](https://leetcode.com/problems/add-binary/)               | Simulate addition          |
 
 ### Medium
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 7 | [Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/) | 2D knapsack (bit-related theme) |
+
+| #   | Problem                                                           | Key Insight                     |
+| --- | ----------------------------------------------------------------- | ------------------------------- |
+| 7   | [Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/) | 2D knapsack (bit-related theme) |
 
 ### From Math Section
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 8 | [Excel Sheet Column Title](https://leetcode.com/problems/excel-sheet-column-title/) | — | Base-26 conversion |
-| 9 | [Maximum Product of Three](https://leetcode.com/problems/maximum-product-of-three-numbers/) | — | Sort: max of two negatives × positive |
-| 10 | [Minimum Moves to Equal Array](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) | — | Math: sum - n*min |
-| 11 | [Happy Number](https://leetcode.com/problems/happy-number/) | Salesforce | Floyd's cycle in digit-square sequence |
-| 12 | [Max Points on Line](https://leetcode.com/problems/max-points-on-a-line/) | — | Slope HashMap with GCD |
-| 13 | [Valid Square](https://leetcode.com/problems/valid-square/) | Salesforce | Distance set has exactly 2 values |
-| 14 | [Kth Factor of N](https://leetcode.com/problems/the-kth-factor-of-n/) | — | Iterate up to sqrt |
+
+| #   | Problem                                                                                              | Companies  | Key Insight                            |
+| --- | ---------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------- |
+| 8   | [Excel Sheet Column Title](https://leetcode.com/problems/excel-sheet-column-title/)                  | —          | Base-26 conversion                     |
+| 9   | [Maximum Product of Three](https://leetcode.com/problems/maximum-product-of-three-numbers/)          | —          | Sort: max of two negatives × positive  |
+| 10  | [Minimum Moves to Equal Array](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) | —          | Math: sum - n\*min                     |
+| 11  | [Happy Number](https://leetcode.com/problems/happy-number/)                                          | Salesforce | Floyd's cycle in digit-square sequence |
+| 12  | [Max Points on Line](https://leetcode.com/problems/max-points-on-a-line/)                            | —          | Slope HashMap with GCD                 |
+| 13  | [Valid Square](https://leetcode.com/problems/valid-square/)                                          | Salesforce | Distance set has exactly 2 values      |
+| 14  | [Kth Factor of N](https://leetcode.com/problems/the-kth-factor-of-n/)                                | —          | Iterate up to sqrt                     |
 
 ### Sorting & Searching from Excel
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 15 | [Permute Two Arrays](https://www.geeksforgeeks.org/permute-two-arrays-sum-every-pair-greater-equal-k/) | Salesforce | Sort asc + desc, pair-check |
-| 16 | [Ceiling in Sorted Array](https://www.geeksforgeeks.org/ceiling-in-a-sorted-array/) | — | Binary search upper bound |
-| 17 | [Find Pair with Difference](https://www.geeksforgeeks.org/find-a-pair-with-the-given-difference/) | Walmart, Salesforce | Sort + two pointer |
-| 18 | [Check if Reversing Sub-Array Sorts](https://www.geeksforgeeks.org/check-reversing-sub-array-make-array-sorted/) | — | Find dip, reverse, verify |
-| 19 | [Radix Sort](https://www.geeksforgeeks.org/radix-sort/) | Amazon | Counting sort per digit |
-| 20 | [Product Array Puzzle](https://www.geeksforgeeks.org/a-product-array-puzzle/) | — | Prefix product + suffix product |
-| 21 | [Find Peak Element](https://leetcode.com/problems/find-peak-element/) | — | Binary search on answer |
-| 22 | [Allocate Minimum Pages](https://practice.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1) | Salesforce | Binary search on answer |
-| 23 | [Min Swaps to Sort](https://www.geeksforgeeks.org/minimum-number-swaps-required-sort-array/) | — | Graph cycles counting |
-| 24 | [Aggressive Cows](https://www.spoj.com/problems/AGGRCOW/) | Microsoft | Binary search on answer |
-| 25 | [Search in Rotated Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) | Salesforce | Modified binary search |
-| 26 | [Count Smaller After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | — | Merge sort counting |
-| 27 | [Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/) | Walmart | Binary search on answer |
+
+| #   | Problem                                                                                                          | Companies           | Key Insight                     |
+| --- | ---------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------- |
+| 15  | [Permute Two Arrays](https://www.geeksforgeeks.org/permute-two-arrays-sum-every-pair-greater-equal-k/)           | Salesforce          | Sort asc + desc, pair-check     |
+| 16  | [Ceiling in Sorted Array](https://www.geeksforgeeks.org/ceiling-in-a-sorted-array/)                              | —                   | Binary search upper bound       |
+| 17  | [Find Pair with Difference](https://www.geeksforgeeks.org/find-a-pair-with-the-given-difference/)                | Walmart, Salesforce | Sort + two pointer              |
+| 18  | [Check if Reversing Sub-Array Sorts](https://www.geeksforgeeks.org/check-reversing-sub-array-make-array-sorted/) | —                   | Find dip, reverse, verify       |
+| 19  | [Radix Sort](https://www.geeksforgeeks.org/radix-sort/)                                                          | Amazon              | Counting sort per digit         |
+| 20  | [Product Array Puzzle](https://www.geeksforgeeks.org/a-product-array-puzzle/)                                    | —                   | Prefix product + suffix product |
+| 21  | [Find Peak Element](https://leetcode.com/problems/find-peak-element/)                                            | —                   | Binary search on answer         |
+| 22  | [Allocate Minimum Pages](https://practice.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1)     | Salesforce          | Binary search on answer         |
+| 23  | [Min Swaps to Sort](https://www.geeksforgeeks.org/minimum-number-swaps-required-sort-array/)                     | —                   | Graph cycles counting           |
+| 24  | [Aggressive Cows](https://www.spoj.com/problems/AGGRCOW/)                                                        | Microsoft           | Binary search on answer         |
+| 25  | [Search in Rotated Array](https://leetcode.com/problems/search-in-rotated-sorted-array/)                         | Salesforce          | Modified binary search          |
+| 26  | [Count Smaller After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/)                   | —                   | Merge sort counting             |
+| 27  | [Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/)                                | Walmart             | Binary search on answer         |
 
 ### Segment Tree from Excel
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 28 | [Range Sum Query Immutable](https://leetcode.com/problems/range-sum-query-immutable/) | Goldman Sachs | Prefix sum (no segment tree needed) |
-| 29 | [Range Sum Query Mutable](https://leetcode.com/problems/range-sum-query-mutable/) | Salesforce | Segment tree or BIT |
-| 30 | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | — | Segment tree / merge sort |
-| 31 | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) | Salesforce | Segment tree / merge sort |
+
+| #   | Problem                                                                                                   | Companies     | Key Insight                         |
+| --- | --------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------- |
+| 28  | [Range Sum Query Immutable](https://leetcode.com/problems/range-sum-query-immutable/)                     | Goldman Sachs | Prefix sum (no segment tree needed) |
+| 29  | [Range Sum Query Mutable](https://leetcode.com/problems/range-sum-query-mutable/)                         | Salesforce    | Segment tree or BIT                 |
+| 30  | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | —             | Segment tree / merge sort           |
+| 31  | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/)                                   | Salesforce    | Segment tree / merge sort           |
 
 ---
 
 ## 🔥 BIT TRICKS SUMMARY
 
-| Problem Type | Trick | Complexity |
-|-------------|-------|-----------|
-| Find unique (pairs repeat) | XOR all elements | O(n), O(1) |
-| Count set bits | `n &= (n-1)` in loop | O(k) k=set bits |
-| Is power of 2 | `n & (n-1) == 0` | O(1) |
-| Swap without temp | `a ^= b; b ^= a; a ^= b;` | O(1) |
-| Enumerate subsets | Bitmask 0 to 2^n-1 | O(2^n) |
-| Get/Set/Clear bit | Shift and mask | O(1) |
+| Problem Type               | Trick                     | Complexity      |
+| -------------------------- | ------------------------- | --------------- |
+| Find unique (pairs repeat) | XOR all elements          | O(n), O(1)      |
+| Count set bits             | `n &= (n-1)` in loop      | O(k) k=set bits |
+| Is power of 2              | `n & (n-1) == 0`          | O(1)            |
+| Swap without temp          | `a ^= b; b ^= a; a ^= b;` | O(1)            |
+| Enumerate subsets          | Bitmask 0 to 2^n-1        | O(2^n)          |
+| Get/Set/Clear bit          | Shift and mask            | O(1)            |
 
 ---
 
 📖 **Related Chapters:**
+
 - [03_Algorithms/10_Bit_Manipulation_Complete.md](../03_Algorithms/10_Bit_Manipulation_Complete.md) — Bit manipulation deep dive
 - [03_Algorithms/08a_NumberTheory_Core.md](../03_Algorithms/08a_NumberTheory_Core.md) — Number theory
 
 ---
-[← 19 Matrix+Grid](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index →](../00_MASTER_INDEX.md)
 
+[← 19 Matrix+Grid](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index →](../00_MASTER_INDEX.md)
 
 🔬 **Section Challenge — 🔥 BIT TRICKS SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
-
-

@@ -8,19 +8,18 @@
 
 **Graph Algorithm Selector** — Use this before every problem:
 
-
-| If it asks... | Algorithm | Time |
-|---|---|---|
-| `count islands / connected components` | DFS/BFS flood fill | O(V+E) |
-| `shortest path (unweighted)` | BFS level-by-level | O(V+E) |
-| `shortest path (weighted, non-negative)` | Dijkstra (min-heap) | O((V+E)logV) |
-| `dependency order / course schedule` | Topological Sort (Kahn's or DFS) | O(V+E) |
-| `detect cycle in directed graph` | DFS 3-color (WHITE/GRAY/BLACK) | O(V+E) |
-| `union / merge components dynamically` | Union-Find | O(E·α(V)) |
-| `bipartite check` | BFS 2-coloring | O(V+E) |
-
+| If it asks...                            | Algorithm                        | Time         |
+| ---------------------------------------- | -------------------------------- | ------------ |
+| `count islands / connected components`   | DFS/BFS flood fill               | O(V+E)       |
+| `shortest path (unweighted)`             | BFS level-by-level               | O(V+E)       |
+| `shortest path (weighted, non-negative)` | Dijkstra (min-heap)              | O((V+E)logV) |
+| `dependency order / course schedule`     | Topological Sort (Kahn's or DFS) | O(V+E)       |
+| `detect cycle in directed graph`         | DFS 3-color (WHITE/GRAY/BLACK)   | O(V+E)       |
+| `union / merge components dynamically`   | Union-Find                       | O(E·α(V))    |
+| `bipartite check`                        | BFS 2-coloring                   | O(V+E)       |
 
 **First Question for Every Graph Problem:**
+
 ```
 1. What are the NODES?
 2. What are the EDGES? (directed or undirected?)
@@ -34,22 +33,23 @@
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Graphs**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 # 📚 SECTION 9: GRAPH ALGORITHMS
 
@@ -88,7 +88,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │  └─────────────────────┴─────────────────────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -148,7 +147,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 // BFS TEMPLATE (use for shortest path in unweighted graph/grid)
 int bfs(int[][] grid, int[] start, int[] end) {
@@ -156,11 +154,11 @@ int bfs(int[][] grid, int[] start, int[] end) {
     Queue<int[]> queue = new LinkedList<>();
     boolean[][] visited = new boolean[rows][cols];
     int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};  // Right, Left, Down, Up
-    
+
     queue.offer(start);
     visited[start[0]][start[1]] = true;
     int steps = 0;
-    
+
     while (!queue.isEmpty()) {
         int size = queue.size();              // Process level by level!
         for (int i = 0; i < size; i++) {
@@ -168,7 +166,7 @@ int bfs(int[][] grid, int[] start, int[] end) {
             if (curr[0]==end[0] && curr[1]==end[1]) return steps;
             for (int[] d : dirs) {
                 int nr = curr[0]+d[0], nc = curr[1]+d[1];
-                if (nr>=0 && nr<rows && nc>=0 && nc<cols 
+                if (nr>=0 && nr<rows && nc>=0 && nc<cols
                     && !visited[nr][nc] && grid[nr][nc]==1) {
                     visited[nr][nc] = true;
                     queue.offer(new int[]{nr, nc});
@@ -182,7 +180,7 @@ int bfs(int[][] grid, int[] start, int[] end) {
 
 // DFS TEMPLATE (use for exploring/counting components)
 void dfs(int[][] grid, int r, int c, boolean[][] visited) {
-    if (r<0 || r>=grid.length || c<0 || c>=grid[0].length 
+    if (r<0 || r>=grid.length || c<0 || c>=grid[0].length
         || visited[r][c] || grid[r][c]==0) return;
     visited[r][c] = true;
     dfs(grid, r+1, c, visited);  // Down
@@ -319,8 +317,6 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 
 ---
 
-
-
 🔬 **Section Challenge — PART 0: WHY Graph Problems & How to Think About Them**
 
 **Challenge 1 (Graph Representation Selection):** You model a road navigation system. 100,000 cities (nodes), average 4 connections (edges) per city. **Who** selects adjacency list? **When** would you use adjacency matrix? **What** is the memory cost difference?
@@ -333,14 +329,16 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 9.1 Graph Traversal (BFS/DFS)
 
@@ -376,7 +374,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │  Output: 3                                                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution (DFS):**
 
@@ -482,7 +479,6 @@ public int numIslandsBFS(char[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -536,7 +532,6 @@ private int dfs(int[][] grid, int i, int j) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -589,7 +584,6 @@ public Node cloneGraph(Node node) {
 │  └───┴───┴───┘    └───┴───┴───┘                                │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -649,7 +643,6 @@ private void dfs(int[][] image, int r, int c, int original, int newColor) {
 │  Output: 4 minutes                                             │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -734,7 +727,6 @@ public int orangesRotting(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -774,8 +766,6 @@ public void wallsAndGates(int[][] rooms) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9.1 Graph Traversal (BFS/DFS)**
 
 **Challenge 1 (BFS Iterative vs DFS Recursive Template):** For graph traversal, BFS uses a queue. DFS can be recursive or iterative (explicit stack). **Who** should use recursive DFS? **When** does iterative DFS differ from recursive DFS in traversal ORDER? **What** visited-tracking mechanism is required for graphs (not needed for trees)?
@@ -788,21 +778,24 @@ public void wallsAndGates(int[][] rooms) {
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 9.2 Graph Cycle Detection
 
 **Pattern:** Detect if a directed graph has a cycle. Two approaches:
+
 1. **DFS 3-coloring:** WHITE(unvisited) → GRAY(in-progress) → BLACK(done). If you visit a GRAY node → cycle!
 2. **Kahn's Algorithm:** Remove nodes with in-degree 0 repeatedly. If nodes remain → cycle.
-**Key insight:** Course Schedule = "Can all courses be taken?" = "Does the prerequisite graph have a cycle?"
+   **Key insight:** Course Schedule = "Can all courses be taken?" = "Does the prerequisite graph have a cycle?"
 
 ### Problem 142: Course Schedule (Cycle Detection)
 
@@ -828,7 +821,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │       0 ↔ 1      Cycle! → Cannot finish ✗                      │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution (DFS with colors):**
 
@@ -897,7 +889,6 @@ private boolean hasCycle(List<List<Integer>> graph, int node, int[] state) {
 │  4. Add nodes with in-degree 0 to queue                        │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution (Kahn's Algorithm - BFS):**
 
@@ -974,7 +965,6 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution (Union-Find):**
 
 ```java
@@ -1008,8 +998,6 @@ private int find(int[] parent, int x) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9.2 Graph Cycle Detection**
 
 **Challenge 1 (Undirected vs Directed Cycle Detection):** `isCyclic(graph)` for undirected graph uses visited + parent tracking. For directed graph, it uses 3-color (WHITE/GRAY/BLACK). **Who** uses which method? **When** does the undirected method give a FALSE POSITIVE on a directed graph?
@@ -1022,23 +1010,26 @@ private int find(int[] parent, int x) {
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 9.3 Shortest Path Problems
 
 **Pattern:** Find minimum distance/steps. Choose algorithm based on edge weights:
+
 - **Unweighted graph** → BFS (each edge = 1 step)
 - **Non-negative weights** → Dijkstra's with min-heap
 - **Negative weights** → Bellman-Ford
 - **K stops limit** → Modified Dijkstra or BFS with state (node, stops)
-**Key insight:** BFS naturally gives shortest path in unweighted graphs because it explores level-by-level.
+  **Key insight:** BFS naturally gives shortest path in unweighted graphs because it explores level-by-level.
 
 ### Problem 145: 01 Matrix
 
@@ -1060,7 +1051,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │  Multi-source BFS from all 0s simultaneously                   │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1130,7 +1120,6 @@ public int[][] updateMatrix(int[][] mat) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1195,7 +1184,6 @@ public int shortestPathBinaryMatrix(int[][] grid) {
 │  All nodes reached, max time = 2                               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1279,7 +1267,6 @@ public int networkDelayTime(int[][] times, int n, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution (Modified Dijkstra):**
 
 ```java
@@ -1353,7 +1340,6 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ### Problem 149: Number of Connected Components
@@ -1379,7 +1365,6 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 │  - No duplicate edges                                          │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1449,7 +1434,6 @@ private boolean union(int[] parent, int[] rank, int x, int y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1510,7 +1494,6 @@ private int find(int[] parent, int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1569,8 +1552,6 @@ private void union(Map<String, String> parent, String x, String y) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9.4 Union-Find (Disjoint Set)**
 
 **Challenge 1 (Trace — Who/When/What):** `find(parent, 5)` on a Union-Find with path compression. The tree is `5 → 3 → 1 → 0`. **Who** gets updated? **When** exactly? **What** is the tree shape after the call?
@@ -1581,10 +1562,10 @@ private void union(Map<String, String> parent, String x, String y) {
 
 </details>
 
-
 ## 9.5 Advanced Graph Problems
 
 **Pattern:** These problems require creative graph modeling.
+
 - **Word Ladder:** Each word = node, differ-by-1-letter = edge → BFS for shortest transformation
 - **Alien Dictionary:** Characters → nodes, ordering rules → directed edges → Topological sort
 - **Bipartite:** 2-color the graph. If any edge connects same-color nodes → not bipartite.
@@ -1615,7 +1596,6 @@ private void union(Map<String, String> parent, String x, String y) {
 │  BFS finds shortest path                                       │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1694,7 +1674,6 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 │  - All characters are lowercase English letters                │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1776,7 +1755,6 @@ public String alienOrder(String[] words) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1817,8 +1795,6 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9.5 Advanced Graph Problems**
 
 **Challenge 1 (Union-Find Path Compression + Rank):** Union-Find with both path compression AND union by rank. **Who** provides which speedup? **When** does Union-Find degrade to O(n) per operation without these optimizations? **What** is the amortized complexity with both?
@@ -1831,14 +1807,16 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 9.6 HackerEarth & Codeforces Graph Problems
 
@@ -1866,7 +1844,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │  - 0 <= trust.length <= 10^4                                   │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1916,7 +1893,6 @@ public int findJudge(int n, int[][] trust) {
 │  Kruskal's: Sort edges, add if doesn't create cycle            │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1975,7 +1951,6 @@ private int find(int[] parent, int x) {
 │  it's not the parent → cycle detected                          │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -2051,7 +2026,6 @@ private boolean dfs(List<List<Integer>> graph, boolean[] visited,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -2119,8 +2093,6 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9.6 HackerEarth & Codeforces Graph Problems**
 
 **Challenge 1 (Dijkstra Priority Queue Choice):** You implement Dijkstra's with `PriorityQueue<int[]>` (min-heap). A node's distance gets updated. You add a NEW entry with the shorter distance (lazy deletion). **Who** processes the stale entry? **When** does lazy deletion cause correctness issues? **What** is the memory tradeoff vs `TreeSet`?
@@ -2133,60 +2105,56 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
-| Problem | Link | Technique | Difficulty |
-|---|---|---|---|
-| Codeforces Round Edges | [CF 920E](https://codeforces.com/problemset/problem/920/E) | DFS on tree | ⭐⭐ Medium |
-| Rome Roads | [CF 1547F](https://codeforces.com/problemset/problem/1547/F) | Dijkstra + MST | ⭐⭐⭐ Hard |
-| Connected Component | [CF 1209G](https://codeforces.com/problemset/problem/1209/G) | BFS + complement graph trick | ⭐⭐⭐ Hard |
-| Longest Path in Tree | [CF 1006E](https://codeforces.com/problemset/problem/1006/E) | Tree diameter BFS | ⭐⭐ Medium |
-| Bipartiteness | [CF 901C](https://codeforces.com/problemset/problem/901/C) | BFS 2-coloring | ⭐⭐ Medium |
-| Course Schedule | [CF 236D](https://codeforces.com/problemset/problem/236/D) | Topological sort | ⭐⭐ Medium |
-| King of the Road | [CF 598D](https://codeforces.com/problemset/problem/598/D) | DFS with conditions | ⭐⭐ Medium |
+| Problem                | Link                                                         | Technique                    | Difficulty  |
+| ---------------------- | ------------------------------------------------------------ | ---------------------------- | ----------- |
+| Codeforces Round Edges | [CF 920E](https://codeforces.com/problemset/problem/920/E)   | DFS on tree                  | ⭐⭐ Medium |
+| Rome Roads             | [CF 1547F](https://codeforces.com/problemset/problem/1547/F) | Dijkstra + MST               | ⭐⭐⭐ Hard |
+| Connected Component    | [CF 1209G](https://codeforces.com/problemset/problem/1209/G) | BFS + complement graph trick | ⭐⭐⭐ Hard |
+| Longest Path in Tree   | [CF 1006E](https://codeforces.com/problemset/problem/1006/E) | Tree diameter BFS            | ⭐⭐ Medium |
+| Bipartiteness          | [CF 901C](https://codeforces.com/problemset/problem/901/C)   | BFS 2-coloring               | ⭐⭐ Medium |
+| Course Schedule        | [CF 236D](https://codeforces.com/problemset/problem/236/D)   | Topological sort             | ⭐⭐ Medium |
+| King of the Road       | [CF 598D](https://codeforces.com/problemset/problem/598/D)   | DFS with conditions          | ⭐⭐ Medium |
 
 ---
 
-
-
-
 ## 🌍 Real-World Applications of Graph Algorithms
 
-| Algorithm | Real-World System | How It's Used |
-|---|---|---|
-| **BFS (shortest path)** | Google Maps / Waze | Find shortest route in unweighted road network |
-| **Dijkstra (weighted shortest)** | Google Maps (weighted) | Route considering road distances and traffic weights |
-| **Topological Sort** | Build systems (Maven, Gradle) | Compile dependencies in correct order (no circular deps) |
-| **DFS cycle detection** | JavaScript bundlers (Webpack) | Detect circular imports that would cause infinite loops |
-| **Union-Find (DSU)** | Social networks (Facebook) | "Connected components" = friend groups; union when friendship added |
-| **BFS multi-source** | Multiplayer game map | Spawn zone distance map computed from all player spawn points |
-| **Bellman-Ford** | Internet routing (BGP) | Find shortest path tolerating negative metric weights |
+| Algorithm                        | Real-World System             | How It's Used                                                       |
+| -------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| **BFS (shortest path)**          | Google Maps / Waze            | Find shortest route in unweighted road network                      |
+| **Dijkstra (weighted shortest)** | Google Maps (weighted)        | Route considering road distances and traffic weights                |
+| **Topological Sort**             | Build systems (Maven, Gradle) | Compile dependencies in correct order (no circular deps)            |
+| **DFS cycle detection**          | JavaScript bundlers (Webpack) | Detect circular imports that would cause infinite loops             |
+| **Union-Find (DSU)**             | Social networks (Facebook)    | "Connected components" = friend groups; union when friendship added |
+| **BFS multi-source**             | Multiplayer game map          | Spawn zone distance map computed from all player spawn points       |
+| **Bellman-Ford**                 | Internet routing (BGP)        | Find shortest path tolerating negative metric weights               |
 
 ```
 🔥 TOPOLOGICAL SORT IN REAL LIFE:
    You run: gradle build
    Gradle reads your build.gradle dependencies → builds a directed graph
    → Topological Sort → compile in correct order
-   
+
    If circular dependency: "BUILD FAILED: Circular dependency detected"
    That's exactly cycle detection in a directed graph (DFS WHITE/GRAY/BLACK)!
 ```
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Graph Algorithms**
 
@@ -2194,18 +2162,28 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 <details><summary>Answer</summary>
 
-**(A) Shortest route (GPS navigation) → Dijkstra's Algorithm (or A*).** Road weights = travel time/distance. Dijkstra finds shortest path by total weight. A* improves Dijkstra with a heuristic (straight-line distance to destination) to explore fewer nodes. Production GPS uses bidirectional Dijkstra or Contraction Hierarchies for sub-millisecond routing on 100M+ node road graphs. **(B) Detect driver driving in circles → Cycle Detection (DFS/Floyd's).** Model the route as a directed graph: each intersection = node, each turn = directed edge. DFS with a 3-color marker detects if the driver revisits a node in the current path. Floyd's tortoise-hare is used on the coordinates sequence if modeled as a linked list. **(C) Find all reachable restaurants within 2km → BFS with distance cutoff.** Start from driver's location, BFS through road network. Stop expanding neighbors when distance exceeds 2km. All nodes visited = reachable restaurants. This is a BFS "level-limited" search. Multi-source BFS (start from ALL restaurants simultaneously) can find which driver is closest to each restaurant. **Who selects:** The software architect, based on: Is the graph weighted? (Dijkstra). Is it directional? (directed DFS). Is the search space bounded? (BFS cutoff). Does it need to scale to millions of nodes? (A*, Contraction Hierarchies).
+**(A) Shortest route (GPS navigation) → Dijkstra's Algorithm (or A\*).** Road weights = travel time/distance. Dijkstra finds shortest path by total weight. A* improves Dijkstra with a heuristic (straight-line distance to destination) to explore fewer nodes. Production GPS uses bidirectional Dijkstra or Contraction Hierarchies for sub-millisecond routing on 100M+ node road graphs. **(B) Detect driver driving in circles → Cycle Detection (DFS/Floyd's).** Model the route as a directed graph: each intersection = node, each turn = directed edge. DFS with a 3-color marker detects if the driver revisits a node in the current path. Floyd's tortoise-hare is used on the coordinates sequence if modeled as a linked list. **(C) Find all reachable restaurants within 2km → BFS with distance cutoff.** Start from driver's location, BFS through road network. Stop expanding neighbors when distance exceeds 2km. All nodes visited = reachable restaurants. This is a BFS "level-limited" search. Multi-source BFS (start from ALL restaurants simultaneously) can find which driver is closest to each restaurant. **Who selects:** The software architect, based on: Is the graph weighted? (Dijkstra). Is it directional? (directed DFS). Is the search space bounded? (BFS cutoff). Does it need to scale to millions of nodes? (A*, Contraction Hierarchies).
 
 </details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+
 </details>
 
+---
+
+### Historical Evolution
+
+**Graph Algorithms** originated with **Leonhard Euler (1736)** who posed the Seven Bridges of Konigsberg problem while at the St. Petersburg Academy, seeking a mathematically rigorous way to determine whether a path exists that traverses each bridge exactly once. This foundational work established nodes as abstract vertices and edges as connections, creating the vocabulary still used in modern graph theory. From this conceptual bedrock, **Edsger Dijkstra (1959)** developed his shortest-path algorithm at the Centrum Wiskunde & Informatica in Amsterdam, motivated by the ARPANET routing problem, where finding optimal packet delivery paths was critical for early internet infrastructure.
+
+The evolution continued with **Robert Floyd (1962)** and **Stephen Warshall (1962)** independently discovering the all-pairs shortest-path algorithm that computes optimal routes between every node simultaneously. **Robert Tarjan (1972)** at Stanford then introduced algorithms for strongly connected components, solving dependency resolution problems in compiler design and build systems. Modern practice anchors this work in industrial-scale systems: Google Maps uses Dijkstra variants with contraction hierarchies for sub-millisecond routing on 100M+ node road networks, the Facebook Graph API relies on graph traversal for friend recommendations across 2B+ users, Neo4j powers fraud detection engines with real-time traversal queries, and BGP/OSPF internet routing protocols implement Bellman-Ford and Dijkstra adaptations to route traffic across continental-scale networks. The 270-year lineage from Euler's paper-and-pencil puzzles to billion-user production systems demonstrates how fundamental graph abstractions transcend their mathematical origins.
 

@@ -6,15 +6,58 @@
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| unweighted shortest path | BFS |
-| weights are 0 or 1 | 0-1 BFS |
-| non-negative weights | Dijkstra |
-| negative weights | Bellman-Ford / potentials |
-| DAG dependencies | topological sort + DP |
-| connectivity with edge additions | DSU |
-| edge deletions offline | DSU rollback |
+### Historical Evolution
+
+**Inventor / Originator:** Graph theory began with Euler (1736) and the Seven Bridges of Konigsberg. Tarjan (1972) invented SCC algorithms. BFS/DFS history is same as file 13.
+
+**Predecessor context:** Graph algorithms before formal graph theory relied on trial-and-error. Finding strongly connected components required multiple passes with no clear methodology.
+
+**Evolution narrative:** Euler's 1736 paper founded graph theory. Tarjan's 1972 algorithm provided the first single-pass O(V+E) SCC solution using DFS with low-link values. BFS and DFS became the two fundamental graph traversal paradigms.
+
+**Modern practice:** Graph traversal underlies web indexing (Google's PageRank uses BFS), social networks, and dependency resolution. Tarjan's SCC algorithm is used in compilers and build systems.
+
+- **Euler 1736**: "Seven Bridges of Konigsberg" — founding paper of graph theory
+- **Tarjan SCC — 1972**: Single DFS pass with low-link values for O(V+E) SCC detection
+- **Moore BFS — 1959 / Dijkstra 1959**: Fundamental graph traversal algorithms
+- **Modern practice**: PageRank (BFS), compilers for dependency resolution (SCC)
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **DFS recursion StackOverflowError on deep graphs (e.g., 100K-deep chain)** — Recursive DFS on a graph with a 100,000-node depth-first chain exhausts JVM stack. Detection: test on a path graph of 100,000 nodes.
+
+- **BFS visited-set needs ConcurrentHashMap in parallel traversal** — In concurrent BFS, shared visited-set access without synchronization causes race conditions (missed nodes, infinite loops). Detection: test with parallel BFS workers; verify all nodes are visited exactly once.
+
+- **Adjacency list memory pressure on dense graphs (V² edges)** — For dense graphs (V=10,000, E=50M), adjacency list allocation causes memory exhaustion. Detection: check if E approaches V²; switch to adjacency matrix for dense graphs.
+
+- **Topological sort Kahn's algorithm needs cycle detection for DAG validation** — Running topological sort on a graph with cycles produces empty/incomplete result with no error. Detection: verify `result.size() == V` after topological sort; if less, graph had a cycle.
+
+**Production Selection Heuristic:** Use iterative BFS/DFS for graph traversal in production. Always check for cycles before topological sort. Choose adjacency representation based on graph density.
+
+---
+
+| Given Constraints                | Do This                   |
+| -------------------------------- | ------------------------- |
+| unweighted shortest path         | BFS                       |
+| weights are 0 or 1               | 0-1 BFS                   |
+| non-negative weights             | Dijkstra                  |
+| negative weights                 | Bellman-Ford / potentials |
+| DAG dependencies                 | topological sort + DP     |
+| connectivity with edge additions | DSU                       |
+| edge deletions offline           | DSU rollback              |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -24,10 +67,10 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 Before choosing an algorithm, you must decide how to represent the graph. This decision affects both code complexity and performance:
 
-| Representation | Space | Edge Lookup | Iterate Neighbors | Best When |
-|---------------|-------|-------------|-------------------|-----------|
-| **Adjacency List** | O(V + E) | O(degree) | O(degree) | Sparse graphs (most real-world graphs) |
-| **Adjacency Matrix** | O(V²) | O(1) | O(V) | Dense graphs, need fast edge queries |
+| Representation       | Space    | Edge Lookup | Iterate Neighbors | Best When                              |
+| -------------------- | -------- | ----------- | ----------------- | -------------------------------------- |
+| **Adjacency List**   | O(V + E) | O(degree)   | O(degree)         | Sparse graphs (most real-world graphs) |
+| **Adjacency Matrix** | O(V²)    | O(1)        | O(V)              | Dense graphs, need fast edge queries   |
 
 Most interview problems use adjacency lists because real-world graphs are sparse (each node has few connections relative to total nodes).
 
@@ -39,13 +82,14 @@ This does NOT work for weighted graphs — a path with more edges might have a l
 
 #### Why Dijkstra Is Correct — The Greedy Proof Sketch
 
-Dijkstra always processes the unvisited node with the **smallest known distance**. Its correctness relies on one assumption: **all edge weights are non-negative.** When you process a node, you know its distance is final because any other path would go through an unprocessed node with a *larger* distance, and since all edges are non-negative, that alternative path can only be *longer*.
+Dijkstra always processes the unvisited node with the **smallest known distance**. Its correctness relies on one assumption: **all edge weights are non-negative.** When you process a node, you know its distance is final because any other path would go through an unprocessed node with a _larger_ distance, and since all edges are non-negative, that alternative path can only be _longer_.
 
 With negative edges, this assumption breaks — a longer path through a negative edge might turn out shorter. This is why Dijkstra fails on negative-weight graphs and you must use Bellman-Ford instead.
 
 #### Union-Find — The Power of Amortized O(1) Operations
 
 Union-Find achieves near-constant time per operation through two optimizations:
+
 - **Path compression**: When you call `find(x)`, make every node along the path point directly to the root. Future operations on these nodes are O(1).
 - **Union by rank**: Always attach the shorter tree under the taller tree, keeping the tree balanced. Without this, unions could create a long chain (O(n) per find).
 
@@ -69,12 +113,12 @@ Problem type → Algorithm:
 └── "Bipartite check" → BFS/DFS with 2-coloring
 ```
 
-
 ---
 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: BFS (Shortest Path Unweighted)
+
 ```java
 int bfs(int[][] graph, int start, int end) {
     Queue<Integer> queue = new LinkedList<>();
@@ -102,6 +146,7 @@ int bfs(int[][] graph, int start, int end) {
 ```
 
 ### Template 2: DFS (Cycle Detection + Topological Sort)
+
 ```java
 // States: 0=unvisited, 1=in-progress, 2=completed
 boolean hasCycle(int node, List<List<Integer>> adj, int[] state, List<Integer> topo) {
@@ -117,6 +162,7 @@ boolean hasCycle(int node, List<List<Integer>> adj, int[] state, List<Integer> t
 ```
 
 ### Template 3: Dijkstra
+
 ```java
 int[] dijkstra(List<int[]>[] graph, int start, int n) {
     int[] dist = new int[n];
@@ -142,6 +188,7 @@ int[] dijkstra(List<int[]>[] graph, int start, int n) {
 ```
 
 ### Template 4: Union-Find
+
 ```java
 int[] parent, rank;
 int find(int x) {
@@ -187,7 +234,6 @@ Step-by-step:
 Time: O(R×C) | Space: O(R×C) recursion stack worst case
 ```
 
-
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: Topological Sort (Course Schedule)
@@ -223,7 +269,6 @@ Step-by-step:
 Time: O(V + E) | Space: O(V + E)
 ```
 
-
 ---
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
@@ -252,88 +297,90 @@ COMMON MISTAKES:
 5. Grid DFS: Forgetting to mark visited BEFORE recursing into neighbors
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Algorithm | Time | Space | When |
-|-----------|------|-------|------|
-| BFS/DFS traversal | O(V+E) | O(V) | Reachability, components |
-| Grid BFS/DFS | O(R×C) | O(R×C) | Islands, flood fill |
-| Topological Sort | O(V+E) | O(V+E) | DAG ordering, scheduling |
-| Dijkstra | O(E log V) | O(V) | Shortest path, positive weights |
-| Union-Find | O(α(n)) ≈ O(1) | O(n) | Connectivity, MST |
+| Algorithm         | Time           | Space  | When                            |
+| ----------------- | -------------- | ------ | ------------------------------- |
+| BFS/DFS traversal | O(V+E)         | O(V)   | Reachability, components        |
+| Grid BFS/DFS      | O(R×C)         | O(R×C) | Islands, flood fill             |
+| Topological Sort  | O(V+E)         | O(V+E) | DAG ordering, scheduling        |
+| Dijkstra          | O(E log V)     | O(V)   | Shortest path, positive weights |
+| Union-Find        | O(α(n)) ≈ O(1) | O(n)   | Connectivity, MST               |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
 ### Easy
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 2 | [DFS of Graph](https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/) | Amazon | Standard DFS template |
-| 3 | [Number of Islands](https://leetcode.com/problems/number-of-islands/) | — | DFS/BFS flood fill on grid |
-| 4 | [Flood Fill](https://leetcode.com/problems/flood-fill/) | Salesforce | BFS/DFS from source |
-| 5 | [Rat in a Maze](https://practice.geeksforgeeks.org/problems/rat-in-a-maze-problem/1) | — | Backtracking DFS |
-| 6 | [Detect Cycle Undirected](https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1) | — | BFS/DFS or Union-Find |
-| 7 | [Detect Cycle Directed](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/) | — | DFS with 3 states |
+
+| #   | Problem                                                                                                      | Companies  | Key Insight                |
+| --- | ------------------------------------------------------------------------------------------------------------ | ---------- | -------------------------- |
+| 2   | [DFS of Graph](https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/)                         | Amazon     | Standard DFS template      |
+| 3   | [Number of Islands](https://leetcode.com/problems/number-of-islands/)                                        | —          | DFS/BFS flood fill on grid |
+| 4   | [Flood Fill](https://leetcode.com/problems/flood-fill/)                                                      | Salesforce | BFS/DFS from source        |
+| 5   | [Rat in a Maze](https://practice.geeksforgeeks.org/problems/rat-in-a-maze-problem/1)                         | —          | Backtracking DFS           |
+| 6   | [Detect Cycle Undirected](https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1) | —          | BFS/DFS or Union-Find      |
+| 7   | [Detect Cycle Directed](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)                              | —          | DFS with 3 states          |
 
 ### Medium
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 8 | [Steps by Knight](https://practice.geeksforgeeks.org/problems/steps-by-knight5927/1) | Amazon | BFS shortest path |
-| 9 | [Decode String](https://leetcode.com/problems/decode-string/) | Amazon | Stack + DFS |
-| 10 | [Shortest Bridge](https://leetcode.com/problems/shortest-bridge/) | Amazon | DFS to find island + BFS to expand |
-| 11 | [Network Connected](https://leetcode.com/problems/number-of-operations-to-make-network-connected/) | Amazon, Salesforce | Union-Find: edges - components |
-| 12 | [Eventual Safe States](https://leetcode.com/problems/find-eventual-safe-states/) | — | Reverse DFS / topo sort |
-| 13 | [Kosaraju's SCC](https://practice.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1) | — | Two-pass DFS |
-| 14 | [Time to Inform Employees](https://leetcode.com/problems/time-needed-to-inform-all-employees/) | Amazon | DFS/BFS on tree |
-| 15 | [Graph Coloring](https://www.geeksforgeeks.org/graph-coloring-applications/) | — | Backtracking |
-| 16 | [Most Stones Removed](https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/) | — | Union-Find on row/col |
-| 17 | [As Far from Land](https://leetcode.com/problems/as-far-from-land-as-possible/) | — | Multi-source BFS |
-| 18 | [Smallest City at Threshold](https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/) | — | Floyd-Warshall or Dijkstra |
-| 19 | [Course Schedule](https://www.geeksforgeeks.org/find-whether-it-is-possible-to-finish-all-tasks-or-not-from-given-dependencies/) | — | Topological sort cycle check |
-| 20 | [Prim's MST](https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/) | Salesforce | PQ-based Prim's |
-| 21 | [Floyd-Warshall](https://practice.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1) | — | All-pairs DP |
-| 22 | [Evaluate Division](https://leetcode.com/problems/evaluate-division/) | — | Weighted graph DFS |
-| 23 | [Snakes and Ladders](https://leetcode.com/problems/snakes-and-ladders/) | — | BFS shortest path |
-| 24 | [Topological Sort](https://practice.geeksforgeeks.org/problems/topological-sort/1) | Microsoft | Kahn's or DFS |
-| 25 | [Cheapest Flights K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/description/) | Amazon, Salesforce | Modified Dijkstra or Bellman-Ford |
-| 26 | [Bellman-Ford Negative Cycle](https://www.geeksforgeeks.org/detect-negative-cycle-graph-bellman-ford/) | — | V-1 iterations + check |
-| 27 | [Bipartite Graph](https://www.geeksforgeeks.org/bipartite-graph/) | — | BFS 2-coloring |
+
+| #   | Problem                                                                                                                                  | Companies          | Key Insight                        |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------------------------------- |
+| 8   | [Steps by Knight](https://practice.geeksforgeeks.org/problems/steps-by-knight5927/1)                                                     | Amazon             | BFS shortest path                  |
+| 9   | [Decode String](https://leetcode.com/problems/decode-string/)                                                                            | Amazon             | Stack + DFS                        |
+| 10  | [Shortest Bridge](https://leetcode.com/problems/shortest-bridge/)                                                                        | Amazon             | DFS to find island + BFS to expand |
+| 11  | [Network Connected](https://leetcode.com/problems/number-of-operations-to-make-network-connected/)                                       | Amazon, Salesforce | Union-Find: edges - components     |
+| 12  | [Eventual Safe States](https://leetcode.com/problems/find-eventual-safe-states/)                                                         | —                  | Reverse DFS / topo sort            |
+| 13  | [Kosaraju's SCC](https://practice.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1)                             | —                  | Two-pass DFS                       |
+| 14  | [Time to Inform Employees](https://leetcode.com/problems/time-needed-to-inform-all-employees/)                                           | Amazon             | DFS/BFS on tree                    |
+| 15  | [Graph Coloring](https://www.geeksforgeeks.org/graph-coloring-applications/)                                                             | —                  | Backtracking                       |
+| 16  | [Most Stones Removed](https://leetcode.com/problems/most-stones-removed-with-same-row-or-column/)                                        | —                  | Union-Find on row/col              |
+| 17  | [As Far from Land](https://leetcode.com/problems/as-far-from-land-as-possible/)                                                          | —                  | Multi-source BFS                   |
+| 18  | [Smallest City at Threshold](https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/) | —                  | Floyd-Warshall or Dijkstra         |
+| 19  | [Course Schedule](https://www.geeksforgeeks.org/find-whether-it-is-possible-to-finish-all-tasks-or-not-from-given-dependencies/)         | —                  | Topological sort cycle check       |
+| 20  | [Prim's MST](https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/)                                               | Salesforce         | PQ-based Prim's                    |
+| 21  | [Floyd-Warshall](https://practice.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1)                                          | —                  | All-pairs DP                       |
+| 22  | [Evaluate Division](https://leetcode.com/problems/evaluate-division/)                                                                    | —                  | Weighted graph DFS                 |
+| 23  | [Snakes and Ladders](https://leetcode.com/problems/snakes-and-ladders/)                                                                  | —                  | BFS shortest path                  |
+| 24  | [Topological Sort](https://practice.geeksforgeeks.org/problems/topological-sort/1)                                                       | Microsoft          | Kahn's or DFS                      |
+| 25  | [Cheapest Flights K Stops](https://leetcode.com/problems/cheapest-flights-within-k-stops/description/)                                   | Amazon, Salesforce | Modified Dijkstra or Bellman-Ford  |
+| 26  | [Bellman-Ford Negative Cycle](https://www.geeksforgeeks.org/detect-negative-cycle-graph-bellman-ford/)                                   | —                  | V-1 iterations + check             |
+| 27  | [Bipartite Graph](https://www.geeksforgeeks.org/bipartite-graph/)                                                                        | —                  | BFS 2-coloring                     |
 
 ### Hard
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 28 | [Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) | Amazon | DFS + memoization on grid |
-| 29 | [Making a Large Island](https://leetcode.com/problems/making-a-large-island/) | — | Union-Find + try flipping each 0 |
-| 30 | [Critical Connections](https://leetcode.com/problems/critical-connections-in-a-network/) | Salesforce | Tarjan's bridge finding |
-| 31 | [Alien Dictionary](https://practice.geeksforgeeks.org/problems/alien-dictionary/1) | Salesforce | Build graph + topological sort |
-| 32 | [Water Jug BFS](https://www.geeksforgeeks.org/water-jug-problem-using-bfs/) | — | State-space BFS |
-| 33 | [Travelling Salesman](https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/) | Salesforce, Microsoft | DP + bitmask |
-| 34 | [Spanning Trees Count](https://www.geeksforgeeks.org/total-number-spanning-trees-graph/) | — | Kirchhoff's theorem |
-| 35 | [Word Ladder](https://leetcode.com/problems/word-ladder/) | — | BFS with word transformation |
-| 36 | [Minimize Cash Flow](https://www.geeksforgeeks.org/minimize-cash-flow-among-given-set-friends-borrowed-money/) | — | Net amounts + greedy |
-| 37 | [Remove Boxes](https://leetcode.com/problems/remove-boxes/) | Salesforce, Microsoft | Interval DP |
+
+| #   | Problem                                                                                                        | Companies             | Key Insight                      |
+| --- | -------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------- |
+| 28  | [Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)        | Amazon                | DFS + memoization on grid        |
+| 29  | [Making a Large Island](https://leetcode.com/problems/making-a-large-island/)                                  | —                     | Union-Find + try flipping each 0 |
+| 30  | [Critical Connections](https://leetcode.com/problems/critical-connections-in-a-network/)                       | Salesforce            | Tarjan's bridge finding          |
+| 31  | [Alien Dictionary](https://practice.geeksforgeeks.org/problems/alien-dictionary/1)                             | Salesforce            | Build graph + topological sort   |
+| 32  | [Water Jug BFS](https://www.geeksforgeeks.org/water-jug-problem-using-bfs/)                                    | —                     | State-space BFS                  |
+| 33  | [Travelling Salesman](https://www.geeksforgeeks.org/travelling-salesman-problem-set-1/)                        | Salesforce, Microsoft | DP + bitmask                     |
+| 34  | [Spanning Trees Count](https://www.geeksforgeeks.org/total-number-spanning-trees-graph/)                       | —                     | Kirchhoff's theorem              |
+| 35  | [Word Ladder](https://leetcode.com/problems/word-ladder/)                                                      | —                     | BFS with word transformation     |
+| 36  | [Minimize Cash Flow](https://www.geeksforgeeks.org/minimize-cash-flow-among-given-set-friends-borrowed-money/) | —                     | Net amounts + greedy             |
+| 37  | [Remove Boxes](https://leetcode.com/problems/remove-boxes/)                                                    | Salesforce, Microsoft | Interval DP                      |
 
 ### Additional — From Bonus Section
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 38 | Bridge in a Graph | Tarjan's algorithm |
-| 39 | Seven Bridges of Königsberg | Euler path existence |
-| 40 | Minimum edges to reverse for path | 0-1 BFS |
+
+| #   | Problem                           | Key Insight          |
+| --- | --------------------------------- | -------------------- |
+| 38  | Bridge in a Graph                 | Tarjan's algorithm   |
+| 39  | Seven Bridges of Königsberg       | Euler path existence |
+| 40  | Minimum edges to reverse for path | 0-1 BFS              |
 
 ---
 
@@ -344,16 +391,19 @@ COMMON MISTAKES:
 "First, I'll represent this as a graph — [adjacency list/matrix]. Then I'll choose the right traversal: BFS for shortest unweighted path, DFS for exploring all paths or detecting cycles, Dijkstra for weighted shortest path, or Union-Find for connectivity queries."
 
 **How to justify your choice:**
+
 - "BFS guarantees shortest path in unweighted graphs because it explores nodes in order of increasing distance from the source. The first time we reach any node IS the shortest path."
 - "Dijkstra is correct because all edge weights are non-negative. When we settle a node (dequeue from priority queue), any alternative path goes through unsettled nodes with larger distances — so it can only be longer."
 - "Union-Find with path compression + union by rank gives amortized O(α(n)) ≈ O(1) per operation, where α is the inverse Ackermann function — practically constant."
 
 **Key anti-pattern:**
+
 - ❌ "NEVER use Dijkstra with negative edge weights — it will give wrong answers because a node marked 'settled' might later be reachable via a cheaper path through a negative edge. Use Bellman-Ford O(V×E) instead."
 - ❌ "For cycle detection in directed graphs, use DFS with 3-color marking (white/gray/black), not just visited/unvisited."
 - ❌ "Don't forget: grids ARE graphs! Each cell is a node, each adjacent cell is an edge. Apply standard BFS/DFS."
 
 **Real-world applications:**
+
 - Google Maps / GPS navigation (Dijkstra for weighted shortest path)
 - Social networks ("People You May Know" — BFS for degrees of separation)
 - Package managers (Maven, npm — topological sort for dependency resolution)
@@ -364,11 +414,11 @@ COMMON MISTAKES:
 ---
 
 📖 **Related Chapters:**
+
 - [03_Algorithms/05c_Graphs_Fundamentals.md](../03_Algorithms/05c_Graphs_Fundamentals.md) — Graph fundamentals
 - [03_Algorithms/05d_Graphs_Advanced_Algos.md](../03_Algorithms/05d_Graphs_Advanced_Algos.md) — Advanced graph algorithms
 - [03_Algorithms/14_Union_Find_DSU_Complete.md](../03_Algorithms/14_Union_Find_DSU_Complete.md) — Union-Find deep dive
 
 ---
+
 [← 13 Tree+DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [15 Heap+Greedy →](15_Heap_Plus_GreedySelection.md)
-
-

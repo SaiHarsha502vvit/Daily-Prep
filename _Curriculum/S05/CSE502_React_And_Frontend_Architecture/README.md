@@ -17,18 +17,18 @@ Comprehensive study of React 19 with Server Components, the Concurrent Renderer,
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | React 19 new features: Server Components, Server Actions, use() hook |
-| 2 | Concurrent rendering: Scheduler, priorities, useTransition, useDeferredValue |
-| 3 | Suspense: data fetching patterns, transitions, error boundaries |
-| 4 | Component composition: compound components, context for state sharing |
-| 5 | State management: useReducer + Context, Zustand, Jotai comparison |
-| 6 | Performance: memo, useMemo, useCallback, avoidance of unnecessary renders |
-| 7 | Forms & validation: Actions, controlled inputs, Zod + React Hook Form |
-| 8 | Routing: React Router v7, nested routes, loaders, data mutations |
-| 9 | Testing: Vitest + React Testing Library, mocking server components |
-| 10 | Capstone: full-stack React 19 application with RSC |
+| Week | Topic                                                                        |
+| ---- | ---------------------------------------------------------------------------- |
+| 1    | React 19 new features: Server Components, Server Actions, use() hook         |
+| 2    | Concurrent rendering: Scheduler, priorities, useTransition, useDeferredValue |
+| 3    | Suspense: data fetching patterns, transitions, error boundaries              |
+| 4    | Component composition: compound components, context for state sharing        |
+| 5    | State management: useReducer + Context, Zustand, Jotai comparison            |
+| 6    | Performance: memo, useMemo, useCallback, avoidance of unnecessary renders    |
+| 7    | Forms & validation: Actions, controlled inputs, Zod + React Hook Form        |
+| 8    | Routing: React Router v7, nested routes, loaders, data mutations             |
+| 9    | Testing: Vitest + React Testing Library, mocking server components           |
+| 10   | Capstone: full-stack React 19 application with RSC                           |
 
 ## Linked Existing Content
 

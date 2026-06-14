@@ -3,6 +3,7 @@
 # Chapter 35 — Database Migration & Schema Evolution
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Backend devs, DevOps, DBAs — anyone deploying database changes
 - **WHAT** is it? → Tools and patterns for safely evolving database schemas over time
 - **WHEN** to use? → Every deploy that changes DB: new columns, tables, indexes, constraints
@@ -15,6 +16,7 @@
 ## Part 1 — Why Schema Migration Matters
 
 ### 1.1 The Problem Without Migrations
+
 ```
 Developer A: "I added a column to users"
 Developer B: "What column? My code just broke"
@@ -30,6 +32,7 @@ Without migrations:
 ```
 
 ### 1.2 What Migrations Give You
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │ V001__create_users.sql                                   │
@@ -53,6 +56,7 @@ Team: Everyone commits migrations to git — merge conflicts caught.
 ## Part 2 — Flyway (Java/SQL)
 
 ### 2.1 Flyway Basics
+
 ```
 Flyway is the most popular SQL migration tool for Java projects.
 
@@ -72,6 +76,7 @@ Naming convention:
 ```
 
 ### 2.2 Sample Migrations
+
 ```sql
 -- V1__create_users.sql
 CREATE TABLE users (
@@ -102,6 +107,7 @@ ALTER TABLE orders ADD COLUMN deleted_at TIMESTAMP;
 ```
 
 ### 2.3 Flyway Configuration
+
 ```properties
 # flyway.conf
 flyway.url=jdbc:postgresql://localhost:5432/mydb
@@ -114,6 +120,7 @@ flyway.outOfOrder=false
 ```
 
 ### 2.4 Flyway Commands
+
 ```bash
 # Check current status
 flyway info
@@ -136,6 +143,7 @@ flyway baseline -baselineVersion=5
 ## Part 3 — Liquibase (XML/YAML/SQL)
 
 ### 3.1 Liquibase Changelog (YAML)
+
 ```yaml
 # changelog.yaml
 databaseChangeLog:
@@ -190,6 +198,7 @@ databaseChangeLog:
 ```
 
 ### 3.2 Liquibase SQL Format
+
 ```sql
 -- changelog.sql
 -- changeset alice:1
@@ -211,12 +220,14 @@ CREATE INDEX idx_users_email ON users (email);
 ## Part 4 — Python: Alembic (SQLAlchemy)
 
 ### 4.1 Setup
+
 ```bash
 pip install alembic sqlalchemy
 alembic init alembic
 ```
 
 ### 4.2 Migration Scripts
+
 ```python
 # alembic/versions/001_create_users.py
 """create users table
@@ -271,6 +282,7 @@ def downgrade():
 ```
 
 ### 4.3 Auto-Generate Migrations
+
 ```python
 # alembic can detect model changes and auto-generate migrations!
 # In your models.py:
@@ -296,6 +308,7 @@ class User(Base):
 ## Part 5 — Zero-Downtime Migrations
 
 ### 5.1 The Problem
+
 ```
 ALTER TABLE users ADD COLUMN phone VARCHAR(20);
 → In PostgreSQL: instant, no lock (if no DEFAULT with volatile expression)
@@ -309,6 +322,7 @@ ALTER TABLE users ALTER COLUMN name TYPE TEXT;
 ```
 
 ### 5.2 Safe Migration Patterns
+
 ```sql
 -- Pattern 1: Add column (SAFE — no default or PG 11+ with default)
 ALTER TABLE users ADD COLUMN phone VARCHAR(20);
@@ -341,6 +355,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);  -- No lock!
 ```
 
 ### 5.3 Backward-Compatible Migrations
+
 ```
 RULE: Every migration must be compatible with BOTH the old AND new code.
 
@@ -367,6 +382,7 @@ Contract → Remove old structure (after all code uses new)
 ## Part 6 — Migration Best Practices
 
 ### 6.1 Migration Checklist
+
 ```
 Before writing a migration:
 ✅ Can it be rolled back? Write both up() and down()
@@ -388,6 +404,7 @@ After deploying:
 ```
 
 ### 6.2 Python: Migration Testing Script
+
 ```python
 """Verify migration health across environments."""
 import pandas as pd
@@ -430,5 +447,18 @@ for env_name, conn_str in ENVIRONMENTS.items():
 │ Best for    │ Java/SQL  │ Enterprise │ Python/     │
 │             │ projects  │ projects   │ Flask/Django│
 └─────────────┴───────────┴────────────┴─────────────┘
-```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Liquibase** (2006): Introduced XML-based changelog files for declarative database schema migration, enabling team collaboration
+- **Flyway** (2010): Founded by Axel Fontaine, focused on simplicity with SQL-script-based migrations for Java ecosystems
+- **Alembic** (2010): Created by Mike Bayer for SQLAlchemy, providing Python-native migration infrastructure with autogeneration from model changes
+- **Expand-contract pattern** (2010s): Industry practice of multi-phase migrations adding columns before removing old ones to avoid downtime
+- **gh-ost (GitHub)** (2016): GitHub's triggerless online schema change tool demonstrated safe live migrations without replication lag
+
+**Evolution narrative:**
+Early database deployments used manual SQL scripts with no versioning, making coordination across teams and environments chaotic. Liquibase (2006) pioneered declarative changes with XML changelogs, while Flyway (2010) brought simplicity-first SQL-script migrations to DevOps workflows. Alembic (2010) solved Python-specific needs by autogenerating migrations from SQLAlchemy model changes. As zero-downtime requirements grew, the expand-contract pattern emerged, and gh-ost (2016) demonstrated that triggerless migration was possible at scale.
+
+**Modern practice anchor:**
+Today's schema migrations combine versioned migration tools (Flyway/Liquibase/Alembic) with expand-contract patterns for safe online changes, automated testing in staging, and rollback procedures tested before production deployment.```

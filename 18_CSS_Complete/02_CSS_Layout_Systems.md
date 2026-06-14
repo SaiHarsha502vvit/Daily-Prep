@@ -6,23 +6,21 @@
 
 ## 5W1H — Why This Chapter?
 
-
 > WHAT: Flexbox = 1-dimensional layout (row OR column).
 > Grid = 2-dimensional layout (rows AND columns together).
 >
-> WHY:  Before flex/grid, layout was done with floats and hacks.
+> WHY: Before flex/grid, layout was done with floats and hacks.
 > Centering a div was a meme. Now it's 3 lines of CSS.
 > Flexbox and Grid solve 99% of all layout problems.
 >
-> WHO:  Every developer who builds UIs. No exceptions.
+> WHO: Every developer who builds UIs. No exceptions.
 >
 > WHEN: Flex: Navigation bars, card rows, alignments.
 > Grid: Page layouts, dashboards, complex 2D layouts.
 > BOTH: Use together! Grid for page, flex for components.
 >
-> HOW:  display: flex or display: grid on the PARENT container.
+> HOW: display: flex or display: grid on the PARENT container.
 > Children become flex/grid items automatically.
-
 
 ---
 
@@ -59,47 +57,46 @@ KEY INSIGHT: justify-content works on MAIN axis.
 When you change direction, their effects SWAP!
 ```
 
-
 ### Container Properties (Parent)
 
 ```css
 .flex-container {
-    display: flex;
+  display: flex;
 
-    /* 1. DIRECTION: Which way items flow */
-    flex-direction: row;           /* → Default: left to right */
-    flex-direction: row-reverse;   /* ← Right to left */
-    flex-direction: column;        /* ↓ Top to bottom */
-    flex-direction: column-reverse;/* ↑ Bottom to top */
+  /* 1. DIRECTION: Which way items flow */
+  flex-direction: row; /* → Default: left to right */
+  flex-direction: row-reverse; /* ← Right to left */
+  flex-direction: column; /* ↓ Top to bottom */
+  flex-direction: column-reverse; /* ↑ Bottom to top */
 
-    /* 2. WRAP: What happens when items don't fit */
-    flex-wrap: nowrap;   /* Default: squish everything on one line */
-    flex-wrap: wrap;     /* Items wrap to next line */
+  /* 2. WRAP: What happens when items don't fit */
+  flex-wrap: nowrap; /* Default: squish everything on one line */
+  flex-wrap: wrap; /* Items wrap to next line */
 
-    /* 3. JUSTIFY-CONTENT: Distribute along MAIN axis */
-    justify-content: flex-start;    /* ┃■ ■ ■      ┃ */
-    justify-content: flex-end;      /* ┃      ■ ■ ■┃ */
-    justify-content: center;        /* ┃   ■ ■ ■   ┃ */
-    justify-content: space-between; /* ┃■    ■    ■┃ */
-    justify-content: space-around;  /* ┃ ■   ■   ■ ┃ */
-    justify-content: space-evenly;  /* ┃  ■  ■  ■  ┃ */
+  /* 3. JUSTIFY-CONTENT: Distribute along MAIN axis */
+  justify-content: flex-start; /* ┃■ ■ ■      ┃ */
+  justify-content: flex-end; /* ┃      ■ ■ ■┃ */
+  justify-content: center; /* ┃   ■ ■ ■   ┃ */
+  justify-content: space-between; /* ┃■    ■    ■┃ */
+  justify-content: space-around; /* ┃ ■   ■   ■ ┃ */
+  justify-content: space-evenly; /* ┃  ■  ■  ■  ┃ */
 
-    /* 4. ALIGN-ITEMS: Align along CROSS axis */
-    align-items: stretch;     /* Default: fill container height */
-    align-items: flex-start;  /* Top of container */
-    align-items: flex-end;    /* Bottom of container */
-    align-items: center;      /* Vertically centered */
-    align-items: baseline;    /* Align text baselines */
+  /* 4. ALIGN-ITEMS: Align along CROSS axis */
+  align-items: stretch; /* Default: fill container height */
+  align-items: flex-start; /* Top of container */
+  align-items: flex-end; /* Bottom of container */
+  align-items: center; /* Vertically centered */
+  align-items: baseline; /* Align text baselines */
 
-    /* 5. GAP: Space between items (modern, clean) */
-    gap: 16px;           /* Equal gap all around */
-    gap: 16px 24px;      /* Row gap | Column gap */
-    /* REASONING: gap replaces margin hacks. No margin on :last-child needed */
+  /* 5. GAP: Space between items (modern, clean) */
+  gap: 16px; /* Equal gap all around */
+  gap: 16px 24px; /* Row gap | Column gap */
+  /* REASONING: gap replaces margin hacks. No margin on :last-child needed */
 
-    /* 6. ALIGN-CONTENT: When items WRAP to multiple lines */
-    align-content: flex-start;
-    align-content: center;
-    align-content: space-between;
+  /* 6. ALIGN-CONTENT: When items WRAP to multiple lines */
+  align-content: flex-start;
+  align-content: center;
+  align-content: space-between;
 }
 ```
 
@@ -107,22 +104,22 @@ When you change direction, their effects SWAP!
 
 ```css
 .flex-item {
-    /* 1. FLEX shorthand: grow | shrink | basis */
-    flex: 1;           /* flex: 1 1 0% — grow equally, shrink equally */
-    flex: 0 1 auto;    /* Default: don't grow, can shrink, natural size */
-    flex: none;        /* 0 0 auto: rigid, no grow/shrink */
+  /* 1. FLEX shorthand: grow | shrink | basis */
+  flex: 1; /* flex: 1 1 0% — grow equally, shrink equally */
+  flex: 0 1 auto; /* Default: don't grow, can shrink, natural size */
+  flex: none; /* 0 0 auto: rigid, no grow/shrink */
 
-    /* INDIVIDUAL: */
-    flex-grow: 1;    /* How much extra space to take (0 = don't grow) */
-    flex-shrink: 1;  /* How much to shrink if overflow (0 = don't shrink) */
-    flex-basis: 200px; /* Initial size before growing/shrinking */
+  /* INDIVIDUAL: */
+  flex-grow: 1; /* How much extra space to take (0 = don't grow) */
+  flex-shrink: 1; /* How much to shrink if overflow (0 = don't shrink) */
+  flex-basis: 200px; /* Initial size before growing/shrinking */
 
-    /* 2. ALIGN-SELF: Override parent's align-items for this item */
-    align-self: center;  /* Vertically center just THIS item */
+  /* 2. ALIGN-SELF: Override parent's align-items for this item */
+  align-self: center; /* Vertically center just THIS item */
 
-    /* 3. ORDER: Visual order (default 0, can be negative) */
-    order: -1;  /* Move to front */
-    order: 99;  /* Move to end */
+  /* 3. ORDER: Visual order (default 0, can be negative) */
+  order: -1; /* Move to front */
+  order: 99; /* Move to end */
 }
 ```
 
@@ -149,78 +146,77 @@ When you change direction, their effects SWAP!
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Common Flex Patterns
 
 ```css
 /* PATTERN 1: Perfect centering (the "holy grail") */
 .center-everything {
-    display: flex;
-    justify-content: center;  /* Horizontal */
-    align-items: center;      /* Vertical */
-    min-height: 100vh;        /* Full viewport */
+  display: flex;
+  justify-content: center; /* Horizontal */
+  align-items: center; /* Vertical */
+  min-height: 100vh; /* Full viewport */
 }
 
 /* PATTERN 2: Navigation bar */
 .navbar {
-    display: flex;
-    justify-content: space-between; /* Logo left, links right */
-    align-items: center;
-    padding: 0 2rem;
-    height: 64px;
+  display: flex;
+  justify-content: space-between; /* Logo left, links right */
+  align-items: center;
+  padding: 0 2rem;
+  height: 64px;
 }
 .nav-links {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
 }
 
 /* PATTERN 3: Card row (equal height, wrapping) */
 .card-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 .card {
-    flex: 1 1 300px;  /* Grow, shrink, min 300px */
-    /* Cards fill row, wrap when < 300px each */
+  flex: 1 1 300px; /* Grow, shrink, min 300px */
+  /* Cards fill row, wrap when < 300px each */
 }
 
 /* PATTERN 4: Sidebar + Main layout */
 .layout {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
 .sidebar {
-    flex: 0 0 280px;  /* Fixed 280px, no grow/shrink */
+  flex: 0 0 280px; /* Fixed 280px, no grow/shrink */
 }
 .main {
-    flex: 1;           /* Takes remaining space */
+  flex: 1; /* Takes remaining space */
 }
 
 /* PATTERN 5: Footer at bottom (even with short content) */
 .page {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 .page-content {
-    flex: 1; /* Pushes footer down */
+  flex: 1; /* Pushes footer down */
 }
 .footer {
-    /* Naturally at bottom */
+  /* Naturally at bottom */
 }
 
 /* PATTERN 6: Input with button */
 .search-bar {
-    display: flex;
-    gap: 0;
+  display: flex;
+  gap: 0;
 }
 .search-input {
-    flex: 1;  /* Input takes remaining space */
+  flex: 1; /* Input takes remaining space */
 }
 .search-btn {
-    flex: none; /* Button stays its natural size */
+  flex: none; /* Button stays its natural size */
 }
 ```
 
@@ -254,39 +250,41 @@ AREA: Rectangle spanning one or more cells
 GAP: Space between tracks
 ```
 
-
 ### Container Properties
 
 ```css
 .grid-container {
-    display: grid;
+  display: grid;
 
-    /* 1. DEFINE COLUMNS & ROWS: */
-    grid-template-columns: 200px 1fr 200px;     /* 3 cols: fixed, flexible, fixed */
-    grid-template-columns: repeat(3, 1fr);       /* 3 equal columns */
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive! */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));  /* Responsive! */
+  /* 1. DEFINE COLUMNS & ROWS: */
+  grid-template-columns: 200px 1fr 200px; /* 3 cols: fixed, flexible, fixed */
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive! */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive! */
 
-    grid-template-rows: 80px 1fr auto;           /* Header, content, footer */
+  grid-template-rows: 80px 1fr auto; /* Header, content, footer */
 
-    /* 2. THE `fr` UNIT — FRACTIONAL SPACE: */
-    grid-template-columns: 1fr 2fr 1fr;
-    /* Total = 4fr.  Col1 = 1/4, Col2 = 2/4, Col3 = 1/4 */
+  /* 2. THE `fr` UNIT — FRACTIONAL SPACE: */
+  grid-template-columns: 1fr 2fr 1fr;
+  /* Total = 4fr.  Col1 = 1/4, Col2 = 2/4, Col3 = 1/4 */
 
-    /* 3. GAP: */
-    gap: 20px;              /* Equal gaps */
-    row-gap: 20px;
-    column-gap: 30px;
+  /* 3. GAP: */
+  gap: 20px; /* Equal gaps */
+  row-gap: 20px;
+  column-gap: 30px;
 
-    /* 4. ALIGNMENT (container level): */
-    justify-items: stretch;  /* Default: stretch to fill cell */
-    justify-items: center;   /* Center items horizontally in cells */
-    align-items: center;     /* Center items vertically in cells */
-    place-items: center;     /* Shorthand for both */
+  /* 4. ALIGNMENT (container level): */
+  justify-items: stretch; /* Default: stretch to fill cell */
+  justify-items: center; /* Center items horizontally in cells */
+  align-items: center; /* Center items vertically in cells */
+  place-items: center; /* Shorthand for both */
 
-    /* Align the GRID ITSELF within container: */
-    justify-content: center;  /* Center grid horizontally */
-    align-content: center;    /* Center grid vertically */
+  /* Align the GRID ITSELF within container: */
+  justify-content: center; /* Center grid horizontally */
+  align-content: center; /* Center grid vertically */
 }
 ```
 
@@ -315,21 +313,21 @@ Use auto-fill when you want consistent column widths.
 
 ```css
 .grid-item {
-    /* PLACE BY LINE NUMBERS: */
-    grid-column: 1 / 3;    /* Start at line 1, end at line 3 (spans 2 cols) */
-    grid-row: 1 / 2;       /* Span 1 row */
+  /* PLACE BY LINE NUMBERS: */
+  grid-column: 1 / 3; /* Start at line 1, end at line 3 (spans 2 cols) */
+  grid-row: 1 / 2; /* Span 1 row */
 
-    /* SPAN syntax: */
-    grid-column: span 2;   /* Span 2 columns from auto-placement */
-    grid-row: span 3;
+  /* SPAN syntax: */
+  grid-column: span 2; /* Span 2 columns from auto-placement */
+  grid-row: span 3;
 
-    /* SHORTCUTS: */
-    grid-column: 1 / -1;   /* Full width (first to last line) */
+  /* SHORTCUTS: */
+  grid-column: 1 / -1; /* Full width (first to last line) */
 
-    /* SELF ALIGNMENT: */
-    justify-self: center;  /* Center within cell (horizontal) */
-    align-self: end;       /* Bottom of cell (vertical) */
-    place-self: center;    /* Both centered */
+  /* SELF ALIGNMENT: */
+  justify-self: center; /* Center within cell (horizontal) */
+  align-self: end; /* Bottom of cell (vertical) */
+  place-self: center; /* Both centered */
 }
 ```
 
@@ -338,21 +336,29 @@ Use auto-fill when you want consistent column widths.
 ```css
 /* THE MOST READABLE WAY TO DEFINE LAYOUTS: */
 .page {
-    display: grid;
-    grid-template-areas:
-        "header  header  header"
-        "sidebar content content"
-        "footer  footer  footer";
-    grid-template-columns: 250px 1fr 1fr;
-    grid-template-rows: 80px 1fr 60px;
-    min-height: 100vh;
-    gap: 0;
+  display: grid;
+  grid-template-areas:
+    "header  header  header"
+    "sidebar content content"
+    "footer  footer  footer";
+  grid-template-columns: 250px 1fr 1fr;
+  grid-template-rows: 80px 1fr 60px;
+  min-height: 100vh;
+  gap: 0;
 }
 
-.header  { grid-area: header; }
-.sidebar { grid-area: sidebar; }
-.content { grid-area: content; }
-.footer  { grid-area: footer; }
+.header {
+  grid-area: header;
+}
+.sidebar {
+  grid-area: sidebar;
+}
+.content {
+  grid-area: content;
+}
+.footer {
+  grid-area: footer;
+}
 
 /* VISUALIZATION:
     ┌──────────────────────────────────────────────┐
@@ -369,15 +375,15 @@ Use auto-fill when you want consistent column widths.
 
 /* RESPONSIVE: Change layout at breakpoints */
 @media (max-width: 768px) {
-    .page {
-        grid-template-areas:
-            "header"
-            "content"
-            "sidebar"
-            "footer";
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto auto;
-    }
+  .page {
+    grid-template-areas:
+      "header"
+      "content"
+      "sidebar"
+      "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto auto;
+  }
 }
 /* On mobile: single column, content before sidebar */
 ```
@@ -387,9 +393,9 @@ Use auto-fill when you want consistent column widths.
 ```css
 /* PATTERN 1: Responsive Card Grid (no media queries!) */
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 /* WHY THIS IS MAGIC:
    - 4 cards on desktop (1200px / 280px ≈ 4)
@@ -400,51 +406,67 @@ Use auto-fill when you want consistent column widths.
 
 /* PATTERN 2: Dashboard layout */
 .dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
 }
 .widget-large {
-    grid-column: span 2;
-    grid-row: span 2;
+  grid-column: span 2;
+  grid-row: span 2;
 }
 .widget-wide {
-    grid-column: span 2;
+  grid-column: span 2;
 }
 
 /* PATTERN 3: Magazine/Blog layout */
 .magazine {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
 }
-.featured { grid-column: 1 / 5; grid-row: 1 / 3; }
-.side-1   { grid-column: 5 / 7; grid-row: 1; }
-.side-2   { grid-column: 5 / 7; grid-row: 2; }
-.regular  { grid-column: span 2; }
+.featured {
+  grid-column: 1 / 5;
+  grid-row: 1 / 3;
+}
+.side-1 {
+  grid-column: 5 / 7;
+  grid-row: 1;
+}
+.side-2 {
+  grid-column: 5 / 7;
+  grid-row: 2;
+}
+.regular {
+  grid-column: span 2;
+}
 
 /* PATTERN 4: Holy Grail Layout */
 .holy-grail {
-    display: grid;
-    grid-template:
-        "header header header" auto
-        "nav    main   aside"  1fr
-        "footer footer footer" auto
-        / 200px 1fr    200px;
-    min-height: 100vh;
+  display: grid;
+  grid-template:
+    "header header header" auto
+    "nav    main   aside" 1fr
+    "footer footer footer" auto
+    / 200px 1fr 200px;
+  min-height: 100vh;
 }
 
 /* PATTERN 5: Overlapping elements (like a hero image with text) */
 .hero {
-    display: grid;
-    place-items: center;
+  display: grid;
+  place-items: center;
 }
 .hero > * {
-    grid-area: 1 / 1; /* Both children occupy same cell = overlap */
+  grid-area: 1 / 1; /* Both children occupy same cell = overlap */
 }
-.hero-image { z-index: 1; }
-.hero-text  { z-index: 2; color: white; }
+.hero-image {
+  z-index: 1;
+}
+.hero-text {
+  z-index: 2;
+  color: white;
+}
 ```
 
 ---
@@ -476,7 +498,6 @@ COMMON COMBO: Grid for page layout, Flex inside components.
   .footer { display: flex; }   ← Footer links are flex
 ```
 
-
 ---
 
 ## 4. Subgrid — Aligning Nested Grids
@@ -487,16 +508,16 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 
 /* SOLUTION: Subgrid (inherited grid tracks from parent) */
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 
 .card {
-    display: grid;
-    grid-template-rows: subgrid; /* Use PARENT's row tracks */
-    grid-row: span 3;           /* Each card spans 3 parent rows */
-    /* Now: title row, description row, button row all ALIGN across cards! */
+  display: grid;
+  grid-template-rows: subgrid; /* Use PARENT's row tracks */
+  grid-row: span 3; /* Each card spans 3 parent rows */
+  /* Now: title row, description row, button row all ALIGN across cards! */
 }
 
 /*
@@ -513,11 +534,6 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 ```
 
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 4. Subgrid — Aligning Nested Grids**
 
@@ -543,37 +559,32 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 /* SOLUTION: Container queries respond to CONTAINER width. */
 
 .card-container {
-    container-type: inline-size;  /* Enable container queries */
-    container-name: card-wrapper; /* Optional: name for targeting */
+  container-type: inline-size; /* Enable container queries */
+  container-name: card-wrapper; /* Optional: name for targeting */
 }
 
 /* Respond to CONTAINER width (not viewport): */
 @container (min-width: 400px) {
-    .card {
-        display: grid;
-        grid-template-columns: 150px 1fr;
-        /* Horizontal layout when container is wide */
-    }
+  .card {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    /* Horizontal layout when container is wide */
+  }
 }
 
 @container (max-width: 399px) {
-    .card {
-        /* Vertical stack when container is narrow */
-    }
+  .card {
+    /* Vertical stack when container is narrow */
+  }
 }
 
 /* Container query units: */
 .card-title {
-    font-size: clamp(1rem, 3cqi, 1.5rem); /* cqi = container query inline */
+  font-size: clamp(1rem, 3cqi, 1.5rem); /* cqi = container query inline */
 }
 ```
 
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 5. Container Queries — The Future of Responsive Components**
 
@@ -623,11 +634,9 @@ Q: What are container queries?
   Essential for reusable components that live in different contexts.
 ```
 
-
 ---
 
 > [← Foundations](01_CSS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Responsive & Animations](03_CSS_Responsive_Animations.md)
-
 
 ---
 

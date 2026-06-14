@@ -27,11 +27,11 @@ services:
 
     # Shared memory: Chromium and Firefox need > 64 MB /dev/shm.
     # 2 GB is safe for 4 parallel workers.
-    shm_size: "2gb"
+    shm_size: '2gb'
 
     environment:
       # CI mode: forbidOnly, 4 workers, 2 retries (playwright.config.ts)
-      CI: "true"
+      CI: 'true'
 
       # Application URLs — read by framework/config/env.loader.ts
       ORANGEHRM_BASE_URL: ${ORANGEHRM_BASE_URL:-https://opensource-demo.orangehrmlive.com}

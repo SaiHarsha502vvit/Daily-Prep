@@ -25,6 +25,7 @@ Object-oriented programming is the backbone of enterprise software. This course 
 ## Existing Content
 
 **Prerequisite reading / builds on:**
+
 - [OOP & Design Patterns (06_OOP_Design)](../../06_OOP_Design/)
 
 ## Subdirectories

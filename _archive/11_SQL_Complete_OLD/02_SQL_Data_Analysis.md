@@ -239,7 +239,7 @@ products (product_id, name, category, price, cost)
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Pattern 1: Customer with their orders
-SELECT 
+SELECT
     c.name AS customer_name,
     c.email,
     o.order_id,
@@ -251,7 +251,7 @@ ORDER BY c.name, o.order_date;
 
 -- Pattern 2: Find customers WITHOUT orders (LEFT JOIN + NULL check)
 -- WHY: Identify inactive customers for marketing campaigns
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     c.email,
@@ -261,7 +261,7 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.order_id IS NULL;  -- No matching order
 
 -- Pattern 3: Order details with product information
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     p.name AS product_name,
@@ -292,7 +292,7 @@ employees:
 */
 
 -- Get employee with manager name
-SELECT 
+SELECT
     e.name AS employee,
     m.name AS manager
 FROM employees e
@@ -307,7 +307,7 @@ LEFT JOIN employees m ON e.manager_id = m.emp_id;
 -- | VP Sales | CEO     |
 
 -- Find employees who manage others
-SELECT DISTINCT 
+SELECT DISTINCT
     m.emp_id,
     m.name AS manager_name,
     COUNT(e.emp_id) AS direct_reports
@@ -320,7 +320,7 @@ GROUP BY m.emp_id, m.name;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Complete sales analysis: Customer → Order → Items → Products
-SELECT 
+SELECT
     c.name AS customer,
     c.city,
     DATE_FORMAT(o.order_date, '%Y-%m') AS order_month,
@@ -335,7 +335,7 @@ INNER JOIN order_items oi ON o.order_id = oi.order_id
 INNER JOIN products p ON oi.product_id = p.product_id
 WHERE o.status = 'completed'
   AND o.order_date >= '2024-01-01'
-GROUP BY c.customer_id, c.name, c.city, 
+GROUP BY c.customer_id, c.name, c.city,
          DATE_FORMAT(o.order_date, '%Y-%m'), p.category
 ORDER BY revenue DESC;
 
@@ -355,7 +355,7 @@ WHERE o.order_date BETWEEN '2024-01-01' AND '2024-01-31';
 SELECT c.customer_id, c.name
 FROM customers c
 WHERE EXISTS (
-    SELECT 1 FROM orders o 
+    SELECT 1 FROM orders o
     WHERE o.customer_id = c.customer_id
       AND o.order_date BETWEEN '2024-01-01' AND '2024-01-31'
 );
@@ -432,7 +432,7 @@ WHERE c.customer_id IN (
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- COUNT: Number of rows/values
-SELECT 
+SELECT
     COUNT(*) AS total_rows,           -- All rows (including NULL)
     COUNT(customer_id) AS non_null,   -- Non-NULL values only
     COUNT(DISTINCT customer_id) AS unique_customers  -- Unique values
@@ -445,7 +445,7 @@ SELECT SUM(total) AS total_revenue FROM orders WHERE status = 'completed';
 SELECT AVG(total) AS avg_order_value FROM orders;
 
 -- MIN/MAX: Smallest/Largest value
-SELECT 
+SELECT
     MIN(order_date) AS first_order,
     MAX(order_date) AS last_order,
     MIN(total) AS smallest_order,
@@ -457,7 +457,7 @@ FROM orders;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Sales by category
-SELECT 
+SELECT
     p.category,
     COUNT(*) AS num_orders,
     SUM(oi.quantity) AS units_sold,
@@ -469,7 +469,7 @@ GROUP BY p.category
 ORDER BY revenue DESC;
 
 -- Sales by month
-SELECT 
+SELECT
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     COUNT(*) AS orders,
     SUM(total) AS revenue,
@@ -479,7 +479,7 @@ GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 ORDER BY month;
 
 -- Multiple GROUP BY columns
-SELECT 
+SELECT
     c.city,
     p.category,
     COUNT(*) AS orders,
@@ -500,7 +500,7 @@ ORDER BY c.city, revenue DESC;
 -- HAVING: Filters GROUPS after aggregation
 
 -- Find high-value customers (spent > ₹10,000)
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     COUNT(*) AS order_count,
@@ -513,7 +513,7 @@ HAVING SUM(o.total) > 10000         -- HAVING: filter groups after
 ORDER BY total_spent DESC;
 
 -- Find products with low sales (need restock review)
-SELECT 
+SELECT
     p.product_id,
     p.name,
     COUNT(oi.item_id) AS times_ordered,
@@ -529,14 +529,14 @@ ORDER BY units_sold;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Single query for multiple metrics
-SELECT 
+SELECT
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     COUNT(*) AS total_orders,
     SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed,
     SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled,
     SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded,
     ROUND(
-        100.0 * SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) / COUNT(*), 
+        100.0 * SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) / COUNT(*),
         2
     ) AS completion_rate
 FROM orders
@@ -544,7 +544,7 @@ GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 ORDER BY month;
 
 -- Revenue breakdown by category
-SELECT 
+SELECT
     DATE_FORMAT(o.order_date, '%Y-%m') AS month,
     SUM(CASE WHEN p.category = 'Electronics' THEN oi.quantity * oi.price ELSE 0 END) AS electronics_rev,
     SUM(CASE WHEN p.category = 'Clothing' THEN oi.quantity * oi.price ELSE 0 END) AS clothing_rev,
@@ -562,7 +562,7 @@ ORDER BY month;
 
 -- MySQL: GROUP_CONCAT
 -- List all products in each order
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     GROUP_CONCAT(p.name ORDER BY p.name SEPARATOR ', ') AS products
@@ -572,7 +572,7 @@ JOIN products p ON oi.product_id = p.product_id
 GROUP BY o.order_id, o.order_date;
 
 -- PostgreSQL: STRING_AGG
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     STRING_AGG(p.name, ', ' ORDER BY p.name) AS products
@@ -674,7 +674,7 @@ function_name() OVER (
 -- RANK: Same rank for ties, gaps after
 -- DENSE_RANK: Same rank for ties, no gaps
 
-SELECT 
+SELECT
     name,
     department,
     salary,
@@ -693,7 +693,7 @@ FROM employees;
 */
 
 -- Rank within each department (PARTITION BY)
-SELECT 
+SELECT
     name,
     department,
     salary,
@@ -701,7 +701,7 @@ SELECT
 FROM employees;
 
 -- NTILE: Divide into N equal groups (quartiles, deciles)
-SELECT 
+SELECT
     customer_id,
     total_spent,
     NTILE(4) OVER (ORDER BY total_spent) AS spending_quartile
@@ -713,14 +713,14 @@ FROM customer_lifetime_value;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Month-over-month comparison
-SELECT 
+SELECT
     month,
     revenue,
     LAG(revenue) OVER (ORDER BY month) AS prev_month_revenue,
     revenue - LAG(revenue) OVER (ORDER BY month) AS revenue_change,
     ROUND(
-        100.0 * (revenue - LAG(revenue) OVER (ORDER BY month)) / 
-        LAG(revenue) OVER (ORDER BY month), 
+        100.0 * (revenue - LAG(revenue) OVER (ORDER BY month)) /
+        LAG(revenue) OVER (ORDER BY month),
         2
     ) AS pct_change
 FROM monthly_revenue;
@@ -734,13 +734,13 @@ FROM monthly_revenue;
 */
 
 -- LEAD: Look ahead
-SELECT 
+SELECT
     employee_id,
     name,
     hire_date,
     LEAD(hire_date) OVER (ORDER BY hire_date) AS next_hire_date,
     DATEDIFF(
-        LEAD(hire_date) OVER (ORDER BY hire_date), 
+        LEAD(hire_date) OVER (ORDER BY hire_date),
         hire_date
     ) AS days_until_next_hire
 FROM employees;
@@ -750,14 +750,14 @@ FROM employees;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Running total (cumulative sum)
-SELECT 
+SELECT
     order_date,
     total,
     SUM(total) OVER (ORDER BY order_date) AS running_total
 FROM orders;
 
 -- Running total RESET each month (PARTITION BY)
-SELECT 
+SELECT
     order_date,
     total,
     SUM(total) OVER (
@@ -767,7 +767,7 @@ SELECT
 FROM orders;
 
 -- 7-day moving average
-SELECT 
+SELECT
     order_date,
     daily_revenue,
     AVG(daily_revenue) OVER (
@@ -777,7 +777,7 @@ SELECT
 FROM daily_sales;
 
 -- 3-day moving average (centered)
-SELECT 
+SELECT
     order_date,
     daily_revenue,
     AVG(daily_revenue) OVER (
@@ -791,12 +791,12 @@ FROM daily_sales;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find first order date for each customer
-SELECT 
+SELECT
     customer_id,
     order_id,
     order_date,
     FIRST_VALUE(order_date) OVER (
-        PARTITION BY customer_id 
+        PARTITION BY customer_id
         ORDER BY order_date
     ) AS first_order_date,
     DATEDIFF(order_date, FIRST_VALUE(order_date) OVER (
@@ -805,7 +805,7 @@ SELECT
 FROM orders;
 
 -- Compare each sale to the day's first and highest sale
-SELECT 
+SELECT
     sale_time,
     amount,
     FIRST_VALUE(amount) OVER (ORDER BY sale_time) AS first_sale,
@@ -818,7 +818,7 @@ FROM sales;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find percentile of each customer's spending
-SELECT 
+SELECT
     customer_id,
     total_spent,
     ROUND(PERCENT_RANK() OVER (ORDER BY total_spent) * 100, 2) AS percentile,
@@ -837,7 +837,7 @@ FROM customer_lifetime_value;
 
 -- Identify top 10% customers
 WITH ranked_customers AS (
-    SELECT 
+    SELECT
         customer_id,
         total_spent,
         PERCENT_RANK() OVER (ORDER BY total_spent) AS percentile
@@ -932,14 +932,14 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 WITH monthly_revenue AS (
-    SELECT 
+    SELECT
         DATE_FORMAT(order_date, '%Y-%m') AS month,
         SUM(total) AS revenue
     FROM orders
     WHERE status = 'completed'
     GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 )
-SELECT 
+SELECT
     month,
     revenue,
     LAG(revenue) OVER (ORDER BY month) AS prev_month,
@@ -955,7 +955,7 @@ ORDER BY month;
 
 WITH customer_orders AS (
     -- Step 1: Get order summary per customer
-    SELECT 
+    SELECT
         customer_id,
         COUNT(*) AS order_count,
         SUM(total) AS total_spent,
@@ -966,7 +966,7 @@ WITH customer_orders AS (
 ),
 rfm_scores AS (
     -- Step 2: Calculate RFM scores (1-5 scale)
-    SELECT 
+    SELECT
         customer_id,
         order_count,
         total_spent,
@@ -978,7 +978,7 @@ rfm_scores AS (
 ),
 customer_segments AS (
     -- Step 3: Create segments based on RFM
-    SELECT 
+    SELECT
         customer_id,
         order_count,
         total_spent,
@@ -997,7 +997,7 @@ customer_segments AS (
     FROM rfm_scores
 )
 -- Step 4: Final output with customer names
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     c.email,
@@ -1020,7 +1020,7 @@ ORDER BY cs.total_score DESC;
 -- Example: Employee hierarchy
 WITH RECURSIVE org_hierarchy AS (
     -- Base case: Start from CEO (no manager)
-    SELECT 
+    SELECT
         emp_id,
         name,
         manager_id,
@@ -1028,11 +1028,11 @@ WITH RECURSIVE org_hierarchy AS (
         name AS path
     FROM employees
     WHERE manager_id IS NULL
-    
+
     UNION ALL
-    
+
     -- Recursive case: Find employees who report to current level
-    SELECT 
+    SELECT
         e.emp_id,
         e.name,
         e.manager_id,
@@ -1096,18 +1096,18 @@ USE TEMP TABLE WHEN:
 -- Track how users who signed up in each month behave over time
 WITH user_cohort AS (
     -- Assign each user to their signup cohort
-    SELECT 
+    SELECT
         customer_id,
         DATE_FORMAT(signup_date, '%Y-%m') AS cohort_month
     FROM customers
 ),
 user_activity AS (
     -- Get each user's activity by month
-    SELECT 
+    SELECT
         c.customer_id,
         uc.cohort_month,
         DATE_FORMAT(o.order_date, '%Y-%m') AS activity_month,
-        TIMESTAMPDIFF(MONTH, 
+        TIMESTAMPDIFF(MONTH,
             STR_TO_DATE(CONCAT(uc.cohort_month, '-01'), '%Y-%m-%d'),
             STR_TO_DATE(CONCAT(DATE_FORMAT(o.order_date, '%Y-%m'), '-01'), '%Y-%m-%d')
         ) AS months_since_signup
@@ -1115,7 +1115,7 @@ user_activity AS (
     JOIN user_cohort uc ON c.customer_id = uc.customer_id
     LEFT JOIN orders o ON c.customer_id = o.customer_id
 )
-SELECT 
+SELECT
     cohort_month,
     months_since_signup,
     COUNT(DISTINCT customer_id) AS active_users
@@ -1130,7 +1130,7 @@ ORDER BY cohort_month, months_since_signup;
 
 -- E-commerce funnel: Visit → Add to Cart → Checkout → Purchase
 WITH funnel AS (
-    SELECT 
+    SELECT
         DATE(event_time) AS event_date,
         COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN session_id END) AS visitors,
         COUNT(DISTINCT CASE WHEN event_type = 'add_to_cart' THEN session_id END) AS add_to_cart,
@@ -1140,7 +1140,7 @@ WITH funnel AS (
     WHERE event_time >= '2024-01-01'
     GROUP BY DATE(event_time)
 )
-SELECT 
+SELECT
     event_date,
     visitors,
     add_to_cart,
@@ -1158,7 +1158,7 @@ ORDER BY event_date;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 WITH monthly_metrics AS (
-    SELECT 
+    SELECT
         DATE_FORMAT(order_date, '%Y-%m') AS month,
         YEAR(order_date) AS year,
         MONTH(order_date) AS month_num,
@@ -1169,17 +1169,17 @@ WITH monthly_metrics AS (
     WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
     GROUP BY DATE_FORMAT(order_date, '%Y-%m'), YEAR(order_date), MONTH(order_date)
 )
-SELECT 
+SELECT
     curr.month AS current_month,
     curr.revenue AS current_revenue,
     prev.revenue AS prev_year_revenue,
     ROUND(
-        100.0 * (curr.revenue - prev.revenue) / prev.revenue, 
+        100.0 * (curr.revenue - prev.revenue) / prev.revenue,
         2
     ) AS yoy_growth_pct
 FROM monthly_metrics curr
-LEFT JOIN monthly_metrics prev 
-    ON curr.month_num = prev.month_num 
+LEFT JOIN monthly_metrics prev
+    ON curr.month_num = prev.month_num
     AND curr.year = prev.year + 1
 WHERE curr.year = YEAR(CURDATE())
 ORDER BY curr.month;
@@ -1190,13 +1190,13 @@ ORDER BY curr.month;
 
 -- Top 3 products by revenue in each category
 WITH product_revenue AS (
-    SELECT 
+    SELECT
         p.category,
         p.product_id,
         p.name,
         SUM(oi.quantity * oi.price) AS revenue,
         RANK() OVER (
-            PARTITION BY p.category 
+            PARTITION BY p.category
             ORDER BY SUM(oi.quantity * oi.price) DESC
         ) AS revenue_rank
     FROM products p
@@ -1221,7 +1221,7 @@ WITH RECURSIVE date_range AS (
     FROM date_range
     WHERE date < DATE('2024-12-31')
 )
-SELECT 
+SELECT
     dr.date,
     'NO ORDERS' AS status
 FROM date_range dr
@@ -1235,7 +1235,7 @@ WHERE o.order_id IS NULL
 
 -- Group user events into sessions (30-min inactivity = new session)
 WITH events_with_prev AS (
-    SELECT 
+    SELECT
         user_id,
         event_time,
         event_type,
@@ -1243,9 +1243,9 @@ WITH events_with_prev AS (
     FROM events
 ),
 events_with_session_flag AS (
-    SELECT 
+    SELECT
         *,
-        CASE 
+        CASE
             WHEN prev_event_time IS NULL THEN 1
             WHEN TIMESTAMPDIFF(MINUTE, prev_event_time, event_time) > 30 THEN 1
             ELSE 0
@@ -1253,15 +1253,15 @@ events_with_session_flag AS (
     FROM events_with_prev
 ),
 events_with_session AS (
-    SELECT 
+    SELECT
         *,
         SUM(new_session_flag) OVER (
-            PARTITION BY user_id 
+            PARTITION BY user_id
             ORDER BY event_time
         ) AS session_id
     FROM events_with_session_flag
 )
-SELECT 
+SELECT
     user_id,
     session_id,
     MIN(event_time) AS session_start,
@@ -1276,7 +1276,7 @@ GROUP BY user_id, session_id;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find P50, P75, P90, P95 order values
-SELECT 
+SELECT
     COUNT(*) AS total_orders,
     MIN(total) AS min_order,
     MAX(total) AS max_order,

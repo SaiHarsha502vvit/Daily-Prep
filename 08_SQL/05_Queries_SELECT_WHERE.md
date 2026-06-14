@@ -6,7 +6,7 @@
 
 ### 🧠 How SQL Queries Work — Thinking in Sets
 
-The most important mindset shift when learning SQL: **SQL is a declarative language**. You describe **what data you want**, not **how to get it**. When you write `SELECT name FROM employees WHERE salary > 50000`, you're saying *"give me names of employees earning more than 50k"* — the database decides *how* to find them (which index to use, which algorithm, etc.).
+The most important mindset shift when learning SQL: **SQL is a declarative language**. You describe **what data you want**, not **how to get it**. When you write `SELECT name FROM employees WHERE salary > 50000`, you're saying _"give me names of employees earning more than 50k"_ — the database decides _how_ to find them (which index to use, which algorithm, etc.).
 
 #### The Logical Execution Order — Why It Matters
 
@@ -24,13 +24,15 @@ SQL doesn't execute in the order you write it. You write `SELECT ... FROM ... WH
 ```
 
 This explains several common SQL puzzles:
-- **Why can't I use a column alias in WHERE?** Because WHERE executes *before* SELECT, so the alias doesn't exist yet.
-- **Why CAN I use an alias in ORDER BY?** Because ORDER BY executes *after* SELECT.
-- **Why is HAVING separate from WHERE?** Because WHERE filters rows *before* grouping, while HAVING filters *after* grouping.
+
+- **Why can't I use a column alias in WHERE?** Because WHERE executes _before_ SELECT, so the alias doesn't exist yet.
+- **Why CAN I use an alias in ORDER BY?** Because ORDER BY executes _after_ SELECT.
+- **Why is HAVING separate from WHERE?** Because WHERE filters rows _before_ grouping, while HAVING filters _after_ grouping.
 
 #### The NULL Trap — A Critical Concept
 
 `NULL` in SQL means **unknown/missing**, not zero, not empty string, not false. It follows **three-valued logic** (TRUE, FALSE, NULL):
+
 - `NULL = NULL` → NULL (not TRUE! Two unknowns aren't necessarily equal)
 - `NULL > 5` → NULL (you can't compare unknown to anything)
 - `NOT NULL` → NULL (the opposite of unknown is still unknown)
@@ -457,3 +459,33 @@ _"Part 1 Complete! You now understand Database basics, Data Types, DDL, DML, and
 ---
 
 > **Navigation**: [< Previous](04_DML_Manipulating_Data.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Aggregations_GroupBy.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Chamberlin & Boyce SEQUEL** (1974): Created SEQUEL — the first declarative query language where SELECT/FROM/WHERE order was chosen for human readability, not execution order, directly shaping modern SQL syntax.
+- **Edgar F. Codd** (1970): Introduced three-valued logic (TRUE, FALSE, UNKNOWN) to handle missing information formally, a philosophical decision that caused the NULL semantics still confusing SQL developers today.
+- **Chris Date** (1975): Wrote extensively on the NULL problem and three-valued logic inconsistencies, documenting edge cases like `NULL = NULL` being NULL not TRUE that persist as common bugs.
+- **SQL-86**: Standardized the SELECT statement and NULL concept, cementing three-valued logic as a permanent feature of SQL.
+- **SQL-92**: Added CASE expressions, completing the declarative expression capability that enables all modern conditional SQL logic.
+
+**Evolution narrative:**
+Chamberlin designed SEQUEL's keyword order (SELECT...FROM...WHERE) as a near-English sentence — "SELECT name FROM employees WHERE salary > 50000" — prioritizing human readability. But internally, the query must be parsed and optimized: the database can't evaluate SELECT before it knows which table to read. This gap between write order and execution order produced the query processing pipeline (FROM → WHERE → GROUP BY → SELECT → ORDER BY) that confuses every SQL learner. Codd's decision to model NULL as a third logical value (UNKNOWN, not ZERO or EMPTY) was philosophically rigorous — it correctly represents "we don't know this value" — but it created the NULL trap where `WHERE salary > 50000` silently excludes NULL salary rows. SQL-92's CASE expressions finally gave SQL a proper conditional construct, replacing earlier COBOL-style IF expressions that couldn't be nested in SELECT clauses.
+
+**Modern practice anchor:**
+Today, every SQL interview expects candidates to explain why `WHERE` filters before SELECT (and therefore can't use aliases) and why `IS NULL` must be used instead of `= NULL` — both direct consequences of Chamberlin's read-order design and Codd's three-valued logic from the 1970s.
+
+### Production Reality
+
+**Failure modes:**
+1. **SELECT * with BLOB columns causing 8-second page loads**: A `SELECT *` on a `user_profiles` table pulls a `profile_pic` MEDIUMBLOB (5MB) on every page view, even when the pic isn't displayed. Queries returning 10 rows with 5MB BLOBs each consume 50MB per request. A Stack Overflow 2011 incident traced slow page loads to `SELECT *` pulling LONGTEXT columns across the wire unnecessarily.
+2. **Leading wildcard LIKE disabling index**: `WHERE email LIKE '%@gmail.com'` forces a full index scan (or table scan) because the B-tree cannot navigate from a trailing wildcard — it must examine every index entry. On 10M users, this query takes 5-10 seconds. Fix: use a reverse-index or full-text index.
+3. **Function on indexed column in WHERE clause**: `WHERE YEAR(hire_date) = 2023` applies YEAR() to every row before filtering, preventing the index on `hire_date` from being used. The database does a seq scan even with an index present. Fix: use `WHERE hire_date >= '2023-01-01' AND hire_date < '2024-01-01'`.
+
+**Debug workflow:**
+(1) Run `EXPLAIN ANALYZE` and check for `Seq Scan` or `type=ALL` — if present on a table with an index on the filtered column, suspect a function wrapper or leading wildcard.
+(2) Profile column sizes: `SELECT AVG(LENGTH(col)) FROM table` to find unexpectedly large columns, then remove them from `SELECT *` to explicit column lists.
+(3) Replace `LIKE '%pattern%'` with `LIKE 'pattern%'` where possible, or migrate to full-text search (MySQL `MATCH ... AGAINST`, PostgreSQL `tsvector`). Check `pg_stat_user_indexes` for index usage ratios.
+
+**Modern practice anchor:**
+Today, query analyzers like `pt-query-digest` (Percona), MySQL `performance_schema`, and PostgreSQL `pg_stat_statements` surface slow queries with high row counts — catching SELECT * abuse and unindexed LIKE patterns automatically in production.

@@ -3,22 +3,22 @@
 ---
 
 # Spring Boot Part 21: Cloud Deployment
+
 ## AWS, Azure, and GCP Integration Complete Guide
 
 **"The cloud is not just about cost savings—it's about speed, scale, and innovation"** - Deploy anywhere, scale everywhere
 
 ---
 
-
-
 🔬 **Section Challenge — AWS, Azure, and GCP Integration Complete Guide**
 
 **Challenge 1 (Architecture):** When migrating a Spring Boot application to AWS, Azure, or GCP, why is it considered an anti-pattern to use the cloud provider's native SDK (like `software.amazon.awssdk`) directly in your business logic?
+
 <details><summary>Answer</summary>
 
 Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObject()`) directly in your `@Service` classes tightly couples your application to AWS. If the business decides to move to Azure or GCP, or if you want to run local integration tests without a mock cloud environment, you have to rewrite the core logic. Instead, use the **Dependency Inversion Principle**: create a generic interface (e.g., `DocumentStorageService`), and inject cloud-specific implementations (e.g., `AwsS3StorageServiceImpl`) via Spring Profiles. Spring Cloud abstractions (like Spring Cloud Stream or Spring Cloud AWS) often handle this natively.
-</details>
 
+</details>
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
@@ -62,10 +62,10 @@ Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObj
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📚 Table of Contents
+
 1. [Cloud Native Principles](#cloud-native-principles)
 2. [Containerization with Docker](#containerization-with-docker)
 3. [Kubernetes Deployment](#kubernetes-deployment)
@@ -107,30 +107,28 @@ Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObj
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Cloud Provider Comparison
 
-| Feature | AWS | Azure | GCP |
-|---------|-----|-------|-----|
-| Compute | EC2, ECS, EKS, Lambda | VMs, AKS, Functions | Compute Engine, GKE, Cloud Run |
-| Database | RDS, DynamoDB | SQL Database, Cosmos DB | Cloud SQL, Firestore |
-| Storage | S3 | Blob Storage | Cloud Storage |
-| Messaging | SQS, SNS, Kinesis | Service Bus, Event Hubs | Pub/Sub |
-| Container Registry | ECR | ACR | GCR, Artifact Registry |
-| Config | Parameter Store, Secrets Manager | Key Vault | Secret Manager |
+| Feature            | AWS                              | Azure                   | GCP                            |
+| ------------------ | -------------------------------- | ----------------------- | ------------------------------ |
+| Compute            | EC2, ECS, EKS, Lambda            | VMs, AKS, Functions     | Compute Engine, GKE, Cloud Run |
+| Database           | RDS, DynamoDB                    | SQL Database, Cosmos DB | Cloud SQL, Firestore           |
+| Storage            | S3                               | Blob Storage            | Cloud Storage                  |
+| Messaging          | SQS, SNS, Kinesis                | Service Bus, Event Hubs | Pub/Sub                        |
+| Container Registry | ECR                              | ACR                     | GCR, Artifact Registry         |
+| Config             | Parameter Store, Secrets Manager | Key Vault               | Secret Manager                 |
 
 ---
-
-
 
 🔬 **Section Challenge — Cloud Native Principles**
 
 **Challenge 1 (Reasoning):** In a 12-Factor App, why are configuration files (`application-prod.yml`) discouraged for storing secrets and environment-specific data?
+
 <details><summary>Answer</summary>
 
 Immutability and Security. The 12-Factor methodology demands that the exact same compiled artifact (Docker image/JAR) is promoted from Dev to Staging to Prod. If config is baked into the code repo or JAR, you risk leaking secrets and violating immutability. All environment-specific config (DB URLs, passwords) must be injected strictly via OS Environment Variables or external config servers (Spring Cloud Config/HashiCorp Vault) at runtime.
-</details>
 
+</details>
 
 ## Containerization with Docker
 
@@ -245,7 +243,7 @@ ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 ### Docker Compose for Local Development
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -267,7 +265,14 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "-q",
+          "http://localhost:8080/actuator/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -360,7 +365,6 @@ volumes:
 │  └───────────────────────────────────────────────────────┘      │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Deployment Manifest
 
@@ -687,7 +691,6 @@ spec:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### AWS SDK Integration
 
 ```xml
@@ -721,7 +724,7 @@ spec:
 ```java
 @Configuration
 public class AWSConfig {
-    
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
@@ -729,7 +732,7 @@ public class AWSConfig {
             .credentialsProvider(DefaultCredentialsProvider.create())
             .build();
     }
-    
+
     @Bean
     public SqsAsyncClient sqsClient() {
         return SqsAsyncClient.builder()
@@ -743,12 +746,12 @@ public class AWSConfig {
 @RequiredArgsConstructor
 @Slf4j
 public class S3StorageService {
-    
+
     private final S3Client s3Client;
-    
+
     @Value("${aws.s3.bucket}")
     private String bucketName;
-    
+
     public String uploadFile(MultipartFile file, String key) {
         try {
             PutObjectRequest request = PutObjectRequest.builder()
@@ -756,48 +759,48 @@ public class S3StorageService {
                 .key(key)
                 .contentType(file.getContentType())
                 .build();
-            
-            s3Client.putObject(request, 
+
+            s3Client.putObject(request,
                 RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-            
+
             return String.format("https://%s.s3.amazonaws.com/%s", bucketName, key);
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload file", e);
         }
     }
-    
+
     public byte[] downloadFile(String key) {
         GetObjectRequest request = GetObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
-        
+
         return s3Client.getObjectAsBytes(request).asByteArray();
     }
-    
+
     public String getPresignedUrl(String key, Duration expiration) {
         try (S3Presigner presigner = S3Presigner.create()) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
                 .build();
-            
+
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
                 .signatureDuration(expiration)
                 .getObjectRequest(getObjectRequest)
                 .build();
-            
+
             return presigner.presignGetObject(presignRequest).url().toString();
         }
     }
-    
+
     public void deleteFile(String key) {
         DeleteObjectRequest request = DeleteObjectRequest.builder()
             .bucket(bucketName)
             .key(key)
             .build();
-        
+
         s3Client.deleteObject(request);
     }
 }
@@ -810,31 +813,31 @@ public class S3StorageService {
 @RequiredArgsConstructor
 @Slf4j
 public class SQSMessageService {
-    
+
     private final SqsAsyncClient sqsClient;
-    
+
     @Value("${aws.sqs.order-queue-url}")
     private String orderQueueUrl;
-    
+
     public CompletableFuture<String> sendMessage(Object message) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(message);
-            
+
             SendMessageRequest request = SendMessageRequest.builder()
                 .queueUrl(orderQueueUrl)
                 .messageBody(messageBody)
                 .messageGroupId("orders")  // For FIFO queues
                 .messageDeduplicationId(UUID.randomUUID().toString())
                 .build();
-            
+
             return sqsClient.sendMessage(request)
                 .thenApply(SendMessageResponse::messageId);
-                
+
         } catch (JsonProcessingException e) {
             throw new MessageException("Failed to serialize message", e);
         }
     }
-    
+
     @Scheduled(fixedDelay = 5000)
     public void pollMessages() {
         ReceiveMessageRequest request = ReceiveMessageRequest.builder()
@@ -843,39 +846,39 @@ public class SQSMessageService {
             .waitTimeSeconds(20)  // Long polling
             .visibilityTimeout(30)
             .build();
-        
+
         sqsClient.receiveMessage(request)
             .thenAccept(response -> {
                 response.messages().forEach(this::processMessage);
             });
     }
-    
+
     private void processMessage(Message message) {
         try {
             log.info("Processing message: {}", message.messageId());
-            
+
             // Process the message
             OrderEvent event = new ObjectMapper()
                 .readValue(message.body(), OrderEvent.class);
-            
+
             // Handle the event
             handleOrderEvent(event);
-            
+
             // Delete message after successful processing
             deleteMessage(message.receiptHandle());
-            
+
         } catch (Exception e) {
             log.error("Failed to process message: {}", message.messageId(), e);
             // Message will become visible again after visibility timeout
         }
     }
-    
+
     private void deleteMessage(String receiptHandle) {
         DeleteMessageRequest request = DeleteMessageRequest.builder()
             .queueUrl(orderQueueUrl)
             .receiptHandle(receiptHandle)
             .build();
-        
+
         sqsClient.deleteMessage(request);
     }
 }
@@ -886,7 +889,7 @@ public class SQSMessageService {
 ```java
 @Configuration
 public class SecretsManagerConfig {
-    
+
     @Bean
     public SecretsManagerClient secretsManagerClient() {
         return SecretsManagerClient.builder()
@@ -898,29 +901,29 @@ public class SecretsManagerConfig {
 @Service
 @RequiredArgsConstructor
 public class SecretsService {
-    
+
     private final SecretsManagerClient secretsClient;
     private final Map<String, CachedSecret> cache = new ConcurrentHashMap<>();
-    
+
     public String getSecret(String secretName) {
         CachedSecret cached = cache.get(secretName);
-        
+
         if (cached != null && !cached.isExpired()) {
             return cached.getValue();
         }
-        
+
         GetSecretValueRequest request = GetSecretValueRequest.builder()
             .secretId(secretName)
             .build();
-        
+
         GetSecretValueResponse response = secretsClient.getSecretValue(request);
         String secretValue = response.secretString();
-        
+
         cache.put(secretName, new CachedSecret(secretValue, Duration.ofMinutes(5)));
-        
+
         return secretValue;
     }
-    
+
     public <T> T getSecretAs(String secretName, Class<T> type) {
         String secretJson = getSecret(secretName);
         try {
@@ -929,18 +932,18 @@ public class SecretsService {
             throw new SecretRetrievalException("Failed to parse secret", e);
         }
     }
-    
+
     @Data
     @AllArgsConstructor
     private static class CachedSecret {
         private String value;
         private Instant expiresAt;
-        
+
         public CachedSecret(String value, Duration ttl) {
             this.value = value;
             this.expiresAt = Instant.now().plus(ttl);
         }
-        
+
         public boolean isExpired() {
             return Instant.now().isAfter(expiresAt);
         }
@@ -950,24 +953,24 @@ public class SecretsService {
 // Database password from Secrets Manager
 @Configuration
 public class DataSourceConfig {
-    
+
     @Autowired
     private SecretsService secretsService;
-    
+
     @Bean
     @Primary
     public DataSource dataSource() {
         DatabaseCredentials creds = secretsService
             .getSecretAs("prod/database/credentials", DatabaseCredentials.class);
-        
+
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(creds.getHost());
         dataSource.setUsername(creds.getUsername());
         dataSource.setPassword(creds.getPassword());
-        
+
         return dataSource;
     }
-    
+
     @Data
     public static class DatabaseCredentials {
         private String host;
@@ -1090,7 +1093,6 @@ cloudWatch:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Azure SDK Integration
 
 ```xml
@@ -1109,5 +1111,3 @@ cloudWatch:
     <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
 </dependency>
 ```
-
-

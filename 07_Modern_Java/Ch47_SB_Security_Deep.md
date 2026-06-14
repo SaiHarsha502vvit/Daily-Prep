@@ -3,7 +3,7 @@
 ---
 
 ```java
-            .map(targetUser -> 
+            .map(targetUser ->
                 targetUser.getOrganizationId().equals(currentUser.getOrganizationId())
             )
             .orElse(false);
@@ -16,7 +16,7 @@
 
     public boolean isOwner(Long resourceId, String resourceType, Authentication auth) {
         User currentUser = (User) auth.getPrincipal();
-        
+
         switch (resourceType) {
             case "document":
                 return documentRepository.findById(resourceId)
@@ -38,10 +38,10 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(
-            Authentication auth, 
-            Object targetDomainObject, 
+            Authentication auth,
+            Object targetDomainObject,
             Object permission) {
-        
+
         if (auth == null || targetDomainObject == null || permission == null) {
             return false;
         }
@@ -52,11 +52,11 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(
-            Authentication auth, 
-            Serializable targetId, 
-            String targetType, 
+            Authentication auth,
+            Serializable targetId,
+            String targetType,
             Object permission) {
-        
+
         if (auth == null || targetType == null || permission == null) {
             return false;
         }
@@ -66,11 +66,11 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     private boolean hasPrivilege(Authentication auth, String targetType, String permission) {
         String requiredAuthority = targetType + ":" + permission;
-        
+
         return auth.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .anyMatch(authority -> 
-                authority.equals(requiredAuthority) || 
+            .anyMatch(authority ->
+                authority.equals(requiredAuthority) ||
                 authority.equals(targetType + ":ADMIN") ||
                 authority.equals("ROLE_ADMIN")
             );
@@ -117,16 +117,16 @@ public class OrderService {
 @Filter(name = "organizationFilter", condition = "organization_id = :orgId")
 @Data
 public class Document {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String title;
-    
+
     @Column(name = "organization_id")
     private Long organizationId;
-    
+
     @Column(name = "owner_id")
     private Long ownerId;
 }
@@ -144,14 +144,14 @@ public class TenantFilterAspect {
     @Before("execution(* com.example.repository.*Repository.*(..))")
     public void enableTenantFilter() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        
+
         if (auth != null && auth.getPrincipal() instanceof User) {
             User user = (User) auth.getPrincipal();
             Session session = entityManager.unwrap(Session.class);
-            
+
             Filter filter = session.enableFilter("organizationFilter");
             filter.setParameter("orgId", user.getOrganizationId());
-            
+
             log.debug("Enabled organization filter for org: {}", user.getOrganizationId());
         }
     }
@@ -167,20 +167,20 @@ public class SecureDocumentService {
 
     public List<Document> findDocuments(DocumentSearchCriteria criteria) {
         User currentUser = getCurrentUser();
-        
+
         Specification<Document> spec = Specification
             .where(belongsToOrganization(currentUser.getOrganizationId()))
             .and(hasAccessLevel(currentUser));
-        
+
         if (criteria.getTitle() != null) {
             spec = spec.and(titleContains(criteria.getTitle()));
         }
-        
+
         return documentRepository.findAll(spec);
     }
 
     private Specification<Document> belongsToOrganization(Long orgId) {
-        return (root, query, cb) -> 
+        return (root, query, cb) ->
             cb.equal(root.get("organizationId"), orgId);
     }
 
@@ -189,7 +189,7 @@ public class SecureDocumentService {
             if (user.hasRole("ADMIN")) {
                 return cb.conjunction();  // No restriction
             }
-            
+
             // Regular users can only see public or their own documents
             return cb.or(
                 cb.equal(root.get("accessLevel"), AccessLevel.PUBLIC),
@@ -199,7 +199,7 @@ public class SecureDocumentService {
     }
 
     private Specification<Document> titleContains(String title) {
-        return (root, query, cb) -> 
+        return (root, query, cb) ->
             cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
     }
 
@@ -215,9 +215,9 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 
     // Automatically filtered by @Query
     @Query("""
-        SELECT d FROM Document d 
+        SELECT d FROM Document d
         WHERE d.organizationId = :#{authentication.principal.organizationId}
-        AND (d.ownerId = :#{authentication.principal.id} 
+        AND (d.ownerId = :#{authentication.principal.id}
              OR d.accessLevel = 'PUBLIC'
              OR :#{hasRole('ADMIN')} = true)
     """)
@@ -225,8 +225,8 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 
     // Method with owner check
     @Query("""
-        SELECT d FROM Document d 
-        WHERE d.id = :id 
+        SELECT d FROM Document d
+        WHERE d.id = :id
         AND (d.ownerId = :#{authentication.principal.id} OR :#{hasRole('ADMIN')} = true)
     """)
     Optional<Document> findByIdSecure(@Param("id") Long id);
@@ -234,8 +234,6 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — Chapter 5: Filtering Data by User Context**
 
@@ -246,7 +244,6 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 **Who enforces?** Three layers: (1) **Spring Security** — authentication confirms the tenant from the JWT claim. (2) **Repository layer** — every query automatically appends `AND tenant_id = :currentTenant`. (3) **Service layer** — explicit ownership check before returning sensitive objects. **When?** Repository-level enforcement at every DB query — not just at the controller. A crafted URL bypasses the controller check if you only check there. **Pattern:** (1) Store tenant in `SecurityContextHolder` after JWT parse: `tenantId = jwtClaims.get("tenantId")`. (2) Use `@FilterDef` + `@Filter` (Hibernate) OR Spring Data `@Query` with SpEL `?#{principal.tenantId}`: `@Query("SELECT o FROM Order o WHERE o.tenantId = ?#{principal.tenantId}")`. (3) For critical resources, add explicit check in service: `if (!order.getTenantId().equals(currentTenant)) throw new AccessDeniedException("...")`. **Why triple-layer?** Defense in depth — if one layer has a bug, the others catch it.
 
 </details>
-
 
 # SECTION 6: AUDIT LOGGING
 
@@ -265,16 +262,16 @@ public class AuditConfig {
     public AuditorAware<String> auditorAware() {
         return () -> {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            
-            if (auth == null || !auth.isAuthenticated() || 
+
+            if (auth == null || !auth.isAuthenticated() ||
                 auth.getPrincipal().equals("anonymousUser")) {
                 return Optional.of("SYSTEM");
             }
-            
+
             if (auth.getPrincipal() instanceof User) {
                 return Optional.of(((User) auth.getPrincipal()).getUsername());
             }
-            
+
             return Optional.of(auth.getName());
         };
     }
@@ -337,7 +334,7 @@ public class AuditTrail {
 }
 
 public enum AuditAction {
-    CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT, 
+    CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT,
     PASSWORD_CHANGE, PERMISSION_CHANGE, EXPORT
 }
 
@@ -371,8 +368,8 @@ public class AuditService {
                 .build();
 
             auditRepository.save(audit);
-            
-            log.info("Audit log: {} {} {} by {}", 
+
+            log.info("Audit log: {} {} {} by {}",
                 action, entityType, entityId, audit.getUsername());
 
         } catch (Exception e) {
@@ -390,7 +387,7 @@ public class AuditService {
             JsonNode newNode = objectMapper.valueToTree(newValue);
 
             List<String> changedFields = new ArrayList<>();
-            
+
             Iterator<String> fieldNames = newNode.fieldNames();
             while (fieldNames.hasNext()) {
                 String field = fieldNames.next();
@@ -422,7 +419,7 @@ public class AuditService {
     }
 
     private String getClientIp() {
-        ServletRequestAttributes attrs = 
+        ServletRequestAttributes attrs =
             (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attrs != null) {
             HttpServletRequest request = attrs.getRequest();
@@ -433,7 +430,7 @@ public class AuditService {
     }
 
     private String getUserAgent() {
-        ServletRequestAttributes attrs = 
+        ServletRequestAttributes attrs =
             (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attrs != null) {
             return attrs.getRequest().getHeader("User-Agent");
@@ -520,16 +517,15 @@ public class User implements Auditable {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Tracking Who Did What, When**
 
 **Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
+
 <details><summary>Answer</summary>
 
 If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
-</details>
 
+</details>
 
 # SECTION 7: SQL INJECTION PREVENTION
 
@@ -540,7 +536,7 @@ If an attacker manages to inject malicious JavaScript into your webpage (XSS), t
 ```java
 /**
  * SQL INJECTION PREVENTION CHECKLIST
- * 
+ *
  * ✅ Use parameterized queries (JPA, Spring Data)
  * ✅ Use named parameters
  * ✅ Validate and sanitize input
@@ -584,7 +580,7 @@ public class UnsafeUserRepository {
         // NEVER DO THIS!
         String jpql = "SELECT u FROM User u WHERE u.username = '" + username + "'";
         return em.createQuery(jpql, User.class).getResultList();
-        
+
         // Attack: username = "' OR '1'='1"
         // Result: SELECT u FROM User u WHERE u.username = '' OR '1'='1'
         // Returns ALL users!
@@ -594,7 +590,7 @@ public class UnsafeUserRepository {
     public List<User> findByEmailDangerous(String email) {
         String sql = "SELECT * FROM users WHERE email = '" + email + "'";
         return em.createNativeQuery(sql, User.class).getResultList();
-        
+
         // Attack: email = "'; DROP TABLE users; --"
         // Could delete the entire table!
     }
@@ -611,7 +607,7 @@ public class SafeUserRepository {
     // ✅ SAFE: Using parameter binding
     public List<User> findByUsernameSecure(String username) {
         return em.createQuery(
-            "SELECT u FROM User u WHERE u.username = :username", 
+            "SELECT u FROM User u WHERE u.username = :username",
             User.class)
             .setParameter("username", username)
             .getResultList();
@@ -661,11 +657,11 @@ public class UserSearchService {
     public List<UserDto> searchUsers(String searchTerm) {
         // Validate and sanitize input
         String sanitized = sanitizeSearchTerm(searchTerm);
-        
+
         if (sanitized.isEmpty()) {
             throw new InvalidSearchTermException("Search term is invalid");
         }
-        
+
         return userRepository.findByUsernameContainingIgnoreCase(sanitized)
             .stream()
             .map(this::toDto)
@@ -676,7 +672,7 @@ public class UserSearchService {
         if (input == null) {
             return "";
         }
-        
+
         // Remove potentially dangerous characters
         return input
             .replaceAll("[';\"\\\\]", "")  // Remove quotes and backslashes
@@ -689,16 +685,15 @@ public class UserSearchService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
 
 **Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
+
 <details><summary>Answer</summary>
 
 If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
-</details>
 
+</details>
 
 # SECTION 8: ENCRYPTING SENSITIVE DATA
 
@@ -725,29 +720,29 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
         if (attribute == null) {
             return null;
         }
-        
+
         try {
             byte[] iv = new byte[GCM_IV_LENGTH];
             new SecureRandom().nextBytes(iv);
-            
+
             SecretKey key = new SecretKeySpec(
-                Base64.getDecoder().decode(encryptionKey), 
+                Base64.getDecoder().decode(encryptionKey),
                 "AES"
             );
-            
+
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
             cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
-            
+
             byte[] encrypted = cipher.doFinal(attribute.getBytes(StandardCharsets.UTF_8));
-            
+
             // Combine IV and encrypted data
             byte[] combined = new byte[iv.length + encrypted.length];
             System.arraycopy(iv, 0, combined, 0, iv.length);
             System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
-            
+
             return Base64.getEncoder().encodeToString(combined);
-            
+
         } catch (Exception e) {
             throw new EncryptionException("Failed to encrypt data", e);
         }
@@ -758,28 +753,28 @@ public class EncryptionConverter implements AttributeConverter<String, String> {
         if (dbData == null) {
             return null;
         }
-        
+
         try {
             byte[] combined = Base64.getDecoder().decode(dbData);
-            
+
             // Extract IV and encrypted data
             byte[] iv = new byte[GCM_IV_LENGTH];
             byte[] encrypted = new byte[combined.length - GCM_IV_LENGTH];
             System.arraycopy(combined, 0, iv, 0, iv.length);
             System.arraycopy(combined, iv.length, encrypted, 0, encrypted.length);
-            
+
             SecretKey key = new SecretKeySpec(
-                Base64.getDecoder().decode(encryptionKey), 
+                Base64.getDecoder().decode(encryptionKey),
                 "AES"
             );
-            
+
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
             cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
-            
+
             byte[] decrypted = cipher.doFinal(encrypted);
             return new String(decrypted, StandardCharsets.UTF_8);
-            
+
         } catch (Exception e) {
             throw new EncryptionException("Failed to decrypt data", e);
         }
@@ -885,7 +880,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/mydb
     username: ${DB_USERNAME}  # Use environment variables!
     password: ${DB_PASSWORD}  # Never hardcode!
-    
+
     # Connection pool security
     hikari:
       connection-timeout: 30000
@@ -893,7 +888,7 @@ spring:
       minimum-idle: 5
       idle-timeout: 600000
       max-lifetime: 1800000
-      
+
       # ==================== SSL/TLS ====================
       data-source-properties:
         ssl: true
@@ -925,21 +920,21 @@ public class DataSourceConfig {
     @Primary
     public DataSource dataSource(DatabaseProperties props) {
         HikariConfig config = new HikariConfig();
-        
+
         config.setJdbcUrl(props.getUrl());
         config.setUsername(props.getUsername());
         config.setPassword(props.getPassword());
-        
+
         // Connection pool settings
         config.setMaximumPoolSize(10);
         config.setMinimumIdle(5);
         config.setConnectionTimeout(30000);
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
-        
+
         // Connection validation
         config.setConnectionTestQuery("SELECT 1");
-        
+
         // SSL properties
         if (props.isSslEnabled()) {
             Properties sslProps = new Properties();
@@ -948,7 +943,7 @@ public class DataSourceConfig {
             sslProps.setProperty("sslrootcert", props.getSslRootCert());
             config.setDataSourceProperties(sslProps);
         }
-        
+
         return new HikariDataSource(config);
     }
 }
@@ -978,15 +973,15 @@ public class AwsSecretsDataSourceConfig {
         GetSecretValueRequest request = GetSecretValueRequest.builder()
             .secretId("prod/database/credentials")
             .build();
-        
+
         GetSecretValueResponse response = secretsManager.getSecretValue(request);
         DatabaseCredentials creds = parseCredentials(response.secretString());
-        
+
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(creds.getUrl());
         config.setUsername(creds.getUsername());
         config.setPassword(creds.getPassword());
-        
+
         return new HikariDataSource(config);
     }
 }
@@ -1006,18 +1001,18 @@ public class CredentialRotationService {
         try {
             // Fetch current credentials from secrets manager
             DatabaseCredentials newCreds = fetchCurrentCredentials();
-            
+
             // Check if credentials have changed
             if (!newCreds.getPassword().equals(getCurrentPassword())) {
                 log.info("Rotating database credentials");
-                
+
                 // Update HikariCP configuration
                 HikariConfigMXBean configBean = dataSource.getHikariConfigMXBean();
                 configBean.setPassword(newCreds.getPassword());
-                
+
                 // Soft evict existing connections
                 dataSource.getHikariPoolMXBean().softEvictConnections();
-                
+
                 log.info("Database credentials rotated successfully");
             }
         } catch (Exception e) {
@@ -1070,13 +1065,11 @@ public class CredentialRotationService {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 **END OF PART 17: DATABASE SECURITY & USER MANAGEMENT**
 
 ➡️ **Next: Part 18 - Distributed Tracing (Sleuth, Zipkin)**
-
 
 ---
 

@@ -19,16 +19,19 @@ challenges/solutions/CH04/
 ## Acceptance criteria
 
 ### `tab-manager.ts`
+
 - Exports `openTabFrom(page, action)` that:
   - Registers the `waitForEvent('page')` listener **before** triggering the action.
   - Returns the new `Page`.
 - Exports `closeTab(page)` that closes the page and asserts it is closed.
 
 ### POMs
+
 - `WindowsPage` exposes a `clickOpenWindowLink()` method that integrates with `openTabFrom`.
 - `NewWindowPage` exposes `expectLoaded()` asserting the visible heading text.
 
 ### Test
+
 - The test opens the new tab, asserts the new tab's heading, switches focus back to the original tab, asserts the original is still interactive.
 - Closes the new tab as part of teardown.
 - Tagged `@regression`.
@@ -44,16 +47,18 @@ challenges/solutions/CH04/
 <details><summary>The race-condition trap</summary>
 
 ❌ Wrong:
+
 ```typescript
-await page.click('#open');
-const newTab = await context.waitForEvent('page'); // listener registered TOO LATE
+await page.click("#open");
+const newTab = await context.waitForEvent("page"); // listener registered TOO LATE
 ```
 
 ✅ Right:
+
 ```typescript
 const [newTab] = await Promise.all([
-  context.waitForEvent('page'),
-  page.click('#open'),
+  context.waitForEvent("page"),
+  page.click("#open"),
 ]);
 ```
 

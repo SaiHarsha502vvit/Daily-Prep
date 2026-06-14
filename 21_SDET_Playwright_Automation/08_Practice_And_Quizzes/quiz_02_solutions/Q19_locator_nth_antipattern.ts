@@ -15,7 +15,7 @@
  * QUESTION: Why is this an anti-pattern? Rewrite clickCustomerRow in one line.
  */
 
-import { type Page, type Locator, expect, test } from '@playwright/test';
+import { type Page, type Locator, expect, test } from "@playwright/test";
 
 // ============================================================
 // WHY it is an anti-pattern
@@ -38,7 +38,7 @@ class CustomerGrid_BAD {
 
   constructor(page: Page) {
     this.page = page;
-    this.rows = page.locator('table > tbody > tr');
+    this.rows = page.locator("table > tbody > tr");
   }
 
   async clickCustomerRow(customerName: string): Promise<void> {
@@ -66,7 +66,7 @@ class CustomerGrid_GOOD {
 
   constructor(page: Page) {
     this.page = page;
-    this.rows = page.locator('table > tbody > tr');
+    this.rows = page.locator("table > tbody > tr");
   }
 
   async clickCustomerRow(customerName: string): Promise<void> {
@@ -90,7 +90,7 @@ class CustomerGrid_Advanced {
 
   constructor(page: Page) {
     this.page = page;
-    this.rows = page.locator('table > tbody > tr');
+    this.rows = page.locator("table > tbody > tr");
   }
 
   /** Click a row by exact cell text (e.g. customer name). */
@@ -101,7 +101,11 @@ class CustomerGrid_Advanced {
   /** Click a row whose STATUS cell equals a specific value. */
   async clickByStatus(status: string): Promise<void> {
     // Filter by a child element's text — more precise than hasText
-    await this.rows.filter({ has: this.page.locator('[data-col="status"]', { hasText: status }) }).click();
+    await this.rows
+      .filter({
+        has: this.page.locator('[data-col="status"]', { hasText: status }),
+      })
+      .click();
   }
 
   /** Get a row by name and assert a specific column value. */
@@ -113,7 +117,9 @@ class CustomerGrid_Advanced {
   /** Count rows matching a filter. */
   async countByStatus(status: string): Promise<number> {
     return this.rows
-      .filter({ has: this.page.locator('[data-col="status"]', { hasText: status }) })
+      .filter({
+        has: this.page.locator('[data-col="status"]', { hasText: status }),
+      })
       .count();
   }
 }
@@ -122,19 +128,19 @@ class CustomerGrid_Advanced {
 // Usage in tests
 // ============================================================
 
-test('click customer row — one-liner', async ({ page }) => {
+test("click customer row — one-liner", async ({ page }) => {
   const grid = new CustomerGrid_GOOD(page);
-  await page.goto('https://example.com/customers');
-  await grid.clickCustomerRow('Harsha Alasai');
+  await page.goto("https://example.com/customers");
+  await grid.clickCustomerRow("Harsha Alasai");
   await expect(page).toHaveURL(/\/customers\/C-\d+/);
 });
 
-test('advanced row assertions', async ({ page }) => {
+test("advanced row assertions", async ({ page }) => {
   const grid = new CustomerGrid_Advanced(page);
-  await page.goto('https://example.com/customers');
+  await page.goto("https://example.com/customers");
 
-  await grid.assertRowStatus('Harsha Alasai', 'Active');
-  expect(await grid.countByStatus('Active')).toBeGreaterThan(0);
+  await grid.assertRowStatus("Harsha Alasai", "Active");
+  expect(await grid.countByStatus("Active")).toBeGreaterThan(0);
 });
 
 export { CustomerGrid_BAD, CustomerGrid_GOOD, CustomerGrid_Advanced };

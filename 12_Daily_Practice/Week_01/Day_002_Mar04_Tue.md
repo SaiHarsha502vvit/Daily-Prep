@@ -24,11 +24,13 @@
 ### Topic: Array Operations — Rotate, Prefix Sum, Merge
 
 #### WHY do these operations matter?
+
 Array rotation appears in scheduling systems (rotating shifts), circular buffers (network packet processing). Prefix sum is the foundation of range queries used in databases and financial calculations. Merging sorted arrays is the core of Merge Sort.
 
 #### WHAT are the key operations?
 
 **1. Array Rotation**
+
 ```
 LEFT ROTATE by 2:
   [1, 2, 3, 4, 5] → [3, 4, 5, 1, 2]
@@ -46,8 +48,8 @@ RIGHT ROTATE by 2:
     Step 3: Reverse remaining elements: [4, 5, 1, 2, 3]
 ```
 
-
 **2. Prefix Sum**
+
 ```
 WHAT: prefix[i] = sum of arr[0..i]
 
@@ -66,7 +68,7 @@ WITH prefix sum: build once O(n), then each query O(1)
 
 ```java
 public class ArrayOperations {
-    
+
     // 1. Rotate array left by k positions — O(n) time, O(1) space
     public static void rotateLeft(int[] arr, int k) {
         int n = arr.length;
@@ -75,7 +77,7 @@ public class ArrayOperations {
         reverse(arr, k, n - 1);
         reverse(arr, 0, n - 1);
     }
-    
+
     private static void reverse(int[] arr, int start, int end) {
         while (start < end) {
             int temp = arr[start];
@@ -85,7 +87,7 @@ public class ArrayOperations {
             end--;
         }
     }
-    
+
     // 2. Build prefix sum array
     public static int[] buildPrefixSum(int[] arr) {
         int[] prefix = new int[arr.length];
@@ -95,18 +97,18 @@ public class ArrayOperations {
         }
         return prefix;
     }
-    
+
     // Range sum query using prefix sum
     public static int rangeSum(int[] prefix, int left, int right) {
         if (left == 0) return prefix[right];
         return prefix[right] - prefix[left - 1];
     }
-    
+
     // 3. Merge two sorted arrays into one sorted array
     public static int[] mergeSorted(int[] a, int[] b) {
         int[] result = new int[a.length + b.length];
         int i = 0, j = 0, k = 0;
-        
+
         while (i < a.length && j < b.length) {
             if (a[i] <= b[j]) {
                 result[k++] = a[i++];
@@ -114,10 +116,10 @@ public class ArrayOperations {
                 result[k++] = b[j++];
             }
         }
-        
+
         while (i < a.length) result[k++] = a[i++];
         while (j < b.length) result[k++] = b[j++];
-        
+
         return result;
     }
 }
@@ -136,12 +138,12 @@ STABLE SORT: Equal elements maintain their original order.
 
 Example: Sort students by grade (ignore name):
   Original:  [(Alice, B), (Bob, A), (Charlie, B), (Diana, A)]
-  
+
   STABLE sort by grade:
   [(Bob, A), (Diana, A), (Alice, B), (Charlie, B)]
   ↑ A's keep original order: Bob before Diana
   ↑ B's keep original order: Alice before Charlie
-  
+
   UNSTABLE sort by grade (could produce):
   [(Diana, A), (Bob, A), (Charlie, B), (Alice, B)]
   ↑ Order among equals is NOT guaranteed
@@ -151,7 +153,6 @@ WHY THIS MATTERS:
   - If department sort is stable, salary order within dept is preserved
   - Real example: Excel multi-column sort depends on stability
 ```
-
 
 #### Insertion Sort — trace through carefully
 
@@ -193,7 +194,6 @@ SURPRISE: Insertion Sort is OPTIMAL for:
   4. Stable sorting needed with O(1) space
 ```
 
-
 ---
 
 ## BLOCK 3: COMBO (20 min)
@@ -218,7 +218,6 @@ KEY INSIGHT: Merge from the END to avoid overwriting!
   Result: [1, 2, 2, 3, 5, 6] ✓
 ```
 
-
 <details>
 <summary>Solution</summary>
 
@@ -240,6 +239,7 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 // NOTE: We don't need "while (i >= 0)" because those elements
 // are already in nums1 in the correct position!
 ```
+
 </details>
 
 ---
@@ -249,37 +249,39 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 ### Scenario: Shopping Cart Price Calculator
 
 **Problem:** Build a function for an e-commerce cart that calculates:
+
 1. Subtotal (sum of all item prices)
 2. Apply bulk discount: if customer buys 3+ of the same item, 10% off that item
 3. Apply coupon: flat discount if total > threshold
 
 **Think about data structures:**
+
 - Array of items? HashMap of item→quantity? Both?
 
 ```java
 public class ShoppingCart {
     // Item: {name, price, quantity}
-    
-    public static double calculateTotal(String[] items, double[] prices, int[] quantities, 
+
+    public static double calculateTotal(String[] items, double[] prices, int[] quantities,
                                          double couponThreshold, double couponDiscount) {
         double subtotal = 0;
-        
+
         for (int i = 0; i < items.length; i++) {
             double itemTotal = prices[i] * quantities[i];
-            
+
             // Bulk discount: 10% off if quantity >= 3
             if (quantities[i] >= 3) {
                 itemTotal *= 0.90;  // 10% discount
             }
-            
+
             subtotal += itemTotal;
         }
-        
+
         // Coupon discount
         if (subtotal >= couponThreshold) {
             subtotal -= couponDiscount;
         }
-        
+
         return Math.round(subtotal * 100.0) / 100.0;  // Round to 2 decimal places
     }
 }
@@ -308,7 +310,6 @@ CHOOSING THE RIGHT TYPE:
   Storing true/false?  → BOOLEAN — stored as TINYINT(1)
 ```
 
-
 #### Practice: CREATE with constraints
 
 ```sql
@@ -336,10 +337,10 @@ INSERT INTO students (first_name, last_name, email, age, gpa, department) VALUES
     ('Diana', 'Prince', 'diana@example.com', 22, 3.7, 'Physics');
 
 -- Try to break constraints (these will FAIL — and that's good!)
--- INSERT INTO students (first_name, last_name, email, age) 
+-- INSERT INTO students (first_name, last_name, email, age)
 -- VALUES ('Test', 'User', NULL, 25);  -- FAILS: email is NOT NULL
 
--- INSERT INTO students (first_name, last_name, email, age, gpa) 
+-- INSERT INTO students (first_name, last_name, email, age, gpa)
 -- VALUES ('Test', 'User', 'test@example.com', 15, 3.0);  -- FAILS: age < 16
 ```
 
@@ -351,11 +352,12 @@ INSERT INTO students (first_name, last_name, email, age, gpa, department) VALUES
 <summary>Answer</summary>
 
 ```sql
-SELECT first_name, last_name, gpa 
-FROM students 
-WHERE department = 'Computer Science' AND gpa > 3.5 
+SELECT first_name, last_name, gpa
+FROM students
+WHERE department = 'Computer Science' AND gpa > 3.5
 ORDER BY gpa DESC;
 ```
+
 </details>
 
 **Q2:** Write an INSERT that would violate the UNIQUE constraint on email. What error would you expect?
@@ -369,6 +371,7 @@ VALUES ('Fake', 'User', 'harsha@example.com', 20, 3.0);
 -- ERROR: Duplicate entry 'harsha@example.com' for key 'email'
 -- The UNIQUE constraint prevents two rows with the same email
 ```
+
 </details>
 
 **Q3 (Challenge):** Write a query to find departments that have more than 1 student. (Hint: you'll need GROUP BY and HAVING — preview of Week 3!)
@@ -383,6 +386,7 @@ GROUP BY department
 HAVING COUNT(*) > 1;
 -- Returns: Computer Science (2 students)
 ```
+
 </details>
 
 > **Read more:** [08_SQL/02_DataTypes_Constraints.md](../../08_SQL/02_DataTypes_Constraints.md)
@@ -401,6 +405,7 @@ Output: [5,6,7,1,2,3,4]
 ```
 
 **Three approaches:**
+
 1. Extra array: copy to new positions → O(n) time, O(n) space
 2. Cyclic replacements → O(n) time, O(1) space (tricky)
 3. Reverse trick → O(n) time, O(1) space (elegant)
@@ -427,6 +432,7 @@ private void reverse(int[] nums, int start, int end) {
     }
 }
 ```
+
 </details>
 
 ---
@@ -451,7 +457,7 @@ public int maxSumSubarray(int[] arr, int k) {
         windowSum += arr[i];
     }
     int maxSum = windowSum;
-    
+
     // Slide the window
     for (int i = k; i < arr.length; i++) {
         windowSum += arr[i] - arr[i - k];  // Add new, remove old
@@ -462,6 +468,7 @@ public int maxSumSubarray(int[] arr, int k) {
 // Time: O(n) | Space: O(1)
 // This is the CLASSIC fixed-size sliding window pattern!
 ```
+
 </details>
 
 ---
@@ -469,6 +476,7 @@ public int maxSumSubarray(int[] arr, int k) {
 ## End of Day 2
 
 ### What you learned today:
+
 1. **Array rotation** — the reverse trick (O(1) space)
 2. **Prefix sum** — O(1) range queries after O(n) build
 3. **Merge sorted arrays** — the two-pointer merge pattern
@@ -481,10 +489,9 @@ public int maxSumSubarray(int[] arr, int k) {
 
 ---
 
-> **Mentor Note:** The reverse trick for array rotation is one of those "aha!" 
-> moments. If you understood it, try to explain it to someone (or write it in 
+> **Mentor Note:** The reverse trick for array rotation is one of those "aha!"
+> moments. If you understood it, try to explain it to someone (or write it in
 > your own words). Teaching solidifies understanding.
-
 
 ---
 

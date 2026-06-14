@@ -28,7 +28,7 @@
 ```
   WITHOUT KUBERNETES:
   ═══════════════════
-  
+
   3 servers, 5 microservices. You manually:
   ❌ Decide which service runs where
   ❌ SSH into servers to deploy new versions
@@ -37,13 +37,13 @@
   ❌ Update one by one, hoping nothing breaks
   ❌ Configure networking between services manually
   ❌ Manage environment variables per server
-  
-  
+
+
   WITH KUBERNETES:
   ════════════════
-  
+
   You DECLARE desired state: "Run 3 replicas of order-service, version 2.1"
-  
+
   Kubernetes CONTINUOUSLY ensures reality matches desired state:
   ✅ Schedules pods onto healthy nodes with sufficient resources
   ✅ Restarts crashed containers automatically
@@ -52,11 +52,11 @@
   ✅ Service discovery: services find each other by name
   ✅ Load balancing: traffic distributed across healthy pods
   ✅ Config management: environment variables, secrets, mounted files
-  
-  
+
+
   THE CORE PRINCIPLE: Declarative, not Imperative
   ════════════════════════════════════════════════
-  
+
   Imperative (without K8s): "Start container X on server A"
   Declarative (with K8s):    "I want 3 instances of X running"
                               K8s figures out the HOW
@@ -64,16 +64,15 @@
 
 ---
 
-
-
 🔬 **Section Challenge — 1. The Big Picture — What Kubernetes Actually Solves**
 
 **Challenge 1 (Architecture):** Kubernetes is often described as a "Declarative" system rather than an "Imperative" system. Why is this distinction critical for recovering from a sudden node failure?
+
 <details><summary>Answer</summary>
 
-In an imperative system (like a script), you tell the system *how* to do things (e.g., "Start Pod A on Node 1"). If Node 1 crashes, the script doesn't know what to do unless you wrote explicit failure-handling code. In a declarative system, you tell Kubernetes the *desired state* ("I want 3 instances of Pod A running"). Kubernetes continuously runs control loops comparing the actual state to the desired state. When Node 1 crashes, the actual state drops to 2 instances. Kubernetes automatically detects this divergence and schedules a new pod on another node to restore the desired state of 3, requiring zero human intervention.
-</details>
+In an imperative system (like a script), you tell the system _how_ to do things (e.g., "Start Pod A on Node 1"). If Node 1 crashes, the script doesn't know what to do unless you wrote explicit failure-handling code. In a declarative system, you tell Kubernetes the _desired state_ ("I want 3 instances of Pod A running"). Kubernetes continuously runs control loops comparing the actual state to the desired state. When Node 1 crashes, the actual state drops to 2 instances. Kubernetes automatically detects this divergence and schedules a new pod on another node to restore the desired state of 3, requiring zero human intervention.
 
+</details>
 
 ## 2. Architecture — Control Plane vs Worker Nodes
 
@@ -110,7 +109,7 @@ In an imperative system (like a script), you tell the system *how* to do things 
   │  └─────────────────────────────────────────────────────────────────┘  │
   │                                                                         │
   └─────────────────────────────────────────────────────────────────────────┘
-  
+
   ┌─── WORKER NODE 1 ──────────────────────────────────────────────────────┐
   │                                                                         │
   │  ┌── kubelet ──────────────────────────────────────────────────────┐  │
@@ -145,11 +144,11 @@ In an imperative system (like a script), you tell the system *how* to do things 
 
 ```
   A Pod is NOT a container. A Pod CONTAINS one or more containers.
-  
-  
+
+
   SINGLE-CONTAINER POD (most common):
   ════════════════════════════════════
-  
+
   ┌─── Pod: order-service-7d4f5b-abc12 ──────────────────────────────────┐
   │                                                                        │
   │  IP: 10.244.1.5 (unique pod IP within cluster)                        │
@@ -164,11 +163,11 @@ In an imperative system (like a script), you tell the system *how* to do things 
   │  Volumes: [config-vol mounted at /config]                              │
   │                                                                        │
   └────────────────────────────────────────────────────────────────────────┘
-  
-  
+
+
   MULTI-CONTAINER POD (sidecar pattern):
   ══════════════════════════════════════
-  
+
   ┌─── Pod ───────────────────────────────────────────────────────────────┐
   │                                                                        │
   │  IP: 10.244.1.6 (SHARED between all containers)                      │
@@ -189,10 +188,10 @@ In an imperative system (like a script), you tell the system *how* to do things 
   │  • Live and die together                                               │
   │                                                                        │
   └────────────────────────────────────────────────────────────────────────┘
-  
-  
+
+
   POD LIFECYCLE:
-  
+
   Pending → Running → Succeeded/Failed
      │         │
      │         └── containers running + health checks passing
@@ -256,30 +255,30 @@ spec:
 
   BEFORE (v2.1):
   [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅]
-  
+
   Step 1: Create new pod with v2.2 (maxSurge=1 allows 4 pods temporarily)
   [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 🔄 starting]
-  
+
   Step 2: Pod-D passes readiness check
   [Pod-A v2.1 ✅] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
-  
+
   Step 3: Terminate oldest v2.1 pod (maxUnavailable=0, we have 4 healthy)
   [Pod-A v2.1 ❌ terminating] [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅]
-  
+
   Step 4-5: Repeat for remaining pods
   [Pod-B v2.1 ✅] [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 🔄]
   → [Pod-C v2.1 ✅] [Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 🔄]
-  
+
   FINAL:
   [Pod-D v2.2 ✅] [Pod-E v2.2 ✅] [Pod-F v2.2 ✅]
-  
+
   → ZERO DOWNTIME! At least 3 healthy pods at all times
   → If v2.2 fails readiness check → rollout pauses → v2.1 still serving
 
 
   HIERARCHY:
   ══════════
-  
+
   Deployment (you manage this)
       │
       ├── creates ReplicaSet-v2.1  (manages v2.1 pods)
@@ -296,11 +295,11 @@ spec:
 ```
   PROBLEM: Pods get random IPs. Pods die and get recreated with new IPs.
   How does "payment-service" find "order-service"?
-  
-  
+
+
   ANSWER: Kubernetes Service = stable DNS name + load balancer
-  
-  
+
+
   ┌─── Service: order-service ──────────────────────────────────────────┐
   │                                                                      │
   │  Type: ClusterIP (internal only, default)                           │
@@ -316,18 +315,18 @@ spec:
   │  └── 10.244.3.2:8080  (Pod-F, healthy ✅)                          │
   │                                                                      │
   └──────────────────────────────────────────────────────────────────────┘
-  
+
   When payment-service calls: http://order-service/api/orders
-  
+
   1. DNS lookup: "order-service" → 10.96.45.123
   2. kube-proxy (iptables/IPVS) intercepts traffic to 10.96.45.123
   3. Load-balances to one of the endpoint pods (round-robin)
   4. If a pod dies → removed from endpoints → no traffic routed to it
-  
-  
+
+
   SERVICE TYPES:
   ══════════════
-  
+
   ┌──────────────────────────────────────────────────────────────────────────┐
   │ Type          │ Scope                │ Use Case                          │
   ├──────────────────────────────────────────────────────────────────────────┤
@@ -347,25 +346,24 @@ spec:
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Services — How Networking Works Inside the Cluster**
 
 **Challenge 1 (Networking):** You have a `payment-service` Deployment with 3 pods and a `ClusterIP` Service. If `order-service` makes an HTTP call to `http://payment-service:8080`, does the traffic go through a centralized load balancer proxy like NGINX?
+
 <details><summary>Answer</summary>
 
-No. Kubernetes `ClusterIP` Services do not use a centralized proxy hop. The DNS resolves the service name to a virtual IP (the ClusterIP). When the pod sends traffic to that IP, `kube-proxy` (which manages `iptables` or `IPVS` rules on *every single node*) intercepts the packet at the kernel level and rewrites the destination IP to directly target one of the 3 healthy pod IPs. It's a completely distributed, client-side (kernel-level) load balancing mechanism.
-</details>
+No. Kubernetes `ClusterIP` Services do not use a centralized proxy hop. The DNS resolves the service name to a virtual IP (the ClusterIP). When the pod sends traffic to that IP, `kube-proxy` (which manages `iptables` or `IPVS` rules on _every single node_) intercepts the packet at the kernel level and rewrites the destination IP to directly target one of the 3 healthy pod IPs. It's a completely distributed, client-side (kernel-level) load balancing mechanism.
 
+</details>
 
 ## 6. Ingress — How External Traffic Reaches Your App
 
 ```
   The single entry point for external HTTP(S) traffic into the cluster.
-  
+
   Internet → Ingress Controller → Services → Pods
-  
-  
+
+
   ┌─── Internet ───────────────────────────────────────────────────────────┐
   │  User browses: https://api.myapp.com/orders                           │
   └───────────────────────────────┬─────────────────────────────────────────┘
@@ -450,7 +448,7 @@ data:
   SPRING_PROFILES_ACTIVE: "prod"
   DATABASE_URL: "jdbc:postgresql://db-service:5432/orders"
   LOG_LEVEL: "INFO"
-  
+
 ---
 # Secret — for sensitive data (Base64 encoded, NOT encrypted by default!)
 apiVersion: v1
@@ -459,8 +457,8 @@ metadata:
   name: app-secrets
 type: Opaque
 data:
-  DB_PASSWORD: cGFzc3dvcmQxMjM=    # base64("password123")
-  JWT_SECRET: c3VwZXJzZWNyZXQ=     # base64("supersecret")
+  DB_PASSWORD: cGFzc3dvcmQxMjM= # base64("password123")
+  JWT_SECRET: c3VwZXJzZWNyZXQ= # base64("supersecret")
 ```
 
 ```
@@ -468,7 +466,7 @@ data:
   ══════════════════
 
   METHOD 1: Environment variables
-  
+
   env:
   - name: DB_URL
     valueFrom:
@@ -480,15 +478,15 @@ data:
       secretKeyRef:
         name: app-secrets
         key: DB_PASSWORD
-  
-  
+
+
   METHOD 2: Volume mounts (files)
-  
+
   volumes:
   - name: config-volume
     configMap:
       name: app-config
-  
+
   containers:
   - volumeMounts:
     - name: config-volume
@@ -496,8 +494,8 @@ data:
       # Creates files: /etc/config/SPRING_PROFILES_ACTIVE
       #                /etc/config/DATABASE_URL
       #                /etc/config/LOG_LEVEL
-  
-  
+
+
   ⚠️ SECRETS ARE NOT ENCRYPTED: Base64 encoding is NOT security.
   For production, use:
   • External secrets (AWS Secrets Manager, HashiCorp Vault)
@@ -512,7 +510,7 @@ data:
 ```
   DEPLOYMENT vs STATEFULSET:
   ══════════════════════════
-  
+
   ┌──────────────────────────────────────────────────────────────────────────┐
   │                     │ Deployment              │ StatefulSet              │
   ├──────────────────────────────────────────────────────────────────────────┤
@@ -523,13 +521,13 @@ data:
   │ Storage             │ Shared or ephemeral     │ Each pod owns its PVC   │
   │ Use case            │ Stateless apps          │ Databases, Kafka, ZK    │
   └──────────────────────────────────────────────────────────────────────────┘
-  
-  
+
+
   WHY DATABASES NEED STATEFULSETS:
   ════════════════════════════════
-  
+
   PostgreSQL with replication:
-  
+
   ┌── StatefulSet: postgres ──────────────────────────────────────────────┐
   │                                                                        │
   │  postgres-0 (PRIMARY)                                                 │
@@ -548,11 +546,11 @@ data:
   │  └── Role: read-only replica                                          │
   │                                                                        │
   └────────────────────────────────────────────────────────────────────────┘
-  
+
   If postgres-1 dies and restarts:
   → Gets SAME name (postgres-1), SAME PVC (data-postgres-1)
   → Reattaches to its data → no data loss!
-  
+
   With Deployment: pod gets random name, different PVC → DATA LOST
 ```
 
@@ -562,12 +560,12 @@ data:
 
 ```yaml
 resources:
-  requests:           # "I NEED at least this much"
-    memory: "256Mi"   # Used for SCHEDULING decisions
-    cpu: "250m"       # Scheduler won't place pod on node without this available
-  limits:             # "NEVER use more than this"
-    memory: "512Mi"   # If exceeded → OOMKilled! (Out of Memory)
-    cpu: "500m"       # If exceeded → throttled (not killed)
+  requests: # "I NEED at least this much"
+    memory: "256Mi" # Used for SCHEDULING decisions
+    cpu: "250m" # Scheduler won't place pod on node without this available
+  limits: # "NEVER use more than this"
+    memory: "512Mi" # If exceeded → OOMKilled! (Out of Memory)
+    cpu: "500m" # If exceeded → throttled (not killed)
 ```
 
 ```
@@ -576,16 +574,16 @@ resources:
   1 CPU = 1000m (millicores)
   250m = 25% of one CPU core
   0.5 = 500m = half a core
-  
+
   MEMORY UNITS:
   ═════════════
   Mi = Mebibytes (1024-based)
   256Mi = 268,435,456 bytes
-  
-  
+
+
   QoS CLASSES (determined by how you set requests/limits):
   ════════════════════════════════════════════════════════
-  
+
   ┌──────────────────────────────────────────────────────────────────────────┐
   │ QoS Class     │ Condition                                │ Eviction     │
   ├──────────────────────────────────────────────────────────────────────────┤
@@ -598,12 +596,12 @@ resources:
   │ BestEffort    │ NO requests AND NO limits set            │ First to die │
   │               │ (gets whatever is left over)              │ Avoid in prod│
   └──────────────────────────────────────────────────────────────────────────┘
-  
+
   When node runs out of memory:
   1. Kill BestEffort pods first
   2. Kill Burstable pods exceeding requests
   3. Kill Guaranteed pods only as last resort
-  
+
   PRODUCTION RULE: ALWAYS set requests and limits.
   Prefer Guaranteed for critical services (DB, payment).
   Burstable OK for general services (tolerate occasional eviction).
@@ -656,14 +654,14 @@ resources:
 containers:
 - name: order-service
   image: order-service:2.1
-  
+
   startupProbe:
     httpGet:
       path: /actuator/health
       port: 8080
     failureThreshold: 30        # Try 30 times
     periodSeconds: 10           # Every 10 seconds = 300s max startup time
-  
+
   livenessProbe:
     httpGet:
       path: /actuator/health/liveness
@@ -671,7 +669,7 @@ containers:
     initialDelaySeconds: 0      # Startup probe handles initial delay
     periodSeconds: 10
     failureThreshold: 3         # 3 consecutive failures → restart
-  
+
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
@@ -737,24 +735,21 @@ containers:
 
 ---
 
-
-
 🔬 **Section Challenge — 11. How Scheduling Works — From YAML to Running Pod**
 
 **Challenge 1 (System Design):** You submit a Deployment YAML to create a Pod that requests `1000m` CPU. All nodes in your cluster only have `500m` CPU available. What is the exact status of the Pod, and which component made that decision?
+
 <details><summary>Answer</summary>
 
 The Pod will remain in a `Pending` state indefinitely. The **kube-scheduler** made this decision during the "Filtering" phase. It evaluated all available nodes, saw that none of them met the `1000m` CPU resource request, and therefore refused to bind the pod to any node. The API server stores the pod as `Pending` until a node frees up enough resources or a new node is added to the cluster.
-</details>
 
+</details>
 
 ## 12. Common Production Patterns
 
 ### Pod Disruption Budget
 
 ```yaml
-
-
 # "Always keep at least 2 pods running during voluntary disruptions"
 # (node drain, rolling update, cluster upgrade)
 apiVersion: policy/v1
@@ -784,12 +779,12 @@ spec:
   minReplicas: 3
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70   # Scale up when avg CPU > 70%
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70 # Scale up when avg CPU > 70%
 ```
 
 ### Pod Anti-Affinity
@@ -800,18 +795,17 @@ spec:
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-            - key: app
-              operator: In
-              values:
-              - order-service
-          topologyKey: kubernetes.io/hostname
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - order-service
+            topologyKey: kubernetes.io/hostname
 ```
 
 ---
 
 **Next Chapter**: [Distributed Patterns & Consensus →](Ch68_Distributed_Patterns.md)
-

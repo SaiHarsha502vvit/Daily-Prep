@@ -25,7 +25,7 @@
 
 ```
   Google's 3 Core Web Vitals (2024):
-  
+
   ┌──────────────────────────────────────────────────────────────────┐
   │                                                                  │
   │  LCP (Largest Contentful Paint):        LOADING SPEED            │
@@ -66,26 +66,26 @@
 ```
   WHAT COUNTS AS LCP ELEMENT:
   ───────────────────────────
-  
+
   • <img> elements
   • <video> poster images
   • Background images via url()
   • Block-level text elements (<h1>, <p>, etc.)
-  
+
   The browser picks the LARGEST visible element within the viewport.
-  
-  
+
+
   LCP OPTIMIZATION CHECKLIST:
   ───────────────────────────
-  
+
   1. Preload the LCP image:
      <link rel="preload" as="image" href="/hero-image.webp"
            fetchpriority="high">
-  
+
   2. Don't lazy-load the LCP image!
      Above-the-fold images should load IMMEDIATELY.
      <img src="hero.webp" loading="eager" fetchpriority="high">
-  
+
   3. Use correct image format and size:
      WebP is 25-35% smaller than JPEG.
      AVIF is 50% smaller than JPEG.
@@ -94,24 +94,21 @@
                   hero-800.webp 800w,
                   hero-1200.webp 1200w"
           sizes="100vw" src="hero-800.webp" alt="Hero">
-  
+
   4. Inline critical CSS (don't block rendering with stylesheets)
-  
+
   5. Use CDN for static assets (closer to user = faster TTFB)
-  
+
   6. Server-side render (SSR) or static generate (SSG) for fast HTML
 ```
 
 ---
 
-
-
-
 ## 3. INP — Interaction to Next Paint
 
 ```
   INP measures: User clicks → Visual response appears
-  
+
   ┌── What happens on click ─────────────────────────────────────┐
   │                                                              │
   │  Click! → Event handler runs → DOM updates → Style → Layout  │
@@ -121,18 +118,18 @@
   │  Total INP = Input Delay + Processing + Presentation Delay   │
   │                                                              │
   └──────────────────────────────────────────────────────────────┘
-  
-  
+
+
   HOW TO IMPROVE INP:
   ───────────────────
-  
+
   1. Break up long tasks (>50ms blocks the main thread):
-  
+
      // BAD — One 200ms task:
      function processAllItems(items) {
        items.forEach(item => heavyProcessing(item)); // 200ms
      }
-     
+
      // GOOD — Yield to browser between chunks:
      async function processAllItems(items) {
        const CHUNK_SIZE = 50;
@@ -143,34 +140,31 @@
          await new Promise(resolve => setTimeout(resolve, 0));
        }
      }
-  
+
   2. Use requestAnimationFrame for visual updates:
      button.addEventListener('click', () => {
        requestAnimationFrame(() => {
          element.classList.add('active'); // Synced to next frame
        });
      });
-  
+
   3. Move heavy work to Web Workers (see Chapter 10)
-  
+
   4. Debounce expensive input handlers
-  
+
   5. Use CSS for animations (transform, opacity — no JS needed!)
 ```
 
 ---
 
-
-
-
 ## 4. CLS — Cumulative Layout Shift
 
 ```
   CLS measures unexpected layout shifts.
-  
+
   BAD EXAMPLE:
   ───────────
-  
+
   Page loads:                After ad loads:
   ┌──────────────────┐      ┌──────────────────┐
   │ Header           │      │ Header           │
@@ -181,35 +175,35 @@
   │ More content     │      │ Article Title    │ ← SHIFTED!
   │                  │      │ Paragraph text   │
   └──────────────────┘      └──────────────────┘
-  
+
   User was about to click "Article Title" → clicked the AD instead!
-  
-  
+
+
   HOW TO FIX CLS:
   ───────────────
-  
+
   1. ALWAYS set dimensions on images and videos:
      <img src="photo.webp" width="800" height="600" alt="...">
      <!-- Browser reserves space BEFORE image loads -->
-     
+
      /* Or use CSS aspect-ratio: */
      img { aspect-ratio: 16 / 9; width: 100%; }
-  
+
   2. Reserve space for ads/embeds:
      .ad-slot { min-height: 250px; } /* Reserve expected size */
-  
+
   3. Don't inject content above existing content:
      New banners, cookie notices → push from TOP, don't shift content.
-  
+
   4. Use transform for animations (not width/height/top/left):
      /* BAD — causes layout shift: */
      .expanding { height: 0; transition: height 0.3s; }
      .expanding.open { height: 200px; }
-     
+
      /* GOOD — no layout shift: */
      .expanding { transform: scaleY(0); transition: transform 0.3s; }
      .expanding.open { transform: scaleY(1); }
-  
+
   5. Use font-display: swap with size-adjust:
      @font-face {
        font-family: 'CustomFont';
@@ -227,29 +221,35 @@
 <!-- RESOURCE HINTS — Tell browser what to load and when -->
 
 <!-- DNS-PREFETCH: Resolve DNS for external domains early -->
-<link rel="dns-prefetch" href="https://api.example.com">
+<link rel="dns-prefetch" href="https://api.example.com" />
 
 <!-- PRECONNECT: DNS + TCP + TLS handshake early -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://cdn.example.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://cdn.example.com" crossorigin />
 
 <!-- PRELOAD: High-priority fetch for THIS page's critical resources -->
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/hero.webp" as="image">
-<link rel="preload" href="/critical.css" as="style">
+<link
+  rel="preload"
+  href="/fonts/inter.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link rel="preload" href="/hero.webp" as="image" />
+<link rel="preload" href="/critical.css" as="style" />
 
 <!-- PREFETCH: Low-priority fetch for NEXT page's resources -->
-<link rel="prefetch" href="/about.html">
-<link rel="prefetch" href="/js/dashboard.js">
+<link rel="prefetch" href="/about.html" />
+<link rel="prefetch" href="/js/dashboard.js" />
 
 <!-- MODULEPRELOAD: Preload ES modules -->
-<link rel="modulepreload" href="/js/utils.js">
+<link rel="modulepreload" href="/js/utils.js" />
 ```
 
 ```
   LOADING PRIORITY MENTAL MODEL:
   ─────────────────────────────
-  
+
   ┌────────────────────────────────────────────────────────────┐
   │  HIGH PRIORITY (blocks rendering):                         │
   │  • HTML document itself                                    │
@@ -273,19 +273,16 @@
 
 ---
 
-
-
-
 ## 6. Image Optimization — The Biggest Win
 
 ```
   IMAGES ARE 50%+ OF TOTAL PAGE WEIGHT.
   Optimizing images = biggest performance improvement!
-  
-  
+
+
   FORMAT COMPARISON:
   ──────────────────
-  
+
   ┌──────────┬──────────┬────────────┬───────────────────────┐
   │ Format   │ Size     │ Quality    │ Browser Support       │
   ├──────────┼──────────┼────────────┼───────────────────────┤
@@ -294,7 +291,7 @@
   │ WebP     │ Medium   │ Both       │ 97%+                  │
   │ AVIF     │ Smallest │ Both       │ 92%+                  │
   └──────────┴──────────┴────────────┴───────────────────────┘
-  
+
   USE AVIF with WebP fallback:
 ```
 
@@ -325,16 +322,13 @@
 
 ---
 
-
-
-
 ## 7. Font Loading Strategies
 
 ```css
 /* STRATEGY 1: font-display: swap (most common) */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter.woff2') format('woff2');
+  font-family: "Inter";
+  src: url("/fonts/inter.woff2") format("woff2");
   font-display: swap;
   /* Shows fallback font immediately → swaps when custom font loads */
   /* FLASH OF UNSTYLED TEXT (FOUT) — acceptable */
@@ -347,23 +341,23 @@
 
 /* STRATEGY 3: size-adjust to minimize layout shift during swap */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter.woff2') format('woff2');
+  font-family: "Inter";
+  src: url("/fonts/inter.woff2") format("woff2");
   font-display: swap;
 }
 
 /* Fallback that matches Inter's metrics */
 @font-face {
-  font-family: 'Inter-fallback';
-  src: local('Arial');
-  size-adjust: 107%;        /* Adjust to match Inter's character width */
+  font-family: "Inter-fallback";
+  src: local("Arial");
+  size-adjust: 107%; /* Adjust to match Inter's character width */
   ascent-override: 90%;
   descent-override: 22%;
   line-gap-override: 0%;
 }
 
 body {
-  font-family: 'Inter', 'Inter-fallback', sans-serif;
+  font-family: "Inter", "Inter-fallback", sans-serif;
 }
 ```
 
@@ -384,21 +378,18 @@ body {
 
 ---
 
-
-
-
 ## 8. JavaScript Bundle Optimization
 
 ```
   ANALYZE BUNDLE SIZE:
   ────────────────────
-  
+
   # Vite:
   npx vite-bundle-visualizer
-  
+
   # Webpack:
   npx webpack-bundle-analyzer stats.json
-  
+
   Shows a treemap of what's in your bundle:
   ┌──────────────────────────────────────────────────────────┐
   │ ┌──────────────────────────────┐ ┌────────────────────┐  │
@@ -418,10 +409,10 @@ body {
 // CODE SPLITTING — Load code only when needed:
 
 // Route-based splitting (React):
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense } from "react";
 
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Settings = lazy(() => import('./pages/Settings'));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 function App() {
   return (
@@ -435,7 +426,7 @@ function App() {
 }
 
 // Component-level splitting:
-const HeavyChart = lazy(() => import('./components/HeavyChart'));
+const HeavyChart = lazy(() => import("./components/HeavyChart"));
 
 function Dashboard() {
   const [showChart, setShowChart] = useState(false);
@@ -455,15 +446,15 @@ function Dashboard() {
 ```
   TREE SHAKING — Dead code elimination:
   ──────────────────────────────────────
-  
+
   // BAD — imports ENTIRE library:
   import _ from 'lodash';          // 72KB
   _.debounce(fn, 300);
-  
+
   // GOOD — imports only the function:
   import debounce from 'lodash/debounce';  // 2KB
   debounce(fn, 300);
-  
+
   // BEST — use native or lightweight alternative:
   // No library needed for debounce! Write it in 5 lines.
 ```
@@ -487,24 +478,24 @@ function Dashboard() {
 ```
   CACHE-CONTROL HEADER:
   ────────────────────
-  
+
   Static assets (JS, CSS, images) with content hash in filename:
   Cache-Control: public, max-age=31536000, immutable
   (Cache for 1 year — file hash changes when content changes)
-  
+
   HTML pages:
   Cache-Control: no-cache
   (Always revalidate with server — but use cached if unchanged)
-  
+
   API responses:
   Cache-Control: private, max-age=0, must-revalidate
   (Never cache — always fresh)
-  
+
   User-specific data:
   Cache-Control: private, no-store
   (Never store — sensitive data)
-  
-  
+
+
   ┌───────────────────┬──────────────────────────────────────────┐
   │ Asset             │ Cache Strategy                           │
   ├───────────────────┼──────────────────────────────────────────┤
@@ -519,8 +510,6 @@ function Dashboard() {
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Caching Strategies — HTTP Cache Headers**
 
 **Challenge 1 (Debug — Who/When/What):** You deploy a CSS bug fix. The file is `styles.a1b2c3.css` with `Cache-Control: max-age=31536000, immutable`. Users still see the broken styles. **Who** is serving the old file? **When** will they see the fix? **What** does `immutable` mean?
@@ -531,22 +520,20 @@ function Dashboard() {
 
 </details>
 
-
 ## 10. Measuring Performance in Code
 
 ```javascript
 // ─── Performance API ───
 
 // Mark start and end of operations:
-performance.mark('fetch-start');
-const data = await fetch('/api/data');
-performance.mark('fetch-end');
-performance.measure('API Fetch', 'fetch-start', 'fetch-end');
+performance.mark("fetch-start");
+const data = await fetch("/api/data");
+performance.mark("fetch-end");
+performance.measure("API Fetch", "fetch-start", "fetch-end");
 
 // Read measurements:
-const measures = performance.getEntriesByType('measure');
+const measures = performance.getEntriesByType("measure");
 console.log(measures[0].duration); // → 342.5 (ms)
-
 
 // ─── PerformanceObserver — Watch for metrics in real-time ───
 const observer = new PerformanceObserver((list) => {
@@ -557,40 +544,37 @@ const observer = new PerformanceObserver((list) => {
 });
 
 // Observe paint events (FCP, LCP):
-observer.observe({ type: 'paint', buffered: true });
+observer.observe({ type: "paint", buffered: true });
 // → "first-contentful-paint: 1200ms"
 
 // Observe Largest Contentful Paint:
 new PerformanceObserver((list) => {
   const entries = list.getEntries();
   const lastEntry = entries[entries.length - 1];
-  console.log('LCP:', lastEntry.startTime, 'Element:', lastEntry.element);
-}).observe({ type: 'largest-contentful-paint', buffered: true });
+  console.log("LCP:", lastEntry.startTime, "Element:", lastEntry.element);
+}).observe({ type: "largest-contentful-paint", buffered: true });
 
 // Observe Layout Shifts (CLS):
 let clsScore = 0;
 new PerformanceObserver((list) => {
   for (const entry of list.getEntries()) {
-    if (!entry.hadRecentInput) { // Ignore user-triggered shifts
+    if (!entry.hadRecentInput) {
+      // Ignore user-triggered shifts
       clsScore += entry.value;
     }
   }
-  console.log('CLS:', clsScore);
-}).observe({ type: 'layout-shift', buffered: true });
-
+  console.log("CLS:", clsScore);
+}).observe({ type: "layout-shift", buffered: true });
 
 // ─── Web Vitals Library (recommended) ───
 // npm install web-vitals
-import { onLCP, onINP, onCLS } from 'web-vitals';
+import { onLCP, onINP, onCLS } from "web-vitals";
 
-onLCP(({ value }) => sendToAnalytics('LCP', value));
-onINP(({ value }) => sendToAnalytics('INP', value));
-onCLS(({ value }) => sendToAnalytics('CLS', value));
+onLCP(({ value }) => sendToAnalytics("LCP", value));
+onINP(({ value }) => sendToAnalytics("INP", value));
+onCLS(({ value }) => sendToAnalytics("CLS", value));
 ```
 
 ---
 
 **Next Chapter**: [Web Accessibility (a11y) →](07_Web_Accessibility_A11y.md)
-
-
-

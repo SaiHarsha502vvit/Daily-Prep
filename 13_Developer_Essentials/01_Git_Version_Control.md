@@ -813,6 +813,18 @@ Git stores **blob objects keyed by content hash** — identical content across c
 
 ---
 
+### Production Reality
+
+**Git workflows fail in production in these named ways:**
+
+- **Force-push outage** — `git push --force origin main` on a shared branch overwrites the remote ref unconditionally. All collaborators whose local branches were based on the overwritten commits now have divergent histories. Their next `git pull` requires manual conflict resolution or creates a polluting merge commit. Fix: use `git push --force-with-lease origin main` — it fails if the remote has commits your local doesn't know about.
+- **Lost commits from reflog ignorance** — `git reset --hard HEAD~5` appears to delete 5 commits, but the reflog keeps them reachable for 90 days. Developers who don't know reflog treat `reset --hard` as permanent, spending hours re-implementing work that was never actually deleted. The garbage collector only prunes unreachable objects older than the configured expiry window.
+- **Git history rewrite after secret exposure** — a database password committed and pushed, then deleted in a later commit, remains in the full git history forever. Trufflehog and GitGuardian scanners flag it years later. The repo being public or having 15 collaborators means the secret must be treated as compromised and rotated immediately. History rewrite (`git filter-branch` or BFG Repo-Cleaner) is the recovery path, but it requires a force-push that breaks all collaborators' local clones.
+- **Merge vs rebase collision on shared branches** — once a developer has fetched and based work on your feature branch, rebasing that branch rewrites all its commits with new SHAs. Their local branch still points to the old SHAs. Merging creates duplicate commits (same code, different hash) creating a confusing 47-commit PR from what should be 8. Rule: rebase only before the first push; merge after sharing.
+
+**Debug workflow:** For force-push recovery: any collaborator with a pre-force clone can recover the history by force-pushing it back. Use `git reflog` to find the lost commit hash, then `git branch recovery <hash>` to create a recovery branch.
+**Mitigation discipline:** Enforce branch protection rules: disable force-push on `main`/`develop` in GitHub/GitLab settings. Use pre-commit hooks (Gitleaks, detect-secrets) to block secret commits before they reach the remote. Require `--force-with-lease` in any CI scripts that must push.
+
 **Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
 
 ---

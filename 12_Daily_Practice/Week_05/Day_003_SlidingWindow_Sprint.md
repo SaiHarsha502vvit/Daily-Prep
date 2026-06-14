@@ -1,12 +1,14 @@
 # Day 03 - Sliding Window (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 159 - Longest Substring with At Most Two Distinct Characters
 2. LeetCode Hard: 76 - Minimum Window Substring
 3. Codeforces: 279B - Books
 4. Codeforces: 1133C - Balanced Team
 
 ## Problem Links
+
 - LC 159 (Premium): Locked on LeetCode (no public official statement page)
 - LC 76: https://leetcode.com/problems/minimum-window-substring/
 - CF 279B: https://codeforces.com/problemset/problem/279/B
@@ -15,12 +17,15 @@
 ## Problem 1 - LC 159 (Premium)
 
 ### Problem Restatement
+
 Return the maximum length of a substring containing at most two distinct characters.
 
 ### Constraints
+
 - `1 <= |s| <= 100000`
 
 ### Sample
+
 Input: `s = "ccaabbb"`  
 Output: `5`
 
@@ -63,6 +68,7 @@ static int atMostTwoBetter(String s) {
 ```
 
 ### Approach C - Optimal (Last Position Tracking) (O(n), O(1))
+
 Track latest positions of two chars, jump left when third appears.
 
 ```java
@@ -87,16 +93,19 @@ static int atMostTwoOptimal(String s) {
 ## Problem 2 - LC 76: Minimum Window Substring
 
 ### Problem Restatement
+
 Given strings `s` and `t`, return the smallest substring of `s` that contains every char of `t` (with multiplicity).
 
 ### Constraints
+
 - `1 <= |s|, |t| <= 100000`
 
 ### Sample
+
 Input: `s = "ADOBECODEBANC", t = "ABC"`  
 Output: `"BANC"`
 
-### Approach A - Brute Force (O(n^2 * alphabet), O(alphabet))
+### Approach A - Brute Force (O(n^2 \* alphabet), O(alphabet))
 
 ```java
 static String minWindowBrute(String s, String t) {
@@ -152,6 +161,7 @@ static String minWindowBetter(String s, String t) {
 ```
 
 ### Approach C - Optimal (Filtered Characters + Sliding Window)
+
 Only process indices in `s` whose chars appear in `t`.
 
 ```java
@@ -188,6 +198,7 @@ static String minWindowOptimal(String s, String t) {
 ```
 
 ### Interview Notes
+
 - `formed == required` is the core invariant.
 - Optimal version is useful when `s` is very large but `t` is small.
 
@@ -196,13 +207,16 @@ static String minWindowOptimal(String s, String t) {
 ## Problem 3 - CF 279B: Books
 
 ### Problem Restatement
+
 Given reading times and total time `T`, choose longest contiguous segment with sum `<= T`.
 
 ### Constraints
+
 - `1 <= n <= 100000`
 - `1 <= a[i] <= 10000`
 
 ### Sample
+
 Input: `a = [3,1,2,1], T = 5`  
 Output: `3`
 
@@ -264,12 +278,15 @@ static int booksOptimal(int[] a, int T) {
 ## Problem 4 - CF 1133C: Balanced Team
 
 ### Problem Restatement
+
 Choose maximum number of students such that max skill - min skill <= 5.
 
 ### Constraints
+
 - `1 <= n <= 200000`
 
 ### Sample
+
 Input: `[1,10,12,11,14,13]`  
 Output: `4`
 
@@ -322,5 +339,6 @@ static int teamOptimal(int[] a) {
 ```
 
 ### Pattern Takeaways
+
 - Positive arrays + sum bound -> sliding window.
 - Difference bound in sorted array -> two pointers on monotone property.

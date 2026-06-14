@@ -37,6 +37,7 @@ Playwright Test → JSON Report → Ingester API → PostgreSQL → Next.js Dash
 ## Quick Start
 
 ### Prerequisites
+
 - Docker & Docker Compose
 - Node.js 20+ (for local development)
 
@@ -111,15 +112,15 @@ CAP_C3/
 
 ## Ingester API
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/api/runs` | POST | Ingest Playwright JSON report |
-| `/api/overview` | GET | Dashboard summary (pass rate, failing/slow tests) |
-| `/api/tests/:name` | GET | Pass/fail history for a specific test |
-| `/api/owners` | GET | List all test owners |
-| `/api/owners/:name` | GET | Per-owner summary + tests not run in 30 days |
-| `/api/runs` | GET | Recent run list |
+| Endpoint            | Method | Description                                       |
+| ------------------- | ------ | ------------------------------------------------- |
+| `/health`           | GET    | Health check                                      |
+| `/api/runs`         | POST   | Ingest Playwright JSON report                     |
+| `/api/overview`     | GET    | Dashboard summary (pass rate, failing/slow tests) |
+| `/api/tests/:name`  | GET    | Pass/fail history for a specific test             |
+| `/api/owners`       | GET    | List all test owners                              |
+| `/api/owners/:name` | GET    | Per-owner summary + tests not run in 30 days      |
+| `/api/runs`         | GET    | Recent run list                                   |
 
 ### Authentication
 
@@ -136,19 +137,21 @@ The ingester accepts the standard Playwright JSON report format:
   "timestamp": "2024-01-01T00:00:00Z",
   "branch": "main",
   "commitSha": "abc123",
-  "results": [{
-    "tests": [
-      {
-        "title": "test name",
-        "fullTitle": "describe block > test name",
-        "file": "tests/foo.spec.ts",
-        "status": "passed",
-        "duration": 1234,
-        "error": { "message": "..." },
-        "owner": "team-name"
-      }
-    ]
-  }]
+  "results": [
+    {
+      "tests": [
+        {
+          "title": "test name",
+          "fullTitle": "describe block > test name",
+          "file": "tests/foo.spec.ts",
+          "status": "passed",
+          "duration": 1234,
+          "error": { "message": "..." },
+          "owner": "team-name"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -167,7 +170,7 @@ jobs:
           ingester-token: ${{ secrets.INGESTER_TOKEN }}
           playwright-report-path: playwright-report/results.json
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
-          min-pass-rate: '80'
+          min-pass-rate: "80"
 ```
 
 ## Deployment Notes
@@ -188,18 +191,19 @@ Set `NEXT_PUBLIC_INGESTER_URL` to your deployed ingester URL.
 3. Deploy the ingester as a Docker container or Node.js process
 
 Recommended free/cheap tiers:
+
 - **Supabase**: PostgreSQL free tier (500 MB, 2 connections)
 - **Railway**: $5/month hobbyist plan with 1 GB RAM
 - **Render**: Free tier (sleeps after 15 min inactivity)
 
 ### Vercel + Supabase (fully serverless)
 
-| Layer | Service | Plan |
-|-------|---------|------|
-| Frontend | Vercel | Free |
-| API | Vercel Serverless Functions | Free |
-| Database | Supabase | Free (500 MB) |
-| Auth | Supabase Auth | Free |
+| Layer    | Service                     | Plan          |
+| -------- | --------------------------- | ------------- |
+| Frontend | Vercel                      | Free          |
+| API      | Vercel Serverless Functions | Free          |
+| Database | Supabase                    | Free (500 MB) |
+| Auth     | Supabase Auth               | Free          |
 
 The ingester can run as a Vercel serverless function with a connection pooler.
 
@@ -222,6 +226,7 @@ npx vitest run --coverage
 ```
 
 Key areas to cover:
+
 - Zod validation (valid/invalid payloads → 422)
 - Idempotency (re-post same run ID updates, not duplicates)
 - SQL injection resistance (parameterized queries)
@@ -232,7 +237,7 @@ Key areas to cover:
 Annotate Playwright tests to track ownership:
 
 ```typescript
-test('login works', { owner: 'auth-team' }, async ({ page }) => {
+test("login works", { owner: "auth-team" }, async ({ page }) => {
   // ...
 });
 ```
@@ -241,12 +246,12 @@ Use the Playwright `metadata` option or a custom reporter to extract `owner` and
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | (required) | PostgreSQL connection string |
-| `PORT` | `3001` | Ingester listen port |
-| `INGESTER_TOKEN` | `dev-token` | Bearer token for API auth |
-| `NEXT_PUBLIC_INGESTER_URL` | `http://localhost:3001` | Web → ingester URL |
+| Variable                   | Default                 | Description                  |
+| -------------------------- | ----------------------- | ---------------------------- |
+| `DATABASE_URL`             | (required)              | PostgreSQL connection string |
+| `PORT`                     | `3001`                  | Ingester listen port         |
+| `INGESTER_TOKEN`           | `dev-token`             | Bearer token for API auth    |
+| `NEXT_PUBLIC_INGESTER_URL` | `http://localhost:3001` | Web → ingester URL           |
 
 ## License
 

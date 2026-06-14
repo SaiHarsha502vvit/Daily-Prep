@@ -7,6 +7,25 @@ _Follow this sequence for optimal learning_
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Spring Framework by Rod Johnson (2004) — *Expert One-on-One J2EE Design and Development* (Wiley, 2002) spawned Spring as an open-source project. Spring Boot was co-created by Dave Syer, Phillip Webb, and the Spring team at VMware/Pivotal (2014).
+
+**Predecessor context:** Pre-Spring (2002), J2EE/EJBs were heavyweight — each bean required deployment descriptors, interfaces, and a container. Testability was poor. Struts 1.x (2000) simplified web but still required XML configuration. The "XML hell" of early Spring (2004) used `applicationContext.xml` with `<bean>` definitions for every class.
+
+**Evolution narrative:** Spring 1.0 (2004) brought lightweight DI via `BeanFactory`. Spring 2.0 (2006) added custom XML namespaces and AspectJ AOP support. Spring 2.5 (2007) introduced `@Autowired`, `@Component`, and `@Repository` — annotation-based config. Spring 3.0 (2009) brought `@Configuration` Java config (replacing XML), REST support, and `@ResponseBody`. Spring Boot 1.0 (2014) at SpringOne: auto-configuration, embedded servers, starter POMs. Spring Boot 2.0 (2018) added WebFlux reactive stack, Kotlin DSL, and WebClient. Spring Boot 3.0 (2023) switched to Jakarta EE 9+ (jakarta.* namespace), required Java 17 minimum, and added GraalVM native image support.
+
+**Modern practice:** Spring Boot 3.x (2023) with Java 21, Spring Framework 6.x. Use `@SpringBootApplication` + `@Configuration` classes. `spring-boot-starter-*` starters reduce manual dependency management. Spring Boot 3.x generates native images via GraalVM for <100ms startup in serverless.
+
+- **Spring Framework 1.0 — 2004**: Rod Johnson. Lightweight DI. `BeanFactory`. XML configuration.
+- **Spring 2.5 — 2007**: Annotation-based DI. `@Autowired`, `@Component`, `@Service`, `@Repository`.
+- **Spring 3.1 — 2011**: Java config. `@Configuration` + `@Bean` replaces XML. Environment profiles.
+- **Spring Boot 1.0 — 2014**: Dave Syer, Pivotal. Auto-configuration, starters, embedded Tomcat/Jetty.
+- **Spring Boot 2.0 — 2018**: WebFlux reactive, Kotlin DSL, `@WebFluxTest`, `WebClient`. Functional routing.
+- **Spring Boot 3.0 — 2023**: Jakarta EE 9+ (`jakarta.*`), Java 17 minimum, GraalVM native image.
+
+---
+
 # 📍 VISUAL LEARNING PATH (START HERE!)
 
 ```
@@ -137,38 +156,38 @@ _Follow this sequence for optimal learning_
 
 # 📚 COMPLETE FILE → TOPIC MAPPING
 
-## #   File Name                                    Topics
+## # File Name Topics
 
---  Ch06_Functional_Programming.md              Lambda, Streams, Optional,
+-- Ch06_Functional_Programming.md Lambda, Streams, Optional,
 Records, var keyword
-00  02_Spring_Boot_Part0_Hidden_Foundations   Reflection, Proxy, Servlet,
+00 02_Spring_Boot_Part0_Hidden_Foundations Reflection, Proxy, Servlet,
 Jackson, HikariCP, DevTools
-01  03_Spring_Boot_Complete_Part1             JVM, GC, Threads, Memory
-02  04_Spring_Boot_Complete_Part2             IoC, DI, Bean Scopes, Lifecycle,
+01 03_Spring_Boot_Complete_Part1 JVM, GC, Threads, Memory
+02 04_Spring_Boot_Complete_Part2 IoC, DI, Bean Scopes, Lifecycle,
 Circular Dependencies
-03  05_Spring_Boot_Complete_Part3             AOP, Proxies, Auto-Config
-04  06_Spring_Boot_Complete_Part4             JPA/Web/Security Overview
-05  07_Spring_Boot_Part5_Lombok_DTOs          @Data, @Builder, DTO Patterns
-06  08_Spring_Boot_Part6_Service_Repository   @Service, @Repository, @Query
-07  09_Spring_Boot_Part7_Controllers_REST     @RestController, @Valid, APIs
-08  10_Spring_Boot_Part8_JPA_Deep_Dive        Entities, Relations, N+1, Fetch
-09  11_Spring_Boot_Part9_Architecture_Quality Clean Code, Package Structure
-10  12_Spring_Boot_Part10_HTTP_Deep_Dive      HTTP Lifecycle, Headers, REST
-11  13_Spring_Boot_Part11_Auth_Security       JWT, OAuth2, Spring Security
-12  14_Spring_Boot_Part12_DSA_Applications    Rate Limiter, LRU, Trie, Graph
-13  15_Spring_Boot_Part13_Industry_Projects   Notification, Feature Flags
-14  16_Spring_Boot_Part14_Essential_Topics    Cache, Async, Actuator, Swagger
-15  17_Spring_Boot_Part15_WebFlux_Reactive    Mono, Flux, WebClient, R2DBC
-16  18_Spring_Boot_Part16_SOLID_Principles    S.O.L.I.D with Spring Examples
-17  19_Spring_Boot_Part17_Database_Security   Password Hash, Encryption, RBAC
-18  20_Spring_Boot_Part18_Distributed_Tracing Micrometer, Zipkin, Spans
-19  21_Spring_Boot_Part19_Testing_Complete    JUnit, Mockito, TestContainers
-20  22_Spring_Boot_Part20_Microservices       Eureka, Gateway, Circuit Breaker
-21  23_Spring_Boot_Part21_Cloud_Deployment    Docker, K8s, AWS, Azure, CI/CD
-22  24_Spring_Boot_Part22_Annotations         ALL annotations reference
-23  25_Spring_Boot_Part23_Missing_Essentials   WebSockets, GraphQL, gRPC,
+03 05_Spring_Boot_Complete_Part3 AOP, Proxies, Auto-Config
+04 06_Spring_Boot_Complete_Part4 JPA/Web/Security Overview
+05 07_Spring_Boot_Part5_Lombok_DTOs @Data, @Builder, DTO Patterns
+06 08_Spring_Boot_Part6_Service_Repository @Service, @Repository, @Query
+07 09_Spring_Boot_Part7_Controllers_REST @RestController, @Valid, APIs
+08 10_Spring_Boot_Part8_JPA_Deep_Dive Entities, Relations, N+1, Fetch
+09 11_Spring_Boot_Part9_Architecture_Quality Clean Code, Package Structure
+10 12_Spring_Boot_Part10_HTTP_Deep_Dive HTTP Lifecycle, Headers, REST
+11 13_Spring_Boot_Part11_Auth_Security JWT, OAuth2, Spring Security
+12 14_Spring_Boot_Part12_DSA_Applications Rate Limiter, LRU, Trie, Graph
+13 15_Spring_Boot_Part13_Industry_Projects Notification, Feature Flags
+14 16_Spring_Boot_Part14_Essential_Topics Cache, Async, Actuator, Swagger
+15 17_Spring_Boot_Part15_WebFlux_Reactive Mono, Flux, WebClient, R2DBC
+16 18_Spring_Boot_Part16_SOLID_Principles S.O.L.I.D with Spring Examples
+17 19_Spring_Boot_Part17_Database_Security Password Hash, Encryption, RBAC
+18 20_Spring_Boot_Part18_Distributed_Tracing Micrometer, Zipkin, Spans
+19 21_Spring_Boot_Part19_Testing_Complete JUnit, Mockito, TestContainers
+20 22_Spring_Boot_Part20_Microservices Eureka, Gateway, Circuit Breaker
+21 23_Spring_Boot_Part21_Cloud_Deployment Docker, K8s, AWS, Azure, CI/CD
+22 24_Spring_Boot_Part22_Annotations ALL annotations reference
+23 25_Spring_Boot_Part23_Missing_Essentials WebSockets, GraphQL, gRPC,
 Batch, HATEOAS, i18n, GraalVM
---  26_Spring_Boot_Curriculum_50Day            50-day study plan (10 weeks)
+-- 26_Spring_Boot_Curriculum_50Day 50-day study plan (10 weeks)
 
 ---
 
@@ -193,7 +212,6 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📚 COMPLETE LEARNING SEQUENCE
@@ -201,6 +219,7 @@ Batch, HATEOAS, i18n, GraalVM
 ---
 
 ## PREREQUISITES: MODERN JAVA FUNDAMENTALS (Week 0) 🟡
+
 _"You cannot learn Spring Boot without modern Java"_
 
 ```
@@ -236,10 +255,10 @@ _"You cannot learn Spring Boot without modern Java"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PHASE 0: HIDDEN FOUNDATIONS (Week 1 - Read First!) ⚫
+
 _"The invisible knowledge that tutorials never teach"_
 
 ```
@@ -270,15 +289,14 @@ _"The invisible knowledge that tutorials never teach"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Why Part 0 Exists
 
-| What People Say | The Reality |
-|-----------------|-------------|
-| "Just use @Autowired" | But HOW does it inject? (Reflection!) |
+| What People Say                       | The Reality                                            |
+| ------------------------------------- | ------------------------------------------------------ |
+| "Just use @Autowired"                 | But HOW does it inject? (Reflection!)                  |
 | "@Transactional handles transactions" | But WHY doesn't it work on private methods? (Proxies!) |
-| "Add the dependency to pom.xml" | But what does "provided" scope mean? |
-| "Jackson converts JSON automatically" | But WHY do I need TypeReference<List<User>>? |
+| "Add the dependency to pom.xml"       | But what does "provided" scope mean?                   |
+| "Jackson converts JSON automatically" | But WHY do I need TypeReference<List<User>>?           |
 
 **This is the knowledge that separates "tutorial followers" from "real engineers"**
 
@@ -304,7 +322,6 @@ _"You cannot understand Spring without understanding Java internals"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Part 1: Java Foundations (PREREQUISITE)
 
@@ -389,7 +406,6 @@ _"Learn HTTP before building REST APIs"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Part 5: Lombok & DTOs
 
 **File:** `Ch35_SB_Lombok_DTOs.md`
@@ -427,16 +443,15 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 ---
 
-
-
 🔬 **Section Challenge — PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡**
 
 **Challenge 1 (Reasoning):** Why is the standard Spring MVC architecture divided strictly into Controller, Service, and Repository layers? Why not just put all logic in the Controller?
+
 <details><summary>Answer</summary>
 
 Separation of Concerns and Testability. Controllers should only handle HTTP protocol translation (JSON to Java, Status Codes). Repositories should only handle SQL/DB translation. Services contain the pure business logic. If logic is in the Controller, you cannot unit test it without mocking HTTP requests. If it's in the Service, you can instantiate the Service class using `new` and pass mock repositories, completely independent of the web layer.
-</details>
 
+</details>
 
 ## PHASE 3: APPLICATION LAYERS (Week 3-4) 🔵
 
@@ -458,7 +473,6 @@ _"Controller → Service → Repository - The layered architecture"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Part 7: Controllers & REST API
 
@@ -533,7 +547,6 @@ _"Features that make your app production-ready"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Part 14: Essential Production Topics
 
 **File:** `Ch44_SB_Caching_Scheduling.md`
@@ -589,7 +602,6 @@ _"From developer to architect"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Part 9: Clean Architecture & Quality
 
@@ -668,19 +680,18 @@ _"From monolith to microservices, from local to cloud"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Part 15: WebFlux & Reactive Programming
 
 **File:** `Ch48_SB_WebFlux_Core.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| Reactive Streams      | Non-blocking I/O            |
-| Mono & Flux           | Core reactive types         |
-| WebClient             | Reactive HTTP client        |
-| R2DBC                 | Reactive database access    |
-| Backpressure          | Handle overwhelming data    |
-| Schedulers            | Control threading           |
+| Topic            | Why It Matters           |
+| ---------------- | ------------------------ |
+| Reactive Streams | Non-blocking I/O         |
+| Mono & Flux      | Core reactive types      |
+| WebClient        | Reactive HTTP client     |
+| R2DBC            | Reactive database access |
+| Backpressure     | Handle overwhelming data |
+| Schedulers       | Control threading        |
 
 ---
 
@@ -688,13 +699,13 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch38_SB_SOLID_Core.md`
 
-| Topic                            | Spring Example              |
-| -------------------------------- | --------------------------- |
-| Single Responsibility            | Service layer separation    |
-| Open/Closed                      | Strategy pattern in Spring  |
-| Liskov Substitution              | Interface programming       |
-| Interface Segregation            | Repository interfaces       |
-| Dependency Inversion             | @Autowired abstraction      |
+| Topic                 | Spring Example             |
+| --------------------- | -------------------------- |
+| Single Responsibility | Service layer separation   |
+| Open/Closed           | Strategy pattern in Spring |
+| Liskov Substitution   | Interface programming      |
+| Interface Segregation | Repository interfaces      |
+| Dependency Inversion  | @Autowired abstraction     |
 
 ---
 
@@ -702,14 +713,14 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch46_SB_Database_Design.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| User Management       | Registration, authentication|
-| Password Security     | BCrypt, Argon2 hashing      |
-| Role-Based Access     | RBAC implementation         |
-| SQL Injection         | Prevention strategies       |
-| Data Encryption       | Column-level encryption     |
-| Audit Logging         | Track data changes          |
+| Topic             | Why It Matters               |
+| ----------------- | ---------------------------- |
+| User Management   | Registration, authentication |
+| Password Security | BCrypt, Argon2 hashing       |
+| Role-Based Access | RBAC implementation          |
+| SQL Injection     | Prevention strategies        |
+| Data Encryption   | Column-level encryption      |
+| Audit Logging     | Track data changes           |
 
 ---
 
@@ -717,13 +728,13 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch53_SB_Distributed_Tracing.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| Micrometer Tracing    | Observability               |
-| Zipkin Integration    | Trace visualization         |
-| Span & Trace IDs      | Request correlation         |
-| Baggage Propagation   | Cross-service context       |
-| Performance Analysis  | Latency identification      |
+| Topic                | Why It Matters         |
+| -------------------- | ---------------------- |
+| Micrometer Tracing   | Observability          |
+| Zipkin Integration   | Trace visualization    |
+| Span & Trace IDs     | Request correlation    |
+| Baggage Propagation  | Cross-service context  |
+| Performance Analysis | Latency identification |
 
 ---
 
@@ -731,15 +742,15 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch59_SB_Testing_Fundamentals.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| JUnit 5               | Modern testing framework    |
-| Mockito               | Mocking dependencies        |
-| @SpringBootTest       | Integration testing         |
-| @WebMvcTest           | Controller testing          |
-| @DataJpaTest          | Repository testing          |
-| TestContainers        | Real database testing       |
-| TDD & BDD             | Development methodologies   |
+| Topic           | Why It Matters            |
+| --------------- | ------------------------- |
+| JUnit 5         | Modern testing framework  |
+| Mockito         | Mocking dependencies      |
+| @SpringBootTest | Integration testing       |
+| @WebMvcTest     | Controller testing        |
+| @DataJpaTest    | Repository testing        |
+| TestContainers  | Real database testing     |
+| TDD & BDD       | Development methodologies |
 
 ---
 
@@ -747,14 +758,14 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch61_SB_Microservices_Core.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| Service Discovery     | Eureka, Consul              |
-| API Gateway           | Spring Cloud Gateway        |
-| Circuit Breaker       | Resilience4j                |
-| Saga Pattern          | Distributed transactions    |
-| CQRS                  | Read/write separation       |
-| Event Sourcing        | Audit and replay            |
+| Topic             | Why It Matters           |
+| ----------------- | ------------------------ |
+| Service Discovery | Eureka, Consul           |
+| API Gateway       | Spring Cloud Gateway     |
+| Circuit Breaker   | Resilience4j             |
+| Saga Pattern      | Distributed transactions |
+| CQRS              | Read/write separation    |
+| Event Sourcing    | Audit and replay         |
 
 ---
 
@@ -762,15 +773,15 @@ _"From monolith to microservices, from local to cloud"_
 
 **File:** `Ch63_SB_Cloud_Core.md`
 
-| Topic                 | Why It Matters              |
-| --------------------- | --------------------------- |
-| Docker                | Containerization            |
-| Kubernetes            | Container orchestration     |
-| AWS (EKS, S3, SQS)    | Amazon cloud services       |
-| Azure (AKS, Blob)     | Microsoft cloud services    |
-| GCP (GKE, Pub/Sub)    | Google cloud services       |
-| CI/CD Pipelines       | Automated deployments       |
-| Terraform             | Infrastructure as Code      |
+| Topic              | Why It Matters           |
+| ------------------ | ------------------------ |
+| Docker             | Containerization         |
+| Kubernetes         | Container orchestration  |
+| AWS (EKS, S3, SQS) | Amazon cloud services    |
+| Azure (AKS, Blob)  | Microsoft cloud services |
+| GCP (GKE, Pub/Sub) | Google cloud services    |
+| CI/CD Pipelines    | Automated deployments    |
+| Terraform          | Infrastructure as Code   |
 
 **✅ Phase 6 complete when you can:**
 
@@ -814,7 +825,6 @@ _"From monolith to microservices, from local to cloud"_
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -871,7 +881,6 @@ _"From monolith to microservices, from local to cloud"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 🎯 LEARNING TIPS
@@ -879,19 +888,19 @@ _"From monolith to microservices, from local to cloud"_
 ## How To Study Effectively
 
 1. DON'T JUST READ - CODE ALONG
-Create a practice project and implement as you learn
+   Create a practice project and implement as you learn
 2. EACH PART = 1-3 DAYS
-Don't rush. Understanding beats memorization.
+   Don't rush. Understanding beats memorization.
 3. BUILD SOMETHING AFTER EACH PHASE
-Phase 1: Simple bean playground
-Phase 2: REST API skeleton
-Phase 3: Complete CRUD app
-Phase 4: Add caching, security
-Phase 5: Full industry-level project
+   Phase 1: Simple bean playground
+   Phase 2: REST API skeleton
+   Phase 3: Complete CRUD app
+   Phase 4: Add caching, security
+   Phase 5: Full industry-level project
 4. INTERVIEW PREP PRIORITY
-Most asked: IoC/DI, REST, JPA, Transactions, Security
+   Most asked: IoC/DI, REST, JPA, Transactions, Security
 5. REVISIT FOUNDATIONS
-If stuck on advanced topics, re-read Part 2 (IoC) and Part 3 (AOP)
+   If stuck on advanced topics, re-read Part 2 (IoC) and Part 3 (AOP)
 
 ---
 
@@ -937,21 +946,19 @@ Part 19 (Testing Complete) → Part 22 (Testing annotations)
 
 ---
 
-
-
 🔬 **Section Challenge — Learning Paths By Goal**
 
 **Challenge 1 (Reasoning):** Why is the standard Spring MVC architecture divided strictly into Controller, Service, and Repository layers? Why not just put all logic in the Controller?
+
 <details><summary>Answer</summary>
 
 Separation of Concerns and Testability. Controllers should only handle HTTP protocol translation (JSON to Java, Status Codes). Repositories should only handle SQL/DB translation. Services contain the pure business logic. If logic is in the Controller, you cannot unit test it without mocking HTTP requests. If it's in the Service, you can instantiate the Service class using `new` and pass mock repositories, completely independent of the web layer.
-</details>
 
+</details>
 
 # ✅ PHASE COMPLETION CHECKLIST
 
 ## After Each Phase, You Should Be Able To Answer These Questions
-
 
 **Prerequisites**:
 ☐ What's the difference between map() and flatMap() in Streams?
@@ -997,6 +1004,37 @@ _Start with Part 0 if you want to understand the magic._
 _Start with Part 1 if you're completely new to Java._
 _Trust the process!_ 🚀
 
+---
+
+### Production Reality
+
+Spring Boot fails in production in patterns that are entirely absent from tutorials. These are the named failure modes you will hit — and how to debug them.
+
+**Named failure modes:**
+
+- **`Spring circular dependency`** — Constructor A needs B, B needs A. Spring's `BeanCurrentlyInCreationException` fires during refresh. **Debug workflow:** Enable debug logging: `logging.level.org.springframework.beans=DEBUG`. Look for "Constructor argument ... of bean 'serviceB' needed a bean of 'serviceA' that has been:". Fix by: (1) using `@Lazy` on one constructor argument (`@Lazy @Autowired A a`), (2) using setter injection instead of constructor injection for one side, (3) refactoring to a shared intermediate component. Spring 5.3+ improved the error message to name the cycle explicitly.
+
+- **`BeanDefinitionOverrideException` — duplicate bean** — Two `@Bean` or `@Component` methods/classes produce the same bean name. Spring Boot 2.1+ disallows overriding by default. **Debug workflow:** The exception lists both bean definitions. Fix by renaming one bean or setting `spring.main.allow-bean-definition-overriding=true` (not recommended for production — it hides real naming conflicts). Enable `logging.level.org.springframework.beans.factory.annotation=DEBUG` to see which bean wins.
+
+- **`LazyInitializationException`** — A lazy `@Bean` or `@Configuration` class is accessed outside a Spring-managed thread or after the context is fully initialized, when OSIV (Open Session In View) is disabled. The session/entity manager is not available. **Debug workflow:** Enable `spring.jpa.open-in-view=true` (default) during development, but disable it in production (`false`) and fix the actual lazy loading issue with `JOIN FETCH`. To debug: look for the stack trace containing "LazyInitializationException: could not initialize proxy — no Session". Fix by fetching the lazy association eagerly before returning from the service layer.
+
+- **`NoSuchBeanDefinitionException`** — Component scan missed the package. Typically happens when a dependency adds a configuration class in a sub-package not under `@SpringBootApplication`'s package tree. **Debug workflow:** `logging.level.org.springframework=DEBUG` shows which packages are scanned. Fix by adding `@ComponentScan(basePackages = {"com.example.app", "com.example.lib"})`. Or move the main `Application` class to a parent package of all components.
+
+- **`ConfigurationProperties` validation failure on startup** — Type mismatch or missing required property in `application.yml` causes `BindException` or `ConversionFailedException` at startup, preventing the app from starting. **Debug workflow:** The startup log prints the specific property path that failed. Add `@Validated` to your `@ConfigurationProperties` class and run with `--debug`. Fix by adding the missing property or using `spring.config.import` for optional config files.
+
+- **`@Scheduled` overlapping runs** — `fixedRate` tasks that take longer than the interval run concurrently on the default single-threaded scheduler (one thread). On multi-core, the default scheduler is one thread — so a slow task blocks the next. **Debug workflow:** Add ` ShedLock` (or `@Async` with a dedicated thread pool) to prevent overlaps. Configure `@EnableScheduling(pool.size=X)`. Monitor with Micrometer: `scheduler.tasks.active` gauge. Without this, background jobs silently pile up or drop.
+
+---
+
+### Trade-offs: Spring Boot vs Quarkus vs Micronaut
+
+| Framework | Use Case | Latency | Throughput | Complexity | When to Prefer |
+|-----------|----------|---------|------------|------------|----------------|
+| **Spring Boot** | Enterprise Java, rich ecosystem | Medium (JVM startup ~2-3s) | Very high (optimized for throughput) | Medium (convention over configuration) | Long-running services; team already knows Spring; need integration with 200+ starters |
+| **Quarkus** | Cloud-native, GraalVM native | Very low (<50ms startup) | High (optimized for lower memory) | Medium (Spring-like DI,略有不同) | Kubernetes/serverless; need <100MB memory; want faster reload in dev |
+| **Micronaut** | Microservices, compile-time DI | Low (<1s startup) | High (low memory footprint) | Medium-High (newer, less community) | Extreme testability needs; want compile-time AOT (no reflection); microservices with low memory budget |
+
+**Key insight:** Spring Boot wins on ecosystem and team familiarity. Quarkus wins on cold-start performance for serverless. Micronaut wins on testability and compile-time optimization. For most enterprise Java teams, start with Spring Boot; evaluate Quarkus only if serverless cold-start is a proven bottleneck.
 
 ---
 

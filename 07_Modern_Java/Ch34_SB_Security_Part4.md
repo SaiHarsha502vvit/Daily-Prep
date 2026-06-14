@@ -7,6 +7,25 @@ _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Spring Security by Ben Alex and the Spring team (2004) — originally Acegi Security for Spring 1.0, integrated into Spring portfolio as Spring Security.
+
+**Predecessor context:** Pre-Spring Security, Java EE used `j2eesecurity` (JAAS — Java Authentication and Authorization Service) with declarative `web.xml` security. JAAS was verbose, XML-heavy, and not Spring-friendly. Application-level security was implemented with `HttpServletRequest.isUserInRole()` checks scattered throughout code.
+
+**Evolution narrative:** Acegi Security (2004, Ben Alex) was the first comprehensive security framework for Spring — declarative security via `FilterChainProxy`, `SecurityEnabler`, and `AuthenticationManager`. It was renamed Spring Security 2.0 (2007) with improved namespace support (`<http>`, `<authentication-manager>`). Spring Security 3.0 (2009) migrated to Spring 3.0 and added method-level security (`@PreAuthorize`). Spring Security 4.0 (2015) introduced CSRF protection by default, `<csrf>` namespace, and WebSocket security. Spring Security 5.0 (2017) added OAuth 2.0 Client support and reactive security (`Reactor Security`). Spring Security 6.0 (2022) removed legacy code, deprecated `WebSecurityConfigurerAdapter`, and streamlined lambda-based configuration.
+
+**Modern practice:** Spring Security 6.x with Java 17+. Use `SecurityFilterChain` `@Bean` with lambda DSL instead of `WebSecurityConfigurerAdapter`. OAuth 2.0 Resource Server with JWT (`spring-boot-starter-oauth2-resource-server`). CSRF only disabled for stateless REST APIs (`csrf(csrf -> csrf.disable())`). `@PreAuthorize`, `@Secured`, and `@RolesAllowed` for method security.
+
+- **Acegi Security — 2004**: Ben Alex. First Spring security framework. Filter-based. XML configuration.
+- **Spring Security 2.0 — 2007**: Renamed. Namespace support (`<http>`, `<intercept-url>`).
+- **Spring Security 3.0 — 2009**: Spring 3.0. Method security. `@PreAuthorize`, `@Secured`.
+- **Spring Security 4.0 — 2015**: CSRF by default. SpEL in `@PreAuthorize`. WebSocket security.
+- **Spring Security 5.0 — 2017**: OAuth 2.0 client, reactive security (Spring WebFlux integration).
+- **Spring Security 6.0 — 2022**: Deprecated `WebSecurityConfigurerAdapter`. Lambda DSL. Removed legacy filters.
+
+---
+
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
 ```
@@ -49,7 +68,6 @@ _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Tier 5: Data Access (JPA & Hibernate)
@@ -60,22 +78,21 @@ _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 
 ### 🔵 WHY: The Problem with Raw JDBC
 
-
-
 🔬 **Section Challenge — Chapter 1: Understanding JPA Architecture**
 
 **Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
+
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
-</details>
 
+</details>
 
 ## Jdbc Vs Jpa Comparison
 
 RAW JDBC (Boilerplate hell):
 public User findById(Long id) {
-String sql = "SELECT * FROM users WHERE id = ?";
+String sql = "SELECT \* FROM users WHERE id = ?";
 try (Connection conn = dataSource.getConnection();
 PreparedStatement ps = conn.prepareStatement(sql)) {
 ps.setLong(1, id);
@@ -93,7 +110,7 @@ return null;
 }
 JPA (Clean and simple):
 public User findById(Long id) {
-return entityManager.find(User.class, id);  // One line!
+return entityManager.find(User.class, id); // One line!
 }
 OR with Spring Data JPA:
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -146,10 +163,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Jdbc Vs Jpa Comparison**
 
@@ -157,7 +171,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 <details><summary>Answer</summary>
 
-**Who is waiting:** The 11th-20th concurrent requests. Each request acquires a JDBC connection from HikariCP's pool. With 10 connections, the first 10 requests proceed. Requests 11-20 BLOCK waiting for a free connection in the pool. **When it times out:** After `spring.datasource.hikari.connection-timeout` milliseconds (default 30,000ms = 30 seconds). If no connection becomes available within 30s, `SQLTransientConnectionException: Unable to acquire JDBC Connection` is thrown. **Two config properties:** (1) `spring.datasource.hikari.maximum-pool-size=50` — increase the pool for I/O-bound services (DB connections are cheap relative to I/O wait time). (2) `spring.datasource.hikari.connection-timeout=5000` — fail fast (5s) rather than letting the caller hang for 30s. **Sizing formula:** `pool_size = (core_count * 2) + effective_spindle_count` (HikariCP's recommendation for OLTP). For a 4-core server: (4 * 2) + 1 = 9 connections. BUT: if your service has many concurrent threads, size for concurrent users, not CPU count. Monitor `hikari.connections.active` via Actuator metrics.
+**Who is waiting:** The 11th-20th concurrent requests. Each request acquires a JDBC connection from HikariCP's pool. With 10 connections, the first 10 requests proceed. Requests 11-20 BLOCK waiting for a free connection in the pool. **When it times out:** After `spring.datasource.hikari.connection-timeout` milliseconds (default 30,000ms = 30 seconds). If no connection becomes available within 30s, `SQLTransientConnectionException: Unable to acquire JDBC Connection` is thrown. **Two config properties:** (1) `spring.datasource.hikari.maximum-pool-size=50` — increase the pool for I/O-bound services (DB connections are cheap relative to I/O wait time). (2) `spring.datasource.hikari.connection-timeout=5000` — fail fast (5s) rather than letting the caller hang for 30s. **Sizing formula:** `pool_size = (core_count * 2) + effective_spindle_count` (HikariCP's recommendation for OLTP). For a 4-core server: (4 \* 2) + 1 = 9 connections. BUT: if your service has many concurrent threads, size for concurrent users, not CPU count. Monitor `hikari.connections.active` via Actuator metrics.
 
 </details>
 <details><summary>Answer</summary>
@@ -175,9 +189,10 @@ List<Order> findAllWithCustomer();
 @EntityGraph(attributePaths = "customer")
 List<Order> findAll();
 ```
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-</details>
 
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+
+</details>
 
 ## Chapter 2: Entity Mapping
 
@@ -265,8 +280,6 @@ public class Address {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 2: Entity Mapping**
 
 **Challenge 1 (@OneToMany Fetch Type Trap):** You have `@OneToMany(fetch = FetchType.EAGER) List<Order> orders` on `User`. You load 100 users. **Who** fires how many SQL queries? **When** does EAGER fetching cause `OutOfMemoryError`? **What** is the production-safe pattern?
@@ -279,8 +292,8 @@ public class Address {
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
-</details>
 
+</details>
 
 ## Chapter 3: Entity Relationships
 
@@ -582,8 +595,6 @@ public class UserService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
 
 **Challenge 1 (Derived Query Ambiguity):** You add `List<User> findByFirstNameAndLastName(String first, String last)` to your repository. Spring Data JPA auto-generates the query. **Who** parses the method name? **When** does the derived query break? **What** happens with `findByFirstNameOrLastNameAndActive(boolean active)`?
@@ -596,8 +607,8 @@ public class UserService {
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
-</details>
 
+</details>
 
 ## Chapter 5: Transaction Management
 
@@ -700,8 +711,6 @@ public class OrderService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: Transaction Management**
 
 **Challenge 1 (REQUIRES_NEW Gotcha):** `ServiceA.processOrder()` is `@Transactional`. It calls `ServiceB.logAudit()` which is `@Transactional(propagation = REQUIRES_NEW)`. `processOrder()` throws a `RuntimeException` after `logAudit()` returns. **Who** rolls back? **What** is the audit log state after the failure? **When** does this pattern cause data inconsistency?
@@ -714,8 +723,8 @@ public class OrderService {
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 # 🔌 Tier 6: Web & REST API
 
@@ -863,8 +872,6 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Building REST APIs**
 
 **Challenge 1 (HTTP Idempotency):** Your `POST /api/orders` creates an order. A network timeout causes the client to retry the same request. **Who** creates duplicate orders? **When** is POST non-idempotent by definition? **What** pattern prevents duplicates?
@@ -877,8 +884,8 @@ public record ErrorResponse(String message, List<String> errors) {}
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
-</details>
 
+</details>
 
 # 🌱 Tier 7: Spring Security
 
@@ -911,7 +918,6 @@ Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method tha
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: Security Configuration
 
@@ -1004,16 +1010,15 @@ public class UserService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: Security Fundamentals**
 
 **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+
 <details><summary>Answer</summary>
 
 JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-</details>
 
+</details>
 
 # 🧪 Tier 9: Testing
 
@@ -1045,7 +1050,6 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Unit Tests (No Spring Context)
 
@@ -1290,7 +1294,6 @@ TESTING:
 □ Know when to use @MockBean vs @Mock
 ```
 
-
 ---
 
 # 🎯 FINAL SUMMARY
@@ -1334,11 +1337,22 @@ TESTING:
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+---
+
+### Trade-offs: Authentication Strategies
+
+| Strategy | Use Case | Latency | Throughput | Complexity | When to Prefer |
+|----------|----------|---------|------------|------------|----------------|
+| **JWT (stateless)** | Stateless REST APIs, microservices | <5ms (token validation) | Very high (no session store) | Medium (token generation, signing, rotation) | Microservices needing stateless auth; horizontal scaling without session affinity; mobile/SPA clients |
+| **Session + Cookie (stateful)** | Traditional web apps | <2ms (session lookup) | Medium (session store required) | Low (Spring session management) | Server-rendered apps (Thymeleaf, JSP); team unfamiliar with JWT; need "logout all devices" feature |
+| **OAuth2 + OIDC** | SSO, third-party login | 50-200ms (external IdP call) | High (token caching) | High (IdP configuration, scopes) | Enterprise SSO (Okta, Auth0); social login (Google, GitHub); need centralized identity across multiple apps |
+| **API Keys** | Service-to-service, partner APIs | <1ms (static key check) | Very high (no token processing) | Low (key generation, storage) | Internal service calls; partner API access; simple machine-to-machine auth without identity claims |
+
+**Key insight:** JWT is the default for modern SPA and mobile backends. Session cookies are simpler for traditional server-rendered apps. OAuth2 adds federation complexity but enables SSO. API keys are the simplest for internal service calls.
 
 ---
 
 _You now have a complete Spring Boot foundation. Practice with real projects!_
-
 
 ---
 

@@ -19,6 +19,7 @@
 ## 1. What it's for
 
 Integration testing problem:
+
 - Frontend deploys before backend.
 - Backend deploys before frontend.
 - Schema change breaks the contract silently.
@@ -27,12 +28,12 @@ Contract testing catches this: each side declares its expectations; both sides v
 
 ### 1.1 The shift-left
 
-| Layer | When breakage detected |
-|---|---|
-| Production E2E | After deploy |
-| Staging E2E | During deploy |
-| Contract test | In CI, before merge |
-| Static schema check | At lint time |
+| Layer               | When breakage detected |
+| ------------------- | ---------------------- |
+| Production E2E      | After deploy           |
+| Staging E2E         | During deploy          |
+| Contract test       | In CI, before merge    |
+| Static schema check | At lint time           |
 
 Contract testing moves API-mismatch failures to PR time.
 
@@ -64,37 +65,37 @@ This inverts traditional API design — the consumer says what it needs.
 In the frontend repo (or Playwright suite testing the frontend):
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import { PactV3, MatchersV3 } from '@pact-foundation/pact';
+import { test, expect } from "@playwright/test";
+import { PactV3, MatchersV3 } from "@pact-foundation/pact";
 
 const { string, integer, eachLike } = MatchersV3;
 
 const pact = new PactV3({
-  consumer: 'web-app',
-  provider: 'citations-api',
+  consumer: "web-app",
+  provider: "citations-api",
 });
 
-test('GET /citations returns a list', async () => {
+test("GET /citations returns a list", async () => {
   pact
-    .uponReceiving('a request for citations')
+    .uponReceiving("a request for citations")
     .withRequest({
-      method: 'GET',
-      path: '/api/citations',
-      headers: { Authorization: 'Bearer test-token' },
+      method: "GET",
+      path: "/api/citations",
+      headers: { Authorization: "Bearer test-token" },
     })
     .willRespondWith({
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
       body: eachLike({
-        id: string('CIT-001'),
-        status: string('PAID'),
+        id: string("CIT-001"),
+        status: string("PAID"),
         amount: integer(150),
       }),
     });
 
   await pact.executeTest(async (mockServer) => {
     const response = await fetch(`${mockServer.url}/api/citations`, {
-      headers: { Authorization: 'Bearer test-token' },
+      headers: { Authorization: "Bearer test-token" },
     });
     expect(response.status).toBe(200);
     const body = await response.json();
@@ -119,19 +120,20 @@ This is the key insight: matchers describe TYPES + SAMPLES. The provider doesn't
 In the backend repo:
 
 ```typescript
-import { Verifier } from '@pact-foundation/pact';
+import { Verifier } from "@pact-foundation/pact";
 
 await new Verifier({
-  providerBaseUrl: 'http://localhost:8080',
-  pactBrokerUrl: 'https://pact-broker.example.com',
+  providerBaseUrl: "http://localhost:8080",
+  pactBrokerUrl: "https://pact-broker.example.com",
   pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-  provider: 'citations-api',
+  provider: "citations-api",
   providerVersion: process.env.GIT_SHA,
   publishVerificationResult: true,
 }).verifyProvider();
 ```
 
 This:
+
 1. Downloads all pacts FROM consumers (from Pact Broker).
 2. Runs the actual provider service.
 3. Replays each consumer's expected requests against the provider.
@@ -155,8 +157,12 @@ The provider implementation must set up that state:
 new Verifier({
   // ...
   stateHandlers: {
-    'a citation CIT-001 exists': async () => {
-      await db.query('INSERT INTO citations VALUES ($1, $2, $3)', ['CIT-001', 'PAID', 150]);
+    "a citation CIT-001 exists": async () => {
+      await db.query("INSERT INTO citations VALUES ($1, $2, $3)", [
+        "CIT-001",
+        "PAID",
+        150,
+      ]);
     },
   },
 });
@@ -205,6 +211,7 @@ pact-broker can-i-deploy \
 ```
 
 Returns:
+
 - `0` (success) — all required contracts verified.
 - non-zero — some consumer expectations not yet verified by provider.
 

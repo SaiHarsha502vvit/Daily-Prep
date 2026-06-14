@@ -29,52 +29,52 @@ spring:
 @RequiredArgsConstructor
 @Slf4j
 public class AzureBlobStorageService {
-    
+
     private final BlobServiceClient blobServiceClient;
-    
+
     @Value("${spring.cloud.azure.storage.blob.container-name}")
     private String containerName;
-    
+
     public String uploadFile(MultipartFile file, String blobName) {
         try {
             BlobContainerClient containerClient = blobServiceClient
                 .getBlobContainerClient(containerName);
-            
+
             BlobClient blobClient = containerClient.getBlobClient(blobName);
-            
+
             blobClient.upload(file.getInputStream(), file.getSize(), true);
-            
+
             return blobClient.getBlobUrl();
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload to Azure Blob", e);
         }
     }
-    
+
     public byte[] downloadFile(String blobName) {
         BlobClient blobClient = blobServiceClient
             .getBlobContainerClient(containerName)
             .getBlobClient(blobName);
-        
+
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         blobClient.downloadStream(outputStream);
-        
+
         return outputStream.toByteArray();
     }
-    
+
     public String generateSasUrl(String blobName, Duration expiration) {
         BlobClient blobClient = blobServiceClient
             .getBlobContainerClient(containerName)
             .getBlobClient(blobName);
-        
+
         OffsetDateTime expiryTime = OffsetDateTime.now().plus(expiration);
-        
+
         BlobSasPermission permission = new BlobSasPermission()
             .setReadPermission(true);
-        
+
         BlobServiceSasSignatureValues sasValues = new BlobServiceSasSignatureValues(
             expiryTime, permission);
-        
+
         return blobClient.getBlobUrl() + "?" + blobClient.generateSas(sasValues);
     }
 }
@@ -85,24 +85,24 @@ public class AzureBlobStorageService {
 ```java
 @Configuration
 public class AzureKeyVaultConfig {
-    
+
     // Key Vault values are automatically injected when using spring-cloud-azure
     @Value("${database-password}")  // From Key Vault
     private String databasePassword;
-    
+
     @Value("${jwt-secret}")  // From Key Vault
     private String jwtSecret;
-    
+
     @Bean
     public DataSource dataSource(
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username) {
-        
+
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(databasePassword);
-        
+
         return dataSource;
     }
 }
@@ -296,44 +296,44 @@ jwt:
 @RequiredArgsConstructor
 @Slf4j
 public class CloudStorageService {
-    
+
     private final Storage storage;
-    
+
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
-    
+
     public String uploadFile(MultipartFile file, String objectName) {
         try {
             BlobId blobId = BlobId.of(bucketName, objectName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                 .setContentType(file.getContentType())
                 .build();
-            
+
             storage.create(blobInfo, file.getBytes());
-            
+
             return String.format("gs://%s/%s", bucketName, objectName);
-            
+
         } catch (IOException e) {
             throw new StorageException("Failed to upload to GCS", e);
         }
     }
-    
+
     public byte[] downloadFile(String objectName) {
         Blob blob = storage.get(BlobId.of(bucketName, objectName));
         return blob.getContent();
     }
-    
+
     public String getSignedUrl(String objectName, Duration expiration) {
         BlobInfo blobInfo = BlobInfo.newBuilder(
             BlobId.of(bucketName, objectName)).build();
-        
+
         URL signedUrl = storage.signUrl(
             blobInfo,
             expiration.toMinutes(),
             TimeUnit.MINUTES,
             Storage.SignUrlOption.withV4Signature()
         );
-        
+
         return signedUrl.toString();
     }
 }
@@ -344,12 +344,12 @@ public class CloudStorageService {
 ```java
 @Configuration
 public class PubSubConfig {
-    
+
     @Bean
     public MessageChannel orderInputChannel() {
         return new PublishSubscribeChannel();
     }
-    
+
     @Bean
     public MessageChannel orderOutputChannel() {
         return new DirectChannel();
@@ -360,23 +360,23 @@ public class PubSubConfig {
 @RequiredArgsConstructor
 @Slf4j
 public class PubSubService {
-    
+
     private final PubSubTemplate pubSubTemplate;
-    
+
     @Value("${gcp.pubsub.order-topic}")
     private String orderTopic;
-    
+
     public CompletableFuture<String> publishOrder(OrderEvent event) {
         try {
             String message = new ObjectMapper().writeValueAsString(event);
-            
+
             return pubSubTemplate.publish(orderTopic, message)
                 .completable()
                 .thenApply(id -> {
                     log.info("Published message to {}: {}", orderTopic, id);
                     return id;
                 });
-                
+
         } catch (JsonProcessingException e) {
             throw new MessagingException("Failed to serialize order event", e);
         }
@@ -387,24 +387,24 @@ public class PubSubService {
 @Component
 @Slf4j
 public class OrderSubscriber {
-    
+
     @Bean
     public Consumer<Message<String>> orderMessageConsumer() {
         return message -> {
             log.info("Received order message: {}", message.getPayload());
-            
+
             try {
                 OrderEvent event = new ObjectMapper()
                     .readValue(message.getPayload(), OrderEvent.class);
                 processOrder(event);
-                
+
             } catch (Exception e) {
                 log.error("Failed to process order message", e);
                 throw new RuntimeException(e);
             }
         };
     }
-    
+
     private void processOrder(OrderEvent event) {
         // Process the order
     }
@@ -417,41 +417,41 @@ public class OrderSubscriber {
 # cloudbuild.yaml for Cloud Run
 steps:
   # Build the container
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
-      - '.'
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
+      - "."
 
   # Push to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: "gcr.io/cloud-builders/docker"
     args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
+      - "push"
+      - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
 
   # Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
-      - 'run'
-      - 'deploy'
-      - 'order-service'
-      - '--image=gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
-      - '--memory=1Gi'
-      - '--cpu=1'
-      - '--min-instances=1'
-      - '--max-instances=10'
-      - '--concurrency=80'
-      - '--set-env-vars=SPRING_PROFILES_ACTIVE=gcp'
-      - '--set-secrets=DB_PASSWORD=database-password:latest'
-      - '--vpc-connector=vpc-connector'
+      - "run"
+      - "deploy"
+      - "order-service"
+      - "--image=gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
+      - "--region=us-central1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
+      - "--memory=1Gi"
+      - "--cpu=1"
+      - "--min-instances=1"
+      - "--max-instances=10"
+      - "--concurrency=80"
+      - "--set-env-vars=SPRING_PROFILES_ACTIVE=gcp"
+      - "--set-secrets=DB_PASSWORD=database-password:latest"
+      - "--vpc-connector=vpc-connector"
 
 images:
-  - 'gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA'
+  - "gcr.io/$PROJECT_ID/order-service:$COMMIT_SHA"
 ```
 
 ---
@@ -491,17 +491,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'gradle'
-      
+
       - name: Run tests
         run: ./gradlew test
-      
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -515,20 +515,20 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -538,7 +538,7 @@ jobs:
             type=sha,prefix=
             type=ref,event=branch
             type=semver,pattern={{version}}
-      
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -553,18 +553,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: staging
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Configure kubectl
         uses: azure/setup-kubectl@v3
-      
+
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_STAGING }}
-      
+
       - name: Deploy to staging
         run: |
           kubectl set image deployment/order-service \
@@ -576,18 +576,18 @@ jobs:
     needs: deploy-staging
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Configure kubectl
         uses: azure/setup-kubectl@v3
-      
+
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v3
         with:
           kubeconfig: ${{ secrets.KUBE_CONFIG_PRODUCTION }}
-      
+
       - name: Deploy to production
         run: |
           kubectl set image deployment/order-service \
@@ -690,7 +690,6 @@ infrastructure/
     ├── azure/
     └── gcp/
 ```
-
 
 ### Terraform Kubernetes Module
 
@@ -847,7 +846,7 @@ prometheus:
           resources:
             requests:
               storage: 100Gi
-    
+
     serviceMonitorSelector:
       matchLabels:
         prometheus: main
@@ -857,7 +856,7 @@ grafana:
   persistence:
     enabled: true
     size: 10Gi
-  
+
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
@@ -951,7 +950,6 @@ management:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Kubernetes Cost Optimization
 
 ```yaml
@@ -1018,6 +1016,7 @@ spec:
 ### Basic
 
 **Q1: What is the difference between IaaS, PaaS, and SaaS?**
+
 ```
 IaaS (Infrastructure as a Service):
 - Raw infrastructure: VMs, storage, networking
@@ -1036,6 +1035,7 @@ SaaS (Software as a Service):
 ```
 
 **Q2: What are the benefits of using containers?**
+
 ```
 Benefits:
 - Consistency across environments
@@ -1047,6 +1047,7 @@ Benefits:
 ```
 
 **Q3: Explain the difference between EKS, AKS, and GKE**
+
 ```
 EKS (Elastic Kubernetes Service - AWS):
 - AWS managed Kubernetes
@@ -1067,6 +1068,7 @@ GKE (Google Kubernetes Engine):
 ### Advanced
 
 **Q4: How do you handle secrets in cloud deployments?**
+
 ```
 Best practices:
 1. Never store secrets in code or config files
@@ -1081,6 +1083,7 @@ Best practices:
 ```
 
 **Q5: Explain blue-green vs canary deployments**
+
 ```
 Blue-Green:
 - Two identical environments
@@ -1104,6 +1107,7 @@ Use canary for:
 ```
 
 **Q6: How do you ensure high availability in cloud?**
+
 ```
 Strategies:
 1. Multi-AZ deployment
@@ -1161,7 +1165,6 @@ Strategies:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Summary
@@ -1180,20 +1183,18 @@ Cloud deployment requires understanding:
 
 ---
 
-*This completes the Spring Boot Cloud Deployment guide - you're now ready to deploy anywhere!*
-
-
----
-
+_This completes the Spring Boot Cloud Deployment guide - you're now ready to deploy anywhere!_
 
 ---
 
-
+---
 
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** In Spring Cloud Config Server, when you change a property in Git, running services don't pick up the change automatically. You need to call `/actuator/refresh` or use Spring Cloud Bus. Why isn't automatic refresh the default, and what dangerous thing can happen if you refresh config at the wrong time?
+
 <details><summary>Answer</summary>
 
 Automatic refresh is dangerous because: (1) **Mid-request config change** — if a database URL changes while a transaction is in progress, the connection pool may be invalidated, causing the transaction to fail. (2) **Partial refresh across instances** — in a 10-instance cluster, if instances refresh at different times, some use the old config and some use the new config simultaneously, causing inconsistent behavior (split-brain). (3) **@RefreshScope beans are destroyed and recreated** — any in-flight request using that bean gets a `BeanCreationException`. Spring Cloud Bus solves the consistency problem by broadcasting a refresh event to ALL instances simultaneously via RabbitMQ/Kafka, but timing is still not atomic. Best practice: use **blue-green deployment** for critical config changes (deploy new instances with new config, drain old ones), and use `/refresh` only for non-critical properties like feature flags or log levels.
+
 </details>

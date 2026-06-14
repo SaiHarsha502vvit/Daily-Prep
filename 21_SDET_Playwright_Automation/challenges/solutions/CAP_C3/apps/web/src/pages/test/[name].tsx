@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { api, TestDetailData } from '../../api';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { api, TestDetailData } from "../../api";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleString();
@@ -14,7 +14,9 @@ function formatDuration(ms: number): string {
 
 export default function TestDetailPage() {
   const router = useRouter();
-  const name = Array.isArray(router.query.name) ? router.query.name[0] : router.query.name || '';
+  const name = Array.isArray(router.query.name)
+    ? router.query.name[0]
+    : router.query.name || "";
   const [data, setData] = useState<TestDetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +40,15 @@ export default function TestDetailPage() {
       <div className="header">
         <div>
           <h1>Test Detail</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem', wordBreak: 'break-all' }}>
-            {name || '...'}
+          <p
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+              wordBreak: "break-all",
+            }}
+          >
+            {name || "..."}
           </p>
         </div>
       </div>
@@ -50,7 +59,9 @@ export default function TestDetailPage() {
       {!loading && !error && data && (
         <>
           {data.branches.length === 0 ? (
-            <div className="empty">No runs found for this test in the last 30 days.</div>
+            <div className="empty">
+              No runs found for this test in the last 30 days.
+            </div>
           ) : (
             data.branches.map((branch) => (
               <div key={branch.branch} className="branch-group">
@@ -68,15 +79,34 @@ export default function TestDetailPage() {
                     <tbody>
                       {branch.history.map((h) => (
                         <tr key={h.runId + h.timestamp}>
-                          <td className="duration-ms">{formatDate(h.timestamp)}</td>
-                          <td>
-                            <span className={`status-badge ${h.status}`}>{h.status}</span>
+                          <td className="duration-ms">
+                            {formatDate(h.timestamp)}
                           </td>
-                          <td className="duration-ms">{formatDuration(h.durationMs)}</td>
-                          <td style={{ maxWidth: '400px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <td>
+                            <span className={`status-badge ${h.status}`}>
+                              {h.status}
+                            </span>
+                          </td>
+                          <td className="duration-ms">
+                            {formatDuration(h.durationMs)}
+                          </td>
+                          <td
+                            style={{
+                              maxWidth: "400px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
                             {h.errorMessage ? (
-                              <span title={h.errorMessage} style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>
-                                {h.errorMessage.split('\n')[0]}
+                              <span
+                                title={h.errorMessage}
+                                style={{
+                                  color: "var(--danger)",
+                                  fontSize: "0.8rem",
+                                }}
+                              >
+                                {h.errorMessage.split("\n")[0]}
                               </span>
                             ) : (
                               <span className="empty-value">—</span>

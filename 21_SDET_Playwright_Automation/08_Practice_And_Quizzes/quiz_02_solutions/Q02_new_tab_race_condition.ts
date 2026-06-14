@@ -8,53 +8,53 @@
  * QUESTION: Find the bug. What happens in real execution?
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ❌ BUGGY — waitForEvent is registered AFTER the click.
 // If the browser opens the new tab before waitForEvent attaches the listener
 // (common in fast local envs), the 'page' event fires and is missed.
 // The await then hangs until the default timeout and the test fails with
 // "waitForEvent('page') exceeded timeout".
-test('view order in new tab — BUGGY', async ({ page, context }) => {
+test("view order in new tab — BUGGY", async ({ page, context }) => {
   // The click happens first ...
-  await page.locator('#viewOrderBtn').click(); // tab may already be open here
+  await page.locator("#viewOrderBtn").click(); // tab may already be open here
   // ... then we try to listen — but the event already fired.
-  const newTab = await context.waitForEvent('page');
+  const newTab = await context.waitForEvent("page");
 
-  await newTab.waitForLoadState('domcontentloaded');
-  await expect(newTab.locator('.order-id')).toHaveText('ORD-001');
+  await newTab.waitForLoadState("domcontentloaded");
+  await expect(newTab.locator(".order-id")).toHaveText("ORD-001");
 });
 
 // ✅ FIX — wrap in Promise.all so the listener is registered BEFORE the click.
 // Promise.all starts both promises simultaneously in the same microtask queue
 // flush, but because waitForEvent attaches synchronously before click() fires
 // its first microtask, the listener is always in place when the tab opens.
-test('view order in new tab — FIXED', async ({ page, context }) => {
+test("view order in new tab — FIXED", async ({ page, context }) => {
   const [newTab] = await Promise.all([
-    context.waitForEvent('page'), // 1 — register listener FIRST (synchronous registration)
-    page.locator('#viewOrderBtn').click(), // 2 — trigger SECOND
+    context.waitForEvent("page"), // 1 — register listener FIRST (synchronous registration)
+    page.locator("#viewOrderBtn").click(), // 2 — trigger SECOND
   ]);
 
-  await newTab.waitForLoadState('domcontentloaded');
-  await expect(newTab.locator('.order-id')).toHaveText('ORD-001');
+  await newTab.waitForLoadState("domcontentloaded");
+  await expect(newTab.locator(".order-id")).toHaveText("ORD-001");
 });
 
 // ✅ REUSABLE HELPER — same pattern extracted for shared use across tests.
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from "@playwright/test";
 
 async function openInNewTab(triggerLocator: Locator): Promise<Page> {
   const parentPage = triggerLocator.page();
   const [newTab] = await Promise.all([
-    parentPage.context().waitForEvent('page'),
+    parentPage.context().waitForEvent("page"),
     triggerLocator.click(),
   ]);
-  await newTab.waitForLoadState('domcontentloaded');
+  await newTab.waitForLoadState("domcontentloaded");
   return newTab;
 }
 
-test('view order in new tab — with helper', async ({ page }) => {
-  const orderTab = await openInNewTab(page.locator('#viewOrderBtn'));
-  await expect(orderTab.locator('.order-id')).toHaveText('ORD-001');
+test("view order in new tab — with helper", async ({ page }) => {
+  const orderTab = await openInNewTab(page.locator("#viewOrderBtn"));
+  await expect(orderTab.locator(".order-id")).toHaveText("ORD-001");
   await orderTab.close();
 });
 

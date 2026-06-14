@@ -7,6 +7,7 @@
 You identified an important gap: permutations/combinations were present in problem files, but the **deep math reasoning + communication style** was missing.
 
 This chapter fixes that in your preferred order:
+
 1. Plain logic and counting math
 2. Decision framework (which model to use)
 3. Interview narration (how to explain)
@@ -22,11 +23,9 @@ This chapter fixes that in your preferred order:
 - Interpretation: number of ways to arrange $n$ distinct items in order
 
 Examples:
+
 - 3 letters (A,B,C): $3! = 6$ orders
 - 5 distinct numbers: $5! = 120$ permutations
-
-
-
 
 ## 1.2 Permutation formula (order matters)
 
@@ -54,9 +53,6 @@ $$
 
 Interpretation: combinations times internal ordering of chosen set.
 
-
-
-
 ## 1.4 Multiset duplicates
 
 If total $n$ items with repeats $a,b,c,...$:
@@ -78,21 +74,26 @@ $$
 Use this mental classifier:
 
 1. "Does order change meaning?"
+
 - yes -> permutation/sequence
 - no -> combination/subset
 
 2. "Do I need fixed size $k$?"
+
 - yes -> choose/arrange $k$
 - no -> all subsets/permutations
 
 3. "Can an element repeat?"
+
 - yes -> unbounded/reuse model
 - no -> used-once model
 
 4. "Are duplicates in input possible?"
+
 - yes -> sort + duplicate-skip logic
 
 5. "Need count only or actual lists?"
+
 - count -> DP/combinatorics faster
 - materialized lists -> backtracking
 
@@ -104,16 +105,15 @@ Interview one-liner:
 
 ## 3) Product Rule, Sum Rule, Complement — The Hidden Backbone
 
-
-
 🔬 **Section Challenge — 3) Product Rule, Sum Rule, Complement — The Hidden Backbone**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 3.1 Product rule
 
@@ -127,16 +127,15 @@ If options are mutually exclusive: total = add counts.
 
 Example: select from branch CSE or EEE with no overlap -> add counts.
 
-
-
 🔬 **Section Challenge — 3.2 Sum rule**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## 3.3 Complement counting
 
@@ -150,9 +149,6 @@ Interview line:
 
 ---
 
-
-
-
 ## 4) Problem Families with Logic-First Explanations
 
 ## Family A: Generate all permutations of distinct numbers
@@ -165,10 +161,12 @@ Interview line:
 - Stop when sequence length equals $n$
 
 State:
+
 - current path
 - used set/boolean array
 
 Complexity:
+
 - states $\approx n!$
 - each output copy costs $O(n)$
 - total $O(n \cdot n!)$
@@ -177,9 +175,6 @@ Interview narration:
 
 "This is an order-sensitive exhaustive generation. I model it as a permutation tree where each level fixes one position with an unused element."
 
-
-
-
 ## Family B: Permutations with duplicates
 
 ### Plain logic
@@ -187,6 +182,7 @@ Interview narration:
 Naive generation repeats same output due to equal values.
 
 Fix:
+
 - sort input
 - when encountering equal values, only allow one branch ordering per level using skip rule
 
@@ -203,6 +199,7 @@ Skip rule concept:
 - each recursive call moves start forward
 
 Complexity:
+
 - outputs $\binom{n}{k}$
 - each output length $k$
 - total $O(k \cdot \binom{n}{k})$
@@ -210,9 +207,6 @@ Complexity:
 Interview narration:
 
 "I prevent reorder duplicates by only selecting future elements. This turns permutations into combinations."
-
-
-
 
 ## Family D: Combination Sum (reuse allowed)
 
@@ -222,17 +216,16 @@ Interview narration:
 - prune when running sum exceeds target
 
 Key distinction:
+
 - reuse allowed -> recurse with same index
 - reuse not allowed -> recurse with next index
-
-
-
 
 ## Family E: Subsets / power set
 
 ### Plain logic
 
 Each element has two decisions:
+
 - include
 - exclude
 
@@ -246,29 +239,17 @@ Interview line:
 
 ## 5) Pruning Strategy (Where Senior-Level Thinking Shows)
 
-
-
-
 ## 5.1 Bound-based pruning
 
 If remaining best-case cannot beat target, cut branch.
-
-
-
 
 ## 5.2 Sum overflow pruning
 
 In positive-only sets, if current sum > target, stop branch immediately.
 
-
-
-
 ## 5.3 Length pruning
 
 If required length is $k$, and remaining elements are fewer than needed, stop.
-
-
-
 
 ## 5.4 Duplicate symmetry pruning
 
@@ -280,37 +261,27 @@ Interview line:
 
 ---
 
-
-
-
 ## 6) Real-World Mapping (How to Explain Relevance)
-
-
-
 
 ## 6.1 Security / OTP / brute-force risk
 
 - permutations/sequences count -> attack surface size
 - informs rate-limit and lockout policy
 
-
-
 🔬 **Section Challenge — 6.1 Security / OTP / brute-force risk**
 
 **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+
 <details><summary>Answer</summary>
 
 JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-</details>
 
+</details>
 
 ## 6.2 Team/route scheduling
 
 - order-sensitive assignments -> permutation model
 - choose subset of candidates -> combination model
-
-
-
 
 ## 6.3 Product bundles and recommendations
 
@@ -338,15 +309,9 @@ Interview line:
 
 "My state is current selection plus used elements and current depth/sum. Transition is choosing one valid next candidate; rollback restores state for sibling branches."
 
-
-
-
 ## Template 3 — explain complexity
 
 "Worst case is exponential due to output size itself. Since we must enumerate results, lower complexity than output cardinality is impossible."
-
-
-
 
 ## Template 4 — explain pruning
 
@@ -354,34 +319,33 @@ Interview line:
 
 ---
 
-
-
-
 ## 8) From Math Logic to Language-Specific Coding (After Logic is Clear)
 
 You asked for language details only after plain logic; this is that final step.
 
-
-
-
 ## 8.1 Language-agnostic implementation checklist
 
 1. Data structures:
+
 - list for current path
 - boolean/map for used
 - result container
 
 2. Recursion contract:
+
 - function(path, start/used, remaining target)
 
 3. Base conditions:
+
 - path length met OR target met
 
 4. Undo step:
+
 - remove last choice
 - unmark used
 
 5. Duplicate handling:
+
 - sorted input + skip condition
 
 ## 8.2 Java-specific implementation notes
@@ -404,28 +368,30 @@ When only counts are needed (not full generated sets), avoid recursive generatio
 
 ---
 
-
-
-
 ## 9) Common Mistakes and How to Avoid Them
 
 1. Treating combinations like permutations
+
 - symptom: duplicate output orderings
 - fix: enforce forward index
 
 2. Forgetting rollback in backtracking
+
 - symptom: corrupted path across branches
 - fix: strict choose -> recurse -> unchoose
 
 3. Ignoring duplicate handling
+
 - symptom: repeated outputs
 - fix: sort + level-based skip rule
 
 4. Not pruning sum overflow
+
 - symptom: timeout on combination sum
 - fix: monotonic pruning after sort
 
 5. Wrong complexity claim
+
 - symptom: claiming polynomial
 - fix: tie complexity to output size
 

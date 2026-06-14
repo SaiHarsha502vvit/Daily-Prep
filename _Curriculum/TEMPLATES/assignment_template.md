@@ -5,20 +5,25 @@
 **Weight:** [% of final grade]
 
 ## Description
+
 [One-paragraph description of the problem or task]
 
 ## Constraints
+
 - [ ]
 - [ ]
 
 ## Submission
+
 - Submit via: [ ]
 - Format: [ ]
 - Late policy: [ ]
 
 ## Rubric
+
 **See:** `../rubrics/[rubric_file].md`
 
 ## References
+
 - [ ]
 - [ ]

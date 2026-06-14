@@ -11,7 +11,7 @@
  *   3. Does NOT contain any item with status:'DELETED'
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ============================================================
 // Type setup (mirrors the API contract)
@@ -19,7 +19,7 @@ import { test, expect } from '@playwright/test';
 
 interface Citation {
   citationId: string;
-  status: 'PENDING' | 'PAID' | 'DISPUTED' | 'DELETED';
+  status: "PENDING" | "PAID" | "DISPUTED" | "DELETED";
   amount: number;
   issuedAt: string;
   vehicleId?: string;
@@ -34,10 +34,10 @@ interface CitationsResponse {
 // ✅ SOLUTION
 // ============================================================
 
-test('GET /citations — assertions with expect.objectContaining', async ({
+test("GET /citations — assertions with expect.objectContaining", async ({
   request,
 }) => {
-  const response = await request.get('/api/v1/citations');
+  const response = await request.get("/api/v1/citations");
   expect(response.ok()).toBeTruthy();
 
   const body = (await response.json()) as CitationsResponse;
@@ -49,15 +49,15 @@ test('GET /citations — assertions with expect.objectContaining', async ({
   // 2 — Contains the target citation (partial match — other fields ignored)
   expect(body.citations).toContainEqual(
     expect.objectContaining({
-      citationId: 'CIT-001',
-      status: 'PAID',
+      citationId: "CIT-001",
+      status: "PAID",
       amount: expect.any(Number), // any Number (including 0.01 or 99999.99)
     }),
   );
 
   // 3 — No DELETED items in the array
   expect(body.citations).not.toContainEqual(
-    expect.objectContaining({ status: 'DELETED' }),
+    expect.objectContaining({ status: "DELETED" }),
   );
 });
 
@@ -65,34 +65,34 @@ test('GET /citations — assertions with expect.objectContaining', async ({
 // BONUS — verify the matching item's amount is POSITIVE
 // ============================================================
 
-test('CIT-001 has positive amount', async ({ request }) => {
-  const response = await request.get('/api/v1/citations');
+test("CIT-001 has positive amount", async ({ request }) => {
+  const response = await request.get("/api/v1/citations");
   const body = (await response.json()) as CitationsResponse;
 
   // Find the specific citation for further assertions
-  const paid = body.citations.find((c) => c.citationId === 'CIT-001');
+  const paid = body.citations.find((c) => c.citationId === "CIT-001");
 
   // First assert it was found, then assert its properties
   expect(paid).toBeDefined();
   expect(paid!.amount).toBeGreaterThan(0);
-  expect(paid!.status).toBe('PAID');
+  expect(paid!.status).toBe("PAID");
 });
 
 // ============================================================
 // Pattern reference — expect.objectContaining vs toEqual
 // ============================================================
 
-test('objectContaining vs toEqual comparison', async ({ request }) => {
-  const response = await request.get('/api/v1/citations/CIT-001');
+test("objectContaining vs toEqual comparison", async ({ request }) => {
+  const response = await request.get("/api/v1/citations/CIT-001");
   const citation = (await response.json()) as Citation;
 
   // toEqual: EXACT match — every field must match exactly (strict)
   // Fails if the response has extra fields you didn't include.
   expect(citation).toEqual({
-    citationId: 'CIT-001',
-    status: 'PAID',
+    citationId: "CIT-001",
+    status: "PAID",
     amount: 150,
-    issuedAt: '2026-05-01T00:00:00Z',
+    issuedAt: "2026-05-01T00:00:00Z",
     // ← if 'vehicleId' exists in response but not here → TEST FAILS
   });
 
@@ -100,8 +100,8 @@ test('objectContaining vs toEqual comparison', async ({ request }) => {
   // Extra fields in the actual object are allowed (ignored).
   expect(citation).toEqual(
     expect.objectContaining({
-      citationId: 'CIT-001',
-      status: 'PAID',
+      citationId: "CIT-001",
+      status: "PAID",
       // 'amount', 'issuedAt', 'vehicleId' etc. are NOT checked → test passes
     }),
   );

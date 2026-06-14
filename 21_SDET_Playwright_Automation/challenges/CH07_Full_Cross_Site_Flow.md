@@ -14,11 +14,12 @@ You are testing this flow:
 6. **Cleanup** — delete the customer account via Admin API.
 
 You don't have an admin portal yet, so simulate it with any combination of:
+
 - OrangeHRM (as admin UI) + reqres.in (as customer/order API), OR
 - Two `the-internet.herokuapp.com` sub-pages, OR
 - A local Node mock you spin up via `webServer` in `playwright.config.ts`.
 
-The *patterns* matter, not the apps.
+The _patterns_ matter, not the apps.
 
 ## Required structure
 
@@ -35,15 +36,15 @@ challenges/solutions/CH07/
 
 ## The seven laws — check each one
 
-| Law | Where you must prove it |
-|---|---|
-| 1. Tests describe behaviour only | Spec has zero locators, zero URLs, zero hardcoded data |
-| 2. Nothing hardcoded | Timeouts from `Timeouts`, URLs from `endpoints`, data from JSON |
-| 3. Layered imports | Spec → POMs/Clients → utilities → constants. No upward imports |
-| 4. Actions wrapped with logging | `clickElement`/`fillInput` only — no raw `.click()` |
-| 5. Parallel safety | `acquireAccount` + `try/finally releaseAccount` |
-| 6. UI + API cross-validation | UI confirms success; API confirms notification |
-| 7. TS strict | Zero `any`. Every method typed. Every JSON load typed. |
+| Law                              | Where you must prove it                                         |
+| -------------------------------- | --------------------------------------------------------------- |
+| 1. Tests describe behaviour only | Spec has zero locators, zero URLs, zero hardcoded data          |
+| 2. Nothing hardcoded             | Timeouts from `Timeouts`, URLs from `endpoints`, data from JSON |
+| 3. Layered imports               | Spec → POMs/Clients → utilities → constants. No upward imports  |
+| 4. Actions wrapped with logging  | `clickElement`/`fillInput` only — no raw `.click()`             |
+| 5. Parallel safety               | `acquireAccount` + `try/finally releaseAccount`                 |
+| 6. UI + API cross-validation     | UI confirms success; API confirms notification                  |
+| 7. TS strict                     | Zero `any`. Every method typed. Every JSON load typed.          |
 
 ## Acceptance criteria
 

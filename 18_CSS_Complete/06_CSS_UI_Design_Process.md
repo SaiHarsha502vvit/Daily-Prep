@@ -28,9 +28,9 @@
 ```
   WHAT JUNIOR DOES:                       WHAT SENIOR DOES:
   ═════════════════                       ═════════════════
-  
+
   Sees design → starts coding             Sees design → ANALYZES first
-  pixel-pushing divs                       
+  pixel-pushing divs
   Adds margins randomly                   Step 1: IDENTIFY the layout type
   Everything breaks on mobile              ┌─────────────────────────┐
   Rewrites 3 times                        │ Is it a grid? Holy grail?│
@@ -70,29 +70,29 @@ When you receive a design (Figma, screenshot, wireframe):
 ```
   ASK THESE QUESTIONS:
   ═══════════════════
-  
+
   1. LAYOUT: What's the page skeleton?
      □ Is there a sidebar? Fixed or collapsible?
      □ Is the header sticky?
      □ How many content columns?
      □ Is the footer at the bottom even when content is short?
-  
+
   2. GRID: What's the underlying grid?
      □ Count the columns (usually 12 or auto)
      □ What's the gutter (gap) between items?
      □ What's the max-width of the content area?
-  
+
   3. COMPONENTS: What repeats?
      □ Buttons (how many variants: primary, secondary, ghost?)
      □ Cards (same structure, different content?)
      □ Forms (input fields, labels, error states)
      □ Navigation items (active state?)
-  
+
   4. SPACING: What's the rhythm?
      □ Are spacings multiples of 4px or 8px?
      □ Section gaps vs element gaps
      □ Padding inside cards vs margins between cards
-  
+
   5. BREAKPOINTS: How does it respond?
      □ What changes at mobile? Tablet?
      □ Does the sidebar collapse?
@@ -101,15 +101,12 @@ When you receive a design (Figma, screenshot, wireframe):
 
 ---
 
-
-
-
 ## 2. Layout Strategy — Which CSS Approach for What
 
 ```
   DECISION TREE: "I need to build THIS layout"
   ═════════════════════════════════════════════
-  
+
   Is it a PAGE-LEVEL layout?
   │
   ├── YES → Use CSS GRID
@@ -157,21 +154,21 @@ When you receive a design (Figma, screenshot, wireframe):
   ║  • Content-out (items dictate size) → Flexbox                        ║
   ║  • Layout-in (grid dictates placement) → Grid                       ║
   ╚═══════════════════════════════════════════════════════════════════════╝
-  
+
   REAL EXAMPLES:
-  
+
   Navbar with logo left, links center, profile right:
   → FLEXBOX (one row, space-between)
-  
+
   Dashboard with sidebar, header, main, and widget panels:
   → GRID (2D layout with named areas)
-  
+
   Card with image top, title, description, button bottom:
   → FLEXBOX column (flex-grow on description pushes button down)
-  
+
   Photo gallery that adapts to screen width:
   → GRID (auto-fill + minmax)
-  
+
   Form with labels aligned to inputs across rows:
   → GRID (consistent column widths)
 ```
@@ -183,7 +180,7 @@ When you receive a design (Figma, screenshot, wireframe):
 ```
   EXAMPLE: E-commerce Product Page
   ═════════════════════════════════
-  
+
   ┌──────────────────────────────────────────────────────────────────┐
   │  [Logo]  [Search............]  [Cart(3)]  [Profile]  ← HEADER  │
   ├──────────────────────────────────────────────────────────────────┤
@@ -202,11 +199,11 @@ When you receive a design (Figma, screenshot, wireframe):
   ├──────────────────────────────────────────────────────────────────┤
   │  © 2026 Company  │  Links  │  Social  │              ← FOOTER  │
   └──────────────────────────────────────────────────────────────────┘
-  
-  
+
+
   DECOMPOSITION:
   ══════════════
-  
+
   Page Layout (CSS Grid):
   ├── <Header />           → grid-column: 1 / -1 (full width)
   │   ├── Logo
@@ -243,10 +240,18 @@ When you receive a design (Figma, screenshot, wireframe):
   min-height: 100vh;
 }
 
-.header  { grid-area: header; }
-.sidebar { grid-area: sidebar; }
-.content { grid-area: content; }
-.footer  { grid-area: footer; }
+.header {
+  grid-area: header;
+}
+.sidebar {
+  grid-area: sidebar;
+}
+.content {
+  grid-area: content;
+}
+.footer {
+  grid-area: footer;
+}
 
 /* Step 2: Product grid INSIDE the content area */
 .product-grid {
@@ -265,23 +270,22 @@ When you receive a design (Figma, screenshot, wireframe):
       "content"
       "footer";
   }
-  .sidebar { display: none; }  /* or move to a drawer */
+  .sidebar {
+    display: none;
+  } /* or move to a drawer */
 }
 ```
 
 ---
-
-
-
 
 ## 4. The Box Model Thinking Process
 
 ```
   WHEN LOOKING AT ANY ELEMENT IN A DESIGN:
   ═════════════════════════════════════════
-  
+
   Ask: Where does each space come from?
-  
+
   ┌──── margin (space OUTSIDE the element) ──────────────────────┐
   │                                                               │
   │  ┌──── border ──────────────────────────────────────────┐    │
@@ -295,69 +299,66 @@ When you receive a design (Figma, screenshot, wireframe):
   │  └───────────────────────────────────────────────────────┘    │
   │                                                               │
   └───────────────────────────────────────────────────────────────┘
-  
-  
+
+
   ALWAYS SET THIS:
   ════════════════
   *, *::before, *::after {
     box-sizing: border-box;  /* width INCLUDES padding + border */
   }
-  
+
   Without this: width: 200px + padding: 20px = 240px total. Nightmare.
   With this:    width: 200px = 200px total (padding fits inside). Sanity.
-  
-  
+
+
   MARGIN vs PADDING DECISION:
   ═══════════════════════════
-  
+
   "I need space between this card and the next card"
   → MARGIN (or gap if using flex/grid)
-  
+
   "I need space between the card border and the text inside"
   → PADDING
-  
+
   "I need space between a section title and the content below"
   → MARGIN-BOTTOM on the title (or margin-top on content)
-  
+
   BEST PRACTICE: Use gap (flex/grid) instead of margins between siblings.
   Gap doesn't cause margin collapse and is more predictable.
 ```
 
 ---
 
-
-
-
 ## 5. Responsive Design Workflow — Mobile-First in Practice
 
 ```
   MOBILE-FIRST MEANS:
   ═══════════════════
-  
+
   Write CSS for MOBILE first (default).
   Then ADD complexity for larger screens.
-  
+
   /* Mobile (default) — single column, simple */
   .product-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   /* Tablet (768px+) — 2 columns */
   @media (min-width: 768px) {
     .product-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-  
+
   /* Desktop (1024px+) — 3 columns */
   @media (min-width: 1024px) {
     .product-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
-  
+
   /* Large desktop (1440px+) — 4 columns, max-width */
   @media (min-width: 1440px) {
     .product-grid {
@@ -366,11 +367,11 @@ When you receive a design (Figma, screenshot, wireframe):
       margin: 0 auto;
     }
   }
-  
-  
+
+
   STANDARD BREAKPOINTS:
   ═════════════════════
-  
+
   ┌─────────────┬────────────────┬──────────────────────────────┐
   │ Breakpoint   │ Min-width      │ Targets                      │
   ├─────────────┼────────────────┼──────────────────────────────┤
@@ -380,17 +381,17 @@ When you receive a design (Figma, screenshot, wireframe):
   │ xl           │ 1280px         │ Desktops                      │
   │ 2xl          │ 1536px         │ Large monitors                │
   └─────────────┴────────────────┴──────────────────────────────┘
-  
-  
+
+
   WHAT CHANGES AT EACH BREAKPOINT:
   ════════════════════════════════
-  
+
   Mobile → Tablet:
   • Sidebar appears (was hidden/drawer)
   • Cards go from 1-col to 2-col
   • Font sizes increase slightly
   • Hamburger menu becomes horizontal nav
-  
+
   Tablet → Desktop:
   • Cards go from 2-col to 3-col
   • Content max-width kicks in (no more than 1200px)
@@ -405,9 +406,9 @@ When you receive a design (Figma, screenshot, wireframe):
 ```
   THE 8px GRID SYSTEM:
   ════════════════════
-  
+
   ALL spacing should be multiples of 8px:
-  
+
   --space-1:  0.25rem  (4px)   → tight spacing, icon margins
   --space-2:  0.5rem   (8px)   → between related elements
   --space-3:  0.75rem  (12px)  → form field gaps
@@ -416,16 +417,16 @@ When you receive a design (Figma, screenshot, wireframe):
   --space-8:  2rem     (32px)  → major section gaps
   --space-12: 3rem     (48px)  → page section separators
   --space-16: 4rem     (64px)  → hero sections
-  
-  
+
+
   WHY A SYSTEM?
   ═════════════
-  
+
   Without system:                    With system:
   margin: 13px;                      margin: var(--space-4);
   padding: 17px 23px;                padding: var(--space-4) var(--space-6);
   gap: 11px;                         gap: var(--space-3);
-  
+
   Result: Random spacings,           Result: Visual rhythm,
   nothing aligns, chaotic.           harmonious, professional.
 ```
@@ -459,17 +460,14 @@ When you receive a design (Figma, screenshot, wireframe):
 
 ---
 
-
-
-
 ## 7. Typography System
 
 ```
   TYPE SCALE (proportional sizing):
   ═════════════════════════════════
-  
+
   Pick a RATIO (1.25 "Major Third" is most common):
-  
+
   Base:   1rem    (16px) → body text
   ×1.25:  1.25rem (20px) → h4 / lead text
   ×1.25²: 1.563rem(25px) → h3
@@ -481,25 +479,25 @@ When you receive a design (Figma, screenshot, wireframe):
 ```css
 :root {
   /* Font families */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
   /* Type scale */
-  --text-xs:   0.75rem;   /* 12px — captions, labels */
-  --text-sm:   0.875rem;  /* 14px — secondary text */
-  --text-base: 1rem;      /* 16px — body */
-  --text-lg:   1.125rem;  /* 18px — lead paragraph */
-  --text-xl:   1.25rem;   /* 20px — h4 */
-  --text-2xl:  1.5rem;    /* 24px — h3 */
-  --text-3xl:  1.875rem;  /* 30px — h2 */
-  --text-4xl:  2.25rem;   /* 36px — h1 */
-  --text-5xl:  3rem;      /* 48px — hero */
-  
+  --text-xs: 0.75rem; /* 12px — captions, labels */
+  --text-sm: 0.875rem; /* 14px — secondary text */
+  --text-base: 1rem; /* 16px — body */
+  --text-lg: 1.125rem; /* 18px — lead paragraph */
+  --text-xl: 1.25rem; /* 20px — h4 */
+  --text-2xl: 1.5rem; /* 24px — h3 */
+  --text-3xl: 1.875rem; /* 30px — h2 */
+  --text-4xl: 2.25rem; /* 36px — h1 */
+  --text-5xl: 3rem; /* 48px — hero */
+
   /* Line heights */
-  --leading-tight: 1.25;   /* headings */
-  --leading-normal: 1.5;   /* body text */
+  --leading-tight: 1.25; /* headings */
+  --leading-normal: 1.5; /* body text */
   --leading-relaxed: 1.75; /* long-form reading */
-  
+
   /* Font weights */
   --font-normal: 400;
   --font-medium: 500;
@@ -515,14 +513,24 @@ body {
   color: var(--color-text);
 }
 
-h1 { font-size: var(--text-4xl); line-height: var(--leading-tight); font-weight: var(--font-bold); }
-h2 { font-size: var(--text-3xl); line-height: var(--leading-tight); font-weight: var(--font-semibold); }
-h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight: var(--font-semibold); }
+h1 {
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--font-bold);
+}
+h2 {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--font-semibold);
+}
+h3 {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--font-semibold);
+}
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 7. Typography System**
 
@@ -543,43 +551,43 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```css
 :root {
   /* Neutral palette (gray scale) */
-  --gray-50:  #f9fafb;    /* backgrounds */
-  --gray-100: #f3f4f6;    /* alt backgrounds */
-  --gray-200: #e5e7eb;    /* borders */
-  --gray-300: #d1d5db;    /* disabled borders */
-  --gray-500: #6b7280;    /* secondary text */
-  --gray-700: #374151;    /* primary text */
-  --gray-900: #111827;    /* headings */
-  
+  --gray-50: #f9fafb; /* backgrounds */
+  --gray-100: #f3f4f6; /* alt backgrounds */
+  --gray-200: #e5e7eb; /* borders */
+  --gray-300: #d1d5db; /* disabled borders */
+  --gray-500: #6b7280; /* secondary text */
+  --gray-700: #374151; /* primary text */
+  --gray-900: #111827; /* headings */
+
   /* Brand colors */
-  --primary-50:  #eff6ff;  /* light tint (hover bg) */
-  --primary-100: #dbeafe;  /* selected state */
-  --primary-500: #3b82f6;  /* main action */
-  --primary-600: #2563eb;  /* hover state */
-  --primary-700: #1d4ed8;  /* active/pressed */
-  
+  --primary-50: #eff6ff; /* light tint (hover bg) */
+  --primary-100: #dbeafe; /* selected state */
+  --primary-500: #3b82f6; /* main action */
+  --primary-600: #2563eb; /* hover state */
+  --primary-700: #1d4ed8; /* active/pressed */
+
   /* Semantic colors */
   --success: #22c55e;
   --warning: #f59e0b;
-  --error:   #ef4444;
-  --info:    #3b82f6;
-  
+  --error: #ef4444;
+  --info: #3b82f6;
+
   /* Semantic mappings */
-  --color-text:       var(--gray-700);
+  --color-text: var(--gray-700);
   --color-text-muted: var(--gray-500);
-  --color-bg:         #ffffff;
-  --color-bg-alt:     var(--gray-50);
-  --color-border:     var(--gray-200);
+  --color-bg: #ffffff;
+  --color-bg-alt: var(--gray-50);
+  --color-border: var(--gray-200);
 }
 
 /* Dark mode — just swap the mappings */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text:       var(--gray-100);
+    --color-text: var(--gray-100);
     --color-text-muted: var(--gray-300);
-    --color-bg:         var(--gray-900);
-    --color-bg-alt:     #1a1a2e;
-    --color-border:     var(--gray-700);
+    --color-bg: var(--gray-900);
+    --color-bg-alt: #1a1a2e;
+    --color-border: var(--gray-700);
   }
 }
 ```
@@ -587,7 +595,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```
   COLOR USAGE RULES:
   ══════════════════
-  
+
   1. Primary color = ONE action (main CTA button, links)
   2. Neutral grays = everything else (text, borders, backgrounds)
   3. Semantic colors = status only (success/warning/error/info)
@@ -597,9 +605,6 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```
 
 ---
-
-
-
 
 ## 9. Complex Layouts — Real Examples Step by Step
 
@@ -627,7 +632,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```css
 .dashboard {
   display: grid;
-  grid-template-columns: 64px 1fr;   /* collapsed sidebar */
+  grid-template-columns: 64px 1fr; /* collapsed sidebar */
   grid-template-rows: 60px 1fr;
   grid-template-areas:
     "sidebar header"
@@ -665,12 +670,12 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
       "main"
       "sidebar";
   }
-  
+
   .sidebar {
-    flex-direction: row;        /* icons in a row */
+    flex-direction: row; /* icons in a row */
     justify-content: space-around;
   }
-  
+
   .charts-area {
     grid-template-columns: 1fr; /* stack on mobile */
   }
@@ -690,24 +695,26 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;              /* image stays inside rounded corners */
-  transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden; /* image stays inside rounded corners */
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);  /* subtle lift effect */
+  transform: translateY(-2px); /* subtle lift effect */
 }
 
 .card__image {
   width: 100%;
-  aspect-ratio: 16 / 9;         /* consistent image size */
+  aspect-ratio: 16 / 9; /* consistent image size */
   object-fit: cover;
 }
 
 .card__body {
   padding: var(--space-4);
-  flex: 1;                      /* pushes footer to bottom */
+  flex: 1; /* pushes footer to bottom */
   display: flex;
   flex-direction: column;
 }
@@ -718,7 +725,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 }
 
 .card__footer {
-  margin-top: auto;             /* always at bottom of card */
+  margin-top: auto; /* always at bottom of card */
   padding-top: var(--space-4);
 }
 ```
@@ -742,7 +749,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 .container {
   width: 100%;
   max-width: var(--container-xl);
-  margin-inline: auto;          /* horizontal centering */
+  margin-inline: auto; /* horizontal centering */
   padding-inline: var(--space-4);
 }
 ```
@@ -752,10 +759,10 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```css
 .modal-overlay {
   position: fixed;
-  inset: 0;                     /* top:0 right:0 bottom:0 left:0 */
+  inset: 0; /* top:0 right:0 bottom:0 left:0 */
   background: rgba(0, 0, 0, 0.5);
   display: grid;
-  place-items: center;          /* center the modal */
+  place-items: center; /* center the modal */
   z-index: 100;
 }
 
@@ -771,21 +778,25 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 }
 
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 ```
 
 ---
-
-
 
 ## 11. CSS Architecture for Large Projects
 
 ```
   FILE STRUCTURE (component-scoped):
   ══════════════════════════════════
-  
+
   styles/
   ├── tokens/
   │   ├── colors.css         → color variables
@@ -806,16 +817,16 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
   │   ├── sidebar.css
   │   └── page.css
   └── main.css               → imports all in order
-  
-  
+
+
   NAMING: BEM (Block__Element--Modifier):
   ═══════════════════════════════════════
-  
+
   .card              → Block
   .card__title       → Element (part of card)
   .card__title--large → Modifier (variant)
   .card--featured    → Block modifier
-  
+
   NEVER nest deeper than: .block__element--modifier
   WRONG: .card__body__title__icon → too deep, flatten it
   RIGHT: .card__icon, .card-body__title
@@ -828,7 +839,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ```
   BEFORE YOU START CODING, VERIFY:
   ════════════════════════════════
-  
+
   □ All breakpoints are designed (mobile, tablet, desktop)
   □ All states are designed (hover, focus, active, disabled, error, loading)
   □ Typography scale is consistent
@@ -839,7 +850,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
   □ Empty states exist ("No results found")
   □ Error states exist (form validation, API failures)
   □ Animations spec'd (duration, easing, what animates)
-  
+
   WHILE CODING:
   ═════════════
   □ Start with CSS variables/tokens before ANY component CSS

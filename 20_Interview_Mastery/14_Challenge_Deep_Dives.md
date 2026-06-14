@@ -3,6 +3,7 @@
 **Navigation**: [← SDET × Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [📚 Index](00_INDEX.md)
 
 **Domain pairs covered:**
+
 - [Deep Dive A — SDET × DSA: Polling with Sliding Window](#deep-dive-a--sdet--dsa-polling-with-sliding-window)
 - [Deep Dive B — Spring Boot × DSA: LRU Cache Inside JPA](#deep-dive-b--spring-boot--dsa-lru-cache-inside-jpa)
 - [Deep Dive C — SDET × Spring Boot: Testing with WireMock](#deep-dive-c--sdet--spring-boot-testing-with-wiremock)
@@ -18,6 +19,7 @@
 ### The Real-World Scenario
 
 You're testing a citation management system. When a `POST /api/citations` is called:
+
 - The API responds immediately with `201 Created` and `{ "id": "CIT-001", "status": "PENDING" }`
 - A background worker picks it up, validates, and changes the status to `PROCESSED`
 - This background processing takes anywhere from **200 milliseconds to 8 seconds** depending on server load
@@ -54,7 +56,7 @@ The most common mistake beginners make:
 // ❌ WRONG — Fixed sleep
 await page.waitForTimeout(5000); // wait 5 seconds
 const res = await request.get(`/api/citations/${id}/status`);
-expect(await res.json()).toMatchObject({ status: 'PROCESSED' });
+expect(await res.json()).toMatchObject({ status: "PROCESSED" });
 ```
 
 **Why this fails — point by point:**
@@ -67,6 +69,7 @@ On a fast developer machine the worker finishes in 200ms. On an overloaded CI se
 
 **Point 3: It gives no information when it fails.**
 When the sleep ends and the status is still `PENDING`, you have no idea if:
+
 - The worker hasn't started yet (and would finish in 1 more second)
 - The worker crashed 3 seconds ago and will never finish
 - The status update has a bug and will never change
@@ -96,11 +99,13 @@ Time budget = 10,000ms → EXHAUSTED → FAIL with clear message
 The window "slides" through real time. We don't care about a fixed position in time — we care about the **window between now and budget-exhausted**. The moment we get a result or run out of budget, we stop.
 
 The **intervals** control how fast we slide:
+
 ```
 intervals: [100, 200, 500, 1000, 2000]
 ```
+
 - First check at 100ms → catches fast responses without waiting
-- Second check at 200ms → slightly more time for moderate loads  
+- Second check at 200ms → slightly more time for moderate loads
 - Third check at 500ms → covers 80% of normal cases
 - Fourth check at 1000ms → covers slow servers
 - Fifth and beyond at 2000ms → maximum spacing for very slow cases
@@ -112,20 +117,19 @@ This is called **exponential-ish backoff** — you check more often when it's fr
 ### Step 4 — The Correct Solution with Line-by-Line Explanation
 
 ```typescript
-test('Citation transitions from PENDING to PROCESSED', async ({ request }) => {
-
+test("Citation transitions from PENDING to PROCESSED", async ({ request }) => {
   // ── Part 1: Create the citation ─────────────────────────────────────────
-  
-  const createResponse = await request.post('/api/citations', {
-    data: { amount: 150, userId: 'USR-001' }
+
+  const createResponse = await request.post("/api/citations", {
+    data: { amount: 150, userId: "USR-001" },
   });
   // request.post: sends HTTP POST with JSON body
   // await: waits for the HTTP response (not for background processing — just the API ack)
-  
+
   expect(createResponse.status()).toBe(201);
   // 201 Created means the citation record was saved, background processing STARTED
   // This is synchronous — we know it happened
-  
+
   const { id } = await createResponse.json();
   // Destructure the response body to get the citation ID
   // e.g. id = "CIT-a3f8b2c1"
@@ -133,48 +137,49 @@ test('Citation transitions from PENDING to PROCESSED', async ({ request }) => {
 
   // ── Part 2: Poll for status change ──────────────────────────────────────
 
-  await expect.poll(
-    // ↑ expect.poll is Playwright's built-in polling utility
-    // It calls the function argument repeatedly until the assertion passes or timeout
+  await expect
+    .poll(
+      // ↑ expect.poll is Playwright's built-in polling utility
+      // It calls the function argument repeatedly until the assertion passes or timeout
 
-    async () => {
-      // This is the "probe function" — it runs on every poll attempt
-      
-      const statusResponse = await request.get(`/api/citations/${id}/status`);
-      // Makes a GET request to the status endpoint
-      // e.g. GET /api/citations/CIT-a3f8b2c1/status
-      
-      const body = await statusResponse.json();
-      // Parse the JSON response body
-      // e.g. { "status": "PENDING", "updatedAt": "..." }
-      
-      return body.status;
-      // Return the value we want to track
-      // expect.poll compares this return value against the assertion (.toBe('PROCESSED'))
-    },
+      async () => {
+        // This is the "probe function" — it runs on every poll attempt
 
-    {
-      message: `Citation ${id} should become PROCESSED within 10 seconds`,
-      // ↑ This message appears in the test failure output
-      // Without this: "Expected ... but received ..." — which citation? What was the context?
-      // With this: "Citation CIT-a3f8b2c1 should become PROCESSED within 10 seconds" — clear!
+        const statusResponse = await request.get(`/api/citations/${id}/status`);
+        // Makes a GET request to the status endpoint
+        // e.g. GET /api/citations/CIT-a3f8b2c1/status
 
-      timeout: 10_000,
-      // ↑ Maximum total time to wait in milliseconds (10 seconds)
-      // If the condition is not met by this time → test FAILS
-      // The _ in 10_000 is just a JavaScript readability trick (= 10000)
+        const body = await statusResponse.json();
+        // Parse the JSON response body
+        // e.g. { "status": "PENDING", "updatedAt": "..." }
 
-      intervals: [100, 200, 500, 1000, 2000],
-      // ↑ How long to wait between each poll attempt
-      // Poll 1: wait 100ms → check
-      // Poll 2: wait 200ms → check
-      // Poll 3: wait 500ms → check
-      // Poll 4: wait 1000ms → check
-      // Poll 5+: wait 2000ms → check, check, check...
-      // Playwright cycles through intervals; repeats the LAST interval if more polls needed
-    }
+        return body.status;
+        // Return the value we want to track
+        // expect.poll compares this return value against the assertion (.toBe('PROCESSED'))
+      },
 
-  ).toBe('PROCESSED');
+      {
+        message: `Citation ${id} should become PROCESSED within 10 seconds`,
+        // ↑ This message appears in the test failure output
+        // Without this: "Expected ... but received ..." — which citation? What was the context?
+        // With this: "Citation CIT-a3f8b2c1 should become PROCESSED within 10 seconds" — clear!
+
+        timeout: 10_000,
+        // ↑ Maximum total time to wait in milliseconds (10 seconds)
+        // If the condition is not met by this time → test FAILS
+        // The _ in 10_000 is just a JavaScript readability trick (= 10000)
+
+        intervals: [100, 200, 500, 1000, 2000],
+        // ↑ How long to wait between each poll attempt
+        // Poll 1: wait 100ms → check
+        // Poll 2: wait 200ms → check
+        // Poll 3: wait 500ms → check
+        // Poll 4: wait 1000ms → check
+        // Poll 5+: wait 2000ms → check, check, check...
+        // Playwright cycles through intervals; repeats the LAST interval if more polls needed
+      },
+    )
+    .toBe("PROCESSED");
   // ↑ The assertion: what the probe function's return value MUST equal
   // expect.poll keeps retrying until this is true OR timeout is reached
   // If this NEVER becomes true → test fails with the message above + last received value
@@ -252,53 +257,57 @@ When an interviewer asks "how do you test eventually-consistent APIs?", they wan
 
 ### Similar Challenges — Try Before Looking at the Answer
 
-**Challenge A** *(easier)*: You're testing a batch export API. You trigger `POST /api/exports` and get back `{ "exportId": "EXP-001", "status": "QUEUED" }`. The export goes through states: `QUEUED → PROCESSING → COMPLETE`. You need to assert it reaches `COMPLETE` within 30 seconds. The export usually takes 5–15 seconds.
+**Challenge A** _(easier)_: You're testing a batch export API. You trigger `POST /api/exports` and get back `{ "exportId": "EXP-001", "status": "QUEUED" }`. The export goes through states: `QUEUED → PROCESSING → COMPLETE`. You need to assert it reaches `COMPLETE` within 30 seconds. The export usually takes 5–15 seconds.
 
 Write the complete Playwright test. Pay attention to:
+
 - What should `intervals` look like for something that takes 5–15 seconds? (not 100ms — too noisy)
 - What is a good failure message?
 
 <details><summary>Answer — Point by Point</summary>
 
 ```typescript
-test('Batch export reaches COMPLETE state within 30 seconds', async ({ request }) => {
-
+test("Batch export reaches COMPLETE state within 30 seconds", async ({
+  request,
+}) => {
   // Step 1: Trigger the export
-  const triggerRes = await request.post('/api/exports', {
-    data: { format: 'CSV', userId: 'USR-001', dateRange: '2026-01' }
+  const triggerRes = await request.post("/api/exports", {
+    data: { format: "CSV", userId: "USR-001", dateRange: "2026-01" },
   });
   expect(triggerRes.status()).toBe(202);
   // 202 Accepted (not 201 Created) means "I've accepted your request, processing is async"
   // This is the correct HTTP status for long-running async operations
-  
+
   const { exportId } = await triggerRes.json();
 
   // Step 2: Poll for COMPLETE
-  await expect.poll(
-    async () => {
-      const statusRes = await request.get(`/api/exports/${exportId}/status`);
-      const body = await statusRes.json();
-      
-      // Extra guard: if status is ERROR, fail immediately instead of waiting the full 30s
-      if (body.status === 'ERROR') {
-        throw new Error(`Export ${exportId} failed: ${body.errorMessage}`);
-        // Throwing inside expect.poll causes immediate failure — not a retry
-        // This is the "fail fast on known-bad states" pattern
-      }
-      
-      return body.status;
-    },
-    {
-      message: `Export ${exportId} should reach COMPLETE within 30 seconds`,
-      timeout: 30_000,
-      intervals: [2000, 3000, 5000, 5000, 5000],
-      // ↑ Why start at 2000ms (not 100ms)?
-      // Exports take 5-15 seconds — checking at 100ms just creates 50 wasted HTTP calls
-      // and spams the server log with meaningless "still QUEUED" responses.
-      // Start the first check at 2 seconds because we KNOW it won't be done in 100ms.
-      // The interval schedule matches the expected duration: 2s → 5s → 10s → 15s → 20s → done.
-    }
-  ).toBe('COMPLETE');
+  await expect
+    .poll(
+      async () => {
+        const statusRes = await request.get(`/api/exports/${exportId}/status`);
+        const body = await statusRes.json();
+
+        // Extra guard: if status is ERROR, fail immediately instead of waiting the full 30s
+        if (body.status === "ERROR") {
+          throw new Error(`Export ${exportId} failed: ${body.errorMessage}`);
+          // Throwing inside expect.poll causes immediate failure — not a retry
+          // This is the "fail fast on known-bad states" pattern
+        }
+
+        return body.status;
+      },
+      {
+        message: `Export ${exportId} should reach COMPLETE within 30 seconds`,
+        timeout: 30_000,
+        intervals: [2000, 3000, 5000, 5000, 5000],
+        // ↑ Why start at 2000ms (not 100ms)?
+        // Exports take 5-15 seconds — checking at 100ms just creates 50 wasted HTTP calls
+        // and spams the server log with meaningless "still QUEUED" responses.
+        // Start the first check at 2 seconds because we KNOW it won't be done in 100ms.
+        // The interval schedule matches the expected duration: 2s → 5s → 10s → 15s → 20s → done.
+      },
+    )
+    .toBe("COMPLETE");
 });
 ```
 
@@ -310,16 +319,21 @@ test('Batch export reaches COMPLETE state within 30 seconds', async ({ request }
 
 ---
 
-**Challenge B** *(medium)*: A notification delivery system. You call `POST /api/notifications/send` and get back `{ "messageId": "MSG-001" }`. You need to verify the notification was actually DELIVERED — but the `/api/notifications/MSG-001` endpoint returns the full object including a `deliveredAt` timestamp (which is `null` until delivery). Your assertion: `deliveredAt` must not be null AND must be within the last 5 minutes.
+**Challenge B** _(medium)_: A notification delivery system. You call `POST /api/notifications/send` and get back `{ "messageId": "MSG-001" }`. You need to verify the notification was actually DELIVERED — but the `/api/notifications/MSG-001` endpoint returns the full object including a `deliveredAt` timestamp (which is `null` until delivery). Your assertion: `deliveredAt` must not be null AND must be within the last 5 minutes.
 
 <details><summary>Answer — Point by Point</summary>
 
 ```typescript
-test('Notification is delivered within 15 seconds with a valid timestamp', async ({ request }) => {
-
+test("Notification is delivered within 15 seconds with a valid timestamp", async ({
+  request,
+}) => {
   // Trigger
-  const sendRes = await request.post('/api/notifications/send', {
-    data: { userId: 'USR-001', type: 'PAYMENT_CONFIRMATION', referenceId: 'CIT-001' }
+  const sendRes = await request.post("/api/notifications/send", {
+    data: {
+      userId: "USR-001",
+      type: "PAYMENT_CONFIRMATION",
+      referenceId: "CIT-001",
+    },
   });
   expect(sendRes.status()).toBe(200);
   const { messageId } = await sendRes.json();
@@ -329,39 +343,48 @@ test('Notification is delivered within 15 seconds with a valid timestamp', async
   const testStartTime = new Date();
 
   // Poll for delivery
-  const deliveredNotification = await expect.poll(
-    async () => {
-      const res = await request.get(`/api/notifications/${messageId}`);
-      const notification = await res.json();
-      
-      // Return the FULL OBJECT — we need multiple fields to assert
-      // (not just a string status)
-      return notification;
-    },
-    {
-      message: `Notification ${messageId} should be delivered within 15 seconds`,
-      timeout: 15_000,
-      intervals: [500, 1000, 2000, 3000],
-    }
-  // ↓ Use a custom matcher that checks MULTIPLE conditions at once
-  ).toMatchObject({
-    messageId: messageId,
-    deliveredAt: expect.not.toBeNull(),
-    // ↑ expect.not.toBeNull() inside toMatchObject = "this field must exist and not be null"
-  });
+  const deliveredNotification = await expect
+    .poll(
+      async () => {
+        const res = await request.get(`/api/notifications/${messageId}`);
+        const notification = await res.json();
+
+        // Return the FULL OBJECT — we need multiple fields to assert
+        // (not just a string status)
+        return notification;
+      },
+      {
+        message: `Notification ${messageId} should be delivered within 15 seconds`,
+        timeout: 15_000,
+        intervals: [500, 1000, 2000, 3000],
+      },
+      // ↓ Use a custom matcher that checks MULTIPLE conditions at once
+    )
+    .toMatchObject({
+      messageId: messageId,
+      deliveredAt: expect.not.toBeNull(),
+      // ↑ expect.not.toBeNull() inside toMatchObject = "this field must exist and not be null"
+    });
 
   // After the poll confirms deliveredAt is not null, do the timestamp range check:
   const deliveredAt = new Date(deliveredNotification.deliveredAt);
   const ageMs = deliveredAt.getTime() - testStartTime.getTime();
-  
-  expect(ageMs, 'deliveredAt should be AFTER the test started').toBeGreaterThanOrEqual(0);
-  expect(ageMs, 'deliveredAt should be within 5 minutes of test start').toBeLessThan(5 * 60 * 1000);
+
+  expect(
+    ageMs,
+    "deliveredAt should be AFTER the test started",
+  ).toBeGreaterThanOrEqual(0);
+  expect(
+    ageMs,
+    "deliveredAt should be within 5 minutes of test start",
+  ).toBeLessThan(5 * 60 * 1000);
   // ↑ This catches a subtle bug: if the system "delivers" with a timestamp from
   // a previous run's data — the timestamp would be OLDER than testStartTime → negative ageMs → fail
 });
 ```
 
 **Why return the full object?** You need TWO assertions:
+
 1. `deliveredAt` is not null (to know delivery happened)
 2. `deliveredAt` is a reasonable timestamp (to catch data bugs)
 
@@ -371,13 +394,14 @@ If your probe returns only `notification.deliveredAt !== null`, you lose the tim
 
 ---
 
-**Challenge C** *(hard)*: You're testing a rate-limited endpoint. Your test sends 12 requests to `GET /api/citations` in rapid succession. The first 10 should return 200. The 11th and 12th should return 429 with a `Retry-After` header. After waiting the time specified in `Retry-After`, the next request should succeed again (200). Write the complete test including the wait-and-retry verification.
+**Challenge C** _(hard)_: You're testing a rate-limited endpoint. Your test sends 12 requests to `GET /api/citations` in rapid succession. The first 10 should return 200. The 11th and 12th should return 429 with a `Retry-After` header. After waiting the time specified in `Retry-After`, the next request should succeed again (200). Write the complete test including the wait-and-retry verification.
 
 <details><summary>Answer — Point by Point</summary>
 
 ```typescript
-test('Rate limiter: 10 allowed, then 429, then recovers after Retry-After', async ({ request }) => {
-
+test("Rate limiter: 10 allowed, then 429, then recovers after Retry-After", async ({
+  request,
+}) => {
   const userId = `RATE-TEST-${Date.now()}`;
   // ↑ Unique per run. Why?
   // Rate limits are tracked per-user. If you reuse a userId across test runs
@@ -385,11 +409,11 @@ test('Rate limiter: 10 allowed, then 429, then recovers after Retry-After', asyn
   // timestamp-based ID = guaranteed isolation between test runs.
 
   // ── Phase 1: Send 12 concurrent requests ────────────────────────────────
-  
+
   const responses = await Promise.all(
     Array.from({ length: 12 }, () =>
-      request.get('/api/citations', { headers: { 'X-User-Id': userId } })
-    )
+      request.get("/api/citations", { headers: { "X-User-Id": userId } }),
+    ),
   );
   // ↑ Why Promise.all?
   // Promise.all fires ALL 12 requests simultaneously.
@@ -400,57 +424,57 @@ test('Rate limiter: 10 allowed, then 429, then recovers after Retry-After', asyn
   // A sequential approach tests "12 requests over 600ms" not "12 requests in 10ms".
 
   // ── Phase 2: Categorize the responses ───────────────────────────────────
-  
-  const successful = responses.filter(r => r.status() === 200);
-  const throttled  = responses.filter(r => r.status() === 429);
+
+  const successful = responses.filter((r) => r.status() === 200);
+  const throttled = responses.filter((r) => r.status() === 429);
 
   // Assertions on counts
   expect(successful.length).toBe(10);
   // Exactly 10 succeed — the rate limit is 10/window, not "approximately 10"
-  
+
   expect(throttled.length).toBe(2);
   // The 11th and 12th are throttled
 
   // ── Phase 3: Inspect the 429 response shape ─────────────────────────────
-  
+
   const firstThrottled = throttled[0];
-  
-  const retryAfterHeader = firstThrottled.headers()['retry-after'];
+
+  const retryAfterHeader = firstThrottled.headers()["retry-after"];
   expect(retryAfterHeader).toBeDefined();
   // ↑ The server MUST tell the client when to retry
   // A 429 without Retry-After is an incomplete implementation — this assertion catches it
-  
+
   const retryAfterSeconds = parseInt(retryAfterHeader, 10);
   expect(retryAfterSeconds).toBeGreaterThan(0);
   // Must be a positive number (not 0, not NaN, not negative)
-  
+
   const body = await firstThrottled.json();
-  expect(body.error).toBe('RATE_LIMIT_EXCEEDED');
+  expect(body.error).toBe("RATE_LIMIT_EXCEEDED");
   // The error code must be machine-readable — not a human message like "too many requests"
   // Clients use the code to decide retry logic; humans read the message field
   expect(body.retryAfterMs).toBeGreaterThan(0);
   // Millisecond version of retry delay — useful for programmatic clients
 
   // ── Phase 4: Wait the specified time and verify recovery ────────────────
-  
+
   const waitMs = retryAfterSeconds * 1000;
   // Convert seconds to milliseconds
-  
+
   // Add a small buffer (200ms) because "retry after N seconds" means "at least N seconds"
   // Hitting exactly at the boundary can still return 429 due to clock jitter
-  await new Promise(resolve => setTimeout(resolve, waitMs + 200));
-  
+  await new Promise((resolve) => setTimeout(resolve, waitMs + 200));
+
   // After waiting, the rate limit window should have reset
-  const recoveryRes = await request.get('/api/citations', {
-    headers: { 'X-User-Id': userId }
+  const recoveryRes = await request.get("/api/citations", {
+    headers: { "X-User-Id": userId },
   });
-  
+
   expect(recoveryRes.status()).toBe(200);
   // ↑ This proves the rate limiter recovers — it's not permanently blocking the user
   // A common implementation bug: rate limit never resets → this assertion catches it
-  
+
   // Also verify the rate limit headers on the recovery response
-  const remaining = recoveryRes.headers()['x-ratelimit-remaining'];
+  const remaining = recoveryRes.headers()["x-ratelimit-remaining"];
   expect(parseInt(remaining)).toBe(9);
   // After 1 recovery request, 9 slots remain (10 - 1 = 9)
   // This proves the sliding window reset correctly to a full 10
@@ -458,6 +482,7 @@ test('Rate limiter: 10 allowed, then 429, then recovers after Retry-After', asyn
 ```
 
 **The three things this test proves:**
+
 1. The rate limiter correctly allows exactly 10 requests
 2. The 429 response is correctly formed (machine-readable error, valid Retry-After)
 3. The rate limiter RECOVERS after the window expires — it doesn't permanently block
@@ -472,7 +497,7 @@ Without assertion 3, you'd never catch the bug where the Redis key TTL is set in
 
 ### The Real-World Scenario
 
-Your citation API has a `GET /api/citations/{id}` endpoint. It's called 10,000 times per minute. Each call hits PostgreSQL. The DB query is fast (2ms), but 10,000 × 2ms = 20 seconds of cumulative DB work per minute, plus connection pool pressure, plus query plan overhead. 
+Your citation API has a `GET /api/citations/{id}` endpoint. It's called 10,000 times per minute. Each call hits PostgreSQL. The DB query is fast (2ms), but 10,000 × 2ms = 20 seconds of cumulative DB work per minute, plus connection pool pressure, plus query plan overhead.
 
 You add JPA's Second-Level Cache. Response times drop from 2ms to 0.1ms for cached citations. But then a support ticket: "User updated their citation 5 minutes ago and the API still shows the old data." The cache is serving stale data.
 
@@ -500,6 +525,7 @@ Timeline:
 The rule: **when you need space, remove the person who has been unused the longest**.
 
 In code terms:
+
 - **Capacity** = how many objects can be cached (e.g. 1000 Citation objects)
 - **Get** = using an entry (moves it to "most recently used" position)
 - **Put** = adding a new entry (if full, evict least recently used first)
@@ -614,12 +640,12 @@ public class Citation {
 
 ### Step 5 — The Four Cache Concurrency Strategies Compared
 
-| Strategy | Can Update? | Thread Safe? | Use When |
-|---|---|---|---|
-| `READ_ONLY` | ❌ No | ✅ Yes (lockless) | Reference data that NEVER changes (countries, currencies) |
-| `NONSTRICT_READ_WRITE` | ✅ Yes | ⚠️ Weak | Rarely-updated data where brief staleness is OK |
-| `READ_WRITE` | ✅ Yes | ✅ Yes (soft lock) | Frequently-updated entities needing consistency |
-| `TRANSACTIONAL` | ✅ Yes | ✅ Yes (JTA tx) | Strict consistency required (financial data) |
+| Strategy               | Can Update? | Thread Safe?       | Use When                                                  |
+| ---------------------- | ----------- | ------------------ | --------------------------------------------------------- |
+| `READ_ONLY`            | ❌ No       | ✅ Yes (lockless)  | Reference data that NEVER changes (countries, currencies) |
+| `NONSTRICT_READ_WRITE` | ✅ Yes      | ⚠️ Weak            | Rarely-updated data where brief staleness is OK           |
+| `READ_WRITE`           | ✅ Yes      | ✅ Yes (soft lock) | Frequently-updated entities needing consistency           |
+| `TRANSACTIONAL`        | ✅ Yes      | ✅ Yes (JTA tx)    | Strict consistency required (financial data)              |
 
 **For citations** (updated when paid): `READ_WRITE` is correct. `TRANSACTIONAL` is overkill unless you're using JTA transactions across multiple databases.
 
@@ -636,6 +662,7 @@ When asked "how would you cache citation data in Spring Boot?", say:
 ### Similar Challenges — Try Before Looking at the Answer
 
 **Challenge A**: You add `@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)` to the `Citation` entity. You have a test that:
+
 1. Loads `CIT-001` (populates cache)
 2. Directly updates the DB row using JDBC (bypasses Hibernate/JPA)
 3. Loads `CIT-001` again via `repo.findById()`
@@ -653,6 +680,7 @@ Will the test see the updated value? Why or why not? What should you do if you n
 **Point 2**: When you update the DB row using raw JDBC (`jdbcTemplate.update("UPDATE citations SET status = 'PAID' WHERE id = 'CIT-001'")`), Hibernate has NO IDEA this happened. JDBC bypasses Hibernate's EntityManager entirely. Hibernate doesn't know to invalidate its L2C entry.
 
 **Point 3**: On the second `repo.findById("CIT-001")`:
+
 - Hibernate checks L1 cache (EntityManager session) → may HIT if same session → returns stale!
 - Hibernate checks L2C → HIT → returns the pre-update value → stale!
 
@@ -692,6 +720,7 @@ void evictCache() {
 **Answer: It depends on the fetch strategy and whether User has its own `@Cache` annotation.**
 
 **Point 1 — Fetch strategy determines WHEN User is loaded:**
+
 ```java
 @Entity
 public class Citation {
@@ -704,6 +733,7 @@ public class Citation {
 ```
 
 **Point 2 — L2C checks happen at the moment of loading:**
+
 ```
 citation.getUser() called:
   Step 1: Hibernate knows user_id = "USR-001" from the Citation row
@@ -713,6 +743,7 @@ citation.getUser() called:
 ```
 
 **Point 3 — User needs its own `@Cache` annotation:**
+
 ```java
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -724,6 +755,7 @@ public class User {
 ```
 
 **Point 4 — Why separate cache regions make sense:**
+
 - Citation might have 10,000 records → large cache region (1000 entries with LRU eviction)
 - User might have 500 records → smaller cache region (500 entries, fits entirely)
 - Different TTLs: Citation changes when paid (minutes), User changes on profile update (hours)
@@ -746,9 +778,9 @@ public CitationDetails fetchFromD365(String citationId) {
     return webClient.get()
         .uri(d365BaseUrl + "/api/citations/{id}", citationId)
         .retrieve()
-        .onStatus(HttpStatusCode::is4xxClientError, resp -> 
+        .onStatus(HttpStatusCode::is4xxClientError, resp ->
             Mono.error(new CitationNotFoundException("D365: " + citationId)))
-        .onStatus(HttpStatusCode::is5xxServerError, resp -> 
+        .onStatus(HttpStatusCode::is5xxServerError, resp ->
             Mono.error(new DynamicsApiException("D365 error for " + citationId)))
         .bodyToMono(CitationDetails.class)
         .block();
@@ -806,14 +838,14 @@ stubFor(
 
 **Matcher options:**
 
-| Matcher | What it checks |
-|---|---|
-| `urlEqualTo("/api/citations/CIT-001")` | Exact URL path match |
-| `urlPathMatching("/api/citations/.*")` | Regex URL match |
-| `get(...)` | HTTP method + URL |
+| Matcher                                             | What it checks            |
+| --------------------------------------------------- | ------------------------- |
+| `urlEqualTo("/api/citations/CIT-001")`              | Exact URL path match      |
+| `urlPathMatching("/api/citations/.*")`              | Regex URL match           |
+| `get(...)`                                          | HTTP method + URL         |
 | `withHeader("Authorization", containing("Bearer"))` | Header must contain value |
-| `withRequestBody(equalToJson("{...}"))` | Body must equal JSON |
-| `withQueryParam("v", equalTo("2"))` | Query parameter check |
+| `withRequestBody(equalToJson("{...}"))`             | Body must equal JSON      |
+| `withQueryParam("v", equalTo("2"))`                 | Query parameter check     |
 
 ---
 
@@ -915,7 +947,7 @@ class CitationD365IntegrationTest {
         // Your API should translate D365's 404 into its own 404
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         // NOT a 500! A 404 from downstream should produce a 404 upstream, not an internal error
-        
+
         assertThat(response.getBody().getError()).contains("CIT-MISSING");
         // The error message should identify WHICH citation was not found
         // A generic "not found" message is unhelpful for debugging
@@ -974,20 +1006,20 @@ class CitationD365IntegrationTest {
 
 ### Step 4 — What WireMock Verifies That Mockito Cannot
 
-| What you're testing | Mockito | WireMock |
-|---|---|---|
-| Your service SENDS the correct URL | ❌ No | ✅ `urlPathMatching(...)` |
-| Your service SENDS the correct headers | ❌ No | ✅ `withHeader(...)` |
-| Your service handles 503 correctly | ⚠️ Simulate with exception | ✅ Real 503 response |
-| Your Jackson `@JsonProperty` mapping works | ❌ No (mocked body) | ✅ Real JSON deserialization |
-| Your service only calls D365 ONCE (not twice) | ❌ No | ✅ `verify(1, ...)` |
-| Your timeout configuration fires correctly | ❌ No | ✅ `withFixedDelay(...)` |
+| What you're testing                           | Mockito                    | WireMock                     |
+| --------------------------------------------- | -------------------------- | ---------------------------- |
+| Your service SENDS the correct URL            | ❌ No                      | ✅ `urlPathMatching(...)`    |
+| Your service SENDS the correct headers        | ❌ No                      | ✅ `withHeader(...)`         |
+| Your service handles 503 correctly            | ⚠️ Simulate with exception | ✅ Real 503 response         |
+| Your Jackson `@JsonProperty` mapping works    | ❌ No (mocked body)        | ✅ Real JSON deserialization |
+| Your service only calls D365 ONCE (not twice) | ❌ No                      | ✅ `verify(1, ...)`          |
+| Your timeout configuration fires correctly    | ❌ No                      | ✅ `withFixedDelay(...)`     |
 
 ---
 
 ### Similar Challenges — Try Before Looking at the Answer
 
-**Challenge A** *(medium)*: Your `PaymentService` calls Stripe's `POST /v1/charges` endpoint. Write WireMock stubs and assertions for: successful charge, and Stripe returns a 402 with a `decline_code` of `insufficient_funds`. Your API should map this to a 402 with a user-friendly message (not the raw Stripe error).
+**Challenge A** _(medium)_: Your `PaymentService` calls Stripe's `POST /v1/charges` endpoint. Write WireMock stubs and assertions for: successful charge, and Stripe returns a 402 with a `decline_code` of `insufficient_funds`. Your API should map this to a 402 with a user-friendly message (not the raw Stripe error).
 
 <details><summary>Answer — Point by Point</summary>
 
@@ -1002,15 +1034,15 @@ void processPayment_stripeInsufficientFunds_returns402WithFriendlyMessage() {
         // ↑ Stripe uses Bearer tokens. Verifying the header ensures:
         //   (a) your service sends auth credentials
         //   (b) you're using test keys (sk_test_), not production keys (sk_live_) in test env
-        
+
         .withRequestBody(containing("amount=15000"))
         // ↑ Verify the body contains the correct charge amount (150.00 USD = 15000 cents)
         // Stripe uses form-encoded bodies, not JSON, for charges
-        
+
         .willReturn(aResponse()
             .withStatus(402)
             // ↑ Stripe returns 402 Payment Required for card errors
-            
+
             .withHeader("Content-Type", "application/json")
             .withBody("""
                 {
@@ -1067,7 +1099,7 @@ void processPayment_stripeInsufficientFunds_returns402WithFriendlyMessage() {
 
 ---
 
-**Challenge B** *(hard)*: You want to test that your service RETRIES when D365 returns 503 the first time but 200 on the second attempt. Your service uses `@Retry(maxAttempts = 3)`. Write the WireMock stubs using `Scenarios` (stateful stubs) so the first call returns 503 and the second call returns 200.
+**Challenge B** _(hard)_: You want to test that your service RETRIES when D365 returns 503 the first time but 200 on the second attempt. Your service uses `@Retry(maxAttempts = 3)`. Write the WireMock stubs using `Scenarios` (stateful stubs) so the first call returns 503 and the second call returns 200.
 
 <details><summary>Answer — Point by Point</summary>
 
@@ -1079,7 +1111,7 @@ void getCitation_d365Flaps_retriesAndSucceeds() {
     // Think of it as a state machine:
     //   State "Started" (default) → return 503
     //   State "RetrySucceeds"     → return 200
-    
+
     // Stub 1: In "Started" state → return 503 → then transition to "RetrySucceeds"
     stubFor(
         get(urlPathMatching("/api/citations/CIT-FLAP"))
@@ -1107,7 +1139,7 @@ void getCitation_d365Flaps_retriesAndSucceeds() {
         .whenScenarioStateIs("RetrySucceeds")
         // ↑ This stub only fires after the state has transitioned
         // Second call → state is "RetrySucceeds" → fires this stub → 200
-        
+
         .willReturn(aResponse()
             .withStatus(200)
             .withHeader("Content-Type", "application/json")

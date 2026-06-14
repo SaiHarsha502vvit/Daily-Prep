@@ -17,18 +17,18 @@ Covers the build pipeline from source to production: bundlers (Vite, Webpack 5),
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Module systems: ESM, CJS, IIFE, bundle format trade-offs |
-| 2 | Vite deep dive: dev server, HMR, build pipeline, plugins |
-| 3 | Webpack 5: module federation, shared modules, runtime chunk |
-| 4 | Tree shaking, scope hoisting, minification (Terser, esbuild, SWC) |
-| 5 | Code splitting strategies: route-based, component-based, entry point |
-| 6 | Asset optimization: images (WebP, AVIF), fonts, critical CSS extraction |
-| 7 | Core Web Vitals: LCP, CLS, INP — metrics, thresholds, tooling |
-| 8 | Browser rendering pipeline: parsing, layout, paint, composite, layers |
-| 9 | Memory profiling: leaks, heap snapshots, retained size, WeakRef patterns |
-| 10 | Lighthouse CI: budgets, thresholds, Puppeteer/Playwright integration |
+| Week | Topic                                                                    |
+| ---- | ------------------------------------------------------------------------ |
+| 1    | Module systems: ESM, CJS, IIFE, bundle format trade-offs                 |
+| 2    | Vite deep dive: dev server, HMR, build pipeline, plugins                 |
+| 3    | Webpack 5: module federation, shared modules, runtime chunk              |
+| 4    | Tree shaking, scope hoisting, minification (Terser, esbuild, SWC)        |
+| 5    | Code splitting strategies: route-based, component-based, entry point     |
+| 6    | Asset optimization: images (WebP, AVIF), fonts, critical CSS extraction  |
+| 7    | Core Web Vitals: LCP, CLS, INP — metrics, thresholds, tooling            |
+| 8    | Browser rendering pipeline: parsing, layout, paint, composite, layers    |
+| 9    | Memory profiling: leaks, heap snapshots, retained size, WeakRef patterns |
+| 10   | Lighthouse CI: budgets, thresholds, Puppeteer/Playwright integration     |
 
 ## Linked Existing Content
 

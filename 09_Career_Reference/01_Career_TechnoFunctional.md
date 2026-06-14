@@ -38,7 +38,6 @@ Techno-Functional Expert:
 Business Problem → Technical Solution → Business Impact → Continuous Improvement
 ```
 
-
 ### The Three Pillars
 
 ```
@@ -56,7 +55,6 @@ Business Problem → Technical Solution → Business Impact → Continuous Impro
 └─────────────────┴─────────────────┴─────────────────────────────┘
 ```
 
-
 ### Why This Matters (India Context)
 
 India's IT industry is evolving:
@@ -68,8 +66,6 @@ India's IT industry is evolving:
 Companies pay premium for people who understand BOTH technology AND business.
 
 ---
-
-
 
 🔬 **Section Challenge — The Techno-Functional Framework**
 
@@ -84,7 +80,6 @@ Companies pay premium for people who understand BOTH technology AND business.
 **Debug/Fix:** Define the metric, isolate the bottleneck, estimate business impact, propose a phased fix, and communicate trade-offs: quick mitigation first, durable architecture second, and monitoring so the business can verify improvement.
 
 </details>
-
 
 ## Technical Skills Deep Dive
 
@@ -111,7 +106,6 @@ Level 2: Implementation
 Level 1: Fundamentals
          └── DSA, Programming basics
 ```
-
 
 ### Key Technical Areas to Master
 
@@ -169,7 +163,6 @@ System Designer thinks:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### 2. Database Scaling
 
 ```
@@ -188,7 +181,6 @@ System Designer thinks:
         SHARDING: Split data across multiple databases
 ```
 
-
 #### 3. Caching Strategies
 
 ```
@@ -205,7 +197,6 @@ System Designer thinks:
 │  Latency: 1ms (cache) vs 50-200ms (DB)                       │
 └──────────────────────────────────────────────────────────────┘
 ```
-
 
 #### 4. Load Balancing
 
@@ -229,7 +220,6 @@ System Designer thinks:
     • IP Hash - Same client → same server
     • Weighted - Based on server capacity
 ```
-
 
 ### System Design Interview Framework
 
@@ -266,7 +256,6 @@ Step 5: WRAP UP (5 min)
 └── Monitoring & alerts
 ```
 
-
 ### Practice System Design Problems
 
 | Problem               | Key Concepts                                     | Difficulty |
@@ -291,8 +280,6 @@ Step 5: WRAP UP (5 min)
 | AWS Architecture Center               | Documentation | https://aws.amazon.com/architecture/                |
 
 ---
-
-
 
 ## Cloud Architecture Excellence
 
@@ -329,7 +316,6 @@ Step 5: WRAP UP (5 min)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Cost Optimization Strategies
 
 #### 1. EC2 Optimization
@@ -350,7 +336,6 @@ Step 5: WRAP UP (5 min)
 │ workloads    │ workloads    │ Data proc.   │                │
 └──────────────┴──────────────┴──────────────┴────────────────┘
 ```
-
 
 #### 2. Right-Sizing Strategy
 
@@ -397,7 +382,6 @@ Day 90-365:  Glacier IR (save 83%)
 Day 365+:    Glacier Deep Archive (save 96%)
 ```
 
-
 ### Azure Core Services
 
 ```
@@ -419,7 +403,6 @@ Day 365+:    Glacier Deep Archive (save 96%)
 │  SQS/SNS      ────►     Service Bus                         │
 └─────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Cloud Architecture Patterns
 
@@ -453,7 +436,6 @@ Day 365+:    Glacier Deep Archive (save 96%)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### 2. Event-Driven Architecture
 
 ```
@@ -479,7 +461,6 @@ Day 365+:    Glacier Deep Archive (save 96%)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### 3. Serverless Architecture
 
 ```
@@ -502,7 +483,6 @@ Day 365+:    Glacier Deep Archive (save 96%)
 │  • Event processing                                         │
 └─────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Cloud Certifications Roadmap
 
@@ -527,7 +507,6 @@ SPECIALTY
 ├── AWS Database Specialty
 └── Azure Security Engineer
 ```
-
 
 ### Learning Resources - Cloud
 
@@ -579,7 +558,6 @@ SPECIALTY
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Key Banking Terms
 
 | Term                    | Definition                           | Technical Relevance                     |
@@ -619,7 +597,6 @@ SPECIALTY
 │  ◄──────────── ~2-3 seconds ────────────────────►             │
 └───────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Banking Data Structures
 
@@ -683,7 +660,6 @@ Data Structures Used:
 └── Trie for autocomplete categories
 ```
 
-
 **Learning Resources**:
 
 - Java Spring Boot: https://spring.io/guides
@@ -718,7 +694,6 @@ System Design Concepts:
 ├── Circuit breaker pattern
 └── Rate limiting
 ```
-
 
 **Learning Resources**:
 
@@ -761,7 +736,6 @@ ML Features:
 └── Historical spending patterns
 ```
 
-
 **Learning Resources**:
 
 - Apache Kafka: https://kafka.apache.org/documentation/
@@ -802,11 +776,7 @@ Tech Stack:
 └── Monitoring: ELK Stack
 ```
 
-
 ---
-
-
-
 
 ## Domain Knowledge - Healthcare
 
@@ -846,7 +816,6 @@ Tech Stack:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Key Healthcare Terms
 
 | Term        | Definition                       | Technical Relevance             |
@@ -864,30 +833,30 @@ Tech Stack:
 
 ```json
 {
-    "resourceType": "Patient",
-    "id": "example",
-    "identifier": [
-        {
-            "system": "http://hospital.com/patients",
-            "value": "12345"
-        }
-    ],
-    "name": [
-        {
-            "use": "official",
-            "family": "Smith",
-            "given": ["John"]
-        }
-    ],
-    "gender": "male",
-    "birthDate": "1990-01-15",
-    "address": [
-        {
-            "use": "home",
-            "city": "Mumbai",
-            "country": "India"
-        }
-    ]
+  "resourceType": "Patient",
+  "id": "example",
+  "identifier": [
+    {
+      "system": "http://hospital.com/patients",
+      "value": "12345"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Smith",
+      "given": ["John"]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1990-01-15",
+  "address": [
+    {
+      "use": "home",
+      "city": "Mumbai",
+      "country": "India"
+    }
+  ]
 }
 ```
 
@@ -920,7 +889,6 @@ Data Models:
 └── Prescription (medications, dosage)
 ```
 
-
 #### Project 2: Telemedicine Platform (Intermediate)
 
 **Objective**: Video consultation platform with scheduling
@@ -949,7 +917,6 @@ Security Considerations:
 ├── Audit logging
 └── Data anonymization
 ```
-
 
 **Learning Resources**:
 
@@ -990,7 +957,6 @@ ML Approach:
 └── Continuous learning pipeline
 ```
 
-
 **Learning Resources**:
 
 - PyDicom: https://pydicom.github.io/
@@ -998,9 +964,6 @@ ML Approach:
 - Deep Learning for Medical Imaging: https://github.com/BMEII-AI/RadImageNet
 
 ---
-
-
-
 
 ## Domain Knowledge - Telecom
 
@@ -1041,7 +1004,6 @@ ML Approach:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Key Telecom Terms
 
 | Term      | Definition                      | Technical Relevance                |
@@ -1078,7 +1040,6 @@ Raw CDR ──► Parser ──► Validation ──► Rating ──► Billing
                            └──► Customer Insights
 ```
 
-
 ### Telecom Projects
 
 #### Project 1: Prepaid Recharge System (Beginner)
@@ -1108,7 +1069,6 @@ Key Data Structures:
 ├── Trie for mobile number validation
 └── LRU Cache for popular plans
 ```
-
 
 #### Project 2: Network Monitoring Dashboard (Intermediate)
 
@@ -1145,7 +1105,6 @@ Metrics to Track:
 ├── Device health
 └── SLA compliance
 ```
-
 
 **Learning Resources**:
 
@@ -1189,11 +1148,7 @@ Technical Challenges:
 └── Regulatory compliance
 ```
 
-
 ---
-
-
-
 
 ## Product Mindset Development
 
@@ -1214,7 +1169,6 @@ Technical Challenges:
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Product Thinking Framework
 
@@ -1246,7 +1200,6 @@ For every feature, ask:
 └─────────────────────────────────────────┘
 ```
 
-
 #### 3. Impact-Driven Development
 
 ```
@@ -1267,7 +1220,6 @@ EFFORT  │                │                │    EFFORT
                          │
                     LOW IMPACT
 ```
-
 
 #### 4. Metrics That Matter
 
@@ -1294,7 +1246,6 @@ Technical Metrics:
 └── Mean time to recovery (MTTR)
 ```
 
-
 ### Becoming a Strategic Partner
 
 ```
@@ -1316,9 +1267,6 @@ LEVEL 4: Leader
 ```
 
 ---
-
-
-
 
 ## Communication & Articulation
 
@@ -1375,7 +1323,6 @@ RESULT: Quantify the outcome
    └── Have backup slides ready
 ```
 
-
 ### Writing Effective Technical Documents
 
 ```
@@ -1393,7 +1340,6 @@ GOOD TECHNICAL WRITING:
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Handling Difficult Conversations
 
@@ -1451,7 +1397,6 @@ DO:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Project Portfolio Progression
 
 ```
@@ -1479,7 +1424,6 @@ MONTH 7+: Expert Projects
 ├── 5G Network Orchestration (Telecom)
 └── Focus: Enterprise architecture, Leadership
 ```
-
 
 ---
 
@@ -1518,7 +1462,6 @@ ADVANCED (Month 5-6)
 └── Domain Deep Dive
     └── Build domain-specific projects
 ```
-
 
 ### Recommended Resources
 
@@ -1587,11 +1530,7 @@ AGILE/MANAGEMENT
 └── TOGAF (Enterprise Architecture)
 ```
 
-
 ---
-
-
-
 
 ## Action Plan: Your 6-Month Transformation
 
@@ -1617,7 +1556,6 @@ Daily Routine:
 └── 1 hour: Project work
 ```
 
-
 ### Month 3-4: Skill Integration
 
 ```
@@ -1634,7 +1572,6 @@ Week 13-16: System Design + Product Thinking
 └── Deliverable: Design document for a real system
 ```
 
-
 ### Month 5-6: Advanced Projects
 
 ```
@@ -1650,7 +1587,6 @@ Week 21-24: Portfolio & Presentation
 ├── Practice technical presentations
 └── Deliverable: Complete portfolio + 3 case studies
 ```
-
 
 ---
 

@@ -5,13 +5,14 @@
 
 ## Criteria
 
-| Criterion | Weight | Excellent (A) | Good (B) | Pass (C) | Fail (D/F) |
-|-----------|--------|---------------|----------|----------|------------|
-| [Criterion 1] | [%] | [Description] | [Description] | [Description] | [Description] |
-| [Criterion 2] | [%] | [Description] | [Description] | [Description] | [Description] |
-| [Criterion 3] | [%] | [Description] | [Description] | [Description] | [Description] |
+| Criterion     | Weight | Excellent (A) | Good (B)      | Pass (C)      | Fail (D/F)    |
+| ------------- | ------ | ------------- | ------------- | ------------- | ------------- |
+| [Criterion 1] | [%]    | [Description] | [Description] | [Description] | [Description] |
+| [Criterion 2] | [%]    | [Description] | [Description] | [Description] | [Description] |
+| [Criterion 3] | [%]    | [Description] | [Description] | [Description] | [Description] |
 
 ## Grading Scale
+
 - A: [90-100%]
 - B: [80-89%]
 - C: [70-79%]
@@ -19,5 +20,6 @@
 - F: [<60%]
 
 ## Notes
+
 - [ ]
 - [ ]

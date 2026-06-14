@@ -7,6 +7,7 @@
 ## 🎯 WHY This Document Exists
 
 In interviews and real jobs, you'll face questions like:
+
 - "Tell me about a time SQL caused a production issue"
 - "How do you prevent data loss?"
 - "What's your deployment checklist?"
@@ -22,9 +23,11 @@ This document gives you REAL STORIES to reference.
 ## 🔴 Case 1: GitLab Database Deletion (2017)
 
 ### What Happened
+
 A tired engineer at GitLab ran `rm -rf` on the WRONG database server. But the SQL backup story is even worse.
 
 ### The SQL Part
+
 ```sql
 -- What they discovered AFTER the deletion:
 
@@ -38,6 +41,7 @@ FATAL: database "gitlabhq_production" does not exist
 ```
 
 ### Root Cause Analysis
+
 ```sql
 -- ❌ What GitLab had (pseudo-code):
 #!/bin/bash
@@ -67,17 +71,18 @@ echo "Backup verified: $(wc -l < $BACKUP_FILE) lines"
 ```
 
 ### Lessons for You
+
 ```sql
 -- ALWAYS have these queries ready:
 
 -- 1. Check last successful backup
-SELECT backup_time, status, size_bytes 
-FROM backup_history 
-ORDER BY backup_time DESC 
+SELECT backup_time, status, size_bytes
+FROM backup_history
+ORDER BY backup_time DESC
 LIMIT 5;
 
 -- 2. Check replication lag
-SELECT client_addr, state, 
+SELECT client_addr, state,
        sent_lsn - replay_lsn AS replication_lag
 FROM pg_stat_replication;
 
@@ -89,6 +94,7 @@ SELECT COUNT(*) FROM table_about_to_modify;
 ```
 
 ### Interview Answer Template
+
 > "I learned from the GitLab incident that backups are worthless unless tested. In my projects, I always verify backup file sizes, test restoration periodically, and NEVER run destructive commands without a transaction."
 
 ---
@@ -96,9 +102,11 @@ SELECT COUNT(*) FROM table_about_to_modify;
 ## 🔴 Case 2: Knight Capital - $440 Million in 45 Minutes (2012)
 
 ### What Happened
+
 A deployment mistake caused old test code to execute real trades. Lost $440M before anyone could stop it.
 
 ### The SQL Connection
+
 ```sql
 -- The problem: deployment to production activated dormant code
 -- that used old test data still in the database
@@ -119,6 +127,7 @@ SELECT * FROM trading_flags WHERE is_enabled = true;
 ```
 
 ### What Should Have Existed
+
 ```sql
 -- ✅ Proper feature flag table:
 CREATE TABLE feature_flags (
@@ -134,27 +143,29 @@ CREATE TABLE feature_flags (
 );
 
 -- Query MUST filter by environment
-SELECT feature_name 
-FROM feature_flags 
-WHERE is_enabled = true 
+SELECT feature_name
+FROM feature_flags
+WHERE is_enabled = true
   AND environment = 'production'  -- NEVER skip this!
   AND (expires_at IS NULL OR expires_at > NOW());
 ```
 
 ### The Code Review Failure
+
 ```sql
 -- ❌ Code that was deployed:
 SELECT setting_value FROM app_settings WHERE key = 'trade_mode';
 -- No environment filter!
 
 -- ✅ Should have been:
-SELECT setting_value 
-FROM app_settings 
-WHERE key = 'trade_mode' 
+SELECT setting_value
+FROM app_settings
+WHERE key = 'trade_mode'
   AND environment = current_setting('app.environment');
 ```
 
 ### Lessons for You
+
 ```sql
 -- ALWAYS have environment separation:
 
@@ -169,7 +180,7 @@ CREATE TABLE test_users (...);
 
 -- 3. Or use environment column with enforced filtering
 CREATE VIEW safe_users AS
-SELECT * FROM users 
+SELECT * FROM users
 WHERE environment = current_setting('app.environment');
 ```
 
@@ -178,9 +189,11 @@ WHERE environment = current_setting('app.environment');
 ## 🔴 Case 3: Amazon S3 Outage (2017)
 
 ### What Happened
+
 A typo in a command removed more servers than intended, taking down a huge portion of the internet.
 
 ### The SQL Parallel
+
 ```sql
 -- The human ran (simplified):
 -- "Remove servers from pool X"
@@ -196,23 +209,23 @@ DELETE FROM servers WHERE pool_id = 'us-east-1-test';
 -- ✅ Safe deletion pattern:
 -- Step 1: See what you're about to delete
 SELECT server_id, pool_id, status, last_heartbeat
-FROM servers 
+FROM servers
 WHERE pool_id = 'us-east-1-test'
 LIMIT 100;  -- Always limit first look
 
 -- Step 2: Count total
 SELECT COUNT(*) as to_be_deleted
-FROM servers 
+FROM servers
 WHERE pool_id = 'us-east-1-test';
 -- Output: 47 (Does this match your expectation?)
 
 -- Step 3: Delete in transaction with limit
 BEGIN;
-DELETE FROM servers 
+DELETE FROM servers
 WHERE pool_id = 'us-east-1-test'
   AND server_id IN (
-    SELECT server_id FROM servers 
-    WHERE pool_id = 'us-east-1-test' 
+    SELECT server_id FROM servers
+    WHERE pool_id = 'us-east-1-test'
     LIMIT 10  -- Small batch first!
   );
 -- Verify: SELECT COUNT(*) FROM servers;
@@ -220,6 +233,7 @@ WHERE pool_id = 'us-east-1-test'
 ```
 
 ### Build These Habits
+
 ```sql
 -- The "I'm about to do something scary" checklist:
 
@@ -252,9 +266,11 @@ COMMIT;
 ## 🔴 Case 4: Marriott Data Breach (2018) - 500 Million Records
 
 ### What Happened
+
 Attackers had access to Marriott's database for 4 YEARS before detection.
 
 ### The SQL Security Failures
+
 ```sql
 -- ❌ Problems found:
 
@@ -272,6 +288,7 @@ GRANT ALL PRIVILEGES ON ALL TABLES TO app_user;  -- Bad!
 ```
 
 ### What Should Have Been There
+
 ```sql
 -- ✅ Proper security setup:
 
@@ -313,7 +330,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- 4. Unusual access detection query
-SELECT user_name, 
+SELECT user_name,
        DATE(executed_at) as query_date,
        COUNT(*) as query_count,
        SUM(rows_affected) as total_rows_accessed
@@ -325,6 +342,7 @@ HAVING COUNT(*) > 1000  -- Unusual volume?
 ```
 
 ### Interview Answer
+
 > "Data breaches often go undetected because there's no anomaly detection. I always implement audit logging and periodic queries to detect unusual access patterns—like bulk SELECTs happening off-hours or from new IP addresses."
 
 ---
@@ -336,6 +354,7 @@ HAVING COUNT(*) > 1000  -- Unusual volume?
 ## 🟡 Disaster Type 1: The Missing WHERE Clause
 
 ### Real Story
+
 > "It was my first week. I ran `UPDATE users SET is_active = false` to deactivate one user. I forgot the WHERE clause. All 2 million users were deactivated. Support tickets flooded in."
 
 ```sql
@@ -348,6 +367,7 @@ UPDATE users SET is_active = false WHERE user_id = 12345;
 ```
 
 ### Prevention Strategies
+
 ```sql
 -- STRATEGY 1: Always use transactions
 BEGIN;
@@ -367,17 +387,18 @@ UPDATE users SET is_active = false WHERE user_id = 12345;
 
 -- STRATEGY 4: SELECT first, then convert to UPDATE
 -- First, see what you're targeting:
-SELECT user_id, email, is_active 
-FROM users 
+SELECT user_id, email, is_active
+FROM users
 WHERE user_id = 12345;
 
 -- Then convert:
-UPDATE users 
+UPDATE users
 SET is_active = false  -- Add SET clause
 WHERE user_id = 12345;  -- Keep same WHERE
 ```
 
 ### Recovery Script
+
 ```sql
 -- If you DO mess up, here's how to recover:
 
@@ -385,7 +406,7 @@ WHERE user_id = 12345;  -- Keep same WHERE
 ROLLBACK;
 
 -- 2. If already committed, check if you have audit tables:
-SELECT * FROM users_audit 
+SELECT * FROM users_audit
 WHERE changed_at > NOW() - INTERVAL '5 minutes'
 ORDER BY changed_at DESC;
 
@@ -393,8 +414,8 @@ ORDER BY changed_at DESC;
 -- pg_restore --target-time="2024-01-15 14:30:00" ...
 
 -- 4. Manual fix based on other data:
-UPDATE users 
-SET is_active = true 
+UPDATE users
+SET is_active = true
 WHERE last_login > NOW() - INTERVAL '30 days';
 -- (Assumption: recently active users should be active)
 ```
@@ -404,6 +425,7 @@ WHERE last_login > NOW() - INTERVAL '30 days';
 ## 🟡 Disaster Type 2: The Accidental Cartesian Join
 
 ### Real Story
+
 > "My report query was running for 2 hours. When I checked, it was trying to create 50 billion rows. I forgot the ON clause in my JOIN."
 
 ```sql
@@ -421,6 +443,7 @@ CROSS JOIN products p;  -- Same disaster, different syntax
 ```
 
 ### Prevention
+
 ```sql
 -- STRATEGY 1: Always use explicit JOIN with ON
 SELECT o.order_id, p.product_name
@@ -452,6 +475,7 @@ SELECT COUNT(*) FROM order_items;      -- 500,000
 ## 🟡 Disaster Type 3: The N+1 Query Problem
 
 ### Real Story
+
 > "Our API response time went from 50ms to 15 seconds. Turned out we were making 1000 database calls for a single page load."
 
 ```sql
@@ -466,6 +490,7 @@ for user in users:
 ```
 
 ### The Fix
+
 ```sql
 -- ✅ Single efficient query with JOIN:
 SELECT u.user_id, u.name, o.order_id, o.total
@@ -479,12 +504,13 @@ LIMIT 1000;
 SELECT * FROM users LIMIT 100;  -- Returns IDs: 1,2,3...100
 
 -- Query 2: Get ALL orders for those users at once
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE user_id IN (1,2,3,4,5...100);  -- Single query!
 -- Total queries: 2 (not 101!)
 ```
 
 ### Detecting N+1 in Production
+
 ```sql
 -- Query to find repeated query patterns:
 SELECT query_text, COUNT(*) as execution_count
@@ -504,6 +530,7 @@ ORDER BY execution_count DESC;
 ## 🟡 Disaster Type 4: The Implicit Type Conversion
 
 ### Real Story
+
 > "Our query was correct but returning wrong results. Turned out comparing string '10' with integer caused unexpected behavior."
 
 ```sql
@@ -523,10 +550,11 @@ SELECT * FROM users WHERE phone_number = '1234567890';
 ```
 
 ### Finding Type Mismatches
+
 ```sql
 -- Check column types before writing queries:
-SELECT column_name, data_type 
-FROM information_schema.columns 
+SELECT column_name, data_type
+FROM information_schema.columns
 WHERE table_name = 'users';
 
 -- Use EXPLAIN to spot type conversion:
@@ -539,6 +567,7 @@ EXPLAIN SELECT * FROM users WHERE phone = 1234567890;
 ## 🟡 Disaster Type 5: The Timezone Trap
 
 ### Real Story
+
 > "All transactions on December 31st appeared on January 1st in reports. We stored timestamps without timezone info, and the report server was in a different timezone."
 
 ```sql
@@ -557,6 +586,7 @@ INSERT INTO transactions VALUES (1, 100, '2024-12-31 23:30:00');
 ```
 
 ### The Fix
+
 ```sql
 -- ✅ Always use TIMESTAMP WITH TIME ZONE:
 CREATE TABLE transactions (
@@ -571,7 +601,7 @@ INSERT INTO transactions (amount, created_at)
 VALUES (100, NOW() AT TIME ZONE 'UTC');
 
 -- Display (convert to user's timezone):
-SELECT amount, 
+SELECT amount,
        created_at AT TIME ZONE 'Asia/Kolkata' as local_time
 FROM transactions;
 
@@ -590,6 +620,7 @@ WHERE created_at >= '2024-12-31 00:00:00 UTC'
 ## 🟠 Case 1: The Index That Wasn't Used
 
 ### Real Story
+
 > "We added an index but queries were still slow. Took us 3 days to realize the index wasn't being used because of a function in WHERE clause."
 
 ```sql
@@ -612,16 +643,17 @@ CREATE INDEX idx_users_email_lower ON users(LOWER(email));
 -- Now LOWER() queries use the index
 
 -- Solution 2: Rewrite query to avoid function:
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE created_at >= '2024-01-15 00:00:00'
   AND created_at < '2024-01-16 00:00:00';
 -- Uses the original index!
 ```
 
 ### Checking Index Usage
+
 ```sql
 -- PostgreSQL: Check if index is being used
-EXPLAIN ANALYZE 
+EXPLAIN ANALYZE
 SELECT * FROM users WHERE email = 'test@test.com';
 -- Look for "Index Scan" vs "Seq Scan"
 
@@ -640,10 +672,11 @@ WHERE idx_scan = 0
 
 ---
 
-## 🟠 Case 2: The Deadly SELECT *
+## 🟠 Case 2: The Deadly SELECT \*
 
 ### Real Story
-> "Production went down during peak hours. Someone had deployed a dashboard that did SELECT * from a table with a 10MB BLOB column, loading 1000 rows = 10GB data transfer."
+
+> "Production went down during peak hours. Someone had deployed a dashboard that did SELECT \* from a table with a 10MB BLOB column, loading 1000 rows = 10GB data transfer."
 
 ```sql
 -- ❌ The query:
@@ -656,7 +689,8 @@ SELECT id, name, price FROM products LIMIT 1000;
 -- Data transferred: ~50KB
 ```
 
-### Why SELECT * Is Bad
+### Why SELECT \* Is Bad
+
 ```sql
 -- Problem 1: Network bandwidth
 SELECT * FROM users;  -- 50 columns, you need 3
@@ -686,6 +720,7 @@ WHERE status = 'active';
 ## 🟠 Case 3: The OFFSET Pagination Disaster
 
 ### Real Story
+
 > "Page 1 loaded in 100ms. Page 1000 loaded in 45 seconds. Our pagination was using OFFSET."
 
 ```sql
@@ -698,19 +733,20 @@ SELECT * FROM orders ORDER BY created_at DESC LIMIT 20 OFFSET 100000; -- Very sl
 ```
 
 ### The Fix: Keyset Pagination
+
 ```sql
 -- ✅ Keyset pagination (consistent speed):
 
 -- First page:
-SELECT * FROM orders 
-ORDER BY created_at DESC, order_id DESC 
+SELECT * FROM orders
+ORDER BY created_at DESC, order_id DESC
 LIMIT 20;
 -- Returns last row: created_at='2024-01-15 10:30:00', order_id=5000
 
 -- Next page (use last row's values):
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE (created_at, order_id) < ('2024-01-15 10:30:00', 5000)
-ORDER BY created_at DESC, order_id DESC 
+ORDER BY created_at DESC, order_id DESC
 LIMIT 20;
 
 -- This is O(1) regardless of page number!
@@ -718,6 +754,7 @@ LIMIT 20;
 ```
 
 ### When You Must Use OFFSET
+
 ```sql
 -- If you absolutely need OFFSET (like "jump to page 500"):
 -- Add an index and keep offset reasonable:
@@ -742,6 +779,7 @@ WHERE page_number = 500;
 ## 🟠 Case 4: The Correlated Subquery Death
 
 ### Real Story
+
 > "A simple report query ran for 12 hours. It had a correlated subquery that ran once per row in the outer query."
 
 ```sql
@@ -816,7 +854,7 @@ SELECT current_database(), current_user, inet_server_addr();
 ROLLBACK;
 
 -- STEP 2: If committed, check for audit/history
-SELECT * FROM table_history 
+SELECT * FROM table_history
 WHERE changed_at > NOW() - INTERVAL '10 minutes';
 
 -- STEP 3: If no audit, check backup recency
@@ -848,7 +886,7 @@ COMMIT;
 -- SAFE DELETE:
 BEGIN;
 -- First, backup what you're deleting:
-CREATE TEMP TABLE deleted_backup AS 
+CREATE TEMP TABLE deleted_backup AS
 SELECT * FROM orders WHERE status = 'cancelled' AND created_at < '2023-01-01';
 -- Then delete:
 DELETE FROM orders WHERE order_id IN (SELECT order_id FROM deleted_backup);
@@ -863,9 +901,9 @@ DECLARE
     affected INT := 1;
 BEGIN
     WHILE affected > 0 LOOP
-        UPDATE orders 
-        SET processed = true 
-        WHERE processed = false 
+        UPDATE orders
+        SET processed = true
+        WHERE processed = false
           AND order_id IN (
             SELECT order_id FROM orders WHERE processed = false LIMIT batch_size
           );
@@ -883,14 +921,17 @@ END $$;
 When asked "Tell me about a SQL disaster you've experienced or learned from":
 
 ### Story 1: The Missing WHERE
+
 > "Early in my career, I ran an UPDATE without a WHERE clause on a test database I thought was safe—turned out it was connected to production. It taught me to always verify my connection first with `SELECT current_database()` and to use transactions for any data modifications."
 
 ### Story 2: The Performance Surprise
+
 > "I wrote a report query that worked fine in development with 1,000 rows. In production with 10 million rows, it timed out. The EXPLAIN showed a full table scan because I had a function on an indexed column. I learned to always test with production-scale data and check execution plans."
 
 ### Story 3: The Backup Failure
+
 > "I learned from the GitLab incident to never trust backups without testing them. I implemented a practice of periodically restoring backups to a test environment to verify they're actually usable."
 
 ---
 
-*Remember: Every expert was once a beginner who made mistakes. The difference is they learned from them and built systems to prevent recurrence.*
+_Remember: Every expert was once a beginner who made mistakes. The difference is they learned from them and built systems to prevent recurrence._

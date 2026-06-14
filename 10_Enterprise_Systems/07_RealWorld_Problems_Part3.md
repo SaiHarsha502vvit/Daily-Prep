@@ -10,15 +10,14 @@
 
 ## Problem 23: Split Bill Among Friends (Simplify Debts)
 
-
 COMPANY: Splitwise / PhonePe
 SYSTEM: Bill Splitting
 CHALLENGE: Minimize number of transactions to settle debts
 
-
 EXAMPLE:
 ────────
 Trip expenses:
+
 - Alice paid ₹3000 for hotel (for Alice, Bob, Charlie)
 - Bob paid ₹1500 for dinner (for all 3)
 - Charlie paid ₹600 for snacks (for all 3)
@@ -27,6 +26,7 @@ Total spent: ₹5100
 Each should pay: ₹1700
 
 Balance:
+
 - Alice: Paid 3000, should pay 1700 → Owed ₹1300
 - Bob: Paid 1500, should pay 1700 → Owes ₹200
 - Charlie: Paid 600, should pay 1700 → Owes ₹1100
@@ -161,7 +161,6 @@ ALGORITHMS:
 3. Sliding Window Counter: Balanced approach
 4. Token Bucket: Most flexible
 ```
-
 
 ```java
 /**
@@ -329,22 +328,23 @@ public class RateLimiterService {
 
 ---
 
-
-
 🔬 **Section Challenge — Problem 24: Rate Limiter (Sliding Window / Token Bucket)**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 # PART 12: SEARCH SYSTEMS (Google/Elasticsearch)
 
@@ -357,7 +357,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 ║ FEATURE: Show top 5 suggestions as user types                                ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -521,7 +520,6 @@ public class SearchAutocomplete {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 /**
  * PROBLEM: Real-time Top K Trending Topics
@@ -662,9 +660,6 @@ public class TrendingTopicsService {
 
 ---
 
-
-
-
 # PART 13: DATA PROCESSING (Batch Systems)
 
 ## Problem 27: Process Large CSV File (External Sort / Chunking)
@@ -676,7 +671,6 @@ public class TrendingTopicsService {
 ║ CHALLENGE: Sort 100GB CSV file with only 4GB RAM                             ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -834,9 +828,6 @@ public class ExternalSort {
 
 ---
 
-
-
-
 ## Problem 28: Find Duplicate Files (Hash-based Deduplication)
 
 ```
@@ -846,7 +837,6 @@ public class ExternalSort {
 ║ CHALLENGE: Find and remove duplicate files to save storage                   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1000,9 +990,6 @@ public class DuplicateFileFinder {
 
 ---
 
-
-
-
 # ⚙️ Part 14: Gaming Systems
 
 ## Problem 29: Leaderboard System (Sorted Set / Skip List)
@@ -1014,7 +1001,6 @@ public class DuplicateFileFinder {
 ║ FEATURES: Update score, Get rank, Get top K, Get players around rank N       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 /**
@@ -1180,7 +1166,6 @@ public class GameLeaderboard {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 /**
  * PROBLEM: Fair Matchmaking System
@@ -1342,9 +1327,6 @@ public class MatchmakingService {
 
 ---
 
-
-
-
 ## 🎯 QUICK REFERENCE: Problem → DSA Mapping
 
 | Problem Domain | Problem            | DSA Used             |
@@ -1370,9 +1352,6 @@ public class MatchmakingService {
 
 ---
 
-
-
-
 ## 📚 How to Use These Problems
 
 ### For Interview Prep:
@@ -1393,7 +1372,47 @@ public class MatchmakingService {
 
 _These are real problems from real systems. Master these patterns and you'll handle any interview!_
 
-
 ---
 
 > **Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
+
+---
+
+## Historical Evolution
+
+Part 3's problems (rate limiting, autocomplete, top-K, external sort, deduplication, leaderboards) span six independent DSA lineages. The "real systems" framing is new; the data structures are 1959-2005.
+
+**1. The Data Structures Behind Part 3 Problems**
+
+- **René de la Briandais — Trie, 1959**: De la Briandais's 1959 paper introduced the digital-search tree (later named "Trie" by Fredkin 1960). Powers every autocomplete + IP-routing lookup in modern systems.
+- **Edward Fredkin — Trie (naming), 1960**: Fredkin coined "Trie" from the middle of "retrieval". Most modern code calls it a "prefix tree" but the original term survives in CS curricula.
+- **J.W.J. Williams — Binary Heap, 1964**: Williams's 1964 CACM paper introduced the binary heap. The data structure behind priority queues, Top-K streaming, and Dijkstra's shortest-path. Part 3's "Top K trending topics" problem uses this exact structure.
+- **Robert Sedgewick + Philippe Flajolet — Analytic Combinatorics, 1996 (later book 2009)**: Sedgewick's analysis of tries + heaps underlies modern autocomplete systems (Google Suggest launched 2004; SAP autocomplete 2012).
+- **Graham Cormode + S. Muthukrishnan — Count-Min Sketch, 2005**: The 2005 paper introduced the probabilistic data structure for frequency estimation in streaming data. Part 3's "Top K trending topics" with high-cardinality stream uses Count-Min Sketch as a memory-efficient counter.
+- **Jon Bentley + Robert Sedgewick — Fast Algorithms for Sorting and Searching, 1997 (Sedgewick's Algorithms in C book)**: The ternary-search-trie + external-sort + binary-search variants used in Part 3 are Sedgewick originals.
+
+**2. Token Bucket Rate Limiting (1970s-1980s)**
+
+- **Token Bucket algorithm — RFC 791 (1981) Internet Protocol**: The rate-limiting algorithm formalized in the IP spec; later adapted to API rate-limiting by NGINX (2004) and Cloudflare (2010+).
+- **Leaky Bucket — Turner 1986 (Newman 1987)**: The dual algorithm. Token bucket allows bursty traffic; leaky bucket enforces smooth output. Modern API gateways use both.
+
+**3. Modern Practice Anchored**
+
+When an ERP autocomplete returns "Customer: Cust-1234" as the user types, the data structure is the de la Briandais 1959 Trie (or Burst-Trie / HAT-Trie modern variants). When an API gateway enforces 1000 req/min, it's Token Bucket from RFC 791 (1981). When a Top-K streaming job counts hashtags, the counter is Count-Min Sketch from Cormode-Muthukrishnan 2005. The DSA hasn't changed; the deployment context has.
+
+### Production Reality
+
+**Failure Mode 1 — Rate Limiter Race Condition (token-bucket atomicity)**: A token-bucket rate limiter in Java implemented as `int tokens; void consume() { tokens--; }` has a TOCTOU (time-of-check-time-of-use) race. Two threads concurrently see tokens=1, both decrement, both pass — over-allowance by 1×N-threads. Fix: `AtomicInteger.compareAndSet()` or Redis `INCR` with TTL.
+
+**Failure Mode 2 — Trie Memory Blowup for Deep Prefix Trees**: A trie over all English words (350K words, average 8 chars) takes ~1MB. A trie over all SKU codes (10M codes, average 12 chars) takes ~500MB. Symptom: OOM on a 256MB heap. Fix: burst-trie (Heikinheimo 2009) or HAT-trie (Askitis-Sinha 2007) — both compact trie variants with hash-array-mapped pages.
+
+**Failure Mode 3 — Top-K Heap Degradation Under Hot Keys**: When one hashtag gets 80% of the traffic (a viral event), the Top-K heap is dominated by that one key. Heap operations become O(log K) per increment but with K=1, the heap is trivial — except the COUNTER for that one key overflows. Fix: Count-Min Sketch for frequency, then heap for top-K from the sketch's output (bounded counter overflow).
+
+**Debug Workflow**:
+1. **Race-condition stress test**: 100 threads, 1 token available, 100 concurrent `consume()` calls. If 100 pass, atomicity is broken.
+2. **Trie memory profile**: jcmd `NMT` (Native Memory Tracking) on a large trie dataset
+3. **Top-K heap profiler**: heap dump → look for `PriorityQueue` with one element dominating
+4. **Hot-key detection**: scatter plot of key frequencies; alert when top-1 / total > 0.5
+
+---
+

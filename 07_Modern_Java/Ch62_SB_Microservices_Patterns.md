@@ -16,7 +16,7 @@ spring:
         git:
           uri: https://github.com/company/config-repo
           default-label: main
-          search-paths: '{application}'
+          search-paths: "{application}"
           clone-on-start: true
           force-pull: true
         encrypt:
@@ -69,13 +69,13 @@ config-repo/
 @RefreshScope  // Enables dynamic refresh
 @RequiredArgsConstructor
 public class ConfigController {
-    
+
     @Value("${app.feature.enabled:false}")
     private boolean featureEnabled;
-    
+
     @Value("${app.rate.limit:100}")
     private int rateLimit;
-    
+
     @GetMapping("/config")
     public Map<String, Object> getConfig() {
         return Map.of(
@@ -167,42 +167,42 @@ ORCHESTRATION-BASED SAGA:
 @RequiredArgsConstructor
 @Slf4j
 public class OrderSagaOrchestrator {
-    
+
     private final OrderService orderService;
     private final PaymentClient paymentClient;
     private final InventoryClient inventoryClient;
     private final NotificationClient notificationClient;
-    
+
     @Transactional
     public OrderResult executeOrderSaga(OrderRequest request) {
         SagaContext context = new SagaContext();
-        
+
         try {
             // Step 1: Create Order
             Order order = createOrder(request, context);
-            
+
             // Step 2: Reserve Inventory
             reserveInventory(order, context);
-            
+
             // Step 3: Process Payment
             processPayment(order, context);
-            
+
             // Step 4: Confirm Order
             confirmOrder(order);
-            
+
             // Step 5: Send Notification
             sendNotification(order);
-            
+
             log.info("Saga completed successfully for order: {}", order.getId());
             return OrderResult.success(order);
-            
+
         } catch (Exception e) {
             log.error("Saga failed, initiating compensation", e);
             compensate(context);
             return OrderResult.failure(e.getMessage());
         }
     }
-    
+
     private Order createOrder(OrderRequest request, SagaContext context) {
         log.info("Step 1: Creating order");
         Order order = orderService.create(request);
@@ -210,37 +210,37 @@ public class OrderSagaOrchestrator {
         context.addCompensation(() -> orderService.cancel(order.getId()));
         return order;
     }
-    
+
     private void reserveInventory(Order order, SagaContext context) {
         log.info("Step 2: Reserving inventory for order: {}", order.getId());
         InventoryReservation reservation = inventoryClient.reserve(
             new ReservationRequest(order.getId(), order.getItems())
         );
         context.setReservation(reservation);
-        context.addCompensation(() -> 
+        context.addCompensation(() ->
             inventoryClient.cancelReservation(reservation.getId()));
     }
-    
+
     private void processPayment(Order order, SagaContext context) {
         log.info("Step 3: Processing payment for order: {}", order.getId());
         PaymentResult payment = paymentClient.process(
             new PaymentRequest(order.getId(), order.getTotalAmount())
         );
-        
+
         if (!payment.isSuccess()) {
             throw new PaymentFailedException(payment.getMessage());
         }
-        
+
         context.setPayment(payment);
-        context.addCompensation(() -> 
+        context.addCompensation(() ->
             paymentClient.refund(payment.getTransactionId()));
     }
-    
+
     private void confirmOrder(Order order) {
         log.info("Step 4: Confirming order: {}", order.getId());
         orderService.confirm(order.getId());
     }
-    
+
     private void sendNotification(Order order) {
         log.info("Step 5: Sending notification for order: {}", order.getId());
         try {
@@ -250,7 +250,7 @@ public class OrderSagaOrchestrator {
             log.warn("Failed to send notification, will retry later", e);
         }
     }
-    
+
     private void compensate(SagaContext context) {
         log.info("Starting compensation for failed saga");
         context.executeCompensations();
@@ -264,11 +264,11 @@ public class SagaContext {
     private InventoryReservation reservation;
     private PaymentResult payment;
     private final Deque<Runnable> compensations = new ArrayDeque<>();
-    
+
     public void addCompensation(Runnable compensation) {
         compensations.push(compensation);
     }
-    
+
     public void executeCompensations() {
         while (!compensations.isEmpty()) {
             try {
@@ -300,21 +300,21 @@ public class OrderCreatedEvent {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final StreamBridge streamBridge;
-    
+
     public Order createOrder(OrderRequest request) {
         Order order = Order.builder()
             .customerId(request.getCustomerId())
             .items(request.getItems())
             .status(OrderStatus.PENDING)
             .build();
-        
+
         Order savedOrder = orderRepository.save(order);
-        
+
         // Publish event
-        streamBridge.send("order-events-out-0", 
+        streamBridge.send("order-events-out-0",
             new OrderCreatedEvent(
                 savedOrder.getId(),
                 savedOrder.getCustomerId(),
@@ -322,21 +322,21 @@ public class OrderService {
                 savedOrder.getTotalAmount()
             )
         );
-        
+
         return savedOrder;
     }
-    
+
     @Bean
     public Consumer<PaymentCompletedEvent> handlePaymentCompleted() {
         return event -> {
             log.info("Payment completed for order: {}", event.getOrderId());
             orderRepository.updateStatus(event.getOrderId(), OrderStatus.PAID);
-            
+
             streamBridge.send("inventory-reserve-out-0",
                 new ReserveInventoryCommand(event.getOrderId()));
         };
     }
-    
+
     @Bean
     public Consumer<PaymentFailedEvent> handlePaymentFailed() {
         return event -> {
@@ -350,21 +350,21 @@ public class OrderService {
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    
+
     private final PaymentGateway paymentGateway;
     private final StreamBridge streamBridge;
-    
+
     @Bean
     public Consumer<OrderCreatedEvent> handleOrderCreated() {
         return event -> {
             log.info("Processing payment for order: {}", event.getOrderId());
-            
+
             try {
                 PaymentResult result = paymentGateway.process(
                     event.getOrderId(),
                     event.getTotalAmount()
                 );
-                
+
                 if (result.isSuccess()) {
                     streamBridge.send("payment-events-out-0",
                         new PaymentCompletedEvent(
@@ -391,8 +391,6 @@ public class PaymentService {
 ```
 
 ---
-
-
 
 ## Event-Driven Architecture
 
@@ -461,9 +459,9 @@ spring:
 @Service
 @RequiredArgsConstructor
 public class EventPublisher {
-    
+
     private final StreamBridge streamBridge;
-    
+
     public void publishOrderCreated(Order order) {
         OrderCreatedEvent event = new OrderCreatedEvent(
             order.getId(),
@@ -472,8 +470,8 @@ public class EventPublisher {
             order.getTotalAmount(),
             Instant.now()
         );
-        
-        streamBridge.send("order-events-out-0", 
+
+        streamBridge.send("order-events-out-0",
             MessageBuilder.withPayload(event)
                 .setHeader("partitionKey", order.getCustomerId())
                 .setHeader("eventType", "OrderCreated")
@@ -485,22 +483,22 @@ public class EventPublisher {
 // Event Consumer
 @Configuration
 public class EventConsumers {
-    
+
     @Bean
     public Consumer<Message<OrderCreatedEvent>> orderCreatedConsumer(
             InventoryService inventoryService) {
         return message -> {
             OrderCreatedEvent event = message.getPayload();
             log.info("Received OrderCreatedEvent: {}", event.getOrderId());
-            
+
             inventoryService.reserveInventory(
                 event.getOrderId(),
                 event.getItems()
             );
         };
     }
-    
-    @Bean  
+
+    @Bean
     public Function<OrderCreatedEvent, PaymentRequestEvent> orderToPayment() {
         return order -> new PaymentRequestEvent(
             order.getOrderId(),
@@ -521,14 +519,14 @@ public class StoredEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    
+
     private String aggregateId;
     private String aggregateType;
     private String eventType;
-    
+
     @Lob
     private String payload;
-    
+
     private int version;
     private Instant timestamp;
 }
@@ -543,23 +541,23 @@ public interface EventStoreRepository extends JpaRepository<StoredEvent, String>
 @Service
 @RequiredArgsConstructor
 public class EventStore {
-    
+
     private final EventStoreRepository repository;
     private final ObjectMapper objectMapper;
-    
-    public void append(String aggregateId, String aggregateType, 
+
+    public void append(String aggregateId, String aggregateType,
                        Object event, int expectedVersion) {
         Optional<StoredEvent> lastEvent = repository
             .findTopByAggregateIdOrderByVersionDesc(aggregateId);
-        
+
         int currentVersion = lastEvent.map(StoredEvent::getVersion).orElse(0);
-        
+
         if (currentVersion != expectedVersion) {
             throw new OptimisticLockingException(
                 "Expected version " + expectedVersion + " but found " + currentVersion
             );
         }
-        
+
         StoredEvent storedEvent = new StoredEvent();
         storedEvent.setAggregateId(aggregateId);
         storedEvent.setAggregateType(aggregateType);
@@ -567,17 +565,17 @@ public class EventStore {
         storedEvent.setPayload(serialize(event));
         storedEvent.setVersion(currentVersion + 1);
         storedEvent.setTimestamp(Instant.now());
-        
+
         repository.save(storedEvent);
     }
-    
+
     public List<Object> getEvents(String aggregateId) {
         return repository.findByAggregateIdOrderByVersionAsc(aggregateId)
             .stream()
             .map(this::deserialize)
             .collect(Collectors.toList());
     }
-    
+
     private String serialize(Object event) {
         try {
             return objectMapper.writeValueAsString(event);
@@ -585,7 +583,7 @@ public class EventStore {
             throw new EventSerializationException(e);
         }
     }
-    
+
     private Object deserialize(StoredEvent storedEvent) {
         try {
             Class<?> eventClass = Class.forName(
@@ -607,7 +605,7 @@ public class OrderAggregate {
     private OrderStatus status;
     private BigDecimal totalAmount;
     private int version;
-    
+
     // Apply events to rebuild state
     public void apply(Object event) {
         if (event instanceof OrderCreatedEvent e) {
@@ -625,7 +623,7 @@ public class OrderAggregate {
         }
         this.version++;
     }
-    
+
     // Rebuild from events
     public static OrderAggregate fromEvents(List<Object> events) {
         OrderAggregate aggregate = new OrderAggregate();
@@ -667,24 +665,23 @@ public class OrderAggregate {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### CQRS Implementation
 
 ```java
 // Commands
 public sealed interface OrderCommand {
-    record CreateOrder(String customerId, List<OrderItem> items) 
+    record CreateOrder(String customerId, List<OrderItem> items)
         implements OrderCommand {}
-    record CancelOrder(String orderId, String reason) 
+    record CancelOrder(String orderId, String reason)
         implements OrderCommand {}
-    record UpdateOrderStatus(String orderId, OrderStatus status) 
+    record UpdateOrderStatus(String orderId, OrderStatus status)
         implements OrderCommand {}
 }
 
 // Queries
 public sealed interface OrderQuery {
     record GetOrderById(String orderId) implements OrderQuery {}
-    record GetOrdersByCustomer(String customerId, int page, int size) 
+    record GetOrdersByCustomer(String customerId, int page, int size)
         implements OrderQuery {}
     record SearchOrders(OrderSearchCriteria criteria) implements OrderQuery {}
 }
@@ -693,13 +690,13 @@ public sealed interface OrderQuery {
 @Service
 @RequiredArgsConstructor
 public class OrderCommandHandler {
-    
+
     private final EventStore eventStore;
     private final ApplicationEventPublisher eventPublisher;
-    
+
     public String handle(OrderCommand.CreateOrder command) {
         String orderId = UUID.randomUUID().toString();
-        
+
         OrderCreatedEvent event = new OrderCreatedEvent(
             orderId,
             command.customerId(),
@@ -707,30 +704,30 @@ public class OrderCommandHandler {
             calculateTotal(command.items()),
             Instant.now()
         );
-        
+
         eventStore.append(orderId, "Order", event, 0);
         eventPublisher.publishEvent(event);  // For read model update
-        
+
         return orderId;
     }
-    
+
     public void handle(OrderCommand.CancelOrder command) {
         OrderAggregate order = loadAggregate(command.orderId());
-        
+
         if (order.getStatus() == OrderStatus.SHIPPED) {
             throw new BusinessException("Cannot cancel shipped order");
         }
-        
+
         OrderCancelledEvent event = new OrderCancelledEvent(
             command.orderId(),
             command.reason(),
             Instant.now()
         );
-        
+
         eventStore.append(command.orderId(), "Order", event, order.getVersion());
         eventPublisher.publishEvent(event);
     }
-    
+
     private OrderAggregate loadAggregate(String orderId) {
         List<Object> events = eventStore.getEvents(orderId);
         if (events.isEmpty()) {
@@ -744,21 +741,21 @@ public class OrderCommandHandler {
 @Service
 @RequiredArgsConstructor
 public class OrderQueryHandler {
-    
+
     private final OrderReadRepository readRepository;
-    
+
     public OrderView handle(OrderQuery.GetOrderById query) {
         return readRepository.findById(query.orderId())
             .orElseThrow(() -> new OrderNotFoundException(query.orderId()));
     }
-    
+
     public Page<OrderView> handle(OrderQuery.GetOrdersByCustomer query) {
         return readRepository.findByCustomerId(
             query.customerId(),
             PageRequest.of(query.page(), query.size())
         );
     }
-    
+
     public Page<OrderView> handle(OrderQuery.SearchOrders query) {
         return readRepository.search(query.criteria());
     }
@@ -777,7 +774,7 @@ public class OrderView {
     private BigDecimal totalAmount;
     private Instant createdAt;
     private Instant updatedAt;
-    
+
     @Data
     public static class OrderItemView {
         private String productId;
@@ -792,15 +789,15 @@ public class OrderView {
 @Component
 @RequiredArgsConstructor
 public class OrderReadModelUpdater {
-    
+
     private final OrderReadRepository readRepository;
     private final UserClient userClient;
     private final ProductClient productClient;
-    
+
     @EventListener
     public void on(OrderCreatedEvent event) {
         UserDTO user = userClient.getUser(event.getCustomerId());
-        
+
         List<OrderView.OrderItemView> itemViews = event.getItems().stream()
             .map(item -> {
                 ProductDTO product = productClient.getProduct(item.getProductId());
@@ -813,7 +810,7 @@ public class OrderReadModelUpdater {
                 return view;
             })
             .collect(Collectors.toList());
-        
+
         OrderView view = new OrderView();
         view.setId(event.getOrderId());
         view.setCustomerId(event.getCustomerId());
@@ -823,10 +820,10 @@ public class OrderReadModelUpdater {
         view.setTotalAmount(event.getTotalAmount());
         view.setCreatedAt(event.getTimestamp());
         view.setUpdatedAt(event.getTimestamp());
-        
+
         readRepository.save(view);
     }
-    
+
     @EventListener
     public void on(OrderCancelledEvent event) {
         readRepository.updateStatus(event.getOrderId(), OrderStatus.CANCELLED);
@@ -835,8 +832,6 @@ public class OrderReadModelUpdater {
 ```
 
 ---
-
-
 
 ## Service Mesh
 
@@ -872,7 +867,6 @@ public class OrderReadModelUpdater {
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Istio Configuration Example
 
@@ -959,14 +953,13 @@ spec:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Gateway Security Configuration
 
 ```java
 @Configuration
 @EnableWebFluxSecurity
 public class GatewaySecurityConfig {
-    
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
@@ -983,14 +976,14 @@ public class GatewaySecurityConfig {
             )
             .build();
     }
-    
+
     @Bean
     public ReactiveJwtDecoder jwtDecoder(@Value("${jwt.secret}") String secret) {
         return NimbusReactiveJwtDecoder.withSecretKey(
             new SecretKeySpec(secret.getBytes(), "HmacSHA256")
         ).build();
     }
-    
+
     private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthConverter() {
         return jwt -> {
             Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
@@ -999,7 +992,7 @@ public class GatewaySecurityConfig {
             );
         };
     }
-    
+
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
         List<String> roles = jwt.getClaimAsStringList("roles");
         if (roles == null) {
@@ -1013,8 +1006,6 @@ public class GatewaySecurityConfig {
 ```
 
 ---
-
-
 
 ## Observability Patterns
 
@@ -1043,13 +1034,12 @@ public class GatewaySecurityConfig {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Metrics with Micrometer
 
 ```java
 @Configuration
 public class MetricsConfig {
-    
+
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() {
         return registry -> registry.config()
@@ -1061,11 +1051,11 @@ public class MetricsConfig {
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    
+
     private final MeterRegistry meterRegistry;
     private final Counter orderCounter;
     private final Timer orderProcessingTimer;
-    
+
     public OrderService(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
         this.orderCounter = Counter.builder("orders.created")
@@ -1075,16 +1065,16 @@ public class OrderService {
             .description("Time to process orders")
             .register(meterRegistry);
     }
-    
+
     public Order createOrder(OrderRequest request) {
         return orderProcessingTimer.record(() -> {
             Order order = processOrder(request);
             orderCounter.increment();
-            
+
             // Custom metrics
-            meterRegistry.gauge("orders.pending", 
+            meterRegistry.gauge("orders.pending",
                 orderRepository.countByStatus(OrderStatus.PENDING));
-            
+
             return order;
         });
     }
@@ -1092,8 +1082,6 @@ public class OrderService {
 ```
 
 ---
-
-
 
 ## Deployment Patterns
 
@@ -1118,7 +1106,6 @@ public class OrderService {
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Canary Deployment
 
@@ -1152,18 +1139,16 @@ public class OrderService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 ## Interview Questions
 
 ### Beginner
 
 **Q1: What is service discovery and why is it needed?**
+
 ```
-Service discovery allows services to find each other dynamically without 
+Service discovery allows services to find each other dynamically without
 hard-coded URLs. It's needed because:
 - Services can scale up/down
 - IP addresses change
@@ -1172,6 +1157,7 @@ hard-coded URLs. It's needed because:
 ```
 
 **Q2: What is an API Gateway?**
+
 ```
 API Gateway is a single entry point for all clients that:
 - Routes requests to appropriate services
@@ -1181,6 +1167,7 @@ API Gateway is a single entry point for all clients that:
 ```
 
 **Q3: Explain the Circuit Breaker pattern**
+
 ```
 Circuit breaker prevents cascading failures:
 - CLOSED: Normal operation, requests pass through
@@ -1196,6 +1183,7 @@ Benefits:
 ### Advanced
 
 **Q4: Compare choreography vs orchestration saga**
+
 ```
 Choreography:
 - Services communicate via events
@@ -1213,6 +1201,7 @@ Orchestration:
 ```
 
 **Q5: What is CQRS and when to use it?**
+
 ```
 Command Query Responsibility Segregation separates read and write operations.
 
@@ -1229,6 +1218,7 @@ Don't use when:
 ```
 
 **Q6: How do you handle distributed transactions?**
+
 ```
 Options:
 1. Saga Pattern - Compensating transactions
@@ -1282,7 +1272,6 @@ Best practices:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Summary
@@ -1300,20 +1289,18 @@ Microservices patterns solve distributed system challenges:
 
 ---
 
-*Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)*
-
-
----
-
+_Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)_
 
 ---
 
-
+---
 
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** The circuit breaker has three states: CLOSED → OPEN → HALF-OPEN. The HALF-OPEN state is the most dangerous. Why? What happens if you allow too many requests through in HALF-OPEN, and what happens if you allow too few?
+
 <details><summary>Answer</summary>
 
 HALF-OPEN is dangerous because it's a **probe state** — you're testing if the downstream service has recovered. **Too many requests in HALF-OPEN:** If you allow 100 probe requests and the service is still down, all 100 fail, wasting resources and potentially cascading the failure to YOUR callers (they're waiting for your timeouts). You also hammer the recovering service with 100 requests when it can barely handle 1 — preventing recovery. **Too few requests:** If you allow only 1 probe and it fails due to a transient network glitch (not because the service is actually down), the circuit opens again for another `waitDurationInOpenState` (e.g., 60s). The service may have recovered at second 2, but you don't retry until second 62 — unnecessary downtime. **Best practice:** `permittedNumberOfCallsInHalfOpenState: 3-5`, `slowCallDurationThreshold: 2s`, `slowCallRateThreshold: 80`. If 3 out of 5 probes succeed within 2s, close the circuit. Resilience4j also supports `automaticTransitionFromOpenToHalfOpenEnabled: true` to avoid needing a request to trigger the transition.
+
 </details>

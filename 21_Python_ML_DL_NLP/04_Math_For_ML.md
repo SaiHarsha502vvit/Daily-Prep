@@ -10,16 +10,17 @@ _"Every ML algorithm is just math with a fancy name. Master the math, master ML.
 
 **Mental Model:** Think of Math for ML as the grammar of a language. You can memorize phrases (use sklearn), but without grammar (math), you can't construct new sentences (design new models), debug errors (understand why a model fails), or appreciate poetry (read research papers).
 
-| Question | Math for ML Context |
-| :--- | :--- |
-| **WHAT** | The mathematical foundations — Linear Algebra, Calculus, Probability, and Optimization — that underpin every machine learning algorithm. |
-| **WHY** | Without math, ML is a black box. Understanding math lets you: debug failing models, tune hyperparameters intelligently, read research papers, and invent new approaches. |
-| **WHEN** | Before diving into ML algorithms. You need this math to understand *why* gradient descent converges, *why* regularization prevents overfitting, and *why* PCA reduces dimensions. |
-| **WHERE** | In every layer of ML: data preprocessing (statistics), model training (calculus + optimization), evaluation (probability), and feature engineering (linear algebra). |
-| **WHO** | Built upon centuries of work: Gauss (statistics), Euler/Leibniz (calculus), Bayes (probability), Cauchy (optimization). Modern ML researchers (Hinton, LeCun, Bengio) applied these to neural networks. |
-| **HOW** | By representing data as vectors/matrices, defining a loss function, computing gradients via calculus, and iteratively minimizing loss using optimization algorithms. |
+| Question  | Math for ML Context                                                                                                                                                                                     |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **WHAT**  | The mathematical foundations — Linear Algebra, Calculus, Probability, and Optimization — that underpin every machine learning algorithm.                                                                |
+| **WHY**   | Without math, ML is a black box. Understanding math lets you: debug failing models, tune hyperparameters intelligently, read research papers, and invent new approaches.                                |
+| **WHEN**  | Before diving into ML algorithms. You need this math to understand _why_ gradient descent converges, _why_ regularization prevents overfitting, and _why_ PCA reduces dimensions.                       |
+| **WHERE** | In every layer of ML: data preprocessing (statistics), model training (calculus + optimization), evaluation (probability), and feature engineering (linear algebra).                                    |
+| **WHO**   | Built upon centuries of work: Gauss (statistics), Euler/Leibniz (calculus), Bayes (probability), Cauchy (optimization). Modern ML researchers (Hinton, LeCun, Bengio) applied these to neural networks. |
+| **HOW**   | By representing data as vectors/matrices, defining a loss function, computing gradients via calculus, and iteratively minimizing loss using optimization algorithms.                                    |
 
 ### Where It's Used in Real World
+
 - **Self-Driving Cars (Tesla)**: Linear algebra (coordinate transforms), calculus (trajectory optimization), probability (sensor fusion under uncertainty).
 - **Recommendation Systems (Netflix)**: Matrix factorization (SVD) to find latent user-movie features from a sparse rating matrix.
 - **Medical Imaging**: Convolution (calculus) applied to image matrices (linear algebra) to detect tumors with probabilistic confidence scores.
@@ -27,19 +28,19 @@ _"Every ML algorithm is just math with a fancy name. Master the math, master ML.
 
 ### Interview Relevance
 
-| Interview Signal | Math Concept Needed |
-|---|---|
-| "Why does your model overfit?" | Bias-Variance Tradeoff (Statistics) |
-| "How does gradient descent work?" | Partial derivatives, Chain Rule (Calculus) |
-| "Explain PCA" | Eigenvalues, Covariance Matrix (Linear Algebra) |
-| "Why use log-loss?" | Maximum Likelihood Estimation (Probability) |
-| "What does the learning rate do?" | Step size in optimization (Optimization) |
+| Interview Signal                  | Math Concept Needed                             |
+| --------------------------------- | ----------------------------------------------- |
+| "Why does your model overfit?"    | Bias-Variance Tradeoff (Statistics)             |
+| "How does gradient descent work?" | Partial derivatives, Chain Rule (Calculus)      |
+| "Explain PCA"                     | Eigenvalues, Covariance Matrix (Linear Algebra) |
+| "Why use log-loss?"               | Maximum Likelihood Estimation (Probability)     |
+| "What does the learning rate do?" | Step size in optimization (Optimization)        |
 
 ---
 
 # PART 1: Linear Algebra — The Language of Data
 
-Every dataset is a matrix. Every feature is a vector. ML *is* linear algebra.
+Every dataset is a matrix. Every feature is a vector. ML _is_ linear algebra.
 
 ---
 
@@ -51,14 +52,14 @@ SCALAR: A single number
 
 VECTOR: An ordered list of numbers (1D)
    v = [3, 7, 1]     ← a point in 3D space
-   
+
    In ML: A single data sample with 3 features
    Example: [height=170, weight=65, age=25]
 
 MATRIX: A 2D grid of numbers (rows × columns)
    A = | 1  2  3 |    ← 2×3 matrix (2 rows, 3 columns)
        | 4  5  6 |
-   
+
    In ML: An entire dataset
    Each ROW = one data sample
    Each COLUMN = one feature
@@ -71,13 +72,13 @@ TENSOR: An N-dimensional array (generalization of matrix)
 
 ### Key Operations
 
-| Operation | Symbol | Example | ML Use Case |
-|---|---|---|---|
-| **Dot Product** | `a · b` | `[1,2] · [3,4] = 1×3 + 2×4 = 11` | Neuron output = weights · inputs |
-| **Matrix Multiply** | `A × B` | `(m×n) × (n×p) = (m×p)` | Forward pass in neural networks |
-| **Transpose** | `Aᵀ` | Rows ↔ Columns | Normal equation: `w = (XᵀX)⁻¹Xᵀy` |
-| **Inverse** | `A⁻¹` | `A × A⁻¹ = I` | Solving linear systems |
-| **Determinant** | `det(A)` | Scalar from square matrix | Check if matrix is invertible |
+| Operation           | Symbol   | Example                          | ML Use Case                       |
+| ------------------- | -------- | -------------------------------- | --------------------------------- |
+| **Dot Product**     | `a · b`  | `[1,2] · [3,4] = 1×3 + 2×4 = 11` | Neuron output = weights · inputs  |
+| **Matrix Multiply** | `A × B`  | `(m×n) × (n×p) = (m×p)`          | Forward pass in neural networks   |
+| **Transpose**       | `Aᵀ`     | Rows ↔ Columns                   | Normal equation: `w = (XᵀX)⁻¹Xᵀy` |
+| **Inverse**         | `A⁻¹`    | `A × A⁻¹ = I`                    | Solving linear systems            |
+| **Determinant**     | `det(A)` | Scalar from square matrix        | Check if matrix is invertible     |
 
 ---
 
@@ -98,11 +99,11 @@ WHY THE DOT PRODUCT IS EVERYWHERE:
 
 GEOMETRIC INTERPRETATION:
   a · b = |a| × |b| × cos(θ)
-  
+
   cos(θ) = 1  → vectors point SAME direction (similar)
   cos(θ) = 0  → vectors are PERPENDICULAR (unrelated)
   cos(θ) = -1 → vectors point OPPOSITE direction (opposite)
-  
+
   THIS is Cosine Similarity — used in:
   • Word embeddings (Word2Vec): similar words have cos ≈ 1
   • Recommendation systems: similar users have cos ≈ 1
@@ -142,7 +143,7 @@ WHAT: For a square matrix A, an eigenvector v satisfies:
       A · v = λ · v
       Where λ (lambda) is the eigenvalue.
 
-INTUITION: 
+INTUITION:
   Most vectors change DIRECTION when multiplied by A.
   Eigenvectors only change MAGNITUDE (they scale by λ).
   They reveal the "natural axes" of a transformation.
@@ -150,12 +151,12 @@ INTUITION:
 WHY THIS MATTERS IN ML — PCA:
   PCA (Principal Component Analysis) finds eigenvectors of
   the COVARIANCE MATRIX of your data.
-  
+
   1. Compute covariance matrix C = (1/n) × Xᵀ × X
   2. Find eigenvectors of C → these are the principal components
   3. Eigenvalues tell you HOW MUCH variance each component captures
   4. Keep top-k eigenvectors → reduce from d dimensions to k dimensions
-  
+
   Example: 1000 features → PCA → 50 features (keeping 95% variance)
   This is DIMENSIONALITY REDUCTION.
 
@@ -200,7 +201,7 @@ for i, ev in enumerate(eigenvalues):
 
 # PART 2: Calculus — How Models Learn
 
-Calculus answers the question: *"How should I adjust my parameters to make my model better?"*
+Calculus answers the question: _"How should I adjust my parameters to make my model better?"_
 
 ---
 
@@ -209,16 +210,16 @@ Calculus answers the question: *"How should I adjust my parameters to make my mo
 ```
 WHAT: The derivative f'(x) tells you HOW FAST f(x) changes
       as x changes by a tiny amount.
-      
+
       f'(x) = lim(h→0) [f(x+h) - f(x)] / h
 
 WHY IN ML:
   We have a LOSS function L(w) that measures how BAD our model is.
   We want to find the weights w that MINIMIZE L(w).
-  
+
   The derivative ∂L/∂w tells us:
   • If ∂L/∂w > 0 → increasing w increases loss → DECREASE w
-  • If ∂L/∂w < 0 → increasing w decreases loss → INCREASE w  
+  • If ∂L/∂w < 0 → increasing w decreases loss → INCREASE w
   • If ∂L/∂w = 0 → we're at a minimum (or maximum or saddle point)
 
 KEY DERIVATIVES TO KNOW:
@@ -237,7 +238,7 @@ WHAT: When f depends on MULTIPLE variables, the partial derivative
 
 THE GRADIENT:
   ∇f = [∂f/∂x₁, ∂f/∂x₂, ..., ∂f/∂xₙ]
-  
+
   The gradient is a VECTOR pointing in the direction of
   STEEPEST ASCENT. To minimize, we go OPPOSITE: -∇f.
 
@@ -246,21 +247,20 @@ EXAMPLE:
   ∂L/∂w₁ = 2w₁
   ∂L/∂w₂ = 2w₂
   ∇L = [2w₁, 2w₂]
-  
+
   At point (3, 4): ∇L = [6, 8]
   To minimize: move in direction [-6, -8]
 ```
 
-
-
 🔬 **Section Challenge — 2.2 Partial Derivatives & Gradients**
 
 **Challenge 1 (Reasoning):** The gradient ∇L points in the direction of steepest ASCENT. Why does moving in the direction of −∇L guarantee we decrease the loss (at least locally), and when does this guarantee BREAK?
+
 <details><summary>Answer</summary>
 
 By definition, the gradient is the direction of maximum rate of increase. Moving by a small step ε in the direction −∇L gives: L(w − ε∇L) ≈ L(w) − ε‖∇L‖² (first-order Taylor expansion). Since ‖∇L‖² is always ≥ 0, the loss decreases. The guarantee BREAKS when: (1) The step ε is too large — the first-order approximation is invalid and we overshoot (this is the learning rate problem). (2) The loss surface has high curvature — the gradient direction is misleading because the surface curves sharply. This is why second-order methods (Newton's method, which uses the Hessian matrix) converge faster but are computationally expensive (Hessian is O(n²) to store for n parameters). (3) At saddle points, the gradient is zero but we're not at a minimum — momentum helps escape by accumulating velocity from previous steps.
-</details>
 
+</details>
 
 ## 2.3 The Chain Rule — Backbone of Backpropagation
 
@@ -269,17 +269,17 @@ WHAT: If y = f(g(x)), then dy/dx = f'(g(x)) · g'(x)
 
 WHY THIS IS CRITICAL:
   A neural network IS a chain of functions:
-  
+
   Input x → Linear(z=wx+b) → Activation(a=σ(z)) → Loss(L)
-  
+
   To find ∂L/∂w, we use the chain rule:
   ∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w
-  
+
   This IS backpropagation!
-  
+
   For a deep network with 100 layers:
   ∂L/∂w₁ = ∂L/∂a₁₀₀ · ∂a₁₀₀/∂z₁₀₀ · ... · ∂z₂/∂a₁ · ∂a₁/∂z₁ · ∂z₁/∂w₁
-  
+
   Chain rule applied 100 times → "backpropagation through layers"
 
 ANALOGY:
@@ -290,36 +290,33 @@ ANALOGY:
 
 ---
 
-
-
-
 ## 2.4 Gradient Descent — The Learning Algorithm
 
 ![Gradient Descent — optimizing on a loss surface](gradient_descent.png)
 
 ```
 THE CORE ALGORITHM:
-  
+
   Repeat until convergence:
       w = w - α · ∂L/∂w
-  
+
   Where:
   • w = model weights (what we want to optimize)
   • α = learning rate (step size — typically 0.001 to 0.1)
   • ∂L/∂w = gradient of loss with respect to weights
 
 VARIANTS:
-  
+
   1. BATCH Gradient Descent
      Uses ALL training data to compute gradient.
-     Pros: Stable convergence.  
+     Pros: Stable convergence.
      Cons: SLOW for large datasets (millions of samples).
-  
+
   2. STOCHASTIC Gradient Descent (SGD)
      Uses ONE random sample per step.
-     Pros: Fast, can escape local minima.  
+     Pros: Fast, can escape local minima.
      Cons: Noisy, erratic path.
-  
+
   3. MINI-BATCH Gradient Descent ← STANDARD IN PRACTICE
      Uses a batch of 32-256 samples per step.
      Pros: Balance of speed and stability. GPU-efficient.
@@ -329,7 +326,7 @@ LEARNING RATE INTUITION:
   Too HIGH (α=1.0): Overshoots minimum, diverges
   Too LOW (α=0.00001): Takes forever, may get stuck
   Just RIGHT (α=0.001): Converges smoothly
-  
+
   ANALOGY: Walking downhill blindfolded.
   Big steps → you overshoot the valley and end up on the other side.
   Tiny steps → you'll get there eventually but it takes all day.
@@ -365,18 +362,18 @@ epochs = 100
 for epoch in range(epochs):
     # Forward pass: prediction
     y_pred = X @ w + b                      # (100,1)
-    
+
     # Compute loss: MSE = (1/n) Σ(y - ŷ)²
     loss = np.mean((y - y_pred) ** 2)
-    
+
     # Compute gradients (partial derivatives)
     dw = (-2/len(X)) * X.T @ (y - y_pred)  # ∂L/∂w
     db = (-2/len(X)) * np.sum(y - y_pred)   # ∂L/∂b
-    
+
     # Update parameters
     w -= lr * dw
     b -= lr * db
-    
+
     if epoch % 20 == 0:
         print(f"Epoch {epoch}: Loss={loss:.4f}, w={w[0,0]:.3f}, b={b[0,0]:.3f}")
 
@@ -387,7 +384,7 @@ for epoch in range(epochs):
 
 # PART 3: Probability & Statistics — Quantifying Uncertainty
 
-ML models don't output *truth* — they output *probabilities*. Understanding probability is understanding ML.
+ML models don't output _truth_ — they output _probabilities_. Understanding probability is understanding ML.
 
 ---
 
@@ -421,15 +418,15 @@ IN ENGLISH:
 
 EXAMPLE — SPAM DETECTION:
   P(spam | "free money") = P("free money" | spam) · P(spam) / P("free money")
-  
+
   P(spam) = 0.3             (30% of emails are spam — prior)
   P("free money"|spam) = 0.8 (80% of spam emails contain "free money" — likelihood)
   P("free money") = 0.3      (30% of all emails contain "free money" — evidence)
-  
+
   P(spam | "free money") = 0.8 × 0.3 / 0.3 = 0.8
-  
+
   → 80% chance it's spam given it contains "free money"!
-  
+
   This is exactly how Naive Bayes classifiers work.
 
 WHY "NAIVE"?
@@ -440,14 +437,14 @@ WHY "NAIVE"?
 
 ## 3.3 Key Distributions
 
-| Distribution | Type | Parameters | ML Use Case |
-|---|---|---|---|
-| **Bernoulli** | Discrete | p (success prob) | Binary classification output |
-| **Binomial** | Discrete | n, p | Number of successes in n trials |
-| **Gaussian (Normal)** | Continuous | μ, σ² | Everywhere — data normalization, weight init, noise |
-| **Uniform** | Continuous | a, b | Random weight initialization |
-| **Poisson** | Discrete | λ (rate) | Count data (events per time) |
-| **Softmax** | Continuous | logits | Multi-class classification outputs |
+| Distribution          | Type       | Parameters       | ML Use Case                                         |
+| --------------------- | ---------- | ---------------- | --------------------------------------------------- |
+| **Bernoulli**         | Discrete   | p (success prob) | Binary classification output                        |
+| **Binomial**          | Discrete   | n, p             | Number of successes in n trials                     |
+| **Gaussian (Normal)** | Continuous | μ, σ²            | Everywhere — data normalization, weight init, noise |
+| **Uniform**           | Continuous | a, b             | Random weight initialization                        |
+| **Poisson**           | Discrete   | λ (rate)         | Count data (events per time)                        |
+| **Softmax**           | Continuous | logits           | Multi-class classification outputs                  |
 
 ```
 THE GAUSSIAN (NORMAL) DISTRIBUTION:
@@ -472,14 +469,14 @@ WHAT: Find the parameters θ that make the observed data MOST PROBABLE.
 
 EXAMPLE — LINEAR REGRESSION:
   Assume: y = wx + b + ε, where ε ~ N(0, σ²) (Gaussian noise)
-  
+
   P(yᵢ | xᵢ, w, b) = (1/√(2πσ²)) · exp(-(yᵢ - wxᵢ - b)² / (2σ²))
-  
+
   Log-likelihood: ℓ = Σ log P(yᵢ | xᵢ, w, b)
                      = -n/2 · log(2πσ²) - (1/2σ²) · Σ(yᵢ - wxᵢ - b)²
-  
+
   Maximizing ℓ ⟺ Minimizing Σ(yᵢ - wxᵢ - b)² ⟺ MSE Loss!
-  
+
   INSIGHT: Minimizing Mean Squared Error IS Maximum Likelihood
   under the assumption of Gaussian noise. This is WHY we use MSE.
 
@@ -493,7 +490,7 @@ CROSS-ENTROPY LOSS:
 
 # PART 4: Optimization — Making Models Learn
 
-Optimization is the *engine* of ML. Everything else is the car; optimization makes it move.
+Optimization is the _engine_ of ML. Everything else is the car; optimization makes it move.
 
 ---
 
@@ -504,7 +501,7 @@ THE GOAL: Find w* = argmin L(w)
 
 CHALLENGES:
   1. LOCAL MINIMA: A low point that isn't the lowest. SGD noise helps escape.
-  2. SADDLE POINTS: Minimum in one direction, maximum in another. 
+  2. SADDLE POINTS: Minimum in one direction, maximum in another.
      Common in high dimensions. Momentum helps escape.
   3. PLATEAUS: Flat regions where gradient ≈ 0. Adam's adaptive LR helps.
   4. RAVINES: Long, narrow valleys. Momentum helps navigate.
@@ -512,7 +509,7 @@ CHALLENGES:
 CONVEX vs NON-CONVEX:
   Convex (e.g., Linear Regression): ONE global minimum, guaranteed to find it.
   Non-Convex (Neural Networks): MANY local minima, no guarantees.
-  
+
   In practice: for deep nets, most local minima are nearly as good as
   the global minimum. The real problem is saddle points.
 ```
@@ -523,14 +520,14 @@ CONVEX vs NON-CONVEX:
 SGD WITH MOMENTUM:
   v_t = β·v_{t-1} + ∂L/∂w        (accumulate velocity)
   w = w - α·v_t                    (update with momentum)
-  
-  β = 0.9 typically. Like a ball rolling downhill — 
+
+  β = 0.9 typically. Like a ball rolling downhill —
   it picks up speed in consistent directions.
 
 RMSProp:
   s_t = β·s_{t-1} + (1-β)·(∂L/∂w)²  (accumulate squared gradients)
   w = w - α·(∂L/∂w) / (√s_t + ε)      (normalize by history)
-  
+
   Adapts learning rate PER PARAMETER. Parameters with large gradients
   get smaller steps; parameters with small gradients get larger steps.
 
@@ -540,9 +537,9 @@ ADAM (Adaptive Moment Estimation) ← MOST POPULAR:
   m̂_t = m_t / (1-β₁ᵗ)                     (bias correction)
   v̂_t = v_t / (1-β₂ᵗ)                     (bias correction)
   w = w - α · m̂_t / (√v̂_t + ε)           (update)
-  
+
   Default: β₁=0.9, β₂=0.999, ε=10⁻⁸, α=0.001
-  
+
   Combines Momentum + RMSProp. Works well out-of-the-box for most problems.
 ```
 
@@ -606,21 +603,21 @@ but fails on new data. This is OVERFITTING.
 
 BIAS-VARIANCE TRADEOFF:
   Total Error = Bias² + Variance + Irreducible Noise
-  
+
   High Bias (Underfitting): Model is too simple → misses patterns
   High Variance (Overfitting): Model is too complex → memorizes noise
-  
+
   Goal: Find the sweet spot between bias and variance.
 
 L1 REGULARIZATION (Lasso):
   L_total = L_data + λ · Σ|wᵢ|
-  
+
   Effect: Drives some weights to EXACTLY ZERO → feature selection!
   Use when: You suspect many features are irrelevant.
 
 L2 REGULARIZATION (Ridge):
   L_total = L_data + λ · Σwᵢ²
-  
+
   Effect: Shrinks ALL weights toward zero (but never exactly zero).
   Use when: All features are potentially relevant but you want smaller weights.
 
@@ -628,7 +625,7 @@ DROPOUT (Neural Networks):
   During training, randomly set some neurons to 0 (probability p=0.5).
   Effect: Forces network to learn redundant representations.
   At test time: use all neurons but scale outputs by (1-p).
-  
+
   ANALOGY: A team where random members are absent each day.
   No one person becomes a single point of failure — the team
   becomes robust because everyone learns multiple roles.
@@ -636,30 +633,28 @@ DROPOUT (Neural Networks):
 
 ---
 
-
-
 🔬 **Section Challenge — 4.3 Regularization — Preventing Overfitting**
 
 **Challenge 1 (Reasoning):** L1 (Lasso) drives weights to EXACTLY zero, but L2 (Ridge) only shrinks them TOWARD zero. Both penalize large weights. Why does L1 produce exact zeros while L2 doesn't?
+
 <details><summary>Answer</summary>
 
 **Geometric explanation:** L1's constraint region is a diamond (|w₁| + |w₂| ≤ c). L2's is a circle (w₁² + w₂² ≤ c). The loss contours (ellipses centered at the optimal unconstrained point) will first touch the constraint boundary at a corner of the diamond (L1) — corners lie on the axes, meaning at least one weight = 0. The circle (L2) has no corners, so the tangent point is almost never on an axis. **Gradient explanation:** L1's gradient is `λ·sign(w)` — a constant push toward zero regardless of magnitude. Even a tiny weight gets the same push. L2's gradient is `2λ·w` — the push shrinks proportionally to the weight's magnitude. As w approaches 0, the L2 penalty push also approaches 0, so the weight never actually reaches zero. **When to use:** L1 when you believe many features are irrelevant (feature selection). L2 when all features matter but you want to prevent any single feature from dominating. ElasticNet combines both.
-</details>
 
+</details>
 
 # Quick Reference — Key Formulas
 
-| Concept | Formula | ML Connection |
-|---|---|---|
-| Dot Product | `a·b = Σaᵢbᵢ` | Neuron output |
-| Matrix Multiply | `(AB)ᵢⱼ = Σ Aᵢₖ·Bₖⱼ` | Forward pass |
-| Derivative | `f'(x) = lim[f(x+h)-f(x)]/h` | Gradient computation |
-| Chain Rule | `∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w` | Backpropagation |
-| Gradient Descent | `w = w - α·∂L/∂w` | Parameter update |
-| Bayes' Theorem | `P(A|B) = P(B|A)·P(A)/P(B)` | Naive Bayes, MAP |
-| Gaussian | `f(x) = exp(-(x-μ)²/2σ²)/√(2πσ²)` | Weight init, BN |
-| MSE Loss | `L = (1/n)Σ(yᵢ-ŷᵢ)²` | Regression |
-| Cross-Entropy | `L = -Σ[y·log(ŷ) + (1-y)·log(1-ŷ)]` | Classification |
-| Softmax | `P(class_i) = exp(zᵢ)/Σexp(zⱼ)` | Multi-class output |
-| Cosine Similarity | `cos(θ) = (a·b)/(‖a‖·‖b‖)` | Text similarity |
-
+| Concept           | Formula                             | ML Connection        |
+| ----------------- | ----------------------------------- | -------------------- | ------------- | ---------------- |
+| Dot Product       | `a·b = Σaᵢbᵢ`                       | Neuron output        |
+| Matrix Multiply   | `(AB)ᵢⱼ = Σ Aᵢₖ·Bₖⱼ`                | Forward pass         |
+| Derivative        | `f'(x) = lim[f(x+h)-f(x)]/h`        | Gradient computation |
+| Chain Rule        | `∂L/∂w = ∂L/∂a · ∂a/∂z · ∂z/∂w`     | Backpropagation      |
+| Gradient Descent  | `w = w - α·∂L/∂w`                   | Parameter update     |
+| Bayes' Theorem    | `P(A                                | B) = P(B             | A)·P(A)/P(B)` | Naive Bayes, MAP |
+| Gaussian          | `f(x) = exp(-(x-μ)²/2σ²)/√(2πσ²)`   | Weight init, BN      |
+| MSE Loss          | `L = (1/n)Σ(yᵢ-ŷᵢ)²`                | Regression           |
+| Cross-Entropy     | `L = -Σ[y·log(ŷ) + (1-y)·log(1-ŷ)]` | Classification       |
+| Softmax           | `P(class_i) = exp(zᵢ)/Σexp(zⱼ)`     | Multi-class output   |
+| Cosine Similarity | `cos(θ) = (a·b)/(‖a‖·‖b‖)`          | Text similarity      |

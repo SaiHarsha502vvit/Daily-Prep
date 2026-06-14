@@ -171,26 +171,26 @@ public class UserService {
 
 ```java
 public class SpringFieldInjector {
-    
+
     public void injectDependencies(Object bean, ApplicationContext context) {
         Class<?> clazz = bean.getClass();
-        
+
         // Get ALL fields (including private!)
         Field[] fields = clazz.getDeclaredFields();
-        
+
         for (Field field : fields) {
             // Check if field has @Autowired
             if (field.isAnnotationPresent(Autowired.class)) {
-                
+
                 // Get the type Spring needs to inject
                 Class<?> fieldType = field.getType();  // UserRepository.class
-                
+
                 // Find a bean of that type
                 Object dependency = context.getBean(fieldType);
-                
+
                 // THE MAGIC: Make private field accessible!
                 field.setAccessible(true);  // Bypass private!
-                
+
                 // Inject the dependency
                 field.set(bean, dependency);
             }
@@ -234,7 +234,7 @@ nameField.set(user, "John");  // Sets user.name = "John"
 ```java
 @RestController
 public class UserController {
-    
+
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.findById(id);
@@ -249,13 +249,13 @@ public class UserController {
 
 ```java
 public class SimpleDispatcher {
-    
+
     private Map<String, MethodHandler> mappings = new HashMap<>();
-    
+
     // At startup: Scan for @RequestMapping
     public void registerController(Object controller) {
         Class<?> clazz = controller.getClass();
-        
+
         for (Method method : clazz.getDeclaredMethods()) {
             // Check for mapping annotations
             GetMapping getMapping = method.getAnnotation(GetMapping.class);
@@ -265,11 +265,11 @@ public class SimpleDispatcher {
             }
         }
     }
-    
+
     // At runtime: When HTTP request comes
     public Object handleRequest(String httpMethod, String path, Object... args) {
         MethodHandler handler = mappings.get(httpMethod + ":" + path);
-        
+
         // REFLECTION: Invoke the method!
         return handler.method.invoke(handler.controller, args);
     }
@@ -313,7 +313,7 @@ privateMethod.invoke(service);
 @Component
 public class UserService {
     private final UserRepository repo;
-    
+
     // Spring calls this constructor - but HOW?
     @Autowired
     public UserService(UserRepository repo) {
@@ -326,36 +326,36 @@ public class UserService {
 
 ```java
 public class SpringBeanFactory {
-    
+
     public Object createBean(Class<?> clazz) throws Exception {
         // Find constructors
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        
+
         // Strategy 1: Look for @Autowired constructor
         for (Constructor<?> constructor : constructors) {
             if (constructor.isAnnotationPresent(Autowired.class)) {
                 return createWithDependencies(constructor);
             }
         }
-        
+
         // Strategy 2: Use single constructor if only one exists
         if (constructors.length == 1) {
             return createWithDependencies(constructors[0]);
         }
-        
+
         // Strategy 3: Use no-arg constructor
         return clazz.getDeclaredConstructor().newInstance();
     }
-    
+
     private Object createWithDependencies(Constructor<?> constructor) throws Exception {
         Class<?>[] paramTypes = constructor.getParameterTypes();
         Object[] args = new Object[paramTypes.length];
-        
+
         // Resolve each dependency
         for (int i = 0; i < paramTypes.length; i++) {
             args[i] = applicationContext.getBean(paramTypes[i]);
         }
-        
+
         constructor.setAccessible(true);
         return constructor.newInstance(args);
     }
@@ -401,10 +401,10 @@ UserService instance = withRepo.newInstance(repoInstance);
 @Service
 @Transactional
 public class OrderService {
-    
+
     @Autowired
     private OrderRepository repo;
-    
+
     @Cacheable("orders")
     public Order findById(Long id) { ... }
 }
@@ -468,13 +468,13 @@ Type[] genericInterfaces = clazz.getGenericInterfaces();
 for (Type type : genericInterfaces) {
     if (type instanceof ParameterizedType) {
         ParameterizedType pType = (ParameterizedType) type;
-        
+
         Type rawType = pType.getRawType();  // JpaRepository
         Type[] typeArgs = pType.getActualTypeArguments();  // [User, Long]
-        
+
         Class<?> entityClass = (Class<?>) typeArgs[0];  // User.class
         Class<?> idClass = (Class<?>) typeArgs[1];      // Long.class
-        
+
         // NOW Spring knows the entity type!
     }
 }
@@ -516,17 +516,17 @@ public Object handleRequest(String path) {
 public class CachedDispatcher {
     private final Map<String, Method> methodCache = new HashMap<>();
     private final Map<String, Object> instanceCache = new HashMap<>();
-    
+
     // Once at startup
     public void init() {
         Class<?> clazz = Class.forName("...");
         Method method = clazz.getMethod("handle");
         Object instance = clazz.newInstance();
-        
+
         methodCache.put("/path", method);
         instanceCache.put("/path", instance);
     }
-    
+
     // Fast at runtime
     public Object handleRequest(String path) {
         Method method = methodCache.get(path);      // O(1) lookup
@@ -654,7 +654,7 @@ public @interface LogExecutionTime {
 // Usage
 @Service
 public class OrderService {
-    
+
     @LogExecutionTime("order-creation")
     public Order createOrder(OrderRequest request) {
         // business logic
@@ -668,14 +668,14 @@ public class OrderService {
 @Aspect
 @Component
 public class LoggingAspect {
-    
+
     // Intercept ALL methods with @LogExecutionTime
     @Around("@annotation(logAnnotation)")
-    public Object logTime(ProceedingJoinPoint joinPoint, 
+    public Object logTime(ProceedingJoinPoint joinPoint,
                           LogExecutionTime logAnnotation) throws Throwable {
-        
+
         String label = logAnnotation.value();  // "order-creation"
-        
+
         long start = System.currentTimeMillis();
         try {
             return joinPoint.proceed();  // Execute actual method
@@ -691,20 +691,20 @@ public class LoggingAspect {
 
 ```java
 public class AnnotationProcessor {
-    
+
     public void processAnnotations(Object bean) {
         Class<?> clazz = bean.getClass();
-        
+
         // Scan all methods
         for (Method method : clazz.getDeclaredMethods()) {
-            
+
             // Check for our annotation
             if (method.isAnnotationPresent(LogExecutionTime.class)) {
                 LogExecutionTime annotation = method.getAnnotation(LogExecutionTime.class);
-                
+
                 String label = annotation.value();
                 boolean showArgs = annotation.showArgs();
-                
+
                 // Now we know this method should be logged
                 // We could wrap it with a proxy...
             }
@@ -730,7 +730,7 @@ public class User {
 
 public class User {
     private String name;
-    
+
     public String getName() { return this.name; }
     public void setName(String name) { this.name = name; }
 }
@@ -779,11 +779,11 @@ public @interface GenerateBuilder { }
 @SupportedAnnotationTypes("com.example.GenerateBuilder")
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class BuilderProcessor extends AbstractProcessor {
-    
+
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, 
+    public boolean process(Set<? extends TypeElement> annotations,
                           RoundEnvironment roundEnv) {
-        
+
         for (Element element : roundEnv.getElementsAnnotatedWith(GenerateBuilder.class)) {
             if (element.getKind() == ElementKind.CLASS) {
                 TypeElement classElement = (TypeElement) element;
@@ -792,15 +792,15 @@ public class BuilderProcessor extends AbstractProcessor {
         }
         return true;
     }
-    
+
     private void generateBuilderClass(TypeElement classElement) {
         String className = classElement.getSimpleName() + "Builder";
-        
+
         // Generate new Java file
         try {
             JavaFileObject file = processingEnv.getFiler()
                 .createSourceFile(className);
-            
+
             try (PrintWriter writer = new PrintWriter(file.openWriter())) {
                 writer.println("public class " + className + " {");
                 // Generate builder methods...
@@ -808,7 +808,7 @@ public class BuilderProcessor extends AbstractProcessor {
             }
         } catch (IOException e) {
             processingEnv.getMessager().printMessage(
-                Diagnostic.Kind.ERROR, 
+                Diagnostic.Kind.ERROR,
                 "Failed to generate builder: " + e.getMessage()
             );
         }
@@ -889,10 +889,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class TransactionProxyFactory {
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T createProxy(T target, Class<T> interfaceType) {
-        
+
         return (T) Proxy.newProxyInstance(
             interfaceType.getClassLoader(),
             new Class<?>[] { interfaceType },
@@ -903,14 +903,14 @@ public class TransactionProxyFactory {
 
 class TransactionHandler implements InvocationHandler {
     private final Object target;
-    
+
     public TransactionHandler(Object target) {
         this.target = target;
     }
-    
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        
+
         // Check if method has @Transactional
         if (method.isAnnotationPresent(Transactional.class)) {
             System.out.println("BEGIN TRANSACTION");
@@ -923,7 +923,7 @@ class TransactionHandler implements InvocationHandler {
                 throw e;
             }
         }
-        
+
         // No transaction needed
         return method.invoke(target, args);
     }
@@ -938,7 +938,7 @@ UserService realService = new UserServiceImpl();
 
 // Wrap it in transaction proxy
 UserService proxiedService = TransactionProxyFactory.createProxy(
-    realService, 
+    realService,
     UserService.class
 );
 
@@ -954,7 +954,7 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 @Service
 public class UserService {  // No interface!
-    
+
     @Transactional
     public void save(User user) { /* implementation */ }
 }
@@ -968,24 +968,24 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 public class CglibProxyFactory {
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T createProxy(Class<T> targetClass) {
-        
+
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(targetClass);  // CGLIB SUBCLASSES your class!
         enhancer.setCallback(new TransactionInterceptor());
-        
+
         return (T) enhancer.create();
     }
 }
 
 class TransactionInterceptor implements MethodInterceptor {
-    
+
     @Override
-    public Object intercept(Object obj, Method method, Object[] args, 
+    public Object intercept(Object obj, Method method, Object[] args,
                            MethodProxy proxy) throws Throwable {
-        
+
         if (method.isAnnotationPresent(Transactional.class)) {
             System.out.println("BEGIN TRANSACTION");
             try {
@@ -998,7 +998,7 @@ class TransactionInterceptor implements MethodInterceptor {
                 throw e;
             }
         }
-        
+
         return proxy.invokeSuper(obj, args);
     }
 }
@@ -1030,12 +1030,12 @@ class TransactionInterceptor implements MethodInterceptor {
 ```java
 @Service
 public class UserService {
-    
+
     @Transactional
     public void methodA() {
         // Transaction works here
     }
-    
+
     public void methodB() {
         methodA();  // ⚠️ NO TRANSACTION! Why?
     }
@@ -1074,10 +1074,10 @@ public class UserService {
 // Solution 1: Inject self (proxy)
 @Service
 public class UserService {
-    
+
     @Autowired
     private UserService self;  // This is the PROXY!
-    
+
     public void methodB() {
         self.methodA();  // Goes through proxy = transaction works!
     }
@@ -1086,10 +1086,10 @@ public class UserService {
 // Solution 2: Use ApplicationContext
 @Service
 public class UserService {
-    
+
     @Autowired
     private ApplicationContext context;
-    
+
     public void methodB() {
         context.getBean(UserService.class).methodA();  // Gets proxy
     }
@@ -1106,7 +1106,7 @@ public class UserServiceA {
 public class UserServiceB {
     @Autowired
     private UserServiceA serviceA;
-    
+
     public void methodB() {
         serviceA.methodA();  // Calls through proxy
     }
@@ -1118,7 +1118,7 @@ public class UserServiceB {
 ```java
 @Service
 public class UserService {
-    
+
     @Transactional
     private void privateMethod() {  // ⚠️ Transaction NEVER works!
         // ...
@@ -1132,13 +1132,13 @@ public class UserService {
 CGLIB creates a SUBCLASS of your service:
 
 class UserService$CglibProxy extends UserService {
-    
+
     @Override
     public void publicMethod() {  // Can override public
         // Add transaction logic
         super.publicMethod();
     }
-    
+
     // CANNOT override private methods!
     // private methods are not inherited
     // So privateMethod() on proxy calls originalClass.privateMethod() directly
@@ -1191,35 +1191,35 @@ A practical rule: when behavior is request-wide, inspect filters and servlet con
 ```java
 // A Servlet is the ORIGINAL Java web component
 public class MyServlet extends HttpServlet {
-    
+
     // Called ONCE when servlet is created
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         // Load resources, initialize state
     }
-    
+
     // Called for EVERY request
     @Override
-    protected void doGet(HttpServletRequest request, 
-                        HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request,
+                        HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Read request
         String name = request.getParameter("name");
-        
+
         // Write response
         response.setContentType("text/html");
         response.getWriter().println("<h1>Hello, " + name + "</h1>");
     }
-    
+
     @Override
-    protected void doPost(HttpServletRequest request, 
-                         HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
         // Handle POST
     }
-    
+
     // Called ONCE when servlet is destroyed
     @Override
     public void destroy() {
@@ -1233,7 +1233,7 @@ public class MyServlet extends HttpServlet {
 ```java
 @GetMapping("/debug")
 public void debugRequest(HttpServletRequest request) {
-    
+
     // === URL INFORMATION ===
     String method = request.getMethod();              // "GET", "POST"
     String uri = request.getRequestURI();             // "/api/users"
@@ -1241,30 +1241,30 @@ public void debugRequest(HttpServletRequest request) {
     String queryString = request.getQueryString();    // "page=1&size=10"
     String contextPath = request.getContextPath();    // "" or "/myapp"
     String servletPath = request.getServletPath();    // "/api/users"
-    
+
     // === PARAMETERS ===
     String page = request.getParameter("page");       // "1" (single value)
     String[] values = request.getParameterValues("ids"); // Multiple values
     Map<String, String[]> allParams = request.getParameterMap();
-    
+
     // === HEADERS ===
     String contentType = request.getHeader("Content-Type");
     String auth = request.getHeader("Authorization");
     Enumeration<String> headerNames = request.getHeaderNames();
-    
+
     // === BODY (for POST/PUT) ===
     BufferedReader reader = request.getReader();      // Text body
     InputStream stream = request.getInputStream();    // Binary body
-    
+
     // === SESSION ===
     HttpSession session = request.getSession();       // Creates if not exists
     HttpSession session2 = request.getSession(false); // Returns null if not exists
-    
+
     // === CLIENT INFO ===
     String remoteAddr = request.getRemoteAddr();      // Client IP
     String remoteHost = request.getRemoteHost();      // Client hostname
     int remotePort = request.getRemotePort();         // Client port
-    
+
     // === ATTRIBUTES (request-scoped storage) ===
     request.setAttribute("user", currentUser);        // Set
     Object user = request.getAttribute("user");       // Get
@@ -1277,18 +1277,18 @@ public void debugRequest(HttpServletRequest request) {
 ```java
 @GetMapping("/download")
 public void customResponse(HttpServletResponse response) throws IOException {
-    
+
     // === STATUS CODE ===
     response.setStatus(HttpServletResponse.SC_OK);           // 200
     response.setStatus(HttpServletResponse.SC_CREATED);      // 201
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);    // 404
-    
+
     // === HEADERS ===
     response.setHeader("X-Custom", "value");          // Set (replaces)
     response.addHeader("X-Custom", "value2");         // Add (appends)
     response.setContentType("application/json");      // Content-Type
     response.setCharacterEncoding("UTF-8");
-    
+
     // === COOKIES ===
     Cookie cookie = new Cookie("session", "abc123");
     cookie.setMaxAge(3600);       // 1 hour
@@ -1296,14 +1296,14 @@ public void customResponse(HttpServletResponse response) throws IOException {
     cookie.setSecure(true);       // HTTPS only
     cookie.setPath("/");
     response.addCookie(cookie);
-    
+
     // === BODY ===
     PrintWriter writer = response.getWriter();        // For text
     OutputStream stream = response.getOutputStream(); // For binary
-    
+
     // === REDIRECTS ===
     response.sendRedirect("/other");                  // 302 redirect
-    
+
     // === ERRORS ===
     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
 }
@@ -1355,28 +1355,28 @@ public void customResponse(HttpServletResponse response) throws IOException {
 @Component
 @Order(1)  // Lower = earlier in chain
 public class RequestLoggingFilter implements Filter {
-    
+
     @Override
-    public void doFilter(ServletRequest request, 
-                        ServletResponse response, 
+    public void doFilter(ServletRequest request,
+                        ServletResponse response,
                         FilterChain chain) throws IOException, ServletException {
-        
+
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        
+
         // BEFORE controller
         long startTime = System.currentTimeMillis();
         String requestId = UUID.randomUUID().toString();
-        
-        log.info("[{}] {} {} started", 
+
+        log.info("[{}] {} {} started",
                 requestId, httpRequest.getMethod(), httpRequest.getRequestURI());
-        
+
         // Pass to next filter (or controller)
         chain.doFilter(request, response);
-        
+
         // AFTER controller
         long duration = System.currentTimeMillis() - startTime;
-        log.info("[{}] completed in {} ms with status {}", 
+        log.info("[{}] completed in {} ms with status {}",
                 requestId, duration, httpResponse.getStatus());
     }
 }
@@ -1412,28 +1412,28 @@ public class RequestLoggingFilter implements Filter {
 // ALL requests go through it
 
 public class DispatcherServlet extends FrameworkServlet {
-    
+
     // Simplified version of what it does
-    protected void doDispatch(HttpServletRequest request, 
+    protected void doDispatch(HttpServletRequest request,
                              HttpServletResponse response) throws Exception {
-        
+
         // 1. Find handler (controller method) for this request
         HandlerExecutionChain handler = getHandler(request);
-        
+
         // 2. Find adapter for the handler
         HandlerAdapter adapter = getHandlerAdapter(handler.getHandler());
-        
+
         // 3. Run interceptors (preHandle)
         if (!handler.applyPreHandle(request, response)) {
             return;
         }
-        
+
         // 4. Execute controller method
         ModelAndView mv = adapter.handle(request, response, handler.getHandler());
-        
+
         // 5. Run interceptors (postHandle)
         handler.applyPostHandle(request, response, mv);
-        
+
         // 6. Render view (or write JSON response)
         processDispatchResult(request, response, handler, mv);
     }
@@ -1533,13 +1533,13 @@ User user = mapper.readValue(json, User.class);
 
 ```java
 public class User {
-    
+
     @JsonProperty("user_name")  // JSON: {"user_name": "John"}
     private String name;
-    
+
     @JsonProperty(access = Access.READ_ONLY)  // Only in response, ignored in request
     private LocalDateTime createdAt;
-    
+
     @JsonProperty(access = Access.WRITE_ONLY)  // Only in request, hidden in response
     private String password;
 }
@@ -1550,10 +1550,10 @@ public class User {
 ```java
 public class User {
     private String name;
-    
+
     @JsonIgnore  // Never serialized or deserialized
     private String password;
-    
+
     @JsonIgnore
     private transient String internalState;
 }
@@ -1563,13 +1563,13 @@ public class User {
 
 ```java
 public class Order {
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime orderDate;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date birthDate;
-    
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)  // Serialize number as string
     private BigDecimal amount;
 }
@@ -1606,9 +1606,9 @@ public class UserProfile {
 public enum Status {
     ACTIVE("A"),
     INACTIVE("I");
-    
+
     private String code;
-    
+
     @JsonCreator  // How to deserialize
     public static Status fromCode(String code) {
         return Arrays.stream(values())
@@ -1616,7 +1616,7 @@ public enum Status {
             .findFirst()
             .orElseThrow();
     }
-    
+
     @JsonValue  // How to serialize
     public String getCode() {
         return code;
@@ -1631,9 +1631,9 @@ public enum Status {
 // When annotations aren't enough - full control
 
 public class MoneySerializer extends JsonSerializer<BigDecimal> {
-    
+
     @Override
-    public void serialize(BigDecimal value, JsonGenerator gen, 
+    public void serialize(BigDecimal value, JsonGenerator gen,
                          SerializerProvider provider) throws IOException {
         if (value != null) {
             gen.writeString("$" + value.setScale(2, RoundingMode.HALF_UP));
@@ -1642,9 +1642,9 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 }
 
 public class MoneyDeserializer extends JsonDeserializer<BigDecimal> {
-    
+
     @Override
-    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt) 
+    public BigDecimal deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException {
         String value = p.getValueAsString();
         if (value != null && value.startsWith("$")) {
@@ -1697,27 +1697,27 @@ public class Cat extends Animal {
 ```java
 @Configuration
 public class JacksonConfig {
-    
+
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        
+
         // Don't fail on unknown properties
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        
+
         // Include only non-null values
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        
+
         // Pretty print
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        
+
         // Date handling
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        
+
         // Snake case
         mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-        
+
         return mapper;
     }
 }
@@ -1831,20 +1831,20 @@ spring:
     url: jdbc:postgresql://localhost:5432/mydb
     username: user
     password: pass
-    
+
     hikari:
       # Pool sizing
-      minimum-idle: 5           # Minimum connections to keep in pool
-      maximum-pool-size: 10     # Maximum connections in pool
-      
+      minimum-idle: 5 # Minimum connections to keep in pool
+      maximum-pool-size: 10 # Maximum connections in pool
+
       # Timeouts
-      connection-timeout: 30000      # Max wait for connection (30s)
-      idle-timeout: 600000          # How long idle connection lives (10min)
-      max-lifetime: 1800000         # Max age of connection (30min)
-      
+      connection-timeout: 30000 # Max wait for connection (30s)
+      idle-timeout: 600000 # How long idle connection lives (10min)
+      max-lifetime: 1800000 # Max age of connection (30min)
+
       # Validation
-      validation-timeout: 5000      # Time to validate connection
-      
+      validation-timeout: 5000 # Time to validate connection
+
       # Performance
       auto-commit: true
       pool-name: MyHikariPool
@@ -1919,20 +1919,20 @@ spring:
   datasource:
     hikari:
       leak-detection-threshold: 60000  # Log if connection held > 60s
-      
+
 // In code, check pool stats
 @Autowired
 private HikariDataSource dataSource;
 
 public void checkPool() {
     HikariPoolMXBean poolProxy = dataSource.getHikariPoolMXBean();
-    
+
     int active = poolProxy.getActiveConnections();
     int idle = poolProxy.getIdleConnections();
     int total = poolProxy.getTotalConnections();
     int waiting = poolProxy.getThreadsAwaitingConnection();
-    
-    log.info("Active: {}, Idle: {}, Total: {}, Waiting: {}", 
+
+    log.info("Active: {}, Idle: {}, Total: {}, Waiting: {}",
              active, idle, total, waiting);
 }
 ```
@@ -2490,7 +2490,7 @@ Frameworks hide syntax, but they cannot choose semantics for you. Good API desig
 
 // Request headers:
 Accept: application/json                    // I want JSON
-Accept: application/xml                     // I want XML  
+Accept: application/xml                     // I want XML
 Accept: text/html, application/json;q=0.9  // HTML preferred, JSON acceptable
 Accept: */*                                 // Anything is fine
 
@@ -2549,14 +2549,14 @@ public class UserService { }  // One instance in entire application
 // Behind the scenes:
 public class SingletonBeanFactory {
     private Map<String, Object> singletonCache = new ConcurrentHashMap<>();
-    
+
     public Object getBean(String name, Class<?> type) {
         // Check cache first
         Object singleton = singletonCache.get(name);
         if (singleton != null) {
             return singleton;
         }
-        
+
         // Create and cache
         synchronized(singletonCache) {
             singleton = type.getDeclaredConstructor().newInstance();
@@ -2582,7 +2582,7 @@ UserService service = context.getBean(UserService.class);  // Factory creates/re
 // @Bean methods are factory methods
 @Configuration
 public class AppConfig {
-    
+
     @Bean  // This IS a factory method
     public UserService userService(UserRepository repo) {
         return new UserServiceImpl(repo);
@@ -2617,7 +2617,7 @@ public abstract class AbstractTemplate {
         doSpecificWork();  // Subclass implements
         cleanup();         // Fixed step
     }
-    
+
     protected void setup() { /* default */ }
     protected void cleanup() { /* default */ }
     protected abstract void doSpecificWork();  // Hook for subclass
@@ -2660,7 +2660,7 @@ PlatformTransactionManager jdbc = new DataSourceTransactionManager();
 // Define event
 public class UserCreatedEvent extends ApplicationEvent {
     private final User user;
-    
+
     public UserCreatedEvent(Object source, User user) {
         super(source);
         this.user = user;
@@ -2672,7 +2672,7 @@ public class UserCreatedEvent extends ApplicationEvent {
 public class UserService {
     @Autowired
     private ApplicationEventPublisher publisher;
-    
+
     public User createUser(User user) {
         // Save user...
         publisher.publishEvent(new UserCreatedEvent(this, user));  // Notify observers
@@ -2683,7 +2683,7 @@ public class UserService {
 // Observer/Listener
 @Component
 public class EmailNotificationListener {
-    
+
     @EventListener
     public void onUserCreated(UserCreatedEvent event) {
         // Send welcome email
@@ -2692,7 +2692,7 @@ public class EmailNotificationListener {
 
 @Component
 public class AuditLogListener {
-    
+
     @EventListener
     public void onUserCreated(UserCreatedEvent event) {
         // Log to audit trail
@@ -2709,7 +2709,7 @@ public class AuditLogListener {
 
 @Component
 public class LoggingBeanPostProcessor implements BeanPostProcessor {
-    
+
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         // Wrap/decorate every bean with logging
@@ -2810,10 +2810,10 @@ Executor design is therefore architectural. Pool size, queue policy, and rejecti
 server:
   tomcat:
     threads:
-      max: 200        # Maximum worker threads
-      min-spare: 10   # Minimum idle threads
-    max-connections: 8192    # Max simultaneous connections
-    accept-count: 100        # Queue when all threads busy
+      max: 200 # Maximum worker threads
+      min-spare: 10 # Minimum idle threads
+    max-connections: 8192 # Max simultaneous connections
+    accept-count: 100 # Queue when all threads busy
 ```
 
 ## K.2 ExecutorService Basics
@@ -2847,7 +2847,7 @@ String result = future.get();  // Blocks until complete
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-    
+
     @Bean
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -2862,13 +2862,13 @@ public class AsyncConfig {
 
 @Service
 public class EmailService {
-    
+
     @Async  // Runs on separate thread!
     public void sendEmail(String to, String body) {
         // This method returns immediately to caller
         // Email sending happens in background
     }
-    
+
     @Async
     public CompletableFuture<String> sendEmailAsync(String to, String body) {
         // Return a Future if you need the result
@@ -2884,15 +2884,15 @@ public class EmailService {
 
 public class RequestContext {
     private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
-    
+
     public static void setUser(User user) {
         currentUser.set(user);
     }
-    
+
     public static User getUser() {
         return currentUser.get();
     }
-    
+
     public static void clear() {
         currentUser.remove();  // IMPORTANT: Prevent memory leaks!
     }
@@ -2900,9 +2900,9 @@ public class RequestContext {
 
 // Usage in filter:
 public class AuthFilter implements Filter {
-    
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, 
+    public void doFilter(ServletRequest request, ServletResponse response,
                         FilterChain chain) throws IOException, ServletException {
         try {
             User user = authenticate(request);
@@ -2917,7 +2917,7 @@ public class AuthFilter implements Filter {
 // Anywhere in your code:
 @Service
 public class OrderService {
-    
+
     public Order createOrder(OrderRequest request) {
         User user = RequestContext.getUser();  // Get current user
         // No need to pass user through every method!
@@ -2931,14 +2931,14 @@ public class OrderService {
 // MDC stores logging context per thread
 
 public class RequestLoggingFilter implements Filter {
-    
-    public void doFilter(ServletRequest request, ServletResponse response, 
+
+    public void doFilter(ServletRequest request, ServletResponse response,
                         FilterChain chain) {
         try {
             String requestId = UUID.randomUUID().toString();
             MDC.put("requestId", requestId);
             MDC.put("userId", getCurrentUserId());
-            
+
             chain.doFilter(request, response);
         } finally {
             MDC.clear();
@@ -3014,7 +3014,7 @@ if (obj instanceof List<String>) { }  // Compile error!
 // Problem 1: Can't create generic type
 public class Box<T> {
     private T item;
-    
+
     public void createItem() {
         item = new T();  // COMPILE ERROR! T doesn't exist at runtime
     }
@@ -3023,11 +3023,11 @@ public class Box<T> {
 // Solution: Pass Class<T>
 public class Box<T> {
     private final Class<T> type;
-    
+
     public Box(Class<T> type) {
         this.type = type;
     }
-    
+
     public T createItem() throws Exception {
         return type.getDeclaredConstructor().newInstance();
     }
@@ -3143,7 +3143,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 // Spring Data generates AT RUNTIME:
 public class UserRepositoryImpl implements UserRepository {
-    
+
     @Override
     public List<User> findByLastName(String lastName) {
         // Generated query execution code
@@ -3152,7 +3152,7 @@ public class UserRepositoryImpl implements UserRepository {
             .setParameter("lastName", lastName)
             .getResultList();
     }
-    
+
     // All JpaRepository methods also implemented...
 }
 
@@ -3169,7 +3169,7 @@ public class UserRepositoryImpl implements UserRepository {
 public class User {
     @Id
     private Long id;
-    
+
     @OneToMany(fetch = FetchType.LAZY)
     private List<Order> orders;  // Lazy loaded
 }
@@ -3177,7 +3177,7 @@ public class User {
 // Hibernate enhances bytecode to add:
 public class User$HibernateProxy extends User {
     private boolean ordersLoaded = false;
-    
+
     @Override
     public List<Order> getOrders() {
         if (!ordersLoaded) {
@@ -3197,7 +3197,7 @@ public class User$HibernateProxy extends User {
 
 // Agent class (requires premain method)
 public class MyAgent {
-    
+
     public static void premain(String args, Instrumentation inst) {
         inst.addTransformer(new ClassFileTransformer() {
             @Override

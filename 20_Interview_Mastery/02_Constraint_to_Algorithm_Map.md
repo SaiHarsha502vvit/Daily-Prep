@@ -11,6 +11,7 @@ This is the definitive, MIT-level guide to reading problem constraints and **ins
 ---
 
 ## Table of Contents
+
 1. [The Operations Budget — Why Constraints Matter](#1-the-operations-budget)
 2. [The Master Constraint Table — With 50+ Algorithms](#2-the-master-constraint-table)
 3. [Deep Dive: Each Complexity Class](#3-deep-dive-each-complexity-class)
@@ -79,16 +80,16 @@ Interview speed comes from converting raw constraints into a deterministic algor
 Treat this as a four-step decision system:
 
 1. Budget extraction:
-Convert input bounds into an operation budget per test case.
+   Convert input bounds into an operation budget per test case.
 
 2. Complexity elimination:
-Discard complexity classes that exceed the budget before thinking about implementation details.
+   Discard complexity classes that exceed the budget before thinking about implementation details.
 
 3. Structure matching:
-Use problem structure (sorted data, graph edges, frequency needs, range updates, monotonic predicate) to pick candidate families.
+   Use problem structure (sorted data, graph edges, frequency needs, range updates, monotonic predicate) to pick candidate families.
 
 4. Constant-factor sanity check:
-Validate language/runtime overhead, memory limits, and hidden costs like hashing collisions, string copies, and I/O volume.
+   Validate language/runtime overhead, memory limits, and hidden costs like hashing collisions, string copies, and I/O volume.
 
 This process turns algorithm choice from intuition into repeatable reasoning, which is exactly what interviewers evaluate under time pressure.
 
@@ -100,12 +101,12 @@ This process turns algorithm choice from intuition into repeatable reasoning, wh
 
 **When**: Mathematical formula, direct lookup, amortized operations
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Math formula | Sum 1..n = n(n+1)/2 | "Sum of first N numbers" |
-| Bit manipulation | XOR to find unique | "Single Number (all appear twice except one)" |
-| HashMap lookup | Pre-computed answer | "Two Sum (second pass)" |
-| Array index access | Direct addressing | "Find element at position k" |
+| Algorithm          | Use Case            | Example Problem                               |
+| ------------------ | ------------------- | --------------------------------------------- |
+| Math formula       | Sum 1..n = n(n+1)/2 | "Sum of first N numbers"                      |
+| Bit manipulation   | XOR to find unique  | "Single Number (all appear twice except one)" |
+| HashMap lookup     | Pre-computed answer | "Two Sum (second pass)"                       |
+| Array index access | Direct addressing   | "Find element at position k"                  |
 
 ```java
 // Classic: Find the missing number in [0..n]
@@ -126,13 +127,13 @@ int missingNumber(int[] nums) {
 
 **When**: Halving search space each step, exponentiation, balanced tree operations
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Binary Search (classic) | Find element in sorted array | "Search in Sorted Array" |
-| Binary Search on Answer | Find minimum/maximum that satisfies condition | "Koko Eating Bananas" |
-| Binary Exponentiation | Compute a^n mod m | "Pow(x, n)" |
-| Segment Tree query | Range min/max/sum (after build) | "Range Sum Query" |
-| Balanced BST ops | Insert/delete/search in TreeMap | "Sliding Window Median" |
+| Algorithm               | Use Case                                      | Example Problem          |
+| ----------------------- | --------------------------------------------- | ------------------------ |
+| Binary Search (classic) | Find element in sorted array                  | "Search in Sorted Array" |
+| Binary Search on Answer | Find minimum/maximum that satisfies condition | "Koko Eating Bananas"    |
+| Binary Exponentiation   | Compute a^n mod m                             | "Pow(x, n)"              |
+| Segment Tree query      | Range min/max/sum (after build)               | "Range Sum Query"        |
+| Balanced BST ops        | Insert/delete/search in TreeMap               | "Sliding Window Median"  |
 
 ```java
 // Binary Search on Answer — The MOST underrated technique
@@ -189,11 +190,11 @@ EXAMPLES:
 
 **When**: Factor finding, block decomposition, some number theory
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Trial division | Find all factors | "Count divisors of N" |
-| Square root decomposition | Block-based range queries | "Mo's algorithm" |
-| Sieve of Eratosthenes (query) | Check if prime | "Count Primes" |
+| Algorithm                     | Use Case                  | Example Problem       |
+| ----------------------------- | ------------------------- | --------------------- |
+| Trial division                | Find all factors          | "Count divisors of N" |
+| Square root decomposition     | Block-based range queries | "Mo's algorithm"      |
+| Sieve of Eratosthenes (query) | Check if prime            | "Count Primes"        |
 
 ```java
 // All factors of N in O(√n)
@@ -215,23 +216,23 @@ List<Integer> getFactors(int n) {
 
 **When**: Single pass, HashMap/HashSet, counting, prefix sums
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Two Pointer (same direction) | Remove duplicates, partition | "Remove Duplicates from Sorted Array" |
-| Two Pointer (opposite) | Pair finding in sorted | "Two Sum II (sorted)" |
-| Sliding Window (fixed) | Max sum of k elements | "Max Average Subarray" |
-| Sliding Window (variable) | Smallest subarray with sum ≥ k | "Minimum Size Subarray Sum" |
-| Prefix Sum | Range sum queries | "Subarray Sum Equals K" |
-| HashMap frequency | Count occurrences | "Top K Frequent Elements" (counting step) |
-| HashSet existence | Find missing/duplicate | "Contains Duplicate" |
-| Kadane's Algorithm | Maximum subarray sum | "Maximum Subarray" |
-| Boyer-Moore Voting | Majority element | "Majority Element" |
-| Dutch National Flag | 3-way partition | "Sort Colors" |
-| Monotonic Stack | Next greater element | "Daily Temperatures" |
-| Stack (matching) | Balanced parentheses | "Valid Parentheses" |
-| Floyd's Cycle | Detect cycle in linked list | "Linked List Cycle" |
-| Bucket Sort | Sort when range is known | "H-Index" |
-| Counting Sort | Sort small range integers | "Sort Array by Frequency" |
+| Algorithm                    | Use Case                       | Example Problem                           |
+| ---------------------------- | ------------------------------ | ----------------------------------------- |
+| Two Pointer (same direction) | Remove duplicates, partition   | "Remove Duplicates from Sorted Array"     |
+| Two Pointer (opposite)       | Pair finding in sorted         | "Two Sum II (sorted)"                     |
+| Sliding Window (fixed)       | Max sum of k elements          | "Max Average Subarray"                    |
+| Sliding Window (variable)    | Smallest subarray with sum ≥ k | "Minimum Size Subarray Sum"               |
+| Prefix Sum                   | Range sum queries              | "Subarray Sum Equals K"                   |
+| HashMap frequency            | Count occurrences              | "Top K Frequent Elements" (counting step) |
+| HashSet existence            | Find missing/duplicate         | "Contains Duplicate"                      |
+| Kadane's Algorithm           | Maximum subarray sum           | "Maximum Subarray"                        |
+| Boyer-Moore Voting           | Majority element               | "Majority Element"                        |
+| Dutch National Flag          | 3-way partition                | "Sort Colors"                             |
+| Monotonic Stack              | Next greater element           | "Daily Temperatures"                      |
+| Stack (matching)             | Balanced parentheses           | "Valid Parentheses"                       |
+| Floyd's Cycle                | Detect cycle in linked list    | "Linked List Cycle"                       |
+| Bucket Sort                  | Sort when range is known       | "H-Index"                                 |
+| Counting Sort                | Sort small range integers      | "Sort Array by Frequency"                 |
 
 ```java
 // Kadane's Algorithm — Maximum Subarray Sum
@@ -268,18 +269,18 @@ int[] nextGreater(int[] nums) {
 
 **When**: Sorting-based solutions, divide and conquer, balanced tree operations
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Merge Sort | Stable sort, count inversions | "Count of Smaller Numbers After Self" |
-| Quick Sort | General purpose sort | "Sort an Array" |
-| Heap Sort | In-place O(n log n) | "Sort an Array" |
-| Sort + Two Pointer | 3Sum, closest pair | "3Sum" |
-| Sort + Binary Search | Count pairs, find target | "Pairs with Difference K" |
-| Sort + Greedy | Interval scheduling | "Non-overlapping Intervals" |
-| TreeMap operations (n times) | Sliding window with order | "Sliding Window Median" |
-| Priority Queue (n push/pop) | Merge K sorted lists | "Merge K Sorted Lists" |
-| Segment Tree (build + query) | Range queries with updates | "Range Sum Query - Mutable" |
-| LIS (patience sort) | Longest Increasing Subseq | "Longest Increasing Subsequence" |
+| Algorithm                    | Use Case                      | Example Problem                       |
+| ---------------------------- | ----------------------------- | ------------------------------------- |
+| Merge Sort                   | Stable sort, count inversions | "Count of Smaller Numbers After Self" |
+| Quick Sort                   | General purpose sort          | "Sort an Array"                       |
+| Heap Sort                    | In-place O(n log n)           | "Sort an Array"                       |
+| Sort + Two Pointer           | 3Sum, closest pair            | "3Sum"                                |
+| Sort + Binary Search         | Count pairs, find target      | "Pairs with Difference K"             |
+| Sort + Greedy                | Interval scheduling           | "Non-overlapping Intervals"           |
+| TreeMap operations (n times) | Sliding window with order     | "Sliding Window Median"               |
+| Priority Queue (n push/pop)  | Merge K sorted lists          | "Merge K Sorted Lists"                |
+| Segment Tree (build + query) | Range queries with updates    | "Range Sum Query - Mutable"           |
+| LIS (patience sort)          | Longest Increasing Subseq     | "Longest Increasing Subsequence"      |
 
 ```java
 // Merge K Sorted Lists — Priority Queue approach
@@ -322,13 +323,13 @@ int lengthOfLIS(int[] nums) {
 
 **When**: All pairs comparison, 2D DP tables, string matching
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| 2D DP | LCS, Edit Distance | "Longest Common Subsequence" |
-| Floyd-Warshall | All-pairs shortest paths | "Network Delay Time" (small graph) |
-| Brute force pairs | Small N comparisons | "3Sum" (with sort optimization) |
-| Expand Around Center | All palindromic substrings | "Longest Palindromic Substring" |
-| Manacher's | Palindrome detection (O(n)) | — |
+| Algorithm            | Use Case                    | Example Problem                    |
+| -------------------- | --------------------------- | ---------------------------------- |
+| 2D DP                | LCS, Edit Distance          | "Longest Common Subsequence"       |
+| Floyd-Warshall       | All-pairs shortest paths    | "Network Delay Time" (small graph) |
+| Brute force pairs    | Small N comparisons         | "3Sum" (with sort optimization)    |
+| Expand Around Center | All palindromic substrings  | "Longest Palindromic Substring"    |
+| Manacher's           | Palindrome detection (O(n)) | —                                  |
 
 ```java
 // Longest Common Subsequence — Classic 2D DP
@@ -373,11 +374,11 @@ int minDistance(String word1, String word2) {
 
 ### Tier 7: O(n³) — Cubic [N ≤ 300 - 500]
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Floyd-Warshall | All-pairs shortest path | "All shortest paths" |
-| Matrix Chain Multiplication | Optimal parenthesization | "Burst Balloons" |
-| Interval DP | Merge operations | "Minimum Cost to Merge Stones" |
+| Algorithm                   | Use Case                 | Example Problem                |
+| --------------------------- | ------------------------ | ------------------------------ |
+| Floyd-Warshall              | All-pairs shortest path  | "All shortest paths"           |
+| Matrix Chain Multiplication | Optimal parenthesization | "Burst Balloons"               |
+| Interval DP                 | Merge operations         | "Minimum Cost to Merge Stones" |
 
 ```java
 // Floyd-Warshall — All Pairs Shortest Path
@@ -398,12 +399,12 @@ void floydWarshall(int[][] dist, int n) {
 
 **When**: Subsets, bitmask DP, exhaustive search with pruning
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Bitmask DP | TSP, subset DP | "Shortest Superstring" |
-| Backtracking with pruning | Constraint satisfaction | "N-Queens" |
-| Meet in the Middle | Split and combine | "Closest Subsequence Sum" |
-| Subset enumeration | All subsets | "Subsets" |
+| Algorithm                 | Use Case                | Example Problem           |
+| ------------------------- | ----------------------- | ------------------------- |
+| Bitmask DP                | TSP, subset DP          | "Shortest Superstring"    |
+| Backtracking with pruning | Constraint satisfaction | "N-Queens"                |
+| Meet in the Middle        | Split and combine       | "Closest Subsequence Sum" |
+| Subset enumeration        | All subsets             | "Subsets"                 |
 
 ```java
 // Bitmask DP — Traveling Salesman Problem
@@ -440,10 +441,10 @@ int tsp(int[][] dist, int n) {
 
 ### Tier 9: O(n!) — Factorial [N ≤ 10-12]
 
-| Algorithm | Use Case | Example Problem |
-|-----------|----------|-----------------|
-| Permutation generation | All orderings | "Permutations" |
-| Brute force assignment | All matchings | "N-Queens" |
+| Algorithm              | Use Case      | Example Problem |
+| ---------------------- | ------------- | --------------- |
+| Permutation generation | All orderings | "Permutations"  |
+| Brute force assignment | All matchings | "N-Queens"      |
 
 ```java
 // N-Queens — Backtracking with pruning
@@ -479,14 +480,13 @@ void backtrack(List<List<String>> result, int[] queens, int row, int n,
 
 ---
 
-
 🔬 **Section Challenge — 2. The Master Constraint Table — With 50+ Algorithms**
 
 **Challenge 1 (Constraint Trap):** You see a problem where $N \le 10^5$, asking to find the length of the Longest Increasing Subsequence (LIS). You immediately write the classic double-for-loop DP solution. Why will you fail this interview, and what specific optimization does $N \le 10^5$ demand?
 
 <details><summary>Answer</summary>
 
-The classic DP approach for LIS has a time complexity of $O(N^2)$. If $N = 10^5$, $N^2 = 10^{10}$ operations, which violently exceeds the $\sim 10^8$ operations per second budget, resulting in a Time Limit Exceeded (TLE) error. The constraint $N \le 10^5$ is a hard signal that you *must* find an $O(N \log N)$ approach. For LIS, this requires the **Patience Sorting / Binary Search** optimization, maintaining an active array of smallest possible tail elements for each subsequence length.
+The classic DP approach for LIS has a time complexity of $O(N^2)$. If $N = 10^5$, $N^2 = 10^{10}$ operations, which violently exceeds the $\sim 10^8$ operations per second budget, resulting in a Time Limit Exceeded (TLE) error. The constraint $N \le 10^5$ is a hard signal that you _must_ find an $O(N \log N)$ approach. For LIS, this requires the **Patience Sorting / Binary Search** optimization, maintaining an active array of smallest possible tail elements for each subsequence length.
 
 </details>
 
@@ -582,7 +582,6 @@ INPUT IS A MATRIX (n × m):
 
 ---
 
-
 🔬 **Section Challenge — 4. Constraint Combinations — Multi-Variable Analysis**
 
 **Challenge 1 (Multi-Variable Limit):** A problem gives you a tree with $N$ nodes ($N \le 10^5$) and $Q$ queries ($Q \le 10^5$), where each query asks for the distance between two nodes `u` and `v`. A candidate proposes running BFS from `u` to `v` for every query. Why is this catastrophic, and what algorithm combination is required?
@@ -657,14 +656,13 @@ Step 4: Can we pre-compute?
 
 ---
 
-
 🔬 **Section Challenge — 5. SQL Constraint Analysis**
 
 **Challenge 1 (Join vs Subquery Budget):** You have an `Orders` table with $10^7$ rows and a `Customers` table with $10^6$ rows. You need to find all customers who placed an order > $1000. You write: `SELECT * FROM Customers c WHERE c.id IN (SELECT o.customer_id FROM Orders o WHERE o.amount > 1000)`. Assume no indexes. What is the execution risk here?
 
 <details><summary>Answer</summary>
 
-Without indexes, older database engines might execute this as a **Correlated Subquery**, performing a full scan of `Orders` ($10^7$ rows) for *every single row* in `Customers` ($10^6$ rows). That's $10^{13}$ operations—an instant timeout. Even if optimized to an uncorrelated subquery, memory could blow up hashing the large inner result. The constraint-safe approach is an `INNER JOIN` or `EXISTS`, combined with explicitly adding an index on `Orders(customer_id, amount)`.
+Without indexes, older database engines might execute this as a **Correlated Subquery**, performing a full scan of `Orders` ($10^7$ rows) for _every single row_ in `Customers` ($10^6$ rows). That's $10^{13}$ operations—an instant timeout. Even if optimized to an uncorrelated subquery, memory could blow up hashing the large inner result. The constraint-safe approach is an `INNER JOIN` or `EXISTS`, combined with explicitly adding an index on `Orders(customer_id, amount)`.
 
 </details>
 
@@ -697,11 +695,12 @@ KEY RATIOS TO REMEMBER:
 ```
 
 ### 🧠 Theory Lens: System Design as Physics
-When you drop from pure algorithms into System Design, the limiting factor stops being CPU Big O and becomes pure **Physics**. 
+
+When you drop from pure algorithms into System Design, the limiting factor stops being CPU Big O and becomes pure **Physics**.
 
 1. **The Speed of Light Limitation**: The reason continental network trips take 150ms is because light physically cannot travel faster through fiber optic glass. No algorithm can "optimize" this. The only solution is architectural—bringing data geographically closer to the user via CDNs or Edge replicas.
 2. **Bandwidth vs Latency Paradox**: You can drive a truck full of hard drives across the country and move 100 Petabytes in two days (Massive Bandwidth, Catastrophic Latency). Network queries are the inverse (Fast Latency, Capped Bandwidth). True system design requires you to analytically separate these two attributes and optimize them independently.
-3. **Mechanical vs Sequential IO**: Solid state drives (SSDs) and spinning disks perform terribly on random writes because of hardware block-mapping or mechanical arm movements. This physical limitation is *exactly why* databases like Cassandra or Kafka use sequential append-only logs. They mathematically convert random application writes into sequential physical writes, effectively cheating physics.
+3. **Mechanical vs Sequential IO**: Solid state drives (SSDs) and spinning disks perform terribly on random writes because of hardware block-mapping or mechanical arm movements. This physical limitation is _exactly why_ databases like Cassandra or Kafka use sequential append-only logs. They mathematically convert random application writes into sequential physical writes, effectively cheating physics.
 
 ---
 
@@ -762,7 +761,6 @@ CONSTRAINT SEEN → COMPONENT CHOSEN
 
 ---
 
-
 🔬 **Section Challenge — 6. System Design Constraint Analysis**
 
 **Challenge 1 (Bandwidth vs Storage Bottleneck):** You are designing a video streaming service. The constraints state you must store 10,000 new videos daily (avg 1GB each) and serve 10,000 requests per second (avg 5MB chunks). Which is your true bottleneck: Storage Capacity, Database Latency, or Network Bandwidth? Provide the math.
@@ -770,9 +768,10 @@ CONSTRAINT SEEN → COMPONENT CHOSEN
 <details><summary>Answer</summary>
 
 **Network Bandwidth** is the critical bottleneck.
-1. *Storage*: 10,000 videos $\times$ 1GB = 10TB/day (Easily handled by S3 or Blob Storage).
-2. *DB Latency*: Metadata reads are trivial to cache; actual video bytes bypass the DB.
-3. *Network Bandwidth*: 10,000 req/sec $\times$ 5MB = 50,000 MB/s = **50 GB/s** (or 400 Gbps) continuous throughput. This massively exceeds the capacity of a single data center network link. You *must* distribute the traffic geographically using a Content Delivery Network (CDN) to serve chunks from edge nodes.
+
+1. _Storage_: 10,000 videos $\times$ 1GB = 10TB/day (Easily handled by S3 or Blob Storage).
+2. _DB Latency_: Metadata reads are trivial to cache; actual video bytes bypass the DB.
+3. _Network Bandwidth_: 10,000 req/sec $\times$ 5MB = 50,000 MB/s = **50 GB/s** (or 400 Gbps) continuous throughput. This massively exceeds the capacity of a single data center network link. You _must_ distribute the traffic geographically using a Content Delivery Network (CDN) to serve chunks from edge nodes.
 
 </details>
 
@@ -844,15 +843,14 @@ ANSWERS:
 
 ## Cross-References
 
-| Topic | Guide |
-|-------|-------|
-| Algorithm Templates | [04_Patterns_Templates/02_Code_Templates](../04_Patterns_Templates/02_Code_Templates.md) |
-| Data Structure Internals | [02_Data_Structures/01_DataStructures_Complete](../02_Data_Structures/01_DataStructures_Complete.md) |
-| SQL Performance Deep Dive | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md) |
-| System Design | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md) |
-| Interview Mindset | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md) |
+| Topic                     | Guide                                                                                                |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Algorithm Templates       | [04_Patterns_Templates/02_Code_Templates](../04_Patterns_Templates/02_Code_Templates.md)             |
+| Data Structure Internals  | [02_Data_Structures/01_DataStructures_Complete](../02_Data_Structures/01_DataStructures_Complete.md) |
+| SQL Performance Deep Dive | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md)                    |
+| System Design             | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)                               |
+| Interview Mindset         | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md)           |
 
 ---
 
 [⬅ The Interview Brain](01_The_Interview_Brain.md) | [📚 Index](00_INDEX.md) | [Next: Pattern Recognition Engine ➡](03_DSA_Pattern_Recognition_Engine.md)
-

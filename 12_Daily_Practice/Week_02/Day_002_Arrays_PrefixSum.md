@@ -69,6 +69,7 @@ Given an integer array `nums` and an integer `k`, return the **maximum length**
 of a subarray that sums to `k`. If there isn't one, return `0`.
 
 **Constraints:**
+
 ```
 1 <= nums.length <= 2 × 10⁵
 -10⁴ <= nums[i] <= 10⁴
@@ -76,6 +77,7 @@ of a subarray that sums to `k`. If there isn't one, return `0`.
 ```
 
 **Examples:**
+
 ```
 Example 1:
   Input:  nums = [1, -1, 5, -2, 3], k = 3
@@ -100,6 +102,7 @@ Example 3:
 ### Approach 1 — Brute Force: O(n²) or O(n³)
 
 **O(n³): Try all subarrays, compute sum each time:**
+
 ```java
 public int maxSubArrayLen_BF(int[] nums, int k) {
     int n = nums.length, maxLen = 0;
@@ -116,6 +119,7 @@ public int maxSubArrayLen_BF(int[] nums, int k) {
 ```
 
 **O(n²): Precompute prefix sums:**
+
 ```java
 public int maxSubArrayLen_O2(int[] nums, int k) {
     int n = nums.length, maxLen = 0;
@@ -145,6 +149,7 @@ Not shown — doesn't handle negative numbers well. Skipping to optimal.
 ### Approach 3 — Optimal: Prefix Sum + HashMap — O(n) Time, O(n) Space
 
 **Key Difference from LC 560 (count subarrays):**
+
 - LC 560 wants **COUNT** → add frequency at every prefix
 - LC 325 wants **MAX LENGTH** → store only the **FIRST** occurrence of each prefix
   (earlier index = longer subarray)
@@ -225,6 +230,7 @@ Answer: 4 ✅
 ---
 
 ### ⚡ Edge Cases
+
 - All negatives: works fine (prefix sums go negative, HashMap handles it)
 - `k = 0`: sum must be exactly 0, needs {0: -1} initialization
 - Duplicate prefix sums: only store first (don't overwrite)
@@ -320,14 +326,14 @@ freq = {0: 1}
 Step 1 (num=1): prefix=1, look for 1-2=-1 → freq[-1]=0, count=0. freq={0:1, 1:1}
 Step 2 (num=1): prefix=2, look for 2-2=0  → freq[0]=1,  count=1. freq={0:1, 1:2, 2:1}
                                                         ↑ subarray [1,1] from index 0-1!
-Step 3 (num=1): prefix=3, look for 3-2=1  → freq[1]=2,  count=3. 
+Step 3 (num=1): prefix=3, look for 3-2=1  → freq[1]=2,  count=3.
                                                         ↑ Wait, freq[1]=2? Why?
 
 Back up: after step 2, freq = {0:1, 1:2, 2:1}
 freq[1] = 2 means prefix sum 1 occurred twice:
   - After index 0 (just the element 1)
   - After index 1 (elements 1+1=2... wait that's 2)
-  
+
 Hmm, let me redo:
   After index 0: prefix=1, freq[1]++ → freq={0:1, 1:1}
   After index 1: prefix=2, freq[2]++ → freq={0:1, 1:1, 2:1}
@@ -357,6 +363,7 @@ For each query, compute the number of indices `j` with `l ≤ j < r` such that
 `s[j] == s[j+1]` (adjacent equal characters in range).
 
 **Constraints:**
+
 ```
 2 ≤ n ≤ 10⁵
 1 ≤ m ≤ 10⁵
@@ -364,6 +371,7 @@ For each query, compute the number of indices `j` with `l ≤ j < r` such that
 ```
 
 **Sample Input 1:**
+
 ```
 ......
 4
@@ -372,7 +380,9 @@ For each query, compute the number of indices `j` with `l ≤ j < r` such that
 1 6
 2 6
 ```
+
 **Sample Output 1:**
+
 ```
 1
 1
@@ -381,6 +391,7 @@ For each query, compute the number of indices `j` with `l ≤ j < r` such that
 ```
 
 **Sample Input 2:**
+
 ```
 #..###
 5
@@ -390,7 +401,9 @@ For each query, compute the number of indices `j` with `l ≤ j < r` such that
 3 6
 3 4
 ```
+
 **Sample Output 2:**
+
 ```
 1
 1
@@ -485,6 +498,7 @@ Queries:
 ```
 
 ### 💡 Key Insight
+
 > **"Transform a character property (adjacent equality) into a prefix sum array.
 > Then any range query is O(1). This is the essence of offline prefix sums."**
 
@@ -497,6 +511,7 @@ Queries:
 ### 📋 Problem Statement (Full)
 
 You are given `t` test cases. For each test case:
+
 - A string of `n` digits (each digit 0-9)
 - A subarray (contiguous subsequence of digits) is called **GOOD** if the
   sum of its elements equals its length.
@@ -504,6 +519,7 @@ You are given `t` test cases. For each test case:
 Find the total number of good subarrays.
 
 **Constraints:**
+
 ```
 1 ≤ t ≤ 10⁴
 1 ≤ n ≤ 10⁵
@@ -512,6 +528,7 @@ Sum of all n ≤ 10⁵ (total across test cases)
 ```
 
 **Input:**
+
 ```
 3
 3
@@ -521,7 +538,9 @@ Sum of all n ≤ 10⁵ (total across test cases)
 6
 600005
 ```
+
 **Output:**
+
 ```
 3
 6
@@ -529,6 +548,7 @@ Sum of all n ≤ 10⁵ (total across test cases)
 ```
 
 **Explanation for "120":**
+
 - Array = [1, 2, 0]
 - Good subarrays (sum = length):
   - [1] at index 0: sum=1, len=1 ✅
@@ -643,7 +663,7 @@ i=1: digit=1, b[1]=0, prefix=0 → count += freq[0]=2 → count=3
 i=2: digit=0, b[2]=-1, prefix=-1 → count += freq[-1]=0 → count=3
      freq={0:3, -1:1}
 
-i=3: digit=1, b[3]=0, prefix=-1+0=-1 
+i=3: digit=1, b[3]=0, prefix=-1+0=-1
      Wait: prefix = -1 + (1-1) = -1 + 0 = -1
      count += freq[-1]=1 → count=4
      freq={0:3, -1:2}
@@ -656,12 +676,14 @@ Answer: 6 ✅
 ```
 
 ### ⚡ Edge Cases
+
 - All 1s → all subarrays are good (every b[i]=0, prefix stays 0)
 - All 0s → no good subarrays of length > 1
 - Answer can be O(n²) → use `long`, not `int`!
 - Use `BufferedReader` for CF, not `Scanner` (faster I/O)
 
 ### 💡 Key Insight
+
 > **"When condition is 'sum equals length', transform: b[i] = a[i] - 1.
 > Now the condition becomes 'sum equals 0'. Then equal prefix sums → good
 > subarray. Count equal prefix pairs using frequency map."**
@@ -673,12 +695,12 @@ Answer: 6 ✅
 
 ## 📊 Day 02 Summary
 
-| Problem | Pattern | Time | Space | Key Trick |
-|---------|---------|------|-------|-----------|
-| LC 325 Max Subarray = K | Prefix + HashMap (first occ) | O(n) | O(n) | Store first occurrence only |
-| LC 560 Subarray Sum = K | Prefix + HashMap (frequency) | O(n) | O(n) | Store all frequencies |
-| CF 313B Ilya Queries | Static prefix sum | O(n+m) | O(n) | Precompute, O(1) query |
-| CF 1398C Good Subarrays | Transform + Prefix + HashMap | O(n) | O(n) | b[i]=a[i]-1 makes sum=0 |
+| Problem                 | Pattern                      | Time   | Space | Key Trick                   |
+| ----------------------- | ---------------------------- | ------ | ----- | --------------------------- |
+| LC 325 Max Subarray = K | Prefix + HashMap (first occ) | O(n)   | O(n)  | Store first occurrence only |
+| LC 560 Subarray Sum = K | Prefix + HashMap (frequency) | O(n)   | O(n)  | Store all frequencies       |
+| CF 313B Ilya Queries    | Static prefix sum            | O(n+m) | O(n)  | Precompute, O(1) query      |
+| CF 1398C Good Subarrays | Transform + Prefix + HashMap | O(n)   | O(n)  | b[i]=a[i]-1 makes sum=0     |
 
 ### 🎯 The Two Prefix Sum Variants
 

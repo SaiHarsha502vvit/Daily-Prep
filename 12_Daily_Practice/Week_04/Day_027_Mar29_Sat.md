@@ -10,11 +10,11 @@
 
 ## 📅 SCHEDULE
 
-| Time Block | Duration | Topic |
-|------------|----------|-------|
-| 0:00–1:30 | 90 min | Spring Boot: JPA & Hibernate |
-| 1:30–2:15 | 45 min | SQL: Mixed Drill (Indexes + Transactions + Normalization) |
-| 2:15–3:00 | 45 min | Week Review + Graph Algorithm Summary |
+| Time Block | Duration | Topic                                                     |
+| ---------- | -------- | --------------------------------------------------------- |
+| 0:00–1:30  | 90 min   | Spring Boot: JPA & Hibernate                              |
+| 1:30–2:15  | 45 min   | SQL: Mixed Drill (Indexes + Transactions + Normalization) |
+| 2:15–3:00  | 45 min   | Week Review + Graph Algorithm Summary                     |
 
 ---
 
@@ -25,7 +25,7 @@
 > | **Spring Boot: JPA & Hibernate Deep Dive** | [Spring Boot: JPA Deep Dive](../../07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) |
 > | **SQL: Mixed Drill (Indexes + Transactions)** | [SQL: Indexes & Performance](../../08_SQL/11_Indexes_Performance.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
 
@@ -48,7 +48,6 @@ WITH JPA:
   // That's it. JPA maps table → object automatically.
 ```
 
-
 ### WHAT: Key Concepts
 
 ```
@@ -66,23 +65,23 @@ Repository       = Interface for CRUD operations (auto-implemented!)
 @Entity
 @Table(name = "employees")
 public class Employee {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "full_name", nullable = false, length = 100)
     private String name;
-    
+
     @Column(nullable = false)
     private BigDecimal salary;
-    
+
     @Enumerated(EnumType.STRING)
     private Department department;
-    
+
     @CreationTimestamp
     private LocalDateTime createdAt;
-    
+
     // Constructors, getters, setters
 }
 ```
@@ -93,21 +92,21 @@ public class Employee {
 // Just DECLARE the interface — Spring implements it automatically!
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    
+
     // Method name → SQL query (auto-generated!)
     List<Employee> findByDepartment(Department dept);
-    
+
     List<Employee> findBySalaryGreaterThan(BigDecimal salary);
-    
+
     List<Employee> findByNameContainingIgnoreCase(String name);
-    
+
     // Custom query when method naming gets too complex
     @Query("SELECT e FROM Employee e WHERE e.salary > :min AND e.department = :dept")
-    List<Employee> findHighEarners(@Param("min") BigDecimal min, 
+    List<Employee> findHighEarners(@Param("min") BigDecimal min,
                                    @Param("dept") Department dept);
-    
+
     // Native SQL query
-    @Query(value = "SELECT * FROM employees WHERE YEAR(created_at) = :year", 
+    @Query(value = "SELECT * FROM employees WHERE YEAR(created_at) = :year",
            nativeQuery = true)
     List<Employee> findByYear(@Param("year") int year);
 }
@@ -122,7 +121,7 @@ public class Department {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    
+
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();
 }
@@ -132,7 +131,7 @@ public class Employee {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)  // LAZY = don't load dept until accessed
     @JoinColumn(name = "dept_id")
     private Department department;
@@ -170,7 +169,6 @@ FIX 2: JPQL JOIN FETCH
 List<Department> findAllWithEmployees();  // 1 query
 ```
 
-
 ### application.properties
 
 ```properties
@@ -204,14 +202,14 @@ CREATE INDEX idx_price ON products(price);
 
 -- DRILL 2: Transaction — transfer stock between warehouses
 BEGIN TRANSACTION;
-    UPDATE inventory SET quantity = quantity - 50 
+    UPDATE inventory SET quantity = quantity - 50
     WHERE product_id = 1 AND warehouse = 'A';
-    UPDATE inventory SET quantity = quantity + 50 
+    UPDATE inventory SET quantity = quantity + 50
     WHERE product_id = 1 AND warehouse = 'B';
 COMMIT;
 
 -- DRILL 3: Normalized query with JOIN + Window Function
-SELECT 
+SELECT
     e.name,
     d.dept_name,
     e.salary,
@@ -221,7 +219,7 @@ JOIN departments d ON e.dept_id = d.id;
 
 -- DRILL 4: View for department summary
 CREATE VIEW dept_summary AS
-SELECT 
+SELECT
     d.dept_name,
     COUNT(e.id) as employee_count,
     AVG(e.salary) as avg_salary,
@@ -238,18 +236,17 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 
 ## 📊 WEEK 04 GRAPH ALGORITHM SUMMARY
 
-| Algorithm | Time | Use Case |
-|---|---|---|
-| BFS | O(V + E) | Shortest unweighted |
-| DFS | O(V + E) | Connectivity, cycles |
-| Dijkstra | O((V+E) log V) | Shortest weighted+ |
-| Bellman-Ford | O(V * E) | Negative weights |
-| Kahn's Topo Sort | O(V + E) | Dependency ordering |
-| Kruskal's MST | O(E log E) | Min cost connect all |
-| Union-Find | O(α(N)) per op | Dynamic connectivity |
-| 2-Color BFS | O(V + E) | Bipartite check |
-| A* | O(E log V) best | Targeted shortest |
-
+| Algorithm        | Time            | Use Case             |
+| ---------------- | --------------- | -------------------- |
+| BFS              | O(V + E)        | Shortest unweighted  |
+| DFS              | O(V + E)        | Connectivity, cycles |
+| Dijkstra         | O((V+E) log V)  | Shortest weighted+   |
+| Bellman-Ford     | O(V \* E)       | Negative weights     |
+| Kahn's Topo Sort | O(V + E)        | Dependency ordering  |
+| Kruskal's MST    | O(E log E)      | Min cost connect all |
+| Union-Find       | O(α(N)) per op  | Dynamic connectivity |
+| 2-Color BFS      | O(V + E)        | Bipartite check      |
+| A\*              | O(E log V) best | Targeted shortest    |
 
 ---
 

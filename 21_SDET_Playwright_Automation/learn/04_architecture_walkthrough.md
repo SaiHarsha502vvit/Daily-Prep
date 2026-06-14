@@ -7,18 +7,17 @@
 ## The 15-step skeleton
 
 ```typescript
-import { test, expect } from '../../fixtures';   // ← from fixtures barrel, not @playwright/test
-import { CitationsClient, type Citation } from '../../clients/CitationsClient';
-import { PayloadsCitation } from '../../constants/payloads.citation';
-import { CrmHomePage, CitationDetailsPage } from '../../websites/crm';
+import { test, expect } from "../../fixtures"; // ← from fixtures barrel, not @playwright/test
+import { CitationsClient, type Citation } from "../../clients/CitationsClient";
+import { PayloadsCitation } from "../../constants/payloads.citation";
+import { CrmHomePage, CitationDetailsPage } from "../../websites/crm";
 
-test('citation paid via UI is verified at API + DB', async ({
-  page,           // Playwright built-in
-  account,        // worker-scoped — file-locked
+test("citation paid via UI is verified at API + DB", async ({
+  page, // Playwright built-in
+  account, // worker-scoped — file-locked
   citationsClient, // typed API client
-  db,             // DB pool
+  db, // DB pool
 }) => {
-
   // ── 1. Construct POMs FIRST, before any test.step ───────────
   const home = new CrmHomePage(page);
   const details = new CitationDetailsPage(page);
@@ -33,7 +32,7 @@ test('citation paid via UI is verified at API + DB', async ({
   };
 
   // ── 3. API: create the pending citation ─────────────────────
-  await test.step('API: create PENDING citation for customer', async () => {
+  await test.step("API: create PENDING citation for customer", async () => {
     const citation = await citationsClient.create(
       PayloadsCitation.pending({ customerId: account.userId }),
     );
@@ -41,75 +40,79 @@ test('citation paid via UI is verified at API + DB', async ({
   });
 
   // ── 4. Pre-condition checks ─────────────────────────────────
-  await test.step('API: verify citation starts PENDING', async () => {
+  await test.step("API: verify citation starts PENDING", async () => {
     expect(data.citationId).not.toBeNull();
     const fresh = await citationsClient.getById(data.citationId!);
-    expect(fresh.status).toBe('PENDING');
+    expect(fresh.status).toBe("PENDING");
   });
 
   // ── 5. UI: navigate to the record ───────────────────────────
-  await test.step('UI: navigate to citation', async () => {
+  await test.step("UI: navigate to citation", async () => {
     await home.goto();
     await home.openCitation(data.citationId!);
   });
 
   // ── 6. Wait for the page to be ready ────────────────────────
-  await test.step('UI: verify page loaded with correct citation', async () => {
+  await test.step("UI: verify page loaded with correct citation", async () => {
     await expect(details.citationIdField).toHaveText(data.citationId!);
-    await expect(details.statusField).toHaveText('PENDING');
+    await expect(details.statusField).toHaveText("PENDING");
   });
 
   // ── 7. UI: trigger the action ───────────────────────────────
-  await test.step('UI: pay the citation', async () => {
+  await test.step("UI: pay the citation", async () => {
     await details.payButton.click();
-    await details.amountInput.fill('150.00');
+    await details.amountInput.fill("150.00");
     await details.confirmPaymentButton.click();
   });
 
   // ── 8. UI: verify the optimistic UI response ────────────────
-  await test.step('UI: payment confirmation shown', async () => {
-    await expect(details.successToast).toContainText('Payment successful');
+  await test.step("UI: payment confirmation shown", async () => {
+    await expect(details.successToast).toContainText("Payment successful");
   });
 
   // ── 9. API: poll for backend commitment ─────────────────────
-  await test.step('API: poll until citation status is PAID', async () => {
-    const updated = await citationsClient.waitForStatus(data.citationId!, 'PAID', 60_000);
+  await test.step("API: poll until citation status is PAID", async () => {
+    const updated = await citationsClient.waitForStatus(
+      data.citationId!,
+      "PAID",
+      60_000,
+    );
     data.paymentId = updated.lastPaymentId ?? null;
     expect(updated.paidAt).not.toBeNull();
   });
 
   // ── 10. DB: verify the storage layer ────────────────────────
-  await test.step('DB: verify citation table reflects payment', async () => {
+  await test.step("DB: verify citation table reflects payment", async () => {
     const rows = await db.query(
-      'SELECT status, paid_at FROM citations WHERE id = $1',
+      "SELECT status, paid_at FROM citations WHERE id = $1",
       [data.citationId],
     );
-    expect(rows.rows[0].status).toBe('PAID');
+    expect(rows.rows[0].status).toBe("PAID");
     expect(rows.rows[0].paid_at).not.toBeNull();
   });
 
   // ── 11. DB: verify side-effects (audit log) ─────────────────
-  await test.step('DB: verify audit log entry', async () => {
+  await test.step("DB: verify audit log entry", async () => {
     const events = await db.query(
-      'SELECT event_type FROM audit_log WHERE entity_id = $1 ORDER BY created_at',
+      "SELECT event_type FROM audit_log WHERE entity_id = $1 ORDER BY created_at",
       [data.citationId],
     );
-    expect(events.rows.map(r => r.event_type)).toContain('citation.paid');
+    expect(events.rows.map((r) => r.event_type)).toContain("citation.paid");
   });
 
   // ── 12. UI: refresh and re-verify ───────────────────────────
-  await test.step('UI: refresh and assert persistent state', async () => {
+  await test.step("UI: refresh and assert persistent state", async () => {
     await page.reload();
-    await expect(details.statusField).toHaveText('PAID');
+    await expect(details.statusField).toHaveText("PAID");
   });
 
   // ── 13. Cross-system: verify notification to customer ───────
-  await test.step('API: notification was sent', async () => {
+  await test.step("API: notification was sent", async () => {
     // (notification fixture, email service, etc.)
   });
 
   // ── 14. Negative case: verify re-pay is rejected ────────────
-  await test.step('API: paying again returns 409', async () => {
+  await test.step("API: paying again returns 409", async () => {
     const response = await citationsClient.payRaw(data.citationId!, 150);
     expect(response.status()).toBe(409);
   });
@@ -129,14 +132,14 @@ Inside a `test.step`, the step's name describes WHAT is happening. POM construct
 
 ```typescript
 // ❌ Pollutes the step
-await test.step('Pay the citation', async () => {
-  const details = new CitationDetailsPage(page);   // setup, not behaviour
+await test.step("Pay the citation", async () => {
+  const details = new CitationDetailsPage(page); // setup, not behaviour
   await details.payButton.click();
 });
 
 // ✅ Setup is invisible
 const details = new CitationDetailsPage(page);
-await test.step('Pay the citation', async () => {
+await test.step("Pay the citation", async () => {
   await details.payButton.click();
 });
 ```
@@ -152,11 +155,16 @@ Also: POMs are reused across multiple steps. Constructing inside the first step 
 ```typescript
 // ❌ Cross-step state with `let`
 let citationId: string;
-await test.step('Create', async () => { citationId = await api.create(); });
-await test.step('Verify', async () => { /* uses citationId */ });
+await test.step("Create", async () => {
+  citationId = await api.create();
+});
+await test.step("Verify", async () => {
+  /* uses citationId */
+});
 ```
 
 Problems:
+
 - TypeScript types are weird (`let citationId: string` — but if step 1 fails, `citationId` is undefined at access).
 - Adding fields means new `let` declarations scattered through the test.
 - Multiple `let`s read worse than one structured object.
@@ -168,9 +176,11 @@ const data: { citationId: string | null; paymentId: string | null } = {
   paymentId: null,
 };
 
-await test.step('Create', async () => { data.citationId = await api.create(); });
-await test.step('Verify', async () => {
-  if (!data.citationId) throw new Error('citationId not set');
+await test.step("Create", async () => {
+  data.citationId = await api.create();
+});
+await test.step("Verify", async () => {
+  if (!data.citationId) throw new Error("citationId not set");
   // ...
 });
 ```
@@ -225,17 +235,19 @@ See [`deep_dives/cross_site_patterns.md §7`](../deep_dives/cross_site_patterns.
 ## What separates this from a script
 
 A script:
+
 ```typescript
-test('pay', async ({ page }) => {
-  await page.goto('/citations/CIT-001');
-  await page.click('.pay-button');
-  await page.fill('.amount', '150');
-  await page.click('.confirm');
-  await expect(page.locator('.success')).toBeVisible();
+test("pay", async ({ page }) => {
+  await page.goto("/citations/CIT-001");
+  await page.click(".pay-button");
+  await page.fill(".amount", "150");
+  await page.click(".confirm");
+  await expect(page.locator(".success")).toBeVisible();
 });
 ```
 
 5 lines. Works for one specific record in one environment. Doesn't:
+
 - Set up data (depends on `CIT-001` existing).
 - Verify the action committed (UI toast is enough).
 - Handle cleanup.

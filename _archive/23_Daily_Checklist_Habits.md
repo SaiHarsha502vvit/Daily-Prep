@@ -180,7 +180,7 @@ Avg Sleep: ___ hours
 
 # 📊 MONTHLY PROGRESS TRACKER
 
-## Month: ******\_******
+## Month: **\*\***\_**\*\***
 
 ### Week-by-Week Progress
 

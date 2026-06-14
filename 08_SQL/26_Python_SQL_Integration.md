@@ -3,6 +3,7 @@
 # Chapter 26 — Python + SQL Integration
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Backend devs, data engineers, analysts, anyone querying databases from code
 - **WHAT** is it? → Connecting Python to databases, executing queries, processing results programmatically
 - **WHEN** to use? → Data pipelines, ETL, reporting, API backends, automation scripts
@@ -15,12 +16,14 @@
 ## Part 1 — sqlite3: Built-in & Zero Setup
 
 ### 1.1 Why Start Here
+
 ```
 sqlite3 ships with Python — no installation, no server, no config.
 Perfect for learning, prototyping, small apps.
 ```
 
 ### 1.2 Connection Lifecycle
+
 ```python
 import sqlite3
 
@@ -52,6 +55,7 @@ conn.close()
 ```
 
 ### 1.3 CRUD Operations
+
 ```python
 import sqlite3
 
@@ -98,6 +102,7 @@ conn.close()
 ```
 
 ### 1.4 Context Manager Pattern (Best Practice)
+
 ```python
 import sqlite3
 
@@ -119,6 +124,7 @@ conn.close()
 ```
 
 ### 1.5 SQL Injection — The #1 Security Rule
+
 ```python
 # ❌ NEVER DO THIS — SQL INJECTION VULNERABILITY
 name = input("Enter name: ")
@@ -134,7 +140,7 @@ cursor.execute("SELECT * FROM users WHERE name = ?", (name,))
 WHY parameterized queries prevent injection:
 
 User input: ' OR '1'='1
-                                      
+
 String format:  SELECT * FROM users WHERE name = '' OR '1'='1'
                 → SQL engine sees TWO conditions → returns all rows!
 
@@ -149,6 +155,7 @@ Parameterized:  SELECT * FROM users WHERE name = ?
 ## Part 2 — psycopg2: PostgreSQL from Python
 
 ### 2.1 Installation & Connection
+
 ```bash
 pip install psycopg2-binary  # binary version (no C compiler needed)
 ```
@@ -177,6 +184,7 @@ conn.close()
 ```
 
 ### 2.2 Parameterized Queries (PostgreSQL uses %s, not ?)
+
 ```python
 import psycopg2
 
@@ -202,6 +210,7 @@ conn.close()
 ```
 
 ### 2.3 Connection Pooling (Production Pattern)
+
 ```python
 from psycopg2 import pool
 
@@ -264,6 +273,7 @@ with conn:
 ## Part 4 — SQLAlchemy: The Python SQL Toolkit
 
 ### 4.1 Why SQLAlchemy?
+
 ```
 sqlite3/psycopg2/pymysql → Low-level, database-specific
 SQLAlchemy              → Universal, works with ANY database
@@ -292,6 +302,7 @@ SQLAlchemy              → Universal, works with ANY database
 ```
 
 ### 4.2 SQLAlchemy Core (SQL Expression Language)
+
 ```python
 from sqlalchemy import create_engine, text
 
@@ -309,6 +320,7 @@ with engine.connect() as conn:
 ```
 
 ### 4.3 SQLAlchemy ORM (Object-Relational Mapping)
+
 ```python
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base, Session
@@ -319,13 +331,13 @@ Base = declarative_base()
 # Define table as Python class
 class Product(Base):
     __tablename__ = 'products'
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
     category = Column(String(50))
     created_at = Column(DateTime, default=datetime.utcnow)
-    
+
     def __repr__(self):
         return f"Product(id={self.id}, name={self.name}, price={self.price})"
 
@@ -339,22 +351,23 @@ with Session(engine) as session:
     laptop = Product(name="Laptop", price=999.99, category="Electronics")
     session.add(laptop)
     session.commit()
-    
+
     # READ
     products = session.query(Product).filter(Product.price > 500).all()
     for p in products:
         print(p)
-    
+
     # UPDATE
     laptop.price = 899.99
     session.commit()
-    
+
     # DELETE
     session.delete(laptop)
     session.commit()
 ```
 
 ### 4.4 Relationships (Foreign Keys)
+
 ```python
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -379,7 +392,7 @@ with Session(engine) as session:
     order2 = Order(amount=250.00, customer=customer)
     session.add(customer)
     session.commit()
-    
+
     # Access related objects
     c = session.query(Customer).filter_by(name="Harsha").first()
     for order in c.orders:
@@ -391,6 +404,7 @@ with Session(engine) as session:
 ## Part 5 — pandas + SQL: Data Analysis Pipeline
 
 ### 5.1 Read SQL into DataFrame
+
 ```python
 import pandas as pd
 import sqlite3
@@ -424,6 +438,7 @@ conn.close()
 ```
 
 ### 5.2 Write DataFrame to SQL
+
 ```python
 import pandas as pd
 import sqlite3
@@ -450,6 +465,7 @@ conn.close()
 ```
 
 ### 5.3 SQLAlchemy + pandas (Production Pattern)
+
 ```python
 import pandas as pd
 from sqlalchemy import create_engine
@@ -463,7 +479,7 @@ df = pd.read_sql_query(
 )
 
 # Process in Python
-df['salary_category'] = pd.cut(df['avg_salary'], 
+df['salary_category'] = pd.cut(df['avg_salary'],
     bins=[0, 50000, 80000, 120000, float('inf')],
     labels=['Low', 'Medium', 'High', 'Very High'])
 
@@ -476,6 +492,7 @@ df.to_sql('department_analysis', engine, if_exists='replace', index=False)
 ## Part 6 — Real-World Patterns
 
 ### 6.1 ETL Pipeline Pattern
+
 ```python
 import pandas as pd
 from sqlalchemy import create_engine, text
@@ -497,7 +514,7 @@ df = pd.read_sql_query("""
 # TRANSFORM
 df['order_date'] = pd.to_datetime(df['order_date'])
 df['month'] = df['order_date'].dt.to_period('M')
-df['amount_bucket'] = pd.cut(df['amount'], 
+df['amount_bucket'] = pd.cut(df['amount'],
     bins=[0, 100, 500, 1000, float('inf')],
     labels=['Small', 'Medium', 'Large', 'Enterprise'])
 
@@ -507,6 +524,7 @@ print(f"Loaded {len(df)} rows")
 ```
 
 ### 6.2 Batch Processing Pattern
+
 ```python
 import sqlite3
 
@@ -521,18 +539,19 @@ while True:
     rows = cursor.fetchmany(batch_size)
     if not rows:
         break
-    
+
     # Process batch
     for row in rows:
         # ... transform data ...
         pass
-    
+
     print(f"Processed {batch_size} rows")
 
 conn.close()
 ```
 
 ### 6.3 Migration Script Pattern
+
 ```python
 import sqlite3
 
@@ -540,11 +559,11 @@ def migrate_v1_to_v2(db_path):
     """Add email column and index to users table."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    
+
     # Check current version
     cursor.execute("PRAGMA user_version")
     version = cursor.fetchone()[0]
-    
+
     if version < 2:
         cursor.execute("ALTER TABLE users ADD COLUMN email TEXT")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
@@ -553,7 +572,7 @@ def migrate_v1_to_v2(db_path):
         print("Migration v1 → v2 complete")
     else:
         print("Already at v2 or later")
-    
+
     conn.close()
 ```
 
@@ -584,12 +603,41 @@ Decision tree:
 
 ## Quick Reference Card
 
-| Task | sqlite3 | psycopg2 | SQLAlchemy |
-|------|---------|----------|------------|
-| Connect | `sqlite3.connect('db')` | `psycopg2.connect(...)` | `create_engine(url)` |
-| Parameterize | `?` | `%s` | `:name` |
-| Fetch all | `cursor.fetchall()` | same | `result.all()` |
-| Fetch one | `cursor.fetchone()` | same | `result.first()` |
-| Commit | `conn.commit()` | same | `session.commit()` |
-| Close | `conn.close()` | same | `session.close()` |
+| Task         | sqlite3                 | psycopg2                | SQLAlchemy           |
+| ------------ | ----------------------- | ----------------------- | -------------------- |
+| Connect      | `sqlite3.connect('db')` | `psycopg2.connect(...)` | `create_engine(url)` |
+| Parameterize | `?`                     | `%s`                    | `:name`              |
+| Fetch all    | `cursor.fetchall()`     | same                    | `result.all()`       |
+| Fetch one    | `cursor.fetchone()`     | same                    | `result.first()`     |
+| Commit       | `conn.commit()`         | same                    | `session.commit()`   |
+| Close        | `conn.close()`          | same                    | `session.close()`    |
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Python DB-API PEP 249** (1999): Standardized interface for Python database connections, replacing many inconsistent adapter-specific APIs
+- **SQLAlchemy** (2006): Introduced expression-based SQL construction and ORM, enabling Pythonic database abstraction
+- **psycopg2** (2001): First robust PostgreSQL adapter for Python, enabling production Python/PostgreSQL applications
+- **pandas** (2008): Brought DataFrame abstraction to Python, making SQL results first-class analytical objects
+- **SQL injection (Phrack 1998)**: Early demonstration of concatenation vulnerabilities that drove parameterized query adoption
+
+**Evolution narrative:**
+Before Python DB-API, database access required proprietary libraries with inconsistent APIs. PEP 249 standardized cursor/connection patterns but still required hand-written SQL strings, making applications vulnerable to injection attacks. SQLAlchemy's expression language (2006) introduced safe SQL construction from Python objects, while pandas (2008) created the modern analytics workflow of SQL extraction followed by in-memory transformation. The ecosystem evolved from raw SQL strings toward composable, secure, analytical pipelines.
+
+**Modern practice anchor:**
+Today's Python/SQL integration combines SQLAlchemy for connection management and ORM, pandas for analytical transformations, and parameterized queries throughout for security.
+
+### Production Reality
+
+**Failure modes:**
+1. **SQL injection from string concatenation**: The Phrack 1998 paper (http://phrack.org/papers/geni ... al_SQLi.html) demonstrated that `cursor.execute(f"SELECT * FROM users WHERE name = '{name}'")` allows `'; DROP TABLE users; --` as input, executing arbitrary SQL. Modern codebases still contain this pattern in legacy ETL scripts, and automated scanners find 1,000+ instances in large Python codebases.
+2. **Connection pool exhaustion (HikariCP timeout)**: `ThreadedConnectionPool(maxconn=10)` with 20 concurrent requests queues connections. At 5-second query time, request 11 waits 50 seconds and HikariCP's `connectionTimeout=30000` fires — app returns 500 errors. The pool size of 10 was configured based on dev, not prod load (100× more traffic).
+3. **N+1 in Django ORM**: `User.objects.all()` with `select_related` omitted on a foreign key triggers a separate query per user for related orders. On 10,000 users, this generates 10,001 queries. The Django debug toolbar shows query 1 of 10001, but only if debug mode is on (never in production).
+
+**Debug workflow:**
+1. Scan for SQL injection vectors: `grep -rn "execute.*f['\"']" --include="*.py" .` or use `bandit -r . -t py` (Bandit B608 rule). Replace all string-formatted SQL with parameterized queries.
+2. Monitor HikariCP pool utilization: add `pool.set_pool_name("my-pool");` and expose `HikariPoolMXBean` via JMX. Alert when `activeConnections + idleConnections > maxPoolSize * 0.8`.
+3. In Django, add `django.db.models.PerformanceMonitoringMiddleware` or run `SELECT num_queries, time FROM django.db import connection; connection.queries[-1]` after each view to log N+1. Require `select_related` / `prefetch_related` in code review for any view returning > 100 objects.
+
+**Modern practice anchor:**
+Production Python/SQL requires SQL injection scanning in CI/CD (Bandit/Semgrep), connection pool metrics in observability dashboards, and Django N+1 detection in staging before every deploy.

@@ -198,7 +198,6 @@ ORDER BY this_year.month;
 □ Can detect gaps and islands in data
 ```
 
-
 ---
 
 _Practice consistently. Aim for 2-3 problems daily. Review solutions even for problems you solved._
@@ -235,11 +234,7 @@ Everything you need to master SQL for Data Analytics and Data Engineering roles
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
 
 # 📌 Section 1: Bulk Data Operations
 
@@ -345,9 +340,6 @@ FROM generate_series(1, 100000) as i;
 ```
 
 ---
-
-
-
 
 ## 1.2 Bulk UPDATE Operations
 
@@ -472,17 +464,15 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 🔬 **Section Challenge — 🔵 WHY: ETL = Extract, Transform, Load**
 
 **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+
 <details><summary>Answer</summary>
 
 Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-</details>
 
+</details>
 
 ## 2.1 Data Cleaning Transformations
 
@@ -579,9 +569,6 @@ SELECT
     END as fiscal_year
 FROM orders;
 ```
-
-
-
 
 ## 2.2 Deduplication Strategies
 
@@ -787,9 +774,6 @@ FROM (
 ORDER BY sale_date;
 ```
 
-
-
-
 ## 3.5 Customer Lifetime Value (CLV)
 
 ```sql
@@ -826,16 +810,15 @@ FROM customer_stats;
 
 ---
 
-
-
 🔬 **Section Challenge — 3.5 Customer Lifetime Value (CLV)**
 
 **Challenge 1 (Design):** Build a CLV query from orders. Which inputs decide whether you use simple historical spend, projected annual value, or cohort-based lifetime value?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Start with constraints: available history, repeat-purchase cadence, churn definition, refunds, and whether revenue or margin matters. If history is short, use conservative historical spend. If purchase intervals are stable, project from average order value and purchase frequency. If cohorts behave differently, compute CLV per acquisition cohort so old customers do not distort new-customer expectations.
-</details>
 
+</details>
 
 # 🔬 Section 4: Window Functions Deep Dive
 
@@ -855,9 +838,6 @@ SELECT
     CUME_DIST() OVER (PARTITION BY department ORDER BY salary DESC) as cume_dist    -- Cumulative distribution
 FROM employees;
 ```
-
-
-
 
 ## 4.2 Value Functions
 
@@ -880,18 +860,15 @@ SELECT
 FROM orders;
 ```
 
-
-
 🔬 **Section Challenge — 4.2 Value Functions**
 
-
-
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 4.3 Aggregate Window Functions
 
@@ -919,18 +896,15 @@ FROM orders;
 
 ---
 
-
-
 🔬 **Section Challenge — 4.3 Aggregate Window Functions**
 
-
-
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 # 🎤 Section 5: More Interview Questions
 
@@ -968,9 +942,6 @@ SET country = CASE UPPER(TRIM(country))
     ELSE country
 END;
 ```
-
-
-
 
 ## Questions Set 2: Time Series
 
@@ -1056,8 +1027,6 @@ WHERE p1.id < p2.id
   );
 ```
 
-
-
 🔬 **Section Challenge — Questions Set 3: Complex JOINs**
 
 **Challenge 1 (Debug — Who/When/What):** A sales report joins `orders → order_items → promotions` and the total revenue figure is 3x higher than expected. **Who** caused the row explosion? **When** does a multi-table JOIN produce unexpected row multiplication? **What** query tells you if fan-out is happening?
@@ -1067,7 +1036,6 @@ WHERE p1.id < p2.id
 **Who caused it?** The join to `promotions` — if each `order_item` can have multiple applied promotions, then one item with 3 promotions appears 3 times in the result, tripling all aggregated values. **When does it happen?** Any many-to-many JOIN without proper aggregation. `orders JOIN order_items JOIN promotions` can be: 1 order × 5 items × 3 promotions = 15 rows for that one order. SUM(amount) on this = 15× the actual order value. **Diagnostic query:** `SELECT o.id, COUNT(*) as row_count FROM orders o JOIN order_items oi ON o.id=oi.order_id JOIN promotions p ON oi.id=p.order_item_id GROUP BY o.id HAVING COUNT(*) > 1`. If row_count > 1, you have fan-out. **Fix options:** (1) Aggregate promotions first: `JOIN (SELECT order_item_id, COUNT(*) promo_count FROM promotions GROUP BY order_item_id) p`. (2) Use `SELECT DISTINCT` on the grain you want. (3) Use `EXISTS` instead of JOIN when you only need to know IF a promotion exists. (4) Re-examine the data model — should promotions be on `order_items` or on `orders`?
 
 </details>
-
 
 ## Questions Set 4: Performance Optimization
 
@@ -1145,9 +1113,6 @@ FROM staging_customers s
 WHERE EXISTS (SELECT 1 FROM changed c WHERE c.customer_id = s.customer_id);
 ```
 
-
-
-
 ## 6.2 Data Warehouse Star Schema
 
 ```sql
@@ -1224,9 +1189,6 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 
 ---
 
-
-
-
 # 📋 SQL Data Engineering Checklist
 
 ```
@@ -1246,8 +1208,36 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 □ Can write recursive CTEs for hierarchies
 ```
 
-
 ---
 
 _Data Engineering is 80% SQL. Master these patterns and you'll excel in any DE interview!_
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Informatica** (1993): Founded to automate enterprise ETL, becoming the first major commercial data integration platform
+- **Talend** (2005): Open-source challenger that brought data integration tools to organizations without enterprise budgets
+- **Snowflake** (2012): Redefined cloud data warehousing with separation of storage/compute and ANSI SQL support
+- **dbt** (2016): Transformed analytics engineering by enabling SQL-based transformations directly in data warehouses
+- **Airflow** (2014): Airbnb's workflow orchestration platform made complex ETL pipelines programmable and observable
+
+**Evolution narrative:**
+Advanced SQL projects evolved from simple query practice to full data engineering workflows as the field matured. Early ETL was manual SQL scripting; Informatica and Talend automated extraction/loading but kept transformation locked in proprietary tools. Snowflake's cloud architecture in 2012 made warehouses elastic and SQL-first, while dbt (2016) enabled analysts to write transformations in SQL with version control, testing, and documentation. Modern advanced projects now encompass data modeling, pipeline orchestration, dimensional design, and governance—reflecting the full data engineering lifecycle.
+
+**Modern practice anchor:**
+Advanced SQL projects (star/snowflake schemas, SCD Type 2, incremental loads, dbt transformations) are directly applicable to data engineering roles at companies using Snowflake, BigQuery, or Redshift.
+
+### Production Reality
+
+**Failure modes:**
+1. **ETL idempotency violations**: Running `etl_extract_leads` twice with the same batch_id re-inserts rows (no dedupe guard). The `etl_checksum` column is computed but never checked. Result: fact table doubles in row count on every re-run, corrupting all downstream revenue metrics.
+2. **Fan-out from multi-valued JOINs**: The `fact_leads` insert joins `stg_leads` → `dim_lead_source` using `source_name`. If two `dim_lead_source` rows share the same name (duplicate SCD entries), one lead generates N rows — A/B test counts become unreliable.
+3. **Round-robin session affinity failures**: dbt runs use round-robin target selection. A 5-target distribution runs transform step 1 on target A, step 2 on target B. Session-scoped temp tables (`CREATE TEMP TABLE`) vanish between targets, causing "relation does not exist" errors.
+
+**Debug workflow:**
+1. Add `UNIQUE` constraint on staging: `ALTER TABLE stg_leads ADD CONSTRAINT u_lead_batch UNIQUE (lead_id, etl_batch_id);` — violations fail the insert, preventing duplicates.
+2. Detect fan-out: `SELECT COUNT(*) AS total, COUNT(DISTINCT lead_id) AS unique_leads FROM fact_leads;` — if total > unique_leads × 1.0, fan-out exists.
+3. Replace round-robin with hash-based distribution: `DISTRIBUTION = HASH(source_key)` ensures rows for the same key land on the same target.
+
+**Modern practice anchor:**
+Production ETL pipelines use `ON CONFLICT DO NOTHING` (PostgreSQL) or `MERGE INTO` (Snowflake/BigQuery) with checksum-based deduplication, not batch ID alone.

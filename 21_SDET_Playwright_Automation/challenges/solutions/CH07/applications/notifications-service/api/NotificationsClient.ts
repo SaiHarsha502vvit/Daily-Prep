@@ -7,17 +7,20 @@
  *
  * In a real system this would be: GET /api/notifications?customerId={id}&type=ORDER_CONFIRMED
  */
-import type { APIRequestContext } from '@playwright/test';
-import { endpoints } from '../../../constants/endpoints';
-import { APP } from '../../../constants/app.constants';
-import type { NotificationListResponse, NotificationRecord } from '../../../types/cross-site.types';
+import type { APIRequestContext } from "@playwright/test";
+import { endpoints } from "../../../constants/endpoints";
+import { APP } from "../../../constants/app.constants";
+import type {
+  NotificationListResponse,
+  NotificationRecord,
+} from "../../../types/cross-site.types";
 
 export class NotificationsClient {
   private readonly baseUrl: string;
 
   constructor(
     private readonly request: APIRequestContext,
-    baseUrl: string = APP.reqres.baseUrl
+    baseUrl: string = APP.reqres.baseUrl,
   ) {
     this.baseUrl = baseUrl;
   }
@@ -31,7 +34,7 @@ export class NotificationsClient {
    * with type metadata. We assert that our notification record exists.
    */
   async getNotificationsForCustomer(
-    customerId: string | number
+    customerId: string | number,
   ): Promise<NotificationListResponse> {
     // Simulate: GET /api/notifications?customer_id={customerId}&type=ORDER_CONFIRMED
     // reqres.in doesn't have this endpoint, so we hit /api/unknown and filter by
@@ -42,7 +45,7 @@ export class NotificationsClient {
 
     if (!response.ok()) {
       throw new Error(
-        `NotificationsClient.getNotifications: Expected 200, got ${response.status()} at ${url}`
+        `NotificationsClient.getNotifications: Expected 200, got ${response.status()} at ${url}`,
       );
     }
 
@@ -56,7 +59,7 @@ export class NotificationsClient {
    */
   async expectOrderConfirmedNotification(
     customerId: string | number,
-    orderId: number
+    orderId: number,
   ): Promise<NotificationRecord> {
     const response = await this.getNotificationsForCustomer(customerId);
 
@@ -67,12 +70,12 @@ export class NotificationsClient {
       (record) =>
         // In real system: record.type === 'ORDER_CONFIRMED' && record.customerId === customerId
         // In mock (reqres.in), we validate the response shape instead:
-        record !== undefined
+        record !== undefined,
     );
 
     if (!matching) {
       throw new Error(
-        `NotificationsClient: No ORDER_CONFIRMED notification found for customer ${customerId}, order ${orderId}`
+        `NotificationsClient: No ORDER_CONFIRMED notification found for customer ${customerId}, order ${orderId}`,
       );
     }
 

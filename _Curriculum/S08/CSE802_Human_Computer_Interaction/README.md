@@ -17,19 +17,19 @@ Study of the principles and practices of human-computer interaction (HCI). Cover
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | HCI history and foundations: cognitive load, Fitts's law, Hick's law, Gestalt principles |
-| 2 | User-centered design process: research, personas, journey maps, user stories |
-| 3 | Usability heuristics: Nielsen's 10 heuristics, severity ratings, heuristic evaluation |
-| 4 | Accessibility fundamentals: WCAG 2.2 success criteria, POUR principles, audit tools |
-| 5 | Semantic HTML and ARIA: roles, states, properties, live regions |
-| 6 | Keyboard navigation and focus management: tab order, skip links, modal trapping |
-| 7 | Visual design for accessibility: color contrast (4.5:1, 3:1), text scaling, motion reduction |
-| 8 | Screen reader testing: NVDA, VoiceOver, common pitfalls, live region announcements |
-| 9 | Prototyping methods: paper, Figma wireframes, high-fidelity interactive prototypes |
-| 10 | Usability testing: test plans, think-aloud protocol, SUS questionnaire, severity scoring |
-| 11 | Capstone: conduct a full usability study and accessibility audit on an existing application |
+| Week | Topic                                                                                        |
+| ---- | -------------------------------------------------------------------------------------------- |
+| 1    | HCI history and foundations: cognitive load, Fitts's law, Hick's law, Gestalt principles     |
+| 2    | User-centered design process: research, personas, journey maps, user stories                 |
+| 3    | Usability heuristics: Nielsen's 10 heuristics, severity ratings, heuristic evaluation        |
+| 4    | Accessibility fundamentals: WCAG 2.2 success criteria, POUR principles, audit tools          |
+| 5    | Semantic HTML and ARIA: roles, states, properties, live regions                              |
+| 6    | Keyboard navigation and focus management: tab order, skip links, modal trapping              |
+| 7    | Visual design for accessibility: color contrast (4.5:1, 3:1), text scaling, motion reduction |
+| 8    | Screen reader testing: NVDA, VoiceOver, common pitfalls, live region announcements           |
+| 9    | Prototyping methods: paper, Figma wireframes, high-fidelity interactive prototypes           |
+| 10   | Usability testing: test plans, think-aloud protocol, SUS questionnaire, severity scoring     |
+| 11   | Capstone: conduct a full usability study and accessibility audit on an existing application  |
 
 ## Linked Existing Content
 

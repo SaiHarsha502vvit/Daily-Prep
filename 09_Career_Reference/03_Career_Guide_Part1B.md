@@ -48,13 +48,11 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 MVCC (Multi-Version Concurrency Control):
+
 ```
 ────────────────────────────────────────
 ```
-
 
 HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 
@@ -90,9 +88,8 @@ HOW MULTIPLE TRANSACTIONS SEE DIFFERENT DATA:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 DEADLOCK DETECTION:
+
 ```
 ──────────────────
 
@@ -123,22 +120,22 @@ DEADLOCK DETECTION:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Connection Pooling Internals
 
 DATABASE CONNECTION LIFECYCLE:
+
 ```
 ═════════════════════════════
 ```
 
-
 WITHOUT CONNECTION POOLING:
+
 ```
 ──────────────────────────
 ```
 
-
 Each request:
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
@@ -160,9 +157,8 @@ Each request:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 WITH CONNECTION POOLING (e.g., HikariCP):
+
 ```
 ────────────────────────────────────────
 
@@ -223,7 +219,9 @@ _Stage 1 Complete! Ready for Stage 2: Cloud Fundamentals to Expertise_
 ### Cloud Computing - The WHY
 
 ```
+
 BEFORE CLOUD:
+
 ```
 ─────────────
 ```
@@ -233,6 +231,7 @@ Cost: $50,000 upfront
 Risk: Over-provision (waste) or Under-provision (crash)
 
 WITH CLOUD:
+
 ```
 ───────────
 ```
@@ -242,6 +241,7 @@ Cost: Pay only what you use
 Risk: Minimal - add/remove resources instantly
 
 CLOUD BENEFITS:
+
 ```
 ├── No upfront capital expense
 ├── Pay-as-you-go pricing
@@ -250,7 +250,6 @@ CLOUD BENEFITS:
 ├── Managed services (less ops work)
 └── Security (often better than DIY)
 ```
-
 
 ### Cloud Service Models
 
@@ -285,7 +284,6 @@ CLOUD BENEFITS:
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### AWS Services - Complete Map
 
@@ -339,6 +337,7 @@ CLOUD BENEFITS:
 #### Example 1: Simple Web Application
 
 ```
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                    SIMPLE WEB APP ARCHITECTURE                   │
@@ -380,7 +379,6 @@ CLOUD BENEFITS:
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
-
 
 #### Example 2: Serverless Architecture
 
@@ -430,7 +428,6 @@ CLOUD BENEFITS:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Example 3: Microservices Architecture
 
 ```
@@ -474,14 +471,13 @@ CLOUD BENEFITS:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### AWS Cost Optimization - Expert Level
 
 COST OPTIMIZATION STRATEGIES:
+
 ```
 ─────────────────────────────
 ```
-
 
 1. RIGHT-SIZING
    ├── Monitor CPU/Memory usage
@@ -491,11 +487,11 @@ COST OPTIMIZATION STRATEGIES:
 
 2. RESERVED INSTANCES / SAVINGS PLANS
    ┌──────────────────────────────────────────────────────────┐
-   │ Instance Type    │ On-Demand  │ 1-Year RI  │ Savings    │
+   │ Instance Type │ On-Demand │ 1-Year RI │ Savings │
    ├──────────────────┼────────────┼────────────┼────────────┤
-   │ t3.medium        │ $30/month  │ $19/month  │ 37%        │
-   │ m5.large         │ $70/month  │ $44/month  │ 37%        │
-   │ r5.xlarge        │ $180/month │ $113/month │ 37%        │
+   │ t3.medium │ $30/month │ $19/month │ 37% │
+   │ m5.large │ $70/month │ $44/month │ 37% │
+   │ r5.xlarge │ $180/month │ $113/month │ 37% │
    └──────────────────────────────────────────────────────────┘
 
 3. SPOT INSTANCES
@@ -506,18 +502,18 @@ COST OPTIMIZATION STRATEGIES:
 
 4. S3 STORAGE TIERS
    ┌──────────────────────────────────────────────────────────┐
-   │ Storage Class     │ Cost/GB   │ Use Case                │
+   │ Storage Class │ Cost/GB │ Use Case │
    ├───────────────────┼───────────┼─────────────────────────┤
-   │ S3 Standard       │ $0.023    │ Frequent access         │
-   │ S3 IA             │ $0.0125   │ Infrequent access       │
-   │ S3 Glacier IR     │ $0.004    │ Archive, mins retrieval │
-   │ S3 Glacier DA     │ $0.00099  │ Archive, hours retrieve │
+   │ S3 Standard │ $0.023 │ Frequent access │
+   │ S3 IA │ $0.0125 │ Infrequent access │
+   │ S3 Glacier IR │ $0.004 │ Archive, mins retrieval │
+   │ S3 Glacier DA │ $0.00099 │ Archive, hours retrieve │
    └──────────────────────────────────────────────────────────┘
 
    Lifecycle Policy Example:
-   Day 0-30:   S3 Standard
-   Day 31-90:  S3 IA
-   Day 91+:    Glacier
+   Day 0-30: S3 Standard
+   Day 31-90: S3 IA
+   Day 91+: Glacier
 
 5. DATABASE OPTIMIZATION
    ├── Use Aurora Serverless for variable workloads
@@ -567,14 +563,13 @@ COST OPTIMIZATION STRATEGIES:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Cloud Security Best Practices
 
 CLOUD SECURITY CHECKLIST:
+
 ```
 ─────────────────────────
 ```
-
 
 1. IDENTITY & ACCESS
    □ Enable MFA for all users
@@ -612,7 +607,6 @@ CLOUD SECURITY CHECKLIST:
    □ Incident response plan
 
 ### Infrastructure as Code (IaC)
-
 
 ```hcl
 # TERRAFORM EXAMPLE - Complete Web App Infrastructure
@@ -736,105 +730,105 @@ output "database_endpoint" {
 name: CI/CD Pipeline
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
 
 env:
-    AWS_REGION: ap-south-1
-    ECR_REPOSITORY: myapp
-    ECS_SERVICE: myapp-service
-    ECS_CLUSTER: production
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: myapp
+  ECS_SERVICE: myapp-service
+  ECS_CLUSTER: production
 
 jobs:
-    # JOB 1: TEST
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+  # JOB 1: TEST
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Set up JDK 17
-              uses: actions/setup-java@v3
-              with:
-                  java-version: "17"
-                  distribution: "temurin"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
 
-            - name: Run Tests
-              run: ./mvnw test
+      - name: Run Tests
+        run: ./mvnw test
 
-            - name: Upload Coverage
-              uses: codecov/codecov-action@v3
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
 
-    # JOB 2: BUILD & PUSH
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
+  # JOB 2: BUILD & PUSH
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
-        steps:
-            - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Login to Amazon ECR
-              id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-            - name: Build and push Docker image
-              env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  IMAGE_TAG: ${{ github.sha }}
-              run: |
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # JOB 3: DEPLOY
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
+  # JOB 3: DEPLOY
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Deploy to ECS
-              run: |
-                  aws ecs update-service \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --service ${{ env.ECS_SERVICE }} \
-                    --force-new-deployment
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment
 
-            - name: Wait for deployment
-              run: |
-                  aws ecs wait services-stable \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --services ${{ env.ECS_SERVICE }}
+      - name: Wait for deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }}
 
-    # JOB 4: NOTIFY
-    notify:
-        needs: [test, build, deploy]
-        runs-on: ubuntu-latest
-        if: always()
+  # JOB 4: NOTIFY
+  notify:
+    needs: [test, build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
 
-        steps:
-            - name: Slack Notification
-              uses: 8398a7/action-slack@v3
-              with:
-                  status: ${{ job.status }}
-                  fields: repo,message,commit,author,action,workflow
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 ```
 
 ---
@@ -1266,16 +1260,12 @@ _Stage 2 Complete! Ready for Stage 3: Full-Stack Development Complete Guide_
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 🔬 Cloud Deep Internals - How Cloud Services ACTUALLY Work**
 
 **Challenge 1 (Reasoning):** The Cloud Internals section shows VPCs with public and private subnets. In a multi-account AWS setup with 15 microservices each in their own VPC, you need them all to communicate. VPC Peering requires N×(N-1)/2 = 105 peering connections. What is the architectural alternative, and why does AWS charge differently for it?
+
 <details><summary>Answer</summary>
 
 The alternative is **AWS Transit Gateway** — a regional network hub that acts as a central router. Instead of 105 peer-to-peer connections, each VPC creates ONE attachment to the Transit Gateway (15 attachments total). Transit Gateway routes traffic between all attached VPCs using route tables. **Why AWS charges differently:** VPC Peering has **no hourly charge** — you only pay for data transfer ($0.01/GB cross-AZ). AWS can offer this for free because peering is a simple L3 routing rule injected into the VPC's route table — no additional infrastructure. Transit Gateway charges **$0.05/hour per attachment** (~$36/month per VPC) PLUS $0.02/GB data processed, because it runs dedicated network appliances (ENIs in each AZ) that inspect and route every packet. **When to use which:** Peering for 2-5 VPCs with simple hub-and-spoke. Transit Gateway for 5+ VPCs, transitive routing needs, centralized network policies, or on-premises connectivity via VPN/Direct Connect. **Key insight:** This is a classic "mesh vs hub" networking problem — the same reason the internet uses BGP routers instead of direct peering between every ISP.
-</details>
 
+</details>

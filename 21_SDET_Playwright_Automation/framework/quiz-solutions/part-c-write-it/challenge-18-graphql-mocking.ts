@@ -47,7 +47,7 @@ export async function mockGraphQLOperation<T>(
   options: {
     hasErrors?: boolean;
     status?: number;
-  } = {}
+  } = {},
 ): Promise<void> {
   const { hasErrors = false, status = 200 } = options;
 
@@ -145,7 +145,7 @@ test('quiz-02-ch18: mock GraphQL error response', async ({ page }) => {
     page,
     'GetUser',
     { user: { id: '', name: '', email: '' } }, // data ignored because hasErrors=true
-    { hasErrors: true, status: 200 } // GraphQL returns 200 even with errors
+    { hasErrors: true, status: 200 }, // GraphQL returns 200 even with errors
   );
 
   const result = await page.evaluate(async () => {

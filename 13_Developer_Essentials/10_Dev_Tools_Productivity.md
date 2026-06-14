@@ -240,7 +240,7 @@ TOOLS:
      - Connect to running Java app
      - See heap usage, thread count, CPU
      - Take heap dumps, thread dumps
-     
+
   2. JProfiler / YourKit (commercial)
      - Method-level profiling (which method is slow?)
      - Memory allocation tracking
@@ -260,18 +260,18 @@ QUICK PROFILING with Spring Boot:
 @Aspect
 @Component
 public class PerformanceAspect {
-    
+
     @Around("@annotation(Timed)")
     public Object measureTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.nanoTime();
         Object result = joinPoint.proceed();
         long duration = (System.nanoTime() - start) / 1_000_000;
-        
+
         log.info("{}.{} took {} ms",
             joinPoint.getSignature().getDeclaringTypeName(),
             joinPoint.getSignature().getName(),
             duration);
-        
+
         return result;
     }
 }
@@ -365,6 +365,36 @@ alias mbr='mvn spring-boot:run'
 
 # 🧭 Productivity Cheat Sheet
 
+### Diagram: IDE Shortcut Frequency Heatmap
+
+```
+Daily (use 50+ times/day):
+╔═══════════════════╗
+║ Cmd+C / Cmd+V     ║ ← copy/paste
+║ Cmd+Z / Cmd+Shift+Z║ ← undo/redo
+║ Cmd+S             ║ ← save
+║ Cmd+P             ║ ← quick file open
+║ Cmd+Shift+F       ║ ← global search
+╚═══════════════════╝
+
+Weekly (use 5-10 times/week):
+╔═══════════════════╗
+║ Cmd+Shift+P       ║ ← command palette
+║ Cmd+B             ║ ← toggle sidebar
+║ Cmd+`             ║ ← next window
+║ Cmd+/             ║ ← comment line
+║ F12               ║ ← go to definition
+╚═══════════════════╝
+
+Monthly (use 1-5 times/month):
+╔═══════════════════╗
+║ Cmd+Shift+P → refactor ║
+║ F2                ║ ← rename symbol
+║ Cmd+K Cmd+S       ║ ← save all
+║ Cmd+Shift+O       ║ ← go to symbol
+╚═══════════════════╝
+```
+
 ```
 NAVIGATE:   Shift+Shift (search everything)
 REFACTOR:   Shift+F6 (rename), Ctrl+Alt+M (extract method)
@@ -406,6 +436,17 @@ Practice the complete development workflow:
 6. Check performance with Actuator
 7. Commit, push, (create PR if on GitHub)
 ```
+
+### Production Reality
+
+**Dev tools and productivity practices fail in production in these named ways:**
+
+- **IDE plugin crash blocking development** — an IntelliJ plugin (Lombok, MapStruct, certain AI assistants) crashes and corrupts the IDE's indexing cache. Developer productivity drops to zero for hours until the IDE cache is cleared and re-indexed. In teams of 20+, this happens to someone every week. Mitigation: pin plugin versions, test new plugins on a development install before distributing team-wide.
+- **SSH key rotation overhead** — a developer leaves or their laptop is stolen. Their SSH key was used in 47 production deploy scripts, 12 Bastion host configs, and 3 GitHub organization members. Key rotation requires updating all 62 locations manually, with downtime risk if any is missed. Fix: use a centralized secrets manager (HashiCorp Vault, AWS SSM Parameter Store) for SSH keys, not individual key files.
+- **Outdated toolchain causing CI failure** — a developer commits with the latest Gradle features; CI runs on a cached Docker image with an older Gradle version. Builds pass locally, fail in CI. The gap between local tool versions and CI tool versions causes unpredictable failures. Fix: use tool version lockfiles (Gradle wrapper, nvm for Node) and verify CI uses identical tool versions.
+
+**Debug workflow:** For IDE crashes: `Help > Diagnostic Tools > Debug Log Settings` shows plugin activity; clearing `.idea/caches` fixes most indexing issues. For SSH key rotation: `ssh-add -l` lists cached keys; revoke the compromised key immediately and update all references from the centralized secrets manager.
+**Mitigation discipline:** Pin all development toolchain versions (IDE, plugins, CLI tools) via dotfiles repository; use Renovatebot or Dependabot to keep tool versions updated in CI and locally simultaneously; avoid local-only tools that aren't in CI.
 
 ---
 

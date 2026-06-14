@@ -25,6 +25,7 @@
 ## 1. The Core Problem — Why These Three Are Confused
 
 The confusion comes from the fact that all three types:
+
 - Run against a deployed application
 - Can use the same automation tools (Appium, Selenium, XCUITest)
 - Involve checking "does things work?"
@@ -124,6 +125,7 @@ Logout works                                Filters, sort, search
 ### Duration Rule
 
 A smoke suite should complete in **under 15 minutes**. If it takes longer:
+
 - You have included too many tests
 - Remove non-critical tests to a regression suite
 
@@ -311,15 +313,15 @@ SMOKE-01: App launches without crash
 WHY: If this fails, nothing else is testable. Non-negotiable.
 
 SMOKE-02: Login screen renders
-WHY: Entry point to all features. If login screen is broken, 
+WHY: Entry point to all features. If login screen is broken,
      testing any feature is impossible.
 
 SMOKE-03: Login with valid credentials succeeds
-WHY: Authentication is the gate to all features. 
+WHY: Authentication is the gate to all features.
      If login is broken, zero features can be tested.
 
 SMOKE-04: Account balance displays on home screen
-WHY: Core value proposition. If balance can't display, 
+WHY: Core value proposition. If balance can't display,
      the app serves no purpose in testing.
 
 SMOKE-05: Transaction list loads (at least one transaction visible)
@@ -335,13 +337,14 @@ WHY: On first launch, the permission dialog blocks the app.
      If it crashes here, the first-install flow is broken.
 
 SMOKE-08: Logout works and user is returned to login
-WHY: State management. If logout is broken, test users 
+WHY: State management. If logout is broken, test users
      pollute each other's sessions, making ALL other tests unreliable.
 ```
 
 **What I excluded and why**:
+
 - Transfer completion — too specific, goes in regression
-- Error message text — too specific, goes in regression  
+- Error message text — too specific, goes in regression
 - Search functionality — secondary feature
 - Settings — non-critical to testing
 
@@ -558,6 +561,7 @@ With regression tests:    CI discovers it before the PR is merged.
 ### Why Regression Bugs Happen
 
 Regression bugs are introduced when:
+
 1. **Shared code changes**: Developer modifies a utility function used in 10 places — 9 places still work, 1 place breaks
 2. **State management changes**: A global state object is modified — some screens that read from it break
 3. **Database schema changes**: A column is renamed or removed — queries that reference it fail
@@ -695,7 +699,7 @@ Regression tests MUST be independent of each other. This is the most common sour
 
 ```java
 // WRONG — tests depend on each other's state
-@Test @Order(1) public void createCitation() { 
+@Test @Order(1) public void createCitation() {
     // Creates citation with ID 123 in the database
 }
 @Test @Order(2) public void viewCitation() {
@@ -833,6 +837,7 @@ No memory crash within 2 minutes of launch
 ### Step 4: Validate the Suite Duration
 
 Time the suite. If it exceeds 15 minutes:
+
 - Remove any test that is not a critical journey
 - Move edge cases to regression
 - Optimize waits and navigation
@@ -840,6 +845,7 @@ Time the suite. If it exceeds 15 minutes:
 ### Step 5: Assign Dedicated Test Data
 
 Create smoke-only test accounts and data that:
+
 - Never expire
 - Always have the minimum data needed
 - Are never modified by other tests
@@ -864,6 +870,7 @@ Settings:           Theme, Language, Data/Privacy
 ### Step 2: Write Test Cases for Each Feature
 
 For each feature, cover:
+
 - Happy path (the ideal user flow)
 - Boundary values (minimum and maximum inputs)
 - Error paths (invalid input, network errors, server errors)
@@ -894,6 +901,7 @@ Edge case:      Pay, receive phone call, return → payment state preserved
 ### Step 4: Set a Maintenance Process
 
 Regression suites DECAY without maintenance. Set a process:
+
 - When a new feature ships → add regression tests for it before release
 - When a test fails due to a UI change (not a bug) → update the test immediately
 - Monthly: Review and remove tests for deprecated features
@@ -914,10 +922,9 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: '0 2 * * *'   # Nightly at 2 AM
+    - cron: "0 2 * * *" # Nightly at 2 AM
 
 jobs:
-
   # Stage 1: Build — runs on every push
   build:
     runs-on: macos-14
@@ -948,7 +955,7 @@ jobs:
   # Stage 3: Regression — runs after smoke, on PRs
   regression:
     needs: smoke
-    if: github.event_name == 'pull_request'   # Only on PRs, not every push
+    if: github.event_name == 'pull_request' # Only on PRs, not every push
     runs-on: macos-14
     steps:
       - name: Run Critical Regression Tests
@@ -1026,7 +1033,7 @@ DECISION: Testing sequence?
 ```
 DECISION: What tests do you run, in what order?
 1. Smoke on iOS 17.4 simulator — Does it even launch? (5 minutes)
-2. Sanity on the crash scenario — launch the app on iOS 17.4, navigate to the 
+2. Sanity on the crash scenario — launch the app on iOS 17.4, navigate to the
    screen that crashed, verify no crash (15 minutes)
 3. Smoke on other iOS versions — Ensure hotfix didn't break iOS 16, 17.0, 17.3 (15 minutes)
 4. Targeted regression on iOS 17.4 only — Run the critical path on the specific OS (30 minutes)

@@ -46,7 +46,10 @@ const test = base.extend<TempFileFixture & TestAccountFixture>({
     const tmpDir = path.resolve(__dirname, '..', '..', '.tmp');
     fs.mkdirSync(tmpDir, { recursive: true });
 
-    const filePath = path.join(tmpDir, `test-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`);
+    const filePath = path.join(
+      tmpDir,
+      `test-${Date.now()}-${Math.random().toString(36).slice(2)}.txt`,
+    );
 
     const tempFileAPI = {
       path: filePath,

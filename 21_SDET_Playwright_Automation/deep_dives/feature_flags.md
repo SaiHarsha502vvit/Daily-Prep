@@ -21,12 +21,14 @@
 ## 1. Why
 
 Feature flags let you:
+
 - Deploy code dark.
 - Roll out gradually (10% → 50% → 100%).
 - A/B test variants.
 - Kill features fast on incidents.
 
 But they multiply test surface:
+
 - 5 flags = 32 combinations.
 - 10 flags = 1024.
 - Real-world: 50+ flags. Combinatorial explosion.
@@ -38,6 +40,7 @@ You can't test every combination. You need a strategy.
 ## 2. The combinatorial explosion
 
 Most flags are independent. Test them in isolation:
+
 - Flag A on/off — 2 tests.
 - Flag B on/off — 2 tests.
 - Total: 4 tests, not 4 combinations.
@@ -50,12 +53,12 @@ For most apps: 80% of flags = independent. Test independently. 20% = interaction
 
 ## 3. Injection strategies
 
-| Strategy | How | Pros | Cons |
-|---|---|---|---|
-| Real flag service (LaunchDarkly) | Tests hit real LD, manipulate flags via API | Production-like | Slow, requires LD test account |
-| URL parameter overrides | App accepts `?flags=A,B` for testing | Fast, deterministic | Requires app cooperation |
-| Cookie override | App reads `flags` cookie | Fast | Requires app cooperation |
-| API mock | `page.route` intercepts LD SDK calls | Fastest | Couples to SDK implementation |
+| Strategy                         | How                                         | Pros                | Cons                           |
+| -------------------------------- | ------------------------------------------- | ------------------- | ------------------------------ |
+| Real flag service (LaunchDarkly) | Tests hit real LD, manipulate flags via API | Production-like     | Slow, requires LD test account |
+| URL parameter overrides          | App accepts `?flags=A,B` for testing        | Fast, deterministic | Requires app cooperation       |
+| Cookie override                  | App reads `flags` cookie                    | Fast                | Requires app cooperation       |
+| API mock                         | `page.route` intercepts LD SDK calls        | Fastest             | Couples to SDK implementation  |
 
 Best for CI: URL/cookie overrides plus periodic real-LD integration tests.
 
@@ -71,16 +74,21 @@ interface FeatureFlags {
 }
 
 const test = base.extend<{ flags: FeatureFlags }>({
-  flags: [{ newCheckoutFlow: false, betaSearchUi: false, pricingV2: false }, { option: true }],
-  
+  flags: [
+    { newCheckoutFlow: false, betaSearchUi: false, pricingV2: false },
+    { option: true },
+  ],
+
   page: async ({ page, flags }, use) => {
     // Inject flags via cookie before navigation
-    await page.context().addCookies([{
-      name: 'feature-flags',
-      value: JSON.stringify(flags),
-      domain: process.env.APP_DOMAIN!,
-      path: '/',
-    }]);
+    await page.context().addCookies([
+      {
+        name: "feature-flags",
+        value: JSON.stringify(flags),
+        domain: process.env.APP_DOMAIN!,
+        path: "/",
+      },
+    ]);
     await use(page);
   },
 });
@@ -89,17 +97,19 @@ const test = base.extend<{ flags: FeatureFlags }>({
 Usage:
 
 ```typescript
-test('default flags', async ({ page }) => {
-  await page.goto('/');
+test("default flags", async ({ page }) => {
+  await page.goto("/");
   // newCheckoutFlow: false (default) — test old flow
 });
 
-test.describe('new checkout flow', () => {
-  test.use({ flags: { newCheckoutFlow: true, betaSearchUi: false, pricingV2: false } });
-  
-  test('new flow renders', async ({ page }) => {
-    await page.goto('/checkout');
-    await expect(page.getByText('Express checkout')).toBeVisible();
+test.describe("new checkout flow", () => {
+  test.use({
+    flags: { newCheckoutFlow: true, betaSearchUi: false, pricingV2: false },
+  });
+
+  test("new flow renders", async ({ page }) => {
+    await page.goto("/checkout");
+    await expect(page.getByText("Express checkout")).toBeVisible();
   });
 });
 ```
@@ -109,7 +119,7 @@ test.describe('new checkout flow', () => {
 ## 5. LaunchDarkly
 
 ```typescript
-import * as LD from 'launchdarkly-node-server-sdk';
+import * as LD from "launchdarkly-node-server-sdk";
 
 const client = LD.init(process.env.LD_SDK_KEY!);
 
@@ -117,18 +127,20 @@ test.beforeAll(async () => {
   await client.waitForInitialization();
 });
 
-test('LD-controlled flag', async ({ page }) => {
+test("LD-controlled flag", async ({ page }) => {
   // Update flag via LD REST API
   await fetch(`https://app.launchdarkly.com/api/v2/flags/default/${flagKey}`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: { Authorization: process.env.LD_API_KEY! },
-    body: JSON.stringify({ patch: [{ op: 'replace', path: '/environments/test/on', value: true }] }),
+    body: JSON.stringify({
+      patch: [{ op: "replace", path: "/environments/test/on", value: true }],
+    }),
   });
 
   // Wait for LD propagation
   await page.waitForTimeout(2000);
 
-  await page.goto('/');
+  await page.goto("/");
   // Test new behavior
 });
 ```
@@ -144,12 +156,16 @@ Better: use LD's "test environment" feature with per-PR flag values, or use boot
 OpenFeature is the standard; multiple providers (Unleash, ConfigCat, Flagsmith).
 
 ```typescript
-import { OpenFeature, type Client } from '@openfeature/server-sdk';
+import { OpenFeature, type Client } from "@openfeature/server-sdk";
 
-await OpenFeature.setProviderAndWait(new UnleashProvider({ /* ... */ }));
+await OpenFeature.setProviderAndWait(
+  new UnleashProvider({
+    /* ... */
+  }),
+);
 const client = OpenFeature.getClient();
 
-const enabled = await client.getBooleanValue('new-checkout', false);
+const enabled = await client.getBooleanValue("new-checkout", false);
 ```
 
 Same testing patterns as LD.
@@ -162,10 +178,10 @@ For flags with interaction effects:
 
 ```typescript
 const matrix = [
-  { newCheckout: false, pricingV2: false, label: 'old checkout, old pricing' },
-  { newCheckout: false, pricingV2: true,  label: 'old checkout, new pricing' },
-  { newCheckout: true,  pricingV2: false, label: 'new checkout, old pricing' },
-  { newCheckout: true,  pricingV2: true,  label: 'new checkout, new pricing' },
+  { newCheckout: false, pricingV2: false, label: "old checkout, old pricing" },
+  { newCheckout: false, pricingV2: true, label: "old checkout, new pricing" },
+  { newCheckout: true, pricingV2: false, label: "new checkout, old pricing" },
+  { newCheckout: true, pricingV2: true, label: "new checkout, new pricing" },
 ];
 
 for (const variant of matrix) {
@@ -183,18 +199,23 @@ for (const variant of matrix) {
 ## 8. All-on / all-off smoke
 
 The most important pair:
+
 - All flags ON — the future state. Tests catch regressions.
 - All flags OFF — the rollback state. Tests verify the app still works without ANY flag.
 
 ```typescript
-test.describe('all flags on', () => {
+test.describe("all flags on", () => {
   test.use({ flags: allFlagsOn() });
-  test('home page loads', async ({ page }) => { /* ... */ });
+  test("home page loads", async ({ page }) => {
+    /* ... */
+  });
 });
 
-test.describe('all flags off', () => {
+test.describe("all flags off", () => {
   test.use({ flags: allFlagsOff() });
-  test('home page loads', async ({ page }) => { /* ... */ });
+  test("home page loads", async ({ page }) => {
+    /* ... */
+  });
 });
 ```
 

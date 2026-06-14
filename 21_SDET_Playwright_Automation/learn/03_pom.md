@@ -7,6 +7,7 @@
 ## The pattern, in 30 seconds
 
 A Page Object is a class that:
+
 - Holds locators for one page (or component).
 - Exposes methods that perform user-level actions.
 - Hides selector strings from tests.
@@ -16,13 +17,13 @@ class LoginPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly submitButton: Locator;
-  
+
   constructor(private readonly page: Page) {
-    this.emailInput = page.getByLabel('Email');
-    this.passwordInput = page.getByLabel('Password');
-    this.submitButton = page.getByRole('button', { name: 'Log in' });
+    this.emailInput = page.getByLabel("Email");
+    this.passwordInput = page.getByLabel("Password");
+    this.submitButton = page.getByRole("button", { name: "Log in" });
   }
-  
+
   async login(email: string, password: string): Promise<void> {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
@@ -32,9 +33,10 @@ class LoginPage {
 ```
 
 Test:
+
 ```typescript
 const login = new LoginPage(page);
-await login.login('admin@example.com', 'admin');
+await login.login("admin@example.com", "admin");
 ```
 
 ---
@@ -43,15 +45,16 @@ await login.login('admin@example.com', 'admin');
 
 POMs add overhead. They're worth it when:
 
-| Signal | Why POM helps |
-|---|---|
-| 5+ tests use the same page | One change in selectors propagates to all |
-| Multi-step actions are shared | `login()` is one line in 50 tests, not 5 |
-| Page is owned by a different team | POM is the contract |
-| Selectors are brittle | One file to fix |
-| Tests are read by people who don't know the selectors | POM exposes intent |
+| Signal                                                | Why POM helps                             |
+| ----------------------------------------------------- | ----------------------------------------- |
+| 5+ tests use the same page                            | One change in selectors propagates to all |
+| Multi-step actions are shared                         | `login()` is one line in 50 tests, not 5  |
+| Page is owned by a different team                     | POM is the contract                       |
+| Selectors are brittle                                 | One file to fix                           |
+| Tests are read by people who don't know the selectors | POM exposes intent                        |
 
 When they don't:
+
 - Single-test pages.
 - Pages with one button and one assertion.
 - Throwaway exploration tests.
@@ -67,9 +70,9 @@ A 200-line POM for a page used in 2 tests is overhead. Don't do it.
 ```typescript
 class HomePage {
   constructor(private readonly page: Page) {}
-  
+
   async clickSignIn() {
-    await this.page.click('.sign-in-button');
+    await this.page.click(".sign-in-button");
   }
 }
 ```
@@ -81,9 +84,9 @@ Wraps an action. Marginally better than inline.
 ```typescript
 class HomePage {
   readonly signInButton: Locator;
-  
+
   constructor(private readonly page: Page) {
-    this.signInButton = page.getByRole('button', { name: 'Sign in' });
+    this.signInButton = page.getByRole("button", { name: "Sign in" });
   }
 }
 ```
@@ -101,20 +104,20 @@ await home.signInButton.click();
 class HomePage {
   readonly signInButton: Locator;
   readonly userMenu: Locator;
-  
+
   constructor(private readonly page: Page) {
-    this.signInButton = page.getByRole('button', { name: 'Sign in' });
-    this.userMenu = page.getByLabel('User menu');
+    this.signInButton = page.getByRole("button", { name: "Sign in" });
+    this.userMenu = page.getByLabel("User menu");
   }
-  
+
   async goto(): Promise<void> {
-    await this.page.goto('/');
+    await this.page.goto("/");
   }
-  
+
   async signIn(): Promise<void> {
     await this.signInButton.click();
   }
-  
+
   async assertLoggedIn(): Promise<void> {
     await expect(this.userMenu).toBeVisible();
   }
@@ -132,7 +135,7 @@ class DashboardPage {
   readonly header: HeaderComponent;
   readonly sidebar: SidebarComponent;
   readonly mainContent: MainContentComponent;
-  
+
   constructor(page: Page) {
     this.header = new HeaderComponent(page);
     this.sidebar = new SidebarComponent(page);
@@ -143,16 +146,16 @@ class DashboardPage {
 class HeaderComponent {
   readonly userMenu: Locator;
   readonly searchInput: Locator;
-  
+
   constructor(page: Page) {
-    const container = page.getByRole('banner');
-    this.userMenu = container.getByLabel('User menu');
-    this.searchInput = container.getByRole('searchbox');
+    const container = page.getByRole("banner");
+    this.userMenu = container.getByLabel("User menu");
+    this.searchInput = container.getByRole("searchbox");
   }
-  
+
   async search(query: string): Promise<void> {
     await this.searchInput.fill(query);
-    await this.searchInput.press('Enter');
+    await this.searchInput.press("Enter");
   }
 }
 ```
@@ -166,11 +169,11 @@ For apps with iframes (D365, embedded SaaS):
 ```typescript
 class EmbeddedFormPage {
   readonly formFrame: FrameLocator;
-  
+
   constructor(private readonly page: Page) {
     this.formFrame = page.frameLocator('iframe[name^="form-frame"]');
   }
-  
+
   // Methods operate within the frame
   async fillField(label: string, value: string): Promise<void> {
     await this.formFrame.getByLabel(label).fill(value);
@@ -198,19 +201,19 @@ The fix: break by section or behavior:
 
 ```typescript
 class CustomerDetailsPage {
-  readonly identity: IdentitySection;       // name, email, phone
-  readonly address: AddressSection;          // billing/shipping
-  readonly orders: OrdersSubgrid;            // orders list
-  readonly notes: NotesSection;              // notes timeline
+  readonly identity: IdentitySection; // name, email, phone
+  readonly address: AddressSection; // billing/shipping
+  readonly orders: OrdersSubgrid; // orders list
+  readonly notes: NotesSection; // notes timeline
 }
 ```
 
 Each subclass is 100-200 lines, focused. Tests compose:
 
 ```typescript
-test('customer can update address', async ({ page }) => {
+test("customer can update address", async ({ page }) => {
   const customer = new CustomerDetailsPage(page);
-  await customer.address.update({ city: 'Austin', zip: '78701' });
+  await customer.address.update({ city: "Austin", zip: "78701" });
   await customer.address.assertSaved();
 });
 ```
@@ -227,14 +230,14 @@ class CheckoutFlow {
   readonly shipping: ShippingPage;
   readonly payment: PaymentPage;
   readonly confirmation: ConfirmationPage;
-  
+
   constructor(page: Page) {
     this.cart = new CartPage(page);
     this.shipping = new ShippingPage(page);
     this.payment = new PaymentPage(page);
     this.confirmation = new ConfirmationPage(page);
   }
-  
+
   async completeCheckout(card: CardDetails): Promise<string> {
     await this.cart.proceedToCheckout();
     await this.shipping.useDefaultAddress();
@@ -250,16 +253,16 @@ The orchestrator is the API the test calls. Tests don't navigate between POMs �
 
 ## When POMs become anti-patterns
 
-| Smell | Diagnosis |
-|---|---|
-| POM exposes raw locators that tests use directly | Underbaked — wrap them |
-| POM exposes 30 methods | Overbaked — split |
-| Test calls 10 POM methods in sequence | Add an orchestrator method |
-| POM has business logic | Wrong layer — move to a service / client |
-| POM throws on construction | Constructor should be sync, side-effect-free |
-| POM hardcodes test data | Test data belongs in fixtures / factories |
-| POM has 5 levels of inheritance | Composition > inheritance |
-| POMs depend on each other | Decouple via the orchestrator |
+| Smell                                            | Diagnosis                                    |
+| ------------------------------------------------ | -------------------------------------------- |
+| POM exposes raw locators that tests use directly | Underbaked — wrap them                       |
+| POM exposes 30 methods                           | Overbaked — split                            |
+| Test calls 10 POM methods in sequence            | Add an orchestrator method                   |
+| POM has business logic                           | Wrong layer — move to a service / client     |
+| POM throws on construction                       | Constructor should be sync, side-effect-free |
+| POM hardcodes test data                          | Test data belongs in fixtures / factories    |
+| POM has 5 levels of inheritance                  | Composition > inheritance                    |
+| POMs depend on each other                        | Decouple via the orchestrator                |
 
 ---
 
@@ -268,9 +271,9 @@ The orchestrator is the API the test calls. Tests don't navigate between POMs �
 ```typescript
 class CustomerDetailsPage {
   readonly name: Locator;
-  
+
   constructor(page: Page) {
-    this.name = page.getByLabel('Name');
+    this.name = page.getByLabel("Name");
     // ZERO browser round-trips here
   }
 }
@@ -289,7 +292,7 @@ See [`reference/03_locators.md §12`](../reference/03_locators.md#12-lazy-evalua
 Repeated boilerplate:
 
 ```typescript
-test('whatever', async ({ page }) => {
+test("whatever", async ({ page }) => {
   const home = new HomePage(page);
   const search = new SearchPage(page);
   const results = new ResultsPage(page);
@@ -301,11 +304,15 @@ Promote to fixtures:
 
 ```typescript
 const test = base.extend<{ home: HomePage; search: SearchPage }>({
-  home: async ({ page }, use) => { await use(new HomePage(page)); },
-  search: async ({ page }, use) => { await use(new SearchPage(page)); },
+  home: async ({ page }, use) => {
+    await use(new HomePage(page));
+  },
+  search: async ({ page }, use) => {
+    await use(new SearchPage(page));
+  },
 });
 
-test('whatever', async ({ home, search }) => {
+test("whatever", async ({ home, search }) => {
   // Already constructed
 });
 ```

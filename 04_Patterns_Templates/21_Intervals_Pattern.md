@@ -4,18 +4,59 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Interval scheduling was formalized by Jon Bentley (1979) in "Programming Pearls." Tarjan developed interval trees. CLRS (1990) provided canonical interval merging algorithms.
+
+**Predecessor context:** Problems involving interval overlaps required O(n²) pairwise comparison. The "sort by start, merge" approach wasn't recognized as optimal.
+
+**Evolution narrative:** Bentley's column in Communications of the ACM popularized interval problems. His greedy algorithm for maximum non-overlapping intervals (sort by end time) became a classic problem. Interval trees provided O(log n) intersection queries.
+
+**Modern practice:** Interval problems appear in calendar scheduling, resource allocation, and meeting room booking. The pattern extends to GPU kernel scheduling and CPU interrupt handling.
+
+- **Bentley 1979**: "Programming Pearls" popularized interval scheduling with greedy optimal algorithm
+- **Interval trees — Tarjan**: Data structure for O(log n) interval intersection queries
+- **CLRS — 1990**: Formalized interval merging with sort-by-start + linear scan
+- **Modern practice**: Calendar apps, meeting room booking, GPU scheduling
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Sort by start vs end determines algorithm (merge uses start, meeting rooms uses end)** — Confusing which field to sort by causes wrong results. Merge intervals: sort by start. Meeting rooms: sort by start for scanning, but use end times for min-heap. Detection: test with overlapping intervals where start/end ordering differs.
+
+- **Overlapping definition inclusive vs exclusive endpoints** — `[1, 3]` and `[3, 5]` overlap if using inclusive intervals but do NOT overlap if using exclusive `[3, 5)`. LeetCode typically uses inclusive. Detection: verify problem's interval convention; mismatch causes off-by-one errors.
+
+- **Sweep line event ordering for equal timestamps** — When two events have the same timestamp (e.g., one interval ends at t, another starts at t), the ordering matters. For non-overlapping check, end must come before start at same time. Detection: test with `[1, 3], [3, 5]` — should not overlap if end=start.
+
+**Production Selection Heuristic:** Always define interval convention (inclusive/exclusive) before coding. Sort by the appropriate field based on the sub-problem. Test with edge cases where intervals touch but don't overlap.
+
+---
+
 # 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| merge overlaps | sort by start, scan |
-| max simultaneous intervals | sweep line or min-heap |
-| online insert/query overlaps | interval tree / TreeMap |
-| coordinates huge but events few | coordinate compression |
-| many range add events | difference array / sweep |
-| closed vs half-open intervals | define boundary rule before coding |
+| Given Constraints               | Do This                            |
+| ------------------------------- | ---------------------------------- |
+| merge overlaps                  | sort by start, scan                |
+| max simultaneous intervals      | sweep line or min-heap             |
+| online insert/query overlaps    | interval tree / TreeMap            |
+| coordinates huge but events few | coordinate compression             |
+| many range add events           | difference array / sweep           |
+| closed vs half-open intervals   | define boundary rule before coding |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -58,7 +99,6 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: THE MENTAL MODEL — "Sort, Scan, Decide"
@@ -77,8 +117,6 @@ find total allocated vs available capacity.
 overlapping regions to find functional units.
 📖 OPERATING SYSTEMS: Memory allocation = interval management.
 malloc/free creates and merges free memory intervals.
-
-
 
 ## The Two Core Techniques
 
@@ -99,36 +137,40 @@ Heap size = current overlap count.
 Works for: Meeting Rooms II, Min Platforms
 
 **Which Technique To Use**:
+
 - "Merge/modify intervals" → Sort + Scan
 - "Count/max simultaneous" → Sweep Line or Min-Heap
-
 
 🔬 **Section Challenge — The Two Core Techniques**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## The Overlap Check — Memorize This
 
 Two intervals [a,b] and [c,d] OVERLAP if and only if:
-a ≤ d  AND  c ≤ b
-Equivalently, they DON'T overlap if:  b < c  OR  d < a
+a ≤ d AND c ≤ b
+Equivalently, they DON'T overlap if: b < c OR d < a
 After sorting by start (a ≤ c), overlap simplifies to:
-c ≤ b   (next start ≤ current end)
+c ≤ b (next start ≤ current end)
 This ONE check drives 80% of interval problems.
+
 ## Difficulties & Common Mistakes
 
 1. Not sorting first — intervals aren't guaranteed sorted in input
 2. Sorting by end when you should sort by start (or vice versa)
+
 - Merge/Insert → sort by START
 - Non-overlapping removal → sort by END (greedy)
 - Meeting Rooms II → sort by START
+
 3. Off-by-one: [1,5] and [5,8] — do they overlap?
-Problem-dependent! Read carefully. Usually YES for intervals.
+   Problem-dependent! Read carefully. Usually YES for intervals.
 4. Forgetting Integer.compare() for comparator (a[0]-b[0] overflows)
 5. Not extending existing interval's end with Math.max during merge
 6. Using == instead of <= for overlap check
@@ -153,7 +195,7 @@ VISUAL:
     2──────6
                 8───10
                           15───18
-  
+
   [1,3] + [2,6]: 2 ≤ 3 → overlap → merge → [1, max(3,6)] = [1,6]
   [1,6] + [8,10]: 8 > 6 → no overlap → add [8,10]
   [8,10] + [15,18]: 15 > 10 → no overlap → add [15,18]
@@ -161,13 +203,12 @@ VISUAL:
 SOLUTION:
 ```
 
-
 ```java
 public int[][] merge(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
     List<int[]> result = new ArrayList<>();
     result.add(intervals[0]);
-    
+
     for (int i = 1; i < intervals.length; i++) {
         int[] last = result.get(result.size() - 1);
         if (intervals[i][0] <= last[1]) {       // Overlap!
@@ -186,9 +227,6 @@ TEMPLATE: This is the base template for all "merge" interval problems.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 2: Insert Interval (LC 57)
 
@@ -213,12 +251,12 @@ SOLUTION:
 public int[][] insert(int[][] intervals, int[] newInterval) {
     List<int[]> result = new ArrayList<>();
     int i = 0, n = intervals.length;
-    
+
     // Phase 1: Add all intervals before newInterval
     while (i < n && intervals[i][1] < newInterval[0]) {
         result.add(intervals[i++]);
     }
-    
+
     // Phase 2: Merge overlapping intervals
     while (i < n && intervals[i][0] <= newInterval[1]) {
         newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
@@ -226,7 +264,7 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
         i++;
     }
     result.add(newInterval);
-    
+
     // Phase 3: Add remaining intervals
     while (i < n) {
         result.add(intervals[i++]);
@@ -240,9 +278,6 @@ COMPLEXITY: Time O(n) — input is already sorted | Space O(n)
 ```
 
 ---
-
-
-
 
 ## PROBLEM 3: Meeting Rooms I (LC 252)
 
@@ -274,9 +309,6 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 
 ---
 
-
-
-
 ## PROBLEM 4: Meeting Rooms II (LC 253) — Min Rooms Needed
 
 ```
@@ -303,12 +335,11 @@ APPROACH 2: Sweep Line
 SOLUTION (Min-Heap):
 ```
 
-
 ```java
 public int minMeetingRooms(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
     PriorityQueue<Integer> heap = new PriorityQueue<>();  // min-heap of end times
-    
+
     for (int[] interval : intervals) {
         if (!heap.isEmpty() && heap.peek() <= interval[0]) {
             heap.poll();  // Room freed
@@ -333,7 +364,7 @@ public int minMeetingRooms(int[][] intervals) {
     }
     Arrays.sort(starts);
     Arrays.sort(ends);
-    
+
     int rooms = 0, endPtr = 0;
     for (int start : starts) {
         if (start < ends[endPtr]) {
@@ -352,9 +383,6 @@ SWEEP LINE IS MORE GENERAL — works for "max overlap" variants too.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 5: Non-overlapping Intervals (LC 435) — Min Removals
 
@@ -378,12 +406,11 @@ GREEDY INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 public int eraseOverlapIntervals(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));  // Sort by END
     int removals = 0, prevEnd = Integer.MIN_VALUE;
-    
+
     for (int[] interval : intervals) {
         if (interval[0] >= prevEnd) {
             prevEnd = interval[1];   // Keep this interval
@@ -401,9 +428,6 @@ KEY: Sort by END for greedy removal. Sort by START for merge.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 6: Interval List Intersections (LC 986)
 
@@ -426,11 +450,11 @@ SOLUTION:
 public int[][] intervalIntersection(int[][] A, int[][] B) {
     List<int[]> result = new ArrayList<>();
     int i = 0, j = 0;
-    
+
     while (i < A.length && j < B.length) {
         int lo = Math.max(A[i][0], B[j][0]);
         int hi = Math.min(A[i][1], B[j][1]);
-        
+
         if (lo <= hi) {
             result.add(new int[]{lo, hi});
         }
@@ -449,9 +473,6 @@ ELEGANT: The Math.max/Math.min trick handles all overlap cases.
 
 ---
 
-
-
-
 ## PROBLEM 7: Minimum Number of Arrows to Burst Balloons (LC 452)
 
 ```
@@ -459,7 +480,7 @@ DIFFICULTY: Medium
 COMPANIES: Facebook, Microsoft
 PATTERN: Sort by end + Greedy (same as Non-overlapping)
 
-PROBLEM: Each balloon is interval [start, end]. An arrow at x bursts all 
+PROBLEM: Each balloon is interval [start, end]. An arrow at x bursts all
          balloons where start ≤ x ≤ end. Min arrows?
 
 THIS IS "Non-overlapping Intervals" IN DISGUISE.
@@ -472,7 +493,7 @@ SOLUTION:
 public int findMinArrowShots(int[][] points) {
     Arrays.sort(points, (a, b) -> Integer.compare(a[1], b[1]));  // Sort by end
     int arrows = 1, arrowPos = points[0][1];
-    
+
     for (int i = 1; i < points.length; i++) {
         if (points[i][0] > arrowPos) {  // Can't reach → need new arrow
             arrows++;
@@ -488,9 +509,6 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 ```
 
 ---
-
-
-
 
 ## 📋 Summary: the Interval Pattern Cheatsheet
 
@@ -520,26 +538,21 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
 
 ## 📋 CURATED PRACTICE PROBLEMS
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Merge Intervals](https://leetcode.com/problems/merge-intervals/) | 56 | Sort + Merge | Google, Facebook |
-| 2 | [Insert Interval](https://leetcode.com/problems/insert-interval/) | 57 | 3-Phase Scan | Google, Facebook |
-| 3 | [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/) | 252 | Sort + Overlap | Amazon |
-| 4 | [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) | 253 | Min-Heap / Sweep | Amazon, Google |
-| 5 | [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) | 435 | Sort End + Greedy | Amazon |
-| 6 | [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/) | 986 | Two Pointers | Facebook |
-| 7 | [Min Arrows Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/) | 452 | Sort End + Greedy | Facebook |
-| 8 | [Employee Free Time](https://leetcode.com/problems/employee-free-time/) | 759 | Merge + Gap Find | Uber |
-| 9 | [My Calendar I](https://leetcode.com/problems/my-calendar-i/) | 729 | TreeMap / Overlap | Google |
-| 10 | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/) | 731 | Sweep Line | Google |
-| 11 | [Car Pooling](https://leetcode.com/problems/car-pooling/) | 1094 | Sweep Line | Google |
-| 12 | [Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/) | 1288 | Sort + Compare | Amazon |
-
+| #   | Problem                                                                                                | LC#  | Pattern           | Company          |
+| --- | ------------------------------------------------------------------------------------------------------ | ---- | ----------------- | ---------------- |
+| 1   | [Merge Intervals](https://leetcode.com/problems/merge-intervals/)                                      | 56   | Sort + Merge      | Google, Facebook |
+| 2   | [Insert Interval](https://leetcode.com/problems/insert-interval/)                                      | 57   | 3-Phase Scan      | Google, Facebook |
+| 3   | [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/)                                          | 252  | Sort + Overlap    | Amazon           |
+| 4   | [Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/)                                    | 253  | Min-Heap / Sweep  | Amazon, Google   |
+| 5   | [Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/)                  | 435  | Sort End + Greedy | Amazon           |
+| 6   | [Interval List Intersections](https://leetcode.com/problems/interval-list-intersections/)              | 986  | Two Pointers      | Facebook         |
+| 7   | [Min Arrows Burst Balloons](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/) | 452  | Sort End + Greedy | Facebook         |
+| 8   | [Employee Free Time](https://leetcode.com/problems/employee-free-time/)                                | 759  | Merge + Gap Find  | Uber             |
+| 9   | [My Calendar I](https://leetcode.com/problems/my-calendar-i/)                                          | 729  | TreeMap / Overlap | Google           |
+| 10  | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/)                                        | 731  | Sweep Line        | Google           |
+| 11  | [Car Pooling](https://leetcode.com/problems/car-pooling/)                                              | 1094 | Sweep Line        | Google           |
+| 12  | [Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/)                    | 1288 | Sort + Compare    | Amazon           |

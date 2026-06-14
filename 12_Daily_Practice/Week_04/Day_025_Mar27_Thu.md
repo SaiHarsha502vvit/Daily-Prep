@@ -1,6 +1,7 @@
 ﻿> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
 
 # DAY 025 — Thursday, March 27, 2026
+
 ## Topological Sort + Kruskal's MST + SQL Views & Stored Procedures
 
 > **Theme**: Dependency ordering + Minimum spanning tree + SQL abstraction layers
@@ -9,14 +10,14 @@
 
 ## 📅 SCHEDULE
 
-| Time Block | Duration | Topic |
-|------------|----------|-------|
-| 0:00–0:30 | 30 min | DS: Topological Sort (Kahn's BFS) |
-| 0:30–1:00 | 30 min | ALGO: Kruskal's MST with Union-Find |
-| 1:00–1:20 | 20 min | COMBO: LC 207 + LC 1584 |
-| 1:20–1:40 | 20 min | REAL-WORLD: Build systems = Topo Sort |
-| 1:40–2:20 | 40 min | SQL: Views + Stored Procedures |
-| 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
+| Time Block | Duration | Topic                                 |
+| ---------- | -------- | ------------------------------------- |
+| 0:00–0:30  | 30 min   | DS: Topological Sort (Kahn's BFS)     |
+| 0:30–1:00  | 30 min   | ALGO: Kruskal's MST with Union-Find   |
+| 1:00–1:20  | 20 min   | COMBO: LC 207 + LC 1584               |
+| 1:20–1:40  | 20 min   | REAL-WORLD: Build systems = Topo Sort |
+| 1:40–2:20  | 40 min   | SQL: Views + Stored Procedures        |
+| 2:20–3:00  | 40 min   | PROBLEMS: Q1 + Q2                     |
 
 ---
 
@@ -28,10 +29,9 @@
 > | **ALGO: Kruskal's MST** | [Graph Advanced Algorithms](../../03_Algorithms/05d_Graphs_Advanced_Algos.md) |
 > | **SQL: Views & Stored Procedures** | [SQL: Views & Stored Procedures](../../08_SQL/12_Views_StoredProcs_Triggers.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
 
 ## 🧱 DS BLOCK: Topological Sort (Kahn's Algorithm)
 
@@ -42,7 +42,7 @@ Course prerequisites:
   CS201 requires CS101
   CS301 requires CS201
   CS202 requires CS101
-  
+
 Valid order: CS101 → CS201 → CS301 → CS202
              CS101 → CS202 → CS201 → CS301
 
@@ -52,33 +52,32 @@ Only works on DAG (Directed Acyclic Graph)
 If cycle exists → NO valid ordering (detect: not all nodes processed)
 ```
 
-
 ### Kahn's Algorithm (BFS-based)
 
 ```java
 // Returns topological order, or empty if cycle exists
 List<Integer> topologicalSort(int n, List<List<Integer>> graph) {
     int[] inDegree = new int[n];
-    
+
     // Step 1: Calculate in-degrees
     for (int u = 0; u < n; u++) {
         for (int v : graph.get(u)) {
             inDegree[v]++;
         }
     }
-    
+
     // Step 2: Start with all nodes having in-degree 0
     Queue<Integer> queue = new LinkedList<>();
     for (int i = 0; i < n; i++) {
         if (inDegree[i] == 0) queue.offer(i);
     }
-    
+
     // Step 3: Process
     List<Integer> order = new ArrayList<>();
     while (!queue.isEmpty()) {
         int node = queue.poll();
         order.add(node);
-        
+
         for (int neighbor : graph.get(node)) {
             inDegree[neighbor]--;
             if (inDegree[neighbor] == 0) {
@@ -86,7 +85,7 @@ List<Integer> topologicalSort(int n, List<List<Integer>> graph) {
             }
         }
     }
-    
+
     // If not all nodes processed → cycle exists
     return order.size() == n ? order : Collections.emptyList();
 }
@@ -113,12 +112,12 @@ Answer: Minimum Spanning Tree (MST)
 int kruskalMST(int n, int[][] edges) {
     // Step 1: Sort edges by weight (greedy: cheapest first)
     Arrays.sort(edges, (a, b) -> a[2] - b[2]);
-    
+
     // Step 2: Use Union-Find to add edges that don't create cycles
     UnionFind uf = new UnionFind(n);
     int totalCost = 0;
     int edgesUsed = 0;
-    
+
     for (int[] edge : edges) {
         int u = edge[0], v = edge[1], w = edge[2];
         if (uf.union(u, v)) {  // Only add if different components
@@ -127,12 +126,12 @@ int kruskalMST(int n, int[][] edges) {
             if (edgesUsed == n - 1) break;  // MST complete
         }
     }
-    
+
     return edgesUsed == n - 1 ? totalCost : -1;  // -1 if disconnected
 }
 ```
 
-### Time: O(E log E) for sorting + O(E * α(V)) for union-find = O(E log E)
+### Time: O(E log E) for sorting + O(E \* α(V)) for union-find = O(E log E)
 
 ---
 
@@ -207,7 +206,6 @@ Return true if you can finish all courses.
 Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
 Output: false (cycle: 0→1→0)
 ```
-
 
 **Pattern**: Topological sort — if cycle detected, return false.
 

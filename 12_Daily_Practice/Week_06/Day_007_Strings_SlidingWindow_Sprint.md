@@ -1,18 +1,21 @@
 # Day 07 - Strings and Sliding Window (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 340 - Longest Substring with At Most K Distinct Characters
 2. LeetCode Medium: 438 - Find All Anagrams in a String
 3. Codeforces: 271A - Beautiful Year
 4. Codeforces: 1535B - Array Reordering
 
 ## Problem Links
+
 - LC 340 (Premium): Locked on LeetCode (no public official statement page)
 - LC 438: https://leetcode.com/problems/find-all-anagrams-in-a-string/
 - CF 271A: https://codeforces.com/problemset/problem/271/A
 - CF 1535B: https://codeforces.com/problemset/problem/1535/B
 
 ## Why This Day Matters
+
 String-window problems train one core interview skill: maintain a dynamic invariant while scanning exactly once.
 
 ---
@@ -20,22 +23,27 @@ String-window problems train one core interview skill: maintain a dynamic invari
 ## Problem 1 - LC 340 (Premium)
 
 ### Problem Statement
+
 Given a string `s` and integer `k`, return the length of the longest substring containing at most `k` distinct characters.
 
 ### Constraints
+
 - `1 <= |s| <= 50000`
 - `0 <= k <= 50`
 
 ### Sample
+
 Input: `s = "eceba", k = 2`  
 Output: `3`
 
 ### Why This DS/Algo
+
 - We need contiguous substring and dynamic validity (`distinct <= k`).
 - HashMap gives current frequency by character in O(1) average.
 - Two pointers maintain smallest valid left boundary for each right boundary.
 
 ### Approach A - Brute Force (O(n^2), O(alphabet))
+
 Try every start and expand until invalid.
 
 ```java
@@ -55,6 +63,7 @@ static int kDistinctBrute(String s, int k) {
 ```
 
 ### Approach B - Better (Sliding Window + HashMap) (O(n), O(k))
+
 Invariant: window `[l..r]` is always valid after shrinking loop.
 
 ```java
@@ -80,6 +89,7 @@ static int kDistinctBetter(String s, int k) {
 ```
 
 ### Approach C - Optimal (Last-Index Ordered Map) (O(n log k), O(k))
+
 Use `TreeMap` by last position to evict oldest distinct char quickly.
 
 ```java
@@ -111,6 +121,7 @@ static int kDistinctOptimal(String s, int k) {
 ```
 
 ### Dry Run Shortcut
+
 `eceba, k=2`: longest valid windows are `ece` and `ce` etc, answer `3`.
 
 ---
@@ -118,20 +129,24 @@ static int kDistinctOptimal(String s, int k) {
 ## Problem 2 - LC 438: Find All Anagrams in a String
 
 ### Problem Statement
+
 Find all start indices of substrings in `s` that are anagrams of `p`.
 
 ### Constraints
+
 - `1 <= |s|, |p| <= 30000`
 
 ### Sample
+
 Input: `s = "cbaebabacd", p = "abc"`  
 Output: `[0, 6]`
 
 ### Why This DS/Algo
+
 - Window size is fixed (`|p|`), so this is fixed-size sliding window.
 - Frequency arrays for 26 lowercase letters give O(1) update and O(26) comparison.
 
-### Approach A - Brute Force (Sort each window) (O(n * m log m), O(m))
+### Approach A - Brute Force (Sort each window) (O(n \* m log m), O(m))
 
 ```java
 static List<Integer> anagramBrute(String s, String p) {
@@ -171,6 +186,7 @@ static List<Integer> anagramBetter(String s, String p) {
 ```
 
 ### Approach C - Optimal (Difference Counter) (O(n), O(1))
+
 Track number of character buckets currently mismatched.
 
 ```java
@@ -210,13 +226,15 @@ static List<Integer> anagramOptimal(String s, String p) {
 ## Problem 3 - CF 271A: Beautiful Year
 
 ### Problem Statement
+
 Given year `y`, find smallest year `> y` with all distinct digits.
 
 ### Why This DS/Algo
+
 - Small bounded search over years.
 - Set/boolean-array check for distinct digits.
 
-### Approach A - Brute Force (Iterative) (O(k * digits), O(1))
+### Approach A - Brute Force (Iterative) (O(k \* digits), O(1))
 
 ```java
 static boolean uniqueYear(int y) {
@@ -253,6 +271,7 @@ static boolean uniqueYearMask(int y) {
 ```
 
 ### Approach C - Optimal
+
 Brute with bitmask is already optimal for this constraint domain.
 
 ---
@@ -260,13 +279,16 @@ Brute with bitmask is already optimal for this constraint domain.
 ## Problem 4 - CF 1535B: Array Reordering
 
 ### Problem Statement
+
 Reorder array to maximize pairs `(i, j)` with `i < j` and `gcd(a[i], 2*a[j]) > 1`.
 
 ### Why This DS/Algo
+
 - Number theory observation: any even `a[i]` automatically works with any `a[j]` because `gcd(even, 2*x) >= 2`.
 - So greedy ordering evens first maximizes valid pairs.
 
 ### Approach A - Brute Force (All permutations) (O(n!), huge)
+
 Not feasible except very small `n`.
 
 ### Approach B - Better (Greedy + Pair Scan) (O(n^2), O(n))
@@ -299,8 +321,10 @@ static int gcd(int a, int b) {
 ```
 
 ### Approach C - Optimal
+
 For this problem, O(n^2) pair checking after greedy order is accepted and effectively optimal for given bounds.
 
 ### Pattern Takeaways
+
 - Sliding window = maintain local validity under expansion/shrinking.
 - Number theory + greedy ordering can turn tricky pair constraints into direct counting.

@@ -30,7 +30,7 @@ function isAdult(age: number): boolean {
   return age >= 18;
 }
 
-test('isAdult', () => {
+test("isAdult", () => {
   expect(isAdult(25)).toBe(true);
 });
 ```
@@ -40,7 +40,7 @@ Coverage: 100%. Mutation testing reveals: change `>= 18` to `> 18` — test stil
 A better test:
 
 ```typescript
-test('isAdult boundary', () => {
+test("isAdult boundary", () => {
   expect(isAdult(17)).toBe(false);
   expect(isAdult(18)).toBe(true);
 });
@@ -55,6 +55,7 @@ Mutation score = killed / (killed + survived) × 100%
 ```
 
 Industry targets:
+
 - 60% — minimal viable
 - 75% — solid suite
 - 85%+ — excellent
@@ -72,11 +73,11 @@ npm i -D @stryker-mutator/core @stryker-mutator/typescript-checker
 ```javascript
 // stryker.conf.js
 export default {
-  packageManager: 'npm',
-  reporters: ['html', 'progress', 'clear-text'],
-  testRunner: 'jest',  // or other; see below for Playwright
-  coverageAnalysis: 'perTest',
-  mutate: ['src/**/*.ts', '!src/**/*.spec.ts'],
+  packageManager: "npm",
+  reporters: ["html", "progress", "clear-text"],
+  testRunner: "jest", // or other; see below for Playwright
+  coverageAnalysis: "perTest",
+  mutate: ["src/**/*.ts", "!src/**/*.spec.ts"],
   thresholds: { high: 80, low: 60, break: 50 },
 };
 ```
@@ -91,15 +92,15 @@ npx stryker run
 
 Stryker applies various transforms:
 
-| Mutator | Example |
-|---|---|
-| Arithmetic | `+` → `-` |
-| Comparison | `>` → `>=`, `==` → `!=` |
-| Boolean | `&&` → `\|\|`, `true` → `false` |
-| Conditional | Always-true / always-false |
-| String literal | "X" → "" |
-| Array | `[]` → `["Stryker"]` |
-| Method calls removed | `.map()` removed |
+| Mutator              | Example                         |
+| -------------------- | ------------------------------- |
+| Arithmetic           | `+` → `-`                       |
+| Comparison           | `>` → `>=`, `==` → `!=`         |
+| Boolean              | `&&` → `\|\|`, `true` → `false` |
+| Conditional          | Always-true / always-false      |
+| String literal       | "X" → ""                        |
+| Array                | `[]` → `["Stryker"]`            |
+| Method calls removed | `.map()` removed                |
 
 Each mutation runs your full test suite once. For a large codebase: thousands of mutations × N seconds per test = very slow.
 
@@ -107,12 +108,12 @@ Each mutation runs your full test suite once. For a large codebase: thousands of
 
 ## 5. Statuses
 
-| Status | Meaning |
-|---|---|
-| **Killed** | At least one test failed after mutation. Good. |
-| **Survived** | No test failed. Your tests don't cover this branch. |
-| **No coverage** | No test ever ran this code. Worse than survived. |
-| **Timeout** | Test runner took too long; mutation likely caused infinite loop. |
+| Status            | Meaning                                                                          |
+| ----------------- | -------------------------------------------------------------------------------- |
+| **Killed**        | At least one test failed after mutation. Good.                                   |
+| **Survived**      | No test failed. Your tests don't cover this branch.                              |
+| **No coverage**   | No test ever ran this code. Worse than survived.                                 |
+| **Timeout**       | Test runner took too long; mutation likely caused infinite loop.                 |
 | **Compile error** | TypeScript catches the mutation; doesn't run. Counted as killed in some configs. |
 
 ---
@@ -136,7 +137,7 @@ Mutation testing is typically a NIGHTLY or WEEKLY job, not per-PR:
 ```yaml
 on:
   schedule:
-    - cron: '0 2 * * 0'   # weekly
+    - cron: "0 2 * * 0" # weekly
 
 jobs:
   mutation:
@@ -169,13 +170,13 @@ Note: mutation testing is best paired with UNIT tests (Jest), not E2E. E2E mutat
 
 ## 8. Anti-patterns
 
-| ❌ | ✅ |
-|---|---|
-| Run mutation testing on every PR | Nightly / weekly |
-| Apply to E2E tests | Apply to unit tests |
-| Aim for 100% mutation score | 75–85% is realistic |
+| ❌                                          | ✅                                          |
+| ------------------------------------------- | ------------------------------------------- |
+| Run mutation testing on every PR            | Nightly / weekly                            |
+| Apply to E2E tests                          | Apply to unit tests                         |
+| Aim for 100% mutation score                 | 75–85% is realistic                         |
 | Treat surviving mutations as "broken tests" | Investigate — some surviving are equivalent |
-| Mutate test code | Mutate ONLY production code |
+| Mutate test code                            | Mutate ONLY production code                 |
 
 ---
 

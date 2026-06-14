@@ -18,6 +18,17 @@
 8. [String Manipulation for DSA: StringBuilder Reasoning](#8-string-manipulation)
 9. [Bit Manipulation with Java Specifics](#9-bit-manipulation)
 10. [Common Java DSA Anti-Patterns & Fixes](#10-anti-patterns)
+
+---
+
+### Historical Evolution
+
+Java's data structure evolution reflects three decades of production engineering trade-offs. **Java 1.0 (1996)** introduced `Vector`, `Hashtable`, and `Stack` as synchronized collections, reflecting early concerns about thread safety over performance — these legacy classes persist in modern Java as deprecated alternatives. **Java 1.2 (1998)** introduced the Collections Framework (`ArrayList`, `HashMap`, `TreeMap`, `LinkedList`) designed by **Josh Bloch and Neal Gafter**, establishing the `List/Map/Set` hierarchy with consistent method signatures that became the standard for language-specific DSA teaching. **Java 5 (2004)** added generics (parameterized types) by **Gilad Bracha and Neal Gafter**, eliminating the need for manual casts and enabling compile-time type checking — this transformed how data structures are used in competitive programming. **Java 8 (2014)** introduced `ConcurrentHashMap` with fine-grained locking, `HashMap` treeification at 8 bucket entries (to prevent HashDoS attacks), and Lambda expressions — all of which changed how Java DSA code is written. **Java 11 (2018)** removed the deprecated `Thread.stop`, `Vector`, and `Stack` from the standard library, finalizing the shift to `ArrayDeque` and `Deque`. Modern practice (post-2010) reflects these layers: understanding why `ArrayList` is the default `List` implementation, why `ArrayDeque` replaces `Stack`/`LinkedList` for queues, and why `HashMap` treeification matters for security all require knowing Java's collection history.
+
+---
+
+## 1. Java Collections for DSA: Which Structure for Which Problem {#1-collections-for-dsa}
+
 11. [Quick-Fire Interview Table](#11-quick-fire-table)
 
 ---
@@ -33,16 +44,16 @@ Similarly, don't use ArrayList when you need O(1) lookup.
 
 Your DSA toolbox in Java:
 
-Need O(1) lookup by key?        → HashMap
+Need O(1) lookup by key? → HashMap
 Need O(1) lookup + insertion order? → LinkedHashMap
-Need sorted keys + range queries?   → TreeMap
-Need O(1) add/remove + uniqueness?  → HashSet
-Need min/max quickly?               → PriorityQueue
-Need LIFO (stack)?                  → ArrayDeque (NOT Stack!)
-Need FIFO (queue)?                  → ArrayDeque or LinkedList
-Need both ends (deque)?             → ArrayDeque
-Need fast random access + growth?   → ArrayList
-Need fast insert/delete at ends?    → LinkedList (rare!)
+Need sorted keys + range queries? → TreeMap
+Need O(1) add/remove + uniqueness? → HashSet
+Need min/max quickly? → PriorityQueue
+Need LIFO (stack)? → ArrayDeque (NOT Stack!)
+Need FIFO (queue)? → ArrayDeque or LinkedList
+Need both ends (deque)? → ArrayDeque
+Need fast random access + growth? → ArrayList
+Need fast insert/delete at ends? → LinkedList (rare!)
 
 90% of DSA problems need: HashMap + ArrayList + ArrayDeque
 
@@ -70,7 +81,6 @@ Need fast insert/delete at ends?    → LinkedList (rare!)
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 2. PriorityQueue Deep Reasoning: The Gotchas That Bite
@@ -90,18 +100,18 @@ pq.poll(); // Returns 1 (smallest!), not 5
 
 For MAX-HEAP:
 PriorityQueue<Integer> maxPQ = new PriorityQueue<>(
-Comparator.reverseOrder()   // or (a, b) -> b - a
+Comparator.reverseOrder() // or (a, b) -> b - a
 );
 ⚠️ NEVER use (a, b) -> b - a for large numbers (overflow!)
 ✅ Use Comparator.reverseOrder() or Integer::compare reversed
 
 GOTCHA #2: peek()/poll() = O(log n), but remove(Object) = O(n)
-pq.remove(3);  // Must scan ALL elements to find 3 → O(n)
+pq.remove(3); // Must scan ALL elements to find 3 → O(n)
 This kills performance in sliding window problems!
 FIX: Use lazy deletion (mark deleted, skip on poll)
 
 GOTCHA #3: Iteration order is NOT sorted!
-for (int x : pq) { ... }  // RANDOM heap order, NOT sorted!
+for (int x : pq) { ... } // RANDOM heap order, NOT sorted!
 To get sorted: while (!pq.isEmpty()) { pq.poll(); }
 
 ### Code — Top-K Pattern (The Right Way)
@@ -111,7 +121,7 @@ To get sorted: while (!pq.isEmpty()) { pq.poll(); }
 public int[] topKLargest(int[] nums, int k) {
     // MIN-heap: smallest of the K largest is at top
     PriorityQueue<Integer> minHeap = new PriorityQueue<>(k);
-    
+
     for (int num : nums) {
         if (minHeap.size() < k) {
             minHeap.offer(num);           // Fill up to K
@@ -120,7 +130,7 @@ public int[] topKLargest(int[] nums, int k) {
             minHeap.offer(num);           // Add new larger element
         }
     }
-    
+
     return minHeap.stream().mapToInt(i -> i).toArray();
     // Time: O(n log k) — much better than O(n log n) sort when k << n
 }
@@ -182,25 +192,24 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Code — Real DSA Problems Solved by TreeMap
 
 ```java
 // Problem: "My Calendar" — book intervals, detect overlaps
 class MyCalendar {
     TreeMap<Integer, Integer> calendar = new TreeMap<>(); // start → end
-    
+
     public boolean book(int start, int end) {
         // Find the event that starts just before our start
         Integer prevStart = calendar.floorKey(start);
-        if (prevStart != null && calendar.get(prevStart) > start) 
+        if (prevStart != null && calendar.get(prevStart) > start)
             return false;  // Previous event overlaps with us
-        
+
         // Find the event that starts just after our start
         Integer nextStart = calendar.ceilingKey(start);
-        if (nextStart != null && nextStart < end) 
+        if (nextStart != null && nextStart < end)
             return false;  // Next event starts before we end
-        
+
         calendar.put(start, end);
         return true;
     }
@@ -241,11 +250,12 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
 
 **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+
 <details><summary>Answer</summary>
 
 `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-</details>
 
+</details>
 
 ## 4. Comparator Mastery: Sorting Logic That Doesn't Break
 
@@ -274,21 +284,20 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Code — Comparator Patterns for DSA
 
 ```java
 // Sort intervals: by start ascending, then by end descending
 int[][] intervals = {{1,5}, {1,3}, {2,6}, {2,4}};
 
-Arrays.sort(intervals, (a, b) -> 
+Arrays.sort(intervals, (a, b) ->
     a[0] != b[0] ? Integer.compare(a[0], b[0])      // start ascending
                   : Integer.compare(b[1], a[1])      // end descending (b before a!)
 );
 // Result: {1,5}, {1,3}, {2,6}, {2,4}
 
 // Same with fluent API (cleaner):
-Arrays.sort(intervals, 
+Arrays.sort(intervals,
     Comparator.<int[], Integer>comparingInt(x -> x[0])    // Renamed: comparingInt doesn't work on arrays directly
                                                            // Actually use Comparator.comparingInt:
 );
@@ -331,13 +340,14 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 🔬 **Section Challenge — 4. Comparator Mastery: Sorting Logic That Doesn't Break**
 
 **Challenge 1 (Bug Hunt):** A comparator returns `a.priority - b.priority`, and sometimes sorting throws `Comparison method violates its general contract`. What should you inspect?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Inspect overflow, inconsistent tie handling, and non-transitive comparisons. A comparator must be antisymmetric and transitive: if `a < b` and `b < c`, then `a < c`.
 
 Use `Integer.compare(a.priority, b.priority)` or `Comparator.comparingInt(Task::priority).thenComparing(Task::createdAt)`. The deeper rule: sorting depends on a strict ordering contract, not just code that "usually returns negative or positive."
-</details>
 
+</details>
 
 ## 5. Arrays.sort vs Collections.sort: Internal Differences That Matter
 
@@ -368,7 +378,6 @@ Use `Integer.compare(a.priority, b.priority)` or `Comparator.comparingInt(Task::
 ║  → Quicksort is faster on primitives (better cache behavior)     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### When This Matters in DSA
 
@@ -474,17 +483,20 @@ public int subarraySum(int[] nums, int k) {
 🔬 **Section Challenge — 6. HashMap for DSA: Beyond Key-Value**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-</details>
 
+</details>
 
 ## 7. Stack, Queue, Deque: The Java Way
 
@@ -510,7 +522,6 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Stack/Queue Method Mapping
 
 ```
@@ -530,7 +541,6 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Monotonic Stack Pattern
 
 ```java
@@ -540,7 +550,7 @@ public int[] nextGreaterElement(int[] nums) {
     int[] result = new int[n];
     Arrays.fill(result, -1);
     Deque<Integer> stack = new ArrayDeque<>();  // Stores INDICES
-    
+
     for (int i = 0; i < n; i++) {
         // While current element is greater than top of stack
         while (!stack.isEmpty() && nums[i] > nums[stack.peek()]) {
@@ -561,7 +571,7 @@ public int[] maxSlidingWindow(int[] nums, int k) {
     int n = nums.length;
     int[] result = new int[n - k + 1];
     Deque<Integer> deque = new ArrayDeque<>();  // Stores indices, decreasing values
-    
+
     for (int i = 0; i < n; i++) {
         // Remove elements outside window
         while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
@@ -572,7 +582,7 @@ public int[] maxSlidingWindow(int[] nums, int k) {
             deque.pollLast();
         }
         deque.offerLast(i);
-        
+
         if (i >= k - 1) {
             result[i - k + 1] = nums[deque.peekFirst()];
         }
@@ -587,11 +597,12 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 🔬 **Section Challenge — 7. Stack, Queue, Deque: The Java Way**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 8. String Manipulation for DSA: StringBuilder Reasoning
 
@@ -621,7 +632,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 ║  500x difference!                                                ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### Essential String DSA Methods
 
@@ -661,11 +671,12 @@ sb.setCharAt(index, 'c');  // Modify in-place
 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
 
 **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+
 <details><summary>Answer</summary>
 
 Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-</details>
 
+</details>
 
 ## 9. Bit Manipulation with Java Specifics
 
@@ -783,18 +794,18 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 ## 11. Quick-Fire Table
 
-| Interview Question | One-Line Senior Answer |
-|---|---|
-| "Why ArrayDeque over Stack?" | java.util.Stack extends Vector (synchronized on every op = slow). ArrayDeque is unsynchronized, cache-friendly, and 3-5x faster. |
-| "PriorityQueue poll order?" | Min-heap by default (smallest first). For max-heap: `new PriorityQueue<>(Comparator.reverseOrder())`. |
-| "Why not (a,b) -> a-b?" | Integer overflow: MAX_VALUE - (-1) = MIN_VALUE (wrong sign). Use `Integer.compare(a, b)` always. |
-| "Arrays.sort vs Collections.sort?" | Arrays.sort(primitives) = Dual-Pivot Quicksort (unstable, in-place). Arrays.sort(Objects) = TimSort (stable, O(n) space). |
-| "HashMap O(1)?" | Average O(1), worst O(n) before Java 8, worst O(log n) in Java 8+ (tree bins when bucket > 8). Load factor 0.75 triggers resize. |
-| "TreeMap use case in DSA?" | When you need sorted order + range queries: floorKey/ceilingKey for interval problems, sweep line, calendar booking. |
-| "String += in loop?" | O(n²) — creates new String object each iteration. Use StringBuilder.append() for O(n) total. |
-| "merge() vs put()?" | merge(key, 1, Integer::sum) = increment counter in one call. put() requires getOrDefault + put = two hash lookups. |
-| "When LinkedList over ArrayList?" | Almost never. Only when you need Iterator.remove() in middle during traversal, or need null elements in a deque. |
-| "int[] vs Integer[] for DSA?" | int[] when possible — no boxing overhead, better cache locality. Integer[] only when you need null values or Object-based APIs. |
+| Interview Question                 | One-Line Senior Answer                                                                                                           |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| "Why ArrayDeque over Stack?"       | java.util.Stack extends Vector (synchronized on every op = slow). ArrayDeque is unsynchronized, cache-friendly, and 3-5x faster. |
+| "PriorityQueue poll order?"        | Min-heap by default (smallest first). For max-heap: `new PriorityQueue<>(Comparator.reverseOrder())`.                            |
+| "Why not (a,b) -> a-b?"            | Integer overflow: MAX_VALUE - (-1) = MIN_VALUE (wrong sign). Use `Integer.compare(a, b)` always.                                 |
+| "Arrays.sort vs Collections.sort?" | Arrays.sort(primitives) = Dual-Pivot Quicksort (unstable, in-place). Arrays.sort(Objects) = TimSort (stable, O(n) space).        |
+| "HashMap O(1)?"                    | Average O(1), worst O(n) before Java 8, worst O(log n) in Java 8+ (tree bins when bucket > 8). Load factor 0.75 triggers resize. |
+| "TreeMap use case in DSA?"         | When you need sorted order + range queries: floorKey/ceilingKey for interval problems, sweep line, calendar booking.             |
+| "String += in loop?"               | O(n²) — creates new String object each iteration. Use StringBuilder.append() for O(n) total.                                     |
+| "merge() vs put()?"                | merge(key, 1, Integer::sum) = increment counter in one call. put() requires getOrDefault + put = two hash lookups.               |
+| "When LinkedList over ArrayList?"  | Almost never. Only when you need Iterator.remove() in middle during traversal, or need null elements in a deque.                 |
+| "int[] vs Integer[] for DSA?"      | int[] when possible — no boxing overhead, better cache locality. Integer[] only when you need null values or Object-based APIs.  |
 
 ---
 

@@ -1,5 +1,8 @@
 import { test, expect } from '../../fixtures/orangehrm.fixture';
-import { generateEmployeeData, generateEmployeeUpdateData } from '../../utilities/data/employee.factory';
+import {
+  generateEmployeeData,
+  generateEmployeeUpdateData,
+} from '../../utilities/data/employee.factory';
 
 /**
  * Employee CRUD lifecycle — three tests wrapped in `describe.serial` because
@@ -34,7 +37,10 @@ test.describe.fixme('Employee CRUD Lifecycle', () => {
     await dashboardPage.expectLoaded();
   });
 
-  test('@regression add employee and verify presence', async ({ employeeListPage, addEmployeePage }) => {
+  test('@regression add employee and verify presence', async ({
+    employeeListPage,
+    addEmployeePage,
+  }) => {
     const employee = generateEmployeeData();
 
     await employeeListPage.navigate();
@@ -50,7 +56,10 @@ test.describe.fixme('Employee CRUD Lifecycle', () => {
     createdEmployeeId = employee.employeeId;
   });
 
-  test('@regression edit existing employee personal details', async ({ employeeListPage, employeePersonalDetailsPage }) => {
+  test('@regression edit existing employee personal details', async ({
+    employeeListPage,
+    employeePersonalDetailsPage,
+  }) => {
     test.skip(!createdEmployeeId, 'Add-employee test did not complete');
 
     await employeeListPage.navigate();
@@ -63,7 +72,9 @@ test.describe.fixme('Employee CRUD Lifecycle', () => {
     await employeePersonalDetailsPage.updatePersonalDetails(update);
     await employeePersonalDetailsPage.save();
 
-    await expect(employeePersonalDetailsPage.savePersonalDetailsButton).toBeVisible({ timeout: 10000 });
+    await expect(employeePersonalDetailsPage.savePersonalDetailsButton).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('@regression delete employee after creation', async ({ employeeListPage }) => {

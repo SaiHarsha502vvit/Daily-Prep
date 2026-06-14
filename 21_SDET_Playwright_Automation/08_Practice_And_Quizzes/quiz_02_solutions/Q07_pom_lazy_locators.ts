@@ -13,7 +13,7 @@
  *           When does the DOM get queried?
  */
 
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page, expect } from "@playwright/test";
 
 // ============================================================
 // EXPLANATION — Locators are lazy descriptions, not DOM references
@@ -36,7 +36,7 @@ class CustomerDetailsPage {
     // ↓ These lines create Locator objects (pure JS, zero browser round-trips)
     this.customerName = page.locator('[data-automation-key="fullname"]');
     this.customerEmail = page.locator('[data-automation-key="emailaddress1"]');
-    this.editButton = page.getByRole('menuitem', { name: 'Edit' });
+    this.editButton = page.getByRole("menuitem", { name: "Edit" });
   }
 
   // ============================================================
@@ -75,8 +75,8 @@ class CustomerDetailsPage {
 // Demo of what does / does NOT query the DOM:
 async function demonstrateLaziness(page: Page) {
   // --- Zero DOM queries (just object creation) ---
-  const locator = page.locator('#myElement'); // no query
-  const filtered = locator.filter({ hasText: 'Active' }); // no query
+  const locator = page.locator("#myElement"); // no query
+  const filtered = locator.filter({ hasText: "Active" }); // no query
   const first = filtered.first(); // no query
 
   // --- DOM queries happen here ---

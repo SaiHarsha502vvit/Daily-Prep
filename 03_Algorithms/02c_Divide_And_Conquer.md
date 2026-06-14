@@ -6,24 +6,27 @@
 
 ## Algorithm Analysis Fundamentals + D&C + Binary Search + Master Theorem
 
-*Extracted from 06a for discoverability — this is a core technique, not an appendix.*
+_Extracted from 06a for discoverability — this is a core technique, not an appendix._
 
 ---
 
 🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master Theorem**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## PART 0: THE MENTAL MODEL — "The Delegation Strategy"
 
@@ -40,18 +43,18 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ### The 5W+H Framework
 
-* **WHAT**: A problem-solving paradigm that breaks a complex problem into smaller, independent subproblems of the same type, solves them recursively, and combines their solutions.
-* **WHY**: Reduces time complexity dramatically. Problems that take $O(n^2)$ using brute force become $O(n \log n)$ because we halve the search space or work exponentially.
-* **WHEN**: Use when a problem can be broken down into identical, *independent* sub-problems (unlike Dynamic Programming, where subproblems *overlap*).
-* **WHERE**: Built-in sorting algorithms (`Arrays.sort()` uses a form of D&C), distributed databases (MapReduce), fast Fourier transforms (signal processing), and computational geometry.
-* **WHO**: John von Neumann (Merge Sort, 1945), Anatolii Karatsuba (Fast Multiplication, 1960), Tony Hoare (Quick Sort, 1959).
-* **HOW**: 1. **Divide** the problem. 2. **Conquer** the subproblems recursively. 3. **Combine** the results.
+- **WHAT**: A problem-solving paradigm that breaks a complex problem into smaller, independent subproblems of the same type, solves them recursively, and combines their solutions.
+- **WHY**: Reduces time complexity dramatically. Problems that take $O(n^2)$ using brute force become $O(n \log n)$ because we halve the search space or work exponentially.
+- **WHEN**: Use when a problem can be broken down into identical, _independent_ sub-problems (unlike Dynamic Programming, where subproblems _overlap_).
+- **WHERE**: Built-in sorting algorithms (`Arrays.sort()` uses a form of D&C), distributed databases (MapReduce), fast Fourier transforms (signal processing), and computational geometry.
+- **WHO**: John von Neumann (Merge Sort, 1945), Anatolii Karatsuba (Fast Multiplication, 1960), Tony Hoare (Quick Sort, 1959).
+- **HOW**: 1. **Divide** the problem. 2. **Conquer** the subproblems recursively. 3. **Combine** the results.
 
 ### Where It's Used in Real World
 
-* **Distributed Systems**: Hadoop MapReduce framework inherently runs on a divide-and-conquer processing model.
-* **Database Query Engines**: Parquet and ORC file formats use binary-search-like structures to jump past chunks of irrelevant data.
-* **Computer Graphics**: Quadtrees and octrees divide spatial coordinate planes into quarters recursively to render visible objects.
+- **Distributed Systems**: Hadoop MapReduce framework inherently runs on a divide-and-conquer processing model.
+- **Database Query Engines**: Parquet and ORC file formats use binary-search-like structures to jump past chunks of irrelevant data.
+- **Computer Graphics**: Quadtrees and octrees divide spatial coordinate planes into quarters recursively to render visible objects.
 
 ---
 
@@ -75,7 +78,7 @@ PROPERTIES:
 
 ## Asymptotic Notations
 
-Big-O (O):     UPPER BOUND (Worst Case)
+Big-O (O): UPPER BOUND (Worst Case)
 f(n) = O(g(n)) means f(n) ≤ c·g(n)
 "At most this much"
 Big-Omega (Ω): LOWER BOUND (Best Case)
@@ -505,17 +508,20 @@ public int findLast(int[] arr, int target) {
 🔬 **Section Challenge — Binary Search — Complete Understanding**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## D&C Classic Algorithms
 
@@ -704,9 +710,10 @@ Strassen:       T(n) = 7T(n/2) + O(n^2)
 ---
 
 📖 **Related Files:**
-* [02a_Sorting_Fundamentals](02a_Sorting_Fundamentals.md) — Merge Sort and Quick Sort details
-* [03a_Recursion_Internals](03a_Recursion_Internals.md) — How recursion works at CPU level
-* [../14_Mental_Models/11_Greedy_vs_DP_Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — D&C vs DP vs Greedy
+
+- [02a_Sorting_Fundamentals](02a_Sorting_Fundamentals.md) — Merge Sort and Quick Sort details
+- [03a_Recursion_Internals](03a_Recursion_Internals.md) — How recursion works at CPU level
+- [../14_Mental_Models/11_Greedy_vs_DP_Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — D&C vs DP vs Greedy
 
 ---
 

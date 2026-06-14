@@ -2,22 +2,64 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Binary search was first published by John Mauchly (1946) for numerical analysis. Donald Knuth formalized it in "The Art of Computer Programming" Vol 3 (1973). Scott Meyers popularized the STL bound/lower_bound trick (2000).
+
+**Predecessor context:** Linear search O(n) was the default for sorted data. Finding elements required scanning from the start, regardless of how sorted the data was.
+
+**Evolution narrative:** Mauchly recognized that sorted data enables logarithmic search by repeatedly halving the search space. Knuth's TAOCP Vol 3 provided the definitive treatment with careful handling of overflow and boundary conditions.
+
+**Modern practice:** Binary search is built into every standard library (C++ STL, Java Collections, Python bisect). The pattern extends to monotonic predicate search, finding peaks, and searching rotated arrays.
+
+- **Mauchly 1946**: First published description of binary search for numerical analysis
+- **Knuth Vol 3 — 1973**: Definitive treatment with overflow-safe midpoint calculation
+- **Meyers 2000**: "Effective STL" popularized lower_bound/upper_bound idioms
+- **Modern practice**: Built into all standard libraries; core to database index lookups
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Mid overflow with `(left+right)/2` for large `left, right`** — Using `(left + right) / 2` causes integer overflow in Java/Python when left and right are near Integer.MAX_VALUE. This produces a negative index causing ArrayIndexOutOfBoundsException. Detection: test with `left=2_000_000_000, right=2_100_000_000`; always use `left + (right - left) / 2`.
+
+- **BS on answer space breaks when predicate has multiple flips** — Binary search assumes the predicate is monotonic (false...false, true...true). If the predicate flips multiple times (e.g., "can we achieve X with Y?"), binary search produces incorrect results. Detection: verify monotonicity before binary searching the answer space.
+
+- **Off-by-one in inclusive vs exclusive bounds** — Using `left <= right` (inclusive) with `left = mid + 1` vs `left < right` (exclusive) with `left = mid + 1` produces different termination conditions. Mixing templates causes infinite loops or missed elements. Detection: test with single-element array and target present/absent.
+
+- **Rotated array BS assumes exactly one rotation pivot** — Binary search on rotated arrays assumes one pivot point. With multiple complete rotations (effectively sorted), the algorithm may still work but wastes time. With unsorted input, it produces wrong results. Detection: verify input is a single-rotation of a sorted array before using this variant.
+
+**Production Selection Heuristic:** Use binary search when the search space has a clear monotonic property and you can verify the predicate flips exactly once. If the predicate's monotonicity is uncertain, test with boundary cases first.
+
+---
+
 ## 🗺️ Pattern Recognition Header — Binary Search
 
 **How do I know this requires Binary Search?**
 
-
-| Signal in problem | BS Type | Search Space |
-|---|---|---|
-| `sorted array + find value` | **Classic BS** | `[0, n-1]` on data |
-| `first/last occurrence`, `count` | **Lower/Upper Bound** | `[0, n]` on data |
-| `rotated sorted array` | **BS on rotated data** | Determine sorted half |
-| `"minimum possible maximum"` or `"minimum X to achieve Y"` | **BS on Answer** | `[minAns, maxAns]` on answer space |
-| `find peak`, `mountain array` | **BS on slope direction** | Move toward ascending |
-| `Kth smallest in matrix / sorted list` | **BS on value range** | `[min, max]` in value space |
-
+| Signal in problem                                          | BS Type                   | Search Space                       |
+| ---------------------------------------------------------- | ------------------------- | ---------------------------------- |
+| `sorted array + find value`                                | **Classic BS**            | `[0, n-1]` on data                 |
+| `first/last occurrence`, `count`                           | **Lower/Upper Bound**     | `[0, n]` on data                   |
+| `rotated sorted array`                                     | **BS on rotated data**    | Determine sorted half              |
+| `"minimum possible maximum"` or `"minimum X to achieve Y"` | **BS on Answer**          | `[minAns, maxAns]` on answer space |
+| `find peak`, `mountain array`                              | **BS on slope direction** | Move toward ascending              |
+| `Kth smallest in matrix / sorted list`                     | **BS on value range**     | `[min, max]` in value space        |
 
 **The 3 BS Templates — which to use:**
+
 ```
 T1: left <= right, left = mid+1, right = mid-1   → Exact match
 T2: left <  right, right = mid                    → First pos >= target (Lower Bound)
@@ -29,14 +71,14 @@ T3: left <  right, left  = mid+1                  → First pos >  target (Upper
 
 ### ⚠️ Constraint Lens — Binary Search Needs Monotonicity
 
-| Constraint / Signal | Use |
-|---------------------|-----|
-| sorted data, find value | classic binary search |
-| first/last valid position | lower/upper bound |
-| `minimum X such that possible(X)` | binary search on answer |
-| predicate flips once (`false...true`) | binary search works |
-| predicate can flip multiple times | binary search is invalid |
-| answer range up to `1e9` / `1e18` | binary search over value range |
+| Constraint / Signal                   | Use                            |
+| ------------------------------------- | ------------------------------ |
+| sorted data, find value               | classic binary search          |
+| first/last valid position             | lower/upper bound              |
+| `minimum X such that possible(X)`     | binary search on answer        |
+| predicate flips once (`false...true`) | binary search works            |
+| predicate can flip multiple times     | binary search is invalid       |
+| answer range up to `1e9` / `1e18`     | binary search over value range |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -45,22 +87,23 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Binary Search**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 # 🔍 Binary Search Patterns Complete Guide
 
@@ -86,15 +129,12 @@ Master Every Variation of the Most Powerful Search Technique
 
 ### The Core Idea
 
-
 BINARY SEARCH IN ONE SENTENCE
 
 "If the search space is MONOTONIC (sorted/ordered),
 eliminate HALF of it each step."
 
-Time: O(log n)  —  From 1 billion → 30 comparisons
-
-
+Time: O(log n) — From 1 billion → 30 comparisons
 
 ### Visual: Why Binary Search is Fast
 
@@ -115,7 +155,6 @@ Binary Search on 1,000,000 elements:
 │ Only ~20 comparisons! (log₂(1,000,000) ≈ 20)       │
 └────────────────────────────────────────────────────┘
 ```
-
 
 ### Prerequisites for Binary Search
 
@@ -141,25 +180,25 @@ Binary Search on 1,000,000 elements:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Binary Search Fundamentals <a name="fundamentals"></a>**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## The 3 Templates (MEMORIZE!) <a name="templates"></a>
 
@@ -253,7 +292,6 @@ Uses:
 - Insert position for 2.5: lowerBound(2.5) → 4
 ```
 
-
 ### Template Cheat Sheet
 
 ```
@@ -280,7 +318,6 @@ Uses:
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -328,7 +365,6 @@ Range: [3, 6-1] = [3, 5]
 Count: 6 - 3 = 3 occurrences
 ```
 
-
 ### Find Insert Position (LeetCode 35)
 
 ```java
@@ -374,7 +410,6 @@ left     mid     right
 Left half [4,5,6,7] is sorted (nums[left] <= nums[mid])
 Right half [0,1,2] is NOT sorted in normal order
 ```
-
 
 ### Search in Rotated Sorted Array (LeetCode 33)
 
@@ -504,9 +539,6 @@ public int findMinWithDup(int[] nums) {
 
 ---
 
-
-
-
 ## Peak Finding Patterns <a name="peak-finding"></a>
 
 ### Find Peak Element (LeetCode 162)
@@ -559,7 +591,6 @@ Multiple peaks exist: index 1 (value 2) and index 5 (value 6)
 Binary search finds ONE of them.
 ```
 
-
 ### Peak Index in Mountain Array (LeetCode 852)
 
 ```java
@@ -586,9 +617,6 @@ public int peakIndexInMountainArray(int[] arr) {
 
 ---
 
-
-
-
 ## Binary Search on Answer <a name="binary-answer"></a>
 
 ### The Concept
@@ -613,7 +641,6 @@ public int peakIndexInMountainArray(int[] arr) {
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Template: Binary Search on Answer
 
@@ -816,22 +843,23 @@ private boolean canPlace(int[] positions, int minDist, int m) {
 
 ---
 
-
-
 🔬 **Section Challenge — Binary Search on Answer <a name="binary-answer"></a>**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## 2D Binary Search <a name="2d-search"></a>
 
@@ -934,22 +962,23 @@ private int countLessOrEqual(int[][] matrix, int target) {
 
 ---
 
-
-
 🔬 **Section Challenge — 2D Binary Search <a name="2d-search"></a>**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## Advanced Patterns <a name="advanced"></a>
 
@@ -1064,8 +1093,6 @@ public double squareRootFixed(double x) {
 
 ---
 
-
-
 ## Common Mistakes <a name="mistakes"></a>
 
 ### Mistake 1: Infinite Loop
@@ -1176,7 +1203,6 @@ if (nums[left] <= nums[mid])  // ✓
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### First Bad Version (LeetCode 278)
 
 ```java
@@ -1266,7 +1292,6 @@ public char nextGreatestLetter(char[] letters, char target) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Binary Search Checklist
 
 ```
@@ -1288,7 +1313,6 @@ After coding:
 □ Test with duplicates (if applicable)
 ```
 
-
 ### Complexity Summary
 
 ```
@@ -1306,7 +1330,6 @@ After coding:
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -1339,23 +1362,18 @@ After coding:
 └───────────────────────────────────────────────────────────────┘
 ```
 
-
 **Pro Tip:** When stuck, ask yourself: "At each step, can I eliminate half of the remaining possibilities?" If yes, binary search applies!
 
-
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
-
-

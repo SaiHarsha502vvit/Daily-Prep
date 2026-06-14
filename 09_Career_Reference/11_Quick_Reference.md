@@ -48,13 +48,9 @@ STEP 5: EDGE CASES (At the very end)
 └───────────────────────────────────────────────────────────┘
 ```
 
-
 **See:** [07_DSA_Guide_Foundations.md](07_DSA_Guide_Foundations.md) for details
 
 ---
-
-
-
 
 ## 🎨 VISUAL PATTERN RECOGNITION GUIDE
 
@@ -87,10 +83,7 @@ STEP 5: EDGE CASES (At the very end)
 └─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION
 ```
 
-
 ---
-
-
 
 ## ⚡ COPY-PASTE TEMPLATES (Memorize These!)
 
@@ -116,7 +109,6 @@ User Input: n = ?
        Continue with main logic...
 
 ```
-
 
 ```java
 Scanner sc = new Scanner(System.in);
@@ -208,7 +200,6 @@ slow fast
   └───────── moves only when condition met
 ```
 
-
 ```java
 // OPPOSITE DIRECTION
 int left = 0, right = arr.length - 1;
@@ -252,7 +243,6 @@ If arr[mid] < target:  lo = mid + 1  (search right)
 If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
-
 ```java
 int lo = 0, hi = arr.length - 1;
 while (lo <= hi) {
@@ -295,7 +285,6 @@ Step 5: ']' → pop        Step 6: ')' → pop
 
 Final: Stack empty → BALANCED ✓
 ```
-
 
 ```java
 public static boolean isBalanced(String s) {
@@ -360,7 +349,6 @@ public static boolean isBalanced(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 | Mistake                        | Wrong Code                      | Correct Code                      |
 | ------------------------------ | ------------------------------- | --------------------------------- |
 | **1. Sliding Window Thinking** | `for (j=i; j<i+k)` (index math) | `if (j-i+1==k)` (count elements!) |
@@ -371,9 +359,6 @@ public static boolean isBalanced(String s) {
 | **6. No Validation**           | `int n = sc.nextInt();`         | `if (n <= 0) print("Invalid");`   |
 
 ---
-
-
-
 
 ## 📋 EXAM DAY CHECKLIST (Read This First!)
 
@@ -519,8 +504,6 @@ public static int[] maxSlidingWindow(int[] arr, int k) {
 
 ---
 
-
-
 ## 🎯 PATTERN RECOGNITION KEYWORDS
 
 | Keyword in Problem            | Pattern to Use          | Complexity   |
@@ -538,8 +521,6 @@ public static int[] maxSlidingWindow(int[] arr, int k) {
 | **"spiral", "rotate matrix"** | **Matrix Traversal**    | **O(M×N)**   |
 
 ---
-
-
 
 ## 🔑 JAVA COLLECTIONS QUICK REFERENCE
 
@@ -615,9 +596,6 @@ String result = sb.toString();   // Convert - O(N)
 
 ---
 
-
-
-
 ## 🎯 MINIMUM TO PASS (60% Score)
 
 ### Must Solve Completely:
@@ -634,9 +612,6 @@ String result = sb.toString();   // Convert - O(N)
 - Use brute force if needed (correct > optimal)
 
 ---
-
-
-
 
 ## 📚 MUST KNOW BEFORE EXAM
 
@@ -1015,11 +990,7 @@ if (n < 0) {
 
 ---
 
-
-
-
 # 🚀 YOU'RE READY! GO ACE THAT EXAM! 🚀
-
 
 ---
 

@@ -17,20 +17,20 @@ A practical career preparation course covering technical interviewing, resume an
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Career strategy: target company selection, role research, application funnel, referral strategy |
-| 2 | Technical resume: ATS optimization, quantifying impact, project descriptions, GitHub portfolio |
-| 3 | LinkedIn and professional brand: headline, summary, skills, endorsements, and recruiter outreach |
-| 4 | Coding interview preparation: problem-solving framework, time management, communication during interviews |
-| 5 | Advanced algorithms in interviews: graph algorithms, dynamic programming, string algorithms |
-| 6 | System design: scale estimation, API design, database selection, caching, CDN, message queues |
-| 7 | Object-oriented design interviews: design from features, SOLID, class diagrams, trade-off discussion |
-| 8 | Behavioral interviews: STAR method, "tell me about a time" questions, culture fit alignment |
-| 9 | Leadership principles and difficult scenarios: conflict resolution, failure, influence without authority |
-| 10 | Negotiation: total compensation (base, bonus, equity), offer comparison, negotiation email templates |
-| 11 | Mock interviews: peer practice and self-recorded sessions with structured self-review |
-| 12 | Capstone: complete a full interview loop (phone screen → coding → system design → behavioral) |
+| Week | Topic                                                                                                     |
+| ---- | --------------------------------------------------------------------------------------------------------- |
+| 1    | Career strategy: target company selection, role research, application funnel, referral strategy           |
+| 2    | Technical resume: ATS optimization, quantifying impact, project descriptions, GitHub portfolio            |
+| 3    | LinkedIn and professional brand: headline, summary, skills, endorsements, and recruiter outreach          |
+| 4    | Coding interview preparation: problem-solving framework, time management, communication during interviews |
+| 5    | Advanced algorithms in interviews: graph algorithms, dynamic programming, string algorithms               |
+| 6    | System design: scale estimation, API design, database selection, caching, CDN, message queues             |
+| 7    | Object-oriented design interviews: design from features, SOLID, class diagrams, trade-off discussion      |
+| 8    | Behavioral interviews: STAR method, "tell me about a time" questions, culture fit alignment               |
+| 9    | Leadership principles and difficult scenarios: conflict resolution, failure, influence without authority  |
+| 10   | Negotiation: total compensation (base, bonus, equity), offer comparison, negotiation email templates      |
+| 11   | Mock interviews: peer practice and self-recorded sessions with structured self-review                     |
+| 12   | Capstone: complete a full interview loop (phone screen → coding → system design → behavioral)             |
 
 ## Linked Existing Content
 

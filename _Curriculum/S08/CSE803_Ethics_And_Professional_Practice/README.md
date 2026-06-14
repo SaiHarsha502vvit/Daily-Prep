@@ -17,17 +17,17 @@ A structured exploration of ethical issues in computing and software engineering
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Professional ethics frameworks: ACM Code of Ethics, IEEE Software Engineering Code |
-| 2 | Software reliability and responsibility: safety-critical systems, liability, and the role of testing |
-| 3 | Data privacy: GDPR, CCPA, data minimization, consent mechanisms, right to erasure |
-| 4 | AI ethics: bias in training data, algorithmic discrimination, fairness metrics, explainability |
-| 5 | Intellectual property: copyright, software patents, open-source licenses, attribution obligations |
-| 6 | Surveillance and privacy: tracking, behavioral data, ad tech, and user consent |
-| 7 | Case studies: Therac-25, Boeing 737 MAX, COMPAS recidivism, Cambridge Analytica |
-| 8 | Ethical decision-making: utilitarian, deontological, and virtue ethics applied to technology decisions |
-| 9 | Capstone: ethical risk assessment for a fictional product launch with structured mitigation plan |
+| Week | Topic                                                                                                  |
+| ---- | ------------------------------------------------------------------------------------------------------ |
+| 1    | Professional ethics frameworks: ACM Code of Ethics, IEEE Software Engineering Code                     |
+| 2    | Software reliability and responsibility: safety-critical systems, liability, and the role of testing   |
+| 3    | Data privacy: GDPR, CCPA, data minimization, consent mechanisms, right to erasure                      |
+| 4    | AI ethics: bias in training data, algorithmic discrimination, fairness metrics, explainability         |
+| 5    | Intellectual property: copyright, software patents, open-source licenses, attribution obligations      |
+| 6    | Surveillance and privacy: tracking, behavioral data, ad tech, and user consent                         |
+| 7    | Case studies: Therac-25, Boeing 737 MAX, COMPAS recidivism, Cambridge Analytica                        |
+| 8    | Ethical decision-making: utilitarian, deontological, and virtue ethics applied to technology decisions |
+| 9    | Capstone: ethical risk assessment for a fictional product launch with structured mitigation plan       |
 
 ## Linked Existing Content
 

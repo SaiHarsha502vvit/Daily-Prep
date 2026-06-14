@@ -4,24 +4,22 @@
 
 ## 5W1H — Why This Chapter?
 
-
 WHAT: The DOM (Document Object Model) is the browser's in-memory
 representation of your HTML. Browser APIs are the tools
 the browser gives JS to interact with the page and more.
 
-WHY:  React abstracts the DOM — but you MUST understand what's
+WHY: React abstracts the DOM — but you MUST understand what's
 underneath. Debugging, performance, third-party libraries,
 vanilla JS projects, and interview questions require it.
 
-WHO:  Every frontend developer. Even React devs need DOM
+WHO: Every frontend developer. Even React devs need DOM
 knowledge for refs, portals, and performance tuning.
 
 WHEN: After understanding JS fundamentals + async.
 
 WHERE: Only in browsers (not Node.js). Node has no DOM.
 
-HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.
-
+HOW: HTML → Parser → DOM Tree. JS accesses via `document` API.
 
 ---
 
@@ -50,7 +48,6 @@ KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
 tree in memory. When JS modifies it, the page updates visually.
 ```
 
-
 ### Node Types
 
 ```javascript
@@ -74,8 +71,8 @@ const header = document.getElementById("main-header");
 // Returns: HTMLElement or null
 
 // BY CSS SELECTOR (most versatile — use this!)
-const el = document.querySelector(".card");          // FIRST match
-const allCards = document.querySelectorAll(".card");  // ALL matches (NodeList)
+const el = document.querySelector(".card"); // FIRST match
+const allCards = document.querySelectorAll(".card"); // ALL matches (NodeList)
 
 // SELECTORS ARE CSS:
 document.querySelector("div.container > p:first-child");
@@ -84,9 +81,9 @@ document.querySelector("input[type='email']");
 document.querySelectorAll("nav a.active");
 
 // OLD METHODS (still work, less common):
-document.getElementsByClassName("card");    // HTMLCollection (live!)
-document.getElementsByTagName("p");         // HTMLCollection (live!)
-document.getElementsByName("email");        // NodeList
+document.getElementsByClassName("card"); // HTMLCollection (live!)
+document.getElementsByTagName("p"); // HTMLCollection (live!)
+document.getElementsByName("email"); // NodeList
 
 // LIVE vs STATIC:
 // getElementsBy* returns LIVE collections — auto-update when DOM changes
@@ -95,15 +92,12 @@ document.getElementsByName("email");        // NodeList
 
 // NodeList → Array (to use array methods):
 const cards = document.querySelectorAll(".card");
-const cardsArray = [...cards];         // Spread
+const cardsArray = [...cards]; // Spread
 // or: Array.from(cards)
-cardsArray.filter(card => card.classList.contains("active"));
+cardsArray.filter((card) => card.classList.contains("active"));
 ```
 
 ---
-
-
-
 
 ## 3. Traversing the DOM
 
@@ -129,37 +123,33 @@ cardsArray.filter(card => card.classList.contains("active"));
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ```javascript
 const list = document.getElementById("list");
 
 // Parent
-list.parentElement;                    // <body> (or whatever wraps it)
-list.closest(".container");            // Walk UP to find matching ancestor
+list.parentElement; // <body> (or whatever wraps it)
+list.closest(".container"); // Walk UP to find matching ancestor
 
 // Children
-list.children;                         // HTMLCollection of direct children
-list.children.length;                  // 3
-list.firstElementChild;                // <li>First</li>
-list.lastElementChild;                 // <li>Third</li>
+list.children; // HTMLCollection of direct children
+list.children.length; // 3
+list.firstElementChild; // <li>First</li>
+list.lastElementChild; // <li>Third</li>
 
 // Siblings
 const second = list.children[1];
-second.nextElementSibling;             // <li>Third</li>
-second.previousElementSibling;        // <li>First</li>
+second.nextElementSibling; // <li>Third</li>
+second.previousElementSibling; // <li>First</li>
 
 // closest() — walk UP the tree (very useful!)
 // In event handlers:
 button.addEventListener("click", (e) => {
-    const card = e.target.closest(".card"); // Find parent card
-    card.classList.toggle("selected");
+  const card = e.target.closest(".card"); // Find parent card
+  card.classList.toggle("selected");
 });
 ```
 
 ---
-
-
-
 
 ## 4. Creating & Modifying Elements
 
@@ -168,39 +158,39 @@ button.addEventListener("click", (e) => {
 const div = document.createElement("div");
 div.className = "card";
 div.id = "card-1";
-div.textContent = "Hello World";             // Text only (safe from XSS)
-div.innerHTML = "<strong>Hello</strong>";     // Parses HTML (XSS risk!)
+div.textContent = "Hello World"; // Text only (safe from XSS)
+div.innerHTML = "<strong>Hello</strong>"; // Parses HTML (XSS risk!)
 
 // SET ATTRIBUTES
 div.setAttribute("data-id", "42");
-div.dataset.id;                              // "42" (dataset maps data-* attrs)
-div.style.backgroundColor = "blue";          // Inline style
+div.dataset.id; // "42" (dataset maps data-* attrs)
+div.style.backgroundColor = "blue"; // Inline style
 div.classList.add("active", "visible");
 div.classList.remove("hidden");
 div.classList.toggle("dark-mode");
-div.classList.contains("active");            // true
+div.classList.contains("active"); // true
 
 // APPEND TO DOM
-document.body.appendChild(div);             // Add as last child
-document.body.prepend(div);                 // Add as first child
+document.body.appendChild(div); // Add as last child
+document.body.prepend(div); // Add as first child
 document.body.insertBefore(div, reference); // Before specific element
 
 // MODERN (cleaner):
-parent.append(div, "text", anotherDiv);    // Multiple items, text ok
+parent.append(div, "text", anotherDiv); // Multiple items, text ok
 parent.prepend(div);
-sibling.before(div);                        // Insert before sibling
-sibling.after(div);                         // Insert after sibling
+sibling.before(div); // Insert before sibling
+sibling.after(div); // Insert after sibling
 
 // REMOVE
-div.remove();                               // Modern
-parent.removeChild(div);                    // Old way
+div.remove(); // Modern
+parent.removeChild(div); // Old way
 
 // CLONE
-const clone = div.cloneNode(true);          // true = deep clone (with children)
-const shallow = div.cloneNode(false);       // Just the element, no children
+const clone = div.cloneNode(true); // true = deep clone (with children)
+const shallow = div.cloneNode(false); // Just the element, no children
 
 // REPLACE
-oldElement.replaceWith(newElement);          // Modern
+oldElement.replaceWith(newElement); // Modern
 parent.replaceChild(newElement, oldElement); // Old way
 ```
 
@@ -209,17 +199,17 @@ parent.replaceChild(newElement, oldElement); // Old way
 ```javascript
 // âŒ BAD: Each appendChild triggers a reflow/repaint
 for (let i = 0; i < 1000; i++) {
-    const li = document.createElement("li");
-    li.textContent = `Item ${i}`;
-    list.appendChild(li); // 1000 DOM updates!
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  list.appendChild(li); // 1000 DOM updates!
 }
 
 // ✅ GOOD: Build in a fragment, then append ONCE
 const fragment = document.createDocumentFragment();
 for (let i = 0; i < 1000; i++) {
-    const li = document.createElement("li");
-    li.textContent = `Item ${i}`;
-    fragment.appendChild(li); // No DOM update yet
+  const li = document.createElement("li");
+  li.textContent = `Item ${i}`;
+  fragment.appendChild(li); // No DOM update yet
 }
 list.appendChild(fragment); // ONE DOM update!
 
@@ -230,9 +220,6 @@ list.appendChild(fragment); // ONE DOM update!
 ```
 
 ---
-
-
-
 
 ## 5. Events — How User Interaction Works
 
@@ -262,7 +249,6 @@ list.appendChild(fragment); // ONE DOM update!
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ```
 EVENT PROPAGATION VISUAL:
 
@@ -282,21 +268,20 @@ EVENT PROPAGATION VISUAL:
 └───────────────────────────────────────────────────────┘
 ```
 
-
 ```javascript
 // ADDING EVENT LISTENERS:
 const button = document.querySelector("#myButton");
 
-button.addEventListener("click", function(event) {
-    console.log(event.target);       // The element that was clicked
-    console.log(event.currentTarget); // The element with the listener
-    console.log(event.type);         // "click"
+button.addEventListener("click", function (event) {
+  console.log(event.target); // The element that was clicked
+  console.log(event.currentTarget); // The element with the listener
+  console.log(event.type); // "click"
 
-    // Stop bubbling:
-    event.stopPropagation();
+  // Stop bubbling:
+  event.stopPropagation();
 
-    // Prevent default browser behavior:
-    event.preventDefault(); // e.g., stop form submission, link navigation
+  // Prevent default browser behavior:
+  event.preventDefault(); // e.g., stop form submission, link navigation
 });
 
 // REMOVE listener (need same function reference):
@@ -305,7 +290,7 @@ button.addEventListener("click", handler);
 button.removeEventListener("click", handler);
 
 // CAPTURE phase listener (rarely needed):
-parent.addEventListener("click", handler, true);  // true = capture
+parent.addEventListener("click", handler, true); // true = capture
 parent.addEventListener("click", handler, { capture: true }); // Same
 
 // ONCE (auto-removes after first fire):
@@ -316,19 +301,19 @@ button.addEventListener("click", handler, { once: true });
 
 ```javascript
 // âŒ BAD: One listener per button (100 buttons = 100 listeners)
-document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", handleDelete);
+document.querySelectorAll(".delete-btn").forEach((btn) => {
+  btn.addEventListener("click", handleDelete);
 });
 
 // ✅ GOOD: One listener on parent, delegate via event.target
 document.querySelector("#todo-list").addEventListener("click", (e) => {
-    if (e.target.matches(".delete-btn")) {
-        const todoItem = e.target.closest(".todo-item");
-        todoItem.remove();
-    }
-    if (e.target.matches(".edit-btn")) {
-        // Handle edit
-    }
+  if (e.target.matches(".delete-btn")) {
+    const todoItem = e.target.closest(".todo-item");
+    todoItem.remove();
+  }
+  if (e.target.matches(".edit-btn")) {
+    // Handle edit
+  }
 });
 
 // WHY delegation?
@@ -362,11 +347,7 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ---
-
-
-
 
 ## 6. Forms & Validation
 
@@ -374,34 +355,34 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 const form = document.querySelector("#signup-form");
 
 form.addEventListener("submit", (e) => {
-    e.preventDefault(); // Prevent page reload!
+  e.preventDefault(); // Prevent page reload!
 
-    // Get form data (modern way):
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    // { email: "user@test.com", password: "123", name: "Harsha" }
+  // Get form data (modern way):
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+  // { email: "user@test.com", password: "123", name: "Harsha" }
 
-    // Validate:
-    if (!data.email.includes("@")) {
-        showError("Invalid email");
-        return;
-    }
+  // Validate:
+  if (!data.email.includes("@")) {
+    showError("Invalid email");
+    return;
+  }
 
-    // Send to API:
-    fetch("/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
+  // Send to API:
+  fetch("/api/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 });
 
 // INDIVIDUAL INPUT ACCESS:
-const email = form.elements.email;         // By name attribute
+const email = form.elements.email; // By name attribute
 const email2 = form.querySelector("[name='email']");
-email.value;                                // Current value
-email.validity.valid;                       // Built-in validation
-email.validity.typeMismatch;               // Email format check
-email.setCustomValidity("Custom error");   // Custom validation message
+email.value; // Current value
+email.validity.valid; // Built-in validation
+email.validity.typeMismatch; // Email format check
+email.setCustomValidity("Custom error"); // Custom validation message
 
 // HTML5 VALIDATION ATTRIBUTES:
 // <input required>                 — must fill
@@ -435,13 +416,12 @@ USE CASES:
 • IndexedDB: offline apps, large data, file caching
 ```
 
-
 ```javascript
 // localStorage (persists forever until cleared):
 localStorage.setItem("theme", "dark");
-localStorage.getItem("theme");           // "dark"
+localStorage.getItem("theme"); // "dark"
 localStorage.removeItem("theme");
-localStorage.clear();                    // Remove ALL
+localStorage.clear(); // Remove ALL
 
 // Store objects (must serialize):
 const user = { name: "Harsha", prefs: { theme: "dark" } };
@@ -453,7 +433,7 @@ sessionStorage.setItem("wizard-step", "3");
 
 // Listen for storage changes (cross-tab communication!):
 window.addEventListener("storage", (e) => {
-    console.log(`Key ${e.key} changed from ${e.oldValue} to ${e.newValue}`);
+  console.log(`Key ${e.key} changed from ${e.oldValue} to ${e.newValue}`);
 });
 // Fires when ANOTHER tab changes localStorage. Not the current tab.
 ```
@@ -470,25 +450,25 @@ const data = await response.json();
 // IMPORTANT: fetch only rejects on NETWORK errors.
 // 404 and 500 are NOT rejections — check response.ok!
 if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  throw new Error(`HTTP error! status: ${response.status}`);
 }
 
 // POST with JSON body:
 const newUser = await fetch("https://api.example.com/users", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ name: "Harsha", email: "h@test.com" })
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  },
+  body: JSON.stringify({ name: "Harsha", email: "h@test.com" }),
 });
 
 // PUT, DELETE:
 await fetch(`/api/users/${id}`, { method: "DELETE" });
 await fetch(`/api/users/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updatedData)
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(updatedData),
 });
 
 // UPLOAD FILE:
@@ -498,17 +478,15 @@ await fetch("/api/upload", { method: "POST", body: formData });
 // Don't set Content-Type — browser sets it with boundary automatically!
 
 // Response methods:
-response.json();   // Parse as JSON
-response.text();   // Plain text
-response.blob();   // Binary (images, files)
-response.headers;  // Headers object
-response.status;   // 200, 404, etc.
-response.ok;       // true if status 200-299
+response.json(); // Parse as JSON
+response.text(); // Plain text
+response.blob(); // Binary (images, files)
+response.headers; // Headers object
+response.status; // 200, 404, etc.
+response.ok; // true if status 200-299
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 8. Fetch API — Making HTTP Requests**
 
@@ -520,33 +498,37 @@ response.ok;       // true if status 200-299
 
 </details>
 
-
 ## 9. Other Essential Browser APIs
 
 ```javascript
 // INTERSECTION OBSERVER (lazy loading, infinite scroll)
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.src = entry.target.dataset.src; // Load image
-            observer.unobserve(entry.target);            // Stop watching
-        }
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.src = entry.target.dataset.src; // Load image
+        observer.unobserve(entry.target); // Stop watching
+      }
     });
-}, { threshold: 0.1 }); // Trigger when 10% visible
+  },
+  { threshold: 0.1 },
+); // Trigger when 10% visible
 
-document.querySelectorAll("img[data-src]").forEach(img => observer.observe(img));
+document
+  .querySelectorAll("img[data-src]")
+  .forEach((img) => observer.observe(img));
 
 // MUTATION OBSERVER (watch DOM changes)
 const observer2 = new MutationObserver((mutations) => {
-    mutations.forEach(m => console.log("DOM changed:", m));
+  mutations.forEach((m) => console.log("DOM changed:", m));
 });
 observer2.observe(document.body, { childList: true, subtree: true });
 
 // RESIZE OBSERVER (responsive without media queries)
-const resizeObs = new ResizeObserver(entries => {
-    entries.forEach(e => {
-        console.log("New size:", e.contentRect.width, e.contentRect.height);
-    });
+const resizeObs = new ResizeObserver((entries) => {
+  entries.forEach((e) => {
+    console.log("New size:", e.contentRect.width, e.contentRect.height);
+  });
 });
 resizeObs.observe(document.querySelector("#myElement"));
 
@@ -556,7 +538,7 @@ history.replaceState(state, title, url);
 history.back();
 history.forward();
 window.addEventListener("popstate", (e) => {
-    console.log("Navigation:", e.state);
+  console.log("Navigation:", e.state);
 });
 
 // CLIPBOARD API
@@ -565,8 +547,8 @@ const text = await navigator.clipboard.readText();
 
 // GEOLOCATION
 navigator.geolocation.getCurrentPosition(
-    pos => console.log(pos.coords.latitude, pos.coords.longitude),
-    err => console.error(err)
+  (pos) => console.log(pos.coords.latitude, pos.coords.longitude),
+  (err) => console.error(err),
 );
 ```
 
@@ -604,7 +586,6 @@ navigator.geolocation.getCurrentPosition(
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ---
 
 ## Interview Quick-Fire
@@ -638,7 +619,6 @@ Q: How does React's Virtual DOM relate to the real DOM?
   it diffs old vs new virtual trees, calculates minimum changes,
   then applies only those to the real DOM (reconciliation).
 ```
-
 
 ---
 

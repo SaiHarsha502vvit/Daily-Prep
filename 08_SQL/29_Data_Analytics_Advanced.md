@@ -3,6 +3,7 @@
 # Chapter 29 — Data Analytics: Advanced
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Senior data analysts, data scientists, analytics engineers, growth leads
 - **WHAT** is it? → Advanced statistical analytics: A/B testing, predictive modeling, anomaly detection, ML-prep
 - **WHEN** to use? → Feature launches, pricing experiments, fraud detection, forecasting, ML pipelines
@@ -15,6 +16,7 @@
 ## Part 1 — A/B Testing with SQL + Python
 
 ### 1.1 What Is A/B Testing?
+
 ```
 A/B Test = Show version A to half your users, version B to the other half.
            Measure which performs better WITH STATISTICAL CONFIDENCE.
@@ -36,10 +38,11 @@ A/B Test = Show version A to half your users, version B to the other half.
 ```
 
 ### 1.2 A/B Test Data Query
+
 ```sql
 -- Extract A/B test results
 WITH test_data AS (
-    SELECT 
+    SELECT
         user_id,
         test_group,  -- 'control' or 'variant'
         CASE WHEN purchase_amount > 0 THEN 1 ELSE 0 END AS converted,
@@ -48,7 +51,7 @@ WITH test_data AS (
     WHERE test_name = 'homepage_redesign_v2'
     AND test_start_date BETWEEN '2026-02-01' AND '2026-02-28'
 )
-SELECT 
+SELECT
     test_group,
     COUNT(*) AS total_users,
     SUM(converted) AS conversions,
@@ -60,6 +63,7 @@ GROUP BY test_group;
 ```
 
 ### 1.3 Statistical Significance in Python
+
 ```python
 import pandas as pd
 from scipy import stats
@@ -70,7 +74,7 @@ import numpy as np
 
 # Load A/B test data
 df = pd.read_sql("""
-    SELECT user_id, test_group, 
+    SELECT user_id, test_group,
            CASE WHEN purchase_amount > 0 THEN 1 ELSE 0 END AS converted,
            purchase_amount
     FROM ab_test_results
@@ -93,7 +97,7 @@ print(f"Significant at 95%? {'YES ✅' if p_value < 0.05 else 'NO ❌'}")
 # === Test 2: Revenue per User (continuous) ===
 # Mann-Whitney U test (non-parametric, better for skewed revenue data)
 stat, p_value_rev = stats.mannwhitneyu(
-    control['purchase_amount'], 
+    control['purchase_amount'],
     variant['purchase_amount'],
     alternative='two-sided'
 )
@@ -115,6 +119,7 @@ print(f"\nRequired sample size per group: {int(np.ceil(sample_size))}")
 ```
 
 ### 1.4 A/B Test Visualization
+
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
@@ -153,17 +158,18 @@ plt.show()
 ## Part 2 — Anomaly Detection
 
 ### 2.1 SQL-Based Anomaly Detection
+
 ```sql
 -- Z-score method: flag values > 3 standard deviations from mean
 WITH stats AS (
-    SELECT 
+    SELECT
         AVG(daily_revenue) AS mean_rev,
         STDDEV(daily_revenue) AS std_rev
     FROM daily_metrics
     WHERE date >= CURRENT_DATE - INTERVAL '90 days'
 ),
 scored AS (
-    SELECT 
+    SELECT
         dm.date,
         dm.daily_revenue,
         s.mean_rev,
@@ -173,11 +179,11 @@ scored AS (
     CROSS JOIN stats s
     WHERE dm.date >= CURRENT_DATE - INTERVAL '90 days'
 )
-SELECT 
+SELECT
     date,
     daily_revenue,
     ROUND(z_score::numeric, 2) AS z_score,
-    CASE 
+    CASE
         WHEN ABS(z_score) > 3 THEN '🔴 CRITICAL'
         WHEN ABS(z_score) > 2 THEN '🟡 WARNING'
         ELSE '🟢 NORMAL'
@@ -187,16 +193,17 @@ ORDER BY date DESC;
 ```
 
 ### 2.2 IQR Method (Robust to Outliers)
+
 ```sql
 WITH percentiles AS (
-    SELECT 
+    SELECT
         PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY amount) AS q1,
         PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY amount) AS q3
     FROM orders
     WHERE order_date >= CURRENT_DATE - INTERVAL '30 days'
 ),
 bounds AS (
-    SELECT 
+    SELECT
         q1,
         q3,
         q3 - q1 AS iqr,
@@ -204,12 +211,12 @@ bounds AS (
         q3 + 1.5 * (q3 - q1) AS upper_bound
     FROM percentiles
 )
-SELECT 
+SELECT
     o.order_id,
     o.amount,
     b.lower_bound,
     b.upper_bound,
-    CASE 
+    CASE
         WHEN o.amount < b.lower_bound THEN 'Unusually LOW'
         WHEN o.amount > b.upper_bound THEN 'Unusually HIGH'
         ELSE 'Normal'
@@ -222,13 +229,14 @@ ORDER BY o.amount DESC;
 ```
 
 ### 2.3 Python: Isolation Forest for Complex Anomalies
+
 ```python
 from sklearn.ensemble import IsolationForest
 import pandas as pd
 
 # Multi-feature anomaly detection
 df = pd.read_sql("""
-    SELECT 
+    SELECT
         user_id, order_count, total_spent, avg_order_value,
         days_since_signup, login_count
     FROM user_metrics
@@ -253,33 +261,34 @@ print(anomalies[['user_id'] + features + ['anomaly_score']].head(10))
 ## Part 3 — Predictive Analytics
 
 ### 3.1 Churn Prediction: SQL Feature Engineering
+
 ```sql
 -- Build features for churn prediction model
 WITH user_features AS (
-    SELECT 
+    SELECT
         u.user_id,
         -- Recency features
         CURRENT_DATE - MAX(o.order_date)::date AS days_since_last_order,
         CURRENT_DATE - MIN(o.order_date)::date AS account_age_days,
-        
+
         -- Frequency features
         COUNT(DISTINCT o.order_id) AS total_orders,
         COUNT(DISTINCT DATE_TRUNC('month', o.order_date)) AS active_months,
-        
+
         -- Monetary features
         SUM(o.amount) AS total_spent,
         AVG(o.amount) AS avg_order_value,
         MAX(o.amount) AS max_order_value,
         STDDEV(o.amount) AS order_value_stddev,
-        
+
         -- Behavioral features
         COUNT(DISTINCT o.product_category) AS categories_purchased,
         AVG(o.items_count) AS avg_items_per_order,
-        
+
         -- Trend features
         SUM(CASE WHEN o.order_date >= CURRENT_DATE - 30 THEN 1 ELSE 0 END) AS orders_last_30d,
         SUM(CASE WHEN o.order_date >= CURRENT_DATE - 90 THEN 1 ELSE 0 END) AS orders_last_90d,
-        
+
         -- Target: churned if no order in 60 days
         CASE WHEN CURRENT_DATE - MAX(o.order_date)::date > 60 THEN 1 ELSE 0 END AS churned
     FROM users u
@@ -291,6 +300,7 @@ SELECT * FROM user_features;
 ```
 
 ### 3.2 Python: Logistic Regression for Churn
+
 ```python
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -303,7 +313,7 @@ df = pd.read_sql("SELECT * FROM user_features", conn)
 
 # Prepare features and target
 feature_cols = ['days_since_last_order', 'account_age_days', 'total_orders',
-                'active_months', 'total_spent', 'avg_order_value', 
+                'active_months', 'total_spent', 'avg_order_value',
                 'categories_purchased', 'orders_last_30d', 'orders_last_90d']
 X = df[feature_cols].fillna(0)
 y = df['churned']
@@ -338,10 +348,11 @@ print(importance)
 ## Part 4 — Advanced Window Functions for Analytics
 
 ### 4.1 Sessionization — Group Events into Sessions
+
 ```sql
 -- A session ends after 30 minutes of inactivity
 WITH events_with_gap AS (
-    SELECT 
+    SELECT
         user_id,
         event_timestamp,
         event_type,
@@ -354,7 +365,7 @@ WITH events_with_gap AS (
 session_markers AS (
     SELECT *,
         -- New session if gap > 30 min or first event
-        CASE 
+        CASE
             WHEN time_since_prev IS NULL THEN 1
             WHEN time_since_prev > INTERVAL '30 minutes' THEN 1
             ELSE 0
@@ -368,7 +379,7 @@ sessions AS (
         ) AS session_id
     FROM session_markers
 )
-SELECT 
+SELECT
     user_id,
     session_id,
     MIN(event_timestamp) AS session_start,
@@ -382,8 +393,9 @@ ORDER BY user_id, session_start;
 ```
 
 ### 4.2 Running Percentile Rank
+
 ```sql
-SELECT 
+SELECT
     salesperson_id,
     sale_date,
     amount,
@@ -401,6 +413,7 @@ FROM sales;
 ```
 
 ### 4.3 Gap Analysis — Finding Missing Dates
+
 ```sql
 -- Find days with no orders (should have data every day)
 WITH date_series AS (
@@ -413,10 +426,10 @@ WITH date_series AS (
 actual_dates AS (
     SELECT DISTINCT order_date::date AS date FROM orders
 )
-SELECT 
+SELECT
     ds.date AS missing_date,
     EXTRACT(DOW FROM ds.date) AS day_of_week,
-    CASE EXTRACT(DOW FROM ds.date) 
+    CASE EXTRACT(DOW FROM ds.date)
         WHEN 0 THEN 'Sunday'
         WHEN 6 THEN 'Saturday'
         ELSE 'Weekday'
@@ -429,26 +442,24 @@ ORDER BY ds.date;
 
 ---
 
-
-
 🔬 **Section Challenge — Part 4 — Advanced Window Functions for Analytics**
 
-
-
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## Part 5 — Attribution Modeling
 
 ### 5.1 First-Touch vs Last-Touch vs Multi-Touch
+
 ```sql
 -- Multi-touch attribution
 WITH touchpoints AS (
-    SELECT 
+    SELECT
         user_id,
         channel,    -- 'google_ads', 'email', 'organic', 'social', 'direct'
         touch_date,
@@ -462,7 +473,7 @@ conversions AS (
     FROM purchases
     WHERE purchase_date BETWEEN '2026-02-01' AND '2026-02-28'
 )
-SELECT 
+SELECT
     t.channel,
     -- First-touch attribution
     SUM(CASE WHEN t.touch_order = 1 THEN c.conversion_value ELSE 0 END) AS first_touch_revenue,
@@ -471,7 +482,7 @@ SELECT
     -- Linear attribution (equal credit to all touches)
     SUM(c.conversion_value / t.total_touches) AS linear_revenue,
     -- Time-decay (recent touches get more credit)
-    SUM(c.conversion_value * t.touch_order / (t.total_touches * (t.total_touches + 1) / 2.0)) 
+    SUM(c.conversion_value * t.touch_order / (t.total_touches * (t.total_touches + 1) / 2.0))
         AS time_decay_revenue,
     -- Count of touches
     COUNT(*) AS total_touches
@@ -483,17 +494,15 @@ ORDER BY linear_revenue DESC;
 
 ---
 
-
-
-
 ## Part 6 — SQL for Machine Learning Prep
 
 ### 6.1 Feature Store Pattern
+
 ```sql
 -- Create a feature store table for ML
 CREATE TABLE ml_user_features AS
 WITH base AS (
-    SELECT 
+    SELECT
         u.user_id,
         u.signup_date,
         u.country,
@@ -501,7 +510,7 @@ WITH base AS (
     FROM users u
 ),
 order_features AS (
-    SELECT 
+    SELECT
         user_id,
         COUNT(*) AS order_count,
         SUM(amount) AS total_spent,
@@ -516,7 +525,7 @@ order_features AS (
     GROUP BY user_id
 ),
 engagement AS (
-    SELECT 
+    SELECT
         user_id,
         COUNT(*) AS total_events,
         COUNT(DISTINCT DATE(event_time)) AS active_days,
@@ -526,7 +535,7 @@ engagement AS (
     FROM user_events
     GROUP BY user_id
 )
-SELECT 
+SELECT
     b.*,
     COALESCE(of.order_count, 0) AS order_count,
     COALESCE(of.total_spent, 0) AS total_spent,
@@ -544,6 +553,7 @@ LEFT JOIN engagement e ON b.user_id = e.user_id;
 ```
 
 ### 6.2 Pipeline: SQL → Python → Model → SQL
+
 ```python
 import pandas as pd
 from sqlalchemy import create_engine
@@ -569,7 +579,7 @@ model.fit(X_train, y_train)
 
 # 3. SCORE all users
 df['churn_probability'] = model.predict_proba(X.fillna(0))[:, 1]
-df['risk_tier'] = pd.cut(df['churn_probability'], 
+df['risk_tier'] = pd.cut(df['churn_probability'],
     bins=[0, 0.3, 0.6, 0.8, 1.0],
     labels=['Low', 'Medium', 'High', 'Critical'])
 
@@ -596,4 +606,30 @@ This chapter covers Levels 2-4. Keep climbing! 🏔️
 
 ---
 
-**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](28_Data_Analytics_Intermediate.md) | [Next >](30_Recursive_Queries_Hierarchical.md)
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Statistical testing (Student)** (1908): William Gosset developed the t-distribution and t-test under the "Student" pseudonym for Guinness Brewery quality control
+- **Mann-Whitney U test** (1947): Non-parametric alternative to t-test, enabling comparison without assuming normal distribution
+- **Chi-squared test (Pearson)** (1900): Karl Pearson's goodness-of-fit test became foundational for categorical data analysis
+- **A/B testing** (1920s): Statistical experiments in pharmaceutical trials evolved into modern controlled experiments for product optimization
+
+**Evolution narrative:**
+Statistical testing methods were developed to make decisions under uncertainty before large-scale computing existed. The t-test (1908) allowed quality engineers to assess differences with small samples, the Mann-Whitney test (1947) provided robustness against non-normal distributions, and chi-squared (1900) enabled categorical analysis. A/B testing migrated from medical trials to web product development in the 2000s, requiring SQL-based implementation for large-scale online experiments. Modern analytics combines these classical statistical frameworks with SQL's ability to compute metrics across millions of observations.
+
+**Modern practice anchor:**
+Today's advanced SQL analytics implements statistical testing (t-tests, chi-squared, confidence intervals) directly in SQL using window functions, enabling data teams to conduct rigorous experiments without exporting data to statistical software.
+### Production Reality
+
+**Failure modes:**
+1. **A/B test false positive from underpowered sample**: Experiment launched with only 500 users per variant — p-value 0.04 declared winner, but 3 days later metric reverts as sample grows and p-value rises to 0.35
+2. **Anomaly detection false positive flood**: Static threshold (3 sigma) on metrics with diurnal pattern triggers 200 alerts during peak hours when normal variation exceeds threshold — on-call team ignores real incidents
+3. **Model drift in production**: Churn prediction model trained on 2023 data continues scoring 2024 users — accuracy drops from 87% to 61% over 6 months, no monitoring catches degradation
+
+**Debug workflow:**
+1. Run power analysis before launch: `SELECT power_t_test(alpha => 0.05, power => 0.8, effect_size => 0.05, std_dev => NULL)` to determine required sample size
+2. Validate statistical assumptions in SQL: check for normality with `SELECT skewness(val), kurtosis(val) FROM metric_series` before applying parametric tests
+3. Implement champion-challenger deployment with automatic rollback: query `experiment_results` table daily for p-value crossing significance threshold
+
+**Modern practice anchor:**
+Production analytics requires statistical rigor at experimental design phase — not post-hoc correction of flawed experiments.

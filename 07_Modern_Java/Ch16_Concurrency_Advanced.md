@@ -435,13 +435,13 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 │  ┌─────────────────────┬──────────────────┬──────────────────────┐              │
 │  │ Feature             │ synchronized     │ ReentrantLock         │             │
 │  ├─────────────────────┼──────────────────┼──────────────────────┤              │
-│  │ Auto-release        │ ✅ Yes           │ ❌ Manual (finally)  │                │
-│  │ tryLock             │ ❌ No            │ ✅ Yes               │                │
-│  │ Fairness            │ ❌ No            │ ✅ new RL(true)      │                │
-│  │ Multiple conditions │ ❌ 1 wait set    │ ✅ newCondition()    │                │
-│  │ Interruptible       │ ❌ No            │ ✅ lockInterruptibly │                │
+│  │ Auto-release        │ ✅ Yes           │ ❌ Manual (finally)  │             │
+│  │ tryLock             │ ❌ No            │ ✅ Yes               │             │
+│  │ Fairness            │ ❌ No            │ ✅ new RL(true)      │             │
+│  │ Multiple conditions │ ❌ 1 wait set    │ ✅ newCondition()    │             │
+│  │ Interruptible       │ ❌ No            │ ✅ lockInterruptibly │             │
 │  │ Performance         │ Similar          │ Similar              │              │
-│  │ Simplicity          │ ✅ Simpler       │ ❌ More verbose      │                │
+│  │ Simplicity          │ ✅ Simpler       │ ❌ More verbose      │             │
 │  └─────────────────────┴──────────────────┴──────────────────────┘              │
 │                                                                                 │
 │  RULE: Use synchronized by default.                                             │

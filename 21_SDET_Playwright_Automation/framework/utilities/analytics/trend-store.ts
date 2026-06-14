@@ -49,7 +49,10 @@ export class TrendStore {
   }
 
   private persist(): void {
-    fs.writeFileSync(this.dbPath, JSON.stringify({ runs: this.runs, nextId: this.nextId }, null, 2));
+    fs.writeFileSync(
+      this.dbPath,
+      JSON.stringify({ runs: this.runs, nextId: this.nextId }, null, 2),
+    );
   }
 
   insertResults(results: TestResult[], runTimestamp: string): void {
@@ -71,9 +74,7 @@ export class TrendStore {
     cutoff.setDate(cutoff.getDate() - sinceDays);
     const cutoffStr = cutoff.toISOString();
 
-    const runs = this.runs.filter(
-      (r) => r.test_name === testName && r.run_timestamp >= cutoffStr
-    );
+    const runs = this.runs.filter((r) => r.test_name === testName && r.run_timestamp >= cutoffStr);
 
     if (runs.length === 0) return 0;
 

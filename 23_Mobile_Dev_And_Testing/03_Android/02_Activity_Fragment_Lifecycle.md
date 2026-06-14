@@ -26,6 +26,7 @@
 ## 1. Why the Lifecycle Exists
 
 Android is a **resource-constrained, multi-tasking mobile OS**. At any moment:
+
 - A phone call can arrive and take over the screen
 - The user can press Home and switch to another app
 - The OS can kill your app to free RAM for a foreground app
@@ -35,6 +36,7 @@ Android is a **resource-constrained, multi-tasking mobile OS**. At any moment:
 The lifecycle is Android's solution: the OS notifies your app about each of these events through **callback methods**. Your job is to react appropriately — save state when told to, release resources when told to, restore state when returning.
 
 **The contract**: If you don't implement the lifecycle correctly, you get:
+
 - Memory leaks (holding references to Activities that should be gone)
 - Data loss (user loses form data on rotation)
 - Crashes (calling a destroyed view)
@@ -349,6 +351,7 @@ override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 <details><summary>Answer</summary>
 
 **What happened**:
+
 1. User is filling out form → `onResume` state
 2. Phone call arrives → Activity goes to `onPause` (call UI covers it)
 3. If the call is long AND other apps run → OS may kill the app process to free RAM
@@ -358,6 +361,7 @@ override fun onRestoreInstanceState(savedInstanceState: Bundle) {
 **The responsible callback**: `onSaveInstanceState()` was not implemented (or not saving the form fields).
 
 **The fix**:
+
 ```kotlin
 override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
@@ -386,6 +390,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ```
 
 **Modern alternative using ViewModel**:
+
 ```kotlin
 // ViewModel survives configuration changes AND process death (with SavedStateHandle)
 class RegistrationViewModel(
@@ -402,6 +407,7 @@ class RegistrationViewModel(
 ```
 
 **QA test for this fix**:
+
 1. Open registration form
 2. Fill in all fields
 3. Enable "Don't keep activities" in Developer Options (simulates low-memory kill)
@@ -494,6 +500,7 @@ WHAT ACTUALLY HAPPENED:
 ### The "Don't Keep Activities" Developer Option
 
 You can simulate process death without low memory:
+
 ```
 Settings → Developer Options → "Don't keep activities" → ON
 
@@ -694,6 +701,7 @@ Here is what happens step by step:
 **Common bugs**:
 
 **Bug A**: Observation in `onCreate` with `this`:
+
 ```kotlin
 override fun onCreate(...) {
     // 'this' never dies between navigation events
@@ -707,6 +715,7 @@ override fun onCreate(...) {
 ```
 
 **Bug B**: Observation in `onViewCreated` with `viewLifecycleOwner` but the ViewModel DOESN'T refresh on return:
+
 ```kotlin
 // ViewModel only loads data once
 class CitationListViewModel : ViewModel() {
@@ -731,6 +740,7 @@ class CitationListViewModel : ViewModel() {
 ```
 
 **The complete correct solution**:
+
 ```kotlin
 // ViewModel: use Room Flow (automatic re-emission on DB change)
 val citations: StateFlow<List<Citation>> = citationRepository.observeAll()
@@ -880,6 +890,7 @@ QA TEST (requires Developer Options):
 ### What Is a Configuration Change?
 
 A configuration change is when the device configuration changes and Android needs to update resources:
+
 - **Screen rotation** (portrait ↔ landscape) — new layouts may be needed
 - **Language/locale change** — new string resources needed
 - **Font size change** (accessibility setting) — layouts must reflow
@@ -1030,12 +1041,15 @@ class CitationListViewModel(
 ## 12. Interview Questions on Lifecycle
 
 **Q: "What is the difference between onPause and onStop?"**
+
 > "`onPause` is called when the Activity loses focus — it may still be partially visible (for example, a transparent dialog is on top of it). `onStop` is called when the Activity is completely hidden — the user has switched to another app or navigated away entirely. The practical difference: `onPause` must be fast because the system is waiting for it to finish before showing the next Activity. `onStop` can do heavier cleanup — saving data to the database, canceling subscriptions — because there's no UI blocked waiting for it. I release the camera and pause animations in `onPause`, and save data and cancel network subscriptions in `onStop`."
 
 **Q: "What happens to a ViewModel during device rotation?"**
+
 > "The ViewModel is NOT destroyed during rotation. This is its primary purpose. When the device rotates, the Activity is destroyed and recreated, but the Android framework keeps the ViewModel instance alive in a ViewModelStore until the Activity is truly finished. The new Activity instance receives the SAME ViewModel object via `ViewModelProvider`. This means any data loaded by the ViewModel — API responses, lists, computed results — survives rotation without re-fetching. Only if the user presses Back or calls `finish()` does the ViewModel get destroyed via `onCleared()`."
 
 **Q: "What is 'process death' and how do you handle it?"**
+
 > "Process death is when the Android OS kills your app's process to reclaim memory — usually because a foreground app needs RAM. It can happen whenever your app is in the background. From the user's perspective, they left the app, did other things, came back, and expect to see where they left off. But the process is gone — all in-memory state is lost. Android reconstructs the Activity's back stack from saved data. The handles: first, `onSaveInstanceState` — save lightweight transient state (form draft, scroll position) to a Bundle, restore it in `onCreate`. Second, Room database and DataStore — any data that was persisted to disk survives. Third, `SavedStateHandle` in ViewModel — for ViewModel state that must survive. The test is simple: enable 'Don't keep activities' in Developer Options and navigate through the app — any screen that loses state has a process death bug."
 
 ---

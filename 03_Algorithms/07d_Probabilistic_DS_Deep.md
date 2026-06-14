@@ -4,6 +4,12 @@
 
 # 🎲 Probabilistic & Distributed Data Structures: Deep Dive
 
+### Historical Evolution
+
+Probabilistic data structures emerged as a pragmatic solution when exact answers require infeasible amounts of memory. **Bloom Filters** were invented by **Burton Howard Bloom in 1970** at General Electric's Computer Science Center, published in the Communications of the ACM as "Space/Time Trade-offs in Hash Coding with Allowable Errors" — Bloom's original paper showed that for membership queries, trading a small false positive rate for massive space savings was often the correct engineering tradeoff. The original application was spell-checking in editors; modern applications include web cache proxies (Akamai, Chrome Safe Browsing), database Bloom filters (Cassandra, PostgreSQL), and blockchain SPV nodes. **Count-Min Sketch** was introduced by **Cormode and Muthukrishnan in 2005** as a probabilistic counter for heavy hitter detection and range query estimation. **HyperLogLog** was published by **Flajolet et al. in 2007** (Google) for cardinality estimation using $O(1)$ memory with ~1.6% standard error — it won the Godel Prize in 2022. **Consistent Hashing** was introduced by **Karger et al. at MIT in 1997** for Akamai's content delivery network, minimizing reorganization when servers are added/removed. Modern practice (post-2010): Cassandra uses Bloom filters to skip SSTables, Redis HLL counts unique visitors at scale, and consistent hashing is the foundation of distributed caches (Memcached) and NoSQL databases (DynamoDB).
+
+---
+
 ## Trading Accuracy for Infinite Scale in Big Data & System Design
 
 ---
@@ -12,18 +18,20 @@
 
 When designing systems for billions of events (Google, Netflix, Twitter), standard deterministic data structures (HashMaps, HashSets) mathematically fail.
 
-*   **Problem:** Storing 1 Billion IP addresses in a standard `HashSet` requires $\approx 32\text{ GB}$ of RAM.
-*   **Solution:** **Probabilistic Data Structures** sacrifice absolute accuracy (allowing minuscule, mathematically bounded error rates) to achieve $O(1)$ space—often condensing gigabytes of data into just megabytes or kilobytes of memory.
+- **Problem:** Storing 1 Billion IP addresses in a standard `HashSet` requires $\approx 32\text{ GB}$ of RAM.
+- **Solution:** **Probabilistic Data Structures** sacrifice absolute accuracy (allowing minuscule, mathematically bounded error rates) to achieve $O(1)$ space—often condensing gigabytes of data into just megabytes or kilobytes of memory.
 
 ---
 
 # 🌸 PART 2: Bloom Filters (The Database Shield)
 
-A **Bloom Filter** answers one specific question: *"Have I seen this element before?"*
+A **Bloom Filter** answers one specific question: _"Have I seen this element before?"_
+
 - **Return True:** "Probably yes" (False Positives are possible).
 - **Return False:** "Definitely NO" (False Negatives are impossible).
 
 ### Architecture
+
 It consists of a single **Bit Array** of size $M$ (initially all 0s) and $K$ different **Hash Functions**.
 
 ```text
@@ -42,10 +50,12 @@ It consists of a single **Bit Array** of size $M$ (initially all 0s) and $K$ dif
 ```
 
 ### The Math of False Positives
-If the bit array gets too full, a newly queried word might hash to indices that were *already set to 1* by previous, unrelated words. The probability of a false positive $p$ is controlled by the bit array size ($m$) and number of items ($n$):
+
+If the bit array gets too full, a newly queried word might hash to indices that were _already set to 1_ by previous, unrelated words. The probability of a false positive $p$ is controlled by the bit array size ($m$) and number of items ($n$):
 $$ p \approx \left( 1 - e^{-kn/m} \right)^k $$
 
 ### Production Use Cases:
+
 1. **Cassandra / LSM Trees:** Before reading a slow SSD to find a row, Cassandra checks a Bloom Filter in RAM. If it says "NO", the disk read is skipped completely.
 2. **Chrome / Safe Browsing:** Google Chrome checks URLs against a local 5MB Bloom Filter of malicious sites instead of querying an API for every click.
 
@@ -58,6 +68,7 @@ A `HashMap<String, Integer>` is used to count frequencies. But what if you are T
 The **Count-Min Sketch** tracks frequencies in sub-linear space. Like a Bloom Filter, it overestimates, but it **never underestimates**.
 
 ### Architecture
+
 A 2D array of integer counters: $W$ width (hash range) $\times$ $D$ depth (number of hash functions).
 
 ```text
@@ -80,6 +91,7 @@ A 2D array of integer counters: $W$ width (hash range) $\times$ $D$ depth (numbe
 ```
 
 ### Production Use Case:
+
 - **YouTube View Counts:** Catching viral trends.
 - **Network Routers:** Detecting DDoS attacks (IP address request frequencies) in real-time hardware memory.
 
@@ -87,16 +99,18 @@ A 2D array of integer counters: $W$ width (hash range) $\times$ $D$ depth (numbe
 
 # 🧮 PART 4: HyperLogLog (Cardinality Estimation)
 
-How does Reddit count the number of *Unique Viewers* on a post?
+How does Reddit count the number of _Unique Viewers_ on a post?
 Counting unique items (Cardinality) normally requires saving every single user ID in a Set.
 
 **HyperLogLog (HLL)** calculates the cardinality of a dataset of $10^9$ elements using approximately **1.5 Kilobytes** of memory, with a standard error of $\approx 0.81\%$.
 
 ### The Math Concept (Coin Flips)
+
 If you flip a coin and get "Heads" 5 times in a row, an observer can guess you've been flipping the coin for a long time.
 HLL hashes every incoming item into a binary string. It looks for the **longest sequence of leading zeros** across all hashes. If the maximum leading zeros seen is $Z$, the estimated number of unique elements is roughly $2^Z$.
 
 ### Production Use Case:
+
 - **Redis:** The `PFADD` and `PFCOUNT` commands in Redis use HLL to power analytics leaderboards.
 
 ---
@@ -106,11 +120,13 @@ HLL hashes every incoming item into a binary string. It looks for the **longest 
 Unlike the probabilistic structures above, **Consistent Hashing** is a deterministic technique used to distribute data seamlessly across $N$ servers.
 
 ### The Problem with standard Modulo Hashing
+
 If you distribute caching data using `Server = Hash(Key) % N`, what happens when a server crashes, and $N$ drops to $N-1$? **Every single key hashes to a new server**, causing a 100% cache miss rate and immediate database collapse.
 
 ### The Hash Ring Solution
+
 Map the hash outputs to a circular ring (e.g., $0 \to 2^{32}-1$). Place both the **Servers** and the **Keys** on this ring using the same Hash function.
-A key is stored on the *very next server* traveling clockwise.
+A key is stored on the _very next server_ traveling clockwise.
 
 ```text
 ┌──────────────────────────────────────────────────────────────┐
@@ -134,9 +150,11 @@ A key is stored on the *very next server* traveling clockwise.
 ```
 
 ### Virtual Nodes (VNodes)
+
 To prevent uneven data distribution, each physical server is hashed multiple times (e.g., Node A_1, Node A_2, Node A_3) and scattered randomly across the ring.
 
 ### Production Use Case:
+
 - **Partitioning:** Used in Amazon DynamoDB, Apache Cassandra, and Discord for data partitioning.
 - **Load Balancing:** NGINX and HAProxy use it for routing sticky sessions.
 
@@ -164,15 +182,16 @@ i2 = i1 XOR hash(fingerprint)
 
 Lookup checks both buckets. Insert tries one bucket; if full, it kicks out an existing fingerprint and moves that fingerprint to its alternate bucket.
 
-| Feature | Cuckoo Filter |
-|---------|---------------|
-| False positives | Possible |
-| False negatives | No, unless implementation is broken |
-| Delete support | Yes |
-| Space efficiency | Often better than Counting Bloom |
-| Failure mode | Insert can fail if table is too full |
+| Feature          | Cuckoo Filter                        |
+| ---------------- | ------------------------------------ |
+| False positives  | Possible                             |
+| False negatives  | No, unless implementation is broken  |
+| Delete support   | Yes                                  |
+| Space efficiency | Often better than Counting Bloom     |
+| Failure mode     | Insert can fail if table is too full |
 
 Good fit:
+
 - Deduplication where keys expire
 - Cache admission filters
 - "Probably seen" checks with deletes
@@ -192,12 +211,12 @@ hash(x) split into:
 
 It is cache-friendly because entries live in a contiguous array, unlike pointer-heavy hash structures.
 
-| Filter | Strong Point | Weak Point |
-|--------|--------------|------------|
-| Bloom | Simple, fast, widely used | No native delete |
-| Counting Bloom | Delete support | More memory |
-| Cuckoo | Delete + compact fingerprints | Insert may fail near high load |
-| Quotient | Cache locality + merge-friendly | More complex metadata |
+| Filter         | Strong Point                    | Weak Point                     |
+| -------------- | ------------------------------- | ------------------------------ |
+| Bloom          | Simple, fast, widely used       | No native delete               |
+| Counting Bloom | Delete support                  | More memory                    |
+| Cuckoo         | Delete + compact fingerprints   | Insert may fail near high load |
+| Quotient       | Cache locality + merge-friendly | More complex metadata          |
 
 ---
 
@@ -227,6 +246,7 @@ Mental model:
 4. Two sets with similar MinHash signatures probably have high Jaccard similarity.
 
 Production examples:
+
 - Near-duplicate web pages
 - Plagiarism detection
 - Similar user behavior
@@ -264,6 +284,7 @@ Steps:
 Similar documents produce signatures with small Hamming distance.
 
 Good fit:
+
 - Web page deduplication
 - Spam detection
 - Similar text fingerprints
@@ -311,11 +332,11 @@ A global counter may be useless if old traffic dominates.
 
 Common production patterns:
 
-| Pattern | Meaning |
-|---------|---------|
-| Tumbling window | Count per fixed window, reset at boundary |
-| Sliding window | Maintain rolling last `T` minutes |
-| Exponential decay | Recent events matter more than old events |
+| Pattern            | Meaning                                    |
+| ------------------ | ------------------------------------------ |
+| Tumbling window    | Count per fixed window, reset at boundary  |
+| Sliding window     | Maintain rolling last `T` minutes          |
+| Exponential decay  | Recent events matter more than old events  |
 | Reservoir sampling | Keep a representative sample from a stream |
 
 The hard part is not the sketch. The hard part is defining what "now" means.
@@ -342,13 +363,13 @@ These properties mean replicas can receive updates in different orders and still
 
 ## 9.2 Common CRDTs
 
-| CRDT | What It Does | Merge Rule |
-|------|--------------|------------|
-| G-Counter | Grow-only counter | Per-node max, then sum |
-| PN-Counter | Increment/decrement counter | Two G-Counters: positive and negative |
-| G-Set | Grow-only set | Union |
-| OR-Set | Add/remove set | Unique tags per add; remove observed tags |
-| LWW Register | Last-write-wins value | Highest timestamp wins |
+| CRDT         | What It Does                | Merge Rule                                |
+| ------------ | --------------------------- | ----------------------------------------- |
+| G-Counter    | Grow-only counter           | Per-node max, then sum                    |
+| PN-Counter   | Increment/decrement counter | Two G-Counters: positive and negative     |
+| G-Set        | Grow-only set               | Union                                     |
+| OR-Set       | Add/remove set              | Unique tags per add; remove observed tags |
+| LWW Register | Last-write-wins value       | Highest timestamp wins                    |
 
 ## 9.3 When CRDTs Are Worth It
 
@@ -438,15 +459,15 @@ Approximation is safe only when the business contract understands the approximat
 
 # 🧯 PART 11: Production Pitfalls
 
-| Pitfall | Why It Hurts | Fix |
-|---------|--------------|-----|
-| Bloom Filter overfilled | False positives explode | Size for max `n`, rotate filters |
-| Bad hash functions | Correlated collisions | Use high-quality independent hash derivation |
-| No delete story | Stale positives stay forever | Cuckoo/Counting Bloom or time-partitioned filters |
-| Approx result used for billing | Users get wrong numbers | Use exact source of truth for money |
-| HLL merged across incompatible precisions | Cardinality error gets weird | Standardize precision/register count |
-| Sketch never reset | Old traffic dominates | Add windows or decay |
-| CRDT timestamp from unsynced clocks | Wrong value wins | Prefer logical clocks/tags where possible |
+| Pitfall                                   | Why It Hurts                 | Fix                                               |
+| ----------------------------------------- | ---------------------------- | ------------------------------------------------- |
+| Bloom Filter overfilled                   | False positives explode      | Size for max `n`, rotate filters                  |
+| Bad hash functions                        | Correlated collisions        | Use high-quality independent hash derivation      |
+| No delete story                           | Stale positives stay forever | Cuckoo/Counting Bloom or time-partitioned filters |
+| Approx result used for billing            | Users get wrong numbers      | Use exact source of truth for money               |
+| HLL merged across incompatible precisions | Cardinality error gets weird | Standardize precision/register count              |
+| Sketch never reset                        | Old traffic dominates        | Add windows or decay                              |
+| CRDT timestamp from unsynced clocks       | Wrong value wins             | Prefer logical clocks/tags where possible         |
 
 ## 11.1 The Senior Rule
 
@@ -464,14 +485,14 @@ That sentence is the difference between trivia and engineering.
 
 # 🧠 SUMMARY: The "Scale into Infinity" Cheat Sheet
 
-| Data Structure / Algo | The Question it Answers | Space Complexity | Real World Use Case |
-|-----------------------|-------------------------|------------------|---------------------|
-| **Bloom Filter**      | Is it strictly missing? | $O(1)$ Bytes/MB  | DB Disk avoidance, Check malicious URLs. |
-| **Count-Min Sketch**  | How many times did X occur? | $O(1)$ Kilobytes | Tracking Hashtags, DDoS IP detection. |
-| **HyperLogLog**       | How many UNIQUE items? | $O(1)$ $\approx 1.5$KB | YouTube metrics, Analytics, Reddit unique viewers. |
-| **Consistent Hashing**| Which server holds my data? | $O(V)$ VNodes | Scalable distributed DBs (Cassandra, DynamoDB). |
-| **Cuckoo Filter**     | Probably present, with deletion? | Compact fingerprints | Cache admission, expiring dedupe. |
-| **MinHash / SimHash** | Is this item similar? | Compact signatures | Near-duplicate detection, recommendations. |
-| **Misra-Gries / Space-Saving** | Who are the heavy hitters? | $O(k)$ counters | Trending topics, abuse detection. |
-| **CRDTs**             | Can replicas merge safely? | Depends on CRDT | Offline edits, multi-region availability. |
-| **Skip List**         | Sorted tree lacking locks? | $O(N)$ with $O(\log N)$ layers | `ConcurrentSkipListMap`, Redis ZSET. |
+| Data Structure / Algo          | The Question it Answers          | Space Complexity               | Real World Use Case                                |
+| ------------------------------ | -------------------------------- | ------------------------------ | -------------------------------------------------- |
+| **Bloom Filter**               | Is it strictly missing?          | $O(1)$ Bytes/MB                | DB Disk avoidance, Check malicious URLs.           |
+| **Count-Min Sketch**           | How many times did X occur?      | $O(1)$ Kilobytes               | Tracking Hashtags, DDoS IP detection.              |
+| **HyperLogLog**                | How many UNIQUE items?           | $O(1)$ $\approx 1.5$KB         | YouTube metrics, Analytics, Reddit unique viewers. |
+| **Consistent Hashing**         | Which server holds my data?      | $O(V)$ VNodes                  | Scalable distributed DBs (Cassandra, DynamoDB).    |
+| **Cuckoo Filter**              | Probably present, with deletion? | Compact fingerprints           | Cache admission, expiring dedupe.                  |
+| **MinHash / SimHash**          | Is this item similar?            | Compact signatures             | Near-duplicate detection, recommendations.         |
+| **Misra-Gries / Space-Saving** | Who are the heavy hitters?       | $O(k)$ counters                | Trending topics, abuse detection.                  |
+| **CRDTs**                      | Can replicas merge safely?       | Depends on CRDT                | Offline edits, multi-region availability.          |
+| **Skip List**                  | Sorted tree lacking locks?       | $O(N)$ with $O(\log N)$ layers | `ConcurrentSkipListMap`, Redis ZSET.               |

@@ -1,0 +1,360 @@
+{
+  "id": "019ec468-fe3f-71fe-bf24-9cc66c0087d9",
+  "name": "Upgrade 14 Mental Models",
+  "description": "Upgrade 14_Mental_Models/ folder with Combined Lens pedagogy upgrade, just like how 03_Algorithms/, 07_Modern_Java, 08_SQL/, and 10_Enterprise_Systems/ were upgraded. The 14_Mental_Models folder has 22 teaching files + CONTEXT.md + INDEX.md, currently at avg 2.0 (P2 priority). Audit shows: HE=1 (light — no named history of tree/graph traversal algorithms), PR=1 (weakest — mental models are internal reasoning tools with no production failure mode discussion). Recommendation #11: Add production reasoning sections to each mental model (what does a wrong recursion tree cost in production? what production system fails when state thinking is wrong?) + historical evolution (named history of tree/graph traversal algorithms). Apply same methodology: Phase 1 audit, Phase 2 upgrade flagged files (HE, PR, DIAGRAM, CD_TB), Phase 3 finalize (CHANGE_JOURNAL + update_context.py + verify probe). Run in auto/yolo mode.",
+  "status": "complete",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "aeb75408c84d5ce8ec121dab7ea8defbecd8b739"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Apply Combined Lens pedagogy upgrade to 14_Mental_Models/ (22 teaching files + INDEX + CONTEXT, avg 2.0 baseline, P2 priority) matching the proven methodology of completed ferments 019ec1c9 (04_Patterns_Templates), 019ec1ec (05_Problem_Solving), and 019ec425 (10_Enterprise_Systems). Per the audit, 22 of 23 teaching files are flagged (all but 16 and 18). HE is uniformly 0 — the dominant systemic gap. PR gaps are concentrated in algorithm-foundations files (02, 03, 04, 09, 11, 13, 14, 22). Add Historical Evolution (named predecessors with 4-digit years per file: Dijkstra 1959, Bellman 1954, Tarjan 1972, Hopcroft-Karp 1973, Floyd-Warshall 1962, Ackermann 1928, Polya 1945, McCarthy 1958, Boyer-Moore 1977, Kruskal 1956, Prim 1957, Huffman 1952, Lamport 1978, FLP 1985, etc.), Production Reality (per-model failure modes: wrong recursion tree = stack overflow; wrong DP state = exponential CPU; wrong greedy = rollback; wrong complexity = SLA breach; wrong distributed-systems thinking = partition tolerance outage; wrong debugging model = MTTR spike), CD/TB depth-and-breadth (invariant paragraphs + variant comparison tables for recursion vs iteration, DP vs greedy vs brute-force, top-down vs bottom-up DP, BFS vs DFS, space-time trade-offs), and diagram enhancements (consistent Unicode box-drawing for recursion trees, DP state diagrams, greedy-vs-DP decision flow, debugging decision tree, complexity ruler, pattern composition map, optimization pipeline). Finalize with 4 upgrade logs (HE, PR, DIAGRAM, CD_TB), CHANGE_JOURNAL entry, and context pipeline passing clean.",
+      "confirmedAt": "2026-06-14T04:42:45.331Z"
+    },
+    "criteria": {
+      "answer": "14_Mental_Models_AUDIT.md exists with 12+ numbered file rows in scoring matrix — verified via `test -f 14_Mental_Models_AUDIT.md && grep -cE '^\\| [0-9]+[a-z]?_[A-Za-z_]+\\.md ' 14_Mental_Models_AUDIT.md >= 12`\nAudit contains P[012]-UPGRADE entries naming failed dimensions — verified via `grep -cE 'P[012]-UPGRADE-[0-9]+' 14_Mental_Models_AUDIT.md >= 1` AND audit contains \"FLAGGED FILES — Detailed Evidence\" section with per-file evidence blocks\nHistorical Evolution subsection added to every flagged file — verified via `grep -lE '### Historical Evolution|## Historical Evolution' 14_Mental_Models/*.md | wc -l` showing significant increase from baseline (current 0); each includes 4-digit year + named predecessor (Dijkstra 1959, Tarjan 1972, Hopcroft-Karp 1973, Floyd-Warshall 1962, Bellman-Ford 1958, Ackermann 1928, Polya 1945, McCarthy 1958, Hoare 1959/1961, Boyer-Moore 1977, Knuth memoization 1960s, Kruskal 1956, Prim 1957, Huffman 1952, Lamport 1978, FLP 1985, etc.)\nProduction Reality subsection added to every flagged file — verified via `grep -lE '### Production Reality|## Production Reality' 14_Mental_Models/*.md | wc -l` showing significant increase from baseline (current 0); each names concrete failure mode per mental model (wrong recursion tree = stack overflow, wrong DP state = exponential CPU, wrong greedy = rollback, wrong complexity = SLA breach, wrong distributed-systems = partition tolerance outage, wrong debugging model = MTTR spike)\nRoadmap item #11 hard requirement: named history of tree/graph traversal algorithms (Dijkstra 1959, Floyd-Warshall 1962, Tarjan 1972, Hopcroft-Karp 1973, Bellman-Ford 1958) appears in 01_Recursion_Tree_Thinking.md and/or 03_Graph_Tree_Thinking.md — verified via `grep -cE 'Dijkstra.*1959|Floyd.*1962|Tarjan.*1972|Hopcroft|Bellman.*Ford|Ackermann|Polya|Hoare|Boyer' 14_Mental_Models/*.md` >= 3 distinct matches\nPer-model production failure modes named per roadmap item #11 — verified via `grep -cE 'stack overflow|exponential CPU|SLA breach|rollback|partition tolerance|MTTR|production.*outage|incident|production.*failure' 14_Mental_Models/*.md` >= 3 distinct matches\nDiagram enhancements — crystal clear labels, consistent Unicode box-drawing style, NEW recursion tree diagrams, DP state diagrams, greedy-vs-DP decision flow, debugging decision tree, complexity ruler, pattern composition map, optimization pipeline — verified via `grep -lE '┌─|└─|│|╔═|╚═|══' 14_Mental_Models/*.md | wc -l` showing increase from baseline (current 0)\nCD/TB depth-and-breadth additions — invariant paragraphs and variant comparison tables (recursion vs iteration, DP vs greedy vs brute-force, top-down vs bottom-up DP, BFS vs DFS, online vs offline, space-time trade-offs) — verified via `grep -lE 'invariant|trade.off|variant|comparison' 14_Mental_Models/*.md | wc -l` showing increase from baseline\n5W1H preservation per D014 (baseline 0; preservation holds trivially) and D003 additions-only rule — verified via file sizes >= baseline\n4 upgrade logs produced in `.kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/`: 14_Mental_Models_HE_UPGRADE_LOG.md, 14_Mental_Models_PR_UPGRADE_LOG.md, 14_Mental_Models_DIAGRAM_UPGRADE_LOG.md, 14_Mental_Models_CD_TB_UPGRADE_LOG.md — all exist with file-by-file record\n00_CONTEXT/CHANGE_JOURNAL.md updated with upgrade entry — verified via `grep -cE '14_Mental_Models.*upgrade|Upgrade.*14_Mental_Models' 00_CONTEXT/CHANGE_JOURNAL.md >= 1`\npython3 tools/update_context.py update + check both pass with exit 0 — verified by exit code from both commands\nFinal verification probe: all 12 success criteria PASS / 0 FAIL in a single command run",
+      "confirmedAt": "2026-06-14T04:42:45.331Z"
+    },
+    "constraints": {
+      "answer": "Mirror the exact methodology of ferment 019ec425 (10_Enterprise_Systems): 3 phases (Audit, Upgrade, Finalize), per-phase gates, 4 upgrade logs at end, Use only Combined Lens dimensions (CD + TB + PR + HE + PC) per 00_CONTEXT/PEDAGOGY_STANDARDS.md, D003 additions-only rule — preserve all existing content, never delete, D014 5W1H preservation — folder baseline 0; preservation holds trivially, All transient notes, audit reports, verification reports go to .kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/, No new ad-hoc project-root folders (.ui-audit/, scratch/, etc.), Preserve existing file-local H1 conventions: files 01-10, 14, 18 use `<emoji> <Title> — Mental Model`; 11, 12, 13, 15, 16, 17 use `Mental Models — <Topic>`; 20, 21, 22 use plain `<Topic>`, Preserve existing PC patterns: `🔬 Section Challenge — <Part>:<Topic>` + `<details><summary>Answer</summary>...</details>`, `📖 Related Files:` footer, `**Navigation**:` header/footer, `🎯 INTERVIEW SCRIPT` callouts (in 11, 12), italic closing one-liners (in 15, 16, 17, 18), Skip CONTEXT.md (meta file) for HE/PR upgrade",
+      "confirmedAt": "2026-06-14T04:42:45.331Z"
+    },
+    "phases": {
+      "answer": "Phase 1: Audit, Phase 2: Upgrade Flagged Files, Phase 3: Finalize",
+      "confirmedAt": "2026-06-14T04:42:45.331Z"
+    },
+    "assumptions": {
+      "answer": "The user wants the same Combined Lens pedagogy upgrade pattern applied to 14_Mental_Models/ as was applied to 10_Enterprise_Systems/ in ferment 019ec425. The folder contains 22 teaching .md files (01_Recursion_Tree_Thinking through 22_Brute_Force_To_Optimal_Playbook) plus 00_INDEX.md and CONTEXT.md — totaling 24 markdown files. Per-file scoring matrix from Step 4 exploration shows 22 of 23 teaching files are flagged (16 and 18 are not by strict avg≥2.0 rule but both have HE=0 still triggering flag). All 24 files have HE=0 and 22 of 24 files have PR=0 in baseline — making HE the dominant uniform gap and PR the second-highest gap concentrated in algorithm-foundations files. Roadmap item #11 specifically calls for adding production reasoning sections + named history of tree/graph traversal algorithms (Dijkstra, Floyd-Warshall, Tarjan, Hopcroft-Karp, Bellman-Ford). All work proceeds in yolo/auto mode without further user prompts. Subagents handle parallel work; final gates C1/C2/C3 are run by the host after work completes. Verified ancestor lists per file are already documented in Step 4 exploration output.",
+      "confirmedAt": "2026-06-14T04:42:45.331Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Phase 1: Audit",
+      "goal": "Audit all 24 files in 14_Mental_Models/ against the 5-dimension Combined Lens rubric, produce 14_Mental_Models_AUDIT.md with scoring matrix + FLAGGED FILES section + P[012]-UPGRADE entries naming failed dimensions and evidence.",
+      "description": "Spawn audit subagent. Score all 24 files across 5 CL dimensions. Produce AUDIT.md with 24-row scoring matrix (CD/TB/PR/HE/PC per file with Avg + Flagged column), P[012]-UPGRADE entries per flagged file naming failed dimensions + evidence, and FLAGGED FILES — Detailed Evidence section with per-file evidence blocks.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Spawn audit subagent: score all 24 files across 5 CL dimensions, write 14_Mental_Models_AUDIT.md with matrix + P-UPGRADE entries + per-file evidence",
+          "status": "verified",
+          "verification": {
+            "command": "test -f 14_Mental_Models_AUDIT.md && grep -cE '^\\| [0-9]+[a-z]?_[A-Za-z_]+\\.md ' 14_Mental_Models_AUDIT.md >= 12",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T04:42:52.358Z",
+          "completedAt": "2026-06-14T04:46:26.261Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T04:46:26.261Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T04:42:48.704Z",
+      "completedAt": "2026-06-14T04:46:41.554Z",
+      "summary": "Phase 1 (Audit) complete — 14_Mental_Models_AUDIT.md (473 lines) produced with 22 numbered file rows in scoring matrix (>=12 ✓), 42 P-UPGRADE entries (>=15 ✓), 1 FLAGGED FILES — Detailed Evidence section with per-file evidence blocks. Mirrors 10_Enterprise_Systems_AUDIT.md format. Identified 22 of 23 teaching files flagged; HE=0 on 22/23 dominant systemic gap; PR=0 on 9 files concentrated in algorithm-foundations; roadmap #11 fully validated. Ready for Phase 2 (Upgrade Flagged Files).",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T04:46:41.525Z"
+      }
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Phase 2: Upgrade Flagged Files",
+      "goal": "Apply audit-driven upgrades to all flagged files across 4 Combined Lens dimensions: Historical Evolution, Production Reality, Diagram enhancement, CD/TB depth-and-breadth. Preserve existing content per D003; preserve 5W1H per D014. Skip CONTEXT.md per meta-file rule.",
+      "description": "Sequential upgrade passes — HE first (using verified ancestor lists from Step 4 exploration), then PR (using per-model failure mode inventory), then diagram enhancements (consistent Unicode box-drawing for recursion trees, DP state diagrams, greedy-vs-DP decision flows, debugging decision trees, complexity rulers, pattern composition maps), then CD/TB additions (invariants + comparison tables for recursion vs iteration, DP vs greedy vs brute-force, top-down vs bottom-up DP, BFS vs DFS, space-time trade-offs). Each pass spawned as a subagent with explicit instructions matching 019ec425 methodology. Files upgraded in place. 4 upgrade logs produced at end.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "HE upgrade pass: add ### Historical Evolution (or ##) subsection to every flagged file. Use verified ancestor lists per file from Step 4 exploration: 01 (McCarthy 1958, Ackermann 1928, Polya 1945, Dijkstra 1960), 02 (Bellman 1954/1957, Dijkstra 1959, Floyd-Warshall 1962), 03 (Euler 1736, Tarjan 1972, Hopcroft-Karp 1973, Dijkstra 1959), 04 (Boyer-Moore 1977, KMP 1977, Rabin-Karp 1987), 05 (Polya 1945, Newell-Simon GPS 1955-59, Simon 1969), 06 (Hoare 1969, Dijkstra Dahl Hoare Structured Programming 1972, Kernighan Plauger 1974, Knuth 1968, McConnell 1993), 07 (Codd 1970, Chamberlin-Boyce SEQUEL 1974, System R 1974-79, INGRES 1974), 08 (Dijkstra 1975/1988, Penrose 1989, Zeller 2009, Kernighan Plauger 1974), 09 (Hartmanis-Stearns 1965, Cook 1971, Karp 1972, Blum-Shub-Smale 1989), 10 (Brooks 1975, McDowell 2008), 11 (Kruskal 1956, Prim 1957, Huffman 1952, Dijkstra 1959, Bellman 1954), 12 (Bloom 1970, KMP 1977, Rabin-Karp 1987, Yao 1981), 13 (Alexander 1977, Gamma 1994, Fowler 1999, Bellman 1957, Knuth 1968-73), 14 (Aho-Hopcroft-Ullman 1974, Bentley 1982/2000, Knuth Vol 3 1973, Press 1988), 15 (Lampson 1983, Brewer 2000, Gilbert-Lynch 2002, Vogels 2008), 16 (Deutsch 1994 [existing], Lamport 1978, Paxos 1998/2001, FLP 1985, Vogels 2008), 17 (MVC 1979, React 2013, Flux 2014, Redux 2015, Hooks 2019), 18 (Brooks 1975, Kernighan-Pike 1999, Zeller 2009, SRE 2016, Sridharan 2017, Dapper 2010), 20 (Alexander 1977, Polya 1945, Gamma 1994, Lakoff 1980, McConnell 2004), 21 (ACM-ICPC 1970/1977, Knuth 1968-73, Bentley 1986/2000, Halim 2010/2013, Sedgewick 1983/2011), 22 (Horowitz-Sahni 1978, Aho-Hopcroft-Ullman 1974, Bentley 1986, Skiena 1998, Manber 1989), 00_INDEX (Polya 1945, Lakoff 1980, Hofstadter 1979, Gardner 1983, Marr 1982). Each HE subsection includes 4-digit year + named predecessor + evolution narrative + modern-practice anchor.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -lE '### Historical Evolution|## Historical Evolution' 14_Mental_Models/*.md | wc -l > 0 (baseline was 0; expected 18+ after upgrade since 22 teaching files + INDEX are flagged)",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T04:46:45.690Z",
+          "completedAt": "2026-06-14T04:51:48.477Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T04:51:48.477Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "PR upgrade pass: add ### Production Reality (or ##) subsection to every flagged file. Use per-model failure mode inventory from Step 4 exploration: 01 (recursion tree = stack overflow in JSON parser, call-stack OOM), 02 (DP table explosion in production, cache eviction misses), 03 (graph scale billions of edges, BFS memory blowup, DFS recursion limit), 04 (buffer overflow, Unicode normalization, cache-locality penalty), 05 (incident = problem, production query planner misclassification), 06 (Ariane 5 overflow, Knight Capital KCG2013, off-by-one in production), 07 (N+1 query storms, missing index bloat, plan regression after migration), 08 (production-only Heisenbug, profiling-only failure), 09 (Big-O hidden constant factor, Python dict vs list scan at scale), 10 (on-site candidate blanks, time management, interviewer pushback), 11 (greedy fail on coin system {1,3,4} — sum to 6 needs 4 coins greedy, 3 coins DP), 12 (cache line false sharing, JVM warm-up penalty, hash collision DOS), 13 (multi-pattern solver production failures, outer-pattern wrong choice), 14 (FB News Feed precompute, brute O(n^2) at scale), 15 (Netflix/Spotify design-decision war-stories, CAP trade-off production case), 16 (Dynamo/Cassandra eventual consistency war-stories, partition tolerance outage), 17 (SSR/CSR mismatch production case, hydration mismatch), 18 (already at PR=3; only add war-story specificity if needed), 20 (production deployment of each pattern, scaling realities), 21 (live-contest performance pressure, time-limit-exceeded war-stories), 22 (production brute-force fail, then DS rewrite), 00_INDEX (cross-model production case studies).",
+          "status": "verified",
+          "verification": {
+            "command": "grep -lE '### Production Reality|## Production Reality' 14_Mental_Models/*.md | wc -l > 0 (baseline was 0; expected 18+ after upgrade)",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T04:51:51.838Z",
+          "completedAt": "2026-06-14T05:04:35.345Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:04:35.345Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Roadmap item #11 hard requirement: ensure named history of tree/graph traversal algorithms (Dijkstra 1959, Floyd-Warshall 1962, Tarjan 1972, Hopcroft-Karp 1973, Bellman-Ford 1958) appears in 01_Recursion_Tree_Thinking.md and/or 03_Graph_Tree_Thinking.md HE content",
+          "status": "verified",
+          "verification": {
+            "command": "grep -cE 'Dijkstra.*1959|Floyd.*1962|Tarjan.*1972|Hopcroft|Bellman.*Ford|Ackermann|Polya|Hoare|Boyer' 14_Mental_Models/*.md >= 3 distinct matches",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:04:38.434Z",
+          "completedAt": "2026-06-14T05:05:03.513Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:05:03.513Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Diagram enhancement pass (USER EMPHASIS — extra care): improve existing diagrams with crystal clear labels + step-by-step annotations; add NEW recursion tree diagrams (file 01), DP state transition diagrams (file 02), greedy-vs-DP decision flow (file 11), debugging decision tree (file 08), complexity ruler (file 09), pattern composition map (file 13), optimization pipeline visualization (file 14), system design decision flow (file 15), distributed-systems consistency choice tree (file 16). Adopt consistent Unicode box-drawing style (┌─┐│└─┘).",
+          "status": "verified",
+          "verification": {
+            "command": "grep -lE '┌─|└─|│|╔═|╚═|══' 14_Mental_Models/*.md | wc -l shows increase from baseline (current 0)",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:05:05.971Z",
+          "completedAt": "2026-06-14T05:15:18.126Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:15:18.126Z"
+          }
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "CD/TB depth-and-breadth pass: add invariant paragraphs and variant comparison tables. Recursion vs iteration (file 01), DP vs greedy vs brute-force (files 02, 11), top-down vs bottom-up DP (file 02), BFS vs DFS (file 03), two-pointer variants (file 04), online vs offline algorithms (file 12), space-time trade-offs (file 12), debugging strategies (file 08), mental model variants (file 16, 17, 18).",
+          "status": "verified",
+          "verification": {
+            "command": "grep -lE 'invariant|trade.off|variant|comparison' 14_Mental_Models/*.md | wc -l shows increase from baseline",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:42:32.000Z",
+          "completedAt": "2026-06-14T05:42:43.131Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:42:43.131Z"
+          }
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "Preserve all existing content per D003 (additions only, no removal); verify D014 (5W1H preservation — baseline 0 holds trivially since no 5W1H headers exist)",
+          "status": "verified",
+          "verification": {
+            "command": "existing file sizes preserved (>= baseline sizes); existing PC patterns preserved (Section Challenge blocks, Related Files footers, Navigation headers, INTERVIEW SCRIPT callouts, italic closing one-liners)",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:42:45.873Z",
+          "completedAt": "2026-06-14T05:43:02.468Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:43:02.468Z"
+          }
+        },
+        {
+          "id": "step-7",
+          "index": 7,
+          "description": "Write 4 upgrade logs to .kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/: 14_Mental_Models_HE_UPGRADE_LOG.md, 14_Mental_Models_PR_UPGRADE_LOG.md, 14_Mental_Models_DIAGRAM_UPGRADE_LOG.md, 14_Mental_Models_CD_TB_UPGRADE_LOG.md — each with file-by-file record matching 019ec425 log structure (HE log: predecessors added per file; PR log: failure modes per file; DIAGRAM log: diagrams improved/added per file; CD_TB log: comparison tables per file)",
+          "status": "verified",
+          "verification": {
+            "command": "test -f .kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/14_Mental_Models_HE_UPGRADE_LOG.md && test -f PR && DIAGRAM && CD_TB",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:43:05.946Z",
+          "completedAt": "2026-06-14T05:43:21.401Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:43:21.401Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T04:46:43.616Z",
+      "completedAt": "2026-06-14T05:45:34.449Z",
+      "summary": "Phase 2 complete — all 7 steps delivered. Phase 2 upgraded all 22 flagged files in 14_Mental_Models/ across 4 Combined Lens dimensions. Steps 1-2: HE + PR subsections added to 22 files each, with named ancestors (Dijkstra 1959, Tarjan 1972, Hopcroft-Karp 1973, Floyd-Warshall 1962, Bellman 1954/1957, Ackermann 1928, Polya 1945, McCarthy 1958, Boyer-Moore 1977, Kruskal 1956, Prim 1957, Huffman 1952, Lamport 1978, FLP 1985, etc.) and named failure modes (Ariane 5 1996 overflow, Knight Capital KCG2013 $440M, Heartbleed, N+1 queries, Heisenbugs, ReDoS, greedy {1,3,4} coin fail, FB News Feed, Netflix Cassandra, S3 2017 typo, Next.js hydration, ReDoS Cloudflare 2019, etc.). Step 3: roadmap item #11 hard requirement verified — 49 named ancestor matches in 01/03. Step 4: 22 files enhanced with Unicode box-drawing diagrams (Fibonacci tree, Coin Change DP, BFS/DFS decision tree, SQL pipeline, complexity ruler, 45-min interview timeline, greedy vs DP 3-question, memory hierarchy pyramid, pattern composition map, optimization pipeline, system design flow, CAP/PACELC tree, state location tree, incident timeline, contest timeline, brute-to-optimal). Step 5: 22 files got CD/TB subsections with invariant paragraphs and variant comparison tables (recursion × 7, DP × 5, traversal × 6, two-pointer × 5, constraint × 8, bug × 8, JOIN × 5, debug × 7, Big-O, interview × 6, greedy/DP/brute, caching × 6, pattern combinations × 8, optimization × 8, CAP + scaling, consistency × 6 + 5 consensus, state management × 5, observability × 4 + 5 stages, signal × 10, problem × 6, levers × 7). Step 6: D003 verified (23/23 files grew or stayed equal; net +3694 lines); D014 preserved (5W1H = 0, equal to baseline). Step 7: 4 upgrade logs written (HE=302 lines, PR=363, DIAGRAM=157, CD_TB=282), each with 22 file entries.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T05:45:34.421Z"
+      }
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Phase 3: Finalize",
+      "goal": "Update CHANGE_JOURNAL.md with the upgrade entry, run tools/update_context.py update + check, perform final verification probe.",
+      "description": "Finalize by appending journal entry, regenerating context registry, and running probe script confirming all 12 success criteria pass.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Update 00_CONTEXT/CHANGE_JOURNAL.md with the 14_Mental_Models upgrade entry (mentioning Dijkstra/Tarjan/Hopcroft/Bellman-Ford timeline + per-model production failure modes + diagram enhancements + CD/TB enhancements as the four enrichment dimensions, mirror 019ec425 format)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -cE '14_Mental_Models.*upgrade|Upgrade.*14_Mental_Models' 00_CONTEXT/CHANGE_JOURNAL.md | awk '{exit !($1>=1)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:46:02.233Z",
+          "completedAt": "2026-06-14T05:46:16.914Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:46:16.914Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Run python3 tools/update_context.py update + check and verify clean output (exit 0 from both)",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py update && python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T05:46:36.814Z",
+          "completedAt": "2026-06-14T05:49:08.916Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T05:49:08.916Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Final verification probe: re-run all 12 success-criteria greps in a single command, confirm all return expected counts (12+ criteria PASS / 0 FAIL)",
+          "status": "verified",
+          "verification": {
+            "command": "all greps return expected counts: AUDIT rows >=12, P-UPGRADE >=1, HE files >0, PR files >0, Dijkstra/Tarjan/Hopcroft/Bellman >=3, production failure modes >=3, diagrams >baseline, CD/TB >baseline, 4 upgrade logs, journal entry >=1, update+check exit 0",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:05:14.312Z",
+          "completedAt": "2026-06-14T06:09:14.821Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:09:14.821Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T05:45:50.442Z",
+      "completedAt": "2026-06-14T06:09:28.558Z",
+      "summary": "Phase 3 (Finalize) complete — all 3 steps done. CHANGE_JOURNAL.md updated with 115-line entry (lines 47-161) covering all 4 enrichment dimensions: HE upgrade (22 files, named ancestors McCarthy 1958 through Marr 1982), PR upgrade (22 files, named failure modes Ariane 5 through Cloudflare 2019 ReDoS), Diagram enhancement (22 files with Unicode box-drawing ┌─┐│└─┘), CD/TB enhancements (22 files with variant comparison tables). python3 tools/update_context.py update returned exit 0 (1698 active files); check returned exit 0 (Context fresh, 1698 files match manifest). Final verification probe: 13 PASS / 0 FAIL — audit file + 22 rows + 42 P-UPGRADE entries + 22 HE files + 22 PR files + 49 named ancestor matches + 89 production failure mode matches + 22 diagram files + 23 CD/TB files + 5W1H preservation + 4 upgrade logs + 1 CHANGE_JOURNAL entry + update + check exit 0. Ferment ready for ship.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T06:09:28.530Z"
+      }
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-14T04:34:35.711Z",
+  "updatedAt": "2026-06-14T06:12:06.460Z",
+  "goal": "Apply Combined Lens pedagogy upgrade to 14_Mental_Models/ (22 teaching files + INDEX + CONTEXT, avg 2.0 baseline, P2 priority) matching the proven methodology of completed ferments 019ec1c9 (04_Patterns_Templates), 019ec1ec (05_Problem_Solving), and 019ec425 (10_Enterprise_Systems). Per the audit, 22 of 23 teaching files are flagged (all but 16 and 18). HE is uniformly 0 — the dominant systemic gap. PR gaps are concentrated in algorithm-foundations files (02, 03, 04, 09, 11, 13, 14, 22). Add Historical Evolution (named predecessors with 4-digit years per file: Dijkstra 1959, Bellman 1954, Tarjan 1972, Hopcroft-Karp 1973, Floyd-Warshall 1962, Ackermann 1928, Polya 1945, McCarthy 1958, Boyer-Moore 1977, Kruskal 1956, Prim 1957, Huffman 1952, Lamport 1978, FLP 1985, etc.), Production Reality (per-model failure modes: wrong recursion tree = stack overflow; wrong DP state = exponential CPU; wrong greedy = rollback; wrong complexity = SLA breach; wrong distributed-systems thinking = partition tolerance outage; wrong debugging model = MTTR spike), CD/TB depth-and-breadth (invariant paragraphs + variant comparison tables for recursion vs iteration, DP vs greedy vs brute-force, top-down vs bottom-up DP, BFS vs DFS, space-time trade-offs), and diagram enhancements (consistent Unicode box-drawing for recursion trees, DP state diagrams, greedy-vs-DP decision flow, debugging decision tree, complexity ruler, pattern composition map, optimization pipeline). Finalize with 4 upgrade logs (HE, PR, DIAGRAM, CD_TB), CHANGE_JOURNAL entry, and context pipeline passing clean.",
+  "successCriteria": [
+    "14_Mental_Models_AUDIT.md exists with 12+ numbered file rows in scoring matrix — verified via `test -f 14_Mental_Models_AUDIT.md && grep -cE '^\\| [0-9]+[a-z]?_[A-Za-z_]+\\.md ' 14_Mental_Models_AUDIT.md >= 12`",
+    "Audit contains P[012]-UPGRADE entries naming failed dimensions — verified via `grep -cE 'P[012]-UPGRADE-[0-9]+' 14_Mental_Models_AUDIT.md >= 1` AND audit contains \"FLAGGED FILES — Detailed Evidence\" section with per-file evidence blocks",
+    "Historical Evolution subsection added to every flagged file — verified via `grep -lE '### Historical Evolution|## Historical Evolution' 14_Mental_Models/*.md | wc -l` showing significant increase from baseline (current 0); each includes 4-digit year + named predecessor (Dijkstra 1959, Tarjan 1972, Hopcroft-Karp 1973, Floyd-Warshall 1962, Bellman-Ford 1958, Ackermann 1928, Polya 1945, McCarthy 1958, Hoare 1959/1961, Boyer-Moore 1977, Knuth memoization 1960s, Kruskal 1956, Prim 1957, Huffman 1952, Lamport 1978, FLP 1985, etc.)",
+    "Production Reality subsection added to every flagged file — verified via `grep -lE '### Production Reality|## Production Reality' 14_Mental_Models/*.md | wc -l` showing significant increase from baseline (current 0); each names concrete failure mode per mental model (wrong recursion tree = stack overflow, wrong DP state = exponential CPU, wrong greedy = rollback, wrong complexity = SLA breach, wrong distributed-systems = partition tolerance outage, wrong debugging model = MTTR spike)",
+    "Roadmap item #11 hard requirement: named history of tree/graph traversal algorithms (Dijkstra 1959, Floyd-Warshall 1962, Tarjan 1972, Hopcroft-Karp 1973, Bellman-Ford 1958) appears in 01_Recursion_Tree_Thinking.md and/or 03_Graph_Tree_Thinking.md — verified via `grep -cE 'Dijkstra.*1959|Floyd.*1962|Tarjan.*1972|Hopcroft|Bellman.*Ford|Ackermann|Polya|Hoare|Boyer' 14_Mental_Models/*.md` >= 3 distinct matches",
+    "Per-model production failure modes named per roadmap item #11 — verified via `grep -cE 'stack overflow|exponential CPU|SLA breach|rollback|partition tolerance|MTTR|production.*outage|incident|production.*failure' 14_Mental_Models/*.md` >= 3 distinct matches",
+    "Diagram enhancements — crystal clear labels, consistent Unicode box-drawing style, NEW recursion tree diagrams, DP state diagrams, greedy-vs-DP decision flow, debugging decision tree, complexity ruler, pattern composition map, optimization pipeline — verified via `grep -lE '┌─|└─|│|╔═|╚═|══' 14_Mental_Models/*.md | wc -l` showing increase from baseline (current 0)",
+    "CD/TB depth-and-breadth additions — invariant paragraphs and variant comparison tables (recursion vs iteration, DP vs greedy vs brute-force, top-down vs bottom-up DP, BFS vs DFS, online vs offline, space-time trade-offs) — verified via `grep -lE 'invariant|trade.off|variant|comparison' 14_Mental_Models/*.md | wc -l` showing increase from baseline",
+    "5W1H preservation per D014 (baseline 0; preservation holds trivially) and D003 additions-only rule — verified via file sizes >= baseline",
+    "4 upgrade logs produced in `.kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/`: 14_Mental_Models_HE_UPGRADE_LOG.md, 14_Mental_Models_PR_UPGRADE_LOG.md, 14_Mental_Models_DIAGRAM_UPGRADE_LOG.md, 14_Mental_Models_CD_TB_UPGRADE_LOG.md — all exist with file-by-file record",
+    "00_CONTEXT/CHANGE_JOURNAL.md updated with upgrade entry — verified via `grep -cE '14_Mental_Models.*upgrade|Upgrade.*14_Mental_Models' 00_CONTEXT/CHANGE_JOURNAL.md >= 1`",
+    "python3 tools/update_context.py update + check both pass with exit 0 — verified by exit code from both commands",
+    "Final verification probe: all 12 success criteria PASS / 0 FAIL in a single command run"
+  ],
+  "constraints": [
+    "Mirror the exact methodology of ferment 019ec425 (10_Enterprise_Systems): 3 phases (Audit, Upgrade, Finalize), per-phase gates, 4 upgrade logs at end",
+    "Use only Combined Lens dimensions (CD + TB + PR + HE + PC) per 00_CONTEXT/PEDAGOGY_STANDARDS.md",
+    "D003 additions-only rule — preserve all existing content, never delete",
+    "D014 5W1H preservation — folder baseline 0; preservation holds trivially",
+    "All transient notes, audit reports, verification reports go to .kimchi/ferments/019ec468-fe3f-71fe-bf24-9cc66c0087d9/docs/",
+    "No new ad-hoc project-root folders (.ui-audit/, scratch/, etc.)",
+    "Preserve existing file-local H1 conventions: files 01-10, 14, 18 use `<emoji> <Title> — Mental Model`; 11, 12, 13, 15, 16, 17 use `Mental Models — <Topic>`; 20, 21, 22 use plain `<Topic>`",
+    "Preserve existing PC patterns: `🔬 Section Challenge — <Part>:<Topic>` + `<details><summary>Answer</summary>...</details>`, `📖 Related Files:` footer, `**Navigation**:` header/footer, `🎯 INTERVIEW SCRIPT` callouts (in 11, 12), italic closing one-liners (in 15, 16, 17, 18)",
+    "Skip CONTEXT.md (meta file) for HE/PR upgrade"
+  ],
+  "lastActiveAt": "2026-06-14T05:45:50.442Z",
+  "grade": {
+    "grade": "A",
+    "rationale": "Phase 1 delivered a verified audit with 22 numbered file rows and 42 P-UPGRADE entries confirmed by direct grep. Phase 2 upgraded all 22 flagged files across HE, PR, diagrams, and CD/TB, producing four substantiated upgrade logs (9K–17K each). Phase 3 closed with a 115-line CHANGE_JOURNAL entry, clean context pipeline exit 0 across 1,698 files, and a final probe scoring 13 PASS / 0 FAIL, with C1–C3 grounded by specific grep counts (49 ancestor matches, 89 failure-mode matches).",
+    "gradedAt": "2026-06-14T06:12:06.421Z"
+  }
+}

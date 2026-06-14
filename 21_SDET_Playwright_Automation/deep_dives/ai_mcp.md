@@ -44,7 +44,7 @@ npm i -D @playwright/mcp
 
 ```typescript
 // mcp-server.ts
-import { startServer } from '@playwright/mcp/server';
+import { startServer } from "@playwright/mcp/server";
 
 await startServer({
   port: 3000,
@@ -53,6 +53,7 @@ await startServer({
 ```
 
 The server exposes:
+
 - `playwright_navigate(url)`
 - `playwright_click(selector)`
 - `playwright_fill(selector, value)`
@@ -78,18 +79,20 @@ Agents (Claude, Copilot, custom) can call these to drive a browser.
 Copilot suggests Playwright code inline:
 
 ```typescript
-test('login', async ({ page }) => {
-  await page.goto('/login');
+test("login", async ({ page }) => {
+  await page.goto("/login");
   // Copilot suggests: await page.getByLabel('Email').fill('user@example.com');
 });
 ```
 
 Good at:
+
 - Common patterns (login, navigation, basic assertions).
 - TypeScript type hints.
 - Boilerplate.
 
 Bad at:
+
 - Domain-specific selectors (your app's data-testid scheme).
 - Complex async flows.
 - App-specific business logic.
@@ -99,12 +102,13 @@ Bad at:
 For test scaffolding via conversation:
 
 ```
-Me: "Write a Playwright test that signs in as admin, navigates to citations, 
+Me: "Write a Playwright test that signs in as admin, navigates to citations,
      and asserts the first row's status is PAID."
 Claude: [generates code]
 ```
 
 Good at:
+
 - Multi-step flows.
 - Explaining failures.
 - Refactoring.
@@ -129,13 +133,13 @@ AI produces a draft. Engineer reviews, refines, commits.
 
 ### 4.1 The 80/20 split
 
-| AI does well | Engineer must do |
-|---|---|
+| AI does well             | Engineer must do            |
+| ------------------------ | --------------------------- |
 | First draft of test body | Verify selectors are stable |
-| Common assertions | Domain-specific assertions |
-| Hook into fixtures | Define fixtures correctly |
-| Suggest improvements | Review against POM patterns |
-| Codegen from URL | Custom data flow |
+| Common assertions        | Domain-specific assertions  |
+| Hook into fixtures       | Define fixtures correctly   |
+| Suggest improvements     | Review against POM patterns |
+| Codegen from URL         | Custom data flow            |
 
 ---
 
@@ -163,10 +167,10 @@ For a 200-failure CI run, AI can cluster similar failures:
 
 ```
 Cluster 1 (87 failures): timeout on /dashboard
-Cluster 2 (43 failures): "OAuth token expired"  
+Cluster 2 (43 failures): "OAuth token expired"
 Cluster 3 (12 failures): "Element not found in modal"
 Cluster 4 (15 failures): visual regression > threshold
-... 
+...
 ```
 
 AI suggests root causes per cluster. Engineer triages the top causes, not individual tests.
@@ -202,14 +206,15 @@ AI accelerates juniors but doesn't replace seniors. Architecture, strategy, root
 
 ## 8. Cost vs value
 
-| Item | Cost |
-|---|---|
-| Copilot for VS Code | $10/user/month |
+| Item                           | Cost                           |
+| ------------------------------ | ------------------------------ |
+| Copilot for VS Code            | $10/user/month                 |
 | Claude API for test generation | ~$0.01-0.10 per test generated |
-| Self-hosted LLM | Hardware + ops |
-| MCP server setup | Engineering time |
+| Self-hosted LLM                | Hardware + ops                 |
+| MCP server setup               | Engineering time               |
 
 For a 50-engineer team:
+
 - Copilot: $500/month, ~10% productivity gain on test writing = $50K/yr equivalent.
 - Claude for scaffolding: $1K/month, similar gain.
 
@@ -219,16 +224,16 @@ ROI is positive for most teams. The risk is over-reliance — engineers stop dev
 
 ## 9. Anti-patterns
 
-| ❌ | ✅ |
-|---|---|
-| Auto-merge AI-suggested test fixes | Human review |
-| Generate tests from app description without DOM | DOM-aware generation |
-| Use AI to write fixtures | AI for boilerplate, humans for architecture |
-| Trust AI's claim that a test "passes" | Run the test |
-| Replace test review with AI | AI assists; humans decide |
-| Use AI to write your security tests | Security needs domain expertise |
-| Generate one big AI-written test that does everything | Smaller, reviewable tests |
-| Rely on AI for test data design | Data design needs business context |
+| ❌                                                    | ✅                                          |
+| ----------------------------------------------------- | ------------------------------------------- |
+| Auto-merge AI-suggested test fixes                    | Human review                                |
+| Generate tests from app description without DOM       | DOM-aware generation                        |
+| Use AI to write fixtures                              | AI for boilerplate, humans for architecture |
+| Trust AI's claim that a test "passes"                 | Run the test                                |
+| Replace test review with AI                           | AI assists; humans decide                   |
+| Use AI to write your security tests                   | Security needs domain expertise             |
+| Generate one big AI-written test that does everything | Smaller, reviewable tests                   |
+| Rely on AI for test data design                       | Data design needs business context          |
 
 ---
 

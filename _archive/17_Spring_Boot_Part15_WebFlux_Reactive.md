@@ -1000,14 +1000,14 @@ public class UserHandler {
 ```yaml
 # application.yml
 spring:
-    r2dbc:
-        url: r2dbc:postgresql://localhost:5432/mydb
-        username: user
-        password: password
-        pool:
-            initial-size: 5
-            max-size: 20
-            max-idle-time: 30m
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/mydb
+    username: user
+    password: password
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
 ```
 
 ### Entity and Repository

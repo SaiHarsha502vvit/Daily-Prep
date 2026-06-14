@@ -34,9 +34,11 @@
 🔬 **Section Challenge — Understanding Recursion from Brain's Perspective**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -45,18 +47,21 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 # 🔬 PART 0: Deep Internals — How Recursion Actually Works at CPU/Memory Level
 
-**🎯 Chapter Goal:** Understand what *physically* happens when you call a recursive function.
+**🎯 Chapter Goal:** Understand what _physically_ happens when you call a recursive function.
 
 **In this section you'll learn:**
+
 - Stack frame creation and destruction
 - CPU register operations
 - Memory layout of the call stack
@@ -131,17 +136,17 @@ HIGH ADDRESSES
   LOW ADDRESSES
 ```
 
-
 💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
 
 🔬 **Section Challenge — 📦 The Call Stack — Physical Memory View**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## ⚙️ CPU Instructions for Each Recursive Call
 
@@ -160,7 +165,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 13: iadd          // Add n + result
 14: ireturn       // Return sum
 ```
-
 
 ### JIT-Compiled x86-64 Assembly (simplified)
 
@@ -192,20 +196,19 @@ sum:
     ret                          ; Return to caller
 ```
 
-
 ### CPU Cycles per Recursive Call
 
-| Operation | Cycles | Notes |
-|-----------|--------|-------|
-| `push rbp` | 1 | |
-| `mov rbp, rsp` | 1 | |
-| `sub rsp, 16` | 1 | |
-| `mov [rbp-4], edi` | 1–4 | Write to memory |
-| `cmp` + `jle` | 1–20 | 1 if predicted, 20 if not |
-| `call sum` | 3–5 | + overhead of callee |
-| `add` | 1 | |
-| `pop` + `ret` | 2 | |
-| **TOTAL per level** | **~15–40** | **Varies by CPU** |
+| Operation           | Cycles     | Notes                     |
+| ------------------- | ---------- | ------------------------- |
+| `push rbp`          | 1          |                           |
+| `mov rbp, rsp`      | 1          |                           |
+| `sub rsp, 16`       | 1          |                           |
+| `mov [rbp-4], edi`  | 1–4        | Write to memory           |
+| `cmp` + `jle`       | 1–20       | 1 if predicted, 20 if not |
+| `call sum`          | 3–5        | + overhead of callee      |
+| `add`               | 1          |                           |
+| `pop` + `ret`       | 2          |                           |
+| **TOTAL per level** | **~15–40** | **Varies by CPU**         |
 
 ⚠️ **Performance Impact:** For `sum(1000)` → **~20,000–40,000 cycles** just in call overhead!
 Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
@@ -214,10 +217,10 @@ Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
 
 ### Java Stack Sizes
 
-| Setting | Value |
-|---------|-------|
+| Setting              | Value                             |
+| -------------------- | --------------------------------- |
 | Default thread stack | ~512 KB – 1 MB (varies by JVM/OS) |
-| Configure via | `java -Xss2m` (set to 2 MB) |
+| Configure via        | `java -Xss2m` (set to 2 MB)       |
 
 ### Maximum Recursion Depth
 
@@ -253,26 +256,26 @@ Here's what it looks like when the stack is about to overflow:
   Stack Limit:   0x7ffe0000 (bottom/low)
 ```
 
-
 🚨 **When SP crosses into the guard page → `StackOverflowError` is thrown**
 
 ### Solutions to Stack Overflow
 
-| # | Solution | Notes |
-|---|----------|-------|
-| 1 | **Convert to iterative** | Always works |
-| 2 | **Increase stack size** (`java -Xss4m`) | Temporary fix only |
-| 3 | **Use tail recursion** | If language supports it — *Java does NOT* |
-| 4 | **Trampoline pattern** | Manual tail call optimization |
+| #   | Solution                                | Notes                                     |
+| --- | --------------------------------------- | ----------------------------------------- |
+| 1   | **Convert to iterative**                | Always works                              |
+| 2   | **Increase stack size** (`java -Xss4m`) | Temporary fix only                        |
+| 3   | **Use tail recursion**                  | If language supports it — _Java does NOT_ |
+| 4   | **Trampoline pattern**                  | Manual tail call optimization             |
 
 🔬 **Section Challenge — 💥 Stack Overflow — Why It Happens**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 🔄 Converting Recursion to Iteration
 
@@ -352,9 +355,11 @@ void permute(int[] nums, List<Integer> curr, boolean[] used) {
 🔬 **Section Challenge — 🔄 Converting Recursion to Iteration**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -363,12 +368,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## 🚀 Tail Recursion — The Optimization That Java Doesn't Have
 
@@ -405,7 +412,6 @@ sumTail(1, 9):     Frame: n=1, acc=9   (reused!)
   ↓
 sumTail(0, 10):    return 10
 ```
-
 
 ✅ **CONSTANT STACK SPACE!** No stack overflow possible!
 
@@ -456,19 +462,21 @@ int result = sumTrampoline(100000, 0).get();  // No stack overflow!
 
 **Languages with TCO:**
 
-| Language | TCO Support |
-|----------|-------------|
-| **Scheme, Haskell** | Guaranteed by language spec |
-| **Scala** | With `@tailrec` annotation |
-| **Kotlin** | With `tailrec` modifier |
-| **JavaScript** | ES6 spec, but limited browser support |
+| Language            | TCO Support                           |
+| ------------------- | ------------------------------------- |
+| **Scheme, Haskell** | Guaranteed by language spec           |
+| **Scala**           | With `@tailrec` annotation            |
+| **Kotlin**          | With `tailrec` modifier               |
+| **JavaScript**      | ES6 spec, but limited browser support |
 
 🔬 **Section Challenge — 🚀 Tail Recursion — The Optimization That Java Doesn't Have**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -477,12 +485,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## 🧠 Memoization — Caching Recursive Results
 
@@ -511,14 +521,15 @@ The call tree for `fib(5)` shows **massive redundancy**:
 
 **Repeated calls:**
 
-| Call | Times Computed |
-|------|----------------|
-| `fib(3)` | 2 times |
-| `fib(2)` | 3 times |
-| `fib(1)` | 5 times |
-| `fib(0)` | 3 times |
+| Call     | Times Computed |
+| -------- | -------------- |
+| `fib(3)` | 2 times        |
+| `fib(2)` | 3 times        |
+| `fib(1)` | 5 times        |
+| `fib(0)` | 3 times        |
 
 ⚠️ **Time Complexity: O(2ⁿ) — exponential!**
+
 - `fib(40)` takes ~1 second
 - `fib(50)` takes ~2 minutes
 
@@ -550,7 +561,6 @@ fib(2)   fib(1)
 fib(1)  fib(0)
 ```
 
-
 ✅ Each `fib(k)` computed exactly **ONCE!**
 **Time: O(n)** · **Space: O(n)**
 
@@ -567,7 +577,6 @@ STACK (much shorter!):
   Only goes 6 levels deep, not exponentially branching!
 ```
 
-
 ---
 
 **Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
@@ -575,8 +584,9 @@ STACK (much shorter!):
 🔬 **Section Challenge — 🧠 Memoization — Caching Recursive Results**
 
 **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+
 <details><summary>Answer</summary>
 
 Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-</details>
 
+</details>

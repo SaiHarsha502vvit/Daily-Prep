@@ -1,4 +1,4 @@
-import { type Locator } from '@playwright/test';
+import { type Locator } from "@playwright/test";
 
 export interface ActionOptions {
   description: string;
@@ -7,11 +7,11 @@ export interface ActionOptions {
 
 export async function clickElement(
   locator: Locator,
-  options: ActionOptions
+  options: ActionOptions,
 ): Promise<void> {
-  await locator.waitFor({ state: 'visible', timeout: options.timeout });
+  await locator.waitFor({ state: "visible", timeout: options.timeout });
   await locator.click({ timeout: options.timeout });
-  if (process.env.LOG_ACTIONS === 'true') {
+  if (process.env.LOG_ACTIONS === "true") {
     console.log(`[ACTION] click: ${options.description}`);
   }
 }
@@ -19,11 +19,11 @@ export async function clickElement(
 export async function fillInput(
   locator: Locator,
   value: string,
-  options: ActionOptions
+  options: ActionOptions,
 ): Promise<void> {
-  await locator.waitFor({ state: 'visible', timeout: options.timeout });
+  await locator.waitFor({ state: "visible", timeout: options.timeout });
   await locator.fill(value, { timeout: options.timeout });
-  if (process.env.LOG_ACTIONS === 'true') {
+  if (process.env.LOG_ACTIONS === "true") {
     console.log(`[ACTION] fill: ${options.description}`);
   }
 }

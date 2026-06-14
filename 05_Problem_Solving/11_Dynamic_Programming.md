@@ -9,6 +9,7 @@
 **DP Signal Words:** `minimum cost`, `maximum profit`, `number of ways`, `longest/shortest`, `can you reach`, `partition into`, `subsequence`, `subset sum`
 
 **Quick Identification:**
+
 ```
 1. Is there a CHOICE at each step?
 2. Do SUBPROBLEMS OVERLAP? (computed multiple times)
@@ -16,15 +17,13 @@
 → ALL YES? → DP
 ```
 
-
-| DP Category | State | Trigger Words |
-|---|---|---|
-| 1D Linear | `dp[i]` = answer for first i | Climbing stairs, house robber, coin change |
-| 2D Grid | `dp[i][j]` = answer at cell | Unique paths, min path sum |
-| Two Sequence | `dp[i][j]` = match i of s1, j of s2 | LCS, edit distance |
-| Knapsack | `dp[i][w]` = best with i items, capacity w | 0/1 knapsack, partition equal subset |
-| Subsequence | `dp[i]` = best ending at i | LIS, word break |
-
+| DP Category  | State                                      | Trigger Words                              |
+| ------------ | ------------------------------------------ | ------------------------------------------ |
+| 1D Linear    | `dp[i]` = answer for first i               | Climbing stairs, house robber, coin change |
+| 2D Grid      | `dp[i][j]` = answer at cell                | Unique paths, min path sum                 |
+| Two Sequence | `dp[i][j]` = match i of s1, j of s2        | LCS, edit distance                         |
+| Knapsack     | `dp[i][w]` = best with i items, capacity w | 0/1 knapsack, partition equal subset       |
+| Subsequence  | `dp[i]` = best ending at i                 | LIS, word break                            |
 
 📖 **Theory:** [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)
 📖 **Patterns:** [16_DP_Pattern_Recognition.md](../04_Patterns_Templates/16_DP_Pattern_Recognition.md)
@@ -32,22 +31,23 @@
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Dynamic Programming**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 # 📚 SECTION 10: DYNAMIC PROGRAMMING PATTERNS
 
@@ -71,7 +71,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY DP — The Most Feared Interview Topic & How to Tame It
@@ -79,10 +78,11 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 ## Why Is Dp The Most Feared Interview Topic
 
 DP appears in ~25% of coding interviews. Companies test it because:
+
 - It reveals if you can DECOMPOSE complex problems
 - It tests mathematical thinking (recurrences)
 - Wrong approach = exponential time; right approach = polynomial time
-REAL-WORLD DP IN PRODUCTION:
+  REAL-WORLD DP IN PRODUCTION:
 - Spell check: "Edit Distance" = DP (Word, Google Docs)
 - GPS routing: Shortest path = DP variant (Google Maps, Waze)
 - Text justification: Knuth's algorithm = DP (LaTeX, Word)
@@ -90,54 +90,55 @@ REAL-WORLD DP IN PRODUCTION:
 - Speech recognition: Viterbi algorithm = DP (Siri, Alexa)
 - Git diff: Longest Common Subsequence = DP
 - Stock trading: Portfolio optimization = DP
+
 ## The Core Insight: Overlapping Subproblems
 
 DP = Recursion + Memoization (avoid re-computing same thing)
 
 **Example**: Fibonacci(5) WITHOUT memoization:
 fib(5)
-╱        ╲
-fib(4)          fib(3)        ← fib(3) computed TWICE
-╱      ╲         ╱     ╲
-fib(3)   fib(2)   fib(2)   fib(1)   ← fib(2) computed 3 TIMES
-╱    ╲     ╱ ╲     ╱ ╲
-fib(2) fib(1) 1   0   1   0               ← fib(1) computed 5 TIMES
 ╱ ╲
-1   0
+fib(4) fib(3) ← fib(3) computed TWICE
+╱ ╲ ╱ ╲
+fib(3) fib(2) fib(2) fib(1) ← fib(2) computed 3 TIMES
+╱ ╲ ╱ ╲ ╱ ╲
+fib(2) fib(1) 1 0 1 0 ← fib(1) computed 5 TIMES
+╱ ╲
+1 0
 Total calls for fib(n) without memo: O(2ⁿ) → fib(40) = 1 BILLION calls!
-Total calls for fib(n) WITH memo:    O(n)   → fib(40) = 40 calls!
+Total calls for fib(n) WITH memo: O(n) → fib(40) = 40 calls!
 
 **With Memoization**: compute each fib(k) ONCE, store result.
 fib(5) → needs fib(4), fib(3)
 fib(4) → needs fib(3), fib(2) → fib(3) already stored! Skip!
 Result: n computations instead of 2ⁿ. That's the power of DP.
 EVERY DP problem has this structure:
+
 1. You have CHOICES at each step
 2. Each choice leads to a SMALLER subproblem
 3. Subproblems OVERLAP (same subproblem solved many times)
 4. You need the OPTIMAL choice (min/max/count)
 
-
-
 ## The 4-Step Framework (Use For Every Dp Problem)
 
 Step 1: DEFINE STATE → "What does dp[i] represent?"
-Step 2: RECURRENCE   → "How does dp[i] relate to smaller dp[j]?"
-Step 3: BASE CASE    → "What are the trivial answers? dp[0] = ?"
-Step 4: BUILD ORDER  → "Bottom-up (tabulation) or top-down (memoization)?"
+Step 2: RECURRENCE → "How does dp[i] relate to smaller dp[j]?"
+Step 3: BASE CASE → "What are the trivial answers? dp[0] = ?"
+Step 4: BUILD ORDER → "Bottom-up (tabulation) or top-down (memoization)?"
 WORKED EXAMPLE — Coin Change (LC 322):
 coins = [1, 3, 4], amount = 6. Find MIN coins.
 Step 1: dp[i] = minimum coins to make amount i
 Step 2: dp[i] = min(dp[i - coin] + 1) for each coin ≤ i
 Step 3: dp[0] = 0 (zero coins for amount 0)
 Step 4: Bottom-up, i from 1 to amount
-dp[0]=0  dp[1]=1(+1) dp[2]=2(+1+1) dp[3]=1(+3) dp[4]=1(+4)
+dp[0]=0 dp[1]=1(+1) dp[2]=2(+1+1) dp[3]=1(+3) dp[4]=1(+4)
 dp[5] = min(dp[5-1]+1, dp[5-3]+1, dp[5-4]+1)
-= min(dp[4]+1,   dp[2]+1,   dp[1]+1)
-= min(2, 3, 2) = 2  → coins: 1+4 or 3+3? Both work, answer = 2
+= min(dp[4]+1, dp[2]+1, dp[1]+1)
+= min(2, 3, 2) = 2 → coins: 1+4 or 3+3? Both work, answer = 2
 dp[6] = min(dp[5]+1, dp[3]+1, dp[2]+1) = min(3, 2, 3) = 2 → 3+3 ✅
 💡 THE SECRET: Step 1 is the HARDEST. Once state is defined correctly,
 the recurrence usually follows naturally. When stuck, try:
+
 - dp[i] = answer for first i elements
 - dp[i][j] = answer for substring from i to j
 - dp[i][j] = answer using first i items with capacity j
@@ -393,7 +394,6 @@ int coinChangeBottomUp(int[] coins, int amount) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -435,7 +435,6 @@ public int climbStairs(int n) {
 │  "Skip current" or "Rob current + skip previous"               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -479,7 +478,6 @@ public int rob(int[] nums) {
 │  Output: 3 (rob house 1 only)                                  │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -532,7 +530,6 @@ private int robRange(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -580,7 +577,6 @@ For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -603,22 +599,23 @@ public int coinChange(int[] coins, int amount) {
 
 ---
 
-
-
 🔬 **Section Challenge — 10.1 1D Dynamic Programming**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 ## 10.2 2D Dynamic Programming
 
@@ -648,7 +645,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 │  Output: 28 paths                                              │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -692,7 +688,6 @@ public int uniquePaths(int m, int n) {
 │  Output: 2 paths                                               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -745,7 +740,6 @@ public int uniquePathsWithObstacles(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -788,7 +782,6 @@ public int minPathSum(int[][] grid) {
 │  LCS = "ace", length = 3                                       │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -842,7 +835,6 @@ If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -871,22 +863,23 @@ public int minDistance(String word1, String word2) {
 
 ---
 
-
-
 🔬 **Section Challenge — 10.2 2D Dynamic Programming**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 ## 10.3 Knapsack Problems
 
@@ -917,7 +910,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 │  Item 2:   0  6 10 16 18 22                                    │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -958,7 +950,6 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 │  dp[i] = true if sum i is achievable                           │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1010,7 +1001,6 @@ public boolean canPartition(int[] nums) {
 │  → Find subsets with sum P                                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1065,7 +1055,6 @@ public int findTargetSumWays(int[] nums, int target) {
 │  O(n log n): Binary search on patience sorting                 │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution (O(n log n)):**
 
@@ -1122,7 +1111,6 @@ private int binarySearch(List<Integer> tails, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1171,7 +1159,6 @@ public boolean wordBreak(String s, List<String> wordDict) {
 │  Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])                  │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -1236,7 +1223,6 @@ public int longestPalindromeSubseq(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -1258,35 +1244,29 @@ public int maxProfit(int[] prices) {
 
 ---
 
-
-
-
 ## 🏆 Competitive Programming — Codeforces Problems
 
-| Problem | Link | DP Type | Difficulty |
-|---|---|---|---|
-| Coins | [CF 16C](https://codeforces.com/problemset/problem/16/C) | 1D DP (Coin Change variant) | ⭐⭐ Medium |
-| Palindrome DP | [CF 5C](https://codeforces.com/problemset/problem/5/C) | 1D DP on strings | ⭐⭐ Medium |
-| Maximum Sum of Digits | [CF 1217C](https://codeforces.com/problemset/problem/1217/C) | Digit DP | ⭐⭐ Medium |
-| Berland Sequence | [CF 837D](https://codeforces.com/problemset/problem/837/D) | Greedy + DP | ⭐⭐⭐ Hard |
-| Tanya and Postcard | [CF 1555E](https://codeforces.com/problemset/problem/1555/E) | Matching DP | ⭐⭐⭐ Hard |
-| Space Journey | [CF 1600E](https://codeforces.com/problemset/problem/1600/E) | Graph DP | ⭐⭐⭐ Hard |
+| Problem               | Link                                                         | DP Type                     | Difficulty  |
+| --------------------- | ------------------------------------------------------------ | --------------------------- | ----------- |
+| Coins                 | [CF 16C](https://codeforces.com/problemset/problem/16/C)     | 1D DP (Coin Change variant) | ⭐⭐ Medium |
+| Palindrome DP         | [CF 5C](https://codeforces.com/problemset/problem/5/C)       | 1D DP on strings            | ⭐⭐ Medium |
+| Maximum Sum of Digits | [CF 1217C](https://codeforces.com/problemset/problem/1217/C) | Digit DP                    | ⭐⭐ Medium |
+| Berland Sequence      | [CF 837D](https://codeforces.com/problemset/problem/837/D)   | Greedy + DP                 | ⭐⭐⭐ Hard |
+| Tanya and Postcard    | [CF 1555E](https://codeforces.com/problemset/problem/1555/E) | Matching DP                 | ⭐⭐⭐ Hard |
+| Space Journey         | [CF 1600E](https://codeforces.com/problemset/problem/1600/E) | Graph DP                    | ⭐⭐⭐ Hard |
 
 ---
 
-
-
-
 ## 🌍 Real-World Applications of Dynamic Programming
 
-| DP Pattern | Real-World System | How It's Used |
-|---|---|---|
-| **Edit Distance (2D String DP)** | Git diff / spell checkers | `diff` tool uses edit distance to find minimal changes between files |
-| **LCS (Longest Common Subsequence)** | DNA sequence alignment | BLAST algorithm aligns DNA/protein sequences using LCS DP |
-| **Knapsack** | Budget/resource allocation | "Maximum feature value within sprint budget" = 0/1 Knapsack |
-| **1D DP (Fibonacci-style)** | Compiler optimization | DAG-based instruction scheduling uses DP on topological order |
-| **Matrix chain multiplication** | ML frameworks (TensorFlow) | Optimal order for matrix multiplications in neural network backprop |
-| **Bellman-Ford (DP on graphs)** | Network routing (RIP protocol) | Distance vector routing = Bellman-Ford DP relaxation |
+| DP Pattern                           | Real-World System              | How It's Used                                                        |
+| ------------------------------------ | ------------------------------ | -------------------------------------------------------------------- |
+| **Edit Distance (2D String DP)**     | Git diff / spell checkers      | `diff` tool uses edit distance to find minimal changes between files |
+| **LCS (Longest Common Subsequence)** | DNA sequence alignment         | BLAST algorithm aligns DNA/protein sequences using LCS DP            |
+| **Knapsack**                         | Budget/resource allocation     | "Maximum feature value within sprint budget" = 0/1 Knapsack          |
+| **1D DP (Fibonacci-style)**          | Compiler optimization          | DAG-based instruction scheduling uses DP on topological order        |
+| **Matrix chain multiplication**      | ML frameworks (TensorFlow)     | Optimal order for matrix multiplications in neural network backprop  |
+| **Bellman-Ford (DP on graphs)**      | Network routing (RIP protocol) | Distance vector routing = Bellman-Ford DP relaxation                 |
 
 ```
 🔥 ICONIC INTERVIEW CONNECTION:
@@ -1296,23 +1276,34 @@ public int maxProfit(int[] prices) {
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Dynamic Programming**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+
 </details>
 
+---
 
+## Historical Evolution
+
+**Dynamic Programming** was formalized by **Richard E. Bellman (1957)** while working at the **RAND Corporation** on multi-stage decision processes for military logistics and operations research. Bellman coined the term "dynamic programming" in his 1952 paper *"On the Theory of Dynamic Programming"* (Proceedings of the National Academy of Sciences) — the name was deliberately vague to disguise the work from Secretary of Defense Charles Wilson, who was hostile to mathematical research ("dynamic" sounded impressive; "programming" referred to planning, not computer code). Bellman's fundamental insight was the **Principle of Optimality**: *"An optimal policy has the property that whatever the initial state and initial decision are, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decision."* This is the formal statement of what we now call **optimal substructure** — the property that makes DP possible.
+
+The technique was popularized through Bellman's 1957 book *"Dynamic Programming"* (Princeton University Press), which established the recurrence-table methodology now standard in DP implementations. **Robert Floyd** and **Stephen Warshall** independently discovered the **Floyd-Warshall all-pairs shortest-path algorithm in 1962** — both used DP over intermediate vertices, making it one of the earliest applications of the principle to graph problems. **Vint Cerf** (then a graduate student) is sometimes credited with independently rediscovering the technique for routing problems in **ARPANET** (1969-1971), though he didn't publish under the DP framework.
+
+**Knuth optimization** was discovered by **Donald E. Knuth in 1971** and refined in his 1974 paper *"Optimum Binary Search Trees"* (Acta Informatica). Knuth proved that for DP recurrences satisfying the **quadrangle inequality** (also called the monotone matrix property), the optimal split point `k[i][j]` is non-decreasing in `i`, reducing the recurrence from O(n³) to O(n²). This was the first "DP optimization" — a class of techniques (Knuth, divide-and-conquer, SMAWK, convex hull, Aliens trick) that exploit structural properties of the recurrence to beat naive O(n³) bounds. The optimal binary search tree problem itself traces back to **Knuth Vol 3 "Sorting and Searching" (1973)**, which became the canonical reference for tree DP, sequence DP, and search-based DP recurrences.
+
+**Modern practice** anchors this history: LeetCode's DP problem set (since 2015) covers the same patterns Bellman formalized — knapsack, LCS, edit distance, coin change — now used by 70%+ of FAANG candidates for interview prep. Competitive programming platforms (Codeforces, AtCoder) push the frontier into convex hull DP, profile DP, and bitmask DP, but the **Bellman optimal substructure principle** from 1957 remains the unifying theoretical foundation. Every DP you write today inherits Bellman's insight: optimal substructure + overlapping subproblems = DP. Cross-reference: see [`03_Algorithms/04a_DP_Internals.md`](../03_Algorithms/04a_DP_Internals.md) for the formal theory and [`04_Patterns_Templates/16_DP_Pattern_Recognition.md`](../04_Patterns_Templates/16_DP_Pattern_Recognition.md) for the pattern recognition framework.

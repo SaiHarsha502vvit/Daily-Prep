@@ -17,21 +17,21 @@ THE EVOLUTION:
   Inspects each packet INDEPENDENTLY. No connection state.
   Decision based on: source IP, dest IP, source port, dest port, protocol.
   Fast but dumb. Can't distinguish legitimate responses from spoofed packets.
-  
+
   Example: iptables in "stateless" mode.
 
 1994 — STATEFUL FIREWALL (Generation 2):
   Tracks CONNECTION STATE (TCP state machine, UDP "connections").
   Knows: "this inbound packet is a RESPONSE to our outbound request."
   Can allow responses automatically (ESTABLISHED,RELATED).
-  
+
   Example: iptables with conntrack module, pf (BSD), Cisco ASA.
 
 2004 — APPLICATION FIREWALL (Generation 3 / NGFW):
   Inspects CONTENT at Layer 7. Understands HTTP, DNS, FTP, SQL.
   Can block: SQL injection patterns, malware downloads, specific URLs.
   Deep Packet Inspection (DPI): looks inside encrypted traffic (with TLS interception).
-  
+
   Example: Palo Alto, Fortinet FortiGate, pfSense with Suricata.
 
 2010s — WAF (Web Application Firewall):
@@ -39,14 +39,14 @@ THE EVOLUTION:
   Works at HTTP layer (headers, body, URLs).
   Rules: OWASP Core Rule Set (CRS).
   Blocks: SQL injection, XSS, CSRF, path traversal, command injection.
-  
+
   Example: AWS WAF, Cloudflare WAF, ModSecurity (open source).
 
 2020s — ZERO TRUST:
   "Never trust, always verify." No implicit trust for ANY traffic.
   Even INTERNAL traffic must be authenticated and authorized.
   Every request is verified: identity, device health, location, risk score.
-  
+
   Implementation: Service mesh (mTLS), BeyondCorp (Google), Microsoft Entra.
 
 FIREWALL TYPES BY DEPLOYMENT:
@@ -230,13 +230,13 @@ ACCESSING AND MANAGING HARDWARE FIREWALLS:
 CISCO ASA:
   Initial access: Serial console cable (9600 baud, 8-N-1).
   After network config: SSH or ASDM (web-based Java GUI).
-  
+
   CLI commands:
   show running-config              # view all configuration
   show access-list                 # view ACLs (firewall rules)
   show conn count                  # active connections
   show xlate                       # NAT translations
-  
+
   Adding ACL:
   access-list OUTSIDE_IN extended permit tcp any host 54.123.45.67 eq 443
   access-group OUTSIDE_IN in interface outside
@@ -244,11 +244,11 @@ CISCO ASA:
 PALO ALTO:
   Web GUI: https://<firewall-ip>  (default admin/admin → change!)
   CLI via SSH: username@firewall>
-  
+
   Key concept: Security ZONES (instead of interfaces).
   Trust → Untrust: allow explicitly.
   Untrust → Trust: deny by default.
-  
+
   show system info
   show running security-policy
   show session all
@@ -256,7 +256,7 @@ PALO ALTO:
 FORTINET FORTIGATE:
   Web GUI: https://<firewall-ip>  (default admin, no password → set immediately!)
   CLI via SSH.
-  
+
   config firewall policy
     edit 1
       set srcintf "internal"
@@ -267,7 +267,7 @@ FORTINET FORTIGATE:
       set service "HTTPS" "SSH"
       set logtraffic all
     end
-  
+
   get firewall policy          # show policies
   diagnose sniffer packet any 'tcp port 443' 4  # packet capture!
 
@@ -275,9 +275,9 @@ PFSENSE (open source):
   Install on any x86 hardware or VM.
   Web GUI: https://192.168.1.1 (default admin/pfsense → change!).
   Features: Firewall, VPN, IDS/IPS (Suricata), DNS, DHCP, traffic shaping.
-  
+
   Best for: home labs, small businesses, learning firewalls.
-  
+
   Rules: Interfaces → WAN/LAN rules → Add rule.
   Logs: Status → System Logs → Firewall.
 ```
@@ -303,7 +303,7 @@ SECURITY GROUPS (instance-level):
   │ Can reference OTHER security groups! │
   │ "Allow traffic from SG-web-servers" │
   └─────────────────────────────────────┘
-  
+
   This is THE primary security control for AWS instances.
 
 NACLs (Network Access Control Lists — subnet-level):
@@ -317,7 +317,7 @@ NACLs (Network Access Control Lists — subnet-level):
   │ Default: allow all (but you should   │
   │ customize for defense-in-depth).     │
   └─────────────────────────────────────┘
-  
+
   Used as an extra layer of defense. Most people rely on Security Groups.
 
 WHEN TO USE WHICH:
@@ -392,13 +392,12 @@ WHEN TO USE WHICH:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **iptables rules** | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — Linux admin |
-| **AWS Security Groups** | [Cloud Networking](13_Cloud_Networking_VPC.md) — Terraform SG |
-| **K8s NetworkPolicy** | [Networking & Security](02_Networking_Security.md) — pod firewalls |
-| **SQL injection** | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) — parameterized queries |
-| **TLS/HTTPS** | [Ch 09: TLS](09_TLS_Encryption.md) — encryption for transit |
-| **DevSecOps pipeline** | [Networking & Security](02_Networking_Security.md) — SAST/DAST |
-| **TCP states** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — conntrack state matching |
-
+| Topic                   | Related Content                                                                |
+| ----------------------- | ------------------------------------------------------------------------------ |
+| **iptables rules**      | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — Linux admin                 |
+| **AWS Security Groups** | [Cloud Networking](13_Cloud_Networking_VPC.md) — Terraform SG                  |
+| **K8s NetworkPolicy**   | [Networking & Security](02_Networking_Security.md) — pod firewalls             |
+| **SQL injection**       | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) — parameterized queries |
+| **TLS/HTTPS**           | [Ch 09: TLS](09_TLS_Encryption.md) — encryption for transit                    |
+| **DevSecOps pipeline**  | [Networking & Security](02_Networking_Security.md) — SAST/DAST                 |
+| **TCP states**          | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — conntrack state matching           |

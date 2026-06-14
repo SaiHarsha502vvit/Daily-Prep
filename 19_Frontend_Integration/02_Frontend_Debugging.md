@@ -6,52 +6,39 @@
 
 ## 5W1H — Why This Chapter?
 
-
 > WHAT: Systematic techniques to find and fix frontend bugs.
 >
-> WHY:  The average developer spends 50% of time debugging.
+> WHY: The average developer spends 50% of time debugging.
 > Moving past console.log to DevTools mastery saves HOURS.
 > Knowing WHERE to look is more valuable than knowing HOW.
 >
-> WHO:  Every frontend developer. Debugging IS the job.
+> WHO: Every frontend developer. Debugging IS the job.
 >
 > WHEN: Every day. Bugs are not exceptions, they're the norm.
 >
-> HOW:  Chrome DevTools → React DevTools → Network Tab →
+> HOW: Chrome DevTools → React DevTools → Network Tab →
 > Performance Profiler → systematic elimination.
-
 
 ---
 
 ## 1. The Debugging Mindset
 
-
 > THE 5-STEP DEBUGGING FRAMEWORK:
 >
-> 1. REPRODUCE  → Can you trigger the bug consistently?
-> Write down EXACT steps to reproduce.
->
-> 2. ISOLATE    → Where is the problem?
-> Network? State? Rendering? CSS? Event?
->
-> 3. INSPECT    → Use the RIGHT tool for the category.
-> Don't guess — measure.
->
+> 1. REPRODUCE → Can you trigger the bug consistently?
+>    Write down EXACT steps to reproduce.
+> 2. ISOLATE → Where is the problem?
+>    Network? State? Rendering? CSS? Event?
+> 3. INSPECT → Use the RIGHT tool for the category.
+>    Don't guess — measure.
 > 4. HYPOTHESIZE → "I think the bug is because X"
-> Now TEST that hypothesis.
->
+>    Now TEST that hypothesis.
 > 5. FIX + VERIFY → Fix the root cause, not the symptom.
-> Add a test so it can't regress.
+>    Add a test so it can't regress.
 >
 > GOLDEN RULE: If you can't reproduce it, you can't fix it.
 
-
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 1. The Debugging Mindset**
 
@@ -73,33 +60,39 @@
 
 ```javascript
 // ─── LEVEL 1: Basics ───
-console.log("value:", variable);          // We all know this
+console.log("value:", variable); // We all know this
 
 // ─── LEVEL 2: Structured Output ───
-console.table([{name: "Alice", age: 30}, {name: "Bob", age: 25}]);
+console.table([
+  { name: "Alice", age: 30 },
+  { name: "Bob", age: 25 },
+]);
 // Displays a formatted table in the console!
 
-console.group("User Flow");               // Collapsible group
+console.group("User Flow"); // Collapsible group
 console.log("Step 1: Login");
 console.log("Step 2: Dashboard");
 console.groupEnd();
 
-console.time("API Call");                  // Measure time
+console.time("API Call"); // Measure time
 await fetch("/api/users");
-console.timeEnd("API Call");               // → "API Call: 142ms"
+console.timeEnd("API Call"); // → "API Call: 142ms"
 
 // ─── LEVEL 3: Debugging Helpers ───
-console.trace("How did we get here?");     // Print stack trace
-console.assert(user.role === "admin",      // Only logs if FALSE
-    "Expected admin, got:", user.role);
-console.count("render");                   // Count how many times called
-console.dir(document.body);               // Show object properties (not HTML)
+console.trace("How did we get here?"); // Print stack trace
+console.assert(
+  user.role === "admin", // Only logs if FALSE
+  "Expected admin, got:",
+  user.role,
+);
+console.count("render"); // Count how many times called
+console.dir(document.body); // Show object properties (not HTML)
 
 // ─── LEVEL 4: Styled Output ───
 console.log(
-    "%c IMPORTANT %c Normal text",
-    "background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px;",
-    ""
+  "%c IMPORTANT %c Normal text",
+  "background: #e74c3c; color: white; padding: 2px 6px; border-radius: 3px;",
+  "",
 );
 ```
 
@@ -140,7 +133,6 @@ Exception Breakpoint:
 └── Code pauses the moment an error is thrown
 ```
 
-
 ### 2.3 Network Tab
 
 ```
@@ -165,7 +157,6 @@ KEY THINGS TO CHECK:
 • Throttling: simulate slow network (3G, offline)
 • CORS errors: look for preflight OPTIONS request failing
 ```
-
 
 ---
 
@@ -206,7 +197,6 @@ REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 4. Common Bug Categories & Solutions
@@ -216,45 +206,45 @@ REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)
 ```tsx
 // BUG: "State update not reflected immediately"
 function Counter() {
-    const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);
 
-    const handleClick = () => {
-        setCount(count + 1);  // Uses STALE closure value!
-        setCount(count + 1);  // Still uses same old count!
-        // count is still 0 in both calls → result: 1, not 2
-    };
+  const handleClick = () => {
+    setCount(count + 1); // Uses STALE closure value!
+    setCount(count + 1); // Still uses same old count!
+    // count is still 0 in both calls → result: 1, not 2
+  };
 
-    // FIX: Use functional update
-    const handleClickFixed = () => {
-        setCount(prev => prev + 1);  // prev is always fresh
-        setCount(prev => prev + 1);  // chained correctly → result: 2
-    };
+  // FIX: Use functional update
+  const handleClickFixed = () => {
+    setCount((prev) => prev + 1); // prev is always fresh
+    setCount((prev) => prev + 1); // chained correctly → result: 2
+  };
 }
 
 // BUG: "Object/Array state not updating UI"
 function UserEditor() {
-    const [user, setUser] = useState({ name: "Alice", age: 30 });
+  const [user, setUser] = useState({ name: "Alice", age: 30 });
 
-    const handleBirthday = () => {
-        user.age += 1;      // MUTATING directly → React can't detect change!
-        setUser(user);       // Same reference → no re-render!
-    };
+  const handleBirthday = () => {
+    user.age += 1; // MUTATING directly → React can't detect change!
+    setUser(user); // Same reference → no re-render!
+  };
 
-    // FIX: Create new object
-    const handleBirthdayFixed = () => {
-        setUser(prev => ({ ...prev, age: prev.age + 1 }));
-        // New object reference → React detects change → re-renders
-    };
+  // FIX: Create new object
+  const handleBirthdayFixed = () => {
+    setUser((prev) => ({ ...prev, age: prev.age + 1 }));
+    // New object reference → React detects change → re-renders
+  };
 }
 
 // BUG: "useEffect runs infinite loop"
 useEffect(() => {
-    fetchData().then(setUsers);
+  fetchData().then(setUsers);
 }, [users]); // users changes → triggers effect → fetches → updates users → INFINITE
 
 // FIX: Empty dependency array (run once)
 useEffect(() => {
-    fetchData().then(setUsers);
+  fetchData().then(setUsers);
 }, []); // Run once on mount
 ```
 
@@ -320,7 +310,6 @@ COMMON CSS BUGS:
 • "Grid gap not showing"    → Check if container has display:grid
 ```
 
-
 ### 4.4 Performance Debugging
 
 ```
@@ -351,7 +340,6 @@ Problem: Bundle too large (slow initial load)
 ├── Fix: Dynamic imports for heavy libraries
 └── Tool: Webpack Bundle Analyzer to see what's big
 ```
-
 
 ---
 
@@ -390,13 +378,7 @@ Problem: Bundle too large (slow initial load)
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 5. CORS Debugging — The Most Confusing Error**
 
@@ -450,13 +432,7 @@ Problem: Bundle too large (slow initial load)
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
-
-
 
 🔬 **Section Challenge — 6. Debugging Checklist by Symptom**
 
@@ -496,11 +472,8 @@ Q: How do you debug a CORS error?
   use a Vite/webpack proxy to avoid CORS entirely.
 ```
 
-
 ---
 
 > [← React Combined](01_React_JS_CSS_Combined.md) | [Index](../00_MASTER_INDEX.md) | [Next → Build Tools](03_Build_Tools_Ecosystem.md)
 
-
 ---
-

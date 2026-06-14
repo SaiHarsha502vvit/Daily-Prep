@@ -24,6 +24,7 @@
 ## 1. Why z-index "Doesn't Work": Stacking Contexts
 
 ### The Freeze Question
+
 "I set z-index: 9999 but my element is still behind another. Why?"
 
 ### Deep Reasoning
@@ -47,30 +48,44 @@ z-index only competes WITHIN the same stacking context
 (same building). You can't jump between buildings.
 ```
 
-
 ```css
 /* What CREATES a new stacking context (a new "building"): */
 
 /* 1. position + z-index (not auto) */
-.parent { position: relative; z-index: 1; } /* New context! */
+.parent {
+  position: relative;
+  z-index: 1;
+} /* New context! */
 
 /* 2. opacity < 1 */
-.parent { opacity: 0.99; } /* New context! Even 0.99! */
+.parent {
+  opacity: 0.99;
+} /* New context! Even 0.99! */
 
 /* 3. transform (any value) */
-.parent { transform: translateZ(0); } /* New context! */
+.parent {
+  transform: translateZ(0);
+} /* New context! */
 
 /* 4. filter, clip-path, mask */
-.parent { filter: blur(0); } /* New context! */
+.parent {
+  filter: blur(0);
+} /* New context! */
 
 /* 5. will-change */
-.parent { will-change: transform; } /* New context! */
+.parent {
+  will-change: transform;
+} /* New context! */
 
 /* 6. position: fixed or sticky */
-.parent { position: fixed; } /* New context! */
+.parent {
+  position: fixed;
+} /* New context! */
 
 /* 7. isolation: isolate (explicitly creates one) */
-.parent { isolation: isolate; } /* New context! Best practice. */
+.parent {
+  isolation: isolate;
+} /* New context! Best practice. */
 ```
 
 **Fix:** Check if your element's parent has ANY of the above properties. If so, the z-index only competes within that parent's stacking context. Move the element out, or adjust the parent's z-index.
@@ -80,6 +95,7 @@ z-index only competes WITHIN the same stacking context
 ## 2. The Cascade: How CSS ACTUALLY Decides Which Rule Wins
 
 ### The Freeze Question
+
 "Two rules target the same element. Which one wins and why?"
 
 ```
@@ -104,15 +120,12 @@ z-index only competes WITHIN the same stacking context
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
-
 
 ## 3. Specificity: It's NOT Just "ID > Class > Element"
 
 ### The Freeze Question
+
 "What's the specificity of `.nav ul li a:hover`?"
 
 ```
@@ -144,12 +157,12 @@ z-index only competes WITHIN the same stacking context
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 ## 4. Box Model: `content-box` vs `border-box` — Why Everyone Switches
 
 ### The Freeze Question
+
 "If I set `width: 200px; padding: 20px; border: 5px solid`, how wide is the element?"
 
 ```
@@ -172,10 +185,11 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 "200px means 200px" — what you'd expect.
 ```
 
-
 ```css
 /* Universal reset — every modern project uses this: */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 ```
@@ -185,6 +199,7 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 ## 5. Block Formatting Context (BFC): The Invisible Layout Force
 
 ### The Freeze Question
+
 "What is a BFC and why should I care?"
 
 ```
@@ -212,18 +227,21 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```css
 /* Old hack */
-.clearfix::after { content: ''; display: block; clear: both; }
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
 
 /* Modern solution */
-.container { display: flow-root; } /* Creates BFC, no side effects */
+.container {
+  display: flow-root;
+} /* Creates BFC, no side effects */
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 5. Block Formatting Context (BFC): The Invisible Layout Force**
 
@@ -235,10 +253,10 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 
 </details>
 
-
 ## 6. Margin Collapse: The Behavior That Confuses Everyone
 
 ### The Freeze Question
+
 "I gave two elements `margin: 20px` each. Why isn't there 40px between them?"
 
 ```
@@ -270,15 +288,12 @@ WHEN IT DOESN'T:
 ❌ Inline-block elements
 ```
 
-
 ---
-
-
-
 
 ## 7. Flexbox vs Grid: Not "Which Is Better" — When Each Shines
 
 ### The Freeze Question
+
 "Should I use Flexbox or Grid?"
 
 ```
@@ -304,15 +319,12 @@ WHEN IT DOESN'T:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
-
 
 ## 8. `position: sticky` Gotchas: Why It Randomly Stops Working
 
 ### The Freeze Question
+
 "My `position: sticky` isn't sticking. What's wrong?"
 
 ```
@@ -345,15 +357,12 @@ WHEN IT DOESN'T:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
-
 
 ## 9. CSS Units: When to Use px, em, rem, %, vh/vw
 
 ### The Freeze Question
+
 "Which CSS unit should I use?"
 
 ```
@@ -391,12 +400,12 @@ WHEN IT DOESN'T:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 ## 10. Reflow vs Repaint: Why Some CSS Changes Are Expensive
 
 ### The Freeze Question
+
 "Why is animating `left` slower than `transform`?"
 
 ```
@@ -430,42 +439,47 @@ WHEN IT DOESN'T:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```css
 /* ❌ SLOW: Triggers reflow every frame */
-.box { transition: left 0.3s; }
-.box:hover { left: 100px; }
+.box {
+  transition: left 0.3s;
+}
+.box:hover {
+  left: 100px;
+}
 
 /* ✅ FAST: Composite only — GPU accelerated */
-.box { transition: transform 0.3s; }
-.box:hover { transform: translateX(100px); }
+.box {
+  transition: transform 0.3s;
+}
+.box:hover {
+  transform: translateX(100px);
+}
 
 /* Use will-change sparingly to hint GPU layer: */
-.box { will-change: transform; } /* Creates own composite layer */
+.box {
+  will-change: transform;
+} /* Creates own composite layer */
 /* ⚠️ Don't overuse — each layer costs GPU memory */
 ```
 
 ---
 
-
-
-
 ## Interview Quick-Fire: CSS Freeze Busters
 
-| Freeze Question | Senior-Level Answer |
-|----------------|-------------------|
-| "How do you center a div?" | `display: grid; place-items: center;` — one line. Or Flexbox: `display: flex; justify-content: center; align-items: center;` |
-| "What is `display: none` vs `visibility: hidden`?" | `display: none` removes from layout (takes no space, triggers reflow). `visibility: hidden` hides but KEEPS space (only repaint). Screen readers skip both. Use `opacity: 0` to hide but keep interactive. |
-| "What's the difference between `em` and `rem`?" | `em` is relative to PARENT's font-size (compounds on nesting). `rem` is relative to ROOT (html) font-size (consistent everywhere). Use `rem` for predictability. |
-| "What does `position: relative` do?" | Creates a positioning context for absolute children AND allows offset (top/left) from ORIGINAL position without affecting other elements' layout. |
-| "Why use CSS custom properties over Sass variables?" | Custom properties are RUNTIME — they cascade, can be changed with JS, respond to media queries. Sass variables compile away (like TypeScript types). Use custom properties for theming. |
+| Freeze Question                                      | Senior-Level Answer                                                                                                                                                                                        |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "How do you center a div?"                           | `display: grid; place-items: center;` — one line. Or Flexbox: `display: flex; justify-content: center; align-items: center;`                                                                               |
+| "What is `display: none` vs `visibility: hidden`?"   | `display: none` removes from layout (takes no space, triggers reflow). `visibility: hidden` hides but KEEPS space (only repaint). Screen readers skip both. Use `opacity: 0` to hide but keep interactive. |
+| "What's the difference between `em` and `rem`?"      | `em` is relative to PARENT's font-size (compounds on nesting). `rem` is relative to ROOT (html) font-size (consistent everywhere). Use `rem` for predictability.                                           |
+| "What does `position: relative` do?"                 | Creates a positioning context for absolute children AND allows offset (top/left) from ORIGINAL position without affecting other elements' layout.                                                          |
+| "Why use CSS custom properties over Sass variables?" | Custom properties are RUNTIME — they cascade, can be changed with JS, respond to media queries. Sass variables compile away (like TypeScript types). Use custom properties for theming.                    |
 
 ---
 
 ← Previous: [Chapter 4 — CSS Responsive & Performance](04_CSS_Modern_Architecture.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [Java Deep Reasoning →](../07_Modern_Java/Ch22_Java_Deep_Reasoning.md)
-
 
 ---
 

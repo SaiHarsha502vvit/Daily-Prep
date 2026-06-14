@@ -8,13 +8,13 @@
 
 # PART 0: The 5W+H Framework
 
-| Question | Python Advanced Context |
-| :--- | :--- |
-| **WHAT** | Deep internals of CPython: the GIL, concurrency models (threading, multiprocessing, asyncio), memory management, and advanced type system features. |
-| **WHY** | Because production Python code must handle web requests concurrently, process large datasets efficiently, and avoid memory leaks. |
-| **WHEN** | When building web servers, data pipelines, ML training loops, or any system that needs performance beyond single-threaded Python. |
-| **WHERE** | Backend services (FastAPI, Django), data engineering (Apache Airflow), ML pipelines, and system administration tools. |
-| **HOW** | By choosing the right concurrency model: asyncio for I/O-bound tasks, multiprocessing for CPU-bound tasks, and careful memory management for large-scale data. |
+| Question  | Python Advanced Context                                                                                                                                        |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | Deep internals of CPython: the GIL, concurrency models (threading, multiprocessing, asyncio), memory management, and advanced type system features.            |
+| **WHY**   | Because production Python code must handle web requests concurrently, process large datasets efficiently, and avoid memory leaks.                              |
+| **WHEN**  | When building web servers, data pipelines, ML training loops, or any system that needs performance beyond single-threaded Python.                              |
+| **WHERE** | Backend services (FastAPI, Django), data engineering (Apache Airflow), ML pipelines, and system administration tools.                                          |
+| **HOW**   | By choosing the right concurrency model: asyncio for I/O-bound tasks, multiprocessing for CPU-bound tasks, and careful memory management for large-scale data. |
 
 ---
 
@@ -36,7 +36,7 @@ WHY DOES IT EXIST?
 WHAT THIS MEANS:
   ❌ Python threads CANNOT achieve true CPU parallelism
   ✅ Python threads CAN run concurrently for I/O operations
-  
+
   Because: while one thread waits for network/disk I/O,
   the GIL is RELEASED and another thread can run.
 
@@ -93,12 +93,12 @@ async def main():
         "https://httpbin.org/get",
         "https://jsonplaceholder.typicode.com/posts/1",
     ]
-    
+
     async with aiohttp.ClientSession() as session:
         # Launch ALL requests concurrently
         tasks = [fetch_url(session, url) for url in urls]
         results = await asyncio.gather(*tasks)
-        
+
         for url, result in zip(urls, results):
             print(f"{url}: {len(result)} chars")
 
@@ -281,7 +281,7 @@ class DatabaseConnection:
     def __enter__(self):
         self.conn = create_connection()
         return self.conn
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.conn.close()  # ALWAYS closes, even on exception
         return False  # don't suppress exceptions
@@ -329,7 +329,7 @@ class User:
     name: str
     email: str
     age: int = 0
-    
+
     # Auto-generates: __init__, __repr__, __eq__
     # No need to write self.name = name boilerplate!
 
@@ -358,7 +358,7 @@ class Order:
     quantity: int
     price: float
     total: float = field(init=False)
-    
+
     def __post_init__(self):
         if self.quantity <= 0:
             raise ValueError("Quantity must be positive")
@@ -432,7 +432,7 @@ list(flatten([1, [2, [3, 4]], 5]))  # [1, 2, 3, 4, 5]
 
 # PART 9: THE GRAND UNIFIED THEORY OF PYTHON EXECUTION PHYSICS & AI (Deconstructed)
 
-> *"Python is not slow. Python is a C-program that runs a massive while-loop evaluating a switch-statement on bytecode. When you run Deep Learning in Python, you are not running Python. You are using Python as an API wrapper to orchestrate massive C++ matrix operations directly on Nvidia GPU hardware. If you do not understand the C-API and the GIL, you do not understand Modern AI."*
+> _"Python is not slow. Python is a C-program that runs a massive while-loop evaluating a switch-statement on bytecode. When you run Deep Learning in Python, you are not running Python. You are using Python as an API wrapper to orchestrate massive C++ matrix operations directly on Nvidia GPU hardware. If you do not understand the C-API and the GIL, you do not understand Modern AI."_
 
 This section strips away the abstraction of "Python Threads" and "PyTorch Tensors." We will look at exactly what the Linux Kernel, the CPython Interpreter, and the CUDA GPU cores are doing when you execute Machine Learning models.
 
@@ -446,23 +446,25 @@ This section strips away the abstraction of "Python Threads" and "PyTorch Tensor
 
 **The Catastrophe of Reference Counting:**
 If `Thread A` and `Thread B` both try to read the variable `x_list`, they both need to increment `x_list`'s reference count. Incrementing a counter in C is NOT an atomic operation. It is three CPU instructions:
+
 1. Load value from RAM into CPU Register.
 2. Add 1 to Register.
 3. Store value back to RAM.
-If Thread A and Thread B execute these instructions simultaneously, the reference count gets corrupted. The V8 Garbage Collector might prematurely delete `x_list` while the threads are still using it, causing an instant `SegFault` crash.
+   If Thread A and Thread B execute these instructions simultaneously, the reference count gets corrupted. The V8 Garbage Collector might prematurely delete `x_list` while the threads are still using it, causing an instant `SegFault` crash.
 
 **The Mechanical Execution (The GIL):**
 To prevent this, Guido van Rossum invented the **GIL (Global Interpreter Lock)**.
 The GIL is a massive, global C-level `mutex` (lock) placed on the entire Python interpreter.
+
 1. Thread A wakes up. It wants to execute a Python line of code.
 2. It MUST acquire the GIL.
 3. Thread B wakes up. It wants to execute code. It CANNOT acquire the GIL. It is physically blocked. It goes back to sleep.
-4. Thread A executes 100 bytecode instructions. 
+4. Thread A executes 100 bytecode instructions.
 5. Thread A is forced to release the GIL, giving Thread B a chance.
 
 **The Result (The CPU-Bound Catastrophe):**
-Because of the GIL, **Python can NEVER use more than 1 CPU core to execute Python code.** 
-If you have a 64-core AWS server, and you write a multi-threaded Python program to calculate prime numbers, 63 cores will sit at 0% utilization, and 1 core will sit at 100%. In fact, multi-threading in Python is often *slower* than single-threading because the OS wastes CPU cycles constantly context-switching threads that are just fighting over the same lock.
+Because of the GIL, **Python can NEVER use more than 1 CPU core to execute Python code.**
+If you have a 64-core AWS server, and you write a multi-threaded Python program to calculate prime numbers, 63 cores will sit at 0% utilization, and 1 core will sit at 100%. In fact, multi-threading in Python is often _slower_ than single-threading because the OS wastes CPU cycles constantly context-switching threads that are just fighting over the same lock.
 
 ---
 
@@ -473,6 +475,7 @@ If you have a 64-core AWS server, and you write a multi-threaded Python program 
 **The Naked Truth:** NumPy is fast because it **Releases the GIL** and bypasses the Python interpreter entirely.
 
 **The Mechanical Execution (Matrix Multiplication):**
+
 1. You write `C = np.dot(A, B)` in Python.
 2. The Python interpreter acquires the GIL and reads the bytecode.
 3. Python calls the underlying C-function inside the NumPy library.
@@ -490,10 +493,11 @@ This is the secret of modern Python. Python is just the glue. The heavy lifting 
 
 **The Abstraction:** "I pass my data into a PyTorch Neural Network, and it trains."
 
-**The Naked Truth:** A GPU is not a magic processor. It is a massive array of thousands of tiny, dumb ALU (Arithmetic Logic Units) that can only do one thing: incredibly fast parallel floating-point multiplication. 
+**The Naked Truth:** A GPU is not a magic processor. It is a massive array of thousands of tiny, dumb ALU (Arithmetic Logic Units) that can only do one thing: incredibly fast parallel floating-point multiplication.
 
 **The Mechanical Execution (The CUDA Bottleneck):**
 When you write `tensor.to('cuda')`, you are executing physical hardware physics across the PCIe bus.
+
 1. The dataset (Images) sits on the NVMe SSD.
 2. The CPU reads the images from the SSD into System RAM (DDR5).
 3. Python executes `images.to('cuda')`.
@@ -509,6 +513,7 @@ The CPU (running single-threaded Python) takes 5 milliseconds to decode the JPEG
 **The Solution (The DataLoader Architecture):**
 To keep the GPU fed, you must use PyTorch's `DataLoader` with `num_workers > 0`.
 This entirely abandons Python Threads and uses **OS Multiprocessing**.
+
 1. The main Python process forks 8 entirely separate OS processes. (Each process gets its own memory space and its own independent GIL).
 2. The 8 processes hit the SSD simultaneously, decode 8 JPEGs in parallel on 8 CPU cores.
 3. They write the decoded matrices into **Shared Memory (shm)**.
@@ -519,13 +524,12 @@ This entirely abandons Python Threads and uses **OS Multiprocessing**.
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Threading / Concurrency | [Java Concurrency](../07_Modern_Java/Ch31_SB_Core_Part1.md) |
-| Memory / Heap / GC | [Memory Foundations](../02_Data_Structures/01a_Memory_Foundations.md) |
-| Hash Tables (dict internals) | [HashTable](../02_Data_Structures/01e_HashTable.md) |
-| **Asyncio Deep Dive** | [Asyncio Internals](02b_Python_Asyncio_Internals.md) |
-| **ML with Python** | [ML Fundamentals](05_ML_Fundamentals.md) — generators for data loading |
+| Topic                        | Related Content                                                          |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| Threading / Concurrency      | [Java Concurrency](../07_Modern_Java/Ch31_SB_Core_Part1.md)              |
+| Memory / Heap / GC           | [Memory Foundations](../02_Data_Structures/01a_Memory_Foundations.md)    |
+| Hash Tables (dict internals) | [HashTable](../02_Data_Structures/01e_HashTable.md)                      |
+| **Asyncio Deep Dive**        | [Asyncio Internals](02b_Python_Asyncio_Internals.md)                     |
+| **ML with Python**           | [ML Fundamentals](05_ML_Fundamentals.md) — generators for data loading   |
 | **NumPy (memory-efficient)** | [NumPy/Pandas](03_NumPy_Pandas_Essentials.md) — array vs list comparison |
-| **DevOps (Python in CI)** | [CI/CD](../22_DevOps/19_CICD_Pipelines.md) — Python testing in pipelines |
-
+| **DevOps (Python in CI)**    | [CI/CD](../22_DevOps/19_CICD_Pipelines.md) — Python testing in pipelines |

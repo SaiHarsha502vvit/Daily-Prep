@@ -1,12 +1,14 @@
 # Day 04 - Binary Search and Monotone Decisions (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 702 - Search in a Sorted Array of Unknown Size
 2. LeetCode Medium: 33 - Search in Rotated Sorted Array
 3. Codeforces: 706B - Interesting Drink
 4. Codeforces: 474B - Worms
 
 ## Problem Links
+
 - LC 702 (Premium): Locked on LeetCode (no public official statement page)
 - LC 33: https://leetcode.com/problems/search-in-rotated-sorted-array/
 - CF 706B: https://codeforces.com/problemset/problem/706/B
@@ -15,13 +17,16 @@
 ## Problem 1 - LC 702 (Premium)
 
 ### Problem Restatement
+
 You can access elements only via `reader.get(index)`. The array is sorted ascending and out-of-range access returns a large sentinel value. Find index of target or `-1`.
 
 ### Constraints
+
 - Length unknown
 - Values sorted ascending
 
 ### Sample
+
 Input: `[-1,0,3,5,9,12]`, target `9`  
 Output: `4`
 
@@ -41,6 +46,7 @@ static int searchBrute(ArrayReader reader, int target) {
 ```
 
 ### Approach B - Better (Exponential Range + Linear Scan) (O(pos), O(1))
+
 Find an upper bound fast, then linearly scan inside bound.
 
 ```java
@@ -82,12 +88,15 @@ static int searchOptimal(ArrayReader reader, int target) {
 ## Problem 2 - LC 33: Search in Rotated Sorted Array
 
 ### Problem Restatement
+
 Given rotated sorted array with unique values, return index of target or `-1`.
 
 ### Constraints
+
 - `1 <= n <= 5000`
 
 ### Sample
+
 Input: `nums=[4,5,6,7,0,1,2], target=0`  
 Output: `4`
 
@@ -146,6 +155,7 @@ static int rotatedOptimal(int[] nums, int target) {
 ```
 
 ### Interview Notes
+
 - Ask whether duplicates exist. Duplicate version needs modified logic.
 
 ---
@@ -153,12 +163,15 @@ static int rotatedOptimal(int[] nums, int target) {
 ## Problem 3 - CF 706B: Interesting Drink
 
 ### Problem Restatement
+
 Given prices and many queries `x`, output how many shops have price `<= x`.
 
 ### Constraints
+
 - `n, q <= 200000`
 
 ### Sample
+
 Input prices: `[3,10,8]`, query `x=9`  
 Output: `2`
 
@@ -187,6 +200,7 @@ static int drinkBetter(int[] sortedPrices, int x) {
 ```
 
 ### Approach C - Optimal (Frequency Prefix, bounded value) (O(maxV + q), O(maxV))
+
 If max price bound is practical, build counting prefix.
 
 ```java
@@ -209,15 +223,19 @@ static int drinkOptimal(int[] pref, int x) {
 ## Problem 4 - CF 474B: Worms
 
 ### Problem Restatement
+
 Given pile sizes, worm labels are assigned consecutively. For each query `x`, output the pile index containing worm `x`.
 
 ### Constraints
+
 - `n, m <= 100000`
 
 ### Sample
+
 Piles: `[2,7,3]` gives ranges `[1..2], [3..9], [10..12]`. Query `x=8` -> pile `2`.
 
 ### Approach A - Brute Force (O(nq), O(1))
+
 For each query, scan piles cumulatively.
 
 ```java
@@ -246,6 +264,7 @@ static int wormsBetter(int[] pref, int x) {
 ```
 
 ### Approach C - Optimal (Offline Sorted Queries) (O(n + q log q), O(q))
+
 Sort queries by `x` and sweep prefix once.
 
 ```java
@@ -266,5 +285,6 @@ static int[] wormsOptimal(int[] piles, int[] queries) {
 ```
 
 ### Pattern Takeaways
+
 - Exponential expansion + binary search for unknown bounds.
 - Lower/upper bound binary searches are reusable templates.

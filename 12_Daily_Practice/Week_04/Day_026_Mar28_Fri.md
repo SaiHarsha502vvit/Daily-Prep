@@ -1,6 +1,7 @@
 ﻿> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
 
 # DAY 026 — Friday, March 28, 2026
+
 ## Bellman-Ford + Bipartite Check + SQL Normalization
 
 > **Theme**: Negative-weight shortest path + Graph coloring + Database design theory
@@ -9,14 +10,14 @@
 
 ## 📅 SCHEDULE
 
-| Time Block | Duration | Topic |
-|------------|----------|-------|
-| 0:00–0:30 | 30 min | DS: Bellman-Ford Algorithm |
-| 0:30–1:00 | 30 min | ALGO: Bipartite Graph Check (2-Coloring) |
-| 1:00–1:20 | 20 min | COMBO: LC 787 + LC 785 |
-| 1:20–1:40 | 20 min | REAL-WORLD: Currency arbitrage = Bellman-Ford |
-| 1:40–2:20 | 40 min | SQL: Database Normalization (1NF → 3NF) |
-| 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
+| Time Block | Duration | Topic                                         |
+| ---------- | -------- | --------------------------------------------- |
+| 0:00–0:30  | 30 min   | DS: Bellman-Ford Algorithm                    |
+| 0:30–1:00  | 30 min   | ALGO: Bipartite Graph Check (2-Coloring)      |
+| 1:00–1:20  | 20 min   | COMBO: LC 787 + LC 785                        |
+| 1:20–1:40  | 20 min   | REAL-WORLD: Currency arbitrage = Bellman-Ford |
+| 1:40–2:20  | 40 min   | SQL: Database Normalization (1NF → 3NF)       |
+| 2:20–3:00  | 40 min   | PROBLEMS: Q1 + Q2                             |
 
 ---
 
@@ -28,10 +29,9 @@
 > | **ALGO: Bipartite Graph Check** | [Graph Patterns](../../03_Algorithms/05e_Graphs_Patterns.md) |
 > | **SQL: Database Normalization (1NF-3NF)** | [SQL: Normalization](../../08_SQL/10_Normalization.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
 
 ## 🧱 DS BLOCK: Bellman-Ford Algorithm
 
@@ -56,7 +56,7 @@ int[] bellmanFord(int n, int[][] edges, int source) {
     int[] dist = new int[n];
     Arrays.fill(dist, Integer.MAX_VALUE);
     dist[source] = 0;
-    
+
     // Relax all edges V-1 times
     for (int i = 0; i < n - 1; i++) {
         boolean updated = false;
@@ -69,7 +69,7 @@ int[] bellmanFord(int n, int[][] edges, int source) {
         }
         if (!updated) break;  // Early termination: no changes = done
     }
-    
+
     // Check for negative weight cycles (V-th relaxation)
     for (int[] edge : edges) {
         int u = edge[0], v = edge[1], w = edge[2];
@@ -78,7 +78,7 @@ int[] bellmanFord(int n, int[][] edges, int source) {
             return null;
         }
     }
-    
+
     return dist;
 }
 ```
@@ -97,7 +97,6 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 │                   │                  │ stops constraint   │
 └───────────────────┴──────────────────┴────────────────────┘
 ```
-
 
 ---
 
@@ -119,7 +118,6 @@ Bipartite = can split nodes into 2 sets such that
         2     3          Edge 0-2: Red-Red ✗ → NOT BIPARTITE
 ```
 
-
 ### BFS 2-Coloring
 
 ```java
@@ -127,15 +125,15 @@ boolean isBipartite(int[][] graph) {
     int n = graph.length;
     int[] color = new int[n];
     Arrays.fill(color, -1);  // -1 = uncolored
-    
+
     for (int i = 0; i < n; i++) {
         if (color[i] != -1) continue;
-        
+
         // BFS from node i
         Queue<Integer> queue = new LinkedList<>();
         queue.offer(i);
         color[i] = 0;
-        
+
         while (!queue.isEmpty()) {
             int node = queue.poll();
             for (int neighbor : graph[node]) {
@@ -171,9 +169,8 @@ UNNORMALIZED (one table):
 Problems:
 • "Eng" phone changes → update EVERY row (Update Anomaly)
 • Delete Alice → lose that she knows Java+SQL (Delete Anomaly)
-• Skills in one column → can't easily query "who knows Java?" 
+• Skills in one column → can't easily query "who knows Java?"
 ```
-
 
 ### The Normal Forms
 
@@ -193,7 +190,6 @@ Problems:
   ✓ No transitive dependencies (non-key → non-key)
   → DeptPhone depends on Dept, not on emp_id → move to departments table
 ```
-
 
 ### Normalized Design
 
@@ -235,11 +231,10 @@ CREATE TABLE employee_skills (
 n cities, flights[i] = [from, to, price].
 Find cheapest price from src to dst with at most k stops.
 
-Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]], 
+Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],
        src=0, dst=3, k=1
 Output: 700 (0→1→3)
 ```
-
 
 **Pattern**: Bellman-Ford with K+1 iterations (or BFS with level = stops).
 

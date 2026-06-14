@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 
-import { Timeouts , PollIntervals } from '../constants/timeouts';
+import { Timeouts, PollIntervals } from '../constants/timeouts';
 import type {
   CreateUserRequest,
   CreateUserResponse,
@@ -134,7 +134,7 @@ function validateListUsersResponse(data: unknown): ListUsersResponse {
         `ListUsersResponse: data[${idx}] expected object`,
         '',
         item,
-        `data[${idx}] not an object`
+        `data[${idx}] not an object`,
       );
     }
     const u = item as Record<string, unknown>;

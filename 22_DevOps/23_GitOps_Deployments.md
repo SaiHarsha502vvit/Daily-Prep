@@ -90,7 +90,7 @@ spec:
   source:
     repoURL: https://github.com/myorg/k8s-manifests
     targetRevision: main
-    path: apps/my-api           # directory in repo with K8s manifests
+    path: apps/my-api # directory in repo with K8s manifests
 
   destination:
     server: https://kubernetes.default.svc
@@ -98,10 +98,10 @@ spec:
 
   syncPolicy:
     automated:
-      prune: true               # delete resources removed from Git
-      selfHeal: true            # revert manual cluster changes
+      prune: true # delete resources removed from Git
+      selfHeal: true # revert manual cluster changes
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
     retry:
       limit: 3
       backoff:
@@ -118,7 +118,7 @@ spec:
 ```
 HELM = package manager for Kubernetes.
   Like apt for Ubuntu, npm for Node.js → Helm for K8s.
-  
+
   A HELM CHART = a package of K8s manifests with templating.
   Instead of hardcoding values → use templates with configurable values.
 
@@ -127,7 +127,7 @@ WHY?
   staging/deploy.yaml: replicas: 1, image: api:staging
   production/deploy.yaml: replicas: 5, image: api:v2.1
   3 environments × 10 files = 30 files. Change a label? → change 30 files.
-  
+
   WITH HELM: ONE template, different values per environment.
   templates/deploy.yaml: replicas: {{ .Values.replicas }}
   staging/values.yaml:   replicas: 1
@@ -151,26 +151,26 @@ WHY?
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: { { .Release.Name } }
   labels:
-    app: {{ .Release.Name }}
-    version: {{ .Values.image.tag }}
+    app: { { .Release.Name } }
+    version: { { .Values.image.tag } }
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: { { .Values.replicas } }
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: { { .Release.Name } }
   template:
     spec:
       containers:
-      - name: {{ .Release.Name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        resources:
-          requests:
-            memory: {{ .Values.resources.requests.memory }}
-            cpu: {{ .Values.resources.requests.cpu }}
-          limits:
-            memory: {{ .Values.resources.limits.memory }}
+        - name: { { .Release.Name } }
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          resources:
+            requests:
+              memory: { { .Values.resources.requests.memory } }
+              cpu: { { .Values.resources.requests.cpu } }
+            limits:
+              memory: { { .Values.resources.limits.memory } }
 
 # ── values-production.yaml ──
 replicas: 5
@@ -237,15 +237,15 @@ THE FULL PICTURE:
      │                      │                      │── reconcile ──────│
      │                      │                      │                   │
      │<──── notification: deployment complete ─────────────────────────│
-  
+
   KEY INSIGHT:
   CI only builds and publishes. It NEVER touches production.
   ArgoCD (in the cluster) pulls from Git and applies.
-  
+
   SEPARATION OF CONCERNS:
   Code repo (github.com/myorg/api):         application source code.
   Config repo (github.com/myorg/k8s-config): K8s manifests + Helm values.
-  
+
   WHY separate?
   1. Different change velocity (code changes daily, infra changes weekly).
   2. Different access control (devs change code, SRE reviews infra).
@@ -277,19 +277,19 @@ spec:
   strategy:
     canary:
       steps:
-      - setWeight: 5           # 5% traffic to new version
-      - pause: { duration: 5m } # observe for 5 minutes
-      - analysis:
-          templates:
-          - templateName: error-rate-check
-      - setWeight: 25          # increase to 25%
-      - pause: { duration: 10m }
-      - analysis:
-          templates:
-          - templateName: error-rate-check
-      - setWeight: 50          # 50%
-      - pause: { duration: 10m }
-      - setWeight: 100         # full rollout
+        - setWeight: 5 # 5% traffic to new version
+        - pause: { duration: 5m } # observe for 5 minutes
+        - analysis:
+            templates:
+              - templateName: error-rate-check
+        - setWeight: 25 # increase to 25%
+        - pause: { duration: 10m }
+        - analysis:
+            templates:
+              - templateName: error-rate-check
+        - setWeight: 50 # 50%
+        - pause: { duration: 10m }
+        - setWeight: 100 # full rollout
 
 ---
 # ANALYSIS TEMPLATE: automated rollback if metrics are bad
@@ -299,17 +299,17 @@ metadata:
   name: error-rate-check
 spec:
   metrics:
-  - name: error-rate
-    interval: 60s
-    successCondition: result[0] < 0.05    # error rate < 5%
-    failureLimit: 3                        # 3 failures → auto-rollback!
-    provider:
-      prometheus:
-        address: http://prometheus:9090
-        query: |
-          sum(rate(http_requests_total{status=~"5..",app="my-api",version="canary"}[5m]))
-          /
-          sum(rate(http_requests_total{app="my-api",version="canary"}[5m]))
+    - name: error-rate
+      interval: 60s
+      successCondition: result[0] < 0.05 # error rate < 5%
+      failureLimit: 3 # 3 failures → auto-rollback!
+      provider:
+        prometheus:
+          address: http://prometheus:9090
+          query: |
+            sum(rate(http_requests_total{status=~"5..",app="my-api",version="canary"}[5m]))
+            /
+            sum(rate(http_requests_total{app="my-api",version="canary"}[5m]))
 ```
 
 ```
@@ -318,9 +318,9 @@ HOW IT WORKS:
   2. Argo Rollouts queries Prometheus: "Is the error rate < 5%?"
   3. YES → proceed to 25%, then 50%, then 100%.
   4. NO (3 consecutive failures) → automatic rollback to stable version!
-  
+
   ZERO HUMAN INTERVENTION. The system validates its own deployments.
-  
+
   vs STANDARD K8S DEPLOYMENT:
   Deployment: replaces pods, can't control traffic percentage.
   Rollout: controls EXACT traffic split using Istio/nginx/ALB.
@@ -355,7 +355,7 @@ ARGOCD vs FLUX:
 WHEN TO USE:
   ArgoCD: teams that want a visual dashboard, simpler setup, monolithic.
   Flux: teams that prefer CLI, want microservice architecture, image automation.
-  
+
   Both are excellent. ArgoCD is more popular (by GitHub stars).
   Flux is more modular (use only the components you need).
 ```
@@ -374,7 +374,7 @@ THE PROBLEM:
 SOLUTION 1: SEALED SECRETS (Bitnami):
   Encrypt secrets client-side → commit ENCRYPTED secret to Git.
   Sealed Secrets controller in cluster → decrypts at deploy time.
-  
+
   kubeseal --cert pub-cert.pem < secret.yaml > sealed-secret.yaml
   # sealed-secret.yaml is safe to commit (encrypted with cluster's public key)
   # Only the controller in the cluster has the private key to decrypt
@@ -382,23 +382,23 @@ SOLUTION 1: SEALED SECRETS (Bitnami):
 SOLUTION 2: SOPS (Mozilla — Secrets OPerationS):
   Encrypt YAML/JSON values (not keys!) with KMS, PGP, or age.
   Stored in Git: keys are readable, values are encrypted.
-  
+
   sops --encrypt --kms arn:aws:kms:us-east-1:123:key/abc secret.yaml > secret.enc.yaml
-  
+
   Result:
   apiVersion: v1
   kind: Secret
   data:
     password: ENC[AES256_GCM,data:abcdef123456,iv:...,tag:...]
     # Key "password" is readable. Value is encrypted.
-  
+
   Flux has built-in SOPS decryption support.
   ArgoCD uses the argocd-vault-plugin or kustomize-sops.
 
 SOLUTION 3: EXTERNAL SECRETS OPERATOR (ESO):
   Don't store secrets in Git at ALL.
   Store an ExternalSecret reference → ESO fetches from Vault/AWS/GCP.
-  
+
   apiVersion: external-secrets.io/v1beta1
   kind: ExternalSecret
   metadata:
@@ -415,7 +415,7 @@ SOLUTION 3: EXTERNAL SECRETS OPERATOR (ESO):
       remoteRef:
         key: production/database
         property: password
-  
+
   ESO creates a real K8s Secret by fetching from AWS Secrets Manager.
   Git only has the REFERENCE, not the actual secret value.
 
@@ -441,23 +441,23 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - list:
-      elements:
-      - cluster: us-east-1
-        url: https://k8s-us-east.mycompany.com
-        values:
-          replicas: "5"
-          env: production
-      - cluster: eu-west-1
-        url: https://k8s-eu-west.mycompany.com
-        values:
-          replicas: "3"
-          env: production
-      - cluster: ap-south-1
-        url: https://k8s-ap-south.mycompany.com
-        values:
-          replicas: "2"
-          env: production
+    - list:
+        elements:
+          - cluster: us-east-1
+            url: https://k8s-us-east.mycompany.com
+            values:
+              replicas: "5"
+              env: production
+          - cluster: eu-west-1
+            url: https://k8s-eu-west.mycompany.com
+            values:
+              replicas: "3"
+              env: production
+          - cluster: ap-south-1
+            url: https://k8s-ap-south.mycompany.com
+            values:
+              replicas: "2"
+              env: production
   template:
     metadata:
       name: my-api-{{cluster}}
@@ -469,10 +469,10 @@ spec:
         path: apps/my-api
         helm:
           valueFiles:
-          - values-{{values.env}}.yaml
+            - values-{{values.env}}.yaml
           parameters:
-          - name: replicas
-            value: "{{values.replicas}}"
+            - name: replicas
+              value: "{{values.replicas}}"
       destination:
         server: "{{url}}"
         namespace: production
@@ -567,7 +567,7 @@ spec:
 KUSTOMIZE vs HELM:
   Kustomize: plain YAML, no templating, simpler, built into kubectl.
   Helm: full templating, package management, dependency management.
-  
+
   USE KUSTOMIZE WHEN: simple overlays (staging vs production).
   USE HELM WHEN: complex charts, community packages (Redis, PostgreSQL).
   USE BOTH: ArgoCD supports Helm + Kustomize in the same Application!
@@ -577,15 +577,14 @@ KUSTOMIZE vs HELM:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **K8s resources** | [Ch 18: K8s](18_Kubernetes_Complete.md) — what GitOps deploys |
-| **CI/CD (builds images)** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — the build side |
-| **Terraform (infra)** | [Ch 20: Terraform](20_Terraform_IaC.md) — provisions K8s cluster |
-| **Monitoring (verify)** | [Ch 21: Observability](21_Monitoring_Observability.md) — post-deploy metrics |
-| **SRE (error budgets)** | [Ch 22: SRE](22_SRE_Practices.md) — deploy velocity decisions |
-| **Service mesh** | [Cloud Native](03_ServiceMesh_CloudNative.md) — Istio + ArgoCD |
-| **Docker images** | [Ch 17: Docker](17_Docker_Complete.md) — what CI builds |
-| **TLS certs** | [Ch 09: TLS](09_TLS_Encryption.md) — cert-manager + GitOps |
-| **Secrets** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — secrets management |
-
+| Topic                     | Related Content                                                              |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| **K8s resources**         | [Ch 18: K8s](18_Kubernetes_Complete.md) — what GitOps deploys                |
+| **CI/CD (builds images)** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — the build side                        |
+| **Terraform (infra)**     | [Ch 20: Terraform](20_Terraform_IaC.md) — provisions K8s cluster             |
+| **Monitoring (verify)**   | [Ch 21: Observability](21_Monitoring_Observability.md) — post-deploy metrics |
+| **SRE (error budgets)**   | [Ch 22: SRE](22_SRE_Practices.md) — deploy velocity decisions                |
+| **Service mesh**          | [Cloud Native](03_ServiceMesh_CloudNative.md) — Istio + ArgoCD               |
+| **Docker images**         | [Ch 17: Docker](17_Docker_Complete.md) — what CI builds                      |
+| **TLS certs**             | [Ch 09: TLS](09_TLS_Encryption.md) — cert-manager + GitOps                   |
+| **Secrets**               | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — secrets management      |

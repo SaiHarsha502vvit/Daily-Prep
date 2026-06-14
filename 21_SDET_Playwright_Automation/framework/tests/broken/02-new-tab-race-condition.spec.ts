@@ -47,10 +47,7 @@ test('fixed: open new tab with Promise.all', async ({ page, context }) => {
 
   const link = page.locator('#open-new-tab-fixed');
 
-  const [newPage] = await Promise.all([
-    context.waitForEvent('page'),
-    link.click(),
-  ]);
+  const [newPage] = await Promise.all([context.waitForEvent('page'), link.click()]);
 
   await expect(newPage).toBeDefined();
   await expect(newPage).toHaveURL(/api\/users/);

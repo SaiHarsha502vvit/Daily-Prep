@@ -1,4 +1,5 @@
 # 📝 DevOps — Problem Sets
+
 ## `22_DevOps` Module | Docker · GitHub Actions · Kubernetes Concepts
 
 > **How to use:** Write every command from memory before checking. Part B deliverables are YAML files you actually write and test.
@@ -34,6 +35,7 @@ RUN mvn package -DskipTests      # only runs when src changes
 ```
 
 🔴 **Erklärung:** A `COPY . .` before `mvn dependency:go-offline` means every source code change (even a comment) invalidates the dependency download layer — `mvn` re-downloads hundreds of MB on every build. This is the #1 Docker performance mistake.
+
 </details>
 
 ---
@@ -42,13 +44,14 @@ RUN mvn package -DskipTests      # only runs when src changes
 
 <details><summary>Answer</summary>
 
-| | `ENTRYPOINT` | `CMD` |
-|---|---|---|
-| Purpose | The command that ALWAYS runs | Default arguments (can be overridden) |
-| Override | `docker run --entrypoint` | `docker run image <new-cmd>` |
-| Common use | The application executable | Application arguments / flags |
+|            | `ENTRYPOINT`                 | `CMD`                                 |
+| ---------- | ---------------------------- | ------------------------------------- |
+| Purpose    | The command that ALWAYS runs | Default arguments (can be overridden) |
+| Override   | `docker run --entrypoint`    | `docker run image <new-cmd>`          |
+| Common use | The application executable   | Application arguments / flags         |
 
 **Common pattern (ENTRYPOINT + CMD together):**
+
 ```dockerfile
 ENTRYPOINT ["java", "-jar", "app.jar"]
 CMD ["--server.port=8080"]   # default port, overridable
@@ -57,12 +60,14 @@ CMD ["--server.port=8080"]   # default port, overridable
 ```
 
 **CMD alone:**
+
 ```dockerfile
 CMD ["java", "-jar", "app.jar"]   # entire command can be overridden
 # docker run image bash  → runs bash instead of the app
 ```
 
 🔴 **Erklärung:** Use ENTRYPOINT for the fixed executable. Use CMD for default flags/arguments. `CMD` alone is fine for development images where you want full flexibility. Production images should use ENTRYPOINT to prevent accidentally running a shell instead of the application.
+
 </details>
 
 ---
@@ -74,16 +79,18 @@ CMD ["java", "-jar", "app.jar"]   # entire command can be overridden
 **Docker's embedded DNS:** When you `docker-compose up`, Docker creates a bridge network and registers each container's service name as a DNS hostname within that network.
 
 So `api` can reach `db` at hostname `db`:
+
 ```yaml
 services:
   api:
     environment:
-      DB_URL: jdbc:postgresql://db:5432/mydb   # "db" resolves to the db container's IP
+      DB_URL: jdbc:postgresql://db:5432/mydb # "db" resolves to the db container's IP
   db:
     image: postgres:16-alpine
 ```
 
 **How it works:**
+
 1. Docker starts its own DNS server at `127.0.0.11` inside each container
 2. When `api` calls `db:5432`, the DNS server resolves `db` to the container's IP on the bridge network
 3. Containers on different networks cannot reach each other (network isolation)
@@ -91,6 +98,7 @@ services:
 **Localhost is NOT the same:** `localhost` inside `api` refers to `api` itself — NOT the host machine, NOT `db`. Use service names for inter-container communication.
 
 🔴 **Erklärung:** The most common mistake is `SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/db`. This works outside Docker (direct host connection) but fails inside a container where `localhost` = the container itself.
+
 </details>
 
 ---
@@ -98,6 +106,7 @@ services:
 ### Part B: Write the Files
 
 **B1.** Write a multi-stage Dockerfile for a Java 17 Spring Boot application that:
+
 - Final image is based on JRE (not JDK)
 - Runs as a non-root user
 - Caches Maven dependencies as a separate layer
@@ -126,6 +135,7 @@ ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-j
 ```
 
 **Why < 200MB:** `eclipse-temurin:17-jre-alpine` base = ~90MB. Plus app JAR ~50MB. Total ≈ 140MB. Using JDK would be ~340MB.
+
 </details>
 
 ---
@@ -135,7 +145,7 @@ ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-j
 <details><summary>Answer</summary>
 
 ```yaml
-version: '3.9'
+version: "3.9"
 services:
   redis:
     image: redis:7-alpine
@@ -169,7 +179,7 @@ services:
       SPRING_REDIS_HOST: redis
       JWT_SECRET: ${JWT_SECRET}
     depends_on:
-      db:    { condition: service_healthy }
+      db: { condition: service_healthy }
       redis: { condition: service_healthy }
 
 volumes:
@@ -177,6 +187,7 @@ volumes:
 ```
 
 Variables come from `.env` file (gitignored): `DB_NAME=myapp\nDB_USER=user\nDB_PASS=pass\nJWT_SECRET=xxx`
+
 </details>
 
 ---
@@ -196,6 +207,7 @@ Variables come from `.env` file (gitignored): `DB_NAME=myapp\nDB_USER=user\nDB_P
 **Step:** A sequential task within a job — runs `uses: action/checkout@v4` or `run: npm test`. Steps within a job share the same filesystem and environment.
 
 **Passing data between steps (via output):**
+
 ```yaml
 steps:
   - id: version
@@ -205,6 +217,7 @@ steps:
 ```
 
 **Passing data between jobs (via artifacts):**
+
 ```yaml
 jobs:
   build:
@@ -220,11 +233,13 @@ jobs:
 ```
 
 🔴 **Erklärung:** Steps share filesystem. Jobs do NOT — each job starts from a fresh VM. To pass build artifacts between jobs, use `upload-artifact` + `download-artifact`.
+
 </details>
 
 ---
 
 **A2 (Hard).** Design a GitHub Actions pipeline that:
+
 1. Runs tests on Java 17 AND 21 in parallel
 2. Only builds the Docker image if tests pass on BOTH
 3. Only pushes to Docker Hub if the branch is `main`
@@ -266,19 +281,20 @@ jobs:
 ```
 
 **Key:** `needs: test` waits for ALL matrix instances of the `test` job. `fail-fast: true` cancels parallel test jobs if one fails. Push is gated by `github.ref` check.
+
 </details>
 
 ---
 
 🔴 **DEVOPS Erklärung Summary:**
 
-| Mistake | Why | Fix |
-|---|---|---|
-| Secrets in `docker-compose.yml` | Committed to git — exposed forever | Use env vars from `.env` (gitignored) or Docker secrets |
-| No health checks | API starts before DB ready → crash | `depends_on: condition: service_healthy` |
-| Build Docker image before tests pass | Broken image pushed to registry | `needs: test` in CI pipeline |
-| `COPY . .` as first instruction | Busts all cached layers on any file change | Copy `pom.xml` first, then source |
-| Running containers as root | Security risk | `adduser` + `USER` instruction |
+| Mistake                              | Why                                        | Fix                                                     |
+| ------------------------------------ | ------------------------------------------ | ------------------------------------------------------- |
+| Secrets in `docker-compose.yml`      | Committed to git — exposed forever         | Use env vars from `.env` (gitignored) or Docker secrets |
+| No health checks                     | API starts before DB ready → crash         | `depends_on: condition: service_healthy`                |
+| Build Docker image before tests pass | Broken image pushed to registry            | `needs: test` in CI pipeline                            |
+| `COPY . .` as first instruction      | Busts all cached layers on any file change | Copy `pom.xml` first, then source                       |
+| Running containers as root           | Security risk                              | `adduser` + `USER` instruction                          |
 
 ---
 

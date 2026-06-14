@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { api, OwnerSummary } from '../../api';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { api, OwnerSummary } from "../../api";
 
 function formatDuration(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -14,7 +14,9 @@ function formatDate(iso: string): string {
 
 export default function OwnerViewPage() {
   const router = useRouter();
-  const name = Array.isArray(router.query.name) ? router.query.name[0] : router.query.name || '';
+  const name = Array.isArray(router.query.name)
+    ? router.query.name[0]
+    : router.query.name || "";
   const [data, setData] = useState<OwnerSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,8 +39,14 @@ export default function OwnerViewPage() {
 
       <div className="header">
         <div>
-          <h1>Owner: {name || '...'}</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          <h1>Owner: {name || "..."}</h1>
+          <p
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+            }}
+          >
             Last 30 days summary
           </p>
         </div>
@@ -56,7 +64,9 @@ export default function OwnerViewPage() {
             </div>
             <div className="card">
               <div className="label">Pass Rate</div>
-              <div className={`value ${data.passRate >= 80 ? 'success' : data.passRate >= 50 ? 'warning' : 'danger'}`}>
+              <div
+                className={`value ${data.passRate >= 80 ? "success" : data.passRate >= 50 ? "warning" : "danger"}`}
+              >
                 {data.passRate}%
               </div>
             </div>
@@ -74,7 +84,9 @@ export default function OwnerViewPage() {
             </div>
             <div className="card">
               <div className="label">Avg Duration</div>
-              <div className="value" style={{ fontSize: '1.25rem' }}>{formatDuration(data.avgDurationMs)}</div>
+              <div className="value" style={{ fontSize: "1.25rem" }}>
+                {formatDuration(data.avgDurationMs)}
+              </div>
             </div>
           </div>
 
@@ -92,9 +104,11 @@ export default function OwnerViewPage() {
                   {data.topFailing.map((t) => (
                     <tr key={t.name}>
                       <td>
-                        <Link href={`/test/${encodeURIComponent(t.name)}`}>{t.name}</Link>
+                        <Link href={`/test/${encodeURIComponent(t.name)}`}>
+                          {t.name}
+                        </Link>
                       </td>
-                      <td style={{ color: 'var(--danger)' }}>{t.failCount}</td>
+                      <td style={{ color: "var(--danger)" }}>{t.failCount}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -116,7 +130,9 @@ export default function OwnerViewPage() {
                   {data.notRunIn30Days.map((t) => (
                     <tr key={t.testName}>
                       <td>
-                        <Link href={`/test/${encodeURIComponent(t.testName)}`}>{t.testName}</Link>
+                        <Link href={`/test/${encodeURIComponent(t.testName)}`}>
+                          {t.testName}
+                        </Link>
                       </td>
                       <td className="duration-ms">{formatDate(t.lastRun)}</td>
                     </tr>

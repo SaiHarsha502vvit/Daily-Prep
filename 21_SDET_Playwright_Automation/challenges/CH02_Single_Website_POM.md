@@ -23,26 +23,31 @@ challenges/solutions/CH02/
 ## Acceptance criteria
 
 ### POMs
+
 - Each POM has **both** a `this.locators` object (raw strings + role descriptors) **and** direct `Locator` properties for outside use. (Dual locator strategy from Ch 05.)
 - Every method has typed parameters and a typed return.
 - No `any`. No raw `page.locator(...)` calls inside specs.
 
 ### `LoginPage.ts`
+
 - `goto()` waits for the username input to be visible before returning.
 - `loginWith({ username, password })` uses your `fillInput` / `clickElement` helpers.
 - `expectInvalidCredentials()` asserts both the alert visibility and exact message.
 - `expectRequiredFieldErrors()` asserts at least one inline error.
 
 ### `DashboardPage.ts`
+
 - `expectLoaded()` asserts the header AND the sidebar are visible.
 - `logout()` works and returns the user to the login page.
 
 ### `PIMListPage.ts`
+
 - `goto()` navigates to the PIM list.
 - `searchByEmployeeName(name: string)` fills the search field, clicks search, and waits for the result rows to update.
 - `getResultCount()` returns a `number` — not a string, not a Promise of unknown.
 
 ### Tests
+
 - `login.spec.ts` covers: valid login, wrong password, wrong username, empty fields. **Four tests.**
 - `pim-search.spec.ts` covers: search returns 0 for nonsense input, search returns >0 for a known employee.
 - Both files import test data from JSON via `loadTestData`. **No inline strings for credentials or employee names.**
@@ -66,11 +71,11 @@ OrangeHRM updates the result table via XHR. `waitForResponse` matching the searc
 
 ```jsonc
 {
-  "valid":   { "username": "Admin", "password": "admin123" },
+  "valid": { "username": "Admin", "password": "admin123" },
   "negative": {
     "wrongPassword": { "username": "Admin", "password": "wrong" },
-    "...": "..."
-  }
+    "...": "...",
+  },
 }
 ```
 
@@ -80,13 +85,13 @@ Keep `valid` and `negative` siblings, not mixed.
 
 ## Self-grading rubric
 
-| Criterion | Pass |
-|---|---|
-| Zero `page.locator(...)` in any `.spec.ts` | yes |
-| Zero hardcoded usernames/passwords in specs | yes |
-| Search test reliable under 5×4 parallel | yes |
-| All POMs typed, no `any` | yes |
-| Tests are tagged | yes |
+| Criterion                                   | Pass |
+| ------------------------------------------- | ---- |
+| Zero `page.locator(...)` in any `.spec.ts`  | yes  |
+| Zero hardcoded usernames/passwords in specs | yes  |
+| Search test reliable under 5×4 parallel     | yes  |
+| All POMs typed, no `any`                    | yes  |
+| Tests are tagged                            | yes  |
 
 ## What this teaches
 

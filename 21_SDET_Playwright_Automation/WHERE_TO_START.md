@@ -44,13 +44,13 @@ Something's broken, due tomorrow, or you need an answer in the next 15 minutes. 
 
 It's a problem-indexed lookup. Examples of what's in there:
 
-- *My test is flaky*
-- *I need to test an OAuth login*
-- *How do I upload a file from a CSV?*
-- *I need to write a test strategy doc*
-- *We need to shard the suite to fit in our CI budget*
-- *I need to integrate axe-core / Lighthouse / Pact / Stryker*
-- *My PM is asking why our tests cost $X/month*
+- _My test is flaky_
+- _I need to test an OAuth login_
+- _How do I upload a file from a CSV?_
+- _I need to write a test strategy doc_
+- _We need to shard the suite to fit in our CI budget_
+- _I need to integrate axe-core / Lighthouse / Pact / Stryker_
+- _My PM is asking why our tests cost $X/month_
 
 Each entry points to 2–4 chapters and the relevant framework code.
 
@@ -58,7 +58,7 @@ Each entry points to 2–4 chapters and the relevant framework code.
 
 ---
 
-## D. I'm reading the `framework/` code and want to understand *why*
+## D. I'm reading the `framework/` code and want to understand _why_
 
 You opened, say, `framework/fixtures/auth.fixture.ts`, saw `proper-lockfile` and wondered "why a lockfile?". You want the chapter that explains the design.
 
@@ -93,15 +93,15 @@ You want to browse, search, or you already know exactly what you want. Two optio
 
 ## A note on what's where
 
-| Type of thing | Where it lives |
-|---------------|----------------|
-| **Theory** (concepts, patterns, anti-patterns) | The 8 numbered chapter folders (`01_Foundations/` through `08_Practice_And_Quizzes/`). |
-| **Runnable code** | [`framework/`](./framework/) — green on `npm run verify`. |
-| **Exercises** | [`challenges/`](./challenges/) — 7 graded challenges + 3 capstones, with reference solutions. |
-| **Career artifacts** | [`career/`](./career/) — rubrics, templates, mock interviews. |
-| **Quick lookups** | [`reference/`](./reference/) — 10 short cheat-sheet cards. |
-| **Single-topic deep dives** | [`deep_dives/`](./deep_dives/) — ~10 short topic notes. |
-| **Starter scaffold** | [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) — copy this to start a new project. |
+| Type of thing                                  | Where it lives                                                                                             |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Theory** (concepts, patterns, anti-patterns) | The 8 numbered chapter folders (`01_Foundations/` through `08_Practice_And_Quizzes/`).                     |
+| **Runnable code**                              | [`framework/`](./framework/) — green on `npm run verify`.                                                  |
+| **Exercises**                                  | [`challenges/`](./challenges/) — 7 graded challenges + 3 capstones, with reference solutions.              |
+| **Career artifacts**                           | [`career/`](./career/) — rubrics, templates, mock interviews.                                              |
+| **Quick lookups**                              | [`reference/`](./reference/) — 10 short cheat-sheet cards.                                                 |
+| **Single-topic deep dives**                    | [`deep_dives/`](./deep_dives/) — ~10 short topic notes.                                                    |
+| **Starter scaffold**                           | [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) — copy this to start a new project. |
 
 ---
 

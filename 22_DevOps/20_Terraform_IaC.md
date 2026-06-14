@@ -17,7 +17,7 @@ CLICK-OPS (manual console):
   Day 60: New team member needs similar setup → spends 3 days clicking.
   Day 90: Security audit → "show me all your firewall rules" → 6 hours of screenshots.
   Day 120: DR test → "recreate everything in another region" → impossible.
-  
+
 IaC:
   Day 1: Write Terraform → terraform apply → infrastructure created. Code in Git.
   Day 30: Read the code → know exactly what's deployed.
@@ -51,7 +51,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-  
+
   # State storage (NEVER store state locally in team environments!)
   backend "s3" {
     bucket         = "mycompany-terraform-state"
@@ -95,9 +95,9 @@ resource "aws_instance" "web" {
   ami           = "ami-0c55b159cbfafe1f0"
   instance_type = var.environment == "production" ? "t3.large" : "t3.micro"
   subnet_id     = aws_subnet.public[0].id
-  
+
   vpc_security_group_ids = [aws_security_group.web.id]
-  
+
   user_data = <<-EOF
     #!/bin/bash
     apt-get update
@@ -124,7 +124,7 @@ TERRAFORM WORKFLOW:
   terraform plan          # show what WILL change (preview!)
   terraform apply         # execute the changes
   terraform destroy       # remove ALL resources
-  
+
   LIFECYCLE:
   1. Write .tf files (desired state)
   2. terraform plan (diff: current state vs desired)
@@ -135,7 +135,7 @@ TERRAFORM WORKFLOW:
 STATE FILE:
   terraform.tfstate = record of ALL resources Terraform manages.
   Maps resource IDs in your code → real resource IDs in the cloud.
-  
+
   CRITICAL: If state is lost → Terraform doesn't know what it created!
   → ALWAYS store state in a remote backend (S3, GCS, Terraform Cloud).
   → ALWAYS enable state locking (DynamoDB) to prevent concurrent writes.
@@ -155,21 +155,21 @@ STATE FILE:
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
-  
+
   name = "${var.environment}-vpc"
   cidr = "10.0.0.0/16"
-  
+
   azs             = ["us-east-1a", "us-east-1b"]
   public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
   private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
-  
+
   enable_nat_gateway = true
 }
 
 # Using YOUR OWN module
 module "api_service" {
   source = "./modules/ecs-service"    # local module
-  
+
   name            = "my-api"
   image           = "ghcr.io/myorg/api:${var.image_tag}"
   cpu             = 1024
@@ -199,7 +199,7 @@ ANTI-PATTERNS:
 1. MONOLITH STATE:
    All resources in ONE state file. Any change → locks EVERYTHING.
    Production + staging in same state → scary!
-   
+
    FIX: Separate state per environment, per component.
    production/vpc/    → state for VPC
    production/app/    → state for application (depends on VPC)
@@ -287,9 +287,9 @@ locals {
     ManagedBy   = "terraform"
     Team        = "platform"
   }
-  
+
   is_production = var.environment == "production"
-  
+
   # Flatten nested data
   subnet_ids = flatten([
     module.vpc.public_subnets,
@@ -301,7 +301,7 @@ locals {
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"]  # Canonical (Ubuntu publisher)
-  
+
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
@@ -334,10 +334,10 @@ resource "aws_instance" "web" {
 
 ```
 TERRAGRUNT = thin wrapper over Terraform that eliminates duplication.
-  
+
   PROBLEM: with standard Terraform, each environment repeats the backend config,
   provider config, and module calls. 3 environments × 5 components = 15 copies!
-  
+
   TERRAGRUNT: write the common config ONCE. Inherit everywhere.
 
 DIRECTORY STRUCTURE:
@@ -464,14 +464,13 @@ terraform state pull                          # download state as JSON
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **VPC resources** | [Ch 13: Cloud VPC](13_Cloud_Networking_VPC.md) — what Terraform provisions |
-| **CI/CD (terraform in pipeline)** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — plan in PR, apply on merge |
-| **K8s cluster provisioning** | [Ch 18: K8s](18_Kubernetes_Complete.md) — EKS/GKE via Terraform |
-| **Security groups** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — SG resources |
-| **DNS records** | [Ch 07: DNS](07_DNS_Complete.md) — Route53 records via Terraform |
-| **GitOps** | [Ch 23: GitOps](23_GitOps_Deployments.md) — infra changes via Git |
-| **Linux instances** | [Ch 16: Linux](16_Linux_Administration.md) — user_data scripts |
-| **Docker (ECS tasks)** | [Ch 17: Docker](17_Docker_Complete.md) — container definitions |
-
+| Topic                             | Related Content                                                            |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| **VPC resources**                 | [Ch 13: Cloud VPC](13_Cloud_Networking_VPC.md) — what Terraform provisions |
+| **CI/CD (terraform in pipeline)** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — plan in PR, apply on merge          |
+| **K8s cluster provisioning**      | [Ch 18: K8s](18_Kubernetes_Complete.md) — EKS/GKE via Terraform            |
+| **Security groups**               | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — SG resources          |
+| **DNS records**                   | [Ch 07: DNS](07_DNS_Complete.md) — Route53 records via Terraform           |
+| **GitOps**                        | [Ch 23: GitOps](23_GitOps_Deployments.md) — infra changes via Git          |
+| **Linux instances**               | [Ch 16: Linux](16_Linux_Administration.md) — user_data scripts             |
+| **Docker (ECS tasks)**            | [Ch 17: Docker](17_Docker_Complete.md) — container definitions             |

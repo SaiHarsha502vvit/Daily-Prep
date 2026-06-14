@@ -27,11 +27,9 @@
 > | **ALGO: HashMap Internals** | [Hash Table & DS Internals](../../02_Data_Structures/01g_DS_Internals.md) |
 > | **SQL: JOINs (INNER, LEFT, RIGHT)** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## BLOCK 1: DATA STRUCTURE (30 min)
 
@@ -56,20 +54,19 @@ Deque = Both ends open
 
 ```
 QUEUE (FIFO):                    DEQUE (Double-Ended):
-                                 
+
   enqueue(x) →  ┌───┬───┬───┐   addFirst(x) → ┌───┬───┬───┐ ← addLast(x)
                  │ A │ B │ C │   removeFirst()← │ A │ B │ C │ → removeLast()
-  dequeue()  ←  └───┴───┴───┘   
+  dequeue()  ←  └───┴───┴───┘
   (returns A)                    (can add/remove from BOTH ends)
 
 Java:
   Queue:  Queue<Integer> q = new LinkedList<>();   // or ArrayDeque
   Deque:  Deque<Integer> dq = new ArrayDeque<>();  // recommended!
-  
+
   Queue methods:  offer(x), poll(), peek()
   Deque methods:  offerFirst(x), offerLast(x), pollFirst(), pollLast()
 ```
-
 
 #### IMPLEMENT: Circular Queue (Array-based)
 
@@ -127,7 +124,6 @@ HashMap converts ANY key into an array index using a hash function.
 RESULT: O(1) average for get/put/contains
 ```
 
-
 #### HOW: Internal Mechanism
 
 ```
@@ -158,7 +154,6 @@ RESULT: O(1) average for get/put/contains
 │    Space:   O(n)                                               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 #### Common HashMap Patterns
 
@@ -202,7 +197,6 @@ Input:  "loveleetcode" → Output: 2 (first unique = 'v')
 APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
-
 ```java
 public int firstUniqChar(String s) {
     Map<Character, Integer> freq = new HashMap<>();
@@ -236,13 +230,12 @@ APPROACH: Queue stores timestamps of recent requests.
 
   Queue for user "john":
   [T-55, T-40, T-30, T-20, T-10, T]   ← 6 requests in last 60s → OK
-  
+
   HashMap<String, Queue<Long>>  : userId → request timestamps
 
 WHY Queue? Oldest timestamps naturally at front → easy to clean up.
 WHY HashMap? O(1) lookup of each user's queue.
 ```
-
 
 ---
 
@@ -267,7 +260,6 @@ departments: dept_id | dept_name
 
 To see "Alice works in Engineering" → you need a JOIN.
 ```
-
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════
@@ -375,7 +367,6 @@ pop() → returns 1
   outStack: [3, 2]
 ```
 
-
 ```java
 class MyQueue {
     Deque<Integer> inStack = new ArrayDeque<>();
@@ -419,7 +410,6 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: HashSet + Two Pointers technique + SQL Subqueries
 ```
-
 
 ---
 

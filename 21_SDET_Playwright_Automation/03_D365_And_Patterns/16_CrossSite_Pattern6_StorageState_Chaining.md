@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md) | [Index](../00_INDEX.md) | [→ Chapter 17: D365 Advanced Timing](./17_D365_Advanced_Timing_Patterns.md)
 
 **Cross-links:**
+
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Worker-scoped fixtures
 - [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — Why state must not be shared between workers
 
@@ -68,26 +69,27 @@ graph TD
         Mem1[In-Memory Session]
         Idx[IndexedDB]
     end
-    
+
     subgraph "storageState JSON"
         JSON[(auth-state.json)]
         C[Cookies Array]
         LS[Origins / localStorage]
     end
-    
+
     Ctx -- "context.storageState()" --> JSON
     Ctx --> Mem1
     Ctx --> Idx
-    
+
     JSON --> C
     JSON --> LS
-    
+
     style Mem1 fill:#fbb,stroke:#f00,stroke-dasharray: 5 5
     style Idx fill:#fbb,stroke:#f00,stroke-dasharray: 5 5
     style JSON fill:#bfb,stroke:#0f0
 ```
 
 **What is NOT captured:**
+
 - `sessionStorage` (per-tab, not serializable across sessions)
 - `IndexedDB` (Playwright limitation)
 - In-memory state (JavaScript objects in the page's memory)
@@ -121,16 +123,20 @@ But if Site A sets domain `crm.company.com` (no leading dot) and Site B is `bill
 ```typescript
 // Checking which cookies your app actually sets:
 // After login, inspect your auth-states/*.json:
-const state = JSON.parse(fs.readFileSync('auth-states/admin-state.json', 'utf-8'));
-console.table(state.cookies.map(c => ({
-  name: c.name.substring(0, 20),
-  domain: c.domain,
-  path: c.path,
-  sameSite: c.sameSite,
-  httpOnly: c.httpOnly,
-  secure: c.secure,
-  expires: c.expires ? new Date(c.expires * 1000).toISOString() : 'session',
-})));
+const state = JSON.parse(
+  fs.readFileSync("auth-states/admin-state.json", "utf-8"),
+);
+console.table(
+  state.cookies.map((c) => ({
+    name: c.name.substring(0, 20),
+    domain: c.domain,
+    path: c.path,
+    sameSite: c.sameSite,
+    httpOnly: c.httpOnly,
+    secure: c.secure,
+    expires: c.expires ? new Date(c.expires * 1000).toISOString() : "session",
+  })),
+);
 ```
 
 ---
@@ -140,9 +146,9 @@ console.table(state.cookies.map(c => ({
 ```typescript
 // globalSetup.ts — runs ONCE before the entire test suite
 
-import { chromium, type FullConfig } from '@playwright/test';
-import path from 'path';
-import fs from 'fs';
+import { chromium, type FullConfig } from "@playwright/test";
+import path from "path";
+import fs from "fs";
 
 interface AuthCredentials {
   email: string;
@@ -155,28 +161,28 @@ const credentialSets: AuthCredentials[] = [
   {
     email: process.env.ADMIN_EMAIL!,
     password: process.env.ADMIN_PASSWORD!,
-    role: 'admin',
-    authStateFile: 'auth-states/admin-state.json',
+    role: "admin",
+    authStateFile: "auth-states/admin-state.json",
   },
   {
     email: process.env.CUSTOMER_EMAIL!,
     password: process.env.CUSTOMER_PASSWORD!,
-    role: 'customer',
-    authStateFile: 'auth-states/customer-state.json',
+    role: "customer",
+    authStateFile: "auth-states/customer-state.json",
   },
   {
     email: process.env.SUPERVISOR_EMAIL!,
     password: process.env.SUPERVISOR_PASSWORD!,
-    role: 'supervisor',
-    authStateFile: 'auth-states/supervisor-state.json',
+    role: "supervisor",
+    authStateFile: "auth-states/supervisor-state.json",
   },
 ];
 
 export default async function globalSetup(config: FullConfig): Promise<void> {
-  console.log('[globalSetup] Starting authentication for all roles...');
+  console.log("[globalSetup] Starting authentication for all roles...");
 
   // Ensure auth-states directory exists
-  const authStatesDir = path.resolve('auth-states');
+  const authStatesDir = path.resolve("auth-states");
   if (!fs.existsSync(authStatesDir)) {
     fs.mkdirSync(authStatesDir, { recursive: true });
   }
@@ -186,31 +192,33 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
   try {
     // Login all roles in parallel for speed
     await Promise.all(
-      credentialSets.map(creds => loginAndSaveState(browser, creds))
+      credentialSets.map((creds) => loginAndSaveState(browser, creds)),
     );
   } finally {
     await browser.close();
   }
 
-  console.log('[globalSetup] All auth states saved ✓');
+  console.log("[globalSetup] All auth states saved ✓");
 }
 
 async function loginAndSaveState(
-  browser: import('@playwright/test').Browser,
-  creds: AuthCredentials
+  browser: import("@playwright/test").Browser,
+  creds: AuthCredentials,
 ): Promise<void> {
   const context = await browser.newContext();
   const page = await context.newPage();
 
   try {
-    console.log(`[globalSetup] Logging in as ${creds.role} (${creds.email})...`);
+    console.log(
+      `[globalSetup] Logging in as ${creds.role} (${creds.email})...`,
+    );
 
     await page.goto(process.env.AUTH_PORTAL_URL!);
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState("domcontentloaded");
 
-    await page.locator('#username').fill(creds.email);
-    await page.locator('#password').fill(creds.password);
-    await page.locator('#loginBtn').click();
+    await page.locator("#username").fill(creds.email);
+    await page.locator("#password").fill(creds.password);
+    await page.locator("#loginBtn").click();
 
     // Wait for successful login — URL changes to dashboard
     await page.waitForURL(/\/(dashboard|home|main)/, { timeout: 30_000 });
@@ -234,8 +242,8 @@ Logging in via UI in globalSetup works but is slow (30-60s per role for D365). I
 ```typescript
 // globalSetup.ts — API-based auth (10x faster than UI login)
 
-import { chromium, request, type FullConfig } from '@playwright/test';
-import fs from 'fs';
+import { chromium, request, type FullConfig } from "@playwright/test";
+import fs from "fs";
 
 export default async function globalSetup(config: FullConfig): Promise<void> {
   // Step 1: Get access token from OAuth endpoint (no UI needed)
@@ -243,24 +251,27 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 
   const tokenResponse = await apiContext.post(process.env.TOKEN_URL!, {
     form: {
-      grant_type:    'password',
-      username:      process.env.ADMIN_EMAIL!,
-      password:      process.env.ADMIN_PASSWORD!,
-      client_id:     process.env.OAUTH_CLIENT_ID!,
+      grant_type: "password",
+      username: process.env.ADMIN_EMAIL!,
+      password: process.env.ADMIN_PASSWORD!,
+      client_id: process.env.OAUTH_CLIENT_ID!,
       client_secret: process.env.OAUTH_CLIENT_SECRET!,
-      scope:         'openid profile email',
+      scope: "openid profile email",
     },
   });
 
   if (!tokenResponse.ok()) {
-    throw new Error(`Token request failed: ${tokenResponse.status()} — ${await tokenResponse.text()}`);
+    throw new Error(
+      `Token request failed: ${tokenResponse.status()} — ${await tokenResponse.text()}`,
+    );
   }
 
-  const { access_token, refresh_token, expires_in } = await tokenResponse.json() as {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-  };
+  const { access_token, refresh_token, expires_in } =
+    (await tokenResponse.json()) as {
+      access_token: string;
+      refresh_token: string;
+      expires_in: number;
+    };
 
   await apiContext.dispose();
 
@@ -270,30 +281,35 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
   const context = await browser.newContext();
 
   // Manually set the auth cookie (mimics what the auth server would set)
-  await context.addCookies([{
-    name:     'access_token',
-    value:    access_token,
-    domain:   '.company.com',
-    path:     '/',
-    expires:  Math.floor(Date.now() / 1000) + expires_in,
-    httpOnly: false,  // must be false for Playwright to handle cross-origin
-    secure:   true,
-    sameSite: 'Lax',
-  }]);
+  await context.addCookies([
+    {
+      name: "access_token",
+      value: access_token,
+      domain: ".company.com",
+      path: "/",
+      expires: Math.floor(Date.now() / 1000) + expires_in,
+      httpOnly: false, // must be false for Playwright to handle cross-origin
+      secure: true,
+      sameSite: "Lax",
+    },
+  ]);
 
   // Optionally visit the app to let it initialize localStorage
   const page = await context.newPage();
-  await page.goto(process.env.CRM_URL + '/dashboard');
+  await page.goto(process.env.CRM_URL + "/dashboard");
   await page.waitForURL(/\/dashboard/, { timeout: 30_000 });
 
-  await context.storageState({ path: 'auth-states/admin-state.json' });
+  await context.storageState({ path: "auth-states/admin-state.json" });
   await browser.close();
 
-  console.log(`[globalSetup] API auth complete. Token valid for ${expires_in}s`);
+  console.log(
+    `[globalSetup] API auth complete. Token valid for ${expires_in}s`,
+  );
 }
 ```
 
 **Performance comparison:**
+
 ```
 UI login in globalSetup:   3 roles × 30s each = 90s overhead
 API auth in globalSetup:   3 roles × 2s each  = 6s overhead
@@ -308,38 +324,38 @@ With 10 CI runs per day: 840 seconds = 14 minutes saved daily
 ```typescript
 // playwright.config.ts
 
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  globalSetup: './globalSetup.ts',  // ← runs once before all tests
+  globalSetup: "./globalSetup.ts", // ← runs once before all tests
 
   projects: [
     // Admin tests — automatically use admin auth state
     {
-      name: 'admin-tests',
-      testMatch: '**/tests/admin/**/*.spec.ts',
+      name: "admin-tests",
+      testMatch: "**/tests/admin/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/admin-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/admin-state.json",
       },
     },
 
     // Customer tests — automatically use customer auth state
     {
-      name: 'customer-tests',
-      testMatch: '**/tests/customer/**/*.spec.ts',
+      name: "customer-tests",
+      testMatch: "**/tests/customer/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/customer-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/customer-state.json",
       },
     },
 
     // Cross-website tests — no pre-loaded state (they manage their own)
     {
-      name: 'cross-site-tests',
-      testMatch: '**/tests/cross-website/**/*.spec.ts',
+      name: "cross-site-tests",
+      testMatch: "**/tests/cross-website/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         // No storageState here — these tests create their own contexts
       },
     },
@@ -405,7 +421,7 @@ sequenceDiagram
     Auth->>T1: Navigate
     Note over T1: T1 reads .company.com cookie,<br/>authenticates, and sets T1 local storage
     T1->>File: Save State (Contains Auth + T1)
-    
+
     Note over File: This state CANNOT be used for T2!<br/>T2 needs its own local storage init.
 ```
 
@@ -417,33 +433,33 @@ const context = await browser.newContext();
 const page = await context.newPage();
 
 // 1. Core Auth
-await page.goto('https://auth.company.com');
-await page.fill('#user', 'admin');
-await page.fill('#pass', 'secret');
-await page.click('#login');
+await page.goto("https://auth.company.com");
+await page.fill("#user", "admin");
+await page.fill("#pass", "secret");
+await page.click("#login");
 
 // 2. Tenant 1 Init
-await page.goto('https://tenant1.crm.com/dashboard');
-await page.waitForLoadState('networkidle');
-await context.storageState({ path: 'auth-states/tenant1.json' });
+await page.goto("https://tenant1.crm.com/dashboard");
+await page.waitForLoadState("networkidle");
+await context.storageState({ path: "auth-states/tenant1.json" });
 
 // 3. Tenant 2 Init (Re-using the same context!)
-await page.goto('https://tenant2.crm.com/dashboard');
-await page.waitForLoadState('networkidle');
-await context.storageState({ path: 'auth-states/tenant2.json' });
+await page.goto("https://tenant2.crm.com/dashboard");
+await page.waitForLoadState("networkidle");
+await context.storageState({ path: "auth-states/tenant2.json" });
 ```
 
 ---
 
 ## 5. When StorageState FAILS — Debugging Guide
 
-| Symptom | Root Cause | Fix |
-|---|---|---|
-| Test navigates to login page despite storageState | Token expired between globalSetup and test run | Add token refresh in a worker-scoped fixture |
-| Works locally, fails in CI | CI takes longer → token expiry window exceeded | Increase token TTL in test config, or refresh tokens in fixtures |
-| One test passes, next test fails | Shared mutable session state (one test modifies it) | Use `storageState: undefined` on tests that modify state |
-| Site B doesn't recognize the state | Auth uses sessionStorage (not captured) | Inject token via `page.addInitScript()` |
-| Cross-domain cookie not carried | Cookie domain is exact (`.crm.company.com`), not wildcard | Save state after visiting Site B in globalSetup too |
+| Symptom                                           | Root Cause                                                | Fix                                                              |
+| ------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------- |
+| Test navigates to login page despite storageState | Token expired between globalSetup and test run            | Add token refresh in a worker-scoped fixture                     |
+| Works locally, fails in CI                        | CI takes longer → token expiry window exceeded            | Increase token TTL in test config, or refresh tokens in fixtures |
+| One test passes, next test fails                  | Shared mutable session state (one test modifies it)       | Use `storageState: undefined` on tests that modify state         |
+| Site B doesn't recognize the state                | Auth uses sessionStorage (not captured)                   | Inject token via `page.addInitScript()`                          |
+| Cross-domain cookie not carried                   | Cookie domain is exact (`.crm.company.com`), not wildcard | Save state after visiting Site B in globalSetup too              |
 
 ---
 
@@ -454,23 +470,26 @@ For long-running suites where tokens expire during the run. The naive approach (
 ```typescript
 // fixtures/auth.fixture.ts
 
-import * as fs from 'fs';
-import { test as base, chromium } from '@playwright/test';
+import * as fs from "fs";
+import { test as base, chromium } from "@playwright/test";
 
 /** Decode JWT payload without signature verification */
 function getJWTExpiry(token: string): number {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) return 0;
-  const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf-8'));
-  return (payload.exp as number) ?? 0;  // Unix timestamp in seconds
+  const payload = JSON.parse(
+    Buffer.from(parts[1], "base64url").toString("utf-8"),
+  );
+  return (payload.exp as number) ?? 0; // Unix timestamp in seconds
 }
 
 /** Read the sso_token cookie from the saved state file */
 function readSavedToken(statePath: string): string | null {
   try {
-    const state = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
-    const cookie = (state.cookies as { name: string; value: string }[])
-      .find(c => c.name === 'sso_token');
+    const state = JSON.parse(fs.readFileSync(statePath, "utf-8"));
+    const cookie = (state.cookies as { name: string; value: string }[]).find(
+      (c) => c.name === "sso_token",
+    );
     return cookie?.value ?? null;
   } catch {
     // File missing or corrupted — trigger re-auth
@@ -483,7 +502,7 @@ const REFRESH_BUFFER_SECONDS = 300; // refresh 5 minutes before actual expiry
 export const test = base.extend<{}, { authToken: string }>({
   authToken: [
     async ({}, use) => {
-      const statePath = 'auth-states/admin-state.json';
+      const statePath = "auth-states/admin-state.json";
 
       let token = readSavedToken(statePath);
       const now = Math.floor(Date.now() / 1000);
@@ -494,24 +513,24 @@ export const test = base.extend<{}, { authToken: string }>({
         console.log(
           token
             ? `[auth fixture] Token expires in ${expiry - now}s — refreshing proactively`
-            : '[auth fixture] No valid token found — performing fresh login'
+            : "[auth fixture] No valid token found — performing fresh login",
         );
 
         const browser = await chromium.launch();
         const context = await browser.newContext();
-        const page    = await context.newPage();
+        const page = await context.newPage();
 
         await page.goto(process.env.AUTH_PORTAL_URL!);
-        await page.locator('#username').fill(process.env.ADMIN_EMAIL!);
-        await page.locator('#password').fill(process.env.ADMIN_PASSWORD!);
-        await page.locator('#loginBtn').click();
+        await page.locator("#username").fill(process.env.ADMIN_EMAIL!);
+        await page.locator("#password").fill(process.env.ADMIN_PASSWORD!);
+        await page.locator("#loginBtn").click();
         await page.waitForURL(/\/(dashboard|home)/, { timeout: 30_000 });
 
         // Atomic write: write to temp file first, then rename
         // Prevents other workers from reading a partially written file
         const tmpPath = `${statePath}.tmp`;
         await context.storageState({ path: tmpPath });
-        fs.renameSync(tmpPath, statePath);  // atomic on most OSes
+        fs.renameSync(tmpPath, statePath); // atomic on most OSes
 
         await browser.close();
 
@@ -520,7 +539,7 @@ export const test = base.extend<{}, { authToken: string }>({
 
       await use(token!);
     },
-    { scope: 'worker' }, // runs once per worker process — shared across all tests in worker
+    { scope: "worker" }, // runs once per worker process — shared across all tests in worker
   ],
 });
 ```
@@ -551,34 +570,42 @@ export const test = base.extend<{}, { authToken: string }>({
 // A one-off script to inspect your saved state (run from terminal)
 // scratch/inspect-auth-state.ts
 
-import * as fs from 'fs';
+import * as fs from "fs";
 
-const state = JSON.parse(fs.readFileSync('auth-states/admin-state.json', 'utf-8'));
+const state = JSON.parse(
+  fs.readFileSync("auth-states/admin-state.json", "utf-8"),
+);
 
-console.log('\n=== COOKIES ===');
+console.log("\n=== COOKIES ===");
 state.cookies.forEach((cookie: Record<string, unknown>) => {
   const expiresDate = cookie.expires
     ? new Date((cookie.expires as number) * 1000).toISOString()
-    : 'session';
+    : "session";
   const isExpired = cookie.expires
     ? (cookie.expires as number) * 1000 < Date.now()
     : false;
   console.log(
     `  ${cookie.name}: domain=${cookie.domain} expires=${expiresDate}` +
-    (isExpired ? ' ⚠ EXPIRED' : ' ✓')
+      (isExpired ? " ⚠ EXPIRED" : " ✓"),
   );
 });
 
-console.log('\n=== LOCAL STORAGE ===');
-state.origins.forEach((origin: { origin: string; localStorage: { name: string; value: string }[] }) => {
-  console.log(`  Origin: ${origin.origin}`);
-  origin.localStorage.forEach(item => {
-    const preview = item.value.substring(0, 60);
-    const hasToken = item.name.toLowerCase().includes('token')
-      || item.name.toLowerCase().includes('auth');
-    console.log(`    ${item.name}: ${preview}...${hasToken ? ' 🔑' : ''}`);
-  });
-});
+console.log("\n=== LOCAL STORAGE ===");
+state.origins.forEach(
+  (origin: {
+    origin: string;
+    localStorage: { name: string; value: string }[];
+  }) => {
+    console.log(`  Origin: ${origin.origin}`);
+    origin.localStorage.forEach((item) => {
+      const preview = item.value.substring(0, 60);
+      const hasToken =
+        item.name.toLowerCase().includes("token") ||
+        item.name.toLowerCase().includes("auth");
+      console.log(`    ${item.name}: ${preview}...${hasToken ? " 🔑" : ""}`);
+    });
+  },
+);
 ```
 
 ---
@@ -639,13 +666,16 @@ App stores auth in:         Solution:
 ```typescript
 // globalTeardown.ts — runs ONCE after all tests complete
 
-import fs from 'fs';
+import fs from "fs";
 
 export default async function globalTeardown(): Promise<void> {
   // Clean up auth state files (they contain real credentials)
   // ⚠ Only in CI — don't delete locally (useful for debugging)
   if (process.env.CI) {
-    const files = ['auth-states/admin-state.json', 'auth-states/customer-state.json'];
+    const files = [
+      "auth-states/admin-state.json",
+      "auth-states/customer-state.json",
+    ];
     for (const file of files) {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file);
@@ -656,8 +686,10 @@ export default async function globalTeardown(): Promise<void> {
 
   // Clean up any test data created during globalSetup
   // (e.g., test users created via API)
-  if (process.env.CLEANUP_TEST_DATA === 'true') {
-    const apiContext = await (await import('@playwright/test')).request.newContext();
+  if (process.env.CLEANUP_TEST_DATA === "true") {
+    const apiContext = await (
+      await import("@playwright/test")
+    ).request.newContext();
     // delete test users, reset seeded data, etc.
     await apiContext.dispose();
   }
@@ -667,8 +699,8 @@ export default async function globalTeardown(): Promise<void> {
 ```typescript
 // playwright.config.ts — register teardown
 export default defineConfig({
-  globalSetup:    './globalSetup.ts',
-  globalTeardown: './globalTeardown.ts',   // ← add this
+  globalSetup: "./globalSetup.ts",
+  globalTeardown: "./globalTeardown.ts", // ← add this
   // ...
 });
 ```
@@ -719,13 +751,14 @@ auth-states/supervisor-state.json
 A) Tests all pass because storageState is saved as-is  
 B) Tests fail with 401/403 errors or redirect to login  
 C) Playwright automatically refreshes expired tokens  
-D) Tests fail with a Playwright error about invalid storageState  
+D) Tests fail with a Playwright error about invalid storageState
 
 <details><summary>Answer</summary>
 
 **B** — The saved cookies are expired. When the test context loads the storageState, the browser sends the expired cookies with each request. The server rejects them (401/403) or ignores them and treats the user as unauthenticated, causing a redirect to the login page. Playwright does not refresh tokens automatically (C). The storageState JSON is syntactically valid so no Playwright error (D) — the cookies are just rejected by the server.
 
 Fix: Worker-scoped fixture that checks token validity and re-authenticates if needed.
+
 </details>
 
 ---
@@ -739,11 +772,11 @@ export default async function globalSetup() {
   const page = await context.newPage();
 
   await page.goto(process.env.AUTH_PORTAL_URL!);
-  await page.locator('#username').fill(process.env.ADMIN_EMAIL!);
-  await page.locator('#password').fill(process.env.ADMIN_PASSWORD!);
-  await page.locator('#loginBtn').click();
+  await page.locator("#username").fill(process.env.ADMIN_EMAIL!);
+  await page.locator("#password").fill(process.env.ADMIN_PASSWORD!);
+  await page.locator("#loginBtn").click();
 
-  await context.storageState({ path: 'auth-states/admin-state.json' });
+  await context.storageState({ path: "auth-states/admin-state.json" });
   await browser.close();
 }
 ```
@@ -753,13 +786,15 @@ export default async function globalSetup() {
 `storageState` is saved immediately after `loginBtn.click()`, before the login completes. The page is still loading (or the server is still processing). The saved state may not have the auth cookies yet.
 
 Fix: Wait for successful login before saving:
+
 ```typescript
-await page.locator('#loginBtn').click();
+await page.locator("#loginBtn").click();
 // Wait for navigation to dashboard — login has completed
 await page.waitForURL(/\/(dashboard|home)/, { timeout: 30_000 });
 // NOW the cookies are set
-await context.storageState({ path: 'auth-states/admin-state.json' });
+await context.storageState({ path: "auth-states/admin-state.json" });
 ```
+
 </details>
 
 ---
@@ -771,42 +806,43 @@ Write a `playwright.config.ts` project setup with 3 projects: `admin-chrome`, `c
 <details><summary>Answer</summary>
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  globalSetup: './globalSetup.ts',
+  globalSetup: "./globalSetup.ts",
 
   projects: [
     {
-      name: 'admin-chrome',
-      testMatch: '**/tests/admin/**/*.spec.ts',
+      name: "admin-chrome",
+      testMatch: "**/tests/admin/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/admin-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/admin-state.json",
         baseURL: process.env.ADMIN_PORTAL_URL,
       },
     },
     {
-      name: 'customer-chrome',
-      testMatch: '**/tests/customer/**/*.spec.ts',
+      name: "customer-chrome",
+      testMatch: "**/tests/customer/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/customer-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/customer-state.json",
         baseURL: process.env.CUSTOMER_PORTAL_URL,
       },
     },
     {
-      name: 'customer-firefox',
-      testMatch: '**/tests/customer/**/*.spec.ts',
+      name: "customer-firefox",
+      testMatch: "**/tests/customer/**/*.spec.ts",
       use: {
-        ...devices['Desktop Firefox'],
-        storageState: 'auth-states/customer-state.json',
+        ...devices["Desktop Firefox"],
+        storageState: "auth-states/customer-state.json",
         baseURL: process.env.CUSTOMER_PORTAL_URL,
       },
     },
   ],
 });
 ```
+
 </details>
 
 ---
@@ -823,29 +859,29 @@ Your app has 3 sites: `auth.company.com` (SSO login), `crm.company.com` (D365), 
 export default async function globalSetup(): Promise<void> {
   const browser = await chromium.launch();
   const context = await browser.newContext();
-  const page    = await context.newPage();
+  const page = await context.newPage();
 
   // Step 1: Login on SSO — sets .company.com cookie
-  await page.goto('https://auth.company.com/login');
-  await page.locator('#username').fill(process.env.ADMIN_EMAIL!);
-  await page.locator('#password').fill(process.env.ADMIN_PASSWORD!);
-  await page.locator('#loginBtn').click();
+  await page.goto("https://auth.company.com/login");
+  await page.locator("#username").fill(process.env.ADMIN_EMAIL!);
+  await page.locator("#password").fill(process.env.ADMIN_PASSWORD!);
+  await page.locator("#loginBtn").click();
   await page.waitForURL(/\/dashboard/);
   // cookie 'sso_token' domain='.company.com' is now in the context
 
   // Step 2: Visit the billing site — triggers its own session setup
   // The billing site accepts the SSO token and creates its own session cookie
-  await page.goto('https://billing.company.com/auth/sso-callback');
+  await page.goto("https://billing.company.com/auth/sso-callback");
   await page.waitForURL(/\/billing\/dashboard/, { timeout: 30_000 });
   // cookie 'billing_session' domain='billing.company.com' is now in the context
 
   // Step 3: Visit CRM (D365) — same SSO token, separate app init
-  await page.goto('https://crm.company.com/');
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
+  await page.goto("https://crm.company.com/");
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 45_000 });
   // D365 sets its own session cookies for crm.company.com
 
   // Step 4: Save ALL cookies + localStorage from ALL sites visited
-  await context.storageState({ path: 'auth-states/admin-state.json' });
+  await context.storageState({ path: "auth-states/admin-state.json" });
   // The state now contains:
   // cookies: [sso_token (.company.com), billing_session (billing.company.com), D365 cookies...]
   // origins: [auth.company.com localStorage, crm.company.com localStorage...]
@@ -855,6 +891,7 @@ export default async function globalSetup(): Promise<void> {
 ```
 
 Key insight: One `BrowserContext` accumulates cookies from ALL domains visited. The saved state captures all of them. When loaded in a test, all sites see their respective cookies.
+
 </details>
 
 ---
@@ -872,13 +909,14 @@ D) 225 seconds (3m 45s)
 
 **B — 215 seconds**.
 
-UI auth:  5 roles × 45s = 225s
-API auth: 5 roles × 2s  = 10s  (parallelized with Promise.all → effectively ~2s total)
-Savings:  225s - 10s = **215 seconds per run**
+UI auth: 5 roles × 45s = 225s
+API auth: 5 roles × 2s = 10s (parallelized with Promise.all → effectively ~2s total)
+Savings: 225s - 10s = **215 seconds per run**
 
 With CI running 10 times per day: **2150 seconds = 36 minutes saved daily**.
 
 Note: Even better when parallelized — with `Promise.all` for all 5 API calls, the total is ~2s regardless of role count (bounded by the slowest individual call).
+
 </details>
 
 ---

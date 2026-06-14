@@ -6,19 +6,19 @@ A runnable, opinionated Playwright + TypeScript starter that demonstrates the **
 
 ## Why this exists
 
-The chapters explain the patterns. This folder *is* the patterns. Every law has at least one file that proves it. Every module (visual, a11y, perf, analytics, telemetry, matchers) has a working reference impl you can copy-paste into a real project.
+The chapters explain the patterns. This folder _is_ the patterns. Every law has at least one file that proves it. Every module (visual, a11y, perf, analytics, telemetry, matchers) has a working reference impl you can copy-paste into a real project.
 
 ## The Seven Laws (re-stated as code locations)
 
-| Law | What it means | Where to look |
-|---|---|---|
-| 1. Tests describe behavior only | No locators, data, or URLs in spec files | [tests/orangehrm/login.spec.ts](tests/orangehrm/login.spec.ts) |
-| 2. Nothing is hardcoded | URLs from `env.loader`, data from JSON, timeouts from enum | [config/env.loader.ts](config/env.loader.ts), [constants/timeouts.ts](constants/timeouts.ts) |
-| 3. Every layer uses the layer below | Tests → POMs → Utilities → Config; API: Client → ApiCore → APIUtils → request | Folder structure itself |
-| 4. Every action wrapped with logging | `clickElement(locator, { description })` not raw `.click()` | [utilities/helpers/action.helpers.ts](utilities/helpers/action.helpers.ts) |
-| 5. Parallel safety | File-locked account pool — workers never collide | [fixtures/auth.fixture.ts](fixtures/auth.fixture.ts) |
-| 6. UI + API cross-validation | Spec asserts what user sees AND what backend stored | [tests/orangehrm/employee.crud.spec.ts](tests/orangehrm/employee.crud.spec.ts) |
-| 7. TypeScript strict everywhere | No `any` in framework code, every response typed | [types/api.types.ts](types/api.types.ts), [tsconfig.json](tsconfig.json) |
+| Law                                  | What it means                                                                 | Where to look                                                                                |
+| ------------------------------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 1. Tests describe behavior only      | No locators, data, or URLs in spec files                                      | [tests/orangehrm/login.spec.ts](tests/orangehrm/login.spec.ts)                               |
+| 2. Nothing is hardcoded              | URLs from `env.loader`, data from JSON, timeouts from enum                    | [config/env.loader.ts](config/env.loader.ts), [constants/timeouts.ts](constants/timeouts.ts) |
+| 3. Every layer uses the layer below  | Tests → POMs → Utilities → Config; API: Client → ApiCore → APIUtils → request | Folder structure itself                                                                      |
+| 4. Every action wrapped with logging | `clickElement(locator, { description })` not raw `.click()`                   | [utilities/helpers/action.helpers.ts](utilities/helpers/action.helpers.ts)                   |
+| 5. Parallel safety                   | File-locked account pool — workers never collide                              | [fixtures/auth.fixture.ts](fixtures/auth.fixture.ts)                                         |
+| 6. UI + API cross-validation         | Spec asserts what user sees AND what backend stored                           | [tests/orangehrm/employee.crud.spec.ts](tests/orangehrm/employee.crud.spec.ts)               |
+| 7. TypeScript strict everywhere      | No `any` in framework code, every response typed                              | [types/api.types.ts](types/api.types.ts), [tsconfig.json](tsconfig.json)                     |
 
 ## Folder map (current)
 
@@ -140,21 +140,21 @@ npm run test:smoke              # 7 OrangeHRM smoke tests, ~30s
 
 ### Daily-use
 
-| Command | What it does |
-|---|---|
-| `npm run verify` | Lint + typecheck — run before pushing |
-| `npm run test` | All projects (orangehrm + api + file-io + firefox-ci) |
-| `npm run test:smoke` | `@smoke`-tagged tests only |
-| `npm run test:regression` | `@regression`-tagged tests only |
-| `npm run test:orangehrm` | Only the OrangeHRM project |
-| `npm run test:api` | Only the API project (auto-skips reqres specs without REQRES_API_KEY) |
-| `npm run test:ui` | Playwright UI mode — time-travel debugging |
-| `npm run test:debug` | Inspector / step-through |
-| `npm run test:headed` | Tests with browser visible |
-| `npm run report` | Open last HTML report |
-| `npm run lint` / `lint:fix` / `lint:strict` | ESLint variants |
-| `npm run format` / `format:check` | Prettier write / verify |
-| `npm run typecheck` | `tsc --noEmit` |
+| Command                                     | What it does                                                          |
+| ------------------------------------------- | --------------------------------------------------------------------- |
+| `npm run verify`                            | Lint + typecheck — run before pushing                                 |
+| `npm run test`                              | All projects (orangehrm + api + file-io + firefox-ci)                 |
+| `npm run test:smoke`                        | `@smoke`-tagged tests only                                            |
+| `npm run test:regression`                   | `@regression`-tagged tests only                                       |
+| `npm run test:orangehrm`                    | Only the OrangeHRM project                                            |
+| `npm run test:api`                          | Only the API project (auto-skips reqres specs without REQRES_API_KEY) |
+| `npm run test:ui`                           | Playwright UI mode — time-travel debugging                            |
+| `npm run test:debug`                        | Inspector / step-through                                              |
+| `npm run test:headed`                       | Tests with browser visible                                            |
+| `npm run report`                            | Open last HTML report                                                 |
+| `npm run lint` / `lint:fix` / `lint:strict` | ESLint variants                                                       |
+| `npm run format` / `format:check`           | Prettier write / verify                                               |
+| `npm run typecheck`                         | `tsc --noEmit`                                                        |
 
 ### Per-project
 
@@ -229,21 +229,21 @@ Missing required vars cause **fail-fast** at startup (see [`config/env.loader.ts
 Three `expect.extend` matchers in [`utilities/matchers/`](utilities/matchers/):
 
 ```typescript
-await expect(locator).toBeReadableTo();            // WCAG AA contrast + font ≥ 12px
-await expect(apiResponse).toRespondWithin(500);    // 200 OK in ≤500ms
-await expect(json).toMatchSchemaZod(UserSchema);   // Zod schema validation
+await expect(locator).toBeReadableTo(); // WCAG AA contrast + font ≥ 12px
+await expect(apiResponse).toRespondWithin(500); // 200 OK in ≤500ms
+await expect(json).toMatchSchemaZod(UserSchema); // Zod schema validation
 ```
 
 Register them via `registerCustomMatchers()` in a global-setup file or test fixture.
 
 ## Known limitations
 
-| Issue | Reason | Workaround |
-|---|---|---|
-| 2 `@smoke` specs marked `test.fixme` | OrangeHRM open-source demo doesn't reliably persist custom Employee Id values | Un-fixme when running against a real OrangeHRM instance you own |
-| All reqres-based API specs skip without `REQRES_API_KEY` | reqres.in introduced mandatory auth in mid-2024 | Get a free key from app.reqres.in/api-keys; set REQRES_API_KEY |
-| Allure deps installed but reporter opt-in only | Keeps local runs lean | `ALLURE=1 npm test` |
-| Visual baselines not committed | First-run captures them | `npx playwright test --project=visual --update-snapshots` (once you've added the project) |
+| Issue                                                    | Reason                                                                        | Workaround                                                                                |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 2 `@smoke` specs marked `test.fixme`                     | OrangeHRM open-source demo doesn't reliably persist custom Employee Id values | Un-fixme when running against a real OrangeHRM instance you own                           |
+| All reqres-based API specs skip without `REQRES_API_KEY` | reqres.in introduced mandatory auth in mid-2024                               | Get a free key from app.reqres.in/api-keys; set REQRES_API_KEY                            |
+| Allure deps installed but reporter opt-in only           | Keeps local runs lean                                                         | `ALLURE=1 npm test`                                                                       |
+| Visual baselines not committed                           | First-run captures them                                                       | `npx playwright test --project=visual --update-snapshots` (once you've added the project) |
 
 ## What to build on top
 

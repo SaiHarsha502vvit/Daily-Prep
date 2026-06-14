@@ -182,7 +182,7 @@ GET /api/v1/users?page=2&size=20&sort=name,asc
 // RESPONSE:
 {
     "data": [
-        {"id": 21, "name": "Alice"}, 
+        {"id": 21, "name": "Alice"},
         {"id": 22, "name": "Bob"}
     ],
     "pagination": {
@@ -235,7 +235,7 @@ public class GlobalExceptionHandler {
             .stream()
             .map(f -> new FieldError(f.getField(), f.getDefaultMessage()))
             .toList();
-        
+
         return new ErrorResponse(400, "Validation failed", details);
     }
 
@@ -348,7 +348,7 @@ Implementation (Spring Boot + Bucket4j):
 
 Common limits:
   Public API:        60 requests/minute
-  Authenticated:     1000 requests/minute  
+  Authenticated:     1000 requests/minute
   Admin:             Unlimited
 ```
 
@@ -410,6 +410,18 @@ Using Spring Boot, implement a REST API for a TODO app:
   - DELETE /api/todos/{id} (delete)
   - Add validation, error handling, DTO pattern
 ```
+
+### Production Reality
+
+**API design decisions fail in production in these named ways:**
+
+- **Rate limiting absence causing backend overload** — an API without rate limiting accepts unlimited requests from any client. A single misconfigured client with a tight loop can send 10,000 req/s to an endpoint designed for 100 req/s. The database connection pool exhausts; the API returns 503 for all users, including well-behaved clients. The fix (Bucket4j with Redis backend) must be in place before the incident, not after.
+- **Idempotency key collisions in retry logic** — client retries a POST `/payments` request on timeout but uses the same idempotency key (`Idempotency-Key: abc-123`) as a previous request with different body content (e.g., amount changed between retries). The server returns the cached response for the original amount, processing the wrong payment. Fix: idempotency key must scope to the exact request body, not just the endpoint.
+- **Pagination cursor drift** — cursor-based pagination using `created_at` timestamp drifts when records are inserted or updated during iteration. A page fetched at noon with cursor `2024-01-15T12:00:00Z` returns items created before noon. If a record is created at `2024-01-15T11:59:59Z` between page 1 and page 2 fetch, it appears in page 2 (already seen), or disappears entirely. Fix: use opaque cursor (encoded position) rather than timestamp.
+- **Version mismatch in breaking change** — `/api/v1/users` removes the `email` field. A client on an older app version still reads `user.email` and gets `undefined`. The client crashes on `.toLowerCase()` when rendering the email field. No 400 error, no deprecation warning — just a silent JS exception on user devices. Semantic versioning and sunset headers are the production discipline.
+
+**Debug workflow:** For rate limiting: monitor `429 Too Many Requests` rate by client in CloudWatch/Grafana; for pagination drift: verify with `db.orders.count()` vs total API pagination count; for idempotency collisions: log all idempotency key collisions in a dedicated metric.
+**Mitigation discipline:** Implement rate limiting before production launch, not after the first DDoS. Use ISO 8601 deprecation headers (`Sunset`, `Deprecation`) when removing API fields. Use opaque cursor pagination for mutable datasets. Test API backward compatibility with consumer-driven contract testing (Pact).
 
 ---
 

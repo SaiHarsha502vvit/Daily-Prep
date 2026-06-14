@@ -12,13 +12,13 @@
  * - finally-block in page.fixture.ts for guaranteed cleanup
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as lockfile from 'proper-lockfile';
+import * as fs from "fs";
+import * as path from "path";
+import * as lockfile from "proper-lockfile";
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  ESS = 'ESS',
+  ADMIN = "ADMIN",
+  ESS = "ESS",
 }
 
 export interface PooledAccount {
@@ -31,7 +31,7 @@ export interface PooledAccount {
 // ---------------------------------------------------------------------------
 // Lock directory setup
 // ---------------------------------------------------------------------------
-const LOCK_DIR = path.resolve(__dirname, '.locks');
+const LOCK_DIR = path.resolve(__dirname, ".locks");
 
 if (!fs.existsSync(LOCK_DIR)) {
   fs.mkdirSync(LOCK_DIR, { recursive: true });
@@ -43,8 +43,8 @@ if (!fs.existsSync(LOCK_DIR)) {
 const ACCOUNTS: PooledAccount[] = [
   {
     id: 1,
-    username: process.env.ORANGEHRM_DEMO_USERNAME ?? 'Admin',
-    password: process.env.ORANGEHRM_DEMO_PASSWORD ?? 'admin123',
+    username: process.env.ORANGEHRM_DEMO_USERNAME ?? "Admin",
+    password: process.env.ORANGEHRM_DEMO_PASSWORD ?? "admin123",
     role: UserRole.ADMIN,
   },
   // Extend with more accounts to scale workers: { id: 2, ... }, { id: 3, ... }
@@ -60,7 +60,7 @@ const releaseFunctions = new Map<number, () => Promise<void>>();
 function lockPathFor(accountId: number): string {
   const file = path.join(LOCK_DIR, `account-${accountId}.lock`);
   if (!fs.existsSync(file)) {
-    fs.writeFileSync(file, '');
+    fs.writeFileSync(file, "");
   }
   return file;
 }
@@ -69,7 +69,7 @@ function lockPathFor(accountId: number): string {
 // acquireAccount — blocks until an account is available or budget exhausted
 // ---------------------------------------------------------------------------
 export async function acquireAccount(): Promise<PooledAccount> {
-  const workerIndex = parseInt(process.env.TEST_WORKER_INDEX ?? '0', 10);
+  const workerIndex = parseInt(process.env.TEST_WORKER_INDEX ?? "0", 10);
 
   // Deterministic ordering: start from workerIndex to spread first attempts
   const startOffset = workerIndex % ACCOUNTS.length;
@@ -87,9 +87,9 @@ export async function acquireAccount(): Promise<PooledAccount> {
 
       try {
         const release = await lockfile.lock(file, {
-          retries: 0,        // non-blocking: throw immediately if locked
-          stale: 3_600_000,  // 1 hour — auto-reclaim if original holder died
-          update: 10_000,    // refresh lockfile mtime every 10s to avoid stale
+          retries: 0, // non-blocking: throw immediately if locked
+          stale: 3_600_000, // 1 hour — auto-reclaim if original holder died
+          update: 10_000, // refresh lockfile mtime every 10s to avoid stale
         });
 
         // Store release function so releaseAccount() can call it later
@@ -106,8 +106,8 @@ export async function acquireAccount(): Promise<PooledAccount> {
   }
 
   throw new Error(
-    '[auth.fixture] No account available within 60s — pool exhausted.\n' +
-      '  Hint: ensure ACCOUNTS.length >= workers, or increase waitBudgetMs.'
+    "[auth.fixture] No account available within 60s — pool exhausted.\n" +
+      "  Hint: ensure ACCOUNTS.length >= workers, or increase waitBudgetMs.",
   );
 }
 

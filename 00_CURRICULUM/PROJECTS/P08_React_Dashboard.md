@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*The CTO wants a real-time analytics dashboard for a SaaS product. Engineers need to see key metrics at a glance: active users, revenue trends, error rates, and recent activity. Build a polished, production-grade dashboard with live data polling.*
+_The CTO wants a real-time analytics dashboard for a SaaS product. Engineers need to see key metrics at a glance: active users, revenue trends, error rates, and recent activity. Build a polished, production-grade dashboard with live data polling._
 
 ---
 
@@ -17,11 +17,11 @@
 
 ### Pages / Views
 
-| Route | Description |
-|---|---|
-| `/` | Main dashboard: 4 stat cards + revenue chart + recent activity table |
-| `/users` | User analytics: growth chart, country breakdown, retention table |
-| `/errors` | Error log: filterable table of recent errors with stack traces |
+| Route     | Description                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `/`       | Main dashboard: 4 stat cards + revenue chart + recent activity table |
+| `/users`  | User analytics: growth chart, country breakdown, retention table     |
+| `/errors` | Error log: filterable table of recent errors with stack traces       |
 
 ### Component Architecture
 
@@ -50,14 +50,14 @@ App
 interface StatCard {
   title: string;
   value: number | string;
-  delta: number;        // % change from previous period
-  deltaLabel: string;   // "vs last 7 days"
-  trend: 'up' | 'down' | 'neutral';
+  delta: number; // % change from previous period
+  deltaLabel: string; // "vs last 7 days"
+  trend: "up" | "down" | "neutral";
   icon: string;
 }
 
 interface RevenuePoint {
-  date: string;         // "2024-01-15"
+  date: string; // "2024-01-15"
   revenue: number;
   expenses: number;
   profit: number;
@@ -65,11 +65,11 @@ interface RevenuePoint {
 
 interface ActivityEvent {
   id: string;
-  type: 'USER_SIGNUP' | 'PAYMENT' | 'ERROR' | 'DEPLOYMENT';
+  type: "USER_SIGNUP" | "PAYMENT" | "ERROR" | "DEPLOYMENT";
   message: string;
   userId?: string;
   timestamp: string;
-  severity: 'info' | 'warning' | 'error';
+  severity: "info" | "warning" | "error";
 }
 
 interface ErrorLog {
@@ -79,7 +79,7 @@ interface ErrorLog {
   count: number;
   firstSeen: string;
   lastSeen: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   service: string;
 }
 ```
@@ -89,16 +89,17 @@ interface ErrorLog {
 ## 📝 Skeleton Code
 
 ### `src/hooks/useDashboardStats.ts`
+
 ```typescript
-import { useQuery } from '@tanstack/react-query';
-import { api } from '../lib/api';
-import type { StatCard, RevenuePoint, ActivityEvent } from '../types';
+import { useQuery } from "@tanstack/react-query";
+import { api } from "../lib/api";
+import type { StatCard, RevenuePoint, ActivityEvent } from "../types";
 
 // Polls every 30 seconds — shows real-time feel
 export function useDashboardStats() {
   return useQuery<StatCard[]>({
-    queryKey: ['dashboard', 'stats'],
-    queryFn: () => api.get('/api/dashboard/stats').then(r => r.data),
+    queryKey: ["dashboard", "stats"],
+    queryFn: () => api.get("/api/dashboard/stats").then((r) => r.data),
     refetchInterval: 30_000,
     staleTime: 20_000,
   });
@@ -106,30 +107,43 @@ export function useDashboardStats() {
 
 export function useRevenueChart(days: number = 30) {
   return useQuery<RevenuePoint[]>({
-    queryKey: ['dashboard', 'revenue', days],
-    queryFn: () => api.get(`/api/dashboard/revenue?days=${days}`).then(r => r.data),
+    queryKey: ["dashboard", "revenue", days],
+    queryFn: () =>
+      api.get(`/api/dashboard/revenue?days=${days}`).then((r) => r.data),
   });
 }
 
 export function useRecentActivity() {
   return useQuery<ActivityEvent[]>({
-    queryKey: ['dashboard', 'activity'],
-    queryFn: () => api.get('/api/dashboard/activity?limit=20').then(r => r.data),
+    queryKey: ["dashboard", "activity"],
+    queryFn: () =>
+      api.get("/api/dashboard/activity?limit=20").then((r) => r.data),
     refetchInterval: 15_000,
   });
 }
 ```
 
 ### `src/components/StatCard.tsx`
-```tsx
-import React from 'react';
-import type { StatCard as StatCardProps } from '../types';
 
-export function StatCard({ title, value, delta, deltaLabel, trend, icon }: StatCardProps) {
-  const trendColor = trend === 'up' ? 'var(--green-500)'
-                   : trend === 'down' ? 'var(--red-500)'
-                   : 'var(--gray-400)';
-  const trendIcon = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→';
+```tsx
+import React from "react";
+import type { StatCard as StatCardProps } from "../types";
+
+export function StatCard({
+  title,
+  value,
+  delta,
+  deltaLabel,
+  trend,
+  icon,
+}: StatCardProps) {
+  const trendColor =
+    trend === "up"
+      ? "var(--green-500)"
+      : trend === "down"
+        ? "var(--red-500)"
+        : "var(--gray-400)";
+  const trendIcon = trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
 
   return (
     <div className="stat-card" role="article" aria-label={title}>
@@ -137,9 +151,12 @@ export function StatCard({ title, value, delta, deltaLabel, trend, icon }: StatC
         <span className="stat-card__icon">{icon}</span>
         <h3 className="stat-card__title">{title}</h3>
       </div>
-      <p className="stat-card__value">{typeof value === 'number' ? value.toLocaleString() : value}</p>
+      <p className="stat-card__value">
+        {typeof value === "number" ? value.toLocaleString() : value}
+      </p>
       <p className="stat-card__delta" style={{ color: trendColor }}>
-        {trendIcon} {Math.abs(delta)}% <span className="stat-card__delta-label">{deltaLabel}</span>
+        {trendIcon} {Math.abs(delta)}%{" "}
+        <span className="stat-card__delta-label">{deltaLabel}</span>
       </p>
     </div>
   );
@@ -147,30 +164,64 @@ export function StatCard({ title, value, delta, deltaLabel, trend, icon }: StatC
 ```
 
 ### `src/components/RevenueChart.tsx`
+
 ```tsx
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useRevenueChart } from '../hooks/useDashboardStats';
+import React from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { useRevenueChart } from "../hooks/useDashboardStats";
 
 export function RevenueChart() {
   const { data, isLoading, error } = useRevenueChart(30);
 
   if (isLoading) return <div className="chart-skeleton" aria-busy="true" />;
-  if (error) return <div className="chart-error">Failed to load revenue data</div>;
+  if (error)
+    return <div className="chart-error">Failed to load revenue data</div>;
 
   return (
     <div className="chart-container">
       <h2 className="chart-title">Revenue vs Expenses (Last 30 Days)</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        <LineChart
+          data={data}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
           <XAxis dataKey="date" tick={{ fontSize: 12 }} />
           <YAxis tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-          <Tooltip formatter={(value: number) => [`$${value.toLocaleString()}`, '']} />
+          <Tooltip
+            formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
+          />
           <Legend />
-          <Line type="monotone" dataKey="revenue" stroke="var(--green-500)" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="expenses" stroke="var(--red-400)" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="profit" stroke="var(--blue-500)" strokeWidth={2} dot={false} />
+          <Line
+            type="monotone"
+            dataKey="revenue"
+            stroke="var(--green-500)"
+            strokeWidth={2}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="expenses"
+            stroke="var(--red-400)"
+            strokeWidth={2}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="profit"
+            stroke="var(--blue-500)"
+            strokeWidth={2}
+            dot={false}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -179,24 +230,55 @@ export function RevenueChart() {
 ```
 
 ### Mock API server (`src/mocks/handlers.ts` — MSW)
+
 ```typescript
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
-  http.get('/api/dashboard/stats', () => {
+  http.get("/api/dashboard/stats", () => {
     return HttpResponse.json([
-      { title: 'Active Users', value: 12_847, delta: 8.2, deltaLabel: 'vs last 7 days', trend: 'up', icon: '👥' },
-      { title: 'Revenue', value: '$48,290', delta: 12.1, deltaLabel: 'vs last month', trend: 'up', icon: '💰' },
-      { title: 'Error Rate', value: '0.12%', delta: -3.4, deltaLabel: 'vs yesterday', trend: 'down', icon: '⚠️' },
-      { title: 'Uptime', value: '99.98%', delta: 0.01, deltaLabel: 'vs last week', trend: 'neutral', icon: '🟢' },
+      {
+        title: "Active Users",
+        value: 12_847,
+        delta: 8.2,
+        deltaLabel: "vs last 7 days",
+        trend: "up",
+        icon: "👥",
+      },
+      {
+        title: "Revenue",
+        value: "$48,290",
+        delta: 12.1,
+        deltaLabel: "vs last month",
+        trend: "up",
+        icon: "💰",
+      },
+      {
+        title: "Error Rate",
+        value: "0.12%",
+        delta: -3.4,
+        deltaLabel: "vs yesterday",
+        trend: "down",
+        icon: "⚠️",
+      },
+      {
+        title: "Uptime",
+        value: "99.98%",
+        delta: 0.01,
+        deltaLabel: "vs last week",
+        trend: "neutral",
+        icon: "🟢",
+      },
     ]);
   }),
 
-  http.get('/api/dashboard/revenue', ({ request }) => {
+  http.get("/api/dashboard/revenue", ({ request }) => {
     const url = new URL(request.url);
-    const days = parseInt(url.searchParams.get('days') ?? '30');
+    const days = parseInt(url.searchParams.get("days") ?? "30");
     const data = Array.from({ length: days }, (_, i) => ({
-      date: new Date(Date.now() - (days - i) * 86400000).toISOString().slice(0, 10),
+      date: new Date(Date.now() - (days - i) * 86400000)
+        .toISOString()
+        .slice(0, 10),
       revenue: 1000 + Math.random() * 500,
       expenses: 600 + Math.random() * 200,
       profit: 400 + Math.random() * 300,
@@ -245,7 +327,9 @@ export const handlers = [
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .stat-card:hover {
   transform: translateY(-2px);
@@ -263,19 +347,36 @@ export const handlers = [
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
-@media (max-width: 1024px) { .dashboard-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 768px)  { .dashboard-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
 .chart-skeleton {
   height: 300px;
-  background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--border-color) 50%,
+    var(--bg-secondary) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
   border-radius: var(--radius);
 }
 @keyframes skeleton-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 ```
 
@@ -283,13 +384,13 @@ export const handlers = [
 
 ## 🔴 Failure Scenarios & Erklärungen
 
-| Mistake | Why | Fix |
-|---|---|---|
-| `useEffect(() => { fetch(url) }, [])` in component | No caching, no dedup, no background refresh | Use React Query `useQuery` — handles all this |
-| Polling with `setInterval` in `useEffect` | Memory leak on unmount, duplicate intervals | Use React Query `refetchInterval` — auto-cleans |
-| No loading state — renders empty chart | Chart flashes on load, confusing UX | Show skeleton immediately; chart fades in with data |
-| `any` for chart data | TypeScript provides no safety on data shape | Define `RevenuePoint` interface, use it everywhere |
-| Hardcoded colors in recharts `stroke` | Breaks dark mode | Use `var(--green-500)` CSS variables — theme-aware |
+| Mistake                                            | Why                                         | Fix                                                 |
+| -------------------------------------------------- | ------------------------------------------- | --------------------------------------------------- |
+| `useEffect(() => { fetch(url) }, [])` in component | No caching, no dedup, no background refresh | Use React Query `useQuery` — handles all this       |
+| Polling with `setInterval` in `useEffect`          | Memory leak on unmount, duplicate intervals | Use React Query `refetchInterval` — auto-cleans     |
+| No loading state — renders empty chart             | Chart flashes on load, confusing UX         | Show skeleton immediately; chart fades in with data |
+| `any` for chart data                               | TypeScript provides no safety on data shape | Define `RevenuePoint` interface, use it everywhere  |
+| Hardcoded colors in recharts `stroke`              | Breaks dark mode                            | Use `var(--green-500)` CSS variables — theme-aware  |
 
 ---
 

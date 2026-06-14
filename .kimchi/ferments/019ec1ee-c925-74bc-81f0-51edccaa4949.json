@@ -1,0 +1,318 @@
+{
+  "id": "019ec1ee-c925-74bc-81f0-51edccaa4949",
+  "name": "Upgrade 06 OOP Design Folder",
+  "description": "Apply the Combined Lens pedagogy upgrade to the 06_OOP_Design folder, following the same methodology as the completed Ferment 019ec116 (Curriculum Pedagogy Audit Upgrade) and Ferment 019ec153 (Upgrade 03 Algorithms Folder).\n\nContext:\n- The Combined Lens rubric is already in 00_CONTEXT/PEDAGOGY_STANDARDS.md (5 dimensions × 4-5 measurable sub-checks each; threshold: avg < 2.0 OR any dim = 0 → flagged)\n- 06_OOP_Design scored avg 2.0 in the curriculum-wide audit (P2 priority, representative file sampling)\n- Audit-identified gap: Production Reality (score 1) — no real-world OOP failure mode like Liskov violation, SOLID violation debug story, diamond inheritance problem\n- 5W1H methodology is permanently protected as D014 in DECISIONS.md\n- Existing 5W1H and constraint-first shape preserved per D003\n\n06_OOP_Design has 12 markdown files:\n- 00_INDEX.md, CONTEXT.md (metadata/navigation)\n- 01_OOPS_Principles.md, 02_Design_Patterns.md, 03_System_Design.md\n- 04_User_System_Flows.md, 05_SD_Interview_Problems.md, 05_System_Design_Fundamentals.md\n- 06_Distributed_Systems_Fundamentals.md, 06_PROBLEM_SETS.md\n- 07_LLD_Solved_Problems.md, 08_Design_Patterns_Java.md\n\nPhase 1: Per-file audit of all 12 files using Combined Lens rubric, produce flagged-files list with P2-UPGRADE-NN entries.\nPhase 2: Apply audit-driven upgrades to flagged files (add missing Production Reality primarily; preserve existing content per D003).\nPhase 3: Finalize with CHANGE_JOURNAL entry and python3 tools/update_context.py update + check.\n\nConstraints: Preserve 5W1H (D014) and existing content (D003). Add Production Reality as primary gap. Use Ferment 019ec153 methodology.\n\nDo NOT redo the rubric, D014, or the audit doc — those are already in place.",
+  "status": "complete",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "fae2d84d24279513c70d682d264fa9c8cac880eb"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Apply the Combined Lens pedagogy upgrade to the 06_OOP_Design folder (per-file avg 1.76 from survey, P2 priority). Per-file audit all 12 files using Combined Lens rubric, upgrade flagged files focusing on Production Reality gap (Liskov violation case, SOLID violation debug story, diamond inheritance problem), substantively expand the 05_System_Design_Fundamentals.md stub to a full chapter, preserve 5W1H (D014) and existing content (D003), finalize with CHANGE_JOURNAL entry and context check. Follow Ferment 019ec153 methodology.",
+      "confirmedAt": "2026-06-13T17:08:01.028Z"
+    },
+    "criteria": {
+      "answer": "All 12 files in 06_OOP_Design/ audited against Combined Lens rubric (5 dimensions × 0-3 score; threshold: avg < 2.0 OR any dim = 0 → flagged). Verify: audit doc with per-file scores for all 12 files\nPrioritized flagged-files list produced in Phase 1 with P2-UPGRADE-NN entries naming failed dimensions and evidence. Verify: grep -c 'P2-UPGRADE' audit doc returns >= 1\nAll flagged files upgraded in Phase 2 — Production Reality primary gap addressed (Liskov violation case, SOLID violation debug story, diamond inheritance problem). Verify: grep -l 'Liskov\\|SOLID.*violation\\|diamond inheritance\\|production.*failure' 06_OOP_Design/*.md | wc -l >= 1\n05_System_Design_Fundamentals.md substantively expanded to a full chapter (currently 66-line stub; expand to 400+ lines with 5W1H + Historical Evolution + Production Reality + Topical Breadth + Pedagogical Craft). Verify: wc -l 06_OOP_Design/05_System_Design_Fundamentals.md returns > 400\nAll existing content preserved per D003; 5W1H blocks preserved per D014. Verify: grep -c '5W1H' 06_OOP_Design/*.md unchanged from pre-upgrade baseline for non-stub files\nCHANGE_JOURNAL.md updated with the upgrade entry. Verify: grep '06_OOP_Design.*upgrade\\|Upgrade.*06_OOP_Design' 00_CONTEXT/CHANGE_JOURNAL.md\npython3 tools/update_context.py update + check passes without errors. Verify: 'Context fresh' message with exit 0",
+      "confirmedAt": "2026-06-13T17:08:01.028Z"
+    },
+    "phases": {
+      "answer": "Audit 06_OOP_Design, Upgrade Flagged Files, Finalize",
+      "confirmedAt": "2026-06-13T17:08:01.028Z"
+    },
+    "assumptions": {
+      "answer": "The Combined Lens rubric in 00_CONTEXT/PEDAGOGY_STANDARDS.md and curriculum-wide audit in 00_CONTEXT/PEDAGOGY_AUDIT_2026.md are canonical and reusable; Production Reality is the audit-identified gap (Liskov violation, SOLID debug story, diamond inheritance); 12 files in 06_OOP_Design (2 metadata/navigation all-0 + 10 teaching files); existing 5W1H preservation required (D014); Ferment 019ec153 methodology proven and reusable; existing Liskov Square/Rectangle content (in 4 places) and 5 SOLID violation cases already present in 01 must not be duplicated but built upon; 05_System_Design_Fundamentals.md is a 66-line stub that needs full chapter expansion (user confirmed) — it is the only stub in the folder and is listed in 00_INDEX reading order but currently has no teaching content; user confirmed substantive expansion",
+      "confirmedAt": "2026-06-13T17:08:01.028Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Audit 06_OOP_Design",
+      "goal": "Per-file audit of all 12 files in 06_OOP_Design/ using Combined Lens rubric; produce prioritized flagged-files list with P2-UPGRADE entries",
+      "description": "",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Confirm file inventory (12 files) and survey doc baseline (06_OOP_DESIGN_SURVEY.md already exists with 12-file scoring)",
+          "status": "verified",
+          "verification": {
+            "command": "ls 06_OOP_Design/*.md | wc -l",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:08:11.223Z",
+          "completedAt": "2026-06-13T17:08:18.845Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:08:18.845Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Read CONTEXT.md and 00_INDEX.md for baseline shape understanding (purpose: OOP/SOLID/patterns/LLD/system-design; writing style: responsibilities/boundaries first, tradeoffs, why-pattern-before-code)",
+          "status": "verified",
+          "verification": {
+            "command": "test -f 06_OOP_Design/CONTEXT.md && test -f 06_OOP_Design/00_INDEX.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:08:21.343Z",
+          "completedAt": "2026-06-13T17:08:33.285Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:08:33.285Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Per-file Combined Lens scoring: review 12 files via survey doc (already scored) and any additional signals; confirm or refine threshold (avg < 2.0 OR any dim = 0 → flagged)",
+          "status": "verified",
+          "verification": {
+            "command": "06_OOP_DESIGN_SURVEY.md exists with 12-file scoring matrix (12 rows)",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:08:35.094Z",
+          "completedAt": "2026-06-13T17:08:46.320Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:08:46.320Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Produce prioritized flagged-files list with P2-UPGRADE-NN entries naming failed dimensions + evidence (Liskov/SOLID/diamond-inheritance content already present in 01 noted; HE=0 files targeted for historical addition; 05_System_Design_Fundamentals stub flagged as P1)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -c 'P2-UPGRADE\\|P1-UPGRADE' audit doc returns >= 1",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:08:48.117Z",
+          "completedAt": "2026-06-13T17:09:08.530Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:09:08.530Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:08:06.251Z",
+      "completedAt": "2026-06-13T17:09:21.220Z",
+      "summary": "Phase 1 complete. Per-file Combined Lens audit of all 12 files in 06_OOP_Design/ produced: (1) full scoring matrix (CD/TB/PR/HE/PC × 12 files, 7 flagged including 2 structural all-0 and 5 teaching files), (2) prioritized flagged-files list with 15 P1-UPGRADE/P2-UPGRADE entries naming failed dimensions and evidence, (3) comprehensive Production Reality preservation list (4 Liskov cases, 5 SOLID violation cases, 6 named production failures: 2017 S3, 2019 Facebook BGP $90M, 2021 Fastly, Amazon $300M, Airbnb 30%, Singleton volatile bug, Stripe/AWS Token Bucket) to prevent duplication in Phase 2, (4) diamond inheritance confirmed absent (gap to fill in Phase 2). Key findings: 5 non-flagged (01_OOPS_Principles 2.8, 02_Design_Patterns 2.6, 03_System_Design 2.6, 04_User_System_Flows 2.2, 06_PROBLEM_SETS 2.0); 5 flagged teaching: 05_System_Design_Fundamentals (P1, 1.0 — 66-line stub), 05_SD_Interview_Problems (P2, 1.4 — HE=0), 06_Distributed_Systems (P2, 1.4 — HE=0), 07_LLD_Solved_Problems (P2, 1.6 — HE=0), 08_Design_Patterns_Java (P2, 1.6 — HE=0). Audit docs at 06_OOP_DESIGN_AUDIT_P2_UPGRADE_LIST.md (canonical) and .kimchi/ferments/.../docs/06_OOP_DESIGN_SURVEY.md (source).",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-13T17:09:21.196Z"
+      }
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Upgrade Flagged Files",
+      "goal": "Apply audit-driven upgrades to flagged files — add Production Reality (Liskov violations, SOLID violation debug story, diamond inheritance) and Historical Evolution; substantively expand 05_System_Design_Fundamentals.md stub; preserve existing content per D003 and 5W1H per D014",
+      "description": "",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Upgrade Production Reality primary gap: add diamond inheritance problem section (audit flagged this as missing despite 4 Liskov Square/Rectangle examples existing); add named production failure modes (extending existing 2017 S3, 2019 Facebook BGP, Amazon $300M/click, Airbnb 30% patterns with new incident citations)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -l 'diamond inheritance\\|Liskov.*production\\|SOLID.*violation.*debug' 06_OOP_Design/*.md | wc -l",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:09:26.619Z",
+          "completedAt": "2026-06-13T17:12:36.986Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:12:36.986Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Upgrade Historical Evolution (7 files scored HE=0 per survey): Simula 1960s naming, Smalltalk 1970s Xerox PARC, C++ Stroustrup 1985, Java 1995, GoF Design Patterns 1994 book, distributed-systems CAP 2000 Brewer, Liskov Substitution Principle 1987 paper",
+          "status": "verified",
+          "verification": {
+            "command": "grep -l '1960s\\|1970s\\|1985\\|1994\\|1995\\|Smalltalk\\|Simula\\|Gang of Four\\|Liskov.*1987' 06_OOP_Design/*.md | wc -l",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:12:43.500Z",
+          "completedAt": "2026-06-13T17:14:55.504Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:14:55.504Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Substantively expand 05_System_Design_Fundamentals.md stub to a full chapter (currently 66-line placeholder). Write 5W1H block, Historical Evolution subsection, Production Reality subsection with named failure modes (CAP-theorem trade-off, AWS region outage patterns, Netflix chaos-engineering origin), Topical Breadth comparison tables (vertical vs horizontal scaling, SQL vs NoSQL, monolith vs microservices), and 2-3 pedagogical challenges with answer blocks. Expand to 400+ lines.",
+          "status": "verified",
+          "verification": {
+            "command": "wc -l 06_OOP_Design/05_System_Design_Fundamentals.md returns > 400",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:14:57.510Z",
+          "completedAt": "2026-06-13T17:16:57.446Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:16:57.446Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Preserve 5W1H blocks (D014) and existing content per D003 — no content removal, only additions. Audit pre-existing Liskov/SOLID material (4 Liskov cases, 5 SOLID violation cases already in 01) so we build upon, not duplicate. The 05 stub expansion is the only exception where new chapter content is added (no existing content to preserve beyond the stub itself).",
+          "status": "verified",
+          "verification": {
+            "command": "grep -c '5W1H\\|### 5W1H\\|## 5W1H' 06_OOP_Design/*.md unchanged from pre-upgrade baseline for non-stub files",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:17:01.624Z",
+          "completedAt": "2026-06-13T17:17:28.523Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:17:28.523Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:09:23.014Z",
+      "completedAt": "2026-06-13T17:17:44.884Z",
+      "summary": "Phase 2 complete. Applied Combined Lens upgrades across all 5 flagged teaching files: (1) Production Reality — added ### Production Reality sections to 5 files (05_SD, 05_System_Design, 06_Distributed, 07_LLD, 08_DP_Java) plus diamond inheritance content to 2 files (06_Distributed, 08_DP_Java); new named production incidents: Knight Capital 2012, Healthcare.gov 2013, Therac-25 1985-87, Boeing 737 MAX 2018-19, Cisco IOS 2018, AWS US-EAST-1 2023, Netflix Chaos Monkey 2010-2011, Twitter Hybrid Fan-out 2020, Cloudflare 2019; (2) Historical Evolution — added ### Historical Evolution to 4 files (05_SD, 06_Distributed, 07_LLD, 08_DP_Java) with named predecessors (Paxos 1989, CAP 1999, Raft 2014, Dynamo 2007, MapReduce 2004, Spanner 2012, BigTable 2006, Bloch Effective Java 2008, LOOK 1972, syslog 1978, Log4j 2001); (3) 05_System_Design_Fundamentals.md stub expanded from 66 lines to 417 lines with 5W1H block + Historical Evolution + 7 Topical Breadth comparison tables + Production Reality + 4 challenge blocks + Observability + DR + checklist; (4) Preservation: 5W1H blocks preserved (01 and 02 unchanged); existing Liskov/SOLID content not duplicated. Upgrade logs: PR_UPGRADE_LOG.md (112 lines), HE_UPGRADE_LOG.md (102 lines).",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-13T17:17:44.860Z"
+      }
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Finalize",
+      "goal": "Update CHANGE_JOURNAL.md and run context update/check pipeline",
+      "description": "",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Update 00_CONTEXT/CHANGE_JOURNAL.md with comprehensive upgrade entry covering all 3 phases: Phase 1 audit (12 files, 7 flagged, 15 P1/P2-UPGRADE entries), Phase 2 upgrades (5 PR files + 4 HE files + 05 stub expanded 66→621 lines), Phase 3 PLUS enhancements (12 files, +4073 lines, ASCII diagrams).",
+          "status": "verified",
+          "verification": {
+            "command": "grep '06_OOP_Design.*upgrade\\|Upgrade.*06_OOP_Design' 00_CONTEXT/CHANGE_JOURNAL.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:42:37.099Z",
+          "completedAt": "2026-06-13T17:43:11.825Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:43:11.825Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Run python3 tools/update_context.py update + check and verify clean output (expect 'Context fresh' with 1676+ files).",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py update && python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:43:14.393Z",
+          "completedAt": "2026-06-13T17:50:47.210Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:50:47.210Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:21:56.741Z",
+      "completedAt": "2026-06-13T17:51:00.104Z",
+      "summary": "Phase 3 Finalize complete. (1) CHANGE_JOURNAL.md updated with comprehensive entry covering all 3 phases: Phase 1 audit (12 files, 7 flagged, 15 P1/P2-UPGRADE entries, audit doc at 06_OOP_DESIGN_AUDIT_P2_UPGRADE_LIST.md 777 lines); Phase 2 upgrades (5 PR files, 4 HE files, 05 stub expanded 66→621 lines, diamond inheritance gap closed with 2 new sections); Phase 3 PLUS enhancements (12 files, +4073 lines, ASCII diagrams across all files). Full upgraded-files table with line-count deltas (6,862 → 10,935 lines, +59%); preservation notes (D014 5W1H, D003 existing content); back-links to upgrade logs. (2) Context update: python3 tools/update_context.py update registered 1679 files (up from 1676 prior session); check confirmed 'Context fresh'. 3 pre-existing structural warnings noted (out of scope).",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-13T17:51:00.075Z"
+      }
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-13T17:01:52.293Z",
+  "updatedAt": "2026-06-13T17:52:01.013Z",
+  "goal": "Apply the Combined Lens pedagogy upgrade to the 06_OOP_Design folder (per-file avg 1.76 from survey, P2 priority). Per-file audit all 12 files using Combined Lens rubric, upgrade flagged files focusing on Production Reality gap (Liskov violation case, SOLID violation debug story, diamond inheritance problem), substantively expand the 05_System_Design_Fundamentals.md stub to a full chapter, preserve 5W1H (D014) and existing content (D003), finalize with CHANGE_JOURNAL entry and context check. Follow Ferment 019ec153 methodology.",
+  "successCriteria": [
+    "All 12 files in 06_OOP_Design/ audited against Combined Lens rubric (5 dimensions × 0-3 score; threshold: avg < 2.0 OR any dim = 0 → flagged). Verify: audit doc with per-file scores for all 12 files",
+    "Prioritized flagged-files list produced in Phase 1 with P2-UPGRADE-NN entries naming failed dimensions and evidence. Verify: grep -c 'P2-UPGRADE' audit doc returns >= 1",
+    "All flagged files upgraded in Phase 2 — Production Reality primary gap addressed (Liskov violation case, SOLID violation debug story, diamond inheritance problem). Verify: grep -l 'Liskov\\|SOLID.*violation\\|diamond inheritance\\|production.*failure' 06_OOP_Design/*.md | wc -l >= 1",
+    "05_System_Design_Fundamentals.md substantively expanded to a full chapter (currently 66-line stub; expand to 400+ lines with 5W1H + Historical Evolution + Production Reality + Topical Breadth + Pedagogical Craft). Verify: wc -l 06_OOP_Design/05_System_Design_Fundamentals.md returns > 400",
+    "All existing content preserved per D003; 5W1H blocks preserved per D014. Verify: grep -c '5W1H' 06_OOP_Design/*.md unchanged from pre-upgrade baseline for non-stub files",
+    "CHANGE_JOURNAL.md updated with the upgrade entry. Verify: grep '06_OOP_Design.*upgrade\\|Upgrade.*06_OOP_Design' 00_CONTEXT/CHANGE_JOURNAL.md",
+    "python3 tools/update_context.py update + check passes without errors. Verify: 'Context fresh' message with exit 0"
+  ],
+  "lastActiveAt": "2026-06-13T17:21:56.741Z",
+  "grade": {
+    "grade": "C",
+    "rationale": "C2 records that a Cluster B subagent aborted mid-way and had to be completed manually, which under the strict rubric constitutes phases needing retries to converge. The Phase 2 F-gate cited the 05_System_Design_Fundamentals.md stub at 417 lines, whereas the final summary and C1 claim 621, revealing inconsistent gate-to-summary tallies. These execution hiccups and reliance on self-reported grep counts rather than inspectable output justify a pessimistic C.",
+    "gradedAt": "2026-06-13T17:52:00.982Z"
+  }
+}

@@ -20,6 +20,16 @@ KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 
 ---
 
+### Historical Evolution
+
+Efficient string pattern matching emerged as critical with the rise of large text corpora in the 1970s. Before efficient algorithms, **naive pattern matching** ($O(nm)$) was the only option — comparing every position of a text of length $n$ with a pattern of length $m$. **Knuth, Morris, and Pratt (1977)** published KMP in the SIAM Journal of Computing, introducing preprocessing of the pattern into a failure function (independently discovered by **J. H. Morris** for text editor applications) — KMP reduces worst-case to $O(n+m)$ by ensuring no text character is examined more than once. **Rabin and Karp (1987)** proposed rolling hash for pattern matching, enabling $O(n+m)$ average case with randomization that extends naturally to multi-pattern and 2D matching. **Z-Algorithm** was developed by **Gusfield (1997)** building on **Crochemore and Perrin (1991)** — the Z-array captures the longest prefix match at each position in $O(n+m)$ without a DFA. **Manacher's algorithm (1975)** discovered the elegant center-radius trick for longest palindromic substring in a single pass. Modern practice (post-2010): suffix arrays (Manber-Myers 1990) power full-text indices in bioinformatics tools (BWA, Bowtie), Aho-Corasick (1975) is used in network intrusion detection (Snort), and the FM-index (Ferragina-Manzini 2000) underlies modern genomic search engines.
+
+---
+
+### Why String Algorithms?
+
+---
+
 ## Why String Algorithms? <a name="why-string-algorithms"></a>
 
 ### Real-World Applications
@@ -38,7 +48,6 @@ KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 │  • Data Compression                                             │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### The Pattern Matching Problem
 
@@ -67,7 +76,7 @@ Time: O((n-m+1) * m) ≈ O(n*m) worst case
 public List<Integer> naiveSearch(String text, String pattern) {
     List<Integer> positions = new ArrayList<>();
     int n = text.length(), m = pattern.length();
-    
+
     for (int i = 0; i <= n - m; i++) {
         int j;
         for (j = 0; j < m; j++) {
@@ -97,7 +106,6 @@ Attempt 3:     A A A A A  vs  A A A A B  → Mismatch at position 4
 We keep rechecking characters we've already seen!
 KMP/Z-algo avoid this redundant work.
 ```
-
 
 ---
 
@@ -138,27 +146,26 @@ i=8: "ABABCABAB"→ "ABAB" matches → LPS[8] = 4
 LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]
 ```
 
-
 ### Complete KMP Implementation
 
 ```java
 public class KMP {
-    
+
     // Main KMP search
     public List<Integer> search(String text, String pattern) {
         List<Integer> result = new ArrayList<>();
         if (pattern.isEmpty()) return result;
-        
+
         int[] lps = buildLPS(pattern);
         int n = text.length(), m = pattern.length();
         int i = 0, j = 0;  // i for text, j for pattern
-        
+
         while (i < n) {
             if (text.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
             }
-            
+
             if (j == m) {  // Found complete match
                 result.add(i - j);
                 j = lps[j - 1];  // Continue searching
@@ -173,16 +180,16 @@ public class KMP {
         }
         return result;
     }
-    
+
     // Build LPS (Longest Prefix Suffix) array
     private int[] buildLPS(String pattern) {
         int m = pattern.length();
         int[] lps = new int[m];
         int len = 0;  // Length of previous longest prefix suffix
         int i = 1;
-        
+
         lps[0] = 0;  // LPS[0] is always 0
-        
+
         while (i < m) {
             if (pattern.charAt(i) == pattern.charAt(len)) {
                 len++;
@@ -213,26 +220,25 @@ Step 1: Compare from start
         A B A B D A B A B C A B A B
         A B A B C
                 ↑ Mismatch at index 4!
-        
+
         j = 4, lps[3] = 2
         Skip: Instead of starting over, jump to j = 2
-        
+
 Step 2: Continue with j = 2 (pattern already matched "AB")
         A B A B D A B A B C A B A B
             A B A B C
             ↑ Now comparing text[4] with pattern[2]
-            
+
         Still mismatch! j = 2, lps[1] = 0
-        
+
 Step 3: j = 0
         A B A B D A B A B C A B A B
                 A B A B C A B A B
                 ↑ Start fresh from here
-                
+
 Step 4: Full match found at index 5!
         A B A B D [A B A B C A B A B]
 ```
-
 
 ### Time Complexity Analysis
 
@@ -252,7 +258,6 @@ Step 4: Full match found at index 5!
 │  - Each char in text visited at most twice                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### KMP Applications
 
@@ -274,7 +279,7 @@ public int shortestPeriod(String s) {
     int[] lps = buildLPS(s);
     int n = s.length();
     int period = n - lps[n - 1];
-    
+
     // Check if it divides evenly
     if (n % period == 0) {
         return period;
@@ -302,7 +307,7 @@ Z[i] = Length of longest substring starting at i
        that matches a prefix of the string
 
 String: a a b c a a b x a a a z
-Z:      -  1 0 0 3 1 0 0 2 2 1 0 
+Z:      -  1 0 0 3 1 0 0 2 2 1 0
 
 Z[0] is undefined (or set to length)
 Z[1] = 1: "a" matches prefix "a"
@@ -314,25 +319,25 @@ Z[8] = 2: "aa" matches prefix "aa"
 
 ```java
 public class ZAlgorithm {
-    
+
     // Build Z-array
     public int[] buildZ(String s) {
         int n = s.length();
         int[] z = new int[n];
-        
+
         int left = 0, right = 0;
-        
+
         for (int i = 1; i < n; i++) {
             if (i < right) {
                 // Use previously computed value
                 z[i] = Math.min(right - i, z[i - left]);
             }
-            
+
             // Extend match
             while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) {
                 z[i]++;
             }
-            
+
             // Update window
             if (i + z[i] > right) {
                 left = i;
@@ -341,16 +346,16 @@ public class ZAlgorithm {
         }
         return z;
     }
-    
+
     // Pattern matching using Z-algorithm
     public List<Integer> search(String text, String pattern) {
         List<Integer> result = new ArrayList<>();
-        
+
         // Concatenate: pattern + "$" + text
         String combined = pattern + "$" + text;
         int[] z = buildZ(combined);
         int m = pattern.length();
-        
+
         // Find positions where Z[i] = pattern length
         for (int i = m + 1; i < combined.length(); i++) {
             if (z[i] == m) {
@@ -377,7 +382,7 @@ i=2: i >= right, start fresh
      "b..." vs "a..." → No match → Z[2] = 0
 
 i=3: i >= right, start fresh
-     "aabaaa" vs "aabaab..." 
+     "aabaaa" vs "aabaab..."
      Match: "aab" → Z[3] = 3
      Window: [3, 6)
 
@@ -389,7 +394,6 @@ i=4: i < right, i - left = 1, Z[1] = 1, right - i = 2
 Continue...
 Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 ```
-
 
 ### Z-Algorithm vs KMP
 
@@ -416,7 +420,6 @@ Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Z-Array Applications
 
 ```java
@@ -427,7 +430,7 @@ public String longestPrefixSuffix(String s) {
     int[] z = buildZ(s);
     int n = s.length();
     int maxLen = 0;
-    
+
     for (int i = 1; i < n; i++) {
         // Check if match extends to end
         if (i + z[i] == n) {
@@ -465,22 +468,22 @@ New hash = (Old hash - A*b²) * b + D
 public class RabinKarp {
     private static final long BASE = 31;
     private static final long MOD = 1_000_000_007;
-    
+
     public List<Integer> search(String text, String pattern) {
         List<Integer> result = new ArrayList<>();
         int n = text.length(), m = pattern.length();
         if (m > n) return result;
-        
+
         // Compute hash of pattern and first window
         long patternHash = computeHash(pattern, m);
         long textHash = computeHash(text, m);
-        
+
         // Precompute BASE^(m-1) for rolling
         long highestPow = 1;
         for (int i = 0; i < m - 1; i++) {
             highestPow = (highestPow * BASE) % MOD;
         }
-        
+
         // Slide window
         for (int i = 0; i <= n - m; i++) {
             if (patternHash == textHash) {
@@ -489,16 +492,16 @@ public class RabinKarp {
                     result.add(i);
                 }
             }
-            
+
             // Roll hash to next position
             if (i < n - m) {
-                textHash = rollHash(textHash, text.charAt(i), 
+                textHash = rollHash(textHash, text.charAt(i),
                                    text.charAt(i + m), highestPow);
             }
         }
         return result;
     }
-    
+
     private long computeHash(String s, int len) {
         long hash = 0;
         for (int i = 0; i < len; i++) {
@@ -506,7 +509,7 @@ public class RabinKarp {
         }
         return hash;
     }
-    
+
     private long rollHash(long hash, char oldChar, char newChar, long highestPow) {
         // Remove old char's contribution
         hash = (hash - (oldChar * highestPow) % MOD + MOD) % MOD;
@@ -564,21 +567,20 @@ Window 3: "BCD" (slide right)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Multiple Pattern Search
 
 ```java
 // Find all occurrences of multiple patterns efficiently
 public Map<String, List<Integer>> multiSearch(String text, String[] patterns) {
     Map<String, List<Integer>> result = new HashMap<>();
-    
+
     // Group patterns by length
     Map<Integer, List<String>> byLength = new HashMap<>();
     for (String p : patterns) {
         byLength.computeIfAbsent(p.length(), k -> new ArrayList<>()).add(p);
         result.put(p, new ArrayList<>());
     }
-    
+
     // Search each length group
     for (int len : byLength.keySet()) {
         // Precompute pattern hashes
@@ -587,13 +589,13 @@ public Map<String, List<Integer>> multiSearch(String text, String[] patterns) {
             long h = computeHash(p, len);
             patternHashes.computeIfAbsent(h, k -> new ArrayList<>()).add(p);
         }
-        
+
         // Roll through text
         if (len > text.length()) continue;
-        
+
         long textHash = computeHash(text, len);
         long highestPow = modPow(BASE, len - 1, MOD);
-        
+
         for (int i = 0; i <= text.length() - len; i++) {
             if (patternHashes.containsKey(textHash)) {
                 String substring = text.substring(i, i + len);
@@ -603,9 +605,9 @@ public Map<String, List<Integer>> multiSearch(String text, String[] patterns) {
                     }
                 }
             }
-            
+
             if (i < text.length() - len) {
-                textHash = rollHash(textHash, text.charAt(i), 
+                textHash = rollHash(textHash, text.charAt(i),
                                    text.charAt(i + len), highestPow);
             }
         }
@@ -631,10 +633,10 @@ Key insight: Use symmetry of palindromes to avoid recomputation.
 
 ```java
 public class Manacher {
-    
+
     public String longestPalindrome(String s) {
         if (s == null || s.length() == 0) return "";
-        
+
         // Transform: "abc" → "#a#b#c#"
         // This handles both odd and even length palindromes uniformly
         StringBuilder sb = new StringBuilder("#");
@@ -643,32 +645,32 @@ public class Manacher {
         }
         String t = sb.toString();
         int n = t.length();
-        
+
         int[] p = new int[n];  // p[i] = palindrome radius at i
         int center = 0, right = 0;  // Current rightmost palindrome
-        
+
         for (int i = 0; i < n; i++) {
             // Mirror position
             int mirror = 2 * center - i;
-            
+
             if (i < right) {
                 // Use mirror's value (bounded by right edge)
                 p[i] = Math.min(right - i, p[mirror]);
             }
-            
+
             // Try to expand
             while (i + p[i] + 1 < n && i - p[i] - 1 >= 0 &&
                    t.charAt(i + p[i] + 1) == t.charAt(i - p[i] - 1)) {
                 p[i]++;
             }
-            
+
             // Update center and right boundary
             if (i + p[i] > right) {
                 center = i;
                 right = i + p[i];
             }
         }
-        
+
         // Find maximum
         int maxLen = 0, maxCenter = 0;
         for (int i = 0; i < n; i++) {
@@ -677,7 +679,7 @@ public class Manacher {
                 maxCenter = i;
             }
         }
-        
+
         // Convert back to original string indices
         int start = (maxCenter - maxLen) / 2;
         return s.substring(start, start + maxLen);
@@ -696,14 +698,13 @@ String:  # a # b # a # a # b #  a  #
 P[i]:    0 1 0 3 0 1 6 1 0 3 0  1  0
                ↑         ↑
           "aba"     "abaaba"
-          
+
 P[6] = 6: Center at position 6 (#), radius 6
          In original string: "abaaba" (length 6)
-         
+
 The trick: When we know P[center] and we're at position i,
            we can use P[mirror] to initialize P[i].
 ```
-
 
 ---
 
@@ -731,28 +732,27 @@ p ──► e              o
       ▼              ▼
       ✓              ✓
      (ape)          (to)
-     
+
 Words stored: "ape", "to"
 Each node = character
 ✓ = end of word marker
 ```
-
 
 ### Trie Implementation
 
 ```java
 public class Trie {
     private TrieNode root;
-    
+
     class TrieNode {
         TrieNode[] children = new TrieNode[26];
         boolean isEndOfWord = false;
     }
-    
+
     public Trie() {
         root = new TrieNode();
     }
-    
+
     // Insert word - O(m)
     public void insert(String word) {
         TrieNode node = root;
@@ -765,18 +765,18 @@ public class Trie {
         }
         node.isEndOfWord = true;
     }
-    
+
     // Search exact word - O(m)
     public boolean search(String word) {
         TrieNode node = searchNode(word);
         return node != null && node.isEndOfWord;
     }
-    
+
     // Search prefix - O(m)
     public boolean startsWith(String prefix) {
         return searchNode(prefix) != null;
     }
-    
+
     private TrieNode searchNode(String s) {
         TrieNode node = root;
         for (char c : s.toCharArray()) {
@@ -788,7 +788,7 @@ public class Trie {
         }
         return node;
     }
-    
+
     // Get all words with prefix
     public List<String> autocomplete(String prefix) {
         List<String> result = new ArrayList<>();
@@ -798,7 +798,7 @@ public class Trie {
         }
         return result;
     }
-    
+
     private void dfs(TrieNode node, StringBuilder sb, List<String> result) {
         if (node.isEndOfWord) {
             result.add(sb.toString());
@@ -862,15 +862,15 @@ Suffix Array = [5, 3, 1, 0, 4, 2]
 public int[] buildSuffixArray(String s) {
     int n = s.length();
     Integer[] sa = new Integer[n];
-    
+
     // Initialize suffix indices
     for (int i = 0; i < n; i++) {
         sa[i] = i;
     }
-    
+
     // Sort by suffix strings
     Arrays.sort(sa, (a, b) -> s.substring(a).compareTo(s.substring(b)));
-    
+
     // Convert to int array
     int[] result = new int[n];
     for (int i = 0; i < n; i++) {
@@ -897,12 +897,12 @@ public int[] buildLCP(String s, int[] sa) {
     int n = s.length();
     int[] rank = new int[n];
     int[] lcp = new int[n];
-    
+
     // Build rank array (inverse of SA)
     for (int i = 0; i < n; i++) {
         rank[sa[i]] = i;
     }
-    
+
     int h = 0;  // Current LCP length
     for (int i = 0; i < n; i++) {
         if (rank[i] > 0) {
@@ -925,7 +925,7 @@ public int[] buildLCP(String s, int[] sa) {
 public String longestRepeatedSubstring(String s) {
     int[] sa = buildSuffixArray(s);
     int[] lcp = buildLCP(s, sa);
-    
+
     int maxLCP = 0, idx = 0;
     for (int i = 1; i < s.length(); i++) {
         if (lcp[i] > maxLCP) {
@@ -941,13 +941,13 @@ public int countDistinctSubstrings(String s) {
     int n = s.length();
     int[] sa = buildSuffixArray(s);
     int[] lcp = buildLCP(s, sa);
-    
+
     // Total substrings = n*(n+1)/2
     // Subtract duplicates (sum of LCP values)
     int total = n * (n + 1) / 2;
     int duplicates = 0;
     for (int l : lcp) duplicates += l;
-    
+
     return total - duplicates;
 }
 ```
@@ -962,19 +962,19 @@ public int countDistinctSubstrings(String s) {
 // Find first occurrence of needle in haystack
 public int strStr(String haystack, String needle) {
     if (needle.isEmpty()) return 0;
-    
+
     int[] lps = buildLPS(needle);
     int i = 0, j = 0;
-    
+
     while (i < haystack.length()) {
         if (haystack.charAt(i) == needle.charAt(j)) {
             i++;
             j++;
         }
-        
+
         if (j == needle.length()) {
             return i - j;  // First match
-        } else if (i < haystack.length() && 
+        } else if (i < haystack.length() &&
                    haystack.charAt(i) != needle.charAt(j)) {
             if (j != 0) {
                 j = lps[j - 1];
@@ -995,7 +995,7 @@ public boolean repeatedSubstringPattern(String s) {
     int[] lps = buildLPS(s);
     int n = s.length();
     int len = lps[n - 1];  // Longest proper prefix which is also suffix
-    
+
     // If len > 0 and (n - len) divides n evenly,
     // then pattern length = n - len
     return len > 0 && n % (n - len) == 0;
@@ -1027,10 +1027,10 @@ public String shortestPalindrome(String s) {
     // Find longest palindrome starting from index 0
     String rev = new StringBuilder(s).reverse().toString();
     String combined = s + "#" + rev;
-    
+
     int[] lps = buildLPS(combined);
     int palindromeLen = lps[combined.length() - 1];
-    
+
     // Add reverse of remaining suffix to front
     return rev.substring(0, s.length() - palindromeLen) + s;
 }
@@ -1046,10 +1046,10 @@ public List<String> findWords(char[][] board, String[] words) {
     for (String word : words) {
         insert(root, word);
     }
-    
+
     Set<String> result = new HashSet<>();
     int m = board.length, n = board[0].length;
-    
+
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             dfs(board, i, j, root, new StringBuilder(), result);
@@ -1058,27 +1058,27 @@ public List<String> findWords(char[][] board, String[] words) {
     return new ArrayList<>(result);
 }
 
-private void dfs(char[][] board, int i, int j, TrieNode node, 
+private void dfs(char[][] board, int i, int j, TrieNode node,
                  StringBuilder path, Set<String> result) {
     if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) return;
-    
+
     char c = board[i][j];
     if (c == '#' || node.children[c - 'a'] == null) return;
-    
+
     path.append(c);
     node = node.children[c - 'a'];
-    
+
     if (node.isEndOfWord) {
         result.add(path.toString());
     }
-    
+
     board[i][j] = '#';  // Mark visited
     dfs(board, i + 1, j, node, path, result);
     dfs(board, i - 1, j, node, path, result);
     dfs(board, i, j + 1, node, path, result);
     dfs(board, i, j - 1, node, path, result);
     board[i][j] = c;    // Restore
-    
+
     path.deleteCharAt(path.length() - 1);
 }
 ```
@@ -1090,11 +1090,11 @@ private void dfs(char[][] board, int i, int j, TrieNode node,
 public String longestDupSubstring(String s) {
     int left = 1, right = s.length() - 1;
     String result = "";
-    
+
     while (left <= right) {
         int mid = left + (right - left) / 2;
         String dup = findDuplicateOfLength(s, mid);
-        
+
         if (dup != null) {
             result = dup;
             left = mid + 1;
@@ -1108,21 +1108,21 @@ public String longestDupSubstring(String s) {
 private String findDuplicateOfLength(String s, int len) {
     long base = 26, mod = (1L << 32);
     long hash = 0, power = 1;
-    
+
     // Compute initial hash and power
     for (int i = 0; i < len; i++) {
         hash = (hash * base + (s.charAt(i) - 'a')) % mod;
         if (i < len - 1) power = (power * base) % mod;
     }
-    
+
     Map<Long, List<Integer>> seen = new HashMap<>();
     seen.put(hash, new ArrayList<>(List.of(0)));
-    
+
     for (int i = len; i < s.length(); i++) {
         // Roll hash
         hash = (hash - (s.charAt(i - len) - 'a') * power % mod + mod) % mod;
         hash = (hash * base + (s.charAt(i) - 'a')) % mod;
-        
+
         if (seen.containsKey(hash)) {
             String candidate = s.substring(i - len + 1, i + 1);
             for (int start : seen.get(hash)) {
@@ -1157,7 +1157,6 @@ private String findDuplicateOfLength(String s, int len) {
 └──────────────┴────────────┴───────────┴─────────────────────────────┘
 ```
 
-
 ### When to Use What
 
 ```
@@ -1185,7 +1184,6 @@ private String findDuplicateOfLength(String s, int len) {
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Common String Tricks
 
@@ -1216,7 +1214,7 @@ private int[] buildLPS(String pattern) {
     int m = pattern.length();
     int[] lps = new int[m];
     int len = 0, i = 1;
-    
+
     while (i < m) {
         if (pattern.charAt(i) == pattern.charAt(len)) {
             lps[i++] = ++len;
@@ -1232,7 +1230,22 @@ private int[] buildLPS(String pattern) {
 
 ---
 
-## Summary
+##
+
+### Topical Breadth — String Matching Selection Trade-offs
+
+The string matching algorithms in this chapter form a trade-off space along worst-case guarantee, preprocessing cost, and space. **KMP** pays O(m) preprocessing to build the longest-prefix-suffix (LPS) array, then searches in O(n+m) worst-case time with O(m) space — the trade-off is worth it when the pattern is reused (streaming, repeated searches) or when the text is adversarial (no pathological worst case). **Rabin-Karp** uses rolling hash for O(m) preprocessing and O(n+m) average search but degrades to O(nm) worst-case when hash collisions occur; this is the only algorithm where an adversarial input can trigger the worst case, so it requires verification on every match. **Z-Algorithm** achieves O(n+m) without the LPS complexity, but requires concatenating pattern + "$" + text (adding O(n+m) space) and is conceptually simpler — it is preferred when you also need period detection or longest-prefix-that-is-also-suffix properties. **Naive search** has O(1) preprocessing and O(1) space but O(nm) worst-case; in practice, on short patterns (m < 10) or random English text, the inner loop exits early so naive often beats KMP because it avoids the O(m) preprocessing overhead entirely.
+
+| Algorithm   | Preprocessing | Search (Worst) | Search (Average)                      | Space  | Best For                                      |
+| ----------- | ------------- | -------------- | ------------------------------------- | ------ | --------------------------------------------- |
+| Naive       | O(1)          | O(nm)          | O(nm) / often O(n) for short patterns | O(1)   | Short patterns, random text, one-off searches |
+| KMP         | O(m)          | O(n+m)         | O(n+m)                                | O(m)   | Repeated pattern, streaming, adversarial text |
+| Rabin-Karp  | O(m)          | O(nm)          | O(n+m)                                | O(m)   | Multiple patterns, 2D matching, randomized    |
+| Z-Algorithm | O(m)          | O(n+m)         | O(n+m)                                | O(n+m) | When Z-array needed for other purposes        |
+
+Select **KMP** when you need a guaranteed O(n+m) bound and the pattern is known upfront. Select **Rabin-Karp** when searching multiple patterns against the same text (precompute text hash once). Select **Z-Algorithm** when you also need period detection or prefix-suffix properties. Default to **KMP** for single-pattern interviews unless the problem hints at hashing.
+
+Summary
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
@@ -1257,7 +1270,6 @@ private int[] buildLPS(String pattern) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!
 
 ---
@@ -1267,9 +1279,9 @@ private int[] buildLPS(String pattern) {
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
-
-

@@ -47,7 +47,7 @@ If we still disagree, I escalate to data. I look at historical bug density in si
 "I use a balanced scorecard approach rather than a single metric. No one number tells the full story.
 
 - **Stability metrics:** Flakiness rate (target <3%), mean time to red-green recovery (how fast a broken build gets fixed), and retry ratio.
-- **Coverage metrics:** Code coverage by layer (unit vs integration vs E2E), but more importantly, *risk-weighted* coverage. I care whether critical paths are covered, not just whether the number is high.
+- **Coverage metrics:** Code coverage by layer (unit vs integration vs E2E), but more importantly, _risk-weighted_ coverage. I care whether critical paths are covered, not just whether the number is high.
 - **Efficiency metrics:** Test execution time per PR, feedback loop length (time from commit to test result), and developer NPS for the test tooling.
 - **Quality outcomes:** Bug escape rate (bugs found in production that could have been caught in CI), and mean time to detect a regression.
 
@@ -71,10 +71,10 @@ It was unpopular in the moment. But the fix resolved a deeper transaction isolat
 
 ## Evaluation Rubric
 
-| Dimension | Exceeds Expectations | Meets Expectations | Below Expectations |
-|-----------|----------------------|--------------------|--------------------|
-| **Self-Awareness** | Clearly articulates career goals, strengths, and growth areas with specificity | Has career direction but less specificity | Vague or only repeats job description |
-| **Communication** | Articulates complex ideas clearly; adapts technical depth to audience | Communicates clearly but occasionally over-technical or under-specific | Hard to follow; jargon without context |
-| **Collaboration & Conflict** | Demonstrates empathy, data-driven persuasion, and compromise | Handles conflict reasonably but sometimes escalates too quickly or concedes too easily | Avoids conflict or creates it; blames others |
-| **Strategic Thinking** | Connects test metrics to business outcomes; thinks org-scale | Thinks about team metrics and some organizational impact | Only focused on individual test execution |
-| **Values & Judgment** | Makes principled decisions with clear reasoning; owns consequences | Makes reasonable decisions but reasoning is sometimes shallow | Inconsistent values or avoids accountability |
+| Dimension                    | Exceeds Expectations                                                           | Meets Expectations                                                                     | Below Expectations                           |
+| ---------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Self-Awareness**           | Clearly articulates career goals, strengths, and growth areas with specificity | Has career direction but less specificity                                              | Vague or only repeats job description        |
+| **Communication**            | Articulates complex ideas clearly; adapts technical depth to audience          | Communicates clearly but occasionally over-technical or under-specific                 | Hard to follow; jargon without context       |
+| **Collaboration & Conflict** | Demonstrates empathy, data-driven persuasion, and compromise                   | Handles conflict reasonably but sometimes escalates too quickly or concedes too easily | Avoids conflict or creates it; blames others |
+| **Strategic Thinking**       | Connects test metrics to business outcomes; thinks org-scale                   | Thinks about team metrics and some organizational impact                               | Only focused on individual test execution    |
+| **Values & Judgment**        | Makes principled decisions with clear reasoning; owns consequences             | Makes reasonable decisions but reasoning is sometimes shallow                          | Inconsistent values or avoids accountability |

@@ -738,11 +738,11 @@ HIGH VALUE E2E TEST SCENARIOS:
      Login → View citations list → Click citation → Pay citation → View receipt
 
   2. Session expiry — security scenario
-     Perform any action with expired token → Redirected to login → Log in → 
+     Perform any action with expired token → Redirected to login → Log in →
      Continue from where user was
 
   3. Offline capability — critical for mobile
-     Load citations while online → Go offline → App shows cached data → 
+     Load citations while online → Go offline → App shows cached data →
      Go back online → Data refreshes automatically
 
   4. Error recovery — user resilience
@@ -897,12 +897,15 @@ FIX:
 ## 12. Interview Q&A
 
 **Q: "What is the difference between unit tests and instrumented tests in Android?"**
+
 > "Unit tests run on the JVM — your machine or CI server — with no Android framework. They use mocks and fakes to isolate the code under test. They run in milliseconds and require no device. Instrumented tests run on a real Android device or emulator and have access to the full Android framework: real Activity, Fragment, Context, SQLite, SharedPreferences. They run in seconds and require a device or emulator. The practical rule: test business logic, ViewModels, use cases, and mappers as unit tests. Test UI behavior, database migrations, navigation, and integration between layers as instrumented tests."
 
 **Q: "How does Espresso handle asynchronous operations — why don't you need Thread.sleep()?"**
+
 > "Espresso has built-in idle synchronization. Before executing any action or assertion, Espresso checks its IdlingResource registry and waits until all registered resources are idle: the main thread has no pending messages, the AsyncTask thread pool is empty, and no animations are running. When Espresso sees the app is idle, it proceeds. This eliminates sleep() and makes tests deterministic. For custom async work — like coroutines or manual threads — you can create a custom IdlingResource or use OkHttp's OkHttp3IdlingResource to tell Espresso when network calls are active. For Compose tests, the equivalent is `waitUntil { condition }` which polls until a condition is true."
 
 **Q: "How do you replace real dependencies (like the API) in instrumented tests?"**
+
 > "With Hilt's `@TestInstallIn` annotation. I create a test-specific Hilt module that replaces the production module for the test component. The replacement provides a fake implementation — an in-memory class that implements the same interface as the real API but returns configured responses instead of hitting the network. Each test can configure the fake: `fakeCitationApi.setCitations(testData)` or `fakeCitationApi.setError(exception)`. This approach tests the real integration between the UI, ViewModel, repository, and Room database — only the network boundary is replaced. The result is fast, hermetic tests that can run in CI without network access and still catch integration bugs."
 
 ---

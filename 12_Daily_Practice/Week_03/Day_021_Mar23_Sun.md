@@ -25,15 +25,14 @@
 > | **Review: BST, Heap, Backtracking, Sliding Window** | [Trees Complete Guide](../../03_Algorithms/05_Trees.md) |
 > | **Review: Recursion + Backtracking** | [Recursion Fundamentals](../../03_Algorithms/03b_Recursion_Fundamentals.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## SPEED DRILL 1: Code from Scratch (30 min)
 
 ### Round 1: Trees (10 min)
+
 ```
 1. Build a BST: insert, search, findMin — from memory
 2. Preorder traversal (iterative with stack)
@@ -42,6 +41,7 @@
 ```
 
 ### Round 2: Heap + Sort (10 min)
+
 ```
 4. MinHeap: insert (sift up) + extractMin (sift down)
 5. Heap Sort (build max-heap + extract)
@@ -49,6 +49,7 @@
 ```
 
 ### Round 3: Patterns (10 min)
+
 ```
 6. Sliding window: max sum subarray of size k
 7. Backtracking: generate all subsets of [1,2,3]
@@ -56,7 +57,7 @@
    Target: All 3 in under 10 minutes
 ```
 
-**Score:** ___ / 8 completed from memory
+**Score:** \_\_\_ / 8 completed from memory
 
 ---
 
@@ -78,25 +79,25 @@
 -- Q7: Running total of order amounts ordered by date
 ```
 
-**Score:** ___ / 7 queries correct
+**Score:** \_\_\_ / 7 queries correct
 
 ---
 
 ## RE-ATTEMPT ZONE (30 min)
 
-| Day | Problem | Difficulty | Re-attempt |
-|-----|---------|------------|------------|
-| 015 | LC 144 Preorder Traversal | Easy | ☐ Done |
-| 015 | LC 94 Inorder Traversal | Easy | ☐ Done |
-| 016 | LC 700 Search in BST | Easy | ☐ Done |
-| 016 | LC 102 Level Order Traversal | Med | ☐ Done |
-| 017 | LC 215 Kth Largest Element | Med | ☐ Done |
-| 017 | LC 347 Top K Frequent | Med | ☐ Done |
-| 018 | LC 78 Subsets | Med | ☐ Done |
-| 018 | LC 46 Permutations | Med | ☐ Done |
-| 019 | LC 3 Longest Substring | Med | ☐ Done |
-| 019 | LC 104 Max Depth | Easy | ☐ Done |
-| 019 | LC 226 Invert Binary Tree | Easy | ☐ Done |
+| Day | Problem                      | Difficulty | Re-attempt |
+| --- | ---------------------------- | ---------- | ---------- |
+| 015 | LC 144 Preorder Traversal    | Easy       | ☐ Done     |
+| 015 | LC 94 Inorder Traversal      | Easy       | ☐ Done     |
+| 016 | LC 700 Search in BST         | Easy       | ☐ Done     |
+| 016 | LC 102 Level Order Traversal | Med        | ☐ Done     |
+| 017 | LC 215 Kth Largest Element   | Med        | ☐ Done     |
+| 017 | LC 347 Top K Frequent        | Med        | ☐ Done     |
+| 018 | LC 78 Subsets                | Med        | ☐ Done     |
+| 018 | LC 46 Permutations           | Med        | ☐ Done     |
+| 019 | LC 3 Longest Substring       | Med        | ☐ Done     |
+| 019 | LC 104 Max Depth             | Easy       | ☐ Done     |
+| 019 | LC 226 Invert Binary Tree    | Easy       | ☐ Done     |
 
 Priority: Anything you couldn't solve in < 5 minutes → solve 3 times.
 
@@ -132,7 +133,6 @@ WHAT'S COMING:
   Building on trees (→ tries) and BFS (→ Dijkstra)!
 ```
 
-
 ---
 
 ## BONUS CHALLENGES (Optional)
@@ -152,7 +152,7 @@ boolean isValidBST(TreeNode root) {
 boolean validate(TreeNode node, long min, long max) {
     if (node == null) return true;
     if (node.val <= min || node.val >= max) return false;
-    return validate(node.left, min, node.val) 
+    return validate(node.left, min, node.val)
         && validate(node.right, node.val, max);
 }
 ```
@@ -222,8 +222,6 @@ PROBLEMS SOLVED:
 
 NEXT MILESTONE: 50 problems by end of Week 4!
 ```
-
-
 
 ---
 

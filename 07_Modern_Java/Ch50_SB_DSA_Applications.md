@@ -49,7 +49,6 @@ _"The algorithm you choose determines your application's success"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 🌱 Section 1: Where DSA Appears in Spring Boot
@@ -58,24 +57,23 @@ _"The algorithm you choose determines your application's success"_
 
 ## Chapter 1: DSA in Enterprise Applications
 
-
-
 🔬 **Section Challenge — Chapter 1: DSA in Enterprise Applications**
 
 **Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
+
 <details><summary>Answer</summary>
 
 Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
-</details>
 
+</details>
 
 ## Dsa Usage In Spring Boot Applications
 
 ┬
-DATA STRUCTURE      │ WHERE IT'S USED
+DATA STRUCTURE │ WHERE IT'S USED
 ┼
 │
-HashMap             │ • Caching (in-memory cache)
+HashMap │ • Caching (in-memory cache)
 │ • Session management
 │ • Request parameter mapping
 │ • API response building
@@ -84,45 +82,45 @@ ArrayList/LinkedList│ • Pagination results
 │ • Batch processing queues
 │ • Order history
 │
-TreeMap/TreeSet     │ • Sorted leaderboards
+TreeMap/TreeSet │ • Sorted leaderboards
 │ • Scheduled tasks (by time)
 │ • Range queries
 │
-PriorityQueue       │ • Task scheduling (priority-based)
+PriorityQueue │ • Task scheduling (priority-based)
 │ • Event processing
 │ • Rate limiting
 │
-Graph               │ • Social networks (friends, followers)
+Graph │ • Social networks (friends, followers)
 │ • Route optimization
 │ • Dependency resolution
 │ • Recommendation systems
 │
-Trie                │ • Auto-complete / Search suggestions
+Trie │ • Auto-complete / Search suggestions
 │ • Spell checking
 │ • IP routing tables
 │
-Bloom Filter        │ • Duplicate detection
+Bloom Filter │ • Duplicate detection
 │ • Cache optimization
 │ • Spam filtering
 │
 ┴
 ┬
-ALGORITHM           │ WHERE IT'S USED
+ALGORITHM │ WHERE IT'S USED
 ┼
 │
-Binary Search       │ • Finding items in sorted data
+Binary Search │ • Finding items in sorted data
 │ • Rate limit threshold checking
 │ • Log file searching
 │
-Sorting             │ • Search results ranking
+Sorting │ • Search results ranking
 │ • Leaderboards
 │ • Report generation
 │
-BFS/DFS             │ • Category tree traversal
+BFS/DFS │ • Category tree traversal
 │ • Organization hierarchy
 │ • Dependency resolution
 │
-Dijkstra/A*         │ • Route planning
+Dijkstra/A\* │ • Route planning
 │ • Network path optimization
 │ • Game pathfinding
 │
@@ -130,15 +128,13 @@ Dynamic Programming │ • Price optimization
 │ • Resource allocation
 │ • String matching
 │
-Sliding Window      │ • Rate limiting
+Sliding Window │ • Rate limiting
 │ • Analytics (rolling averages)
 │ • Stream processing
 │
 ┴
 
 ---
-
-
 
 🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
 
@@ -169,49 +165,49 @@ Sliding Window      │ • Rate limiting
 @Component
 @Slf4j
 public class SlidingWindowRateLimiter {
-    
+
     // Map of userId -> Queue of request timestamps
     private final Map<String, Deque<Long>> requestLog = new ConcurrentHashMap<>();
-    
+
     @Value("${rate-limit.requests-per-minute:60}")
     private int maxRequests;
-    
+
     @Value("${rate-limit.window-ms:60000}")
     private long windowMs;
-    
+
     /**
      * Check if request is allowed for given user
-     * 
+     *
      * @param userId The user identifier (can be IP, API key, user ID)
      * @return true if request is allowed, false if rate limited
      */
     public boolean allowRequest(String userId) {
         long now = System.currentTimeMillis();
         long windowStart = now - windowMs;
-        
+
         // Get or create request queue for this user
         Deque<Long> timestamps = requestLog.computeIfAbsent(
-            userId, 
+            userId,
             k -> new LinkedList<>()
         );
-        
+
         synchronized (timestamps) {
             // Remove old timestamps outside the window (sliding)
             while (!timestamps.isEmpty() && timestamps.peekFirst() < windowStart) {
                 timestamps.pollFirst();
             }
-            
+
             // Check if under limit
             if (timestamps.size() < maxRequests) {
                 timestamps.addLast(now);
                 return true;
             }
-            
+
             log.warn("Rate limit exceeded for user: {}", userId);
             return false;
         }
     }
-    
+
     /**
      * Get remaining requests for user
      */
@@ -220,7 +216,7 @@ public class SlidingWindowRateLimiter {
         if (timestamps == null) {
             return maxRequests;
         }
-        
+
         long windowStart = System.currentTimeMillis() - windowMs;
         synchronized (timestamps) {
             while (!timestamps.isEmpty() && timestamps.peekFirst() < windowStart) {
@@ -236,17 +232,17 @@ public class SlidingWindowRateLimiter {
 @Component
 @RequiredArgsConstructor
 public class RateLimitFilter extends OncePerRequestFilter {
-    
+
     private final SlidingWindowRateLimiter rateLimiter;
-    
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        
+
         String clientId = getClientId(request);
-        
+
         if (!rateLimiter.allowRequest(clientId)) {
             response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             response.setContentType("application/json");
@@ -256,15 +252,15 @@ public class RateLimitFilter extends OncePerRequestFilter {
             );
             return;
         }
-        
+
         // Add rate limit headers
         int remaining = rateLimiter.getRemainingRequests(clientId);
         response.setHeader("X-RateLimit-Limit", "60");
         response.setHeader("X-RateLimit-Remaining", String.valueOf(remaining));
-        
+
         filterChain.doFilter(request, response);
     }
-    
+
     private String getClientId(HttpServletRequest request) {
         // Try to get user ID from JWT, fall back to IP
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -278,8 +274,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 2: Rate Limiting with Sliding Window**
 
 **Challenge 1 (Rate Limiter: In-Memory vs Redis for Distributed Systems):** A sliding window rate limiter using `ConcurrentHashMap` works per-JVM instance. **Who** fails when you have 3 app instances? **When** do you need Redis? **What** is the Redis Lua script pattern for atomic rate limiting?
@@ -292,14 +286,16 @@ public class RateLimitFilter extends OncePerRequestFilter {
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Chapter 3: Auto-Complete with Trie
 
@@ -324,30 +320,30 @@ class TrieNode {
 @Service
 @Slf4j
 public class AutoCompleteService {
-    
+
     private final TrieNode root = new TrieNode();
-    
+
     /**
      * Insert a word into the Trie
      */
     public void insert(String word) {
         if (word == null || word.isEmpty()) return;
-        
+
         TrieNode current = root;
         String lowerWord = word.toLowerCase();
-        
+
         for (char c : lowerWord.toCharArray()) {
             current = current.children.computeIfAbsent(c, k -> new TrieNode());
         }
-        
+
         current.isEndOfWord = true;
         current.word = word;  // Store original case
         current.frequency++;
     }
-    
+
     /**
      * Get suggestions for a prefix
-     * 
+     *
      * @param prefix The prefix to search for
      * @param limit Maximum number of suggestions
      * @return List of suggestions sorted by frequency
@@ -356,20 +352,20 @@ public class AutoCompleteService {
         if (prefix == null || prefix.isEmpty()) {
             return Collections.emptyList();
         }
-        
+
         TrieNode prefixNode = findPrefixNode(prefix.toLowerCase());
         if (prefixNode == null) {
             return Collections.emptyList();
         }
-        
+
         // Use PriorityQueue to get top suggestions by frequency
         PriorityQueue<TrieNode> pq = new PriorityQueue<>(
             (a, b) -> b.frequency - a.frequency  // Max heap by frequency
         );
-        
+
         // DFS to collect all words with this prefix
         collectWords(prefixNode, pq);
-        
+
         // Extract top suggestions
         List<String> suggestions = new ArrayList<>();
         while (!pq.isEmpty() && suggestions.size() < limit) {
@@ -378,10 +374,10 @@ public class AutoCompleteService {
                 suggestions.add(node.word);
             }
         }
-        
+
         return suggestions;
     }
-    
+
     private TrieNode findPrefixNode(String prefix) {
         TrieNode current = root;
         for (char c : prefix.toCharArray()) {
@@ -392,7 +388,7 @@ public class AutoCompleteService {
         }
         return current;
     }
-    
+
     private void collectWords(TrieNode node, PriorityQueue<TrieNode> pq) {
         if (node.isEndOfWord) {
             pq.offer(node);
@@ -401,7 +397,7 @@ public class AutoCompleteService {
             collectWords(child, pq);
         }
     }
-    
+
     /**
      * Load words from database on startup
      */
@@ -423,14 +419,14 @@ public class AutoCompleteService {
 @RequestMapping("/api/search")
 @RequiredArgsConstructor
 public class SearchController {
-    
+
     private final AutoCompleteService autoCompleteService;
-    
+
     @GetMapping("/suggest")
     public List<String> getSuggestions(
             @RequestParam String q,
             @RequestParam(defaultValue = "10") int limit) {
-        
+
         return autoCompleteService.getSuggestions(q, limit);
     }
 }
@@ -457,13 +453,13 @@ public class SearchController {
 @Component
 @Slf4j
 public class LRUCache<K, V> {
-    
+
     private final Map<K, V> cache;
     private final int maxSize;
-    
+
     public LRUCache(@Value("${cache.max-size:1000}") int maxSize) {
         this.maxSize = maxSize;
-        
+
         // LinkedHashMap with access-order + removeEldestEntry = LRU Cache!
         this.cache = Collections.synchronizedMap(
             new LinkedHashMap<K, V>(maxSize, 0.75f, true) {
@@ -478,23 +474,23 @@ public class LRUCache<K, V> {
             }
         );
     }
-    
+
     public V get(K key) {
         return cache.get(key);  // Access moves entry to end (most recently used)
     }
-    
+
     public void put(K key, V value) {
         cache.put(key, value);
     }
-    
+
     public void invalidate(K key) {
         cache.remove(key);
     }
-    
+
     public void clear() {
         cache.clear();
     }
-    
+
     public int size() {
         return cache.size();
     }
@@ -506,10 +502,10 @@ public class LRUCache<K, V> {
 @RequiredArgsConstructor
 @Slf4j
 public class ProductService {
-    
+
     private final ProductRepository productRepository;
     private final LRUCache<Long, ProductResponse> productCache;
-    
+
     public ProductResponse getProduct(Long id) {
         // Check cache first
         ProductResponse cached = productCache.get(id);
@@ -517,27 +513,27 @@ public class ProductService {
             log.debug("Cache hit for product: {}", id);
             return cached;
         }
-        
+
         // Cache miss - fetch from database
         log.debug("Cache miss for product: {}", id);
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new ProductNotFoundException(id));
-        
+
         ProductResponse response = mapToResponse(product);
-        
+
         // Store in cache
         productCache.put(id, response);
-        
+
         return response;
     }
-    
+
     @Transactional
     public ProductResponse updateProduct(Long id, UpdateProductRequest request) {
         // ... update logic
-        
+
         // Invalidate cache
         productCache.invalidate(id);
-        
+
         return getProduct(id);  // Re-fetch and cache
     }
 }
@@ -545,16 +541,15 @@ public class ProductService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: LRU Cache for API Response Caching**
 
 **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+
 <details><summary>Answer</summary>
 
 Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-</details>
 
+</details>
 
 ## Chapter 5: Shortest Path for Delivery Routing
 
@@ -571,10 +566,10 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 @Service
 @Slf4j
 public class DeliveryRouteService {
-    
+
     // Graph representation: location -> (neighbor, distance)
     private final Map<String, Map<String, Double>> graph = new ConcurrentHashMap<>();
-    
+
     /**
      * Add a road between two locations
      */
@@ -582,10 +577,10 @@ public class DeliveryRouteService {
         graph.computeIfAbsent(from, k -> new HashMap<>()).put(to, distance);
         graph.computeIfAbsent(to, k -> new HashMap<>()).put(from, distance);  // Bidirectional
     }
-    
+
     /**
      * Find shortest path using Dijkstra's Algorithm
-     * 
+     *
      * @param start Starting location
      * @param end Destination
      * @return RouteResult with path and total distance
@@ -594,14 +589,14 @@ public class DeliveryRouteService {
         if (!graph.containsKey(start) || !graph.containsKey(end)) {
             throw new LocationNotFoundException("Location not found in graph");
         }
-        
+
         // Distance from start to each node
         Map<String, Double> distances = new HashMap<>();
         // Previous node in shortest path
         Map<String, String> previous = new HashMap<>();
         // Visited nodes
         Set<String> visited = new HashSet<>();
-        
+
         // Priority queue: (distance, node)
         PriorityQueue<double[]> pq = new PriorityQueue<>(
             Comparator.comparingDouble(a -> a[0])
@@ -611,39 +606,39 @@ public class DeliveryRouteService {
         for (String node : graph.keySet()) {
             nodeIndex.put(node, index++);
         }
-        
+
         // Initialize
         for (String node : graph.keySet()) {
             distances.put(node, Double.MAX_VALUE);
         }
         distances.put(start, 0.0);
         pq.offer(new double[]{0.0, nodeIndex.get(start)});
-        
+
         // Reverse index lookup
         String[] indexToNode = new String[graph.size()];
         for (Map.Entry<String, Integer> entry : nodeIndex.entrySet()) {
             indexToNode[entry.getValue()] = entry.getKey();
         }
-        
+
         while (!pq.isEmpty()) {
             double[] current = pq.poll();
             String currentNode = indexToNode[(int) current[1]];
-            
+
             if (visited.contains(currentNode)) continue;
             visited.add(currentNode);
-            
+
             if (currentNode.equals(end)) break;
-            
+
             // Check all neighbors
             Map<String, Double> neighbors = graph.get(currentNode);
             if (neighbors != null) {
                 for (Map.Entry<String, Double> neighbor : neighbors.entrySet()) {
                     String nextNode = neighbor.getKey();
                     double edgeWeight = neighbor.getValue();
-                    
+
                     if (!visited.contains(nextNode)) {
                         double newDist = distances.get(currentNode) + edgeWeight;
-                        
+
                         if (newDist < distances.get(nextNode)) {
                             distances.put(nextNode, newDist);
                             previous.put(nextNode, currentNode);
@@ -653,7 +648,7 @@ public class DeliveryRouteService {
                 }
             }
         }
-        
+
         // Reconstruct path
         List<String> path = new ArrayList<>();
         String current = end;
@@ -661,14 +656,14 @@ public class DeliveryRouteService {
             path.add(0, current);
             current = previous.get(current);
         }
-        
+
         if (!path.get(0).equals(start)) {
             throw new NoRouteException("No route found between " + start + " and " + end);
         }
-        
+
         return new RouteResult(path, distances.get(end));
     }
-    
+
     /**
      * Find optimal route visiting multiple stops (simplified TSP)
      */
@@ -676,16 +671,16 @@ public class DeliveryRouteService {
         // For small number of stops, use nearest neighbor heuristic
         List<String> route = new ArrayList<>();
         route.add(start);
-        
+
         Set<String> unvisited = new HashSet<>(stops);
         String current = start;
         double totalDistance = 0;
-        
+
         while (!unvisited.isEmpty()) {
             // Find nearest unvisited stop
             String nearest = null;
             double minDist = Double.MAX_VALUE;
-            
+
             for (String stop : unvisited) {
                 RouteResult result = findShortestPath(current, stop);
                 if (result.distance() < minDist) {
@@ -693,13 +688,13 @@ public class DeliveryRouteService {
                     nearest = stop;
                 }
             }
-            
+
             route.add(nearest);
             totalDistance += minDist;
             unvisited.remove(nearest);
             current = nearest;
         }
-        
+
         return new RouteResult(route, totalDistance);
     }
 }
@@ -712,20 +707,20 @@ public record RouteResult(List<String> path, double distance) {}
 @RequestMapping("/api/delivery")
 @RequiredArgsConstructor
 public class DeliveryController {
-    
+
     private final DeliveryRouteService routeService;
-    
+
     @GetMapping("/route")
     public RouteResult getRoute(
             @RequestParam String from,
             @RequestParam String to) {
         return routeService.findShortestPath(from, to);
     }
-    
+
     @PostMapping("/multi-stop-route")
     public RouteResult getMultiStopRoute(@RequestBody MultiStopRequest request) {
         return routeService.findOptimalMultiStopRoute(
-            request.start(), 
+            request.start(),
             request.stops()
         );
     }
@@ -734,24 +729,18 @@ public class DeliveryController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
 
 **Challenge 1 (Dijkstra vs BFS for Delivery Routing):** A delivery routing API must find the shortest path between two addresses. **Who** uses Dijkstra vs BFS? **When** does BFS produce a WRONG shortest path in a road network? **What** graph representation stores road weights?
 
 <details><summary>Answer</summary>
 
-**Who uses Dijkstra:** Applications where road segments have DIFFERENT travel times (weights). A road network is a weighted graph. BFS finds the path with fewest EDGES, not least TOTAL WEIGHT. **When BFS produces wrong results:** Road A→C is 1 step but takes 2 hours (highway construction). Road A→B→C is 2 steps but takes 20 minutes. BFS picks A→C (fewest hops). Dijkstra picks A→B→C (minimum total time). Any road network with non-uniform edge weights — BFS gives wrong results. **Graph representation for weights:** Adjacency list with `Map<String, List<int[]>>` where `int[] = {neighborId, travelTimeMinutes}`. Or a `Map<String, Map<String, Integer>>` for O(1) edge weight lookup. **Spring Boot delivery routing pattern:** Store road graph in Redis (precomputed shortest paths for common city pairs). Recalculate via Dijkstra for custom routes. Cache results `@Cacheable("routes")`. For real-time: integrate with Google Maps Distance Matrix API or HERE Routing API. **A* over Dijkstra:** A* uses a heuristic (straight-line distance to destination) to reduce nodes explored. For GPS navigation: A* is 10-100x faster than Dijkstra on large road graphs while guaranteeing optimal routes (admissible heuristic).
-
+**Who uses Dijkstra:** Applications where road segments have DIFFERENT travel times (weights). A road network is a weighted graph. BFS finds the path with fewest EDGES, not least TOTAL WEIGHT. **When BFS produces wrong results:** Road A→C is 1 step but takes 2 hours (highway construction). Road A→B→C is 2 steps but takes 20 minutes. BFS picks A→C (fewest hops). Dijkstra picks A→B→C (minimum total time). Any road network with non-uniform edge weights — BFS gives wrong results. **Graph representation for weights:** Adjacency list with `Map<String, List<int[]>>` where `int[] = {neighborId, travelTimeMinutes}`. Or a `Map<String, Map<String, Integer>>` for O(1) edge weight lookup. **Spring Boot delivery routing pattern:** Store road graph in Redis (precomputed shortest paths for common city pairs). Recalculate via Dijkstra for custom routes. Cache results `@Cacheable("routes")`. For real-time: integrate with Google Maps Distance Matrix API or HERE Routing API. **A\* over Dijkstra:** A* uses a heuristic (straight-line distance to destination) to reduce nodes explored. For GPS navigation: A* is 10-100x faster than Dijkstra on large road graphs while guaranteeing optimal routes (admissible heuristic).
 
 📎 **Reference Anchor:** [cp-algorithms: Dijkstra's Algorithm](https://cp-algorithms.com/graph/dijkstra.html)  
 **Invariant learned:** Dijkstra's correctness relies on the **greedy choice property**: once a node is extracted from the min-heap (distance finalized), its shortest distance will NEVER be improved. This only holds when all edge weights are non-negative. Negative weights violate this — use Bellman-Ford instead.  
 **Local rewrite:** See the `DeliveryRouteService.findShortestPath()` above. The PriorityQueue uses `double[]` pairs `{distance, nodeIndex}` because Java's `PriorityQueue` doesn't support node priority updates natively — instead, duplicate entries are pushed and ignored via the `visited` set check.  
-**Constraint warning:** Road graph with traffic weights changing in real-time — static Dijkstra becomes stale. Use A* with a time-aware heuristic or re-run Dijkstra on weight change events (incremental graph updates). For negative-weight edges (rare in routing but possible with bidirectional cost modeling), switch to Bellman-Ford.
-
-
-
+**Constraint warning:** Road graph with traffic weights changing in real-time — static Dijkstra becomes stale. Use A\* with a time-aware heuristic or re-run Dijkstra on weight change events (incremental graph updates). For negative-weight edges (rare in routing but possible with bidirectional cost modeling), switch to Bellman-Ford.
 
 ## Chapter 6: Task Scheduler with Priority Queue
 
@@ -773,13 +762,13 @@ public class ScheduledTask implements Comparable<ScheduledTask> {
     private int priority;  // 1 = highest, 10 = lowest
     private LocalDateTime scheduledTime;
     private Runnable task;
-    
+
     @Override
     public int compareTo(ScheduledTask other) {
         // First by scheduled time
         int timeCompare = this.scheduledTime.compareTo(other.scheduledTime);
         if (timeCompare != 0) return timeCompare;
-        
+
         // Then by priority (lower number = higher priority)
         return Integer.compare(this.priority, other.priority);
     }
@@ -789,30 +778,30 @@ public class ScheduledTask implements Comparable<ScheduledTask> {
 @Service
 @Slf4j
 public class TaskSchedulerService {
-    
+
     private final PriorityQueue<ScheduledTask> taskQueue = new PriorityQueue<>();
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
     private final Map<String, ScheduledTask> taskMap = new ConcurrentHashMap<>();
-    
+
     /**
      * Schedule a new task
      */
     public String scheduleTask(String name, int priority, LocalDateTime when, Runnable task) {
         String taskId = UUID.randomUUID().toString();
-        
+
         ScheduledTask scheduledTask = new ScheduledTask(
             taskId, name, priority, when, task
         );
-        
+
         synchronized (taskQueue) {
             taskQueue.offer(scheduledTask);
             taskMap.put(taskId, scheduledTask);
         }
-        
+
         log.info("Task scheduled: {} at {} with priority {}", name, when, priority);
         return taskId;
     }
-    
+
     /**
      * Cancel a scheduled task
      */
@@ -827,7 +816,7 @@ public class TaskSchedulerService {
             return false;
         }
     }
-    
+
     /**
      * Get next task to execute
      */
@@ -836,14 +825,14 @@ public class TaskSchedulerService {
             return taskQueue.peek();
         }
     }
-    
+
     /**
      * Execute due tasks
      */
     @Scheduled(fixedRate = 1000)  // Check every second
     public void executeDueTasks() {
         LocalDateTime now = LocalDateTime.now();
-        
+
         while (true) {
             ScheduledTask task;
             synchronized (taskQueue) {
@@ -854,7 +843,7 @@ public class TaskSchedulerService {
                 taskQueue.poll();
                 taskMap.remove(task.getId());
             }
-            
+
             // Execute task asynchronously
             executor.submit(() -> {
                 try {
@@ -866,7 +855,7 @@ public class TaskSchedulerService {
             });
         }
     }
-    
+
     /**
      * Get all pending tasks
      */
@@ -887,10 +876,10 @@ public record TaskInfo(String id, String name, int priority, LocalDateTime sched
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 public class TaskController {
-    
+
     private final TaskSchedulerService taskScheduler;
     private final EmailService emailService;
-    
+
     @PostMapping("/schedule-email")
     public Map<String, String> scheduleEmail(@RequestBody ScheduleEmailRequest request) {
         String taskId = taskScheduler.scheduleTask(
@@ -899,15 +888,15 @@ public class TaskController {
             request.sendAt(),
             () -> emailService.sendEmail(request.to(), request.subject(), request.body())
         );
-        
+
         return Map.of("taskId", taskId, "status", "scheduled");
     }
-    
+
     @GetMapping("/pending")
     public List<TaskInfo> getPendingTasks() {
         return taskScheduler.getPendingTasks();
     }
-    
+
     @DeleteMapping("/{taskId}")
     public Map<String, Object> cancelTask(@PathVariable String taskId) {
         boolean cancelled = taskScheduler.cancelTask(taskId);
@@ -933,17 +922,17 @@ public class TaskController {
 @Service
 @Slf4j
 public class LeaderboardService {
-    
+
     // Score -> Set of user IDs with that score (handles ties)
     private final TreeMap<Long, Set<String>> scoreToUsers = new TreeMap<>(
         Collections.reverseOrder()  // Highest score first
     );
-    
+
     // User ID -> Current score
     private final Map<String, Long> userScores = new ConcurrentHashMap<>();
-    
+
     private final Object lock = new Object();
-    
+
     /**
      * Update user's score
      */
@@ -960,15 +949,15 @@ public class LeaderboardService {
                     }
                 }
             }
-            
+
             // Add new score entry
             userScores.put(userId, newScore);
             scoreToUsers.computeIfAbsent(newScore, k -> new HashSet<>()).add(userId);
-            
+
             log.debug("Updated score for {}: {} -> {}", userId, oldScore, newScore);
         }
     }
-    
+
     /**
      * Add points to user's score
      */
@@ -980,7 +969,7 @@ public class LeaderboardService {
             return newScore;
         }
     }
-    
+
     /**
      * Get user's rank (1-based)
      */
@@ -990,7 +979,7 @@ public class LeaderboardService {
             if (userScore == null) {
                 return -1;  // User not on leaderboard
             }
-            
+
             int rank = 1;
             for (Map.Entry<Long, Set<String>> entry : scoreToUsers.entrySet()) {
                 if (entry.getKey().equals(userScore)) {
@@ -1001,7 +990,7 @@ public class LeaderboardService {
             return -1;
         }
     }
-    
+
     /**
      * Get top N players
      */
@@ -1009,10 +998,10 @@ public class LeaderboardService {
         synchronized (lock) {
             List<LeaderboardEntry> result = new ArrayList<>();
             int rank = 1;
-            
+
             for (Map.Entry<Long, Set<String>> entry : scoreToUsers.entrySet()) {
                 if (result.size() >= n) break;
-                
+
                 Long score = entry.getKey();
                 for (String userId : entry.getValue()) {
                     if (result.size() >= n) break;
@@ -1020,11 +1009,11 @@ public class LeaderboardService {
                 }
                 rank += entry.getValue().size();
             }
-            
+
             return result;
         }
     }
-    
+
     /**
      * Get players around a specific user (context view)
      */
@@ -1034,14 +1023,14 @@ public class LeaderboardService {
             if (userScore == null) {
                 return Collections.emptyList();
             }
-            
+
             int userRank = getRank(userId);
             int startRank = Math.max(1, userRank - count);
             int endRank = userRank + count;
-            
+
             List<LeaderboardEntry> result = new ArrayList<>();
             int currentRank = 1;
-            
+
             for (Map.Entry<Long, Set<String>> entry : scoreToUsers.entrySet()) {
                 Long score = entry.getKey();
                 for (String uid : entry.getValue()) {
@@ -1052,11 +1041,11 @@ public class LeaderboardService {
                     if (currentRank > endRank) return result;
                 }
             }
-            
+
             return result;
         }
     }
-    
+
     /**
      * Get user's score
      */
@@ -1073,27 +1062,27 @@ public record LeaderboardEntry(int rank, String userId, long score) {}
 @RequestMapping("/api/leaderboard")
 @RequiredArgsConstructor
 public class LeaderboardController {
-    
+
     private final LeaderboardService leaderboardService;
-    
+
     @PostMapping("/score")
     public Map<String, Object> addScore(@RequestBody AddScoreRequest request) {
         long newScore = leaderboardService.addPoints(request.userId(), request.points());
         int rank = leaderboardService.getRank(request.userId());
-        
+
         return Map.of(
             "userId", request.userId(),
             "newScore", newScore,
             "rank", rank
         );
     }
-    
+
     @GetMapping("/top")
     public List<LeaderboardEntry> getTopPlayers(
             @RequestParam(defaultValue = "10") int count) {
         return leaderboardService.getTopN(count);
     }
-    
+
     @GetMapping("/user/{userId}")
     public Map<String, Object> getUserStats(@PathVariable String userId) {
         return Map.of(
@@ -1102,7 +1091,7 @@ public class LeaderboardController {
             "rank", leaderboardService.getRank(userId)
         );
     }
-    
+
     @GetMapping("/around/{userId}")
     public List<LeaderboardEntry> getAroundUser(
             @PathVariable String userId,
@@ -1114,22 +1103,20 @@ public class LeaderboardController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: Leaderboard with TreeMap**
 
 **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+
 <details><summary>Answer</summary>
 
 `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+
 </details>
 
 📎 **Reference Anchor:** [OpenJDK `TreeMap.java`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/TreeMap.java#L281-L340)  
 **Invariant learned:** TreeMap is backed by a Red-Black Tree. `put`, `get`, `remove` are all O(log N) guaranteed. The key comparison uses `Comparator` (if provided) or `Comparable`. The `reverseOrder()` comparator in `LeaderboardService` flips the comparison so highest score is first when iterating.  
 **Local rewrite:** The `scoreToUsers: TreeMap<Long, Set<String>>` uses `Collections.reverseOrder()` so `.entrySet()` iterates from highest to lowest score. This is equivalent to `NavigableMap.descendingMap()`. For `getRank()`, each `entry.getValue().size()` is the count of users tied at that score level — O(K) where K is the number of distinct score levels.  
 **Constraint warning:** For real-time leaderboards with millions of users, a `synchronized(lock)` block on every score update is a bottleneck. Production systems use Redis `ZADD`/`ZRANK`/`ZRANGE` (sorted sets backed by a skip list) instead of Java in-memory TreeMap — Redis provides atomic leaderboard operations distributed across instances.
-
-
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1145,19 +1132,19 @@ public class LeaderboardController {
 @Getter
 @Setter
 public class Employee {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String name;
     private String title;
     private String department;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private Employee manager;
-    
+
     @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
     private List<Employee> directReports = new ArrayList<>();
 }
@@ -1167,22 +1154,22 @@ public class Employee {
 @RequiredArgsConstructor
 @Slf4j
 public class OrganizationService {
-    
+
     private final EmployeeRepository employeeRepository;
-    
+
     /**
      * Get all employees under a manager (DFS - recursive)
      */
     public List<EmployeeNode> getSubordinates(Long managerId) {
         Employee manager = employeeRepository.findById(managerId)
             .orElseThrow(() -> new EmployeeNotFoundException(managerId));
-        
+
         return buildSubtree(manager);
     }
-    
+
     private List<EmployeeNode> buildSubtree(Employee employee) {
         List<EmployeeNode> children = new ArrayList<>();
-        
+
         for (Employee report : employee.getDirectReports()) {
             EmployeeNode node = new EmployeeNode(
                 report.getId(),
@@ -1192,28 +1179,28 @@ public class OrganizationService {
             );
             children.add(node);
         }
-        
+
         return children;
     }
-    
+
     /**
      * Get reporting chain (path from employee to CEO)
      */
     public List<EmployeeDto> getReportingChain(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
-        
+
         List<EmployeeDto> chain = new ArrayList<>();
         Employee current = employee;
-        
+
         while (current != null) {
             chain.add(toDto(current));
             current = current.getManager();
         }
-        
+
         return chain;  // [Employee, Manager, Senior Manager, ..., CEO]
     }
-    
+
     /**
      * Find common manager of two employees (Lowest Common Ancestor)
      */
@@ -1221,7 +1208,7 @@ public class OrganizationService {
         // Get paths to root for both employees
         List<Long> path1 = getPathToRoot(emp1Id);
         List<Long> path2 = getPathToRoot(emp2Id);
-        
+
         // Find first common ancestor
         Set<Long> path1Set = new HashSet<>(path1);
         for (Long ancestorId : path2) {
@@ -1229,63 +1216,63 @@ public class OrganizationService {
                 return toDto(employeeRepository.findById(ancestorId).orElseThrow());
             }
         }
-        
+
         return null;  // No common manager (shouldn't happen in valid org)
     }
-    
+
     private List<Long> getPathToRoot(Long employeeId) {
         List<Long> path = new ArrayList<>();
         Employee current = employeeRepository.findById(employeeId).orElse(null);
-        
+
         while (current != null) {
             path.add(current.getId());
             current = current.getManager();
         }
-        
+
         return path;
     }
-    
+
     /**
      * Get org chart level by level (BFS)
      */
     public List<List<EmployeeDto>> getOrgByLevel(Long rootId) {
         Employee root = employeeRepository.findById(rootId)
             .orElseThrow(() -> new EmployeeNotFoundException(rootId));
-        
+
         List<List<EmployeeDto>> levels = new ArrayList<>();
         Queue<Employee> queue = new LinkedList<>();
         queue.offer(root);
-        
+
         while (!queue.isEmpty()) {
             int levelSize = queue.size();
             List<EmployeeDto> currentLevel = new ArrayList<>();
-            
+
             for (int i = 0; i < levelSize; i++) {
                 Employee emp = queue.poll();
                 currentLevel.add(toDto(emp));
-                
+
                 // Add direct reports to queue
                 for (Employee report : emp.getDirectReports()) {
                     queue.offer(report);
                 }
             }
-            
+
             levels.add(currentLevel);
         }
-        
+
         return levels;
     }
-    
+
     /**
      * Count total subordinates
      */
     public int countSubordinates(Long managerId) {
         Employee manager = employeeRepository.findById(managerId)
             .orElseThrow(() -> new EmployeeNotFoundException(managerId));
-        
+
         return countSubordinatesRecursive(manager) - 1;  // Exclude self
     }
-    
+
     private int countSubordinatesRecursive(Employee employee) {
         int count = 1;  // Count self
         for (Employee report : employee.getDirectReports()) {
@@ -1293,7 +1280,7 @@ public class OrganizationService {
         }
         return count;
     }
-    
+
     private EmployeeDto toDto(Employee e) {
         return new EmployeeDto(e.getId(), e.getName(), e.getTitle(), e.getDepartment());
     }
@@ -1308,26 +1295,26 @@ public record EmployeeDto(Long id, String name, String title, String department)
 @RequestMapping("/api/org")
 @RequiredArgsConstructor
 public class OrganizationController {
-    
+
     private final OrganizationService orgService;
-    
+
     @GetMapping("/employees/{id}/subordinates")
     public List<EmployeeNode> getSubordinates(@PathVariable Long id) {
         return orgService.getSubordinates(id);
     }
-    
+
     @GetMapping("/employees/{id}/reporting-chain")
     public List<EmployeeDto> getReportingChain(@PathVariable Long id) {
         return orgService.getReportingChain(id);
     }
-    
+
     @GetMapping("/common-manager")
     public EmployeeDto findCommonManager(
             @RequestParam Long emp1,
             @RequestParam Long emp2) {
         return orgService.findCommonManager(emp1, emp2);
     }
-    
+
     @GetMapping("/chart/{rootId}")
     public List<List<EmployeeDto>> getOrgChart(@PathVariable Long rootId) {
         return orgService.getOrgByLevel(rootId);
@@ -1337,22 +1324,23 @@ public class OrganizationController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 8: Organization Hierarchy with Tree Traversal**
 
 **Challenge 1 (Reasoning):** For an organization chart API, when should you choose BFS, DFS, parent pointers, or an adjacency map?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Use an adjacency map to store `managerId -> employees`. Use DFS to emit nested trees, BFS to return level-order charts, and parent pointers to climb from an employee to ancestors or find a common manager. The chosen traversal follows the output shape: nested output screams DFS; level output screams BFS; ancestor questions scream parent links.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** The organization traversal assumes the data is a tree, but production has a cycle caused by bad imports. What breaks, and how do you defend?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Plain recursion can loop until stack overflow. Add `visited` tracking, maximum depth, and validation that prevents an employee from becoming their own ancestor. In APIs, return a clear data-integrity error instead of hanging the request.
-</details>
 
+</details>
 
 # 📋 DSA + Spring Boot Summary
 
@@ -1379,11 +1367,9 @@ Plain recursion can loop until stack overflow. Add `visited` tracking, maximum d
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Continue to Part 13: Industry-Level Real Projects_
-
 
 ---
 

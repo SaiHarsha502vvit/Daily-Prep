@@ -1,9 +1,15 @@
-import { css } from './css';
-import type { AggregatedResult, SuiteSummary } from '../types';
+import { css } from "./css";
+import type { AggregatedResult, SuiteSummary } from "../types";
 
-export function renderHtml(data: AggregatedResult, _outputFolder: string): string {
+export function renderHtml(
+  data: AggregatedResult,
+  _outputFolder: string,
+): string {
   const { overall, byProject, byOwner, slowestTests, failedTests } = data;
-  const passRate = overall.total > 0 ? ((overall.passed / overall.total) * 100).toFixed(1) : '0.0';
+  const passRate =
+    overall.total > 0
+      ? ((overall.passed / overall.total) * 100).toFixed(1)
+      : "0.0";
 
   const projectRows = Object.entries(byProject)
     .map(
@@ -17,9 +23,9 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
         `<td><span class="badge badge-skip">${s.skipped}</span></td>` +
         `<td>${fmtDuration(s.duration)}</td>` +
         `<td>${fmtPct(s)}</td>` +
-        `</tr>`
+        `</tr>`,
     )
-    .join('');
+    .join("");
 
   const ownerRows = Object.entries(byOwner)
     .map(
@@ -33,9 +39,9 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
         `<td><span class="badge badge-skip">${s.skipped}</span></td>` +
         `<td>${fmtDuration(s.duration)}</td>` +
         `<td>${fmtPct(s)}</td>` +
-        `</tr>`
+        `</tr>`,
     )
-    .join('');
+    .join("");
 
   const slowestRows = slowestTests
     .slice(0, 10)
@@ -45,9 +51,9 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
         `<td>${escapeHtml(t.title)}</td>` +
         `<td>${fmtDuration(t.duration)}</td>` +
         `<td><span class="tag">${escapeHtml(t.file)}</span></td>` +
-        `</tr>`
+        `</tr>`,
     )
-    .join('');
+    .join("");
 
   const failedRows = failedTests
     .map(
@@ -56,9 +62,9 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
         `<td>${escapeHtml(t.title)}</td>` +
         `<td><span class="error-msg">${escapeHtml(t.error)}</span></td>` +
         `<td><span class="tag">${escapeHtml(t.file)}</span></td>` +
-        `</tr>`
+        `</tr>`,
     )
-    .join('');
+    .join("");
 
   const ownerSection =
     Object.keys(byOwner).length > 0
@@ -73,7 +79,7 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
       <tbody>${ownerRows}</tbody>
     </table>
   </div>`
-      : '';
+      : "";
 
   const ownerDropdown =
     Object.keys(byOwner).length > 0
@@ -81,10 +87,12 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
     <select onchange="filterByOwner(this.value)">
       <option value="">All</option>
       ${Object.keys(byOwner)
-        .map((o) => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`)
-        .join('')}
+        .map(
+          (o) => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`,
+        )
+        .join("")}
     </select>`
-      : '';
+      : "";
 
   const scripts = `<script>
     const ALL_RESULTS = ${JSON.stringify(data)};
@@ -117,155 +125,157 @@ export function renderHtml(data: AggregatedResult, _outputFolder: string): strin
   </script>`;
 
   return (
-    '<!DOCTYPE html>\n' +
+    "<!DOCTYPE html>\n" +
     '<html lang="en">\n' +
-    '<head>\n' +
+    "<head>\n" +
     '  <meta charset="UTF-8" />\n' +
     '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n' +
-    '  <title>Playwright Team Reporter</title>\n' +
-    '  <style>' +
+    "  <title>Playwright Team Reporter</title>\n" +
+    "  <style>" +
     css +
-    '</style>\n' +
-    '</head>\n' +
-    '<body>\n' +
+    "</style>\n" +
+    "</head>\n" +
+    "<body>\n" +
     '<div class="container">\n' +
-    '\n' +
-    '  <header>\n' +
-    '    <h1>Playwright Team Reporter</h1>\n' +
+    "\n" +
+    "  <header>\n" +
+    "    <h1>Playwright Team Reporter</h1>\n" +
     '    <span style="color:var(--text-muted);font-size:0.8rem">' +
     new Date().toLocaleString() +
-    '</span>\n' +
-    '  </header>\n' +
-    '\n' +
+    "</span>\n" +
+    "  </header>\n" +
+    "\n" +
     '  <div class="top-bar">\n' +
     '    <div class="stat-card">\n' +
     '      <div class="value">' +
     overall.total +
-    '</div>\n' +
+    "</div>\n" +
     '      <div class="label">Total</div>\n' +
-    '    </div>\n' +
+    "    </div>\n" +
     '    <div class="stat-card passed">\n' +
     '      <div class="value">' +
     overall.passed +
-    '</div>\n' +
+    "</div>\n" +
     '      <div class="label">Passed</div>\n' +
-    '    </div>\n' +
+    "    </div>\n" +
     '    <div class="stat-card failed">\n' +
     '      <div class="value">' +
     overall.failed +
-    '</div>\n' +
+    "</div>\n" +
     '      <div class="label">Failed</div>\n' +
-    '    </div>\n' +
+    "    </div>\n" +
     '    <div class="stat-card flaky">\n' +
     '      <div class="value">' +
     overall.flaky +
-    '</div>\n' +
+    "</div>\n" +
     '      <div class="label">Flaky</div>\n' +
-    '    </div>\n' +
+    "    </div>\n" +
     '    <div class="stat-card skipped">\n' +
     '      <div class="value">' +
     overall.skipped +
-    '</div>\n' +
+    "</div>\n" +
     '      <div class="label">Skipped</div>\n' +
-    '    </div>\n' +
+    "    </div>\n" +
     '    <div class="pass-rate-bar">\n' +
     '      <div class="rate" style="color:' +
     (Number(passRate) >= 80
-      ? 'var(--pass)'
+      ? "var(--pass)"
       : Number(passRate) >= 50
-        ? 'var(--flaky)'
-        : 'var(--fail)') +
+        ? "var(--flaky)"
+        : "var(--fail)") +
     '">' +
     passRate +
-    '%</div>\n' +
+    "%</div>\n" +
     '      <div class="progress-track">\n' +
     '        <div class="progress-fill" style="width:' +
     passRate +
-    '%;background:' +
+    "%;background:" +
     (Number(passRate) >= 80
-      ? 'var(--pass)'
+      ? "var(--pass)"
       : Number(passRate) >= 50
-        ? 'var(--flaky)'
-        : 'var(--fail)') +
+        ? "var(--flaky)"
+        : "var(--fail)") +
     '"></div>\n' +
-    '      </div>\n' +
-    '    </div>\n' +
-    '  </div>\n' +
-    '\n' +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
     '  <div class="filters">\n' +
-    '    <label>Filters:</label>\n' +
+    "    <label>Filters:</label>\n" +
     '    <button class="filter-btn active" onclick="showAll()">All</button>\n' +
     '    <button class="filter-btn" onclick="showFailed()">Failed Only</button>\n' +
     '    <button class="filter-btn" onclick="filterByTag(\'smoke\')">@smoke</button>\n' +
     '    <button class="filter-btn" onclick="filterByTag(\'regression\')">@regression</button>\n' +
     ownerDropdown +
-    '  </div>\n' +
-    '\n' +
+    "  </div>\n" +
+    "\n" +
     '  <div class="section">\n' +
-    '    <h2>Per-Project Breakdown</h2>\n' +
-    '    <table>\n' +
-    '      <thead>\n' +
-    '        <tr>\n' +
-    '          <th>Project</th><th>Total</th><th>Passed</th><th>Failed</th><th>Flaky</th><th>Skipped</th><th>Duration</th><th>Pass %</th>\n' +
-    '        </tr>\n' +
-    '      </thead>\n' +
-    '      <tbody>' +
+    "    <h2>Per-Project Breakdown</h2>\n" +
+    "    <table>\n" +
+    "      <thead>\n" +
+    "        <tr>\n" +
+    "          <th>Project</th><th>Total</th><th>Passed</th><th>Failed</th><th>Flaky</th><th>Skipped</th><th>Duration</th><th>Pass %</th>\n" +
+    "        </tr>\n" +
+    "      </thead>\n" +
+    "      <tbody>" +
     projectRows +
-    '</tbody>\n' +
-    '    </table>\n' +
-    '  </div>\n' +
-    '\n' +
+    "</tbody>\n" +
+    "    </table>\n" +
+    "  </div>\n" +
+    "\n" +
     ownerSection +
-    '\n' +
+    "\n" +
     '  <div class="section">\n' +
-    '    <h2>Top 10 Slowest Tests</h2>\n' +
-    '    <table>\n' +
-    '      <thead>\n' +
-    '        <tr>\n' +
-    '          <th>Test</th><th>Duration</th><th>File</th>\n' +
-    '        </tr>\n' +
-    '      </thead>\n' +
-    '      <tbody>' +
-    (slowestRows || '<tr><td colspan="3" class="empty-state">No test data</td></tr>') +
-    '</tbody>\n' +
-    '    </table>\n' +
-    '  </div>\n' +
-    '\n' +
+    "    <h2>Top 10 Slowest Tests</h2>\n" +
+    "    <table>\n" +
+    "      <thead>\n" +
+    "        <tr>\n" +
+    "          <th>Test</th><th>Duration</th><th>File</th>\n" +
+    "        </tr>\n" +
+    "      </thead>\n" +
+    "      <tbody>" +
+    (slowestRows ||
+      '<tr><td colspan="3" class="empty-state">No test data</td></tr>') +
+    "</tbody>\n" +
+    "    </table>\n" +
+    "  </div>\n" +
+    "\n" +
     '  <div class="section">\n' +
-    '    <h2>Failed Tests</h2>\n' +
-    '    <table>\n' +
-    '      <thead>\n' +
-    '        <tr>\n' +
-    '          <th>Test</th><th>Error</th><th>File</th>\n' +
-    '        </tr>\n' +
-    '      </thead>\n' +
-    '      <tbody>' +
-    (failedRows || '<tr><td colspan="3" class="empty-state">No failures</td></tr>') +
-    '</tbody>\n' +
-    '    </table>\n' +
-    '  </div>\n' +
-    '\n' +
-    '</div>\n' +
+    "    <h2>Failed Tests</h2>\n" +
+    "    <table>\n" +
+    "      <thead>\n" +
+    "        <tr>\n" +
+    "          <th>Test</th><th>Error</th><th>File</th>\n" +
+    "        </tr>\n" +
+    "      </thead>\n" +
+    "      <tbody>" +
+    (failedRows ||
+      '<tr><td colspan="3" class="empty-state">No failures</td></tr>') +
+    "</tbody>\n" +
+    "    </table>\n" +
+    "  </div>\n" +
+    "\n" +
+    "</div>\n" +
     scripts +
-    '</body>\n' +
-    '</html>'
+    "</body>\n" +
+    "</html>"
   );
 }
 
 function escapeHtml(s: string): string {
   return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function fmtDuration(ms: number): string {
-  if (ms < 1000) return ms + 'ms';
-  return (ms / 1000).toFixed(2) + 's';
+  if (ms < 1000) return ms + "ms";
+  return (ms / 1000).toFixed(2) + "s";
 }
 
 function fmtPct(s: SuiteSummary): string {
-  if (s.total === 0) return '—';
-  return ((s.passed / s.total) * 100).toFixed(1) + '%';
+  if (s.total === 0) return "—";
+  return ((s.passed / s.total) * 100).toFixed(1) + "%";
 }

@@ -48,10 +48,7 @@ async function saveAuthStateFixed(context: BrowserContext, page: Page): Promise<
   await page.locator("input[name='password']").fill('admin123');
 
   // FIXED: Wait for navigation to the dashboard URL AND the page to be fully loaded.
-  await Promise.all([
-    page.waitForURL(/dashboard/),
-    page.locator("button[type='submit']").click(),
-  ]);
+  await Promise.all([page.waitForURL(/dashboard/), page.locator("button[type='submit']").click()]);
   await page.waitForLoadState('networkidle');
 
   // NOW the session cookies/auth tokens are settled. Safe to save.

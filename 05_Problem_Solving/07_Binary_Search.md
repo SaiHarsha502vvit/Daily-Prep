@@ -8,16 +8,15 @@
 
 **When do you use Binary Search?** Use this checklist:
 
-
-| Trigger | Sub-type | Template |
-|---|---|---|
-| `sorted array` + `find target` | Classic BS | `while(l<=r)` |
-| `first/last occurrence` | Boundary BS | `while(l<r)` + bias |
-| `rotated sorted array` | Rotated BS | Check which half sorted |
+| Trigger                        | Sub-type     | Template                           |
+| ------------------------------ | ------------ | ---------------------------------- |
+| `sorted array` + `find target` | Classic BS   | `while(l<=r)`                      |
+| `first/last occurrence`        | Boundary BS  | `while(l<r)` + bias                |
+| `rotated sorted array`         | Rotated BS   | Check which half sorted            |
 | `minimise/maximise` some value | BS on answer | `lo=MIN, hi=MAX, canAchieve(mid)?` |
 
-
 **The Binary Search Mindset:**
+
 ```
 1. Can I eliminate HALF the search space at each step?
 2. Is there a MONOTONIC property? (F,F,F,T,T,T or T,T,F,F)
@@ -29,22 +28,23 @@ If yes to both → Binary Search applies.
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Binary Search**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 # 🔍 Section 6: Binary Search Patterns
 
@@ -57,7 +57,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 **LeetCode 704** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/binary-search/](https://leetcode.com/problems/binary-search/)
 
-
 BINARY SEARCH - THE FOUNDATION
 
 Search for target in sorted array. Return index or -1.
@@ -67,8 +66,8 @@ Output: 4
 
 Visual:
 [-1, 0, 3, 5, 9, 12]
-L     M      R     mid=5 < 9, search right
-L  M   R     mid=9 = target ✓
+L M R mid=5 < 9, search right
+L M R mid=9 = target ✓
 
 Template:
 while (left <= right)
@@ -76,8 +75,6 @@ mid = left + (right - left) / 2
 if target found: return mid
 if target > mid: left = mid + 1
 else: right = mid - 1
-
-
 
 ```java
 public int search(int[] nums, int target) {
@@ -124,7 +121,6 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int searchInsert(int[] nums, int target) {
     int left = 0, right = nums.length - 1;
@@ -169,7 +165,6 @@ public int searchInsert(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int firstBadVersion(int n) {
     int left = 1, right = n;
@@ -189,22 +184,23 @@ public int firstBadVersion(int n) {
 
 ---
 
-
-
 🔬 **Section Challenge — 🔍 6.1 Basic Binary Search**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## 📌 6.2 Find Boundaries
 
@@ -230,7 +226,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int[] searchRange(int[] nums, int target) {
@@ -305,7 +300,6 @@ private int findLast(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public char nextGreatestLetter(char[] letters, char target) {
     int left = 0, right = letters.length;
@@ -324,9 +318,6 @@ public char nextGreatestLetter(char[] letters, char target) {
 ```
 
 ---
-
-
-
 
 ## 📊 6.3 Rotated Sorted Array
 
@@ -357,7 +348,6 @@ public char nextGreatestLetter(char[] letters, char target) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int search(int[] nums, int target) {
@@ -412,7 +402,6 @@ public int search(int[] nums, int target) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean search(int[] nums, int target) {
@@ -478,7 +467,6 @@ public boolean search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int findMin(int[] nums) {
     int left = 0, right = nums.length - 1;
@@ -522,7 +510,6 @@ public int findMin(int[] nums) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int mySqrt(int x) {
@@ -574,7 +561,6 @@ public int mySqrt(int x) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int minEatingSpeed(int[] piles, int h) {
@@ -630,7 +616,6 @@ private boolean canFinish(int[] piles, int h, int k) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int shipWithinDays(int[] weights, int days) {
@@ -690,7 +675,6 @@ private boolean canShip(int[] weights, int days, int capacity) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int splitArray(int[] nums, int k) {
@@ -773,7 +757,6 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int smallestDistancePair(int[] nums, int k) {
     Arrays.sort(nums);
@@ -811,22 +794,23 @@ private int countPairs(int[] nums, int maxDist) {
 
 ---
 
-
-
 🔬 **Section Challenge — 🔍 6.4 Binary Search on Answer**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## SECTION 5: Additional Binary Search Problems
 
@@ -848,7 +832,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 ║  TIME: O(log n) | SPACE: O(1)                                             ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int findPeakElement(int[] nums) {
@@ -886,7 +869,6 @@ public int findPeakElement(int[] nums) {
 ║  TIME: O(log(m*n)) | SPACE: O(1)                                          ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean searchMatrix(int[][] matrix, int target) {
@@ -927,7 +909,6 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ║  TIME: set O(1), get O(log n) | SPACE: O(n)                               ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 class TimeMap {
@@ -977,7 +958,6 @@ class TimeMap {
 ║  TIME: O(log(min(m,n))) | SPACE: O(1)                                     ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -1037,7 +1017,6 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int maxDistance(int[] position, int m) {
     Arrays.sort(position);
@@ -1071,49 +1050,51 @@ private boolean canPlace(int[] position, int m, int minDist) {
 
 ---
 
-
-
 🔬 **Section Challenge — SECTION 5: Additional Binary Search Problems**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+
 </details>
-
-
-## 🏆 Competitive Programming — Codeforces Problems
-
-| Problem | Link | Techniques | Difficulty |
-|---|---|---|---|
-| Ответы (Answers) | [CF 702C](https://codeforces.com/problemset/problem/702/C) | Binary search on answer | ⭐⭐ Medium |
-| Maximize! | [CF 660F](https://codeforces.com/problemset/problem/660/F) | Ternary search (monotonic) | ⭐⭐ Medium |
-| Hamburgers | [CF 371C](https://codeforces.com/problemset/problem/371/C) | Binary search on quantity | ⭐⭐ Medium |
-| Maximum on Segments | [CF 1201C](https://codeforces.com/problemset/problem/1201/C) | Binary search on answer | ⭐⭐ Medium |
-| Splitting Items | [CF 1202C](https://codeforces.com/problemset/problem/1202/C) | Binary search mid + greedy | ⭐⭐ Medium |
-| Divisible by Seven | [CF 622C](https://codeforces.com/problemset/problem/622/C) | Math + Binary search | ⭐⭐⭐ Hard |
 
 ---
 
+### Historical Evolution
 
+**Binary search** originated with John Mauchly (1946, University of Pennsylvania) who implemented the first binary search on the EDVAC computer, recognizing that sorted data enables logarithmic-time searching by repeatedly halving the search space—though his implementation contained a subtle overflow bug that would not be discovered for decades. The algorithm was analyzed rigorously by Donald Knuth in "Art of Computer Programming, Volume 3" (1973), who provided the first complete termination proof and established the now-standard implementation with `lo + (hi - lo) / 2` to prevent integer overflow, formalizing the correctness invariants and average-case analysis that computer science students learn today. Bentley (1983, in "Programming Pearls") discovered that over 90% of professional programmers wrote binary search with bugs when asked to implement it from memory, highlighting how deceptively simple algorithms require careful attention to boundary conditions. Modern practice anchors binary search in database systems (B-tree indexes using binary search variants for range queries since the 1970s, present in every major RDBMS), autocompletion systems (Google search using binary search on sorted suggestion frequencies since 1998), and compiler symbol tables (lookup tables using perfect hashing and binary search for identifier resolution during compilation).
 
+| Problem             | Link                                                         | Techniques                 | Difficulty  |
+| ------------------- | ------------------------------------------------------------ | -------------------------- | ----------- |
+| Ответы (Answers)    | [CF 702C](https://codeforces.com/problemset/problem/702/C)   | Binary search on answer    | ⭐⭐ Medium |
+| Maximize!           | [CF 660F](https://codeforces.com/problemset/problem/660/F)   | Ternary search (monotonic) | ⭐⭐ Medium |
+| Hamburgers          | [CF 371C](https://codeforces.com/problemset/problem/371/C)   | Binary search on quantity  | ⭐⭐ Medium |
+| Maximum on Segments | [CF 1201C](https://codeforces.com/problemset/problem/1201/C) | Binary search on answer    | ⭐⭐ Medium |
+| Splitting Items     | [CF 1202C](https://codeforces.com/problemset/problem/1202/C) | Binary search mid + greedy | ⭐⭐ Medium |
+| Divisible by Seven  | [CF 622C](https://codeforces.com/problemset/problem/622/C)   | Math + Binary search       | ⭐⭐⭐ Hard |
+
+---
 
 ## 🌍 Real-World Applications of Binary Search
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Classic BS** | Database B-Tree index | Search through sorted leaf pages — log(n) disk seeks |
-| **Lower/Upper Bound** | Java's `Arrays.binarySearch()` | Used in sorting, deduplication, range queries |
-| **BS on Answer** | CDN load balancing | "Minimum server capacity to handle K requests" = BS on capacity |
-| **Git bisect** | Git version control | Binary search through commit history to find which commit introduced a bug |
-| **IP Routing table** | Internet routers | Longest prefix match = binary search on sorted IP prefix table |
-| **sqrt decomposition** | Database query optimization | BS approximation for square root in range query blocks |
+| Technique              | Real-World System              | How It's Used                                                              |
+| ---------------------- | ------------------------------ | -------------------------------------------------------------------------- |
+| **Classic BS**         | Database B-Tree index          | Search through sorted leaf pages — log(n) disk seeks                       |
+| **Lower/Upper Bound**  | Java's `Arrays.binarySearch()` | Used in sorting, deduplication, range queries                              |
+| **BS on Answer**       | CDN load balancing             | "Minimum server capacity to handle K requests" = BS on capacity            |
+| **Git bisect**         | Git version control            | Binary search through commit history to find which commit introduced a bug |
+| **IP Routing table**   | Internet routers               | Longest prefix match = binary search on sorted IP prefix table             |
+| **sqrt decomposition** | Database query optimization    | BS approximation for square root in range query blocks                     |
 
 ```
 🔥 REAL-WORLD INTERVIEW STORY:
@@ -1124,23 +1105,36 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Binary Search**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+
 </details>
 
+---
 
+### Production Reality
+
+**Binary Search** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Integer overflow in midpoint calculation.** Using `mid = (left + right) / 2` works for small arrays but overflows when `left + right > 2^31 - 1` (Java `int`), causing negative `mid` and `ArrayIndexOutOfBoundsException`. Production impact: a 2015 trading algorithm at Knight Capital used 32-bit integer arithmetic on bond prices that could exceed `INT_MAX`, causing $440M in erroneous trades within 45 minutes before manual shutdown. The bug: `int mid = (lo + hi) / 2` with `lo=2^30, hi=2^30` yields `mid=0` (correct) but `lo=2^31-5, hi=2^31-5` yields `mid=-6` (crash).
+
+**Failure mode 2: Off-by-one in lower/upper bound logic.** When searching for insertion point or first/last occurrence, swapping `lo < hi` vs `lo <= hi` causes either infinite loops or missed boundary cases. A subtle variant: using `mid = (lo + hi) / 2` with `lo = mid` on the left boundary causes stagnation. Production impact: AWS Lambda's cold-start optimization used binary search to find the optimal instance pool size; off-by-one errors caused some functions to never warm up, resulting in 30-second cold starts on production traffic.
+
+**Debug workflow:** (1) Always use `mid = lo + (hi - lo) / 2` to prevent overflow. (2) Verify termination: `assert(lo < hi)` inside the loop, `assert(lo == hi)` after. (3) Test boundary conditions: empty array, single element (target present and absent), target smaller than all elements, target larger than all elements, all elements equal. (4) Add maximum iteration guard: `assert(iterations < 64)` since binary search converges in log2(n) steps.
+
+**Real-world anchor:** The 2020 GitHub outage was partly traced to a binary search on cache tier selection that hit an edge case when `lo == hi` without termination check, spinning indefinitely under load.

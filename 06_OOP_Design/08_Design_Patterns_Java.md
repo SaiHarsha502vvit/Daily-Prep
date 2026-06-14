@@ -4,20 +4,16 @@
 
 ## Why Learn Design Patterns?
 
-
 Design patterns are PROVEN SOLUTIONS to RECURRING PROBLEMS.
 
-Without patterns:  "I'll figure out a way to do this..."
-With patterns:     "This is a Strategy problem — I know exactly
+Without patterns: "I'll figure out a way to do this..."
+With patterns: "This is a Strategy problem — I know exactly
 how to structure this."
 
 Interview Reality: "Can you give me an example of [Pattern]?"
 → Expected for mid-level and above
 
-
 ---
-
-
 
 🔬 **Section Challenge — Why Learn Design Patterns?**
 
@@ -29,21 +25,23 @@ Interview Reality: "Can you give me an example of [Pattern]?"
 
 </details>
 
-
 ## Pattern Categories Overview
 
+### Historical Evolution
 
-CREATIONAL (5)         STRUCTURAL (7)        BEHAVIORAL (11)
-How objects are        How objects are        How objects
-CREATED                COMPOSED              COMMUNICATE
-─────────────         ─────────────         ─────────────
-Singleton ★           Adapter ★             Strategy ★
-Factory Method ★      Decorator ★           Observer ★
-Abstract Factory      Facade ★              Template Method ★
-Builder ★             Proxy ★               Iterator
-Prototype             Composite             Command
-Bridge                Chain of Resp ★
-Flyweight             State
+Design patterns as a formal discipline began with **Christopher Alexander's "A Pattern Language" (1977)**, a landmark book on urban architecture and building design that introduced the concept that recurring design problems have recurring solutions expressible as named patterns with context, forces, and resolution. **Kent Beck and Ward Cunningham applied Alexander's pattern language to software in 1987** (C++ Report), writing the first OOP-specific patterns — this is the origin of the pattern movement in computing. **The Gang of Four (Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides) published "Design Patterns: Elements of Reusable Object-Oriented Software" in 1994**, cataloguing 23 patterns across creational, structural, and behavioral categories; this book became the definitive reference, and its patterns are now universal vocabulary. **POSA (Pattern-Oriented Software Architecture, Buschmann et al., 1996)** extended the catalog with concurrent and network patterns (half-object-plus-protocol, reactor,proactor) — the foundation for high-performance server design used in Tomcat, Netty, and Node.js. **Joshua Bloch's "Effective Java" (2008, Item 3)** popularized the enum-based Singleton as superior to classic `getInstance()` double-checked locking — enum Singletons are immune to reflection and serialization attacks, making them the only truly safe form of Singleton in Java. Today, patterns continue to evolve: the **Microservices patterns (2014+, Sam Newman "Building Microservices")** applied classical patterns (sidecar, strangler fig, circuit breaker) at the service boundary; and **AI-assisted code generation (2023+)** is beginning to generate pattern-compliant code automatically from natural language descriptions.
+
+CREATIONAL (5) STRUCTURAL (7) BEHAVIORAL (11)
+How objects are How objects are How objects
+CREATED COMPOSED COMMUNICATE
+───────────── ───────────── ─────────────
+Singleton ★ Adapter ★ Strategy ★
+Factory Method ★ Decorator ★ Observer ★
+Abstract Factory Facade ★ Template Method ★
+Builder ★ Proxy ★ Iterator
+Prototype Composite Command
+Bridge Chain of Resp ★
+Flyweight State
 Mediator
 Memento
 Visitor
@@ -51,10 +49,7 @@ Interpreter
 
 ★ = Most commonly asked in interviews / used in practice
 
-
 ---
-
-
 
 🔬 **Section Challenge — Pattern Categories Overview**
 
@@ -66,31 +61,28 @@ Interpreter
 
 </details>
 
-
 ## Creational Patterns
 
 ### 1. Singleton — One Instance Only
-
 
 PROBLEM: Need exactly ONE instance of a class globally.
 ANALOGY: There's only ONE President of a country at a time.
 USE: Database connection pool, Logger, Configuration, Cache
 
-
 ```java
 // Thread-safe Singleton using enum (Joshua Bloch's recommended approach)
 public enum DatabasePool {
     INSTANCE;
-    
+
     private final HikariDataSource dataSource;
-    
+
     DatabasePool() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:postgresql://localhost/mydb");
         config.setMaximumPoolSize(10);
         this.dataSource = new HikariDataSource(config);
     }
-    
+
     public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
@@ -104,9 +96,9 @@ Connection conn = DatabasePool.INSTANCE.getConnection();
 // Double-checked locking (classic approach)
 public class Logger {
     private static volatile Logger instance;
-    
+
     private Logger() { } // private constructor!
-    
+
     public static Logger getInstance() {
         if (instance == null) {                    // First check (no lock)
             synchronized (Logger.class) {
@@ -121,7 +113,7 @@ public class Logger {
 ```
 
 ```
-⚠️ WARNING: Singleton is often OVERUSED. 
+⚠️ WARNING: Singleton is often OVERUSED.
    Consider Dependency Injection instead (@Autowired in Spring).
    Spring beans are singletons by default within the container.
 ```
@@ -200,7 +192,7 @@ public class User {
     private final String phone;         // optional
     private final String address;       // optional
     private final int age;              // optional
-    
+
     private User(Builder builder) {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
@@ -209,7 +201,7 @@ public class User {
         this.address = builder.address;
         this.age = builder.age;
     }
-    
+
     public static class Builder {
         // Required
         private final String firstName;
@@ -219,28 +211,28 @@ public class User {
         private String phone = "";
         private String address = "";
         private int age = 0;
-        
+
         public Builder(String firstName, String lastName, String email) {
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
         }
-        
+
         public Builder phone(String phone) {
             this.phone = phone;
             return this;  // enables chaining
         }
-        
+
         public Builder address(String address) {
             this.address = address;
             return this;
         }
-        
+
         public Builder age(int age) {
             this.age = age;
             return this;
         }
-        
+
         public User build() {
             // Validate here if needed
             return new User(this);
@@ -261,8 +253,6 @@ User user = new User.Builder("Sai", "Harsha", "sai@example.com")
 
 ---
 
-
-
 🔬 **Section Challenge — Creational Patterns**
 
 **Challenge 1 (Debug — Who/When/What):** In the double-checked locking Singleton, why is `volatile` on the `instance` field mandatory? What specific bug occurs without it, and who observes it?
@@ -280,7 +270,6 @@ User user = new User.Builder("Sai", "Harsha", "sai@example.com")
 Private constructor prevents direct instantiation — forces all creation through the Builder, guaranteeing validation runs. `build()` returns `User` (not `Builder`) because the Builder is a temporary construction scaffold — once the object is built, the Builder's job is done. This also makes `User` immutable: all fields are `final`, set once during construction, never modified after. The Builder is mutable (fluent setters); the product is immutable. This separation is the core insight.
 
 </details>
-
 
 ## Structural Patterns
 
@@ -311,18 +300,18 @@ public class StripeAPI {
 // --- Adapter ---
 public class StripeAdapter implements PaymentProcessor {
     private final StripeAPI stripeAPI;
-    
+
     public StripeAdapter(StripeAPI stripeAPI) {
         this.stripeAPI = stripeAPI;
     }
-    
+
     @Override
     public boolean charge(String customerId, double amount) {
         StripeChargeRequest request = new StripeChargeRequest();
         request.setCustomer(customerId);
         request.setAmount((long)(amount * 100)); // Stripe uses cents
         request.setCurrency("usd");
-        
+
         StripeCharge charge = stripeAPI.createCharge(request);
         return charge.isPaid();
     }
@@ -346,7 +335,6 @@ processor.charge("cust_123", 49.99);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // --- Component interface ---
 public interface DataSource {
@@ -357,12 +345,12 @@ public interface DataSource {
 // --- Base component ---
 public class FileDataSource implements DataSource {
     private final String filename;
-    
+
     public FileDataSource(String filename) { this.filename = filename; }
-    
+
     @Override
     public String read() { return readFromFile(filename); }
-    
+
     @Override
     public void write(String data) { writeToFile(filename, data); }
 }
@@ -370,12 +358,12 @@ public class FileDataSource implements DataSource {
 // --- Decorator base ---
 public abstract class DataSourceDecorator implements DataSource {
     protected DataSource wrappee;
-    
+
     public DataSourceDecorator(DataSource source) { this.wrappee = source; }
-    
+
     @Override
     public String read() { return wrappee.read(); }
-    
+
     @Override
     public void write(String data) { wrappee.write(data); }
 }
@@ -383,12 +371,12 @@ public abstract class DataSourceDecorator implements DataSource {
 // --- Concrete decorators ---
 public class EncryptionDecorator extends DataSourceDecorator {
     public EncryptionDecorator(DataSource source) { super(source); }
-    
+
     @Override
     public void write(String data) {
         super.write(encrypt(data));       // encrypt before writing
     }
-    
+
     @Override
     public String read() {
         return decrypt(super.read());     // decrypt after reading
@@ -397,12 +385,12 @@ public class EncryptionDecorator extends DataSourceDecorator {
 
 public class CompressionDecorator extends DataSourceDecorator {
     public CompressionDecorator(DataSource source) { super(source); }
-    
+
     @Override
     public void write(String data) {
         super.write(compress(data));
     }
-    
+
     @Override
     public String read() {
         return decompress(super.read());
@@ -431,7 +419,6 @@ source.write("sensitive data");  // compressed → encrypted → file
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // Complex subsystems
 class InventoryService { boolean checkStock(String productId) { /*...*/ } }
@@ -445,26 +432,26 @@ public class OrderFacade {
     private final PaymentService payment;
     private final ShippingService shipping;
     private final NotifyService notify;
-    
+
     // Constructor with DI...
-    
+
     public OrderResult placeOrder(Order order) {
         // Step 1: Check stock
         if (!inventory.checkStock(order.getProductId())) {
             return OrderResult.outOfStock();
         }
-        
+
         // Step 2: Process payment
         if (!payment.processPayment(order)) {
             return OrderResult.paymentFailed();
         }
-        
+
         // Step 3: Create shipment
         String trackingId = shipping.createShipment(order);
-        
+
         // Step 4: Notify customer
         notify.sendConfirmation(order.getEmail());
-        
+
         return OrderResult.success(trackingId);
     }
 }
@@ -485,7 +472,6 @@ OrderResult result = orderFacade.placeOrder(order);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public interface UserRepository {
     User findById(Long id);
@@ -504,11 +490,11 @@ public class UserRepositoryImpl implements UserRepository {
 public class CachingUserRepository implements UserRepository {
     private final UserRepository realRepo;
     private final Map<Long, User> cache = new ConcurrentHashMap<>();
-    
+
     public CachingUserRepository(UserRepository realRepo) {
         this.realRepo = realRepo;
     }
-    
+
     @Override
     public User findById(Long id) {
         return cache.computeIfAbsent(id, realRepo::findById);
@@ -525,8 +511,6 @@ User same = repo.findById(1L);  // cache hit!
 
 ---
 
-
-
 🔬 **Section Challenge — Structural Patterns**
 
 **Challenge 1 (Design — Who/When/What):** Decorator vs Proxy — both wrap an object. In the code above, `EncryptionDecorator` wraps `FileDataSource` and `CachingUserRepository` wraps `UserRepositoryImpl`. **What** is the fundamental difference in intent? **When** would you choose one over the other?
@@ -538,7 +522,6 @@ User same = repo.findById(1L);  // cache hit!
 **When to choose:** Need to enrich functionality? Decorator. Need to restrict/optimize access? Proxy. The structural implementation is nearly identical (wrapper implements same interface), but the intent drives the design. A logging Decorator adds behavior; a caching Proxy optimizes access. If you're adding layers of features (compress + encrypt + log), that's Decorator stacking. If you're guarding one operation (check cache before DB), that's Proxy.
 
 </details>
-
 
 ## Behavioral Patterns
 
@@ -583,11 +566,11 @@ public class FlatDiscount implements DiscountStrategy {
 // Context
 public class ShoppingCart {
     private DiscountStrategy discountStrategy;
-    
+
     public void setDiscountStrategy(DiscountStrategy strategy) {
         this.discountStrategy = strategy;
     }
-    
+
     public double checkout(double total) {
         return discountStrategy.calculateDiscount(total);
     }
@@ -612,7 +595,6 @@ cart.setDiscountStrategy(price -> price * 0.9); // 10% off inline
 ║  USE: Event systems, UI updates, pub/sub, reactive programming.      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Observer interface
@@ -645,14 +627,14 @@ public class AnalyticsService implements OrderEventListener {
 // Subject (publisher)
 public class OrderService {
     private final List<OrderEventListener> listeners = new ArrayList<>();
-    
+
     public void subscribe(OrderEventListener listener) {
         listeners.add(listener);
     }
-    
+
     public void placeOrder(Order order) {
         // ... business logic ...
-        
+
         // Notify all observers
         listeners.forEach(l -> l.onOrderPlaced(order));
     }
@@ -681,11 +663,10 @@ orderService.placeOrder(new Order(/*...*/));
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // Template
 public abstract class DataImporter {
-    
+
     // Template method — defines the algorithm skeleton
     public final void importData() {
         String raw = readData();          // Step 1
@@ -694,21 +675,21 @@ public abstract class DataImporter {
         save(valid);                      // Step 4
         notifyComplete(valid.size());     // Step 5
     }
-    
+
     protected abstract String readData();              // subclass implements
     protected abstract List<Record> parse(String raw); // subclass implements
-    
+
     // Common implementation (can be overridden)
     protected List<Record> validate(List<Record> records) {
         return records.stream()
                 .filter(Record::isValid)
                 .collect(Collectors.toList());
     }
-    
+
     protected void save(List<Record> records) {
         repository.saveAll(records);
     }
-    
+
     protected void notifyComplete(int count) {
         log.info("Imported {} records", count);
     }
@@ -718,7 +699,7 @@ public abstract class DataImporter {
 public class CSVImporter extends DataImporter {
     @Override
     protected String readData() { return readFile("data.csv"); }
-    
+
     @Override
     protected List<Record> parse(String raw) {
         return Arrays.stream(raw.split("\n"))
@@ -730,7 +711,7 @@ public class CSVImporter extends DataImporter {
 public class JSONImporter extends DataImporter {
     @Override
     protected String readData() { return callAPI("/api/data"); }
-    
+
     @Override
     protected List<Record> parse(String raw) {
         return objectMapper.readValue(raw, new TypeReference<>() {});
@@ -755,12 +736,12 @@ importer.importData(); // runs the whole pipeline
 ```java
 public abstract class AuthHandler {
     private AuthHandler next;
-    
+
     public AuthHandler setNext(AuthHandler handler) {
         this.next = handler;
         return handler; // for chaining
     }
-    
+
     public boolean handle(HttpRequest request) {
         if (next != null) {
             return next.handle(request);
@@ -812,8 +793,6 @@ chain.handle(request);
 
 ---
 
-
-
 🔬 **Section Challenge — Behavioral Patterns**
 
 **Challenge 1 (Reasoning):** Strategy vs Template Method — both let you vary algorithm behavior. In the code above, `DiscountStrategy` uses composition (HAS-A) while `DataImporter` uses inheritance (IS-A). **When** is each appropriate? **What** limitation does Template Method have that Strategy doesn't?
@@ -825,7 +804,6 @@ chain.handle(request);
 **Template Method's limitation:** Single inheritance. A `CSVImporter` can't also be a `CompressedImporter`. With Strategy, you can inject multiple strategies (discount strategy + shipping strategy + tax strategy). Template Method locks you into one hierarchy. Modern Java preference: favor Strategy (composition) over Template Method (inheritance) — this is "favor composition over inheritance" in practice.
 
 </details>
-
 
 ## Patterns in Spring Boot — Where You Already Use Them
 
@@ -848,11 +826,7 @@ chain.handle(request);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
-
 
 ## Pattern Selection Guide
 
@@ -876,10 +850,7 @@ chain.handle(request);
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Pattern Selection Guide**
 
@@ -890,7 +861,6 @@ chain.handle(request);
 **(1) Tax rules → Strategy.** Different algorithms (state tax calculation) swapped at runtime based on shipping address. `TaxStrategy` interface with `CaliforniaTax`, `TexasTax`, etc. **(2) Logging + retry → Decorator.** Wrap `PaymentProcessor` with `LoggingDecorator` then `RetryDecorator`. Each adds behavior without modifying the core. **(3) Order with 12 optional fields → Builder.** Avoids telescoping constructors. Required fields in Builder constructor, optional via fluent methods. `Order order = new Order.Builder(userId, cartId).shippingAddress(...).giftWrap(true).build();`
 
 </details>
-
 
 ## Interview Quick-Fire
 
@@ -941,18 +911,606 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+## PLUS Enhancements
+
+### Diagram 1: Singleton Double-Checked Locking with volatile (Memory Layout)
+
+```
+  WITHOUT volatile — THE BROKEN PATH:
+  ═══════════════════════════════════
+
+  Thread A (getInstance, creates Logger):
+  ─────────────────────────────────────────
+
+  Step 1: allocate memory for Logger object
+         ┌─────────────────────────────────┐
+         │  instance ─────────────────┐    │
+         │  fields: null              │    │
+         │  ┌──────────────────────┐  │    │
+         │  │ (uninitialized data) │  │    │
+         │  └──────────────────────┘  │    │
+         └─────────────────────────────────┘
+                    │
+                    │ INSTRUCTION REORDERING HAPPENS HERE
+                    ▼
+  Step 2: instance = reference (pointer set)
+         ┌─────────────────────────────────┐
+         │  instance ─────────────────┐    │
+         │  fields: null              │    │
+         │  ┌──────────────────────┐  │    │
+         │  │ (still uninitialized)│  │    │
+         │  └──────────────────────┘  │    │
+         └─────────────────────────────────┘
+                    │
+                    │ (constructor NOT yet run!)
+                    ▼
+  Step 3: run constructor (writes to fields)
+         ┌─────────────────────────────────┐
+         │  instance ─────────────────┐    │
+         │  fields: fileWriter=...    │    │
+         │  ┌──────────────────────┐  │    │
+         │  │ FileWriter ready     │  │    │
+         │  └──────────────────────┘  │    │
+         └─────────────────────────────────┘
+
+  Thread B arrives at if(instance==null)? → SEES instance ≠ null
+         → RETURNS PARTIALLY CONSTRUCTED Logger!
+         → fileWriter == null → NullPointerException!
+
+  WITH volatile — THE CORRECT PATH:
+  ══════════════════════════════════
+
+  volatile creates a happens-before memory barrier:
+
+  Step 1: allocate memory
+  Step 2: instance = reference  ──────┐
+  Step 3: run constructor              │ happens-before
+         └─────────────────────────────┘
+
+  The volatile write (Step 2) happens-before
+  any subsequent volatile read (Thread B sees fully constructed object)
+
+  THE DOUBLE-CHECK DIAGRAM:
+  ═════════════════════════
+
+  public static Logger getInstance() {
+      if (instance == null) {          ◀── First check: fast path (no lock)
+          synchronized(Logger.class) {   │
+              if (instance == null) {    ◀── Second check: with lock
+                  instance = new Logger();│
+              }                          │
+          }                              │
+      }                                  │
+      return instance;                   │
+  }
+                                        │
+  Thread A: holds lock → creates        │
+  Thread B: waits at synchronized       │
+  Thread B: acquires lock → sees        │
+            instance ≠ null → returns   │
+            (Thread A completed)         │
+
+  WHY TWO CHECKS?
+  Without first check: every call acquires lock → massive overhead
+  Without second check: two threads both acquire lock → create twice
+```
+
+### Diagram 2: Decorator Pattern — "Russian Doll" Wrapping Visualization
+
+```
+  COMPONENT INTERFACE
+  ════════════════════
+
+  ┌────────────────────────────────────────────────────┐
+  │ <<interface>> DataSource                           │
+  ├────────────────────────────────────────────────────┤
+  │ + read(): String                                   │
+  │ + write(data: String): void                        │
+  └────────────────────────────────────────────────────┘
+                              △
+                              │ implements
+          ┌───────────────────┴──────────────────┐
+          │                                      │
+  ┌───────────────┐                      ┌───────────────┐
+  │FileDataSource │                      │NetworkSource  │
+  │(base concrete)│                      │               │
+  └───────────────┘                      └───────────────┘
+
+  DECORATOR CHAIN (wrapping = "russian doll"):
+  ══════════════════════════════════════════
+
+  At usage time:
+  DataSource source = new CompressionDecorator(
+                          new EncryptionDecorator(
+                              new FileDataSource("data.txt")));
+
+  Visualization of the chain:
+  ════════════════════
+
+  ┌─────────────────────────────────────────────────────┐
+  │                  CompressionDecorator               │
+  │  wrappee: ────────────▶ ┌────────────────────────┐ │
+  │  compress(write)        │  EncryptionDecorator    │ │
+  │  decompress(read)       │  wrappee: ────────────▶│ │
+  │                         │  encrypt(write)         │ │
+  │                         │  decrypt(read)          │ │
+  │                         │                         │ │
+  │                         │  wrappee: ────────────▶│ │
+  │                         │  FileDataSource        │ │
+  │                         │  readFromFile()        │ │
+  │                         │  writeToFile()         │ │
+  │                         └────────────────────────┘ │
+  └─────────────────────────────────────────────────────┘
+
+  WRITE FLOW (outside-in):
+  ══════════════════════
+
+  client.write("sensitive data")
+       │
+       ▼
+  ┌────────────────────────────────────┐
+  │ CompressionDecorator.write(data)   │
+  │   compressed = compress(data)      │
+  │   super.write(compressed)          │
+  │       ▼                           │
+  │   ┌──────────────────────────────┐│
+  │   │ EncryptionDecorator.write()  ││
+  │   │   encrypted = encrypt(comp)  ││
+  │   │   super.write(encrypted)     ││
+  │   │       ▼                      ││
+  │   │   ┌────────────────────────┐ ││
+  │   │   │ FileDataSource.write() │ ││
+  │   │   │   writeToFile(enc)     │ ││
+  │   │   └────────────────────────┘ ││
+  │   └──────────────────────────────┘│
+  └────────────────────────────────────┘
+
+  READ FLOW (inside-out):
+  ══════════════════════
+  FileDataSource.read() → FileDataSource.readFromFile()
+       │
+  EncryptionDecorator.read() → decrypt(raw) ──────────────▶
+       │
+  CompressionDecorator.read() → decompress(decrypted) ────▶
+       │
+  client.read() → returns fully processed data
+
+  KEY PROPERTY: Decorators are STACKABLE and COMPOSABLE.
+  New decorators added with ZERO changes to existing code (OCP).
+```
+
+### Diagram 3: Proxy Pattern (Spring AOP) — Transaction/Async Sequence
+
+```
+  ┌──────────────────────────────────────────────────────────────────────────┐
+  │           SPRING AOP PROXY CHAIN (how @Transactional works)              │
+  └──────────────────────────────────────────────────────────────────────────┘
+
+  WITHOUT SPRING PROXY (what you might expect):
+  ══════════════════════════════════════════════
+  Client ──────────────────────────────▶ TargetService.method()
+
+  WITH SPRING PROXY (what actually happens):
+  ══════════════════════════════════════════════
+
+  Client
+    │
+    │ userService.method()
+    ▼
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  CGLIB-generated Proxy (extends UserService)                            │
+  │                                                                         │
+  │  method() {                                                             │
+  │    // BEFORE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━       │
+  │    // @Transactional: DataSourceUtils.getConnection()                   │
+  │    // Connection.setAutoCommit(false)                                   │
+  │    // TransactionSynchronizationManager.bindResource()                  │
+  │    // @Async: submit to thread pool, return CompletableFuture          │
+  │    // @Cacheable: check cache, return if hit                            │
+  │    //                                                                   │
+  │    ┌───────────────────────────────────────────────────────────────┐   │
+  │    │                    TARGET METHOD                               │   │
+  │    │              super.method()  ──────────────────────────────▶ │   │
+  │    │              (actual UserService logic executes here)         │   │
+  │    └───────────────────────────────────────────────────────────────┘   │
+  │                                                                         │
+  │    // AFTER ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━     │
+  │    // @Transactional: Connection.commit() or Connection.rollback()     │
+  │    // @Cacheable: put result in cache                                   │
+  │    // @Async: already returned CompletableFuture to caller              │
+  │  }                                                                      │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  BEAN POST-PROCESSOR LIFECYCLE:
+  ═══════════════════════════════════
+
+  Spring Container starts
+       │
+       ▼
+  Bean instantiated (new UserServiceImpl())
+       │
+       ▼
+  BeanPostProcessor.postProcessAfterInitialization()
+       │
+       ▼
+  ┌─────────────────────────────────────────────────────────┐
+  │  Creates proxy wrapping the bean                        │
+  │  If @Transactional on class/method:                     │
+  │    → Creates TransactionInterceptor                     │
+  │    → Wraps target in JdkDynamicProxy or CGLIB           │
+  │  If @Async on method:                                  │
+  │    → Wraps in AsyncExecutionInterceptor                │
+  └─────────────────────────────────────────────────────────┘
+       │
+       ▼
+  Proxy injected into all @Autowired fields
+  (client code never sees the real object — only the proxy)
+
+  SPRING AOP ATTRIBUTE FLOW (annotation → behavior):
+  ═══════════════════════════════════════════════════
+
+  @Transactional              @Cacheable           @Async
+  ─────────────               ───────────          ──────
+  Before: begin tx            Before: check cache  Before: submit to thread pool
+  After:  commit/rollback     After:  put in cache  After:  returns Future
+
+  Annotation → Aspect → Pointcut → Advice → Proxy
+  ────────────────────────────────────────────────
+  @Transactional → TransactionAspect → execution(* *..*Service.*(..))
+                  → @Before + @AfterReturning/AfterThrowing
+                  → TransactionInterceptor.invoke()
+
+  THE "SELF-INVOCATION" PROBLEM:
+  ════════════════════════════════
+  Inside UserService:
+    methodA() { this.methodB(); }  ← this bypasses proxy!
+    @Transactional
+    methodB() { /* no transaction! */ }  ← proxy not called
+
+  Fix: inject self (self-injection) or use TransactionTemplate.
+```
+
+### Mechanism Deep-Dive: Spring's AOP Proxy Chain
+
+**How the BeanPostProcessor creates the proxy at startup:**
+
+```
+  SPRING CONTAINER BOOTSTRAP SEQUENCE:
+  ══════════════════════════════════════
+
+  1. BeanDefinitionReader parses @Component / @Service
+     → Registers bean definition: "userService" → UserServiceImpl.class
+
+  2. BeanFactoryPostProcessor processes bean definitions
+     → Finds @Transactional annotations
+     → Registers transaction infrastructure beans (DataSource, TransactionManager)
+
+  3. BeanInstantiation: new UserServiceImpl()
+     → Real object created (constructor runs)
+
+  4. BeanPostProcessor.postProcessAfterInitialization()
+     → Wraps real object in proxy
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │  AnnotationTransactionAspect (aspectJ-based) or                  │
+  │  TransactionInterceptor (JDK dynamic proxy)                      │
+  │  is registered as a BeanPostProcessor.                          │
+  │  It wraps every bean that has @Transactional.                   │
+  └──────────────────────────────────────────────────────────────────┘
+
+  PROXY TYPE SELECTION:
+  ════════════════════
+
+  If UserServiceImpl implements an interface (e.g., UserService):
+    → Spring uses JDK Dynamic Proxy
+    → Proxy implements UserService, extends InvocationHandler
+    → Proxy.method() → InvocationHandler.invoke()
+
+  If UserServiceImpl does NOT implement an interface:
+    → Spring uses CGLIB (code generation library)
+    → Proxy SUBCLASSES UserServiceImpl
+    → Overrides every method to add intercept logic
+    → Proxy is a subclass — may fail if methods are final
+
+  HOW @Transactional TRIGGERS TRANSACTION BOUNDARIES:
+  ═════════════════════════════════════════════════════
+
+  @Transactional
+  public void transfer(Account from, Account to, double amount) {
+      debit(from, amount);
+      credit(to, amount);
+      // if exception → rollback
+      // if success → commit
+  }
+
+  What actually executes:
+  ═════════════════════
+
+  TransactionInterceptor.invoke(MethodInvocation):
+
+  1. Determine transaction attributes:
+     Read propagation, isolation level, timeout from annotation
+
+  2. Check transaction propagation:
+     Is there already a transaction on this thread?
+     → PROPAGATION.REQUIRED: join existing (don't suspend)
+     → PROPAGATION.REQUIRES_NEW: suspend existing, start new
+
+  3. Get connection from DataSource:
+     Connection conn = DataSourceUtils.getConnection(dataSource);
+
+  4. Set isolation level:
+     conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+
+  5. Set autoCommit = false:
+     conn.setAutoCommit(false);
+
+  6. Bind to ThreadLocal (so nested @Transactional calls join):
+     TransactionSynchronizationManager.bindResource(ds, connection)
+
+  7. INVOKE TARGET METHOD (user code runs here)
+     invocation.proceed()
+
+  8a. If NO exception: Connection.commit()
+  8b. If EXCEPTION thrown: Connection.rollback()
+
+  9. Unbind from ThreadLocal:
+      TransactionSynchronizationManager.unbindResource(ds)
+
+  10. Return connection to pool:
+      DataSourceUtils.releaseConnection(conn, ds)
+```
+
+### Why-This-Not-That: Builder vs Constructor Telescoping
+
+```
+  THE PROBLEM: CONSTRUCTOR TELESCOPING
+  ══════════════════════════════════════════
+
+  User has 3 required + 5 optional fields:
+
+  // Without telescoping: 2^5 = 32 constructors needed!
+  User("John")                         ← which optionals?
+  User("John", null)                   ← which is null?
+  User("John", null, null)             ← confusing
+  User("John", null, null, null)       ← which is address?
+  User("John", null, null, null, null) ← impossible to read
+
+  // Telescoping pattern: each constructor adds one optional
+  public User(String firstName) {
+      this(firstName, null, null, null, null, null);
+  }
+  public User(String firstName, String lastName) {
+      this(firstName, lastName, null, null, null, null);
+  }
+  public User(String firstName, String lastName, String email) {
+      this(firstName, lastName, email, null, null, null);
+  }
+  // ... 32 variations
+
+  MAINTENANCE COST: Adding one more optional field requires
+  adding 16 new constructors (half of 32).
+
+  THE BUILDER SOLUTION:
+  ════════════════════════
+
+  User user = new User.Builder("John", "Doe", "john@example.com")
+      .phone("1234567890")
+      .address("123 Main St")
+      .age(30)
+      .build();
+
+  COMPARISON TABLE:
+  ════════════════════════
+
+  ┌────────────────────────────────┬──────────────────────┬─────────────────────┐
+  │  DIMENSION                    │  BUILDER             │  TELESCOPING         │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  N optional params             │  1 class             │  2^N constructors   │
+  │  (where N = 5)                │  + 1 Builder inner   │  required!          │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  Readability at call site     │  YES: Clear names    │  NO: positional args│
+  │                                │    .phone("123")     │    User("John",     │
+  │                                │                      │    null, "john@",   │
+  │                                │                      │    null, 30)        │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  Immutability                 │  YES: final fields   │  NO: mutable during │
+  │                                │    set in constructor│    construction     │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  Validation                   │  YES: Centralized    │  NO: scattered      │
+  │                                │    in build()        │    across ctors     │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  Adding optional param         │  2 lines: setter +   │  16 constructor     │
+  │                                │  field               │  variants modified! │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  IDE auto-complete            │  YES: Builder        │  NO: positional,    │
+  │                                │    methods named     │    no name hints    │
+  ├────────────────────────────────┼──────────────────────┼─────────────────────┤
+  │  Lombok @Builder              │  YES: One annotation │  NO: manual all 32  │
+  │  (zero-boilerplate)           │    generates all     │    constructors     │
+  └────────────────────────────────┴──────────────────────┴─────────────────────┘
+
+  BUILDER + FLUENT INTERFACE:
+  ══════════════════════════
+
+  The key insight: Builder methods RETURN THE BUILDER, not void.
+
+  return this;  // enables method chaining
+
+  This is called the FLUENT INTERFACE pattern.
+  Used in: StringBuilder, Stream API, JUnit assertions, HttpClient.
+
+  BUILDER + VALIDATION:
+  ══════════════════════════
+
+  public User build() {
+      if (firstName == null || firstName.isBlank()) {
+          throw new IllegalStateException("firstName required");
+      }
+      if (age != null && age < 0) {
+          throw new IllegalStateException("age must be positive");
+      }
+      // Cross-field validation
+      if (phone != null && !phone.matches("\\d{10}")) {
+          throw new IllegalStateException("Invalid phone");
+      }
+      return new User(this);
+  }
+
+  Validation happens ONCE at build(), never scattered.
+  Impossible with telescoping: each constructor would need its own validation.
+
+  WHEN NOT TO USE BUILDER:
+  ─────────────────────────
+  1. 1-2 required fields, no optionals → plain constructor is fine
+  2. All parameters required → no benefit
+  3. Simple DTO with Jackson/JSON → @Data + @Builder for Jackson integration
+  4. Performance-critical (GC pressure from Builder allocation) → consider static factory
+```
+
+### Breadth Comparison 1: Creational Pattern Selection Table
+
+```
+┌─────────────────┬───────────────────┬─────────────────┬────────────────────────────┐
+│  PATTERN        │  WHEN TO USE      │  TRADE-OFFS     │  SELECTION CRITERIA        │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Factory        │  Type determined  │  Decouples      │  Do you need to create     │
+│  Method         │  at subclass      │  creator from   │  ONE family of related     │
+│                 │  (Collection.     │  concrete type; │  objects with shared       │
+│                 │  iterator())      │  adds indirection│  configuration?           │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Abstract       │  Creating         │  More complex   │  Need Button + Scrollbar   │
+│  Factory        │  families of      │  (many factory  │  to both be Windows-style  │
+│                 │  related objects  │  classes);      │  or both Mac-style? Use    │
+│                 │  (e.g., UI:       │  hard to add    │  Abstract Factory          │
+│                 │  Button+TextField │  new product    │                             │
+│                 │  must match style)│  families       │                             │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Builder        │  Complex object,  │  More code      │  Object has 4+ fields,     │
+│                 │  many optional    │  (Builder class);│  some required, some      │
+│                 │  params, need     │  1 extra object │  optional; or validation   │
+│                 │  immutability     │  allocation     │  needed; or want readable  │
+│                 │                   │                 │  call site                 │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Prototype      │  Creating objects │  Cloning can    │  Need copies of complex   │
+│                 │  by cloning       │  be complex for │  objects; avoid rebuilding│
+│                 │  existing one     │  deep copies    │  from scratch; e.g.,      │
+│                 │  (Shape.clone())  │  (circular refs)│  prototype registry       │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Singleton      │  One instance,    │  Global state;  │  Framework globals (log,  │
+│  (use DI)       │  globally         │  hides deps;    │  config); but prefer DI   │
+│                 │  accessible       │  untestable     │  + Spring @Component      │
+│                 │  (Registry)       │                 │  over self-managed        │
+│                 │                   │                 │  getInstance()            │
+├─────────────────┼───────────────────┼─────────────────┼────────────────────────────┤
+│  Object Pool    │  Reuse expensive  │  Must manage    │  DB connections, thread   │
+│  (not GoF)      │  objects          │  pool lifecycle;│  pools, string pool       │
+│                 │                   │  memory if pool │  (reuse String literals)  │
+│                 │                   │  too large      │                            │
+└─────────────────┴───────────────────┴─────────────────┴────────────────────────────┘
+
+  QUICK DECISION GUIDE:
+  ══════════════════════════
+  Need ONE of something, global access?  → Singleton (or DI)
+  Create by type parameter?              → Factory Method
+  Create families of related objects?    → Abstract Factory
+  Create complex objects step-by-step?   → Builder
+  Create copies of existing objects?     → Prototype
+  Reuse expensive resources?             → Object Pool
+
+  MOST USED IN PRODUCTION: Builder (#1), Factory (#2), DI/Singleton (#3)
+```
+
+### Breadth Comparison 2: Structural Pattern Comparison — Adapter vs Decorator vs Proxy vs Facade
+
+```
+┌──────────────────┬───────────────┬───────────────┬───────────────┬──────────────┐
+│  DIMENSION       │  ADAPTER      │  DECORATOR    │  PROXY        │  FACADE      │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  WRAPS           │  Interface    │  Interface    │  Interface    │  Subsystem   │
+│  (what)          │  (converts)   │  (adds)       │  (controls)   │  (simplifies)│
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  CHANGES         │  Interface    │  Behavior     │  Access       │  API         │
+│  (what changes)  │  shape        │  (add new)    │  (same op,    │  (many -> 1) │
+│                  │               │               │  guarded)     │              │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  CLIENT SEES     │  New interface│  Same interface│  Same interface│  Simple     │
+│                  │  (target)     │  (component)   │  (service)    │  interface   │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  CAN STACK       │  No (wrap     │  YES - stack  │  No (single   │  No (one     │
+│  (multiple)      │  once)        │  many layers  │  level)       │  level)      │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  LOCATION        │  Anywhere     │  Same package │  Same package │  Client side │
+│                  │  (bridges)    │  (extension)  │  (control)    │  (isolation) │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  INTENTION       │  Make work    │  Add behavior │  Control access│  Simplify   │
+│  (why)           │  together     │  dynamically  │  (lazy, cache,│  complexity  │
+│                  │               │               │  auth, log)   │              │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  JAVA EXAMPLE    │  Arrays.asList│  BufferedReader│  @Transactional│  OrderFacade│
+│                  │  (ListAdapter)│  wrapping     │  (Spring AOP) │  (placeOrder)│
+│                  │               │  FileReader   │  Lazy init    │              │
+│                  │               │               │  (Hibernate)  │              │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  SPRING USE      │  HandlerAdapter│ HttpServlet  │  @Transactional│  Repository │
+│  CASE            │  (converts    │  RequestWrap │  @Cacheable   │  (hides JPA  │
+│                  │  HTTP request) │  (adds gzip) │  @Async       │  complexity) │
+├──────────────────┼───────────────┼───────────────┼───────────────┼──────────────┤
+│  STRUCTURAL      │  Target <-> Adaptee Component<-> │  Real<->Proxy │ Client<->  │
+│  PARITY          │  (compatible) │  Decorator<-> │  (transparent)│  Subsystem   │
+│                  │               │  Concrete     │               │  (all hidden)│
+└──────────────────┴───────────────┴───────────────┴───────────────┴──────────────┘
+
+  THE COMMON STRUCTURE (all four wrap):
+  ═════════════════════════════════════════
+
+  All four structural patterns share the WRAPPER pattern:
+
+  ┌────────────────┐
+  │    Client      │
+  └───────┬────────┘
+          │
+          ▼
+  ┌────────────────┐     implements      ┌────────────────────┐
+  │  Wrapper       │────────────────────▶│  Target Interface  │
+  │  (Adapter/     │                     └────────────────────┘
+  │   Decorator/   │                            ▲
+  │   Proxy/Facade)│                            │ implements
+  │                │                     ┌──────┴──────────────┐
+  │  wrappee: ────▶│                     │                     │
+  └────────────────┘                     │                     │
+                                          └─────────────────────┘
+
+  WHAT DIFFERS IS THE WRAPPER'S BEHAVIOR:
+  ════════════════════════════════════
+
+  ADAPTER:    Wraps incompatible interface → makes it look like target
+  DECORATOR:  Wraps same interface → adds NEW behavior (stacking OK)
+  PROXY:      Wraps same interface → CONTROLS access (caching, auth)
+  FACADE:     Wraps MULTIPLE interfaces → provides SIMPLE entry point
+
+  REMEMBER:
+  ─────────
+  "Adapter makes things WORK together."
+  "Decorator makes things DO MORE."
+  "Proxy makes things ACCESS SAFELY."
+  "Facade makes things SIMPLER."
+
+  STRUCTURAL SIMILARITY → PRACTICAL DIFFERENCE:
+  ══════════════════════════════════════════════
+  Adapter:   I have X but need Y → adapt X to look like Y
+  Decorator: I have X and need X + logging → wrap X with logging
+  Proxy:     I have X but don't want to load it until called → lazy X
+  Facade:    I have A+B+C+D and client only knows E → E hides A+B+C+D
+```
 
 ---
 
-*Learn 5 patterns deeply (Strategy, Factory, Builder, Observer, Decorator). The rest you can recognize and reference.*
-
-
----
-
+_Learn 5 patterns deeply (Strategy, Factory, Builder, Observer, Decorator). The rest you can recognize and reference._
 
 ---
 
-
+---
 
 🔬 **Section Challenge — Mental Model: Patterns as Communication**
 
@@ -964,4 +1522,32 @@ A: Global state, hard to test (use DI instead), hides dependencies,
 
 </details>
 
+### Production Reality
 
+- **Boeing 737 MAX 2018-2019**: MCAS (Maneuvering Characteristics Augmentation System) software caused two crashes killing **346 people**. Root cause relevant to OOP/SOLID: (1) **SRP violation**: MCAS was given a single input — one Angle-of-Attack (AoA) sensor. The system had one reason to change (flight envelope protection) but relied on a single sensor rather than voting across multiple redundant sensors. (2) **DIP violation**: The MCAS was tightly coupled to a physical sensor without an abstraction layer — if the sensor failed, there was no fallback. In OOP terms: the design violated ISP (the sensor abstraction exposed raw voltage values rather than a "flight condition is safe" boolean) and DIP (the flight controller depended on a concrete sensor, not an interface). The fix added a second AoA sensor, an AoA disagree alert, and an independent architecture layer that could not be overridden by the original MCAS code.
+- **Cisco IOS 2018**: A VPN vulnerability allowed **unauthenticated remote code execution** on Cisco enterprise routers. Root cause: improper input validation — the encapsulation boundary was broken at the network stack boundary. The IOS process handling VPN packets did not validate packet length fields before copying them into fixed-size buffers, causing a stack buffer overflow. In OOP terms: this is a broken **encapsulation** violation at the system boundary. Data from an external source (the network) was treated as trusted and passed directly into internal state structures without validation. The OOP principle that applies: "validate all input at the boundary" — untrusted data from outside a class's encapsulation layer must always be treated as potentially malicious. The fix was a boundary validation layer (packet sanitizer) inserted between the network interface and the IOS processing core.
+- **Singleton anti-pattern in production**: The GoF Singleton (self-managed `getInstance()`) is a source of real production failures in Java. The `volatile` bug described in the challenge above has caused silent data corruption in logging frameworks (partially constructed loggers with null fields write nothing, silently losing audit trails). Spring's `@Component` (a container-managed singleton with DI) avoids this entirely — the container owns instantiation, so the container can inject mocks, control lifecycle, and guarantee thread-safe construction. **Pattern lesson**: use DI + container-managed scopes instead of self-managed Singleton. If you must use Singleton, use the enum form (Joshua Bloch, Effective Java, Item 3) which is immune to reflection and serialization attacks.
+
+#### In Production: Diamond Inheritance with Java 8+ Default Methods
+
+Java forbids class multiple inheritance (`class D extends A, B`), but allows _interface_ multiple inheritance via `implements`. With Java 8's `default` methods, two interfaces can both provide an implementation of the same method signature — creating the **interface diamond problem**:
+
+```java
+// Two orthogonal interfaces — Audit and Notification — both default to logging
+interface AuditLog { default void log(String event) { System.out.println("Audit: " + event); } }
+interface NotifyAdmin { default void log(String event) { System.out.println("Admin: " + event); } }
+
+// This COMPILE ERRORs — unrelated defaults for log():
+class OrderService implements AuditLog, NotifyAdmin { }  // error!
+
+// Must explicitly resolve:
+class OrderService implements AuditLog, NotifyAdmin {
+    public void log(String event) { AuditLog.super.log(event); }  // picks AuditLog's version
+}
+```
+
+**Production failure mode**: Java's own Collections API designers avoided this by using abstract classes (`AbstractList`, `AbstractSet`) rather than interfaces with defaults. If `List` and `Set` had both declared `default` implementations of `toArray()` with different logic, any class implementing both would require mandatory override. The interface default method feature, added in Java 8 for lambda-compatible evolution, has caused compile errors in real codebases that tried to retrofit default behavior onto orthogonal APIs.
+
+**C++ parity**: The C++ multiple-inheritance diamond (`class D : public B, public C`) has the same ambiguity with no compiler automatic resolution. C++ requires either explicit disambiguation (`D::B::foo()`) or virtual inheritance (`class B : virtual public A`). Virtual inheritance adds a vptr indirection cost and complicates constructor ordering — it is rarely used, so C++ codebases simply avoid multiple inheritance of stateful base classes.
+
+In Java, the interface default method feature is a powerful tool for API evolution but must be used with care to avoid unintentional diamond inheritance issues. The best practice is to avoid default methods in interfaces that are likely to be implemented together, or to design interfaces with clear orthogonal responsibilities that don't overlap in method signatures.

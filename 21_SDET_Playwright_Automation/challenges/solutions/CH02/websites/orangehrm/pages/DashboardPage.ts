@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import { Timeouts } from '../../../framework/constants/timeouts';
+import { type Page, type Locator, expect } from "@playwright/test";
+import { Timeouts } from "../../../framework/constants/timeouts";
 
 export class DashboardPage {
   readonly page: Page;
@@ -8,8 +8,8 @@ export class DashboardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.header = page.locator('.oxd-topbar-header');
-    this.sidebar = page.locator('.oxd-sidepanel');
+    this.header = page.locator(".oxd-topbar-header");
+    this.sidebar = page.locator(".oxd-sidepanel");
   }
 
   async expectLoaded(): Promise<void> {
@@ -18,8 +18,8 @@ export class DashboardPage {
   }
 
   async logout(): Promise<void> {
-    await this.page.locator('.oxd-userdropdown-tab').click();
-    await this.page.locator('text=Logout').click();
+    await this.page.locator(".oxd-userdropdown-tab").click();
+    await this.page.locator("text=Logout").click();
     await expect(this.page.locator('h5:has-text("Login")')).toBeVisible();
   }
 }

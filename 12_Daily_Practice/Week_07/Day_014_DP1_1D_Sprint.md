@@ -1,18 +1,21 @@
 # Day 14 - Dynamic Programming I (1D DP) (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 256 - Paint House
 2. LeetCode Medium: 322 - Coin Change
 3. Codeforces: 455A - Boredom
 4. Codeforces: 474D - Flowers
 
 ## Problem Links
+
 - LC 256 (Premium): Locked on LeetCode (no public official statement page)
 - LC 322: https://leetcode.com/problems/coin-change/
 - CF 455A: https://codeforces.com/problemset/problem/455/A
 - CF 474D: https://codeforces.com/problemset/problem/474/D
 
 ## Why This Day Matters
+
 1D DP trains state design: what is the minimal memory needed to represent past decisions.
 
 ---
@@ -20,9 +23,11 @@
 ## Problem 1 - LC 256 (Premium): Paint House
 
 ### Problem Statement
+
 `n` houses, 3 colors. Adjacent houses cannot share color. Minimize total cost.
 
 ### Why This DS/Algo
+
 Local constraint depends only on previous house color -> DP over index and color.
 
 ### Approach A - Brute Force recursion (O(3^n))
@@ -64,16 +69,18 @@ static int paintOptimal(int[][] c) {
 ## Problem 2 - LC 322: Coin Change
 
 ### Problem Statement
+
 Given coin denominations and amount, minimum coins needed to form amount or `-1`.
 
 ### Why This DS/Algo
+
 Unbounded choice with optimal substructure: `dp[x] = 1 + min(dp[x - coin])`.
 
 ### Approach A - Brute Force recursion
 
-### Approach B - Better (top-down memo) (O(amount * coins), O(amount))
+### Approach B - Better (top-down memo) (O(amount \* coins), O(amount))
 
-### Approach C - Optimal (bottom-up DP) (O(amount * coins), O(amount))
+### Approach C - Optimal (bottom-up DP) (O(amount \* coins), O(amount))
 
 ```java
 static int coinChangeOptimal(int[] coins, int amount) {
@@ -92,6 +99,7 @@ static int coinChangeOptimal(int[] coins, int amount) {
 ```
 
 ### Interview Notes
+
 Greedy fails for arbitrary coin systems, DP is required for correctness.
 
 ---
@@ -99,9 +107,11 @@ Greedy fails for arbitrary coin systems, DP is required for correctness.
 ## Problem 3 - CF 455A: Boredom
 
 ### Problem Statement
+
 Choose numbers to maximize points (`value * count`) but taking `x` forbids `x-1` and `x+1`.
 
 ### Why This DS/Algo
+
 After frequency compression, this becomes House Robber on value line.
 
 ### Approach A - Brute Force subset choice on values
@@ -149,9 +159,11 @@ static long boredomOptimal(int[] a) {
 ## Problem 4 - CF 474D: Flowers
 
 ### Problem Statement
+
 Count ways to make total length `i` using red flowers length 1 and white group length `k`. Answer many range queries.
 
 ### Why This DS/Algo
+
 - Recurrence: `dp[i] = dp[i-1] + dp[i-k]`.
 - Multiple range queries require prefix sums over `dp`.
 
@@ -185,5 +197,6 @@ static int answerQuery(int[] pref, int a, int b) {
 ```
 
 ### Pattern Takeaways
+
 - DP + prefix sum is common for "many range queries on dp results".
 - Compress the domain first (counts, max value) whenever possible.

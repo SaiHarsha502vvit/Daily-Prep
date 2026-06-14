@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 07: E2E Architecture](./07_test_step_E2E_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 09: Parallel Execution](./09_Parallel_Execution_Workers.md)
 
 **Cross-links:**
+
 - [`16_JavaScript/09_Browser_Internals_Rendering.md`](../../16_JavaScript/09_Browser_Internals_Rendering.md) — Complete rendering pipeline deep dive
 - [`15_React_Frontend/01_React_Fundamentals.md`](../../15_React_Frontend/01_React_Fundamentals.md) — React rendering lifecycle
 - [`21_SDET/09_Dynamics365_CRM_Testing.md`](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) — D365-specific patterns built on this chapter
@@ -12,7 +13,7 @@
 ## 5W1H — Why This Chapter?
 
 - **WHAT**: How browsers actually render a page — from HTML bytes to pixels — and how that pipeline directly causes the "element visible but text missing" problem you face in Dynamics 365, JSP, and ASP.NET apps.
-- **WHY**: Every time you write `waitFor({ state: 'visible', timeout: 60000 })` without understanding *why* you need it, you are guessing. Understanding the browser pipeline lets you write precise, fast waits instead of arbitrary timeouts.
+- **WHY**: Every time you write `waitFor({ state: 'visible', timeout: 60000 })` without understanding _why_ you need it, you are guessing. Understanding the browser pipeline lets you write precise, fast waits instead of arbitrary timeouts.
 - **WHO**: SDETs dealing with slow-loading enterprise UIs where elements appear in the DOM before their content is ready.
 - **WHEN**: Every time a test is flaky due to timing issues.
 - **HOW**: By tracing a D365 page load from the first network packet all the way to visible text on screen.
@@ -35,6 +36,7 @@ The browser parses HTML and builds the **Document Object Model** — a tree of E
 ```
 
 Becomes:
+
 ```
 Document
 └── html
@@ -53,17 +55,21 @@ Document
 The browser parses all CSS files and inline styles into the **CSS Object Model** — a tree of style rules.
 
 ```css
-#masterSearch { display: none; }
-.ms-Spinner { visibility: hidden; }
+#masterSearch {
+  display: none;
+}
+.ms-Spinner {
+  visibility: hidden;
+}
 ```
 
 **SDET impact:** An element can be in the DOM tree but not rendered at all because CSS says `display: none`. This is why:
 
 ```typescript
-await page.locator('#masterSearch').waitFor({ state: 'attached' });
+await page.locator("#masterSearch").waitFor({ state: "attached" });
 // Passes! The element IS in the DOM.
 
-await page.locator('#masterSearch').waitFor({ state: 'visible' });
+await page.locator("#masterSearch").waitFor({ state: "visible" });
 // FAILS! display:none means it has no rendered box — not "visible".
 ```
 
@@ -107,13 +113,14 @@ Accessibility Tree:
 ```
 
 **This is exactly your `menuitem` vs `button` issue.** The `<li>` has `role="menuitem"` in the accessibility tree. The visual `<button>` inside it is a child of the `menuitem`. When you call:
+
 ```typescript
-page.getByRole('button', { name: 'Edit' })
+page.getByRole("button", { name: "Edit" });
 // Looks in accessibility tree for a BUTTON named "Edit"
 // Finds: nothing at the top level (the button is inside a menuitem)
 
-page.getByRole('menuitem', { name: 'Edit' })
-// Looks in accessibility tree for a MENUITEM named "Edit"  
+page.getByRole("menuitem", { name: "Edit" });
+// Looks in accessibility tree for a MENUITEM named "Edit"
 // Finds: the <li> element that wraps the visual button ✅
 ```
 
@@ -124,8 +131,9 @@ page.getByRole('menuitem', { name: 'Edit' })
 ## 2. What Playwright's `{ state: 'visible' }` Actually Checks
 
 When you write:
+
 ```typescript
-await locator.waitFor({ state: 'visible' });
+await locator.waitFor({ state: "visible" });
 ```
 
 Playwright checks ALL of the following — every single one must be true:
@@ -141,12 +149,12 @@ Playwright checks ALL of the following — every single one must be true:
 
 **The four Playwright states explained:**
 
-| State | DOM present? | CSS visible? | In render tree? |
-|---|---|---|---|
-| `'attached'` | ✅ Required | ❌ Not checked | ❌ Not checked |
-| `'detached'` | ❌ Must NOT be present | — | — |
-| `'visible'` | ✅ Required | ✅ Required | ✅ Required |
-| `'hidden'` | Either absent OR `display:none` | CSS hidden | ❌ Not in render tree |
+| State        | DOM present?                    | CSS visible?   | In render tree?       |
+| ------------ | ------------------------------- | -------------- | --------------------- |
+| `'attached'` | ✅ Required                     | ❌ Not checked | ❌ Not checked        |
+| `'detached'` | ❌ Must NOT be present          | —              | —                     |
+| `'visible'`  | ✅ Required                     | ✅ Required    | ✅ Required           |
+| `'hidden'`   | Either absent OR `display:none` | CSS hidden     | ❌ Not in render tree |
 
 ---
 
@@ -160,14 +168,17 @@ React renders the page STRUCTURE immediately — the skeleton, navigation, tab h
 
 ```html
 <!-- After Phase 1 — DOM is ready -->
-<div id="MasterSearchDropdown-option"></div>  <!-- EXISTS but empty -->
+<div id="MasterSearchDropdown-option"></div>
+<!-- EXISTS but empty -->
 <table class="ms-DetailsList">
   <!-- NO ROWS YET -->
 </table>
-<div class="ms-Spinner"></div>  <!-- Loading spinner is present -->
+<div class="ms-Spinner"></div>
+<!-- Loading spinner is present -->
 ```
 
 At this point:
+
 - `waitFor({ state: 'visible' })` on `#MasterSearchDropdown-option` → **PASSES** (element exists and is visible)
 - But its dropdown options are empty
 - The table has zero rows
@@ -180,8 +191,10 @@ D365's JavaScript makes one or more API calls to the CRM backend. When they retu
 <!-- After Phase 2 — data is loaded -->
 <div id="MasterSearchDropdown-option">Card | Smartcard | Order</div>
 <table class="ms-DetailsList">
-  <tr class="ms-DetailsList-row">  <!-- ROWS NOW EXIST -->
-    <td>CIT-001</td><td>PAID</td>
+  <tr class="ms-DetailsList-row">
+    <!-- ROWS NOW EXIST -->
+    <td>CIT-001</td>
+    <td>PAID</td>
   </tr>
 </table>
 <!-- Spinner is gone -->
@@ -191,11 +204,13 @@ D365's JavaScript makes one or more API calls to the CRM backend. When they retu
 
 ```typescript
 // ❌ WRONG — waits for the shell, not the data
-await page.locator('#MasterSearchDropdown-option').waitFor({ state: 'visible' });
+await page
+  .locator("#MasterSearchDropdown-option")
+  .waitFor({ state: "visible" });
 // This passes after Phase 1 (0.5–2s)
 // But the dropdown has no options yet!
 
-await page.selectOption('#MasterSearchDropdown-option', 'Card');
+await page.selectOption("#MasterSearchDropdown-option", "Card");
 // Fails: option "Card" doesn't exist yet
 ```
 
@@ -205,13 +220,15 @@ await page.selectOption('#MasterSearchDropdown-option', 'Card');
 
 ```typescript
 // ✅ Wait for the spinner to disappear (signals Phase 2 is starting)
-await expect(page.locator('.ms-Spinner')).toHaveCount(0);
+await expect(page.locator(".ms-Spinner")).toHaveCount(0);
 
 // ✅ Wait for actual text content inside the dropdown
-await expect(page.locator('#MasterSearchDropdown-option')).toContainText('Card');
+await expect(page.locator("#MasterSearchDropdown-option")).toContainText(
+  "Card",
+);
 
 // ✅ Wait for at least one data row
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
 ```
 
 **Strategy 2: Wait for the Network Response**
@@ -222,30 +239,33 @@ await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
 
 const [response] = await Promise.all([
   page.waitForResponse(
-    response => response.url().includes('/api/master-search') && response.status() === 200
+    (response) =>
+      response.url().includes("/api/master-search") &&
+      response.status() === 200,
   ),
-  page.click('#searchButton'),
+  page.click("#searchButton"),
 ]);
 // Now the response is available AND the UI will shortly update
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
 ```
 
 **Strategy 3: `waitForLoadState` — Use Sparingly**
 
 ```typescript
 // 'domcontentloaded' — fires when HTML is parsed (Phase 1, very early)
-await page.waitForLoadState('domcontentloaded');
+await page.waitForLoadState("domcontentloaded");
 
 // 'load' — fires when all resources (images, scripts) are loaded
-await page.waitForLoadState('load');
+await page.waitForLoadState("load");
 
 // 'networkidle' — fires when no network requests for 500ms
 // ⚠️ FRAGILE on SPAs — they often have background polling requests
 // that prevent 'networkidle' from ever firing
-await page.waitForLoadState('networkidle'); // Use with caution
+await page.waitForLoadState("networkidle"); // Use with caution
 ```
 
 **Strategy 4 (NEVER USE): Hard timeout**
+
 ```typescript
 // ❌ NEVER do this in production tests
 await page.waitForTimeout(10000); // "Wait 10 seconds and hope it loads"
@@ -259,15 +279,17 @@ await page.waitForTimeout(10000); // "Wait 10 seconds and hope it loads"
 In traditional multi-page apps (JSP, `.aspx`), clicking a tab causes a FULL PAGE RELOAD. Playwright's `page.waitForNavigation()` waits for this reload and works correctly.
 
 **In React SPAs (D365, your CRM app):** Clicking a tab does NOT reload the page. It:
+
 1. Updates the URL hash (e.g., `/customer/123#phones`)
 2. Updates the React component state
 3. Re-renders the tab content in the same DOM
 
 **No browser navigation event fires.** If you do:
+
 ```typescript
 // ❌ WRONG for SPAs
 await Promise.all([
-  page.waitForNavigation(),          // Times out! No navigation happens.
+  page.waitForNavigation(), // Times out! No navigation happens.
   page.click('[role="tab"][name="Phones"]'),
 ]);
 ```
@@ -279,19 +301,16 @@ await Promise.all([
 await page.click('[role="tab"][name="Phones"]');
 
 // Wait for the tab's aria-selected to update
-await expect(
-  page.locator('[role="tab"][name="Phones"]')
-).toHaveAttribute('aria-selected', 'true');
+await expect(page.locator('[role="tab"][name="Phones"]')).toHaveAttribute(
+  "aria-selected",
+  "true",
+);
 
 // Wait for the content below to render
-await expect(
-  page.locator('.phone-list-container')
-).toBeVisible();
+await expect(page.locator(".phone-list-container")).toBeVisible();
 
 // OR: wait for a specific text that only appears in Phone tab content
-await expect(
-  page.locator('.phone-list-container')
-).toContainText('Primary');
+await expect(page.locator(".phone-list-container")).toContainText("Primary");
 ```
 
 ---
@@ -305,16 +324,18 @@ Your environment includes both SPA (D365/React) AND legacy apps (JSP, ASPX). Eac
 These are traditional server-rendered apps. The server generates the full HTML on every request.
 
 **Characteristics:**
+
 - Full page reload on every navigation and form submit
 - All content is in the DOM immediately after `waitForLoadState('domcontentloaded')`
 - No two-phase render problem
 - But: slow because every interaction requires a round-trip to the server
 
 **Playwright approach:**
+
 ```typescript
-await page.click('#submitButton');
+await page.click("#submitButton");
 // For JSP: the page fully reloads — waitForNavigation works
-await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+await page.waitForNavigation({ waitUntil: "domcontentloaded" });
 // Now all server-rendered content is in the DOM
 ```
 
@@ -323,6 +344,7 @@ await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 These use server-side rendering with **UpdatePanel** (partial page refresh via AJAX).
 
 **Characteristics:**
+
 - Some form submissions trigger a partial AJAX update (not full reload)
 - Some links cause full page navigation
 - The `__VIEWSTATE` hidden field maintains form state server-side
@@ -331,17 +353,13 @@ These use server-side rendering with **UpdatePanel** (partial page refresh via A
 
 ```typescript
 // For ASPX with UpdatePanel:
-await page.click('#ctl00_MainContent_btnSearch'); // ASP.NET server control ID
+await page.click("#ctl00_MainContent_btnSearch"); // ASP.NET server control ID
 
 // Wait for UpdateProgress (loading indicator) to disappear
-await expect(
-  page.locator('#UpdateProgress1')
-).toBeHidden({ timeout: 30000 });
+await expect(page.locator("#UpdateProgress1")).toBeHidden({ timeout: 30000 });
 
 // NOW the updated content is in the DOM
-await expect(
-  page.locator('#ctl00_MainContent_GridView1')
-).toBeVisible();
+await expect(page.locator("#ctl00_MainContent_GridView1")).toBeVisible();
 ```
 
 ---
@@ -352,23 +370,23 @@ When a locator can't find an element, use this debugging pipeline:
 
 ```typescript
 // Step 1: Take a screenshot at the point of failure
-await page.screenshot({ path: 'debug-screenshot.png', fullPage: true });
+await page.screenshot({ path: "debug-screenshot.png", fullPage: true });
 
 // Step 2: Dump the current page HTML to inspect the DOM state
 const html = await page.content();
 console.log(html.substring(0, 5000)); // first 5000 chars
 
 // Step 3: Check if the element EXISTS but is hidden
-const count = await page.locator('#myElement').count();
+const count = await page.locator("#myElement").count();
 console.log(`Element count: ${count}`); // 0 = not in DOM at all
 
 // Step 4: Check the element's CSS state
-const isVisible = await page.locator('#myElement').isVisible();
-const isHidden = await page.locator('#myElement').isHidden();
+const isVisible = await page.locator("#myElement").isVisible();
+const isHidden = await page.locator("#myElement").isHidden();
 console.log(`Visible: ${isVisible}, Hidden: ${isHidden}`);
 
 // Step 5: Check bounding box (width/height = 0 means CSS collapsed it)
-const box = await page.locator('#myElement').boundingBox();
+const box = await page.locator("#myElement").boundingBox();
 console.log(`BoundingBox: ${JSON.stringify(box)}`);
 // null = not in render tree. { x, y, width: 0, height: 0 } = collapsed.
 
@@ -383,24 +401,36 @@ console.log(`BoundingBox: ${JSON.stringify(box)}`);
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (The Two-Phase Render):** After clicking "Search" in Master Search, your test does:
+
 ```typescript
-await page.locator('.ms-DetailsList-row').waitFor({ state: 'visible', timeout: 30000 });
-const rowText = await page.locator('.ms-DetailsList-row').first().textContent();
-expect(rowText).toContain('CIT-001');
+await page
+  .locator(".ms-DetailsList-row")
+  .waitFor({ state: "visible", timeout: 30000 });
+const rowText = await page.locator(".ms-DetailsList-row").first().textContent();
+expect(rowText).toContain("CIT-001");
 ```
+
 This sometimes passes with empty text content. What is happening and how do you fix it?
+
 <details><summary>Answer</summary>
 
 The `waitFor({ state: 'visible' })` passes as soon as the row element appears in the DOM with a non-zero bounding box — which can happen during Phase 1 (the shell render) before the data arrives. The row is visible but its cells are empty.
 
 Fix: wait for the text content specifically, not just visibility:
+
 ```typescript
-await expect(page.locator('.ms-DetailsList-row').first()).toContainText('CIT-001', { timeout: 30000 });
+await expect(page.locator(".ms-DetailsList-row").first()).toContainText(
+  "CIT-001",
+  { timeout: 30000 },
+);
 ```
+
 This keeps retrying until the text appears, handling both Phase 1 and Phase 2.
+
 </details>
 
 **Challenge 2 (The ARIA Role Trap):** You see this button on screen in D365: "Edit Customer". You try `page.getByRole('button', { name: 'Edit Customer' })` — it returns 0 elements. How do you find the real ARIA role?
+
 <details><summary>Answer</summary>
 
 1. Open Chrome DevTools → click the "Edit Customer" element in the Elements panel.
@@ -409,28 +439,33 @@ This keeps retrying until the text appears, handling both Phase 1 and Phase 2.
 4. Use `page.getByRole('menuitem', { name: 'Edit Customer' })` instead.
 
 Alternative: inspect the DOM directly — look for a parent element with `role="menuitem"` attribute on the `<li>` wrapping the visual button.
+
 </details>
 
 **Challenge 3 (SPA vs MPA Wait):** You are writing a test for both a D365 page (React SPA) and a JSP page. Both have a "Search" button that triggers data loading. Write the correct post-click wait for each:
+
 <details><summary>Answer</summary>
 
 **D365 (React SPA):**
+
 ```typescript
-await page.click('#searchButton');
+await page.click("#searchButton");
 // No navigation fires — wait for content
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
 ```
 
 **JSP (server-rendered):**
+
 ```typescript
 await Promise.all([
-  page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
-  page.click('#searchButton'),
+  page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+  page.click("#searchButton"),
 ]);
 // All content is now in the DOM immediately
-await expect(page.locator('#resultTable tr')).toHaveCount({ minimum: 1 });
+await expect(page.locator("#resultTable tr")).toHaveCount({ minimum: 1 });
 ```
+
 </details>
 
 ---
@@ -443,31 +478,35 @@ You can wait for a response AND inspect its body in the same call — essential 
 // Pattern: wait for a specific response, capture the body, use in later steps
 const [searchResponse] = await Promise.all([
   page.waitForResponse(
-    async response => {
-      if (!response.url().includes('/api/master-search')) return false;
+    async (response) => {
+      if (!response.url().includes("/api/master-search")) return false;
       if (response.status() !== 200) return false;
       // Inspect the body — must be the response with data, not a 204 or empty
-      const body = await response.json() as { results: unknown[] };
-      return body.results.length > 0;  // only resolve when results arrive
+      const body = (await response.json()) as { results: unknown[] };
+      return body.results.length > 0; // only resolve when results arrive
     },
-    { timeout: 30_000 }
+    { timeout: 30_000 },
   ),
   masterSearchPage.searchButton.click(),
 ]);
 
-const responseBody = await searchResponse.json() as { results: SearchResult[] };
+const responseBody = (await searchResponse.json()) as {
+  results: SearchResult[];
+};
 console.log(`API returned ${responseBody.results.length} results`);
 
 // Now assert the UI matches the API response
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount(responseBody.results.length);
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount(
+  responseBody.results.length,
+);
 ```
 
 ```typescript
 // Pattern: intercept AND capture for later assertion
 let capturedCitationId: string | null = null;
-await page.route('**/api/citations', async route => {
+await page.route("**/api/citations", async (route) => {
   const response = await route.fetch();
-  const body = await response.json() as { citationId: string };
+  const body = (await response.json()) as { citationId: string };
   capturedCitationId = body.citationId;
   await route.fulfill({ response });
 });
@@ -585,8 +624,8 @@ Execution order:
 
 // Promise.all prevents this:
 const [newTab] = await Promise.all([
-  context.waitForEvent('page'),  // listener registered FIRST (line 1 starts synchronously)
-  page.click('#openTab'),        // click fires AFTER listener is registered
+  context.waitForEvent("page"), // listener registered FIRST (line 1 starts synchronously)
+  page.click("#openTab"), // click fires AFTER listener is registered
 ]);
 
 // Why this works:
@@ -605,10 +644,10 @@ const [newTab] = await Promise.all([
 // Other code (and event handlers) CAN run during the suspension.
 
 async function exampleFlow() {
-  console.log('1: before await');          // runs immediately
-  await page.click('#btn');               // SUSPENDS this function
+  console.log("1: before await"); // runs immediately
+  await page.click("#btn"); // SUSPENDS this function
   // --- event loop runs: processes CDP response, handles other events ---
-  console.log('2: after await');          // resumes when CDP response arrives
+  console.log("2: after await"); // resumes when CDP response arrives
 }
 
 // This is exactly how waitForEvent works:
@@ -633,7 +672,7 @@ For locator.click():
   ✓ Enabled:    not disabled attribute, not aria-disabled
   ✓ Editable:   N/A for click
   ✓ Receives Events: not covered by another element (pointer events)
-  
+
   If ANY check fails → Playwright retries (up to timeout)
   If all pass → action is performed
 
@@ -677,7 +716,7 @@ For expect(locator).toBeVisible():
 ```typescript
 // force: true — bypass ALL actionability checks and click immediately
 // Use ONLY when you understand why the check fails and it's a test limitation
-await page.locator('#hiddenTrigger').click({ force: true });
+await page.locator("#hiddenTrigger").click({ force: true });
 // Warning: force: true on a truly invisible element = undetected bug
 
 // Common legitimate uses:
@@ -687,7 +726,9 @@ await page.locator('#hiddenTrigger').click({ force: true });
 
 // trial: true — run actionability checks WITHOUT performing the action
 // Useful for: "is this element clickable yet?" as a conditional
-const isReady = await page.locator('#btn').click({ trial: true })
+const isReady = await page
+  .locator("#btn")
+  .click({ trial: true })
   .then(() => true)
   .catch(() => false);
 ```
@@ -744,7 +785,7 @@ When the browser needs to update the screen after a DOM change:
 // Best practice: wait for CONTENT, not just visibility:
 // After a grid load (heavy reflow), don't just wait for row visibility.
 // Wait for specific text to appear — that confirms both reflow AND data:
-await expect(grid.locator('.ms-DetailsRow').first()).toContainText('CIT-001');
+await expect(grid.locator(".ms-DetailsRow").first()).toContainText("CIT-001");
 // This passes ONLY when the row is rendered AND the text is populated.
 // Much more reliable than just waitFor({ state: 'visible' })
 ```
@@ -757,62 +798,72 @@ Use CDP's `Runtime.evaluate` to run browser-side JavaScript and capture custom p
 
 ```typescript
 // Measure how long D365 takes to render the first data row after search
-test('Measure Master Search render time', async ({ page }) => {
+test("Measure Master Search render time", async ({ page }) => {
   await page.goto(process.env.CRM_URL!);
 
   // Inject a PerformanceObserver BEFORE clicking search
   await page.evaluate(() => {
     (window as any).__renderMetrics = {};
-    const observer = new PerformanceObserver(list => {
+    const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         (window as any).__renderMetrics[entry.name] = entry.startTime;
       }
     });
-    observer.observe({ type: 'mark', buffered: true });
+    observer.observe({ type: "mark", buffered: true });
     // Mark immediately
-    performance.mark('search-button-clicked');
+    performance.mark("search-button-clicked");
   });
 
-  await page.click('#searchButton');
+  await page.click("#searchButton");
 
   // Wait for results to appear
-  await expect(page.locator('.ms-DetailsList-row').first()).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator(".ms-DetailsList-row").first()).toBeVisible({
+    timeout: 30_000,
+  });
 
   // Mark again after render
-  await page.evaluate(() => { performance.mark('first-row-visible'); });
+  await page.evaluate(() => {
+    performance.mark("first-row-visible");
+  });
 
   // Read metrics from browser
-  const metrics = await page.evaluate(() => (window as any).__renderMetrics) as Record<string, number>;
-  const renderTimeMs = metrics['first-row-visible'] - metrics['search-button-clicked'];
+  const metrics = (await page.evaluate(
+    () => (window as any).__renderMetrics,
+  )) as Record<string, number>;
+  const renderTimeMs =
+    metrics["first-row-visible"] - metrics["search-button-clicked"];
 
   console.log(`D365 search render time: ${renderTimeMs.toFixed(0)}ms`);
-  await test.info().attach('render-metrics', {
-    body:        JSON.stringify({ renderTimeMs }, null, 2),
-    contentType: 'application/json',
+  await test.info().attach("render-metrics", {
+    body: JSON.stringify({ renderTimeMs }, null, 2),
+    contentType: "application/json",
   });
 
   // Assert render time is within SLA
-  expect(renderTimeMs, 'Master Search render time exceeds 10s SLA').toBeLessThan(10_000);
+  expect(
+    renderTimeMs,
+    "Master Search render time exceeds 10s SLA",
+  ).toBeLessThan(10_000);
 });
 
 // CDP Network throttling for performance testing:
-test('D365 loads acceptably on slow network', async ({ page, context }) => {
+test("D365 loads acceptably on slow network", async ({ page, context }) => {
   const cdpSession = await context.newCDPSession(page);
-  await cdpSession.send('Network.enable');
-  await cdpSession.send('Network.emulateNetworkConditions', {
-    offline:            false,
-    downloadThroughput: 1.5 * 1024 * 1024 / 8,  // 1.5 Mbps
-    uploadThroughput:   750 * 1024 / 8,          // 750 Kbps
-    latency:            100,                      // 100ms RTT
+  await cdpSession.send("Network.enable");
+  await cdpSession.send("Network.emulateNetworkConditions", {
+    offline: false,
+    downloadThroughput: (1.5 * 1024 * 1024) / 8, // 1.5 Mbps
+    uploadThroughput: (750 * 1024) / 8, // 750 Kbps
+    latency: 100, // 100ms RTT
   });
 
   const start = Date.now();
   await page.goto(process.env.CRM_URL!);
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 60_000 });
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 60_000 });
   const loadTime = Date.now() - start;
 
   console.log(`D365 load time on throttled network: ${loadTime}ms`);
-  expect(loadTime).toBeLessThan(30_000);  // 30s SLA on 1.5Mbps
+  expect(loadTime).toBeLessThan(30_000); // 30s SLA on 1.5Mbps
 });
 ```
 
@@ -821,24 +872,36 @@ test('D365 loads acceptably on slow network', async ({ page, context }) => {
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (The Two-Phase Render):** After clicking "Search" in Master Search, your test does:
+
 ```typescript
-await page.locator('.ms-DetailsList-row').waitFor({ state: 'visible', timeout: 30000 });
-const rowText = await page.locator('.ms-DetailsList-row').first().textContent();
-expect(rowText).toContain('CIT-001');
+await page
+  .locator(".ms-DetailsList-row")
+  .waitFor({ state: "visible", timeout: 30000 });
+const rowText = await page.locator(".ms-DetailsList-row").first().textContent();
+expect(rowText).toContain("CIT-001");
 ```
+
 This sometimes passes with empty text content. What is happening and how do you fix it?
+
 <details><summary>Answer</summary>
 
 The `waitFor({ state: 'visible' })` passes as soon as the row element appears in the DOM with a non-zero bounding box — which can happen during Phase 1 (the shell render) before the data arrives. The row is visible but its cells are empty.
 
 Fix: wait for the text content specifically, not just visibility:
+
 ```typescript
-await expect(page.locator('.ms-DetailsList-row').first()).toContainText('CIT-001', { timeout: 30000 });
+await expect(page.locator(".ms-DetailsList-row").first()).toContainText(
+  "CIT-001",
+  { timeout: 30000 },
+);
 ```
+
 This keeps retrying until the text appears, handling both Phase 1 and Phase 2.
+
 </details>
 
 **Challenge 2 (The ARIA Role Trap):** You see this button on screen in D365: "Edit Customer". You try `page.getByRole('button', { name: 'Edit Customer' })` — it returns 0 elements. How do you find the real ARIA role?
+
 <details><summary>Answer</summary>
 
 1. Open Chrome DevTools → click the "Edit Customer" element in the Elements panel.
@@ -847,28 +910,33 @@ This keeps retrying until the text appears, handling both Phase 1 and Phase 2.
 4. Use `page.getByRole('menuitem', { name: 'Edit Customer' })` instead.
 
 Alternative: inspect the DOM directly — look for a parent element with `role="menuitem"` attribute on the `<li>` wrapping the visual button.
+
 </details>
 
 **Challenge 3 (SPA vs MPA Wait):** You are writing a test for both a D365 page (React SPA) and a JSP page. Both have a "Search" button that triggers data loading. Write the correct post-click wait for each:
+
 <details><summary>Answer</summary>
 
 **D365 (React SPA):**
+
 ```typescript
-await page.click('#searchButton');
+await page.click("#searchButton");
 // No navigation fires — wait for content
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
 ```
 
 **JSP (server-rendered):**
+
 ```typescript
 await Promise.all([
-  page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
-  page.click('#searchButton'),
+  page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+  page.click("#searchButton"),
 ]);
 // All content is now in the DOM immediately
-await expect(page.locator('#resultTable tr')).toHaveCount({ minimum: 1 });
+await expect(page.locator("#resultTable tr")).toHaveCount({ minimum: 1 });
 ```
+
 </details>
 
 ---
@@ -878,6 +946,7 @@ await expect(page.locator('#resultTable tr')).toHaveCount({ minimum: 1 });
 <details><summary>Answer</summary>
 
 Playwright checks ALL of these for `state: 'visible'`:
+
 1. Element exists in the DOM
 2. No ancestor has `display: none`
 3. No ancestor has `visibility: hidden`
@@ -885,40 +954,42 @@ Playwright checks ALL of these for `state: 'visible'`:
 5. Element has a non-zero bounding box (width > 0 AND height > 0)
 
 **Diagnostic steps:**
+
 ```typescript
 // 1. Is it in the DOM at all?
-const count = await page.locator('#submitBtn').count();
+const count = await page.locator("#submitBtn").count();
 console.log(`DOM count: ${count}`);
 
 // 2. Get bounding box (null = not in render tree, 0x0 = CSS collapsed)
-const box = await page.locator('#submitBtn').boundingBox();
+const box = await page.locator("#submitBtn").boundingBox();
 console.log(`BoundingBox: ${JSON.stringify(box)}`);
 
 // 3. Check CSS computed styles:
-const styles = await page.locator('#submitBtn').evaluate(el => {
+const styles = await page.locator("#submitBtn").evaluate((el) => {
   const s = window.getComputedStyle(el);
   return {
-    display:    s.display,
+    display: s.display,
     visibility: s.visibility,
-    opacity:    s.opacity,
-    width:      s.width,
-    height:     s.height,
+    opacity: s.opacity,
+    width: s.width,
+    height: s.height,
   };
 });
-console.log('Computed styles:', styles);
+console.log("Computed styles:", styles);
 
 // 4. Walk ancestors to find which one has display:none:
 await page.evaluate(() => {
-  let el = document.querySelector('#submitBtn');
+  let el = document.querySelector("#submitBtn");
   while (el) {
     const s = window.getComputedStyle(el);
-    if (s.display === 'none' || s.visibility === 'hidden') {
-      console.log('Hidden ancestor:', el.tagName, el.id, el.className);
+    if (s.display === "none" || s.visibility === "hidden") {
+      console.log("Hidden ancestor:", el.tagName, el.id, el.className);
     }
     el = el.parentElement;
   }
 });
 ```
+
 </details>
 
 ---
@@ -928,15 +999,17 @@ await page.evaluate(() => {
 <details><summary>Answer</summary>
 
 **Components of the 150ms:**
+
 1. **CDP round-trip** (~2-5ms): JSON message from Node.js → CDP endpoint → Chromium → response back
 2. **Actionability checks** (~10-140ms): Playwright must verify the element is visible, stable, enabled, and receives events. If the element has a CSS animation in progress, Playwright waits for it to settle before clicking.
 
 **150ms is reasonable** for a button with an animation. 2-5ms is the floor for any CDP action (even on localhost).
 
 **To speed it up** (only if you understand the tradeoff):
+
 ```typescript
 // 1. Skip stability check (dangerous — only if there's no animation):
-await page.locator('#btn').click({ force: true });
+await page.locator("#btn").click({ force: true });
 // BUT: force:true bypasses ALL checks, including "element covered by another element"
 
 // 2. If the element is already known stable, there's nothing to optimize.
@@ -944,14 +1017,15 @@ await page.locator('#btn').click({ force: true });
 
 // 3. Real speedup: use Promise.all for INDEPENDENT actions:
 // Sequential: 150ms + 150ms = 300ms
-await page.click('#btn1');
-await page.click('#btn2');
+await page.click("#btn1");
+await page.click("#btn2");
 // Parallel (if btn2 doesn't depend on btn1's side effect):
-await Promise.all([page.click('#btn1'), page.click('#btn2')]);
+await Promise.all([page.click("#btn1"), page.click("#btn2")]);
 // = ~150ms total
 ```
 
 Key insight: optimizing individual action speed is almost never the bottleneck. Network waits (waitForResponse, waitFor visible) dominate E2E test duration.
+
 </details>
 
 ---
@@ -959,11 +1033,13 @@ Key insight: optimizing individual action speed is almost never the bottleneck. 
 ## 📚 References & Further Reading
 
 ### Official Documentation — Playwright
+
 - [Actionability Checks](https://playwright.dev/docs/actionability) — The exact checklist Playwright runs before every click, fill, or check (visible, stable, enabled, editable, receives events)
 - [Auto-waiting vs Explicit waiting](https://playwright.dev/docs/actionability#assertions) — How `expect(locator)` waits differ from action waits
 - [CDP Session API](https://playwright.dev/docs/api/class-cdpsession) — How to interact with the raw Chrome DevTools Protocol from within Playwright tests
 
 ### Browser Internals & Rendering
+
 - [Google Developers: Rendering Performance](https://developers.google.com/web/fundamentals/performance/rendering) — The authoritative guide on Style, Layout, Paint, and Composite (the pixel pipeline)
 - [MDN: Accessibility Tree](https://developer.mozilla.org/en-US/docs/Glossary/Accessibility_tree) — How browsers construct the accessibility tree that `getByRole` uses
 - [Chrome DevTools Protocol Viewer](https://chromedevtools.github.io/devtools-protocol/) — The full reference for all CDP commands (Network, DOM, Page, Emulation)
@@ -971,4 +1047,3 @@ Key insight: optimizing individual action speed is almost never the bottleneck. 
 ---
 
 **Navigation**: [← Chapter 07: E2E Architecture](./07_test_step_E2E_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 09: Parallel Execution](./09_Parallel_Execution_Workers.md)
-

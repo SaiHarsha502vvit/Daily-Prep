@@ -58,11 +58,11 @@ npx playwright test --grep @perf
 
 ## Performance Budgets
 
-| Metric | What it measures | Why it matters |
-|--------|------------------|----------------|
-| FCP | Time to first content render | Perceived load speed |
-| LCP | Time to largest content render | Perceived load completion |
-| TTFB | Server response time | Backend performance |
+| Metric | What it measures               | Why it matters            |
+| ------ | ------------------------------ | ------------------------- |
+| FCP    | Time to first content render   | Perceived load speed      |
+| LCP    | Time to largest content render | Perceived load completion |
+| TTFB   | Server response time           | Backend performance       |
 
 ## CI Integration
 

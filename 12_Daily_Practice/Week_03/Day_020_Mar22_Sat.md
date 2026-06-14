@@ -23,15 +23,14 @@
 > | **Spring Boot: REST Controllers + Validation** | [Spring Boot: Controllers & REST](../../07_Modern_Java/Ch37_SB_Controllers_REST.md) |
 > | **SQL: Mixed Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## 1. SPRING BOOT: REST Controllers Deep Dive (45 min)
 
 ### WHY?
+
 REST APIs are how 95% of modern applications communicate. Spring Boot makes building REST APIs fast, but understanding the layers (Controller → Service → Repository) is essential.
 
 ### The Layered Architecture
@@ -54,27 +53,26 @@ CLIENT (Browser/Mobile/Postman)
 └───────────────────────────────────────┘
 ```
 
-
 ### Complete CRUD REST Controller
 
 ```java
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    
+
     private final ProductService productService;
-    
+
     // Constructor injection (recommended)
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-    
+
     // GET /api/products — List all
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAll() {
         return ResponseEntity.ok(productService.findAll());
     }
-    
+
     // GET /api/products/{id} — Get by ID
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable Long id) {
@@ -82,7 +80,7 @@ public class ProductController {
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
-    
+
     // POST /api/products — Create
     @PostMapping
     public ResponseEntity<ProductDTO> create(
@@ -91,7 +89,7 @@ public class ProductController {
         URI location = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(location).body(created);
     }
-    
+
     // PUT /api/products/{id} — Full update
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> update(
@@ -99,14 +97,14 @@ public class ProductController {
             @Valid @RequestBody UpdateProductRequest request) {
         return ResponseEntity.ok(productService.update(id, request));
     }
-    
+
     // DELETE /api/products/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
-    
+
     // GET /api/products/search?name=phone&minPrice=100
     @GetMapping("/search")
     public ResponseEntity<List<ProductDTO>> search(
@@ -135,7 +133,6 @@ public class ProductController {
 └─────────┴────────────┴──────────────┴──────────────────┘
 ```
 
-
 ### DTO Pattern (Don't Expose Entities!)
 
 ```java
@@ -143,10 +140,10 @@ public class ProductController {
 public record CreateProductRequest(
     @NotBlank(message = "Name is required")
     String name,
-    
+
     @NotNull @Positive(message = "Price must be positive")
     BigDecimal price,
-    
+
     @Size(max = 500)
     String description
 ) {}
@@ -175,6 +172,7 @@ public record ProductDTO(
 ## 2. SPRING BOOT: Error Handling + Validation (45 min)
 
 ### WHY?
+
 Good APIs return meaningful error messages, not stack traces. Global error handling keeps controllers clean and gives clients consistent error format.
 
 ### Global Exception Handler
@@ -193,17 +191,17 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
-    
+
     // Handle validation errors (@Valid failures)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex) {
-        
+
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(err ->
             fieldErrors.put(err.getField(), err.getDefaultMessage())
         );
-        
+
         ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "Validation failed",
@@ -212,7 +210,7 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.badRequest().body(error);
     }
-    
+
     // Catch-all for unexpected errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
@@ -293,7 +291,7 @@ Client sends: POST /api/products  { "name": "", "price": -5 }
   3. Throws MethodArgumentNotValidException
   4. @RestControllerAdvice catches it
   5. Returns 400 + structured error JSON
-  
+
   NO TRY-CATCH IN CONTROLLER! Clean separation.
 ```
 
@@ -324,7 +322,7 @@ ORDER BY department, rnk;
 ```sql
 -- Find managers who manage more than 3 employees
 -- and show their team's average salary
-SELECT m.name AS manager, 
+SELECT m.name AS manager,
     COUNT(e.id) AS team_size,
     ROUND(AVG(e.salary), 2) AS team_avg_salary
 FROM employees e
@@ -338,7 +336,7 @@ ORDER BY team_size DESC;
 
 ```sql
 -- Categorize orders by month and size, count each combination
-SELECT 
+SELECT
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     CASE
         WHEN total < 50 THEN 'Small'
@@ -350,7 +348,7 @@ SELECT
 FROM orders
 WHERE YEAR(order_date) = 2025
 GROUP BY DATE_FORMAT(order_date, '%Y-%m'),
-    CASE 
+    CASE
         WHEN total < 50 THEN 'Small'
         WHEN total < 200 THEN 'Medium'
         ELSE 'Large'
@@ -378,7 +376,7 @@ GROUP BY type;
 ```sql
 -- Monthly revenue with running total and month-over-month change
 WITH monthly AS (
-    SELECT 
+    SELECT
         DATE_FORMAT(order_date, '%Y-%m') AS month,
         SUM(total) AS revenue
     FROM orders
@@ -388,7 +386,7 @@ SELECT month, revenue,
     SUM(revenue) OVER (ORDER BY month) AS running_total,
     revenue - LAG(revenue) OVER (ORDER BY month) AS mom_change,
     ROUND(
-        (revenue - LAG(revenue) OVER (ORDER BY month)) * 100.0 
+        (revenue - LAG(revenue) OVER (ORDER BY month)) * 100.0
         / LAG(revenue) OVER (ORDER BY month), 1
     ) AS growth_pct
 FROM monthly
@@ -425,12 +423,11 @@ Sliding Window ─── Fixed Size (sum of k)
 
 SQL Advanced:
   UNION/CASE → Window Functions → LAG/LEAD → CTEs
-  
+
 Spring Boot:
   Controller → Service → Repository layers
   @Valid + @RestControllerAdvice = clean error handling
 ```
-
 
 ---
 
@@ -455,7 +452,6 @@ Error Handling            [ ]      [ ]          [ ]
 SCORE: ___ / 39 (13 × 3)
 TARGET: 26+ before moving to Week 4
 ```
-
 
 ---
 

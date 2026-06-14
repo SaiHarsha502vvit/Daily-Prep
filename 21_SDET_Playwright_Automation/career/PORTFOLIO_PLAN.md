@@ -33,6 +33,7 @@ Most SDETs don't ship public work. So the ones who do **stand out instantly**. T
 **Goal**: a public version of [`framework/`](../framework/) you keep clean and presentable.
 
 Required content:
+
 - Working `npm install && npm test` on a clean clone
 - README with: what, why, quick start, the seven laws, architecture diagram, screenshot of test output
 - Example tests against a public site (OrangeHRM is fine)
@@ -47,15 +48,16 @@ Avoid: forking the repo from work, including any actual company URLs/credentials
 
 The three options in [`../challenges/`](../challenges/):
 
-| Capstone | Best for if you're targeting | Difficulty |
-|---|---|---|
-| Flaky-Test Detector | Pure SDET roles | Medium |
-| Custom HTML Reporter | SDET → FE-adjacent | Medium |
-| Test Analytics Dashboard | SDET → Platform/SRE/SDE | High |
+| Capstone                 | Best for if you're targeting | Difficulty |
+| ------------------------ | ---------------------------- | ---------- |
+| Flaky-Test Detector      | Pure SDET roles              | Medium     |
+| Custom HTML Reporter     | SDET → FE-adjacent           | Medium     |
+| Test Analytics Dashboard | SDET → Platform/SRE/SDE      | High       |
 
 Pick ONE. Ship it. Then the others, if you have time.
 
 Each must include:
+
 - Working demo (deployed if it has a web part)
 - README with architecture diagram
 - Decision log: a `DECISIONS.md` explaining 3–5 design choices
@@ -99,13 +101,13 @@ Optimise for that order.
 
 ## A 6-month milestone table
 
-| Month | Ship |
-|---|---|
-| 1 | Tier 1 framework public + first blog post |
-| 2 | CH01–CH04 completed; framework hardening |
-| 3 | Capstone #1 public, in working state |
-| 4 | Open-source PR merged (any size) + blog post 2 |
-| 5 | Capstone #2 (or harden #1) + interview prep starts |
-| 6 | Blog post 3 + start applying to senior SDET roles |
+| Month | Ship                                               |
+| ----- | -------------------------------------------------- |
+| 1     | Tier 1 framework public + first blog post          |
+| 2     | CH01–CH04 completed; framework hardening           |
+| 3     | Capstone #1 public, in working state               |
+| 4     | Open-source PR merged (any size) + blog post 2     |
+| 5     | Capstone #2 (or harden #1) + interview prep starts |
+| 6     | Blog post 3 + start applying to senior SDET roles  |
 
 Adjust dates for your actual pace. Don't ship something half-done — recruiters DO click around.

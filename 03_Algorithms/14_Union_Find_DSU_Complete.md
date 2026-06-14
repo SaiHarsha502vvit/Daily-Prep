@@ -349,6 +349,7 @@ class UnionFind {
 ```
 
 📖 **Related mental models:**
+
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — When to select Union-Find vs BFS/DFS
 - [14_Mental_Models/09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md) — Choosing data structure by constraint size
 
@@ -375,7 +376,6 @@ class UnionFind {
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
-
 
 ### Visual: How Union-Find Works
 
@@ -405,7 +405,6 @@ Now: find(1) → 0, find(3) → 0
      So 1 and 3 are in the SAME group!
 ```
 
-
 ### Two Key Operations
 
 ```
@@ -427,17 +426,17 @@ Now: find(1) → 0, find(3) → 0
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 🔬 **Section Challenge — Union-Find Fundamentals <a name="fundamentals"></a>**
 
 **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+
 <details><summary>Answer</summary>
 
 Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-</details>
 
+</details>
 
 ## Basic Implementation <a name="basic-implementation"></a>
 
@@ -446,7 +445,7 @@ Without path compression + union by rank: O(N) height possible (linear chain). W
 ```java
 class UnionFindBasic {
     private int[] parent;
-    
+
     public UnionFindBasic(int n) {
         parent = new int[n];
         // Initially, each element is its own parent
@@ -454,7 +453,7 @@ class UnionFindBasic {
             parent[i] = i;
         }
     }
-    
+
     // Find root (representative) of x
     public int find(int x) {
         while (parent[x] != x) {
@@ -462,7 +461,7 @@ class UnionFindBasic {
         }
         return x;
     }
-    
+
     // Merge groups containing x and y
     public void union(int x, int y) {
         int rootX = find(x);
@@ -471,7 +470,7 @@ class UnionFindBasic {
             parent[rootX] = rootY;  // Make rootY the parent of rootX
         }
     }
-    
+
     // Check if x and y are in same group
     public boolean connected(int x, int y) {
         return find(x) == find(y);
@@ -531,20 +530,19 @@ This is why we need optimizations.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Implementation with Path Compression
 
 ```java
 class UnionFindWithPathCompression {
     private int[] parent;
-    
+
     public UnionFindWithPathCompression(int n) {
         parent = new int[n];
         for (int i = 0; i < n; i++) {
             parent[i] = i;
         }
     }
-    
+
     // Find with path compression (recursive)
     public int find(int x) {
         if (parent[x] != x) {
@@ -552,7 +550,7 @@ class UnionFindWithPathCompression {
         }
         return parent[x];
     }
-    
+
     // Find with path compression (iterative)
     public int findIterative(int x) {
         int root = x;
@@ -568,7 +566,7 @@ class UnionFindWithPathCompression {
         }
         return root;
     }
-    
+
     public void union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
@@ -604,7 +602,6 @@ Tree after find(0):
 Future find(0) = O(1)!
 ```
 
-
 ---
 
 ## Union by Rank/Size <a name="union-by-rank"></a>
@@ -615,7 +612,7 @@ Future find(0) = O(1)!
 Without Union by Rank:
 
 If we always make first root point to second:
-union(1,2): 2     union(2,3): 3     
+union(1,2): 2     union(2,3): 3
             |               |
             1               2
                             |
@@ -635,7 +632,7 @@ Always attach smaller tree under root of larger tree.
 class UnionFindByRank {
     private int[] parent;
     private int[] rank;  // Approximate height
-    
+
     public UnionFindByRank(int n) {
         parent = new int[n];
         rank = new int[n];
@@ -644,20 +641,20 @@ class UnionFindByRank {
             rank[i] = 0;
         }
     }
-    
+
     public int find(int x) {
         if (parent[x] != x) {
             parent[x] = find(parent[x]);  // Path compression
         }
         return parent[x];
     }
-    
+
     public void union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
-        
+
         if (rootX == rootY) return;
-        
+
         // Union by rank: attach smaller tree under larger
         if (rank[rootX] < rank[rootY]) {
             parent[rootX] = rootY;
@@ -684,7 +681,7 @@ More intuitive than rank.
 class UnionFindBySize {
     private int[] parent;
     private int[] size;
-    
+
     public UnionFindBySize(int n) {
         parent = new int[n];
         size = new int[n];
@@ -693,20 +690,20 @@ class UnionFindBySize {
             size[i] = 1;
         }
     }
-    
+
     public int find(int x) {
         if (parent[x] != x) {
             parent[x] = find(parent[x]);
         }
         return parent[x];
     }
-    
+
     public void union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
-        
+
         if (rootX == rootY) return;
-        
+
         // Union by size: attach smaller to larger
         if (size[rootX] < size[rootY]) {
             parent[rootX] = rootY;
@@ -716,7 +713,7 @@ class UnionFindBySize {
             size[rootX] += size[rootY];
         }
     }
-    
+
     // Get size of component containing x
     public int getSize(int x) {
         return size[find(x)];
@@ -729,11 +726,12 @@ class UnionFindBySize {
 🔬 **Section Challenge — Union by Rank/Size <a name="union-by-rank"></a>**
 
 **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+
 <details><summary>Answer</summary>
 
 Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-</details>
 
+</details>
 
 ## Optimized Implementation <a name="optimized"></a>
 
@@ -744,18 +742,18 @@ class UnionFind {
     private int[] parent;
     private int[] rank;
     private int count;  // Number of connected components
-    
+
     public UnionFind(int n) {
         parent = new int[n];
         rank = new int[n];
         count = n;
-        
+
         for (int i = 0; i < n; i++) {
             parent[i] = i;
             rank[i] = 0;
         }
     }
-    
+
     // Find with path compression
     public int find(int x) {
         if (parent[x] != x) {
@@ -763,16 +761,16 @@ class UnionFind {
         }
         return parent[x];
     }
-    
+
     // Union by rank
     public boolean union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
-        
+
         if (rootX == rootY) {
             return false;  // Already in same component
         }
-        
+
         if (rank[rootX] < rank[rootY]) {
             parent[rootX] = rootY;
         } else if (rank[rootX] > rank[rootY]) {
@@ -781,16 +779,16 @@ class UnionFind {
             parent[rootY] = rootX;
             rank[rootX]++;
         }
-        
+
         count--;  // Merged two components
         return true;
     }
-    
+
     // Check if connected
     public boolean connected(int x, int y) {
         return find(x) == find(y);
     }
-    
+
     // Get number of components
     public int getCount() {
         return count;
@@ -804,33 +802,33 @@ class UnionFind {
 class UnionFindMap<T> {
     private Map<T, T> parent;
     private Map<T, Integer> rank;
-    
+
     public UnionFindMap() {
         parent = new HashMap<>();
         rank = new HashMap<>();
     }
-    
+
     public T find(T x) {
         if (!parent.containsKey(x)) {
             parent.put(x, x);
             rank.put(x, 0);
         }
-        
+
         if (!parent.get(x).equals(x)) {
             parent.put(x, find(parent.get(x)));
         }
         return parent.get(x);
     }
-    
+
     public void union(T x, T y) {
         T rootX = find(x);
         T rootY = find(y);
-        
+
         if (rootX.equals(rootY)) return;
-        
+
         int rankX = rank.get(rootX);
         int rankY = rank.get(rootY);
-        
+
         if (rankX < rankY) {
             parent.put(rootX, rootY);
         } else if (rankX > rankY) {
@@ -852,11 +850,11 @@ class UnionFindMap<T> {
 ```java
 public int countComponents(int n, int[][] edges) {
     UnionFind uf = new UnionFind(n);
-    
+
     for (int[] edge : edges) {
         uf.union(edge[0], edge[1]);
     }
-    
+
     return uf.getCount();
 }
 ```
@@ -871,7 +869,7 @@ isConnected[i][j] = 1 means city i and j are connected.
 public int findCircleNum(int[][] isConnected) {
     int n = isConnected.length;
     UnionFind uf = new UnionFind(n);
-    
+
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
             if (isConnected[i][j] == 1) {
@@ -879,7 +877,7 @@ public int findCircleNum(int[][] isConnected) {
             }
         }
     }
-    
+
     return uf.getCount();
 }
 ```
@@ -895,7 +893,7 @@ Given n edges (one extra), find the edge that creates a cycle.
 public int[] findRedundantConnection(int[][] edges) {
     int n = edges.length;
     UnionFind uf = new UnionFind(n + 1);  // 1-indexed nodes
-    
+
     for (int[] edge : edges) {
         if (!uf.union(edge[0], edge[1])) {
             // Union failed = already connected = this edge creates cycle
@@ -923,7 +921,6 @@ Step 3: union(2,3) → FAIL! (1,2,3 already connected)
         This is the redundant edge!
 ```
 
-
 ### 4. Graph Valid Tree (LeetCode 261)
 
 ```java
@@ -934,16 +931,16 @@ A valid tree has n-1 edges and is fully connected.
 public boolean validTree(int n, int[][] edges) {
     // Tree must have exactly n-1 edges
     if (edges.length != n - 1) return false;
-    
+
     UnionFind uf = new UnionFind(n);
-    
+
     for (int[] edge : edges) {
         // If union fails, there's a cycle
         if (!uf.union(edge[0], edge[1])) {
             return false;
         }
     }
-    
+
     // Must be one connected component
     return uf.getCount() == 1;
 }
@@ -963,27 +960,27 @@ Sort edges by weight, add if doesn't create cycle.
 
 public int minimumSpanningTree(int n, int[][] edges) {
     // edges[i] = [u, v, weight]
-    
+
     // Sort by weight
     Arrays.sort(edges, (a, b) -> a[2] - b[2]);
-    
+
     UnionFind uf = new UnionFind(n);
     int totalWeight = 0;
     int edgesUsed = 0;
-    
+
     for (int[] edge : edges) {
         int u = edge[0], v = edge[1], weight = edge[2];
-        
+
         // Only add edge if it doesn't create cycle
         if (uf.union(u, v)) {
             totalWeight += weight;
             edgesUsed++;
-            
+
             // MST has n-1 edges
             if (edgesUsed == n - 1) break;
         }
     }
-    
+
     // Check if we connected all nodes
     return edgesUsed == n - 1 ? totalWeight : -1;
 }
@@ -1001,7 +998,7 @@ public List<List<String>> accountsMerge(List<List<String>> accounts) {
     Map<String, Integer> emailToId = new HashMap<>();
     Map<String, String> emailToName = new HashMap<>();
     int id = 0;
-    
+
     // Assign ID to each unique email
     for (List<String> account : accounts) {
         String name = account.get(0);
@@ -1013,7 +1010,7 @@ public List<List<String>> accountsMerge(List<List<String>> accounts) {
             emailToName.put(email, name);
         }
     }
-    
+
     // Union emails in same account
     UnionFind uf = new UnionFind(id);
     for (List<String> account : accounts) {
@@ -1022,7 +1019,7 @@ public List<List<String>> accountsMerge(List<List<String>> accounts) {
             uf.union(firstId, emailToId.get(account.get(i)));
         }
     }
-    
+
     // Group emails by root
     Map<Integer, List<String>> rootToEmails = new HashMap<>();
     for (String email : emailToId.keySet()) {
@@ -1031,7 +1028,7 @@ public List<List<String>> accountsMerge(List<List<String>> accounts) {
             .computeIfAbsent(root, k -> new ArrayList<>())
             .add(email);
     }
-    
+
     // Build result
     List<List<String>> result = new ArrayList<>();
     for (int root : rootToEmails.keySet()) {
@@ -1041,7 +1038,7 @@ public List<List<String>> accountsMerge(List<List<String>> accounts) {
         emails.add(0, name);
         result.add(emails);
     }
-    
+
     return result;
 }
 ```
@@ -1056,28 +1053,28 @@ Add land cells one by one, return number of islands after each addition.
 public List<Integer> numIslands2(int m, int n, int[][] positions) {
     List<Integer> result = new ArrayList<>();
     UnionFind uf = new UnionFind(m * n);
-    
+
     boolean[][] grid = new boolean[m][n];
     int islands = 0;
     int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    
+
     for (int[] pos : positions) {
         int r = pos[0], c = pos[1];
-        
+
         if (grid[r][c]) {
             // Already land, count unchanged
             result.add(islands);
             continue;
         }
-        
+
         grid[r][c] = true;
         islands++;  // New island
         int id = r * n + c;
-        
+
         // Union with adjacent land
         for (int[] dir : dirs) {
             int nr = r + dir[0], nc = c + dir[1];
-            
+
             if (nr >= 0 && nr < m && nc >= 0 && nc < n && grid[nr][nc]) {
                 int neighborId = nr * n + nc;
                 if (uf.union(id, neighborId)) {
@@ -1085,10 +1082,10 @@ public List<Integer> numIslands2(int m, int n, int[][] positions) {
                 }
             }
         }
-        
+
         result.add(islands);
     }
-    
+
     return result;
 }
 ```
@@ -1098,17 +1095,20 @@ public List<Integer> numIslands2(int m, int n, int[][] positions) {
 🔬 **Section Challenge — Graph Problems <a name="graph-problems"></a>**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## Advanced Techniques <a name="advanced"></a>
 
@@ -1123,7 +1123,7 @@ Used in problems like "Evaluate Division".
 class WeightedUnionFind {
     private int[] parent;
     private double[] weight;  // weight[i] = relationship from i to parent[i]
-    
+
     public WeightedUnionFind(int n) {
         parent = new int[n];
         weight = new double[n];
@@ -1132,7 +1132,7 @@ class WeightedUnionFind {
             weight[i] = 1.0;
         }
     }
-    
+
     public int find(int x) {
         if (parent[x] != x) {
             int root = find(parent[x]);
@@ -1141,20 +1141,20 @@ class WeightedUnionFind {
         }
         return parent[x];
     }
-    
+
     public void union(int x, int y, double value) {
         // value = x / y
         int rootX = find(x);
         int rootY = find(y);
-        
+
         if (rootX == rootY) return;
-        
+
         // value = x/y = (weight[x] * rootX) / (weight[y] * rootY)
         // So: rootX = weight[y] * value / weight[x] * rootY
         parent[rootX] = rootY;
         weight[rootX] = weight[y] * value / weight[x];
     }
-    
+
     public double query(int x, int y) {
         if (find(x) != find(y)) return -1.0;
         return weight[x] / weight[y];
@@ -1165,41 +1165,41 @@ class WeightedUnionFind {
 ### Evaluate Division (LeetCode 399)
 
 ```java
-public double[] calcEquation(List<List<String>> equations, 
+public double[] calcEquation(List<List<String>> equations,
                               double[] values,
                               List<List<String>> queries) {
-    
+
     // Map string to integer ID
     Map<String, Integer> varToId = new HashMap<>();
     int id = 0;
-    
+
     for (List<String> eq : equations) {
         if (!varToId.containsKey(eq.get(0))) varToId.put(eq.get(0), id++);
         if (!varToId.containsKey(eq.get(1))) varToId.put(eq.get(1), id++);
     }
-    
+
     WeightedUnionFind uf = new WeightedUnionFind(id);
-    
+
     // Process equations
     for (int i = 0; i < equations.size(); i++) {
         int x = varToId.get(equations.get(i).get(0));
         int y = varToId.get(equations.get(i).get(1));
         uf.union(x, y, values[i]);
     }
-    
+
     // Answer queries
     double[] result = new double[queries.size()];
     for (int i = 0; i < queries.size(); i++) {
         String a = queries.get(i).get(0);
         String b = queries.get(i).get(1);
-        
+
         if (!varToId.containsKey(a) || !varToId.containsKey(b)) {
             result[i] = -1.0;
         } else {
             result[i] = uf.query(varToId.get(a), varToId.get(b));
         }
     }
-    
+
     return result;
 }
 ```
@@ -1217,18 +1217,18 @@ class UnionFindWithUndo {
     private int[] parent;
     private int[] rank;
     private Deque<int[]> history;  // Stack of [x, oldParent, oldRank]
-    
+
     public UnionFindWithUndo(int n) {
         parent = new int[n];
         rank = new int[n];
         history = new ArrayDeque<>();
-        
+
         for (int i = 0; i < n; i++) {
             parent[i] = i;
             rank[i] = 0;
         }
     }
-    
+
     // Find WITHOUT path compression
     public int find(int x) {
         while (parent[x] != x) {
@@ -1236,16 +1236,16 @@ class UnionFindWithUndo {
         }
         return x;
     }
-    
+
     public void union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
-        
+
         if (rootX == rootY) {
             history.push(new int[]{-1, -1, -1});  // No-op marker
             return;
         }
-        
+
         // Union by rank, record old state
         if (rank[rootX] < rank[rootY]) {
             history.push(new int[]{rootX, parent[rootX], rank[rootX]});
@@ -1259,7 +1259,7 @@ class UnionFindWithUndo {
             rank[rootX]++;
         }
     }
-    
+
     public void undo() {
         int[] op = history.pop();
         if (op[0] != -1) {
@@ -1306,7 +1306,6 @@ class UnionFindWithUndo {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Longest Consecutive Sequence (LeetCode 128)
 
 ```java
@@ -1316,19 +1315,19 @@ Find longest consecutive sequence in unsorted array.
 
 public int longestConsecutive(int[] nums) {
     if (nums.length == 0) return 0;
-    
+
     Map<Integer, Integer> numToId = new HashMap<>();
     int id = 0;
-    
+
     // Assign ID to each unique number
     for (int num : nums) {
         if (!numToId.containsKey(num)) {
             numToId.put(num, id++);
         }
     }
-    
+
     UnionFindBySize uf = new UnionFindBySize(id);
-    
+
     // Union consecutive numbers
     for (int num : nums) {
         if (numToId.containsKey(num - 1)) {
@@ -1338,7 +1337,7 @@ public int longestConsecutive(int[] nums) {
             uf.union(numToId.get(num), numToId.get(num + 1));
         }
     }
-    
+
     // Find max component size
     int maxLen = 1;
     for (int num : nums) {
@@ -1359,19 +1358,19 @@ Return lexicographically smallest string.
 public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
     int n = s.length();
     UnionFind uf = new UnionFind(n);
-    
+
     // Union all swappable positions
     for (List<Integer> pair : pairs) {
         uf.union(pair.get(0), pair.get(1));
     }
-    
+
     // Group indices by root
     Map<Integer, List<Integer>> groups = new HashMap<>();
     for (int i = 0; i < n; i++) {
         int root = uf.find(i);
         groups.computeIfAbsent(root, k -> new ArrayList<>()).add(i);
     }
-    
+
     // For each group, sort characters and assign back
     char[] result = new char[n];
     for (List<Integer> indices : groups.values()) {
@@ -1382,13 +1381,13 @@ public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
         }
         Collections.sort(chars);
         Collections.sort(indices);
-        
+
         // Assign sorted characters to sorted positions
         for (int i = 0; i < indices.size(); i++) {
             result[indices.get(i)] = chars.get(i);
         }
     }
-    
+
     return new String(result);
 }
 ```
@@ -1404,24 +1403,24 @@ Classic MST problem.
 public int minCostConnectPoints(int[][] points) {
     int n = points.length;
     List<int[]> edges = new ArrayList<>();
-    
+
     // Generate all edges with costs
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
-            int cost = Math.abs(points[i][0] - points[j][0]) + 
+            int cost = Math.abs(points[i][0] - points[j][0]) +
                        Math.abs(points[i][1] - points[j][1]);
             edges.add(new int[]{i, j, cost});
         }
     }
-    
+
     // Sort by cost
     edges.sort((a, b) -> a[2] - b[2]);
-    
+
     // Kruskal's MST
     UnionFind uf = new UnionFind(n);
     int totalCost = 0;
     int edgesUsed = 0;
-    
+
     for (int[] edge : edges) {
         if (uf.union(edge[0], edge[1])) {
             totalCost += edge[2];
@@ -1429,7 +1428,7 @@ public int minCostConnectPoints(int[][] points) {
             if (edgesUsed == n - 1) break;
         }
     }
-    
+
     return totalCost;
 }
 ```
@@ -1445,13 +1444,13 @@ public int largestIsland(int[][] grid) {
     int n = grid.length;
     UnionFind uf = new UnionFind(n * n);
     int[] size = new int[n * n];
-    
+
     // Initialize sizes
     for (int i = 0; i < n * n; i++) {
         int r = i / n, c = i % n;
         size[i] = grid[r][c];
     }
-    
+
     // Union adjacent 1s
     int[][] dirs = {{0, 1}, {1, 0}};
     for (int i = 0; i < n; i++) {
@@ -1467,14 +1466,14 @@ public int largestIsland(int[][] grid) {
             }
         }
     }
-    
+
     // Calculate component sizes
     int[] compSize = new int[n * n];
     for (int i = 0; i < n * n; i++) {
         int root = uf.find(i);
         compSize[root] += size[i];
     }
-    
+
     // Try flipping each 0
     int maxSize = 0;
     for (int i = 0; i < n; i++) {
@@ -1498,7 +1497,7 @@ public int largestIsland(int[][] grid) {
             }
         }
     }
-    
+
     return maxSize == 0 ? 1 : maxSize;  // Handle all 0s case
 }
 ```
@@ -1537,26 +1536,25 @@ public int largestIsland(int[][] grid) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Code Template (Copy-Paste Ready)
 
 ```java
 class UnionFind {
     private int[] parent, rank;
     private int count;
-    
+
     public UnionFind(int n) {
         parent = new int[n];
         rank = new int[n];
         count = n;
         for (int i = 0; i < n; i++) parent[i] = i;
     }
-    
+
     public int find(int x) {
         if (parent[x] != x) parent[x] = find(parent[x]);
         return parent[x];
     }
-    
+
     public boolean union(int x, int y) {
         int px = find(x), py = find(y);
         if (px == py) return false;
@@ -1566,7 +1564,7 @@ class UnionFind {
         count--;
         return true;
     }
-    
+
     public boolean connected(int x, int y) { return find(x) == find(y); }
     public int getCount() { return count; }
 }
@@ -1594,7 +1592,6 @@ class UnionFind {
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -1632,7 +1629,6 @@ class UnionFind {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-
 **Pro Tip:** When you see problems involving merging groups, checking connectivity, or building spanning trees, Union-Find should be your first thought!
 
 ---
@@ -1642,8 +1638,9 @@ class UnionFind {
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>

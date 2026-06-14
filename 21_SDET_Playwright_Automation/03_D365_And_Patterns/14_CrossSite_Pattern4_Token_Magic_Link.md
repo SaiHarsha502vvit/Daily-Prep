@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md) | [Index](../00_INDEX.md) | [→ Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md)
 
 **Cross-links:**
+
 - [`22_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../22_Advanced_API_Testing/01_API_Testing_Foundations.md) — How to call the email/notification service API
 - [`19_Advanced_Console_Scripts_Security.md`](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md) — Auth enforcement testing
 - [`16_CrossSite_Pattern6_StorageState_Chaining.md`](./16_CrossSite_Pattern6_StorageState_Chaining.md) — JWT in cookies
@@ -22,33 +23,43 @@
 ## 1. The 5 Real Token Flow Types
 
 ### Type 1 — Magic Link in Email (password reset, invite, verification)
+
 ```
 Auth portal sends email → Token is embedded in URL → User clicks URL → Lands on reset page
 ```
+
 Test strategy: Intercept via email service API before clicking anything.
 
 ### Type 2 — OAuth Authorization Code
+
 ```
 App redirects to OAuth provider → User logs in → Provider redirects back with ?code=xxx → App exchanges code for token
 ```
+
 Test strategy: Let the OAuth flow complete automatically (the browser follows redirects).
 
 ### Type 3 — SSO Token as URL Parameter
+
 ```
 Auth portal (Site A) generates SSO token → Appends to redirect URL → CRM portal (Site B) receives and validates it
 ```
+
 Test strategy: Login on Site A → capture the redirect URL → extract the token from URL params.
 
 ### Type 4 — Token in localStorage (Site A → Site B, same domain)
+
 ```
 Auth portal sets localStorage['sso_token'] = 'eyJ...' → CRM portal reads same localStorage → auto-authenticated
 ```
+
 Test strategy: Read from localStorage after login on Site A, verify it exists and is well-formed.
 
 ### Type 5 — HttpOnly JWT Cookie (most secure)
+
 ```
 Auth API sets Set-Cookie: jwt=...; HttpOnly; Secure → Browser sends cookie automatically on every request to same domain → No JS access needed
 ```
+
 Test strategy: Login via API → verify response sets the cookie → navigate to protected page → verify no redirect to login.
 
 ---
@@ -82,7 +93,7 @@ Priority 4: Have the backend expose the token via a test-only API endpoint
 ```typescript
 // clients/EmailServiceClient.ts — wrapper for your notification service API
 
-import { type APIRequestContext } from '@playwright/test';
+import { type APIRequestContext } from "@playwright/test";
 
 interface EmailNotification {
   id: string;
@@ -106,28 +117,33 @@ export class EmailServiceClient {
     private readonly baseURL: string = process.env.EMAIL_SERVICE_URL!,
   ) {}
 
-  async getLatestEmailTo(address: string, subject: string): Promise<EmailNotification> {
-    const response = await this.request.get(
-      `${this.baseURL}/api/messages`,
-      {
-        params: { to: address, subject, limit: 1 },
-        headers: { Authorization: `Bearer ${process.env.EMAIL_SERVICE_TOKEN}` },
-      }
-    );
-    if (!response.ok()) throw new Error(`Email service returned ${response.status()}`);
+  async getLatestEmailTo(
+    address: string,
+    subject: string,
+  ): Promise<EmailNotification> {
+    const response = await this.request.get(`${this.baseURL}/api/messages`, {
+      params: { to: address, subject, limit: 1 },
+      headers: { Authorization: `Bearer ${process.env.EMAIL_SERVICE_TOKEN}` },
+    });
+    if (!response.ok())
+      throw new Error(`Email service returned ${response.status()}`);
     const messages: EmailNotification[] = await response.json();
-    if (messages.length === 0) throw new Error(`No emails found for ${address}`);
+    if (messages.length === 0)
+      throw new Error(`No emails found for ${address}`);
     return messages[0];
   }
 
   async getLatestResetLink(email: string): Promise<MagicLink> {
-    const notification = await this.getLatestEmailTo(email, 'Reset your password');
+    const notification = await this.getLatestEmailTo(
+      email,
+      "Reset your password",
+    );
 
     // Extract the URL from the email body using regex
     const urlMatch = notification.bodyText.match(
-      /https?:\/\/[^\s"<>]+\/reset\?token=[A-Za-z0-9._%-]+/
+      /https?:\/\/[^\s"<>]+\/reset\?token=[A-Za-z0-9._%-]+/,
     );
-    if (!urlMatch) throw new Error('No reset link found in email body');
+    if (!urlMatch) throw new Error("No reset link found in email body");
 
     const url = urlMatch[0];
     const tokenMatch = url.match(/token=([^&]+)/);
@@ -135,9 +151,9 @@ export class EmailServiceClient {
 
     return {
       url,
-      token: tokenMatch?.[1] ?? '',
-      userId: userIdMatch?.[1] ?? '',
-      expiresAt: '', // may not be in URL — call backend if needed
+      token: tokenMatch?.[1] ?? "",
+      userId: userIdMatch?.[1] ?? "",
+      expiresAt: "", // may not be in URL — call backend if needed
     };
   }
 }
@@ -146,18 +162,21 @@ export class EmailServiceClient {
 ```typescript
 // tests/specs/auth/password-reset.spec.ts
 
-import { test, expect } from '../../fixtures';
-import { AuthPortalPage } from '../../websites/auth/pages/AuthPortalPage';
-import { PasswordResetPage } from '../../websites/auth/pages/PasswordResetPage';
-import { EmailServiceClient } from '../../clients/EmailServiceClient';
+import { test, expect } from "../../fixtures";
+import { AuthPortalPage } from "../../websites/auth/pages/AuthPortalPage";
+import { PasswordResetPage } from "../../websites/auth/pages/PasswordResetPage";
+import { EmailServiceClient } from "../../clients/EmailServiceClient";
 
 const testUser = {
   email: `test-${Date.now()}@testinbox.company.com`,
-  currentPassword: 'OldPass123!',
+  currentPassword: "OldPass123!",
   newPassword: `NewPass${Date.now()}!`,
 };
 
-test('Password reset magic link flow — cross-site token', async ({ page, request }) => {
+test("Password reset magic link flow — cross-site token", async ({
+  page,
+  request,
+}) => {
   const data = {
     resetLink: null as string | null,
     resetToken: null as string | null,
@@ -168,46 +187,56 @@ test('Password reset magic link flow — cross-site token', async ({ page, reque
   const authPortal = new AuthPortalPage(page);
   const emailClient = new EmailServiceClient(request);
 
-  await test.step('Navigate to auth portal', async () => {
+  await test.step("Navigate to auth portal", async () => {
     await authPortal.goto();
   });
 
-  await test.step('Request password reset for test user', async () => {
+  await test.step("Request password reset for test user", async () => {
     await authPortal.clickForgotPassword();
     await authPortal.enterResetEmail(testUser.email);
     await authPortal.submitResetRequest();
     // Portal shows "Check your email" confirmation
-    await expect(authPortal.resetEmailSentConfirmation).toBeVisible({ timeout: 10000 });
+    await expect(authPortal.resetEmailSentConfirmation).toBeVisible({
+      timeout: 10000,
+    });
   });
 
-  await test.step('Intercept magic link via email service API', async () => {
+  await test.step("Intercept magic link via email service API", async () => {
     // Poll the email service — email may take a few seconds to arrive
-    let magicLink: Awaited<ReturnType<EmailServiceClient['getLatestResetLink']>> | null = null;
+    let magicLink: Awaited<
+      ReturnType<EmailServiceClient["getLatestResetLink"]>
+    > | null = null;
 
-    await expect.poll(
-      async () => {
-        try {
-          magicLink = await emailClient.getLatestResetLink(testUser.email);
-          return true;
-        } catch {
-          return false;
-        }
-      },
-      { message: 'Password reset email should arrive within 30s', timeout: 30_000, intervals: [2000] }
-    ).toBe(true);
+    await expect
+      .poll(
+        async () => {
+          try {
+            magicLink = await emailClient.getLatestResetLink(testUser.email);
+            return true;
+          } catch {
+            return false;
+          }
+        },
+        {
+          message: "Password reset email should arrive within 30s",
+          timeout: 30_000,
+          intervals: [2000],
+        },
+      )
+      .toBe(true);
 
     data.resetLink = magicLink!.url;
     data.resetToken = magicLink!.token;
     expect(data.resetToken).toBeTruthy();
   });
 
-  await test.step('Navigate to password reset URL (different page/domain from auth portal)', async () => {
+  await test.step("Navigate to password reset URL (different page/domain from auth portal)", async () => {
     // This might navigate to a different subdomain: reset.company.com vs login.company.com
     await page.goto(data.resetLink!);
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState("domcontentloaded");
   });
 
-  await test.step('Complete password reset on reset page', async () => {
+  await test.step("Complete password reset on reset page", async () => {
     const resetPage = new PasswordResetPage(page);
     await resetPage.waitForLoad();
     await resetPage.setNewPassword(testUser.newPassword);
@@ -218,14 +247,14 @@ test('Password reset magic link flow — cross-site token', async ({ page, reque
     data.resetCompleted = true;
   });
 
-  await test.step('Verify login with new password works', async () => {
+  await test.step("Verify login with new password works", async () => {
     await authPortal.goto();
     await authPortal.loginWith(testUser.email, testUser.newPassword);
     await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
     data.loginWithNewPassword = true;
   });
 
-  await test.step('Verify OLD password no longer works', async () => {
+  await test.step("Verify OLD password no longer works", async () => {
     await authPortal.goto();
     await authPortal.loginWith(testUser.email, testUser.currentPassword);
     await expect(authPortal.loginErrorMessage).toBeVisible({ timeout: 10000 });
@@ -238,7 +267,7 @@ test('Password reset magic link flow — cross-site token', async ({ page, reque
 ## 4. Token Expiry Testing
 
 ```typescript
-test('Expired magic link is rejected', async ({ page, request }) => {
+test("Expired magic link is rejected", async ({ page, request }) => {
   const emailClient = new EmailServiceClient(request);
 
   // Request reset
@@ -251,7 +280,7 @@ test('Expired magic link is rejected', async ({ page, request }) => {
   // Wait for token to expire (your system's TTL — ask your dev team)
   // For a 5-minute TTL: wait 6 minutes (only practical in specific CI jobs)
   // Better approach: use a BACKDATED token via a test API
-  const expiredLink = `${link.url.replace(link.token, 'EXPIRED_TOKEN_12345')}`;
+  const expiredLink = `${link.url.replace(link.token, "EXPIRED_TOKEN_12345")}`;
 
   await page.goto(expiredLink);
   const resetPage = new PasswordResetPage(page);
@@ -266,7 +295,7 @@ test('Expired magic link is rejected', async ({ page, request }) => {
 ## 5. Token Reuse Prevention
 
 ```typescript
-test('Magic link cannot be used twice', async ({ page, request }) => {
+test("Magic link cannot be used twice", async ({ page, request }) => {
   const emailClient = new EmailServiceClient(request);
   const authPortal = new AuthPortalPage(page);
 
@@ -282,8 +311,9 @@ test('Magic link cannot be used twice', async ({ page, request }) => {
 
   // Use the SAME link a SECOND time — must be rejected
   await page.goto(link.url);
-  await expect(resetPage.tokenExpiredMessage.or(resetPage.tokenAlreadyUsedMessage))
-    .toBeVisible({ timeout: 10000 });
+  await expect(
+    resetPage.tokenExpiredMessage.or(resetPage.tokenAlreadyUsedMessage),
+  ).toBeVisible({ timeout: 10000 });
 });
 ```
 
@@ -292,7 +322,7 @@ test('Magic link cannot be used twice', async ({ page, request }) => {
 ## 6. SSO Token in URL — Capture and Validate
 
 ```typescript
-test('SSO redirect passes valid token to CRM portal', async ({ page }) => {
+test("SSO redirect passes valid token to CRM portal", async ({ page }) => {
   const authPortal = new AuthPortalPage(page);
 
   // Login on auth portal — this will redirect to CRM portal with SSO token
@@ -300,18 +330,21 @@ test('SSO redirect passes valid token to CRM portal', async ({ page }) => {
   await authPortal.loginWith(testUser.email, testUser.currentPassword);
 
   // Wait for the redirect — URL will contain the SSO token
-  await page.waitForURL('**/crm/**?sso_token=*', { timeout: 15000 });
+  await page.waitForURL("**/crm/**?sso_token=*", { timeout: 15000 });
 
   const redirectedURL = page.url();
   const url = new URL(redirectedURL);
-  const ssoToken = url.searchParams.get('sso_token');
+  const ssoToken = url.searchParams.get("sso_token");
 
-  expect(ssoToken, 'SSO token must be present in redirect URL').not.toBeNull();
-  expect(ssoToken!.length, 'SSO token must be non-trivially long').toBeGreaterThan(20);
+  expect(ssoToken, "SSO token must be present in redirect URL").not.toBeNull();
+  expect(
+    ssoToken!.length,
+    "SSO token must be non-trivially long",
+  ).toBeGreaterThan(20);
 
   // Verify CRM portal accepted the token and shows the dashboard
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
-  await expect(page.locator('.ms-Nav')).toBeVisible({ timeout: 20000 });
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
+  await expect(page.locator(".ms-Nav")).toBeVisible({ timeout: 20000 });
 });
 ```
 
@@ -325,68 +358,89 @@ You can decode and validate JWTs without the private key (signature verification
 // utils/jwt.util.ts
 
 interface JWTPayload {
-  sub:  string;          // subject (user ID)
-  exp:  number;          // expiry (Unix timestamp)
-  iat:  number;          // issued at (Unix timestamp)
-  iss:  string;          // issuer
-  aud:  string | string[]; // audience
-  role: string;          // your custom claim
+  sub: string; // subject (user ID)
+  exp: number; // expiry (Unix timestamp)
+  iat: number; // issued at (Unix timestamp)
+  iss: string; // issuer
+  aud: string | string[]; // audience
+  role: string; // your custom claim
   [key: string]: unknown;
 }
 
-export function decodeJWT(token: string): { header: unknown; payload: JWTPayload } {
-  const parts = token.split('.');
-  if (parts.length !== 3) throw new Error(`Invalid JWT structure: ${parts.length} parts`);
+export function decodeJWT(token: string): {
+  header: unknown;
+  payload: JWTPayload;
+} {
+  const parts = token.split(".");
+  if (parts.length !== 3)
+    throw new Error(`Invalid JWT structure: ${parts.length} parts`);
 
-  const header  = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf-8'));
-  const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf-8')) as JWTPayload;
+  const header = JSON.parse(
+    Buffer.from(parts[0], "base64url").toString("utf-8"),
+  );
+  const payload = JSON.parse(
+    Buffer.from(parts[1], "base64url").toString("utf-8"),
+  ) as JWTPayload;
   // Note: parts[2] = signature — we do NOT verify here (no private key in tests)
 
   return { header, payload };
 }
 
-export function assertJWTStructure(token: string, expected: {
-  issuer?:   string;
-  audience?: string;
-  minTTL?:   number;   // minimum remaining lifetime in seconds
-  role?:     string;
-}): void {
+export function assertJWTStructure(
+  token: string,
+  expected: {
+    issuer?: string;
+    audience?: string;
+    minTTL?: number; // minimum remaining lifetime in seconds
+    role?: string;
+  },
+): void {
   const { payload } = decodeJWT(token);
   const now = Math.floor(Date.now() / 1000);
 
   if (payload.exp <= now) {
-    throw new Error(`JWT is already expired at ${new Date(payload.exp * 1000).toISOString()}`);
+    throw new Error(
+      `JWT is already expired at ${new Date(payload.exp * 1000).toISOString()}`,
+    );
   }
 
   const remainingTTL = payload.exp - now;
   if (expected.minTTL && remainingTTL < expected.minTTL) {
-    throw new Error(`JWT expires in ${remainingTTL}s, but expected at least ${expected.minTTL}s`);
+    throw new Error(
+      `JWT expires in ${remainingTTL}s, but expected at least ${expected.minTTL}s`,
+    );
   }
 
   if (expected.issuer && payload.iss !== expected.issuer) {
-    throw new Error(`JWT issuer: expected '${expected.issuer}', got '${payload.iss}'`);
+    throw new Error(
+      `JWT issuer: expected '${expected.issuer}', got '${payload.iss}'`,
+    );
   }
 
   if (expected.audience) {
     const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
     if (!aud.includes(expected.audience)) {
-      throw new Error(`JWT audience: expected '${expected.audience}', got '${aud.join(',')}'`);
+      throw new Error(
+        `JWT audience: expected '${expected.audience}', got '${aud.join(",")}'`,
+      );
     }
   }
 
   if (expected.role && payload.role !== expected.role) {
-    throw new Error(`JWT role: expected '${expected.role}', got '${payload.role}'`);
+    throw new Error(
+      `JWT role: expected '${expected.role}', got '${payload.role}'`,
+    );
   }
 }
 
 // Usage in test:
-await test.step('Validate JWT structure from SSO redirect', async () => {
-  const ssoToken = new URL(page.url()).searchParams.get('sso_token')!;
+await test.step("Validate JWT structure from SSO redirect", async () => {
+  const ssoToken = new URL(page.url()).searchParams.get("sso_token")!;
   assertJWTStructure(ssoToken, {
-    issuer:   'https://auth.company.com',
-    audience: 'crm-portal',
-    minTTL:   300,  // at least 5 minutes remaining
-    role:     'AGENT',
+    issuer: "https://auth.company.com",
+    audience: "crm-portal",
+    minTTL: 300, // at least 5 minutes remaining
+    role: "AGENT",
   });
 });
 ```
@@ -398,43 +452,57 @@ await test.step('Validate JWT structure from SSO redirect', async () => {
 HttpOnly cookies can't be read by `document.cookie` (JavaScript). Use CDP to verify them:
 
 ```typescript
-import { CDPSession } from '@playwright/test';
+import { CDPSession } from "@playwright/test";
 
 async function getHttpOnlyCookies(
-  page:   import('@playwright/test').Page,
-  domain: string
-): Promise<{ name: string; value: string; httpOnly: boolean; secure: boolean; sameSite: string }[]> {
+  page: import("@playwright/test").Page,
+  domain: string,
+): Promise<
+  {
+    name: string;
+    value: string;
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: string;
+  }[]
+> {
   // CDP gives full access to all cookies including HttpOnly
   const cdp = await page.context().newCDPSession(page);
-  const { cookies } = await cdp.send('Network.getCookies', { urls: [domain] });
+  const { cookies } = await cdp.send("Network.getCookies", { urls: [domain] });
   await cdp.detach();
-  return cookies.map(c => ({
-    name:     c.name,
-    value:    c.value,
+  return cookies.map((c) => ({
+    name: c.name,
+    value: c.value,
     httpOnly: c.httpOnly,
-    secure:   c.secure,
-    sameSite: c.sameSite ?? 'None',
+    secure: c.secure,
+    sameSite: c.sameSite ?? "None",
   }));
 }
 
-test('HttpOnly JWT cookie is set correctly after login', async ({ page }) => {
+test("HttpOnly JWT cookie is set correctly after login", async ({ page }) => {
   await page.goto(process.env.AUTH_URL!);
-  await page.fill('#username', testUser.email);
-  await page.fill('#password', testUser.password);
-  await page.click('#loginBtn');
-  await page.waitForURL('**/dashboard/**');
+  await page.fill("#username", testUser.email);
+  await page.fill("#password", testUser.password);
+  await page.click("#loginBtn");
+  await page.waitForURL("**/dashboard/**");
 
   const cookies = await getHttpOnlyCookies(page, process.env.AUTH_URL!);
-  const jwtCookie = cookies.find(c => c.name === 'jwt' || c.name === '.AspNet.ApplicationCookie');
+  const jwtCookie = cookies.find(
+    (c) => c.name === "jwt" || c.name === ".AspNet.ApplicationCookie",
+  );
 
-  expect(jwtCookie, 'JWT cookie must exist after login').toBeDefined();
-  expect(jwtCookie!.httpOnly, 'JWT must be HttpOnly (not readable by JS)').toBe(true);
-  expect(jwtCookie!.secure,   'JWT must be Secure (HTTPS only)').toBe(true);
-  expect(jwtCookie!.sameSite, 'JWT must be Lax or Strict SameSite').toMatch(/^(Lax|Strict)$/);
+  expect(jwtCookie, "JWT cookie must exist after login").toBeDefined();
+  expect(jwtCookie!.httpOnly, "JWT must be HttpOnly (not readable by JS)").toBe(
+    true,
+  );
+  expect(jwtCookie!.secure, "JWT must be Secure (HTTPS only)").toBe(true);
+  expect(jwtCookie!.sameSite, "JWT must be Lax or Strict SameSite").toMatch(
+    /^(Lax|Strict)$/,
+  );
 
   // Validate the JWT structure (even though it's HttpOnly, CDP gave us the value)
   assertJWTStructure(jwtCookie!.value, {
-    issuer: 'https://auth.company.com',
+    issuer: "https://auth.company.com",
     minTTL: 3600, // at least 1 hour
   });
 });
@@ -447,7 +515,9 @@ test('HttpOnly JWT cookie is set correctly after login', async ({ page }) => {
 Tokens stored in the wrong place are a security vulnerability. Test that tokens are NOT in insecure locations:
 
 ```typescript
-test('Auth tokens are NOT stored in localStorage (security audit)', async ({ page }) => {
+test("Auth tokens are NOT stored in localStorage (security audit)", async ({
+  page,
+}) => {
   await performLogin(page, testUser);
 
   // Read all localStorage keys
@@ -465,19 +535,19 @@ test('Auth tokens are NOT stored in localStorage (security audit)', async ({ pag
   for (const [key, value] of Object.entries(localStorageData)) {
     expect(
       jwtPattern.test(value),
-      `localStorage['${key}'] contains what looks like a JWT — this is a security risk!`
+      `localStorage['${key}'] contains what looks like a JWT — this is a security risk!`,
     ).toBe(false);
   }
 
   // Verify token is in HttpOnly cookie instead:
   const cookies = await getHttpOnlyCookies(page, process.env.AUTH_URL!);
   expect(
-    cookies.some(c => c.httpOnly && jwtPattern.test(c.value)),
-    'JWT must be in an HttpOnly cookie, not localStorage'
+    cookies.some((c) => c.httpOnly && jwtPattern.test(c.value)),
+    "JWT must be in an HttpOnly cookie, not localStorage",
   ).toBe(true);
 });
 
-test('Auth token is NOT accessible via document.cookie', async ({ page }) => {
+test("Auth token is NOT accessible via document.cookie", async ({ page }) => {
   await performLogin(page, testUser);
 
   // document.cookie CANNOT see HttpOnly cookies — this is the expected behavior
@@ -486,7 +556,7 @@ test('Auth token is NOT accessible via document.cookie', async ({ page }) => {
 
   expect(
     jwtPattern.test(visibleCookies),
-    'A JWT is visible in document.cookie — it must be HttpOnly to be secure!'
+    "A JWT is visible in document.cookie — it must be HttpOnly to be secure!",
   ).toBe(false);
 });
 ```
@@ -500,13 +570,14 @@ Your team uses a custom notification service. The service has a REST API. Which 
 A) Open Gmail using Gmail API credentials and search the inbox  
 B) `page.waitForEvent('dialog')` — magic links appear in browser dialogs  
 C) Call the notification service's API to retrieve the latest message for the test user  
-D) Read the URL from the browser's network tab using `page.waitForResponse()`  
+D) Read the URL from the browser's network tab using `page.waitForResponse()`
 
 <details><summary>Answer</summary>
 
 **C** — Call your notification service API. It's the cleanest, fastest, and most reliable approach. It doesn't depend on email delivery timing, doesn't require browser UI interaction, and is exactly what the API exists for.
 
 A = accessing real email in tests is fragile, slow, and potentially a security issue. B = wrong — magic links are in emails, not browser dialogs. D = `waitForResponse` catches the backend API call that sends the notification, not the link content.
+
 </details>
 
 ---
@@ -527,21 +598,25 @@ The email service call returns `null` 30% of the time in CI. What is the bug and
 The email hasn't arrived yet when `getLatestResetLink` is called. Email delivery is asynchronous — requesting a reset triggers an API call from your backend to the notification service, then the notification service sends the email. This takes 1–5 seconds in most environments.
 
 Fix: Poll with `expect.poll`:
+
 ```typescript
 let link: MagicLink | null = null;
-await expect.poll(
-  async () => {
-    try {
-      link = await emailClient.getLatestResetLink(testUser.email);
-      return true;
-    } catch {
-      return false; // not arrived yet
-    }
-  },
-  { timeout: 30_000, intervals: [2000, 3000, 5000] }
-).toBe(true);
+await expect
+  .poll(
+    async () => {
+      try {
+        link = await emailClient.getLatestResetLink(testUser.email);
+        return true;
+      } catch {
+        return false; // not arrived yet
+      }
+    },
+    { timeout: 30_000, intervals: [2000, 3000, 5000] },
+  )
+  .toBe(true);
 await page.goto(link!.url);
 ```
+
 </details>
 
 ---
@@ -549,6 +624,7 @@ await page.goto(link!.url);
 ### Challenge 3 [Write It Yourself]
 
 Write a `PasswordResetPage` POM with:
+
 - `waitForLoad()` — waits for the new password input to be visible
 - `setNewPassword(pwd)` + `setConfirmPassword(pwd)` — fills the fields
 - `submit()` — clicks submit and waits for either success or error
@@ -557,7 +633,7 @@ Write a `PasswordResetPage` POM with:
 <details><summary>Answer</summary>
 
 ```typescript
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class PasswordResetPage {
   readonly page: Page;
@@ -572,22 +648,22 @@ export class PasswordResetPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.newPasswordInput = page.locator('#newPassword');
-    this.confirmPasswordInput = page.locator('#confirmPassword');
-    this.submitButton = page.locator('#resetPasswordBtn');
-    this.successMessage = page.locator('.password-reset-success');
-    this.tokenExpiredMessage = page.locator('.error-expired').or(
-      page.getByText('link has expired', { exact: false })
-    );
-    this.tokenAlreadyUsedMessage = page.locator('.error-used').or(
-      page.getByText('already been used', { exact: false })
-    );
-    this.loginErrorMessage = page.locator('.login-error-message');
-    this.validationError = page.locator('.field-validation-error');
+    this.newPasswordInput = page.locator("#newPassword");
+    this.confirmPasswordInput = page.locator("#confirmPassword");
+    this.submitButton = page.locator("#resetPasswordBtn");
+    this.successMessage = page.locator(".password-reset-success");
+    this.tokenExpiredMessage = page
+      .locator(".error-expired")
+      .or(page.getByText("link has expired", { exact: false }));
+    this.tokenAlreadyUsedMessage = page
+      .locator(".error-used")
+      .or(page.getByText("already been used", { exact: false }));
+    this.loginErrorMessage = page.locator(".login-error-message");
+    this.validationError = page.locator(".field-validation-error");
   }
 
   async waitForLoad(): Promise<void> {
-    await this.newPasswordInput.waitFor({ state: 'visible', timeout: 20000 });
+    await this.newPasswordInput.waitFor({ state: "visible", timeout: 20000 });
   }
 
   async setNewPassword(password: string): Promise<void> {
@@ -601,12 +677,13 @@ export class PasswordResetPage {
   async submit(): Promise<void> {
     await this.submitButton.click();
     // Wait for either success or error — don't wait for a specific URL
-    await expect(
-      this.successMessage.or(this.validationError)
-    ).toBeVisible({ timeout: 15000 });
+    await expect(this.successMessage.or(this.validationError)).toBeVisible({
+      timeout: 15000,
+    });
   }
 }
 ```
+
 </details>
 
 ---
@@ -618,29 +695,33 @@ Your test intercepts the SSO token from the URL: `https://crm.company.com?sso_to
 <details><summary>Answer</summary>
 
 ```typescript
-import { decodeJWT, assertJWTStructure } from '../../utils/jwt.util';
+import { decodeJWT, assertJWTStructure } from "../../utils/jwt.util";
 
-const ssoToken = new URL(page.url()).searchParams.get('sso_token')!;
+const ssoToken = new URL(page.url()).searchParams.get("sso_token")!;
 
 // 1. Structurally valid JWT (3 parts, valid base64url)
 const { payload } = decodeJWT(ssoToken);
 
 // 2. Not expired
 const now = Math.floor(Date.now() / 1000);
-expect(payload.exp, 'SSO token must not be expired').toBeGreaterThan(now);
+expect(payload.exp, "SSO token must not be expired").toBeGreaterThan(now);
 
 // 3. Issued by the correct authority
-expect(payload.iss, 'Wrong issuer').toBe('auth.company.com');
+expect(payload.iss, "Wrong issuer").toBe("auth.company.com");
 
 // 4. Has a usable remaining lifetime (not expiring in 30 seconds)
 const remainingTTL = payload.exp - now;
-expect(remainingTTL, 'SSO token must have at least 5 minutes remaining').toBeGreaterThan(300);
+expect(
+  remainingTTL,
+  "SSO token must have at least 5 minutes remaining",
+).toBeGreaterThan(300);
 
 // 5. Subject is the correct user
 expect(payload.sub).toBe(testUser.userId);
 ```
 
 Note: You CANNOT verify the signature without the private key. That's the backend's job. Your test verifies the **structure, claims, and expiry** — which is sufficient for E2E flow testing.
+
 </details>
 
 ---
@@ -657,13 +738,14 @@ You're asked to write a test that verifies the JWT is set as an HttpOnly cookie 
 
 ```typescript
 const cdp = await page.context().newCDPSession(page);
-const { cookies } = await cdp.send('Network.getCookies', { urls: [authUrl] });
-const jwtCookie = cookies.find(c => c.name === 'jwt');
-expect(jwtCookie?.httpOnly).toBe(true);  // ← only CDP can see this
+const { cookies } = await cdp.send("Network.getCookies", { urls: [authUrl] });
+const jwtCookie = cookies.find((c) => c.name === "jwt");
+expect(jwtCookie?.httpOnly).toBe(true); // ← only CDP can see this
 await cdp.detach();
 ```
 
 This also lets you verify `Secure: true` and `SameSite: Lax/Strict` — which `document.cookie` also cannot reveal.
+
 </details>
 
 ---
@@ -681,56 +763,58 @@ PKCE (Proof Key for Code Exchange) is the mandatory security extension for OAuth
 // 5. Auth server validates: SHA256(code_verifier) === stored code_challenge
 // 6. App receives: { access_token, refresh_token, id_token }
 
-test('OAuth PKCE flow uses S256 challenge method', async ({ page }) => {
+test("OAuth PKCE flow uses S256 challenge method", async ({ page }) => {
   let authorizeRequest: URL | null = null;
   let tokenRequest: { url: string; body: URLSearchParams } | null = null;
 
   // Intercept the authorization redirect
-  page.on('request', request => {
-    if (request.url().includes('/oauth2/authorize')) {
+  page.on("request", (request) => {
+    if (request.url().includes("/oauth2/authorize")) {
       authorizeRequest = new URL(request.url());
     }
   });
 
   // Intercept the token exchange POST
-  await page.route('**/oauth2/token', async route => {
-    const postData = route.request().postData() ?? '';
+  await page.route("**/oauth2/token", async (route) => {
+    const postData = route.request().postData() ?? "";
     tokenRequest = {
-      url:  route.request().url(),
+      url: route.request().url(),
       body: new URLSearchParams(postData),
     };
-    await route.continue();  // let the real request proceed
+    await route.continue(); // let the real request proceed
   });
 
   // Trigger login (which starts the OAuth flow)
   await page.goto(process.env.APP_URL!);
-  await page.waitForURL('**/authorize?**', { timeout: 10_000 });
+  await page.waitForURL("**/authorize?**", { timeout: 10_000 });
 
   // ── Verify the authorization request ──────────────────────────────────────
-  expect(authorizeRequest, 'App must initiate OAuth flow').not.toBeNull();
+  expect(authorizeRequest, "App must initiate OAuth flow").not.toBeNull();
 
   const params = authorizeRequest!.searchParams;
-  expect(params.get('response_type')).toBe('code');  // NOT 'token' (implicit)
-  expect(params.get('code_challenge_method')).toBe('S256'); // must be SHA256
-  expect(params.get('code_challenge')).toMatch(/^[A-Za-z0-9_-]{43}$/); // base64url SHA256
-  expect(params.get('state')).toBeTruthy(); // CSRF protection token
+  expect(params.get("response_type")).toBe("code"); // NOT 'token' (implicit)
+  expect(params.get("code_challenge_method")).toBe("S256"); // must be SHA256
+  expect(params.get("code_challenge")).toMatch(/^[A-Za-z0-9_-]{43}$/); // base64url SHA256
+  expect(params.get("state")).toBeTruthy(); // CSRF protection token
 
   // Complete login at the auth provider
-  await page.fill('#username', testUser.email);
-  await page.fill('#password', testUser.password);
-  await page.click('#loginBtn');
+  await page.fill("#username", testUser.email);
+  await page.fill("#password", testUser.password);
+  await page.click("#loginBtn");
 
   // Wait for redirect back to the app
   await page.waitForURL(`${process.env.APP_URL}/**`, { timeout: 30_000 });
 
   // ── Verify the token exchange request ─────────────────────────────────────
-  expect(tokenRequest, 'App must exchange code for tokens').not.toBeNull();
-  expect(tokenRequest!.body.get('grant_type')).toBe('authorization_code');
-  expect(tokenRequest!.body.get('code_verifier')).toBeTruthy();  // PKCE verifier must be present
-  expect(tokenRequest!.body.get('code_verifier')).toMatch(/^[A-Za-z0-9_~.-]{43,128}$/);
+  expect(tokenRequest, "App must exchange code for tokens").not.toBeNull();
+  expect(tokenRequest!.body.get("grant_type")).toBe("authorization_code");
+  expect(tokenRequest!.body.get("code_verifier")).toBeTruthy(); // PKCE verifier must be present
+  expect(tokenRequest!.body.get("code_verifier")).toMatch(
+    /^[A-Za-z0-9_~.-]{43,128}$/,
+  );
 
   // Verify: code_verifier length must be 43-128 chars (RFC 7636)
-  const verifierLength = tokenRequest!.body.get('code_verifier')!.length;
+  const verifierLength = tokenRequest!.body.get("code_verifier")!.length;
   expect(verifierLength).toBeGreaterThanOrEqual(43);
   expect(verifierLength).toBeLessThanOrEqual(128);
 });
@@ -738,16 +822,19 @@ test('OAuth PKCE flow uses S256 challenge method', async ({ page }) => {
 
 ```typescript
 // Security test: app rejects invalid code_verifier (simulated attack)
-test('OAuth token exchange rejects wrong code_verifier', async ({ page, request }) => {
+test("OAuth token exchange rejects wrong code_verifier", async ({
+  page,
+  request,
+}) => {
   // Intercept and modify the token exchange to use a wrong verifier
-  await page.route('**/oauth2/token', async route => {
-    const postData = new URLSearchParams(route.request().postData() ?? '');
-    postData.set('code_verifier', 'WRONG_VERIFIER_SIMULATING_PKCE_ATTACK');
+  await page.route("**/oauth2/token", async (route) => {
+    const postData = new URLSearchParams(route.request().postData() ?? "");
+    postData.set("code_verifier", "WRONG_VERIFIER_SIMULATING_PKCE_ATTACK");
 
     // Forward modified request
     const response = await request.post(route.request().url(), {
       data: postData.toString(),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
     await route.fulfill({
@@ -760,8 +847,9 @@ test('OAuth token exchange rejects wrong code_verifier', async ({ page, request 
   // Complete the auth flow...
 
   // The page should show an auth error — NOT grant access
-  await expect(page.locator('.auth-error, #error, [role="alert"]'))
-    .toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('.auth-error, #error, [role="alert"]')).toBeVisible(
+    { timeout: 15_000 },
+  );
   await expect(page).not.toHaveURL(/dashboard/, { timeout: 5_000 });
 });
 ```
@@ -773,23 +861,25 @@ test('OAuth token exchange rejects wrong code_verifier', async ({ page, request 
 A robust enterprise test suite must verify that when an Access Token expires, the app seamlessly uses the Refresh Token to get a new one without forcing the user to log in again.
 
 ```typescript
-test('App successfully rotates expired access token using refresh token', async ({ page }) => {
+test("App successfully rotates expired access token using refresh token", async ({
+  page,
+}) => {
   // 1. Intercept the token exchange to capture the real Refresh Token
   let capturedRefreshToken: string | null = null;
-  await page.route('**/oauth2/token', async route => {
+  await page.route("**/oauth2/token", async (route) => {
     const response = await route.fetch();
     const body = await response.json();
-    
+
     if (body.refresh_token) {
       capturedRefreshToken = body.refresh_token;
     }
-    
+
     // We intentionally MOCK the access_token to expire in 5 seconds
-    body.expires_in = 5; 
-    
+    body.expires_in = 5;
+
     await route.fulfill({
       status: 200,
-      contentType: 'application/json',
+      contentType: "application/json",
       body: JSON.stringify(body),
     });
   });
@@ -797,7 +887,7 @@ test('App successfully rotates expired access token using refresh token', async 
   // 2. Login to the application
   await page.goto(process.env.APP_URL!);
   // ... perform login ...
-  await page.waitForURL('**/dashboard');
+  await page.waitForURL("**/dashboard");
 
   // 3. Wait for the mocked access token to expire
   // (We mocked it to 5 seconds, so we wait 6 seconds)
@@ -805,25 +895,26 @@ test('App successfully rotates expired access token using refresh token', async 
 
   // 4. Intercept the subsequent rotation request to verify it happens
   const [rotationRequest] = await Promise.all([
-    page.waitForRequest(req => 
-      req.url().includes('/oauth2/token') && 
-      req.postData()?.includes('grant_type=refresh_token')
+    page.waitForRequest(
+      (req) =>
+        req.url().includes("/oauth2/token") &&
+        req.postData()?.includes("grant_type=refresh_token"),
     ),
     // Trigger an API call in the UI by clicking a tab
-    page.click('text=Profile Settings'),
+    page.click("text=Profile Settings"),
   ]);
 
   // 5. Verify the app sent the correct refresh token
-  const postData = new URLSearchParams(rotationRequest.postData() ?? '');
-  expect(postData.get('refresh_token')).toBe(capturedRefreshToken);
+  const postData = new URLSearchParams(rotationRequest.postData() ?? "");
+  expect(postData.get("refresh_token")).toBe(capturedRefreshToken);
 
   // 6. Verify the UI still works (meaning the rotation succeeded and the API call went through)
-  await expect(page.locator('.profile-details')).toBeVisible();
+  await expect(page.locator(".profile-details")).toBeVisible();
 });
 ```
 
 Testing this edge case manually is notoriously difficult (requiring testers to sit idle for hours). With Playwright's `page.route()`, you can compress hours of token TTLs into a 10-second test by modifying the `expires_in` response payload on the fly.
 
 ---
-**Navigation**: [← Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md) | [Index](../00_INDEX.md) | [→ Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md)
 
+**Navigation**: [← Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md) | [Index](../00_INDEX.md) | [→ Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md)

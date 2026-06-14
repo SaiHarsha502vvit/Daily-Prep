@@ -39,21 +39,21 @@
 ```
   The Elements tab shows the LIVE DOM (not your source HTML).
   Changes you make here are immediate but NOT saved to files.
-  
-  
+
+
   KEY SHORTCUTS:
   ══════════════
-  
+
   Ctrl+Shift+C (Cmd+Shift+C)  → Inspect element mode (click to select)
   F2 on selected element       → Edit as HTML
   Delete                       → Remove element
   Ctrl+Z                       → Undo DOM change
   H                            → Toggle visibility (display: none)
-  
-  
+
+
   STYLES PANEL (right side):
   ══════════════════════════
-  
+
   ┌─ Styles ──────────────────────────────────────────────┐
   │                                                        │
   │  element.style {                                       │
@@ -75,7 +75,7 @@
   │    display: inline-block;                              │
   │                                                        │
   └────────────────────────────────────────────────────────┘
-  
+
   Click any value to edit live. Click empty area to add new property.
 ```
 
@@ -83,7 +83,7 @@
 
 ```
   COMPUTED panel shows the FINAL resolved value for every property.
-  
+
   ┌─ Computed ────────────────────────────────────────────┐
   │                                                        │
   │  ┌───────────────────────────────────────┐             │
@@ -104,7 +104,7 @@
   │  font-size: 16px            → inherited from body      │
   │                                                        │
   └────────────────────────────────────────────────────────┘
-  
+
   Click the arrow next to any property to see which rule set it.
 ```
 
@@ -112,13 +112,13 @@
 
 ```
   Right-click element → Force state:
-  
+
   ✅ :hover    → See hover styles without hovering
   ✅ :active   → See click styles
   ✅ :focus    → See focus styles
   ✅ :visited  → See visited link styles
   ✅ :focus-within → See focus-within states
-  
+
   ESSENTIAL for debugging hover menus or focus states
   that disappear when you move your mouse to DevTools!
 ```
@@ -134,22 +134,22 @@
 
 // TABLE — Display arrays/objects as sortable tables:
 console.table([
-  { name: 'Alice', age: 30, role: 'dev' },
-  { name: 'Bob', age: 25, role: 'design' },
-  { name: 'Carol', age: 35, role: 'pm' }
+  { name: "Alice", age: 30, role: "dev" },
+  { name: "Bob", age: 25, role: "design" },
+  { name: "Carol", age: 35, role: "pm" },
 ]);
 // Shows a beautiful sortable table! Click headers to sort.
 
 // GROUP — Collapsible groups:
-console.group('User Authentication');
-console.log('Token valid:', true);
-console.log('User:', 'alice@example.com');
+console.group("User Authentication");
+console.log("Token valid:", true);
+console.log("User:", "alice@example.com");
 console.groupEnd();
 
 // TIME — Measure execution:
-console.time('dataProcessing');
+console.time("dataProcessing");
 processLargeDataset();
-console.timeEnd('dataProcessing'); // → dataProcessing: 142.5ms
+console.timeEnd("dataProcessing"); // → dataProcessing: 142.5ms
 
 // COUNT — Track call frequency:
 function handleClick(button) {
@@ -157,18 +157,18 @@ function handleClick(button) {
 }
 
 // ASSERT — Log only when condition is false:
-console.assert(user.age >= 18, 'User is underage!', user);
+console.assert(user.age >= 18, "User is underage!", user);
 
 // TRACE — Show call stack:
 function deepFunction() {
-  console.trace('How did I get here?');
+  console.trace("How did I get here?");
 }
 
 // STYLED LOGS:
 console.log(
-  '%cWARNING%c This operation is expensive',
-  'background: #ff6b6b; color: white; padding: 2px 8px; border-radius: 4px;',
-  'color: #ff6b6b;'
+  "%cWARNING%c This operation is expensive",
+  "background: #ff6b6b; color: white; padding: 2px 8px; border-radius: 4px;",
+  "color: #ff6b6b;",
 );
 ```
 
@@ -182,26 +182,26 @@ console.log(
 
 // CONSOLE UTILITIES (only work in Console, not in code):
 
-$0    // Currently selected element in Elements tab
-$1    // Previously selected element
-$$('div.card')  // Same as document.querySelectorAll('div.card')
+$0; // Currently selected element in Elements tab
+$1; // Previously selected element
+$$("div.card"); // Same as document.querySelectorAll('div.card')
 
 // Copy anything to clipboard:
-copy($0.outerHTML)
-copy(JSON.stringify(data, null, 2))
+copy($0.outerHTML);
+copy(JSON.stringify(data, null, 2));
 
 // Monitor function calls:
-monitor(fetchUserData)
+monitor(fetchUserData);
 // → "function fetchUserData called with arguments: [123]"
-unmonitor(fetchUserData) // Stop monitoring
+unmonitor(fetchUserData); // Stop monitoring
 
 // Monitor events on an element:
-monitorEvents($0, 'click')     // Log all clicks on selected element
-monitorEvents($0, ['click', 'keydown'])
-unmonitorEvents($0)
+monitorEvents($0, "click"); // Log all clicks on selected element
+monitorEvents($0, ["click", "keydown"]);
+unmonitorEvents($0);
 
 // Get event listeners:
-getEventListeners($0)
+getEventListeners($0);
 // → { click: [{listener: f, useCapture: false}], ... }
 ```
 
@@ -212,29 +212,29 @@ getEventListeners($0)
 ```
   TYPES OF BREAKPOINTS:
   ═════════════════════
-  
+
   1. LINE BREAKPOINT — Click line number (blue marker)
      Pauses execution at that exact line.
-  
+
   2. CONDITIONAL BREAKPOINT — Right-click line → "Add conditional"
      Example: userId === 'user123'
      Only pauses when condition is true!
-  
+
   3. LOGPOINT — Right-click line → "Add logpoint"
      Example: "User data:", userData
      Logs WITHOUT pausing — no need to add console.log to code!
-  
+
   4. DOM BREAKPOINT (in Elements tab):
      Right-click element → "Break on..."
      • Subtree modifications (child added/removed)
      • Attribute modifications (class/style changed)
      • Node removal
-  
+
   5. XHR/FETCH BREAKPOINT:
      Sources → XHR/fetch Breakpoints → Add
      Enter URL substring: "/api/users"
      Pauses whenever a matching request is made.
-  
+
   6. EVENT LISTENER BREAKPOINT:
      Sources → Event Listener Breakpoints
      Check "Mouse → click" → pauses on ALL click handlers
@@ -244,7 +244,7 @@ getEventListeners($0)
 
 ```
   When paused at a breakpoint:
-  
+
   ┌─────────────────────────────────────────────────────┐
   │  ▶ Resume (F8)      — Continue until next breakpoint│
   │  ⤵ Step Over (F10)  — Execute line, move to next    │
@@ -252,11 +252,11 @@ getEventListeners($0)
   │  ⤶ Step Out (Shift+F11) — Finish current function   │
   │  ⏭ Step (F9)        — Next statement (micro-step)   │
   └─────────────────────────────────────────────────────┘
-  
+
   SCOPE PANEL (while paused):
   ═══════════════════════════
   Shows all variables in current scope:
-  
+
   Local:
     item = { id: 5, name: "Widget" }
     index = 3
@@ -266,7 +266,7 @@ getEventListeners($0)
     config = { apiUrl: "..." }
   Global:
     window, document, ...
-  
+
   WATCH PANEL:
   ════════════
   Add expressions to watch:
@@ -280,22 +280,19 @@ getEventListeners($0)
 ```
   Without source maps:           With source maps:
   ═══════════════════           ═════════════════
-  
+
   // bundle.min.js              // src/components/UserCard.tsx
   var a=function(b){            const UserCard = ({ user }) => {
   return b.n+" "+b.l;            return user.name + " " + user.lastName;
   };                            };
-  
+
   Source maps connect minified/bundled code back to your original files.
   Built automatically by webpack/vite/esbuild in dev mode.
-  
+
   In Sources tab: you see your ORIGINAL files, set breakpoints there!
 ```
 
 ---
-
-
-
 
 ## 4. Network Tab — Request Waterfall Analysis
 
@@ -315,18 +312,18 @@ getEventListeners($0)
   │  avatar.jpg  200     image   15KB   190ms          ██████    │
   │                                                               │
   └───────────────────────────────────────────────────────────────┘
-  
-  
+
+
   WATERFALL COLOR CODING:
   ═══════════════════════
-  
+
   ┌────────────────────────────────────────────────────────────┐
   │  █ DNS Lookup (green)     — Resolving domain name          │
   │  █ Initial Connection     — TCP + TLS handshake (orange)   │
   │  █ TTFB (green)           — Waiting for server response    │
   │  █ Content Download (blue) — Downloading response body     │
   └────────────────────────────────────────────────────────────┘
-  
+
   If TTFB is long → server is slow (optimize backend)
   If Download is long → response is large (compress/reduce)
   If DNS is long → preconnect to that domain
@@ -337,35 +334,33 @@ getEventListeners($0)
 ```
   THROTTLE NETWORK — Test slow connections:
   ═════════════════════════════════════════
-  
+
   ▼ No throttling
     Fast 3G (562 kbps down, 150ms latency)
     Slow 3G (50 kbps down, 2000ms latency)
     Offline
-  
+
   BLOCK REQUESTS — Test failure handling:
   ═══════════════════════════════════════
   Right-click request → "Block request URL"
   Or: Network conditions → Request blocking → Add pattern
-  
+
   Pattern: *api/users* → blocks all matching requests
   Does your app show a proper error state? or crash?
-  
+
   COPY REQUEST — Export for debugging:
   ════════════════════════════════════
   Right-click request → Copy:
   • Copy as cURL    → paste into terminal to reproduce
   • Copy as fetch   → paste into Console to replay
   • Copy headers    → share with backend team
-  
+
   REPLAY REQUEST:
   ═══════════════
   Right-click → "Replay XHR" → sends the same request again
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 4. Network Tab — Request Waterfall Analysis**
 
@@ -386,17 +381,17 @@ getEventListeners($0)
 ```
   HOW TO PROFILE:
   ═══════════════
-  
+
   1. Open Performance tab
   2. Click Record (⏺)
   3. Perform the slow action (scroll, click, navigate)
   4. Click Stop
   5. Analyze the flame chart
-  
-  
+
+
   THE FLAME CHART:
   ════════════════
-  
+
   Time →  0ms      100ms     200ms     300ms     400ms
   ┌──────────────────────────────────────────────────────┐
   │ Task ████████████████████████████████████████████     │ ← Long Task!
@@ -411,7 +406,7 @@ getEventListeners($0)
   │  │     └ Sidebar ████                                 │
   │  └ Style + Layout ██████                              │
   └──────────────────────────────────────────────────────┘
-  
+
   READING THE CHART:
   • Width = time spent (wider = slower)
   • Red triangle top = Long Task (>50ms)
@@ -426,24 +421,24 @@ getEventListeners($0)
 ```
   SUMMARY VIEW (at bottom):
   ═════════════════════════
-  
+
   Loading:    120ms  ███
   Scripting:  450ms  ████████████████
   Rendering:  80ms   ██
   Painting:   30ms   █
   System:     40ms   █
   Idle:       280ms  ████████
-  
+
   → Scripting dominates? Your JS is the bottleneck.
   → Rendering high? Too many layout recalculations.
-  
-  
+
+
   FRAMES VIEW:
   ════════════
-  
+
   Each green bar = one frame (ideally 16.67ms at 60fps)
   Red bar = dropped frame (took too long)
-  
+
   ┌ Frames ──────────────────────────────────────────┐
   │ █ █ █ █ █ ▓ ▓ ▓ █ █ █ █ █ █ ▓ █ █ █ █ █ █ █   │
   │ ↑ normal   ↑↑↑ dropped frames (red/yellow)       │
@@ -452,29 +447,26 @@ getEventListeners($0)
 
 ---
 
-
-
-
 ## 6. Memory Tab — Hunting Memory Leaks
 
 ```
   MEMORY LEAK SYMPTOMS:
   ═════════════════════
-  
+
   • App gets slower over time
   • Tab memory keeps growing (check Task Manager: Shift+Esc in Chrome)
   • Page eventually crashes with "Aw, Snap!"
-  
-  
+
+
   THREE TOOLS IN MEMORY TAB:
   ══════════════════════════
-  
+
   1. HEAP SNAPSHOT — "Where is memory being used RIGHT NOW?"
      Take snapshot → See all objects, their sizes, and references.
-  
+
   2. ALLOCATION TIMELINE — "What's allocating memory OVER TIME?"
      Start recording → interact with app → See blue bars (allocations).
-  
+
   3. ALLOCATION SAMPLING — Lightweight profiling for production.
 ```
 
@@ -483,49 +475,49 @@ getEventListeners($0)
 ```
   THE 3-SNAPSHOT TECHNIQUE:
   ═════════════════════════
-  
+
   Step 1: Navigate to the page → Take Snapshot 1 (baseline)
   Step 2: Do the action you suspect leaks (e.g., open/close modal 10 times)
   Step 3: Force garbage collection (🗑 icon in Memory tab)
   Step 4: Take Snapshot 2
   Step 5: Compare Snapshot 1 vs 2
-  
+
   In Snapshot 2, select "Objects allocated between Snapshot 1 and 2"
-  
+
   If objects from opened-then-closed modals STILL exist → LEAK!
-  
-  
+
+
   COMMON MEMORY LEAK PATTERNS:
   ════════════════════════════
-  
+
   1. Event listeners not removed:
      // LEAK:
      useEffect(() => {
        window.addEventListener('scroll', handleScroll);
        // Missing cleanup! Listener stays after unmount
      }, []);
-     
+
      // FIX:
      useEffect(() => {
        window.addEventListener('scroll', handleScroll);
        return () => window.removeEventListener('scroll', handleScroll);
      }, []);
-  
+
   2. setInterval not cleared:
      // LEAK:
      useEffect(() => {
        setInterval(fetchUpdates, 5000);
        // Interval runs FOREVER even after unmount
      }, []);
-     
+
      // FIX:
      useEffect(() => {
        const id = setInterval(fetchUpdates, 5000);
        return () => clearInterval(id);
      }, []);
-  
+
   3. Closures holding references:
-     // LEAK: 
+     // LEAK:
      function setup() {
        const hugeData = loadMassiveDataset(); // 50MB
        return function handler() {
@@ -534,7 +526,7 @@ getEventListeners($0)
          console.log(hugeData.length);
        };
      }
-     
+
      // FIX: Extract only what you need
      function setup() {
        const hugeData = loadMassiveDataset();
@@ -543,7 +535,7 @@ getEventListeners($0)
          console.log(length); // Closure only holds the number
        };
      }
-  
+
   4. Detached DOM nodes:
      const elements = [];
      function createRow() {
@@ -558,15 +550,12 @@ getEventListeners($0)
 
 ---
 
-
-
-
 ## 7. Application Tab — Storage, Service Workers, Cache
 
 ```
   APPLICATION TAB SECTIONS:
   ═════════════════════════
-  
+
   Storage:
   ├── Local Storage      → Key-value pairs (persistent)
   │   └── Click to view/edit/delete entries
@@ -575,18 +564,18 @@ getEventListeners($0)
   ├── Cookies           → View all cookies, edit values, check flags
   │   └── HttpOnly? Secure? SameSite? Expiry?
   └── Cache Storage     → Service worker caches (inspect cached responses)
-  
+
   Service Workers:
   ├── See registered SWs, their status (activated/waiting)
   ├── Push test button (send test push notification)
   ├── Sync test button (trigger background sync)
   ├── Update on reload checkbox
   └── Unregister button
-  
-  
+
+
   COOKIE DEBUGGING:
   ═════════════════
-  
+
   ┌────────────┬────────────────────────────────────────┐
   │ Column     │ What to check                          │
   ├────────────┼────────────────────────────────────────┤
@@ -608,16 +597,16 @@ getEventListeners($0)
 ```
   HOW TO RUN:
   ═══════════
-  
+
   1. Open Lighthouse tab (or Ctrl+Shift+I → Lighthouse)
   2. Select categories: Performance, Accessibility, Best Practices, SEO
   3. Select device: Mobile / Desktop
   4. Click "Analyze page load"
-  
-  
+
+
   PERFORMANCE METRICS:
   ════════════════════
-  
+
   ┌── Score Breakdown ──────────────────────────────────────────┐
   │                                                              │
   │  FCP (First Contentful Paint)     1.2s  ← first text/image │
@@ -640,11 +629,11 @@ getEventListeners($0)
   │  • JavaScript execution: 1.8s                               │
   │                                                              │
   └──────────────────────────────────────────────────────────────┘
-  
-  
+
+
   ACCESSIBILITY AUDIT:
   ════════════════════
-  
+
   ✅ Image elements have alt attributes
   ❌ Background and foreground colors do not have sufficient contrast ratio
   ❌ Form elements do not have associated labels
@@ -660,37 +649,37 @@ getEventListeners($0)
 ```
   REACT DEVTOOLS EXTENSION (separate install):
   ═════════════════════════════════════════════
-  
+
   Components Tab:
   ├── View component tree (like Elements but for React)
   ├── Inspect props and state of any component
   ├── Edit state/props LIVE (test different values)
   ├── See which hooks are used (useState, useEffect, etc.)
   └── Search for components by name
-  
+
   Profiler Tab:
   ├── Record a session → See which components re-rendered
   ├── Flame chart shows render time per component
   ├── "Why did this render?" for each component
   │   → Props changed? State changed? Parent re-rendered?
   └── Ranked chart → Components sorted by render time
-  
-  
+
+
   SETTINGS (gear icon):
   ═══════════════════════
   ☑ Highlight updates when components render
     → Yellow/green flash around elements that re-render
     → INSTANTLY see unnecessary re-renders!
-  
-  
+
+
   USEFUL DEBUGGING PATTERN:
   ═════════════════════════
-  
+
   // Why is my component re-rendering?
   // Add this hook temporarily:
   function useWhyDidYouRender(name, props) {
     const previousProps = useRef(props);
-    
+
     useEffect(() => {
       const changes = {};
       Object.keys(props).forEach(key => {
@@ -701,16 +690,16 @@ getEventListeners($0)
           };
         }
       });
-      
+
       if (Object.keys(changes).length > 0) {
         console.log(`[${name}] Re-rendered because:`, changes);
       }
-      
+
       previousProps.current = props;
     });
   }
-  
-  // Usage: 
+
+  // Usage:
   function ProductList({ items, filter, sort }) {
     useWhyDidYouRender('ProductList', { items, filter, sort });
     // ...
@@ -719,17 +708,14 @@ getEventListeners($0)
 
 ---
 
-
-
-
 ## 10. Mobile Debugging & Device Emulation
 
 ```
   DEVICE MODE (Ctrl+Shift+M):
   ════════════════════════════
-  
+
   Toggle device toolbar to emulate mobile devices:
-  
+
   ┌── Device Toolbar ────────────────────────────────────┐
   │  ▼ iPhone 14 Pro    │ 393 x 852  │ 3x │ Rotate     │
   │                                                       │
@@ -742,17 +728,17 @@ getEventListeners($0)
   │  • Touch simulation (touch events instead of mouse)  │
   │  • Media query visualization (see breakpoint bars)   │
   └───────────────────────────────────────────────────────┘
-  
-  
+
+
   REMOTE DEBUGGING (real device):
   ═══════════════════════════════
-  
+
   Android:
   1. Enable USB debugging on phone
   2. Connect via USB
   3. Chrome → chrome://inspect → find your device
   4. Click "Inspect" → full DevTools for mobile browser
-  
+
   iOS:
   1. Enable Web Inspector (Settings → Safari → Advanced)
   2. Connect via USB to Mac
@@ -760,9 +746,6 @@ getEventListeners($0)
 ```
 
 ---
-
-
-
 
 ## 11. Common Debugging Scenarios — Cookbook
 
@@ -838,15 +821,19 @@ getEventListeners($0)
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Stale Closure Tracking):** You suspect a `setInterval` is using a stale React state because it logs the initial state `0` continuously instead of the updated `count`. How can you verify this closure in the DevTools without modifying the source code?
+
 <details><summary>Answer</summary>
 
 **Answer:** Use the Sources tab. Add a Logpoint (right-click the line number -> Add logpoint) inside the interval callback: `count`. Because the Logpoint runs in the same scope as the code execution, you can verify if `count` evaluates to `0` or if it's the fresh value. You can also add a Breakpoint on the interval's callback line and inspect the "Scope" panel (under "Closure") to see the exact values captured by the function.
+
 </details>
 
 **Challenge 2 (Memory Leak Diagnosis):** After testing your Single Page App by navigating back and forth between the Dashboard and a large Report table 10 times, the browser slows down. How do you definitively prove the Report table is leaking memory using the 3-Snapshot Technique?
+
 <details><summary>Answer</summary>
 
-**Answer:** 
+**Answer:**
+
 1. Open the Memory tab and take Snapshot 1 (baseline) on the Dashboard.
 2. Perform the action: navigate to the Report table, then back to the Dashboard. Repeat this 10 times.
 3. Click the Trash Can icon to force Garbage Collection.
@@ -857,5 +844,3 @@ getEventListeners($0)
 ---
 
 **Next Chapter**: [Web Performance & Core Web Vitals →](06_Web_Performance_CoreWebVitals.md)
-
-

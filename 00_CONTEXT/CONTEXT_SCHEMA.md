@@ -10,15 +10,19 @@ Each active module folder should have a `CONTEXT.md` with:
 # Folder Context: <folder>
 
 ## Purpose
+
 What this folder owns.
 
 ## Writing Style
+
 How files in this folder are usually written.
 
 ## Boundaries
+
 What belongs elsewhere.
 
 ## Update Triggers
+
 When future agents must update this context.
 ```
 

@@ -61,10 +61,7 @@ test('quiz-02-ch04: wait for navigation + network idle', async ({ page }) => {
 
   // FIXED: Wait for navigation to complete AND network to be idle.
   // This means the page has fully loaded, not just that N milliseconds passed.
-  await Promise.all([
-    page.waitForURL(/dashboard/),
-    submitBtn.click(),
-  ]);
+  await Promise.all([page.waitForURL(/dashboard/), submitBtn.click()]);
   await page.waitForLoadState('networkidle');
 
   await expect(page.locator('h6')).toContainText('Dashboard');
@@ -82,7 +79,7 @@ test('quiz-02-ch04: wait for API response instead of sleep', async ({ page }) =>
   const response = await responsePromise;
   expect(response.status()).toBe(200);
 
-  const body = await response.json() as { page: number };
+  const body = (await response.json()) as { page: number };
   expect(body.page).toBe(1);
 });
 

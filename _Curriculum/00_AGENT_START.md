@@ -4,12 +4,12 @@ This repo is the source of truth. Treat it as a living technical curriculum.
 
 ## Semester Map
 
-| Sem | Focus | Key Folders |
-|-----|-------|-------------|
-| S1–S2 | Foundations: DSA, SQL, Java, JS | `02_Data_Structures`, `03_Algorithms`, `07_Modern_Java`, `08_SQL` |
-| S3 | Full Stack: React, TS, CSS, Spring | `15_React_Frontend`, `17_TypeScript`, `18_CSS_Complete`, `07_Modern_Java` |
-| S4 | Backend: Enterprise, DevOps | `10_Enterprise_Systems`, `22_DevOps`, `13_Developer_Essentials` |
-| S5–S8 | Interview Prep, Career, ML/DL | `20_Interview_Mastery`, `09_Career_Reference`, `21_Python_ML_DL_NLP` |
+| Sem   | Focus                              | Key Folders                                                               |
+| ----- | ---------------------------------- | ------------------------------------------------------------------------- |
+| S1–S2 | Foundations: DSA, SQL, Java, JS    | `02_Data_Structures`, `03_Algorithms`, `07_Modern_Java`, `08_SQL`         |
+| S3    | Full Stack: React, TS, CSS, Spring | `15_React_Frontend`, `17_TypeScript`, `18_CSS_Complete`, `07_Modern_Java` |
+| S4    | Backend: Enterprise, DevOps        | `10_Enterprise_Systems`, `22_DevOps`, `13_Developer_Essentials`           |
+| S5–S8 | Interview Prep, Career, ML/DL      | `20_Interview_Mastery`, `09_Career_Reference`, `21_Python_ML_DL_NLP`      |
 
 ## Key Folders
 
@@ -46,6 +46,8 @@ Full file map: `_Curriculum/01_FILE_MAP.md`.
 ## Context Update Rule
 
 After edits: (1) Update folder `CONTEXT.md` if boundaries changed. (2) Update `00_CONTEXT/DECISIONS.md` if a permanent rule was added. (3) Log in `00_CONTEXT/CHANGE_JOURNAL.md`. Then run:
-```powershell
+
+````powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check```
+````

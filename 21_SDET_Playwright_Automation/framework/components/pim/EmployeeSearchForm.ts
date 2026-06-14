@@ -17,7 +17,9 @@ export class EmployeeSearchForm {
   constructor(page: Page) {
     this.page = page;
     // The employee name input inside the PIM search area uses a wrapper pattern
-    this.employeeNameInput = page.locator('.oxd-form-row input[placeholder="Type for hints..."]').first();
+    this.employeeNameInput = page
+      .locator('.oxd-form-row input[placeholder="Type for hints..."]')
+      .first();
     // Label-anchored locator — robust against autocomplete inputs that also have class .oxd-input.
     this.employeeIdInput = page
       .locator('.oxd-input-group')
@@ -26,7 +28,9 @@ export class EmployeeSearchForm {
     this.searchButton = page.getByRole('button', { name: 'Search' });
     this.resetButton = page.getByRole('button', { name: 'Reset' });
     this.includeDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').first();
-    this.supervisorNameInput = page.locator('.oxd-form-row input[placeholder="Type for hints..."]').nth(1);
+    this.supervisorNameInput = page
+      .locator('.oxd-form-row input[placeholder="Type for hints..."]')
+      .nth(1);
     this.jobTitleDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').nth(1);
     this.subUnitDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').nth(2);
   }

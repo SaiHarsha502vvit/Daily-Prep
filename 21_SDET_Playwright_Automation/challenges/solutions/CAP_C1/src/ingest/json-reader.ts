@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 export interface PlaywrightTest {
   title: string;
-  status: 'passed' | 'failed' | 'skipped' | 'timedOut' | 'interrupted';
+  status: "passed" | "failed" | "skipped" | "timedOut" | "interrupted";
   duration: number;
   errors: string[];
 }
@@ -14,7 +14,11 @@ export interface PlaywrightReport {
 }
 
 function isPlaywrightReport(obj: unknown): obj is { tests?: unknown[] } {
-  return typeof obj === 'object' && obj !== null && Array.isArray((obj as { tests?: unknown }).tests);
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    Array.isArray((obj as { tests?: unknown }).tests)
+  );
 }
 
 export function readJsonReports(dirPath: string): PlaywrightReport[] {
@@ -22,7 +26,7 @@ export function readJsonReports(dirPath: string): PlaywrightReport[] {
     throw new Error(`Reports directory does not exist: ${dirPath}`);
   }
 
-  const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.json'));
+  const files = fs.readdirSync(dirPath).filter((f) => f.endsWith(".json"));
   if (files.length === 0) {
     throw new Error(`No JSON files found in: ${dirPath}`);
   }
@@ -31,7 +35,7 @@ export function readJsonReports(dirPath: string): PlaywrightReport[] {
 
   for (const file of files) {
     const filePath = path.join(dirPath, file);
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(filePath, "utf-8");
     const parsed = JSON.parse(content);
 
     if (!isPlaywrightReport(parsed)) {
@@ -39,15 +43,21 @@ export function readJsonReports(dirPath: string): PlaywrightReport[] {
     }
 
     const tests: PlaywrightTest[] = (parsed.tests ?? []).map((t: unknown) => {
-      if (typeof t !== 'object' || t === null) {
+      if (typeof t !== "object" || t === null) {
         throw new Error(`Invalid test entry in: ${file}`);
       }
       const test = t as Record<string, unknown>;
       return {
-        title: String(test.title ?? ''),
-        status: ['passed', 'failed', 'skipped', 'timedOut', 'interrupted'].includes(String(test.status))
-          ? (test.status as PlaywrightTest['status'])
-          : 'failed',
+        title: String(test.title ?? ""),
+        status: [
+          "passed",
+          "failed",
+          "skipped",
+          "timedOut",
+          "interrupted",
+        ].includes(String(test.status))
+          ? (test.status as PlaywrightTest["status"])
+          : "failed",
         duration: Number(test.duration ?? 0),
         errors: Array.isArray(test.errors) ? test.errors.map(String) : [],
       };

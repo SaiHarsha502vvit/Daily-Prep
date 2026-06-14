@@ -8,22 +8,20 @@
 
 ## Why This Chapter Exists
 
-
 THE FREEZE PATTERN
 
-Junior:   "I know closures capture variables"
+Junior: "I know closures capture variables"
 Interviewer: "But WHY does this print 5,5,5,5,5 instead of
 0,1,2,3,4?"
-Junior:   *freezes*
+Junior: _freezes_
 
-Senior:   "Because var is function-scoped, so the loop shares
+Senior: "Because var is function-scoped, so the loop shares
 ONE binding. The closure captures the variable, not
 its value at that moment. Each iteration doesn't
 create a new scope — it mutates the same variable.
 Using let creates block scope, so each iteration
 gets its own binding — like giving each callback
 its own copy of the letter, not a shared whiteboard."
-
 
 This chapter covers **30+ freeze moments** — places where surface knowledge fails and deep reasoning saves you.
 
@@ -52,15 +50,18 @@ This chapter covers **30+ freeze moments** — places where surface knowledge fa
 ## 1. Event Loop: The Execution Order Trap
 
 ### The Freeze Question
+
 ```javascript
-console.log('1');
-setTimeout(() => console.log('2'), 0);
-Promise.resolve().then(() => console.log('3'));
-console.log('4');
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+console.log("4");
 ```
+
 **"What's the output order and WHY?"**
 
 ### Surface Answer (Junior)
+
 "1, 4, 2, 3... wait, no... 1, 4, 3, 2?"
 
 ### Deep Reasoning (Senior)
@@ -87,8 +88,8 @@ console.log('4');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Why `setTimeout(fn, 0)` doesn't mean "run immediately":**
+
 - `0ms` means "run after the current execution context AND all microtasks are done"
 - Even with 0ms delay, it goes to the macrotask queue
 - Microtasks (Promises) ALWAYS run before macrotasks (setTimeout)
@@ -96,28 +97,29 @@ console.log('4');
 ### The Follow-Up Trap
 
 ```javascript
-console.log('start');
+console.log("start");
 
-setTimeout(() => console.log('timeout1'), 0);
-setTimeout(() => console.log('timeout2'), 0);
+setTimeout(() => console.log("timeout1"), 0);
+setTimeout(() => console.log("timeout2"), 0);
 
 Promise.resolve()
   .then(() => {
-    console.log('promise1');
-    setTimeout(() => console.log('timeout3'), 0);
+    console.log("promise1");
+    setTimeout(() => console.log("timeout3"), 0);
   })
-  .then(() => console.log('promise2'));
+  .then(() => console.log("promise2"));
 
-console.log('end');
+console.log("end");
 
 // Output: start, end, promise1, promise2, timeout1, timeout2, timeout3
-// WHY? All microtasks drain BEFORE any macrotask. promise2 is chained 
+// WHY? All microtasks drain BEFORE any macrotask. promise2 is chained
 // so it's queued as next microtask after promise1 runs.
 ```
 
 ### The Analogy That Clicks
 
 **The event loop is like a bank teller:**
+
 - The teller (call stack) handles one customer at a time
 - VIP customers (microtasks) can cut in line after each regular customer
 - Regular customers (macrotasks) wait their turn
@@ -129,6 +131,7 @@ console.log('end');
 ## 2. Closures: The Stale Variable Trap
 
 ### The Freeze Question
+
 ```javascript
 for (var i = 0; i < 5; i++) {
   setTimeout(() => console.log(i), 1000);
@@ -137,6 +140,7 @@ for (var i = 0; i < 5; i++) {
 ```
 
 ### Surface Answer (Junior)
+
 "0, 1, 2, 3, 4" → **WRONG**
 
 ### Deep Reasoning (Senior)
@@ -162,14 +166,15 @@ for (var i = 0; i < 5; i++) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Why `var` causes this:**
+
 - `var` is **function-scoped**, not block-scoped
 - There is ONE `i` variable for the entire function
 - The closure captures the **variable itself**, not its value at capture time
 - By the time setTimeout callbacks run, the loop has finished and `i = 5`
 
 **Why `let` fixes it:**
+
 - `let` is **block-scoped** — each loop iteration creates a NEW binding
 - Each callback captures a DIFFERENT `i` variable
 - It's like each callback gets its own private notebook instead of sharing a whiteboard
@@ -183,7 +188,7 @@ for (let i = 0; i < 5; i++) {
 
 // Fix 2: IIFE (pre-ES6 — manually create new scope)
 for (var i = 0; i < 5; i++) {
-  (function(j) {
+  (function (j) {
     setTimeout(() => console.log(j), 1000);
   })(i); // j = copy of i at this moment
 }
@@ -197,12 +202,15 @@ for (var i = 0; i < 5; i++) {
 ```
 
 ### The Deadly Follow-Up
+
 ```javascript
 // "What does this print?"
 function createFunctions() {
   let result = [];
   for (var i = 0; i < 3; i++) {
-    result.push(function() { return i; });
+    result.push(function () {
+      return i;
+    });
   }
   return result;
 }
@@ -216,32 +224,36 @@ console.log(fns[2]()); // 3
 
 ---
 
-
-
 🔬 **Section Challenge — 2. Closures: The Stale Variable Trap**
 
 **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
+
 <details><summary>Answer</summary>
 
 A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
-</details>
 
+</details>
 
 ## 3. `this` Binding: The 5 Rules Nobody Fully Knows
 
 ### The Freeze Question
+
 ```javascript
 const obj = {
-  name: 'Alice',
-  greet: function() { console.log(this.name); },
-  greetArrow: () => { console.log(this.name); }
+  name: "Alice",
+  greet: function () {
+    console.log(this.name);
+  },
+  greetArrow: () => {
+    console.log(this.name);
+  },
 };
 
-obj.greet();        // ?
-obj.greetArrow();   // ?
+obj.greet(); // ?
+obj.greetArrow(); // ?
 
 const fn = obj.greet;
-fn();               // ?
+fn(); // ?
 ```
 
 ### Deep Reasoning: The 5 Rules (Priority Order)
@@ -271,48 +283,49 @@ fn();               // ?
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Answering the question:**
 
 ```javascript
-obj.greet();        // "Alice" — Rule 3 (implicit: obj is before the dot)
-obj.greetArrow();   // undefined — Rule 4 (arrow inherits from enclosing = global)
+obj.greet(); // "Alice" — Rule 3 (implicit: obj is before the dot)
+obj.greetArrow(); // undefined — Rule 4 (arrow inherits from enclosing = global)
 const fn = obj.greet;
-fn();               // undefined — Rule 5 (no object before dot = default binding)
+fn(); // undefined — Rule 5 (no object before dot = default binding)
 ```
 
 **WHY arrow functions don't have their own `this`:**
+
 - Arrow functions were designed for callbacks where you WANT the parent's `this`
 - Before arrows, people wrote `const self = this;` everywhere
 - Arrow functions solve this by **lexically binding `this`** at creation time
 - Think of it as: regular functions ask "who called me?" while arrow functions ask "where was I born?"
 
 ### The Trap: `this` in Event Handlers
+
 ```javascript
 class Button {
   constructor() {
     this.count = 0;
     // BUG: regular function loses `this` when used as callback
-    document.addEventListener('click', this.handleClick); // this = document!
-    
+    document.addEventListener("click", this.handleClick); // this = document!
+
     // FIX 1: arrow function
-    document.addEventListener('click', () => this.handleClick()); // this = Button
-    
+    document.addEventListener("click", () => this.handleClick()); // this = Button
+
     // FIX 2: bind
-    document.addEventListener('click', this.handleClick.bind(this)); // this = Button
+    document.addEventListener("click", this.handleClick.bind(this)); // this = Button
   }
-  handleClick() { this.count++; }
+  handleClick() {
+    this.count++;
+  }
 }
 ```
 
 ---
 
-
-
-
 ## 4. == vs === : More Than "Strict Equality"
 
 ### The Freeze Question
+
 "Explain the ALGORITHM behind `==`. Don't just say 'type coercion.'"
 
 ### Deep Reasoning
@@ -330,7 +343,6 @@ class Button {
 ║  6. Otherwise? → false                                           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 **Walking through tricky cases:**
 
@@ -364,6 +376,7 @@ class Button {
 ## 5. Hoisting: It's Not What You Think
 
 ### The Freeze Question
+
 ```javascript
 console.log(a); // ?
 console.log(b); // ?
@@ -401,30 +414,32 @@ const c = 3;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Analogy:** Think of `var` like a hotel reservation — when you arrive (execution), your room exists but it's empty (undefined). `let`/`const` are like a VIP reservation — the room exists on paper but you're NOT allowed in until check-in time (your declaration line). Trying to enter early gets you thrown out (ReferenceError).
 
 ### The Follow-Up Trap: Function Hoisting
+
 ```javascript
 foo(); // "foo" — function declarations are FULLY hoisted
 bar(); // TypeError: bar is not a function
 
-function foo() { console.log("foo"); }
-var bar = function() { console.log("bar"); };
+function foo() {
+  console.log("foo");
+}
+var bar = function () {
+  console.log("bar");
+};
 
-// WHY? `var bar` is hoisted as undefined. 
+// WHY? `var bar` is hoisted as undefined.
 // Calling undefined() → TypeError.
 // The function BODY isn't hoisted — only the var declaration is.
 ```
 
 ---
 
-
-
-
 ## 6. Prototypes: Why `typeof null === 'object'`
 
 ### The Freeze Question
+
 "Why does `typeof null` return `'object'`? Is null an object?"
 
 ### Deep Reasoning
@@ -436,45 +451,45 @@ In the original JavaScript engine (1995), values were stored as a type tag + val
 This bug was proposed for fix in ES2015 but rejected — too much existing code depends on it.
 
 ```javascript
-typeof null       // "object" — BUG (not actually an object)
-typeof undefined  // "undefined"
-typeof 42         // "number"
-typeof "hi"       // "string"
-typeof true       // "boolean"  
-typeof Symbol()   // "symbol"
-typeof 42n        // "bigint"
-typeof {}         // "object"
-typeof []         // "object" — arrays ARE objects!
-typeof function(){} // "function" — special case, functions ARE objects too
+typeof null; // "object" — BUG (not actually an object)
+typeof undefined; // "undefined"
+typeof 42; // "number"
+typeof "hi"; // "string"
+typeof true; // "boolean"
+typeof Symbol(); // "symbol"
+typeof 42n; // "bigint"
+typeof {}; // "object"
+typeof []; // "object" — arrays ARE objects!
+typeof function () {}; // "function" — special case, functions ARE objects too
 
 // Safe null check:
-value === null          // true only for null
-value == null           // true for null OR undefined (useful!)
-value == undefined      // same as above
+value === null; // true only for null
+value == null; // true for null OR undefined (useful!)
+value == undefined; // same as above
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 6. Prototypes: Why `typeof null === 'object'`**
 
 **Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+
 <details><summary>Answer</summary>
 
 `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-</details>
 
+</details>
 
 ## 7. Promise Microtask vs setTimeout Macrotask
 
 ### The Freeze Question
+
 ```javascript
-setTimeout(() => console.log('A'), 0);
-Promise.resolve().then(() => console.log('B'));
-queueMicrotask(() => console.log('C'));
-requestAnimationFrame(() => console.log('D'));
-console.log('E');
+setTimeout(() => console.log("A"), 0);
+Promise.resolve().then(() => console.log("B"));
+queueMicrotask(() => console.log("C"));
+requestAnimationFrame(() => console.log("D"));
+console.log("E");
 ```
 
 ### Deep Reasoning
@@ -496,8 +511,8 @@ console.log('E');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Why Microtasks Before Macrotasks?**
+
 - The spec says: after EACH macrotask, drain ALL microtasks
 - This prevents starvation — if a Promise.then() schedules another Promise.then(), BOTH run before the next setTimeout
 - Danger: infinite microtask loop blocks the entire browser (no repaint, no user input)
@@ -512,34 +527,37 @@ function infiniteMicro() {
 
 ---
 
-
-
 🔬 **Section Challenge — 7. Promise Microtask vs setTimeout Macrotask**
 
 **Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
+
 <details><summary>Answer</summary>
 
 `Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
+
 </details>
 
 **Challenge 2 (Design):** Implement `Promise.race` from scratch.
+
 <details><summary>Answer</summary>
 
 ```javascript
 function race(promises) {
-    return new Promise((resolve, reject) => {
-        promises.forEach(p => Promise.resolve(p).then(resolve, reject));
-        // First to resolve OR reject wins — others are ignored
-    });
+  return new Promise((resolve, reject) => {
+    promises.forEach((p) => Promise.resolve(p).then(resolve, reject));
+    // First to resolve OR reject wins — others are ignored
+  });
 }
 ```
-Once the first promise settles, the outer promise is settled. Other promises continue running internally but their results are discarded.
-</details>
 
+Once the first promise settles, the outer promise is settled. Other promises continue running internally but their results are discarded.
+
+</details>
 
 ## 8. Pass by Value vs Pass by Reference: JS Does Neither
 
 ### The Freeze Question
+
 "Is JavaScript pass by value or pass by reference?"
 
 ### Deep Reasoning
@@ -561,31 +579,30 @@ Once the first promise settles, the outer promise is settled. Other promises con
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // Primitives: true pass-by-value
 let a = 10;
-let b = a;    // b gets COPY of 10
-b = 20;       // only changes b
+let b = a; // b gets COPY of 10
+b = 20; // only changes b
 console.log(a); // 10 (unchanged)
 
 // Objects: pass-by-value-of-reference
-let obj1 = { name: 'Alice' };
-let obj2 = obj1;  // obj2 gets COPY of the REFERENCE (both point to same object)
-obj2.name = 'Bob'; // MUTATES the shared object
+let obj1 = { name: "Alice" };
+let obj2 = obj1; // obj2 gets COPY of the REFERENCE (both point to same object)
+obj2.name = "Bob"; // MUTATES the shared object
 console.log(obj1.name); // 'Bob' ← both point to same mailbox
 
 // But REASSIGNMENT doesn't affect the original
-let obj3 = { name: 'Alice' };
+let obj3 = { name: "Alice" };
 let obj4 = obj3;
-obj4 = { name: 'Charlie' }; // obj4 now points to NEW object
+obj4 = { name: "Charlie" }; // obj4 now points to NEW object
 console.log(obj3.name); // 'Alice' ← original unchanged
 
 // PROOF that it's not true pass-by-reference:
 function tryToChange(param) {
-  param = { name: 'New' }; // if pass-by-reference, this would change original
+  param = { name: "New" }; // if pass-by-reference, this would change original
 }
-let original = { name: 'Original' };
+let original = { name: "Original" };
 tryToChange(original);
 console.log(original.name); // 'Original' — PROOF: not pass-by-reference
 ```
@@ -597,6 +614,7 @@ console.log(original.name); // 'Original' — PROOF: not pass-by-reference
 ## 9. Why `[] == false` but `[] ? true : false` Returns True
 
 ### The Freeze Question
+
 "If `[] == false` is true, why is `[] ? 'yes' : 'no'` → `'yes'`?"
 
 ### Deep Reasoning
@@ -623,10 +641,10 @@ These use COMPLETELY DIFFERENT algorithms:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **The Falsy List (MEMORIZE — only 8 values):**
+
 ```javascript
-false, 0, -0, 0n, "", null, undefined, NaN
+(false, 0, -0, 0n, "", null, undefined, NaN);
 // EVERYTHING else is truthy, including:
 // [], {}, "0", "false", new Boolean(false), new Number(0)
 ```
@@ -636,6 +654,7 @@ false, 0, -0, 0n, "", null, undefined, NaN
 ## 10. Async/Await: It's NOT Just Syntactic Sugar
 
 ### The Freeze Question
+
 "If async/await is just syntactic sugar over Promises, why does it exist?"
 
 ### Deep Reasoning
@@ -669,20 +688,19 @@ It IS syntactic sugar, but saying "just syntactic sugar" dismisses crucial diffe
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // Promise chain — hard to read with conditions
 function getUser(id) {
   return fetch(`/users/${id}`)
-    .then(res => res.json())
-    .then(user => {
-      if (user.role === 'admin') {
-        return fetch(`/admin/${id}`).then(res => res.json());
+    .then((res) => res.json())
+    .then((user) => {
+      if (user.role === "admin") {
+        return fetch(`/admin/${id}`).then((res) => res.json());
       }
       return user;
     })
-    .then(data => process(data))
-    .catch(err => handleError(err)); // easy to forget!
+    .then((data) => process(data))
+    .catch((err) => handleError(err)); // easy to forget!
 }
 
 // async/await — reads like synchronous code
@@ -690,12 +708,12 @@ async function getUser(id) {
   try {
     const res = await fetch(`/users/${id}`);
     const user = await res.json();
-    
-    if (user.role === 'admin') {
+
+    if (user.role === "admin") {
       const adminRes = await fetch(`/admin/${id}`);
       return await adminRes.json();
     }
-    
+
     return process(user);
   } catch (err) {
     handleError(err);
@@ -704,6 +722,7 @@ async function getUser(id) {
 ```
 
 **The subtle trap: `await` in loops**
+
 ```javascript
 // SEQUENTIAL (slow — each waits for the previous)
 for (const url of urls) {
@@ -711,7 +730,7 @@ for (const url of urls) {
 }
 
 // PARALLEL (fast — all start at once)
-const promises = urls.map(url => fetch(url));
+const promises = urls.map((url) => fetch(url));
 const results = await Promise.all(promises); // all at once!
 
 // Senior insight: if operations are independent, ALWAYS use Promise.all()
@@ -720,26 +739,28 @@ const results = await Promise.all(promises); // all at once!
 
 ---
 
-
-
 🔬 **Section Challenge — 10. Async/Await: It's NOT Just Syntactic Sugar**
 
 **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+
 <details><summary>Answer</summary>
 
 `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+
 <details><summary>Answer</summary>
 
 Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-</details>
 
+</details>
 
 ## 11. WeakMap/WeakRef: Why GC Matters in JS
 
 ### The Freeze Question
+
 "When would you use WeakMap over Map?"
 
 ### Deep Reasoning
@@ -758,7 +779,6 @@ Yes — `await` unwraps the rejected promise and throws the rejection value as a
 ║  → You can't browse the catalog (not iterable) — by design!      ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```javascript
 // MEMORY LEAK WITH MAP
@@ -779,6 +799,7 @@ function processElement(element) {
 ```
 
 **Key constraints of WeakMap (and WHY):**
+
 - Keys must be objects (primitives can't be garbage collected)
 - Not iterable (GC is non-deterministic — you can't reliably list entries)
 - No `.size` property (same reason)
@@ -786,12 +807,10 @@ function processElement(element) {
 
 ---
 
-
-
-
 ## 12. Generator Functions: Lazy Evaluation in JS
 
 ### The Freeze Question
+
 "What's the difference between a generator and an async function?"
 
 ### Deep Reasoning
@@ -816,7 +835,6 @@ function processElement(element) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // Generator: Infinite Fibonacci (lazy — only computes when asked)
 function* fibonacci() {
@@ -839,16 +857,15 @@ fib.next(); // { value: 2, done: false }
 
 ---
 
-
-
 🔬 **Section Challenge — 12. Generator Functions: Lazy Evaluation in JS**
 
 **Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
+
 <details><summary>Answer</summary>
 
 Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
-</details>
 
+</details>
 
 ## 13. Why `0.1 + 0.2 !== 0.3`
 
@@ -875,20 +892,27 @@ Generator: O(1) — stores only the current execution state (stack frame: local 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
-0.1 + 0.2 === 0.3        // false
-0.1 + 0.2                // 0.30000000000000004
+0.1 + 0.2 === 0.3; // false
+0.1 + 0.2; // 0.30000000000000004
 
 // Solutions:
 // 1. Epsilon comparison
-Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
+(Math.abs(0.1 + 0.2 - 0.3) <
+  Number.EPSILON(
+    // true
 
-// 2. Fixed point (multiply, compute, divide)
-(0.1 * 10 + 0.2 * 10) / 10 === 0.3  // true
+    // 2. Fixed point (multiply, compute, divide)
+    0.1 * 10 + 0.2 * 10,
+  ) /
+    10 ===
+  0.3(
+    // true
 
-// 3. toFixed (for display, returns string)
-(0.1 + 0.2).toFixed(1) === '0.3'  // true
+    // 3. toFixed (for display, returns string)
+    0.1 + 0.2,
+  ).toFixed(1)) ===
+  "0.3"; // true
 
 // For financial calculations: NEVER use float! Use integer cents.
 // $1.10 + $2.20 → 110 + 220 = 330 → $3.30
@@ -899,6 +923,7 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ## 14. The Temporal Dead Zone Explained Properly
 
 ### The Freeze Question
+
 "You said `let` is hoisted. Then why does accessing it before declaration throw an error?"
 
 ### Deep Reasoning
@@ -924,8 +949,8 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 **Why TDZ exists (the design reasoning):**
+
 - var's behavior of silently returning `undefined` caused countless bugs
 - const MUST have TDZ — you can't access a const before it has a value
 - let got TDZ for consistency with const (both are block-scoped)
@@ -933,12 +958,10 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 
 ---
 
-
-
-
 ## 15. Event Delegation: Why Not Add Listeners to Every Element?
 
 ### The Freeze Question
+
 "Why use event delegation instead of adding a click handler to each button?"
 
 ### Deep Reasoning
@@ -960,17 +983,16 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // BAD: 1000 handlers (memory heavy, breaks for dynamic elements)
-document.querySelectorAll('.btn').forEach(btn => {
-  btn.addEventListener('click', handleClick); // 1000 listeners in memory
+document.querySelectorAll(".btn").forEach((btn) => {
+  btn.addEventListener("click", handleClick); // 1000 listeners in memory
 });
 // Problem: buttons added LATER don't have handlers!
 
 // GOOD: 1 handler (works for current AND future elements)
-document.getElementById('button-container').addEventListener('click', (e) => {
-  if (e.target.matches('.btn')) {
+document.getElementById("button-container").addEventListener("click", (e) => {
+  if (e.target.matches(".btn")) {
     handleClick(e); // ONE listener handles all buttons
   }
 });
@@ -981,6 +1003,7 @@ document.getElementById('button-container').addEventListener('click', (e) => {
 ```
 
 **Three reasons delegation is superior:**
+
 1. **Memory:** 1 function vs N functions in memory
 2. **Dynamic elements:** Works for elements not yet in DOM
 3. **Setup time:** One `addEventListener` call vs N calls
@@ -989,22 +1012,21 @@ document.getElementById('button-container').addEventListener('click', (e) => {
 
 ## Interview Quick-Fire: JS Freeze Busters
 
-| Freeze Question | Deep One-Liner |
-|----------------|---------------|
-| "Is JS single-threaded?" | Yes for the main thread, but Web Workers can run code in parallel (no DOM access). The EVENT LOOP makes it feel concurrent. |
-| "What's a closure?" | A function + its lexical environment. It's a backpack the function carries, containing all variables that existed when it was created. |
-| "Explain prototypal inheritance" | Every object has a hidden `[[Prototype]]` link. Property lookup walks this chain until found or null. `class` is syntactic sugar over this chain. |
-| "What's the difference between null and undefined?" | `undefined` = variable exists but no value assigned (empty slot). `null` = intentional absence of value (empty box). |
-| "Can you modify a const object?" | Yes! `const` prevents reassignment of the BINDING, not mutation of the VALUE. `const obj = {}; obj.a = 1;` is legal. Only `obj = {}` fails. |
-| "What's a pure function?" | Same inputs → same output, no side effects. It doesn't read or modify anything outside itself. Like a math function: f(x) = 2x. |
-| "Why use Symbol?" | Unique, non-string property keys. Two Symbols are NEVER equal, even with same description. Used for: hidden properties, preventing name collisions, well-known symbols like Symbol.iterator. |
+| Freeze Question                                            | Deep One-Liner                                                                                                                                                                                                 |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Is JS single-threaded?"                                   | Yes for the main thread, but Web Workers can run code in parallel (no DOM access). The EVENT LOOP makes it feel concurrent.                                                                                    |
+| "What's a closure?"                                        | A function + its lexical environment. It's a backpack the function carries, containing all variables that existed when it was created.                                                                         |
+| "Explain prototypal inheritance"                           | Every object has a hidden `[[Prototype]]` link. Property lookup walks this chain until found or null. `class` is syntactic sugar over this chain.                                                              |
+| "What's the difference between null and undefined?"        | `undefined` = variable exists but no value assigned (empty slot). `null` = intentional absence of value (empty box).                                                                                           |
+| "Can you modify a const object?"                           | Yes! `const` prevents reassignment of the BINDING, not mutation of the VALUE. `const obj = {}; obj.a = 1;` is legal. Only `obj = {}` fails.                                                                    |
+| "What's a pure function?"                                  | Same inputs → same output, no side effects. It doesn't read or modify anything outside itself. Like a math function: f(x) = 2x.                                                                                |
+| "Why use Symbol?"                                          | Unique, non-string property keys. Two Symbols are NEVER equal, even with same description. Used for: hidden properties, preventing name collisions, well-known symbols like Symbol.iterator.                   |
 | "What's the difference between `for...in` and `for...of`?" | `for...in` iterates over enumerable PROPERTY NAMES (including inherited). `for...of` iterates over iterable VALUES (arrays, strings, maps). Never use `for...in` on arrays — it includes prototype properties. |
-| "What's debounce vs throttle?" | Debounce: wait until user STOPS typing (resets timer on each keystroke). Throttle: fire at most once every N ms (steady heartbeat). Search input = debounce. Scroll handler = throttle. |
-| "Why doesn't `typeof []` return 'array'?" | Arrays ARE objects in JS. Use `Array.isArray([])` instead. This is because arrays are objects with special length behavior and numeric keys. |
+| "What's debounce vs throttle?"                             | Debounce: wait until user STOPS typing (resets timer on each keystroke). Throttle: fire at most once every N ms (steady heartbeat). Search input = debounce. Scroll handler = throttle.                        |
+| "Why doesn't `typeof []` return 'array'?"                  | Arrays ARE objects in JS. Use `Array.isArray([])` instead. This is because arrays are objects with special length behavior and numeric keys.                                                                   |
 
 ---
 
 ← Previous: [Chapter 7 — Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [React Deep Reasoning →](../15_React_Frontend/09_React_Deep_Reasoning.md)
-

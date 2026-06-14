@@ -638,6 +638,7 @@ RULE: If the information should still be visible after rotation → StateFlow
 ```
 
 **The test that catches this bug**:
+
 1. Navigate to Payment screen
 2. Complete a payment successfully
 3. Navigate to Success screen
@@ -1097,15 +1098,19 @@ class CitationListFragment : Fragment() {
 ## 13. Interview Q&A
 
 **Q: "What is a ViewModel and why does it exist?"**
+
 > "A ViewModel is an architecture component that stores and manages UI-related data across configuration changes. Before ViewModel, developers stored data in Activities — every rotation destroyed the Activity and its data, causing unnecessary re-fetches and bad UX. ViewModel survives rotation because Android stores it in a ViewModelStore that is retained across configuration changes. It also separates concerns: the ViewModel doesn't know about Views, making it fully unit testable without a device. It's destroyed only when the Activity is truly finished — not on rotation."
 
 **Q: "What is the difference between LiveData and StateFlow?"**
+
 > "Both are observable data holders. LiveData is lifecycle-aware by default — it stops delivering updates when the observer's lifecycle is not active, preventing crashes and wasted work. StateFlow is a Kotlin Coroutines construct with no Android dependency, making it usable in the domain layer. StateFlow always has a current value (like LiveData's initial value), it only emits when the value changes (unlike LiveData which can deliver the same value twice), and it has all of Kotlin Flow's operator set (map, filter, combine, debounce, etc.) making data transformations cleaner. New code should prefer StateFlow, with careful manual lifecycle management using `repeatOnLifecycle(STARTED)` in the UI."
 
 **Q: "When would you use SharedFlow instead of StateFlow?"**
+
 > "For one-time events: navigation actions, showing snackbars, displaying toasts, triggering dialogs. The distinction is whether a new subscriber should see the last value. StateFlow always replays the last value — appropriate for 'show the current state of this screen'. SharedFlow with replay=0 does not replay — appropriate for 'this event happened once and should not happen again when a new subscriber (after rotation) arrives'. A concrete example: after a successful payment, I emit NavigateToSuccess as a SharedFlow event. If I stored it in StateFlow, returning to the Payment screen from the Success screen would immediately re-navigate — a bug caused by the replay behavior."
 
 **Q: "What is SharingStarted.WhileSubscribed(5000) and why 5000ms?"**
+
 > "WhileSubscribed means the upstream cold Flow is only active while there are active subscribers. When the last subscriber leaves, a timer starts — 5000ms by default. If no new subscriber arrives within that time, the upstream is cancelled. The 5 seconds covers the Activity/Fragment recreation cycle during rotation: the old Fragment unsubscribes, Android recreates the Fragment (takes under 1 second), the new Fragment subscribes. The 5-second grace period ensures the Room database query is never restarted during rotation, preventing a brief loading flicker. It's a balance — too short and rotations cause re-fetches; too long and resources stay active unnecessarily."
 
 ---

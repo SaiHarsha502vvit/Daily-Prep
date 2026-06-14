@@ -37,19 +37,18 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking
 
-
-
 🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -58,12 +57,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## The Real-World Origin
 
@@ -85,18 +86,15 @@ At each element, you make a binary choice: INCLUDE or EXCLUDE.
 This creates a recursion tree of depth n with 2^n leaves.
 THE RECURSION TREE for {1, 2, 3}:
 {}
-/         \
-{1}            {}                  ← include/exclude 1
-/    \        /    \
-{1,2}  {1}    {2}    {}                ← include/exclude 2
-/ \   / \    / \    / \
-{1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{}         ← include/exclude 3
+/ \
+{1} {} ← include/exclude 1
+/ \ / \
+{1,2} {1} {2} {} ← include/exclude 2
+/ \ / \ / \ / \
+{1,2,3}{1,2}{1,3}{1}{2,3}{2}{3}{} ← include/exclude 3
 Leaves = all 2^3 = 8 subsets of {1,2,3}
 
-
-
 ## The Mental Model: "Include Or Exclude — That'S All Recursion Is"
-
 
 **Template For All Subset Problems**:
 void solve(int index, int[] nums, <state>) {
@@ -107,24 +105,26 @@ return;
 // CHOICE 1: Include nums[index]
 <add nums[index] to state>
 solve(index + 1, nums, <state>);
-<remove nums[index] from state>    // BACKTRACK
+<remove nums[index] from state> // BACKTRACK
 // CHOICE 2: Exclude nums[index]
 solve(index + 1, nums, <state>);
 }
 
 **When To Use Each Variant**:
+
 - Generate all subsets → Backtracking template above
 - Count subsets with property → Recursion + Memoization → DP
 - Optimize over subsets → DP (Knapsack family)
 - Enumerate with constraints → Backtracking + Pruning
 
-
 🔬 **Section Challenge — The Mental Model: "Include Or Exclude — That'S All Recursion Is"**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -133,58 +133,62 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## The Recursion → Dp Pipeline (Mit 6.006 Framework)
 
 STEP 1: PURE RECURSION (Brute Force)
 int count(int[] nums, int i, int target) {
 if (i == nums.length) return target == 0 ? 1 : 0;
-return count(nums, i+1, target - nums[i])   // include
-+ count(nums, i+1, target);              // exclude
-}
-Time: O(2^n) — explores every subset
-STEP 2: IDENTIFY OVERLAPPING SUBPROBLEMS
-State = (index, remaining target)
-Same (i, target) can be reached via different paths!
-Example: {1,2,3}, target=3
-Path 1: include 1, exclude 2 → (i=2, target=2)
-Path 2: exclude 1, include 2 → (i=2, target=1) ← different!
-But with larger arrays, overlaps multiply.
-STEP 3: ADD MEMOIZATION (Top-Down DP)
-Map<String, Integer> memo = new HashMap<>();
-int count(int[] nums, int i, int target) {
-if (i == nums.length) return target == 0 ? 1 : 0;
-String key = i + "," + target;
-if (memo.containsKey(key)) return memo.get(key);
-int result = count(nums, i+1, target-nums[i])
-+ count(nums, i+1, target);
-memo.put(key, result);
-return result;
-}
-Time: O(n × target)
-STEP 4: BOTTOM-UP DP
-dp[i][t] = number of subsets from first i elements summing to t
-dp[0][0] = 1
-dp[i][t] = dp[i-1][t] + dp[i-1][t - nums[i-1]]
-Time: O(n × target), Space: O(n × target)
-STEP 5: SPACE OPTIMIZATION (1D DP)
-Process target RIGHT TO LEFT (so we don't overwrite needed values)
-for each num: for t = target to num: dp[t] += dp[t - num]
-Time: O(n × target), Space: O(target)
+return count(nums, i+1, target - nums[i]) // include
 
+- count(nums, i+1, target); // exclude
+  }
+  Time: O(2^n) — explores every subset
+  STEP 2: IDENTIFY OVERLAPPING SUBPROBLEMS
+  State = (index, remaining target)
+  Same (i, target) can be reached via different paths!
+  Example: {1,2,3}, target=3
+  Path 1: include 1, exclude 2 → (i=2, target=2)
+  Path 2: exclude 1, include 2 → (i=2, target=1) ← different!
+  But with larger arrays, overlaps multiply.
+  STEP 3: ADD MEMOIZATION (Top-Down DP)
+  Map<String, Integer> memo = new HashMap<>();
+  int count(int[] nums, int i, int target) {
+  if (i == nums.length) return target == 0 ? 1 : 0;
+  String key = i + "," + target;
+  if (memo.containsKey(key)) return memo.get(key);
+  int result = count(nums, i+1, target-nums[i])
+- count(nums, i+1, target);
+  memo.put(key, result);
+  return result;
+  }
+  Time: O(n × target)
+  STEP 4: BOTTOM-UP DP
+  dp[i][t] = number of subsets from first i elements summing to t
+  dp[0][0] = 1
+  dp[i][t] = dp[i-1][t] + dp[i-1]t - nums[i-1]]
+  Time: O(n × target), Space: O(n × target)
+  STEP 5: SPACE OPTIMIZATION (1D DP)
+  Process target RIGHT TO LEFT (so we don't overwrite needed values)
+  for each num: for t = target to num: dp[t] += dp[t - num]
+  Time: O(n × target), Space: O(target)
 
 🔬 **Section Challenge — The Recursion → Dp Pipeline (Mit 6.006 Framework)**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -193,26 +197,28 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## Difficulties & Common Mistakes
 
 1. Forgetting to BACKTRACK: after recursing with include, remove the element
 2. Not handling DUPLICATES: [1,2,2] generates duplicate subsets if naive.
-Fix: sort + skip nums[i] == nums[i-1] at same recursion level.
+   Fix: sort + skip nums[i] == nums[i-1] at same recursion level.
 3. Confusing SUBSETS vs SUBSEQUENCES vs SUBARRAYS:
-Subset: any elements, order doesn't matter → {1,3} from {1,2,3}
-Subsequence: maintain relative order → {1,3} from {1,2,3}
-Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}
+   Subset: any elements, order doesn't matter → {1,3} from {1,2,3}
+   Subsequence: maintain relative order → {1,3} from {1,2,3}
+   Subarray: contiguous → {1,2} from {1,2,3}, NOT {1,3}
 4. Integer overflow in counting: use long or modular arithmetic.
 5. Off-by-one in DP: dp[i] means "using first i items" not "item at i".
 6. In 1D DP for 0/1 knapsack, iterating target LEFT-TO-RIGHT instead of
-RIGHT-TO-LEFT (causes items to be used multiple times = unbounded!)
+   RIGHT-TO-LEFT (causes items to be used multiple times = unbounded!)
 
 ---
 
@@ -239,7 +245,6 @@ RECURSION TREE:
 SOLUTION:
 ```
 
-
 ```java
 public List<List<Integer>> subsets(int[] nums) {
     List<List<Integer>> result = new ArrayList<>();
@@ -247,10 +252,10 @@ public List<List<Integer>> subsets(int[] nums) {
     return result;
 }
 
-private void backtrack(int[] nums, int start, List<Integer> current, 
+private void backtrack(int[] nums, int start, List<Integer> current,
                        List<List<Integer>> result) {
     result.add(new ArrayList<>(current));  // Add copy of current subset
-    
+
     for (int i = start; i < nums.length; i++) {
         current.add(nums[i]);                // Include
         backtrack(nums, i + 1, current, result);
@@ -292,13 +297,12 @@ THE DUPLICATE HANDLING TRICK:
   2. At each level, skip nums[i] if nums[i] == nums[i-1] AND
      i > start (not the first element at this level)
 
-  Why? If [1, 2a, 2b]: 
+  Why? If [1, 2a, 2b]:
   "Include 2a, exclude 2b" and "exclude 2a, include 2b" give same subset.
   By forcing 2b to only appear AFTER 2a in subsets, we avoid duplicates.
 
 SOLUTION:
 ```
-
 
 ```java
 public List<List<Integer>> subsetsWithDup(int[] nums) {
@@ -308,14 +312,14 @@ public List<List<Integer>> subsetsWithDup(int[] nums) {
     return result;
 }
 
-private void backtrack(int[] nums, int start, List<Integer> current, 
+private void backtrack(int[] nums, int start, List<Integer> current,
                        List<List<Integer>> result) {
     result.add(new ArrayList<>(current));
-    
+
     for (int i = start; i < nums.length; i++) {
         // Skip duplicate at same recursion level
         if (i > start && nums[i] == nums[i - 1]) continue;
-        
+
         current.add(nums[i]);
         backtrack(nums, i + 1, current, result);
         current.remove(current.size() - 1);
@@ -325,7 +329,7 @@ private void backtrack(int[] nums, int start, List<Integer> current,
 
 ```
 COMPLEXITY: Time O(n × 2^n) worst case | Space O(n)
-THE KEY LINE: i > start (not i > 0!). We CAN include duplicate 
+THE KEY LINE: i > start (not i > 0!). We CAN include duplicate
               AFTER previous same element, just not at same branch level.
 ```
 
@@ -358,7 +362,6 @@ RECURSION TREE for target=7, candidates=[2,3,6,7]:
 SOLUTION:
 ```
 
-
 ```java
 public List<List<Integer>> combinationSum(int[] candidates, int target) {
     List<List<Integer>> result = new ArrayList<>();
@@ -367,10 +370,10 @@ public List<List<Integer>> combinationSum(int[] candidates, int target) {
     return result;
 }
 
-private void backtrack(int[] cands, int remaining, int start, 
+private void backtrack(int[] cands, int remaining, int start,
                        List<Integer> current, List<List<Integer>> result) {
     if (remaining == 0) { result.add(new ArrayList<>(current)); return; }
-    
+
     for (int i = start; i < cands.length; i++) {
         if (cands[i] > remaining) break;  // Pruning (requires sorted)
         current.add(cands[i]);
@@ -385,9 +388,6 @@ COMPLEXITY: Time O(n^(T/M)) where T=target, M=min candidate | Space O(T/M)
 ```
 
 ---
-
-
-
 
 ## PROBLEM 4: Combination Sum II — Each Number Once (LC 40)
 
@@ -407,7 +407,6 @@ COMBINING TWO TRICKS:
 SOLUTION:
 ```
 
-
 ```java
 public List<List<Integer>> combinationSum2(int[] candidates, int target) {
     Arrays.sort(candidates);
@@ -416,14 +415,14 @@ public List<List<Integer>> combinationSum2(int[] candidates, int target) {
     return result;
 }
 
-private void backtrack(int[] cands, int remaining, int start, 
+private void backtrack(int[] cands, int remaining, int start,
                        List<Integer> current, List<List<Integer>> result) {
     if (remaining == 0) { result.add(new ArrayList<>(current)); return; }
-    
+
     for (int i = start; i < cands.length; i++) {
         if (cands[i] > remaining) break;
         if (i > start && cands[i] == cands[i - 1]) continue;  // Skip dups
-        
+
         current.add(cands[i]);
         backtrack(cands, remaining - cands[i], i + 1, current, result);  // i+1!
         current.remove(current.size() - 1);
@@ -445,11 +444,7 @@ COMPARISON TABLE:
 └───────────────────┴──────────────┴──────────────────┴─────────────┘
 ```
 
-
 ---
-
-
-
 
 ## PROBLEM 5: Subset Sum — Count Subsets with Given Sum
 
@@ -469,14 +464,13 @@ THE FULL PIPELINE:
 STEP 1 — PURE RECURSION:
 ```
 
-
 ```java
 // O(2^n) — explores all subsets
 int countSubsets(int[] nums, int i, int target) {
     if (target == 0) return 1;         // Found a valid subset
     if (i == nums.length) return 0;    // Exhausted elements
     if (target < 0) return 0;          // Over the target
-    
+
     // Include nums[i] OR exclude nums[i]
     return countSubsets(nums, i + 1, target - nums[i])
          + countSubsets(nums, i + 1, target);
@@ -493,7 +487,7 @@ int countSubsets(int[] nums, int i, int target, Integer[][] memo) {
     if (target == 0) return 1;
     if (i == nums.length || target < 0) return 0;
     if (memo[i][target] != null) return memo[i][target];
-    
+
     memo[i][target] = countSubsets(nums, i + 1, target - nums[i], memo)
                     + countSubsets(nums, i + 1, target, memo);
     return memo[i][target];
@@ -508,10 +502,10 @@ STEP 3 — BOTTOM-UP DP (2D):
 int countSubsets(int[] nums, int target) {
     int n = nums.length;
     int[][] dp = new int[n + 1][target + 1];
-    
+
     // Base: empty subset sums to 0
     for (int i = 0; i <= n; i++) dp[i][0] = 1;
-    
+
     for (int i = 1; i <= n; i++) {
         for (int t = 0; t <= target; t++) {
             dp[i][t] = dp[i - 1][t];  // Exclude nums[i-1]
@@ -532,7 +526,7 @@ STEP 4 — SPACE-OPTIMIZED (1D DP):
 int countSubsets(int[] nums, int target) {
     int[] dp = new int[target + 1];
     dp[0] = 1;
-    
+
     for (int num : nums) {
         // RIGHT TO LEFT — crucial for 0/1 knapsack!
         for (int t = target; t >= num; t--) {
@@ -551,8 +545,6 @@ num, causing it to be counted multiple times (unbounded knapsack behavior).
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 5: Subset Sum — Count Subsets with Given Sum**
 
 **Challenge 1 (Trace — Why Right-to-Left):** In the 1D DP version of Subset Sum, the inner loop runs `for (int t = target; t >= num; t--)`. Why RIGHT-to-LEFT? Trace `dp` for `nums=[2,3]` and `target=5` using BOTH left-to-right and right-to-left, and show which gives the wrong count.
@@ -570,7 +562,6 @@ With `nums=[2,3], target=5`, initial `dp=[1,0,0,0,0,0]`.
 </details>
 
 ## PROBLEM 6: Partition Equal Subset Sum (LC 416)
-
 
 ```
 DIFFICULTY: Medium
@@ -591,17 +582,16 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 public boolean canPartition(int[] nums) {
     int sum = 0;
     for (int n : nums) sum += n;
     if (sum % 2 != 0) return false;
-    
+
     int target = sum / 2;
     boolean[] dp = new boolean[target + 1];
     dp[0] = true;
-    
+
     for (int num : nums) {
         for (int t = target; t >= num; t--) {  // Right to left!
             dp[t] = dp[t] || dp[t - num];
@@ -613,16 +603,13 @@ public boolean canPartition(int[] nums) {
 
 ```
 COMPLEXITY: Time O(n × sum/2) | Space O(sum/2)
-EDGE CASES: 
+EDGE CASES:
   - Single element → false
   - All same elements, even count → true
   - Sum is odd → false immediately
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
 
@@ -639,7 +626,6 @@ EDGE CASES:
 </details>
 
 ## PROBLEM 7: Target Sum (LC 494)
-
 
 ```
 DIFFICULTY: Medium
@@ -664,20 +650,19 @@ MATHEMATICAL TRANSFORMATION:
 SOLUTION:
 ```
 
-
 ```java
 public int findTargetSumWays(int[] nums, int target) {
     int sum = 0;
     for (int n : nums) sum += n;
-    
+
     // Edge cases
     if ((sum + target) % 2 != 0) return 0;
     if (Math.abs(target) > sum) return 0;
-    
+
     int subsetSum = (sum + target) / 2;
     int[] dp = new int[subsetSum + 1];
     dp[0] = 1;
-    
+
     for (int num : nums) {
         for (int t = subsetSum; t >= num; t--) {
             dp[t] += dp[t - num];
@@ -693,8 +678,6 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
 
@@ -720,7 +703,6 @@ Returns **0**. The mathematical derivation requires `(sum + target)` to be even 
 
 ## PROBLEM 8: Letter Combinations of Phone Number (LC 17)
 
-
 ```
 DIFFICULTY: Medium
 COMPANIES: Amazon, Facebook, Google, Microsoft
@@ -735,9 +717,8 @@ PROBLEM: Given digit string, return all letter combinations.
 SOLUTION:
 ```
 
-
 ```java
-private String[] mapping = {"", "", "abc", "def", "ghi", "jkl", 
+private String[] mapping = {"", "", "abc", "def", "ghi", "jkl",
                              "mno", "pqrs", "tuv", "wxyz"};
 
 public List<String> letterCombinations(String digits) {
@@ -768,9 +749,6 @@ WHY 4^n? Some digits map to 4 letters (7→pqrs, 9→wxyz).
 
 ---
 
-
-
-
 ## PROBLEM 9: Permutations (LC 46)
 
 ```
@@ -796,7 +774,7 @@ public List<List<Integer>> permute(int[] nums) {
     return result;
 }
 
-private void backtrack(int[] nums, boolean[] used, List<Integer> current, 
+private void backtrack(int[] nums, boolean[] used, List<Integer> current,
                        List<List<Integer>> result) {
     if (current.size() == nums.length) {
         result.add(new ArrayList<>(current));
@@ -835,7 +813,7 @@ THE DUPLICATE SKIP RULE FOR PERMUTATIONS:
   Sort first. Skip nums[i] if:
   1. nums[i] == nums[i-1] AND
   2. !used[i-1] (previous duplicate NOT used at upper level)
-  
+
   This ensures duplicates are used in ORDER: first 1a, then 1b.
 
 SOLUTION:
@@ -849,7 +827,7 @@ public List<List<Integer>> permuteUnique(int[] nums) {
     return result;
 }
 
-private void backtrack(int[] nums, boolean[] used, List<Integer> current, 
+private void backtrack(int[] nums, boolean[] used, List<Integer> current,
                        List<List<Integer>> result) {
     if (current.size() == nums.length) {
         result.add(new ArrayList<>(current));
@@ -858,7 +836,7 @@ private void backtrack(int[] nums, boolean[] used, List<Integer> current,
     for (int i = 0; i < nums.length; i++) {
         if (used[i]) continue;
         if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
-        
+
         used[i] = true;
         current.add(nums[i]);
         backtrack(nums, used, current, result);
@@ -902,15 +880,15 @@ private boolean dfs(char[][] board, String word, int i, int j, int k) {
     if (k == word.length()) return true;
     if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) return false;
     if (board[i][j] != word.charAt(k)) return false;
-    
+
     char temp = board[i][j];
     board[i][j] = '#';  // Mark visited
-    
+
     boolean found = dfs(board, word, i + 1, j, k + 1) ||
                     dfs(board, word, i - 1, j, k + 1) ||
                     dfs(board, word, i, j + 1, k + 1) ||
                     dfs(board, word, i, j - 1, k + 1);
-    
+
     board[i][j] = temp;  // Backtrack
     return found;
 }
@@ -923,8 +901,6 @@ TRICK: Modify board in-place to mark visited (avoid boolean[][] array).
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 11: Word Search (LC 79)**
 
 **Challenge 1 (Trace — Who/When/What):** On a 2×3 board `[['A','B','C'],['D','E','F']]`, trace the DFS call for `word="ABE"`. At each recursive call, answer: Who holds the current cell? When is the cell marked `#`? What cells are already visited?
@@ -934,6 +910,7 @@ TRICK: Modify board in-place to mark visited (avoid boolean[][] array).
 **Who?** `dfs(board, word, i, j, k)` — the recursive function. **When?** `board[i][j] = '#'` is set BEFORE the 4-directional recursive calls, and restored AFTER.
 
 Call 1: `dfs(0,0,0)` — `board[0][0]='A'`, matches `word[0]='A'`. Mark `board[0][0]='#'`. What's visited? `{(0,0)}`.
+
 - Try right: `dfs(0,1,1)` — `board[0][1]='B'`, matches `word[1]='B'`. Mark `board[0][1]='#'`. Visited: `{(0,0),(0,1)}`.
   - Try up: OOB. Try down: `dfs(1,1,2)` — `board[1][1]='E'`, matches `word[2]='E'`. `k+1=3=word.length()` → return `true`.
   - Propagates `true` all the way up. The in-place `#` marking IS the visited array — no extra space needed. The backtrack `board[i][j] = temp` only runs on the `false` path.
@@ -947,7 +924,6 @@ Call 1: `dfs(0,0,0)` — `board[0][0]='A'`, matches `word[0]='A'`. Mark `board[0
 Without backtracking, `board[0][0]='A'` gets marked `'#'` permanently. The search tries path (0,0)→(0,1)→needs 'A' next. It looks down at (1,1)='B' — no. Looks left at (0,0) — but it's `'#'` now, not 'A'. The DFS fails to find "ABA" even though path (0,0)→(0,1)→(1,1) doesn't work, the path (0,0)→(1,0)→(0,0) would revisit (0,0) which is correctly prevented. The REAL valid path is (0,0)→(0,1)→(1,1) — but word[2]='A' ≠ 'B'. Actually (1,0)→(0,0)→(0,1) works: A→A→B = "AAB" ≠ "ABA". So (0,0)→(1,0)→(1,1): A→A→B = "AAB" ≠ "ABA". Valid: (0,0)→(0,1)→(1,1): A→B→B = "ABB" ≠ "ABA". The answer is this specific board has no valid "ABA" path — but the deeper lesson is: without backtracking, cells stay permanently poisoned across DIFFERENT starting points, causing false negatives when a valid path exists through a cell used by an earlier failed attempt.
 
 </details>
-
 
 ## PROBLEM 12: Generate Parentheses (LC 22)
 
@@ -1020,7 +996,6 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<List<String>> partition(String s) {
     List<List<String>> result = new ArrayList<>();
@@ -1075,7 +1050,6 @@ private boolean isPalindrome(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<List<Integer>> combine(int n, int k) {
     List<List<Integer>> result = new ArrayList<>();
@@ -1121,7 +1095,6 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<List<String>> solveNQueens(int n) {
     List<List<String>> result = new ArrayList<>();
@@ -1164,42 +1137,51 @@ private void backtrack(char[][] board, int row,
 
 ### Easy
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Power of Two](https://leetcode.com/problems/power-of-two/) | 231 | Recursion / Bit | Google |
-| 2 | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | 509 | Recursion → DP | Amazon |
-| 3 | [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/) | 70 | Recursion → DP | Amazon |
+| #   | Problem                                                             | LC# | Pattern         | Company |
+| --- | ------------------------------------------------------------------- | --- | --------------- | ------- |
+| 1   | [Power of Two](https://leetcode.com/problems/power-of-two/)         | 231 | Recursion / Bit | Google  |
+| 2   | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | 509 | Recursion → DP  | Amazon  |
+| 3   | [Climbing Stairs](https://leetcode.com/problems/climbing-stairs/)   | 70  | Recursion → DP  | Amazon  |
 
 ### Medium
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Subsets](https://leetcode.com/problems/subsets/) | 78 | Backtracking | Amazon, Facebook |
-| 2 | [Subsets II](https://leetcode.com/problems/subsets-ii/) | 90 | Backtracking + Dedup | Facebook |
-| 3 | [Combination Sum](https://leetcode.com/problems/combination-sum/) | 39 | Backtracking Unbounded | Amazon |
-| 4 | [Combination Sum II](https://leetcode.com/problems/combination-sum-ii/) | 40 | Backtracking Once | Facebook |
-| 5 | [Combinations](https://leetcode.com/problems/combinations/) | 77 | Backtracking | Microsoft |
-| 6 | [Permutations](https://leetcode.com/problems/permutations/) | 46 | Backtracking + visited | Amazon |
-| 7 | [Permutations II](https://leetcode.com/problems/permutations-ii/) | 47 | Backtracking + Dedup | Amazon |
-| 8 | [Letter Combinations of Phone](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 17 | Backtracking | Amazon, Google |
-| 9 | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) | 22 | Constrained Backtrack | Amazon, Google |
-| 10 | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | 416 | 0/1 Knapsack | Facebook |
-| 11 | [Target Sum](https://leetcode.com/problems/target-sum/) | 494 | Subset Sum Count | Facebook |
-| 12 | [Word Search](https://leetcode.com/problems/word-search/) | 79 | Grid Backtracking | Amazon |
-| 13 | [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/) | 131 | Backtracking | Amazon |
-| 14 | [Beautiful Arrangement](https://leetcode.com/problems/beautiful-arrangement/) | 526 | Permutation Backtrack | Google |
-| 15 | [Count Number of Nice Subarrays](https://leetcode.com/problems/count-number-of-nice-subarrays/) | 1248 | Sliding Window Count | Amazon |
+| #   | Problem                                                                                              | LC#  | Pattern                | Company          |
+| --- | ---------------------------------------------------------------------------------------------------- | ---- | ---------------------- | ---------------- |
+| 1   | [Subsets](https://leetcode.com/problems/subsets/)                                                    | 78   | Backtracking           | Amazon, Facebook |
+| 2   | [Subsets II](https://leetcode.com/problems/subsets-ii/)                                              | 90   | Backtracking + Dedup   | Facebook         |
+| 3   | [Combination Sum](https://leetcode.com/problems/combination-sum/)                                    | 39   | Backtracking Unbounded | Amazon           |
+| 4   | [Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)                              | 40   | Backtracking Once      | Facebook         |
+| 5   | [Combinations](https://leetcode.com/problems/combinations/)                                          | 77   | Backtracking           | Microsoft        |
+| 6   | [Permutations](https://leetcode.com/problems/permutations/)                                          | 46   | Backtracking + visited | Amazon           |
+| 7   | [Permutations II](https://leetcode.com/problems/permutations-ii/)                                    | 47   | Backtracking + Dedup   | Amazon           |
+| 8   | [Letter Combinations of Phone](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 17   | Backtracking           | Amazon, Google   |
+| 9   | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)                          | 22   | Constrained Backtrack  | Amazon, Google   |
+| 10  | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/)              | 416  | 0/1 Knapsack           | Facebook         |
+| 11  | [Target Sum](https://leetcode.com/problems/target-sum/)                                              | 494  | Subset Sum Count       | Facebook         |
+| 12  | [Word Search](https://leetcode.com/problems/word-search/)                                            | 79   | Grid Backtracking      | Amazon           |
+| 13  | [Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)                    | 131  | Backtracking           | Amazon           |
+| 14  | [Beautiful Arrangement](https://leetcode.com/problems/beautiful-arrangement/)                        | 526  | Permutation Backtrack  | Google           |
+| 15  | [Count Number of Nice Subarrays](https://leetcode.com/problems/count-number-of-nice-subarrays/)      | 1248 | Sliding Window Count   | Amazon           |
 
 ### Hard
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [N-Queens](https://leetcode.com/problems/n-queens/) | 51 | Constraint Backtrack | Amazon, Google |
-| 2 | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) | 37 | Constraint Backtrack | Google |
-| 3 | [Stickers to Spell Word](https://leetcode.com/problems/stickers-to-spell-word/) | 691 | Bitmask DP | — |
-| 4 | [Partition to K Equal Sum](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/) | 698 | Backtrack + Prune | LinkedIn |
-| 5 | [Word Search II](https://leetcode.com/problems/word-search-ii/) | 212 | Trie + Backtrack | Amazon, Google |
+| #   | Problem                                                                                     | LC# | Pattern              | Company        |
+| --- | ------------------------------------------------------------------------------------------- | --- | -------------------- | -------------- |
+| 1   | [N-Queens](https://leetcode.com/problems/n-queens/)                                         | 51  | Constraint Backtrack | Amazon, Google |
+| 2   | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/)                               | 37  | Constraint Backtrack | Google         |
+| 3   | [Stickers to Spell Word](https://leetcode.com/problems/stickers-to-spell-word/)             | 691 | Bitmask DP           | —              |
+| 4   | [Partition to K Equal Sum](https://leetcode.com/problems/partition-to-k-equal-sum-subsets/) | 698 | Backtrack + Prune    | LinkedIn       |
+| 5   | [Word Search II](https://leetcode.com/problems/word-search-ii/)                             | 212 | Trie + Backtrack     | Amazon, Google |
 
 ---
 
 **Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../06_OOP_Design/01_OOPS_Principles.md)
+
+---
+
+### Historical Evolution
+
+**Recursion and Combinatorial Generation** originated with **Haskell Curry (1920s-1930s)** at the University of Amsterdam and Gottingen, whose work on combinatory logic established the theoretical foundations for recursive function definitions. Curry demonstrated that any computable function could be expressed through function composition and fixed-point operators, a principle that would later underpin functional programming. **John McCarthy (1958)** at MIT extended these ideas into LISP, implementing recursion as a first-class language feature, where functions could call themselves directly, enabling elegant expression of tree traversals, subset enumeration, and mathematical induction proofs within code itself.
+
+**Donald Knuth (1968)** at Stanford compiled these concepts into "The Art of Computer Programming, Volume 1" (Fundamental Algorithms), formalizing recursive backtracking as a systematic design technique and cataloging subset generation methods alongside tree traversal algorithms. Knuth's treatment of combinatorial generation problems, particularly the "Algorithm L" for generating combinations in lexicographic order, became the canonical reference for algorithm designers. Modern practice anchors recursion in industry: functional languages (Haskell, OCaml, Clojure) use recursion as their primary control structure, with tail-call optimization enabling safe recursion on unbounded data; JSON parsers (built into every browser and server runtime) recursively traverse nested object trees; file system implementations use recursive directory traversal for operations like `du -sh` or `find`; and combinatorial generation underlies constraint satisfaction solvers in scheduling, logistics optimization, and the SAT solvers that verify modern integrated circuits with billions of transistors. The 100-year lineage from mathematical logic to billion-dollar EDA verification tools demonstrates the enduring power of recursive thinking.
+

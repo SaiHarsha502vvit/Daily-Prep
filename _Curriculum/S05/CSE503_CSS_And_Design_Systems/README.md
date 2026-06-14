@@ -17,18 +17,18 @@ Mastery of modern CSS from fundamentals through advanced layout (Grid, Flexbox, 
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Modern selectors, specificity, cascade, and @layer architecture |
-| 2 | Flexbox deep dive: axis, alignment, flex-grow/shrink, wrapping patterns |
-| 3 | CSS Grid: explicit/implicit grids, named areas, subgrid, alignment |
-| 4 | Container Queries + logical properties for responsive design |
-| 5 | Design tokens: naming conventions, tiers (primitive, semantic, component) |
-| 6 | Typography systems: scale, fluid type with clamp(), variable fonts |
-| 7 | Color systems: perceptual uniformity, contrast utilities, palette generation |
-| 8 | Motion: transitions, animations, scroll-driven animations, @keyframes |
-| 9 | Accessibility: focus-visible, ARIA roles, reduced-motion, skip links |
-| 10 | Design system documentation: Storybook integration, living style guides |
+| Week | Topic                                                                        |
+| ---- | ---------------------------------------------------------------------------- |
+| 1    | Modern selectors, specificity, cascade, and @layer architecture              |
+| 2    | Flexbox deep dive: axis, alignment, flex-grow/shrink, wrapping patterns      |
+| 3    | CSS Grid: explicit/implicit grids, named areas, subgrid, alignment           |
+| 4    | Container Queries + logical properties for responsive design                 |
+| 5    | Design tokens: naming conventions, tiers (primitive, semantic, component)    |
+| 6    | Typography systems: scale, fluid type with clamp(), variable fonts           |
+| 7    | Color systems: perceptual uniformity, contrast utilities, palette generation |
+| 8    | Motion: transitions, animations, scroll-driven animations, @keyframes        |
+| 9    | Accessibility: focus-visible, ARIA roles, reduced-motion, skip links         |
+| 10   | Design system documentation: Storybook integration, living style guides      |
 
 ## Linked Existing Content
 

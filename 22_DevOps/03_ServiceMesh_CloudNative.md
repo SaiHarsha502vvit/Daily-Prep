@@ -14,15 +14,15 @@
 THE PROBLEM:
   Microservices need to: encrypt traffic (mTLS), retry on failure,
   load balance, observe (trace requests), enforce rate limits.
-  
+
   WITHOUT service mesh: every team adds these features IN CODE.
   → Java team uses Resilience4j. Python team uses their own retry lib.
   → Inconsistent, duplicated work, hard to enforce company-wide policies.
-  
+
   WITH service mesh: a SIDECAR PROXY sits next to every pod.
   Your app makes plain HTTP calls. The proxy handles EVERYTHING:
   mTLS, retries, circuit breakers, tracing, rate limiting.
-  
+
   ANALOGY: A translator accompanies you in a foreign country.
   You speak English (plain HTTP). The translator handles:
   local language (mTLS encryption), customs (rate limits),
@@ -30,17 +30,17 @@ THE PROBLEM:
   You don't need to learn anything new.
 
 HOW IT WORKS:
-  
+
   ┌─ Pod A ──────────────────────┐     ┌─ Pod B ──────────────────────┐
   │  ┌──────────┐  ┌──────────┐  │     │  ┌──────────┐  ┌──────────┐  │
   │  │ Your App │→→│  Envoy   │──┼──►──┼──│  Envoy   │→→│ Your App │  │
   │  │ (8080)   │  │ (sidecar)│  │     │  │ (sidecar)│  │ (8080)   │  │
   │  └──────────┘  └──────────┘  │     │  └──────────┘  └──────────┘  │
   └──────────────────────────────┘     └──────────────────────────────┘
-  
+
   Your app calls localhost:8080 → Envoy intercepts → encrypts (mTLS) →
   routes to Pod B's Envoy → decrypts → forwards to Pod B's app.
-  
+
   All traffic is encrypted in transit. Apps don't know about TLS.
 
 KEY SERVICE MESH FEATURES:
@@ -66,7 +66,7 @@ ISTIO vs LINKERD:
            Best for: large enterprises, complex traffic policies.
   Linkerd: Lightweight. Simple. Uses its own micro-proxy.
            Best for: teams wanting simplicity, lower resource overhead.
-  
+
   Recommendation: Start with Linkerd (easy). Move to Istio if you need advanced features.
 ```
 
@@ -78,21 +78,21 @@ metadata:
   name: myapp
 spec:
   hosts:
-  - myapp
+    - myapp
   http:
-  - route:
-    - destination:
-        host: myapp
-        subset: stable            # v1.0 (current)
-      weight: 90                  # 90% of traffic
-    - destination:
-        host: myapp
-        subset: canary            # v2.0 (new)
-      weight: 10                  # 10% of traffic
-    retries:
-      attempts: 3
-      perTryTimeout: 2s
-    timeout: 10s
+    - route:
+        - destination:
+            host: myapp
+            subset: stable # v1.0 (current)
+          weight: 90 # 90% of traffic
+        - destination:
+            host: myapp
+            subset: canary # v2.0 (new)
+          weight: 10 # 10% of traffic
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+      timeout: 10s
 
 ---
 # Define which pods belong to which subset
@@ -105,18 +105,18 @@ spec:
   trafficPolicy:
     connectionPool:
       tcp:
-        maxConnections: 100       # circuit breaker: max connections
+        maxConnections: 100 # circuit breaker: max connections
     outlierDetection:
-      consecutive5xxErrors: 5     # eject pod after 5 consecutive errors
+      consecutive5xxErrors: 5 # eject pod after 5 consecutive errors
       interval: 30s
       baseEjectionTime: 30s
   subsets:
-  - name: stable
-    labels:
-      version: v1
-  - name: canary
-    labels:
-      version: v2
+    - name: stable
+      labels:
+        version: v1
+    - name: canary
+      labels:
+        version: v2
 ```
 
 ---
@@ -129,28 +129,28 @@ spec:
 THE EVOLUTION:
   Bare Metal → VMs → Containers → Serverless
   Each step: less infrastructure for the developer to manage.
-  
+
   Serverless = you write a FUNCTION. Cloud runs it. You pay per invocation.
   No servers to manage. No Docker. No K8s. Just code.
-  
-  ANALOGY: 
+
+  ANALOGY:
   Running a server = owning a car. You pay even when parked.
   Serverless = taking a taxi. You pay only when riding.
 
 AWS LAMBDA (most popular):
-  
+
   Trigger → Lambda Function → Response
-  
+
   Triggers: API Gateway (HTTP), SQS (message queue), S3 (file upload),
             CloudWatch (scheduled), DynamoDB Streams (data change)
-  
+
   PRICING: $0.20 per 1 million invocations.
            Free tier: 1M invocations/month.
-  
+
   COLD START PROBLEM:
   First invocation after idle: Lambda spins up a container → 100-3000ms delay.
   Subsequent invocations: warm container → 1-10ms.
-  
+
   MITIGATION:
   • Provisioned Concurrency: pre-warm N instances (costs more)
   • Smaller runtime: Python/Node start faster than Java/Spring
@@ -160,7 +160,7 @@ WHEN TO USE SERVERLESS vs CONTAINERS:
   ✓ Serverless: Event-driven, sporadic traffic, simple functions, startups
   ✗ Serverless: Long-running tasks (15 min max!), consistent high traffic,
                  complex apps, need control over runtime
-  
+
   KNATIVE (Serverless ON Kubernetes):
     Run serverless workloads on YOUR K8s cluster.
     Scale-to-zero: no traffic → 0 pods (saves resources).
@@ -182,14 +182,14 @@ def lambda_handler(event, context):
     Event contains the HTTP request body.
     """
     body = json.loads(event['body'])
-    
+
     # Validate
     if not body.get('customer_id') or not body.get('items'):
         return {
             'statusCode': 400,
             'body': json.dumps({'error': 'Missing required fields'})
         }
-    
+
     # Store in DynamoDB
     order_id = str(uuid.uuid4())
     table.put_item(Item={
@@ -200,14 +200,14 @@ def lambda_handler(event, context):
         'status': 'PENDING',
         'createdAt': datetime.utcnow().isoformat()
     })
-    
+
     # Trigger next step (async!)
     sqs = boto3.client('sqs')
     sqs.send_message(
         QueueUrl='https://sqs.us-east-1.amazonaws.com/123/payment-queue',
         MessageBody=json.dumps({'orderId': order_id, 'total': body['total']})
     )
-    
+
     return {
         'statusCode': 201,
         'body': json.dumps({'orderId': order_id, 'status': 'PENDING'})
@@ -225,7 +225,7 @@ THE PROBLEM:
   Cloud billing is pay-per-use.
   Without controls: engineering team spins up resources → forgets about them.
   Monthly AWS bill goes from $5,000 → $50,000. Nobody knows why.
-  
+
   FINOPS = Financial + Operations. Making cloud costs visible and accountable.
 
 COST OPTIMIZATION STRATEGIES:
@@ -233,7 +233,7 @@ COST OPTIMIZATION STRATEGIES:
 1. RIGHT-SIZING:
    Most instances are overprovisioned. Monitor actual CPU/memory usage.
    t3.large (2 vCPU, 8GB) running at 5% CPU → switch to t3.small (save 75%).
-   
+
    Tools: AWS Compute Optimizer, Datadog, kubecost (K8s cost per pod).
 
 2. RESERVED INSTANCES / SAVINGS PLANS:
@@ -241,7 +241,7 @@ COST OPTIMIZATION STRATEGIES:
    1-year reserved: $0.06/hr (40% savings, commitment)
    3-year reserved: $0.04/hr (60% savings, big commitment)
    Spot instances: $0.02/hr (80% savings, BUT can be terminated with 2 min warning!)
-   
+
    Spot is great for: batch processing, CI/CD runners, ML training.
    Spot is BAD for: production API servers (can't lose them mid-request!).
 
@@ -253,7 +253,7 @@ COST OPTIMIZATION STRATEGIES:
 4. SCALING POLICIES:
    Schedule-based: Scale down at night (70% of traffic is daytime).
    Event-based: Scale up for Black Friday, scale down after.
-   
+
    K8s: HPA (Horizontal Pod Autoscaler) + VPA (Vertical Pod Autoscaler).
    Cluster Autoscaler: add/remove NODES when pods can't be scheduled.
 
@@ -262,7 +262,7 @@ UNIT ECONOMICS:
   Cost per 1,000 API requests: $0.05
   Cost per customer: $2.50/month
   Cost per GB processed: $0.12
-  
+
   If cost per request increases → investigate specific service.
 ```
 
@@ -281,7 +281,7 @@ THE PROBLEM WITH "YOU BUILD IT, YOU RUN IT":
 PLATFORM ENGINEERING:
   A dedicated team builds an Internal Developer Platform (IDP).
   Developers SELF-SERVE through Golden Paths:
-  
+
   Developer: "I need a new microservice."
   IDP: "Fill in this form: service name, language, team."
   → Auto-creates: GitHub repo, Dockerfile, Helm chart, CI/CD pipeline,
@@ -290,7 +290,7 @@ PLATFORM ENGINEERING:
 
 THE CNCF LANDSCAPE (Cloud Native Computing Foundation):
   The CNCF graduates and incubates the tools that run the cloud:
-  
+
   GRADUATED (production-proven):
   • Kubernetes (orchestration)
   • Prometheus (metrics)
@@ -303,7 +303,7 @@ THE CNCF LANDSCAPE (Cloud Native Computing Foundation):
   • OpenTelemetry (observability)
   • Falco (runtime security)
   • Linkerd (service mesh)
-  
+
   INCUBATING (gaining traction):
   • Dapr (portable microservices runtime)
   • Backstage (developer portal — Spotify open-sourced)
@@ -316,12 +316,11 @@ THE CNCF LANDSCAPE (Cloud Native Computing Foundation):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
+| Topic                             | Related Content                                                                                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **Saga pattern (distributed tx)** | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) — compensation logic |
-| **Circuit breaker** | [Networking & Security](02_Networking_Security.md) — cloud reliability patterns |
-| **DynamoDB (Lambda backend)** | [NoSQL Guide](../08_SQL/22_NoSQL_MongoDB.md) — document stores |
-| **ML model serving (Lambda)** | [MLOps Production](../21_Python_ML_DL_NLP/13_MLOps_Production.md) |
-| **Queue-based (SQS)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — queues everywhere |
-| **Event-driven (Kafka)** | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) — Outbox, CQRS |
-
+| **Circuit breaker**               | [Networking & Security](02_Networking_Security.md) — cloud reliability patterns                    |
+| **DynamoDB (Lambda backend)**     | [NoSQL Guide](../08_SQL/22_NoSQL_MongoDB.md) — document stores                                     |
+| **ML model serving (Lambda)**     | [MLOps Production](../21_Python_ML_DL_NLP/13_MLOps_Production.md)                                  |
+| **Queue-based (SQS)**             | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — queues everywhere               |
+| **Event-driven (Kafka)**          | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) — Outbox, CQRS       |

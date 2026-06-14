@@ -8,7 +8,7 @@ import { type Response } from '@playwright/test';
  */
 export async function toRespondWithin(
   received: PromiseLike<Response> | Response,
-  expectedMs: number
+  expectedMs: number,
 ): Promise<{ pass: boolean; message: () => string }> {
   const startTime = Date.now();
 

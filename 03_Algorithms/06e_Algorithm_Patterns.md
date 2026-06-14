@@ -18,28 +18,36 @@
 
 ---
 
+### Historical Evolution
+
+Advanced offline query algorithms emerged from the intersection of competitive programming and database query optimization. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — the key insight is that sorting queries by block size ($n/\sqrt{q}$) reduces the total movement to $O(n\sqrt{q})$. **Heavy-Light Decomposition (HLD)** was developed by **Harold Djidjev and Robert Tarjan in the 1980s** for network flow applications, with the classic "Maintaining trees in a linear ordering" paper by **Sleator and Tarjan (1983)** formalizing heavy-path concepts for link-cut trees. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries on static strings — they generalize binary indexed trees to multiple dimensions and enable $O(\log \sigma)$ queries on sequences over alphabets of size $\sigma$, critical for bioinformatics (FM-index, BWT-based searching). **Dinic's algorithm** for maximum flow was published by **Yefim Dinic in 1970** with the capacity scaling optimization (Goldberg 1985), and remains the go-to algorithm for network flow problems. Modern practice (post-2010) applies these patterns in competitive programming (CF, AtCoder), database index structures, and network analysis tools.
+
+---
+
 ## 📚 NP — Completeness — the Complete Understanding
 
 ## P Vs Np - The Millennium Prize Problem
 
 **Complexity Classes**:
 P (Polynomial Time):
+
 - Problems solvable in O(n^k) for some constant k
 - Examples: Sorting, Shortest Path, MST, Matrix Multiplication
 - These are "tractable" - efficient algorithms exist
-NP (Nondeterministic Polynomial Time):
+  NP (Nondeterministic Polynomial Time):
 - Problems where solutions can be VERIFIED in polynomial time
 - NOT "Non-Polynomial"!
 - Examples: SAT, Traveling Salesman, Vertex Cover
-NP-Complete:
+  NP-Complete:
 - Hardest problems in NP
 - If any NP-Complete problem has a polynomial solution → P = NP
 - 21 original NP-Complete problems (Karp's 21)
-NP-Hard:
+  NP-Hard:
 - At least as hard as NP-Complete
 - May not even be in NP (solution might not be verifiable in poly time)
 - Example: Halting Problem (undecidable!)
-VISUAL RELATIONSHIP (if P ≠ NP):
+  VISUAL RELATIONSHIP (if P ≠ NP):
+
 ```text
 NP-Hard
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -61,16 +69,19 @@ NP-Hard
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 PROVING NP-COMPLETENESS:
 To show problem X is NP-Complete:
+
 1. Show X is in NP (solution verifiable in poly time)
 2. Show X is NP-Hard (reduce known NP-Complete problem to X in poly time)
-Reduction: If A reduces to B in polynomial time, written A ≤_p B:
+   Reduction: If A reduces to B in polynomial time, written A ≤_p B:
+
 - We can transform any instance of A to an instance of B
 - Transformation takes polynomial time
 - Solution to transformed B gives solution to original A
-If B has polynomial solution and A ≤_p B → A has polynomial solution
-Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol
+  If B has polynomial solution and A ≤_p B → A has polynomial solution
+  Contrapositive: If A has no poly solution and A ≤_p B → B has no poly sol
 
 ```java
 public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
@@ -129,7 +140,6 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 📌 Randomized Algorithms
 
 ```
@@ -150,7 +160,6 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 │ ─────────────────────                                                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 void randomizedQuickSort(int[] arr, int low, int high) {
@@ -189,7 +198,6 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 │ MILLER-RABIN PRIMALITY TEST:                                                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // Monte Carlo: May report composite as prime, never reports prime as composite
@@ -258,7 +266,6 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -388,7 +395,6 @@ class AhoCorasick {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 // DINIC'S ALGORITHM - O(V²E)
 class Dinic {
@@ -467,11 +473,12 @@ class Dinic {
 🔬 **Section Challenge — 🌐 Network Flow Algorithms**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## 📌 Computational Geometry Basics
 
@@ -614,7 +621,6 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Master these algorithms to understand the foundations of computer science!_ 🎯
@@ -634,72 +640,86 @@ Attempt only after mastering the fundamentals in earlier chapters.
 
 ## Section 1: Greedy Algorithms
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Jump Game (LC 55) | LeetCode | Medium | Track farthest reachable |
-| 2 | Jump Game II (LC 45) | LeetCode | Medium | Greedy BFS-style levels |
-| 3 | Gas Station (LC 134) | LeetCode | Medium | If total >= 0, solution exists |
-| 4 | Task Scheduler (LC 621) | LeetCode | Medium | Most frequent first + idle slots |
-| 5 | Non-overlapping Intervals (LC 435) | LeetCode | Medium | Sort by end, count kept |
-| 6 | Merge Intervals (LC 56) | LeetCode | Medium | Sort by start, merge overlapping |
-| 7 | Meeting Rooms II (LC 253) | LeetCode | Medium | Min heap for end times |
-| 8 | Partition Labels (LC 763) | LeetCode | Medium | Last occurrence of each char |
-| 9 | Minimum Number of Arrows (LC 452) | LeetCode | Medium | Interval scheduling |
-| 10 | Candy (LC 135) | LeetCode | Hard | Two-pass left-to-right, right-to-left |
+| #   | Problem                            | Platform | Difficulty | Key Technique                         |
+| --- | ---------------------------------- | -------- | ---------- | ------------------------------------- |
+| 1   | Jump Game (LC 55)                  | LeetCode | Medium     | Track farthest reachable              |
+| 2   | Jump Game II (LC 45)               | LeetCode | Medium     | Greedy BFS-style levels               |
+| 3   | Gas Station (LC 134)               | LeetCode | Medium     | If total >= 0, solution exists        |
+| 4   | Task Scheduler (LC 621)            | LeetCode | Medium     | Most frequent first + idle slots      |
+| 5   | Non-overlapping Intervals (LC 435) | LeetCode | Medium     | Sort by end, count kept               |
+| 6   | Merge Intervals (LC 56)            | LeetCode | Medium     | Sort by start, merge overlapping      |
+| 7   | Meeting Rooms II (LC 253)          | LeetCode | Medium     | Min heap for end times                |
+| 8   | Partition Labels (LC 763)          | LeetCode | Medium     | Last occurrence of each char          |
+| 9   | Minimum Number of Arrows (LC 452)  | LeetCode | Medium     | Interval scheduling                   |
+| 10  | Candy (LC 135)                     | LeetCode | Hard       | Two-pass left-to-right, right-to-left |
 
 ---
 
 🔬 **Section Challenge — Section 1: Greedy Algorithms**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Section 2: Bit Manipulation
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Single Number (LC 136) | LeetCode | Easy | XOR all elements |
-| 2 | Number of 1 Bits (LC 191) | LeetCode | Easy | n & (n-1) clears last set bit |
-| 3 | Counting Bits (LC 338) | LeetCode | Easy | dp[i] = dp[i>>1] + (i&1) |
-| 4 | Missing Number (LC 268) | LeetCode | Easy | XOR with indices |
-| 5 | Reverse Bits (LC 190) | LeetCode | Easy | Shift and build result |
-| 6 | Single Number II (LC 137) | LeetCode | Medium | Count bits mod 3 |
-| 7 | Single Number III (LC 260) | LeetCode | Medium | XOR + rightmost set bit split |
-| 8 | Subsets (LC 78) | LeetCode | Medium | Bitmask 0 to 2^n-1 |
-| 9 | Maximum XOR of Two Numbers (LC 421) | LeetCode | Medium | Trie on binary representation |
-| 10 | Minimum Flips to Make a OR b Equal to c (LC 1318) | LeetCode | Medium | Bit-by-bit analysis |
+| #   | Problem                                           | Platform | Difficulty | Key Technique                 |
+| --- | ------------------------------------------------- | -------- | ---------- | ----------------------------- |
+| 1   | Single Number (LC 136)                            | LeetCode | Easy       | XOR all elements              |
+| 2   | Number of 1 Bits (LC 191)                         | LeetCode | Easy       | n & (n-1) clears last set bit |
+| 3   | Counting Bits (LC 338)                            | LeetCode | Easy       | dp[i] = dp[i>>1] + (i&1)      |
+| 4   | Missing Number (LC 268)                           | LeetCode | Easy       | XOR with indices              |
+| 5   | Reverse Bits (LC 190)                             | LeetCode | Easy       | Shift and build result        |
+| 6   | Single Number II (LC 137)                         | LeetCode | Medium     | Count bits mod 3              |
+| 7   | Single Number III (LC 260)                        | LeetCode | Medium     | XOR + rightmost set bit split |
+| 8   | Subsets (LC 78)                                   | LeetCode | Medium     | Bitmask 0 to 2^n-1            |
+| 9   | Maximum XOR of Two Numbers (LC 421)               | LeetCode | Medium     | Trie on binary representation |
+| 10  | Minimum Flips to Make a OR b Equal to c (LC 1318) | LeetCode | Medium     | Bit-by-bit analysis           |
 
 ---
 
 ## Section 3: String Algorithms
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Longest Common Prefix (LC 14) | LeetCode | Easy | Vertical scan or binary search |
-| 2 | Implement strStr() / KMP (LC 28) | LeetCode | Easy | KMP failure function |
-| 3 | Longest Palindromic Substring (LC 5) | LeetCode | Medium | Expand around center or Manacher |
-| 4 | Longest Palindromic Subsequence (LC 516) | LeetCode | Medium | 2D DP |
-| 5 | Edit Distance (LC 72) | LeetCode | Medium | Classic 2D DP |
-| 6 | Wildcard Matching (LC 44) | LeetCode | Hard | DP or greedy with backtrack |
-| 7 | Regular Expression Matching (LC 10) | LeetCode | Hard | DP with * handling |
-| 8 | Shortest Palindrome (LC 214) | LeetCode | Hard | KMP on s + "#" + reverse(s) |
-| 9 | Repeated Substring Pattern (LC 459) | LeetCode | Easy | KMP failure function insight |
-| 10 | Minimum Window Substring (LC 76) | LeetCode | Hard | Sliding window + freq map |
+| #   | Problem                                  | Platform | Difficulty | Key Technique                    |
+| --- | ---------------------------------------- | -------- | ---------- | -------------------------------- |
+| 1   | Longest Common Prefix (LC 14)            | LeetCode | Easy       | Vertical scan or binary search   |
+| 2   | Implement strStr() / KMP (LC 28)         | LeetCode | Easy       | KMP failure function             |
+| 3   | Longest Palindromic Substring (LC 5)     | LeetCode | Medium     | Expand around center or Manacher |
+| 4   | Longest Palindromic Subsequence (LC 516) | LeetCode | Medium     | 2D DP                            |
+| 5   | Edit Distance (LC 72)                    | LeetCode | Medium     | Classic 2D DP                    |
+| 6   | Wildcard Matching (LC 44)                | LeetCode | Hard       | DP or greedy with backtrack      |
+| 7   | Regular Expression Matching (LC 10)      | LeetCode | Hard       | DP with \* handling              |
+| 8   | Shortest Palindrome (LC 214)             | LeetCode | Hard       | KMP on s + "#" + reverse(s)      |
+| 9   | Repeated Substring Pattern (LC 459)      | LeetCode | Easy       | KMP failure function insight     |
+| 10  | Minimum Window Substring (LC 76)         | LeetCode | Hard       | Sliding window + freq map        |
 
 ---
 
 ## HIDDEN GEMS — Advanced
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Maximum Product of Word Lengths (LC 318) | LeetCode | Bitmask for character sets |
-| 2 | Wiggle Sort II (LC 324) | LeetCode | Median + 3-way partition |
-| 3 | Queue Reconstruction by Height (LC 406) | LeetCode | Sort desc height, insert by k |
-| 4 | UTF-8 Validation (LC 393) | LeetCode | Bit manipulation for encoding |
-| 5 | Gray Code (LC 89) | LeetCode | i XOR (i >> 1) — elegant bit pattern |
-| 6 | Circular Array Loop (LC 457) | LeetCode | Slow/fast pointer on circular |
+| #   | Problem                                  | Platform | Why It's Valuable                        |
+| --- | ---------------------------------------- | -------- | ---------------------------------------- |
+| 1   | Maximum Product of Word Lengths (LC 318) | LeetCode | Bitmask for character sets               |
+| 2   | Wiggle Sort II (LC 324)                  | LeetCode | Median + 3-way partition                 |
+| 3   | Queue Reconstruction by Height (LC 406)  | LeetCode | Sort desc height, insert by k            |
+| 4   | UTF-8 Validation (LC 393)                | LeetCode | Bit manipulation for encoding            |
+| 5   | Gray Code (LC 89)                        | LeetCode | i XOR (i &gt;&gt; 1) elegant bit pattern |
+| 6   | Circular Array Loop (LC 457)             | LeetCode | Slow/fast pointer on circular            |
 
+### Topical Breadth — Advanced Pattern Selection Trade-offs
+
+The advanced patterns in this chapter each exploit a different constraint boundary, and the selection hinges on whether the problem is static or dynamic, online or offline. **Meet-in-the-Middle** reduces O(2^n) to O(2^(n/2) * n) by splitting the set and enumerating both halves — the trade-off is it requires O(2^(n/2)) space and works only when you can enumerate all partial solutions cleanly; the practical threshold is n <= 30 where 2^30 is too large for brute force but 2^15 is manageable. **Sqrt Decomposition** answers range queries in O(sqrt(n)) by dividing the array into blocks — the trade-off versus segment tree is that sqrt decomposition is simpler to implement and faster for static arrays with O(1) point updates, but degrades to O(sqrt(n)) per query where segment tree gives O(log n). **Mo's Algorithm** answers offline range queries in O((n+q)*sqrt(n)) on static arrays — the trade-off is it requires the array to be static (no updates) and needs block size tuning; it outperforms segment tree when you have many queries (q >> n) on read-only data. **Heavy-Light Decomposition (HLD)** enables O(log^2 n) path queries on trees by decomposing into O(log n) heavy paths — the trade-off versus Euler tour with BIT is that HLD handles both path and subtree queries efficiently, while Euler tour + BIT is O(log n) for subtree but O(n) for arbitrary paths; use HLD when the problem mixes path aggregates with point updates. **Wavelet Tree** answers static range k-th order statistics in O(log sigma) where sigma is alphabet size — the trade-off versus segment tree is that wavelet tree handles static arrays with range k-th/min/max queries elegantly but cannot handle updates; use wavelet tree when the array never changes and you need median/k-th frequently.
+
+| Pattern                   | Time per Query    | Update             | Space          | When to Prefer                              |
+| ------------------------- | ----------------- | ------------------ | -------------- | ------------------------------------------- |
+| Meet-in-the-Middle        | O(2^(n/2))        | N/A                | O(2^(n/2))     | n <= 30, subset sum, TSP small n            |
+| Sqrt Decomposition        | O(sqrt(n))        | O(1)               | O(n)           | Static queries, simple updates, low q       |
+| Mo's Algorithm            | O((n+q)\*sqrt(n)) | None (static only) | O(n)           | Many offline range queries, read-only array |
+| Heavy-Light Decomposition | O(log^2 n)        | O(log^2 n)         | O(n)           | Path queries + point updates on trees       |
+| Wavelet Tree              | O(log sigma)      | None (static only) | O(n log sigma) | Static range k-th order, median queries     |
+
+Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subset or partition problem. Select **Sqrt Decomposition** as the simplest offline range query structure before reaching for segment tree. Select **Mo's** when you have hundreds of range queries on a static array. Select **HLD** when the problem explicitly asks for path aggregates on a tree. Default to **Segment Tree** for dynamic range queries with updates.

@@ -1920,105 +1920,105 @@ output "database_endpoint" {
 name: CI/CD Pipeline
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
 
 env:
-    AWS_REGION: ap-south-1
-    ECR_REPOSITORY: myapp
-    ECS_SERVICE: myapp-service
-    ECS_CLUSTER: production
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: myapp
+  ECS_SERVICE: myapp-service
+  ECS_CLUSTER: production
 
 jobs:
-    # JOB 1: TEST
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+  # JOB 1: TEST
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Set up JDK 17
-              uses: actions/setup-java@v3
-              with:
-                  java-version: "17"
-                  distribution: "temurin"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
 
-            - name: Run Tests
-              run: ./mvnw test
+      - name: Run Tests
+        run: ./mvnw test
 
-            - name: Upload Coverage
-              uses: codecov/codecov-action@v3
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
 
-    # JOB 2: BUILD & PUSH
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
+  # JOB 2: BUILD & PUSH
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
-        steps:
-            - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Login to Amazon ECR
-              id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-            - name: Build and push Docker image
-              env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  IMAGE_TAG: ${{ github.sha }}
-              run: |
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # JOB 3: DEPLOY
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
+  # JOB 3: DEPLOY
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Deploy to ECS
-              run: |
-                  aws ecs update-service \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --service ${{ env.ECS_SERVICE }} \
-                    --force-new-deployment
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment
 
-            - name: Wait for deployment
-              run: |
-                  aws ecs wait services-stable \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --services ${{ env.ECS_SERVICE }}
+      - name: Wait for deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }}
 
-    # JOB 4: NOTIFY
-    notify:
-        needs: [test, build, deploy]
-        runs-on: ubuntu-latest
-        if: always()
+  # JOB 4: NOTIFY
+  notify:
+    needs: [test, build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
 
-        steps:
-            - name: Slack Notification
-              uses: 8398a7/action-slack@v3
-              with:
-                  status: ${{ job.status }}
-                  fields: repo,message,commit,author,action,workflow
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 ```
 
 ---
@@ -2457,4 +2457,3 @@ HOW AUTO SCALING WORKS:
 _Stage 2 Complete! Ready for Stage 3: Full-Stack Development Complete Guide_
 
 ---
-

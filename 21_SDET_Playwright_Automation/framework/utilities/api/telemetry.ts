@@ -14,10 +14,24 @@ import type { Tracer, Span, Attributes } from '@opentelemetry/api';
 // ---------------------------------------------------------------------------
 
 let _getTracer: (name: string) => Tracer = () =>
-  ({ startSpan: () => ({ setAttribute: () => {}, setAttributes: () => {}, recordException: () => {}, end: () => {}, setStatus: () => {} }) }) as unknown as Tracer;
+  ({
+    startSpan: () => ({
+      setAttribute: () => {},
+      setAttributes: () => {},
+      recordException: () => {},
+      end: () => {},
+      setStatus: () => {},
+    }),
+  }) as unknown as Tracer;
 
 let _startSpan: (tracer: Tracer, name: string, opts?: { attributes?: Attributes }) => Span = () =>
-  ({ setAttribute: () => {}, setAttributes: () => {}, recordException: () => {}, end: () => {}, setStatus: () => {} }) as unknown as Span;
+  ({
+    setAttribute: () => {},
+    setAttributes: () => {},
+    recordException: () => {},
+    end: () => {},
+    setStatus: () => {},
+  }) as unknown as Span;
 
 let _inject: (context: unknown, carrier: Record<string, string>) => void = () => {};
 
@@ -49,11 +63,7 @@ export function getApiTracer(serviceName = 'playwright-tests'): Tracer {
  * Starts a new span with the given name and optional attributes.
  * When @opentelemetry/api is absent, returns a no-op span.
  */
-export function createApiSpan(
-  tracer: Tracer,
-  name: string,
-  attributes?: Attributes
-): Span {
+export function createApiSpan(tracer: Tracer, name: string, attributes?: Attributes): Span {
   return _startSpan(tracer, name, { attributes });
 }
 

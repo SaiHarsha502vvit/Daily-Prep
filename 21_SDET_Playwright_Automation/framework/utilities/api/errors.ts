@@ -112,7 +112,7 @@ export function createStatusError(
   status: number,
   message: string,
   endpoint: string,
-  responseBody: unknown
+  responseBody: unknown,
 ): ApiError {
   switch (status) {
     case AppConstants.HTTP_BAD_REQUEST:

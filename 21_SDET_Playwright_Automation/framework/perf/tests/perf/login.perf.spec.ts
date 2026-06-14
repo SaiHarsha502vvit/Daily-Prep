@@ -9,7 +9,9 @@ test('@perf login page load performance', async ({ page }) => {
   const metrics = await measurePageLoad(page);
 
   // Log metrics for CI reporting
-  console.log(`Login page metrics: FCP=${metrics.fcp.toFixed(0)}ms, LCP=${metrics.lcp.toFixed(0)}ms, TTFB=${metrics.ttfb.toFixed(0)}ms`);
+  console.log(
+    `Login page metrics: FCP=${metrics.fcp.toFixed(0)}ms, LCP=${metrics.lcp.toFixed(0)}ms, TTFB=${metrics.ttfb.toFixed(0)}ms`,
+  );
 
   // Assert within orangehrm login budget
   assertWithinBudget(metrics, PERF_BUDGETS.orangehrm.loginLoad);

@@ -10,19 +10,20 @@
 
 **Mental Model:** Think of your database as a library of foreign-language books and your Java app as an English speaker. Hibernate is the translator (Object-Relational Mapper) who instantly reads the foreign books and hands you English summaries, saving you from learning the database's specific SQL dialect.
 
-| Question | Hibernate & JPA Context |
-| :--- | :--- |
-| **WHAT** | An Object-Relational Mapping (ORM) framework that maps Java objects (entities) to relational database tables, handling all the underlying SQL generation and JDBC execution. |
-| **WHY** | To eliminate boilerplate JDBC code, prevent SQL injection, cache data for performance, and allow developers to think in objects rather than tables. |
-| **WHEN** | Used in data-driven enterprise applications when you need complex domain models, caching, or database-agnostic code. |
-| **WHERE** | Sits in the persistence layer (Data Access layer), acting as the bridge between your Spring Services/Repositories and the actual RDBMS (PostgreSQL, MySQL). |
-| **WHO** | Originally created by Gavin King in 2001. It became so dominant that it heavily influenced the creation of the official Java Persistence API (JPA) standard. |
-| **HOW** | Works by using a `PersistenceContext` (first-level cache) to track entity states (Transient, Managed, Detached, Removed) and "Dirty Checking" to automatically generate `UPDATE` SQL statements only when fields change. |
+| Question  | Hibernate & JPA Context                                                                                                                                                                                                  |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | An Object-Relational Mapping (ORM) framework that maps Java objects (entities) to relational database tables, handling all the underlying SQL generation and JDBC execution.                                             |
+| **WHY**   | To eliminate boilerplate JDBC code, prevent SQL injection, cache data for performance, and allow developers to think in objects rather than tables.                                                                      |
+| **WHEN**  | Used in data-driven enterprise applications when you need complex domain models, caching, or database-agnostic code.                                                                                                     |
+| **WHERE** | Sits in the persistence layer (Data Access layer), acting as the bridge between your Spring Services/Repositories and the actual RDBMS (PostgreSQL, MySQL).                                                              |
+| **WHO**   | Originally created by Gavin King in 2001. It became so dominant that it heavily influenced the creation of the official Java Persistence API (JPA) standard.                                                             |
+| **HOW**   | Works by using a `PersistenceContext` (first-level cache) to track entity states (Transient, Managed, Detached, Removed) and "Dirty Checking" to automatically generate `UPDATE` SQL statements only when fields change. |
 
 ### Where It's Used in Real World
-*   **E-commerce Systems**: Managing complex relationships between `User`, `Order`, `Product`, and `Payment` tables without writing hundreds of JOIN queries.
-*   **ERP Systems**: Handling massive enterprise schemas where entities might have dozens of relationships via `@OneToMany` and `@ManyToOne` mappings.
-*   **CMS Applications**: Caching frequently accessed articles and metadata using Second-Level Cache to bypass the database entirely.
+
+- **E-commerce Systems**: Managing complex relationships between `User`, `Order`, `Product`, and `Payment` tables without writing hundreds of JOIN queries.
+- **ERP Systems**: Handling massive enterprise schemas where entities might have dozens of relationships via `@OneToMany` and `@ManyToOne` mappings.
+- **CMS Applications**: Caching frequently accessed articles and metadata using Second-Level Cache to bypass the database entirely.
 
 ---
 
@@ -52,13 +53,13 @@
   userRepo.save(user)
         │
         ▼
-  SimpleJpaRepository          
-  .save(entity)                
-        │                       
-        ├── Is entity new?      
-        │   (check @Id == null  
+  SimpleJpaRepository
+  .save(entity)
+        │
+        ├── Is entity new?
+        │   (check @Id == null
         │    or @Version == null)
-        │                       
+        │
         ├── NEW → em.persist(entity)
         │         │
         │         ▼
@@ -69,7 +70,7 @@
         │         │
         │         ├── Generate ID (if @GeneratedValue)
         │         │   ├── IDENTITY → INSERT now (need DB-generated ID)
-        │         │   ├── SEQUENCE → SELECT nextval('seq') 
+        │         │   ├── SEQUENCE → SELECT nextval('seq')
         │         │   ├── TABLE → UPDATE id_table
         │         │   └── UUID → generate in Java
         │         │
@@ -79,7 +80,7 @@
         │         ├── Take "snapshot" of entity state
         │         │   (for dirty checking later)
         │         │
-        │         └── Schedule INSERT action 
+        │         └── Schedule INSERT action
         │             (ActionQueue — deferred execution)
         │
         └── EXISTING → em.merge(entity)
@@ -140,16 +141,16 @@
 
 ---
 
-
-
 🔬 **Section Challenge — 1. The Full Stack: From repository.save() to Database Disk**
 
 **Challenge 1 (Engineering):** You notice severe latency spikes when calling `userRepo.save(user)` for newly registered users. Database CPU is low, and HikariCP connections are available. The primary key generation strategy is `@GeneratedValue(strategy = GenerationType.IDENTITY)`. Why is `save()` suddenly blocking, and what is the architectural fix?
+
 <details><summary>Answer</summary>
 
 **Scenario:** During a high-traffic signup event, thread starvation occurs because `save()` blocks execution longer than expected.
 **Trace:** `GenerationType.IDENTITY` forces Hibernate to immediately execute an `INSERT` statement to obtain the database-generated ID, completely bypassing Hibernate's internal ActionQueue and deferred execution (transactional write-behind). This means every `save()` synchronously hits the database and waits for disk I/O, preventing JDBC batching.
 **Debug/Fix:** Change the generation strategy to `GenerationType.SEQUENCE` (with a sequence generator like Postgre's `CREATE SEQUENCE`). This allows Hibernate to pre-fetch a batch of IDs (using `allocationSize=50`), assign them to entities in memory, and defer the actual `INSERT` statements until the flush phase, enabling JDBC batching and eliminating the per-request synchronous I/O bottleneck.
+
 </details>
 
 ## 2. Persistence Context — The Most Misunderstood Concept
@@ -199,10 +200,10 @@
 public void demonstrateIdentity() {
     User user1 = userRepo.findById(1L).orElseThrow();  // SQL: SELECT * FROM users WHERE id=1
     User user2 = userRepo.findById(1L).orElseThrow();  // NO SQL! Returns cached reference
-    
+
     System.out.println(user1 == user2);  // true! Same Java object!
     // Not just equals() — literally the same reference in memory
-    
+
     // WHY: Persistence Context maps EntityKey(User, 1) → one User object
     // Second findById(1) sees it's already in the map and returns same reference
 }
@@ -210,18 +211,17 @@ public void demonstrateIdentity() {
 
 ---
 
-
-
 🔬 **Section Challenge — 2. Persistence Context — The Most Misunderstood Concept**
 
 **Challenge 1 (Engineering):** A batch processing job reads 100,000 entities in a single `@Transactional` method, modifies a status flag, and commits. The application crashes with an `OutOfMemoryError` midway through processing. Why does this happen, and how do you fix it without removing the transaction?
+
 <details><summary>Answer</summary>
 
 **Scenario:** A background worker processing millions of rows causes the JVM to run out of heap space.
-**Trace:** The Persistence Context (L1 cache) stores a hard reference to *every* entity loaded or persisted during the transaction. It also stores a deep-copied `Object[]` snapshot of the entity's initial state for dirty checking. When processing 100,000 entities in one transaction, the L1 cache balloons continuously until memory is exhausted, because the Session is not cleared until the method ends.
+**Trace:** The Persistence Context (L1 cache) stores a hard reference to _every_ entity loaded or persisted during the transaction. It also stores a deep-copied `Object[]` snapshot of the entity's initial state for dirty checking. When processing 100,000 entities in one transaction, the L1 cache balloons continuously until memory is exhausted, because the Session is not cleared until the method ends.
 **Debug/Fix:** Implement chunk-based processing with explicit flushing and clearing. Read and process entities in batches (e.g., 500 at a time). After each batch, manually call `entityManager.flush()` to send the `UPDATE` statements to the database, followed immediately by `entityManager.clear()` to detach all managed entities and allow the garbage collector to reclaim the memory from the L1 cache.
-</details>
 
+</details>
 
 ## 3. Entity States — The 4-State Machine You MUST Know
 
@@ -269,19 +269,19 @@ public void demonstrateIdentity() {
   │                               │  │                               │
   └──────────────────────────────┘  └──────────────────────────────┘
 
-  
+
   CRITICAL INSIGHT — The detached trap:
 
   @Transactional
   public User getUser(Long id) {
       return userRepo.findById(id).orElseThrow();
   }  // Transaction ends → Session closes → User becomes DETACHED
-  
+
   // In the controller:
   User user = userService.getUser(1L);
   user.setName("Updated");  // Changes NOT tracked — entity is DETACHED!
   // NO UPDATE will be sent to database!
-  
+
   // You MUST either:
   // 1. Modify within @Transactional (while MANAGED)
   // 2. Call userRepo.save(user) which does em.merge() (re-attaches)
@@ -293,12 +293,12 @@ public void demonstrateIdentity() {
 @Transactional
 public void dangerousMerge(User detachedUser) {
     detachedUser.setName("New Name");
-    
+
     // WRONG:
     entityManager.merge(detachedUser);
     detachedUser.setEmail("new@email.com");  // ❌ This change is LOST!
     // merge() returned a DIFFERENT managed copy. 'detachedUser' is still detached!
-    
+
     // CORRECT:
     User managedUser = entityManager.merge(detachedUser);
     managedUser.setEmail("new@email.com");  // ✅ This is tracked
@@ -308,27 +308,26 @@ public void dangerousMerge(User detachedUser) {
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Entity States — The 4-State Machine You MUST Know**
 
 **Challenge 1 (Engineering):** A caching service retrieves a `User` from Redis and passes it to the `UserService` to update the user's `lastLogin` timestamp. You call `userRepo.save(user)` to persist the update. However, monitoring tools show that an unnecessary `SELECT` statement is executed before every `UPDATE`. Why is this happening, and how do you optimize it?
+
 <details><summary>Answer</summary>
 
 **Scenario:** High database load caused by an unexpected N+1 style read penalty during an update operation.
 **Trace:** The `User` object retrieved from Redis is a standard Java object, meaning it is in the `TRANSIENT` or `DETACHED` state. When you call `save()` (which calls `em.merge()` under the hood for entities with existing IDs), Hibernate must figure out the difference between the detached entity and the current database state. To do this, it executes a `SELECT` statement to pull the current state into the Persistence Context before merging the changes and issuing the `UPDATE`.
 **Debug/Fix:** If you know the exact ID and only need to update specific fields, bypass the merge trap entirely by writing a custom JPQL `@Modifying` query (e.g., `@Query("UPDATE User u SET u.lastLogin = :time WHERE u.id = :id")`). This pushes the update directly to the database, completely avoiding the `SELECT` penalty and bypasses the Persistence Context.
-</details>
 
+</details>
 
 ## 4. First-Level Cache — Why You Get the Same Object Twice
 
 ```
   How the first-level cache works:
-  
+
   @Transactional
   public void demonstrateCache() {
-  
+
       // Call 1: findById(1L)
       // PC cache: empty
       // → SQL: SELECT * FROM users WHERE id = 1
@@ -336,15 +335,15 @@ public void dangerousMerge(User detachedUser) {
       // → Stored in PC: entitiesByKey.put(EntityKey(User, 1), user)
       // → Snapshot taken: entitySnapshotsByKey.put(EntityKey(User,1), ["Harsha","h@ex.com"])
       User user1 = userRepo.findById(1L).get();
-  
-      // Call 2: findById(1L)  
+
+      // Call 2: findById(1L)
       // PC cache: EntityKey(User, 1) → FOUND!
       // → NO SQL executed!
       // → Returns same reference from cache
       User user2 = userRepo.findById(1L).get();
-      
+
       assert user1 == user2;  // true — same object
-  
+
       // Call 3: JPQL query that includes id=1
       // ⚠️ JPQL ALWAYS goes to database!
       // → SQL: SELECT * FROM users WHERE email = 'h@ex.com'
@@ -352,18 +351,18 @@ public void dangerousMerge(User detachedUser) {
       // → PC checks: EntityKey(User, 1) already exists!
       // → DISCARDS the DB result, returns cached entity
       User user3 = userRepo.findByEmail("h@ex.com");
-      
+
       assert user1 == user3;  // true — still same object!
   }
-  
-  
+
+
   IMPORTANT LIMITATION:
   ═══════════════════════
   First-level cache is PER SESSION (per @Transactional method).
-  
+
   Transaction 1: findById(1) → SQL → cache it
   Transaction 2: findById(1) → SQL again! (different Session, different cache)
-  
+
   First-level cache does NOT help across transactions.
   That's what second-level cache is for.
 ```
@@ -426,30 +425,30 @@ flowchart TD
     %% Hibernate Dirty Checking Physics
     subgraph FLUSH ["Transaction Commit (Flush Phase)"]
         PC["Persistence Context (L1 Cache)"]
-        
+
         ENTITY["Java Entity Reference<br/>name='Sai Harsha'"]
         SNAPSHOT["Internal Snapshot[]<br/>name='Harsha'"]
-        
+
         PC --> ENTITY
         PC --> SNAPSHOT
-        
+
         CHECK{"Dirty Check Algorithm<br/>for i=0 to properties.length<br/>if (entity[i] != snapshot[i])"}
-        
+
         ENTITY --> CHECK
         SNAPSHOT --> CHECK
-        
+
         ACTION["ActionQueue.addAction(EntityUpdateAction)"]
         CHECK -->|Difference Found!| ACTION
-        
+
         JDBC["JDBC Batch Execution<br/>UPDATE users SET..."]
         ACTION --> JDBC
-    
+
 ```
 
 ```text
   WHY THIS MATTERS:
   ═════════════════
-  
+
   @Transactional
   public void updateUserName(Long id, String newName) {
       User user = userRepo.findById(id).orElseThrow();
@@ -458,7 +457,7 @@ flowchart TD
       // Dirty checking will detect the change and UPDATE automatically
       // when the transaction commits.
   }
-  
+
   Many developers write: userRepo.save(user) after modifying a managed entity.
   It works (save → merge → detects already managed → does nothing extra),
   but it's UNNECESSARY and shows you don't understand dirty checking.
@@ -466,30 +465,29 @@ flowchart TD
 
   @Transactional(readOnly = true) OPTIMIZATION:
   ══════════════════════════════════════════════
-  
+
   When readOnly = true, Hibernate:
   1. Does NOT take snapshots (no Object[] allocation)
   2. Does NOT perform dirty checking at flush time
   3. Sets JDBC connection to read-only mode
   4. Database may optimize (use read replica, less locking)
-  
+
   For 10,000 entities: skipping snapshots saves ~40KB memory + CPU time
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Dirty Checking — How Hibernate Knows You Changed Something**
 
 **Challenge 1 (Engineering):** You have a legacy `Employee` table with 150 columns (including heavy CLOB fields). A microservice loads an `Employee` and updates a single boolean field `isActive = false`. Database CPU suddenly spikes due to massive Write-Ahead Logging (WAL) I/O. Why did changing a single boolean cause an I/O bottleneck?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Database storage engines struggle with excessive WAL writes during minor entity updates.
-**Trace:** By default, when Hibernate's Dirty Checking detects a change, it generates a static `UPDATE` statement that includes *every single column* in the entity, regardless of whether it changed. It does this to cache the `PreparedStatement` at the JDBC level. Writing 150 columns (including heavy text blobs) to the database forces the database engine to rewrite massive amounts of data into the WAL and data pages, crushing disk I/O.
-**Debug/Fix:** Annotate the `Employee` entity with `@DynamicUpdate`. This instructs Hibernate to dynamically generate the `UPDATE` SQL string at runtime, including *only* the columns that were modified (in this case, just `isActive = false`). This eliminates the massive payload overhead at the cost of slight CPU overhead in string generation, dramatically reducing network and database I/O.
-</details>
+**Trace:** By default, when Hibernate's Dirty Checking detects a change, it generates a static `UPDATE` statement that includes _every single column_ in the entity, regardless of whether it changed. It does this to cache the `PreparedStatement` at the JDBC level. Writing 150 columns (including heavy text blobs) to the database forces the database engine to rewrite massive amounts of data into the WAL and data pages, crushing disk I/O.
+**Debug/Fix:** Annotate the `Employee` entity with `@DynamicUpdate`. This instructs Hibernate to dynamically generate the `UPDATE` SQL string at runtime, including _only_ the columns that were modified (in this case, just `isActive = false`). This eliminates the massive payload overhead at the cost of slight CPU overhead in string generation, dramatically reducing network and database I/O.
 
+</details>
 
 ## 6. Flush Modes — When SQL Actually Gets Sent
 
@@ -516,47 +514,47 @@ flowchart TD
 
   AUTO FLUSH EXAMPLE:
   ════════════════════
-  
+
   @Transactional
   public void autoFlushDemo() {
       User user = new User("Harsha");
       entityManager.persist(user);
       // SQL: nothing yet! Just added to PC
-      
+
       // Now execute a JPQL query:
       List<User> users = entityManager
           .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
           .getResultList();
-      
+
       // BEFORE executing the SELECT, Hibernate AUTO-FLUSHES:
       // → INSERT INTO users (name) VALUES ('Harsha')  ← sent to DB first
       // → SELECT * FROM users WHERE name = 'Harsha'   ← now this finds the row!
-      // 
+      //
       // WHY: If it didn't flush, the SELECT would miss the pending INSERT!
-      
+
       assert users.contains(user);  // true!
   }
-  
-  
+
+
   COMMIT FLUSH GOTCHA:
   ════════════════════
-  
+
   entityManager.setFlushMode(FlushModeType.COMMIT);
-  
+
   @Transactional
   public void commitFlushGotcha() {
       User user = new User("Harsha");
       entityManager.persist(user);
       // Still just in PC, not in DB
-      
+
       List<User> users = entityManager
           .createQuery("SELECT u FROM User u WHERE u.name = 'Harsha'", User.class)
           .getResultList();
-      
+
       // No auto-flush before query!
       // SELECT runs against DB → "Harsha" NOT FOUND (not flushed yet!)
       assert users.isEmpty();  // true! The query misses the pending insert!
-      
+
       // INSERT happens only when transaction commits
   }
 ```
@@ -571,17 +569,17 @@ flowchart TD
       @Id
       private Long id;
       private String name;
-      
+
       @OneToMany(fetch = FetchType.LAZY)  // default for collections
       private List<Order> orders;  // NOT loaded immediately
   }
 
   WHAT HIBERNATE ACTUALLY STORES:
   ═══════════════════════════════
-  
+
   When you load a User, the 'orders' field is NOT a real ArrayList.
   It's a PROXY — a Hibernate-generated wrapper:
-  
+
   User{
       id = 1,
       name = "Harsha",
@@ -592,10 +590,10 @@ flowchart TD
           role = "User.orders"             ← Which mapping
       }
   }
-  
+
   WHEN YOU ACCESS orders:
   ═══════════════════════
-  
+
   user.getOrders().size()
        │
        ▼
@@ -612,45 +610,44 @@ flowchart TD
        │   │
        │   └── NO → LazyInitializationException!
        │            "could not initialize proxy - no Session"
-       │            
+       │
        │            This happens when:
        │            • @Transactional method already returned
        │            • Session is closed
        │            • You try to access lazy collection in controller/view
        │
        └── This is the #1 Hibernate exception beginners face
-  
-  
+
+
   FOR @ManyToOne / @OneToOne (single entities):
   ══════════════════════════════════════════════
-  
+
   @ManyToOne(fetch = FetchType.LAZY)
   private Department department;
-  
+
   Hibernate creates a CGLIB PROXY of Department:
-  
+
   user.getDepartment() returns Department$$EnhancerByHibernate {
       id = 5,           ← Only the ID is set!
       name = null,      ← NOT loaded
       initialized = false
   }
-  
+
   user.getDepartment().getId()    → returns 5 (no SQL — ID already known)
   user.getDepartment().getName()  → TRIGGERS SQL: SELECT * FROM departments WHERE id=5
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 7. Lazy Loading — How Proxy Objects Work**
 
 **Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
+
 <details><summary>Answer</summary>
 
-Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
-</details>
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it _after_ the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 
+</details>
 
 ## 8. Second-Level Cache — The Cache You Configure
 
@@ -682,10 +679,10 @@ Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hiber
   │  │ • Often MORE harm than good (stale data, invalidation storms)       │   │
   │  └──────────────────────────────────────────────────────────────────────┘   │
   └──────────────────────────────────────────────────────────────────────────────┘
-  
-  
+
+
   LOOKUP ORDER:
-  
+
   entityManager.find(User.class, 1L)
        │
        ├─ Check L1 Cache (Persistence Context)
@@ -762,7 +759,7 @@ public class Country {
 public class Department {
     @Id private Long id;
     private String name;
-    
+
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private List<Employee> employees;
 }
@@ -813,7 +810,7 @@ sequenceDiagram
 // One query with JOIN
 @Query("SELECT d FROM Department d JOIN FETCH d.employees")
 List<Department> findAllWithEmployees();
-// SQL: SELECT d.*, e.* FROM departments d 
+// SQL: SELECT d.*, e.* FROM departments d
 //      LEFT JOIN employees e ON d.id = e.department_id
 // → 1 query instead of 101!
 // ⚠️ Cartesian product warning: if department has 50 employees,
@@ -847,7 +844,7 @@ public class Department {
     private List<Employee> employees;
 }
 // SQL 1: SELECT * FROM departments
-// SQL 2: SELECT * FROM employees WHERE department_id IN 
+// SQL 2: SELECT * FROM employees WHERE department_id IN
 //         (SELECT id FROM departments)  ← subquery!
 // → Exactly 2 queries always. Clean.
 ```
@@ -861,14 +858,14 @@ public class Department {
   ═══════════
   A Servlet Filter that keeps the Hibernate Session OPEN
   for the entire HTTP request — even AFTER @Transactional ends.
-  
+
   Spring Boot ENABLES THIS BY DEFAULT!
   spring.jpa.open-in-view = true (default)
-  
-  
+
+
   WITHOUT OSIV (spring.jpa.open-in-view = false):
   ════════════════════════════════════════════════
-  
+
   Request → Controller → @Transactional Service → Repository → DB
                                │
                           Session opens
@@ -878,11 +875,11 @@ public class Department {
                          user.getOrders()  ← LazyInitializationException! 💥
                                │
                          Response sent
-  
-  
+
+
   WITH OSIV (spring.jpa.open-in-view = true, DEFAULT):
   ════════════════════════════════════════════════════
-  
+
   Request → OpenSessionInViewFilter opens Session
                │
                ├── Controller → @Transactional Service → Repository → DB
@@ -894,11 +891,11 @@ public class Department {
                │                                    (new SELECT in auto-commit mode)
                │
                └── Response sent → Filter closes Session
-  
-  
+
+
   WHY IT'S CONTROVERSIAL:
   ═══════════════════════
-  
+
   PROS:                                    CONS:
   • No LazyInitializationException         • DB connection held for ENTIRE request
   • Simpler controller code                • Including slow view rendering time
@@ -906,8 +903,8 @@ public class Department {
                                            • N+1 queries hidden in view layer
                                            • Harder to reason about when SQL executes
                                            • Defeats purpose of connection pooling
-  
-  
+
+
   RECOMMENDATION:
   Set spring.jpa.open-in-view = false
   Use JOIN FETCH / @EntityGraph / DTOs instead
@@ -916,30 +913,29 @@ public class Department {
 
 ---
 
-
-
 🔬 **Section Challenge — 10. Open Session in View — The Controversial Pattern**
 
 **Challenge 1 (Engineering):** A Spring Boot API experiences HikariCP connection pool exhaustion during peak traffic. Database queries are extremely fast (<5ms), but thread dumps show connections are held for seconds while the Tomcat threads are busy serializing a 5MB JSON response to clients over slow mobile networks. Why is the database connection tied to JSON serialization?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Connection pool starvation caused by long-running HTTP responses.
-**Trace:** Spring Boot enables Open Session in View (OSIV) by default (`spring.jpa.open-in-view=true`). OSIV keeps the Hibernate `Session`—and its underlying JDBC connection—open for the *entire* lifecycle of the HTTP request, including the view rendering or JSON serialization phase. If the client has a slow network and the 5MB payload takes 2 seconds to transmit, the database connection is held hostage for those 2 seconds, entirely defeating the purpose of a connection pool.
-**Debug/Fix:** Explicitly disable OSIV by setting `spring.jpa.open-in-view=false` in `application.yml`. Refactor the service layer to fetch all necessary lazy associations explicitly within the `@Transactional` boundary (using `JOIN FETCH` or by mapping entities to DTOs) so the JDBC connection is returned to the pool *before* the JSON serialization begins.
-</details>
+**Trace:** Spring Boot enables Open Session in View (OSIV) by default (`spring.jpa.open-in-view=true`). OSIV keeps the Hibernate `Session`—and its underlying JDBC connection—open for the _entire_ lifecycle of the HTTP request, including the view rendering or JSON serialization phase. If the client has a slow network and the 5MB payload takes 2 seconds to transmit, the database connection is held hostage for those 2 seconds, entirely defeating the purpose of a connection pool.
+**Debug/Fix:** Explicitly disable OSIV by setting `spring.jpa.open-in-view=false` in `application.yml`. Refactor the service layer to fetch all necessary lazy associations explicitly within the `@Transactional` boundary (using `JOIN FETCH` or by mapping entities to DTOs) so the JDBC connection is returned to the pool _before_ the JSON serialization begins.
 
+</details>
 
 ## 11. Connection Pooling — HikariCP Internals
 
 ```
   WHY CONNECTION POOLING?
   ═══════════════════════
-  
+
   Database connection = TCP connection + authentication + session setup
   → Takes 20-50ms to create
   → If 1000 requests/second, each creating a connection:
     1000 × 30ms = 30 SECONDS of just connection overhead!
-  
+
   Connection Pool = Pre-created connections, reused across requests
   → Taking from pool: < 1ms
   → 1000 requests reuse 10-20 connections
@@ -947,7 +943,7 @@ public class Department {
 
   HikariCP ARCHITECTURE:
   ══════════════════════
-  
+
   ┌─── HikariPool ──────────────────────────────────────────────────────┐
   │                                                                      │
   │  Configuration:                                                      │
@@ -991,13 +987,13 @@ public class Department {
 
   HOW TO SIZE YOUR POOL:
   ═══════════════════════
-  
+
   Formula (from HikariCP wiki):
   connections = (core_count * 2) + effective_spindle_count
-  
+
   For a 4-core server with SSD:
   connections = (4 * 2) + 1 = 9 ≈ 10
-  
+
   Common mistake: Setting maximumPoolSize = 100
   → More connections = MORE contention on DB locks
   → Usually 10-20 is optimal for most applications
@@ -1006,43 +1002,42 @@ public class Department {
 
 ---
 
-
-
 🔬 **Section Challenge — 11. Connection Pooling — HikariCP Internals**
 
 **Challenge 1 (Engineering):** To handle a massive traffic spike, a junior developer increases the HikariCP `maximumPoolSize` from 10 to 200 on an application connected to a 4-core PostgreSQL database. Surprisingly, the application's overall throughput drops by 50% and database CPU utilization stays pegged at 100%. Why did adding more connections make it slower?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Database thrashing caused by an oversized connection pool.
 **Trace:** A database connection is not a lightweight construct; it maps to an OS thread or process on the database server. When 200 active connections simultaneously hit a 4-core database, the OS scheduler spends the vast majority of its CPU cycles context switching between 200 threads rather than actually executing SQL. This destroys the CPU cache and causes extreme lock contention on database pages.
 **Debug/Fix:** Right-size the connection pool. According to HikariCP's sizing formula (`connections = (core_count * 2) + effective_spindle_count`), a 4-core DB should have a pool size of around 10. Revert the pool size back to 10, and if the application still faces throughput issues, introduce asynchronous processing (message queues) or a caching layer (Redis) to absorb the concurrency before it reaches the database.
-</details>
 
+</details>
 
 ## 12. How Spring Data JPA Generates Repository Implementations
 
 ```
   THE MYSTERY:
   ════════════
-  
+
   You write:
   public interface UserRepository extends JpaRepository<User, Long> {
       List<User> findByNameAndAgeGreaterThan(String name, int age);
   }
-  
+
   There's NO implementation class! How does it work?
-  
+
 
   THE ANSWER: Dynamic Proxy Generation at Startup
   ════════════════════════════════════════════════
 
   Step 1: Spring Boot scans for interfaces extending Repository
           @EnableJpaRepositories triggers RepositoryBeanDefinitionRegistrar
-          
+
   Step 2: For each repository interface:
           Creates a JdkDynamicAopProxy (JDK Dynamic Proxy)
           that implements your interface
-          
+
   Step 3: All method calls go through SimpleJpaRepository
           (the default implementation) or are parsed from
           the method name
@@ -1060,7 +1055,7 @@ public class Department {
        │
        └── Generated JPQL:
            SELECT u FROM User u WHERE u.name = ?1 AND u.age > ?2
-           
+
            Which Hibernate translates to:
            SELECT * FROM users WHERE name = ? AND age > ?
 
@@ -1096,15 +1091,14 @@ public class Department {
 
 **Next Chapter**: [Spring Security Internals →](Ch57_Spring_Security_Internals.md)
 
-
 🔬 **Section Challenge — 12. How Spring Data JPA Generates Repository Implementations**
 
 **Challenge 1 (Engineering):** A developer uses Spring Data JPA's method name derivation to write a query: `findByStatusAndDepartmentNameAndCreatedAtAfterOrderByLastNameDesc(...)`. Code reviews point out this is an anti-pattern for complex queries. Beyond readability, what is the architectural risk of using extreme method name derivation in Spring Boot?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Brittleness and startup overhead caused by abusing Spring Data JPA dynamic query generation.
 **Trace:** Spring Data parses repository method names at application startup to build an internal AST (Abstract Syntax Tree) and generate the backing JPQL. As the method name grows in complexity, the parsing overhead increases, slowing down application bootstrap time. More importantly, it creates a rigid coupling to the entity's exact property names. If a property like `departmentName` is refactored to `deptName`, the method breaks, often silently until the Spring context attempts to load.
 **Debug/Fix:** Cap method derivation to simple lookups (e.g., `findByEmail(String email)`). For complex conditions, use the `@Query` annotation with a clean, readable method name: `@Query("SELECT u FROM User u WHERE u.status = :status AND u.department.name = :deptName AND...") List<User> findTargetUsers(...)`. This decouples the method signature from the entity field names and centralizes the SQL logic for easier tuning.
+
 </details>
-
-

@@ -1,9 +1,9 @@
 # Spec — Option A: Play-to-Strengths Curriculum Upgrade
 
-| | |
-|---|---|
-| **Author** | Orchestrator |
-| **Date** | 2026-06-06 |
+|            |                                 |
+| ---------- | ------------------------------- |
+| **Author** | Orchestrator                    |
+| **Date**   | 2026-06-06                      |
 | **Status** | Approved by user — all 3 phases |
 
 ---
@@ -26,6 +26,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 ## Phase 1 — Critical Gaps
 
 ### Chunk 1.1: P09 CI/CD Pipeline Code Stubs
+
 - **File:** `00_CURRICULUM/PROJECTS/P09_CICD_Pipeline.md` (rewrite/append)
 - **Goal:** Transform from 0-code spec to production-grade project spec.
 - **Content:**
@@ -40,6 +41,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 - **Acceptance:** ≥ 15 code blocks, ≥ 800 lines total.
 
 ### Chunk 1.2: CSE401 Operating Systems
+
 - **File:** `_Curriculum/S04/CSE401_Operating_Systems/README.md` (new content)
 - **Goal:** Full 16-week university-level syllabus.
 - **Units:**
@@ -52,6 +54,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 - **Acceptance:** 6 problem sets with `<details>` keys, cross-refs to `13_Developer_Essentials/`, `07_Modern_Java/`, `22_DevOps/`.
 
 ### Chunk 1.3: CSE402 Computer Networks
+
 - **File:** `_Curriculum/S04/CSE402_Computer_Networks/README.md` (new content)
 - **Goal:** Full 16-week syllabus focused on application-layer down to transport.
 - **Units:**
@@ -65,6 +68,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 - **Acceptance:** 6 problem sets with `<details>` keys, real Wireshark/tcpdump traces.
 
 ### Chunk 1.4: Python ML/DL Problem Set Expansion
+
 - **File:** `21_Python_ML_DL_NLP/21_PROBLEM_SETS.md` (expand)
 - **Current:** 1 challenge
 - **Target:** 10 challenges total.
@@ -85,21 +89,25 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 ## Phase 2 — More TBD Shells + PS
 
 ### Chunk 2.1: CSE101 Discrete Mathematics (CS-focused)
+
 - **File:** `_Curriculum/S01/CSE101_Discrete_Mathematics/README.md`
 - **Scope:** Logic, proofs, sets, combinatorics, graph theory. Skip deep number theory.
 - **Units:** 4 units, 16 weeks.
 
 ### Chunk 2.2: CSE203 Probability & Statistics for CS
+
 - **File:** `_Curriculum/S02/CSE203_Probability_And_Statistics/README.md`
 - **Scope:** Distributions, Bayesian inference, A/B testing, Monte Carlo. NOT measure theory.
 - **Units:** 4 units, 16 weeks.
 
 ### Chunk 2.3: CSE204 Computer Architecture (applied)
+
 - **File:** `_Curriculum/S02/CSE204_Computer_Architecture/README.md`
 - **Scope:** Cache hierarchy, pipelining, branch prediction, memory ordering. Skip microarchitecture formalism.
 - **Units:** 4 units, 16 weeks.
 
 ### Chunk 2.4: Expand 5 Thin Problem Sets
+
 - **Files:**
   - `15_React_Frontend/15_PROBLEM_SETS.md` (3 → 8 challenges)
   - `16_JavaScript/16_PROBLEM_SETS.md` (4 → 8)
@@ -109,6 +117,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 - **Acceptance:** Each new challenge: constraint lens, real code, `<details>` answer keys.
 
 ### Chunk 2.5: Missing 00_INDEX.md + Light Folder Enrichment
+
 - **Files:**
   - `00_CURRICULUM/00_INDEX.md`
   - `12_Daily_Practice/00_INDEX.md`
@@ -123,10 +132,12 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 ## Phase 3 — Applied Security + Remaining PS + Last Enrichments
 
 ### Chunk 3.1: CSE403 Applied Security & CSE404 Search & IR
+
 - **CSE403:** TLS, JWT security, OWASP Top 10, secure coding, secrets management, zero-trust basics.
 - **CSE404:** Inverted index, Elasticsearch ops, BM25, vector search intro. NOT deep retrieval theory.
 
 ### Chunk 3.2: Expand Remaining 5 Thin Problem Sets
+
 - **Files:**
   - `07_Modern_Java/07_CONCURRENCY_PROBLEM_SETS.md` (2 → 8)
   - `20_Interview_Mastery/20_SYSTEM_DESIGN_PROBLEM_SETS.md` (2 → 8)
@@ -135,6 +146,7 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
   - `23_Mobile_Dev_And_Testing/23_PROBLEM_SETS.md` (3 → 8)
 
 ### Chunk 3.3: Final Light Folder Enrichments
+
 - `01_Getting_Started/05_Containerized_Development_Workflow.md`
 - `17_TypeScript/06_TS_React_Bridge_and_Generic_Components.md`
 - `18_CSS_Complete/11_Modern_Layout_Subgrid_and_Container_Queries.md`
@@ -144,20 +156,20 @@ Fill the highest-impact gaps in the curriculum repository using domains where co
 
 ## Chunk Ordering & Dependencies
 
-| Chunk | Files | Dependent on | Can run parallel with |
-|-------|-------|-------------|----------------------|
-| 1.1 P09 CI/CD | 1 | none | 1.2, 1.3, 1.4 |
-| 1.2 CSE401 OS | 1 | none | 1.1, 1.3, 1.4 |
-| 1.3 CSE402 Networks | 1 | none | 1.1, 1.2, 1.4 |
-| 1.4 Python ML PS | 1 | none | 1.1, 1.2, 1.3 |
-| 2.1 CSE101 Discrete | 1 | none | 2.2, 2.3 |
-| 2.2 CSE203 Prob | 1 | none | 2.1, 2.3 |
-| 2.3 CSE204 Arch | 1 | none | 2.1, 2.2 |
-| 2.4 Thin PS ×5 | 5 | none | 2.5 |
-| 2.5 Indices + Light | 7 | none | 2.4 |
-| 3.1 CSE403 + CSE404 | 2 | none | 3.2, 3.3 |
-| 3.2 Remaining PS ×5 | 5 | none | 3.1, 3.3 |
-| 3.3 Last enrichments | 4 | none | 3.1, 3.2 |
+| Chunk                | Files | Dependent on | Can run parallel with |
+| -------------------- | ----- | ------------ | --------------------- |
+| 1.1 P09 CI/CD        | 1     | none         | 1.2, 1.3, 1.4         |
+| 1.2 CSE401 OS        | 1     | none         | 1.1, 1.3, 1.4         |
+| 1.3 CSE402 Networks  | 1     | none         | 1.1, 1.2, 1.4         |
+| 1.4 Python ML PS     | 1     | none         | 1.1, 1.2, 1.3         |
+| 2.1 CSE101 Discrete  | 1     | none         | 2.2, 2.3              |
+| 2.2 CSE203 Prob      | 1     | none         | 2.1, 2.3              |
+| 2.3 CSE204 Arch      | 1     | none         | 2.1, 2.2              |
+| 2.4 Thin PS ×5       | 5     | none         | 2.5                   |
+| 2.5 Indices + Light  | 7     | none         | 2.4                   |
+| 3.1 CSE403 + CSE404  | 2     | none         | 3.2, 3.3              |
+| 3.2 Remaining PS ×5  | 5     | none         | 3.1, 3.3              |
+| 3.3 Last enrichments | 4     | none         | 3.1, 3.2              |
 
 ## Verification After Each Chunk
 

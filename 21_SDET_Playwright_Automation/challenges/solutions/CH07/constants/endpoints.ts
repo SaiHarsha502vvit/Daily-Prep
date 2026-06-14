@@ -1,14 +1,16 @@
-import { APP } from './app.constants';
+import { APP } from "./app.constants";
 
 export const endpoints = {
   orangehrm: {
-    LOGIN: '/web/index.php/auth/login',
-    DASHBOARD: '/web/index.php/dashboard/index',
+    LOGIN: "/web/index.php/auth/login",
+    DASHBOARD: "/web/index.php/dashboard/index",
   },
   reqres: {
     USERS: `${APP.reqres.baseUrl}/api/users`,
-    USER_BY_ID: (id: string | number): string => `${APP.reqres.baseUrl}/api/users/${id}`,
-    LIST_USERS: (page: number = 1): string => `${APP.reqres.baseUrl}/api/users?page=${page}`,
+    USER_BY_ID: (id: string | number): string =>
+      `${APP.reqres.baseUrl}/api/users/${id}`,
+    LIST_USERS: (page: number = 1): string =>
+      `${APP.reqres.baseUrl}/api/users?page=${page}`,
     CREATE_USER: `${APP.reqres.baseUrl}/api/users`,
     REGISTER: `${APP.reqres.baseUrl}/api/register`,
     LOGIN: `${APP.reqres.baseUrl}/api/login`,

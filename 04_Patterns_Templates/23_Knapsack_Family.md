@@ -4,17 +4,58 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** George Dantzig (1957) formalized integer programming for knapsack. Richard Bellman (1957) applied dynamic programming to knapsack. Horowitz and Sahni (1974) introduced meet-in-the-middle.
+
+**Predecessor context:** Combinatorial optimization problems like knapsack were solved by exhaustive enumeration. The exponential time complexity was considered unavoidable.
+
+**Evolution narrative:** Dantzig modeled knapsack as integer linear programming. Bellman showed DP could solve bounded knapsack in pseudo-polynomial time. Meet-in-the-middle enabled O(2^(n/2)) solutions for subset sum.
+
+**Modern practice:** Knapsack variants appear in resource allocation, budget optimization, and cutting stock problems. The 0/1 knapsack pattern is one of LeetCode's core DP patterns.
+
+- **Dantzig 1957**: Integer programming formulation for knapsack; foundation of combinatorial optimization
+- **Bellman 1957**: DP formulation with state dp[i][w] for bounded knapsack
+- **Horowitz-Sahni meet-in-the-middle — 1974**: O(2^(n/2)) for subset sum
+- **Modern practice**: Resource allocation, budget optimization, cutting stock problems
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **DP state dimension overflow for large n (10⁴ × 10⁴ grid = 100M cells)** — 2D DP table for knapsack with n=10,000 and capacity=10,000 requires 100M cells (~800MB for longs), exceeding memory limits. Detection: check `n * capacity` vs available memory; use 1D DP (rolling array) when possible.
+
+- **0/1 vs unbounded vs fractional confusion — different transitions** — Wrong variant choice produces completely wrong answers. 0/1 knapsack iterates backward; unbounded iterates forward. Detection: verify which variant the problem requires; test with repeated items.
+
+- **Integer overflow on `dp[i] + weight`** — When capacity is large (e.g., 10⁹), adding to dp values can overflow int. Detection: use long for dp array; test with maximum capacity.
+
+**Production Selection Heuristic:** Use 1D DP rolling array for knapsack to save space. Always verify the variant (0/1, unbounded, fractional). Use long to prevent overflow on large capacities.
+
+---
+
 # 📚 KNAPSACK FAMILY — THE UNIFICATION GUIDE
 
 ## The Knapsack Family Tree
 
 KNAPSACK
-/    |     \
-0/1  Unbounded  Bounded
-/ | \     |         |
-Subset  Target Partition  Coin    Rod
-Sum     Sum    Equal    Change   Cut
-(LC416) (LC494)(LC416)  (LC322) (GFG)
+/ | \
+0/1 Unbounded Bounded
+/ | \ | |
+Subset Target Partition Coin Rod
+Sum Sum Equal Change Cut
+(LC416) (LC494)(LC416) (LC322) (GFG)
 |
 Coin Ways
 (LC518)
@@ -25,14 +66,14 @@ The ONLY difference: 0/1 vs unbounded vs bounded.
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| each item used once | 0/1 knapsack, iterate capacity backward |
-| item can be reused | unbounded knapsack, iterate capacity forward |
-| count ways | addition recurrence |
-| min coins/items | min recurrence with infinity initialization |
-| target sum is huge but `N` small | meet-in-the-middle or pruning |
-| weights include negatives | classic knapsack does not apply directly |
+| Given Constraints                | Do This                                      |
+| -------------------------------- | -------------------------------------------- |
+| each item used once              | 0/1 knapsack, iterate capacity backward      |
+| item can be reused               | unbounded knapsack, iterate capacity forward |
+| count ways                       | addition recurrence                          |
+| min coins/items                  | min recurrence with infinity initialization  |
+| target sum is huge but `N` small | meet-in-the-middle or pruning                |
+| weights include negatives        | classic knapsack does not apply directly     |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -176,35 +217,34 @@ PROBLEM: n items with weights[] and values[]. Capacity W. Maximize value.
 
 VISUAL (3 items, W=4):
   items:  weight=[1, 2, 3], value=[6, 10, 12]
-  
+
   2D Table dp[i][w] = max value using items 0..i-1 with capacity w:
         w=0  w=1  w=2  w=3  w=4
   i=0    0    0    0    0    0
   i=1    0    6    6    6    6     (item1: w=1, v=6)
   i=2    0    6   10   16   16    (item2: w=2, v=10)
   i=3    0    6   10   16   22    (item3: w=3, v=12)
-  
+
   Answer: dp[3][4] = 22 (take items 2 and 3: weight=5?NO → items 1+3: 1+3=4, 6+12=18?
                          Actually: items 1+2: 1+2=3, 6+10=16, then item3: 3≤4, 12.
                          Best: items 2+3: 2+3=5>4, NO. Items 1+2: 16. item 1+3: 18.
-                         dp[3][4] = max(dp[2][4], dp[2][4-3]+12) = max(16, dp[2][1]+12) = max(16, 6+12) = 22? 
+                         dp[3][4] = max(dp[2][4], dp[2][4-3]+12) = max(16, dp[2][1]+12) = max(16, 6+12) = 22?
                          Wait: dp[2][1]=6, so 6+12=18. dp[2][4]=16. Answer = 18.)
-  
+
   Correction: dp[3][4] = max(dp[2][4], dp[2][1]+12) = max(16, 18) = 18
 ```
-
 
 ```java
 // 2D solution
 public int knapsack(int[] weights, int[] values, int W) {
     int n = weights.length;
     int[][] dp = new int[n + 1][W + 1];
-    
+
     for (int i = 1; i <= n; i++) {
         for (int w = 0; w <= W; w++) {
             dp[i][w] = dp[i - 1][w];  // Skip item
             if (weights[i - 1] <= w) {
-                dp[i][w] = Math.max(dp[i][w], 
+                dp[i][w] = Math.max(dp[i][w],
                     dp[i - 1][w - weights[i - 1]] + values[i - 1]);  // Take item
             }
         }
@@ -215,7 +255,7 @@ public int knapsack(int[] weights, int[] values, int W) {
 // 1D space-optimized (RIGHT → LEFT)
 public int knapsack1D(int[] weights, int[] values, int W) {
     int[] dp = new int[W + 1];
-    
+
     for (int i = 0; i < weights.length; i++) {
         for (int w = W; w >= weights[i]; w--) {      // ← RIGHT to LEFT!
             dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);
@@ -246,17 +286,16 @@ TRANSFORMATION:
 SOLUTION:
 ```
 
-
 ```java
 public boolean canPartition(int[] nums) {
     int sum = 0;
     for (int n : nums) sum += n;
     if (sum % 2 != 0) return false;  // Odd sum → impossible
-    
+
     int target = sum / 2;
     boolean[] dp = new boolean[target + 1];
     dp[0] = true;
-    
+
     for (int num : nums) {
         for (int t = target; t >= num; t--) {      // RIGHT → LEFT (0/1)
             dp[t] = dp[t] || dp[t - num];
@@ -272,16 +311,15 @@ COMPLEXITY: Time O(n × sum) | Space O(sum)
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 2: Partition Equal Subset Sum (LC 416)**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## PROBLEM 3: Target Sum (LC 494)
 
@@ -300,17 +338,16 @@ TRANSFORMATION (the clever part):
 SOLUTION:
 ```
 
-
 ```java
 public int findTargetSumWays(int[] nums, int target) {
     int sum = 0;
     for (int n : nums) sum += n;
     if ((sum + target) % 2 != 0 || Math.abs(target) > sum) return 0;
-    
+
     int subsetSum = (sum + target) / 2;
     int[] dp = new int[subsetSum + 1];
     dp[0] = 1;  // One way to make sum 0: pick nothing
-    
+
     for (int num : nums) {
         for (int s = subsetSum; s >= num; s--) {   // RIGHT → LEFT (0/1)
             dp[s] += dp[s - num];
@@ -327,16 +364,15 @@ KEY: The mathematical transformation is the hardest part!
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 3: Target Sum (LC 494)**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## PROBLEM 4: Coin Change — Minimum Coins (LC 322)
 
@@ -351,13 +387,12 @@ PROBLEM: Coins of given denominations, find min coins to make amount.
 SOLUTION:
 ```
 
-
 ```java
 public int coinChange(int[] coins, int amount) {
     int[] dp = new int[amount + 1];
     Arrays.fill(dp, amount + 1);  // "infinity"
     dp[0] = 0;
-    
+
     for (int coin : coins) {
         for (int a = coin; a <= amount; a++) {       // LEFT → RIGHT (unbounded!)
             dp[a] = Math.min(dp[a], dp[a - coin] + 1);
@@ -373,9 +408,6 @@ COMPLEXITY: Time O(coins × amount) | Space O(amount)
 
 ---
 
-
-
-
 ## PROBLEM 5: Coin Change II — Count Ways (LC 518)
 
 ```
@@ -389,18 +421,17 @@ PROBLEM: Number of COMBINATIONS of coins to make amount.
 CRITICAL DISTINCTION:
   COMBINATIONS (order doesn't matter): coins outer, amount inner
   PERMUTATIONS (order matters): amount outer, coins inner
-  
+
   This problem asks COMBINATIONS → coins as outer loop.
 
 SOLUTION:
 ```
 
-
 ```java
 public int change(int amount, int[] coins) {
     int[] dp = new int[amount + 1];
     dp[0] = 1;
-    
+
     for (int coin : coins) {                   // Items OUTER
         for (int a = coin; a <= amount; a++) {  // LEFT → RIGHT (unbounded)
             dp[a] += dp[a - coin];
@@ -418,7 +449,7 @@ PERMUTATIONS variant (Combination Sum IV — LC 377):
 public int combinationSum4(int[] nums, int target) {
     int[] dp = new int[target + 1];
     dp[0] = 1;
-    
+
     for (int t = 1; t <= target; t++) {         // Capacity OUTER
         for (int num : nums) {                   // Items INNER
             if (t >= num) dp[t] += dp[t - num];
@@ -434,9 +465,6 @@ REMEMBER: Outer/inner loop order controls combinations vs permutations!
 ```
 
 ---
-
-
-
 
 ## PROBLEM 6: Ones and Zeroes (LC 474)
 
@@ -456,7 +484,7 @@ SOLUTION:
 ```java
 public int findMaxForm(String[] strs, int m, int n) {
     int[][] dp = new int[m + 1][n + 1];
-    
+
     for (String s : strs) {
         int zeros = 0, ones = 0;
         for (char c : s.toCharArray()) {
@@ -512,23 +540,22 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📋 CURATED PRACTICE PROBLEMS — KNAPSACK FAMILY
 
-| # | Problem | LC# | Type | Objective | Key Insight |
-|---|---------|-----|------|-----------|-------------|
-| 1 | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | 416 | 0/1 | Boolean | Target = sum/2 |
-| 2 | [Target Sum](https://leetcode.com/problems/target-sum/) | 494 | 0/1 | Count | Math transform: (S+T)/2 |
-| 3 | [Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/) | 1049 | 0/1 | Min diff | Same as partition |
-| 4 | [Coin Change](https://leetcode.com/problems/coin-change/) | 322 | Unbounded | Min count | fill=∞, dp[0]=0 |
-| 5 | [Coin Change II](https://leetcode.com/problems/coin-change-ii/) | 518 | Unbounded | Count combos | Items outer loop |
-| 6 | [Combination Sum IV](https://leetcode.com/problems/combination-sum-iv/) | 377 | Unbounded | Count perms | Capacity outer loop |
-| 7 | [Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/) | 474 | 0/1 2D | Max subset | Two capacities |
-| 8 | [Profitable Schemes](https://leetcode.com/problems/profitable-schemes/) | 879 | 0/1 2D | Count | Hard: 2D knapsack |
-| 9 | [Minimum Cost For Tickets](https://leetcode.com/problems/minimum-cost-for-tickets/) | 983 | Unbounded | Min cost | Travel day variant |
-| 10 | [Perfect Squares](https://leetcode.com/problems/perfect-squares/) | 279 | Unbounded | Min count | Squares as coins |
+| #   | Problem                                                                                 | LC#  | Type      | Objective    | Key Insight             |
+| --- | --------------------------------------------------------------------------------------- | ---- | --------- | ------------ | ----------------------- |
+| 1   | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | 416  | 0/1       | Boolean      | Target = sum/2          |
+| 2   | [Target Sum](https://leetcode.com/problems/target-sum/)                                 | 494  | 0/1       | Count        | Math transform: (S+T)/2 |
+| 3   | [Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/)             | 1049 | 0/1       | Min diff     | Same as partition       |
+| 4   | [Coin Change](https://leetcode.com/problems/coin-change/)                               | 322  | Unbounded | Min count    | fill=∞, dp[0]=0         |
+| 5   | [Coin Change II](https://leetcode.com/problems/coin-change-ii/)                         | 518  | Unbounded | Count combos | Items outer loop        |
+| 6   | [Combination Sum IV](https://leetcode.com/problems/combination-sum-iv/)                 | 377  | Unbounded | Count perms  | Capacity outer loop     |
+| 7   | [Ones and Zeroes](https://leetcode.com/problems/ones-and-zeroes/)                       | 474  | 0/1 2D    | Max subset   | Two capacities          |
+| 8   | [Profitable Schemes](https://leetcode.com/problems/profitable-schemes/)                 | 879  | 0/1 2D    | Count        | Hard: 2D knapsack       |
+| 9   | [Minimum Cost For Tickets](https://leetcode.com/problems/minimum-cost-for-tickets/)     | 983  | Unbounded | Min cost     | Travel day variant      |
+| 10  | [Perfect Squares](https://leetcode.com/problems/perfect-squares/)                       | 279  | Unbounded | Min count    | Squares as coins        |
 
 ---
 

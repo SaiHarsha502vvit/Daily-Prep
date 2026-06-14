@@ -1,4 +1,5 @@
 # 📝 Python & Machine Learning — Problem Sets
+
 ## `21_Python_ML_DL_NLP` Module | Python Core · NumPy/Pandas · ML · NLP
 
 > **How to use:** All code goes in `JavaSolutions/ps/python/`. Run with Python 3.10+. No `import *` — explicit imports only.
@@ -14,6 +15,7 @@
 ### Part A: Predict / Debug
 
 **A1 (Easy).** What does this print?
+
 ```python
 x = [1, 2, 3]
 y = x           # reference copy, NOT value copy
@@ -31,11 +33,13 @@ print(x)
 **Fix — deep copy:** `import copy; y = copy.deepcopy(x)` (needed for nested structures)
 
 🔴 **Erklärung:** Python variables are references, not values. Assignment copies the reference, not the object. This is Python's #1 beginner mistake. Always copy explicitly when you need independent state.
+
 </details>
 
 ---
 
 **A2 (Medium).** Rewrite this function as a list comprehension and a generator expression. When should each be used?
+
 ```python
 def get_even_squares(n):
     result = []
@@ -61,10 +65,12 @@ print(list(get_even_squares_gen(10)))  # [0, 4, 16, 36, 64]
 ```
 
 **When to use:**
+
 - **List comprehension `[...]`**: You need random access, `.len()`, iterate multiple times, or pass to something expecting a list
 - **Generator `(...)`**: Large/infinite sequences — only ONE value in memory at a time; cannot rewind
 
 🔴 **Erklärung:** `sum(i**2 for i in range(10**8))` runs in constant memory. `sum([i**2 for i in range(10**8)])` creates a list of 100M items in RAM — probably crashes. Generators are Python's most powerful memory optimization.
+
 </details>
 
 ---
@@ -102,6 +108,7 @@ expensive(5, multiplier=4)  # different kwargs — prints again
 ---
 
 **A1 (Medium).** What's the difference between these two operations?
+
 ```python
 import numpy as np
 
@@ -123,6 +130,7 @@ result2 = a ** 2
 **Operation 2:** NumPy vectorized operation — runs optimized C/BLAS code on the entire array. ~100× faster for large arrays.
 
 **Benchmark:**
+
 ```python
 import time
 n = 10_000_000
@@ -133,6 +141,7 @@ t0 = time.time(); a**2; print(f"Vectorized: {time.time()-t0:.3f}s")           # 
 ```
 
 🔴 **Erklärung:** NEVER loop over NumPy arrays in Python. Any operation that iterates element-by-element defeats the purpose of NumPy. If you find yourself writing a for loop over an ndarray, there's almost always a vectorized equivalent: `np.where`, `np.apply_along_axis`, fancy indexing, boolean masking.
+
 </details>
 
 ---
@@ -180,6 +189,7 @@ q3 = totals[totals > avg].index.tolist()
 df['profit_margin'] = (df['sales'] - df['cost']) / df['sales'] * 100
 # Vectorized — no loop needed
 ```
+
 </details>
 
 ---
@@ -207,14 +217,15 @@ Error
   │──────────────────────── Model Complexity →
 ```
 
-| Model | Bias | Variance | Problem |
-|---|---|---|---|
-| Linear Regression (underfit) | High | Low | Doesn't capture patterns |
-| Deep Decision Tree (overfit) | Low | High | Memorizes training data |
-| Random Forest (well-tuned) | Medium | Medium | Balanced |
-| 1-NN | Very Low | Very High | Overfits to every noise point |
+| Model                        | Bias     | Variance  | Problem                       |
+| ---------------------------- | -------- | --------- | ----------------------------- |
+| Linear Regression (underfit) | High     | Low       | Doesn't capture patterns      |
+| Deep Decision Tree (overfit) | Low      | High      | Memorizes training data       |
+| Random Forest (well-tuned)   | Medium   | Medium    | Balanced                      |
+| 1-NN                         | Very Low | Very High | Overfits to every noise point |
 
 **Rule:** Increase model complexity → bias ↓, variance ↑. Regularization (L1/L2, dropout, early stopping) reduces variance.
+
 </details>
 
 ---
@@ -295,6 +306,7 @@ TF-IDF = TF × IDF
 ```
 
 **Why better than raw count:**
+
 - "the", "is", "a" appear in ALL documents → high TF but very low IDF → near-zero TF-IDF
 - Technical terms like "neural", "dropout" appear in few documents → high IDF → high TF-IDF
 - TF-IDF naturally suppresses common words WITHOUT needing a manual stopword list
@@ -314,6 +326,7 @@ print(X.toarray())                  # each row: TF-IDF vector for a doc
 ```
 
 🔴 **Erklärung:** Raw word count + cosine similarity is called "Bag of Words." TF-IDF is an improved bag of words. Both IGNORE word order. For order-sensitive tasks, use sequential models (LSTM) or attention-based models (Transformers/BERT).
+
 </details>
 
 ---
@@ -340,10 +353,10 @@ def semantic_search(query: str, top_k: int = 3) -> list[tuple[str, float]]:
     # Encode all docs and the query
     doc_embeddings = model.encode(knowledge_base)
     query_embedding = model.encode([query])[0]
-    
+
     # Cosine similarity (embeddings are L2-normalized by default in sentence-transformers)
     scores = np.dot(doc_embeddings, query_embedding)  # dot product = cosine sim when normalized
-    
+
     # Top-k results
     top_indices = np.argsort(scores)[::-1][:top_k]
     return [(knowledge_base[i], float(scores[i])) for i in top_indices]

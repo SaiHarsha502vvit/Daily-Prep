@@ -8,13 +8,18 @@ interface OAuthTokenResponse {
   expires_in?: number;
 }
 
-function requireOAuthEnv(): { tokenUrl: string; clientId: string; clientSecret: string; scope?: string } {
+function requireOAuthEnv(): {
+  tokenUrl: string;
+  clientId: string;
+  clientSecret: string;
+  scope?: string;
+} {
   const tokenUrl = process.env.OAUTH_TOKEN_URL;
   const clientId = process.env.OAUTH_CLIENT_ID;
   const clientSecret = process.env.OAUTH_CLIENT_SECRET;
   if (!tokenUrl || !clientId || !clientSecret) {
     throw new Error(
-      '[auth.oauth.fixture] Missing OAuth env. Set OAUTH_TOKEN_URL, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET.'
+      '[auth.oauth.fixture] Missing OAuth env. Set OAUTH_TOKEN_URL, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET.',
     );
   }
   return { tokenUrl, clientId, clientSecret, scope: process.env.OAUTH_SCOPE };
@@ -37,7 +42,7 @@ export const test = base.extend<NonNullable<unknown>, OAuthFixtures>({
         const response = await ctx.post(tokenUrl, { form });
         if (!response.ok()) {
           throw new Error(
-            `[auth.oauth.fixture] Token endpoint returned ${response.status()} ${response.statusText()}`
+            `[auth.oauth.fixture] Token endpoint returned ${response.status()} ${response.statusText()}`,
           );
         }
         const body = (await response.json()) as OAuthTokenResponse;

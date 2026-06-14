@@ -9,12 +9,14 @@ CH01 establishes foundational building blocks used throughout the framework: typ
 ## File Structure and Purpose
 
 ### `constants/timeouts.ts`
+
 Centralizes timeout and polling interval constants using TypeScript enums with numeric underscores for readability.
 
 - **`Timeouts` enum**: Standard wait durations (1s to 5min) for element waits, API retries, and general timeouts
 - **`PollIntervals` enum**: Frequency options for polling loops (FAST=100ms, MEDIUM=500ms, SLOW=1000ms)
 
 ### `types/api.types.ts`
+
 TypeScript interfaces for API response patterns following REST conventions.
 
 - **`PaginationMeta`**: Metadata for paginated endpoints (page, perPage, total, totalPages)
@@ -22,6 +24,7 @@ TypeScript interfaces for API response patterns following REST conventions.
 - **`ApiResponse<T>`**: Generic wrapper for API responses with data, optional pagination, and optional errors array
 
 ### `types/user.types.ts`
+
 Domain models for OrangeHRM user entities.
 
 - **`UserRole` enum**: Role constants (ADMIN, MANAGER, ESS) matching OrangeHRM's role system
@@ -29,6 +32,7 @@ Domain models for OrangeHRM user entities.
 - **`UserData` interface**: Complete user object with id, name components, role, and status
 
 ### `utilities/helpers/action.helpers.ts`
+
 Reusable UI automation helpers that wrap Playwright locator actions with consistent logging and timeout handling.
 
 - **`clickElement`**: Waits for visibility, clicks, and optionally logs the action
@@ -36,6 +40,7 @@ Reusable UI automation helpers that wrap Playwright locator actions with consist
 - **`ActionOptions`**: Standard interface for action configuration (description, optional timeout)
 
 ### `config/env.loader.ts`
+
 Centralized environment configuration loader with validation.
 
 - **`envConfig`**: Frozen configuration object with typed properties
@@ -53,9 +58,22 @@ This solution addresses the requirements from [CH01 Challenge Specification](../
 Import from the solution directory:
 
 ```typescript
-import { Timeouts, PollIntervals } from '../challenges/solutions/CH01/constants/timeouts';
-import { ApiResponse, PaginationMeta } from '../challenges/solutions/CH01/types/api.types';
-import { UserData, UserRole, UserStatus } from '../challenges/solutions/CH01/types/user.types';
-import { clickElement, fillInput } from '../challenges/solutions/CH01/utilities/helpers/action.helpers';
-import { envConfig } from '../challenges/solutions/CH01/config/env.loader';
+import {
+  Timeouts,
+  PollIntervals,
+} from "../challenges/solutions/CH01/constants/timeouts";
+import {
+  ApiResponse,
+  PaginationMeta,
+} from "../challenges/solutions/CH01/types/api.types";
+import {
+  UserData,
+  UserRole,
+  UserStatus,
+} from "../challenges/solutions/CH01/types/user.types";
+import {
+  clickElement,
+  fillInput,
+} from "../challenges/solutions/CH01/utilities/helpers/action.helpers";
+import { envConfig } from "../challenges/solutions/CH01/config/env.loader";
 ```

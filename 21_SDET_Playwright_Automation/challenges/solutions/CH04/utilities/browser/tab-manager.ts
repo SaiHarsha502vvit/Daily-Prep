@@ -1,4 +1,4 @@
-import type { Page, BrowserContext } from '@playwright/test';
+import type { Page, BrowserContext } from "@playwright/test";
 
 /**
  * Opens a new tab by registering the 'page' event listener BEFORE triggering the action,
@@ -8,10 +8,13 @@ import type { Page, BrowserContext } from '@playwright/test';
  * @param action — the async action that triggers a new tab (e.g. page.click('#open'))
  * @returns the newly opened Page
  */
-export async function openTabFrom(page: Page, action: () => Promise<void>): Promise<Page> {
+export async function openTabFrom(
+  page: Page,
+  action: () => Promise<void>,
+): Promise<Page> {
   const context = page.context() as BrowserContext;
 
-  const [newTab] = await Promise.all([context.waitForEvent('page'), action()]);
+  const [newTab] = await Promise.all([context.waitForEvent("page"), action()]);
   return newTab;
 }
 
@@ -25,4 +28,4 @@ export async function closeTab(tab: Page): Promise<void> {
   expect(tab.isClosed()).toBe(true);
 }
 
-import { expect } from '@playwright/test';
+import { expect } from "@playwright/test";

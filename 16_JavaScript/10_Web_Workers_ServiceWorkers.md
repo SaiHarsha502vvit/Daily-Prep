@@ -28,16 +28,16 @@
 ```
   THE SINGLE-THREAD PROBLEM:
   ══════════════════════════
-  
+
   Main Thread handles EVERYTHING:
   • JavaScript execution
   • DOM manipulation
   • Style calculation
   • Layout & Paint
   • User input handling (clicks, scrolls, typing)
-  
+
   If JS takes 200ms processing data:
-  
+
   ┌─ Main Thread ─────────────────────────────────────────────┐
   │                                                            │
   │  Frame 1  │ HEAVY JS (200ms) █████████████│ Frame 14      │
@@ -45,9 +45,9 @@
   │          UI FROZEN — user can't click, scroll, or type    │
   │                                                            │
   └────────────────────────────────────────────────────────────┘
-  
+
   WITH Web Worker:
-  
+
   ┌─ Main Thread ─────────────────────────────────────────────┐
   │ Frame 1 │ Frame 2 │ Frame 3 │ ... │ Frame 12 │ Frame 13  │
   │ (16ms)  │ (16ms)  │ (16ms)  │     │ (16ms)   │ (16ms)    │
@@ -61,9 +61,6 @@
 
 ---
 
-
-
-
 ## 2. Dedicated Web Workers — Basics
 
 ```javascript
@@ -72,23 +69,23 @@
 // ═══════════════════════════════════════════
 
 // Worker runs in a SEPARATE file
-const worker = new Worker('heavy-computation.js');
+const worker = new Worker("heavy-computation.js");
 
 // Send data TO the worker
-worker.postMessage({ 
-  type: 'SORT_DATA', 
-  data: hugeArray 
+worker.postMessage({
+  type: "SORT_DATA",
+  data: hugeArray,
 });
 
 // Receive results FROM the worker
 worker.onmessage = (event) => {
-  console.log('Sorted data:', event.data);
+  console.log("Sorted data:", event.data);
   renderTable(event.data); // Back on main thread, update UI
 };
 
 // Handle errors
 worker.onerror = (error) => {
-  console.error('Worker error:', error.message);
+  console.error("Worker error:", error.message);
 };
 
 // Terminate when done
@@ -103,16 +100,16 @@ worker.terminate();
 // 'self' refers to the worker's global scope (not window!)
 self.onmessage = (event) => {
   const { type, data } = event.data;
-  
+
   switch (type) {
-    case 'SORT_DATA':
+    case "SORT_DATA":
       // This sorting takes 200ms — but doesn't block UI!
       const sorted = data.sort((a, b) => a.value - b.value);
       self.postMessage(sorted);
       break;
-      
-    case 'FILTER_DATA':
-      const filtered = data.filter(item => item.active);
+
+    case "FILTER_DATA":
+      const filtered = data.filter((item) => item.active);
       self.postMessage(filtered);
       break;
   }
@@ -130,7 +127,7 @@ const workerCode = `
   };
 `;
 
-const blob = new Blob([workerCode], { type: 'application/javascript' });
+const blob = new Blob([workerCode], { type: "application/javascript" });
 const worker = new Worker(URL.createObjectURL(blob));
 
 worker.postMessage([1, 2, 3, 4, 5]);
@@ -144,7 +141,7 @@ worker.onmessage = (e) => console.log(e.data); // [1, 4, 9, 16, 25]
 ```
   HOW postMessage WORKS:
   ══════════════════════
-  
+
   Main Thread                    Worker Thread
   ┌──────────────────┐          ┌──────────────────┐
   │                  │          │                  │
@@ -159,9 +156,9 @@ worker.onmessage = (e) => console.log(e.data); // [1, 4, 9, 16, 25]
   │  (event) => {}   │ (clone)  │                  │
   │                  │          │                  │
   └──────────────────┘          └──────────────────┘
-  
+
   DATA IS CLONED, NOT SHARED!
-  
+
   ⚠️ Structured Clone Algorithm handles:
   ✅ Objects, Arrays, Maps, Sets, Dates, RegExp
   ✅ ArrayBuffer, TypedArrays, Blob, File, ImageData
@@ -190,12 +187,12 @@ worker.postMessage(buffer, [buffer]); // Second arg = transferables
 ```
   STRUCTURED CLONE vs TRANSFER:
   ═════════════════════════════
-  
+
   Clone:               Transfer:
   Main: [████████]     Main: [████████] → Main: [        ]
   Copy: [████████]     Worker: [████████]
   Worker gets copy     Worker gets THE SAME memory
-  
+
   Transferable types:
   • ArrayBuffer
   • MessagePort
@@ -214,12 +211,12 @@ worker.postMessage(buffer, [buffer]); // Second arg = transferables
 // ═══════════════════════════════════════════
 
 // any-page.js (same code in every tab)
-const shared = new SharedWorker('shared-worker.js');
+const shared = new SharedWorker("shared-worker.js");
 shared.port.start();
 
-shared.port.postMessage({ type: 'JOIN', userId: 'user123' });
+shared.port.postMessage({ type: "JOIN", userId: "user123" });
 shared.port.onmessage = (e) => {
-  console.log('Broadcast from worker:', e.data);
+  console.log("Broadcast from worker:", e.data);
 };
 ```
 
@@ -230,14 +227,14 @@ const connections = [];
 self.onconnect = (event) => {
   const port = event.ports[0];
   connections.push(port);
-  
+
   port.onmessage = (e) => {
-    if (e.data.type === 'BROADCAST') {
+    if (e.data.type === "BROADCAST") {
       // Send to ALL connected tabs
-      connections.forEach(p => p.postMessage(e.data.message));
+      connections.forEach((p) => p.postMessage(e.data.message));
     }
   };
-  
+
   port.start();
 };
 ```
@@ -245,14 +242,14 @@ self.onconnect = (event) => {
 ```
   USE CASES for SharedWorker:
   ═══════════════════════════
-  
+
   Tab 1 ─── port ───┐
   Tab 2 ─── port ───┤── SharedWorker ── WebSocket connection
   Tab 3 ─── port ───┘
-  
+
   Instead of 3 WebSocket connections (one per tab),
   ONE SharedWorker manages ONE connection for all tabs.
-  
+
   Also useful for:
   • Shared state across tabs (shopping cart, user session)
   • Coordinating tab activities (only one tab plays audio)
@@ -309,17 +306,16 @@ self.onconnect = (event) => {
 self.onmessage = (event) => {
   const { imageData, filter } = event.data;
   const pixels = imageData.data; // Uint8ClampedArray
-  
-  if (filter === 'grayscale') {
+
+  if (filter === "grayscale") {
     for (let i = 0; i < pixels.length; i += 4) {
-      const avg = (pixels[i] + pixels[i+1] + pixels[i+2]) / 3;
-      pixels[i] = pixels[i+1] = pixels[i+2] = avg;
+      const avg = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+      pixels[i] = pixels[i + 1] = pixels[i + 2] = avg;
     }
   }
-  
+
   self.postMessage(imageData, [imageData.data.buffer]); // Transfer!
 };
-
 
 // ═══════════════════════════════════════════
 // USE CASE 2: CSV/JSON Parsing of Large Files
@@ -327,20 +323,19 @@ self.onmessage = (event) => {
 // parser-worker.js
 self.onmessage = (event) => {
   const csvText = event.data;
-  const lines = csvText.split('\n');
-  const headers = lines[0].split(',');
-  
+  const lines = csvText.split("\n");
+  const headers = lines[0].split(",");
+
   const records = [];
   for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(',');
+    const values = lines[i].split(",");
     const record = {};
-    headers.forEach((h, idx) => record[h.trim()] = values[idx]?.trim());
+    headers.forEach((h, idx) => (record[h.trim()] = values[idx]?.trim()));
     records.push(record);
   }
-  
+
   self.postMessage(records);
 };
-
 
 // ═══════════════════════════════════════════
 // USE CASE 3: Search/Filter in Large Dataset
@@ -350,22 +345,22 @@ let dataset = null;
 
 self.onmessage = (event) => {
   const { type, payload } = event.data;
-  
-  if (type === 'LOAD') {
+
+  if (type === "LOAD") {
     dataset = payload; // Store dataset in worker memory
-    self.postMessage({ type: 'READY', count: dataset.length });
+    self.postMessage({ type: "READY", count: dataset.length });
   }
-  
-  if (type === 'SEARCH') {
+
+  if (type === "SEARCH") {
     const query = payload.toLowerCase();
-    const results = dataset.filter(item =>
-      item.name.toLowerCase().includes(query) ||
-      item.email.toLowerCase().includes(query)
+    const results = dataset.filter(
+      (item) =>
+        item.name.toLowerCase().includes(query) ||
+        item.email.toLowerCase().includes(query),
     );
-    self.postMessage({ type: 'RESULTS', data: results });
+    self.postMessage({ type: "RESULTS", data: results });
   }
 };
-
 
 // ═══════════════════════════════════════════
 // USE CASE 4: Encryption/Hashing
@@ -373,13 +368,15 @@ self.onmessage = (event) => {
 // crypto-worker.js
 self.onmessage = async (event) => {
   const { action, data } = event.data;
-  
-  if (action === 'HASH') {
+
+  if (action === "HASH") {
     const encoder = new TextEncoder();
     const buffer = encoder.encode(data);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
     self.postMessage({ hash: hashHex });
   }
 };
@@ -391,7 +388,7 @@ self.onmessage = async (event) => {
 
 ```
   Service Worker sits BETWEEN your app and the network:
-  
+
   ┌── Browser Tab ──┐        ┌── Service Worker ──┐        ┌── Network ──┐
   │                 │        │                    │        │             │
   │  fetch('/api')  │ ──→    │  Intercept!        │ ──→    │  Server     │
@@ -399,11 +396,11 @@ self.onmessage = async (event) => {
   │  ← response     │ ←──   │  ← serve from cache │        │             │
   │                 │        │  OR forward to net  │ ←──   │  ← response │
   └─────────────────┘        └────────────────────┘        └─────────────┘
-  
-  
+
+
   WHAT SERVICE WORKERS ENABLE:
   ════════════════════════════
-  
+
   1. OFFLINE SUPPORT — serve cached pages when no internet
   2. CACHING STRATEGIES — cache API responses, static assets
   3. PUSH NOTIFICATIONS — receive messages even when tab is closed
@@ -415,15 +412,15 @@ self.onmessage = async (event) => {
 
 ```javascript
 // main.js — register the service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
     try {
-      const registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'  // Controls all pages under /
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/", // Controls all pages under /
       });
-      console.log('SW registered:', registration.scope);
+      console.log("SW registered:", registration.scope);
     } catch (error) {
-      console.error('SW registration failed:', error);
+      console.error("SW registration failed:", error);
     }
   });
 }
@@ -431,16 +428,16 @@ if ('serviceWorker' in navigator) {
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Service Workers — The Proxy Between Browser and Network**
 
 **Challenge 1 (Design):** You deploy a new version of your SPA, but users complain they are still seeing the old UI for days. Your Service Worker uses a standard 'Cache First' strategy for the HTML file. What caused this, and how do you design a robust SW update flow?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Users stuck on an old version of the app despite new deployments.
-**Trace:** The browser fetches the `sw.js` file (which is byte-compared with the existing one). If it detects a change, the new SW installs but goes into the **WAITING** state. It will *not* activate until all tabs controlled by the old SW are closed. Furthermore, if the `index.html` was heavily cached, the browser might not even know there's a new SW.
+**Trace:** The browser fetches the `sw.js` file (which is byte-compared with the existing one). If it detects a change, the new SW installs but goes into the **WAITING** state. It will _not_ activate until all tabs controlled by the old SW are closed. Furthermore, if the `index.html` was heavily cached, the browser might not even know there's a new SW.
 **Debug/Design Fix:**
+
 1. **Never cache `index.html` or `sw.js`** with a Cache-First strategy. Use `Network-First` or set strict `Cache-Control: no-cache` headers for them.
 2. Listen for the SW update on the client: when a new SW is waiting, show a "New version available! [Refresh]" toast.
 3. On clicking Refresh, send a message to the waiting SW: `worker.postMessage({ type: 'SKIP_WAITING' })`.
@@ -490,35 +487,35 @@ if ('serviceWorker' in navigator) {
 
 ```javascript
 // sw.js — Service Worker
-const CACHE_NAME = 'app-v1';
+const CACHE_NAME = "app-v1";
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles/main.css',
-  '/scripts/app.js',
-  '/images/logo.svg'
+  "/",
+  "/index.html",
+  "/styles/main.css",
+  "/scripts/app.js",
+  "/images/logo.svg",
 ];
 
 // INSTALL — Pre-cache essential assets
-self.addEventListener('install', (event) => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
-    })
+    }),
   );
   self.skipWaiting(); // Don't wait for old SW to die
 });
 
 // ACTIVATE — Clean up old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter(name => name !== CACHE_NAME)
-          .map(name => caches.delete(name))
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name)),
       );
-    })
+    }),
   );
   self.clients.claim(); // Take control of all tabs immediately
 });
@@ -541,15 +538,20 @@ self.addEventListener('activate', (event) => {
 ```
 
 ```javascript
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request).then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
-      });
-    })
+      return (
+        cached ||
+        fetch(event.request).then((response) => {
+          const clone = response.clone();
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+      );
+    }),
   );
 });
 ```
@@ -567,15 +569,17 @@ self.addEventListener('fetch', (event) => {
 ```
 
 ```javascript
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        caches
+          .open(CACHE_NAME)
+          .then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(event.request)),
   );
 });
 ```
@@ -594,7 +598,7 @@ self.addEventListener('fetch', (event) => {
 ```
 
 ```javascript
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(event.request).then((cached) => {
@@ -604,7 +608,7 @@ self.addEventListener('fetch', (event) => {
         });
         return cached || fetchPromise;
       });
-    })
+    }),
   );
 });
 ```
@@ -612,7 +616,7 @@ self.addEventListener('fetch', (event) => {
 ```
   CHOOSING THE RIGHT STRATEGY:
   ════════════════════════════
-  
+
   ┌────────────────────┬──────────────────────────────────────┐
   │ Asset Type         │ Strategy                             │
   ├────────────────────┼──────────────────────────────────────┤
@@ -629,16 +633,15 @@ self.addEventListener('fetch', (event) => {
 
 ---
 
-
-
 🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
 
 **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+
 <details><summary>Answer</summary>
 
 Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-</details>
 
+</details>
 
 ## 11. Background Sync & Push Notifications
 
@@ -650,28 +653,28 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 // main.js — Queue a sync event
 async function sendMessage(message) {
   // Save to IndexedDB (persists offline)
-  await saveToIndexedDB('outbox', message);
-  
+  await saveToIndexedDB("outbox", message);
+
   // Request background sync
   const reg = await navigator.serviceWorker.ready;
-  await reg.sync.register('send-messages');
+  await reg.sync.register("send-messages");
 }
 
 // sw.js — Handle the sync event
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'send-messages') {
+self.addEventListener("sync", (event) => {
+  if (event.tag === "send-messages") {
     event.waitUntil(
-      getFromIndexedDB('outbox').then((messages) => {
+      getFromIndexedDB("outbox").then((messages) => {
         return Promise.all(
           messages.map((msg) =>
-            fetch('/api/messages', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(msg)
-            }).then(() => deleteFromIndexedDB('outbox', msg.id))
-          )
+            fetch("/api/messages", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(msg),
+            }).then(() => deleteFromIndexedDB("outbox", msg.id)),
+          ),
         );
-      })
+      }),
     );
   }
 });
@@ -687,36 +690,34 @@ async function subscribeToPush() {
   const reg = await navigator.serviceWorker.ready;
   const subscription = await reg.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   });
-  
+
   // Send subscription to your server
-  await fetch('/api/push-subscribe', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(subscription)
+  await fetch("/api/push-subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(subscription),
   });
 }
 
 // sw.js — Handle incoming push
-self.addEventListener('push', (event) => {
+self.addEventListener("push", (event) => {
   const data = event.data.json();
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: '/images/notification-icon.png',
-      badge: '/images/badge.png',
-      data: { url: data.url }
-    })
+      icon: "/images/notification-icon.png",
+      badge: "/images/badge.png",
+      data: { url: data.url },
+    }),
   );
 });
 
 // sw.js — Handle notification click
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(
-    clients.openWindow(event.notification.data.url)
-  );
+  event.waitUntil(clients.openWindow(event.notification.data.url));
 });
 ```
 
@@ -729,40 +730,45 @@ self.addEventListener('notificationclick', (event) => {
 // use Google's Workbox library:
 
 // sw.js (using Workbox)
-import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
-import { ExpirationPlugin } from 'workbox-expiration';
+import { precacheAndRoute } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import {
+  CacheFirst,
+  NetworkFirst,
+  StaleWhileRevalidate,
+} from "workbox-strategies";
+import { ExpirationPlugin } from "workbox-expiration";
 
 // Pre-cache app shell (injected at build time)
 precacheAndRoute(self.__WB_MANIFEST);
 
 // Cache images (cache first, expire after 30 days)
 registerRoute(
-  ({ request }) => request.destination === 'image',
+  ({ request }) => request.destination === "image",
   new CacheFirst({
-    cacheName: 'images',
+    cacheName: "images",
     plugins: [
-      new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 30 * 24 * 60 * 60 }),
+      new ExpirationPlugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+      }),
     ],
-  })
+  }),
 );
 
 // API calls (network first, fallback to cache)
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/'),
+  ({ url }) => url.pathname.startsWith("/api/"),
   new NetworkFirst({
-    cacheName: 'api-cache',
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 5 * 60 }),
-    ],
-  })
+    cacheName: "api-cache",
+    plugins: [new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 5 * 60 })],
+  }),
 );
 
 // Google Fonts (stale-while-revalidate)
 registerRoute(
-  ({ url }) => url.origin === 'https://fonts.googleapis.com',
-  new StaleWhileRevalidate({ cacheName: 'google-fonts-stylesheets' })
+  ({ url }) => url.origin === "https://fonts.googleapis.com",
+  new StaleWhileRevalidate({ cacheName: "google-fonts-stylesheets" }),
 );
 ```
 

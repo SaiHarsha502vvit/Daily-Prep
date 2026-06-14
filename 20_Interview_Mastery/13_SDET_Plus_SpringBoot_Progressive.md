@@ -3,6 +3,7 @@
 **Navigation**: [← Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [🔥 Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
 
 **Cross-links:**
+
 - [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns
 - [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/) — API testing depth
 - [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals
@@ -43,8 +44,9 @@ The testing pyramid answers one question: **where should you put your effort?**
 ```
 
 **Why pyramid not rectangle?**
+
 - Unit tests: milliseconds each → run thousands in CI in seconds
-- Integration tests: seconds each → run hundreds in CI in minutes  
+- Integration tests: seconds each → run hundreds in CI in minutes
 - E2E tests: minutes each → run tens in CI in hours
 
 Inverted pyramid (too many E2E) = **"ice cream cone anti-pattern"** — slow CI, unreliable feedback, developers skip running tests locally.
@@ -77,16 +79,16 @@ Move tests as LOW as possible while still testing the right thing.
 
 ### ✍️ The Restructured Test Distribution
 
-| Layer | Count | Tool | When to use |
-|---|---|---|---|
-| Unit | 400 | JUnit 5 + Mockito | Business logic, data transformations |
-| Repository | 80 | @DataJpaTest | JPQL queries, JPA mappings |
-| Controller | 120 | @WebMvcTest + MockMvc | HTTP layer, request/response mapping, validation |
-| Service integration | 60 | @SpringBootTest (no web) | Service ↔ DB integration |
-| External API contract | 40 | WireMock | Outbound HTTP stubs |
-| Async events | 20 | EmbeddedKafka | Kafka consumer/producer |
-| Full system | 30 | @SpringBootTest (web) | End-to-end application scenarios |
-| Browser E2E | 50 | Playwright | Critical user journeys only |
+| Layer                 | Count | Tool                     | When to use                                      |
+| --------------------- | ----- | ------------------------ | ------------------------------------------------ |
+| Unit                  | 400   | JUnit 5 + Mockito        | Business logic, data transformations             |
+| Repository            | 80    | @DataJpaTest             | JPQL queries, JPA mappings                       |
+| Controller            | 120   | @WebMvcTest + MockMvc    | HTTP layer, request/response mapping, validation |
+| Service integration   | 60    | @SpringBootTest (no web) | Service ↔ DB integration                         |
+| External API contract | 40    | WireMock                 | Outbound HTTP stubs                              |
+| Async events          | 20    | EmbeddedKafka            | Kafka consumer/producer                          |
+| Full system           | 30    | @SpringBootTest (web)    | End-to-end application scenarios                 |
+| Browser E2E           | 50    | Playwright               | Critical user journeys only                      |
 
 Result: 800 tests → **CI from 45 minutes to 12 minutes**.
 
@@ -119,6 +121,7 @@ Different test slices load DIFFERENT subsets of this context:
 ### 🔍 The Real-World SDET Problem
 
 You need to test three things:
+
 1. `CitationController.createCitation()` validates the request and returns 400 for missing `amount`
 2. `CitationRepository.findByStatus()` returns citations in descending date order
 3. The full flow: `POST /api/citations` → controller → service → repository → DB → response
@@ -349,6 +352,7 @@ TestRestTemplate → Real HTTP client, requires @SpringBootTest(webEnvironment=R
 ### 🔍 The Real-World SDET Problem
 
 You have three teams testing three different layers. Which client should each use?
+
 - Team A: testing controller validation (no DB)
 - Team B: testing a WebFlux (reactive) API
 - Team C: testing the full deployed app (all layers + real DB)
@@ -362,7 +366,7 @@ Decision tree:
   Is your app WebFlux (reactive)?
     Yes → always use WebTestClient
     No  → continue...
-  
+
   Are you using @WebMvcTest (no real HTTP)?
     Yes → use MockMvc (can't use RestTemplate — no server)
     No  → @SpringBootTest with RANDOM_PORT?
@@ -426,14 +430,14 @@ assertThat(response.getBody().getStatus()).isEqualTo("PENDING");
 
 **When to use which** at a glance:
 
-| Scenario | Best choice |
-|---|---|
-| Validating request/response shape (no DB) | MockMvc |
-| WebFlux reactive endpoints | WebTestClient |
-| Testing redirects, cookie handling | TestRestTemplate |
-| Asserting custom headers precisely | MockMvc (`header().string(...)`) |
-| Streaming/SSE endpoints | WebTestClient |
-| Complex JSON path assertions | MockMvc + jsonPath |
+| Scenario                                  | Best choice                      |
+| ----------------------------------------- | -------------------------------- |
+| Validating request/response shape (no DB) | MockMvc                          |
+| WebFlux reactive endpoints                | WebTestClient                    |
+| Testing redirects, cookie handling        | TestRestTemplate                 |
+| Asserting custom headers precisely        | MockMvc (`header().string(...)`) |
+| Streaming/SSE endpoints                   | WebTestClient                    |
+| Complex JSON path assertions              | MockMvc + jsonPath               |
 
 ---
 
@@ -504,6 +508,7 @@ assertThat(allCitations.stream().map(c -> c.id()).distinct().count())
 ### 🧠 Foundation — What is WireMock?
 
 When your Spring Boot service calls an external API (Dynamics 365, Stripe, a third-party REST service), tests face a choice:
+
 1. Call the **real API** → slow, costs money, network-dependent, data shared with prod → ❌ for automated tests
 2. **Mock the HTTP client** (Mockito `@MockBean` on `RestTemplate`) → doesn't test actual HTTP behaviour (serialization, headers, status codes) → ❌ incomplete
 3. **WireMock** → spins up a REAL HTTP server on a local port, returns pre-configured responses → ✅ tests actual HTTP behavior without the real external dependency
@@ -518,6 +523,7 @@ Your Spring app → HTTP request → [WireMock server on port 8089] → stubbed 
 ### 🔍 The Real-World SDET Problem
 
 Your `DynamicsApiClient` calls `https://d365.company.com/citations/{id}`. In tests:
+
 - The real D365 is unstable (staging flaps)
 - Tests that call real D365 take 2-3 seconds vs 50ms for local stubs
 - You need to test how your code handles D365 returning 503
@@ -726,6 +732,7 @@ This test catches the common bug where developers forget to validate the upstrea
 ### 🧠 Foundation — What is Embedded Kafka?
 
 Kafka is normally a separate process (a server). In tests, spinning up a real Kafka server would:
+
 - Take 5-10 seconds to start
 - Require Docker or external infrastructure
 - Leave state between tests
@@ -742,6 +749,7 @@ Embedded: Your app → in-memory → [Kafka running in same JVM]
 ### 🔍 The Real-World SDET Problem
 
 `PaymentService` publishes `PaymentProcessedEvent` to Kafka topic `payment-processed`. `NotificationService` consumes that topic and sends an email. You need to:
+
 1. Test that `PaymentService` publishes the correct event (producer test)
 2. Test that `NotificationService` reacts correctly when an event arrives (consumer test)
 3. Test the full flow end-to-end: payment → Kafka → notification
@@ -753,7 +761,7 @@ Embedded: Your app → in-memory → [Kafka running in same JVM]
 ```
 Async testing challenge:
   Producer publishes → Kafka → Consumer processes (in a different thread, different time)
-  
+
   Test must:
     1. Publish or trigger an action
     2. WAIT for the async processing to complete (polling!)
@@ -908,6 +916,7 @@ void auditService_processesEventsFromThreeTopics_createsThreeAuditLogs()
 ### 🧠 Foundation — What is Testcontainers?
 
 Testcontainers is a Java library that manages Docker containers in your test lifecycle:
+
 - Spins up a REAL PostgreSQL container before your test class runs
 - Provides the actual JDBC URL to Spring via `@DynamicPropertySource`
 - Shuts down and removes the container after tests finish
@@ -921,6 +930,7 @@ Test ends  → Docker: stop + remove container
 
 **Why not H2?**
 H2 (in-memory DB) is fast but differs from PostgreSQL in:
+
 - SQL syntax (some JPQL generates PostgreSQL-specific SQL)
 - Constraints behavior
 - Index strategies
@@ -933,6 +943,7 @@ Testcontainers gives you the real thing.
 ### 🔍 The Real-World SDET Problem
 
 Your migration added a PostgreSQL-specific partial index:
+
 ```sql
 CREATE UNIQUE INDEX idx_citations_pending_user
 ON citations(user_id)
@@ -996,6 +1007,7 @@ class CitationPartialIndexTest {
 ```
 
 **Shared container (performance optimization)**:
+
 ```java
 // Reuse the same container across ALL test classes — faster than one per class
 abstract class PostgreSQLTestBase {
@@ -1070,6 +1082,7 @@ Understanding this chain tells you EXACTLY why `@WithMockUser` works, why `@PreA
 ### 🔍 The Real-World SDET Problem
 
 You have three security scenarios to test:
+
 1. Unauthenticated user accessing a protected endpoint → 401
 2. Authenticated user without the right role → 403
 3. Authenticated user with correct role → 200

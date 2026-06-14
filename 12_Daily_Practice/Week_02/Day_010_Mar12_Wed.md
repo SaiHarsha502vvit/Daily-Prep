@@ -27,11 +27,9 @@
 > | **ALGO: Binary Search** | [Binary Search Patterns](../../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
 > | **SQL: Aggregate Functions & GROUP BY** | [SQL: Aggregations & GROUP BY](../../08_SQL/06_Aggregations_GroupBy.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## BLOCK 1: DATA STRUCTURE (30 min)
 
@@ -52,7 +50,6 @@ MEMORY INSIGHT: The program call stack IS a stack.
   bar() returns → stack: [main, foo]
   foo() returns → stack: [main]
 ```
-
 
 #### WHAT: Operations
 
@@ -84,7 +81,6 @@ push(40):    pop():       peek():
 │  10 │
 └─────┘
 ```
-
 
 #### IMPLEMENT: Stack using Array
 
@@ -140,18 +136,17 @@ PREREQUISITE: Array must be SORTED.
 
 HOW IT WORKS:
   [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]   target = 23
-  
+
   Step 1: mid = arr[4] = 16.  16 < 23 → search right half
   [                      23, 38, 56, 72, 91]
-  
+
   Step 2: mid = arr[7] = 56.  56 > 23 → search left half
   [                      23, 38]
-  
+
   Step 3: mid = arr[5] = 23.  23 == 23 → FOUND! ✓
-  
+
   3 steps instead of 6 (linear would need to check indices 0-5)
 ```
-
 
 #### IMPLEMENT: Two Templates
 
@@ -209,10 +204,9 @@ ALGORITHM:
   For each char:
     If opening bracket: push to stack
     If closing bracket: check if top of stack matches
-    
+
   At end: stack must be empty
 ```
-
 
 ```java
 public boolean isValid(String s) {
@@ -252,12 +246,11 @@ SCENARIO: Text editor undo/redo — two stacks!
   Press Ctrl+Z    → undo: []         redo: [World, Hello]
   Press Ctrl+Y    → undo: [Hello]    redo: [World]    ← pop redo, push undo
   Type " Java"    → undo: [Hello, Java] redo: []      ← new action CLEARS redo!
-  
+
   WHY clear redo on new action?
   You went back in time, then did something NEW → old future is invalid.
   (Same as git: checkout old commit + make new commit = old branch abandoned)
 ```
-
 
 ---
 
@@ -335,7 +328,6 @@ Input:  [1, 3, 5, 6], target = 2  → Output: 1 (would insert at index 1)
 This is exactly the LOWER BOUND template from today!
 ```
 
-
 ```java
 public int searchInsert(int[] nums, int target) {
     int left = 0, right = nums.length;
@@ -361,7 +353,6 @@ push(7):  main: [5,3,7]   min: [5,3,3]    ← min still 3
 pop():    main: [5,3]     min: [5,3]
 getMin(): return min.peek() = 3 ✓
 ```
-
 
 ```java
 class MinStack {
@@ -402,7 +393,6 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Queue/Deque + HashMap intro + SQL JOINs Part 1
 ```
-
 
 ---
 

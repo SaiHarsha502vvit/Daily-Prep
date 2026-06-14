@@ -21,7 +21,7 @@
 //
 //    When a function is created, V8 creates a "closure scope" object
 //    on the heap that stores ALL variables from the parent scope that
-//    the inner function references. This object is NOT the state — 
+//    the inner function references. This object is NOT the state —
 //    it's a COPY of the variable's value at creation time.
 //
 //    ┌──────────────────────────────────────────────────────────────┐
@@ -150,7 +150,7 @@
 //
 // ═══════════════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 export default function StaleClosureCounter() {
   const [count, setCount] = useState(0);
@@ -174,17 +174,21 @@ export default function StaleClosureCounter() {
     }, 1000);
 
     return () => {
-      console.log('[Cleanup] Clearing interval');
+      console.log("[Cleanup] Clearing interval");
       clearInterval(timer);
     };
   }, []); // Empty dependency array — effect only runs once
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'monospace', textAlign: 'center' }}>
+    <div
+      style={{ padding: "2rem", fontFamily: "monospace", textAlign: "center" }}
+    >
       <h2>Stale Closure Counter</h2>
-      <p style={{ fontSize: '4rem', color: count > 0 ? '#27ae60' : '#e74c3c' }}>{count}</p>
-      <p style={{ color: '#888' }}>Should increment by 1 every second.</p>
-      <p style={{ color: '#888' }}>If it's stuck at 1, the closure is stale.</p>
+      <p style={{ fontSize: "4rem", color: count > 0 ? "#27ae60" : "#e74c3c" }}>
+        {count}
+      </p>
+      <p style={{ color: "#888" }}>Should increment by 1 every second.</p>
+      <p style={{ color: "#888" }}>If it's stuck at 1, the closure is stale.</p>
     </div>
   );
 }

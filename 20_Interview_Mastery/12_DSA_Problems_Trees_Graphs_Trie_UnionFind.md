@@ -15,6 +15,7 @@
 **WHAT**: Mirror a binary tree — every left child becomes right, every right becomes left.
 
 **WHY recursion naturally models tree structure**:
+
 - A tree is recursive: it's a root with two subtrees
 - To invert: swap root's children, then invert each subtree
 - Base case: null node → do nothing
@@ -22,6 +23,7 @@
 **WHEN**: "Transform entire tree structure" → DFS recursion, process each node.
 
 **HOW — The Logic Chain**:
+
 ```
 invertTree(node):
   → If node is null → return null
@@ -42,10 +44,12 @@ invertTree(node):
 **WHAT**: Find the longest root-to-leaf path.
 
 **WHY bottom-up recursion works**:
+
 - Depth of a tree = 1 + max(depth of left subtree, depth of right subtree)
 - Base case: null → depth is 0
 
 **HOW — The Logic Chain**:
+
 ```
 maxDepth(node):
   → If null → return 0
@@ -63,12 +67,14 @@ maxDepth(node):
 **WHAT**: Is this tree a valid BST (every left < root < every right)?
 
 **WHY range checking works**:
+
 - Common mistake: only checking node.left < node < node.right. This misses deeper violations.
 - Correct: each node must be within a RANGE (min, max). Left subtree narrows max. Right subtree narrows min.
 
 **WHEN**: "Validate BST" → Pass down valid range or use in-order traversal.
 
 **HOW — The Logic Chain (Range approach)**:
+
 ```
 isValid(node, min, max):
   → If null → return true
@@ -90,11 +96,13 @@ Initial call: isValid(root, -∞, +∞)
 **WHAT**: Return nodes grouped by level.
 
 **WHY BFS with level counting**:
+
 - BFS naturally processes level by level
 - Before processing each level, note queue size = number of nodes in this level
 - Process exactly that many nodes, adding their children for the next level
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Queue with root. Result list.
 Step 2: While queue not empty:
@@ -119,12 +127,14 @@ Step 2: While queue not empty:
 **WHAT**: Find the deepest node that is an ancestor of both p and q.
 
 **WHY recursive return-based approach works**:
+
 - If current node IS p or q → return it (this subtree contains a target)
 - Recurse left and right
 - If both sides return non-null → current node is the LCA
 - If only one side returns non-null → that side has the LCA
 
 **HOW — The Logic Chain**:
+
 ```
 LCA(node, p, q):
   → If node is null → return null
@@ -146,11 +156,13 @@ LCA(node, p, q):
 **WHAT**: Find the maximum sum path (can start and end anywhere).
 
 **WHY the "gain" concept works**:
+
 - At each node, compute the maximum "gain" — best sum from this node going DOWN into one subtree
 - The "path through this node" = node.val + leftGain + rightGain
 - But when returning to parent, we can only go through ONE child (path can't fork)
 
 **HOW — The Logic Chain**:
+
 ```
 Global: maxSum = -∞
 
@@ -158,10 +170,10 @@ maxGain(node):
   → If null → return 0
   → leftGain = max(0, maxGain(left))    ← 0 means don't take negative path
   → rightGain = max(0, maxGain(right))
-  
+
   → pathThroughNode = node.val + leftGain + rightGain
   → maxSum = max(maxSum, pathThroughNode)
-  
+
   → return node.val + max(leftGain, rightGain)   ← only one side to parent
 ```
 
@@ -174,11 +186,13 @@ maxGain(node):
 **WHAT**: Convert tree to string and back.
 
 **WHY preorder with null markers works**:
+
 - Preorder visits root first → natural for reconstruction
 - Recording null children makes the structure UNAMBIGUOUS
 - `"1,2,null,null,3,4,null,null,5,null,null"`
 
 **HOW — The Logic Chain**:
+
 ```
 Serialize (preorder):
   → If null → append "null,"
@@ -200,9 +214,6 @@ Deserialize:
 
 ---
 
-
-
-
 ## GRAPHS
 
 ---
@@ -212,6 +223,7 @@ Deserialize:
 **WHAT**: Count connected components of '1's in a grid.
 
 **WHY DFS flood fill works**:
+
 - When you find a '1', that's a new island
 - DFS marks all connected '1's as visited (flood fill)
 - Continue scanning. Each new unvisited '1' = new island.
@@ -219,6 +231,7 @@ Deserialize:
 **WHEN**: "Count connected components in grid/graph" → DFS/BFS + visited marking.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Scan every cell
 Step 2: When grid[i][j] == '1':
@@ -238,11 +251,13 @@ Step 3: Return count
 **WHAT**: Create a deep copy of an undirected graph.
 
 **WHY HashMap + DFS works**:
+
 - Need to avoid infinite loops (graph has cycles)
 - HashMap maps original node → cloned node
 - If already cloned → return the clone. If not → create clone, then clone neighbors.
 
 **HOW — The Logic Chain**:
+
 ```
 HashMap<Node, Node> visited
 
@@ -265,6 +280,7 @@ clone(node):
 **WHAT**: Can you finish all courses given prerequisites? (Cycle detection in directed graph).
 
 **WHY topological sort detects cycles**:
+
 - Prerequisites form a directed graph
 - If there's a cycle → impossible to finish
 - Topological sort succeeds only on DAGs (directed acyclic graphs)
@@ -272,6 +288,7 @@ clone(node):
 **WHEN**: "Order with dependencies", "detect cycle in directed graph" → Topological sort (Kahn's BFS or DFS).
 
 **HOW — Kahn's BFS Logic**:
+
 ```
 Step 1: Compute in-degree for each node
 Step 2: Queue all nodes with in-degree 0 (no prerequisites)
@@ -294,10 +311,12 @@ Step 4: If processed count == total nodes → no cycle → possible
 **WHAT**: Transform one word to another, changing one letter at a time, each step must be a valid word.
 
 **WHY BFS (not DFS) is essential**:
+
 - Need SHORTEST path → BFS guarantees shortest path in unweighted graph
 - Each word is a node. Two words are connected if they differ by exactly one letter.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Put all words in a set for O(1) lookup
 Step 2: BFS from beginWord:
@@ -316,12 +335,14 @@ Step 3: return level count when endWord found, 0 if not found
 **WHAT**: Is the given graph a valid tree? (Connected + no cycles + n nodes + n-1 edges).
 
 **WHY Union-Find is elegant here**:
+
 - Tree = connected graph with exactly n-1 edges and no cycles
 - Quick check: if edges ≠ n-1 → not a tree
 - Union-Find: for each edge, union the two nodes. If they're already in the same set → cycle → not a tree
 - Finally: check if all nodes in one component
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: If edges ≠ n-1 → return false
 Step 2: Initialize Union-Find with n components
@@ -338,6 +359,7 @@ Step 4: Return true (n-1 edges + no cycle → connected tree)
 **WHAT**: Find shortest time for a signal to reach all nodes from source (weighted graph).
 
 **WHY Dijkstra's algorithm**:
+
 - Finding shortest path in graph with non-negative weights
 - Greedy: always process the closest unvisited node
 - Min-heap gives O((V+E) log V)
@@ -345,6 +367,7 @@ Step 4: Return true (n-1 edges + no cycle → connected tree)
 **WHEN**: "Shortest path" + "non-negative weights" → Dijkstra's. "Negative weights" → Bellman-Ford.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: dist[] = infinity for all, dist[source] = 0
 Step 2: Min-heap with (0, source)
@@ -362,22 +385,23 @@ Step 4: Return max(dist[]) if all reachable, else -1
 
 ---
 
-
-
 🔬 **Section Challenge — GRAPHS**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## TRIE
 
@@ -388,6 +412,7 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 **WHAT**: Build a tree where each path from root to a node represents a prefix.
 
 **WHY Trie for string operations**:
+
 - O(L) insert and search where L = word length (vs O(n) for searching list of words)
 - Each node has up to 26 children (for lowercase English)
 - A boolean flag marks "a complete word ends here"
@@ -395,12 +420,13 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 **WHEN**: "Prefix search", "autocomplete", "word dictionary", "starts with" → Trie.
 
 **HOW — The Logic Chain**:
+
 ```
 TrieNode: children[26], isEnd boolean
 
 insert(word):
   → node = root
-  → For each char c: 
+  → For each char c:
     → index = c - 'a'
     → If children[index] is null → create new node
     → Move to children[index]
@@ -424,11 +450,13 @@ startsWith(prefix):
 **WHAT**: Find all words from a dictionary that can be formed in a grid.
 
 **WHY Trie + DFS beats repeated single-word search**:
+
 - Searching each word separately: O(words × m × n × 4^L)
 - Build a Trie of all words, then DFS from each cell, traversing the Trie simultaneously
 - If current path doesn't match any Trie prefix → prune early
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Build Trie from all words
 Step 2: For each cell (i,j) as starting point:
@@ -452,11 +480,13 @@ Step 3: DFS explores 4 directions, moving down Trie:
 **WHAT**: Count connected components in an undirected graph.
 
 **WHY Union-Find is ideal**:
+
 - Start with n components (each node is its own component)
 - For each edge, union the two nodes → decreases component count by 1
 - Final answer = remaining component count
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: parent[i] = i for all, components = n
 Step 2: For each edge (u, v):
@@ -467,6 +497,7 @@ Step 3: Return components
 ```
 
 **Optimizations**:
+
 - **Path compression**: In `find()`, make each node point directly to root
 - **Union by rank**: Attach smaller tree under larger tree's root
 - Together: nearly O(1) per operation (amortized)
@@ -478,11 +509,13 @@ Step 3: Return components
 **WHAT**: Merge accounts that share an email (same person).
 
 **WHY Union-Find groups related items**:
+
 - Each email is a node. Emails in the same account are connected.
 - Union all emails within each account.
 - After all unions, each component = one person's merged account.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: For each account: union all its emails with the first email
 Step 2: Map each email to its root representative
@@ -494,78 +527,82 @@ Step 4: Sort emails within each group, attach the name
 
 ---
 
-
-
 🔬 **Section Challenge — UNION-FIND**
 
 **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+
 <details><summary>Answer</summary>
 
 Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-</details>
 
+</details>
 
 ## MASTER PROBLEM MAP — Trees, Graphs, Trie, Union-Find
 
-| # | Problem | Core Logic | Pattern | Key Insight |
-|---|---------|------------|---------|-------------|
-| 1 | Invert Binary Tree | swap children recursively | DFS Transform | 3 lines of logic |
-| 2 | Max Depth | 1 + max(left, right) | Bottom-up Recursion | Base: null → 0 |
-| 3 | Validate BST | range (min, max) per node | Range Propagation | Pass tighter bounds down |
-| 4 | Level Order | BFS + levelSize snapshot | BFS Level-by-Level | Capture queue.size() BEFORE loop |
-| 5 | LCA | both sides non-null → LCA | Recursive Return | Info flows upward |
-| 6 | Max Path Sum | gain vs path-through | Dual-purpose Return | Return single path, track split path |
-| 7 | Serialize Tree | preorder + null markers | Preorder Encoding | Null markers make structure unique |
-| 8 | Number of Islands | DFS flood fill | Connected Components | Mark visited by modifying grid |
-| 9 | Clone Graph | HashMap original→clone | DFS + Map | Add to map BEFORE recursing |
-| 10 | Course Schedule | topological sort / cycle | Kahn's BFS | processed < total → cycle exists |
-| 11 | Word Ladder | BFS for shortest | BFS Shortest Path | Try all 26 chars at each position |
-| 12 | Graph Valid Tree | n-1 edges + no cycle | Union-Find | Same-set union = cycle |
-| 13 | Dijkstra's | greedy closest node | Min-Heap BFS | Lazy deletion: skip stale entries |
-| 14 | Implement Trie | children[26] + isEnd | Trie Structure | O(L) per operation |
-| 15 | Word Search II | Trie + grid DFS | Trie-guided DFS | Trie prunes impossible paths early |
-| 16 | Connected Components | union edges, count groups | Union-Find | components-- on each successful union |
-| 17 | Accounts Merge | union shared emails | Union-Find | Group by root after all unions |
+| #   | Problem              | Core Logic                | Pattern              | Key Insight                           |
+| --- | -------------------- | ------------------------- | -------------------- | ------------------------------------- |
+| 1   | Invert Binary Tree   | swap children recursively | DFS Transform        | 3 lines of logic                      |
+| 2   | Max Depth            | 1 + max(left, right)      | Bottom-up Recursion  | Base: null → 0                        |
+| 3   | Validate BST         | range (min, max) per node | Range Propagation    | Pass tighter bounds down              |
+| 4   | Level Order          | BFS + levelSize snapshot  | BFS Level-by-Level   | Capture queue.size() BEFORE loop      |
+| 5   | LCA                  | both sides non-null → LCA | Recursive Return     | Info flows upward                     |
+| 6   | Max Path Sum         | gain vs path-through      | Dual-purpose Return  | Return single path, track split path  |
+| 7   | Serialize Tree       | preorder + null markers   | Preorder Encoding    | Null markers make structure unique    |
+| 8   | Number of Islands    | DFS flood fill            | Connected Components | Mark visited by modifying grid        |
+| 9   | Clone Graph          | HashMap original→clone    | DFS + Map            | Add to map BEFORE recursing           |
+| 10  | Course Schedule      | topological sort / cycle  | Kahn's BFS           | processed < total → cycle exists      |
+| 11  | Word Ladder          | BFS for shortest          | BFS Shortest Path    | Try all 26 chars at each position     |
+| 12  | Graph Valid Tree     | n-1 edges + no cycle      | Union-Find           | Same-set union = cycle                |
+| 13  | Dijkstra's           | greedy closest node       | Min-Heap BFS         | Lazy deletion: skip stale entries     |
+| 14  | Implement Trie       | children[26] + isEnd      | Trie Structure       | O(L) per operation                    |
+| 15  | Word Search II       | Trie + grid DFS           | Trie-guided DFS      | Trie prunes impossible paths early    |
+| 16  | Connected Components | union edges, count groups | Union-Find           | components-- on each successful union |
+| 17  | Accounts Merge       | union shared emails       | Union-Find           | Group by root after all unions        |
 
 ---
-
-
 
 🔬 **Section Challenge — MASTER PROBLEM MAP — Trees, Graphs, Trie, Union-Find**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## Interview Quick-Fire: Trees / Graphs / Trie / Union-Find
 
 **Q: "DFS or BFS for trees?"**
+
 - DFS (recursion): when you need bottom-up info (depth, path sum, LCA)
 - BFS (queue): when you need level-by-level processing
 
 **Q: "When to use Trie vs HashMap?"**
+
 - Trie: prefix queries, autocomplete, word search with pruning
 - HashMap: exact match only, no prefix operations needed
 
 **Q: "Topological sort — when Kahn's BFS vs DFS?"**
+
 - Kahn's: easier to get the ordering, detects cycle by count
 - DFS: natural for recursive problems, cycle = revisiting in-progress node
 
 **Q: "Union-Find vs DFS for connected components?"**
+
 - Union-Find: incremental (edges arrive one by one), nearly O(1) per op
 - DFS: batch processing, simpler if you have full graph upfront
 
 **Q: "How to handle graph with negative weights?"**
+
 - Dijkstra FAILS with negative weights
 - Use Bellman-Ford O(VE) or SPFA
 - For all-pairs: Floyd-Warshall O(V³)
-

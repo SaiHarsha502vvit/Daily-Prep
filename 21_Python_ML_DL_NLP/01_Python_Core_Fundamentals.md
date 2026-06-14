@@ -10,16 +10,17 @@ _"Python is the lingua franca of data science, ML, and automation."_
 
 **Mental Model:** If Java is a formal business suit (strict types, verbose, enforced structure), Python is smart-casual wear (dynamic types, concise, flexible). Both are professional, but Python lets you move faster when prototyping and data-wrangling.
 
-| Question | Python Context |
-| :--- | :--- |
-| **WHAT** | A high-level, interpreted, dynamically-typed programming language designed for readability and rapid development. |
-| **WHY** | Because it prioritizes developer productivity over machine speed. Python's clean syntax lets you express complex ideas in fewer lines than Java/C++, making it ideal for data science, scripting, and prototyping. |
-| **WHEN** | Use for: ML/AI, data analysis, scripting/automation, web backends (Django/Flask), API development. Avoid for: real-time systems, mobile apps, performance-critical loops. |
-| **WHERE** | Runs on CPython interpreter (default), Anaconda distribution (data science), or PyPy (speed). Deployed on servers, Jupyter notebooks, cloud functions, and embedded systems. |
-| **WHO** | Created by Guido van Rossum in 1991, inspired by ABC language. Named after Monty Python. Maintained by the Python Software Foundation. |
-| **HOW** | Source code → CPython compiler → Bytecode (.pyc) → CPython VM executes bytecode. The GIL (Global Interpreter Lock) ensures only one thread executes Python bytecode at a time. |
+| Question  | Python Context                                                                                                                                                                                                     |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | A high-level, interpreted, dynamically-typed programming language designed for readability and rapid development.                                                                                                  |
+| **WHY**   | Because it prioritizes developer productivity over machine speed. Python's clean syntax lets you express complex ideas in fewer lines than Java/C++, making it ideal for data science, scripting, and prototyping. |
+| **WHEN**  | Use for: ML/AI, data analysis, scripting/automation, web backends (Django/Flask), API development. Avoid for: real-time systems, mobile apps, performance-critical loops.                                          |
+| **WHERE** | Runs on CPython interpreter (default), Anaconda distribution (data science), or PyPy (speed). Deployed on servers, Jupyter notebooks, cloud functions, and embedded systems.                                       |
+| **WHO**   | Created by Guido van Rossum in 1991, inspired by ABC language. Named after Monty Python. Maintained by the Python Software Foundation.                                                                             |
+| **HOW**   | Source code → CPython compiler → Bytecode (.pyc) → CPython VM executes bytecode. The GIL (Global Interpreter Lock) ensures only one thread executes Python bytecode at a time.                                     |
 
 ### Where It's Used in Real World
+
 - **Google**: Python is one of Google's three official languages. Used in YouTube, Google Search, and internal tools.
 - **Instagram**: The entire backend is built on Django (Python web framework) serving 2B+ monthly active users.
 - **NASA/SpaceX**: Used for flight software testing, data analysis, and simulation.
@@ -40,7 +41,7 @@ CRITICAL DIFFERENCE FROM JAVA:
   Python: x = 5        → x is a LABEL pointing to an integer object 5
 
   In Python, EVERYTHING is an object — even integers!
-  
+
   x = 5
   y = x    # y points to the SAME object as x
   y = 10   # y now points to a NEW object; x still points to 5
@@ -48,13 +49,13 @@ CRITICAL DIFFERENCE FROM JAVA:
 MUTABLE vs IMMUTABLE:
   Immutable (can't change in-place): int, float, str, tuple, frozenset, bool
   Mutable (can change in-place):     list, dict, set, custom objects
-  
+
   WHY THIS MATTERS:
   a = [1, 2, 3]
   b = a           # b points to SAME list object
   b.append(4)     # modifies the shared object
   print(a)        # [1, 2, 3, 4] ← a is affected too!
-  
+
   a = (1, 2, 3)
   b = a           # b points to SAME tuple
   # b.append(4)   # ERROR! Tuples are immutable
@@ -64,12 +65,12 @@ REFERENCE COUNTING & GARBAGE COLLECTION:
   import sys
   x = [1, 2, 3]
   print(sys.getrefcount(x))  # 2 (x + the getrefcount argument)
-  
+
   y = x                       # refcount = 3
   del y                        # refcount = 2
   x = None                    # refcount = 1 (only getrefcount arg)
   # When refcount reaches 0 → object is deallocated immediately
-  
+
   CPython also has a cyclic garbage collector for reference cycles:
   a = []; b = []; a.append(b); b.append(a)  # circular reference!
   # Reference counting can't clean this → GC detects and cleans cycles
@@ -401,21 +402,21 @@ sorted_by_score = sorted(students, key=lambda s: s[1], reverse=True)
 
 class Animal:
     species_count = 0  # class variable (shared by all instances)
-    
+
     def __init__(self, name, sound):   # constructor
         self.name = name               # instance variable
         self.sound = sound
         Animal.species_count += 1
-    
+
     def speak(self):                    # instance method
         return f"{self.name} says {self.sound}!"
-    
+
     def __str__(self):                  # toString equivalent
         return f"Animal({self.name})"
-    
+
     def __repr__(self):                 # developer representation
         return f"Animal(name='{self.name}', sound='{self.sound}')"
-    
+
     def __len__(self):                  # len(animal) works
         return len(self.name)
 
@@ -423,7 +424,7 @@ class Dog(Animal):                      # inheritance
     def __init__(self, name, breed):
         super().__init__(name, "Woof")  # call parent constructor
         self.breed = breed
-    
+
     def fetch(self, item):
         return f"{self.name} fetches the {item}!"
 
@@ -441,7 +442,7 @@ class Student:
     name: str
     age: int
     grades: list = field(default_factory=list)
-    
+
     @property
     def average_grade(self):
         return sum(self.grades) / len(self.grades) if self.grades else 0
@@ -509,11 +510,10 @@ with timer("Training"):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Python Lists (dynamic arrays) | [Arrays](../02_Data_Structures/01b_Arrays.md) |
-| Python Dicts (hash maps) | [HashTable](../02_Data_Structures/01e_HashTable.md) |
-| Generators / Iterators | [Stack & Queue](../02_Data_Structures/01d_Stack_Queue.md) |
-| Sorting (`sorted()`, `list.sort()`) | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| Decorators (design pattern) | [Design Patterns — Decorator](../06_OOP_Design/02_Design_Patterns.md) |
-
+| Topic                               | Related Content                                                       |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| Python Lists (dynamic arrays)       | [Arrays](../02_Data_Structures/01b_Arrays.md)                         |
+| Python Dicts (hash maps)            | [HashTable](../02_Data_Structures/01e_HashTable.md)                   |
+| Generators / Iterators              | [Stack & Queue](../02_Data_Structures/01d_Stack_Queue.md)             |
+| Sorting (`sorted()`, `list.sort()`) | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md)  |
+| Decorators (design pattern)         | [Design Patterns — Decorator](../06_OOP_Design/02_Design_Patterns.md) |

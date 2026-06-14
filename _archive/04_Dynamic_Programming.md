@@ -2925,56 +2925,56 @@ _DP is not about memorizing solutions - it's about SEEING the substructure!_
 
 ### Level 1: 1D DP (Start Here)
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Climbing Stairs | Easy | LC 70 | Fibonacci variant |
-| 2 | House Robber | Medium | LC 198 | Take/skip |
-| 3 | Min Cost Climbing Stairs | Easy | LC 746 | Forward/backward DP |
-| 4 | Maximum Subarray | Medium | LC 53 | Kadane's |
-| 5 | Decode Ways | Medium | LC 91 | String DP |
-| 6 | Coin Change | Medium | LC 322 | Unbounded knapsack |
-| 7 | Longest Increasing Subsequence | Medium | LC 300 | LIS (O(n log n) optimization) |
-| 8 | Word Break | Medium | LC 139 | Prefix matching DP |
-| 9 | Perfect Squares | Medium | LC 279 | Min decomposition |
-| 10 | Jump Game | Medium | LC 55 | Greedy or DP |
+| #   | Problem                        | Difficulty | Source | DP Type                       |
+| --- | ------------------------------ | ---------- | ------ | ----------------------------- |
+| 1   | Climbing Stairs                | Easy       | LC 70  | Fibonacci variant             |
+| 2   | House Robber                   | Medium     | LC 198 | Take/skip                     |
+| 3   | Min Cost Climbing Stairs       | Easy       | LC 746 | Forward/backward DP           |
+| 4   | Maximum Subarray               | Medium     | LC 53  | Kadane's                      |
+| 5   | Decode Ways                    | Medium     | LC 91  | String DP                     |
+| 6   | Coin Change                    | Medium     | LC 322 | Unbounded knapsack            |
+| 7   | Longest Increasing Subsequence | Medium     | LC 300 | LIS (O(n log n) optimization) |
+| 8   | Word Break                     | Medium     | LC 139 | Prefix matching DP            |
+| 9   | Perfect Squares                | Medium     | LC 279 | Min decomposition             |
+| 10  | Jump Game                      | Medium     | LC 55  | Greedy or DP                  |
 
 ### Level 2: 2D DP
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Unique Paths | Medium | LC 62 | Grid DP |
-| 2 | Minimum Path Sum | Medium | LC 64 | Grid DP |
-| 3 | Longest Common Subsequence | Medium | LC 1143 | Classic LCS |
-| 4 | Edit Distance | Medium | LC 72 | String to string |
-| 5 | 0/1 Knapsack | Medium | Classic | Weight/value table |
-| 6 | Coin Change 2 | Medium | LC 518 | Count combinations |
-| 7 | Target Sum | Medium | LC 494 | Subset sum variant |
-| 8 | Interleaving String | Medium | LC 97 | Two-string matching |
-| 9 | Maximal Square | Medium | LC 221 | 2D min expansion |
-| 10 | Longest Palindromic Subsequence | Medium | LC 516 | Reverse + LCS |
+| #   | Problem                         | Difficulty | Source  | DP Type             |
+| --- | ------------------------------- | ---------- | ------- | ------------------- |
+| 1   | Unique Paths                    | Medium     | LC 62   | Grid DP             |
+| 2   | Minimum Path Sum                | Medium     | LC 64   | Grid DP             |
+| 3   | Longest Common Subsequence      | Medium     | LC 1143 | Classic LCS         |
+| 4   | Edit Distance                   | Medium     | LC 72   | String to string    |
+| 5   | 0/1 Knapsack                    | Medium     | Classic | Weight/value table  |
+| 6   | Coin Change 2                   | Medium     | LC 518  | Count combinations  |
+| 7   | Target Sum                      | Medium     | LC 494  | Subset sum variant  |
+| 8   | Interleaving String             | Medium     | LC 97   | Two-string matching |
+| 9   | Maximal Square                  | Medium     | LC 221  | 2D min expansion    |
+| 10  | Longest Palindromic Subsequence | Medium     | LC 516  | Reverse + LCS       |
 
 ### Level 3: Advanced DP
 
-| # | Problem | Difficulty | Source | DP Type |
-|---|---------|-----------|--------|---------|
-| 1 | Longest Palindromic Substring | Medium | LC 5 | Expand center or DP |
-| 2 | Regular Expression Matching | Hard | LC 10 | Two-string with wildcards |
-| 3 | Burst Balloons | Hard | LC 312 | Interval DP |
-| 4 | Partition Equal Subset Sum | Medium | LC 416 | Subset sum |
-| 5 | House Robber III | Medium | LC 337 | Tree DP |
-| 6 | Stone Game | Medium | LC 877 | Game theory DP |
-| 7 | Minimum Cost to Cut a Stick | Hard | LC 1547 | Interval DP |
-| 8 | Distinct Subsequences | Hard | LC 115 | Counting DP |
-| 9 | Best Time Buy Sell Stock w/ Cooldown | Medium | LC 309 | State machine DP |
-| 10 | Palindrome Partitioning II | Hard | LC 132 | Min cuts DP |
+| #   | Problem                              | Difficulty | Source  | DP Type                   |
+| --- | ------------------------------------ | ---------- | ------- | ------------------------- |
+| 1   | Longest Palindromic Substring        | Medium     | LC 5    | Expand center or DP       |
+| 2   | Regular Expression Matching          | Hard       | LC 10   | Two-string with wildcards |
+| 3   | Burst Balloons                       | Hard       | LC 312  | Interval DP               |
+| 4   | Partition Equal Subset Sum           | Medium     | LC 416  | Subset sum                |
+| 5   | House Robber III                     | Medium     | LC 337  | Tree DP                   |
+| 6   | Stone Game                           | Medium     | LC 877  | Game theory DP            |
+| 7   | Minimum Cost to Cut a Stick          | Hard       | LC 1547 | Interval DP               |
+| 8   | Distinct Subsequences                | Hard       | LC 115  | Counting DP               |
+| 9   | Best Time Buy Sell Stock w/ Cooldown | Medium     | LC 309  | State machine DP          |
+| 10  | Palindrome Partitioning II           | Hard       | LC 132  | Min cuts DP               |
 
 **Hidden Gems:**
 
-| Problem | Source | Why It's Great |
-|---------|--------|---------------|
-| Minimum Falling Path Sum | LC 931 | Simple 2D DP — great for building intuition |
+| Problem                          | Source | Why It's Great                              |
+| -------------------------------- | ------ | ------------------------------------------- |
+| Minimum Falling Path Sum         | LC 931 | Simple 2D DP — great for building intuition |
 | Delete Operation for Two Strings | LC 583 | LCS variant — easier entry to edit distance |
-| Ones and Zeroes | LC 474 | 2D knapsack with two weight dimensions |
-| Maximum Length of Pair Chain | LC 646 | Greedy or DP — compare both approaches |
-| Largest Divisible Subset | LC 368 | LIS variant with divisibility |
-| Counting Bits | LC 338 | DP on bits — beautiful O(n) pattern |
+| Ones and Zeroes                  | LC 474 | 2D knapsack with two weight dimensions      |
+| Maximum Length of Pair Chain     | LC 646 | Greedy or DP — compare both approaches      |
+| Largest Divisible Subset         | LC 368 | LIS variant with divisibility               |
+| Counting Bits                    | LC 338 | DP on bits — beautiful O(n) pattern         |

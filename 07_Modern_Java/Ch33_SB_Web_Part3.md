@@ -49,7 +49,6 @@ _"Understanding how @Transactional and auto-configuration actually work"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Tier 3: Aspect — Oriented Programming (aop)
@@ -66,26 +65,27 @@ WITHOUT AOP (Logging everywhere):
 @Service
 public class UserService {
 public User findById(Long id) {
-log.info("Entering findById with id={}", id);        // REPEATED!
-long start = System.currentTimeMillis();              // REPEATED!
-try {                                                  // REPEATED!
+log.info("Entering findById with id={}", id); // REPEATED!
+long start = System.currentTimeMillis(); // REPEATED!
+try { // REPEATED!
 User user = userRepo.findById(id);
 log.info("Exiting findById, took {}ms",
-System.currentTimeMillis() - start);     // REPEATED!
+System.currentTimeMillis() - start); // REPEATED!
 return user;
-} catch (Exception e) {                               // REPEATED!
-log.error("Error in findById", e);                // REPEATED!
+} catch (Exception e) { // REPEATED!
+log.error("Error in findById", e); // REPEATED!
 throw e;
 }
 }
 public void createUser(User user) {
-log.info("Entering createUser");                      // REPEATED!
-long start = System.currentTimeMillis();              // REPEATED!
+log.info("Entering createUser"); // REPEATED!
+long start = System.currentTimeMillis(); // REPEATED!
 // Same boilerplate... in EVERY method!
 }
 }
 
 **Problems**:
+
 - ❌ Code duplication everywhere
 - ❌ Business logic buried under infrastructure code
 - ❌ Adding new concern (security?) = modify every method
@@ -93,38 +93,38 @@ long start = System.currentTimeMillis();              // REPEATED!
 
 ### The AOP Solution
 
-
-
 🔬 **Section Challenge — The Cross-Cutting Problem**
 
 **Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+
 <details><summary>Answer</summary>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
-</details>
 
+</details>
 
 ## With Aop (Separation Of Concerns)
 
 @Service
 public class UserService {
 public User findById(Long id) {
-return userRepo.findById(id);  // Pure business logic!
+return userRepo.findById(id); // Pure business logic!
 }
 public void createUser(User user) {
-userRepo.save(user);           // Clean!
+userRepo.save(user); // Clean!
 }
 }
 @Aspect
 @Component
 public class LoggingAspect {
-@Around("execution(* com.example.service.*.*(..))")
+@Around("execution(_ com.example.service._.\*(..))")
 public Object logMethod(ProceedingJoinPoint pjp) {
 // Logging logic defined ONCE, applied everywhere!
 }
 }
 
 **Benefits**:
+
 - ✅ Business logic is clean and focused
 - ✅ Cross-cutting logic defined once
 - ✅ Easy to add/remove/modify concerns
@@ -164,10 +164,7 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 2: AOP Terminology**
 
@@ -180,8 +177,8 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 </details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
-</details>
 
+</details>
 
 ## Chapter 3: Advice Types
 
@@ -358,21 +355,19 @@ public class ComprehensiveAspect {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 3: Advice Types**
 
 **Challenge 1 (Trace — Who/When/What):** You have `@Around` and `@Before` advice on the same method. **Who** executes first? **When** does `@Around` call `proceed()`? **What** happens if `@Around` never calls `proceed()`?\n\n<details><summary>Answer</summary>\n\n**Who executes first?** `@Around` always wraps `@Before`/`@After`. Call stack: Around (enter) → Before → Method → After → Around (exit). **When `proceed()` called?** `proceed()` is the pivot point — everything BEFORE `proceed()` is pre-processing, everything AFTER is post-processing. `@Before` advice runs when `proceed()` is called. **If `proceed()` never called?** The target method and ALL remaining advice (`@Before`, `@After`, `@AfterReturning`) are SKIPPED. The `@Around` advice effectively intercepts and replaces the method call. This is intentional for caching (`@Cacheable` checks cache, returns cached value without calling proceed if cache hit), circuit breakers (returns fallback without calling the actual method).\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## Chapter 4: Pointcut Expressions
 
@@ -511,21 +506,19 @@ public class PointcutExamplesAspect {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
 
-**Challenge 1 (Expression Debug):** You write pointcut `"execution(* com.app.service.*.*(..))"`  to intercept all service methods. But your `OrderServiceImpl` in `com.app.service.impl` is NOT intercepted. **Who** is the scope that excludes it? **What** is the corrected expression, and **what** is the difference between `.*.` and `..*` in pointcut syntax?
+**Challenge 1 (Expression Debug):** You write pointcut `"execution(* com.app.service.*.*(..))"` to intercept all service methods. But your `OrderServiceImpl` in `com.app.service.impl` is NOT intercepted. **Who** is the scope that excludes it? **What** is the corrected expression, and **what** is the difference between `.*.` and `..*` in pointcut syntax?
 
 <details><summary>Answer</summary>
 
-**Who excludes it:** The single-level wildcard `*`. `com.app.service.*.*` matches classes DIRECTLY in `com.app.service` package, NOT subpackages. `OrderServiceImpl` is in `com.app.service.impl` (one level deeper). **Corrected expression:** `"execution(* com.app.service..*.*(..))"`  — note `..` instead of first `.*`. **Difference between `.*.` and `..*`:** `.*.` = single-level package wildcard (one subdirectory level). `..*` = multi-level package wildcard (any depth of subpackages). So `com.app.service..*.*` matches: `com.app.service.UserService.save()`, `com.app.service.impl.UserServiceImpl.save()`, `com.app.service.order.impl.OrderServiceImpl.process()`. **Common mistake:** Using `.*.*` thinking it means "all classes in this tree" — it only means "all classes in the EXACT package". The `..` token is the subtree selector in pointcut expressions.
+**Who excludes it:** The single-level wildcard `*`. `com.app.service.*.*` matches classes DIRECTLY in `com.app.service` package, NOT subpackages. `OrderServiceImpl` is in `com.app.service.impl` (one level deeper). **Corrected expression:** `"execution(* com.app.service..*.*(..))"` — note `..` instead of first `.*`. **Difference between `.*.` and `..*`:** `.*.` = single-level package wildcard (one subdirectory level). `..*` = multi-level package wildcard (any depth of subpackages). So `com.app.service..*.*` matches: `com.app.service.UserService.save()`, `com.app.service.impl.UserServiceImpl.save()`, `com.app.service.order.impl.OrderServiceImpl.process()`. **Common mistake:** Using `.*.*` thinking it means "all classes in this tree" — it only means "all classes in the EXACT package". The `..` token is the subtree selector in pointcut expressions.
 
 </details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
-</details>
 
+</details>
 
 ## Chapter 5: How Spring AOP Works (Proxy Magic)
 
@@ -567,7 +560,6 @@ Separation of Concerns. Controllers should only focus on mapping requests and de
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Proxy Types: JDK Dynamic Proxy vs CGLIB
 
@@ -683,8 +675,6 @@ public class UserService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
 
 **Challenge 1 (Proxy Debug — Who/When/What):** You have `@Transactional UserService.save()`. Inside `save()`, you call `this.validate()`. `validate()` has a `@Cacheable` annotation. The cache is NEVER populated. **Who** is `this`? **When** is the proxy bypassed? **What** is the fix?
@@ -696,8 +686,8 @@ public class UserService {
 </details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
-</details>
 
+</details>
 
 ## Chapter 6: Practical AOP Examples
 
@@ -1071,14 +1061,14 @@ public class EmailProperties {
 ```yaml
 # application.yml
 email:
-    host: smtp.gmail.com
-    port: 587
-    username: myapp@gmail.com
-    password: ${EMAIL_PASSWORD} # From environment variable
-    timeout: 45s
-    retry:
-        max-attempts: 5
-        delay: 2s
+  host: smtp.gmail.com
+  port: 587
+  username: myapp@gmail.com
+  password: ${EMAIL_PASSWORD} # From environment variable
+  timeout: 45s
+  retry:
+    max-attempts: 5
+    delay: 2s
 ```
 
 ```java
@@ -1135,7 +1125,6 @@ public class EmailService {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```yaml
 
@@ -1245,11 +1234,9 @@ CONFIGURATION:
 □ Understand externalized configuration
 ```
 
-
 ---
 
 _Continue to Part 4: Data Access (JPA & Hibernate), Security, Web & Testing_
-
 
 ---
 

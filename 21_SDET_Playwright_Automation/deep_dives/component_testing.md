@@ -60,17 +60,17 @@ Playwright drives the browser
 
 ### 1.4 When to use CT
 
-| Scenario | CT or E2E? |
-|---|---|
-| "Does this button look right and handle a click?" | CT |
-| "Does the form validate correctly?" | CT |
-| "Does the modal trap focus?" | CT |
-| "Does the dropdown open?" | CT |
-| "Does the chart render with this data?" | CT |
-| "Does the user flow work end-to-end?" | E2E |
-| "Does navigation work?" | E2E |
-| "Does the API integration work?" | E2E |
-| "Do permissions work?" | E2E |
+| Scenario                                          | CT or E2E? |
+| ------------------------------------------------- | ---------- |
+| "Does this button look right and handle a click?" | CT         |
+| "Does the form validate correctly?"               | CT         |
+| "Does the modal trap focus?"                      | CT         |
+| "Does the dropdown open?"                         | CT         |
+| "Does the chart render with this data?"           | CT         |
+| "Does the user flow work end-to-end?"             | E2E        |
+| "Does navigation work?"                           | E2E        |
+| "Does the API integration work?"                  | E2E        |
+| "Do permissions work?"                            | E2E        |
 
 CT is for COMPONENT correctness. E2E is for WORKFLOW correctness. They complement.
 
@@ -82,14 +82,14 @@ CT has been "experimental" since 2022. It's production-ready for React/Vue/Svelt
 
 ## 2. Supported frameworks
 
-| Framework | Package | Status |
-|---|---|---|
-| React | `@playwright/experimental-ct-react` | Stable |
-| Vue | `@playwright/experimental-ct-vue` | Stable |
-| Svelte | `@playwright/experimental-ct-svelte` | Stable |
-| Solid | `@playwright/experimental-ct-solid` | Stable |
-| Angular | Not officially supported | Use TestBed + Karma OR Cypress CT |
-| Vanilla JS | Not directly | Mount via React with vanilla wrapper |
+| Framework  | Package                              | Status                               |
+| ---------- | ------------------------------------ | ------------------------------------ |
+| React      | `@playwright/experimental-ct-react`  | Stable                               |
+| Vue        | `@playwright/experimental-ct-vue`    | Stable                               |
+| Svelte     | `@playwright/experimental-ct-svelte` | Stable                               |
+| Solid      | `@playwright/experimental-ct-solid`  | Stable                               |
+| Angular    | Not officially supported             | Use TestBed + Karma OR Cypress CT    |
+| Vanilla JS | Not directly                         | Mount via React with vanilla wrapper |
 
 For unsupported frameworks: E2E tests against a dev page that renders the component in isolation.
 
@@ -117,12 +117,14 @@ test('renders customer name', async ({ mount }) => {
 ### 3.2 Vue example
 
 ```typescript
-import { test, expect } from '@playwright/experimental-ct-vue';
-import CustomerCard from './CustomerCard.vue';
+import { test, expect } from "@playwright/experimental-ct-vue";
+import CustomerCard from "./CustomerCard.vue";
 
-test('renders customer card', async ({ mount }) => {
-  const component = await mount(CustomerCard, { props: { name: 'Alice', status: 'Active' } });
-  await expect(component.getByRole('heading')).toContainText('Alice');
+test("renders customer card", async ({ mount }) => {
+  const component = await mount(CustomerCard, {
+    props: { name: "Alice", status: "Active" },
+  });
+  await expect(component.getByRole("heading")).toContainText("Alice");
 });
 ```
 
@@ -329,6 +331,7 @@ The component renders, calls fetch, the route handler intercepts, returns mock d
 ### 6.2 Module mocking
 
 Playwright CT doesn't have Jest-style `jest.mock`. To mock modules:
+
 - Use dependency injection (pass the dependency as a prop or via context).
 - Use the bundler's mock-resolution if supported (Vite alias).
 - For React: use a context-based service injection pattern.
@@ -372,10 +375,10 @@ Component baselines are smaller, more isolated, and less prone to noise than pag
 
 ### 7.2 The component-visual workflow
 
-| Test type | Purpose |
-|---|---|
-| Visual unit (CT) | Per-component appearance |
-| Visual integration (E2E) | Page layout |
+| Test type                | Purpose                  |
+| ------------------------ | ------------------------ |
+| Visual unit (CT)         | Per-component appearance |
+| Visual integration (E2E) | Page layout              |
 
 Run thousands of fast component visuals; run few slow page visuals.
 
@@ -385,14 +388,14 @@ Run thousands of fast component visuals; run few slow page visuals.
 
 ### 8.1 CT vs E2E timing
 
-| Action | CT | E2E |
-|---|---|---|
-| Mount a component | ~100 ms | N/A |
-| Navigate a page | N/A | ~1000 ms |
-| Make an API call (mocked) | ~10 ms | ~10 ms (mocked) |
-| Make an API call (real) | N/A | ~50-500 ms |
-| Assert visible | ~10 ms | ~10 ms |
-| Total per test | ~200-500 ms | ~2000-5000 ms |
+| Action                    | CT          | E2E             |
+| ------------------------- | ----------- | --------------- |
+| Mount a component         | ~100 ms     | N/A             |
+| Navigate a page           | N/A         | ~1000 ms        |
+| Make an API call (mocked) | ~10 ms      | ~10 ms (mocked) |
+| Make an API call (real)   | N/A         | ~50-500 ms      |
+| Assert visible            | ~10 ms      | ~10 ms          |
+| Total per test            | ~200-500 ms | ~2000-5000 ms   |
 
 For testing component-level behavior, CT is 5–10× faster.
 
@@ -410,12 +413,12 @@ A suite of 500 component tests with 4 workers: ~25–50 seconds. Same suite as E
 
 ```typescript
 // playwright-ct.config.ts
-import { defineConfig, devices } from '@playwright/experimental-ct-react';
+import { defineConfig, devices } from "@playwright/experimental-ct-react";
 
 export default defineConfig({
-  testDir: './src',
-  testMatch: '**/*.spec.tsx',
-  ctPort: 3100,                      // dev server port
+  testDir: "./src",
+  testMatch: "**/*.spec.tsx",
+  ctPort: 3100, // dev server port
   ctViteConfig: {
     // Same Vite config as your app
     plugins: [react()],
@@ -445,19 +448,19 @@ For TS projects with type checking: add another 1–3 seconds. Worth disabling t
 
 ## 10. CT vs Jest + Testing Library
 
-| | Playwright CT | Jest + RTL |
-|---|---|---|
-| Runtime | Real browser | jsdom (simulated DOM) |
-| CSS | Real | Approximated |
-| Layout | Real | Approximated |
-| Animations | Real | Mostly absent |
-| Performance API | Real | Mocked |
-| canvas / WebGL | Real | Mocked |
-| Locator API | Playwright's | RTL's findByX |
-| Speed | Slower (browser overhead) | Faster (no browser) |
-| Debugging | Playwright UI Mode, trace | Console |
-| Visual regression | Yes | No |
-| Cross-browser | Yes | No (jsdom only) |
+|                   | Playwright CT             | Jest + RTL            |
+| ----------------- | ------------------------- | --------------------- |
+| Runtime           | Real browser              | jsdom (simulated DOM) |
+| CSS               | Real                      | Approximated          |
+| Layout            | Real                      | Approximated          |
+| Animations        | Real                      | Mostly absent         |
+| Performance API   | Real                      | Mocked                |
+| canvas / WebGL    | Real                      | Mocked                |
+| Locator API       | Playwright's              | RTL's findByX         |
+| Speed             | Slower (browser overhead) | Faster (no browser)   |
+| Debugging         | Playwright UI Mode, trace | Console               |
+| Visual regression | Yes                       | No                    |
+| Cross-browser     | Yes                       | No (jsdom only)       |
 
 ### 10.1 When Jest + RTL wins
 
@@ -479,23 +482,25 @@ Many teams use both: Jest for logic-heavy components; Playwright CT for visual-h
 
 ## 11. CT vs Storybook + Chromatic
 
-| | Playwright CT | Storybook + Chromatic |
-|---|---|---|
-| Component preview | Yes (via UI Mode) | Yes (Storybook UI) |
-| Visual regression | Yes | Yes (Chromatic) |
-| Interactivity testing | Yes (full Playwright) | Limited (play function) |
-| Behavior assertions | Native | Storybook Test Runner (additional) |
-| Cost | Free | Free dev, paid Chromatic |
-| Browser environments | All | All (Chromatic Cloud) |
+|                       | Playwright CT         | Storybook + Chromatic              |
+| --------------------- | --------------------- | ---------------------------------- |
+| Component preview     | Yes (via UI Mode)     | Yes (Storybook UI)                 |
+| Visual regression     | Yes                   | Yes (Chromatic)                    |
+| Interactivity testing | Yes (full Playwright) | Limited (play function)            |
+| Behavior assertions   | Native                | Storybook Test Runner (additional) |
+| Cost                  | Free                  | Free dev, paid Chromatic           |
+| Browser environments  | All                   | All (Chromatic Cloud)              |
 
 ### 11.1 The split
 
 Storybook EXCELS at:
+
 - Documentation (component examples for designers, PMs).
 - Manual exploration during development.
 - Visual snapshot review across components.
 
 Playwright CT excels at:
+
 - Behavior testing.
 - Assertions on logic.
 - Integration with E2E tests.
@@ -507,17 +512,20 @@ Many teams: Storybook for docs + Chromatic for visual review + Playwright CT for
 ## 12. CT vs Cypress component
 
 Cypress component testing is mature, polished:
+
 - Same Cypress runner UI.
 - Time-travel debugger.
 - Strong React/Vue support.
 
 Playwright CT advantages:
+
 - Cross-browser (Cypress is Chromium-only).
 - Better TypeScript integration.
 - Better with cross-origin scenarios.
 - Faster execution.
 
 Cypress advantages:
+
 - More polished DX.
 - Better community for component testing patterns.
 - Less "experimental" label baggage.
@@ -586,17 +594,17 @@ See [`reference/04_fixtures.md`](../reference/04_fixtures.md).
 
 ## 15. Anti-patterns
 
-| ❌ | ✅ |
-|---|---|
-| CT tests for full user workflows | Use E2E for workflows |
-| E2E tests for per-component behavior | Use CT for components |
+| ❌                                                       | ✅                              |
+| -------------------------------------------------------- | ------------------------------- |
+| CT tests for full user workflows                         | Use E2E for workflows           |
+| E2E tests for per-component behavior                     | Use CT for components           |
 | Mocking everything in CT (the component becomes useless) | Mock only external dependencies |
-| Visual baselines in CT for highly dynamic data | Mask or don't include |
-| Mounting a top-level App component in CT | Mount specific components |
-| Cypress-style end-to-end in Playwright CT | Use Playwright (E2E) |
-| Real router in CT | MemoryRouter |
-| Real Redux store with thunks | Mocked store or sandbox |
-| Skipping CT because Jest exists | Use both for different purposes |
+| Visual baselines in CT for highly dynamic data           | Mask or don't include           |
+| Mounting a top-level App component in CT                 | Mount specific components       |
+| Cypress-style end-to-end in Playwright CT                | Use Playwright (E2E)            |
+| Real router in CT                                        | MemoryRouter                    |
+| Real Redux store with thunks                             | Mocked store or sandbox         |
+| Skipping CT because Jest exists                          | Use both for different purposes |
 
 ---
 

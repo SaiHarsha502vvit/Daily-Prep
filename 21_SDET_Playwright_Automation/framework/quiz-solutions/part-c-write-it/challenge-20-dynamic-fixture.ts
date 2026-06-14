@@ -28,7 +28,7 @@ interface DynamicFixtures {
 class ContextualPage {
   constructor(
     readonly page: Page,
-    readonly role: 'admin' | 'editor' | 'viewer'
+    readonly role: 'admin' | 'editor' | 'viewer',
   ) {}
 
   async gotoDashboard(): Promise<void> {

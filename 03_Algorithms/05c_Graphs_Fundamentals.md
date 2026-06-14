@@ -7,18 +7,27 @@
 
 **Arrived here from a graph or tree problem? Use this decision table:**
 
+### Production Reality
 
-| Problem Signal | Algorithm to use | Time Complexity |
-|---|---|---|
-| Shortest path, unweighted | **BFS** (level-by-level) | O(V+E) |
-| Shortest path, weighted (+ve) | **Dijkstra** (min-heap) | O((V+E) log V) |
-| Detect cycle in directed graph | **DFS** (WHITE/GRAY/BLACK) | O(V+E) |
-| Topological sort (prerequisites) | **Kahn's BFS** or DFS postorder | O(V+E) |
-| Find all islands / components | **DFS or BFS** from each unvisited | O(V+E) |
-| Minimum spanning tree | **Kruskal** (sort edges) or **Prim** | O(E log E) |
+**BFS/DFS production debugging — common failure causes:** (1) **StackOverflowError on DFS** for graphs with depth > ~10,000 on JVM default stack (~1MB) — switch to iterative BFS with an explicit `ArrayDeque` queue, or increase stack size with `-Xss2m`. (2) **Visited-set race condition in concurrent BFS** — multiple threads processing the same graph simultaneously corrupt a shared `HashMap` visited set — use `ConcurrentHashMap` or an atomic `boolean[]` bitmask for thread-safe state. (3) **O(V+E) memory pressure on large graphs** — a graph with 10M nodes and 50M edges needs ~1GB for adjacency lists in Java; process in streaming/batch mode or use graph compression for memory-constrained production environments.
 
+**Recursion depth scalability — BFS vs DFS trade-off:** BFS with an explicit queue never overflows the call stack regardless of graph depth — use it for deep graphs (e.g., linked structure trees with 100K+ levels). DFS is elegant but trusts the JVM call stack; on graphs deeper than ~10,000 (possible in pathological input or synthetic test cases), it throws `StackOverflowError` with no useful stack trace. Production systems should default to iterative BFS for untrusted or deep graph input.
+
+**Scalability — BFS queue size as memory signal:** BFS's queue size is bounded by the graph's maximum frontier width, not depth. For a balanced binary tree, the maximum queue size is n/2 (the bottom level). For a star graph, it is n-1 (all leaves queued at once). Monitoring queue size at runtime can detect graph structure anomalies — an unexpectedly large queue may indicate a supernode in a scale-free network (e.g., social graph with celebrity nodes having millions of edges).
+
+---
+
+| Problem Signal                   | Algorithm to use                     | Time Complexity |
+| -------------------------------- | ------------------------------------ | --------------- |
+| Shortest path, unweighted        | **BFS** (level-by-level)             | O(V+E)          |
+| Shortest path, weighted (+ve)    | **Dijkstra** (min-heap)              | O((V+E) log V)  |
+| Detect cycle in directed graph   | **DFS** (WHITE/GRAY/BLACK)           | O(V+E)          |
+| Topological sort (prerequisites) | **Kahn's BFS** or DFS postorder      | O(V+E)          |
+| Find all islands / components    | **DFS or BFS** from each unvisited   | O(V+E)          |
+| Minimum spanning tree            | **Kruskal** (sort edges) or **Prim** | O(E log E)      |
 
 **BFS vs DFS in one line:**
+
 ```
 BFS = "Shortest path / minimum steps"    → Queue  → O(V+E)
 DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
@@ -183,8 +192,6 @@ DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
 
-
-
 ## Graph Representations
 
 ```
@@ -229,8 +236,6 @@ ADJACENCY MATRIX (For dense graphs):
 
 </details>
 
-
-
 ## Graph Types
 
 ```
@@ -254,8 +259,6 @@ CONNECTED: All nodes reachable from any node
 **Who detects:** DFS with a 3-color marking (WHITE=unvisited, GRAY=in current DFS path, BLACK=fully processed). **When DFS detects a directed cycle:** When it encounters a GRAY node (a node already in the current DFS call stack). A GRAY node means we've found a path from that node back to itself — a cycle. **Why undirected graphs differ:** In undirected graphs, `A-B` means both `A→B` and `B→A` edges exist. Seeing `B` from `A` when `B` is already visited doesn't mean a cycle — it's just the tree edge in reverse. You must track `parent` and only flag a cycle if the neighbor is visited AND is NOT the parent. **Back edge = cycle:** In DFS traversal, a "back edge" goes from a node to one of its ancestors in the DFS tree. In directed graphs: back edge = discovered gray ancestor = cycle. **Topological sort only works on DAGs** — cycle detection is the prerequisite check before topological sort.
 
 </details>
-
-
 
 # 🕸️ Part 6: Graph Traversals
 
@@ -319,7 +322,6 @@ CONNECTED: All nodes reachable from any node
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## DFS (Depth-First Search)
 
 ```
@@ -340,7 +342,6 @@ USES:
 - Topological sort
 - Connected components
 ```
-
 
 ```java
 // RECURSIVE DFS
@@ -394,14 +395,16 @@ public void dfsIterative(int start, List<List<Integer>> graph) {
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## BFS (Breadth-First Search)
 
@@ -424,7 +427,6 @@ USES:
 - Level-order traversal
 - Finding nearest neighbor
 ```
-
 
 ```java
 public void bfs(int start, List<List<Integer>> graph) {
@@ -487,14 +489,16 @@ public int shortestPath(int start, int end, List<List<Integer>> graph) {
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 # 📌 Part 7: Cycle Detection
 
@@ -542,8 +546,6 @@ private boolean dfsHasCycle(int node, int parent,
 **Who counts:** The outer loop that starts BFS from each unvisited node. With edges `{0-1, 1-2, 3-4}`: Component 1 = `{0, 1, 2}`, Component 2 = `{3, 4}`, Component 3 = `{vertex 5 if isolated}`. Answer = 2 components. **When BFS misses a component:** If you only call BFS once from node 0, BFS visits `{0, 1, 2}` but never sees `{3, 4}` because they're disconnected. **Correct algorithm:** Outer loop over ALL vertices: `for (int i = 0; i < n; i++) { if (!visited[i]) { components++; bfs(i); } }`. Each BFS call marks all vertices in ONE component as visited. The outer loop counts how many separate BFS calls were needed = number of components. **Use cases:** LC 323 (Number of Connected Components), LC 200 (Number of Islands uses DFS/BFS grid-based connected components). Union-Find is an alternative that handles dynamic edge additions.
 
 </details>
-
-
 
 ## In Directed Graph
 
@@ -594,8 +596,6 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 </details>
 
-
-
 # 🔄 Part 8: Topological Sort
 
 ```
@@ -608,7 +608,6 @@ Course 1 → Course 2 → Course 3
 
 Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
 ```
-
 
 ```java
 // Kahn's Algorithm (BFS approach)
@@ -780,5 +779,3 @@ HARD:
 > * [cp-algorithms/dijkstra](https://cp-algorithms.com/graph/dijkstra.html) -> **Invariant:** Always expands the minimum-distance unvisited node; requires non-negative edge weights.
 > * [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) -> **Local rewrite:** Dijkstra in Java heavily relies on `PriorityQueue`. Remember that Java's `PriorityQueue.remove(Object)` is O(N), so we don't update existing nodes in the queue — we just insert the new shorter distance and ignore the old one when we pop it (lazy deletion).
 > * **Constraint warning:** If the graph has negative weights, Dijkstra's greedy invariant breaks; use Bellman-Ford instead.
-
-

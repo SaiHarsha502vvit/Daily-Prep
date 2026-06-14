@@ -24,9 +24,10 @@
 
 A **data structure** is a way of ORGANIZING and STORING data so that we can perform OPERATIONS efficiently.
 
-💡 **Key Insight:** It's not just about *storing* data — it's about making certain *operations* fast!
+💡 **Key Insight:** It's not just about _storing_ data — it's about making certain _operations_ fast!
 
 **Analogy — Same Books, Different Organizations:**
+
 - Library with books thrown randomly → Hard to find books
 - Library with books sorted by topic → Easy to find by topic
 - Library with books sorted by author → Easy to find by author
@@ -35,16 +36,20 @@ Same books, different organizations, different speeds for different tasks!
 
 ### Historical Evolution
 
-| Year | Innovation | Motivation |
-|------|-----------|------------|
-| 1945 | First computers | Data just thrown in memory |
-| 1950s | **Arrays** | Need for sequential data |
-| 1956 | **Linked Lists** | Need for dynamic size |
-| 1960s | **Stacks, Queues** | Need for order control |
-| 1962 | **AVL Trees** | Need for balanced search |
-| 1972 | **B-Trees** | Need for database indexing |
-| 1984 | **Skip Lists** | Probabilistic alternative to trees |
-| 1990s | **Hash structures** | O(1) lookup need |
+| Year  | Innovation           | Motivation                                      |
+| ----- | -------------------- | ----------------------------------------------- |
+| 1945  | First computers      | Data just thrown in memory                      |
+| 1950s | **Arrays**           | Need for sequential data                        |
+| 1956  | **Linked Lists**     | Need for dynamic size                           |
+| 1960s | **Stacks, Queues**   | Need for order control                          |
+| 1962  | **AVL Trees**        | Need for balanced search                        |
+| 1972  | **B-Trees**          | Need for database indexing                      |
+| 1984  | **Skip Lists**       | Probabilistic alternative to trees              |
+| 1990s | **Hash structures**  | O(1) lookup need                                |
+| 2006  | **NumPy** (Python)   | N-dimensional array ops, vectorized math        |
+| 2008  | **Pandas**           | Columnar data frames built on NumPy             |
+| 2016  | **Apache Arrow**     | Cross-language columnar array format            |
+| 2020s | **ML tensor arrays** | GPU-accelerated array primitives (PyTorch, JAX) |
 
 ---
 
@@ -54,15 +59,32 @@ Same books, different organizations, different speeds for different tasks!
 
 Consider 1 million user accounts — the DS you choose determines performance:
 
-| Operation | Unsorted List | Sorted Array | HashMap |
-|-----------|---------------|--------------|---------|
-| Find user by ID | 1 million ops | 20 ops | **1 op** |
-| Add new user | **1 op** | 1 million ops | **1 op** |
-| Delete user | 1 million ops | 1 million ops | **1 op** |
-| List all users | 1 million ops | 1 million ops | 1 million ops |
+| Operation       | Unsorted List | Sorted Array  | HashMap       |
+| --------------- | ------------- | ------------- | ------------- |
+| Find user by ID | 1 million ops | 20 ops        | **1 op**      |
+| Add new user    | **1 op**      | 1 million ops | **1 op**      |
+| Delete user     | 1 million ops | 1 million ops | **1 op**      |
+| List all users  | 1 million ops | 1 million ops | 1 million ops |
 
 ⚠️ **Trade-Off:** Every DS is GOOD at some operations and BAD at others.
 There is NO perfect data structure — only the **perfect choice for your problem!**
+
+🔬 **Challenge — Trade-Off Deep Dive:**
+
+> When would a 1D array of `int[1_000_000]` be _slower_ than `int[1000][1000]`? (Hint: think about CPU cache lines and strided access.)
+>
+> <details><summary>Answer</summary>
+>
+> **Answer:** In the common case of _row-by-row traversal_, both layouts perform equally since rows fit neatly into cache lines. The performance gap appears in **column-wise traversal** (accessing every 1000th element):
+>
+> - `int[1_000_000]` (flat): accesses strided elements — each access is a cache **miss**, since each row of 1000 elements sits on a different cache line (64 bytes). Miss rate ~100%.
+> - `int[1000][1000]` (2D): accessing `arr[r][c]` still requires `arr[r]` base + offset. However, the 2D form's **inner loop** over columns is still contiguous. The real win is that each inner row (1000 ints = 4000 bytes) spans ~62 cache lines — so the first access in a row is a miss, but the next 15 elements hit.
+>
+> **Bottom line:** For 2D matrix problems, using a `int[rows][cols]` lets the JIT optimize inner loops as contiguous. But when writing a `int[1_000_000]` flat array and iterating column-major, each `arr[i * cols + c]` is a potential cache-line boundary — up to 1000x slower than the equivalent `arr[c]` in a true 2D layout.
+>
+> **Rule of thumb:** Choose the array layout that matches your access pattern. Row-major loop → flat 1D. Column-major → prefer 2D or transpose first.
+>
+> </details>
 
 ---
 
@@ -97,20 +119,21 @@ There is NO perfect data structure — only the **perfect choice for your proble
 
 ### Quick Selection Guide
 
-| Need | Use |
-|------|-----|
-| Fast access by index | **Array** |
-| Fast insert/delete anywhere | **LinkedList** |
-| LIFO (Last In First Out) | **Stack** |
-| FIFO (First In First Out) | **Queue** |
-| Fast lookup by key | **HashMap** |
-| Fast lookup + sorted order | **TreeMap** |
-| Unique elements only | **Set** |
-| Hierarchical relationships | **Tree** |
-| Complex relationships | **Graph** |
-| Priority-based access | **Heap / PriorityQueue** |
+| Need                        | Use                      |
+| --------------------------- | ------------------------ |
+| Fast access by index        | **Array**                |
+| Fast insert/delete anywhere | **LinkedList**           |
+| LIFO (Last In First Out)    | **Stack**                |
+| FIFO (First In First Out)   | **Queue**                |
+| Fast lookup by key          | **HashMap**              |
+| Fast lookup + sorted order  | **TreeMap**              |
+| Unique elements only        | **Set**                  |
+| Hierarchical relationships  | **Tree**                 |
+| Complex relationships       | **Graph**                |
+| Priority-based access       | **Heap / PriorityQueue** |
 
 💡 **When no existing DS fits → Create your own by COMBINING!**
+
 - **LRU Cache** = HashMap + DoublyLinkedList
 - **MinStack** = Stack + Stack (for mins)
 - **Trie** = Tree with characters as edges
@@ -118,23 +141,17 @@ There is NO perfect data structure — only the **perfect choice for your proble
 
 ---
 
-
-
-
 ## 🧗 Common Difficulties in Learning DS
 
-| Difficulty | Solution |
-|-----------|----------|
-| "Too many DS to learn!" | Master the **10 core DS** first: Array, List, Stack, Queue, HashMap, Set, Tree, Heap, Graph, Trie |
-| "I know DS but don't know when to use it" | Focus on **OPERATIONS** each DS optimizes |
-| "I understand concept but can't implement" | **Draw pictures first**, code follows naturally |
-| "Array is O(1), HashMap is O(1) — what's the difference?" | Array: O(1) by **INDEX** · HashMap: O(1) by **KEY** |
-| "Each DS feels completely different" | See how DS **COMBINE**: TreeMap = Tree + Map, HashSet = HashMap with only keys |
+| Difficulty                                                | Solution                                                                                          |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| "Too many DS to learn!"                                   | Master the **10 core DS** first: Array, List, Stack, Queue, HashMap, Set, Tree, Heap, Graph, Trie |
+| "I know DS but don't know when to use it"                 | Focus on **OPERATIONS** each DS optimizes                                                         |
+| "I understand concept but can't implement"                | **Draw pictures first**, code follows naturally                                                   |
+| "Array is O(1), HashMap is O(1) — what's the difference?" | Array: O(1) by **INDEX** · HashMap: O(1) by **KEY**                                               |
+| "Each DS feels completely different"                      | See how DS **COMBINE**: TreeMap = Tree + Map, HashSet = HashMap with only keys                    |
 
 ---
-
-
-
 
 ## 🎯 Expected Outcomes of Mastering DS
 
@@ -150,36 +167,29 @@ There is NO perfect data structure — only the **perfect choice for your proble
 FROM: "I'll try arrays for everything"
 TO: "I'll choose the **RIGHT DS** for each operation"
 
-
 ---
-
-
-
 
 # ❓ Part 1: Why Data Structures Exist
 
 ## The Origin Story
 
 **1950s:** Computers had **LIMITED memory** (just a few KB).
-The problem was clear — *how do you organize data efficiently?*
+The problem was clear — _how do you organize data efficiently?_
 The solution: **Data Structures were born!**
 
 Every DS was created to solve a **SPECIFIC** problem:
 
-| Data Structure | Created For |
-|---------------|-------------|
-| **Array** | Fast access by position |
-| **LinkedList** | Fast insertion/deletion |
-| **Stack** | Last-In-First-Out (LIFO) |
-| **Queue** | First-In-First-Out (FIFO) |
-| **Tree** | Hierarchical data |
-| **Graph** | Relationships between entities |
-| **HashMap** | O(1) lookup |
+| Data Structure | Created For                    |
+| -------------- | ------------------------------ |
+| **Array**      | Fast access by position        |
+| **LinkedList** | Fast insertion/deletion        |
+| **Stack**      | Last-In-First-Out (LIFO)       |
+| **Queue**      | First-In-First-Out (FIFO)      |
+| **Tree**       | Hierarchical data              |
+| **Graph**      | Relationships between entities |
+| **HashMap**    | O(1) lookup                    |
 
 ---
-
-
-
 
 # 📊 Part 2: Arrays
 
@@ -218,6 +228,35 @@ Every DS was created to solve a **SPECIFIC** problem:
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
+### 🔒 Array Invariants (Always True — Never Assumptions)
+
+| Invariant                             | Expression                                                                                                                              | Violation Result                                            |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| **Bounds invariant**                  | `0 <= index < length` for all valid accesses                                                                                            | `ArrayIndexOutOfBoundsException` at runtime                 |
+| **Contiguity invariant**              | All elements live at `base + k * elementSize` for `k = 0..n-1`                                                                          | Corrupted data if violated (hardware/OS guarantee this)     |
+| **ArrayList grow rule (JDK default)** | Grows by **1.5x** (`newCapacity = oldCapacity + oldCapacity >> 1`) when full                                                            | Some JVMs use 2x — always check the vendor's implementation |
+| **Primitive vs object array**         | `int[]` holds raw values (4 bytes each). `Integer[]` holds **object references** (8 bytes each on 64-bit JVM) plus heap object overhead | Confusing these causes ~3x memory bloat                     |
+
+⚠️ **Common misconception:** Many students assume `arr.length` is O(n). It is always **O(1)** — the JVM stores length as a field in the object header.
+
+🔬 **Challenge — Memory Layout (near 5W1H):**
+
+> Trace through a 10×10 `int` array's memory layout. What is the **byte offset** of element `arr[3][7]` in row-major order on a 64-bit JVM where `int` = 4 bytes?
+>
+> <details><summary>Answer</summary>
+>
+> **Step-by-step:**
+>
+> 1. Row-major formula: `offset = (row * numCols + col) * elementSize`
+> 2. Substituting: `offset = (3 * 10 + 7) * 4 = (30 + 7) * 4 = 37 * 4 = 148 bytes`
+> 3. If `arr` starts at address `0x1000`, then `arr[3][7]` lives at `0x1000 + 148 = 0x1094`.
+>
+> **Verification:** `arr[0][0]` = offset 0, `arr[0][9]` = offset 36, `arr[1][0]` = offset 40, `arr[3][7]` = 148. Each row is exactly 40 bytes (10 cols × 4 bytes). Row 3 starts at 120, plus 7 elements × 4 = 28 more = 148.
+>
+> **Follow-up:** For a `byte[10][10]`, `arr[3][7]` offset = `(3*10+7)*1 = 37 bytes`. For `double[10][10]` (8 bytes each), offset = `(3*10+7)*8 = 296 bytes`. Always multiply by `elementSize`!
+>
+> </details>
+
 ## 🧬 Nature & Behavior
 
 ### What is an Array?
@@ -241,7 +280,6 @@ WHY CONTIGUOUS MATTERS:
 - arr[3] = 1000 + (3 × 4) = 1012
 - This is O(1) random access!
 ```
-
 
 ### Array Characteristics
 
@@ -267,7 +305,7 @@ THE CPU MEMORY HIERARCHY:
 ┌─────────────┐ ← L1 Cache: 32KB, ~1 nanosecond (4 cycles)
 ├─────────────┤ ← L2 Cache: 256KB, ~4 nanoseconds (12 cycles)
 ├─────────────┤ ← L3 Cache: 8MB, ~12 nanoseconds (36 cycles)
-├─────────────┤ ← RAM: 16GB, ~100 nanoseconds (300 cycles) 
+├─────────────┤ ← RAM: 16GB, ~100 nanoseconds (300 cycles)
 ├─────────────┤ ← SSD: 1TB, ~100,000 nanoseconds
 └─────────────┘ ← HDD: 2TB, ~10,000,000 nanoseconds
 
@@ -282,7 +320,7 @@ ARRAY ITERATION:
   ...
   arr[15]: CACHE HIT! (already in cache)
   arr[16]: CACHE MISS → fetch next 64 bytes
-  
+
   Result: Only 1 cache miss per 16 elements = 6.25% miss rate
 
 LINKED LIST ITERATION:
@@ -290,7 +328,7 @@ LINKED LIST ITERATION:
   node2 at address 0x5F00: CACHE MISS → different region!
   node3 at address 0x2A00: CACHE MISS → different region!
   node4 at address 0x8100: CACHE MISS → different region!
-  
+
   Result: Nearly 100% cache miss rate (nodes scattered in memory)
 
 REAL NUMBERS (summing 1 million integers):
@@ -307,16 +345,19 @@ ANALOGY: Reading a book vs reading a dictionary.
 ### 🔴 Real-World Origin: Supermarket Inventory (1957)
 
 **Problem at IBM (1957):**
+
 - Supermarket needed to track **10,000 products**
 - Each product has: ID, Name, Price, Quantity
 - Need to look up any product by ID **quickly**
 
 **Before Arrays:**
+
 - Products stored in random memory locations
 - Finding product #5000 required searching 5000 locations
 - Time: **O(n)** for every lookup 😩
 
 **Solution — Array:**
+
 - Store products in **consecutive memory**
 - Product ID = Array Index
 - `products[5000]` = **instant access!**
@@ -420,6 +461,7 @@ public class MyArray {
 ### 📦 Group A — Traversal Basics
 
 **Q1 — Declare & Print All Elements**
+
 ```java
 int[] arr = {10, 20, 30, 40, 50};
 for (int i = 0; i < arr.length; i++)
@@ -427,6 +469,7 @@ for (int i = 0; i < arr.length; i++)
 ```
 
 **Q2 — Read From User**
+
 ```java
 Scanner sc = new Scanner(System.in);
 int n = sc.nextInt();
@@ -434,19 +477,23 @@ int[] arr = new int[n];
 for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
 ```
 
-**Q3 — Print All EVEN Numbers** — O(n) *(already optimal — must check each element)*
+**Q3 — Print All EVEN Numbers** — O(n) _(already optimal — must check each element)_
+
 ```java
 for (int x : arr) if (x % 2 == 0) System.out.print(x + " ");
 ```
+
 ❓ Why can't we do better than O(n)? Because we must inspect every element at least once.
 
 **Q4 — Sum of Odd Numbers**
+
 ```java
 int sum = 0;
 for (int x : arr) if (x % 2 != 0) sum += x;
 ```
 
 **Q5 — Average of All Elements**
+
 ```java
 int sum = 0;
 for (int x : arr) sum += x;
@@ -454,6 +501,7 @@ double avg = (double) sum / arr.length;
 ```
 
 **Q6 — Average of Prime Numbers in Array**
+
 ```java
 boolean isPrime(int n) {
     if (n < 2) return false;
@@ -465,9 +513,11 @@ int sum = 0, count = 0;
 for (int x : arr) if (isPrime(x)) { sum += x; count++; }
 double primeAvg = count > 0 ? (double)sum/count : 0;
 ```
+
 💡 `i * i <= n` is the √n optimization — O(√n) instead of O(n) per check.
 
-**Q7 — Print in Reverse Order** *(just print, don't rearrange)*
+**Q7 — Print in Reverse Order** _(just print, don't rearrange)_
+
 ```java
 for (int i = arr.length - 1; i >= 0; i--)
     System.out.print(arr[i] + " ");
@@ -475,15 +525,18 @@ for (int i = arr.length - 1; i >= 0; i--)
 ```
 
 **Q8 — Sum of First + Last Element**
+
 ```java
 int result = arr[0] + arr[arr.length - 1];
 ```
 
 **Q9 — Swap Every Two Adjacent Elements**
+
 ```
 Input:  {8,7,5,1,5,2,6}
 Output: {7,8,1,5,2,5,6}   ← pairs (0,1),(2,3),(4,5) swapped; last stays if odd length
 ```
+
 ```java
 for (int i = 0; i + 1 < arr.length; i += 2) {
     int tmp = arr[i]; arr[i] = arr[i+1]; arr[i+1] = tmp;
@@ -491,16 +544,19 @@ for (int i = 0; i + 1 < arr.length; i += 2) {
 ```
 
 **Q10 — Print Alternative Elements**
+
 ```java
 for (int i = 0; i < arr.length; i += 2)
     System.out.print(arr[i] + " ");
 ```
 
-**Q11 — Sum Up to Given Index K** *(prefix sum preview!)*
+**Q11 — Sum Up to Given Index K** _(prefix sum preview!)_
+
 ```java
 int k = 3, sum = 0;
 for (int i = 0; i <= k; i++) sum += arr[i];
 ```
+
 💡 If you need this for many K values, computing each time = O(n) per query.
 **Prefix Sum** (Part 13) makes it O(1) per query after O(n) build.
 
@@ -509,6 +565,7 @@ for (int i = 0; i <= k; i++) sum += arr[i];
 ### 📦 Group B — Min / Max First Look
 
 **Q12 — Find Biggest Element**
+
 ```java
 int max = arr[0];
 for (int x : arr) if (x > max) max = x;
@@ -516,16 +573,19 @@ for (int x : arr) if (x > max) max = x;
 ```
 
 **Q13 — Find Smallest Element**
+
 ```java
 int min = arr[0];
 for (int x : arr) if (x < min) min = x;
 ```
 
 **Q14 — Find Second Highest Element**
+
 ```
 Brute: Sort descending → arr[1]   O(n log n)
 Better: Two-variable single pass   O(n)
 ```
+
 ```java
 int first = Integer.MIN_VALUE, second = Integer.MIN_VALUE;
 for (int x : arr) {
@@ -535,6 +595,7 @@ for (int x : arr) {
 ```
 
 **Q15 — Count Numbers Below Key Value**
+
 ```java
 int key = 10, count = 0;
 for (int x : arr) if (x < key) count++;
@@ -544,10 +605,12 @@ for (int x : arr) if (x < key) count++;
 
 ### 📦 Group C — Pairs & Two Arrays
 
-**Q16 — All Pairs Summing to Target K** *(Two Sum brute force)*
+**Q16 — All Pairs Summing to Target K** _(Two Sum brute force)_
+
 ```
 Input: {4,6,18,10,14,2}, target=20 → Output: {6,14}, {18,2}
 ```
+
 ```java
 // Brute: O(n²)
 for (int i = 0; i < n; i++)
@@ -555,10 +618,12 @@ for (int i = 0; i < n; i++)
         if (arr[i] + arr[j] == k)
             System.out.println("{" + arr[i] + "," + arr[j] + "}");
 ```
+
 🧱 **You hit the wall** — for n=10⁶ this is 10¹² operations.
 **HashMap reduces this to O(n)** — you'll apply that after learning HashMap (Part 10).
 
 **Q17 — Sum of Same Position Values in Two Arrays**
+
 ```java
 int[] a = {1,2,3}, b = {10,20,30};
 for (int i = 0; i < a.length; i++)
@@ -566,6 +631,7 @@ for (int i = 0; i < a.length; i++)
 ```
 
 **Q18 — Merge Two Arrays**
+
 ```java
 int[] merged = new int[a.length + b.length];
 for (int i = 0; i < a.length; i++) merged[i] = a[i];
@@ -576,13 +642,13 @@ for (int i = 0; i < b.length; i++) merged[a.length + i] = b[i];
 
 ### 🎯 Practice Problems — Foundation Level
 
-| Problem | Platform | Difficulty | Concept |
-|---------|----------|------------|---------|
-| LC 1929 — Concatenation of Array | LeetCode | ⭐ Easy | Array building |
-| LC 2011 — Final Value After Operations | LeetCode | ⭐ Easy | Simple traversal |
-| LC 1512 — Number of Good Pairs | LeetCode | ⭐ Easy | Nested loops |
-| CF 4A — Watermelon | Codeforces | Div2-A | Simple math |
-| CF 158A — Next Round | Codeforces | Div2-A | Linear scan |
+| Problem                                | Platform   | Difficulty | Concept          |
+| -------------------------------------- | ---------- | ---------- | ---------------- |
+| LC 1929 — Concatenation of Array       | LeetCode   | ⭐ Easy    | Array building   |
+| LC 2011 — Final Value After Operations | LeetCode   | ⭐ Easy    | Simple traversal |
+| LC 1512 — Number of Good Pairs         | LeetCode   | ⭐ Easy    | Nested loops     |
+| CF 4A — Watermelon                     | Codeforces | Div2-A     | Simple math      |
+| CF 158A — Next Round                   | Codeforces | Div2-A     | Linear scan      |
 
 🌟 **Goal:** Solve all 5 before moving to Sub Arrays. These cement loop instincts.
 
@@ -595,18 +661,22 @@ for (int i = 0; i < b.length; i++) merged[a.length + i] = b[i];
 🏦 **Real-World Origin:** Financial Trading System (1990s)
 
 **Problem at Goldman Sachs:**
+
 - Traders needed to find **pairs of stocks** where Stock A + Stock B = Target budget
 - Thousands of stocks, **milliseconds** to decide
 
 **Before Optimization:**
+
 ```
 for each stock A:
     for each stock B:
         if A + B == target: found!
 ```
+
 Time: **O(n²)** — too slow for real-time trading!
 
 **Solution — The Thinking Process:**
+
 1. "We're checking the same pairs multiple times"
 2. "What if we **remember** what we've seen?"
 3. "**HashMap!** Store value → index"
@@ -667,6 +737,7 @@ public void printAllSubArrays(int[] arr) {
 ### 🧱 Level 2: You Hit the Wall — Max Sum Subarray
 
 **Brute O(n³):** — TLE for n > 5,000
+
 ```java
 int maxSum = arr[0];
 for (int i = 0; i < n; i++)
@@ -678,6 +749,7 @@ for (int i = 0; i < n; i++)
 ```
 
 **Better O(n²):** Remove 3rd loop by accumulating
+
 ```java
 int maxSum = arr[0];
 for (int i = 0; i < n; i++) {
@@ -696,13 +768,11 @@ for (int i = 0; i < n; i++) {
 
 **STOP HERE — Learn these patterns, then return to "✅ Apply" below:**
 
-
-| Technique | When You Need It | Study File |
-|-----------|-----------------|------------|
-| **Sliding Window** | Variable/fixed window on array | 📖 [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) |
-| **Two Pointers** | Sorted array, pairs/triplets | 📖 [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
-| **Prefix Sum** | Sum queries, count subarrays with sum K | 📖 [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
-
+| Technique          | When You Need It                        | Study File                                                                             |
+| ------------------ | --------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Sliding Window** | Variable/fixed window on array          | 📖 [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)               |
+| **Two Pointers**   | Sorted array, pairs/triplets            | 📖 [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
+| **Prefix Sum**     | Sum queries, count subarrays with sum K | 📖 [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md)     |
 
 ⬅️ **RETURN CHECKPOINT** — Come back here and apply each below.
 
@@ -729,6 +799,7 @@ public int maxSubarraySum(int[] arr) {
 ```
 
 **Dry Run — `[-2,1,-3,4,-1,2,1,-5,4]`:**
+
 ```
 i  arr[i]  current                   maxSum
 0   -2     -2                         -2
@@ -750,6 +821,7 @@ Answer: 6  (subarray [4,-1,2,1])
 ### ✅ Apply 2: Count Subarrays with Sum = K
 
 **Brute O(n²):**
+
 ```java
 int count = 0;
 for (int i = 0; i < n; i++) {
@@ -762,12 +834,14 @@ for (int i = 0; i < n; i++) {
 ```
 
 **Optimal O(n) — Prefix Sum + HashMap:**
+
 ```
 INSIGHT: if prefixSum[j] - prefixSum[i] == k
          then subarray arr[i+1..j] has sum k
          Rearranged: prefixSum[i] = currentSum - k
          → For each position j, check if (currentSum - k) seen before in HashMap
 ```
+
 ```java
 public int subarraySum(int[] arr, int k) {
     Map<Integer,Integer> freq = new HashMap<>();
@@ -782,6 +856,7 @@ public int subarraySum(int[] arr, int k) {
 }
 // Time: O(n) | Space: O(n)
 ```
+
 🔗 **New to HashMap?** → 📖 [Go learn HashTable first](01e_HashTable.md) then return here.
 
 📖 **LeetCode 560** — Subarray Sum Equals K
@@ -815,6 +890,7 @@ public int minSubarrayLen(int k, int[] arr) {
 GOTCHA: Negative × Negative = Positive!
 Track BOTH max and min at each step.
 ```
+
 ```java
 public int maxProduct(int[] arr) {
     int maxProd = arr[0], curMax = arr[0], curMin = arr[0];
@@ -834,15 +910,15 @@ public int maxProduct(int[] arr) {
 
 ### 🎯 Problem Set — Sub Arrays
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | LC 53 — Maximum Subarray | LeetCode | ⭐⭐ Med | Kadane's |
-| 2 | LC 560 — Subarray Sum Equals K | LeetCode | ⭐⭐ Med | Prefix Sum + HashMap |
-| 3 | LC 209 — Min Size Subarray Sum | LeetCode | ⭐⭐ Med | Sliding Window |
-| 4 | LC 152 — Max Product Subarray | LeetCode | ⭐⭐ Med | Track max+min |
-| 5 | LC 1004 — Max Consecutive Ones III | LeetCode | ⭐⭐ Med | Sliding Window |
-| 6 | LC 713 — Subarray Product < K | LeetCode | ⭐⭐ Med | Sliding Window |
-| 7 | LC 76 — Minimum Window Substring | LeetCode | ⭐⭐⭐ Hard | Sliding Window |
+| #   | Problem                            | Platform | Difficulty  | Key Technique        |
+| --- | ---------------------------------- | -------- | ----------- | -------------------- |
+| 1   | LC 53 — Maximum Subarray           | LeetCode | ⭐⭐ Med    | Kadane's             |
+| 2   | LC 560 — Subarray Sum Equals K     | LeetCode | ⭐⭐ Med    | Prefix Sum + HashMap |
+| 3   | LC 209 — Min Size Subarray Sum     | LeetCode | ⭐⭐ Med    | Sliding Window       |
+| 4   | LC 152 — Max Product Subarray      | LeetCode | ⭐⭐ Med    | Track max+min        |
+| 5   | LC 1004 — Max Consecutive Ones III | LeetCode | ⭐⭐ Med    | Sliding Window       |
+| 6   | LC 713 — Subarray Product < K      | LeetCode | ⭐⭐ Med    | Sliding Window       |
+| 7   | LC 76 — Minimum Window Substring   | LeetCode | ⭐⭐⭐ Hard | Sliding Window       |
 
 ### 🧠 Pattern Fingerprint — Sub Arrays
 
@@ -859,6 +935,7 @@ SEE THESE WORDS → USE THIS:
 ```
 
 ### 📅 Revisit Tracker
+
 - **Day 3:** Redo LC 53 + LC 209 from memory (no hints)
 - **Day 7:** Redo LC 560 (Prefix Sum + HashMap) + LC 713
 
@@ -957,6 +1034,7 @@ LIS:     {2, 3, 7, 101}   length = 4
 ```
 
 **Layer 1 — DP O(n²):**
+
 ```java
 public int lisDP(int[] arr) {
     int n = arr.length;
@@ -974,6 +1052,7 @@ public int lisDP(int[] arr) {
 ```
 
 **Layer 2 — Binary Search O(n log n):**
+
 ```java
 public int lisOptimal(int[] arr) {
     List<Integer> tails = new ArrayList<>();
@@ -1013,13 +1092,13 @@ public int lcs(String s1, String s2) {
 
 ### 🎯 Problem Set — Sub Sequences
 
-| # | Problem | Platform | Difficulty | Technique |
-|---|---------|----------|------------|-----------|
-| 1 | LC 78 — Subsets | LeetCode | ⭐⭐ Med | Recursion |
-| 2 | LC 300 — LIS | LeetCode | ⭐⭐ Med | DP → BinSearch |
-| 3 | LC 1143 — LCS | LeetCode | ⭐⭐ Med | 2D DP |
-| 4 | LC 416 — Partition Equal Subset Sum | LeetCode | ⭐⭐ Med | Subset-sum DP |
-| 5 | LC 1035 — Uncrossed Lines | LeetCode | ⭐⭐ Med | LCS in disguise |
+| #   | Problem                             | Platform | Difficulty | Technique       |
+| --- | ----------------------------------- | -------- | ---------- | --------------- |
+| 1   | LC 78 — Subsets                     | LeetCode | ⭐⭐ Med   | Recursion       |
+| 2   | LC 300 — LIS                        | LeetCode | ⭐⭐ Med   | DP → BinSearch  |
+| 3   | LC 1143 — LCS                       | LeetCode | ⭐⭐ Med   | 2D DP           |
+| 4   | LC 416 — Partition Equal Subset Sum | LeetCode | ⭐⭐ Med   | Subset-sum DP   |
+| 5   | LC 1035 — Uncrossed Lines           | LeetCode | ⭐⭐ Med   | LCS in disguise |
 
 ### 🧠 Pattern Fingerprint — Sub Sequences
 
@@ -1035,6 +1114,7 @@ SEE THESE WORDS → USE THIS:
 ```
 
 ### 📅 Revisit Tracker
+
 - **Day 3:** Redo LC 78 (Subsets recursion) + LC 300 (LIS DP)
 - **Day 7:** Redo LC 300 using binary search approach from memory
 
@@ -1073,24 +1153,22 @@ public int binarySearch(int[] arr, int target) {
 📖 [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
 ⬅️ Return here after studying for: search in rotated array, first/last occurrence.
 
-| | Linear Search | Binary Search |
-|---|---|---|
-| Requires sorted? | ❌ No | ✅ Yes |
-| Time | O(n) | O(log n) |
-| Use when | Unsorted / search once | Sorted / search many times |
+|                  | Linear Search          | Binary Search              |
+| ---------------- | ---------------------- | -------------------------- |
+| Requires sorted? | ❌ No                  | ✅ Yes                     |
+| Time             | O(n)                   | O(log n)                   |
+| Use when         | Unsorted / search once | Sorted / search many times |
 
 ### 🎯 Problems
-| Problem | Pattern |
-|---------|---------|
-| LC 704 — Binary Search | Classic |
-| LC 35 — Search Insert Position | Lower bound |
+
+| Problem                         | Pattern                |
+| ------------------------------- | ---------------------- |
+| LC 704 — Binary Search          | Classic                |
+| LC 35 — Search Insert Position  | Lower bound            |
 | LC 33 — Search in Rotated Array | Modified binary search |
-| LC 34 — First and Last Position | Two binary searches |
+| LC 34 — First and Last Position | Two binary searches    |
 
 ---
-
-
-
 
 ## 📈 Part 7: Sorting Algorithms — All 5
 
@@ -1181,34 +1259,138 @@ private int partition(int[] arr, int low, int high) {
 
 ### Comparison Table
 
-| Sort | Best | Avg | Worst | Space | Stable | Best For |
-|------|------|-----|-------|-------|--------|----------|
-| Bubble | O(n) | O(n²) | O(n²) | O(1) | ✅ | Teaching |
-| Selection | O(n²) | O(n²) | O(n²) | O(1) | ❌ | Min writes |
-| Insertion | **O(n)** | O(n²) | O(n²) | O(1) | ✅ | Small/nearly-sorted |
-| Merge | O(n log n) | O(n log n) | O(n log n) | O(n) | ✅ | Need stable guaranteed |
-| Quick | O(n log n) | O(n log n) | O(n²) | O(log n) | ❌ | General in-place |
+| Sort      | Best       | Avg        | Worst      | Space    | Stable | Best For               |
+| --------- | ---------- | ---------- | ---------- | -------- | ------ | ---------------------- |
+| Bubble    | O(n)       | O(n²)      | O(n²)      | O(1)     | ✅     | Teaching               |
+| Selection | O(n²)      | O(n²)      | O(n²)      | O(1)     | ❌     | Min writes             |
+| Insertion | **O(n)**   | O(n²)      | O(n²)      | O(1)     | ✅     | Small/nearly-sorted    |
+| Merge     | O(n log n) | O(n log n) | O(n log n) | O(n)     | ✅     | Need stable guaranteed |
+| Quick     | O(n log n) | O(n log n) | O(n²)      | O(log n) | ❌     | General in-place       |
 
 ### 🎯 Problems
-| Problem | Sort Technique |
-|---------|----------------|
-| LC 912 — Sort an Array | Implement merge/quick sort |
-| LC 75 — Sort Colors | Dutch National Flag |
-| LC 56 — Merge Intervals | Sort by start, merge |
-| LC 1636 — Sort by Frequency | Custom comparator |
+
+| Problem                     | Sort Technique             |
+| --------------------------- | -------------------------- |
+| LC 912 — Sort an Array      | Implement merge/quick sort |
+| LC 75 — Sort Colors         | Dutch National Flag        |
+| LC 56 — Merge Intervals     | Sort by start, merge       |
+| LC 1636 — Sort by Frequency | Custom comparator          |
 
 ---
 
+## 🐛 Production Failure Modes & Debugging
 
+> These are the bugs that kill arrays in production — not algorithm failures, but the silent killers: out-of-bounds, memory exhaustion, and cache collapse.
+
+### Failure 1: ArrayIndexOutOfBoundsException in Production Loops
+
+**Mechanism:** Three common causes in live code:
+
+| Cause                       | Example                                                | Why It Happens                                            |
+| --------------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| Off-by-one in termination   | `for (i=0; i<=arr.length; i++)`                        | `<=` instead of `<` — touches `arr[length]`               |
+| Race in concurrent mutation | Thread A reads `length` while Thread B resizes         | `size` field drifts from `data.length`                    |
+| Length/size confusion in 2D | `for (j=0; j<grid[0].length; j++)` when grid is jagged | Works in tests (uniform grids), fails on jagged real data |
+
+**Debugging step — jstack investigation:**
+
+```java
+// Suspect: infinite loop or crash on specific input
+// 1. Reproduce with: java -cp myapp.jar MyClass input.txt
+// 2. Get live thread dump: jstack <pid> | grep -A 20 "RUNNABLE"
+// 3. Look for: "java.lang.ArrayIndexOutOfBoundsException"
+//    or stack frames stuck in your loop with no exit
+
+// Safe pattern (no off-by-one):
+for (int i = 0; i < arr.length; i++) { /* always safe */ }
+
+// Safe 2D traversal (handles jagged):
+for (int r = 0; r < grid.length; r++)
+    for (int c = 0; c < grid[r].length; c++)  // each row independently
+        process(grid[r][c]);
+```
+
+### Failure 2: Memory Pressure from Large Array Allocation
+
+**Mechanism:** Arrays allocate the full size upfront. A seemingly small declaration can OOM a container:
+
+| Declaration                   | Size                        | 512MB JVM limit             |
+| ----------------------------- | --------------------------- | --------------------------- |
+| `new int[1_000_000]`          | ~4 MB                       | OK                          |
+| `new int[100_000_000]`        | ~400 MB                     | OK                          |
+| `new int[1_000_000_000]`      | **~4 GB**                   | OOM crash                   |
+| `new int[100_000][100_000]`   | **~40 GB**                  | OOM on first line           |
+| `new byte[Integer.MAX_VALUE]` | **2 GB** (max array length) | Legal but OOM on allocation |
+
+**The 2D trap:** `int[100000][100000]` looks like 100k × 100k = 10 billion elements → ~40 GB. It fails at declaration, not at use.
+
+**Debugging step — heap analysis:**
+
+```java
+// BEFORE allocation, validate:
+long requiredBytes = (long) rows * cols * 4;  // 4 bytes per int
+if (requiredBytes > Runtime.getRuntime().maxMemory()) {
+    throw new IllegalArgumentException("Array too large: " + requiredBytes + " bytes");
+}
+int[][] arr = new int[rows][cols];  // now safe to proceed
+
+// In production, monitor with:
+// jcmd <pid> VM.native_memory summary
+// jmap -heap <pid>  // shows used vs max heap
+```
+
+### Failure 3: Cache-Unfriendly Array Traversal Patterns
+
+**Mechanism:** Cache lines are 64 bytes. Sequential access gives 1 miss per 16 `int` elements. Strided access can cause 1 miss per element — a **16x slowdown** disguised as algorithmic slowness:
+
+| Pattern                                | Miss Rate                                | Relative Speed  |
+| -------------------------------------- | ---------------------------------------- | --------------- |
+| `for (int i=0; i<n; i++) arr[i]`       | 6.25% (1/16)                             | **1x baseline** |
+| `for (int i=0; i<n; i+=2) arr[i]`      | 50% (1/2) — stride-2                     | ~8x slower      |
+| `for (int i=0; i<n; i+=16) arr[i]`     | ~100% — stride-16                        | ~16x slower     |
+| Column-major on `int[1000][1000]` flat | 100% — each row is a cache-line boundary | ~16x slower     |
+
+**Real production symptom:** Matrix multiply with row-major layout and column-order inner loop runs 10-20x slower than expected from Big-O. CPU profilers (async-profiler, perf) show L1/L2 miss rate spikes.
+
+**Debugging step — cache analysis:**
+
+```java
+// Symptom: code runs correctly but 10x slower than expected for size N
+// 1. Use async-profiler to sample:
+//    java -XX:+UnlockDiagnosticVMOptions \
+//    -agentpath:async-profiler.so=start,event=cache-misses,interval=1ms
+//
+// 2. Or add instrumentation:
+long start = System.nanoTime();
+for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++)
+        sum += matrix[r][c];  // row-major: cache-friendly
+long end = System.nanoTime();
+System.out.println("Row-major: " + (end - start) / 1e6 + " ms");
+
+// For column-major access: transpose first, or flatten and access with:
+// int idx = c * rows + r;   // map col-major to flat array
+```
+
+### Quick Reference: Failure Mode → Root Cause → Fix
+
+| Failure                 | Root Cause                               | Fix                                                        |
+| ----------------------- | ---------------------------------------- | ---------------------------------------------------------- |
+| AIOOBE in loop          | `i <= length` or stale index             | Always use `i < arr.length`; validate index first          |
+| OOM on array allocation | Size exceeds JVM heap                    | Check `requiredBytes > maxMemory` before allocation        |
+| Slow but correct code   | Strided access destroying cache locality | Match traversal order to array layout; transpose if needed |
+
+---
 
 🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
 
 **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+
 <details><summary>Answer</summary>
 
 Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-</details>
 
+</details>
 
 ## 📊 Part 8: Frequency & Duplicates
 
@@ -1303,13 +1485,14 @@ for (int x : arr) if (x % 2 != 0) oddLcm = lcm((int)oddLcm, x);
 ```
 
 ### 🎯 Problems
-| Problem | Pattern |
-|---------|---------|
-| LC 1 — Two Sum | HashMap complement lookup |
-| LC 242 — Valid Anagram | Frequency count |
-| LC 347 — Top K Frequent Elements | Freq + Heap |
-| LC 128 — Longest Consecutive Sequence | HashSet O(n) |
-| CF 4C — Registration System | HashMap counting |
+
+| Problem                               | Pattern                   |
+| ------------------------------------- | ------------------------- |
+| LC 1 — Two Sum                        | HashMap complement lookup |
+| LC 242 — Valid Anagram                | Frequency count           |
+| LC 347 — Top K Frequent Elements      | Freq + Heap               |
+| LC 128 — Longest Consecutive Sequence | HashSet O(n)              |
+| CF 4C — Registration System           | HashMap counting          |
 
 ### 🧠 Pattern Fingerprint — Frequency
 
@@ -1325,6 +1508,7 @@ SEE THESE WORDS → USE THIS:
 ```
 
 ### 📅 Revisit Tracker
+
 - **Day 3:** Redo LC 1 (Two Sum) + LC 242 (Anagram)
 - **Day 7:** Redo LC 128 (Consecutive — HashSet O(n))
 
@@ -1345,6 +1529,7 @@ Key: use (i + rotate) % n  to access circularly
 ```
 
 ### Print All Circular Rotations O(n²)
+
 ```java
 public void printRotations(int[] arr) {
     int n = arr.length;
@@ -1373,11 +1558,12 @@ private void reverse(int[] arr, int l, int r) {
 ```
 
 ### 🎯 Problems
-| Problem | Pattern |
-|---------|---------|
-| LC 189 — Rotate Array | Reverse trick |
-| LC 153 — Min in Rotated Sorted Array | Binary search |
-| LC 918 — Max Sum Circular Subarray | Kadane's + circular trick |
+
+| Problem                              | Pattern                   |
+| ------------------------------------ | ------------------------- |
+| LC 189 — Rotate Array                | Reverse trick             |
+| LC 153 — Min in Rotated Sorted Array | Binary search             |
+| LC 918 — Max Sum Circular Subarray   | Kadane's + circular trick |
 
 ---
 
@@ -1388,6 +1574,7 @@ private void reverse(int[] arr, int l, int r) {
 ⬅️ Return here to apply it to arrays.
 
 ### Recursive Sum
+
 ```java
 public int sum(int[] arr, int n) {
     if (n == 0) return 0;                         // base case
@@ -1397,6 +1584,7 @@ public int sum(int[] arr, int n) {
 ```
 
 ### Recursive Binary Search
+
 ```java
 public int binarySearch(int[] arr, int l, int r, int target) {
     if (l > r) return -1;
@@ -1409,6 +1597,7 @@ public int binarySearch(int[] arr, int l, int r, int target) {
 ```
 
 ### Recursive Reverse
+
 ```java
 public void reverse(int[] arr, int left, int right) {
     if (left >= right) return;
@@ -1421,14 +1610,14 @@ public void reverse(int[] arr, int left, int right) {
 
 ---
 
-
-
 🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1437,29 +1626,31 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## ⚡ Part 11: Pattern Connections Hub
 
 **Master map:** Array problem type → Pattern → DS needed → Where to learn
 
-| Problem Type | Pattern | DS Used | Study File | Example |
-|---|---|---|---|---|
-| Max/min subarray sum | **Kadane's** | Variables | [04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) | LC 53 |
-| Subarray sum = K | **Prefix Sum + HashMap** | HashMap | [04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) | LC 560 |
-| Min window subarray | **Sliding Window** | Two ptrs | [01_Sliding_Window](../04_Patterns_Templates/01_Sliding_Window.md) | LC 209, 76 |
-| Pairs with sum K | **Two Pointers** or **HashMap** | Array/Map | [07_Two_Pointers](../04_Patterns_Templates/07_Two_Pointers_Complete.md) | LC 1, 167 |
-| All subsequences | **Recursion / Backtracking** | Call stack | [03c_Recursion_Advanced](../03_Algorithms/03c_Recursion_Advanced.md) | LC 78 |
-| LIS / LCS | **DP** | 1D/2D array | [04b_DP_Fundamentals](../03_Algorithms/04b_DP_Fundamentals.md) | LC 300, 1143 |
-| Frequency / count | **HashMap** | HashMap | [01e_HashTable](01e_HashTable.md) | LC 1, 347 |
-| Find in sorted | **Binary Search** | Two ptrs | [06_Binary_Search_Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) | LC 704, 33 |
-| k-th largest | **Heap / QuickSelect** | PriorityQueue | [01f_Trees_Heaps](01f_Trees_Heaps.md) | LC 215 |
-| 3 groups (0,1,2) | **Dutch National Flag** | Two ptrs | [02a_Sorting](../03_Algorithms/02a_Sorting_Fundamentals.md) | LC 75 |
+| Problem Type         | Pattern                         | DS Used       | Study File                                                                         | Example      |
+| -------------------- | ------------------------------- | ------------- | ---------------------------------------------------------------------------------- | ------------ |
+| Max/min subarray sum | **Kadane's**                    | Variables     | [04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md)       | LC 53        |
+| Subarray sum = K     | **Prefix Sum + HashMap**        | HashMap       | [04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md)       | LC 560       |
+| Min window subarray  | **Sliding Window**              | Two ptrs      | [01_Sliding_Window](../04_Patterns_Templates/01_Sliding_Window.md)                 | LC 209, 76   |
+| Pairs with sum K     | **Two Pointers** or **HashMap** | Array/Map     | [07_Two_Pointers](../04_Patterns_Templates/07_Two_Pointers_Complete.md)            | LC 1, 167    |
+| All subsequences     | **Recursion / Backtracking**    | Call stack    | [03c_Recursion_Advanced](../03_Algorithms/03c_Recursion_Advanced.md)               | LC 78        |
+| LIS / LCS            | **DP**                          | 1D/2D array   | [04b_DP_Fundamentals](../03_Algorithms/04b_DP_Fundamentals.md)                     | LC 300, 1143 |
+| Frequency / count    | **HashMap**                     | HashMap       | [01e_HashTable](01e_HashTable.md)                                                  | LC 1, 347    |
+| Find in sorted       | **Binary Search**               | Two ptrs      | [06_Binary_Search_Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) | LC 704, 33   |
+| k-th largest         | **Heap / QuickSelect**          | PriorityQueue | [01f_Trees_Heaps](01f_Trees_Heaps.md)                                              | LC 215       |
+| 3 groups (0,1,2)     | **Dutch National Flag**         | Two ptrs      | [02a_Sorting](../03_Algorithms/02a_Sorting_Fundamentals.md)                        | LC 75        |
 
 ### 🧠 Master Keyword → Pattern Map
 
@@ -1480,21 +1671,19 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ### 🔗 Cross-References — Navigate the Ecosystem
 
-| Topic | Related Content |
-|---|---|
-| Array patterns & templates | [Array + Two Pointers](../04_Patterns_Templates/08_Array_Plus_TwoPointers.md) |
-| Array practice problems | [Problem Solving — Arrays](../05_Problem_Solving/04_Arrays.md) |
-| Sorting algorithms on arrays | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| Sliding window on arrays | [Sliding Window Mastery](../04_Patterns_Templates/01_Sliding_Window.md) |
+| Topic                          | Related Content                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| Array patterns & templates     | [Array + Two Pointers](../04_Patterns_Templates/08_Array_Plus_TwoPointers.md)   |
+| Array practice problems        | [Problem Solving — Arrays](../05_Problem_Solving/04_Arrays.md)                  |
+| Sorting algorithms on arrays   | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md)            |
+| Sliding window on arrays       | [Sliding Window Mastery](../04_Patterns_Templates/01_Sliding_Window.md)         |
 | Binary search on sorted arrays | [Binary Search Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
-| 2D arrays / Matrix | [2D Arrays & Matrix](04_2D_Arrays_Matrix.md) |
-| NumPy arrays (Python) | [NumPy & Pandas](../21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md) |
+| 2D arrays / Matrix             | [2D Arrays & Matrix](04_2D_Arrays_Matrix.md)                                    |
+| NumPy arrays (Python)          | [NumPy & Pandas](../21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md)          |
 
 ---
 
 ---
-
-
 
 ## ✅ You Know Arrays — Now Practice! (JIT Study Path)
 
@@ -1502,35 +1691,243 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 **Step 1 — Basic Problems (Warm Up):**
 
-| Problem | LC # | Pattern | What to Learn |
-|---|---|---|---|
-| Two Sum | LC 1 | HashMap lookup | O(n²) → O(n) with complement map |
-| Best Time to Buy/Sell Stock | LC 121 | Min-so-far scan | Single pass tracking |
-| Contains Duplicate | LC 217 | HashSet | O(n) existence check |
-| Missing Number | LC 268 | Math / XOR | n*(n+1)/2 or XOR trick |
-| Maximum Subarray | LC 53 | Kadane's algo | dp[i] = max(num, dp[i-1]+num) |
-
+| Problem                     | LC #   | Pattern         | What to Learn                    |
+| --------------------------- | ------ | --------------- | -------------------------------- |
+| Two Sum                     | LC 1   | HashMap lookup  | O(n²) → O(n) with complement map |
+| Best Time to Buy/Sell Stock | LC 121 | Min-so-far scan | Single pass tracking             |
+| Contains Duplicate          | LC 217 | HashSet         | O(n) existence check             |
+| Missing Number              | LC 268 | Math / XOR      | n\*(n+1)/2 or XOR trick          |
+| Maximum Subarray            | LC 53  | Kadane's algo   | dp[i] = max(num, dp[i-1]+num)    |
 
 **Step 2 — Hit a wall? Learn these patterns:**
+
 - Contiguous subarray → **[Sliding Window Template](../04_Patterns_Templates/01_Sliding_Window.md)**
 - In-place operations → **[Two Pointers Template](../04_Patterns_Templates/07_Two_Pointers_Complete.md)**
-- "Sum equals K"  → **[Prefix Sum Guide](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)**
+- "Sum equals K" → **[Prefix Sum Guide](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)**
 
 **Step 3 — Apply patterns on harder problems:**
 👉 **[Go to Arrays Problem Solving File →](../05_Problem_Solving/04_Arrays.md)**
 
 **Step 4 — Competitive Practice:**
 
-| CF Problem | Topic | Difficulty |
-|---|---|---|
-| [CF 1A — Theatre Square](https://codeforces.com/problemset/problem/1/A) | Math on arrays | ⭐ Easy |
-| [CF 158B — Taxi](https://codeforces.com/problemset/problem/158/B) | Array grouping | ⭐ Easy |
+| CF Problem                                                                        | Topic              | Difficulty  |
+| --------------------------------------------------------------------------------- | ------------------ | ----------- |
+| [CF 1A — Theatre Square](https://codeforces.com/problemset/problem/1/A)           | Math on arrays     | ⭐ Easy     |
+| [CF 158B — Taxi](https://codeforces.com/problemset/problem/158/B)                 | Array grouping     | ⭐ Easy     |
 | [CF 1515C — Phoenix and Towers](https://codeforces.com/problemset/problem/1515/C) | Array construction | ⭐⭐ Medium |
 
-
 🌍 **Real-World Connections:**
+
 - **Netflix** stores your watch history as an array, uses sliding window to compute "trending in last 7 days"
 - **Stock price APIs** return arrays; max profit = max(price[i] - min(price[0..i-1]))
 - **Sensor data** (IoT, medical devices) uses circular arrays / ring buffers
 - **Git diff** (add/remove lines) uses LCS algorithm on arrays of lines
 
+---
+
+# 🎓 University-Level Addendum — Arrays as Formal Theory
+
+> **Purpose:** This addendum elevates the chapter to MIT/KTH/ETH rigor. It assumes you have read the body above; the content here formalizes the intuition behind array algorithms with proofs, constraint enumeration, and explicit failure modes. Cross-references to `01a_Memory_Foundations.md` for the underlying memory layout theory.
+
+## Array Constraint Signals — Read These First
+
+Before choosing an array algorithm, read these constraint signals from the problem statement. They determine whether the array is the right DS and which algorithm family applies.
+
+| Signal | What It Tells You | Example |
+|---|---|---|
+| **`n ≤ 10³`** | Brute force O(n²) is fine; choose simplest algorithm | Sorting + nested loop |
+| **`n ≤ 10⁵`** | O(n log n) needed; merge sort, heap, balanced BST | Kadane's, sliding window |
+| **`n ≤ 10⁶`** | O(n) required; single pass, two pointers, prefix sums | Sub-array sum |
+| **`n ≥ 10⁷`** | Memory becomes the bottleneck; O(1) extra space mandatory | Streaming problems |
+| **Random access required** | Array beats linked list (O(1) vs O(n)) | Direct index lookup |
+| **Insert/delete in middle** | Linked list may beat array (O(1) vs O(n)) | Frequent edits |
+| **Memory budget < 4 × n × sizeof(T)** | Compact array / bitset | Boolean grid |
+| **Array sorted** | Binary search O(log n), two pointers O(n) | Search in sorted |
+| **Array unsorted** | Hash-based O(n) or sort-then-search O(n log n) | Two-sum |
+| **2D array** | Cache-friendly traversal order matters (row-major) | Matrix problems |
+
+These are the same constraint signals at the heart of `02_PROBLEM_SETS.md` Model 1. Master them once and the algorithm choice becomes mechanical.
+
+### Worked Example — Picking Algorithm from Constraints
+
+**Problem:** Find the maximum sum of any contiguous subarray.
+
+- n = 10⁵, time budget = 1 second, memory budget = O(1)
+- **Reading constraints:** n ≤ 10⁵ → O(n log n) or O(n) needed; O(n²) (brute force) is too slow.
+- **Brute force:** Try all O(n²) subarrays, sum each → O(n³) → ~10¹⁵ ops → 1,000 seconds. Fails.
+- **Optimized:** Kadane's algorithm → O(n) single pass → ~10⁵ ops → 0.0001 seconds. Passes.
+- **DS choice:** Contiguous array (the input itself); no auxiliary DS needed. ✅
+
+## When Arrays Break — Formal Failure Modes
+
+An array's invariants (contiguity, random access, bounded size) can be violated. The following are the canonical "when arrays break" scenarios that every algorithm must defend against.
+
+### Break 1 — Out-of-Bounds Access
+
+**Condition:** Index `i` is negative, ≥ length, or computed from another index that overflowed.
+
+**What breaks:** `ArrayIndexOutOfBoundsException` in Java; undefined behavior in C/C++; silent corruption in Fortran if the array is on the stack and the out-of-bounds location is reused.
+
+**Invariant violated:** `0 ≤ i < arr.length` for every access. Algorithms that compute indices (e.g., `i = left + (right - left) / 2` for binary search) must prove the index stays in bounds for the entire loop.
+
+**Defense:** Test boundary cases (`i = 0`, `i = length - 1`, `i = length`) explicitly. Use checked arithmetic for index computation.
+
+### Break 2 — Resize Cost Amortization Failure
+
+**Condition:** An algorithm repeatedly appends to an array that needs to grow. If growth is not geometric (e.g., `+1` per resize), the total cost is O(n²), not O(n).
+
+**What breaks:** A `n = 10⁶` append becomes 10¹² ops → 1,000 seconds instead of 1 second. The `ArrayList` in Java uses 1.5× growth; `Vector` (legacy) uses 2×; both are correct, but a custom implementation that grows by `+1` is broken.
+
+**Invariant violated:** Amortized O(1) per append requires geometric growth. The proof (geometric series, sum ≤ 2n) is in `01g_DS_Internals.md` Challenge 1.
+
+**Defense:** Always check the growth factor. Linear growth is a bug.
+
+### Break 3 — Cache-Line Trashing on Column-Major Traversal
+
+**Condition:** 2D array iterated in column-major order when stored in row-major memory (the C/Java/Fortran default).
+
+**What breaks:** Every access misses the cache line. For an N×M matrix, total cache misses are M×N instead of N + M/16. See `01a_Memory_Foundations.md` Challenge 3 for the 1,000× slowdown demonstration.
+
+**Invariant violated:** Spatial locality: consecutive memory accesses should be within the same cache line (64 bytes = 16 `int`s). Column-major access in row-major memory breaks this.
+
+**Defense:** Use row-major order in row-major memory. For column-major data (e.g., from a Fortran library), transpose first or use blocked algorithms.
+
+### Break 4 — Memory Fragmentation with Variable-Length Rows
+
+**Condition:** Java `int[][]` is an array of references to inner arrays. Each inner array is a separate heap allocation. If inner rows are allocated with different sizes (jagged array), fragmentation occurs.
+
+**What breaks:** Outer array fits in cache; inner arrays scatter across the heap. Iteration in row-major order pays one cache miss per row on average instead of amortizing across the row.
+
+**Invariant violated:** A 2D array stored row-major must have contiguous rows. Ragged arrays break this invariant.
+
+**Defense:** Use a 1D array with manual indexing (`arr[row * cols + col]`) when memory locality matters.
+
+### Break 5 — Integer Overflow on Size Computation
+
+**Condition:** Computing `n * sizeof(T)` or `2 * size` where the result exceeds `Integer.MAX_VALUE`.
+
+**What breaks:** Negative array length → `NegativeArraySizeException`; wrong size allocated → OOB write on first element.
+
+**Invariant violated:** Array size must be a non-negative integer. The OS allocates memory in pages, so the size must also be representable as `size_t` (typically 64-bit).
+
+**Defense:** Use `long` for size arithmetic. Allocate via `Math.toIntExact(longValue)` to detect overflow explicitly.
+
+### Break 6 — Aliasing in In-Place Algorithms
+
+**Condition:** In-place reversal, rotation, or partition algorithms that use two pointers moving toward each other. If the two pointers reference overlapping memory (e.g., the same subarray), the swap corrupts data.
+
+**What breaks:** In-place reversal of a palindrome (`[1, 2, 1]` → swap(0, 2) gives `[1, 2, 1]`, then swap(1, 1) is a no-op — works). But for an even-length palindrome (`[1, 2, 2, 1]` → swap(0, 3) gives `[1, 2, 2, 1]`, then swap(1, 2) gives `[1, 2, 2, 1]`, then loop terminates — works). The bug surfaces with `arr == reverseInPlace(arr)` when `arr.length == 1`.
+
+**Invariant violated:** `i < j` for the entire loop. When `i == j`, the algorithm must terminate.
+
+**Defense:** Use `while (i < j)` (strict), not `while (i <= j)`.
+
+## Brute-Force to Optimal Ladder — Array Problems
+
+The canonical ladder for array problems, with explicit cost progression:
+
+| Tier | Approach | Cost | When Acceptable |
+|---|---|---|---|
+| **L0 — All subarrays** | Enumerate every O(n²) subarray, check each | O(n³) total | n ≤ 500 |
+| **L1 — All subarrays, summed incrementally** | Enumerate subarrays, sum on the fly | O(n²) | n ≤ 5,000 |
+| **L2 — Prefix sums** | Precompute prefix array, answer each query in O(1) | O(n) preprocess + O(1) query | n ≤ 10⁵ |
+| **L3 — Single pass** | Maintain running state (Kadane's, two pointers) | O(n) | n ≤ 10⁶ |
+| **L4 — Streaming** | O(1) memory, O(n) time, single pass with limited lookback | O(n) | n ≥ 10⁷ |
+
+The ladder is the array-specific counterpart to the memory-cost ladder in `01a_Memory_Foundations.md`. Pick the lowest tier that meets the time budget.
+
+### Worked Example — Maximum Subarray Sum
+
+**Input:** `arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]`, n = 9.
+
+- **L0 — All subarrays:** O(n³) → enumerate all 36 subarrays, sum each. Result: 6 (`[4, -1, 2, 1]`).
+- **L1 — Prefix sums:** O(n²) → compute prefix sums, enumerate subarrays. Result: 6.
+- **L2 — Prefix + max query:** O(n) preprocess → prefix[i] - prefix[j] = subarray sum. Result: 6.
+- **L3 — Kadane's:** O(n) single pass → track running max, reset on negative. Result: 6.
+- **L4 — Streaming:** Same as L3, but with bounded lookback window.
+
+For n = 10⁵, only L2, L3, L4 complete in time. L3 (Kadane's) is the standard answer; L4 is the engineering choice if memory is bounded.
+
+## Edge Cases — Always Check These
+
+Every array algorithm must enumerate these in its correctness argument. Skipping one is a common source of bugs.
+
+| # | Edge Case | What Can Break |
+|---|---|---|
+| 1 | **Empty array** (`n = 0`) | Off-by-one in size; loop never enters; max/min returns sentinel (Java: `Optional.empty()`) |
+| 2 | **Single element** (`n = 1`) | Trivial case hides init bugs; max = min = arr[0] |
+| 3 | **All same elements** (`arr = [5, 5, 5, 5]`) | Binary search assumes strict ordering; returns wrong index |
+| 4 | **Sorted ascending** | BST degeneracy if used; binary search works |
+| 5 | **Sorted descending** | Mirror of #4 |
+| 6 | **Negative numbers only** | Max-product algorithms break if they assume ≥ 0 |
+| 7 | **Mixed positive/negative** | Kadane's invariant: reset running sum when negative |
+| 8 | **Integer overflow in sum** | `n * MAX_VALUE` exceeds `int`; use `long` |
+| 9 | **Duplicate max/min values** | First/last occurrence semantics differ (stable vs unstable) |
+| 10 | **NaN in floating-point arrays** | All comparisons with NaN return false; max/min returns first non-NaN |
+
+## Formal Complexity Proofs — Array Operations
+
+These derivations make the Big-O statements throughout the chapter precise.
+
+### Random Access
+
+For `arr[i]`:
+
+```
+T_random_access(arr, i) = T_base + sizeof(T) * i / cache_line_size * T_RAM
+                         + sizeof(T) * (i mod 16) * T_L1
+                         ≈ T_L1 for i in same cache line as previous access
+                         ≈ T_RAM for cold random access (uniform i)
+```
+
+**Average case (uniform random i over N elements):**
+
+```
+E[T] = (N / 16) * T_RAM + (1 - N/16) * T_L1
+     ≈ T_L1 + (N / 16) * (T_RAM - T_L1)
+```
+
+For N = 10⁶ with T_L1 = 1 ns and T_RAM = 100 ns, E[T] ≈ 1 + 62,500 × 99 ≈ 6.2 μs per access.
+
+### Sequential Traversal
+
+For `arr[0..n-1]` in order:
+
+```
+T_sequential(n) = n * T_L1     (after first cold miss brings cache line)
+                ≈ n * 1 ns      = 1 ms for n = 10⁶
+```
+
+vs random access: 6.2 μs × 10⁶ = 6.2 seconds. Sequential is 6,000× faster — this is why `for (i = 0; i < n; i++) sum += arr[i]` outperforms `while (true) { int i = rand() % n; sum += arr[i]; }` by orders of magnitude.
+
+### Prefix Sum Precompute
+
+```
+T_prefix_precompute(n) = O(n) additions
+T_prefix_query(l, r)   = O(1) — one subtraction
+T_total(q queries)     = O(n + q)
+```
+
+This is the L2 tier in the brute-force ladder; the win is amortizing precompute over many queries.
+
+### Resize Cost (Geometric Growth)
+
+For `ArrayList`-style 1.5× growth:
+
+```
+T_resize_amortized(n) = O(1) per append
+                       because sum(1 + 1/1.5 + 1/1.5² + ... + 1/1.5^k) = 1/(1 - 1/1.5) = 3
+```
+
+The geometric series proof: each element is copied at most `log_{1.5}(n)` times, so total copies ≤ `n * log_{1.5}(n)` / `n` = `log_{1.5}(n)` ≈ 32 for n = 10⁶. Amortized O(1) per append.
+
+For linear growth (`+1` per resize), the same proof gives `O(n)` per append — quadratic total. **Always use geometric growth.**
+
+## Cross-References
+
+- **`01a_Memory_Foundations.md`** — memory layout invariants, cache-line analysis, and the brute-force memory cost ladder.
+- **`01c_LinkedList.md`** — the alternative to arrays when insert/delete at arbitrary position dominates; pointer-chasing cost analysis.
+- **`01g_DS_Internals.md`** — ArrayList resize proof (geometric series), escape analysis for primitive arrays.
+- **`02_PROBLEM_SETS.md`** — exam-style problems on arrays (Kadane's invariant, address-formula derivation, rotation proof).
+- **`A2_DS_Complexity_FirstPrinciples.md`** — formal Big-O derivations for all array operations.
+- **`A3_DS_Lower_Bounds.md`** — proves Ω(n log n) lower bound on comparison-based array sorting.

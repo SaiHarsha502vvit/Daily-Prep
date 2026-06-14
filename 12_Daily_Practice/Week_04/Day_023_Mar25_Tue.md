@@ -1,6 +1,7 @@
 ﻿> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
 
 # DAY 023 — Tuesday, March 25, 2026
+
 ## Graph DFS + Trie Applications + SQL EXPLAIN & Query Optimization
 
 > **Theme**: Depth-first graph traversal + Trie prefix tricks + SQL performance tuning
@@ -9,14 +10,14 @@
 
 ## 📅 SCHEDULE
 
-| Time Block | Duration | Topic |
-|------------|----------|-------|
-| 0:00–0:30 | 30 min | DS: Trie — Autocomplete + Word Search |
-| 0:30–1:00 | 30 min | ALGO: Graph DFS — Cycle Detection |
-| 1:00–1:20 | 20 min | COMBO: LC 211 + LC 547 |
-| 1:20–1:40 | 20 min | REAL-WORLD: Spell checker = Trie + Edit Distance |
-| 1:40–2:20 | 40 min | SQL: EXPLAIN Plans + Query Optimization |
-| 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
+| Time Block | Duration | Topic                                            |
+| ---------- | -------- | ------------------------------------------------ |
+| 0:00–0:30  | 30 min   | DS: Trie — Autocomplete + Word Search            |
+| 0:30–1:00  | 30 min   | ALGO: Graph DFS — Cycle Detection                |
+| 1:00–1:20  | 20 min   | COMBO: LC 211 + LC 547                           |
+| 1:20–1:40  | 20 min   | REAL-WORLD: Spell checker = Trie + Edit Distance |
+| 1:40–2:20  | 40 min   | SQL: EXPLAIN Plans + Query Optimization          |
+| 2:20–3:00  | 40 min   | PROBLEMS: Q1 + Q2                                |
 
 ---
 
@@ -28,10 +29,9 @@
 > | **ALGO: Graph DFS + Cycle Detection** | [Graph Fundamentals](../../03_Algorithms/05c_Graphs_Fundamentals.md) |
 > | **SQL: EXPLAIN Plans & Query Optimization** | [SQL: Query Optimization](../../08_SQL/14_Query_Optimization.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
 
 ## 🧱 DS BLOCK: Trie — Autocomplete & Word Search
 
@@ -43,7 +43,7 @@ List<String> autocomplete(TrieNode root, String prefix) {
     List<String> results = new ArrayList<>();
     TrieNode node = findNode(root, prefix);
     if (node == null) return results;
-    
+
     // DFS from this node to find all complete words
     dfs(node, new StringBuilder(prefix), results);
     return results;
@@ -51,7 +51,7 @@ List<String> autocomplete(TrieNode root, String prefix) {
 
 void dfs(TrieNode node, StringBuilder path, List<String> results) {
     if (node.isEnd) results.add(path.toString());
-    
+
     for (int i = 0; i < 26; i++) {
         if (node.children[i] != null) {
             path.append((char)('a' + i));
@@ -68,12 +68,12 @@ void dfs(TrieNode node, StringBuilder path, List<String> results) {
 // Search with '.' as wildcard matching any letter
 boolean searchWithWildcard(TrieNode node, String word, int index) {
     if (index == word.length()) return node.isEnd;
-    
+
     char c = word.charAt(index);
     if (c == '.') {
         // Try ALL children
         for (int i = 0; i < 26; i++) {
-            if (node.children[i] != null 
+            if (node.children[i] != null
                 && searchWithWildcard(node.children[i], word, index + 1)) {
                 return true;
             }
@@ -98,7 +98,7 @@ boolean searchWithWildcard(TrieNode node, String word, int index) {
 void dfs(List<List<Integer>> graph, int node, boolean[] visited) {
     visited[node] = true;
     // Process node
-    
+
     for (int neighbor : graph.get(node)) {
         if (!visited[neighbor]) {
             dfs(graph, neighbor, visited);
@@ -111,13 +111,13 @@ void dfsIterative(List<List<Integer>> graph, int start) {
     boolean[] visited = new boolean[graph.size()];
     Stack<Integer> stack = new Stack<>();
     stack.push(start);
-    
+
     while (!stack.isEmpty()) {
         int node = stack.pop();
         if (visited[node]) continue;
         visited[node] = true;
         // Process node
-        
+
         for (int neighbor : graph.get(node)) {
             if (!visited[neighbor]) {
                 stack.push(neighbor);
@@ -135,7 +135,7 @@ void dfsIterative(List<List<Integer>> graph, int start) {
 boolean hasCycle(List<List<Integer>> graph) {
     int n = graph.size();
     int[] color = new int[n];  // all WHITE initially
-    
+
     for (int i = 0; i < n; i++) {
         if (color[i] == 0 && dfsDetectCycle(graph, i, color)) {
             return true;
@@ -146,14 +146,14 @@ boolean hasCycle(List<List<Integer>> graph) {
 
 boolean dfsDetectCycle(List<List<Integer>> graph, int node, int[] color) {
     color[node] = 1;  // GRAY: currently exploring
-    
+
     for (int neighbor : graph.get(node)) {
         if (color[neighbor] == 1) return true;   // Back edge → CYCLE!
         if (color[neighbor] == 0 && dfsDetectCycle(graph, neighbor, color)) {
             return true;
         }
     }
-    
+
     color[node] = 2;  // BLACK: fully explored
     return false;
 }
@@ -166,9 +166,9 @@ boolean dfsDetectCycle(List<List<Integer>> graph, int node, int[] color) {
 ### Reading EXPLAIN Output
 
 ```sql
-EXPLAIN SELECT e.name, d.dept_name 
-FROM employees e 
-JOIN departments d ON e.dept_id = d.id 
+EXPLAIN SELECT e.name, d.dept_name
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
 WHERE e.salary > 50000;
 
 -- Key columns in EXPLAIN output:
@@ -213,16 +213,15 @@ Design a data structure that supports:
 
 addWord("bad"), addWord("dad"), addWord("mad")
 search("pad") → false
-search("bad") → true  
+search("bad") → true
 search(".ad") → true
 search("b..") → true
 ```
 
-
 ### Q2: Number of Provinces (LC 547) — Medium
 
 ```
-n cities, some connected directly. If city a connects to b, 
+n cities, some connected directly. If city a connects to b,
 and b connects to c, then a-b-c form one province.
 
 Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]

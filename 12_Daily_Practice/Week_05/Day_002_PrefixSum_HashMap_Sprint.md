@@ -1,12 +1,14 @@
 # Day 02 - Prefix Sum and HashMap (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 325 - Maximum Size Subarray Sum Equals k
 2. LeetCode Medium: 560 - Subarray Sum Equals K
 3. Codeforces: 313B - Ilya and Queries
 4. Codeforces: 1398C - Good Subarrays
 
 ## Problem Links
+
 - LC 325 (Premium): Locked on LeetCode (no public official statement page)
 - LC 560: https://leetcode.com/problems/subarray-sum-equals-k/
 - CF 313B: https://codeforces.com/problemset/problem/313/B
@@ -15,14 +17,17 @@
 ## Problem 1 - LC 325 (Premium): Maximum Size Subarray Sum Equals k
 
 ### Problem Restatement
+
 Given integer array `nums` and integer `k`, return the maximum length of a contiguous subarray with sum exactly `k`.
 
 ### Constraints
+
 - `1 <= n <= 200000`
 - `-10000 <= nums[i] <= 10000`
 - `-100000 <= k <= 100000`
 
 ### Sample
+
 Input: `nums = [1,-1,5,-2,3], k = 3`  
 Output: `4`
 
@@ -43,6 +48,7 @@ static int maxLenBrute(int[] nums, int k) {
 ```
 
 ### Approach B - Better (Prefix + Sorting Pairs) (O(n log n), O(n))
+
 Store `(prefix, index)` and try earliest occurrence via sorting/grouping.
 
 ```java
@@ -63,6 +69,7 @@ static int maxLenBetter(int[] nums, int k) {
 ```
 
 ### Approach C - Optimal (Prefix + First Occurrence HashMap) (O(n), O(n))
+
 Store first index for each prefix sum only once.
 
 ```java
@@ -83,6 +90,7 @@ static int maxLenOptimal(int[] nums, int k) {
 ```
 
 ### Reasoning
+
 Using first occurrence maximizes length because earlier start index gives longer segment.
 
 ---
@@ -90,13 +98,16 @@ Using first occurrence maximizes length because earlier start index gives longer
 ## Problem 2 - LC 560: Subarray Sum Equals K
 
 ### Problem Restatement
+
 Count subarrays with sum equal to `k`.
 
 ### Constraints
+
 - `1 <= n <= 20000`
 - `-1000 <= nums[i] <= 1000`
 
 ### Sample
+
 Input: `nums = [1,1,1], k = 2`  
 Output: `2`
 
@@ -135,6 +146,7 @@ static int countSubarraysBetter(int[] nums, int k) {
 ```
 
 ### Approach C - Optimal (Streaming Prefix + HashMap) (O(n), O(n))
+
 One pass, no explicit prefix array.
 
 ```java
@@ -153,6 +165,7 @@ static int countSubarraysOptimal(int[] nums, int k) {
 ```
 
 ### Interview Notes
+
 - `freq[0] = 1` is mandatory to count subarrays starting at index `0`.
 - Negative numbers break sliding window; prefix + map is the robust pattern.
 
@@ -161,16 +174,20 @@ static int countSubarraysOptimal(int[] nums, int k) {
 ## Problem 3 - CF 313B: Ilya and Queries
 
 ### Problem Restatement
+
 Given string `s` and `q` queries `(l, r)` (1-indexed), answer how many positions `i` in `[l, r-1]` satisfy `s[i] == s[i+1]`.
 
 ### Constraints
+
 - `|s|, q <= 200000`
 
 ### Sample
+
 Input: `s = "..##.."`, query `(1,6)`  
 Output: `3`
 
 ### Approach A - Brute Force (O(total range), O(1))
+
 For each query, scan from `l` to `r-1`.
 
 ```java
@@ -184,6 +201,7 @@ static int queryBrute(String s, int l, int r) {
 ```
 
 ### Approach B - Better (Prefix Counts) (O(n + q), O(n))
+
 `pref[i] = equal-adjacent count up to i`.
 
 ```java
@@ -202,9 +220,11 @@ static int queryBetter(int[] pref, int l, int r) {
 ```
 
 ### Approach C - Optimal (Same Formula + Fast IO) (O(n + q), O(n))
+
 Asymptotics are already optimal; practical speed comes from buffered input/output.
 
 ### Dry Run
+
 For `s="aabcc"`: adjacency marker is `[1,0,0,1]`, prefix makes each query O(1).
 
 ---
@@ -212,16 +232,20 @@ For `s="aabcc"`: adjacency marker is `[1,0,0,1]`, prefix makes each query O(1).
 ## Problem 4 - CF 1398C: Good Subarrays
 
 ### Problem Restatement
+
 Given digit string `s`, count subarrays where sum of digits equals subarray length.
 
 ### Constraints
+
 - Sum of lengths over tests up to around `2e5`
 
 ### Sample
+
 Input: `s = "1203"`  
 Output: `4`
 
 ### Core Transformation
+
 Let `b[i] = digit[i] - 1`. Then we need subarrays with sum `0` in `b`.
 
 ### Approach A - Brute Force (O(n^2), O(1))
@@ -242,6 +266,7 @@ static long goodSubarraysBrute(String s) {
 ```
 
 ### Approach B - Better (Prefix + Sort Equal Values) (O(n log n), O(n))
+
 Build transformed prefix array, sort, count equal groups.
 
 ```java
@@ -282,5 +307,6 @@ static long goodSubarraysOptimal(String s) {
 ```
 
 ### Interview Notes
+
 - This is a textbook algebraic reduction problem.
 - Counting equal prefix values is the key invariant.

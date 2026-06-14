@@ -9,6 +9,7 @@
 ---
 
 ## Table of Contents
+
 1. [The System Design Framework](#1-the-system-design-framework)
 2. [Back-of-Envelope Estimation](#2-back-of-envelope-estimation)
 3. [Building Blocks — The Components](#3-building-blocks)
@@ -64,8 +65,6 @@ HOW   → How do components communicate? (Sync/async, protocols)
 ```
 
 ---
-
-
 
 ## 2. Back-of-Envelope Estimation
 
@@ -265,9 +264,6 @@ KAFKA vs RABBITMQ:
 
 ---
 
-
-
-
 ## 4. Core Design Patterns
 
 ### Rate Limiter
@@ -352,8 +348,6 @@ CROSS-SHARD QUERIES:
 ```
 
 ---
-
-
 
 ## 5. Database Choices
 
@@ -527,8 +521,6 @@ HYBRID (Best practice):
 
 ---
 
-
-
 ## 7. Non-Functional Requirements
 
 ### Reliability Patterns
@@ -566,7 +558,7 @@ PATTERN: SAGA FOR DISTRIBUTED TRANSACTIONS
   If step 3 fails:
   → Compensating transaction: Refund payment (undo step 2)
   → Mark order as failed (undo step 1)
-  
+
   "I'd use a choreography saga with Kafka events for loose coupling,
    or orchestration saga for complex workflows with many steps."
 ```
@@ -596,36 +588,37 @@ THE THREE PILLARS:
 
 ---
 
-
-
 🔬 **Section Challenge — 7. Non-Functional Requirements**
 
 **Challenge 1 (NFR Reasoning):** A design prompt says, "Build a notification system for 10M users." Which non-functional requirements must you clarify before choosing the architecture?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Clarify latency, throughput, fan-out size, delivery guarantee, durability, ordering, availability, retry policy, notification channels, abuse limits, observability, and cost ceiling.
 
 Those constraints decide the design. Low-latency chat needs push and presence. Marketing notifications can use queues and batch delivery. Financial alerts may need durable logs, idempotency, audit trails, and stronger retry semantics.
+
 </details>
 
 **Challenge 2 (Trade-off):** Users receive a real notification only once every few hours. Should you default to WebSockets or polling?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Do not default to WebSockets just because they feel "real time." Idle WebSocket connections pin server and OS resources for every connected user. Polling or long polling can be cheaper when events are rare because the server releases connection memory between checks.
 
 Choose WebSockets for high-frequency, bidirectional exchange such as multiplayer, live trading, or collaborative editing. For rare notifications, start with polling, long polling, SSE, or push infrastructure depending on latency and platform constraints.
-</details>
 
+</details>
 
 ## Cross-References
 
-| Topic | Deep Dive |
-|-------|-----------|
-| System Design Fundamentals | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md) |
-| Real-World DSA Problems | [10_Enterprise_Systems/03-06](../10_Enterprise_Systems/03_RealWorld_Problems_DSA.md) |
-| SQL Performance at Scale | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md) |
-| Data Structures for Systems | [02_Data_Structures/01](../02_Data_Structures/01_DataStructures_Complete.md) |
-| Constraint Analysis | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md) |
+| Topic                       | Deep Dive                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| System Design Fundamentals  | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)               |
+| Real-World DSA Problems     | [10_Enterprise_Systems/03-06](../10_Enterprise_Systems/03_RealWorld_Problems_DSA.md) |
+| SQL Performance at Scale    | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md)    |
+| Data Structures for Systems | [02_Data_Structures/01](../02_Data_Structures/01_DataStructures_Complete.md)         |
+| Constraint Analysis         | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md)                  |
 
 ---
 

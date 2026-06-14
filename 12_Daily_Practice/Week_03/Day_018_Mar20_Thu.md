@@ -26,15 +26,14 @@
 > | **ALGO: Backtracking Framework** | [Recursion Advanced + Backtracking](../../03_Algorithms/03c_Recursion_Advanced.md) |
 > | **SQL: HAVING + Complex JOINs + Self-JOINs** | [SQL: Aggregations & GROUP BY](../../08_SQL/06_Aggregations_GroupBy.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## 1. RECURSION PATTERNS DEEP DIVE (30 min)
 
 ### WHY?
+
 Recursion is the engine behind backtracking, divide-and-conquer, tree traversals, and dynamic programming. Mastering recursion patterns is mastering 40%+ of interview questions.
 
 ### The Three Recursion Patterns
@@ -43,13 +42,13 @@ Recursion is the engine behind backtracking, divide-and-conquer, tree traversals
 PATTERN 1: LINEAR RECURSION
   f(n) calls f(n-1) once
   Example: factorial, fibonacci, linked list traversal
-  
+
   factorial(5) → 5 * factorial(4) → 4 * factorial(3) → ...
 
-PATTERN 2: TREE RECURSION  
+PATTERN 2: TREE RECURSION
   f(n) calls f() multiple times
   Example: fibonacci (naive), generate parentheses, subsets
-  
+
   fib(4) → fib(3) + fib(2)
             ↙        ↘
        fib(2)+fib(1)  fib(1)+fib(0)
@@ -60,11 +59,10 @@ PATTERN 3: ACCUMULATOR RECURSION (Tail Recursion)
 
   // NOT tail-recursive
   int sum(int n) { return n == 0 ? 0 : n + sum(n-1); }
-  
+
   // Tail-recursive (JVM doesn't optimize, but concept matters)
   int sum(int n, int acc) { return n == 0 ? acc : sum(n-1, acc+n); }
 ```
-
 
 ### How to Think About Recursion
 
@@ -81,7 +79,6 @@ Example: Max depth of binary tree
   3. Smaller: go to left child, go to right child
   4. Combine: 1 + max(left, right)
 ```
-
 
 ### Call Stack Visualization
 
@@ -104,33 +101,33 @@ maxDepth([3])
 return 1 + max(1,2) = 3
 ```
 
-
 ---
 
 ## 2. ALGO DEEP DIVE: Backtracking Framework (30 min)
 
 ### WHY?
+
 Backtracking = recursion + "undo choices." It generates all valid combinations/permutations/subsets. Many interview problems are backtracking in disguise.
 
 ### 📐 The Universal Backtracking Template
 
 ```java
-void backtrack(List<List<Integer>> result, List<Integer> current, 
+void backtrack(List<List<Integer>> result, List<Integer> current,
                int[] input, int start) {
     // 1. Decision: Add current state to result (if valid)
     if (isGoal(current)) {
         result.add(new ArrayList<>(current));  // COPY!
         return; // or don't return if collecting all
     }
-    
+
     // 2. Explore: Try each choice
     for (int i = start; i < input.length; i++) {
         // 3. Choose
         current.add(input[i]);
-        
+
         // 4. Recurse (make problem smaller)
         backtrack(result, current, input, i + 1);
-        
+
         // 5. UN-choose (backtrack!)
         current.remove(current.size() - 1);
     }
@@ -157,7 +154,6 @@ At each node:
   → Try adding each remaining element
   → Undo (backtrack) after exploring
 ```
-
 
 ### Backtracking Decision Tree — Permutations
 
@@ -195,7 +191,7 @@ WHERE e.salary > m.salary;
 ```
 SELF-JOIN MENTAL MODEL:
   Imagine two COPIES of the same table side by side.
-  
+
   employees e:              employees m:
   ┌────┬───────┬────────┐   ┌────┬───────┬────────┐
   │ id │ name  │ mgr_id │   │ id │ name  │ salary │
@@ -205,7 +201,6 @@ SELF-JOIN MENTAL MODEL:
   │ 3  │ Carol │   1    │──→│ 1  │ Alice │  90k   │  (Carol's manager)
   └────┴───────┴────────┘   └────┴───────┴────────┘
 ```
-
 
 ### HAVING vs WHERE
 
@@ -226,7 +221,6 @@ EXECUTION ORDER:
                       ↑                  ↑
               rows are grouped     groups are filtered
 ```
-
 
 ### Multi-Table JOINs
 
@@ -274,6 +268,7 @@ HAVING COUNT(DISTINCT MONTH(o.order_date)) = 12;
 **Link:** https://leetcode.com/problems/subsets/
 
 ### Problem
+
 Given an integer array of unique elements, return all possible subsets (power set).
 
 ### Solution
@@ -285,11 +280,11 @@ class Solution {
         backtrack(result, new ArrayList<>(), nums, 0);
         return result;
     }
-    
+
     private void backtrack(List<List<Integer>> result, List<Integer> current,
                            int[] nums, int start) {
         result.add(new ArrayList<>(current));  // Add every state!
-        
+
         for (int i = start; i < nums.length; i++) {
             current.add(nums[i]);                    // Choose
             backtrack(result, current, nums, i + 1); // Explore
@@ -313,7 +308,6 @@ TRACE for [1,2,3]:
     backtrack([3], 3) → add [3], return
 ```
 
-
 ---
 
 ## 5. PROBLEM 2: LC 46 — Permutations
@@ -330,17 +324,17 @@ class Solution {
         backtrack(result, new ArrayList<>(), nums, used);
         return result;
     }
-    
+
     private void backtrack(List<List<Integer>> result, List<Integer> current,
                            int[] nums, boolean[] used) {
         if (current.size() == nums.length) {
             result.add(new ArrayList<>(current));
             return;
         }
-        
+
         for (int i = 0; i < nums.length; i++) {
             if (used[i]) continue;  // Skip already-used elements
-            
+
             used[i] = true;
             current.add(nums[i]);
             backtrack(result, current, nums, used);
@@ -371,7 +365,6 @@ BACKTRACKING IN REAL LIFE:
   4. Route planning   — try paths, backtrack on dead end
   5. Compiler parsing — try grammar rules, backtrack on mismatch
 ```
-
 
 ---
 

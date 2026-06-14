@@ -17,20 +17,20 @@ Deep dive into the Java Virtual Machine and concurrent programming. Covers JVM a
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | JVM architecture: class file structure, class loaders (bootstrap, app, custom) |
-| 2 | Runtime data areas: heap, stack (frames, native stacks), metaspace, PC registers |
-| 3 | Memory model: happens-before, synchronized, volatile, final field semantics |
-| 4 | Garbage collection: generational hypothesis, mark-sweep-compact, G1 tuning |
-| 5 | ZGC and Shenandoah: NUMA-aware, concurrent compaction, pause-time goals |
-| 6 | JIT compilation: interpreter vs JIT, tiered compilation,热点代码 profiling |
-| 7 | ForkJoinPool: work-stealing, recursiveTask, parallel stream internals |
-| 8 | CompletableFuture: composition, exception handling, thenApply vs thenCompose |
-| 9 | Virtual threads (Project Loom): carrier threads, pinning, structured concurrency |
-| 10 | Structured Concurrency (JEP 480): scope, cancellation, error propagation |
-| 11 | Thread debugging: async-profiler, jstack, jmap, Java Flight Recorder |
-| 12 | Capstone: implement a high-performance concurrent data pipeline |
+| Week | Topic                                                                            |
+| ---- | -------------------------------------------------------------------------------- |
+| 1    | JVM architecture: class file structure, class loaders (bootstrap, app, custom)   |
+| 2    | Runtime data areas: heap, stack (frames, native stacks), metaspace, PC registers |
+| 3    | Memory model: happens-before, synchronized, volatile, final field semantics      |
+| 4    | Garbage collection: generational hypothesis, mark-sweep-compact, G1 tuning       |
+| 5    | ZGC and Shenandoah: NUMA-aware, concurrent compaction, pause-time goals          |
+| 6    | JIT compilation: interpreter vs JIT, tiered compilation,热点代码 profiling       |
+| 7    | ForkJoinPool: work-stealing, recursiveTask, parallel stream internals            |
+| 8    | CompletableFuture: composition, exception handling, thenApply vs thenCompose     |
+| 9    | Virtual threads (Project Loom): carrier threads, pinning, structured concurrency |
+| 10   | Structured Concurrency (JEP 480): scope, cancellation, error propagation         |
+| 11   | Thread debugging: async-profiler, jstack, jmap, Java Flight Recorder             |
+| 12   | Capstone: implement a high-performance concurrent data pipeline                  |
 
 ## Linked Existing Content
 

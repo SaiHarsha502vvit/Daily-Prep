@@ -8,13 +8,13 @@
 
 # PART 0: The 5W+H Framework
 
-| Question | NumPy & Pandas Context |
-| :--- | :--- |
-| **WHAT** | NumPy: a library for fast numerical computing with N-dimensional arrays. Pandas: a library for data manipulation and analysis with labeled DataFrames. |
-| **WHY** | Python lists are 10-100x slower than NumPy for numerical operations. Pandas provides SQL-like data wrangling in Python. Together they eliminate the need for Excel/SQL for most data tasks. |
-| **WHEN** | Whenever you work with numerical data (NumPy) or structured/tabular data (Pandas). This is the first step in every ML pipeline. |
-| **WHERE** | Used in: data preprocessing, feature engineering, exploratory data analysis (EDA), scientific computing, financial analysis, and as the foundation layer under scikit-learn and PyTorch. |
-| **HOW** | NumPy stores data in contiguous C-level arrays (not Python objects) and uses vectorized operations (BLAS/LAPACK). Pandas builds on NumPy, adding labels (index/columns) and rich I/O (CSV, SQL, Excel). |
+| Question  | NumPy & Pandas Context                                                                                                                                                                                  |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **WHAT**  | NumPy: a library for fast numerical computing with N-dimensional arrays. Pandas: a library for data manipulation and analysis with labeled DataFrames.                                                  |
+| **WHY**   | Python lists are 10-100x slower than NumPy for numerical operations. Pandas provides SQL-like data wrangling in Python. Together they eliminate the need for Excel/SQL for most data tasks.             |
+| **WHEN**  | Whenever you work with numerical data (NumPy) or structured/tabular data (Pandas). This is the first step in every ML pipeline.                                                                         |
+| **WHERE** | Used in: data preprocessing, feature engineering, exploratory data analysis (EDA), scientific computing, financial analysis, and as the foundation layer under scikit-learn and PyTorch.                |
+| **HOW**   | NumPy stores data in contiguous C-level arrays (not Python objects) and uses vectorized operations (BLAS/LAPACK). Pandas builds on NumPy, adding labels (index/columns) and rich I/O (CSV, SQL, Excel). |
 
 ---
 
@@ -326,7 +326,7 @@ print(x.strides)                   # (4,) → step 4 bytes for next element
 
 y = x.reshape(3, 4)
 print(y.shape)                     # (3, 4)
-print(y.strides)                   # (16, 4) 
+print(y.strides)                   # (16, 4)
 # To go to the next column: step 4 bytes
 # To go to the next row: step 16 bytes (4 elements * 4 bytes)
 
@@ -381,7 +381,7 @@ df_multi = pd.DataFrame({'Budget_M': [10, 12, 50, 55], 'Headcount': [20, 22, 100
 
 print(df_multi)
 #                     Budget_M  Headcount
-# Department  Year                       
+# Department  Year
 # Sales       2023        10         20
 #             2024        12         22
 # Engineering 2023        50        100
@@ -450,7 +450,7 @@ for chunk in pd.read_csv('50GB_sales.csv', chunksize=chunk_size):
     # Process only 100k rows at a time
     chunk['status'] = chunk['status'].astype('category')
     total_sales += chunk.loc[chunk['status'] == 'Paid', 'amount'].sum()
-    
+
 print(f"Total Paid Sales: {total_sales}")
 ```
 
@@ -458,10 +458,9 @@ print(f"Total Paid Sales: {total_sales}")
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Arrays (ndarray internals) | [Arrays](../02_Data_Structures/01b_Arrays.md) |
-| Hash Maps (Pandas index) | [HashTable](../02_Data_Structures/01e_HashTable.md) |
-| Sorting (df.sort_values) | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| Matrix operations → ML | [Math for ML](04_Math_For_ML.md) |
-
+| Topic                      | Related Content                                                      |
+| -------------------------- | -------------------------------------------------------------------- |
+| Arrays (ndarray internals) | [Arrays](../02_Data_Structures/01b_Arrays.md)                        |
+| Hash Maps (Pandas index)   | [HashTable](../02_Data_Structures/01e_HashTable.md)                  |
+| Sorting (df.sort_values)   | [Sorting Fundamentals](../03_Algorithms/02a_Sorting_Fundamentals.md) |
+| Matrix operations → ML     | [Math for ML](04_Math_For_ML.md)                                     |

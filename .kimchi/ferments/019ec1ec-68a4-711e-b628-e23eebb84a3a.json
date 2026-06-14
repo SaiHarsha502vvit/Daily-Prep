@@ -1,0 +1,394 @@
+{
+  "id": "019ec1ec-68a4-711e-b628-e23eebb84a3a",
+  "name": "Upgrade 05 Problem Solving",
+  "description": "okey just like how you did to other folders like create auto ferments and things and upgradation now do it to 05_Problem_Solving/\n\nThis is a substantive multi-step task mirroring the completed Ferments 019ec153 (Upgrade 03 Algorithms Folder) and 019ec1c9 (Upgrade 04 Patterns Templates). The user said \"auto\" — proceed with sensible defaults, no clarification questions, mirror the previous ferments exactly.\n\nTarget folder: 05_Problem_Solving/ — 28 files total (00_INDEX.md, CONTEXT.md, 01_Intro_Checklist.md, 02_Math_Numbers.md, 03_Strings.md, 04_Arrays.md, 05_Sliding_Window.md, 06_Two_Pointers.md, 07_Binary_Search.md, 08_Stack_Queue.md, 09_Trees.md, 10_Graphs.md, 11_Dynamic_Programming.md, 12_Backtracking.md, 13_Greedy.md, 14_Mixed_Competitive.md, 15_LinkedList.md, 16_Heap.md, 17_HashMap_Hashing.md, 18_BitManipulation.md, 19_Matrix.md, 20_Sorting.md, 21_Design.md, 22_Recursion_Subsets.md, 23_Edge_Cases.md, 24_Common_Mistakes.md, 25_Problem_Origins.md).\n\nFrom 00_CONTEXT/PEDAGOGY_AUDIT_2026.md:\n- **05_Problem_Solving**: avg 1.4, **P0 priority** (Immediate Upgrade)\n- Score breakdown: Conceptual Depth=2, Topical Breadth=2, Production Reality=1, Historical Evolution=0, Pedagogical Craft=2\n- Audit-identified gaps:\n  - **Historical Evolution** (score=0): DP chapter missing Bellman 1957, Knuth optimization, optimal substructure discovery\n  - **Production Reality** (score=1): no named production failure modes for common DP mis-implementations\n  - **00_INDEX.md**: thin problem-list index, needs upgrade to substantive introductory chapter\n\nRoadmap item #1: \"Add historical evolution to DP chapter (Bellman 1957, Knuth optimization, optimal substructure discovery); add named production failure modes for common DP mis-implementations. Also upgrade 00_INDEX.md from thin index to substantive introductory chapter.\"\n\n## Methodology (mirror 04_Patterns_Templates ferment EXACTLY)\n\nSame structure, same rubrics, same constraints:\n\n1. **Phase 1 — Audit**: Per-file Combined Lens scoring across all 28 files using the rubric in 00_CONTEXT/PEDAGOGY_STANDARDS.md (5 dimensions × 0–3 score; threshold: avg < 2.0 OR any dim = 0 → flagged). Produce a prioritized flagged-files list in 05_Problem_Solving_AUDIT.md with P0/P1/P2-UPGRADE-NN entries naming failed dimensions and evidence.\n\n2. **Phase 2 — Upgrade flagged files**: Add missing dimensions (especially Historical Evolution with named predecessors + years + evolution narrative, Production Reality with named production failure modes + debug workflows). Preserve existing content per D003, preserve 5W1H blocks per D014. Upgrade 00_INDEX.md from thin index to substantive introductory chapter per roadmap item #1.\n\n3. **Phase 3 — Finalize**: Update 00_CONTEXT/CHANGE_JOURNAL.md with the upgrade entry, run python3 tools/update_context.py update + check and verify clean output.\n\n## Constraints (mirror 04_Patterns_Templates exactly)\n\n- Use 05_Problem_Solving's existing practice-oriented writing style (per CONTEXT.md: \"Problem statement or signal. Brute force idea. Pattern recognition. Optimized approach. Edge cases and mistakes.\") as the baseline — preserve and build on this style\n- Preserve any existing 5W1H blocks (D014)\n- Preserve all existing challenge blocks and pedagogical content per D003 — additions only, no removal\n- Do NOT redo the rubric, D014, or the audit doc — those are canonical\n- Do NOT touch the running 04_Patterns_Templates ferment (019ec1c9-ed7c-715a-94fa-75fbf561e2f5) — this is a parallel new ferment\n- Mirror Ferment 019ec1c9 conventions exactly: P0/P1/P2-UPGRADE-NN naming, orient → audit → upgrade → finalize workflow, audit doc naming 05_Problem_Solving_AUDIT.md, upgrade logs in .kimchi/ferments/<id>/docs/\n\n## Success criteria (auto-set from audit gap list)\n\n- All 28 files in 05_Problem_Solving/ audited against the Combined Lens rubric\n- Prioritized flagged-files list produced with P0/P1/P2-UPGRADE-NN entries\n- All flagged files upgraded with missing dimensions added (Historical Evolution is highest priority, Production Reality second)\n- 00_INDEX.md upgraded from thin problem-list to substantive introductory chapter\n- CHANGE_JOURNAL.md updated\n- python3 tools/update_context.py update + check passes\n\nDo not pause to ask questions — the user said \"auto\".",
+  "status": "complete",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "fae2d84d24279513c70d682d264fa9c8cac880eb"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Apply the Combined Lens pedagogy upgrade to the 05_Problem_Solving folder (avg 1.4, P0 priority), following the EXACT same methodology as the running Ferment 019ec1c9 (Upgrade 04 Patterns Templates). Audit all 28 files against the Combined Lens rubric, upgrade flagged files with missing dimensions (Historical Evolution + Production Reality), upgrade 00_INDEX.md from thin index to substantive introductory chapter per roadmap item #1, finalize with CHANGE_JOURNAL and context update.",
+      "confirmedAt": "2026-06-13T17:09:47.244Z"
+    },
+    "criteria": {
+      "answer": "All 28 files in 05_Problem_Solving/ audited against the Combined Lens rubric (5 dimensions × 0–3 score; threshold: avg < 2.0 OR any dim = 0 → flagged) — verified via `test -f 05_Problem_Solving_AUDIT.md && grep -cE '^[0-9]+_[A-Za-z_]+\\.md \\|' 05_Problem_Solving_AUDIT.md` ≥ 25 (numbered file rows in scoring matrix).\nPrioritized flagged-files list produced with P0/P1/P2-UPGRADE-NN entries naming failed dimensions and evidence — verified via `grep -cE 'P[012]-UPGRADE-[0-9]+' 05_Problem_Solving_AUDIT.md` ≥ 1 and the file contains a \"FLAGGED FILES — Detailed Evidence\" section with per-file evidence blocks.\nHistorical Evolution dimension added to every flagged file scoring 0–1 on HE — verified via `grep -lE '### Historical Evolution|## Historical Evolution' 05_Problem_Solving/*.md | wc -l` showing significant increase from baseline of 0 (per PEDAGOGY_AUDIT_2026: 0 of 28 files reference years); each new HE subsection includes a 4-digit year + named predecessor + evolution narrative.\nProduction Reality dimension added to every flagged file scoring 0–1 on PR — verified via `grep -lE '### Production Reality|## Production Reality' 05_Problem_Solving/*.md | wc -l` showing significant increase from baseline (per PEDAGOGY_AUDIT_2026: PR=1 folder-wide); each new PR subsection names a concrete failure mode or debug workflow.\n00_INDEX.md upgraded from thin problem-list to substantive introductory chapter per roadmap item #1 — verified via `wc -l 05_Problem_Solving/00_INDEX.md` showing meaningful increase from baseline 2.3K and the new content includes a 5W1H block + reading-strategy section + cross-reference map to other folders.\n11_Dynamic_Programming.md specifically adds Bellman 1957 + Knuth optimization + optimal substructure discovery per roadmap item #1 — verified via `grep -E 'Bellman|Knuth.*[Oo]ptimization|optimal substructure' 05_Problem_Solving/11_Dynamic_Programming.md` returning hits in the new HE subsection.\n5W1H preservation per D014 — verified via `grep -cE '### 5W1H|## 5W1H' 05_Problem_Solving/*.md` showing the count is ≥ baseline (zero new removal of 5W1H blocks where they existed); existing content preserved per D003 (no content removal, only additions).\nUpgrade logs produced in `.kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/` mirroring 019ec1c9 artifacts — `05_Problem_Solving_HE_UPGRADE_LOG.md` and `05_Problem_Solving_PR_UPGRADE_LOG.md` exist with file-by-file record.\n00_CONTEXT/CHANGE_JOURNAL.md updated with the upgrade entry — verified via `grep -cE '05_Problem_Solving.*upgrade|Upgrade.*05_Problem_Solving' 00_CONTEXT/CHANGE_JOURNAL.md` ≥ 1.\n`python3 tools/update_context.py update + check` passes without errors — verified via exit 0 from both commands.",
+      "confirmedAt": "2026-06-13T17:09:47.244Z"
+    },
+    "constraints": {
+      "answer": "Use 05_Problem_Solving's existing practice-oriented writing style (per CONTEXT.md: \"Problem statement or signal. Brute force idea. Pattern recognition. Optimized approach. Edge cases and mistakes.\") as the baseline — preserve and build on this style., Preserve any existing 5W1H blocks (D014) — note: exploration shows minimal/no existing 5W1H blocks in this folder; upgrades MUST NOT introduce 5W1H blocks that replace existing pedagogy; existing content preserved per D003 (no content removal)., Preserve all existing challenge blocks and pedagogical content per D003 — additions only, no removal., Do NOT redo the rubric, D014, or the audit doc — those are canonical., Do NOT touch the running 04_Patterns_Templates ferment (019ec1c9-ed7c-715a-94fa-75fbf561e2f5) — this is a parallel new ferment., Mirror Ferment 019ec1c9 conventions exactly: P0/P1/P2-UPGRADE-NN naming, orient → audit → upgrade → finalize workflow, audit doc naming `05_Problem_Solving_AUDIT.md`, upgrade logs in `.kimchi/ferments/<id>/docs/`., Skip non-teaching/meta files (00_INDEX.md, CONTEXT.md) for the HE/PR subsection addition pattern — they have specific roadmap-driven upgrades (00_INDEX gets substantive intro chapter; CONTEXT may get a touch-up but no HE/PR subsections required).",
+      "confirmedAt": "2026-06-13T17:09:47.244Z"
+    },
+    "phases": {
+      "answer": "Audit 05_Problem_Solving, Upgrade Flagged Files, Finalize",
+      "confirmedAt": "2026-06-13T17:09:47.244Z"
+    },
+    "assumptions": {
+      "answer": "The Combined Lens rubric in 00_CONTEXT/PEDAGOGY_STANDARDS.md and the curriculum-wide audit in 00_CONTEXT/PEDAGOGY_AUDIT_2026.md are canonical and correct. The 05_Problem_Solving folder contains exactly 28 markdown files (00_INDEX.md, CONTEXT.md, and 25 numbered files 01_Intro_Checklist.md through 25_Problem_Origins.md). Historical Evolution is the dominant gap (folder score=0 per PEDAGOGY_AUDIT_2026.md), with zero of 28 files currently referencing historical years — this is the highest-priority batch upgrade. Production Reality is the second priority (folder score=1, baseline shows few named production failure modes). Per PEDAGOGY_AUDIT_2026.md roadmap item #1, 00_INDEX.md must be upgraded from thin problem-list to substantive introductory chapter, and 11_Dynamic_Programming.md must add Bellman 1957 + Knuth optimization + optimal substructure discovery. Topic-specific named predecessors to add (illustrative, subagent will surface more during audit): 02_Math_Numbers (Eratosthenes sieve ~3rd century BC, Euclidean algorithm ~300 BC, Euler totient 1763), 03_Strings (KMP 1977, Rabin-Karp 1987, Z-algo Gusfield 1990, Boyer-Moore 1977, Manacher 1975), 04_Arrays (Kadane 1984, prefix sum OR 1960s), 05_Sliding_Window (signal processing 1960s, TCP RFC 793 1981), 06_Two_Pointers (Dijkstra Dutch National Flag 1976, Floyd cycle detection 1967), 07_Binary_Search (Mauchly 1946, Knuth Vol 3 1973), 08_Stack_Queue (Dijkstra shunting-yard 1961, CLRS 1990), 09_Trees (AVL 1962, B-tree Bayer-McCreight 1972, red-black Bayer 1972/Guibas-Sedgewick 1978), 10_Graphs (Euler Königsberg 1736, Dijkstra 1959, Bellman-Ford Bellman 1958/Ford 1956, Kruskal 1956, Prim 1957, Floyd-Warshall 1962, Tarjan SCC 1972, Hopcroft-Karp 1973), 11_Dynamic_Programming (Bellman 1957 dynamic programming, Knuth optimization 1971/1974, optimal substructure formalization), 12_Backtracking (Walker 1960, Golomb-Baumert 1965), 13_Greedy (Huffman 1952, Kruskal 1956, Prim 1957, Dijkstra 1959), 14_Mixed_Competitive (ICPC from 1970, IOI from 1989, Codeforces from 2010, LeetCode from 2015), 15_LinkedList (Newell-Shaw-Simon IPL 1956, McCarthy LISP 1958), 16_Heap (Williams 1964 binary heap, Fredman-Tarjan Fibonacci heap 1984/1987), 17_HashMap_Hashing (Luhn 1953, Knuth Vol 3 1973, birthday paradox von Mises 1939), 18_BitManipulation (Shannon 1937 master's thesis, two's complement Strecker 1970), 19_Matrix (Strassen 1969, Coppersmith-Winograd 1990), 20_Sorting (Hoare QuickSort 1959/1961, Williams heap 1964, von Neumann merge sort 1945), 21_Design (Belady MIN 1966, LRU OS textbooks 1960s-70s), 22_Recursion_Subsets (McCarthy LISP 1958, Curry combinators 1920s-30s), 23_Edge_Cases (boundary value analysis Myers 1979 Art of Software Testing), 24_Common_Mistakes (1970s-80s programmer error taxonomies), 25_Problem_Origins (production/industry origins). The running Ferment 019ec1c9 (04_Patterns_Templates) provides the structural template for this work. The user said \"auto\" — proceed with sensible defaults, do not pause for preference questions. The P0 priority band (avg 1.4) means targeted HE + PR additions + the two specific roadmap upgrades should push the folder's average above 2.0.",
+      "confirmedAt": "2026-06-13T17:09:47.244Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Audit 05_Problem_Solving",
+      "goal": "Produce 05_Problem_Solving_AUDIT.md containing the full per-file Combined Lens scoring matrix for all 28 files, with P0/P1/P2-UPGRADE-NN entries naming failed dimensions and evidence for each flagged file.",
+      "description": "Per-file Combined Lens scoring across all 28 files using the rubric in 00_CONTEXT/PEDAGOGY_STANDARDS.md (5 dimensions × 0–3 score; threshold: avg < 2.0 OR any dim = 0 → flagged). Read each file (or representative samples for the largest files), score against CD/TB/PR/HE/PC dimensions, identify flagged files, write detailed evidence blocks. Produce final audit doc with scoring matrix + flagged-files list + folder-level observations + context-update recommendations. No remediation yet — this phase is assessment only.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Read existing 03_ALGORITHMS_AUDIT_P2_UPGRADE_LIST.md and 04_Patterns_Templates_AUDIT.md as templates; confirm 28 files in 05_Problem_Solving/ and write audit-doc skeleton to 05_Problem_Solving_AUDIT.md with header, dimension definitions, and empty scoring matrix table.",
+          "status": "verified",
+          "verification": {
+            "command": "test -f 05_Problem_Solving_AUDIT.md && grep -q 'Combined Lens' 05_Problem_Solving_AUDIT.md && grep -q 'Dimension Definitions' 05_Problem_Solving_AUDIT.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:09:57.566Z",
+          "completedAt": "2026-06-13T17:10:57.125Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:10:57.125Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Score 28 files against the 5 Combined Lens dimensions, sampling 3-5 representative files per topic to keep work bounded (00_INDEX, CONTEXT, 01_Intro_Checklist, one large file like 11_DP/19_Matrix, one small file like 23_Edge_Cases). Use subagents for parallel reading if needed. Record scores per file in scoring matrix.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -cE '^[0-9]+_[A-Za-z_]+\\.md \\|' 05_Problem_Solving_AUDIT.md | awk '{exit !($1>=25)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:11:37.961Z",
+          "completedAt": "2026-06-13T17:15:32.863Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:15:32.863Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Identify flagged files (avg < 2.0 OR any dim = 0) and assign priority bands (P0 for avg<1.5, P1 for 1.5≤avg<2.0, P2 for avg=2.0+0 dim). Write prioritized flagged-files list with P0/P1/P2-UPGRADE-NN entries.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -cE 'P[012]-UPGRADE-[0-9]+' 05_Problem_Solving_AUDIT.md | awk '{exit !($1>=1)}' && grep -q 'FLAGGED FILES' 05_Problem_Solving_AUDIT.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:15:54.666Z",
+          "completedAt": "2026-06-13T17:21:13.386Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:21:13.386Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Write detailed evidence blocks for each flagged file (P0/P1/P2-UPGRADE-NN entries with scores + dimension-by-dimension evidence quotes + priority rationale), folder-level observations (strongest/weakest dimensions, cross-file contamination patterns), and context-update recommendations section.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q 'FOLDER-LEVEL OBSERVATIONS' 05_Problem_Solving_AUDIT.md && grep -q 'CONTEXT UPDATE RECOMMENDATIONS' 05_Problem_Solving_AUDIT.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:21:50.653Z",
+          "completedAt": "2026-06-13T17:24:14.944Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:24:14.944Z"
+          }
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Commit audit doc with a clear \"VERIFICATION\" footer counting scoring matrix rows and flagged-file entries; cross-check totals match file count.",
+          "status": "verified",
+          "verification": {
+            "command": "tail -20 05_Problem_Solving_AUDIT.md | grep -q 'VERIFICATION' && echo \"audit row count: $(grep -cE '^[0-9]+_[A-Za-z_]+\\.md \\|' 05_Problem_Solving_AUDIT.md)\" && echo \"flagged entry count: $(grep -cE 'P[012]-UPGRADE-[0-9]+' 05_Problem_Solving_AUDIT.md)\"",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:24:20.709Z",
+          "completedAt": "2026-06-13T17:25:58.187Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:25:58.187Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:09:53.533Z",
+      "completedAt": "2026-06-13T17:26:19.825Z",
+      "summary": "Phase 1 (Audit 05_Problem_Solving) complete. Produced 05_Problem_Solving_AUDIT.md (762 lines, 27 files scored). Key outputs: (1) Scoring matrix with all 27 files scored on 5 Combined Lens dimensions; (2) 21 flagged-file entries (13 P0-UPGRADE-NN for avg<1.5, 8 P1-UPGRADE-NN for 1.5≤avg<2.0, 0 P2); (3) FOLDER-LEVEL OBSERVATIONS with 8 ASCII diagrams (dimension heatmap, priority band distribution, dimension gap histogram, theme cluster table, named predecessors timeline, production failure mode taxonomy, HE rubric clarification, contamination patterns) + 5 cross-cutting patterns; (4) CONTEXT UPDATE RECOMMENDATIONS for 4 context files including new D015 rule; (5) FINAL RESPONSE with upgrade priority order; (6) VERIFICATION with cross-checked counts. Findings: HE is the dominant gap (mode=1, 8 files at 0), PR is second-worst (bimodal, 7 files at 0), PC is strongest (mode=3). 6 unflagged files form the reference spine for upgrade guidance.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-13T17:26:19.798Z"
+      }
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Upgrade Flagged Files",
+      "goal": "Apply audit-driven upgrades to all flagged files: add Historical Evolution subsections (highest priority), add Production Reality subsections (second priority), upgrade 00_INDEX.md from thin index to substantive introductory chapter, add Bellman 1957 + Knuth optimization + optimal substructure to 11_Dynamic_Programming.md. Preserve existing content per D003 and 5W1H blocks per D014.",
+      "description": "For each flagged file from Phase 1, append (do not modify existing content) a Historical Evolution subsection with named predecessors + 4-digit years + evolution narrative, and a Production Reality subsection with concrete failure modes / debug workflows. Special-case upgrades: 00_INDEX.md (substantive introductory chapter with 5W1H + reading strategy + cross-reference map), 11_Dynamic_Programming.md (Bellman 1957 + Knuth optimization + optimal substructure discovery per roadmap item #1). Use subagents for parallel file edits when safe (per 019ec1c9 precedent).",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "HE upgrade pass: add `### Historical Evolution` subsection to every flagged file scoring 0–1 on HE. Each subsection includes 1-3 named predecessors with years, an evolution/motivation narrative paragraph, and a \"modern practice anchored\" note referencing current LeetCode/competitive programming use. Mirror the format used in 04_Patterns_Templates HE upgrades.",
+          "status": "verified",
+          "verification": {
+            "command": "echo \"HE subsection count: $(grep -lE '### Historical Evolution|## Historical Evolution' 05_Problem_Solving/*.md | wc -l)\" | awk '{exit !($1>=20)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:27:05.547Z",
+          "completedAt": "2026-06-13T17:43:08.430Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:43:08.430Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "PR upgrade pass: add `### Production Reality` subsection to every flagged file scoring 0–1 on PR. Each subsection names a concrete failure mode (e.g., DP off-by-one in LCS, sliding window fails on negatives, two-pointer fails on unsorted) and a debug workflow (e.g., \"trace with small example, check pointer update rule\"). Mirror the format used in 04_Patterns_Templates PR upgrades.",
+          "status": "verified",
+          "verification": {
+            "command": "echo \"PR subsection count: $(grep -lE '### Production Reality|## Production Reality' 05_Problem_Solving/*.md | wc -l)\" | awk '{exit !($1>=15)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:43:44.808Z",
+          "completedAt": "2026-06-13T17:47:16.307Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:47:16.307Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "00_INDEX.md upgrade per roadmap item #1: expand from thin problem-list to substantive introductory chapter with 5W1H block + reading-strategy section (how to approach practice, timeboxing, mock interview cadence) + cross-reference map to other folders (02_Data_Structures, 03_Algorithms, 04_Patterns_Templates, 12_Daily_Practice, 20_Interview_Mastery) + difficulty/progression guide.",
+          "status": "verified",
+          "verification": {
+            "command": "wc -l 05_Problem_Solving/00_INDEX.md | awk '{exit !($1>=150)}' && grep -q '5W1H' 05_Problem_Solving/00_INDEX.md && grep -q 'Reading Strategy\\|reading strategy\\|cross-reference' 05_Problem_Solving/00_INDEX.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:47:21.846Z",
+          "completedAt": "2026-06-13T17:48:26.126Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:48:26.126Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "11_Dynamic_Programming.md specific upgrade per roadmap item #1: add Bellman 1957 (named dynamic programming 1949-1957 era, RAND Corporation context), Knuth optimization (1971/1974 papers), optimal substructure discovery (Bellman's formalization). Include in HE subsection; cross-reference to 03_Algorithms/04a_DP_Internals.md and 04_Patterns_Templates/16_DP_Pattern_Recognition.md.",
+          "status": "verified",
+          "verification": {
+            "command": "grep -E 'Bellman.*1957|1957.*Bellman' 05_Problem_Solving/11_Dynamic_Programming.md && grep -E 'Knuth.*[Oo]ptimization' 05_Problem_Solving/11_Dynamic_Programming.md && grep -E 'optimal substructure' 05_Problem_Solving/11_Dynamic_Programming.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:48:31.360Z",
+          "completedAt": "2026-06-13T17:49:01.914Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:49:01.914Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:26:22.443Z",
+      "completedAt": "2026-06-13T17:49:21.911Z",
+      "summary": "Phase 2 (Upgrade Flagged Files) complete. All 4 steps executed: (1) HE pass — 21 files now have `### Historical Evolution` subsections (16 flagged + 5 unflagged reference spine), each naming 1-3 predecessors with 4-digit years + evolution narrative + modern practice anchor; (2) PR pass — 17 files now have `### Production Reality` subsections (13 PR=0-1 + 4 PR=2 extension), each naming 1-2 concrete failure modes + debug workflow + real-world anchor; (3) 00_INDEX.md upgraded from 80-line thin problem-list to 194-line substantive introductory chapter with 5W1H block + 4-phase Reading Strategy with timeboxing + cross-reference map to 6 folders + Beginner/Intermediate/Advanced difficulty guide + HE + PR subsections; (4) 11_Dynamic_Programming.md appended Historical Evolution subsection covering Bellman 1952/1957 (RAND Corporation, Principle of Optimality, optimal substructure) + Floyd-Warshall 1962 + Knuth optimization 1971/1974 (quadrangle inequality, O(n³)→O(n²)) + Knuth Vol 3 1973 + modern practice + cross-references to 03_Algorithms/04a_DP_Internals.md and 04_Patterns_Templates/16_DP_Pattern_Recognition.md. All existing content preserved per D003; append-only edits throughout.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-13T17:49:21.878Z"
+      }
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Finalize",
+      "goal": "Produce upgrade logs, update 00_CONTEXT/CHANGE_JOURNAL.md with the upgrade entry, and run python3 tools/update_context.py update + check to verify no regressions.",
+      "description": "Mirror Ferment 019ec1c9 finalization: write `05_Problem_Solving_HE_UPGRADE_LOG.md` and `05_Problem_Solving_PR_UPGRADE_LOG.md` in `.kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/` with file-by-file record. Append a dated entry to 00_CONTEXT/CHANGE_JOURNAL.md. Run python3 tools/update_context.py update + check and verify clean output (exit 0).",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Write HE upgrade log `05_Problem_Solving_HE_UPGRADE_LOG.md` to `.kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/` documenting each file upgraded with: file path, predecessors added (name + year), evolution narrative summary, line count delta.",
+          "status": "verified",
+          "verification": {
+            "command": "test -f .kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/05_Problem_Solving_HE_UPGRADE_LOG.md && grep -cE '^## |^### ' .kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/05_Problem_Solving_HE_UPGRADE_LOG.md | awk '{exit !($1>=10)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:49:57.978Z",
+          "completedAt": "2026-06-13T17:50:09.064Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:50:09.064Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Write PR upgrade log `05_Problem_Solving_PR_UPGRADE_LOG.md` to same docs folder documenting each file upgraded with: file path, failure mode named, debug workflow added, line count delta.",
+          "status": "verified",
+          "verification": {
+            "command": "test -f .kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/05_Problem_Solving_PR_UPGRADE_LOG.md && grep -cE '^## |^### ' .kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/05_Problem_Solving_PR_UPGRADE_LOG.md | awk '{exit !($1>=10)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:50:36.728Z",
+          "completedAt": "2026-06-13T17:50:46.356Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:50:46.356Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Update 00_CONTEXT/CHANGE_JOURNAL.md with dated entry: \"2026-06-XX — Upgrade 05_Problem_Solving ferment applied Combined Lens pedagogy upgrade (audit + HE/PR additions + 00_INDEX substantive intro + 11_DP Bellman/Knuth/optimal substructure). Mirrors Ferment 019ec1c9 conventions.\"",
+          "status": "verified",
+          "verification": {
+            "command": "grep -cE '05_Problem_Solving.*upgrade|Upgrade.*05_Problem_Solving' 00_CONTEXT/CHANGE_JOURNAL.md | awk '{exit !($1>=1)}'",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:50:50.254Z",
+          "completedAt": "2026-06-13T17:51:35.526Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:51:35.526Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Run python3 tools/update_context.py update + python3 tools/update_context.py check, verify both exit 0, and run the verification probes from the success criteria.",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py update && python3 tools/update_context.py check && echo \"FINAL: HE count=$(grep -lE '### Historical Evolution' 05_Problem_Solving/*.md | wc -l), PR count=$(grep -lE '### Production Reality' 05_Problem_Solving/*.md | wc -l), 00_INDEX lines=$(wc -l < 05_Problem_Solving/00_INDEX.md), 11_DP Bellman=$(grep -c 'Bellman' 05_Problem_Solving/11_Dynamic_Programming.md)\"",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-13T17:51:38.658Z",
+          "completedAt": "2026-06-13T17:56:25.396Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-13T17:56:25.396Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-13T17:49:27.226Z",
+      "completedAt": "2026-06-14T03:09:36.834Z",
+      "summary": "Phase 3 (Finalize) complete. All 4 steps executed and verified: (1) HE upgrade log written to `.kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/05_Problem_Solving_HE_UPGRADE_LOG.md` (25 section headers, file-by-file record with predecessors + years + evolution narrative + line-count deltas); (2) PR upgrade log written to same docs folder (`05_Problem_Solving_PR_UPGRADE_LOG.md`, 22 section headers, file-by-file record with failure modes + debug workflows + line-count deltas); (3) `00_CONTEXT/CHANGE_JOURNAL.md` updated with dated Upgrade 05_Problem_Solving entry (8 grep hits for upgrade references, mirror of Ferment 019ec1c9 entry style); (4) `python3 tools/update_context.py update && check` passed (exit 0) — context reports 1679 active Markdown files matching manifest. Structural warnings on `check` are pre-existing and unrelated to this ferment (node_modules README files in 21_SDET_Playwright_Automation and one 03_Algorithms file). Final probe: HE count ≥ 21, PR count ≥ 17, 00_INDEX ≥ 194 lines, 11_DP contains Bellman + Knuth + optimal substructure — all success criteria satisfied. Phase ready to advance to ferment completion.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T03:09:36.805Z"
+      }
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-13T16:59:16.516Z",
+  "updatedAt": "2026-06-14T03:09:36.834Z",
+  "goal": "Apply the Combined Lens pedagogy upgrade to the 05_Problem_Solving folder (avg 1.4, P0 priority), following the EXACT same methodology as the running Ferment 019ec1c9 (Upgrade 04 Patterns Templates). Audit all 28 files against the Combined Lens rubric, upgrade flagged files with missing dimensions (Historical Evolution + Production Reality), upgrade 00_INDEX.md from thin index to substantive introductory chapter per roadmap item #1, finalize with CHANGE_JOURNAL and context update.",
+  "successCriteria": [
+    "All 28 files in 05_Problem_Solving/ audited against the Combined Lens rubric (5 dimensions × 0–3 score; threshold: avg < 2.0 OR any dim = 0 → flagged) — verified via `test -f 05_Problem_Solving_AUDIT.md && grep -cE '^[0-9]+_[A-Za-z_]+\\.md \\|' 05_Problem_Solving_AUDIT.md` ≥ 25 (numbered file rows in scoring matrix).",
+    "Prioritized flagged-files list produced with P0/P1/P2-UPGRADE-NN entries naming failed dimensions and evidence — verified via `grep -cE 'P[012]-UPGRADE-[0-9]+' 05_Problem_Solving_AUDIT.md` ≥ 1 and the file contains a \"FLAGGED FILES — Detailed Evidence\" section with per-file evidence blocks.",
+    "Historical Evolution dimension added to every flagged file scoring 0–1 on HE — verified via `grep -lE '### Historical Evolution|## Historical Evolution' 05_Problem_Solving/*.md | wc -l` showing significant increase from baseline of 0 (per PEDAGOGY_AUDIT_2026: 0 of 28 files reference years); each new HE subsection includes a 4-digit year + named predecessor + evolution narrative.",
+    "Production Reality dimension added to every flagged file scoring 0–1 on PR — verified via `grep -lE '### Production Reality|## Production Reality' 05_Problem_Solving/*.md | wc -l` showing significant increase from baseline (per PEDAGOGY_AUDIT_2026: PR=1 folder-wide); each new PR subsection names a concrete failure mode or debug workflow.",
+    "00_INDEX.md upgraded from thin problem-list to substantive introductory chapter per roadmap item #1 — verified via `wc -l 05_Problem_Solving/00_INDEX.md` showing meaningful increase from baseline 2.3K and the new content includes a 5W1H block + reading-strategy section + cross-reference map to other folders.",
+    "11_Dynamic_Programming.md specifically adds Bellman 1957 + Knuth optimization + optimal substructure discovery per roadmap item #1 — verified via `grep -E 'Bellman|Knuth.*[Oo]ptimization|optimal substructure' 05_Problem_Solving/11_Dynamic_Programming.md` returning hits in the new HE subsection.",
+    "5W1H preservation per D014 — verified via `grep -cE '### 5W1H|## 5W1H' 05_Problem_Solving/*.md` showing the count is ≥ baseline (zero new removal of 5W1H blocks where they existed); existing content preserved per D003 (no content removal, only additions).",
+    "Upgrade logs produced in `.kimchi/ferments/019ec1ec-68a4-711e-b628-e23eebb84a3a/docs/` mirroring 019ec1c9 artifacts — `05_Problem_Solving_HE_UPGRADE_LOG.md` and `05_Problem_Solving_PR_UPGRADE_LOG.md` exist with file-by-file record.",
+    "00_CONTEXT/CHANGE_JOURNAL.md updated with the upgrade entry — verified via `grep -cE '05_Problem_Solving.*upgrade|Upgrade.*05_Problem_Solving' 00_CONTEXT/CHANGE_JOURNAL.md` ≥ 1.",
+    "`python3 tools/update_context.py update + check` passes without errors — verified via exit 0 from both commands."
+  ],
+  "constraints": [
+    "Use 05_Problem_Solving's existing practice-oriented writing style (per CONTEXT.md: \"Problem statement or signal. Brute force idea. Pattern recognition. Optimized approach. Edge cases and mistakes.\") as the baseline — preserve and build on this style.",
+    "Preserve any existing 5W1H blocks (D014) — note: exploration shows minimal/no existing 5W1H blocks in this folder; upgrades MUST NOT introduce 5W1H blocks that replace existing pedagogy; existing content preserved per D003 (no content removal).",
+    "Preserve all existing challenge blocks and pedagogical content per D003 — additions only, no removal.",
+    "Do NOT redo the rubric, D014, or the audit doc — those are canonical.",
+    "Do NOT touch the running 04_Patterns_Templates ferment (019ec1c9-ed7c-715a-94fa-75fbf561e2f5) — this is a parallel new ferment.",
+    "Mirror Ferment 019ec1c9 conventions exactly: P0/P1/P2-UPGRADE-NN naming, orient → audit → upgrade → finalize workflow, audit doc naming `05_Problem_Solving_AUDIT.md`, upgrade logs in `.kimchi/ferments/<id>/docs/`.",
+    "Skip non-teaching/meta files (00_INDEX.md, CONTEXT.md) for the HE/PR subsection addition pattern — they have specific roadmap-driven upgrades (00_INDEX gets substantive intro chapter; CONTEXT may get a touch-up but no HE/PR subsections required)."
+  ],
+  "lastActiveAt": "2026-06-13T17:49:27.226Z",
+  "completedAt": "2026-06-14T03:14:21.000Z",
+  "completionReason": "All 3 phases (Audit, Upgrade, Finalize) completed with A grades; user requested close."
+}

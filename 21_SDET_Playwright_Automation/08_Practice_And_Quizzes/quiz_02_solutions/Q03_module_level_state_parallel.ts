@@ -12,7 +12,7 @@
  * QUESTION: What are the two bugs that cause intermittent CI failures?
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ============================================================
 // BUG 1 — Module-level variables are NOT shared across workers
@@ -31,15 +31,15 @@ import { test, expect } from '@playwright/test';
 let createdOrderId_BAD: string;
 let createdCustomerId_BAD: string;
 
-test('Create customer and order — BUGGY', async ({ page: _page }) => {
+test("Create customer and order — BUGGY", async ({ page: _page }) => {
   // Imagine an API call here that returns { id: 'C-1' }
-  createdCustomerId_BAD = 'C-1';
-  createdOrderId_BAD = 'ORD-1';
+  createdCustomerId_BAD = "C-1";
+  createdOrderId_BAD = "ORD-1";
 });
 
-test('Verify order — BUGGY', async ({ page: _page }) => {
+test("Verify order — BUGGY", async ({ page: _page }) => {
   // createdOrderId_BAD is undefined if this runs in a different worker
-  console.log('order id:', createdOrderId_BAD); // may print "undefined"
+  console.log("order id:", createdOrderId_BAD); // may print "undefined"
 });
 
 // ============================================================
@@ -49,27 +49,27 @@ test('Verify order — BUGGY', async ({ page: _page }) => {
 // execution.  Using a const object (not let primitives) keeps the reference
 // stable across the describe block.
 
-test.describe.serial('Order lifecycle', () => {
+test.describe.serial("Order lifecycle", () => {
   // Shared state — an object so the reference is stable (reassigning a
   // primitive like `let orderId = ''` inside a test does NOT propagate to
   // other tests, because each `let` closure captures a different slot).
-  const data = { customerId: '', orderId: '' };
+  const data = { customerId: "", orderId: "" };
 
-  test('Create customer and order', async ({ page: _page }) => {
+  test("Create customer and order", async ({ page: _page }) => {
     // Simulate API call:
-    data.customerId = 'C-1';
-    data.orderId = 'ORD-1';
-    expect(data.orderId).toBe('ORD-1'); // just to show it's set
+    data.customerId = "C-1";
+    data.orderId = "ORD-1";
+    expect(data.orderId).toBe("ORD-1"); // just to show it's set
   });
 
-  test('Verify order exists for customer', async ({ page: _page }) => {
+  test("Verify order exists for customer", async ({ page: _page }) => {
     // data.orderId is guaranteed to be set — same worker, sequential
-    expect(data.orderId).toBe('ORD-1');
+    expect(data.orderId).toBe("ORD-1");
   });
 
-  test('Delete order', async ({ page: _page }) => {
+  test("Delete order", async ({ page: _page }) => {
     // Still guaranteed to run AFTER "Verify"
-    expect(data.orderId).toBe('ORD-1');
+    expect(data.orderId).toBe("ORD-1");
   });
 });
 

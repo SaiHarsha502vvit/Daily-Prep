@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 05: POM Architecture](./05_POM_Architecture_Deep_Dive.md) | [Index](../00_INDEX.md) | [→ Chapter 07: E2E Test Architecture](./07_test_step_E2E_Architecture.md)
 
 **Cross-links:**
+
 - [`17_TypeScript/01_TS_Foundations.md`](../../17_TypeScript/01_TS_Foundations.md) — Generics (`test.extend<T>()`)
 - [`16_JavaScript/04_JS_Async_Promises.md`](../../16_JavaScript/04_JS_Async_Promises.md) — Generator functions and `yield`
 - [`06_OOP_Design/02_Design_Patterns.md`](../../06_OOP_Design/02_Design_Patterns.md) — Dependency Injection pattern
@@ -26,7 +27,7 @@ A fixture is a **managed dependency** — Playwright creates it, injects it into
 You've been using built-in fixtures since day one:
 
 ```typescript
-test('example', async ({ page, request, browser, context }) => {
+test("example", async ({ page, request, browser, context }) => {
   //                     ↑     ↑       ↑        ↑
   //                     These are all Playwright's built-in fixtures.
   //                     You never wrote "const page = await browser.newPage()".
@@ -39,11 +40,11 @@ test('example', async ({ page, request, browser, context }) => {
 ```typescript
 // ❌ Without fixtures — repeated in every test file
 test.beforeEach(async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('#username', process.env.TEST_USER!);
-  await page.fill('#password', process.env.TEST_PASSWORD!);
-  await page.click('#loginButton');
-  await page.waitForURL('**/dashboard');
+  await page.goto("/login");
+  await page.fill("#username", process.env.TEST_USER!);
+  await page.fill("#password", process.env.TEST_PASSWORD!);
+  await page.click("#loginButton");
+  await page.waitForURL("**/dashboard");
 });
 
 // If 30 test files need this, you have 30 copies of this code.
@@ -52,9 +53,9 @@ test.beforeEach(async ({ page }) => {
 
 ```typescript
 // ✅ With a fixture — written once, used everywhere
-test('my test', async ({ authenticatedPage }) => {
+test("my test", async ({ authenticatedPage }) => {
   // authenticatedPage is already logged in — fixture handled it
-  await authenticatedPage.goto('/master-search');
+  await authenticatedPage.goto("/master-search");
 });
 ```
 
@@ -83,8 +84,8 @@ Playwright lets you extend the base `test` object with your own custom fixtures.
 ```typescript
 // fixtures/index.ts
 
-import { test as base, type Page } from '@playwright/test';
-import { MasterSearchPage } from '../pages/crm/MasterSearchPage';
+import { test as base, type Page } from "@playwright/test";
+import { MasterSearchPage } from "../pages/crm/MasterSearchPage";
 
 // Define the shape of your custom fixtures
 interface CustomFixtures {
@@ -94,7 +95,6 @@ interface CustomFixtures {
 
 // Extend the base test with your custom fixtures
 export const test = base.extend<CustomFixtures>({
-
   // ── Fixture 1: masterSearchPage ────────────────────────────────────────
   masterSearchPage: async ({ page }, use) => {
     // SETUP: create the page object
@@ -112,11 +112,11 @@ export const test = base.extend<CustomFixtures>({
   // ── Fixture 2: authToken ───────────────────────────────────────────────
   authToken: async ({ request }, use) => {
     // SETUP: get a token from the auth API
-    const response = await request.post('/api/auth/token', {
+    const response = await request.post("/api/auth/token", {
       data: {
         username: process.env.TEST_USER,
         password: process.env.TEST_PASSWORD,
-      }
+      },
     });
     const body = await response.json();
     const token = body.access_token as string;
@@ -125,15 +125,14 @@ export const test = base.extend<CustomFixtures>({
     await use(token);
 
     // TEARDOWN: (optional) invalidate the token
-    await request.post('/api/auth/logout', {
-      headers: { Authorization: `Bearer ${token}` }
+    await request.post("/api/auth/logout", {
+      headers: { Authorization: `Bearer ${token}` },
     });
   },
-
 });
 
 // Re-export expect so test files only need to import from one place
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### Using Your Custom Fixture
@@ -141,21 +140,23 @@ export { expect } from '@playwright/test';
 ```typescript
 // tests/specs/crm/masterSearch.spec.ts
 
-import { test, expect } from '../../fixtures';  // ← import YOUR extended test
+import { test, expect } from "../../fixtures"; // ← import YOUR extended test
 //                               ↑ not '@playwright/test' — your version
 
-test.describe('Master Search', () => {
-
-  test('search by transit account', async ({ page, masterSearchPage, authToken }) => {
+test.describe("Master Search", () => {
+  test("search by transit account", async ({
+    page,
+    masterSearchPage,
+    authToken,
+  }) => {
     //                                              ↑               ↑
     //                                              your custom fixtures!
-    
+
     await page.goto(process.env.APP_URL!);
     await masterSearchPage.waitForPageLoad();
-    await masterSearchPage.searchByTransitAccount('ACC-001');
+    await masterSearchPage.searchByTransitAccount("ACC-001");
     await masterSearchPage.verifyResultsAreVisible();
   });
-
 });
 ```
 
@@ -207,9 +208,9 @@ authToken: async ({ request }, use) => {
   // ── BEFORE (setup) ───────────────────────────────────────
   const response = await request.post('/api/auth/token', { ... });
   const token = response.json().access_token;
-  
+
   await use(token);  // ← "yield" point — test runs HERE
-  
+
   // ── AFTER (teardown) ─────────────────────────────────────
   // This runs AFTER the test (and after any test.afterEach hooks)
   await request.post('/api/auth/logout', { headers: { Authorization: `Bearer ${token}` } });
@@ -246,6 +247,7 @@ authToken: { scope: 'test', async: true, async ({ request }, use) => { ... } }
 ```
 
 Timeline with 10 tests:
+
 ```
 Login → Test 1 → Logout → Login → Test 2 → Logout → ... (10 logins total)
 ```
@@ -263,9 +265,9 @@ export const test = base.extend<{}, { sharedAuthToken: string }>({
   sharedAuthToken: [async ({ request }, use) => {
     const response = await request.post('/api/auth/token', { ... });
     const token = response.json().access_token;
-    
+
     await use(token);
-    
+
     // Teardown runs ONCE after all tests in this worker finish
     await request.post('/api/auth/logout', { headers: { Authorization: `Bearer ${token}` } });
   }, { scope: 'worker' }],  // ← specify scope here
@@ -273,6 +275,7 @@ export const test = base.extend<{}, { sharedAuthToken: string }>({
 ```
 
 Timeline with 10 tests and 1 worker:
+
 ```
 Login → Test 1, Test 2, ..., Test 10 → Logout (1 login total)
 ```
@@ -292,13 +295,13 @@ export interface AccountData {
   accessToken: string;
   refreshToken: string;
   email: string;
-  role: 'ADMIN' | 'AGENT' | 'SUPERVISOR';
+  role: "ADMIN" | "AGENT" | "SUPERVISOR";
 }
 
 // fixtures/index.ts
-import { test as base } from '@playwright/test';
-import { MasterSearchPage } from '../pages/crm/MasterSearchPage';
-import type { AccountData } from '../types';
+import { test as base } from "@playwright/test";
+import { MasterSearchPage } from "../pages/crm/MasterSearchPage";
+import type { AccountData } from "../types";
 
 interface TestFixtures {
   masterSearchPage: MasterSearchPage;
@@ -310,64 +313,66 @@ interface WorkerFixtures {
 }
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
-
   // ── Worker-scoped: login once per worker ─────────────────────────────
-  account: [async ({ request }, use) => {
-    const response = await request.post(
-      `${process.env.AUTH_URL}/api/auth/token`,
-      {
-        data: {
-          username: process.env.TEST_AGENT_USER,
-          password: process.env.TEST_AGENT_PASSWORD,
-          grant_type: 'password',
+  account: [
+    async ({ request }, use) => {
+      const response = await request.post(
+        `${process.env.AUTH_URL}/api/auth/token`,
+        {
+          data: {
+            username: process.env.TEST_AGENT_USER,
+            password: process.env.TEST_AGENT_PASSWORD,
+            grant_type: "password",
+          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
         },
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      }
-    );
+      );
 
-    expect(response.status()).toBe(200);
-    const body = await response.json();
+      expect(response.status()).toBe(200);
+      const body = await response.json();
 
-    const accountData: AccountData = {
-      userId: body.user_id,
-      accessToken: body.access_token,
-      refreshToken: body.refresh_token,
-      email: body.email,
-      role: body.role,
-    };
+      const accountData: AccountData = {
+        userId: body.user_id,
+        accessToken: body.access_token,
+        refreshToken: body.refresh_token,
+        email: body.email,
+        role: body.role,
+      };
 
-    await use(accountData);
+      await use(accountData);
 
-    // Teardown: revoke token after all worker tests finish
-    await request.post(`${process.env.AUTH_URL}/api/auth/revoke`, {
-      data: { token: accountData.refreshToken }
-    });
-
-  }, { scope: 'worker' }],
+      // Teardown: revoke token after all worker tests finish
+      await request.post(`${process.env.AUTH_URL}/api/auth/revoke`, {
+        data: { token: accountData.refreshToken },
+      });
+    },
+    { scope: "worker" },
+  ],
 
   // ── Test-scoped: inject authenticated state into the browser ─────────
   // This uses the worker-scoped "account" fixture
   masterSearchPage: async ({ page, account }, use) => {
     // Inject the auth token into the browser context's extra headers
     await page.setExtraHTTPHeaders({
-      'Authorization': `Bearer ${account.accessToken}`,
+      Authorization: `Bearer ${account.accessToken}`,
     });
 
     // OR: set cookies if the app uses cookie-based auth
-    await page.context().addCookies([{
-      name: 'auth_token',
-      value: account.accessToken,
-      domain: new URL(process.env.APP_URL!).hostname,
-      path: '/',
-    }]);
+    await page.context().addCookies([
+      {
+        name: "auth_token",
+        value: account.accessToken,
+        domain: new URL(process.env.APP_URL!).hostname,
+        path: "/",
+      },
+    ]);
 
     const masterSearch = new MasterSearchPage(page);
     await use(masterSearch);
   },
-
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### Fixture Error Handling — Fail Fast with Clear Messages
@@ -424,28 +429,30 @@ account: [async ({ request }, use) => {
 ### Using It in a Test File
 
 ```typescript
-import { test, expect } from '../../fixtures';
+import { test, expect } from "../../fixtures";
 
-test.describe('Master Search — Citation Flow', () => {
-
+test.describe("Master Search — Citation Flow", () => {
   // account fixture: automatically logged in (worker-scoped, no re-login per test)
   // masterSearchPage: already authenticated, pre-built POM object
-  test('Agent can search by transit account', async ({ masterSearchPage, account, request }) => {
+  test("Agent can search by transit account", async ({
+    masterSearchPage,
+    account,
+    request,
+  }) => {
     console.log(`Running test as: ${account.email} (${account.role})`);
-    
-    await test.step('Navigate to Master Search', async () => {
+
+    await test.step("Navigate to Master Search", async () => {
       await masterSearchPage.waitForPageLoad();
     });
 
-    await test.step('Search by transit account number', async () => {
-      await masterSearchPage.searchByTransitAccount('ACC-001');
+    await test.step("Search by transit account number", async () => {
+      await masterSearchPage.searchByTransitAccount("ACC-001");
     });
 
-    await test.step('Verify results appear', async () => {
+    await test.step("Verify results appear", async () => {
       await masterSearchPage.verifyResultsAreVisible();
     });
   });
-
 });
 ```
 
@@ -457,29 +464,31 @@ Since you do both API-based AND direct SQL DB verification:
 
 ```typescript
 // fixtures/db.fixture.ts
-import * as sql from 'mssql';
+import * as sql from "mssql";
 
 interface DBFixtures {
   dbPool: sql.ConnectionPool;
 }
 
 export const dbTest = base.extend<{}, DBFixtures>({
-  dbPool: [async ({}, use) => {
-    // SETUP: create connection pool once per worker
-    const pool = await sql.connect({
-      server: process.env.DB_HOST!,
-      database: process.env.DB_NAME!,
-      user: process.env.DB_USER!,
-      password: process.env.DB_PASSWORD!,
-      options: { encrypt: true, trustServerCertificate: false }
-    });
+  dbPool: [
+    async ({}, use) => {
+      // SETUP: create connection pool once per worker
+      const pool = await sql.connect({
+        server: process.env.DB_HOST!,
+        database: process.env.DB_NAME!,
+        user: process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        options: { encrypt: true, trustServerCertificate: false },
+      });
 
-    await use(pool);
+      await use(pool);
 
-    // TEARDOWN: close pool after all tests in this worker
-    await pool.close();
-
-  }, { scope: 'worker' }],
+      // TEARDOWN: close pool after all tests in this worker
+      await pool.close();
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
@@ -512,18 +521,29 @@ As your suite grows, you'll have separate fixture files for different concerns. 
 ```typescript
 // fixtures/index.ts — the single import point for all tests
 
-import { mergeTests } from '@playwright/test';
-import { test as authFixtures }   from './auth.fixture';
-import { test as dbFixtures }     from './db.fixture';
-import { test as apiFixtures }    from './api.fixture';
-import { test as pageFixtures }   from './page.fixture';
+import { mergeTests } from "@playwright/test";
+import { test as authFixtures } from "./auth.fixture";
+import { test as dbFixtures } from "./db.fixture";
+import { test as apiFixtures } from "./api.fixture";
+import { test as pageFixtures } from "./page.fixture";
 
 // Merge all fixture sets into one `test` object
-export const test = mergeTests(authFixtures, dbFixtures, apiFixtures, pageFixtures);
-export { expect } from '@playwright/test';
+export const test = mergeTests(
+  authFixtures,
+  dbFixtures,
+  apiFixtures,
+  pageFixtures,
+);
+export { expect } from "@playwright/test";
 
 // Now tests get ALL fixtures:
-test('full stack test', async ({ page, account, dbPool, citationsClient, masterSearchPage }) => {
+test("full stack test", async ({
+  page,
+  account,
+  dbPool,
+  citationsClient,
+  masterSearchPage,
+}) => {
   // page           → from Playwright built-in
   // account        → from auth.fixture (worker-scoped login)
   // dbPool         → from db.fixture (worker-scoped DB connection)
@@ -636,41 +656,41 @@ For operations that run ONCE before the entire test suite (not per worker, but o
 ```typescript
 // playwright.config.ts
 export default defineConfig({
-  globalSetup: './fixtures/global.setup.ts',
+  globalSetup: "./fixtures/global.setup.ts",
   use: {
     baseURL: process.env.APP_URL,
     extraHTTPHeaders: {
-      'x-correlation-id': 'PLAYWRIGHT-TEST-RUN',
-    }
-  }
+      "x-correlation-id": "PLAYWRIGHT-TEST-RUN",
+    },
+  },
 });
 
 // fixtures/global.setup.ts
-import { chromium } from '@playwright/test';
+import { chromium } from "@playwright/test";
 
 export default async function globalSetup() {
   // This runs ONCE before any test
   // Common use: save auth state to a file so all workers can reuse it
-  
+
   const browser = await chromium.launch();
   const page = await browser.newPage();
-  
-  await page.goto(process.env.APP_URL + '/login');
-  await page.fill('#username', process.env.TEST_USER!);
-  await page.fill('#password', process.env.TEST_PASSWORD!);
-  await page.click('#loginButton');
-  await page.waitForURL('**/dashboard');
-  
+
+  await page.goto(process.env.APP_URL + "/login");
+  await page.fill("#username", process.env.TEST_USER!);
+  await page.fill("#password", process.env.TEST_PASSWORD!);
+  await page.click("#loginButton");
+  await page.waitForURL("**/dashboard");
+
   // Save auth state (cookies + localStorage) to a file
-  await page.context().storageState({ path: 'fixtures/auth-state.json' });
+  await page.context().storageState({ path: "fixtures/auth-state.json" });
   await browser.close();
 }
 
 // playwright.config.ts — use the saved state in all tests
 export default defineConfig({
   use: {
-    storageState: 'fixtures/auth-state.json'  // Every test starts pre-authenticated!
-  }
+    storageState: "fixtures/auth-state.json", // Every test starts pre-authenticated!
+  },
 });
 ```
 
@@ -679,35 +699,41 @@ export default defineConfig({
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Scope Selection):** You have 50 test files. Each test needs a valid auth token. The token expires after 8 hours. Your test suite runs in 45 minutes. Should the auth fixture be `scope: 'test'` or `scope: 'worker'`? What changes if tokens expire after 5 minutes?
+
 <details><summary>Answer</summary>
 
-With an 8-hour expiry and a 45-minute suite, use `scope: 'worker'` — one login per worker, shared across all tests in that worker. The token won't expire during the run, so no risk of auth failure. 
+With an 8-hour expiry and a 45-minute suite, use `scope: 'worker'` — one login per worker, shared across all tests in that worker. The token won't expire during the run, so no risk of auth failure.
 
 If tokens expire after 5 minutes, you need `scope: 'test'` — each test gets a fresh token. Alternatively, you could use a refresh-token mechanism inside the worker-scoped fixture to extend the session. The key consideration is always: does the token survive the test run duration?
+
 </details>
 
 **Challenge 2 (Teardown):** Write a fixture called `testCustomer` that creates a test customer record via the API in setup, provides the customer ID to the test, and DELETES the customer record in teardown. Why is this pattern important for test idempotency?
+
 <details><summary>Answer</summary>
 
 ```typescript
 testCustomer: async ({ request }, use) => {
   // Setup: create the customer
-  const createResponse = await request.post('/api/customers', {
-    data: { name: `Test-${Date.now()}`, email: `test-${Date.now()}@test.com` }
+  const createResponse = await request.post("/api/customers", {
+    data: { name: `Test-${Date.now()}`, email: `test-${Date.now()}@test.com` },
   });
   const { customerId } = await createResponse.json();
-  
+
   // Inject the ID into the test
   await use(customerId);
-  
+
   // Teardown: delete the customer (runs even if the test fails)
   await request.delete(`/api/customers/${customerId}`);
 };
 ```
+
 This is critical for idempotency: every test run starts with no test data and ends with no test data. Tests can run in any order, any number of times, without accumulating stale records or conflicting with each other.
+
 </details>
 
 **Challenge 3 (Fixture Composition):** You need a fixture `adminPage` that:
+
 1. Uses the `account` fixture (worker-scoped, already built).
 2. Navigates to the admin dashboard.
 3. Returns a `AdminDashboardPage` POM object.
@@ -726,13 +752,12 @@ adminPage: async ({ page, account }, use) => {
   // No teardown needed — page is cleaned up by Playwright
 },
 ```
+
 Playwright resolves fixture dependencies automatically. Because `adminPage` declares `account` in its arguments, Playwright guarantees `account` is set up before `adminPage` runs.
+
 </details>
 
-
 ---
-
-
 
 **Challenge 4 [mergeTests]:** You have two fixture files: `auth.fixture.ts` (exports `test` with `account` fixture) and `api.fixture.ts` (exports `test` with `citationsClient` fixture). Write the `fixtures/index.ts` that combines both so a test can use `{ page, account, citationsClient }` in one import.
 
@@ -740,13 +765,13 @@ Playwright resolves fixture dependencies automatically. Because `adminPage` decl
 
 ```typescript
 // fixtures/index.ts
-import { mergeTests }            from '@playwright/test';
-import { test as authFixtures }  from './auth.fixture';
-import { test as apiFixtures }   from './api.fixture';
+import { mergeTests } from "@playwright/test";
+import { test as authFixtures } from "./auth.fixture";
+import { test as apiFixtures } from "./api.fixture";
 
 // Merge both fixture sets
 export const test = mergeTests(authFixtures, apiFixtures);
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 
 // Usage in a test file:
 // import { test, expect } from '../../fixtures';
@@ -754,6 +779,7 @@ export { expect } from '@playwright/test';
 ```
 
 **Key rule**: `mergeTests` requires that no two fixture files define a fixture with the SAME name (other than overriding built-ins). If both `auth.fixture.ts` and `api.fixture.ts` tried to define an `account` fixture, `mergeTests` would throw a conflict error. Keep fixture names unique across files.
+
 </details>
 
 ---
@@ -786,6 +812,7 @@ account: [async ({ browser }, use) => {
 **Bug 3: No validation that login succeeded** — `page.waitForURL('/dashboard')` passes if the URL contains `/dashboard` BUT the app might show an error on the dashboard. Fix: assert on a dashboard-specific element after navigation.
 
 **Fixed version:**
+
 ```typescript
 account: [async ({ browser }, use) => {
   const context = await browser.newContext();
@@ -807,8 +834,8 @@ account: [async ({ browser }, use) => {
   }
 }, { scope: 'worker' }],
 ```
-</details>
 
+</details>
 
 ---
 
@@ -818,40 +845,64 @@ account: [async ({ browser }, use) => {
 
 ```typescript
 // fixtures/multiRole.fixture.ts
-import { test as base } from '@playwright/test';
-import type { AccountData } from '../types';
+import { test as base } from "@playwright/test";
+import type { AccountData } from "../types";
 
 interface MultiRoleFixtures {
-  agentAccount:  AccountData;
-  adminAccount:  AccountData;
+  agentAccount: AccountData;
+  adminAccount: AccountData;
 }
 
 export const test = base.extend<{}, MultiRoleFixtures>({
   // Agent account — worker-scoped, created once
-  agentAccount: [async ({ request }, use) => {
-    const res = await request.post('/api/auth/token', {
-      data: { username: process.env.AGENT_USER, password: process.env.AGENT_PASS },
-    });
-    const body = await res.json();
-    await use({ userId: body.user_id, accessToken: body.access_token, role: 'AGENT' });
-  }, { scope: 'worker' }],
+  agentAccount: [
+    async ({ request }, use) => {
+      const res = await request.post("/api/auth/token", {
+        data: {
+          username: process.env.AGENT_USER,
+          password: process.env.AGENT_PASS,
+        },
+      });
+      const body = await res.json();
+      await use({
+        userId: body.user_id,
+        accessToken: body.access_token,
+        role: "AGENT",
+      });
+    },
+    { scope: "worker" },
+  ],
 
   // Admin account — worker-scoped, created once
-  adminAccount: [async ({ request }, use) => {
-    const res = await request.post('/api/auth/token', {
-      data: { username: process.env.ADMIN_USER, password: process.env.ADMIN_PASS },
-    });
-    const body = await res.json();
-    await use({ userId: body.user_id, accessToken: body.access_token, role: 'ADMIN' });
-  }, { scope: 'worker' }],
+  adminAccount: [
+    async ({ request }, use) => {
+      const res = await request.post("/api/auth/token", {
+        data: {
+          username: process.env.ADMIN_USER,
+          password: process.env.ADMIN_PASS,
+        },
+      });
+      const body = await res.json();
+      await use({
+        userId: body.user_id,
+        accessToken: body.access_token,
+        role: "ADMIN",
+      });
+    },
+    { scope: "worker" },
+  ],
 });
 
 // In the test:
-test('Agent creates, Admin deletes', async ({ request, agentAccount, adminAccount }) => {
+test("Agent creates, Admin deletes", async ({
+  request,
+  agentAccount,
+  adminAccount,
+}) => {
   // Step 1: Agent creates a citation (API call as agent)
-  const createRes = await request.post('/api/citations', {
+  const createRes = await request.post("/api/citations", {
     headers: { Authorization: `Bearer ${agentAccount.accessToken}` },
-    data: { customerId: 'USR-001', amount: 150, status: 'PENDING' },
+    data: { customerId: "USR-001", amount: 150, status: "PENDING" },
   });
   expect(createRes.status()).toBe(201);
   const { citationId } = await createRes.json();
@@ -871,6 +922,7 @@ test('Agent creates, Admin deletes', async ({ request, agentAccount, adminAccoun
 ```
 
 Key: both accounts are worker-scoped (one login each per worker, not per test). The test uses `request` directly with different auth headers — no browser context needed for API-only RBAC tests.
+
 </details>
 
 ---
@@ -878,12 +930,14 @@ Key: both accounts are worker-scoped (one login each per worker, not per test). 
 ## 📚 References & Further Reading
 
 ### Official Documentation — Playwright
+
 - [Fixtures Guide](https://playwright.dev/docs/test-fixtures) — The official Playwright guide covering test vs worker scope, override patterns, and automatic dependency resolution
 - [Test API: `test.extend`](https://playwright.dev/docs/api/class-test#test-extend) — API reference for the fixture extension system
 - [mergeTests API](https://playwright.dev/docs/api/class-test#test-merge-tests) — How to combine multiple fixture files into a single export
 - [Global Setup and Teardown](https://playwright.dev/docs/test-global-setup-teardown) — When to use `globalSetup` instead of a worker-scoped fixture
 
 ### Core Concepts
+
 - [Dependency Injection in JS/TS](https://blog.logrocket.com/dependency-injection-node-js/) — General concepts of DI that Playwright's fixture system implements
 - [Idempotence in Testing](https://martinfowler.com/articles/nonDeterminism.html) — Martin Fowler's discussion on non-determinism and why setup/teardown (which fixtures provide) is critical for stable tests
 

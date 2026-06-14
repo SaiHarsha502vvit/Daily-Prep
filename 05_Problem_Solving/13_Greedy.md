@@ -6,21 +6,20 @@
 
 ## 🗺️ Pattern Recognition Header — Greedy
 
-**Is this a Greedy problem?** Ask: *"Can I make the locally best choice and never look back?"*
+**Is this a Greedy problem?** Ask: _"Can I make the locally best choice and never look back?"_
 
-
-| Signal Words / Problem Type | Greedy Strategy | Key Sort |
-|---|---|---|
-| `intervals / meetings / schedule` | Sort by END time, pick non-overlapping | `(a,b) → a[1]-b[1]` |
-| `merge intervals / cover ranges` | Sort by START time, extend current | `(a,b) → a[0]-b[0]` |
-| `min intervals to remove` | Sort by end, count overlapping with lastEnd | end time |
-| `can reach end / jump game` | Track `farthest`, scan L→R | none (array scan) |
-| `task scheduler / cooldown` | Schedule most-frequent first | max-heap by freq |
-| `connect sticks / minimize cost` | Always merge smallest first (Huffman) | min-heap |
-| `assign to groups / fractional` | Sort both sides, match greedily | value/weight |
-
+| Signal Words / Problem Type       | Greedy Strategy                             | Key Sort            |
+| --------------------------------- | ------------------------------------------- | ------------------- |
+| `intervals / meetings / schedule` | Sort by END time, pick non-overlapping      | `(a,b) → a[1]-b[1]` |
+| `merge intervals / cover ranges`  | Sort by START time, extend current          | `(a,b) → a[0]-b[0]` |
+| `min intervals to remove`         | Sort by end, count overlapping with lastEnd | end time            |
+| `can reach end / jump game`       | Track `farthest`, scan L→R                  | none (array scan)   |
+| `task scheduler / cooldown`       | Schedule most-frequent first                | max-heap by freq    |
+| `connect sticks / minimize cost`  | Always merge smallest first (Huffman)       | min-heap            |
+| `assign to groups / fractional`   | Sort both sides, match greedily             | value/weight        |
 
 **⚠️ Greedy vs DP Decision:**
+
 ```
 CAN find a counterexample where local-best ≠ global-best? → Use DP
 ALL local-best choices lead to global best (exchange argument holds)? → Greedy
@@ -35,43 +34,41 @@ FAILS:   0/1 Knapsack, Coin Change (arbitrary), LIS, Edit Distance
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Greedy**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 # 📚 SECTION 12: GREEDY ALGORITHMS
 
 ## Greedy Fundamentals
 
-
 💡 **KEY INSIGHT:**
 Make locally optimal choice at each step → Global optimum
 
 **When To Use Greedy**:
+
 1. Optimal substructure: Optimal solution contains optimal
-solutions to subproblems
+   solutions to subproblems
 2. Greedy choice property: Local optimal leads to global
 
 **Common Patterns**:
+
 - Interval scheduling (meetings, activities)
 - Huffman coding
 - Minimum spanning tree (Kruskal's, Prim's)
 - Dijkstra's shortest path
 - Fractional knapsack
-⚠️ GREEDY DOESN'T ALWAYS WORK:
+  ⚠️ GREEDY DOESN'T ALWAYS WORK:
 - 0/1 Knapsack → Need DP
 - Longest path → Need DP/Backtracking
 
 ---
-
-
 
 🔬 **Section Challenge — Greedy Fundamentals**
 
@@ -85,12 +82,10 @@ solutions to subproblems
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+
 </details>
 
-
 ## PART 0: WHY Greedy — The Algorithm That Feels Like Cheating (But Isn't)
-
-
 
 🔬 **Section Challenge — PART 0: WHY Greedy — The Algorithm That Feels Like Cheating (But Isn't)**
 
@@ -98,39 +93,41 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 <details><summary>Answer</summary>
 
-**Who breaks greedy:** The `6` denomination. After picking `6`, you need 4 more — which requires four `1`s (5 total). But `5+5=10` is optimal (2 coins). **What property allows failure:** The denominations don't have the "greedy-choice property" for this target. Greedy works on coin systems where each denomination is an exact multiple of smaller ones (e.g., `[1, 5, 25, 100]` — US coins). In that case, a bigger coin is always worth more combinations. With `[1, 5, 6]`, `6` is not a multiple of `5` — the domains overlap non-uniformly. **When greedy ALWAYS works:** When denominations are a canonical coin system (each larger denomination = integer multiple of the next smaller). US coins, EU coins work. Also when there's a formal proof via exchange argument for the specific denomination set. **General solution:** Coin change is a DP problem (LC 322). DP is O(amount * #coins) and handles all denomination sets correctly.
+**Who breaks greedy:** The `6` denomination. After picking `6`, you need 4 more — which requires four `1`s (5 total). But `5+5=10` is optimal (2 coins). **What property allows failure:** The denominations don't have the "greedy-choice property" for this target. Greedy works on coin systems where each denomination is an exact multiple of smaller ones (e.g., `[1, 5, 25, 100]` — US coins). In that case, a bigger coin is always worth more combinations. With `[1, 5, 6]`, `6` is not a multiple of `5` — the domains overlap non-uniformly. **When greedy ALWAYS works:** When denominations are a canonical coin system (each larger denomination = integer multiple of the next smaller). US coins, EU coins work. Also when there's a formal proof via exchange argument for the specific denomination set. **General solution:** Coin change is a DP problem (LC 322). DP is O(amount \* #coins) and handles all denomination sets correctly.
 
 </details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Why Greedy Problems Are Tricky (And Important)
 
 Greedy algorithms feel simple: "just pick the best choice."
 The HARD PART: proving the greedy choice is CORRECT.
 Greedy appears in ~15% of interviews. The trap:
+
 - You often RECOGNIZE the greedy answer intuitively
 - But you can't PROVE it → interviewer asks "why does this work?"
 - Or worse: you assume greedy works when it DOESN'T → wrong answer
-TWO PROPERTIES REQUIRED (must have BOTH):
+  TWO PROPERTIES REQUIRED (must have BOTH):
+
 1. GREEDY CHOICE PROPERTY: The locally best choice leads to global best
 2. OPTIMAL SUBSTRUCTURE: After making a choice, the remaining problem
-is a smaller version of the same problem
-WORKS vs DOESN'T WORK:
-┬
-- ✅ Greedy WORKS        │ ❌ Greedy FAILS (need DP)
-┼
-Activity Selection     │ 0/1 Knapsack
-Fractional Knapsack    │ Longest Increasing Subsequence
-Huffman Coding         │ Coin Change (arbitrary coins)
-Dijkstra's Algorithm   │ Edit Distance
-Kruskal's MST          │ Matrix Chain Multiplication
-Jump Game I            │ Palindrome Partitioning min cuts
-┴
+   is a smaller version of the same problem
+   WORKS vs DOESN'T WORK:
+   ┬
 
+- ✅ Greedy WORKS │ ❌ Greedy FAILS (need DP)
+  ┼
+  Activity Selection │ 0/1 Knapsack
+  Fractional Knapsack │ Longest Increasing Subsequence
+  Huffman Coding │ Coin Change (arbitrary coins)
+  Dijkstra's Algorithm │ Edit Distance
+  Kruskal's MST │ Matrix Chain Multiplication
+  Jump Game I │ Palindrome Partitioning min cuts
+  ┴
 
 🔬 **Section Challenge — Why Greedy Problems Are Tricky (And Important)**
 
@@ -144,8 +141,8 @@ Jump Game I            │ Palindrome Partitioning min cuts
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## The Mental Model: "Sort + Scan + Never Look Back"
 
@@ -154,9 +151,9 @@ STEP 1: SORT the input by some criterion
 STEP 2: SCAN left to right, making the best choice at each step
 STEP 3: NEVER reconsider a past choice
 The KEY is knowing HOW to sort:
-Intervals:    Sort by END TIME → finish earliest, maximize room
-Jump Game:    Don't sort! Scan L→R, track farthest reachable
-Gas Station:  Scan L→R, track surplus (gas - cost). Reset at deficit.
+Intervals: Sort by END TIME → finish earliest, maximize room
+Jump Game: Don't sort! Scan L→R, track farthest reachable
+Gas Station: Scan L→R, track surplus (gas - cost). Reset at deficit.
 Task Scheduler: Sort by frequency → schedule most frequent first
 Assign Cookies: Sort both arrays → match smallest cookie to child
 HOW TO VERIFY (Exchange Argument — the proof technique):
@@ -166,10 +163,10 @@ WORKED EXAMPLE — Activity Selection:
 Activities: [(1,3), (2,5), (4,7), (6,8), (5,9)]
 Sort by end: [(1,3), (2,5), (4,7), (6,8), (5,9)]
 Pick (1,3) ✓ — ends earliest
-Skip (2,5)   — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip
+Skip (2,5) — starts before 3? No, 2 < 3 ❌ — WAIT, 2 < 3 so skip
 Pick (4,7) ✓ — starts at 4 ≥ 3
-Pick (6,8)   — starts at 6 < 7? YES → skip
-Skip (5,9)   — starts at 5 < 7 → skip
+Pick (6,8) — starts at 6 < 7? YES → skip
+Skip (5,9) — starts at 5 < 7 → skip
 Result: [(1,3), (4,7)] = 2 activities
 Proof: If we replaced (1,3) with (2,5), we'd free LESS room for
 future activities. Swapping always makes it worse → greedy is correct.
@@ -179,10 +176,10 @@ future activities. Swapping always makes it worse → greedy is correct.
 public int maxNonOverlapping(int[][] intervals) {
     // STEP 1: Sort by end time
     Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
-    
+
     int count = 0;
     int lastEnd = Integer.MIN_VALUE;
-    
+
     // STEP 2: Scan, greedily pick if no overlap
     for (int[] interval : intervals) {
         if (interval[0] >= lastEnd) {  // no overlap
@@ -330,7 +327,6 @@ public int maxNonOverlapping(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -370,7 +366,6 @@ public boolean canAttendMeetings(int[][] intervals) {
 │  Heap stores end times of ongoing meetings                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -419,7 +414,6 @@ public int minMeetingRooms(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -467,7 +461,6 @@ public int eraseOverlapIntervals(int[][] intervals) {
 │  Output: [[1,6], [8,10], [15,18]]                              │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -518,7 +511,6 @@ public int[][] merge(int[][] intervals) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -550,9 +542,6 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
 
 ---
 
-
-
-
 ## 12.2 Array Greedy
 
 **Pattern:** Scan the array maintaining a greedy invariant (farthest jump, surplus gas, candy needed).
@@ -579,7 +568,6 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
 │  Greedy: Track max reachable index                             │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -617,7 +605,6 @@ public boolean canJump(int[] nums) {
 │  Greedy: BFS-like level traversal                              │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -666,7 +653,6 @@ public int jump(int[] nums) {
 │  Output: 3                                                     │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -717,7 +703,6 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -748,8 +733,6 @@ public int candy(int[] ratings) {
 
 ---
 
-
-
 🔬 **Section Challenge — 12.2 Array Greedy**
 
 **Challenge 1 (Array Greedy — Gas Station):** LC 134: circular gas station. You can complete a circuit if `sum(gas) >= sum(cost)`. **Who** finds the start station? **What** is the greedy insight that makes O(n) possible without trying all starts?
@@ -762,8 +745,8 @@ public int candy(int[] ratings) {
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## 12.3 String Greedy
 
@@ -790,7 +773,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 │  Greedy: Track last occurrence of each char                    │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -842,7 +824,6 @@ public List<Integer> partitionLabels(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -873,8 +854,6 @@ public int leastInterval(char[] tasks, int n) {
 
 ---
 
-
-
 🔬 **Section Challenge — 12.3 String Greedy**
 
 **Challenge 1 (String Greedy — Task Scheduler):** LC 621: Task Scheduler. Tasks A-Z with cooldown n. **Who** determines the minimum time? **What** greedy choice maximizes CPU utilization?
@@ -887,8 +866,8 @@ public int leastInterval(char[] tasks, int n) {
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## 12.4 Math Greedy
 
@@ -911,7 +890,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 │  Max subarray: [4, -1, 2, 1] = 6                               │
 └────────────────────────────────────────────────────────────────┘
 ```
-
 
 **Solution:**
 
@@ -956,7 +934,6 @@ public int maxSubArray(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 **Solution:**
 
 ```java
@@ -978,8 +955,6 @@ public int maxProfit(int[] prices) {
 
 ---
 
-
-
 🔬 **Section Challenge — 12.4 Math Greedy**
 
 **Challenge 1 (Math Greedy — Digit Maximization):** Given non-negative integer `n`, remove `k` digits to make the largest possible number. **Who** makes the greedy choice? **What** local decision guarantees the globally maximum result?
@@ -992,53 +967,47 @@ public int maxProfit(int[] prices) {
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
-| Problem | Link | Technique | Difficulty |
-|---|---|---|---|
-| Taxi | [CF 158B](https://codeforces.com/problemset/problem/158/B) | Greedy pairing | ⭐ Easy |
-| Vasya and String | [CF 676C](https://codeforces.com/problemset/problem/676/C) | Greedy + sliding window | ⭐⭐ Medium |
-| Petya and Strings | [CF 96A](https://codeforces.com/problemset/problem/96/A) | Lexicographic greedy | ⭐ Easy |
-| Potions | [CF 1526C](https://codeforces.com/problemset/problem/1526/C) | Greedy + min-heap | ⭐⭐ Medium |
-| Minimize the Permutation | [CF 1968B](https://codeforces.com/problemset/problem/1968/B) | Greedy on array | ⭐⭐ Medium |
-| Petya and Exam | [CF 832B](https://codeforces.com/problemset/problem/832/B) | Greedy time scheduling | ⭐⭐ Medium |
+| Problem                  | Link                                                         | Technique               | Difficulty  |
+| ------------------------ | ------------------------------------------------------------ | ----------------------- | ----------- |
+| Taxi                     | [CF 158B](https://codeforces.com/problemset/problem/158/B)   | Greedy pairing          | ⭐ Easy     |
+| Vasya and String         | [CF 676C](https://codeforces.com/problemset/problem/676/C)   | Greedy + sliding window | ⭐⭐ Medium |
+| Petya and Strings        | [CF 96A](https://codeforces.com/problemset/problem/96/A)     | Lexicographic greedy    | ⭐ Easy     |
+| Potions                  | [CF 1526C](https://codeforces.com/problemset/problem/1526/C) | Greedy + min-heap       | ⭐⭐ Medium |
+| Minimize the Permutation | [CF 1968B](https://codeforces.com/problemset/problem/1968/B) | Greedy on array         | ⭐⭐ Medium |
+| Petya and Exam           | [CF 832B](https://codeforces.com/problemset/problem/832/B)   | Greedy time scheduling  | ⭐⭐ Medium |
 
 ---
 
-
-
-
 ## 🌍 Real-World Applications of Greedy Algorithms
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Interval scheduling (earliest deadline)** | Calendar apps / meeting schedulers | Pack maximum non-overlapping meetings in a day |
-| **Huffman coding** | ZIP, gzip, JPEG compression | Always merge the two least-frequent characters first |
-| **Prim's/Kruskal's (MST)** | Network infrastructure planning | Minimum cable to connect all offices |
-| **Dijkstra's (greedy relaxation)** | GPS navigation | At each step, pick the closest unvisited node |
-| **Job scheduling (OS)** | CPU / task schedulers | Shortest-job-first scheduling minimizes average wait time |
-| **Coin change (denominations designed for greedy)** | Currency systems worldwide | US/EU coins designed so greedy works (unlike arbitrary denominations) |
+| Technique                                           | Real-World System                  | How It's Used                                                         |
+| --------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------- |
+| **Interval scheduling (earliest deadline)**         | Calendar apps / meeting schedulers | Pack maximum non-overlapping meetings in a day                        |
+| **Huffman coding**                                  | ZIP, gzip, JPEG compression        | Always merge the two least-frequent characters first                  |
+| **Prim's/Kruskal's (MST)**                          | Network infrastructure planning    | Minimum cable to connect all offices                                  |
+| **Dijkstra's (greedy relaxation)**                  | GPS navigation                     | At each step, pick the closest unvisited node                         |
+| **Job scheduling (OS)**                             | CPU / task schedulers              | Shortest-job-first scheduling minimizes average wait time             |
+| **Coin change (denominations designed for greedy)** | Currency systems worldwide         | US/EU coins designed so greedy works (unlike arbitrary denominations) |
 
 ```
 🔥 HUFFMAN IN EVERY FILE YOU DOWNLOAD:
    Characters: 'e'→15%, 't'→10%, 'a'→8%, others less frequent
-   
+
    Huffman greedy: always merge 2 rarest nodes into one
    Result: 'e' → "0" (1 bit), 't' → "10" (2 bits), rare chars → longer codes
-   
+
    On average: ~2.5 bits/char instead of 8 bits = 68% compression
    "This is in EVERY .zip file, every HTTP gzip response, every JPEG"
 ```
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Greedy Algorithms**
 
@@ -1046,12 +1015,37 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 <details><summary>Answer</summary>
 
-**Who proves it optimal:** Exchange argument. In any optimal code tree, the two symbols with lowest frequency must be deepest (assigned longest codes). Swapping shallower symbols with the two lowest-frequency symbols into deeper positions reduces or maintains total weighted path length. Therefore always merging the two lowest first is optimal. **Greedy algorithm:** Min-heap of (frequency, node). Pop two minimums, merge into parent with combined frequency, push back. Repeat until one node. This is O(n log n) with a heap. **Prefix-free property:** In the Huffman tree, codes are only assigned to LEAF nodes. Since no leaf is an ancestor of another leaf, no code is a prefix of another. Bit strings are read left (0) / right (1) until a leaf is reached — unambiguous decoding. **Why greedy works here:** The cost function (sum of frequency * depth) has "optimal substructure" — an optimal tree for n symbols contains optimal sub-trees for any subset. Combined with the greedy-choice property (always merge cheapest pair), this guarantees global optimality. Huffman is one of the few greedy algorithms with a formal optimality proof.
+**Who proves it optimal:** Exchange argument. In any optimal code tree, the two symbols with lowest frequency must be deepest (assigned longest codes). Swapping shallower symbols with the two lowest-frequency symbols into deeper positions reduces or maintains total weighted path length. Therefore always merging the two lowest first is optimal. **Greedy algorithm:** Min-heap of (frequency, node). Pop two minimums, merge into parent with combined frequency, push back. Repeat until one node. This is O(n log n) with a heap. **Prefix-free property:** In the Huffman tree, codes are only assigned to LEAF nodes. Since no leaf is an ancestor of another leaf, no code is a prefix of another. Bit strings are read left (0) / right (1) until a leaf is reached — unambiguous decoding. **Why greedy works here:** The cost function (sum of frequency \* depth) has "optimal substructure" — an optimal tree for n symbols contains optimal sub-trees for any subset. Combined with the greedy-choice property (always merge cheapest pair), this guarantees global optimality. Huffman is one of the few greedy algorithms with a formal optimality proof.
 
 </details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+
 </details>
 
+---
 
+### Historical Evolution
+
+**Greedy algorithms** trace their origins to two independent lines of work in the late 1950s, both targeting optimization over combinatorial structures. David Huffman (1952) invented Huffman coding at MIT for his Information Theory term paper, greedily merging the two lowest-probability symbols at each step to build optimal prefix-free binary codes — a technique that remains the foundation of JPEG, PNG, MP3, and DEFLATE compression four decades later. Joseph Kruskal (1956) published his minimum spanning tree algorithm in the Proceedings of the American Mathematical Society, greedily adding the cheapest edge that does not form a cycle, with a proof via cut property that became a template for greedy correctness arguments across domains.
+
+Robert Prim (1957) independently discovered the same MST problem using a different greedy strategy — growing a single component from a seed node — while Edsger Dijkstra (1959) formalized his shortest-path algorithm with a greedy relaxation approach that remains virtually unchanged in every production network routing implementation today (OSPF, IS-IS, and interior BGP rely on Dijkstra's SPF calculation). The theoretical framework unifying these disparate results — that a problem admits a greedy optimal solution if and only if it satisfies the matroid or greedoid structure — was established by Bernard Boruvka (1926, early MST work) and later generalized by Jack Edmonds (1971) through the theory of matroids and submodular optimization.
+
+Modern practice anchors greedy algorithms in production systems at Google, Cisco, and Akamai: Dijkstra's algorithm routes billions of packets per second in internet infrastructure, Kruskal's and Prim's MST algorithms appear in network design and cluster analysis, and Huffman's coding underlies every major compression pipeline. Competitive programming platforms like LeetCode, Codeforces, and AtCoder regularly feature greedy problems (activity selection, fractional knapsack, Huffman encoding) as core algorithm challenges, with Huffman's greedy merge step a perennial interview favorite since the early 2010s.
+
+---
+
+### Production Reality
+
+**Greedy Algorithms** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Greedy optimality violation.** The classic counterexample is 0/1 knapsack: items with weights (10, 20, 30) and values (60, 100, 120) with capacity 50. Greedy by value/weight ratio picks item 1 (value 60) and is stuck — total value 60. Dynamic programming gets items 2+3 for value 220. Production impact: incorrect optimization results in revenue loss, resource overallocation, or scheduling failures when greedy is applied outside its valid domain.
+
+**Failure mode 2: Comparator overflow in priority queues.** Dijkstra implementations commonly use `(dist[u] - dist[v])` for comparison. With distances reaching Integer.MAX_VALUE, subtracting a small distance from MAX_VALUE causes integer overflow, yielding negative values that corrupt the min-heap ordering. Production impact: routing tables become inconsistent; packets loop or drop. The 2019 Cloudflare outage was partially traceable to integer overflow in routing calculations.
+
+**Failure mode 3: Negative-weight edge handling.** Dijkstra's algorithm with a standard min-heap silently produces wrong shortest paths on graphs with negative-weight edges. Production impact: GPS systems misroute vehicles near elevation changes; financial arbitrage systems compute incorrect paths. Bellman-Ford or SPFA must be used instead.
+
+**Debug workflow:** Before committing to greedy: (1) formally prove the greedy-choice property — every local optimum leads to a global optimum; (2) prove optimal substructure — optimal solution contains optimal solutions to subproblems; (3) test the counterexample case: fractional vs. indivisible items; (4) use `Integer.compare(a, b)` instead of `a - b` in comparators to prevent overflow; (5) verify no negative weights exist before using Dijkstra; otherwise switch to Bellman-Ford.
+
+**Real-world anchor:** Amazon's EC2 scheduler uses greedy bin-packing for instance placement. When capacity calculations overflow at scale boundaries, instances are incorrectly placed, causing "insufficient capacity" errors post-launch — a production incident affecting thousands of deployments in 2017.

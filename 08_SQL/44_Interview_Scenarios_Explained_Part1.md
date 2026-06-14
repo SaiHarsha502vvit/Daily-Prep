@@ -7,27 +7,25 @@
 
 ## 📋 Scenarios in This File
 
-| # | Scenario | Interview Trigger |
-|---|----------|-------------------|
-| S1 | INT Primary Key Exhaustion | "Tell me about a scaling challenge you handled" |
-| S2 | Full Table Scan on Large Table | "Describe a performance issue you diagnosed" |
-| S3 | N+1 Query Problem | "What's the worst performance bug you've seen?" |
-| S4 | Slow Pagination (OFFSET) | "How would you implement pagination for large datasets?" |
-| S5 | Missing Index / Wrong Index | "Walk me through how you'd optimize a slow query" |
-| S6 | Connection Pool Exhaustion | "Tell me about a production outage you resolved" |
-| S7 | Hot Partition / Uneven Shard | "How does your system handle data distribution?" |
-| S8 | Cache Stampede / Thundering Herd | "How do you handle cache failures at scale?" |
-| S9 | Slow COUNT(*) on Billion Rows | "How would you get a count of records efficiently?" |
-| S10 | SELECT * in Production | "What common anti-patterns have you fixed?" |
+| #   | Scenario                         | Interview Trigger                                        |
+| --- | -------------------------------- | -------------------------------------------------------- |
+| S1  | INT Primary Key Exhaustion       | "Tell me about a scaling challenge you handled"          |
+| S2  | Full Table Scan on Large Table   | "Describe a performance issue you diagnosed"             |
+| S3  | N+1 Query Problem                | "What's the worst performance bug you've seen?"          |
+| S4  | Slow Pagination (OFFSET)         | "How would you implement pagination for large datasets?" |
+| S5  | Missing Index / Wrong Index      | "Walk me through how you'd optimize a slow query"        |
+| S6  | Connection Pool Exhaustion       | "Tell me about a production outage you resolved"         |
+| S7  | Hot Partition / Uneven Shard     | "How does your system handle data distribution?"         |
+| S8  | Cache Stampede / Thundering Herd | "How do you handle cache failures at scale?"             |
+| S9  | Slow COUNT(\*) on Billion Rows   | "How would you get a count of records efficiently?"      |
+| S10 | SELECT \* in Production          | "What common anti-patterns have you fixed?"              |
 
 ---
-
-
-
 
 ## S1: Primary Key ID Exhaustion
 
 ### 🎤 Interview Question
+
 "Tell me about a scaling challenge you dealt with in production."
 
 ### ✅ Professional Answer (SIREN Format)
@@ -40,12 +38,12 @@
 
 ```sql
 -- The diagnostic query I ran
-SELECT 
+SELECT
     MAX(id) AS current_max,
     2147483647 - MAX(id) AS remaining_ids,
-    (2147483647 - MAX(id)) / 
-        (SELECT COUNT(*) FROM transactions 
-         WHERE created_at > CURRENT_DATE - INTERVAL '30 days') * 30 
+    (2147483647 - MAX(id)) /
+        (SELECT COUNT(*) FROM transactions
+         WHERE created_at > CURRENT_DATE - INTERVAL '30 days') * 30
         AS estimated_days_remaining
 FROM transactions;
 ```
@@ -77,7 +75,7 @@ SELECT setval('transactions_v2_id_seq', (SELECT MAX(id) FROM transactions));
 -- Step 3: Application dual-writes to old AND new table (behind feature flag)
 -- Step 4: Background job copies historical data in batches
 -- Step 5: Verify counts match
--- Step 6: Atomic swap: RENAME transactions TO transactions_old; 
+-- Step 6: Atomic swap: RENAME transactions TO transactions_old;
 --         RENAME transactions_v2 TO transactions;
 -- Step 7: Drop old table after verification period
 ```
@@ -94,7 +92,7 @@ WHY INT runs out:
 - INT = 4 bytes = 32 bits = 2^31 - 1 = 2,147,483,647 max (signed)
 - At 100K inserts/day: lasts 58 years
 - At 1M inserts/day:   lasts 5.8 years ← danger zone
-- At 10M inserts/day:  lasts 214 days  
+- At 10M inserts/day:  lasts 214 days
 
 WHY BIGINT is enough:
 - BIGINT = 8 bytes = 64 bits = 2^63 - 1 = 9,223,372,036,854,775,807
@@ -116,6 +114,7 @@ WHY UUID v7 fixes this:
 ### 🔄 Variants You Should Know
 
 **Variant A: VARCHAR(9) ID running out**
+
 ```sql
 -- Business uses formatted IDs like "ORD000001" to "ORD999999"
 -- Max: 999,999 IDs for 6-digit numeric part
@@ -125,6 +124,7 @@ WHY UUID v7 fixes this:
 ```
 
 **Variant B: Snowflake ID for distributed systems**
+
 ```
 Structure: [timestamp 41 bits][machine_id 10 bits][sequence 12 bits]
 - 41-bit timestamp: ~69 years
@@ -135,6 +135,7 @@ Structure: [timestamp 41 bits][machine_id 10 bits][sequence 12 bits]
 ```
 
 **Variant C: After a database merge/acquisition**
+
 ```sql
 -- Company A has user IDs 1-500,000
 -- Company B has user IDs 1-300,000
@@ -143,7 +144,7 @@ Structure: [timestamp 41 bits][machine_id 10 bits][sequence 12 bits]
 -- Solution 1: Offset one database
 UPDATE company_b.users SET id = id + 1000000;
 
--- Solution 2: Surrogate key + source tag  
+-- Solution 2: Surrogate key + source tag
 ALTER TABLE merged_users ADD COLUMN source VARCHAR(10);
 -- (id=1234, source='A') and (id=1234, source='B') coexist
 ```
@@ -153,21 +154,21 @@ ALTER TABLE merged_users ADD COLUMN source VARCHAR(10);
 ```
 Q: "Why not just use UUID from the start?"
 A: "UUIDs are excellent for distributed systems, but they have trade-offs:
-    16 bytes vs 8 bytes for BIGINT (doubles index size), UUID v4 is random 
-    which causes B-Tree fragmentation. For a single-database system, BIGINT 
-    auto-increment is simpler and more performant. If I were designing a 
+    16 bytes vs 8 bytes for BIGINT (doubles index size), UUID v4 is random
+    which causes B-Tree fragmentation. For a single-database system, BIGINT
+    auto-increment is simpler and more performant. If I were designing a
     new distributed system today, I'd use UUID v7."
 
 Q: "How did you handle the migration without downtime?"
-A: "The key insight is that RENAME TABLE is an atomic metadata operation — 
-    it takes microseconds regardless of table size. The expensive part 
-    (copying data) happens in the background while the old table serves 
+A: "The key insight is that RENAME TABLE is an atomic metadata operation —
+    it takes microseconds regardless of table size. The expensive part
+    (copying data) happens in the background while the old table serves
     traffic. The dual-write period ensures no data loss during the transition."
 
 Q: "What happens to foreign keys during migration?"
-A: "Great question — any table with a FK to our transactions table also 
-    needs to be migrated. I mapped all FK dependencies first and included 
-    them in the migration plan. In PostgreSQL, I also temporarily dropped 
+A: "Great question — any table with a FK to our transactions table also
+    needs to be migrated. I mapped all FK dependencies first and included
+    them in the migration plan. In PostgreSQL, I also temporarily dropped
     FK constraints during the backfill and re-added them after."
 ```
 
@@ -176,6 +177,7 @@ A: "Great question — any table with a FK to our transactions table also
 ## S2: Full Table Scan on Large Table
 
 ### 🎤 Interview Question
+
 "Walk me through how you'd diagnose and fix a slow database query."
 
 ### ✅ Professional Answer
@@ -186,9 +188,9 @@ A: "Great question — any table with a FK to our transactions table also
 
 ```sql
 EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
-SELECT * FROM orders 
-WHERE customer_id = 12345 
-  AND status = 'pending' 
+SELECT * FROM orders
+WHERE customer_id = 12345
+  AND status = 'pending'
   AND created_at > '2025-01-01';
 
 -- BEFORE fix (bad plan):
@@ -201,6 +203,7 @@ WHERE customer_id = 12345
 ```
 
 "The execution plan tells me everything:
+
 - **Seq Scan** = full table scan, reading every row
 - **Rows Removed by Filter: 49,999,153** = we read 50M rows to find 847 matches
 - **Buffers: read=563,421** = 563K disk page reads. At 8KB per page, that's ~4.4GB of I/O
@@ -211,10 +214,10 @@ The key insight is composite index column ordering. The rule is **Equality → R
 
 ```sql
 -- customer_id = exact match (EQUALITY)
--- status = exact match (EQUALITY)  
+-- status = exact match (EQUALITY)
 -- created_at > date (RANGE)
 -- So the optimal index is:
-CREATE INDEX idx_orders_cust_status_date 
+CREATE INDEX idx_orders_cust_status_date
 ON orders (customer_id, status, created_at);
 -- ↑ Equality columns first, range column last
 
@@ -254,9 +257,9 @@ Index on (created_at, customer_id, status):  ← WRONG ORDER
 
 ```
 The Performance Math:
-- Full scan: 50M rows × 186 bytes = 9.3GB data 
+- Full scan: 50M rows × 186 bytes = 9.3GB data
   → ~1.2M page reads → ~5-30 seconds
-- Index scan: 4 B-Tree levels + 847 row lookups 
+- Index scan: 4 B-Tree levels + 847 row lookups
   → ~860 page reads → <1ms
 - That's a 1,400x reduction in I/O
 ```
@@ -264,6 +267,7 @@ The Performance Math:
 ### 🔄 Variants
 
 **Variant A: Index exists but not used**
+
 ```sql
 -- Query uses function on indexed column:
 WHERE LOWER(email) = 'john@example.com'
@@ -278,16 +282,18 @@ WHERE phone = 12345  -- phone is VARCHAR, comparing to INT
 ```
 
 **Variant B: Index scan vs bitmap scan vs seq scan**
+
 ```sql
 -- The optimizer makes intelligent choices:
 -- < 5% of table: Index Scan (random I/O, few pages)
 -- 5-20% of table: Bitmap Index Scan (batch random I/O)
 -- > 20% of table: Seq Scan (sequential is faster than lots of random)
--- This is WHY adding an index doesn't always help queries that 
+-- This is WHY adding an index doesn't always help queries that
 -- return large portions of the table!
 ```
 
 **Variant C: Covering index (index-only scan)**
+
 ```sql
 -- Query: SELECT customer_id, status, COUNT(*) FROM orders GROUP BY 1, 2
 -- If index is (customer_id, status), database reads ONLY the index
@@ -301,6 +307,7 @@ CREATE INDEX idx_covering ON orders (customer_id, status);
 ## S3: N+1 Query Problem
 
 ### 🎤 Interview Question
+
 "What's the most common performance problem in ORM-based applications?"
 
 ### ✅ Professional Answer
@@ -322,12 +329,12 @@ for (Customer c : customers) {
 // 2. SELECT * FROM orders WHERE customer_id = 1       ← +1
 // 3. SELECT * FROM orders WHERE customer_id = 2       ← +1
 // 4. SELECT * FROM orders WHERE customer_id = 3       ← +1
-// ... 
+// ...
 // 1001. SELECT * FROM orders WHERE customer_id = 1000 ← +1
 // Total: 1 + 1000 = 1001 queries for what should be 1 query!
 ```
 
-**The root cause is the ORM's lazy loading strategy.** `@OneToMany` defaults to `FetchType.LAZY`, which is actually the *correct* default — you don't want to load every relationship eagerly all the time. The problem is that developers access the lazy collection in a loop without realizing each access is a separate database round-trip.
+**The root cause is the ORM's lazy loading strategy.** `@OneToMany` defaults to `FetchType.LAZY`, which is actually the _correct_ default — you don't want to load every relationship eagerly all the time. The problem is that developers access the lazy collection in a loop without realizing each access is a separate database round-trip.
 
 **The fix depends on the context:**"
 
@@ -385,6 +392,7 @@ This is equivalent to the difference between:
 ### 🔄 Variants
 
 **Variant A: N+1 in REST API (not just ORM)**
+
 ```java
 // Same anti-pattern in microservices:
 List<Order> orders = orderService.getOrders();       // 1 call
@@ -400,6 +408,7 @@ List<Customer> customers = customerService.getCustomersByIds(
 ```
 
 **Variant B: N+1 with nested relationships (N+1+M)**
+
 ```java
 // Customer → Orders → OrderItems
 // 1 query for customers
@@ -409,7 +418,7 @@ List<Customer> customers = customerService.getCustomersByIds(
 
 // Fix: Multi-level JOIN FETCH
 @Query("SELECT c FROM Customer c " +
-       "JOIN FETCH c.orders o " + 
+       "JOIN FETCH c.orders o " +
        "JOIN FETCH o.items")
 List<Customer> findAllWithOrdersAndItems();
 // WARNING: This creates a Cartesian product — use with care on large datasets
@@ -417,6 +426,7 @@ List<Customer> findAllWithOrdersAndItems();
 ```
 
 **Variant C: Detecting N+1 automatically**
+
 ```java
 // Add query counting in tests:
 @Test
@@ -435,6 +445,7 @@ void shouldNotHaveNPlusOne() {
 ## S4: Slow Pagination (OFFSET Hell)
 
 ### 🎤 Interview Question
+
 "How would you implement pagination for a table with 100 million rows?"
 
 ### ✅ Professional Answer
@@ -454,7 +465,7 @@ SELECT * FROM orders ORDER BY id LIMIT 20 OFFSET 19980;
 
 -- Page 50000: catastrophically slow
 SELECT * FROM orders ORDER BY id LIMIT 20 OFFSET 999980;
--- Database reads 1,000,000 rows, discards 999,980, returns 20. 
+-- Database reads 1,000,000 rows, discards 999,980, returns 20.
 -- Execution time: 8+ seconds on 100M rows!
 ```
 
@@ -477,20 +488,20 @@ SELECT * FROM orders ORDER BY id LIMIT 20 OFFSET 999980;
 public Page<OrderDTO> getOrders(
         @RequestParam(required = false) Long afterId,
         @RequestParam(defaultValue = "20") int pageSize) {
-    
+
     List<Order> orders;
     if (afterId == null) {
         orders = orderRepo.findTopNByOrderByIdAsc(pageSize + 1);
     } else {
-        orders = orderRepo.findByIdGreaterThanOrderByIdAsc(afterId, 
+        orders = orderRepo.findByIdGreaterThanOrderByIdAsc(afterId,
                                     PageRequest.of(0, pageSize + 1));
     }
-    
+
     boolean hasNext = orders.size() > pageSize;
     if (hasNext) orders = orders.subList(0, pageSize);
-    
+
     Long nextCursor = hasNext ? orders.get(orders.size() - 1).getId() : null;
-    
+
     return new Page<>(
         orders.stream().map(OrderDTO::from).toList(),
         nextCursor,
@@ -527,6 +538,7 @@ The B-Tree seek: For 100M rows, index depth ≈ 4
 ### 🔄 Variants
 
 **Variant A: Multi-column sort (compound cursor)**
+
 ```sql
 -- Can't use simple WHERE id > ? when sorting by (created_at DESC, id DESC)
 -- Keyset condition for compound sort:
@@ -540,6 +552,7 @@ LIMIT 20;
 ```
 
 **Variant B: Total count problem**
+
 ```sql
 -- Users want "Page 3 of 15,000" but COUNT(*) on 100M rows is slow
 -- Solutions:
@@ -550,6 +563,7 @@ LIMIT 20;
 ```
 
 **Variant C: API pagination for external consumers**
+
 ```
 OFFSET-based: GET /api/orders?page=5&pageSize=20
 - Simple for client
@@ -565,12 +579,10 @@ CURSOR-based: GET /api/orders?after=eyJpZCI6MTIzNH0&limit=20
 
 ---
 
-
-
-
 ## S5: Missing Index / Wrong Index Order
 
 ### 🎤 Interview Question
+
 "How do you identify missing indexes in production?"
 
 ### ✅ Professional Answer
@@ -581,13 +593,13 @@ CURSOR-based: GET /api/orders?after=eyJpZCI6MTIzNH0&limit=20
 
 ```sql
 -- Tables that are scanned sequentially too often
-SELECT 
+SELECT
     schemaname, relname AS table_name,
     seq_scan,                   -- Number of sequential scans
     idx_scan,                   -- Number of index scans
-    CASE WHEN (seq_scan + idx_scan) > 0 
+    CASE WHEN (seq_scan + idx_scan) > 0
          THEN ROUND(100.0 * seq_scan / (seq_scan + idx_scan), 1)
-         ELSE 0 
+         ELSE 0
     END AS pct_seq_scan,
     n_live_tup AS row_count
 FROM pg_stat_user_tables
@@ -601,7 +613,7 @@ ORDER BY pct_seq_scan DESC, seq_scan DESC;
 
 ```sql
 -- PostgreSQL (requires pg_stat_statements extension)
-SELECT 
+SELECT
     LEFT(query, 200) AS query,
     calls,
     ROUND(mean_exec_time::numeric, 2) AS avg_ms,
@@ -615,7 +627,7 @@ LIMIT 20;
 **3. Analyze the worst queries:**"
 
 ```sql
-EXPLAIN (ANALYZE, BUFFERS) 
+EXPLAIN (ANALYZE, BUFFERS)
 <paste the slow query here>;
 -- Look for:
 -- ❌ Seq Scan on large table
@@ -656,6 +668,7 @@ WRONG ORDER:
 ### 🔄 Variants
 
 **Variant A: Redundant indexes wasting space**
+
 ```sql
 -- You have:
 -- INDEX (a, b, c)
@@ -664,11 +677,11 @@ WRONG ORDER:
 -- INDEX (b, a)     ← NOT redundant! Different leading column
 
 -- Detect redundant indexes:
-SELECT 
+SELECT
     idx1.indexrelid::regclass AS possibly_redundant,
     idx2.indexrelid::regclass AS covering_index
 FROM pg_index idx1
-JOIN pg_index idx2 ON idx1.indrelid = idx2.indrelid 
+JOIN pg_index idx2 ON idx1.indrelid = idx2.indrelid
     AND idx1.indexrelid != idx2.indexrelid
 WHERE idx1.indkey::text = ANY(
     SELECT unnest(string_to_array(idx2.indkey::text, ' '))
@@ -677,6 +690,7 @@ WHERE idx1.indkey::text = ANY(
 ```
 
 **Variant B: Index exists but optimizer chooses not to use it**
+
 ```sql
 -- Possible reasons:
 -- 1. Statistics are stale → ANALYZE table_name;
@@ -697,6 +711,7 @@ FROM pg_stats WHERE tablename = 'orders' AND attname = 'status';
 ## S6: Connection Pool Exhaustion
 
 ### 🎤 Interview Question
+
 "Tell me about a production outage you helped resolve."
 
 ### ✅ Professional Answer
@@ -708,7 +723,7 @@ FROM pg_stats WHERE tablename = 'orders' AND attname = 'status';
 **INVESTIGATION:** I checked HikariCP metrics and saw all 20 connections were in 'active' state with zero available. I queried PostgreSQL directly:"
 
 ```sql
-SELECT pid, state, query, 
+SELECT pid, state, query,
        NOW() - xact_start AS transaction_duration,
        NOW() - query_start AS query_duration,
        wait_event_type, wait_event
@@ -721,32 +736,35 @@ ORDER BY xact_start;
 -- They were all running the same query at some point
 ```
 
-"**ROOT CAUSE:** A developer had added a new endpoint that called an external payment API *inside* a `@Transactional` method. When the payment API slowed down (it was having its own incident), each request held a database connection for the full duration of the HTTP call — up to 45 seconds. Since we only had 20 connections, and each was tied up for 45 seconds, our pool capacity was effectively (20 connections / 45 seconds) = ~0.4 requests per second. Our actual traffic was 50 requests/second.
+"**ROOT CAUSE:** A developer had added a new endpoint that called an external payment API _inside_ a `@Transactional` method. When the payment API slowed down (it was having its own incident), each request held a database connection for the full duration of the HTTP call — up to 45 seconds. Since we only had 20 connections, and each was tied up for 45 seconds, our pool capacity was effectively (20 connections / 45 seconds) = ~0.4 requests per second. Our actual traffic was 50 requests/second.
 
 **EXECUTION — immediate (5 minutes):**"
 
 ```sql
 -- Kill the hung transactions
-SELECT pg_terminate_backend(pid) 
-FROM pg_stat_activity 
-WHERE state = 'idle in transaction' 
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE state = 'idle in transaction'
   AND NOW() - xact_start > INTERVAL '30 seconds';
 ```
 
 🔬 **Section Challenge — S6: Connection Pool Exhaustion**
 
 **Challenge 1 (Reasoning):** A payment API slows down, and every request keeps a database transaction open while waiting for HTTP. Why does this drain the connection pool even if each SQL statement is fast?
+
 <details><summary>Answer</summary>
 
 The transaction owns a database connection for the whole method, not only while SQL is executing. If the external API waits 45 seconds, that connection is pinned for 45 seconds. With 20 pool connections, capacity becomes roughly `20 / 45 = 0.44` requests/sec for that path, no matter how fast the actual SQL is. The fix is to move external calls outside the transaction or split the workflow into short DB transactions plus retryable/outbox steps.
+
 </details>
 
 **Challenge 2 (Design):** Why is killing `idle in transaction` sessions only an emergency action, not the real fix?
+
 <details><summary>Answer</summary>
 
 Terminating sessions frees connections immediately, but it can abort in-flight business work and does not remove the code path that created long transactions. The real fix is to shorten transaction scope, add transaction timeouts, add Hikari leak detection, and keep non-DB I/O outside DB transactions. Emergency termination restores service; code and configuration changes prevent recurrence.
-</details>
 
+</details>
 
 ```yaml
 # Increase pool size for immediate relief:
@@ -754,7 +772,7 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 50
-      idle-in-transaction-session-timeout: 30000  # Kill after 30s
+      idle-in-transaction-session-timeout: 30000 # Kill after 30s
 ```
 
 "**EXECUTION — fix (same day):**"
@@ -791,6 +809,7 @@ private void updateOrderPayment(Long orderId, String paymentId) {
 ```
 
 "**NEXT STEPS:** I added three things:
+
 1. HikariCP pool utilization alert at 80%
 2. `idle-in-transaction-session-timeout` at the PostgreSQL level (30 seconds)
 3. A static analysis rule that flags `@Transactional` methods containing HTTP client calls"
@@ -824,6 +843,7 @@ Pool sizing formula (HikariCP recommended):
 ## S7: Hot Partition / Uneven Data Distribution
 
 ### 🎤 Interview Question
+
 "How do you handle data skew in a distributed database?"
 
 ### ✅ Professional Answer
@@ -834,7 +854,7 @@ Pool sizing formula (HikariCP recommended):
 -- That partition's disk is saturated while other partitions idle
 
 -- Detect hot partition:
-SELECT 
+SELECT
     tableoid::regclass AS partition_name,
     COUNT(*) AS rows,
     pg_size_pretty(pg_relation_size(tableoid)) AS size
@@ -864,6 +884,7 @@ CREATE TABLE orders_p1 PARTITION OF orders FOR VALUES WITH (MODULUS 8, REMAINDER
 ## S8: Cache Stampede / Thundering Herd
 
 ### 🎤 Interview Question
+
 "How do you handle cache failures at scale?"
 
 ### ✅ Professional Answer
@@ -888,14 +909,14 @@ public List<Product> getTopProducts() {
 public List<Product> getTopProducts() {
     List<Product> cached = cache.get("top_products");
     if (cached != null) return cached;
-    
+
     // Only one thread acquires the lock
     if (regenerationLock.tryLock("top_products", Duration.ofSeconds(10))) {
         try {
             // Double-check after acquiring lock
             cached = cache.get("top_products");
             if (cached != null) return cached;
-            
+
             cached = productRepo.findTopExpensive();  // 1 DB query
             cache.put("top_products", cached, Duration.ofMinutes(5));
             return cached;
@@ -914,7 +935,7 @@ public List<Product> getTopProducts() {
 public List<Product> getTopProducts() {
     CacheEntry<List<Product>> entry = cache.getWithMetadata("top_products");
     if (entry == null) return regenerateAndCache();
-    
+
     double ttlRemaining = entry.getRemainingTtl().toSeconds();
     double totalTtl = 300.0;  // 5 minutes
     // As TTL approaches 0, probability of refresh approaches 1
@@ -948,12 +969,10 @@ DSA connection:
 
 ---
 
-
-
-
-## S9: Slow COUNT(*) on Billion Rows
+## S9: Slow COUNT(\*) on Billion Rows
 
 ### 🎤 Interview Question
+
 "How would you implement a 'total results' count for a search feature?"
 
 ### ✅ Professional Answer
@@ -1010,14 +1029,15 @@ public void refreshCounts() {}
 
 ---
 
-## S10: SELECT * in Production
+## S10: SELECT \* in Production
 
 ### 🎤 Interview Question
+
 "What common anti-patterns do you look for in code reviews?"
 
 ### ✅ Professional Answer
 
-"SELECT * is one of the first things I flag. It seems harmless but causes real performance problems at scale:
+"SELECT \* is one of the first things I flag. It seems harmless but causes real performance problems at scale:
 
 **1. Network bandwidth waste:**"
 
@@ -1029,6 +1049,7 @@ public void refreshCounts() {}
 ```
 
 **2. Prevents index-only scans:**"
+
 ```sql
 -- If index is (status, created_at), and query is:
 SELECT status, created_at FROM orders WHERE status = 'pending';
@@ -1037,6 +1058,7 @@ SELECT status, created_at FROM orders WHERE status = 'pending';
 ```
 
 **3. Breaks when schema changes:**"
+
 ```java
 // ResultSet mapped positionally:
 String name = rs.getString(2);  // Was 'name', but someone added a column before it
@@ -1047,6 +1069,7 @@ String name = rs.getString("name");  // Always correct regardless of schema chan
 ```
 
 **4. Spring Boot/JPA version:**"
+
 ```java
 // BAD: Load full entity for a simple status check
 Optional<Order> order = orderRepo.findById(id);
@@ -1061,20 +1084,27 @@ String findStatusById(@Param("id") Long id);
 
 ---
 
-
-
-
 ## 🧠 Pattern Map: Problems → Professional Diagnosis
 
-| When You See... | Immediately Think... | Say in Interview... |
-|-----------------|---------------------|---------------------|
-| Slow query | Execution plan → Seq Scan? | "I'd start with EXPLAIN ANALYZE to examine the execution plan" |
-| Timeout errors | Connection pool or lock contention | "This pattern suggests either pool exhaustion or lock contention; I'd check pg_stat_activity" |
-| Intermittent slowness | Lock contention or plan regression | "The intermittent nature suggests a concurrency issue, possibly lock contention during peak traffic" |
-| OOM in application | Unbounded collection loading | "This is consistent with unbounded entity accumulation — likely loading too many entities in a single transaction" |
-| Data inconsistency | Race condition or missing constraint | "This indicates either a race condition in the write path or a missing database constraint" |
-| Spike then recovery | Cache expiration or GC pause | "The spike-and-recovery pattern is characteristic of cache stampede or a major GC pause" |
+| When You See...       | Immediately Think...                 | Say in Interview...                                                                                                |
+| --------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Slow query            | Execution plan → Seq Scan?           | "I'd start with EXPLAIN ANALYZE to examine the execution plan"                                                     |
+| Timeout errors        | Connection pool or lock contention   | "This pattern suggests either pool exhaustion or lock contention; I'd check pg_stat_activity"                      |
+| Intermittent slowness | Lock contention or plan regression   | "The intermittent nature suggests a concurrency issue, possibly lock contention during peak traffic"               |
+| OOM in application    | Unbounded collection loading         | "This is consistent with unbounded entity accumulation — likely loading too many entities in a single transaction" |
+| Data inconsistency    | Race condition or missing constraint | "This indicates either a race condition in the write path or a missing database constraint"                        |
+| Spike then recovery   | Cache expiration or GC pause         | "The spike-and-recovery pattern is characteristic of cache stampede or a major GC pause"                           |
 
 ---
 
 [⬅ Previous: 43_Interview_Mindset](43_Interview_Mindset_How_Professionals_Explain.md) | [📚 Index](00_INDEX.md) | [Next: 45_Interview_Scenarios_Part2 ➡](45_Interview_Scenarios_Explained_Part2.md)
+
+### Historical Evolution (Extended)
+
+**Additional predecessors:**
+- **Twitter (2010)**: Snowflake ID — 64-bit distributed ID (timestamp + machine_id + sequence) solving cross-datacenter uniqueness before UUID v7 existed
+- **Paul J. Leach / Microsoft (2005)**: UUID v4 (RFC 4122) — random 128-bit IDs enabling distributed generation but causing B-Tree fragmentation
+- **Friendster (2002)**: Early social network hitting auto-increment ID exhaustion at 100M users — lesson that sequential IDs don't scale past single-machine databases
+
+**Brief evolution note:**
+The INT exhaustion problem is as old as relational databases themselves — the 2^31-1 ceiling was set when 2 billion records seemed astronomical. UUIDs emerged from the need for distributed generation (no coordinator), but their random nature created write amplification on B-Tree indexes. The industry eventually converged on UUID v7 (RFC 9562, 2024) — time-ordered 128-bit IDs that preserve both distributed uniqueness AND sequential B-Tree efficiency.

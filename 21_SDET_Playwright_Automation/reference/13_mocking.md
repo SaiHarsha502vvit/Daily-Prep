@@ -52,19 +52,19 @@ Browser app → HTTP request
 
 ### 1.2 What's interceptable
 
-| Resource type | Interceptable |
-|---|---|
-| XHR / Fetch (API calls) | ✅ |
-| Documents (HTML) | ✅ |
-| Scripts (JS) | ✅ |
-| Stylesheets (CSS) | ✅ |
-| Images | ✅ |
-| Fonts | ✅ |
-| WebSockets | ✅ (separate API; see §11) |
-| Service Worker fetches | ✅ |
-| Server-Sent Events | ✅ |
-| WebRTC | ❌ (peer-to-peer, doesn't go through browser network stack) |
-| navigator.sendBeacon | ✅ |
+| Resource type           | Interceptable                                               |
+| ----------------------- | ----------------------------------------------------------- |
+| XHR / Fetch (API calls) | ✅                                                          |
+| Documents (HTML)        | ✅                                                          |
+| Scripts (JS)            | ✅                                                          |
+| Stylesheets (CSS)       | ✅                                                          |
+| Images                  | ✅                                                          |
+| Fonts                   | ✅                                                          |
+| WebSockets              | ✅ (separate API; see §11)                                  |
+| Service Worker fetches  | ✅                                                          |
+| Server-Sent Events      | ✅                                                          |
+| WebRTC                  | ❌ (peer-to-peer, doesn't go through browser network stack) |
+| navigator.sendBeacon    | ✅                                                          |
 
 ---
 
@@ -99,19 +99,20 @@ Is the dependency under your control?
 ### 2.2 The exception — error-path tests
 
 Even for owned backends, mocking is right when:
+
 - You need a 500, 429, or timeout reliably.
 - You need to test optimistic UI updates under specific server responses.
 - You need to test analytics calls that you don't want to actually emit.
 
 ### 2.3 The trade-off — fidelity vs determinism
 
-| | Real backend | Mock |
-|---|---|---|
-| Fidelity | High — catches integration bugs | Low — mocks can lie |
-| Determinism | Variable — depends on env health | Total |
-| Setup cost | Higher — must seed data | Lower |
-| CI cost | Higher — backend dependency | Lower — self-contained |
-| Maintenance | Real schema changes show up | Must update mocks manually |
+|             | Real backend                     | Mock                       |
+| ----------- | -------------------------------- | -------------------------- |
+| Fidelity    | High — catches integration bugs  | Low — mocks can lie        |
+| Determinism | Variable — depends on env health | Total                      |
+| Setup cost  | Higher — must seed data          | Lower                      |
+| CI cost     | Higher — backend dependency      | Lower — self-contained     |
+| Maintenance | Real schema changes show up      | Must update mocks manually |
 
 Both have value. A healthy suite uses both: integration tests against real backend, UI/error-path tests with mocks.
 
@@ -135,21 +136,21 @@ page.route(
 
 ```typescript
 // Glob — supports * (any) and ** (any path)
-await page.route('**/api/citations', handler);
-await page.route('**/api/citations/**', handler);
+await page.route("**/api/citations", handler);
+await page.route("**/api/citations/**", handler);
 
 // Regex
 await page.route(/\/api\/citations\/\d+/, handler);
 await page.route(/.*\.png$/, handler);
 
 // Function
-await page.route(url => url.hostname === 'api.example.com', handler);
+await page.route((url) => url.hostname === "api.example.com", handler);
 ```
 
 ### 3.3 The handler
 
 ```typescript
-await page.route('**/api/citations', async (route, request) => {
+await page.route("**/api/citations", async (route, request) => {
   console.log(request.method(), request.url());
   await route.continue();
 });
@@ -160,7 +161,7 @@ Receives a `Route` (for disposal) and the `Request` (for inspection).
 ### 3.4 `times` option
 
 ```typescript
-await page.route('**/api/once', handler, { times: 1 });
+await page.route("**/api/once", handler, { times: 1 });
 // Handler fires for first request, then is automatically unregistered.
 ```
 
@@ -170,10 +171,10 @@ Useful for one-shot mocks. After `times` invocations, the route is auto-removed.
 
 ```typescript
 // Per-page route — only THIS page's requests
-await page.route('**/api/*', handler);
+await page.route("**/api/*", handler);
 
 // Per-context route — all pages in the context
-await context.route('**/api/*', handler);
+await context.route("**/api/*", handler);
 
 // Per-browser-context route — multi-context
 // (NOT supported; route is per-context)
@@ -184,8 +185,8 @@ For new tabs in the same context, context-level routes apply automatically.
 ### 3.6 Unregister
 
 ```typescript
-await page.unroute('**/api/citations', handler);    // remove specific
-await page.unroute('**/api/citations');             // remove all for that pattern
+await page.unroute("**/api/citations", handler); // remove specific
+await page.unroute("**/api/citations"); // remove all for that pattern
 ```
 
 Usually not needed — routes are cleared when the page/context closes.
@@ -193,8 +194,8 @@ Usually not needed — routes are cleared when the page/context closes.
 ### 3.7 Multiple matching routes
 
 ```typescript
-await page.route('**/api/**', handlerA);
-await page.route('**/api/citations', handlerB);
+await page.route("**/api/**", handlerA);
+await page.route("**/api/citations", handlerB);
 ```
 
 If both match a request, the LAST registered wins. To layer them, use `route.fallback()` (see §6).
@@ -208,6 +209,7 @@ The single most important rule of `page.route`.
 ### 4.1 The rule
 
 Every route handler MUST eventually call exactly ONE of:
+
 - `route.continue()` — forward to real server
 - `route.fulfill(...)` — return a fake response
 - `route.abort(...)` — fail the request
@@ -216,12 +218,12 @@ Every route handler MUST eventually call exactly ONE of:
 ### 4.2 What happens if you don't dispose
 
 ```typescript
-await page.route('**/api/citations', async (route) => {
-  console.log('Intercepted!');
+await page.route("**/api/citations", async (route) => {
+  console.log("Intercepted!");
   // Forgot route.continue() / fulfill / abort
 });
 
-await page.goto('/dashboard');  // hangs forever — citations request never completes
+await page.goto("/dashboard"); // hangs forever — citations request never completes
 ```
 
 The request hangs indefinitely. The page never receives a response. Tests time out with mysterious errors.
@@ -232,7 +234,7 @@ This is the most common mocking bug. See Q16 in [practice solutions](../08_Pract
 
 ```typescript
 await route.continue();
-await route.fulfill({ status: 200, body: '{}' });
+await route.fulfill({ status: 200, body: "{}" });
 // Error: Route is already handled!
 ```
 
@@ -241,19 +243,23 @@ Calling two disposal methods throws. Always call exactly ONE.
 ### 4.4 The defensive pattern
 
 ```typescript
-await page.route('**/api/citations', async (route, request) => {
+await page.route("**/api/citations", async (route, request) => {
   try {
-    if (request.method() === 'POST') {
+    if (request.method() === "POST") {
       // Mock POSTs
-      await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ id: 'new' }) });
+      await route.fulfill({
+        status: 201,
+        contentType: "application/json",
+        body: JSON.stringify({ id: "new" }),
+      });
     } else {
       // Forward GETs to real server
       await route.continue();
     }
   } catch (e) {
     // If our logic crashed, don't leave the request hanging
-    console.error('Route handler error:', e);
-    await route.abort('failed').catch(() => {});  // best-effort
+    console.error("Route handler error:", e);
+    await route.abort("failed").catch(() => {}); // best-effort
   }
 });
 ```
@@ -272,10 +278,10 @@ await route.continue();
 
 // Forward with modifications
 await route.continue({
-  url: 'https://different.example.com/api/citations',     // change URL
-  method: 'PUT',                                           // change method
-  headers: { ...request.headers(), 'x-trace': 'true' },   // change headers
-  postData: JSON.stringify({ patched: true }),             // change body
+  url: "https://different.example.com/api/citations", // change URL
+  method: "PUT", // change method
+  headers: { ...request.headers(), "x-trace": "true" }, // change headers
+  postData: JSON.stringify({ patched: true }), // change body
 });
 ```
 
@@ -288,21 +294,21 @@ await route.fulfill();
 // Full response
 await route.fulfill({
   status: 200,
-  contentType: 'application/json',
-  headers: { 'x-cache': 'MISS', 'cache-control': 'no-store' },
-  body: JSON.stringify({ id: 'mock-001', status: 'PAID' }),
+  contentType: "application/json",
+  headers: { "x-cache": "MISS", "cache-control": "no-store" },
+  body: JSON.stringify({ id: "mock-001", status: "PAID" }),
 });
 
 // Response from a file
 await route.fulfill({
-  path: 'test-data/mock-citations.json',
+  path: "test-data/mock-citations.json",
 });
 
 // Response from a buffer
 await route.fulfill({
   status: 200,
-  contentType: 'application/pdf',
-  body: fs.readFileSync('test-data/mock.pdf'),
+  contentType: "application/pdf",
+  body: fs.readFileSync("test-data/mock.pdf"),
 });
 ```
 
@@ -313,20 +319,20 @@ await route.fulfill({
 await route.abort();
 
 // Specific error
-await route.abort('blockedbyclient');
-await route.abort('connectionreset');
-await route.abort('timedout');
-await route.abort('namenotresolved');
-await route.abort('failed');
-await route.abort('internetdisconnected');
+await route.abort("blockedbyclient");
+await route.abort("connectionreset");
+await route.abort("timedout");
+await route.abort("namenotresolved");
+await route.abort("failed");
+await route.abort("internetdisconnected");
 ```
 
 Useful for testing error-state UIs:
 
 ```typescript
-await page.route('**/api/**', route => route.abort('timedout'));
-await page.goto('/dashboard');
-await expect(page.getByText('Network error')).toBeVisible();
+await page.route("**/api/**", (route) => route.abort("timedout"));
+await page.goto("/dashboard");
+await expect(page.getByText("Network error")).toBeVisible();
 ```
 
 ### 5.4 `fetch` (since v1.39)
@@ -353,17 +359,17 @@ Layered routing — most-specific to least-specific.
 
 ```typescript
 // Generic — log everything
-await page.route('**/*', async (route) => {
+await page.route("**/*", async (route) => {
   console.log(route.request().url());
-  await route.fallback();  // pass to next matching route
+  await route.fallback(); // pass to next matching route
 });
 
 // Specific — mock /api/citations
-await page.route('**/api/citations', async (route) => {
-  if (route.request().method() === 'POST') {
+await page.route("**/api/citations", async (route) => {
+  if (route.request().method() === "POST") {
     await route.fulfill({ status: 201, body: '{"id":"mock"}' });
   } else {
-    await route.fallback();  // delegate to a less-specific route or real network
+    await route.fallback(); // delegate to a less-specific route or real network
   }
 });
 ```
@@ -375,8 +381,8 @@ await page.route('**/api/citations', async (route) => {
 Playwright tries handlers in REVERSE registration order (last registered = first tried). To make the generic handler run FIRST:
 
 ```typescript
-await page.route('**/*', genericHandler);    // registered first → tried last
-await page.route('**/api/citations', specific); // registered last → tried first
+await page.route("**/*", genericHandler); // registered first → tried last
+await page.route("**/api/citations", specific); // registered last → tried first
 ```
 
 In practice: register specific handlers first, then generic. Specific handlers can `fallback` to the generic for non-matching cases.
@@ -386,10 +392,10 @@ In practice: register specific handlers first, then generic. Specific handlers c
 You can fetch the real response, decide based on it, then either modify (`fulfill`) or pass through (`fallback`):
 
 ```typescript
-await page.route('**/api/citations', async (route) => {
+await page.route("**/api/citations", async (route) => {
   const response = await route.fetch();
   if (response.status() === 200) {
-    await route.fulfill({ response });   // forward as-is
+    await route.fulfill({ response }); // forward as-is
   } else {
     // Mock the error response
     await route.fulfill({ status: 500, body: '{"error":"mocked"}' });
@@ -404,12 +410,12 @@ await page.route('**/api/citations', async (route) => {
 ### 7.1 Glob patterns
 
 ```typescript
-'**/api/*'              // any /api/foo  (one path segment)
-'**/api/**'             // any /api/...  (multiple segments)
-'**/api/citations/?'    // any /api/citations/X (one character)
-'**/api/citations/{1,2}' // /api/citations/1 OR /api/citations/2
-'**/*.png'              // any .png anywhere
-'https://api.example.com/**'  // specific hostname
+"**/api/*"; // any /api/foo  (one path segment)
+"**/api/**"; // any /api/...  (multiple segments)
+"**/api/citations/?"; // any /api/citations/X (one character)
+"**/api/citations/{1,2}"; // /api/citations/1 OR /api/citations/2
+"**/*.png"; // any .png anywhere
+"https://api.example.com/**"; // specific hostname
 ```
 
 ### 7.2 Regex patterns
@@ -424,9 +430,10 @@ Regex is more powerful but harder to read. Use globs for simple cases.
 ### 7.3 Function predicates
 
 ```typescript
-await page.route(url => {
-  return url.pathname.startsWith('/api/') &&
-         url.searchParams.get('test') !== 'true';
+await page.route((url) => {
+  return (
+    url.pathname.startsWith("/api/") && url.searchParams.get("test") !== "true"
+  );
 }, handler);
 ```
 
@@ -437,7 +444,7 @@ Most flexible. Use when glob/regex can't express the condition.
 ```typescript
 // playwright.config.ts: use.baseURL = 'https://app.example.com'
 
-await page.route('/api/citations', handler);
+await page.route("/api/citations", handler);
 // Matches https://app.example.com/api/citations? Probably no — relative URLs aren't auto-prefixed for matching.
 ```
 
@@ -453,8 +460,10 @@ Observers — see traffic without intercepting.
 
 ```typescript
 const [response] = await Promise.all([
-  page.waitForResponse(r => r.url().includes('/api/citations') && r.method() === 'POST'),
-  page.locator('#save').click(),
+  page.waitForResponse(
+    (r) => r.url().includes("/api/citations") && r.method() === "POST",
+  ),
+  page.locator("#save").click(),
 ]);
 
 expect(response.ok()).toBeTruthy();
@@ -466,23 +475,25 @@ expect(body.id).toBeDefined();
 
 ```typescript
 const [request] = await Promise.all([
-  page.waitForRequest(r => r.url().includes('/analytics') && r.method() === 'POST'),
-  page.locator('#submit').click(),
+  page.waitForRequest(
+    (r) => r.url().includes("/analytics") && r.method() === "POST",
+  ),
+  page.locator("#submit").click(),
 ]);
 
 const payload = request.postDataJSON();
-expect(payload).toMatchObject({ event: 'submit', userId: '123' });
+expect(payload).toMatchObject({ event: "submit", userId: "123" });
 ```
 
 ### 8.3 Observe vs intercept
 
-| | `page.route` | `page.waitForResponse` |
-|---|---|---|
-| Real request goes through? | Maybe (depending on disposal) | Always |
-| Can modify? | Yes | No |
-| Can mock? | Yes | No |
-| Side-effects on backend? | Maybe | Yes |
-| Failure on missing event? | Hangs | Times out |
+|                            | `page.route`                  | `page.waitForResponse` |
+| -------------------------- | ----------------------------- | ---------------------- |
+| Real request goes through? | Maybe (depending on disposal) | Always                 |
+| Can modify?                | Yes                           | No                     |
+| Can mock?                  | Yes                           | No                     |
+| Side-effects on backend?   | Maybe                         | Yes                    |
+| Failure on missing event?  | Hangs                         | Times out              |
 
 If you just want to see what happened — `waitForResponse`. If you want to control what the server returns — `page.route`.
 
@@ -491,13 +502,15 @@ If you just want to see what happened — `waitForResponse`. If you want to cont
 ```typescript
 // Capture every API response into an array
 const responses: APIResponse[] = [];
-page.on('response', r => { if (r.url().includes('/api/')) responses.push(r); });
+page.on("response", (r) => {
+  if (r.url().includes("/api/")) responses.push(r);
+});
 
-await page.goto('/dashboard');
-await page.locator('#refresh').click();
-await page.waitForLoadState('networkidle');
+await page.goto("/dashboard");
+await page.locator("#refresh").click();
+await page.waitForLoadState("networkidle");
 
-expect(responses.map(r => r.status())).not.toContain(500);
+expect(responses.map((r) => r.status())).not.toContain(500);
 ```
 
 Cumulative — captures everything, useful for "did anything error during the test."
@@ -506,13 +519,13 @@ Cumulative — captures everything, useful for "did anything error during the te
 
 ```typescript
 // ❌ Race — listener may register too late
-await page.click('#trigger');
-const response = await page.waitForResponse('**/api/X');
+await page.click("#trigger");
+const response = await page.waitForResponse("**/api/X");
 
 // ✅ Listener first
 const [response] = await Promise.all([
-  page.waitForResponse('**/api/X'),
-  page.click('#trigger'),
+  page.waitForResponse("**/api/X"),
+  page.click("#trigger"),
 ]);
 ```
 
@@ -525,13 +538,13 @@ Same rule as `waitForEvent` — register before triggering.
 ### 9.1 Single endpoint mock
 
 ```typescript
-await page.route('**/api/citations', async route => {
+await page.route("**/api/citations", async (route) => {
   await route.fulfill({
     status: 200,
-    contentType: 'application/json',
+    contentType: "application/json",
     body: JSON.stringify([
-      { id: 'CIT-001', status: 'PENDING', amount: 150 },
-      { id: 'CIT-002', status: 'PAID', amount: 250 },
+      { id: "CIT-001", status: "PENDING", amount: 150 },
+      { id: "CIT-002", status: "PAID", amount: 250 },
     ]),
   });
 });
@@ -540,11 +553,12 @@ await page.route('**/api/citations', async route => {
 ### 9.2 Mock by method
 
 ```typescript
-await page.route('**/api/citations', async (route) => {
+await page.route("**/api/citations", async (route) => {
   const method = route.request().method();
-  if (method === 'GET')  await route.fulfill({ body: JSON.stringify(mockList) });
-  if (method === 'POST') await route.fulfill({ status: 201, body: JSON.stringify({ id: 'new' }) });
-  if (method === 'DELETE') await route.fulfill({ status: 204 });
+  if (method === "GET") await route.fulfill({ body: JSON.stringify(mockList) });
+  if (method === "POST")
+    await route.fulfill({ status: 201, body: JSON.stringify({ id: "new" }) });
+  if (method === "DELETE") await route.fulfill({ status: 204 });
 });
 ```
 
@@ -552,11 +566,11 @@ await page.route('**/api/citations', async (route) => {
 
 ```typescript
 await page.route(/\/api\/citations\/(\w+)/, async (route, request) => {
-  const id = request.url().split('/').pop();
-  if (id === 'CIT-404') {
+  const id = request.url().split("/").pop();
+  if (id === "CIT-404") {
     await route.fulfill({ status: 404, body: '{"error":"not found"}' });
   } else {
-    await route.fulfill({ body: JSON.stringify({ id, status: 'PAID' }) });
+    await route.fulfill({ body: JSON.stringify({ id, status: "PAID" }) });
   }
 });
 ```
@@ -565,21 +579,23 @@ await page.route(/\/api\/citations\/(\w+)/, async (route, request) => {
 
 ```typescript
 // Force every API call to return 500
-await page.route('**/api/**', route => route.fulfill({
-  status: 500,
-  body: JSON.stringify({ error: 'Server error' }),
-}));
+await page.route("**/api/**", (route) =>
+  route.fulfill({
+    status: 500,
+    body: JSON.stringify({ error: "Server error" }),
+  }),
+);
 
-await page.goto('/dashboard');
-await expect(page.getByText('Something went wrong')).toBeVisible();
+await page.goto("/dashboard");
+await expect(page.getByText("Something went wrong")).toBeVisible();
 ```
 
 ### 9.5 Mock with delays
 
 ```typescript
-await page.route('**/api/slow', async route => {
-  await new Promise(r => setTimeout(r, 2000));  // 2s delay
-  await route.fulfill({ body: '{}' });
+await page.route("**/api/slow", async (route) => {
+  await new Promise((r) => setTimeout(r, 2000)); // 2s delay
+  await route.fulfill({ body: "{}" });
 });
 ```
 
@@ -590,10 +606,10 @@ Useful for testing loading states.
 ```typescript
 const citations: Citation[] = [];
 
-await page.route('**/api/citations', async (route, request) => {
-  if (request.method() === 'GET') {
+await page.route("**/api/citations", async (route, request) => {
+  if (request.method() === "GET") {
     await route.fulfill({ body: JSON.stringify(citations) });
-  } else if (request.method() === 'POST') {
+  } else if (request.method() === "POST") {
     const body = request.postDataJSON();
     const newOne = { id: `CIT-${citations.length + 1}`, ...body };
     citations.push(newOne);
@@ -613,29 +629,33 @@ GraphQL has one endpoint, many operations. Differentiate by `operationName`.
 ### 10.1 Basic operation-based routing
 
 ```typescript
-await page.route('**/graphql', async (route) => {
-  if (route.request().method() !== 'POST') {
+await page.route("**/graphql", async (route) => {
+  if (route.request().method() !== "POST") {
     await route.continue();
     return;
   }
 
-  const body = route.request().postDataJSON() as { operationName?: string; query?: string; variables?: unknown };
-  
-  if (body.operationName === 'GetCustomer') {
+  const body = route.request().postDataJSON() as {
+    operationName?: string;
+    query?: string;
+    variables?: unknown;
+  };
+
+  if (body.operationName === "GetCustomer") {
     await route.fulfill({
       status: 200,
-      contentType: 'application/json',
+      contentType: "application/json",
       body: JSON.stringify({
-        data: { customer: { id: 'C-001', name: 'Mocked Customer' } },
+        data: { customer: { id: "C-001", name: "Mocked Customer" } },
       }),
     });
     return;
   }
-  
-  if (body.operationName === 'UpdateCustomer') {
+
+  if (body.operationName === "UpdateCustomer") {
     await route.fulfill({
       status: 200,
-      body: JSON.stringify({ data: { updateCustomer: { id: 'C-001' } } }),
+      body: JSON.stringify({ data: { updateCustomer: { id: "C-001" } } }),
     });
     return;
   }
@@ -651,19 +671,23 @@ await page.route('**/graphql', async (route) => {
 type GqlMocks = Record<string, unknown | ((vars: any) => unknown)>;
 
 async function setupGraphQLMocks(page: Page, mocks: GqlMocks): Promise<void> {
-  await page.route('**/graphql', async (route) => {
-    if (route.request().method() !== 'POST') {
+  await page.route("**/graphql", async (route) => {
+    if (route.request().method() !== "POST") {
       await route.continue();
       return;
     }
 
-    const body = route.request().postDataJSON() as { operationName?: string; variables?: unknown };
-    const name = body.operationName ?? '';
+    const body = route.request().postDataJSON() as {
+      operationName?: string;
+      variables?: unknown;
+    };
+    const name = body.operationName ?? "";
 
     if (name in mocks) {
-      const data = typeof mocks[name] === 'function'
-        ? (mocks[name] as Function)(body.variables)
-        : mocks[name];
+      const data =
+        typeof mocks[name] === "function"
+          ? (mocks[name] as Function)(body.variables)
+          : mocks[name];
       await route.fulfill({
         status: 200,
         body: JSON.stringify({ data }),
@@ -676,9 +700,9 @@ async function setupGraphQLMocks(page: Page, mocks: GqlMocks): Promise<void> {
 
 // Usage
 await setupGraphQLMocks(page, {
-  GetCustomer: { customer: { id: 'C-001', name: 'Alice' } },
+  GetCustomer: { customer: { id: "C-001", name: "Alice" } },
   GetCustomerOrders: (vars: { customerId: string }) => ({
-    orders: [{ id: 'O-1', customerId: vars.customerId, amount: 100 }],
+    orders: [{ id: "O-1", customerId: vars.customerId, amount: 100 }],
   }),
 });
 ```
@@ -687,10 +711,12 @@ await setupGraphQLMocks(page, {
 
 ```typescript
 await route.fulfill({
-  status: 200,                                   // GraphQL errors are 200!
+  status: 200, // GraphQL errors are 200!
   body: JSON.stringify({
     data: null,
-    errors: [{ message: 'Customer not found', extensions: { code: 'NOT_FOUND' } }],
+    errors: [
+      { message: "Customer not found", extensions: { code: "NOT_FOUND" } },
+    ],
   }),
 });
 ```
@@ -703,8 +729,8 @@ GraphQL's convention: errors are reported in the response body, not via HTTP sta
 await route.fulfill({
   status: 200,
   body: JSON.stringify({
-    data: { customer: { id: 'C-001', name: 'Alice', orders: null } },
-    errors: [{ path: ['customer', 'orders'], message: 'Permission denied' }],
+    data: { customer: { id: "C-001", name: "Alice", orders: null } },
+    errors: [{ path: ["customer", "orders"], message: "Permission denied" }],
   }),
 });
 ```
@@ -720,30 +746,38 @@ WebSocket interception uses a separate API.
 ### 11.1 The pattern
 
 ```typescript
-await page.routeWebSocket('wss://**/realtime', ws => {
+await page.routeWebSocket("wss://**/realtime", (ws) => {
   // ws is a WebSocketRoute — controls the WebSocket connection
-  
+
   ws.onMessage(async (message) => {
-    console.log('Client → Server:', message);
-    
+    console.log("Client → Server:", message);
+
     // Echo back, or send mock
-    if (message.includes('subscribe')) {
-      await ws.send(JSON.stringify({ type: 'subscribed', channel: 'citations' }));
+    if (message.includes("subscribe")) {
+      await ws.send(
+        JSON.stringify({ type: "subscribed", channel: "citations" }),
+      );
     }
   });
 
   // Simulate server push
-  setTimeout(() => ws.send(JSON.stringify({ type: 'update', id: 'CIT-001', status: 'PAID' })), 1000);
+  setTimeout(
+    () =>
+      ws.send(
+        JSON.stringify({ type: "update", id: "CIT-001", status: "PAID" }),
+      ),
+    1000,
+  );
 });
 ```
 
 ### 11.2 Closing the connection
 
 ```typescript
-await page.routeWebSocket('wss://**', ws => {
-  ws.onMessage(msg => {
-    if (JSON.parse(msg).type === 'auth-failed') {
-      ws.close({ code: 1008, reason: 'Auth required' });
+await page.routeWebSocket("wss://**", (ws) => {
+  ws.onMessage((msg) => {
+    if (JSON.parse(msg).type === "auth-failed") {
+      ws.close({ code: 1008, reason: "Auth required" });
     }
   });
 });
@@ -752,11 +786,11 @@ await page.routeWebSocket('wss://**', ws => {
 ### 11.3 Connecting to the real server
 
 ```typescript
-await page.routeWebSocket('wss://**', async ws => {
+await page.routeWebSocket("wss://**", async (ws) => {
   // Connect to real server, proxy through
   await ws.connectToServer();
-  ws.onMessage(msg => {
-    console.log('Forwarding:', msg);
+  ws.onMessage((msg) => {
+    console.log("Forwarding:", msg);
     // Messages auto-forward in both directions
   });
 });
@@ -784,37 +818,39 @@ use: {
 ```
 
 Or per-context:
+
 ```typescript
 const context = await browser.newContext({
-  recordHar: { path: 'test.har' },
+  recordHar: { path: "test.har" },
 });
 ```
 
 Modes:
+
 - `'minimal'` — request/response headers, no bodies
 - `'full'` — everything including bodies (large files)
 
 ### 12.2 Replay
 
 ```typescript
-await page.routeFromHAR('test-results/network.har', { update: false });
-await page.goto('/dashboard');
+await page.routeFromHAR("test-results/network.har", { update: false });
+await page.goto("/dashboard");
 // Network calls are served from the HAR — no real network hit
 ```
 
 ### 12.3 Use cases
 
-| Scenario | HAR helps |
-|---|---|
-| Offline testing | Replay last-recorded traffic |
-| Reproducing a bug | Capture HAR during bug, share for repro |
-| Demo without backend | Record once, replay forever |
-| Performance baseline | Compare HAR diffs across runs |
+| Scenario             | HAR helps                               |
+| -------------------- | --------------------------------------- |
+| Offline testing      | Replay last-recorded traffic            |
+| Reproducing a bug    | Capture HAR during bug, share for repro |
+| Demo without backend | Record once, replay forever             |
+| Performance baseline | Compare HAR diffs across runs           |
 
 ### 12.4 The `update` option
 
 ```typescript
-await page.routeFromHAR('updates.har', { update: true });
+await page.routeFromHAR("updates.har", { update: true });
 // New requests: hit real server, append to HAR
 // Existing requests: serve from HAR
 ```
@@ -842,8 +878,8 @@ Simulating slow networks, offline, etc.
 
 ```typescript
 await context.setOffline(true);
-await page.goto('/');
-await expect(page.getByText('Offline')).toBeVisible();
+await page.goto("/");
+await expect(page.getByText("Offline")).toBeVisible();
 await context.setOffline(false);
 ```
 
@@ -853,15 +889,15 @@ For testing PWA offline-first behaviour.
 
 ```typescript
 const client = await context.newCDPSession(page);
-await client.send('Network.enable');
-await client.send('Network.emulateNetworkConditions', {
+await client.send("Network.enable");
+await client.send("Network.emulateNetworkConditions", {
   offline: false,
-  downloadThroughput: (1.5 * 1024 * 1024) / 8,   // 1.5 Mbps
-  uploadThroughput: (750 * 1024) / 8,             // 750 Kbps
-  latency: 40,                                     // 40 ms RTT
+  downloadThroughput: (1.5 * 1024 * 1024) / 8, // 1.5 Mbps
+  uploadThroughput: (750 * 1024) / 8, // 750 Kbps
+  latency: 40, // 40 ms RTT
 });
 
-await page.goto('/heavy-page');
+await page.goto("/heavy-page");
 // Page loads as if on slow 3G
 ```
 
@@ -870,8 +906,8 @@ CDP only — Chromium and Edge.
 ### 13.3 Per-request delay via route
 
 ```typescript
-await page.route('**/api/**', async (route) => {
-  await new Promise(r => setTimeout(r, 500));  // 500ms delay
+await page.route("**/api/**", async (route) => {
+  await new Promise((r) => setTimeout(r, 500)); // 500ms delay
   await route.continue();
 });
 ```
@@ -881,9 +917,10 @@ Cross-browser. Less realistic than CDP throttling (doesn't simulate throughput l
 ### 13.4 Random failure injection
 
 ```typescript
-await page.route('**/api/**', async (route) => {
-  if (Math.random() < 0.1) {            // 10% failure rate
-    await route.abort('timedout');
+await page.route("**/api/**", async (route) => {
+  if (Math.random() < 0.1) {
+    // 10% failure rate
+    await route.abort("timedout");
   } else {
     await route.continue();
   }
@@ -908,27 +945,31 @@ const client = await context.newCDPSession(page);
 
 ```typescript
 // Enable network instrumentation
-await client.send('Network.enable');
+await client.send("Network.enable");
 
 // Set throttling
-await client.send('Network.emulateNetworkConditions', { /* ... */ });
+await client.send("Network.emulateNetworkConditions", {
+  /* ... */
+});
 
 // Set custom user agent
-await client.send('Network.setUserAgentOverride', { userAgent: 'TestBot/1.0' });
+await client.send("Network.setUserAgentOverride", { userAgent: "TestBot/1.0" });
 
 // Block specific URLs
-await client.send('Network.setBlockedURLs', { urls: ['*.gif', 'tracker.example.com'] });
+await client.send("Network.setBlockedURLs", {
+  urls: ["*.gif", "tracker.example.com"],
+});
 
 // Disable cache
-await client.send('Network.setCacheDisabled', { cacheDisabled: true });
+await client.send("Network.setCacheDisabled", { cacheDisabled: true });
 
 // Intercept at a lower level
-await client.send('Fetch.enable', {
-  patterns: [{ urlPattern: '*', requestStage: 'Request' }],
+await client.send("Fetch.enable", {
+  patterns: [{ urlPattern: "*", requestStage: "Request" }],
 });
-client.on('Fetch.requestPaused', async params => {
+client.on("Fetch.requestPaused", async (params) => {
   // Lower-level than page.route
-  await client.send('Fetch.continueRequest', { requestId: params.requestId });
+  await client.send("Fetch.continueRequest", { requestId: params.requestId });
 });
 ```
 
@@ -969,8 +1010,8 @@ Useful for testing the non-SW behavior or when SW caching interferes with tests.
 ```typescript
 const workers = context.serviceWorkers();
 for (const sw of workers) {
-  console.log('SW URL:', sw.url());
-  await sw.evaluate(() => self.clients.matchAll().then(cs => cs.length));
+  console.log("SW URL:", sw.url());
+  await sw.evaluate(() => self.clients.matchAll().then((cs) => cs.length));
 }
 ```
 
@@ -978,7 +1019,7 @@ for (const sw of workers) {
 
 ```typescript
 // Clear all SW caches
-await context.serviceWorkers().forEach(async sw => {
+await context.serviceWorkers().forEach(async (sw) => {
   await sw.evaluate(async () => {
     const keys = await caches.keys();
     for (const key of keys) await caches.delete(key);
@@ -996,11 +1037,11 @@ Critical for tests where stale SW caches cause "old content" bugs.
 
 Every intercepted request goes through your JS handler. Cost:
 
-| Handler | Per-request overhead |
-|---|---|
-| `route.continue()` only | ~0.5 ms |
-| Pattern match + continue | ~1 ms |
-| `route.fulfill` | ~0.2 ms (no network) |
+| Handler                            | Per-request overhead |
+| ---------------------------------- | -------------------- |
+| `route.continue()` only            | ~0.5 ms              |
+| Pattern match + continue           | ~1 ms                |
+| `route.fulfill`                    | ~0.2 ms (no network) |
 | `route.fetch` + modify + `fulfill` | network time + ~2 ms |
 
 For a page with 100 requests, generic interception adds ~50–100 ms.
@@ -1022,7 +1063,7 @@ Registering at context level applies to all pages in that context. Cheaper than 
 For one-shot mocks:
 
 ```typescript
-await page.route('**/api/once', handler, { times: 1 });
+await page.route("**/api/once", handler, { times: 1 });
 ```
 
 After 1 hit, route is unregistered. Subsequent requests bypass the handler entirely.
@@ -1115,26 +1156,26 @@ After 1 hit, route is unregistered. Subsequent requests bypass the handler entir
 
 ## 18. Anti-pattern catalog
 
-| ❌ | ✅ |
-|---|---|
-| `page.route` handler without disposal | Always continue/fulfill/abort exactly once |
-| Mocking before the page object is created | Register routes BEFORE first navigation |
-| Hardcoded full URLs in patterns | Glob with `**/` prefix for cross-environment |
-| Stateful mock with module-level variables | State inside fixture/test scope |
-| Mock everything (own + third-party) | Mock only what you don't control |
-| Mock GraphQL by URL only | Match on `operationName` |
-| GraphQL mock returns errors as 4xx | GraphQL convention is 200 with `errors` array |
-| Mocks without schema validation | Validate mock shape with Zod |
-| HAR with dynamic timestamps | Strip query params during replay |
-| CDP-only code without browser check | Guard with `if (browserName === 'chromium')` |
-| `waitForResponse` AFTER trigger | `Promise.all([waitForResponse, trigger])` |
-| Mock for production-grade integration test | Real backend for integration |
-| Network delay via `setTimeout(... 5000 ...)` | CDP throttling OR route delay |
-| Mock data drifted from real API | Generate from OpenAPI / Zod schemas |
-| Multiple route handlers without `fallback` | Use `fallback` for layering |
-| Forget content-type in fulfill | Always set explicit content-type |
-| Capture all responses with `page.on('response')` then assert later | Use `waitForResponse` for targeted assertions |
-| Service Worker caches stale data across tests | `serviceWorkers: 'block'` or cache reset in fixture |
+| ❌                                                                 | ✅                                                  |
+| ------------------------------------------------------------------ | --------------------------------------------------- |
+| `page.route` handler without disposal                              | Always continue/fulfill/abort exactly once          |
+| Mocking before the page object is created                          | Register routes BEFORE first navigation             |
+| Hardcoded full URLs in patterns                                    | Glob with `**/` prefix for cross-environment        |
+| Stateful mock with module-level variables                          | State inside fixture/test scope                     |
+| Mock everything (own + third-party)                                | Mock only what you don't control                    |
+| Mock GraphQL by URL only                                           | Match on `operationName`                            |
+| GraphQL mock returns errors as 4xx                                 | GraphQL convention is 200 with `errors` array       |
+| Mocks without schema validation                                    | Validate mock shape with Zod                        |
+| HAR with dynamic timestamps                                        | Strip query params during replay                    |
+| CDP-only code without browser check                                | Guard with `if (browserName === 'chromium')`        |
+| `waitForResponse` AFTER trigger                                    | `Promise.all([waitForResponse, trigger])`           |
+| Mock for production-grade integration test                         | Real backend for integration                        |
+| Network delay via `setTimeout(... 5000 ...)`                       | CDP throttling OR route delay                       |
+| Mock data drifted from real API                                    | Generate from OpenAPI / Zod schemas                 |
+| Multiple route handlers without `fallback`                         | Use `fallback` for layering                         |
+| Forget content-type in fulfill                                     | Always set explicit content-type                    |
+| Capture all responses with `page.on('response')` then assert later | Use `waitForResponse` for targeted assertions       |
+| Service Worker caches stale data across tests                      | `serviceWorkers: 'block'` or cache reset in fixture |
 
 ---
 

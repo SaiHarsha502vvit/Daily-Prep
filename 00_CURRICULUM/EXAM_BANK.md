@@ -17,6 +17,7 @@
 **Q1 (10 pts).** Explain why `HashMap` has O(1) average-case lookup but can degrade to O(n). What two conditions cause worst-case? What does Java 8 do to mitigate it?
 
 **Q2 (10 pts).** Trace BFS on this graph starting from node A. Show the queue state after each step. What is the shortest path from A to F?
+
 ```
 A -- B -- E
 |         |
@@ -36,6 +37,7 @@ C -- D -- F
 **Q3:** Optimal substructure: the globally optimal solution contains optimal solutions to sub-problems. Overlapping: same sub-problems are solved multiple times. Counter-example: Merge Sort has optimal substructure (correctly merge-sorted halves = correctly sorted whole) but NO overlapping subproblems — each sub-array is distinct. Therefore Divide & Conquer (not DP) is correct. Activity Selection (greedy) also has optimal substructure without overlapping sub-problems.
 
 **Q4:** QuickSort degrades to O(n²) when pivot always = min or max element (sorted/reverse-sorted input with naive first-element pivot). Each partition produces one sub-array of size 0 and one of size n-1. Fix: randomized pivot, or median-of-three (compare first/middle/last, use median). Merge Sort: always O(n log n) but requires O(n) extra space. QuickSort: O(log n) space (stack) average, cache-friendly, faster in practice.
+
 </details>
 
 ---
@@ -50,7 +52,7 @@ class LRUCache<K, V> {
     private final int capacity;
     // Hint: use LinkedHashMap with accessOrder=true
     // OR use HashMap + custom doubly linked list
-    
+
     public LRUCache(int capacity) { /* TODO */ }
     public V get(K key) { /* TODO: return null if not found */ }
     public void put(K key, V value) { /* TODO: evict LRU if full */ }
@@ -65,7 +67,7 @@ class LRUCache<K, V> {
     // LinkedHashMap(capacity, loadFactor, accessOrder=true):
     // accessOrder=true → iterates in access order (LRU first)
     private final LinkedHashMap<K, V> map;
-    
+
     public LRUCache(int capacity) {
         this.capacity = capacity;
         this.map = new LinkedHashMap<>(capacity, 0.75f, true) {
@@ -75,14 +77,15 @@ class LRUCache<K, V> {
             }
         };
     }
-    
+
     public synchronized V get(K key) { return map.getOrDefault(key, null); }
-    
+
     public synchronized void put(K key, V value) { map.put(key, value); }
 }
 ```
 
 **Alternative (explicit doubly linked list):** HashMap maps key → Node. DLL maintains order: head = LRU, tail = MRU. `get`: move accessed node to tail. `put`: add to tail; if full, remove head. O(1) for both because HashMap lookup + DLL pointer operations are O(1).
+
 </details>
 
 ---
@@ -108,14 +111,14 @@ List<List<Integer>> levelOrder(TreeNode root) {
 List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> result = new ArrayList<>();
     if (root == null) return result;
-    
+
     Queue<TreeNode> queue = new LinkedList<>();
     queue.offer(root);
-    
+
     while (!queue.isEmpty()) {
         int levelSize = queue.size(); // snapshot — queue grows as we add children
         List<Integer> level = new ArrayList<>();
-        
+
         for (int i = 0; i < levelSize; i++) {
             TreeNode node = queue.poll();
             level.add(node.val);
@@ -128,6 +131,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 }
 // Time: O(n), Space: O(n) — queue holds at most one full level at a time
 ```
+
 </details>
 
 ---
@@ -135,6 +139,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 ### Section C — Design (20 points)
 
 **Q7 (20 pts).** Design a task queue system that:
+
 - Processes tasks with priorities (HIGH/MEDIUM/LOW)
 - Guarantees HIGH tasks are processed before MEDIUM, MEDIUM before LOW
 - Supports concurrent producers (multiple threads submitting tasks)
@@ -147,7 +152,7 @@ Name the data structure. Explain your design. Write the Java class signature and
 
 ```java
 enum Priority { HIGH, MEDIUM, LOW }
-record Task(String id, Priority priority, Runnable work) 
+record Task(String id, Priority priority, Runnable work)
     implements Comparable<Task> {
     public int compareTo(Task other) {
         return this.priority.compareTo(other.priority); // HIGH < MEDIUM < LOW by ordinal
@@ -157,7 +162,7 @@ record Task(String id, Priority priority, Runnable work)
 class PriorityTaskQueue {
     private final PriorityBlockingQueue<Task> queue = new PriorityBlockingQueue<>();
     private final ExecutorService workers;
-    
+
     PriorityTaskQueue(int workerCount) {
         workers = Executors.newFixedThreadPool(workerCount);
         for (int i = 0; i < workerCount; i++) {
@@ -169,10 +174,11 @@ class PriorityTaskQueue {
             });
         }
     }
-    
+
     void submit(Task task) { queue.offer(task); } // thread-safe
 }
 ```
+
 </details>
 
 ---
@@ -188,6 +194,7 @@ class PriorityTaskQueue {
 **Q1 (10 pts).** Your Spring Boot service has a method annotated `@Transactional`. A developer calls it from another method IN THE SAME BEAN without going through the proxy. Does the transaction start? Explain exactly why using Spring's AOP proxy mechanism.
 
 **Q2 (10 pts).** Explain the N+1 query problem. Given this JPA code, write the SQL it generates and write the fix:
+
 ```java
 // Problem code:
 List<Order> orders = orderRepo.findAll();
@@ -205,6 +212,7 @@ for (Order order : orders) {
 **Q2:** `findAll()` = 1 SQL: `SELECT * FROM orders` (returns 100 orders). Then each `order.getCustomer()` triggers 1 SQL: `SELECT * FROM customers WHERE id = ?` → 100 additional queries = 101 total. Fix: `@EntityGraph(attributePaths = "customer")` on the repository method, or JPQL `JOIN FETCH o.customer`. This generates 1 SQL with a JOIN.
 
 **Q3:** CAP: Consistency (all nodes see same data), Availability (every request gets a response), Partition Tolerance (system works despite network splits). You can only guarantee 2 of 3 during a partition. Likes counter: choose AP — serve possibly stale like count (availability matters, slight staleness acceptable). Bank balance: choose CP — reject the request if nodes can't agree (consistency is legally mandatory, brief unavailability acceptable over showing wrong balance).
+
 </details>
 
 ---
@@ -214,6 +222,7 @@ for (Order order : orders) {
 **Q4 (25 pts).** Design the entity model for a hotel booking system. Identify: aggregate roots, value objects, and domain invariants. Then write the Java class skeletons for `Reservation` (aggregate root) and `DateRange` (value object). Include at least 2 domain methods on `Reservation`.
 
 **Q5 (25 pts).** Write a Spring Boot REST controller for `GET /api/books` with:
+
 - Optional query params: `?author=Alice&genre=fiction&page=0&size=20`
 - Returns `Page<BookDto>` (JPA Pageable)
 - Proper HTTP semantics (200, 400, 404)
@@ -245,6 +254,7 @@ PromoOfferEvent        → [EmailChannel]
 ```
 
 **Adding WhatsApp:** Add `WhatsAppChannel implements NotificationChannel`. Register in `NotificationFactory`. Zero changes to `NotificationService` or event classes. Open-Closed Principle maintained.
+
 </details>
 
 ---
@@ -258,33 +268,39 @@ PromoOfferEvent        → [EmailChannel]
 ### Section A — JavaScript/TypeScript (40 points)
 
 **Q1 (10 pts).** What is the output? Explain each line.
-```javascript
-const p1 = new Promise(resolve => { setTimeout(() => resolve('A'), 100); });
-const p2 = new Promise(resolve => { setTimeout(() => resolve('B'), 50);  });
-const p3 = Promise.reject('C');
 
-Promise.allSettled([p1, p2, p3]).then(results => {
-  results.forEach(r => console.log(r.status, r.value ?? r.reason));
+```javascript
+const p1 = new Promise((resolve) => {
+  setTimeout(() => resolve("A"), 100);
+});
+const p2 = new Promise((resolve) => {
+  setTimeout(() => resolve("B"), 50);
+});
+const p3 = Promise.reject("C");
+
+Promise.allSettled([p1, p2, p3]).then((results) => {
+  results.forEach((r) => console.log(r.status, r.value ?? r.reason));
 });
 ```
 
 **Q2 (10 pts).** Write a TypeScript type `DeepPartial<T>` that makes ALL nested properties optional (not just top level).
 
 **Q3 (20 pts).** A React component fetches user data and updates a chart whenever the user changes. Identify ALL bugs and fix them:
+
 ```tsx
 function UserChart({ userId }) {
   const [data, setData] = useState([]);
-  
+
   useEffect(async () => {
     const res = await fetch(`/api/users/${userId}/stats`);
     setData(await res.json());
-  });  // ← missing deps array
-  
-  const processedData = data.map(item => ({
+  }); // ← missing deps array
+
+  const processedData = data.map((item) => ({
     ...item,
-    value: item.raw * 1.15
+    value: item.raw * 1.15,
   }));
-  
+
   return <Chart data={processedData} />;
 }
 ```
@@ -294,18 +310,22 @@ function UserChart({ userId }) {
 ### Section B — React Architecture (40 points)
 
 **Q4 (20 pts).** Build a `useFetch<T>(url: string)` custom hook that:
+
 - Returns `{ data: T | null, loading: boolean, error: Error | null }`
 - Handles race conditions (URL changes before previous fetch completes)
 - Aborts the fetch on component unmount
 
 **Q5 (20 pts).** Explain the difference between these two data fetching approaches and when to use each:
+
 ```tsx
-// Approach A: 
-const { data } = useQuery({ queryKey: ['user', id], queryFn: fetchUser });
+// Approach A:
+const { data } = useQuery({ queryKey: ["user", id], queryFn: fetchUser });
 
 // Approach B:
 const [user, setUser] = useState(null);
-useEffect(() => { fetchUser(id).then(setUser); }, [id]);
+useEffect(() => {
+  fetchUser(id).then(setUser);
+}, [id]);
 ```
 
 ---
@@ -313,6 +333,7 @@ useEffect(() => { fetchUser(id).then(setUser); }, [id]);
 ### Section C — DevOps (20 points)
 
 **Q6 (20 pts).** Write a `Dockerfile` for a Node.js + React (Vite) app that:
+
 - Builds the static assets in a build stage
 - Serves them via Nginx in the final stage
 - Final image must be < 50MB
@@ -324,7 +345,7 @@ WORKDIR /app
 # TODO: efficient layer caching for npm dependencies
 # TODO: build the app
 
-# Stage 2: Serve — complete this  
+# Stage 2: Serve — complete this
 FROM nginx:alpine
 # TODO: copy built assets to nginx's serve directory
 # TODO: custom nginx.conf for SPA routing (all routes → index.html)
@@ -354,7 +375,7 @@ server {
   listen 80;
   root /usr/share/nginx/html;
   index index.html;
-  
+
   # All unknown paths → index.html (React Router handles routing)
   location / {
     try_files $uri $uri/ /index.html;
@@ -363,6 +384,7 @@ server {
 ```
 
 **Why < 50MB:** `nginx:alpine` base = ~5MB. Built React app ≈ 5–20MB. Total ≈ 10–25MB. No Node.js runtime in final image.
+
 </details>
 
 ---

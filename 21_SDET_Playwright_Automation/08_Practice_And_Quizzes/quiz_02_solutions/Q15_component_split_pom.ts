@@ -16,7 +16,7 @@
  *   }
  */
 
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 // ============================================================
 // FILE: components/orders/OrderSearchForm.ts
@@ -33,10 +33,10 @@ class OrderSearchForm {
 
   constructor(page: Page) {
     this.page = page;
-    this.orderIdInput = page.locator('#orderSearch_id');
-    this.statusDropdown = page.locator('#orderSearch_status');
-    this.searchButton = page.locator('#orderSearch_submit');
-    this.resetButton = page.locator('#orderSearch_reset');
+    this.orderIdInput = page.locator("#orderSearch_id");
+    this.statusDropdown = page.locator("#orderSearch_status");
+    this.searchButton = page.locator("#orderSearch_submit");
+    this.resetButton = page.locator("#orderSearch_reset");
   }
 
   async searchById(id: string): Promise<void> {
@@ -52,7 +52,7 @@ class OrderSearchForm {
   async reset(): Promise<void> {
     await this.resetButton.click();
     // Optionally wait for the inputs to clear:
-    await expect(this.orderIdInput).toHaveValue('');
+    await expect(this.orderIdInput).toHaveValue("");
   }
 }
 
@@ -70,9 +70,9 @@ class OrderResultsGrid {
 
   constructor(page: Page) {
     this.page = page;
-    this.resultRows = page.locator('.order-results-row');
-    this.resultCount = page.locator('.order-results-count');
-    this.pagination = page.locator('.order-results-pagination');
+    this.resultRows = page.locator(".order-results-row");
+    this.resultCount = page.locator(".order-results-count");
+    this.pagination = page.locator(".order-results-pagination");
   }
 
   async waitForResults(timeout = 20_000): Promise<void> {
@@ -116,8 +116,8 @@ class OrdersPage {
   }
 
   async goto(): Promise<void> {
-    await this.page.goto(`${process.env.APP_URL ?? ''}/orders`);
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.goto(`${process.env.APP_URL ?? ""}/orders`);
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   /** High-level: search by ID and wait for the grid to update. */
@@ -137,23 +137,23 @@ class OrdersPage {
 // Usage in tests
 // ============================================================
 
-import { test } from '@playwright/test';
+import { test } from "@playwright/test";
 
-test('search for an order by ID', async ({ page }) => {
+test("search for an order by ID", async ({ page }) => {
   const ordersPage = new OrdersPage(page);
   await ordersPage.goto();
 
-  await ordersPage.searchAndWait('ORD-001');
+  await ordersPage.searchAndWait("ORD-001");
 
   expect(await ordersPage.resultsGrid.getRowCount()).toBe(1);
-  await ordersPage.resultsGrid.clickRowByText('ORD-001');
+  await ordersPage.resultsGrid.clickRowByText("ORD-001");
 });
 
-test('search form reset clears results', async ({ page }) => {
+test("search form reset clears results", async ({ page }) => {
   const ordersPage = new OrdersPage(page);
   await ordersPage.goto();
 
-  await ordersPage.searchAndWait('ORD-001');
+  await ordersPage.searchAndWait("ORD-001");
   expect(await ordersPage.resultsGrid.getRowCount()).toBe(1);
 
   await ordersPage.resetAndClear();

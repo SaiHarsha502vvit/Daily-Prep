@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)
 
 **Cross-links:**
+
 - [`17_D365_Advanced_Timing_Patterns.md`](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) — Wait for stable state before screenshotting
 - [`25_CICD_Integration_GitHub_Azure.md`](./25_CICD_Integration_GitHub_Azure.md) — Storing snapshots in CI
 - [`26_Flakiness_Diagnosis_and_Fixing.md`](./26_Flakiness_Diagnosis_and_Fixing.md) — Animation flakiness in screenshots
@@ -12,7 +13,7 @@
 ## 5W1H
 
 - **WHAT**: Pixel-by-pixel comparison of browser screenshots against approved baseline images — catching unintended UI regressions that functional tests completely miss.
-- **WHY**: A functional test verifies that a button *exists* and *clicks*. Visual regression verifies that the button still *looks right* — correct colour, position, size, text, and spacing. In D365 and enterprise portals, unintended CSS changes routinely break UI without breaking any functional assertion.
+- **WHY**: A functional test verifies that a button _exists_ and _clicks_. Visual regression verifies that the button still _looks right_ — correct colour, position, size, text, and spacing. In D365 and enterprise portals, unintended CSS changes routinely break UI without breaking any functional assertion.
 - **WHO**: SDETs responsible for UI stability. Particularly valuable when a designer or frontend developer makes a "small CSS change" that breaks the entire CRM's data grid layout.
 - **WHEN**: After functional coverage is solid. Don't add visual tests before the UI is stable — changing UI invalidates screenshots constantly.
 - **HOW**: `expect(page).toHaveScreenshot()` with masking for dynamic content, threshold for minor rendering differences, and baseline management strategy.
@@ -63,25 +64,25 @@ Human vision is most sensitive to brightness (Y channel) and less sensitive to c
 
 ```typescript
 // The full threshold parameter set:
-await expect(page).toHaveScreenshot('form.png', {
+await expect(page).toHaveScreenshot("form.png", {
   // Pixel ratio threshold (fraction of total pixels)
-  maxDiffPixelRatio: 0.002,       // 0.2% of pixels can differ
+  maxDiffPixelRatio: 0.002, // 0.2% of pixels can differ
 
   // Absolute pixel count threshold (alternative — use ONE of these two)
   // maxDiffPixels: 50,            // max 50 different pixels
 
   // Per-pixel color sensitivity (0 = exact match, 1 = any color counts as match)
-  threshold: 0.1,                  // 10% brightness difference per pixel
+  threshold: 0.1, // 10% brightness difference per pixel
 
   // Scale factor (for high-DPI/Retina displays)
   // scale: 'css',                 // compare at CSS pixel size (default)
   // scale: 'device',              // compare at device pixel size (2x on Retina)
 
   // Animation handling
-  animations: 'disabled',          // freeze CSS animations before capture
+  animations: "disabled", // freeze CSS animations before capture
 
   // Caret handling (text cursor blinking)
-  caret: 'hide',                   // hide text cursor (default)
+  caret: "hide", // hide text cursor (default)
   // caret: 'initial',             // don't modify caret
 
   // Style tag injected before screenshot (for custom overrides)
@@ -99,12 +100,14 @@ await expect(page).toHaveScreenshot('form.png', {
 ```typescript
 // tests/specs/visual/citation-form.visual.spec.ts
 
-import { test, expect } from '../../fixtures';
-import { CitationDetailPage } from '../../pages/CitationDetailPage';
+import { test, expect } from "../../fixtures";
+import { CitationDetailPage } from "../../pages/CitationDetailPage";
 
-test.describe('Visual regression @visual @citations', () => {
-
-  test('Citation detail form layout is correct', async ({ page, testCitation }) => {
+test.describe("Visual regression @visual @citations", () => {
+  test("Citation detail form layout is correct", async ({
+    page,
+    testCitation,
+  }) => {
     const citationDetail = new CitationDetailPage(page);
 
     // Navigate to the citation
@@ -112,22 +115,27 @@ test.describe('Visual regression @visual @citations', () => {
 
     // Wait for the page to be fully stable BEFORE screenshotting
     // D365: wait for spinners and OData to complete
-    await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
-    await expect(citationDetail.citationIdField).toHaveText(testCitation.citationId, { timeout: 30_000 });
+    await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+      timeout: 45_000,
+    });
+    await expect(citationDetail.citationIdField).toHaveText(
+      testCitation.citationId,
+      { timeout: 30_000 },
+    );
 
     // Take the screenshot and compare to baseline
-    await expect(page).toHaveScreenshot('citation-detail-form.png', {
+    await expect(page).toHaveScreenshot("citation-detail-form.png", {
       // Allow up to 0.2% pixel difference (for anti-aliasing, font rendering)
       maxDiffPixelRatio: 0.002,
     });
   });
-
 });
 ```
 
 **Where is `citation-detail-form.png` stored?**
 
 Playwright creates a `__screenshots__` directory next to your spec file:
+
 ```
 tests/specs/visual/
 ├── citation-form.visual.spec.ts
@@ -156,7 +164,7 @@ The biggest challenge in enterprise visual testing: **dynamic content that chang
 // - Breadcrumb with session-specific paths
 // - Any auto-generated reference numbers
 
-await expect(page).toHaveScreenshot('citation-detail.png', {
+await expect(page).toHaveScreenshot("citation-detail.png", {
   maxDiffPixelRatio: 0.002,
 
   // Mask dynamic areas — they're replaced with a solid block in the diff
@@ -166,15 +174,15 @@ await expect(page).toHaveScreenshot('citation-detail.png', {
     page.locator('[data-automation-key="modifiedon"]'),
 
     // User-specific content
-    page.locator('.ms-Persona-imageArea'),        // profile pictures
-    page.locator('.ms-BreadcrumbItem'),           // breadcrumb (session-specific)
+    page.locator(".ms-Persona-imageArea"), // profile pictures
+    page.locator(".ms-BreadcrumbItem"), // breadcrumb (session-specific)
 
     // Any auto-generated IDs that change per run
     page.locator('[data-automation-key="ticketnumber"]'),
   ],
 
   // Color of the mask (default: magenta — visible in diff image)
-  maskColor: '#FF00FF',
+  maskColor: "#FF00FF",
 });
 ```
 
@@ -182,11 +190,11 @@ await expect(page).toHaveScreenshot('citation-detail.png', {
 
 ```typescript
 // When a dynamic element doesn't have a good selector, mask by position
-await expect(page).toHaveScreenshot('dashboard.png', {
+await expect(page).toHaveScreenshot("dashboard.png", {
   clip: {
     // Screenshot only this portion (excludes the dynamic header)
     x: 0,
-    y: 120,    // skip the top 120px (header with timestamps/user info)
+    y: 120, // skip the top 120px (header with timestamps/user info)
     width: 1920,
     height: 900,
   },
@@ -221,12 +229,12 @@ await page.addStyleTag({
       animation: none !important;
       background: #e1e1e1 !important;
     }
-  `
+  `,
 });
 
-await expect(page).toHaveScreenshot('form-stable.png', {
-  animations: 'disabled',
-  maxDiffPixelRatio: 0.001,  // tighter threshold when we control the content
+await expect(page).toHaveScreenshot("form-stable.png", {
+  animations: "disabled",
+  maxDiffPixelRatio: 0.001, // tighter threshold when we control the content
 });
 ```
 
@@ -237,17 +245,23 @@ await expect(page).toHaveScreenshot('form-stable.png', {
 Instead of screenshotting the full page (which catches irrelevant changes), screenshot specific components:
 
 ```typescript
-test('Search results grid layout', async ({ page, citationsClient, account }) => {
+test("Search results grid layout", async ({
+  page,
+  citationsClient,
+  account,
+}) => {
   // Setup: create a known citation so the grid has consistent data
-  await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
+  await citationsClient.create(
+    PayloadsCitation.pending({ customerId: account.userId }),
+  );
 
   await masterSearch.goto();
   await masterSearch.searchPanel.searchByUser(account.userId);
   await masterSearch.resultsGrid.waitForResults();
 
   // Screenshot ONLY the results grid, not the entire page
-  const gridLocator = page.locator('.ms-DetailsList');
-  await expect(gridLocator).toHaveScreenshot('search-results-grid.png', {
+  const gridLocator = page.locator(".ms-DetailsList");
+  await expect(gridLocator).toHaveScreenshot("search-results-grid.png", {
     maxDiffPixelRatio: 0.001,
     mask: [
       gridLocator.locator('[data-automation-key="createdon"]'),
@@ -256,13 +270,13 @@ test('Search results grid layout', async ({ page, citationsClient, account }) =>
   });
 });
 
-test('Citation status badge - PENDING', async ({ page, testCitation }) => {
+test("Citation status badge - PENDING", async ({ page, testCitation }) => {
   await citationDetail.goto(testCitation.citationId);
 
   // Only the status badge — tiny, stable, meaningful
-  const badge = page.locator('.citation-status-badge');
+  const badge = page.locator(".citation-status-badge");
   await expect(badge).toBeVisible();
-  await expect(badge).toHaveScreenshot('status-badge-pending.png');
+  await expect(badge).toHaveScreenshot("status-badge-pending.png");
 });
 ```
 
@@ -270,15 +284,23 @@ test('Citation status badge - PENDING', async ({ page, testCitation }) => {
 
 ```typescript
 // ✅ Good component targets — isolated, meaningful, stable:
-await expect(page.locator('.status-badge')).toHaveScreenshot('status-pending.png');
-await expect(page.locator('.payment-summary-card')).toHaveScreenshot('payment-summary.png');
-await expect(page.locator('.error-notification')).toHaveScreenshot('error-state.png');
-await expect(page.locator('.ms-DetailsList')).toHaveScreenshot('data-grid.png');
-await expect(page.locator('nav[aria-label="Main navigation"]')).toHaveScreenshot('nav.png');
+await expect(page.locator(".status-badge")).toHaveScreenshot(
+  "status-pending.png",
+);
+await expect(page.locator(".payment-summary-card")).toHaveScreenshot(
+  "payment-summary.png",
+);
+await expect(page.locator(".error-notification")).toHaveScreenshot(
+  "error-state.png",
+);
+await expect(page.locator(".ms-DetailsList")).toHaveScreenshot("data-grid.png");
+await expect(
+  page.locator('nav[aria-label="Main navigation"]'),
+).toHaveScreenshot("nav.png");
 
 // ❌ Bad targets — too large, too many dynamic parts:
-await expect(page).toHaveScreenshot('full-page.png');  // catches everything including irrelevant
-await expect(page.locator('body')).toHaveScreenshot('body.png');  // same problem
+await expect(page).toHaveScreenshot("full-page.png"); // catches everything including irrelevant
+await expect(page.locator("body")).toHaveScreenshot("body.png"); // same problem
 ```
 
 ---
@@ -291,9 +313,9 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       // Global defaults — override per-test as needed
-      maxDiffPixelRatio: 0.002,     // 0.2% pixel difference allowed globally
-      threshold: 0.2,               // Per-pixel colour difference threshold (0-1)
-      animations: 'disabled',       // Disable CSS animations before screenshotting (key!)
+      maxDiffPixelRatio: 0.002, // 0.2% pixel difference allowed globally
+      threshold: 0.2, // Per-pixel colour difference threshold (0-1)
+      animations: "disabled", // Disable CSS animations before screenshotting (key!)
     },
   },
   // ...
@@ -335,43 +357,45 @@ D365's Fluent UI has several visual testing pitfalls:
 // Challenge 1: Command Bar is user-role-dependent
 // Different roles see different buttons → screenshot differs per account
 // Solution: mask the entire command bar
-await expect(page).toHaveScreenshot('d365-form.png', {
+await expect(page).toHaveScreenshot("d365-form.png", {
   mask: [
-    page.locator('.ms-CommandBar'),  // entire command bar
-    page.locator('.ms-CommandBar-overflowMenu'),
+    page.locator(".ms-CommandBar"), // entire command bar
+    page.locator(".ms-CommandBar-overflowMenu"),
   ],
 });
 
 // Challenge 2: Fluent UI Tooltips appear on hover
 // Solution: move mouse away from interactive elements before screenshotting
-await page.mouse.move(0, 0);  // move to top-left corner
-await page.waitForTimeout(300);  // wait for tooltip to hide
-await expect(page).toHaveScreenshot('d365-grid.png');
+await page.mouse.move(0, 0); // move to top-left corner
+await page.waitForTimeout(300); // wait for tooltip to hide
+await expect(page).toHaveScreenshot("d365-grid.png");
 
 // Challenge 3: Focus rings (accessibility outlines) show when keyboard-navigating
 // Solution: ensure mouse is used for navigation (not keyboard) in visual tests
 // Or: add CSS to hide focus rings for visual tests
 await page.addStyleTag({
-  content: '*:focus { outline: none !important; }'
+  content: "*:focus { outline: none !important; }",
 });
 // ⚠ Only in visual tests — never in functional tests (breaks accessibility)
 
 // Challenge 4: D365 Two-Phase Render — shell loads, then data loads
 // Solution: wait for actual data, not just DOM ready
-await expect(page.locator('[data-id="citation_status"] .ms-TextField-field'))
-  .not.toHaveText('', { timeout: 30_000 });  // wait for non-empty field
+await expect(
+  page.locator('[data-id="citation_status"] .ms-TextField-field'),
+).not.toHaveText("", { timeout: 30_000 }); // wait for non-empty field
 // THEN screenshot
 
 // Challenge 5: Fluent UI panel animations (slide-in/slide-out)
 // Even with animations: 'disabled', Fluent UI uses requestAnimationFrame
 // Solution: wait for panel to fully open before screenshotting
-await expect(page.locator('[data-id="editDialog"][aria-hidden="false"]'))
-  .toBeVisible({ timeout: 10_000 });
+await expect(
+  page.locator('[data-id="editDialog"][aria-hidden="false"]'),
+).toBeVisible({ timeout: 10_000 });
 await page.waitForFunction(() => {
-  const panel = document.querySelector('.ms-Panel-main');
+  const panel = document.querySelector(".ms-Panel-main");
   if (!panel) return false;
   const transform = window.getComputedStyle(panel).transform;
-  return transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)';
+  return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
 });
 // THEN screenshot
 ```
@@ -382,13 +406,13 @@ await page.waitForFunction(() => {
 
 ```typescript
 // Bad: vague names
-await expect(page).toHaveScreenshot('test.png');
-await expect(page).toHaveScreenshot('screenshot1.png');
+await expect(page).toHaveScreenshot("test.png");
+await expect(page).toHaveScreenshot("screenshot1.png");
 
 // Good: descriptive, context-specific names
-await expect(page).toHaveScreenshot('citation-detail-pending-status.png');
-await expect(badge).toHaveScreenshot('status-badge-overdue-warning.png');
-await expect(grid).toHaveScreenshot('search-results-3-citations.png');
+await expect(page).toHaveScreenshot("citation-detail-pending-status.png");
+await expect(badge).toHaveScreenshot("status-badge-overdue-warning.png");
+await expect(grid).toHaveScreenshot("search-results-3-citations.png");
 
 // Pattern: [component]-[state]-[variant].png
 // Examples:
@@ -407,21 +431,21 @@ await expect(grid).toHaveScreenshot('search-results-3-citations.png');
 // playwright.config.ts — fix viewport so screenshots are consistent
 export default defineConfig({
   use: {
-    viewport: { width: 1920, height: 1080 },  // standard enterprise desktop
+    viewport: { width: 1920, height: 1080 }, // standard enterprise desktop
     // All screenshots taken at this size
   },
 
   // For responsive testing, create separate projects:
   projects: [
     {
-      name: 'visual-desktop',
+      name: "visual-desktop",
       use: { viewport: { width: 1920, height: 1080 } },
-      testMatch: '**/*.visual.spec.ts',
+      testMatch: "**/*.visual.spec.ts",
     },
     {
-      name: 'visual-laptop',
+      name: "visual-laptop",
       use: { viewport: { width: 1366, height: 768 } },
-      testMatch: '**/*.visual.spec.ts',
+      testMatch: "**/*.visual.spec.ts",
     },
   ],
 });
@@ -434,8 +458,8 @@ export default defineConfig({
 ```typescript
 // fixtures/visual.fixture.ts
 
-import { test as base, expect } from '@playwright/test';
-import type { Page, Locator } from '@playwright/test';
+import { test as base, expect } from "@playwright/test";
+import type { Page, Locator } from "@playwright/test";
 
 interface VisualFixtures {
   /**
@@ -446,10 +470,10 @@ interface VisualFixtures {
     target: Page | Locator,
     name: string,
     options?: {
-      mask?:              Locator[];
+      mask?: Locator[];
       maxDiffPixelRatio?: number;
-      waitForSelector?:   string;   // wait for this to be visible before screenshotting
-    }
+      waitForSelector?: string; // wait for this to be visible before screenshotting
+    },
   ) => Promise<void>;
 }
 
@@ -457,25 +481,31 @@ export const test = base.extend<VisualFixtures>({
   screenshotStable: async ({ page }, use) => {
     const helper = async (
       target: Page | Locator,
-      name:   string,
+      name: string,
       options: {
-        mask?:              Locator[];
+        mask?: Locator[];
         maxDiffPixelRatio?: number;
-        waitForSelector?:   string;
-      } = {}
+        waitForSelector?: string;
+      } = {},
     ): Promise<void> => {
       // 1. Wait for D365 spinners to disappear
-      await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
-      await expect(page.locator('[class*="shimmer"]')).toHaveCount(0, { timeout: 15_000 });
+      await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+        timeout: 30_000,
+      });
+      await expect(page.locator('[class*="shimmer"]')).toHaveCount(0, {
+        timeout: 15_000,
+      });
 
       // 2. Wait for custom content selector if specified
       if (options.waitForSelector) {
-        await expect(page.locator(options.waitForSelector)).toBeVisible({ timeout: 20_000 });
+        await expect(page.locator(options.waitForSelector)).toBeVisible({
+          timeout: 20_000,
+        });
       }
 
       // 3. Move mouse to safe position (avoid hover states and tooltips)
-      await page.mouse.move(5, 5);  // top-left, out of the way
-      await page.waitForTimeout(150);  // let tooltip fade out
+      await page.mouse.move(5, 5); // top-left, out of the way
+      await page.waitForTimeout(150); // let tooltip fade out
 
       // 4. Inject stability CSS
       await page.addStyleTag({
@@ -483,15 +513,15 @@ export const test = base.extend<VisualFixtures>({
           * { animation: none !important; transition: none !important; }
           .ms-Spinner { display: none !important; }
           [class*="shimmer"] { animation: none !important; background: #f0f0f0 !important; }
-        `
+        `,
       });
 
       // 5. Take the screenshot
       await expect(target).toHaveScreenshot(name, {
-        animations:        'disabled',
-        caret:             'hide',
+        animations: "disabled",
+        caret: "hide",
         maxDiffPixelRatio: options.maxDiffPixelRatio ?? 0.002,
-        mask:              options.mask ?? [],
+        mask: options.mask ?? [],
       });
     };
 
@@ -500,16 +530,24 @@ export const test = base.extend<VisualFixtures>({
 });
 
 // Usage in tests:
-test('Citation form stable screenshot', async ({ page, screenshotStable, testCitation }) => {
+test("Citation form stable screenshot", async ({
+  page,
+  screenshotStable,
+  testCitation,
+}) => {
   await page.goto(`/citations/${testCitation.citationId}`);
 
-  await screenshotStable(page.locator('.citation-form'), 'citation-form-stable.png', {
-    mask: [
-      page.locator('[data-automation-key="createdon"]'),
-      page.locator('[data-automation-key="modifiedon"]'),
-    ],
-    waitForSelector: '[data-testid="citation-status"]',
-  });
+  await screenshotStable(
+    page.locator(".citation-form"),
+    "citation-form-stable.png",
+    {
+      mask: [
+        page.locator('[data-automation-key="createdon"]'),
+        page.locator('[data-automation-key="modifiedon"]'),
+      ],
+      waitForSelector: '[data-testid="citation-status"]',
+    },
+  );
 });
 ```
 
@@ -562,13 +600,13 @@ playwright-report/**     ← IGNORE (HTML report)
 # .github/workflows/playwright.yml (visual tests section)
 
 visual-tests:
-  runs-on: ubuntu-latest   # ← MUST match the OS used to generate baselines
+  runs-on: ubuntu-latest # ← MUST match the OS used to generate baselines
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: '20'
-        cache: 'npm'
+        node-version: "20"
+        cache: "npm"
     - run: npm ci
     - run: npx playwright install chromium --with-deps
 
@@ -611,6 +649,7 @@ docker run --rm \
 **Situation**: A designer changes `--primary-color: #0078d4` to `--primary-color: #0079d3` — a 1-digit hex difference. 40 visual tests fail in CI. The designer insists "it's the same blue."
 
 **The diagnosis**:
+
 ```
 pixelmatch found 2,847 pixels different in citation-detail-form.png
 YIQ delta: 0.12 (above 0.1 threshold)
@@ -620,6 +659,7 @@ Affected area: all primary buttons, command bar, highlighted rows
 **Why it matters**: The change was intentional for the new brand style guide. But it affected 40 baseline images — which means 40 forms, 40 grids, 40 buttons.
 
 **The lesson**:
+
 ```typescript
 // ✅ Isolate color from layout — screenshot components separately
 // If color changes, only badge/button screenshots need updating
@@ -627,10 +667,14 @@ Affected area: all primary buttons, command bar, highlighted rows
 
 // Instead of: one full-page screenshot that includes both layout AND color
 // Use:
-await expect(page.locator('.citation-form-layout')).toHaveScreenshot('form-layout.png');
+await expect(page.locator(".citation-form-layout")).toHaveScreenshot(
+  "form-layout.png",
+);
 // → Tests layout positioning (column widths, row heights, spacing)
 
-await expect(page.locator('.status-badge')).toHaveScreenshot('status-badge-color.png');
+await expect(page.locator(".status-badge")).toHaveScreenshot(
+  "status-badge-color.png",
+);
 // → Tests color appearance
 
 // When CSS variable changes → only color screenshots need updating
@@ -659,6 +703,7 @@ USE FUNCTIONAL TESTS FOR:                USE VISUAL TESTS FOR:
 ```
 
 **The 80/20 rule for visual tests:**
+
 - 80% of your testing budget: functional tests
 - 20%: visual regression on critical, stable UI components (navigation, forms, status badges, data grids)
 - 0%: visual tests on unstable, frequently-changing UI
@@ -679,6 +724,7 @@ D) CI runs on Linux; local runs on Windows — tests would always fail
 <details><summary>Answer</summary>
 
 **B** — OS-level font rendering is different. Linux uses FreeType, macOS uses CoreText, Windows uses DirectWrite. Even with the same font file, the rendered pixels differ slightly — enough to fail a pixel-perfect comparison. Playwright solves this by maintaining separate baseline files per OS. In practice, use Linux as the CI baseline standard and run `--update-snapshots` on Linux (or Docker) to generate/update baselines.
+
 </details>
 
 ---
@@ -702,6 +748,7 @@ E) Increase `maxDiffPixelRatio` to 0.05
 **C** — Injecting `animation-duration: 0s` via CSS is a belt-and-suspenders approach that works for animations Playwright's built-in freezing might miss (e.g., animations triggered by JavaScript, not CSS transitions).
 
 **A** is the anti-pattern (waitForTimeout is never the answer). **D** helps with scope but doesn't fix the animation problem. **E** loosens the threshold but masks the real problem.
+
 </details>
 
 ---
@@ -709,6 +756,7 @@ E) Increase `maxDiffPixelRatio` to 0.05
 ### Challenge 3 [Write It Yourself]
 
 Write a `screenshotComponent` helper that:
+
 1. Waits for a locator to be stable (no animation, no layout shift)
 2. Moves the mouse away (avoids hover states)
 3. Takes a component-level screenshot with dynamic elements masked
@@ -718,25 +766,25 @@ Write a `screenshotComponent` helper that:
 ```typescript
 // utils/visual.utils.ts
 
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page, expect } from "@playwright/test";
 
 interface ScreenshotOptions {
-  name:               string;
-  maskLocators?:      Locator[];
+  name: string;
+  maskLocators?: Locator[];
   maxDiffPixelRatio?: number;
-  stabilizeWaitMs?:   number;  // extra wait after mouse move (default: 150ms)
+  stabilizeWaitMs?: number; // extra wait after mouse move (default: 150ms)
 }
 
 export async function screenshotComponent(
-  page:      Page,
+  page: Page,
   component: Locator,
-  options:   ScreenshotOptions
+  options: ScreenshotOptions,
 ): Promise<void> {
   // 1. Ensure the component is visible and stable
   await expect(component).toBeVisible({ timeout: 15_000 });
 
   // 2. Wait for D365 spinners to settle
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 15_000 });
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 15_000 });
 
   // 3. Move mouse away to avoid hover states and tooltips
   await page.mouse.move(0, 0);
@@ -744,27 +792,28 @@ export async function screenshotComponent(
 
   // 4. Inject animation-killer CSS
   await page.addStyleTag({
-    content: `* { animation: none !important; transition: none !important; }`
+    content: `* { animation: none !important; transition: none !important; }`,
   });
 
   // 5. Take the screenshot
   await expect(component).toHaveScreenshot(options.name, {
     maxDiffPixelRatio: options.maxDiffPixelRatio ?? 0.002,
-    mask:              options.maskLocators ?? [],
-    animations:        'disabled',
-    caret:             'hide',
+    mask: options.maskLocators ?? [],
+    animations: "disabled",
+    caret: "hide",
   });
 }
 
 // Usage:
-await screenshotComponent(page, page.locator('.citation-form'), {
-  name: 'citation-form.png',
+await screenshotComponent(page, page.locator(".citation-form"), {
+  name: "citation-form.png",
   maskLocators: [
     page.locator('[data-automation-key="createdon"]'),
-    page.locator('.ms-Persona-imageArea'),
+    page.locator(".ms-Persona-imageArea"),
   ],
 });
 ```
+
 </details>
 
 ---
@@ -774,9 +823,9 @@ await screenshotComponent(page, page.locator('.citation-form'), {
 What is wrong with this visual test?
 
 ```typescript
-test('Citation status badge', async ({ page }) => {
-  await page.goto('/citations/CIT-001');
-  await expect(page.locator('.status-badge')).toHaveScreenshot('badge.png');
+test("Citation status badge", async ({ page }) => {
+  await page.goto("/citations/CIT-001");
+  await expect(page.locator(".status-badge")).toHaveScreenshot("badge.png");
 });
 ```
 
@@ -795,21 +844,34 @@ D365 Fluent UI shows `.ms-Spinner` during data loading. If it's visible when the
 If the badge has a fade-in animation, the screenshot might capture it mid-animation. Fix: add `animations: 'disabled'` or inject `* { animation: none !important; }`.
 
 **Fixed version:**
+
 ```typescript
-test('Citation status badge shows PENDING correctly', async ({ page, citationsClient, account }) => {
-  const citation = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
+test("Citation status badge shows PENDING correctly", async ({
+  page,
+  citationsClient,
+  account,
+}) => {
+  const citation = await citationsClient.create(
+    PayloadsCitation.pending({ customerId: account.userId }),
+  );
   await page.goto(`/citations/${citation.citationId}`);
 
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
-  await expect(page.locator('.status-badge')).not.toHaveText('', { timeout: 20_000 });
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30_000 });
+  await expect(page.locator(".status-badge")).not.toHaveText("", {
+    timeout: 20_000,
+  });
   await page.mouse.move(0, 0);
 
-  await expect(page.locator('.status-badge')).toHaveScreenshot('status-badge-pending.png', {
-    animations: 'disabled',
-    maxDiffPixelRatio: 0.001,
-  });
+  await expect(page.locator(".status-badge")).toHaveScreenshot(
+    "status-badge-pending.png",
+    {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.001,
+    },
+  );
 });
 ```
+
 </details>
 
 ---
@@ -840,4 +902,5 @@ Option A skips review entirely — you'll auto-approve regressions you didn't in
 </details>
 
 ---
+
 **Navigation**: [← Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)

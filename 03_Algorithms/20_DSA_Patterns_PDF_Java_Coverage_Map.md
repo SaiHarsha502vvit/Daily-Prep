@@ -42,17 +42,20 @@ This chapter is not theory-heavy; it is a navigation and execution layer.
 🔬 **Section Challenge — 2.2 Binary Search and Variants**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+
 </details>
 
 **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+
 <details><summary>Answer</summary>
 
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-</details>
 
+</details>
 
 ## 2.3 Recursion, Backtracking, DP
 
@@ -66,9 +69,11 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 🔬 **Section Challenge — 2.3 Recursion, Backtracking, DP**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -77,12 +82,14 @@ An explicit `Stack<State>` where State holds what the stack frame would hold (cu
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
+
 Why and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-</details>
 
+</details>
 
 ## 2.4 Graphs and Trees
 
@@ -93,22 +100,23 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
   - `06_Graphs_Complete.md`
   - `15_Graphs_Deep_Dive.md`
 
-
-
 🔬 **Section Challenge — 2.4 Graphs and Trees**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 2.5 Bit Manipulation and XOR
 
@@ -153,17 +161,16 @@ For each topic, verify you can do all of these in Java:
 3. Implement optimized version without template copy.
 4. State time and space complexity clearly.
 5. Handle edge cases:
+
 - empty input
 - single element
 - duplicates
 - negatives
 - overflow-sensitive sums
+
 6. Convert logic into reusable helper methods/classes.
 
 ---
-
-
-
 
 ## 4. 21-Day Java Revision Route (Pattern-Focused)
 
@@ -199,8 +206,6 @@ Day 21: finalize personal cheat sheets
 
 ---
 
-
-
 ## 5. Gap Closure Status from PDF
 
 Based on PDF-to-workspace matching done in this session:
@@ -214,16 +219,23 @@ Based on PDF-to-workspace matching done in this session:
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
 
 **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
+
 <details><summary>Answer</summary>
 
 A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
+
 </details>
 
+### Topical Breadth — Pattern-to-Language Selection Trade-offs
+
+Not all DSA patterns are equally natural in every language. The trade-off between pattern expressiveness and language idiom determines which template to use in an interview. **Java**: strong for tree/graph pointer-chasing (explicit Node classes, generics), competitive for segment trees and Fenwick trees with OOP wrappers, weaker for functional patterns (no first-class functions pre-Java 8). **Python**: strong for rapid prototyping with dictionaries and lists, excellent for two-pointer and sliding window (readable, concise), weaker for low-level bit manipulation (integers are arbitrary precision, no unsigned). **JavaScript**: strong for tree/graph traversal with JSON-like objects, weaker for typed DS (no generics, no unsigned integers). The **interview trade-off**: Java demonstrates CS fundamentals and type safety (impresses security-conscious teams); Python demonstrates speed of reasoning (impresses ML/data teams); JavaScript demonstrates full-stack awareness (impresses web-native companies).
+
+Select **Java templates** for: trees, graphs, segment trees, Fenwick trees, bit tries, typed collections, OOP design. Select **Python templates** for: two-pointer, sliding window, hashmap-heavy, quick prototyping, readable recursion. Select **JavaScript templates** for: tree traversal with dynamic objects, graph traversal with adjacency lists, functional patterns (map/filter/reduce).
+
+---
 
 ## 6. Final Interview Positioning (What to Say)
 

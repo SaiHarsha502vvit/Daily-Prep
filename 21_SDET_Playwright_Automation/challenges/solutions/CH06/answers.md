@@ -31,6 +31,7 @@ File locks solve this because they live on the **OS file system**, which is a sh
 ### 4. Why does release go in a finally block?
 
 In `page.fixture.ts`, the `pooledAccount` fixture looks like:
+
 ```typescript
 pooledAccount: async ({}, use) => {
   const account = await acquireAccount();

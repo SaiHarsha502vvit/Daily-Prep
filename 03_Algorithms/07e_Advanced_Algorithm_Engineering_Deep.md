@@ -14,17 +14,23 @@ The goal is not to memorize scary names. The goal is to recognize the deeper pat
 
 ---
 
+### Historical Evolution
+
+The advanced techniques in this chapter represent the frontier of practical algorithm engineering, often developed to solve problems that standard algorithms couldn't handle within time/memory limits. **Mo's Algorithm** (offline range query answering) was introduced by **Mo, Q. I. in 1993** as a technique for answering offline queries on static arrays by reordering them to minimize the movement of the query window — sorting queries by block size reduces total movement to $O(n\sqrt{q})$, enabling problems that would be $O(n \cdot q)$ with naive online approaches. **Heavy-Light Decomposition** was developed by **Harold Djidjev and Robert Tarjan in the early 1980s** for network flow applications and formalized by **Sleator and Tarjan (1983)** in the context of tree decomposition — the insight that decomposing a tree into heavy paths and light edges enables $O(\log N)$ path queries, originally motivated by link-cut trees for dynamic graph connectivity. **Wavelet Trees** were introduced by **Grossi, Gupta, and Vitter in 2003** for high-dimensional rank/select queries — they generalize the binary indexed tree to support range frequency and k-th smallest queries in $O(\log \sigma)$ time over alphabets of size $\sigma$. **Dinic's maximum flow algorithm** (1970) and **Goldberg's push-relabel** (1985) represent two decades of network flow optimization. Modern practice (post-2010) combines these: HLD is used in network routing, Wavelet Trees underpin bioinformatics tools (BWA), and Mo's algorithm appears in competitive programming range frequency problems.
+
+---
+
 # PART 1: The Senior Decision Frame
 
 Before choosing an advanced technique, ask five questions.
 
-| Question | If Yes, Think About |
-|----------|---------------------|
-| Are queries mixed with updates? | Fenwick, Segment Tree, Lazy Segment Tree, Treap |
-| Are queries on tree paths/subtrees? | Euler Tour, LCA, Heavy-Light Decomposition |
-| Can queries be reordered offline? | Mo's Algorithm, sweep line, DSU offline |
-| Do you need kth/rank/frequency over ranges? | Wavelet Tree, Persistent Segment Tree |
-| Is state changing over time with rollback? | DSU Rollback, persistent structures |
+| Question                                    | If Yes, Think About                             |
+| ------------------------------------------- | ----------------------------------------------- |
+| Are queries mixed with updates?             | Fenwick, Segment Tree, Lazy Segment Tree, Treap |
+| Are queries on tree paths/subtrees?         | Euler Tour, LCA, Heavy-Light Decomposition      |
+| Can queries be reordered offline?           | Mo's Algorithm, sweep line, DSU offline         |
+| Do you need kth/rank/frequency over ranges? | Wavelet Tree, Persistent Segment Tree           |
+| Is state changing over time with rollback?  | DSU Rollback, persistent structures             |
 
 ## 1.1 Online vs Offline
 
@@ -60,12 +66,12 @@ graph + connectivity/shortest path/flow over changing constraints
 
 The correct structure is usually chosen by the axis:
 
-| Axis | Static | Point Updates | Range Updates | Offline |
-|------|--------|---------------|---------------|---------|
-| Array | Prefix, Sparse Table | Fenwick, Segment Tree | Lazy Segment Tree | Mo's, Sweep Line |
-| Tree subtree | Euler Tour + Prefix | Euler Tour + BIT | Euler Tour + Lazy Segment Tree | DSU on Tree |
-| Tree path | LCA binary lifting | HLD + Segment Tree | HLD + Lazy Segment Tree | Tarjan LCA |
-| Dynamic graph | N/A | DSU for additions | Hard | DSU rollback, divide over time |
+| Axis          | Static               | Point Updates         | Range Updates                  | Offline                        |
+| ------------- | -------------------- | --------------------- | ------------------------------ | ------------------------------ |
+| Array         | Prefix, Sparse Table | Fenwick, Segment Tree | Lazy Segment Tree              | Mo's, Sweep Line               |
+| Tree subtree  | Euler Tour + Prefix  | Euler Tour + BIT      | Euler Tour + Lazy Segment Tree | DSU on Tree                    |
+| Tree path     | LCA binary lifting   | HLD + Segment Tree    | HLD + Lazy Segment Tree        | Tarjan LCA                     |
+| Dynamic graph | N/A                  | DSU for additions     | Hard                           | DSU rollback, divide over time |
 
 ---
 
@@ -100,13 +106,13 @@ Why? Every time you take a light edge, the subtree size at least halves.
 
 HLD gives every node:
 
-| Field | Meaning |
-|-------|---------|
-| `parent[u]` | Parent in rooted tree |
-| `depth[u]` | Depth from root |
-| `heavy[u]` | Child with largest subtree |
-| `head[u]` | Top node of current heavy chain |
-| `pos[u]` | Position in base array |
+| Field       | Meaning                         |
+| ----------- | ------------------------------- |
+| `parent[u]` | Parent in rooted tree           |
+| `depth[u]`  | Depth from root                 |
+| `heavy[u]`  | Child with largest subtree      |
+| `head[u]`   | Top node of current heavy chain |
+| `pos[u]`    | Position in base array          |
 
 Nodes on the same heavy chain become contiguous in the base array.
 
@@ -172,22 +178,22 @@ That means subtree sum/update becomes a normal range query/update.
 
 ## 3.2 Common Patterns
 
-| Tree Problem | Transformation |
-|--------------|----------------|
-| Subtree sum | Euler Tour + Fenwick |
-| Subtree add, point query | Euler Tour + difference BIT |
-| Subtree add, subtree sum | Euler Tour + lazy segment tree |
-| Ancestor check | `tin[a] <= tin[b] && tout[b] <= tout[a]` |
-| LCA preprocessing | Euler depth tour + RMQ |
+| Tree Problem             | Transformation                           |
+| ------------------------ | ---------------------------------------- |
+| Subtree sum              | Euler Tour + Fenwick                     |
+| Subtree add, point query | Euler Tour + difference BIT              |
+| Subtree add, subtree sum | Euler Tour + lazy segment tree           |
+| Ancestor check           | `tin[a] <= tin[b] && tout[b] <= tout[a]` |
+| LCA preprocessing        | Euler depth tour + RMQ                   |
 
 ## 3.3 Euler Tour vs HLD
 
-| Need | Best Tool |
-|------|-----------|
-| Query whole subtree | Euler Tour |
+| Need                         | Best Tool                         |
+| ---------------------------- | --------------------------------- |
+| Query whole subtree          | Euler Tour                        |
 | Query root-to-node path only | Euler Tour prefix trick sometimes |
-| Query arbitrary path `u-v` | HLD |
-| Query only ancestor/LCA | Binary Lifting / RMQ |
+| Query arbitrary path `u-v`   | HLD                               |
+| Query only ancestor/LCA      | Binary Lifting / RMQ              |
 
 ---
 
@@ -204,6 +210,7 @@ query(L, R): answer something about arr[L..R]
 ```
 
 Examples:
+
 - number of distinct values
 - frequency of most common value
 - pair counts
@@ -259,13 +266,13 @@ If add/remove is not cheap, Mo's Algorithm is not useful.
 
 ## 4.4 Variants
 
-| Variant | Handles |
-|---------|---------|
-| Standard Mo | Static array range queries |
-| Mo with updates | Offline point updates + range queries |
-| Mo on trees | Path/subtree queries via Euler Tour |
-| Hilbert order Mo | Better practical locality than block sorting |
-| Rollback Mo | Cases where remove is hard but rollback is possible |
+| Variant          | Handles                                             |
+| ---------------- | --------------------------------------------------- |
+| Standard Mo      | Static array range queries                          |
+| Mo with updates  | Offline point updates + range queries               |
+| Mo on trees      | Path/subtree queries via Euler Tour                 |
+| Hilbert order Mo | Better practical locality than block sorting        |
+| Rollback Mo      | Cases where remove is hard but rollback is possible |
 
 ---
 
@@ -283,12 +290,12 @@ arr = [5, 1, 2, 7, 3, 5, 9]
 
 Wavelet Tree can answer:
 
-| Query | Meaning |
-|-------|---------|
-| `kth(L, R, k)` | kth smallest in subarray |
-| `countLTE(L, R, x)` | how many values `<= x` in subarray |
-| `freq(L, R, x)` | frequency of `x` in subarray |
-| `rangeCount(L, R, a, b)` | count values in `[a, b]` |
+| Query                    | Meaning                            |
+| ------------------------ | ---------------------------------- |
+| `kth(L, R, k)`           | kth smallest in subarray           |
+| `countLTE(L, R, x)`      | how many values `<= x` in subarray |
+| `freq(L, R, x)`          | frequency of `x` in subarray       |
+| `rangeCount(L, R, a, b)` | count values in `[a, b]`           |
 
 Complexity:
 
@@ -327,13 +334,13 @@ else:
 
 ## 5.3 Wavelet Tree vs Persistent Segment Tree
 
-| Need | Wavelet Tree | Persistent Segment Tree |
-|------|--------------|-------------------------|
-| Static array | Excellent | Excellent |
-| kth in range | Excellent | Excellent |
-| Point updates | Harder | Possible with versions or dynamic tree |
-| Memory | Compact | More nodes |
-| Conceptual model | Value partition tree | Versioned frequency segment trees |
+| Need             | Wavelet Tree         | Persistent Segment Tree                |
+| ---------------- | -------------------- | -------------------------------------- |
+| Static array     | Excellent            | Excellent                              |
+| kth in range     | Excellent            | Excellent                              |
+| Point updates    | Harder               | Possible with versions or dynamic tree |
+| Memory           | Compact              | More nodes                             |
+| Conceptual model | Value partition tree | Versioned frequency segment trees      |
 
 ---
 
@@ -466,13 +473,13 @@ A Link-Cut Tree represents preferred paths using splay trees.
 
 Supported operations:
 
-| Operation | Meaning | Complexity |
-|-----------|---------|------------|
-| `makeroot(u)` | Reroot represented tree at `u` | `O(log N)` amortized |
-| `findroot(u)` | Find tree root | `O(log N)` amortized |
-| `link(u, v)` | Connect two trees | `O(log N)` amortized |
-| `cut(u, v)` | Remove edge | `O(log N)` amortized |
-| `pathQuery(u, v)` | Aggregate on path | `O(log N)` amortized |
+| Operation         | Meaning                        | Complexity           |
+| ----------------- | ------------------------------ | -------------------- |
+| `makeroot(u)`     | Reroot represented tree at `u` | `O(log N)` amortized |
+| `findroot(u)`     | Find tree root                 | `O(log N)` amortized |
+| `link(u, v)`      | Connect two trees              | `O(log N)` amortized |
+| `cut(u, v)`       | Remove edge                    | `O(log N)` amortized |
+| `pathQuery(u, v)` | Aggregate on path              | `O(log N)` amortized |
 
 Use when tree edges change online and path aggregates are required.
 
@@ -509,12 +516,12 @@ Goal: push as much flow as possible from source to sink.
 
 Common algorithms:
 
-| Algorithm | Idea | Good For |
-|-----------|------|----------|
-| Ford-Fulkerson | Repeated augmenting paths | Teaching, small graphs |
-| Edmonds-Karp | BFS shortest augmenting path | Simple proof, moderate size |
-| Dinic | BFS levels + DFS blocking flow | Competitive programming default |
-| Push-Relabel | Local excess pushing | Dense/practical cases |
+| Algorithm      | Idea                           | Good For                        |
+| -------------- | ------------------------------ | ------------------------------- |
+| Ford-Fulkerson | Repeated augmenting paths      | Teaching, small graphs          |
+| Edmonds-Karp   | BFS shortest augmenting path   | Simple proof, moderate size     |
+| Dinic          | BFS levels + DFS blocking flow | Competitive programming default |
+| Push-Relabel   | Local excess pushing           | Dense/practical cases           |
 
 ## 9.2 Dinic Mental Model
 
@@ -530,13 +537,13 @@ Why it is fast:
 
 ## 9.3 Modeling Max Flow Problems
 
-| Problem Phrase | Flow Model |
-|----------------|------------|
-| "assign workers to jobs" | bipartite matching |
-| "capacity-limited routes" | max flow |
-| "minimum cut / remove cheapest barriers" | min cut |
-| "each node has capacity" | split node into `in -> out` edge |
-| "choose with prerequisites" | min-cut closure modeling |
+| Problem Phrase                           | Flow Model                       |
+| ---------------------------------------- | -------------------------------- |
+| "assign workers to jobs"                 | bipartite matching               |
+| "capacity-limited routes"                | max flow                         |
+| "minimum cut / remove cheapest barriers" | min cut                          |
+| "each node has capacity"                 | split node into `in -> out` edge |
+| "choose with prerequisites"              | min-cut closure modeling         |
 
 ## 9.4 Min-Cost Max-Flow
 
@@ -553,6 +560,7 @@ how cheaply can we send that much?
 ```
 
 Common use cases:
+
 - assignment with costs
 - transportation
 - scheduling
@@ -602,11 +610,11 @@ y = m[j]x + b[j]
 
 Query the best line at `x[i]`.
 
-| Situation | Tool |
-|-----------|------|
-| Slopes monotonic, x monotonic | Deque CHT |
-| Arbitrary insert/query x | Li Chao Tree |
-| Need delete old lines | Dynamic CHT variants |
+| Situation                     | Tool                 |
+| ----------------------------- | -------------------- |
+| Slopes monotonic, x monotonic | Deque CHT            |
+| Arbitrary insert/query x      | Li Chao Tree         |
+| Need delete old lines         | Dynamic CHT variants |
 
 ## 10.3 Li Chao Segment Tree
 
@@ -670,6 +678,7 @@ opt[l][r-1] <= opt[l][r] <= opt[l+1][r]
 Search only that smaller range.
 
 Classic examples:
+
 - optimal binary search tree
 - merging stones/files under certain cost forms
 
@@ -692,6 +701,7 @@ find many patterns in one text
 Build a trie of patterns, then add failure links like KMP.
 
 Use cases:
+
 - dictionary matching
 - content moderation
 - virus signatures
@@ -710,12 +720,12 @@ A Suffix Automaton is a compact automaton representing all substrings of a strin
 
 It can answer:
 
-| Query | How |
-|-------|-----|
+| Query                     | How                                             |
+| ------------------------- | ----------------------------------------------- |
 | Count distinct substrings | sum over states `len[state] - len[link[state]]` |
-| Longest common substring | Walk second string through automaton |
-| Occurrence count | Propagate terminal counts by length order |
-| Substring existence | Automaton traversal |
+| Longest common substring  | Walk second string through automaton            |
+| Occurrence count          | Propagate terminal counts by length order       |
+| Substring existence       | Automaton traversal                             |
 
 Deep invariant:
 
@@ -746,13 +756,13 @@ Sort events and maintain active state.
 
 Examples:
 
-| Problem | Active Structure |
-|---------|------------------|
-| Meeting rooms | min-heap of end times |
-| Skyline | multiset/TreeMap of heights |
-| Rectangle union area | segment tree over compressed y |
-| Intersections | balanced tree of active segments |
-| Offline range queries | Fenwick over sorted events |
+| Problem               | Active Structure                 |
+| --------------------- | -------------------------------- |
+| Meeting rooms         | min-heap of end times            |
+| Skyline               | multiset/TreeMap of heights      |
+| Rectangle union area  | segment tree over compressed y   |
+| Intersections         | balanced tree of active segments |
+| Offline range queries | Fenwick over sorted events       |
 
 ## 12.2 Rectangle Union Area
 
@@ -779,21 +789,21 @@ This is the same pattern as logs, bookings, and resource allocation:
 
 # PART 13: Recognition Cheat Sheet
 
-| If You See | Think |
-|------------|-------|
-| "path query on tree" | HLD |
-| "subtree update/query" | Euler Tour + BIT/Segment Tree |
-| "kth smallest in subarray" | Wavelet Tree / Persistent Segment Tree |
-| "many static range distinct queries" | Mo's Algorithm |
-| "add/remove edges offline + connectivity" | DSU Rollback |
-| "dynamic forest online" | Link-Cut Tree / Euler Tour Tree |
-| "minimize cost under capacity" | Min-Cost Max-Flow |
-| "max assignment count" | Bipartite Matching / Max Flow |
-| "DP transition is best line at x" | CHT / Li Chao |
-| "DP opt index moves monotonically" | Divide & Conquer DP / Knuth |
-| "many patterns in text" | Aho-Corasick |
-| "all substrings of one string" | Suffix Automaton |
-| "events over time/coordinates" | Sweep Line |
+| If You See                                | Think                                  |
+| ----------------------------------------- | -------------------------------------- |
+| "path query on tree"                      | HLD                                    |
+| "subtree update/query"                    | Euler Tour + BIT/Segment Tree          |
+| "kth smallest in subarray"                | Wavelet Tree / Persistent Segment Tree |
+| "many static range distinct queries"      | Mo's Algorithm                         |
+| "add/remove edges offline + connectivity" | DSU Rollback                           |
+| "dynamic forest online"                   | Link-Cut Tree / Euler Tour Tree        |
+| "minimize cost under capacity"            | Min-Cost Max-Flow                      |
+| "max assignment count"                    | Bipartite Matching / Max Flow          |
+| "DP transition is best line at x"         | CHT / Li Chao                          |
+| "DP opt index moves monotonically"        | Divide & Conquer DP / Knuth            |
+| "many patterns in text"                   | Aho-Corasick                           |
+| "all substrings of one string"            | Suffix Automaton                       |
+| "events over time/coordinates"            | Sweep Line                             |
 
 ---
 
@@ -825,16 +835,16 @@ Advanced DSA is not a pile of unrelated tricks.
 
 It is the art of changing the shape of the problem:
 
-| Problem Shape | Transformation |
-|---------------|----------------|
-| Tree | Flatten into array |
-| Time | Segment tree over intervals |
-| Range | Maintain moving window |
-| Version history | Path-copy persistent nodes |
-| Connectivity with deletion | Rollback instead of true delete |
-| DP transitions | Turn states into lines or monotone ranges |
-| Many strings | Build an automaton once |
-| Geometry | Sweep sorted events |
+| Problem Shape              | Transformation                            |
+| -------------------------- | ----------------------------------------- |
+| Tree                       | Flatten into array                        |
+| Time                       | Segment tree over intervals               |
+| Range                      | Maintain moving window                    |
+| Version history            | Path-copy persistent nodes                |
+| Connectivity with deletion | Rollback instead of true delete           |
+| DP transitions             | Turn states into lines or monotone ranges |
+| Many strings               | Build an automaton once                   |
+| Geometry                   | Sweep sorted events                       |
 
 When stuck, ask:
 

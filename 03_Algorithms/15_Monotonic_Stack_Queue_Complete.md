@@ -54,11 +54,12 @@ Despite the while loop INSIDE the for loop, it's NOT O(n²)!
 🔬 **Section Challenge — What Problem Does Monotonic Stack Solve**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Real-World Origin Story
 
@@ -71,10 +72,11 @@ Result: O(n) algorithm! This became THE classic monotonic stack problem.
 2000s — COMPETITIVE PROGRAMMING EXPLOSION:
 Monotonic stack became a core technique in contests (IOI, ACM-ICPC).
 Dozens of seemingly different problems share this core pattern:
+
 - Stock Price Span (finance: days since price was this low)
 - Trapping Rain Water (civil engineering: water accumulation)
 - Buildings With Sunset View (architecture: visibility)
-TODAY — INDUSTRY USES:
+  TODAY — INDUSTRY USES:
 - Real-time dashboards: Sliding window max over streaming data
 - Financial analysis: Stock span, volatility tracking
 - Computer vision: Local maxima/minima detection in signal processing
@@ -86,22 +88,23 @@ TODAY — INDUSTRY USES:
 MONOTONIC DECREASING STACK (for Next Greater Element):
 Imagine a bouncer maintaining a LINE of people sorted by HEIGHT.
 When a NEW person arrives:
+
 1. Anyone in line SHORTER than new person gets kicked out.
-(They just found their "next greater" = the new person!)
+   (They just found their "next greater" = the new person!)
 2. The new person joins the end of the line.
 
 **Full Walkthrough**: arr = [2, 1, 4, 3, 5]
-Step 1: Process 2    Stack: [2]           Line: just 2 standing
+Step 1: Process 2 Stack: [2] Line: just 2 standing
 No one to kick out. 2 enters line.
-Step 2: Process 1    Stack: [2, 1]        Line: 2 then 1
+Step 2: Process 1 Stack: [2, 1] Line: 2 then 1
 1 < 2, so 1 stands behind 2. No one kicked out.
-Step 3: Process 4    Stack: [4]           Kicks: 1→NGE=4, 2→NGE=4
+Step 3: Process 4 Stack: [4] Kicks: 1→NGE=4, 2→NGE=4
 4 arrives. 1 < 4 → kicked! (NGE of 1 = 4)
 2 < 4 → kicked! (NGE of 2 = 4)
 4 enters empty line.
-Step 4: Process 3    Stack: [4, 3]        3 stands behind 4
+Step 4: Process 3 Stack: [4, 3] 3 stands behind 4
 3 < 4, no one kicked. 3 enters.
-Step 5: Process 5    Stack: [5]           Kicks: 3→NGE=5, 4→NGE=5
+Step 5: Process 5 Stack: [5] Kicks: 3→NGE=5, 4→NGE=5
 5 kicks out 3 (NGE=5) and 4 (NGE=5). 5 enters.
 Final: 5 has no NGE → -1
 Result: NGE = [4, 4, 5, 5, -1]
@@ -111,16 +114,16 @@ Result: NGE = [4, 4, 5, 5, -1]
 ## The Complete Variant Table
 
 ┬
-You Need             │ Use This
+You Need │ Use This
 ┼
 Next Greater Element │ Monotonic DECREASING stack, scan L→R
 Next Smaller Element │ Monotonic INCREASING stack, scan L→R
 Prev Greater Element │ Monotonic DECREASING stack, scan L→R
 Prev Smaller Element │ Monotonic INCREASING stack, scan L→R
-Sliding Window Max   │ Monotonic DECREASING deque
-Sliding Window Min   │ Monotonic INCREASING deque
-Largest Rectangle    │ Monotonic INCREASING stack (heights)
-Trapping Rain Water  │ Monotonic DECREASING stack (heights)
+Sliding Window Max │ Monotonic DECREASING deque
+Sliding Window Min │ Monotonic INCREASING deque
+Largest Rectangle │ Monotonic INCREASING stack (heights)
+Trapping Rain Water │ Monotonic DECREASING stack (heights)
 ┴
 MEMORY TRICK for Increasing vs Decreasing:
 Want GREATER? Keep SMALLER ones waiting → DECREASING stack
@@ -142,7 +145,7 @@ public int[] nextGreater(int[] arr) {
     int[] result = new int[n];
     Arrays.fill(result, -1);           // Default: no greater element found
     Deque<Integer> stack = new ArrayDeque<>();  // Stores INDICES
-    
+
     for (int i = 0; i < n; i++) {
         // Pop all elements SMALLER than current (they found their NGE!)
         while (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
@@ -162,7 +165,7 @@ public int[] prevSmaller(int[] arr) {
     int[] result = new int[n];
     Arrays.fill(result, -1);
     Deque<Integer> stack = new ArrayDeque<>();  // INCREASING stack
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
             stack.pop();  // Remove elements >= current
@@ -282,6 +285,7 @@ public int[] prevSmaller(int[] arr) {
 ```
 
 📖 **Related mental models:**
+
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Pattern recognition for O(n) problems
 - [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — How monotonic stack optimizes away nested loops
 
@@ -310,7 +314,6 @@ public int[] prevSmaller(int[] arr) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Visual Comparison
 
 ```
@@ -335,7 +338,6 @@ Monotonic Increasing Stack:
 └─────┘   (smallest at bottom)
 ```
 
-
 ### The Key Insight
 
 ```
@@ -358,7 +360,6 @@ Monotonic Increasing Stack:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Monotonic Stack Basics <a name="monotonic-stack"></a>
@@ -373,7 +374,7 @@ When a larger element comes, pop smaller ones.
 
 public void buildMonotonicDecreasing(int[] nums) {
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     for (int num : nums) {
         // Pop elements smaller than current
         while (!stack.isEmpty() && stack.peek() < num) {
@@ -382,7 +383,7 @@ public void buildMonotonicDecreasing(int[] nums) {
         }
         stack.push(num);
     }
-    
+
     // Remaining elements have no next greater
     while (!stack.isEmpty()) {
         System.out.println(stack.pop() + " has no next greater");
@@ -439,17 +440,17 @@ Final: 6, 3 have no next greater → -1
 Result: [5, 5, 6, -1, 3, -1]
 ```
 
-
 ---
 
 🔬 **Section Challenge — Monotonic Stack Basics <a name="monotonic-stack"></a>**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Next Greater Element Pattern <a name="next-greater"></a>
 
@@ -465,9 +466,9 @@ public int[] nextGreaterElement(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
     Arrays.fill(result, -1);
-    
+
     Deque<Integer> stack = new ArrayDeque<>();  // Store indices
-    
+
     for (int i = 0; i < n; i++) {
         // Pop all elements smaller than current
         while (!stack.isEmpty() && nums[stack.peek()] < nums[i]) {
@@ -476,7 +477,7 @@ public int[] nextGreaterElement(int[] nums) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 ```
@@ -493,14 +494,14 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
     // Build next greater map for nums2
     Map<Integer, Integer> nextGreater = new HashMap<>();
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     for (int num : nums2) {
         while (!stack.isEmpty() && stack.peek() < num) {
             nextGreater.put(stack.pop(), num);
         }
         stack.push(num);
     }
-    
+
     // Answer for nums1
     int[] result = new int[nums1.length];
     for (int i = 0; i < nums1.length; i++) {
@@ -522,23 +523,23 @@ public int[] nextGreaterElements(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
     Arrays.fill(result, -1);
-    
+
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     // Go through array twice for circular behavior
     for (int i = 0; i < 2 * n; i++) {
         int num = nums[i % n];
-        
+
         while (!stack.isEmpty() && nums[stack.peek()] < num) {
             result[stack.pop()] = num;
         }
-        
+
         // Only push indices in first pass
         if (i < n) {
             stack.push(i);
         }
     }
-    
+
     return result;
 }
 ```
@@ -562,7 +563,6 @@ i=5: done
 result = [2, -1, 2]
 ```
 
-
 ---
 
 ## Next Smaller Element Pattern <a name="next-smaller"></a>
@@ -579,9 +579,9 @@ public int[] nextSmallerElement(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
     Arrays.fill(result, -1);
-    
+
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     for (int i = 0; i < n; i++) {
         // Pop all elements LARGER than current
         while (!stack.isEmpty() && nums[stack.peek()] > nums[i]) {
@@ -590,7 +590,7 @@ public int[] nextSmallerElement(int[] nums) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 ```
@@ -619,7 +619,6 @@ public int[] nextSmallerElement(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Daily Temperatures (LeetCode 739)
 
 ```java
@@ -631,9 +630,9 @@ This is "Next Greater Element" but return INDEX DIFFERENCE.
 public int[] dailyTemperatures(int[] temperatures) {
     int n = temperatures.length;
     int[] result = new int[n];
-    
+
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
             int idx = stack.pop();
@@ -641,7 +640,7 @@ public int[] dailyTemperatures(int[] temperatures) {
         }
         stack.push(i);
     }
-    
+
     return result;  // Unpopped days remain 0 (no warmer day)
 }
 ```
@@ -662,23 +661,23 @@ public int[] previousGreaterElement(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
     Arrays.fill(result, -1);
-    
+
     Deque<Integer> stack = new ArrayDeque<>();  // Decreasing stack
-    
+
     for (int i = 0; i < n; i++) {
         // Pop smaller elements (they won't be previous greater for future)
         while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) {
             stack.pop();
         }
-        
+
         // If stack not empty, top is previous greater
         if (!stack.isEmpty()) {
             result[i] = nums[stack.peek()];
         }
-        
+
         stack.push(i);
     }
-    
+
     return result;
 }
 ```
@@ -695,23 +694,23 @@ public int[] previousSmallerElement(int[] nums) {
     int n = nums.length;
     int[] result = new int[n];
     Arrays.fill(result, -1);
-    
+
     Deque<Integer> stack = new ArrayDeque<>();  // Increasing stack
-    
+
     for (int i = 0; i < n; i++) {
         // Pop larger elements
         while (!stack.isEmpty() && nums[stack.peek()] >= nums[i]) {
             stack.pop();
         }
-        
+
         // If stack not empty, top is previous smaller
         if (!stack.isEmpty()) {
             result[i] = nums[stack.peek()];
         }
-        
+
         stack.push(i);
     }
-    
+
     return result;
 }
 ```
@@ -746,7 +745,6 @@ public int[] previousSmallerElement(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Monotonic Queue <a name="monotonic-queue"></a>
@@ -769,7 +767,6 @@ public int[] previousSmallerElement(int[] nums) {
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
-
 
 ### Visual: Monotonic Queue for Max
 
@@ -804,11 +801,12 @@ Window [-1, -3, 5]:
 🔬 **Section Challenge — Monotonic Queue <a name="monotonic-queue"></a>**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Sliding Window Maximum/Minimum <a name="sliding-window"></a>
 
@@ -822,30 +820,30 @@ Use DECREASING deque to keep potential maximums.
 
 public int[] maxSlidingWindow(int[] nums, int k) {
     if (nums.length == 0) return new int[0];
-    
+
     int[] result = new int[nums.length - k + 1];
     Deque<Integer> deque = new ArrayDeque<>();  // Store indices
-    
+
     for (int i = 0; i < nums.length; i++) {
         // Remove indices outside current window
         while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
             deque.pollFirst();
         }
-        
+
         // Remove smaller elements (they can't be max)
         while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
             deque.pollLast();
         }
-        
+
         // Add current index
         deque.offerLast(i);
-        
+
         // Record max when window is complete
         if (i >= k - 1) {
             result[i - k + 1] = nums[deque.peekFirst()];
         }
     }
-    
+
     return result;
 }
 ```
@@ -889,25 +887,25 @@ Same as maximum but use INCREASING deque.
 public int[] minSlidingWindow(int[] nums, int k) {
     int[] result = new int[nums.length - k + 1];
     Deque<Integer> deque = new ArrayDeque<>();
-    
+
     for (int i = 0; i < nums.length; i++) {
         // Remove indices outside window
         while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
             deque.pollFirst();
         }
-        
+
         // Remove LARGER elements (opposite of max)
         while (!deque.isEmpty() && nums[deque.peekLast()] > nums[i]) {
             deque.pollLast();
         }
-        
+
         deque.offerLast(i);
-        
+
         if (i >= k - 1) {
             result[i - k + 1] = nums[deque.peekFirst()];
         }
     }
-    
+
     return result;
 }
 ```
@@ -917,17 +915,20 @@ public int[] minSlidingWindow(int[] nums, int k) {
 🔬 **Section Challenge — Sliding Window Maximum/Minimum <a name="sliding-window"></a>**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Advanced Applications <a name="advanced"></a>
 
@@ -944,7 +945,7 @@ public int largestRectangleArea(int[] heights) {
     int n = heights.length;
     int[] left = new int[n];   // Left boundary (first smaller)
     int[] right = new int[n];  // Right boundary (first smaller)
-    
+
     // Find previous smaller element
     Deque<Integer> stack = new ArrayDeque<>();
     for (int i = 0; i < n; i++) {
@@ -954,7 +955,7 @@ public int largestRectangleArea(int[] heights) {
         left[i] = stack.isEmpty() ? -1 : stack.peek();
         stack.push(i);
     }
-    
+
     // Find next smaller element
     stack.clear();
     for (int i = n - 1; i >= 0; i--) {
@@ -964,7 +965,7 @@ public int largestRectangleArea(int[] heights) {
         right[i] = stack.isEmpty() ? n : stack.peek();
         stack.push(i);
     }
-    
+
     // Calculate max area
     int maxArea = 0;
     for (int i = 0; i < n; i++) {
@@ -972,7 +973,7 @@ public int largestRectangleArea(int[] heights) {
         int area = heights[i] * width;
         maxArea = Math.max(maxArea, area);
     }
-    
+
     return maxArea;
 }
 
@@ -981,10 +982,10 @@ public int largestRectangleAreaOnePass(int[] heights) {
     int n = heights.length;
     Deque<Integer> stack = new ArrayDeque<>();
     int maxArea = 0;
-    
+
     for (int i = 0; i <= n; i++) {
         int h = (i == n) ? 0 : heights[i];
-        
+
         while (!stack.isEmpty() && heights[stack.peek()] > h) {
             int height = heights[stack.pop()];
             int width = stack.isEmpty() ? i : i - stack.peek() - 1;
@@ -992,7 +993,7 @@ public int largestRectangleAreaOnePass(int[] heights) {
         }
         stack.push(i);
     }
-    
+
     return maxArea;
 }
 ```
@@ -1021,7 +1022,6 @@ For bar at index 2 (height 5):
 Maximum rectangle has area 10 (using bars at indices 2,3)
 ```
 
-
 ### Maximal Rectangle (LeetCode 85)
 
 ```java
@@ -1032,11 +1032,11 @@ Treat each row as histogram base.
 
 public int maximalRectangle(char[][] matrix) {
     if (matrix.length == 0) return 0;
-    
+
     int m = matrix.length, n = matrix[0].length;
     int[] heights = new int[n];
     int maxArea = 0;
-    
+
     for (int i = 0; i < m; i++) {
         // Build histogram for row i
         for (int j = 0; j < n; j++) {
@@ -1046,11 +1046,11 @@ public int maximalRectangle(char[][] matrix) {
                 heights[j] = 0;
             }
         }
-        
+
         // Find largest rectangle in this histogram
         maxArea = Math.max(maxArea, largestRectangleArea(heights));
     }
-    
+
     return maxArea;
 }
 ```
@@ -1065,13 +1065,13 @@ Alternative to two-pointer approach using monotonic stack.
 public int trap(int[] height) {
     Deque<Integer> stack = new ArrayDeque<>();
     int water = 0;
-    
+
     for (int i = 0; i < height.length; i++) {
         while (!stack.isEmpty() && height[i] > height[stack.peek()]) {
             int bottom = height[stack.pop()];
-            
+
             if (stack.isEmpty()) break;
-            
+
             int left = stack.peek();
             int h = Math.min(height[left], height[i]) - bottom;
             int w = i - left - 1;
@@ -1079,7 +1079,7 @@ public int trap(int[] height) {
         }
         stack.push(i);
     }
-    
+
     return water;
 }
 ```
@@ -1094,9 +1094,9 @@ Use monotonic increasing stack.
 
 public String removeKdigits(String num, int k) {
     if (k >= num.length()) return "0";
-    
+
     Deque<Character> stack = new ArrayDeque<>();
-    
+
     for (char c : num.toCharArray()) {
         // Remove larger digits before adding smaller one
         while (k > 0 && !stack.isEmpty() && stack.peek() > c) {
@@ -1105,25 +1105,25 @@ public String removeKdigits(String num, int k) {
         }
         stack.push(c);
     }
-    
+
     // If k still > 0, remove from end
     while (k > 0) {
         stack.pop();
         k--;
     }
-    
+
     // Build result (stack is reversed)
     StringBuilder sb = new StringBuilder();
     while (!stack.isEmpty()) {
         sb.append(stack.pop());
     }
     sb.reverse();
-    
+
     // Remove leading zeros
     while (sb.length() > 1 && sb.charAt(0) == '0') {
         sb.deleteCharAt(0);
     }
-    
+
     return sb.toString();
 }
 ```
@@ -1139,10 +1139,10 @@ Process from right, track "2" (nums[k]) using monotonic stack.
 public boolean find132pattern(int[] nums) {
     int n = nums.length;
     if (n < 3) return false;
-    
+
     Deque<Integer> stack = new ArrayDeque<>();  // Decreasing
     int second = Integer.MIN_VALUE;  // The "2" in 132 (nums[k])
-    
+
     // Process from right to left
     for (int i = n - 1; i >= 0; i--) {
         // nums[i] is candidate for "1"
@@ -1150,15 +1150,15 @@ public boolean find132pattern(int[] nums) {
         if (nums[i] < second) {
             return true;  // Found 132 pattern!
         }
-        
+
         // Pop elements smaller than current (they can be "2")
         while (!stack.isEmpty() && nums[i] > stack.peek()) {
             second = stack.pop();  // Update "2" to largest possible
         }
-        
+
         stack.push(nums[i]);  // Push as potential "3"
     }
-    
+
     return false;
 }
 ```
@@ -1196,30 +1196,29 @@ public boolean find132pattern(int[] nums) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Stock Span Problem (LeetCode 901)
 
 ```java
 /*
-Find how many consecutive days (including today) 
+Find how many consecutive days (including today)
 where price was <= today's price.
 */
 
 class StockSpanner {
     Deque<int[]> stack;  // [price, span]
-    
+
     public StockSpanner() {
         stack = new ArrayDeque<>();
     }
-    
+
     public int next(int price) {
         int span = 1;
-        
+
         // Pop days with lower price, accumulate their spans
         while (!stack.isEmpty() && stack.peek()[0] <= price) {
             span += stack.pop()[1];
         }
-        
+
         stack.push(new int[]{price, span});
         return span;
     }
@@ -1237,27 +1236,27 @@ Must keep relative order. Each letter appears exactly once.
 public String removeDuplicateLetters(String s) {
     int[] count = new int[26];  // Remaining count
     boolean[] inStack = new boolean[26];
-    
+
     for (char c : s.toCharArray()) {
         count[c - 'a']++;
     }
-    
+
     Deque<Character> stack = new ArrayDeque<>();
-    
+
     for (char c : s.toCharArray()) {
         count[c - 'a']--;
-        
+
         if (inStack[c - 'a']) continue;  // Already in result
-        
+
         // Pop larger chars if they appear later
         while (!stack.isEmpty() && stack.peek() > c && count[stack.peek() - 'a'] > 0) {
             inStack[stack.pop() - 'a'] = false;
         }
-        
+
         stack.push(c);
         inStack[c - 'a'] = true;
     }
-    
+
     StringBuilder sb = new StringBuilder();
     while (!stack.isEmpty()) {
         sb.append(stack.pop());
@@ -1277,28 +1276,28 @@ Use prefix sum + monotonic deque.
 public int shortestSubarray(int[] nums, int k) {
     int n = nums.length;
     long[] prefix = new long[n + 1];
-    
+
     for (int i = 0; i < n; i++) {
         prefix[i + 1] = prefix[i] + nums[i];
     }
-    
+
     Deque<Integer> deque = new ArrayDeque<>();
     int minLen = Integer.MAX_VALUE;
-    
+
     for (int i = 0; i <= n; i++) {
         // Check if current prefix - front >= k
         while (!deque.isEmpty() && prefix[i] - prefix[deque.peekFirst()] >= k) {
             minLen = Math.min(minLen, i - deque.pollFirst());
         }
-        
+
         // Maintain increasing deque (larger prefix won't help)
         while (!deque.isEmpty() && prefix[i] <= prefix[deque.peekLast()]) {
             deque.pollLast();
         }
-        
+
         deque.offerLast(i);
     }
-    
+
     return minLen == Integer.MAX_VALUE ? -1 : minLen;
 }
 ```
@@ -1314,15 +1313,15 @@ For each element, count how many subarrays it's the minimum of.
 public int sumSubarrayMins(int[] arr) {
     int n = arr.length;
     int MOD = 1_000_000_007;
-    
+
     // For each element, find:
     // - left: how far left we can extend while being minimum
     // - right: how far right we can extend while being minimum
     int[] left = new int[n];   // Previous smaller or equal
     int[] right = new int[n];  // Next smaller
-    
+
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     // Previous smaller or equal
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
@@ -1331,9 +1330,9 @@ public int sumSubarrayMins(int[] arr) {
         left[i] = stack.isEmpty() ? i + 1 : i - stack.peek();
         stack.push(i);
     }
-    
+
     stack.clear();
-    
+
     // Next smaller (strictly)
     for (int i = n - 1; i >= 0; i--) {
         while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
@@ -1342,13 +1341,13 @@ public int sumSubarrayMins(int[] arr) {
         right[i] = stack.isEmpty() ? n - i : stack.peek() - i;
         stack.push(i);
     }
-    
+
     // Calculate contribution of each element
     long result = 0;
     for (int i = 0; i < n; i++) {
         result = (result + (long) arr[i] * left[i] * right[i]) % MOD;
     }
-    
+
     return (int) result;
 }
 ```
@@ -1382,7 +1381,6 @@ public int sumSubarrayMins(int[] arr) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Code Templates
 
 ```java
@@ -1392,7 +1390,7 @@ public int[] nextGreater(int[] arr) {
     int[] result = new int[n];
     Arrays.fill(result, -1);
     Deque<Integer> stack = new ArrayDeque<>();  // Decreasing
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
             result[stack.pop()] = arr[i];
@@ -1408,7 +1406,7 @@ public int[] prevGreater(int[] arr) {
     int[] result = new int[n];
     Arrays.fill(result, -1);
     Deque<Integer> stack = new ArrayDeque<>();
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && arr[stack.peek()] <= arr[i]) {
             stack.pop();
@@ -1423,7 +1421,7 @@ public int[] prevGreater(int[] arr) {
 public int[] maxWindow(int[] arr, int k) {
     int[] result = new int[arr.length - k + 1];
     Deque<Integer> deque = new ArrayDeque<>();  // Decreasing
-    
+
     for (int i = 0; i < arr.length; i++) {
         // Remove out-of-window
         if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
@@ -1463,7 +1461,6 @@ public int[] maxWindow(int[] arr, int k) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Summary
@@ -1500,7 +1497,6 @@ public int[] maxWindow(int[] arr, int k) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-
 **Pro Tip:** When you see "next greater/smaller", "sliding window max/min", or problems involving "how far can we extend", think monotonic stack/queue!
 
 ---
@@ -1510,9 +1506,9 @@ public int[] maxWindow(int[] arr, int k) {
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
-
-

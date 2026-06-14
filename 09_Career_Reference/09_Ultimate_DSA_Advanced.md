@@ -31,7 +31,6 @@
 │  ──────────────────────────────────────                                         │
 ```
 
-
 ```java
 // Z[i] = length of longest substring starting at i that matches prefix
 int[] zFunction(String s) {
@@ -77,7 +76,6 @@ List<Integer> findPattern(String text, String pattern) {
 │ AHO-CORASICK (Multiple pattern matching): │
 │ ────────────────────────────────────────── │
 ```
-
 
 ```java
 class AhoCorasick {
@@ -148,13 +146,6 @@ class AhoCorasick {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
-
-
-
-
 🔬 **Section Challenge — 📝 String Algorithms — the Complete Toolkit**
 
 **Challenge 1 (Constraint Selection):** A problem asks whether a pattern appears in a text. Sometimes there is one pattern, sometimes `10^5` patterns, and sometimes you need repeated substring/range comparisons. How do you choose between KMP, Rabin-Karp, Trie/Aho-Corasick, and suffix structures?
@@ -171,7 +162,6 @@ class AhoCorasick {
 
 ## 📌 Randomized Algorithms
 
-
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS                                     │
@@ -186,8 +176,6 @@ class AhoCorasick {
 │ QUICKSELECT (Find k-th smallest element):                                       │
 │ ──────────────────────────────────────────                                      │
 ```
-
-
 
 ```java
 // O(n) expected, O(n²) worst case
@@ -227,7 +215,6 @@ int partition(int[] arr, int lo, int hi, int pivotIdx) {
 │ MILLER-RABIN PRIMALITY TEST: │
 │ ──────────────────────────── │
 ```
-
 
 ```java
 // Test if n is prime with high probability
@@ -277,7 +264,6 @@ boolean millerTest(long a, long d, long n, int r) {
 │ ─────────────────────────────────────────────── │
 ```
 
-
 ```java
 // Select k random items from unknown-size stream
 int[] reservoirSample(Iterator<Integer> stream, int k) {
@@ -311,10 +297,7 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 📌 Approximation Algorithms
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -327,8 +310,6 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 │ VERTEX COVER - 2-APPROXIMATION:                                                 │
 │ ─────────────────────────────────                                               │
 ```
-
-
 
 ```java
 // Find vertex cover at most 2x optimal
@@ -365,7 +346,6 @@ Set<Integer> vertexCover(int n, int[][] edges) {
 │ SET COVER - log(n)-APPROXIMATION: │
 │ ────────────────────────────────── │
 ```
-
 
 ```java
 // Cover all elements using minimum number of sets
@@ -406,7 +386,6 @@ List<Set<Integer>> setCover(Set<Integer> universe, List<Set<Integer>> sets) {
 │ TSP - 1.5-APPROXIMATION (Christofides): │
 │ ──────────────────────────────────────── │
 ```
-
 
 ```java
 // For metric TSP (triangle inequality holds)
@@ -454,10 +433,7 @@ List<Integer> tspApprox(int[][] dist, int n) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 📌 Modern Data Structures in Production
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -467,8 +443,6 @@ List<Integer> tspApprox(int[][] dist, int n) {
 │ COUNT-MIN SKETCH (Approximate frequency counting):                              │
 │ ──────────────────────────────────────────────────                              │
 ```
-
-
 
 ```java
 class CountMinSketch {
@@ -519,7 +493,6 @@ class CountMinSketch {
 │ HYPERLOGLOG (Cardinality estimation): │
 │ ────────────────────────────────────── │
 ```
-
 
 ```java
 class HyperLogLog {
@@ -578,7 +551,6 @@ class HyperLogLog {
 │ CUCKOO FILTER (Better than Bloom filter): │
 │ ────────────────────────────────────────── │
 ```
-
 
 ```java
 class CuckooFilter {
@@ -653,13 +625,6 @@ class CuckooFilter {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
-
-
-
-
 🔬 **Section Challenge — 📌 Modern Data Structures in Production**
 
 **Challenge 1 (Production DS Selection):** You need to track trending queries, unique visitors, bad-token membership, and time-window analytics at scale. Which data structures fit each job, and what trade-off are you accepting?
@@ -676,7 +641,6 @@ class CuckooFilter {
 
 ## 🎨 Interview Patterns — Advanced Level
 
-
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ ADVANCED INTERVIEW PATTERNS                                                     │
@@ -685,8 +649,6 @@ class CuckooFilter {
 │ PATTERN 1: MONOTONIC STACK VARIATIONS                                           │
 │ ─────────────────────────────────────────                                       │
 ```
-
-
 
 ```java
 // Next Greater Element with circular array
@@ -731,7 +693,6 @@ int largestRectangle(int[] heights) {
 │ PATTERN 2: SWEEP LINE ALGORITHM │
 │ ──────────────────────────────── │
 ```
-
 
 ```java
 // Count overlapping intervals at any point
@@ -795,7 +756,6 @@ List<int[]> getSkyline(int[][] buildings) {
 │ ────────────────────────────────────── │
 ```
 
-
 ```java
 // Minimize maximum: Allocate books to students
 int minMaxPages(int[] books, int students) {
@@ -844,7 +804,6 @@ boolean canAllocate(int[] books, int students, int maxPages) {
 │ ───────────────────────────────── │
 ```
 
-
 ```java
 // Subset sum with n up to 40 (too large for 2^n, but 2^20 is ok)
 int closestSum(int[] nums, int target) {
@@ -892,10 +851,7 @@ int closestSum(int[] nums, int target) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 📚 Complete DSA Mastery Checklist
-
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -952,8 +908,6 @@ int closestSum(int[] nums, int target) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
-
 ```
 
 ---
@@ -977,14 +931,9 @@ int closestSum(int[] nums, int target) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
-
-
-
 ---
 
 > **Prev**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | **Next**: [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
-
 
 ---
 

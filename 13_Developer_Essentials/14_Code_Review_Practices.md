@@ -56,14 +56,14 @@ DESIGN CHECKS
 READABILITY CHECKS
 
 □ Are variable/method names descriptive?
-❌ int d;  ✅ int daysSinceModification;
+❌ int d; ✅ int daysSinceModification;
 □ Are comments explaining WHY, not WHAT?
-❌ // increment counter     ✅ // retry after rate limit
+❌ // increment counter ✅ // retry after rate limit
 □ Are methods short and focused? (<20 lines ideal)
 □ Is nesting manageable? (≤3 levels deep)
 □ Can I understand the code without asking the author?
 □ Are magic numbers replaced with named constants?
-❌ if (retries > 3)     ✅ if (retries > MAX_RETRIES)
+❌ if (retries > 3) ✅ if (retries > MAX_RETRIES)
 
 ### 4. Testing
 
@@ -244,15 +244,19 @@ if (!isValid(input)) {
 
 ```markdown
 ## What
+
 Brief description of what this PR does.
 
 ## Why
+
 Link to ticket/story. Context on why this change is needed.
 
 ## How
+
 Technical approach. Key design decisions and trade-offs.
 
 ## Testing
+
 - [ ] Unit tests added
 - [ ] Manual testing done
 - [ ] Edge cases covered
@@ -265,6 +269,18 @@ Technical approach. Key design decisions and trade-offs.
 
 100% line coverage does not mean tests are meaningful. Specific anti-patterns: (1) **Assertions on mocks, not behavior**: `verify(mockRepo, times(1)).save(any())` — this asserts the code called a method, not that the method did the right thing. If the `save()` was called with wrong data, the test passes. (2) **Testing implementation, not behavior**: test asserts that a private method was called in a specific order. Refactor the code → test breaks. Tests should assert outcomes, not internal call sequences. (3) **No negative test cases**: 95% coverage with only happy-path tests. Missing: what happens when `userId` is null? When payment gateway is down? When DB throws a unique constraint violation? (4) **Tautological assertions**: `assertEquals("", user.getName())` after calling `new User("")` — testing the constructor stores what you pass, not business logic. Review standard: read each test name aloud. If it doesn't describe a meaningful business scenario with a specific outcome, it's a test-theater test.
 
+### Production Reality
+
+**Code review practices fail in production in these named ways:**
+
+- **Reviewer fatigue causing rubber-stamping** — a reviewer gets 15 PRs in a day and starts approving without deep reading after the first 5. Real defects pass through: missing null checks, unhandled edge cases, security misconfigs. The rubber-stamp pattern: LGTM with no comments on a complex change = signal that the review was not meaningful.
+- **Review thread explosion blocking merge** — a 5-comment thread on a variable naming issue prevents merge. The author and reviewer go back and forth 10 times. Meanwhile, 3 other PRs are stacked on top and must be rebased. This creates a cascade of merge conflicts. Code review velocity drops; teams start merging without review to "move faster."
+- **LGTM culture hiding real issues** — "Looks Good To Me" without any review comments signals either perfection (rare) or surface-level review. Google research: teams with no mandatory review process have 2x post-release defect rates. But mandatory review with rubber-stamping also degrades to zero safety. The real metric is defect escape rate, not review count.
+- **Review of 5000-line PRs** — cognitive load research: human working memory can hold 4-7 items simultaneously. A 500-line diff is the limit of effective review; 5000 lines is noise. Large PRs get fewer comments per line and more defects slip through. The fix: enforce a PR size soft limit (~400 lines) in the team norms; split large features into stacked PRs.
+
+**Debug workflow:** For rubber-stamping: track PR approval time vs review comment count; a PR with <2 comments approved in <10 minutes is likely rubber-stamped. For thread explosion: use a "thread resolved" policy — if a thread has 3+ exchanges, move to a sync call and close the thread.
+**Mitigation discipline:** Use review metrics (defect escape rate, PR size, review time) as team health indicators; enforce PR size limits in CI (`cloc` diff line count); require at least 1 substantive comment from each reviewer before merge.
+
 </details>
 
 **Challenge 2 (Design):** A PR adds a new `OrderDiscountService`. The test file has `@MockitoExtension` and mocks `OrderRepository`, `UserRepository`, and `DiscountRepository`. A reviewer comments: "This is over-mocked." What does this mean and what is the correct alternative?
@@ -276,9 +292,11 @@ Over-mocking: when a unit test mocks so many collaborators that it only tests th
 </details>
 
 ## Screenshots (if UI)
+
 Before and After screenshots.
 
 ## Notes for Reviewer
+
 - Focus on the algorithm in `PaymentService.calculateDiscount()`
 - The `UserMapper` change is auto-generated, skip it
 ```
@@ -419,7 +437,7 @@ The author learns:
 
 ---
 
-*The best code reviews feel like pair programming, not a courtroom trial.*
+_The best code reviews feel like pair programming, not a courtroom trial._
 
 ---
 

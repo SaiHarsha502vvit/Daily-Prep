@@ -1,8 +1,8 @@
-import { PlaywrightReport } from '../ingest/json-reader';
+import { PlaywrightReport } from "../ingest/json-reader";
 
 export interface TestRun {
   name: string;
-  status: 'passed' | 'failed' | 'skipped' | 'timedOut' | 'interrupted';
+  status: "passed" | "failed" | "skipped" | "timedOut" | "interrupted";
   duration: number;
   errors: string[];
   passes: number;
@@ -39,7 +39,7 @@ function mergeTestRuns(reports: PlaywrightReport[]): TestRun[] {
     for (const test of report.tests) {
       if (map.has(test.title)) {
         const existing = map.get(test.title)!;
-        if (test.status === 'passed') existing.passes++;
+        if (test.status === "passed") existing.passes++;
         existing.totalRuns++;
         existing.duration += test.duration;
         existing.errors.push(...test.errors);
@@ -49,7 +49,7 @@ function mergeTestRuns(reports: PlaywrightReport[]): TestRun[] {
           status: test.status,
           duration: test.duration,
           errors: [...test.errors],
-          passes: test.status === 'passed' ? 1 : 0,
+          passes: test.status === "passed" ? 1 : 0,
           totalRuns: 1,
         });
       }
@@ -69,11 +69,11 @@ function computeFlakeScore(passRate: number): number {
  */
 export function calculateFlakeScores(
   reports: PlaywrightReport[],
-  criticalThreshold: number
+  criticalThreshold: number,
 ): TestSummary[] {
   const merged = mergeTestRuns(reports);
 
-  return merged.map(run => {
+  return merged.map((run) => {
     const passRate = run.totalRuns > 0 ? run.passes / run.totalRuns : 0;
     const flakeScore = run.totalRuns >= 5 ? computeFlakeScore(passRate) : 0;
     const avgDuration = run.totalRuns > 0 ? run.duration / run.totalRuns : 0;
@@ -96,7 +96,7 @@ export function calculateFlakeScores(
  */
 export function calculateGroupScores(
   tests: TestSummary[],
-  groupFn: (test: TestSummary) => string
+  groupFn: (test: TestSummary) => string,
 ): GroupScore[] {
   const groups = new Map<string, TestSummary[]>();
 
@@ -109,12 +109,20 @@ export function calculateGroupScores(
   return Array.from(groups.entries()).map(([key, groupTests]) => {
     const avgFlakeScore =
       groupTests.length > 0
-        ? groupTests.reduce((sum, t) => sum + t.flakeScore, 0) / groupTests.length
+        ? groupTests.reduce((sum, t) => sum + t.flakeScore, 0) /
+          groupTests.length
         : 0;
     const totalPasses = groupTests.reduce((sum, t) => sum + t.passes, 0);
     const totalRuns = groupTests.reduce((sum, t) => sum + t.totalRuns, 0);
     const passRate = totalRuns > 0 ? totalPasses / totalRuns : 0;
 
-    return { key, tests: groupTests, avgFlakeScore, passRate, totalRuns, passes: totalPasses };
+    return {
+      key,
+      tests: groupTests,
+      avgFlakeScore,
+      passRate,
+      totalRuns,
+      passes: totalPasses,
+    };
   });
 }

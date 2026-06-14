@@ -2,10 +2,10 @@
 
 A scan of every `.md` file in `21_SDET_Playwright_Automation/` (excluding `node_modules/` and the stale `_Curriculum/` mirror).
 
-| Scan date | Broken links found | Notes |
-|-----------|-------------------:|-------|
-| 2026-06-11 (initial) | **71** | Documented in the categorized punch list (historical, below) |
-| 2026-06-11 (after sweep) | **5** | All 5 are either false positives or aspirational sibling-module cross-references — see below |
+| Scan date                | Broken links found | Notes                                                                                        |
+| ------------------------ | -----------------: | -------------------------------------------------------------------------------------------- |
+| 2026-06-11 (initial)     |             **71** | Documented in the categorized punch list (historical, below)                                 |
+| 2026-06-11 (after sweep) |              **5** | All 5 are either false positives or aspirational sibling-module cross-references — see below |
 
 **66 broken links repaired** in the sweep. Source files touched:
 

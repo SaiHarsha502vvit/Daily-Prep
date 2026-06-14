@@ -17,20 +17,20 @@ Comprehensive Spring Boot 3.x coverage from core concepts through distributed sy
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Spring Boot fundamentals: auto-configuration, starters, actuator |
-| 2 | Dependency injection: @Bean, @Component, @Configuration, @Primary, @Qualifier |
-| 3 | Spring MVC: controllers, request/response mapping, validation (JSR-380) |
-| 4 | Spring Data JPA: repositories, query derivation, auditing, pagination |
-| 5 | Transaction management: @Transactional, propagation, isolation levels |
-| 6 | Spring Security: JWT authentication, OAuth2 Resource Server |
-| 7 | Spring WebFlux: reactive controllers, WebClient, MongoDB Reactive |
-| 8 | Microservices patterns: circuit breaker, bulkhead, retry, timeout |
-| 9 | Service discovery & API gateway: Eureka, Spring Cloud Gateway, routing |
-| 10 | Observability: Micrometer, distributed tracing (Zipkin), health endpoints |
-| 11 | Deployment: Docker, Helm, 12-factor config, environment promotion |
-| 12 | Capstone: multi-service e-commerce platform with circuit breakers |
+| Week | Topic                                                                         |
+| ---- | ----------------------------------------------------------------------------- |
+| 1    | Spring Boot fundamentals: auto-configuration, starters, actuator              |
+| 2    | Dependency injection: @Bean, @Component, @Configuration, @Primary, @Qualifier |
+| 3    | Spring MVC: controllers, request/response mapping, validation (JSR-380)       |
+| 4    | Spring Data JPA: repositories, query derivation, auditing, pagination         |
+| 5    | Transaction management: @Transactional, propagation, isolation levels         |
+| 6    | Spring Security: JWT authentication, OAuth2 Resource Server                   |
+| 7    | Spring WebFlux: reactive controllers, WebClient, MongoDB Reactive             |
+| 8    | Microservices patterns: circuit breaker, bulkhead, retry, timeout             |
+| 9    | Service discovery & API gateway: Eureka, Spring Cloud Gateway, routing        |
+| 10   | Observability: Micrometer, distributed tracing (Zipkin), health endpoints     |
+| 11   | Deployment: Docker, Helm, 12-factor config, environment promotion             |
+| 12   | Capstone: multi-service e-commerce platform with circuit breakers             |
 
 ## Linked Existing Content
 

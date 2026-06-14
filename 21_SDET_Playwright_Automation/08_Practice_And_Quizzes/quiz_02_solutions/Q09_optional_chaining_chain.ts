@@ -73,13 +73,9 @@ async function getPrimaryPhoneNumber(
   //   → if .phones was undefined → return undefined
   //   → else                     → find the primary Phone or undefined
 
-  const primaryPhone = response
-    ?.customer
-    ?.contact
-    ?.addresses
-    ?.find((addr) => addr.type === 'HOME')
-    ?.phones
-    ?.find((phone) => phone.primary);
+  const primaryPhone = response?.customer?.contact?.addresses
+    ?.find((addr) => addr.type === "HOME")
+    ?.phones?.find((phone) => phone.primary);
 
   // primaryPhone?.number
   //   → if primaryPhone is undefined → return undefined
@@ -103,12 +99,15 @@ async function runExamples() {
     customer: {
       contact: {
         addresses: [
-          { type: 'WORK', phones: [{ number: '512-000-0001', primary: false }] },
           {
-            type: 'HOME',
+            type: "WORK",
+            phones: [{ number: "512-000-0001", primary: false }],
+          },
+          {
+            type: "HOME",
             phones: [
-              { number: '512-000-0002', primary: false },
-              { number: '512-000-0003', primary: true }, // ← target
+              { number: "512-000-0002", primary: false },
+              { number: "512-000-0003", primary: true }, // ← target
             ],
           },
         ],
@@ -132,7 +131,7 @@ async function runExamples() {
     customer: {
       contact: {
         addresses: [
-          { type: 'WORK', phones: [{ number: '512-000-0001', primary: true }] },
+          { type: "WORK", phones: [{ number: "512-000-0001", primary: true }] },
         ],
       },
     },
@@ -145,8 +144,8 @@ async function runExamples() {
       contact: {
         addresses: [
           {
-            type: 'HOME',
-            phones: [{ number: '512-000-0004', primary: false }],
+            type: "HOME",
+            phones: [{ number: "512-000-0004", primary: false }],
           },
         ],
       },
@@ -165,7 +164,7 @@ async function getPrimaryPhoneNumber_verbose(
   if (!response.customer.contact.addresses) return null;
 
   const homeAddr = response.customer.contact.addresses.find(
-    (a) => a.type === 'HOME',
+    (a) => a.type === "HOME",
   );
   if (!homeAddr) return null;
   if (!homeAddr.phones) return null;

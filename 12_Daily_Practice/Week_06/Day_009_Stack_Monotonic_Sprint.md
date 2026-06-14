@@ -1,18 +1,21 @@
 # Day 09 - Stack and Monotonic Stack (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 716 - Max Stack
 2. LeetCode Hard: 84 - Largest Rectangle in Histogram
 3. Codeforces: 1313C2 - Skyscrapers (harder variant)
 4. Codeforces: 4C - Registration System
 
 ## Problem Links
+
 - LC 716 (Premium): Locked on LeetCode (no public official statement page)
 - LC 84: https://leetcode.com/problems/largest-rectangle-in-histogram/
 - CF 1313C2: https://codeforces.com/problemset/problem/1313/C2
 - CF 4C: https://codeforces.com/problemset/problem/4/C
 
 ## Why This Day Matters
+
 Monotonic stacks are about preserving order constraints and answering nearest-smaller/greater in linear time.
 
 ---
@@ -20,9 +23,11 @@ Monotonic stacks are about preserving order constraints and answering nearest-sm
 ## Problem 1 - LC 716 (Premium): Max Stack
 
 ### Problem Statement
+
 Design stack supporting `push`, `pop`, `top`, `peekMax`, `popMax`.
 
 ### Why This DS/Algo
+
 - Normal stack cannot pop arbitrary max quickly.
 - Combine doubly linked list for O(1) removals with ordered structure by value.
 
@@ -54,6 +59,7 @@ class MaxStackBrute {
 ```
 
 ### Approach B - Better (Two stacks) (popMax still O(n))
+
 Keep max-stack for fast `peekMax`.
 
 ```java
@@ -146,9 +152,11 @@ class MaxStackOptimal {
 ## Problem 2 - LC 84: Largest Rectangle in Histogram
 
 ### Why This DS/Algo
+
 Area for each bar is determined by nearest smaller on both sides. Monotonic increasing stack computes both boundaries in O(n).
 
 ### Approach A - Brute Force (O(n^2), O(1))
+
 For each center bar, expand while heights >= current.
 
 ### Approach B - Better (precompute left/right smaller) (O(n), O(n))
@@ -206,18 +214,23 @@ static int largestRectOptimal(int[] h) {
 ## Problem 3 - CF 1313C2: Skyscrapers
 
 ### Problem Statement
+
 Choose peak and reduce heights to form mountain-like skyline maximizing total sum.
 
 ### Why This DS/Algo
+
 Nearest-smaller boundaries and prefix contribution from monotonic stack provide best peak in O(n).
 
 ### Approach A - Brute Force (O(n^2))
+
 Try each peak, propagate min to both sides.
 
 ### Approach B - Better (Prefix contribution + suffix contribution) (O(n), O(n))
+
 Standard editorial method with stack dynamic sums.
 
 ### Approach C - Optimal
+
 Better method is optimal asymptotically.
 
 ---
@@ -225,9 +238,11 @@ Better method is optimal asymptotically.
 ## Problem 4 - CF 4C: Registration System
 
 ### Problem Statement
+
 For each username request, print `OK` if new, otherwise `name+count`.
 
 ### Why This DS/Algo
+
 HashMap maps string to occurrence count, perfect direct indexing.
 
 ### Approach A - Brute Force list scan (O(n^2))
@@ -249,8 +264,10 @@ static List<String> registrationBetter(List<String> requests) {
 ```
 
 ### Approach C - Optimal
+
 HashMap solution is optimal for expected complexity.
 
 ### Pattern Takeaways
+
 - Monotonic stack compresses nearest-boundary computation to linear time.
 - Composite DS design (DLL + TreeMap) appears in system-design flavored coding tasks.

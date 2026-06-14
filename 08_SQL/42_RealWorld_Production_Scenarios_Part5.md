@@ -9,50 +9,52 @@
 
 ## 📋 Scenario Master Index (Part 5: Scenarios 101–125)
 
-| # | Scenario | Category |
-|---|----------|----------|
-| 101 | LazyInitializationException in REST response | JPA/Hibernate |
-| 102 | @Transactional not working — silently no rollback | Spring |
-| 103 | HikariCP connection pool exhausted | Connection Pool |
-| 104 | Memory leak from Hibernate session cache | Memory |
-| 105 | N+1 in REST controller — 1000 queries per request | JPA/Hibernate |
-| 106 | Slow startup — Flyway migration on 500M-row table | Deployment |
-| 107 | Thread pool exhaustion from blocking DB calls | Threads |
-| 108 | Circuit breaker for database failover | Resilience |
-| 109 | Entity equals/hashCode wrong — Set breaks | JPA/Hibernate |
-| 110 | Open Session in View — silent performance killer | JPA/Hibernate |
-| 111 | Bulk INSERT 1M rows — OOM crash | Batch Processing |
-| 112 | @Cacheable returns stale data after DB update | Caching |
-| 113 | REST API pagination — full table scan on page 50000 | API Design |
-| 114 | Multitenancy — wrong tenant gets data | Security |
-| 115 | Distributed lock fails — two instances process same job | Concurrency |
-| 116 | Health check passes but app is unhealthy | Monitoring |
-| 117 | Graceful shutdown loses in-flight transactions | Deployment |
-| 118 | Spring Security session + DB session mismatch | Security |
-| 119 | File upload saves to local disk — pod restart loses it | Cloud Native |
-| 120 | Log table grows unbounded — disk full | Operations |
-| 121 | API rate limiting — single user DDoSes your DB | API Design |
-| 122 | Retry storm after partial failure | Resilience |
-| 123 | JSON serialization infinite recursion (bidirectional JPA) | Serialization |
-| 124 | Spring Batch fails at row 999,997 of 1M — restart? | Batch Processing |
-| 125 | Microservice data consistency without 2PC | Architecture |
+| #   | Scenario                                                  | Category         |
+| --- | --------------------------------------------------------- | ---------------- |
+| 101 | LazyInitializationException in REST response              | JPA/Hibernate    |
+| 102 | @Transactional not working — silently no rollback         | Spring           |
+| 103 | HikariCP connection pool exhausted                        | Connection Pool  |
+| 104 | Memory leak from Hibernate session cache                  | Memory           |
+| 105 | N+1 in REST controller — 1000 queries per request         | JPA/Hibernate    |
+| 106 | Slow startup — Flyway migration on 500M-row table         | Deployment       |
+| 107 | Thread pool exhaustion from blocking DB calls             | Threads          |
+| 108 | Circuit breaker for database failover                     | Resilience       |
+| 109 | Entity equals/hashCode wrong — Set breaks                 | JPA/Hibernate    |
+| 110 | Open Session in View — silent performance killer          | JPA/Hibernate    |
+| 111 | Bulk INSERT 1M rows — OOM crash                           | Batch Processing |
+| 112 | @Cacheable returns stale data after DB update             | Caching          |
+| 113 | REST API pagination — full table scan on page 50000       | API Design       |
+| 114 | Multitenancy — wrong tenant gets data                     | Security         |
+| 115 | Distributed lock fails — two instances process same job   | Concurrency      |
+| 116 | Health check passes but app is unhealthy                  | Monitoring       |
+| 117 | Graceful shutdown loses in-flight transactions            | Deployment       |
+| 118 | Spring Security session + DB session mismatch             | Security         |
+| 119 | File upload saves to local disk — pod restart loses it    | Cloud Native     |
+| 120 | Log table grows unbounded — disk full                     | Operations       |
+| 121 | API rate limiting — single user DDoSes your DB            | API Design       |
+| 122 | Retry storm after partial failure                         | Resilience       |
+| 123 | JSON serialization infinite recursion (bidirectional JPA) | Serialization    |
+| 124 | Spring Batch fails at row 999,997 of 1M — restart?        | Batch Processing |
+| 125 | Microservice data consistency without 2PC                 | Architecture     |
 
 ---
 
 ## Scenario 101: LazyInitializationException in REST Response
 
 ### 🔴 The Incident
+
 API returns 500 error: `LazyInitializationException: could not initialize proxy — no Session`. Customer entity has `@OneToMany List<Order> orders` — accessed during JSON serialization AFTER transaction closed.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Hibernate lazy-loads collections. After transaction closes, accessing unloaded collection throws exception |
-| **Why** | Default `@OneToMany` fetch = LAZY. Jackson serializer accesses the field outside Hibernate session |
-| **When** | Any REST endpoint returning entities with lazy relationships |
-| **Where** | Controller returning JPA entities directly (no DTO) |
-| **Who** | Every Spring Boot developer hits this within their first month |
-| **How** | Use DTOs, fetch joins, or entity graphs — never return JPA entities directly |
+
+| Question  | Answer                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------- |
+| **What**  | Hibernate lazy-loads collections. After transaction closes, accessing unloaded collection throws exception |
+| **Why**   | Default `@OneToMany` fetch = LAZY. Jackson serializer accesses the field outside Hibernate session         |
+| **When**  | Any REST endpoint returning entities with lazy relationships                                               |
+| **Where** | Controller returning JPA entities directly (no DTO)                                                        |
+| **Who**   | Every Spring Boot developer hits this within their first month                                             |
+| **How**   | Use DTOs, fetch joins, or entity graphs — never return JPA entities directly                               |
 
 ### FIX 1: Use DTOs (Best Practice)
 
@@ -92,6 +94,7 @@ Customer findWithOrdersAndItems(@Param("id") Long id);
 ```
 
 ### Anti-Pattern: DON'T Do This
+
 ```java
 // DON'T use Open Session in View (OSIV) as a fix
 // DON'T use Hibernate.initialize() in controller
@@ -100,12 +103,10 @@ Customer findWithOrdersAndItems(@Param("id") Long id);
 
 ---
 
-
-
-
 ## Scenario 102: @Transactional Not Working — No Rollback
 
 ### 🔴 The Incident
+
 Method throws exception but database changes are committed. Data in inconsistent state.
 
 ### Root Causes & Fixes
@@ -117,7 +118,7 @@ public class OrderService {
     public void process() {
         this.createOrder();  // ❌ Direct call — proxy bypassed — no transaction!
     }
-    
+
     @Transactional
     public void createOrder() {
         // This runs WITHOUT a transaction when called from process()!
@@ -129,11 +130,11 @@ public class OrderService {
 public class OrderService {
     @Autowired
     private OrderService self;  // Proxy-aware self reference
-    
+
     public void process() {
         self.createOrder();  // ✅ Goes through proxy — transaction works
     }
-    
+
     @Transactional
     public void createOrder() { /* ... */ }
 }
@@ -175,27 +176,27 @@ private void createOrder() { }  // ❌ Spring AOP can't proxy private methods!
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 102: @Transactional Not Working — No Rollback**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenario 103: HikariCP Connection Pool Exhausted
 
 ### 🔴 The Incident
+
 `HikariPool - Connection is not available, request timed out after 30000ms`. All API requests fail. 10 connections max, all in use.
 
 ### Diagnosis
 
 ```sql
 -- PostgreSQL: See active connections
-SELECT pid, usename, application_name, state, query, 
+SELECT pid, usename, application_name, state, query,
        NOW() - query_start AS duration
 FROM pg_stat_activity
 WHERE datname = 'mydb'
@@ -208,28 +209,31 @@ ORDER BY duration DESC;
 🔬 **Section Challenge — Scenario 103: HikariCP Connection Pool Exhausted**
 
 **Challenge 1 (Reasoning):** `pg_stat_activity` shows many sessions in `idle in transaction` for 30+ seconds. Why can this exhaust HikariCP even if CPU and database I/O look normal?
+
 <details><summary>Answer</summary>
 
 A connection is checked out until the transaction ends. `idle in transaction` means the application is not actively querying, but it is still holding the connection and transaction resources. Hikari sees the connection as busy, so new requests wait until `connection-timeout` and fail. This is a capacity problem caused by connection hold time, not CPU saturation. Fix the code path that keeps transactions open and add leak detection / transaction timeout as guardrails.
+
 </details>
 
 **Challenge 2 (Design):** The team wants to raise `maximum-pool-size` from 10 to 100. What must you check before doing that, and why can a bigger pool make the incident worse?
+
 <details><summary>Answer</summary>
 
 Check database `max_connections`, CPU, memory per backend, lock contention, average query time, and p95 connection hold time. A larger pool can push more concurrent work into the database than it can execute, increasing lock waits, context switching, memory pressure, and queueing inside the database. The real fix is often shorter transactions, no external HTTP inside transactions, indexes, batching, and fail-fast timeouts. Pool size is a throttle, not a magic throughput multiplier.
-</details>
 
+</details>
 
 ```yaml
 # application.yml — tune HikariCP
 spring:
   datasource:
     hikari:
-      maximum-pool-size: 20          # Default 10 may be too low
+      maximum-pool-size: 20 # Default 10 may be too low
       minimum-idle: 5
-      connection-timeout: 10000      # Fail fast (10s not 30s)
-      idle-timeout: 600000           # Release idle connections after 10 min
-      max-lifetime: 1800000          # Cycle connections every 30 min
+      connection-timeout: 10000 # Fail fast (10s not 30s)
+      idle-timeout: 600000 # Release idle connections after 10 min
+      max-lifetime: 1800000 # Cycle connections every 30 min
       leak-detection-threshold: 30000 # Log warning if connection held > 30s
 ```
 
@@ -272,9 +276,11 @@ public void processReport() {
 ## Scenario 104: Memory Leak from Hibernate Session Cache
 
 ### 🔴 The Incident
+
 Application OOM after processing large batch. Heap dump shows millions of Hibernate entity instances in `PersistenceContext`.
 
 ### Root Cause
+
 Hibernate's first-level cache (Session) keeps ALL entities loaded in a transaction. Loading 1M rows = 1M objects in memory.
 
 ### Fix
@@ -293,7 +299,7 @@ public void processAll() {
 public void processAll() {
     int batchSize = 500;
     int count = 0;
-    
+
     try (Stream<Order> stream = orderRepo.streamAll()) {
         for (Order order : (Iterable<Order>) stream::iterator) {
             order.setProcessed(true);
@@ -319,11 +325,10 @@ StatelessSession stateless = session.getSessionFactory().openStatelessSession();
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 104: Memory Leak from Hibernate Session Cache**
 
 **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -339,21 +344,20 @@ List<Order> findAllWithCustomer();
 @EntityGraph(attributePaths = "customer")
 List<Order> findAll();
 ```
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-</details>
 
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+
+</details>
 
 ## Scenario 105: N+1 in REST Controller — 1000 Queries Per Request
 
 ### 🔴 The Incident
+
 `GET /api/orders` takes 8 seconds. Database shows 1001 queries: 1 for orders + 1000 for each order's customer.
 
 ### Diagnosis
 
 ```yaml
-
-
-
 # Enable query logging to see the problem
 spring:
   jpa:
@@ -407,6 +411,7 @@ List<OrderSummary> findAllSummaries();
 ## Scenario 106: Slow Startup — Flyway Migration on 500M-Row Table
 
 ### 🔴 The Incident
+
 Application takes 45 minutes to start. Kubernetes kills the pod (health check timeout). Pod restart loop.
 
 ### Fix
@@ -415,7 +420,7 @@ Application takes 45 minutes to start. Kubernetes kills the pod (health check ti
 # application.yml — separate migration from startup
 spring:
   flyway:
-    enabled: false  # Don't run at startup
+    enabled: false # Don't run at startup
 
 # Run migration as a separate Kubernetes Job BEFORE deployment:
 # k8s-migration-job.yaml
@@ -427,9 +432,16 @@ spec:
   template:
     spec:
       containers:
-      - name: migration
-        image: myapp:latest
-        command: ["java", "-cp", "app.jar", "org.flywaydb.commandline.Main", "migrate"]
+        - name: migration
+          image: myapp:latest
+          command:
+            [
+              "java",
+              "-cp",
+              "app.jar",
+              "org.flywaydb.commandline.Main",
+              "migrate",
+            ]
 ```
 
 ```java
@@ -449,6 +461,7 @@ public class AsyncMigration implements ApplicationListener<ApplicationReadyEvent
 ## Scenario 107: Thread Pool Exhaustion from Blocking DB Calls
 
 ### 🔴 The Incident
+
 Tomcat thread pool (200 threads) fully consumed. All waiting on slow DB query. New requests rejected with 503.
 
 ### Fix
@@ -491,9 +504,6 @@ public List<Order> getOrdersFallback(Exception e) {
 
 ---
 
-
-
-
 ## Scenario 108: Circuit Breaker for Database Failover
 
 ### Fix: Resilience4j with Spring Boot
@@ -511,13 +521,13 @@ resilience4j:
 
 @Service
 public class OrderService {
-    
+
     @CircuitBreaker(name = "database", fallbackMethod = "fallback")
     @Retry(name = "database", fallbackMethod = "fallback")
     public Order getOrder(Long id) {
         return orderRepo.findById(id).orElseThrow();
     }
-    
+
     private Order fallback(Long id, Exception e) {
         // Try read replica
         return readReplicaRepo.findById(id)
@@ -531,6 +541,7 @@ public class OrderService {
 ## Scenario 109: Entity equals/hashCode Wrong — Set Breaks
 
 ### 🔴 The Incident
+
 Adding entities to `Set` causes duplicates. `contains()` returns false for entities that SHOULD match.
 
 ### Fix
@@ -557,17 +568,17 @@ public boolean equals(Object o) {
 public class Order {
     @Id @GeneratedValue
     private Long id;
-    
+
     @Column(unique = true, updatable = false)
     private UUID businessKey = UUID.randomUUID();  // Assigned immediately
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order other)) return false;
         return businessKey.equals(other.businessKey);
     }
-    
+
     @Override
     public int hashCode() {
         return businessKey.hashCode();
@@ -579,14 +590,14 @@ public class Order {
 public class Order {
     @Id @GeneratedValue
     private Long id;
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Order other)) return false;
         return id != null && id.equals(other.id);
     }
-    
+
     @Override
     public int hashCode() {
         return getClass().hashCode();  // Constant — all Orders in same bucket
@@ -596,6 +607,7 @@ public class Order {
 ```
 
 ### DSA Connection
+
 - **Hash collision** — constant hashCode degrades HashMap/HashSet from O(1) to O(n)
 - **Object identity vs equality** — reference equality (`==`) vs value equality (`.equals()`)
 - **Business key = natural key** = deterministic hash from immutable field
@@ -605,18 +617,16 @@ public class Order {
 ## Scenario 110: Open Session in View — Silent Performance Killer
 
 ### 🔴 The Incident
+
 Spring Boot enables OSIV by default. Every REST request holds a DB connection from request start to response end. Under load, connections exhausted.
 
 ### Fix
 
 ```yaml
-
-
-
 # Disable OSIV
 spring:
   jpa:
-    open-in-view: false  # Default is TRUE — disable it!
+    open-in-view: false # Default is TRUE — disable it!
     # Now LazyInitializationException forces you to fetch properly
 ```
 
@@ -680,9 +690,6 @@ public void copyInsert(List<Order> orders) {
 
 ---
 
-
-
-
 ## Scenario 112: @Cacheable Returns Stale Data After DB Update
 
 ### Fix
@@ -734,16 +741,16 @@ public CacheManager cacheManager() {
 public CursorPage<OrderDTO> getOrders(
         @RequestParam(required = false) String cursor,
         @RequestParam(defaultValue = "20") int size) {
-    
+
     Long afterId = cursor != null ? decodeCursor(cursor) : 0L;
-    
+
     List<Order> orders = orderRepo.findByIdGreaterThanOrderByIdAsc(afterId, PageRequest.of(0, size + 1));
-    
+
     boolean hasNext = orders.size() > size;
     if (hasNext) orders = orders.subList(0, size);
-    
+
     String nextCursor = hasNext ? encodeCursor(orders.get(orders.size() - 1).getId()) : null;
-    
+
     return new CursorPage<>(
         orders.stream().map(OrderDTO::from).toList(),
         nextCursor
@@ -759,12 +766,10 @@ public CursorPage<OrderDTO> getOrders(
 
 ---
 
-
-
-
 ## Scenario 114–125: Quick-Fire Backend Scenarios
 
 ### Scenario 114: Multitenancy — Wrong Tenant Gets Data
+
 ```java
 // FIX: Hibernate Filter per tenant
 @FilterDef(name = "tenantFilter", parameters = @ParamDef(name = "tenantId", type = Long.class))
@@ -788,12 +793,13 @@ public class TenantInterceptor implements HandlerInterceptor {
 ```
 
 ### Scenario 115: Distributed Lock — Two Instances Process Same Job
+
 ```java
 // FIX: Database-level distributed lock
 @Component
 public class DistributedLock {
     @Autowired private JdbcTemplate jdbc;
-    
+
     public boolean tryLock(String lockName, Duration duration) {
         try {
             int rows = jdbc.update(
@@ -819,38 +825,39 @@ CREATE TABLE distributed_locks (
 ```
 
 ### Scenario 116: Health Check Passes But App Is Unhealthy
+
 ```java
 // Default health check only verifies DB connection exists
 // FIX: Custom health indicator that tests actual functionality
 @Component
 public class DatabaseHealthIndicator implements HealthIndicator {
     @Autowired private JdbcTemplate jdbc;
-    
+
     @Override
     public Health health() {
         try {
             long start = System.currentTimeMillis();
             jdbc.queryForObject("SELECT 1", Integer.class);
             long duration = System.currentTimeMillis() - start;
-            
+
             if (duration > 1000) {
                 return Health.down()
                     .withDetail("query_time_ms", duration)
                     .withDetail("reason", "Database responding too slowly")
                     .build();
             }
-            
+
             // Check connection pool health
             HikariDataSource ds = (HikariDataSource) dataSource;
             int active = ds.getHikariPoolMXBean().getActiveConnections();
             int total = ds.getHikariPoolMXBean().getTotalConnections();
-            
+
             if ((double) active / total > 0.9) {
                 return Health.down()
                     .withDetail("reason", "Connection pool 90%+ utilized")
                     .build();
             }
-            
+
             return Health.up().withDetail("query_time_ms", duration).build();
         } catch (Exception e) {
             return Health.down(e).build();
@@ -860,24 +867,26 @@ public class DatabaseHealthIndicator implements HealthIndicator {
 ```
 
 ### Scenario 117: Graceful Shutdown Loses In-Flight Transactions
+
 ```yaml
 # application.yml
 server:
-  shutdown: graceful  # Wait for in-flight requests to complete
+  shutdown: graceful # Wait for in-flight requests to complete
 spring:
   lifecycle:
-    timeout-per-shutdown-phase: 30s  # Max wait time
+    timeout-per-shutdown-phase: 30s # Max wait time
 ```
 
 ```java
 @PreDestroy
 public void onShutdown() {
-    log.info("Shutting down — waiting for {} active transactions", 
+    log.info("Shutting down — waiting for {} active transactions",
              transactionManager.getActiveCount());
 }
 ```
 
 ### Scenario 118: Spring Security Session Fixation
+
 ```java
 // FIX: Session fixation protection
 @Configuration
@@ -895,6 +904,7 @@ public class SecurityConfig {
 ```
 
 ### Scenario 119: File Upload Lost on Pod Restart
+
 ```java
 // BAD: Saving to local filesystem
 Files.write(Paths.get("/tmp/uploads/" + filename), bytes);
@@ -904,7 +914,7 @@ Files.write(Paths.get("/tmp/uploads/" + filename), bytes);
 @Service
 public class FileStorageService {
     @Autowired private S3Client s3;
-    
+
     public String upload(MultipartFile file) {
         String key = UUID.randomUUID() + "/" + file.getOriginalFilename();
         s3.putObject(
@@ -917,6 +927,7 @@ public class FileStorageService {
 ```
 
 ### Scenario 120: Log Table Grows Unbounded
+
 ```sql
 -- PROBLEM: audit_log table has 2 billion rows, 500GB
 -- FIX: Partition by time + auto-drop old partitions
@@ -936,13 +947,14 @@ DROP TABLE audit_log_2024_12;
 ```
 
 ### Scenario 121: API Rate Limiting
+
 ```java
 // FIX: Bucket4j rate limiter backed by database
 @Bean
 public FilterRegistrationBean<RateLimitFilter> rateLimitFilter() {
     // 100 requests per minute per user
     Bandwidth limit = Bandwidth.classic(100, Refill.greedy(100, Duration.ofMinutes(1)));
-    
+
     return new FilterRegistrationBean<>(new RateLimitFilter(limit));
 }
 
@@ -963,6 +975,7 @@ spring:
 ```
 
 ### Scenario 122: Retry Storm After Partial Failure
+
 ```java
 // PROBLEM: 1000 API clients all retry at the same time after a 5-second DB outage
 // This AMPLIFIES the load — thundering herd!
@@ -987,6 +1000,7 @@ public ResponseEntity<String> handleUnavailable() {
 ```
 
 ### Scenario 123: JSON Infinite Recursion (Bidirectional JPA)
+
 ```java
 // PROBLEM: Customer → Orders → Customer → Orders → ... StackOverflow!
 @Entity
@@ -1019,6 +1033,7 @@ private Customer customer;
 ```
 
 ### Scenario 124: Spring Batch Fails at Row 999,997 — Restart?
+
 ```java
 // Spring Batch supports RESTARTABLE jobs
 // It stores progress in batch metadata tables
@@ -1044,6 +1059,7 @@ public Step processStep() {
 ```
 
 ### Scenario 125: Microservice Data Consistency Without 2PC
+
 ```java
 // PROBLEM: Order service creates order, Payment service charges card.
 // If payment fails, order is already committed.
@@ -1052,10 +1068,10 @@ public Step processStep() {
 @Transactional
 public void createOrder(OrderRequest req) {
     Order order = orderRepo.save(new Order(req));  // Save order
-    
+
     // Save event in SAME transaction (outbox pattern)
     outboxRepo.save(new OutboxEvent(
-        "OrderCreated", 
+        "OrderCreated",
         order.getId().toString(),
         objectMapper.writeValueAsString(order)
     ));
@@ -1091,41 +1107,53 @@ CREATE INDEX idx_outbox_unpublished ON outbox_events (published) WHERE published
 
 ## 🧠 DSA Patterns Behind Backend Scenarios
 
-| Scenario | DSA Pattern |
-|----------|-------------|
-| LazyInitializationException | **Lazy evaluation / Thunk** — deferred computation |
-| Connection pool | **Object pool / Thread pool** — resource reuse |
-| Hibernate cache OOM | **LRU cache eviction** — bounded cache with eviction |
-| N+1 queries | **Batch processing / Prefetch** — amortize overhead |
-| Circuit breaker | **State machine** — CLOSED → OPEN → HALF_OPEN |
-| Distributed lock | **Mutex / Semaphore** — mutual exclusion |
-| Retry with jitter | **Exponential backoff** — collision avoidance (like CSMA/CD) |
-| Infinite recursion | **Cycle detection** — DFS with visited set |
-| Keyset pagination | **Binary search / B-Tree seek** — O(log n) vs O(n) scan |
-| Saga pattern | **Compensating transactions** — undo log / rollback |
-| Outbox pattern | **Write-ahead log (WAL)** — persist intent before execution |
-| Batch restart | **Checkpointing** — save progress, resume from last checkpoint |
-| Rate limiting | **Token bucket / Sliding window** — rate control algorithms |
-| Thread pool exhaustion | **Bounded queue** — producer-consumer with capacity |
-| Graceful shutdown | **Drain queue** — stop accepting, process remaining |
+| Scenario                    | DSA Pattern                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| LazyInitializationException | **Lazy evaluation / Thunk** — deferred computation             |
+| Connection pool             | **Object pool / Thread pool** — resource reuse                 |
+| Hibernate cache OOM         | **LRU cache eviction** — bounded cache with eviction           |
+| N+1 queries                 | **Batch processing / Prefetch** — amortize overhead            |
+| Circuit breaker             | **State machine** — CLOSED → OPEN → HALF_OPEN                  |
+| Distributed lock            | **Mutex / Semaphore** — mutual exclusion                       |
+| Retry with jitter           | **Exponential backoff** — collision avoidance (like CSMA/CD)   |
+| Infinite recursion          | **Cycle detection** — DFS with visited set                     |
+| Keyset pagination           | **Binary search / B-Tree seek** — O(log n) vs O(n) scan        |
+| Saga pattern                | **Compensating transactions** — undo log / rollback            |
+| Outbox pattern              | **Write-ahead log (WAL)** — persist intent before execution    |
+| Batch restart               | **Checkpointing** — save progress, resume from last checkpoint |
+| Rate limiting               | **Token bucket / Sliding window** — rate control algorithms    |
+| Thread pool exhaustion      | **Bounded queue** — producer-consumer with capacity            |
+| Graceful shutdown           | **Drain queue** — stop accepting, process remaining            |
 
 ---
 
-
-
-
 ## 🎯 Complete Series Navigation
 
-| Part | File | Scenarios | Theme |
-|------|------|-----------|-------|
-| 1 | [Chapter 38](38_RealWorld_Production_Scenarios_Part1.md) | 1–25 | IDs, Data Growth, Storage |
-| 2 | [Chapter 39](39_RealWorld_Production_Scenarios_Part2.md) | 26–50 | Query Performance & Optimization |
-| 3 | [Chapter 40](40_RealWorld_Production_Scenarios_Part3.md) | 51–75 | Concurrency, Transactions, Integrity |
-| 4 | [Chapter 41](41_RealWorld_Production_Scenarios_Part4.md) | 76–100 | Schema, Migrations, Disasters |
-| 5 | [Chapter 42](42_RealWorld_Production_Scenarios_Part5.md) | 101–125 | Backend & Spring Boot Production |
+| Part | File                                                     | Scenarios | Theme                                |
+| ---- | -------------------------------------------------------- | --------- | ------------------------------------ |
+| 1    | [Chapter 38](38_RealWorld_Production_Scenarios_Part1.md) | 1–25      | IDs, Data Growth, Storage            |
+| 2    | [Chapter 39](39_RealWorld_Production_Scenarios_Part2.md) | 26–50     | Query Performance & Optimization     |
+| 3    | [Chapter 40](40_RealWorld_Production_Scenarios_Part3.md) | 51–75     | Concurrency, Transactions, Integrity |
+| 4    | [Chapter 41](41_RealWorld_Production_Scenarios_Part4.md) | 76–100    | Schema, Migrations, Disasters        |
+| 5    | [Chapter 42](42_RealWorld_Production_Scenarios_Part5.md) | 101–125   | Backend & Spring Boot Production     |
 
 **Total: 125 real-world production scenarios with SQL + DSA + Spring Boot solutions**
 
 ---
 
 [⬅ Previous: 41_RealWorld_Production_Scenarios_Part4](41_RealWorld_Production_Scenarios_Part4.md) | [📚 Index](00_INDEX.md) | [Next: 43_Interview_Mindset ➡](43_Interview_Mindset_How_Professionals_Explain.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Gavin King (2001)**: Created Hibernate — pioneered ORM patterns (lazy loading, session cache, @Transactional boundary assumptions) that Java developers still navigate today
+- **Rod Johnson (2003)**: Created Spring Framework — introduced dependency injection and declarative transaction management (@Transactional) to Java, separating persistence concerns from business logic
+- **Brett Wooldridge (2013)**: Created HikariCP — optimized connection pool with "fast path" acquisition, minimal delegation, and aggressive leak detection replacing c3p0/Hikari as the standard
+- **Database administrators (1990s)**: Connection pooling emerged as a practice when multi-tier web applications (web server → app server → database) introduced the problem of frequent TCP connection establishment overhead
+- **Hibernate team (2004)**: LazyInitializationException documented as a common Hibernate gotcha — occurs when entity lazy collections are accessed outside the Hibernate session lifecycle
+
+**Evolution narrative:**
+The JPA/Hibernate era (2000s-2010s) dramatically increased Java developer productivity by eliminating raw JDBC boilerplate, but it also introduced a new class of production problems invisible at development scale: N+1 queries (Hibernate generates one query per lazy collection access), session cache memory leaks (unbounded first-level cache accumulates entities), and the open-session-in-view anti-pattern (Hibernate session held across HTTP response serialization). Connection pooling pre-dates ORMs — the problem of establishing a new TCP connection to the database for every request was identified in the 1990s with CGI-per-request architectures. HikariCP (2013) solved the pool efficiency problem that older pools (c3p0, DBCP) had with fast-path acquisition and aggressive leak detection.
+
+**Modern practice anchor:**
+Today, Spring Boot's auto-configuration manages HikariCP pools, JPA's @Transactional boundary management is well-understood, and tools like Spring Data JPA's @EntityGraph and @Query with JOIN FETCH give developers explicit control over SQL generation. The lessons from these 2000s production disasters are codified in Spring Boot's default configurations (open-in-view disabled by default, connection pool sized appropriately).

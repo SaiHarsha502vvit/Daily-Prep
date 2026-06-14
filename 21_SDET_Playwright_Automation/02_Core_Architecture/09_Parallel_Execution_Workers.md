@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 08: Browser Internals](./08_Browser_Internals_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 10: Dynamics 365 CRM Testing](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md)
 
 **Cross-links:**
+
 - [`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`](../../13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) — Concurrency mental models
 - [`21_SDET/06_Custom_Fixtures_Architecture.md`](./06_Custom_Fixtures_Architecture.md) — Worker-scoped fixtures (the `account` fixture)
 
@@ -50,6 +51,7 @@ npx playwright test --workers=4
 ```
 
 **Key facts:**
+
 1. Each worker is a separate Node.js process. They share NO memory.
 2. Each worker has its own browser instance.
 3. By default, each TEST gets its own BrowserContext (isolated cookies/storage).
@@ -82,7 +84,7 @@ This is fundamentally different from threads. In a thread model, all threads sha
 ```typescript
 // This is why module-level variables are scoped to ONE worker:
 // global.ts (imported by both Worker 1 and Worker 2)
-let sharedCounter = 0;  // Worker 1 sees 0; Worker 2 ALSO sees 0 (separate process)
+let sharedCounter = 0; // Worker 1 sees 0; Worker 2 ALSO sees 0 (separate process)
 
 // Worker 1 increments: sharedCounter = 1
 // Worker 2 increments: sharedCounter = 1  ← NOT 2! They're separate
@@ -109,6 +111,7 @@ export default defineConfig({
 ```
 
 Behaviour:
+
 - Different **files** run in parallel (one file per worker at a time).
 - Tests **within the same file** run SEQUENTIALLY.
 - Test order within a file is preserved.
@@ -132,6 +135,7 @@ export default defineConfig({
 ```
 
 Behaviour:
+
 - Every individual test can run on any worker at any time.
 - No ordering guarantees within a file.
 - Maximum speed — all 4 workers run 4 tests simultaneously.
@@ -155,9 +159,9 @@ The most dangerous problem with parallel tests.
 
 ```typescript
 // ❌ WRONG — hardcoded test data
-test('Create customer', async ({ request }) => {
-  const response = await request.post('/api/customers', {
-    data: { email: 'test@company.com', name: 'Test Customer' }
+test("Create customer", async ({ request }) => {
+  const response = await request.post("/api/customers", {
+    data: { email: "test@company.com", name: "Test Customer" },
   });
   expect(response.status()).toBe(201);
 });
@@ -174,19 +178,19 @@ The failure is random — sometimes Worker 1 finishes first (test passes), somet
 
 ```typescript
 // ✅ CORRECT — unique identifier per test run
-test('Create customer', async ({ request }) => {
+test("Create customer", async ({ request }) => {
   // Every run generates a unique email
   const uniqueEmail = `test-${Date.now()}@company.com`;
   // OR: const uniqueEmail = `test-${crypto.randomUUID()}@company.com`;
 
-  const response = await request.post('/api/customers', {
-    data: { email: uniqueEmail, name: 'Test Customer' }
+  const response = await request.post("/api/customers", {
+    data: { email: uniqueEmail, name: "Test Customer" },
   });
   expect(response.status()).toBe(201);
-  
+
   const body = await response.json();
   const customerId = body.customerId;
-  
+
   // Clean up after the test — delete the unique customer we created
   await request.delete(`/api/customers/${customerId}`);
 });
@@ -194,38 +198,41 @@ test('Create customer', async ({ request }) => {
 
 ### Unique Data Generation Strategies — Comparison Table
 
-| Strategy | Example | Uniqueness | Readability | Risk |
-|---|---|---|---|---|
-| `Date.now()` | `test-1716893445123@co.com` | High (ms precision) | Poor | Collision if 2 tests start same ms |
-| `randomUUID()` | `test-f47ac10b-58cc@co.com` | Guaranteed | Poor | None |
-| `workerIndex + timestamp` | `w2-1716893445123@co.com` | High | Medium | None |
-| `testId` hash | `test-a3f2b8c1@co.com` | Guaranteed | Good | None |
-| `testTitle` slug | `test-create-citation@co.com` | Moderate | Best | Two tests with same title collide |
-| Faker.js | `John.Smith.5521@acme.com` | High | Best | Extra dependency |
+| Strategy                  | Example                       | Uniqueness          | Readability | Risk                               |
+| ------------------------- | ----------------------------- | ------------------- | ----------- | ---------------------------------- |
+| `Date.now()`              | `test-1716893445123@co.com`   | High (ms precision) | Poor        | Collision if 2 tests start same ms |
+| `randomUUID()`            | `test-f47ac10b-58cc@co.com`   | Guaranteed          | Poor        | None                               |
+| `workerIndex + timestamp` | `w2-1716893445123@co.com`     | High                | Medium      | None                               |
+| `testId` hash             | `test-a3f2b8c1@co.com`        | Guaranteed          | Good        | None                               |
+| `testTitle` slug          | `test-create-citation@co.com` | Moderate            | Best        | Two tests with same title collide  |
+| Faker.js                  | `John.Smith.5521@acme.com`    | High                | Best        | Extra dependency                   |
 
 ```typescript
 // Strategy 1: Timestamp (simple)
 const email = `test-${Date.now()}@company.com`;
 
 // Strategy 2: randomUUID (guaranteed unique)
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 const email = `test-${randomUUID()}@company.com`;
 
 // Strategy 3: workerIndex + timestamp (readable, no collision)
-const workerId = test.info().workerIndex;  // 0, 1, 2, or 3
+const workerId = test.info().workerIndex; // 0, 1, 2, or 3
 const email = `w${workerId}-${Date.now()}@company.com`;
 
 // Strategy 4: testId (stable hash per test — useful for debugging)
-const testId = test.info().testId;  // e.g. 'a3f2b8c1d4e5f6g7'
+const testId = test.info().testId; // e.g. 'a3f2b8c1d4e5f6g7'
 const email = `test-${testId.slice(0, 8)}@company.com`;
 
 // Strategy 5: Faker.js (readable + unique)
-import { faker } from '@faker-js/faker';
-const email = faker.internet.email({ firstName: 'Test', provider: 'company.com' });
+import { faker } from "@faker-js/faker";
+const email = faker.internet.email({
+  firstName: "Test",
+  provider: "company.com",
+});
 // → 'Test.Smith5521@company.com'
 
 // Best practice for enterprise suites:
-export function uniqueEmail(prefix = 'test'): string {
+export function uniqueEmail(prefix = "test"): string {
   return `${prefix}-w${test.info().workerIndex}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}@testenv.com`;
   // e.g. 'test-w2-1716893445123-8f2k@testenv.com'
 }
@@ -241,23 +248,23 @@ export function uniqueEmail(prefix = 'test'): string {
 // ❌ WRONG — mutable module-level variable
 let authToken: string; // shared within a worker across tests!
 
-test('test A', async ({ request }) => {
+test("test A", async ({ request }) => {
   authToken = await getToken(request); // sets it
 });
 
-test('test B', async ({ request }) => {
+test("test B", async ({ request }) => {
   // If fullyParallel:true, test B might run BEFORE test A!
   // authToken is undefined!
-  await request.get('/api/data', {
-    headers: { Authorization: `Bearer ${authToken}` } // undefined → 401
+  await request.get("/api/data", {
+    headers: { Authorization: `Bearer ${authToken}` }, // undefined → 401
   });
 });
 
 // ✅ CORRECT — use fixtures (previous chapter) or local variables per test
-test('test B', async ({ request, account }) => {
+test("test B", async ({ request, account }) => {
   // account.accessToken comes from the fixture — always set, always valid
-  await request.get('/api/data', {
-    headers: { Authorization: `Bearer ${account.accessToken}` }
+  await request.get("/api/data", {
+    headers: { Authorization: `Bearer ${account.accessToken}` },
   });
 });
 ```
@@ -266,11 +273,11 @@ test('test B', async ({ request, account }) => {
 
 ```typescript
 // Reading a file is safe — multiple workers can read the same file simultaneously
-import endpoints from '../data/endpoints'; // ✅ safe — read-only import
+import endpoints from "../data/endpoints"; // ✅ safe — read-only import
 
 // Reading storageState file — safe
 const context = await browser.newContext({
-  storageState: 'fixtures/auth-state.json' // ✅ safe — workers only READ this
+  storageState: "fixtures/auth-state.json", // ✅ safe — workers only READ this
 });
 
 // Writing to a shared file — DANGEROUS in parallel
@@ -299,18 +306,18 @@ test.describe('Independent API tests', () => {
 
 ```typescript
 // Make THIS describe block run sequentially (even if global fullyParallel is true)
-test.describe('Order-dependent E2E flow', () => {
-  test.describe.configure({ mode: 'serial' }); // ← forces sequential
+test.describe("Order-dependent E2E flow", () => {
+  test.describe.configure({ mode: "serial" }); // ← forces sequential
 
-  test('Step 1: Create customer', async ({ request }) => {
+  test("Step 1: Create customer", async ({ request }) => {
     // creates customer, somehow stores ID...
   });
 
-  test('Step 2: Create order for customer', async ({ request }) => {
+  test("Step 2: Create order for customer", async ({ request }) => {
     // depends on customer created in Step 1
   });
 
-  test('Step 3: Verify order in DB', async ({ }) => {
+  test("Step 3: Verify order in DB", async ({}) => {
     // depends on Steps 1 and 2
   });
 });
@@ -392,7 +399,7 @@ jobs:
     name: Playwright Shard ${{ matrix.shardIndex }} of ${{ matrix.shardTotal }}
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false  # don't cancel other shards if one fails
+      fail-fast: false # don't cancel other shards if one fails
       matrix:
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
@@ -413,8 +420,8 @@ jobs:
             --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} \
             --workers=2
         env:
-          CRM_URL:        ${{ secrets.CRM_URL }}
-          ADMIN_EMAIL:    ${{ secrets.ADMIN_EMAIL }}
+          CRM_URL: ${{ secrets.CRM_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           CI: true
 
@@ -456,6 +463,7 @@ jobs:
 ```
 
 **The math with 4 shards × 2 workers each = 8 parallel test executors:**
+
 ```
 500 tests × 30s average = 15,000s sequential
 With 8 parallel executors: 15,000 / 8 ≈ 1,875s ≈ 31 minutes
@@ -532,38 +540,38 @@ export const test = base.extend<{}, { account: TestAccount }>({{
 All properties available in a running test:
 
 ```typescript
-test('demo test info', async ({}, testInfo) => {
-  testInfo.title           // 'demo test info'
-  testInfo.titlePath       // ['describe name', 'nested describe', 'demo test info']
-  testInfo.file            // '/path/to/spec.ts'
-  testInfo.line            // 3
-  testInfo.column          // 1
-  testInfo.testId          // 'a3f2b8c1...' (unique per test)
-  testInfo.workerIndex     // 0-N (which worker process)
-  testInfo.parallelIndex   // same as workerIndex
-  testInfo.retry           // 0, 1, 2... (0 = first attempt)
-  testInfo.repeatEachIndex // for --repeat-each flag
-  testInfo.timeout         // timeout in ms from config
-  testInfo.project.name    // 'admin-tests'
-  testInfo.config.workers  // 4
+test("demo test info", async ({}, testInfo) => {
+  testInfo.title; // 'demo test info'
+  testInfo.titlePath; // ['describe name', 'nested describe', 'demo test info']
+  testInfo.file; // '/path/to/spec.ts'
+  testInfo.line; // 3
+  testInfo.column; // 1
+  testInfo.testId; // 'a3f2b8c1...' (unique per test)
+  testInfo.workerIndex; // 0-N (which worker process)
+  testInfo.parallelIndex; // same as workerIndex
+  testInfo.retry; // 0, 1, 2... (0 = first attempt)
+  testInfo.repeatEachIndex; // for --repeat-each flag
+  testInfo.timeout; // timeout in ms from config
+  testInfo.project.name; // 'admin-tests'
+  testInfo.config.workers; // 4
 
   // Runtime state:
-  testInfo.status          // 'passed' | 'failed' | 'timedOut' | 'skipped' (set after test)
-  testInfo.error           // the error if status is 'failed'
-  testInfo.duration        // ms (set after test)
-  testInfo.startTime       // Date
+  testInfo.status; // 'passed' | 'failed' | 'timedOut' | 'skipped' (set after test)
+  testInfo.error; // the error if status is 'failed'
+  testInfo.duration; // ms (set after test)
+  testInfo.startTime; // Date
 
   // Paths:
-  testInfo.outputDir       // directory for this test's output files
-  testInfo.snapshotDir     // directory for screenshots
-  testInfo.snapshotSuffix  // platform + browser suffix for screenshots
+  testInfo.outputDir; // directory for this test's output files
+  testInfo.snapshotDir; // directory for screenshots
+  testInfo.snapshotSuffix; // platform + browser suffix for screenshots
 
   // Actions:
-  await testInfo.attach('name', { body: 'content', contentType: 'text/plain' });
-  testInfo.annotations.push({ type: 'issue', description: 'JIRA-1234' });
-  testInfo.skip('reason');         // skip the test from within
-  testInfo.fixme('known bug');     // mark as known failure
-  testInfo.slow();                 // triple the timeout for this test
+  await testInfo.attach("name", { body: "content", contentType: "text/plain" });
+  testInfo.annotations.push({ type: "issue", description: "JIRA-1234" });
+  testInfo.skip("reason"); // skip the test from within
+  testInfo.fixme("known bug"); // mark as known failure
+  testInfo.slow(); // triple the timeout for this test
 
   // Useful pattern: add context to test titles for CI reports
   if (testInfo.retry > 0) {
@@ -578,12 +586,12 @@ test('demo test info', async ({}, testInfo) => {
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   // Test discovery
-  testDir: './tests/specs',
-  testMatch: '**/*.spec.ts',
+  testDir: "./tests/specs",
+  testMatch: "**/*.spec.ts",
 
   // Parallelism
   workers: process.env.CI ? 4 : 2,
@@ -595,8 +603,8 @@ export default defineConfig({
   // Set to true only when all tests are fully independent
 
   // Timeouts
-  timeout: 60000,              // 60s per test
-  expect: { timeout: 10000 },  // 10s for assertions to auto-retry
+  timeout: 60000, // 60s per test
+  expect: { timeout: 10000 }, // 10s for assertions to auto-retry
 
   // Retry on failure (useful for flaky D365 rendering)
   retries: process.env.CI ? 2 : 0,
@@ -604,10 +612,7 @@ export default defineConfig({
   // Locally: no retries (you want to see failures immediately)
 
   // Reporter
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list'],
-  ],
+  reporter: [["html", { open: "never" }], ["list"]],
 
   use: {
     // Base URL — all page.goto('/path') calls use this
@@ -615,19 +620,19 @@ export default defineConfig({
 
     // Global headers for all requests
     extraHTTPHeaders: {
-      'x-test-correlation-id': `playwright-${Date.now()}`,
+      "x-test-correlation-id": `playwright-${Date.now()}`,
     },
 
     // Tracing — saves a trace file on failure for debugging
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
 
   // Project configurations for different apps/browsers
   projects: [
-    { name: 'crm-chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'legacy-firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: "crm-chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "legacy-firefox", use: { ...devices["Desktop Firefox"] } },
   ],
 });
 ```
@@ -668,63 +673,69 @@ Signs you have too few workers:
 
 ---
 
-
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Collision Detection):** Two workers both run this test simultaneously. What happens and why?
+
 ```typescript
-test('search for test customer', async ({ page }) => {
-  await page.fill('#emailSearch', 'automation-test@company.com');
-  await page.click('#searchButton');
-  await expect(page.locator('.customer-row')).toHaveCount(1);
+test("search for test customer", async ({ page }) => {
+  await page.fill("#emailSearch", "automation-test@company.com");
+  await page.click("#searchButton");
+  await expect(page.locator(".customer-row")).toHaveCount(1);
 });
 ```
+
 <details><summary>Answer</summary>
 
 This test only READS data (searches for an existing customer) — it doesn't create or delete anything. Two workers running this simultaneously are both just querying the same record. No collision. This test is safe to run in parallel as-is, ASSUMING the customer `automation-test@company.com` already exists as a stable fixture record and no other test deletes it. The risk is if another parallel test does DELETE this record.
+
 </details>
 
 **Challenge 2 (Data Design):** You need to test "Create → Verify → Delete" for a citation record. Design this as a SINGLE test (not 3 separate serial tests) using a fixture for setup/teardown. Why is the single-test approach better?
+
 <details><summary>Answer</summary>
 
 ```typescript
 // The fixture creates and cleans up:
-citationRecord: async ({ request }, use) => {
-  const response = await request.post('/api/citations', {
-    data: { amount: 150.00, type: 'PARKING', vehicleId: `VH-${Date.now()}` }
+citationRecord: (async ({ request }, use) => {
+  const response = await request.post("/api/citations", {
+    data: { amount: 150.0, type: "PARKING", vehicleId: `VH-${Date.now()}` },
   });
   const { citationId } = await response.json();
-  
+
   await use(citationId); // test runs here
-  
+
   await request.delete(`/api/citations/${citationId}`); // always runs
 },
+  // The test:
+  test("Citation CRUD flow", async ({ page, citationRecord }) => {
+    // citationRecord is the citationId, pre-created
 
-// The test:
-test('Citation CRUD flow', async ({ page, citationRecord }) => {
-  // citationRecord is the citationId, pre-created
-  
-  await test.step('Verify citation appears in UI', async () => {
-    await page.fill('#citationSearch', citationRecord);
-    await expect(page.locator('.result-row')).toBeVisible();
-  });
-  
-  await test.step('Delete citation via UI', async () => {
-    await page.click('#deleteButton');
-    await expect(page.locator('.result-row')).toHaveCount(0);
-  });
-  // Fixture teardown: delete via API (safety net if UI delete failed)
-});
+    await test.step("Verify citation appears in UI", async () => {
+      await page.fill("#citationSearch", citationRecord);
+      await expect(page.locator(".result-row")).toBeVisible();
+    });
+
+    await test.step("Delete citation via UI", async () => {
+      await page.click("#deleteButton");
+      await expect(page.locator(".result-row")).toHaveCount(0);
+    });
+    // Fixture teardown: delete via API (safety net if UI delete failed)
+  }));
 ```
+
 Better than serial tests because: (1) If it fails, only one test shows as failed (not 3). (2) Teardown always runs even on failure. (3) The test can run in parallel with itself (different `citationId` each time). (4) No shared state between steps via module-level variables.
+
 </details>
 
 **Challenge 3 (Config):** Your suite has 200 tests. Locally, developers run it with 2 workers. In CI, it runs with 6 workers. Tests take ~30s average. With `fullyParallel: false`: estimate the local and CI run times. Would `fullyParallel: true` help if tests are independent?
+
 <details><summary>Answer</summary>
 
 With `fullyParallel: false` (file-level parallelism), the bottleneck is the largest file. If tests are evenly distributed across 20 files (10 tests each, 300s per file): Local (2 workers): ~10 files per worker × 300s = ~3000s = ~50 minutes. CI (6 workers): ~4 files per worker × 300s = ~1200s = ~20 minutes.
 
 With `fullyParallel: true` (test-level): Local (2 workers): 100 tests per worker × 30s = ~3000s = ~50 minutes (same). CI (6 workers): ~34 tests per worker × 30s = ~1020s = ~17 minutes. The improvement with fullyParallel depends on how unevenly tests are distributed. If one file has 80 tests and others have 10, fullyParallel distributes more evenly. The real win is adding more workers, not just enabling fullyParallel.
+
 </details>
 
 ---
@@ -760,14 +771,16 @@ test('check customer', async ({ page }) => {
 **Root cause**: Exposing fixture state via module-level exports breaks the fixture isolation contract. Fixture state should only be accessible through the fixture parameter.
 
 **Fix**: Never export fixture state via module-level variables. The customerId must flow THROUGH the fixture:
+
 ```typescript
 // ✅ State flows through the fixture parameter only
-test('check customer', async ({ account }) => {
+test("check customer", async ({ account }) => {
   // account.customerId is always set because the fixture ran before this test
   await page.goto(`/customers/${account.customerId}`);
 });
 // Nothing is exported. The customerId is only accessible inside tests that declare `account`.
 ```
+
 </details>
 
 ---
@@ -806,12 +819,13 @@ jobs:
 
   visual:
     runs-on: ubuntu-latest
-    needs: []  # runs in parallel with functional
+    needs: [] # runs in parallel with functional
     steps:
       - run: npx playwright test --project=visual
 ```
 
 Both jobs run simultaneously on separate machines. Functional tests don't compete with visual tests for CPU/memory.
+
 </details>
 
 ---
@@ -828,14 +842,14 @@ Large suites use tags to run different test tiers at different speeds:
 export default defineConfig({
   projects: [
     {
-      name: 'smoke',
-      grep: /@smoke/,         // only runs tests tagged @smoke
-      retries: 0,             // smoke tests must pass first time
+      name: "smoke",
+      grep: /@smoke/, // only runs tests tagged @smoke
+      retries: 0, // smoke tests must pass first time
       workers: 2,
     },
     {
-      name: 'regression',
-      grepInvert: /@smoke/,   // everything EXCEPT smoke tests
+      name: "regression",
+      grepInvert: /@smoke/, // everything EXCEPT smoke tests
       retries: 2,
       workers: 4,
     },
@@ -845,12 +859,12 @@ export default defineConfig({
 
 ```typescript
 // In test files — add @smoke tag to critical path tests:
-test('@smoke search by transit account', async ({ masterSearchPage }) => {
+test("@smoke search by transit account", async ({ masterSearchPage }) => {
   // This test runs in BOTH the smoke project and regression project
   // unless you use grepInvert in regression
 });
 
-test('advanced filter by date range', async ({ masterSearchPage }) => {
+test("advanced filter by date range", async ({ masterSearchPage }) => {
   // No @smoke tag — only runs in regression project
 });
 
@@ -866,11 +880,11 @@ test('advanced filter by date range', async ({ masterSearchPage }) => {
 
 ```typescript
 // Annotation-based tagging (richer metadata):
-test('D365 customer search', async ({ page }, testInfo) => {
+test("D365 customer search", async ({ page }, testInfo) => {
   testInfo.annotations.push(
-    { type: 'owner',    description: 'team-crm' },
-    { type: 'jira',     description: 'CRM-1234' },
-    { type: 'severity', description: 'critical' },
+    { type: "owner", description: "team-crm" },
+    { type: "jira", description: "CRM-1234" },
+    { type: "severity", description: "critical" },
   );
   // These annotations appear in the HTML report and can be queried
 });
@@ -884,24 +898,24 @@ test('D365 customer search', async ({ page }, testInfo) => {
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
-const isCI   = !!process.env.CI;
+const isCI = !!process.env.CI;
 const isNight = !!process.env.NIGHTLY;
 
 export default defineConfig({
-  testDir: './tests/specs',
+  testDir: "./tests/specs",
   retries: isCI ? 1 : 0,
 
   projects: [
     {
-      name: 'smoke',
+      name: "smoke",
       grep: /@smoke/,
       workers: 4,
       timeout: 30_000,
     },
     {
-      name: 'full-regression',
+      name: "full-regression",
       workers: 6,
       timeout: 60_000,
       retries: 2,
@@ -918,7 +932,7 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: '0 2 * * *'   # nightly at 02:00 UTC
+    - cron: "0 2 * * *" # nightly at 02:00 UTC
 
 jobs:
   smoke:
@@ -955,6 +969,7 @@ jobs:
 ```
 
 **Key decisions:**
+
 - Smoke uses `grep: /@smoke/` to match exactly 30 tagged tests
 - PR gate targets < 5 min: 30 tests × ~7s average × 4 workers ≈ 52s
 - Nightly regression uses 6 workers + sharding for speed
@@ -966,16 +981,17 @@ jobs:
 ## 📚 References & Further Reading
 
 ### Official Documentation — Playwright
+
 - [Parallelism and Sharding](https://playwright.dev/docs/test-parallel) — Official documentation on worker processes, `fullyParallel`, and serial mode
 - [Sharding Tests](https://playwright.dev/docs/test-sharding) — How to distribute test execution across multiple CI machines
 - [Annotations and Tags](https://playwright.dev/docs/test-annotations) — How to tag tests, conditionally skip tests, and attach metadata
 - [GitHub Actions Integration](https://playwright.dev/docs/ci-github) — Standard workflows, including how to merge sharded blob reports
 
 ### Deep Dives
+
 - [Node.js Event Loop, Timers, and process.nextTick()](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick) — How the single-threaded event loop powers multiple asynchronous Playwright actions within a single worker
 - [Playwright's "Merge Reports" Feature](https://playwright.dev/docs/test-sharding#merge-reports-cli) — How to combine multiple `blob` reports from sharded runs into a single HTML report
 
 ---
 
 **Navigation**: [← Chapter 08: Browser Internals](./08_Browser_Internals_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 10: Dynamics 365 CRM Testing](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md)
-

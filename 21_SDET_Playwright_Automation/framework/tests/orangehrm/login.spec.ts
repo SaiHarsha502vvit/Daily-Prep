@@ -18,9 +18,16 @@ const testData: TestData = { lastLoginStatus: 'idle' };
 test.describe('OrangeHRM Login', () => {
   const credentials = loadTestData<NegativeCredentials>('orangehrm/credentials');
 
-  test('@smoke valid credentials land on dashboard', async ({ loginPage, dashboardPage, pooledAccount }) => {
+  test('@smoke valid credentials land on dashboard', async ({
+    loginPage,
+    dashboardPage,
+    pooledAccount,
+  }) => {
     await loginPage.navigate();
-    await loginPage.loginWith({ username: pooledAccount.username, password: pooledAccount.password });
+    await loginPage.loginWith({
+      username: pooledAccount.username,
+      password: pooledAccount.password,
+    });
     await dashboardPage.expectLoaded();
     testData.lastLoginStatus = 'success';
   });
@@ -48,7 +55,10 @@ test.describe('OrangeHRM Login', () => {
 
   test('@smoke logout redirects to login', async ({ loginPage, dashboardPage, pooledAccount }) => {
     await loginPage.navigate();
-    await loginPage.loginWith({ username: pooledAccount.username, password: pooledAccount.password });
+    await loginPage.loginWith({
+      username: pooledAccount.username,
+      password: pooledAccount.password,
+    });
     await dashboardPage.expectLoaded();
     await dashboardPage.header.logout();
     await dashboardPage.header.expectLoggedOut();

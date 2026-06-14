@@ -12,14 +12,14 @@
 
 ```javascript
 // Looks reasonable — "just wait for the API to update"
-test('order status becomes PROCESSED', async () => {
+test("order status becomes PROCESSED", async () => {
   await submitOrder(orderId);
 
   // Give the backend time to process...
   await page.waitForTimeout(5000); // 5 seconds feels safe, right?
 
   const status = await getOrderStatus(orderId);
-  expect(status).toBe('PROCESSED');
+  expect(status).toBe("PROCESSED");
 });
 ```
 
@@ -43,21 +43,23 @@ Developer complaint: "Why does the CI run take 45 minutes?"
 ### ✅ The Correct Code
 
 ```javascript
-test('order status becomes PROCESSED', async () => {
+test("order status becomes PROCESSED", async () => {
   await submitOrder(orderId);
 
   // Poll with tight intervals; stop as soon as condition is met
-  await expect.poll(
-    async () => {
-      const status = await getOrderStatus(orderId);
-      return status;
-    },
-    {
-      intervals: [200, 500, 1000, 2000], // escalating back-off
-      timeout: 10_000,                   // hard ceiling — fail fast with real info
-      message: `Order ${orderId} never reached PROCESSED status`,
-    }
-  ).toBe('PROCESSED');
+  await expect
+    .poll(
+      async () => {
+        const status = await getOrderStatus(orderId);
+        return status;
+      },
+      {
+        intervals: [200, 500, 1000, 2000], // escalating back-off
+        timeout: 10_000, // hard ceiling — fail fast with real info
+        message: `Order ${orderId} never reached PROCESSED status`,
+      },
+    )
+    .toBe("PROCESSED");
 });
 ```
 
@@ -108,7 +110,7 @@ class OrderServiceTest {
 All tests: GREEN ✅
 Production alert (3 hours after deploy):
   "Active orders page shows completed orders."
-  
+
 Root cause: findByStatus had WHERE status = 'active' (lowercase);
             DB column uses 'ACTIVE' (uppercase, case-sensitive collation).
             The mock never hit the DB — the mismatch was invisible.
@@ -198,7 +200,7 @@ Security audit finding:
   "Rate limiter bypassed: 200 requests in 50ms using boundary timing attack.
    Expected rejection after 10. Observed: no rejections until 11th request
    within a single window. Attacker can send 20x limit at window boundaries."
-   
+
 Production: API keys used for scraping; billing overruns; downstream service SLA breached.
 ```
 
@@ -280,7 +282,7 @@ Dev environment: Account API responds in 12ms ✅
 Production (6 months later):
   OutOfMemoryError: Java heap space
   at org.hibernate.loader.Loader.loadFromResultSet(...)
-  
+
   Support ticket: "Account page loads for 30 seconds then crashes for large accounts."
   DB query count for ONE API call: 1 query, 2,500 rows returned.
   Memory per request: ~180MB for a single account.
@@ -330,30 +332,29 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 ```javascript
 // Looks clean — userId defined once, reused everywhere
-describe('User API', () => {
+describe("User API", () => {
+  const userId = "user-123"; // ← shared across ALL tests below
 
-  const userId = 'user-123';  // ← shared across ALL tests below
-
-  test('create user', async () => {
-    await createUser(userId, { name: 'Alice' });
+  test("create user", async () => {
+    await createUser(userId, { name: "Alice" });
     // Passes: user-123 created ✅
   });
 
-  test('update user name', async () => {
-    await updateUser(userId, { name: 'Alice Updated' });
+  test("update user name", async () => {
+    await updateUser(userId, { name: "Alice Updated" });
     // Passes when run after 'create user' ✅
     // Fails when run alone: 404 Not Found ❌
   });
 
-  test('delete user', async () => {
+  test("delete user", async () => {
     await deleteUser(userId);
     // Now user-123 is gone — any test after this that uses userId will fail
   });
 
-  test('get user after update', async () => {
+  test("get user after update", async () => {
     // Depends on 'update user name' running first AND 'delete user' NOT running first
     const user = await getUser(userId);
-    expect(user.name).toBe('Alice Updated');  // 404 if delete ran first ❌
+    expect(user.name).toBe("Alice Updated"); // 404 if delete ran first ❌
   });
 });
 ```
@@ -381,34 +382,35 @@ After investigation:
 ### ✅ The Correct Code
 
 ```javascript
-describe('User API', () => {
-
+describe("User API", () => {
   // Each test owns its own unique user — no sharing
   let userId;
 
   beforeEach(async () => {
     // Generate a unique ID per test — collision-proof across parallel workers
     userId = `TEST-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    await createUser(userId, { name: 'Alice' });
+    await createUser(userId, { name: "Alice" });
   });
 
   afterEach(async () => {
     // Clean up only this test's user — doesn't affect anyone else
-    await deleteUser(userId).catch(() => { /* already deleted — fine */ });
+    await deleteUser(userId).catch(() => {
+      /* already deleted — fine */
+    });
   });
 
-  test('create user succeeds', async () => {
+  test("create user succeeds", async () => {
     const user = await getUser(userId);
-    expect(user.name).toBe('Alice');
+    expect(user.name).toBe("Alice");
   });
 
-  test('update user name', async () => {
-    await updateUser(userId, { name: 'Alice Updated' });
+  test("update user name", async () => {
+    await updateUser(userId, { name: "Alice Updated" });
     const user = await getUser(userId);
-    expect(user.name).toBe('Alice Updated');
+    expect(user.name).toBe("Alice Updated");
   });
 
-  test('delete user', async () => {
+  test("delete user", async () => {
     await deleteUser(userId);
     await expect(getUser(userId)).rejects.toMatchObject({ status: 404 });
   });
@@ -550,8 +552,8 @@ DB query count:      4,200/minute ← still high — why?
 Support ticket: "We added Hibernate L2C two weeks ago but the DB is still slow.
                  The dashboard shows the cache is working."
 
-Root cause: Entity hits = 87%. Collection hits = 0%. 
-            Every page load triggers one entity fetch (cached) and 
+Root cause: Entity hits = 87%. Collection hits = 0%.
+            Every page load triggers one entity fetch (cached) and
             one collection SELECT (not cached).
 ```
 
@@ -634,11 +636,11 @@ Production incident (2:14 AM):
   D365 maintenance window returns 404 for all contact endpoints.
   Your app: NullPointerException in D365Client.parseResponse(D365Client.java:87)
   User-visible: 500 Internal Server Error — "Something went wrong"
-  
+
   Root cause: parseResponse assumed a non-null body.
               When D365 returns 404 with no body, body was null.
               The null was never tested because only 200 was stubbed.
-  
+
   Impact: All users unable to load contact pages for 2 hours.
 ```
 
@@ -759,17 +761,17 @@ Application startup:
   APPLICATION FAILED TO START
   ***************************
   Description:
-    The dependencies of some of the beans in the application context 
+    The dependencies of some of the beans in the application context
     form a cycle:
     orderService → notificationService → orderService
-    
+
   Action:
-    Relying upon circular references is discouraged and they are 
-    prohibited by default. Update your application to remove the 
+    Relying upon circular references is discouraged and they are
+    prohibited by default. Update your application to remove the
     dependency cycle between beans.
-    
+
   Previously worked: on Spring Boot 2.5 with field injection.
-  Now fails: after upgrade to Spring Boot 2.6+ (circular references 
+  Now fails: after upgrade to Spring Boot 2.6+ (circular references
              prohibited by default).
 ```
 
@@ -968,18 +970,18 @@ public class OrderProcessingListener {
 
 ## Summary Table
 
-| #  | Anti-Pattern                          | Domain              | Symptom Keyword              | Fix Keyword                  |
-|----|---------------------------------------|---------------------|------------------------------|------------------------------|
-| 1  | Thread.sleep in Tests                 | SDET                | CI timeout / always 5s       | `expect.poll` with intervals |
-| 2  | Over-Mocking the Repository           | SDET + Spring Boot  | Green tests, prod query bug  | `@DataJpaTest` + Testcontainers |
-| 3  | Fixed-Window Rate Limiter             | DSA + Spring Boot   | 20x limit at boundary        | Sliding window ZSET (Redis)  |
-| 4  | Eager Loading Everything              | Spring Boot + DSA   | OOM, 2500 rows for 1 account | `FetchType.LAZY` + JOIN FETCH |
-| 5  | Sharing Test State Across Tests       | SDET                | Pass alone, fail together    | Unique ID per test, beforeEach |
-| 6  | @SpringBootTest for Unit Tests        | Spring Boot + SDET  | 45-min CI, devs skip tests   | Plain Mockito / `@WebMvcTest` |
-| 7  | Missing @Cache on Collections         | Spring Boot         | High L2C hit, high DB queries | `@Cache` on entity AND collection |
-| 8  | Not Testing the Error Path            | SDET                | NPE on 503, 500 to user      | WireMock stubs per error code |
-| 9  | Circular Bean Dependency              | Spring Boot         | App won't start in CI        | Third bean / `@Lazy` / Events |
-| 10 | CountDownLatch with Wrong Count       | SDET + Spring Boot  | Flaky Kafka test, 30% fail   | `new CountDownLatch(N)` exact count |
+| #   | Anti-Pattern                    | Domain             | Symptom Keyword               | Fix Keyword                         |
+| --- | ------------------------------- | ------------------ | ----------------------------- | ----------------------------------- |
+| 1   | Thread.sleep in Tests           | SDET               | CI timeout / always 5s        | `expect.poll` with intervals        |
+| 2   | Over-Mocking the Repository     | SDET + Spring Boot | Green tests, prod query bug   | `@DataJpaTest` + Testcontainers     |
+| 3   | Fixed-Window Rate Limiter       | DSA + Spring Boot  | 20x limit at boundary         | Sliding window ZSET (Redis)         |
+| 4   | Eager Loading Everything        | Spring Boot + DSA  | OOM, 2500 rows for 1 account  | `FetchType.LAZY` + JOIN FETCH       |
+| 5   | Sharing Test State Across Tests | SDET               | Pass alone, fail together     | Unique ID per test, beforeEach      |
+| 6   | @SpringBootTest for Unit Tests  | Spring Boot + SDET | 45-min CI, devs skip tests    | Plain Mockito / `@WebMvcTest`       |
+| 7   | Missing @Cache on Collections   | Spring Boot        | High L2C hit, high DB queries | `@Cache` on entity AND collection   |
+| 8   | Not Testing the Error Path      | SDET               | NPE on 503, 500 to user       | WireMock stubs per error code       |
+| 9   | Circular Bean Dependency        | Spring Boot        | App won't start in CI         | Third bean / `@Lazy` / Events       |
+| 10  | CountDownLatch with Wrong Count | SDET + Spring Boot | Flaky Kafka test, 30% fail    | `new CountDownLatch(N)` exact count |
 
 ---
 

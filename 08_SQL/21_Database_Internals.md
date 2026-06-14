@@ -11,15 +11,12 @@ Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, 
 
 ## Part 1: Storage Engines — The Heart of a Database
 
+## B-Tree │ Lsm-Tree
 
-
-
-## B-Tree   │  Lsm-Tree
-
-| Read speed  |   Fast    |   Slower  | (may check multiple SSTables) |
-| Write speed |   Slower  |   Fast    | (sequential writes, no random I/O) |
-| Space amp.  |   Lower   |   Higher  | (old versions in SSTables) |
-| Write amp.  |   Lower   |   Higher  | (compaction rewrites data) |
+| Read speed | Fast | Slower | (may check multiple SSTables) |
+| Write speed | Slower | Fast | (sequential writes, no random I/O) |
+| Space amp. | Lower | Higher | (old versions in SSTables) |
+| Write amp. | Lower | Higher | (compaction rewrites data) |
 
 ---
 
@@ -51,7 +48,6 @@ Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, 
      → If parent is full → split again (cascades up)
 ```
 
-
 ### Clustered vs Non-Clustered Index
 
 CLUSTERED INDEX (Primary Key):
@@ -69,7 +65,6 @@ COVERING INDEX:
 → Index contains ALL columns needed by query
 → No need to visit actual table row! (index-only scan)
 → CREATE INDEX idx ON orders(customer_id) INCLUDE (total, status)
-
 
 ---
 
@@ -102,16 +97,15 @@ COVERING INDEX:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Part 4: MVCC (Multi-Version Concurrency Control)
 
-## Version  │ Balance │ Created   │ Expired
+## Version │ Balance │ Created │ Expired
 
-| v1       | $100    | txn 10    | txn 20 |
-| v2       | $150    | txn 20    | txn 35 |
-| v3       | $200    | txn 35    | —         | ← current |
+| v1 | $100 | txn 10 | txn 20 |
+| v2 | $150 | txn 20 | txn 35 |
+| v3 | $200 | txn 35 | — | ← current |
 
 ---
 
@@ -145,33 +139,33 @@ COVERING INDEX:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Part 5: Buffer Pool & Memory Management**
 
 **Challenge 1 (Reasoning):** Your database shows buffer cache hit ratio dropping from 99% to 82% after a new dashboard launches. What does that imply about the working set, and what two fixes would you test first?
+
 <details><summary>Answer</summary>
 
 The working set no longer fits comfortably in the buffer pool, or the dashboard is scanning pages that evict hotter OLTP pages. First inspect the dashboard queries with `EXPLAIN` and add/select better indexes so it reads fewer pages. Second separate workload pressure: cache/materialize dashboard results, move analytics to a replica, or increase buffer memory if the host has headroom. The invariant is simple: the buffer pool helps only when reused pages stay resident long enough to be reused.
+
 </details>
 
 **Challenge 2 (Design):** Dirty pages improve write throughput, but they create recovery risk. Why does checkpoint frequency trade off normal latency against crash recovery time?
+
 <details><summary>Answer</summary>
 
 Frequent checkpoints flush dirty pages sooner, so crash recovery replays less WAL. The cost is more background I/O during normal operation, which can compete with foreground reads/writes and create latency spikes. Infrequent checkpoints reduce steady-state flushing pressure, but a crash must replay a longer WAL range. The design goal is not "checkpoint always" or "checkpoint never"; it is to smooth writeback while bounding recovery time.
-</details>
 
+</details>
 
 ## Part 6: Query Execution — How SELECT Actually Works
 
-## Algorithm        │ Complexity  │ When Used
+## Algorithm │ Complexity │ When Used
 
-| Nested Loop      | O(N × M)   | Small tables, or inner has index |
-| Hash Join        | O(N + M)   | Large tables, no useful index |
-| Merge Join       | O(N + M)   | Both inputs already sorted |
+| Nested Loop | O(N × M) | Small tables, or inner has index |
+| Hash Join | O(N + M) | Large tables, no useful index |
+| Merge Join | O(N + M) | Both inputs already sorted |
 
 ---
 
@@ -236,16 +230,13 @@ and delete the old ones. This reclaims space from updated/deleted rows (tombston
 
 ---
 
-
-
-
 ## Part 6.3: Buffer Pool Advanced Architecture
 
 ```
 A database isn't just an array of cached pages. The Buffer Pool has complex internal lists:
 
 1. FREE LIST: Empty pages ready to be used.
-2. LRU LIST (Least Recently Used): 
+2. LRU LIST (Least Recently Used):
    - Tracks which pages are hot (frequently accessed) vs cold.
    - When Free List is empty, evict the coldest page from LRU.
 3. FLUSH LIST: Dirty pages (modified in memory, not yet on disk), sorted by oldest modification.
@@ -261,28 +252,29 @@ THE DOUBLEWRITE BUFFER (MySQL InnoDB):
 Disk pages are usually 16KB. OS file systems write in 4KB chunks.
 If power fails exactly halfway through writing a 16KB page, the page is CORRUPTED.
 Solution: InnoDB writes the 16KB page to a sequential "Doublewrite Buffer" on disk first.
-Then it writes it to the actual `.ibd` data file. 
+Then it writes it to the actual `.ibd` data file.
 If corruption happens during the data file write, it recovers the clean copy from the doublewrite buffer.
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — Part 6.3: Buffer Pool Advanced Architecture**
 
 **Challenge 1 (Reasoning):** InnoDB tracks free pages, recently used pages, and dirty pages separately. Why is one single LRU list not enough for a production buffer pool?
+
 <details><summary>Answer</summary>
 
 Different page states need different decisions. Free pages can be reused immediately. Clean cold pages can be evicted cheaply. Dirty pages cannot be evicted until flushed, because memory contains changes not yet durable in data files. A single LRU list would hide whether the eviction candidate is cheap or expensive. Separate lists let the engine choose victims, schedule background flushes, and avoid blocking a foreground query on a surprise dirty-page write.
+
 </details>
 
 **Challenge 2 (Design):** Why does InnoDB use a doublewrite buffer even though it already has WAL?
+
 <details><summary>Answer</summary>
 
 WAL records logical/redo changes, but it does not by itself guarantee that a partially written database page is physically readable. If a 16KB page is torn during a power failure, the page image can be corrupt. The doublewrite buffer writes a clean full-page copy to a safe sequential area first, then writes the real page. On recovery, InnoDB can restore the clean page image and then apply WAL. WAL solves lost changes; doublewrite solves torn pages.
-</details>
 
+</details>
 
 ## Part 7: Interview Quick-Fire
 
@@ -311,3 +303,17 @@ A: Run EXPLAIN ANALYZE. Common causes:
    5. Lock contention → check for long-running transactions
 ```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Bayer & McCreight** (1972): Invented the B-tree data structure, which remains the dominant index structure in all major databases 50+ years later
+- **Gray** (1978): Proposed Write-Ahead Logging (WAL) as the foundation for crash recovery, now called the ARIES protocol
+- **System R Storage Engine** (1974-1979): IBM's pioneering work on buffer management, locking, and crash recovery that influenced every subsequent database
+- **Stonebraker** (1986): Created PostgreSQL (originally Postgres) with multi-version concurrency and extensibility as core design goals
+- **InnoDB** (1995): Heikki Tuuri's storage engine introduced clustered indexes, row-level locking, and MVCC to MySQL, transforming it into an enterprise database
+
+**Evolution narrative:**
+Database internals evolved from research prototypes (System R, Ingres) to production systems solving real reliability problems. The B-tree (1972) replaced earlier hash-based and tree structures because it minimized disk I/O for range queries—a critical insight for databases that couldn't fit entirely in memory. Gray's WAL (1978) solved the crash recovery problem by ensuring durability without expensive synchronous disk writes. InnoDB's row-level locking (1995) finally made high-concurrency OLTP feasible on a single MySQL instance, replacing table-level locks that serialized all writes.
+
+**Modern practice anchor:**
+Understanding B-tree index mechanics, MVCC snapshot isolation, WAL durability, and buffer pool LRU is essential for debugging MySQL and PostgreSQL performance in production at scale.

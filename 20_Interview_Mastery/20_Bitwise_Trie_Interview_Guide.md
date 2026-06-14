@@ -7,9 +7,11 @@
 This chapter closes the explicit gap for Bitwise Trie coverage.
 
 Java implementation companion:
+
 - [03_Algorithms/18_Bitwise_Trie_Java_Complete.md](../03_Algorithms/18_Bitwise_Trie_Java_Complete.md)
 
 You already had related problems (Maximum XOR), but interview prep is stronger when the pattern itself is a standalone concept with:
+
 - plain bit-logic explanation
 - decision rules
 - communication templates
@@ -22,6 +24,7 @@ You already had related problems (Maximum XOR), but interview prep is stronger w
 A Bitwise Trie stores numbers by bits from most significant to least significant.
 
 If we use 32-bit integers, each number becomes a path of length 32:
+
 - at each level, bit is 0 or 1
 - left child can represent 0
 - right child can represent 1
@@ -34,18 +37,17 @@ This makes "best opposite-bit match" queries fast.
 
 ---
 
-
-
-
 ## 2) Why It Works for Maximum XOR
 
 XOR truth table:
+
 - 0 XOR 0 = 0
 - 1 XOR 1 = 0
 - 0 XOR 1 = 1
 - 1 XOR 0 = 1
 
 To maximize XOR at each bit position:
+
 - if current bit is 0, we want 1
 - if current bit is 1, we want 0
 
@@ -60,17 +62,20 @@ Interview one-liner:
 ## 3) When to Use Bitwise Trie vs Alternatives
 
 Use Bitwise Trie when:
+
 - question includes XOR optimization/matching
 - many repeated queries over a changing set
 - need online insertion + query
 
 Common triggers:
+
 - maximum XOR of two numbers
 - maximize x XOR y from set S
 - offline queries: max XOR under constraint
 - XOR pair counting with bounds
 
 Prefer alternatives when:
+
 - only one pass and tiny constraints -> brute force may be acceptable
 - no bitwise objective -> trie is unnecessary
 - very small number range -> array/frequency tricks might be simpler
@@ -82,16 +87,15 @@ Prefer alternatives when:
 ## 4.1 Insert(number)
 
 For each bit from high to low:
+
 - read bit b
 - if child[b] missing, create it
 - move to child[b]
 
-
-
-
 ## 4.2 QueryMaxXor(number)
 
 For each bit from high to low:
+
 - read bit b
 - preferred = 1 - b
 - if child[preferred] exists:
@@ -100,11 +104,13 @@ For each bit from high to low:
 - else move to child[b]
 
 Complexity:
+
 - insert: O(W)
 - query: O(W)
 - W = bit width (usually 31 or 32)
 
 Total for n numbers:
+
 - O(nW), effectively O(n)
 
 ---
@@ -114,13 +120,13 @@ Total for n numbers:
 ## Variant A: Maximum XOR of Two Numbers
 
 Flow:
+
 1. initialize trie with first number
 2. for each next number x:
+
 - query best XOR against inserted numbers
 - update global max
 - insert x
-
-
 
 🔬 **Section Challenge — Variant A: Maximum XOR of Two Numbers**
 
@@ -132,10 +138,10 @@ Flow:
 
 </details>
 
-
 ## Variant B: Maximum XOR with Constraint (offline)
 
 Pattern:
+
 - queries: (x, limit)
 - sort numbers ascending
 - sort queries by limit
@@ -143,21 +149,18 @@ Pattern:
 - query trie for x
 
 Why offline sort helps:
+
 - each number inserted once
 - each query answered once
 - total near O((n+q)W + sort cost)
 
-
-
-
 ## Variant C: Prefix XOR + Trie (max subarray XOR)
 
 Logic:
+
 - subarray XOR i..j = prefixXor[j] XOR prefixXor[i-1]
 - while scanning, store previous prefixXor values in trie
 - for current prefixXor, query max xor partner
-
-
 
 🔬 **Section Challenge — Variant C: Prefix XOR + Trie (max subarray XOR)**
 
@@ -169,12 +172,12 @@ Logic:
 
 </details>
 
-
 ## Variant D: Counting XOR pairs less than K
 
 Uses trie with count metadata in nodes.
 
 For each number x:
+
 - count how many previous y satisfy (x XOR y) < K
 - insert x
 
@@ -182,19 +185,14 @@ This is a classic advanced interview extension.
 
 ---
 
-
-
-
 ## 6) Handling Negatives and Bit Width
-
-
-
 
 ## Option 1: Fixed unsigned view
 
 Treat each int as fixed 32-bit pattern.
 
 In Java:
+
 - iterate bits 31..0
 - use unsigned shift `>>>`
 
@@ -208,8 +206,6 @@ Interview line:
 
 ---
 
-
-
 🔬 **Section Challenge — Option 2: Bounded range optimization**
 
 **Challenge 1 (Performance — Who/When/What):** You use a 32-bit Bitwise Trie for integers guaranteed to be ≤ 10⁶. **Who** wastes memory? **When** does reducing bit width matter? **What** is the exact node count reduction?
@@ -220,22 +216,26 @@ Interview line:
 
 </details>
 
-
 ## 7) Common Mistakes
 
 1. Using signed shift incorrectly
+
 - fix: use unsigned shift where required
 
 2. Inconsistent bit width between insert/query
+
 - fix: one global width constant
 
 3. Forgetting base case when trie is empty
+
 - fix: insert first value before query or handle empty query
 
 4. Memory blow-up in huge datasets
+
 - fix: reduce bit width by max value constraint, or use pooled node arrays
 
 5. Wrong objective in query
+
 - max XOR requires opposite-bit preference
 - min XOR requires same-bit preference first
 
@@ -299,9 +299,6 @@ maxXor(x):
 ```
 
 ---
-
-
-
 
 ## 11) Practice Ladder
 

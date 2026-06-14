@@ -1,18 +1,22 @@
-import { test, expect, type Page } from '@playwright/test';
-import { WindowsPage } from '../../../websites/the-internet/pages/WindowsPage';
-import { NewWindowPage } from '../../../websites/the-internet/pages/NewWindowPage';
-import { closeTab } from '../../../utilities/browser/tab-manager';
+import { test, expect, type Page } from "@playwright/test";
+import { WindowsPage } from "../../../websites/the-internet/pages/WindowsPage";
+import { NewWindowPage } from "../../../websites/the-internet/pages/NewWindowPage";
+import { closeTab } from "../../../utilities/browser/tab-manager";
 
-const BASE_URL = 'https://the-internet.herokuapp.com/windows';
+const BASE_URL = "https://the-internet.herokuapp.com/windows";
 
-test.describe('New Tab Flow', { tag: ['@regression'] }, () => {
+test.describe("New Tab Flow", { tag: ["@regression"] }, () => {
   let windowsPage: WindowsPage;
 
   test.beforeEach(({ page }: { page: Page }) => {
     windowsPage = new WindowsPage(page);
   });
 
-  test('opens new tab, validates heading, returns to original', async ({ page }: { page: Page }) => {
+  test("opens new tab, validates heading, returns to original", async ({
+    page,
+  }: {
+    page: Page;
+  }) => {
     await page.goto(BASE_URL);
 
     // Act — open the new tab using the race-condition-safe helper
@@ -26,7 +30,7 @@ test.describe('New Tab Flow', { tag: ['@regression'] }, () => {
     await page.bringToFront();
 
     // Assert — original tab is still interactive
-    await expect(page.locator('h3')).toContainText('Opening a New Window');
+    await expect(page.locator("h3")).toContainText("Opening a New Window");
 
     // Teardown — close the new tab to prevent memory build-up in parallel workers
     await closeTab(newTab);

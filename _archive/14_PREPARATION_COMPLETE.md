@@ -15,49 +15,49 @@
 ### Core Learning Documents:
 
 1. **[PaperToCode_TranslationGuide.md](PaperToCode_TranslationGuide.md)** - START HERE if you freeze when coding
-    - The 5-Step Universal Method
-    - Works for ALL problems, not just one pattern
-    - Fixes: "I understand on paper but can't code it"
+   - The 5-Step Universal Method
+   - Works for ALL problems, not just one pattern
+   - Fixes: "I understand on paper but can't code it"
 
 2. **[SlidingWindow_MasterGuide.md](SlidingWindow_MasterGuide.md)** - Read if confused about boundaries
-    - Count-based thinking: `j - i + 1 == k`
-    - No more `<` vs `<=` confusion
-    - Fixes: "Should I use j < i+k or j <= i+k?"
+   - Count-based thinking: `j - i + 1 == k`
+   - No more `<` vs `<=` confusion
+   - Fixes: "Should I use j < i+k or j <= i+k?"
 
 3. **[NetcrackerPreparation_ArraysStrings.md](NetcrackerPreparation_ArraysStrings.md)** - Main comprehensive guide
-    - All 20 patterns with full explanations
-    - 100+ practice problems
-    - Every pattern uses 5-step method
-    - Visual diagrams matching your paper style
+   - All 20 patterns with full explanations
+   - 100+ practice problems
+   - Every pattern uses 5-step method
+   - Visual diagrams matching your paper style
 
 ### Quick References:
 
 4. **[QuickReference_CheatSheet.md](QuickReference_CheatSheet.md)** - Exam-day cheat sheet (6 pages)
-    - Pattern recognition table
-    - Quick templates (copy-paste ready)
-    - Common pitfalls
-    - Time allocation guide
+   - Pattern recognition table
+   - Quick templates (copy-paste ready)
+   - Common pitfalls
+   - Time allocation guide
 
 5. **[NEW_PATTERNS_ADDED.md](NEW_PATTERNS_ADDED.md)** - Summary of recent enhancements
-    - What's new (Patterns 13-20)
-    - Study priority guide
-    - Quick pattern comparison table
+   - What's new (Patterns 13-20)
+   - Study priority guide
+   - Quick pattern comparison table
 
 6. **[CoreTemplates_and_Roadmap.md](CoreTemplates_and_Roadmap.md)** - Templates & mock exam
-    - Copy-paste templates
-    - Mock exam simulation
-    - Roadmap by time available
+   - Copy-paste templates
+   - Mock exam simulation
+   - Roadmap by time available
 
 ### Meta Documents:
 
 7. **[WHAT_WE_FIXED.md](WHAT_WE_FIXED.md)** - Your transformation story
-    - Before/after comparison
-    - Core breakthroughs explained
-    - Confidence booster
+   - Before/after comparison
+   - Core breakthroughs explained
+   - Confidence booster
 
 8. **[README_START_HERE.md](README_START_HERE.md)** - Entry point & study plans
-    - Quick start by time available (2 days, 1 day, 6 hours, 2 hours)
-    - File navigation guide
+   - Quick start by time available (2 days, 1 day, 6 hours, 2 hours)
+   - File navigation guide
 
 ---
 

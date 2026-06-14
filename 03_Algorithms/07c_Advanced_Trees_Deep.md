@@ -13,16 +13,17 @@
 Standard Binary Search Trees (BST) degenerate into $O(N)$ linked lists when elements are inserted consecutively. **Self-balancing trees** maintain a height of $O(\log N)$ by imposing structural invariants.
 
 ### The Asymptotic Height Constraint
+
 A tree of $N$ nodes has the minimum possible height bounded by:
 $$ H \ge \lfloor \log_2(N+1) \rfloor $$
 Self-balancing trees guarantee $H = \Theta(\log N)$, ensuring that **Search, Insert, and Delete** continuously operate in optimal bounds.
 
-| Tree Type | Height Bound | Balance Factor |
-|-----------|--------------|----------------|
-| **AVL Tree** | $\approx 1.44 \log_2(N)$ | Strict: Left/Right height difference $\le 1$. |
-| **Red-Black**| $\le 2 \log_2(N+1)$ | Relaxed: Black-height must match across all paths. |
+| Tree Type     | Height Bound             | Balance Factor                                     |
+| ------------- | ------------------------ | -------------------------------------------------- |
+| **AVL Tree**  | $\approx 1.44 \log_2(N)$ | Strict: Left/Right height difference $\le 1$.      |
+| **Red-Black** | $\le 2 \log_2(N+1)$      | Relaxed: Black-height must match across all paths. |
 
-*Engineering Tradeoff:* AVL provides faster lookups due to shallower depth. Red-Black provides faster inserts/deletes because its relaxed rules require fewer rotations to fix.
+_Engineering Tradeoff:_ AVL provides faster lookups due to shallower depth. Red-Black provides faster inserts/deletes because its relaxed rules require fewer rotations to fix.
 
 ---
 
@@ -38,11 +39,11 @@ In Java 8+, `HashMap` bins will **Treeify** — converting a linked-list bucket 
 2. **Root Property:** The root is ALWAYS BLACK.
 3. **Leaf Property:** All leaves (NIL/null references) are considered BLACK.
 4. **Red Sequence Rule:** If a node is RED, both its children MUST be BLACK (No two consecutive red nodes on any path).
-5. **Black Height Rule:** Every simple path from a given node to any of its descendant leaves contains the *same number of BLACK nodes*.
+5. **Black Height Rule:** Every simple path from a given node to any of its descendant leaves contains the _same number of BLACK nodes_.
 
 ## 2.2 Rotations & Deletion Complexity
 
-Insertions use the **Uncle's Color** to determine whether to perform a *Color Flip* or a *Rotation*.
+Insertions use the **Uncle's Color** to determine whether to perform a _Color Flip_ or a _Rotation_.
 
 However, **Deletion in a Red-Black Tree** is notoriously one of the most complex algorithms in standard computer science, containing **6 distinct cases** handling "Double Black" nodes to restore the Black Height invariant without violating the Red Sequence rule.
 
@@ -63,8 +64,10 @@ However, **Deletion in a Red-Black Tree** is notoriously one of the most complex
 ```
 
 ## 2.3 Concurrency: The SkipList Alternative
+
 Because rotating a Red-Black tree demands locking multiple nodes (parent, child, uncle, grandparent), they are terrible for highly concurrent writes.
-- *Java Solution:* Instead of a `ConcurrentTreeMap`, Java provides `ConcurrentSkipListMap` — a probabilistically balanced linked-list structure that allows **Wait-Free / Lock-Free** concurrent insertions via CAS (Compare-And-Swap) operations.
+
+- _Java Solution:_ Instead of a `ConcurrentTreeMap`, Java provides `ConcurrentSkipListMap` — a probabilistically balanced linked-list structure that allows **Wait-Free / Lock-Free** concurrent insertions via CAS (Compare-And-Swap) operations.
 
 ---
 
@@ -76,10 +79,12 @@ A standard binary tree might require 20 random pointer jumps (20 page faults) fo
 ## 3.1 B-Tree Internal Architecture
 
 A B-tree of order $m$ (maximum children per node):
+
 - A node with $k$ children contains exactly $k-1$ keys.
-- **Node Splitting:** When a node exceeds $m-1$ keys during insertion, it undergoes a **Split**. The node divides in half, and the strictly *median key* is pushed up to the parent.
+- **Node Splitting:** When a node exceeds $m-1$ keys during insertion, it undergoes a **Split**. The node divides in half, and the strictly _median key_ is pushed up to the parent.
 
 ### Visualizing a B-Tree Node (Order 4)
+
 ```text
 ┌───────────────────────────────────────────┐
 │               [ 15 | 30 | 45 ]            │
@@ -95,14 +100,17 @@ A B-tree of order $m$ (maximum children per node):
 In modern databases (MySQL InnoDB, PostgreSQL), **B+ Trees** universally replace standard B-Trees.
 
 ### Multi-Level Indexing & Linked Leaves
+
 1. **Routing-Only Internals:** Internal nodes do not store actual rows. They only act as traffic cops.
 2. **Linked Leaves:** Leaf nodes form a doubly-linked list, yielding $O(1)$ sequential range queries (`BETWEEN`, `ORDER BY`).
 
 ### Clustered vs Non-Clustered Indexes
-- **Clustered Index (Primary Key):** The table *is* the B+ Tree. The leaf nodes contain the physical row data.
+
+- **Clustered Index (Primary Key):** The table _is_ the B+ Tree. The leaf nodes contain the physical row data.
 - **Secondary Index:** The leaf nodes contain the indexed column, plus a pointer (usually the Primary Key) back to the Clustered Index. This causes a **Secondary Lookup (Key Lookup)**.
 
 ### The Scale Math: Why Databases Scale to Billions
+
 Let's calculate capacity using a standard **4KB Disk Page**.
 
 ```text
@@ -132,12 +140,13 @@ Let's calculate capacity using a standard **4KB Disk Page**.
 B+ Trees suffer under heavy, concurrent pure-write workloads because updating scattered nodes causes **Random Disk I/O**. Modern Distributed systems (Cassandra, Kafka, RocksDB, LevelDB) bypass B+ Trees using **Log-Structured Merge-Trees (LSM)**.
 
 ### The LSM Anatomy: Eliminating Random Writes
+
 LSM Trees convert all random writes into **Sequential Log Appends**.
 
 1. **WAL (Write-Ahead Log):** Every command is instantly appended to a sequential file on disk. If the server crashes, data is recovered from here.
-2. **MemTable:** Concurrently, the data is pushed rapidly into an *in-memory* tree (Red-Black / Skip List).
+2. **MemTable:** Concurrently, the data is pushed rapidly into an _in-memory_ tree (Red-Black / Skip List).
 3. **SSTable (Sorted String Table):** When the MemTable fills up (e.g., 16MB), it is flushed sequentially to disk as an immutable, read-only file.
-4. **Bloom Filters:** Reads must search multiple SSTables. To prevent massive I/O, a Bloom Filter (probabilistic bit-array) sits in front of each SSTable, instantly answering *"Is this key definitely NOT here?"*
+4. **Bloom Filters:** Reads must search multiple SSTables. To prevent massive I/O, a Bloom Filter (probabilistic bit-array) sits in front of each SSTable, instantly answering _"Is this key definitely NOT here?"_
 5. **Compaction:** Background threads eventually merge multiple Level-0 SSTables into larger Level-1 SSTables, purging deleted data (Tombstones).
 
 ```text
@@ -165,11 +174,13 @@ LSM Trees convert all random writes into **Sequential Log Appends**.
 A **Treap** (Tree + Heap) achieves self-balancing without complex rotation invariants (like Red-Black) by relying on **Probability**.
 
 ### The Hybrid Rule
+
 Every node has two values: A **Key** (the actual data) and a **Priority** (a random number).
+
 1. **BST Property:** Keys must be ordered left-to-right.
 2. **Heap Property:** Priorities must obey the Max-Heap property (parent priority > child priority).
 
-By assigning random priorities upon insertion, the Treap simulates constructing a standard BST from a *randomly shuffled* array, structurally guaranteeing an expected height of $O(\log N)$ perfectly dodging sorted-input degeneration!
+By assigning random priorities upon insertion, the Treap simulates constructing a standard BST from a _randomly shuffled_ array, structurally guaranteeing an expected height of $O(\log N)$ perfectly dodging sorted-input degeneration!
 
 ---
 
@@ -178,7 +189,9 @@ By assigning random priorities upon insertion, the Treap simulates constructing 
 A Splay Tree ignores height limits. Instead, it moves the **most recently accessed element** directly to the root via **Splaying**.
 
 ### Rotations (Zig, Zig-Zig, Zig-Zag)
+
 When a node is queried, it is rotated upward using paired operations. By moving it to the root, future queries for the same key are essentially $O(1)$.
+
 - **Temporal Locality:** Splay Trees naturally act as an LRU Cache without maintaining separate queues.
 - Used in IP Routing tables, network packets, and some GC tracking algorithms where a tiny subset of data receives 99% of the traffic.
 
@@ -189,6 +202,7 @@ When a node is queried, it is rotated upward using paired operations. By moving 
 How does Uber find the closest drivers in $O(\log N)$ time across a 2D map? Searching a 1D B-Tree is impossible for geographic coordinates (Latitude, Longitude).
 
 ### The Spatial Strategy
+
 - **QuadTrees:** Recursively divide a 2D space into 4 equal quadrants (NW, NE, SW, SE). If a quadrant has too many points, it splits again.
 - **R-Trees (Rectangle Trees):** B-Trees but for multi-dimensional spaces. Nodes represent **Minimum Bounding Rectangles (MBR)**.
 
@@ -213,9 +227,10 @@ How does Uber find the closest drivers in $O(\log N)$ time across a 2D map? Sear
 
 # 🔐 PART 9: Merkle Trees (The Cryptographic Trust)
 
-A **Merkle Tree (Hash Tree)** flips the concept of a tree upside down: it's not used to *find* data, it's used to **verify the mathematical integrity** of enormous datasets in distributed systems.
+A **Merkle Tree (Hash Tree)** flips the concept of a tree upside down: it's not used to _find_ data, it's used to **verify the mathematical integrity** of enormous datasets in distributed systems.
 
 ### Core Architecture
+
 - **Leaves** are cryptographic hashes of data blocks.
 - **Parent Nodes** are hashes of the combined hashes of their children.
 - **Root Node (Merkle Root)** mathematically represents the exact state of the entire system.
@@ -235,6 +250,7 @@ A **Merkle Tree (Hash Tree)** flips the concept of a tree upside down: it's not 
 ```
 
 ### Production Use Cases:
+
 1. **Blockchain:** SPV (Simplified Payment Verification). You only need the $O(\log N)$ branches to mathematically prove your transaction is in the block, without downloading the whole GiB block.
 2. **Git:** Every commit is part of a Merkle-like DAG. If one byte in one file changes, the root hash changes.
 3. **DynamoDB / Cassandra Anti-Entropy:** Nodes compare their Merkle Roots. If they match, they are 100% perfectly synced. If they differ, they follow the differing branches down in $O(\log N)$ network calls to find the exact missing rows.
@@ -259,11 +275,11 @@ size(node) = 1 + size(left) + size(right)
 
 Now the tree supports:
 
-| Operation | Meaning | Complexity |
-|-----------|---------|------------|
-| `rank(x)` | Count how many keys are `< x` | `O(log N)` |
-| `select(k)` | Find kth smallest key | `O(log N)` |
-| `countRange(L, R)` | Count keys in `[L, R]` | `O(log N)` |
+| Operation          | Meaning                       | Complexity |
+| ------------------ | ----------------------------- | ---------- |
+| `rank(x)`          | Count how many keys are `< x` | `O(log N)` |
+| `select(k)`        | Find kth smallest key         | `O(log N)` |
+| `countRange(L, R)` | Count keys in `[L, R]`        | `O(log N)` |
 
 ### `select(k)` Logic
 
@@ -295,6 +311,7 @@ When searching for any interval that overlaps `[qStart, qEnd]`:
 Why this works: if the entire left subtree ends before `qStart`, no interval in that subtree can possibly overlap the query.
 
 Production examples:
+
 - Calendar conflict detection
 - Meeting room booking
 - Genome range queries
@@ -329,12 +346,12 @@ Interview explanations often stop at the five invariants. Real mastery starts wh
 
 New nodes are inserted as **RED** because adding a red node does not immediately change black-height.
 
-| Case | Parent | Uncle | Action | Why |
-|------|--------|-------|--------|-----|
-| 1 | BLACK | any | Stop | No invariant broken |
-| 2 | RED | RED | Recolor parent+uncle BLACK, grandparent RED | Push red conflict upward |
-| 3 | RED | BLACK/null and triangle | Rotate parent to make line | Convert to case 4 |
-| 4 | RED | BLACK/null and line | Rotate grandparent, recolor | Remove consecutive red |
+| Case | Parent | Uncle                   | Action                                      | Why                      |
+| ---- | ------ | ----------------------- | ------------------------------------------- | ------------------------ |
+| 1    | BLACK  | any                     | Stop                                        | No invariant broken      |
+| 2    | RED    | RED                     | Recolor parent+uncle BLACK, grandparent RED | Push red conflict upward |
+| 3    | RED    | BLACK/null and triangle | Rotate parent to make line                  | Convert to case 4        |
+| 4    | RED    | BLACK/null and line     | Rotate grandparent, recolor                 | Remove consecutive red   |
 
 Triangle means `left-right` or `right-left`.
 Line means `left-left` or `right-right`.
@@ -361,12 +378,12 @@ Instead of thinking "the null child is broken", think:
 
 > One subtree is carrying a missing black credit. The fix-up moves, pays, or cancels that debt.
 
-| Case | Sibling | Sibling Children | Action |
-|------|---------|------------------|--------|
-| Sibling RED | RED | any | Rotate parent, recolor sibling/parent, convert to black-sibling case |
-| Sibling BLACK | both BLACK | Recolor sibling RED, move double-black upward |
-| Sibling BLACK | near child RED, far child BLACK | Rotate sibling to convert to far-red case |
-| Sibling BLACK | far child RED | Rotate parent, recolor, finish |
+| Case          | Sibling                         | Sibling Children                              | Action                                                               |
+| ------------- | ------------------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| Sibling RED   | RED                             | any                                           | Rotate parent, recolor sibling/parent, convert to black-sibling case |
+| Sibling BLACK | both BLACK                      | Recolor sibling RED, move double-black upward |
+| Sibling BLACK | near child RED, far child BLACK | Rotate sibling to convert to far-red case     |
+| Sibling BLACK | far child RED                   | Rotate parent, recolor, finish                |
 
 The "far child" is the child farther from the double-black node. If the double-black node is on the left, sibling's far child is sibling.right.
 
@@ -374,15 +391,16 @@ The "far child" is the child farther from the double-black node. If the double-b
 
 `TreeMap` is a general-purpose mutable map. Java optimizes for predictable overall behavior, not the absolute shallowest possible tree.
 
-| Concern | AVL | Red-Black |
-|---------|-----|-----------|
-| Lookup depth | Slightly better | Slightly worse |
-| Insert/delete rotations | More frequent | Usually fewer |
-| Implementation complexity | Moderate | Moderate-hard |
-| Mutable map workload | Good | Excellent |
-| Standard library fit | Good | Better default |
+| Concern                   | AVL             | Red-Black      |
+| ------------------------- | --------------- | -------------- |
+| Lookup depth              | Slightly better | Slightly worse |
+| Insert/delete rotations   | More frequent   | Usually fewer  |
+| Implementation complexity | Moderate        | Moderate-hard  |
+| Mutable map workload      | Good            | Excellent      |
+| Standard library fit      | Good            | Better default |
 
 Rule of thumb:
+
 - AVL: choose when reads dominate and tree height must be extremely tight.
 - Red-Black: choose when inserts/deletes are common and you need stable general-purpose performance.
 
@@ -392,25 +410,25 @@ Rule of thumb:
 
 Both structures are "sorted index" designs, but they optimize different physical realities.
 
-| Dimension | B+ Tree | LSM Tree |
-|-----------|---------|----------|
-| Write path | Update pages in-place | Append WAL + memory table |
-| Read path | Usually one tree descent | Check memtable + SSTables |
-| Range scan | Excellent via linked leaves | Good after compaction, worse across many files |
-| Write amplification | Page splits + random writes | Compaction rewrites data |
-| Read amplification | Low | Can be high without Bloom filters |
-| Space amplification | Usually lower | Higher during compaction/tombstones |
-| Best fit | OLTP relational indexes | Write-heavy logs, time-series, distributed stores |
+| Dimension           | B+ Tree                     | LSM Tree                                          |
+| ------------------- | --------------------------- | ------------------------------------------------- |
+| Write path          | Update pages in-place       | Append WAL + memory table                         |
+| Read path           | Usually one tree descent    | Check memtable + SSTables                         |
+| Range scan          | Excellent via linked leaves | Good after compaction, worse across many files    |
+| Write amplification | Page splits + random writes | Compaction rewrites data                          |
+| Read amplification  | Low                         | Can be high without Bloom filters                 |
+| Space amplification | Usually lower               | Higher during compaction/tombstones               |
+| Best fit            | OLTP relational indexes     | Write-heavy logs, time-series, distributed stores |
 
 ## 12.1 The Three Amplifications
 
 Storage engines are judged by three brutal metrics:
 
-| Metric | Meaning | Example |
-|--------|---------|---------|
-| Write amplification | Physical bytes written / logical bytes written | LSM compaction rewrites old data |
-| Read amplification | Physical reads needed for one logical read | LSM may check several SSTables |
-| Space amplification | Extra bytes stored beyond live data | Old versions and tombstones wait for compaction |
+| Metric              | Meaning                                        | Example                                         |
+| ------------------- | ---------------------------------------------- | ----------------------------------------------- |
+| Write amplification | Physical bytes written / logical bytes written | LSM compaction rewrites old data                |
+| Read amplification  | Physical reads needed for one logical read     | LSM may check several SSTables                  |
+| Space amplification | Extra bytes stored beyond live data            | Old versions and tombstones wait for compaction |
 
 You cannot minimize all three at once. A database engine is basically a negotiated treaty between these costs.
 
@@ -425,6 +443,7 @@ put(key, TOMBSTONE)
 The value is not immediately removed from every old SSTable. It disappears only after compaction has merged away older versions.
 
 Failure modes:
+
 - Too many tombstones make reads slower.
 - Range scans may walk over dead records.
 - A delayed compaction backlog can make "deleted" data occupy disk for a long time.
@@ -463,6 +482,7 @@ unchanged subtrees are shared between versions
 ## 13.1 Persistent Segment Tree
 
 Useful for:
+
 - kth smallest in subarray
 - offline range frequency queries
 - immutable snapshots
@@ -471,12 +491,12 @@ Useful for:
 
 Complexities:
 
-| Operation | Complexity |
-|-----------|------------|
-| Build | `O(N log V)` or `O(N)` depending on compression/build style |
-| Update version | `O(log N)` new nodes |
-| Query version | `O(log N)` |
-| Compare two versions | `O(log N)` if aggregate supports subtraction |
+| Operation            | Complexity                                                  |
+| -------------------- | ----------------------------------------------------------- |
+| Build                | `O(N log V)` or `O(N)` depending on compression/build style |
+| Update version       | `O(log N)` new nodes                                        |
+| Query version        | `O(log N)`                                                  |
+| Compare two versions | `O(log N)` if aggregate supports subtraction                |
 
 Important mental model:
 
@@ -484,11 +504,11 @@ Important mental model:
 
 ## 13.2 Copy-on-Write vs Full Copy
 
-| Strategy | Memory | Speed | When |
-|----------|--------|-------|------|
-| Full copy | `O(N)` per version | Simple but expensive | Tiny data |
-| Copy-on-write tree | `O(log N)` per update | More complex | Serious versioning |
-| Event sourcing | Store commands, rebuild state | Cheap writes, replay cost | Business audit logs |
+| Strategy           | Memory                        | Speed                     | When                |
+| ------------------ | ----------------------------- | ------------------------- | ------------------- |
+| Full copy          | `O(N)` per version            | Simple but expensive      | Tiny data           |
+| Copy-on-write tree | `O(log N)` per update         | More complex              | Serious versioning  |
+| Event sourcing     | Store commands, rebuild state | Cheap writes, replay cost | Business audit logs |
 
 Persistent trees are the DSA version of immutable architecture.
 
@@ -498,15 +518,15 @@ Persistent trees are the DSA version of immutable architecture.
 
 Advanced trees fail in ways that look "impossible" unless you know the invariants.
 
-| Symptom | Likely Cause | Structure |
-|---------|--------------|-----------|
-| `TreeMap` loses entries | Comparator inconsistent with equals | Red-Black / TreeMap |
-| Range query misses item | Mutable key changed after insertion | Any ordered tree |
-| DB index gets huge | Low-cardinality or wide indexed column | B+ Tree |
-| Writes suddenly slow | Page split storm or compaction backlog | B+ / LSM |
-| Read latency spikes | Too many SSTables checked | LSM |
-| Spatial query returns too many candidates | Loose bounding rectangles | R-Tree |
-| Merkle sync never settles | Non-deterministic serialization before hashing | Merkle Tree |
+| Symptom                                   | Likely Cause                                   | Structure           |
+| ----------------------------------------- | ---------------------------------------------- | ------------------- |
+| `TreeMap` loses entries                   | Comparator inconsistent with equals            | Red-Black / TreeMap |
+| Range query misses item                   | Mutable key changed after insertion            | Any ordered tree    |
+| DB index gets huge                        | Low-cardinality or wide indexed column         | B+ Tree             |
+| Writes suddenly slow                      | Page split storm or compaction backlog         | B+ / LSM            |
+| Read latency spikes                       | Too many SSTables checked                      | LSM                 |
+| Spatial query returns too many candidates | Loose bounding rectangles                      | R-Tree              |
+| Merkle sync never settles                 | Non-deterministic serialization before hashing | Merkle Tree         |
 
 ## 14.1 Comparator Contract Trap
 
@@ -554,16 +574,16 @@ Practice these in order:
 
 # 🧠 SUMMARY & SYSTEM DESIGN CHEAT SHEET
 
-| Structure | Production Use Case | The Core Engineering "Trick" |
-|-----------|---------------------|------------------------------|
-| **AVL Tree** | Immutable / Read-Heavy Cache | Strict balancing guarantees the shallowest possible pointer tree. |
-| **Red-Black** | Mutable In-Memory Maps (OS/Java) | Loose balances prevent cascading rotation storms on mass inserts. |
-| **B/B+ Tree**| Relational SQL (MySQL/PostgreSQL) | Ultra-fat nodes adapt to physical disk page sizes. B+ links leaves for range scans. |
-| **LSM Tree** | Big Data / NoSQL (Cassandra) | Replaces random disk seeks with pure sequential log appends + compactions. |
-| **Treap** | Competitive Programming / Routers | Uses random priorities (Heaps) to probabilistically enforce balance. |
-| **Splay** | LRU Caches / Packet Routing | Forces frequently requested keys to naturally surface to the tree's root. |
-| **Quad/R-Tree**| Spatial DBs (PostGIS, Uber, Maps) | Boxes multi-dimensional coordinates into hierarchical bounding rectangles. |
-| **Order Statistic Tree** | Leaderboards / percentile queries | Stores subtree sizes so rank and kth queries stay `O(log N)`. |
-| **Interval Tree** | Calendars / range conflicts | Stores `maxEnd` metadata to prune impossible overlap branches. |
-| **Persistent Tree** | Versioned snapshots / kth range queries | Path-copying preserves history with only `O(log N)` new nodes per update. |
-| **Merkle Tree**| Crypto / Git / DB Anti-Entropy | Hashes bubble up to a single Root allowing $O(\log N)$ mathematical state verification. |
+| Structure                | Production Use Case                     | The Core Engineering "Trick"                                                            |
+| ------------------------ | --------------------------------------- | --------------------------------------------------------------------------------------- |
+| **AVL Tree**             | Immutable / Read-Heavy Cache            | Strict balancing guarantees the shallowest possible pointer tree.                       |
+| **Red-Black**            | Mutable In-Memory Maps (OS/Java)        | Loose balances prevent cascading rotation storms on mass inserts.                       |
+| **B/B+ Tree**            | Relational SQL (MySQL/PostgreSQL)       | Ultra-fat nodes adapt to physical disk page sizes. B+ links leaves for range scans.     |
+| **LSM Tree**             | Big Data / NoSQL (Cassandra)            | Replaces random disk seeks with pure sequential log appends + compactions.              |
+| **Treap**                | Competitive Programming / Routers       | Uses random priorities (Heaps) to probabilistically enforce balance.                    |
+| **Splay**                | LRU Caches / Packet Routing             | Forces frequently requested keys to naturally surface to the tree's root.               |
+| **Quad/R-Tree**          | Spatial DBs (PostGIS, Uber, Maps)       | Boxes multi-dimensional coordinates into hierarchical bounding rectangles.              |
+| **Order Statistic Tree** | Leaderboards / percentile queries       | Stores subtree sizes so rank and kth queries stay `O(log N)`.                           |
+| **Interval Tree**        | Calendars / range conflicts             | Stores `maxEnd` metadata to prune impossible overlap branches.                          |
+| **Persistent Tree**      | Versioned snapshots / kth range queries | Path-copying preserves history with only `O(log N)` new nodes per update.               |
+| **Merkle Tree**          | Crypto / Git / DB Anti-Entropy          | Hashes bubble up to a single Root allowing $O(\log N)$ mathematical state verification. |

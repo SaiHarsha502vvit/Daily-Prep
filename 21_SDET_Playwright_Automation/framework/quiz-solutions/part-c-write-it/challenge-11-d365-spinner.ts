@@ -42,18 +42,12 @@ export interface SpinnerWaitOptions {
 export async function waitForD365Spinner(
   page: Page,
   spinnerSelector: string | Locator,
-  options: SpinnerWaitOptions = {}
+  options: SpinnerWaitOptions = {},
 ): Promise<void> {
-  const {
-    timeout = 30_000,
-    appearanceTimeout = 5_000,
-    pollInterval = 250,
-  } = options;
+  const { timeout = 30_000, appearanceTimeout = 5_000, pollInterval = 250 } = options;
 
   const spinner: Locator =
-    typeof spinnerSelector === 'string'
-      ? page.locator(spinnerSelector)
-      : spinnerSelector;
+    typeof spinnerSelector === 'string' ? page.locator(spinnerSelector) : spinnerSelector;
 
   // PHASE 1: Wait for the spinner to appear.
   // We use a short timeout because the spinner might already be gone
@@ -125,7 +119,7 @@ test('quiz-02-ch11: waits for D365 spinner lifecycle', async ({ page }) => {
 
 export async function waitForD365SpinnerByRole(
   page: Page,
-  options: SpinnerWaitOptions = {}
+  options: SpinnerWaitOptions = {},
 ): Promise<void> {
   // D365 spinners often have role="status" or aria-label="Loading".
   const spinner = page.getByRole('status').filter({ hasText: /Loading|Please wait/ });

@@ -16,13 +16,29 @@ export class DashboardPage extends OrangeHRMBasePage {
 
   constructor(page: Page) {
     super(page);
-    this.timeAtWorkWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Time at Work' });
-    this.myActionsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'My Actions' });
-    this.quickLaunchWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Quick Launch' });
-    this.buzzLatestPostsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Buzz Latest Posts' });
-    this.employeesOnLeaveTodayWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employees on Leave Today' });
-    this.employeeDistributionBySubunitWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Sub Unit' });
-    this.employeeDistributionByLocationWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Location' });
+    this.timeAtWorkWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', {
+      hasText: 'Time at Work',
+    });
+    this.myActionsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', {
+      hasText: 'My Actions',
+    });
+    this.quickLaunchWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', {
+      hasText: 'Quick Launch',
+    });
+    this.buzzLatestPostsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', {
+      hasText: 'Buzz Latest Posts',
+    });
+    this.employeesOnLeaveTodayWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', {
+      hasText: 'Employees on Leave Today',
+    });
+    this.employeeDistributionBySubunitWidget = page.locator(
+      '.oxd-sheet.orangehrm-dashboard-widget',
+      { hasText: 'Employee Distribution by Sub Unit' },
+    );
+    this.employeeDistributionByLocationWidget = page.locator(
+      '.oxd-sheet.orangehrm-dashboard-widget',
+      { hasText: 'Employee Distribution by Location' },
+    );
   }
 
   async navigate(): Promise<void> {
@@ -49,19 +65,21 @@ export class DashboardPage extends OrangeHRMBasePage {
       await expect.soft(widget).toBeVisible({ timeout: Timeouts.TEN_SECONDS });
     }
     // Final hard assertion if any soft failed
-    const visibleChecks = await Promise.all(
-      widgets.map((w) => w.isVisible().catch(() => false))
-    );
+    const visibleChecks = await Promise.all(widgets.map((w) => w.isVisible().catch(() => false)));
     expect(visibleChecks.every(Boolean)).toBe(true);
   }
 
   async clickQuickLaunch(label: string): Promise<void> {
-    const button = this.quickLaunchWidget.locator('.orangehrm-quick-launch-card').filter({ hasText: label });
+    const button = this.quickLaunchWidget
+      .locator('.orangehrm-quick-launch-card')
+      .filter({ hasText: label });
     await button.click();
   }
 
   async clickMyAction(label: string): Promise<void> {
-    const button = this.myActionsWidget.locator('.orangehrm-todo-list-item').filter({ hasText: label });
+    const button = this.myActionsWidget
+      .locator('.orangehrm-todo-list-item')
+      .filter({ hasText: label });
     await button.click();
   }
 }

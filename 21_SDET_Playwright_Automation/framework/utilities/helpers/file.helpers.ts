@@ -39,7 +39,7 @@ export async function triggerDownload(page: Page, trigger: Locator): Promise<Dow
 export async function downloadAndRead(
   page: Page,
   trigger: Locator,
-  saveAsPath: string
+  saveAsPath: string,
 ): Promise<string> {
   const download = await triggerDownload(page, trigger);
   fs.mkdirSync(path.dirname(saveAsPath), { recursive: true });
@@ -98,7 +98,7 @@ function splitCsvRow(line: string): string[] {
 
 export async function createDataTransfer(
   page: Page,
-  file: InMemoryFile
+  file: InMemoryFile,
 ): Promise<JSHandle<DataTransfer>> {
   return page.evaluateHandle(
     ({ name, mimeType, base64 }) => {
@@ -116,6 +116,6 @@ export async function createDataTransfer(
       name: file.name,
       mimeType: file.mimeType,
       base64: file.buffer.toString('base64'),
-    }
+    },
   );
 }

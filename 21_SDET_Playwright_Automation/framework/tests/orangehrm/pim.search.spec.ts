@@ -25,7 +25,10 @@ test.describe('PIM Search Filters & Pagination', () => {
     expect(count).toBeGreaterThanOrEqual(0);
   });
 
-  test('@smoke search by employee id returns exact match', async ({ employeeListPage, addEmployeePage }) => {
+  test('@smoke search by employee id returns exact match', async ({
+    employeeListPage,
+    addEmployeePage,
+  }) => {
     // KNOWN LIMITATION: same OrangeHRM demo persistence quirk as employee.crud's
     // "@smoke add employee and verify presence". The custom Employee Id from
     // generateEmployeeData() is not reliably searchable on the public demo after save.

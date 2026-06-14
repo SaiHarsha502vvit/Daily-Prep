@@ -9,6 +9,7 @@
 ---
 
 ## Table of Contents
+
 1. [The Decomposition Mindset](#1-the-decomposition-mindset)
 2. [The Universal Decomposition Process](#2-universal-decomposition-process)
 3. [Decomposing DSA Problems](#3-decomposing-dsa-problems)
@@ -64,14 +65,13 @@ HOW   → How do I break this into steps? (the actual decomposition)
 
 ---
 
-
 🔬 **Section Challenge — 1. The Decomposition Mindset**
 
 **Challenge 1 (Simplification Trap):** You are asked to solve "Longest Palindromic Substring." You try to simplify the problem by first writing a function `isPalindrome(String s)`. Why is this specific simplification actually a trap that leads to an optimal failure?
 
 <details><summary>Answer</summary>
 
-While `isPalindrome(s)` correctly simplifies checking a single string, decomposing the problem into "Generate all substrings $\to$ check `isPalindrome` for each" forces an $O(N^3)$ complexity ($O(N^2)$ substrings $\times$ $O(N)$ check). The *correct* simplification ladder should focus on the *structure* of a palindrome, leading to "Can I find a palindrome centered at index `i`?" which naturally decomposes into the optimal $O(N^2)$ Expand-Around-Center approach.
+While `isPalindrome(s)` correctly simplifies checking a single string, decomposing the problem into "Generate all substrings $\to$ check `isPalindrome` for each" forces an $O(N^3)$ complexity ($O(N^2)$ substrings $\times$ $O(N)$ check). The _correct_ simplification ladder should focus on the _structure_ of a palindrome, leading to "Can I find a palindrome centered at index `i`?" which naturally decomposes into the optimal $O(N^2)$ Expand-Around-Center approach.
 
 </details>
 
@@ -81,7 +81,7 @@ While `isPalindrome(s)` correctly simplifies checking a single string, decomposi
 THE INPUT-OUTPUT-CONSTRAINT TRIANGLE:
 
   ┌────────────┐
-  │   INPUT    │  ← What do I receive? Types, ranges, structure 
+  │   INPUT    │  ← What do I receive? Types, ranges, structure
   └──────┬─────┘
          │
    ┌─────▼─────┐
@@ -275,14 +275,13 @@ DECOMPOSITION:
 
 ---
 
-
 🔬 **Section Challenge — 3. Decomposing DSA Problems**
 
 **Challenge 1 (State Decomposition):** You are tasked with designing an `LRUCache`. You decide to use an array of objects `[{key, value, lastAccessedTime}]` and update the time on every `get()`. To evict, you scan the array for the oldest time. What specific complexity constraint did your decomposition violate, and how does the standard dual-structure approach resolve it?
 
 <details><summary>Answer</summary>
 
-This decomposition violates the $O(1)$ time complexity constraint. Scanning an array to find the oldest time takes $O(N)$, and shifting elements (if you remove from the array) takes $O(N)$. The problem must be decomposed by *operation requirements*: $O(1)$ lookup requires a **HashMap**, and $O(1)$ ordered eviction/updating requires a **Doubly Linked List**. Only by combining these two independent structures can you achieve the $O(1)$ bounds.
+This decomposition violates the $O(1)$ time complexity constraint. Scanning an array to find the oldest time takes $O(N)$, and shifting elements (if you remove from the array) takes $O(N)$. The problem must be decomposed by _operation requirements_: $O(1)$ lookup requires a **HashMap**, and $O(1)$ ordered eviction/updating requires a **Doubly Linked List**. Only by combining these two independent structures can you achieve the $O(1)$ bounds.
 
 </details>
 
@@ -360,16 +359,15 @@ DECOMPOSITION:
 
 ---
 
-
 🔬 **Section Challenge — 4. Decomposing SQL Problems**
 
 **Challenge 1 (CTE Granularity):** You are writing a complex SQL query using CTEs (Common Table Expressions) to find "Top 3 departments by average salary of employees hired in 2023." Your first CTE joins `Departments` and `Employees` and calculates the average. Why is this decomposition flawed, and what is the rule of "Inside-Out" filtering?
 
 <details><summary>Answer</summary>
 
-If your first CTE aggregates the average *before* filtering for the hire date, you calculate the wrong average (including all years) or you join massive amounts of unnecessary data. The "Inside-Out" rule dictates that you must filter raw data **first**. 
-CTE 1: Filter `Employees` where `hire_date` is in 2023. 
-CTE 2: Join with `Departments` and calculate the average. 
+If your first CTE aggregates the average _before_ filtering for the hire date, you calculate the wrong average (including all years) or you join massive amounts of unnecessary data. The "Inside-Out" rule dictates that you must filter raw data **first**.
+CTE 1: Filter `Employees` where `hire_date` is in 2023.
+CTE 2: Join with `Departments` and calculate the average.
 Outer Query: `ORDER BY` average and `LIMIT 3`.
 
 </details>
@@ -437,7 +435,6 @@ DECOMPOSITION:
 
 ---
 
-
 🔬 **Section Challenge — 5. Decomposing System Design Problems**
 
 **Challenge 1 (Microservice Boundary):** You are designing a Ride-Sharing app. A junior engineer proposes putting the User Profile data and the Real-Time Location (Lat/Long) tracking data in the same PostgreSQL database table because "they both belong to the Driver entity." What non-functional requirement does this violate, and how should it be decomposed?
@@ -474,7 +471,6 @@ STEP 4: IDENTIFY BEHAVIORS that VARY → use PATTERNS
 ```
 
 ---
-
 
 🔬 **Section Challenge — 6. Decomposing OOP/Design Problems**
 
@@ -603,14 +599,13 @@ Decompose:
 
 ---
 
-
 🔬 **Section Challenge — 7. 10 Worked Decompositions (Cross-Domain)**
 
 **Challenge 1 (Cross-Domain Translation):** Translate the "Two Pointers" DSA decomposition (used to find a pair summing to a target in a sorted array) into its direct SQL equivalent. What is the SQL operation, and what acts as the "target"?
 
 <details><summary>Answer</summary>
 
-The direct SQL equivalent of Two Pointers for pair-finding is a **Self-Join**. 
+The direct SQL equivalent of Two Pointers for pair-finding is a **Self-Join**.
 Instead of pointers `i` and `j` moving across an array, you alias the table twice (`SELECT * FROM table t1 JOIN table t2`). The "target" condition becomes the `ON` or `WHERE` clause (e.g., `ON t1.value + t2.value = target`). If avoiding duplicates (like $i < j$), you add `WHERE t1.id < t2.id`.
 
 </details>
@@ -635,13 +630,13 @@ Instead of pointers `i` and `j` moving across an array, you alias the table twic
 
 ## Cross-References
 
-| Topic | Deep Dive |
-|-------|-----------|
+| Topic               | Deep Dive                                                                 |
+| ------------------- | ------------------------------------------------------------------------- |
 | Pattern Recognition | [03_DSA_Pattern_Recognition_Engine](03_DSA_Pattern_Recognition_Engine.md) |
-| Constraint Analysis | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md) |
-| SQL Patterns | [05_SQL_Interview_Thinking](05_SQL_Interview_Thinking.md) |
-| System Design | [06_System_Design_Blueprint](06_System_Design_Blueprint.md) |
-| The Interview Brain | [01_The_Interview_Brain](01_The_Interview_Brain.md) |
+| Constraint Analysis | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md)       |
+| SQL Patterns        | [05_SQL_Interview_Thinking](05_SQL_Interview_Thinking.md)                 |
+| System Design       | [06_System_Design_Blueprint](06_System_Design_Blueprint.md)               |
+| The Interview Brain | [01_The_Interview_Brain](01_The_Interview_Brain.md)                       |
 
 ---
 

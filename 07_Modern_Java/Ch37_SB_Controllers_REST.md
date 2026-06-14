@@ -49,7 +49,6 @@ _"Controllers are thin - they delegate, not implement"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📖 REST Controller Fundamentals
@@ -159,15 +158,11 @@ public class UserController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 2: HTTP Method Mappings**
 
 **Challenge 1 (Debug — Who/When/What):** Your `@GetMapping` returns an object, but the client receives XML instead of JSON. **Who** selected XML? **When** is the content type decided? **What** controls the priority?\n\n<details><summary>Answer</summary>\n\n**Who selects?** Spring's `ContentNegotiationManager`, which evaluates the `Accept` header. If the client sends `Accept: application/xml` and your app has Jackson XML on the classpath, Spring returns XML. **When decided?** During handler adapter processing, before serialization — `HttpMessageConverter` selection happens after the controller method returns. **Priority:** (1) `Accept` header from client, (2) URL extension (deprecated), (3) request parameter (`?format=json`). **Fix:** If you ALWAYS want JSON, either: configure `ContentNegotiationConfigurer.defaultContentType(MediaType.APPLICATION_JSON)`, or add `produces = "application/json"` to your `@GetMapping`. Remove Jackson XML from classpath if XML responses are unintended.\n\n</details>
-
 
 ## Chapter 3: Request Parameters
 
@@ -419,16 +414,15 @@ public class UserController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: Response Handling**
 
 **Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
+
 <details><summary>Answer</summary>
 
 Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
-</details>
 
+</details>
 
 ## Chapter 5: Validation
 
@@ -874,16 +868,15 @@ public class GlobalExceptionHandler {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Exception Handling**
 
 **Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
+
 <details><summary>Answer</summary>
 
 Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
-</details>
 
+</details>
 
 ## Chapter 7: API Versioning
 
@@ -1021,16 +1014,15 @@ public class UserController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: API Versioning**
 
 **Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
+
 <details><summary>Answer</summary>
 
 Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
-</details>
 
+</details>
 
 ## Chapter 8: Controller Best Practices
 
@@ -1111,7 +1103,6 @@ Loss of Type Safety and API Documentation. A generic `Map` completely destroys t
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Example: Complete CRUD Controller
 
@@ -1290,11 +1281,9 @@ public class UserController {
 □ Thin controllers - delegate to services
 ```
 
-
 ---
 
 _Continue to Part 8: JPA & Hibernate Deep Dive_
-
 
 ---
 

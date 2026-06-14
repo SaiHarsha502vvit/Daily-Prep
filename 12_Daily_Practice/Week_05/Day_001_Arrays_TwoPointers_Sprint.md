@@ -1,12 +1,14 @@
 # Day 01 - Arrays and Two Pointers (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 259 - 3Sum Smaller
 2. LeetCode Medium: 11 - Container With Most Water
 3. Codeforces: 489B - BerSU Ball
 4. Codeforces: 580A - Kefa and First Steps
 
 ## Problem Links
+
 - LC 259 (Premium): Locked on LeetCode (no public official statement page)
 - LC 11: https://leetcode.com/problems/container-with-most-water/
 - CF 489B: https://codeforces.com/problemset/problem/489/B
@@ -15,18 +17,22 @@
 ## Problem 1 - LC 259 (Premium): 3Sum Smaller
 
 ### Problem Restatement
+
 Given an integer array `nums` and integer `target`, count triplets `(i, j, k)` such that `0 <= i < j < k < n` and `nums[i] + nums[j] + nums[k] < target`.
 
 ### Constraints
+
 - `0 <= n <= 3500`
 - `-100 <= nums[i] <= 100`
 - `-100 <= target <= 100`
 
 ### Sample
+
 Input: `nums = [-2, 0, 1, 3], target = 2`  
 Output: `2`
 
 ### Approach A - Brute Force (O(n^3), O(1))
+
 Try all triplets.
 
 ```java
@@ -44,6 +50,7 @@ static int threeSumSmallerBrute(int[] nums, int target) {
 ```
 
 ### Approach B - Better (Sort + Binary Search) (O(n^2 log n), O(1))
+
 Fix `i` and `j`, binary search the largest valid `k`.
 
 ```java
@@ -69,6 +76,7 @@ static int threeSumSmallerBetter(int[] nums, int target) {
 ```
 
 ### Approach C - Optimal (Sort + Two Pointers) (O(n^2), O(1))
+
 For fixed `i`, if `(i,left,right)` is valid then all pairs `(i,left,left+1..right)` are valid.
 
 ```java
@@ -92,9 +100,11 @@ static int threeSumSmallerOptimal(int[] nums, int target) {
 ```
 
 ### Dry Run Idea
+
 For `[-2,0,1,3]` and `target=2`, fix `-2`, then `l=0`, `r=3` gives one valid band and contributes `2` directly.
 
 ### Interview Notes
+
 - This is a counting version of 3Sum, not a dedup listing problem.
 - Counting by ranges (`r-l`) is the key optimization.
 
@@ -103,13 +113,16 @@ For `[-2,0,1,3]` and `target=2`, fix `-2`, then `l=0`, `r=3` gives one valid ban
 ## Problem 2 - LC 11: Container With Most Water
 
 ### Problem Restatement
+
 Given heights, choose two indices `i < j`. Area is `min(h[i], h[j]) * (j - i)`. Return max area.
 
 ### Constraints
+
 - `2 <= n <= 100000`
 - `0 <= height[i] <= 10000`
 
 ### Sample
+
 Input: `height = [1,8,6,2,5,4,8,3,7]`  
 Output: `49`
 
@@ -128,6 +141,7 @@ static int maxAreaBrute(int[] h) {
 ```
 
 ### Approach B - Better (Sort by Height Desc) (O(n log n), O(n))
+
 Process bars from tallest to shortest; track farthest processed indices.
 
 ```java
@@ -149,6 +163,7 @@ static int maxAreaBetter(int[] h) {
 ```
 
 ### Approach C - Optimal (Two Pointers) (O(n), O(1))
+
 Move the shorter wall, because moving the taller wall cannot improve min-height bound.
 
 ```java
@@ -164,6 +179,7 @@ static int maxAreaOptimal(int[] h) {
 ```
 
 ### Edge Cases
+
 - All zeros -> answer `0`.
 - Strictly increasing/decreasing arrays still handled by pointer rule.
 
@@ -172,17 +188,21 @@ static int maxAreaOptimal(int[] h) {
 ## Problem 3 - CF 489B: BerSU Ball
 
 ### Problem Restatement
+
 Two arrays represent boy and girl skill levels. Pair one boy with one girl if skill difference is at most `1`. Maximize number of pairs.
 
 ### Constraints
+
 - `1 <= n, m <= 100`
 - `1 <= skill <= 100`
 
 ### Sample
+
 Input: boys `[1,4,6]`, girls `[2,5,8]`  
 Output: `2`
 
 ### Approach A - Brute Force (Backtracking) (Exponential)
+
 Try pair/not-pair choices recursively.
 
 ```java
@@ -201,6 +221,7 @@ static int bersuBrute(int[] b, int[] g, boolean[] used, int i) {
 ```
 
 ### Approach B - Better (DP on Sorted Arrays) (O(nm), O(nm))
+
 Classic LCS-style DP with match condition.
 
 ```java
@@ -222,6 +243,7 @@ static int bersuBetter(int[] b, int[] g) {
 ```
 
 ### Approach C - Optimal (Greedy Two Pointers) (O(n log n + m log m), O(1))
+
 Sort both and greedily match the smallest feasible pair.
 
 ```java
@@ -240,6 +262,7 @@ static int bersuOptimal(int[] b, int[] g) {
 ```
 
 ### Interview Notes
+
 - This is greedy matching on sorted sequences.
 - Proof idea: earliest feasible match never hurts future matches.
 
@@ -248,17 +271,21 @@ static int bersuOptimal(int[] b, int[] g) {
 ## Problem 4 - CF 580A: Kefa and First Steps
 
 ### Problem Restatement
+
 Find the length of the longest contiguous non-decreasing segment.
 
 ### Constraints
+
 - `1 <= n <= 100000`
 - `1 <= a[i] <= 1e9`
 
 ### Sample
+
 Input: `[1,2,2,1,3,4,4]`  
 Output: `4` (`[1,3,4,4]`)
 
 ### Approach A - Brute Force (O(n^2), O(1))
+
 Check all segment starts and extend while non-decreasing.
 
 ```java
@@ -274,6 +301,7 @@ static int kefaBrute(int[] a) {
 ```
 
 ### Approach B - Better (DP Ending at i) (O(n), O(n))
+
 `dp[i] = longest non-decreasing subarray ending at i`.
 
 ```java
@@ -291,6 +319,7 @@ static int kefaBetter(int[] a) {
 ```
 
 ### Approach C - Optimal (Two Pointers) (O(n), O(1))
+
 Keep current run length; reset when order breaks.
 
 ```java
@@ -306,5 +335,6 @@ static int kefaOptimal(int[] a) {
 ```
 
 ### Pattern Takeaways
+
 - Non-decreasing contiguous segment is a linear scan invariant.
 - Keep this as a baseline pattern for later sliding window problems.

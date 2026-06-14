@@ -19,7 +19,7 @@ export async function clickElement(locator: Locator, options: ActionOptions): Pr
 export async function fillInput(
   locator: Locator,
   value: string,
-  options: ActionOptions
+  options: ActionOptions,
 ): Promise<void> {
   const timeout = options.timeout ?? Timeouts.FIFTEEN_SECONDS;
   await locator.waitFor({ state: 'visible', timeout });
@@ -32,22 +32,22 @@ export async function fillInput(
 export async function selectOption(
   locator: Locator,
   value: string,
-  options: ActionOptions
+  options: ActionOptions,
 ): Promise<void> {
   const timeout = options.timeout ?? Timeouts.FIFTEEN_SECONDS;
   await locator.waitFor({ state: 'visible', timeout });
   await locator.selectOption(value, { timeout });
 }
 
-export async function waitForVisible(
-  locator: Locator,
-  options: ActionOptions
-): Promise<void> {
+export async function waitForVisible(locator: Locator, options: ActionOptions): Promise<void> {
   const timeout = options.timeout ?? Timeouts.FIFTEEN_SECONDS;
   await locator.waitFor({ state: 'visible', timeout });
 }
 
-export async function isVisibleSafe(locator: Locator, timeoutMs = Timeouts.FIVE_SECONDS): Promise<boolean> {
+export async function isVisibleSafe(
+  locator: Locator,
+  timeoutMs = Timeouts.FIVE_SECONDS,
+): Promise<boolean> {
   return locator
     .waitFor({ state: 'visible', timeout: timeoutMs })
     .then(() => true)
@@ -58,7 +58,7 @@ export async function safeNavigate(
   page: Page,
   url: string,
   description: string,
-  timeout = Timeouts.THIRTY_SECONDS
+  timeout = Timeouts.THIRTY_SECONDS,
 ): Promise<void> {
   if (process.env.LOG_ACTIONS === 'true') console.log(`[goto]  ${description} → ${url}`);
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout });

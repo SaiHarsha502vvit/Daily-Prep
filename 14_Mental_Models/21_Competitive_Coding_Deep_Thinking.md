@@ -25,14 +25,14 @@ The best competitive programmers are not faster because they type faster. They a
 
 Competitive coding tests six muscles at once.
 
-| Muscle | Meaning | Example |
-|--------|---------|---------|
-| Translation | Convert story to math | "Cities and roads" becomes graph |
-| Constraint reading | Know what time complexity is allowed | `N = 2e5` rejects `O(N^2)` |
-| Pattern recognition | Map signal to known family | "subarray" + "sum" -> prefix/sliding |
-| Proof thinking | Know why the algorithm is correct | greedy exchange, DP recurrence |
-| Implementation control | Avoid off-by-one and overflow | `long`, bounds, indexing |
-| Debugging | Find the broken invariant fast | dry run, tiny tests, edge cases |
+| Muscle                 | Meaning                              | Example                              |
+| ---------------------- | ------------------------------------ | ------------------------------------ |
+| Translation            | Convert story to math                | "Cities and roads" becomes graph     |
+| Constraint reading     | Know what time complexity is allowed | `N = 2e5` rejects `O(N^2)`           |
+| Pattern recognition    | Map signal to known family           | "subarray" + "sum" -> prefix/sliding |
+| Proof thinking         | Know why the algorithm is correct    | greedy exchange, DP recurrence       |
+| Implementation control | Avoid off-by-one and overflow        | `long`, bounds, indexing             |
+| Debugging              | Find the broken invariant fast       | dry run, tiny tests, edge cases      |
 
 Deep truth:
 
@@ -70,15 +70,15 @@ That last version is already the solution shape.
 
 The constraints are a map.
 
-| Input Size | Usually Acceptable | Think About |
-|------------|--------------------|-------------|
-| `N <= 10` | `O(N!)`, backtracking | permutations, exhaustive search |
-| `N <= 20` | `O(2^N * N)` | bitmask DP, subsets |
-| `N <= 100` | `O(N^3)` | Floyd, interval DP |
-| `N <= 2,000` | `O(N^2)` | pair DP, 2D loops |
-| `N <= 1e5` | `O(N log N)` or `O(N)` | sorting, heap, Fenwick, graph |
-| `N <= 1e6` | `O(N)` or near-linear | prefix, two pointers, sieve |
-| `N >= 1e9` | `O(log N)` or math | binary search, formulas, fast power |
+| Input Size   | Usually Acceptable     | Think About                         |
+| ------------ | ---------------------- | ----------------------------------- |
+| `N <= 10`    | `O(N!)`, backtracking  | permutations, exhaustive search     |
+| `N <= 20`    | `O(2^N * N)`           | bitmask DP, subsets                 |
+| `N <= 100`   | `O(N^3)`               | Floyd, interval DP                  |
+| `N <= 2,000` | `O(N^2)`               | pair DP, 2D loops                   |
+| `N <= 1e5`   | `O(N log N)` or `O(N)` | sorting, heap, Fenwick, graph       |
+| `N <= 1e6`   | `O(N)` or near-linear  | prefix, two pointers, sieve         |
+| `N >= 1e9`   | `O(log N)` or math     | binary search, formulas, fast power |
 
 Rule of thumb:
 
@@ -132,15 +132,15 @@ Can I reorder the work?
 
 Examples:
 
-| Statement Signal | Real Shape |
-|------------------|------------|
-| "continuous segment" | subarray/window/prefix |
-| "choose subset" | bitmask/backtracking/knapsack |
-| "minimum steps" | BFS/shortest path |
-| "dependencies" | DAG/topological sort |
-| "many range queries" | prefix/Fenwick/segment/sparse/Mo |
+| Statement Signal               | Real Shape                           |
+| ------------------------------ | ------------------------------------ |
+| "continuous segment"           | subarray/window/prefix               |
+| "choose subset"                | bitmask/backtracking/knapsack        |
+| "minimum steps"                | BFS/shortest path                    |
+| "dependencies"                 | DAG/topological sort                 |
+| "many range queries"           | prefix/Fenwick/segment/sparse/Mo     |
 | "kth / rank / count less than" | heap, binary search, order statistic |
-| "can we achieve X?" | binary search on answer |
+| "can we achieve X?"            | binary search on answer              |
 
 ## Step 5: Choose an Invariant
 
@@ -148,14 +148,14 @@ An invariant is the truth your algorithm preserves.
 
 Examples:
 
-| Technique | Invariant |
-|-----------|-----------|
-| Sliding window | Window always satisfies or nearly satisfies condition |
-| Monotonic stack | Stack remains increasing/decreasing |
-| Dijkstra | Popped node has final shortest distance |
-| DSU | Parent root represents connected component |
-| DP | `dp[state]` equals best/count answer for that exact state |
-| Binary search | Answer is inside `[lo, hi]` |
+| Technique       | Invariant                                                 |
+| --------------- | --------------------------------------------------------- |
+| Sliding window  | Window always satisfies or nearly satisfies condition     |
+| Monotonic stack | Stack remains increasing/decreasing                       |
+| Dijkstra        | Popped node has final shortest distance                   |
+| DSU             | Parent root represents connected component                |
+| DP              | `dp[state]` equals best/count answer for that exact state |
+| Binary search   | Answer is inside `[lo, hi]`                               |
 
 If you cannot state the invariant, you probably cannot debug the algorithm.
 
@@ -165,15 +165,15 @@ Proof can be short.
 
 Use one of these proof styles:
 
-| Algorithm Family | Proof Style |
-|------------------|-------------|
-| Greedy | Exchange argument / stays ahead |
-| DP | Induction over state order |
-| Graph BFS | Layer expansion proof |
-| Dijkstra | Cut property / smallest unsettled distance |
-| Binary search | Monotonic predicate + invariant |
-| Segment tree | Range partition proof |
-| DSU | Component representative invariant |
+| Algorithm Family | Proof Style                                |
+| ---------------- | ------------------------------------------ |
+| Greedy           | Exchange argument / stays ahead            |
+| DP               | Induction over state order                 |
+| Graph BFS        | Layer expansion proof                      |
+| Dijkstra         | Cut property / smallest unsettled distance |
+| Binary search    | Monotonic predicate + invariant            |
+| Segment tree     | Range partition proof                      |
+| DSU              | Component representative invariant         |
 
 Competitive proof is not formal math theater. It is your bug shield.
 
@@ -197,26 +197,26 @@ Then code.
 
 This table should live in your head.
 
-| Constraint / Phrase | Brain Says | Common Tools |
-|---------------------|------------|--------------|
-| `N <= 20` | subset states are possible | bitmask, meet-in-middle |
-| `N <= 40` and subset sum | split into two halves | meet-in-the-middle |
-| `N <= 100`, all-pairs shortest path | cubic ok | Floyd-Warshall |
-| `N <= 2e5`, range queries | need log or O(1) query | Fenwick, segment tree, sparse table |
-| static range min | no updates | sparse table |
-| range update + range query | lazy propagation | segment tree |
-| point update + prefix/range sum | simpler tree | Fenwick |
-| graph with unweighted edges | shortest path by levels | BFS |
-| graph with non-negative weights | shortest path | Dijkstra |
-| graph with negative weights | careful | Bellman-Ford, SPFA rarely, potentials |
-| tree path queries | flatten paths | HLD, LCA |
-| subtree queries | flatten subtree | Euler Tour |
-| exact `K` subarray sum | prefix difference | hashmap |
-| longest at most/at least condition | sliding window if monotonic | two pointers |
-| "minimum maximum" | binary search answer | monotonic check |
-| "number of ways" | DP/combinatorics | modulo arithmetic |
-| "large exponent" | fast power | binary exponentiation |
-| "gcd of many values" | Euclid, prefix/suffix gcd | gcd math |
+| Constraint / Phrase                 | Brain Says                  | Common Tools                          |
+| ----------------------------------- | --------------------------- | ------------------------------------- |
+| `N <= 20`                           | subset states are possible  | bitmask, meet-in-middle               |
+| `N <= 40` and subset sum            | split into two halves       | meet-in-the-middle                    |
+| `N <= 100`, all-pairs shortest path | cubic ok                    | Floyd-Warshall                        |
+| `N <= 2e5`, range queries           | need log or O(1) query      | Fenwick, segment tree, sparse table   |
+| static range min                    | no updates                  | sparse table                          |
+| range update + range query          | lazy propagation            | segment tree                          |
+| point update + prefix/range sum     | simpler tree                | Fenwick                               |
+| graph with unweighted edges         | shortest path by levels     | BFS                                   |
+| graph with non-negative weights     | shortest path               | Dijkstra                              |
+| graph with negative weights         | careful                     | Bellman-Ford, SPFA rarely, potentials |
+| tree path queries                   | flatten paths               | HLD, LCA                              |
+| subtree queries                     | flatten subtree             | Euler Tour                            |
+| exact `K` subarray sum              | prefix difference           | hashmap                               |
+| longest at most/at least condition  | sliding window if monotonic | two pointers                          |
+| "minimum maximum"                   | binary search answer        | monotonic check                       |
+| "number of ways"                    | DP/combinatorics            | modulo arithmetic                     |
+| "large exponent"                    | fast power                  | binary exponentiation                 |
+| "gcd of many values"                | Euclid, prefix/suffix gcd   | gcd math                              |
 
 ---
 
@@ -364,13 +364,13 @@ components
 
 Translation examples:
 
-| Story | Graph Model |
-|-------|-------------|
-| Word ladder | word is node, one-letter change is edge |
+| Story             | Graph Model                              |
+| ----------------- | ---------------------------------------- |
+| Word ladder       | word is node, one-letter change is edge  |
 | Lock combinations | combination is state, wheel turn is edge |
-| Course schedule | prerequisite edge, topological sort |
-| Grid maze | cell is node, valid move is edge |
-| Social groups | users as nodes, relationships as edges |
+| Course schedule   | prerequisite edge, topological sort      |
+| Grid maze         | cell is node, valid move is edge         |
+| Social groups     | users as nodes, relationships as edges   |
 
 ## 4.7 DP
 
@@ -478,12 +478,12 @@ Can j be represented by a bitmask?
 
 Common compressions:
 
-| Original | Compression |
-|----------|-------------|
-| `dp[i][j]` depends on `i-1` | two rows |
-| 0/1 knapsack | one row, iterate capacity backward |
-| grid paths | one row if only top/left needed |
-| visited subset | bitmask |
+| Original                    | Compression                        |
+| --------------------------- | ---------------------------------- |
+| `dp[i][j]` depends on `i-1` | two rows                           |
+| 0/1 knapsack                | one row, iterate capacity backward |
+| grid paths                  | one row if only top/left needed    |
+| visited subset              | bitmask                            |
 
 ## 5.5 Monotonicity Hunting
 
@@ -862,14 +862,14 @@ For each pattern:
 
 Keep categories:
 
-| Mistake Type | Example |
-|--------------|---------|
-| Misread | missed "at most" vs "exactly" |
-| Wrong pattern | used sliding window with negatives |
-| Proof gap | greedy failed on hidden case |
-| Implementation | off-by-one in prefix |
-| Java trap | int overflow |
-| Edge case | empty answer / duplicates |
+| Mistake Type   | Example                            |
+| -------------- | ---------------------------------- |
+| Misread        | missed "at most" vs "exactly"      |
+| Wrong pattern  | used sliding window with negatives |
+| Proof gap      | greedy failed on hidden case       |
+| Implementation | off-by-one in prefix               |
+| Java trap      | int overflow                       |
+| Edge case      | empty answer / duplicates          |
 
 If the same category repeats, train that category.
 
@@ -1075,3 +1075,176 @@ large counts -> combinatorics/modulo
 Final mindset:
 
 > Competitive coding is not magic. It is disciplined transformation. Read the constraints, find the shape, choose the invariant, prove the move, then code carefully.
+
+## NEW DIAGRAM — Contest Timeline (Time Allocation Per Phase)
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  DIAGRAM: Competitive Coding Contest Timeline — 50-Minute Problem Allocation │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  TOTAL CONTEST: ~50 minutes per problem (adjust for total contest length)   │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │                                                                       │    │
+│  │  READ PHASE      THINK PHASE          CODE PHASE        TEST PHASE   │    │
+│  │  ────────────    ────────────        ────────────       ───────────  │    │
+│  │  0 ──────── 5    5 ──────── 15       15 ──────── 40     40 ──── 50  │    │
+│  │  │            │               │               │              │      │    │
+│  │  │ 5 min      │ 10 min        │ 25 min        │ 10 min       │      │    │
+│  │  │            │               │               │              │      │    │
+│  │  └────────────┴───────────────┴───────────────┴──────────────┘      │    │
+│  │       │              │               │                │              │    │
+│  │       ▼              ▼               ▼                ▼              │    │
+│  │  ┌──────────┐  ┌───────────┐  ┌───────────┐  ┌──────────────┐        │    │
+│  │  │Read twice│  │Brute force│  │Code clean │  │Dry run edge │        │    │
+│  │  │Restate in│  │Identify   │  │variables  │  │cases         │        │    │
+│  │  │1 sentence│  │bottleneck │  │named well │  │min, max,     │        │    │
+│  │  │          │  │Choose     │  │comment key│  │empty, single│        │    │
+│  │  │Constraints│  │pattern    │  │parts      │  │negatives,   │        │    │
+│  │  │N, time   │  │Prove/verify│ │compile    │  │overflow val │        │    │
+│  │  │What asks?│  │transition │  │early +    │  │             │        │    │
+│  │  │Edge cases│  │            │  │often      │  │SUBMIT!      │        │    │
+│  │  └──────────┘  └───────────┘  └───────────┘  └──────────────┘        │    │
+│  │                                                                       │    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  STEP-BY-STEP TIME ALLOCATION:                                               │
+│                                                                              │
+│  ① READ (0-5 min):                                                          │
+│     • Read problem statement TWICE before touching keyboard                  │
+│     • Restate in one sentence: "Given X, find Y"                            │
+│     • Extract N from constraints: n ≤ 10^5 → need O(n log n) or better      │
+│     • Identify: sorted? duplicates? negative? updates? → affects pattern    │
+│     • Note: 1 second in Java ≈ 1e8 ops → use this to estimate budget        │
+│                                                                              │
+│  ② THINK (5-15 min):                                                        │
+│     • Write brute force first (always) — reveals structure, states, what repeats│
+│     • Identify the repeated operation: that is your bottleneck              │
+│     • Match bottleneck to data structure: O(1) lookup → HashMap              │
+│     • Prove the algorithm (exchange argument for greedy, recurrence for DP)  │
+│     • If stuck > 10 min: consider binary search on answer, or model as graph │
+│                                                                              │
+│  ③ CODE (15-40 min):                                                        │
+│     • Code in this order: types → helper functions → main logic → combine   │
+│     • Variables named: `left`, `right`, `target`, `count` NOT `i`, `j`, `k` │
+│     • Comment the invariant: `// Invariant: window satisfies condition`      │
+│     • Compile EARLY (C++: g++ -Wall; Java: javac; Python: python -m py_compile)│
+│     • Add fast I/O if needed: ios::sync_with_stdio(false) in C++            │
+│     • Verify code compiles WITHOUT RUNNING before proceeding                │
+│                                                                              │
+│  ④ TEST (40-50 min):                                                        │
+│     • Run through test cases mentally AND with actual code:                  │
+│       - Minimum input: n=1, empty array, single node                        │
+│       - Maximum input: n=10^5, largest values                               │
+│       - Edge cases: all same, sorted ascending, sorted descending           │
+│       - Negative numbers: if applicable                                     │
+│       - Duplicates: if applicable                                           │
+│       - Answer = 0 or answer = empty: the 0-case matters!                   │
+│     • SUBMIT ONLY AFTER dry run passes on at least 3 test cases            │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────────┐    │
+│  │  TIME EMERGENCY RULES:                                                 │    │
+│  │  • Stuck for > 10 min → say approach out loud, try constraint check  │    │
+│  │  • Code takes > 25 min → explain pseudocode, skip to next problem    │    │
+│  │  • TLE after submit → check: is I/O fast? Is loop nested O(n^2)?    │    │
+│  │  • Wrong answer → dry run on smallest failing case, add edge cases   │    │
+│  │  • Compile error → read the LAST line of error (actual error line)   │    │
+│  └──────────────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Historical Evolution
+
+> **Why this section**: mental-model pedagogy requires knowing the prior art. The frameworks below all have named predecessors — naming them prevents reinventing the wheel and connects your reasoning to decades of computer-science practice.
+
+| Year | Predecessor | Contribution |
+| --- | --- | --- |
+| 1970/1977 | ACM | ICPC — competitive programming as a discipline |
+| 1968/1973 | Knuth | *TAOCP Vol 1-3* — algorithm analysis and competitive fundamentals |
+| 1986 | Bentley | *Programming Pearls* — column-based competitive coding essays |
+| 2010 | Halim & Halim | *Competitive Programming 3* — systematic CP training |
+| 1983/2011 | Sedgewick | *Algorithms* — textbook algorithm analysis and implementation |
+
+**Evolution narrative**: Competitive coding as a systematic practice emerged from the formalization of algorithm analysis and the competitive programming movement. Donald Knuth's 1968-1973 *Art of Computer Programming* Volumes 1-3 established the mathematical vocabulary for analyzing algorithms and provided the baseline algorithms (sorting, searching, graph traversal) that competitive programmers still build upon. Jon Bentley's 1986 *Programming Pearls* (column in Communications of the ACM, later collected into books in 1986 and 2000) pioneered the case-study approach to competitive coding: here is a problem, here is the naive solution, here is why it is slow, here is the O(N log N) rewrite. The ACM International Collegiate Programming Contest (ICPC, regionals starting 1970, world finals 1977) provided the competitive venue that tested and refined these techniques under time pressure. Steven Halim's 2010 *Competitive Programming 3* synthesized the training methodology into a learnable curriculum. Robert Sedgewick's 1983/2011 *Algorithms* textbooks provided the rigorous analysis and clean implementations that competitive programmers reference daily.
+
+**Modern practice anchor**: Today's competitive coding practice (CP-Algorithms, KACTL, AtCoder Library, LeetCode) directly inherits from the Knuth-Bentley-Halim lineage: mathematical rigor in complexity analysis, clean algorithm templates, and the disciplined problem-solving pipeline (read constraints → find shape → choose invariant → prove move → code carefully).
+
+## Production Reality
+
+> **Why this section**: a mental model is only useful if it predicts what breaks in production. Below are named failure modes tied to this mental model, with debug workflows and modern observability tools.
+
+### Failure Mode 1: TLE (Time Limit Exceeded) — O(n^2) Brute Force at n=10^5
+
+**What goes wrong**: A contestant writes a nested-loop solution. It passes all sample tests (n=100). At n=100,000, O(n^2) = 10 billion operations, and the judge terminates the submission at the 2-second limit. The solution is correct but too slow. The contestant wasted 40 minutes trying to debug "why is my O(n^2) algorithm wrong?" — it wasn't wrong, it was slow.
+
+**Cost**: 40 minutes of contest time lost. Rank drop from top 100 to top 1000. For interviews: candidate submits a correct solution that times out — automatic rejection regardless of correctness.
+
+**Debug workflow**:
+1. Always compute complexity before submitting: n=10^5 → O(n log n) or O(n). If nested loops, it's O(n^2) → will TLE.
+2. Add fast I/O as a habit: `ios::sync_with_stdio(false); cin.tie(nullptr);` in C++, `sys.stdin.readline` in Python. Slow I/O alone can cause TLE at n=10^5.
+3. Use the constraint quick-check: "n ≤ 10^5 → need O(n log n) or O(n)." If your solution is O(n^2), it will TLE before you debug correctness.
+4. In practice: run your solution locally on n=10^5 before submitting. If it takes >2 seconds locally, it's a TLE.
+
+### Failure Mode 2: Codeforces Round Penalty — Wrong Submission Counts Against Score
+
+**What goes wrong**: A contestant submits a solution that fails on hidden test cases. The wrong answer is locked in. They spend 25 minutes debugging, submit again — wrong again. Each wrong submission adds 10-20 minute penalty. The contest ends with 2 solved problems and 3 wrong attempts, placing 500th instead of 200th. The penalty system in Codeforces means a single wrong submission can cost 50+ minutes of time.
+
+**Cost**: Rank degradation of 300+ positions. Prize money lost. Psychological impact of seeing the scoreboard drop. For interview prep: wrong submissions on LeetCode "contest mode" reduce your contest rating.
+
+**Debug workflow**:
+1. Always dry-run on edge cases before submitting: empty input, single element, all same values, maximum values, negative numbers.
+2. Use the 2-submission rule: submit once, then only submit again after dry-running your code on paper for all edge cases.
+3. For each problem, write the solution complexity at the top of your code. Before submitting, verify it matches the constraint requirement.
+4. Practice on Codeforces with penalty tracking on. Build the habit of only submitting when you've verified edge cases.
+
+### Failure Mode 3: Contest Template Failures — Missing Fast I/O
+
+**What goes wrong**: A contestant copies their template from a previous contest. It has `cin.tie(nullptr)` but is missing `ios::sync_with_stdio(false)`. At n=10^5 with 10^5 queries, `cin` alone takes 3+ seconds vs 0.2 seconds with sync disabled. The solution is O(n log n) correct, but the I/O overhead causes TLE. The contestant spends 20 minutes micro-optimizing the algorithm when the fix is two lines.
+
+**Cost**: 20 minutes wasted on irrelevant optimization. TLE submission. Rank drop. Psychological: "my O(n log n) solution should be fast enough!" — the real problem is I/O.
+
+**Debug workflow**:
+1. Always include fast I/O in your template. For C++: `ios::sync_with_stdio(false); cin.tie(nullptr);`. For Python: `import sys; input = sys.stdin.readline`.
+2. Time your template's I/O: read 10^5 integers with your template and verify it completes in <0.5 seconds.
+3. Use `#ifdef LOCAL` to enable debug output in practice but strip it in submissions.
+4. Have a minimal "safe template" with fast I/O, long type aliases, and no extra includes that compiles in <1 second.
+
+### Failure Mode 4: Brute Force O(n^2) at Scale — SLA Breach in System Design Context
+
+**What goes wrong**: A production service needs to find all pairs of users with matching attributes. The engineer uses nested loops (O(n^2)) because it worked in development with 100 users. In production with 1 million users, 10^12 operations run for 6+ hours before timing out. The feature is rolled back.
+
+**Cost**: Feature rollback. Engineering time to implement correct solution. Delayed product launch. If discovered during a live demo, reputational damage.
+
+**Debug workflow**:
+1. Always compute: n=10^6 → O(n^2) = 10^12 ops, which is ~2.7 hours at 10^8 ops/sec. Any nested loop over production data volume is a guaranteed timeout.
+2. Add a complexity comment in PR review: "// O(n^2) — acceptable for n < 1000" — this prevents O(n^2) from sneaking into production code paths.
+3. Implement a "complexity budget" in CI: if a new function has nested loops over unbounded collections, fail the PR with a comment.
+4. Use production-like data volumes in staging testing: test with 100K-1M rows before merging any code touching large datasets.
+
+### Modern Production Tools
+
+- **KACTL / AtCoder Library (ACL)**: Pre-built, pre-tested templates with fast I/O included. Use them instead of custom templates — they compile in <2 seconds and have been stress-tested in contests.
+- **pytest-benchmark / JMH**: Measure actual throughput of your algorithm on production-like data sizes. Verify O(n log n) beats O(n^2) at the actual n before shipping.
+- **Codeforces / AtCoder practice rounds**: Build the habit of dry-running before submitting. The scoreboard consequence (penalty minutes) trains discipline.
+- **LeetCode "Contest Mode"**: Practice under time pressure without knowing problem difficulty. Build pattern recognition speed under stress.
+- **GitHub Actions complexity linter**: Run static analysis on PR that flags `for i in range(n): for j in range(n)` without a comment explaining why it's acceptable for the given constraints.
+
+## Conceptual Depth & Topical Breadth
+
+> **Why this section**: this mental model rests on a specific invariant, and its variants cover a spectrum of trade-offs. Knowing the invariant and the variants lets you apply the model correctly across problems.
+
+### Invariant
+
+**Time pressure requires pre-built mental templates**. The invariant is that competitive programming success depends on recognizing problem types instantly and applying pre-practiced solutions. Under contest pressure, there is no time for derivation — the solution must flow from pattern recognition. The internal mechanism is **schema-based problem solving**: problems are categorized by structure and solution type, and each category has a standard approach.
+
+### Variants Comparison
+
+| Problem Class | Strategy | Common Pitfalls | Time Allocation |
+| --- | --- | --- | --- |
+| Constructive | Build incrementally, verify | Missing edge case | High (novel) |
+| Interactive | Think from both sides | Wrong query assumption | High (novel) |
+| Output-only | Analyze for pattern / formula | Missing insight | Medium |
+| Standard (array/tree/graph) | Pattern recognition + template | Implementation bugs | Low (known) |
+| Optimization (DP/greedy) | State definition + transition | State explosion | Medium |
+| Query-based (segment tree) | Preprocess, answer | Index confusion | Medium |

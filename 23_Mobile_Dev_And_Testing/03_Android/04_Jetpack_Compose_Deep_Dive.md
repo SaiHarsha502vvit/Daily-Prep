@@ -1051,12 +1051,15 @@ LazyColumn {
 ## 14. Interview Q&A on Compose
 
 **Q: "What is recomposition and how does Compose minimize it?"**
+
 > "Recomposition is the process of re-running composable functions when the state they read changes. Compose minimizes it through smart recomposition: it only re-executes composables that actually read changed state, skipping all others. A composable is skippable if its parameters are stable — meaning Compose can determine whether they've changed without running the composable. Data classes, primitive types, and StateFlow values are typically stable. Unstable types (mutable collections, non-data classes) force Compose to always recompose the consumer. The @Stable and @Immutable annotations can mark types as stable to help the compiler generate optimal code."
 
 **Q: "What is the difference between remember and rememberSaveable?"**
+
 > "Both cache values across recompositions, but they differ in survival scope. `remember` survives recompositions but is lost when the composable leaves the composition — so it doesn't survive rotation or process death. `rememberSaveable` persists its value in the instance state Bundle, the same mechanism as `onSaveInstanceState`, so it survives both configuration changes and process death. The tradeoff: rememberSaveable has a ~1MB size limit and requires the stored value to be Parcelable or serializable. For complex data, the ViewModel with SavedStateHandle is the right place, not rememberSaveable."
 
 **Q: "What is state hoisting and why is it important?"**
+
 > "State hoisting is moving state from a composable up to its caller, making the composable stateless — it receives state as input and emits events as output. The benefits: stateless composables are easier to test (no internal state to set up), easier to reuse (the caller controls the state), and easier to preview in Android Studio. The principle is 'state flows down, events flow up' — a child composable calls a callback when the user interacts, and the parent (or ViewModel) decides what to do with that event and updates the state that flows back down. This creates a unidirectional data flow that is easy to reason about and debug."
 
 ---

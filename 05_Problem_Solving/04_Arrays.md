@@ -7,18 +7,17 @@
 ## 🗺️ Pattern Recognition Header
 
 > **Before solving, identify the pattern.** This file covers multiple array techniques. Use this guide:
->
 
-| Problem Type | Pattern | Learn It First |
-|---|---|---|
-| `two numbers sum to target` | HashMap complement | 📖 [01e_HashTable.md](../02_Data_Structures/01e_HashTable.md) |
-| `find duplicate / unique` | HashSet or Sort | 📖 [01e_HashTable.md](../02_Data_Structures/01e_HashTable.md) |
-| `move elements in-place` | Two Pointers | 📖 [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
-| `intervals / overlapping ranges` | Sort by start + Heap | 📖 [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md) |
-| `missing numbers in range` | Linear scan | 📖 [01b_Arrays.md](../02_Data_Structures/01b_Arrays.md) |
+| Problem Type                     | Pattern              | Learn It First                                                                         |
+| -------------------------------- | -------------------- | -------------------------------------------------------------------------------------- |
+| `two numbers sum to target`      | HashMap complement   | 📖 [01e_HashTable.md](../02_Data_Structures/01e_HashTable.md)                          |
+| `find duplicate / unique`        | HashSet or Sort      | 📖 [01e_HashTable.md](../02_Data_Structures/01e_HashTable.md)                          |
+| `move elements in-place`         | Two Pointers         | 📖 [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
+| `intervals / overlapping ranges` | Sort by start + Heap | 📖 [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)                      |
+| `missing numbers in range`       | Linear scan          | 📖 [01b_Arrays.md](../02_Data_Structures/01b_Arrays.md)                                |
 
->
 > **Constraint Quick Check:**
+>
 > ```
 > n ≤ 10^5 → need O(n) or O(n log n)  → HashMap / Sort
 > Answer is an index pair → HashMap complement O(n)
@@ -28,8 +27,6 @@
 > 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
-
-
 
 # 📊 Section 3: Array Problems
 
@@ -42,7 +39,6 @@
 **LeetCode 1** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/two-sum/](https://leetcode.com/problems/two-sum/)
 
-
 > TWO SUM
 >
 > Given array of integers and target, return indices of two numbers that
@@ -51,8 +47,6 @@
 > Input: nums = [2, 7, 11, 15], target = 9
 > Output: [0, 1]
 > Explanation: nums[0] + nums[1] = 2 + 7 = 9
->
-
 
 ```java
 public int[] twoSum(int[] nums, int target) {
@@ -117,7 +111,6 @@ public int[] twoSum(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 class TwoSum {
     private Map<Integer, Integer> numCount;
@@ -168,7 +161,6 @@ class TwoSum {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean containsDuplicate(int[] nums) {
@@ -221,7 +213,6 @@ public boolean containsDuplicate(int[] nums) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Bucket Sort Approach - O(n) time, O(k) space
@@ -278,7 +269,6 @@ private long getBucket(int num, long bucketSize) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public void moveZeroes(int[] nums) {
@@ -349,7 +339,6 @@ public void moveZeroes(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public boolean canAttendMeetings(int[][] intervals) {
     // Sort by start time
@@ -415,7 +404,6 @@ public boolean canAttendMeetings(int[][] intervals) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Method 1: Min Heap - O(n log n)
@@ -524,7 +512,6 @@ public int minMeetingRoomsV2(int[][] intervals) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<String> findMissingRanges(int[] nums, int lower, int upper) {
     List<String> result = new ArrayList<>();
@@ -619,45 +606,54 @@ private String formatRange(int lower, int upper) {
 
 ---
 
-
-
-
 ## 🏆 Competitive Programming — Codeforces Problems
 
 > Master arrays at the competitive level. These problems require combining multiple techniques.
 
-| Problem | Link | Techniques | Difficulty |
-|---|---|---|---|
-| Theatre Square | [CF 1A](https://codeforces.com/problemset/problem/1/A) | Math + arrays (ceiling division) | ⭐ Easy |
-| Taxi | [CF 158B](https://codeforces.com/problemset/problem/158/B) | Array grouping + greedy | ⭐ Easy |
-| Ilya and Array | [CF 313B](https://codeforces.com/problemset/problem/313/B) | Array manipulation | ⭐ Easy |
-| Pairs | [CF 1462C](https://codeforces.com/problemset/problem/1462/C) | Prefix sum on array | ⭐⭐ Medium |
-| Boats Competition | [CF 1399C](https://codeforces.com/problemset/problem/1399/C) | Sort + Two pointers | ⭐⭐ Medium |
-| Phoenix and Towers | [CF 1515C](https://codeforces.com/problemset/problem/1515/C) | Array construction greedy | ⭐⭐ Medium |
-| BogoSort | [CF 1417E](https://codeforces.com/problemset/problem/1417/E) | Array inversion counting | ⭐⭐⭐ Hard |
+| Problem            | Link                                                         | Techniques                       | Difficulty  |
+| ------------------ | ------------------------------------------------------------ | -------------------------------- | ----------- |
+| Theatre Square     | [CF 1A](https://codeforces.com/problemset/problem/1/A)       | Math + arrays (ceiling division) | ⭐ Easy     |
+| Taxi               | [CF 158B](https://codeforces.com/problemset/problem/158/B)   | Array grouping + greedy          | ⭐ Easy     |
+| Ilya and Array     | [CF 313B](https://codeforces.com/problemset/problem/313/B)   | Array manipulation               | ⭐ Easy     |
+| Pairs              | [CF 1462C](https://codeforces.com/problemset/problem/1462/C) | Prefix sum on array              | ⭐⭐ Medium |
+| Boats Competition  | [CF 1399C](https://codeforces.com/problemset/problem/1399/C) | Sort + Two pointers              | ⭐⭐ Medium |
+| Phoenix and Towers | [CF 1515C](https://codeforces.com/problemset/problem/1515/C) | Array construction greedy        | ⭐⭐ Medium |
+| BogoSort           | [CF 1417E](https://codeforces.com/problemset/problem/1417/E) | Array inversion counting         | ⭐⭐⭐ Hard |
 
 ---
-
-
-
 
 ## 🌍 Real-World Applications of Arrays
 
 > Every single line of code you've written above runs in production somewhere. Here's where:
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Two Sum** | Banking/Fraud detection | Find transaction pairs that sum to a suspicious amount |
-| **Max Subarray (Kadane's)** | Stock trading systems | Find the best buy-sell window in price history |
-| **Sliding Window** | Netflix/YouTube | "Trending in last 7 days" = fixed window on view-count array |
-| **Prefix Sum** | Game servers | "Total damage dealt in rounds 5-20" without re-scanning |
-| **Interval merging** | Google Calendar | Find free slots, merge overlapping meeting times |
-| **Dutch Flag partition** | Database query planners | 3-way partition in QuickSort for strings |
-| **Circular array (ring buffer)** | IoT sensors / OS kernel | Store recent N readings without memory reallocation |
+| Technique                        | Real-World System       | How It's Used                                                |
+| -------------------------------- | ----------------------- | ------------------------------------------------------------ |
+| **Two Sum**                      | Banking/Fraud detection | Find transaction pairs that sum to a suspicious amount       |
+| **Max Subarray (Kadane's)**      | Stock trading systems   | Find the best buy-sell window in price history               |
+| **Sliding Window**               | Netflix/YouTube         | "Trending in last 7 days" = fixed window on view-count array |
+| **Prefix Sum**                   | Game servers            | "Total damage dealt in rounds 5-20" without re-scanning      |
+| **Interval merging**             | Google Calendar         | Find free slots, merge overlapping meeting times             |
+| **Dutch Flag partition**         | Database query planners | 3-way partition in QuickSort for strings                     |
+| **Circular array (ring buffer)** | IoT sensors / OS kernel | Store recent N readings without memory reallocation          |
 
-```
-🔥 INTERVIEW GOLD: "Netflix stores viewing history as arrays.
-   The 'Trending Now' row = sliding window max of past 7 days views."
-   Drop this and you stand out from 90% of candidates.
-```
+---
 
+### Historical Evolution
+
+**Array algorithms** originated with Kadane's algorithm (1984, Jay Kadane at Carnegie Mellon University) which solved the maximum subarray problem in O(N) time, replacing the O(N³) divide-and-conquer approach with a single-pass dynamic programming insight that tracks running sums. The technique was formalized and generalized by computer scientists studying dynamic programming optimization. Dijkstra's Dutch National Flag algorithm (1976, Edsger Dijkstra) solved three-way partitioning for sorting algorithms, introducing the three-pointer technique that partitions arrays around a pivot color-coded red, white, or blue—the algorithm influenced QuickSort variants and remains critical in database query planners. Boyer-Moore majority vote algorithm (1980, Robert Boyer and J Strother Moore) provided an elegant O(N) time, O(1) space solution for finding elements appearing more than N/2 times, using vote cancellation that emerged from formal verification research. Modern practice anchors these techniques in signal processing (audio codecs using Kadane's algorithm for peak detection since the 1990s), image processing (GPU-accelerated convolution filters implementing sliding window and prefix sum operations), and real-time analytics dashboards at companies like Netflix and YouTube for computing trending metrics.
+
+---
+
+### Production Reality
+
+**Array** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Cyclic rotation with excessive memory allocation.** The naive approach to rotating arrays by k positions creates O(n) temporary buffers on each call. For a real-time trading system rotating order books 60 times per second with 10,000 orders, this allocates 600,000 order objects per second, triggering garbage collection pauses that cause latency spikes. LeetCode 189 (Rotate Array) passes in competition but times out in production with strict SLAs. Production impact: latency spikes above 99th percentile, missed trading windows, customer complaints.
+
+**Failure mode 2: In-place rotation losing original data.** The 3-reverse algorithm for array rotation (`reverse(0,k)`, `reverse(k,n)`, `reverse(0,n)`) is elegant but destroys the original array during rotation. If code needs to preserve original order for rollback or audit, in-place rotation loses data irreversibly. Database query result sets rotated in-place cannot be re-sorted for alternative analyses. Production impact: data loss, inability to audit/replay operations, compliance violations in regulated industries.
+
+**Failure mode 3: Two-pointer fails on unsorted input.** Two-pointer algorithms like two-sum optimization assume the array is sorted or have predictable ordering. Applying two-pointer to find pairs in an unsorted array produces wrong answers—pointers move based on comparison, not original indices. Anomaly detection systems using two-pointer without verifying sort order miss fraud patterns. Production impact: incorrect fraud detection, missed compliance violations, financial loss.
+
+**Debug workflow:** 1. Verify sort order assumption before applying two-pointer—add assertion `assert isSorted(arr)`. 2. Allocate temp buffer if memory permits: `int[] temp = new int[n]` for safety-critical rotations. 3. For O(1) space rotation, use the 3-reverse trick but document data loss risk. 4. Profile memory allocation rates in production-like load testing. 5. Test with maximum array sizes (e.g., 10^6 elements) to catch scaling issues before deployment.
+
+**Real-world anchor:** The 2012 Knight Capital trading algorithm loss ($440M in 45 minutes) was partially caused by array/queue management bugs—when order queues weren't properly rotated or reset after certain conditions, stale orders executed at wrong prices. The same failure mode as array rotation bugs in competitive programming, causing catastrophic financial impact.

@@ -183,7 +183,6 @@
 
 ```
 
-
 ```java
 // How loadClass() works (simplified)
 protected Class<?> loadClass(String name, boolean resolve) {
@@ -225,18 +224,17 @@ protected Class<?> loadClass(String name, boolean resolve) {
 
 ---
 
-
-
 🔬 **Section Challenge — ⚙️ Class Loader Subsystem — Deep Dive**
 
 **Challenge 1 (JVM Reasoning):** Two jars contain `com.app.Util`. The app works locally, but production loads the older class. How do class loader delegation and classpath order explain the bug?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Class loading is usually parent-first: bootstrap, platform, application, then custom loaders. Once a loader defines a class for a binary name, that definition is reused for that loader.
 
 If the older jar appears earlier on the classpath or is visible to a parent loader, the newer jar may never be used. Debug with `-verbose:class`, inspect the runtime classpath, and remember that class identity is the pair `(binary name, defining class loader)`.
-</details>
 
+</details>
 
 ## 📌 Creating Custom Class Loaders
 
@@ -317,18 +315,17 @@ public class HotReloadClassLoader extends ClassLoader {
 
 ---
 
-
-
 🔬 **Section Challenge — 📌 Creating Custom Class Loaders**
 
 **Challenge 1 (Class Identity):** A hot-reload class loader reloads `com.app.Plugin`, but casting an old plugin instance to the new `Plugin` type throws `ClassCastException`. Why?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 In the JVM, class identity is not only the package and class name. It is the class name plus the defining class loader. `com.app.Plugin` loaded by loader A and `com.app.Plugin` loaded by loader B are different runtime types.
 
 For hot reload, create a fresh child loader per reload, keep shared API interfaces in a stable parent loader, drop references to old instances/loaders, and close URLClassLoader resources so old classes can be garbage collected.
-</details>
 
+</details>
 
 ## 🧠 JVM Memory Model — Complete Deep Dive
 
@@ -413,7 +410,6 @@ For hot reload, create a fresh child loader per reload, keep shared API interfac
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📚 Stack Frame Structure
@@ -465,7 +461,6 @@ For hot reload, create a fresh child loader per reload, keep shared API interfac
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 // EXAMPLE: How this code maps to stack frame
 public int calculate(int a, int b) {
@@ -497,8 +492,6 @@ public int calculate(int a, int b) {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 📚 Stack Frame Structure**
 
@@ -557,7 +550,6 @@ public int calculate(int a, int b) {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## ⚖️ Gc Algorithms Comparison
 
@@ -624,7 +616,6 @@ public static void memoryInfo() {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 **JIT OPTIMIZATIONS:**
 
@@ -819,9 +810,6 @@ public class VarHandlesDemo {
 
 ---
 
-
-
-
 ## 📌 Building a Mini — Framework
 
 ```java
@@ -910,9 +898,6 @@ User user = service.getUser(123);
 
 ---
 
-
-
-
 ## 📋 JVM Tuning Cheat Sheet
 
 ```
@@ -960,11 +945,7 @@ User user = service.getUser(123);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
 
 ## 🔬 JVM Internals Mastery Checklist
 
@@ -1016,7 +997,6 @@ User user = service.getUser(123);
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 _"Understanding JVM internals separates junior developers from senior architects."_ 🔧
@@ -1032,7 +1012,6 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ---
 
 **Prev**: [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md)
-
 
 ---
 

@@ -14,14 +14,19 @@
  * QUESTION: Write the complete TypeScript interface for this response.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ============================================================
 // ✅ SOLUTION — TypeScript interfaces
 // ============================================================
 
 /** Valid states an order can be in (string literal union). */
-type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+type OrderStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
 
 /**
  * A single line item within an order.
@@ -43,11 +48,11 @@ interface LineItem {
  */
 interface ShippingAddress {
   line1: string;
-  line2?: string;     // optional — apartment / suite / etc.
+  line2?: string; // optional — apartment / suite / etc.
   city: string;
   state: string;
   postalCode: string;
-  country: string;    // ISO 3166-1 alpha-2, e.g. 'US'
+  country: string; // ISO 3166-1 alpha-2, e.g. 'US'
 }
 
 /**
@@ -57,11 +62,11 @@ interface OrderResponse {
   orderId: string;
   status: OrderStatus;
   totalAmount: number;
-  currency: string;            // ISO 4217, e.g. 'USD'
+  currency: string; // ISO 4217, e.g. 'USD'
   lineItems: LineItem[];
   shippingAddress: ShippingAddress;
-  createdAt: string;           // ISO 8601 timestamp — parse if you need Date math
-  estimatedDelivery: string;   // ISO 8601 date string, e.g. '2026-06-02'
+  createdAt: string; // ISO 8601 timestamp — parse if you need Date math
+  estimatedDelivery: string; // ISO 8601 date string, e.g. '2026-06-02'
   trackingNumber: string | null; // null before the shipment is picked up
 }
 
@@ -69,26 +74,26 @@ interface OrderResponse {
 // Usage in API tests
 // ============================================================
 
-test('GET /orders/:id — verify structure', async ({ request }) => {
-  const response = await request.get('/api/v1/orders/ORD-2026-001');
+test("GET /orders/:id — verify structure", async ({ request }) => {
+  const response = await request.get("/api/v1/orders/ORD-2026-001");
   expect(response.ok()).toBeTruthy();
 
   // Cast with the typed interface — get compile-time safety in assertions
   const order = (await response.json()) as OrderResponse;
 
   // TypeScript now knows the shape — full autocomplete + type checking
-  expect(order.orderId).toBe('ORD-2026-001');
-  expect(order.status).toBe('PROCESSING');
+  expect(order.orderId).toBe("ORD-2026-001");
+  expect(order.status).toBe("PROCESSING");
   expect(order.totalAmount).toBeGreaterThan(0);
   expect(order.lineItems).toHaveLength(1);
 
   const item = order.lineItems[0]!;
-  expect(item.sku).toBe('PROD-A');
+  expect(item.sku).toBe("PROD-A");
   expect(item.quantity).toBeGreaterThan(0);
   expect(item.discountApplied).toBe(true);
-  expect(item.discountCode).toBe('SAVE10');
+  expect(item.discountCode).toBe("SAVE10");
 
-  expect(order.shippingAddress.city).toBe('Austin');
+  expect(order.shippingAddress.city).toBe("Austin");
   expect(order.trackingNumber).toBeNull(); // not shipped yet
 });
 
@@ -103,12 +108,12 @@ interface BaseOrder {
 }
 
 interface PendingOrder extends BaseOrder {
-  status: 'PENDING';
+  status: "PENDING";
   trackingNumber: null; // always null when PENDING
 }
 
 interface ShippedOrder extends BaseOrder {
-  status: 'SHIPPED' | 'DELIVERED';
+  status: "SHIPPED" | "DELIVERED";
   trackingNumber: string; // always present when shipped
   estimatedDelivery: string;
 }
@@ -116,7 +121,7 @@ interface ShippedOrder extends BaseOrder {
 type TypedOrder = PendingOrder | ShippedOrder;
 
 function assertOrderShipped(order: TypedOrder): asserts order is ShippedOrder {
-  if (order.status !== 'SHIPPED' && order.status !== 'DELIVERED') {
+  if (order.status !== "SHIPPED" && order.status !== "DELIVERED") {
     throw new Error(`Expected shipped/delivered order, got ${order.status}`);
   }
 }

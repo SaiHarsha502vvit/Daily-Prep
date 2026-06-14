@@ -11,6 +11,7 @@ This is the MIT/IIT-level guide to building an **interview problem-solving brain
 ---
 
 ## Table of Contents
+
 1. [The 5W+H Problem Analysis Framework](#1-the-5wh-problem-analysis-framework)
 2. [The First 60 Seconds — What Separates Hire from No-Hire](#2-the-first-60-seconds)
 3. [Parameter Recognition — Reading the Problem Like Source Code](#3-parameter-recognition)
@@ -50,40 +51,40 @@ Every problem — whether it's a LeetCode question, a SQL query, a system design
 
 **Example: "Given an array of integers, find two numbers that add up to a target"**
 
-| Question | What You Ask | What You Discover |
-|----------|-------------|-------------------|
-| **WHAT** | What is the input? What is the output? What are the constraints? | Input: int[], target int. Output: indices. Constraint: exactly one solution exists |
-| **WHY** | Why is brute force not enough? Why do we need optimization? | O(n²) brute force → need O(n). Because n can be 10⁴-10⁵ |
-| **WHERE** | Where does the data live? Where do we store intermediate results? | Array in memory. HashMap for complement lookup |
-| **WHEN** | When do we check? When do we insert? When do we return? | Check BEFORE insert (avoids using same element twice) |
-| **WHO** | Who are the actors? Who reads/writes? | Single pass: one pointer traverses, HashMap stores history |
-| **HOW** | How do we implement? How do we handle edge cases? | HashMap: key=value, val=index. Return immediately on match |
+| Question  | What You Ask                                                      | What You Discover                                                                  |
+| --------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **WHAT**  | What is the input? What is the output? What are the constraints?  | Input: int[], target int. Output: indices. Constraint: exactly one solution exists |
+| **WHY**   | Why is brute force not enough? Why do we need optimization?       | O(n²) brute force → need O(n). Because n can be 10⁴-10⁵                            |
+| **WHERE** | Where does the data live? Where do we store intermediate results? | Array in memory. HashMap for complement lookup                                     |
+| **WHEN**  | When do we check? When do we insert? When do we return?           | Check BEFORE insert (avoids using same element twice)                              |
+| **WHO**   | Who are the actors? Who reads/writes?                             | Single pass: one pointer traverses, HashMap stores history                         |
+| **HOW**   | How do we implement? How do we handle edge cases?                 | HashMap: key=value, val=index. Return immediately on match                         |
 
 ### Applying 5W+H to a SQL Problem
 
 **Example: "Find the second highest salary"**
 
-| Question | What You Ask | What You Discover |
-|----------|-------------|-------------------|
-| **WHAT** | What table? What columns? What if ties? What if < 2 employees? | Employee(id, salary). Need DISTINCT. Return NULL if not found |
-| **WHY** | Why not just ORDER BY LIMIT? Why subquery? | LIMIT works but need NULL handling. OFFSET 1 might return nothing |
-| **WHERE** | Where in the query execution order does filtering happen? | FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT |
-| **WHEN** | When do duplicates matter? When is NULL needed? | DISTINCT before ranking. NULL when no second salary exists |
-| **WHO** | Who needs this? What's the business context? | HR dashboard showing salary tiers. Need for any Nth salary |
-| **HOW** | How to generalize? | `DENSE_RANK()` or subquery with `OFFSET N-1 LIMIT 1` wrapped in subquery for NULL |
+| Question  | What You Ask                                                   | What You Discover                                                                 |
+| --------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **WHAT**  | What table? What columns? What if ties? What if < 2 employees? | Employee(id, salary). Need DISTINCT. Return NULL if not found                     |
+| **WHY**   | Why not just ORDER BY LIMIT? Why subquery?                     | LIMIT works but need NULL handling. OFFSET 1 might return nothing                 |
+| **WHERE** | Where in the query execution order does filtering happen?      | FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT                      |
+| **WHEN**  | When do duplicates matter? When is NULL needed?                | DISTINCT before ranking. NULL when no second salary exists                        |
+| **WHO**   | Who needs this? What's the business context?                   | HR dashboard showing salary tiers. Need for any Nth salary                        |
+| **HOW**   | How to generalize?                                             | `DENSE_RANK()` or subquery with `OFFSET N-1 LIMIT 1` wrapped in subquery for NULL |
 
 ### Applying 5W+H to System Design
 
 **Example: "Design a URL shortener"**
 
-| Question | What You Ask | What You Discover |
-|----------|-------------|-------------------|
-| **WHAT** | What features? What scale? What SLA? | Create short URL, redirect, analytics. 100M URLs/month, 10:1 read:write |
-| **WHY** | Why not just hash? Why distributed? | Hash collision at scale. Single DB won't handle 1B reads/month |
-| **WHERE** | Where to store? Where to cache? Where to generate IDs? | DB for persistence, Redis for hot URLs, distributed ID generator |
-| **WHEN** | When to expire? When to cache-evict? When to scale? | TTL-based expiry, LRU eviction, auto-scale at 70% capacity |
-| **WHO** | Who calls the API? Who are the failure modes? | Web clients, mobile apps. DB down, cache miss, ID collision |
-| **HOW** | How to generate short codes? How to handle redirects? | Base62 encoding of auto-increment ID. 301 permanent vs 302 temporary |
+| Question  | What You Ask                                           | What You Discover                                                       |
+| --------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **WHAT**  | What features? What scale? What SLA?                   | Create short URL, redirect, analytics. 100M URLs/month, 10:1 read:write |
+| **WHY**   | Why not just hash? Why distributed?                    | Hash collision at scale. Single DB won't handle 1B reads/month          |
+| **WHERE** | Where to store? Where to cache? Where to generate IDs? | DB for persistence, Redis for hot URLs, distributed ID generator        |
+| **WHEN**  | When to expire? When to cache-evict? When to scale?    | TTL-based expiry, LRU eviction, auto-scale at 70% capacity              |
+| **WHO**   | Who calls the API? Who are the failure modes?          | Web clients, mobile apps. DB down, cache miss, ID collision             |
+| **HOW**   | How to generate short codes? How to handle redirects?  | Base62 encoding of auto-increment ID. 301 permanent vs 302 temporary    |
 
 ---
 
@@ -283,14 +284,13 @@ When you read the problem statement, certain **words** should trigger **immediat
 
 ---
 
-
 🔬 **Section Challenge — 3. Parameter Recognition — Reading the Problem Like Source Code**
 
 **Challenge 1 (Constraint Mapping):** You are given an array of integers $N$ where $N \le 10^5$, and a target $K$. You need to find the number of contiguous subarrays that sum to $K$. A junior dev suggests sorting the array first and using two pointers. Why is this technically flawed, and what specific constraint keyword proves it?
 
 <details><summary>Answer</summary>
 
-The keyword **"contiguous subarray"** explicitly prohibits sorting. Sorting destroys the original relative ordering of the elements, which is the defining characteristic of a contiguous subarray. While $N \le 10^5$ *does* suggest an $O(N)$ or $O(N \log N)$ algorithm, the correct approach for contiguous sum queries without sorting is a **Prefix Sum with a HashMap** to achieve $O(N)$ time.
+The keyword **"contiguous subarray"** explicitly prohibits sorting. Sorting destroys the original relative ordering of the elements, which is the defining characteristic of a contiguous subarray. While $N \le 10^5$ _does_ suggest an $O(N)$ or $O(N \log N)$ algorithm, the correct approach for contiguous sum queries without sorting is a **Prefix Sum with a HashMap** to achieve $O(N)$ time.
 
 </details>
 
@@ -422,14 +422,13 @@ PATTERN: DP variants
 
 ---
 
-
 🔬 **Section Challenge — 4. The Decision Engine — DS/Algorithm/Pattern Selection**
 
 **Challenge 1 (Design Trade-offs):** You need to design an in-memory cache that supports `get(key)` and `put(key, value)` in $O(1)$ time, while evicting the least recently used (LRU) item when capacity is reached. Why does a standard HashMap fail this requirement, and what exact data structure composition is required to fix it?
 
 <details><summary>Answer</summary>
 
-A standard HashMap provides $O(1)$ `get` and `put`, but it inherently lacks **ordering**. To evict the *least recently used* item, you must maintain a chronological order of access. To solve this, you compose a **HashMap with a Doubly Linked List**. The HashMap stores references to the Linked List nodes for $O(1)$ access, while the Doubly Linked List maintains the access order (moving accessed nodes to the head) allowing $O(1)$ eviction at the tail.
+A standard HashMap provides $O(1)$ `get` and `put`, but it inherently lacks **ordering**. To evict the _least recently used_ item, you must maintain a chronological order of access. To solve this, you compose a **HashMap with a Doubly Linked List**. The HashMap stores references to the Linked List nodes for $O(1)$ access, while the Doubly Linked List maintains the access order (moving accessed nodes to the head) allowing $O(1)$ eviction at the tail.
 
 </details>
 
@@ -551,7 +550,6 @@ ALWAYS SAY:
 ```
 
 ---
-
 
 🔬 **Section Challenge — 5. Complexity Reasoning — Think Before You Code**
 
@@ -810,14 +808,13 @@ TRAP: Greedy doesn't actually work
 
 ---
 
-
 🔬 **Section Challenge — 8. The Debugging Brain — When You're Stuck**
 
-**Challenge 1 (Dry Run Logic):** You are writing a Binary Search to find the *first* occurrence of a target in a sorted array with duplicates. Your loop condition is `while (lo <= hi)`. If `arr[mid] == target`, you execute `return mid;`. Why will this fail, and how do you debug it?
+**Challenge 1 (Dry Run Logic):** You are writing a Binary Search to find the _first_ occurrence of a target in a sorted array with duplicates. Your loop condition is `while (lo <= hi)`. If `arr[mid] == target`, you execute `return mid;`. Why will this fail, and how do you debug it?
 
 <details><summary>Answer</summary>
 
-Returning `mid` immediately upon finding the target is a flaw because you might have found the *second* or *third* occurrence, not the *first*. To debug and fix this, you must **not** return immediately. Instead, when `arr[mid] == target`, you should record the potential answer (`ans = mid`) and aggressively search the left half by setting `hi = mid - 1` to see if an even earlier occurrence exists.
+Returning `mid` immediately upon finding the target is a flaw because you might have found the _second_ or _third_ occurrence, not the _first_. To debug and fix this, you must **not** return immediately. Instead, when `arr[mid] == target`, you should record the potential answer (`ans = mid`) and aggressively search the left half by setting `hi = mid - 1` to see if an even earlier occurrence exists.
 
 </details>
 
@@ -896,7 +893,6 @@ but distributed. Snowflake IDs use bit manipulation — epoch time + machine ID
 
 ---
 
-
 🔬 **Section Challenge — 9. Cross-Domain Thinking — DSA × SQL × System Design × OOP**
 
 **Challenge 1 (System Design Translation):** How does the concept of a "Trie" (Prefix Tree) map to a large-scale System Design component, specifically for a search engine's autocomplete feature?
@@ -958,36 +954,39 @@ Level 5: TEACHER (12+ months)
 ### The Weekly Reflection Template
 
 ```markdown
-
 🔬 **Section Challenge — 10. The Growth Mindset Architecture**
 
 **Challenge 1 (Reflection Priority):** After failing a mock interview on a DP problem, you review the optimal solution and realize it was a standard 0/1 Knapsack variant. What is the single most important actionable note to write in your Weekly Reflection?
 
 <details><summary>Answer</summary>
 
-The most critical note is **NOT** the code template for 0/1 Knapsack. The critical note is the **Trigger Signal**: *"What specific keyword or constraint in the problem statement should have warned me this was 0/1 Knapsack instead of Greedy?"* (e.g., identifying that items were indivisible and the goal was global maximization under a hard capacity constraint). You must document the *recognition failure*, not just the solution.
+The most critical note is **NOT** the code template for 0/1 Knapsack. The critical note is the **Trigger Signal**: _"What specific keyword or constraint in the problem statement should have warned me this was 0/1 Knapsack instead of Greedy?"_ (e.g., identifying that items were indivisible and the goal was global maximization under a hard capacity constraint). You must document the _recognition failure_, not just the solution.
 
 </details>
 
 ### What I got right:
+
 - [Pattern I recognized correctly]
 - [Edge case I caught]
 
 ### What I missed:
+
 - [Pattern I should have seen]
 - [Optimization I missed]
 
 ### New pattern learned:
+
 - [Name]: [When to use] → [Template]
 
 ### Confidence level by category:
-- Arrays:        ████████░░  80%
-- Strings:       ██████░░░░  60%
-- Trees:         ███████░░░  70%
-- Graphs:        █████░░░░░  50%
-- DP:            ████░░░░░░  40%
-- System Design: ██████░░░░  60%
-- SQL:           ███████░░░  70%
+
+- Arrays: ████████░░ 80%
+- Strings: ██████░░░░ 60%
+- Trees: ███████░░░ 70%
+- Graphs: █████░░░░░ 50%
+- DP: ████░░░░░░ 40%
+- System Design: ██████░░░░ 60%
+- SQL: ███████░░░ 70%
 ```
 
 ---
@@ -996,22 +995,22 @@ The most critical note is **NOT** the code template for 0/1 Knapsack. The critic
 
 ### The "See X → Think Y → Do Z" Card
 
-| See in Problem | Think Pattern | Do This First |
-|----------------|---------------|---------------|
-| "subarray sum" | Prefix Sum | Build prefix[], then two-sum on prefixes |
-| "k elements" | Heap | MinHeap of size k for top-k, MaxHeap for bottom-k |
-| "contiguous" | Sliding Window | Define window condition, expand/shrink |
-| "sorted + target" | Two Pointer/BS | Two Pointer from both ends |
-| "shortest in graph" | BFS/Dijkstra | BFS for unit weight, Dijkstra otherwise |
-| "ordering dependency" | Topological Sort | Build in-degree map, BFS Kahn's |
-| "connected?" | Union-Find | Rank + path compression |
-| "all possibilities" | Backtracking | Recursive choices with undo |
-| "min/max with choices" | DP | Define state, find transition |
-| "next greater" | Monotonic Stack | Decreasing stack, pop when current > top |
-| "stream of data" | Balanced BST/Heap | TreeMap or two heaps for median |
-| "intervals overlap" | Sort by start | Sort, then greedy sweep |
-| "parentheses valid" | Stack | Push open, pop for close, match |
-| "design a class" | OOP + DS combo | Identify operations, pick optimal DS |
+| See in Problem         | Think Pattern     | Do This First                                     |
+| ---------------------- | ----------------- | ------------------------------------------------- |
+| "subarray sum"         | Prefix Sum        | Build prefix[], then two-sum on prefixes          |
+| "k elements"           | Heap              | MinHeap of size k for top-k, MaxHeap for bottom-k |
+| "contiguous"           | Sliding Window    | Define window condition, expand/shrink            |
+| "sorted + target"      | Two Pointer/BS    | Two Pointer from both ends                        |
+| "shortest in graph"    | BFS/Dijkstra      | BFS for unit weight, Dijkstra otherwise           |
+| "ordering dependency"  | Topological Sort  | Build in-degree map, BFS Kahn's                   |
+| "connected?"           | Union-Find        | Rank + path compression                           |
+| "all possibilities"    | Backtracking      | Recursive choices with undo                       |
+| "min/max with choices" | DP                | Define state, find transition                     |
+| "next greater"         | Monotonic Stack   | Decreasing stack, pop when current > top          |
+| "stream of data"       | Balanced BST/Heap | TreeMap or two heaps for median                   |
+| "intervals overlap"    | Sort by start     | Sort, then greedy sweep                           |
+| "parentheses valid"    | Stack             | Push open, pop for close, match                   |
+| "design a class"       | OOP + DS combo    | Identify operations, pick optimal DS              |
 
 ### Emergency Phrases for Interviews
 
@@ -1042,18 +1041,18 @@ When you finish:
 
 ## Cross-References to Existing Guides
 
-| Topic | Deep Dive In |
-|-------|-------------|
-| Data Structures Internals | [02_Data_Structures/](../02_Data_Structures/01_DataStructures_Complete.md) |
-| Algorithm Thinking | [03_Algorithms/01_Algorithm_Thinking](../03_Algorithms/01_Algorithm_Thinking.md) |
-| Pattern Templates | [04_Patterns_Templates/](../04_Patterns_Templates/02_Code_Templates.md) |
-| Pattern Recognition | [04_Patterns_Templates/04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
-| Problem Solving Practice | [05_Problem_Solving/](../05_Problem_Solving/01_Practice_Problems.md) |
-| Design Patterns | [06_OOP_Design/02_Design_Patterns](../06_OOP_Design/02_Design_Patterns.md) |
-| System Design | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md) |
-| SQL Complete | [08_SQL/](../08_SQL/00_INDEX.md) |
-| SQL Interview Mindset | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md) |
-| Career Guide | [09_Career_Reference/01_Career_Guide](../09_Career_Reference/01_Career_Guide.md) |
+| Topic                     | Deep Dive In                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Data Structures Internals | [02_Data_Structures/](../02_Data_Structures/01_DataStructures_Complete.md)                         |
+| Algorithm Thinking        | [03_Algorithms/01_Algorithm_Thinking](../03_Algorithms/01_Algorithm_Thinking.md)                   |
+| Pattern Templates         | [04_Patterns_Templates/](../04_Patterns_Templates/02_Code_Templates.md)                            |
+| Pattern Recognition       | [04_Patterns_Templates/04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
+| Problem Solving Practice  | [05_Problem_Solving/](../05_Problem_Solving/01_Practice_Problems.md)                               |
+| Design Patterns           | [06_OOP_Design/02_Design_Patterns](../06_OOP_Design/02_Design_Patterns.md)                         |
+| System Design             | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)                             |
+| SQL Complete              | [08_SQL/](../08_SQL/00_INDEX.md)                                                                   |
+| SQL Interview Mindset     | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md)         |
+| Career Guide              | [09_Career_Reference/01_Career_Guide](../09_Career_Reference/01_Career_Guide.md)                   |
 
 ---
 

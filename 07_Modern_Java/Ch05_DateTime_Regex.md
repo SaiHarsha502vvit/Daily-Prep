@@ -41,7 +41,7 @@ LocalDate date = LocalDate.of(2026, 3, 8);  // March 8, 2026. Obvious.
 
 ## 1. The Core Classes — Choose the Right One
 
-```                                                            
+```
 ┌──────────────────────────────────────────────────────────────===┐
 │ CLASS              │ STORES                │ USE WHEN           │
 │────────────────────│────────────────────── │───────────────────=│
@@ -128,16 +128,15 @@ Instant back = ldt.atZone(ZoneId.systemDefault()).toInstant();
 
 ---
 
-
-
 🔬 **Section Challenge — 3. LocalTime, LocalDateTime, Instant**
 
 **Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
+
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 4. ZonedDateTime — The Real-World Necessity
 
@@ -212,8 +211,6 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Duration and Period — Measuring Time Gaps**
 
 **Challenge 1 (Duration vs Period DST Pitfall):** `Duration.between(march10_2am, march10_3am)` in a DST-observing timezone. Clocks jump from 2am to 3am. **Who** calculates 1 hour? **When** does `Period.between()` NOT account for DST? **What** is the `ChronoUnit` alternative?
@@ -226,8 +223,8 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 6. DateTimeFormatter — Parsing and Formatting
 
@@ -278,8 +275,6 @@ Common Format Patterns:
 
 ---
 
-
-
 🔬 **Section Challenge — 6. DateTimeFormatter — Parsing and Formatting**
 
 **Challenge 1 (DateTimeFormatter Thread Safety):** `SimpleDateFormat` is NOT thread-safe. `DateTimeFormatter` IS thread-safe. **Who** makes `DateTimeFormatter` safe? **When** would you use `DateTimeFormatter.ofPattern()` vs `DateTimeFormatter.ISO_DATE_TIME`? **What** is the pre-defined formatter for RFC-1123 (HTTP dates)?
@@ -292,8 +287,8 @@ Common Format Patterns:
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 7. Practical Patterns — Real-World Code
 
@@ -341,8 +336,6 @@ ZonedDateTime userLocal = storedUtc.atZone(ZoneId.of("Asia/Kolkata"));  // Displ
 ```
 
 ---
-
-
 
 ## PART 2: REGEX MASTERY (java.util.regex)
 
@@ -409,8 +402,6 @@ ANCHORS & GROUPS:
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Regex Fundamentals — The Building Blocks**
 
 **Challenge 1 (Regex ReDoS — Catastrophic Backtracking):** Pattern `(a+)+b` on input `"aaaaaaaaaaaaaac"` takes exponentially long. **Who** causes the blowup? **When** does normal backtracking become exponential? **What** is the fix?
@@ -423,8 +414,8 @@ ANCHORS & GROUPS:
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 9. Pattern and Matcher — Java's Regex Engine
 
@@ -467,8 +458,6 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Pattern and Matcher — Java's Regex Engine**
 
 **Challenge 1 (Matcher.find() vs Matcher.matches()):** You use `Pattern.compile("\\d+").matcher("abc123").matches()`. It returns `false`. You switch to `find()`. It returns `true`. **Who** finds the match? **When** does `matches()` work correctly? **What** is the behavioral difference in terms of the full string?
@@ -481,8 +470,8 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 10. Capturing Groups — Extracting Data
 
@@ -523,8 +512,6 @@ if (m.find()) {
 
 ---
 
-
-
 🔬 **Section Challenge — 10. Capturing Groups — Extracting Data**
 
 **Challenge 1 (Capturing Group Back-References):** Regex `(\\w+) \\1` matches repeated words like `"hello hello"`. **Who** creates the back-reference? **When** does `\\1` fail in a Java `String.replaceAll()` replacement? **What** is the replacement string syntax for a group?
@@ -537,8 +524,8 @@ if (m.find()) {
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 11. Practical Regex Patterns
 
@@ -599,8 +586,6 @@ Pattern hasDigit = Pattern.compile("(?=.*\\d).{8,}");
 
 ---
 
-
-
 ## 12. String Methods with Regex
 
 ```java
@@ -628,8 +613,6 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 
 ---
 
-
-
 🔬 **Section Challenge — 12. String Methods with Regex**
 
 **Challenge 1 (String.replaceAll() Security Risk):** `userInput` comes from an HTTP request. You call `str.replaceAll(userInput, "REDACTED")`. **Who** is at risk? **When** does this become a ReDoS attack? **What** is the safe alternative?
@@ -642,8 +625,8 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 <details><summary>Answer</summary>
 
 Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
-</details>
 
+</details>
 
 ## 13. Performance — Pattern Compilation Matters
 
@@ -680,8 +663,6 @@ Performance Rules:
 ```
 
 ---
-
-
 
 ## 14. Java 9+ Regex Features
 

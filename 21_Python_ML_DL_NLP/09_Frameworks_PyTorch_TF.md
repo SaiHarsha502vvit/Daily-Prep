@@ -8,25 +8,25 @@ _"PyTorch for research, TensorFlow for production — but both can do everything
 
 # PART 0: The 5W+H Framework
 
-| Question | DL Frameworks Context |
-| :--- | :--- |
-| **WHAT** | Software libraries that provide: GPU-accelerated tensor operations, automatic differentiation (autograd), pre-built neural network layers, optimizers, and data loading utilities. |
-| **WHY** | Writing neural networks from scratch (raw NumPy) is impractical for production models. Frameworks handle GPU parallelism, gradient computation, and model serialization automatically. |
-| **WHEN** | Whenever you build, train, or deploy neural networks — from simple classifiers to billion-parameter language models. |
-| **WHERE** | PyTorch: Meta AI, academia, research papers. TensorFlow: Google, production ML systems, mobile (TFLite). |
-| **HOW** | Both follow the same pattern: define model → feed data → compute loss → backpropagate → update weights. The API differs but the math is identical. |
+| Question  | DL Frameworks Context                                                                                                                                                                  |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | Software libraries that provide: GPU-accelerated tensor operations, automatic differentiation (autograd), pre-built neural network layers, optimizers, and data loading utilities.     |
+| **WHY**   | Writing neural networks from scratch (raw NumPy) is impractical for production models. Frameworks handle GPU parallelism, gradient computation, and model serialization automatically. |
+| **WHEN**  | Whenever you build, train, or deploy neural networks — from simple classifiers to billion-parameter language models.                                                                   |
+| **WHERE** | PyTorch: Meta AI, academia, research papers. TensorFlow: Google, production ML systems, mobile (TFLite).                                                                               |
+| **HOW**   | Both follow the same pattern: define model → feed data → compute loss → backpropagate → update weights. The API differs but the math is identical.                                     |
 
 ### PyTorch vs TensorFlow at a Glance
 
-| Feature | PyTorch | TensorFlow/Keras |
-|---|---|---|
-| **Created by** | Meta AI (FAIR) | Google Brain |
-| **Execution** | Eager (dynamic graph) | Eager (TF2) or Graph (TF1) |
-| **API Style** | Pythonic, OOP-heavy | Keras = simple, TF = verbose |
-| **Research** | ⭐ Dominant (80%+ papers) | Less common in new research |
-| **Production** | TorchServe, ONNX | TF Serving, TFLite, TF.js |
-| **Debugging** | Easy (standard Python) | Harder with graph mode |
-| **Community** | Fastest growing | Larger existing ecosystem |
+| Feature        | PyTorch                   | TensorFlow/Keras             |
+| -------------- | ------------------------- | ---------------------------- |
+| **Created by** | Meta AI (FAIR)            | Google Brain                 |
+| **Execution**  | Eager (dynamic graph)     | Eager (TF2) or Graph (TF1)   |
+| **API Style**  | Pythonic, OOP-heavy       | Keras = simple, TF = verbose |
+| **Research**   | ⭐ Dominant (80%+ papers) | Less common in new research  |
+| **Production** | TorchServe, ONNX          | TF Serving, TFLite, TF.js    |
+| **Debugging**  | Easy (standard Python)    | Harder with graph mode       |
+| **Community**  | Fastest growing           | Larger existing ecosystem    |
 
 ---
 
@@ -118,7 +118,7 @@ class MNISTClassifier(nn.Module):
             nn.Dropout(0.2),
             nn.Linear(128, 10),        # 128 → 10 classes
         )
-    
+
     def forward(self, x):
         x = self.flatten(x)           # (batch, 28, 28) → (batch, 784)
         return self.layers(x)         # (batch, 784) → (batch, 10)
@@ -135,20 +135,20 @@ def train(model, loader, criterion, optimizer, epochs=5):
         total_loss = 0
         for batch_X, batch_y in loader:
             batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-            
+
             # 1. Forward pass
             outputs = model(batch_X)
             loss = criterion(outputs, batch_y)
-            
+
             # 2. Backward pass
             optimizer.zero_grad()              # clear previous gradients
             loss.backward()                    # compute gradients
-            
+
             # 3. Update weights
             optimizer.step()                   # w = w - lr * grad
-            
+
             total_loss += loss.item()
-        
+
         print(f"Epoch {epoch+1}: Loss = {total_loss/len(loader):.4f}")
 
 # ─── Evaluation ───
@@ -260,17 +260,17 @@ model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
 # PART 3: Common Patterns Comparison
 
-| Task | PyTorch | TensorFlow/Keras |
-|---|---|---|
-| **Define model** | `class Model(nn.Module)` | `keras.Sequential()` or Functional API |
-| **Forward pass** | `output = model(x)` | `output = model(x)` |
-| **Loss** | `loss = criterion(output, y)` | Built into `model.compile(loss=...)` |
-| **Backprop** | `loss.backward()` | Handled by `model.fit()` |
-| **Update** | `optimizer.step()` | Handled by `model.fit()` |
-| **Gradient** | Manual loop | `model.fit()` does everything |
-| **GPU** | `model.to('cuda')` | Auto-detects GPU |
-| **Save** | `torch.save(state_dict)` | `model.save('file.keras')` |
-| **Deploy** | TorchServe, ONNX | TF Serving, TFLite, TF.js |
+| Task             | PyTorch                       | TensorFlow/Keras                       |
+| ---------------- | ----------------------------- | -------------------------------------- |
+| **Define model** | `class Model(nn.Module)`      | `keras.Sequential()` or Functional API |
+| **Forward pass** | `output = model(x)`           | `output = model(x)`                    |
+| **Loss**         | `loss = criterion(output, y)` | Built into `model.compile(loss=...)`   |
+| **Backprop**     | `loss.backward()`             | Handled by `model.fit()`               |
+| **Update**       | `optimizer.step()`            | Handled by `model.fit()`               |
+| **Gradient**     | Manual loop                   | `model.fit()` does everything          |
+| **GPU**          | `model.to('cuda')`            | Auto-detects GPU                       |
+| **Save**         | `torch.save(state_dict)`      | `model.save('file.keras')`             |
+| **Deploy**       | TorchServe, ONNX              | TF Serving, TFLite, TF.js              |
 
 ```
 WHEN TO USE WHICH:
@@ -361,27 +361,27 @@ class ImageDataset(Dataset):
         self.img_dir = img_dir
         self.img_names = os.listdir(img_dir)
         self.transform = transform
-        
+
     def __len__(self):
         return len(self.img_names)
-        
+
     def __getitem__(self, idx):
         # LAZY LOADING: Read from disk only when requested
         img_path = os.path.join(self.img_dir, self.img_names[idx])
         image = Image.open(img_path).convert("RGB")
         label = 1 if "cat" in self.img_names[idx] else 0
-        
+
         if self.transform:
             image = self.transform(image)
-            
+
         return image, label
 
 # DataLoader handles batching, shuffling, and MULTIPROCESSING
 dataset = ImageDataset("data/train")
 loader = DataLoader(
-    dataset, 
-    batch_size=32, 
-    shuffle=True, 
+    dataset,
+    batch_size=32,
+    shuffle=True,
     num_workers=4,    # Uses 4 CPU cores to load data in background!
     pin_memory=True   # Speeds up CPU → GPU transfer
 )
@@ -402,19 +402,19 @@ def setup(rank, world_size):
 
 def train_ddp(rank, world_size):
     setup(rank, world_size)
-    
+
     # 1. Move model to specific GPU
     model = MyModel().to(rank)
-    
+
     # 2. Wrap model in DDP
     ddp_model = DDP(model, device_ids=[rank])
-    
+
     # 3. Use DistributedSampler to ensure GPUs don't process the same data
     sampler = torch.utils.data.distributed.DistributedSampler(dataset)
     loader = DataLoader(dataset, sampler=sampler, batch_size=32)
-    
+
     # ... standard training loop ...
-    
+
     dist.destroy_process_group()
 
 # Launch with: torchrun --nproc_per_node=4 train_script.py
@@ -520,7 +520,7 @@ inputs = tokenizer(text, return_tensors="pt")  # "pt" = return PyTorch tensors
 with torch.no_grad():
     logits = model(**inputs).logits
     predicted_class = logits.argmax().item()
-    
+
 print("Positive" if predicted_class == 1 else "Negative")
 ```
 
@@ -552,8 +552,8 @@ dummy_input = torch.randn(1, 3, 224, 224)
 
 # 3. Export to ONNX
 torch.onnx.export(
-    model, 
-    dummy_input, 
+    model,
+    dummy_input,
     "resnet18.onnx",
     export_params=True,
     input_names=['input_image'],
@@ -568,10 +568,9 @@ torch.onnx.export(
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Tensor operations (matrix math) | [Math for ML](04_Math_For_ML.md) |
-| Neural network architectures | [Deep Learning](07_Deep_Learning_Fundamentals.md) |
-| NLP model fine-tuning | [NLP Complete](08_NLP_Complete.md) |
-| Python OOP (nn.Module) | [Python Core](01_Python_Core_Fundamentals.md) |
-
+| Topic                           | Related Content                                   |
+| ------------------------------- | ------------------------------------------------- |
+| Tensor operations (matrix math) | [Math for ML](04_Math_For_ML.md)                  |
+| Neural network architectures    | [Deep Learning](07_Deep_Learning_Fundamentals.md) |
+| NLP model fine-tuning           | [NLP Complete](08_NLP_Complete.md)                |
+| Python OOP (nn.Module)          | [Python Core](01_Python_Core_Fundamentals.md)     |

@@ -2,14 +2,14 @@
 
 Master switchboard for the navigation overlay. Open one of these depending on what you need.
 
-| Lens | What it does |
-|------|--------------|
-| [`WHERE_TO_START.md`](./WHERE_TO_START.md) | 60-second decision tree. Open this first if you don't know which other file to open. |
-| [`SITEMAP.md`](./SITEMAP.md) | One-page map of every folder + file at the module root with "open this if…" guidance. |
-| [`PATHWAY_01_LEARNING.md`](./PATHWAY_01_LEARNING.md) | Ordered reading list: brand new → mid-level SDET. ~80–110 h. |
+| Lens                                                         | What it does                                                                                                                           |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [`WHERE_TO_START.md`](./WHERE_TO_START.md)                   | 60-second decision tree. Open this first if you don't know which other file to open.                                                   |
+| [`SITEMAP.md`](./SITEMAP.md)                                 | One-page map of every folder + file at the module root with "open this if…" guidance.                                                  |
+| [`PATHWAY_01_LEARNING.md`](./PATHWAY_01_LEARNING.md)         | Ordered reading list: brand new → mid-level SDET. ~80–110 h.                                                                           |
 | [`PATHWAY_02_PROFESSIONAL.md`](./PATHWAY_02_PROFESSIONAL.md) | Ordered reading list: mid-level → senior / staff / principal SDET. ~130–180 h. Tied to [`READINESS_RUBRIC.md`](./READINESS_RUBRIC.md). |
-| [`PATHWAY_03_OFFICE.md`](./PATHWAY_03_OFFICE.md) | Problem-indexed lookup for daily work ("My test is flaky", "I need to test OAuth", "Writing a test strategy doc"). |
-| [`MAP_CODE_TO_CHAPTER.md`](./MAP_CODE_TO_CHAPTER.md) | Reverse map: every meaningful file under `framework/` → the chapter that teaches the design. |
+| [`PATHWAY_03_OFFICE.md`](./PATHWAY_03_OFFICE.md)             | Problem-indexed lookup for daily work ("My test is flaky", "I need to test OAuth", "Writing a test strategy doc").                     |
+| [`MAP_CODE_TO_CHAPTER.md`](./MAP_CODE_TO_CHAPTER.md)         | Reverse map: every meaningful file under `framework/` → the chapter that teaches the design.                                           |
 
 ---
 

@@ -172,17 +172,17 @@ If a type is genuinely unknown at a boundary (e.g., a third-party SDK response),
 
 ### Naming
 
-| Concept                            | Convention                                      |
-| ---------------------------------- | ----------------------------------------------- |
-| Files containing classes           | `PascalCase.ts` — `LoginPage.ts`, `UsersClient.ts` |
+| Concept                            | Convention                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------ |
+| Files containing classes           | `PascalCase.ts` — `LoginPage.ts`, `UsersClient.ts`                       |
 | Files containing functions/helpers | `kebab-case.ts` or `dot.case.ts` — `data.loader.ts`, `action.helpers.ts` |
-| Classes                            | `PascalCase`                                    |
-| Methods, variables                 | `camelCase`                                     |
+| Classes                            | `PascalCase`                                                             |
+| Methods, variables                 | `camelCase`                                                              |
 | Constants                          | `SCREAMING_SNAKE_CASE` if truly immutable global; `PascalCase` for enums |
-| Types & interfaces                 | `PascalCase` — no `I` prefix                    |
-| Page object classes                | `<Feature>Page` — `LoginPage`, `DashboardPage`  |
-| Component object classes           | `<Feature><Component>` — `EmployeeSearchForm`, `HeaderNav` |
-| Test files                         | `<feature>.<kind>.spec.ts` — `login.smoke.spec.ts`, `users.api.spec.ts` |
+| Types & interfaces                 | `PascalCase` — no `I` prefix                                             |
+| Page object classes                | `<Feature>Page` — `LoginPage`, `DashboardPage`                           |
+| Component object classes           | `<Feature><Component>` — `EmployeeSearchForm`, `HeaderNav`               |
+| Test files                         | `<feature>.<kind>.spec.ts` — `login.smoke.spec.ts`, `users.api.spec.ts`  |
 
 ---
 
@@ -192,21 +192,23 @@ If a type is genuinely unknown at a boundary (e.g., a third-party SDK response),
 
 Every test gets one or more tags so CI can route work. Apply tags as **inline title suffixes** so Playwright's `--grep` matches them.
 
-| Tag                | When to apply                                        |
-| ------------------ | ---------------------------------------------------- |
-| `@smoke`           | < 30s; covers the critical path for a feature        |
-| `@regression`      | Full feature coverage; runs on every PR              |
-| `@nightly`         | Slow; runs on the nightly schedule only              |
-| `@visual`          | Pixel diff test                                      |
-| `@a11y`            | Accessibility check                                  |
-| `@perf`            | Performance budget assertion                         |
-| `@security`        | Security control assertion                           |
-| `@flake-candidate` | Tracked as flaky; triaged before merge to `main`     |
+| Tag                | When to apply                                    |
+| ------------------ | ------------------------------------------------ |
+| `@smoke`           | < 30s; covers the critical path for a feature    |
+| `@regression`      | Full feature coverage; runs on every PR          |
+| `@nightly`         | Slow; runs on the nightly schedule only          |
+| `@visual`          | Pixel diff test                                  |
+| `@a11y`            | Accessibility check                              |
+| `@perf`            | Performance budget assertion                     |
+| `@security`        | Security control assertion                       |
+| `@flake-candidate` | Tracked as flaky; triaged before merge to `main` |
 
 Example:
 
 ```typescript
-test('admin can log in @smoke @regression', async ({ loginPage }) => { /* ... */ });
+test('admin can log in @smoke @regression', async ({ loginPage }) => {
+  /* ... */
+});
 ```
 
 Run a subset:
@@ -247,11 +249,11 @@ Rules:
 
 ### Fixtures — four scopes
 
-| Scope     | Use for                                                                 |
-| --------- | ----------------------------------------------------------------------- |
-| `test`    | POMs, data factories, per-test API context, the data bridge             |
-| `worker`  | Account pool acquisition, expensive auth setup, shared API token caches |
-| `session` | Cross-worker singletons (rare — usually OS-level resources)             |
+| Scope     | Use for                                                                       |
+| --------- | ----------------------------------------------------------------------------- |
+| `test`    | POMs, data factories, per-test API context, the data bridge                   |
+| `worker`  | Account pool acquisition, expensive auth setup, shared API token caches       |
+| `session` | Cross-worker singletons (rare — usually OS-level resources)                   |
 | `auto`    | Auto-cleanup fixtures (`testEmployee`); declared with `auto: false` to opt-in |
 
 When you add a fixture, document **why** the chosen scope is correct — especially for `worker`-scoped fixtures that have parallel-safety implications.
@@ -315,18 +317,18 @@ PR body should answer:
 
 ## 9. Running the Test Matrix
 
-| Command                                   | Scope                                  |
-| ----------------------------------------- | -------------------------------------- |
-| `npm test`                                | Everything                             |
-| `npm run test:orangehrm`                  | OrangeHRM UI project only              |
-| `npm run test:api`                        | API project only                       |
-| `npm run test:smoke`                      | `@smoke` tag                           |
-| `npm run test:regression`                 | `@regression` tag                      |
-| `npm run test:ui`                         | Playwright UI mode                     |
-| `npm run test:headed`                     | Run with browsers visible              |
-| `npm run test:debug`                      | Step-by-step in inspector              |
-| `PLAYWRIGHT_SHARD_INDEX=1 PLAYWRIGHT_SHARD_TOTAL=4 npm run test:shard` | One of four shards (used in CI)        |
-| `npm run test:docker`                     | Inside the project Docker image        |
+| Command                                                                | Scope                           |
+| ---------------------------------------------------------------------- | ------------------------------- |
+| `npm test`                                                             | Everything                      |
+| `npm run test:orangehrm`                                               | OrangeHRM UI project only       |
+| `npm run test:api`                                                     | API project only                |
+| `npm run test:smoke`                                                   | `@smoke` tag                    |
+| `npm run test:regression`                                              | `@regression` tag               |
+| `npm run test:ui`                                                      | Playwright UI mode              |
+| `npm run test:headed`                                                  | Run with browsers visible       |
+| `npm run test:debug`                                                   | Step-by-step in inspector       |
+| `PLAYWRIGHT_SHARD_INDEX=1 PLAYWRIGHT_SHARD_TOTAL=4 npm run test:shard` | One of four shards (used in CI) |
+| `npm run test:docker`                                                  | Inside the project Docker image |
 
 After a run:
 

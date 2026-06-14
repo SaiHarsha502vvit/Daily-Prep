@@ -39,6 +39,45 @@
 
 ---
 
+### Historical Evolution
+
+Hooks represent the single largest API shift in React's history, replacing class lifecycle methods with composable functions and enabling function components to hold state.
+
+| Year | Milestone |
+|------|-----------|
+| 2016 | React Fiber announced — the new reconciler that makes Hooks possible |
+| 2018 | Hooks RFC introduced at React Conf by Dan Abramov and Sophie Alpert |
+| 2019 | React 16.8 releases Hooks (useState, useEffect, useContext) to stable |
+| 2022 | React 18 adds useId, useTransition, useDeferredValue for concurrent features |
+
+Fiber's linked-list hook architecture, introduced as the reconciler in 2017, is what enables Hooks to work. Each component's Fiber node stores hooks as a linked list, and React walks this list in order on every render. This design decision is why hooks must be called in the same order on every render.
+
+**Predecessor:** Class lifecycle methods (componentDidMount, componentDidUpdate) — state and side effects were tied to class components exclusively
+**Modern anchor:** Every new React codebase today uses function components with Hooks; class components are considered legacy
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Infinite render loop** | Empty or shallow `useEffect` deps (`[]` or missing dep) that sets state read in the effect | Use exhaustive-deps ESLint rule; for derived state, compute in render, not effect |
+| **Stale closure** | Callback in `setTimeout` or event listener reads old state because closure captured initial render | Use refs for latest values (`useRef`) or functional state updates (`setState(prev => ...)`) |
+| **Memory leak on unmounted component** | Async fetch resolves after component unmounts; `setState` on unmounted component triggers warning | Use AbortController in `useEffect` cleanup; track mounted state with a ref or use `react-use` `useMountedState` |
+| **Hook rule violation** | Conditional `useEffect` inside `if (condition)` or loop; React crashes with "Rendered fewer hooks than expected" | Never conditionally call hooks; push conditions inside the hook body or extract to early-return wrapper |
+
+Hooks lifecycle pitfalls dominate production incident reports because `useEffect`'s dependency model is deceptively simple but silently breaks when closures capture stale values or cleanup is skipped during rapid mount/unmount cycles.
+
+---
+
+### Invariant: Hooks Order
+
+> **Invariant:** Hooks must be called in the same order on every render of a component.
+
+**Why this must hold:** React tracks hooks via a linked list keyed by call order. Each hook call corresponds to an index in the component's Fiber node hook array. If the order changes (e.g., a hook is called inside a conditional), React associates state with the wrong hook slot — corrupting state across renders and triggering "Rendered fewer hooks than expected" errors.
+
+**If violated:** State appears to "leak" between unrelated hooks, or components crash with cryptic hook count mismatches. The Rules of Hooks lint rule (`eslint-plugin-react-hooks`) catches this statically in most cases.
+
+---
+
 ## useState (Already covered in Fundamentals)
 
 Quick reminder: `const [state, setState] = useState(initialValue);`
@@ -48,15 +87,19 @@ Quick reminder: `const [state, setState] = useState(initialValue);`
 🔬 **Section Challenge — useState (Already covered in Fundamentals)**
 
 **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+
 <details><summary>Answer</summary>
 
 Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+
 <details><summary>Answer</summary>
 
 `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+
 </details>
 
 ## useEffect — Side Effects
@@ -104,31 +147,33 @@ HOW IT WORKS INTERNALLY:
 ```
 
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 // Pattern 1: Run on EVERY render (rarely needed)
-useEffect(() => { console.log('rendered'); });
+useEffect(() => {
+  console.log("rendered");
+});
 
 // Pattern 2: Run ONCE on mount (fetch data, setup subscription)
 useEffect(() => {
   fetchData();
   return () => cleanup(); // runs on unmount
-}, []);                    // ← empty dependency array
+}, []); // ← empty dependency array
 
 // Pattern 3: Run when specific values change
 useEffect(() => {
   fetchUser(userId);
-}, [userId]);              // ← runs when userId changes
+}, [userId]); // ← runs when userId changes
 
 // COMMON MISTAKE: Infinite loop!
 // ❌ BAD:
 useEffect(() => {
-  setCount(count + 1);  // triggers re-render → triggers effect → infinite!
+  setCount(count + 1); // triggers re-render → triggers effect → infinite!
 }, [count]);
 
 // 🎓 MIT/KTH SYSTEMS DEEP DIVE: The Race Condition & The Network Boundary
 // The browser's network layer operates outside of JavaScript (in C++ Web APIs).
-// The Event Loop pushes HTTP responses back onto the JS queue whenever they finish, 
+// The Event Loop pushes HTTP responses back onto the JS queue whenever they finish,
 // in NO GUARANTEED ORDER. If User 1 fetch takes 500ms, and User 2 takes 100ms,
 // the user clicking fast (1 -> 2) will see User 2 briefly, then User 1 permanently overwrites it!
 
@@ -142,19 +187,24 @@ function UserProfile({ userId }) {
     // We use a native AbortController to physically sever the HTTP TCP connection
     // if the component unmounts or the userId changes before the fetch completes.
     const controller = new AbortController();
-    
+
     setLoading(true);
     fetch(`/api/users/${userId}`, { signal: controller.signal })
-      .then(res => res.json())
-      .then(data => { setUser(data); setLoading(false); })
-      .catch(err => { 
-        if (err.name !== 'AbortError') { // Ignore aborted requests
-          setError(err); setLoading(false); 
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          // Ignore aborted requests
+          setError(err);
+          setLoading(false);
         }
       });
-    
+
     // Cleanup Phase: Cancel the in-flight request
-    return () => controller.abort(); 
+    return () => controller.abort();
   }, [userId]);
 
   if (loading) return <Spinner />;
@@ -168,15 +218,19 @@ function UserProfile({ userId }) {
 🔬 **Section Challenge — useEffect — Side Effects**
 
 **Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+
 <details><summary>Answer</summary>
 
 React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
+
 </details>
 
 **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
+
 <details><summary>Answer</summary>
 
 Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
+
 </details>
 
 ## useRef — Persist Values Without Re-render
@@ -214,16 +268,16 @@ KEY INSIGHT: useRef is essentially useState without the re-render.
 ```
 
 ```jsx
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 // USE CASE 1: Access DOM elements
 function TextInput() {
   const inputRef = useRef(null);
-  
+
   useEffect(() => {
     inputRef.current.focus(); // focus on mount
   }, []);
-  
+
   return <input ref={inputRef} placeholder="Auto-focused!" />;
 }
 
@@ -231,12 +285,12 @@ function TextInput() {
 function Timer() {
   const intervalRef = useRef(null);
   const [count, setCount] = useState(0);
-  
+
   const start = () => {
-    intervalRef.current = setInterval(() => setCount(c => c + 1), 1000);
+    intervalRef.current = setInterval(() => setCount((c) => c + 1), 1000);
   };
   const stop = () => clearInterval(intervalRef.current);
-  
+
   return (
     <div>
       <p>{count}</p>
@@ -249,7 +303,9 @@ function Timer() {
 // USE CASE 3: Track previous value
 function usePrevious(value) {
   const ref = useRef();
-  useEffect(() => { ref.current = value; });
+  useEffect(() => {
+    ref.current = value;
+  });
   return ref.current;
 }
 ```
@@ -293,38 +349,44 @@ INTERNAL MECHANISM:
 ```
 
 ```jsx
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from "react";
 
 // useMemo: Memoize COMPUTED VALUE (skip expensive recalculation)
 function ExpensiveList({ items, filter }) {
   const filteredItems = useMemo(() => {
-    return items.filter(item => item.name.includes(filter)); // expensive
+    return items.filter((item) => item.name.includes(filter)); // expensive
   }, [items, filter]); // only recalculate when items or filter change
-  
-  return <ul>{filteredItems.map(i => <li key={i.id}>{i.name}</li>)}</ul>;
+
+  return (
+    <ul>
+      {filteredItems.map((i) => (
+        <li key={i.id}>{i.name}</li>
+      ))}
+    </ul>
+  );
 }
 
 // useCallback: Memoize FUNCTION REFERENCE (prevent child re-renders)
 function Parent() {
   const [count, setCount] = useState(0);
-  
+
   // Without useCallback: new function on every render → Child re-renders!
   // With useCallback: same function reference → Child skips re-render
   const handleClick = useCallback(() => {
-    console.log('clicked');
+    console.log("clicked");
   }, []); // dependencies: [] = never changes
-  
+
   return (
     <div>
       <p>{count}</p>
-      <button onClick={() => setCount(c => c + 1)}>Increment</button>
+      <button onClick={() => setCount((c) => c + 1)}>Increment</button>
       <ExpensiveChild onClick={handleClick} /> {/* won't re-render */}
     </div>
   );
 }
 
 const ExpensiveChild = React.memo(({ onClick }) => {
-  console.log('Child rendered'); // only when onClick reference changes
+  console.log("Child rendered"); // only when onClick reference changes
   return <button onClick={onClick}>Child Button</button>;
 });
 
@@ -369,14 +431,14 @@ HOW CONTEXT WORKS INTERNALLY:
 ```
 
 ```jsx
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 // 1. Create context
-const ThemeContext = createContext('light');
+const ThemeContext = createContext("light");
 
 // 2. Provider wraps tree
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <Header />
@@ -389,7 +451,7 @@ function App() {
 function ThemeToggle() {
   const { theme, setTheme } = useContext(ThemeContext);
   return (
-    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+    <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
       Current: {theme}
     </button>
   );
@@ -401,9 +463,11 @@ function ThemeToggle() {
 🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
 
 **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+
 <details><summary>Answer</summary>
 
 Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+
 </details>
 
 ## useReducer — Complex State Logic
@@ -440,22 +504,25 @@ INTERNAL: useReducer stores [state, dispatch] on the Fiber's hook.
 ```
 
 ```jsx
-import { useReducer } from 'react';
+import { useReducer } from "react";
 
 // Like Redux but local — great for related state transitions
 const initialState = { items: [], loading: false, error: null };
 
 function cartReducer(state, action) {
   switch (action.type) {
-    case 'ADD_ITEM':
+    case "ADD_ITEM":
       return { ...state, items: [...state.items, action.payload] };
-    case 'REMOVE_ITEM':
-      return { ...state, items: state.items.filter(i => i.id !== action.payload) };
-    case 'CLEAR':
+    case "REMOVE_ITEM":
+      return {
+        ...state,
+        items: state.items.filter((i) => i.id !== action.payload),
+      };
+    case "CLEAR":
       return { ...state, items: [] };
-    case 'SET_LOADING':
+    case "SET_LOADING":
       return { ...state, loading: action.payload };
-    case 'SET_ERROR':
+    case "SET_ERROR":
       return { ...state, error: action.payload, loading: false };
     default:
       throw new Error(`Unknown action: ${action.type}`);
@@ -464,14 +531,20 @@ function cartReducer(state, action) {
 
 function ShoppingCart() {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-  
+
   return (
     <div>
-      <button onClick={() => dispatch({ type: 'ADD_ITEM', payload: { id: 1, name: 'Laptop' } })}>
+      <button
+        onClick={() =>
+          dispatch({ type: "ADD_ITEM", payload: { id: 1, name: "Laptop" } })
+        }
+      >
         Add Laptop
       </button>
-      <button onClick={() => dispatch({ type: 'CLEAR' })}>Clear Cart</button>
-      {state.items.map(item => <p key={item.id}>{item.name}</p>)}
+      <button onClick={() => dispatch({ type: "CLEAR" })}>Clear Cart</button>
+      {state.items.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
     </div>
   );
 }
@@ -524,11 +597,26 @@ function useFetch(url) {
     setLoading(true);
 
     fetch(url)
-      .then(res => { if (!res.ok) throw new Error(res.statusText); return res.json(); })
-      .then(json => { if (!cancelled) { setData(json); setLoading(false); }})
-      .catch(err => { if (!cancelled) { setError(err.message); setLoading(false); }});
+      .then((res) => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      })
+      .then((json) => {
+        if (!cancelled) {
+          setData(json);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.message);
+          setLoading(false);
+        }
+      });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [url]);
 
   return { data, loading, error };
@@ -566,23 +654,36 @@ function useDebounce(value, delay = 300) {
 🔬 **Section Challenge — Custom Hooks — Reuse Logic**
 
 **Challenge 1 (Design):** Design a `useAsync(asyncFn)` hook that handles loading, error, and data states. What edge case does every junior miss?
+
 <details><summary>Answer</summary>
 
 ```jsx
 function useAsync(asyncFn, deps = []) {
-    const [state, setState] = useState({ data: null, loading: true, error: null });
-    useEffect(() => {
-        let cancelled = false;
-        setState(s => ({ ...s, loading: true }));
-        asyncFn()
-            .then(data => { if (!cancelled) setState({ data, loading: false, error: null }); })
-            .catch(error => { if (!cancelled) setState({ data: null, loading: false, error }); });
-        return () => { cancelled = true; };
-    }, deps);
-    return state;
+  const [state, setState] = useState({
+    data: null,
+    loading: true,
+    error: null,
+  });
+  useEffect(() => {
+    let cancelled = false;
+    setState((s) => ({ ...s, loading: true }));
+    asyncFn()
+      .then((data) => {
+        if (!cancelled) setState({ data, loading: false, error: null });
+      })
+      .catch((error) => {
+        if (!cancelled) setState({ data: null, loading: false, error });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, deps);
+  return state;
 }
 ```
+
 The edge case every junior misses: the **cleanup/cancellation flag**. Without `cancelled = true` in cleanup, if the component unmounts before the async operation completes, `setState` is called on an unmounted component. This causes a memory leak and React warning. The `cancelled` flag (or `AbortController`) prevents stale updates from zombie promises.
+
 </details>
 
 ## Hook Rules (MUST FOLLOW)
@@ -599,9 +700,9 @@ THE INTERNAL REASON:
   Render 2: useState(0) → Hook[0], useEffect() → Hook[1], useRef() → Hook[2]
   ✔ Same order = React knows which hook is which.
 
-  If you put a hook inside an `if` block: 
+  If you put a hook inside an `if` block:
   Render 1 (condition=true):  useState → Hook[0], useEffect → Hook[1], useRef → Hook[2]
-  Render 2 (condition=false): useEffect → Hook[0](!), useRef → Hook[1](!) 
+  Render 2 (condition=false): useEffect → Hook[0](!), useRef → Hook[1](!)
   ✘ Hooks shifted! React returns useEffect's data to useState. CRASH.
 
   ANALOGY: Hooks are like assigned seats in a classroom.
@@ -625,17 +726,16 @@ THE INTERNAL REASON:
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### 🔗 Cross-References to DSA Concepts
 
-| Hooks Concept | Underlying DSA/Algorithm |
-|---|---|
-| Hook linked list (memoizedState → Hook1 → Hook2) | [LinkedList](../02_Data_Structures/01c_LinkedList.md) |
-| useMemo (caching computed values) | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md) |
-| useReducer (state machine pattern) | [Design Patterns — State](../06_OOP_Design/02_Design_Patterns.md) |
-| useCallback (referential equality) | [HashTable — Object identity](../02_Data_Structures/01e_HashTable.md) |
-| useContext (tree traversal to find Provider) | [Tree Algorithms — DFS](../03_Algorithms/05_Trees.md) |
-| Custom Hooks (composition) | [OOP — Strategy Pattern](../06_OOP_Design/02_Design_Patterns.md) |
+| Hooks Concept                                    | Underlying DSA/Algorithm                                              |
+| ------------------------------------------------ | --------------------------------------------------------------------- |
+| Hook linked list (memoizedState → Hook1 → Hook2) | [LinkedList](../02_Data_Structures/01c_LinkedList.md)                 |
+| useMemo (caching computed values)                | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md)           |
+| useReducer (state machine pattern)               | [Design Patterns — State](../06_OOP_Design/02_Design_Patterns.md)     |
+| useCallback (referential equality)               | [HashTable — Object identity](../02_Data_Structures/01e_HashTable.md) |
+| useContext (tree traversal to find Provider)     | [Tree Algorithms — DFS](../03_Algorithms/05_Trees.md)                 |
+| Custom Hooks (composition)                       | [OOP — Strategy Pattern](../06_OOP_Design/02_Design_Patterns.md)      |
 
 ---
 
@@ -651,11 +751,11 @@ React 16 (Fiber, 2017): Rewrote the renderer to allow pausing.
 React 18 (Concurrent Mode, 2022): Actually ships Concurrent features.
   The BIG IDEA: React can now INTERRUPT rendering to do something
   more urgent, then resume where it left off.
-  
+
   OLD MODEL (Synchronous):
     User types → React renders → Browser paints
     React rendering BLOCKS everything. If render takes 300ms → frozen UI.
-  
+
   NEW MODEL (Concurrent):
     User types → React starts rendering → (interrupt!) paint → continue rendering
     React can pause, let the browser paint, then continue.
@@ -677,29 +777,29 @@ Urgent updates (like typing) can INTERRUPT non-urgent ones.
 ```
 
 ```jsx
-import { useState, useTransition } from 'react';
+import { useState, useTransition } from "react";
 
 function SearchPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isPending, startTransition] = useTransition();
-  
+
   function handleChange(e) {
     // URGENT: Update input immediately (always responsive)
     setQuery(e.target.value);
-    
+
     // NON-URGENT: Can be interrupted if user types faster
     startTransition(() => {
       const filtered = expensiveFilter(items, e.target.value);
-      setResults(filtered);   // deferred — can be interrupted!
+      setResults(filtered); // deferred — can be interrupted!
     });
   }
-  
+
   return (
     <div>
       <input value={query} onChange={handleChange} />
-      {isPending && <Spinner />}           {/* Shows while transition runs */}
-      <ResultsList results={results} />    {/* Stale while transitioning */}
+      {isPending && <Spinner />} {/* Shows while transition runs */}
+      <ResultsList results={results} /> {/* Stale while transitioning */}
     </div>
   );
 }
@@ -714,19 +814,21 @@ not dispatched updates. The component "lags behind" intentionally.
 ```
 
 ```jsx
-import { useDeferredValue, Suspense, memo } from 'react';
+import { useDeferredValue, Suspense, memo } from "react";
 
 function SearchResults({ query }) {
   // Deferred version of query — updates AFTER urgent updates settle
   const deferredQuery = useDeferredValue(query);
-  
+
   // This component renders TWICE during transition:
   // 1. With old deferredQuery (stale but visible — not spinners)
   // 2. With new deferredQuery (fresh results)
-  const isStale = query !== deferredQuery;  // detect stale render
-  
+  const isStale = query !== deferredQuery; // detect stale render
+
   return (
-    <div style={{ opacity: isStale ? 0.7 : 1 }}>  {/* dim stale results */}
+    <div style={{ opacity: isStale ? 0.7 : 1 }}>
+      {" "}
+      {/* dim stale results */}
       <Suspense fallback={<Spinner />}>
         <ExpensiveResultsList query={deferredQuery} />
       </Suspense>
@@ -744,7 +846,7 @@ THE EVOLUTION OF LOADING STATES:
   v1 (class era): componentDidMount → setState({loading, data, error})
   v2 (hooks era): useEffect → useState for loading/data/error
   v3 (Suspense):  Declare WHAT to show while waiting — React handles rest.
-  
+
 ANALOGY: Suspense is like a LOADING DOCK.
   You place your order (render a component that needs async data).
   A fallback goes up ("Shipment incoming, please wait...").
@@ -761,19 +863,23 @@ HOW SUSPENSE WORKS INTERNALLY:
 
 ```jsx
 // Modern data fetching with React Query (integrates with Suspense)
-import { Suspense } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Suspense } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 // With Suspense-aware data fetching (React Query v5, SWR, etc.)
 function UserProfile({ userId }) {
   // useSuspenseQuery THROWS a promise while loading!
   // No loading/error state needed — Suspense handles it.
   const { data: user } = useSuspenseQuery({
-    queryKey: ['user', userId],
-    queryFn: () => fetch(`/api/users/${userId}`).then(r => r.json())
+    queryKey: ["user", userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then((r) => r.json()),
   });
   // If we get here, data is GUARANTEED to exist (no loading check needed)
-  return <div>{user.name} — {user.email}</div>;
+  return (
+    <div>
+      {user.name} — {user.email}
+    </div>
+  );
 }
 
 // Wrap with Suspense to handle loading, ErrorBoundary for errors
@@ -792,13 +898,13 @@ function Dashboard() {
   return (
     <div>
       <Suspense fallback={<HeaderSkeleton />}>
-        <DashboardHeader />               {/* loads independently */}
+        <DashboardHeader /> {/* loads independently */}
       </Suspense>
       <Suspense fallback={<ListSkeleton />}>
-        <RecentActivity />                {/* loads independently */}
+        <RecentActivity /> {/* loads independently */}
       </Suspense>
       <Suspense fallback={<ChartSkeleton />}>
-        <AnalyticsChart />                {/* loads independently */}
+        <AnalyticsChart /> {/* loads independently */}
       </Suspense>
     </div>
   );
@@ -810,21 +916,21 @@ function Dashboard() {
 ### use() — The Universal Async Hook (React 19)
 
 ```jsx
-import { use, Suspense } from 'react';
+import { use, Suspense } from "react";
 
 // THE FUTURE: use() works for both Promises AND Contexts anywhere
 // (Even inside loops and conditionals — breaking the hook rules limitation!)
 
-const userPromise = fetch('/api/user').then(r => r.json());
+const userPromise = fetch("/api/user").then((r) => r.json());
 
 function UserCard() {
   // use() suspends the component while promise resolves
-  const user = use(userPromise);  // throws promise → Suspense catches
+  const user = use(userPromise); // throws promise → Suspense catches
   return <div>{user.name}</div>;
 }
 
 // use() for Context (same as useContext, but more flexible):
-const theme = use(ThemeContext);  // works inside conditions!
+const theme = use(ThemeContext); // works inside conditions!
 ```
 
 ### React Server Components (RSC) — Zero-Bundle Size
@@ -852,7 +958,7 @@ ARCHITECTURE:
   • Can access server-only secrets (process.env.DB_PASSWORD)
   • Cannot use useState, useEffect, onClick, etc.
   • Not included in JS bundle
-  
+
   Client Component ("use client" at top):
   • Runs in browser (hydration)
   • Can use all hooks
@@ -867,9 +973,9 @@ ARCHITECTURE:
 async function UserProfile({ userId }: { userId: string }) {
   // Direct DB query! No useEffect, no API endpoint needed.
   // This runs on the SERVER, never ships to the browser.
-  const user = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  const user = await db.query("SELECT * FROM users WHERE id = ?", [userId]);
   const posts = await postsService.getByUser(userId);
-  
+
   return (
     <div>
       <h1>{user.name}</h1>
@@ -882,20 +988,50 @@ async function UserProfile({ userId }: { userId: string }) {
 }
 
 // ── Client Component ──
-'use client';  // opt-in to client rendering
+("use client"); // opt-in to client rendering
 
-import { useState } from 'react';
+import { useState } from "react";
 
 function LikeButton({ initialLikes }: { initialLikes: number }) {
   const [likes, setLikes] = useState(initialLikes);
-  return (
-    <button onClick={() => setLikes(l => l + 1)}>
-      ❤️ {likes}
-    </button>
-  );
+  return <button onClick={() => setLikes((l) => l + 1)}>❤️ {likes}</button>;
   // This small interactive piece ships as JS. The rest? Zero bytes.
 }
 ```
+
+---
+
+### useEffect Cleanup Lifecycle
+
+```
+MOUNT
+  │
+  ▼
+EFFECT RUNS  (e.g., addEventListener, fetch, subscription)
+  │
+  ▼
+[component alive — deps unchanged]
+  │
+  ├─ PROPS/STATE CHANGE (deps DID change)
+  │   │
+  │   ├─ CLEANUP runs (old effect's return)
+  │   │   e.g., removeEventListener, abort fetch
+  │   │
+  │   ▼
+  │   EFFECT RUNS again (new deps)
+  │
+  └─ UNMOUNT
+      │
+      ├─ CLEANUP runs (final time)
+      │   e.g., cancel subscription, clear timer
+      │
+      ▼
+      [component destroyed]
+```
+
+**Common mistake:** Returning a non-function from effect (e.g., a number or undefined) — silently no-ops cleanup. Always `return () => { /* cleanup */ }` when needed.
+
+**Another mistake:** Missing deps in the array → stale closures → cleanup uses old state value.
 
 ---
 
@@ -908,36 +1044,39 @@ When scaling applications, junior engineers memorize hook syntax. Senior enginee
 A component unmounting doesn't inherently destroy external subscriptions or event listeners created within it. This leads to **memory leaks** and **zombie state updates** (updating state on an unmounted component).
 
 **The Broken Junior Code:**
+
 ```jsx
 useEffect(() => {
   // BUG: Every time this effect runs, another listener is stacked.
   // When the component dies, the listener stays in the DOM memory forever.
-  window.addEventListener('resize', handleResize);
+  window.addEventListener("resize", handleResize);
 }, []); // Even with [], it leaks when the component unmounts.
 ```
 
 **The Systems Fix (The Cleanup Function):**
+
 ```jsx
 useEffect(() => {
   const handleResize = () => setWidth(window.innerWidth);
-  window.addEventListener('resize', handleResize);
-  
-  // The Cleanup Phase: React runs this BEFORE the next effect cycle, 
+  window.addEventListener("resize", handleResize);
+
+  // The Cleanup Phase: React runs this BEFORE the next effect cycle,
   // OR when the component is finally destroyed.
-  return () => window.removeEventListener('resize', handleResize);
+  return () => window.removeEventListener("resize", handleResize);
 }, []);
 ```
 
 ### Trap 2: The Object Identity Re-render Storm (`useEffect` Infinity Loop)
 
-React compares dependency array items using `Object.is()`. If you pass an object or array declared *inside* the render body, its memory address changes on **every single render**, causing the effect to run infinitely.
+React compares dependency array items using `Object.is()`. If you pass an object or array declared _inside_ the render body, its memory address changes on **every single render**, causing the effect to run infinitely.
 
 **The Broken Junior Code:**
+
 ```jsx
 function Profile({ userId }) {
   // BUG: `options` is a brand new object in memory every render.
   const options = { id: userId, includeHistory: true };
-  
+
   useEffect(() => {
     fetchProfile(options);
   }, [options]); // 💥 INFINITE LOOP 💥
@@ -946,13 +1085,17 @@ function Profile({ userId }) {
 ```
 
 **The Systems Fix (Decoupling Memory):**
+
 ```jsx
 // Fix A: Move static objects OUTSIDE the component so it has one permanent memory address.
 const STATIC_OPTIONS = { includeHistory: true };
 
 function Profile({ userId }) {
   // Fix B: useMemo to preserve the memory address across renders unless userId changes.
-  const dynamicOptions = useMemo(() => ({ id: userId, includeHistory: true }), [userId]);
+  const dynamicOptions = useMemo(
+    () => ({ id: userId, includeHistory: true }),
+    [userId],
+  );
 
   useEffect(() => {
     fetchProfile(dynamicOptions);
@@ -962,9 +1105,10 @@ function Profile({ userId }) {
 
 ### Trap 3: The `useRef` Stale UI Trap
 
-`useRef` is famously used to store mutable data that *doesn't* trigger a re-render. However, developers often try to render `.current` values in the UI, resulting in screen data that is permanently disconnected from reality.
+`useRef` is famously used to store mutable data that _doesn't_ trigger a re-render. However, developers often try to render `.current` values in the UI, resulting in screen data that is permanently disconnected from reality.
 
 **The Broken Junior Code:**
+
 ```jsx
 const clickCount = useRef(0);
 
@@ -985,10 +1129,11 @@ If it needs to be seen on the screen, it **must** be `useState`. If it acts as a
 Juniors frequently create "mirrored" or "derivative" state using multiple `useState` calls and `useEffect` to sync them. This causes unnecessary double-renders (Component renders -> Effect syncs state -> Component renders again).
 
 **The Broken Junior Code:**
+
 ```jsx
-const [firstName, setFirstName] = useState('');
-const [lastName, setLastName] = useState('');
-const [fullName, setFullName] = useState(''); // Redundant!
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [fullName, setFullName] = useState(""); // Redundant!
 
 // BUG: Triggers a second render pass just to calculate a derived value.
 useEffect(() => {
@@ -997,11 +1142,12 @@ useEffect(() => {
 ```
 
 **The Systems Fix (Render-Phase Calculation):**
-```jsx
-const [firstName, setFirstName] = useState('');
-const [lastName, setLastName] = useState('');
 
-// Calculate it directly during the render phase. It requires zero extra memory 
+```jsx
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+
+// Calculate it directly during the render phase. It requires zero extra memory
 // tracking and triggers no cascading renders.
 const fullName = `${firstName} ${lastName}`;
 ```

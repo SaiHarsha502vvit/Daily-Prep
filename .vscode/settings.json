@@ -1,12 +1,12 @@
 {
-    "java.search.scope": "main",
-    "markdownlint.configFile": ".markdownlint.jsonc",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.markdownlint": "explicit"
-    },
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": true
-    }
+  "java.search.scope": "main",
+  "markdownlint.configFile": ".markdownlint.jsonc",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.markdownlint": "explicit"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  }
 }

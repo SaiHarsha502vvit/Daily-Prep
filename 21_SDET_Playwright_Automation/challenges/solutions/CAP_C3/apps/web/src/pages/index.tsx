@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { api, OverviewData } from '../api';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { api, OverviewData } from "../api";
 
 function formatDuration(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -25,7 +25,13 @@ export default function OverviewPage() {
       <div className="header">
         <div>
           <h1>Test Analytics Dashboard</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          <p
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+            }}
+          >
             Last 30 days overview
           </p>
         </div>
@@ -47,7 +53,9 @@ export default function OverviewPage() {
             </div>
             <div className="card">
               <div className="label">Pass Rate</div>
-              <div className={`value ${data.passRate >= 80 ? 'success' : data.passRate >= 50 ? 'warning' : 'danger'}`}>
+              <div
+                className={`value ${data.passRate >= 80 ? "success" : data.passRate >= 50 ? "warning" : "danger"}`}
+              >
                 {data.passRate}%
               </div>
             </div>
@@ -61,11 +69,19 @@ export default function OverviewPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "1.5rem",
+            }}
+          >
             <div className="section">
               <h2>Top 10 Failing Tests</h2>
               {data.failingTests.length === 0 ? (
-                <div className="empty">No failing tests in the last 30 days</div>
+                <div className="empty">
+                  No failing tests in the last 30 days
+                </div>
               ) : (
                 <table>
                   <thead>
@@ -80,11 +96,19 @@ export default function OverviewPage() {
                     {data.failingTests.map((t) => (
                       <tr key={t.name}>
                         <td>
-                          <Link href={`/test/${encodeURIComponent(t.name)}`}>{t.name}</Link>
+                          <Link href={`/test/${encodeURIComponent(t.name)}`}>
+                            {t.name}
+                          </Link>
                         </td>
-                        <td style={{ color: 'var(--danger)' }}>{t.failCount}</td>
-                        <td style={{ color: 'var(--success)' }}>{t.passCount}</td>
-                        <td className="duration-ms">{formatDuration(t.avgDurationMs)}</td>
+                        <td style={{ color: "var(--danger)" }}>
+                          {t.failCount}
+                        </td>
+                        <td style={{ color: "var(--success)" }}>
+                          {t.passCount}
+                        </td>
+                        <td className="duration-ms">
+                          {formatDuration(t.avgDurationMs)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -109,9 +133,13 @@ export default function OverviewPage() {
                     {data.slowestTests.map((t) => (
                       <tr key={t.name}>
                         <td>
-                          <Link href={`/test/${encodeURIComponent(t.name)}`}>{t.name}</Link>
+                          <Link href={`/test/${encodeURIComponent(t.name)}`}>
+                            {t.name}
+                          </Link>
                         </td>
-                        <td className="duration-ms">{formatDuration(t.avgDurationMs)}</td>
+                        <td className="duration-ms">
+                          {formatDuration(t.avgDurationMs)}
+                        </td>
                         <td>{t.runCount}</td>
                       </tr>
                     ))}
@@ -124,7 +152,9 @@ export default function OverviewPage() {
       )}
 
       {!loading && !error && !data && (
-        <div className="empty">No data available. Ingest some Playwright reports to get started.</div>
+        <div className="empty">
+          No data available. Ingest some Playwright reports to get started.
+        </div>
       )}
     </div>
   );

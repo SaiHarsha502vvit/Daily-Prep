@@ -10,7 +10,7 @@
  * QUESTION: Three things are wrong. Find them all.
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page } from "@playwright/test";
 
 // ============================================================
 // BUG 1 — waitForTimeout(5000): hard sleeps are always wrong
@@ -32,38 +32,38 @@ import { test, expect, type Page } from '@playwright/test';
 // still displaying C-000's value.
 
 // ❌ BUGGY
-test('verify customer status — BUGGY', async ({ page }) => {
+test("verify customer status — BUGGY", async ({ page }) => {
   const statusField = page.locator('[data-automation-key="statecode"]');
 
   // Pretend adminPortal.navigateToCustomer('C-001') is this:
-  await page.goto('https://example.com/customers/C-001');
+  await page.goto("https://example.com/customers/C-001");
 
   await page.waitForTimeout(5000); // ❌ hard sleep
 
   const status = await statusField.textContent(); // ❌ point-in-time read
-  expect(status?.trim()).toBe('Active'); // ❌ might be stale or blank
+  expect(status?.trim()).toBe("Active"); // ❌ might be stale or blank
 });
 
 // ✅ FIX — content-based waits with Playwright's built-in auto-retry
-test('verify customer status — FIXED', async ({ page }) => {
+test("verify customer status — FIXED", async ({ page }) => {
   const statusField = page.locator('[data-automation-key="statecode"]');
 
   // Navigate
-  await page.goto('https://example.com/customers/C-001');
+  await page.goto("https://example.com/customers/C-001");
 
   // 1 — Confirm we landed on the right record (anti-stale-render guard)
   await expect(page.locator('[data-automation-key="fullname"]')).toHaveText(
-    'Expected Customer Name',
+    "Expected Customer Name",
     { timeout: 30_000 },
   );
 
   // 2 — Wait for loading spinners to clear (D365 / SPA pattern)
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, {
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
     timeout: 30_000,
   });
 
   // 3 — Assert on the specific field; toHaveText auto-retries until timeout
-  await expect(statusField).toHaveText('Active', { timeout: 30_000 });
+  await expect(statusField).toHaveText("Active", { timeout: 30_000 });
   // No textContent() needed — toHaveText is both the wait AND the assertion.
 });
 
@@ -72,12 +72,12 @@ async function waitForD365Load(
   page: Page,
   expectedTitle?: string,
 ): Promise<void> {
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, {
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
     timeout: 45_000,
   });
   if (expectedTitle) {
     const titleArea = page
-      .locator('.ms-CommandBar, .ms-PageHeader, h1[title]')
+      .locator(".ms-CommandBar, .ms-PageHeader, h1[title]")
       .first();
     await expect(titleArea).toContainText(expectedTitle, {
       timeout: 30_000,
@@ -85,12 +85,13 @@ async function waitForD365Load(
   }
 }
 
-test('verify customer status — with D365 helper', async ({ page }) => {
-  await page.goto('https://crm.example.com/customers/C-001');
-  await waitForD365Load(page, 'Expected Customer Name');
-  await expect(
-    page.locator('[data-automation-key="statecode"]'),
-  ).toHaveText('Active', { timeout: 30_000 });
+test("verify customer status — with D365 helper", async ({ page }) => {
+  await page.goto("https://crm.example.com/customers/C-001");
+  await waitForD365Load(page, "Expected Customer Name");
+  await expect(page.locator('[data-automation-key="statecode"]')).toHaveText(
+    "Active",
+    { timeout: 30_000 },
+  );
 });
 
 // WHY

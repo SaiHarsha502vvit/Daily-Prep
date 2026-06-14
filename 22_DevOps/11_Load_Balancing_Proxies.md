@@ -13,31 +13,31 @@
 ```
 FORWARD PROXY (client-side):
   Client → Forward Proxy → Internet
-  
+
   The proxy acts on BEHALF OF THE CLIENT.
   Internet sees the proxy's IP, not the client's.
-  
+
   Uses:
   1. Privacy/anonymity: hide client IP (VPN, Tor).
   2. Content filtering: corporate proxy blocks social media.
   3. Caching: proxy caches responses → faster for repeated requests.
   4. Bypassing restrictions: access blocked websites through foreign proxy.
-  
+
   Examples: Squid, corporate proxy servers, VPN tunnels.
 
 REVERSE PROXY (server-side):
   Client → Reverse Proxy → Backend Servers
-  
+
   The proxy acts on BEHALF OF THE SERVER.
   Client sees the proxy's IP, not the backend servers'.
-  
+
   Uses:
   1. Load balancing: distribute across multiple backends.
   2. TLS termination: proxy handles HTTPS, backends get HTTP.
   3. Caching: cache static responses at the edge.
   4. Security: hide backend topology, WAF, rate limiting.
   5. Compression: proxy gzips responses.
-  
+
   Examples: nginx, HAProxy, Envoy, Traefik, Caddy, AWS ALB.
 
 THE CRITICAL DIFFERENCE:
@@ -55,38 +55,38 @@ THE CRITICAL DIFFERENCE:
 LAYER 4 (Transport — TCP/UDP level):
   Sees: source IP, dest IP, source port, dest port, protocol.
   Does NOT see: HTTP headers, URLs, cookies, content.
-  
+
   Decision: based on IP + port. Route entire TCP connection to one backend.
   Speed: FAST (no content parsing, works at kernel level).
-  
+
   HOW IT WORKS:
   Client connects to VIP (Virtual IP: 54.123.45.67:443).
   L4 LB selects backend server (10.0.1.10:8000).
   ALL packets in this connection go to the SAME backend.
-  
+
   Modes:
   DSR (Direct Server Return): backend responds DIRECTLY to client (bypasses LB).
     Ultra-fast. Used for: high-bandwidth services (video streaming).
   NAT mode: LB rewrites src/dst IPs. Both directions through LB.
-  
+
   Examples: AWS NLB, HAProxy L4 mode, Linux IPVS, nginx (stream module).
-  
+
   ANALOGY: A highway toll booth.
   Routes cars (connections) to different lanes (backends) based on license plate (IP/port).
   Doesn't read what's in the car (HTTP content).
 
 LAYER 7 (Application — HTTP/HTTPS level):
   Sees: HTTP headers, URL path, host header, cookies, query params, body.
-  
+
   Decision: based on CONTENT.
   /api/*        → api-backends
   /static/*     → CDN/static servers
   /admin/*      → admin-backends (with additional auth check)
   Host: api.v2  → v2-backends
   Cookie: canary=true → canary-backends
-  
+
   Speed: Slower than L4 (must parse HTTP). But much more powerful.
-  
+
   CAN DO:
   • TLS termination (handles HTTPS, forwards HTTP to backends)
   • Header injection (add X-Request-Id for tracing)
@@ -94,9 +94,9 @@ LAYER 7 (Application — HTTP/HTTPS level):
   • Response caching
   • Rate limiting per path/user
   • A/B testing, canary routing
-  
+
   Examples: AWS ALB, nginx, HAProxy L7 mode, Envoy, Traefik.
-  
+
   ANALOGY: A restaurant host.
   Reads your reservation (HTTP request). VIP? Private room. Regular? Main dining.
   Vegetarian? Kitchen with veggie chef. Understands your NEEDS.
@@ -151,7 +151,7 @@ CONSISTENT HASHING:
   Client goes to the nearest server clockwise on the ring.
   Adding a server: only ~1/N of clients are remapped.
   Removing a server: only that server's clients are remapped.
-  
+
   Used by: Envoy, nginx Plus, CDNs, database sharding (Cassandra, DynamoDB).
   SEE: DS in Production — Hash Tables — Consistent Hashing for full explanation.
 
@@ -322,7 +322,7 @@ THE PROBLEM:
 CDN SOLUTION:
   Cache your content at 300+ EDGE LOCATIONS worldwide.
   User in Tokyo → hits CDN edge in Tokyo (5ms) instead of Virginia (150ms).
-  
+
   CDN PROVIDERS:
   Cloudflare: 330+ cities. Free tier! Also offers DDoS protection, WAF, DNS.
   AWS CloudFront: 450+ PoPs. Deep AWS integration.
@@ -332,16 +332,16 @@ CDN SOLUTION:
 WHAT CDN CACHES:
   Static assets: CSS, JS, images, fonts, videos.
   API responses: if Cache-Control allows (GET requests with proper headers).
-  
+
   CACHE RULES (set by your server's response headers):
   Cache-Control: public, max-age=31536000, immutable
     → CDN caches for 1 year. Never revalidates. File name has version hash.
     → Used for: style.abc123.css (filename changes = cache busts automatically).
-  
+
   Cache-Control: public, max-age=60, stale-while-revalidate=300
     → CDN caches for 60s, then serves stale while fetching fresh in background.
     → Used for: API responses, dynamic HTML.
-  
+
   Cache-Control: private, no-store
     → CDN does NOT cache. Every request goes to origin.
     → Used for: user-specific data, authenticated APIs.
@@ -360,14 +360,13 @@ CDN INVALIDATION:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Consistent hashing** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) |
-| **TCP load balancing** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — kube-proxy, IPVS |
-| **HTTP routing** | [Ch 08: HTTP](08_HTTP_Complete.md) — headers, methods |
-| **TLS termination** | [Ch 09: TLS](09_TLS_Encryption.md) — certificates for nginx |
-| **K8s Ingress** | [Networking & Security](02_Networking_Security.md) — Ingress controllers |
-| **Service mesh** | [Cloud Native](03_ServiceMesh_CloudNative.md) — Envoy proxy |
-| **React deployment** | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) — build → nginx |
-| **CSS CDN** | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) — versioned assets |
-
+| Topic                  | Related Content                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| **Consistent hashing** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                    |
+| **TCP load balancing** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — kube-proxy, IPVS                        |
+| **HTTP routing**       | [Ch 08: HTTP](08_HTTP_Complete.md) — headers, methods                               |
+| **TLS termination**    | [Ch 09: TLS](09_TLS_Encryption.md) — certificates for nginx                         |
+| **K8s Ingress**        | [Networking & Security](02_Networking_Security.md) — Ingress controllers            |
+| **Service mesh**       | [Cloud Native](03_ServiceMesh_CloudNative.md) — Envoy proxy                         |
+| **React deployment**   | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) — build → nginx |
+| **CSS CDN**            | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) — versioned assets   |

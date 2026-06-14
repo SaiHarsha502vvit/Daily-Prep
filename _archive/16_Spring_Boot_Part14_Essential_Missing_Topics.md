@@ -777,35 +777,35 @@ public class ScheduledTasks {
 ```yaml
 # application.yml
 management:
-    endpoints:
-        web:
-            exposure:
-                include: health,info,metrics,prometheus # Expose specific endpoints
-                # include: "*"  # Expose all (NOT recommended in prod)
-            base-path: /actuator # URL prefix
-    endpoint:
-        health:
-            show-details: when-authorized # always, never, when-authorized
-            show-components: always
-    info:
-        env:
-            enabled: true # Show info.* properties
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus # Expose specific endpoints
+        # include: "*"  # Expose all (NOT recommended in prod)
+      base-path: /actuator # URL prefix
+  endpoint:
     health:
-        db:
-            enabled: true # Database health check
-        redis:
-            enabled: true # Redis health check
-        diskspace:
-            enabled: true # Disk space check
+      show-details: when-authorized # always, never, when-authorized
+      show-components: always
+  info:
+    env:
+      enabled: true # Show info.* properties
+  health:
+    db:
+      enabled: true # Database health check
+    redis:
+      enabled: true # Redis health check
+    diskspace:
+      enabled: true # Disk space check
 
 # Custom info
 info:
-    app:
-        name: My Application
-        version: "@project.version@" # From Maven
-        description: Spring Boot Demo
-    team: Backend Team
-    contact: team@company.com
+  app:
+    name: My Application
+    version: "@project.version@" # From Maven
+    description: Spring Boot Demo
+  team: Backend Team
+  contact: team@company.com
 ```
 
 ### Health Indicators
@@ -963,13 +963,13 @@ Content-Type: application/json
 ```yaml
 # application.yml
 springdoc:
-    api-docs:
-        path: /v3/api-docs
-    swagger-ui:
-        path: /swagger-ui.html
-        operationsSorter: method
-        tagsSorter: alpha
-    show-actuator: false
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  show-actuator: false
 ```
 
 ### OpenAPI Configuration
@@ -1138,12 +1138,12 @@ public record CreateUserRequest(
 ```yaml
 # application.yml
 spring:
-    servlet:
-        multipart:
-            enabled: true
-            max-file-size: 10MB
-            max-request-size: 50MB
-            file-size-threshold: 2KB # After this, write to disk
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+      file-size-threshold: 2KB # After this, write to disk
 ```
 
 ```java
@@ -1326,21 +1326,21 @@ public class FileStorageService {
 ```yaml
 # application.yml
 spring:
-    mail:
-        host: smtp.gmail.com
-        port: 587
-        username: ${MAIL_USERNAME}
-        password: ${MAIL_PASSWORD} # Use app password for Gmail
-        properties:
-            mail:
-                smtp:
-                    auth: true
-                    starttls:
-                        enable: true
-                        required: true
-                    connectiontimeout: 5000
-                    timeout: 5000
-                    writetimeout: 5000
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD} # Use app password for Gmail
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 ```
 
 ```java
@@ -1447,19 +1447,19 @@ public class EmailService {
 ```yaml
 # application.yml
 logging:
-    level:
-        root: INFO
-        com.myapp: DEBUG
-        org.springframework: INFO
-        org.hibernate.SQL: DEBUG
-        org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Show query params
-    pattern:
-        console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-        file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file:
-        name: logs/application.log
-        max-size: 10MB
-        max-history: 30
+  level:
+    root: INFO
+    com.myapp: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Show query params
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+    max-size: 10MB
+    max-history: 30
 ```
 
 ### Logback Configuration
@@ -1571,11 +1571,11 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 ```yaml
 # application.yml
 spring:
-    flyway:
-        enabled: true
-        baseline-on-migrate: true
-        locations: classpath:db/migration
-        validate-on-migrate: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
 ```
 
 ### Migration Files
@@ -1656,45 +1656,45 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 version: "3.8"
 
 services:
-    app:
-        build: .
-        ports:
-            - "8080:8080"
-        environment:
-            - SPRING_PROFILES_ACTIVE=prod
-            - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydb
-            - SPRING_DATASOURCE_USERNAME=root
-            - SPRING_DATASOURCE_PASSWORD=secret
-            - SPRING_REDIS_HOST=redis
-        depends_on:
-            - db
-            - redis
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - SPRING_REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-    db:
-        image: mysql:8
-        environment:
-            MYSQL_ROOT_PASSWORD: secret
-            MYSQL_DATABASE: mydb
-        volumes:
-            - mysql-data:/var/lib/mysql
-        ports:
-            - "3306:3306"
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
-    redis:
-        image: redis:7-alpine
-        ports:
-            - "6379:6379"
-        volumes:
-            - redis-data:/data
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
 
 volumes:
-    mysql-data:
-    redis-data:
+  mysql-data:
+  redis-data:
 ```
 
 ### Building and Running
@@ -1724,46 +1724,46 @@ docker-compose down
 ```yaml
 # application.yml - Common settings
 spring:
-    application:
-        name: my-application
-    profiles:
-        active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: my-application
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 ---
 # application-dev.yml
 spring:
-    config:
-        activate:
-            on-profile: dev
-    datasource:
-        url: jdbc:h2:mem:devdb
-        driver-class-name: org.h2.Driver
-    h2:
-        console:
-            enabled: true
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:devdb
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
 
 logging:
-    level:
-        com.myapp: DEBUG
+  level:
+    com.myapp: DEBUG
 
 ---
 # application-prod.yml
 spring:
-    config:
-        activate:
-            on-profile: prod
-    datasource:
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-        hikari:
-            maximum-pool-size: 20
-            minimum-idle: 5
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
 
 logging:
-    level:
-        root: WARN
-        com.myapp: INFO
+  level:
+    root: WARN
+    com.myapp: INFO
 ```
 
 ### Configuration Properties Class
@@ -1853,18 +1853,18 @@ public class JwtService {
 ```yaml
 # application.yml
 spring:
-    kafka:
-        bootstrap-servers: localhost:9092
-        consumer:
-            group-id: my-group
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-            properties:
-                spring.json.trusted.packages: "*"
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 ```
 
 ```java

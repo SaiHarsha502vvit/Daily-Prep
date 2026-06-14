@@ -9,50 +9,52 @@
 
 ## 📋 Scenario Master Index (Part 2: Scenarios 26–50)
 
-| # | Scenario | Category |
-|---|----------|----------|
-| 26 | SELECT * in production code | Query Anti-Pattern |
-| 27 | N+1 query problem — 1000 queries for 1 page | ORM/Backend |
-| 28 | Missing index on WHERE clause — full table scan | Index Missing |
-| 29 | Wrong index order — composite index not used | Index Design |
-| 30 | LIKE '%search%' — can't use index | Search Pattern |
-| 31 | Implicit type conversion killing index | Index Bypass |
-| 32 | OR conditions preventing index usage | Query Anti-Pattern |
-| 33 | Correlated subquery running O(n²) | Query Anti-Pattern |
-| 34 | DISTINCT masking a JOIN explosion | Query Anti-Pattern |
-| 35 | COUNT(*) on billion-row table — 45-minute query | Aggregate |
-| 36 | Pagination with OFFSET — gets slower every page | Pagination |
-| 37 | Sorting without index — filesort on disk | Sort |
-| 38 | Function on indexed column — index bypass | Index Bypass |
-| 39 | Query plan regression after statistics update | Plan Instability |
-| 40 | Temp table spill to disk — insufficient work_mem | Memory |
-| 41 | Connection pool exhaustion — too many idle queries | Connection |
-| 42 | Cartesian product from missing JOIN condition | Query Bug |
-| 43 | NOT IN with NULL — returns zero rows | NULL Trap |
-| 44 | Index-only scan prevented by visibility check | PostgreSQL |
-| 45 | Multi-table JOIN producing 100M intermediate rows | JOIN Explosion |
-| 46 | Subquery in SELECT list — hidden N+1 | Query Anti-Pattern |
-| 47 | UNION vs UNION ALL — accidental dedup of 10M rows | Query Anti-Pattern |
-| 48 | Prepared statement plan cache bloat | Memory |
-| 49 | Lock wait timeout from unindexed FK update | Lock |
-| 50 | Dashboard query running every 5 seconds per user | Load Pattern |
+| #   | Scenario                                           | Category           |
+| --- | -------------------------------------------------- | ------------------ |
+| 26  | SELECT \* in production code                       | Query Anti-Pattern |
+| 27  | N+1 query problem — 1000 queries for 1 page        | ORM/Backend        |
+| 28  | Missing index on WHERE clause — full table scan    | Index Missing      |
+| 29  | Wrong index order — composite index not used       | Index Design       |
+| 30  | LIKE '%search%' — can't use index                  | Search Pattern     |
+| 31  | Implicit type conversion killing index             | Index Bypass       |
+| 32  | OR conditions preventing index usage               | Query Anti-Pattern |
+| 33  | Correlated subquery running O(n²)                  | Query Anti-Pattern |
+| 34  | DISTINCT masking a JOIN explosion                  | Query Anti-Pattern |
+| 35  | COUNT(\*) on billion-row table — 45-minute query   | Aggregate          |
+| 36  | Pagination with OFFSET — gets slower every page    | Pagination         |
+| 37  | Sorting without index — filesort on disk           | Sort               |
+| 38  | Function on indexed column — index bypass          | Index Bypass       |
+| 39  | Query plan regression after statistics update      | Plan Instability   |
+| 40  | Temp table spill to disk — insufficient work_mem   | Memory             |
+| 41  | Connection pool exhaustion — too many idle queries | Connection         |
+| 42  | Cartesian product from missing JOIN condition      | Query Bug          |
+| 43  | NOT IN with NULL — returns zero rows               | NULL Trap          |
+| 44  | Index-only scan prevented by visibility check      | PostgreSQL         |
+| 45  | Multi-table JOIN producing 100M intermediate rows  | JOIN Explosion     |
+| 46  | Subquery in SELECT list — hidden N+1               | Query Anti-Pattern |
+| 47  | UNION vs UNION ALL — accidental dedup of 10M rows  | Query Anti-Pattern |
+| 48  | Prepared statement plan cache bloat                | Memory             |
+| 49  | Lock wait timeout from unindexed FK update         | Lock               |
+| 50  | Dashboard query running every 5 seconds per user   | Load Pattern       |
 
 ---
 
-## Scenario 26: SELECT * in Production Code
+## Scenario 26: SELECT \* in Production Code
 
 ### 🔴 The Incident
+
 API endpoint fetches `SELECT * FROM users` with 47 columns including a 500KB `profile_json` BLOB. Page loads take 8 seconds. Network bandwidth saturated.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Fetching 47 columns when only 3 are needed; transferring 500x more data than necessary |
-| **Why** | Developer used `findAll()` JPA method, or wrote `SELECT *` for convenience |
-| **When** | Becomes critical when tables have BLOB/TEXT columns or lots of unused columns |
-| **Where** | API endpoints, reports, list screens — anything that fetches multiple rows |
-| **Who** | Junior devs, ORMs with default fetch-all, copy-pasted SQL |
-| **How** | Select only needed columns, use DTO projections |
+
+| Question  | Answer                                                                                 |
+| --------- | -------------------------------------------------------------------------------------- |
+| **What**  | Fetching 47 columns when only 3 are needed; transferring 500x more data than necessary |
+| **Why**   | Developer used `findAll()` JPA method, or wrote `SELECT *` for convenience             |
+| **When**  | Becomes critical when tables have BLOB/TEXT columns or lots of unused columns          |
+| **Where** | API endpoints, reports, list screens — anything that fetches multiple rows             |
+| **Who**   | Junior devs, ORMs with default fetch-all, copy-pasted SQL                              |
+| **How**   | Select only needed columns, use DTO projections                                        |
 
 ### SQL Solution
 
@@ -103,28 +105,28 @@ List<UserListView> findByActiveTrue();  // Spring auto-generates optimal SQL
 ```
 
 ### DSA Connection
+
 - **Column pruning** = Array slicing — only copy elements you need
 - **Wide row vs narrow row** = Struct of Arrays vs Array of Structs — memory layout optimization
 
 ---
 
-
-
-
 ## Scenario 27: N+1 Query Problem — 1000 Queries for 1 Page
 
 ### 🔴 The Incident
+
 Page showing 50 orders with customer names fires 51 queries: 1 for orders + 50 individual customer lookups. Page takes 12 seconds.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | ORM lazy-loads relationships; each access triggers a separate SQL query |
-| **Why** | `@ManyToOne(fetch = FetchType.LAZY)` + iterating in a loop |
-| **When** | Any list page with related entities |
-| **Where** | JPA/Hibernate, Django ORM, ActiveRecord, Entity Framework |
-| **Who** | Any dev who iterates over parent entities and accesses child fields |
-| **How** | JOIN FETCH, batch fetching, or custom query |
+
+| Question  | Answer                                                                  |
+| --------- | ----------------------------------------------------------------------- |
+| **What**  | ORM lazy-loads relationships; each access triggers a separate SQL query |
+| **Why**   | `@ManyToOne(fetch = FetchType.LAZY)` + iterating in a loop              |
+| **When**  | Any list page with related entities                                     |
+| **Where** | JPA/Hibernate, Django ORM, ActiveRecord, Entity Framework               |
+| **Who**   | Any dev who iterates over parent entities and accesses child fields     |
+| **How**   | JOIN FETCH, batch fetching, or custom query                             |
 
 ### SQL Demonstration
 
@@ -191,6 +193,7 @@ spring:
 ```
 
 ### DSA Connection
+
 - **N+1 = O(n) nested lookups** = Not pre-building a HashMap
 - **JOIN FETCH = HashJoin** = Build hash table of customers O(n), then probe O(1) per order
 - **Batch fetch = Chunked processing** = Process in groups of K instead of 1-by-1
@@ -200,6 +203,7 @@ spring:
 ## Scenario 28: Missing Index on WHERE Clause — Full Table Scan
 
 ### 🔴 The Incident
+
 `SELECT * FROM orders WHERE customer_email = 'john@example.com'` takes 15 seconds on a 50M row table. EXPLAIN shows `Seq Scan`.
 
 ### SQL Solution
@@ -223,13 +227,13 @@ SELECT * FROM orders WHERE customer_email = 'john@example.com';
 -- That's 367,000x faster!
 
 -- FIND ALL missing indexes: Tables with sequential scans
-SELECT 
+SELECT
     schemaname || '.' || relname AS table_name,
     seq_scan,
     seq_tup_read,
     idx_scan,
-    CASE WHEN seq_scan > 0 
-         THEN ROUND(seq_tup_read::NUMERIC / seq_scan) 
+    CASE WHEN seq_scan > 0
+         THEN ROUND(seq_tup_read::NUMERIC / seq_scan)
          ELSE 0 END AS avg_rows_per_seq_scan,
     pg_size_pretty(pg_relation_size(relid)) AS table_size
 FROM pg_stat_user_tables
@@ -248,13 +252,13 @@ ORDER BY no_index_used_count DESC LIMIT 20;
 @Aspect
 @Component
 public class SlowQueryDetector {
-    
+
     @Around("execution(* com.app.repository.*.*(..))")
     public Object detectSlowQueries(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.nanoTime();
         Object result = joinPoint.proceed();
         long elapsed = (System.nanoTime() - start) / 1_000_000;
-        
+
         if (elapsed > 100) {  // > 100ms
             log.warn("SLOW QUERY: {}.{} took {}ms — check for missing index",
                 joinPoint.getTarget().getClass().getSimpleName(),
@@ -272,17 +276,19 @@ public class SlowQueryDetector {
 ## Scenario 29: Wrong Index Order — Composite Index Not Used
 
 ### 🔴 The Incident
+
 Index exists on `(status, created_at, customer_id)` but query `WHERE customer_id = 5 AND status = 'active'` doesn't use it efficiently.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Composite index follows leftmost prefix rule; skipping first column can't use B-Tree efficiently |
-| **Why** | Index designed for one query pattern but used for a different one |
-| **When** | When queries don't match the leftmost columns of the composite index |
-| **Where** | All B-Tree index implementations (MySQL, PostgreSQL, Oracle) |
-| **Who** | Devs who add indexes without understanding column order matters |
-| **How** | Reorder columns by: equality first → range second → sort third |
+
+| Question  | Answer                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------ |
+| **What**  | Composite index follows leftmost prefix rule; skipping first column can't use B-Tree efficiently |
+| **Why**   | Index designed for one query pattern but used for a different one                                |
+| **When**  | When queries don't match the leftmost columns of the composite index                             |
+| **Where** | All B-Tree index implementations (MySQL, PostgreSQL, Oracle)                                     |
+| **Who**   | Devs who add indexes without understanding column order matters                                  |
+| **How**   | Reorder columns by: equality first → range second → sort third                                   |
 
 ### SQL Solution
 
@@ -314,7 +320,7 @@ CREATE INDEX idx_orders_optimal ON orders(status, customer_id, created_at);
 
 -- VERIFY with EXPLAIN:
 EXPLAIN ANALYZE
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE status = 'active' AND customer_id = 5 AND created_at > '2025-01-01'
 ORDER BY created_at DESC
 LIMIT 20;
@@ -323,6 +329,7 @@ LIMIT 20;
 ```
 
 ### DSA Connection
+
 - **Composite index = Multi-level sorting** = Sorting by (last_name, first_name, age) — can binary search by last_name or (last_name, first_name) but NOT first_name alone
 - **Leftmost prefix = Trie traversal** — must traverse from root, can't skip levels
 
@@ -331,6 +338,7 @@ LIMIT 20;
 ## Scenario 30: LIKE '%search%' — Can't Use Index
 
 ### 🔴 The Incident
+
 Search feature: `WHERE product_name LIKE '%laptop%'` on 10M products. Full table scan every search. Users wait 8 seconds.
 
 ### SQL Solutions
@@ -341,7 +349,7 @@ EXPLAIN SELECT * FROM products WHERE name LIKE '%laptop%';
 -- Seq Scan (B-Tree index = useless for leading %)
 
 -- Solution 1: Full-Text Search (PostgreSQL)
-ALTER TABLE products ADD COLUMN name_tsv tsvector 
+ALTER TABLE products ADD COLUMN name_tsv tsvector
     GENERATED ALWAYS AS (to_tsvector('english', name || ' ' || description)) STORED;
 CREATE INDEX idx_products_fts ON products USING GIN(name_tsv);
 
@@ -357,17 +365,17 @@ SELECT * FROM products WHERE name LIKE '%laptop%';
 -- Now uses GIN trigram index! Works even with leading %
 
 SELECT * FROM products WHERE name % 'laptap';  -- Fuzzy match (typo-tolerant)
-SELECT *, similarity(name, 'laptap') AS sim FROM products 
+SELECT *, similarity(name, 'laptap') AS sim FROM products
 WHERE name % 'laptap' ORDER BY sim DESC;
 
 -- Solution 3: MySQL Full-Text
 ALTER TABLE products ADD FULLTEXT INDEX ft_name_desc (name, description);
-SELECT * FROM products 
+SELECT * FROM products
 WHERE MATCH(name, description) AGAINST('laptop gaming' IN BOOLEAN MODE);
 
 -- Solution 4: Generated column for prefix search
 -- If searches are always "starts with":
-ALTER TABLE products ADD COLUMN name_reversed VARCHAR(255) 
+ALTER TABLE products ADD COLUMN name_reversed VARCHAR(255)
     GENERATED ALWAYS AS (REVERSE(name)) STORED;
 CREATE INDEX idx_name_rev ON products(name_reversed);
 -- WHERE name LIKE '%phone' → WHERE name_reversed LIKE 'enohp%' → uses index!
@@ -388,7 +396,7 @@ public static Specification<Product> search(String term) {
     return (root, query, cb) -> {
         // Use full-text for longer terms, LIKE for short ones
         if (term.length() >= 3) {
-            return cb.isTrue(cb.function("fts_match", Boolean.class, 
+            return cb.isTrue(cb.function("fts_match", Boolean.class,
                 root.get("name"), cb.literal(term)));
         }
         return cb.like(cb.lower(root.get("name")), "%" + term.toLowerCase() + "%");
@@ -401,6 +409,7 @@ public static Specification<Product> search(String term) {
 ## Scenario 31: Implicit Type Conversion Killing Index
 
 ### 🔴 The Incident
+
 Column `phone VARCHAR(15)` has an index. Query `WHERE phone = 9876543210` (numeric, no quotes) does full table scan because database converts every row's VARCHAR to number for comparison.
 
 ### SQL Solution
@@ -453,6 +462,7 @@ User findByPhone(@Param("phone") String phone);  // String → no conversion
 ## Scenario 32: OR Conditions Preventing Index Usage
 
 ### 🔴 The Incident
+
 `WHERE status = 'active' OR email = 'john@example.com'` — neither index is used because the optimizer can't use two different indexes in a single scan efficiently.
 
 ### SQL Solution
@@ -501,6 +511,7 @@ public static Specification<User> searchUsers(String status, String email) {
 ## Scenario 33: Correlated Subquery Running O(n²)
 
 ### 🔴 The Incident
+
 Query finds "latest order per customer" using correlated subquery. For 1M customers × 50M orders = evaluating subquery 1M times. Runtime: 2 hours.
 
 ### SQL Solution
@@ -528,9 +539,9 @@ SELECT * FROM (
 SELECT DISTINCT ON (c.id) c.id, o.*
 FROM customers c
 JOIN LATERAL (
-    SELECT * FROM orders 
-    WHERE customer_id = c.id 
-    ORDER BY order_date DESC 
+    SELECT * FROM orders
+    WHERE customer_id = c.id
+    ORDER BY order_date DESC
     LIMIT 1
 ) o ON true;
 -- Uses index on orders(customer_id, order_date DESC) — very fast
@@ -541,7 +552,7 @@ FROM orders o
 JOIN (
     SELECT customer_id, MAX(order_date) AS max_date
     FROM orders GROUP BY customer_id
-) latest ON o.customer_id = latest.customer_id 
+) latest ON o.customer_id = latest.customer_id
         AND o.order_date = latest.max_date;
 
 -- PERFORMANCE COMPARISON (50M orders, 1M customers):
@@ -551,18 +562,17 @@ JOIN (
 ```
 
 ### DSA Connection
+
 - **Correlated subquery = Nested loops** = O(n²) — for each element, scan all elements
 - **Window function = Sort + single pass** = O(n log n + n)
 - **LATERAL JOIN = Index lookup** = O(n × log m) where m = orders per customer
 
 ---
 
-
-
-
 ## Scenario 34: DISTINCT Masking a JOIN Explosion
 
 ### 🔴 The Incident
+
 Query has `SELECT DISTINCT` and returns correct results, but takes 30 minutes. Without DISTINCT, it returns 100x more rows. The DISTINCT is hiding a Cartesian product from a bad JOIN.
 
 ### SQL Solution
@@ -587,7 +597,7 @@ JOIN order_items oi ON oi.order_id = o.id;
 SELECT u.id, u.name, u.email
 FROM users u
 WHERE EXISTS (
-    SELECT 1 FROM orders o 
+    SELECT 1 FROM orders o
     JOIN order_items oi ON oi.order_id = o.id
     WHERE o.customer_id = u.id
 );
@@ -605,8 +615,6 @@ JOIN (
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 34: DISTINCT Masking a JOIN Explosion**
 
 **Challenge 1 (Debug — Who/When/What):** A query uses `SELECT DISTINCT customer_id FROM orders JOIN tags ON orders.id = tags.order_id WHERE tags.name = 'VIP'`. It seems fast and returns correct-looking customer IDs. **Who** is hiding a problem? **When** would removing DISTINCT break the query? **What** is the performance trap?
@@ -617,8 +625,7 @@ JOIN (
 
 </details>
 
-
-## Scenario 35: COUNT(*) on Billion-Row Table — 45-Minute Query
+## Scenario 35: COUNT(\*) on Billion-Row Table — 45-Minute Query
 
 ### SQL Solution
 
@@ -665,8 +672,8 @@ SELECT COUNT(*) FROM events WHERE created_at > '2025-03-01';
 ```java
 @Service
 public class EventService {
-    
-    @Cacheable(value = "eventCount", key = "'total'", 
+
+    @Cacheable(value = "eventCount", key = "'total'",
                unless = "#result == null")
     public Long getEventCount() {
         // Use approximate count for display purposes
@@ -675,7 +682,7 @@ public class EventService {
             Long.class
         );
     }
-    
+
     @CacheEvict(value = "eventCount", allEntries = true)
     @Scheduled(fixedRate = 60000)  // Refresh every minute
     public void refreshCount() {}
@@ -684,23 +691,22 @@ public class EventService {
 
 ---
 
-
-
-
 ## Scenario 36: Pagination with OFFSET — Gets Slower Every Page
 
 ### 🔴 The Incident
+
 Page 1 loads in 50ms. Page 100 loads in 3 seconds. Page 10,000 loads in 2 minutes. Users can't navigate past page 50.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | `OFFSET 10000 LIMIT 20` must skip 10,000 rows THEN return 20 — the skip is O(n) |
-| **Why** | Database fetches and discards OFFSET rows before returning LIMIT rows |
-| **When** | Any paginated list/API/feed with deep pages |
-| **Where** | All SQL databases — OFFSET is universally slow |
-| **Who** | Every developer building list APIs |
-| **How** | Keyset/Cursor pagination: `WHERE id > last_seen_id LIMIT 20` |
+
+| Question  | Answer                                                                          |
+| --------- | ------------------------------------------------------------------------------- |
+| **What**  | `OFFSET 10000 LIMIT 20` must skip 10,000 rows THEN return 20 — the skip is O(n) |
+| **Why**   | Database fetches and discards OFFSET rows before returning LIMIT rows           |
+| **When**  | Any paginated list/API/feed with deep pages                                     |
+| **Where** | All SQL databases — OFFSET is universally slow                                  |
+| **Who**   | Every developer building list APIs                                              |
+| **How**   | Keyset/Cursor pagination: `WHERE id > last_seen_id LIMIT 20`                    |
 
 ### SQL Solution
 
@@ -755,13 +761,13 @@ public class CursorPage<T> {
 
 @Repository
 public class ProductCursorRepository {
-    
+
     @Autowired
     private JdbcTemplate jdbc;
-    
+
     public CursorPage<Product> findByCursor(String afterCursor, int limit) {
         List<Product> items;
-        
+
         if (afterCursor == null) {
             items = jdbc.query(
                 "SELECT * FROM products ORDER BY created_at DESC, id DESC LIMIT ?",
@@ -774,31 +780,29 @@ public class ProductCursorRepository {
                 "SELECT * FROM products " +
                 "WHERE (created_at, id) < (?, ?) " +
                 "ORDER BY created_at DESC, id DESC LIMIT ?",
-                productRowMapper, 
+                productRowMapper,
                 Timestamp.valueOf(parts[0]), Long.parseLong(parts[1]), limit + 1
             );
         }
-        
+
         boolean hasMore = items.size() > limit;
         if (hasMore) items = items.subList(0, limit);
-        
-        String nextCursor = hasMore ? 
+
+        String nextCursor = hasMore ?
             encodeCursor(items.get(items.size() - 1)) : null;
-        
+
         return new CursorPage<>(items, nextCursor, hasMore);
     }
 }
 ```
 
 ### DSA Connection
+
 - **OFFSET = Skip list traversal** = O(n) to skip n nodes
 - **Keyset = Binary search** = O(log n) seek to position
 - **Cursor = Iterator pattern** = Maintains position state for O(1) next
 
 ---
-
-
-
 
 ## Scenario 37: Sorting Without Index — Filesort on Disk
 
@@ -839,7 +843,7 @@ SELECT * FROM orders WHERE YEAR(created_at) = 2025;
 -- Index on created_at CANNOT be used (function transforms each row)
 
 -- GOOD: Rewrite as range condition
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE created_at >= '2025-01-01' AND created_at < '2026-01-01';
 -- Index Scan! No function evaluation needed.
 
@@ -853,7 +857,7 @@ WHERE created_at >= '2025-03-08' AND created_at < '2025-03-09'  -- GOOD
 
 WHERE CONCAT(first_name, ' ', last_name) = 'John Doe'  -- BAD
 -- FIX: Generated column + index
-ALTER TABLE users ADD COLUMN full_name VARCHAR(200) 
+ALTER TABLE users ADD COLUMN full_name VARCHAR(200)
     GENERATED ALWAYS AS (CONCAT(first_name, ' ', last_name)) STORED;
 CREATE INDEX idx_full_name ON users(full_name);
 
@@ -867,6 +871,7 @@ SELECT * FROM users WHERE LOWER(email) = 'john@example.com';  -- Uses index!
 ## Scenario 39: Query Plan Regression After Statistics Update
 
 ### 🔴 The Incident
+
 Query ran in 100ms for months. After `ANALYZE` (statistics refresh), same query now takes 30 seconds. The optimizer chose a different plan based on new statistics.
 
 ### SQL Solution
@@ -886,11 +891,11 @@ SET enable_mergejoin = OFF;
 RESET ALL;
 
 -- MySQL: Use index hints
-SELECT /*+ INDEX(orders idx_customer_date) */ * 
+SELECT /*+ INDEX(orders idx_customer_date) */ *
 FROM orders WHERE customer_id = 5;
 
 -- Or force specific join order:
-SELECT /*+ JOIN_ORDER(orders, customers) */ * 
+SELECT /*+ JOIN_ORDER(orders, customers) */ *
 FROM orders JOIN customers ON ...;
 
 -- ROOT CAUSE FIX: Update statistics more accurately
@@ -912,7 +917,7 @@ SELECT * FROM users u JOIN orders o ON o.customer_id = u.id;
 
 ```sql
 -- PROBLEM: Sort/Hash operations exceed memory, spill to disk
-EXPLAIN (ANALYZE, BUFFERS) 
+EXPLAIN (ANALYZE, BUFFERS)
 SELECT customer_id, SUM(total) FROM orders GROUP BY customer_id;
 -- Sort Method: external merge  Disk: 1024MB  ← SLOW!
 
@@ -932,12 +937,10 @@ RESET work_mem;
 
 ---
 
-
-
-
 ## Scenarios 41–50: Quick-Fire Query Optimization
 
 ### Scenario 41: Connection Pool Exhaustion
+
 ```java
 // PROBLEM: All connections busy, new requests wait/timeout
 // Spring Boot detection:
@@ -952,9 +955,9 @@ spring:
 @Scheduled(fixedRate = 10000)
 public void checkPool() {
     HikariPool pool = (HikariPool) dataSource.unwrap(HikariDataSource.class).getHikariPoolMXBean();
-    log.info("Pool: active={}, idle={}, waiting={}", 
+    log.info("Pool: active={}, idle={}, waiting={}",
         pool.getActiveConnections(), pool.getIdleConnections(), pool.getThreadsAwaitingConnection());
-    
+
     if (pool.getThreadsAwaitingConnection() > 5) {
         log.error("CONNECTION POOL EXHAUSTION IMMINENT!");
     }
@@ -962,6 +965,7 @@ public void checkPool() {
 ```
 
 ### Scenario 42: Cartesian Product from Missing JOIN Condition
+
 ```sql
 -- PROBLEM: Forgot the ON clause
 SELECT u.name, o.total FROM users u, orders o;
@@ -975,6 +979,7 @@ SELECT u.name, o.total FROM users u JOIN orders o ON o.customer_id = u.id;
 ```
 
 ### Scenario 43: NOT IN with NULL — Returns Zero Rows
+
 ```sql
 -- PROBLEM: NOT IN fails silently when subquery contains NULL
 SELECT * FROM customers
@@ -993,6 +998,7 @@ WHERE id NOT IN (SELECT customer_id FROM orders WHERE customer_id IS NOT NULL);
 ```
 
 ### Scenario 44: Index-Only Scan Prevented by Visibility Check
+
 ```sql
 -- PostgreSQL: Index-only scan should be instant but hits heap anyway
 EXPLAIN ANALYZE SELECT customer_id FROM orders WHERE customer_id = 5;
@@ -1004,6 +1010,7 @@ VACUUM orders;
 ```
 
 ### Scenario 45: Multi-Table JOIN Producing 100M Intermediate Rows
+
 ```sql
 -- PROBLEM: 5-table join explodes before final GROUP BY reduces it
 SELECT c.name, COUNT(*)
@@ -1024,9 +1031,10 @@ FROM customers c JOIN order_counts oc ON oc.customer_id = c.id;
 ```
 
 ### Scenario 46: Subquery in SELECT List — Hidden N+1
+
 ```sql
 -- PROBLEM: Subquery in SELECT runs once per row
-SELECT 
+SELECT
     o.id,
     (SELECT name FROM customers WHERE id = o.customer_id) AS customer_name,
     (SELECT COUNT(*) FROM order_items WHERE order_id = o.id) AS item_count
@@ -1043,6 +1051,7 @@ LEFT JOIN (
 ```
 
 ### Scenario 47: UNION vs UNION ALL — Accidental Dedup
+
 ```sql
 -- PROBLEM: UNION sorts and deduplicates (expensive)
 SELECT id, name FROM active_users
@@ -1058,6 +1067,7 @@ SELECT id, name FROM archived_users;
 ```
 
 ### Scenario 48: Prepared Statement Plan Cache Bloat
+
 ```sql
 -- PostgreSQL: 10,000 different query patterns cached
 SELECT count(*) FROM pg_prepared_statements;
@@ -1071,6 +1081,7 @@ ALTER SYSTEM SET plan_cache_mode = 'force_custom_plan';  -- Disables caching
 ```
 
 ### Scenario 49: Lock Wait from Unindexed FK Update
+
 ```sql
 -- PROBLEM: UPDATE on parent table, child table has FK without index
 UPDATE customers SET status = 'inactive' WHERE id = 5;
@@ -1082,13 +1093,14 @@ CREATE INDEX idx_orders_customer ON orders(customer_id);
 ```
 
 ### Scenario 50: Dashboard Queries Running Every 5 Seconds Per User
+
 ```sql
 -- PROBLEM: 500 users × dashboard refresh every 5s = 100 queries/second
 -- Same 10 queries repeated 100×/second
 
 -- FIX: Materialized view refreshed every minute
 CREATE MATERIALIZED VIEW dashboard_stats AS
-SELECT 
+SELECT
     COUNT(*) FILTER (WHERE status = 'active') AS active_orders,
     SUM(total) FILTER (WHERE created_at > CURRENT_DATE) AS today_revenue,
     COUNT(DISTINCT customer_id) AS unique_customers_today
@@ -1103,7 +1115,7 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY dashboard_stats;
 ```java
 @Service
 public class DashboardService {
-    
+
     @Cacheable(value = "dashboard", key = "#tenantId")
     public DashboardStats getDashboard(Long tenantId) {
         return jdbc.queryForObject(
@@ -1111,7 +1123,7 @@ public class DashboardService {
             dashboardMapper, tenantId
         );
     }
-    
+
     @Scheduled(fixedRate = 60000)  // Refresh materialized view every 60s
     @CacheEvict(value = "dashboard", allEntries = true)
     public void refreshDashboard() {
@@ -1124,22 +1136,32 @@ public class DashboardService {
 
 ## 🧠 DSA Patterns Behind Query Optimization
 
-| Scenario | DSA Pattern |
-|----------|-------------|
-| SELECT * waste | **Pruning** — skip unnecessary branches |
-| N+1 queries | **Batching** — batch lookups with HashMap |
-| Missing index | **Binary Search vs Linear Scan** — O(log n) vs O(n) |
-| Composite index order | **Trie / Multi-level sort** — prefix matching |
-| LIKE %text% | **Inverted index** — pre-process for substring search |
-| Correlated subquery | **Nested loops → HashJoin** — O(n²) → O(n) |
-| OFFSET pagination | **Array index vs linked list traverse** — O(1) vs O(n) |
-| Keyset pagination | **BST seek** — start from a known position |
-| COUNT(*) cache | **Memoization** — store computed results |
-| JOIN explosion | **Early termination** — aggregate before expanding |
+| Scenario              | DSA Pattern                                            |
+| --------------------- | ------------------------------------------------------ |
+| SELECT \* waste       | **Pruning** — skip unnecessary branches                |
+| N+1 queries           | **Batching** — batch lookups with HashMap              |
+| Missing index         | **Binary Search vs Linear Scan** — O(log n) vs O(n)    |
+| Composite index order | **Trie / Multi-level sort** — prefix matching          |
+| LIKE %text%           | **Inverted index** — pre-process for substring search  |
+| Correlated subquery   | **Nested loops → HashJoin** — O(n²) → O(n)             |
+| OFFSET pagination     | **Array index vs linked list traverse** — O(1) vs O(n) |
+| Keyset pagination     | **BST seek** — start from a known position             |
+| COUNT(\*) cache       | **Memoization** — store computed results               |
+| JOIN explosion        | **Early termination** — aggregate before expanding     |
 
 ---
 
 [⬅ Previous: 38_RealWorld_Production_Scenarios_Part1](38_RealWorld_Production_Scenarios_Part1.md) | [📚 Index](00_INDEX.md) | [Next: 40_RealWorld_Production_Scenarios_Part3 ➡](40_RealWorld_Production_Scenarios_Part3.md)
 
+### Historical Evolution
 
+**Predecessors (with years):**
+- **Gavin King (2001)**: Created Hibernate — the ORM that popularized the N+1 query problem by making lazy loading the default, silently generating hundreds of queries from one entity access
+- **SQL practitioners (pre-2000s)**: SELECT * became ubiquitous as a shorthand — developers debugged by seeing all columns; the network and memory cost was not measured until web scale
+- **PostgreSQL Global Development Group (2000)**: PostgreSQL 7.0 introduced EXPLAIN ANALYZE — making query plans observable for the first time to non-DBA developers
 
+**Evolution narrative:**
+Query performance problems are as old as SQL itself. Early databases ran on expensive mainframes where every query was scrutinized. The PC era (1990s) democratized databases but also democratized bad patterns: SELECT * for convenience, no indexes because "disk is cheap," and ORMs that abstracted away the SQL generation. Hibernate (2001) was a productivity revolution that also became the N+1 query factory — developers who never saw the SQL it generated had no reason to worry about 1000 queries per page. The EXPLAIN ANALYZE command existed in commercial databases but PostgreSQL's open-source EXPLAIN made plan analysis accessible to everyone.
+
+**Modern practice anchor:**
+Today, every major ORM (Hibernate, Django, ActiveRecord, EF Core) includes query logging, N+1 detection tools, and JOIN FETCH / eager loading options — a direct response to the decade of production pain caused by these patterns.

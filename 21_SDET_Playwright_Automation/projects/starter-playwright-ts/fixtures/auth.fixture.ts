@@ -1,4 +1,4 @@
-import { test as base, type Page } from '@playwright/test';
+import { test as base, type Page } from "@playwright/test";
 
 /**
  * ─── LEVEL 2: TEST-SCOPED AUTH FIXTURE ────────────────────────────────────
@@ -7,12 +7,16 @@ import { test as base, type Page } from '@playwright/test';
  * See Ch51 for the full taxonomy.
  */
 
-async function uiLogin(page: Page, email: string, password: string): Promise<void> {
-  await page.goto('/login');
-  await page.locator('#username').fill(email);
-  await page.locator('#password').fill(password);
-  await page.getByRole('button', { name: 'Login' }).click();
-  await page.waitForURL('**/dashboard');
+async function uiLogin(
+  page: Page,
+  email: string,
+  password: string,
+): Promise<void> {
+  await page.goto("/login");
+  await page.locator("#username").fill(email);
+  await page.locator("#password").fill(password);
+  await page.getByRole("button", { name: "Login" }).click();
+  await page.waitForURL("**/dashboard");
 }
 
 interface AuthFixtures {
@@ -29,4 +33,4 @@ export const test = base.extend<AuthFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";

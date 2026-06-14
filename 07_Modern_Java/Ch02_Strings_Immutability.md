@@ -8,16 +8,15 @@
 
 ---
 
-
-
 🔬 **Section Challenge — PART 1: STRING INTERNALS**
 
 **Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
+
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
-</details>
 
+</details>
 
 ## 🎯 The 5W1H
 
@@ -33,6 +32,23 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 ║  KEY  = Every "modification" creates a NEW String object         ║
 ║         "hello".toUpperCase() → NEW String "HELLO"               ║
 ╚══════════════════════════════════════════════════════════════════╝
+
+### Historical Evolution
+
+**Inventor / Originator:** James Gosling / Sun Microsystems (1995) — `String` made immutable by design from Java 1.0.
+
+**Predecessor context:** C++'s `std::string` was mutable: two references could point to the same buffer, and one could modify it, silently corrupting the other's data. Pointer aliasing bugs were a major source of production failures.
+
+**Evolution narrative:** Java's designers made `String` immutable from the beginning (Java 1.0, 1995): no `setCharAt()`, no public char[] field. This enabled the string pool (one copy shared by all references), hashCode caching (immutable → compute once), thread safety (no synchronization needed), and security (no one can modify a class name mid-classload). The substring memory leak was a real bug in Java 6 (interned strings in old heap caused OOM) — fixed in Java 7 update 6 (2012). Compact Strings (Java 9, 2017) changed internal storage from `char[]` (2 bytes each) to `byte[]` with ISO-8859-1/LATIN-1 encoding, halving heap usage for ASCII strings. String concatenation was improved in Java 9 via `invokedynamic` (JSR 292), which replaced the older `StringBuilder` bytecode approach.
+
+**Modern practice:** Java 9+ uses `String` methods with `StringConcatFactory` (invokedynamic). String templates (preview, Java 21-22) will add `${expression}` syntax. `String.isBlank()`, `String.strip()`, `String.lines()`, `String.repeat()` (Java 11+) are modern additions. For high-performance string operations, use `StringBuilder` for building, `String.intern()` only for a known finite set, and avoid `new String(s)` in hot paths.
+
+- **Java 1.0 — 1995**: Immutable String by design. Enables string pool, hashCode caching, security.
+- **C++ std::string — pre-1995**: Mutable. Aliasing bugs. The foil for Java's design choice.
+- **Java 6 substring leak — 2006**: Fixed Java 7u6 (2012). Old substring shared backing array. OOM risk.
+- **Java 7 string pool move — 2012**: Pool moved from PermGen to heap. `intern()` now viable in more cases.
+- **Compact Strings — Java 9 (2017)**: `char[]` → `byte[]` with LATIN-1 encoding. ~50% heap reduction for ASCII.
+- **`invokedynamic` string concat — Java 9 (2017)**: JSR 292. More efficient than pre-Java 9 `StringBuilder` bytecode.
 ```
 
 ---
@@ -86,22 +102,23 @@ System.out.println(s1 == s6);       // false — runtime concat, new object
 
 ---
 
-
-
 🔬 **Section Challenge — 1. String Pool — How It Works**
 
 **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+
 <details><summary>Answer</summary>
 
 First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+
 </details>
 
 **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+
 <details><summary>Answer</summary>
 
 Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-</details>
 
+</details>
 
 ## 2. String Immutability — Why and How
 
@@ -127,8 +144,6 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 
 ---
 
-
-
 🔬 **Section Challenge — 2. String Immutability — Why and How**
 
 **Challenge 1 (String Immutability + intern()):** `String s = new String("hello"); s.intern();` **Who** decides where the string is stored after `intern()`? **When** does `intern()` save memory vs. waste it? **What** does `s == "hello"` return before and after calling `intern()`?
@@ -141,8 +156,8 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
-</details>
 
+</details>
 
 ## 3. String Concatenation — The Performance Trap
 
@@ -188,8 +203,6 @@ String s = "Name: " + name + " Age: " + age;
 
 ---
 
-
-
 🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
 
 **Challenge 1 (Compile-Time vs Runtime Concatenation):** `String a = "hello" + " world";` vs `String x = "hello"; String b = x + " world";`. **Who** performs the concatenation? **When** does the JVM avoid creating a `StringBuilder`? **What** is the bytecode difference?
@@ -202,8 +215,8 @@ String s = "Name: " + name + " Age: " + age;
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
-</details>
 
+</details>
 
 ## 4. StringBuilder vs StringBuffer
 
@@ -237,16 +250,15 @@ StringBuilder sb = new StringBuilder(1000);  // Start with capacity 1000
 
 ---
 
-
-
 🔬 **Section Challenge — 4. StringBuilder vs StringBuffer**
 
 **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+
 <details><summary>Answer</summary>
 
 Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-</details>
 
+</details>
 
 ## 5. Compact Strings (Java 9+)
 
@@ -267,8 +279,6 @@ Each `+=` creates a NEW String object: copies all existing chars + appends new c
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
 
 **Challenge 1 (Compact Strings Java 9+):** Java 9 introduced Compact Strings. A `String` containing `"hello"` (all ASCII) uses `byte[]` internally. A string containing `"café"` (has é, non-ASCII) uses `byte[]` with 2 bytes per char. **Who** decides which encoding is used? **When** does this create a subtle performance issue in `charAt()`? **What** is the JVM flag to disable it?
@@ -281,8 +291,8 @@ Each `+=` creates a NEW String object: copies all existing chars + appends new c
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
-</details>
 
+</details>
 
 ## 6. Text Blocks (Java 15+)
 
@@ -359,8 +369,6 @@ String.format("Name: %s", name); // Formatted string
 
 ---
 
-
-
 🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
 
 **Challenge 1 (substring() Memory Sharing):** In Java 6, `"hello world".substring(0, 5)` returned a `String` that shared the underlying `char[]` with the original. Java 7+ changed this. **Who** caused the Java 6 memory leak? **When** did this become a production OOM issue? **What** did Java 7 change?
@@ -373,14 +381,12 @@ String.format("Name: %s", name); // Formatted string
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
-</details>
 
+</details>
 
 ## PART 2: IMMUTABILITY PATTERNS
 
 ---
-
-
 
 ## 8. What Makes a Class Immutable?
 
@@ -401,15 +407,15 @@ Immutability Allocation Thrashing. Strings in Java are immutable. Every time you
 public final class Money {
     private final BigDecimal amount;
     private final Currency currency;
-    
+
     public Money(BigDecimal amount, Currency currency) {
         this.amount = amount;    // BigDecimal is already immutable ✅
         this.currency = currency; // Currency is already immutable ✅
     }
-    
+
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
-    
+
     // "Modification" returns a NEW object
     public Money add(Money other) {
         if (!this.currency.equals(other.currency)) {
@@ -429,12 +435,12 @@ public final class Money {
 public final class Event {
     private final String name;
     private final Date startDate;  // Date is MUTABLE!
-    
+
     public Event(String name, Date startDate) {
         this.name = name;
         this.startDate = startDate;  // ❌ Stores the SAME reference!
     }
-    
+
     public Date getStartDate() {
         return startDate;  // ❌ Caller can modify the Date!
     }
@@ -450,12 +456,12 @@ event.getStartDate().setYear(1970);  // Also modifies internal state!
 public final class Event {
     private final String name;
     private final Date startDate;
-    
+
     public Event(String name, Date startDate) {
         this.name = name;
         this.startDate = new Date(startDate.getTime());  // ✅ Copy in constructor
     }
-    
+
     public Date getStartDate() {
         return new Date(startDate.getTime());  // ✅ Copy in getter
     }
@@ -465,12 +471,12 @@ public final class Event {
 public final class Event {
     private final String name;
     private final LocalDateTime startTime;  // Already immutable!
-    
+
     public Event(String name, LocalDateTime startTime) {
         this.name = name;
         this.startTime = startTime;  // No copy needed — immutable
     }
-    
+
     public LocalDateTime getStartTime() {
         return startTime;  // Safe to return directly — immutable
     }
@@ -486,12 +492,12 @@ public final class Event {
 public final class Team {
     private final String name;
     private final List<String> members;
-    
+
     public Team(String name, List<String> members) {
         this.name = name;
         this.members = members;  // ❌ Same reference!
     }
-    
+
     public List<String> getMembers() {
         return members;  // ❌ Caller can add/remove!
     }
@@ -501,12 +507,12 @@ public final class Team {
 public final class Team {
     private final String name;
     private final List<String> members;
-    
+
     public Team(String name, List<String> members) {
         this.name = name;
         this.members = List.copyOf(members);  // ✅ Immutable copy
     }
-    
+
     public List<String> getMembers() {
         return members;  // ✅ Already immutable — safe to return
     }
@@ -536,14 +542,14 @@ System.out.println(copy);  // [a, b, c] — the copy is INDEPENDENT
 // Records (Java 16+) give you immutability with minimal boilerplate
 public record Money(BigDecimal amount, Currency currency) {
     // Constructor, getters, equals, hashCode, toString — all generated!
-    
+
     // Compact constructor for validation
     public Money {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Amount cannot be negative");
         }
     }
-    
+
     // Behavior methods
     public Money add(Money other) {
         if (!this.currency.equals(other.currency)) {
@@ -582,7 +588,7 @@ public final class HttpRequest {
     private final Map<String, String> headers;
     private final String body;
     private final int timeout;
-    
+
     private HttpRequest(Builder builder) {
         this.method = builder.method;
         this.url = builder.url;
@@ -590,21 +596,21 @@ public final class HttpRequest {
         this.body = builder.body;
         this.timeout = builder.timeout;
     }
-    
+
     // Only getters — no setters
     public String getMethod() { return method; }
     public String getUrl() { return url; }
     public Map<String, String> getHeaders() { return headers; }
     public String getBody() { return body; }
     public int getTimeout() { return timeout; }
-    
+
     public static class Builder {
         private String method = "GET";
         private String url;
         private Map<String, String> headers = new HashMap<>();
         private String body;
         private int timeout = 30_000;
-        
+
         public Builder url(String url) { this.url = url; return this; }
         public Builder method(String method) { this.method = method; return this; }
         public Builder header(String key, String value) {
@@ -612,7 +618,7 @@ public final class HttpRequest {
         }
         public Builder body(String body) { this.body = body; return this; }
         public Builder timeout(int ms) { this.timeout = ms; return this; }
-        
+
         public HttpRequest build() {
             Objects.requireNonNull(url, "URL is required");
             return new HttpRequest(this);
@@ -631,8 +637,6 @@ HttpRequest request = new HttpRequest.Builder()
 ```
 
 ---
-
-
 
 ## 13. Interview Questions & Answers
 
@@ -656,9 +660,9 @@ Records auto-generate constructor, accessors, equals, hashCode, toString — gre
 
 ---
 
-**Key Takeaway**: String immutability enables the pool, thread safety, and 
-hashCode caching. Use StringBuilder in loops, not `+=`. For your own immutable 
-classes: `final` class, `final` fields, defensive copies, no setters. 
+**Key Takeaway**: String immutability enables the pool, thread safety, and
+hashCode caching. Use StringBuilder in loops, not `+=`. For your own immutable
+classes: `final` class, `final` fields, defensive copies, no setters.
 Records are shorthand but need defensive copies for mutable fields.
 
 **Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)

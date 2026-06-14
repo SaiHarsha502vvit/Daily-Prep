@@ -28,17 +28,20 @@ test-analytics-dashboard/
 ## Required features
 
 ### Ingester
+
 - POST `/api/runs` accepts a Playwright JSON report.
 - Validates with **Zod** (or similar) — rejects malformed payloads with 422.
 - Writes to PostgreSQL: tables `runs`, `tests`, `attachments`.
 - Idempotent: re-posting the same run-id updates rather than duplicates.
 
 ### Web dashboard
+
 - **Overview**: 30-day pass rate trend, total runs, top 10 failing tests, top 10 slowest tests.
 - **Test detail**: pass/fail history for one test, grouped by branch.
 - **Owner view**: per-owner test counts, failure rates, "tests not run in 30 days."
 
 ### CI integration
+
 - GitHub Action `upload-playwright-report` reusable workflow.
 - After test run, POSTs `results.json` to the ingester.
 - Auth via simple bearer token from secrets.
@@ -61,7 +64,7 @@ test-analytics-dashboard/
 ## What this teaches
 
 - Backend + frontend wired together with a real schema.
-- That test data is *production data* — needs migrations, indexes, retention policy.
+- That test data is _production data_ — needs migrations, indexes, retention policy.
 - Operational concerns: idempotency, validation at the boundary, observability.
 
 ## Portfolio value
@@ -72,11 +75,11 @@ This single repo demonstrates: TypeScript, React, Postgres, Docker, CI/CD, GitHu
 
 Don't try to ship all of it in a weekend. Plan four iterations:
 
-| Week | Goal |
-|---|---|
-| 1 | Ingester with hard-coded schema, no UI — runs `psql` queries by hand |
-| 2 | Minimal Next.js page reading from `/api/overview` |
-| 3 | Test detail page + GitHub Action |
-| 4 | Polish, deploy, write the README |
+| Week | Goal                                                                 |
+| ---- | -------------------------------------------------------------------- |
+| 1    | Ingester with hard-coded schema, no UI — runs `psql` queries by hand |
+| 2    | Minimal Next.js page reading from `/api/overview`                    |
+| 3    | Test detail page + GitHub Action                                     |
+| 4    | Polish, deploy, write the README                                     |
 
 Anything beyond this is a stretch goal — ship the four-week version first.

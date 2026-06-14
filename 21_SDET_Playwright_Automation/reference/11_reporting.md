@@ -49,10 +49,10 @@ For a retried test, `onTestBegin → onTestEnd` fires once per attempt.
 
 ### 1.2 The two surfaces
 
-| Surface | Who consumes | Examples |
-|---|---|---|
-| Human-readable | Developers, QA, PMs triaging | HTML report, list, dot |
-| Machine-readable | CI dashboards, analytics | JUnit, JSON, blob, custom |
+| Surface          | Who consumes                 | Examples                  |
+| ---------------- | ---------------------------- | ------------------------- |
+| Human-readable   | Developers, QA, PMs triaging | HTML report, list, dot    |
+| Machine-readable | CI dashboards, analytics     | JUnit, JSON, blob, custom |
 
 Production-grade configs use BOTH:
 
@@ -68,11 +68,13 @@ reporter: [
 ### 1.3 Where reporters run
 
 Reporters run in the MAIN process (not workers). They have access to:
+
 - The full config
 - All test results across all workers and shards (in a single run)
 - The filesystem
 
 They CANNOT access:
+
 - Live browser state
 - In-flight requests
 - Worker memory
@@ -83,17 +85,17 @@ Workers send events to the main process via the standard Playwright IPC.
 
 ## 2. Built-in reporters
 
-| Reporter | Output | Audience | Use when |
-|---|---|---|---|
-| `list` | stdout | Dev | Local development, default when not CI |
-| `dot` | stdout | CI | Short feedback for very long suites |
-| `line` | stdout | CI | One updating line; for tight CI log budgets |
-| `html` | filesystem | All | Always include |
-| `junit` | filesystem | CI dashboards | Jenkins, Azure DevOps, GitLab |
-| `json` | filesystem | Analytics | Custom tooling, dashboards |
-| `blob` | filesystem | Sharded CI | Merged into HTML/junit after run |
-| `null` | none | Programmatic | Agentic / scripted runs |
-| `github` | annotations | GitHub PR | When running in GitHub Actions |
+| Reporter | Output      | Audience      | Use when                                    |
+| -------- | ----------- | ------------- | ------------------------------------------- |
+| `list`   | stdout      | Dev           | Local development, default when not CI      |
+| `dot`    | stdout      | CI            | Short feedback for very long suites         |
+| `line`   | stdout      | CI            | One updating line; for tight CI log budgets |
+| `html`   | filesystem  | All           | Always include                              |
+| `junit`  | filesystem  | CI dashboards | Jenkins, Azure DevOps, GitLab               |
+| `json`   | filesystem  | Analytics     | Custom tooling, dashboards                  |
+| `blob`   | filesystem  | Sharded CI    | Merged into HTML/junit after run            |
+| `null`   | none        | Programmatic  | Agentic / scripted runs                     |
+| `github` | annotations | GitHub PR     | When running in GitHub Actions              |
 
 ### 2.1 `list`
 
@@ -106,8 +108,9 @@ Workers send events to the main process via the standard Playwright IPC.
 One line per test with status, path, duration. Most readable for humans.
 
 Options:
+
 ```typescript
-['list', { printSteps: true }]      // also print test.step() entries
+["list", { printSteps: true }]; // also print test.step() entries
 ```
 
 ### 2.2 `dot`
@@ -129,13 +132,16 @@ A single line that updates in place. Saves CI log space.
 ### 2.4 `html`
 
 ```typescript
-['html', {
-  outputFolder: 'playwright-report',
-  open: 'on-failure',                  // 'always' | 'never' | 'on-failure'
-  host: '127.0.0.1',                   // for `show-report`
-  port: 9323,
-  attachmentsBaseURL: '',              // if you host attachments separately
-}]
+[
+  "html",
+  {
+    outputFolder: "playwright-report",
+    open: "on-failure", // 'always' | 'never' | 'on-failure'
+    host: "127.0.0.1", // for `show-report`
+    port: 9323,
+    attachmentsBaseURL: "", // if you host attachments separately
+  },
+];
 ```
 
 Produces a static HTML site at `playwright-report/`. View with `npx playwright show-report`.
@@ -145,13 +151,16 @@ See §3 for internals.
 ### 2.5 `junit`
 
 ```typescript
-['junit', {
-  outputFile: 'test-results/junit.xml',
-  stripANSIControlSequences: true,     // remove color codes; some parsers break
-  includeProjectInTestName: true,      // [chromium] prefix in test names
-  embedAttachmentsAsProperty: 'attachments',
-  embedAnnotationsAsProperty: 'annotations',
-}]
+[
+  "junit",
+  {
+    outputFile: "test-results/junit.xml",
+    stripANSIControlSequences: true, // remove color codes; some parsers break
+    includeProjectInTestName: true, // [chromium] prefix in test names
+    embedAttachmentsAsProperty: "attachments",
+    embedAnnotationsAsProperty: "annotations",
+  },
+];
 ```
 
 See §4.
@@ -159,7 +168,7 @@ See §4.
 ### 2.6 `json`
 
 ```typescript
-['json', { outputFile: 'test-results/results.json' }]
+["json", { outputFile: "test-results/results.json" }];
 ```
 
 See §5.
@@ -167,7 +176,7 @@ See §5.
 ### 2.7 `blob`
 
 ```typescript
-['blob', { outputDir: 'blob-report' }]
+["blob", { outputDir: "blob-report" }];
 ```
 
 Binary intermediate format for sharded CI. See §6.
@@ -175,7 +184,7 @@ Binary intermediate format for sharded CI. See §6.
 ### 2.8 `null`
 
 ```typescript
-['null']
+["null"];
 ```
 
 No output. Use for programmatic runs where you read results from `onEnd` in a custom reporter.
@@ -183,10 +192,11 @@ No output. Use for programmatic runs where you read results from `onEnd` in a cu
 ### 2.9 `github`
 
 ```typescript
-['github']
+["github"];
 ```
 
 When running in GitHub Actions:
+
 - Test failures appear as inline annotations in PR "Files changed".
 - Logs are grouped collapsibly.
 - Step durations appear in the workflow timing.
@@ -220,26 +230,29 @@ The server is a simple static file server with one endpoint for the trace viewer
 
 ### 3.2 The view
 
-| Section | Shows |
-|---|---|
-| Top — summary | Total, passed, failed, flaky, skipped, duration |
-| Filter bar | Filter by status, project, name |
-| Test list | All tests with timing |
+| Section       | Shows                                              |
+| ------------- | -------------------------------------------------- |
+| Top — summary | Total, passed, failed, flaky, skipped, duration    |
+| Filter bar    | Filter by status, project, name                    |
+| Test list     | All tests with timing                              |
 | Selected test | Each step with timing, error messages, attachments |
-| Trace viewer | Embedded — see §8 |
-| Source view | Your spec file with the failing line highlighted |
-| Network tab | All HTTP requests during the test |
-| Console tab | console.log/error from the page |
+| Trace viewer  | Embedded — see §8                                  |
+| Source view   | Your spec file with the failing line highlighted   |
+| Network tab   | All HTTP requests during the test                  |
+| Console tab   | console.log/error from the page                    |
 
 ### 3.3 Attachments in HTML report
 
 Anything `testInfo.attach()`'d appears under the test:
 
 ```typescript
-test('my test', async ({ page }, testInfo) => {
+test("my test", async ({ page }, testInfo) => {
   // ...
-  await testInfo.attach('screenshot', { path: 'manual-screenshot.png' });
-  await testInfo.attach('payload', { body: JSON.stringify(data), contentType: 'application/json' });
+  await testInfo.attach("screenshot", { path: "manual-screenshot.png" });
+  await testInfo.attach("payload", {
+    body: JSON.stringify(data),
+    contentType: "application/json",
+  });
 });
 ```
 
@@ -248,6 +261,7 @@ PNG attachments show inline. JSON/text shows as expandable text. Binary download
 ### 3.4 Hosting
 
 The HTML report is static — host on:
+
 - GitHub Pages (commit `playwright-report/` to a `gh-pages` branch)
 - S3 bucket with static website hosting
 - Vercel/Netlify (drag-and-drop deploy)
@@ -258,6 +272,7 @@ Permanent link to each test run becomes shareable.
 ### 3.5 Customisation limits
 
 The HTML report's CSS and layout are not directly customisable. To brand:
+
 - Wrap in an iframe in your own dashboard.
 - Or use a custom reporter (see §7) that produces HTML you control.
 - Or use Allure / ReportPortal which are designed for customisation.
@@ -296,10 +311,13 @@ The lowest-common-denominator format. Every CI dashboard parses JUnit.
 ### 4.3 Attachment embedding
 
 ```typescript
-['junit', {
-  outputFile: 'test-results/junit.xml',
-  embedAttachmentsAsProperty: 'attachments',   // base64-embed
-}]
+[
+  "junit",
+  {
+    outputFile: "test-results/junit.xml",
+    embedAttachmentsAsProperty: "attachments", // base64-embed
+  },
+];
 ```
 
 Includes attachments in the XML. Useful if your CI dashboard supports inline screenshots; bloats the XML otherwise.
@@ -307,7 +325,7 @@ Includes attachments in the XML. Useful if your CI dashboard supports inline scr
 ### 4.4 The `stripANSIControlSequences` option
 
 ```typescript
-['junit', { stripANSIControlSequences: true }]
+["junit", { stripANSIControlSequences: true }];
 ```
 
 Removes ANSI color codes from error messages. Some XML parsers choke on them. Set to `true` unless you're confident your parser handles ANSI.
@@ -315,7 +333,7 @@ Removes ANSI color codes from error messages. Some XML parsers choke on them. Se
 ### 4.5 `includeProjectInTestName`
 
 ```typescript
-['junit', { includeProjectInTestName: true }]
+["junit", { includeProjectInTestName: true }];
 ```
 
 Test names become `[chromium] login passes` instead of `login passes`. Useful when running multiple projects (e.g., Chromium + Firefox + WebKit) — distinguishes which project failed.
@@ -370,20 +388,25 @@ Machine-readable everything.
 ### 5.2 Analytics use case
 
 ```typescript
-import results from './test-results/results.json';
+import results from "./test-results/results.json";
 
 const flakyTests = results.suites
-  .flatMap(s => s.specs.flatMap(sp => sp.tests))
-  .filter(t => t.results.some(r => r.retry > 0 && r.status === 'passed'));
+  .flatMap((s) => s.specs.flatMap((sp) => sp.tests))
+  .filter((t) => t.results.some((r) => r.retry > 0 && r.status === "passed"));
 
 console.log(`Flaky tests: ${flakyTests.length}`);
 
 const slowTests = results.suites
-  .flatMap(s => s.specs.flatMap(sp => sp.tests))
-  .filter(t => t.results.some(r => r.duration > 30_000))
+  .flatMap((s) => s.specs.flatMap((sp) => sp.tests))
+  .filter((t) => t.results.some((r) => r.duration > 30_000))
   .sort((a, b) => b.results[0].duration - a.results[0].duration);
 
-console.log(`Slowest tests:`, slowTests.slice(0, 10).map(t => ({ title: t.title, duration: t.results[0].duration })));
+console.log(
+  `Slowest tests:`,
+  slowTests
+    .slice(0, 10)
+    .map((t) => ({ title: t.title, duration: t.results[0].duration })),
+);
 ```
 
 ### 5.3 Pipe to Splunk/Datadog/Grafana
@@ -464,11 +487,13 @@ interface Reporter {
   onStepEnd?(test: TestCase, result: TestResult, step: TestStep): void;
   onTestEnd?(test: TestCase, result: TestResult): void;
   onError?(error: TestError): void;
-  onEnd?(result: FullResult): void | Promise<void | { status?: FullResult['status'] }>;
-  
+  onEnd?(
+    result: FullResult,
+  ): void | Promise<void | { status?: FullResult["status"] }>;
+
   printsToStdio?(): boolean;
   onExit?(): void | Promise<void>;
-  
+
   // Lifecycle hooks
   onConfigure?(config: FullConfig): void;
 }
@@ -497,29 +522,34 @@ interface Suite {
 
 interface TestCase {
   title: string;
-  titlePath(): string[];     // ['describe1', 'describe2', 'test name']
+  titlePath(): string[]; // ['describe1', 'describe2', 'test name']
   location: Location;
   parent: Suite;
   retries: number;
   timeout: number;
   expectedStatus: TestStatus;
-  results: TestResult[];     // one per attempt
+  results: TestResult[]; // one per attempt
 }
 
 interface TestResult {
-  retry: number;             // 0 = first attempt
+  retry: number; // 0 = first attempt
   startTime: Date;
   duration: number;
-  status: 'passed' | 'failed' | 'timedOut' | 'skipped' | 'interrupted';
+  status: "passed" | "failed" | "timedOut" | "skipped" | "interrupted";
   errors: TestError[];
-  attachments: { name: string; path?: string; body?: Buffer; contentType: string }[];
+  attachments: {
+    name: string;
+    path?: string;
+    body?: Buffer;
+    contentType: string;
+  }[];
   stdout: (string | Buffer)[];
   stderr: (string | Buffer)[];
   workerIndex: number;
 }
 
 interface FullResult {
-  status: 'passed' | 'failed' | 'timedout' | 'interrupted';
+  status: "passed" | "failed" | "timedout" | "interrupted";
   startTime: Date;
   duration: number;
 }
@@ -562,14 +592,14 @@ The single most valuable debugging tool in Playwright.
 
 A trace zip contains:
 
-| File | Contents |
-|---|---|
-| `0-trace.network` | All HTTP requests/responses with timings |
-| `0-trace.stacks` | Stack traces for every Playwright API call |
-| `0-trace.trace` | The event log |
-| `*.png` | Pre/post screenshots for every action |
-| `*.snapshot` | DOM snapshots at every action |
-| `resources/*` | Embedded CSS, fonts, images for snapshots |
+| File              | Contents                                   |
+| ----------------- | ------------------------------------------ |
+| `0-trace.network` | All HTTP requests/responses with timings   |
+| `0-trace.stacks`  | Stack traces for every Playwright API call |
+| `0-trace.trace`   | The event log                              |
+| `*.png`           | Pre/post screenshots for every action      |
+| `*.snapshot`      | DOM snapshots at every action              |
+| `resources/*`     | Embedded CSS, fonts, images for snapshots  |
 
 ### 8.2 Capturing traces
 
@@ -581,6 +611,7 @@ use: {
 ```
 
 Modes:
+
 - `'off'` — no trace
 - `'on'` — trace every test
 - `'retain-on-failure'` — write every test, keep only failures
@@ -597,17 +628,17 @@ Opens in browser at `http://localhost:8000` (or `--port=N`).
 
 ### 8.4 The viewer
 
-| Tab | Shows |
-|---|---|
-| Actions | Step-by-step list of Playwright calls. Click to time-travel. |
-| Snapshot — Before | DOM state right before the selected action |
-| Snapshot — After | DOM state right after the action |
-| Snapshot — Action | Action-frame snapshot if available |
-| Source | Spec file at the line that produced the action |
-| Console | console.log/error from the page at that time |
-| Network | HTTP requests with status, size, timing |
-| Errors | Page-side exceptions |
-| Metadata | Test name, project, retry, browser, viewport |
+| Tab               | Shows                                                        |
+| ----------------- | ------------------------------------------------------------ |
+| Actions           | Step-by-step list of Playwright calls. Click to time-travel. |
+| Snapshot — Before | DOM state right before the selected action                   |
+| Snapshot — After  | DOM state right after the action                             |
+| Snapshot — Action | Action-frame snapshot if available                           |
+| Source            | Spec file at the line that produced the action               |
+| Console           | console.log/error from the page at that time                 |
+| Network           | HTTP requests with status, size, timing                      |
+| Errors            | Page-side exceptions                                         |
+| Metadata          | Test name, project, retry, browser, viewport                 |
 
 ### 8.5 The "Pick locator" feature
 
@@ -618,6 +649,7 @@ This is the FASTEST way to write a new locator — open the trace, find the elem
 ### 8.6 Time travel
 
 The timeline at the bottom shows all actions. Click anywhere to see the DOM at that moment. You can:
+
 - Scrub forward and backward.
 - Compare before/after a specific action.
 - See exactly when the element appeared / disappeared.
@@ -625,6 +657,7 @@ The timeline at the bottom shows all actions. Click anywhere to see the DOM at t
 ### 8.7 Network inspection
 
 The Network tab is fully interactive:
+
 - Click a request to see headers, body (if captured), status, timing.
 - Filter by URL pattern.
 - See which response correlates with which action.
@@ -650,12 +683,12 @@ Disabling screenshots cuts trace size 50–80% but loses before/after visual com
 
 On a 30-action test:
 
-| Trace mode | Wall-clock | Disk |
-|---|---|---|
-| `'off'` | 6.0 s | 0 |
-| `'retain-on-failure'` | 6.2 s | 0 (on pass) |
-| `'on'` | 6.4 s | 250 KB |
-| `'on'` heavy SPA | 7.5 s | 5 MB |
+| Trace mode            | Wall-clock | Disk        |
+| --------------------- | ---------- | ----------- |
+| `'off'`               | 6.0 s      | 0           |
+| `'retain-on-failure'` | 6.2 s      | 0 (on pass) |
+| `'on'`                | 6.4 s      | 250 KB      |
+| `'on'` heavy SPA      | 7.5 s      | 5 MB        |
 
 The 4% overhead of `'retain-on-failure'` is always worth it for the debugging power.
 
@@ -675,21 +708,22 @@ Opens a desktop app (technically: an Electron-like view in your default browser 
 
 ### 9.2 What it shows
 
-| Panel | Shows |
-|---|---|
-| Test list (left) | All your tests, with status indicators |
+| Panel             | Shows                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Test list (left)  | All your tests, with status indicators                              |
 | Pickable selector | Top right — auto-generates locators when you click in the live page |
-| Live page | The browser instance running the selected test |
-| Timeline | Visual timeline of the test run |
-| Actions list | Every Playwright call, time-travel-able |
-| Source | Your spec file, highlightable |
-| Watch | File watcher rerun on save |
+| Live page         | The browser instance running the selected test                      |
+| Timeline          | Visual timeline of the test run                                     |
+| Actions list      | Every Playwright call, time-travel-able                             |
+| Source            | Your spec file, highlightable                                       |
+| Watch             | File watcher rerun on save                                          |
 
 ### 9.3 Watch mode
 
 UI mode auto-reruns tests when their spec file changes. Edit → save → see the test re-run instantly.
 
 You can scope:
+
 - "Watch this test only" — only the currently-selected test reruns.
 - "Watch this file only" — all tests in the file rerun.
 - "Watch all" — entire suite reruns.
@@ -715,6 +749,7 @@ This is the fastest test-writing experience in any framework. Use it constantly 
 Click "Pick locator" → click any element in the live page → Playwright generates and copies the locator.
 
 The generated locators are smart:
+
 - Prefers `getByRole`, `getByText`, `getByLabel`.
 - Falls back to `getByTestId` if available.
 - Falls back to CSS only when nothing else uniquely identifies.
@@ -748,6 +783,7 @@ Both pause at the start of the first test and open the Inspector.
 ### 10.2 The Inspector window
 
 A separate window with:
+
 - Step / Resume controls
 - Action history
 - The page being tested
@@ -762,10 +798,10 @@ A separate window with:
 ### 10.4 Inserting a programmatic pause
 
 ```typescript
-test('debug me', async ({ page }) => {
-  await page.goto('/login');
-  await page.pause();   // pauses ONLY when PWDEBUG=1 or --debug
-  await page.fill('#username', 'admin');
+test("debug me", async ({ page }) => {
+  await page.goto("/login");
+  await page.pause(); // pauses ONLY when PWDEBUG=1 or --debug
+  await page.fill("#username", "admin");
 });
 ```
 
@@ -773,12 +809,12 @@ test('debug me', async ({ page }) => {
 
 ### 10.5 When to use Inspector vs Trace
 
-| Inspector | Trace |
-|---|---|
-| During test development | After a failure happened |
-| Live debugging | Post-mortem |
-| Need to interact with browser | Just inspecting state |
-| Single test in isolation | Failures from CI |
+| Inspector                     | Trace                    |
+| ----------------------------- | ------------------------ |
+| During test development       | After a failure happened |
+| Live debugging                | Post-mortem              |
+| Need to interact with browser | Just inspecting state    |
+| Single test in isolation      | Failures from CI         |
 
 UI Mode supersedes the Inspector for most cases. Use the standalone Inspector mainly when you need a specific debug scenario UI Mode doesn't support.
 
@@ -817,20 +853,24 @@ npx allure open allure-report
 ### 11.4 Allure annotations
 
 ```typescript
-import { allure } from 'allure-playwright';
+import { allure } from "allure-playwright";
 
-test('placing an order', async ({ page }) => {
-  await allure.feature('Checkout');
-  await allure.story('Place order with credit card');
-  await allure.severity('critical');
-  await allure.owner('jane@example.com');
-  await allure.tag('regression', 'checkout');
-  await allure.link('JIRA-1234', 'https://jira.example.com/JIRA-1234', 'issue');
-  await allure.parameter('payment_method', 'card');
+test("placing an order", async ({ page }) => {
+  await allure.feature("Checkout");
+  await allure.story("Place order with credit card");
+  await allure.severity("critical");
+  await allure.owner("jane@example.com");
+  await allure.tag("regression", "checkout");
+  await allure.link("JIRA-1234", "https://jira.example.com/JIRA-1234", "issue");
+  await allure.parameter("payment_method", "card");
 
   // ... test body
 
-  await allure.attachment('order-confirmation', JSON.stringify(orderJson), 'application/json');
+  await allure.attachment(
+    "order-confirmation",
+    JSON.stringify(orderJson),
+    "application/json",
+  );
 });
 ```
 
@@ -912,16 +952,21 @@ reporter: [
 
 ```typescript
 // reporters/slack-reporter.ts
-import type { Reporter, TestCase, TestResult, FullResult } from '@playwright/test/reporter';
+import type {
+  Reporter,
+  TestCase,
+  TestResult,
+  FullResult,
+} from "@playwright/test/reporter";
 
 export default class SlackReporter implements Reporter {
   private failures: { test: string; error: string }[] = [];
 
   onTestEnd(test: TestCase, result: TestResult): void {
-    if (result.status === 'failed') {
+    if (result.status === "failed") {
       this.failures.push({
-        test: test.titlePath().join(' › '),
-        error: result.errors[0]?.message ?? 'Unknown error',
+        test: test.titlePath().join(" › "),
+        error: result.errors[0]?.message ?? "Unknown error",
       });
     }
   }
@@ -929,12 +974,16 @@ export default class SlackReporter implements Reporter {
   async onEnd(result: FullResult): Promise<void> {
     if (this.failures.length === 0) return;
 
-    const text = `❌ Playwright run ${result.status}: ${this.failures.length} failures\n\n` +
-      this.failures.slice(0, 10).map(f => `• ${f.test}\n   ${f.error}`).join('\n');
+    const text =
+      `❌ Playwright run ${result.status}: ${this.failures.length} failures\n\n` +
+      this.failures
+        .slice(0, 10)
+        .map((f) => `• ${f.test}\n   ${f.error}`)
+        .join("\n");
 
     await fetch(process.env.SLACK_WEBHOOK_URL!, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
     });
   }
@@ -948,9 +997,9 @@ export default class FlakeDetector implements Reporter {
   private flakes: { test: string; retries: number }[] = [];
 
   onTestEnd(test: TestCase, result: TestResult): void {
-    if (result.status === 'passed' && result.retry > 0) {
+    if (result.status === "passed" && result.retry > 0) {
       this.flakes.push({
-        test: test.titlePath().join(' › '),
+        test: test.titlePath().join(" › "),
         retries: result.retry,
       });
     }
@@ -970,16 +1019,21 @@ export default class FlakeDetector implements Reporter {
 ### 13.3 GitHub PR commenter
 
 ```typescript
-import { Octokit } from '@octokit/rest';
+import { Octokit } from "@octokit/rest";
 
 export default class PRCommenter implements Reporter {
-  private results: { total: number; passed: number; failed: number; flaky: number } = { total: 0, passed: 0, failed: 0, flaky: 0 };
+  private results: {
+    total: number;
+    passed: number;
+    failed: number;
+    flaky: number;
+  } = { total: 0, passed: 0, failed: 0, flaky: 0 };
 
   onTestEnd(test: TestCase, result: TestResult): void {
     this.results.total++;
-    if (result.status === 'passed' && result.retry > 0) this.results.flaky++;
-    else if (result.status === 'passed') this.results.passed++;
-    else if (result.status === 'failed') this.results.failed++;
+    if (result.status === "passed" && result.retry > 0) this.results.flaky++;
+    else if (result.status === "passed") this.results.passed++;
+    else if (result.status === "failed") this.results.failed++;
   }
 
   async onEnd(): Promise<void> {
@@ -987,10 +1041,11 @@ export default class PRCommenter implements Reporter {
 
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
     await octokit.issues.createComment({
-      owner: 'myorg',
-      repo: 'myrepo',
+      owner: "myorg",
+      repo: "myrepo",
       issue_number: parseInt(process.env.PR_NUMBER),
-      body: `## Playwright Results\n\n` +
+      body:
+        `## Playwright Results\n\n` +
         `✅ Passed: ${this.results.passed}\n` +
         `❌ Failed: ${this.results.failed}\n` +
         `⚠️ Flaky: ${this.results.flaky}\n` +
@@ -1013,20 +1068,22 @@ export default class DatadogReporter implements Reporter {
       `retry:${result.retry}`,
     ];
 
-    fetch('https://api.datadoghq.com/api/v1/series', {
-      method: 'POST',
+    fetch("https://api.datadoghq.com/api/v1/series", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'DD-API-KEY': process.env.DD_API_KEY!,
+        "Content-Type": "application/json",
+        "DD-API-KEY": process.env.DD_API_KEY!,
       },
       body: JSON.stringify({
-        series: [{
-          metric: 'playwright.test.duration',
-          points: [[Math.floor(Date.now() / 1000), result.duration]],
-          tags,
-        }],
+        series: [
+          {
+            metric: "playwright.test.duration",
+            points: [[Math.floor(Date.now() / 1000), result.duration]],
+            tags,
+          },
+        ],
       }),
-    }).catch(e => console.warn('DD emit failed:', e));
+    }).catch((e) => console.warn("DD emit failed:", e));
   }
 }
 ```
@@ -1034,21 +1091,21 @@ export default class DatadogReporter implements Reporter {
 ### 13.5 S3 trace uploader
 
 ```typescript
-import { S3 } from '@aws-sdk/client-s3';
-import * as fs from 'node:fs';
+import { S3 } from "@aws-sdk/client-s3";
+import * as fs from "node:fs";
 
 export default class S3TraceUploader implements Reporter {
-  private s3 = new S3({ region: 'us-east-1' });
+  private s3 = new S3({ region: "us-east-1" });
 
   async onTestEnd(test: TestCase, result: TestResult): Promise<void> {
-    if (result.status !== 'failed') return;
+    if (result.status !== "failed") return;
 
-    const traceAttachment = result.attachments.find(a => a.name === 'trace');
+    const traceAttachment = result.attachments.find((a) => a.name === "trace");
     if (!traceAttachment?.path) return;
 
     const key = `traces/${process.env.GITHUB_SHA}/${test.id}.zip`;
     await this.s3.putObject({
-      Bucket: 'playwright-traces',
+      Bucket: "playwright-traces",
       Key: key,
       Body: fs.readFileSync(traceAttachment.path),
     });
@@ -1067,7 +1124,7 @@ export default class S3TraceUploader implements Reporter {
 ### 14.1 Path-based
 
 ```typescript
-await testInfo.attach('Screenshot at error', { path: '/tmp/screenshot.png' });
+await testInfo.attach("Screenshot at error", { path: "/tmp/screenshot.png" });
 ```
 
 The HTML report shows it inline (if image) or as a download link.
@@ -1075,9 +1132,9 @@ The HTML report shows it inline (if image) or as a download link.
 ### 14.2 Body-based
 
 ```typescript
-await testInfo.attach('Request payload', {
+await testInfo.attach("Request payload", {
   body: JSON.stringify(payload, null, 2),
-  contentType: 'application/json',
+  contentType: "application/json",
 });
 ```
 
@@ -1085,14 +1142,14 @@ Inline content, no temp file needed.
 
 ### 14.3 Common content types
 
-| Content type | Renders as |
-|---|---|
-| `image/png`, `image/jpeg` | Inline image |
-| `text/plain`, `text/html` | Expandable text |
-| `application/json` | Pretty-printed JSON |
-| `application/pdf` | Download link + inline preview (browser-dependent) |
-| `application/zip` | Download link |
-| `video/webm` | Inline video player |
+| Content type              | Renders as                                         |
+| ------------------------- | -------------------------------------------------- |
+| `image/png`, `image/jpeg` | Inline image                                       |
+| `text/plain`, `text/html` | Expandable text                                    |
+| `application/json`        | Pretty-printed JSON                                |
+| `application/pdf`         | Download link + inline preview (browser-dependent) |
+| `application/zip`         | Download link                                      |
+| `video/webm`              | Inline video player                                |
 
 ### 14.4 Use cases
 
@@ -1103,14 +1160,14 @@ Inline content, no temp file needed.
 - Console error logs from page
 
 ```typescript
-test('debug attachable info', async ({ page }, testInfo) => {
-  const response = await page.request.get('/api/me');
+test("debug attachable info", async ({ page }, testInfo) => {
+  const response = await page.request.get("/api/me");
   const body = await response.json();
 
   // Attach for debugging
-  await testInfo.attach('API response', {
+  await testInfo.attach("API response", {
     body: JSON.stringify(body, null, 2),
-    contentType: 'application/json',
+    contentType: "application/json",
   });
 
   // Continue with assertions
@@ -1127,12 +1184,18 @@ Annotations surface metadata in reports.
 ### 15.1 Basic syntax
 
 ```typescript
-test('important test', { tag: ['@regression', '@checkout'] }, async ({ page }) => {
-  test.info().annotations.push({ type: 'owner', description: 'jane@example.com' });
-  test.info().annotations.push({ type: 'issue', description: 'JIRA-1234' });
-  test.info().annotations.push({ type: 'severity', description: 'high' });
-  // ...
-});
+test(
+  "important test",
+  { tag: ["@regression", "@checkout"] },
+  async ({ page }) => {
+    test
+      .info()
+      .annotations.push({ type: "owner", description: "jane@example.com" });
+    test.info().annotations.push({ type: "issue", description: "JIRA-1234" });
+    test.info().annotations.push({ type: "severity", description: "high" });
+    // ...
+  },
+);
 ```
 
 ### 15.2 Where they appear
@@ -1144,7 +1207,7 @@ test('important test', { tag: ['@regression', '@checkout'] }, async ({ page }) =
 ### 15.3 The `@` tag syntax
 
 ```typescript
-test('checkout flow @smoke @regression', async ({ page }) => {
+test("checkout flow @smoke @regression", async ({ page }) => {
   // ...
 });
 ```
@@ -1167,9 +1230,9 @@ projects: [
 ### 15.4 Programmatic tags
 
 ```typescript
-test('dynamic tag', async ({ page }, testInfo) => {
+test("dynamic tag", async ({ page }, testInfo) => {
   if (process.env.RUN_AS_FLAKY) {
-    testInfo.annotations.push({ type: 'flaky', description: 'Known issue' });
+    testInfo.annotations.push({ type: "flaky", description: "Known issue" });
   }
 });
 ```
@@ -1199,13 +1262,14 @@ Use to find tests worth optimising.
 ### 16.1 Marking known-slow tests
 
 ```typescript
-test('long-running data import', async ({ page }) => {
-  test.slow();                       // multiplies test timeout by 3
+test("long-running data import", async ({ page }) => {
+  test.slow(); // multiplies test timeout by 3
   // ...
 });
 ```
 
 `test.slow()` does three things:
+
 - Multiplies the test timeout by 3 (default 30s → 90s).
 - Marks the test as slow in reports.
 - Tells Playwright's shard algorithm to balance slow tests across shards.
@@ -1228,6 +1292,7 @@ The flaky count = passed-on-retry. They didn't fail, but they didn't pass first 
 ### 17.2 In CI dashboards
 
 Many CI dashboards highlight flakiness:
+
 - GitHub Actions: shows retry count.
 - GitLab: "Test Reports" tab shows flake history.
 - Azure DevOps: built-in "Flaky tests" view.
@@ -1235,15 +1300,17 @@ Many CI dashboards highlight flakiness:
 ### 17.3 Via JSON analysis
 
 ```typescript
-import results from './test-results/results.json';
+import results from "./test-results/results.json";
 
 const flakyTests = results.suites
-  .flatMap(s => s.specs)
-  .flatMap(sp => sp.tests)
-  .filter(t => t.results.some(r => r.retry > 0 && r.status === 'passed'));
+  .flatMap((s) => s.specs)
+  .flatMap((sp) => sp.tests)
+  .filter((t) => t.results.some((r) => r.retry > 0 && r.status === "passed"));
 
 for (const t of flakyTests) {
-  console.log(`${t.title}: passed on retry ${t.results.find(r => r.status === 'passed')?.retry}`);
+  console.log(
+    `${t.title}: passed on retry ${t.results.find((r) => r.status === "passed")?.retry}`,
+  );
 }
 ```
 
@@ -1251,11 +1318,11 @@ for (const t of flakyTests) {
 
 ```typescript
 // fixtures/quarantine.ts
-const QUARANTINED = ['tests/known-flake.spec.ts:23'];
+const QUARANTINED = ["tests/known-flake.spec.ts:23"];
 
 test.beforeEach(async ({}, testInfo) => {
   if (QUARANTINED.includes(`${testInfo.file}:${testInfo.line}`)) {
-    test.skip(true, 'QUARANTINED — see issue #1234');
+    test.skip(true, "QUARANTINED — see issue #1234");
   }
 });
 ```
@@ -1305,6 +1372,7 @@ Codifies which flakes are known + tracked. Don't let "quarantine" become a perma
 **Cause:** Trace > 500 MB. Common when `trace: 'on'` + SPA with many DOM snapshots.
 
 **Fix:** Slim future traces (`trace: { mode: 'on', screenshots: false, snapshots: true }`). For the existing huge one, extract specific files manually:
+
 ```bash
 unzip trace.zip -d /tmp/trace
 # Inspect individual files
@@ -1325,6 +1393,7 @@ unzip trace.zip -d /tmp/trace
 **Cause:** Custom reporter `onEnd` awaits a Slack webhook that timed out.
 
 **Fix:** Use `Promise.race` with a timeout, or fire-and-forget for non-critical reporting:
+
 ```typescript
 async onEnd(): Promise<void> {
   await Promise.race([
@@ -1349,6 +1418,7 @@ async onEnd(): Promise<void> {
 **Cause:** Either not running in `pull_request` context, OR `permissions` not set in workflow.
 
 **Fix:** Add permissions:
+
 ```yaml
 permissions:
   pull-requests: write
@@ -1368,21 +1438,21 @@ permissions:
 
 ## 19. Anti-pattern catalog
 
-| ❌ | ✅ |
-|---|---|
-| Only `list` reporter in CI | Include `html`, `junit`, optionally `json` |
-| `trace: 'on'` in CI | `trace: 'retain-on-failure'` |
-| No JUnit XML for CI dashboard | `junit` reporter for dashboard integration |
-| Massive `console.log` per test for debugging | `testInfo.attach()` — appears in HTML report |
+| ❌                                                | ✅                                             |
+| ------------------------------------------------- | ---------------------------------------------- |
+| Only `list` reporter in CI                        | Include `html`, `junit`, optionally `json`     |
+| `trace: 'on'` in CI                               | `trace: 'retain-on-failure'`                   |
+| No JUnit XML for CI dashboard                     | `junit` reporter for dashboard integration     |
+| Massive `console.log` per test for debugging      | `testInfo.attach()` — appears in HTML report   |
 | Custom reporter that blocks tests on slow webhook | Fire-and-forget OR `Promise.race` with timeout |
-| Reporter that throws on missing env vars | Log warning, continue |
-| Reporter with secrets in `console.log` | Mask credentials in logs |
-| `show-report` without uploading full folder | Upload entire `playwright-report/` dir |
-| Allure on a 20-test suite | Built-in HTML is enough |
-| Manual annotation entry in test bodies | Use the `tag` option in `test()` |
-| Trace viewer in production CI logs | Upload as artifact; viewer needs full zip |
-| Quarantine forever without owner | Quarantine has an expiry; assigned to a person |
-| `reportSlowTests: null` | Always surface slow tests for awareness |
+| Reporter that throws on missing env vars          | Log warning, continue                          |
+| Reporter with secrets in `console.log`            | Mask credentials in logs                       |
+| `show-report` without uploading full folder       | Upload entire `playwright-report/` dir         |
+| Allure on a 20-test suite                         | Built-in HTML is enough                        |
+| Manual annotation entry in test bodies            | Use the `tag` option in `test()`               |
+| Trace viewer in production CI logs                | Upload as artifact; viewer needs full zip      |
+| Quarantine forever without owner                  | Quarantine has an expiry; assigned to a person |
+| `reportSlowTests: null`                           | Always surface slow tests for awareness        |
 
 ---
 

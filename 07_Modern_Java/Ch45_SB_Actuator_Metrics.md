@@ -2,16 +2,34 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** Spring Boot Actuator by the Spring team at Pivotal (2014) — production-ready features for Spring Boot applications.
+
+**Predecessor context:** Pre-Actuator (before 2014), monitoring Spring apps required JConsole, JMX beans, or custom servlet filters. There was no standardized health endpoint or metrics API. Flyway (2010, Axel Fontaine) and Liquibase (2006, Nathan Voxland) provided database migrations independently.
+
+**Evolution narrative:** Flyway (2010) introduced versioned SQL migrations to replace manual DB scripts. Liquibase (2006) added XML/YAML changelog-based migrations with rollback support. Spring Boot 1.0 (2014) bundled Actuator with `/health`, `/info`, `/metrics` endpoints. Spring Boot 1.3 (2015) added `/env`, `/beans`, `/trace`. Micrometer (2017, Tommy Darnell) provided a metrics facade — dimensional metrics compatible with Prometheus, Datadog, Graphite. Spring Boot 2.x (2018) switched to Micrometer. Docker multi-stage builds (Docker 17.05, 2017) enabled small production images. Spring Boot 3.x (2023) uses `jakarta.*` namespace for Actuator's `/jmx` endpoint.
+
+**Modern practice:** Spring Boot 3.x with `spring-boot-starter-actuator`. Expose `/actuator/health`, `/actuator/prometheus` for Prometheus scraping. Use Micrometer tags for dimensional metrics. Flyway for DB migrations, Liquibase for rollback-heavy schemas. Multi-stage Docker builds for <200MB images.
+
+- **Liquibase — 2006**: Nathan Voxland. Changelog-based migrations. Rollback support.
+- **Flyway — 2010**: Axel Fontaine. Versioned SQL migrations. Simple and effective.
+- **Spring Boot Actuator 1.0 — 2014**: `/health`, `/info`, `/metrics`. Standardized production endpoints.
+- **Micrometer — 2017**: Tommy Darnell. Metrics facade. Prometheus, Datadog, Graphite compatibility.
+- **Docker multi-stage build — Docker 17.05 (2017)**: Small production images. Builder → Runtime separation.
+
+---
+
 ```yaml
 # application.yml
 springdoc:
-    api-docs:
-        path: /v3/api-docs
-    swagger-ui:
-        path: /swagger-ui.html
-        operationsSorter: method
-        tagsSorter: alpha
-    show-actuator: false
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  show-actuator: false
 ```
 
 ### OpenAPI Configuration
@@ -379,21 +397,21 @@ public class FileStorageService {
 ```yaml
 # application.yml
 spring:
-    mail:
-        host: smtp.gmail.com
-        port: 587
-        username: ${MAIL_USERNAME}
-        password: ${MAIL_PASSWORD} # Use app password for Gmail
-        properties:
-            mail:
-                smtp:
-                    auth: true
-                    starttls:
-                        enable: true
-                        required: true
-                    connectiontimeout: 5000
-                    timeout: 5000
-                    writetimeout: 5000
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD} # Use app password for Gmail
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 ```
 
 ```java
@@ -635,11 +653,11 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 ```yaml
 # application.yml
 spring:
-    flyway:
-        enabled: true
-        baseline-on-migrate: true
-        locations: classpath:db/migration
-        validate-on-migrate: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
 ```
 
 ### Migration Files
@@ -737,45 +755,45 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 version: "3.8"
 
 services:
-    app:
-        build: .
-        ports:
-            - "8080:8080"
-        environment:
-            - SPRING_PROFILES_ACTIVE=prod
-            - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydb
-            - SPRING_DATASOURCE_USERNAME=root
-            - SPRING_DATASOURCE_PASSWORD=secret
-            - SPRING_REDIS_HOST=redis
-        depends_on:
-            - db
-            - redis
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - SPRING_REDIS_HOST=redis
+    depends_on:
+      - db
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-    db:
-        image: mysql:8
-        environment:
-            MYSQL_ROOT_PASSWORD: secret
-            MYSQL_DATABASE: mydb
-        volumes:
-            - mysql-data:/var/lib/mysql
-        ports:
-            - "3306:3306"
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
-    redis:
-        image: redis:7-alpine
-        ports:
-            - "6379:6379"
-        volumes:
-            - redis-data:/data
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
 
 volumes:
-    mysql-data:
-    redis-data:
+  mysql-data:
+  redis-data:
 ```
 
 ### Building and Running
@@ -805,46 +823,46 @@ docker-compose down
 ```yaml
 # application.yml - Common settings
 spring:
-    application:
-        name: my-application
-    profiles:
-        active: ${SPRING_PROFILES_ACTIVE:dev}
+  application:
+    name: my-application
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 ---
 # application-dev.yml
 spring:
-    config:
-        activate:
-            on-profile: dev
-    datasource:
-        url: jdbc:h2:mem:devdb
-        driver-class-name: org.h2.Driver
-    h2:
-        console:
-            enabled: true
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:devdb
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
 
 logging:
-    level:
-        com.myapp: DEBUG
+  level:
+    com.myapp: DEBUG
 
 ---
 # application-prod.yml
 spring:
-    config:
-        activate:
-            on-profile: prod
-    datasource:
-        url: ${DATABASE_URL}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-        hikari:
-            maximum-pool-size: 20
-            minimum-idle: 5
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
 
 logging:
-    level:
-        root: WARN
-        com.myapp: INFO
+  level:
+    root: WARN
+    com.myapp: INFO
 ```
 
 ### Configuration Properties Class
@@ -934,18 +952,18 @@ public class JwtService {
 ```yaml
 # application.yml
 spring:
-    kafka:
-        bootstrap-servers: localhost:9092
-        consumer:
-            group-id: my-group
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-            properties:
-                spring.json.trusted.packages: "*"
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 ```
 
 ```java
@@ -1101,11 +1119,23 @@ public class RabbitConsumer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _This completes the essential missing topics in Spring Boot!_
 
+---
+
+### Trade-offs: Metrics and Monitoring Approaches
+
+| Approach | Use Case | Latency | Throughput | Complexity | When to Prefer |
+|----------|----------|---------|------------|------------|----------------|
+| **Spring Boot Actuator + Micrometer** | Built-in health/metrics | <1ms overhead | High (in-process) | Low | Default for Spring Boot apps; no extra infrastructure |
+| **Prometheus + Grafana** | Time-series metrics, dashboards | <5ms scrape interval | Very high (batch pull model) | Medium | Cloud-native apps; need long-term metric history |
+| **Datadog APM** | Distributed tracing + metrics | Agent-based, ~1% CPU | Very high | Low (agent handles everything) | Paid enterprise; need distributed traces across services |
+| **CloudWatch + X-Ray** | AWS-native observability | Agent SDK overhead | High | Medium | Already running on AWS; want unified AWS monitoring |
+| **Custom Micrometer + InfluxDB** | Full control over storage | Minimal | Medium (custom) | High | Need custom metric aggregation; self-hosted stack |
+
+**Key insight:** Actuator provides the foundation; external systems extend it. Start with Micrometer + Prometheus (free), graduate to Datadog when you need distributed tracing across service boundaries.
 
 ---
 

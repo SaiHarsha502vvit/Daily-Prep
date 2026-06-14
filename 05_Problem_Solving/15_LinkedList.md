@@ -7,19 +7,18 @@
 ## 🗺️ Pattern Recognition Header — Linked List
 
 > **Which Linked List technique should I use?**
->
 
-| Problem Signature | Technique | Template |
-|---|---|---|
-| `find middle / detect cycle / kth from end` | **Runner** (slow/fast pointers) | `slow=head, fast=head; fast!=null && fast.next!=null` |
-| `reverse the list / reverse k-group` | **3-pointer reversal** | `prev=null, curr=head; while curr: save next, flip, advance` |
-| `merge two sorted lists / unknown new head` | **Dummy Head** (sentinel) | `ListNode dummy=new ListNode(0); return dummy.next` |
-| `copy random pointer` | **Interleave** technique | 3-pass: clone → link random → separate |
-| `merge K sorted lists` | **Min-heap of heads** | `PriorityQueue<ListNode>` |
-| `palindrome check` | **Find middle + Reverse half** | Runner to mid, reverse second half, compare |
+| Problem Signature                           | Technique                       | Template                                                     |
+| ------------------------------------------- | ------------------------------- | ------------------------------------------------------------ |
+| `find middle / detect cycle / kth from end` | **Runner** (slow/fast pointers) | `slow=head, fast=head; fast!=null && fast.next!=null`        |
+| `reverse the list / reverse k-group`        | **3-pointer reversal**          | `prev=null, curr=head; while curr: save next, flip, advance` |
+| `merge two sorted lists / unknown new head` | **Dummy Head** (sentinel)       | `ListNode dummy=new ListNode(0); return dummy.next`          |
+| `copy random pointer`                       | **Interleave** technique        | 3-pass: clone → link random → separate                       |
+| `merge K sorted lists`                      | **Min-heap of heads**           | `PriorityQueue<ListNode>`                                    |
+| `palindrome check`                          | **Find middle + Reverse half**  | Runner to mid, reverse second half, compare                  |
 
->
 > **The 3 Core Mental Models:**
+>
 > ```
 > RUNNER    → "Two speeds. When fast reaches end, slow is at the answer."
 > DUMMY     → "When head might change, use a sentinel to avoid special cases."
@@ -35,9 +34,11 @@
 > 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Linked List**
 
 **Challenge 1 (Reasoning):** The pattern table shows Runner (slow/fast) for cycle detection. But you could also detect cycles with a HashSet of visited nodes. When is HashSet actually BETTER than Floyd's, and why do interviewers still expect Floyd's?
+
 <details><summary>Answer</summary>
 
-HashSet detection is O(n) time, O(n) space. Floyd's is O(n) time, O(1) space. For the basic "does a cycle exist?" question, they're equivalent in time. But Floyd's wins in two critical ways: (1) **O(1) space** — for embedded systems or memory-constrained environments (real-world), this matters. (2) Floyd's can **find the cycle entry point** (LC 142) by resetting one pointer to head — HashSet can too, but Floyd's proof demonstrates mastery of the mathematical invariant `t = kc - a`. Interviewers expect Floyd's because it tests *algorithmic elegance* and *proof ability*, not just problem-solving. HashSet IS better when you need to detect cycles in directed GRAPHS (not just linked lists) where the topology doesn't guarantee Floyd's convergence.
+HashSet detection is O(n) time, O(n) space. Floyd's is O(n) time, O(1) space. For the basic "does a cycle exist?" question, they're equivalent in time. But Floyd's wins in two critical ways: (1) **O(1) space** — for embedded systems or memory-constrained environments (real-world), this matters. (2) Floyd's can **find the cycle entry point** (LC 142) by resetting one pointer to head — HashSet can too, but Floyd's proof demonstrates mastery of the mathematical invariant `t = kc - a`. Interviewers expect Floyd's because it tests _algorithmic elegance_ and _proof ability_, not just problem-solving. HashSet IS better when you need to detect cycles in directed GRAPHS (not just linked lists) where the topology doesn't guarantee Floyd's convergence.
+
 </details>
 
 # 📚 SECTION 13: LINKED LIST PROBLEMS
@@ -66,7 +67,6 @@ HashSet detection is O(n) time, O(n) space. Floyd's is O(n) time, O(1) space. Fo
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY Linked List — MIT/KTH Style Deep Understanding
@@ -74,9 +74,11 @@ HashSet detection is O(n) time, O(n) space. Floyd's is O(n) time, O(1) space. Fo
 > 🔬 **Section Challenge — PART 0: WHY Linked List — MIT/KTH Style Deep Understanding**
 
 **Challenge 1 (Reasoning):** The complexity table shows "Insert at head: Array O(n), LinkedList O(1)." But Java's `ArrayList.add(0, elem)` is O(n) while `LinkedList.addFirst(elem)` is O(1). Despite this, why does Java documentation recommend ArrayList for almost all use cases?
+
 <details><summary>Answer</summary>
 
 Cache locality dominates. ArrayList stores elements in a contiguous array — CPU cache lines prefetch consecutive memory, making sequential access ~100× faster than pointer-chasing. LinkedList nodes are scattered across the heap; every `.next` dereference is a potential cache miss (~100 CPU cycles vs ~1 cycle for cached data). For n < 1000, even O(n) shifts in ArrayList are faster than O(1) LinkedList operations due to `System.arraycopy()` being a single optimized memcpy. LinkedList also has ~40 bytes overhead per node (object header + two pointers) vs 4 bytes per element in ArrayList. **Use LinkedList only when**: (1) you need O(1) removal by reference (with an iterator), (2) LRU cache pattern (HashMap + DLL), or (3) n > 10^6 with frequent mid-list insertions.
+
 </details>
 
 ## Why These Problems Matter
@@ -88,11 +90,12 @@ traversal and pointer rewiring. This forces you to think about INVARIANTS
 at every step.
 
 **Why Interviewers Love It**:
+
 - Pointer bugs are EASY to introduce, HARD to debug → tests carefulness
 - Edge cases everywhere: empty list, single node, head changes
 - O(1) space constraints force elegant in-place solutions
 - Reveals whether you truly understand references vs values
-REAL-WORLD LINKED LISTS:
+  REAL-WORLD LINKED LISTS:
 - LRU Cache (HashMap + Doubly Linked List)
 - Blockchain (each block links to previous hash)
 - File systems (FAT table — each cluster points to next)
@@ -105,84 +108,91 @@ MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)
 Two pointers traverse the list at DIFFERENT SPEEDS.
 Fast moves 2 steps, slow moves 1 step per iteration.
 Applications:
+
 - Detect cycle: if fast meets slow → cycle exists
 - Find middle: when fast reaches end, slow is at middle
 - Find kth from end: start fast k steps ahead, then move both
-WHY IT WORKS (formal):
-Let n = list length. After t steps: slow at position t, fast at 2t.
-When fast reaches position n: t = n/2, so slow is at n/2 (middle).
-For cycle of length c: relative speed is 1 node/step,
-so fast catches slow in at most c steps after both enter cycle.
-MODEL 2: "DUMMY HEAD" (sentinel node)
-Create a fake node before the real head:
-dummy → [real head] → [node2] → ...
+  WHY IT WORKS (formal):
+  Let n = list length. After t steps: slow at position t, fast at 2t.
+  When fast reaches position n: t = n/2, so slow is at n/2 (middle).
+  For cycle of length c: relative speed is 1 node/step,
+  so fast catches slow in at most c steps after both enter cycle.
+  MODEL 2: "DUMMY HEAD" (sentinel node)
+  Create a fake node before the real head:
+  dummy → [real head] → [node2] → ...
 
 **Why**: Eliminates ALL special cases where head might change.
 Without dummy: if you delete head, you need if-else logic.
 With dummy: just process uniformly, return dummy.next.
 Use dummy when:
+
 - Merging two lists (new head unknown until comparison)
 - Removing nodes (head itself might be removed)
 - Partitioning (building two sub-lists, heads unknown)
-MODEL 3: "REVERSE AS YOU GO" (in-place reversal)
-Reverse pointers one-by-one during a single traversal.
-Uses three pointers: prev, curr, next.
-Before: prev → null, curr → [1] → [2] → [3] → null
-After:  null ← [1] ← [2] ← [3] ← prev, curr → null
-Loop invariant: After iteration i, the first i nodes are reversed
-and prev points to the new head of the reversed portion.
+  MODEL 3: "REVERSE AS YOU GO" (in-place reversal)
+  Reverse pointers one-by-one during a single traversal.
+  Uses three pointers: prev, curr, next.
+  Before: prev → null, curr → [1] → [2] → [3] → null
+  After: null ← [1] ← [2] ← [3] ← prev, curr → null
+  Loop invariant: After iteration i, the first i nodes are reversed
+  and prev points to the new head of the reversed portion.
 
 ## Formal Definition (Mit / Kth Style)
 
 A singly linked list L = (v₁, v₂, ..., vₙ) is a sequence of nodes
 where each node vᵢ contains:
-- vᵢ.val  — the stored datum
+
+- vᵢ.val — the stored datum
 - vᵢ.next — a pointer to vᵢ₊₁ (for i < n), with vₙ.next = null
-The list is accessed via a reference head = v₁ (or head = null if empty).
+  The list is accessed via a reference head = v₁ (or head = null if empty).
 
 **Time Complexity Invariant**:
 Accessing the i-th element requires O(i) time since there is
 NO random access. Every operation that depends on position i
 has a lower bound of Ω(i) comparisons/pointer traversals.
 ┬──────────┬
-| Operation                | Array    | LinkedList |
+| Operation | Array | LinkedList |
 ┼──────────┼
-| Access i-th element      | O(1)     | O(i) |
-| Insert at head           | O(n)     | O(1) |
-| Insert at position i     | O(n)     | O(i) |
-| Delete at head           | O(n)     | O(1) |
-| Delete at position i     | O(n)     | O(i) |
-| Search                   | O(n)     | O(n) |
-| Merge sort               | O(n lgn) | O(n lgn) | ← LL uses O(1) space! |
+| Access i-th element | O(1) | O(i) |
+| Insert at head | O(n) | O(1) |
+| Insert at position i | O(n) | O(i) |
+| Delete at head | O(n) | O(1) |
+| Delete at position i | O(n) | O(i) |
+| Search | O(n) | O(n) |
+| Merge sort | O(n lgn) | O(n lgn) | ← LL uses O(1) space! |
 ┴──────────┴
 
 > 🔬 **Section Challenge — Formal Definition (Mit / Kth Style)**
 
 **Challenge 1 (Reasoning):** The table says "Merge sort: Array O(n lg n) time, O(n) space; LinkedList O(n lg n) time, O(1) space." Why does merge sort on a LinkedList use O(1) extra space while array merge sort requires O(n)?
+
 <details><summary>Answer</summary>
 
-Array merge sort needs O(n) auxiliary space because merging two sorted subarrays in-place is O(n²) — you'd need to shift elements. So you copy to a temp array, merge back. LinkedList merge is O(1) extra space because merging is just **pointer rewiring**: you walk two list halves and redirect `.next` pointers. No elements are copied or moved in memory. Similarly, splitting a linked list is O(1) after finding the midpoint (just set `mid.next = null`), while splitting an array requires copying subarrays. This is why merge sort is the *natural* sort for linked lists, while quicksort is natural for arrays (quicksort's partition needs random access, which LL lacks).
+Array merge sort needs O(n) auxiliary space because merging two sorted subarrays in-place is O(n²) — you'd need to shift elements. So you copy to a temp array, merge back. LinkedList merge is O(1) extra space because merging is just **pointer rewiring**: you walk two list halves and redirect `.next` pointers. No elements are copied or moved in memory. Similarly, splitting a linked list is O(1) after finding the midpoint (just set `mid.next = null`), while splitting an array requires copying subarrays. This is why merge sort is the _natural_ sort for linked lists, while quicksort is natural for arrays (quicksort's partition needs random access, which LL lacks).
+
 </details>
 
 ## Decision Flowchart: Which Linked List Technique
 
 DECISION FLOWCHART
-"Find middle / cycle / kth from end?"  → Runner (slow/fast)
-"Reverse the list or a sublist?"       → Three-pointer reversal
-"Merge two sorted lists?"              → Dummy head + compare
-"Head might change (delete/insert)?"   → Dummy head sentinel
-"Copy list with random pointers?"      → Interleave technique
-"Merge K sorted lists?"                → Min-heap of heads
-"Sort a linked list?"                  → Merge sort (natural)
-"Palindrome check?"                    → Find mid + reverse half
-"Partition around value?"              → Two dummy heads
+"Find middle / cycle / kth from end?" → Runner (slow/fast)
+"Reverse the list or a sublist?" → Three-pointer reversal
+"Merge two sorted lists?" → Dummy head + compare
+"Head might change (delete/insert)?" → Dummy head sentinel
+"Copy list with random pointers?" → Interleave technique
+"Merge K sorted lists?" → Min-heap of heads
+"Sort a linked list?" → Merge sort (natural)
+"Palindrome check?" → Find mid + reverse half
+"Partition around value?" → Two dummy heads
 
 > 🔬 **Section Challenge — Decision Flowchart: Which Linked List Technique**
 
 **Challenge 1 (Reasoning):** The flowchart says "Palindrome check → Find mid + reverse half." But this DESTROYS the original list. In an interview, when should you restore the list, and how?
+
 <details><summary>Answer</summary>
 
 You should **always offer to restore** in an interview — it shows you understand the side effect. After comparing the two halves, reverse the second half again. Code: (1) Find middle with slow/fast. (2) Reverse second half. (3) Compare both halves. (4) **Reverse second half again** to restore. (5) Return result. Without restoration, any other code holding a reference to the list gets corrupted data. In production, this is a **thread-safety issue** — if another thread reads the list during palindrome check, it sees a half-reversed list. Alternative: use O(n) space with a stack (push first half, pop-and-compare second half), which avoids mutation entirely. The tradeoff: O(1) space with mutation vs O(n) space without.
+
 </details>
 
 ## Java Code Templates
@@ -190,24 +200,24 @@ You should **always offer to restore** in an interview — it shows you understa
 TEMPLATE 1: REVERSE LINKED LIST (iterative, O(1) space)
 ListNode prev = null, curr = head;
 while (curr != null) {
-ListNode next = curr.next;   // save next
-curr.next = prev;            // reverse pointer
-prev = curr;                 // advance prev
-curr = next;                 // advance curr
+ListNode next = curr.next; // save next
+curr.next = prev; // reverse pointer
+prev = curr; // advance prev
+curr = next; // advance curr
 }
-return prev;  // new head
+return prev; // new head
 TEMPLATE 2: FIND MIDDLE (slow/fast runner)
 ListNode slow = head, fast = head;
 while (fast != null && fast.next != null) {
 slow = slow.next;
 fast = fast.next.next;
 }
-return slow;  // middle node (2nd middle if even length)
+return slow; // middle node (2nd middle if even length)
 TEMPLATE 3: MERGE TWO SORTED LISTS (dummy head)
 ListNode dummy = new ListNode(0), tail = dummy;
 while (l1 != null && l2 != null) {
 if (l1.val <= l2.val) { tail.next = l1; l1 = l1.next; }
-else                  { tail.next = l2; l2 = l2.next; }
+else { tail.next = l2; l2 = l2.next; }
 tail = tail.next;
 }
 tail.next = (l1 != null) ? l1 : l2;
@@ -269,20 +279,21 @@ head might change. Every step maintains my loop invariant."
 ## Complexity Quick Reference
 
 ┬──────────┬──────────┬
-| Problem                  | Time     | Space    | Technique |
+| Problem | Time | Space | Technique |
 ┼──────────┼──────────┼
-| Reverse List             | O(n)     | O(1)     | Three pointers |
-| Find Middle              | O(n)     | O(1)     | Slow/fast |
-| Detect Cycle             | O(n)     | O(1)     | Floyd's |
-| Merge Two Sorted         | O(n+m)   | O(1)     | Dummy head |
-| Remove Nth from End      | O(n)     | O(1)     | Two-pointer gap |
-| Add Two Numbers          | O(max)   | O(max)   | Stack / reverse |
-| Copy Random Pointer      | O(n)     | O(1)*| Interleave 3-pass |
-| Merge K Sorted           | O(N lgk) | O(k)     | Min-heap |
-| Reverse K-Group          | O(n)     | O(1)     | Iterative K-rev |
-| Sort Linked List         | O(n lgn) | O(1)*    | Bottom-up merge |
+| Reverse List | O(n) | O(1) | Three pointers |
+| Find Middle | O(n) | O(1) | Slow/fast |
+| Detect Cycle | O(n) | O(1) | Floyd's |
+| Merge Two Sorted | O(n+m) | O(1) | Dummy head |
+| Remove Nth from End | O(n) | O(1) | Two-pointer gap |
+| Add Two Numbers | O(max) | O(max) | Stack / reverse |
+| Copy Random Pointer | O(n) | O(1)_| Interleave 3-pass |
+| Merge K Sorted | O(N lgk) | O(k) | Min-heap |
+| Reverse K-Group | O(n) | O(1) | Iterative K-rev |
+| Sort Linked List | O(n lgn) | O(1)_ | Bottom-up merge |
 ┴──────────┴──────────┴
-* O(1) extra space (excluding recursion stack or output)
+
+- O(1) extra space (excluding recursion stack or output)
 
 ---
 
@@ -315,12 +326,12 @@ EXAMPLES:
   Input: head = []           →  Output: []
 ```
 
-
 **OBSERVATION 1:** We need to reverse each pointer: instead of vᵢ.next = vᵢ₊₁, set vᵢ.next = vᵢ₋₁. This can be done in a single pass left-to-right, maintaining `prev` and `curr`.
 
 **OBSERVATION 2:** Before setting curr.next = prev, we must save curr.next (otherwise we lose access to the rest of the list).
 
 **ALGORITHM (Iterative):**
+
 ```
 Step 1: Initialize prev = null, curr = head
 Step 2: While curr ≠ null:
@@ -332,6 +343,7 @@ Step 3: Return prev (new head)
 ```
 
 **PROOF OF CORRECTNESS (Loop Invariant):**
+
 ```
 Invariant: After iteration i, the first i nodes have their pointers reversed
            and prev points to node vᵢ (head of the reversed prefix).
@@ -391,6 +403,7 @@ public ListNode reverseListStack(ListNode head) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Approach 1 (Iterative):
   Time:  O(n) — single pass through all n nodes
@@ -408,6 +421,7 @@ Approach 3 (Stack):
 ```
 
 **VARIANTS:**
+
 - Reverse a sublist (LC 92) — Problem #226
 - Reverse in K-groups (LC 25) — Problem #235
 - Reverse alternating K-group — variation of #235
@@ -431,12 +445,12 @@ EXAMPLES:
   Input: [1,2,3,4,5,6] → Output: node 4 (second middle)
 ```
 
-
 **OBSERVATION 1:** Slow/fast runner. If fast moves 2 steps per iteration and slow moves 1 step, when fast reaches the end, slow is at the midpoint.
 
 **OBSERVATION 2 (formal):** Let n = |L|. After t iterations, slow is at position t, fast at 2t. Fast stops when 2t ≥ n, i.e., t = ⌊n/2⌋. So slow is at position ⌊n/2⌋, which is the (second) middle.
 
 **ALGORITHM:**
+
 ```
 Step 1: slow = head, fast = head
 Step 2: While fast ≠ null AND fast.next ≠ null:
@@ -446,6 +460,7 @@ Step 3: Return slow
 ```
 
 **PROOF OF CORRECTNESS:**
+
 ```
 Let n = length of list, positions indexed from 0.
 
@@ -472,6 +487,7 @@ public ListNode middleNode(ListNode head) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n) — fast pointer traverses at most n nodes
 Space: O(1) — two pointers only
@@ -482,6 +498,7 @@ To get FIRST middle when n is even:
 ```
 
 **VARIANTS:**
+
 - Delete middle node (LC 2095)
 - Split list into two halves (prerequisite for LL merge sort)
 
@@ -505,12 +522,12 @@ EXAMPLES:
   Out: [1] → [1] → [2] → [3] → [4] → [4] → null
 ```
 
-
 **OBSERVATION 1:** Use a dummy head to avoid special-casing which list provides the first node.
 
 **OBSERVATION 2:** At each step, compare the heads of both lists and append the smaller one to the result. This is the merge step of merge sort.
 
 **ALGORITHM:**
+
 ```
 Step 1: Create dummy node, tail = dummy
 Step 2: While l1 ≠ null AND l2 ≠ null:
@@ -522,6 +539,7 @@ Step 4: Return dummy.next
 ```
 
 **PROOF OF CORRECTNESS (by induction on total elements processed):**
+
 ```
 Claim: After processing i elements, the merged list contains the i
 smallest elements from L₁ ∪ L₂ in sorted order.
@@ -563,6 +581,7 @@ public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n + m) — each node visited exactly once
 Space: O(1) — only pointer rewiring, no new nodes created
@@ -573,6 +592,7 @@ equal elements from L₁ appear before those from L₂.
 ```
 
 **VARIANTS:**
+
 - Merge K sorted lists (LC 23) — Problem #234
 - Merge sorted arrays (LC 88) — different technique (in-place from end)
 
@@ -599,12 +619,12 @@ EXAMPLES:
                                       Output: false
 ```
 
-
 **OBSERVATION 1:** If we use two pointers at different speeds, in a cycle they MUST eventually meet (like runners on a circular track).
 
 **OBSERVATION 2 (Floyd's Cycle Detection):** Slow moves 1 step, fast moves 2 steps. If no cycle, fast reaches null. If cycle exists, fast enters the cycle first and "laps" slow.
 
 **ALGORITHM:**
+
 ```
 Step 1: slow = head, fast = head
 Step 2: While fast ≠ null AND fast.next ≠ null:
@@ -614,8 +634,8 @@ Step 2: While fast ≠ null AND fast.next ≠ null:
 Step 3: Return false  (fast reached end → no cycle)
 ```
 
-
 **PROOF OF CORRECTNESS (Floyd's Theorem):**
+
 ```
 Setup: Let the list have a "tail" of length t (before cycle entry)
 and a cycle of length c.
@@ -645,7 +665,6 @@ Why? When they first meet:
   So moving t steps from meeting point = kc - a steps in cycle = cycle start.
   Moving t steps from head also reaches cycle start. They meet there. ∎
 ```
-
 
 **JAVA CODE:**
 
@@ -682,6 +701,7 @@ public ListNode detectCycle(ListNode head) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n) — slow traverses at most n nodes; fast catches slow within
        one cycle length after slow enters the cycle.
@@ -692,6 +712,7 @@ Floyd's is strictly better in space.
 ```
 
 **VARIANTS:**
+
 - Find cycle start (LC 142) — shown above
 - Find cycle length — after detection, count steps from meeting point back to meeting point
 
@@ -855,7 +876,6 @@ APPROACH:
 TEMPLATE: Single-pass accumulation.
 ```
 
-
 ```java
 public int getDecimalValue(ListNode head) {
     int result = 0;
@@ -896,12 +916,12 @@ EXAMPLES:
   Input: [1], n = 1           →  Output: []           (removed head)
 ```
 
-
 **OBSERVATION 1:** Two-pointer gap technique: if fast is n steps ahead of slow, when fast reaches null, slow is at the node BEFORE the one to delete.
 
 **OBSERVATION 2:** Use a dummy head because the head itself might be the node to remove (e.g., single-node list with n=1).
 
 **ALGORITHM:**
+
 ```
 Step 1: Create dummy → head. Set fast = dummy, slow = dummy.
 Step 2: Advance fast by (n + 1) steps.
@@ -910,8 +930,8 @@ Step 4: slow.next = slow.next.next  (skip the target node)
 Step 5: Return dummy.next
 ```
 
-
 **PROOF OF CORRECTNESS:**
+
 ```
 After Step 2, fast is (n+1) positions ahead of slow (both starting from dummy).
 The total positions from dummy to null is (size + 1).
@@ -950,12 +970,14 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(L) where L = length of list — single pass
 Space: O(1) — three pointers + dummy node
 ```
 
 **VARIANTS:**
+
 - Remove nth from end of doubly linked list
 - Return removed node's value
 
@@ -980,12 +1002,12 @@ EXAMPLES:
        After:  1 → 4 → 3 → 2 → 5
 ```
 
-
 **OBSERVATION 1:** Navigate to position (left - 1) — the node just before the reversal zone. Then reverse exactly (right - left + 1) nodes.
 
 **OBSERVATION 2:** Use dummy head since left=1 means the head changes.
 
 **ALGORITHM:**
+
 ```
 Step 1: Create dummy → head. Navigate prev to position (left - 1).
 Step 2: curr = prev.next (first node in reversal zone).
@@ -993,7 +1015,6 @@ Step 3: For i = 0 to (right - left - 1):
           Move curr.next to just after prev (front-insertion).
 Step 4: Return dummy.next.
 ```
-
 
 **JAVA CODE:**
 
@@ -1023,12 +1044,14 @@ public ListNode reverseBetween(ListNode head, int left, int right) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n) — at most one full traversal
 Space: O(1) — in-place pointer rewiring
 ```
 
 **VARIANTS:**
+
 - Reverse K-group (LC 25) — Problem #235
 - Reverse alternating K nodes
 
@@ -1053,12 +1076,12 @@ EXAMPLES:
   out: [7] → [8] → [0] → [7]    (7243 + 564 = 7807)
 ```
 
-
 **OBSERVATION 1:** Digits are stored most-significant first, but addition starts from least-significant. Use stacks to reverse the processing order without modifying the original lists.
 
 **OBSERVATION 2:** Process digit-by-digit with carry, building the result by prepending (to get MSB-first output).
 
 **ALGORITHM:**
+
 ```
 Step 1: Push all digits of l1 onto stack1, l2 onto stack2.
 Step 2: Initialize carry = 0, head = null.
@@ -1097,6 +1120,7 @@ public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n + m) — push all digits, then process all
 Space: O(n + m) — two stacks
@@ -1126,6 +1150,7 @@ APPROACH: 3-pass interleaving technique (O(1) extra space, excluding output)
 **OBSERVATION 2:** Interleave technique: insert clone of each node right after the original. Then random pointers can be set using clone.random = original.random.next. Finally, separate the two lists.
 
 **ALGORITHM:**
+
 ```
 Pass 1 — Interleave: For each node A, insert A' (clone) after A.
   A → B → C  becomes  A → A' → B → B' → C → C'
@@ -1136,7 +1161,6 @@ Pass 2 — Set random: For each original node A:
 Pass 3 — Separate: Extract cloned nodes into their own list.
   Restore original list.
 ```
-
 
 **JAVA CODE:**
 
@@ -1178,13 +1202,13 @@ public Node copyRandomList(Node head) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n) — three passes, each O(n)
 Space: O(1) extra (cloned nodes are part of the output, not extra space)
 
 Alternative (HashMap): O(n) time, O(n) space — map original → clone
 ```
-
 
 ---
 
@@ -1200,7 +1224,6 @@ APPROACH:
 
 TEMPLATE: Two dummy heads + single pass.
 ```
-
 
 ```java
 public ListNode partition(ListNode head, int x) {
@@ -1237,7 +1260,6 @@ APPROACH:
 
 TEMPLATE: DFS flattening.
 ```
-
 
 **Complexity:** Time O(n), Space O(depth) for recursion stack.
 
@@ -1296,7 +1318,6 @@ APPROACH:
 TEMPLATE: Two dummy heads.
 ```
 
-
 **Complexity:** Time O(n), Space O(1).
 
 ---
@@ -1317,7 +1338,6 @@ APPROACH (Dutch National Flag adaptation):
 TEMPLATE: Three dummy heads + single pass.
 ```
 
-
 **Complexity:** Time O(n), Space O(1).
 
 ---
@@ -1325,9 +1345,11 @@ TEMPLATE: Three dummy heads + single pass.
 > 🔬 **Section Challenge — 13.2 Pointer Manipulation (Medium)**
 
 **Challenge 1 (Reasoning):** In "Copy List with Random Pointer" (LC 138), the interleave approach uses 3 passes and O(1) extra space, while the HashMap approach uses 1 pass and O(n) space. The interleave approach modifies the ORIGINAL list. Why is this dangerous in production code?
+
 <details><summary>Answer</summary>
 
 The interleave approach inserts clone nodes INTO the original list: `A → A' → B → B' → C → C'`. During pass 2 (setting random pointers) and pass 3 (separating lists), the original list is in a **corrupted state**. If another thread reads the list concurrently, or if an exception occurs mid-operation, the original list is permanently damaged. In production, the HashMap approach is safer: it never touches the original list. The O(n) space is negligible for most applications. The interleave approach is an **interview trick** that demonstrates pointer manipulation mastery, but real codebases use the HashMap version (or `clone()` with deep copy). **Use interleave only when**: O(1) space is a hard constraint AND you own exclusive access to the list.
+
 </details>
 
 ## 13.3 Advanced Operations (Hard)
@@ -1359,6 +1381,7 @@ EXAMPLES:
 **OBSERVATION 2:** Alternative — divide and conquer: recursively merge pairs, halving the number of lists each round. log k rounds, each round processes all N nodes.
 
 **ALGORITHM (Min-Heap):**
+
 ```
 Step 1: Insert head of each non-empty list into a min-heap.
 Step 2: Create dummy, tail = dummy.
@@ -1371,6 +1394,7 @@ Step 4: Return dummy.next.
 ```
 
 **PROOF OF O(N log k) COMPLEXITY:**
+
 ```
 The heap contains at most k elements at any time.
 Each of the N total nodes is inserted and extracted exactly once.
@@ -1424,6 +1448,7 @@ private ListNode mergeRange(ListNode[] lists, int lo, int hi) {
 ```
 
 **COMPLEXITY COMPARISON:**
+
 ```
 Approach 1 (Heap):   Time O(N log k), Space O(k)
 Approach 2 (D&C):    Time O(N log k), Space O(log k) recursion stack
@@ -1433,6 +1458,7 @@ Both optimal approaches achieve O(N log k). Heap is simpler to implement.
 ```
 
 **VARIANTS:**
+
 - Merge K sorted arrays
 - Smallest range covering elements from K lists (LC 632)
 
@@ -1455,10 +1481,10 @@ EXAMPLES:
   Input: [1,2,3,4,5], k=3  →  Output: [3,2,1,4,5]
 ```
 
-
 **OBSERVATION:** Process the list in chunks of k. For each chunk: check if k nodes remain, reverse them, connect to the previous group.
 
 **ALGORITHM:**
+
 ```
 Step 1: Create dummy → head, groupPrev = dummy.
 Step 2: Count if at least k nodes remain from groupPrev.next.
@@ -1467,7 +1493,6 @@ Step 3: If yes, reverse the next k nodes.
         Update groupPrev = tail of reversed group.
 Step 4: Repeat from Step 2.
 ```
-
 
 **JAVA CODE:**
 
@@ -1505,6 +1530,7 @@ public ListNode reverseKGroup(ListNode head, int k) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n) — each node visited at most twice (once for counting, once for reversing)
 Space: O(1) — in-place pointer manipulation
@@ -1531,6 +1557,7 @@ OBSERVATION: Merge sort is NATURAL for linked lists because:
 ```
 
 **ALGORITHM:**
+
 ```
 Step 1: Base case — if list is empty or has one node, return it.
 Step 2: Find middle using slow/fast. Split into two halves.
@@ -1539,6 +1566,7 @@ Step 4: Merge two sorted halves using Problem #218's merge.
 ```
 
 **PROOF THAT LL MERGE SORT USES O(1) EXTRA SPACE (bottom-up):**
+
 ```
 Top-down uses O(log n) stack space for recursion.
 Bottom-up avoids recursion entirely:
@@ -1584,6 +1612,7 @@ private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 ```
 
 **COMPLEXITY:**
+
 ```
 Time:  O(n log n) — log n levels, O(n) work per level (split + merge)
 Space: O(log n) — recursion depth (top-down). O(1) for bottom-up variant.
@@ -1818,7 +1847,6 @@ Step 1 (node=5, i=1): `nextInt(1)=0` always → `result=5`, i→2. Step 2 (node=
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 > **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Heap.md)
@@ -1829,32 +1857,34 @@ Step 1 (node=5, i=1): `nextInt(1)=0` always → `result=5`, i→2. Step 2 (node=
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
-| Problem | Link | Technique | Difficulty |
-|---|---|---|---|
-| Linked List & Two Pointers | [CF 817C](https://codeforces.com/problemset/problem/817/C) | Fast & Slow on data stream | ⭐⭐ Medium |
-| IQ Test | [CF 25A](https://codeforces.com/problemset/problem/25/A) | Linked list traversal | ⭐ Easy |
-| Coloring Trees | [CF 711C](https://codeforces.com/problemset/problem/711/C) | DP on linked sequence | ⭐⭐ Medium |
-| K-th Symbol | [CF 1201C](https://codeforces.com/problemset/problem/1201/C) | Recursive + pointer logic | ⭐⭐ Medium |
+| Problem                    | Link                                                         | Technique                  | Difficulty  |
+| -------------------------- | ------------------------------------------------------------ | -------------------------- | ----------- |
+| Linked List & Two Pointers | [CF 817C](https://codeforces.com/problemset/problem/817/C)   | Fast & Slow on data stream | ⭐⭐ Medium |
+| IQ Test                    | [CF 25A](https://codeforces.com/problemset/problem/25/A)     | Linked list traversal      | ⭐ Easy     |
+| Coloring Trees             | [CF 711C](https://codeforces.com/problemset/problem/711/C)   | DP on linked sequence      | ⭐⭐ Medium |
+| K-th Symbol                | [CF 1201C](https://codeforces.com/problemset/problem/1201/C) | Recursive + pointer logic  | ⭐⭐ Medium |
 
 ---
 
 > 🔬 **Section Challenge — 🏆 Competitive Programming — Codeforces Problems**
 
 **Challenge 1 (Reasoning):** The Codeforces table includes "DP on linked sequence." How is DP on a linked list fundamentally different from DP on an array? What changes in the state transition?
+
 <details><summary>Answer</summary>
 
 In array DP, you access `dp[i-1]`, `dp[i-2]`, etc. in O(1) via random access. In linked list DP, accessing node `i-2` from node `i` requires either: (1) maintaining extra pointers (e.g., `prevPrev`), or (2) converting to an array first. The state transition is the same mathematically, but the **implementation** must carry forward previous states explicitly. For example, House Robber on a linked list: you can't do `dp[i] = max(dp[i-1], dp[i-2] + val[i])` because there's no `dp[i-2]` pointer. Instead, carry two variables: `prevMax` and `prevPrevMax`, updating in O(1) space. This is why most DP-on-LL problems are solved by converting to array first — the O(n) space is worth the O(1) random access.
+
 </details>
 
 ## 🌍 Real-World Applications of Linked Lists
 
-| Technique | Real-World System | How It's Used |
-|---|---|---|
-| **Doubly Linked List** | Browser history (Chrome/Firefox) | Back/Forward = prev/next pointers, eviction of old entries |
-| **HashMap + DLL (LRU Cache)** | Redis, OS Page Cache, CPU Cache | Get O(1) + evict LRU entry O(1) simultaneously |
-| **Circular Linked List** | CPU Round-Robin Scheduling | Each process node points to next; cycle never ends |
-| **Skip List** | Redis Sorted Sets | Multi-level linked list gives O(log n) search without tree rebalancing |
-| **Singly Linked List** | Memory allocator free list | OS/JVM free heap blocks chained as linked list |
+| Technique                     | Real-World System                | How It's Used                                                          |
+| ----------------------------- | -------------------------------- | ---------------------------------------------------------------------- |
+| **Doubly Linked List**        | Browser history (Chrome/Firefox) | Back/Forward = prev/next pointers, eviction of old entries             |
+| **HashMap + DLL (LRU Cache)** | Redis, OS Page Cache, CPU Cache  | Get O(1) + evict LRU entry O(1) simultaneously                         |
+| **Circular Linked List**      | CPU Round-Robin Scheduling       | Each process node points to next; cycle never ends                     |
+| **Skip List**                 | Redis Sorted Sets                | Multi-level linked list gives O(log n) search without tree rebalancing |
+| **Singly Linked List**        | Memory allocator free list       | OS/JVM free heap blocks chained as linked list                         |
 
 ```
 🔥 LRU CACHE = most common system design interview:
@@ -1871,7 +1901,18 @@ In array DP, you access `dp[i-1]`, `dp[i-2]`, etc. in O(1) via random access. In
 > 🔬 **Section Challenge — 🌍 Real-World Applications of Linked Lists**
 
 **Challenge 1 (Reasoning):** The LRU Cache uses HashMap + Doubly Linked List for O(1) get and O(1) eviction. Why can't you achieve this with HashMap + Singly Linked List? What specific operation breaks?
+
 <details><summary>Answer</summary>
 
 Eviction requires removing the TAIL node and also updating the node BEFORE the tail to become the new tail. In a DLL, the tail's `.prev` pointer gives O(1) access to the predecessor. In a SLL, finding the predecessor of the tail requires O(n) traversal from the head — because you have no `.prev` pointer. So `evict()` becomes O(n), defeating the entire purpose. The `get()` operation also breaks: when you access a node, you need to move it to the head (most recently used). Moving requires: (1) detaching the node from its current position (need to update predecessor's `.next`), and (2) inserting at head. Step 1 is O(n) in SLL because you can't find the predecessor. DLL gives O(1) for both operations. **This is why LRU Cache is the canonical example of why DLL exists.**
+
 </details>
+
+---
+
+### Historical Evolution
+
+**Linked Lists** originated with **Allen Newell, Cliff Shaw, and Herbert Simon (1956)** at RAND Corporation, who developed IPL (Information Processing Language) as the first programming language to include linked list data structures, motivated by their work on theorem proving and artificial intelligence. Their "list processing" paradigm treated memory as a dynamic chain of nodes connected by pointers, fundamentally different from the static arrays prevalent at the time. Following this, **John McCarthy (1958)** at MIT invented LISP, where the `cons` cell — a pair of pointers representing a singly linked list — became the foundational data structure for symbolic computing, enabling recursive function evaluation that was central to AI research in the 1960s.
+
+**Robert Floyd (1967)** later contributed cycle detection algorithms that could identify infinite loops in linked data structures without markers or counters, a critical capability for garbage collection systems and early runtime environments. This work matured into the industry-standard Floyd Tortoise-Hare algorithm used today. Modern practice anchors linked lists in system design: LRU caches (Redis, CPU page caches) combine HashMaps with doubly linked lists to achieve O(1) get and evict operations, operating system process schedulers use circular doubly linked lists for round-robin CPU time sharing across millions of processes, and Git's commit history is implemented as a singly linked list where each commit holds a pointer to its parent, enabling the immutable append-only branching model that powers version control for billions of repositories. The combination of dynamic memory allocation, pointer-based traversal, and O(1) insertions/removals continues to make linked lists indispensable in modern systems programming.
+

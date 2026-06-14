@@ -3,6 +3,7 @@
 **Folder**: [03_Android](./) | **Series**: [23_Mobile_Dev_And_Testing](../)
 
 **Files in this folder**:
+
 1. **01_Architecture_And_App_Model.md** ← you are here
 2. [02_Activity_Fragment_Lifecycle.md](./02_Activity_Fragment_Lifecycle.md)
 3. [03_ViewModel_StateFlow_LiveData.md](./03_ViewModel_StateFlow_LiveData.md)
@@ -62,6 +63,7 @@ YOUR SOURCE CODE:
 ```
 
 **Why this matters for QA**:
+
 - Apps compiled for debug have extra safety checks, unobfuscated code, and debug symbols — easier to understand crashes
 - Apps compiled for release are obfuscated (ProGuard/R8), AOT-compiled, and stripped — they behave differently and crash differently
 - A bug in a debug build does NOT always reproduce in a release build, and vice versa
@@ -317,6 +319,7 @@ Check the `<intent-filter>` for deep links in the staging build's manifest.
 The most common cause: the `android:pathPrefix` in the intent filter does not match the path `/citation/CIT-001`.
 
 **Example bug**:
+
 ```xml
 <!-- Production manifest -->
 <data android:pathPrefix="/citation" />   ← matches /citation/CIT-001
@@ -327,9 +330,11 @@ The most common cause: the `android:pathPrefix` in the intent filter does not ma
 ```
 
 **Other things to check**:
+
 1. `android:autoVerify="true"` — App Links (HTTPS deep links) require domain verification. Staging might not have the `.well-known/assetlinks.json` file published, so the OS falls back to opening the app at the default screen instead of the deep link destination.
 
 2. The scheme/host combination:
+
 ```xml
 <!-- Does staging use a different host? -->
 android:host="staging.myapp.com"   ← the link uses myapp.com → no match
@@ -391,6 +396,7 @@ Data passing: Intent extras           Data passing: ViewModel (shared), argument
 ### Component 3: Service — Background Work
 
 A Service runs in the background without a UI. Used for:
+
 - Long-running operations (music playback, file download)
 - Periodic sync (upload citation data while app is backgrounded)
 - WorkManager handles most modern background work (replaces Services for many cases)
@@ -440,18 +446,21 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 Music playback runs in a **Foreground Service**. Here is what happens when the OS kills the app:
 
 **If the music service is a FOREGROUND Service** (correct implementation):
+
 - Shows a notification (e.g., "Now Playing: Song Title")
 - The OS treats it as user-visible → much lower chance of being killed
 - If killed anyway (extreme low memory), it restarts automatically if `START_STICKY` is returned from `onStartCommand`
 - Music continues even after the hosting Activity is destroyed
 
 **If the music service is a BACKGROUND Service** (wrong implementation):
+
 - No notification
 - Android 8.0+ does NOT allow background services to run indefinitely
 - The OS kills it within minutes
 - Music stops unexpectedly → user-reported bug
 
 **QA test for this**:
+
 1. Start music playback
 2. Switch to another app
 3. Open Memory Manager and force-kill the app (not the service, the full app)
@@ -459,6 +468,7 @@ Music playback runs in a **Foreground Service**. Here is what happens when the O
 5. After ~2 minutes: Music still playing (restart worked via START_STICKY)
 
 **What `onStartCommand` return values mean**:
+
 - `START_STICKY`: Service is restarted after being killed (null intent)
 - `START_NOT_STICKY`: Service is NOT restarted (for one-time tasks)
 - `START_REDELIVER_INTENT`: Service is restarted with the original intent (file downloads)
@@ -666,6 +676,7 @@ android {
 ```
 
 This generates four build variants:
+
 ```
 stagingDebug    → staging API + debug mode + package .staging + .debug suffix
 stagingRelease  → staging API + release mode + package .staging
@@ -674,12 +685,14 @@ productionRelease → production API + release mode → what ships to Play Store
 ```
 
 **In BuildConfig** — this is how developers read which environment they're in:
+
 ```kotlin
 val apiUrl = BuildConfig.API_BASE_URL    // different per flavor
 val isDebug = BuildConfig.DEBUG          // true/false per build type
 ```
 
 **QA implication — which build to test?**:
+
 ```
 QA TESTING MATRIX:
 ┌──────────────────┬───────────────────────────────────────────────────┐
@@ -767,12 +780,15 @@ minSdk = 28 (Android 9.0): Supports 85% of devices, better security defaults
 Android 13 (API 33) introduced the `POST_NOTIFICATIONS` permission — a **runtime permission** that must be explicitly granted by the user. On Android 12 and below, apps automatically had notification permission.
 
 **The bug**: The app's permission request code was never added. The manifest declares:
+
 ```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 ```
+
 But the app never calls `ActivityCompat.requestPermissions()` to ask the user for it. On Android 12, the permission is auto-granted (the system ignores POST_NOTIFICATIONS on API < 33). On Android 13, the permission is denied by default until requested AND granted.
 
 **The fix**: Add runtime permission request for Android 13+:
+
 ```kotlin
 // In Activity onCreate or onboarding flow:
 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -807,6 +823,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 ### Why Signing Exists
 
 Android requires every APK to be **digitally signed** before installation. The signature:
+
 - Proves the APK came from you (not tampered by a third party)
 - Enables system updates (update must be signed by same key)
 - Controls what apps can share data with each other (same signing key = can share data)
@@ -898,6 +915,7 @@ HARDWARE
 ```
 
 **Why this matters for testing**:
+
 - Bugs in YOUR APP LAYER → unit tests and integration tests catch these
 - Bugs at FRAMEWORK LAYER → version-specific bugs (minSdk differences)
 - Bugs at NATIVE LAYER → crash with SIGSEGV in native code — harder to debug
@@ -1061,12 +1079,15 @@ USER taps PAY button on CitationDetailScreen
 ## 13. Interview Questions on Android Architecture
 
 **Q: "What is the difference between compileSdk and minSdk?"**
+
 > "`compileSdk` is the Android API level you compile AGAINST — it determines which APIs are available to call in your code. `minSdk` is the MINIMUM Android version you support — your app will refuse to install on anything older. You should set `compileSdk` to the latest stable API to access modern APIs and receive deprecation warnings. `minSdk` is a business decision based on your user base. A common configuration is `compileSdk=35, minSdk=26` — you use the latest APIs but maintain backward compatibility to Android 8."
 
 **Q: "What is the difference between an Activity and a Fragment?"**
+
 > "An Activity is an independent, OS-managed component — it has its own task, its own lifecycle managed directly by Android, and can be launched from outside the app. A Fragment is a reusable UI piece that LIVES INSIDE an Activity — it cannot exist without a host. Modern Android development favors a single-Activity architecture where one MainActivity hosts all screens via Fragments or Jetpack Compose destinations managed by Jetpack Navigation. Fragments provide a more modular, testable UI structure and better back stack management through the Navigation component."
 
 **Q: "Why should sensitive config like API keys not be in the manifest or build.gradle?"**
+
 > "AndroidManifest.xml and build.gradle are committed to source control. API keys in these files are visible to anyone with access to the repository — including if the repo is accidentally public. Additionally, anyone who reverse-engineers the APK can extract the manifest and read plaintext values from it. The correct approach: store sensitive values as environment variables on CI machines, inject them at build time via `BuildConfig` fields (which are obfuscated in release builds), or better yet, use Android Keystore for runtime secrets and fetch them from a secure backend endpoint at login time — never hardcode them."
 
 ---

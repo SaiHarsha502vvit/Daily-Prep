@@ -4,25 +4,29 @@
  * Uses the-internet.herokuapp.com login page as a stand-in for a customer portal.
  * Customer logs in and places an order (interacts with a form on the internet.herokuapp.com).
  */
-import { type Page, type Locator, expect } from '@playwright/test';
-import { clickElement, fillInput, safeNavigate } from '../../../utilities/helpers/action.helpers';
-import { APP } from '../../../constants/app.constants';
-import { Timeouts } from '../../../constants/timeouts';
+import { type Page, type Locator, expect } from "@playwright/test";
+import {
+  clickElement,
+  fillInput,
+  safeNavigate,
+} from "../../../utilities/helpers/action.helpers";
+import { APP } from "../../../constants/app.constants";
+import { Timeouts } from "../../../constants/timeouts";
 
 export class CustomerPortalPage {
   readonly page: Page;
 
   private readonly locators = {
-    usernameInput: '#username',
-    passwordInput: '#password',
+    usernameInput: "#username",
+    passwordInput: "#password",
     loginButton: 'button[type="submit"]',
-    flashBanner: '#flash',
+    flashBanner: "#flash",
     orderLink: 'a:has-text("Form Authentication")', // proxy navigation
-    orderForm: 'form',
-    productSelect: '#dropdown',
-    quantityInput: '#quantity',
+    orderForm: "form",
+    productSelect: "#dropdown",
+    quantityInput: "#quantity",
     submitOrderButton: 'button:has-text("Order")',
-    orderConfirmation: '#order-confirmation',
+    orderConfirmation: "#order-confirmation",
   };
 
   readonly usernameInput: Locator;
@@ -46,14 +50,23 @@ export class CustomerPortalPage {
 
   async gotoLogin(): Promise<void> {
     const url = `${APP.internet.baseUrl}/login`;
-    await safeNavigate(this.page, url, 'Customer portal login page');
-    await this.usernameInput.waitFor({ state: 'visible', timeout: Timeouts.THIRTY_SECONDS });
+    await safeNavigate(this.page, url, "Customer portal login page");
+    await this.usernameInput.waitFor({
+      state: "visible",
+      timeout: Timeouts.THIRTY_SECONDS,
+    });
   }
 
   async loginAsCustomer(username: string, password: string): Promise<void> {
-    await fillInput(this.usernameInput, username, { description: 'customer portal username' });
-    await fillInput(this.passwordInput, password, { description: 'customer portal password' });
-    await clickElement(this.loginButton, { description: 'customer portal login submit' });
+    await fillInput(this.usernameInput, username, {
+      description: "customer portal username",
+    });
+    await fillInput(this.passwordInput, password, {
+      description: "customer portal password",
+    });
+    await clickElement(this.loginButton, {
+      description: "customer portal login submit",
+    });
   }
 
   async expectLoginSuccess(): Promise<void> {
@@ -63,27 +76,37 @@ export class CustomerPortalPage {
 
   async navigateToOrderPage(): Promise<void> {
     const secureLink = this.page.locator('a:has-text("Secure")');
-    await clickElement(secureLink, { description: 'navigate to secure area' });
+    await clickElement(secureLink, { description: "navigate to secure area" });
     await this.page.waitForURL(/secure/, { timeout: Timeouts.THIRTY_SECONDS });
   }
 
   async selectProduct(productName: string): Promise<void> {
-    await clickElement(this.productSelect, { description: 'product dropdown' });
+    await clickElement(this.productSelect, { description: "product dropdown" });
     await this.productSelect.selectOption(productName);
   }
 
   async enterQuantity(quantity: string): Promise<void> {
-    await this.quantityInput.waitFor({ state: 'visible', timeout: Timeouts.FIVE_SECONDS });
+    await this.quantityInput.waitFor({
+      state: "visible",
+      timeout: Timeouts.FIVE_SECONDS,
+    });
     await this.quantityInput.clear();
-    await fillInput(this.quantityInput, quantity, { description: 'order quantity' });
+    await fillInput(this.quantityInput, quantity, {
+      description: "order quantity",
+    });
   }
 
   async placeOrder(): Promise<string> {
-    await clickElement(this.submitOrderButton, { description: 'submit order button' });
+    await clickElement(this.submitOrderButton, {
+      description: "submit order button",
+    });
 
     // Wait for confirmation element and extract code
-    await this.orderConfirmation.waitFor({ state: 'visible', timeout: Timeouts.THIRTY_SECONDS });
+    await this.orderConfirmation.waitFor({
+      state: "visible",
+      timeout: Timeouts.THIRTY_SECONDS,
+    });
     const confirmationText = await this.orderConfirmation.textContent();
-    return confirmationText ?? '';
+    return confirmationText ?? "";
   }
 }

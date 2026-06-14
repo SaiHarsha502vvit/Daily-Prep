@@ -26,17 +26,16 @@
 > | **Review: Sorting Algorithms** | [Sorting Fundamentals](../../03_Algorithms/02a_Sorting_Fundamentals.md) |
 > | **Review: Binary Search** | [Binary Search Patterns](../../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## SPEED DRILL 1: Code from Scratch (30 min)
 
 **Rules:** Close all notes. Set a timer. Write these from memory.
 
 ### Round 1: Data Structures (10 min)
+
 ```
 1. Implement a Stack using array (push, pop, peek, isEmpty)
 2. Implement Singly LinkedList (insertAtHead, delete, contains)
@@ -44,6 +43,7 @@
 ```
 
 ### Round 2: Algorithms (10 min)
+
 ```
 3. Write Merge Sort (mergeSort + merge helper)
 4. Write Binary Search (exact match template)
@@ -51,6 +51,7 @@
 ```
 
 ### Round 3: Problem Solving (10 min)
+
 ```
 5. Reverse a Linked List (iterative)
 6. Two Sum using HashMap
@@ -58,7 +59,7 @@
    Target: < 3 minutes each
 ```
 
-**Score yourself:** ___ / 7 completed from memory without errors
+**Score yourself:** \_\_\_ / 7 completed from memory without errors
 
 ---
 
@@ -85,7 +86,7 @@ Write these queries from memory:
 --     (use NOT EXISTS)
 ```
 
-**Score yourself:** ___ / 7 queries correct
+**Score yourself:** \_\_\_ / 7 queries correct
 
 ---
 
@@ -93,18 +94,18 @@ Write these queries from memory:
 
 Go back to any problems from this week you struggled with:
 
-| Day | Problem | Status | Re-attempt |
-|-----|---------|--------|------------|
-| 008 | Merge Two Sorted Lists (LC 21) | ☐ Easy ☐ Hard | ☐ Done |
-| 008 | Middle of LinkedList (LC 876) | ☐ Easy ☐ Hard | ☐ Done |
-| 009 | Sort Colors (LC 75) | ☐ Easy ☐ Hard | ☐ Done |
-| 009 | Linked List Cycle (LC 141) | ☐ Easy ☐ Hard | ☐ Done |
-| 010 | Valid Parentheses (LC 20) | ☐ Easy ☐ Hard | ☐ Done |
-| 010 | Min Stack (LC 155) | ☐ Easy ☐ Hard | ☐ Done |
-| 011 | Two Sum (LC 1) | ☐ Easy ☐ Hard | ☐ Done |
-| 011 | Queue using Stacks (LC 232) | ☐ Easy ☐ Hard | ☐ Done |
-| 012 | Container with Most Water (LC 11) | ☐ Easy ☐ Hard | ☐ Done |
-| 012 | Contains Duplicate (LC 217) | ☐ Easy ☐ Hard | ☐ Done |
+| Day | Problem                           | Status        | Re-attempt |
+| --- | --------------------------------- | ------------- | ---------- |
+| 008 | Merge Two Sorted Lists (LC 21)    | ☐ Easy ☐ Hard | ☐ Done     |
+| 008 | Middle of LinkedList (LC 876)     | ☐ Easy ☐ Hard | ☐ Done     |
+| 009 | Sort Colors (LC 75)               | ☐ Easy ☐ Hard | ☐ Done     |
+| 009 | Linked List Cycle (LC 141)        | ☐ Easy ☐ Hard | ☐ Done     |
+| 010 | Valid Parentheses (LC 20)         | ☐ Easy ☐ Hard | ☐ Done     |
+| 010 | Min Stack (LC 155)                | ☐ Easy ☐ Hard | ☐ Done     |
+| 011 | Two Sum (LC 1)                    | ☐ Easy ☐ Hard | ☐ Done     |
+| 011 | Queue using Stacks (LC 232)       | ☐ Easy ☐ Hard | ☐ Done     |
+| 012 | Container with Most Water (LC 11) | ☐ Easy ☐ Hard | ☐ Done     |
+| 012 | Contains Duplicate (LC 217)       | ☐ Easy ☐ Hard | ☐ Done     |
 
 Focus on anything marked "Hard" — solve it 3 times until it's automatic.
 
@@ -141,7 +142,6 @@ WHAT'S COMING:
   Difficulty ramp: MEDIUM → MEDIUM-HARD
   You'll build on everything from Week 1-2!
 ```
-
 
 ---
 
@@ -204,7 +204,6 @@ Spring Boot DI            [ ]      [ ]          [ ]
 SCORE: ___ / 42 (14 topics × 3 levels)
 TARGET: 28+ (at least "can code it" for everything)
 ```
-
 
 ---
 

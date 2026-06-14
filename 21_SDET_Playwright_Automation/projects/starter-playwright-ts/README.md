@@ -27,14 +27,14 @@ npx playwright test --project=chromium
 
 ## What Each Pattern Demonstrates
 
-| File | Chapters | Pattern |
-|---|---|---|
-| `playwright.config.ts` | Ch46 | Config merge algebra, projects DAG, CI vs local conditional |
-| `fixtures/auth.fixture.ts` | Ch51 (Level 2) | Test-scoped auth fixture with cleanup |
-| `pages/PortalPage.ts` | Ch50 | Orchestrator + Component POMs (TabBar, MenuBar, Toast) |
-| `pages/InvoiceTabContent.ts` | Ch50 | FrameLocator-scoped tab content |
-| `tests/invoice-flow.spec.ts` | Ch07, Ch42, Ch47 | Data accumulator, test.step, file upload/download |
-| `tests/setup/global-setup.ts` | Ch16 | `storageState` pre-seeding with freshness check |
+| File                          | Chapters         | Pattern                                                     |
+| ----------------------------- | ---------------- | ----------------------------------------------------------- |
+| `playwright.config.ts`        | Ch46             | Config merge algebra, projects DAG, CI vs local conditional |
+| `fixtures/auth.fixture.ts`    | Ch51 (Level 2)   | Test-scoped auth fixture with cleanup                       |
+| `pages/PortalPage.ts`         | Ch50             | Orchestrator + Component POMs (TabBar, MenuBar, Toast)      |
+| `pages/InvoiceTabContent.ts`  | Ch50             | FrameLocator-scoped tab content                             |
+| `tests/invoice-flow.spec.ts`  | Ch07, Ch42, Ch47 | Data accumulator, test.step, file upload/download           |
+| `tests/setup/global-setup.ts` | Ch16             | `storageState` pre-seeding with freshness check             |
 
 ---
 

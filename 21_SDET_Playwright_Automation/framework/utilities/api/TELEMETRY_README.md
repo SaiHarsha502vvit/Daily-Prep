@@ -70,13 +70,13 @@ const exporter = new DatadogExporter({
 
 Every API call emits a span named `http.<method>` (e.g. `http.get`, `http.post`) with:
 
-| Attribute           | Description                              | Example                        |
-|---------------------|------------------------------------------|--------------------------------|
-| `http.method`       | HTTP verb                                | `GET`                          |
-| `http.url`          | Full request URL                         | `https://api.example.com/users`|
-| `http.target`       | Request path + query                     | `/users?page=1`                |
-| `http.status_code`  | Numeric HTTP response status             | `200`                          |
-| `error`             | Set to `true` when the request threw     | `true`                         |
+| Attribute          | Description                          | Example                         |
+| ------------------ | ------------------------------------ | ------------------------------- |
+| `http.method`      | HTTP verb                            | `GET`                           |
+| `http.url`         | Full request URL                     | `https://api.example.com/users` |
+| `http.target`      | Request path + query                 | `/users?page=1`                 |
+| `http.status_code` | Numeric HTTP response status         | `200`                           |
+| `error`            | Set to `true` when the request threw | `true`                          |
 
 Exception details are recorded via `span.recordException()` on failure.
 
@@ -130,8 +130,8 @@ JAEGER_ENDPOINT=http://localhost:14268/api/traces npx playwright test
 
 ## Files
 
-| File                      | Purpose                                             |
-|---------------------------|-----------------------------------------------------|
-| `utilities/api/telemetry.ts` | No-op-safe helpers: `getApiTracer`, `createApiSpan`, `propagation` |
-| `utilities/api/ApiCore.ts`   | Instrumented HTTP client (adds spans + propagation) |
-| `utilities/api/TELEMETRY_README.md` | This document                              |
+| File                                | Purpose                                                            |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| `utilities/api/telemetry.ts`        | No-op-safe helpers: `getApiTracer`, `createApiSpan`, `propagation` |
+| `utilities/api/ApiCore.ts`          | Instrumented HTTP client (adds spans + propagation)                |
+| `utilities/api/TELEMETRY_README.md` | This document                                                      |

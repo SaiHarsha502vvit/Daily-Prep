@@ -3,6 +3,7 @@
 **Navigation**: [← Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | [📚 Index](00_INDEX.md) | [SpringBoot × DSA →](12_SpringBoot_Plus_DSA_Progressive.md)
 
 **Cross-links:**
+
 - [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns used in solutions
 - [`02_Data_Structures/`](../02_Data_Structures/) — DSA foundations
 - [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/) — API testing patterns
@@ -34,7 +35,7 @@ Imagine you have a long list of numbers: `[1, 3, 2, 6, 4, 5, 8, 7]`. You want to
 
 **Brute force**: check every window of 3 by summing them fresh → O(n × k).
 
-**Sliding window**: compute the first window once, then *slide* it — add the new element coming in, subtract the element going out → O(n).
+**Sliding window**: compute the first window once, then _slide_ it — add the new element coming in, subtract the element going out → O(n).
 
 ```
 [1, 3, 2] → sum=6
@@ -51,13 +52,14 @@ The insight: **you re-use the previous window's result** instead of recomputing 
 Your API test creates a citation and then polls for its status to change from `PENDING` to `PROCESSED`. The API is eventually consistent — it may take anywhere from 200ms to 8 seconds.
 
 **Wrong approach**:
+
 ```typescript
 // ❌ Fixed wait — too short = flaky, too long = slow
 await page.waitForTimeout(5000);
 const status = await request.get(`/api/citations/${id}/status`);
 ```
 
-**The sliding window insight applied to polling**: instead of a fixed timeout, use a **variable interval** that checks on an *adaptive* schedule — checking more frequently early on, then spacing out (because if it hasn't happened in 2 seconds, another 500ms check is unlikely to help).
+**The sliding window insight applied to polling**: instead of a fixed timeout, use a **variable interval** that checks on an _adaptive_ schedule — checking more frequently early on, then spacing out (because if it hasn't happened in 2 seconds, another 500ms check is unlikely to help).
 
 ---
 
@@ -85,23 +87,27 @@ Step 4: Define the interval strategy
 
 ```typescript
 // ✅ CORRECT: Sliding window polling with expect.poll
-test('Citation status transitions from PENDING to PROCESSED', async ({ request }) => {
-  const res = await request.post('/api/citations', { data: { amount: 150 } });
+test("Citation status transitions from PENDING to PROCESSED", async ({
+  request,
+}) => {
+  const res = await request.post("/api/citations", { data: { amount: 150 } });
   const { id } = await res.json();
 
   // expect.poll slides a 10-second window, checking every 500ms
   // It stops the moment the condition is met — no wasted time
-  await expect.poll(
-    async () => {
-      const statusRes = await request.get(`/api/citations/${id}/status`);
-      return (await statusRes.json()).status;
-    },
-    {
-      message: `Citation ${id} should transition to PROCESSED within 10s`,
-      timeout: 10_000,
-      intervals: [100, 200, 500, 1000, 2000], // sliding schedule: fast first, then slower
-    }
-  ).toBe('PROCESSED');
+  await expect
+    .poll(
+      async () => {
+        const statusRes = await request.get(`/api/citations/${id}/status`);
+        return (await statusRes.json()).status;
+      },
+      {
+        message: `Citation ${id} should transition to PROCESSED within 10s`,
+        timeout: 10_000,
+        intervals: [100, 200, 500, 1000, 2000], // sliding schedule: fast first, then slower
+      },
+    )
+    .toBe("PROCESSED");
 });
 ```
 
@@ -120,23 +126,26 @@ async function pollKafkaMessage(
   consumer: KafkaConsumer,
   topic: string,
   matcher: (msg: any) => boolean,
-  options = { timeout: 15_000, intervals: [200, 500, 1000, 2000, 5000] }
+  options = { timeout: 15_000, intervals: [200, 500, 1000, 2000, 5000] },
 ): Promise<KafkaMessage> {
-  return expect.poll(
-    async () => {
-      const messages = await consumer.getMessages(topic, { maxMessages: 50 });
-      return messages.find(m => matcher(JSON.parse(m.value)));
-    },
-    {
-      timeout: options.timeout,
-      intervals: options.intervals,
-      message: `Expected Kafka message in topic "${topic}" within ${options.timeout}ms`,
-    }
-  ).not.toBeUndefined();
+  return expect
+    .poll(
+      async () => {
+        const messages = await consumer.getMessages(topic, { maxMessages: 50 });
+        return messages.find((m) => matcher(JSON.parse(m.value)));
+      },
+      {
+        timeout: options.timeout,
+        intervals: options.intervals,
+        message: `Expected Kafka message in topic "${topic}" within ${options.timeout}ms`,
+      },
+    )
+    .not.toBeUndefined();
 }
 ```
 
 **Interval reasoning**:
+
 - `200ms`: catches the fast path (message already there or arrives immediately)
 - `500ms, 1000ms`: medium latency (Kafka consumer lag)
 - `2000ms, 5000ms`: slow path (consumer rebalance, network partition recovery)
@@ -152,14 +161,16 @@ The sliding window adapts to the actual system speed — fast tests on good days
 <details><summary>Answer</summary>
 
 ```typescript
-await expect.poll(
-  async () => {
-    const res = await request.get(`/api/notifications?userId=${userId}`);
-    const { notifications } = await res.json();
-    return notifications.map((n: any) => n.id);  // return the array of IDs
-  },
-  { timeout: 5000, intervals: [200, 500, 1000] }
-).toContain(expectedNotificationId);
+await expect
+  .poll(
+    async () => {
+      const res = await request.get(`/api/notifications?userId=${userId}`);
+      const { notifications } = await res.json();
+      return notifications.map((n: any) => n.id); // return the array of IDs
+    },
+    { timeout: 5000, intervals: [200, 500, 1000] },
+  )
+  .toContain(expectedNotificationId);
 // toContain works on arrays — it checks if the returned array includes the expected ID
 ```
 
@@ -175,25 +186,34 @@ await expect.poll(
 
 ```typescript
 // Naive — breaks if value oscillates past 10 and then drops below:
-await expect.poll(async () => await db.count('citations'), { timeout: 8000 }).toBe(10);
+await expect
+  .poll(async () => await db.count("citations"), { timeout: 8000 })
+  .toBe(10);
 
 // Robust — poll until count >= 10 (more lenient lower bound):
-await expect.poll(
-  async () => await db.count('citations'),
-  { timeout: 8000, message: 'Citation count should reach at least 10' }
-).toBeGreaterThanOrEqual(10);
+await expect
+  .poll(async () => await db.count("citations"), {
+    timeout: 8000,
+    message: "Citation count should reach at least 10",
+  })
+  .toBeGreaterThanOrEqual(10);
 
 // OR: use a "settled" poll — wait until 2 consecutive checks agree:
 let previousCount = -1;
-await expect.poll(async () => {
-  const count = await db.count('citations');
-  if (count === previousCount && count >= 10) return count;
-  previousCount = count;
-  return -1;  // sentinel: tell expect.poll to keep retrying
-}, { timeout: 8000 }).toBeGreaterThanOrEqual(10);
+await expect
+  .poll(
+    async () => {
+      const count = await db.count("citations");
+      if (count === previousCount && count >= 10) return count;
+      previousCount = count;
+      return -1; // sentinel: tell expect.poll to keep retrying
+    },
+    { timeout: 8000 },
+  )
+  .toBeGreaterThanOrEqual(10);
 ```
 
-**The lesson**: sliding window polling must account for *oscillating* state. A simple `.toBe(10)` is brittle. Use `toBeGreaterThanOrEqual` for monotonic growth, or the "settled" pattern for volatile data.
+**The lesson**: sliding window polling must account for _oscillating_ state. A simple `.toBe(10)` is brittle. Use `toBeGreaterThanOrEqual` for monotonic growth, or the "settled" pattern for volatile data.
 
 </details>
 
@@ -251,22 +271,26 @@ Step 4: Assert at the end
 ### ✍️ The Solution
 
 ```typescript
-test('Pagination returns no duplicate citations across pages', async ({ request }) => {
-  const userId = 'USR-001';
-  const seenIds = new Set<string>();        // O(1) lookup
-  const duplicates: string[] = [];          // track which IDs were duplicated
+test("Pagination returns no duplicate citations across pages", async ({
+  request,
+}) => {
+  const userId = "USR-001";
+  const seenIds = new Set<string>(); // O(1) lookup
+  const duplicates: string[] = []; // track which IDs were duplicated
   let cursor: string | null = null;
 
   do {
-    const url = `/api/citations?userId=${userId}&limit=50` + (cursor ? `&cursor=${cursor}` : '');
+    const url =
+      `/api/citations?userId=${userId}&limit=50` +
+      (cursor ? `&cursor=${cursor}` : "");
     const res = await request.get(url);
     const body = await res.json();
 
     for (const citation of body.items) {
       if (seenIds.has(citation.id)) {
-        duplicates.push(citation.id);       // O(1) — HashMap lookup
+        duplicates.push(citation.id); // O(1) — HashMap lookup
       } else {
-        seenIds.add(citation.id);           // O(1) — HashMap insert
+        seenIds.add(citation.id); // O(1) — HashMap insert
       }
     }
 
@@ -276,7 +300,7 @@ test('Pagination returns no duplicate citations across pages', async ({ request 
   // Assertion with a useful failure message
   expect(
     duplicates,
-    `Found duplicate citation IDs across pages: ${duplicates.join(', ')}`
+    `Found duplicate citation IDs across pages: ${duplicates.join(", ")}`,
   ).toHaveLength(0);
 });
 ```
@@ -292,13 +316,18 @@ test('Pagination returns no duplicate citations across pages', async ({ request 
 <details><summary>Answer</summary>
 
 ```typescript
-test('Transaction referenceIds are globally unique per user', async ({ request }) => {
-  const userId = 'USR-AUDIT-001';
-  const idCounts = new Map<string, number>();  // referenceId → count
+test("Transaction referenceIds are globally unique per user", async ({
+  request,
+}) => {
+  const userId = "USR-AUDIT-001";
+  const idCounts = new Map<string, number>(); // referenceId → count
   let cursor: string | null = null;
 
   do {
-    const res = await request.get(`/api/transactions?userId=${userId}&limit=100` + (cursor ? `&cursor=${cursor}` : ''));
+    const res = await request.get(
+      `/api/transactions?userId=${userId}&limit=100` +
+        (cursor ? `&cursor=${cursor}` : ""),
+    );
     const body = await res.json();
 
     for (const tx of body.items) {
@@ -314,7 +343,7 @@ test('Transaction referenceIds are globally unique per user', async ({ request }
 
   expect(
     duplicates,
-    `Duplicate referenceIds found: ${duplicates.join(', ')}`
+    `Duplicate referenceIds found: ${duplicates.join(", ")}`,
   ).toHaveLength(0);
 });
 ```
@@ -336,7 +365,7 @@ const duplicates: string[] = [];
 
 for (const delivery of webhookDeliveries) {
   const compositeKey = `${delivery.eventId}::${delivery.endpointId}`;
-  
+
   if (seen.has(compositeKey)) {
     duplicates.push(compositeKey);
   } else {
@@ -344,7 +373,7 @@ for (const delivery of webhookDeliveries) {
   }
 }
 
-expect(duplicates, 'Duplicate webhook deliveries detected').toHaveLength(0);
+expect(duplicates, "Duplicate webhook deliveries detected").toHaveLength(0);
 ```
 
 **Key insight**: the "identity" of a record is determined by the DOMAIN, not just one field. Composite keys in a Set encode multi-field uniqueness constraints.
@@ -358,13 +387,13 @@ expect(duplicates, 'Duplicate webhook deliveries detected').toHaveLength(0);
 <details><summary>Answer</summary>
 
 ```typescript
-let previousScore = Infinity;  // use Infinity as the starting sentinel (every score is ≤ ∞)
+let previousScore = Infinity; // use Infinity as the starting sentinel (every score is ≤ ∞)
 const orderViolations: string[] = [];
 
 for (const result of allResults) {
   if (result.relevanceScore > previousScore) {
     orderViolations.push(
-      `${result.id}: score ${result.relevanceScore} > previous ${previousScore} (out of order)`
+      `${result.id}: score ${result.relevanceScore} > previous ${previousScore} (out of order)`,
     );
   }
   previousScore = result.relevanceScore;
@@ -372,7 +401,7 @@ for (const result of allResults) {
 
 expect(
   orderViolations,
-  `Sort order violated:\n${orderViolations.join('\n')}`
+  `Sort order violated:\n${orderViolations.join("\n")}`,
 ).toHaveLength(0);
 ```
 
@@ -407,6 +436,7 @@ Topological order:
 ### 🔍 The Real-World SDET Problem
 
 You have 15 API tests. Some tests depend on data created by other tests:
+
 - `test_create_citation` must run before `test_pay_citation`
 - `test_create_user` must run before `test_create_citation`
 - `test_generate_report` must run after both `test_pay_citation` AND `test_apply_discount`
@@ -461,7 +491,7 @@ function topologicalSort(tests: TestDependency[]): TestId[] {
   // Build adjacency list and in-degree count
   for (const test of tests) {
     for (const dep of test.dependencies) {
-      graph.get(dep)!.add(test.id);                        // dep → test
+      graph.get(dep)!.add(test.id); // dep → test
       inDegree.set(test.id, (inDegree.get(test.id) ?? 0) + 1);
     }
   }
@@ -484,7 +514,7 @@ function topologicalSort(tests: TestDependency[]): TestId[] {
   }
 
   if (result.length !== tests.length) {
-    throw new Error('CIRCULAR DEPENDENCY detected in test graph!');
+    throw new Error("CIRCULAR DEPENDENCY detected in test graph!");
   }
 
   return result;
@@ -492,14 +522,38 @@ function topologicalSort(tests: TestDependency[]): TestId[] {
 
 // Usage in a test suite
 const tests: TestDependency[] = [
-  { id: 'create_user',     dependencies: [],                    execute: async () => { /* POST /users */ } },
-  { id: 'create_citation', dependencies: ['create_user'],       execute: async () => { /* POST /citations */ } },
-  { id: 'pay_citation',    dependencies: ['create_citation'],   execute: async () => { /* POST /payments */ } },
-  { id: 'gen_report',      dependencies: ['pay_citation'],      execute: async () => { /* GET /reports */ } },
+  {
+    id: "create_user",
+    dependencies: [],
+    execute: async () => {
+      /* POST /users */
+    },
+  },
+  {
+    id: "create_citation",
+    dependencies: ["create_user"],
+    execute: async () => {
+      /* POST /citations */
+    },
+  },
+  {
+    id: "pay_citation",
+    dependencies: ["create_citation"],
+    execute: async () => {
+      /* POST /payments */
+    },
+  },
+  {
+    id: "gen_report",
+    dependencies: ["pay_citation"],
+    execute: async () => {
+      /* GET /reports */
+    },
+  },
 ];
 
 const order = topologicalSort(tests);
-const testMap = new Map(tests.map(t => [t.id, t]));
+const testMap = new Map(tests.map((t) => [t.id, t]));
 
 for (const testId of order) {
   await testMap.get(testId)!.execute();
@@ -688,7 +742,7 @@ git bisect run ./run_flaky_test.sh
 // Find: the FIRST commit where passRate < 0.8
 
 function findFirstBrokenCommit(
-  history: { sha: string; passRate: number }[]
+  history: { sha: string; passRate: number }[],
 ): string | null {
   let left = 0;
   let right = history.length - 1;
@@ -697,9 +751,9 @@ function findFirstBrokenCommit(
     const mid = Math.floor((left + right) / 2);
 
     if (history[mid].passRate >= 0.8) {
-      left = mid + 1;  // mid is still "good" → broken is to the RIGHT
+      left = mid + 1; // mid is still "good" → broken is to the RIGHT
     } else {
-      right = mid;     // mid is "bad" → broken is here or to the LEFT
+      right = mid; // mid is "bad" → broken is here or to the LEFT
     }
   }
 
@@ -723,9 +777,9 @@ function findFirstExceeding(times: number[], threshold: number): number {
   while (left < right) {
     const mid = Math.floor((left + right) / 2);
     if (times[mid] <= threshold) {
-      left = mid + 1;   // mid is acceptable → look right
+      left = mid + 1; // mid is acceptable → look right
     } else {
-      right = mid;      // mid exceeds threshold → answer is here or left
+      right = mid; // mid exceeds threshold → answer is here or left
     }
   }
 
@@ -752,16 +806,16 @@ const idx = findFirstExceeding(times, 200);
 async function findFirstFailingTest(
   runTest: (index: number) => Promise<boolean>,
   low: number,
-  high: number
+  high: number,
 ): Promise<number> {
   while (low < high) {
     const mid = Math.floor((low + high) / 2);
     const passed = await runTest(mid);
 
     if (passed) {
-      low = mid + 1;   // mid passed → first failure is to the RIGHT
+      low = mid + 1; // mid passed → first failure is to the RIGHT
     } else {
-      high = mid;      // mid failed → first failure is here or to the LEFT
+      high = mid; // mid failed → first failure is here or to the LEFT
     }
   }
 
@@ -805,11 +859,13 @@ A min-heap is the same but the smallest element is always at the root.
 ### 🔍 The Real-World SDET Problem
 
 You have 500 API tests. A deploy is happening in 30 minutes and you only have time to run the 50 most critical ones. Tests have:
+
 - `priority` (1-5, where 5 = payment-critical)
 - `lastFailureRate` (0.0-1.0 — how often this test has failed historically)
 - `estimatedDuration` (seconds)
 
 You want a priority queue that surfaces the most critical tests first. Score formula:
+
 ```
 score = priority × 10 + lastFailureRate × 5 - estimatedDuration × 0.1
 ```
@@ -841,21 +897,21 @@ Alternative (simpler for fixed N):
 ```typescript
 interface TestCase {
   id: string;
-  priority: number;        // 1-5
+  priority: number; // 1-5
   lastFailureRate: number; // 0.0-1.0
   estimatedDuration: number; // seconds
 }
 
 function scoreTest(test: TestCase): number {
-  return test.priority * 10
-    + test.lastFailureRate * 5
-    - test.estimatedDuration * 0.1;
+  return (
+    test.priority * 10 + test.lastFailureRate * 5 - test.estimatedDuration * 0.1
+  );
 }
 
 // Simple max-heap using a sorted approach (fine for ≤ 10K tests)
 function getTopN(tests: TestCase[], n: number): TestCase[] {
   return [...tests]
-    .sort((a, b) => scoreTest(b) - scoreTest(a))  // descending by score
+    .sort((a, b) => scoreTest(b) - scoreTest(a)) // descending by score
     .slice(0, n);
 }
 
@@ -898,9 +954,12 @@ class MaxHeap<T> {
     const n = this.heap.length;
     while (true) {
       let largest = i;
-      const left = 2 * i + 1, right = 2 * i + 2;
-      if (left < n && this.compare(this.heap[left], this.heap[largest]) > 0) largest = left;
-      if (right < n && this.compare(this.heap[right], this.heap[largest]) > 0) largest = right;
+      const left = 2 * i + 1,
+        right = 2 * i + 2;
+      if (left < n && this.compare(this.heap[left], this.heap[largest]) > 0)
+        largest = left;
+      if (right < n && this.compare(this.heap[right], this.heap[largest]) > 0)
+        largest = right;
       if (largest === i) break;
       [this.heap[i], this.heap[largest]] = [this.heap[largest], this.heap[i]];
       i = largest;
@@ -938,9 +997,7 @@ interface FlakyResult {
 
 function topKFlakiest(results: FlakyResult[], k: number): FlakyResult[] {
   // Use JavaScript's built-in sort for simplicity (replace with actual min-heap for massive datasets)
-  return [...results]
-    .sort((a, b) => b.flakiness - a.flakiness)
-    .slice(0, k);
+  return [...results].sort((a, b) => b.flakiness - a.flakiness).slice(0, k);
 }
 
 // With true min-heap (O(n log k) instead of O(n log n)):
@@ -959,6 +1016,7 @@ function topKFlakiest(results: FlakyResult[], k: number): FlakyResult[] {
 ### 🧠 Foundation — What is Exponential Backoff?
 
 When a network request fails, when do you retry? Three options:
+
 1. **Immediate retry**: hammer the server → makes overload worse
 2. **Fixed delay** (e.g. every 1s): predictable but can create synchronized retry storms (1000 clients all retry at the same second)
 3. **Exponential backoff with jitter**: wait 1s, then 2s, then 4s, then 8s + random jitter → retries spread out over time → gentle on the server
@@ -994,7 +1052,7 @@ async function withRetry<T>(
     baseDelayMs?: number;
     maxDelayMs?: number;
     retryOn?: (error: any) => boolean;
-  } = {}
+  } = {},
 ): Promise<T> {
   const {
     maxAttempts = 3,
@@ -1013,12 +1071,17 @@ async function withRetry<T>(
       if (!retryOn(error) || attempt === maxAttempts - 1) throw error;
 
       // Exponential backoff: 2^attempt * baseDelay + jitter
-      const exponential = Math.min(Math.pow(2, attempt) * baseDelayMs, maxDelayMs);
+      const exponential = Math.min(
+        Math.pow(2, attempt) * baseDelayMs,
+        maxDelayMs,
+      );
       const jitter = Math.random() * (baseDelayMs / 2); // ±25% jitter
       const delay = Math.floor(exponential + jitter);
 
-      console.warn(`Attempt ${attempt + 1} failed (${error.status}). Retrying in ${delay}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+      console.warn(
+        `Attempt ${attempt + 1} failed (${error.status}). Retrying in ${delay}ms...`,
+      );
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 
@@ -1026,17 +1089,22 @@ async function withRetry<T>(
 }
 
 // Usage in a Playwright test:
-test('Fetch citation with retry on transient failures', async ({ request }) => {
+test("Fetch citation with retry on transient failures", async ({ request }) => {
   const citation = await withRetry(
     async () => {
-      const res = await request.get('/api/citations/CIT-001');
-      if (!res.ok()) throw Object.assign(new Error('API error'), { status: res.status() });
+      const res = await request.get("/api/citations/CIT-001");
+      if (!res.ok())
+        throw Object.assign(new Error("API error"), { status: res.status() });
       return res.json();
     },
-    { maxAttempts: 4, baseDelayMs: 500, retryOn: (e) => [429, 503].includes(e.status) }
+    {
+      maxAttempts: 4,
+      baseDelayMs: 500,
+      retryOn: (e) => [429, 503].includes(e.status),
+    },
   );
 
-  expect(citation.id).toBe('CIT-001');
+  expect(citation.id).toBe("CIT-001");
 });
 ```
 
@@ -1051,7 +1119,7 @@ test('Fetch citation with retry on transient failures', async ({ request }) => {
 ```typescript
 async function withSmartRetry<T>(
   fn: () => Promise<T>,
-  maxAttempts = 3
+  maxAttempts = 3,
 ): Promise<T> {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
@@ -1060,16 +1128,18 @@ async function withSmartRetry<T>(
       if (attempt === maxAttempts - 1) throw error;
 
       // Respect Retry-After header if present
-      const retryAfterSec = error.headers?.['retry-after'];
+      const retryAfterSec = error.headers?.["retry-after"];
       const delay = retryAfterSec
-        ? parseInt(retryAfterSec, 10) * 1000        // server told us exactly
+        ? parseInt(retryAfterSec, 10) * 1000 // server told us exactly
         : Math.min(Math.pow(2, attempt) * 500, 8000); // exponential backoff
 
-      console.warn(`Attempt ${attempt + 1} failed. Waiting ${delay}ms (${retryAfterSec ? 'server-specified' : 'exponential'})`);
-      await new Promise(r => setTimeout(r, delay));
+      console.warn(
+        `Attempt ${attempt + 1} failed. Waiting ${delay}ms (${retryAfterSec ? "server-specified" : "exponential"})`,
+      );
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
-  throw new Error('Max retries exceeded');
+  throw new Error("Max retries exceeded");
 }
 ```
 
@@ -1105,52 +1175,65 @@ Your CI runs each test 10 times per week. A test is considered "flaky" if its pa
 interface CIRunResult {
   testId: string;
   runDate: string;
-  result: 'PASS' | 'FAIL' | 'SKIP';
+  result: "PASS" | "FAIL" | "SKIP";
 }
 
 interface FlakinessReport {
   testId: string;
   totalRuns: number;
   passRate: number;
-  status: 'STABLE' | 'FLAKY' | 'BROKEN' | 'SKIPPED';
+  status: "STABLE" | "FLAKY" | "BROKEN" | "SKIPPED";
 }
 
 function analyzeFlakiness(
   results: CIRunResult[],
-  flakyThreshold = { low: 0.2, high: 0.8 }
+  flakyThreshold = { low: 0.2, high: 0.8 },
 ): FlakinessReport[] {
   // Step 1: Build frequency map per test
-  const testResults = new Map<string, { pass: number; fail: number; skip: number }>();
+  const testResults = new Map<
+    string,
+    { pass: number; fail: number; skip: number }
+  >();
 
   for (const run of results) {
     if (!testResults.has(run.testId)) {
       testResults.set(run.testId, { pass: 0, fail: 0, skip: 0 });
     }
     const counts = testResults.get(run.testId)!;
-    counts[run.result.toLowerCase() as 'pass' | 'fail' | 'skip']++;
+    counts[run.result.toLowerCase() as "pass" | "fail" | "skip"]++;
   }
 
   // Step 2: Compute pass rate and classify
-  return [...testResults.entries()].map(([testId, counts]) => {
-    const total = counts.pass + counts.fail + counts.skip;
-    const passRate = total > 0 ? counts.pass / (counts.pass + counts.fail) : 1;
+  return [...testResults.entries()]
+    .map(([testId, counts]) => {
+      const total = counts.pass + counts.fail + counts.skip;
+      const passRate =
+        total > 0 ? counts.pass / (counts.pass + counts.fail) : 1;
 
-    let status: FlakinessReport['status'];
-    if (counts.skip === total) status = 'SKIPPED';
-    else if (passRate > flakyThreshold.high) status = 'STABLE';
-    else if (passRate < flakyThreshold.low) status = 'BROKEN';
-    else status = 'FLAKY';
+      let status: FlakinessReport["status"];
+      if (counts.skip === total) status = "SKIPPED";
+      else if (passRate > flakyThreshold.high) status = "STABLE";
+      else if (passRate < flakyThreshold.low) status = "BROKEN";
+      else status = "FLAKY";
 
-    return { testId, totalRuns: total, passRate: Math.round(passRate * 100) / 100, status };
-  }).sort((a, b) => a.passRate - b.passRate); // worst first
+      return {
+        testId,
+        totalRuns: total,
+        passRate: Math.round(passRate * 100) / 100,
+        status,
+      };
+    })
+    .sort((a, b) => a.passRate - b.passRate); // worst first
 }
 
 // Report output:
 const report = analyzeFlakiness(weeklyResults);
-const flaky = report.filter(r => r.status === 'FLAKY');
-const broken = report.filter(r => r.status === 'BROKEN');
+const flaky = report.filter((r) => r.status === "FLAKY");
+const broken = report.filter((r) => r.status === "BROKEN");
 
-console.table(flaky.map(r => ({ ...r, passRate: `${(r.passRate * 100).toFixed(0)}%` })));
+console.table(
+  flaky.map((r) => ({ ...r, passRate: `${(r.passRate * 100).toFixed(0)}%` })),
+);
 ```
 
 ---
@@ -1163,25 +1246,38 @@ console.table(flaky.map(r => ({ ...r, passRate: `${(r.passRate * 100).toFixed(0)
 
 ```typescript
 function worstDayOfWeek(results: CIRunResult[]): string {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const dayCounts = new Map<number, { pass: number; fail: number }>();
 
   for (const run of results) {
     const day = new Date(run.runDate).getDay(); // 0=Sun, 6=Sat
     if (!dayCounts.has(day)) dayCounts.set(day, { pass: 0, fail: 0 });
     const counts = dayCounts.get(day)!;
-    if (run.result === 'PASS') counts.pass++;
-    else if (run.result === 'FAIL') counts.fail++;
+    if (run.result === "PASS") counts.pass++;
+    else if (run.result === "FAIL") counts.fail++;
   }
 
   let worstDay = -1;
   let worstRate = 0;
   for (const [day, { pass, fail }] of dayCounts) {
     const failRate = fail / (pass + fail);
-    if (failRate > worstRate) { worstRate = failRate; worstDay = day; }
+    if (failRate > worstRate) {
+      worstRate = failRate;
+      worstDay = day;
+    }
   }
 
-  return worstDay >= 0 ? `${days[worstDay]} (${(worstRate * 100).toFixed(1)}% failure rate)` : 'No data';
+  return worstDay >= 0
+    ? `${days[worstDay]} (${(worstRate * 100).toFixed(1)}% failure rate)`
+    : "No data";
 }
 ```
 
@@ -1196,6 +1292,7 @@ function worstDayOfWeek(results: CIRunResult[]): string {
 ### 🧠 Foundation — What is a Segment Tree?
 
 A Segment Tree is a binary tree where:
+
 - Each **leaf** holds a single value (e.g. one API response time measurement)
 - Each **internal node** holds the result of combining its children (e.g. the `min`, `max`, or `sum` of a range)
 
@@ -1216,6 +1313,7 @@ Segment tree for RANGE MINIMUM:
 ```
 
 **Why this matters**:
+
 - Brute force range min/max query: O(n) — scan every element in range
 - Segment tree range query: O(log n) — traverse only the relevant nodes
 - When you run 10,000 performance metric queries per minute, O(log n) vs O(n) is the difference between 14 operations and 10,000
@@ -1225,6 +1323,7 @@ Segment tree for RANGE MINIMUM:
 ### 🔍 The Real-World SDET Problem
 
 Your performance test captures API response times every 100ms for 10 minutes → **6,000 data points**. Your assertions need:
+
 1. What was the **maximum** response time between minute 3 and minute 7?
 2. How many data points in that range **exceeded 200ms** (the SLA threshold)?
 3. After each new data point arrives, update the tree and re-query in real time
@@ -1280,7 +1379,10 @@ class PerformanceSegmentTree {
     this.n = data.length;
     // Tree size: 4 * n is always sufficient (safe upper bound)
     this.tree = new Array(4 * this.n).fill(null).map(() => ({
-      min: Infinity, max: -Infinity, sum: 0, count: 0
+      min: Infinity,
+      max: -Infinity,
+      sum: 0,
+      count: 0,
     }));
     this.build(data, 1, 0, this.n - 1);
     // node index 1 = root (1-indexed for clean parent/child math: children of i = 2i, 2i+1)
@@ -1295,16 +1397,29 @@ class PerformanceSegmentTree {
     };
   }
 
-  private build(data: number[], node: number, start: number, end: number): void {
+  private build(
+    data: number[],
+    node: number,
+    start: number,
+    end: number,
+  ): void {
     if (start === end) {
       // Leaf node: single data point
-      this.tree[node] = { min: data[start], max: data[start], sum: data[start], count: 1 };
+      this.tree[node] = {
+        min: data[start],
+        max: data[start],
+        sum: data[start],
+        count: 1,
+      };
       return;
     }
     const mid = Math.floor((start + end) / 2);
-    this.build(data, 2 * node, start, mid);       // build left child
+    this.build(data, 2 * node, start, mid); // build left child
     this.build(data, 2 * node + 1, mid + 1, end); // build right child
-    this.tree[node] = this.combine(this.tree[2 * node], this.tree[2 * node + 1]);
+    this.tree[node] = this.combine(
+      this.tree[2 * node],
+      this.tree[2 * node + 1],
+    );
     // ↑ Each parent = combination of its children
   }
 
@@ -1313,7 +1428,13 @@ class PerformanceSegmentTree {
     return this._query(1, 0, this.n - 1, l, r);
   }
 
-  private _query(node: number, start: number, end: number, l: number, r: number): RangeStats {
+  private _query(
+    node: number,
+    start: number,
+    end: number,
+    l: number,
+    r: number,
+  ): RangeStats {
     if (r < start || end < l) {
       // Completely outside query range — return identity values
       return { min: Infinity, max: -Infinity, sum: 0, count: 0 };
@@ -1324,7 +1445,7 @@ class PerformanceSegmentTree {
     }
     // Partial overlap — recurse into both halves
     const mid = Math.floor((start + end) / 2);
-    const leftResult  = this._query(2 * node,     start,   mid, l, r);
+    const leftResult = this._query(2 * node, start, mid, l, r);
     const rightResult = this._query(2 * node + 1, mid + 1, end, l, r);
     return this.combine(leftResult, rightResult);
   }
@@ -1334,31 +1455,42 @@ class PerformanceSegmentTree {
     this._update(1, 0, this.n - 1, index, newValue);
   }
 
-  private _update(node: number, start: number, end: number, index: number, value: number): void {
+  private _update(
+    node: number,
+    start: number,
+    end: number,
+    index: number,
+    value: number,
+  ): void {
     if (start === end) {
       // Found the leaf — update it
       this.tree[node] = { min: value, max: value, sum: value, count: 1 };
       return;
     }
     const mid = Math.floor((start + end) / 2);
-    if (index <= mid) this._update(2 * node,     start,   mid, index, value);
-    else              this._update(2 * node + 1, mid + 1, end, index, value);
+    if (index <= mid) this._update(2 * node, start, mid, index, value);
+    else this._update(2 * node + 1, mid + 1, end, index, value);
     // After updating the leaf, recompute this node from children
-    this.tree[node] = this.combine(this.tree[2 * node], this.tree[2 * node + 1]);
+    this.tree[node] = this.combine(
+      this.tree[2 * node],
+      this.tree[2 * node + 1],
+    );
   }
 }
 
 // ── Usage in a performance test ──────────────────────────────────────────────
 
-test('API response times stay within SLA across all load phases', async ({ request }) => {
+test("API response times stay within SLA across all load phases", async ({
+  request,
+}) => {
   const responseTimes: number[] = [];
 
   // Collect 6,000 measurements (100ms intervals × 10 minutes)
   for (let i = 0; i < 6000; i++) {
     const start = Date.now();
-    await request.get('/api/citations');
+    await request.get("/api/citations");
     responseTimes.push(Date.now() - start);
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
   }
 
   // Build segment tree once: O(n log n)
@@ -1384,13 +1516,16 @@ test('API response times stay within SLA across all load phases', async ({ reque
   // Note: for count-of-threshold-exceeding, a different structure is needed
   // (segment tree stores max, not count-above-threshold)
   // Use a filter for this specific query:
-  const slaBreaches = responseTimes.slice(1800, 4200).filter(t => t > 300).length;
+  const slaBreaches = responseTimes
+    .slice(1800, 4200)
+    .filter((t) => t > 300).length;
   const slaBreachRate = slaBreaches / 2400;
-  expect(slaBreachRate, 'SLA breach rate during peak').toBeLessThan(0.01); // < 1%
+  expect(slaBreachRate, "SLA breach rate during peak").toBeLessThan(0.01); // < 1%
 });
 ```
 
 **Complexity breakdown**:
+
 - Build tree: O(n log n) — done ONCE
 - Each range query (max, min, sum, count): O(log n)
 - Each point update: O(log n)
@@ -1415,14 +1550,17 @@ For 6,000 data points and 20 assertions: segment tree = 20 × 13 = 260 operation
 
 // Each segment tree node stores:
 interface ConsecutiveStats {
-  total: number;      // total elements in this segment
+  total: number; // total elements in this segment
   prefixOnes: number; // consecutive 5xx from LEFT edge
   suffixOnes: number; // consecutive 5xx from RIGHT edge
-  maxOnes: number;    // maximum consecutive 5xx sequence in this range
-  allOnes: boolean;   // true if ENTIRE range is 5xx (needed for merging)
+  maxOnes: number; // maximum consecutive 5xx sequence in this range
+  allOnes: boolean; // true if ENTIRE range is 5xx (needed for merging)
 }
 
-function combine5xx(left: ConsecutiveStats, right: ConsecutiveStats): ConsecutiveStats {
+function combine5xx(
+  left: ConsecutiveStats,
+  right: ConsecutiveStats,
+): ConsecutiveStats {
   // The max consecutive could span the boundary:
   // left-suffix + right-prefix = cross-boundary streak
   const crossBoundary = left.suffixOnes + right.prefixOnes;
@@ -1431,7 +1569,9 @@ function combine5xx(left: ConsecutiveStats, right: ConsecutiveStats): Consecutiv
     total: left.total + right.total,
     prefixOnes: left.allOnes ? left.total + right.prefixOnes : left.prefixOnes,
     // ↑ If left is ALL 5xx, prefix extends into right
-    suffixOnes: right.allOnes ? right.total + left.suffixOnes : right.suffixOnes,
+    suffixOnes: right.allOnes
+      ? right.total + left.suffixOnes
+      : right.suffixOnes,
     maxOnes: Math.max(left.maxOnes, right.maxOnes, crossBoundary),
     // ↑ The answer is the max of: left's internal max, right's internal max,
     //   OR the streak that crosses the boundary
@@ -1454,8 +1594,13 @@ This exact pattern appears in: maximum subarray problems, longest consecutive se
 
 ```typescript
 // Simple approach: O(n) per query — acceptable for ≤ 20 queries on 1,000 points
-function countBelowThreshold(data: number[], l: number, r: number, threshold: number): number {
-  return data.slice(l, r + 1).filter(v => v < threshold).length;
+function countBelowThreshold(
+  data: number[],
+  l: number,
+  r: number,
+  threshold: number,
+): number {
+  return data.slice(l, r + 1).filter((v) => v < threshold).length;
   // O(r - l + 1) per query — fine for small datasets or infrequent queries
 }
 
@@ -1485,7 +1630,7 @@ console.log(`
 const sorted = [...data].sort((a, b) => a - b);
 const p50 = sorted[Math.floor(sorted.length * 0.5)];
 // Now p50 is computed — use O(n) query or binary search on sorted array
-const countBelowP50 = sorted.filter(v => v < p50).length; // ≈ 50% by definition
+const countBelowP50 = sorted.filter((v) => v < p50).length; // ≈ 50% by definition
 ```
 
 **The interview answer**: for most SDET use cases (≤ 10,000 data points, ≤ 100 queries), O(n) per query is fine. For high-frequency streaming metrics at scale, a merge sort tree or a pre-sorted structure with binary search delivers O(log n) to O(log² n). Always state WHEN the complexity difference matters — interviewers reward pragmatic reasoning.

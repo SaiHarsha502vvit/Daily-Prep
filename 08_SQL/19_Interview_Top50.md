@@ -123,3 +123,33 @@ SELECT user_id, COUNT(*) AS consecutive_days FROM numbered GROUP BY user_id, grp
 ---
 
 > **Navigation**: [< Previous](18b_SQL_Projects_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_CheatSheet_QuickRef.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Oracle/Sybase** (1990s): Early enterprise databases that established SQL as the standard for interview technical screens
+- **LeetCode** (2015): Formalized SQL interview question banks with difficulty ratings and company frequency tags
+- **HackerRank** (2012): Pioneered automated assessment platforms that companies adopted for initial screening
+- **Pramp** (2015): Peer interview practice platform that democratized mock technical interviews
+- **SQL-92 Standard** (1992): Baseline syntax that all SQL interviews assume (JOINs, subqueries, GROUP BY, HAVING)
+
+**Evolution narrative:**
+SQL interviews evolved from whiteboard queries in onsite loops (2010) to automated platform assessments (2012-2015) to hybrid formats combining live coding with system design discussions. Oracle and Sybase dominance in enterprise created a baseline expectation of SQL proficiency for database-related roles. LeetCode's SQL section (launched 2015) codified 50-100 problems as the "standard prep curriculum" that candidates now share in study groups. Modern interviews test not just query writing but optimization, schema design, and debugging skills reflecting actual production challenges.
+
+**Modern practice anchor:**
+Top 50 SQL interview questions now include window functions (LAG/LEAD, RANK), CTEs, and optimization challenges that appear consistently at Google, Meta, Amazon, and Apple.
+
+### Production Reality
+
+**Failure modes:**
+1. **SELECT * in production workloads**: Interview queries use `SELECT *` freely, but in production on a table with 20 VARCHAR(2000) columns and a BLOB for file attachments, this causes 8-second page load times as the app transfers megabytes per row. Stack Overflow's 2013 slow-down was partially traced to `SELECT *` pulling unneeded BLOB columns over the wire.
+2. **ORDER BY without LIMIT on unbounded results**: A query written as practice exercise `SELECT * FROM employees ORDER BY hire_date` — when called without pagination — sorts 50,000 rows and streams them all. In a web API this causes timeout and memory exhaustion. Fix: always apply keyset or offset pagination.
+3. **NULL handling surprises in production filters**: An interview query `WHERE dept_id != 5` silently drops NULL dept_id rows (NULL != 5 evaluates to NULL, not TRUE). In a production report this means the "unassigned" bucket is always zero. Every SQL developer discovers this bug in their first month on the job.
+
+**Debug workflow:**
+(1) Review query execution plans with `EXPLAIN ANALYZE` — look for `Seq Scan` and `Sort (Disk)` indicating full-table sort without index.
+(2) Enable query logging in production and filter for queries returning >10,000 rows unexpectedly.
+(3) Test NULL-edge-case queries: run `WHERE col != val` and explicitly check `WHERE col IS NULL` to ensure all buckets are accounted for.
+
+**Modern practice anchor:**
+Today, tools like New Relic, Datadog, and Percona's PMM dashboard visualize query row counts and latency in production, catching interview-style unbounded results before they cascade into page timeouts.

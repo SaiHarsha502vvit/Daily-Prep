@@ -24,6 +24,7 @@ Do not rely on a single chat transcript to remember the repo. The repo carries i
 ## Agent Quick Start (Codex/Antigravity/etc.)
 
 If you are a newly spawned agent, immediately run this check to see what you missed:
+
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
 ```

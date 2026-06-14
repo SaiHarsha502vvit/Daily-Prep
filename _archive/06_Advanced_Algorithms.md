@@ -3,10 +3,10 @@
 ## From Divide & Conquer to NP-Complete
 
 ---
+
 > **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06b_Advanced_Algorithms_Patterns.md)
 
 ---
-
 
 # 🔬 PART 0: DEEP INTERNALS - HOW ALGORITHMS ACTUALLY WORK AT CPU/MEMORY LEVEL
 
@@ -2217,7 +2217,6 @@ SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
 ```
 
 ---
-
 
 ---
 

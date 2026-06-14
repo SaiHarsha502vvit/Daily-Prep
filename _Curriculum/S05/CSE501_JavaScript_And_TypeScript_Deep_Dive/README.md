@@ -17,18 +17,18 @@ A rigorous exploration of modern JavaScript (ES2024+) and TypeScript 5.x. Covers
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | ES2024+ syntax deep dive: destructuring, spread, rest, optional chaining, nullish coalescing |
-| 2 | Iterators, Generators, Symbol.iterator, async generators |
-| 3 | Proxy, Reflect, WeakMap, WeakSet, and memory-sensitive caching |
-| 4 | TypeScript fundamentals: types, interfaces, enums, generics |
-| 5 | Advanced TypeScript: conditional types, infer, template literal types, mapped types |
-| 6 | Decorators (TC39 Stage 3): class, method, field, accessor decorators |
-| 7 | Mixins, composition, and the functional patterns from S03 applied in TS |
-| 8 | Module systems: ESM, CJS, dynamic imports, top-level await |
-| 9 | TypeScript project configuration: strict mode, path aliases, composite projects |
-| 10 | Capstone: build a typed event emitter / reactive utility library |
+| Week | Topic                                                                                        |
+| ---- | -------------------------------------------------------------------------------------------- |
+| 1    | ES2024+ syntax deep dive: destructuring, spread, rest, optional chaining, nullish coalescing |
+| 2    | Iterators, Generators, Symbol.iterator, async generators                                     |
+| 3    | Proxy, Reflect, WeakMap, WeakSet, and memory-sensitive caching                               |
+| 4    | TypeScript fundamentals: types, interfaces, enums, generics                                  |
+| 5    | Advanced TypeScript: conditional types, infer, template literal types, mapped types          |
+| 6    | Decorators (TC39 Stage 3): class, method, field, accessor decorators                         |
+| 7    | Mixins, composition, and the functional patterns from S03 applied in TS                      |
+| 8    | Module systems: ESM, CJS, dynamic imports, top-level await                                   |
+| 9    | TypeScript project configuration: strict mode, path aliases, composite projects              |
+| 10   | Capstone: build a typed event emitter / reactive utility library                             |
 
 ## Linked Existing Content
 

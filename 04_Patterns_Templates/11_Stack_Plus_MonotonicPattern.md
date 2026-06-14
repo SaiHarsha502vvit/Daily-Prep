@@ -4,18 +4,58 @@
 
 **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
-
 ### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
+
+### Historical Evolution
+
+**Inventor / Originator:** Monotonic stack techniques were formalized by Barbay, Rao, and Salinger (2013) in output-sensitive algorithms. Earlier variants appeared in parser theory and compiler construction in the 1970s.
+
+**Predecessor context:** Problems like "next greater element" required O(n²) by scanning forward for each element. Stack-based solutions were known but not systematized.
+
+**Evolution narrative:** Compiler design and parser theory in the 1970s developed stack-based techniques for expression evaluation. These evolved into the general monotonic stack pattern for next-element problems. Barbay et al. proved output-sensitive bounds.
+
+**Modern practice:** Monotonic stacks solve problems in O(n) that would otherwise be O(n²). They're used in stock span problems, histogram calculations, and online algorithm scheduling.
+
+- **Parser theory — 1970s**: Stack-based techniques for expression parsing and evaluation
+- **Barbay-Rao-Salinger 2013**: Output-sensitive analysis of range queries and monotonic structures
+- **Stack-based NGE — 1980s**: Practical O(n) solution to next greater element problems
+- **Modern practice**: Used in LeetCode (Next Greater Element, Largest Rectangle in Histogram)
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Monotonic stack wrong direction (increasing vs decreasing) for Next Greater vs Next Smaller** — Using increasing stack when decreasing stack is required (or vice versa) produces completely wrong results. NGE (next greater element) needs a decreasing stack; NSE needs increasing stack. Detection: trace with `[2, 1, 3, 4]` — NGE should give `[3, 3, 4, -1]`; wrong direction gives wrong values.
+
+- **Stack overflow on deep recursion for tree-like structures** — If you implement monotonic stack recursively (nested iteration), deep inputs cause StackOverflowError. Detection: test with 100,000-element input; JVM default stack ~1MB cannot handle deeply nested calls.
+
+- **Pop condition wrong — pops too early or too late** — The while-loop condition `while (!stack.isEmpty() && nums[stack.peek()] < current)` must correctly compare to maintain monotonicity. Too aggressive popping loses needed elements; too conservative leaves stack non-monotonic. Detection: verify stack is always monotonic (increasing or decreasing) after each push/pop.
+
+**Production Selection Heuristic:** Use decreasing stack for Next Greater Element; use increasing stack for Next Smaller Element. Verify stack monotonicity property holds throughout execution.
+
+---
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| next greater/smaller element | monotonic stack |
-| circular next greater | scan `2N` with modulo |
-| sliding window maximum/minimum | monotonic deque, not stack |
-| need nearest previous boundary | stack stores indices |
-| duplicates matter | choose strict vs non-strict comparison carefully |
+| Given Constraints              | Do This                                          |
+| ------------------------------ | ------------------------------------------------ |
+| next greater/smaller element   | monotonic stack                                  |
+| circular next greater          | scan `2N` with modulo                            |
+| sliding window maximum/minimum | monotonic deque, not stack                       |
+| need nearest previous boundary | stack stores indices                             |
+| duplicates matter              | choose strict vs non-strict comparison carefully |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -32,6 +72,7 @@ A monotonic decreasing stack (for next greater element) maintains this invariant
 The proof is elegant: each element is pushed onto the stack **exactly once** and popped **at most once**. Across all n elements, that's at most n pushes + n pops = **2n total operations = O(n).** The inner `while` loop doesn't make it O(n²) because the total pops across all iterations is bounded by n.
 
 #### Increasing vs Decreasing — The Key Distinction
+
 - **Monotonic Decreasing** stack (big → small from bottom to top): finds **next GREATER** element. New elements that are larger "answer" and pop smaller elements.
 - **Monotonic Increasing** stack (small → big from bottom to top): finds **next SMALLER** element. New elements that are smaller "answer" and pop larger elements.
 
@@ -50,8 +91,8 @@ IF the problem says:
 THEN → Stack (often Monotonic)
 ```
 
-
 ### Monotonic Stack Types
+
 ```
 Monotonic INCREASING stack:     Monotonic DECREASING stack:
 Bottom → Top: small → big      Bottom → Top: big → small
@@ -62,14 +103,12 @@ Stack: [1, 3, 5, 7]            Stack: [9, 7, 4, 2]
 Push 4 → pop 7,5 → [1,3,4]    Push 6 → pop 2,4 → [9,7,6]
 ```
 
-
 ---
-
-
 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Next Greater Element
+
 ```java
 // For each element, find next greater to the right
 int[] nextGreater = new int[n];
@@ -85,6 +124,7 @@ for (int i = 0; i < n; i++) {
 ```
 
 ### Template 2: Largest Rectangle in Histogram
+
 ```java
 // Classic monotonic stack problem
 Deque<Integer> stack = new ArrayDeque<>();
@@ -102,6 +142,7 @@ for (int i = 0; i <= heights.length; i++) {
 ```
 
 ### Template 3: Stock Span / Online Processing
+
 ```java
 // Consecutive days before with price ≤ today
 Deque<int[]> stack = new ArrayDeque<>();  // [price, span]
@@ -137,19 +178,17 @@ Remaining: ans[2]=-1, ans[4]=-1, ans[5]=-1
 Result: [8, 8, -1, 5, -1, -1]
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔬 VISUAL: Monotonic Stack for Next Greater**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## � FULL WALKTHROUGH: Largest Rectangle in Histogram
 
@@ -185,11 +224,7 @@ Time: O(n) | Space: O(n)
 Trick: Add sentinel 0 at end to auto-trigger final cleanup.
 ```
 
-
 ---
-
-
-
 
 ## 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template
 
@@ -221,19 +256,17 @@ KEY: Stack stores elements waiting for their NGE.
      When a larger element arrives, it's the answer for all smaller ones on stack.
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## 🛡️ EDGE CASES
 
@@ -251,67 +284,69 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 └────────────────────────────────┴─────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Problem | Time | Space | Key Detail |
-|---------|------|-------|------------|
-| Next Greater Element | O(n) | O(n) | Each element pushed/popped once |
-| Largest Rectangle | O(n) | O(n) | Sentinel simplifies cleanup |
-| Stock Span | O(n) amortized | O(n) | Monotonic decreasing |
-| Sum of Subarray Mins | O(n) | O(n) | Contribution technique |
-| Daily Temperatures | O(n) | O(n) | Store indices, not values |
+| Problem              | Time           | Space | Key Detail                      |
+| -------------------- | -------------- | ----- | ------------------------------- |
+| Next Greater Element | O(n)           | O(n)  | Each element pushed/popped once |
+| Largest Rectangle    | O(n)           | O(n)  | Sentinel simplifies cleanup     |
+| Stock Span           | O(n) amortized | O(n)  | Monotonic decreasing            |
+| Sum of Subarray Mins | O(n)           | O(n)  | Contribution technique          |
+| Daily Temperatures   | O(n)           | O(n)  | Store indices, not values       |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
 
-
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 1 | [Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/) | — | Two stacks for amortized O(1) |
-| 2 | [Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/) | Amazon | Push expensive or pop expensive |
-| 3 | [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/) | — | Monotonic stack + HashMap |
-| 4 | [Evaluate Postfix Expression](https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/) | Salesforce | Classic stack evaluation |
-| 5 | [Implement Deque](https://www.geeksforgeeks.org/implement-stack-queue-using-deque/) | Salesforce, Microsoft | Deque supports both ends |
+
+| #   | Problem                                                                                                 | Companies             | Key Insight                     |
+| --- | ------------------------------------------------------------------------------------------------------- | --------------------- | ------------------------------- |
+| 1   | [Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/)             | —                     | Two stacks for amortized O(1)   |
+| 2   | [Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/)             | Amazon                | Push expensive or pop expensive |
+| 3   | [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/)                         | —                     | Monotonic stack + HashMap       |
+| 4   | [Evaluate Postfix Expression](https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/) | Salesforce            | Classic stack evaluation        |
+| 5   | [Implement Deque](https://www.geeksforgeeks.org/implement-stack-queue-using-deque/)                     | Salesforce, Microsoft | Deque supports both ends        |
 
 ### Medium
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 6 | [Online Stock Span](https://leetcode.com/problems/online-stock-span/) | Amazon | Monotonic decreasing + span merge |
-| 7 | [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/) | Salesforce | Monotonic stack + contribution counting |
-| 8 | [Remove All Adjacent Duplicates II](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/) | Amazon | Stack with count tracking |
-| 9 | [Rotten Oranges](https://practice.geeksforgeeks.org/problems/rotten-oranges2536/1) | Salesforce | Multi-source BFS (not stack, but queue!) |
-| 10 | [Minimum Cost Tree From Leaf Values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/) | — | Monotonic decreasing stack |
-| 11 | [Flatten Nested List Iterator](https://leetcode.com/problems/flatten-nested-list-iterator/) | — | Stack for recursive flattening |
-| 12 | [Circular Tour](https://practice.geeksforgeeks.org/problems/circular-tour/1) | — | Greedy (or stack simulation) |
+
+| #   | Problem                                                                                                         | Companies  | Key Insight                              |
+| --- | --------------------------------------------------------------------------------------------------------------- | ---------- | ---------------------------------------- |
+| 6   | [Online Stock Span](https://leetcode.com/problems/online-stock-span/)                                           | Amazon     | Monotonic decreasing + span merge        |
+| 7   | [Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/)                             | Salesforce | Monotonic stack + contribution counting  |
+| 8   | [Remove All Adjacent Duplicates II](https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/) | Amazon     | Stack with count tracking                |
+| 9   | [Rotten Oranges](https://practice.geeksforgeeks.org/problems/rotten-oranges2536/1)                              | Salesforce | Multi-source BFS (not stack, but queue!) |
+| 10  | [Minimum Cost Tree From Leaf Values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/)         | —          | Monotonic decreasing stack               |
+| 11  | [Flatten Nested List Iterator](https://leetcode.com/problems/flatten-nested-list-iterator/)                     | —          | Stack for recursive flattening           |
+| 12  | [Circular Tour](https://practice.geeksforgeeks.org/problems/circular-tour/1)                                    | —          | Greedy (or stack simulation)             |
 
 ### Hard
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 13 | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | — | Classic monotonic stack |
-| 14 | [Max of Minimums for Every Window Size](https://www.geeksforgeeks.org/find-the-maximum-of-minimums-for-every-window-size-in-a-given-array/) | Salesforce, Microsoft | Monotonic stack + fill technique |
-| 15 | [LRU Cache](https://www.geeksforgeeks.org/lru-cache-implementation/) | Microsoft | HashMap + Doubly Linked List |
-| 16 | [The Celebrity Problem](http://geeksforgeeks.org/the-celebrity-problem/) | — | Stack elimination |
+
+| #   | Problem                                                                                                                                     | Companies             | Key Insight                      |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------- |
+| 13  | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/)                                             | —                     | Classic monotonic stack          |
+| 14  | [Max of Minimums for Every Window Size](https://www.geeksforgeeks.org/find-the-maximum-of-minimums-for-every-window-size-in-a-given-array/) | Salesforce, Microsoft | Monotonic stack + fill technique |
+| 15  | [LRU Cache](https://www.geeksforgeeks.org/lru-cache-implementation/)                                                                        | Microsoft             | HashMap + Doubly Linked List     |
+| 16  | [The Celebrity Problem](http://geeksforgeeks.org/the-celebrity-problem/)                                                                    | —                     | Stack elimination                |
 
 ### Additional — Stacks & Queues from Excel
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 17 | [Distance of Nearest Cell Having 1](https://practice.geeksforgeeks.org/problems/distance-of-nearest-cell-having-1-1587115620/1) | Multi-source BFS |
-| 18 | [Implement Two Stacks in Array](https://www.geeksforgeeks.org/implement-two-stacks-in-an-array/) | Start from opposite ends |
-| 19 | Sum of min-max elements of subarrays of size k | Monotonic deque |
-| 20 | Efficiently implement k-queues in single array | Array segmentation |
+
+| #   | Problem                                                                                                                         | Key Insight              |
+| --- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| 17  | [Distance of Nearest Cell Having 1](https://practice.geeksforgeeks.org/problems/distance-of-nearest-cell-having-1-1587115620/1) | Multi-source BFS         |
+| 18  | [Implement Two Stacks in Array](https://www.geeksforgeeks.org/implement-two-stacks-in-an-array/)                                | Start from opposite ends |
+| 19  | Sum of min-max elements of subarrays of size k                                                                                  | Monotonic deque          |
+| 20  | Efficiently implement k-queues in single array                                                                                  | Array segmentation       |
 
 ---
 
@@ -331,15 +366,18 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 "The brute force checks every element to the right for each position — O(n²). A monotonic stack solves it in O(n) because each element is pushed once and popped at most once. When a new element is larger than the stack top, it's the 'next greater' for all smaller elements on the stack — we pop and record answers. Total operations: at most n pushes + n pops = O(n)."
 
 **Key mathematical justification:**
+
 - "It looks O(n²) due to the inner while-loop, but each element participates in at most 2 operations (push + pop) across the entire run. Amortized O(1) per element."
 - "The invariant is: the stack always contains elements that are still waiting for their 'next greater' answer, in decreasing order."
 
 **Common mistakes to proactively mention:**
+
 - ❌ "Use `ArrayDeque` not `Stack` class — Stack is legacy, synchronized, and slower."
 - ❌ "For histogram problems, add a sentinel value (height 0) at the end to flush remaining stack elements."
 - ❌ "Increasing stack finds next SMALLER; decreasing finds next GREATER — draw it out to be sure."
 
 **Real-world applications:**
+
 - Stock span problem (how many consecutive days was the price ≤ today's price)
 - Temperature monitoring systems (days until warmer weather)
 - Expression parsing in compilers (operator precedence)
@@ -348,10 +386,10 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 ---
 
 📖 **Related Chapters:**
+
 - [02_Data_Structures/01d_Stack_Queue.md](../02_Data_Structures/01d_Stack_Queue.md) — Stack/Queue fundamentals
 - [03_Algorithms/15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md) — Deep dive
 
 ---
+
 [← 10 HashMap+Counting](10_HashMap_Plus_Counting.md) | [12 LinkedList+TwoPointers →](12_LinkedList_Plus_TwoPointers.md)
-
-

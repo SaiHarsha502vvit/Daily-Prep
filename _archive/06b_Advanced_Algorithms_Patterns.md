@@ -2088,64 +2088,64 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ## Section 1: Greedy Algorithms
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Jump Game (LC 55) | LeetCode | Medium | Track farthest reachable |
-| 2 | Jump Game II (LC 45) | LeetCode | Medium | Greedy BFS-style levels |
-| 3 | Gas Station (LC 134) | LeetCode | Medium | If total >= 0, solution exists |
-| 4 | Task Scheduler (LC 621) | LeetCode | Medium | Most frequent first + idle slots |
-| 5 | Non-overlapping Intervals (LC 435) | LeetCode | Medium | Sort by end, count kept |
-| 6 | Merge Intervals (LC 56) | LeetCode | Medium | Sort by start, merge overlapping |
-| 7 | Meeting Rooms II (LC 253) | LeetCode | Medium | Min heap for end times |
-| 8 | Partition Labels (LC 763) | LeetCode | Medium | Last occurrence of each char |
-| 9 | Minimum Number of Arrows (LC 452) | LeetCode | Medium | Interval scheduling |
-| 10 | Candy (LC 135) | LeetCode | Hard | Two-pass left-to-right, right-to-left |
+| #   | Problem                            | Platform | Difficulty | Key Technique                         |
+| --- | ---------------------------------- | -------- | ---------- | ------------------------------------- |
+| 1   | Jump Game (LC 55)                  | LeetCode | Medium     | Track farthest reachable              |
+| 2   | Jump Game II (LC 45)               | LeetCode | Medium     | Greedy BFS-style levels               |
+| 3   | Gas Station (LC 134)               | LeetCode | Medium     | If total >= 0, solution exists        |
+| 4   | Task Scheduler (LC 621)            | LeetCode | Medium     | Most frequent first + idle slots      |
+| 5   | Non-overlapping Intervals (LC 435) | LeetCode | Medium     | Sort by end, count kept               |
+| 6   | Merge Intervals (LC 56)            | LeetCode | Medium     | Sort by start, merge overlapping      |
+| 7   | Meeting Rooms II (LC 253)          | LeetCode | Medium     | Min heap for end times                |
+| 8   | Partition Labels (LC 763)          | LeetCode | Medium     | Last occurrence of each char          |
+| 9   | Minimum Number of Arrows (LC 452)  | LeetCode | Medium     | Interval scheduling                   |
+| 10  | Candy (LC 135)                     | LeetCode | Hard       | Two-pass left-to-right, right-to-left |
 
 ---
 
 ## Section 2: Bit Manipulation
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Single Number (LC 136) | LeetCode | Easy | XOR all elements |
-| 2 | Number of 1 Bits (LC 191) | LeetCode | Easy | n & (n-1) clears last set bit |
-| 3 | Counting Bits (LC 338) | LeetCode | Easy | dp[i] = dp[i>>1] + (i&1) |
-| 4 | Missing Number (LC 268) | LeetCode | Easy | XOR with indices |
-| 5 | Reverse Bits (LC 190) | LeetCode | Easy | Shift and build result |
-| 6 | Single Number II (LC 137) | LeetCode | Medium | Count bits mod 3 |
-| 7 | Single Number III (LC 260) | LeetCode | Medium | XOR + rightmost set bit split |
-| 8 | Subsets (LC 78) | LeetCode | Medium | Bitmask 0 to 2^n-1 |
-| 9 | Maximum XOR of Two Numbers (LC 421) | LeetCode | Medium | Trie on binary representation |
-| 10 | Minimum Flips to Make a OR b Equal to c (LC 1318) | LeetCode | Medium | Bit-by-bit analysis |
+| #   | Problem                                           | Platform | Difficulty | Key Technique                 |
+| --- | ------------------------------------------------- | -------- | ---------- | ----------------------------- |
+| 1   | Single Number (LC 136)                            | LeetCode | Easy       | XOR all elements              |
+| 2   | Number of 1 Bits (LC 191)                         | LeetCode | Easy       | n & (n-1) clears last set bit |
+| 3   | Counting Bits (LC 338)                            | LeetCode | Easy       | dp[i] = dp[i>>1] + (i&1)      |
+| 4   | Missing Number (LC 268)                           | LeetCode | Easy       | XOR with indices              |
+| 5   | Reverse Bits (LC 190)                             | LeetCode | Easy       | Shift and build result        |
+| 6   | Single Number II (LC 137)                         | LeetCode | Medium     | Count bits mod 3              |
+| 7   | Single Number III (LC 260)                        | LeetCode | Medium     | XOR + rightmost set bit split |
+| 8   | Subsets (LC 78)                                   | LeetCode | Medium     | Bitmask 0 to 2^n-1            |
+| 9   | Maximum XOR of Two Numbers (LC 421)               | LeetCode | Medium     | Trie on binary representation |
+| 10  | Minimum Flips to Make a OR b Equal to c (LC 1318) | LeetCode | Medium     | Bit-by-bit analysis           |
 
 ---
 
 ## Section 3: String Algorithms
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Longest Common Prefix (LC 14) | LeetCode | Easy | Vertical scan or binary search |
-| 2 | Implement strStr() / KMP (LC 28) | LeetCode | Easy | KMP failure function |
-| 3 | Longest Palindromic Substring (LC 5) | LeetCode | Medium | Expand around center or Manacher |
-| 4 | Longest Palindromic Subsequence (LC 516) | LeetCode | Medium | 2D DP |
-| 5 | Edit Distance (LC 72) | LeetCode | Medium | Classic 2D DP |
-| 6 | Wildcard Matching (LC 44) | LeetCode | Hard | DP or greedy with backtrack |
-| 7 | Regular Expression Matching (LC 10) | LeetCode | Hard | DP with * handling |
-| 8 | Shortest Palindrome (LC 214) | LeetCode | Hard | KMP on s + "#" + reverse(s) |
-| 9 | Repeated Substring Pattern (LC 459) | LeetCode | Easy | KMP failure function insight |
-| 10 | Minimum Window Substring (LC 76) | LeetCode | Hard | Sliding window + freq map |
+| #   | Problem                                  | Platform | Difficulty | Key Technique                    |
+| --- | ---------------------------------------- | -------- | ---------- | -------------------------------- |
+| 1   | Longest Common Prefix (LC 14)            | LeetCode | Easy       | Vertical scan or binary search   |
+| 2   | Implement strStr() / KMP (LC 28)         | LeetCode | Easy       | KMP failure function             |
+| 3   | Longest Palindromic Substring (LC 5)     | LeetCode | Medium     | Expand around center or Manacher |
+| 4   | Longest Palindromic Subsequence (LC 516) | LeetCode | Medium     | 2D DP                            |
+| 5   | Edit Distance (LC 72)                    | LeetCode | Medium     | Classic 2D DP                    |
+| 6   | Wildcard Matching (LC 44)                | LeetCode | Hard       | DP or greedy with backtrack      |
+| 7   | Regular Expression Matching (LC 10)      | LeetCode | Hard       | DP with \* handling              |
+| 8   | Shortest Palindrome (LC 214)             | LeetCode | Hard       | KMP on s + "#" + reverse(s)      |
+| 9   | Repeated Substring Pattern (LC 459)      | LeetCode | Easy       | KMP failure function insight     |
+| 10  | Minimum Window Substring (LC 76)         | LeetCode | Hard       | Sliding window + freq map        |
 
 ---
 
 ## HIDDEN GEMS — Advanced
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Maximum Product of Word Lengths (LC 318) | LeetCode | Bitmask for character sets |
-| 2 | Wiggle Sort II (LC 324) | LeetCode | Median + 3-way partition |
-| 3 | Queue Reconstruction by Height (LC 406) | LeetCode | Sort desc height, insert by k |
-| 4 | UTF-8 Validation (LC 393) | LeetCode | Bit manipulation for encoding |
-| 5 | Gray Code (LC 89) | LeetCode | i XOR (i >> 1) — elegant bit pattern |
-| 6 | Circular Array Loop (LC 457) | LeetCode | Slow/fast pointer on circular |
+| #   | Problem                                  | Platform | Why It's Valuable                    |
+| --- | ---------------------------------------- | -------- | ------------------------------------ |
+| 1   | Maximum Product of Word Lengths (LC 318) | LeetCode | Bitmask for character sets           |
+| 2   | Wiggle Sort II (LC 324)                  | LeetCode | Median + 3-way partition             |
+| 3   | Queue Reconstruction by Height (LC 406)  | LeetCode | Sort desc height, insert by k        |
+| 4   | UTF-8 Validation (LC 393)                | LeetCode | Bit manipulation for encoding        |
+| 5   | Gray Code (LC 89)                        | LeetCode | i XOR (i >> 1) — elegant bit pattern |
+| 6   | Circular Array Loop (LC 457)             | LeetCode | Slow/fast pointer on circular        |
 
 ---

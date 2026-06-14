@@ -15,7 +15,6 @@
 **LeetCode 205** | **Difficulty:** Easy
 🔗 [https://leetcode.com/problems/isomorphic-strings/](https://leetcode.com/problems/isomorphic-strings/)
 
-
 > ISOMORPHIC STRINGS
 >
 > Two strings are isomorphic if characters in s can be replaced to get t.
@@ -38,8 +37,6 @@
 > Input: s = "badc", t = "baba"
 > Output: false
 > Explanation: d and c both map to 'a' - not allowed
->
-
 
 ```java
 public boolean isIsomorphic(String s, String t) {
@@ -116,7 +113,6 @@ public boolean isIsomorphicMap(String s, String t) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean wordPattern(String pattern, String s) {
@@ -197,7 +193,6 @@ public boolean wordPattern(String pattern, String s) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean wordPatternMatch(String pattern, String s) {
@@ -289,7 +284,6 @@ private boolean backtrack(String pattern, int pIdx, String s, int sIdx,
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<List<String>> groupIsomorphic(String[] words) {
     Map<String, List<String>> groups = new HashMap<>();
@@ -321,17 +315,14 @@ private String getPattern(String s) {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 🎨 2.1 Isomorphic & Pattern Matching**
 
 **Challenge 1 (Reasoning):** The `groupIsomorphic` solution uses `getPattern()` to map "egg" → "011". But this creates a subtle bug for inputs like `["ab", "cd", "ba"]`. Why are "ab" and "ba" NOT isomorphic to each other, yet both map to pattern "01"?
+
 <details><summary>Answer</summary>
 
-They ARE both isomorphic to the same abstract pattern "01" (two distinct characters in order), so they SHOULD be grouped together — and they are! The pattern "01" means "first char is class 0, second char is class 1." Both "ab" (a→0, b→1) and "ba" (b→0, a→1) produce "01." The confusion arises because people think isomorphism requires the *same mapping* — but it only requires *a valid bijection exists*. For "ab"→"ba": map a→b, b→a. Valid! The `getPattern` approach works precisely because it abstracts away the actual characters and captures only the *structure* of the string.
+They ARE both isomorphic to the same abstract pattern "01" (two distinct characters in order), so they SHOULD be grouped together — and they are! The pattern "01" means "first char is class 0, second char is class 1." Both "ab" (a→0, b→1) and "ba" (b→0, a→1) produce "01." The confusion arises because people think isomorphism requires the _same mapping_ — but it only requires _a valid bijection exists_. For "ab"→"ba": map a→b, b→a. Valid! The `getPattern` approach works precisely because it abstracts away the actual characters and captures only the _structure_ of the string.
+
 </details>
 
 ## 🧩 2.2 Anagram Problems
@@ -357,7 +348,6 @@ They ARE both isomorphic to the same abstract pattern "01" (two distinct charact
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean isAnagram(String s, String t) {
@@ -402,7 +392,6 @@ public boolean isAnagram(String s, String t) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public List<Integer> findAnagrams(String s, String p) {
@@ -489,7 +478,6 @@ public List<Integer> findAnagrams(String s, String p) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public boolean isStrobogrammatic(String num) {
     Map<Character, Character> map = new HashMap<>();
@@ -558,7 +546,6 @@ public boolean isStrobogrammatic(String num) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public List<String> findStrobogrammatic(int n) {
     return helper(n, n);
@@ -612,7 +599,6 @@ private List<String> helper(int n, int finalLength) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public boolean validPalindrome(String s) {
@@ -688,7 +674,6 @@ private boolean isPalindrome(String s, int left, int right) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public boolean canPermutePalindrome(String s) {
     int[] count = new int[26];
@@ -726,13 +711,30 @@ public boolean canPermutePalindromeSet(String s) {
 
 > **Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
 
+---
 
+### Historical Evolution
 
+**String algorithms** originated with the Knuth-Morris-Pratt algorithm (1977, Donald Knuth, Vaughan Pratt, and James Morris) who solved the substring search problem in O(N+M) time by preprocessing a failure function that enables constant-time longest prefix-suffix matches. The technique was refined by the Rabin-Karp algorithm (1987, Richard Karp and Michael Rabin) who introduced rolling hash-based searching, enabling efficient multi-pattern matching through hash comparisons—a breakthrough for plagiarism detection systems. Gusfield's Z-algorithm (published in his 1997 book "Strings, Sequences, and Streams") provided an alternative linear-time solution by computing Z-values that measure prefix matches, while Manacher's algorithm (1975, Glenn Manacher) discovered how to find longest palindromes in O(N) time by processing palindromes centered between characters rather than at characters. Modern practice anchors this work in bioinformatics applications (DNA sequence alignment using suffix arrays and KMP variants since the Human Genome Project, 1990-2003), plagiarism detection (Turnitin and similar systems using Rabin-Karp fingerprints since 1998), and search engine indexing (inverted indices built on string processing foundations).
 
-> 🔬 **Section Challenge — 🧩 2.3 Palindrome Problems**
-
-**Challenge 1 (Reasoning):** For "Longest Palindromic Substring" (LC 5), expand-around-center is O(N²) and DP is also O(N²). Why do most competitive programmers prefer expand-around-center despite identical Big-O?
 <details><summary>Answer</summary>
 
 Both are O(N²) in time, but expand-around-center uses **O(1) space** while DP uses **O(N²) space** for the dp[i][j] table. In practice, the constant factor matters enormously: expand-around-center accesses contiguous memory (expanding outward from a center), giving excellent cache locality. DP fills a 2D table with non-sequential access patterns (diagonal fills), causing cache misses. For N=1000, DP allocates a 1M boolean table; expand uses two integer pointers. Both are O(N²) comparisons, but expand is ~2-3× faster in practice. **Manacher's algorithm** beats both at O(N) time, O(N) space — but is rarely expected in interviews due to its complexity.
+
 </details>
+
+---
+
+### Production Reality
+
+**String** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Integer overflow in reverse operations.** LeetCode 7 (Reverse Integer) silently returns 0 for inputs like 1534236469 because reversing produces 9646324351, which exceeds Integer.MAX_VALUE (2147483647). In production, a payment system reversing transaction amounts could lose thousands of dollars if overflow is unchecked. Java's `Integer.parseInt` throws NumberFormatException; returning 0 silently is more dangerous. Production impact: incorrect financial calculations, regulatory compliance failures, potential legal liability.
+
+**Failure mode 2: Quadratic time from string concatenation in loops.** Using `s += c` in a tight loop creates a new String object each iteration (Strings are immutable in Java). For n=100000 characters, this causes O(n²) memory allocations and copies, leading to 5-10 second execution times. A logging system appending characters line-by-line degrades from O(n) to O(n²), causing timeouts. Production impact: request timeouts, thread pool exhaustion, cascading failures in high-throughput systems.
+
+**Failure mode 3: Reference equality vs value equality.** Using `==` to compare Strings compares references, not content. After `String a = new String("test")` and `String b = new String("test")`, `a == b` is false even though `a.equals(b)` is true. This causes authentication failures, cache misses, and incorrect conditional logic in production. Production impact: login failures, data mismatches, unpredictable business logic.
+
+**Debug workflow:** 1. Pre-check overflow before multiplication: `if (x > Integer.MAX_VALUE / 10) return 0`. 2. Use `StringBuilder` for string concatenation in loops—reserve capacity with `new StringBuilder(n)`. 3. Always use `.equals()` for String comparison; use `==` only for interned Strings or when reference equality is intentional. 4. Profile hot loops with `JMH` or visualvm to catch hidden O(n²) behavior. 5. Test with maximum-length inputs (e.g., 100K chars).
+
+**Real-world anchor:** The 2017 Cloudbleed security vulnerability in Cloudflare occurred partly due to string buffer handling issues—when buffers weren't properly managed, sensitive data leaked from memory. Improper string handling in parsing logic caused buffer over-reads, exposing encrypted traffic. This parallels the quadratic concatenation bug and string comparison failures in competitive programming.

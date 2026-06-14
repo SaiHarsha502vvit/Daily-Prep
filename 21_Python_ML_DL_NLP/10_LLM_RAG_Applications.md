@@ -10,14 +10,14 @@ _"A language model without retrieval is a student taking an exam from memory. A 
 
 **Mental Model:** This guide builds PROGRESSIVELY. Each PART depends on the previous one. Don't skip ahead — each concept is a building block for the next. Think of it as a university course: Lecture 1 → 2 → 3 → ... → Final Project (RAG system).
 
-| Question | LLMs & RAG Context |
-| :--- | :--- |
-| **WHAT** | Large Language Models (LLMs) are neural networks trained to predict text. RAG (Retrieval-Augmented Generation) enhances LLMs by giving them access to external knowledge at inference time — like giving a student an open book during an exam. |
-| **WHY** | LLMs "hallucinate" — they generate plausible-sounding but factually wrong text. RAG grounds responses in real documents, reducing hallucinations and enabling domain-specific knowledge without expensive retraining. |
-| **WHEN** | When you need: factual accuracy over knowledge bases, domain-specific Q&A (legal, medical, internal docs), real-time information (LLM training data has a cutoff date), or attribution/citation of sources. |
-| **WHERE** | Enterprise search (Glean, Notion AI), customer support (chatbots over FAQs), research assistants (Perplexity AI), code assistants (GitHub Copilot), healthcare (clinical decision support). |
-| **WHO** | LLMs: OpenAI (GPT), Google (Gemini), Meta (LLaMA), Anthropic (Claude). RAG: Lewis et al. (2020, Facebook AI Research — coined "RAG"), LangChain (framework), LlamaIndex (framework). |
-| **HOW** | Query → **Retrieve** relevant documents from a knowledge base → **Augment** the LLM prompt with retrieved context → **Generate** a grounded response. Each step has deep engineering. |
+| Question  | LLMs & RAG Context                                                                                                                                                                                                                              |
+| :-------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | Large Language Models (LLMs) are neural networks trained to predict text. RAG (Retrieval-Augmented Generation) enhances LLMs by giving them access to external knowledge at inference time — like giving a student an open book during an exam. |
+| **WHY**   | LLMs "hallucinate" — they generate plausible-sounding but factually wrong text. RAG grounds responses in real documents, reducing hallucinations and enabling domain-specific knowledge without expensive retraining.                           |
+| **WHEN**  | When you need: factual accuracy over knowledge bases, domain-specific Q&A (legal, medical, internal docs), real-time information (LLM training data has a cutoff date), or attribution/citation of sources.                                     |
+| **WHERE** | Enterprise search (Glean, Notion AI), customer support (chatbots over FAQs), research assistants (Perplexity AI), code assistants (GitHub Copilot), healthcare (clinical decision support).                                                     |
+| **WHO**   | LLMs: OpenAI (GPT), Google (Gemini), Meta (LLaMA), Anthropic (Claude). RAG: Lewis et al. (2020, Facebook AI Research — coined "RAG"), LangChain (framework), LlamaIndex (framework).                                                            |
+| **HOW**   | Query → **Retrieve** relevant documents from a knowledge base → **Augment** the LLM prompt with retrieved context → **Generate** a grounded response. Each step has deep engineering.                                                           |
 
 ---
 
@@ -68,13 +68,13 @@ BYTE-PAIR ENCODING (BPE) — How Tokenizers Are Built:
   2. Count ALL adjacent character pairs in corpus
   3. Merge MOST FREQUENT pair into a new token
   4. Repeat 50,000 times (for GPT-2 vocabulary)
-  
+
   Example progression:
   Start:  t-h-e → "t", "h", "e"
   Merge:  "th" (most common pair)
   Merge:  "the" (most common pair with "th")
   Result: "the" is a SINGLE token!
-  
+
   Rare words get split: "unforgettable" → ["un", "forget", "table"]
   The model understands subwords even for words it's never seen!
 
@@ -99,10 +99,10 @@ GREEDY DECODING:
   Always pick the HIGHEST probability token.
   ✅ Deterministic, fast
   ❌ Boring, repetitive ("the the the the...")
-  
+
 TEMPERATURE SAMPLING:
   P'(token) = softmax(logits / T)
-  
+
   T = 1.0:  original distribution (balanced)
   T = 0.1:  sharper distribution → more confident → less creative
   T = 2.0:  flatter distribution → more random → more creative
@@ -117,7 +117,7 @@ TOP-K SAMPLING:
 TOP-P (NUCLEUS) SAMPLING:
   Sample from the smallest set of tokens whose cumulative probability ≥ p.
   p=0.9: consider tokens until their probabilities sum to 0.9
-  
+
   Adapts K automatically:
   If model is confident (one dominant token) → small set
   If model is uncertain (flat distribution) → larger set
@@ -130,9 +130,6 @@ BEAM SEARCH:
 ```
 
 ---
-
-
-
 
 # PART 2: Embeddings at Scale — The Foundation of Retrieval
 
@@ -156,24 +153,24 @@ CONTEXTUAL EMBEDDINGS (BERT):
 
 SENTENCE EMBEDDINGS:
   Map an ENTIRE sentence/paragraph to a single vector.
-  
+
   "How do I reset my password?"  → [0.23, -0.45, 0.67, ...]
   "I forgot my login credentials" → [0.21, -0.43, 0.65, ...]
-  
+
   These two vectors are CLOSE in embedding space (similar meaning)
   even though they share almost no words!
-  
+
   HOW: Use a BERT-like model, take the [CLS] token embedding,
   or mean-pool all token embeddings as the sentence vector.
 
 SENTENCE-BERT (SBERT, 2019):
   Fine-tune BERT with CONTRASTIVE LEARNING:
-  
+
   Training data: (sentence_A, sentence_B, is_similar?)
   Loss: push similar pairs CLOSE, dissimilar pairs APART
-  
+
   Contrastive loss = -log(exp(sim(A,B)/τ) / Σ exp(sim(A,neg)/τ))
-  
+
   τ (temperature) controls how peaked the distribution is.
   This is the InfoNCE loss used everywhere in modern ML.
 
@@ -184,9 +181,6 @@ MODERN EMBEDDING MODELS:
   Cohere embed-v3: 1024 dimensions, multi-lingual
 ```
 
-
-
-
 ## 2.2 Vector Similarity Search
 
 ```
@@ -194,7 +188,7 @@ GIVEN a query embedding, find the K most similar documents.
 
 BRUTE FORCE: compute cosine similarity with ALL documents.
   cos(q, d) = q · d / (‖q‖ · ‖d‖)
-  
+
   For 1M documents of 768 dimensions:
   1M × 768 float32 = ~3 GB (fits in memory!)
   But 1M dot products per query → ~10ms (fast enough for many cases)
@@ -283,19 +277,19 @@ THE PROBLEM WITH PURE LLMs:
 
 1. HALLUCINATION: LLMs generate plausible bullshit with confidence.
    "The Eiffel Tower was built in 1887 by Thomas Edison" ← wrong!
-   
+
 2. KNOWLEDGE CUTOFF: GPT-4 doesn't know events after its training date.
    "Who won the 2025 World Cup?" → "I don't have that information."
-   
+
 3. NO DOMAIN KNOWLEDGE: LLMs don't know YOUR company's internal docs.
    "What is our refund policy?" → generic answer, not YOUR policy.
-   
+
 4. NO ATTRIBUTION: LLMs can't cite sources. You can't verify claims.
 
 THE RAG SOLUTION:
   DON'T train the model on your data. Instead:
   RETRIEVE relevant documents → PASTE them into the prompt → GENERATE from context.
-  
+
   This is like giving a student the textbook during the exam instead of
   trying to make them memorize the entire textbook.
 ```
@@ -307,7 +301,7 @@ THE THREE STAGES:
 
 STAGE 1 — INDEXING (offline, one-time):
   Raw documents → Split into chunks → Embed each chunk → Store in vector DB
-  
+
   Document: "Python Guide (500 pages)"
   ↓ Chunking
   ["Python was created by...", "List comprehensions are...", "Decorators in Python..."]
@@ -318,7 +312,7 @@ STAGE 1 — INDEXING (offline, one-time):
 
 STAGE 2 — RETRIEVAL (at query time):
   User query → Embed query → Search vector DB → Return top-K chunks
-  
+
   Query: "How do decorators work in Python?"
   ↓ Embed
   [0.76, -0.15, ...]
@@ -327,33 +321,30 @@ STAGE 2 — RETRIEVAL (at query time):
 
 STAGE 3 — GENERATION (at query time):
   Construct prompt: system_message + retrieved_chunks + user_query → LLM → response
-  
+
   prompt = f"""
   You are a helpful assistant. Answer ONLY from the provided context.
   If the context doesn't contain the answer, say "I don't know."
-  
+
   Context:
   {chunk_47}
   {chunk_23}
   {chunk_89}
-  
+
   Question: How do decorators work in Python?
   """
-  
+
   LLM generates response GROUNDED in the retrieved chunks.
   → Can cite sources! → Drastically reduces hallucination!
 ```
-
-
-
 
 ## 3.3 Chunking Strategies — The Most Underrated Step
 
 ```
 WHY CHUNKING MATTERS:
-  Chunks too LARGE: embed the meaning of 10 different topics → 
+  Chunks too LARGE: embed the meaning of 10 different topics →
     vector is a blur → poor retrieval precision
-  Chunks too SMALL: lose context → 
+  Chunks too SMALL: lose context →
     "it refers to the algorithm" — WHAT algorithm? Lost!
 
 CHUNKING METHODS:
@@ -385,12 +376,9 @@ CHUNK SIZE GUIDELINES:
   128-256 tokens:  high precision, may lose context
   256-512 tokens:  good balance (most popular)
   512-1024 tokens: more context, less precision
-  
+
   OVERLAP: 10-20% of chunk size prevents losing info at boundaries
 ```
-
-
-
 
 ## 3.4 Advanced Retrieval Techniques
 
@@ -424,7 +412,7 @@ SOLUTION: RERANKING
   Use a cross-encoder model to RE-SCORE each (query, chunk) pair.
   Cross-encoder is more accurate than bi-encoder but slower.
   Return top-5 after reranking.
-  
+
   Bi-encoder: embed query and doc separately → fast, but less accurate
   Cross-encoder: embed (query + doc) together → slow, but very accurate
 ```
@@ -459,9 +447,6 @@ HUMAN EVALUATION:
 
 ---
 
-
-
-
 # PART 4: Production RAG Patterns
 
 ---
@@ -472,13 +457,13 @@ PATTERN 1 — CONVERSATIONAL RAG:
   User: "Tell me about Python decorators"
   AI: "Python decorators are..."
   User: "How are they different from Java annotations?"
-  
+
   Standalone query: "How are Python decorators different from Java annotations?"
   (LLM rewrites the query to be self-contained before retrieval)
 
 PATTERN 2 — AGENTIC RAG:
   LLM decides WHEN to retrieve, WHAT to search for, and WHETHER to search again.
-  
+
   Query: "Compare React and Vue performance"
   Agent: "I need to search for React performance AND Vue performance"
   → Search 1: "React rendering performance benchmarks"
@@ -487,10 +472,10 @@ PATTERN 2 — AGENTIC RAG:
 
 PATTERN 3 — MULTI-INDEX RAG:
   Different knowledge bases for different types of information.
-  
+
   Query: "What's our Q3 revenue forecast?"
   → Route to: [financial_docs_index] (not [engineering_docs_index])
-  
+
   Query: "How do I deploy to production?"
   → Route to: [engineering_docs_index]
 
@@ -504,13 +489,12 @@ PATTERN 4 — CORRECTIVE RAG (CRAG):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Transformer architecture | [Deep Learning](07_Deep_Learning_Fundamentals.md) |
-| Word embeddings, Seq2Seq, Attention | [NLP Complete](08_NLP_Complete.md) |
-| Cosine similarity math | [Math for ML](04_Math_For_ML.md) |
-| PyTorch / TensorFlow | [Frameworks](09_Frameworks_PyTorch_TF.md) |
-| Trie (tokenization) | [Advanced DS](../03_Algorithms/07a_Advanced_DS_Core.md) |
-| HashTable (embedding lookup) | [HashTable DS](../02_Data_Structures/01e_HashTable.md) |
-| System design (scaling RAG) | [System Design Internals](../20_Interview_Mastery/06c_System_Design_Internals.md) |
-
+| Topic                               | Related Content                                                                   |
+| ----------------------------------- | --------------------------------------------------------------------------------- |
+| Transformer architecture            | [Deep Learning](07_Deep_Learning_Fundamentals.md)                                 |
+| Word embeddings, Seq2Seq, Attention | [NLP Complete](08_NLP_Complete.md)                                                |
+| Cosine similarity math              | [Math for ML](04_Math_For_ML.md)                                                  |
+| PyTorch / TensorFlow                | [Frameworks](09_Frameworks_PyTorch_TF.md)                                         |
+| Trie (tokenization)                 | [Advanced DS](../03_Algorithms/07a_Advanced_DS_Core.md)                           |
+| HashTable (embedding lookup)        | [HashTable DS](../02_Data_Structures/01e_HashTable.md)                            |
+| System design (scaling RAG)         | [System Design Internals](../20_Interview_Mastery/06c_System_Design_Internals.md) |

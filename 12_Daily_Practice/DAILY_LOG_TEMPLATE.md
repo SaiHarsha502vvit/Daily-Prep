@@ -1,4 +1,5 @@
 # 📋 Daily Practice Log Template
+
 ## Use this every study day — even if you only studied 20 minutes
 
 > **Copy this file to:** `12_Daily_Practice/Week_XX/Day_YY_YYYY-MM-DD.md`  
@@ -8,10 +9,10 @@
 
 ## 🗓️ Log — [DATE]
 
-**Time spent:** _____ min  
-**Semester/Week/Day:** S__ W__ D__  
-**Current module:** ___________________  
-**Current project:** ___________________
+**Time spent:** **\_** min  
+**Semester/Week/Day:** S** W** D**  
+**Current module:** ********\_**********  
+**Current project:** ********\_\_\_********
 
 ---
 
@@ -19,9 +20,9 @@
 
 > List the specific topics, pages, or sections you covered. Be precise — "OOP" is not specific enough. "Strategy Pattern — GoF, applied to PaymentProcessor" is.
 
-- 
-- 
-- 
+-
+-
+-
 
 ---
 
@@ -46,9 +47,9 @@
 
 ## 📝 Problem Sets / Exercises Attempted
 
-| Problem | Result | Time |
-|---|---|---|
-| | ✅ Solved / ❌ Stuck / 🟡 Partial | |
+| Problem | Result                            | Time |
+| ------- | --------------------------------- | ---- |
+|         | ✅ Solved / ❌ Stuck / 🟡 Partial |      |
 
 ---
 
@@ -57,8 +58,8 @@
 > Every mistake is a learning signal. Don't skip this section.
 
 | Mistake | Root Cause | What I'll Do Differently |
-|---|---|---|
-| | | |
+| ------- | ---------- | ------------------------ |
+|         |            |                          |
 
 ---
 
@@ -78,9 +79,9 @@
 
 > Be specific. "Study Java" is not a plan. "Complete JAVA-PS2 A2 (flatMap vs map)" is a plan.
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ---
 
@@ -91,4 +92,4 @@
 
 ---
 
-*Remember: A bad 30-minute session is better than a perfect 0-minute session.*
+_Remember: A bad 30-minute session is better than a perfect 0-minute session._

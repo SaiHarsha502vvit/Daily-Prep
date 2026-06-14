@@ -20,13 +20,13 @@ The answer is not magic. You rewrite the slow part of brute force using the corr
 
 Before thinking about code, extract five facts.
 
-| Question | Why It Matters |
-|----------|----------------|
-| What is the input shape? | array, string, tree, graph, matrix, intervals, numbers |
-| What is being asked? | find, count, maximize, minimize, check, generate |
-| What are the constraints? | decides allowed complexity |
+| Question                       | Why It Matters                                           |
+| ------------------------------ | -------------------------------------------------------- |
+| What is the input shape?       | array, string, tree, graph, matrix, intervals, numbers   |
+| What is being asked?           | find, count, maximize, minimize, check, generate         |
+| What are the constraints?      | decides allowed complexity                               |
 | Are there special value rules? | sorted, positive, negative, duplicates, unique, weighted |
-| Are there updates/queries? | decides static precompute vs dynamic DS |
+| Are there updates/queries?     | decides static precompute vs dynamic DS                  |
 
 ## The One-Sentence Rewrite
 
@@ -50,31 +50,31 @@ Use this two-axis classifier.
 
 ## Axis 1: Input Shape
 
-| Input Shape | First Suspects |
-|-------------|----------------|
-| array/string | two pointers, sliding window, prefix, hashmap, stack |
-| sorted array | binary search, two pointers |
-| linked list | fast/slow pointers, reversal, dummy node |
-| tree | DFS, BFS, recursion, LCA, Euler Tour |
-| graph/grid | BFS, DFS, Dijkstra, topological sort, DSU |
-| intervals | sort, merge, sweep line, heap |
-| numbers/math | gcd, modulo, combinatorics, binary search answer |
-| stream | heap, hashmap, monotonic queue, sketches |
-| many range queries | prefix, Fenwick, segment tree, sparse table |
+| Input Shape        | First Suspects                                       |
+| ------------------ | ---------------------------------------------------- |
+| array/string       | two pointers, sliding window, prefix, hashmap, stack |
+| sorted array       | binary search, two pointers                          |
+| linked list        | fast/slow pointers, reversal, dummy node             |
+| tree               | DFS, BFS, recursion, LCA, Euler Tour                 |
+| graph/grid         | BFS, DFS, Dijkstra, topological sort, DSU            |
+| intervals          | sort, merge, sweep line, heap                        |
+| numbers/math       | gcd, modulo, combinatorics, binary search answer     |
+| stream             | heap, hashmap, monotonic queue, sketches             |
+| many range queries | prefix, Fenwick, segment tree, sparse table          |
 
 ## Axis 2: Asked Operation
 
-| Asked Operation | First Suspects |
-|-----------------|----------------|
-| existence | set/hashmap, binary search, graph reachability |
-| count | hashmap frequency, prefix, DP, combinatorics |
-| min/max | heap, greedy, DP, binary search answer |
-| shortest | BFS/Dijkstra/Bellman-Ford |
-| all ways / generate | backtracking, recursion, DP |
-| kth/top K | heap, quickselect, binary search, TreeMap |
-| range aggregate | prefix/Fenwick/segment/sparse |
-| dependencies/order | topological sort |
-| connectivity | DFS/BFS/DSU |
+| Asked Operation     | First Suspects                                 |
+| ------------------- | ---------------------------------------------- |
+| existence           | set/hashmap, binary search, graph reachability |
+| count               | hashmap frequency, prefix, DP, combinatorics   |
+| min/max             | heap, greedy, DP, binary search answer         |
+| shortest            | BFS/Dijkstra/Bellman-Ford                      |
+| all ways / generate | backtracking, recursion, DP                    |
+| kth/top K           | heap, quickselect, binary search, TreeMap      |
+| range aggregate     | prefix/Fenwick/segment/sparse                  |
+| dependencies/order  | topological sort                               |
+| connectivity        | DFS/BFS/DSU                                    |
 
 Category is not one keyword. It is:
 
@@ -90,14 +90,14 @@ Brute force teaches you the structure of the solution.
 
 ## Common Brute Force Shapes
 
-| Brute Force Shape | Example |
-|-------------------|---------|
-| single loop | scan for max/min/count |
-| double loop | all pairs, all subarrays |
-| triple loop | all triplets, all ranges with recompute |
-| recursion | all subsets/permutations/paths |
-| graph state search | try every reachable state |
-| per-query scan | answer every query by scanning full array |
+| Brute Force Shape  | Example                                   |
+| ------------------ | ----------------------------------------- |
+| single loop        | scan for max/min/count                    |
+| double loop        | all pairs, all subarrays                  |
+| triple loop        | all triplets, all ranges with recompute   |
+| recursion          | all subsets/permutations/paths            |
+| graph state search | try every reachable state                 |
+| per-query scan     | answer every query by scanning full array |
 
 ## Brute Force Template
 
@@ -126,22 +126,22 @@ The answer tells you the optimization.
 
 This is the heart of the rewrite.
 
-| Brute Force Bottleneck | Replace With | Why |
-|------------------------|--------------|-----|
-| scanning to find complement | hashmap | `O(1)` lookup |
-| recomputing range sum | prefix sum | `O(1)` range sum |
-| recomputing range min/max static | sparse table | precompute answers by powers of 2 |
-| range query with updates | Fenwick / segment tree | update and query in `O(log N)` |
-| checking all previous greater/smaller | monotonic stack | discard useless candidates |
-| checking all window max values | monotonic deque | keep best candidates only |
-| trying all sorted pairs | two pointers | sorted order eliminates pairs |
-| linear search over answer | binary search | monotonic predicate halves space |
-| repeated recursion states | memoization / DP | compute each state once |
-| repeated min/max extraction | heap | get best item in `O(log N)` |
-| repeated connectivity checks | DSU | component lookup almost `O(1)` |
-| repeated substring matching | KMP / rolling hash | reuse prefix/hash information |
-| repeated graph shortest path unweighted | BFS | layer expansion |
-| weighted shortest path | Dijkstra | min-distance frontier |
+| Brute Force Bottleneck                  | Replace With           | Why                               |
+| --------------------------------------- | ---------------------- | --------------------------------- |
+| scanning to find complement             | hashmap                | `O(1)` lookup                     |
+| recomputing range sum                   | prefix sum             | `O(1)` range sum                  |
+| recomputing range min/max static        | sparse table           | precompute answers by powers of 2 |
+| range query with updates                | Fenwick / segment tree | update and query in `O(log N)`    |
+| checking all previous greater/smaller   | monotonic stack        | discard useless candidates        |
+| checking all window max values          | monotonic deque        | keep best candidates only         |
+| trying all sorted pairs                 | two pointers           | sorted order eliminates pairs     |
+| linear search over answer               | binary search          | monotonic predicate halves space  |
+| repeated recursion states               | memoization / DP       | compute each state once           |
+| repeated min/max extraction             | heap                   | get best item in `O(log N)`       |
+| repeated connectivity checks            | DSU                    | component lookup almost `O(1)`    |
+| repeated substring matching             | KMP / rolling hash     | reuse prefix/hash information     |
+| repeated graph shortest path unweighted | BFS                    | layer expansion                   |
+| weighted shortest path                  | Dijkstra               | min-distance frontier             |
 
 ---
 
@@ -283,13 +283,13 @@ But paths explode exponentially.
 
 Categorize:
 
-| Constraint | Tool |
-|------------|------|
-| unweighted graph/grid | BFS |
-| weights are 0 or 1 | 0-1 BFS |
-| non-negative weights | Dijkstra |
-| negative weights | Bellman-Ford |
-| DAG | topological DP |
+| Constraint            | Tool           |
+| --------------------- | -------------- |
+| unweighted graph/grid | BFS            |
+| weights are 0 or 1    | 0-1 BFS        |
+| non-negative weights  | Dijkstra       |
+| negative weights      | Bellman-Ford   |
+| DAG                   | topological DP |
 
 The category comes from edge weights, not just the phrase "shortest path."
 
@@ -301,36 +301,36 @@ Use this checklist.
 
 ## Data Structure Choice
 
-| Need | Choose |
-|------|--------|
-| fast membership | HashSet |
-| key to value/frequency | HashMap |
+| Need                          | Choose            |
+| ----------------------------- | ----------------- |
+| fast membership               | HashSet           |
+| key to value/frequency        | HashMap           |
 | sorted keys / floor / ceiling | TreeMap / TreeSet |
-| first/last in order | deque |
-| nested/undo behavior | stack |
-| level order / BFS | queue |
-| repeated min/max | priority queue |
-| range sum with updates | Fenwick |
-| general range queries/updates | segment tree |
-| static range min/max | sparse table |
-| connectivity | DSU |
-| prefix relationships | prefix sum/xor |
+| first/last in order           | deque             |
+| nested/undo behavior          | stack             |
+| level order / BFS             | queue             |
+| repeated min/max              | priority queue    |
+| range sum with updates        | Fenwick           |
+| general range queries/updates | segment tree      |
+| static range min/max          | sparse table      |
+| connectivity                  | DSU               |
+| prefix relationships          | prefix sum/xor    |
 
 ## Algorithm Choice
 
-| Need | Choose |
-|------|--------|
-| reduce pair search in sorted data | two pointers |
-| contiguous window with monotonic condition | sliding window |
-| exact subarray sum/xor | prefix + hashmap |
-| next greater/smaller | monotonic stack |
-| search monotonic answer | binary search answer |
-| explore all choices | backtracking |
-| repeated optimal subproblems | DP |
-| local choice has exchange proof | greedy |
-| unweighted shortest path | BFS |
-| weighted shortest path | Dijkstra/Bellman-Ford |
-| dependency order | topological sort |
+| Need                                       | Choose                |
+| ------------------------------------------ | --------------------- |
+| reduce pair search in sorted data          | two pointers          |
+| contiguous window with monotonic condition | sliding window        |
+| exact subarray sum/xor                     | prefix + hashmap      |
+| next greater/smaller                       | monotonic stack       |
+| search monotonic answer                    | binary search answer  |
+| explore all choices                        | backtracking          |
+| repeated optimal subproblems               | DP                    |
+| local choice has exchange proof            | greedy                |
+| unweighted shortest path                   | BFS                   |
+| weighted shortest path                     | Dijkstra/Bellman-Ford |
+| dependency order                           | topological sort      |
 
 ---
 
@@ -393,3 +393,174 @@ Algorithms exploit order, monotonicity, graph shape, or overlapping states.
 ```
 
 That is the whole game.
+
+## NEW DIAGRAM — Brute Force to Optimal Transformation (Step-by-Step Rewrite)
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  DIAGRAM: Brute Force to Optimal — The Bottleneck Rewrite Pipeline          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  THE PATTERN:                                                                │
+│  Brute Force O(n²) → Identify repeated work → Replace with DS/Algo → O(n)   │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 1: BRUTE FORCE (make it work first)                            │    │
+│  │                                                                        │    │
+│  │  Example: Two Sum                                                       │    │
+│  │  for i in range(n):                 # O(n) outer                       │    │
+│  │    for j in range(i+1, n):          # O(n) inner = O(n²) total         │    │
+│  │      if a[i] + a[j] == target:                                        │    │
+│  │        return [i, j]                                                  │    │
+│  │                                                                        │    │
+│  │  Bottleneck identified: For each a[i], scanning all j to find target-a[i]│    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                              │                                                │
+│                              ▼ Ask: "What am I rescanning?"                  │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 2: IDENTIFY THE REPEATED OPERATION                              │    │
+│  │                                                                        │    │
+│  │  For each a[i], we LINEARLY scan a[j..] to find "target - a[i]"       │    │
+│  │  This linear scan is O(n). We do it n times. Total: O(n²).            │    │
+│  │                                                                        │    │
+│  │  Question: "Can I answer 'has target - a[i] appeared before?' in O(1)?"│    │
+│  │  Answer: YES! Use a HashMap.                                            │    │
+│  │                                                                        │    │
+│  │  Bottleneck: O(n) lookup per element                                   │
+│  │  Replacement: O(1) lookup (HashMap)                                    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                              │                                                │
+│                              ▼ Ask: "Which DS answers this in O(1)?"         │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 3: CHOOSE THE DATA STRUCTURE / ALGORITHM                        │    │
+│  │                                                                        │    │
+│  │  Need: O(1) complement existence check                                  │    │
+│  │   └── HashMap / HashSet: O(1) contains() lookup                       │    │
+│  │                                                                        │    │
+│  │  Other common bottlenecks and their replacements:                       │    │
+│  │  ┌──────────────────────┬──────────────────────────────┐               │    │
+│  │  │ Repeated Work        │ Replace With                │ Result        │   │
+│  │  ├──────────────────────┼──────────────────────────────┼──────────────┤   │
+│  │  │ Scanning for complement │ HashMap                  │ O(n²) → O(n) │   │
+│  │  │ Recomputing range sum │ Prefix sum array           │ O(n×q) → O(1)│   │
+│  │  │ Recursive fib calls  │ Memoization / DP table      │ O(2^n)→O(n)  │   │
+│  │  │ Linear search sorted  │ Binary search             │ O(n) → O(log n)│  │
+│  │  │ Repeated min/max     │ Heap / monotonic deque     │ O(n×k)→O(n log k)│ │
+│  │  │ Repeated subproblems │ Memoization (top-down)     │ O(k^n)→O(n×k) │  │
+│  │  │ All pairs shortest   │ BFS layer expansion       │ O(n²) → O(n)  │   │
+│  │  └──────────────────────┴──────────────────────────────┴──────────────┘   │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                              │                                                │
+│                              ▼ Apply the chosen DS/Algo                       │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 4: IMPLEMENT THE OPTIMAL SOLUTION                               │    │
+│  │                                                                        │    │
+│  │  Two Sum Optimized:                                                     │    │
+│  │  seen = {}                          # O(n) space for HashMap           │    │
+│  │  for x in a:                         # O(n) time, single pass         │    │
+│  │    complement = target - x                                          │    │
+│  │    if complement in seen:             # O(1) lookup ← THE OPTIMIZATION │    │
+│  │      return [seen[complement], index]                                 │    │
+│  │    seen[x] = index                   # O(1) insert                    │    │
+│  │                                                                        │    │
+│  │  Result: Time O(n) + Space O(n) ← Optimal for Two Sum!               │    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+│                              │                                                │
+│                              ▼ Verify: same output as brute force on tests   │
+│  ┌────────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 5: VERIFY + COMPLEXITY STAMP                                     │    │
+│  │                                                                        │    │
+│  │  Before: Time: O(n²)   Space: O(1)  ← document original                │    │
+│  │  After:  Time: O(n)    Space: O(n)  ← document optimization            │    │
+│  │                                                                        │    │
+│  │  Verify with edge cases: empty, single, duplicates, target=0,         │    │
+│  │  max integer (overflow check in Java/C++)                              │    │
+│  │                                                                        │    │
+│  │  THE ONE-SENTENCE SUMMARY:                                             │    │
+│  │  "I traded O(n) space (HashMap) to eliminate the O(n) inner scan,      │    │
+│  │   reducing total time from O(n²) to O(n)."                            │    │
+│  └────────────────────────────────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Historical Evolution
+
+> **Why this section**: mental-model pedagogy requires knowing the prior art. The frameworks below all have named predecessors — naming them prevents reinventing the wheel and connects your reasoning to decades of computer-science practice.
+
+| Year | Predecessor | Contribution |
+| --- | --- | --- |
+| 1978 | Horowitz & Sahni | *Fundamentals of Computer Algorithms* — brute-to-optimal methodology |
+| 1974 | Aho, Hopcroft, Ullman | *Design and Analysis* — systematic bottleneck identification |
+| 1986 | Bentley | *Programming Pearls* — loop rewriting case studies |
+| 1998 | Skiena | *The Algorithm Design Manual* — algorithm selection by problem type |
+| 1989 | Manber | *Introduction to Algorithms: A Creative Approach* — constructive algorithm derivation |
+
+**Evolution narrative**: The "brute force to optimal" rewrite methodology traces to the formalization of algorithm design in the 1970s and 1980s. Ellis Horowitz and Sartaj Sahni's 1978 *Fundamentals of Computer Algorithms* established the canonical approach: for every problem, start with an exhaustive search (brute force), analyze its complexity, identify the dominant cost, then replace that specific operation with a more efficient data structure or algorithm — the exact pipeline this guide teaches. Aho, Hopcroft, and Ullman's 1974 *Design and Analysis of Computer Algorithms* provided the mathematical framework for bottleneck identification. Bentley's 1986 *Programming Pearls* demonstrated this on concrete case studies: Two Sum O(N^2) → HashMap O(N), prefix sum for range queries, etc. Steven Skiena's 1998 *Algorithm Design Manual* organized algorithm selection by problem type with explicit decision trees. Udi Manber's 1989 *Introduction to Algorithms* introduced the creative approach: algorithms as constructions, not discoveries — the insight that optimal solutions are engineered from known building blocks.
+
+**Modern practice anchor**: Today's competitive programming and interview prep (LeetCode editorials, CTCI optimization sections, competitive coding coaches) use the brute-force-to-optimal pipeline that directly descends from the Horowitz-Sahni/Bentley lineage: name the repeated operation, replace it with the appropriate data structure, prove the invariant.
+
+## Production Reality
+
+> **Why this section**: a mental model is only useful if it predicts what breaks in production. Below are named failure modes tied to this mental model, with debug workflows and modern observability tools.
+
+### Failure Mode 1: ReDoS (Regex Catastrophic Backtracking) — Cloudflare 2019
+
+**What goes wrong**: A developer writes a regex for URL validation: `(a+)+$` or `(.*abc.*)+`. The regex has nested quantifiers. When given a carefully crafted input string (e.g., `aaaaaaaaaaaaaaaaaaaaaaaaaaaaa!`), the regex engine tries all possible match paths. Time complexity degrades from O(n) to O(2^n). A single request with a malicious URL takes 30+ seconds of CPU — enough to saturate a single core. 100 concurrent malicious requests = 100% CPU, service unavailable.
+
+**Cost**: Cloudflare 2019 outage — regex DOS took down all Cloudflare services globally. Service unavailability for millions of sites. Estimated $50M+ business impact.
+
+**Debug workflow**:
+1. Use the regex static analyzer `re2` or `hyperscan` — these use linear-time algorithms and fail to compile catastrophic backtracking patterns.
+2. Run `regex-benchmark` on your regex against a worst-case input before deploying: test with `a{50}!` vs `a{100}!`. If processing time grows exponentially with input length, your regex is vulnerable.
+3. Avoid nested quantifiers: `(a+)+`, `(.*a.*)+`, `(a*)*` are all dangerous. Use `a+` or `a{1,100}` instead of `(a+)+`.
+4. Add rate limiting on user-provided regex: if a user submits a custom regex, execute it in a sandboxed subprocess with a 1-second timeout.
+
+### Failure Mode 2: Data Structure Rewrite at Scale — List to HashMap 100x Speedup
+
+**What goes wrong**: A recommendation service uses an `ArrayList` for user lookups. With 1M users, `list.contains(user)` is O(n) = 1M operations per lookup. At 10,000 lookups/sec, that's 10 billion operations/sec. The engineer migrates to `HashMap` — O(1) lookup. Throughput jumps from 10 QPS to 1,000 QPS. But the migration introduced a subtle bug: the HashMap's hash function collisions on the `userId` string prefix caused O(n) degradation in the 1% of users with numeric-prefixed IDs.
+
+**Cost**: Migration time invested, but O(1) claim was false for edge cases. A 1% error rate on 1M users = 10,000 users with degraded performance. Requires hotfix to fix the hash function.
+
+**Debug workflow**:
+1. After any DS migration (list→map, array→heap), run tests with adversarial inputs: duplicate keys, sorted input, reverse order, all-same values.
+2. Measure p50/p95/p99 latency per bucket in the new structure. If p99 latency > 10x p50, there's a hash collision or ordering issue.
+3. Benchmark the new DS with production-like data size and distribution. Test the 99th percentile user profile, not just average.
+4. Add DS migration integration tests: after the HashMap migration, verify `get()` still returns the correct value for all input keys.
+
+### Failure Mode 3: Nested Loop Rewrite Missed — O(n^2) SLA Breach in Production
+
+**What goes wrong**: An order-processing service has a nested loop: for each order, scan all items to find the matching product. 10,000 orders × 10,000 products = 100M comparisons per batch. The engineer optimizes the inner scan to O(1) with a product HashMap — 10,000 HashMap lookups = 10M operations, 10x faster. But the outer loop is still there — the O(n^2) was reduced to O(n), not eliminated. At 1M orders/day, the service still processes 10^12 operations over 24 hours.
+
+**Debug workflow**:
+1. Verify total complexity after optimization: if the bottleneck was the inner loop, reducing it from O(n) to O(1) changes O(n^2) to O(n). If there are still nested loops, verify the outer loop is bounded.
+2. Profile the optimized code: if the new inner-loop optimization accounts for <20% of total time, there may be another bottleneck (possibly the outer loop itself).
+3. Add asymptotic complexity as a comment in code: `// Optimization: O(n^2) → O(n)` — this prevents future engineers from accidentally adding back the nested loop.
+4. Run load tests with production data volumes before and after: verify the batch job time actually improves to the expected O(n) scale.
+
+### Modern Production Tools
+
+- **re2 / hyperscan**: Linear-time regex engines that reject catastrophic backtracking patterns at compile time. Use these for all user-facing regex validation.
+- **JMH (Java Microbenchmark Harness)**: Benchmark DS transitions (ArrayList→HashMap, Array→Heap) with production data sizes. Verify p99 latency actually improved, not just average.
+- **perf stat -e branch-misses,cache-misses**: Identify cache and branch prediction misses after DS migration. High cache misses after HashMap migration signal a collision or locality issue.
+- **Datadog APM histogram**: Track p50/p95/p99 latency for batch jobs. After optimization, verify the latency histogram shifted left — not just average improvement.
+- **Complexity budget in PR template**: Require engineers to state the time/space complexity before and after any optimization. If complexity didn't change (O(n^2)→O(n^2)), reject the PR with "optimization didn't address the bottleneck."
+
+## Conceptual Depth & Topical Breadth
+
+> **Why this section**: this mental model rests on a specific invariant, and its variants cover a spectrum of trade-offs. Knowing the invariant and the variants lets you apply the model correctly across problems.
+
+### Invariant
+
+**Brute force always works**; optimization escapes its limits. The invariant is that the naive solution is always correct but always slow. The optimization path is: write brute force correctly first, profile to find the bottleneck, then replace that specific bottleneck with a more efficient data structure or algorithm. The internal mechanism is **bottleneck isolation**: not all slow code is equally slow.
+
+### Variants Comparison
+
+| Optimization Lever | Bottleneck Pattern | Replacement | Typical Gain |
+| --- | --- | --- | --- |
+| HashMap for lookup | Nested loop with `in` check | dict/HashMap | O(n) per lookup → O(1) |
+| Sorting | Unsorted pair enumeration | Sort + two-pointer | O(n^2) → O(n log n) |
+| Prefix sum | Repeated range sum in loop | Prefix array | O(k) per query → O(1) |
+| Sorting precomputation | Repeated computation | Sort once | O(n!) → O(n log n) |
+| Heap for selection | Full scan for k-th largest | quickselect/heap | O(n) avg vs O(n log n) |
+| Bit manipulation | Set operations via loops | Bitwise ops | O(n) → O(1) per operation |
+| Memoization | Repeated subcomputation | Lookup table | Exponential → polynomial |

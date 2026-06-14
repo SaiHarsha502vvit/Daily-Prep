@@ -29,20 +29,20 @@
 
 ## 1. What it catches
 
-| Bug class | Visual regression catches? |
-|---|---|
-| Layout shift (a sidebar moved 20px) | ✅ |
-| Color change (button went from blue to teal) | ✅ |
-| Font change (Helvetica → Arial) | ✅ |
-| Spacing change (padding went from 16 to 12) | ✅ |
-| New unexpected element appeared | ✅ |
-| Element disappeared | ✅ |
-| Element became invisible (opacity 0) | ⚠️ Sometimes — depends on background |
-| Element became hidden (display: none) | ✅ |
-| Z-index changed (modal behind page) | ✅ |
-| Text content changed | ✅ — but DOM assertions catch this better |
-| API change | ❌ — different bug class |
-| Behaviour change | ❌ |
+| Bug class                                    | Visual regression catches?                |
+| -------------------------------------------- | ----------------------------------------- |
+| Layout shift (a sidebar moved 20px)          | ✅                                        |
+| Color change (button went from blue to teal) | ✅                                        |
+| Font change (Helvetica → Arial)              | ✅                                        |
+| Spacing change (padding went from 16 to 12)  | ✅                                        |
+| New unexpected element appeared              | ✅                                        |
+| Element disappeared                          | ✅                                        |
+| Element became invisible (opacity 0)         | ⚠️ Sometimes — depends on background      |
+| Element became hidden (display: none)        | ✅                                        |
+| Z-index changed (modal behind page)          | ✅                                        |
+| Text content changed                         | ✅ — but DOM assertions catch this better |
+| API change                                   | ❌ — different bug class                  |
+| Behaviour change                             | ❌                                        |
 
 Visual regression is RENDER-LEVEL testing. It complements behaviour tests; it doesn't replace them.
 
@@ -60,8 +60,8 @@ The discipline of visual regression is managing the false-positive rate.
 
 ```typescript
 await expect(page).toHaveScreenshot();
-await expect(page.locator('.modal')).toHaveScreenshot('modal.png');
-await expect(page).toHaveScreenshot('full-page.png', { fullPage: true });
+await expect(page.locator(".modal")).toHaveScreenshot("modal.png");
+await expect(page).toHaveScreenshot("full-page.png", { fullPage: true });
 ```
 
 ### 2.2 The full options
@@ -69,35 +69,35 @@ await expect(page).toHaveScreenshot('full-page.png', { fullPage: true });
 ```typescript
 await expect(page).toHaveScreenshot({
   // Name override
-  name: 'custom-name.png',
+  name: "custom-name.png",
 
   // Full options
-  fullPage: false,                       // entire scrollable page
-  clip: { x: 0, y: 0, width: 800, height: 600 },  // crop
-  omitBackground: false,                 // transparent background
+  fullPage: false, // entire scrollable page
+  clip: { x: 0, y: 0, width: 800, height: 600 }, // crop
+  omitBackground: false, // transparent background
 
   // Masking
   mask: [
-    page.locator('.timestamp'),          // hide dynamic timestamps
-    page.locator('.user-avatar'),        // hide variable avatars
+    page.locator(".timestamp"), // hide dynamic timestamps
+    page.locator(".user-avatar"), // hide variable avatars
   ],
-  maskColor: 'rgba(255, 0, 255, 0.5)',   // pink for visibility
+  maskColor: "rgba(255, 0, 255, 0.5)", // pink for visibility
 
   // Behaviour
-  animations: 'disabled',                // freeze animations
-  caret: 'hide',                         // hide text cursor
+  animations: "disabled", // freeze animations
+  caret: "hide", // hide text cursor
 
   // Tolerances
-  threshold: 0.2,                        // pixel diff threshold (0-1)
-  maxDiffPixels: 100,                    // total pixels different
-  maxDiffPixelRatio: 0.02,               // 2% of pixels different
-  
+  threshold: 0.2, // pixel diff threshold (0-1)
+  maxDiffPixels: 100, // total pixels different
+  maxDiffPixelRatio: 0.02, // 2% of pixels different
+
   // Scaling
-  scale: 'device',                       // 'css' | 'device'
-  
+  scale: "device", // 'css' | 'device'
+
   // Stability
-  timeout: 5000,                         // overall timeout
-  stylePath: 'tests/test-styles.css',    // inject CSS before snapshot
+  timeout: 5000, // overall timeout
+  stylePath: "tests/test-styles.css", // inject CSS before snapshot
 });
 ```
 
@@ -109,6 +109,7 @@ The browser anti-aliasing means rendering is never byte-identical even between i
 - `maxDiffPixelRatio: 0.02` — globally: up to 2% of pixels can be "different" without failing.
 
 Typical settings:
+
 - New project (zero baselines): `threshold: 0.2, maxDiffPixelRatio: 0.02`.
 - Established project: tighten over time as baselines stabilise.
 - High-fidelity (design QA): `threshold: 0.1, maxDiffPixelRatio: 0.005`.
@@ -134,9 +135,11 @@ npx playwright test --update-snapshots
 ```
 
 The first run produces:
+
 ```
 ERROR: Screenshot doesn't exist, generated.
 ```
+
 Plus a `.png` file alongside the spec. Commit it.
 
 ---
@@ -147,10 +150,10 @@ A more generic matcher for any kind of file (PNG, text, JSON).
 
 ```typescript
 const data = await page.evaluate(() => JSON.stringify(window.appState));
-await expect(data).toMatchSnapshot('app-state.json');
+await expect(data).toMatchSnapshot("app-state.json");
 
-const buf = await page.locator('canvas').screenshot();
-await expect(buf).toMatchSnapshot('canvas.png');
+const buf = await page.locator("canvas").screenshot();
+await expect(buf).toMatchSnapshot("canvas.png");
 ```
 
 For images, prefer `toHaveScreenshot` (more options). For non-image artifacts (JSON, text), use `toMatchSnapshot`.
@@ -178,6 +181,7 @@ snapshotPathTemplate: '{snapshotDir}/{projectName}/{testFilePath}/{arg}{ext}',
 ```
 
 Customise where snapshots land. Useful when:
+
 - You want per-project subfolders.
 - You're hosting snapshots externally.
 - You want to deduplicate across platforms (don't — let each platform have its own).
@@ -242,19 +246,19 @@ The most important visual-regression technique.
 
 Dynamic content that changes every render:
 
-| Dynamic content | Why it's dynamic |
-|---|---|
-| Timestamps ("Updated 2 min ago") | Changes every minute |
-| User avatars | Randomised in test data |
-| Profile pictures | Same |
-| Random IDs in URLs | UUID per record |
-| Loading indicators (between phases) | Timing-dependent |
-| Animated charts | Animation state |
-| Ad banners | Third-party content |
-| Auto-saved drafts | "Last saved: X seconds ago" |
-| News feeds / activity feeds | New items constantly |
-| Cursors / focus rings | Position-dependent |
-| Cookie banners | Dismissed state varies |
+| Dynamic content                     | Why it's dynamic            |
+| ----------------------------------- | --------------------------- |
+| Timestamps ("Updated 2 min ago")    | Changes every minute        |
+| User avatars                        | Randomised in test data     |
+| Profile pictures                    | Same                        |
+| Random IDs in URLs                  | UUID per record             |
+| Loading indicators (between phases) | Timing-dependent            |
+| Animated charts                     | Animation state             |
+| Ad banners                          | Third-party content         |
+| Auto-saved drafts                   | "Last saved: X seconds ago" |
+| News feeds / activity feeds         | New items constantly        |
+| Cursors / focus rings               | Position-dependent          |
+| Cookie banners                      | Dismissed state varies      |
 
 ### 5.2 How to mask
 
@@ -262,10 +266,10 @@ Dynamic content that changes every render:
 await expect(page).toHaveScreenshot({
   mask: [
     page.locator('[data-testid="last-updated"]'),
-    page.locator('.user-avatar'),
-    page.locator('.cookie-banner'),
+    page.locator(".user-avatar"),
+    page.locator(".cookie-banner"),
   ],
-  maskColor: 'rgba(255, 0, 255, 0.5)',  // pink, semi-transparent
+  maskColor: "rgba(255, 0, 255, 0.5)", // pink, semi-transparent
 });
 ```
 
@@ -290,14 +294,14 @@ For SPAs with lots of dynamic content:
 ```typescript
 // fixtures/visual.ts
 const DEFAULT_MASKS = (page: Page) => [
-  page.locator('[data-dynamic="true"]'),  // app sets data-dynamic on dynamic elements
-  page.locator('time'),                    // all <time> tags (timestamps)
-  page.locator('.user-avatar'),
+  page.locator('[data-dynamic="true"]'), // app sets data-dynamic on dynamic elements
+  page.locator("time"), // all <time> tags (timestamps)
+  page.locator(".user-avatar"),
 ];
 
 // In a test
 await expect(page).toHaveScreenshot({
-  mask: [...DEFAULT_MASKS(page), page.locator('.custom-mask')],
+  mask: [...DEFAULT_MASKS(page), page.locator(".custom-mask")],
 });
 ```
 
@@ -332,12 +336,14 @@ For these, additional intervention:
 await page.evaluate(() => (window as any).gsap?.globalTimeline?.pause());
 
 // Pause canvas animation by setting a flag
-await page.evaluate(() => { (window as any).__animationsPaused = true; });
+await page.evaluate(() => {
+  (window as any).__animationsPaused = true;
+});
 
 // Force every Animation API instance to a fixed state
 await page.evaluate(() => {
-  document.querySelectorAll('*').forEach(el => {
-    (el as HTMLElement).getAnimations?.().forEach(a => a.finish());
+  document.querySelectorAll("*").forEach((el) => {
+    (el as HTMLElement).getAnimations?.().forEach((a) => a.finish());
   });
 });
 ```
@@ -347,7 +353,9 @@ await page.evaluate(() => {
 Spinners are animations. Before screenshot, wait for them to be gone:
 
 ```typescript
-await expect(page.locator('.ms-Spinner, .spinner, [role="progressbar"]')).toHaveCount(0);
+await expect(
+  page.locator('.ms-Spinner, .spinner, [role="progressbar"]'),
+).toHaveCount(0);
 await expect(page).toHaveScreenshot();
 ```
 
@@ -364,6 +372,7 @@ A live clock display:
 Updates every second. ALWAYS will diff.
 
 Options:
+
 1. Mask it.
 2. Stop the clock before snapshot: `await page.evaluate(() => clearInterval(window.clockInterval));`.
 3. Freeze the system clock with `page.clock.install({ fixedTime: ... })`.
@@ -392,6 +401,7 @@ For visual tests specifically, lock the viewport and never change it. Different 
 Fonts vary between OSes. The same `font-family: 'Helvetica'` renders differently on macOS (real Helvetica) vs Linux (Helvetica not installed → fallback).
 
 Solutions:
+
 1. Ship a font stack that resolves consistently: `font-family: 'Roboto', 'Arial', sans-serif`. As long as Roboto is web-loaded, looks the same everywhere.
 2. Run tests in a container with controlled fonts (e.g., MS Playwright Docker image with `fonts-roboto` installed).
 3. Per-platform baselines (default behaviour) — accept the duplication.
@@ -423,6 +433,7 @@ use: {
 ### 8.1 The macOS vs Linux problem
 
 The same Chromium build renders text and images differently on macOS vs Linux:
+
 - Font rendering: macOS uses subpixel antialiasing; Linux uses grayscale.
 - Emoji: rendered from different system fonts.
 - Image scaling: subtle interpolation differences.
@@ -432,14 +443,15 @@ For a 1000×800 screenshot, you'll typically see 50–200 pixel diffs between pl
 ### 8.2 The "test on Linux only" recommendation
 
 Most teams pick one platform for visual regression:
+
 - **CI Linux** (via Docker) — recommended; matches production for most web apps.
 - Developers test locally on macOS/Windows but DON'T update baselines from there.
 
 Setting:
 
 ```typescript
-test('visual test', async ({ page }) => {
-  test.skip(process.platform !== 'linux', 'Visual tests only run on Linux');
+test("visual test", async ({ page }) => {
+  test.skip(process.platform !== "linux", "Visual tests only run on Linux");
   // ...
   await expect(page).toHaveScreenshot();
 });
@@ -481,6 +493,7 @@ homepage.spec.ts-snapshots/
 ```
 
 Each browser renders slightly differently. Common differences:
+
 - Form controls (button shapes, checkbox styling).
 - Scrollbar styling.
 - Font kerning.
@@ -501,15 +514,19 @@ Instead of full-page screenshots, snapshot specific components.
 ### 10.1 Locator-scoped screenshot
 
 ```typescript
-await expect(page.locator('.customer-card')).toHaveScreenshot('customer-card.png');
+await expect(page.locator(".customer-card")).toHaveScreenshot(
+  "customer-card.png",
+);
 ```
 
 Pros:
+
 - Smaller diff surface — less false-positive risk.
 - Each component's tests are independent.
 - Easier to update (one component's baselines, not the whole page).
 
 Cons:
+
 - Layout context lost (a component looks fine alone, breaks in a page layout).
 
 ### 10.2 The component-test integration
@@ -530,11 +547,11 @@ See [`./component_testing.md`](./component_testing.md).
 
 ### 10.3 The split visual-vs-E2E strategy
 
-| Test type | Scope |
-|---|---|
-| Component visual tests | Per-component rendering |
+| Test type               | Scope                             |
+| ----------------------- | --------------------------------- |
+| Component visual tests  | Per-component rendering           |
 | Page-level visual tests | Layout, header/footer, navigation |
-| E2E visual tests | Whole pages in real workflows |
+| E2E visual tests        | Whole pages in real workflows     |
 
 Components catch design system regressions cheaply. Page-level catches integration. E2E catches "the workflow shows the right page."
 
@@ -551,6 +568,7 @@ The hardest problem in visual regression: when the design system intentionally c
 Designer changes button colours globally. 200 tests have buttons in their screenshots. All 200 fail.
 
 You need to:
+
 1. Verify the change is intentional (review).
 2. Update all 200 baselines.
 3. Verify each new baseline (more review).
@@ -561,8 +579,12 @@ You need to:
 If your app uses CSS custom properties for colors:
 
 ```css
-:root { --color-primary: #0066cc; }
-.btn-primary { background: var(--color-primary); }
+:root {
+  --color-primary: #0066cc;
+}
+.btn-primary {
+  background: var(--color-primary);
+}
 ```
 
 A designer changes the token; the renders change once. Update all baselines via:
@@ -585,6 +607,7 @@ Lots of small component visual tests are easier to triage than few large page-le
 Some teams set up CI to auto-update baselines on every change. Don't.
 
 This means:
+
 - Real visual regressions are silently accepted.
 - The whole visual test layer becomes useless.
 - You're paying for nothing.
@@ -605,6 +628,7 @@ FAIL: 5 tests
 ```
 
 For each failure, Playwright produces `actual.png`, `expected.png`, `diff.png`. In the HTML report:
+
 - Click the failed test.
 - Three images shown side-by-side or as slider.
 - Hover to compare.
@@ -616,6 +640,7 @@ By default, diff highlights are red. Pixels that differ between actual and expec
 ### 12.2 The "is it real?" diagnostic
 
 Look at the diff:
+
 - Many isolated red pixels scattered → anti-aliasing noise, raise tolerance.
 - Red region in a specific area → real change in that area.
 - Big red block → entire section differs.
@@ -640,6 +665,7 @@ docker run --rm -v $(pwd):/work -w /work playwright-image \
 ### 13.2 The "snapshot doesn't exist" CI failure
 
 First time a new visual test runs in CI:
+
 ```
 ERROR: Screenshot doesn't exist, generated.
 ```
@@ -647,6 +673,7 @@ ERROR: Screenshot doesn't exist, generated.
 The test passes locally (file exists) but fails CI (file in git, but for a different platform).
 
 Solutions:
+
 - Pre-generate baselines for all target platforms before merging.
 - OR have CI generate and upload as a separate "approval" step in PRs.
 
@@ -676,6 +703,7 @@ For automated baseline updates in PRs:
 ### 14.1 Per-test cost
 
 `toHaveScreenshot` adds 200–800 ms per call:
+
 - Wait for animations to settle.
 - Capture pixel buffer.
 - Compare with baseline.
@@ -686,6 +714,7 @@ For a 200-test suite where each test has 1 visual assertion: 40–160 seconds of
 ### 14.2 `fullPage: true` cost
 
 A 5000-pixel-tall scrollable page screenshot:
+
 - Captures the whole page, not just viewport.
 - ~1–3 seconds extra.
 - Larger PNG files (200 KB – 1 MB).
@@ -702,15 +731,15 @@ git LFS for baselines is reasonable above 500 MB.
 
 ## 15. When NOT to use
 
-| Scenario | Better alternative |
-|---|---|
-| Pure content changes | DOM assertions (`toHaveText`) |
-| Behavior verification | Behavior tests |
+| Scenario                         | Better alternative               |
+| -------------------------------- | -------------------------------- |
+| Pure content changes             | DOM assertions (`toHaveText`)    |
+| Behavior verification            | Behavior tests                   |
 | Cross-browser layout differences | Don't — each is its own baseline |
-| Highly dynamic dashboards | Behavior + DOM assertions |
-| Real-time updating content | Don't — false-positive forever |
-| Maps / 3D scenes / videos | Specialized tools |
-| Pure design system QA | Storybook + Chromatic dedicated |
+| Highly dynamic dashboards        | Behavior + DOM assertions        |
+| Real-time updating content       | Don't — false-positive forever   |
+| Maps / 3D scenes / videos        | Specialized tools                |
+| Pure design system QA            | Storybook + Chromatic dedicated  |
 
 Visual regression is one tool. It's expensive (baselines, review, CI compute) and has high false-positive rate. Use where it shines: design-stable UI surfaces with infrequent intentional changes.
 

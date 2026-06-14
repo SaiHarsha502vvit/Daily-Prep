@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*You are the lead architect at a food delivery startup (think Swiggy / Zomato). The CTO has a hard rule: NO database tables are created until the domain model is finalized and reviewed. Your deliverable is a complete DDD entity design document plus Java class stubs.*
+_You are the lead architect at a food delivery startup (think Swiggy / Zomato). The CTO has a hard rule: NO database tables are created until the domain model is finalized and reviewed. Your deliverable is a complete DDD entity design document plus Java class stubs._
 
 ---
 
@@ -37,43 +37,48 @@ Map the complete end-to-end business process step-by-step:
 
 ## 📋 Step 2 — Domains (Bounded Contexts)
 
-| Domain | Responsibility |
-|---|---|
-| **Customer Domain** | Customer profiles, addresses, cart management |
-| **Restaurant Domain** | Restaurant profiles, menus, order acceptance |
-| **Delivery Domain** | Driver management, assignment, tracking, OTP |
-| **Payments Domain** | Payment processing, driver payouts, refunds |
-| **Rating Domain** | Bidirectional ratings collection and aggregation |
+| Domain                | Responsibility                                   |
+| --------------------- | ------------------------------------------------ |
+| **Customer Domain**   | Customer profiles, addresses, cart management    |
+| **Restaurant Domain** | Restaurant profiles, menus, order acceptance     |
+| **Delivery Domain**   | Driver management, assignment, tracking, OTP     |
+| **Payments Domain**   | Payment processing, driver payouts, refunds      |
+| **Rating Domain**     | Bidirectional ratings collection and aggregation |
 
 ---
 
 ## 📋 Step 3 — Responsibilities Per Domain
 
 ### Customer Domain
+
 - Maintain customer profile (name, phone, email, preferences)
 - Manage multiple delivery addresses per customer
 - Manage the cart (add/remove items, apply coupons)
 - Calculate cart total including taxes and discounts
 
 ### Restaurant Domain
+
 - Maintain restaurant profile (name, location, cuisine, operating hours)
 - Manage menu items (name, description, price, availability flag)
 - Accept or reject incoming orders within a time window
 - Update item availability (e.g., "sold out")
 
 ### Delivery Domain
+
 - Manage driver profiles and real-time availability
 - Match the best available driver to an order
 - Track driver GPS location during active delivery
 - Handle OTP verification for delivery confirmation
 
 ### Payments Domain
+
 - Process customer payment at order placement
 - Hold funds until delivery is confirmed
 - Deduct platform commission and credit driver earnings
 - Handle refunds for cancelled or failed orders
 
 ### Rating Domain
+
 - Collect customer rating for restaurant (1–5 stars + comment)
 - Collect customer rating for driver (1–5 stars)
 - Collect restaurant rating for customer (used for fraud detection)
@@ -86,6 +91,7 @@ Map the complete end-to-end business process step-by-step:
 ### Customer Domain
 
 **`Customer` (Aggregate Root)**
+
 ```
 id: UUID
 name: String
@@ -96,9 +102,11 @@ addresses: List<DeliveryAddress>
 defaultAddressId: UUID
 createdAt: Instant
 ```
-*Invariant: phone and email must be unique across all customers*
+
+_Invariant: phone and email must be unique across all customers_
 
 **`DeliveryAddress` (Entity — child of Customer)**
+
 ```
 id: UUID
 label: String (Home / Work / Other)
@@ -110,6 +118,7 @@ isDefault: boolean
 ```
 
 **`Cart` (Aggregate Root — separate from Customer)**
+
 ```
 id: UUID
 customerId: UUID
@@ -121,11 +130,13 @@ discount: Money
 total: Money
 status: ACTIVE | CHECKED_OUT | ABANDONED
 ```
-*Invariant: All CartItems must be from the SAME restaurant. Cart cannot be checked out if restaurantId's restaurant is closed.*
+
+_Invariant: All CartItems must be from the SAME restaurant. Cart cannot be checked out if restaurantId's restaurant is closed._
 
 ### Restaurant Domain
 
 **`Restaurant` (Aggregate Root)**
+
 ```
 id: UUID
 name: String
@@ -138,6 +149,7 @@ status: OPEN | CLOSED | SUSPENDED
 ```
 
 **`MenuItem` (Entity — child of Restaurant)**
+
 ```
 id: UUID
 name: String
@@ -147,11 +159,13 @@ category: String
 isAvailable: boolean
 preparationTimeMinutes: int
 ```
-*Invariant: price must be > 0. isAvailable can be toggled only by the restaurant owner.*
+
+_Invariant: price must be > 0. isAvailable can be toggled only by the restaurant owner._
 
 ### Delivery Domain
 
 **`Order` (Aggregate Root — central entity)**
+
 ```
 id: UUID
 customerId: UUID
@@ -166,9 +180,11 @@ actualDeliveredAt: Instant (nullable)
 driverId: UUID (nullable until assigned)
 fareBreakdown: FareBreakdown (Value Object)
 ```
-*Invariant: status can only advance forward or move to CANCELLED. OTP is generated only when status transitions to READY. Order cannot be modified after PLACED.*
+
+_Invariant: status can only advance forward or move to CANCELLED. OTP is generated only when status transitions to READY. Order cannot be modified after PLACED._
 
 **`OrderLine` (Value Object — immutable snapshot)**
+
 ```
 menuItemId: UUID
 name: String (snapshot — original menu item may change price later)
@@ -178,6 +194,7 @@ lineTotal: Money
 ```
 
 **`DriverRequest` (Entity — for driver matching)**
+
 ```
 id: UUID
 orderId: UUID
@@ -188,6 +205,7 @@ response: PENDING | ACCEPTED | REJECTED | TIMED_OUT
 ```
 
 **`Driver` (Aggregate Root — in Delivery Domain)**
+
 ```
 id: UUID
 name: String
@@ -202,6 +220,7 @@ rating: AggregateRating (Value Object)
 ### Payments Domain
 
 **`Payment` (Aggregate Root)**
+
 ```
 id: UUID
 orderId: UUID
@@ -215,6 +234,7 @@ completedAt: Instant (nullable)
 ```
 
 **`DriverEarnings` (Entity)**
+
 ```
 id: UUID
 driverId: UUID
@@ -229,6 +249,7 @@ status: PENDING | CREDITED
 ### Rating Domain
 
 **`OrderRating` (Aggregate Root)**
+
 ```
 id: UUID
 orderId: UUID
@@ -418,13 +439,13 @@ public class Driver {
 
 ## 🔴 Erklärung: Common Entity Design Mistakes
 
-| Mistake | Why It's Wrong | The Fix |
-|---|---|---|
-| `Order` stores `List<MenuItem>` directly | Cross-aggregate reference; menu prices can change after order | Store `List<OrderLine>` (immutable snapshot with name + price at time of order) |
-| Single `User` entity for Customer and Driver | Different domains, different lifecycle, different invariants | Separate `Customer` and `Driver` aggregates in separate bounded contexts |
-| `Order` directly references `Restaurant` object | Cross-aggregate direct reference — breaks independent deployability | Store `restaurantId: UUID` only; load restaurant via its own service |
-| Status stored as plain String `"PLACED"` | No compile-time safety; typos cause bugs | Use `enum OrderStatus { PLACED, ACCEPTED, PREPARING, READY, PICKED_UP, DELIVERED, CANCELLED }` |
-| Mutable `OrderLine` inside Order | Total can be tampered after placement | `OrderLine` as an immutable record — set at creation, never changed |
+| Mistake                                         | Why It's Wrong                                                      | The Fix                                                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `Order` stores `List<MenuItem>` directly        | Cross-aggregate reference; menu prices can change after order       | Store `List<OrderLine>` (immutable snapshot with name + price at time of order)                |
+| Single `User` entity for Customer and Driver    | Different domains, different lifecycle, different invariants        | Separate `Customer` and `Driver` aggregates in separate bounded contexts                       |
+| `Order` directly references `Restaurant` object | Cross-aggregate direct reference — breaks independent deployability | Store `restaurantId: UUID` only; load restaurant via its own service                           |
+| Status stored as plain String `"PLACED"`        | No compile-time safety; typos cause bugs                            | Use `enum OrderStatus { PLACED, ACCEPTED, PREPARING, READY, PICKED_UP, DELIVERED, CANCELLED }` |
+| Mutable `OrderLine` inside Order                | Total can be tampered after placement                               | `OrderLine` as an immutable record — set at creation, never changed                            |
 
 ---
 

@@ -88,18 +88,18 @@ public class PriceCalculator {
 @Test
 void shouldApply20PercentDiscount() {
     PriceCalculator calc = new PriceCalculator();
-    
+
     BigDecimal result = calc.calculateDiscount(
         new BigDecimal("100.00"), 20
     );
-    
+
     assertEquals(new BigDecimal("80.00"), result);
 }
 
 @Test
 void shouldRejectNegativePercentage() {
     PriceCalculator calc = new PriceCalculator();
-    
+
     assertThrows(IllegalArgumentException.class, () -> {
         calc.calculateDiscount(new BigDecimal("100.00"), -5);
     });
@@ -136,7 +136,7 @@ class OrderControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
+
     @Autowired
     private OrderRepository orderRepo;
 
@@ -145,13 +145,13 @@ class OrderControllerIntegrationTest {
         String json = """
             {"product": "Laptop", "quantity": 1, "price": 999.99}
             """;
-        
+
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists());
-        
+
         // Verify it actually saved to database
         assertEquals(1, orderRepo.count());
     }
@@ -189,7 +189,7 @@ void userCanLoginAndViewDashboard() {
     driver.findElement(By.id("email")).sendKeys("user@test.com");
     driver.findElement(By.id("password")).sendKeys("password123");
     driver.findElement(By.id("loginBtn")).click();
-    
+
     // Should redirect to dashboard
     assertTrue(driver.getCurrentUrl().contains("/dashboard"));
     assertTrue(driver.findElement(By.id("welcomeMsg")).isDisplayed());
@@ -236,7 +236,7 @@ void shouldCalculateTotalWithTax() {
 
 ## Test Data Builders (GOOS Pattern)
 
-In *Growing Object-Oriented Software, Guided by Tests* (GOOS), the authors strongly advocate for the **Test Data Builder** pattern to construct complex domain objects for tests.
+In _Growing Object-Oriented Software, Guided by Tests_ (GOOS), the authors strongly advocate for the **Test Data Builder** pattern to construct complex domain objects for tests.
 
 ```java
 // BAD: Brittle constructors make tests hard to read and fragile
@@ -244,7 +244,7 @@ In *Growing Object-Oriented Software, Guided by Tests* (GOOS), the authors stron
 void shouldCalculateDiscount() {
     // What do all these nulls and booleans mean? If Order adds a field, this breaks!
     Order order = new Order(123L, null, "USD", true, false, new Customer("John", "Doe", 30), new ArrayList<>());
-    
+
     BigDecimal total = service.calculateTotal(order);
     // ...
 }
@@ -258,7 +258,7 @@ void shouldCalculateDiscount() {
         .withCustomer(aCustomer().withAge(30).build())
         .isPriority()
         .build();
-        
+
     BigDecimal total = service.calculateTotal(order);
     // ...
 }
@@ -266,7 +266,7 @@ void shouldCalculateDiscount() {
 
 ### Why it matters
 
-1. **Readability**: It highlights *only* the data relevant to the specific test scenario. The irrelevant fields are filled with sensible defaults by the builder.
+1. **Readability**: It highlights _only_ the data relevant to the specific test scenario. The irrelevant fields are filled with sensible defaults by the builder.
 2. **Resilience**: If you add a new mandatory field to `Order`, you only update the `OrderBuilder` class with a default value. You don't have to fix 500 broken tests that were calling the `Order` constructor directly.
 
 ## Test Naming Convention
@@ -328,10 +328,10 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepo;
-    
+
     @Mock
     private PaymentGateway paymentGateway;
-    
+
     @InjectMocks
     private OrderService orderService;
 
@@ -340,21 +340,21 @@ class OrderServiceTest {
         // Arrange
         Order order = new Order("Laptop", 999.99);
         when(paymentGateway.charge(anyDouble())).thenReturn(true);
-        
+
         // Act
         orderService.placeOrder(order);
-        
+
         // Assert
         verify(orderRepo).save(order);  // was save() called?
         verify(paymentGateway).charge(999.99);
     }
-    
+
     @Test
     void shouldNotSaveOrder_whenPaymentFails() {
         // Arrange
         Order order = new Order("Laptop", 999.99);
         when(paymentGateway.charge(anyDouble())).thenReturn(false);
-        
+
         // Act & Assert
         assertThrows(PaymentFailedException.class, () -> {
             orderService.placeOrder(order);
@@ -387,7 +387,7 @@ class OrderServiceTest {
 ```
 TDD Cycle:
   1. RED   — Write a FAILING test first
-  2. GREEN — Write the MINIMUM code to make it pass  
+  2. GREEN — Write the MINIMUM code to make it pass
   3. REFACTOR — Clean up without breaking tests
 
 Example:
@@ -453,6 +453,28 @@ IMPORTANT: High coverage ≠ good tests!
 
 ---
 
+### Historical Evolution
+
+**Testing frameworks and practices have evolved from Smalltalk to JavaScript:**
+
+- **1989** — SUnit (Smalltalk Unit Testing Framework) created by Kent Beck at Tektronix, introducing the xUnit pattern: `setUp()`, `tearDown()`, `assert*` methods, and the test runner. Every modern testing framework (JUnit, NUnit, pytest, Jest) descends directly from SUnit's design.
+- **1997** — Kent Beck and Erich Gamma released JUnit at the PLoP conference (pattern languages conference). JUnit established Java as a first-class testing language and introduced the `TestCase`, `TestSuite`, and `assert*` patterns that became the universal testing vocabulary.
+- **2003** — Kent Beck's "Test-Driven Development by Example" (Addison-Wesley) formalized TDD as a disciplined practice: Red (failing test), Green (make it pass), Refactor. This book evangelized TDD across the industry and remains the canonical TDD reference.
+- **2006** — JUnit 4 released, adopting Java 5 annotations (`@Test`, `@Before`, `@After`) instead of method naming conventions, and integrating with modern build tools (Maven, Ant). The framework matured from a tool into an ecosystem.
+- **2006** — Dan North introduced BDD (Behavior-Driven Development) in his article "Introducing BDD" (dannorth.net), reframing tests as specifications of behavior using a Given-When-Then vocabulary. JBehave and then Cucumber popularized this outside-in testing approach.
+- **2014** — Jest released by Facebook (originally for React testing). Jest's focus on zero-configuration, integrated mocking, and fast execution (Jest uses jsdom + isolated sandboxed tests) established the modern standard for JavaScript testing.
+- **2017** — JUnit 5 (Codename: JUnit Lambda) released after three years of development. JUnit 5 introduced a modular architecture (JUnit Platform, Jupiter, Vintage), native support for lambdas in tests, parameterized tests, and improved extensibility — modernizing the framework for Java 8+.
+
+**Key references:**
+- Kent Beck — SUnit (1989) and JUnit (1997) — The originator of the xUnit testing pattern; every modern testing framework in any language traces back to Beck's Smalltalk implementation.
+- Kent Beck — *Test-Driven Development by Example* (2003) — The canonical TDD reference; introduced the Red-Green-Refactor cycle and demonstrated TDD as a design practice, not just a testing technique.
+- Dan North — BDD article "Introducing BDD" (2006) — Reframed testing from checking behavior to specifying behavior; the Given-When-Then vocabulary became the standard for acceptance testing.
+- JUnit Team — JUnit 5 / JUnit Lambda (2017) — Modernized the 20-year-old JUnit framework with Java 8+ features, a modular architecture, and the `@Tag`, `@Nested`, and `@DisplayName` annotations that make large test suites maintainable.
+
+**Why this matters for testing:** The testing pyramid (70% unit, 20% integration, 10% E2E) and the Arrange-Act-Assert pattern are not arbitrary — they emerged from 30 years of empirical evidence about what makes test suites fast, reliable, and maintainable. Understanding the SUnit (1989) → JUnit (1997) → JUnit 5 (2017) evolution explains why modern testing frameworks work the way they do.
+
+---
+
 # 🧭 Testing Cheat Sheet
 
 ```
@@ -493,7 +515,34 @@ Handle: negative amounts, insufficient funds, null account
 
 ---
 
-**Next Chapter**: [API Design & REST →](07_API_Design_REST.md)
+### Production Reality
+
+**Testing practices fail in production in these named ways:**
+
+- **Flaky test tax** — Google research (2020, Luo et al.): 16% of CI failures are flaky tests (tests that fail non-deterministically, passing on re-run). At Google scale, flaky tests cost millions in developer hours per year. The 30% of test suite time spent re-running flaky tests reduces effective code review bandwidth. The real danger: developers learn to ignore red CI, and when a real failure appears in the noise, it is dismissed as "another flake."
+- **Test coverage as misleading proxy** — 80% line coverage can hide zero assertions on critical paths. A test that calls `order.calculateTotal()` and has 100% line coverage but no assertion (only `// assert result > 0`) passes but catches nothing. Capers Jones research: coverage metrics correlate weakly with defect removal efficiency. The test might be executing code without verifying that the output is correct.
+- **Integration test with shared state** — a `@SpringBootTest` that doesn't use `@Transactional` rollback shares state with other test classes running in parallel. Test A creates a user; Test B finds 2 users instead of 1. Test execution order in CI differs from local, making the failure appear intermittently. This is the "works on my machine" of test suites.
+- **E2E test fragility on environment drift** — a Selenium test passes in CI against staging but fails in production because production has different feature flags, a newer third-party JS library, or a different CDN response. Browser auto-updates can break ChromeDriver compatibility overnight. Tests that depend on exact DOM element ordering are the most fragile.
+
+**Debug workflow:** For flaky tests: `git bisect` across commits to find the commit that introduced the flake; check for async timing issues (`Thread.sleep`), shared mutable state, or random data generation. For coverage proxy failures: use mutation testing (Pitest) to verify tests actually catch defects, not just execute lines.
+**Mitigation discipline:** Configure CI to auto-retry flaky tests once (`--retries=1` in most test frameworks); use `@DirtiesContext` or TestContainers with unique ports per test class to eliminate shared state; maintain a "flaky test quarantine" dashboard to track and fix flakes before they accumulate.
 
 ---
 
+### Trade-off: Test Level Variants
+
+| Aspect              | Unit Test         | Integration Test  | End-to-End Test    | Contract Test     |
+|---------------------|-------------------|-------------------|-------------------|-------------------|
+| Speed               | ms                | seconds           | minutes            | seconds           |
+| Scope               | one function      | one service       | whole system      | service boundary  |
+| Maintenance         | low               | medium            | high              | medium            |
+| Confidence gained   | low               | medium            | high              | medium            |
+| Flakiness           | very low          | medium            | high              | low               |
+| Year popularized    | 1997 (JUnit)      | 2003 (SpringTest) | 2010 (Selenium)   | 2014 (Pact)       |
+| Best for            | business logic    | API contracts     | critical user flows| cross-team APIs   |
+
+**Selection rule (testing pyramid):** Many unit tests, fewer integration tests, fewer still E2E tests, plus contract tests at service boundaries.
+
+**Next Chapter**: [API Design & REST →](07_API_Design_REST.md)
+
+---

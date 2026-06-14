@@ -6,22 +6,17 @@
 
 ## 5W1H — Why This Chapter?
 
-
 > WHAT: The thinking frameworks expert frontend developers use
 > to build complex, aesthetic, maintainable UIs.
 >
-> WHY:  Beginners know syntax but freeze when faced with:
+> WHY: Beginners know syntax but freeze when faced with:
 > "Build a dashboard with filters, tabs, modal, charts."
 > Mental models turn a vague requirement into a clear plan.
 >
 > ANALOGY: An architect doesn't start by laying bricks.
-> They:  1. Understand the purpose (office? hospital?)
-> 2. Draw a blueprint (rooms, hallways, exits)
-> 3. Identify materials (concrete, glass, steel)
-> 4. Then build, room by room.
+> They: 1. Understand the purpose (office? hospital?) 2. Draw a blueprint (rooms, hallways, exits) 3. Identify materials (concrete, glass, steel) 4. Then build, room by room.
 >
 > Frontend is the same: Purpose → Blueprint → Components → Build
-
 
 ---
 
@@ -83,7 +78,6 @@ STEP 3 — IDENTIFY DATA FLOW:
 • Reviews → separate API call, lazy loaded in tab
 ```
 
-
 ---
 
 ## 2. The Data-First Approach
@@ -115,7 +109,6 @@ BEFORE WRITING ANY JSX, ANSWER:
 THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
-
 ---
 
 ## 3. State Ownership Rule
@@ -143,7 +136,6 @@ IF PROP DRILLING > 3 LEVELS DEEP → Consider:
 ├── Zustand (for frequently changing shared state)
 └── Composition pattern (pass components as children)
 ```
-
 
 ---
 
@@ -177,13 +169,11 @@ GOLDEN RULES:
 5. Position absolute ONLY for overlays/tooltips/badges
 ```
 
-
 ---
 
 ## 5. Building Complex UI Patterns
 
 ### Pattern 1: Modal / Dialog
-
 
 > MODAL — The most common complex UI pattern
 >
@@ -197,70 +187,69 @@ GOLDEN RULES:
 > ✓ Animate open/close
 > ✓ Render in portal (avoid z-index issues)
 
-
 ```tsx
 // Modal.tsx — Complete accessible modal
 import { useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 interface ModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-    children: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
 }
 
 function Modal({ isOpen, onClose, title, children }: ModalProps) {
-    const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-    // Close on Escape
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-        };
-        if (isOpen) {
-            document.addEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = "hidden"; // Prevent scroll
-        }
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = "";
-        };
-    }, [isOpen, onClose]);
+  // Close on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden"; // Prevent scroll
+    }
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, onClose]);
 
-    // Focus trap: focus the modal when opened
-    useEffect(() => {
-        if (isOpen) modalRef.current?.focus();
-    }, [isOpen]);
+  // Focus trap: focus the modal when opened
+  useEffect(() => {
+    if (isOpen) modalRef.current?.focus();
+  }, [isOpen]);
 
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
-    // Portal: render outside component tree, at document.body
-    return createPortal(
-        <div
-            className={styles.overlay}
-            onClick={onClose}           // Close on overlay click
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-        >
-            <div
-                ref={modalRef}
-                className={styles.modal}
-                onClick={e => e.stopPropagation()} // Don't close on modal click
-                tabIndex={-1}
-            >
-                <header className={styles.header}>
-                    <h2 id="modal-title">{title}</h2>
-                    <button onClick={onClose} aria-label="Close">✕</button>
-                </header>
-                <div className={styles.body}>
-                    {children}
-                </div>
-            </div>
-        </div>,
-        document.body
-    );
+  // Portal: render outside component tree, at document.body
+  return createPortal(
+    <div
+      className={styles.overlay}
+      onClick={onClose} // Close on overlay click
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()} // Don't close on modal click
+        tabIndex={-1}
+      >
+        <header className={styles.header}>
+          <h2 id="modal-title">{title}</h2>
+          <button onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </header>
+        <div className={styles.body}>{children}</div>
+      </div>
+    </div>,
+    document.body,
+  );
 }
 ```
 
@@ -269,43 +258,46 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
 ```tsx
 // useInfiniteScroll.ts — Reusable hook
 function useInfiniteScroll(callback: () => void) {
-    const observer = useRef<IntersectionObserver | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
 
-    const sentinelRef = useCallback((node: HTMLElement | null) => {
-        if (observer.current) observer.current.disconnect();
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                callback(); // Load more when sentinel is visible
-            }
-        });
-        if (node) observer.current.observe(node);
-    }, [callback]);
+  const sentinelRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          callback(); // Load more when sentinel is visible
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [callback],
+  );
 
-    return sentinelRef;
+  return sentinelRef;
 }
 
 // Usage:
 function ProductList() {
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage }
-        = useInfiniteQuery({
-            queryKey: ["products"],
-            queryFn: ({ pageParam }) => fetchProducts(pageParam),
-            getNextPageParam: (lastPage) => lastPage.nextCursor,
-        });
-
-    const sentinelRef = useInfiniteScroll(() => {
-        if (hasNextPage) fetchNextPage();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["products"],
+      queryFn: ({ pageParam }) => fetchProducts(pageParam),
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     });
 
-    return (
-        <div className={styles.grid}>
-            {data?.pages.flatMap(page =>
-                page.products.map(p => <ProductCard key={p.id} product={p} />)
-            )}
-            <div ref={sentinelRef} /> {/* Invisible sentinel at bottom */}
-            {isFetchingNextPage && <Spinner />}
-        </div>
-    );
+  const sentinelRef = useInfiniteScroll(() => {
+    if (hasNextPage) fetchNextPage();
+  });
+
+  return (
+    <div className={styles.grid}>
+      {data?.pages.flatMap((page) =>
+        page.products.map((p) => <ProductCard key={p.id} product={p} />),
+      )}
+      <div ref={sentinelRef} /> {/* Invisible sentinel at bottom */}
+      {isFetchingNextPage && <Spinner />}
+    </div>
+  );
 }
 ```
 
@@ -338,61 +330,57 @@ function ProductList() {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```tsx
 // FormWizard.tsx — Multi-step form
 type WizardState = {
-    currentStep: number;
-    formData: Record<string, unknown>;
+  currentStep: number;
+  formData: Record<string, unknown>;
 };
 
 type WizardAction =
-    | { type: "NEXT" }
-    | { type: "BACK" }
-    | { type: "UPDATE_DATA"; payload: Record<string, unknown> }
-    | { type: "GO_TO_STEP"; payload: number };
+  | { type: "NEXT" }
+  | { type: "BACK" }
+  | { type: "UPDATE_DATA"; payload: Record<string, unknown> }
+  | { type: "GO_TO_STEP"; payload: number };
 
 function wizardReducer(state: WizardState, action: WizardAction): WizardState {
-    switch (action.type) {
-        case "NEXT":
-            return { ...state, currentStep: state.currentStep + 1 };
-        case "BACK":
-            return { ...state, currentStep: Math.max(0, state.currentStep - 1) };
-        case "UPDATE_DATA":
-            return { ...state, formData: { ...state.formData, ...action.payload } };
-        case "GO_TO_STEP":
-            return { ...state, currentStep: action.payload };
-    }
+  switch (action.type) {
+    case "NEXT":
+      return { ...state, currentStep: state.currentStep + 1 };
+    case "BACK":
+      return { ...state, currentStep: Math.max(0, state.currentStep - 1) };
+    case "UPDATE_DATA":
+      return { ...state, formData: { ...state.formData, ...action.payload } };
+    case "GO_TO_STEP":
+      return { ...state, currentStep: action.payload };
+  }
 }
 
 const STEPS = [PersonalInfo, AddressForm, PaymentDetails, ReviewSubmit];
 
 function FormWizard() {
-    const [state, dispatch] = useReducer(wizardReducer, {
-        currentStep: 0,
-        formData: {},
-    });
+  const [state, dispatch] = useReducer(wizardReducer, {
+    currentStep: 0,
+    formData: {},
+  });
 
-    const StepComponent = STEPS[state.currentStep];
+  const StepComponent = STEPS[state.currentStep];
 
-    return (
-        <div className={styles.wizard}>
-            <StepIndicator current={state.currentStep} total={STEPS.length} />
-            <StepComponent
-                data={state.formData}
-                onUpdate={(data) => dispatch({ type: "UPDATE_DATA", payload: data })}
-                onNext={() => dispatch({ type: "NEXT" })}
-                onBack={() => dispatch({ type: "BACK" })}
-            />
-        </div>
-    );
+  return (
+    <div className={styles.wizard}>
+      <StepIndicator current={state.currentStep} total={STEPS.length} />
+      <StepComponent
+        data={state.formData}
+        onUpdate={(data) => dispatch({ type: "UPDATE_DATA", payload: data })}
+        onNext={() => dispatch({ type: "NEXT" })}
+        onBack={() => dispatch({ type: "BACK" })}
+      />
+    </div>
+  );
 }
 ```
 
 ---
-
-
-
 
 ## 6. The Feature Implementation Checklist
 
@@ -434,7 +422,6 @@ function FormWizard() {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 7. Responsive Design Mental Model
@@ -468,10 +455,7 @@ function FormWizard() {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 ## Interview Quick-Fire
 
@@ -503,15 +487,16 @@ Q: What makes a good component API (props)?
   Avoid boolean overload: use variant="primary" not isPrimary, isSecondary.
 ```
 
-
 ---
 
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Component Decomposition):** A designer hands you a mockup of a Twitter-like feed. You see a list of tweets, each with a user avatar, name, text, and action buttons (reply, retweet, like). You also see a trending sidebar. Draw the component hierarchy and determine which component fetches the feed data.
+
 <details><summary>Answer</summary>
 
 **Hierarchy:**
+
 ```text
 FeedPage
 ├── MainColumn
@@ -524,19 +509,21 @@ FeedPage
 └── SidebarColumn
     └── TrendingTopics
 ```
+
 **Data Fetching:** The `FeedPage` (or a dedicated route-level wrapper) should fetch the feed data and the trending topics, then pass them down as props or provide them via Context/Zustand if deeply nested.
+
 </details>
 
 **Challenge 2 (State Ownership):** You have a multi-step checkout form. Step 1 collects shipping info. Step 2 collects payment info. Step 3 is a review screen showing everything. Where should the state for `shippingInfo` and `paymentInfo` live?
+
 <details><summary>Answer</summary>
 
 **Answer:** The state must live in the lowest common ancestor of Step 1, Step 2, and Step 3. This is typically the parent `CheckoutWizard` component that renders the individual steps. The state is then passed down as props to the active step, or provided via Context if prop drilling becomes an issue.
+
 </details>
 
 ---
 
 > [← Build Tools](03_Build_Tools_Ecosystem.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Servers & Networking](../13_Developer_Essentials/17_Servers_Ports_Networking.md)
 
-
 ---
-

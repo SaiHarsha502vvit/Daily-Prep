@@ -15,6 +15,7 @@
 **Task:** I was tasked with bringing flakiness under 3% within one quarter without reducing test coverage.
 
 **Action:**
+
 - I built a dashboard aggregating test results by failure category (network timeout, race condition, selector timeout, environment issue).
 - The top 5 flaky tests accounted for 60% of all flakes. I root-caused each:
   - Two tests used `page.waitForTimeout` instead of waiting for a DOM state. Replaced with Playwright auto-waiting locators.
@@ -36,6 +37,7 @@
 **Task:** I needed to introduce contract testing (Pact) with minimal disruption to the team's existing workflow.
 
 **Action:**
+
 - I paired with one engineer for two afternoons to write Pact tests for a single service pair. We demoed the setup in a team meeting.
 - I created an internal "Pact in 15 minutes" guide with copy-pasteable templates for our tech stack.
 - I worked with Platform to add Pact Broker to our CI pipeline so contract verification ran automatically.
@@ -54,6 +56,7 @@
 **Task:** Product wanted to ship the feature for Black Friday (2 weeks away). I had to provide a clear quality assessment and recommend a path forward.
 
 **Action:**
+
 - I reproduced the bug consistently using a load-test script that drove 500 concurrent checkouts.
 - I documented the exact failure rate, customer impact (missing receipt email, order still successful), and the engineering effort to fix (estimated 2 weeks).
 - I proposed shipping with a monitoring alert on the receipt-generation failure metric, a manual fallback (customer support can trigger receipt resend), and a hard commitment to fix in the following sprint.
@@ -72,6 +75,7 @@
 **Task:** I was their onboarding buddy and needed to help them reach autonomy within the standard 90-day ramp.
 
 **Action:**
+
 - I started by observing them write a test, then asked them to run it in isolation and explain why it failed. This made the problem concrete rather than abstract.
 - I introduced them to the AAA pattern (Arrange-Act-Assert) and test data factories as a way to ensure each test owned its own state.
 - We pair-programmed refactoring their three most problematic tests together, then I asked them to refactor two more independently while I observed.
@@ -90,6 +94,7 @@
 **Task:** I needed to advocate for accessibility without derailing the launch timeline.
 
 **Action:**
+
 - I gathered data: 3 critical user journeys were currently unreachable via keyboard navigation. I ran a quick screen-reader test and documented the failure.
 - Instead of asking for a full accessibility audit, I scoped a "critical path only" accessibility pass that would take 2 days.
 - I presented the business risk (potential ADA complaint, user base includes ~8% screen-reader users per analytics) and the 2-day compromise to the PM and EM.
@@ -101,10 +106,10 @@
 
 ## Evaluation Rubric
 
-| Dimension | Exceeds Expectations | Meets Expectations | Below Expectations |
-|-----------|----------------------|--------------------|--------------------|
-| **STAR Structure** | Every answer follows Situation-Task-Action-Result clearly and concisely | Mostly follows STAR; one answer may be slightly vague | Rambling; missing key STAR components |
-| **Leadership Evidence** | Shows initiative, influence across teams, and ownership of outcomes | Shows ownership within own team | Only describes tasks they were assigned |
-| **Problem-Solving Depth** | Explains root cause analysis, trade-offs, and multiple considered options | Explains what they did and why | Only states actions without reasoning |
-| **Collaboration** | Demonstrates working with engineers, PMs, EMs, and support to reach outcomes | Works with immediate team | Works in isolation or blames others |
-| **Results Orientation** | Quantifies outcomes (percentages, time saved, defect reduction) | Mentions outcomes but not always quantified | No outcomes discussed; only describes activity |
+| Dimension                 | Exceeds Expectations                                                         | Meets Expectations                                    | Below Expectations                             |
+| ------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------- |
+| **STAR Structure**        | Every answer follows Situation-Task-Action-Result clearly and concisely      | Mostly follows STAR; one answer may be slightly vague | Rambling; missing key STAR components          |
+| **Leadership Evidence**   | Shows initiative, influence across teams, and ownership of outcomes          | Shows ownership within own team                       | Only describes tasks they were assigned        |
+| **Problem-Solving Depth** | Explains root cause analysis, trade-offs, and multiple considered options    | Explains what they did and why                        | Only states actions without reasoning          |
+| **Collaboration**         | Demonstrates working with engineers, PMs, EMs, and support to reach outcomes | Works with immediate team                             | Works in isolation or blames others            |
+| **Results Orientation**   | Quantifies outcomes (percentages, time saved, defect reduction)              | Mentions outcomes but not always quantified           | No outcomes discussed; only describes activity |

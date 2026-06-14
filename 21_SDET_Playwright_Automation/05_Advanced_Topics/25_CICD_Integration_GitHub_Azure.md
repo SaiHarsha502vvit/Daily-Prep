@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 **Cross-links:**
+
 - [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — Sharding and workers
 - [`16_CrossSite_Pattern6_StorageState_Chaining.md`](../03_D365_And_Patterns/16_CrossSite_Pattern6_StorageState_Chaining.md) — globalSetup in CI
 - [`21_Enterprise_Project_Structure.md`](../04_Enterprise_Architecture/21_Enterprise_Project_Structure.md) — Environment config
@@ -72,15 +73,15 @@ Add this script to catch missing env vars BEFORE tests run:
 // In CI: runs before `npx playwright test`
 
 const REQUIRED_ENV_VARS = [
-  'ADMIN_EMAIL',
-  'ADMIN_PASSWORD',
-  'ADMIN_ACCESS_TOKEN',
-  'TENANT_ID',
-  'CRM_URL',
-  'CUSTOMER_PORTAL_URL',
-  'API_BASE_URL',
-  'NOTIFICATION_SERVICE_URL',
-  'TEST_ENV',
+  "ADMIN_EMAIL",
+  "ADMIN_PASSWORD",
+  "ADMIN_ACCESS_TOKEN",
+  "TENANT_ID",
+  "CRM_URL",
+  "CUSTOMER_PORTAL_URL",
+  "API_BASE_URL",
+  "NOTIFICATION_SERVICE_URL",
+  "TEST_ENV",
 ] as const;
 
 let hasErrors = false;
@@ -91,20 +92,23 @@ for (const varName of REQUIRED_ENV_VARS) {
     console.error(`❌ Missing required env var: ${varName}`);
     hasErrors = true;
   } else {
-    const preview = value.length > 20 ? value.substring(0, 20) + '...' : value;
+    const preview = value.length > 20 ? value.substring(0, 20) + "..." : value;
     console.log(`✅ ${varName}: ${preview}`);
   }
 }
 
 if (hasErrors) {
-  console.error('\nAbort: Required environment variables are missing.');
-  process.exit(1);  // Non-zero exit → CI pipeline fails with clear message
+  console.error("\nAbort: Required environment variables are missing.");
+  process.exit(1); // Non-zero exit → CI pipeline fails with clear message
 }
 
-console.log('\nAll required environment variables are set. Ready to run tests.');
+console.log(
+  "\nAll required environment variables are set. Ready to run tests.",
+);
 ```
 
 In `package.json`:
+
 ```json
 {
   "scripts": {
@@ -127,22 +131,22 @@ Before diving into the YAML, here is the architectural flow of the enterprise pi
 graph TD
     A[PR Opened / Code Pushed] --> B(Job 1: Setup & Cache Node/Browsers)
     B --> C{Job 2: Smoke Tests}
-    
+
     C -->|Fails| D[Abort Pipeline / Mark PR Red]
     C -->|Passes| E[Job 3: Regression Shard 1/4]
     C -->|Passes| F[Job 3: Regression Shard 2/4]
     C -->|Passes| G[Job 3: Regression Shard 3/4]
     C -->|Passes| H[Job 3: Regression Shard 4/4]
-    
+
     E -->|Upload Blob Report| I((Sync Point))
     F -->|Upload Blob Report| I
     G -->|Upload Blob Report| I
     H -->|Upload Blob Report| I
-    
+
     I --> J{Job 4: Merge Reports}
     J --> K[Generate Unified HTML Report]
     K --> L[Upload Final Artifact]
-    
+
     style A fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
     style C fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
     style E fill:#e8f5e9,stroke:#4caf50,stroke-width:1px
@@ -166,15 +170,15 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options: [dev, staging, prod-readonly]
       test_tag:
-        description: 'Test tag to run (e.g. @smoke, @regression, leave empty for all)'
+        description: "Test tag to run (e.g. @smoke, @regression, leave empty for all)"
         required: false
-        default: '@smoke'
+        default: "@smoke"
 
 jobs:
   # ── Job 1: Dependency check ────────────────────────────────────────────────
@@ -184,9 +188,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci                          # install exact locked versions
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci # install exact locked versions
       - run: npx playwright install chromium # install only what we need
         # Note: --with-deps installs system dependencies (fonts, libs)
       - run: npx playwright install-deps chromium
@@ -195,15 +199,15 @@ jobs:
   smoke:
     needs: setup
     runs-on: ubuntu-latest
-    environment: staging                     # GitHub Environment with secrets
+    environment: staging # GitHub Environment with secrets
     timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - run: npm ci
       - run: npx playwright install chromium --with-deps
 
@@ -217,7 +221,7 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}
           ADMIN_ACCESS_TOKEN: ${{ secrets.STAGING_ADMIN_TOKEN }}
           TENANT_ID: ${{ secrets.TENANT_ID }}
-          CRM_URL: ${{ vars.STAGING_CRM_URL }}          # vars = non-secret config
+          CRM_URL: ${{ vars.STAGING_CRM_URL }} # vars = non-secret config
           CUSTOMER_PORTAL_URL: ${{ vars.STAGING_PORTAL_URL }}
           API_BASE_URL: ${{ vars.STAGING_API_URL }}
           NOTIFICATION_SERVICE_URL: ${{ vars.STAGING_NOTIF_URL }}
@@ -236,13 +240,13 @@ jobs:
           NOTIFICATION_SERVICE_URL: ${{ vars.STAGING_NOTIF_URL }}
           TEST_ENV: staging
           # Enable API request logging for CI debugging
-          PLAYWRIGHT_API_LOGGING: 'true'
+          PLAYWRIGHT_API_LOGGING: "true"
 
       # Always upload artifacts — even if tests fail
       # This is where you get the HTML report, screenshots, videos, traces
       - name: Upload test results
         uses: actions/upload-artifact@v4
-        if: always()                         # ← CRITICAL: always upload, even on failure
+        if: always() # ← CRITICAL: always upload, even on failure
         with:
           name: playwright-smoke-report
           path: |
@@ -252,14 +256,14 @@ jobs:
 
   # ── Job 3: Full regression (sharded — runs in parallel across 4 machines) ──
   regression:
-    needs: smoke                             # Only run full suite if smoke passes
+    needs: smoke # Only run full suite if smoke passes
     runs-on: ubuntu-latest
     environment: staging
     timeout-minutes: 60
     # Sharding: run tests across 4 machines simultaneously
     # Machine 1 runs shard 1/4, machine 2 runs shard 2/4, etc.
     strategy:
-      fail-fast: false                       # Don't cancel other shards if one fails
+      fail-fast: false # Don't cancel other shards if one fails
       matrix:
         shard: [1, 2, 3, 4]
 
@@ -267,8 +271,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - run: npm ci
       - run: npx playwright install chromium --with-deps
 
@@ -288,7 +292,7 @@ jobs:
           API_BASE_URL: ${{ vars.STAGING_API_URL }}
           NOTIFICATION_SERVICE_URL: ${{ vars.STAGING_NOTIF_URL }}
           TEST_ENV: staging
-          PLAYWRIGHT_API_LOGGING: 'true'
+          PLAYWRIGHT_API_LOGGING: "true"
 
       - name: Upload shard blob report
         uses: actions/upload-artifact@v4
@@ -296,7 +300,7 @@ jobs:
         with:
           name: blob-report-shard-${{ matrix.shard }}
           path: blob-report/
-          retention-days: 1                  # short retention — only needed for merge
+          retention-days: 1 # short retention — only needed for merge
 
   # ── Job 4: Merge shard reports into one HTML report ───────────────────────
   merge-reports:
@@ -307,8 +311,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - run: npm ci
 
       - name: Download all blob reports
@@ -346,44 +350,43 @@ trigger:
       - develop
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 variables:
   # Non-secret config (set in Azure DevOps Pipeline → Variables)
-  TEST_ENV: 'staging'
-  STAGING_CRM_URL: 'https://staging-crm.company.com'
-  STAGING_API_URL: 'https://staging-api.company.com'
-  NODE_VERSION: '20'
+  TEST_ENV: "staging"
+  STAGING_CRM_URL: "https://staging-crm.company.com"
+  STAGING_API_URL: "https://staging-api.company.com"
+  NODE_VERSION: "20"
 
 stages:
-
   # ── Stage 1: Smoke ─────────────────────────────────────────────────────────
   - stage: SmokeTests
-    displayName: 'Smoke Tests (@smoke)'
+    displayName: "Smoke Tests (@smoke)"
     jobs:
       - job: RunSmoke
-        displayName: 'Run @smoke tests'
+        displayName: "Run @smoke tests"
         timeoutInMinutes: 30
 
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '$(NODE_VERSION)'
+              versionSpec: "$(NODE_VERSION)"
 
           - script: npm ci
-            displayName: 'Install dependencies'
+            displayName: "Install dependencies"
 
           - script: npx playwright install chromium --with-deps
-            displayName: 'Install Playwright browsers'
+            displayName: "Install Playwright browsers"
 
           - script: npx ts-node scripts/check-env.ts
-            displayName: 'Validate environment variables'
+            displayName: "Validate environment variables"
             env:
               # Azure DevOps secrets — set as secret variables in pipeline
-              ADMIN_EMAIL: $(STAGING_ADMIN_EMAIL)         # (secret)
-              ADMIN_PASSWORD: $(STAGING_ADMIN_PASSWORD)   # (secret)
-              ADMIN_ACCESS_TOKEN: $(STAGING_ADMIN_TOKEN)  # (secret)
-              TENANT_ID: $(TENANT_ID)                     # (secret)
+              ADMIN_EMAIL: $(STAGING_ADMIN_EMAIL) # (secret)
+              ADMIN_PASSWORD: $(STAGING_ADMIN_PASSWORD) # (secret)
+              ADMIN_ACCESS_TOKEN: $(STAGING_ADMIN_TOKEN) # (secret)
+              TENANT_ID: $(TENANT_ID) # (secret)
               CRM_URL: $(STAGING_CRM_URL)
               CUSTOMER_PORTAL_URL: $(STAGING_PORTAL_URL)
               API_BASE_URL: $(STAGING_API_URL)
@@ -394,7 +397,7 @@ stages:
               npx playwright test \
                 --grep "@smoke" \
                 --reporter=html,junit
-            displayName: 'Run smoke tests'
+            displayName: "Run smoke tests"
             env:
               ADMIN_EMAIL: $(STAGING_ADMIN_EMAIL)
               ADMIN_PASSWORD: $(STAGING_ADMIN_PASSWORD)
@@ -405,40 +408,40 @@ stages:
               API_BASE_URL: $(STAGING_API_URL)
               NOTIFICATION_SERVICE_URL: $(STAGING_NOTIF_URL)
               TEST_ENV: $(TEST_ENV)
-              PLAYWRIGHT_API_LOGGING: 'true'
+              PLAYWRIGHT_API_LOGGING: "true"
 
           # Publish JUnit results (shows in Azure DevOps Tests tab)
           - task: PublishTestResults@2
             condition: always()
             inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: 'test-results/junit-results.xml'
-              testRunTitle: 'Playwright Smoke Tests'
+              testResultsFormat: "JUnit"
+              testResultsFiles: "test-results/junit-results.xml"
+              testRunTitle: "Playwright Smoke Tests"
               failTaskOnFailedTests: true
 
           # Publish HTML report as build artifact
           - task: PublishBuildArtifacts@1
             condition: always()
             inputs:
-              pathToPublish: 'playwright-report'
-              artifactName: 'playwright-smoke-report'
+              pathToPublish: "playwright-report"
+              artifactName: "playwright-smoke-report"
 
   # ── Stage 2: Regression (parallel) ────────────────────────────────────────
   - stage: RegressionTests
-    displayName: 'Regression Tests (sharded)'
+    displayName: "Regression Tests (sharded)"
     dependsOn: SmokeTests
     condition: succeeded()
     jobs:
       # Azure DevOps parallel jobs via strategy matrix
       - job: Shard
         strategy:
-          parallel: 4              # 4 parallel agents
+          parallel: 4 # 4 parallel agents
         timeoutInMinutes: 60
 
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '$(NODE_VERSION)'
+              versionSpec: "$(NODE_VERSION)"
           - script: npm ci
           - script: npx playwright install chromium --with-deps
 
@@ -448,7 +451,7 @@ stages:
                 --grep "@regression" \
                 --shard=$(SYSTEM_JOBPOSITIONINPHASE)/$(SYSTEM_TOTALJOBSINPHASE) \
                 --reporter=blob
-            displayName: 'Run regression shard $(SYSTEM_JOBPOSITIONINPHASE)/4'
+            displayName: "Run regression shard $(SYSTEM_JOBPOSITIONINPHASE)/4"
             env:
               ADMIN_EMAIL: $(STAGING_ADMIN_EMAIL)
               ADMIN_PASSWORD: $(STAGING_ADMIN_PASSWORD)
@@ -463,8 +466,8 @@ stages:
           - task: PublishBuildArtifacts@1
             condition: always()
             inputs:
-              pathToPublish: 'blob-report'
-              artifactName: 'blob-shard-$(SYSTEM_JOBPOSITIONINPHASE)'
+              pathToPublish: "blob-report"
+              artifactName: "blob-shard-$(SYSTEM_JOBPOSITIONINPHASE)"
 ```
 
 ---
@@ -476,17 +479,17 @@ The config must behave differently locally vs in CI:
 ```typescript
 // playwright.config.ts
 
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
-const isCI = Boolean(process.env.CI);  // GitHub Actions / Azure DevOps both set CI=true
+const isCI = Boolean(process.env.CI); // GitHub Actions / Azure DevOps both set CI=true
 
 export default defineConfig({
-  testDir: './tests/specs',
-  globalSetup: './tests/globalSetup.ts',
+  testDir: "./tests/specs",
+  globalSetup: "./tests/globalSetup.ts",
 
   // In CI: run all tests in parallel across workers
   // Locally: limit workers to avoid hogging your machine
-  workers: isCI ? '100%' : 4,
+  workers: isCI ? "100%" : 4,
 
   // Retry failed tests automatically
   // In CI: retry up to 2 times (catches transient network/timing issues)
@@ -494,7 +497,7 @@ export default defineConfig({
   retries: isCI ? 2 : 0,
 
   // Timeout for each test
-  timeout: isCI ? 90_000 : 60_000,  // CI is slower
+  timeout: isCI ? 90_000 : 60_000, // CI is slower
 
   // Timeout for expect() assertions
   expect: { timeout: isCI ? 30_000 : 15_000 },
@@ -502,13 +505,13 @@ export default defineConfig({
   // Reporter: different in CI vs local
   reporter: isCI
     ? [
-        ['github'],      // Annotates PRs with test failures inline
-        ['html', { outputFolder: 'playwright-report', open: 'never' }],
-        ['junit', { outputFile: 'test-results/junit-results.xml' }],
+        ["github"], // Annotates PRs with test failures inline
+        ["html", { outputFolder: "playwright-report", open: "never" }],
+        ["junit", { outputFile: "test-results/junit-results.xml" }],
       ]
     : [
-        ['html', { outputFolder: 'playwright-report', open: 'on-failure' }],
-        ['list'],        // Compact live output in terminal
+        ["html", { outputFolder: "playwright-report", open: "on-failure" }],
+        ["list"], // Compact live output in terminal
       ],
 
   use: {
@@ -516,13 +519,13 @@ export default defineConfig({
     headless: isCI ? true : !process.env.PLAYWRIGHT_HEADED,
 
     // Capture trace on retry (essential for debugging CI failures)
-    trace: isCI ? 'on-first-retry' : 'retain-on-failure',
+    trace: isCI ? "on-first-retry" : "retain-on-failure",
 
     // Screenshot on failure
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
 
     // Video on retry (helps see what actually happened)
-    video: isCI ? 'on-first-retry' : 'off',
+    video: isCI ? "on-first-retry" : "off",
 
     // Global viewport
     viewport: { width: 1920, height: 1080 },
@@ -533,26 +536,26 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'admin-chrome',
-      testMatch: '**/admin/**/*.spec.ts',
+      name: "admin-chrome",
+      testMatch: "**/admin/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/admin-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/admin-state.json",
         baseURL: process.env.CRM_URL,
       },
     },
     {
-      name: 'customer-chrome',
-      testMatch: '**/customer/**/*.spec.ts',
+      name: "customer-chrome",
+      testMatch: "**/customer/**/*.spec.ts",
       use: {
-        ...devices['Desktop Chrome'],
-        storageState: 'auth-states/customer-state.json',
+        ...devices["Desktop Chrome"],
+        storageState: "auth-states/customer-state.json",
         baseURL: process.env.CUSTOMER_PORTAL_URL,
       },
     },
     {
-      name: 'api-tests',
-      testMatch: '**/api/**/*.spec.ts',
+      name: "api-tests",
+      testMatch: "**/api/**/*.spec.ts",
       use: {
         baseURL: process.env.API_BASE_URL,
       },
@@ -583,6 +586,7 @@ By tag:
 ```
 
 **What to share with your manager:**
+
 - The summary line: "237/242 tests passed in 14 minutes"
 - Links to failing test screenshots
 - Tag-based breakdown: "All smoke tests passed. 3 regression-only tests failed — investigating."
@@ -640,13 +644,14 @@ Why is `if: always()` critical on the upload step?
 A) Without it, the step runs twice  
 B) Without it, if tests fail, the upload step is skipped — you lose the report exactly when you need it most  
 C) `if: always()` makes the step run in parallel with the test step  
-D) It enables automatic retry of the upload  
+D) It enables automatic retry of the upload
 
 <details><summary>Answer</summary>
 
 **B** — GitHub Actions skips subsequent steps when a previous step fails (by default). If tests fail, the `playwright test` step exits with a non-zero code → GitHub marks the job as failed → all following steps are skipped — including the artifact upload. Without `if: always()`, you lose the report, screenshots, and trace files precisely when a test failure has just occurred and you need them most.
 
 `if: always()` forces the step to run regardless of whether previous steps succeeded or failed.
+
 </details>
 
 ---
@@ -675,6 +680,7 @@ D) It enables automatic retry of the upload
 **Bug 2:** Missing `--reporter=html` flag (or equivalent config). Unless `playwright.config.ts` already sets `reporter: 'html'`, the default reporter writes no HTML files. The `playwright-report/` directory would be empty, and the artifact upload would succeed but contain nothing useful.
 
 Fix:
+
 ```yaml
 - name: Run tests
   run: npx playwright test --reporter=html,github
@@ -683,11 +689,12 @@ Fix:
 
 - name: Upload report
   uses: actions/upload-artifact@v4
-  if: always()      # ← required
+  if: always() # ← required
   with:
     name: report
     path: playwright-report/
 ```
+
 </details>
 
 ---
@@ -695,6 +702,7 @@ Fix:
 ### Challenge 3 [Write It Yourself]
 
 Write the `package.json` scripts section for a team that needs:
+
 - `test:smoke` — run only @smoke tests with HTML + GitHub reporter
 - `test:regression` — run @regression tests with retries=2 and blob reporter (for sharding)
 - `test:local` — run all tests, headed, with 2 workers, HTML report opens on failure
@@ -721,9 +729,11 @@ Write the `package.json` scripts section for a team that needs:
   }
 }
 ```
+
 </details>
 
 ---
+
 **Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 ### Challenge 4 [MCQ] — Sharding: `fail-fast: false`
@@ -747,11 +757,13 @@ D) It prevents duplicate test execution when matrix values overlap
 **B** — By default, GitHub Actions `fail-fast: true` means: if any matrix job fails, cancel all remaining matrix jobs. For sharding, this means: if shard 1 has a failing test, shards 2, 3, and 4 are cancelled. You receive results from only one quarter of your suite.
 
 The consequences:
+
 - The `merge-reports` job (which needs ALL four blob reports) runs with incomplete data
 - You cannot tell if shards 2-4 have additional failures or all-passing
 - The merged HTML report shows 25% of tests — misleading for management dashboards
 
 With `fail-fast: false`:
+
 - All 4 shards run to completion regardless of each other's failures
 - The merge job receives all 4 blob reports
 - The merged HTML shows the FULL picture: which tests failed, which passed, across all shards
@@ -788,19 +800,22 @@ Both usages are backwards:
 `secrets` are masked in logs (replaced with `***`), which makes debugging impossible. If the URL is wrong, you cannot see what value was used because it is always redacted. Non-sensitive config (URLs, tenant IDs, environment names) belongs in `vars` so it is visible in logs and auditable.
 
 The correct distinction:
+
 - `secrets`: passwords, tokens, API keys, private certificates — anything that would cause harm if leaked. Values are masked in ALL logs.
 - `vars`: URLs, environment names, feature flags, non-sensitive config — values you need to see in logs to debug pipeline failures.
 
 Correct setup:
+
 ```yaml
 env:
-  ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }}  # secret: masked in logs
-  ADMIN_TOKEN: ${{ secrets.STAGING_ADMIN_TOKEN }}        # secret: masked in logs
-  API_BASE_URL: ${{ vars.STAGING_API_URL }}              # variable: visible in logs, auditable
-  TEST_ENV: staging                                       # hardcoded constant: fine in YAML
+  ADMIN_PASSWORD: ${{ secrets.STAGING_ADMIN_PASSWORD }} # secret: masked in logs
+  ADMIN_TOKEN: ${{ secrets.STAGING_ADMIN_TOKEN }} # secret: masked in logs
+  API_BASE_URL: ${{ vars.STAGING_API_URL }} # variable: visible in logs, auditable
+  TEST_ENV: staging # hardcoded constant: fine in YAML
 ```
 
 </details>
 
 ---
+
 **Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)

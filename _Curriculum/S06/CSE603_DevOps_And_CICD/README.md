@@ -17,20 +17,20 @@ End-to-end DevOps pipeline: containerization (Docker), container orchestration (
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Docker fundamentals: images, containers, networks, volumes, Docker Compose |
-| 2 | Docker optimization: multi-stage builds, distroless, layer caching, security scanning |
-| 3 | Kubernetes core: Pod, Deployment, ReplicaSet, Service, Ingress |
-| 4 | Kubernetes advanced: ConfigMaps, Secrets, RBAC, NetworkPolicies, HorizontalPodAutoscaler |
-| 5 | CI/CD fundamentals: pipeline anatomy, GitHub Actions syntax, matrix builds |
-| 6 | Advanced CI/CD: artifacts, cache optimization, secret management, self-hosted runners |
-| 7 | Infrastructure as Code: Terraform HCL, modules, remote state, workspaces |
-| 8 | Deployment strategies: blue-green, canary, rolling updates, feature flags |
-| 9 | Observability: Prometheus metrics, Grafana dashboards, alerting rules |
-| 10 | Distributed tracing: OpenTelemetry instrumentation, Tempo traces, correlation |
-| 11 | GitOps: ArgoCD, declarative deployments, drift reconciliation |
-| 12 | Capstone: complete CI/CD pipeline with Docker, K8s, and monitoring |
+| Week | Topic                                                                                    |
+| ---- | ---------------------------------------------------------------------------------------- |
+| 1    | Docker fundamentals: images, containers, networks, volumes, Docker Compose               |
+| 2    | Docker optimization: multi-stage builds, distroless, layer caching, security scanning    |
+| 3    | Kubernetes core: Pod, Deployment, ReplicaSet, Service, Ingress                           |
+| 4    | Kubernetes advanced: ConfigMaps, Secrets, RBAC, NetworkPolicies, HorizontalPodAutoscaler |
+| 5    | CI/CD fundamentals: pipeline anatomy, GitHub Actions syntax, matrix builds               |
+| 6    | Advanced CI/CD: artifacts, cache optimization, secret management, self-hosted runners    |
+| 7    | Infrastructure as Code: Terraform HCL, modules, remote state, workspaces                 |
+| 8    | Deployment strategies: blue-green, canary, rolling updates, feature flags                |
+| 9    | Observability: Prometheus metrics, Grafana dashboards, alerting rules                    |
+| 10   | Distributed tracing: OpenTelemetry instrumentation, Tempo traces, correlation            |
+| 11   | GitOps: ArgoCD, declarative deployments, drift reconciliation                            |
+| 12   | Capstone: complete CI/CD pipeline with Docker, K8s, and monitoring                       |
 
 ## Linked Existing Content
 

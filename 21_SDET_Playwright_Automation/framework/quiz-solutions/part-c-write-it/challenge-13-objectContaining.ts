@@ -77,7 +77,7 @@ test('quiz-02-ch13: partial match with objectContaining', async ({ page }) => {
       username: 'jsmith',
       email: 'jsmith@example.com',
       role: 'admin',
-    })
+    }),
   );
 
   // We can also assert nested objects partially using nested objectContaining.
@@ -87,7 +87,7 @@ test('quiz-02-ch13: partial match with objectContaining', async ({ page }) => {
       metadata: expect.objectContaining({
         loginCount: expect.any(Number),
       }),
-    })
+    }),
   );
 });
 
@@ -120,7 +120,7 @@ test('quiz-02-ch13: array of objects with partial matching', async ({ page }) =>
     expect.arrayContaining([
       expect.objectContaining({ sku: 'A001', name: 'Widget' }),
       expect.objectContaining({ sku: 'B002', name: 'Gadget' }),
-    ])
+    ]),
   );
 
   // Assert every product has a positive price.
@@ -128,7 +128,7 @@ test('quiz-02-ch13: array of objects with partial matching', async ({ page }) =>
     expect(product).toEqual(
       expect.objectContaining({
         price: expect.any(Number),
-      })
+      }),
     );
     expect(product.price).toBeGreaterThan(0);
   }
@@ -151,7 +151,7 @@ test('quiz-02-ch13: partial API response validation', async ({ request }) => {
       email: 'janet.weaver@reqres.in',
       first_name: 'Janet',
       last_name: 'Weaver',
-    })
+    }),
   );
 
   // And we can still make a targeted assertion on things we DO care about.

@@ -312,61 +312,61 @@ helm template my-release ./my-app --debug
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
-    namespace: argocd
+  name: my-app
+  namespace: argocd
 spec:
-    project: default
+  project: default
 
-    source:
-        repoURL: https://github.com/myorg/my-app-manifests.git
-        targetRevision: main
-        path: kubernetes/production
+  source:
+    repoURL: https://github.com/myorg/my-app-manifests.git
+    targetRevision: main
+    path: kubernetes/production
 
-        # For Helm charts
-        helm:
-            valueFiles:
-                - values-production.yaml
-            parameters:
-                - name: image.tag
-                  value: v1.2.3
+    # For Helm charts
+    helm:
+      valueFiles:
+        - values-production.yaml
+      parameters:
+        - name: image.tag
+          value: v1.2.3
 
-    destination:
-        server: https://kubernetes.default.svc
-        namespace: production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
 
-    syncPolicy:
-        automated:
-            prune: true # Delete resources not in Git
-            selfHeal: true # Revert manual changes
-        syncOptions:
-            - CreateNamespace=true
-        retry:
-            limit: 5
-            backoff:
-                duration: 5s
-                factor: 2
-                maxDuration: 3m
+  syncPolicy:
+    automated:
+      prune: true # Delete resources not in Git
+      selfHeal: true # Revert manual changes
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
 
 ---
 # ArgoCD Project
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-    name: production
-    namespace: argocd
+  name: production
+  namespace: argocd
 spec:
-    description: Production applications
-    sourceRepos:
-        - "https://github.com/myorg/*"
-    destinations:
-        - namespace: production
-          server: https://kubernetes.default.svc
-    clusterResourceWhitelist:
-        - group: ""
-          kind: Namespace
-    namespaceResourceWhitelist:
-        - group: "*"
-          kind: "*"
+  description: Production applications
+  sourceRepos:
+    - "https://github.com/myorg/*"
+  destinations:
+    - namespace: production
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
 ```
 
 ```
@@ -632,9 +632,6 @@ GITOPS WORKFLOW:
 ```
 
 ---
-
-
-
 
 ## 🔬 DEEP INTERNALS - How Everything ACTUALLY Works
 
@@ -1949,9 +1946,6 @@ TTI (Time to Interactive): < 3.8s
 
 ---
 
-
-
-
 ## 🔬 Docker & Kubernetes Deep Internals
 
 ### How Docker Containers Work
@@ -2214,18 +2208,20 @@ KUBERNETES ARCHITECTURE - DEEP DIVE:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🔬 Docker & Kubernetes Deep Internals**
 
 **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+
 <details><summary>Answer</summary>
 
 In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+
 </details>
 
 **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+
 <details><summary>Answer</summary>
 
 `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-</details>
 
+</details>

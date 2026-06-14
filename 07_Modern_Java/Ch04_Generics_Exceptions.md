@@ -80,22 +80,23 @@ public <T> T create(Class<T> type) throws Exception {
 
 ---
 
-
-
 🔬 **Section Challenge — 1. Type Erasure — The #1 Thing to Understand**
 
 **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+
 <details><summary>Answer</summary>
 
 No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## 2. Bounded Type Parameters — Restricting T
 
@@ -121,16 +122,15 @@ public static <T extends Comparable<T> & Serializable> T findMax(List<T> list) {
 
 ---
 
-
-
 🔬 **Section Challenge — 2. Bounded Type Parameters — Restricting T**
 
 **Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+
 <details><summary>Answer</summary>
 
 The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
-</details>
 
+</details>
 
 ## 3. Wildcards — The `?` Symbol
 
@@ -167,17 +167,18 @@ void addNumbers(List<? super Integer> list) {
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Wildcards — The `?` Symbol**
 
 **Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
+
 <details><summary>Answer</summary>
 
 No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
+
 </details>
 
 **Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
+
 <details><summary>Answer</summary>
 
 ```java
@@ -185,9 +186,10 @@ No. The compiler doesn't know the actual type — it could be `List<Integer>`, `
     for (T item : src) dst.add(item);
 }
 ```
-PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
-</details>
 
+PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
+
+</details>
 
 ## 4. Invariance, Covariance & Contravariance — The Big Picture
 
@@ -333,7 +335,7 @@ RULE OF THUMB:
   Invariant   → full access, no flexibility
   Covariant   → flexible input, read-only (PRODUCER)
   Contravariant → flexible output, write-only (CONSUMER)
-  
+
   This is EXACTLY what PECS says! ↓
 ```
 
@@ -366,8 +368,6 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Invariance, Covariance & Contravariance — The Big Picture**
 
 **Challenge 1 (Array vs Generic Variance):** The code shows `Animal[] animals = new Dog[3]` COMPILES, then `animals[1] = new Cat()` throws `ArrayStoreException` at RUNTIME. **Who** detects the problem in arrays vs. generics? **When** does each catch it? **What** made Java choose invariant generics but covariant arrays?
@@ -379,8 +379,8 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 </details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-</details>
 
+</details>
 
 ## 5. PECS — Producer Extends, Consumer Super
 
@@ -453,16 +453,15 @@ Collections.copy(numbers, integers);  // ✅ Copy Integer list into Number list
 
 ---
 
-
-
 🔬 **Section Challenge — 5. PECS — Producer Extends, Consumer Super**
 
 **Challenge 1 (Reasoning):** Stack's `pushAll(Iterable<? extends E> src)` vs `popAll(Collection<? super E> dst)` — trace why each wildcard direction is needed.
+
 <details><summary>Answer</summary>
 
 `pushAll`: we READ from `src` to push into the stack → it Produces E → `extends E`. `popAll`: we WRITE popped values INTO `dst` → `dst` Consumes E → `super E`. Applying PECS mechanically: Producer=Extends, Consumer=Super. If you used `<E>` for both, you'd lose flexibility — `pushAll(List<Integer>)` would fail for a `Stack<Number>`.
-</details>
 
+</details>
 
 ## 6. Generic Methods — Type Inference
 
@@ -492,8 +491,6 @@ max(10, 20);              // 20 — Integer implements Comparable
 
 ---
 
-
-
 🔬 **Section Challenge — 6. Generic Methods — Type Inference**
 
 **Challenge 1 (Design — Who/When/What):** `Collections.sort(list)` infers `T` automatically. **Who** performs the type inference? **When** (compile time or runtime)? **What** happens if the list contains mixed types like `List<Object>` with both `String` and `Integer`?
@@ -504,7 +501,6 @@ max(10, 20);              // 20 — Integer implements Comparable
 
 </details>
 
-
 ## 7. Generic Class Patterns — Real-World
 
 ```java
@@ -513,28 +509,28 @@ public class Result<T> {
     private final T value;
     private final String error;
     private final boolean success;
-    
+
     private Result(T value, String error, boolean success) {
         this.value = value;
         this.error = error;
         this.success = success;
     }
-    
+
     public static <T> Result<T> ok(T value) {
         return new Result<>(value, null, true);
     }
-    
+
     public static <T> Result<T> fail(String error) {
         return new Result<>(null, error, false);
     }
-    
+
     public <R> Result<R> map(Function<T, R> mapper) {
         if (success) {
             return Result.ok(mapper.apply(value));
         }
         return Result.fail(error);
     }
-    
+
     // Getters...
 }
 
@@ -565,16 +561,16 @@ public class UserRepository implements Repository<User, Long> {
 public class Builder<T> {
     private final Supplier<T> constructor;
     private final List<Consumer<T>> modifiers = new ArrayList<>();
-    
+
     public Builder(Supplier<T> constructor) {
         this.constructor = constructor;
     }
-    
+
     public Builder<T> with(Consumer<T> modifier) {
         modifiers.add(modifier);
         return this;
     }
-    
+
     public T build() {
         T instance = constructor.get();
         modifiers.forEach(m -> m.accept(instance));
@@ -589,8 +585,6 @@ User user = new Builder<>(User::new)
 ```
 
 ---
-
-
 
 ## 8. Type Inference Evolution
 
@@ -612,8 +606,6 @@ list.stream()
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Type Inference Evolution**
 
 **Challenge 1 (Reasoning — Who/When/What):** Java 10 introduced `var`. `var list = new ArrayList<String>()` works. But `var list = new ArrayList<>()` gives a raw type warning. **Why?** **What** type does the compiler infer?
@@ -624,12 +616,9 @@ list.stream()
 
 </details>
 
-
 ## PART 2: EXCEPTION HANDLING — Beyond try-catch
 
 ---
-
-
 
 🔬 **Section Challenge — PART 2: EXCEPTION HANDLING — Beyond try-catch**
 
@@ -640,7 +629,6 @@ list.stream()
 **Who catches first?** Spring's `TransactionInterceptor` (the AOP advice around the method). It inspects the exception type and the `rollbackFor`/`noRollbackFor` rules. **When rollback?** Default: rolls back on `RuntimeException` and `Error`, commits on `Exception` (checked). So unchecked exceptions = automatic rollback, checked exceptions = commit (unless overridden with `@Transactional(rollbackFor = Exception.class)`). **If swallowed?** The TransactionInterceptor only acts on exceptions that ESCAPE the `@Transactional` method. If a caller catches and swallows, the transaction COMMITS even though the operation partially failed — data corruption. Never swallow exceptions inside transactional boundaries.
 
 </details>
-
 
 ## 9. Exception Hierarchy — The Family Tree
 
@@ -653,7 +641,7 @@ list.stream()
      VirtualMachine               /      |      \     FileNotFound
      Error                  NullPointer  ClassCast  IllegalArgument
                             IndexOutOf    Arithmetic  IllegalState
-                            
+
 ┌─────────────────────────────────────────────────────────────────┐
 │ Error: JVM problems — DON'T catch (can't recover)               │
 │   OutOfMemoryError, StackOverflowError                          │
@@ -673,22 +661,22 @@ list.stream()
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Exception Hierarchy — The Family Tree**
 
 **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+
 <details><summary>Answer</summary>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
-
 
 ## 10. Custom Exception Design — The Right Way
 
@@ -701,13 +689,13 @@ throw new RuntimeException("Error");
 public class ApplicationException extends RuntimeException {
     private final String errorCode;
     private final HttpStatus httpStatus;
-    
+
     public ApplicationException(String message, String errorCode, HttpStatus httpStatus) {
         super(message);
         this.errorCode = errorCode;
         this.httpStatus = httpStatus;
     }
-    
+
     public String getErrorCode() { return errorCode; }
     public HttpStatus getHttpStatus() { return httpStatus; }
 }
@@ -741,11 +729,10 @@ public User findById(Long id) {
 
 ---
 
-
-
 🔬 **Section Challenge — 10. Custom Exception Design — The Right Way**
 
 **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+
 <details><summary>Answer</summary>
 
 ```java
@@ -759,9 +746,10 @@ public class PaymentException extends RuntimeException { // unchecked!
 public class InsufficientFundsException extends PaymentException { ... }
 public class PaymentGatewayException extends PaymentException { ... }
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-</details>
 
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+
+</details>
 
 ## 11. Exception Translation — Layer Boundaries
 
@@ -794,19 +782,19 @@ public User getUserByEmail(String email) {
 // Controller — Global exception handler
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(ex.getHttpStatus())
             .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
     }
-    
+
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleAppException(ApplicationException ex) {
         return ResponseEntity.status(ex.getHttpStatus())
             .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
         log.error("Unexpected error", ex);
@@ -820,8 +808,6 @@ record ErrorResponse(String code, String message) {}
 
 ---
 
-
-
 🔬 **Section Challenge — 11. Exception Translation — Layer Boundaries**
 
 **Challenge 1 (Translation Design):** A `DataAccessException` (Spring's unchecked DB exception) leaks into the Controller layer. **Who** translates it? **When** should translation happen? **What** is the anti-pattern of catching `DataAccessException` directly in the Controller?
@@ -833,14 +819,15 @@ record ErrorResponse(String code, String message) {}
 </details>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
-
 
 ## 12. try-with-resources — Deep Understanding
 
@@ -861,18 +848,18 @@ try (
 // Custom AutoCloseable
 public class DatabaseTransaction implements AutoCloseable {
     private final Connection conn;
-    
+
     public DatabaseTransaction(Connection conn) throws SQLException {
         this.conn = conn;
         conn.setAutoCommit(false);
         System.out.println("Transaction started");
     }
-    
+
     public void commit() throws SQLException {
         conn.commit();
         System.out.println("Committed");
     }
-    
+
     @Override
     public void close() throws SQLException {
         if (!conn.getAutoCommit()) {
@@ -914,14 +901,14 @@ try {
 
 ---
 
-
-
 🔬 **Section Challenge — 12. try-with-resources — Deep Understanding**
 
 **Challenge 1 (Reasoning):** Both the `try` block and `close()` throw exceptions. Which one propagates? Where does the other go?
+
 <details><summary>Answer</summary>
 
 The `try` block's exception propagates (it's the 'primary' exception). The `close()` exception is SUPPRESSED — attached via `addSuppressed()`. Retrieve it with `e.getSuppressed()`. This is the opposite of old `try/finally` where the `finally` exception would REPLACE the original (swallowing it silently). Always use try-with-resources for `Closeable` resources — never try/finally.
+
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -930,12 +917,14 @@ The `try` block's exception propagates (it's the 'primary' exception). The `clos
 InputStream in = new FileInputStream(f);
 try { process(in); } catch(IOException e) { } finally { in.close(); }
 ```
+
 What's wrong?
+
 <details><summary>Answer</summary>
 
 Two bugs: 1) `in` is declared OUTSIDE try — if `new FileInputStream(f)` throws, `in` is null but we attempt `in.close()` in finally → NPE. 2) `in.close()` can also throw `IOException` — not handled in finally → swallowed silently. Fix: use try-with-resources: `try(InputStream in = new FileInputStream(f)) { process(in); }`
-</details>
 
+</details>
 
 ## 13. Exception Handling Patterns
 
@@ -952,7 +941,7 @@ public void processOrder(Order order) {
     if (order.getTotal().compareTo(BigDecimal.ZERO) <= 0) {
         throw new IllegalArgumentException("Order total must be positive");
     }
-    
+
     // Now safe to process — no defensive null checks needed below
     processPayment(order);
     updateInventory(order);
@@ -969,7 +958,7 @@ try {
 } catch (SQLException e) {
     // ✅ Chain the original exception as the cause
     throw new DataAccessException("Failed to save user", e);
-    
+
     // ❌ NEVER lose the original
     // throw new DataAccessException("Failed to save user");
 }
@@ -1004,8 +993,6 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 
 ---
 
-
-
 🔬 **Section Challenge — 13. Exception Handling Patterns**
 
 **Challenge 1 (Pattern Selection):** You have a `sendEmail()` method that throws `SmtpException` (transient network error) and `InvalidAddressException` (permanent user error). **What** exception handling pattern fits each? **Who** decides whether to retry? **When** do you stop retrying?
@@ -1017,8 +1004,8 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 </details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-</details>
 
+</details>
 
 ## 14. Checked vs Unchecked — When to Use Which
 
@@ -1102,8 +1089,6 @@ Rules:
 
 ---
 
-
-
 🔬 **Section Challenge — 16. The Complete Exception Strategy**
 
 **Challenge 1 (Strategy Audit):** You review code: `catch (Exception e) { throw new ServiceException("Failed", e); }`. **Who** loses information? **When** does this pattern become dangerous in a monitoring context? **What** two fields should every wrapper exception carry?
@@ -1115,14 +1100,15 @@ Rules:
 </details>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+1. `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
-
 
 ## 17. Interview Questions & Answers
 
@@ -1222,8 +1208,6 @@ public void doWork() throws InterruptedException {
 
 ---
 
-
-
 🔬 **Section Challenge — 18. Exceptions in Multithreaded Code — The Hidden Traps**
 
 **Challenge 1 (Thread Propagation Trace):** You submit `() -> { throw new RuntimeException("task failed"); }` to an `ExecutorService`. **Who** catches the exception? **When** does the calling thread see it? **What** happens if you never call `future.get()`?
@@ -1235,8 +1219,8 @@ public void doWork() throws InterruptedException {
 </details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-</details>
 
+</details>
 
 ## 19. Exceptions in CompletableFuture — Async Exception Handling
 
@@ -1296,8 +1280,6 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 
 ---
 
-
-
 🔬 **Section Challenge — 19. Exceptions in CompletableFuture — Async Exception Handling**
 
 **Challenge 1 (Chain Behavior):** `CompletableFuture.supplyAsync(() -> fetchUser(id)).thenApply(user -> enrich(user)).exceptionally(e -> fallback)`. If `fetchUser()` throws, **who** handles it? **When** does `thenApply()` run? **What** value does the final `.get()` return?
@@ -1309,8 +1291,8 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 </details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
-</details>
 
+</details>
 
 ## 20. Spring Boot Global Exception Handling — Complete Strategy
 
@@ -1452,10 +1434,7 @@ type erasure's limits. PECS guides wildcard choice. For exceptions, design a
 hierarchy that maps to HTTP status codes, translate at layer boundaries,
 always chain the original cause, **and handle UncaughtExceptionHandler in every thread/pool**.
 
-
 ---
-
-
 
 🔬 **Section Challenge — 20. Spring Boot Global Exception Handling — Complete Strategy**
 
@@ -1468,6 +1447,5 @@ always chain the original cause, **and handle UncaughtExceptionHandler in every 
 </details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
+
 </details>
-
-

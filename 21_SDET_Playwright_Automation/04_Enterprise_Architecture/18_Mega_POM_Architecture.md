@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 17: D365 Advanced Timing](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 19: Console Scripts & Security](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)
 
 **Cross-links:**
+
 - [`05_POM_Architecture_Deep_Dive.md`](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) — Foundational POM patterns
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Injecting POMs as fixtures
 
@@ -242,27 +243,27 @@ classDiagram
         +waitForLoad()
         +searchAndSelectCustomer()
     }
-    
+
     class SearchPanel {
         +Locator tabCustomerSearch
         +Locator input_customerFirstName
         +searchByCustomerName()
         +resetAllForms()
     }
-    
+
     class ResultsGrid {
         +Locator container
         +Locator rows
         +getRowCount()
         +clickRowByIndex()
     }
-    
+
     class DetailPanel {
         +Locator panel_container
         +waitForPanel()
         +getCustomerId()
     }
-    
+
     MasterSearchPage *-- SearchPanel : "composes"
     MasterSearchPage *-- ResultsGrid : "composes"
     MasterSearchPage *-- DetailPanel : "composes"
@@ -294,10 +295,10 @@ components/master-search/
 ```typescript
 // pages/MasterSearchPage.ts — The ONLY file tests import directly
 
-import { type Page } from '@playwright/test';
-import { SearchPanel } from '../components/master-search/SearchPanel';
-import { ResultsGrid } from '../components/master-search/ResultsGrid';
-import { DetailPanel } from '../components/master-search/DetailPanel';
+import { type Page } from "@playwright/test";
+import { SearchPanel } from "../components/master-search/SearchPanel";
+import { ResultsGrid } from "../components/master-search/ResultsGrid";
+import { DetailPanel } from "../components/master-search/DetailPanel";
 
 export class MasterSearchPage {
   readonly page: Page;
@@ -318,12 +319,17 @@ export class MasterSearchPage {
   }
 
   async waitForLoad(): Promise<void> {
-    await this.page.locator('.ms-Spinner').waitFor({ state: 'hidden', timeout: 30000 });
+    await this.page
+      .locator(".ms-Spinner")
+      .waitFor({ state: "hidden", timeout: 30000 });
     await this.searchPanel.waitForVisible();
   }
 
   // High-level test-facing methods that combine components:
-  async searchAndSelectCustomer(firstName: string, lastName: string): Promise<void> {
+  async searchAndSelectCustomer(
+    firstName: string,
+    lastName: string,
+  ): Promise<void> {
     await this.searchPanel.searchByCustomerName(firstName, lastName);
     await this.resultsGrid.waitForResults();
     await this.resultsGrid.clickFirstRow();
@@ -337,7 +343,7 @@ export class MasterSearchPage {
 ```typescript
 // components/master-search/SearchPanel.ts
 
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class SearchPanel {
   private readonly page: Page;
@@ -377,75 +383,90 @@ export class SearchPanel {
     this.page = page;
 
     // Tabs
-    this.tabCustomerSearch = page.getByRole('tab', { name: 'Customer Search' });
-    this.tabOrderSearch = page.getByRole('tab', { name: 'Order Search' });
-    this.tabCitationSearch = page.getByRole('tab', { name: 'Citation Search' });
+    this.tabCustomerSearch = page.getByRole("tab", { name: "Customer Search" });
+    this.tabOrderSearch = page.getByRole("tab", { name: "Order Search" });
+    this.tabCitationSearch = page.getByRole("tab", { name: "Citation Search" });
 
     // Customer Search inputs
-    this.input_customerFirstName = page.locator('#masterSearch_firstName');
-    this.input_customerLastName = page.locator('#masterSearch_lastName');
-    this.input_customerEmail = page.locator('#masterSearch_email');
-    this.input_customerPhone = page.locator('#masterSearch_phone');
-    this.input_customerDOB = page.locator('#masterSearch_dob');
-    this.dropdown_customerStatus = page.locator('#masterSearch_statusDropdown');
-    this.dropdown_customerType = page.locator('#masterSearch_typeDropdown');
-    this.button_searchCustomer = page.locator('#masterSearch_btnCustomerSearch');
-    this.button_resetCustomer = page.locator('#masterSearch_btnCustomerReset');
+    this.input_customerFirstName = page.locator("#masterSearch_firstName");
+    this.input_customerLastName = page.locator("#masterSearch_lastName");
+    this.input_customerEmail = page.locator("#masterSearch_email");
+    this.input_customerPhone = page.locator("#masterSearch_phone");
+    this.input_customerDOB = page.locator("#masterSearch_dob");
+    this.dropdown_customerStatus = page.locator("#masterSearch_statusDropdown");
+    this.dropdown_customerType = page.locator("#masterSearch_typeDropdown");
+    this.button_searchCustomer = page.locator(
+      "#masterSearch_btnCustomerSearch",
+    );
+    this.button_resetCustomer = page.locator("#masterSearch_btnCustomerReset");
 
     // Order Search inputs
-    this.input_orderNumber = page.locator('#masterSearch_orderNumber');
-    this.input_orderDateFrom = page.locator('#masterSearch_orderFrom');
-    this.input_orderDateTo = page.locator('#masterSearch_orderTo');
-    this.dropdown_orderStatus = page.locator('#masterSearch_orderStatus');
-    this.button_searchOrder = page.locator('#masterSearch_btnOrderSearch');
-    this.button_resetOrder = page.locator('#masterSearch_btnOrderReset');
+    this.input_orderNumber = page.locator("#masterSearch_orderNumber");
+    this.input_orderDateFrom = page.locator("#masterSearch_orderFrom");
+    this.input_orderDateTo = page.locator("#masterSearch_orderTo");
+    this.dropdown_orderStatus = page.locator("#masterSearch_orderStatus");
+    this.button_searchOrder = page.locator("#masterSearch_btnOrderSearch");
+    this.button_resetOrder = page.locator("#masterSearch_btnOrderReset");
 
     // Citation inputs
-    this.input_citationId = page.locator('#masterSearch_citationId');
-    this.input_registrationPlate = page.locator('#masterSearch_plate');
-    this.input_transitAccount = page.locator('#masterSearch_transit');
-    this.button_searchCitation = page.locator('#masterSearch_btnCitationSearch');
-    this.button_resetCitation = page.locator('#masterSearch_btnCitationReset');
+    this.input_citationId = page.locator("#masterSearch_citationId");
+    this.input_registrationPlate = page.locator("#masterSearch_plate");
+    this.input_transitAccount = page.locator("#masterSearch_transit");
+    this.button_searchCitation = page.locator(
+      "#masterSearch_btnCitationSearch",
+    );
+    this.button_resetCitation = page.locator("#masterSearch_btnCitationReset");
   }
 
   async waitForVisible(): Promise<void> {
     await expect(this.tabCustomerSearch).toBeVisible({ timeout: 20000 });
   }
 
-  async navigateToTab(tabName: 'Customer Search' | 'Order Search' | 'Citation Search'): Promise<void> {
+  async navigateToTab(
+    tabName: "Customer Search" | "Order Search" | "Citation Search",
+  ): Promise<void> {
     const tabLocator = {
-      'Customer Search': this.tabCustomerSearch,
-      'Order Search': this.tabOrderSearch,
-      'Citation Search': this.tabCitationSearch,
+      "Customer Search": this.tabCustomerSearch,
+      "Order Search": this.tabOrderSearch,
+      "Citation Search": this.tabCitationSearch,
     }[tabName];
 
     await tabLocator.click();
-    await expect(tabLocator).toHaveAttribute('aria-selected', 'true', { timeout: 5000 });
+    await expect(tabLocator).toHaveAttribute("aria-selected", "true", {
+      timeout: 5000,
+    });
   }
 
-  async searchByCustomerName(firstName: string, lastName: string): Promise<void> {
-    await this.navigateToTab('Customer Search');
+  async searchByCustomerName(
+    firstName: string,
+    lastName: string,
+  ): Promise<void> {
+    await this.navigateToTab("Customer Search");
     await this.input_customerFirstName.fill(firstName);
     await this.input_customerLastName.fill(lastName);
     await this.button_searchCustomer.click();
   }
 
   async searchByCitationId(citationId: string): Promise<void> {
-    await this.navigateToTab('Citation Search');
+    await this.navigateToTab("Citation Search");
     await this.input_citationId.fill(citationId);
     await this.button_searchCitation.click();
   }
 
   async searchByTransitAccount(transitAccount: string): Promise<void> {
-    await this.navigateToTab('Citation Search');
+    await this.navigateToTab("Citation Search");
     await this.input_transitAccount.fill(transitAccount);
     await this.button_searchCitation.click();
   }
 
   async resetAllForms(): Promise<void> {
-    if (await this.tabCustomerSearch.getAttribute('aria-selected') === 'true') {
+    if (
+      (await this.tabCustomerSearch.getAttribute("aria-selected")) === "true"
+    ) {
       await this.button_resetCustomer.click();
-    } else if (await this.tabOrderSearch.getAttribute('aria-selected') === 'true') {
+    } else if (
+      (await this.tabOrderSearch.getAttribute("aria-selected")) === "true"
+    ) {
       await this.button_resetOrder.click();
     } else {
       await this.button_resetCitation.click();
@@ -537,30 +558,34 @@ export class MasterSearchPage {
     this.page = page;
     this.loc = {
       customerSearch: {
-        tab: () => page.getByRole('tab', { name: 'Customer Search' }),
-        firstName: () => page.locator('#masterSearch_firstName'),
-        lastName: () => page.locator('#masterSearch_lastName'),
-        email: () => page.locator('#masterSearch_email'),
-        searchButton: () => page.locator('#masterSearch_btnCustomerSearch'),
-        resetButton: () => page.locator('#masterSearch_btnCustomerReset'),
+        tab: () => page.getByRole("tab", { name: "Customer Search" }),
+        firstName: () => page.locator("#masterSearch_firstName"),
+        lastName: () => page.locator("#masterSearch_lastName"),
+        email: () => page.locator("#masterSearch_email"),
+        searchButton: () => page.locator("#masterSearch_btnCustomerSearch"),
+        resetButton: () => page.locator("#masterSearch_btnCustomerReset"),
         statusOption: (value) => page.locator(`[data-value="${value}"]`),
       },
       orderSearch: {
-        tab: () => page.getByRole('tab', { name: 'Order Search' }),
-        orderNumber: () => page.locator('#masterSearch_orderNumber'),
-        searchButton: () => page.locator('#masterSearch_btnOrderSearch'),
+        tab: () => page.getByRole("tab", { name: "Order Search" }),
+        orderNumber: () => page.locator("#masterSearch_orderNumber"),
+        searchButton: () => page.locator("#masterSearch_btnOrderSearch"),
       },
       citationSearch: {
-        tab: () => page.getByRole('tab', { name: 'Citation Search' }),
-        citationId: () => page.locator('#masterSearch_citationId'),
-        transitAccount: () => page.locator('#masterSearch_transit'),
-        searchButton: () => page.locator('#masterSearch_btnCitationSearch'),
+        tab: () => page.getByRole("tab", { name: "Citation Search" }),
+        citationId: () => page.locator("#masterSearch_citationId"),
+        transitAccount: () => page.locator("#masterSearch_transit"),
+        searchButton: () => page.locator("#masterSearch_btnCitationSearch"),
       },
       resultsGrid: {
-        container: () => page.locator('.masterSearch-results'),
-        rows: () => page.locator('.masterSearch-results .ms-DetailsList-row'),
-        row: (i) => page.locator('.masterSearch-results .ms-DetailsList-row').nth(i),
-        rowByText: (text) => page.locator('.masterSearch-results .ms-DetailsList-row').filter({ hasText: text }),
+        container: () => page.locator(".masterSearch-results"),
+        rows: () => page.locator(".masterSearch-results .ms-DetailsList-row"),
+        row: (i) =>
+          page.locator(".masterSearch-results .ms-DetailsList-row").nth(i),
+        rowByText: (text) =>
+          page
+            .locator(".masterSearch-results .ms-DetailsList-row")
+            .filter({ hasText: text }),
         nextPage: () => page.locator('[aria-label="Next page"]'),
         prevPage: () => page.locator('[aria-label="Previous page"]'),
       },
@@ -569,7 +594,7 @@ export class MasterSearchPage {
 }
 
 // Usage in tests — namespaced, IDE autocomplete works:
-await masterSearch.loc.customerSearch.firstName().fill('John');
+await masterSearch.loc.customerSearch.firstName().fill("John");
 await masterSearch.loc.customerSearch.searchButton().click();
 await masterSearch.loc.resultsGrid.row(0).click();
 ```
@@ -622,11 +647,12 @@ You're adding a locator for a "Date of Birth" input field in the customer search
 A) `readonly DateOfBirth: Locator`  
 B) `readonly input_customerDOB: Locator`  
 C) `readonly customer_dob_input: Locator`  
-D) `readonly dobField: Locator`  
+D) `readonly dobField: Locator`
 
 <details><summary>Answer</summary>
 
 **B** — `input_customerDOB`. Match the existing convention exactly: `input_` prefix + `customer` context + field abbreviation. Changing naming convention mid-file (A, C, D) makes the file harder to navigate and breaks grep patterns.
+
 </details>
 
 ---
@@ -638,17 +664,17 @@ export class SearchPanel {
   readonly input_transitAccount: Locator;
 
   constructor(page: Page) {
-    this.input_transitAccount = page.locator('#transitSearch');
+    this.input_transitAccount = page.locator("#transitSearch");
   }
 }
 
 export class MasterSearchPage {
   readonly searchPanel: SearchPanel;
-  readonly input_transitAccount: Locator;  // forgot to remove old one
+  readonly input_transitAccount: Locator; // forgot to remove old one
 
   constructor(page: Page) {
     this.searchPanel = new SearchPanel(page);
-    this.input_transitAccount = page.locator('#OLD_transitSearch'); // old selector!
+    this.input_transitAccount = page.locator("#OLD_transitSearch"); // old selector!
   }
 }
 ```
@@ -658,6 +684,7 @@ export class MasterSearchPage {
 After migrating to the component pattern, the old `input_transitAccount` on `MasterSearchPage` still exists AND has the OLD (possibly wrong) selector. Tests that call `masterSearchPage.input_transitAccount` instead of `masterSearchPage.searchPanel.input_transitAccount` will use the stale selector and fail intermittently (or silently use the wrong element if both selectors match something).
 
 Fix: Delete `input_transitAccount` from `MasterSearchPage` after migrating all callers to `searchPanel.input_transitAccount`.
+
 </details>
 
 ---
@@ -665,6 +692,7 @@ Fix: Delete `input_transitAccount` from `MasterSearchPage` after migrating all c
 ### Challenge 3 [Write It Yourself]
 
 Write a `ResultsGrid` component class with:
+
 - `rows` locator (all grid rows)
 - `header` locator (the header row)
 - `pagination_info` locator (e.g., "Page 1 of 5")
@@ -675,7 +703,7 @@ Write a `ResultsGrid` component class with:
 <details><summary>Answer</summary>
 
 ```typescript
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class ResultsGrid {
   private readonly page: Page;
@@ -689,20 +717,20 @@ export class ResultsGrid {
 
   constructor(page: Page) {
     this.page = page;
-    this.container = page.locator('.search-results-container');
-    this.rows = page.locator('.search-results-container .ms-DetailsList-row');
-    this.header = page.locator('.search-results-container .ms-DetailsHeader');
-    this.pagination_info = page.locator('.pagination-info');
+    this.container = page.locator(".search-results-container");
+    this.rows = page.locator(".search-results-container .ms-DetailsList-row");
+    this.header = page.locator(".search-results-container .ms-DetailsHeader");
+    this.pagination_info = page.locator(".pagination-info");
     this.pagination_next = page.locator('[aria-label="Next page"]');
     this.pagination_prev = page.locator('[aria-label="Previous page"]');
-    this.spinner = page.locator('.search-results-container .ms-Spinner');
+    this.spinner = page.locator(".search-results-container .ms-Spinner");
   }
 
   async waitForResults(minRows: number = 1): Promise<void> {
     await expect(this.spinner).toHaveCount(0, { timeout: 30000 });
     await expect(this.rows.nth(minRows - 1)).toBeVisible({ timeout: 30000 });
     // Wait for first row's first cell to have non-empty text
-    await expect(this.rows.first()).not.toHaveText('', { timeout: 15000 });
+    await expect(this.rows.first()).not.toHaveText("", { timeout: 15000 });
   }
 
   async getRowCount(): Promise<number> {
@@ -718,10 +746,11 @@ export class ResultsGrid {
   async getRowTextByIndex(index: number): Promise<string> {
     const row = this.rows.nth(index);
     await expect(row).toBeVisible();
-    return (await row.textContent() ?? '').trim();
+    return ((await row.textContent()) ?? "").trim();
   }
 }
 ```
+
 </details>
 
 ---
@@ -731,8 +760,9 @@ export class ResultsGrid {
 When your framework grows to 50+ POMs across multiple micro-frontends, importing and instantiating them manually in every test becomes a maintenance nightmare.
 
 **The Anti-Pattern:**
+
 ```typescript
-test('complex workflow', async ({ page }) => {
+test("complex workflow", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const searchPage = new MasterSearchPage(page);
   const detailPage = new CustomerDetailPage(page);
@@ -746,21 +776,31 @@ Create a central registry fixture that groups POMs by business domain.
 
 ```typescript
 // fixtures/app.fixture.ts
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 class CRMApp {
   constructor(public readonly page: Page) {}
-  
+
   // Expose POMs as getter properties
-  get login() { return new LoginPage(this.page); }
-  get masterSearch() { return new MasterSearchPage(this.page); }
-  get customerDetail() { return new CustomerDetailPage(this.page); }
+  get login() {
+    return new LoginPage(this.page);
+  }
+  get masterSearch() {
+    return new MasterSearchPage(this.page);
+  }
+  get customerDetail() {
+    return new CustomerDetailPage(this.page);
+  }
 }
 
 class BillingApp {
   constructor(public readonly page: Page) {}
-  get payment() { return new PaymentPage(this.page); }
-  get invoice() { return new InvoicePage(this.page); }
+  get payment() {
+    return new PaymentPage(this.page);
+  }
+  get invoice() {
+    return new InvoicePage(this.page);
+  }
 }
 
 export const test = base.extend<{ crm: CRMApp; billing: BillingApp }>({
@@ -769,13 +809,13 @@ export const test = base.extend<{ crm: CRMApp; billing: BillingApp }>({
 });
 
 // Usage in tests - clean and namespaced:
-test('complex workflow', async ({ crm, billing }) => {
+test("complex workflow", async ({ crm, billing }) => {
   await crm.masterSearch.goto();
-  await crm.masterSearch.searchAndSelectCustomer('John', 'Smith');
-  
+  await crm.masterSearch.searchAndSelectCustomer("John", "Smith");
+
   await crm.customerDetail.clickMakePayment();
-  
-  await billing.payment.payBalance(150.00);
+
+  await billing.payment.payBalance(150.0);
 });
 ```
 
@@ -787,30 +827,34 @@ In the Module Registry pattern above, doing `new MasterSearchPage(page)` instant
 
 **The Solution: Lazy Initialization (Getters)**
 
-Instead of assigning locators in the constructor, use TypeScript getters. The `Locator` object is only created the *first time* it is accessed during the test.
+Instead of assigning locators in the constructor, use TypeScript getters. The `Locator` object is only created the _first time_ it is accessed during the test.
 
 ```typescript
 // ❌ EAGER LOAD (High Memory)
 export class SearchPanel {
   readonly button_search: Locator;
-  
+
   constructor(private page: Page) {
     // 400 locator objects created instantly upon 'new SearchPanel(page)'
-    this.button_search = page.locator('#searchBtn');
+    this.button_search = page.locator("#searchBtn");
   }
 }
 
 // ✅ LAZY LOAD (Zero Memory until used)
 export class SearchPanel {
   constructor(private page: Page) {}
-  
+
   // Locator is only created when searchPanel.button_search is accessed
-  get button_search() { return this.page.locator('#searchBtn'); }
-  get input_firstName() { return this.page.locator('#firstName'); }
-  
+  get button_search() {
+    return this.page.locator("#searchBtn");
+  }
+  get input_firstName() {
+    return this.page.locator("#firstName");
+  }
+
   async searchByCustomerName(firstName: string) {
     await this.input_firstName.fill(firstName); // Locator created here
-    await this.button_search.click();           // Locator created here
+    await this.button_search.click(); // Locator created here
   }
 }
 ```
@@ -822,6 +866,7 @@ This ensures that even if a fixture provides access to 50 POMs, zero memory is w
 ## 📚 References & Further Reading
 
 ### Architecture Patterns
+
 - [Martin Fowler: PageObject](https://martinfowler.com/bliki/PageObject.html) — The original definition and intent of the pattern
 - [Playwright POM Best Practices](https://playwright.dev/docs/pom) — Official documentation
 - [Playwright Fixtures](https://playwright.dev/docs/test-fixtures) — How to inject your POM registries into tests securely
@@ -829,5 +874,3 @@ This ensures that even if a fixture provides access to 50 POMs, zero memory is w
 ---
 
 **Navigation**: [← Chapter 17: D365 Advanced Timing](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 19: Console Scripts & Security](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)
-
-

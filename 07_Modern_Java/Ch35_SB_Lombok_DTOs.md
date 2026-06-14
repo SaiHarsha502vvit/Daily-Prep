@@ -49,7 +49,6 @@ _"Write less code, express more intent"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Lombok — the Boilerplate Killer
@@ -215,7 +214,6 @@ public class User {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -783,7 +781,6 @@ public class Counter {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Lombok Configuration File
 
 ```properties
@@ -863,7 +860,6 @@ lombok.experimental.flagUsage = warning
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -1078,8 +1074,6 @@ public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable Long id) 
 
 ---
 
-
-
 ## Chapter 7: DTO Mapping Strategies
 
 ### Manual Mapping (Simple, No Dependencies)
@@ -1192,16 +1186,15 @@ public class UserService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: DTO Mapping Strategies**
 
 **Challenge 1 (Reasoning):** Why is using Lombok's `@Data` annotation on a JPA `@Entity` class extremely dangerous and likely to cause infinite loops?
+
 <details><summary>Answer</summary>
 
 `@Data` automatically generates `equals()`, `hashCode()`, and `toString()` using ALL fields in the class. If you have a bidirectional relationship (e.g., `Author` has `List<Book>`, and `Book` has `Author`), calling `toString()` on an `Author` will print its `Books`. Printing the `Book` will print its `Author`, which prints its `Books`, leading to an infinite recursive loop and a `StackOverflowError`. You should strictly use `@Getter` and `@Setter` on entities instead.
-</details>
 
+</details>
 
 ## Chapter 8: DTO Architecture Patterns
 
@@ -1237,7 +1230,6 @@ public class UserService {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Complete Example: User Management
 
@@ -1468,8 +1460,6 @@ public class UserController {
 
 ---
 
-
-
 # 📋 LOMBOK & DTO CHECKLIST
 
 ```
@@ -1488,11 +1478,9 @@ DTOs:
 □ Understand API response wrapper pattern
 ```
 
-
 ---
 
 _Continue to Part 6: Service Layer & Repository Best Practices_
-
 
 ---
 

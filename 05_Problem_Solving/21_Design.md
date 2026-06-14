@@ -35,7 +35,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## PART 0: WHY Design Problems — Thinking Like an Architect
@@ -109,11 +108,7 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
-
 
 ## PROBLEM 1: LRU Cache (LC 146) — The #1 Design Problem
 
@@ -152,7 +147,6 @@ THE KEY INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 class LRUCache {
     class Node {
@@ -160,18 +154,18 @@ class LRUCache {
         Node prev, next;
         Node(int k, int v) { key = k; val = v; }
     }
-    
+
     private int capacity;
     private Map<Integer, Node> map = new HashMap<>();
     private Node head = new Node(0, 0);  // Sentinel
     private Node tail = new Node(0, 0);  // Sentinel
-    
+
     public LRUCache(int capacity) {
         this.capacity = capacity;
         head.next = tail;
         tail.prev = head;
     }
-    
+
     public int get(int key) {
         if (!map.containsKey(key)) return -1;
         Node node = map.get(key);
@@ -179,7 +173,7 @@ class LRUCache {
         addToFront(node);
         return node.val;
     }
-    
+
     public void put(int key, int value) {
         if (map.containsKey(key)) {
             Node node = map.get(key);
@@ -197,12 +191,12 @@ class LRUCache {
             map.put(key, node);
         }
     }
-    
+
     private void remove(Node node) {
         node.prev.next = node.next;
         node.next.prev = node.prev;
     }
-    
+
     private void addToFront(Node node) {
         node.next = head.next;
         node.prev = head;
@@ -218,10 +212,7 @@ SENTINEL TRICK: Head and Tail dummies avoid null checks — cleaner code.
 FOLLOW-UP: "Make it thread-safe" → Use ReentrantReadWriteLock.
 ```
 
-
 ---
-
-
 
 ## PROBLEM 2: Min Stack (LC 155)
 
@@ -245,27 +236,26 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 class MinStack {
     private Deque<Integer> stack = new ArrayDeque<>();
     private Deque<Integer> minStack = new ArrayDeque<>();
-    
+
     public void push(int val) {
         stack.push(val);
         int min = minStack.isEmpty() ? val : Math.min(val, minStack.peek());
         minStack.push(min);
     }
-    
+
     public void pop() {
         stack.pop();
         minStack.pop();
     }
-    
+
     public int top() {
         return stack.peek();
     }
-    
+
     public int getMin() {
         return minStack.peek();
     }
@@ -279,9 +269,6 @@ SPACE OPTIMIZATION: Only push to minStack when new value <= current min.
 ```
 
 ---
-
-
-
 
 ## PROBLEM 3: Implement Trie / Prefix Tree (LC 208)
 
@@ -316,12 +303,11 @@ WHY TRIE?
 SOLUTION:
 ```
 
-
 ```java
 class Trie {
     private Trie[] children = new Trie[26];
     private boolean isEnd = false;
-    
+
     public void insert(String word) {
         Trie node = this;
         for (char c : word.toCharArray()) {
@@ -333,16 +319,16 @@ class Trie {
         }
         node.isEnd = true;
     }
-    
+
     public boolean search(String word) {
         Trie node = findNode(word);
         return node != null && node.isEnd;
     }
-    
+
     public boolean startsWith(String prefix) {
         return findNode(prefix) != null;
     }
-    
+
     private Trie findNode(String s) {
         Trie node = this;
         for (char c : s.toCharArray()) {
@@ -362,8 +348,6 @@ VARIANT: Use HashMap<Character, Trie> instead of array for Unicode support.
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 3: Implement Trie / Prefix Tree (LC 208)**
 
 **Challenge 1 (Trace — Who/When/What):** Trace `insert("app")` then `search("app")` and `startsWith("ap")` on an initially empty Trie. At each character step, answer: Who holds the current position? When is `isEnd` set? What already exists before each traversal starts?
@@ -371,6 +355,7 @@ VARIANT: Use HashMap<Character, Trie> instead of array for Unicode support.
 <details><summary>Answer</summary>
 
 **Insert "app":** Who? `node` pointer starting at `root`. When? `isEnd=true` is set ONLY after the last character is processed. What already exists? All `children[26]` are null at root initially.
+
 - char 'a' (idx=0): `root.children[0]==null` → create new Trie node. `node = root.children[0]`.
 - char 'p' (idx=15): `node.children[15]==null` → create. `node = ...children[15]`.
 - char 'p' (idx=15): `node.children[15]==null` → create. `node = ...children[15]`.
@@ -392,7 +377,6 @@ After inserting "app", the Trie has nodes for 'a'->'p'->'p' with `isEnd=true` on
 
 ## PROBLEM 4: Design Add and Search Words (LC 211)
 
-
 ```
 DIFFICULTY: Medium
 COMPANIES: Facebook, Google, Amazon
@@ -407,12 +391,11 @@ INSIGHT: Regular Trie for addWord. DFS with branching for '.'.
 SOLUTION:
 ```
 
-
 ```java
 class WordDictionary {
     private WordDictionary[] children = new WordDictionary[26];
     private boolean isEnd = false;
-    
+
     public void addWord(String word) {
         WordDictionary node = this;
         for (char c : word.toCharArray()) {
@@ -422,15 +405,15 @@ class WordDictionary {
         }
         node.isEnd = true;
     }
-    
+
     public boolean search(String word) {
         return dfs(word, 0, this);
     }
-    
+
     private boolean dfs(String word, int i, WordDictionary node) {
         if (node == null) return false;
         if (i == word.length()) return node.isEnd;
-        
+
         char c = word.charAt(i);
         if (c == '.') {
             // Try ALL children
@@ -450,8 +433,6 @@ COMPLEXITY: addWord O(L) | search O(26^L) worst case (all dots) | typically O(L)
 ```
 
 ---
-
-
 
 ## PROBLEM 5: LFU Cache (LC 460)
 
@@ -488,7 +469,6 @@ THE ARCHITECTURE:
 SOLUTION:
 ```
 
-
 ```java
 class LFUCache {
     class Node {
@@ -496,12 +476,12 @@ class LFUCache {
         Node prev, next;
         Node(int k, int v) { key = k; val = v; freq = 1; }
     }
-    
+
     class DLList {
         Node head = new Node(0, 0), tail = new Node(0, 0);
         int size = 0;
         DLList() { head.next = tail; tail.prev = head; }
-        
+
         void addFirst(Node node) {
             node.next = head.next; node.prev = head;
             head.next.prev = node; head.next = node;
@@ -518,20 +498,20 @@ class LFUCache {
             return lru;
         }
     }
-    
+
     int capacity, minFreq;
     Map<Integer, Node> keyMap = new HashMap<>();
     Map<Integer, DLList> freqMap = new HashMap<>();
-    
+
     public LFUCache(int capacity) { this.capacity = capacity; }
-    
+
     public int get(int key) {
         if (!keyMap.containsKey(key)) return -1;
         Node node = keyMap.get(key);
         updateFreq(node);
         return node.val;
     }
-    
+
     public void put(int key, int value) {
         if (capacity == 0) return;
         if (keyMap.containsKey(key)) {
@@ -550,7 +530,7 @@ class LFUCache {
             minFreq = 1;
         }
     }
-    
+
     private void updateFreq(Node node) {
         DLList oldList = freqMap.get(node.freq);
         oldList.remove(node);
@@ -586,13 +566,13 @@ SOLUTION:
 class MyHashMap {
     private static final int SIZE = 1001;
     private List<int[]>[] buckets;
-    
+
     public MyHashMap() {
         buckets = new List[SIZE];
     }
-    
+
     private int hash(int key) { return key % SIZE; }
-    
+
     public void put(int key, int value) {
         int h = hash(key);
         if (buckets[h] == null) buckets[h] = new ArrayList<>();
@@ -601,7 +581,7 @@ class MyHashMap {
         }
         buckets[h].add(new int[]{key, value});
     }
-    
+
     public int get(int key) {
         int h = hash(key);
         if (buckets[h] == null) return -1;
@@ -610,7 +590,7 @@ class MyHashMap {
         }
         return -1;
     }
-    
+
     public void remove(int key) {
         int h = hash(key);
         if (buckets[h] == null) return;
@@ -627,22 +607,23 @@ FOLLOW-UP: Real HashMap uses power-of-2 sizing, tree-ify at 8 collisions,
 
 ---
 
-
-
 🔬 **Section Challenge — PROBLEM 6: Design HashMap (LC 706)**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-</details>
 
+</details>
 
 ## PROBLEM 7: Insert Delete GetRandom O(1) (LC 380)
 
@@ -672,33 +653,32 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-
 ```java
 class RandomizedSet {
     private List<Integer> list = new ArrayList<>();
     private Map<Integer, Integer> map = new HashMap<>();
     private Random rand = new Random();
-    
+
     public boolean insert(int val) {
         if (map.containsKey(val)) return false;
         map.put(val, list.size());
         list.add(val);
         return true;
     }
-    
+
     public boolean remove(int val) {
         if (!map.containsKey(val)) return false;
         int idx = map.get(val);
         int last = list.get(list.size() - 1);
-        
+
         list.set(idx, last);       // Overwrite with last
         map.put(last, idx);        // Update last's index
-        
+
         list.remove(list.size() - 1);
         map.remove(val);
         return true;
     }
-    
+
     public int getRandom() {
         return list.get(rand.nextInt(list.size()));
     }
@@ -711,9 +691,6 @@ VARIANT: LC 381 — allow duplicates. Use Map<Integer, Set<Integer>> for indices
 ```
 
 ---
-
-
-
 
 ## PROBLEM 8: Design Browser History (LC 1472)
 
@@ -731,11 +708,11 @@ SOLUTION (ArrayList approach — simplest):
 class BrowserHistory {
     private List<String> history = new ArrayList<>();
     private int current = 0;
-    
+
     public BrowserHistory(String homepage) {
         history.add(homepage);
     }
-    
+
     public void visit(String url) {
         // Clear forward history
         while (history.size() > current + 1) {
@@ -744,12 +721,12 @@ class BrowserHistory {
         history.add(url);
         current++;
     }
-    
+
     public String back(int steps) {
         current = Math.max(0, current - steps);
         return history.get(current);
     }
-    
+
     public String forward(int steps) {
         current = Math.min(history.size() - 1, current + steps);
         return history.get(current);
@@ -762,8 +739,6 @@ COMPLEXITY: visit O(1) amortized | back/forward O(1) | Space O(n)
 ```
 
 ---
-
-
 
 ## PROBLEM 9: Design Twitter (LC 355)
 
@@ -783,44 +758,43 @@ INSIGHT: getNewsFeed = Merge K sorted lists (each user's tweets sorted by time)
 SOLUTION:
 ```
 
-
 ```java
 class Twitter {
     private int timestamp = 0;
     private Map<Integer, List<int[]>> tweets = new HashMap<>();  // userId → [(time, tweetId)]
     private Map<Integer, Set<Integer>> following = new HashMap<>();
-    
+
     public void postTweet(int userId, int tweetId) {
         tweets.computeIfAbsent(userId, k -> new ArrayList<>())
               .add(new int[]{timestamp++, tweetId});
     }
-    
+
     public List<Integer> getNewsFeed(int userId) {
         // Max-heap by timestamp
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
-        
+
         Set<Integer> users = new HashSet<>();
         users.add(userId);
         if (following.containsKey(userId)) users.addAll(following.get(userId));
-        
+
         for (int uid : users) {
             List<int[]> userTweets = tweets.getOrDefault(uid, List.of());
             for (int[] t : userTweets) pq.offer(t);
         }
-        
+
         List<Integer> feed = new ArrayList<>();
         while (!pq.isEmpty() && feed.size() < 10) {
             feed.add(pq.poll()[1]);
         }
         return feed;
     }
-    
+
     public void follow(int followerId, int followeeId) {
         following.computeIfAbsent(followerId, k -> new HashSet<>()).add(followeeId);
     }
-    
+
     public void unfollow(int followerId, int followeeId) {
-        if (following.containsKey(followerId)) 
+        if (following.containsKey(followerId))
             following.get(followerId).remove(followeeId);
     }
 }
@@ -832,8 +806,6 @@ OPTIMIZATION: Only put last tweet from each user in heap, track index.
 ```
 
 ---
-
-
 
 ## PROBLEM 10: Serialize and Deserialize Binary Tree (LC 297)
 
@@ -854,19 +826,19 @@ public class Codec {
         serializeDFS(root, sb);
         return sb.toString();
     }
-    
+
     private void serializeDFS(TreeNode node, StringBuilder sb) {
         if (node == null) { sb.append("null,"); return; }
         sb.append(node.val).append(",");
         serializeDFS(node.left, sb);
         serializeDFS(node.right, sb);
     }
-    
+
     public TreeNode deserialize(String data) {
         Queue<String> queue = new LinkedList<>(Arrays.asList(data.split(",")));
         return deserializeDFS(queue);
     }
-    
+
     private TreeNode deserializeDFS(Queue<String> queue) {
         String val = queue.poll();
         if ("null".equals(val)) return null;
@@ -901,7 +873,6 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 ║  TIME: O(1) amortized next/hasNext | SPACE: O(D) depth of nesting         ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public class NestedIterator implements Iterator<Integer> {
@@ -946,7 +917,6 @@ public class NestedIterator implements Iterator<Integer> {
 ║  All operations O(1)                                                      ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 class MyCircularQueue {
@@ -1001,7 +971,6 @@ class MyCircularQueue {
 ║  set/snap O(1), get O(log S) where S = number of snaps                    ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 class SnapshotArray {
@@ -1063,7 +1032,6 @@ class SnapshotArray {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 class StockPrice {
     private Map<Integer, Integer> timestampPrice;
@@ -1117,7 +1085,6 @@ class StockPrice {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 class MedianFinder {
     private PriorityQueue<Integer> maxHeap; // lower half
@@ -1145,47 +1112,43 @@ class MedianFinder {
 
 ---
 
-
-
-
 ## 📋 CURATED PRACTICE PROBLEMS
 
 ### Easy
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [Design HashMap](https://leetcode.com/problems/design-hashmap/) | 706 | Array + Chaining | Amazon |
-| 2 | [Design HashSet](https://leetcode.com/problems/design-hashset/) | 705 | Array + Chaining | Amazon |
-| 3 | [Min Stack](https://leetcode.com/problems/min-stack/) | 155 | Auxiliary Stack | Amazon, Google |
-| 4 | [Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/) | 232 | Two Stacks | Microsoft |
-| 5 | [Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/) | 225 | Queue rotation | Amazon |
-| 6 | [Design Parking System](https://leetcode.com/problems/design-parking-system/) | 1603 | Counter | Amazon |
+| #   | Problem                                                                                     | LC#  | Pattern          | Company        |
+| --- | ------------------------------------------------------------------------------------------- | ---- | ---------------- | -------------- |
+| 1   | [Design HashMap](https://leetcode.com/problems/design-hashmap/)                             | 706  | Array + Chaining | Amazon         |
+| 2   | [Design HashSet](https://leetcode.com/problems/design-hashset/)                             | 705  | Array + Chaining | Amazon         |
+| 3   | [Min Stack](https://leetcode.com/problems/min-stack/)                                       | 155  | Auxiliary Stack  | Amazon, Google |
+| 4   | [Implement Queue using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/) | 232  | Two Stacks       | Microsoft      |
+| 5   | [Implement Stack using Queues](https://leetcode.com/problems/implement-stack-using-queues/) | 225  | Queue rotation   | Amazon         |
+| 6   | [Design Parking System](https://leetcode.com/problems/design-parking-system/)               | 1603 | Counter          | Amazon         |
 
 ### Medium
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [LRU Cache](https://leetcode.com/problems/lru-cache/) | 146 | HashMap + DLL | Amazon, Facebook |
-| 2 | [Implement Trie](https://leetcode.com/problems/implement-trie-prefix-tree/) | 208 | Trie | Google, Amazon |
-| 3 | [Design Add and Search Words](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | 211 | Trie + DFS | Facebook |
-| 4 | [Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1/) | 380 | HashMap + ArrayList | Facebook |
-| 5 | [Design Browser History](https://leetcode.com/problems/design-browser-history/) | 1472 | DLL / ArrayList | Amazon |
-| 6 | [Design Twitter](https://leetcode.com/problems/design-twitter/) | 355 | Heap + HashMap | Amazon, Twitter |
-| 7 | [Design Circular Queue](https://leetcode.com/problems/design-circular-queue/) | 622 | Array modular | Amazon |
-| 8 | [Design Circular Deque](https://leetcode.com/problems/design-circular-deque/) | 641 | Array modular | Google |
-| 9 | [Snapshot Array](https://leetcode.com/problems/snapshot-array/) | 1146 | Binary Search | Google |
-| 10 | [Time Based Key-Value Store](https://leetcode.com/problems/time-based-key-value-store/) | 981 | HashMap + Binary Search | Google |
-| 11 | [Design Underground System](https://leetcode.com/problems/design-underground-system/) | 1396 | HashMap | Amazon |
-| 12 | [Online Stock Span](https://leetcode.com/problems/online-stock-span/) | 901 | Monotonic Stack | Amazon |
+| #   | Problem                                                                                                  | LC#  | Pattern                 | Company          |
+| --- | -------------------------------------------------------------------------------------------------------- | ---- | ----------------------- | ---------------- |
+| 1   | [LRU Cache](https://leetcode.com/problems/lru-cache/)                                                    | 146  | HashMap + DLL           | Amazon, Facebook |
+| 2   | [Implement Trie](https://leetcode.com/problems/implement-trie-prefix-tree/)                              | 208  | Trie                    | Google, Amazon   |
+| 3   | [Design Add and Search Words](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | 211  | Trie + DFS              | Facebook         |
+| 4   | [Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1/)                | 380  | HashMap + ArrayList     | Facebook         |
+| 5   | [Design Browser History](https://leetcode.com/problems/design-browser-history/)                          | 1472 | DLL / ArrayList         | Amazon           |
+| 6   | [Design Twitter](https://leetcode.com/problems/design-twitter/)                                          | 355  | Heap + HashMap          | Amazon, Twitter  |
+| 7   | [Design Circular Queue](https://leetcode.com/problems/design-circular-queue/)                            | 622  | Array modular           | Amazon           |
+| 8   | [Design Circular Deque](https://leetcode.com/problems/design-circular-deque/)                            | 641  | Array modular           | Google           |
+| 9   | [Snapshot Array](https://leetcode.com/problems/snapshot-array/)                                          | 1146 | Binary Search           | Google           |
+| 10  | [Time Based Key-Value Store](https://leetcode.com/problems/time-based-key-value-store/)                  | 981  | HashMap + Binary Search | Google           |
+| 11  | [Design Underground System](https://leetcode.com/problems/design-underground-system/)                    | 1396 | HashMap                 | Amazon           |
+| 12  | [Online Stock Span](https://leetcode.com/problems/online-stock-span/)                                    | 901  | Monotonic Stack         | Amazon           |
 
 ### Hard
 
-| # | Problem | LC# | Pattern | Company |
-|---|---------|-----|---------|---------|
-| 1 | [LFU Cache](https://leetcode.com/problems/lfu-cache/) | 460 | HashMap + Freq DLL | Amazon, Google |
-| 2 | [Serialize and Deserialize Binary Tree](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) | 297 | DFS/BFS encoding | Amazon, Facebook |
-| 3 | [Find Median from Data Stream](https://leetcode.com/problems/find-median-from-data-stream/) | 295 | Two Heaps | Amazon, Google |
-| 4 | [Design Search Autocomplete](https://leetcode.com/problems/design-search-autocomplete-system/) | 642 | Trie + Priority | Google |
-| 5 | [All O(1) Data Structure](https://leetcode.com/problems/all-oone-data-structure/) | 432 | HashMap + DLL | Amazon |
-| 6 | [Design Skiplist](https://leetcode.com/problems/design-skiplist/) | 1206 | Probabilistic | — |
-
+| #   | Problem                                                                                                       | LC#  | Pattern            | Company          |
+| --- | ------------------------------------------------------------------------------------------------------------- | ---- | ------------------ | ---------------- |
+| 1   | [LFU Cache](https://leetcode.com/problems/lfu-cache/)                                                         | 460  | HashMap + Freq DLL | Amazon, Google   |
+| 2   | [Serialize and Deserialize Binary Tree](https://leetcode.com/problems/serialize-and-deserialize-binary-tree/) | 297  | DFS/BFS encoding   | Amazon, Facebook |
+| 3   | [Find Median from Data Stream](https://leetcode.com/problems/find-median-from-data-stream/)                   | 295  | Two Heaps          | Amazon, Google   |
+| 4   | [Design Search Autocomplete](https://leetcode.com/problems/design-search-autocomplete-system/)                | 642  | Trie + Priority    | Google           |
+| 5   | [All O(1) Data Structure](https://leetcode.com/problems/all-oone-data-structure/)                             | 432  | HashMap + DLL      | Amazon           |
+| 6   | [Design Skiplist](https://leetcode.com/problems/design-skiplist/)                                             | 1206 | Probabilistic      | —                |

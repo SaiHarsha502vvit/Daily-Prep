@@ -8,6 +8,7 @@
 Interviewers WILL ask: "How do you work in Agile teams?"
 
 This isn't just process — it changes HOW you code:
+
 - Smaller PRs (fit in a sprint)
 - User stories → acceptance criteria → test cases
 - Daily standups → early blockers → faster delivery
@@ -18,10 +19,10 @@ This isn't just process — it changes HOW you code:
 
 THE 4 VALUES (2001, 17 Software Developers)
 
-Individuals & Interactions    OVER   Processes & Tools
-Working Software              OVER   Comprehensive Documentation
-Customer Collaboration        OVER   Contract Negotiation
-Responding to Change          OVER   Following a Plan
+Individuals & Interactions OVER Processes & Tools
+Working Software OVER Comprehensive Documentation
+Customer Collaboration OVER Contract Negotiation
+Responding to Change OVER Following a Plan
 
 ⚠️ Items on the RIGHT still have value.
 Items on the LEFT have MORE value.
@@ -50,23 +51,23 @@ Items on the LEFT have MORE value.
 WATERFALL (Like building a house)
 
 Requirements ──→ Design ──→ Build ──→ Test ──→ Deploy
-▔▔▔▔▔▔▔▔▔▔▔    ▔▔▔▔▔▔    ▔▔▔▔▔    ▔▔▔▔    ▔▔▔▔▔▔
-Month 1-2        Month 3    Month 4-6 Month 7 Month 8
+▔▔▔▔▔▔▔▔▔▔▔ ▔▔▔▔▔▔ ▔▔▔▔▔ ▔▔▔▔ ▔▔▔▔▔▔
+Month 1-2 Month 3 Month 4-6 Month 7 Month 8
 
-Customer sees product: Month 8  😱
+Customer sees product: Month 8 😱
 "That's not what I wanted!"
 
 ─────────────────────────────────────────────────────
 
 AGILE (Like sculpting with feedback)
 
-Sprint 1:  [Plan→Build→Test→Demo] → Feedback → Adjust
-Sprint 2:  [Plan→Build→Test→Demo] → Feedback → Adjust
-Sprint 3:  [Plan→Build→Test→Demo] → Feedback → Adjust
-Sprint 4:  [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 1: [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 2: [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 3: [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 4: [Plan→Build→Test→Demo] → Feedback → Adjust
 ...
 
-Customer sees product: Every 2 weeks  ✓
+Customer sees product: Every 2 weeks ✓
 "Let me tweak this one thing..."
 
 ---
@@ -135,16 +136,18 @@ No adding work mid-sprint (unless truly urgent).
 
 SPRINT PLANNING (4 hours for 2-week sprint)
 
-Input:  Product Backlog (prioritized by PO)
+Input: Product Backlog (prioritized by PO)
 Output: Sprint Backlog (committed by team)
 
 PART 1 — WHAT (with PO):
+
 - PO presents top-priority items
 - Team asks clarifying questions
 - Team estimates capacity (story points)
 - Team selects items they can commit to
 
 PART 2 — HOW (dev team):
+
 - Break stories into technical tasks
 - Identify dependencies
 - Create Sprint Goal (one-sentence summary)
@@ -163,6 +166,7 @@ Each team member answers 3 questions:
 3. Are there any BLOCKERS?
 
 ❌ ANTI-PATTERNS:
+
 - Status report to the manager (it's team sync, not reporting)
 - Problem-solving in standup (say "let's take this offline")
 - Going over 15 minutes
@@ -196,12 +200,12 @@ TIP: As a developer, volunteer to demo YOUR work.
 
 ### 4. Sprint Retrospective
 
-## Start Doing     │  Stop Doing      │  Continue Doing
+## Start Doing │ Stop Doing │ Continue Doing
 
-| Pair programming | Skipping tests   | Code reviews |
+| Pair programming | Skipping tests | Code reviews |
 | on complex tasks | for "quick fixes"| before merge |
-| Writing ADRs for | Long meetings    | Daily standups |
-| arch decisions   | without agenda   | at 10am |
+| Writing ADRs for | Long meetings | Daily standups |
+| arch decisions | without agenda | at 10am |
 
 ### 5. Backlog Refinement (Grooming)
 
@@ -220,13 +224,26 @@ Activities:
 
 ---
 
-🔬 **Section Challenge — Start Doing     │  Stop Doing      │  Continue Doing**
+🔬 **Section Challenge — Start Doing │ Stop Doing │ Continue Doing**
 
 **Challenge 1 (Reasoning):** A retrospective ends with 12 action items. Next sprint, none were implemented. Why does this happen and what structural fix makes retros actually change team behavior?
 
 <details><summary>Answer</summary>
 
 Root cause: **action items without owners and deadlines are wishes, not commitments**. 12 items means the team is spreading attention too thin — nothing gets prioritized. Structural fix: (1) **Maximum 2-3 action items per retro** — ruthlessly prioritize. (2) **Each item has ONE named owner** (not "the team") and a specific definition of done: "Alice will add pre-commit ESLint hook by Wednesday." (3) **First agenda item of NEXT retro**: review last sprint's action items. If they weren't done, why not? This creates accountability. (4) **Convert action items to stories** in the sprint backlog — if it doesn't make the board, it doesn't happen. The team that does 2 action items per retro consistently will outperform the team that promises 12 and delivers 0.
+
+### Production Reality
+
+**Agile and Scrum practices fail in production in these named ways:**
+
+- **Sprint commitment overestimation causing crunch** — a team commits to 40 story points in a 2-week sprint but delivers 20. Every sprint, the burndown chart shows the same shortfall. The response: extend hours, skip meetings, merge unfinished code. Technical debt accumulates; code quality degrades; bugs increase. The root cause is often velocity gaming: teams inflate estimates to look consistent with past sprints that were already overestimated.
+- **Retrospective action items never completed** — each sprint retrospective produces 5 "action items": "improve code review turnaround," "document deployment runbook," "reduce flaky tests." By the next retrospective, none are done. No one owns them. No time was allocated. The retrospective becomes theater. Fix: action items must have an owner, a deadline, and be reviewed at sprint planning.
+- **Story point inflation over time** — a "2-point story" in 2024 is not the same effort as a 2-point story in 2022. Points tend to inflate by ~10-15% per year as the team gets more comfortable. Velocity becomes meaningless for capacity planning. Fix: use reference stories calibrated annually, or switch to using T-shirt sizes with explicit anchor points.
+
+**Debug workflow:** Track velocity trend over 6+ sprints; if it consistently exceeds or falls short of average, recalibrate. Track retrospective action item completion rate — if <50%, the retrospective process is broken.
+**Mitigation discipline:** Use rolling average velocity (last 5 sprints) for capacity planning, not last sprint alone. Allocate 20% of sprint capacity to tech debt and process improvement. Review retrospective action items at the start of every sprint planning as the first agenda item.
+
+---
 
 </details>
 
@@ -255,16 +272,16 @@ so that I can regain access to my account."
 ACCEPTANCE CRITERIA (Given-When-Then):
 
 GIVEN I am on the login page
-WHEN  I click "Forgot Password" and enter my email
-THEN  I receive a reset link within 5 minutes
+WHEN I click "Forgot Password" and enter my email
+THEN I receive a reset link within 5 minutes
 
 GIVEN I click the reset link
-WHEN  I enter a valid new password (8+ chars, 1 uppercase)
-THEN  my password is updated and I'm redirected to login
+WHEN I enter a valid new password (8+ chars, 1 uppercase)
+THEN my password is updated and I'm redirected to login
 
 GIVEN the reset link is older than 24 hours
-WHEN  I click it
-THEN  I see "Link expired" and option to request new one
+WHEN I click it
+THEN I see "Link expired" and option to request new one
 
 ### INVEST Criteria for Good Stories
 
@@ -303,7 +320,7 @@ STORY POINTS — Relative Sizing (NOT hours)
 
 Fibonacci Scale: 1, 2, 3, 5, 8, 13, 21
 
-1 point  → Trivial (change a label, update a config)
+1 point → Trivial (change a label, update a config)
 2 points → Simple (add a field, simple validation)
 3 points → Standard (new API endpoint with tests)
 5 points → Moderate (feature with multiple components)
@@ -347,15 +364,16 @@ The SM asks the **highest** (13) and **lowest** (2) estimators to explain their 
 
 KANBAN BOARD
 
-BACKLOG    │  IN PROGRESS   │  IN REVIEW    │  DONE
-(No Limit) │  (WIP Limit:3) │ (WIP Limit:2) │
+BACKLOG │ IN PROGRESS │ IN REVIEW │ DONE
+(No Limit) │ (WIP Limit:3) │ (WIP Limit:2) │
 ───────────┼────────────────┼───────────────┼──────
-[Story 7]  │  [Story 4]     │  [Story 2]    │  [Story 1] ✓
-[Story 8]  │  [Story 5]     │  [Story 3]    │
-[Story 9]  │  [Story 6]     │               │
-[Story 10] │                │               │
+[Story 7] │ [Story 4] │ [Story 2] │ [Story 1] ✓
+[Story 8] │ [Story 5] │ [Story 3] │
+[Story 9] │ [Story 6] │ │
+[Story 10] │ │ │
 
 KEY PRINCIPLES:
+
 - Visualize the workflow
 - Limit Work In Progress (WIP)
 - Manage flow (reduce bottlenecks)
@@ -364,15 +382,15 @@ KEY PRINCIPLES:
 
 ### Scrum vs Kanban
 
-ASPECT           │  SCRUM               │  KANBAN
-Cadence          │  Fixed sprints       │  Continuous flow
-Roles            │  PO, SM, Dev Team    │  No prescribed roles
-Change during    │  Not recommended     │  Allowed anytime
-iteration        │                      │
-Commitment       │  Sprint backlog      │  WIP limits
-Metrics          │  Velocity            │  Lead time, cycle time
-Ceremonies       │  5 ceremonies        │  Just standups
-Best for         │  Product development │  Support/ops/bugs
+ASPECT │ SCRUM │ KANBAN
+Cadence │ Fixed sprints │ Continuous flow
+Roles │ PO, SM, Dev Team │ No prescribed roles
+Change during │ Not recommended │ Allowed anytime
+iteration │ │
+Commitment │ Sprint backlog │ WIP limits
+Metrics │ Velocity │ Lead time, cycle time
+Ceremonies │ 5 ceremonies │ Just standups
+Best for │ Product development │ Support/ops/bugs
 
 ---
 
@@ -416,14 +434,14 @@ The bottleneck is synchronous, end-of-sprint acceptance. Fixes: (1) **Continuous
 
 ## Agile Metrics That Matter
 
-METRIC         │  WHAT IT MEASURES           │  HEALTHY SIGN
-Velocity       │  Points/sprint              │  Stable (±20%)
-Sprint         │  % committed stories done   │  > 80%
-Burndown       │  Remaining work over time   │  Steady decline
-Cycle Time     │  Start → Done for one item  │  Decreasing
-Lead Time      │  Request → Delivery         │  Decreasing
-Escaped Bugs   │  Bugs found in production   │  Near zero
-Code Coverage  │  % code with tests          │  ≥ 80%
+METRIC │ WHAT IT MEASURES │ HEALTHY SIGN
+Velocity │ Points/sprint │ Stable (±20%)
+Sprint │ % committed stories done │ > 80%
+Burndown │ Remaining work over time │ Steady decline
+Cycle Time │ Start → Done for one item │ Decreasing
+Lead Time │ Request → Delivery │ Decreasing
+Escaped Bugs │ Bugs found in production │ Near zero
+Code Coverage │ % code with tests │ ≥ 80%
 
 ### Burndown Chart
 
@@ -477,12 +495,14 @@ A: By user workflow, by input method, by data type,
 "Doing Agile" vs "Being Agile"
 
 DOING AGILE:
+
 - Having standups but nobody listens
 - Sprint retros but no action items
 - Jira board but waterfall in disguise
-→ "Cargo cult Agile" — copying the rituals without the values
+  → "Cargo cult Agile" — copying the rituals without the values
 
 BEING AGILE:
+
 - Genuinely welcoming feedback and change
 - Shipping small, getting feedback, iterating
 - Talking to users, not hiding behind specs
@@ -494,7 +514,7 @@ team — not the other way around.
 
 ---
 
-*The best sprint is one where the team delivers what they committed to, learns something new, and enjoys working together.*
+_The best sprint is one where the team delivers what they committed to, learns something new, and enjoys working together._
 
 ---
 
@@ -517,3 +537,17 @@ They violate the core manifesto values, not just surface ceremonies: (1) **Worki
 The objection conflates **Scrum** with **Agile** — they are not the same thing. Agile is a set of values and principles (the Manifesto). Scrum is ONE framework for implementing those values. Kanban is ALSO an Agile framework. Both prioritize continuous delivery, feedback, and adaptation. The Scrum Master's objection is an example of Agile fundamentalism: treating the framework as the goal instead of treating the team's effectiveness as the goal. Manifesto Principle 12: "At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly." If Kanban serves the team better (e.g., they have high-priority support tickets interrupting sprints), switching is the most Agile thing they can do. The correct response: "What problem are we solving by switching? What outcomes do we expect to improve?" Choose the framework that serves the work, not the work that serves the framework.
 
 </details>
+
+### Conceptual Depth: The Agile Manifesto Invariant
+
+**Core invariant:** Individuals and interactions over processes and tools. Working software over comprehensive documentation. Customer collaboration over contract negotiation. Responding to change over following a plan.
+
+**Why this matters:** Software development under uncertainty cannot be fully specified upfront. Waterfall assumed you could specify all requirements before coding; agile assumes requirements emerge from working software.
+
+**The deep pattern:** The manifesto is NOT anti-process — it's anti-ritual-process. The right side ("while there is value in the items on the right, we value the items on the left more") acknowledges processes have value but should serve humans, not the reverse.
+
+**Historical context:** Written in February 2001 at Snowbird, Utah by 17 software practitioners (Beck, Fowler, Cockburn, Poppendieck, Jeffries, etc.). The signatories included representatives from Scrum, XP, Crystal, DSDM, FDD, and pragmatic programming traditions — a coalition, not a single methodology.
+
+**Constraint that breaks the invariant:** When teams become "doing agile" (standups, story points, retros) without the underlying values (individuals/working software/customer/change), they get Cargo Cult Agile — ceremony without substance.
+
+**Practical signal:** If a team's "Agile transformation" produced more meetings but no faster delivery, they have the rituals without the invariant.

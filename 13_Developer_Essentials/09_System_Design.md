@@ -11,14 +11,14 @@
 ```
 Level 0: Laptop
   One app, one database, one user
-  
+
 Level 1: Single Server (startup)
   10-100 users → one server handles everything
 
 Level 2: Vertical Scaling
   1,000 users → bigger CPU, more RAM, faster disk
 
-Level 3: Horizontal Scaling  
+Level 3: Horizontal Scaling
   100,000 users → multiple servers behind a load balancer
 
 Level 4: Distributed Systems
@@ -75,9 +75,11 @@ Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
 🔬 **Section Challenge — 1. Load Balancer**
 
 **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+
 <details><summary>Answer</summary>
 
 Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+
 </details>
 
 ## 2. Caching
@@ -85,7 +87,7 @@ Session data (shopping cart, auth state) is stored on ONE server. Round-robin se
 ```
 WITHOUT cache:
   Client → Server → Database (100ms) → Server → Client
-  
+
 WITH cache:
   Client → Server → Cache HIT (1ms) → Server → Client
   Client → Server → Cache MISS → Database → Store in Cache → Client
@@ -96,12 +98,12 @@ Cache Layers:
   │ Cache    │    │ Cache    │    │  Cache   │    │          │
   │ (local)  │    │ (edge)   │    │ (Redis)  │    │          │
   └──────────┘    └──────────┘    └──────────┘    └──────────┘
-  
+
 Cache Strategies:
   CACHE-ASIDE    → App checks cache first, loads from DB on miss, writes to cache
   WRITE-THROUGH  → Write to cache AND DB simultaneously
   WRITE-BEHIND   → Write to cache, async batch write to DB (fast but risky)
-  
+
 Eviction Policies:
   LRU  → Least Recently Used (most common)
   LFU  → Least Frequently Used
@@ -132,9 +134,11 @@ public class ProductService {
 🔬 **Section Challenge — 2. Caching**
 
 **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+
 <details><summary>Answer</summary>
 
 Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+
 </details>
 
 ## 3. Database Scaling
@@ -199,7 +203,7 @@ Use Cases:
   - Order processing (place in queue → process async)
   - Log aggregation (apps write to Kafka → analytics reads)
   - Microservice communication (decoupled)
-  
+
 Tools: Apache Kafka, RabbitMQ, AWS SQS, Redis Streams
 ```
 
@@ -211,7 +215,7 @@ WITHOUT CDN (server in US):
 
 WITH CDN (edge server in India):
   User in India → 100 km → CDN Edge → 5ms
-  
+
   ┌──────┐          ┌─────────┐
   │ User │ ───>     │ CDN     │   ← Static files cached here
   │ India│          │ Mumbai  │
@@ -280,9 +284,11 @@ RULE: Start with monolith, extract microservices WHEN NEEDED
 🔬 **Section Challenge — Microservices vs Monolith**
 
 **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+
 <details><summary>Answer</summary>
 
 Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+
 </details>
 
 ## CAP Theorem
@@ -304,6 +310,33 @@ So you choose: CP or AP.
   AP (Availability + Partition Tolerance):
     → Social media: Show stale feed, but ALWAYS respond
     → Tools: Cassandra, DynamoDB, CouchDB
+```
+
+### Diagram: CAP Triangle with System Labels
+
+```
+                  CONSISTENCY (C)
+                        ╱╲
+                       ╱  ╲
+                      ╱ CP ╲
+                     ╱      ╲
+                    ╱────────╲
+                   ╱          ╲
+                  ╱    CAP     ╲
+                 ╱    THEOREM    ╲
+                ╱   (Brewer 2000) ╲
+               ╱                  ╲
+              ╱──── AP ───────────╲
+             ╱                      ╲
+            ╱           PA          ╲
+           ╱   (impossible during    ╲
+          ╱       partition)          ╲
+         ╱────────────────────────────╲
+   AVAILABILITY (A)         PARTITION TOLERANCE (P)
+
+   CP systems: HBase, Redis Cluster, etcd, ZooKeeper
+   AP systems: Cassandra, DynamoDB, CouchDB, Riak
+   Trade-off: Choose based on whether correctness or uptime matters more
 ```
 
 ## Rate Limiting Algorithms
@@ -378,11 +411,11 @@ Useful numbers to memorize:
   Read from SSD:           100 μs  (1,000x slower)
   Read from disk:          10 ms   (100,000x slower)
   Network round trip:      1-100 ms
-  
+
   1 server handles:        ~10,000 concurrent connections
   1 day has:               86,400 seconds
   1 million requests/day:  ~12 QPS (queries per second)
-  
+
   1 KB  → a short email
   1 MB  → a photo
   1 GB  → a movie
@@ -416,7 +449,7 @@ Monitor       → Prometheus + Grafana + ELK Stack
 Design a URL shortener (like bit.ly):
   - POST /shorten → returns short URL
   - GET /{shortCode} → redirects to original
-  
+
 Think about:
   - How to generate unique short codes?
   - Database schema?
@@ -440,6 +473,34 @@ Think about:
   - How to fan out group messages?
   - What if a user is offline?
 ```
+
+### Production Reality
+
+**System design principles fail in production in these named ways:**
+
+- **Cache stampede on hot key** — a popular endpoint uses Redis cache with 5-minute TTL. When the cache expires at T=0, 1,000 simultaneous requests all miss the cache and hit the database simultaneously. This "thundering herd" causes a 1,000x load spike. Fix: probabilistic early expiration (cache value includes expiry timestamp; background thread refreshes before TTL) or cache warming via scheduled job.
+- **Consistency vs availability during partition** — a split-brain scenario where the primary database and replica are in different network partitions. Writes go to primary (available), reads from replica (stale). CAP theorem: you must choose. Shopping cart: must be available and writable; balance check: must be consistent. Use the right database model for each use case.
+- **Connection pool exhaustion from connection leaks** — each microservice maintains its own database connection pool. A slow query in Service A holds a connection for 30 seconds; 50 instances × slow queries exhausts the shared DB connection limit. All 50 instances start queuing. Fix: set `query_timeout` per query, use HikariCP `maxLifetime`, and configure RDS connection pooler (RDS Proxy).
+- **Retry storm** — circuit breaker opens after 5 failures; 10,000 queued clients all retry in 30 seconds when the breaker half-opens. Each retry makes the situation worse. Fix: add jitter (random delay) to retry intervals: `sleep = baseDelay + random(0, baseDelay)`. This spreads the retry load.
+
+**Debug workflow:** For cache stampede: monitor cache hit rate; for connection exhaustion: `SHOW PROCESSLIST` in MySQL or `pg_stat_activity` in PostgreSQL. For retry storm: histogram of retry attempt counts.
+**Mitigation discipline:** Use circuit breakers with half-open state limits; implement connection timeouts at every hop; use cache-aside with TTL jitter; test failure modes with chaos engineering (Gremlin, LitmusChaos).
+
+---
+
+### Conceptual Depth: The CAP Invariant
+
+**Core invariant:** During a network partition, a distributed system must choose between Consistency and Availability. You cannot have both. (Eric Brewer, PODC 2000, formally proven by Gilbert-Lynch 2002.)
+
+**Why this matters:** Every database or distributed system designer faces this choice. The marketing term "CA" (consistent + available without partition tolerance) is theoretically possible only when partitions never happen — i.e., on a single-node system. In any real network, you must choose.
+
+**The deep pattern:** The choice is encoded in the replication protocol:
+- **CP** (Consistency + Partition tolerance): quorum writes, blocking reads → e.g., HBase, Redis Cluster, etcd, ZooKeeper
+- **AP** (Availability + Partition tolerance): any-replica writes, async replication → e.g., Cassandra, DynamoDB, CouchDB, Riak
+
+**Constraint that breaks the invariant:** When the network fails (and it will), you cannot serve all reads AND guarantee they return the latest write. The system makes a choice for you — usually the one the developer didn't intend.
+
+**Practical signal:** If your "highly available" database returns stale data after a network blip without an error, you're AP (and the data may be wrong). If your "strongly consistent" database returns errors under load, you're CP.
 
 ---
 

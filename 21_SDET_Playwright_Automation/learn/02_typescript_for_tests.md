@@ -15,6 +15,7 @@ The case for TS in test code:
 5. **Onboarding signal** — new hires read types, learn the system shape.
 
 The case against:
+
 - "Strict TS slows me down." Real, for the first month. Pays back from month 2.
 - "We have `any` everywhere anyway." Then you've taken on TS's cost and not its benefit. Tighten one file at a time.
 
@@ -27,8 +28,8 @@ For an SDET earning enterprise wages, the productivity ROI of TS is positive. Do
 ### Stage 1 — TS-as-JS
 
 ```typescript
-test('login', async ({ page }: any) => {
-  await page.goto('/login');
+test("login", async ({ page }: any) => {
+  await page.goto("/login");
   // ...
 });
 ```
@@ -36,6 +37,7 @@ test('login', async ({ page }: any) => {
 You can write this. It works. You get zero TS benefit.
 
 Signs you're here:
+
 - Every parameter is `: any`.
 - `as any` casts everywhere.
 - Tests work but refactoring is dangerous.
@@ -43,11 +45,11 @@ Signs you're here:
 ### Stage 2 — Inferred types
 
 ```typescript
-import { test } from '@playwright/test';
+import { test } from "@playwright/test";
 
-test('login', async ({ page }) => {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill('user@example.com');
+test("login", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByLabel("Email").fill("user@example.com");
 });
 ```
 
@@ -58,7 +60,7 @@ The `{ page }` destructure is inferred from `test`'s signature. No annotations n
 ```typescript
 interface Citation {
   id: string;
-  status: 'PENDING' | 'PAID' | 'DISPUTED' | 'DELETED';
+  status: "PENDING" | "PAID" | "DISPUTED" | "DELETED";
   amount: number;
 }
 
@@ -77,17 +79,17 @@ This is where the framework lives. Reference: [`reference/06_api_testing.md`](..
 ### Stage 4 — Type-driven design
 
 ```typescript
-type CitationStatus = 'PENDING' | 'PAID' | 'DISPUTED' | 'DELETED';
+type CitationStatus = "PENDING" | "PAID" | "DISPUTED" | "DELETED";
 
 type Citation<S extends CitationStatus = CitationStatus> = {
   id: string;
   status: S;
   amount: number;
-  paidAt: S extends 'PAID' ? string : null;
-  disputeReason: S extends 'DISPUTED' ? string : null;
+  paidAt: S extends "PAID" ? string : null;
+  disputeReason: S extends "DISPUTED" ? string : null;
 };
 
-async function payCitation(c: Citation<'PENDING'>): Promise<Citation<'PAID'>> {
+async function payCitation(c: Citation<"PENDING">): Promise<Citation<"PAID">> {
   // Caller must pass PENDING citation. Returns PAID.
 }
 ```
@@ -103,7 +105,7 @@ Most tests don't need this. It's the right level for the framework's foundation 
 ### Discriminated unions for API responses
 
 ```typescript
-type ApiResult<T> = 
+type ApiResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: { code: string; message: string } };
 
@@ -115,13 +117,13 @@ async function getCitation(id: string): Promise<ApiResult<Citation>> {
   return { ok: true, data: await response.json() };
 }
 
-const result = await getCitation('CIT-001');
+const result = await getCitation("CIT-001");
 if (result.ok) {
   // TS knows result.data exists
   expect(result.data.amount).toBe(150);
 } else {
   // TS knows result.error exists
-  expect(result.error.code).toBe('NOT_FOUND');
+  expect(result.error.code).toBe("NOT_FOUND");
 }
 ```
 
@@ -140,10 +142,10 @@ class APIUtils {
   }
 }
 
-const citation = await api.post<CreateCitation, Citation>(
-  '/citations',
-  { amount: 150, status: 'PENDING' },
-);
+const citation = await api.post<CreateCitation, Citation>("/citations", {
+  amount: 150,
+  status: "PENDING",
+});
 // citation is typed as Citation
 ```
 
@@ -153,13 +155,15 @@ Reference: [`reference/06_api_testing.md`](../reference/06_api_testing.md).
 
 ```typescript
 const TEST_USERS = {
-  admin: { username: 'admin', role: 'ADMIN' },
-  user:  { username: 'user',  role: 'USER' },
+  admin: { username: "admin", role: "ADMIN" },
+  user: { username: "user", role: "USER" },
 } as const;
 
 // TEST_USERS.admin.role is typed as the literal 'ADMIN', not string.
-function loginAs(role: 'ADMIN' | 'USER') { /* ... */ }
-loginAs(TEST_USERS.admin.role);  // works — role is literal 'ADMIN'
+function loginAs(role: "ADMIN" | "USER") {
+  /* ... */
+}
+loginAs(TEST_USERS.admin.role); // works — role is literal 'ADMIN'
 ```
 
 Without `as const`, `role` widens to `string` and the call fails type-check.
@@ -167,19 +171,25 @@ Without `as const`, `role` widens to `string` and the call fails type-check.
 ### Branded types for IDs
 
 ```typescript
-type CustomerId = string & { readonly __brand: 'CustomerId' };
-type OrderId = string & { readonly __brand: 'OrderId' };
+type CustomerId = string & { readonly __brand: "CustomerId" };
+type OrderId = string & { readonly __brand: "OrderId" };
 
-function asCustomerId(s: string): CustomerId { return s as CustomerId; }
+function asCustomerId(s: string): CustomerId {
+  return s as CustomerId;
+}
 
-async function getCustomer(id: CustomerId): Promise<Customer> { /* ... */ }
-async function getOrder(id: OrderId): Promise<Order> { /* ... */ }
+async function getCustomer(id: CustomerId): Promise<Customer> {
+  /* ... */
+}
+async function getOrder(id: OrderId): Promise<Order> {
+  /* ... */
+}
 
-const cid = asCustomerId('cust-001');
-const oid = 'ord-001' as OrderId;
+const cid = asCustomerId("cust-001");
+const oid = "ord-001" as OrderId;
 
-getCustomer(cid);   // OK
-getCustomer(oid);   // ❌ TS error — type mismatch
+getCustomer(cid); // OK
+getCustomer(oid); // ❌ TS error — type mismatch
 ```
 
 Prevents "passed an order ID where customer ID was expected" at compile time. Rare in tests but useful in large frameworks with many ID types.
@@ -189,13 +199,13 @@ Prevents "passed an order ID where customer ID was expected" at compile time. Ra
 ```typescript
 const ENDPOINTS = {
   citations: {
-    list: '/citations',
-    create: '/citations',
+    list: "/citations",
+    create: "/citations",
     getById: (id: string) => `/citations/${id}`,
   },
 } satisfies Record<string, Record<string, string | ((arg: string) => string)>>;
 
-ENDPOINTS.citations.getById('CIT-001');   // typed as string
+ENDPOINTS.citations.getById("CIT-001"); // typed as string
 ```
 
 `satisfies` validates shape without widening. Useful for config objects where you want strong inference AND validation.
@@ -204,14 +214,14 @@ ENDPOINTS.citations.getById('CIT-001');   // typed as string
 
 ## Generics — where they earn their complexity
 
-| Pattern | Use? |
-|---|---|
-| `APIUtils.post<TPayload, TResponse>` | ✅ Yes — reusable wrapper |
-| `Factory<T>().build()` | ✅ Yes — generic builders |
-| `Pool<T>(items: T[])` | ✅ Yes — generic resource pool |
-| `<T extends Locator>(loc: T)` | ❌ Probably no — `Locator` is enough |
-| 5-parameter generic | ❌ Almost always overengineered |
-| Generics in test bodies | ❌ Tests should be concrete |
+| Pattern                              | Use?                                 |
+| ------------------------------------ | ------------------------------------ |
+| `APIUtils.post<TPayload, TResponse>` | ✅ Yes — reusable wrapper            |
+| `Factory<T>().build()`               | ✅ Yes — generic builders            |
+| `Pool<T>(items: T[])`                | ✅ Yes — generic resource pool       |
+| `<T extends Locator>(loc: T)`        | ❌ Probably no — `Locator` is enough |
+| 5-parameter generic                  | ❌ Almost always overengineered      |
+| Generics in test bodies              | ❌ Tests should be concrete          |
 
 Rule: generics in framework code, concrete types in test bodies.
 
@@ -235,8 +245,8 @@ Rule: generics in framework code, concrete types in test bodies.
 `noUncheckedIndexedAccess` is the underappreciated one:
 
 ```typescript
-const items = ['a', 'b'];
-const first = items[0];   // typed as 'string | undefined' (was just 'string')
+const items = ["a", "b"];
+const first = items[0]; // typed as 'string | undefined' (was just 'string')
 ```
 
 Forces null-handling. Catches "what if the array is empty" at compile time.

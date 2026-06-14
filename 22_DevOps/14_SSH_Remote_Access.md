@@ -18,7 +18,7 @@ WHAT SSH PROVIDES:
   2. Encrypted file transfer (SCP, SFTP)
   3. Port forwarding / tunneling (access internal services securely)
   4. Authentication (password or key-based)
-  
+
 SSH USES TCP PORT 22 (by default).
 
 AUTHENTICATION METHODS (in order of preference):
@@ -26,16 +26,16 @@ AUTHENTICATION METHODS (in order of preference):
 1. PUBLIC KEY (best — passwordless, most secure):
    Your machine has private key (~/.ssh/id_ed25519).
    Server has your public key (~/.ssh/authorized_keys).
-   
+
    Handshake: server sends challenge → your SSH client signs with private key →
    server verifies with public key → authenticated!
-   
+
    NO PASSWORD crosses the network. Private key NEVER leaves your machine.
 
 2. PASSWORD:
    Encrypted by SSH tunnel. But: vulnerable to brute force.
    DISABLE password auth on production servers!
-   
+
 3. CERTIFICATE-BASED (enterprise):
    SSH CA signs your public key → certificate has expiry and permissions.
    Server trusts the CA → automatically trusts any cert signed by it.
@@ -46,7 +46,7 @@ KEY TYPES:
   ECDSA (ecdsa):      Elliptic curve. 256-bit = RSA 3072-bit security. Faster.
   Ed25519 (ed25519):  Daniel Bernstein's curve. 256-bit. FASTEST. RECOMMENDED.
                       Small keys, fast verification, high security.
-  
+
   ALWAYS USE ed25519 for new keys.
 ```
 
@@ -149,44 +149,44 @@ THREE TYPES:
 
 1. LOCAL PORT FORWARDING (-L):
    "Make a remote service available on MY machine."
-   
+
    Use case: Access a production database that's in a private subnet.
    The database only allows connections from the bastion host.
-   
+
    ssh -L 5432:db-internal:5432 user@bastion.myapp.com
-   
+
    Translation:
    "Listen on MY localhost:5432. Send traffic through SSH to bastion.
     Bastion connects to db-internal:5432 and relays data back."
-   
+
    Now: psql -h localhost -p 5432 → connects to the PRODUCTION DATABASE!
-   
+
    Traffic flow:
    Your laptop:5432 → [SSH encrypted tunnel] → bastion → db-internal:5432
 
 2. REMOTE PORT FORWARDING (-R):
    "Make a service on MY machine available to the REMOTE server."
-   
+
    Use case: Show your local dev server to a colleague on the remote network.
-   
+
    ssh -R 8080:localhost:3000 user@remote-server.com
-   
+
    Translation:
    "On remote-server, listen on port 8080. Forward to MY localhost:3000."
-   
+
    Now: curl http://remote-server:8080 → reaches YOUR local dev server!
-   
+
    Like a reverse ngrok.
 
 3. DYNAMIC PORT FORWARDING (-D / SOCKS proxy):
    "Route ALL my traffic through the SSH server."
-   
+
    ssh -D 1080 user@remote-server.com
-   
+
    Creates a SOCKS5 proxy on localhost:1080.
    Configure browser to use SOCKS5 proxy localhost:1080.
    → ALL browser traffic routes through the SSH tunnel → exits at remote-server.
-   
+
    Use case: Browse internal websites, bypass geographic restrictions.
 ```
 
@@ -243,13 +243,13 @@ WIREGUARD (modern, fast, simple):
   Uses modern cryptography: Curve25519, ChaCha20, Poly1305, BLAKE2.
   Faster than OpenVPN and IPsec.
   Built into Linux kernel (since 5.6).
-  
+
   Becoming the default for cloud VPN (Tailscale, Cloudflare WARP use WireGuard).
 
 SPLIT TUNNELING:
   Full tunnel: ALL traffic goes through VPN (secure but slow).
   Split tunnel: only CORPORATE traffic goes through VPN, rest goes direct.
-  
+
   Split is faster but: personal traffic isn't protected.
   Corporate preference: usually full tunnel for security.
 ```
@@ -307,7 +307,7 @@ MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 ```
 FAIL2BAN (brute force protection):
   Monitors SSH logs → bans IPs after N failed attempts.
-  
+
   sudo apt install fail2ban
   # Config: /etc/fail2ban/jail.local
   [sshd]
@@ -316,7 +316,7 @@ FAIL2BAN (brute force protection):
   maxretry = 3
   bantime = 3600        # ban for 1 hour
   findtime = 600        # within 10 minutes
-  
+
   # Check banned IPs
   sudo fail2ban-client status sshd
 ```
@@ -325,12 +325,11 @@ FAIL2BAN (brute force protection):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **TLS (SSH uses similar crypto)** | [Ch 09: TLS](09_TLS_Encryption.md) — Diffie-Hellman, Ed25519 |
-| **Public/private keys** | [Ch 09: TLS](09_TLS_Encryption.md) — asymmetric encryption |
-| **Bastion in VPC** | [Ch 13: Cloud VPC](13_Cloud_Networking_VPC.md) — public subnet bastion |
-| **Firewall (port 22)** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — allow SSH from subnet |
-| **Docker exec (alt to SSH)** | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — container debugging |
-| **Git over SSH** | Uses the same ~/.ssh/id_ed25519 key format |
-
+| Topic                             | Related Content                                                            |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| **TLS (SSH uses similar crypto)** | [Ch 09: TLS](09_TLS_Encryption.md) — Diffie-Hellman, Ed25519               |
+| **Public/private keys**           | [Ch 09: TLS](09_TLS_Encryption.md) — asymmetric encryption                 |
+| **Bastion in VPC**                | [Ch 13: Cloud VPC](13_Cloud_Networking_VPC.md) — public subnet bastion     |
+| **Firewall (port 22)**            | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — allow SSH from subnet |
+| **Docker exec (alt to SSH)**      | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — container debugging     |
+| **Git over SSH**                  | Uses the same ~/.ssh/id_ed25519 key format                                 |

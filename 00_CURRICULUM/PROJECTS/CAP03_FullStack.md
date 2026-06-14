@@ -8,7 +8,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*Build "DevBoard" — a developer productivity dashboard where engineers can track their GitHub-style personal task boards. Users can create projects, add tasks with priorities and tags, track time, and view analytics.*
+_Build "DevBoard" — a developer productivity dashboard where engineers can track their GitHub-style personal task boards. Users can create projects, add tasks with priorities and tags, track time, and view analytics._
 
 ---
 
@@ -39,9 +39,10 @@
 **`User`** — name, email, password (BCrypt), role, createdAt  
 **`Project`** — name, description, ownerId, color, status (ACTIVE/ARCHIVED)  
 **`Task`** — title, description, projectId, assigneeId, priority (LOW/MEDIUM/HIGH/CRITICAL), status (TODO/IN_PROGRESS/REVIEW/DONE), dueDate, tags  
-**`TimeEntry`** — taskId, userId, startedAt, endedAt, durationMinutes, description  
+**`TimeEntry`** — taskId, userId, startedAt, endedAt, durationMinutes, description
 
 ### Business Rules
+
 - A `Project` belongs to one owner; collaborators can be invited
 - A `Task` must belong to a `Project`
 - `TimeEntry.durationMinutes` = `endedAt - startedAt` (auto-calculated)
@@ -51,24 +52,25 @@
 
 ## 📋 Backend API Spec (Spring Boot 3)
 
-| Method | Path | Description |
-|---|---|---|
-| POST | `/api/auth/register` | Register user |
-| POST | `/api/auth/login` | Login → JWT |
-| GET | `/api/projects` | My projects |
-| POST | `/api/projects` | Create project |
-| GET | `/api/projects/{id}/tasks` | Tasks in project (filterable by status, priority) |
-| POST | `/api/projects/{id}/tasks` | Create task |
-| PATCH | `/api/tasks/{id}/status` | Move task to new status |
-| POST | `/api/tasks/{id}/time-entries` | Start a time entry |
-| PUT | `/api/time-entries/{id}/stop` | Stop time entry |
-| GET | `/api/analytics/summary` | Dashboard stats: tasks done today, total time logged this week |
+| Method | Path                           | Description                                                    |
+| ------ | ------------------------------ | -------------------------------------------------------------- |
+| POST   | `/api/auth/register`           | Register user                                                  |
+| POST   | `/api/auth/login`              | Login → JWT                                                    |
+| GET    | `/api/projects`                | My projects                                                    |
+| POST   | `/api/projects`                | Create project                                                 |
+| GET    | `/api/projects/{id}/tasks`     | Tasks in project (filterable by status, priority)              |
+| POST   | `/api/projects/{id}/tasks`     | Create task                                                    |
+| PATCH  | `/api/tasks/{id}/status`       | Move task to new status                                        |
+| POST   | `/api/tasks/{id}/time-entries` | Start a time entry                                             |
+| PUT    | `/api/time-entries/{id}/stop`  | Stop time entry                                                |
+| GET    | `/api/analytics/summary`       | Dashboard stats: tasks done today, total time logged this week |
 
 ---
 
 ## 📋 Frontend Features (React 18 + TypeScript)
 
 ### Pages
+
 1. **Login / Register** — auth forms with validation
 2. **Dashboard** — summary cards (tasks due today, time logged this week, project health)
 3. **Project Board** — Kanban board (TODO / IN_PROGRESS / REVIEW / DONE columns, drag-to-move tasks)
@@ -76,6 +78,7 @@
 5. **Analytics** — charts (tasks completed per day, time by project)
 
 ### Required Tech
+
 - `React Query` for all API calls (no raw `fetch` in components)
 - `Zustand` for UI state (selected project, board filters)
 - `react-beautiful-dnd` or `@dnd-kit/core` for Kanban drag-and-drop
@@ -87,6 +90,7 @@
 ## 📝 Skeleton Code
 
 ### Backend — `Task.java`
+
 ```java
 package com.devboard.domain.task;
 
@@ -99,35 +103,35 @@ import java.util.*;
 public class Task {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false)
     private String title;
-    
+
     private String description;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
-    
+
     @Enumerated(EnumType.STRING)
     private Priority priority;
-    
+
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
-    
+
     private LocalDate dueDate;
-    
+
     @ElementCollection
     @CollectionTable(name = "task_tags", joinColumns = @JoinColumn(name = "task_id"))
     @Column(name = "tag")
     private Set<String> tags = new HashSet<>();
-    
+
     // Domain method: move task to new status with validation
     public void moveTo(TaskStatus newStatus) {
         // TODO: validate valid transitions (e.g., cannot go from DONE back to TODO without reason)
         this.status = newStatus;
     }
-    
+
     // Domain method: check if task is overdue
     public boolean isOverdue() {
         return dueDate != null && LocalDate.now().isAfter(dueDate) && status != TaskStatus.DONE;
@@ -136,17 +140,18 @@ public class Task {
 ```
 
 ### Frontend — `useProjects.ts`
+
 ```typescript
 // src/hooks/useProjects.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../lib/api';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../lib/api";
 
 export interface Project {
   id: number;
   name: string;
   description: string;
   color: string;
-  status: 'ACTIVE' | 'ARCHIVED';
+  status: "ACTIVE" | "ARCHIVED";
 }
 
 export interface CreateProjectRequest {
@@ -157,8 +162,8 @@ export interface CreateProjectRequest {
 
 export function useProjects() {
   return useQuery<Project[]>({
-    queryKey: ['projects'],
-    queryFn: () => api.get('/api/projects').then(r => r.data),
+    queryKey: ["projects"],
+    queryFn: () => api.get("/api/projects").then((r) => r.data),
   });
 }
 
@@ -166,55 +171,66 @@ export function useCreateProject() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateProjectRequest) =>
-      api.post<Project>('/api/projects', data).then(r => r.data),
+      api.post<Project>("/api/projects", data).then((r) => r.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 }
 ```
 
 ### Frontend — `KanbanBoard.tsx`
+
 ```tsx
 // src/pages/KanbanBoard.tsx
-import React from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import React from "react";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
 
-type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'REVIEW' | 'DONE';
+type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 
 interface Task {
   id: number;
   title: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
   status: TaskStatus;
   dueDate?: string;
   tags: string[];
 }
 
-const COLUMNS: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'];
+const COLUMNS: TaskStatus[] = ["TODO", "IN_PROGRESS", "REVIEW", "DONE"];
 
 export function KanbanBoard({ projectId }: { projectId: number }) {
   // TODO: use useQuery to load tasks for projectId
   // TODO: group tasks by status into columns
   // TODO: onDragEnd: call PATCH /api/tasks/{id}/status with new status
-  
+
   const handleDragEnd = (result: DropResult) => {
     // TODO: if dragged to different column, update task status via mutation
     //       use optimistic update for instant UI feedback
   };
-  
+
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div style={{ display: 'flex', gap: '1rem' }}>
-        {COLUMNS.map(status => (
+      <div style={{ display: "flex", gap: "1rem" }}>
+        {COLUMNS.map((status) => (
           <Droppable droppableId={status} key={status}>
             {(provided) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                style={{ minWidth: 250, background: '#f5f5f5', padding: '1rem', borderRadius: 8 }}
+                style={{
+                  minWidth: 250,
+                  background: "#f5f5f5",
+                  padding: "1rem",
+                  borderRadius: 8,
+                }}
               >
-                <h3>{status.replace('_', ' ')}</h3>
+                <h3>{status.replace("_", " ")}</h3>
                 {/* TODO: render TaskCard for each task in this column */}
                 {provided.placeholder}
               </div>
@@ -245,13 +261,13 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
 
 ## 🔴 Failure Scenarios & Erklärungen
 
-| Mistake | Why | Fix |
-|---|---|---|
-| JWT stored in `localStorage` | XSS attacks can steal tokens | Store in `httpOnly` cookie — inaccessible to JS |
-| `useEffect(() => { fetch(url) })` directly in components | Race conditions, no deduplication, no caching | Use React Query `useQuery` — handles all this |
-| CORS not configured in Spring | Frontend blocked by browser | Add `@CrossOrigin` or configure `CorsConfigurationSource` in `SecurityConfig` |
-| No optimistic update on drag | Board flickers on status change (API latency) | Use React Query's `onMutate` for optimistic updates |
-| `TimeEntry.durationMinutes` set by frontend | Client can send arbitrary duration | Always calculate server-side: `endedAt - startedAt` |
+| Mistake                                                  | Why                                           | Fix                                                                           |
+| -------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------- |
+| JWT stored in `localStorage`                             | XSS attacks can steal tokens                  | Store in `httpOnly` cookie — inaccessible to JS                               |
+| `useEffect(() => { fetch(url) })` directly in components | Race conditions, no deduplication, no caching | Use React Query `useQuery` — handles all this                                 |
+| CORS not configured in Spring                            | Frontend blocked by browser                   | Add `@CrossOrigin` or configure `CorsConfigurationSource` in `SecurityConfig` |
+| No optimistic update on drag                             | Board flickers on status change (API latency) | Use React Query's `onMutate` for optimistic updates                           |
+| `TimeEntry.durationMinutes` set by frontend              | Client can send arbitrary duration            | Always calculate server-side: `endedAt - startedAt`                           |
 
 ---
 

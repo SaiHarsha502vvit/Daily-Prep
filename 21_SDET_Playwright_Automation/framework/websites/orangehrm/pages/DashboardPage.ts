@@ -22,10 +22,9 @@ export class DashboardPage {
     this.page = page;
     this.header = page.locator(this.locators.header).first();
     this.userDropdown = page.locator(this.locators.userDropdown);
-    this.logoutLink = page.getByRole(
-      this.locators.logoutLink.role,
-      { name: this.locators.logoutLink.name }
-    );
+    this.logoutLink = page.getByRole(this.locators.logoutLink.role, {
+      name: this.locators.logoutLink.name,
+    });
     this.sidebarMenu = page.locator(this.locators.sidebarMenu);
   }
 

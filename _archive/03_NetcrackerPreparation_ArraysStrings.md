@@ -333,8 +333,8 @@ public static void optimizedWindow(int[] arr, int k) {
 
 1. First window: Compute normally (can't optimize)
 2. Second window: Only 1 element differs from first window!
-    - Remove arr[0], add arr[k]
-    - No need to recalculate entire sum
+   - Remove arr[0], add arr[k]
+   - No need to recalculate entire sum
 3. Pattern: Each new window = old window - left element + right element
 
 ### 🎨 Sliding Optimization Visual:
@@ -860,10 +860,10 @@ public static void prefixSumApproach(int[] arr, int[][] queries) {
 
 1. prefix[i] = sum from 0 to i
 2. To get sum from L to R:
-    - We need: arr[L] + arr[L+1] + ... + arr[R]
-    - We have: prefix[R] = arr[0] + ... + arr[R]
-    - We have: prefix[L-1] = arr[0] + ... + arr[L-1]
-    - Subtract: prefix[R] - prefix[L-1] = arr[L] + ... + arr[R] ✓
+   - We need: arr[L] + arr[L+1] + ... + arr[R]
+   - We have: prefix[R] = arr[0] + ... + arr[R]
+   - We have: prefix[L-1] = arr[0] + ... + arr[L-1]
+   - Subtract: prefix[R] - prefix[L-1] = arr[L] + ... + arr[R] ✓
 
 ### 📝 Common Logic Blocks:
 
@@ -1189,8 +1189,8 @@ count=count+1;  // Increments AFTER printing
 **Why This Fails:**
 
 - Example: For input `7` (4th prime):
-    - Primes found: 2 (count=1), 3 (count=2), 5 (count=3), 7 (count=3 when printed)
-    - Output: "Prime, Position = 3" ❌ (Should be 4)
+  - Primes found: 2 (count=1), 3 (count=2), 5 (count=3), 7 (count=3 when printed)
+  - Output: "Prime, Position = 3" ❌ (Should be 4)
 - Off-by-one error: increment happens too late
 
 **Interviewer Perspective:**
@@ -1575,9 +1575,9 @@ for (int i = 2; i < num/2; i++)
 **Complexity Comparison:**
 
 - For N = 1,000,000:
-    - Option A: ~1,000,000 iterations
-    - Option B: ~1,000 iterations ✅
-    - Option C: ~500,000 iterations (buggy)
+  - Option A: ~1,000,000 iterations
+  - Option B: ~1,000 iterations ✅
+  - Option C: ~500,000 iterations (buggy)
 
 ---
 
@@ -1818,8 +1818,8 @@ public class FirstNegativeDeque {
 
 - Recognize keywords: "every window of size K" → Sliding Window pattern
 - Understand two approaches:
-    1. **Brute Force:** Check each window separately O(N×K)
-    2. **Optimized:** Use Deque to track negatives O(N)
+  1. **Brute Force:** Check each window separately O(N×K)
+  2. **Optimized:** Use Deque to track negatives O(N)
 
 **Why Junior Developers Skip:**
 
@@ -2615,9 +2615,9 @@ Missing: 4 and 35
 **Test Case Analysis:**
 
 - **Input 1:** [4, 35, 5]
-    - Expected: `5 14 19 23 28 32`
-    - Your output: `14 19 23 28` (missing 5 and 32)
-    - Why: 5 is at boundary, 32 is near end
+  - Expected: `5 14 19 23 28 32`
+  - Your output: `14 19 23 28` (missing 5 and 32)
+  - Why: 5 is at boundary, 32 is near end
 - Result: **TC 1, TC 2, TC 4, TC 6 all test boundary inclusion**
 
 **Interviewer Perspective:**

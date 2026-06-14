@@ -14,11 +14,11 @@
 TRADITIONAL OPS:
   Operations team manually deploys, monitors, responds to incidents.
   More users → more work → hire more ops people → doesn't scale.
-  
+
 SRE (Site Reliability Engineering — Google, 2003):
   Software engineers who happen to run production.
   AUTOMATE EVERYTHING: deployments, monitoring, incident response, capacity planning.
-  
+
   KEY PRINCIPLES:
   1. Embrace risk (accept that failure will happen — plan for it).
   2. SLOs define reliability (customers define "good enough," not engineering).
@@ -39,15 +39,15 @@ OPERATIONS IS A SOFTWARE PROBLEM.
 SLI (Service Level Indicator):
   A MEASUREMENT of service quality.
   "What are we measuring?"
-  
+
   Availability SLI:
     successful_requests / total_requests × 100
     → "99.2% of requests returned non-5xx in the last 30 days"
-  
+
   Latency SLI:
     requests_under_threshold / total_requests × 100
     → "95.1% of requests completed in < 200ms"
-  
+
   Correctness SLI:
     correct_responses / total_responses × 100
     → "99.99% of calculations returned correct results"
@@ -55,10 +55,10 @@ SLI (Service Level Indicator):
 SLO (Service Level Objective):
   A TARGET for the SLI.
   "What's our goal?"
-  
+
   SLO: 99.9% availability (measured over 30-day rolling window).
   Meaning: we tolerate up to 43.2 minutes of downtime per month.
-  
+
   SLO: 95% of requests complete in < 200ms.
   Meaning: 5% of requests can be slow, but not more.
 
@@ -72,7 +72,7 @@ SLO (Service Level Objective):
   │ 99.99%   │ 52.6 minutes    │ 4.32 minutes   │ 8.64 seconds   │
   │ 99.999%  │ 5.26 minutes    │ 25.9 seconds   │ 0.86 seconds   │
   └──────────┴─────────────────┴────────────────┴────────────────┘
-  
+
   Every additional nine is 10x harder to achieve and 10x more expensive!
   99% → 99.9%: add redundancy, health checks.
   99.9% → 99.99%: multi-region, sophisticated failover, chaos testing.
@@ -81,21 +81,21 @@ SLO (Service Level Objective):
 SLA (Service Level Agreement):
   A CONTRACT with customers. Legal and financial consequences.
   "If we fail to meet 99.9% availability, we credit 10% of your bill."
-  
+
   SLA is ALWAYS looser than SLO (internal target is stricter than customer promise).
   SLO: 99.95% | SLA: 99.9% → gives buffer for internal issues.
 
 ERROR BUDGET:
   Error budget = 1 - SLO.
   SLO: 99.9% → Error budget: 0.1% → 43.2 minutes of downtime/month.
-  
+
   If budget is HEALTHY (plenty left):
     → Ship features faster. Take more risks. Deploy more often.
-  
+
   If budget is CONSUMED:
     → STOP shipping new features. Focus entirely on reliability.
     → Fix bugs, add monitoring, improve testing, fix infrastructure.
-  
+
   This is the MAGIC of SRE. It creates a self-regulating system:
   Product team wants features → but they also want uptime →
   if they break things → they exhaust budget → forced to fix reliability first.
@@ -114,7 +114,7 @@ INCIDENT LIFECYCLE:
    → Monitoring alert fires (Prometheus → PagerDuty → on-call SRE).
    → Customer report (SLOWER — means monitoring missed it!).
    → Synthetic monitoring (automated tests that probe your service regularly).
-   
+
    GOAL: detect within 1-5 minutes. Not 30 minutes.
 
 2. TRIAGE:
@@ -131,7 +131,7 @@ INCIDENT LIFECYCLE:
    → Toggle feature flag off.
    → Redirect traffic (DNS failover to backup region).
    → Restart the service (if the fix is unclear, buy time).
-   
+
    GOAL: mitigate in minutes. Root cause can wait. Users can't.
 
 4. RESOLUTION (fix the root cause):
@@ -245,7 +245,7 @@ THE MATH:
   Current usage: 60% CPU across 10 servers.
   Growth rate: 15% month-over-month.
   Capacity ceiling: 80% (above this → performance degrades).
-  
+
   Months until ceiling: log(80/60) / log(1.15) = 2.06 months.
   → In ~2 months you need more capacity!
 
@@ -255,7 +255,7 @@ HEADROOM CALCULATION:
   1. Traffic spikes (Black Friday → 3x normal traffic).
   2. Instance failure (1 of 3 dies → remaining 2 handle 150% load each).
   3. Deployment overhead (rolling update briefly doubles pod count).
-  
+
   FORMULA: required_instances = peak_load / (capacity_per_instance × target_utilization)
   Example: 10,000 req/s peak, 500 req/s per instance, 70% target →
            10,000 / (500 × 0.7) = 28.6 → 29 instances minimum.
@@ -267,7 +267,7 @@ LOAD TESTING (measure before you calculate):
   wrk:                Simple HTTP benchmarking. Ultra-fast.
   JMeter:             Enterprise. GUI-based. Heavy but comprehensive.
   Gatling:            Scala-based. Beautiful reports.
-  
+
   WHAT TO MEASURE:
   1. Throughput: max requests/second before degradation.
   2. Latency: p50, p95, p99 at various load levels.
@@ -328,7 +328,7 @@ ON-CALL BEST PRACTICES:
    Minimum 2 people per rotation (primary + secondary).
    1-week rotations (not longer — burnout risk).
    Handoff meeting: outgoing SRE briefs incoming on current state.
-   
+
 2. COMPENSATION:
    On-call pay: stipend for being available (even without pages).
    Incident pay: extra compensation for actual pages.
@@ -339,7 +339,7 @@ ON-CALL BEST PRACTICES:
    Primary on-call: responds within 5 minutes.
    If unresponsive after 10 min → secondary on-call paged.
    If SEV-1 → escalate to engineering manager + VP immediately.
-   
+
    PagerDuty escalation policy:
    0 min: page primary (push notification + SMS + phone call)
    10 min: page secondary
@@ -514,7 +514,7 @@ AUTOMATION LEVELS:
   Level 2: Runbook steps are scripted → human triggers script.
   Level 3: Alert triggers script automatically → human reviews.
   Level 4: Fully automated → human only notified of outcome.
-  
+
   GOAL: move every runbook from Level 1 → Level 4 over time.
 ```
 
@@ -544,14 +544,14 @@ class CircuitBreaker:
         self.failure_count = 0
         self.state = CircuitState.CLOSED
         self.last_failure_time = None
-    
+
     def call(self, func, *args, **kwargs):
         if self.state == CircuitState.OPEN:
             if time.time() - self.last_failure_time > self.recovery_timeout:
                 self.state = CircuitState.HALF_OPEN  # try one request
             else:
                 raise CircuitBreakerOpenError("Circuit is OPEN — failing fast!")
-        
+
         try:
             result = func(*args, **kwargs)
             self._on_success()
@@ -559,11 +559,11 @@ class CircuitBreaker:
         except Exception as e:
             self._on_failure()
             raise
-    
+
     def _on_success(self):
         self.failure_count = 0
         self.state = CircuitState.CLOSED
-    
+
     def _on_failure(self):
         self.failure_count += 1
         self.last_failure_time = time.time()
@@ -594,11 +594,11 @@ def retry_with_backoff(func, max_retries=5, base_delay=1.0, max_delay=60.0):
         except (ConnectionError, TimeoutError) as e:
             if attempt == max_retries - 1:
                 raise  # exhausted all retries
-            
+
             # Exponential backoff with full jitter
             delay = min(base_delay * (2 ** attempt), max_delay)
             jitter = random.uniform(0, delay)
-            
+
             print(f"Attempt {attempt + 1} failed: {e}. Retrying in {jitter:.1f}s...")
             time.sleep(jitter)
 
@@ -622,17 +622,17 @@ future = payment_pool.submit(payment_service.charge, amount=99.99)
 
 def get_product_page(product_id):
     product = db.get_product(product_id)     # CRITICAL — must work
-    
+
     try:
         reviews = review_service.get(product_id)  # NON-CRITICAL
     except Exception:
         reviews = []  # degrade: show page without reviews
-    
+
     try:
         recommendations = ml_service.recommend(product_id)  # NON-CRITICAL
     except Exception:
         recommendations = get_popular_products()  # fallback to popular items
-    
+
     return render(product, reviews, recommendations)
 ```
 
@@ -647,7 +647,7 @@ GOOGLE'S SRE MODEL:
   SRE team: software engineers who maintain production systems.
   50% engineering: build automation, tools, observability.
   50% ops: on-call, incident response, capacity planning.
-  
+
   If ops > 50% → SRE team pushes back to product team:
   "Your service is too unreliable. Fix it before we'll support it."
   This creates SHARED RESPONSIBILITY between SRE and product teams.
@@ -678,7 +678,7 @@ THE SRE ENGAGEMENT MODEL:
   3. Does it have runbooks for common failures?
   4. Does it have load testing results?
   5. Has it passed a production readiness review (PRR)?
-  
+
   If YES to all → SRE supports it.
   If NO → product team supports it themselves until they meet the bar.
 
@@ -694,14 +694,13 @@ CULTURE:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Monitoring (metrics for SLIs)** | [Ch 21: Observability](21_Monitoring_Observability.md) — Prometheus, PromQL |
-| **K8s self-healing** | [Ch 18: K8s](18_Kubernetes_Complete.md) — probes, HPA, PDB |
-| **Deployment strategies** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — canary, rollback |
-| **Load balancing (failover)** | [Ch 11: LB](11_Load_Balancing_Proxies.md) — health checks |
-| **Distributed patterns** | [Distributed Patterns](../10_Enterprise_Systems/09_Distributed_Patterns.md) — circuit breaker |
-| **SQL slow queries** | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — EXPLAIN ANALYZE |
-| **Capacity math** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — bandwidth-delay product |
-| **Linux performance** | [Ch 16: Linux](16_Linux_Administration.md) — USE method, OOM killer |
-
+| Topic                             | Related Content                                                                               |
+| --------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Monitoring (metrics for SLIs)** | [Ch 21: Observability](21_Monitoring_Observability.md) — Prometheus, PromQL                   |
+| **K8s self-healing**              | [Ch 18: K8s](18_Kubernetes_Complete.md) — probes, HPA, PDB                                    |
+| **Deployment strategies**         | [Ch 19: CI/CD](19_CICD_Pipelines.md) — canary, rollback                                       |
+| **Load balancing (failover)**     | [Ch 11: LB](11_Load_Balancing_Proxies.md) — health checks                                     |
+| **Distributed patterns**          | [Distributed Patterns](../10_Enterprise_Systems/09_Distributed_Patterns.md) — circuit breaker |
+| **SQL slow queries**              | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — EXPLAIN ANALYZE                         |
+| **Capacity math**                 | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — bandwidth-delay product                           |
+| **Linux performance**             | [Ch 16: Linux](16_Linux_Administration.md) — USE method, OOM killer                           |

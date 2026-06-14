@@ -19,6 +19,7 @@ Backtracking = "Try everything, but prune impossible branches early."
 **WHAT**: You can climb 1 or 2 steps. How many distinct ways to reach the top?
 
 **WHY DP works here**:
+
 - To reach step n, you came from step n-1 (one step) or step n-2 (two steps)
 - So ways(n) = ways(n-1) + ways(n-2) — it's Fibonacci!
 - Overlapping subproblems: ways(5) needs ways(4) and ways(3), but ways(4) also needs ways(3)
@@ -26,6 +27,7 @@ Backtracking = "Try everything, but prune impossible branches early."
 **WHEN**: "Count ways" + "choices at each step" → DP.
 
 **HOW — The Logic Chain**:
+
 ```
 State definition: dp[i] = number of ways to reach step i
 Transition: dp[i] = dp[i-1] + dp[i-2]
@@ -38,6 +40,7 @@ Answer: dp[n]
 **Interview narration**: "At each step I have 2 choices. The total ways to reach step n is the sum of ways to reach n-1 and n-2. This is a linear DP — I just track the last two values."
 
 **The 5W+H DP Framework for EVERY DP Problem**:
+
 ```
 WHAT: Define the state — what does dp[i] (or dp[i][j]) represent?
 WHY:  Write the recurrence — how does dp[i] depend on smaller states?
@@ -54,10 +57,12 @@ HOW:  Can we optimize space? Do we only need last row/value?
 **WHAT**: Rob houses (can't rob two adjacent). Maximize money.
 
 **WHY the "rob or skip" recurrence works**:
+
 - At house i, two choices: ROB it (then skip i-1) or SKIP it (take best up to i-1)
 - dp[i] = max(dp[i-2] + val[i], dp[i-1])
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i] = max money from first i houses
 Transition: dp[i] = max(dp[i-2] + nums[i], dp[i-1])
@@ -79,12 +84,14 @@ Base: dp[0] = nums[0], dp[1] = max(nums[0], nums[1])
 **WHAT**: Minimum coins to make amount. Unlimited supply of each denomination.
 
 **WHY this is the unbounded knapsack family**:
+
 - For each amount, try every coin. Take the option that gives minimum coins.
 - dp[amount] = min over all coins c: dp[amount - c] + 1
 
 **WHEN**: "Minimum/maximum" + "unlimited choices from a set" → Unbounded knapsack DP.
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[a] = minimum coins to make amount a
 Transition: dp[a] = min(dp[a - coin] + 1) for all coins where coin ≤ a
@@ -104,12 +111,14 @@ Answer: dp[amount] (if still ∞ → return -1)
 **WHAT**: Find length of longest strictly increasing subsequence.
 
 **WHY O(n²) DP works**:
+
 - dp[i] = LIS ending at index i
 - For each j < i: if nums[j] < nums[i] → dp[i] = max(dp[i], dp[j] + 1)
 
 **WHEN**: "Longest subsequence with ordering property" → DP or binary search.
 
 **HOW — O(n²) Logic Chain**:
+
 ```
 State: dp[i] = length of LIS ending at i
 Transition: dp[i] = 1 + max(dp[j]) for all j < i where nums[j] < nums[i]
@@ -118,6 +127,7 @@ Answer: max(dp[0..n-1])
 ```
 
 **O(n log n) approach using patience sorting**:
+
 ```
 Maintain an array "tails" where tails[i] = smallest possible tail of LIS of length i+1
 For each number:
@@ -136,10 +146,12 @@ Answer = tails.length
 **WHAT**: Given items with weights and values, maximize value within weight capacity. Each item used at most once.
 
 **WHY 2D DP captures "which items, how much capacity"**:
+
 - State: dp[i][w] = max value using first i items with capacity w
 - For each item: include it or exclude it
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i][w] = max value from items 1..i with capacity w
 Transition:
@@ -151,6 +163,7 @@ Answer: dp[n][W]
 ```
 
 **Space optimization**: Since dp[i] only depends on dp[i-1], use 1D array. **Iterate w from RIGHT to LEFT** to avoid using updated values:
+
 ```
 for each item:
   for w = W down to weight[i]:
@@ -166,11 +179,13 @@ for each item:
 **WHAT**: Find the longest subsequence present in both strings.
 
 **WHY 2D table captures "compare prefixes"**:
+
 - Compare s1[0..i] with s2[0..j]
 - If characters match → extend previous diagonal answer
 - If not → take the better of dropping one character from either string
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i][j] = LCS of s1[0..i-1] and s2[0..j-1]
 Transition:
@@ -193,11 +208,13 @@ Answer: dp[m][n]
 **WHAT**: Minimum insertions, deletions, replacements to transform word1 into word2.
 
 **WHY it's like LCS but with operations**:
+
 - Same 2D structure comparing prefixes
 - If chars match → no operation needed (diagonal)
 - If don't match → try all 3 operations, take minimum
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i][j] = min ops to convert word1[0..i-1] to word2[0..j-1]
 Transition:
@@ -219,10 +236,12 @@ Base: dp[i][0] = i (delete all), dp[0][j] = j (insert all)
 **WHAT**: Can the string be segmented into space-separated dictionary words?
 
 **WHY substring checking works**:
+
 - dp[i] = "can s[0..i-1] be segmented?"
 - For each position j from 0 to i-1: if dp[j] is true AND s[j..i] is in dictionary → dp[i] = true
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i] = can we segment s[0..i-1]?
 Transition: dp[i] = true if ∃ j where dp[j] == true AND s[j..i] ∈ dict
@@ -239,11 +258,13 @@ Answer: dp[n]
 **WHAT**: Find longest subsequence that reads the same forwards and backwards.
 
 **WHY interval DP works**:
+
 - dp[i][j] = LPS of s[i..j]
 - If s[i] == s[j] → they wrap around the inner LPS: dp[i][j] = dp[i+1][j-1] + 2
 - If not → dp[i][j] = max(dp[i+1][j], dp[i][j-1])
 
 **HOW — The Logic Chain**:
+
 ```
 Base: dp[i][i] = 1 (single char is palindrome of length 1)
 Fill diagonally (increasing gap):
@@ -263,11 +284,13 @@ Answer: dp[0][n-1]
 **WHAT**: Given string of digits, count interpretations as letters (1→A, ..., 26→Z).
 
 **WHY it's like climbing stairs with conditions**:
+
 - Single digit (1-9): one way to decode
 - Two digits (10-26): another way to decode
 - dp[i] = number of ways to decode first i characters
 
 **HOW — The Logic Chain**:
+
 ```
 State: dp[i] = ways to decode s[0..i-1]
 Transition:
@@ -280,22 +303,23 @@ Base: dp[0] = 1 (empty = one way), dp[1] = (s[0] ≠ '0' ? 1 : 0)
 
 ---
 
-
-
 🔬 **Section Challenge — DYNAMIC PROGRAMMING**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 ## GREEDY
 
@@ -306,6 +330,7 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 **WHAT**: Can you reach the last index? Each element = max jump length.
 
 **WHY greedy "farthest reach" works**:
+
 - Track the farthest index you can reach at any step
 - At position i: farthest = max(farthest, i + nums[i])
 - If i > farthest → you're stuck → false
@@ -314,6 +339,7 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 **WHEN**: "Can you reach the end?" + "greedy forward progress" → Track reachable frontier.
 
 **HOW — The Logic Chain**:
+
 ```
 farthest = 0
 For each i from 0 to n-1:
@@ -331,6 +357,7 @@ For each i from 0 to n-1:
 **WHAT**: Find minimum number of meeting rooms needed for all intervals.
 
 **WHY sorting + min-heap works**:
+
 - Sort meetings by start time
 - Heap tracks the END TIME of each room in use
 - For each meeting: if earliest ending room ends before this meeting starts → reuse it
@@ -339,6 +366,7 @@ For each i from 0 to n-1:
 **WHEN**: "Schedule overlapping intervals" + "minimize resources" → Sort + heap.
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Sort by start time
 Step 2: Min-heap of end times (one per room)
@@ -357,11 +385,13 @@ Step 4: Return heap.size()
 **WHAT**: Partition string so each character appears in at most one part. Maximum number of parts.
 
 **WHY last-occurrence + greedy works**:
+
 - Precompute last occurrence of each character
 - A partition must extend at least to the last occurrence of its first character
 - As we scan, any character we encounter might push the partition end further
 
 **HOW — The Logic Chain**:
+
 ```
 Step 1: Map each character → its last index
 Step 2: start = 0, end = 0
@@ -380,11 +410,13 @@ Step 3: For each i:
 **WHAT**: Find starting gas station for a circular trip. gas[i] = fuel gained, cost[i] = fuel spent to next station.
 
 **WHY single-pass greedy works**:
+
 - If total gas ≥ total cost → solution ALWAYS exists (proven mathematically)
 - Track surplus (running sum of gas - cost). If surplus goes negative → this start point failed, try next position as start
 - The last starting point that doesn't fail is the answer
 
 **HOW — The Logic Chain**:
+
 ```
 totalSurplus = 0, currentSurplus = 0, start = 0
 For each i:
@@ -400,16 +432,15 @@ Return totalSurplus ≥ 0 ? start : -1
 
 ---
 
-
-
 🔬 **Section Challenge — GREEDY**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## BACKTRACKING
 
@@ -420,6 +451,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 **WHAT**: Generate all subsets of a set.
 
 **WHY backtracking explores the decision tree**:
+
 - For each element: include it or exclude it → 2 choices → 2^n subsets
 - Recursion tree: at level i, make choice for element i, then move to i+1
 - Base case: processed all elements → add current subset to result
@@ -427,6 +459,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 **WHEN**: "Generate all combinations/subsets/permutations" → Backtracking.
 
 **HOW — The Logic Chain**:
+
 ```
 backtrack(start, currentSubset):
   → Add copy of currentSubset to result
@@ -447,11 +480,13 @@ backtrack(start, currentSubset):
 **WHAT**: Generate all permutations of distinct numbers.
 
 **WHY backtracking with "used" tracking**:
+
 - Unlike subsets, order matters: [1,2] ≠ [2,1]
 - At each position, any unused number can go here
 - Track which numbers are used with a boolean array or swap technique
 
 **HOW — The Logic Chain**:
+
 ```
 backtrack(currentPerm, used):
   → If currentPerm.size == n → add copy to result
@@ -473,11 +508,13 @@ backtrack(currentPerm, used):
 **WHAT**: Find all unique combinations that sum to target. Numbers can be reused.
 
 **WHY backtracking with sum tracking**:
+
 - At each step: choose a number (can reuse it), add to running sum
 - If sum exceeds target → prune (stop this branch)
 - If sum equals target → found a valid combination
 
 **HOW — The Logic Chain**:
+
 ```
 backtrack(start, remaining, current):
   → If remaining == 0 → add copy to result
@@ -497,11 +534,13 @@ backtrack(start, remaining, current):
 **WHAT**: Place N queens on N×N board so no two attack each other.
 
 **WHY column-by-column placement + constraint tracking**:
+
 - Place one queen per row (no two in same row guaranteed)
 - Track used columns, used diagonals, used anti-diagonals
 - Diagonal property: row - col is constant. Anti-diagonal: row + col is constant.
 
 **HOW — The Logic Chain**:
+
 ```
 backtrack(row):
   → If row == n → found valid placement, save it
@@ -521,11 +560,13 @@ backtrack(row):
 **WHAT**: Fill a 9×9 Sudoku grid satisfying row, column, and box constraints.
 
 **WHY backtracking with constraint propagation**:
+
 - Find next empty cell. Try digits 1-9. Check validity. Recurse.
 - If no digit works → backtrack (this branch is dead)
 - Constraint check: same row, column, and 3×3 box
 
 **HOW — The Logic Chain**:
+
 ```
 solve(board):
   → Find next empty cell (row, col)
@@ -545,45 +586,41 @@ isValid(row, col, digit):
 
 ---
 
-
-
-
 ## MASTER PROBLEM MAP — DP, Greedy, Backtracking
 
-| # | Problem | Core Logic | Family | Key Insight |
-|---|---------|------------|--------|-------------|
-| 1 | Climbing Stairs | ways(n) = ways(n-1) + ways(n-2) | Linear DP | Fibonacci in disguise |
-| 2 | House Robber | rob or skip decision | Linear DP | max(skip prev, rob + 2-back) |
-| 3 | Coin Change | min coins for each amount | Unbounded Knapsack | Try all coins, iterate amounts up |
-| 4 | LIS | extend or not from each j < i | Subsequence DP | O(n log n) via patience sort |
-| 5 | 0/1 Knapsack | take or skip each item | 0/1 Knapsack | 1D: iterate capacity RIGHT to LEFT |
-| 6 | LCS | match → diagonal, else max(up, left) | Two-Sequence DP | Reconstruct by backtracking |
-| 7 | Edit Distance | 3 operations at mismatch | Two-Sequence DP | Draw the table in interview |
-| 8 | Word Break | check all word endings at each pos | String DP | dp[0]=true is the crucial base |
-| 9 | Longest Palindromic Subseq | interval DP or LCS(s, reverse(s)) | Interval DP | Same as LCS of s and reversed s |
-| 10 | Decode Ways | like stairs but with conditions | Linear DP | '0' edge cases are the trap |
-| 11 | Jump Game | track farthest reachable | Greedy Frontier | i > farthest → stuck |
-| 12 | Meeting Rooms II | sort + min-heap of end times | Greedy + Heap | heap size = rooms needed |
-| 13 | Partition Labels | extend to last occurrence | Greedy Extend | Can't close until all chars covered |
-| 14 | Gas Station | running surplus, reset on negative | Greedy Reset | total ≥ 0 guarantees solution exists |
-| 15 | Subsets | include or exclude each element | Backtrack Generate | start parameter prevents duplicates |
-| 16 | Permutations | try each unused element | Backtrack Generate | used[] array tracks availability |
-| 17 | Combination Sum | reuse allowed, prune on excess | Backtrack Prune | i not i+1 for reuse |
-| 18 | N-Queens | column + diagonal constraint sets | Backtrack Constrain | row-col and row+col identify diagonals |
-| 19 | Sudoku Solver | try 1-9, validate, recurse | Backtrack Constrain | Bitmask for fast constraint check |
+| #   | Problem                    | Core Logic                           | Family              | Key Insight                            |
+| --- | -------------------------- | ------------------------------------ | ------------------- | -------------------------------------- |
+| 1   | Climbing Stairs            | ways(n) = ways(n-1) + ways(n-2)      | Linear DP           | Fibonacci in disguise                  |
+| 2   | House Robber               | rob or skip decision                 | Linear DP           | max(skip prev, rob + 2-back)           |
+| 3   | Coin Change                | min coins for each amount            | Unbounded Knapsack  | Try all coins, iterate amounts up      |
+| 4   | LIS                        | extend or not from each j < i        | Subsequence DP      | O(n log n) via patience sort           |
+| 5   | 0/1 Knapsack               | take or skip each item               | 0/1 Knapsack        | 1D: iterate capacity RIGHT to LEFT     |
+| 6   | LCS                        | match → diagonal, else max(up, left) | Two-Sequence DP     | Reconstruct by backtracking            |
+| 7   | Edit Distance              | 3 operations at mismatch             | Two-Sequence DP     | Draw the table in interview            |
+| 8   | Word Break                 | check all word endings at each pos   | String DP           | dp[0]=true is the crucial base         |
+| 9   | Longest Palindromic Subseq | interval DP or LCS(s, reverse(s))    | Interval DP         | Same as LCS of s and reversed s        |
+| 10  | Decode Ways                | like stairs but with conditions      | Linear DP           | '0' edge cases are the trap            |
+| 11  | Jump Game                  | track farthest reachable             | Greedy Frontier     | i > farthest → stuck                   |
+| 12  | Meeting Rooms II           | sort + min-heap of end times         | Greedy + Heap       | heap size = rooms needed               |
+| 13  | Partition Labels           | extend to last occurrence            | Greedy Extend       | Can't close until all chars covered    |
+| 14  | Gas Station                | running surplus, reset on negative   | Greedy Reset        | total ≥ 0 guarantees solution exists   |
+| 15  | Subsets                    | include or exclude each element      | Backtrack Generate  | start parameter prevents duplicates    |
+| 16  | Permutations               | try each unused element              | Backtrack Generate  | used[] array tracks availability       |
+| 17  | Combination Sum            | reuse allowed, prune on excess       | Backtrack Prune     | i not i+1 for reuse                    |
+| 18  | N-Queens                   | column + diagonal constraint sets    | Backtrack Constrain | row-col and row+col identify diagonals |
+| 19  | Sudoku Solver              | try 1-9, validate, recurse           | Backtrack Constrain | Bitmask for fast constraint check      |
 
 ---
-
-
 
 🔬 **Section Challenge — MASTER PROBLEM MAP — DP, Greedy, Backtracking**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## The DP Decision Flowchart — Interview Logic
 
@@ -600,7 +637,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 ```
 
 **How to identify DP state dimensions**:
+
 - 1 changing parameter → 1D DP (climb stairs, house robber)
 - 2 changing parameters → 2D DP (knapsack, LCS, edit distance)
 - Interval problems → dp[i][j] for substring s[i..j]
-

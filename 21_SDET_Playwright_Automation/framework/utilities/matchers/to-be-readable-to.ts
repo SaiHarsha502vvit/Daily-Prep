@@ -10,7 +10,7 @@ import { type Locator } from '@playwright/test';
  */
 export async function toBeReadableTo(
   locator: Locator,
-  options: { timeout?: number } = {}
+  options: { timeout?: number } = {},
 ): Promise<{ pass: boolean; message: () => string }> {
   const timeout = options.timeout ?? 5000;
 
@@ -82,19 +82,17 @@ export async function toBeReadableTo(
 
     // Check font size
     if (result.fontSize < 12) {
-      failures.push(
-        `Font size ${result.fontSize}px is below minimum 12px`
-      );
+      failures.push(`Font size ${result.fontSize}px is below minimum 12px`);
     }
 
     // Check contrast ratio (WCAG AA requires 4.5:1)
     if (!result.hasContrastRatio) {
       failures.push(
-        `Could not parse colors: foreground="${result.color}", background="${result.backgroundColor}"`
+        `Could not parse colors: foreground="${result.color}", background="${result.backgroundColor}"`,
       );
     } else if (result.contrastRatio !== null && result.contrastRatio < 4.5) {
       failures.push(
-        `Contrast ratio ${result.contrastRatio.toFixed(2)}:1 is below WCAG AA minimum of 4.5:1`
+        `Contrast ratio ${result.contrastRatio.toFixed(2)}:1 is below WCAG AA minimum of 4.5:1`,
       );
     }
 

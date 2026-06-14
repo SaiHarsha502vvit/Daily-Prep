@@ -87,6 +87,7 @@ The boundary is: everything before the WebView loads = Appium; everything inside
 <details><summary>Answer</summary>
 
 **Playwright only**. A PWA is a website. It runs inside Chrome on Android. There are no native UI elements. Playwright can:
+
 - Emulate any Android device (Pixel 6, Samsung Galaxy S21) — viewport, screen density, touch events
 - Test offline mode (`context.setOffline(true)`)
 - Test install prompt behavior
@@ -104,6 +105,7 @@ Appium would be overkill and unnecessary complexity here.
 ### The Core: Chrome DevTools Protocol (CDP)
 
 Playwright is fundamentally a **CDP client**. CDP is a debugging protocol built into Chrome/Chromium (and Firefox/WebKit have their own equivalents). It gives programmatic access to:
+
 - DOM manipulation
 - JavaScript execution
 - Network interception
@@ -131,6 +133,7 @@ YOUR WEB APP (HTML / CSS / JavaScript)
 ### Mobile Emulation — What Actually Happens
 
 When you tell Playwright "emulate an iPhone 14", it does NOT launch an iOS simulator. It tells Chrome to:
+
 1. Set the viewport to 390×844 pixels
 2. Set the User-Agent string to an iPhone's UA
 3. Set the device pixel ratio to 3
@@ -139,7 +142,7 @@ When you tell Playwright "emulate an iPhone 14", it does NOT launch an iOS simul
 
 ```typescript
 // What this code actually does to Chrome:
-const iPhone14 = devices['iPhone 14'];
+const iPhone14 = devices["iPhone 14"];
 const context = await browser.newContext({
   ...iPhone14,
   // This expands to:
@@ -231,6 +234,7 @@ REAL DEVICE or EMULATOR / SIMULATOR
 ### The UIAutomator2 Driver (Android)
 
 UIAutomator2 is Google's accessibility testing framework. It speaks to Android's **accessibility tree** — a hierarchical representation of every UI element on screen, including:
+
 - Button text
 - Content descriptions
 - Resource IDs
@@ -258,6 +262,7 @@ Accessibility Tree:
 ### The XCUITest Driver (iOS)
 
 On iOS, it is the same concept but Apple's framework:
+
 - XCUITest is Apple's own UI testing framework (used in Xcode)
 - Appium's XCUITest driver wraps XCUITest and exposes it over the WebDriver protocol
 - Your Appium test code → HTTP → Appium server → XCUITest framework → iOS Simulator or real device
@@ -271,10 +276,12 @@ On iOS, it is the same concept but Apple's framework:
 <details><summary>Answer</summary>
 
 `By.id("com.example.myapp:id/login_button")` is an **Android resource ID selector**. It breaks down as:
+
 - `com.example.myapp` — the app's package name (like a namespace)
 - `id/login_button` — the specific resource ID of the View
 
 In Android XML layouts, developers assign IDs like:
+
 ```xml
 <Button
     android:id="@+id/login_button"
@@ -284,6 +291,7 @@ In Android XML layouts, developers assign IDs like:
 This becomes `com.example.myapp:id/login_button` in the accessibility tree at runtime.
 
 **Why it is different from CSS selectors**:
+
 - CSS selectors target HTML elements in a DOM (`#login-button`, `.btn-primary`)
 - Appium resource IDs target View objects in Android's View hierarchy
 - There is no HTML. There is no CSS. The app is rendered using Android's View system, not a browser engine.
@@ -340,11 +348,11 @@ On iOS the equivalent would be `By.accessibilityId("loginButton")` — using the
 
 The startup speed difference is huge and matters in CI:
 
-| Scenario | Playwright | Appium |
-|---|---|---|
-| Start 1 test | ~200ms browser startup | ~30-60s (boot emulator + install app) |
-| Run 50 tests | ~5 minutes | ~20-40 minutes (slow to start, slow to interact) |
-| Run on 10 parallel workers | Easy — just launch 10 browsers | Hard — need 10 emulators or 10 real devices |
+| Scenario                   | Playwright                     | Appium                                           |
+| -------------------------- | ------------------------------ | ------------------------------------------------ |
+| Start 1 test               | ~200ms browser startup         | ~30-60s (boot emulator + install app)            |
+| Run 50 tests               | ~5 minutes                     | ~20-40 minutes (slow to start, slow to interact) |
+| Run on 10 parallel workers | Easy — just launch 10 browsers | Hard — need 10 emulators or 10 real devices      |
 
 ---
 
@@ -423,6 +431,7 @@ This is the most important table in this file. When an interviewer asks "why did
 ```
 
 **Execution strategy**:
+
 - Use Appium for the full E2E flow (login → order → checkout)
 - Switch context to WEBVIEW for the map interaction
 - Use Playwright request API separately to smoke-test APIs
@@ -437,47 +446,52 @@ This is the most important table in this file. When an interviewer asks "why did
 <details><summary>Answer — Point by Point</summary>
 
 **Sub-task 1: Layout at 375px viewport**
+
 - Playwright: `devices['iPhone SE']` sets viewport to 375×667. CSS media queries apply. Zero setup.
 - Appium: Not the right tool. Appium doesn't control browser viewport in a meaningful way for layout testing. You'd need a separate browser session anyway.
 - **Winner: Playwright**
 
 **Sub-task 2: Network performance at 3G speed**
+
 ```typescript
 // Playwright — built in
 const context = await browser.newContext({
-  ...devices['Pixel 7'],
+  ...devices["Pixel 7"],
 });
 // Emulate 3G: ~1.5Mbps down, 750Kbps up, 40ms latency
-await context.route('**/*', async route => {
-  await new Promise(resolve => setTimeout(resolve, 40)); // latency
+await context.route("**/*", async (route) => {
+  await new Promise((resolve) => setTimeout(resolve, 40)); // latency
   await route.continue();
 });
 // OR use CDP directly:
 const client = await context.newCDPSession(page);
-await client.send('Network.emulateNetworkConditions', {
+await client.send("Network.emulateNetworkConditions", {
   offline: false,
-  downloadThroughput: 1.5 * 1024 * 1024 / 8, // bytes/sec
-  uploadThroughput: 750 * 1024 / 8,
+  downloadThroughput: (1.5 * 1024 * 1024) / 8, // bytes/sec
+  uploadThroughput: (750 * 1024) / 8,
   latency: 40,
 });
 ```
+
 - Appium: Cannot throttle network without external proxy (Charles, mitmproxy). Much more setup.
 - **Winner: Playwright**
 
 **Sub-task 3: Check API calls when tapping "Add to Cart"**
+
 ```typescript
 // Playwright — network interception is native
 const [request] = await Promise.all([
-  page.waitForRequest(req =>
-    req.url().includes('/api/cart') && req.method() === 'POST'
+  page.waitForRequest(
+    (req) => req.url().includes("/api/cart") && req.method() === "POST",
   ),
-  page.getByRole('button', { name: 'Add to Cart' }).tap(), // touch event
+  page.getByRole("button", { name: "Add to Cart" }).tap(), // touch event
 ]);
 
-const body = JSON.parse(request.postData() || '{}');
-expect(body.productId).toBe('SKU-001');
+const body = JSON.parse(request.postData() || "{}");
+expect(body.productId).toBe("SKU-001");
 expect(body.quantity).toBe(1);
 ```
+
 - Appium: Cannot intercept network requests natively. You'd need to set up a proxy server, configure the device to route through it, and parse the proxy logs. 10x more complex.
 - **Winner: Playwright — by a large margin**
 
@@ -530,12 +544,12 @@ START: What are you testing?
 Playwright ships with 40+ device descriptors. Here is how to use them and what they actually set:
 
 ```typescript
-import { test, expect, devices } from '@playwright/test';
+import { test, expect, devices } from "@playwright/test";
 
-test('mobile checkout flow on Pixel 7', async ({ browser }) => {
+test("mobile checkout flow on Pixel 7", async ({ browser }) => {
   // Create a mobile context — sets all device parameters
   const context = await browser.newContext({
-    ...devices['Pixel 7'],
+    ...devices["Pixel 7"],
     // devices['Pixel 7'] expands to:
     // userAgent: 'Mozilla/5.0 (Linux; Android 13; Pixel 7)...'
     // viewport: { width: 412, height: 915 }
@@ -546,10 +560,10 @@ test('mobile checkout flow on Pixel 7', async ({ browser }) => {
   });
 
   const page = await context.newPage();
-  await page.goto('https://myapp.com/shop');
+  await page.goto("https://myapp.com/shop");
 
   // Touch tap (not mouse click)
-  await page.getByRole('button', { name: 'Add to Cart' }).tap();
+  await page.getByRole("button", { name: "Add to Cart" }).tap();
 
   // Swipe gesture (using touchscreen API)
   await page.touchscreen.swipe(200, 400, 200, 100, { steps: 10 });
@@ -570,34 +584,34 @@ A real project uses `playwright.config.ts` to define multiple device targets:
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   projects: [
     // --- Mobile devices ---
     {
-      name: 'mobile-chrome-pixel7',
-      use: { ...devices['Pixel 7'] },
+      name: "mobile-chrome-pixel7",
+      use: { ...devices["Pixel 7"] },
     },
     {
-      name: 'mobile-safari-iphone14',
-      use: { ...devices['iPhone 14'] },
+      name: "mobile-safari-iphone14",
+      use: { ...devices["iPhone 14"] },
     },
     {
-      name: 'mobile-chrome-samsung',
-      use: { ...devices['Galaxy S21'] },
+      name: "mobile-chrome-samsung",
+      use: { ...devices["Galaxy S21"] },
     },
 
     // --- Tablet ---
     {
-      name: 'tablet-ipad-pro',
-      use: { ...devices['iPad Pro 11'] },
+      name: "tablet-ipad-pro",
+      use: { ...devices["iPad Pro 11"] },
     },
 
     // --- Desktop (for comparison) ---
     {
-      name: 'desktop-chrome',
-      use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } },
+      name: "desktop-chrome",
+      use: { browserName: "chromium", viewport: { width: 1440, height: 900 } },
     },
   ],
 });
@@ -610,27 +624,29 @@ export default defineConfig({
 One of Playwright's most powerful features — unavailable in Appium:
 
 ```typescript
-test('cart API called correctly when adding item on mobile', async ({ browser }) => {
-  const context = await browser.newContext({ ...devices['iPhone 14'] });
+test("cart API called correctly when adding item on mobile", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ ...devices["iPhone 14"] });
   const page = await context.newPage();
 
   // Intercept the add-to-cart API call
   let capturedRequest: any = null;
-  await page.route('**/api/v1/cart/items', async route => {
+  await page.route("**/api/v1/cart/items", async (route) => {
     // Capture the request payload
-    capturedRequest = JSON.parse(route.request().postData() || '{}');
+    capturedRequest = JSON.parse(route.request().postData() || "{}");
     // Let the request go through (don't mock it)
     await route.continue();
   });
 
-  await page.goto('/product/123');
-  await page.getByRole('button', { name: 'Add to Cart' }).tap();
+  await page.goto("/product/123");
+  await page.getByRole("button", { name: "Add to Cart" }).tap();
 
   // Assert the API was called with correct data
   expect(capturedRequest).not.toBeNull();
-  expect(capturedRequest.productId).toBe('123');
+  expect(capturedRequest.productId).toBe("123");
   expect(capturedRequest.quantity).toBe(1);
-  expect(capturedRequest.source).toBe('mobile_web'); // mobile-specific field
+  expect(capturedRequest.source).toBe("mobile_web"); // mobile-specific field
 });
 ```
 
@@ -639,6 +655,7 @@ test('cart API called correctly when adding item on mobile', async ({ browser })
 ### 🎯 Practice — Level 2 (Intermediate)
 
 **Challenge**: Write a Playwright test that:
+
 1. Opens the app on a Pixel 7 emulation
 2. Simulates going offline (to test offline mode)
 3. Verifies the offline banner appears
@@ -647,21 +664,21 @@ test('cart API called correctly when adding item on mobile', async ({ browser })
 <details><summary>Answer — Step by Step</summary>
 
 ```typescript
-import { test, expect, devices } from '@playwright/test';
+import { test, expect, devices } from "@playwright/test";
 
-test('offline banner appears and disappears', async ({ browser }) => {
-  const context = await browser.newContext({ ...devices['Pixel 7'] });
+test("offline banner appears and disappears", async ({ browser }) => {
+  const context = await browser.newContext({ ...devices["Pixel 7"] });
   const page = await context.newPage();
-  await page.goto('/');
+  await page.goto("/");
 
   // Verify no offline banner at start
-  await expect(page.getByTestId('offline-banner')).toBeHidden();
+  await expect(page.getByTestId("offline-banner")).toBeHidden();
 
   // Step 1: Go offline — use CDP to set network conditions
   // This simulates the device losing network connectivity
   const client = await context.newCDPSession(page);
-  await client.send('Network.enable');
-  await client.send('Network.emulateNetworkConditions', {
+  await client.send("Network.enable");
+  await client.send("Network.emulateNetworkConditions", {
     offline: true,
     downloadThroughput: -1,
     uploadThroughput: -1,
@@ -672,14 +689,16 @@ test('offline banner appears and disappears', async ({ browser }) => {
   await context.setOffline(true);
 
   // The banner should appear (usually shown by a JavaScript event listener on 'online'/'offline')
-  await expect(page.getByTestId('offline-banner')).toBeVisible();
-  await expect(page.getByTestId('offline-banner')).toContainText('No internet connection');
+  await expect(page.getByTestId("offline-banner")).toBeVisible();
+  await expect(page.getByTestId("offline-banner")).toContainText(
+    "No internet connection",
+  );
 
   // Step 2: Go back online
   await context.setOffline(false);
 
   // The banner should disappear (app caught the 'online' event)
-  await expect(page.getByTestId('offline-banner')).toBeHidden();
+  await expect(page.getByTestId("offline-banner")).toBeHidden();
 });
 ```
 
@@ -839,25 +858,28 @@ manageBillingItem.click();
 ```
 
 **How UiScrollable works**:
+
 1. `new UiSelector().scrollable(true)` — finds the scrollable container (RecyclerView)
 2. `scrollIntoView(...)` — scrolls the container, checking after each scroll if the element exists
 3. When found, it stops scrolling and returns the element
 4. Android's UIAutomator framework handles this natively — it is fast and reliable
 
 **The equivalent for iOS** (also off-screen elements don't exist):
+
 ```javascript
 // WebdriverIO + Appium iOS
-await driver.execute('mobile: scroll', {
-  direction: 'down',
-  element: await $('~manage-billing-section'), // scroll until accessible
+await driver.execute("mobile: scroll", {
+  direction: "down",
+  element: await $("~manage-billing-section"), // scroll until accessible
 });
 ```
 
 **Web comparison** (why web is simpler):
+
 ```typescript
 // Playwright — the DOM contains all items even if off-screen
-await page.locator('text=Manage Billing').scrollIntoViewIfNeeded();
-await page.locator('text=Manage Billing').click();
+await page.locator("text=Manage Billing").scrollIntoViewIfNeeded();
+await page.locator("text=Manage Billing").click();
 // DOM element exists before scroll — no special logic needed
 ```
 
@@ -878,11 +900,11 @@ The most powerful mobile testing strategy uses BOTH tools — each doing what it
 // This creates test data before Appium needs it
 async function createTestCitation(amount: number): Promise<string> {
   const apiContext = await request.newContext({
-    baseURL: 'https://api.myapp.com',
+    baseURL: "https://api.myapp.com",
   });
 
-  const response = await apiContext.post('/citations', {
-    data: { amount, status: 'PENDING' }
+  const response = await apiContext.post("/citations", {
+    data: { amount, status: "PENDING" },
   });
 
   const { citationId } = await response.json();
@@ -936,12 +958,15 @@ public void testPayCitationE2E() throws Exception {
 Use these when an interviewer asks about mobile testing:
 
 **Q: "Can Playwright test native mobile apps?"**
+
 > "Playwright is a browser automation tool — it speaks to browser engines via Chrome DevTools Protocol. For mobile, it works excellently for mobile web testing and WebView content, with full network interception and device emulation. For truly native UI elements — Android Views, iOS UIKit elements — you need Appium, which speaks to the platform's accessibility framework via UIAutomator2 or XCUITest. I'd use them together: Playwright for the API layer and web content, Appium for native UI flows."
 
 **Q: "Why is Appium slower than Playwright?"**
+
 > "Two reasons. First, Appium uses HTTP (the WebDriver protocol) — each command is an HTTP round-trip to the Appium server, then to the device. Playwright uses a persistent WebSocket connection — no round-trip overhead. Second, Appium must boot a device or emulator, install the APK or IPA, and wait for the app to launch — that is 30-60 seconds of startup vs. 200ms for a browser."
 
 **Q: "How would you test a React Native app?"**
+
 > "React Native has two modes: the JavaScript logic lives in a JS thread, but the UI is rendered with actual native components (not WebViews). So you use Appium with UIAutomator2 or XCUITest. The app LOOKS native because it IS native at the UI layer. However, if the app uses `WebView` components for any screens, you switch context to `WEBVIEW` in Appium, or use Playwright if the page is a full web page."
 
 ---

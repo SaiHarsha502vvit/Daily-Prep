@@ -74,7 +74,7 @@ interface TestResult {
   testName: string;
   filePath: string;
   status: 'passed' | 'failed' | 'skipped' | 'timedOut';
-  duration: number;   // milliseconds
+  duration: number; // milliseconds
   errors: string[];
   project: string;
 }

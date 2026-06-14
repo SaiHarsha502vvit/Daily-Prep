@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
+
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — The Data Accumulator pattern
 - [`05_POM_Architecture_Deep_Dive.md`](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) — POM internals
 - [`21_Enterprise_Project_Structure.md`](./21_Enterprise_Project_Structure.md) — Where each file lives
@@ -14,7 +15,7 @@
 Your test is set up like this. You see it in the codebase. It looks a specific way and you want to know **why each part is placed where it is**:
 
 ```typescript
-test('Verify citation flow', async ({ page, account, citationsClient }) => {
+test("Verify citation flow", async ({ page, account, citationsClient }) => {
   //                                    ↑ fixture params
 
   // ─── POMs are created HERE — at the TOP of the test function body ───────
@@ -29,19 +30,19 @@ test('Verify citation flow', async ({ page, account, citationsClient }) => {
   };
 
   // ─── Steps come AFTER ────────────────────────────────────────────────────
-  await test.step('Navigate to Master Search', async () => {
+  await test.step("Navigate to Master Search", async () => {
     await masterSearchPage.goto();
   });
 
-  await test.step('Search for customer and open citation', async () => {
+  await test.step("Search for customer and open citation", async () => {
     await masterSearchPage.searchPanel.searchByTransitAccount(account.userId);
     await masterSearchPage.resultsGrid.waitForResults();
     data.citationId = await masterSearchPage.resultsGrid.getFirstRowId();
   });
 
-  await test.step('API: Verify citation is PENDING', async () => {
+  await test.step("API: Verify citation is PENDING", async () => {
     const citation = await citationsClient.getById(data.citationId!);
-    expect(citation.status).toBe('PENDING');
+    expect(citation.status).toBe("PENDING");
   });
 });
 ```
@@ -57,16 +58,15 @@ This chapter explains every structural decision in an enterprise test.
 ### The Technical Reason — TypeScript Scope
 
 ```typescript
-test('example', async ({ page }) => {
-
+test("example", async ({ page }) => {
   // If you declare inside step 1:
-  await test.step('Step 1: Navigate', async () => {
+  await test.step("Step 1: Navigate", async () => {
     const masterPage = new MasterSearchPage(page); // ← inside step 1's closure
     await masterPage.goto();
   });
 
-  await test.step('Step 2: Search', async () => {
-    await masterPage.searchPanel.searchById('CIT-001');
+  await test.step("Step 2: Search", async () => {
+    await masterPage.searchPanel.searchById("CIT-001");
     //    ↑ TypeScript ERROR: Cannot find name 'masterPage'
     //    It was declared in a different closure (step 1's inner function)
   });
@@ -78,16 +78,16 @@ test('example', async ({ page }) => {
 **Solution: Hoist to the test function's outer scope:**
 
 ```typescript
-test('example', async ({ page }) => {
+test("example", async ({ page }) => {
   // Declared in the TEST function's scope — accessible from ALL steps
   const masterPage = new MasterSearchPage(page);
 
-  await test.step('Step 1: Navigate', async () => {
-    await masterPage.goto();  // ✅ works — masterPage is in the enclosing scope
+  await test.step("Step 1: Navigate", async () => {
+    await masterPage.goto(); // ✅ works — masterPage is in the enclosing scope
   });
 
-  await test.step('Step 2: Search', async () => {
-    await masterPage.searchPanel.searchById('CIT-001');  // ✅ works
+  await test.step("Step 2: Search", async () => {
+    await masterPage.searchPanel.searchById("CIT-001"); // ✅ works
   });
 });
 ```
@@ -165,11 +165,11 @@ test('create citation and verify', async ({ page, citationsClient, account }) =>
 // ❌ let variables — TypeScript "possibly unassigned" problem
 let citationId: string;
 
-await test.step('Create', async () => {
-  citationId = 'CIT-001';  // assigned in a closure
+await test.step("Create", async () => {
+  citationId = "CIT-001"; // assigned in a closure
 });
 
-await test.step('Find', async () => {
+await test.step("Find", async () => {
   masterSearchPage.searchByCitationId(citationId);
   //                                   ↑ TypeScript: Variable 'citationId' is used before being assigned
   //   The compiler can't prove step 1 runs before step 2 at compile time.
@@ -179,7 +179,7 @@ await test.step('Find', async () => {
 const data = { citationId: null as string | null };
 // TypeScript knows: data exists (it's const), data.citationId is string | null (explicit type).
 // No ambiguity.
-data.citationId = 'CIT-001';
+data.citationId = "CIT-001";
 masterSearchPage.searchByCitationId(data.citationId!); // ! is intentional: "I know this was set"
 ```
 
@@ -194,7 +194,7 @@ graph TD
     A[Section 1: Imports] -->|Framework, UI, API, Data, Types| B[Section 2: Describe Block]
     B -->|Contains Tags & Name| C[Section 3: Static Test Data]
     C -->|Shared across tests| D[Section 4: The Test Function]
-    
+
     subgraph Test Function Scope
     D --> E[Declare POMs]
     D --> F[Declare Data Accumulator]
@@ -203,7 +203,7 @@ graph TD
     G --> H[test.step 2: UI Action]
     H --> I[test.step 3: API Cross-validation]
     end
-    
+
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style D fill:#bbf,stroke:#333,stroke-width:2px
     style G fill:#dfd,stroke:#333,stroke-width:2px
@@ -221,38 +221,39 @@ graph TD
 
 // ─── SECTION 1: IMPORTS ─────────────────────────────────────────────────────
 // Rule: never import from @playwright/test directly — always from your fixtures file
-import { test, expect } from '../../fixtures';
+import { test, expect } from "../../fixtures";
 
 // Page objects — UI layer
-import { MasterSearchPage } from '../../pages/MasterSearchPage';
-import { CitationDetailPage } from '../../pages/CitationDetailPage';
+import { MasterSearchPage } from "../../pages/MasterSearchPage";
+import { CitationDetailPage } from "../../pages/CitationDetailPage";
 
 // Business data — not raw strings
-import { PayloadsCitation } from '../../data/payloads/PayloadsCitation';
-import { CitationStatus } from '../../data/enums/citation.enums';
+import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import { CitationStatus } from "../../data/enums/citation.enums";
 
 // Types — for TypeScript to understand the accumulator
-import type { CitationApiResponse } from '../../types/api-responses.types';
+import type { CitationApiResponse } from "../../types/api-responses.types";
 
 // ─── SECTION 2: DESCRIBE + TAGS ─────────────────────────────────────────────
 // Tags like @smoke, @citations, @regression allow filtering:
 //   npx playwright test --grep "@smoke"        → only smoke tests
 //   npx playwright test --grep-invert "@slow"  → skip slow tests in CI
-test.describe('Citation Dispute Flow @citations @regression', () => {
-
+test.describe("Citation Dispute Flow @citations @regression", () => {
   // ─── SECTION 3: STATIC TEST DATA ──────────────────────────────────────────
   // Why here (inside describe, outside test)?
   // → Shared by all tests in this describe block
   // → Does NOT change between test runs (unlike data generated at test time)
   // → Visible to all tests without being a module-level variable
-  const disputeReason = 'Vehicle not present at location';
+  const disputeReason = "Vehicle not present at location";
   const expectedResolutionDays = 30;
 
   // ─── SECTION 4: THE TEST ────────────────────────────────────────────────
-  test(
-    'Customer disputes citation → Admin reviews → Status updates → Customer notified',
-    async ({ page, account, citationsClient, notificationsClient }) => {
-
+  test("Customer disputes citation → Admin reviews → Status updates → Customer notified", async ({
+    page,
+    account,
+    citationsClient,
+    notificationsClient,
+  }) => {
     // ── POMs: declared at TOP of test body ───────────────────────────────
     // Why? Scope + readability (see Section 1 of this chapter)
     const masterSearch = new MasterSearchPage(page);
@@ -271,9 +272,9 @@ test.describe('Citation Dispute Flow @citations @regression', () => {
     // ── Step 1: Setup via API (faster than UI setup) ──────────────────────
     // Why API for setup? UI setup is slow and tested elsewhere.
     // This test is about the DISPUTE flow, not the CREATION flow.
-    await test.step('Setup: Create a PENDING citation via API', async () => {
+    await test.step("Setup: Create a PENDING citation via API", async () => {
       data.createdCitation = await citationsClient.create(
-        PayloadsCitation.pending({ customerId: account.userId })
+        PayloadsCitation.pending({ customerId: account.userId }),
       );
       expect(data.createdCitation.citationId).toMatch(/^CIT-/);
       expect(data.createdCitation.status).toBe(CitationStatus.PENDING);
@@ -281,54 +282,60 @@ test.describe('Citation Dispute Flow @citations @regression', () => {
 
     // ── Step 2: UI action ─────────────────────────────────────────────────
     // Now we use the UI — the customer disputes through the portal
-    await test.step('Navigate to Master Search in CRM', async () => {
+    await test.step("Navigate to Master Search in CRM", async () => {
       await masterSearch.goto();
       // D365-specific wait (see Chapter 17):
-      await expect(masterSearch.searchPanel.tabCustomerSearch).toBeVisible({ timeout: 30_000 });
+      await expect(masterSearch.searchPanel.tabCustomerSearch).toBeVisible({
+        timeout: 30_000,
+      });
     });
 
     await test.step(`Find citation ${data.createdCitation!.citationId} in CRM`, async () => {
-      await masterSearch.searchPanel.searchByCitationId(data.createdCitation!.citationId);
+      await masterSearch.searchPanel.searchByCitationId(
+        data.createdCitation!.citationId,
+      );
       await masterSearch.resultsGrid.waitForResults();
       await masterSearch.resultsGrid.clickRowByIndex(0);
     });
 
-    await test.step('Open citation and submit dispute', async () => {
+    await test.step("Open citation and submit dispute", async () => {
       await citationDetail.waitForLoad();
       await citationDetail.disputeButton.click();
       await citationDetail.disputeReasonInput.fill(disputeReason);
       await citationDetail.submitDisputeButton.click();
-      await expect(citationDetail.disputeConfirmationBanner).toBeVisible({ timeout: 10_000 });
+      await expect(citationDetail.disputeConfirmationBanner).toBeVisible({
+        timeout: 10_000,
+      });
       data.disputeReference = await citationDetail.getDisputeReference();
     });
 
     // ── Step 3: API cross-validation (verify backend agrees with UI) ──────
-    await test.step('API: Confirm citation status is now DISPUTED', async () => {
+    await test.step("API: Confirm citation status is now DISPUTED", async () => {
       // The status change may be async — use polling
       const updated = await citationsClient.waitForStatus(
         data.createdCitation!.citationId,
-        CitationStatus.DISPUTED
+        CitationStatus.DISPUTED,
       );
       data.resolvedStatus = updated.status;
       expect(updated.status).toBe(CitationStatus.DISPUTED);
     });
 
-    await test.step('Notifications: DISPUTE_CREATED notification was sent', async () => {
+    await test.step("Notifications: DISPUTE_CREATED notification was sent", async () => {
       await notificationsClient.pollForNotification(
         account.userId,
-        'DISPUTE_CREATED'
+        "DISPUTE_CREATED",
       );
       // pollForNotification throws if the notification doesn't arrive within timeout
     });
 
     // ── Step 4: Final cross-validation ──────────────────────────────────
-    await test.step('Verify: dispute reference is in the API response', async () => {
-      const citation = await citationsClient.getById(data.createdCitation!.citationId);
+    await test.step("Verify: dispute reference is in the API response", async () => {
+      const citation = await citationsClient.getById(
+        data.createdCitation!.citationId,
+      );
       expect(citation.disputeReference).toBe(data.disputeReference);
     });
-
   }); // end test
-
 }); // end describe
 ```
 
@@ -340,10 +347,10 @@ test.describe('Citation Dispute Flow @citations @regression', () => {
 
 ```typescript
 // ❌ NEVER in a spec file:
-const adminEmail = 'admin@company.com';    // hardcoded credential
-const adminPassword = 'Admin@123!';        // hardcoded credential
-const apiKey = 'sk-live-abc123xyz789';     // hardcoded secret
-const crmUrl = 'https://crm.company.com'; // hardcoded URL
+const adminEmail = "admin@company.com"; // hardcoded credential
+const adminPassword = "Admin@123!"; // hardcoded credential
+const apiKey = "sk-live-abc123xyz789"; // hardcoded secret
+const crmUrl = "https://crm.company.com"; // hardcoded URL
 ```
 
 ```typescript
@@ -355,29 +362,28 @@ const crmUrl = 'https://crm.company.com'; // hardcoded URL
 //   CRM_URL=https://crm.company.com
 
 // In fixtures/index.ts:
-account: async ({}, use) => {
+account: (async ({}, use) => {
   await use({
     email: process.env.ADMIN_EMAIL!,
     accessToken: process.env.ADMIN_ACCESS_TOKEN!,
     // ...
   });
 },
-
-// In test:
-async ({ account }) => {
-  // test receives account.email — never sees the actual value in the code
-}
+  // In test:
+  async ({ account }) => {
+    // test receives account.email — never sees the actual value in the code
+  });
 ```
 
 **Why?**
 
-| Reason | Consequence of NOT following it |
-|---|---|
-| **Security** | Credentials in Git → breach, credential rotation headaches |
-| **Environment flexibility** | Hardcoded staging URL breaks when running locally |
-| **Token rotation** | Hardcoded tokens expire → tests fail mysteriously at 2 AM |
-| **Auditability** | Can't tell which tests used which credentials |
-| **Multi-role testing** | Can't swap from ADMIN to CUSTOMER token without code changes |
+| Reason                      | Consequence of NOT following it                              |
+| --------------------------- | ------------------------------------------------------------ |
+| **Security**                | Credentials in Git → breach, credential rotation headaches   |
+| **Environment flexibility** | Hardcoded staging URL breaks when running locally            |
+| **Token rotation**          | Hardcoded tokens expire → tests fail mysteriously at 2 AM    |
+| **Auditability**            | Can't tell which tests used which credentials                |
+| **Multi-role testing**      | Can't swap from ADMIN to CUSTOMER token without code changes |
 
 ---
 
@@ -402,12 +408,12 @@ await test.step('Notifications: DISPUTE_CREATED email sent within 30s', async ()
 
 ```typescript
 // Bad: when this fails, you see "Search for customer" — but WHICH customer?
-await test.step('Search for customer', async () => {
+await test.step("Search for customer", async () => {
   await masterSearch.searchPanel.searchByEmail(data.email!);
 });
 
 // Better: the step name includes the runtime value
-await test.step(`Search for customer by email: ${data.email ?? 'not set yet'}`, async () => {
+await test.step(`Search for customer by email: ${data.email ?? "not set yet"}`, async () => {
   await masterSearch.searchPanel.searchByEmail(data.email!);
 });
 // In the failure report: "Search for customer by email: john.smith@company.com"
@@ -422,24 +428,27 @@ await test.step(`Search for customer by email: ${data.email ?? 'not set yet'}`, 
 // Enterprise convention: imports in this order, separated by blank lines
 
 // 1. Framework imports (always first)
-import { test, expect } from '../../fixtures'; // YOUR fixtures wrapper
+import { test, expect } from "../../fixtures"; // YOUR fixtures wrapper
 
 // 2. Page Object Models (UI layer)
-import { MasterSearchPage } from '../../pages/MasterSearchPage';
-import { CitationDetailPage } from '../../pages/CitationDetailPage';
+import { MasterSearchPage } from "../../pages/MasterSearchPage";
+import { CitationDetailPage } from "../../pages/CitationDetailPage";
 
 // 3. API clients (if used directly in test — not via fixtures)
 // Usually not needed here since clients come through fixtures
 
 // 4. Data layer (payloads, enums)
-import { PayloadsCitation } from '../../data/payloads/PayloadsCitation';
-import { CitationStatus, NotificationType } from '../../data/enums/citation.enums';
+import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import {
+  CitationStatus,
+  NotificationType,
+} from "../../data/enums/citation.enums";
 
 // 5. TypeScript types (interfaces/types only, not runtime values)
-import type { CitationApiResponse } from '../../types/api-responses.types';
+import type { CitationApiResponse } from "../../types/api-responses.types";
 
 // 6. Utilities (date utils, string utils, etc.)
-import { DateUtils } from '../../utils/date.utils';
+import { DateUtils } from "../../utils/date.utils";
 ```
 
 **Why this order?** It matches the "layer" model — framework → UI → API → data → types → utils. When scanning imports, you immediately understand the test's dependencies.
@@ -452,19 +461,21 @@ import { DateUtils } from '../../utils/date.utils';
 // tests/specs/citations/create-and-notify.spec.ts
 
 // ── Imports: framework → UI → data → types ───────────────────────────────────
-import { test, expect } from '../../fixtures';
-import { MasterSearchPage } from '../../pages/MasterSearchPage';
-import { PayloadsCitation } from '../../data/payloads/PayloadsCitation';
-import { CitationStatus } from '../../data/enums/citation.enums';
-import type { CitationApiResponse } from '../../types/api-responses.types';
+import { test, expect } from "../../fixtures";
+import { MasterSearchPage } from "../../pages/MasterSearchPage";
+import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import { CitationStatus } from "../../data/enums/citation.enums";
+import type { CitationApiResponse } from "../../types/api-responses.types";
 
 // ── Describe: name + tags ─────────────────────────────────────────────────────
-test.describe('Create citation and verify notification @citations @smoke', () => {
-
+test.describe("Create citation and verify notification @citations @smoke", () => {
   // ── Test: business description as the name ────────────────────────────────
-  test(
-    'Agent creates PARKING citation → customer receives email notification within 30s',
-    async ({ page, account, citationsClient, notificationsClient }) => {
+  test("Agent creates PARKING citation → customer receives email notification within 30s", async ({
+    page,
+    account,
+    citationsClient,
+    notificationsClient,
+  }) => {
     //        ↑ page   ↑ auth    ↑ HTTP client   ↑ notifications client
     //        Playwright built-in  ←── your custom fixtures ──────────────────────►
 
@@ -482,11 +493,11 @@ test.describe('Create citation and verify notification @citations @smoke', () =>
 
     // ── Steps: sequential business actions ────────────────────────────────
 
-    await test.step('Create PENDING citation via API (fast setup)', async () => {
+    await test.step("Create PENDING citation via API (fast setup)", async () => {
       // Using API for setup — not UI — because UI creation is tested separately.
       // This test is about NOTIFICATION DELIVERY, not about the creation UI.
       data.citation = await citationsClient.create(
-        PayloadsCitation.pending({ customerId: account.userId })
+        PayloadsCitation.pending({ customerId: account.userId }),
         // ↑ Why PayloadsCitation.pending()? See Chapter 22.
         // ↑ No JSON here — business intent only.
       );
@@ -494,31 +505,31 @@ test.describe('Create citation and verify notification @citations @smoke', () =>
       expect(data.citation.status).toBe(CitationStatus.PENDING);
     });
 
-    await test.step('Confirm citation visible in CRM Master Search', async () => {
+    await test.step("Confirm citation visible in CRM Master Search", async () => {
       await masterSearch.goto();
-      await masterSearch.searchPanel.searchByCitationId(data.citation!.citationId);
+      await masterSearch.searchPanel.searchByCitationId(
+        data.citation!.citationId,
+      );
       // ↑ data.citation! — non-null assertion, safe because step 1 asserted it
       await masterSearch.resultsGrid.waitForResults();
-      await expect(
-        masterSearch.resultsGrid.rows.first()
-      ).toContainText(data.citation!.citationId);
+      await expect(masterSearch.resultsGrid.rows.first()).toContainText(
+        data.citation!.citationId,
+      );
     });
 
-    await test.step('Notification: CITATION_CREATED email delivered within 30s', async () => {
+    await test.step("Notification: CITATION_CREATED email delivered within 30s", async () => {
       // Polling — the notification service is async (it may take a few seconds)
       const notification = await notificationsClient.pollForNotification(
         account.userId,
-        'CITATION_CREATED',
-        30_000 // 30 second timeout
+        "CITATION_CREATED",
+        30_000, // 30 second timeout
       );
       // Business assertions — not HTTP assertions
-      expect(notification.channel).toBe('email');
-      expect(notification.status).toBe('delivered');
+      expect(notification.channel).toBe("email");
+      expect(notification.status).toBe("delivered");
       expect(notification.referenceId).toBe(data.citation!.citationId);
     });
-
   }); // end test
-
 }); // end describe
 ```
 
@@ -558,7 +569,7 @@ sequenceDiagram
 
 Enterprise suites separate setup logic by scope to maximize speed and stability.
 
-1. **`globalSetup`**: One-time database seeding, global auth token generation, or standing up local mock servers. Runs *before Playwright spins up workers*.
+1. **`globalSetup`**: One-time database seeding, global auth token generation, or standing up local mock servers. Runs _before Playwright spins up workers_.
 2. **`beforeAll` / `afterAll`**: Shared setup for a specific test suite. **DANGER**: Data mutations here will cause cross-test contamination if tests run in parallel or manipulate the same records.
 3. **`beforeEach` / `afterEach`**: Pre/post-test cleanup. Prefer test-scoped **Fixtures** over `beforeEach` hooks, because fixtures automatically clean up even if the test fails or times out.
 
@@ -569,8 +580,8 @@ test.afterEach(async ({ page }) => {
 });
 
 // ✅ Good: Test-scoped fixture handles its own lifecycle
-test('My test', async ({ customerUser }) => {
-   // customerUser is injected, used, and automatically deleted by the fixture's teardown
+test("My test", async ({ customerUser }) => {
+  // customerUser is injected, used, and automatically deleted by the fixture's teardown
 });
 ```
 
@@ -581,14 +592,14 @@ test('My test', async ({ customerUser }) => {
 ### Challenge 1 [MCQ] — Scope Question
 
 ```typescript
-test('example', async ({ page }) => {
-  await test.step('Step 1', async () => {
+test("example", async ({ page }) => {
+  await test.step("Step 1", async () => {
     const form = new CitationFormPage(page);
     await form.goto();
   });
 
-  await test.step('Step 2', async () => {
-    await form.fillCitationId('CIT-001');  // ← what happens?
+  await test.step("Step 2", async () => {
+    await form.fillCitationId("CIT-001"); // ← what happens?
   });
 });
 ```
@@ -598,13 +609,14 @@ What happens on the `await form.fillCitationId(...)` line?
 A) It works — `form` is in the test function's scope  
 B) TypeScript compile error — `form` is not defined in this scope  
 C) Runtime error — `form` is undefined  
-D) It works — `test.step` shares scope with the test function  
+D) It works — `test.step` shares scope with the test function
 
 <details><summary>Answer</summary>
 
 **B** — TypeScript compile error. `form` is declared inside the `async () => { ... }` callback of Step 1. That callback is a separate function scope (a closure). Step 2's callback is a DIFFERENT function scope. TypeScript correctly identifies that `form` is not in scope for Step 2.
 
 Fix: move `const form = new CitationFormPage(page)` to the test function body (before any steps).
+
 </details>
 
 ---
@@ -612,22 +624,24 @@ Fix: move `const form = new CitationFormPage(page)` to the test function body (b
 ### Challenge 2 [Spot the Bug]
 
 ```typescript
-test('lookup customer', async ({ page, account }) => {
+test("lookup customer", async ({ page, account }) => {
   const data = { customerId: null as string | null };
   const masterSearch = new MasterSearchPage(page);
 
-  await test.step('Search customer', async () => {
+  await test.step("Search customer", async () => {
     await masterSearch.searchPanel.searchByEmail(account.email);
     await masterSearch.resultsGrid.waitForResults();
     data.customerId = await masterSearch.resultsGrid.getFirstRowId();
     // ← No assertion that data.customerId is not null
   });
 
-  await test.step('Open customer record', async () => {
+  await test.step("Open customer record", async () => {
     await masterSearch.resultsGrid.clickRowByIndex(0);
     const detail = new CustomerDetailPage(page);
     await detail.waitForLoad();
-    await expect(detail.customerId).toHaveText(data.customerId!, { timeout: 20000 });
+    await expect(detail.customerId).toHaveText(data.customerId!, {
+      timeout: 20000,
+    });
     // ↑ If data.customerId is null (no results found), this gives a confusing error
   });
 });
@@ -638,15 +652,20 @@ test('lookup customer', async ({ page, account }) => {
 The bug is **missing validation after `getFirstRowId()`**. If the search returns no results, `data.customerId` stays `null`. Step 2 then tries `toHaveText(null!, ...)` — the `!` bypasses TypeScript's null check, and the assertion message will be something like `Expected "CUSTOMER-123" to equal null` — confusing.
 
 Fix: Add an assertion in step 1:
+
 ```typescript
-await test.step('Search customer', async () => {
+await test.step("Search customer", async () => {
   await masterSearch.searchPanel.searchByEmail(account.email);
   await masterSearch.resultsGrid.waitForResults(1); // at least 1 row
   data.customerId = await masterSearch.resultsGrid.getFirstRowId();
-  expect(data.customerId, 'Customer must appear in search results').not.toBeNull();
+  expect(
+    data.customerId,
+    "Customer must appear in search results",
+  ).not.toBeNull();
   // ↑ Clear failure message if search returns no results
 });
 ```
+
 </details>
 
 ---
@@ -658,6 +677,7 @@ Write a complete test for this business scenario using the architecture from thi
 **Scenario:** "Admin creates a new SUPERVISOR user via API → the new supervisor logs into the portal → the supervisor's dashboard shows 0 assigned citations"
 
 Use:
+
 - `account` fixture (admin)
 - A `UsersApiClient` with a `create(payload)` method
 - `PayloadsUser.newSupervisor(email, teamId)` from Chapter 21
@@ -667,18 +687,18 @@ Use:
 <details><summary>Answer</summary>
 
 ```typescript
-import { test, expect } from '../../fixtures';
-import { SupervisorDashboardPage } from '../../pages/SupervisorDashboardPage';
-import { PayloadsUser } from '../../data/payloads/PayloadsUser';
-import { StringUtils } from '../../utils/string.utils';
-import type { CreateUserResponse } from '../../types/api-responses.types';
+import { test, expect } from "../../fixtures";
+import { SupervisorDashboardPage } from "../../pages/SupervisorDashboardPage";
+import { PayloadsUser } from "../../data/payloads/PayloadsUser";
+import { StringUtils } from "../../utils/string.utils";
+import type { CreateUserResponse } from "../../types/api-responses.types";
 
-test.describe('New supervisor onboarding @users @smoke', () => {
-
-  test(
-    'Admin creates supervisor → supervisor dashboard shows 0 assigned citations',
-    async ({ page, account, usersClient }) => {
-
+test.describe("New supervisor onboarding @users @smoke", () => {
+  test("Admin creates supervisor → supervisor dashboard shows 0 assigned citations", async ({
+    page,
+    account,
+    usersClient,
+  }) => {
     // ── POMs: declared at top of test body ─────────────────────────────
     const supervisorDashboard = new SupervisorDashboardPage(page);
 
@@ -689,14 +709,14 @@ test.describe('New supervisor onboarding @users @smoke', () => {
 
     // ── Steps ──────────────────────────────────────────────────────────
 
-    await test.step('Create new supervisor user via API', async () => {
+    await test.step("Create new supervisor user via API", async () => {
       const payload = PayloadsUser.newSupervisor(
-        StringUtils.randomEmail('supervisor'),
-        'TEAM-001' // team ID — from env or config, not hardcoded in real tests
+        StringUtils.randomEmail("supervisor"),
+        "TEAM-001", // team ID — from env or config, not hardcoded in real tests
       );
       data.newSupervisor = await usersClient.create(payload);
       expect(data.newSupervisor.userId).toMatch(/^USR-/);
-      expect(data.newSupervisor.role).toBe('SUPERVISOR');
+      expect(data.newSupervisor.role).toBe("SUPERVISOR");
     });
 
     await test.step(`Login as new supervisor: ${data.newSupervisor?.email}`, async () => {
@@ -706,32 +726,34 @@ test.describe('New supervisor onboarding @users @smoke', () => {
       await supervisorDashboard.waitForLoad();
     });
 
-    await test.step('Dashboard shows 0 assigned citations for new supervisor', async () => {
-      await expect(supervisorDashboard.assignedCitationsCount).toHaveText('0', { timeout: 15_000 });
+    await test.step("Dashboard shows 0 assigned citations for new supervisor", async () => {
+      await expect(supervisorDashboard.assignedCitationsCount).toHaveText("0", {
+        timeout: 15_000,
+      });
     });
-
   });
-
 });
 ```
+
 </details>
 
 ---
 
 ## Summary — The Enterprise Test Architecture Rules
 
-| Rule | Reason |
-|---|---|
-| Import from `../../fixtures`, not `@playwright/test` | Your custom test object has fixtures baked in |
-| Declare ALL POMs at top of test body | TypeScript scope: steps (closures) need outer-scope variables |
-| Use a typed data accumulator object | `let` creates "possibly unassigned" errors across step closures |
+| Rule                                                     | Reason                                                          |
+| -------------------------------------------------------- | --------------------------------------------------------------- |
+| Import from `../../fixtures`, not `@playwright/test`     | Your custom test object has fixtures baked in                   |
+| Declare ALL POMs at top of test body                     | TypeScript scope: steps (closures) need outer-scope variables   |
+| Use a typed data accumulator object                      | `let` creates "possibly unassigned" errors across step closures |
 | Name steps as business actions, not technical operations | Failure reports should be readable by QA leads, not just coders |
-| Never put URLs, credentials, or tokens in spec files | Security, environment flexibility, token rotation |
-| Use enums, not magic strings | Compile-time typo detection, autocomplete |
-| Use payload factories with overrides | Readable defaults, composable with real test data |
-| Assertions inside steps, not after them | Step-level failure isolation: you know WHICH step failed |
+| Never put URLs, credentials, or tokens in spec files     | Security, environment flexibility, token rotation               |
+| Use enums, not magic strings                             | Compile-time typo detection, autocomplete                       |
+| Use payload factories with overrides                     | Readable defaults, composable with real test data               |
+| Assertions inside steps, not after them                  | Step-level failure isolation: you know WHICH step failed        |
 
 ---
+
 **Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 ---
@@ -739,14 +761,14 @@ test.describe('New supervisor onboarding @users @smoke', () => {
 ### Challenge 4 [MCQ] — The Non-Null Assertion Operator `!`
 
 ```typescript
-await test.step('Create citation via API', async () => {
+await test.step("Create citation via API", async () => {
   data.citation = await citationsClient.create(
-    PayloadsCitation.pending({ customerId: account.userId })
+    PayloadsCitation.pending({ customerId: account.userId }),
   );
   // ← NO assertion that data.citation is valid
 });
 
-await test.step('Verify citation in UI', async () => {
+await test.step("Verify citation in UI", async () => {
   await masterSearch.searchPanel.searchByCitationId(data.citation!.citationId);
   //                                                             ↑
   //                           Non-null assertion: "Trust me TypeScript, this is not null"
@@ -765,6 +787,7 @@ D) `!` is safe after `await` calls because async functions always return defined
 **B** — The non-null assertion `!` is a compile-time override. It tells TypeScript "I know this isn't null" but TypeScript does NOT check this at runtime. If the value IS null, you get a runtime `TypeError: Cannot read properties of null`.
 
 The `!` is **safe** when a prior step's assertion explicitly validated the value:
+
 ```typescript
 await test.step('Create citation', async () => {
   data.citation = await citationsClient.create(...);
@@ -781,6 +804,7 @@ await test.step('Verify in UI', async () => {
 ```
 
 The `!` is **masking a bug** when:
+
 ```typescript
 await test.step('Create citation', async () => {
   data.citation = await citationsClient.create(...);
@@ -805,22 +829,22 @@ await test.step('Verify in UI', async () => {
 ### Challenge 5 [Spot the Bug — Step Naming and Data Exposure]
 
 ```typescript
-const adminEmail = 'admin@acme-company.com';
-const adminPassword = 'SecurePass@2024!';
+const adminEmail = "admin@acme-company.com";
+const adminPassword = "SecurePass@2024!";
 
-test.describe('Admin authentication', () => {
-  test('Admin can log in and see dashboard', async ({ page }) => {
+test.describe("Admin authentication", () => {
+  test("Admin can log in and see dashboard", async ({ page }) => {
     const loginPage = new LoginPage(page);
     const dashboard = new DashboardPage(page);
 
-    await test.step('Login with admin credentials', async () => {
+    await test.step("Login with admin credentials", async () => {
       await loginPage.goto();
       await loginPage.emailInput.fill(adminEmail);
       await loginPage.passwordInput.fill(adminPassword);
       await loginPage.submitButton.click();
     });
 
-    await test.step('check dashboard', async () => {
+    await test.step("check dashboard", async () => {
       await expect(dashboard.header).toBeVisible();
     });
   });
@@ -833,6 +857,7 @@ Three violations of enterprise test architecture. Find them all.
 
 **Violation 1 — Credentials hardcoded in the spec file**
 `adminEmail` and `adminPassword` are string constants in the test file. This means they are committed to Git, visible in code reviews, and invalidated every time credentials rotate. Enterprise fix:
+
 ```typescript
 // .env.local (never committed):
 // ADMIN_EMAIL=admin@acme-company.com
@@ -840,25 +865,31 @@ Three violations of enterprise test architecture. Find them all.
 
 // In fixtures:
 account: async ({}, use) => {
-  await use({ email: process.env.ADMIN_EMAIL!, password: process.env.ADMIN_PASSWORD! });
-}
+  await use({
+    email: process.env.ADMIN_EMAIL!,
+    password: process.env.ADMIN_PASSWORD!,
+  });
+};
 
 // In test: async ({ account }) => { ... account.email ... }
 ```
 
 **Violation 2 — Vague step name: `'check dashboard'`**
 In the Playwright HTML report, a failed step shows only its name. `'check dashboard'` tells you nothing about what was checked, which element, or what the expected state was. Enterprise fix:
+
 ```typescript
-await test.step('Dashboard: header element is visible after admin login', async () => {
+await test.step("Dashboard: header element is visible after admin login", async () => {
   await expect(dashboard.header).toBeVisible({ timeout: 15_000 });
 });
 ```
+
 The step name should read like a test case description: readable by a QA lead who doesn't know the codebase.
 
 **Violation 3 — `DashboardPage` POM created outside the test function**
 Wait — actually `dashboard` IS declared inside the test function. But `loginPage` and `dashboard` are both declared before any steps, which is correct. The real third violation is **no assertion after the login step** — if the login fails silently (submit button clicks but auth fails), the test proceeds to "check dashboard" with a failing auth state. Add:
+
 ```typescript
-await test.step('Login with admin credentials', async () => {
+await test.step("Login with admin credentials", async () => {
   await loginPage.goto();
   await loginPage.emailInput.fill(account.email);
   await loginPage.passwordInput.fill(account.password);
@@ -874,4 +905,5 @@ Summary of fixes: move credentials to environment variables + fixtures, rename s
 </details>
 
 ---
+
 **Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)

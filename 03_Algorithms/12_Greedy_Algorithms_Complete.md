@@ -28,11 +28,11 @@ Make the Locally Optimal Choice at Each Step
 **Core Problem**: Optimization — find the BEST answer among many possibilities.
 Three approaches to optimization:
 
-| Approach | How it works | Time | Guaranteed? |
-|---|---|---|---|
-| Backtracking | Try all combinations | O(2^n) | Yes (brute force) |
-| Dynamic Programming | Build optimal from subproblem answers | O(n^2) or O(n×W) | Yes (always) |
-| Greedy | Always pick local best, never look back | O(n log n) or O(n) | Only sometimes |
+| Approach            | How it works                            | Time               | Guaranteed?       |
+| ------------------- | --------------------------------------- | ------------------ | ----------------- |
+| Backtracking        | Try all combinations                    | O(2^n)             | Yes (brute force) |
+| Dynamic Programming | Build optimal from subproblem answers   | O(n^2) or O(n×W)   | Yes (always)      |
+| Greedy              | Always pick local best, never look back | O(n log n) or O(n) | Only sometimes    |
 
 **The Catch**: Greedy doesn't ALWAYS work. It only works when making the
 "selfish" best choice at each step happens to lead to the overall best.
@@ -46,30 +46,31 @@ Greedy: 4+1+1 = 3 coins ❌
 Optimal: 3+3 = 2 coins ✅
 Greedy FAILS for some coin systems → need DP for general coins.
 
-| Greedy Works | Greedy Fails (Need DP) |
-|---|---|
-| Fractional Knapsack | 0/1 Knapsack |
-| Activity Selection | Weighted Job Scheduling |
-| Huffman Coding | General Coin Change |
-| Kruskal's/Prim's MST | Longest Path in Graph |
-| Dijkstra (non-negative) | Dijkstra (negative weights) |
-| Interval Scheduling | Interval Scheduling + Weights |
+| Greedy Works            | Greedy Fails (Need DP)        |
+| ----------------------- | ----------------------------- |
+| Fractional Knapsack     | 0/1 Knapsack                  |
+| Activity Selection      | Weighted Job Scheduling       |
+| Huffman Coding          | General Coin Change           |
+| Kruskal's/Prim's MST    | Longest Path in Graph         |
+| Dijkstra (non-negative) | Dijkstra (negative weights)   |
+| Interval Scheduling     | Interval Scheduling + Weights |
 
 ### Where It's Used in Real World
 
-* **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
-* **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
-* **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
-* **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
+- **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
+- **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
+- **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
+- **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
 
 🔬 **Section Challenge — What Problem Does Greedy Solve**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Real-World Origin Story
 
@@ -116,7 +117,7 @@ VISUAL — Activity Selection:
 Activities: A=[1,4], B=[3,5], C=[0,6], D=[5,7], E=[3,9], F=[5,9]
 G=[6,10], H=[8,11], I=[8,12], J=[2,14], K=[12,16]
 Timeline:
-0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 C
 A
 J
@@ -145,40 +146,41 @@ for activities starting after time 4 → smaller subproblem.
 </details>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## How To Prove Greedy Works: Three Methods
 
 METHOD 1: EXCHANGE ARGUMENT (most common in interviews)
 Steps:
+
 1. Assume there's an optimal solution OPT that doesn't use greedy choice
 2. SWAP one element from OPT with the greedy choice
 3. Show the result is AT LEAST AS GOOD as OPT
 4. Conclude: greedy choice can always be in an optimal solution
-FULL PROOF — Activity Selection Exchange Argument:
-Greedy picks activity 'g' with EARLIEST finish time.
-Suppose OPT starts with activity 'o' instead (ends later than g).
-g
-o
-rest of OPT
-SWAP 'o' with 'g' in OPT:
-g
-rest of OPT──── (still compatible! g ends EARLIER)
-Result: Same number of activities, no conflicts.
-→ OPT with 'g' is at least as good as OPT with 'o'. ∎
-METHOD 2: GREEDY STAYS AHEAD
-Show: After each step k, greedy's partial solution ≥ any alternative's.
-"Greedy is always at least as far ahead as any other strategy."
-Example: Greedy coin change for US coins.
-After choosing each coin, the remaining amount is always smaller
-than any other strategy's remaining amount.
-METHOD 3: STRUCTURAL / MATROID THEORY
-If the problem has MATROID structure (independence system where
-"subsets of valid sets are valid"), greedy is GUARANTEED optimal.
-Examples: MST (graphic matroid), scheduling on uniform machines.
-For interviews: Pattern recognition. "This looks like Activity
-Selection / Huffman / Interval Partitioning → greedy works."
+   FULL PROOF — Activity Selection Exchange Argument:
+   Greedy picks activity 'g' with EARLIEST finish time.
+   Suppose OPT starts with activity 'o' instead (ends later than g).
+   g
+   o
+   rest of OPT
+   SWAP 'o' with 'g' in OPT:
+   g
+   rest of OPT──── (still compatible! g ends EARLIER)
+   Result: Same number of activities, no conflicts.
+   → OPT with 'g' is at least as good as OPT with 'o'. ∎
+   METHOD 2: GREEDY STAYS AHEAD
+   Show: After each step k, greedy's partial solution ≥ any alternative's.
+   "Greedy is always at least as far ahead as any other strategy."
+   Example: Greedy coin change for US coins.
+   After choosing each coin, the remaining amount is always smaller
+   than any other strategy's remaining amount.
+   METHOD 3: STRUCTURAL / MATROID THEORY
+   If the problem has MATROID structure (independence system where
+   "subsets of valid sets are valid"), greedy is GUARANTEED optimal.
+   Examples: MST (graphic matroid), scheduling on uniform machines.
+   For interviews: Pattern recognition. "This looks like Activity
+   Selection / Huffman / Interval Partitioning → greedy works."
 
 🔬 **Section Challenge — How To Prove Greedy Works: Three Methods**
 
@@ -191,15 +193,15 @@ Selection / Huffman / Interval Partitioning → greedy works."
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## "Greedy Fails" — Full Worked Example
 
 0/1 KNAPSACK: capacity=50, items: {val:60,wt:10}, {val:100,wt:20},
 {val:120,wt:30}
 Greedy strategy 1 — Sort by value/weight ratio:
-Item 1: 60/10 = 6.0   Item 2: 100/20 = 5.0   Item 3: 120/30 = 4.0
+Item 1: 60/10 = 6.0 Item 2: 100/20 = 5.0 Item 3: 120/30 = 4.0
 Pick Item 1 (wt 10, val 60), then Item 2 (wt 20, val 100).
 Remaining capacity: 50-10-20 = 20. Item 3 needs 30 → can't fit.
 Greedy answer: 60 + 100 = 160
@@ -234,32 +236,32 @@ Why? You can always "pour in" more of the best-ratio item.
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## When To Use Greedy Vs Dp Vs Backtracking
 
-| Signal | Greedy | DP | Backtracking |
-|---|---|---|---|
-| "Minimum/maximum" | Maybe | Likely | Unlikely |
-| "Count ways" | Rarely | Almost always | Sometimes |
-| "List all solutions" | Never | Never | Always |
-| n ≤ 10^6 | Must use | Maybe O(n) | Way too slow |
-| n ≤ 10^4 | Good fit | Good fit | Usually too slow |
-| n ≤ 20 | Good fit | Good fit | Good fit |
-| Can sort input? | Almost always | Sometimes | Sometimes |
-| Greedy choice property? | Required | Not needed | N/A |
-| Overlapping subproblems? | No | Yes (key) | No |
-| Decision at each step | One best | Try all | Try all + prune |
+| Signal                   | Greedy        | DP            | Backtracking     |
+| ------------------------ | ------------- | ------------- | ---------------- |
+| "Minimum/maximum"        | Maybe         | Likely        | Unlikely         |
+| "Count ways"             | Rarely        | Almost always | Sometimes        |
+| "List all solutions"     | Never         | Never         | Always           |
+| n ≤ 10^6                 | Must use      | Maybe O(n)    | Way too slow     |
+| n ≤ 10^4                 | Good fit      | Good fit      | Usually too slow |
+| n ≤ 20                   | Good fit      | Good fit      | Good fit         |
+| Can sort input?          | Almost always | Sometimes     | Sometimes        |
+| Greedy choice property?  | Required      | Not needed    | N/A              |
+| Overlapping subproblems? | No            | Yes (key)     | No               |
+| Decision at each step    | One best      | Try all       | Try all + prune  |
 
 DECISION TREE (use in interviews):
 Can you sort + pick locally best?
 YES → Can you prove exchange argument?
 YES → GREEDY ✅
-NO  → Think harder or fall back to DP
-NO  → Does problem have overlapping subproblems?
+NO → Think harder or fall back to DP
+NO → Does problem have overlapping subproblems?
 YES → DP
-NO  → Backtracking / DFS
+NO → Backtracking / DFS
 💡 Interview tip: "I believe greedy works here because of the exchange
 argument: [explain swap]. If I'm wrong, I'd fall back to DP."
 
@@ -274,42 +276,43 @@ argument: [explain swap]. If I'm wrong, I'd fall back to DP."
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## The 10 Greedy Pattern Families
 
 Most interview greedy problems fall into one of these families:
+
 1. INTERVAL SCHEDULING — Sort by end time, pick non-overlapping
-Problems: Activity Selection, Non-overlapping Intervals, Meeting Rooms
-Signal: "intervals", "schedule", "overlap", "meetings"
+   Problems: Activity Selection, Non-overlapping Intervals, Meeting Rooms
+   Signal: "intervals", "schedule", "overlap", "meetings"
 2. INTERVAL PARTITIONING — Sort by start time, use min-heap for rooms
-Problems: Meeting Rooms II, Minimum Platforms
-Signal: "minimum rooms/platforms", "parallel tasks"
+   Problems: Meeting Rooms II, Minimum Platforms
+   Signal: "minimum rooms/platforms", "parallel tasks"
 3. FRACTIONAL SELECTION — Sort by ratio, take best ratio first
-Problems: Fractional Knapsack, Task Scheduler with cooldown
-Signal: "maximize value per unit", "fractional"
+   Problems: Fractional Knapsack, Task Scheduler with cooldown
+   Signal: "maximize value per unit", "fractional"
 4. HUFFMAN / MERGE — Always merge the two smallest
-Problems: Huffman Coding, Minimum Cost to Connect Sticks
-Signal: "merge costs", "encoding", "combine"
+   Problems: Huffman Coding, Minimum Cost to Connect Sticks
+   Signal: "merge costs", "encoding", "combine"
 5. SINGLE-PASS GREEDY — Scan once, maintain running state
-Problems: Best Time to Buy/Sell Stock, Gas Station, Jump Game
-Signal: "array traversal", "track running min/max/sum"
+   Problems: Best Time to Buy/Sell Stock, Gas Station, Jump Game
+   Signal: "array traversal", "track running min/max/sum"
 6. TWO-POINTER GREEDY — Greedy from both ends
-Problems: Container With Most Water, Trapping Rain Water
-Signal: "two sides", "shrink from both ends"
+   Problems: Container With Most Water, Trapping Rain Water
+   Signal: "two sides", "shrink from both ends"
 7. SORTING + ASSIGNMENT — Sort, then assign greedily
-Problems: Assign Cookies, Boats to Save People
-Signal: "assign resources to demands", "pair up"
+   Problems: Assign Cookies, Boats to Save People
+   Signal: "assign resources to demands", "pair up"
 8. DIGIT/CHARACTER GREEDY — Build result character by character
-Problems: Remove K Digits, Largest Number, Reorganize String
-Signal: "form number/string", "remove digits", "rearrange"
+   Problems: Remove K Digits, Largest Number, Reorganize String
+   Signal: "form number/string", "remove digits", "rearrange"
 9. GRAPH GREEDY — MST, shortest paths
-Problems: Kruskal's, Prim's, Dijkstra
-Signal: "minimum spanning", "shortest path", "network"
+   Problems: Kruskal's, Prim's, Dijkstra
+   Signal: "minimum spanning", "shortest path", "network"
 10. EXCHANGE-BASED — Prove by showing any swap makes it worse
-Problems: Task Scheduler, Queue Reconstruction by Height
-Signal: Complex problems where you must PROVE greedy works
+    Problems: Task Scheduler, Queue Reconstruction by Height
+    Signal: Complex problems where you must PROVE greedy works
 
 🔬 **Section Challenge — The 10 Greedy Pattern Families**
 
@@ -322,30 +325,32 @@ Signal: Complex problems where you must PROVE greedy works
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Benchmark: Why Greedy Is Fast
 
 Activity Selection — n activities:
 
-| n | Greedy O(n log n) | DP O(n^2) | Backtracking O(2^n) |
-|---|---|---|---|
-| 100 | 0.001 ms | 0.01 ms | 10^24 years (impossible) |
-| 1,000 | 0.01 ms | 1 ms | Not practical |
-| 10,000 | 0.14 ms | 100 ms | Not practical |
-| 100,000 | 1.7 ms | 10 sec | Not practical |
-| 1,000,000 | 20 ms | 17 min | Not practical |
-| 10,000,000 | 0.23 sec | ~28 hours | Not practical |
+| n          | Greedy O(n log n) | DP O(n^2) | Backtracking O(2^n)      |
+| ---------- | ----------------- | --------- | ------------------------ |
+| 100        | 0.001 ms          | 0.01 ms   | 10^24 years (impossible) |
+| 1,000      | 0.01 ms           | 1 ms      | Not practical            |
+| 10,000     | 0.14 ms           | 100 ms    | Not practical            |
+| 100,000    | 1.7 ms            | 10 sec    | Not practical            |
+| 1,000,000  | 20 ms             | 17 min    | Not practical            |
+| 10,000,000 | 0.23 sec          | ~28 hours | Not practical            |
 
 **Cpu Insight**: Greedy is often cache-friendly!
-* Greedy: Sort array once → sequential scan → CPU cache loves this
-* DP: Random table access → cache misses → slower than theory predicts
-* After sorting, greedy scans left-to-right → prefetcher predicts next
+
+- Greedy: Sort array once → sequential scan → CPU cache loves this
+- DP: Random table access → cache misses → slower than theory predicts
+- After sorting, greedy scans left-to-right → prefetcher predicts next
 
 **Memory**:
-* Greedy: Usually O(1) or O(n) extra space
-* DP: Often O(n²) or O(n×W) table → can blow memory for large inputs
+
+- Greedy: Usually O(1) or O(n) extra space
+- DP: Often O(n²) or O(n×W) table → can blow memory for large inputs
 
 🔬 **Section Challenge — Benchmark: Why Greedy Is Fast**
 
@@ -358,8 +363,8 @@ Activity Selection — n activities:
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Greedy Template Code — The Skeleton
 
@@ -370,11 +375,11 @@ Almost every greedy solution follows this pattern:
 public int greedySolve(int[][] items) {
     // STEP 1: SORT by the greedy criterion
     Arrays.sort(items, (a, b) -> a[1] - b[1]);  // e.g., by end time
-    
+
     // STEP 2: Initialize tracking variables
     int count = 0;
     int lastEnd = Integer.MIN_VALUE;
-    
+
     // STEP 3: Single pass — make greedy choice at each step
     for (int[] item : items) {
         if (item[0] >= lastEnd) {   // Can we pick this item?
@@ -383,7 +388,7 @@ public int greedySolve(int[][] items) {
         }
         // NO — skip it (never look back!)
     }
-    
+
     return count;
 }
 // Time: O(n log n) for sort + O(n) for scan = O(n log n)
@@ -515,8 +520,9 @@ public int greedySolve(int[][] items) {
 ```
 
 📖 **Related mental models:**
-* [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
-* [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
+
+- [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
+- [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
 
 ---
 
@@ -531,8 +537,8 @@ public int greedySolve(int[][] items) {
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## What is Greedy? <a name="what-is-greedy"></a>
 
@@ -554,7 +560,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Visual Example: Coin Change (When Greedy Works)
 
 ```
@@ -573,7 +578,6 @@ Result: 25 + 25 + 10 + 1 + 1 + 1 = 6 coins ✓
 
 This works because US coins have special property!
 ```
-
 
 ### When Greedy FAILS
 
@@ -601,8 +605,8 @@ For arbitrary coins, use DP instead.
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## When Does Greedy Work? <a name="when-greedy-works"></a>
 
@@ -624,7 +628,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### How to Recognize Greedy Problems
 
@@ -651,7 +654,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Proof Technique: Exchange Argument
 
 ```
@@ -677,8 +679,8 @@ To prove greedy works:
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Classic Greedy Patterns <a name="classic-patterns"></a>
 
@@ -691,7 +693,7 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 public int greedyTemplate(int[] items) {
     // Step 1: Sort by relevant criteria
     Arrays.sort(items);  // or custom comparator
-    
+
     // Step 2: Process greedily
     int result = 0;
     for (int item : items) {
@@ -718,7 +720,6 @@ Different interval problems need different sorting:
 └───────────────────────────────────┴──────────────────────────────┘
 ```
 
-
 ### Pattern 3: Two-Pointer Greedy
 
 ```java
@@ -728,10 +729,10 @@ Different interval problems need different sorting:
 public int matchPairs(int[] costs, int[] values) {
     Arrays.sort(costs);
     Arrays.sort(values);
-    
+
     int i = 0, j = 0;
     int matches = 0;
-    
+
     while (i < costs.length && j < values.length) {
         if (values[j] >= costs[i]) {
             matches++;
@@ -756,8 +757,8 @@ public int matchPairs(int[] costs, int[] values) {
 </details>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Scheduling Problems <a name="scheduling"></a>
 
@@ -775,10 +776,10 @@ This leaves maximum room for future activities.
 public int maxActivities(int[][] activities) {
     // Sort by end time
     Arrays.sort(activities, (a, b) -> a[1] - b[1]);
-    
+
     int count = 0;
     int lastEnd = 0;
-    
+
     for (int[] activity : activities) {
         int start = activity[0], end = activity[1];
         if (start >= lastEnd) {  // Non-overlapping
@@ -812,12 +813,11 @@ E [8,9]  ✓  (starts after D ends)
 Result: 3 activities (A, D, E)
 ```
 
-
 ### Job Scheduling to Maximize Profit
 
 ```java
 /*
-Jobs have deadline and profit. 
+Jobs have deadline and profit.
 Each job takes 1 unit time. Maximize profit.
 Schedule at latest possible time before deadline.
 */
@@ -826,15 +826,15 @@ public int maxProfit(int[][] jobs) {
     // jobs[i] = [deadline, profit]
     // Sort by profit descending
     Arrays.sort(jobs, (a, b) -> b[1] - a[1]);
-    
+
     int maxDeadline = 0;
     for (int[] job : jobs) {
         maxDeadline = Math.max(maxDeadline, job[0]);
     }
-    
+
     boolean[] slots = new boolean[maxDeadline + 1];
     int profit = 0;
-    
+
     for (int[] job : jobs) {
         int deadline = job[0];
         // Find latest available slot before deadline
@@ -863,18 +863,18 @@ public int minMeetingRooms(int[][] intervals) {
     int n = intervals.length;
     int[] starts = new int[n];
     int[] ends = new int[n];
-    
+
     for (int i = 0; i < n; i++) {
         starts[i] = intervals[i][0];
         ends[i] = intervals[i][1];
     }
-    
+
     Arrays.sort(starts);
     Arrays.sort(ends);
-    
+
     int rooms = 0, maxRooms = 0;
     int i = 0, j = 0;
-    
+
     while (i < n) {
         if (starts[i] < ends[j]) {
             rooms++;  // New meeting starts
@@ -892,7 +892,7 @@ public int minMeetingRooms(int[][] intervals) {
 public int minMeetingRooms2(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
     PriorityQueue<Integer> pq = new PriorityQueue<>();  // End times
-    
+
     for (int[] interval : intervals) {
         // If room frees up before this meeting starts
         if (!pq.isEmpty() && pq.peek() <= interval[0]) {
@@ -918,13 +918,13 @@ Same as: find maximum non-overlapping, subtract from total.
 
 public int eraseOverlapIntervals(int[][] intervals) {
     if (intervals.length == 0) return 0;
-    
+
     // Sort by end time
     Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
-    
+
     int kept = 1;
     int end = intervals[0][1];
-    
+
     for (int i = 1; i < intervals.length; i++) {
         if (intervals[i][0] >= end) {  // Non-overlapping
             kept++;
@@ -946,14 +946,14 @@ Sort by start, merge as we go.
 public int[][] merge(int[][] intervals) {
     Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
     List<int[]> merged = new ArrayList<>();
-    
+
     for (int[] interval : intervals) {
         // If doesn't overlap with last, add new
         if (merged.isEmpty() || merged.get(merged.size()-1)[1] < interval[0]) {
             merged.add(interval);
         } else {
             // Merge by extending end
-            merged.get(merged.size()-1)[1] = 
+            merged.get(merged.size()-1)[1] =
                 Math.max(merged.get(merged.size()-1)[1], interval[1]);
         }
     }
@@ -972,12 +972,12 @@ Merge if necessary.
 public int[][] insert(int[][] intervals, int[] newInterval) {
     List<int[]> result = new ArrayList<>();
     int i = 0;
-    
+
     // Add all before newInterval
     while (i < intervals.length && intervals[i][1] < newInterval[0]) {
         result.add(intervals[i++]);
     }
-    
+
     // Merge overlapping intervals
     while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
         newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
@@ -985,12 +985,12 @@ public int[][] insert(int[][] intervals, int[] newInterval) {
         i++;
     }
     result.add(newInterval);
-    
+
     // Add all after
     while (i < intervals.length) {
         result.add(intervals[i++]);
     }
-    
+
     return result.toArray(new int[result.size()][]);
 }
 ```
@@ -1006,11 +1006,11 @@ to cover the entire range.
 public int minIntervals(int[][] intervals, int n) {
     // Sort by start time
     Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-    
+
     int count = 0;
     int covered = 0;  // Current coverage end
     int i = 0;
-    
+
     while (covered < n) {
         // Find interval that starts ≤ covered and extends furthest
         int maxEnd = covered;
@@ -1018,10 +1018,10 @@ public int minIntervals(int[][] intervals, int n) {
             maxEnd = Math.max(maxEnd, intervals[i][1]);
             i++;
         }
-        
+
         // If can't extend coverage, impossible
         if (maxEnd == covered) return -1;
-        
+
         covered = maxEnd;
         count++;
     }
@@ -1043,7 +1043,7 @@ Track farthest reachable position.
 
 public boolean canJump(int[] nums) {
     int farthest = 0;
-    
+
     for (int i = 0; i < nums.length; i++) {
         // Can't reach position i
         if (i > farthest) return false;
@@ -1065,10 +1065,10 @@ public int jump(int[] nums) {
     int jumps = 0;
     int currentEnd = 0;
     int farthest = 0;
-    
+
     for (int i = 0; i < nums.length - 1; i++) {
         farthest = Math.max(farthest, i + nums[i]);
-        
+
         // Must jump when reaching current jump's limit
         if (i == currentEnd) {
             jumps++;
@@ -1095,19 +1095,19 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
     int totalTank = 0;
     int currentTank = 0;
     int startStation = 0;
-    
+
     for (int i = 0; i < gas.length; i++) {
         int diff = gas[i] - cost[i];
         totalTank += diff;
         currentTank += diff;
-        
+
         // Can't reach next station from startStation
         if (currentTank < 0) {
             startStation = i + 1;  // Try starting from next
             currentTank = 0;
         }
     }
-    
+
     return totalTank >= 0 ? startStation : -1;
 }
 ```
@@ -1124,9 +1124,9 @@ Maximize content children (cookie size >= greed).
 public int findContentChildren(int[] children, int[] cookies) {
     Arrays.sort(children);
     Arrays.sort(cookies);
-    
+
     int child = 0, cookie = 0;
-    
+
     while (child < children.length && cookie < cookies.length) {
         if (cookies[cookie] >= children[child]) {
             child++;  // Child satisfied
@@ -1148,12 +1148,12 @@ Moving taller line can only decrease area.
 public int maxArea(int[] height) {
     int left = 0, right = height.length - 1;
     int maxWater = 0;
-    
+
     while (left < right) {
         int h = Math.min(height[left], height[right]);
         int w = right - left;
         maxWater = Math.max(maxWater, h * w);
-        
+
         // Move the shorter line
         if (height[left] < height[right]) {
             left++;
@@ -1175,7 +1175,7 @@ Greedy: Capture every upward movement.
 
 public int maxProfit(int[] prices) {
     int profit = 0;
-    
+
     for (int i = 1; i < prices.length; i++) {
         if (prices[i] > prices[i-1]) {
             profit += prices[i] - prices[i-1];
@@ -1201,21 +1201,21 @@ public int candy(int[] ratings) {
     int n = ratings.length;
     int[] candies = new int[n];
     Arrays.fill(candies, 1);
-    
+
     // Left to right: higher than left neighbor?
     for (int i = 1; i < n; i++) {
         if (ratings[i] > ratings[i-1]) {
             candies[i] = candies[i-1] + 1;
         }
     }
-    
+
     // Right to left: higher than right neighbor?
     for (int i = n - 2; i >= 0; i--) {
         if (ratings[i] > ratings[i+1]) {
             candies[i] = Math.max(candies[i], candies[i+1] + 1);
         }
     }
-    
+
     int total = 0;
     for (int c : candies) total += c;
     return total;
@@ -1227,11 +1227,12 @@ public int candy(int[] ratings) {
 🔬 **Section Challenge — Array Greedy Problems <a name="array-greedy"></a>**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## String Greedy Problems <a name="string-greedy"></a>
 
@@ -1246,7 +1247,7 @@ Use monotonic stack.
 
 public String removeKdigits(String num, int k) {
     Deque<Character> stack = new ArrayDeque<>();
-    
+
     for (char c : num.toCharArray()) {
         // Remove larger digits
         while (!stack.isEmpty() && k > 0 && stack.peek() > c) {
@@ -1255,10 +1256,10 @@ public String removeKdigits(String num, int k) {
         }
         stack.push(c);
     }
-    
+
     // Remove remaining from end
     while (k-- > 0) stack.pop();
-    
+
     // Build result, remove leading zeros
     StringBuilder sb = new StringBuilder();
     while (!stack.isEmpty()) {
@@ -1267,7 +1268,7 @@ public String removeKdigits(String num, int k) {
     while (sb.length() > 0 && sb.charAt(0) == '0') {
         sb.deleteCharAt(0);
     }
-    
+
     return sb.length() == 0 ? "0" : sb.toString();
 }
 ```
@@ -1289,14 +1290,14 @@ public List<Integer> partitionLabels(String s) {
     for (int i = 0; i < s.length(); i++) {
         lastIndex[s.charAt(i) - 'a'] = i;
     }
-    
+
     List<Integer> result = new ArrayList<>();
     int start = 0, end = 0;
-    
+
     for (int i = 0; i < s.length(); i++) {
         // Extend partition to include all of current char
         end = Math.max(end, lastIndex[s.charAt(i) - 'a']);
-        
+
         // Reached end of current partition
         if (i == end) {
             result.add(end - start + 1);
@@ -1323,7 +1324,7 @@ public String reorganizeString(String s) {
     for (char c : s.toCharArray()) {
         count[c - 'a']++;
     }
-    
+
     // Check if possible
     int maxCount = 0, maxChar = 0;
     for (int i = 0; i < 26; i++) {
@@ -1333,16 +1334,16 @@ public String reorganizeString(String s) {
         }
     }
     if (maxCount > (s.length() + 1) / 2) return "";
-    
+
     // Fill even positions with most frequent
     char[] result = new char[s.length()];
     int index = 0;
-    
+
     while (count[maxChar]-- > 0) {
         result[index] = (char) ('a' + maxChar);
         index += 2;
     }
-    
+
     // Fill remaining
     for (int i = 0; i < 26; i++) {
         while (count[i]-- > 0) {
@@ -1351,7 +1352,7 @@ public String reorganizeString(String s) {
             index += 2;
         }
     }
-    
+
     return new String(result);
 }
 ```
@@ -1369,16 +1370,16 @@ public int leastInterval(char[] tasks, int n) {
     for (char task : tasks) {
         count[task - 'A']++;
     }
-    
+
     Arrays.sort(count);
     int maxCount = count[25];
-    
+
     // Count tasks with max frequency
     int maxCountTasks = 0;
     for (int i = 25; i >= 0 && count[i] == maxCount; i--) {
         maxCountTasks++;
     }
-    
+
     // Formula: (maxCount - 1) * (n + 1) + maxCountTasks
     // Or just total tasks if no idle needed
     return Math.max(tasks.length, (maxCount - 1) * (n + 1) + maxCountTasks);
@@ -1396,11 +1397,12 @@ A B _ A B _ A B
 🔬 **Section Challenge — String Greedy Problems <a name="string-greedy"></a>**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Graph Greedy Algorithms <a name="graph-greedy"></a>
 
@@ -1416,15 +1418,15 @@ Use Union-Find to detect cycles.
 public int kruskalMST(int n, int[][] edges) {
     // edges[i] = [u, v, weight]
     Arrays.sort(edges, (a, b) -> a[2] - b[2]);
-    
+
     int[] parent = new int[n];
     for (int i = 0; i < n; i++) parent[i] = i;
-    
+
     int cost = 0, edgeCount = 0;
-    
+
     for (int[] edge : edges) {
         int u = edge[0], v = edge[1], w = edge[2];
-        
+
         if (find(parent, u) != find(parent, v)) {
             union(parent, u, v);
             cost += w;
@@ -1457,27 +1459,27 @@ public int primMST(int n, int[][] edges) {
     // Build adjacency list
     List<int[]>[] graph = new List[n];
     for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-    
+
     for (int[] e : edges) {
         graph[e[0]].add(new int[]{e[1], e[2]});
         graph[e[1]].add(new int[]{e[0], e[2]});
     }
-    
+
     // Min heap: [weight, vertex]
     PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
     boolean[] visited = new boolean[n];
     int cost = 0;
-    
+
     pq.offer(new int[]{0, 0});  // Start from vertex 0
-    
+
     while (!pq.isEmpty()) {
         int[] curr = pq.poll();
         int w = curr[0], u = curr[1];
-        
+
         if (visited[u]) continue;
         visited[u] = true;
         cost += w;
-        
+
         for (int[] neighbor : graph[u]) {
             if (!visited[neighbor[0]]) {
                 pq.offer(new int[]{neighbor[1], neighbor[0]});
@@ -1500,26 +1502,26 @@ public int[] dijkstra(int n, int[][] edges, int src) {
     // Build adjacency list
     List<int[]>[] graph = new List[n];
     for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-    
+
     for (int[] e : edges) {
         graph[e[0]].add(new int[]{e[1], e[2]});
         // For undirected: graph[e[1]].add(new int[]{e[0], e[2]});
     }
-    
+
     int[] dist = new int[n];
     Arrays.fill(dist, Integer.MAX_VALUE);
     dist[src] = 0;
-    
+
     // Min heap: [distance, vertex]
     PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
     pq.offer(new int[]{0, src});
-    
+
     while (!pq.isEmpty()) {
         int[] curr = pq.poll();
         int d = curr[0], u = curr[1];
-        
+
         if (d > dist[u]) continue;  // Skip outdated
-        
+
         for (int[] neighbor : graph[u]) {
             int v = neighbor[0], w = neighbor[1];
             if (dist[u] + w < dist[v]) {
@@ -1537,17 +1539,20 @@ public int[] dijkstra(int n, int[][] edges, int src) {
 🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## Interview Problems <a name="interview-problems"></a>
 
@@ -1566,7 +1571,7 @@ public int numRescueBoats(int[] people, int limit) {
     Arrays.sort(people);
     int left = 0, right = people.length - 1;
     int boats = 0;
-    
+
     while (left <= right) {
         if (people[left] + people[right] <= limit) {
             left++;  // Light person fits with heavy
@@ -1590,10 +1595,10 @@ Same as max non-overlapping intervals!
 
 public int findMinArrowShots(int[][] points) {
     Arrays.sort(points, (a, b) -> Integer.compare(a[1], b[1]));
-    
+
     int arrows = 1;
     int end = points[0][1];
-    
+
     for (int i = 1; i < points.length; i++) {
         if (points[i][0] > end) {
             arrows++;
@@ -1621,12 +1626,12 @@ public int[][] reconstructQueue(int[][] people) {
         if (a[0] != b[0]) return b[0] - a[0];  // Height desc
         return a[1] - b[1];  // K asc
     });
-    
+
     List<int[]> result = new ArrayList<>();
     for (int[] person : people) {
         result.add(person[1], person);  // Insert at index k
     }
-    
+
     return result.toArray(new int[people.length][]);
 }
 ```
@@ -1641,7 +1646,7 @@ Start with no change. Can you give correct change?
 
 public boolean lemonadeChange(int[] bills) {
     int fives = 0, tens = 0;
-    
+
     for (int bill : bills) {
         if (bill == 5) {
             fives++;
@@ -1695,7 +1700,6 @@ public boolean lemonadeChange(int[] bills) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Same Problem, Different Approaches
 
 ```java
@@ -1717,7 +1721,7 @@ public int dpCoinChange(int[] coins, int amount) {
     int[] dp = new int[amount + 1];
     Arrays.fill(dp, amount + 1);
     dp[0] = 0;
-    
+
     for (int i = 1; i <= amount; i++) {
         for (int coin : coins) {
             if (coin <= i) {
@@ -1734,47 +1738,48 @@ public int dpCoinChange(int[] coins, int amount) {
 🔬 **Section Challenge — Greedy vs DP <a name="greedy-vs-dp"></a>**
 
 **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-</details>
 
+</details>
 
 ## Practice Problems <a name="practice-problems"></a>
 
 ### Easy 🟢
 
-| Problem | Type | Key Insight |
-|---------|------|-------------|
-| Assign Cookies | Matching | Sort both, greedy match |
-| Lemonade Change | Simulation | Prefer $10 change |
-| Best Time to Buy/Sell Stock II | Array | Capture every up |
-| Can Place Flowers | Array | Check neighbors |
-| Maximum Units on Truck | Sorting | Sort by units/box |
+| Problem                        | Type       | Key Insight             |
+| ------------------------------ | ---------- | ----------------------- |
+| Assign Cookies                 | Matching   | Sort both, greedy match |
+| Lemonade Change                | Simulation | Prefer $10 change       |
+| Best Time to Buy/Sell Stock II | Array      | Capture every up        |
+| Can Place Flowers              | Array      | Check neighbors         |
+| Maximum Units on Truck         | Sorting    | Sort by units/box       |
 
 ### Medium 🟡
 
-| Problem | Type | Key Insight |
-|---------|------|-------------|
-| Jump Game I/II | Array | Track farthest |
-| Gas Station | Circular | Track running sum |
-| Non-overlapping Intervals | Intervals | Sort by end |
-| Meeting Rooms II | Intervals | Event processing |
-| Partition Labels | String | Last occurrence |
-| Task Scheduler | Scheduling | Max frequency formula |
-| Boats to Save People | Two pointer | Pair heaviest + lightest |
-| Queue Reconstruction | Sorting | Tall first, insert at k |
-| Container With Most Water | Two pointer | Move shorter |
+| Problem                   | Type        | Key Insight              |
+| ------------------------- | ----------- | ------------------------ |
+| Jump Game I/II            | Array       | Track farthest           |
+| Gas Station               | Circular    | Track running sum        |
+| Non-overlapping Intervals | Intervals   | Sort by end              |
+| Meeting Rooms II          | Intervals   | Event processing         |
+| Partition Labels          | String      | Last occurrence          |
+| Task Scheduler            | Scheduling  | Max frequency formula    |
+| Boats to Save People      | Two pointer | Pair heaviest + lightest |
+| Queue Reconstruction      | Sorting     | Tall first, insert at k  |
+| Container With Most Water | Two pointer | Move shorter             |
 
 ### Hard 🔴
 
-| Problem | Type | Key Insight |
-|---------|------|-------------|
-| Candy | Two pass | L→R then R→L |
-| Create Maximum Number | Stack | Monotonic stack |
-| IPO | Heap | Max profit affordable |
-| Minimum Number of Refueling Stops | Heap | Collect fuel options |
-| Course Schedule III | Sorting + Heap | Replace longer courses |
+| Problem                           | Type           | Key Insight            |
+| --------------------------------- | -------------- | ---------------------- |
+| Candy                             | Two pass       | L→R then R→L           |
+| Create Maximum Number             | Stack          | Monotonic stack        |
+| IPO                               | Heap           | Max profit affordable  |
+| Minimum Number of Refueling Stops | Heap           | Collect fuel options   |
+| Course Schedule III               | Sorting + Heap | Replace longer courses |
 
 ---
 
@@ -1813,7 +1818,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Common Mistakes to Avoid
 
 ```
@@ -1833,7 +1837,6 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
    → Always update end/farthest after making choice
 ```
 
-
 ---
 
 **Master These 3 Greedy Patterns:**
@@ -1850,6 +1853,4 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!
-

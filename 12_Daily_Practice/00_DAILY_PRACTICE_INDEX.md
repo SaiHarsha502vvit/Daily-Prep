@@ -38,19 +38,19 @@ Every Sunday = REVIEW DAY (no new topics, consolidate + redo)
 
 ## Progress Tracker
 
-| Week | Days | Dates | Focus | Status |
-|------|------|-------|-------|--------|
-| 01 | 1-7 | Mar 3-9 | Arrays + Sorting + SQL Basics | [ ] |
-| 02 | 8-14 | Mar 10-16 | HashMap + Searching + SQL DDL/DML | [ ] |
-| 03 | 15-21 | Mar 17-23 | Stack/Queue + Recursion + SQL Queries | [ ] |
-| 04 | 22-28 | Mar 24-30 | Trie + Graphs + SQL Performance + JPA | [ ] |
-| 05 | 29-35 | Mar 31-Apr 6 | Trees + DFS/BFS + SQL Aggregations | [ ] |
-| 06 | 36-42 | Apr 7-13 | BST + Divide & Conquer + SQL Subqueries | [ ] |
-| 07 | 43-49 | Apr 14-20 | Heaps + Greedy + SQL Window Functions | [ ] |
-| 08 | 50-56 | Apr 21-27 | Graphs + Shortest Path + SQL Advanced | [ ] |
-| 09 | 57-63 | Apr 28-May 4 | DP Basics + Backtracking + SQL Optimization | [ ] |
-| 10 | 64-70 | May 5-11 | DP Advanced + Bit Manipulation + SQL Projects | [ ] |
-| 11 | 71-77 | May 12-18 | System Design + Mock Interviews + SQL Review | [ ] |
+| Week | Days  | Dates        | Focus                                         | Status |
+| ---- | ----- | ------------ | --------------------------------------------- | ------ |
+| 01   | 1-7   | Mar 3-9      | Arrays + Sorting + SQL Basics                 | [ ]    |
+| 02   | 8-14  | Mar 10-16    | HashMap + Searching + SQL DDL/DML             | [ ]    |
+| 03   | 15-21 | Mar 17-23    | Stack/Queue + Recursion + SQL Queries         | [ ]    |
+| 04   | 22-28 | Mar 24-30    | Trie + Graphs + SQL Performance + JPA         | [ ]    |
+| 05   | 29-35 | Mar 31-Apr 6 | Trees + DFS/BFS + SQL Aggregations            | [ ]    |
+| 06   | 36-42 | Apr 7-13     | BST + Divide & Conquer + SQL Subqueries       | [ ]    |
+| 07   | 43-49 | Apr 14-20    | Heaps + Greedy + SQL Window Functions         | [ ]    |
+| 08   | 50-56 | Apr 21-27    | Graphs + Shortest Path + SQL Advanced         | [ ]    |
+| 09   | 57-63 | Apr 28-May 4 | DP Basics + Backtracking + SQL Optimization   | [ ]    |
+| 10   | 64-70 | May 5-11     | DP Advanced + Bit Manipulation + SQL Projects | [ ]    |
+| 11   | 71-77 | May 12-18    | System Design + Mock Interviews + SQL Review  | [ ]    |
 
 ---
 
@@ -91,18 +91,17 @@ Week 11:   HARD       (Integration, system thinking)
 
 Each daily file links to these study materials:
 
-| Topic Area | Files to Read |
-|-----------|---------------|
-| Arrays | [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) |
-| Sorting | [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| Two Pointers | [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
-| Sliding Window | [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) |
-| SQL Foundations | [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) |
-| Problems: Arrays | [05_Problem_Solving/04_Arrays.md](../05_Problem_Solving/04_Arrays.md) |
-| Problems: Sliding Window | [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) |
-| Problems: Two Pointers | [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) |
-| Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](../07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
-
+| Topic Area               | Files to Read                                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Arrays                   | [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md)           |
+| Sorting                  | [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md)                 |
+| Two Pointers             | [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
+| Sliding Window           | [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)               |
+| SQL Foundations          | [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md)                   |
+| Problems: Arrays         | [05_Problem_Solving/04_Arrays.md](../05_Problem_Solving/04_Arrays.md)                                     |
+| Problems: Sliding Window | [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md)                     |
+| Problems: Two Pointers   | [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md)                         |
+| Spring Boot              | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](../07_Modern_Java/Ch24_Spring_Boot_Roadmap.md)               |
 
 ---
 

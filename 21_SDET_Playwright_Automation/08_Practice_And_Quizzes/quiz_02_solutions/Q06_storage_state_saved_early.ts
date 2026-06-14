@@ -9,8 +9,8 @@
  * QUESTION: What is the bug? What does the saved state file contain?
  */
 
-import { chromium } from '@playwright/test';
-import * as path from 'node:path';
+import { chromium } from "@playwright/test";
+import * as path from "node:path";
 
 // ============================================================
 // BUG — storageState captured before the POST response arrives
@@ -30,11 +30,11 @@ async function globalSetup_BAD() {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto('https://crm.example.com/login');
-  await page.fill('#username', process.env.ADMIN_EMAIL!);
-  await page.fill('#password', process.env.ADMIN_PASSWORD!);
-  await page.locator('#loginBtn').click(); // ❌ fires click — does NOT await auth
-  await context.storageState({ path: 'auth-states/admin.json' }); // ❌ cookies missing
+  await page.goto("https://crm.example.com/login");
+  await page.fill("#username", process.env.ADMIN_EMAIL!);
+  await page.fill("#password", process.env.ADMIN_PASSWORD!);
+  await page.locator("#loginBtn").click(); // ❌ fires click — does NOT await auth
+  await context.storageState({ path: "auth-states/admin.json" }); // ❌ cookies missing
 
   await browser.close();
 }
@@ -48,17 +48,17 @@ async function globalSetup_FIXED() {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto('https://crm.example.com/login');
-  await page.fill('#username', process.env.ADMIN_EMAIL!);
-  await page.fill('#password', process.env.ADMIN_PASSWORD!);
-  await page.locator('#loginBtn').click();
+  await page.goto("https://crm.example.com/login");
+  await page.fill("#username", process.env.ADMIN_EMAIL!);
+  await page.fill("#password", process.env.ADMIN_PASSWORD!);
+  await page.locator("#loginBtn").click();
 
   // Wait until navigation confirms the server accepted the credentials.
   // waitForURL retries until the URL pattern matches or the timeout expires.
   await page.waitForURL(/\/(dashboard|home|main)/, { timeout: 30_000 });
   // ↑ At this point the browser has received all Set-Cookie headers.
 
-  const statePath = path.resolve('auth-states/admin.json');
+  const statePath = path.resolve("auth-states/admin.json");
   await context.storageState({ path: statePath }); // ✅ cookies are in the context
 
   await browser.close();
@@ -73,18 +73,18 @@ async function globalSetup_FixedWithLocator() {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto('https://crm.example.com/login');
-  await page.fill('#username', process.env.ADMIN_EMAIL!);
-  await page.fill('#password', process.env.ADMIN_PASSWORD!);
-  await page.locator('#loginBtn').click();
+  await page.goto("https://crm.example.com/login");
+  await page.fill("#username", process.env.ADMIN_EMAIL!);
+  await page.fill("#password", process.env.ADMIN_PASSWORD!);
+  await page.locator("#loginBtn").click();
 
   // Wait for a post-login element (e.g. dashboard header or user avatar)
   await page.locator('[data-testid="dashboard-header"]').waitFor({
-    state: 'visible',
+    state: "visible",
     timeout: 30_000,
   });
 
-  await context.storageState({ path: 'auth-states/admin.json' }); // ✅
+  await context.storageState({ path: "auth-states/admin.json" }); // ✅
 
   await browser.close();
 }

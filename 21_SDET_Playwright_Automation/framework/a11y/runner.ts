@@ -40,10 +40,7 @@ export interface AxeNode {
  * @returns AxeResults containing violations and passes
  * @throws Error if @axe-core/playwright is not installed
  */
-export async function runAxe(
-  page: Page,
-  options?: { tags?: string[] },
-): Promise<AxeResults> {
+export async function runAxe(page: Page, options?: { tags?: string[] }): Promise<AxeResults> {
   let axePlaywright: typeof AxeCorePlaywright | null = null;
 
   try {
@@ -81,9 +78,7 @@ export function assertNoViolations(results: AxeResults): void {
     .map(
       (v) =>
         `- [${v.impact ?? 'unknown'}] ${v.id}: ${v.description}\n` +
-        v.nodes
-          .map((n) => `    Target: ${n.target.join(', ')}\n    HTML: ${n.html}`)
-          .join('\n'),
+        v.nodes.map((n) => `    Target: ${n.target.join(', ')}\n    HTML: ${n.html}`).join('\n'),
     )
     .join('\n\n');
 

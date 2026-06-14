@@ -46,6 +46,7 @@ SCENARIO: Same codebase, with unit tests.
 ### What Unit Tests Are
 
 A **unit test** tests a **single unit of behavior** in isolation:
+
 - Isolates the class under test from its dependencies (using test doubles)
 - Has no Android framework (no Activity, no Context, no Instrumentation)
 - Runs on the JVM — on your machine, in the CI pipeline, in 8 seconds
@@ -1304,12 +1305,15 @@ assertThat(result.getOrNull()?.id).isEqualTo("CIT-001")
 ## 15. Interview Q&A
 
 **Q: "What is the difference between a Mock, Stub, and Fake?"**
+
 > "These are three types of test doubles with different purposes. A Stub provides canned responses to method calls — you set 'when this is called, return that value' and the stub doesn't track or verify anything. A Mock also provides responses but additionally verifies that specific interactions happened — 'was this method called exactly once?' A Fake is a working lightweight implementation of an interface, like an in-memory database instead of a real one. For most of my ViewModel and UseCase tests I use stubs (MockK's `coEvery`) — I just need specific return values. I use mocks when I need to verify a side-effect happened (an analytics event was tracked). I use fakes for repositories in integration tests where I want realistic behavior without a real database or network."
 
 **Q: "How do you test a ViewModel that uses coroutines?"**
+
 > "There are two problems to solve: first, ViewModels default to `Dispatchers.Main` which doesn't exist in unit tests. I solve this with a `MainDispatcherRule` (JUnit 4) or `MainDispatcherExtension` (JUnit 5) that replaces `Dispatchers.Main` with a `TestDispatcher` before each test. Second, coroutines run asynchronously but tests are synchronous. I use `runTest { }` from `kotlinx-coroutines-test` which runs all coroutines in a virtual time environment. `UnconfinedTestDispatcher` runs coroutines eagerly so I don't need to advance time for simple tests. `StandardTestDispatcher` gives me control over timing for testing intermediate states or debounced behavior. For testing Flow emissions, I use Turbine's `.test { }` which gives a clean API for awaiting and asserting on each emitted item."
 
 **Q: "How do you decide what to unit test?"**
+
 > "I focus on behavior that has business value and meaningful decision points. Business logic functions — fee calculations, validation rules, status transitions — always get tested with full boundary analysis. Use cases get tested for every execution path: success, each failure type, authentication state. ViewModels get tested for every state transition and every event emission. Mappers get tested for every enum mapping and every edge case in type conversion. I don't write tests for simple data classes, single-line delegating functions, or framework boilerplate — those have no logic to verify. The heuristic: if a bug in this function could reach a user and affect their experience or data, test it."
 
 ---

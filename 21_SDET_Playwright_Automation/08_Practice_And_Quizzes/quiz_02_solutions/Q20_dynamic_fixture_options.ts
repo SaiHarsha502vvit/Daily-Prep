@@ -7,13 +7,13 @@
  *   Hint: Use Playwright's test.use({}) pattern with a custom option fixture.
  */
 
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect } from "@playwright/test";
 
 // ============================================================
 // Domain types
 // ============================================================
 
-type AccountRole = 'standard' | 'admin' | 'read-only';
+type AccountRole = "standard" | "admin" | "read-only";
 
 interface TestAccount {
   id: string;
@@ -42,15 +42,15 @@ async function deleteTestUserFromDB(_id: string): Promise<void> {
 // to decide what to create.  Per-test overrides go through test.use({}).
 
 interface MyFixtures {
-  accountRole: AccountRole;                    // the option
-  testAccount: TestAccount;                    // the resulting fixture
+  accountRole: AccountRole; // the option
+  testAccount: TestAccount; // the resulting fixture
 }
 
 export const test = base.extend<MyFixtures>({
   // ── STEP 1: Declare the option fixture with a default value ──
   // { option: true } tells Playwright: "this is a configuration knob,
   // not a setup fixture — never create side effects here".
-  accountRole: ['standard', { option: true }],
+  accountRole: ["standard", { option: true }],
 
   // ── STEP 2: Read the option inside the setup fixture ──
   // testAccount depends on accountRole just like any other fixture.
@@ -68,18 +68,18 @@ export const test = base.extend<MyFixtures>({
 // ============================================================
 
 // Test A — uses the default 'standard' role (no override needed)
-test('standard user sees only their own data', async ({ testAccount }) => {
-  expect(testAccount.role).toBe('standard');
+test("standard user sees only their own data", async ({ testAccount }) => {
+  expect(testAccount.role).toBe("standard");
   // Use testAccount.email / testAccount.id for login, API calls, etc.
 });
 
 // Test B — override accountRole to 'admin' for the ENTIRE FILE
 // test.use({ accountRole: 'admin' }) at file scope affects every test
 // in this file after this point.
-test.use({ accountRole: 'admin' });
+test.use({ accountRole: "admin" });
 
-test('admin user sees all records', async ({ testAccount }) => {
-  expect(testAccount.role).toBe('admin');
+test("admin user sees all records", async ({ testAccount }) => {
+  expect(testAccount.role).toBe("admin");
   // testAccount was created with role: 'admin' because of test.use above
 });
 
@@ -87,23 +87,23 @@ test('admin user sees all records', async ({ testAccount }) => {
 // SCOPED OVERRIDES — only within a describe block
 // ============================================================
 
-test.describe('Admin role tests', () => {
-  test.use({ accountRole: 'admin' }); // applies ONLY to this describe block
+test.describe("Admin role tests", () => {
+  test.use({ accountRole: "admin" }); // applies ONLY to this describe block
 
-  test('admin can delete records', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('admin');
+  test("admin can delete records", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("admin");
   });
 
-  test('admin can view audit log', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('admin');
+  test("admin can view audit log", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("admin");
   });
 });
 
-test.describe('Read-only role tests', () => {
-  test.use({ accountRole: 'read-only' });
+test.describe("Read-only role tests", () => {
+  test.use({ accountRole: "read-only" });
 
-  test('read-only user cannot edit', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('read-only');
+  test("read-only user cannot edit", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("read-only");
   });
 });
 
@@ -113,7 +113,7 @@ test.describe('Read-only role tests', () => {
 
 interface ExtendedFixtures {
   accountRole: AccountRole;
-  accountRegion: 'US' | 'EU' | 'APAC';
+  accountRegion: "US" | "EU" | "APAC";
   testAccount: TestAccount & { region: string };
 }
 
@@ -130,8 +130,8 @@ async function createRegionalUser(
 }
 
 export const testWithRegion = base.extend<ExtendedFixtures>({
-  accountRole:   ['standard',  { option: true }],
-  accountRegion: ['US',        { option: true }],
+  accountRole: ["standard", { option: true }],
+  accountRegion: ["US", { option: true }],
 
   testAccount: async ({ accountRole, accountRegion }, use) => {
     const account = await createRegionalUser(accountRole, accountRegion);
@@ -140,12 +140,12 @@ export const testWithRegion = base.extend<ExtendedFixtures>({
   },
 });
 
-testWithRegion.describe('EU admin smoke test', () => {
-  testWithRegion.use({ accountRole: 'admin', accountRegion: 'EU' });
+testWithRegion.describe("EU admin smoke test", () => {
+  testWithRegion.use({ accountRole: "admin", accountRegion: "EU" });
 
-  testWithRegion('EU admin sees EU orders', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('admin');
-    expect(testAccount.region).toBe('EU');
+  testWithRegion("EU admin sees EU orders", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("admin");
+    expect(testAccount.region).toBe("EU");
   });
 });
 

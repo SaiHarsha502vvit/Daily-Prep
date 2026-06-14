@@ -3,10 +3,10 @@
  * Replaces the framework's TestDataBridge for the CH07 solution.
  */
 export enum BridgeKey {
-  CUSTOMER_ID = 'CUSTOMER_ID',
-  ORDER_ID = 'ORDER_ID',
-  CUSTOMER_EMAIL = 'CUSTOMER_EMAIL',
-  CONFIRMATION_CODE = 'CONFIRMATION_CODE',
+  CUSTOMER_ID = "CUSTOMER_ID",
+  ORDER_ID = "ORDER_ID",
+  CUSTOMER_EMAIL = "CUSTOMER_EMAIL",
+  CONFIRMATION_CODE = "CONFIRMATION_CODE",
 }
 
 export class TestDataBridge {
@@ -21,8 +21,10 @@ export class TestDataBridge {
     if (val === undefined) {
       throw new Error(`[TestDataBridge] No value for key: ${key}`);
     }
-    if (typeof val !== 'number') {
-      throw new Error(`[TestDataBridge] Expected number for ${key}, got string`);
+    if (typeof val !== "number") {
+      throw new Error(
+        `[TestDataBridge] Expected number for ${key}, got string`,
+      );
     }
     return val;
   }

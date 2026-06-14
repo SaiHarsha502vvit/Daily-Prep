@@ -49,7 +49,6 @@ _"You cannot master Spring without mastering these Java internals first"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 🎯 LEARNING PHILOSOPHY
@@ -83,7 +82,6 @@ _"You cannot master Spring without mastering these Java internals first"_
 
 ```
 
-
 ---
 
 # ☕ Tier 1: the Non — Negotiable Java Foundations
@@ -94,34 +92,34 @@ _"You cannot master Spring without mastering these Java internals first"_
 
 ### 🔵 WHY: Understanding Memory is Understanding Performance
 
-
-
 🔬 **Section Challenge — Chapter 1: Memory Model & JVM Internals**
 
 **Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
+
 <details><summary>Answer</summary>
 
-Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
-</details>
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes _you_ wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 
+</details>
 
 ## Why Jvm Memory Model Matters
 
-
 **Without This Knowledge**:
+
 - OutOfMemoryError: Metaspace (and you don't know why)
 - Memory leaks in production
 - GC pauses causing 500ms response times
 - "It works on my machine" but crashes in production
 
 **With This Knowledge**:
+
 - Optimize JVM settings for your workload
 - Understand why Spring creates proxies in heap
 - Debug memory issues confidently
 - Pass advanced Java interview questions
-🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours
-with OutOfMemoryError: Metaspace. Root cause: Dynamically generated
-classes from reflection never got garbage collected.
+  🔴 REAL INCIDENT: A startup's Spring Boot app crashed every 2 hours
+  with OutOfMemoryError: Metaspace. Root cause: Dynamically generated
+  classes from reflection never got garbage collected.
 
 ### 🟢 HOW: JVM Memory Architecture
 
@@ -179,7 +177,6 @@ classes from reflection never got garbage collected.
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Stack vs Heap - The Critical Difference
 
@@ -310,7 +307,6 @@ public class StringPoolDemo {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: The Four Reference Types
 
@@ -446,21 +442,19 @@ public class ReferenceTypesDemo {
 └────────────────┴───────────────────────┴────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 2: Reference Types (Garbage Collection Keys)**
 
 **Challenge 1 (Reasoning — Who/When/What):** `WeakReference<User>` is used in a cache. **Who** decides when the referent is cleared? **When** exactly? **What** is the difference between Soft and Weak for caching?\n\n<details><summary>Answer</summary>\n\n**Who decides?** The GC. A WeakReference is cleared during ANY GC cycle if no strong references exist. **When exactly?** As soon as GC runs and finds no strong or soft references pointing to the object. This can happen at any time, even with plenty of available heap. **Soft vs Weak for caching:** `SoftReference` is only cleared when the JVM is running LOW on memory (before OOM is thrown) — better for caches that you want to keep as long as possible. `WeakReference` is cleared on the NEXT GC cycle regardless of memory pressure — useful for canonicalizing maps (`WeakHashMap`) but poor for general caches. For production caches, use Caffeine/Guava which manage eviction policies more predictably than reference semantics.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## Chapter 3: Garbage Collection Algorithms
 
@@ -495,7 +489,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: GC Algorithms Explained
 
@@ -547,7 +540,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Practical JVM Tuning for Spring Boot
 
@@ -617,7 +609,6 @@ java -Xms8g -Xmx8g \
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### 🟢 HOW: Class Loader Hierarchy
 
 ```
@@ -661,7 +652,6 @@ java -Xms8g -Xmx8g \
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Spring Boot's Special ClassLoader
 
 ```java
@@ -689,16 +679,15 @@ java -Xms8g -Xmx8g \
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
 
 **Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
+
 <details><summary>Answer</summary>
 
-Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
-</details>
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes _you_ wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 
+</details>
 
 ## Chapter 5: Advanced Threading (Concurrency)
 
@@ -731,7 +720,6 @@ Control over instantiation. `@Component` is a class-level annotation. Spring aut
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### ThreadLocal - How Spring Stores Request-Scoped Data
 
@@ -986,16 +974,15 @@ public class CompletableFutureDemo {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
 
 **Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
+
 <details><summary>Answer</summary>
 
-Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
-</details>
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes _you_ wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 
+</details>
 
 ## Chapter 6: Functional Java (Lambda & Streams)
 
@@ -1026,7 +1013,6 @@ Control over instantiation. `@Component` is a class-level annotation. Spring aut
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Lambda Expressions Deep Dive
 
@@ -1189,16 +1175,15 @@ public class StreamsDemo {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Functional Java (Lambda & Streams)**
 
 **Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+
 <details><summary>Answer</summary>
 
 Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
-</details>
 
+</details>
 
 # 📋 TIER 1 CHECKLIST
 
@@ -1229,11 +1214,9 @@ FUNCTIONAL JAVA:
 □ Can explain effectively final variables
 ```
 
-
 ---
 
 _Continue to Part 2: Spring Core (IoC & Dependency Injection)_
-
 
 ---
 

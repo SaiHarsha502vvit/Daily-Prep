@@ -5,15 +5,17 @@
 ## Reading Order
 
 ### Core Patterns
-| # | File | Pattern |
-|---|------|---------|
-| 1 | [Sliding Window](01_Sliding_Window.md) | Fixed/variable window on arrays/strings |
-| 2 | [Code Templates](02_Code_Templates.md) | Copy-paste solution skeletons |
-| 3 | [Visual Diagrams](03_Visual_Diagrams.md) | See how patterns work visually |
-| 4 | [Pattern Recognition](04_Pattern_Recognition.md) | How to identify WHICH pattern to use |
-| 5 | [LeetCode ↔ RealWorld Map](05_LeetCode_RealWorld_Map.md) | Connect problems to real systems |
+
+| #   | File                                                     | Pattern                                 |
+| --- | -------------------------------------------------------- | --------------------------------------- |
+| 1   | [Sliding Window](01_Sliding_Window.md)                   | Fixed/variable window on arrays/strings |
+| 2   | [Code Templates](02_Code_Templates.md)                   | Copy-paste solution skeletons           |
+| 3   | [Visual Diagrams](03_Visual_Diagrams.md)                 | See how patterns work visually          |
+| 4   | [Pattern Recognition](04_Pattern_Recognition.md)         | How to identify WHICH pattern to use    |
+| 5   | [LeetCode ↔ RealWorld Map](05_LeetCode_RealWorld_Map.md) | Connect problems to real systems        |
 
 ### Combination Patterns (Pattern + Data Structure)
+
 | 6 | [Binary Search Patterns](06_Binary_Search_Patterns.md) | Search space reduction |
 | 7 | [Two Pointers](07_Two_Pointers_Complete.md) | Opposite/same direction pointers |
 | 8 | [Array + Two Pointers](08_Array_Plus_TwoPointers.md) | Array-specific pointer techniques |
@@ -36,4 +38,5 @@
 | 25 | [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) | Choose patterns from constraints, values, updates, weights |
 
 ---
+
 [← Back to Master Index](../00_MASTER_INDEX.md)

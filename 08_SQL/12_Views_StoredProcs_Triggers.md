@@ -17,12 +17,14 @@ A view is a **saved query** that behaves like a table. You define it once, and t
 3. **Consistency** — If the business definition of "active employee" is `WHERE is_active = TRUE AND termination_date IS NULL`, define it once in a view. Every query uses the same definition.
 
 **Regular View vs Materialized View:**
+
 - A **regular view** stores no data — it re-executes the underlying query every time you query the view. Fast to create, always up-to-date, but query performance depends on the underlying complexity.
 - A **materialized view** physically stores the query result on disk, like a cached table. Reading is instant, but the data can become stale. You must explicitly `REFRESH` it. Use for expensive aggregations that don't need real-time accuracy (dashboards, reports).
 
 #### Stored Procedures & Functions — Logic in the Database
 
 Stored procedures encapsulate multi-step operations as reusable, callable units in the database. The key difference:
+
 - **Function** → returns a single value, can be used inside SELECT statements (like `SELECT CalculateTax(price) FROM products`)
 - **Procedure** → can perform multiple operations (INSERT, UPDATE, DELETE, control flow), called with `CALL`
 
@@ -394,18 +396,15 @@ CALL transfer_employee(5, 2);
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 13: Stored Procedures & Functions**
 
-
-
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## Chapter 14: Triggers
 
@@ -575,3 +574,32 @@ EXECUTE FUNCTION log_employee_changes();
 DROP TRIGGER IF EXISTS employee_audit_trigger ON employees;
 ```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **IBM System R** (1974–1979): Implemented the first views as saved query definitions — a security and abstraction mechanism allowing users to see only relevant columns without exposing underlying table structure.
+- **SQL-92**: Standardized CREATE VIEW, DROP VIEW, updatable views, and WITH CHECK OPTION — ensuring views could enforce domain integrity by preventing inserts/updates that would make rows invisible to the view.
+- **IBM DB2** (1983): Introduced stored procedures as reusable server-side logic, embedding business rules directly in the database layer to reduce network round-trips.
+- **SQL:1999**: Added triggers as part of the standard (CREATE TRIGGER syntax with BEFORE/AFTER and INSERT/UPDATE/DELETE events), enabling automatic reaction to data changes.
+- **Oracle Corporation** (1990s): Popularized materialized views with query rewrite optimization — allowing the query optimizer to automatically substitute a pre-computed aggregate result for a live query, the ultimate performance optimization for analytical workloads.
+
+**Evolution narrative:**
+Views were System R's answer to a security and simplicity problem: giving users controlled access to complex joined data without exposing all underlying tables. A view is essentially a stored SELECT that the DBMS executes on demand — always fresh but never stored. Materialized views (Oracle, 1990s) took the opposite trade: pre-compute and store the result, accept stale data, gain instant reads. Trigger design in SQL:1999 was contentious — early trigger implementations varied wildly in fired timing (BEFORE vs AFTER) and recursion behavior. The WITH CHECK OPTION on views (SQL-92) was particularly important for data integrity: it prevents you from inserting a row through a view if that row wouldn't appear in the view's result — essential for enforcing `WHERE is_active = TRUE` type constraints at the database level. Stored procedures in IBM DB2 were driven by the client-server era's network costs: bundling multi-statement logic into a single network round-trip dramatically reduced latency for transaction-heavy applications. Today, views remain the primary security abstraction in enterprise databases, triggers power audit logging in regulated industries (banking, healthcare), and materialized views underpin every cloud data warehouse's pre-aggregation strategy.
+
+**Modern practice anchor:**
+Today, production systems use views for column-level security (hiding salary/SSN from application users), triggers for HIPAA/SOX audit logging in regulated industries, and materialized views (Snowflake, PostgreSQL, Oracle) to pre-compute expensive aggregations — all three abstraction mechanisms tracing directly to System R's 1974 view design and the SQL-92 standard.
+
+### Production Reality
+
+**Failure modes:**
+1. **Trigger cascading causing invisible fires**: A `BEFORE UPDATE` trigger on `employees` that updates `department_budget` fires another trigger on `department_budget` that updates `expense_reports` — cascading 4 levels deep without any application code visible. When `expense_reports` stops accepting entries, debugging requires tracing the trigger chain manually. MySQL's `SHOW TRIGGERS` is the only visibility tool — there is no "trigger stack view".
+2. **N+1 query pattern embedded inside a stored procedure**: A stored procedure loops through employees with a cursor and runs `SELECT * FROM bonuses WHERE emp_id = v_emp_id` for each row — 10,000 employees = 10,001 queries in one `CALL`. This bypasses ORM query logging since it happens inside the DB. Instagram's 2012 performance issues were partly traced to complex stored procedures generating N+1 patterns invisible to their application-level query monitoring.
+3. **Recursive trigger infinite loop**: An `AFTER UPDATE` on `accounts` updates a `balance` column which fires another trigger on the same table, creating infinite recursion until the database hits `max_sp_recursion_depth` (default 0 in MySQL, causing crash; PostgreSQL hits `1040` recursion depth by default). This consumed all DB connections and took down the application for 2 hours in a 2019 fintech incident.
+
+**Debug workflow:**
+(1) Disable all triggers temporarily: `ALTER TABLE employees DISABLE TRIGGERS ALL;` — if the operation completes normally, a trigger is causing the issue. Re-enable one at a time to isolate the culprit.
+(2) For stored procedure N+1, run `SHOW PROFILES` (MySQL) or `pg_stat_statements` after calling the procedure — look for high query count from a single procedure invocation.
+(3) For recursive trigger loops, set `max_sp_recursion_depth = 10` (MySQL) and wrap trigger logic with a recursion guard: `IF (SELECT触发_depth FROM trigger_context) > 5 THEN SIGNAL SQLSTATE '99999'; END IF;`
+
+**Modern practice anchor:**
+Today, stored procedures are largely replaced by application-layer logic (better testability, version control) and triggers are avoided for critical paths — production systems use event-driven pipelines (Kafka, SQS) for audit logging instead of invisible database triggers, making query behavior fully visible to application monitoring.

@@ -17,20 +17,20 @@ A hands-on compiler construction course covering the full pipeline from source t
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Language theory review: regular languages, context-free grammars, Chomsky hierarchy |
-| 2 | Lexical analysis: token streams, regex-based lexers, handling ambiguity and errors |
-| 3 | Parsing: recursive descent, LL(k), predictive parsing tables |
-| 4 | Bottom-up parsing: LR(0), SLR, LALR parsers and conflict resolution |
-| 5 | AST construction and visitor pattern for tree traversal |
-| 6 | Semantic analysis: symbol tables, scope chains, type systems |
-| 7 | Type checking: static typing, subtype rules, type inference (Hindley-Milner intro) |
-| 8 | Intermediate representation: 3-address code, control flow graphs |
-| 9 | Code generation: register allocation (graph coloring), JVM bytecode emission |
-| 10 | Optimization: constant propagation, dead code elimination, loop invariant code motion |
-| 11 | Advanced topics: SSA form, dataflow analysis, Just-In-Time compilation basics |
-| 12 | Capstone: complete compiler with code generation targeting a real virtual machine |
+| Week | Topic                                                                                 |
+| ---- | ------------------------------------------------------------------------------------- |
+| 1    | Language theory review: regular languages, context-free grammars, Chomsky hierarchy   |
+| 2    | Lexical analysis: token streams, regex-based lexers, handling ambiguity and errors    |
+| 3    | Parsing: recursive descent, LL(k), predictive parsing tables                          |
+| 4    | Bottom-up parsing: LR(0), SLR, LALR parsers and conflict resolution                   |
+| 5    | AST construction and visitor pattern for tree traversal                               |
+| 6    | Semantic analysis: symbol tables, scope chains, type systems                          |
+| 7    | Type checking: static typing, subtype rules, type inference (Hindley-Milner intro)    |
+| 8    | Intermediate representation: 3-address code, control flow graphs                      |
+| 9    | Code generation: register allocation (graph coloring), JVM bytecode emission          |
+| 10   | Optimization: constant propagation, dead code elimination, loop invariant code motion |
+| 11   | Advanced topics: SSA form, dataflow analysis, Just-In-Time compilation basics         |
+| 12   | Capstone: complete compiler with code generation targeting a real virtual machine     |
 
 ## Linked Existing Content
 

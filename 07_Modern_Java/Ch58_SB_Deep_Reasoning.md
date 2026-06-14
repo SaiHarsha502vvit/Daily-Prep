@@ -26,6 +26,7 @@
 ## 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard
 
 ### The Freeze Question
+
 "What's the difference between a DispatcherServlet and a Filter?"
 
 **This is the question the user explicitly said people freeze on.**
@@ -66,7 +67,6 @@ DISPATCHER SERVLET = The receptionist inside the building
 → Only ONE DispatcherServlet (front controller pattern)
 → Handles: URL mapping, argument binding, exception handling
 ```
-
 
 ```java
 // FILTER: Runs at Servlet container level, wraps the entire request
@@ -109,6 +109,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 ```
 
 ### Complete Request Flow:
+
 ```
 Client → Tomcat → Filter1 → Filter2 → Filter3
   → DispatcherServlet
@@ -120,20 +121,18 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
   → Filter3 → Filter2 → Filter1 → Tomcat → Client
 ```
 
-
 ### When To Use What:
-| Use Case | Use |
-|----------|-----|
-| Logging, CORS, compression | Filter |
-| Authentication/Authorization | Filter (Spring Security) |
-| Rate limiting, request modification | Filter |
-| Audit logging with Spring context | Interceptor |
-| Controller-specific pre/post logic | Interceptor |
-| Business logic, API endpoints | Controller |
+
+| Use Case                            | Use                      |
+| ----------------------------------- | ------------------------ |
+| Logging, CORS, compression          | Filter                   |
+| Authentication/Authorization        | Filter (Spring Security) |
+| Rate limiting, request modification | Filter                   |
+| Audit logging with Spring context   | Interceptor              |
+| Controller-specific pre/post logic  | Interceptor              |
+| Business logic, API endpoints       | Controller               |
 
 ---
-
-
 
 🔬 **Section Challenge — 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard**
 
@@ -147,12 +146,13 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
 <details><summary>Answer</summary>
 
 JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-</details>
 
+</details>
 
 ## 2. What @SpringBootApplication Actually Does
 
 ### The Freeze Question
+
 "What does @SpringBootApplication do? Could you build a Spring Boot app without it?"
 
 ```
@@ -180,7 +180,6 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // These two are IDENTICAL:
 @SpringBootApplication
@@ -202,8 +201,6 @@ public class MyApp { ... }
 
 ---
 
-
-
 🔬 **Section Challenge — 2. What @SpringBootApplication Actually Does**
 
 **Challenge 1 (@SpringBootApplication Removal):** Your team disables `@SpringBootApplication` and splits its three constituent annotations. They set `@ComponentScan(basePackages="com.app.api")` but forget `@EnableAutoConfiguration`. **Who** fails to load? **When** does the failure surface? **What** is the minimum set of annotations to get a working embedded Tomcat with Spring MVC?
@@ -216,12 +213,13 @@ public class MyApp { ... }
 <details><summary>Answer</summary>
 
 Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-</details>
 
+</details>
 
 ## 3. Auto-Configuration: How Spring "Magically" Knows What You Need
 
 ### The Freeze Question
+
 "How does Spring Boot know to configure a DataSource without you configuring it?"
 
 ```
@@ -253,7 +251,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ║  It's not magic — it's conditional bean registration.            ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Simplified auto-config class:
@@ -290,8 +287,6 @@ public class MyConfig {
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Auto-Configuration: How Spring "Magically" Knows What You Need**
 
 **Challenge 1 (Negative Match Debug):** Your Spring Boot app has `spring-boot-starter-data-jpa` but no `spring.datasource.url`. The app fails to start. **Who** is the auto-configuration trying to create? **When** would `debug=true` show this? **What** two properties fix it without providing a real DB?
@@ -304,12 +299,13 @@ public class MyConfig {
 <details><summary>Answer</summary>
 
 Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-</details>
 
+</details>
 
 ## 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls
 
 ### The Freeze Question
+
 "I put @Transactional on a method but it doesn't create a transaction. Why?"
 
 ```
@@ -331,7 +327,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ║  you don't go through the door (proxy) again.                    ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 @Service
@@ -380,8 +375,6 @@ public class NotificationService {
 
 ---
 
-
-
 🔬 **Section Challenge — 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls**
 
 **Challenge 1 (Private Method Gotcha):** You add `@Transactional` to a `private` method. **Who** silently ignores it? **When** does data written in that method get committed or rolled back? **What** is the Spring documentation's stated reason?
@@ -394,12 +387,13 @@ public class NotificationService {
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## 5. Bean Lifecycle: What Happens Between `new` and "Ready"
 
 ### The Freeze Question
+
 "What's the Spring Bean lifecycle?"
 
 ```
@@ -422,7 +416,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ║  PRACTICAL: You usually only need @PostConstruct/@PreDestroy     ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 @Service
@@ -449,6 +442,7 @@ public class CacheService {
 ## 6. IoC & DI: Not Just "Injection" — The Inversion Explained
 
 ### The Freeze Question
+
 "What is Inversion of Control? What's being inverted?"
 
 ```
@@ -479,7 +473,6 @@ public class CacheService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // WITHOUT IoC: You create everything (tightly coupled)
 public class OrderService {
@@ -505,8 +498,6 @@ public class OrderService {
 
 ---
 
-
-
 🔬 **Section Challenge — 6. IoC & DI: Not Just "Injection" — The Inversion Explained**
 
 **Challenge 1 (Tight Coupling Test Pain):** Without IoC, `OrderService` does `new StripeProcessor()` internally. **Who** makes testing impossible without a real Stripe API? **When** does tight coupling cause a unit test to become an integration test? **What** specific Java limitation prevents mocking `new` expressions?
@@ -519,12 +510,13 @@ public class OrderService {
 <details><summary>Answer</summary>
 
 Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-</details>
 
+</details>
 
 ## 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor
 
 ### The Freeze Question
+
 "What's wrong with @Autowired on fields?"
 
 ```
@@ -554,7 +546,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // ❌ Field injection — tests need reflection or Spring context
 @Service
@@ -580,8 +571,6 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 
 ---
 
-
-
 🔬 **Section Challenge — 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor**
 
 **Challenge 1 (Immutability & Circular Dependency):** Constructor injection enforces `final` fields. **Who** prevents circular constructor dependencies from compiling? **When** does immutability in a Spring bean matter for thread safety? **What** happens to `final` field visibility across threads without `volatile`?
@@ -594,12 +583,13 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 <details><summary>Answer</summary>
 
 Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-</details>
 
+</details>
 
 ## 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks
 
 ### The Freeze Question
+
 "I defined a prototype bean but it's acting like a singleton. Why?"
 
 ```
@@ -625,7 +615,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ║  holder only gets filled once (at singleton creation).           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // ❌ BROKEN: Prototype injected into Singleton
@@ -659,8 +648,6 @@ public class ShoppingCart { ... }
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks**
 
 **Challenge 1 (Request-Scoped Prototype):** You need a fresh `RequestContext` bean per HTTP request (not per class injection). **Who** fails with `@Scope("prototype")` injected into a singleton? **What** scope is correct? **When** does Spring's `request` scope fail outside a web context?
@@ -673,12 +660,13 @@ public class ShoppingCart { ... }
 <details><summary>Answer</summary>
 
 `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-</details>
 
+</details>
 
 ## 9. @Controller vs @RestController: Not Just "Adds @ResponseBody"
 
 ### The Freeze Question
+
 "What's the actual difference?"
 
 ```
@@ -710,12 +698,12 @@ public class ShoppingCart { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 ## 10. Spring Security Filter Chain: How Authentication Actually Works
 
 ### The Freeze Question
+
 "How does Spring Security authenticate a request?"
 
 ```
@@ -750,10 +738,7 @@ public class ShoppingCart { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 10. Spring Security Filter Chain: How Authentication Actually Works**
 
@@ -767,12 +752,13 @@ public class ShoppingCart { ... }
 <details><summary>Answer</summary>
 
 JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-</details>
 
+</details>
 
 ## 11. Profiles & Conditional Beans: How Spring Switches Environments
 
 ### The Freeze Question
+
 "How do you configure different settings for dev, staging, and production?"
 
 ```java
@@ -815,8 +801,6 @@ public class StorageConfig {
 
 ---
 
-
-
 🔬 **Section Challenge — 11. Profiles & Conditional Beans: How Spring Switches Environments**
 
 **Challenge 1 (Property Resolution Order):** `application.yml` sets `app.timeout=30`. `application-prod.yml` sets `app.timeout=60`. You also pass `--app.timeout=90` on the command line. **Who** wins? **What** is Spring's property source priority order? **When** does `@Value` vs `@ConfigurationProperties` behave differently under profile activation?
@@ -829,12 +813,13 @@ public class StorageConfig {
 <details><summary>Answer</summary>
 
 Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
-</details>
 
+</details>
 
 ## 12. Why @Async Doesn't Work Without @EnableAsync
 
 ### The Freeze Question
+
 "I added @Async but the method still runs synchronously."
 
 ```
@@ -856,7 +841,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ║     → ALWAYS configure a proper ThreadPoolTaskExecutor           ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 @Configuration
@@ -887,8 +871,6 @@ public class EmailService {
 
 ---
 
-
-
 🔬 **Section Challenge — 12. Why @Async Doesn't Work Without @EnableAsync**
 
 **Challenge 1 (@Async Thread Pool Exhaustion):** Your `@Async` service uses the default `SimpleAsyncTaskExecutor`. Under load, 500 concurrent requests hit an async endpoint. **Who** creates 500 threads? **When** does this cause OOM? **What** is the correct `ThreadPoolTaskExecutor` configuration for a bounded async pool?
@@ -899,24 +881,22 @@ public class EmailService {
 
 </details>
 
-
 ## Interview Quick-Fire: Spring Boot Freeze Busters
 
-| Freeze Question | Senior-Level Answer |
-|----------------|-------------------|
-| "What is a Servlet?" | A Java interface for handling HTTP requests. Tomcat is the Servlet Container that manages servlet lifecycle. DispatcherServlet is Spring's single servlet that delegates to controllers. |
+| Freeze Question                                 | Senior-Level Answer                                                                                                                                                                            |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "What is a Servlet?"                            | A Java interface for handling HTTP requests. Tomcat is the Servlet Container that manages servlet lifecycle. DispatcherServlet is Spring's single servlet that delegates to controllers.       |
 | "What's @Component vs @Service vs @Repository?" | Functionally identical — all register as beans. @Service and @Repository are semantic markers. @Repository adds automatic exception translation (SQL exceptions → Spring DataAccessException). |
-| "What is Spring Boot Starter?" | A curated set of dependencies. `spring-boot-starter-web` includes Tomcat + Spring MVC + Jackson + Validation. You add ONE dependency instead of configuring 15. |
-| "What's the embedded server?" | Spring Boot packages Tomcat/Jetty/Undertow INSIDE your jar. No external server needed. Run `java -jar app.jar` → Tomcat starts on port 8080. Production-ready out of the box. |
-| "How does Spring Boot handle errors?" | BasicErrorController catches unhandled exceptions. Returns JSON for REST (Accept: application/json) or HTML error page (browser). Customize with @ControllerAdvice + @ExceptionHandler. |
-| "What's Actuator?" | Production monitoring endpoints: /health, /metrics, /info, /env. Shows bean definitions, HTTP traces, thread dumps. Secure them in production! |
+| "What is Spring Boot Starter?"                  | A curated set of dependencies. `spring-boot-starter-web` includes Tomcat + Spring MVC + Jackson + Validation. You add ONE dependency instead of configuring 15.                                |
+| "What's the embedded server?"                   | Spring Boot packages Tomcat/Jetty/Undertow INSIDE your jar. No external server needed. Run `java -jar app.jar` → Tomcat starts on port 8080. Production-ready out of the box.                  |
+| "How does Spring Boot handle errors?"           | BasicErrorController catches unhandled exceptions. Returns JSON for REST (Accept: application/json) or HTML error page (browser). Customize with @ControllerAdvice + @ExceptionHandler.        |
+| "What's Actuator?"                              | Production monitoring endpoints: /health, /metrics, /info, /env. Shows bean definitions, HTTP traces, thread dumps. Secure them in production!                                                 |
 
 ---
 
 ← Previous: [Chapter 31 — Java Deep Reasoning](Ch22_Java_Deep_Reasoning.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [DSA Deep Reasoning →](../03_Algorithms/16_DSA_Deep_Reasoning.md)
-
 
 ---
 

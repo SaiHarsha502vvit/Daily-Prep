@@ -7,16 +7,16 @@
 
 ## 📋 Theory Topics
 
-| # | Topic | Why It Matters |
-|---|-------|---------------|
-| T1 | B-Tree Internals & Math | Explains index design, fragmentation, covering indexes |
-| T2 | MVCC: How PostgreSQL Reads Without Locking | Explains snapshot isolation, VACUUM, bloat |
-| T3 | Lock Hierarchy & Escalation | Explains deadlocks, ALTER TABLE blocks, lock timeouts |
-| T4 | Query Optimizer Decision Making | Explains why the DB sometimes ignores your index |
-| T5 | WAL (Write-Ahead Log) | Explains crash recovery, replication, why commits are durable |
-| T6 | Buffer Pool & Memory | Explains cache hits, cold starts, why SSDs transformed databases |
-| T7 | Transaction Log & Undo/Redo | How atomicity and durability actually work under the hood |
-| T8 | Hash Join vs Nested Loop vs Merge Join | Read execution plans like a senior engineer |
+| #   | Topic                                      | Why It Matters                                                   |
+| --- | ------------------------------------------ | ---------------------------------------------------------------- |
+| T1  | B-Tree Internals & Math                    | Explains index design, fragmentation, covering indexes           |
+| T2  | MVCC: How PostgreSQL Reads Without Locking | Explains snapshot isolation, VACUUM, bloat                       |
+| T3  | Lock Hierarchy & Escalation                | Explains deadlocks, ALTER TABLE blocks, lock timeouts            |
+| T4  | Query Optimizer Decision Making            | Explains why the DB sometimes ignores your index                 |
+| T5  | WAL (Write-Ahead Log)                      | Explains crash recovery, replication, why commits are durable    |
+| T6  | Buffer Pool & Memory                       | Explains cache hits, cold starts, why SSDs transformed databases |
+| T7  | Transaction Log & Undo/Redo                | How atomicity and durability actually work under the hood        |
+| T8  | Hash Join vs Nested Loop vs Merge Join     | Read execution plans like a senior engineer                      |
 
 ---
 
@@ -66,7 +66,7 @@ flowchart TD
         L1A["Internal Page<br/>(8KB)"]
         L1B["Internal Page<br/>(8KB)"]
         L1C["Internal Page<br/>(8KB)"]
-        
+
         ROOT -->|Pointer 1| L1A
         ROOT -->|Pointer 2| L1B
         ROOT -->|Pointer 583| L1C
@@ -76,11 +76,11 @@ flowchart TD
         L2A["Leaf Page<br/>(8KB = 400 Rows)"]
         L2B["Leaf Page<br/>(8KB)"]
         L2C["Leaf Page<br/>(8KB)"]
-        
+
         L1A -->|1 Disk I/O| L2A
         L1A -->|1 Disk I/O| L2B
         L1C -->|1 Disk I/O| L2C
-        
+
         L2A <-->|Doubly-Linked| L2B
         L2B <-->|Doubly-Linked| L2C
     end
@@ -134,15 +134,12 @@ Query: WHERE country = 'USA' AND zipcode = '10001' → PARTIAL
 RULE: B-Tree can use columns left-to-right until it hits a gap or range condition.
   (country = 'USA' AND city = 'NYC' AND zipcode > '10000')
    ↑ used             ↑ used            ↑ used (rightmost, range)
-  
+
   (country = 'USA' AND zipcode = '10001')
    ↑ used             ↑ NOT used (city gap!)
 ```
 
 ---
-
-
-
 
 ## T2: MVCC — How PostgreSQL Reads Without Locking
 
@@ -227,9 +224,6 @@ Key difference:
 
 ---
 
-
-
-
 ## T3: Lock Hierarchy & Escalation
 
 ### PostgreSQL Lock Types (Simplified)
@@ -285,22 +279,23 @@ COMMIT;
 
 ---
 
-
-
 🔬 **Section Challenge — T3: Lock Hierarchy & Escalation**
 
 **Challenge 1 (Reasoning):** Why can one huge `UPDATE` hold far more locks, block more sessions, and create worse rollback risk than the same work in small committed batches?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Locks live until the transaction commits or rolls back. A large update expands the lock footprint, increases undo/redo pressure, and can trigger escalation or long waits. Batching shortens lock lifetime, limits rollback size, and gives other transactions chances to progress between commits.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** A nightly job updates millions of rows during peak traffic in one transaction. Users report timeouts. Name the likely lock problem and two fixes.
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 The job is probably holding many row/page/table locks for too long, blocking interactive writes and sometimes reads depending on isolation level. Fix by batching by primary-key ranges, running off-peak, narrowing predicates with usable indexes, and committing between chunks. For critical systems, also add progress checkpoints and retry-safe idempotency.
-</details>
 
+</details>
 
 ## T4: Query Optimizer — Why It Sometimes Ignores Your Index
 
@@ -327,7 +322,7 @@ Plan B: Index Scan
   + Heap lookups: 200,000 × random_page_cost = 200,000 × 4.0 = 800,000
   = Total cost: 800,016
 
-The optimizer CORRECTLY chooses Seq Scan because reading 20% of rows 
+The optimizer CORRECTLY chooses Seq Scan because reading 20% of rows
 via random I/O is MORE expensive than reading the entire table sequentially.
 
 RULE OF THUMB:
@@ -382,7 +377,7 @@ RULE: Before modifying ANY data page, first write the change to a sequential log
 COMMIT SEQUENCE:
 1. Write changes to WAL buffer (in memory)
 2. fsync WAL to disk (DURABLE — survives crash)
-3. Return "COMMIT OK" to application 
+3. Return "COMMIT OK" to application
 4. Write actual data pages to disk (sometime later — asynchronous)
 
 If crash happens between step 2 and 4:
@@ -405,12 +400,12 @@ sequenceDiagram
     APP->>BUF: UPDATE users SET name='Bob'
     Note over BUF: Page marked "Dirty"
     APP->>WAL: Write WAL Record (Txn 200)
-    
+
     APP->>DISK: COMMIT (fsync WAL to disk)
     DISK-->>APP: "COMMIT OK" (Durability Guaranteed)
-    
+
     Note over APP, DATA: --- SERVER CRASH ---
-    
+
     Note over WAL, DATA: Restart Recovery
     DISK->>BUF: Read WAL from Checkpoint
     BUF->>DATA: Replay Changes (Flush Dirty Pages)
@@ -434,7 +429,7 @@ PRIMARY                              REPLICA
   ├─ Write WAL ──── send WAL ────────→ Apply WAL
   ├─ Write WAL ──── send WAL ────────→ Apply WAL
   │                                    │
-  
+
 Synchronous replication:
   Primary waits until replica confirms WAL received → zero data loss
   Trade-off: higher latency (network round-trip per commit)
@@ -485,21 +480,21 @@ flowchart TD
     subgraph APP ["Application"]
         Q["Query Execution"]
     end
-    
+
     subgraph RAM ["Memory (Shared Buffers)"]
         HOT["Pg 1 (Hot)"]
         WARM["Pg 5 (Warm)"]
         COLD["Pg 12 (Cold)"]
-        
+
         Q -->|Buffer Hit: 0.001ms| HOT
     end
-    
+
     subgraph OS_CACHE ["OS Page Cache"]
         OC["Cached Disk Pages"]
         Q -->|OS Cache Hit: 0.01ms| OC
         COLD -.->|Evicted via Clock-Sweep| OC
     end
-    
+
     subgraph DISK ["Physical Storage (SSD/HDD)"]
         DATA["Base Data Pages"]
         Q -->|Buffer Miss: 0.1ms - 5ms| DATA
@@ -530,22 +525,23 @@ SIZING:
 
 ---
 
-
-
 🔬 **Section Challenge — T6: Buffer Pool & Memory**
 
 **Challenge 1 (Reasoning):** Buffer cache hit ratio is 99.5%, but p95 latency is still high. Why can a high hit ratio be misleading?
+
 <details><summary>Answer</summary>
 
 A high hit ratio means most page reads are served from memory, but it says nothing about CPU-heavy plans, lock waits, sort/hash spill, connection pool waits, or a small number of expensive disk reads on critical requests. It can also hide that one endpoint scans many cached pages and burns CPU. Pair hit ratio with `EXPLAIN ANALYZE`, wait events, temp file/spill metrics, lock metrics, and query latency percentiles.
+
 </details>
 
 **Challenge 2 (Design):** Why is "increase shared_buffers" not always the best answer when disk reads are high?
+
 <details><summary>Answer</summary>
 
 More buffer memory helps only if the workload has reusable pages and the host has memory headroom. If the real issue is missing indexes, bad join order, sequential scans, or one-time analytics queries, a larger cache just stores waste. It may also starve the OS page cache or increase checkpoint pressure. First reduce pages read per query; then size memory for the remaining working set.
-</details>
 
+</details>
 
 ## T7: Transaction Internals — Undo/Redo
 
@@ -588,16 +584,15 @@ THE COMMIT DANCE:
 
 ---
 
-
-
 🔬 **Section Challenge — T7: Transaction Internals — Undo/Redo**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## T8: Join Algorithms — Reading Execution Plans Like a Senior
 
@@ -614,7 +609,7 @@ The database optimizer chooses between three join strategies:
    Complexity: O(n × m)  (but with index on inner table: O(n × log m))
    Best for: Small outer table + indexed inner table
    Example: Customer (1 row) JOIN Orders (indexed by customer_id)
-   
+
    EXPLAIN output:
    Nested Loop
      → Index Scan on customers  (1 row)
@@ -627,12 +622,12 @@ The database optimizer chooses between three join strategies:
    Complexity: O(n + m)  — linear!
    Best for: Large tables without useful indexes
    Memory: Needs hash table in memory (work_mem setting)
-   
+
    EXPLAIN output:
    Hash Join
      → Hash (build side: customers, 10K rows)
      → Seq Scan on orders (probe side: 1M rows)
-   
+
    WARNING: If hash table doesn't fit in work_mem → spills to disk → SLOW
 
 3. MERGE JOIN (Sort-Merge Join)
@@ -641,7 +636,7 @@ The database optimizer chooses between three join strategies:
 
    Complexity: O(n log n + m log m) for sort, then O(n + m) for merge
    Best for: Both tables already sorted (by index) + large result
-   
+
    EXPLAIN output:
    Merge Join
      → Index Scan on customers (already sorted by id)
@@ -670,11 +665,11 @@ WHERE c.country = 'Japan'
 -- RESULT:
 Nested Loop  (cost=0.87..125.34 rows=15 width=52) (actual time=0.055..0.234 rows=12 loops=1)
   Buffers: shared hit=48
-  ->  Index Scan using idx_customers_country on customers c  (cost=0.43..8.45 rows=3 width=36) 
+  ->  Index Scan using idx_customers_country on customers c  (cost=0.43..8.45 rows=3 width=36)
                                                               (actual time=0.023..0.028 rows=3 loops=1)
         Index Cond: (country = 'Japan')
         Buffers: shared hit=4
-  ->  Index Scan using idx_orders_customer_date on orders o  (cost=0.44..38.92 rows=5 width=24) 
+  ->  Index Scan using idx_orders_customer_date on orders o  (cost=0.44..38.92 rows=5 width=24)
                                                               (actual time=0.008..0.062 rows=4 loops=3)
         Index Cond: ((customer_id = c.id) AND (created_at > '2025-01-01'))
         Buffers: shared hit=44
@@ -696,8 +691,6 @@ RED FLAGS in execution plans:
 
 ---
 
-
-
 🔬 **Section Challenge — T8: Join Algorithms — Reading Execution Plans Like a Senior**
 
 **Challenge 1 (Debug — Who/When/What):** You see `Hash Join (cost=45000 rows=5M)` in EXPLAIN. At 2AM, the query starts returning a disk spill warning. **Who** is spilling? **When** does a Hash Join fall back to disk? **What** are the tuning knobs?
@@ -708,21 +701,46 @@ RED FLAGS in execution plans:
 
 </details>
 
-
 ## 🎓 Theory Quick-Reference Card for Interviews
 
-| Concept | One-Line Explanation | Impress With |
-|---------|---------------------|--------------|
-| B-Tree depth | 100M rows = 3-4 levels = 3-4 page reads | "Fan-out of ~500 per page keeps trees shallow" |
-| MVCC | Old row versions, each txn sees its own snapshot | "Readers never block writers — that's why we need VACUUM" |
-| WAL | Sequential log written before data pages | "Durability with sequential I/O — 100x faster than random writes" |
-| Buffer pool | RAM cache of disk pages, 99%+ hit rate goal | "If hit ratio drops below 99%, we're I/O bound" |
-| Lock queue | FIFO — ALTER TABLE blocks everyone behind it | "That's why we set lock_timeout before DDL statements" |
-| Hash join | Build hash table on small side, probe with large | "O(n+m) but needs work_mem for the hash table" |
-| Composite index | Left-to-right until gap or range | "Equality columns first, range last — the ERS rule" |
-| Statistics | Optimizer decisions based on pg_statistics | "Stale stats → bad plans. ANALYZE refreshes them" |
-| Checkpoint | Flushes dirty pages, advances WAL recovery point | "Spacing checkpoints reduces I/O spikes but increases recovery time" |
+| Concept         | One-Line Explanation                             | Impress With                                                         |
+| --------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
+| B-Tree depth    | 100M rows = 3-4 levels = 3-4 page reads          | "Fan-out of ~500 per page keeps trees shallow"                       |
+| MVCC            | Old row versions, each txn sees its own snapshot | "Readers never block writers — that's why we need VACUUM"            |
+| WAL             | Sequential log written before data pages         | "Durability with sequential I/O — 100x faster than random writes"    |
+| Buffer pool     | RAM cache of disk pages, 99%+ hit rate goal      | "If hit ratio drops below 99%, we're I/O bound"                      |
+| Lock queue      | FIFO — ALTER TABLE blocks everyone behind it     | "That's why we set lock_timeout before DDL statements"               |
+| Hash join       | Build hash table on small side, probe with large | "O(n+m) but needs work_mem for the hash table"                       |
+| Composite index | Left-to-right until gap or range                 | "Equality columns first, range last — the ERS rule"                  |
+| Statistics      | Optimizer decisions based on pg_statistics       | "Stale stats → bad plans. ANALYZE refreshes them"                    |
+| Checkpoint      | Flushes dirty pages, advances WAL recovery point | "Spacing checkpoints reduces I/O spikes but increases recovery time" |
 
 ---
 
 [⬅ Previous: 46_Interview_Scenarios_Part3](46_Interview_Scenarios_Explained_Part3.md) | [📚 Index](00_INDEX.md) | [Next: 48_Problem_Variants_Bank ➡](48_Problem_Variants_Bank.md)
+
+### Historical Evolution (Extended)
+
+**Additional predecessors:**
+- **Rudolf Bayer & Ed McCreight (1972)**: Invented the B-tree at Boeing — optimized for disk I/O with high fan-out (hundreds of keys per node), enabling shallow trees even for billions of rows
+- **David Reed (1978)**: MIT paper introducing MVCC — the insight that maintaining multiple row versions eliminates read locks entirely, enabling PostgreSQL's concurrent-read/writing architecture
+- **Edgar F. Codd (1985)**: "Is Your DBMS Really Relational?" and the 12 Rules — formal definition of what a relational database must do; rule 0: all data represented as tables
+- **Michael Stonebraker (1986)**:POSTGRES project at UC Berkeley — introduced user-defined types, triggers, and rules; the ancestor of modern PostgreSQL (1996 open-source fork)
+
+**Brief evolution note:**
+Database theory crystallized in the 1970s-1980s around the relational model (Codd), SQL language (Chamberlin & Boyce at IBM 1974), B-tree storage (Bayer & McCreight), and MVCC concurrency (Reed). Stonebraker's Postgres added extensibility. Gray's transaction work (1981) formalized ACID. These foundational papers are why modern databases behave as they do — the trade-offs in MVCC (dead tuple bloat needing VACUUM), B-tree page splits (fillfactor tuning), and WAL sequential writes (durability with minimal random I/O) are all direct consequences of these 1970s design decisions.
+
+### Production Reality
+
+**Failure modes:**
+1. **VACUUM bloat causing 10x table size**: Table with 100M rows has 80M dead tuples — table size inflates from 10GB to 85GB, index scans slow 5x as more pages loaded, disk I/O spikes to 80%
+2. **WAL disk full**: Heavy UPDATE workload fills WAL volume (500GB allocated) — Postgres stalls at checkpoint, database goes read-only, writes halt until WAL is recycled
+3. **B-Tree fragmentation from random inserts**: High-concurrency insert workload on indexed column — page fillfactor 70% causes 30% of inserts to split pages, index size 40% larger, query latency doubles
+
+**Debug workflow:**
+1. Run `VACUUM VERBOSE` on affected table — check for "found 0 removable row versions" indicating table was not vacuumed recently
+2. Query dead tuple accumulation: `SELECT relname, n_dead_tup, n_live_tup, last_autovacuum FROM pg_stat_user_tables WHERE n_dead_tup > 10000 ORDER BY n_dead_tup DESC`
+3. Check WAL usage: `SELECT pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn) AS replication_lag, pg_wal_location_name(pg_current_wal_lsn()) AS current_lsn`
+
+**Modern practice anchor:**
+Database internals knowledge translates directly to production debugging — understanding VACUUM, WAL, and B-Tree behavior separates运维 from development engineers.

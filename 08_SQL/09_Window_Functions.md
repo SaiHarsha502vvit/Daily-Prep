@@ -48,7 +48,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Ranking Functions
 
 ```sql
@@ -346,28 +345,30 @@ WINDOW w AS (PARTITION BY dept_id ORDER BY salary DESC);
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 9: Window Functions**
 
 **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+
 </details>
 
 > [!NOTE]
 > **Open Source Reference: Window Aggregation Engine**
-> * [postgres/nodeWindowAgg.c](https://github.com/postgres/postgres/blob/master/src/backend/executor/nodeWindowAgg.c) -> **Invariant:** The executor groups tuples into partitions, caching them in a `tuplestore`. It evaluates window functions over the defined frame boundaries without reducing the input row count.
-> * **Local rewrite:** While `GROUP BY` routes tuples to an aggregator that emits a single result row per group (destroying base row visibility), the `WindowAgg` node buffers the partition, evaluates the aggregate or ranking function, and emits the result appended to *every* original row.
-> * **Constraint warning:** Because it requires sorting and buffering (often spilling to disk if `work_mem` is exceeded), window functions are expensive on large partitions. Always define the narrowest `PARTITION BY` possible and filter with `WHERE` *before* the window function runs.
+>
+> - [postgres/nodeWindowAgg.c](https://github.com/postgres/postgres/blob/master/src/backend/executor/nodeWindowAgg.c) -> **Invariant:** The executor groups tuples into partitions, caching them in a `tuplestore`. It evaluates window functions over the defined frame boundaries without reducing the input row count.
+> - **Local rewrite:** While `GROUP BY` routes tuples to an aggregator that emits a single result row per group (destroying base row visibility), the `WindowAgg` node buffers the partition, evaluates the aggregate or ranking function, and emits the result appended to _every_ original row.
+> - **Constraint warning:** Because it requires sorting and buffering (often spilling to disk if `work_mem` is exceeded), window functions are expensive on large partitions. Always define the narrowest `PARTITION BY` possible and filter with `WHERE` _before_ the window function runs.
 
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 📝 PRACTICE EXERCISES - PART 2
 
@@ -548,7 +549,9 @@ _"Part 2 Complete! You now understand Aggregates, GROUP BY, JOINs, Subqueries, C
 ---
 
 # ═══════════════════════════════════════════════════════════════════
+
 # MERGED FROM: 02_SQL_Data_Analysis.md (WHY-HOW Framework Edition)
+
 # ═══════════════════════════════════════════════════════════════════
 
 # 📊 SQL FOR DATA ANALYSIS - Complete Guide
@@ -595,7 +598,6 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 └── Funnel analysis
 
 ```
-
 
 ---
 
@@ -658,7 +660,6 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Visual: All JOIN Types
 
@@ -929,8 +930,6 @@ WHERE c.customer_id IN (
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 1: Understanding JOINs**
 
 **Challenge 1 (Bug Hunt — Who/When/What):** `SELECT * FROM orders o LEFT JOIN customers c ON o.customer_id = c.id WHERE c.country = 'US'`. **Who** gets excluded? **When** does a LEFT JOIN silently become an INNER JOIN? **What** is the fix?
@@ -948,7 +947,6 @@ WHERE c.customer_id IN (
 **`customers LEFT JOIN orders`:** ALL customers preserved, even those with no orders. Orders without a customer are excluded. Use when: "show me all customers, even inactive ones." **`orders LEFT JOIN customers`:** ALL orders preserved, even orphan orders with no customer. Customers with no orders are excluded. Use when: "show me all orders, flag which ones have a missing customer." **Need both sides?** `FULL OUTER JOIN` (PostgreSQL, SQL Server). In MySQL: `LEFT JOIN UNION RIGHT JOIN`. Or use a proper data integrity constraint (FK) to prevent orphan orders in the first place.
 
 </details>
-
 
 # 📌 Part 2: Aggregate Functions & Group By
 
@@ -993,7 +991,6 @@ WHERE c.customer_id IN (
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: Complete Aggregation Guide
 
@@ -1159,9 +1156,6 @@ GROUP BY o.order_id, o.order_date;
 
 ---
 
-
-
-
 # 🚀 Part 3: Window Functions — Advanced Analytics
 
 ---
@@ -1228,7 +1222,6 @@ GROUP BY o.order_id, o.order_date;
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: Window Functions Complete Guide
 
@@ -1498,7 +1491,6 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: CTE Patterns
 
@@ -1944,12 +1936,25 @@ FROM orders;
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 **NEXT: 03_SQL_RealWorld_Incidents.md - Production SQL Stories and Lessons**
 
-
 ---
 
 > **Navigation**: [< Previous](08_Subqueries_CTEs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Normalization.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **SQL:1999**: Introduced window functions (OVER clause, PARTITION BY, ROWS/RANGE frames, FIRST_VALUE, LAST_VALUE, LEAD, LAG) as a core language feature — the most significant SQL enhancement since SQL-92.
+- **SQL:2003**: Added ranking window functions (ROW_NUMBER, RANK, DENSE_RANK, NTILE, PERCENT_RANK, CUME_DIST) completing the window function catalog.
+- **PostgreSQL 8.4** (2009): First major open-source database to implement full window function support, bringing analytical SQL to the developer mainstream.
+- **MySQL 8.0** (2018): Added window functions after a decade of community demand — prior to this, MySQL lacked them entirely, driving many developers to PostgreSQL for analytics work.
+- **ISO/IEC 9075-2:2003**: Standardized window function frame clauses (ROWS BETWEEN, RANGE BETWEEN), enabling precise control over running totals and moving averages.
+
+**Evolution narrative:**
+Window functions were the missing piece between GROUP BY (which collapses rows) and raw SELECT (which doesn't support ranking/running calculations). Before SQL:1999, computing a running total required a correlated subquery or self-join — O(n^2) performance — and ranking required complex CASE expressions over GROUP BY results. SQL:1999's window model was elegant: the OVER clause defined a "window" of rows relative to the current row, and aggregate functions naturally extended to windowed execution. The key insight was framing: SUM() OVER (ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) gave developers running totals without any subquery. PostgreSQL's 2009 implementation made this accessible to the open-source world; MySQL's 2018 addition finally standardized window functions across all major open-source databases, eliminating the "use PostgreSQL for analytics" migration pattern.
+
+**Modern practice anchor:**
+Today, window functions appear in virtually every SQL analytics interview and production analytics pipeline — ROW_NUMBER() for deduplication, LAG/LEAD for period-over-period analysis, and SUM() OVER() for running totals are workhorses in every data analyst's toolkit, all directly inherited from SQL:1999.

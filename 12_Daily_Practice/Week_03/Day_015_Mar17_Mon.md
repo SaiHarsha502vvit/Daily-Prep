@@ -27,18 +27,18 @@
 > | **ALGO: DFS (Preorder, Inorder, Postorder)** | [Graph Fundamentals](../../03_Algorithms/05c_Graphs_Fundamentals.md) |
 > | **SQL: UNION, UNION ALL, CASE WHEN** | [SQL: Subqueries & CTEs](../../08_SQL/08_Subqueries_CTEs.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## 1. DS DEEP DIVE: Binary Tree (30 min)
 
 ### WHY?
+
 Every hierarchical structure in computing is a tree: file systems, DOM, organization charts, JSON, XML, database indexes (B-Trees). Trees are the bridge between linear structures (arrays, lists) and complex networks (graphs). If you only learn one non-linear data structure deeply, it should be the binary tree.
 
 ### 📌 What?
+
 A **binary tree** is a tree where each node has at most **two children** (left, right).
 
 ```
@@ -59,7 +59,6 @@ A **binary tree** is a tree where each node has at most **two children** (left, 
     Size   = Total nodes = 6
 ```
 
-
 ### Tree Properties
 
 ```
@@ -73,14 +72,13 @@ Perfect tree    All internal nodes have 2 children, all leaves same level
 Balanced tree   |height(left) - height(right)| ≤ 1 for every node
 ```
 
-
 ### HOW — Implementation
 
 ```java
 class TreeNode {
     int val;
     TreeNode left, right;
-    
+
     TreeNode(int val) {
         this.val = val;
     }
@@ -88,38 +86,38 @@ class TreeNode {
 
 class BinaryTree {
     TreeNode root;
-    
+
     // Count total nodes
     int size(TreeNode node) {
         if (node == null) return 0;
         return 1 + size(node.left) + size(node.right);
     }
-    
+
     // Height of tree
     int height(TreeNode node) {
         if (node == null) return -1; // convention: empty = -1
         return 1 + Math.max(height(node.left), height(node.right));
     }
-    
+
     // Build from array (level-order, null = no node)
     // Input: [10, 5, 15, 3, 7, null, 20]
     TreeNode buildFromArray(Integer[] arr) {
         if (arr.length == 0 || arr[0] == null) return null;
-        
+
         TreeNode root = new TreeNode(arr[0]);
         Queue<TreeNode> queue = new LinkedList<>();
         queue.add(root);
         int i = 1;
-        
+
         while (!queue.isEmpty() && i < arr.length) {
             TreeNode current = queue.poll();
-            
+
             if (i < arr.length && arr[i] != null) {
                 current.left = new TreeNode(arr[i]);
                 queue.add(current.left);
             }
             i++;
-            
+
             if (i < arr.length && arr[i] != null) {
                 current.right = new TreeNode(arr[i]);
                 queue.add(current.right);
@@ -136,6 +134,7 @@ class BinaryTree {
 ## 2. ALGO DEEP DIVE: DFS — Three Traversals (30 min)
 
 ### WHY?
+
 DFS is the fundamental tree traversal — it goes deep before going wide. Three orderings (pre/in/post) each solve different problems: preorder for copying/serializing, inorder for BST sorted order, postorder for deletion/evaluation.
 
 ### WHAT — The Three Orders
@@ -156,7 +155,6 @@ INORDER   (Left → Root → Right):  4, 2, 5, 1, 3
 POSTORDER (Left → Right → Root):  4, 5, 2, 3, 1
   Use: Delete tree, evaluate expressions, calc directory sizes
 ```
-
 
 ### Memory Model — Call Stack Visualization
 
@@ -181,7 +179,6 @@ After returning from 4:
 │ preorder(1)  │  ← waiting for left subtree
 └──────────────┘
 ```
-
 
 ### HOW — Recursive (clean) vs Iterative (interview-ready)
 
@@ -212,14 +209,14 @@ void postorder(TreeNode node, List<Integer> result) {
 List<Integer> preorderIterative(TreeNode root) {
     List<Integer> result = new ArrayList<>();
     if (root == null) return result;
-    
+
     Stack<TreeNode> stack = new Stack<>();
     stack.push(root);
-    
+
     while (!stack.isEmpty()) {
         TreeNode node = stack.pop();
         result.add(node.val);
-        
+
         // Push RIGHT first so LEFT is processed first (LIFO)
         if (node.right != null) stack.push(node.right);
         if (node.left != null)  stack.push(node.left);
@@ -232,7 +229,7 @@ List<Integer> inorderIterative(TreeNode root) {
     List<Integer> result = new ArrayList<>();
     Stack<TreeNode> stack = new Stack<>();
     TreeNode curr = root;
-    
+
     while (curr != null || !stack.isEmpty()) {
         // Go as far left as possible
         while (curr != null) {
@@ -252,6 +249,7 @@ List<Integer> inorderIterative(TreeNode root) {
 ## 3. SQL LESSON: UNION, UNION ALL, CASE WHEN (40 min)
 
 ### WHY?
+
 Real databases have related tables. UNION combines results from different queries. CASE adds conditional logic inside queries — like if/else for SQL. Together they handle reporting, data categorization, and combining data from multiple sources.
 
 ### UNION vs UNION ALL
@@ -281,7 +279,6 @@ employees:        contractors:      UNION result:
                                   └───────┘
 ```
 
-
 ### CASE WHEN — SQL's if/else
 
 ```sql
@@ -306,12 +303,11 @@ HOW CASE WORKS:
   Like a switch statement — exits after first match!
 ```
 
-
 ### Combining CASE with Aggregates
 
 ```sql
 -- Count students in each grade category
-SELECT 
+SELECT
     COUNT(CASE WHEN grade >= 90 THEN 1 END) AS a_count,
     COUNT(CASE WHEN grade >= 80 AND grade < 90 THEN 1 END) AS b_count,
     COUNT(CASE WHEN grade < 80 THEN 1 END) AS other_count
@@ -363,6 +359,7 @@ GROUP BY department;
 **Link:** https://leetcode.com/problems/binary-tree-preorder-traversal/
 
 ### Problem
+
 Given root of a binary tree, return the preorder traversal of its values.
 
 ### Visual Walkthrough
@@ -385,7 +382,6 @@ Step-by-step (iterative):
 Output: [1, 2, 3]
 ```
 
-
 ### Solution
 
 ```java
@@ -396,22 +392,22 @@ class Solution {
         dfs(root, result);
         return result;
     }
-    
+
     private void dfs(TreeNode node, List<Integer> result) {
         if (node == null) return;
         result.add(node.val);
         dfs(node.left, result);
         dfs(node.right, result);
     }
-    
+
     // Approach 2: Iterative with Stack
     public List<Integer> preorderTraversalIterative(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         if (root == null) return result;
-        
+
         Deque<TreeNode> stack = new ArrayDeque<>();
         stack.push(root);
-        
+
         while (!stack.isEmpty()) {
             TreeNode node = stack.pop();
             result.add(node.val);
@@ -432,6 +428,7 @@ class Solution {
 **Link:** https://leetcode.com/problems/binary-tree-inorder-traversal/
 
 ### Problem
+
 Given root of a binary tree, return the inorder traversal of its values.
 
 ### Visual Walkthrough
@@ -461,7 +458,6 @@ Call inorder(1):
 Output: [1, 3, 2]
 ```
 
-
 ### Solution — Iterative (Interview Gold)
 
 ```java
@@ -470,7 +466,7 @@ class Solution {
         List<Integer> result = new ArrayList<>();
         Deque<TreeNode> stack = new ArrayDeque<>();
         TreeNode curr = root;
-        
+
         while (curr != null || !stack.isEmpty()) {
             // Drill all the way left
             while (curr != null) {
@@ -527,24 +523,22 @@ WHERE YOU'LL SEE TREES:
    = (2 * 5) + 3 = 13  (postorder evaluation)
 ```
 
-
 ---
 
 ## Self-Assessment
 
-| Concept | Confidence 1-5 |
-|---------|----------------|
-| TreeNode structure | ___ |
-| Tree properties (height, depth, balanced) | ___ |
-| Preorder traversal (recursive + iterative) | ___ |
-| Inorder traversal (recursive + iterative) | ___ |
-| Postorder traversal (recursive) | ___ |
-| SQL UNION vs UNION ALL | ___ |
-| SQL CASE WHEN | ___ |
-| CASE with aggregates (pivot) | ___ |
+| Concept                                    | Confidence 1-5 |
+| ------------------------------------------ | -------------- |
+| TreeNode structure                         | \_\_\_         |
+| Tree properties (height, depth, balanced)  | \_\_\_         |
+| Preorder traversal (recursive + iterative) | \_\_\_         |
+| Inorder traversal (recursive + iterative)  | \_\_\_         |
+| Postorder traversal (recursive)            | \_\_\_         |
+| SQL UNION vs UNION ALL                     | \_\_\_         |
+| SQL CASE WHEN                              | \_\_\_         |
+| CASE with aggregates (pivot)               | \_\_\_         |
 
 **Target:** All 4+ before Week 3 ends.
-
 
 ---
 

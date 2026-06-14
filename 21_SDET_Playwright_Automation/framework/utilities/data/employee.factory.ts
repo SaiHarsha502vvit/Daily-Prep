@@ -39,7 +39,7 @@ export function generateEmployeeData(overrides: Partial<EmployeeData> = {}): Emp
 }
 
 export function generateEmployeeUpdateData(
-  overrides: Partial<EmployeeUpdateData> = {}
+  overrides: Partial<EmployeeUpdateData> = {},
 ): EmployeeUpdateData {
   return {
     nationality: overrides.nationality ?? 'American',

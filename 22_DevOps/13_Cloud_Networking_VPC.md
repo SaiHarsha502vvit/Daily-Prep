@@ -15,7 +15,7 @@ AWS VPC (Virtual Private Cloud):
   Your own isolated section of the AWS cloud.
   You choose the CIDR block (e.g., 10.0.0.0/16 = 65,536 IPs).
   Inside the VPC: you create subnets, route tables, gateways, security rules.
-  
+
   ANALOGY: A VPC is like buying a plot of land.
   You decide: where to put the public parking lot (public subnet),
   where the private offices go (private subnet), where the security gates are (SG/NACL),
@@ -63,7 +63,7 @@ SUBNET DESIGN (best practices):
   2+ Availability Zones for redundancy:
   Public-AZ1:  10.0.1.0/24   | Public-AZ2:  10.0.3.0/24
   Private-AZ1: 10.0.2.0/24   | Private-AZ2: 10.0.4.0/24
-  
+
   If AZ1 goes down → traffic shifts to AZ2 automatically.
 ```
 
@@ -78,24 +78,24 @@ VPC PEERING:
   Connect two VPCs → instances can communicate using PRIVATE IPs.
   No internet transit. Traffic stays on AWS backbone.
   Cross-account and cross-region supported!
-  
+
   Limitation: NOT transitive! VPC-A peers with VPC-B, VPC-B peers with VPC-C.
   VPC-A CANNOT reach VPC-C through VPC-B. Must create separate peering.
 
 TRANSIT GATEWAY:
   Solves the peering problem. Hub-and-spoke model.
   One Transit Gateway → all VPCs connect to it → full mesh connectivity.
-  
+
   10 VPCs with peering: 10 × 9 / 2 = 45 peering connections!
   10 VPCs with Transit Gateway: 10 connections (one per VPC to the hub).
 
 VPC ENDPOINTS (PrivateLink):
   Access AWS services (S3, DynamoDB, SQS) WITHOUT going through the internet!
   Traffic stays on AWS private network.
-  
+
   Gateway Endpoint: S3, DynamoDB (free!). Adds route to VPC route table.
   Interface Endpoint: everything else (SQS, Secrets Manager, etc.). Creates ENI in your subnet.
-  
+
   WHY: security (no internet exposure), latency (AWS backbone), cost (no NAT GW charges).
 
 ELASTIC IP (EIP):
@@ -190,13 +190,12 @@ KEY DIFFERENCE:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **IP subnetting/CIDR** | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — binary math |
-| **Terraform IaC** | [DevOps Advanced](01_DevOps_Advanced.md) — Terraform basics |
-| **Firewalls (SG vs NACL)** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) |
-| **NAT mechanics** | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — NAT deep dive |
-| **Load balancers** | [Ch 11: Load Balancing](11_Load_Balancing_Proxies.md) — ALB vs NLB |
-| **K8s in VPC** | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — EKS networking |
-| **Serverless (Lambda VPC)** | [Cloud Native](03_ServiceMesh_CloudNative.md) |
-
+| Topic                       | Related Content                                                     |
+| --------------------------- | ------------------------------------------------------------------- |
+| **IP subnetting/CIDR**      | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — binary math   |
+| **Terraform IaC**           | [DevOps Advanced](01_DevOps_Advanced.md) — Terraform basics         |
+| **Firewalls (SG vs NACL)**  | [Ch 10: Firewalls](10_Firewalls_Access_Control.md)                  |
+| **NAT mechanics**           | [Ch 05: IP Addressing](05_IP_Addressing_Subnets.md) — NAT deep dive |
+| **Load balancers**          | [Ch 11: Load Balancing](11_Load_Balancing_Proxies.md) — ALB vs NLB  |
+| **K8s in VPC**              | [DevOps Fundamentals](00_DevOps_Fundamentals.md) — EKS networking   |
+| **Serverless (Lambda VPC)** | [Cloud Native](03_ServiceMesh_CloudNative.md)                       |

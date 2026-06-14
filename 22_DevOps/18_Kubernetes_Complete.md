@@ -22,7 +22,7 @@ WITH 500 CONTAINERS ACROSS 50 SERVERS:
   New version deploy — don't take down the WHOLE service. (Rolling updates)
   Services need to find each other. (Service discovery)
   Some containers need persistent storage. (Volume management)
-  
+
   KUBERNETES HANDLES ALL OF THIS AUTOMATICALLY.
 
 KUBERNETES ARCHITECTURE:
@@ -53,7 +53,7 @@ THE RECONCILIATION LOOP:
   YOU declare: "I want 3 replicas of my-api running."
   K8s: "There are currently 2. Let me start 1 more."
   Server dies (1 pod lost): "There are now 2. Let me start 1 more on a healthy server."
-  
+
   THIS IS THE CORE PRINCIPLE: declarative desired state → K8s reconciles actual state.
 ```
 
@@ -77,50 +77,50 @@ metadata:
     version: v1
 spec:
   containers:
-  - name: api
-    image: myregistry/my-api:1.2.3
-    ports:
-    - containerPort: 8000
-    resources:
-      requests:                    # guaranteed allocation
-        memory: "256Mi"
-        cpu: "250m"                # 250 millicores = 0.25 CPU core
-      limits:                      # max allowed
-        memory: "512Mi"            # exceeds → OOM killed
-        cpu: "500m"                # exceeds → throttled (not killed)
-    livenessProbe:                 # "is the process stuck?"
-      httpGet:
-        path: /health
-        port: 8000
-      initialDelaySeconds: 15
-      periodSeconds: 10
-      failureThreshold: 3          # 3 failures → restart container
-    readinessProbe:                # "is it ready to receive traffic?"
-      httpGet:
-        path: /ready
-        port: 8000
-      initialDelaySeconds: 5
-      periodSeconds: 5
-    startupProbe:                  # "has it finished starting?"
-      httpGet:
-        path: /health
-        port: 8000
-      failureThreshold: 30        # 30 × 10s = 5 minutes to start
-      periodSeconds: 10
-    env:
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: db-credentials
-          key: url
-    volumeMounts:
-    - name: config
-      mountPath: /app/config
-      readOnly: true
+    - name: api
+      image: myregistry/my-api:1.2.3
+      ports:
+        - containerPort: 8000
+      resources:
+        requests: # guaranteed allocation
+          memory: "256Mi"
+          cpu: "250m" # 250 millicores = 0.25 CPU core
+        limits: # max allowed
+          memory: "512Mi" # exceeds → OOM killed
+          cpu: "500m" # exceeds → throttled (not killed)
+      livenessProbe: # "is the process stuck?"
+        httpGet:
+          path: /health
+          port: 8000
+        initialDelaySeconds: 15
+        periodSeconds: 10
+        failureThreshold: 3 # 3 failures → restart container
+      readinessProbe: # "is it ready to receive traffic?"
+        httpGet:
+          path: /ready
+          port: 8000
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      startupProbe: # "has it finished starting?"
+        httpGet:
+          path: /health
+          port: 8000
+        failureThreshold: 30 # 30 × 10s = 5 minutes to start
+        periodSeconds: 10
+      env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: url
+      volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
   volumes:
-  - name: config
-    configMap:
-      name: api-config
+    - name: config
+      configMap:
+        name: api-config
 ```
 
 ```yaml
@@ -138,19 +138,19 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1              # create 1 extra pod during update
-      maxUnavailable: 0        # never have fewer than 3 running → zero downtime!
+      maxSurge: 1 # create 1 extra pod during update
+      maxUnavailable: 0 # never have fewer than 3 running → zero downtime!
   template:
     metadata:
       labels:
         app: my-api
         version: v1.2.3
     spec:
-      terminationGracePeriodSeconds: 30  # time for graceful shutdown
+      terminationGracePeriodSeconds: 30 # time for graceful shutdown
       containers:
-      - name: api
-        image: myregistry/my-api:1.2.3
-        # ... (same as pod spec above)
+        - name: api
+          image: myregistry/my-api:1.2.3
+          # ... (same as pod spec above)
 ```
 
 ```yaml
@@ -161,13 +161,13 @@ metadata:
   name: my-api-service
   namespace: production
 spec:
-  type: ClusterIP                # internal only (most common for microservices)
+  type: ClusterIP # internal only (most common for microservices)
   selector:
-    app: my-api                  # route to ALL pods with label app=my-api
+    app: my-api # route to ALL pods with label app=my-api
   ports:
-  - port: 80                    # service port (what clients use)
-    targetPort: 8000             # pod port (what your app listens on)
-    protocol: TCP
+    - port: 80 # service port (what clients use)
+      targetPort: 8000 # pod port (what your app listens on)
+      protocol: TCP
 
 # Service types:
 # ClusterIP (default): internal only. Accessible within K8s cluster.
@@ -188,31 +188,31 @@ metadata:
     nginx.ingress.kubernetes.io/rate-limit: "100"
 spec:
   tls:
-  - hosts:
-    - api.myapp.com
-    - www.myapp.com
-    secretName: myapp-tls
+    - hosts:
+        - api.myapp.com
+        - www.myapp.com
+      secretName: myapp-tls
   rules:
-  - host: api.myapp.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: my-api-service
-            port:
-              number: 80
-  - host: www.myapp.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+    - host: api.myapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-api-service
+                port:
+                  number: 80
+    - host: www.myapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
 ```
 
 ---
@@ -235,21 +235,21 @@ spec:
   minReplicas: 3
   maxReplicas: 20
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70       # scale up when CPU > 70%
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70 # scale up when CPU > 70%
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 30  # wait 30s before scaling up more
+      stabilizationWindowSeconds: 30 # wait 30s before scaling up more
     scaleDown:
       stabilizationWindowSeconds: 300 # wait 5min before scaling down (avoid flapping)
 ```
@@ -259,13 +259,13 @@ SELF-HEALING MECHANISMS:
 
 1. POD RESTART (livenessProbe fails):
    K8s restarts the container. CrashLoopBackOff if repeatedly fails.
-   
+
 2. POD RESCHEDULING (node dies):
    Controller notices pod is gone → schedules new pod on healthy node.
-   
+
 3. READINESS (readinessProbe fails):
    Pod removed from service endpoints → no traffic. Still running (might recover).
-   
+
 4. POD DISRUPTION BUDGET:
    "NEVER have fewer than 2 pods running, even during maintenance."
    kubectl drain node-3 → K8s moves pods to other nodes, respecting the budget.
@@ -362,12 +362,12 @@ metadata:
   name: pod-reader
   namespace: production
 rules:
-- apiGroups: [""]              # "" = core API group (pods, services, etc.)
-  resources: ["pods", "pods/log"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get", "list"]
+  - apiGroups: [""] # "" = core API group (pods, services, etc.)
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list"]
 
 ---
 # ROLEBINDING: attach the role to a user/group/service account
@@ -377,12 +377,12 @@ metadata:
   name: read-pods-binding
   namespace: production
 subjects:
-- kind: User
-  name: developer@mycompany.com
-  apiGroup: rbac.authorization.k8s.io
-- kind: Group
-  name: developers                     # LDAP/OIDC group
-  apiGroup: rbac.authorization.k8s.io
+  - kind: User
+    name: developer@mycompany.com
+    apiGroup: rbac.authorization.k8s.io
+  - kind: Group
+    name: developers # LDAP/OIDC group
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
   name: pod-reader
@@ -395,9 +395,9 @@ kind: ClusterRole
 metadata:
   name: secret-reader
 rules:
-- apiGroups: [""]
-  resources: ["secrets"]
-  verbs: ["get"]                        # read-only, no list/watch
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"] # read-only, no list/watch
 
 ---
 # SERVICE ACCOUNT: identity for PODS (not humans)
@@ -438,7 +438,7 @@ metadata:
   name: postgres
   namespace: production
 spec:
-  serviceName: "postgres"              # headless service for DNS
+  serviceName: "postgres" # headless service for DNS
   replicas: 3
   selector:
     matchLabels:
@@ -449,28 +449,28 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:16
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: pg-secret
-              key: password
-        volumeMounts:
-        - name: pg-data
-          mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:                # each pod gets its OWN PVC!
-  - metadata:
-      name: pg-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: gp3
-      resources:
-        requests:
-          storage: 100Gi
+        - name: postgres
+          image: postgres:16
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-secret
+                  key: password
+          volumeMounts:
+            - name: pg-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates: # each pod gets its OWN PVC!
+    - metadata:
+        name: pg-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 100Gi
 
 # This creates:
 # Pod: postgres-0 → PVC: pg-data-postgres-0 → PV: 100Gi EBS volume
@@ -497,18 +497,18 @@ spec:
         name: fluentd
     spec:
       tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        effect: NoSchedule         # run even on control plane nodes!
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule # run even on control plane nodes!
       containers:
-      - name: fluentd
-        image: fluent/fluentd:v1.16
-        volumeMounts:
-        - name: varlog
-          mountPath: /var/log       # mount host's /var/log into container
+        - name: fluentd
+          image: fluent/fluentd:v1.16
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log # mount host's /var/log into container
       volumes:
-      - name: varlog
-        hostPath:
-          path: /var/log
+        - name: varlog
+          hostPath:
+            path: /var/log
 
 # Result: every node in the cluster gets exactly 1 fluentd pod.
 # New node added? → DaemonSet automatically schedules fluentd on it!
@@ -528,10 +528,10 @@ metadata:
   name: default-deny-all
   namespace: production
 spec:
-  podSelector: {}                  # applies to ALL pods in namespace
+  podSelector: {} # applies to ALL pods in namespace
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   # No ingress/egress rules → deny everything!
 
 ---
@@ -546,13 +546,13 @@ spec:
     matchLabels:
       app: my-api
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: ingress-nginx       # only from ingress namespace
-    ports:
-    - port: 8000
-      protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx # only from ingress namespace
+      ports:
+        - port: 8000
+          protocol: TCP
 
 ---
 # ── ALLOW API TO TALK TO DATABASE ──
@@ -566,19 +566,19 @@ spec:
     matchLabels:
       app: my-api
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: postgres
-    ports:
-    - port: 5432
-  - to:                             # also allow DNS!
-    - namespaceSelector: {}
-    ports:
-    - port: 53
-      protocol: UDP
-    - port: 53
-      protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              app: postgres
+      ports:
+        - port: 5432
+    - to: # also allow DNS!
+        - namespaceSelector: {}
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
 
 # PATTERN: default deny → whitelist specific traffic paths.
 # API → DB: allowed. API → payment-service: allowed.
@@ -598,7 +598,7 @@ KUBERNETES STORAGE MODEL:
   PersistentVolume (PV):     The actual storage (EBS, GCE PD, NFS, Ceph).
   PersistentVolumeClaim (PVC): a REQUEST for storage by a pod.
   StorageClass:               defines HOW to provision PVs dynamically.
-  
+
   LIFECYCLE:
   1. Admin creates StorageClass: "gp3 = AWS EBS gp3, encrypted, 3000 IOPS."
   2. Pod requests storage via PVC: "I need 50Gi of gp3 storage."
@@ -607,7 +607,7 @@ KUBERNETES STORAGE MODEL:
   5. Pod mounts the PVC.
   6. Pod deleted → PVC persists → data survives!
   7. PVC deleted → PV retained OR deleted (based on reclaimPolicy).
-  
+
   ACCESS MODES:
   ReadWriteOnce (RWO): one node can mount read-write (EBS, default).
   ReadOnlyMany (ROX):  many nodes can mount read-only (NFS, S3).
@@ -621,8 +621,8 @@ kind: StorageClass
 metadata:
   name: gp3
 provisioner: ebs.csi.aws.com
-volumeBindingMode: WaitForFirstConsumer  # provision in same AZ as pod!
-reclaimPolicy: Retain                     # keep volume after PVC deletion
+volumeBindingMode: WaitForFirstConsumer # provision in same AZ as pod!
+reclaimPolicy: Retain # keep volume after PVC deletion
 parameters:
   type: gp3
   encrypted: "true"
@@ -648,17 +648,16 @@ spec:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **Docker (containers K8s runs)** | [Ch 17: Docker](17_Docker_Complete.md) |
-| **Container networking** | [Ch 04-06](04_Networking_Complete.md) — pod-to-pod, services |
-| **DNS (CoreDNS)** | [Ch 07: DNS](07_DNS_Complete.md) — K8s internal DNS |
-| **Load balancing** | [Ch 11: LB](11_Load_Balancing_Proxies.md) — kube-proxy, Ingress |
-| **Helm charts** | [Ch 23: GitOps](23_GitOps_Deployments.md) — Helm + ArgoCD |
-| **Monitoring** | [Ch 21: Observability](21_Monitoring_Observability.md) — Prometheus in K8s |
-| **Terraform provisions K8s** | [Ch 20: Terraform](20_Terraform_IaC.md) — EKS/GKE modules |
-| **Network policies** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — pod firewalls |
-| **Linux (kubelet, cgroups)** | [Ch 16: Linux](16_Linux_Administration.md) |
-| **RBAC for security** | [Networking & Security](02_Networking_Security.md) — zero trust |
-| **SQL in StatefulSets** | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — PostgreSQL HA |
-
+| Topic                            | Related Content                                                            |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| **Docker (containers K8s runs)** | [Ch 17: Docker](17_Docker_Complete.md)                                     |
+| **Container networking**         | [Ch 04-06](04_Networking_Complete.md) — pod-to-pod, services               |
+| **DNS (CoreDNS)**                | [Ch 07: DNS](07_DNS_Complete.md) — K8s internal DNS                        |
+| **Load balancing**               | [Ch 11: LB](11_Load_Balancing_Proxies.md) — kube-proxy, Ingress            |
+| **Helm charts**                  | [Ch 23: GitOps](23_GitOps_Deployments.md) — Helm + ArgoCD                  |
+| **Monitoring**                   | [Ch 21: Observability](21_Monitoring_Observability.md) — Prometheus in K8s |
+| **Terraform provisions K8s**     | [Ch 20: Terraform](20_Terraform_IaC.md) — EKS/GKE modules                  |
+| **Network policies**             | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — pod firewalls         |
+| **Linux (kubelet, cgroups)**     | [Ch 16: Linux](16_Linux_Administration.md)                                 |
+| **RBAC for security**            | [Networking & Security](02_Networking_Security.md) — zero trust            |
+| **SQL in StatefulSets**          | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — PostgreSQL HA        |

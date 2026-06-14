@@ -1,12 +1,14 @@
 # Day 06 - Hashing and Frequency Maps (MIT/KTH Style)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 266 - Palindrome Permutation
 2. LeetCode Medium: 49 - Group Anagrams
 3. Codeforces: 1520D - Same Differences
 4. Codeforces: 1003A - Polycarp's Pockets
 
 ## Problem Links
+
 - LC 266 (Premium): Locked on LeetCode (no public official statement page)
 - LC 49: https://leetcode.com/problems/group-anagrams/
 - CF 1520D: https://codeforces.com/problemset/problem/1520/D
@@ -15,16 +17,20 @@
 ## Problem 1 - LC 266 (Premium): Palindrome Permutation
 
 ### Problem Restatement
+
 Given string `s`, decide whether some permutation of `s` can form a palindrome.
 
 ### Constraints
+
 - `1 <= |s| <= 5000`
 
 ### Sample
+
 Input: `"carerac"`  
 Output: `true`
 
 ### Approach A - Brute Force (Permutation Check) (O(n!))
+
 Generate permutations and test palindrome.
 
 ```java
@@ -36,6 +42,7 @@ static boolean isPal(String t) {
 ```
 
 ### Approach B - Better (Frequency Count) (O(n), O(alphabet))
+
 At most one char can have odd frequency.
 
 ```java
@@ -49,6 +56,7 @@ static boolean canPermuteBetter(String s) {
 ```
 
 ### Approach C - Optimal (Parity Bitset) (O(n), O(1))
+
 Toggle parity only, no full counts needed.
 
 ```java
@@ -64,16 +72,20 @@ static boolean canPermuteOptimal(String s) {
 ## Problem 2 - LC 49: Group Anagrams
 
 ### Problem Restatement
+
 Group strings where each group contains anagrams.
 
 ### Constraints
+
 - Up to about `10^4` words
 
 ### Sample
+
 Input: `["eat","tea","tan","ate","nat","bat"]`  
 Output: `[[eat,tea,ate],[tan,nat],[bat]]`
 
-### Approach A - Brute Force Pairing (O(n^2 * k log k), O(n))
+### Approach A - Brute Force Pairing (O(n^2 \* k log k), O(n))
+
 Compare each word with all others by sorted form.
 
 ```java
@@ -84,7 +96,7 @@ static String sigSort(String s) {
 }
 ```
 
-### Approach B - Better (Sorted Signature HashMap) (O(n * k log k), O(nk))
+### Approach B - Better (Sorted Signature HashMap) (O(n \* k log k), O(nk))
 
 ```java
 static List<List<String>> groupAnagramsBetter(String[] strs) {
@@ -97,7 +109,8 @@ static List<List<String>> groupAnagramsBetter(String[] strs) {
 }
 ```
 
-### Approach C - Optimal (Frequency Signature) (O(n * k), O(nk))
+### Approach C - Optimal (Frequency Signature) (O(n \* k), O(nk))
+
 Use 26-count signature to avoid sorting each word.
 
 ```java
@@ -120,6 +133,7 @@ static List<List<String>> groupAnagramsOptimal(String[] strs) {
 ```
 
 ### Interview Notes
+
 - Signature design is the whole problem.
 - Frequency signature is usually the best practical choice.
 
@@ -128,13 +142,16 @@ static List<List<String>> groupAnagramsOptimal(String[] strs) {
 ## Problem 3 - CF 1520D: Same Differences
 
 ### Problem Restatement
+
 Count pairs `(i, j)` (`i < j`) such that `a[j] - a[i] = j - i`.
 Equivalent: `a[i] - i` is equal for both indices.
 
 ### Constraints
+
 - Total `n` across tests up to around `2e5`
 
 ### Sample
+
 Input: `a = [1,2,3,4]`  
 Output: `6`
 
@@ -153,6 +170,7 @@ static long sameDiffBrute(int[] a) {
 ```
 
 ### Approach B - Better (Transform + Sort) (O(n log n), O(n))
+
 Count equal values in array `b[i] = a[i] - i`.
 
 ```java
@@ -193,13 +211,16 @@ static long sameDiffOptimal(int[] a) {
 ## Problem 4 - CF 1003A: Polycarp's Pockets
 
 ### Problem Restatement
+
 Given coin types, maximum number of equal-type coins is answer.
 
 ### Constraints
+
 - `1 <= n <= 100`
 - `1 <= coin <= 100`
 
 ### Sample
+
 Input: `[1,2,2,3,3,3]`  
 Output: `3`
 
@@ -233,6 +254,7 @@ static int pocketsBetter(int[] a) {
 ```
 
 ### Approach C - Optimal (Counting Array) (O(n), O(1))
+
 Since value range is small.
 
 ```java
@@ -247,5 +269,6 @@ static int pocketsOptimal(int[] a) {
 ```
 
 ### Pattern Takeaways
+
 - Algebraic transforms often reduce pair-counting to frequency counting.
 - HashMap is the standard tool for `count pairs by key` problems.

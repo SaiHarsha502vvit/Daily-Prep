@@ -38,7 +38,6 @@ WHY THIS COURSE:
 - Problem sets build real skills
 ```
 
-
 ### MIT 6.046 - Design and Analysis of Algorithms
 
 ```
@@ -69,7 +68,6 @@ WHY THIS COURSE:
 - Research-level insights
 ```
 
-
 ### MIT 6.851 - Advanced Data Structures
 
 ```
@@ -97,11 +95,7 @@ WHY THIS COURSE:
 - Cutting-edge techniques
 ```
 
-
 ---
-
-
-
 
 ## Stanford University
 
@@ -134,7 +128,6 @@ WHY THIS COURSE:
 - Available on Coursera!
 ```
 
-
 ### Stanford CS166 - Data Structures
 
 ```
@@ -161,7 +154,6 @@ WHY THIS COURSE:
 - Practical focus
 - Modern techniques
 ```
-
 
 ---
 
@@ -200,7 +192,6 @@ WHY THIS COURSE:
 - Autograder available!
 ```
 
-
 ### CS 170 - Efficient Algorithms and Intractable Problems
 
 ```
@@ -229,7 +220,6 @@ WHY THIS COURSE:
 - Problem sets are challenging
 ```
 
-
 ---
 
 ## KTH Royal Institute of Technology (Sweden)
@@ -257,7 +247,6 @@ WHY KTH:
 - Industry connections
 - Practical focus
 ```
-
 
 ### ID1020 - Algorithms and Data Structures
 
@@ -288,11 +277,7 @@ WHY THIS COURSE:
 - Princeton collaboration
 ```
 
-
 ---
-
-
-
 
 # 🌟 TIER 2: EXCELLENT COMPLEMENTARY RESOURCES
 
@@ -320,9 +305,6 @@ WHY THIS COURSE:
 ```
 
 ---
-
-
-
 
 ## Carnegie Mellon University (CMU)
 
@@ -354,7 +336,6 @@ WHY THIS COURSE:
 - Research-oriented
 - Problem solving focus
 ```
-
 
 ---
 
@@ -491,7 +472,6 @@ WEEK 7-8: Advanced Topics
 TOTAL: 140 problems, solid foundation
 ```
 
-
 ## Path 2: Deep Understanding (3 months)
 
 ```
@@ -514,10 +494,6 @@ MONTH 3: Specialization
 └── Build a portfolio project
 ```
 
-
-
-
-
 ## Path 3: Competitive Programming (6 months)
 
 ```
@@ -539,11 +515,7 @@ PHASE 3 (Month 5-6): Advanced
 └── Target: 300 problems
 ```
 
-
 ---
-
-
-
 
 # 🔗 QUICK REFERENCE LINKS
 
@@ -586,7 +558,6 @@ PRACTICE:
 ├── AtCoder: https://atcoder.jp/
 └── HackerRank: https://hackerrank.com/
 ```
-
 
 ---
 
@@ -654,7 +625,6 @@ WHY THIS COURSE:
 - ESSENTIAL for senior engineering roles
 ```
 
-
 ## Berkeley CS162 - Operating Systems
 
 ```
@@ -685,10 +655,6 @@ WHY THIS COURSE:
 - Essential for systems programming
 ```
 
-
-
-
-
 ## Berkeley CS186 - Database Systems
 
 ```
@@ -716,7 +682,6 @@ WHY THIS COURSE:
 - Know WHY indexes work
 - Query optimization insights
 ```
-
 
 ## CMU 15-445 - Database Systems
 
@@ -748,7 +713,6 @@ WHY THIS COURSE:
 - Andy Pavlo is legendary teacher
 ```
 
-
 ## CMU 15-721 - Advanced Database Systems
 
 ```
@@ -775,7 +739,6 @@ WHY THIS COURSE:
 - Research paper discussions
 - Future of databases
 ```
-
 
 ---
 
@@ -810,10 +773,6 @@ WHY THIS COURSE:
 - Essential for backend engineers
 ```
 
-
-
-
-
 ## MIT 6.033 - Computer System Engineering
 
 ```
@@ -839,11 +798,7 @@ WHY THIS COURSE:
 - How to think about complexity
 ```
 
-
 ---
-
-
-
 
 # 🌟 TIER 6: SPECIALIZED ADVANCED TOPICS
 
@@ -865,9 +820,6 @@ WHY THIS COURSE:
 - Mathematical foundations
 - The OG ML course
 ```
-
-
-
 
 ## MIT 6.172 - Performance Engineering
 
@@ -896,10 +848,6 @@ WHY THIS COURSE:
 - Performance debugging
 ```
 
-
-
-
-
 ## UIUC CS 425 - Distributed Systems
 
 ```
@@ -921,7 +869,6 @@ WHY THIS COURSE:
 - More practical focus
 - Cloud computing emphasis
 ```
-
 
 ---
 
@@ -968,10 +915,6 @@ WHY READ THESE:
 - Interview gold mine
 ```
 
-
-
-
-
 ## System Design Resources
 
 ```
@@ -995,10 +938,7 @@ Online Resources:
 └── Architecture Notes: https://architecturenotes.co/
 ```
 
-
 ---
-
-
 
 # 🌟 TIER 8: RESEARCH PAPERS (FOR DEEP UNDERSTANDING)
 
@@ -1044,7 +984,6 @@ HOW TO READ PAPERS:
 5. Don't try to understand everything first time
 ```
 
-
 ---
 
 # 🌟 TIER 9: EUROPEAN EXCELLENCE
@@ -1070,7 +1009,6 @@ WHY ETH:
 - Rigorous European education
 ```
 
-
 ## EPFL (Switzerland)
 
 ```
@@ -1090,7 +1028,6 @@ WHY EPFL:
 - Scala and functional programming
 - Research excellence
 ```
-
 
 ## TU Munich (Germany)
 
@@ -1112,7 +1049,6 @@ WHY TUM:
 - Practical engineering focus
 - Strong in databases
 ```
-
 
 ---
 
@@ -1235,11 +1171,9 @@ STAGE 4: MASTERY (Ongoing)
 
 ```
 
-
 ---
 
 _"The goal is not to consume courses. The goal is to see systems everywhere."_ 🌟
-
 
 ---
 

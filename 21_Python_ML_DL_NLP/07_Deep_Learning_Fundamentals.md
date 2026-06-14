@@ -8,18 +8,19 @@ _"Deep Learning is just linear algebra + calculus + a lot of compute. The concep
 
 # PART 0: The 5W+H Framework
 
-**Mental Model:** If Machine Learning is learning to recognize a cat by measuring tail length and ear shape (manual features), Deep Learning is handing a neural network a million cat photos and letting it *discover its own features* — edges → textures → faces → entire cats.
+**Mental Model:** If Machine Learning is learning to recognize a cat by measuring tail length and ear shape (manual features), Deep Learning is handing a neural network a million cat photos and letting it _discover its own features_ — edges → textures → faces → entire cats.
 
-| Question | Deep Learning Context |
-| :--- | :--- |
-| **WHAT** | A subset of ML that uses artificial neural networks with multiple layers ("deep" networks) to automatically learn hierarchical representations from raw data. |
-| **WHY** | Because traditional ML requires *manual feature engineering*. For images, audio, and text, human-designed features are inferior to features learned directly by deep networks. DL removes the human bottleneck. |
-| **WHEN** | When you have: (1) large datasets (10K+ samples), (2) complex patterns (images, speech, language), (3) access to GPUs/TPUs, (4) manual features aren't good enough. |
-| **WHERE** | Self-driving cars (computer vision), voice assistants (speech recognition), ChatGPT/Gemini (language models), AlphaFold (protein folding), DALL-E/Midjourney (image generation). |
-| **WHO** | Pioneers: Frank Rosenblatt (Perceptron, 1958), Geoffrey Hinton (backprop/deep belief nets), Yann LeCun (CNNs), Yoshua Bengio (RNNs), Andrej Karpathy (popularizer). |
-| **HOW** | Stack layers of neurons. Each layer transforms input → output. Forward pass computes predictions. Loss function measures error. Backpropagation computes gradients. Optimizer updates weights. Repeat for millions of iterations. |
+| Question  | Deep Learning Context                                                                                                                                                                                                             |
+| :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | A subset of ML that uses artificial neural networks with multiple layers ("deep" networks) to automatically learn hierarchical representations from raw data.                                                                     |
+| **WHY**   | Because traditional ML requires _manual feature engineering_. For images, audio, and text, human-designed features are inferior to features learned directly by deep networks. DL removes the human bottleneck.                   |
+| **WHEN**  | When you have: (1) large datasets (10K+ samples), (2) complex patterns (images, speech, language), (3) access to GPUs/TPUs, (4) manual features aren't good enough.                                                               |
+| **WHERE** | Self-driving cars (computer vision), voice assistants (speech recognition), ChatGPT/Gemini (language models), AlphaFold (protein folding), DALL-E/Midjourney (image generation).                                                  |
+| **WHO**   | Pioneers: Frank Rosenblatt (Perceptron, 1958), Geoffrey Hinton (backprop/deep belief nets), Yann LeCun (CNNs), Yoshua Bengio (RNNs), Andrej Karpathy (popularizer).                                                               |
+| **HOW**   | Stack layers of neurons. Each layer transforms input → output. Forward pass computes predictions. Loss function measures error. Backpropagation computes gradients. Optimizer updates weights. Repeat for millions of iterations. |
 
 ### Where It's Used in Real World
+
 - **ChatGPT/Gemini**: Transformer-based language models with 175B+ parameters generating human-quality text.
 - **Tesla Autopilot**: CNNs processing camera images at 36 FPS to detect lanes, cars, pedestrians.
 - **Google Translate**: Encoder-decoder transformers translating between 100+ languages in real-time.
@@ -28,17 +29,17 @@ _"Deep Learning is just linear algebra + calculus + a lot of compute. The concep
 
 ### Historical Timeline
 
-| Year | Milestone | Impact |
-|------|-----------|--------|
-| 1958 | Perceptron (Rosenblatt) | First neural network — simple linear classifier |
-| 1969 | AI Winter begins | Minsky proved perceptrons can't learn XOR |
-| 1986 | Backpropagation (Rumelhart, Hinton) | Made training multi-layer networks possible |
-| 1998 | LeNet-5 (LeCun) | First successful CNN for digit recognition |
-| 2012 | AlexNet (Krizhevsky, Hinton) | Won ImageNet by a huge margin → DL revolution |
-| 2014 | GANs (Goodfellow) | Generative adversarial networks for image generation |
-| 2017 | Transformer (Vaswani et al.) | "Attention Is All You Need" → modern NLP foundation |
-| 2020 | GPT-3 (OpenAI) | 175B parameters, few-shot learning capabilities |
-| 2022 | ChatGPT | Brought LLMs to the mainstream |
+| Year | Milestone                           | Impact                                               |
+| ---- | ----------------------------------- | ---------------------------------------------------- |
+| 1958 | Perceptron (Rosenblatt)             | First neural network — simple linear classifier      |
+| 1969 | AI Winter begins                    | Minsky proved perceptrons can't learn XOR            |
+| 1986 | Backpropagation (Rumelhart, Hinton) | Made training multi-layer networks possible          |
+| 1998 | LeNet-5 (LeCun)                     | First successful CNN for digit recognition           |
+| 2012 | AlexNet (Krizhevsky, Hinton)        | Won ImageNet by a huge margin → DL revolution        |
+| 2014 | GANs (Goodfellow)                   | Generative adversarial networks for image generation |
+| 2017 | Transformer (Vaswani et al.)        | "Attention Is All You Need" → modern NLP foundation  |
+| 2020 | GPT-3 (OpenAI)                      | 175B parameters, few-shot learning capabilities      |
+| 2022 | ChatGPT                             | Brought LLMs to the mainstream                       |
 
 ---
 
@@ -53,17 +54,17 @@ _"Deep Learning is just linear algebra + calculus + a lot of compute. The concep
 ```
 BIOLOGICAL NEURON:
   Dendrites (inputs) → Cell body (processing) → Axon (output)
-  
+
   If total input exceeds a THRESHOLD → neuron FIRES (sends signal)
   If below threshold → neuron stays quiet
 
 ARTIFICIAL NEURON:
   inputs × weights + bias → activation function → output
-  
+
   z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b    (weighted sum)
   z = w · x + b                           (dot product form)
   a = σ(z)                                (activation function)
-  
+
   WHERE:
   • x = input features
   • w = weights (learned parameters — HOW IMPORTANT each input is)
@@ -79,7 +80,7 @@ WHY WE NEED ACTIVATION FUNCTIONS:
   Without them: output = w₁(w₂·x + b₂) + b₁ = w₁w₂·x + (w₁b₂+b₁)
   This is STILL a linear function! No matter how many layers,
   it collapses to y = ax + b. Useless for complex patterns.
-  
+
   Activation functions introduce NON-LINEARITY → networks can
   learn curves, boundaries, and complex shapes.
 
@@ -164,14 +165,14 @@ FORWARD PASS (prediction):
 
 PARAMETER COUNT:
   Input: 784, Hidden1: 256, Hidden2: 128, Output: 10
-  
+
   W₁: 784×256 = 200,704 parameters
   b₁: 256 parameters
   W₂: 256×128 = 32,768 parameters
   b₂: 128 parameters
   W₃: 128×10 = 1,280 parameters
   b₃: 10 parameters
-  
+
   Total: ~235,000 learnable parameters!
   GPT-3 has 175 BILLION. GPT-4 has ~1.8 TRILLION.
 ```
@@ -181,28 +182,27 @@ PARAMETER COUNT:
 ```
 REGRESSION:
   MSE = (1/n) · Σ(yᵢ - ŷᵢ)²
-  
+
 BINARY CLASSIFICATION:
   Binary Cross-Entropy = -[y·log(ŷ) + (1-y)·log(1-ŷ)]
-  
+
 MULTI-CLASS CLASSIFICATION:
   Categorical Cross-Entropy = -Σ yᵢ · log(ŷᵢ)
-  
+
   For class k: L = -log(ŷₖ)  where k is the true class
   If model is confident and correct: ŷₖ ≈ 1 → L ≈ 0  (low loss)
   If model is wrong:               ŷₖ ≈ 0 → L → ∞   (high loss)
 ```
 
-
-
 🔬 **Section Challenge — 2.2 Loss Functions**
 
 **Challenge 1 (Reasoning):** For binary classification, why is Cross-Entropy loss used instead of MSE? Both penalize wrong predictions. What makes MSE specifically BAD with sigmoid outputs?
+
 <details><summary>Answer</summary>
 
 **Gradient saturation.** MSE loss with sigmoid: `L = (y - σ(z))²`. The gradient is `∂L/∂z = 2(y-σ(z)) · σ'(z)`. Sigmoid's derivative `σ'(z)` has maximum value 0.25 (at z=0) and approaches 0 for large |z|. When the model is CONFIDENTLY WRONG (z is very negative but y=1), σ(z) ≈ 0 and σ'(z) ≈ 0 → gradient ≈ 0 → the model can't learn to correct its worst mistakes! **Cross-entropy fix:** `L = -y·log(σ(z))`. The gradient simplifies to `∂L/∂z = σ(z) - y`. When confidently wrong: σ(z) ≈ 0, y=1 → gradient = -1 (large!). The loss function SCREAMS when the model is confidently wrong, producing a large gradient for fast correction. Also, cross-entropy creates a CONVEX loss surface with sigmoid (guaranteed global minimum), while MSE creates a non-convex surface with multiple local minima. **Key insight:** The choice of loss function determines the gradient landscape, not just the error measurement.
-</details>
 
+</details>
 
 ## 2.3 Backpropagation — How Networks Learn
 
@@ -216,15 +216,15 @@ THE ALGORITHM:
 
 FOR A SIMPLE 2-LAYER NETWORK:
   Forward:  z = Wx + b → a = σ(z) → L = loss(y, a)
-  
+
   Backward (chain rule):
   ∂L/∂a = -(y/a) + (1-y)/(1-a)              (derivative of loss)
   ∂a/∂z = σ(z) · (1-σ(z))                    (derivative of sigmoid)
   ∂z/∂W = x                                    (derivative of linear)
-  
+
   ∂L/∂W = ∂L/∂a · ∂a/∂z · ∂z/∂W             (chain rule!)
          = (a-y) · x                           (simplified)
-  
+
   Update: W = W - α · (a-y) · x
 
 WHY THIS WORKS:
@@ -236,7 +236,7 @@ THE VANISHING GRADIENT PROBLEM:
   In deep networks (50+ layers), gradients are multiplied at each layer.
   If each layer's gradient < 1 (e.g., sigmoid max = 0.25):
   0.25 × 0.25 × 0.25 × ... × 0.25 = 0.25⁵⁰ ≈ 10⁻³⁰ → gradient vanishes!
-  
+
   SOLUTIONS:
   • ReLU activation (gradient = 1 for positive values)
   • Batch Normalization (normalize activations per layer)
@@ -265,47 +265,47 @@ class SimpleNeuralNetwork:
         self.b1 = np.zeros((1, hidden_size))
         self.W2 = np.random.randn(hidden_size, output_size) * np.sqrt(2/hidden_size)
         self.b2 = np.zeros((1, output_size))
-    
+
     def relu(self, z):
         return np.maximum(0, z)
-    
+
     def relu_derivative(self, z):
         return (z > 0).astype(float)
-    
+
     def sigmoid(self, z):
         return 1 / (1 + np.exp(-np.clip(z, -500, 500)))
-    
+
     def forward(self, X):
         self.z1 = X @ self.W1 + self.b1      # linear
         self.a1 = self.relu(self.z1)           # activation
         self.z2 = self.a1 @ self.W2 + self.b2  # linear
         self.a2 = self.sigmoid(self.z2)        # output
         return self.a2
-    
+
     def backward(self, X, y, lr=0.01):
         m = X.shape[0]
-        
+
         # Output layer gradient
         dz2 = self.a2 - y                          # (a2 - y)
         dW2 = (1/m) * self.a1.T @ dz2
         db2 = (1/m) * np.sum(dz2, axis=0, keepdims=True)
-        
+
         # Hidden layer gradient (chain rule!)
         da1 = dz2 @ self.W2.T
         dz1 = da1 * self.relu_derivative(self.z1)
         dW1 = (1/m) * X.T @ dz1
         db1 = (1/m) * np.sum(dz1, axis=0, keepdims=True)
-        
+
         # Update weights
         self.W2 -= lr * dW2
         self.b2 -= lr * db2
         self.W1 -= lr * dW1
         self.b1 -= lr * db1
-    
+
     def train(self, X, y, epochs=1000, lr=0.01):
         for epoch in range(epochs):
             y_pred = self.forward(X)
-            loss = -np.mean(y * np.log(y_pred + 1e-8) + 
+            loss = -np.mean(y * np.log(y_pred + 1e-8) +
                            (1-y) * np.log(1-y_pred + 1e-8))
             self.backward(X, y, lr)
             if epoch % 200 == 0:
@@ -335,7 +335,7 @@ WHAT: Neural networks designed for GRID-STRUCTURED data (images, audio).
 WHY:  A 224×224 RGB image has 150,528 pixels.
       Fully connected: 150,528 × 1000 = 150M parameters per layer!
       CNN with 3×3 filter: 3×3×3 = 27 parameters per filter.
-      
+
       CNNs exploit SPATIAL LOCALITY: nearby pixels are related.
       The same edge detector works everywhere in the image.
       This is WEIGHT SHARING.
@@ -343,9 +343,9 @@ WHY:  A 224×224 RGB image has 150,528 pixels.
 HOW CONVOLUTION WORKS:
   Input:  5×5 image
   Filter: 3×3 kernel (learned weights)
-  
+
   Slide filter across image, compute dot product at each position:
-  
+
   Image:              Filter:         Output:
   ┌─┬─┬─┬─┬─┐       ┌─┬─┬─┐        ┌─┬─┬─┐
   │1│0│1│0│1│       │1│0│1│        │4│3│4│
@@ -375,7 +375,7 @@ LENET-5 (1998, LeCun):
   ~60K parameters. Used for digit recognition (ZIP codes).
 
 ALEXNET (2012, Krizhevsky):
-  Input(224×224×3) → Conv5(96) → Pool → Conv5(256) → Pool → 
+  Input(224×224×3) → Conv5(96) → Pool → Conv5(256) → Pool →
   Conv3(384) → Conv3(384) → Conv3(256) → Pool → FC(4096) → FC(4096) → Output(1000)
   ~60M parameters. Won ImageNet. Started the DL revolution.
   Key innovations: ReLU, Dropout, Data Augmentation, GPU training.
@@ -386,10 +386,10 @@ VGG-16 (2014):
 
 RESNET (2015, He):
   Innovation: SKIP CONNECTIONS (residual connections)
-  
+
   Normal: output = F(x)
   ResNet: output = F(x) + x       ← ADD input to output!
-  
+
   This solves vanishing gradients: gradient always has a path through 'x'.
   ResNet-152: 152 layers, won ImageNet with 3.57% error (superhuman!).
 
@@ -421,20 +421,20 @@ HOW:
 PROBLEM: VANISHING GRADIENTS (again!)
   For long sequences (100+ tokens), gradients through time steps
   multiply at each step → vanish or explode.
-  
+
   RNN can't learn: "The cat, which sat on the mat and ate the fish, ___"
   By the time it reaches "___", the information about "cat" has vanished.
 
 SOLUTION: LSTM (Long Short-Term Memory)
   Uses GATES to control information flow:
-  
+
   Forget Gate:  f_t = σ(W_f · [h_{t-1}, x_t] + b_f)    "What to forget?"
   Input Gate:   i_t = σ(W_i · [h_{t-1}, x_t] + b_i)    "What new info to add?"
   Output Gate:  o_t = σ(W_o · [h_{t-1}, x_t] + b_o)    "What to output?"
   Cell State:   C_t = f_t ⊙ C_{t-1} + i_t ⊙ tanh(...)  "Long-term memory"
   Hidden State: h_t = o_t ⊙ tanh(C_t)                    "Short-term memory"
-  
-  The cell state C_t is like a CONVEYOR BELT — information flows through 
+
+  The cell state C_t is like a CONVEYOR BELT — information flows through
   with minimal modification. Gates ADD or REMOVE information selectively.
 
 GRU (Gated Recurrent Unit) — Simplified LSTM:
@@ -456,24 +456,24 @@ WHY TRANSFORMERS REPLACED RNNs:
   4. Transformers use ATTENTION to look at ANY position directly
 
 THE SELF-ATTENTION MECHANISM:
-  
+
   "The animal didn't cross the street because it was too tired"
-  
+
   What does "it" refer to? "animal" or "street"?
-  
+
   Self-attention computes RELEVANCE between every pair of words:
-  
+
   For each word, create three vectors:
   Q (Query):  "What am I looking for?"
   K (Key):    "What do I contain?"
   V (Value):  "What information do I carry?"
-  
+
   Attention(Q, K, V) = softmax(Q · Kᵀ / √d_k) · V
-  
+
   Q · Kᵀ → similarity score between each pair of words
   softmax → normalize to probabilities
   × V    → weighted sum of values
-  
+
   "it" Q × "animal" K = HIGH score → "it" attends to "animal"
   "it" Q × "street" K = LOW score → "it" ignores "street"
 
@@ -485,13 +485,13 @@ MULTI-HEAD ATTENTION:
   Head 3: positional relationships (nearby words)
 
 TRANSFORMER ARCHITECTURE:
-  
+
   ENCODER (understanding input):
   Input → Embedding + Positional Encoding
        → Multi-Head Self-Attention → Add & Norm
        → Feed-Forward Network      → Add & Norm
        → (repeat N times)
-  
+
   DECODER (generating output):
   Output → Embedding + Positional Encoding
         → Masked Multi-Head Self-Attention → Add & Norm
@@ -516,7 +516,7 @@ flowchart TD
     AN1 --> FFN["Feed-Forward Network"]
     FFN --> AN2["Add & LayerNorm"]
     AN2 --> |"×N layers"| OUT["Output Representations"]
-    
+
     subgraph "Self-Attention Detail"
         Q["Query (Q)"]
         K["Key (K)"]
@@ -543,40 +543,40 @@ _MIT 6.S191-style: understanding WHY each optimizer exists and the math behind i
 STOCHASTIC GRADIENT DESCENT (SGD):
   The foundation. At each step, estimate gradient from a MINI-BATCH
   (typically 32-256 samples) instead of the full dataset.
-  
+
   θ = θ - α · ∇L(θ; x_batch, y_batch)
-  
+
   PROBLEM: noisy gradients → zig-zagging → slow convergence
 
 SGD WITH MOMENTUM:
   Like a ball rolling downhill with inertia.
   Accumulates past gradients → smooths out noise.
-  
+
   v_t = β · v_{t-1} + ∇L(θ)            (velocity = momentum × old + gradient)
   θ = θ - α · v_t                        (update params)
-  
+
   β = 0.9 typical. The velocity "remembers" 90% of previous direction.
-  
+
   WHY: without momentum, gradient oscillates in ravines (steep walls).
   With momentum, it builds speed in the consistent direction.
 
 ADAM (Adaptive Moment Estimation):
   THE DEFAULT OPTIMIZER. Combines momentum + adaptive learning rates.
-  
+
   m_t = β₁ · m_{t-1} + (1-β₁) · g_t    (1st moment: mean of gradients)
   v_t = β₂ · v_{t-1} + (1-β₂) · g_t²   (2nd moment: variance of gradients)
-  
+
   m̂_t = m_t / (1 - β₁ᵗ)                (bias correction — critical early on!)
   v̂_t = v_t / (1 - β₂ᵗ)
-  
+
   θ = θ - α · m̂_t / (√v̂_t + ε)         (update: scale by inverse std)
-  
+
   Defaults: α=0.001, β₁=0.9, β₂=0.999, ε=10⁻⁸
-  
+
   WHY BIAS CORRECTION?
   At t=1: m₁ = 0.1 · g₁ (if β₁=0.9)
   This underestimates the true mean! Correction: m̂₁ = m₁ / 0.1 = g₁
-  
+
   INTUITION: Each parameter gets its own adaptive learning rate.
   Parameters with large gradients → smaller effective LR (don't overshoot)
   Parameters with small gradients → larger effective LR (don't get stuck)
@@ -584,22 +584,21 @@ ADAM (Adaptive Moment Estimation):
 ADAMW (Adam with Decoupled Weight Decay):
   Standard L2 regularization in Adam doesn't work as intended.
   AdamW separates weight decay from gradient update:
-  
+
   θ = θ - α · (m̂_t / (√v̂_t + ε) + λ · θ)
-  
+
   This is the optimizer used by BERT, GPT, and most modern models.
 ```
-
-
 
 🔬 **Section Challenge — 6.1 Gradient Descent Variants**
 
 **Challenge 1 (Reasoning):** Modern Transformer training uses "warmup + cosine decay" for learning rate scheduling. Why do we INCREASE the learning rate at the start (warmup) when the model has random weights and high loss? Shouldn't we start slow?
+
 <details><summary>Answer</summary>
 
 **Counterintuitive but mathematically justified.** At step 0, weights are random → Adam's `v_t` (second moment / gradient variance estimate) is initialized to 0. With no history, Adam has NO information about the scale of gradients for each parameter. If you use a large LR immediately, Adam divides by `√(v̂_t) ≈ 0` → enormous effective step → NaN. **Warmup gives Adam time to calibrate.** During warmup (small LR, 5-10% of training): gradients are large but steps are small; `v_t` accumulates enough history to produce reliable variance estimates. After warmup, Adam has accurate per-parameter scaling → safe to use full LR. **Cosine decay rationale:** Early training needs large LR (coarse search for good region). Late training needs small LR (fine-tune within the good region). Cosine is smooth (no discontinuities like step decay), which prevents loss spikes. **Practical:** Without warmup, Transformer training often diverges in the first 100 steps. With warmup, the same hyperparameters converge stably.
-</details>
 
+</details>
 
 ## 6.2 Learning Rate Scheduling
 
@@ -607,20 +606,20 @@ ADAMW (Adam with Decoupled Weight Decay):
 THE MOST IMPORTANT HYPERPARAMETER IS THE LEARNING RATE.
   Too high: loss diverges → NaN → training fails
   Too low:  loss decreases painfully slowly → stuck in local minimum
-  
+
   Rule: START high(ish), then DECAY over time.
 
 WARMUP + COSINE DECAY (modern standard):
   Phase 1 — Warmup (first ~5% of training):
     LR ramps linearly from 0 to target LR
     WHY: at the start, random weights → huge gradients → need small LR
-    
+
   Phase 2 — Cosine Decay:
     LR = LR_min + ½(LR_max - LR_min)(1 + cos(π · t/T))
     Smoothly decays from LR_max to LR_min following a cosine curve
-    
+
   This is what GPT, BERT, and most Transformers use.
-  
+
   Other schedules:
   • Step decay: halve LR every N epochs (old school)
   • Exponential decay: LR = LR₀ · exp(-k·t)
@@ -632,9 +631,6 @@ LR FINDER (practical trick):
 ```
 
 ---
-
-
-
 
 # PART 7: Regularization — Preventing Overfitting
 
@@ -651,7 +647,7 @@ FORWARD PASS (training):
   mask = Bernoulli(p=0.5)   → [1, 0, 1, 1, 0, ...]
   a = relu(Wx + b) ⊙ mask   (elementwise multiply by mask)
   a = a / (1 - p)            (scale up remaining neurons)
-  
+
   WHY SCALE UP?
   If we drop 50% of neurons, the surviving neurons carry 2× the weight.
   At test time, ALL neurons are active → we need to match expected values.
@@ -664,10 +660,10 @@ WHY DROPOUT WORKS:
   1. ENSEMBLE EFFECT: Each training step uses a DIFFERENT sub-network
      (there are 2ⁿ possible sub-networks for n neurons!)
      The final model is an AVERAGE of all these sub-networks.
-  
+
   2. REDUNDANCY: No neuron can rely on another being there.
      Forces neurons to learn INDEPENDENT features.
-     
+
   3. SIMILAR TO: Bagging in random forests
      Each "tree" (sub-network) is trained on a random subset.
 
@@ -687,12 +683,12 @@ PROBLEM: "Internal Covariate Shift"
   but layer N-1 suddenly outputs [-10, 10] → layer N confused!
 
 SOLUTION: Normalize each layer's inputs to zero mean, unit variance.
-  
+
   μ_B = (1/m) Σ xᵢ                    (batch mean)
   σ²_B = (1/m) Σ (xᵢ - μ_B)²         (batch variance)
   x̂ᵢ = (xᵢ - μ_B) / √(σ²_B + ε)     (normalize)
   yᵢ = γ · x̂ᵢ + β                     (scale and shift — LEARNABLE!)
-  
+
   γ (gamma) and β (beta) are LEARNED parameters.
   WHY? Pure normalization might remove useful information.
   γ and β let the network learn to UNDO the normalization if needed.
@@ -705,13 +701,10 @@ LAYER NORMALIZATION (used in Transformers):
   Normalize across FEATURES instead of across batch.
   Why? In NLP, batch sizes vary, sequences have different lengths.
   LayerNorm is batch-size-independent.
-  
+
   BatchNorm: normalize each feature across the batch
   LayerNorm: normalize each sample across its features
 ```
-
-
-
 
 ## 7.3 Data Augmentation
 
@@ -751,10 +744,10 @@ _How modern AI works: don't train from scratch, transfer knowledge._
 THE PARADIGM SHIFT:
   Before (2012): Train each model from scratch on task-specific data
   After (2018):  Pre-train on MASSIVE general data → fine-tune on YOUR data
-  
+
   Pre-training: GPT-3 trained on 570GB of internet text (45TB compute)
   Fine-tuning: YOUR task with 1000 examples in 30 minutes on 1 GPU
-  
+
   Transfer learning is like EDUCATION:
   Pre-training = general education (K-12, college)
   Fine-tuning = specialization (medical school, law school)
@@ -764,20 +757,20 @@ TWO APPROACHES:
 
 1. FEATURE EXTRACTION (freeze base, train head):
    Pre-trained model → FREEZE all weights → Add new output layer → Train only new layer
-   
+
    Use when: your dataset is SMALL (< 1000 samples)
    Why: pre-trained features are already good, don't overfit to small data
 
 2. FINE-TUNING (unfreeze some/all layers):
    Pre-trained model → UNFREEZE last N layers → Train with small LR
-   
+
    Use when: your dataset is MEDIUM (1000-100K samples)
    Why: task-specific adaptation captures nuances
-   
+
    DISCRIMINATIVE LEARNING RATES:
    Later layers (near output): higher LR (task-specific)
    Earlier layers (near input): lower LR (general features)
-   
+
    Example: [1e-5, 3e-5, 1e-4]  for [early, middle, late] layers
 ```
 
@@ -820,15 +813,15 @@ PROBLEM: GPT-3 has 175B parameters. Fine-tuning ALL of them is:
 LORA (Low-Rank Adaptation):
   Instead of updating W (d×d matrix), learn a LOW-RANK update:
   W' = W + ∆W = W + B·A
-  
+
   Where: W is frozen (original weights)
          A: d×r matrix, B: r×d matrix (r << d, e.g., r=8)
-  
+
   Original params: d² (millions)
   LoRA params: 2·d·r (thousands!) → 0.1% of original
-  
+
   Performance: ~95-99% of full fine-tuning quality
-  
+
   Used by: LLaMA fine-tunes, Stable Diffusion fine-tunes
 
 QLORA: Quantize base model to 4-bit + LoRA
@@ -873,12 +866,11 @@ COMMON ARCHITECTURES CHEAT SHEET:
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Matrix Operations (forward pass) | [2D Arrays & Matrix](../02_Data_Structures/04_2D_Arrays_Matrix.md) |
-| Optimization math (calculus, linear algebra) | [Math for ML](04_Math_For_ML.md) |
-| Transformers → NLP applications | [NLP Complete](08_NLP_Complete.md) |
-| Graph Neural Networks | [Graph Algorithms](../03_Algorithms/05c_Graphs_Fundamentals.md) |
-| LLMs → RAG Applications | [LLM & RAG Guide](10_LLM_RAG_Applications.md) |
-| PyTorch / TensorFlow implementation | [Frameworks](09_Frameworks_PyTorch_TF.md) |
-
+| Topic                                        | Related Content                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------ |
+| Matrix Operations (forward pass)             | [2D Arrays & Matrix](../02_Data_Structures/04_2D_Arrays_Matrix.md) |
+| Optimization math (calculus, linear algebra) | [Math for ML](04_Math_For_ML.md)                                   |
+| Transformers → NLP applications              | [NLP Complete](08_NLP_Complete.md)                                 |
+| Graph Neural Networks                        | [Graph Algorithms](../03_Algorithms/05c_Graphs_Fundamentals.md)    |
+| LLMs → RAG Applications                      | [LLM & RAG Guide](10_LLM_RAG_Applications.md)                      |
+| PyTorch / TensorFlow implementation          | [Frameworks](09_Frameworks_PyTorch_TF.md)                          |

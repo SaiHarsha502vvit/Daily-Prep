@@ -49,7 +49,6 @@ _"Every API call is a journey through layers of protocols"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Section 1: HTTP Request Lifecycle
@@ -155,8 +154,6 @@ _"Every API call is a journey through layers of protocols"_
 
 ## Chapter 2: HTTP Request Structure
 
-
-
 🔬 **Section Challenge — Chapter 2: HTTP Request Structure**
 
 **Challenge 1 (Debug — Who/When/What):** A client sends `Content-Type: application/json` but the body is actually form-encoded. **Who** first detects the mismatch in Spring Boot? **What** exception is thrown? **When** in the request lifecycle?
@@ -167,23 +164,22 @@ _"Every API call is a journey through layers of protocols"_
 
 </details>
 
-
 ## Anatomy Of An Http Request
 
 REQUEST LINE
 POST /api/v1/users/123/orders HTTP/1.1
 ───┬── ─────────┬───────────── ────┬───
-| |            |                  | |
-METHOD        URL               VERSION
+| | | | |
+METHOD URL VERSION
 HEADERS
-Host: api.myapp.com                       │ ← Required in HTTP/1.1
-Content-Type: application/json            │ ← What format body is in
-Content-Length: 89                        │ ← Body size in bytes
-Accept: application/json                  │ ← What format you want back
-Authorization: Bearer eyJhbGc...          │ ← Authentication token
-User-Agent: PostmanRuntime/7.29.0         │ ← Client info
-Cache-Control: no-cache                   │ ← Caching behavior
-X-Request-ID: abc-123-def                 │ ← Custom header
+Host: api.myapp.com │ ← Required in HTTP/1.1
+Content-Type: application/json │ ← What format body is in
+Content-Length: 89 │ ← Body size in bytes
+Accept: application/json │ ← What format you want back
+Authorization: Bearer eyJhbGc... │ ← Authentication token
+User-Agent: PostmanRuntime/7.29.0 │ ← Client info
+Cache-Control: no-cache │ ← Caching behavior
+X-Request-ID: abc-123-def │ ← Custom header
 BLANK LINE
 (separates headers from body)
 BODY (optional)
@@ -196,27 +192,25 @@ BODY (optional)
 **Headers Detailed**:
 
 **General Headers**:
-Cache-Control    │ no-cache, no-store, max-age=3600
-Connection       │ keep-alive, close
-Date             │ Wed, 12 Feb 2026 10:30:00 GMT
+Cache-Control │ no-cache, no-store, max-age=3600
+Connection │ keep-alive, close
+Date │ Wed, 12 Feb 2026 10:30:00 GMT
 
 **Request Headers**:
-Accept           │ application/json, text/html, */*
-Accept-Encoding  │ gzip, deflate, br
-Accept-Language  │ en-US,en;q=0.9
-Authorization    │ Bearer token, Basic base64creds
-Host             │ api.myapp.com (required!)
-User-Agent       │ Browser/App identifier
-Cookie           │ session=abc123
-Referer          │ Previous page URL
+Accept │ application/json, text/html, _/_
+Accept-Encoding │ gzip, deflate, br
+Accept-Language │ en-US,en;q=0.9
+Authorization │ Bearer token, Basic base64creds
+Host │ api.myapp.com (required!)
+User-Agent │ Browser/App identifier
+Cookie │ session=abc123
+Referer │ Previous page URL
 ENTITY HEADERS (about the body):
-Content-Type     │ application/json, multipart/form-data
-Content-Length   │ Size in bytes
+Content-Type │ application/json, multipart/form-data
+Content-Length │ Size in bytes
 Content-Encoding │ gzip
 
 ---
-
-
 
 🔬 **Section Challenge — Anatomy Of An HTTP Request**
 
@@ -228,10 +222,7 @@ Content-Encoding │ gzip
 
 </details>
 
-
 ## Chapter 3: HTTP Response Structure
-
-
 
 🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
 
@@ -243,20 +234,19 @@ Content-Encoding │ gzip
 
 </details>
 
-
 ## Anatomy Of An Http Response
 
 STATUS LINE
 HTTP/1.1 201 Created
 ────┬─── ─┬─ ───┬───
-| |     |     | |
-VERSION CODE  PHRASE
+| | | | |
+VERSION CODE PHRASE
 RESPONSE HEADERS
 Content-Type: application/json
 Content-Length: 89
-Location: /api/v1/orders/789              │ ← For 201, where created
+Location: /api/v1/orders/789 │ ← For 201, where created
 Cache-Control: max-age=3600
-X-RateLimit-Remaining: 99                 │ ← Custom response header
+X-RateLimit-Remaining: 99 │ ← Custom response header
 Set-Cookie: session=xyz; HttpOnly
 RESPONSE BODY
 {
@@ -267,35 +257,33 @@ RESPONSE BODY
 
 **Status Codes Reference**:
 1xx INFORMATIONAL:
-100 Continue        │ Keep sending the request
-101 Switching       │ Changing protocols (WebSocket upgrade)
+100 Continue │ Keep sending the request
+101 Switching │ Changing protocols (WebSocket upgrade)
 2xx SUCCESS:
-200 OK              │ Standard success
-201 Created         │ Resource created (POST)
-202 Accepted        │ Request accepted, processing async
-204 No Content      │ Success but no body (DELETE)
+200 OK │ Standard success
+201 Created │ Resource created (POST)
+202 Accepted │ Request accepted, processing async
+204 No Content │ Success but no body (DELETE)
 3xx REDIRECTION:
 301 Moved Permanent │ URL changed permanently
-302 Found           │ Temporary redirect
-304 Not Modified    │ Cached version is still valid
+302 Found │ Temporary redirect
+304 Not Modified │ Cached version is still valid
 4xx CLIENT ERROR:
-400 Bad Request     │ Invalid syntax/data
-401 Unauthorized    │ Not authenticated
-403 Forbidden       │ Authenticated but not authorized
-404 Not Found       │ Resource doesn't exist
-405 Method Not      │ Wrong HTTP method
-409 Conflict        │ State conflict (duplicate, etc.)
-422 Unprocessable   │ Valid syntax, invalid semantics
-429 Too Many Reqs   │ Rate limit exceeded
+400 Bad Request │ Invalid syntax/data
+401 Unauthorized │ Not authenticated
+403 Forbidden │ Authenticated but not authorized
+404 Not Found │ Resource doesn't exist
+405 Method Not │ Wrong HTTP method
+409 Conflict │ State conflict (duplicate, etc.)
+422 Unprocessable │ Valid syntax, invalid semantics
+429 Too Many Reqs │ Rate limit exceeded
 5xx SERVER ERROR:
-500 Internal Error  │ Generic server error
-502 Bad Gateway     │ Upstream server error
+500 Internal Error │ Generic server error
+502 Bad Gateway │ Upstream server error
 503 Service Unavail │ Server temporarily unavailable
 504 Gateway Timeout │ Upstream server timeout
 
 ---
-
-
 
 🔬 **Section Challenge — Anatomy Of An HTTP Response**
 
@@ -306,7 +294,6 @@ RESPONSE BODY
 **Practical impact:** REST conventions say 201 = resource created + `Location` header with the new resource URL. Returning 200 omits both signals. **Who cares?** (1) API clients that check status codes for routing logic (e.g., a mobile app that reads the `Location` header to redirect). (2) OpenAPI/Swagger docs that document different status codes for different operations. (3) Monitoring systems that track 2xx but distinguish creation events. (4) Proxy servers that may cache 200 GET responses but not 201. **Fix in Spring Boot:** `return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user)` — this sets 201 AND the `Location` header automatically.
 
 </details>
-
 
 # SECTION 2: PATH VARIABLES vs QUERY PARAMETERS
 
@@ -361,19 +348,17 @@ RESPONSE BODY
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
 
 **Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
+
 <details><summary>Answer</summary>
 
 Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new TCP connection (and performing the expensive TCP/TLS handshakes) for every few requests, and requests on the same connection must wait for the previous response to finish (Head-of-Line blocking). HTTP/2 uses a single, persistent TCP connection and multiplexes all 100 requests concurrently as interleaved binary frames, completely eliminating TCP handshake overhead and blocking.
-</details>
 
+</details>
 
 ## Chapter 5: @PathVariable - Deep Dive
 
@@ -383,7 +368,7 @@ Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new T
 // ═══════════════════════════════════════════════════════════════════════════════
 //
 // @PathVariable extracts values from the URL PATH ITSELF
-// 
+//
 // URL: /users/123/orders/456
 //              ↓         ↓
 //           userId    orderId  ← These ARE PART OF THE PATH (not after ?)
@@ -397,23 +382,23 @@ Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new T
 @RestController
 @RequestMapping("/api/v1")
 public class PathVariableExamplesController {
-    
+
     // ─────────────────────────────────────────────────────────────────────────
     // BASIC PATH VARIABLE
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/users/123
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
         // id = 123
         return ResponseEntity.ok(userService.findById(id));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PATH VARIABLE WITH DIFFERENT NAME
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // When URL param name differs from Java variable name
     // GET /api/v1/users/123
     @GetMapping("/users/{userId}")
@@ -421,12 +406,12 @@ public class PathVariableExamplesController {
             @PathVariable("userId") Long id) {  // "userId" maps to id
         return ResponseEntity.ok(userService.findById(id));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // MULTIPLE PATH VARIABLES
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/users/123/orders/456
     @GetMapping("/users/{userId}/orders/{orderId}")
     public ResponseEntity<OrderResponse> getUserOrder(
@@ -435,12 +420,12 @@ public class PathVariableExamplesController {
         // userId = 123, orderId = 456
         return ResponseEntity.ok(orderService.findByUserAndId(userId, orderId));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // OPTIONAL PATH VARIABLE (Rare - usually bad design)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/products/electronics
     // GET /api/v1/products/electronics/laptops
     @GetMapping({"/products/{category}", "/products/{category}/{subcategory}"})
@@ -450,12 +435,12 @@ public class PathVariableExamplesController {
         // subcategory is null if not provided
         return ResponseEntity.ok(productService.findByCategory(category, subcategory));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PATH VARIABLE WITH MAP (all variables at once)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/regions/north/cities/seattle
     @GetMapping("/regions/{region}/cities/{city}")
     public ResponseEntity<Map<String, Object>> getRegionCity(
@@ -465,12 +450,12 @@ public class PathVariableExamplesController {
         String city = pathVars.get("city");
         return ResponseEntity.ok(locationService.find(region, city));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PATH VARIABLE WITH REGEX VALIDATION
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Only matches if id is numeric
     // GET /api/v1/items/123 ✓
     // GET /api/v1/items/abc ✗ (404, not this endpoint)
@@ -478,20 +463,20 @@ public class PathVariableExamplesController {
     public ResponseEntity<ItemResponse> getItem(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.findById(id));
     }
-    
+
     // GET /api/v1/items/abc would match THIS endpoint instead
     @GetMapping("/items/{slug:[a-z-]+}")  // lowercase letters and hyphens
     public ResponseEntity<ItemResponse> getItemBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(itemService.findBySlug(slug));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PATH VARIABLE DATA TYPES
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Spring automatically converts String from URL to target type
-    
+
     @GetMapping("/numbers/{num}")
     public String numberTypes(
             @PathVariable int num,          // "123" → 123
@@ -499,7 +484,7 @@ public class PathVariableExamplesController {
             @PathVariable Double num3) {    // "12.5" → 12.5
         return "converted!";
     }
-    
+
     // Works with @DateTimeFormat
     @GetMapping("/events/{date}")
     public ResponseEntity<List<EventResponse>> getEventsByDate(
@@ -508,21 +493,21 @@ public class PathVariableExamplesController {
         // date = LocalDate.of(2026, 2, 12)
         return ResponseEntity.ok(eventService.findByDate(date));
     }
-    
+
     // Works with UUIDs
     @GetMapping("/sessions/{sessionId}")
     public ResponseEntity<SessionResponse> getSession(@PathVariable UUID sessionId) {
         // URL: /sessions/550e8400-e29b-41d4-a716-446655440000
         return ResponseEntity.ok(sessionService.findById(sessionId));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PATH VARIABLE WITH ENUM
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     public enum ReportType { DAILY, WEEKLY, MONTHLY, YEARLY }
-    
+
     // GET /api/v1/reports/WEEKLY
     @GetMapping("/reports/{type}")
     public ResponseEntity<ReportResponse> getReport(@PathVariable ReportType type) {
@@ -543,7 +528,7 @@ public class PathVariableExamplesController {
 // ═══════════════════════════════════════════════════════════════════════════════
 //
 // @RequestParam extracts values from QUERY STRING (after ?)
-// 
+//
 // URL: /users?name=John&age=25&active=true
 //              ↓       ↓       ↓
 //            name    age    active  ← These come AFTER the ?
@@ -557,11 +542,11 @@ public class PathVariableExamplesController {
 @RestController
 @RequestMapping("/api/v1")
 public class RequestParamExamplesController {
-    
+
     // ─────────────────────────────────────────────────────────────────────────
     // BASIC QUERY PARAMETER
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/users?name=John
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> searchUsers(
@@ -569,12 +554,12 @@ public class RequestParamExamplesController {
         // name = "John"
         return ResponseEntity.ok(userService.searchByName(name));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // OPTIONAL PARAMETER (with default)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/products           → page=0, size=20
     // GET /api/v1/products?page=2    → page=2, size=20
     // GET /api/v1/products?size=50   → page=0, size=50
@@ -584,12 +569,12 @@ public class RequestParamExamplesController {
             @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(productService.findAll(PageRequest.of(page, size)));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // TRULY OPTIONAL (null if not provided)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/orders                    → status=null, minAmount=null
     // GET /api/v1/orders?status=PENDING     → status=PENDING, minAmount=null
     @GetMapping("/orders")
@@ -598,12 +583,12 @@ public class RequestParamExamplesController {
             @RequestParam(required = false) BigDecimal minAmount) {
         return ResponseEntity.ok(orderService.search(status, minAmount));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // MULTIPLE VALUES (List/Array)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/products?category=electronics&category=books&category=toys
     // OR: /api/v1/products?category=electronics,books,toys
     @GetMapping("/products/filter")
@@ -612,7 +597,7 @@ public class RequestParamExamplesController {
         // category = ["electronics", "books", "toys"]
         return ResponseEntity.ok(productService.findByCategories(category));
     }
-    
+
     // GET /api/v1/items?ids=1,2,3,4,5
     @GetMapping("/items")
     public ResponseEntity<List<ItemResponse>> getItems(
@@ -620,24 +605,24 @@ public class RequestParamExamplesController {
         // ids = [1L, 2L, 3L, 4L, 5L]
         return ResponseEntity.ok(itemService.findAllById(ids));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // DIFFERENT PARAMETER NAME
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/search?q=spring+boot
     @GetMapping("/search")
     public ResponseEntity<SearchResult> search(
             @RequestParam("q") String query) {  // "q" in URL → "query" in code
         return ResponseEntity.ok(searchService.search(query));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // ALL PARAMETERS AS MAP
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/custom?color=red&size=large&brand=nike
     @GetMapping("/custom")
     public ResponseEntity<Map<String, Object>> customSearch(
@@ -645,12 +630,12 @@ public class RequestParamExamplesController {
         // params = {"color": "red", "size": "large", "brand": "nike"}
         return ResponseEntity.ok(catalogService.search(params));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // DATE/TIME PARAMETERS
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/events?from=2026-01-01&to=2026-12-31
     @GetMapping("/events")
     public ResponseEntity<List<EventResponse>> getEvents(
@@ -658,20 +643,20 @@ public class RequestParamExamplesController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return ResponseEntity.ok(eventService.findBetween(from, to));
     }
-    
+
     // With time: /api/v1/logs?since=2026-02-12T08:30:00
     @GetMapping("/logs")
     public ResponseEntity<List<LogEntry>> getLogs(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) 
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             LocalDateTime since) {
         return ResponseEntity.ok(logService.findSince(since));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // BOOLEAN PARAMETERS
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/users?active=true&verified=false
     // Note: "true", "yes", "1" all work for true
     //       "false", "no", "0" all work for false
@@ -681,12 +666,12 @@ public class RequestParamExamplesController {
             @RequestParam(required = false) Boolean verified) {  // Can be null
         return ResponseEntity.ok(userService.filter(active, verified));
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // COMPLEX FILTERING - REAL WORLD EXAMPLE
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // GET /api/v1/jobs?
     //     keyword=java&
     //     location=seattle&
@@ -698,7 +683,7 @@ public class RequestParamExamplesController {
     //     sortDir=desc&
     //     page=0&
     //     size=20
-    
+
     @GetMapping("/jobs")
     public ResponseEntity<Page<JobResponse>> searchJobs(
             @RequestParam(required = false) String keyword,
@@ -711,7 +696,7 @@ public class RequestParamExamplesController {
             @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        
+
         JobSearchCriteria criteria = JobSearchCriteria.builder()
             .keyword(keyword)
             .location(location)
@@ -720,13 +705,13 @@ public class RequestParamExamplesController {
             .maxSalary(maxSalary)
             .experienceLevels(experience)
             .build();
-        
-        Sort sort = sortDir.equalsIgnoreCase("asc") 
-            ? Sort.by(sortBy).ascending() 
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+            ? Sort.by(sortBy).ascending()
             : Sort.by(sortBy).descending();
-        
+
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        
+
         return ResponseEntity.ok(jobService.search(criteria, pageRequest));
     }
 }
@@ -804,7 +789,6 @@ public class RequestParamExamplesController {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -988,7 +972,6 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 🌐 Section 4: Network Protocols
@@ -1056,7 +1039,6 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Chapter 11: Building Protocol Clients in Spring Boot
@@ -1083,10 +1065,10 @@ public class RequestParamExamplesController {
 @RequiredArgsConstructor
 @Slf4j
 public class EmailService {
-    
+
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;  // Thymeleaf
-    
+
     // Simple text email
     public void sendSimpleEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -1096,43 +1078,43 @@ public class EmailService {
         mailSender.send(message);
         log.info("Email sent to {}", to);
     }
-    
+
     // HTML email with template
-    public void sendHtmlEmail(String to, String subject, String template, 
+    public void sendHtmlEmail(String to, String subject, String template,
                               Map<String, Object> variables) {
         try {
             Context context = new Context();
             context.setVariables(variables);
             String htmlContent = templateEngine.process(template, context);
-            
+
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            
+
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);  // true = HTML
-            
+
             mailSender.send(message);
             log.info("HTML email sent to {}", to);
         } catch (MessagingException e) {
             throw new EmailException("Failed to send email", e);
         }
     }
-    
+
     // Email with attachment
-    public void sendEmailWithAttachment(String to, String subject, String body, 
+    public void sendEmailWithAttachment(String to, String subject, String body,
                                          String attachmentPath) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            
+
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body);
-            
+
             FileSystemResource file = new FileSystemResource(new File(attachmentPath));
             helper.addAttachment(file.getFilename(), file);
-            
+
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new EmailException("Failed to send email with attachment", e);
@@ -1151,29 +1133,29 @@ public class EmailService {
 @RequiredArgsConstructor
 @Slf4j
 public class FtpService {
-    
+
     @Value("${ftp.host}")
     private String host;
-    
+
     @Value("${ftp.port}")
     private int port;
-    
+
     @Value("${ftp.username}")
     private String username;
-    
+
     @Value("${ftp.password}")
     private String password;
-    
+
     public void uploadFile(String localPath, String remotePath) {
         FTPClient ftpClient = new FTPClient();
-        
+
         try {
             // Connect
             ftpClient.connect(host, port);
             ftpClient.login(username, password);
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            
+
             // Upload
             try (InputStream inputStream = new FileInputStream(localPath)) {
                 boolean success = ftpClient.storeFile(remotePath, inputStream);
@@ -1181,9 +1163,9 @@ public class FtpService {
                     throw new FtpException("Failed to upload file");
                 }
             }
-            
+
             log.info("File uploaded: {} → {}", localPath, remotePath);
-            
+
         } catch (IOException e) {
             throw new FtpException("FTP operation failed", e);
         } finally {
@@ -1195,24 +1177,24 @@ public class FtpService {
             } catch (IOException ignored) {}
         }
     }
-    
+
     public void downloadFile(String remotePath, String localPath) {
         FTPClient ftpClient = new FTPClient();
-        
+
         try {
             ftpClient.connect(host, port);
             ftpClient.login(username, password);
             ftpClient.enterLocalPassiveMode();
-            
+
             try (OutputStream outputStream = new FileOutputStream(localPath)) {
                 boolean success = ftpClient.retrieveFile(remotePath, outputStream);
                 if (!success) {
                     throw new FtpException("Failed to download file");
                 }
             }
-            
+
             log.info("File downloaded: {} → {}", remotePath, localPath);
-            
+
         } catch (IOException e) {
             throw new FtpException("FTP operation failed", e);
         } finally {
@@ -1224,20 +1206,20 @@ public class FtpService {
             } catch (IOException ignored) {}
         }
     }
-    
+
     public List<String> listFiles(String remotePath) {
         FTPClient ftpClient = new FTPClient();
-        
+
         try {
             ftpClient.connect(host, port);
             ftpClient.login(username, password);
             ftpClient.enterLocalPassiveMode();
-            
+
             FTPFile[] files = ftpClient.listFiles(remotePath);
             return Arrays.stream(files)
                 .map(FTPFile::getName)
                 .collect(Collectors.toList());
-                
+
         } catch (IOException e) {
             throw new FtpException("FTP list failed", e);
         } finally {
@@ -1261,7 +1243,7 @@ public class FtpService {
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // Messages TO client use /topic prefix
@@ -1271,7 +1253,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // User-specific messages
         config.setUserDestinationPrefix("/user");
     }
-    
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // WebSocket endpoint
@@ -1285,16 +1267,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
-    
+
     private final SimpMessagingTemplate messagingTemplate;
-    
+
     // Receive message from client, broadcast to all subscribers
     @MessageMapping("/chat.sendMessage")  // Client sends to /app/chat.sendMessage
     @SendTo("/topic/public")              // Broadcast to all subscribers
     public ChatMessage sendMessage(ChatMessage message) {
         return message;
     }
-    
+
     // Send to specific user
     @MessageMapping("/chat.sendPrivate")
     public void sendPrivateMessage(PrivateMessage message, Principal principal) {
@@ -1304,7 +1286,7 @@ public class ChatController {
             message
         );
     }
-    
+
     // Send from any service (not just WebSocket handler)
     public void notifyUser(String username, Notification notification) {
         messagingTemplate.convertAndSendToUser(
@@ -1333,22 +1315,22 @@ public class ChatController {
 @Component
 @Slf4j
 public class TcpServer {
-    
+
     @Value("${tcp.server.port:9090}")
     private int port;
-    
+
     private ServerSocket serverSocket;
     private ExecutorService executorService;
-    
+
     @PostConstruct
     public void start() {
         executorService = Executors.newCachedThreadPool();
-        
+
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
                 log.info("TCP Server started on port {}", port);
-                
+
                 while (!serverSocket.isClosed()) {
                     Socket clientSocket = serverSocket.accept();
                     executorService.submit(() -> handleClient(clientSocket));
@@ -1358,7 +1340,7 @@ public class TcpServer {
             }
         }).start();
     }
-    
+
     private void handleClient(Socket socket) {
         try (
             BufferedReader in = new BufferedReader(
@@ -1368,7 +1350,7 @@ public class TcpServer {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 log.info("Received: {}", inputLine);
-                
+
                 // Process command (custom protocol)
                 String response = processCommand(inputLine);
                 out.println(response);
@@ -1377,7 +1359,7 @@ public class TcpServer {
             log.error("Client handling error", e);
         }
     }
-    
+
     private String processCommand(String command) {
         // Simple command processor
         return switch (command.toUpperCase()) {
@@ -1387,7 +1369,7 @@ public class TcpServer {
             default -> "UNKNOWN COMMAND";
         };
     }
-    
+
     @PreDestroy
     public void stop() throws IOException {
         if (serverSocket != null) {
@@ -1407,16 +1389,16 @@ public class TcpServer {
 // Proto file: user_service.proto
 // syntax = "proto3";
 // package com.myapp;
-// 
+//
 // service UserService {
 //   rpc GetUser (GetUserRequest) returns (UserResponse);
 //   rpc ListUsers (ListUsersRequest) returns (stream UserResponse);
 // }
-// 
+//
 // message GetUserRequest {
 //   int64 id = 1;
 // }
-// 
+//
 // message UserResponse {
 //   int64 id = 1;
 //   string name = 2;
@@ -1427,28 +1409,28 @@ public class TcpServer {
 
 @GrpcService
 public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @Override
-    public void getUser(GetUserRequest request, 
+    public void getUser(GetUserRequest request,
                         StreamObserver<UserResponse> responseObserver) {
         User user = userRepository.findById(request.getId())
             .orElseThrow(() -> new StatusRuntimeException(Status.NOT_FOUND));
-        
+
         UserResponse response = UserResponse.newBuilder()
             .setId(user.getId())
             .setName(user.getName())
             .setEmail(user.getEmail())
             .build();
-        
+
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
-    
+
     @Override
-    public void listUsers(ListUsersRequest request, 
+    public void listUsers(ListUsersRequest request,
                           StreamObserver<UserResponse> responseObserver) {
         // Streaming response
         userRepository.findAll().forEach(user -> {
@@ -1466,16 +1448,15 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
 
 **Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
+
 <details><summary>Answer</summary>
 
 Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new TCP connection (and performing the expensive TCP/TLS handshakes) for every few requests, and requests on the same connection must wait for the previous response to finish (Head-of-Line blocking). HTTP/2 uses a single, persistent TCP connection and multiplexes all 100 requests concurrently as interleaved binary frames, completely eliminating TCP handshake overhead and blocking.
-</details>
 
+</details>
 
 ## Chapter 12: HTTP Client Implementations
 
@@ -1488,32 +1469,32 @@ Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new T
 @Service
 @RequiredArgsConstructor
 public class ExternalApiService {
-    
+
     private final RestTemplate restTemplate;
-    
+
     public UserDto getUser(Long id) {
         String url = "https://api.external.com/users/{id}";
         return restTemplate.getForObject(url, UserDto.class, id);
     }
-    
+
     public UserDto createUser(CreateUserRequest request) {
         String url = "https://api.external.com/users";
         return restTemplate.postForObject(url, request, UserDto.class);
     }
-    
+
     // With headers
     public UserDto getUserWithAuth(Long id, String token) {
         String url = "https://api.external.com/users/{id}";
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        
+
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        
+
         ResponseEntity<UserDto> response = restTemplate.exchange(
             url, HttpMethod.GET, entity, UserDto.class, id);
-        
+
         return response.getBody();
     }
 }
@@ -1521,7 +1502,7 @@ public class ExternalApiService {
 // RestTemplate bean configuration
 @Configuration
 public class RestTemplateConfig {
-    
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
@@ -1536,16 +1517,16 @@ public class RestTemplateConfig {
 @Service
 @RequiredArgsConstructor
 public class ReactiveApiService {
-    
+
     private final WebClient webClient;
-    
+
     public Mono<UserDto> getUser(Long id) {
         return webClient.get()
             .uri("/users/{id}", id)
             .retrieve()
             .bodyToMono(UserDto.class);
     }
-    
+
     // Blocking call (if you need synchronous)
     public UserDto getUserBlocking(Long id) {
         return webClient.get()
@@ -1554,15 +1535,15 @@ public class ReactiveApiService {
             .bodyToMono(UserDto.class)
             .block();  // Blocks until complete
     }
-    
+
     // With error handling
     public Mono<UserDto> getUserWithErrorHandling(Long id) {
         return webClient.get()
             .uri("/users/{id}", id)
             .retrieve()
-            .onStatus(HttpStatus::is4xxClientError, response -> 
+            .onStatus(HttpStatus::is4xxClientError, response ->
                 Mono.error(new ClientException("Client error: " + response.statusCode())))
-            .onStatus(HttpStatus::is5xxServerError, response -> 
+            .onStatus(HttpStatus::is5xxServerError, response ->
                 Mono.error(new ServerException("Server error: " + response.statusCode())))
             .bodyToMono(UserDto.class)
             .timeout(Duration.ofSeconds(10));
@@ -1572,7 +1553,7 @@ public class ReactiveApiService {
 // WebClient bean configuration
 @Configuration
 public class WebClientConfig {
-    
+
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
@@ -1581,7 +1562,7 @@ public class WebClientConfig {
             .filter(logRequest())
             .build();
     }
-    
+
     private ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
@@ -1598,20 +1579,20 @@ public class WebClientConfig {
 
 @FeignClient(name = "user-service", url = "${external.api.url}")
 public interface UserClient {
-    
+
     @GetMapping("/users/{id}")
     UserDto getUser(@PathVariable Long id);
-    
+
     @GetMapping("/users")
     List<UserDto> getAllUsers(@RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "20") int size);
-    
+
     @PostMapping("/users")
     UserDto createUser(@RequestBody CreateUserRequest request);
-    
+
     @PutMapping("/users/{id}")
     UserDto updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request);
-    
+
     @DeleteMapping("/users/{id}")
     void deleteUser(@PathVariable Long id);
 }
@@ -1620,9 +1601,9 @@ public interface UserClient {
 @Service
 @RequiredArgsConstructor
 public class UserManagementService {
-    
+
     private final UserClient userClient;  // Auto-injected
-    
+
     public UserDto getUser(Long id) {
         return userClient.getUser(id);
     }
@@ -1632,7 +1613,6 @@ public class UserManagementService {
 ---
 
 _Continue to Part 11: Authentication & Authorization_
-
 
 ---
 
@@ -1647,6 +1627,3 @@ _Continue to Part 11: Authentication & Authorization_
 **Who blocks?** `RestTemplate` always blocks the calling thread — it's synchronous. `WebClient` is non-blocking by default. **When pick WebClient in non-reactive?** (1) When you need reactive features like streaming, SSE, or connection pooling with backpressure. (2) RestTemplate is in maintenance mode since Spring 5 — new features only in WebClient. (3) When consuming microservices with variable latency — `WebClient` can aggregate multiple parallel calls with `Mono.zip()`. **What does `block()` do?** Subscribes to the reactive pipeline and blocks the current thread until the result arrives — similar to `CompletableFuture.get()`. You get the convenience of sync code while the underlying HTTP layer remains non-blocking. Downside: defeats reactive scalability — avoid in reactive contexts.
 
 </details>
-
-
-

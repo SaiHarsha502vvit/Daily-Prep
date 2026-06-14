@@ -8,11 +8,11 @@
 
 A browser, while displaying a page, maintains four trees in parallel:
 
-| Tree | What it represents |
-|---|---|
-| **DOM tree** | The HTML structure as JavaScript sees it |
-| **CSSOM tree** | The computed CSS styles for each node |
-| **Render tree** | DOM + CSSOM combined, minus invisible nodes |
+| Tree                   | What it represents                            |
+| ---------------------- | --------------------------------------------- |
+| **DOM tree**           | The HTML structure as JavaScript sees it      |
+| **CSSOM tree**         | The computed CSS styles for each node         |
+| **Render tree**        | DOM + CSSOM combined, minus invisible nodes   |
 | **Accessibility tree** | What assistive tech (screen readers) perceive |
 
 Most of what tests do interacts with the DOM tree. But `getByRole`, `getByLabel`, etc. read the ACCESSIBILITY tree. And waits for "visible" check the RENDER tree.
@@ -51,8 +51,9 @@ Tests touch this via `page.locator('.card')`, `getByText('Title')`, etc.
 ### What this means for tests
 
 When you write:
+
 ```typescript
-const el = await page.locator('.card').textContent();
+const el = await page.locator(".card").textContent();
 ```
 
 You're asking the browser: "Find a `.card` in the CURRENT DOM and return its text." It's a snapshot. The DOM might change next millisecond.
@@ -66,8 +67,13 @@ Why `expect(loc).toHaveText(...)` is better than `expect(await loc.textContent()
 Parsed from CSS. Joined with the DOM to determine final styles.
 
 ```css
-.card { background: white; padding: 16px; }
-.card.featured { background: yellow; }
+.card {
+  background: white;
+  padding: 16px;
+}
+.card.featured {
+  background: yellow;
+}
 ```
 
 The CSSOM doesn't have a 1:1 element correspondence with DOM. It's a separate model of rules + selectors + cascade.
@@ -77,7 +83,9 @@ The CSSOM doesn't have a 1:1 element correspondence with DOM. It's a separate mo
 Computed style — what's ACTUALLY applied — is the join:
 
 ```typescript
-const bg = await page.locator('.card').evaluate(el => getComputedStyle(el).backgroundColor);
+const bg = await page
+  .locator(".card")
+  .evaluate((el) => getComputedStyle(el).backgroundColor);
 // Reflects DOM state + CSS cascade
 ```
 
@@ -95,13 +103,14 @@ Playwright's "visible" check uses the render tree. An element with `display: non
 
 ```typescript
 // Element exists in DOM
-const exists = await page.locator('.hidden').count();   // 1
+const exists = await page.locator(".hidden").count(); // 1
 
 // But isn't rendered
-const visible = await page.locator('.hidden').isVisible();   // false
+const visible = await page.locator(".hidden").isVisible(); // false
 ```
 
 The DOM and render tree DIVERGE for:
+
 - `display: none`
 - `<head>` content
 - `<template>` content (only DOM, not rendered)
@@ -133,7 +142,7 @@ DOM: `HTMLDivElement`. A11y tree: `{role: "button", name: "Save"}` — same as a
 
 ```typescript
 // Finds both examples above
-page.getByRole('button', { name: 'Save' });
+page.getByRole("button", { name: "Save" });
 ```
 
 This is why semantic locators are stable: they describe what the user experiences, not how the developer structured it.
@@ -165,7 +174,7 @@ Each step is async. JS runs first; rendering happens at the next frame.
 After clicking a button that triggers a CSS change:
 
 ```typescript
-await page.click('#toggle-theme');
+await page.click("#toggle-theme");
 // CSS class has been added to <html>
 // But the visual update happens at the next paint
 ```
@@ -221,6 +230,7 @@ window
 ```
 
 Three phases:
+
 1. **Capture** — top-down to target. Listeners with `{capture: true}` fire here.
 2. **Target** — at the element. Listeners on the target fire.
 3. **Bubble** — bottom-up. Listeners on ancestors fire.
@@ -236,9 +246,9 @@ For mocking events (`page.dispatchEvent`), you can fire on a SPECIFIC element wi
 ## Layout vs paint
 
 ```typescript
-element.style.width = '300px';   // triggers layout — synchronous
-element.style.color = 'red';     // triggers paint only — cheaper
-element.classList.add('foo');    // may trigger layout AND paint
+element.style.width = "300px"; // triggers layout — synchronous
+element.style.color = "red"; // triggers paint only — cheaper
+element.classList.add("foo"); // may trigger layout AND paint
 ```
 
 Layout (reflow) is expensive. Paint is cheap. CSS that triggers layout on every animation frame causes "jank."
@@ -251,8 +261,8 @@ For performance-sensitive tests, batch reads:
 
 ```typescript
 const positions = await page.evaluate(() => {
-  return Array.from(document.querySelectorAll('.card')).map(el => 
-    el.getBoundingClientRect()
+  return Array.from(document.querySelectorAll(".card")).map((el) =>
+    el.getBoundingClientRect(),
   );
 });
 ```

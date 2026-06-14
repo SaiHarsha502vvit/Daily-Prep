@@ -49,7 +49,6 @@ _"Understand the magic behind the annotations"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📖 JPA Fundamentals
@@ -126,14 +125,12 @@ _"Understand the magic behind the annotations"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
 
 **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -149,9 +146,10 @@ List<Order> findAllWithCustomer();
 @EntityGraph(attributePaths = "customer")
 List<Order> findAll();
 ```
-Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-</details>
 
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+
+</details>
 
 ## Chapter 2: Entity Mapping Deep Dive
 
@@ -402,16 +400,15 @@ public class Address {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 2: Entity Mapping Deep Dive**
 
 **Challenge 1 (Reasoning):** You execute a query that returns 100 `Author` entities. Each `Author` has a `@OneToMany` list of `Book` entities. You loop through the authors and call `author.getBooks().size()`. Why does this crash your database performance?
+
 <details><summary>Answer</summary>
 
 The N+1 Query Problem. The initial query fetches 100 Authors (1 query). When you call `getBooks()` on the first author, Hibernate executes a new SQL query to fetch their books. It repeats this for all 100 authors. You just executed 1 + 100 = 101 separate SQL queries instead of a single join. To fix this, you must use a `JOIN FETCH` in your JPQL query or a `@EntityGraph` to load the authors and their books in a single database round-trip.
-</details>
 
+</details>
 
 ## Chapter 3: Entity Relationships
 
@@ -430,7 +427,6 @@ The N+1 Query Problem. The initial query fetches 100 Authors (1 query). When you
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### One-to-One Relationship
 
@@ -751,7 +747,6 @@ public class UserRoleId implements Serializable {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### N+1 Query Visual Flow — Sequence Diagram
 
 ```
@@ -820,7 +815,6 @@ public class UserRoleId implements Serializable {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Solutions to N+1
 
@@ -946,7 +940,6 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Chapter 5: Entity Lifecycle & Persistence Context
@@ -987,7 +980,6 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Understanding the States
 
@@ -1092,8 +1084,6 @@ public class EntityLifecycleDemo {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
 
 **Challenge 1 (Debug — Who/When/What):** You load a `User` entity, modify `user.setEmail("new@email.com")`, and DON'T call `entityManager.save()`. The email IS updated in the database. **Who** detected and persisted the change? **When** does flush happen? **What** is the mechanism?
@@ -1103,7 +1093,6 @@ public class EntityLifecycleDemo {
 **Who?** JPA's **dirty checking** mechanism — the persistence context (first-level cache) stores a snapshot of every managed entity at load time. At flush, it compares current field values against the snapshot. **When flush happens:** By default `FlushModeType.AUTO` — before query execution (to avoid stale reads) and at transaction commit. So your modification is flushed at `@Transactional` method exit → `EntityManager.flush()` → `EntityManager.close()` → `UPDATE` SQL sent. **Mechanism:** Hibernate compares entity field by field (reflective snapshot). If ANY field changed → generates `UPDATE SET field=? WHERE id=?`. **When to be careful:** (1) In `@Transactional` methods — unintended mutations flush automatically. (2) For bulk updates, use JPQL `UPDATE` to bypass dirty checking overhead. (3) Use `entityManager.detach(entity)` to remove from persistence context and prevent dirty check.
 
 </details>
-
 
 ## Chapter 6: Cascade Types
 
@@ -1195,18 +1184,17 @@ public class User {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Cascade Types**
 
 **Challenge 1 (Debug — Who/When/What):** `@OneToMany(cascade = CascadeType.ALL)` — you delete a `User` and ALL their `Orders` are deleted. **Who** issues the DELETE statements? **When** relative to the parent DELETE? **What** happens if an Order has FK references from another table?\n\n<details><summary>Answer</summary>\n\n**Who issues?** Hibernate's `DefaultDeleteEventListener`. CascadeType.REMOVE propagates `session.delete()` to each child entity. **When?** Children are deleted BEFORE the parent (to satisfy FK constraints). Hibernate traverses the cascade graph depth-first. **FK from another table?** If `order_items` table has `order_id` FK without `ON DELETE CASCADE`, Hibernate deletes `Order` but `order_items` still reference it → `ConstraintViolationException`. **Fix options:** (1) Add `orphanRemoval = true` + handle items in lifecycle. (2) Set `@OnDelete(action = OnDeleteAction.CASCADE)` on the DB constraint. (3) Remove items first in application code. **Warning:** `CascadeType.ALL` + `CascadeType.REMOVE` are often too aggressive — prefer explicit control of delete cascades.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## Chapter 7: Transactions
 
@@ -1394,16 +1382,15 @@ public class BrokenService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: Transactions**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Chapter 8: JPA Best Practices Summary
 
@@ -1445,11 +1432,9 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Continue to Part 9: Clean Architecture & Quality Code_
-
 
 ---
 

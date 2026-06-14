@@ -3,17 +3,20 @@
 **Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
 
 **Open-Source Tools Referenced:**
+
 - **axe-core** — https://github.com/dequelabs/axe-core (MPL 2.0) — the world's leading accessibility testing engine, by Deque Systems
 - **@axe-core/playwright** — https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright (MPL 2.0)
 - **axe-html-reporter** — https://github.com/lpelypenko/axe-html-reporter (MIT) — beautiful HTML reports
 
 **Online References:**
+
 - https://www.w3.org/WAI/WCAG21/quickref/ — WCAG 2.1 Quick Reference (W3C)
 - https://dequeuniversity.com/rules/axe/ — axe rule descriptions (Deque University)
 - https://web.dev/accessibility/ — Google's accessibility guide
 - https://a11y.coffee/ — Community accessibility guide
 
 **Cross-references (this repo):**
+
 - [`Ch52 Component Testing`](../05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) — testing components in isolation, including ARIA assertions
 - [`Ch02 Enterprise Locators (XPath, getByRole)`](../01_Foundations/02_Enterprise_Locators_XPath.md) — role/label/text selectors that drive accessible markup discipline
 
@@ -63,12 +66,12 @@ Key WCAG 2.1 AA rules you'll encounter:
 
 Axe classifies violations into four impact levels. Understanding these is critical for triage:
 
-| Impact Level | Description | CI Strategy | Example Rules |
-|---|---|---|---|
-| **Critical** | Prevents users from accessing or operating the content entirely. | **BLOCK CI** | `aria-required-children`, `button-name`, `label` |
-| **Serious** | Causes significant frustration or forces users to find workarounds. | **BLOCK CI** | `color-contrast`, `duplicate-id-active`, `tabindex` |
-| **Moderate** | Annoying, but users can still accomplish their goals. | **WARN** / Add to backlog | `landmark-one-main`, `region` |
-| **Minor** | Small nitpicks or edge cases that don't severely impact usability. | **IGNORE** / Add to backlog | `css-orientation-lock`, `html-has-lang` |
+| Impact Level | Description                                                         | CI Strategy                 | Example Rules                                       |
+| ------------ | ------------------------------------------------------------------- | --------------------------- | --------------------------------------------------- |
+| **Critical** | Prevents users from accessing or operating the content entirely.    | **BLOCK CI**                | `aria-required-children`, `button-name`, `label`    |
+| **Serious**  | Causes significant frustration or forces users to find workarounds. | **BLOCK CI**                | `color-contrast`, `duplicate-id-active`, `tabindex` |
+| **Moderate** | Annoying, but users can still accomplish their goals.               | **WARN** / Add to backlog   | `landmark-one-main`, `region`                       |
+| **Minor**    | Small nitpicks or edge cases that don't severely impact usability.  | **IGNORE** / Add to backlog | `css-orientation-lock`, `html-has-lang`             |
 
 ---
 
@@ -92,8 +95,8 @@ npm show axe-core version               # → e.g., 4.9.1
 
 ```typescript
 // fixtures/accessibility.fixture.ts
-import AxeBuilder from '@axe-core/playwright';
-import type { AxeResults, Result } from 'axe-core';
+import AxeBuilder from "@axe-core/playwright";
+import type { AxeResults, Result } from "axe-core";
 
 export interface AccessibilityFixtures {
   // Run axe on the current page and return results
@@ -110,20 +113,21 @@ export interface A11yOptions {
   // CSS selectors to exclude from scanning (e.g. third-party widgets you can't fix)
   exclude?: string[];
   // Impact levels to fail on: 'critical' | 'serious' | 'moderate' | 'minor'
-  failOnImpact?: ('critical' | 'serious' | 'moderate' | 'minor')[];
+  failOnImpact?: ("critical" | "serious" | "moderate" | "minor")[];
 }
 
 export const test = base.extend<AccessibilityFixtures>({
-
   runA11y: async ({ page }, use) => {
     const runner = async (options: A11yOptions = {}): Promise<AxeResults> => {
       const builder = new AxeBuilder({ page })
-        .withTags(options.tags ?? ['wcag2a', 'wcag2aa', 'wcag21aa'])  // target WCAG 2.1 AA
-        .exclude(options.exclude ?? [
-          // Common exclusions in enterprise apps:
-          '[data-testid="third-party-chat-widget"]',  // third-party we can't fix
-          '.ms-CommandBar-overflowButton',             // D365 Fluent UI overflow (known issue)
-        ]);
+        .withTags(options.tags ?? ["wcag2a", "wcag2aa", "wcag21aa"]) // target WCAG 2.1 AA
+        .exclude(
+          options.exclude ?? [
+            // Common exclusions in enterprise apps:
+            '[data-testid="third-party-chat-widget"]', // third-party we can't fix
+            ".ms-CommandBar-overflowButton", // D365 Fluent UI overflow (known issue)
+          ],
+        );
 
       if (options.runOnly) {
         builder.withRules(options.runOnly);
@@ -132,10 +136,10 @@ export const test = base.extend<AccessibilityFixtures>({
       const results = await builder.analyze();
 
       // Attach results to test report for visibility
-      const { test } = await import('@playwright/test');
-      test.info().attach('axe-results', {
+      const { test } = await import("@playwright/test");
+      test.info().attach("axe-results", {
         body: JSON.stringify(results, null, 2),
-        contentType: 'application/json',
+        contentType: "application/json",
       });
 
       return results;
@@ -147,25 +151,29 @@ export const test = base.extend<AccessibilityFixtures>({
   assertA11y: async ({ runA11y }, use) => {
     const asserter = async (options: A11yOptions = {}): Promise<void> => {
       const results = await runA11y(options);
-      const impactThreshold = options.failOnImpact ?? ['critical', 'serious'];
+      const impactThreshold = options.failOnImpact ?? ["critical", "serious"];
 
       // Filter to only violations at or above the impact threshold
-      const failures = results.violations.filter(v =>
-        impactThreshold.includes(v.impact as any)
+      const failures = results.violations.filter((v) =>
+        impactThreshold.includes(v.impact as any),
       );
 
       if (failures.length > 0) {
         // Format a human-readable failure message
-        const message = failures.map(v =>
-          `[${v.impact?.toUpperCase()}] ${v.id}: ${v.description}\n` +
-          `  Help: ${v.helpUrl}\n` +
-          v.nodes.slice(0, 3).map(n =>
-            `  → ${n.target.join(', ')}: ${n.failureSummary}`
-          ).join('\n')
-        ).join('\n\n');
+        const message = failures
+          .map(
+            (v) =>
+              `[${v.impact?.toUpperCase()}] ${v.id}: ${v.description}\n` +
+              `  Help: ${v.helpUrl}\n` +
+              v.nodes
+                .slice(0, 3)
+                .map((n) => `  → ${n.target.join(", ")}: ${n.failureSummary}`)
+                .join("\n"),
+          )
+          .join("\n\n");
 
         throw new Error(
-          `${failures.length} accessibility violation(s) found:\n\n${message}`
+          `${failures.length} accessibility violation(s) found:\n\n${message}`,
         );
       }
     };
@@ -183,40 +191,47 @@ export const test = base.extend<AccessibilityFixtures>({
 
 ```typescript
 // tests/specs/accessibility/citation-pages.a11y.spec.ts
-import { test, expect } from '../../fixtures';
+import { test, expect } from "../../fixtures";
 
-test.describe('Accessibility @a11y @wcag', () => {
-
-  test('Citation search page — no WCAG 2.1 AA violations', async ({
+test.describe("Accessibility @a11y @wcag", () => {
+  test("Citation search page — no WCAG 2.1 AA violations", async ({
     page,
     assertA11y,
   }) => {
-    await page.goto('/citations');
-    await page.waitForLoadState('networkidle');  // wait for dynamic content to load
+    await page.goto("/citations");
+    await page.waitForLoadState("networkidle"); // wait for dynamic content to load
 
     // Assert: zero critical or serious violations
     await assertA11y({
-      tags: ['wcag2a', 'wcag2aa', 'wcag21aa'],
-      failOnImpact: ['critical', 'serious'],
+      tags: ["wcag2a", "wcag2aa", "wcag21aa"],
+      failOnImpact: ["critical", "serious"],
     });
   });
 
-  test('Citation creation form — all form fields are labelled', async ({
+  test("Citation creation form — all form fields are labelled", async ({
     page,
     runA11y,
   }) => {
-    await page.goto('/citations/new');
+    await page.goto("/citations/new");
 
     const results = await runA11y({
       // Only test form-labelling rules — specific assertion
-      runOnly: ['label', 'label-content-name-mismatch', 'select-name', 'form-field-multiple-labels'],
+      runOnly: [
+        "label",
+        "label-content-name-mismatch",
+        "select-name",
+        "form-field-multiple-labels",
+      ],
     });
 
     // Zero violations for form labelling rules
-    expect(results.violations, formatViolations(results.violations)).toHaveLength(0);
+    expect(
+      results.violations,
+      formatViolations(results.violations),
+    ).toHaveLength(0);
   });
 
-  test('Citation detail page — screen reader accessible', async ({
+  test("Citation detail page — screen reader accessible", async ({
     page,
     runA11y,
     testCitation,
@@ -225,102 +240,121 @@ test.describe('Accessibility @a11y @wcag', () => {
 
     const results = await runA11y({
       // Focus on ARIA rules — critical for screen readers
-      tags: ['cat.aria', 'wcag2a', 'wcag2aa'],
+      tags: ["cat.aria", "wcag2a", "wcag2aa"],
     });
 
-    const critical = results.violations.filter(v => v.impact === 'critical');
-    const serious  = results.violations.filter(v => v.impact === 'serious');
+    const critical = results.violations.filter((v) => v.impact === "critical");
+    const serious = results.violations.filter((v) => v.impact === "serious");
 
     // Zero critical ARIA violations
     if (critical.length > 0) {
-      throw new Error(`${critical.length} critical ARIA violation(s):\n${formatViolations(critical)}`);
+      throw new Error(
+        `${critical.length} critical ARIA violation(s):\n${formatViolations(critical)}`,
+      );
     }
 
     // Warn on serious (don't block, but log)
     if (serious.length > 0) {
-      console.warn(`[A11y Warning] ${serious.length} serious violation(s):\n${formatViolations(serious)}`);
+      console.warn(
+        `[A11y Warning] ${serious.length} serious violation(s):\n${formatViolations(serious)}`,
+      );
     }
   });
 });
 
 // Helper: format violations for readable error messages
-function formatViolations(violations: import('axe-core').Result[]): string {
-  return violations.map(v =>
-    `• [${v.impact}] ${v.id}: ${v.description}\n` +
-    `  Rule: https://dequeuniversity.com/rules/axe/${v.id}\n` +
-    `  Nodes: ${v.nodes.map(n => n.target.join(', ')).join(' | ')}`
-  ).join('\n\n');
+function formatViolations(violations: import("axe-core").Result[]): string {
+  return violations
+    .map(
+      (v) =>
+        `• [${v.impact}] ${v.id}: ${v.description}\n` +
+        `  Rule: https://dequeuniversity.com/rules/axe/${v.id}\n` +
+        `  Nodes: ${v.nodes.map((n) => n.target.join(", ")).join(" | ")}`,
+    )
+    .join("\n\n");
 }
 ```
 
 ### Testing Keyboard Navigation
 
 ```typescript
-test('Citation form is fully keyboard navigable', async ({ page }) => {
-  await page.goto('/citations/new');
+test("Citation form is fully keyboard navigable", async ({ page }) => {
+  await page.goto("/citations/new");
 
   // Tab through all form fields — verify focus moves correctly
-  const focusableElements = page.locator(':focus-visible');
+  const focusableElements = page.locator(":focus-visible");
 
-  await page.keyboard.press('Tab');
+  await page.keyboard.press("Tab");
   // First focusable element should be the first form field
   await expect(focusableElements).toBeFocused();
-  const firstLabel = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'));
-  expect(firstLabel, 'First focusable element must have aria-label').toBeTruthy();
+  const firstLabel = await page.evaluate(() =>
+    document.activeElement?.getAttribute("aria-label"),
+  );
+  expect(
+    firstLabel,
+    "First focusable element must have aria-label",
+  ).toBeTruthy();
 
   // Tab through all 5 fields and the submit button
   for (let i = 0; i < 5; i++) {
-    await page.keyboard.press('Tab');
+    await page.keyboard.press("Tab");
   }
   // Last focused should be Submit button
-  const activeTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase());
-  expect(['button', 'input[type="submit"]']).toContain(activeTag);
+  const activeTag = await page.evaluate(() =>
+    document.activeElement?.tagName.toLowerCase(),
+  );
+  expect(["button", 'input[type="submit"]']).toContain(activeTag);
 
   // Tab once more — focus should NOT get trapped
-  await page.keyboard.press('Tab');
+  await page.keyboard.press("Tab");
   // If focus is now outside the form → no keyboard trap ✅
 });
 
-test('Modal closes on Escape key', async ({ page }) => {
-  await page.goto('/citations/new');
+test("Modal closes on Escape key", async ({ page }) => {
+  await page.goto("/citations/new");
   await page.locator('[data-testid="help-modal-trigger"]').click();
   await expect(page.locator('[role="dialog"]')).toBeVisible();
 
   // Accessibility requirement: modals must close on Escape
-  await page.keyboard.press('Escape');
+  await page.keyboard.press("Escape");
   await expect(page.locator('[role="dialog"]')).toBeHidden({ timeout: 2000 });
 
   // Focus must return to the trigger element after modal closes
   const activeEl = await page.evaluate(() =>
-    document.activeElement?.getAttribute('data-testid')
+    document.activeElement?.getAttribute("data-testid"),
   );
-  expect(activeEl).toBe('help-modal-trigger');
+  expect(activeEl).toBe("help-modal-trigger");
 });
 ```
 
 ### Colour Contrast Check (Specific Rule)
 
 ```typescript
-test('Colour contrast meets WCAG AA (4.5:1 for normal text)', async ({ page, runA11y }) => {
-  await page.goto('/citations');
+test("Colour contrast meets WCAG AA (4.5:1 for normal text)", async ({
+  page,
+  runA11y,
+}) => {
+  await page.goto("/citations");
 
   const results = await runA11y({
-    runOnly: ['color-contrast', 'color-contrast-enhanced'],
+    runOnly: ["color-contrast", "color-contrast-enhanced"],
   });
 
   // Map contrast violations to human-readable format
   if (results.violations.length > 0) {
-    const details = results.violations.flatMap(v =>
-      v.nodes.map(n => ({
-        element: n.target.join(', '),
+    const details = results.violations.flatMap((v) =>
+      v.nodes.map((n) => ({
+        element: n.target.join(", "),
         foreground: n.any[0]?.data?.fgColor,
         background: n.any[0]?.data?.bgColor,
         ratio: n.any[0]?.data?.contrastRatio,
-        required: v.id === 'color-contrast' ? '4.5:1' : '7:1',
-      }))
+        required: v.id === "color-contrast" ? "4.5:1" : "7:1",
+      })),
     );
     console.table(details);
-    throw new Error(`${results.violations.length} colour contrast violation(s) found (see table above)`);
+    throw new Error(
+      `${results.violations.length} colour contrast violation(s) found (see table above)`,
+    );
   }
 });
 ```
@@ -332,32 +366,40 @@ test('Colour contrast meets WCAG AA (4.5:1 for normal text)', async ({ page, run
 Screen readers use `aria-live` regions to announce dynamic content changes. Test that these regions work correctly:
 
 ```typescript
-test('Search results count is announced to screen readers via aria-live', async ({ page }) => {
-  await page.goto('/citations');
+test("Search results count is announced to screen readers via aria-live", async ({
+  page,
+}) => {
+  await page.goto("/citations");
 
   // Find the aria-live region that announces result counts
-  const liveRegion = page.locator('[aria-live]');
+  const liveRegion = page.locator("[aria-live]");
 
   // Verify the live region exists and has the correct politeness level
   await expect(liveRegion).toHaveCount({ minimum: 1 });
-  const politeness = await liveRegion.first().getAttribute('aria-live');
+  const politeness = await liveRegion.first().getAttribute("aria-live");
   // 'polite' = announced after current speech finishes (correct for search results)
   // 'assertive' = interrupts current speech (for urgent alerts only)
-  expect(politeness, 'Search result announcement should be polite').toBe('polite');
+  expect(politeness, "Search result announcement should be polite").toBe(
+    "polite",
+  );
 
   // Trigger a search
-  await page.fill('#searchInput', 'CIT-001');
-  await page.click('#searchBtn');
+  await page.fill("#searchInput", "CIT-001");
+  await page.click("#searchBtn");
 
   // Wait for the live region to be updated with the result count
-  await expect(liveRegion.first()).toContainText(/results found|no results/i, { timeout: 15_000 });
+  await expect(liveRegion.first()).toContainText(/results found|no results/i, {
+    timeout: 15_000,
+  });
 });
 
-test('Error messages are announced immediately via aria-live assertive', async ({ page }) => {
-  await page.goto('/citations/new');
+test("Error messages are announced immediately via aria-live assertive", async ({
+  page,
+}) => {
+  await page.goto("/citations/new");
 
   // Submit empty form to trigger validation errors
-  await page.click('#submitBtn');
+  await page.click("#submitBtn");
 
   const errorRegion = page.locator('[aria-live="assertive"]');
   await expect(errorRegion).toBeVisible({ timeout: 5000 });
@@ -366,18 +408,18 @@ test('Error messages are announced immediately via aria-live assertive', async (
   // This is correct for form validation errors (user needs to know NOW)
 });
 
-test('Loading spinner has aria-label for screen readers', async ({ page }) => {
-  await page.goto('/citations');
-  await page.click('#searchBtn');
+test("Loading spinner has aria-label for screen readers", async ({ page }) => {
+  await page.goto("/citations");
+  await page.click("#searchBtn");
 
   const spinner = page.locator('.ms-Spinner, [role="progressbar"]').first();
   if (await spinner.isVisible()) {
     // Spinner must have either aria-label or aria-labelledby — otherwise screen reader says nothing
-    const ariaLabel     = await spinner.getAttribute('aria-label');
-    const ariaLabeledBy = await spinner.getAttribute('aria-labelledby');
+    const ariaLabel = await spinner.getAttribute("aria-label");
+    const ariaLabeledBy = await spinner.getAttribute("aria-labelledby");
     expect(
       ariaLabel || ariaLabeledBy,
-      'Loading spinner must have aria-label or aria-labelledby for screen readers'
+      "Loading spinner must have aria-label or aria-labelledby for screen readers",
     ).toBeTruthy();
   }
 });
@@ -390,31 +432,35 @@ test('Loading spinner has aria-label for screen readers', async ({ page }) => {
 For deep ARIA debugging, walk the accessibility tree from JavaScript:
 
 ```typescript
-test('D365 CommandBar buttons are accessible', async ({ page }) => {
-  await page.goto('/citations');
+test("D365 CommandBar buttons are accessible", async ({ page }) => {
+  await page.goto("/citations");
 
   // Walk the CommandBar accessibility tree
   const commandBarA11y = await page.evaluate(() => {
-    const commandBar = document.querySelector('[role="menubar"], .ms-CommandBar');
+    const commandBar = document.querySelector(
+      '[role="menubar"], .ms-CommandBar',
+    );
     if (!commandBar) return null;
 
-    const items = Array.from(commandBar.querySelectorAll('[role="menuitem"], [role="button"]'));
-    return items.map(el => ({
-      role:        el.getAttribute('role'),
-      ariaLabel:   el.getAttribute('aria-label'),
-      ariaDisabled: el.getAttribute('aria-disabled'),
+    const items = Array.from(
+      commandBar.querySelectorAll('[role="menuitem"], [role="button"]'),
+    );
+    return items.map((el) => ({
+      role: el.getAttribute("role"),
+      ariaLabel: el.getAttribute("aria-label"),
+      ariaDisabled: el.getAttribute("aria-disabled"),
       textContent: el.textContent?.trim().substring(0, 50),
-      tabIndex:    (el as HTMLElement).tabIndex,
+      tabIndex: (el as HTMLElement).tabIndex,
     }));
   });
 
-  expect(commandBarA11y, 'CommandBar must be findable').not.toBeNull();
+  expect(commandBarA11y, "CommandBar must be findable").not.toBeNull();
 
   for (const item of commandBarA11y ?? []) {
     // Every interactive item must have a name (label or text)
     expect(
       item.ariaLabel || item.textContent,
-      `CommandBar item has no accessible name: role=${item.role}`
+      `CommandBar item has no accessible name: role=${item.role}`,
     ).toBeTruthy();
   }
 });
@@ -422,10 +468,10 @@ test('D365 CommandBar buttons are accessible', async ({ page }) => {
 // The D365/Fluent UI components that commonly fail axe — document as known exclusions:
 // These are Microsoft Fluent UI issues, not your app's issues:
 const fluentUIKnownAxeExclusions = [
-  '.ms-CommandBar-overflowButton',  // overflow "..." button — aria-label missing in some Fluent versions
-  '.ms-Spinner',                    // spinner lacks aria-label in older Fluent UI
-  '.ms-DetailsHeader-checkTooltip', // checkbox tooltip in grid headers
-  '[data-icon-name]',               // icon-only buttons without text in some Fluent versions
+  ".ms-CommandBar-overflowButton", // overflow "..." button — aria-label missing in some Fluent versions
+  ".ms-Spinner", // spinner lacks aria-label in older Fluent UI
+  ".ms-DetailsHeader-checkTooltip", // checkbox tooltip in grid headers
+  "[data-icon-name]", // icon-only buttons without text in some Fluent versions
 ];
 // Use these in your AxeBuilder exclude() call for known Fluent UI violations
 // ALWAYS track these in KnownViolations with a Fluent UI version and expected fix date
@@ -440,29 +486,33 @@ While manual screen reader testing (VoiceOver on Mac, NVDA/JAWS on Windows) is e
 Screen readers do not see `<div class="btn">`. They see the Accessibility Tree, which consists of Roles, Names, and Values. Playwright's `getByRole` queries exactly this tree.
 
 ```typescript
-test('Citation creation form is perceivable by screen readers', async ({ page }) => {
-  await page.goto('/citations/new');
+test("Citation creation form is perceivable by screen readers", async ({
+  page,
+}) => {
+  await page.goto("/citations/new");
 
   // If these locators fail, a screen reader user CANNOT find these elements.
   // This is much stronger than page.locator('.btn-primary')
-  
+
   // 1. Headings (Navigation via 'H' key in NVDA)
-  await expect(page.getByRole('heading', { name: 'Create New Citation', level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Create New Citation", level: 1 }),
+  ).toBeVisible();
 
   // 2. Form Fields (Navigation via 'F' key)
-  const customerInput = page.getByRole('textbox', { name: 'Customer ID' });
-  await customerInput.fill('USR-001');
+  const customerInput = page.getByRole("textbox", { name: "Customer ID" });
+  await customerInput.fill("USR-001");
 
   // 3. Dropdowns/Comboboxes
-  const typeSelect = page.getByRole('combobox', { name: 'Citation Type' });
-  await typeSelect.selectOption('PARKING');
+  const typeSelect = page.getByRole("combobox", { name: "Citation Type" });
+  await typeSelect.selectOption("PARKING");
 
   // 4. Buttons (Navigation via 'B' key)
-  const submitButton = page.getByRole('button', { name: 'Submit Citation' });
+  const submitButton = page.getByRole("button", { name: "Submit Citation" });
   await expect(submitButton).toBeEnabled();
   await submitButton.click();
 
-  // If a developer changes <button> to <div onClick="...">, `getByRole` will immediately fail, 
+  // If a developer changes <button> to <div onClick="...">, `getByRole` will immediately fail,
   // catching the exact regression that would break screen reader navigation.
 });
 ```
@@ -473,23 +523,26 @@ test('Citation creation form is perceivable by screen readers', async ({ page })
 // After your test suite runs, generate a shareable HTML report:
 // axe-html-reporter: https://github.com/lpelypenko/axe-html-reporter
 
-import { createHtmlReport } from 'axe-html-reporter';
-import fs from 'fs';
+import { createHtmlReport } from "axe-html-reporter";
+import fs from "fs";
 
 // In a globalTeardown or reporter:
 async function generateA11yReport(allResults: AxeResults[]): Promise<void> {
-  const combinedViolations = allResults.flatMap(r => r.violations);
+  const combinedViolations = allResults.flatMap((r) => r.violations);
 
   const htmlReport = createHtmlReport({
     results: { violations: combinedViolations } as AxeResults,
     options: {
-      projectKey: 'Citations Management System',
-      outputDir: 'accessibility-report',
-      reportFileName: 'accessibility-report.html',
+      projectKey: "Citations Management System",
+      outputDir: "accessibility-report",
+      reportFileName: "accessibility-report.html",
     },
   });
 
-  fs.writeFileSync('accessibility-report/accessibility-report.html', htmlReport);
+  fs.writeFileSync(
+    "accessibility-report/accessibility-report.html",
+    htmlReport,
+  );
   console.log(`[A11y] Report: accessibility-report/accessibility-report.html`);
   console.log(`[A11y] Total violations: ${combinedViolations.length}`);
 }
@@ -506,7 +559,7 @@ accessibility-tests:
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-      with: { node-version: '20', cache: 'npm' }
+      with: { node-version: "20", cache: "npm" }
     - run: npm ci
     - run: npx playwright install chromium --with-deps
 
@@ -523,7 +576,7 @@ accessibility-tests:
         path: |
           playwright-report/
           accessibility-report/
-        retention-days: 60  # keep longer — compliance evidence
+        retention-days: 60 # keep longer — compliance evidence
 ```
 
 ---
@@ -539,17 +592,17 @@ Most enterprise apps have existing accessibility violations. Don't try to fix ev
 
 export const KnownViolations = {
   // Format: ruleId → number of known occurrences → review date
-  'color-contrast': {
+  "color-contrast": {
     count: 12,
-    ticket: 'TICKET-8821',
-    reviewDate: '2026-07-01',
-    reason: 'D365 Fluent UI theme — waiting for Microsoft update',
+    ticket: "TICKET-8821",
+    reviewDate: "2026-07-01",
+    reason: "D365 Fluent UI theme — waiting for Microsoft update",
   },
-  'region': {
+  region: {
     count: 4,
-    ticket: 'TICKET-8900',
-    reviewDate: '2026-06-01',
-    reason: 'Legacy JSP pages — refactor in progress',
+    ticket: "TICKET-8900",
+    reviewDate: "2026-06-01",
+    reason: "Legacy JSP pages — refactor in progress",
   },
 } as const;
 
@@ -562,14 +615,18 @@ async function assertA11yWithDebtTracking(results: AxeResults): Promise<void> {
       if (violation.nodes.length > known.count) {
         throw new Error(
           `[A11y Debt] '${violation.id}' violation COUNT GREW: ` +
-          `was ${known.count}, now ${violation.nodes.length}. ` +
-          `Ticket: ${known.ticket}. NEW violations were introduced.`
+            `was ${known.count}, now ${violation.nodes.length}. ` +
+            `Ticket: ${known.ticket}. NEW violations were introduced.`,
         );
       }
-      console.warn(`[A11y Debt] Known: ${violation.id} (${violation.nodes.length}/${known.count}) — ${known.ticket}`);
+      console.warn(
+        `[A11y Debt] Known: ${violation.id} (${violation.nodes.length}/${known.count}) — ${known.ticket}`,
+      );
     } else {
       // Unknown violation — fail immediately
-      throw new Error(`[A11y] NEW violation: ${violation.id}: ${violation.description}`);
+      throw new Error(
+        `[A11y] NEW violation: ${violation.id}: ${violation.description}`,
+      );
     }
   }
 }
@@ -588,13 +645,14 @@ A D365 form has an input for "Customer Name" with a visible label next to it, bu
 A) `color-contrast` — the label text has insufficient contrast  
 B) `label` — form input has no associated label  
 C) `region` — form is not wrapped in a landmark region  
-D) `aria-required-attr` — input is missing required ARIA attribute  
+D) `aria-required-attr` — input is missing required ARIA attribute
 
 <details><summary>Answer</summary>
 
 **B** — `label` rule (WCAG 1.3.1, 4.1.2). The `label` element must be programmatically associated with its input using `for`/`id` pairing, or `aria-label`, or `aria-labelledby`. A visible label with no programmatic connection is invisible to screen readers. The user hears "edit text" — no indication of what to type.
 
 Fix options:
+
 ```html
 <!-- Option 1: for/id pair -->
 <label for="customerName">Customer Name</label>
@@ -607,11 +665,13 @@ Fix options:
 <span id="nameLabel">Customer Name</span>
 <input type="text" aria-labelledby="nameLabel" />
 ```
+
 </details>
 
 ---
 
 **Key References:**
+
 - [github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core) — axe-core engine (MPL 2.0)
 - [dequeuniversity.com/rules/axe](https://dequeuniversity.com/rules/axe/) — every rule explained
 - [w3.org/WAI/WCAG21/quickref](https://www.w3.org/WAI/WCAG21/quickref/) — WCAG 2.1 quick reference
@@ -622,15 +682,19 @@ Fix options:
 ### Challenge 2 [Spot the A11y Bug]
 
 Your page has this markup for a search filter dropdown:
+
 ```html
 <div class="dropdown-container">
-  <div class="dropdown-toggle" onclick="toggleDropdown()">Filter by Status ▼</div>
+  <div class="dropdown-toggle" onclick="toggleDropdown()">
+    Filter by Status ▼
+  </div>
   <ul class="dropdown-menu" style="display:none">
     <li onclick="selectStatus('PAID')">Paid</li>
     <li onclick="selectStatus('PENDING')">Pending</li>
   </ul>
 </div>
 ```
+
 axe reports 3 violations on this component. What are they?
 
 <details><summary>Answer</summary>
@@ -640,6 +704,7 @@ axe reports 3 violations on this component. What are they?
 2. **`listitem` / `keyboard` violation**: The `<li>` elements have onclick handlers but are not keyboard-operable. Users who don't use a mouse can't access them. Fix: use `<button>` inside `<li>`, or add `tabindex="0"` and keyboard event handlers.
 
 3. **`aria-expanded` missing**: The dropdown toggle doesn't communicate its open/closed state. Screen readers can't tell if the menu is expanded. Fix:
+
 ```html
 <button
   class="dropdown-toggle"
@@ -651,11 +716,27 @@ axe reports 3 violations on this component. What are they?
   Filter by Status
 </button>
 <ul id="statusDropdown" role="listbox" aria-label="Filter by Status" hidden>
-  <li role="option" onclick="selectStatus('PAID')" tabindex="0" onkeydown="handleKey(event, 'PAID')">Paid</li>
-  <li role="option" onclick="selectStatus('PENDING')" tabindex="0" onkeydown="handleKey(event, 'PENDING')">Pending</li>
+  <li
+    role="option"
+    onclick="selectStatus('PAID')"
+    tabindex="0"
+    onkeydown="handleKey(event, 'PAID')"
+  >
+    Paid
+  </li>
+  <li
+    role="option"
+    onclick="selectStatus('PENDING')"
+    tabindex="0"
+    onkeydown="handleKey(event, 'PENDING')"
+  >
+    Pending
+  </li>
 </ul>
 ```
+
 Set `aria-expanded="true"` when open, `aria-expanded="false"` when closed.
+
 </details>
 
 ---
@@ -667,6 +748,7 @@ Your app has 47 axe violations. Your manager says "fix them all this sprint." Wh
 <details><summary>Answer</summary>
 
 **Why "fix all" is wrong:**
+
 - 47 violations likely span multiple teams/components. You can't own all of them.
 - Some violations are in third-party libraries (D365 Fluent UI, Microsoft components) that YOU cannot fix.
 - Fixing all 47 at once risks introducing new bugs while rushing.
@@ -676,7 +758,7 @@ Your app has 47 axe violations. Your manager says "fix them all this sprint." Wh
 
 1. **Triage by impact**: Separate `critical` + `serious` (fix immediately) from `moderate` + `minor` (schedule).
 
-2. **Classify ownership**: Which violations are in your code? Which are third-party (Fluent UI)?  Add third-party violations to `KnownViolations` and exclude them from blocking CI.
+2. **Classify ownership**: Which violations are in your code? Which are third-party (Fluent UI)? Add third-party violations to `KnownViolations` and exclude them from blocking CI.
 
 3. **Fix by page priority**: Fix violations on high-traffic pages first (login, main dashboard, primary workflows).
 
@@ -692,29 +774,29 @@ Your application uses a third-party chat widget (`#vendor-chat-iframe`) that has
 <details><summary>Answer</summary>
 
 ```typescript
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test('Dashboard is accessible except for vendor widgets', async ({ page }) => {
-  await page.goto('/dashboard');
-  
+test("Dashboard is accessible except for vendor widgets", async ({ page }) => {
+  await page.goto("/dashboard");
+
   const accessibilityScanResults = await new AxeBuilder({ page })
     // 1. Ignore the specific element entirely (all rules)
-    .exclude('#vendor-chat-iframe')
-    
+    .exclude("#vendor-chat-iframe")
+
     // 2. Disable a specific rule globally across the whole page
-    .disableRules(['color-contrast'])
-    
+    .disableRules(["color-contrast"])
+
     // 3. Only run WCAG 2.1 AA rules
-    .withTags(['wcag21aa'])
-    
+    .withTags(["wcag21aa"])
+
     .analyze();
 
   expect(accessibilityScanResults.violations).toEqual([]);
 });
 ```
 
-**SDE Principle**: Tooling pragmatism. In the real world, "zero violations" is hard when relying on third-party integrations. Building surgical exclusions prevents your team from turning off the *entire* a11y test suite out of frustration.
+**SDE Principle**: Tooling pragmatism. In the real world, "zero violations" is hard when relying on third-party integrations. Building surgical exclusions prevents your team from turning off the _entire_ a11y test suite out of frustration.
 
 </details>
 
@@ -723,15 +805,15 @@ test('Dashboard is accessible except for vendor widgets', async ({ page }) => {
 ### Challenge 5 [Spot the Bug — Timing and A11y]
 
 ```typescript
-test('Citation detail modal is accessible', async ({ page }) => {
-  await page.goto('/citations');
-  
+test("Citation detail modal is accessible", async ({ page }) => {
+  await page.goto("/citations");
+
   // Click the row to open the modal
   await page.click('.citation-row:has-text("CIT-001")');
-  
+
   // Run axe immediately
   const results = await new AxeBuilder({ page }).analyze();
-  
+
   expect(results.violations).toEqual([]);
 });
 ```
@@ -740,31 +822,31 @@ The test consistently passes locally but randomly fails in CI, or it passes in C
 
 <details><summary>Answer</summary>
 
-**Bug**: Axe analyzes the DOM *at the exact millisecond* it is invoked. 
+**Bug**: Axe analyzes the DOM _at the exact millisecond_ it is invoked.
 
-When you `page.click()`, Playwright fires the click event. But the React/Vue modal might take 100ms to animate in, fetch data, and render its content. If you run `AxeBuilder` instantly, axe scans the page *before the modal is fully visible in the DOM*. 
+When you `page.click()`, Playwright fires the click event. But the React/Vue modal might take 100ms to animate in, fetch data, and render its content. If you run `AxeBuilder` instantly, axe scans the page _before the modal is fully visible in the DOM_.
 
 It passes because it's scanning the background page, completely missing the modal.
 
 **Fix**: Always wait for the specific UI state to settle before running axe.
 
 ```typescript
-test('Citation detail modal is accessible', async ({ page }) => {
-  await page.goto('/citations');
-  
+test("Citation detail modal is accessible", async ({ page }) => {
+  await page.goto("/citations");
+
   await page.click('.citation-row:has-text("CIT-001")');
-  
+
   // Wait for the modal animation to finish and content to render
-  await page.waitForSelector('.modal-content', { state: 'visible' });
-  
+  await page.waitForSelector(".modal-content", { state: "visible" });
+
   // Optional: if the modal loads data, wait for the data
-  await expect(page.locator('.modal-amount')).toContainText('£');
-  
+  await expect(page.locator(".modal-amount")).toContainText("£");
+
   // NOW analyze the settled DOM
   const results = await new AxeBuilder({ page })
-    .include('.modal-content') // Optimization: only scan the modal!
+    .include(".modal-content") // Optimization: only scan the modal!
     .analyze();
-  
+
   expect(results.violations).toEqual([]);
 });
 ```
@@ -774,4 +856,5 @@ test('Citation detail modal is accessible', async ({ page }) => {
 </details>
 
 ---
+
 **Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)

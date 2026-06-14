@@ -11,6 +11,7 @@ This chapter puts EVERYTHING from Files 01-08 together into complete mock interv
 ---
 
 ## Table of Contents
+
 1. [How to Use These Simulations](#1-how-to-use-these-simulations)
 2. [Mock 1: DSA — Array/String (45 min)](#2-mock-1-dsa-array-string)
 3. [Mock 2: DSA — Tree/Graph (45 min)](#3-mock-2-dsa-tree-graph)
@@ -159,9 +160,6 @@ A: "Recursive approach: reduce kSum to (k-1)Sum until the base case
 
 ---
 
-
-
-
 ## 3. Mock 2: DSA — Tree/Graph (45 min)
 
 ### The Question
@@ -244,22 +242,23 @@ A: "For repeated queries, I'd preprocess using Euler tour + sparse table
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Mock 2: DSA — Tree/Graph (45 min)**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 4. Mock 3: SQL Interview (45 min)
 
@@ -450,9 +449,6 @@ YOU: "To summarize: this system handles 100M+ notifications per day
 
 ---
 
-
-
-
 ## 6. Mock 5: OOP Design (45 min)
 
 ### The Question
@@ -560,9 +556,6 @@ YOU: "Key design decisions:
 
 ---
 
-
-
-
 ## 7. Mock 6: Mixed Round (60 min)
 
 ### Part A: Quick DSA (15 min)
@@ -665,9 +658,6 @@ FRAMEWORK (STAR-T):
 ```
 
 ---
-
-
-
 
 ## 8. Self-Evaluation Rubric
 
@@ -788,15 +778,15 @@ WEEK 4 (Polish):
 
 ## Cross-References
 
-| Topic | Deep Dive |
-|-------|-----------|
-| Interview Mindset | [01_The_Interview_Brain](01_The_Interview_Brain.md) |
-| Constraint Analysis | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md) |
-| Pattern Library | [03_DSA_Pattern_Recognition_Engine](03_DSA_Pattern_Recognition_Engine.md) |
-| Complexity Analysis | [04_Complexity_Analysis_Masterclass](04_Complexity_Analysis_Masterclass.md) |
-| SQL Patterns | [05_SQL_Interview_Thinking](05_SQL_Interview_Thinking.md) |
-| System Design | [06_System_Design_Blueprint](06_System_Design_Blueprint.md) |
-| Design Patterns | [07_Design_Patterns_Interview_Guide](07_Design_Patterns_Interview_Guide.md) |
+| Topic                 | Deep Dive                                                                   |
+| --------------------- | --------------------------------------------------------------------------- |
+| Interview Mindset     | [01_The_Interview_Brain](01_The_Interview_Brain.md)                         |
+| Constraint Analysis   | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md)         |
+| Pattern Library       | [03_DSA_Pattern_Recognition_Engine](03_DSA_Pattern_Recognition_Engine.md)   |
+| Complexity Analysis   | [04_Complexity_Analysis_Masterclass](04_Complexity_Analysis_Masterclass.md) |
+| SQL Patterns          | [05_SQL_Interview_Thinking](05_SQL_Interview_Thinking.md)                   |
+| System Design         | [06_System_Design_Blueprint](06_System_Design_Blueprint.md)                 |
+| Design Patterns       | [07_Design_Patterns_Interview_Guide](07_Design_Patterns_Interview_Guide.md) |
 | Problem Decomposition | [08_Problem_Decomposition_Framework](08_Problem_Decomposition_Framework.md) |
 
 ---

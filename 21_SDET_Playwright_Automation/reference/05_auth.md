@@ -45,25 +45,25 @@ The "right" answer depends on what the app does, what the IdP expects, and what'
 
 ### 1.1 The cost spectrum
 
-| Approach | Setup time per test | Cost per worker | Cost per CI run |
-|---|---|---|---|
-| UI login every test | 5–15 s | N/A | 5 s × tests |
-| Pre-authenticated storageState | 0 s | 5–15 s (setup project, once) | 5–15 s |
-| OAuth client credentials | 0 s | 100–500 ms (worker fixture, once) | 100–500 ms |
-| storageState + token refresh | 0 s | 0 + occasional refresh | minimal |
+| Approach                       | Setup time per test | Cost per worker                   | Cost per CI run |
+| ------------------------------ | ------------------- | --------------------------------- | --------------- |
+| UI login every test            | 5–15 s              | N/A                               | 5 s × tests     |
+| Pre-authenticated storageState | 0 s                 | 5–15 s (setup project, once)      | 5–15 s          |
+| OAuth client credentials       | 0 s                 | 100–500 ms (worker fixture, once) | 100–500 ms      |
+| storageState + token refresh   | 0 s                 | 0 + occasional refresh            | minimal         |
 
 For a 200-test suite: UI login adds 16+ minutes; storageState adds 15 seconds.
 
 ### 1.2 The security spectrum
 
-| Pattern | Credential exposure |
-|---|---|
-| Credentials in `.env`, gitignored | Local-only — usually fine for dev creds |
+| Pattern                                        | Credential exposure                                    |
+| ---------------------------------------------- | ------------------------------------------------------ |
+| Credentials in `.env`, gitignored              | Local-only — usually fine for dev creds                |
 | Credentials in CI secrets, injected at runtime | Standard — secrets in vault, runner reads at job start |
-| Credentials in code | NEVER — even rotation can't recover from this |
-| Credentials in CI logs (via `console.log`) | Treat as compromised; rotate |
-| Hardcoded in test data files committed to repo | NEVER |
-| `.p12` / `.pfx` files in repo | NEVER, even for test certs |
+| Credentials in code                            | NEVER — even rotation can't recover from this          |
+| Credentials in CI logs (via `console.log`)     | Treat as compromised; rotate                           |
+| Hardcoded in test data files committed to repo | NEVER                                                  |
+| `.p12` / `.pfx` files in repo                  | NEVER, even for test certs                             |
 
 ---
 
@@ -105,6 +105,7 @@ Does the app use SSO with an external IdP?
 ### 3.1 What is `storageState`
 
 A serialised snapshot of:
+
 - **Cookies** — all cookies set on the browser context
 - **localStorage** — for every origin the context has visited
 - **sessionStorage** — same (since v1.43; earlier versions captured only localStorage)
@@ -149,22 +150,22 @@ The file is human-readable JSON. You can manually inspect or edit it for debuggi
 
 ```typescript
 // tests/global.setup.ts
-import { test as setup, expect } from '@playwright/test';
+import { test as setup, expect } from "@playwright/test";
 
-setup('authenticate as admin', async ({ page }) => {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(process.env.ADMIN_EMAIL!);
-  await page.getByLabel('Password').fill(process.env.ADMIN_PASSWORD!);
-  await page.getByRole('button', { name: 'Log in' }).click();
+setup("authenticate as admin", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByLabel("Email").fill(process.env.ADMIN_EMAIL!);
+  await page.getByLabel("Password").fill(process.env.ADMIN_PASSWORD!);
+  await page.getByRole("button", { name: "Log in" }).click();
 
   // CRITICAL — wait for navigation BEFORE saving
   await page.waitForURL(/\/(dashboard|home)/, { timeout: 30_000 });
-  
+
   // Optional but useful — verify the session by hitting an authenticated endpoint
-  const me = await page.request.get('/api/users/me');
+  const me = await page.request.get("/api/users/me");
   expect(me.ok()).toBeTruthy();
 
-  await page.context().storageState({ path: 'auth-states/admin.json' });
+  await page.context().storageState({ path: "auth-states/admin.json" });
 });
 ```
 
@@ -189,8 +190,10 @@ projects: [
 Or inline in a test:
 
 ```typescript
-test('authenticated test', async ({ browser }) => {
-  const context = await browser.newContext({ storageState: 'auth-states/admin.json' });
+test("authenticated test", async ({ browser }) => {
+  const context = await browser.newContext({
+    storageState: "auth-states/admin.json",
+  });
   const page = await context.newPage();
   // page starts authenticated
   await context.close();
@@ -201,19 +204,19 @@ test('authenticated test', async ({ browser }) => {
 
 ```typescript
 // global.setup.ts — runs multiple setup tests in parallel
-setup('authenticate as admin', async ({ page }) => {
-  await loginAs(page, 'admin');
-  await page.context().storageState({ path: 'auth-states/admin.json' });
+setup("authenticate as admin", async ({ page }) => {
+  await loginAs(page, "admin");
+  await page.context().storageState({ path: "auth-states/admin.json" });
 });
 
-setup('authenticate as user', async ({ page }) => {
-  await loginAs(page, 'user');
-  await page.context().storageState({ path: 'auth-states/user.json' });
+setup("authenticate as user", async ({ page }) => {
+  await loginAs(page, "user");
+  await page.context().storageState({ path: "auth-states/user.json" });
 });
 
-setup('authenticate as read-only', async ({ page }) => {
-  await loginAs(page, 'readonly');
-  await page.context().storageState({ path: 'auth-states/readonly.json' });
+setup("authenticate as read-only", async ({ page }) => {
+  await loginAs(page, "readonly");
+  await page.context().storageState({ path: "auth-states/readonly.json" });
 });
 ```
 
@@ -240,16 +243,16 @@ projects: [
 
 ```typescript
 // ❌ WRONG — saves PRE-LOGIN state
-await page.locator('#loginBtn').click();
-await page.context().storageState({ path: 'auth-states/admin.json' });
+await page.locator("#loginBtn").click();
+await page.context().storageState({ path: "auth-states/admin.json" });
 // Click resolves before cookies arrive. File contains no session.
 ```
 
 ```typescript
 // ✅ CORRECT — wait for post-login signal
-await page.locator('#loginBtn').click();
+await page.locator("#loginBtn").click();
 await page.waitForURL(/\/dashboard/, { timeout: 30_000 });
-await page.context().storageState({ path: 'auth-states/admin.json' });
+await page.context().storageState({ path: "auth-states/admin.json" });
 ```
 
 Symptom of the bug: `admin.json` exists, has cookies, but tests fail with 401. Open the file — likely the only cookies are tracking cookies, not the session token.
@@ -260,11 +263,11 @@ Session cookies eventually expire. When you write storageState today and use it 
 
 Strategies:
 
-| Strategy | When to use |
-|---|---|
+| Strategy                                              | When to use                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------------ |
 | Always regenerate at start of run (via setup project) | Standard — `dependencies: ['setup']` ensures fresh state every run |
-| Cache for 1 hour, regenerate on expiry | When setup is slow (5+ seconds) and your CI runs frequently |
-| Commit storageState to repo | NEVER — cookies are secrets |
+| Cache for 1 hour, regenerate on expiry                | When setup is slow (5+ seconds) and your CI runs frequently        |
+| Commit storageState to repo                           | NEVER — cookies are secrets                                        |
 
 The setup project pattern always regenerates. That's the right default.
 
@@ -284,16 +287,17 @@ By default storageState saves cookies + localStorage + sessionStorage. To omit s
 
 ```typescript
 await page.context().storageState({
-  path: 'auth-states/admin.json',
-  indexedDB: false,            // default — IndexedDB not saved
+  path: "auth-states/admin.json",
+  indexedDB: false, // default — IndexedDB not saved
 });
 ```
 
 To save IndexedDB (since v1.45):
+
 ```typescript
 await page.context().storageState({
-  path: 'auth-states/admin.json',
-  indexedDB: true,             // captures all IndexedDB databases
+  path: "auth-states/admin.json",
+  indexedDB: true, // captures all IndexedDB databases
 });
 ```
 
@@ -317,48 +321,48 @@ Useful for in-memory state passing between contexts within a single test (e.g., 
 
 OAuth 2.0 is a delegation framework defined by RFC 6749. Four parties:
 
-| Role | Who it is |
-|---|---|
-| Resource Owner | The user |
-| Resource Server | The API the user wants to access |
-| Client | The app trying to act on behalf of the user (your SPA, mobile app, or service) |
-| Authorization Server | The IdP that issues tokens (Auth0, Okta, Azure AD) |
+| Role                 | Who it is                                                                      |
+| -------------------- | ------------------------------------------------------------------------------ |
+| Resource Owner       | The user                                                                       |
+| Resource Server      | The API the user wants to access                                               |
+| Client               | The app trying to act on behalf of the user (your SPA, mobile app, or service) |
+| Authorization Server | The IdP that issues tokens (Auth0, Okta, Azure AD)                             |
 
 The output of any OAuth flow is an **access token** — a string the client sends to the resource server (in the `Authorization: Bearer ...` header) to access user resources.
 
 ### 4.1 The four grant types still in use
 
-| Grant | Who uses it | Has user UI? | Browser involved? |
-|---|---|---|---|
-| Authorization Code (+ PKCE) | SPAs, mobile apps, native apps with users | Yes | Yes |
-| Client Credentials | Backend services with no user | No | No |
-| Refresh Token | Any flow that supports refresh | No | No |
-| Device Code | TVs, IoT devices with no keyboard | Yes | Yes (on a separate device) |
+| Grant                       | Who uses it                               | Has user UI? | Browser involved?          |
+| --------------------------- | ----------------------------------------- | ------------ | -------------------------- |
+| Authorization Code (+ PKCE) | SPAs, mobile apps, native apps with users | Yes          | Yes                        |
+| Client Credentials          | Backend services with no user             | No           | No                         |
+| Refresh Token               | Any flow that supports refresh            | No           | No                         |
+| Device Code                 | TVs, IoT devices with no keyboard         | Yes          | Yes (on a separate device) |
 
 Two more grants exist but are deprecated:
 
-| Grant | Status | Why deprecated |
-|---|---|---|
-| Resource Owner Password Credentials | ❌ Don't use for new code | Defeats SSO; requires sharing passwords with the client |
-| Implicit | ❌ Don't use | Tokens returned in URL fragment; vulnerable to interception |
+| Grant                               | Status                    | Why deprecated                                              |
+| ----------------------------------- | ------------------------- | ----------------------------------------------------------- |
+| Resource Owner Password Credentials | ❌ Don't use for new code | Defeats SSO; requires sharing passwords with the client     |
+| Implicit                            | ❌ Don't use              | Tokens returned in URL fragment; vulnerable to interception |
 
 ### 4.2 Token types
 
-| Token | Purpose | Format | Validation |
-|---|---|---|---|
-| Access token | Authorize API calls | Opaque OR JWT | Validated by resource server (or via introspection) |
-| Refresh token | Get a new access token without re-auth | Opaque, long-lived | Validated only by authorization server |
-| ID token | Authenticate user identity (OIDC) | Always JWT | Validated by client |
+| Token         | Purpose                                | Format             | Validation                                          |
+| ------------- | -------------------------------------- | ------------------ | --------------------------------------------------- |
+| Access token  | Authorize API calls                    | Opaque OR JWT      | Validated by resource server (or via introspection) |
+| Refresh token | Get a new access token without re-auth | Opaque, long-lived | Validated only by authorization server              |
+| ID token      | Authenticate user identity (OIDC)      | Always JWT         | Validated by client                                 |
 
 ### 4.3 Token lifetime norms
 
-| Token | Typical lifetime |
-|---|---|
-| Access token (web) | 5–60 minutes |
-| Access token (mobile) | 30 minutes–24 hours |
-| Refresh token (sliding) | Days to months, rotates on use |
+| Token                    | Typical lifetime               |
+| ------------------------ | ------------------------------ |
+| Access token (web)       | 5–60 minutes                   |
+| Access token (mobile)    | 30 minutes–24 hours            |
+| Refresh token (sliding)  | Days to months, rotates on use |
 | Refresh token (absolute) | Days to months, fixed lifetime |
-| ID token | Equal to access token, usually |
+| ID token                 | Equal to access token, usually |
 
 In Playwright tests, access tokens often outlive an entire test run. Refresh is rarely needed at test scale.
 
@@ -367,7 +371,7 @@ In Playwright tests, access tokens often outlive an entire test run. Refresh is 
 Once you have an access token:
 
 ```typescript
-await page.request.get('/api/citations', {
+await page.request.get("/api/citations", {
   headers: { Authorization: `Bearer ${accessToken}` },
 });
 ```
@@ -389,7 +393,7 @@ For service-to-service auth where no human user is involved.
      client_id=<id>
      client_secret=<secret>
      scope=<optional>
-     
+
    Auth Server → Client
    {
      "access_token": "eyJ...",
@@ -405,36 +409,44 @@ That's it — no UI, no redirects, no user interaction.
 
 ```typescript
 // fixtures/auth.oauth.fixture.ts
-import { test as base, request as playwrightRequest } from '@playwright/test';
+import { test as base, request as playwrightRequest } from "@playwright/test";
 
-interface OAuthFixtures { oauthToken: string; }
+interface OAuthFixtures {
+  oauthToken: string;
+}
 
 export const test = base.extend<NonNullable<unknown>, OAuthFixtures>({
-  oauthToken: [async ({}, use) => {
-    const tokenUrl = process.env.OAUTH_TOKEN_URL!;
-    const ctx = await playwrightRequest.newContext();
-    try {
-      const response = await ctx.post(tokenUrl, {
-        form: {
-          grant_type: 'client_credentials',
-          client_id: process.env.OAUTH_CLIENT_ID!,
-          client_secret: process.env.OAUTH_CLIENT_SECRET!,
-          scope: 'api:read api:write',
-        },
-      });
-      if (!response.ok()) {
-        throw new Error(`Token endpoint returned ${response.status()}: ${await response.text()}`);
+  oauthToken: [
+    async ({}, use) => {
+      const tokenUrl = process.env.OAUTH_TOKEN_URL!;
+      const ctx = await playwrightRequest.newContext();
+      try {
+        const response = await ctx.post(tokenUrl, {
+          form: {
+            grant_type: "client_credentials",
+            client_id: process.env.OAUTH_CLIENT_ID!,
+            client_secret: process.env.OAUTH_CLIENT_SECRET!,
+            scope: "api:read api:write",
+          },
+        });
+        if (!response.ok()) {
+          throw new Error(
+            `Token endpoint returned ${response.status()}: ${await response.text()}`,
+          );
+        }
+        const body = await response.json();
+        await use(body.access_token);
+      } finally {
+        await ctx.dispose();
       }
-      const body = await response.json();
-      await use(body.access_token);
-    } finally {
-      await ctx.dispose();
-    }
-  }, { scope: 'worker' }],
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
 Why worker scope:
+
 - Each call is 200–500 ms.
 - The token is opaque and not personalised — safe to share.
 - A 100-test suite with worker-scope: 4 fetches (4 workers). With test-scope: 100 fetches. Saves 30+ seconds.
@@ -442,8 +454,8 @@ Why worker scope:
 ### 5.3 Tests using the token
 
 ```typescript
-test('GET /citations', async ({ request, oauthToken }) => {
-  const response = await request.get('/api/citations', {
+test("GET /citations", async ({ request, oauthToken }) => {
+  const response = await request.get("/api/citations", {
     headers: { Authorization: `Bearer ${oauthToken}` },
   });
   expect(response.ok()).toBeTruthy();
@@ -454,10 +466,13 @@ Or, integrate into your API client:
 
 ```typescript
 class CitationsApiClient {
-  constructor(private readonly request: APIRequestContext, private readonly token: string) {}
+  constructor(
+    private readonly request: APIRequestContext,
+    private readonly token: string,
+  ) {}
 
   async list(): Promise<Citation[]> {
-    const r = await this.request.get('/citations', {
+    const r = await this.request.get("/citations", {
       headers: { Authorization: `Bearer ${this.token}` },
     });
     return r.json();
@@ -475,11 +490,13 @@ const test = base.extend({
 ### 5.4 Secret management
 
 Client secrets are SECRETS. Never:
+
 - Commit to repo
 - Print to logs (even at debug level)
 - Hardcode in tests
 
 Always:
+
 - Store in CI platform secrets (GitHub Actions secrets, Azure DevOps variable groups)
 - Inject as env vars at runtime
 - Rotate quarterly
@@ -487,11 +504,13 @@ Always:
 ### 5.5 Test-only OAuth client
 
 Production OAuth clients usually have:
+
 - Restricted scopes
 - IP allowlists
 - Tight rate limits
 
 Create a SEPARATE test-only OAuth client:
+
 - Limited scopes
 - Test environment isolation
 - Higher rate limits for CI
@@ -508,7 +527,7 @@ For human-user flows where the IdP redirects through a browser.
 ```
 1. Client generates code_verifier (random 43-128 char string)
    code_challenge = SHA256(code_verifier), base64url-encoded
-   
+
 2. Client → Auth Server (in browser)
    GET /authorize
      response_type=code
@@ -518,12 +537,12 @@ For human-user flows where the IdP redirects through a browser.
      code_challenge_method=S256
      scope=openid profile email
      state=<random-csrf-token>
-   
+
 3. Auth Server shows login UI, user authenticates.
-   
+
 4. Auth Server → Client (redirect to callback URL)
    GET /callback?code=<auth_code>&state=<csrf-token>
-   
+
 5. Client → Auth Server (via HTTPS, server-side)
    POST /oauth/token
      grant_type=authorization_code
@@ -531,7 +550,7 @@ For human-user flows where the IdP redirects through a browser.
      redirect_uri=<callback>
      client_id=<id>
      code_verifier=<verifier>      ← server checks SHA256(verifier) == challenge
-   
+
 6. Auth Server → Client
    { access_token, refresh_token, id_token, expires_in }
 ```
@@ -558,26 +577,26 @@ In a real test, you typically don't implement PKCE yourself — the SPA does it.
 7. Your test saves storageState.
 
 ```typescript
-setup('OAuth login', async ({ page }) => {
-  await page.goto('https://app.example.com/login');
-  
+setup("OAuth login", async ({ page }) => {
+  await page.goto("https://app.example.com/login");
+
   // App redirects to IdP — Playwright follows
   await page.waitForURL(/auth\.example\.com/);
 
   // Fill in IdP UI
-  await page.getByLabel('Email').fill(process.env.USER_EMAIL!);
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByLabel('Password').fill(process.env.USER_PASSWORD!);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByLabel("Email").fill(process.env.USER_EMAIL!);
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByLabel("Password").fill(process.env.USER_PASSWORD!);
+  await page.getByRole("button", { name: "Sign in" }).click();
 
   // IdP redirects back to the SPA
   await page.waitForURL(/app\.example\.com/);
-  
+
   // The SPA completes the token exchange in the background.
   // Verify the session is established before saving.
-  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
 
-  await page.context().storageState({ path: 'auth-states/user.json' });
+  await page.context().storageState({ path: "auth-states/user.json" });
 });
 ```
 
@@ -585,7 +604,7 @@ setup('OAuth login', async ({ page }) => {
 
 ```typescript
 const accessToken = await page.evaluate(() => {
-  return localStorage.getItem('access_token');
+  return localStorage.getItem("access_token");
   // OR — for OIDC apps using oidc-client-js:
   // const data = JSON.parse(localStorage.getItem('oidc.user:...'));
   // return data.access_token;
@@ -599,6 +618,7 @@ Useful if you want to call APIs directly (bypassing the UI) once logged in.
 Some legacy apps still use the implicit grant (`response_type=token`). Tokens come back in the URL fragment (`#access_token=...`).
 
 If you're testing such an app:
+
 - It works in Playwright (the browser handles fragments).
 - Push back on the dev team to migrate to Auth Code + PKCE.
 - Tokens in fragments leak to browser history and analytics scripts.
@@ -636,20 +656,23 @@ If you need to use it for tests, treat it as a test-only convenience and ensure 
 
 ```typescript
 const test = base.extend<{}, { token: string }>({
-  token: [async ({}, use) => {
-    const ctx = await playwrightRequest.newContext();
-    const r = await ctx.post(`${process.env.OAUTH_URL}/token`, {
-      form: {
-        grant_type: 'password',
-        username: process.env.TEST_USERNAME!,
-        password: process.env.TEST_PASSWORD!,
-        client_id: process.env.OAUTH_CLIENT_ID!,
-      },
-    });
-    const body = await r.json();
-    await use(body.access_token);
-    await ctx.dispose();
-  }, { scope: 'worker' }],
+  token: [
+    async ({}, use) => {
+      const ctx = await playwrightRequest.newContext();
+      const r = await ctx.post(`${process.env.OAUTH_URL}/token`, {
+        form: {
+          grant_type: "password",
+          username: process.env.TEST_USERNAME!,
+          password: process.env.TEST_PASSWORD!,
+          client_id: process.env.OAUTH_CLIENT_ID!,
+        },
+      });
+      const body = await r.json();
+      await use(body.access_token);
+      await ctx.dispose();
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
@@ -666,7 +689,7 @@ For TVs, IoT devices, CLI tools — anything without a keyboard or browser.
    POST /oauth/device/code
      client_id=<id>
      scope=<scopes>
-   
+
 2. Auth Server → Device
    {
      "device_code": "...",
@@ -675,17 +698,17 @@ For TVs, IoT devices, CLI tools — anything without a keyboard or browser.
      "expires_in": 1800,
      "interval": 5
    }
-   
+
 3. Device shows user_code to user, instructs them to visit verification_uri.
-   
+
 4. User goes to another device (phone, laptop), enters user_code, authenticates.
-   
+
 5. Device polls Auth Server every `interval` seconds:
    POST /oauth/token
      grant_type=urn:ietf:params:oauth:grant-type:device_code
      device_code=...
      client_id=<id>
-   
+
 6. Once user completes auth, polling returns:
    { access_token, refresh_token, ... }
 ```
@@ -695,25 +718,27 @@ For TVs, IoT devices, CLI tools — anything without a keyboard or browser.
 Playwright can drive both sides:
 
 ```typescript
-test('device code authentication', async ({ context }) => {
+test("device code authentication", async ({ context }) => {
   // Side 1 — the "device" requesting auth
   const deviceContext = await context.browser()!.newContext();
   const devicePage = await deviceContext.newPage();
-  await devicePage.goto('https://device-app.example.com/login');
-  const userCode = await devicePage.getByTestId('user-code').textContent();
+  await devicePage.goto("https://device-app.example.com/login");
+  const userCode = await devicePage.getByTestId("user-code").textContent();
 
   // Side 2 — the user "approving" on another device
   const userPage = await context.newPage();
   await userPage.goto(`https://example.com/device`);
-  await userPage.getByLabel('Code').fill(userCode!);
-  await userPage.getByRole('button', { name: 'Continue' }).click();
-  await userPage.getByLabel('Email').fill(process.env.USER_EMAIL!);
-  await userPage.getByLabel('Password').fill(process.env.USER_PASSWORD!);
-  await userPage.getByRole('button', { name: 'Sign in' }).click();
-  await userPage.getByRole('button', { name: 'Approve' }).click();
+  await userPage.getByLabel("Code").fill(userCode!);
+  await userPage.getByRole("button", { name: "Continue" }).click();
+  await userPage.getByLabel("Email").fill(process.env.USER_EMAIL!);
+  await userPage.getByLabel("Password").fill(process.env.USER_PASSWORD!);
+  await userPage.getByRole("button", { name: "Sign in" }).click();
+  await userPage.getByRole("button", { name: "Approve" }).click();
 
   // The device should now be authenticated
-  await expect(devicePage.getByRole('heading', { name: 'Welcome' })).toBeVisible();
+  await expect(
+    devicePage.getByRole("heading", { name: "Welcome" }),
+  ).toBeVisible();
 });
 ```
 
@@ -742,10 +767,10 @@ Auth Server → Client
 
 ### 9.2 Rotation policies
 
-| Policy | Behaviour |
-|---|---|
-| Static refresh | Same refresh token returned every time |
-| Rotation | New refresh token issued each use; old becomes invalid |
+| Policy          | Behaviour                                                                |
+| --------------- | ------------------------------------------------------------------------ |
+| Static refresh  | Same refresh token returned every time                                   |
+| Rotation        | New refresh token issued each use; old becomes invalid                   |
 | Reuse detection | If old refresh is used twice, ALL tokens revoked (suspected token theft) |
 
 Modern IdPs (Auth0, Okta) use rotation + reuse detection. Always handle the rotation in your fixture:
@@ -779,14 +804,14 @@ OpenID Connect (OIDC) is OAuth 2.0 + a layer for AUTHENTICATION (not just author
 
 ### 10.1 What OIDC adds
 
-| Feature | OAuth 2.0 | OIDC |
-|---|---|---|
-| Access token (API authorization) | ✅ | ✅ |
-| Refresh token | ✅ | ✅ |
-| ID token (user identity) | ❌ | ✅ — a JWT with user claims |
-| `/userinfo` endpoint | ❌ | ✅ — returns user profile data |
-| Discovery (`.well-known/openid-configuration`) | ❌ | ✅ |
-| Standard scopes (`openid`, `profile`, `email`) | ❌ | ✅ |
+| Feature                                        | OAuth 2.0 | OIDC                           |
+| ---------------------------------------------- | --------- | ------------------------------ |
+| Access token (API authorization)               | ✅        | ✅                             |
+| Refresh token                                  | ✅        | ✅                             |
+| ID token (user identity)                       | ❌        | ✅ — a JWT with user claims    |
+| `/userinfo` endpoint                           | ❌        | ✅ — returns user profile data |
+| Discovery (`.well-known/openid-configuration`) | ❌        | ✅                             |
+| Standard scopes (`openid`, `profile`, `email`) | ❌        | ✅                             |
 
 ### 10.2 The ID token
 
@@ -824,10 +849,10 @@ ID tokens are explicitly for the client to read user identity. Don't use the acc
 If your tests need to verify the user's identity claims:
 
 ```typescript
-import { decodeJwt } from 'jose';     // npm i jose
+import { decodeJwt } from "jose"; // npm i jose
 
 const idToken = await page.evaluate(() => {
-  return localStorage.getItem('id_token');
+  return localStorage.getItem("id_token");
 });
 
 const claims = decodeJwt(idToken!) as {
@@ -839,7 +864,7 @@ const claims = decodeJwt(idToken!) as {
 };
 
 expect(claims.email).toBe(process.env.USER_EMAIL);
-expect(claims.roles).toContain('admin');
+expect(claims.roles).toContain("admin");
 expect(claims.exp * 1000).toBeGreaterThan(Date.now());
 ```
 
@@ -848,13 +873,15 @@ expect(claims.exp * 1000).toBeGreaterThan(Date.now());
 For SECURITY tests that need to verify the token signature:
 
 ```typescript
-import { jwtVerify, createRemoteJWKSet } from 'jose';
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
-const JWKS = createRemoteJWKSet(new URL('https://example.auth0.com/.well-known/jwks.json'));
+const JWKS = createRemoteJWKSet(
+  new URL("https://example.auth0.com/.well-known/jwks.json"),
+);
 
 const { payload } = await jwtVerify(idToken, JWKS, {
-  issuer: 'https://example.auth0.com/',
-  audience: 'your-client-id',
+  issuer: "https://example.auth0.com/",
+  audience: "your-client-id",
 });
 ```
 
@@ -866,7 +893,7 @@ If the ID token is in a cookie:
 
 ```typescript
 const cookies = await page.context().cookies();
-const idTokenCookie = cookies.find(c => c.name === 'id_token');
+const idTokenCookie = cookies.find((c) => c.name === "id_token");
 const claims = decodeJwt(idTokenCookie!.value);
 ```
 
@@ -878,11 +905,11 @@ SAML is older, XML-based, common in enterprise (Active Directory Federation Serv
 
 ### 12.1 The three parties
 
-| Role | Who |
-|---|---|
+| Role                    | Who                                     |
+| ----------------------- | --------------------------------------- |
 | Identity Provider (IdP) | The auth server (AD FS, Okta, OneLogin) |
-| Service Provider (SP) | The app the user wants to access |
-| User | The user |
+| Service Provider (SP)   | The app the user wants to access        |
+| User                    | The user                                |
 
 ### 12.2 The SAML assertion
 
@@ -908,10 +935,10 @@ The SP validates the signature and extracts claims to establish a session.
 
 ### 12.3 Bindings — how the assertion travels
 
-| Binding | Method |
-|---|---|
-| HTTP-POST | IdP returns an HTML form that auto-submits POST with SAMLResponse |
-| HTTP-Redirect | IdP redirects with SAMLResponse in URL (smaller assertions only) |
+| Binding       | Method                                                                    |
+| ------------- | ------------------------------------------------------------------------- |
+| HTTP-POST     | IdP returns an HTML form that auto-submits POST with SAMLResponse         |
+| HTTP-Redirect | IdP redirects with SAMLResponse in URL (smaller assertions only)          |
 | HTTP-Artifact | IdP sends an artifact ID; SP calls back-channel to get the real assertion |
 
 Almost all modern integrations use HTTP-POST.
@@ -931,22 +958,22 @@ Almost all modern integrations use HTTP-POST.
 ```
 
 ```typescript
-setup('SAML login (SP-initiated)', async ({ page }) => {
-  await page.goto('https://app.example.com');
+setup("SAML login (SP-initiated)", async ({ page }) => {
+  await page.goto("https://app.example.com");
   // SP redirects to IdP
   await page.waitForURL(/idp\.corp\.example\.com\/saml/);
 
-  await page.getByLabel('Username').fill(process.env.SAML_USER!);
-  await page.getByLabel('Password').fill(process.env.SAML_PASSWORD!);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByLabel("Username").fill(process.env.SAML_USER!);
+  await page.getByLabel("Password").fill(process.env.SAML_PASSWORD!);
+  await page.getByRole("button", { name: "Sign in" }).click();
 
   // IdP auto-POSTs back to SP. Wait for SP.
   await page.waitForURL(/app\.example\.com/);
 
   // Verify session
-  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
 
-  await page.context().storageState({ path: 'auth-states/saml.json' });
+  await page.context().storageState({ path: "auth-states/saml.json" });
 });
 ```
 
@@ -963,19 +990,19 @@ User starts from the IdP's dashboard ("MyApps") and clicks an app icon.
 No SAMLRequest. The SP must accept unsolicited responses — many security-conscious SPs disable this.
 
 ```typescript
-setup('SAML login (IdP-initiated)', async ({ page }) => {
-  await page.goto('https://portal.idp.example.com');
+setup("SAML login (IdP-initiated)", async ({ page }) => {
+  await page.goto("https://portal.idp.example.com");
 
-  await page.getByLabel('Username').fill(process.env.SAML_USER!);
-  await page.getByLabel('Password').fill(process.env.SAML_PASSWORD!);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByLabel("Username").fill(process.env.SAML_USER!);
+  await page.getByLabel("Password").fill(process.env.SAML_PASSWORD!);
+  await page.getByRole("button", { name: "Sign in" }).click();
 
   // Click the app tile
-  await page.getByRole('link', { name: 'My CRM App' }).click();
+  await page.getByRole("link", { name: "My CRM App" }).click();
 
   // The IdP POSTs to the SP
   await page.waitForURL(/app\.example\.com/);
-  await page.context().storageState({ path: 'auth-states/saml.json' });
+  await page.context().storageState({ path: "auth-states/saml.json" });
 });
 ```
 
@@ -989,7 +1016,7 @@ For tests, always validate the final URL after `waitForURL`:
 
 ```typescript
 await page.waitForURL(/app\.example\.com/);
-await expect(page).toHaveURL(/\/dashboard$/);   // ensure we're at the right page
+await expect(page).toHaveURL(/\/dashboard$/); // ensure we're at the right page
 ```
 
 ### 13.4 SAML cookie vs JWT
@@ -1016,7 +1043,7 @@ Time-based One-Time Password (RFC 6238). The 6-digit codes from Google Authentic
 
 ```typescript
 // utilities/auth/totp.helper.ts
-import { authenticator } from 'otplib';
+import { authenticator } from "otplib";
 
 const REFRESH_WINDOW_SECONDS = 5;
 
@@ -1028,7 +1055,7 @@ export async function generateFreshTotp(secret: string): Promise<string> {
   // Avoid the boundary — if <5s remaining, wait for next window
   const remaining = authenticator.timeRemaining();
   if (remaining < REFRESH_WINDOW_SECONDS) {
-    await new Promise(r => setTimeout(r, (remaining + 1) * 1000));
+    await new Promise((r) => setTimeout(r, (remaining + 1) * 1000));
   }
   return authenticator.generate(secret);
 }
@@ -1054,23 +1081,23 @@ The IdP usually accepts the previous code too (1-window tolerance), so this is c
 ### 14.4 Driving the MFA UI
 
 ```typescript
-import { generateFreshTotp } from '@/utilities/auth/totp.helper';
+import { generateFreshTotp } from "@/utilities/auth/totp.helper";
 
-setup('OAuth login + MFA', async ({ page }) => {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill(process.env.USER_EMAIL!);
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByLabel('Password').fill(process.env.USER_PASSWORD!);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+setup("OAuth login + MFA", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByLabel("Email").fill(process.env.USER_EMAIL!);
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByLabel("Password").fill(process.env.USER_PASSWORD!);
+  await page.getByRole("button", { name: "Sign in" }).click();
 
   // MFA prompt
   await page.waitForURL(/\/mfa/);
   const code = await generateFreshTotp(process.env.USER_TOTP_SECRET!);
-  await page.getByLabel('Authentication code').fill(code);
-  await page.getByRole('button', { name: 'Verify' }).click();
+  await page.getByLabel("Authentication code").fill(code);
+  await page.getByRole("button", { name: "Verify" }).click();
 
   await page.waitForURL(/\/dashboard/);
-  await page.context().storageState({ path: 'auth-states/user.json' });
+  await page.context().storageState({ path: "auth-states/user.json" });
 });
 ```
 
@@ -1078,18 +1105,19 @@ setup('OAuth login + MFA', async ({ page }) => {
 
 Treat TOTP secrets the same as passwords:
 
-| Storage | OK for tests? |
-|---|---|
-| Plain `.env` committed to repo | ❌ NEVER |
-| `.env` gitignored, local only | ⚠️ OK for dev, not for shared accounts |
-| CI secrets vault (GitHub, Doppler, Vault) | ✅ Standard |
-| Generated per-test via API | ✅ Ideal but rarely possible |
+| Storage                                   | OK for tests?                          |
+| ----------------------------------------- | -------------------------------------- |
+| Plain `.env` committed to repo            | ❌ NEVER                               |
+| `.env` gitignored, local only             | ⚠️ OK for dev, not for shared accounts |
+| CI secrets vault (GitHub, Doppler, Vault) | ✅ Standard                            |
+| Generated per-test via API                | ✅ Ideal but rarely possible           |
 
 For a shared service account, the secret should be in a vault. The CI job pulls it at start. Local dev mirrors the same env var.
 
 ### 14.6 Rotation
 
 TOTP secrets should rotate periodically:
+
 - Service accounts: monthly to quarterly.
 - Real user accounts used for tests: don't use real users; use service accounts.
 - When a contractor leaves: rotate immediately.
@@ -1106,12 +1134,12 @@ The IdP texts a code to a phone number.
 
 Strategies:
 
-| Strategy | Setup | Reliability |
-|---|---|---|
-| Use test-only account WITHOUT MFA enabled | Easiest; talk to IdP admin | High |
-| Use an SMS testing service (Twilio test sandbox, etc.) | Complex; service-specific | Medium |
-| API-side bypass: an admin endpoint that issues a token without UI | Requires IdP cooperation | High once set up |
-| MailHog-style local SMS gateway | Only if you run the SMS gateway yourself | High |
+| Strategy                                                          | Setup                                    | Reliability      |
+| ----------------------------------------------------------------- | ---------------------------------------- | ---------------- |
+| Use test-only account WITHOUT MFA enabled                         | Easiest; talk to IdP admin               | High             |
+| Use an SMS testing service (Twilio test sandbox, etc.)            | Complex; service-specific                | Medium           |
+| API-side bypass: an admin endpoint that issues a token without UI | Requires IdP cooperation                 | High once set up |
+| MailHog-style local SMS gateway                                   | Only if you run the SMS gateway yourself | High             |
 
 For most teams, the answer is: SMS tests use service accounts without MFA, or the test bypasses login entirely via storageState pre-seeded by the IdP team.
 
@@ -1135,11 +1163,11 @@ WebAuthn is a browser API. Playwright has `context.addInitScript` and CDP suppor
 
 ```typescript
 const client = await context.newCDPSession(page);
-await client.send('WebAuthn.enable');
-await client.send('WebAuthn.addVirtualAuthenticator', {
+await client.send("WebAuthn.enable");
+await client.send("WebAuthn.addVirtualAuthenticator", {
   options: {
-    protocol: 'ctap2',
-    transport: 'internal',
+    protocol: "ctap2",
+    transport: "internal",
     hasResidentKey: true,
     hasUserVerification: true,
     isUserVerified: true,
@@ -1213,7 +1241,7 @@ Renew before expiry. Automate:
 # .github/workflows/check-mtls-cert.yml
 on:
   schedule:
-    - cron: '0 0 * * 0'  # weekly
+    - cron: "0 0 * * 0" # weekly
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -1262,15 +1290,15 @@ The old-school approach: server validates credentials, sets a session cookie, br
 ### 17.2 Testing
 
 ```typescript
-setup('legacy cookie login', async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('#user', process.env.USER!);
-  await page.fill('#pass', process.env.PASS!);
-  await page.click('#submit');
+setup("legacy cookie login", async ({ page }) => {
+  await page.goto("/login");
+  await page.fill("#user", process.env.USER!);
+  await page.fill("#pass", process.env.PASS!);
+  await page.click("#submit");
   await page.waitForURL(/\/home/);
 
   // Cookie is now set. Save state.
-  await page.context().storageState({ path: 'auth.json' });
+  await page.context().storageState({ path: "auth.json" });
 });
 ```
 
@@ -1281,12 +1309,14 @@ storageState handles cookie-based sessions perfectly.
 For tests that don't need a browser:
 
 ```typescript
-test('API session via cookie', async ({ request }) => {
+test("API session via cookie", async ({ request }) => {
   // Login — server sets cookie
-  await request.post('/login', { form: { username: 'admin', password: 'admin' } });
+  await request.post("/login", {
+    form: { username: "admin", password: "admin" },
+  });
 
   // Subsequent requests carry the cookie automatically (request maintains cookie jar)
-  const me = await request.get('/api/me');
+  const me = await request.get("/api/me");
   expect(me.ok()).toBeTruthy();
 });
 ```
@@ -1318,10 +1348,10 @@ The OWASP recommendation: tokens in HttpOnly cookies, NEVER localStorage.
 If the app under test uses this pattern:
 
 ```typescript
-const token = await page.evaluate(() => localStorage.getItem('access_token'));
+const token = await page.evaluate(() => localStorage.getItem("access_token"));
 
 // Use the token directly
-await request.get('/api/users/me', {
+await request.get("/api/users/me", {
   headers: { Authorization: `Bearer ${token}` },
 });
 ```
@@ -1333,11 +1363,13 @@ storageState captures localStorage too, so this still works for session restorat
 Write a security test asserting your app does NOT use localStorage for tokens:
 
 ```typescript
-test('access token is not in localStorage', async ({ page }) => {
+test("access token is not in localStorage", async ({ page }) => {
   await loginViaUi(page);
-  const items = await page.evaluate(() => Object.fromEntries(Object.entries(localStorage)));
+  const items = await page.evaluate(() =>
+    Object.fromEntries(Object.entries(localStorage)),
+  );
   for (const value of Object.values(items)) {
-    expect(value).not.toMatch(/^eyJ/);   // JWT prefix
+    expect(value).not.toMatch(/^eyJ/); // JWT prefix
   }
 });
 ```
@@ -1437,25 +1469,25 @@ When the user logs in at IdP, the SP, and a third app, all sharing a single sess
 
 ### 20.1 The mechanics
 
-| Mechanism | How it works |
-|---|---|
-| Shared domain cookies | All apps under `*.example.com` share cookies (rare due to SameSite/Secure restrictions) |
+| Mechanism                | How it works                                                                                 |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| Shared domain cookies    | All apps under `*.example.com` share cookies (rare due to SameSite/Secure restrictions)      |
 | Federation via SAML/OIDC | Each app re-authenticates to the IdP; IdP recognises existing session, auto-issues new token |
-| Token federation | Apps exchange tokens via service-to-service flows |
+| Token federation         | Apps exchange tokens via service-to-service flows                                            |
 
 ### 20.2 Testing cross-domain SSO
 
 ```typescript
-test('cross-app SSO', async ({ context }) => {
+test("cross-app SSO", async ({ context }) => {
   // App 1 — login
   const app1 = await context.newPage();
-  await app1.goto('https://app1.example.com');
-  await loginAt(app1, 'user@example.com', 'password');
+  await app1.goto("https://app1.example.com");
+  await loginAt(app1, "user@example.com", "password");
 
   // App 2 — should be auto-logged-in (federated session)
   const app2 = await context.newPage();
-  await app2.goto('https://app2.example.com');
-  await expect(app2.getByRole('button', { name: 'Account' })).toBeVisible();
+  await app2.goto("https://app2.example.com");
+  await expect(app2.getByRole("button", { name: "Account" })).toBeVisible();
   // NOT redirected to login — federation worked
 });
 ```
@@ -1533,9 +1565,10 @@ Each app's first navigation redirects to the IdP, which sees the federation cook
 **Cause:** Accumulated tracking cookies from analytics during login flow.
 
 **Fix:** After login, programmatically delete unnecessary cookies before saving state:
+
 ```typescript
-await page.context().clearCookies({ domain: 'analytics.example.com' });
-await page.context().storageState({ path: 'auth.json' });
+await page.context().clearCookies({ domain: "analytics.example.com" });
+await page.context().storageState({ path: "auth.json" });
 ```
 
 ### Failure 7 — Worker fixture fetched a token; later tests fail with 401
@@ -1574,27 +1607,27 @@ await page.context().storageState({ path: 'auth.json' });
 
 ## 22. Anti-pattern catalog
 
-| ❌ Anti-pattern | ✅ Fix |
-|---|---|
-| Logging in via UI per test | Pre-authenticate in setup project, load storageState |
-| `storageState` after `click()` without wait | Wait for post-login URL |
-| Hardcoded passwords in spec files | `process.env` + secrets manager |
-| TOTP secret in committed `.env` | Vault / Doppler / GitHub Actions secrets |
-| Shared storageState across roles | One file per role |
-| Bearer token fetched per test | Worker scope + expiry check |
-| `Stamper.use({ accountRole: 'admin' })` then forgetting to update fixture | Always read options from destructured fixture arg |
-| Token in `console.log` for debugging | Use the trace viewer instead |
-| Plain HTTP for OAuth requests | TLS only |
-| Test-only `/oauth/token` endpoint exposed in production | Strict gateway routing |
-| `.p12` files in repo | Base64 in CI secret, write to disk at runtime |
-| Reusing production credentials in tests | Dedicated service accounts |
-| Driving SAML/OIDC UI when client_credentials would work | Machine-to-machine flow |
-| TOTP without time-window buffer | `generateFreshTotp` waits if <5s remaining |
-| `extraHTTPHeaders` with token in config root | Token might be undefined at config-load time — set per-test |
-| Reading auth claims from access token directly | Use ID token for identity, access token for authz |
-| ID token validation without signature check (in security tests) | Use `jwtVerify` with the IdP's JWKS |
-| Sharing test accounts across many tests without account pool | File-locked pool ensures parallel safety |
-| `await page.goto('/login')` before `storageState` loaded | storageState only takes effect on context creation |
+| ❌ Anti-pattern                                                           | ✅ Fix                                                      |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Logging in via UI per test                                                | Pre-authenticate in setup project, load storageState        |
+| `storageState` after `click()` without wait                               | Wait for post-login URL                                     |
+| Hardcoded passwords in spec files                                         | `process.env` + secrets manager                             |
+| TOTP secret in committed `.env`                                           | Vault / Doppler / GitHub Actions secrets                    |
+| Shared storageState across roles                                          | One file per role                                           |
+| Bearer token fetched per test                                             | Worker scope + expiry check                                 |
+| `Stamper.use({ accountRole: 'admin' })` then forgetting to update fixture | Always read options from destructured fixture arg           |
+| Token in `console.log` for debugging                                      | Use the trace viewer instead                                |
+| Plain HTTP for OAuth requests                                             | TLS only                                                    |
+| Test-only `/oauth/token` endpoint exposed in production                   | Strict gateway routing                                      |
+| `.p12` files in repo                                                      | Base64 in CI secret, write to disk at runtime               |
+| Reusing production credentials in tests                                   | Dedicated service accounts                                  |
+| Driving SAML/OIDC UI when client_credentials would work                   | Machine-to-machine flow                                     |
+| TOTP without time-window buffer                                           | `generateFreshTotp` waits if <5s remaining                  |
+| `extraHTTPHeaders` with token in config root                              | Token might be undefined at config-load time — set per-test |
+| Reading auth claims from access token directly                            | Use ID token for identity, access token for authz           |
+| ID token validation without signature check (in security tests)           | Use `jwtVerify` with the IdP's JWKS                         |
+| Sharing test accounts across many tests without account pool              | File-locked pool ensures parallel safety                    |
+| `await page.goto('/login')` before `storageState` loaded                  | storageState only takes effect on context creation          |
 
 ---
 

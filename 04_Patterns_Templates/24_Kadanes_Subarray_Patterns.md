@@ -5,32 +5,75 @@
 **WHY this pattern?** The family of "contiguous subarray optimization" problems is one of the most frequently tested categories in interviews. Kadane's Algorithm is the foundational O(N) technique that underpins all of them. Understanding **why** it works — not just how — separates 3+ YOE engineers from juniors.
 
 > 📖 **Cross-Reference Navigator:**
+>
 > - 🧠 **How to Think:** [Array & String Thinking — Part 4: Prefix/Kadane](../14_Mental_Models/04_Array_String_Thinking.md#part-4-prefix-sum--kadane) | [Optimization Pipeline — Kadane Example](../14_Mental_Models/14_Optimization_Pipeline.md#example-2-maximum-subarray-sum-lc-53) | [Greedy vs DP](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
 > - 📐 **Related Patterns:** [Prefix Sum/XOR](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Sliding Window](09_Array_Plus_SlidingWindow.md) | [DP Patterns](16_DP_Pattern_Recognition.md)
 > - 📚 **Theory:** [Arrays DS](../02_Data_Structures/01b_Arrays.md)
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| maximum subarray sum, mixed signs | Kadane |
-| maximum circular subarray | max(Kadane normal, total - minSubarray) |
-| exact sum `K` | prefix sum + hashmap |
-| longest/shortest threshold with positives | sliding window |
-| threshold with negatives | prefix + deque/tree |
-| need subarray product | track max/min product due to negatives |
+### Historical Evolution
+
+**Inventor / Originator:** Jay Kadane (1984) published the linear-time max subarray algorithm. Jon Bentley (1986) documented it in "Programming Pearls." Andrew Viterbi (1967) applied similar greedy DP to hidden Markov models.
+
+**Predecessor context:** The maximum subarray problem was solved in O(n²) or O(n³) by checking all possible subarrays. No one knew it could be solved in O(n).
+
+**Evolution narrative:** Kadane's 1984 algorithm discovered that at each position, you decide: extend the previous subarray or start fresh. This greedy DP insight reduced O(n²) to O(n). Bentley popularized it in his influential column.
+
+**Modern practice:** Kadane's algorithm is one of the most elegant in computer science. It appears in stock price problems, signal processing, and any domain requiring maximum subarray sums.
+
+- **Kadane 1984**: Published the O(n) max subarray algorithm; simple elegant solution
+- **Bentley 1986**: "Programming Pearls" popularized Kadane's algorithm to wide audience
+- **Viterbi 1967**: Similar greedy DP for HMMs; precursor to Kadane's principle
+- **Modern practice**: Stock buy/sell problems, signal processing, maximum subarray variants
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **All-negative array: Kadane returns max element, NOT 0 — adjust initial value if problem wants empty subarray** — Standard Kadane with `maxSoFar = Integer.MIN_VALUE` returns the maximum (least negative) element. Some problems want 0 for empty subarray. Detection: test with `[-3, -2, -1]`; verify expected answer is -1 or 0.
+
+- **Max product subarray needs tracking of both max AND min (negatives)** — A single negative number can flip max to min and vice versa. Kadane's for max product must track both because `min * negative = max`. Detection: test with `[-2, 3, -4]`; should return 24 (from [-2, 3, -4]).
+
+- **Circular subarray: total - min subarray breaks when all elements are negative** — `max(circular, non-circular)` where `circular = total - minSubarray` fails when all elements are negative (minSubarray = total, giving 0 instead of max element). Detection: test with all-negative array; verify circular subarray returns max element.
+
+**Production Selection Heuristic:** Use Kadane for max subarray sum on non-circular arrays. For max product, track both max and min at each step. For circular, verify no all-negative case.
+
+---
+
+| Given Constraints                         | Do This                                 |
+| ----------------------------------------- | --------------------------------------- |
+| maximum subarray sum, mixed signs         | Kadane                                  |
+| maximum circular subarray                 | max(Kadane normal, total - minSubarray) |
+| exact sum `K`                             | prefix sum + hashmap                    |
+| longest/shortest threshold with positives | sliding window                          |
+| threshold with negatives                  | prefix + deque/tree                     |
+| need subarray product                     | track max/min product due to negatives  |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ---
 
-## 🧠 The Core Epiphany: What Is Kadane's *Really* Doing?
+## 🧠 The Core Epiphany: What Is Kadane's _Really_ Doing?
 
-Kadane's is **not** "tracking the max sum so far." That describes what it does, not *why* it works.
+Kadane's is **not** "tracking the max sum so far." That describes what it does, not _why_ it works.
 
 ### The Decision At Every Index
 
 At every index `i`, you face a binary decision:
+
 > **"Is the subarray ending at `i-1` an asset or a liability?"**
 
 - If the cumulative sum ending at `i-1` is **positive**, it's an **asset** — extending the subarray by including `arr[i]` makes the total larger.
@@ -51,11 +94,12 @@ Sliding window requires **monotonicity** (expanding always increases, shrinking 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: Maximum Subarray Sum (Classic Kadane's)
+
 ```java
 public int maxSubArray(int[] nums) {
     int currentMax = nums[0];
     int globalMax = nums[0];
-    
+
     for (int i = 1; i < nums.length; i++) {
         // DECISION: extend previous subarray, or start fresh?
         currentMax = Math.max(nums[i], currentMax + nums[i]);
@@ -67,10 +111,11 @@ public int maxSubArray(int[] nums) {
 ```
 
 ### Template 2: Maximum Product Subarray
+
 ```java
 public int maxProduct(int[] nums) {
     int maxSoFar = nums[0], minSoFar = nums[0], result = nums[0];
-    
+
     for (int i = 1; i < nums.length; i++) {
         // A negative number can flip min to max!
         if (nums[i] < 0) {
@@ -87,15 +132,16 @@ public int maxProduct(int[] nums) {
 // Time: O(N) | Space: O(1)
 ```
 
-**Why track `minSoFar`?** A massive negative product × another negative number = a massive *positive* product. So the current minimum is always a candidate for the future maximum.
+**Why track `minSoFar`?** A massive negative product × another negative number = a massive _positive_ product. So the current minimum is always a candidate for the future maximum.
 
 ### Template 3: Subarray Sum Equals K (Prefix Sum + HashMap)
+
 ```java
 public int subarraySum(int[] nums, int k) {
     Map<Integer, Integer> prefixCount = new HashMap<>();
     prefixCount.put(0, 1); // empty prefix
     int prefix = 0, count = 0;
-    
+
     for (int num : nums) {
         prefix += num;
         // How many previous prefixes complement current to make sum = k?
@@ -108,12 +154,13 @@ public int subarraySum(int[] nums, int k) {
 ```
 
 ### Template 4: Subarray with Given XOR
+
 ```java
 public int subarraysWithXor(int[] arr, int k) {
     Map<Integer, Integer> prefixXorCount = new HashMap<>();
     prefixXorCount.put(0, 1);
     int xor = 0, count = 0;
-    
+
     for (int num : arr) {
         xor ^= num;
         // If prefix[r] ^ prefix[l-1] = k, then prefix[l-1] = prefix[r] ^ k
@@ -143,7 +190,7 @@ At every index `i`, you face a **binary decision**:
 
   ASSET (positive sum):    Keep it — extending adds value
   LIABILITY (negative sum): Abandon it — start fresh from arr[i]
-  
+
 This is what Math.max(arr[i], currentMax + arr[i]) encodes:
   - arr[i] alone         → "start fresh" (abandon the past)
   - currentMax + arr[i]  → "extend"      (past was helpful)
@@ -200,7 +247,7 @@ return maxSum;
 public int maxSubArray(int[] nums) {
     int currentMax = nums[0];  // best subarray ending at current index
     int globalMax = nums[0];   // best subarray seen anywhere
-    
+
     for (int i = 1; i < nums.length; i++) {
         // DECISION: is the past an asset or liability?
         currentMax = Math.max(nums[i], currentMax + nums[i]);
@@ -257,6 +304,7 @@ Answer: 6 ✅ (subarray [4, -1, 2, 1])
 ---
 
 ### 🧠 Things to Remember
+
 - **Core decision:** `Math.max(arr[i], currentMax + arr[i])` = "extend vs restart"
 - **It's a 1D DP:** `dp[i] = max(arr[i], dp[i-1] + arr[i])` compressed to one variable
 - **Initialize with `nums[0]`**, NOT `0` — handles all-negative arrays
@@ -299,7 +347,7 @@ Step-by-step:
        result = 6 ✅
 
   Answer: 6 ✅ (subarray [2, 3])
-  
+
   Note: minSoFar=-48 was being tracked because if a future negative
   appeared, -48 × negative = 48, a huge positive! That's why we track both.
 ```
@@ -438,24 +486,26 @@ Subarray problem?
 ## 📋 PRACTICE PROBLEMS (7-10 Core Problems)
 
 ### Easy
-| # | Problem | Difficulty | Key Insight |
-|---|---------|------------|-------------|
-| 1 | [Maximum Subarray (LC 53)](https://leetcode.com/problems/maximum-subarray/) | Easy | Classic Kadane's: extend vs restart |
-| 2 | [Best Time to Buy and Sell Stock (LC 121)](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | Easy | Kadane's variant: track min price, max profit |
+
+| #   | Problem                                                                                                    | Difficulty | Key Insight                                   |
+| --- | ---------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------- |
+| 1   | [Maximum Subarray (LC 53)](https://leetcode.com/problems/maximum-subarray/)                                | Easy       | Classic Kadane's: extend vs restart           |
+| 2   | [Best Time to Buy and Sell Stock (LC 121)](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | Easy       | Kadane's variant: track min price, max profit |
 
 ### Medium
-| # | Problem | Difficulty | Key Insight |
-|---|---------|------------|-------------|
-| 3 | [Maximum Product Subarray (LC 152)](https://leetcode.com/problems/maximum-product-subarray/) | Medium | Track both max AND min (negative flip) |
-| 4 | [Subarray Sum Equals K (LC 560)](https://leetcode.com/problems/subarray-sum-equals-k/) | Medium | Prefix Sum + HashMap, NOT sliding window |
-| 5 | [Maximum Sum Circular Subarray (LC 918)](https://leetcode.com/problems/maximum-sum-circular-subarray/) | Medium | totalSum - minSubarray for wrap case |
-| 6 | [Subarray Sums Divisible by K (LC 974)](https://leetcode.com/problems/subarray-sums-divisible-by-k/) | Medium | Prefix modulo + HashMap |
-| 7 | [Longest Subarray with Sum ≤ K](https://leetcode.com/problems/subarray-product-less-than-k/) | Medium | Sliding window (non-negative only) |
-| 8 | [Count Nice Subarrays (LC 1248)](https://leetcode.com/problems/count-number-of-nice-subarrays/) | Medium | Convert to prefix sum (odd=1, even=0) |
+
+| #   | Problem                                                                                                | Difficulty | Key Insight                              |
+| --- | ------------------------------------------------------------------------------------------------------ | ---------- | ---------------------------------------- |
+| 3   | [Maximum Product Subarray (LC 152)](https://leetcode.com/problems/maximum-product-subarray/)           | Medium     | Track both max AND min (negative flip)   |
+| 4   | [Subarray Sum Equals K (LC 560)](https://leetcode.com/problems/subarray-sum-equals-k/)                 | Medium     | Prefix Sum + HashMap, NOT sliding window |
+| 5   | [Maximum Sum Circular Subarray (LC 918)](https://leetcode.com/problems/maximum-sum-circular-subarray/) | Medium     | totalSum - minSubarray for wrap case     |
+| 6   | [Subarray Sums Divisible by K (LC 974)](https://leetcode.com/problems/subarray-sums-divisible-by-k/)   | Medium     | Prefix modulo + HashMap                  |
+| 7   | [Longest Subarray with Sum ≤ K](https://leetcode.com/problems/subarray-product-less-than-k/)           | Medium     | Sliding window (non-negative only)       |
+| 8   | [Count Nice Subarrays (LC 1248)](https://leetcode.com/problems/count-number-of-nice-subarrays/)        | Medium     | Convert to prefix sum (odd=1, even=0)    |
 
 ### Hard
-| # | Problem | Difficulty | Key Insight |
-|---|---------|------------|-------------|
-| 9 | [Max Subarray Sum with One Deletion (LC 1186)](https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/) | Hard | Two Kadane passes: left-to-right + right-to-left |
-| 10 | [Shortest Subarray with Sum at Least K (LC 862)](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Hard | Prefix + Monotonic Deque (negatives!) |
 
+| #   | Problem                                                                                                                | Difficulty | Key Insight                                      |
+| --- | ---------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------ |
+| 9   | [Max Subarray Sum with One Deletion (LC 1186)](https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/)  | Hard       | Two Kadane passes: left-to-right + right-to-left |
+| 10  | [Shortest Subarray with Sum at Least K (LC 862)](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Hard       | Prefix + Monotonic Deque (negatives!)            |

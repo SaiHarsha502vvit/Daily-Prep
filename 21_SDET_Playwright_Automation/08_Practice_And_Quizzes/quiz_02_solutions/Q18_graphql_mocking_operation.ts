@@ -9,20 +9,20 @@
  *   Hint: GraphQL requests are POSTs where the body contains an operationName.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ============================================================
 // ✅ SOLUTION
 // ============================================================
 
-test('mock GetCustomerData, pass through all other GQL operations', async ({
+test("mock GetCustomerData, pass through all other GQL operations", async ({
   page,
 }) => {
-  await page.route('**/graphql', async (route) => {
+  await page.route("**/graphql", async (route) => {
     const request = route.request();
 
     // GraphQL uses POST; GETs (e.g. introspection over GET) go straight through
-    if (request.method() !== 'POST') {
+    if (request.method() !== "POST") {
       return route.continue();
     }
 
@@ -41,21 +41,21 @@ test('mock GetCustomerData, pass through all other GQL operations', async ({
     // Check operationName first (preferred — explicit and reliable)
     // Fall back to checking the query string for named operations
     const isTargetOp =
-      body.operationName === 'GetCustomerData' ||
-      (body.query?.includes('query GetCustomerData') ?? false);
+      body.operationName === "GetCustomerData" ||
+      (body.query?.includes("query GetCustomerData") ?? false);
 
     if (isTargetOp) {
       // ✅ Fulfill with mocked response — request does NOT reach the server
       await route.fulfill({
         status: 200,
-        contentType: 'application/json',
+        contentType: "application/json",
         body: JSON.stringify({
           data: {
             customer: {
-              id: 'C-001',
-              name: 'Mocked Customer',
-              email: 'mock@example.com',
-              status: 'ACTIVE',
+              id: "C-001",
+              name: "Mocked Customer",
+              email: "mock@example.com",
+              status: "ACTIVE",
             },
           },
         }),
@@ -67,11 +67,11 @@ test('mock GetCustomerData, pass through all other GQL operations', async ({
   });
 
   // Trigger an action that fires GetCustomerData
-  await page.goto('https://app.example.com/customers/C-001');
+  await page.goto("https://app.example.com/customers/C-001");
 
   // The UI will render the MOCKED customer data
   await expect(page.locator('[data-testid="customer-name"]')).toHaveText(
-    'Mocked Customer',
+    "Mocked Customer",
   );
 });
 
@@ -88,21 +88,21 @@ type GraphQLBody = {
 type MockMap = Record<string, unknown>; // operationName → mock data
 
 async function setupGraphQLMocks(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   mocks: MockMap,
 ): Promise<void> {
-  await page.route('**/graphql', async (route) => {
-    if (route.request().method() !== 'POST') {
+  await page.route("**/graphql", async (route) => {
+    if (route.request().method() !== "POST") {
       return route.continue();
     }
 
     const body = route.request().postDataJSON() as GraphQLBody | null;
-    const opName = body?.operationName ?? '';
+    const opName = body?.operationName ?? "";
 
     if (opName && opName in mocks) {
       await route.fulfill({
         status: 200,
-        contentType: 'application/json',
+        contentType: "application/json",
         body: JSON.stringify({ data: mocks[opName] }),
       });
     } else {
@@ -111,49 +111,49 @@ async function setupGraphQLMocks(
   });
 }
 
-test('multiple GQL mocks via dispatch map', async ({ page }) => {
+test("multiple GQL mocks via dispatch map", async ({ page }) => {
   await setupGraphQLMocks(page, {
     GetCustomerData: {
-      customer: { id: 'C-001', name: 'Alice', status: 'ACTIVE' },
+      customer: { id: "C-001", name: "Alice", status: "ACTIVE" },
     },
     GetCustomerOrders: {
       orders: [
-        { id: 'ORD-001', amount: 99.99 },
-        { id: 'ORD-002', amount: 49.99 },
+        { id: "ORD-001", amount: 99.99 },
+        { id: "ORD-002", amount: 49.99 },
       ],
     },
     // GetCustomerNotes is NOT in the map → hits the real server
   });
 
-  await page.goto('https://app.example.com/customers/C-001');
+  await page.goto("https://app.example.com/customers/C-001");
 
   await expect(page.locator('[data-testid="customer-name"]')).toHaveText(
-    'Alice',
+    "Alice",
   );
-  await expect(page.locator('[data-testid="order-count"]')).toHaveText('2');
+  await expect(page.locator('[data-testid="order-count"]')).toHaveText("2");
 });
 
 // ============================================================
 // Verify a captured GQL request payload
 // ============================================================
 
-test('verify GetCustomerData variables', async ({ page }) => {
+test("verify GetCustomerData variables", async ({ page }) => {
   let capturedVariables: Record<string, unknown> | undefined;
 
-  await page.route('**/graphql', async (route) => {
+  await page.route("**/graphql", async (route) => {
     const body = route.request().postDataJSON() as GraphQLBody | null;
 
-    if (body?.operationName === 'GetCustomerData') {
+    if (body?.operationName === "GetCustomerData") {
       capturedVariables = body.variables;
     }
 
     await route.continue(); // let it hit the real server
   });
 
-  await page.goto('https://app.example.com/customers/C-001');
+  await page.goto("https://app.example.com/customers/C-001");
 
   expect(capturedVariables).toEqual(
-    expect.objectContaining({ customerId: 'C-001' }),
+    expect.objectContaining({ customerId: "C-001" }),
   );
 });
 

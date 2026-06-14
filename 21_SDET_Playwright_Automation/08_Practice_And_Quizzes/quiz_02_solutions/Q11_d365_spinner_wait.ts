@@ -9,7 +9,7 @@
  *   3. Uses timeouts: 45 s for spinners, 30 s for title
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page } from "@playwright/test";
 
 // ============================================================
 // ✅ SOLUTION
@@ -24,10 +24,13 @@ import { test, expect, type Page } from '@playwright/test';
  *                        against stale-render (seeing data from the previous
  *                        record during navigation).
  */
-async function waitForD365Load(page: Page, expectedTitle?: string): Promise<void> {
+async function waitForD365Load(
+  page: Page,
+  expectedTitle?: string,
+): Promise<void> {
   // Step 1 — Wait for all spinners to disappear.
   // toHaveCount(0) retries until count is 0 or the timeout expires.
-  await expect(page.locator('.ms-Spinner')).toHaveCount(0, {
+  await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
     timeout: 45_000,
   });
 
@@ -36,7 +39,7 @@ async function waitForD365Load(page: Page, expectedTitle?: string): Promise<void
   // record's data while fetching the new one.
   if (expectedTitle) {
     const titleArea = page
-      .locator('.ms-CommandBar, .ms-PageHeader, h1[title]')
+      .locator(".ms-CommandBar, .ms-PageHeader, h1[title]")
       .first();
     await expect(titleArea).toContainText(expectedTitle, {
       timeout: 30_000,
@@ -48,24 +51,24 @@ async function waitForD365Load(page: Page, expectedTitle?: string): Promise<void
 // Usage examples
 // ============================================================
 
-test('navigate to customer and check status', async ({ page }) => {
-  await page.goto('https://crm.example.com/customers/C-001');
+test("navigate to customer and check status", async ({ page }) => {
+  await page.goto("https://crm.example.com/customers/C-001");
 
   // Basic wait — just spinners
   await waitForD365Load(page);
 
   const status = page.locator('[data-automation-key="statecode"]');
-  await expect(status).toHaveText('Active', { timeout: 30_000 });
+  await expect(status).toHaveText("Active", { timeout: 30_000 });
 });
 
-test('navigate to customer with title guard', async ({ page }) => {
-  await page.goto('https://crm.example.com/customers/C-001');
+test("navigate to customer with title guard", async ({ page }) => {
+  await page.goto("https://crm.example.com/customers/C-001");
 
   // Full wait — spinners AND confirm we see the right customer name
-  await waitForD365Load(page, 'Harsha Alasai');
+  await waitForD365Load(page, "Harsha Alasai");
 
   const status = page.locator('[data-automation-key="statecode"]');
-  await expect(status).toHaveText('Active', { timeout: 30_000 });
+  await expect(status).toHaveText("Active", { timeout: 30_000 });
 });
 
 // ============================================================
@@ -75,7 +78,7 @@ test('navigate to customer with title guard', async ({ page }) => {
 // In that case the .ms-Spinner elements live inside the frame, not in the
 // top-level DOM.
 
-import { type FrameLocator } from '@playwright/test';
+import { type FrameLocator } from "@playwright/test";
 
 async function waitForD365FormLoad(
   frameOrPage: Page | FrameLocator,
@@ -84,25 +87,23 @@ async function waitForD365FormLoad(
   // Works with both Page and FrameLocator — both expose .locator()
   const loc = (selector: string) => frameOrPage.locator(selector);
 
-  await expect(loc('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
+  await expect(loc(".ms-Spinner")).toHaveCount(0, { timeout: 45_000 });
 
   if (expectedTitle) {
-    const titleArea = loc(
-      '.ms-CommandBar, .ms-PageHeader, h1[title]',
-    ).first();
+    const titleArea = loc(".ms-CommandBar, .ms-PageHeader, h1[title]").first();
     await expect(titleArea).toContainText(expectedTitle, { timeout: 30_000 });
   }
 }
 
-test('D365 form inside IFrame', async ({ page }) => {
-  await page.goto('https://crm.example.com/entity/account/C-001');
+test("D365 form inside IFrame", async ({ page }) => {
+  await page.goto("https://crm.example.com/entity/account/C-001");
 
   // The form is inside the main IFrame
   const formFrame: FrameLocator = page.frameLocator(
     'iframe[name="main-iframe"]',
   );
 
-  await waitForD365FormLoad(formFrame, 'Contoso Ltd');
+  await waitForD365FormLoad(formFrame, "Contoso Ltd");
 
   const ownerField = formFrame.locator('[data-automation-key="ownerid"]');
   await expect(ownerField).not.toBeEmpty();

@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
 
 **Cross-links:**
+
 - [`23_APIUtils_HTTP_Library.md`](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md) — The foundational APIUtils pattern this chapter builds on
 - [`22_Headers_Payloads_Endpoints_Factory.md`](../04_Enterprise_Architecture/22_Headers_Payloads_Endpoints_Factory.md) — The factory layer
 - [`27_Advanced_TypeScript_for_SDETs.md`](./27_Advanced_TypeScript_for_SDETs.md) — Generics and conditional types used here
@@ -61,6 +62,7 @@ Layer 1: Playwright APIRequestContext
 ```
 
 **Why this layer separation?**
+
 ```
 Problem: You change the API path from /api/v1/citations to /api/v2/citations
 With no library:    Update 50 test files manually
@@ -87,22 +89,22 @@ Before building abstractions, understand what you're wrapping.
 
 ```typescript
 // What Playwright's APIRequestContext provides:
-import { type APIRequestContext } from '@playwright/test';
+import { type APIRequestContext } from "@playwright/test";
 
 // In a fixture:
 async ({ request }, use) => {
   // request IS the APIRequestContext — a fetch-like HTTP client
   // It manages cookies, sessions, and headers per context
 
-  const response = await request.get('https://api.example.com/data');
+  const response = await request.get("https://api.example.com/data");
   // Returns: APIResponse (not a fetch Response)
 
-  const status:  number          = response.status();
+  const status: number = response.status();
   const headers: Record<string, string> = response.headers();
-  const body:    Buffer          = await response.body();
-  const text:    string          = await response.text();
-  const json:    unknown         = await response.json();  // typed as unknown!
-  const ok:      boolean         = response.ok();  // status 200-299
+  const body: Buffer = await response.body();
+  const text: string = await response.text();
+  const json: unknown = await response.json(); // typed as unknown!
+  const ok: boolean = response.ok(); // status 200-299
 
   // URL and request info:
   const url: string = response.url();
@@ -123,42 +125,42 @@ async ({ request }, use) => {
 ```typescript
 // lib/core/ApiCore.ts
 
-import type { APIRequestContext, APIResponse } from '@playwright/test';
+import type { APIRequestContext, APIResponse } from "@playwright/test";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ApiCoreConfig {
-  baseUrl:          string;
+  baseUrl: string;
   defaultTimeoutMs: number;
-  logRequests:      boolean;
-  maskHeaders:      string[];  // Headers whose values are masked in logs: ['Authorization', 'x-api-key']
+  logRequests: boolean;
+  maskHeaders: string[]; // Headers whose values are masked in logs: ['Authorization', 'x-api-key']
 }
 
 export interface RequestOptions {
-  headers?:   Record<string, string>;
-  params?:    Record<string, string | number | boolean>;
+  headers?: Record<string, string>;
+  params?: Record<string, string | number | boolean>;
   timeoutMs?: number;
   // No body here — use post/put/patch methods which add the body
 }
 
 export interface ApiResponse<T> {
-  status:  number;
-  ok:      boolean;
+  status: number;
+  ok: boolean;
   headers: Record<string, string>;
-  body:    T;
-  url:     string;
+  body: T;
+  url: string;
   durationMs: number;
 }
 
 export class ApiHttpError extends Error {
   constructor(
-    public readonly status:  number,
-    public readonly url:     string,
-    public readonly body:    unknown,
-    message: string
+    public readonly status: number,
+    public readonly url: string,
+    public readonly body: unknown,
+    message: string,
   ) {
     super(message);
-    this.name = 'ApiHttpError';
+    this.name = "ApiHttpError";
   }
 }
 
@@ -166,20 +168,20 @@ export class ApiHttpError extends Error {
 
 export class ApiCore {
   constructor(
-    private readonly ctx:    APIRequestContext,
-    private readonly config: ApiCoreConfig
+    private readonly ctx: APIRequestContext,
+    private readonly config: ApiCoreConfig,
   ) {}
 
   // ── Core generic request method ──────────────────────────────────────────
 
   async request<T>(
-    method:  'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD',
-    path:    string,
-    options: RequestOptions & { body?: unknown } = {}
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD",
+    path: string,
+    options: RequestOptions & { body?: unknown } = {},
   ): Promise<ApiResponse<T>> {
-    const url     = this.buildUrl(path, options.params);
+    const url = this.buildUrl(path, options.params);
     const headers = options.headers ?? {};
-    const start   = Date.now();
+    const start = Date.now();
 
     if (this.config.logRequests) {
       this.logRequest(method, url, headers, options.body);
@@ -190,7 +192,7 @@ export class ApiCore {
       raw = await this.ctx.fetch(url, {
         method,
         headers,
-        data:    options.body !== undefined ? options.body : undefined,
+        data: options.body !== undefined ? options.body : undefined,
         timeout: options.timeoutMs ?? this.config.defaultTimeoutMs,
       });
     } catch (error) {
@@ -202,13 +204,13 @@ export class ApiCore {
     const responseHeaders = raw.headers();
 
     let body: T;
-    const contentType = responseHeaders['content-type'] ?? '';
-    if (contentType.includes('application/json')) {
-      body = await raw.json() as T;
-    } else if (contentType.includes('text/')) {
-      body = await raw.text() as unknown as T;
+    const contentType = responseHeaders["content-type"] ?? "";
+    if (contentType.includes("application/json")) {
+      body = (await raw.json()) as T;
+    } else if (contentType.includes("text/")) {
+      body = (await raw.text()) as unknown as T;
     } else {
-      body = await raw.body() as unknown as T;
+      body = (await raw.body()) as unknown as T;
     }
 
     if (this.config.logRequests) {
@@ -216,9 +218,9 @@ export class ApiCore {
     }
 
     return {
-      status:     raw.status(),
-      ok:         raw.ok(),
-      headers:    responseHeaders,
+      status: raw.status(),
+      ok: raw.ok(),
+      headers: responseHeaders,
       body,
       url,
       durationMs,
@@ -228,58 +230,97 @@ export class ApiCore {
   // ── Convenience methods ───────────────────────────────────────────────────
 
   get<T>(path: string, opts?: RequestOptions): Promise<ApiResponse<T>> {
-    return this.request<T>('GET', path, opts);
+    return this.request<T>("GET", path, opts);
   }
 
-  post<T>(path: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
-    return this.request<T>('POST', path, { ...opts, body });
+  post<T>(
+    path: string,
+    body: unknown,
+    opts?: RequestOptions,
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>("POST", path, { ...opts, body });
   }
 
-  put<T>(path: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
-    return this.request<T>('PUT', path, { ...opts, body });
+  put<T>(
+    path: string,
+    body: unknown,
+    opts?: RequestOptions,
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>("PUT", path, { ...opts, body });
   }
 
-  patch<T>(path: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
-    return this.request<T>('PATCH', path, { ...opts, body });
+  patch<T>(
+    path: string,
+    body: unknown,
+    opts?: RequestOptions,
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>("PATCH", path, { ...opts, body });
   }
 
-  delete<T = void>(path: string, opts?: RequestOptions): Promise<ApiResponse<T>> {
-    return this.request<T>('DELETE', path, opts);
+  delete<T = void>(
+    path: string,
+    opts?: RequestOptions,
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>("DELETE", path, opts);
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  private buildUrl(path: string, params?: Record<string, string | number | boolean>): string {
-    const base = this.config.baseUrl.replace(/\/$/, '');
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  private buildUrl(
+    path: string,
+    params?: Record<string, string | number | boolean>,
+  ): string {
+    const base = this.config.baseUrl.replace(/\/$/, "");
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
     const url = `${base}${normalizedPath}`;
 
     if (!params || Object.keys(params).length === 0) return url;
 
     const qs = new URLSearchParams(
-      Object.entries(params).map(([k, v]) => [k, String(v)])
+      Object.entries(params).map(([k, v]) => [k, String(v)]),
     );
     return `${url}?${qs.toString()}`;
   }
 
-  private logRequest(method: string, url: string, headers: Record<string, string>, body: unknown): void {
+  private logRequest(
+    method: string,
+    url: string,
+    headers: Record<string, string>,
+    body: unknown,
+  ): void {
     const maskedHeaders = this.maskSensitiveHeaders(headers);
-    const bodyStr = body ? `\n  Body: ${JSON.stringify(body).substring(0, 200)}` : '';
-    console.log(`→ ${method} ${url}\n  Headers: ${JSON.stringify(maskedHeaders)}${bodyStr}`);
+    const bodyStr = body
+      ? `\n  Body: ${JSON.stringify(body).substring(0, 200)}`
+      : "";
+    console.log(
+      `→ ${method} ${url}\n  Headers: ${JSON.stringify(maskedHeaders)}${bodyStr}`,
+    );
   }
 
-  private logResponse(status: number, url: string, durationMs: number, body: unknown): void {
-    const bodyStr = typeof body === 'object' ? JSON.stringify(body).substring(0, 200) : String(body);
-    const icon = status < 400 ? '←' : '✗';
-    console.log(`${icon} ${status} ${url} (${durationMs}ms)\n  Body: ${bodyStr}`);
+  private logResponse(
+    status: number,
+    url: string,
+    durationMs: number,
+    body: unknown,
+  ): void {
+    const bodyStr =
+      typeof body === "object"
+        ? JSON.stringify(body).substring(0, 200)
+        : String(body);
+    const icon = status < 400 ? "←" : "✗";
+    console.log(
+      `${icon} ${status} ${url} (${durationMs}ms)\n  Body: ${bodyStr}`,
+    );
   }
 
-  private maskSensitiveHeaders(headers: Record<string, string>): Record<string, string> {
+  private maskSensitiveHeaders(
+    headers: Record<string, string>,
+  ): Record<string, string> {
     const result = { ...headers };
     for (const key of this.config.maskHeaders) {
       const lowerKey = key.toLowerCase();
       if (result[lowerKey]) {
-        result[lowerKey] = '***MASKED***';
+        result[lowerKey] = "***MASKED***";
       }
     }
     return result;
@@ -306,45 +347,50 @@ export class HeadersBuilder {
 
   /** Add Bearer token authorization */
   withBearer(token: string): this {
-    this._headers['Authorization'] = `Bearer ${token}`;
+    this._headers["Authorization"] = `Bearer ${token}`;
     return this;
   }
 
   /** Add API key authentication */
-  withApiKey(key: string, headerName = 'x-api-key'): this {
+  withApiKey(key: string, headerName = "x-api-key"): this {
     this._headers[headerName] = key;
     return this;
   }
 
   /** Add content-type header */
-  withContentType(type: 'application/json' | 'multipart/form-data' | string = 'application/json'): this {
-    this._headers['Content-Type'] = type;
+  withContentType(
+    type:
+      | "application/json"
+      | "multipart/form-data"
+      | string = "application/json",
+  ): this {
+    this._headers["Content-Type"] = type;
     return this;
   }
 
   /** Add accept header */
-  withAccept(type = 'application/json'): this {
-    this._headers['Accept'] = type;
+  withAccept(type = "application/json"): this {
+    this._headers["Accept"] = type;
     return this;
   }
 
   /** Add correlation ID for request tracing */
   withCorrelationId(id: string): this {
-    this._headers['x-correlation-id'] = id;
+    this._headers["x-correlation-id"] = id;
     return this;
   }
 
   /** Mark request as coming from the test suite */
   withTestMetadata(testId: string, workerIndex: number): this {
-    this._headers['x-test-id']          = testId;
-    this._headers['x-test-worker']      = String(workerIndex);
-    this._headers['x-test-client']      = 'playwright-automation';
+    this._headers["x-test-id"] = testId;
+    this._headers["x-test-worker"] = String(workerIndex);
+    this._headers["x-test-client"] = "playwright-automation";
     return this;
   }
 
   /** Add tenant ID for multi-tenant systems */
   withTenantId(tenantId: string): this {
-    this._headers['x-tenant-id'] = tenantId;
+    this._headers["x-tenant-id"] = tenantId;
     return this;
   }
 
@@ -375,7 +421,7 @@ export class HeadersCrm {
       .withBearer(accessToken)
       .withContentType()
       .withAccept()
-      .withTenantId(process.env.CRM_TENANT_ID ?? 'default');
+      .withTenantId(process.env.CRM_TENANT_ID ?? "default");
 
     if (testId) {
       builder.withCorrelationId(`test-${testId}`);
@@ -407,66 +453,76 @@ export class HeadersCrm {
 
 export interface CitationSearchParams {
   customerId?: string;
-  status?:     'PENDING' | 'PAID' | 'OVERDUE' | 'DISPUTED' | 'CANCELLED';
-  from?:       string;  // ISO date: '2026-01-01'
-  to?:         string;
-  page?:       number;
-  limit?:      number;
+  status?: "PENDING" | "PAID" | "OVERDUE" | "DISPUTED" | "CANCELLED";
+  from?: string; // ISO date: '2026-01-01'
+  to?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface UserSearchParams {
-  email?:  string;
-  name?:   string;
-  role?:   string;
-  page?:   number;
-  limit?:  number;
+  email?: string;
+  name?: string;
+  role?: string;
+  page?: number;
+  limit?: number;
 }
 
 // ─── Endpoint registry ────────────────────────────────────────────────────────
 
 export const Endpoints = {
   citations: {
-    list:         (params?: CitationSearchParams) => buildUrl('/api/v2/citations', params),
-    getById:      (id: string)                    => `/api/v2/citations/${encodeURIComponent(id)}`,
-    create:       ()                              => '/api/v2/citations',
-    update:       (id: string)                    => `/api/v2/citations/${encodeURIComponent(id)}`,
-    updateStatus: (id: string)                    => `/api/v2/citations/${encodeURIComponent(id)}/status`,
-    delete:       (id: string)                    => `/api/v2/citations/${encodeURIComponent(id)}`,
+    list: (params?: CitationSearchParams) =>
+      buildUrl("/api/v2/citations", params),
+    getById: (id: string) => `/api/v2/citations/${encodeURIComponent(id)}`,
+    create: () => "/api/v2/citations",
+    update: (id: string) => `/api/v2/citations/${encodeURIComponent(id)}`,
+    updateStatus: (id: string) =>
+      `/api/v2/citations/${encodeURIComponent(id)}/status`,
+    delete: (id: string) => `/api/v2/citations/${encodeURIComponent(id)}`,
     payments: {
-      create:     (citationId: string)            => `/api/v2/citations/${encodeURIComponent(citationId)}/payments`,
-      getById:    (citationId: string, pid: string) =>
-                  `/api/v2/citations/${encodeURIComponent(citationId)}/payments/${encodeURIComponent(pid)}`,
-      list:       (citationId: string)            => `/api/v2/citations/${encodeURIComponent(citationId)}/payments`,
+      create: (citationId: string) =>
+        `/api/v2/citations/${encodeURIComponent(citationId)}/payments`,
+      getById: (citationId: string, pid: string) =>
+        `/api/v2/citations/${encodeURIComponent(citationId)}/payments/${encodeURIComponent(pid)}`,
+      list: (citationId: string) =>
+        `/api/v2/citations/${encodeURIComponent(citationId)}/payments`,
     },
     disputes: {
-      create:     (citationId: string)            => `/api/v2/citations/${encodeURIComponent(citationId)}/disputes`,
-      getById:    (citationId: string, did: string) =>
-                  `/api/v2/citations/${encodeURIComponent(citationId)}/disputes/${encodeURIComponent(did)}`,
+      create: (citationId: string) =>
+        `/api/v2/citations/${encodeURIComponent(citationId)}/disputes`,
+      getById: (citationId: string, did: string) =>
+        `/api/v2/citations/${encodeURIComponent(citationId)}/disputes/${encodeURIComponent(did)}`,
     },
   },
   users: {
-    list:         (params?: UserSearchParams)     => buildUrl('/api/v2/users', params),
-    getById:      (id: string)                    => `/api/v2/users/${encodeURIComponent(id)}`,
-    create:       ()                              => '/api/v2/users',
-    update:       (id: string)                    => `/api/v2/users/${encodeURIComponent(id)}`,
-    delete:       (id: string)                    => `/api/v2/users/${encodeURIComponent(id)}`,
+    list: (params?: UserSearchParams) => buildUrl("/api/v2/users", params),
+    getById: (id: string) => `/api/v2/users/${encodeURIComponent(id)}`,
+    create: () => "/api/v2/users",
+    update: (id: string) => `/api/v2/users/${encodeURIComponent(id)}`,
+    delete: (id: string) => `/api/v2/users/${encodeURIComponent(id)}`,
     roles: {
-      list:       (userId: string)                => `/api/v2/users/${encodeURIComponent(userId)}/roles`,
-      assign:     (userId: string)                => `/api/v2/users/${encodeURIComponent(userId)}/roles`,
+      list: (userId: string) =>
+        `/api/v2/users/${encodeURIComponent(userId)}/roles`,
+      assign: (userId: string) =>
+        `/api/v2/users/${encodeURIComponent(userId)}/roles`,
     },
   },
   notifications: {
-    getForUser:   (userId: string)                => `/api/v2/notifications?userId=${encodeURIComponent(userId)}`,
-    getById:      (id: string)                    => `/api/v2/notifications/${encodeURIComponent(id)}`,
-    markRead:     (id: string)                    => `/api/v2/notifications/${encodeURIComponent(id)}/read`,
+    getForUser: (userId: string) =>
+      `/api/v2/notifications?userId=${encodeURIComponent(userId)}`,
+    getById: (id: string) => `/api/v2/notifications/${encodeURIComponent(id)}`,
+    markRead: (id: string) =>
+      `/api/v2/notifications/${encodeURIComponent(id)}/read`,
   },
   reports: {
-    generate:     ()                              => '/api/v2/reports',
-    getById:      (id: string)                    => `/api/v2/reports/${encodeURIComponent(id)}`,
-    download:     (id: string)                    => `/api/v2/reports/${encodeURIComponent(id)}/download`,
+    generate: () => "/api/v2/reports",
+    getById: (id: string) => `/api/v2/reports/${encodeURIComponent(id)}`,
+    download: (id: string) =>
+      `/api/v2/reports/${encodeURIComponent(id)}/download`,
   },
-  health:         ()                              => '/api/health',
-  version:        ()                              => '/api/version',
+  health: () => "/api/health",
+  version: () => "/api/version",
 } as const;
 
 // ─── URL builder utility ──────────────────────────────────────────────────────
@@ -475,7 +531,7 @@ function buildUrl(base: string, params?: Record<string, unknown>): string {
   if (!params) return base;
 
   const validParams = Object.entries(params)
-    .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .filter(([, v]) => v !== undefined && v !== null && v !== "")
     .map(([k, v]) => [k, String(v)]);
 
   if (validParams.length === 0) return base;
@@ -492,7 +548,7 @@ function buildUrl(base: string, params?: Record<string, unknown>): string {
 ```mermaid
 graph TD
     Error[Error] --> ApiError
-    
+
     ApiError --> CitationNotFoundError[404: CitationNotFoundError]
     ApiError --> CitationAlreadyPaidError[409: CitationAlreadyPaidError]
     ApiError --> PaymentValidationError[422: PaymentValidationError]
@@ -507,24 +563,24 @@ graph TD
 export class ApiError extends Error {
   constructor(
     public readonly operation: string,
-    public readonly status:    number,
-    public readonly url:       string,
-    public readonly body:      unknown,
-    message: string
+    public readonly status: number,
+    public readonly url: string,
+    public readonly body: unknown,
+    message: string,
   ) {
     super(`[${operation}] HTTP ${status} at ${url}: ${message}`);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 
   /** Format for structured logging */
   toJson(): Record<string, unknown> {
     return {
-      name:      this.name,
+      name: this.name,
       operation: this.operation,
-      status:    this.status,
-      url:       this.url,
-      body:      this.body,
-      message:   this.message,
+      status: this.status,
+      url: this.url,
+      body: this.body,
+      message: this.message,
     };
   }
 }
@@ -532,36 +588,60 @@ export class ApiError extends Error {
 // Domain-specific error classes — each maps to a specific HTTP error scenario
 export class CitationNotFoundError extends ApiError {
   constructor(id: string, url: string) {
-    super('citations.getById', 404, url, null, `Citation '${id}' not found`);
-    this.name = 'CitationNotFoundError';
+    super("citations.getById", 404, url, null, `Citation '${id}' not found`);
+    this.name = "CitationNotFoundError";
   }
 }
 
 export class CitationAlreadyPaidError extends ApiError {
   constructor(id: string, url: string, body: unknown) {
-    super('citations.pay', 409, url, body, `Citation '${id}' has already been paid`);
-    this.name = 'CitationAlreadyPaidError';
+    super(
+      "citations.pay",
+      409,
+      url,
+      body,
+      `Citation '${id}' has already been paid`,
+    );
+    this.name = "CitationAlreadyPaidError";
   }
 }
 
 export class PaymentValidationError extends ApiError {
-  constructor(url: string, public readonly validationErrors: string[]) {
-    super('citations.pay', 422, url, validationErrors, `Payment validation failed: ${validationErrors.join(', ')}`);
-    this.name = 'PaymentValidationError';
+  constructor(
+    url: string,
+    public readonly validationErrors: string[],
+  ) {
+    super(
+      "citations.pay",
+      422,
+      url,
+      validationErrors,
+      `Payment validation failed: ${validationErrors.join(", ")}`,
+    );
+    this.name = "PaymentValidationError";
   }
 }
 
 export class RateLimitError extends ApiError {
-  constructor(url: string, public readonly retryAfterSeconds: number) {
-    super('api', 429, url, null, `Rate limited. Retry after ${retryAfterSeconds}s`);
-    this.name = 'RateLimitError';
+  constructor(
+    url: string,
+    public readonly retryAfterSeconds: number,
+  ) {
+    super(
+      "api",
+      429,
+      url,
+      null,
+      `Rate limited. Retry after ${retryAfterSeconds}s`,
+    );
+    this.name = "RateLimitError";
   }
 }
 
 export class ServerError extends ApiError {
   constructor(operation: string, url: string, body: unknown) {
-    super(operation, 500, url, body, 'Internal server error');
-    this.name = 'ServerError';
+    super(operation, 500, url, body, "Internal server error");
+    this.name = "ServerError";
   }
 }
 
@@ -570,16 +650,18 @@ export class ServerError extends ApiError {
 /** Maps HTTP status codes to specific error classes */
 export function createApiError(
   operation: string,
-  status:    number,
-  url:       string,
-  body:      unknown,
-  context?:  { id?: string }
+  status: number,
+  url: string,
+  body: unknown,
+  context?: { id?: string },
 ): ApiError {
   const bodyObj = body as Record<string, unknown> | null;
 
   switch (status) {
-    case 404: return new CitationNotFoundError(context?.id ?? 'unknown', url);
-    case 409: return new CitationAlreadyPaidError(context?.id ?? 'unknown', url, body);
+    case 404:
+      return new CitationNotFoundError(context?.id ?? "unknown", url);
+    case 409:
+      return new CitationAlreadyPaidError(context?.id ?? "unknown", url, body);
     case 422: {
       const errors = (bodyObj?.errors as string[]) ?? [String(body)];
       return new PaymentValidationError(url, errors);
@@ -593,7 +675,13 @@ export function createApiError(
     case 503:
       return new ServerError(operation, url, body);
     default:
-      return new ApiError(operation, status, url, body, `Unexpected status ${status}`);
+      return new ApiError(
+        operation,
+        status,
+        url,
+        body,
+        `Unexpected status ${status}`,
+      );
   }
 }
 ```
@@ -603,51 +691,86 @@ export function createApiError(
 ```typescript
 // lib/clients/CitationsClient.ts
 
-import type { ApiCore } from '../core/ApiCore';
-import { Endpoints }    from '../endpoints/Endpoints';
-import { createApiError, CitationNotFoundError } from '../errors/ApiErrors';
-import type { Citation, CreateCitationPayload, UpdateCitationStatusPayload, PayCitationPayload, Payment } from '../types/domain';
+import type { ApiCore } from "../core/ApiCore";
+import { Endpoints } from "../endpoints/Endpoints";
+import { createApiError, CitationNotFoundError } from "../errors/ApiErrors";
+import type {
+  Citation,
+  CreateCitationPayload,
+  UpdateCitationStatusPayload,
+  PayCitationPayload,
+  Payment,
+} from "../types/domain";
 
 export class CitationsClient {
   constructor(
-    private readonly api:     ApiCore,
-    private readonly getHeaders: () => Record<string, string>
+    private readonly api: ApiCore,
+    private readonly getHeaders: () => Record<string, string>,
     // ↑ lazy function — called per request (ensures fresh auth token)
   ) {}
 
   // ── Read operations ───────────────────────────────────────────────────────
 
   async getById(id: string): Promise<Citation> {
-    const url      = Endpoints.citations.getById(id);
-    const response = await this.api.get<Citation>(url, { headers: this.getHeaders() });
+    const url = Endpoints.citations.getById(id);
+    const response = await this.api.get<Citation>(url, {
+      headers: this.getHeaders(),
+    });
 
     if (response.status === 404) throw new CitationNotFoundError(id, url);
-    if (!response.ok) throw createApiError('citations.getById', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.getById",
+        response.status,
+        url,
+        response.body,
+      );
 
     return response.body;
   }
 
-  async getAll(params?: Parameters<typeof Endpoints.citations.list>[0]): Promise<Citation[]> {
-    const url      = Endpoints.citations.list(params);
-    const response = await this.api.get<{ data: Citation[]; total: number }>(url, {
-      headers: this.getHeaders(),
-    });
+  async getAll(
+    params?: Parameters<typeof Endpoints.citations.list>[0],
+  ): Promise<Citation[]> {
+    const url = Endpoints.citations.list(params);
+    const response = await this.api.get<{ data: Citation[]; total: number }>(
+      url,
+      {
+        headers: this.getHeaders(),
+      },
+    );
 
-    if (!response.ok) throw createApiError('citations.list', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.list",
+        response.status,
+        url,
+        response.body,
+      );
     return response.body.data;
   }
 
-  async search(params: Parameters<typeof Endpoints.citations.list>[0]): Promise<Citation[]> {
+  async search(
+    params: Parameters<typeof Endpoints.citations.list>[0],
+  ): Promise<Citation[]> {
     return this.getAll(params);
   }
 
   // ── Write operations ──────────────────────────────────────────────────────
 
   async create(payload: CreateCitationPayload): Promise<Citation> {
-    const url      = Endpoints.citations.create();
-    const response = await this.api.post<Citation>(url, payload, { headers: this.getHeaders() });
+    const url = Endpoints.citations.create();
+    const response = await this.api.post<Citation>(url, payload, {
+      headers: this.getHeaders(),
+    });
 
-    if (!response.ok) throw createApiError('citations.create', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.create",
+        response.status,
+        url,
+        response.body,
+      );
     if (response.status !== 201) {
       console.warn(`citations.create: expected 201, got ${response.status}`);
     }
@@ -655,45 +778,78 @@ export class CitationsClient {
     return response.body;
   }
 
-  async updateStatus(id: string, payload: UpdateCitationStatusPayload): Promise<Citation> {
-    const url      = Endpoints.citations.updateStatus(id);
-    const response = await this.api.patch<Citation>(url, payload, { headers: this.getHeaders() });
+  async updateStatus(
+    id: string,
+    payload: UpdateCitationStatusPayload,
+  ): Promise<Citation> {
+    const url = Endpoints.citations.updateStatus(id);
+    const response = await this.api.patch<Citation>(url, payload, {
+      headers: this.getHeaders(),
+    });
 
     if (response.status === 404) throw new CitationNotFoundError(id, url);
-    if (!response.ok) throw createApiError('citations.updateStatus', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.updateStatus",
+        response.status,
+        url,
+        response.body,
+      );
 
     return response.body;
   }
 
   async delete(id: string): Promise<void> {
-    const url      = Endpoints.citations.delete(id);
+    const url = Endpoints.citations.delete(id);
     const response = await this.api.delete(url, { headers: this.getHeaders() });
 
     if (response.status === 404) {
       // Idempotent delete — 404 means already gone, that's fine
       return;
     }
-    if (!response.ok) throw createApiError('citations.delete', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.delete",
+        response.status,
+        url,
+        response.body,
+      );
   }
 
   // ── Payment operations ────────────────────────────────────────────────────
 
   async pay(citationId: string, payload: PayCitationPayload): Promise<Payment> {
-    const url      = Endpoints.citations.payments.create(citationId);
-    const response = await this.api.post<Payment>(url, payload, { headers: this.getHeaders() });
+    const url = Endpoints.citations.payments.create(citationId);
+    const response = await this.api.post<Payment>(url, payload, {
+      headers: this.getHeaders(),
+    });
 
     if (!response.ok) {
-      throw createApiError('citations.pay', response.status, url, response.body, { id: citationId });
+      throw createApiError(
+        "citations.pay",
+        response.status,
+        url,
+        response.body,
+        { id: citationId },
+      );
     }
 
     return response.body;
   }
 
   async getPayments(citationId: string): Promise<Payment[]> {
-    const url      = Endpoints.citations.payments.list(citationId);
-    const response = await this.api.get<Payment[]>(url, { headers: this.getHeaders() });
+    const url = Endpoints.citations.payments.list(citationId);
+    const response = await this.api.get<Payment[]>(url, {
+      headers: this.getHeaders(),
+    });
 
-    if (!response.ok) throw createApiError('citations.payments.list', response.status, url, response.body);
+    if (!response.ok)
+      throw createApiError(
+        "citations.payments.list",
+        response.status,
+        url,
+        response.body,
+      );
     return response.body;
   }
 
@@ -705,34 +861,46 @@ export class CitationsClient {
    */
   async bulkCreate(payloads: CreateCitationPayload[]): Promise<Citation[]> {
     const results = await Promise.allSettled(
-      payloads.map(p => this.create(p))
+      payloads.map((p) => this.create(p)),
     );
 
     const failures = results
-      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
-      .map(r => r.reason);
+      .filter((r): r is PromiseRejectedResult => r.status === "rejected")
+      .map((r) => r.reason);
 
     if (failures.length > 0) {
-      const messages = failures.map(e => e?.message ?? String(e)).join('\n  ');
-      throw new Error(`bulkCreate: ${failures.length}/${payloads.length} citations failed:\n  ${messages}`);
+      const messages = failures
+        .map((e) => e?.message ?? String(e))
+        .join("\n  ");
+      throw new Error(
+        `bulkCreate: ${failures.length}/${payloads.length} citations failed:\n  ${messages}`,
+      );
     }
 
     return results
-      .filter((r): r is PromiseFulfilledResult<Citation> => r.status === 'fulfilled')
-      .map(r => r.value);
+      .filter(
+        (r): r is PromiseFulfilledResult<Citation> => r.status === "fulfilled",
+      )
+      .map((r) => r.value);
   }
 
   /**
    * Deletes all citations matching the given parameters.
    * Returns the number of deleted records.
    */
-  async bulkDelete(params: Parameters<typeof Endpoints.citations.list>[0]): Promise<number> {
+  async bulkDelete(
+    params: Parameters<typeof Endpoints.citations.list>[0],
+  ): Promise<number> {
     const citations = await this.getAll(params);
-    const results   = await Promise.allSettled(citations.map(c => this.delete(c.citationId)));
-    const failed    = results.filter(r => r.status === 'rejected');
+    const results = await Promise.allSettled(
+      citations.map((c) => this.delete(c.citationId)),
+    );
+    const failed = results.filter((r) => r.status === "rejected");
 
     if (failed.length > 0) {
-      console.warn(`bulkDelete: ${failed.length}/${citations.length} deletions failed`);
+      console.warn(
+        `bulkDelete: ${failed.length}/${citations.length} deletions failed`,
+      );
     }
 
     return citations.length - failed.length;
@@ -743,27 +911,34 @@ export class CitationsClient {
    * This is the correct alternative to for-loops with waitForTimeout.
    */
   async waitForStatus(
-    id:             string,
-    expectedStatus: Citation['status'],
-    timeoutMs:      number = 120_000
+    id: string,
+    expectedStatus: Citation["status"],
+    timeoutMs: number = 120_000,
   ): Promise<Citation> {
-    const { expect } = await import('@playwright/test');
+    const { expect } = await import("@playwright/test");
     let lastCitation: Citation | null = null;
 
-    await expect.poll(
-      async () => {
-        lastCitation = await this.getById(id);
-        if (['FAILED', 'CANCELLED'].includes(lastCitation.status) && lastCitation.status !== expectedStatus) {
-          throw new Error(`Citation ${id} reached terminal status '${lastCitation.status}', expected '${expectedStatus}'`);
-        }
-        return lastCitation.status;
-      },
-      {
-        message:   `Citation ${id} never reached status '${expectedStatus}'`,
-        timeout:   timeoutMs,
-        intervals: [1000, 2000, 5000, 10000],
-      }
-    ).toBe(expectedStatus);
+    await expect
+      .poll(
+        async () => {
+          lastCitation = await this.getById(id);
+          if (
+            ["FAILED", "CANCELLED"].includes(lastCitation.status) &&
+            lastCitation.status !== expectedStatus
+          ) {
+            throw new Error(
+              `Citation ${id} reached terminal status '${lastCitation.status}', expected '${expectedStatus}'`,
+            );
+          }
+          return lastCitation.status;
+        },
+        {
+          message: `Citation ${id} never reached status '${expectedStatus}'`,
+          timeout: timeoutMs,
+          intervals: [1000, 2000, 5000, 10000],
+        },
+      )
+      .toBe(expectedStatus);
 
     return lastCitation!;
   }
@@ -785,14 +960,14 @@ sequenceDiagram
     participant Zod as Zod Schema
     participant Core as ApiCore
     participant PW as Playwright
-    
+
     Test->>Client: getById('CIT-001')
     Client->>Core: get<unknown>('/api/...')
     Core->>PW: fetch()
     PW-->>Core: APIResponse (Buffer)
     Core-->>Client: raw json (unknown)
     Client->>Zod: parse(json)
-    
+
     alt Schema Matches
         Zod-->>Client: Validated Citation object
         Client-->>Test: Typed Citation
@@ -990,20 +1165,20 @@ async createWithRetry(payload: CreateCitationPayload): Promise<Citation> {
 ```typescript
 // fixtures/index.ts — Complete fixture wiring
 
-import { test as base, type TestInfo } from '@playwright/test';
-import { ApiCore }              from '../lib/core/ApiCore';
-import { CitationsClient }      from '../lib/clients/CitationsClient';
-import { UsersClient }          from '../lib/clients/UsersClient';
-import { NotificationsClient }  from '../lib/clients/NotificationsClient';
-import { HeadersCrm }           from '../lib/headers/HeadersBuilder';
+import { test as base, type TestInfo } from "@playwright/test";
+import { ApiCore } from "../lib/core/ApiCore";
+import { CitationsClient } from "../lib/clients/CitationsClient";
+import { UsersClient } from "../lib/clients/UsersClient";
+import { NotificationsClient } from "../lib/clients/NotificationsClient";
+import { HeadersCrm } from "../lib/headers/HeadersBuilder";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface TestFixtures {
-  apiCore:               ApiCore;
-  citationsClient:       CitationsClient;
-  usersClient:           UsersClient;
-  notificationsClient:   NotificationsClient;
+  apiCore: ApiCore;
+  citationsClient: CitationsClient;
+  usersClient: UsersClient;
+  notificationsClient: NotificationsClient;
 }
 
 interface WorkerFixtures {
@@ -1013,52 +1188,56 @@ interface WorkerFixtures {
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
-
   // Worker-scoped: login once per worker
   account: [
     async ({ browser }, use) => {
       const context = await browser.newContext();
-      const page    = await context.newPage();
+      const page = await context.newPage();
       const request = context.request;
 
-      const loginResponse = await request.post(`${process.env.AUTH_URL}/token`, {
-        data: {
-          grant_type: 'password',
-          username:   process.env.TEST_USER_EMAIL!,
-          password:   process.env.TEST_USER_PASSWORD!,
-          client_id:  process.env.OAUTH_CLIENT_ID!,
+      const loginResponse = await request.post(
+        `${process.env.AUTH_URL}/token`,
+        {
+          data: {
+            grant_type: "password",
+            username: process.env.TEST_USER_EMAIL!,
+            password: process.env.TEST_USER_PASSWORD!,
+            client_id: process.env.OAUTH_CLIENT_ID!,
+          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
         },
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      });
+      );
 
       if (!loginResponse.ok()) {
-        throw new Error(`Login failed: ${loginResponse.status()} — ${await loginResponse.text()}`);
+        throw new Error(
+          `Login failed: ${loginResponse.status()} — ${await loginResponse.text()}`,
+        );
       }
 
-      const tokens = await loginResponse.json() as {
-        access_token:  string;
+      const tokens = (await loginResponse.json()) as {
+        access_token: string;
         refresh_token: string;
-        user_id:       string;
+        user_id: string;
       };
 
       await context.close();
 
       await use({
-        userId:       tokens.user_id,
-        accessToken:  tokens.access_token,
+        userId: tokens.user_id,
+        accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token,
       });
     },
-    { scope: 'worker' }
+    { scope: "worker" },
   ],
 
   // Test-scoped: ApiCore (wraps Playwright's request context)
   apiCore: async ({ request }, use, testInfo) => {
     const core = new ApiCore(request, {
-      baseUrl:          process.env.CRM_API_URL!,
+      baseUrl: process.env.CRM_API_URL!,
       defaultTimeoutMs: 30_000,
-      logRequests:      process.env.LOG_API_REQUESTS === 'true',
-      maskHeaders:      ['authorization', 'x-api-key'],
+      logRequests: process.env.LOG_API_REQUESTS === "true",
+      maskHeaders: ["authorization", "x-api-key"],
     });
     await use(core);
   },
@@ -1066,24 +1245,27 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
   // Test-scoped: CitationsClient
   citationsClient: async ({ apiCore, account }, use, testInfo) => {
     // getHeaders is lazy: called per request, ensuring token is always current
-    const getHeaders = () => HeadersCrm.auth(account.accessToken, testInfo.testId);
+    const getHeaders = () =>
+      HeadersCrm.auth(account.accessToken, testInfo.testId);
     await use(new CitationsClient(apiCore, getHeaders));
   },
 
   // Test-scoped: UsersClient
   usersClient: async ({ apiCore, account }, use, testInfo) => {
-    const getHeaders = () => HeadersCrm.auth(account.accessToken, testInfo.testId);
+    const getHeaders = () =>
+      HeadersCrm.auth(account.accessToken, testInfo.testId);
     await use(new UsersClient(apiCore, getHeaders));
   },
 
   // Test-scoped: NotificationsClient
   notificationsClient: async ({ apiCore, account }, use, testInfo) => {
-    const getHeaders = () => HeadersCrm.auth(account.accessToken, testInfo.testId);
+    const getHeaders = () =>
+      HeadersCrm.auth(account.accessToken, testInfo.testId);
     await use(new NotificationsClient(apiCore, getHeaders));
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ---
@@ -1093,75 +1275,98 @@ export { expect } from '@playwright/test';
 ```typescript
 // tests/specs/citations/payment.spec.ts
 // Import from YOUR fixtures, not from @playwright/test
-import { test, expect } from '../../fixtures';
-import { PayloadsCitation }           from '../../data/payloads/PayloadsCitation';
-import { CitationAlreadyPaidError }   from '../../lib/errors/ApiErrors';
+import { test, expect } from "../../fixtures";
+import { PayloadsCitation } from "../../data/payloads/PayloadsCitation";
+import { CitationAlreadyPaidError } from "../../lib/errors/ApiErrors";
 
-test.describe('Citation Payment', () => {
-
-  test('Full payment flow — API + UI + DB verified', async ({
-    page, citationsClient, notificationsClient, dbClient, account
+test.describe("Citation Payment", () => {
+  test("Full payment flow — API + UI + DB verified", async ({
+    page,
+    citationsClient,
+    notificationsClient,
+    dbClient,
+    account,
   }) => {
     const testStart = new Date();
     let citation: Citation;
 
-    await test.step('API: Create pending citation', async () => {
+    await test.step("API: Create pending citation", async () => {
       citation = await citationsClient.create(
-        PayloadsCitation.parking({ customerId: account.userId })
+        PayloadsCitation.parking({ customerId: account.userId }),
       );
-      expect(citation.status).toBe('PENDING');
+      expect(citation.status).toBe("PENDING");
       expect(citation.customerId).toBe(account.userId);
     });
 
-    await test.step('UI: Submit payment', async () => {
+    await test.step("UI: Submit payment", async () => {
       const citationPage = new CitationDetailPage(page);
       await citationPage.goto(citation.citationId);
       await citationPage.payNow(citation.amount);
     });
 
-    await test.step('API: Wait for citation to reach PAID', async () => {
+    await test.step("API: Wait for citation to reach PAID", async () => {
       // The RIGHT way — uses expect.poll internally
-      const paidCitation = await citationsClient.waitForStatus(citation.citationId, 'PAID', 120_000);
+      const paidCitation = await citationsClient.waitForStatus(
+        citation.citationId,
+        "PAID",
+        120_000,
+      );
       expect(paidCitation.amount).toBe(citation.amount);
     });
 
-    await test.step('API: Notification was sent', async () => {
-      await expect.poll(
-        async () => {
-          const notifs = await notificationsClient.getForUser(account.userId, { after: testStart });
-          return notifs.some(n => n.type === 'PAYMENT_CONFIRMED' && n.metadata?.citationId === citation.citationId);
-        },
-        { message: 'Payment confirmation notification never sent', timeout: 60_000 }
-      ).toBe(true);
+    await test.step("API: Notification was sent", async () => {
+      await expect
+        .poll(
+          async () => {
+            const notifs = await notificationsClient.getForUser(
+              account.userId,
+              { after: testStart },
+            );
+            return notifs.some(
+              (n) =>
+                n.type === "PAYMENT_CONFIRMED" &&
+                n.metadata?.citationId === citation.citationId,
+            );
+          },
+          {
+            message: "Payment confirmation notification never sent",
+            timeout: 60_000,
+          },
+        )
+        .toBe(true);
     });
 
-    await test.step('DB: Citation and payment recorded correctly', async () => {
+    await test.step("DB: Citation and payment recorded correctly", async () => {
       const row = await dbClient.queryOne<{ status: string; paid_at: Date }>(
-        'SELECT status, paid_at FROM citations WHERE citation_id = $1',
-        [citation.citationId]
+        "SELECT status, paid_at FROM citations WHERE citation_id = $1",
+        [citation.citationId],
       );
-      expect(row?.status).toBe('PAID');
+      expect(row?.status).toBe("PAID");
       expect(row?.paid_at.getTime()).toBeGreaterThan(testStart.getTime());
     });
   });
 
-  test('Paying an already-paid citation returns 409', async ({ citationsClient, account }) => {
+  test("Paying an already-paid citation returns 409", async ({
+    citationsClient,
+    account,
+  }) => {
     // Create + pay a citation
     const citation = await citationsClient.create(
-      PayloadsCitation.parking({ customerId: account.userId })
+      PayloadsCitation.parking({ customerId: account.userId }),
     );
     await citationsClient.pay(citation.citationId, { amount: citation.amount });
-    await citationsClient.waitForStatus(citation.citationId, 'PAID');
+    await citationsClient.waitForStatus(citation.citationId, "PAID");
 
     // Attempt to pay again — should get CitationAlreadyPaidError
     await expect(
-      citationsClient.pay(citation.citationId, { amount: citation.amount })
+      citationsClient.pay(citation.citationId, { amount: citation.amount }),
     ).rejects.toThrow(CitationAlreadyPaidError);
   });
 });
 ```
 
 **The test reads like requirements**:
+
 - "Create pending citation" — plain English
 - "Wait for PAID" — no implementation detail (no for-loops, no waits)
 - Error cases are domain exceptions, not HTTP status codes
@@ -1174,6 +1379,7 @@ test.describe('Citation Payment', () => {
 ### Q1. [Write It] — BulkOperationsClient
 
 Write a `BulkCitationsHelper` class that extends CitationsClient's capabilities with:
+
 1. `createAndPay(payload, paymentAmount): Promise<{ citation: Citation, payment: Payment }>` — creates a citation and immediately submits payment, returning both
 2. `cleanupByCustomer(customerId): Promise<number>` — deletes all citations for a customer (using bulkDelete), returns count
 3. `verifyAllStatus(ids: string[], expectedStatus: string): Promise<void>` — verifies all citations in the list have the expected status using parallel API calls
@@ -1185,11 +1391,13 @@ export class BulkCitationsHelper {
   constructor(private readonly citations: CitationsClient) {}
 
   async createAndPay(
-    payload:       CreateCitationPayload,
-    paymentAmount: number
+    payload: CreateCitationPayload,
+    paymentAmount: number,
   ): Promise<{ citation: Citation; payment: Payment }> {
     const citation = await this.citations.create(payload);
-    const payment  = await this.citations.pay(citation.citationId, { amount: paymentAmount });
+    const payment = await this.citations.pay(citation.citationId, {
+      amount: paymentAmount,
+    });
     return { citation, payment };
   }
 
@@ -1197,28 +1405,36 @@ export class BulkCitationsHelper {
     return this.citations.bulkDelete({ customerId });
   }
 
-  async verifyAllStatus(ids: string[], expectedStatus: Citation['status']): Promise<void> {
+  async verifyAllStatus(
+    ids: string[],
+    expectedStatus: Citation["status"],
+  ): Promise<void> {
     // Fetch all citations in parallel
     const results = await Promise.allSettled(
-      ids.map(id => this.citations.getById(id))
+      ids.map((id) => this.citations.getById(id)),
     );
 
     const failures: string[] = [];
 
     results.forEach((result, idx) => {
-      if (result.status === 'rejected') {
+      if (result.status === "rejected") {
         failures.push(`${ids[idx]}: fetch failed — ${result.reason}`);
       } else if (result.value.status !== expectedStatus) {
-        failures.push(`${ids[idx]}: expected '${expectedStatus}', got '${result.value.status}'`);
+        failures.push(
+          `${ids[idx]}: expected '${expectedStatus}', got '${result.value.status}'`,
+        );
       }
     });
 
     if (failures.length > 0) {
-      throw new Error(`verifyAllStatus failed for ${failures.length}/${ids.length} citations:\n${failures.join('\n')}`);
+      throw new Error(
+        `verifyAllStatus failed for ${failures.length}/${ids.length} citations:\n${failures.join("\n")}`,
+      );
     }
   }
 }
 ```
+
 </details>
 
 ---
@@ -1237,6 +1453,7 @@ D) `expect(response.status()).toBe(200); // let it fail as an assertion`
 **C** — `throw new CitationNotFoundError(id, url)`.
 
 Why C is best:
+
 - The error message tells you WHICH citation was not found and WHERE the call went
 - Tests can use `catch (e) { if (e instanceof CitationNotFoundError) { ... } }` to handle expected 404s gracefully
 - The error is part of your domain language, not generic HTTP
@@ -1244,6 +1461,7 @@ Why C is best:
 Why not A: Returning `null` forces every caller to null-check. Easy to forget. Silences real errors.
 Why not B: Generic `Error('Not found')` loses the citation ID and URL — harder to debug.
 Why not D: A test assertion failure gives no information about why the citation wasn't found.
+
 </details>
 
 ---
@@ -1267,11 +1485,13 @@ Your API client has 50 methods. Adding Zod schemas to all of them would take 3 w
 5. **Timestamp fields** — `createdAt`, `updatedAt`, `processedAt`. These are often compared to `new Date()` in assertions. Schema validation catches format changes (epoch vs ISO string) early.
 
 **Skip for now:**
+
 - Simple string fields (name, description) — low value
 - List responses — validate the individual item schema; the list wrapper rarely changes
 - Error response bodies — these already fail on `response.ok === false`
 
 The 20/80 rule: 20% of fields carry 80% of the validation value. Start with IDs, statuses, amounts, and timestamps.
+
 </details>
 
 ---
@@ -1291,8 +1511,8 @@ D) It allows the tests to bypass network proxies.
 
 <details><summary>Answer</summary>
 
-**B** — Centralization and Separation of Concerns. 
-When URLs or headers change, you update one class, not 50 spec files. Specs remain readable, containing only the *intent* of the test.
+**B** — Centralization and Separation of Concerns.
+When URLs or headers change, you update one class, not 50 spec files. Specs remain readable, containing only the _intent_ of the test.
 
 </details>
 
@@ -1313,26 +1533,28 @@ class ApiClient {
 }
 
 // In test:
-const data = await client.get('/api/config');
-expect(data.theme).toBe('dark');
+const data = await client.get("/api/config");
+expect(data.theme).toBe("dark");
 ```
 
 What is the danger of this error handling pattern?
 
 <details><summary>Answer</summary>
 
-**Bug**: Returning `null` on an HTTP error is a classic anti-pattern. 
-If the API returns a 500 Internal Server Error, `data` becomes `null`. The test then attempts `data.theme`, throwing `TypeError: Cannot read properties of null (reading 'theme')`. 
+**Bug**: Returning `null` on an HTTP error is a classic anti-pattern.
+If the API returns a 500 Internal Server Error, `data` becomes `null`. The test then attempts `data.theme`, throwing `TypeError: Cannot read properties of null (reading 'theme')`.
 
-The test fails with a generic JavaScript error instead of telling the developer *why* it failed (the 500 error).
+The test fails with a generic JavaScript error instead of telling the developer _why_ it failed (the 500 error).
 
 **Fix**: Throw a descriptive error containing the HTTP status and response body.
+
 ```typescript
-    if (!response.ok()) {
-      const body = await response.text();
-      throw new Error(`API GET ${url} failed with ${response.status()}: ${body}`);
-    }
+if (!response.ok()) {
+  const body = await response.text();
+  throw new Error(`API GET ${url} failed with ${response.status()}: ${body}`);
+}
 ```
+
 This forces the test to fail immediately at the API step, putting the exact HTTP error in the CI logs.
 
 </details>
@@ -1347,21 +1569,21 @@ Write a `requestWithRetry` wrapper method inside your `ApiClient` that takes a c
 
 ```typescript
   private async requestWithRetry(
-    operation: () => Promise<APIResponse>, 
+    operation: () => Promise<APIResponse>,
     maxRetries = 3
   ): Promise<APIResponse> {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       const response = await operation();
-      
+
       // If success or a non-retryable error (like 400 or 404), return immediately
       if (![502, 503, 504].includes(response.status())) {
         return response;
       }
-      
+
       if (attempt === maxRetries) {
         return response; // Out of retries, return the failing response
       }
-      
+
       console.warn(`Attempt ${attempt} failed with ${response.status()}. Retrying...`);
       // Wait 1 second before next attempt (using a standard Promise-based delay)
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1396,10 +1618,15 @@ D) Put the token in a global variable.
 ```typescript
 // Client class
 export class ApiClient {
-  constructor(private request: APIRequestContext, private token: string) {}
-  
+  constructor(
+    private request: APIRequestContext,
+    private token: string,
+  ) {}
+
   async get(url: string) {
-    return this.request.get(url, { headers: { Authorization: `Bearer ${this.token}` } });
+    return this.request.get(url, {
+      headers: { Authorization: `Bearer ${this.token}` },
+    });
   }
 }
 
@@ -1409,7 +1636,7 @@ export const test = base.extend<{ apiClient: ApiClient }>({
     // Inject the isolated, test-specific token into the client
     const client = new ApiClient(request, loginToken);
     await use(client);
-  }
+  },
 });
 ```
 
@@ -1430,36 +1657,38 @@ class ApiClient {
 }
 
 // In test:
-const user = await client.get<User>('/api/users/1');
+const user = await client.get<User>("/api/users/1");
 ```
 
 While this looks like excellent TypeScript, what false sense of security does `response.json()` returning `T` give you at runtime?
 
 <details><summary>Answer</summary>
 
-**Bug**: TypeScript types are erased at compile time. `response.json()` returns an `any` at runtime. By casting it to `Promise<T>`, you are telling TypeScript "trust me, the API returned the `User` shape." 
+**Bug**: TypeScript types are erased at compile time. `response.json()` returns an `any` at runtime. By casting it to `Promise<T>`, you are telling TypeScript "trust me, the API returned the `User` shape."
 
 If the API actually returned `{ error: "User not found" }`, TypeScript won't catch it, and the test will crash later when you try to access `user.firstName`.
 
 **SDE Fix**: To achieve true runtime type safety, you must parse the response through a schema validator like Zod.
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 class ApiClient {
   async get<T>(url: string, schema: z.ZodSchema<T>): Promise<T> {
     const response = await this.request.get(url);
     const json = await response.json();
-    
+
     // Throws a clear runtime error if the API payload doesn't match the expected type
-    return schema.parse(json); 
+    return schema.parse(json);
   }
 }
 
 // In test:
-const user = await client.get('/api/users/1', UserSchema);
+const user = await client.get("/api/users/1", UserSchema);
 ```
+
 </details>
 
 ---
+
 **Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)

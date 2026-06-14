@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 **Cross-links:**
+
 - [`04_JS_TS_For_Automation.md`](../01_Foundations/04_JS_TS_For_Automation.md) — TypeScript fundamentals
 - [`22_Headers_Payloads_Endpoints_Factory.md`](../04_Enterprise_Architecture/22_Headers_Payloads_Endpoints_Factory.md) — Where these patterns are used
 - [`23_APIUtils_HTTP_Library.md`](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md) — Generic API clients
@@ -62,12 +63,12 @@ export class TestDataFactory<TCreate, TResponse> {
   constructor(
     private readonly createFn: (payload: TCreate) => Promise<TResponse>,
     private readonly deleteFn: (item: TResponse) => Promise<void>,
-    private readonly getId: (item: TResponse) => string
+    private readonly getId: (item: TResponse) => string,
   ) {}
 
   async create(payload: TCreate): Promise<TResponse> {
     const item = await this.createFn(payload);
-    this.created.push(item);  // Track for cleanup
+    this.created.push(item); // Track for cleanup
     return item;
   }
 
@@ -78,7 +79,10 @@ export class TestDataFactory<TCreate, TResponse> {
         await this.deleteFn(item);
         console.log(`[TestDataFactory] Deleted ${this.getId(item)}`);
       } catch (error) {
-        console.warn(`[TestDataFactory] Failed to delete ${this.getId(item)}:`, error);
+        console.warn(
+          `[TestDataFactory] Failed to delete ${this.getId(item)}:`,
+          error,
+        );
       }
     }
     this.created = [];
@@ -86,17 +90,24 @@ export class TestDataFactory<TCreate, TResponse> {
 }
 
 // Usage: citation factory
-const citationFactory = new TestDataFactory<CreateCitationPayload, CitationApiResponse>(
+const citationFactory = new TestDataFactory<
+  CreateCitationPayload,
+  CitationApiResponse
+>(
   (payload) => citationsClient.create(payload),
   (citation) => citationsClient.delete(citation.citationId),
-  (citation) => citation.citationId
+  (citation) => citation.citationId,
 );
 
-const c1 = await citationFactory.create(PayloadsCitation.pending({ customerId: account.userId }));
-const c2 = await citationFactory.create(PayloadsCitation.paid({ customerId: account.userId }));
+const c1 = await citationFactory.create(
+  PayloadsCitation.pending({ customerId: account.userId }),
+);
+const c2 = await citationFactory.create(
+  PayloadsCitation.paid({ customerId: account.userId }),
+);
 
 // After the test:
-await citationFactory.cleanup();  // Deletes c2 then c1 (reverse order)
+await citationFactory.cleanup(); // Deletes c2 then c1 (reverse order)
 ```
 
 ---
@@ -109,8 +120,8 @@ await citationFactory.cleanup();  // Deletes c2 then c1 (reverse order)
 // Without discriminated unions:
 interface TestScenario {
   type: string;
-  userId?: string;        // only for logged-in scenarios
-  guestEmail?: string;    // only for guest scenarios
+  userId?: string; // only for logged-in scenarios
+  guestEmail?: string; // only for guest scenarios
   errorExpected?: boolean;
   errorMessage?: string;
 }
@@ -123,46 +134,53 @@ interface TestScenario {
 // With discriminated unions: each variant has ONLY its relevant fields
 
 type CitationTestScenario =
-  | { kind: 'logged-in'; userId: string; expectedCount: number }
-  | { kind: 'guest'; email: string; expectRedirectToLogin: true }
-  | { kind: 'suspended'; userId: string; expectedError: 'ACCOUNT_SUSPENDED' }
-  | { kind: 'no-results'; userId: string; searchTerm: string };
+  | { kind: "logged-in"; userId: string; expectedCount: number }
+  | { kind: "guest"; email: string; expectRedirectToLogin: true }
+  | { kind: "suspended"; userId: string; expectedError: "ACCOUNT_SUSPENDED" }
+  | { kind: "no-results"; userId: string; searchTerm: string };
 
 // TypeScript narrows the type based on `kind`:
 function runScenario(scenario: CitationTestScenario) {
-  if (scenario.kind === 'logged-in') {
-    scenario.userId;        // ✅ TypeScript knows this exists
-    scenario.email;         // ❌ TypeScript error: property doesn't exist on this variant
+  if (scenario.kind === "logged-in") {
+    scenario.userId; // ✅ TypeScript knows this exists
+    scenario.email; // ❌ TypeScript error: property doesn't exist on this variant
   }
-  if (scenario.kind === 'guest') {
-    scenario.email;         // ✅ TypeScript knows this exists
-    scenario.userId;        // ❌ TypeScript error
+  if (scenario.kind === "guest") {
+    scenario.email; // ✅ TypeScript knows this exists
+    scenario.userId; // ❌ TypeScript error
   }
 }
 
 // Practical test use:
 const scenarios: CitationTestScenario[] = [
-  { kind: 'logged-in', userId: 'USR-001', expectedCount: 5 },
-  { kind: 'guest', email: 'guest@test.com', expectRedirectToLogin: true },
-  { kind: 'suspended', userId: 'USR-002', expectedError: 'ACCOUNT_SUSPENDED' },
+  { kind: "logged-in", userId: "USR-001", expectedCount: 5 },
+  { kind: "guest", email: "guest@test.com", expectRedirectToLogin: true },
+  { kind: "suspended", userId: "USR-002", expectedError: "ACCOUNT_SUSPENDED" },
 ];
 
 for (const scenario of scenarios) {
-  test(`Citation search: ${scenario.kind} user`, async ({ page, citationsClient }) => {
+  test(`Citation search: ${scenario.kind} user`, async ({
+    page,
+    citationsClient,
+  }) => {
     switch (scenario.kind) {
-      case 'logged-in':
+      case "logged-in":
         // scenario.userId is definitely a string here — TypeScript knows
-        const results = await citationsClient.search({ userId: scenario.userId });
+        const results = await citationsClient.search({
+          userId: scenario.userId,
+        });
         expect(results.length).toBe(scenario.expectedCount);
         break;
 
-      case 'guest':
+      case "guest":
         await page.goto(`/citations?email=${scenario.email}`);
         await expect(page).toHaveURL(/\/login/);
         break;
 
-      case 'suspended':
-        const response = await citationsClient.search({ userId: scenario.userId });
+      case "suspended":
+        const response = await citationsClient.search({
+          userId: scenario.userId,
+        });
         expect(response).toMatchObject({ error: scenario.expectedError });
         break;
     }
@@ -182,9 +200,9 @@ for (const scenario of scenarios) {
 async function callEndpoint(path: string) {
   return request.get(path);
 }
-callEndpoint('/api/v2/citations/CIT-001');   // ✅
-callEndpoint('/api/v2/citaions/CIT-001');    // ✅ TypeScript: no error. Runtime: 404
-callEndpoint('not-even-a-path');             // ✅ TypeScript: no error. Runtime: error
+callEndpoint("/api/v2/citations/CIT-001"); // ✅
+callEndpoint("/api/v2/citaions/CIT-001"); // ✅ TypeScript: no error. Runtime: 404
+callEndpoint("not-even-a-path"); // ✅ TypeScript: no error. Runtime: error
 ```
 
 ### Template Literal Types Solution
@@ -212,13 +230,35 @@ callTypeSafeEndpoint('FETCH', '/api/v2/citations');          // ❌ TypeScript e
 
 ```typescript
 // Typed event names for Playwright's waitForEvent
-type PageEventName = 'close' | 'console' | 'crash' | 'dialog' | 'domcontentloaded' | 'download' | 'filechooser' | 'frameattached' | 'framedetached' | 'framenavigated' | 'load' | 'pageerror' | 'popup' | 'request' | 'requestfailed' | 'requestfinished' | 'response' | 'websocket' | 'worker';
+type PageEventName =
+  | "close"
+  | "console"
+  | "crash"
+  | "dialog"
+  | "domcontentloaded"
+  | "download"
+  | "filechooser"
+  | "frameattached"
+  | "framedetached"
+  | "framenavigated"
+  | "load"
+  | "pageerror"
+  | "popup"
+  | "request"
+  | "requestfailed"
+  | "requestfinished"
+  | "response"
+  | "websocket"
+  | "worker";
 
 // Better: use Playwright's own types
-import { type Page } from '@playwright/test';
-type PageEvent = Parameters<Page['waitForEvent']>[0];
+import { type Page } from "@playwright/test";
+type PageEvent = Parameters<Page["waitForEvent"]>[0];
 
-async function waitForPageEvent(page: Page, event: PageEvent): Promise<unknown> {
+async function waitForPageEvent(
+  page: Page,
+  event: PageEvent,
+): Promise<unknown> {
   return page.waitForEvent(event as any);
 }
 ```
@@ -240,23 +280,24 @@ async getById(id: string): Promise<CitationApiResponse> { ... }
 
 ```typescript
 // The return type depends on a parameter at compile time:
-type ResponseFormat = 'body' | 'raw';
+type ResponseFormat = "body" | "raw";
 
-type GetResult<F extends ResponseFormat, T> =
-  F extends 'body' ? T :          // If format is 'body', return T
-  F extends 'raw'  ? ApiResponse<T> : // If format is 'raw', return ApiResponse<T>
-  never;
+type GetResult<F extends ResponseFormat, T> = F extends "body"
+  ? T // If format is 'body', return T
+  : F extends "raw"
+    ? ApiResponse<T> // If format is 'raw', return ApiResponse<T>
+    : never;
 
 class CitationsApiClient {
-  async getById<F extends ResponseFormat = 'body'>(
+  async getById<F extends ResponseFormat = "body">(
     citationId: string,
-    format?: F
+    format?: F,
   ): Promise<GetResult<F, CitationApiResponse>> {
     const response = await this.api.get<CitationApiResponse>(
-      Endpoints.citations.getById(citationId)
+      Endpoints.citations.getById(citationId),
     );
 
-    if (format === 'raw') {
+    if (format === "raw") {
       return response as GetResult<F, CitationApiResponse>;
     }
     return response.body as GetResult<F, CitationApiResponse>;
@@ -264,16 +305,16 @@ class CitationsApiClient {
 }
 
 // Usage:
-const citation = await citationsClient.getById('CIT-001');
+const citation = await citationsClient.getById("CIT-001");
 //    ↑ TypeScript knows this is CitationApiResponse (default: 'body')
 
-const rawResponse = await citationsClient.getById('CIT-001', 'raw');
+const rawResponse = await citationsClient.getById("CIT-001", "raw");
 //    ↑ TypeScript knows this is ApiResponse<CitationApiResponse>
 expect(rawResponse.status).toBe(200);
-expect(rawResponse.body.citationId).toBe('CIT-001');
+expect(rawResponse.body.citationId).toBe("CIT-001");
 
 // 404 test:
-const notFound = await citationsClient.getById('DOES-NOT-EXIST', 'raw');
+const notFound = await citationsClient.getById("DOES-NOT-EXIST", "raw");
 //    ↑ TypeScript knows this is ApiResponse<CitationApiResponse>
 expect(notFound.status).toBe(404);
 ```
@@ -287,8 +328,8 @@ expect(notFound.status).toBe(404);
 ```typescript
 // Without satisfies: TypeScript widens the type and loses specificity
 const config = {
-  crmUrl: 'https://staging-crm.company.com',
-  roles: ['ADMIN', 'AGENT'],
+  crmUrl: "https://staging-crm.company.com",
+  roles: ["ADMIN", "AGENT"],
 };
 // config.roles is string[] — TypeScript lost that it's specifically ['ADMIN', 'AGENT']
 // config.crmUrl is string — TypeScript lost that it's this specific URL
@@ -308,9 +349,9 @@ type EnvironmentConfig = {
 };
 
 const stagingConfig = {
-  crmUrl: 'https://staging-crm.company.com',
-  apiBaseUrl: 'https://staging-api.company.com',
-  roles: ['ADMIN', 'AGENT', 'SUPERVISOR'] as const,
+  crmUrl: "https://staging-crm.company.com",
+  apiBaseUrl: "https://staging-api.company.com",
+  roles: ["ADMIN", "AGENT", "SUPERVISOR"] as const,
   timeouts: { default: 30_000, d365: 60_000, api: 15_000 },
 } satisfies EnvironmentConfig;
 // ↑ TypeScript validates: does this match EnvironmentConfig? Yes ✅
@@ -318,7 +359,7 @@ const stagingConfig = {
 //           stagingConfig.roles is readonly ['ADMIN', 'AGENT', 'SUPERVISOR'] (not string[])
 
 // Why this matters for tests:
-stagingConfig.roles[0];  // TypeScript: 'ADMIN' — the exact literal, not string
+stagingConfig.roles[0]; // TypeScript: 'ADMIN' — the exact literal, not string
 // You can use this to generate typed test scenarios from the roles list
 ```
 
@@ -328,16 +369,16 @@ stagingConfig.roles[0];  // TypeScript: 'ADMIN' — the exact literal, not strin
 type CreateCitationPayload = {
   customerId: string;
   amount: number;
-  status: 'PENDING' | 'PAID' | 'DISPUTED';
-  citationType: 'PARKING' | 'SPEEDING' | 'BUS_LANE';
+  status: "PENDING" | "PAID" | "DISPUTED";
+  citationType: "PARKING" | "SPEEDING" | "BUS_LANE";
 };
 
 // Validate payload shape at definition time, keep literals:
 const testPayload = {
-  customerId: 'USR-001',
+  customerId: "USR-001",
   amount: 150,
-  status: 'PENDING',
-  citationType: 'PARKING',
+  status: "PENDING",
+  citationType: "PARKING",
   // Imagine a typo here: citationType: 'PRKING'
   // satisfies catches it at definition time ← not at runtime
 } satisfies CreateCitationPayload;
@@ -366,8 +407,8 @@ interface LocatorNames {
 }
 // Then you implement it:
 const selectors: LocatorNames = {
-  searchInput: '#searchInput',
-  searchButton: '#searchBtn',
+  searchInput: "#searchInput",
+  searchButton: "#searchBtn",
   // TypeScript checks these match LocatorNames — but it's still verbose
 };
 ```
@@ -379,38 +420,38 @@ const selectors: LocatorNames = {
 
 // Step 1: Define the valid locator names
 const LOCATOR_NAMES = [
-  'searchInput',
-  'searchButton',
-  'resultsGrid',
-  'firstResultRow',
-  'paginationNext',
-  'statusDropdown',
-  'dateFromPicker',
-  'dateToPicker',
-  'exportButton',
-  'filterPanel',
+  "searchInput",
+  "searchButton",
+  "resultsGrid",
+  "firstResultRow",
+  "paginationNext",
+  "statusDropdown",
+  "dateFromPicker",
+  "dateToPicker",
+  "exportButton",
+  "filterPanel",
 ] as const;
 
-type LocatorName = typeof LOCATOR_NAMES[number];
+type LocatorName = (typeof LOCATOR_NAMES)[number];
 // = 'searchInput' | 'searchButton' | 'resultsGrid' | 'firstResultRow' | ...
 
 // Step 2: Create a MAPPED type that requires a selector for every locator name
 type LocatorMap = {
-  [K in LocatorName]: string;  // Every key in LocatorName must map to a string (the CSS selector)
+  [K in LocatorName]: string; // Every key in LocatorName must map to a string (the CSS selector)
 };
 
 // Step 3: Implement — TypeScript enforces ALL names are present
 const MasterSearchLocators: LocatorMap = {
-  searchInput:    '[data-automation-key="searchInput"]',
-  searchButton:   '[data-automation-key="searchButton"]',
-  resultsGrid:    '.ms-DetailsList',
-  firstResultRow: '.ms-DetailsList-row:first-child',
-  paginationNext: '.pager-next',
-  statusDropdown: '#statusFilter',
-  dateFromPicker: '#dateFrom',
-  dateToPicker:   '#dateTo',
-  exportButton:   '[data-testid="exportBtn"]',
-  filterPanel:    '.filter-panel',
+  searchInput: '[data-automation-key="searchInput"]',
+  searchButton: '[data-automation-key="searchButton"]',
+  resultsGrid: ".ms-DetailsList",
+  firstResultRow: ".ms-DetailsList-row:first-child",
+  paginationNext: ".pager-next",
+  statusDropdown: "#statusFilter",
+  dateFromPicker: "#dateFrom",
+  dateToPicker: "#dateTo",
+  exportButton: '[data-testid="exportBtn"]',
+  filterPanel: ".filter-panel",
   // If you forget one, TypeScript error: "Property 'exportButton' is missing"
 };
 
@@ -424,12 +465,14 @@ class MasterSearchPage {
       Object.entries(MasterSearchLocators).map(([name, selector]) => [
         name,
         page.locator(selector),
-      ])
+      ]),
     ) as Record<LocatorName, Locator>;
   }
 
   // Access with full TypeScript autocomplete:
-  get searchInput(): Locator { return this.locators.searchInput; }
+  get searchInput(): Locator {
+    return this.locators.searchInput;
+  }
   //                                                ↑ TypeScript shows all valid names
 }
 ```
@@ -444,7 +487,7 @@ TypeScript's built-in utility types are extremely useful in test payloads:
 // ── Required<T> ── All optional fields become required ──────────────────────
 interface CreateCitationPayload {
   customerId: string;
-  amount?: number;       // optional
+  amount?: number; // optional
   status?: CitationStatus; // optional
 }
 
@@ -458,12 +501,12 @@ type UpdateCitationPayload = Partial<CreateCitationPayload>;
 // { customerId?: string; amount?: number; status?: CitationStatus }
 
 // ── Pick<T, K> ── Take only specific fields ──────────────────────────────────
-type CitationStatusUpdate = Pick<CreateCitationPayload, 'status'>;
+type CitationStatusUpdate = Pick<CreateCitationPayload, "status">;
 // { status?: CitationStatus }
 // Useful when an endpoint only accepts certain fields
 
 // ── Omit<T, K> ── Exclude specific fields ───────────────────────────────────
-type CitationPayloadWithoutId = Omit<CreateCitationPayload, 'customerId'>;
+type CitationPayloadWithoutId = Omit<CreateCitationPayload, "customerId">;
 // { amount?: number; status?: CitationStatus }
 // Useful when the endpoint derives the ID from the URL, not the body
 
@@ -480,14 +523,14 @@ const testConfig: Readonly<EnvironmentConfig> = stagingConfig;
 Useful for narrowing existing union types:
 
 ```typescript
-type CitationStatus = 'PENDING' | 'PAID' | 'OVERDUE' | 'DISPUTED' | 'CANCELLED';
+type CitationStatus = "PENDING" | "PAID" | "OVERDUE" | "DISPUTED" | "CANCELLED";
 
 // Extract: keep only the statuses that represent "closed" states
-type ClosedStatus = Extract<CitationStatus, 'PAID' | 'CANCELLED'>;
+type ClosedStatus = Extract<CitationStatus, "PAID" | "CANCELLED">;
 // = 'PAID' | 'CANCELLED'
 
 // Exclude: remove specific statuses from the union
-type ActiveStatus = Exclude<CitationStatus, 'CANCELLED'>;
+type ActiveStatus = Exclude<CitationStatus, "CANCELLED">;
 // = 'PENDING' | 'PAID' | 'OVERDUE' | 'DISPUTED'
 
 // Practical use: test data factories typed to specific subsets
@@ -500,7 +543,10 @@ function createTestCitation(status: ActiveStatus): CreateCitationPayload {
 // Extract response fields you care about for assertions:
 type CitationAssertionData = Pick<
   CitationApiResponse,
-  Extract<keyof CitationApiResponse, 'citationId' | 'status' | 'amount' | 'customerId'>
+  Extract<
+    keyof CitationApiResponse,
+    "citationId" | "status" | "amount" | "customerId"
+  >
 >;
 // = { citationId: string; status: string; amount: number; customerId: string }
 ```
@@ -590,7 +636,7 @@ type SuccessResponse = { data: any[]; total: number };
 
 // 1. Using the 'in' operator to narrow unions
 function processResponse(response: ErrorResponse | SuccessResponse) {
-  if ('error' in response) {
+  if ("error" in response) {
     // TypeScript now knows `response` is ErrorResponse
     console.log(`Failed with code ${response.code}`);
   } else {
@@ -602,11 +648,13 @@ function processResponse(response: ErrorResponse | SuccessResponse) {
 // 2. Custom Type Guards (User-Defined Type Guards)
 // Returns a boolean, but also tells TypeScript the type if true
 function isErrorResponse(res: any): res is ErrorResponse {
-  return res !== null && typeof res === 'object' && 'error' in res && 'code' in res;
+  return (
+    res !== null && typeof res === "object" && "error" in res && "code" in res
+  );
 }
 
 async function testApi() {
-  const apiResult: unknown = await fetch('/api').then(r => r.json());
+  const apiResult: unknown = await fetch("/api").then((r) => r.json());
 
   if (isErrorResponse(apiResult)) {
     // apiResult is now strongly typed as ErrorResponse
@@ -640,7 +688,7 @@ What does Option A lose compared to Option B?
 A) Option A is slower at runtime  
 B) Option A compiles fine, but the caller gets type `any` — no autocomplete, no type checking on the result, errors compile silently  
 C) Option A throws if the response isn't valid JSON  
-D) Option A requires more memory  
+D) Option A requires more memory
 
 <details><summary>Answer</summary>
 
@@ -648,14 +696,15 @@ D) Option A requires more memory
 
 ```typescript
 // With any:
-const result = await client.get('/api/citations/CIT-001');
-result.citationID;   // ✅ TypeScript: no error. Runtime: undefined (it's citationId)
+const result = await client.get("/api/citations/CIT-001");
+result.citationID; // ✅ TypeScript: no error. Runtime: undefined (it's citationId)
 
 // With generic T:
-const result = await client.get<CitationApiResponse>('/api/citations/CIT-001');
-result.citationID;   // ❌ TypeScript error: Property 'citationID' does not exist
-result.citationId;   // ✅ TypeScript: fine. Correct field name.
+const result = await client.get<CitationApiResponse>("/api/citations/CIT-001");
+result.citationID; // ❌ TypeScript error: Property 'citationID' does not exist
+result.citationId; // ✅ TypeScript: fine. Correct field name.
 ```
+
 </details>
 
 ---
@@ -664,13 +713,13 @@ result.citationId;   // ✅ TypeScript: fine. Correct field name.
 
 ```typescript
 type SearchMode =
-  | { mode: 'byId'; citationId: string }
-  | { mode: 'byUser'; userId: string }
-  | { mode: 'byDate'; dateFrom: string; dateTo: string };
+  | { mode: "byId"; citationId: string }
+  | { mode: "byUser"; userId: string }
+  | { mode: "byDate"; dateFrom: string; dateTo: string };
 
 function buildSearchQuery(search: SearchMode): string {
-  if (search.mode === 'byId') return `?citationId=${search.citationId}`;
-  if (search.mode === 'byUser') return `?userId=${search.userId}`;
+  if (search.mode === "byId") return `?citationId=${search.citationId}`;
+  if (search.mode === "byUser") return `?userId=${search.userId}`;
   // ← What happens if someone adds a new variant to SearchMode?
 }
 ```
@@ -682,11 +731,13 @@ function buildSearchQuery(search: SearchMode): string {
 If a new variant is added to `SearchMode` (e.g., `{ mode: 'byStatus'; status: string }`), the function silently returns `undefined` for that case — TypeScript won't warn you because the return type is implicitly `string | undefined`.
 
 Fix — use an exhaustiveness check with `never`:
+
 ```typescript
 function buildSearchQuery(search: SearchMode): string {
-  if (search.mode === 'byId') return `?citationId=${search.citationId}`;
-  if (search.mode === 'byUser') return `?userId=${search.userId}`;
-  if (search.mode === 'byDate') return `?dateFrom=${search.dateFrom}&dateTo=${search.dateTo}`;
+  if (search.mode === "byId") return `?citationId=${search.citationId}`;
+  if (search.mode === "byUser") return `?userId=${search.userId}`;
+  if (search.mode === "byDate")
+    return `?dateFrom=${search.dateFrom}&dateTo=${search.dateTo}`;
 
   // This line is only reachable if a new mode was added but not handled above
   const exhaustiveCheck: never = search;
@@ -695,6 +746,7 @@ function buildSearchQuery(search: SearchMode): string {
   throw new Error(`Unhandled search mode: ${exhaustiveCheck}`);
 }
 ```
+
 </details>
 
 ---
@@ -702,6 +754,7 @@ function buildSearchQuery(search: SearchMode): string {
 ### Challenge 3 [Write It Yourself]
 
 Write a `createTypedTest` generic helper that creates a test with a pre-created API resource:
+
 - Takes a `createFn: () => Promise<T>` and a `deleteFn: (item: T) => Promise<void>`
 - Returns a test that provides the created resource as a fixture named `resource`
 - Cleans up after the test
@@ -711,11 +764,11 @@ Write a `createTypedTest` generic helper that creates a test with a pre-created 
 ```typescript
 // utils/typed-test-builder.ts
 
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 export function createTypedTest<T>(
   createFn: () => Promise<T>,
-  deleteFn: (item: T) => Promise<void>
+  deleteFn: (item: T) => Promise<void>,
 ) {
   return base.extend<{ resource: T }>({
     resource: async ({}, use) => {
@@ -725,7 +778,7 @@ export function createTypedTest<T>(
       try {
         await deleteFn(item);
       } catch (e) {
-        console.warn('[createTypedTest] Cleanup failed:', e);
+        console.warn("[createTypedTest] Cleanup failed:", e);
       }
     },
   });
@@ -733,19 +786,22 @@ export function createTypedTest<T>(
 
 // Usage:
 const citationTest = createTypedTest(
-  () => citationsClient.create(PayloadsCitation.pending({ customerId: 'USR-001' })),
-  (citation) => citationsClient.delete(citation.citationId)
+  () =>
+    citationsClient.create(PayloadsCitation.pending({ customerId: "USR-001" })),
+  (citation) => citationsClient.delete(citation.citationId),
 );
 
 // In spec:
-citationTest('verify citation details', async ({ resource: citation }) => {
-  expect(citation.status).toBe('PENDING');
+citationTest("verify citation details", async ({ resource: citation }) => {
+  expect(citation.status).toBe("PENDING");
   // citation is CitationApiResponse — fully typed
 });
 ```
+
 </details>
 
 ---
+
 **Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 ### Challenge 4 [MCQ] — `satisfies` vs Type Annotation
@@ -753,14 +809,14 @@ citationTest('verify citation details', async ({ resource: citation }) => {
 ```typescript
 // Option A: type annotation
 const config: EnvironmentConfig = {
-  crmUrl: 'https://staging-crm.company.com',
-  roles: ['ADMIN', 'AGENT'],
+  crmUrl: "https://staging-crm.company.com",
+  roles: ["ADMIN", "AGENT"],
 };
 
 // Option B: satisfies
 const config = {
-  crmUrl: 'https://staging-crm.company.com',
-  roles: ['ADMIN', 'AGENT'],
+  crmUrl: "https://staging-crm.company.com",
+  roles: ["ADMIN", "AGENT"],
 } satisfies EnvironmentConfig;
 ```
 
@@ -776,17 +832,21 @@ D) There is no difference — both produce identical types
 **B** — This is the key distinction:
 
 With type annotation (Option A):
+
 ```typescript
-config.crmUrl  // type: string  (widened — all specificity lost)
-config.roles   // type: string[] (widened — could be any strings)
+config.crmUrl; // type: string  (widened — all specificity lost)
+config.roles; // type: string[] (widened — could be any strings)
 ```
+
 TypeScript validates the SHAPE matches `EnvironmentConfig` but then widens the inferred types to match the annotation. You lose the literal values.
 
 With `satisfies` (Option B):
+
 ```typescript
-config.crmUrl  // type: 'https://staging-crm.company.com'  (literal retained)
-config.roles   // type: string[]  (not narrowed further without `as const`)
+config.crmUrl; // type: 'https://staging-crm.company.com'  (literal retained)
+config.roles; // type: string[]  (not narrowed further without `as const`)
 ```
+
 `satisfies` validates the shape AND preserves the most specific type the compiler can infer. The annotation doesn't overwrite the inferred type — it only checks compatibility.
 
 For test configuration, the practical benefit: literal types enable exhaustive switch statements and prevent invalid values at compile time, rather than only discovering them at runtime when the wrong URL is used.
@@ -802,10 +862,10 @@ Note: `satisfies` was introduced in TypeScript 4.9 (November 2022).
 ```typescript
 async function createAndAssert<T>(
   createFn: () => Promise<T>,
-  expectedId: string
+  expectedId: string,
 ): Promise<T> {
   const result = await createFn();
-  expect(result.id).toBe(expectedId);  // ← TypeScript error here
+  expect(result.id).toBe(expectedId); // ← TypeScript error here
   return result;
 }
 ```
@@ -827,34 +887,36 @@ interface HasId {
 // Constrain T to only types that have an `id` field:
 async function createAndAssert<T extends HasId>(
   createFn: () => Promise<T>,
-  expectedId: string
+  expectedId: string,
 ): Promise<T> {
   const result = await createFn();
-  expect(result.id).toBe(expectedId);  // ✅ TypeScript knows T has .id
+  expect(result.id).toBe(expectedId); // ✅ TypeScript knows T has .id
   return result;
 }
 ```
 
 Now TypeScript guarantees:
+
 - `T` must have at least `{ id: string }` — any additional fields are allowed
 - The function works with `CitationApiResponse` (which has `.citationId`, not `.id`)? No — you'd need to adapt to the actual field name. The real pattern uses a key extractor:
 
 ```typescript
 async function createAndAssert<T>(
   createFn: () => Promise<T>,
-  getId: (result: T) => string,   // caller specifies how to extract the ID
-  expectedId: string
+  getId: (result: T) => string, // caller specifies how to extract the ID
+  expectedId: string,
 ): Promise<T> {
   const result = await createFn();
-  expect(getId(result)).toBe(expectedId);  // ✅ no constraint needed
+  expect(getId(result)).toBe(expectedId); // ✅ no constraint needed
   return result;
 }
 
 // Usage:
 await createAndAssert(
-  () => citationsClient.create(PayloadsCitation.pending({ customerId: 'USR-001' })),
-  (citation) => citation.citationId,  // caller provides the extractor
-  'CIT-001'
+  () =>
+    citationsClient.create(PayloadsCitation.pending({ customerId: "USR-001" })),
+  (citation) => citation.citationId, // caller provides the extractor
+  "CIT-001",
 );
 ```
 
@@ -863,4 +925,5 @@ This is the pattern used by the `TestDataFactory` from Section 1 — it takes a 
 </details>
 
 ---
+
 **Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)

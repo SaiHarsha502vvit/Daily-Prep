@@ -16,10 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const MIN_NODE_MAJOR = 18;
-const REQUIRED_VARS = [
-  'ORANGEHRM_BASE_URL',
-  'API_BASE_URL',
-];
+const REQUIRED_VARS = ['ORANGEHRM_BASE_URL', 'API_BASE_URL'];
 const OPTIONAL_VARS_WITH_DEFAULTS = [
   { key: 'ADMIN_USERNAME', fallback: 'Admin' },
   { key: 'ADMIN_PASSWORD', fallback: 'admin123' },
@@ -42,8 +39,7 @@ function printTable(title, rows) {
     const labelStr = label.padEnd(24, ' ');
     const statusStr = status.padEnd(8, ' ');
     const detailStr = detail || '';
-    const color =
-      status === 'PASS' ? COLORS.green : status === 'WARN' ? COLORS.yellow : COLORS.red;
+    const color = status === 'PASS' ? COLORS.green : status === 'WARN' ? COLORS.yellow : COLORS.red;
     console.log(`${labelStr} ${color}${statusStr}${COLORS.reset} ${detailStr}`);
   });
 }
@@ -72,7 +68,11 @@ function checkPlaywrightBrowsers() {
     // Check default location
     const defaultPath = path.join(require('os').homedir(), '.cache', 'ms-playwright');
     if (fs.existsSync(defaultPath)) {
-      const dirs = fs.readdirSync(defaultPath).filter((d) => d.startsWith('chromium') || d.startsWith('firefox') || d.startsWith('webkit'));
+      const dirs = fs
+        .readdirSync(defaultPath)
+        .filter(
+          (d) => d.startsWith('chromium') || d.startsWith('firefox') || d.startsWith('webkit'),
+        );
       if (dirs.length > 0) {
         return {
           label: 'Browsers Installed',
@@ -139,12 +139,14 @@ function main() {
 
   printTable(
     'Validation Results',
-    rows.map((r) => [r.label, r.status, r.detail])
+    rows.map((r) => [r.label, r.status, r.detail]),
   );
 
   const failures = rows.filter((r) => r.status === 'FAIL');
   if (failures.length > 0) {
-    console.log(`\n${COLORS.red}[ERROR] ${failures.length} check(s) failed. Aborting.${COLORS.reset}\n`);
+    console.log(
+      `\n${COLORS.red}[ERROR] ${failures.length} check(s) failed. Aborting.${COLORS.reset}\n`,
+    );
     process.exit(1);
   }
 

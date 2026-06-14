@@ -33,6 +33,7 @@ Before any code, you need the right mental model of what Android is.
 ### Android Is a Permission-Sandboxed Operating System
 
 Every Android app runs in its own **sandbox** — a completely isolated process with its own memory space, file storage, and user ID. Apps cannot access each other's data by default. This is why:
+
 - You need to REQUEST permissions (camera, contacts, location)
 - Apps can only share data through explicit mechanisms (Content Providers, Intents)
 
@@ -159,6 +160,7 @@ class LoginActivity : AppCompatActivity() {
 ### The Problem Android Solves
 
 Your phone has limited RAM. Android needs to be able to:
+
 - Pause your app when you receive a phone call
 - Stop your app when you switch to another app
 - Kill your app entirely when memory is needed
@@ -219,6 +221,7 @@ The **lifecycle** is Android's contract with your app: "I will call these method
 ### The Configuration Change Problem (CRITICAL)
 
 **The most important lifecycle fact**: When the user **rotates their phone**, Android **destroys and recreates** the Activity from scratch. This means:
+
 - `onDestroy()` is called
 - `onCreate()` is called again
 - All your variables are RESET
@@ -282,6 +285,7 @@ onResume()    ← Your app is back in foreground
 **Is the form data lost?**
 
 It depends on how you stored it:
+
 - **Instance variables in the Activity**: NOT lost (the Activity was never destroyed — it went to onStop, not onDestroy)
 - **If Android HAD killed the process** (extreme memory pressure): YES, lost — unless you saved to `savedInstanceState` or a ViewModel
 - **In a ViewModel**: NEVER lost (ViewModel survives even when Activity is recreated by rotation)
@@ -299,6 +303,7 @@ It depends on how you stored it:
 **Without special handling: NO, data is lost on rotation.**
 
 Lifecycle methods fired during rotation:
+
 ```
 onPause()
 onStop()
@@ -334,6 +339,7 @@ class FormViewModel : ViewModel() {
 An **Intent** is a message object that describes an action to perform. It is how Android components (Activities, Services) communicate.
 
 Two types:
+
 1. **Explicit Intent**: "Open THIS specific Activity" — you name the class
 2. **Implicit Intent**: "Someone handle THIS action" — Android picks the right app
 
@@ -390,6 +396,7 @@ startActivity(Intent.createChooser(shareIntent, "Share via"))
 ### 🎯 Practice — Level 2
 
 **Scenario**: You are writing an Appium test for a flow where a user:
+
 1. Taps "Pay Citation" on the home screen
 2. Is taken to the Payment screen
 3. The amount `$150.00` is displayed on the Payment screen
@@ -404,6 +411,7 @@ The amount is passed via Intent extra. What could break this flow in production 
 The HomeActivity uses key `"AMOUNT"` when putting the extra. The PaymentActivity uses key `"amount"` (lowercase) when reading it. Android is case-sensitive. Result: `getDoubleExtra("amount", 0.0)` returns `0.0` — the payment screen shows `$0.00`.
 
 Your test catches this by asserting the amount displayed:
+
 ```java
 // Appium test
 WebElement amountText = driver.findElement(By.id("com.app:id/tv_amount"));
@@ -440,6 +448,7 @@ Tap an article → new screen         Both panels side by side
 ```
 
 Without Fragments, you need completely different code for phone and tablet. With Fragments, you have:
+
 - `ArticleListFragment` — reusable piece showing the list
 - `ArticleDetailFragment` — reusable piece showing one article
 
@@ -627,6 +636,7 @@ If the login API call takes 3 seconds and the user rotates mid-call, the Activit
 
 **Reason 2: Testability**
 You can test the ViewModel in pure JUnit without any Android emulator or device. The ViewModel has no Android UI dependencies — it only knows about `LoginState` and the repository interface. Testing the Activity requires a device or Robolectric (heavyweight). Testing the ViewModel is:
+
 ```kotlin
 @Test
 fun `login success updates state to Success`() = runTest {
@@ -670,14 +680,14 @@ Every 2 seconds:                    }
 
 ### LiveData vs StateFlow — Which to Use
 
-| | LiveData | StateFlow |
-|---|---|---|
-| Origin | Android Jetpack (Java-friendly) | Kotlin Coroutines |
-| Lifecycle aware | YES — auto (stops when UI not visible) | Manual (`repeatOnLifecycle`) |
-| Initial value required | NO | YES — must have initial value |
-| Transformation | `map`, `switchMap` (clunky) | Kotlin operators (clean) |
-| Testing | Harder | Easy with `runTest` |
-| Recommended in 2024 | Only for legacy code | ✅ Prefer StateFlow |
+|                        | LiveData                               | StateFlow                     |
+| ---------------------- | -------------------------------------- | ----------------------------- |
+| Origin                 | Android Jetpack (Java-friendly)        | Kotlin Coroutines             |
+| Lifecycle aware        | YES — auto (stops when UI not visible) | Manual (`repeatOnLifecycle`)  |
+| Initial value required | NO                                     | YES — must have initial value |
+| Transformation         | `map`, `switchMap` (clunky)            | Kotlin operators (clean)      |
+| Testing                | Harder                                 | Easy with `runTest`           |
+| Recommended in 2024    | Only for legacy code                   | ✅ Prefer StateFlow           |
 
 ```kotlin
 // StateFlow example — modern approach
@@ -966,11 +976,11 @@ private fun LoginButton(username: String, password: String, viewModel: LoginView
              /_____________________ \
 ```
 
-| Layer | Tool | What It Tests | Speed | Count |
-|---|---|---|---|---|
-| Unit | JUnit 5 + Mockito | Pure logic: ViewModel, Repository, Utility classes | ~50ms/test | Many (hundreds) |
-| Instrumented | Espresso | UI interactions on a real device/emulator | ~2-10s/test | Medium (tens) |
-| E2E | Appium | Full user journey across multiple screens | ~30-120s/test | Few (10-20) |
+| Layer        | Tool              | What It Tests                                      | Speed         | Count           |
+| ------------ | ----------------- | -------------------------------------------------- | ------------- | --------------- |
+| Unit         | JUnit 5 + Mockito | Pure logic: ViewModel, Repository, Utility classes | ~50ms/test    | Many (hundreds) |
+| Instrumented | Espresso          | UI interactions on a real device/emulator          | ~2-10s/test   | Medium (tens)   |
+| E2E          | Appium            | Full user journey across multiple screens          | ~30-120s/test | Few (10-20)     |
 
 **The Rule**: If a test CAN be a unit test, it SHOULD be a unit test. Don't use Espresso where JUnit works. Don't use Appium where Espresso works.
 
@@ -1131,6 +1141,7 @@ class CitationDaoTest {
 ### 🎯 Practice — Level 2
 
 **Challenge**: Write a unit test for `CartViewModel.addItem()` that verifies:
+
 1. Adding one item updates the item list
 2. The total amount is correctly calculated
 3. Adding the same item again increases quantity (not adds duplicate)
@@ -1341,6 +1352,7 @@ fun citationList_scrollAndClickByText() {
 ### 🎯 Practice — Level 3 (Advanced)
 
 **Challenge**: You have a payment form. You want to test that:
+
 - Amount field only accepts numbers (not letters)
 - Submit button is disabled when amount is 0 or empty
 - Submitting a valid amount shows a confirmation dialog
@@ -1593,6 +1605,7 @@ public class CitationPaymentE2ETest extends BaseAppiumTest {
 ```
 
 **The practical rule in most teams:**
+
 - Developers write Espresso tests (they know the code, they're in Android Studio)
 - QA/SDET engineers write Appium tests (they cover cross-platform, cross-screen flows)
 - Appium is NOT a replacement for Espresso — it is a complement at a higher level
@@ -1602,12 +1615,15 @@ public class CitationPaymentE2ETest extends BaseAppiumTest {
 ## 15. Interview Questions on Android
 
 **Q: "What is the Activity lifecycle and why does it matter?"**
+
 > "Activity lifecycle is Android's contract for managing app state across system events — phone calls, screen rotation, memory pressure, and app switching. The key methods are: `onCreate` (one-time setup), `onResume/onPause` (visibility changes), `onStop/onStart` (foreground/background), and `onDestroy` (final cleanup). The critical thing to understand is that screen rotation triggers a full `onDestroy → onCreate` cycle, which is why data must be stored in a ViewModel rather than instance variables — the ViewModel survives configuration changes."
 
 **Q: "What is ViewModel and why not just use a static variable?"**
+
 > "ViewModel provides UI data that survives configuration changes like rotation. Unlike a static variable, ViewModel is scoped to the screen's lifecycle — it is cleared when the user permanently leaves the screen (via back stack). Static variables live for the entire app process, causing memory leaks and state bleeding between screens. ViewModel also integrates with `viewModelScope` for coroutine lifecycle management — coroutines are automatically cancelled when the screen is gone."
 
 **Q: "What is the difference between Espresso and Appium for Android?"**
+
 > "Espresso is Google's white-box UI test framework built into Android. It runs in-process alongside the app, knows about the app's UI thread, and auto-waits for the app to be idle — no explicit waits needed. It's fast, accurate, and best for testing individual Activity/Fragment behavior. Appium is a black-box E2E framework that runs out-of-process, communicates via HTTP to UIAutomator2, and is better for cross-platform tests or cross-app flows. I'd use Espresso for form validation and navigation logic, and Appium for full user journeys that might span multiple screens or need to interact with system UI."
 
 ---

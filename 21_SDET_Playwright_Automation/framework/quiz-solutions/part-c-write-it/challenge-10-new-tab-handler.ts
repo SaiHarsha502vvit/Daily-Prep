@@ -36,7 +36,7 @@ export async function openNewTab(
     expectedUrlPattern?: RegExp;
     waitForLoadState?: 'load' | 'domcontentloaded' | 'networkidle';
     timeout?: number;
-  } = {}
+  } = {},
 ): Promise<NewTabResult> {
   const { expectedUrlPattern, waitForLoadState = 'networkidle', timeout = 15_000 } = options;
 
@@ -69,14 +69,10 @@ export async function openNewTab(
 test('quiz-02-ch10: helper opens new tab and validates URL', async ({ page }) => {
   await page.goto('https://demoqa.com/links');
 
-  const { popup } = await openNewTab(
-    page,
-    page.getByRole('link', { name: 'Home', exact: true }),
-    {
-      expectedUrlPattern: /demoqa\.com/,
-      waitForLoadState: 'networkidle',
-    }
-  );
+  const { popup } = await openNewTab(page, page.getByRole('link', { name: 'Home', exact: true }), {
+    expectedUrlPattern: /demoqa\.com/,
+    waitForLoadState: 'networkidle',
+  });
 
   // Verify the popup is a fully loaded, independent page.
   await expect(popup.locator('body')).toBeVisible();
@@ -96,7 +92,7 @@ export async function openNewTabViaContext(
   options: {
     expectedUrlPattern?: RegExp;
     waitForLoadState?: 'load' | 'domcontentloaded' | 'networkidle';
-  } = {}
+  } = {},
 ): Promise<NewTabResult> {
   const { expectedUrlPattern, waitForLoadState = 'networkidle' } = options;
 
@@ -122,7 +118,7 @@ test('quiz-02-ch10: context-level new tab helper', async ({ page, context }) => 
     context,
     page,
     page.getByRole('link', { name: 'Home', exact: true }),
-    { expectedUrlPattern: /demoqa\.com/ }
+    { expectedUrlPattern: /demoqa\.com/ },
   );
 
   await expect(popup).toHaveURL(/demoqa\.com/);

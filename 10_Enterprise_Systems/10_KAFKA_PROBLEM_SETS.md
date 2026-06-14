@@ -39,6 +39,7 @@ Partition 3 ──┘      Consumer D handles P2, P3
 Each consumer group gets ALL messages independently. Adding a second group does not affect the first.
 
 🔴 **Erklärung:** If you have MORE consumers in a group than partitions, the extra consumers sit idle — no partition to assign. Scale partitions first, then scale consumers to match.
+
 </details>
 
 ---
@@ -53,7 +54,7 @@ Each consumer group gets ALL messages independently. Adding a second group does 
 
 ```java
 // Producer: always sends messages with same key to same partition
-kafkaTemplate.send("order-events", 
+kafkaTemplate.send("order-events",
     order.getCustomerId().toString(),  // key → determines partition
     orderEvent);                        // value
 ```
@@ -63,6 +64,7 @@ kafkaTemplate.send("order-events",
 **Warning:** If one customer generates 99% of traffic (celebrity problem), that partition becomes a hot spot. Solution: add a suffix to the key: `customerId + "-" + (random % numSubPartitions)` — accept some ordering trade-off for distribution.
 
 🔴 **Erklärung:** Beginners forget to set a partition key and use round-robin (default). All messages for the same customer land on different partitions → processed out of order → inventory deducted before order placed → catastrophe.
+
 </details>
 
 ---
@@ -71,17 +73,19 @@ kafkaTemplate.send("order-events",
 
 <details><summary>Answer</summary>
 
-| Semantics | Producer `acks` | Consumer commit | Risk |
-|---|---|---|---|
-| **At-most-once** | `acks=0` (fire-and-forget) | Auto-commit before processing | Message lost if broker fails after send but before storage |
-| **At-least-once** | `acks=all` | Manual commit after processing | Duplicate if consumer crashes after process but before commit |
-| **Exactly-once** | `acks=all` + idempotent producer | Transactional consumer | ~30% throughput overhead; requires Kafka transactions |
+| Semantics         | Producer `acks`                  | Consumer commit                | Risk                                                          |
+| ----------------- | -------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| **At-most-once**  | `acks=0` (fire-and-forget)       | Auto-commit before processing  | Message lost if broker fails after send but before storage    |
+| **At-least-once** | `acks=all`                       | Manual commit after processing | Duplicate if consumer crashes after process but before commit |
+| **Exactly-once**  | `acks=all` + idempotent producer | Transactional consumer         | ~30% throughput overhead; requires Kafka transactions         |
 
 **Production reality:**
+
 - **At-least-once + idempotent consumer** is the industry standard: `acks=all`, commit after processing, make every consumer operation idempotent (check if already processed via DB unique key or Redis SETNX).
 - **Exactly-once** is used for financial transactions where even a "just deduplicate" retry is unacceptable.
 
 **Idempotent consumer pattern (Java):**
+
 ```java
 @KafkaListener(topics = "order-events")
 public void handle(OrderEvent event) {
@@ -95,6 +99,7 @@ public void handle(OrderEvent event) {
 ```
 
 🔴 **Erklärung:** Exactly-once sounds desirable but adds enormous complexity. Start with at-least-once + idempotent consumers. Only add Kafka transactions when you have a concrete business requirement (financial audit) and measure the throughput cost first.
+
 </details>
 
 ---
@@ -111,15 +116,16 @@ kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
   --describe --group my-group
 ```
 
-| Rank | Root Cause | Diagnostic |
-|---|---|---|
-| 1 | **Slow processing** — each message takes too long (DB call, external API) | Add `@Timed` on handler; check p99 processing time |
-| 2 | **GC pause** — JVM stop-the-world pauses pausing consumer loop | `jstat -gcutil <PID> 1000`; look for long GC pauses |
-| 3 | **Not enough consumer instances** — 4 partitions, 1 consumer = 4× bottleneck | `kafka-consumer-groups.sh --describe` → check partition assignment |
-| 4 | **Message processing error loop** — exception causes endless retry on same message | Check consumer logs for repeated error on same offset |
-| 5 | **Producer spike** — upstream sent 10× normal volume in a burst | Check producer metrics; compare message rate to baseline |
+| Rank | Root Cause                                                                         | Diagnostic                                                         |
+| ---- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1    | **Slow processing** — each message takes too long (DB call, external API)          | Add `@Timed` on handler; check p99 processing time                 |
+| 2    | **GC pause** — JVM stop-the-world pauses pausing consumer loop                     | `jstat -gcutil <PID> 1000`; look for long GC pauses                |
+| 3    | **Not enough consumer instances** — 4 partitions, 1 consumer = 4× bottleneck       | `kafka-consumer-groups.sh --describe` → check partition assignment |
+| 4    | **Message processing error loop** — exception causes endless retry on same message | Check consumer logs for repeated error on same offset              |
+| 5    | **Producer spike** — upstream sent 10× normal volume in a burst                    | Check producer metrics; compare message rate to baseline           |
 
 **Remediation steps:**
+
 1. Scale consumer instances to match partition count
 2. Move slow operations to async (CompletableFuture + async thread pool)
 3. Batch-process: `@KafkaListener(batch = true)` processes List<Message> per poll
@@ -144,15 +150,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class OrderEventConsumer {
-    
+
     private final OrderService orderService;
     private final ProcessedEventRepository processedRepo;
-    
+
     public OrderEventConsumer(OrderService orderService, ProcessedEventRepository processedRepo) {
         this.orderService = orderService;
         this.processedRepo = processedRepo;
     }
-    
+
     @KafkaListener(
         topics = "${kafka.topics.order-placed}",
         groupId = "${spring.kafka.consumer.group-id}",
@@ -163,12 +169,12 @@ public class OrderEventConsumer {
         // TODO: 1. Check if event already processed (by eventId)
         //       2. If yes: log and return (idempotent)
         //       3. If no: process the order, mark as processed in same transaction
-        
+
         if (processedRepo.existsById(event.eventId())) {
             log.info("Duplicate event ignored: {}", event.eventId());
             return;
         }
-        
+
         try {
             orderService.processNewOrder(event);
             processedRepo.save(new ProcessedEvent(event.eventId(), Instant.now()));
@@ -199,39 +205,40 @@ record OrderPlacedEvent(
 spring:
   kafka:
     producer:
-      acks: all              # why?
-      retries: 3             # why?
-      enable-idempotence: true  # why?
-      compression-type: snappy  # why?
+      acks: all # why?
+      retries: 3 # why?
+      enable-idempotence: true # why?
+      compression-type: snappy # why?
     consumer:
-      auto-offset-reset: earliest  # why?
-      enable-auto-commit: false    # why?
-      max-poll-records: 50         # why?
+      auto-offset-reset: earliest # why?
+      enable-auto-commit: false # why?
+      max-poll-records: 50 # why?
 
 kafka:
   topics:
     order-placed:
-      partitions: 12         # why 12 specifically?
-      replication-factor: 3  # why 3?
+      partitions: 12 # why 12 specifically?
+      replication-factor: 3 # why 3?
     driver-location:
-      partitions: 24         # why more than order-placed?
+      partitions: 24 # why more than order-placed?
       replication-factor: 3
 ```
 
 <details><summary>Answer</summary>
 
-| Setting | Reason |
-|---|---|
-| `acks: all` | Wait for leader + all in-sync replicas to acknowledge — no data loss even if leader fails |
-| `retries: 3` | Transient network errors are retried automatically |
-| `enable-idempotence: true` | Producer assigns sequence numbers — broker detects and drops duplicates from retries |
-| `compression-type: snappy` | ~50% size reduction; Snappy is fast with low CPU cost vs Gzip |
-| `auto-offset-reset: earliest` | New consumer groups start from beginning — don't miss historical messages |
-| `enable-auto-commit: false` | Manual commit after processing — prevents "committed but not processed" message loss |
-| `max-poll-records: 50` | Limits messages per poll; prevents consumer timeout if batch processing is slow |
-| `order-placed: 12 partitions` | 12 = LCM of typical team sizes (1,2,3,4,6,12 consumers all divide evenly) |
-| `replication-factor: 3` | Survive 2 broker failures; standard for production |
-| `driver-location: 24 partitions` | Location updates arrive 10× more frequently than orders; needs more parallelism |
+| Setting                          | Reason                                                                                    |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| `acks: all`                      | Wait for leader + all in-sync replicas to acknowledge — no data loss even if leader fails |
+| `retries: 3`                     | Transient network errors are retried automatically                                        |
+| `enable-idempotence: true`       | Producer assigns sequence numbers — broker detects and drops duplicates from retries      |
+| `compression-type: snappy`       | ~50% size reduction; Snappy is fast with low CPU cost vs Gzip                             |
+| `auto-offset-reset: earliest`    | New consumer groups start from beginning — don't miss historical messages                 |
+| `enable-auto-commit: false`      | Manual commit after processing — prevents "committed but not processed" message loss      |
+| `max-poll-records: 50`           | Limits messages per poll; prevents consumer timeout if batch processing is slow           |
+| `order-placed: 12 partitions`    | 12 = LCM of typical team sizes (1,2,3,4,6,12 consumers all divide evenly)                 |
+| `replication-factor: 3`          | Survive 2 broker failures; standard for production                                        |
+| `driver-location: 24 partitions` | Location updates arrive 10× more frequently than orders; needs more parallelism           |
+
 </details>
 
 ---
@@ -259,11 +266,13 @@ kafka:
 ```
 
 **States:**
+
 - **CLOSED** (normal): Requests pass through. Count failures. If failures exceed threshold (e.g., 50% error rate in last 10 calls), trip to OPEN.
 - **OPEN** (broken): All requests immediately fail without calling downstream. Protects the upstream from cascading failures.
 - **HALF-OPEN** (probing): After a wait timeout, allow ONE test request. If it succeeds → CLOSED. If it fails → back to OPEN.
 
 **Resilience4j implementation:**
+
 ```java
 @Bean
 public CircuitBreaker paymentCircuitBreaker(CircuitBreakerRegistry registry) {
@@ -282,6 +291,7 @@ public PaymentResult charge(PaymentRequest req) {
 ```
 
 🔴 **Erklärung:** Without Circuit Breaker: if Payment Service is down, every Order request waits for the HTTP timeout (default 30s), holding threads. 1000 concurrent users × 30s wait = thread pool exhausted → entire service crashes. Circuit Breaker fails fast in < 1ms when OPEN, keeping the upstream alive.
+
 </details>
 
 ---
@@ -292,25 +302,26 @@ public PaymentResult charge(PaymentRequest req) {
 
 **Gateway responsibilities:**
 
-| Responsibility | Gateway? | Individual Service? |
-|---|---|---|
-| **Authentication** (JWT validation) | ✅ Once at gateway | ❌ Redundant in each service |
-| **Rate limiting** (100 req/s per user) | ✅ Central enforcement | ❌ Distributed rate limiting is complex |
-| **Request routing** (path → service) | ✅ Core gateway function | N/A |
-| **SSL termination** (HTTPS → HTTP internally) | ✅ Once at boundary | N/A |
-| **Load balancing** | ✅ Gateway level | ✅ Service mesh (alternative) |
-| **Request logging / tracing** | ✅ Inject trace-id at entry | ✅ Propagate trace-id downstream |
-| **Authorization** (can user X access resource Y?) | ❌ Business logic | ✅ In the owning service |
-| **Business logic** | ❌ Never | ✅ Always |
+| Responsibility                                    | Gateway?                    | Individual Service?                     |
+| ------------------------------------------------- | --------------------------- | --------------------------------------- |
+| **Authentication** (JWT validation)               | ✅ Once at gateway          | ❌ Redundant in each service            |
+| **Rate limiting** (100 req/s per user)            | ✅ Central enforcement      | ❌ Distributed rate limiting is complex |
+| **Request routing** (path → service)              | ✅ Core gateway function    | N/A                                     |
+| **SSL termination** (HTTPS → HTTP internally)     | ✅ Once at boundary         | N/A                                     |
+| **Load balancing**                                | ✅ Gateway level            | ✅ Service mesh (alternative)           |
+| **Request logging / tracing**                     | ✅ Inject trace-id at entry | ✅ Propagate trace-id downstream        |
+| **Authorization** (can user X access resource Y?) | ❌ Business logic           | ✅ In the owning service                |
+| **Business logic**                                | ❌ Never                    | ✅ Always                               |
 
 **Spring Cloud Gateway config:**
+
 ```yaml
 spring:
   cloud:
     gateway:
       routes:
         - id: order-service
-          uri: lb://order-service   # load-balanced via Eureka
+          uri: lb://order-service # load-balanced via Eureka
           predicates:
             - Path=/api/orders/**
           filters:
@@ -318,10 +329,11 @@ spring:
               args:
                 redis-rate-limiter.replenishRate: 100
                 redis-rate-limiter.burstCapacity: 200
-            - AuthenticationFilter    # custom JWT validation filter
+            - AuthenticationFilter # custom JWT validation filter
 ```
 
 🔴 **Erklärung:** Authorization (can THIS user access THIS resource?) must stay in the owning service — it's business logic. Only the Order service knows whether user Alice can view order #12345. The gateway only verifies the JWT is valid, not what it's allowed to access.
+
 </details>
 
 ---
@@ -339,6 +351,7 @@ spring:
 <details><summary>Answer Outline</summary>
 
 **Topic Topology:**
+
 ```
 order-placed          (12 partitions) ← OrderService publishes
   ↓
@@ -359,12 +372,14 @@ order-dlq             (3 partitions)  ← Dead Letter Queue for all failed event
 ```
 
 **Inventory down for 2 hours:**
+
 - Kafka retains `order-placed` messages per `retention.ms` (default 7 days)
 - `inventory-group` consumer lag grows but messages are safe
 - When InventoryService recovers: starts from last committed offset, processes all 2h of backlog
 - Add lag alert: alert if `order-placed` lag > 50,000 messages
 
 **Dead Letter Queue strategy:**
+
 ```java
 @KafkaListener(topics = "order-placed")
 public void handle(OrderPlacedEvent e) {
@@ -376,8 +391,53 @@ public void handle(OrderPlacedEvent e) {
     }
 }
 ```
+
 </details>
 
 ---
 
 [← Back to Semester 4 Guide](../00_CURRICULUM/SEMESTER_4_GUIDE.md)
+
+---
+
+## Historical Evolution
+
+Apache Kafka is the de facto event-streaming backbone for enterprise integration — but its lineage is shorter than most developers assume. Three threads:
+
+**1. The LinkedIn Origin (2010-2011)**
+
+- **LinkedIn Engineering — Kafka initial commit, January 2011 (Jay Kreps, Neha Narkhede, Jun Rao)**: Kafka was built at LinkedIn to solve the problem of moving activity-tracking data + log data + operational metrics through a unified pipeline. The original Kafka paper was published at NetDB 2011.
+- **Apache Incubator — October 2011**: Kafka entered the Apache Software Foundation incubator.
+- **Apache Top-Level Project — October 2012**: Kafka graduated from incubator to Apache top-level.
+- **Confluent founded — 2014 by Kreps, Narkhede, Rao**: The three Kafka creators left LinkedIn to commercialize Kafka. Confluent's first product was Confluent Platform (the "enterprise Kafka" distribution).
+
+**2. The Exactly-Once + Streams Era (2017-2020)**
+
+- **Kafka 0.11 (June 2017) — exactly-once semantics (EOS)**: The watershed release. Idempotent producers + transactional APIs made "exactly-once delivery" possible across producer + consumer + stream processing. Before this, at-least-once was the practical guarantee, requiring idempotency-key logic at the consumer.
+- **Kafka Streams — 2016 (0.10) → GA 2017 (0.11)**: The embedded stream-processing library. Avoided the need to deploy a separate Flink/Spark cluster for many use cases.
+- **KSQL — 2017 → ksqlDB 2019**: The SQL-on-Kafka engine. Made Kafka accessible to data analysts without Java/Scala skills.
+- **Schema Registry — 2015 (Confluent)**: The Avro/JSON-Schema/Protobuf schema management service. Became the canonical way to evolve Kafka topic schemas.
+
+**3. The KRaft Era (2022-today)**
+
+- **Kafka ZooKeeper removal — KIP-500, proposed 2018; KRaft production-ready in Kafka 3.3 (Oct 2022); default in Kafka 4.0 (2024)**: ZooKeeper was the original metadata store but became an operational bottleneck. KRaft (Kafka Raft) replaced it with an internal Raft consensus protocol — no external coordination service required.
+- **Tiered Storage (KIP-405) — Kafka 3.6 (Oct 2023)**: Allowed Kafka brokers to offload old log segments to S3-compatible storage. Made infinite retention economically viable.
+- **Modern Practice Anchored**: When you see "exactly-once delivery", that's Kafka 0.11 (2017). When you see "KRaft / no ZooKeeper", that's Kafka 3.3 (Oct 2022). When you see "tiered storage on S3", that's Kafka 3.6 (Oct 2023). A 2026 Kafka shop running Kafka 2.x is running a 7-year-old version — and a Kafka 4.0 (2024) shop is missing nothing. The evolution has been steep.
+
+### Production Reality
+
+**Failure Mode 1 — Consumer Rebalance Storm**: A Kafka consumer group has 100 consumers. One consumer is slow (long GC pause, network blip). The group coordinator rebalances: all 100 consumers reassign partitions; processing stops for 30-60 seconds; meanwhile, producer back-pressure builds up. Symptom: latency spike every few minutes. Fix: `max.poll.interval.ms` set higher; static membership (KIP-345); cooperative rebalancing (KIP-429).
+
+**Failure Mode 2 — Out-of-Order Event Delivery**: Kafka guarantees order within a partition, but not across partitions. A "user-created" event lands in partition 0; an "email-verified" event for the same user lands in partition 1; if partition 1 is processed first, the system sees "email-verified before user-created". Symptom: orphaned records. Fix: partition by entity-id (user-id); route all events for one entity to the same partition.
+
+**Failure Mode 3 — Idempotent-Producer Retry Duplicate**: Kafka 0.11+ has idempotent producer (PID + sequence number). If the producer retries after a network timeout, the broker dedupes by PID+seq. But if the producer's local log is corrupted (PID lost), the producer gets a new PID and may re-send the same logical message. Fix: producer-side transactional ID + transactional.id reset only on explicit operator action.
+
+**Debug Workflow**:
+1. **`kafka-consumer-groups.sh --describe --group <name>`** — lag per partition; consumer assignment
+2. **`__consumer_offsets` topic inspection** — committed offsets per (group, topic, partition)
+3. **`kafka-log-dirs.sh --describe`** — disk usage per partition
+4. **JMX metrics** — `records-lag-max`, `rebalance-rate`, `request-latency-avg`
+5. **Burrow / Cruise Control** — automated lag monitoring + self-healing
+
+---
+

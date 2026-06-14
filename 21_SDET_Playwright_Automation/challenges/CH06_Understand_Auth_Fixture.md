@@ -42,7 +42,7 @@ Close all reference material. In a new file `challenges/solutions/CH06/auth-from
 
 ## Acceptance criteria
 
-- Part 3 answers are in `challenges/solutions/CH06/answers.md` and explain *why*, not just *what*.
+- Part 3 answers are in `challenges/solutions/CH06/answers.md` and explain _why_, not just _what_.
 - Part 4 implementation:
   - Uses `proper-lockfile`.
   - Uses worker offset.

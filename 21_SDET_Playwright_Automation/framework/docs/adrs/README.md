@@ -32,14 +32,14 @@ Replace `NNN` with the next sequential number (check existing ADRs below) and gi
 
 ### Step 2: Fill in the Template
 
-| Section | Description |
-|---------|-------------|
-| **Status** | Start with `Proposed`. Change to `Accepted` after team approval. |
-| **Context** | Describe the problem or motivation. Include data (metrics, pain points) when available. |
-| **Decision** | State the specific change being made. Be concrete and actionable. |
-| **Consequences** | List positive outcomes, negative outcomes, and identified risks with mitigations. |
-| **Compliance** | Define how the team verifies this decision is followed. |
-| **Related** | Link to other ADRs, curriculum chapters, documentation, or external resources. |
+| Section          | Description                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| **Status**       | Start with `Proposed`. Change to `Accepted` after team approval.                        |
+| **Context**      | Describe the problem or motivation. Include data (metrics, pain points) when available. |
+| **Decision**     | State the specific change being made. Be concrete and actionable.                       |
+| **Consequences** | List positive outcomes, negative outcomes, and identified risks with mitigations.       |
+| **Compliance**   | Define how the team verifies this decision is followed.                                 |
+| **Related**      | Link to other ADRs, curriculum chapters, documentation, or external resources.          |
 
 ### Step 3: Open a Pull Request
 
@@ -61,18 +61,18 @@ Replace `NNN` with the next sequential number (check existing ADRs below) and gi
 
 The SDET curriculum (Ch65) covers test automation architecture patterns and industry best practices. Our ADRs document how we apply those principles in our specific context:
 
-| Curriculum Topic | ADR Application |
-|------------------|-----------------|
-| Framework selection | ADR-001: Why we chose Playwright over alternatives |
-| CI/CD integration | Referenced in ADR-001; future ADR planned |
-| Test data management | Future ADR planned |
-| Reporting and observability | Future ADR planned |
-| Cross-browser testing | Built into Playwright via ADR-001 |
+| Curriculum Topic            | ADR Application                                    |
+| --------------------------- | -------------------------------------------------- |
+| Framework selection         | ADR-001: Why we chose Playwright over alternatives |
+| CI/CD integration           | Referenced in ADR-001; future ADR planned          |
+| Test data management        | Future ADR planned                                 |
+| Reporting and observability | Future ADR planned                                 |
+| Cross-browser testing       | Built into Playwright via ADR-001                  |
 
 ## Index of Existing ADRs
 
-| ADR Number | Title | Status | Date |
-|------------|-------|--------|------|
+| ADR Number                             | Title                                   | Status   | Date       |
+| -------------------------------------- | --------------------------------------- | -------- | ---------- |
 | [ADR-001](./ADR-001-why-playwright.md) | Adopt Playwright for End-to-End Testing | Accepted | 2026-06-10 |
 
 ## Quick Reference

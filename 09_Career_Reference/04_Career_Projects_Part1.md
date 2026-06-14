@@ -50,7 +50,6 @@
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Frontend Development - React Complete
 
 #### React Project Structure (Production Ready)
@@ -126,7 +125,6 @@ my-react-app/
 └── package.json
 ```
 
-
 #### React Patterns - Production Code
 
 ```tsx
@@ -136,44 +134,44 @@ my-react-app/
 import { useState, useEffect, useCallback } from "react";
 
 interface FetchState<T> {
-    data: T | null;
-    loading: boolean;
-    error: Error | null;
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
 }
 
 const cache = new Map<string, any>();
 
 export function useFetch<T>(
-    url: string,
-    options?: RequestInit,
+  url: string,
+  options?: RequestInit,
 ): FetchState<T> & { refetch: () => void } {
-    const [state, setState] = useState<FetchState<T>>({
-        data: cache.get(url) || null,
-        loading: !cache.has(url),
-        error: null,
-    });
+  const [state, setState] = useState<FetchState<T>>({
+    data: cache.get(url) || null,
+    loading: !cache.has(url),
+    error: null,
+  });
 
-    const fetchData = useCallback(async () => {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
+  const fetchData = useCallback(async () => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok)
-                throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
 
-            const data = await response.json();
-            cache.set(url, data);
-            setState({ data, loading: false, error: null });
-        } catch (error) {
-            setState({ data: null, loading: false, error: error as Error });
-        }
-    }, [url, options]);
+      const data = await response.json();
+      cache.set(url, data);
+      setState({ data, loading: false, error: null });
+    } catch (error) {
+      setState({ data: null, loading: false, error: error as Error });
+    }
+  }, [url, options]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-    return { ...state, refetch: fetchData };
+  return { ...state, refetch: fetchData };
 }
 
 // ============================================
@@ -182,36 +180,36 @@ export function useFetch<T>(
 import axios, { AxiosInstance, AxiosError } from "axios";
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 10000,
-    headers: {
-        "Content-Type": "application/json",
-    },
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // Request interceptor - Add auth token
 api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error),
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor - Handle errors globally
 api.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            // Token expired - try refresh or logout
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-        }
-        return Promise.reject(error);
-    },
+  (response) => response,
+  async (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      // Token expired - try refresh or logout
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
 );
 
 export default api;
@@ -223,51 +221,51 @@ import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
 interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: "admin" | "user";
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
 }
 
 interface AuthState {
-    user: User | null;
-    token: string | null;
-    isAuthenticated: boolean;
-    login: (user: User, token: string) => void;
-    logout: () => void;
-    updateUser: (updates: Partial<User>) => void;
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (user: User, token: string) => void;
+  logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
-    devtools(
-        persist(
-            (set) => ({
-                user: null,
-                token: null,
-                isAuthenticated: false,
+  devtools(
+    persist(
+      (set) => ({
+        user: null,
+        token: null,
+        isAuthenticated: false,
 
-                login: (user, token) =>
-                    set({
-                        user,
-                        token,
-                        isAuthenticated: true,
-                    }),
+        login: (user, token) =>
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+          }),
 
-                logout: () =>
-                    set({
-                        user: null,
-                        token: null,
-                        isAuthenticated: false,
-                    }),
+        logout: () =>
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+          }),
 
-                updateUser: (updates) =>
-                    set((state) => ({
-                        user: state.user ? { ...state.user, ...updates } : null,
-                    })),
-            }),
-            { name: "auth-storage" },
-        ),
+        updateUser: (updates) =>
+          set((state) => ({
+            user: state.user ? { ...state.user, ...updates } : null,
+          })),
+      }),
+      { name: "auth-storage" },
     ),
+  ),
 );
 
 // ============================================
@@ -277,26 +275,26 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 
 interface ProtectedRouteProps {
-    children: React.ReactNode;
-    requiredRole?: "admin" | "user";
+  children: React.ReactNode;
+  requiredRole?: "admin" | "user";
 }
 
 export function ProtectedRoute({
-    children,
-    requiredRole,
+  children,
+  requiredRole,
 }: ProtectedRouteProps) {
-    const { isAuthenticated, user } = useAuthStore();
-    const location = useLocation();
+  const { isAuthenticated, user } = useAuthStore();
+  const location = useLocation();
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-    if (requiredRole && user?.role !== requiredRole) {
-        return <Navigate to="/unauthorized" replace />;
-    }
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 }
 
 // ============================================
@@ -308,154 +306,145 @@ import { z } from "zod";
 
 // Define schema
 const loginSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z
-        .string()
-        .min(8, "Password must be at least 8 characters")
-        .regex(/[A-Z]/, "Password must contain uppercase letter")
-        .regex(/[0-9]/, "Password must contain a number"),
-    rememberMe: z.boolean().optional(),
+  email: z.string().email("Invalid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain uppercase letter")
+    .regex(/[0-9]/, "Password must contain a number"),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 // Form component
 export function LoginForm() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const onSubmit = async (data: LoginFormData) => {
-        try {
-            const response = await api.post("/auth/login", data);
-            useAuthStore
-                .getState()
-                .login(response.data.user, response.data.token);
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
-    };
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const response = await api.post("/auth/login", data);
+      useAuthStore.getState().login(response.data.user, response.data.token);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-                <input {...register("email")} placeholder="Email" />
-                {errors.email && <span>{errors.email.message}</span>}
-            </div>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <input {...register("email")} placeholder="Email" />
+        {errors.email && <span>{errors.email.message}</span>}
+      </div>
 
-            <div>
-                <input
-                    {...register("password")}
-                    type="password"
-                    placeholder="Password"
-                />
-                {errors.password && <span>{errors.password.message}</span>}
-            </div>
+      <div>
+        <input
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+        />
+        {errors.password && <span>{errors.password.message}</span>}
+      </div>
 
-            <label>
-                <input {...register("rememberMe")} type="checkbox" />
-                Remember me
-            </label>
+      <label>
+        <input {...register("rememberMe")} type="checkbox" />
+        Remember me
+      </label>
 
-            <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Logging in..." : "Login"}
-            </button>
-        </form>
-    );
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Logging in..." : "Login"}
+      </button>
+    </form>
+  );
 }
 
 // ============================================
 // 6. DATA TABLE - Reusable component
 // ============================================
 interface Column<T> {
-    key: keyof T;
-    header: string;
-    render?: (value: T[keyof T], row: T) => React.ReactNode;
-    sortable?: boolean;
+  key: keyof T;
+  header: string;
+  render?: (value: T[keyof T], row: T) => React.ReactNode;
+  sortable?: boolean;
 }
 
 interface DataTableProps<T> {
-    data: T[];
-    columns: Column<T>[];
-    loading?: boolean;
-    onRowClick?: (row: T) => void;
+  data: T[];
+  columns: Column<T>[];
+  loading?: boolean;
+  onRowClick?: (row: T) => void;
 }
 
 export function DataTable<T extends { id: string | number }>({
-    data,
-    columns,
-    loading,
-    onRowClick,
+  data,
+  columns,
+  loading,
+  onRowClick,
 }: DataTableProps<T>) {
-    const [sortConfig, setSortConfig] = useState<{
-        key: keyof T;
-        direction: "asc" | "desc";
-    } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof T;
+    direction: "asc" | "desc";
+  } | null>(null);
 
-    const sortedData = useMemo(() => {
-        if (!sortConfig) return data;
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data;
 
-        return [...data].sort((a, b) => {
-            const aVal = a[sortConfig.key];
-            const bVal = b[sortConfig.key];
+    return [...data].sort((a, b) => {
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
 
-            if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-            return 0;
-        });
-    }, [data, sortConfig]);
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
 
-    if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
-    return (
-        <table>
-            <thead>
-                <tr>
-                    {columns.map((col) => (
-                        <th
-                            key={String(col.key)}
-                            onClick={() =>
-                                col.sortable &&
-                                setSortConfig({
-                                    key: col.key,
-                                    direction:
-                                        sortConfig?.direction === "asc"
-                                            ? "desc"
-                                            : "asc",
-                                })
-                            }
-                        >
-                            {col.header}
-                            {col.sortable && sortConfig?.key === col.key && (
-                                <span>
-                                    {sortConfig.direction === "asc"
-                                        ? " ↑"
-                                        : " ↓"}
-                                </span>
-                            )}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {sortedData.map((row) => (
-                    <tr key={row.id} onClick={() => onRowClick?.(row)}>
-                        {columns.map((col) => (
-                            <td key={String(col.key)}>
-                                {col.render
-                                    ? col.render(row[col.key], row)
-                                    : String(row[col.key])}
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    );
+  return (
+    <table>
+      <thead>
+        <tr>
+          {columns.map((col) => (
+            <th
+              key={String(col.key)}
+              onClick={() =>
+                col.sortable &&
+                setSortConfig({
+                  key: col.key,
+                  direction: sortConfig?.direction === "asc" ? "desc" : "asc",
+                })
+              }
+            >
+              {col.header}
+              {col.sortable && sortConfig?.key === col.key && (
+                <span>{sortConfig.direction === "asc" ? " ↑" : " ↓"}</span>
+              )}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {sortedData.map((row) => (
+          <tr key={row.id} onClick={() => onRowClick?.(row)}>
+            {columns.map((col) => (
+              <td key={String(col.key)}>
+                {col.render
+                  ? col.render(row[col.key], row)
+                  : String(row[col.key])}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 }
 ```
 
@@ -521,7 +510,6 @@ my-spring-app/
 ├── pom.xml
 └── Dockerfile
 ```
-
 
 #### Spring Boot Production Code
 
@@ -2033,9 +2021,6 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 
 ---
 
-
-
-
 ## Phase 7: DevOps - Complete Guide
 
 ### DevOps Culture & Principles
@@ -2067,7 +2052,6 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Kubernetes - Complete Guide
 
@@ -2115,7 +2099,6 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 #### Kubernetes Objects
 
 ```yaml
@@ -2125,77 +2108,77 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: backend-deployment
-    namespace: production
-    labels:
+  name: backend-deployment
+  namespace: production
+  labels:
+    app: backend
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # Max pods above desired
+      maxUnavailable: 0 # Zero downtime
+  template:
+    metadata:
+      labels:
         app: backend
         version: v1
-spec:
-    replicas: 3
-    selector:
-        matchLabels:
-            app: backend
-    strategy:
-        type: RollingUpdate
-        rollingUpdate:
-            maxSurge: 1 # Max pods above desired
-            maxUnavailable: 0 # Zero downtime
-    template:
-        metadata:
-            labels:
-                app: backend
-                version: v1
-        spec:
-            containers:
-                - name: backend
-                  image: myregistry/backend:v1.2.3
-                  ports:
-                      - containerPort: 8080
+    spec:
+      containers:
+        - name: backend
+          image: myregistry/backend:v1.2.3
+          ports:
+            - containerPort: 8080
 
-                  # Resource limits
-                  resources:
-                      requests:
-                          memory: "256Mi"
-                          cpu: "250m"
-                      limits:
-                          memory: "512Mi"
-                          cpu: "500m"
+          # Resource limits
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
 
-                  # Environment variables
-                  env:
-                      - name: SPRING_PROFILES_ACTIVE
-                        value: "production"
-                      - name: DB_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secrets
-                                key: password
+          # Environment variables
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "production"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: password
 
-                  # Health checks
-                  livenessProbe:
-                      httpGet:
-                          path: /actuator/health/liveness
-                          port: 8080
-                      initialDelaySeconds: 30
-                      periodSeconds: 10
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
 
-                  readinessProbe:
-                      httpGet:
-                          path: /actuator/health/readiness
-                          port: 8080
-                      initialDelaySeconds: 10
-                      periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
 
-                  # Volume mounts
-                  volumeMounts:
-                      - name: config-volume
-                        mountPath: /app/config
-                        readOnly: true
+          # Volume mounts
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+              readOnly: true
 
-            volumes:
-                - name: config-volume
-                  configMap:
-                      name: backend-config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: backend-config
 
 ---
 # ============================================
@@ -2204,13 +2187,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: backend-service
-    namespace: production
+  name: backend-service
+  namespace: production
 spec:
-    type: ClusterIP # Internal only
-    selector:
+  type: ClusterIP # Internal only
+  selector:
 ```
-
 
 ---
 

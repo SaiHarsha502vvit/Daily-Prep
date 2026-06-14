@@ -9,10 +9,9 @@ import { Timeouts } from './constants/timeouts';
 // gets its own isolated report directory (prevents overwrites in
 // sharded / matrix jobs).
 const isCI = !!process.env.CI;
-const ciTimestamp = process.env.PLAYWRIGHT_REPORT_TIMESTAMP || new Date().toISOString().replace(/[:.]/g, '-');
-const htmlOutputFolder = isCI
-  ? `playwright-report/ci-${ciTimestamp}`
-  : 'playwright-report';
+const ciTimestamp =
+  process.env.PLAYWRIGHT_REPORT_TIMESTAMP || new Date().toISOString().replace(/[:.]/g, '-');
+const htmlOutputFolder = isCI ? `playwright-report/ci-${ciTimestamp}` : 'playwright-report';
 
 // Parse shard settings from environment variables (Docker / CI overrides).
 function getShardConfig(): { shardIndex?: number; shardTotal?: number } {
@@ -34,12 +33,8 @@ export default defineConfig({
 
   fullyParallel: true,
   forbidOnly: isCI,
-  retries: isCI
-    ? parseInt(process.env.PLAYWRIGHT_RETRIES || '2', 10)
-    : 0,
-  workers: isCI
-    ? parseInt(process.env.PLAYWRIGHT_WORKERS || '4', 10)
-    : undefined,
+  retries: isCI ? parseInt(process.env.PLAYWRIGHT_RETRIES || '2', 10) : 0,
+  workers: isCI ? parseInt(process.env.PLAYWRIGHT_WORKERS || '4', 10) : undefined,
 
   // Apply shard configuration when provided (CI / Docker overrides).
   // Playwright expects `current` (1-based), not `index`.
@@ -67,7 +62,12 @@ export default defineConfig({
     // Allure — disabled by default to keep local runs lean. Enable by setting
     // ALLURE=1 in your env; the reporter writes to ./allure-results.
     ...(process.env.ALLURE === '1'
-      ? [['allure-playwright', { outputFolder: 'allure-results', detail: true, suiteTitle: true }] as const]
+      ? [
+          [
+            'allure-playwright',
+            { outputFolder: 'allure-results', detail: true, suiteTitle: true },
+          ] as const,
+        ]
       : []),
     // Custom matchers registered in global setup or test fixture
   ],

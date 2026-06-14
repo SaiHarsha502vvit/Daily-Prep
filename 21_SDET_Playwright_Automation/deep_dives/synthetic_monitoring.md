@@ -22,6 +22,7 @@
 Run a test every N minutes against PRODUCTION. If the test fails, the on-call engineer is alerted.
 
 Use cases:
+
 - Critical user flow monitor (signup, login, checkout).
 - Third-party dependency monitor (payment gateway, IdP).
 - Geographic availability check.
@@ -31,10 +32,10 @@ Use cases:
 
 ## 2. vs others
 
-| Type | What |
-|---|---|
-| Functional E2E (PR / CI) | Catch regressions before deploy |
-| Synthetic monitoring | Catch problems after deploy, before users notice |
+| Type                       | What                                                      |
+| -------------------------- | --------------------------------------------------------- |
+| Functional E2E (PR / CI)   | Catch regressions before deploy                           |
+| Synthetic monitoring       | Catch problems after deploy, before users notice          |
 | RUM (Real User Monitoring) | Tell you problems users ARE noticing (after they noticed) |
 
 Synthetic monitors are the BRIDGE between deploy and user impact.
@@ -47,37 +48,35 @@ Native Playwright support. Hosted SaaS.
 
 ```typescript
 // __checks__/checkout.check.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('checkout flow works end-to-end', async ({ page }) => {
-  await page.goto('https://app.example.com/');
-  await page.getByRole('link', { name: 'Sign in' }).click();
-  await page.getByLabel('Email').fill(process.env.MONITOR_EMAIL!);
-  await page.getByLabel('Password').fill(process.env.MONITOR_PASSWORD!);
-  await page.getByRole('button', { name: 'Log in' }).click();
+test("checkout flow works end-to-end", async ({ page }) => {
+  await page.goto("https://app.example.com/");
+  await page.getByRole("link", { name: "Sign in" }).click();
+  await page.getByLabel("Email").fill(process.env.MONITOR_EMAIL!);
+  await page.getByLabel("Password").fill(process.env.MONITOR_PASSWORD!);
+  await page.getByRole("button", { name: "Log in" }).click();
   await expect(page).toHaveURL(/dashboard/);
 });
 ```
 
 ```typescript
 // checkly.config.ts
-import { defineConfig } from 'checkly';
+import { defineConfig } from "checkly";
 
 export default defineConfig({
-  projectName: 'production-monitors',
+  projectName: "production-monitors",
   checks: {
-    frequency: 10,                     // run every 10 minutes
-    locations: ['us-east-1', 'eu-west-1', 'ap-southeast-1'],
-    runtimeId: '2024.02',
-    alertChannels: [
-      { id: 'slack-prod-alerts' },
-      { id: 'pagerduty-oncall' },
-    ],
+    frequency: 10, // run every 10 minutes
+    locations: ["us-east-1", "eu-west-1", "ap-southeast-1"],
+    runtimeId: "2024.02",
+    alertChannels: [{ id: "slack-prod-alerts" }, { id: "pagerduty-oncall" }],
   },
 });
 ```
 
 Push:
+
 ```bash
 npx checkly deploy
 ```
@@ -100,13 +99,13 @@ Now `checkout.check.ts` runs every 10 minutes from 3 regions. Failures alert.
 - type: browser
   name: Checkout flow
   status: live
-  locations: ['aws:us-east-1', 'aws:eu-west-1']
-  frequency: 600  # seconds
+  locations: ["aws:us-east-1", "aws:eu-west-1"]
+  frequency: 600 # seconds
   steps:
     - type: goto
-      url: 'https://app.example.com/'
+      url: "https://app.example.com/"
     - type: click
-      selector: 'role=link[name=Sign in]'
+      selector: "role=link[name=Sign in]"
     # ... etc.
 ```
 
@@ -122,7 +121,7 @@ Datadog Synthetics has its own DSL — not Playwright. Less flexible but integra
 # .github/workflows/synthetic.yml
 on:
   schedule:
-    - cron: '*/10 * * * *'   # every 10 minutes
+    - cron: "*/10 * * * *" # every 10 minutes
   workflow_dispatch:
 
 jobs:
@@ -187,6 +186,7 @@ SLO: 99.5% of monitor runs succeed in any 30-day window.
 ```
 
 Track:
+
 - Monitor runs / month.
 - Successful runs.
 - Calculate availability.
@@ -198,13 +198,13 @@ If you commit to SLAs with customers, synthetic monitors are evidence.
 
 ## 8. Cost vs value
 
-| Approach | Cost (~) | Value |
-|---|---|---|
-| Checkly free tier | $0 | Basic single-region |
-| Checkly paid | $80–$500/mo | Multi-region, dashboards, alerting |
-| Datadog Synthetics | $5 per 10K runs | Tightly integrated with Datadog stack |
-| Self-hosted GitHub Actions | $0–$50/mo | Flexible but you maintain |
-| Selenium Grid + cron | Free | DIY, lots of ops |
+| Approach                   | Cost (~)        | Value                                 |
+| -------------------------- | --------------- | ------------------------------------- |
+| Checkly free tier          | $0              | Basic single-region                   |
+| Checkly paid               | $80–$500/mo     | Multi-region, dashboards, alerting    |
+| Datadog Synthetics         | $5 per 10K runs | Tightly integrated with Datadog stack |
+| Self-hosted GitHub Actions | $0–$50/mo       | Flexible but you maintain             |
+| Selenium Grid + cron       | Free            | DIY, lots of ops                      |
 
 For a 5-monitor setup running every 10 minutes: ~22000 runs/month. Cheap on Datadog, mid-price on Checkly.
 

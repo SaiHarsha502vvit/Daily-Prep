@@ -14,13 +14,13 @@
 
 **Difficulty:** Easy | **Category:** Basic Math
 
-
 > CHECK IF A NUMBER IS PRIME
 >
 > A prime number is a natural number greater than 1 that has no positive
 > divisors other than 1 and itself.
 >
 > Examples:
+>
 > - 2, 3, 5, 7, 11, 13, 17, 19, 23, 29... are prime
 > - 4 (2×2), 6 (2×3), 8, 9, 10... are NOT prime
 >
@@ -33,8 +33,6 @@
 > Optimization: Only check till √n
 > Why? If n = a × b and a ≤ √n, then b ≥ √n
 > So if no divisor exists till √n, none exists after
->
-
 
 ```java
 // SOLUTION - OPTIMAL O(√n)
@@ -86,7 +84,6 @@ public boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // SIEVE OF ERATOSTHENES - O(n log log n)
 public int countPrimes(int n) {
@@ -135,7 +132,6 @@ public int countPrimes(int n) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int nthPrime(int n) {
@@ -193,7 +189,6 @@ private boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int[] previousAndNextPrime(int n) {
     int[] result = new int[2];
@@ -250,7 +245,6 @@ private int findNextPrime(int n) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public List<Integer> primeFactors(int n) {
@@ -330,7 +324,6 @@ public List<Integer> primeFactors(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int[] closestPrimes(int left, int right) {
     // Generate all primes in range using Sieve
@@ -395,7 +388,6 @@ public int[] closestPrimes(int left, int right) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 **LeetCode 509** | 🔗 [https://leetcode.com/problems/fibonacci-number/](https://leetcode.com/problems/fibonacci-number/)
 
 ```java
@@ -457,7 +449,6 @@ private int fibHelper(int n, int[] memo) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 // Method 1: Iterative Sum
 public int sumFibonacci(int n) {
@@ -508,7 +499,6 @@ public int sumFibonacciFormula(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public boolean isFibonacci(int n) {
     return isPerfectSquare(5 * n * n + 4) ||
@@ -558,7 +548,6 @@ public boolean isFibonacciIterative(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int tribonacci(int n) {
     if (n == 0) return 0;
@@ -607,7 +596,6 @@ public int tribonacci(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int climbStairs(int n) {
     if (n <= 2) return n;
@@ -646,7 +634,6 @@ public int climbStairs(int n) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int sumOfDigits(int n) {
@@ -692,7 +679,6 @@ public int sumOfDigitsRecursive(int n) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // O(1) solution using formula
@@ -741,7 +727,6 @@ public int addDigitsIterative(int num) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 public int reverse(int x) {
@@ -793,7 +778,6 @@ public int reverse(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public boolean isPalindrome(int x) {
     // Negative or ends with 0 (except 0 itself)
@@ -843,7 +827,6 @@ public boolean isPalindrome(int x) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Floyd's Cycle Detection
@@ -898,7 +881,6 @@ private int sumSquareDigits(int n) {
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 // Euclidean Algorithm - O(log(min(a,b)))
@@ -973,7 +955,6 @@ public int lcm(int a, int b) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```java
 public int findGCD(int[] nums) {
     int min = Integer.MAX_VALUE;
@@ -1000,3 +981,19 @@ private int gcd(int a, int b) {
 ---
 
 > **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
+
+---
+
+### Production Reality
+
+**Math & Number** patterns introduce several production failure modes that learners must internalize:
+
+**Failure mode 1: Integer overflow in arithmetic sequences.** Computing `n * (n + 1) / 2` for triangular sums causes overflow when n > 65535 in 32-bit signed int. For n=100000, `100000 * 100001 = 10000100000` exceeds Integer.MAX_VALUE (2.1 billion), wrapping to negative values in Java. LeetCode 829 (Consecutive Numbers Sum) fails silently with wrong answers. In banking systems calculating compound interest over many periods, overflow causes incorrect principal calculations. Production impact: financial discrepancies, audit failures, regulatory compliance violations.
+
+**Failure mode 2: Division by zero in GCD/Euclidean algorithm.** When implementing `gcd(a, b)` recursively, calling with b=0 causes division by zero at `a % b`. This occurs in production when finding GCD of array minimums that could include 0 (e.g., sensor readings with 0 values). LeetCode 1979 (Find GCD of Array) crashes on input `[0, 0]`. Production impact: application crash, 500 error in API, data pipeline failure if GCD is used in safety-critical denominator calculations.
+
+**Failure mode 3: Modulo with negative numbers.** Java's `%` operator returns negative remainders for negative dividends: `-7 % 3 = -1` (not 2). This breaks hash table implementations using `(key % tableSize)` for negative keys, causing out-of-bounds array access when converting negative index to positive bucket. Production impact: IndexOutOfBoundsException, security vulnerability if negative indices bypass access controls, silent data corruption.
+
+**Debug workflow:** 1. Use `long` for all arithmetic that might exceed int range (Integer.MAX_VALUE is ~2.1B). 2. Check GCD base case: `if (b == 0) return a` before modulus operation. 3. Normalize modulo: `(x % n + n) % n` ensures non-negative result. 4. Test with boundary values: 0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE. 5. Use `assert` statements at known safe boundaries.
+
+**Real-world anchor:** The 1996 Ariane 5 rocket explosion ($370M loss) was caused by a 64-bit floating point to 16-bit integer conversion overflow when horizontal velocity exceeded 32767—the same integer overflow failure mode as `n*(n+1)/2` overflow in production Java code. NASA lost the spacecraft due to inadequate overflow checking in math operations.

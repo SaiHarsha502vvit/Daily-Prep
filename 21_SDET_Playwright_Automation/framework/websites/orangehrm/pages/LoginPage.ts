@@ -26,10 +26,9 @@ export class LoginPage {
     this.page = page;
     this.usernameInput = page.locator(this.locators.usernameInput);
     this.passwordInput = page.locator(this.locators.passwordInput);
-    this.submitButton = page.getByRole(
-      this.locators.submitButton.role,
-      { name: this.locators.submitButton.name }
-    );
+    this.submitButton = page.getByRole(this.locators.submitButton.role, {
+      name: this.locators.submitButton.name,
+    });
     this.errorAlert = page.locator(this.locators.errorAlert);
     this.requiredFieldError = page.locator(this.locators.requiredFieldError);
   }

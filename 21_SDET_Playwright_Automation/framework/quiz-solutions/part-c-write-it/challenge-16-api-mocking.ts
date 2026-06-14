@@ -68,35 +68,32 @@ test('quiz-02-ch16: precise GET mock with hit verification', async ({ page }) =>
   let mockHit = false;
 
   // FIXED: Match exact URL pattern + exact HTTP method.
-  await page.route(
-    '**/api/users?page=1',
-    async (route: Route, request: Request) => {
-      if (request.method() !== 'GET') {
-        // Pass through non-GET requests so they hit the real server.
-        await route.continue();
-        return;
-      }
-
-      mockHit = true;
-
-      const mockBody: MockUsersResponse = {
-        users: [
-          { id: 1, name: 'Alice', email: 'alice@example.com' },
-          { id: 2, name: 'Bob', email: 'bob@example.com' },
-        ],
-        total: 2,
-      };
-
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockBody),
-        headers: {
-          'Cache-Control': 'no-cache',
-        },
-      });
+  await page.route('**/api/users?page=1', async (route: Route, request: Request) => {
+    if (request.method() !== 'GET') {
+      // Pass through non-GET requests so they hit the real server.
+      await route.continue();
+      return;
     }
-  );
+
+    mockHit = true;
+
+    const mockBody: MockUsersResponse = {
+      users: [
+        { id: 1, name: 'Alice', email: 'alice@example.com' },
+        { id: 2, name: 'Bob', email: 'bob@example.com' },
+      ],
+      total: 2,
+    };
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(mockBody),
+      headers: {
+        'Cache-Control': 'no-cache',
+      },
+    });
+  });
 
   // Trigger the request from the page.
   await page.evaluate(async () => {

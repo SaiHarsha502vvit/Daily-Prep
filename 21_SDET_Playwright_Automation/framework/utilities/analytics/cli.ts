@@ -62,9 +62,13 @@ function main(): void {
     const cutoffStr = sinceDate.toISOString();
 
     // Collect all test names seen in window
-    const testNames = [...new Set(store['runs'].filter(
-      (r: { run_timestamp: string }) => r.run_timestamp >= cutoffStr
-    ).map((r: { test_name: string }) => r.test_name))];
+    const testNames = [
+      ...new Set(
+        store['runs']
+          .filter((r: { run_timestamp: string }) => r.run_timestamp >= cutoffStr)
+          .map((r: { test_name: string }) => r.test_name),
+      ),
+    ];
 
     const flakes = testNames
       .map((name) => ({ name, flakeRate: store.queryFlakeRate(name, sinceDays) }))
@@ -120,7 +124,7 @@ function main(): void {
 
     const passed = results.filter((r) => r.status === 'passed').length;
     console.log(
-      `\nInserted ${results.length} test results into ${dbPath} (${passed} passed, ${results.length - passed} failed/skipped) at ${timestamp}\n`
+      `\nInserted ${results.length} test results into ${dbPath} (${passed} passed, ${results.length - passed} failed/skipped) at ${timestamp}\n`,
     );
   } else {
     console.log(`Analytics CLI

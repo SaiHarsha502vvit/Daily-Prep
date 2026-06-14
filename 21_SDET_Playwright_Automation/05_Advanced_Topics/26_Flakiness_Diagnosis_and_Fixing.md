@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 **Cross-links:**
+
 - [`08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — Root cause: rendering timelines
 - [`17_D365_Advanced_Timing_Patterns.md`](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) — D365-specific flakiness
 - [`25_CICD_Integration_GitHub_Azure.md`](./25_CICD_Integration_GitHub_Azure.md) — Retries in CI
@@ -142,33 +143,41 @@ Step 6: Apply the fix
 
 ```typescript
 // ❌ Root cause: asserting immediately after navigation
-await page.click('#processPayment');
-expect(await page.locator('.confirmation-id').textContent()).toMatch(/CONF-\d+/);
+await page.click("#processPayment");
+expect(await page.locator(".confirmation-id").textContent()).toMatch(
+  /CONF-\d+/,
+);
 // Fails when the confirmation renders slowly
 
 // ✅ Fix: assert with expect() which auto-retries until timeout
-await page.click('#processPayment');
-await expect(page.locator('.confirmation-id')).toHaveText(/CONF-\d+/, { timeout: 20_000 });
+await page.click("#processPayment");
+await expect(page.locator(".confirmation-id")).toHaveText(/CONF-\d+/, {
+  timeout: 20_000,
+});
 // expect() retries the assertion for up to 20 seconds — timing safe
 
 // ❌ D365 specific: asserting before spinner hides
-await page.getByRole('menuitem', { name: 'Save & Close' }).click();
-const status = await page.locator('[data-automation-key="statecode"]').textContent();
+await page.getByRole("menuitem", { name: "Save & Close" }).click();
+const status = await page
+  .locator('[data-automation-key="statecode"]')
+  .textContent();
 
 // ✅ Fix: wait for spinner, THEN wait for correct content
-await page.getByRole('menuitem', { name: 'Save & Close' }).click();
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
-await expect(page.locator('[data-automation-key="statecode"]'))
-  .toHaveText('Active', { timeout: 30_000 });
+await page.getByRole("menuitem", { name: "Save & Close" }).click();
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 45_000 });
+await expect(page.locator('[data-automation-key="statecode"]')).toHaveText(
+  "Active",
+  { timeout: 30_000 },
+);
 ```
 
 ### Type 2 Fix — Data Pollution
 
 ```typescript
 // ❌ Root cause: search returns previous test's data
-await masterSearch.searchPanel.searchByCustomerName('AutoTest');
+await masterSearch.searchPanel.searchByCustomerName("AutoTest");
 const count = await masterSearch.resultsGrid.rows.count();
-expect(count).toBe(1);  // Fails if another test left AutoTest-1 in the DB
+expect(count).toBe(1); // Fails if another test left AutoTest-1 in the DB
 
 // ✅ Fix: use UNIQUE, TEST-SPECIFIC identifiers
 const uniqueId = `AutoTest-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -186,20 +195,22 @@ await masterSearch.searchPanel.searchByCitationId(data.citationId!);
 
 ```typescript
 // ❌ Root cause: module-level state
-let createdUserId: string;   // ← shared across tests in module
+let createdUserId: string; // ← shared across tests in module
 
 // ✅ Fix: use test.describe.serial() with a SCOPED object
-test.describe.serial('User lifecycle', () => {
-  const state = { userId: '' };  // scoped to this describe block, same worker
+test.describe.serial("User lifecycle", () => {
+  const state = { userId: "" }; // scoped to this describe block, same worker
 
-  test('Create user', async ({ usersClient, account }) => {
-    const user = await usersClient.create(PayloadsUser.newAgent(StringUtils.randomEmail()));
-    state.userId = user.userId;    // safe: describe.serial runs these in order, same worker
+  test("Create user", async ({ usersClient, account }) => {
+    const user = await usersClient.create(
+      PayloadsUser.newAgent(StringUtils.randomEmail()),
+    );
+    state.userId = user.userId; // safe: describe.serial runs these in order, same worker
   });
 
-  test('Verify user', async ({ usersClient }) => {
+  test("Verify user", async ({ usersClient }) => {
     const user = await usersClient.getById(state.userId);
-    expect(user.role).toBe('AGENT');
+    expect(user.role).toBe("AGENT");
   });
 });
 ```
@@ -208,7 +219,7 @@ test.describe.serial('User lifecycle', () => {
 
 ```typescript
 // ❌ Root cause: hardcoded timeout too short for CI
-await expect(page.locator('.search-results')).toBeVisible({ timeout: 5000 });
+await expect(page.locator(".search-results")).toBeVisible({ timeout: 5000 });
 // Fails in CI because the staging API takes 8-12 seconds
 
 // ✅ Fix: environment-aware timeouts
@@ -216,7 +227,9 @@ const isCI = Boolean(process.env.CI);
 const NETWORK_TIMEOUT = isCI ? 30_000 : 15_000;
 const D365_TIMEOUT = isCI ? 60_000 : 30_000;
 
-await expect(page.locator('.search-results')).toBeVisible({ timeout: NETWORK_TIMEOUT });
+await expect(page.locator(".search-results")).toBeVisible({
+  timeout: NETWORK_TIMEOUT,
+});
 
 // ✅ Or: configure via playwright.config.ts (better)
 // expect: { timeout: isCI ? 30_000 : 15_000 }
@@ -234,8 +247,11 @@ await expect(page.locator('.search-results')).toBeVisible({ timeout: NETWORK_TIM
 // npx playwright test --project=webkit --repeat-each=5
 
 // Fix A: skip on browsers where the feature isn't applicable:
-test('D365 CommandBar drag-drop', async ({ page, browserName }) => {
-  test.skip(browserName !== 'chromium', 'D365 drag-drop only supported on Chrome');
+test("D365 CommandBar drag-drop", async ({ page, browserName }) => {
+  test.skip(
+    browserName !== "chromium",
+    "D365 drag-drop only supported on Chrome",
+  );
   // ...
 });
 
@@ -243,40 +259,44 @@ test('D365 CommandBar drag-drop', async ({ page, browserName }) => {
 // playwright.config.ts:
 projects: [
   {
-    name: 'chromium',
-    use: { ...devices['Desktop Chrome'], actionTimeout: 15_000 },
+    name: "chromium",
+    use: { ...devices["Desktop Chrome"], actionTimeout: 15_000 },
   },
   {
-    name: 'firefox',
-    use: { ...devices['Desktop Firefox'], actionTimeout: 25_000 },  // Firefox renders slower
+    name: "firefox",
+    use: { ...devices["Desktop Firefox"], actionTimeout: 25_000 }, // Firefox renders slower
   },
-]
+];
 
 // Fix C: disable CSS transitions globally for visual tests:
 // In globalSetup or test beforeEach, inject CSS to disable animations:
-await page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; animation: none !important; }' });
+await page.addStyleTag({
+  content:
+    "*, *::before, *::after { transition: none !important; animation: none !important; }",
+});
 // This eliminates timing differences caused by different browser animation speeds
 ```
-
-
 
 ### Type 6 Fix — Locator Ambiguity
 
 ```typescript
 // ❌ Root cause: index shifts
-await page.locator('.order-row').nth(0).click();  // which row? loaded in what order?
+await page.locator(".order-row").nth(0).click(); // which row? loaded in what order?
 
 // ✅ Fix: identify by data attribute, not position
-await page.locator('.order-row').filter({ hasText: data.orderId! }).click();
+await page.locator(".order-row").filter({ hasText: data.orderId! }).click();
 
 // ✅ Or: get the specific row by its unique ID attribute
 await page.locator(`[data-order-id="${data.orderId}"]`).click();
 
 // ❌ Root cause: text match too broad
-await page.getByText('Edit').click();  // matches 5 Edit buttons on the same page
+await page.getByText("Edit").click(); // matches 5 Edit buttons on the same page
 
 // ✅ Fix: scope to the correct container
-await page.locator('.citation-actions-panel').getByRole('menuitem', { name: 'Edit' }).click();
+await page
+  .locator(".citation-actions-panel")
+  .getByRole("menuitem", { name: "Edit" })
+  .click();
 ```
 
 ### Type 7 Fix — Token / Session Expiry
@@ -290,13 +310,15 @@ export default async function globalSetup() {
   const page = await context.newPage();
 
   // Check if saved state is still valid before trusting it
-  const savedStatePath = 'auth-states/admin-state.json';
+  const savedStatePath = "auth-states/admin-state.json";
   const isStateValid = await checkStateValidity(savedStatePath);
 
   if (isStateValid) {
-    console.log('[globalSetup] Auth state is still valid — skipping login');
+    console.log("[globalSetup] Auth state is still valid — skipping login");
   } else {
-    console.log('[globalSetup] Auth state is expired or missing — re-logging in');
+    console.log(
+      "[globalSetup] Auth state is expired or missing — re-logging in",
+    );
     await performLogin(page, context, savedStatePath);
   }
 
@@ -305,22 +327,27 @@ export default async function globalSetup() {
 
 async function checkStateValidity(statePath: string): Promise<boolean> {
   try {
-    const { readFileSync } = await import('fs');
-    const state = JSON.parse(readFileSync(statePath, 'utf-8'));
-    const now = Date.now() / 1000;  // Unix timestamp
+    const { readFileSync } = await import("fs");
+    const state = JSON.parse(readFileSync(statePath, "utf-8"));
+    const now = Date.now() / 1000; // Unix timestamp
 
     // Check if any auth cookie expires soon (within 5 minutes)
     for (const cookie of state.cookies ?? []) {
-      if (cookie.name === 'session_token' || cookie.name === '.AspNet.ApplicationCookie') {
+      if (
+        cookie.name === "session_token" ||
+        cookie.name === ".AspNet.ApplicationCookie"
+      ) {
         if (cookie.expires && cookie.expires < now + 300) {
-          console.log(`[globalSetup] Cookie ${cookie.name} expires in < 5 minutes`);
+          console.log(
+            `[globalSetup] Cookie ${cookie.name} expires in < 5 minutes`,
+          );
           return false;
         }
       }
     }
     return true;
   } catch {
-    return false;  // File missing or corrupt
+    return false; // File missing or corrupt
   }
 }
 ```
@@ -371,28 +398,31 @@ test.beforeEach(async ({ page }) => {
 });
 ```
 
-
-
 ### Type 9 Fix — Third-Party Service
 
 ```typescript
 // ❌ Root cause: fixed wait for async notification
-await page.waitForTimeout(3000);  // "should arrive in 3 seconds"
+await page.waitForTimeout(3000); // "should arrive in 3 seconds"
 const notif = await notificationsClient.getByUser(account.userId);
 // Fails when the notification service is slow and arrives in 5 seconds
 
 // ✅ Fix: polling with expect.poll()
-await expect.poll(
-  async () => {
-    const notifs = await notificationsClient.getByUser(account.userId);
-    return notifs.some(n => n.type === 'CITATION_CREATED' && n.referenceId === data.citationId);
-  },
-  {
-    message: 'CITATION_CREATED notification must arrive',
-    timeout: 30_000,       // total wait: 30 seconds
-    intervals: [1000, 2000, 3000, 5000, 10_000],  // check at 1s, 2s, 3s, 5s, 10s intervals
-  }
-).toBe(true);
+await expect
+  .poll(
+    async () => {
+      const notifs = await notificationsClient.getByUser(account.userId);
+      return notifs.some(
+        (n) =>
+          n.type === "CITATION_CREATED" && n.referenceId === data.citationId,
+      );
+    },
+    {
+      message: "CITATION_CREATED notification must arrive",
+      timeout: 30_000, // total wait: 30 seconds
+      intervals: [1000, 2000, 3000, 5000, 10_000], // check at 1s, 2s, 3s, 5s, 10s intervals
+    },
+  )
+  .toBe(true);
 // If notification arrives in 2s → test passes in 2s
 // If notification arrives in 28s → test still passes
 // If notification hasn't arrived after 30s → clear failure message
@@ -423,17 +453,17 @@ graph TD
 
 ### Quick Reference Matrix
 
-| Evidence from Trace | Flakiness Type | First Fix to Try |
-|---|---|---|
-| Assertion fires BEFORE API response | Type 1 (Timing) | Replace immediate assertion with `expect()` with timeout |
-| Test fails after Test A in same suite | Type 2 (Data pollution) | Use unique IDs; add explicit teardown |
-| Fails in parallel but not serial | Type 3 (Order dependency) | Use `test.describe.serial()` or scoped state |
-| Fails in CI but not locally | Type 4 (Environment) | Increase timeouts; check secrets; check network SLA |
-| Fails in Firefox but not Chromium | Type 5 (Browser/Platform) | Add browser skip; adjust per-browser timeout |
-| Screenshot assertion fails intermittently | Type 8 (Animation) | Disable CSS animations in test setup |
-| Token/cookie expires mid-run | Type 7 (Session) | Add cookie expiry check in globalSetup |
-| Notification/webhook test fails 1-in-5 | Type 9 (Third-party) | Replace `waitForTimeout` with `expect.poll` |
-| Locator selects wrong element | Type 6 (Locator ambiguity) | Use data attributes instead of nth/text selectors |
+| Evidence from Trace                       | Flakiness Type             | First Fix to Try                                         |
+| ----------------------------------------- | -------------------------- | -------------------------------------------------------- |
+| Assertion fires BEFORE API response       | Type 1 (Timing)            | Replace immediate assertion with `expect()` with timeout |
+| Test fails after Test A in same suite     | Type 2 (Data pollution)    | Use unique IDs; add explicit teardown                    |
+| Fails in parallel but not serial          | Type 3 (Order dependency)  | Use `test.describe.serial()` or scoped state             |
+| Fails in CI but not locally               | Type 4 (Environment)       | Increase timeouts; check secrets; check network SLA      |
+| Fails in Firefox but not Chromium         | Type 5 (Browser/Platform)  | Add browser skip; adjust per-browser timeout             |
+| Screenshot assertion fails intermittently | Type 8 (Animation)         | Disable CSS animations in test setup                     |
+| Token/cookie expires mid-run              | Type 7 (Session)           | Add cookie expiry check in globalSetup                   |
+| Notification/webhook test fails 1-in-5    | Type 9 (Third-party)       | Replace `waitForTimeout` with `expect.poll`              |
+| Locator selects wrong element             | Type 6 (Locator ambiguity) | Use data attributes instead of nth/text selectors        |
 
 ---
 
@@ -443,14 +473,14 @@ graph TD
 
 When tests fail, CI pipelines often retry them. But not all retries are equal.
 
-| Strategy | Setup in Playwright | Best For | Risk Level |
-|---|---|---|---|
-| **No Retries** | `retries: 0` | Local dev, catching real bugs immediately. | 🟢 Low (but high frustration in CI) |
-| **Test Retries** | `retries: process.env.CI ? 2 : 0` | CI environments where network blips are common. Automatically re-runs the `test()` block. | 🟡 Medium (masks Type 1-4 flakiness) |
-| **Step Retries** | `await expect.poll(...)` | Waiting for async data without failing the whole test. | 🟢 Low (smart waiting, not blind retries) |
-| **Browser Restart** | Use `worker-scoped` fixtures to rebuild contexts on failure. | Memory leaks, corrupted browser cache state. | 🔴 High (slows down suite significantly) |
+| Strategy            | Setup in Playwright                                          | Best For                                                                                  | Risk Level                                |
+| ------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **No Retries**      | `retries: 0`                                                 | Local dev, catching real bugs immediately.                                                | 🟢 Low (but high frustration in CI)       |
+| **Test Retries**    | `retries: process.env.CI ? 2 : 0`                            | CI environments where network blips are common. Automatically re-runs the `test()` block. | 🟡 Medium (masks Type 1-4 flakiness)      |
+| **Step Retries**    | `await expect.poll(...)`                                     | Waiting for async data without failing the whole test.                                    | 🟢 Low (smart waiting, not blind retries) |
+| **Browser Restart** | Use `worker-scoped` fixtures to rebuild contexts on failure. | Memory leaks, corrupted browser cache state.                                              | 🔴 High (slows down suite significantly)  |
 
-**Rule of Thumb**: Do not use Test Retries (`retries: 2`) as a permanent crutch. If a test *needs* retries to pass, it belongs in quarantine until the root cause is fixed using the decision tree above.
+**Rule of Thumb**: Do not use Test Retries (`retries: 2`) as a permanent crutch. If a test _needs_ retries to pass, it belongs in quarantine until the root cause is fixed using the decision tree above.
 
 ---
 
@@ -484,11 +514,11 @@ npx playwright test mytest.spec.ts --repeat-each=50 --project=chromium
 **Confidence table:**
 
 | Repeat count | Failure rate detectable | Confidence |
-|---|---|---|
-| 10 | ≥30% failure rate | Low |
-| 50 | ≥5% failure rate | Medium |
-| 200 | ≥1% failure rate | High |
-| 1000 | ≥0.2% failure rate | Very High |
+| ------------ | ----------------------- | ---------- |
+| 10           | ≥30% failure rate       | Low        |
+| 50           | ≥5% failure rate        | Medium     |
+| 200          | ≥1% failure rate        | High       |
+| 1000         | ≥0.2% failure rate      | Very High  |
 
 A test that fails 1-in-50 has a 2% failure rate — it will fail roughly once per full regression suite run.
 
@@ -570,6 +600,7 @@ test('Flaky test @quarantine', async () => { ... });
 ```
 
 **Quarantine rules:**
+
 1. Always add the JIRA/GitHub issue number and expected fix date
 2. Review quarantine list weekly — tests cannot stay in quarantine indefinitely
 3. Any test quarantined for 30+ days gets escalated to the team lead
@@ -584,7 +615,7 @@ test('Flaky test @quarantine', async () => { ... });
 // Parses playwright's JSON report and calculates flakiness metrics
 // Run: npx ts-node scripts/flakiness-report.ts
 
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
 interface PlaywrightResult {
   suites: Suite[];
@@ -602,24 +633,28 @@ interface Spec {
 }
 
 interface Test {
-  results: { status: 'passed' | 'failed' | 'skipped'; retry: number }[];
+  results: { status: "passed" | "failed" | "skipped"; retry: number }[];
 }
 
-function analyzeFlakiness(reportPath = 'test-results/report.json') {
-  const report: PlaywrightResult = JSON.parse(readFileSync(reportPath, 'utf-8'));
+function analyzeFlakiness(reportPath = "test-results/report.json") {
+  const report: PlaywrightResult = JSON.parse(
+    readFileSync(reportPath, "utf-8"),
+  );
 
   let totalTests = 0;
-  let flakyTests = 0;  // passed after retry
+  let flakyTests = 0; // passed after retry
   let failedTests = 0;
 
   function processSpec(spec: Spec) {
     for (const test of spec.tests) {
       totalTests++;
-      const retried = test.results.some(r => r.retry > 0);
-      const finalPassed = test.results[test.results.length - 1].status === 'passed';
-      const finalFailed = test.results[test.results.length - 1].status === 'failed';
+      const retried = test.results.some((r) => r.retry > 0);
+      const finalPassed =
+        test.results[test.results.length - 1].status === "passed";
+      const finalFailed =
+        test.results[test.results.length - 1].status === "failed";
 
-      if (retried && finalPassed) flakyTests++;   // passed on retry = flaky
+      if (retried && finalPassed) flakyTests++; // passed on retry = flaky
       if (finalFailed) failedTests++;
     }
   }
@@ -632,7 +667,11 @@ function analyzeFlakiness(reportPath = 'test-results/report.json') {
   console.log(`Flaky (passed on retry): ${flakyTests} (${flakyRate}%)`);
   console.log(`Failed: ${failedTests}`);
   console.log(`\nFlakiness rate: ${flakyRate}%`);
-  console.log(flakyRate > '5' ? '⚠ Above 5% — investigation required' : '✅ Within acceptable range');
+  console.log(
+    flakyRate > "5"
+      ? "⚠ Above 5% — investigation required"
+      : "✅ Within acceptable range",
+  );
 }
 
 analyzeFlakiness();
@@ -640,12 +679,12 @@ analyzeFlakiness();
 
 **Flakiness rate targets:**
 
-| Rate | Meaning |
-|---|---|
-| 0–2% | Healthy — occasional env blips |
-| 2–5% | Watch — find patterns, fix worst offenders |
+| Rate  | Meaning                                                       |
+| ----- | ------------------------------------------------------------- |
+| 0–2%  | Healthy — occasional env blips                                |
+| 2–5%  | Watch — find patterns, fix worst offenders                    |
 | 5–10% | Problem — start quarantine, stop adding new tests until fixed |
-| 10%+ | Crisis — tests have lost developer trust |
+| 10%+  | Crisis — tests have lost developer trust                      |
 
 ---
 
@@ -654,6 +693,7 @@ analyzeFlakiness();
 ### Challenge 1 [MCQ] — Trace Viewer Diagnosis
 
 You open a trace and see:
+
 - At `00:08.100`: `expect(page.locator('.ms-Spinner')).toHaveCount(0)` — PASSES
 - At `00:08.105`: `expect(statusField).toHaveText('DISPUTED')` — FAILS: received `'PENDING'`
 - At `00:09.200`: Network: `PATCH /api/citations/CIT-001` → 200, response: `{status: 'DISPUTED'}`
@@ -663,21 +703,23 @@ Which flakiness type is this and what is the fix?
 A) Type 3 (order dependency) — the PATCH needs to run before the spinner check  
 B) Type 1 (timing) — the spinner hid, but the D365 React UI hasn't re-rendered the field value yet from the API response. Need a second wait targeting the actual field content, not just the spinner.  
 C) Type 4 (environment) — CI machines are slow, increase timeout  
-D) Type 6 (locator ambiguity) — statusField matches the wrong element  
+D) Type 6 (locator ambiguity) — statusField matches the wrong element
 
 <details><summary>Answer</summary>
 
 **B** — Classic D365 two-phase render. The spinner disappearing means the API call fired, but D365's React layer hasn't processed the response yet and re-rendered the field. The PATCH request completes at 09.200 — a full second after the assertion fires at 08.105.
 
 Fix:
+
 ```typescript
 // Wait for spinner (phase 1)
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 45_000 });
 
 // Wait for the FIELD to show the new value (phase 2 — React re-render)
-await expect(statusField).toHaveText('DISPUTED', { timeout: 30_000 });
+await expect(statusField).toHaveText("DISPUTED", { timeout: 30_000 });
 // expect() retries for 30 seconds — will catch the update when it arrives
 ```
+
 </details>
 
 ---
@@ -687,23 +729,23 @@ await expect(statusField).toHaveText('DISPUTED', { timeout: 30_000 });
 ```typescript
 // tests/specs/citations/search.spec.ts
 
-test.describe('Citation search', () => {
+test.describe("Citation search", () => {
   let testCitationId: string;
 
   test.beforeAll(async ({ citationsClient, account }) => {
     const citation = await citationsClient.create(
-      PayloadsCitation.pending({ customerId: account.userId })
+      PayloadsCitation.pending({ customerId: account.userId }),
     );
-    testCitationId = citation.citationId;  // ← module-scoped
+    testCitationId = citation.citationId; // ← module-scoped
   });
 
-  test('Search by ID returns exactly 1 result', async ({ masterSearch }) => {
+  test("Search by ID returns exactly 1 result", async ({ masterSearch }) => {
     await masterSearch.searchPanel.searchByCitationId(testCitationId);
     await masterSearch.resultsGrid.waitForResults();
     expect(await masterSearch.resultsGrid.rows.count()).toBe(1);
   });
 
-  test('First result matches the citation ID', async ({ masterSearch }) => {
+  test("First result matches the citation ID", async ({ masterSearch }) => {
     await masterSearch.searchPanel.searchByCitationId(testCitationId);
     const firstId = await masterSearch.resultsGrid.getFirstRowId();
     expect(firstId).toBe(testCitationId);
@@ -726,6 +768,7 @@ test.describe('Citation search', () => {
 If two workers run these tests simultaneously, each creates a citation. But `searchByCitationId` should find exactly 1 — that part is fine. However, `testCitationId` is in JavaScript module memory scoped to the worker. If the describe block somehow runs on two workers (e.g., with `fullyParallel: true`), each worker has its own separate `testCitationId`. The `afterAll` only deletes the worker's own citation. Race conditions on the delete can cause 404s.
 
 Fix: Use `test.describe.serial()` for ordered lifecycle tests, and ensure `beforeAll` only uses worker-scoped fixtures.
+
 </details>
 
 ---
@@ -748,12 +791,16 @@ Your team has these 4 failing tests. Classify each by flakiness type and name th
 3. **Type 4 (Environment) or Type 5 (Browser/Platform)** — Linux runs Chromium headless, Windows runs Chromium headed. Headless has no GPU compositor, slightly different rendering. Could also be network SLA difference. Fix: run `--repeat-each=20` on Linux. If it's timing, increase timeouts. If it's rendering, disable CSS animations.
 
 4. **Type 1 (Timing)** — the spinner occasionally takes longer than the default timeout. Fix:
+
 ```typescript
 // Don't check for count(0) directly — retry until it's gone:
-await expect(page.locator('#spinner')).toHaveCount(0, { timeout: 30_000 });
+await expect(page.locator("#spinner")).toHaveCount(0, { timeout: 30_000 });
 // Or wait for what comes AFTER the spinner (the content):
-await expect(page.locator('.result-row').first()).toBeVisible({ timeout: 30_000 });
+await expect(page.locator(".result-row").first()).toBeVisible({
+  timeout: 30_000,
+});
 ```
+
 </details>
 
 ---
@@ -778,6 +825,7 @@ You have 3 tests in quarantine. Your manager asks: "Why are these tests quaranti
 </details>
 
 ---
+
 **Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 ### Challenge 5 [MCQ] — Statistical Confidence in Flakiness Testing
@@ -798,10 +846,12 @@ The math: P(10 consecutive passes | 5% failure rate) = 0.95^10 ≈ 0.599 = 59.9%
 You have a nearly 40% chance of seeing 10 passes in a row even if the bug is completely unmodified. You have simply observed a statistically likely sequence.
 
 To achieve 95% confidence that the failure rate is below 5%:
+
 - You need approximately 59 consecutive passes (0.95^59 ≈ 0.05)
 - To achieve 99% confidence: approximately 90 consecutive passes (0.95^90 ≈ 0.01)
 
 Practical guidance using the chapter's table:
+
 - 10 passes: only detects failure rates of 30%+ with reasonable confidence — use for quick triage only
 - 50 passes: detects 5%+ failure rates — use before calling a fix "done"
 - 200 passes: detects 1%+ failure rates — required before removing quarantine from high-value tests
@@ -811,4 +861,5 @@ The correct protocol: after applying a fix, run `--repeat-each=200`. If 0 failur
 </details>
 
 ---
+
 **Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)

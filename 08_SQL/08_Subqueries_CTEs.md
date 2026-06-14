@@ -12,11 +12,11 @@ A subquery is a `SELECT` statement nested inside another SQL statement. It lets 
 
 Both can often solve the same problem, but they differ in important ways:
 
-| Aspect | Subquery | JOIN |
-|--------|----------|------|
-| **Readability** | Better when asking "exists/doesn't exist" questions | Better when combining columns from multiple tables |
-| **Performance** | Correlated subqueries run *once per row* of the outer query — can be very slow on large tables | JOINs are typically optimized better by the query planner |
-| **Use when** | Checking existence, comparing to aggregates, filtering by derived values | Retrieving columns from related tables |
+| Aspect          | Subquery                                                                                       | JOIN                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Readability** | Better when asking "exists/doesn't exist" questions                                            | Better when combining columns from multiple tables        |
+| **Performance** | Correlated subqueries run _once per row_ of the outer query — can be very slow on large tables | JOINs are typically optimized better by the query planner |
+| **Use when**    | Checking existence, comparing to aggregates, filtering by derived values                       | Retrieving columns from related tables                    |
 
 > 💡 **Rule of Thumb:** If you need columns from both tables in your output, use a JOIN. If you only need data from one table but need to check a condition against another, a subquery or EXISTS is often cleaner.
 
@@ -149,7 +149,6 @@ SELECT * FROM <cte_name>;
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -427,3 +426,18 @@ SELECT * FROM category_tree ORDER BY full_path;
 ---
 
 > **Navigation**: [< Previous](07_JOINs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Window_Functions.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Chamberlin SEQUEL** (1974): Included nested subqueries as a core feature of SEQUEL — allowing a SELECT inside WHERE, FROM, and SELECT clauses — directly addressing the need to filter by computed aggregate values.
+- **SQL-92**: Standardized correlated subqueries (subqueries referencing outer query columns), resolving ambiguity in how nested queries with correlated references should be evaluated.
+- **SQL:1999**: Introduced the WITH clause (Common Table Expressions) and WITH RECURSIVE — a landmark addition enabling query modularization and recursive traversal of hierarchies that subqueries alone could not express.
+- **Stonebraker & INGRES** (1976): The INGRES project demonstrated that subquery evaluation could be optimized by decorrelation — rewriting nested queries into joins — a technique modern query optimizers still use to this day.
+- **SQL:1999 (Recursive CTEs)**: Added WITH RECURSIVE enabling traversal of trees and graphs (org charts, bill-of-materials, network topologies) — a capability that previously required proprietary procedural code or multiple self-joins.
+
+**Evolution narrative:**
+Subqueries were present from SEQUEL's beginning but early implementations were limited: some databases only allowed scalar subqueries (single value), and correlated subqueries were often executed naively (re-evaluating the entire subquery for each outer row), making them O(n^2) in performance. SQL:1999's WITH clause was the biggest advance: by naming intermediate result sets, complex queries could be broken into readable steps, and the optimizer gained freedom to materializing intermediate results. The recursive CTE was the crown jewel — before SQL:1999, traversing an org chart required either hardcoded depth limits (self-join once for each level) or procedural cursor loops. WITH RECURSIVE reduced this to a single declarative query that the database engine would execute through iterative fixpoint evaluation. Today, recursive CTEs power everything from hierarchical reporting to graph traversal in production databases.
+
+**Modern practice anchor:**
+Today, every SQL interview expects you to write CTEs (WITH clause) for multi-step queries and recursive CTEs for hierarchy problems — the WITH syntax and recursive evaluation model date directly to SQL:1999, and companies like Snowflake and BigQuery rely on recursive CTEs to flatten deeply nested JSON and traverse hierarchical data in production pipelines.

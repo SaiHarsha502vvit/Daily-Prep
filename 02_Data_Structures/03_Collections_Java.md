@@ -241,22 +241,23 @@ for (int num : list) {
 }
 ```
 
-
-
 🔬 **Section Challenge — ArrayList Methods (Most Used for Arrays/DSA)**
 
 **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+
 <details><summary>Answer</summary>
 
 `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+
 </details>
 
 **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+
 <details><summary>Answer</summary>
 
 None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
-</details>
 
+</details>
 
 ## LinkedList Methods (Queue + Deque operations)
 
@@ -295,9 +296,6 @@ list.removeLast();  // Remove from back
 ```
 
 ---
-
-
-
 
 # 📌 Section 2: Map Interface
 
@@ -383,22 +381,35 @@ for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
 map.forEach((key, value) -> System.out.println(key + " -> " + value));
 ```
 
-
-
 🔬 **Section Challenge — HashMap Methods (CRITICAL for DSA!)**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+
 </details>
 
+**Challenge 3 (Design):** `ConcurrentHashMap` uses lock striping on 16 segments (JDK 7) instead of a single global lock. What's the performance trade-off vs `Hashtable` and vs JDK 8's CAS-based approach?
+
+<details><summary>Answer</summary>
+
+**Single lock (Hashtable)**: One `synchronized` block guards all buckets. Throughput = 1 thread at a time. Simple but bottlenecks under concurrency.
+
+**Lock striping (JDK 7 CHM, 16 segments)**: Each segment locks independently. Up to 16 threads operate in parallel if they touch different segments. `size()` and `clear()` must lock ALL segments → O(16) = O(1) but with high contention cost.
+
+**CAS-based (JDK 8+)**: Fine-grained per-bucket locking replaced by `Unsafe.compareAndSwap`. No lock for read-heavy operations. For write-heavy: still uses synchronized on individual buckets when CAS fails (high contention → fallback). `size()` is estimated, not precise, avoiding full-lock scans.
+
+Trade-off summary: Lock striping → more parallelism, less contention. CAS → lowest overhead for low-contention writes, but complex retry logic. Always benchmark with realistic concurrency levels before choosing.
 
 ## TreeMap Methods (Sorted Order)
 
@@ -431,16 +442,15 @@ treeMap.floorKey(7);      // 5 (largest <= 7)
 
 ---
 
-
-
 🔬 **Section Challenge — TreeMap Methods (Sorted Order)**
 
 **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+
 <details><summary>Answer</summary>
 
 `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-</details>
 
+</details>
 
 # 📌 Section 3: Set Interface
 
@@ -555,9 +565,6 @@ while (!queue.isEmpty()) {
 }
 ```
 
-
-
-
 ## PriorityQueue Methods (Heap)
 
 | Method        | Return Type | Signature          | Description        | Time     |
@@ -657,9 +664,6 @@ while (!stack.isEmpty()) {
 
 ---
 
-
-
-
 # 📝 Section 6: String Builder
 
 ## StringBuilder Methods (For String Manipulation)
@@ -703,16 +707,15 @@ if (sb.length() > 0) {
 
 ---
 
-
-
 🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
 
 **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+
 <details><summary>Answer</summary>
 
 Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-</details>
 
+</details>
 
 # 📊 Section 7: Arrays Utility Class
 
@@ -758,9 +761,6 @@ System.out.println(Arrays.deepToString(matrix));  // [[1, 2], [3, 4]]
 
 ---
 
-
-
-
 # 📌 Section 8: Collections Utility Class
 
 ## Static Methods in java.util.Collections
@@ -793,9 +793,6 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 ---
 
-
-
-
 # 📖 Section 9: Quick Reference Tables
 
 ## When to Use Which Collection?
@@ -823,6 +820,90 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 | Add/Contains     | -         | -          | O(1)    | O(log n) | O(1)    | O(log n) |
 | Get by key       | -         | -          | O(1)    | O(log n) | -       | -        |
 | Sorted order     | No        | No         | No      | Yes      | No      | Yes      |
+
+---
+
+# 🧩 Section 9b: Production Failure Modes
+
+> **Real-World Incidents**: These are the bugs that bring down production systems. Know the mechanism, know the fix.
+
+| Failure Mode                                                      | Mechanism                                                                                                                                                                                                                                                                                                                            | Debugging Step / Fix Pattern                                                                                                                                                                                                |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Vector thread-safety overhead**                                 | `Vector` synchronizes every method with `synchronized` — even reads. In a read-heavy system (e.g., config cache), threads queue up on a single intrinsic lock. Throughput collapses under concurrent reads.                                                                                                                          | Replace `Vector` with `ArrayList` + external `Collections.synchronizedList()` only if needed, or use `CopyOnWriteArrayList` for read-heavy scenarios. Better: eliminate shared state entirely.                              |
+| **Hashtable null-key NPE**                                        | `Hashtable.put(null, value)` throws `NullPointerException` at runtime. `HashMap` permits one null key. If code is migrated from `Hashtable` to `HashMap` and a null-check is removed, a formerly-silent failure becomes a silent success — or vice versa.                                                                            | Add explicit null checks before insertion: `if (key == null) throw new IllegalArgumentException("null key")`. Use `Optional` to signal absent values instead of null.                                                       |
+| **`ConcurrentModificationException` during iteration + mutation** | A thread iterates a collection while another thread modifies it (add/remove). The iterator maintains a `modCount`; if it changes mid-iteration, `ConcurrentModificationException` is thrown. Applies to `ArrayList`, `HashMap`, `HashSet`, etc. `synchronized` blocks or iterators do NOT protect against cross-thread modification. | Use the iterator's own `remove()`: `iterator.remove()`. Or copy before iterating: `for (String s : new ArrayList<>(list))`. For maps: `entrySet` iterator remove is safe. Never use `forEach` with side-effecting mutation. |
+| **ArrayList vs LinkedList wrong choice in production**            | `LinkedList` has O(n) per-element traversal due to pointer chasing and cache misses. Under load, a "fast insert/delete" LinkedList in a hot path (e.g., event queue, sliding window) causes CPU stall spikes. `ArrayList` is cache-friendly — adjacent elements share a cache line, making iteration 5-10x faster in practice.       | Profile before choosing. Default to `ArrayList`. Use `ArrayDeque` for queue/stack. Only use `LinkedList` when pointer-anchored O(1) insert/delete at known positions is genuinely required and the data set is small.       |
+
+### Quick Reference: Thread-Safe vs Unsafe
+
+| Collection             | Thread-Safe?        | Null Keys             | Notes                                                         |
+| ---------------------- | ------------------- | --------------------- | ------------------------------------------------------------- |
+| `ArrayList`            | No                  | Yes                   | Use `Collections.synchronizedList()` for thread-safe wrapping |
+| `LinkedList`           | No                  | Yes                   | Prefer `ArrayDeque` for queue/stack                           |
+| `Vector`               | Yes (full)          | No                    | Deprecated for new code — use `ArrayList` + external sync     |
+| `HashMap`              | No                  | One null key          | Use `ConcurrentHashMap` for concurrent access                 |
+| `Hashtable`            | Yes (full)          | No null keys          | Deprecated — use `ConcurrentHashMap`                          |
+| `ConcurrentHashMap`    | Yes (lock-striped)  | No null keys (JDK 8+) | Preferred concurrent map; `computeIfAbsent` is atomic         |
+| `CopyOnWriteArrayList` | Yes (copy-on-write) | Yes                   | Good for read-heavy, rarely-written data                      |
+
+---
+
+# 📐 Section 9c: Invariant Statements
+
+> **Invariant**: A condition that is always true for a correctly functioning object. Knowing invariants explains WHY operations are O(1) or O(log N) and helps you detect corruption.
+
+### ArrayList Invariant
+
+```
+elementData[0..size-1]  → valid, non-null elements (in insertion order)
+elementData[size..capacity-1]  → null slots (always null after constructor)
+size ≥ 0
+capacity ≥ size + 1
+Resize triggers when: size == elementData.length
+```
+
+**Why O(1) amortized add**: Capacity doubles on resize. N insertions cost 1+2+4+...+N = 2N = O(N). Amortized per insert = O(N)/N = O(1). The null-slot invariant guarantees no bounds-check on append path.
+
+### HashMap Invariant
+
+```
+0.75  ≤  load factor  ≤  1.0          (default: 0.75)
+threshold = capacity × loadFactor
+Resize when: size  >  threshold
+Average chain length: O(1)       (hash function distributes keys uniformly)
+No bucket contains a reference to null unless size == 0
+```
+
+**Why O(1) average get**: Good hash → bucket index = O(1). Hash collision (worst case) → all keys in one bucket → O(n). Load factor 0.75 keeps chains short. The `size > threshold` invariant guarantees the table never grows beyond O(N) entries.
+
+### TreeMap Invariant (Red-Black Tree)
+
+```
+Red-Black properties:
+  1. Every node is either RED or BLACK
+  2. Root is BLACK
+  3. Every leaf (NIL) is BLACK
+  4. Red node: both children are BLACK (no red-red edges)
+  5. For every node: all simple paths to descendant leaves
+     have the same BLACK height
+Height bound: h ≤ 2 × log₂(n+1)
+Therefore: get/put/remove = O(log n) guaranteed
+```
+
+**Why O(log N) guaranteed**: Unlike a plain BST which can degrade to O(N) with sorted input, the RB-tree re-balances on every insertion/deletion, keeping height proportional to log₂(N). This is why `TreeMap.ceilingKey()` and range queries (`subMap`) are always O(log N).
+
+### ConcurrentHashMap Invariant (JDK 7 / lock-striped design)
+
+```
+16 segments by default (concurrencyLevel = 16)
+Each segment behaves like a mini HashMap with its own lock
+Segment[i] owns bucket range: i to i+capacity-1 (mod 16)
+Operations targeting different segments: no contention — parallel
+Operations targeting same segment: serialized by segment lock
+Resize per-segment: independent of other segments
+```
+
+**Why lock striping beats one lock**: Full synchronization (Hashtable) makes all operations sequential → 1 thread at a time. Lock striping allows up to 16 concurrent operations on different segments. Trade-off: operations spanning multiple segments (e.g., `size()`) require acquiring all segment locks (expensive). JDK 8 replaced this with CAS-based approach for finer granularity.
 
 ---
 
@@ -855,24 +936,317 @@ Focus on choosing the RIGHT collection for each problem.
 
 ## Collection Choice Problems
 
-| # | Problem | Platform | Difficulty | Best Collection | Why |
-|---|---------|----------|------------|-----------------|-----|
-| 1 | Two Sum (LC 1) | LeetCode | Easy | HashMap | O(1) lookup by complement |
-| 2 | Group Anagrams (LC 49) | LeetCode | Medium | HashMap<String, List> | Sorted key grouping |
-| 3 | Kth Largest Element (LC 215) | LeetCode | Medium | PriorityQueue | Min heap of size k |
-| 4 | LRU Cache (LC 146) | LeetCode | Medium | LinkedHashMap | Insertion order + removeEldest |
-| 5 | Merge Intervals (LC 56) | LeetCode | Medium | ArrayList + sort | Collections.sort by start |
-| 6 | Sliding Window Max (LC 239) | LeetCode | Hard | ArrayDeque | Monotonic deque |
-| 7 | Top K Frequent Words (LC 692) | LeetCode | Medium | HashMap + TreeMap | Sorted by freq then alpha |
-| 8 | Contains Duplicate III (LC 220) | LeetCode | Hard | TreeSet | floor/ceiling for range check |
-| 9 | My Calendar I (LC 729) | LeetCode | Medium | TreeMap | floorKey/ceilingKey for overlap |
-| 10 | Task Scheduler (LC 621) | LeetCode | Medium | PriorityQueue | Max heap by remaining count |
+| #   | Problem                         | Platform | Difficulty | Best Collection       | Why                             |
+| --- | ------------------------------- | -------- | ---------- | --------------------- | ------------------------------- |
+| 1   | Two Sum (LC 1)                  | LeetCode | Easy       | HashMap               | O(1) lookup by complement       |
+| 2   | Group Anagrams (LC 49)          | LeetCode | Medium     | HashMap<String, List> | Sorted key grouping             |
+| 3   | Kth Largest Element (LC 215)    | LeetCode | Medium     | PriorityQueue         | Min heap of size k              |
+| 4   | LRU Cache (LC 146)              | LeetCode | Medium     | LinkedHashMap         | Insertion order + removeEldest  |
+| 5   | Merge Intervals (LC 56)         | LeetCode | Medium     | ArrayList + sort      | Collections.sort by start       |
+| 6   | Sliding Window Max (LC 239)     | LeetCode | Hard       | ArrayDeque            | Monotonic deque                 |
+| 7   | Top K Frequent Words (LC 692)   | LeetCode | Medium     | HashMap + TreeMap     | Sorted by freq then alpha       |
+| 8   | Contains Duplicate III (LC 220) | LeetCode | Hard       | TreeSet               | floor/ceiling for range check   |
+| 9   | My Calendar I (LC 729)          | LeetCode | Medium     | TreeMap               | floorKey/ceilingKey for overlap |
+| 10  | Task Scheduler (LC 621)         | LeetCode | Medium     | PriorityQueue         | Max heap by remaining count     |
 
 ---
 
 _This reference is your go-to guide during practice!_
 
-
 ---
 
 > **Navigation**: [< Previous](02b_DS_Variants_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
+
+---
+
+# 🎓 University-Level Addendum — Java Collections as Production-Ready Code
+
+> **Purpose:** This addendum elevates the chapter to MIT/KTH/ETH rigor. The body has comprehensive method reference, complexity tables, invariant statements, and production failure modes (Section 9b); this addendum consolidates the canonical production failure modes with formal root-cause analysis, adds a constraint-first collection selection framework, and provides exam-style invariant proofs.
+
+## Production Failure Modes — Canonical Set
+
+These are the most common production failures from misuse of Java Collections. Each is presented with: trigger condition, what breaks, root cause, and defense.
+
+### Failure 1 — ArrayList Default Capacity O(n²) Total Insert
+
+**Trigger:** `new ArrayList<>()` then `add` 10⁶ elements.
+
+**What breaks:** Multiple resizes (17 with default 1.5× growth from capacity 10 to ~1.3M). Each resize copies all existing elements → O(n × log n) total instead of O(n).
+
+**Root cause:** Default capacity is 10. The user assumes ArrayList is "fast enough" without considering the resize cost.
+
+**Defense:** Always pre-size: `new ArrayList<>(expectedSize + 1)`. For `expectedSize = 10⁶`, allocate `1,000,001` capacity to skip all resizes.
+
+**Diagnostic:** Profile with JFR (Java Flight Recorder) and look for `jdk.internal.array.Resize` events.
+
+**Cost in production:** For a hot-path insertion loop, this can mean 30× slowdown. Common in batch processing code.
+
+### Failure 2 — HashMap Default Capacity 16 + Resize Storm
+
+**Trigger:** `new HashMap<>()` then `put` 10⁶ entries.
+
+**What breaks:** Resize at size 12 (16 × 0.75). 17 resizes total. Each resize copies all buckets and rehashes every key.
+
+**Root cause:** Default capacity is 16, but most production maps have 10⁴-10⁶ entries.
+
+**Defense:** Always pre-size: `new HashMap<>(expectedSize / 0.75 + 1)`. For `expectedSize = 10⁶`, allocate `1,333,334` capacity.
+
+**Diagnostic:** JFR `java.util.HashMap` events or `HashMap.size()` checks against `HashMap.table.length()`.
+
+**Cost in production:** Identical to Failure 1 — 30× slowdown on insert-heavy workloads.
+
+### Failure 3 — ConcurrentModificationException Surprise
+
+**Trigger:** Iterating a HashMap/ArrayList while another thread modifies it (or even the same thread via `Iterator.remove()` patterns).
+
+**What breaks:** `ConcurrentModificationException` thrown mid-iteration. Worst case: data corruption without exception (custom impl).
+
+**Root cause:** `modCount` field incremented on structural modification; iterators check `expectedModCount == modCount` and throw on mismatch.
+
+**Defense:** Use `ConcurrentHashMap` for concurrent access. Or collect keys to modify first, then apply changes after iteration. Or use `Iterator.remove()` explicitly (which updates `expectedModCount`).
+
+**Diagnostic:** Look for stack trace with `AbstractList$Itr.next()` or `HashMap$HashIterator.next()` — these are the throw sites.
+
+**Cost in production:** Hard-to-reproduce bugs; common in event-driven systems where callbacks modify the event source.
+
+### Failure 4 — Iterator Invalidation After Resize
+
+**Trigger:** Iterating a HashMap while a `put` triggers a resize.
+
+**What breaks:** Iterator's `expectedModCount` is set correctly, but the iteration now walks the *old* bucket array (which the iterator holds by reference). The new bucket array is invisible to the iterator. Result: iteration misses new entries or returns stale.
+
+**Root cause:** HashMap's iterator holds a reference to the old table; resize creates a new table; iterator still walks the old.
+
+**Defense:** Don't modify during iteration. Use `ConcurrentHashMap` for concurrent updates.
+
+**Cost in production:** Silent data inconsistency — observed values don't match expected.
+
+### Failure 5 — LinkedList Random Access O(n) per Get
+
+**Trigger:** `linkedList.get(i)` in a loop.
+
+**What breaks:** Each `get(i)` walks from head or tail (whichever is closer) → O(n) per call. Loop of n gets → O(n²) total.
+
+**Root cause:** LinkedList has no random access; `get(i)` is implemented as `Node node(int index) { ... }`.
+
+**Defense:** Always use `Iterator` for LinkedList. Or use ArrayList when random access is needed.
+
+**Diagnostic:** Profile with async-profiler; look for `LinkedList.node(int)` in CPU samples.
+
+**Cost in production:** 100-1000× slowdown vs ArrayList for the same workload.
+
+### Failure 6 — Hashtable Null Key NPE
+
+**Trigger:** `Hashtable.put(null, value)` or `ConcurrentHashMap.put(null, value)`.
+
+**What breaks:** `NullPointerException` thrown.
+
+**Root cause:** Hashtable and ConcurrentHashMap explicitly reject null keys/values to avoid ambiguity with `containsKey`. HashMap allows one null key.
+
+**Defense:** Don't use null as a key. Use `Optional<T>` or a sentinel object.
+
+**Cost in production:** Crash on edge-case input (e.g., user-submitted form with missing field).
+
+### Failure 7 — TreeMap Comparator Inconsistency
+
+**Trigger:** `Comparator.compare(a, b)` returns inconsistent results across calls (e.g., uses mutable state).
+
+**What breaks:** TreeMap contracts broken; entries in wrong positions; `get(k)` may not find k.
+
+**Root cause:** Comparator must be a pure function of inputs. Violating this violates the TreeMap contract.
+
+**Defense:** Comparator should use only the inputs and stateless fields. Document this explicitly.
+
+**Cost in production:** Silent data corruption; tree structure may violate ordering invariant.
+
+### Failure 8 — HashMap.equals/hashCode Contract Violation
+
+**Trigger:** Custom key class overrides `equals` but not `hashCode`.
+
+**What breaks:** Two equal keys hash to different buckets → `get(k)` returns null even though `containsKey(k) == true` is impossible (the lookup uses `hashCode` to find the bucket, then `equals` to find the entry).
+
+**Root cause:** Hash contract: `equals(a, b) ⟹ hashCode(a) == hashCode(b)`. Violating this breaks lookup.
+
+**Defense:** Always override both `equals` and `hashCode`. Use `Objects.hash(field1, field2, ...)` for `hashCode`. Use `IDE` to generate.
+
+**Cost in production:** Lost entries; size() reports correct count but `get()` returns null for some keys.
+
+### Failure 9 — IdentityHashMap Surprise
+
+**Trigger:** Using `IdentityHashMap` instead of `HashMap` for a typical map.
+
+**What breaks:** Uses `==` instead of `.equals()`. Two strings `"a"` and `new String("a")` are different keys.
+
+**Root cause:** IdentityHashMap's contract is reference equality.
+
+**Defense:** Use HashMap unless you specifically need reference equality (e.g., object identity tracking).
+
+**Cost in production:** Silent incorrect behavior — equal keys treated as different.
+
+### Failure 10 — EnumMap Performance Surprise
+
+**Trigger:** Using `EnumMap` with a non-enum key.
+
+**What breaks:** `ClassCastException` at runtime. EnumMap is typed for enums only.
+
+**Root cause:** EnumMap uses an array indexed by enum ordinal; non-enum keys can't be cast to enum.
+
+**Defense:** Always declare EnumMap with an enum type: `EnumMap<MyEnum, V> map = new EnumMap<>(MyEnum.class)`.
+
+**Cost in production:** Runtime crash on first use.
+
+### Failure 11 — PriorityQueue Iteration Order
+
+**Trigger:** Iterating a `PriorityQueue` and expecting sorted order.
+
+**What breaks:** Iteration is in heap order (parent before children), NOT sorted order. The heap property only guarantees `peek()` returns the minimum.
+
+**Root cause:** PriorityQueue is a binary heap; iteration is level-order (BFS).
+
+**Defense:** To iterate in sorted order, repeatedly call `poll()` (drains the heap in sorted order). Or copy to a List and sort.
+
+**Cost in production:** Silent incorrect results when user assumes iteration is sorted.
+
+### Failure 12 — Collections.unmodifiableList Not Deep
+
+**Trigger:** `Collections.unmodifiableList(listOfMutableObjects)` then mutating the contained objects.
+
+**What breaks:** Mutation succeeds — `unmodifiableList` only prevents structural changes (add/remove), not element mutations.
+
+**Root cause:** `unmodifiableList` wraps the list; it doesn't deep-copy elements.
+
+**Defense:** Use immutable objects (Java records, Lombok `@Value`) for elements. Or use `List.copyOf(list)` which is shallow but creates a new immutable list.
+
+**Cost in production:** Defensive immutability violated; mutations propagate unexpectedly.
+
+## Constraint-First Collection Selection
+
+The body has decision guidance; this section formalizes it as a decision tree for university-level reasoning.
+
+### Decision Tree
+
+```
+need to store key-value pairs?
+  → NO → List (ArrayList default, LinkedList if frequent insert/delete at known positions)
+  → YES → continue
+
+need ordering (sorted iteration, range queries)?
+  → YES → continue
+  → NO → HashMap (or ConcurrentHashMap for thread-safety)
+
+thread-safe required?
+  → YES → ConcurrentHashMap (lock striping) or ConcurrentSkipListMap (sorted + concurrent)
+  → NO → continue
+
+key is a primitive int?
+  → YES → IntIntMap (fastutil/Trove) — saves 24 bytes per entry vs Integer boxing
+  → NO → HashMap<Integer, V>
+
+frequent iteration + insertion-order preservation?
+  → YES → LinkedHashMap
+  → NO → HashMap
+
+LRU cache needed?
+  → YES → LinkedHashMap (access-order = true) + removeEldestEntry override
+  → NO → HashMap
+
+need min/max at head?
+  → YES → PriorityQueue (binary heap)
+  → NO → List/Map
+```
+
+### Decision Table
+
+| Workload | Best Choice | Why |
+|---|---|---|
+| Default key-value map | HashMap | O(1) avg; memory-efficient |
+| Sorted iteration | TreeMap (Red-Black) | O(log n) ops + sorted |
+| Concurrent map | ConcurrentHashMap | Lock striping; safe publication |
+| Sorted + concurrent | ConcurrentSkipListMap | Lock-free skip list |
+| LRU cache | LinkedHashMap (access-order) | O(1) get + O(1) eviction |
+| Primitive int key | IntIntMap (fastutil) | No boxing; 24 bytes/entry saved |
+| Enum key | EnumMap | O(1) array-backed; 8 bytes for ≤64 enums |
+| Bounded queue | ArrayBlockingQueue | Bounded + thread-safe |
+| Producer-consumer | ConcurrentLinkedQueue | Lock-free; unbounded |
+| Stack/queue (single-threaded) | ArrayDeque | Faster than Stack/LinkedList |
+| Top-K | PriorityQueue | O(n log K) with K-size heap |
+| Symbol table (interpreter) | HashMap<String, Value> | Fast lookup |
+| Graph adjacency list | Map<V, List<E>> | Explicit; allows fine control |
+
+## Exam-Style Invariant Proofs
+
+### Proof — HashMap ModCount Preserves CM-Exception
+
+**Theorem:** If thread A iterates a HashMap and thread B modifies it (adds/removes), thread A's iterator throws ConcurrentModificationException within at most O(1) operations after the modification.
+
+**Proof:**
+- `HashMap.modCount` is incremented on each structural modification (put, remove).
+- `HashMap.HashIterator` stores `expectedModCount = modCount` at creation.
+- `HashMap.HashIterator.next()` checks `if (modCount != expectedModCount) throw new ConcurrentModificationException()`.
+- This check is O(1).
+- The check happens before returning each element.
+
+Therefore, the iterator throws within O(1) ops of the modification. ✓
+
+**Limitation:** This is best-effort detection, not guaranteed. A modification that happens between the check and the `next()` call won't be caught until the next iteration. For strict consistency, use `ConcurrentHashMap`.
+
+### Proof — ArrayList modCount Increments Are Monotonic
+
+**Theorem:** `ArrayList.modCount` is non-decreasing across all operations on a given ArrayList.
+
+**Proof:** By inspection of `ArrayList` source:
+- `add(E)`: increments modCount.
+- `add(int, E)`: increments modCount.
+- `remove(int)`: increments modCount.
+- `remove(Object)`: increments modCount.
+- `removeAll(Collection)`: increments modCount per `BatchUpdateException`.
+- `retainAll`: increments modCount.
+- `clear`: increments modCount.
+- `set(int, E)` and `get(int)`: do NOT increment (not structural).
+- `iterator()` and `listIterator()`: read modCount (no write).
+
+Therefore, modCount is non-decreasing. ✓
+
+This invariant is why `ConcurrentModificationException` works: any modification between iterator creation and use will be detected.
+
+### Proof — TreeMap Comparator Must Be Consistent with Equals
+
+**Theorem:** If `Comparator.compare(a, b) == 0` for `a.equals(b) == false`, then TreeMap contracts are violated.
+
+**Proof by counterexample:**
+- Let `a` and `b` be two objects with `a.equals(b) == false` but `compare(a, b) == 0`.
+- TreeMap.put(a, v1) inserts `a` at some position.
+- TreeMap.put(b, v2) compares `b` to `a`: `compare(b, a) == 0`. TreeMap may consider `b` "equal" to `a` and replace `v1` with `v2`. Or it may add `b` as a new entry.
+- Now TreeMap.containsKey(a) returns true, but `get(a)` returns `v2` (not `v1`).
+- Or TreeMap has two entries with semantically equal keys, breaking uniqueness.
+
+Therefore, the invariant `compare == 0 ⟺ equals == true` is required. Violating it produces non-deterministic behavior. ✓
+
+**Defense:** Document this requirement. Use `Comparator.comparingInt()` which delegates to `Integer.compare` (which is consistent with `Integer.equals`).
+
+## Performance Anti-Patterns Summary
+
+| Anti-Pattern | Why It's Slow | Fix |
+|---|---|---|
+| `new ArrayList<>()` + many adds | O(n log n) total due to resizes | Pre-size: `new ArrayList<>(expectedSize + 1)` |
+| `new HashMap<>()` + many puts | Same — 17 resizes for 10⁶ entries | Pre-size: `new HashMap<>(expectedSize / 0.75 + 1)` |
+| `linkedList.get(i)` in loop | O(n²) — each get is O(n) | Use iterator or ArrayList |
+| `list.contains(o)` on ArrayList | O(n) per call; O(n²) if in loop | Convert to HashSet for O(1) lookup |
+| `hashMap.keySet().contains(k)` | O(1) — but iterating keySet is O(n) | Use `hashMap.containsKey(k)` directly |
+| `priorityQueue.iterator()` + sort | Iterates in heap order, not sorted | Poll repeatedly or sort the result |
+| `arrayList.toArray()` without pre-sizing | Allocates a new array each time | Reuse a single `Object[]` buffer |
+| `stringConcatenationInLoop` | O(n²) — each + creates new String | Use `StringBuilder` with `ensureCapacity` |
+| `subList().clear()` to remove range | Sublist view complicates iteration; better to use `removeRange` | Use direct `removeAll` with a sublist |
+| `Collections.sort(list)` on nearly-sorted list | O(n log n) even when input is nearly sorted | Use insertion sort for small or nearly-sorted input |
+
+## Cross-References
+
+- **`01a_Memory_Foundations.md`** — escape analysis, memory layout, cache behavior.
+- **`01b_Arrays.md`** — ArrayList internals; resize cost analysis.
+- **`01c_LinkedList.md`** — LinkedList internals; iterator invalidation.
+- **`01e_HashTable.md`** — HashMap internals; hash distribution; treeify threshold.
+- **`01f_Trees_Heaps.md`** — TreeMap Red-Black; Comparator contract.
+- **`01g_DS_Internals.md`** — implementation-specific invariants (AL1-AL5, HM1-HM6, TM1-TM4, LL1-LL4).
+- **`02_PROBLEM_SETS.md`** — exam-style collection selection problems.
+- **`05_DS_In_Production.md`** — production failure modes for storage engines and databases.
+- **`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`** — concurrency patterns and backpressure.

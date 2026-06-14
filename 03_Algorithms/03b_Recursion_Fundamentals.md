@@ -7,17 +7,16 @@
 
 **Arrived here from a problem that said "find all..." or involved a tree/graph?**
 
-
-| Recursion type | When you use it | Jump to PS Problems |
-|---|---|---|
-| **Linear recursion** | Factorial, linked list operations | [LinkedList PS](../05_Problem_Solving/15_LinkedList.md) |
-| **Binary recursion** (no overlap) | Tree height, Merge Sort | [Trees PS](../05_Problem_Solving/09_Trees.md) |
-| **Binary recursion** (with overlap) | Fibonacci → **add memo → DP!** | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Backtracking** (Choose-Explore-Unchoose) | Subsets, Permutations, N-Queens | [Backtracking PS](../05_Problem_Solving/12_Backtracking.md) |
-| **DFS** on graph | Islands, connected components | [Graphs PS](../05_Problem_Solving/10_Graphs.md) |
-
+| Recursion type                             | When you use it                   | Jump to PS Problems                                         |
+| ------------------------------------------ | --------------------------------- | ----------------------------------------------------------- |
+| **Linear recursion**                       | Factorial, linked list operations | [LinkedList PS](../05_Problem_Solving/15_LinkedList.md)     |
+| **Binary recursion** (no overlap)          | Tree height, Merge Sort           | [Trees PS](../05_Problem_Solving/09_Trees.md)               |
+| **Binary recursion** (with overlap)        | Fibonacci → **add memo → DP!**    | [DP PS](../05_Problem_Solving/07_DP.md)                     |
+| **Backtracking** (Choose-Explore-Unchoose) | Subsets, Permutations, N-Queens   | [Backtracking PS](../05_Problem_Solving/12_Backtracking.md) |
+| **DFS** on graph                           | Islands, connected components     | [Graphs PS](../05_Problem_Solving/10_Graphs.md)             |
 
 **Signal → Tool mapping:**
+
 ```
 "Find ALL combinations/subsets/paths" → Backtracking (recursion + undo)
 "Repeated sub-problems in recursion?" → Add memoization → DP
@@ -52,6 +51,22 @@
 ║        3. Make the RECURSIVE CALL and trust it solves the sub-problem.       ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
+
+### Historical Evolution
+
+Recursion as a mathematical concept predates computers by decades, grounded in **Stephen Kleene's 1930s work on recursive functions** — the formal study of which problems can be computed by a function calling itself, later forming the theoretical foundation of computability theory alongside Gödel's incompleteness results. The first practical implementation of recursion as a first-class programming construct came with **John McCarthy's LISP in 1958** — the LISt Processing language, which treated recursion as the primary control structure rather than an afterthought, enabling direct expression of problems like list traversal, tree operations, and symbolic computation. Before LISP, most programming (assembly, FORTRAN) relied on explicit loops with GOTO statements; LISP demonstrated that recursion was not only mathematically natural but practically efficient when implemented with a stack. Modern practice (post-2010) reflects this heritage: functional languages (Haskell, Clojure) make recursion the default, while iterative approaches in Java/Python use the same call-stack mechanism that LISP pioneered — understanding recursion's history explains why tree/graph traversals feel "natural" as recursive functions.
+
+---
+
+### Production Reality
+
+**Scalability concern — StackOverflowError at depth ~10,000:** JVM default thread stack is ~1MB. Each recursive frame costs 1-4KB depending on local variable count. For n > ~10,000, recursive factorial, Fibonacci, or tree DFS causes with no useful diagnostic — the stack trace is truncated to the top 50 frames, hiding the recursion depth problem. In production on untrusted input (e.g., competitive programming test cases, malformed data), always set a depth guard () or rewrite recursively using an explicit stack. The annotation (JVM-level tail recursion optimization) is not yet standard — do not rely on it.
+
+**Production failure — exponential blowup without memoization:** Fibonacci recurrence T(n) = T(n-1) + T(n-2) + O(1) is exponential without memoization. Computing fib(45) naïvely takes ~3 seconds in Java; fib(50) takes ~50 seconds. In production, never compute Fibonacci recursively without an memoized version (array or HashMap). The same applies to any tree recursion with repeated subproblems — always check the recursion tree before coding.
+
+**Debug workflow — trace recursion with depth counter:** When recursion produces wrong results, common causes: (1) missing base case (infinite recursion → ), (2) wrong base case (returns wrong value for leaf), (3) not returning the recursive call result (forgets to propagate), (4) shared mutable state across recursive calls causing interference. Add with depth counter to trace execution path.
+
+---
 
 ## Complete Understanding
 
@@ -266,15 +281,18 @@ WHY THIS WORKS:
 🔬 **Section Challenge — The Three Laws of Recursion**
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -299,7 +317,7 @@ public int recursiveFunction(parameters) {
     // 3. COMBINE - Use sub-result to build answer
     return combine(subResult, currentData);
 }
-```
+````
 
 ## Classic Example: Factorial
 
@@ -379,12 +397,14 @@ public int sum(int[] arr, int index) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -416,7 +436,7 @@ public int fibonacci(int n) {
 // fib(3) computed 2 times
 // fib(2) computed 3 times
 // This is why we need MEMOIZATION (see DP guide)
-```
+````
 
 🔬 **Section Challenge — Type 2: Binary/Tree Recursion**
 
@@ -430,12 +450,14 @@ public int fibonacci(int n) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -465,7 +487,7 @@ public int factorialTail(int n, int accumulator) {
 // Trace:
 // factorialTail(5, 1) → factorialTail(4, 5) → factorialTail(3, 20)
 // → factorialTail(2, 60) → factorialTail(1, 120) → returns 120
-```
+````
 
 🔬 **Section Challenge — Type 3: Tail Recursion**
 
@@ -479,12 +501,14 @@ public int factorialTail(int n, int accumulator) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -509,7 +533,7 @@ public boolean isOdd(int n) {
 
 // Trace isEven(4):
 // isEven(4) → isOdd(3) → isEven(2) → isOdd(1) → isEven(0) → true
-```
+````
 
 ---
 
@@ -525,12 +549,14 @@ public boolean isOdd(int n) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -550,7 +576,7 @@ public void printArray(int[] arr, int index) {
     System.out.println(arr[index]);   // Process current
     printArray(arr, index + 1);        // Recurse on rest
 }
-```
+````
 
 ## Pattern 2: Recurse then Process
 
@@ -605,12 +631,14 @@ public int maxElement(int[] arr, int left, int right) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -647,7 +675,7 @@ public void generateSubsets(int[] nums, int index, List<Integer> current,
 //           [1,2]  [1] [2]  []
 //
 // Result: [[1,2], [1], [2], []]
-```
+````
 
 ---
 
@@ -699,12 +727,14 @@ public ListNode reverseList(ListNode head) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -752,7 +782,7 @@ private int checkHeight(TreeNode root) {
 
     return 1 + Math.max(leftHeight, rightHeight);
 }
-```
+````
 
 ---
 
@@ -768,12 +798,14 @@ private int checkHeight(TreeNode root) {
 <details><summary>Answer</summary>
 
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
-```
+
+````
 Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
@@ -796,7 +828,7 @@ public int sum(int n) {
     if (n == 0) return 0;   // BASE CASE!
     return n + sum(n - 1);
 }
-```
+````
 
 ## Mistake 2: Not Making Progress
 
@@ -969,7 +1001,6 @@ To move n disks from A → C:
   Total moves = 2^n - 1 = 2^3 - 1 = 7 moves
 ```
 
-
 ```java
 // Tower of Hanoi — Classic Recursive Solution
 public void towerOfHanoi(int n, char source, char target, char auxiliary) {
@@ -979,10 +1010,10 @@ public void towerOfHanoi(int n, char source, char target, char auxiliary) {
     }
     // Step 1: Move n-1 disks from source to auxiliary (using target as helper)
     towerOfHanoi(n - 1, source, auxiliary, target);
-    
+
     // Step 2: Move the largest disk from source to target
     System.out.println("Move disk " + n + " from " + source + " to " + target);
-    
+
     // Step 3: Move n-1 disks from auxiliary to target (using source as helper)
     towerOfHanoi(n - 1, auxiliary, target, source);
 }
@@ -1014,33 +1045,33 @@ At 1 move/second, that's 585 billion years. The universe is 13.8 billion.
 
 ## Easy
 
-| # | Problem | LC# | Pattern |
-|---|---------|-----|---------|
-| 1 | [Sum of Digits](https://leetcode.com/problems/add-digits/) | 258 | Recursion / Math |
-| 2 | [Power of Two](https://leetcode.com/problems/power-of-two/) | 231 | Recursion / Bit |
-| 3 | [Palindrome Check](https://leetcode.com/problems/valid-palindrome/) | 125 | Recursion / Two Pointers |
-| 4 | [Reverse String](https://leetcode.com/problems/reverse-string/) | 344 | Recursion / Two Pointers |
-| 5 | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | 509 | Recursion → DP |
+| #   | Problem                                                             | LC# | Pattern                  |
+| --- | ------------------------------------------------------------------- | --- | ------------------------ |
+| 1   | [Sum of Digits](https://leetcode.com/problems/add-digits/)          | 258 | Recursion / Math         |
+| 2   | [Power of Two](https://leetcode.com/problems/power-of-two/)         | 231 | Recursion / Bit          |
+| 3   | [Palindrome Check](https://leetcode.com/problems/valid-palindrome/) | 125 | Recursion / Two Pointers |
+| 4   | [Reverse String](https://leetcode.com/problems/reverse-string/)     | 344 | Recursion / Two Pointers |
+| 5   | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | 509 | Recursion → DP           |
 
 ## Medium
 
-| # | Problem | LC# | Pattern |
-|---|---------|-----|---------|
-| 1 | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/) | 22 | Constrained Backtrack |
-| 2 | [Subsets](https://leetcode.com/problems/subsets/) | 78 | Include/Exclude |
-| 3 | [Permutations](https://leetcode.com/problems/permutations/) | 46 | Backtrack + visited |
-| 4 | [Combination Sum](https://leetcode.com/problems/combination-sum/) | 39 | Unbounded Backtrack |
-| 5 | [Letter Combinations of Phone](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 17 | Backtracking |
+| #   | Problem                                                                                              | LC# | Pattern               |
+| --- | ---------------------------------------------------------------------------------------------------- | --- | --------------------- |
+| 1   | [Generate Parentheses](https://leetcode.com/problems/generate-parentheses/)                          | 22  | Constrained Backtrack |
+| 2   | [Subsets](https://leetcode.com/problems/subsets/)                                                    | 78  | Include/Exclude       |
+| 3   | [Permutations](https://leetcode.com/problems/permutations/)                                          | 46  | Backtrack + visited   |
+| 4   | [Combination Sum](https://leetcode.com/problems/combination-sum/)                                    | 39  | Unbounded Backtrack   |
+| 5   | [Letter Combinations of Phone](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | 17  | Backtracking          |
 
 ## Hard
 
-| # | Problem | LC# | Pattern |
-|---|---------|-----|---------|
-| 1 | [N-Queens](https://leetcode.com/problems/n-queens/) | 51 | Constraint Backtrack |
-| 2 | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) | 37 | Constraint Backtrack |
-| 3 | [Word Search](https://leetcode.com/problems/word-search/) | 79 | Grid Backtrack |
-| 4 | [Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/) | 10 | Recursion → DP |
-| 5 | [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/) | 44 | Recursion → DP |
+| #   | Problem                                                                                   | LC# | Pattern              |
+| --- | ----------------------------------------------------------------------------------------- | --- | -------------------- |
+| 1   | [N-Queens](https://leetcode.com/problems/n-queens/)                                       | 51  | Constraint Backtrack |
+| 2   | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/)                             | 37  | Constraint Backtrack |
+| 3   | [Word Search](https://leetcode.com/problems/word-search/)                                 | 79  | Grid Backtrack       |
+| 4   | [Regular Expression Matching](https://leetcode.com/problems/regular-expression-matching/) | 10  | Recursion → DP       |
+| 5   | [Wildcard Matching](https://leetcode.com/problems/wildcard-matching/)                     | 44  | Recursion → DP       |
 
 ---
 

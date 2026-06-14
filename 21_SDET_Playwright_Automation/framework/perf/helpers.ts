@@ -24,7 +24,9 @@ export async function measurePageLoad(page: Page): Promise<PerfMetrics> {
       };
 
       // Get TTFB from navigation timing
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        'navigation',
+      )[0] as PerformanceNavigationTiming;
       if (navigation) {
         metrics.ttfb = navigation.responseStart;
       }
@@ -32,7 +34,9 @@ export async function measurePageLoad(page: Page): Promise<PerfMetrics> {
       // Use PerformanceObserver for FCP
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const fcpEntry = entries.find((e) => e.entryType === 'paint' && e.name === 'first-contentful-paint');
+        const fcpEntry = entries.find(
+          (e) => e.entryType === 'paint' && e.name === 'first-contentful-paint',
+        );
         if (fcpEntry) {
           metrics.fcp = fcpEntry.startTime;
         }

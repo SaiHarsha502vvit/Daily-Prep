@@ -15,12 +15,10 @@ npm install playwright-team-reporter
 In `playwright.config.ts`:
 
 ```typescript
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  reporter: [
-    ['playwright-team-reporter', { outputFolder: 'team-report' }],
-  ],
+  reporter: [["playwright-team-reporter", { outputFolder: "team-report" }]],
 });
 ```
 
@@ -48,7 +46,7 @@ The HTML page shows:
 Add metadata to tests using Playwright's annotation API:
 
 ```typescript
-test('my test', async ({ page }) => {
+test("my test", async ({ page }) => {
   // @owner alice
   // @jira https://jira.example.com/browse/TEST-123
   // ...

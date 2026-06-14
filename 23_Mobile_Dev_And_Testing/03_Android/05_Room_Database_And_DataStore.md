@@ -39,6 +39,7 @@ File/Assets        Binary/text files, JSON           Any       NO           NO (
 ```
 
 **When to use Room**:
+
 - User's data (citations, payments, profile)
 - Cached API responses
 - Offline-capable features
@@ -46,6 +47,7 @@ File/Assets        Binary/text files, JSON           Any       NO           NO (
 - Any data you want to query with SQL
 
 **When to use DataStore (Preferences)**:
+
 - User settings (dark mode, notification preferences)
 - Small configuration values
 - Simple flags (onboarding complete, app version seen)
@@ -606,6 +608,7 @@ class MigrationTest {
 <details><summary>Answer</summary>
 
 **Migration to write**:
+
 ```kotlin
 val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(db: SupportSQLiteDatabase) {
@@ -659,6 +662,7 @@ fun migrate4To5_emptyDatabase_doesNotCrash() {
 ```
 
 **Edge cases to check (QA perspective)**:
+
 1. **Existing user on v4 updates to v5** → migration runs → `attachment_count` = 0 for all old citations ✓
 2. **Fresh install of v5** → migration never runs, fresh DB at v5 ✓
 3. **User skips v4** (v3 → v5 path) → does Room support multi-step migrations? YES — Room chains them: `3→4→5`. Ensure both migrations are registered.
@@ -925,6 +929,7 @@ In-memory cache        YES*                NO                        NO
 ```
 
 **QA tests for this table**:
+
 ```
 Test 1 (Rotation):
   Developer Options: Don't keep activities OFF
@@ -1003,12 +1008,15 @@ init {
 ## 14. Interview Q&A
 
 **Q: "What is Room and why use it instead of raw SQLite?"**
+
 > "Room is Google's persistence library, a high-level abstraction over SQLite. The primary advantage over raw SQLite is compile-time verification of SQL queries — if you write a query referencing a column that doesn't exist, the build fails, not the app at runtime. Room also eliminates the boilerplate of `Cursor` management, reduces the risk of SQL injection (queries use named parameters), and has first-class support for Kotlin coroutines via suspend functions and Flow. The Flow integration is particularly powerful — a DAO query that returns `Flow<List<T>>` automatically re-emits new data whenever the underlying table changes, enabling reactive UIs without any manual refresh calls."
 
 **Q: "What is a Room migration and what happens if you don't provide one?"**
+
 > "A migration is code that transforms the database schema from one version to another when a user updates the app. When you add a column or change a table, you increment the `version` number in `@Database` and provide a `Migration` object with the SQL to alter the schema. If you don't provide one and the version number changes, Room throws an `IllegalStateException` — the app crashes on launch for all users who had the previous version. The worst 'fix' is `fallbackToDestructiveMigration()`, which drops and recreates the database — all user data is lost. Migrations must be tested against production-like data using Room's `MigrationTestHelper` in instrumented tests."
 
 **Q: "What is the difference between SharedPreferences and DataStore?"**
+
 > "SharedPreferences is the legacy API for key-value storage. Its problems: reads can block the main thread (ANR risk), `apply()` writes are fire-and-forget with no error feedback, and it's not safe for concurrent access, leading to occasional data corruption. DataStore is the modern replacement. All operations are either `suspend` functions or `Flow` — never blocking. Writes use `edit { }` which is atomic — either all changes in a transaction commit or none do. DataStore handles concurrent access correctly and flushes writes before the process dies. I use DataStore for all new preference code and migrate SharedPreferences code when I touch those files."
 
 ---

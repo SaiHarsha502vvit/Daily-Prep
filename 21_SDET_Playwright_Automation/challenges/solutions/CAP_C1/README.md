@@ -19,13 +19,13 @@ playwright-flake-detector --reports ./playwright-report
 
 **All options:**
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--reports <dir>` | `./playwright-report` | Directory containing Playwright JSON reports |
-| `--threshold <n>` | `0.3` | Quarantine threshold (0–1) |
-| `--critical <n>` | `0.5` | Critical threshold — exit code 1 if any test exceeds it |
-| `--output-dir <dir>` | `./flake-report` | Where to write report files |
-| `--help` | | Show help |
+| Flag                 | Default               | Description                                             |
+| -------------------- | --------------------- | ------------------------------------------------------- |
+| `--reports <dir>`    | `./playwright-report` | Directory containing Playwright JSON reports            |
+| `--threshold <n>`    | `0.3`                 | Quarantine threshold (0–1)                              |
+| `--critical <n>`     | `0.5`                 | Critical threshold — exit code 1 if any test exceeds it |
+| `--output-dir <dir>` | `./flake-report`      | Where to write report files                             |
+| `--help`             |                       | Show help                                               |
 
 ## Output
 
@@ -45,19 +45,21 @@ pass_rate = passes / total_runs
 flake_score = 1 - |pass_rate - 0.5| * 2
 ```
 
-| Pass Rate | Flake Score | Interpretation |
-|-----------|-------------|----------------|
-| 100% | 0.0 | Perfect — always passes |
-| 0% | 0.0 | Perfect — always fails (but fix it) |
-| 50% | 1.0 | Maximum flakiness — coin flip |
-| 80% | 0.4 | Mostly stable |
-| 20% | 0.4 | Mostly stable (mirror of 80%) |
+| Pass Rate | Flake Score | Interpretation                      |
+| --------- | ----------- | ----------------------------------- |
+| 100%      | 0.0         | Perfect — always passes             |
+| 0%        | 0.0         | Perfect — always fails (but fix it) |
+| 50%       | 1.0         | Maximum flakiness — coin flip       |
+| 80%       | 0.4         | Mostly stable                       |
+| 20%       | 0.4         | Mostly stable (mirror of 80%)       |
 
 A test is flagged **critical** when:
+
 - `flake_score > critical_threshold` **AND**
 - `total_runs >= 5` (enough data to be statistically meaningful)
 
 A test is flagged **quarantine** when:
+
 - `flake_score > quarantine_threshold` **AND**
 - `total_runs >= 5`
 

@@ -44,6 +44,7 @@ framework/
 ```
 
 Each folder answers one question:
+
 - `config/` — How do we read environment?
 - `constants/` — What are the unchanging values?
 - `fixtures/` — How does each test get set up?
@@ -65,7 +66,7 @@ Each folder answers one question:
 ```typescript
 // config/env.loader.ts
 export const envConfig = {
-  orangehrm: { baseUrl: requireEnv('ORANGEHRM_BASE_URL') },
+  orangehrm: { baseUrl: requireEnv("ORANGEHRM_BASE_URL") },
 };
 
 // constants/endpoints.ts
@@ -82,10 +83,11 @@ Tests import from `fixtures/` (the barrel). Never from `@playwright/test` direct
 
 ```typescript
 // tests/orangehrm/login.spec.ts
-import { test, expect } from '../../fixtures/page.fixture';
+import { test, expect } from "../../fixtures/page.fixture";
 ```
 
 This means:
+
 - Custom fixtures are always available.
 - Centralised teardown.
 - New fixtures don't require updating every spec.
@@ -143,12 +145,12 @@ See [`reference/06_api_testing.md §14`](../reference/06_api_testing.md#14-the-5
 
 ## When this structure pays off
 
-| Team size | Structure benefit |
-|---|---|
-| 1 engineer | None — overhead exceeds benefit |
-| 2–3 engineers | Beginning to show — fixtures, factories |
+| Team size      | Structure benefit                                 |
+| -------------- | ------------------------------------------------- |
+| 1 engineer     | None — overhead exceeds benefit                   |
+| 2–3 engineers  | Beginning to show — fixtures, factories           |
 | 4–10 engineers | Massive — refactoring is safe, onboarding is fast |
-| 10+ engineers | Essential — anything less is chaos |
+| 10+ engineers  | Essential — anything less is chaos                |
 
 For solo projects or proofs of concept, dump everything into a flat `tests/` and skip the architecture. Add layers as the team grows.
 
@@ -160,14 +162,14 @@ The cost of premature structure: 200 lines of plumbing for 50 lines of test logi
 
 Symptoms:
 
-| Smell | Diagnosis |
-|---|---|
-| 7 layers to add one endpoint | You've over-layered |
+| Smell                                                | Diagnosis                |
+| ---------------------------------------------------- | ------------------------ |
+| 7 layers to add one endpoint                         | You've over-layered      |
 | Engineers can't write a test without reading 5 files | API surface too obscured |
-| Factories that always have the same default | Defaults > factory |
-| Wrapper that only does `return inner(args)` | Useless layer |
-| Abstract base class for one concrete subclass | Premature abstraction |
-| Generic types with 5+ parameters | Trying too hard |
+| Factories that always have the same default          | Defaults > factory       |
+| Wrapper that only does `return inner(args)`          | Useless layer            |
+| Abstract base class for one concrete subclass        | Premature abstraction    |
+| Generic types with 5+ parameters                     | Trying too hard          |
 
 Cure: delete a layer. If the test still works in 1 hour, the layer wasn't earning its place.
 

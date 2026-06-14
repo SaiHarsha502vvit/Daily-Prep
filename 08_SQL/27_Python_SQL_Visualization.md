@@ -3,6 +3,7 @@
 # Chapter 27 — Python + SQL Visualization
 
 ## 5W-H Framework
+
 - **WHO** needs this? → Data analysts, backend devs building dashboards, anyone explaining data to stakeholders
 - **WHAT** is it? → Creating charts, graphs, and visual reports from SQL query results using Python
 - **WHEN** to use? → Reporting, dashboards, presentations, data exploration, debugging data issues
@@ -15,11 +16,13 @@
 ## Part 1 — matplotlib: The Foundation
 
 ### 1.1 Setup
+
 ```bash
 pip install matplotlib pandas
 ```
 
 ### 1.2 Bar Chart — Revenue by Category
+
 ```python
 import sqlite3
 import pandas as pd
@@ -54,9 +57,10 @@ plt.show()
 ```
 
 ### 1.3 Line Chart — Monthly Trends
+
 ```python
 df = pd.read_sql("""
-    SELECT 
+    SELECT
         strftime('%Y-%m', order_date) as month,
         SUM(amount) as revenue,
         COUNT(*) as orders
@@ -78,7 +82,7 @@ ax1.tick_params(axis='y', labelcolor=color1)
 # Orders line (secondary axis)
 ax2 = ax1.twinx()
 color2 = 'coral'
-ax2.plot(df['month'], df['orders'], color=color2, marker='s', linewidth=2, 
+ax2.plot(df['month'], df['orders'], color=color2, marker='s', linewidth=2,
          linestyle='--', label='Orders')
 ax2.set_ylabel('Number of Orders', color=color2)
 ax2.tick_params(axis='y', labelcolor=color2)
@@ -95,6 +99,7 @@ plt.show()
 ```
 
 ### 1.4 Pie Chart — Distribution
+
 ```python
 df = pd.read_sql("""
     SELECT region, COUNT(*) as count
@@ -118,6 +123,7 @@ plt.show()
 ```
 
 ### 1.5 Histogram — Value Distribution
+
 ```python
 df = pd.read_sql("SELECT amount FROM orders", conn)
 
@@ -143,6 +149,7 @@ plt.show()
 ## Part 2 — seaborn: Statistical Visualization
 
 ### 2.1 Why seaborn?
+
 ```
 matplotlib = low-level, full control, verbose
 seaborn    = high-level, beautiful defaults, statistical focus
@@ -155,6 +162,7 @@ pip install seaborn
 ```
 
 ### 2.2 Heatmap — Correlation Matrix
+
 ```python
 import seaborn as sns
 
@@ -165,7 +173,7 @@ df = pd.read_sql("""
 
 fig, ax = plt.subplots(figsize=(10, 8))
 correlation = df.corr()
-sns.heatmap(correlation, annot=True, cmap='coolwarm', center=0, 
+sns.heatmap(correlation, annot=True, cmap='coolwarm', center=0,
             fmt='.2f', square=True, linewidths=0.5, ax=ax)
 ax.set_title('Feature Correlation Matrix', fontsize=16, fontweight='bold')
 plt.tight_layout()
@@ -173,6 +181,7 @@ plt.show()
 ```
 
 ### 2.3 Box Plot — Salary by Department
+
 ```python
 df = pd.read_sql("""
     SELECT department, salary FROM employees
@@ -188,13 +197,14 @@ plt.show()
 ```
 
 ### 2.4 Count Plot — Status Distribution
+
 ```python
 df = pd.read_sql("""
     SELECT status, priority FROM tickets
 """, conn)
 
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.countplot(data=df, x='status', hue='priority', 
+sns.countplot(data=df, x='status', hue='priority',
               palette='viridis', order=['Open', 'In Progress', 'Resolved', 'Closed'], ax=ax)
 ax.set_title('Ticket Status by Priority', fontsize=16, fontweight='bold')
 ax.legend(title='Priority')
@@ -203,6 +213,7 @@ plt.show()
 ```
 
 ### 2.5 Scatter Plot with Regression — Price vs Sales
+
 ```python
 df = pd.read_sql("""
     SELECT p.price, SUM(od.quantity) as total_sold
@@ -212,7 +223,7 @@ df = pd.read_sql("""
 """, conn)
 
 fig, ax = plt.subplots(figsize=(10, 6))
-sns.regplot(data=df, x='price', y='total_sold', 
+sns.regplot(data=df, x='price', y='total_sold',
             scatter_kws={'alpha': 0.6}, line_kws={'color': 'red'}, ax=ax)
 ax.set_title('Price vs Units Sold (with Regression)', fontsize=16, fontweight='bold')
 ax.set_xlabel('Price ($)')
@@ -226,6 +237,7 @@ plt.show()
 ## Part 3 — plotly: Interactive Visualization
 
 ### 3.1 Why plotly?
+
 ```
 matplotlib/seaborn → Static images (great for reports, papers)
 plotly             → Interactive HTML (hover, zoom, pan, click)
@@ -237,6 +249,7 @@ pip install plotly
 ```
 
 ### 3.2 Interactive Line Chart
+
 ```python
 import plotly.express as px
 
@@ -255,13 +268,14 @@ fig.show()  # Opens interactive chart in browser
 ```
 
 ### 3.3 Interactive Scatter Plot
+
 ```python
 df = pd.read_sql("""
     SELECT name, revenue, employees, industry, founded_year
     FROM companies
 """, conn)
 
-fig = px.scatter(df, x='employees', y='revenue', 
+fig = px.scatter(df, x='employees', y='revenue',
                  color='industry', size='revenue',
                  hover_name='name',
                  title='Company Size vs Revenue',
@@ -270,6 +284,7 @@ fig.show()
 ```
 
 ### 3.4 Sunburst Chart — Hierarchical Data
+
 ```python
 df = pd.read_sql("""
     SELECT region, country, city, SUM(revenue) as revenue
@@ -277,13 +292,14 @@ df = pd.read_sql("""
     GROUP BY region, country, city
 """, conn)
 
-fig = px.sunburst(df, path=['region', 'country', 'city'], 
+fig = px.sunburst(df, path=['region', 'country', 'city'],
                   values='revenue',
                   title='Revenue Breakdown: Region → Country → City')
 fig.show()
 ```
 
 ### 3.5 Funnel Chart — Conversion Pipeline
+
 ```python
 stages = pd.read_sql("""
     SELECT stage, COUNT(*) as count
@@ -305,12 +321,10 @@ fig.show()
 
 ---
 
-
-
-
 ## Part 4 — Dashboard Pattern: Multi-Chart Reports
 
 ### 4.1 matplotlib Subplots Dashboard
+
 ```python
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -355,6 +369,7 @@ conn.close()
 ```
 
 ### 4.2 Automated Report Generation
+
 ```python
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -364,23 +379,23 @@ from datetime import datetime
 def generate_monthly_report(db_path, output_path):
     """Generate multi-page PDF report from database."""
     conn = sqlite3.connect(db_path)
-    
+
     with PdfPages(output_path) as pdf:
         # Page 1: KPI Summary
         fig, axes = plt.subplots(2, 2, figsize=(11, 8.5))
         fig.suptitle(f'Business Report — {datetime.now().strftime("%B %Y")}', fontsize=18)
-        
+
         # ... add charts to each axis ...
-        
+
         pdf.savefig(fig)
         plt.close()
-        
+
         # Page 2: Detailed analysis
         fig, axes = plt.subplots(1, 2, figsize=(11, 8.5))
         # ... more charts ...
         pdf.savefig(fig)
         plt.close()
-    
+
     conn.close()
     print(f"Report saved to {output_path}")
 
@@ -392,6 +407,7 @@ def generate_monthly_report(db_path, output_path):
 ## Part 5 — Real-World Visualization Recipes
 
 ### 5.1 Time-Series Anomaly Detection
+
 ```python
 df = pd.read_sql("""
     SELECT date, daily_revenue FROM revenue_daily
@@ -410,7 +426,7 @@ ax.plot(df['date'], df['daily_revenue'], 'b-', alpha=0.5, label='Daily Revenue')
 ax.plot(df['date'], df['rolling_mean'], 'g-', linewidth=2, label='7-day Moving Avg')
 ax.fill_between(df['date'], df['lower'], df['upper'], alpha=0.2, color='green')
 anomalies = df[df['anomaly']]
-ax.scatter(anomalies['date'], anomalies['daily_revenue'], 
+ax.scatter(anomalies['date'], anomalies['daily_revenue'],
            color='red', s=100, zorder=5, label='Anomalies')
 ax.set_title('Revenue Anomaly Detection')
 ax.legend()
@@ -419,11 +435,12 @@ plt.show()
 ```
 
 ### 5.2 Cohort Retention Heatmap
+
 ```python
 # Query: monthly cohort retention
 df = pd.read_sql("""
     WITH cohorts AS (
-        SELECT user_id, 
+        SELECT user_id,
                MIN(strftime('%Y-%m', order_date)) as cohort_month
         FROM orders GROUP BY user_id
     )
@@ -440,7 +457,7 @@ pivot = df.pivot_table(index='cohort_month', columns='month_number', values='use
 pivot_pct = pivot.div(pivot[0], axis=0) * 100
 
 fig, ax = plt.subplots(figsize=(14, 8))
-sns.heatmap(pivot_pct, annot=True, fmt='.0f', cmap='YlGnBu', 
+sns.heatmap(pivot_pct, annot=True, fmt='.0f', cmap='YlGnBu',
             vmin=0, vmax=100, ax=ax)
 ax.set_title('Monthly Cohort Retention (%)', fontsize=16, fontweight='bold')
 ax.set_xlabel('Months Since First Purchase')
@@ -450,6 +467,7 @@ plt.show()
 ```
 
 ### 5.3 Geographic Visualization
+
 ```python
 import plotly.express as px
 
@@ -486,5 +504,33 @@ What are you trying to show?
 Static report? → matplotlib/seaborn
 Interactive dashboard? → plotly
 Quick exploration? → pandas .plot()
-```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **matplotlib** (2003): 2D plotting library that became Python's visualization foundation, inspired by MATLAB's plotting commands
+- **ggplot2 (Wickham)** (2007): Introduced the grammar of graphics to R, proving that declarative visualization mappings outperform imperative approaches
+- **Tableau** (2003): Pioneered drag-and-drop business intelligence dashboards, bringing visualization to non-technical business users
+- **seaborn** (2012): Built on matplotlib to provide statistical visualization with better defaults and aesthetic coherence
+- **plotly** (2013): Brought interactive, web-native visualizations to Python with the open-source Plotly.js as backend
+
+**Evolution narrative:**
+Python's early visualization landscape was dominated by matplotlib (2003), which prioritized publication-quality static output over interactivity. The ggplot2 grammar-of-graphics paradigm demonstrated that treating visualization as a mapping between aesthetic attributes and data variables was more composable than MATLAB-style imperative plotting. Seaborn and plotly later addressed matplotlib's weaknesses—seaborn for statistical aesthetics, plotly for interactivity—while SQL result visualization emerged as pandas made database outputs natural inputs to visualization pipelines.
+
+**Modern practice anchor:**
+Modern Python/SQL visualization typically uses pandas to extract data, then matplotlib/seaborn for statistical charts or plotly for interactive dashboards that can be embedded in web applications.
+
+### Production Reality
+
+**Failure modes:**
+1. **Loading 100M rows into pandas (memory exhaustion)**: `pd.read_sql("SELECT * FROM events", conn)` on a 100M-row table with 1KB/row = 100GB of RAM. The process is killed by OOM killer (exit code 137). The chart never renders; the job fails silently in cron.
+2. **No sampling leading to misleading charts**: `SELECT amount FROM orders` without `LIMIT` returns 10M rows. The histogram shows every outlier (one-time $500K orders), making the distribution look highly skewed. Executives conclude "most orders are huge" — when 99.9% of orders are under $100.
+3. **Missing datetime parsing**: `df['date'] = df['date']` without `pd.to_datetime()` causes matplotlib to treat dates as strings. The line chart renders alphabetically ("Jan", "Feb", "Mar" sorted as strings: "Apr", "Aug", "Dec") with no time-series continuity. The spike-and-dip pattern looks like a bug but passes code review.
+
+**Debug workflow:**
+1. Before loading, estimate row count: `SELECT COUNT(*) FROM events WHERE date >= '2024-01-01'` — if > 1M rows, add `LIMIT 100000` or use server-side sampling: `SELECT * FROM events TABLESAMPLE SYSTEM (1)` (1% sample).
+2. After fetch, run `df.describe()` before plotting — check if `mean >> median` (extreme skew) and cap outliers with `df['amount'] = df['amount'].clip(upper=df['amount'].quantile(0.99))` before visualization.
+3. Add datetime validation: `df['date'] = pd.to_datetime(df['date'], errors='coerce')` — if any rows become NaT, those rows had unparseable dates (wrong format, timezone strings) that would have rendered incorrectly.
+
+**Modern practice anchor:**
+Production visualization pipelines require server-side aggregation (SQL GROUP BY) before pandas ingest, not loading raw rows — this reduces 100M rows to 365 annual summary rows with correct dtype parsing.```

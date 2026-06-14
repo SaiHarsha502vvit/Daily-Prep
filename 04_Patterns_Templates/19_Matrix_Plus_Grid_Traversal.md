@@ -6,14 +6,55 @@
 
 ### ⚠️ Constraint Lens
 
-| Given Constraints | Do This |
-|-------------------|---------|
-| shortest path unweighted grid | BFS |
-| count islands/components | DFS/BFS/DSU |
-| weighted grid path | Dijkstra |
-| many rectangle sum queries | 2D prefix |
-| rectangle updates | 2D difference / 2D BIT |
-| recursion depth may be huge | iterative stack/queue |
+### Historical Evolution
+
+**Inventor / Originator:** Floyd-Warshall (1962) for all-pairs shortest path. Bellman-Ford (1958) for single-source with negative edges. Dijkstra (1959) for positive weights.
+
+**Predecessor context:** Grid/graph problems required explicit graph construction. Dynamic programming on grids wasn't recognized as a distinct pattern from graph traversal.
+
+**Evolution narrative:** Matrix operations and grid traversal evolved separately but merged when practitioners realized grids are special cases of graphs. Floyd and Warshall independently discovered all-pairs shortest path; Bellman extended Bellman's equations to graphs.
+
+**Modern practice:** Matrix multiplication (Floyd-Warshall uses matrix min-plus multiplication) is the basis of GPU computing. Grid DP appears in LeetCode and competitive programming.
+
+- **Bellman-Ford — 1958**: V-1 relaxation rounds; negative cycle detection
+- **Dijkstra 1959**: Positive-weight shortest path; extended with binary heap for O(E log V)
+- **Floyd-Warshall — 1962**: All-pairs shortest path O(V^3); independently discovered
+- **Modern practice**: GPU computing (matrix multiply), LeetCode grid DP problems
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **BFS/DFS on grid needs visited set to avoid cycles** — Without a visited set, BFS/DFS revisits cells, causing infinite loops on grids with cycles (if graph is explicit). For 4-connected grid traversal, visited set prevents re-exploring cells. Detection: test on grid where path exists; verify each cell is visited exactly once.
+
+- **Off-by-one in 4-direction neighbor iteration (top, bottom, left, right bounds)** — Checking neighbors without bounds validation causes IndexOutOfBoundsException at grid edges. Detection: test on 1x1 grid and first/last row/column cells.
+
+- **Recursion stack overflow on grid >500x500** — Recursive DFS on large grids exhausts JVM stack. A 1000x1000 grid with path can exceed 1MB stack. Detection: test on 1000x1000 grid; use iterative BFS instead.
+
+**Production Selection Heuristic:** Use iterative BFS with ArrayDeque for production grid traversal. Always check bounds before accessing grid cells. Use visited set or in-place marking to avoid revisiting.
+
+---
+
+| Given Constraints                    | Do This                |
+| ------------------------------------ | ---------------------- |
+| shortest path unweighted grid        | BFS                    |
+| count islands/components             | DFS/BFS/DSU            |
+| weighted grid path                   | Dijkstra               |
+| many rectangle sum queries           | 2D prefix              |
+| rectangle updates                    | 2D difference / 2D BIT |
+| recursion depth may be huge          | iterative stack/queue  |
 | grid has obstacles + state like keys | BFS with state bitmask |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
@@ -30,7 +71,7 @@ A 2D matrix with R rows and C columns is really a **graph with R×C nodes** wher
 
 #### Multi-Source BFS — A Key Grid Technique
 
-Instead of running BFS from each source cell separately (O(k × R×C) for k sources), add ALL source cells to the queue at the start. They become "level 0," and BFS naturally computes the minimum distance from *any* source to every cell in a single O(R×C) pass. This is the correct approach for "rotten oranges" and "distance to nearest" problems.
+Instead of running BFS from each source cell separately (O(k × R×C) for k sources), add ALL source cells to the queue at the start. They become "level 0," and BFS naturally computes the minimum distance from _any_ source to every cell in a single O(R×C) pass. This is the correct approach for "rotten oranges" and "distance to nearest" problems.
 
 #### In-Place Visited Marking — Trading Purity for Efficiency
 
@@ -50,12 +91,12 @@ IF the problem has:
 THEN → Matrix + BFS/DFS/Math
 ```
 
-
 ---
 
 ## 📐 CORE TEMPLATES
 
 ### Template 1: DFS Flood Fill (Island Counting)
+
 ```java
 int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
 
@@ -75,6 +116,7 @@ void dfs(char[][] grid, int r, int c) {
 ```
 
 ### Template 2: BFS Shortest Path in Grid
+
 ```java
 int shortestPath(int[][] grid, int[] start, int[] end) {
     Queue<int[]> queue = new LinkedList<>();
@@ -103,6 +145,7 @@ int shortestPath(int[][] grid, int[] start, int[] end) {
 ```
 
 ### Template 3: Spiral Traversal
+
 ```java
 List<Integer> spiralOrder(int[][] matrix) {
     List<Integer> result = new ArrayList<>();
@@ -118,6 +161,7 @@ List<Integer> spiralOrder(int[][] matrix) {
 ```
 
 ### Template 4: Rotate 90° Clockwise
+
 ```java
 // Transpose + Reverse each row
 void rotate(int[][] matrix) {
@@ -165,7 +209,6 @@ Each boundary shrinks inward after processing that side.
 Time: O(R×C) | Space: O(1) extra (output doesn't count)
 ```
 
-
 ---
 
 ## 🔬 FULL WALKTHROUGH 2: BFS Shortest Path in Grid
@@ -205,11 +248,7 @@ KEY: BFS guarantees shortest path in unweighted grids.
 Time: O(R×C) | Space: O(R×C)
 ```
 
-
 ---
-
-
-
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
@@ -239,71 +278,71 @@ COMMON MISTAKES:
    Mark first, then zero in a second pass!
 ```
 
-
 ---
 
 ## 📊 COMPLEXITY SUMMARY
 
-| Problem | Time | Space | Notes |
-|---------|------|-------|-------|
-| Spiral Traversal | O(R×C) | O(1) | 4-boundary technique |
-| Rotate 90° | O(R×C) | O(1) | Transpose + reverse |
-| BFS Shortest Path | O(R×C) | O(R×C) | Queue + visited |
-| DFS Flood Fill | O(R×C) | O(R×C) | Stack/recursion |
-| Set Matrix Zeroes | O(R×C) | O(1) | First row/col as markers |
-| Binary Search in Matrix | O(log(R×C)) | O(1) | Treat as 1D sorted array |
+| Problem                 | Time        | Space  | Notes                    |
+| ----------------------- | ----------- | ------ | ------------------------ |
+| Spiral Traversal        | O(R×C)      | O(1)   | 4-boundary technique     |
+| Rotate 90°              | O(R×C)      | O(1)   | Transpose + reverse      |
+| BFS Shortest Path       | O(R×C)      | O(R×C) | Queue + visited          |
+| DFS Flood Fill          | O(R×C)      | O(R×C) | Stack/recursion          |
+| Set Matrix Zeroes       | O(R×C)      | O(1)   | First row/col as markers |
+| Binary Search in Matrix | O(log(R×C)) | O(1)   | Treat as 1D sorted array |
 
 ---
-
-
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+
 </details>
 
-
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
-| # | Problem | Companies | Key Insight |
-|---|---------|-----------|-------------|
-| 1 | [Maximum Size Rectangle of 1s](https://www.geeksforgeeks.org/maximum-size-rectangle-binary-sub-matrix-1s/) | — | Histogram per row + stack |
-| 2 | [Number of Islands](https://www.geeksforgeeks.org/find-number-of-islands/) | — | DFS/BFS flood fill |
-| 3 | [Surrounded Regions (O/X)](https://www.geeksforgeeks.org/given-matrix-o-x-replace-o-x-surrounded-x/) | — | DFS from borders first |
-| 4 | [Spiral Matrix](https://leetcode.com/problems/spiral-matrix/) | Salesforce | Four-boundary traversal |
-| 5 | [Rotate Image](https://leetcode.com/problems/rotate-image/) | Salesforce | Transpose + reverse |
-| 6 | [Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/) | Microsoft | Use first row/col as markers |
-| 7 | [Word Search](https://leetcode.com/problems/word-search/) | — | DFS backtracking on grid |
+
+| #   | Problem                                                                                                    | Companies  | Key Insight                  |
+| --- | ---------------------------------------------------------------------------------------------------------- | ---------- | ---------------------------- |
+| 1   | [Maximum Size Rectangle of 1s](https://www.geeksforgeeks.org/maximum-size-rectangle-binary-sub-matrix-1s/) | —          | Histogram per row + stack    |
+| 2   | [Number of Islands](https://www.geeksforgeeks.org/find-number-of-islands/)                                 | —          | DFS/BFS flood fill           |
+| 3   | [Surrounded Regions (O/X)](https://www.geeksforgeeks.org/given-matrix-o-x-replace-o-x-surrounded-x/)       | —          | DFS from borders first       |
+| 4   | [Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)                                              | Salesforce | Four-boundary traversal      |
+| 5   | [Rotate Image](https://leetcode.com/problems/rotate-image/)                                                | Salesforce | Transpose + reverse          |
+| 6   | [Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/)                                      | Microsoft  | Use first row/col as markers |
+| 7   | [Word Search](https://leetcode.com/problems/word-search/)                                                  | —          | DFS backtracking on grid     |
 
 ### From Other Sections (Grid-Based)
-| # | Problem | Key Insight |
-|---|---------|-------------|
-| 8 | [Flood Fill](https://leetcode.com/problems/flood-fill/) | BFS/DFS from source |
-| 9 | [Rotten Oranges](https://practice.geeksforgeeks.org/problems/rotten-oranges2536/1) | Multi-source BFS |
-| 10 | [Distance of Nearest 1](https://practice.geeksforgeeks.org/problems/distance-of-nearest-cell-having-1-1587115620/1) | Multi-source BFS |
-| 11 | [Longest Increasing Path](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) | DFS + memoization |
-| 12 | [Game of Life](https://leetcode.com/problems/game-of-life/) | Encode states in bits |
+
+| #   | Problem                                                                                                             | Key Insight           |
+| --- | ------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| 8   | [Flood Fill](https://leetcode.com/problems/flood-fill/)                                                             | BFS/DFS from source   |
+| 9   | [Rotten Oranges](https://practice.geeksforgeeks.org/problems/rotten-oranges2536/1)                                  | Multi-source BFS      |
+| 10  | [Distance of Nearest 1](https://practice.geeksforgeeks.org/problems/distance-of-nearest-cell-having-1-1587115620/1) | Multi-source BFS      |
+| 11  | [Longest Increasing Path](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/)                       | DFS + memoization     |
+| 12  | [Game of Life](https://leetcode.com/problems/game-of-life/)                                                         | Encode states in bits |
 
 ---
 
 ## 🔥 GRID TRICKS
 
-| Trick | Code | When |
-|-------|------|------|
-| Direction array | `int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}}` | All 4/8 neighbors |
-| In-place visited | `grid[r][c] = '#'` | Avoid extra boolean array |
-| Multi-source BFS | Add ALL sources to queue first | "From all 1s simultaneously" |
-| Border DFS first | Process borders, then interior | Surrounded regions |
-| Encode state in-place | `cell = cell + 10 * newState` | Game of Life |
+| Trick                 | Code                                         | When                         |
+| --------------------- | -------------------------------------------- | ---------------------------- |
+| Direction array       | `int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}}` | All 4/8 neighbors            |
+| In-place visited      | `grid[r][c] = '#'`                           | Avoid extra boolean array    |
+| Multi-source BFS      | Add ALL sources to queue first               | "From all 1s simultaneously" |
+| Border DFS first      | Process borders, then interior               | Surrounded regions           |
+| Encode state in-place | `cell = cell + 10 * newState`                | Game of Life                 |
 
 ---
 
 📖 **Related Chapters:**
+
 - [02_Data_Structures/04_2D_Arrays_Matrix.md](../02_Data_Structures/04_2D_Arrays_Matrix.md) — Matrix basics
 
 ---
+
 [← 18 String+Advanced](18_String_Plus_Advanced.md) | [20 BitManip+Tricks →](20_BitManipulation_Plus_Tricks.md)
-
-

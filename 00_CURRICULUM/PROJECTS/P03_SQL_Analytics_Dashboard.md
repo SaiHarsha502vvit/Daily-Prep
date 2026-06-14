@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*You are a data analyst at an e-commerce company. The VP of Sales wants a weekly executive dashboard. Every query must run in under 2 seconds on a table of 5 million orders. Build all 7 reports.*
+_You are a data analyst at an e-commerce company. The VP of Sales wants a weekly executive dashboard. Every query must run in under 2 seconds on a table of 5 million orders. Build all 7 reports._
 
 ---
 
@@ -86,10 +86,10 @@ ORDER BY month;
 
 🔴 **Erklärung:**
 
-| Mistake | Why | Fix |
-|---|---|---|
-| Filtering `CANCELLED` inside HAVING | Aggregates already include cancelled orders | Filter in WHERE before aggregation |
-| `GROUP BY order_date` instead of month | Creates one row per day, not per month | Use `DATE_FORMAT`/`TO_CHAR` to truncate to month |
+| Mistake                                | Why                                         | Fix                                              |
+| -------------------------------------- | ------------------------------------------- | ------------------------------------------------ |
+| Filtering `CANCELLED` inside HAVING    | Aggregates already include cancelled orders | Filter in WHERE before aggregation               |
+| `GROUP BY order_date` instead of month | Creates one row per day, not per month      | Use `DATE_FORMAT`/`TO_CHAR` to truncate to month |
 
 ---
 
@@ -337,14 +337,14 @@ ORDER BY month;
 
 ## 🔴 Common Mistakes (Erklärungen)
 
-| Mistake | MySQL Symptom | Oracle Symptom | Fix |
-|---|---|---|---|
-| `LIMIT n` in subquery | Works in MySQL | ORA-00907: missing right parenthesis | Use `ROWNUM` or `FETCH FIRST` in Oracle |
-| `YEAR(date)` | Works | ORA-00904: invalid identifier | Use `EXTRACT(YEAR FROM date)` in both for portability |
-| Division without `NULLIF` | Returns NULL for zero denominator | Same | Always `/ NULLIF(denominator, 0)` |
-| `DATE_FORMAT()` | Works | ORA-00904 | Use `TO_CHAR(date, 'YYYY-MM')` in Oracle |
-| `IFNULL(a, b)` | Works | ORA-00904 | Use `COALESCE(a, b)` — ANSI standard, works in both |
-| `GROUP_CONCAT()` | Works | ORA-00904 | Use `LISTAGG(col, ',') WITHIN GROUP (ORDER BY col)` in Oracle |
+| Mistake                   | MySQL Symptom                     | Oracle Symptom                       | Fix                                                           |
+| ------------------------- | --------------------------------- | ------------------------------------ | ------------------------------------------------------------- |
+| `LIMIT n` in subquery     | Works in MySQL                    | ORA-00907: missing right parenthesis | Use `ROWNUM` or `FETCH FIRST` in Oracle                       |
+| `YEAR(date)`              | Works                             | ORA-00904: invalid identifier        | Use `EXTRACT(YEAR FROM date)` in both for portability         |
+| Division without `NULLIF` | Returns NULL for zero denominator | Same                                 | Always `/ NULLIF(denominator, 0)`                             |
+| `DATE_FORMAT()`           | Works                             | ORA-00904                            | Use `TO_CHAR(date, 'YYYY-MM')` in Oracle                      |
+| `IFNULL(a, b)`            | Works                             | ORA-00904                            | Use `COALESCE(a, b)` — ANSI standard, works in both           |
+| `GROUP_CONCAT()`          | Works                             | ORA-00904                            | Use `LISTAGG(col, ',') WITHIN GROUP (ORDER BY col)` in Oracle |
 
 ---
 

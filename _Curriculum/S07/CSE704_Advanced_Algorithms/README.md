@@ -17,20 +17,20 @@ An advanced algorithms course covering topics typically reserved for graduate st
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Review of asymptotic analysis, recurrence relations, and master theorem |
-| 2 | Advanced graph algorithms: DFS ordering, Tarjan's SCC, Johnson's algorithm for all-pairs shortest paths |
-| 3 | Maximum flow: Ford-Fulkerson, Edmonds-Karp, Dinic's algorithm, min-cut applications |
-| 4 | Matchings: bipartite matching, Hall's theorem, Hungarian algorithm, non-bipartite matching |
-| 5 | Linear programming: simplex algorithm, duality, zero-sum games |
-| 6 | Integer linear programming: branch and bound, cutting planes, Gomory cuts |
-| 7 | Approximation algorithms: vertex cover (2-approx), set cover (greedy log n), TSP (triangle inequality) |
-| 8 | PTAS and FPTAS: knapsack PTAS, scheduling problems, polynomial-time approximation schemes |
-| 9 | Randomized algorithms: randomized quicksort, Karger-MinCut, probabilistic method, Chernoff bounds |
-| 10 | Probabilistic data structures: Bloom filters, Count-Min sketch, HyperLogLog, Skip lists |
-| 11 | Parameterized complexity: kernelization, fixed-parameter algorithms, treewidth applications |
-| 12 | Capstone: competitive programming problem set + algorithm portfolio documentation |
+| Week | Topic                                                                                                   |
+| ---- | ------------------------------------------------------------------------------------------------------- |
+| 1    | Review of asymptotic analysis, recurrence relations, and master theorem                                 |
+| 2    | Advanced graph algorithms: DFS ordering, Tarjan's SCC, Johnson's algorithm for all-pairs shortest paths |
+| 3    | Maximum flow: Ford-Fulkerson, Edmonds-Karp, Dinic's algorithm, min-cut applications                     |
+| 4    | Matchings: bipartite matching, Hall's theorem, Hungarian algorithm, non-bipartite matching              |
+| 5    | Linear programming: simplex algorithm, duality, zero-sum games                                          |
+| 6    | Integer linear programming: branch and bound, cutting planes, Gomory cuts                               |
+| 7    | Approximation algorithms: vertex cover (2-approx), set cover (greedy log n), TSP (triangle inequality)  |
+| 8    | PTAS and FPTAS: knapsack PTAS, scheduling problems, polynomial-time approximation schemes               |
+| 9    | Randomized algorithms: randomized quicksort, Karger-MinCut, probabilistic method, Chernoff bounds       |
+| 10   | Probabilistic data structures: Bloom filters, Count-Min sketch, HyperLogLog, Skip lists                 |
+| 11   | Parameterized complexity: kernelization, fixed-parameter algorithms, treewidth applications             |
+| 12   | Capstone: competitive programming problem set + algorithm portfolio documentation                       |
 
 ## Linked Existing Content
 

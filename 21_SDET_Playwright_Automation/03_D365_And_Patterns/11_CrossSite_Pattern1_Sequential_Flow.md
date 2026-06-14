@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 10: D365 CRM Testing](./10_Dynamics365_CRM_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 12: New Tab Shared Context](./12_CrossSite_Pattern2_NewTab_SharedContext.md)
 
 **Cross-links:**
+
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — Data Accumulator DTO pattern
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Multi-site fixtures
 - [`22_Advanced_API_Testing/05_Data_From_API_To_Test.md`](../../22_Advanced_API_Testing/05_Data_From_API_To_Test.md) — Typed response interfaces
@@ -131,12 +132,12 @@ tests/
 ### `AdminPortalPage.ts` — Orchestrator with Component Composition
 
 ```typescript
-import { type Page } from '@playwright/test';
-import { UserManagement } from '../components/UserManagement';
+import { type Page } from "@playwright/test";
+import { UserManagement } from "../components/UserManagement";
 
 export class AdminPortalPage {
   readonly page: Page;
-  readonly users: UserManagement;  // composed component
+  readonly users: UserManagement; // composed component
 
   constructor(page: Page) {
     this.page = page;
@@ -146,7 +147,9 @@ export class AdminPortalPage {
   async goto(): Promise<void> {
     await this.page.goto(process.env.ADMIN_CRM_URL!);
     // D365-specific wait — spinner disappears + data loads
-    await this.page.locator('.ms-Spinner').waitFor({ state: 'hidden', timeout: 30000 });
+    await this.page
+      .locator(".ms-Spinner")
+      .waitFor({ state: "hidden", timeout: 30000 });
   }
 }
 ```
@@ -154,13 +157,13 @@ export class AdminPortalPage {
 ### `UserManagement.ts` — Component POM
 
 ```typescript
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 export interface NewUserData {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'AGENT' | 'SUPERVISOR' | 'ADMIN';
+  role: "AGENT" | "SUPERVISOR" | "ADMIN";
 }
 
 export interface CreatedUser {
@@ -184,33 +187,47 @@ export class UserManagement {
   constructor(page: Page) {
     this.page = page;
     // D365 CommandBar: menuitem, NOT button
-    this.newUserButton = page.getByRole('menuitem', { name: 'New User' });
+    this.newUserButton = page.getByRole("menuitem", { name: "New User" });
     // D365 form fields use data-automation-key
-    this.firstNameInput = page.locator('[data-automation-key="firstname.fieldControl-text-box-text"]');
-    this.lastNameInput = page.locator('[data-automation-key="lastname.fieldControl-text-box-text"]');
-    this.emailInput = page.locator('[data-automation-key="emailaddress1.fieldControl-text-box-text"]');
-    this.roleDropdown = page.locator('#roleDropdown-option');
-    this.saveButton = page.getByRole('menuitem', { name: 'Save & Close' });
-    this.confirmationBanner = page.locator('.ms-MessageBar').filter({ hasText: 'Saved' });
+    this.firstNameInput = page.locator(
+      '[data-automation-key="firstname.fieldControl-text-box-text"]',
+    );
+    this.lastNameInput = page.locator(
+      '[data-automation-key="lastname.fieldControl-text-box-text"]',
+    );
+    this.emailInput = page.locator(
+      '[data-automation-key="emailaddress1.fieldControl-text-box-text"]',
+    );
+    this.roleDropdown = page.locator("#roleDropdown-option");
+    this.saveButton = page.getByRole("menuitem", { name: "Save & Close" });
+    this.confirmationBanner = page
+      .locator(".ms-MessageBar")
+      .filter({ hasText: "Saved" });
   }
 
   async createUser(userData: NewUserData): Promise<CreatedUser> {
     await this.newUserButton.click();
-    await this.firstNameInput.waitFor({ state: 'visible', timeout: 20000 });
+    await this.firstNameInput.waitFor({ state: "visible", timeout: 20000 });
 
     await this.firstNameInput.fill(userData.firstName);
     await this.lastNameInput.fill(userData.lastName);
     await this.emailInput.fill(userData.email);
 
     await this.roleDropdown.click();
-    await this.page.getByRole('option', { name: userData.role }).click();
+    await this.page.getByRole("option", { name: userData.role }).click();
 
     await this.saveButton.click();
-    await this.confirmationBanner.waitFor({ state: 'visible', timeout: 30000 });
+    await this.confirmationBanner.waitFor({ state: "visible", timeout: 30000 });
 
-    const userId = await this.page.locator('[data-automation-key="contactid"]').textContent();
-    const tempPassword = await this.page.locator('[data-automation-key="temppassword"]').textContent();
-    const createdAt = await this.page.locator('[data-automation-key="createdon"]').textContent();
+    const userId = await this.page
+      .locator('[data-automation-key="contactid"]')
+      .textContent();
+    const tempPassword = await this.page
+      .locator('[data-automation-key="temppassword"]')
+      .textContent();
+    const createdAt = await this.page
+      .locator('[data-automation-key="createdon"]')
+      .textContent();
 
     return {
       userId: userId!.trim(),
@@ -226,7 +243,7 @@ export class UserManagement {
 ### `CustomerPortalPage.ts` — JSP App POM
 
 ```typescript
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class CustomerPortalPage {
   readonly page: Page;
@@ -240,18 +257,18 @@ export class CustomerPortalPage {
   constructor(page: Page) {
     this.page = page;
     // JSP: standard HTML IDs — much simpler than D365
-    this.emailInput = page.locator('#username');
-    this.passwordInput = page.locator('#password');
-    this.loginButton = page.locator('#loginBtn');
-    this.onboardingBanner = page.locator('.onboarding-welcome-banner');
-    this.displayNameLabel = page.locator('.user-display-name');
-    this.errorMessage = page.locator('.error-message');
+    this.emailInput = page.locator("#username");
+    this.passwordInput = page.locator("#password");
+    this.loginButton = page.locator("#loginBtn");
+    this.onboardingBanner = page.locator(".onboarding-welcome-banner");
+    this.displayNameLabel = page.locator(".user-display-name");
+    this.errorMessage = page.locator(".error-message");
   }
 
   async goto(): Promise<void> {
     await this.page.goto(process.env.CUSTOMER_PORTAL_URL!);
     // JSP: full server render — DOM is complete after domcontentloaded
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState("domcontentloaded");
   }
 
   async loginWith(email: string, password: string): Promise<void> {
@@ -259,7 +276,7 @@ export class CustomerPortalPage {
     await this.passwordInput.fill(password);
     await this.loginButton.click();
     // JSP form submit = full page reload
-    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState("domcontentloaded");
     await expect(this.errorMessage).toHaveCount(0);
   }
 
@@ -269,7 +286,7 @@ export class CustomerPortalPage {
 
   async getDisplayName(): Promise<string> {
     await expect(this.displayNameLabel).toBeVisible();
-    return (await this.displayNameLabel.textContent() ?? '').trim();
+    return ((await this.displayNameLabel.textContent()) ?? "").trim();
   }
 }
 ```
@@ -289,16 +306,16 @@ export class CustomerPortalPage {
 // This file is the ONLY file your tests import from.
 // It wraps the Playwright base `test` and injects everything your tests need.
 
-import { test as base, expect } from '@playwright/test';
-import { UserServiceClient } from '../clients/UserServiceClient';
-import { NotificationsClient } from '../clients/NotificationsClient';
+import { test as base, expect } from "@playwright/test";
+import { UserServiceClient } from "../clients/UserServiceClient";
+import { NotificationsClient } from "../clients/NotificationsClient";
 
 // ── Step 1: Define the shape of your custom fixtures ──────────────────────────
 interface AuthAccount {
-  accessToken: string;   // Bearer token for API calls — read from env or login
-  userId: string;        // The logged-in user's ID
-  email: string;         // The logged-in user's email
-  role: 'ADMIN' | 'AGENT' | 'SUPERVISOR';
+  accessToken: string; // Bearer token for API calls — read from env or login
+  userId: string; // The logged-in user's ID
+  email: string; // The logged-in user's email
+  role: "ADMIN" | "AGENT" | "SUPERVISOR";
 }
 
 interface CustomFixtures {
@@ -312,8 +329,8 @@ interface CustomFixtures {
 
 // ── Step 2: Extend the base test with your fixtures ───────────────────────────
 export const test = base.extend<
-  Omit<CustomFixtures, 'account'>,  // test-scoped
-  Pick<CustomFixtures, 'account'>   // worker-scoped
+  Omit<CustomFixtures, "account">, // test-scoped
+  Pick<CustomFixtures, "account"> // worker-scoped
 >({
   // ── WORKER-SCOPED: runs once per worker, shared by all tests in that worker ──
   // Why worker-scoped? We don't want to log in 200 times for 200 tests.
@@ -322,10 +339,10 @@ export const test = base.extend<
       // In real tests, this comes from a globalSetup storageState or an API login call.
       // For illustration, we read from environment variables set by your CI/CD.
       const account: AuthAccount = {
-        accessToken: process.env.ADMIN_ACCESS_TOKEN!,  // ← comes from env, NOT hardcoded
+        accessToken: process.env.ADMIN_ACCESS_TOKEN!, // ← comes from env, NOT hardcoded
         userId: process.env.ADMIN_USER_ID!,
         email: process.env.ADMIN_EMAIL!,
-        role: 'ADMIN',
+        role: "ADMIN",
       };
 
       // Provide the account to every test in this worker
@@ -333,7 +350,7 @@ export const test = base.extend<
 
       // No teardown needed — we didn't create anything, just read env vars
     },
-    { scope: 'worker' }, // ← This is the key line
+    { scope: "worker" }, // ← This is the key line
   ],
 
   // ── TEST-SCOPED: created fresh before each test, destroyed after ──────────────
@@ -372,52 +389,65 @@ export { expect };
 // tests/specs/cross-website/user-onboarding.spec.ts
 
 // ✅ Import from YOUR fixtures file — NOT from @playwright/test
-import { test, expect } from '../../fixtures';
-import { AdminPortalPage } from '../../websites/admin-crm/pages/AdminPortalPage';
-import { CustomerPortalPage } from '../../websites/customer-portal/pages/CustomerPortalPage';
-import { UserServiceClient } from '../../clients/UserServiceClient';
-import type { CrossSiteOnboardingData } from '../../types/test-data.types';
+import { test, expect } from "../../fixtures";
+import { AdminPortalPage } from "../../websites/admin-crm/pages/AdminPortalPage";
+import { CustomerPortalPage } from "../../websites/customer-portal/pages/CustomerPortalPage";
+import { UserServiceClient } from "../../clients/UserServiceClient";
+import type { CrossSiteOnboardingData } from "../../types/test-data.types";
 
 const newUserTemplate = {
   firstName: `Test-${Date.now()}`,
-  lastName: 'Automation',
+  lastName: "Automation",
   email: `test-${Date.now()}@company-test.com`,
-  role: 'AGENT' as const,
+  role: "AGENT" as const,
 };
 
-test.describe('User Onboarding — Cross-Website E2E @cross-site @regression', () => {
-
-  test('Admin creates user in CRM → User logs into customer portal → API confirms onboarding', async ({
-    page, request, account,
+test.describe("User Onboarding — Cross-Website E2E @cross-site @regression", () => {
+  test("Admin creates user in CRM → User logs into customer portal → API confirms onboarding", async ({
+    page,
+    request,
+    account,
   }) => {
-
     const data: CrossSiteOnboardingData = {
-      userId: null, email: null, tempPassword: null, fullName: null, accountCreatedAt: null,
-      loginSucceeded: false, onboardingBannerVisible: null, portalDisplayName: null,
-      apiUserStatus: null, apiOnboardingStep: null,
+      userId: null,
+      email: null,
+      tempPassword: null,
+      fullName: null,
+      accountCreatedAt: null,
+      loginSucceeded: false,
+      onboardingBannerVisible: null,
+      portalDisplayName: null,
+      apiUserStatus: null,
+      apiOnboardingStep: null,
     };
 
     const adminPortal = new AdminPortalPage(page);
 
     // ── SITE A: ADMIN CRM (D365) ──────────────────────────────────────────
-    await test.step('Navigate to Admin CRM portal', async () => {
+    await test.step("Navigate to Admin CRM portal", async () => {
       await adminPortal.goto();
     });
 
-    await test.step('Create new user account in CRM', async () => {
+    await test.step("Create new user account in CRM", async () => {
       const createdUser = await adminPortal.users.createUser(newUserTemplate);
       data.userId = createdUser.userId;
       data.email = createdUser.email;
       data.tempPassword = createdUser.tempPassword;
       data.fullName = createdUser.fullName;
       data.accountCreatedAt = createdUser.createdAt;
-      expect(data.userId, 'User ID must be returned after creation').not.toBeNull();
-      expect(data.tempPassword, 'Temp password must be returned').not.toBeNull();
+      expect(
+        data.userId,
+        "User ID must be returned after creation",
+      ).not.toBeNull();
+      expect(
+        data.tempPassword,
+        "Temp password must be returned",
+      ).not.toBeNull();
     });
 
-    await test.step('CRM shows user in Active state', async () => {
+    await test.step("CRM shows user in Active state", async () => {
       const statusField = page.locator('[data-automation-key="statecode"]');
-      await expect(statusField).toHaveText('Active', { timeout: 10000 });
+      await expect(statusField).toHaveText("Active", { timeout: 10000 });
     });
 
     // ── SITE B: CUSTOMER PORTAL (JSP) ─────────────────────────────────────
@@ -425,7 +455,7 @@ test.describe('User Onboarding — Cross-Website E2E @cross-site @regression', (
     // still active — if same-domain SSO is configured, authentication carries over.
     const customerPortal = new CustomerPortalPage(page);
 
-    await test.step('Navigate to Customer Portal (JSP app)', async () => {
+    await test.step("Navigate to Customer Portal (JSP app)", async () => {
       await customerPortal.goto();
       // Wait strategy switches: no more D365 spinner, just domcontentloaded
     });
@@ -435,12 +465,12 @@ test.describe('User Onboarding — Cross-Website E2E @cross-site @regression', (
       data.loginSucceeded = true;
     });
 
-    await test.step('Customer portal shows onboarding welcome banner', async () => {
+    await test.step("Customer portal shows onboarding welcome banner", async () => {
       await customerPortal.verifyOnboardingState();
       data.onboardingBannerVisible = true;
     });
 
-    await test.step('Customer portal shows correct display name', async () => {
+    await test.step("Customer portal shows correct display name", async () => {
       data.portalDisplayName = await customerPortal.getDisplayName();
       expect(data.portalDisplayName).toContain(newUserTemplate.firstName);
     });
@@ -451,15 +481,14 @@ test.describe('User Onboarding — Cross-Website E2E @cross-site @regression', (
       const apiUser = await userService.getById(data.userId!);
       data.apiUserStatus = apiUser.status;
       data.apiOnboardingStep = apiUser.onboardingStep;
-      expect(data.apiUserStatus).toBe('onboarding');
+      expect(data.apiUserStatus).toBe("onboarding");
       expect(data.apiOnboardingStep).toBe(1);
     });
 
-    await test.step('Cross-verify: portal name matches CRM full name', async () => {
-      expect(data.portalDisplayName).toContain(data.fullName!.split(' ')[0]);
+    await test.step("Cross-verify: portal name matches CRM full name", async () => {
+      expect(data.portalDisplayName).toContain(data.fullName!.split(" ")[0]);
     });
   });
-
 });
 ```
 
@@ -470,22 +499,22 @@ test.describe('User Onboarding — Cross-Website E2E @cross-site @regression', (
 ```typescript
 // ─── D365 (React SPA) ─────────────────────────────────────────────────────
 await page.goto(process.env.ADMIN_CRM_URL!);
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30000 });
-await expect(page.locator('.ms-DetailsList-row')).toHaveCount({ minimum: 1 });
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30000 });
+await expect(page.locator(".ms-DetailsList-row")).toHaveCount({ minimum: 1 });
 
 // ─── JSP / Servlet (server-rendered) ──────────────────────────────────────
 await page.goto(process.env.CUSTOMER_PORTAL_URL!);
-await page.waitForLoadState('domcontentloaded'); // DOM is complete here
+await page.waitForLoadState("domcontentloaded"); // DOM is complete here
 
 // ─── ASPX / WebForms (with UpdatePanel) ────────────────────────────────────
 await page.goto(process.env.ASPX_URL!);
-await page.waitForLoadState('load');
+await page.waitForLoadState("load");
 // UpdatePanel partial refresh: wait for its loading indicator to disappear
-await expect(page.locator('#UpdateProgress1')).toBeHidden({ timeout: 20000 });
+await expect(page.locator("#UpdateProgress1")).toBeHidden({ timeout: 20000 });
 
 // ─── After any JSP form submit ─────────────────────────────────────────────
 await Promise.all([
-  page.waitForLoadState('domcontentloaded'),
+  page.waitForLoadState("domcontentloaded"),
   submitButton.click(),
 ]);
 ```
@@ -502,8 +531,14 @@ Explicitly assert that the data accumulator has the necessary data before naviga
 
 ```typescript
 // Inside the test, immediately after collecting the data:
-expect(data.email, 'CRITICAL: User email was not generated in CRM').not.toBeNull();
-expect(data.tempPassword, 'CRITICAL: Temp password was not generated').not.toBeNull();
+expect(
+  data.email,
+  "CRITICAL: User email was not generated in CRM",
+).not.toBeNull();
+expect(
+  data.tempPassword,
+  "CRITICAL: Temp password was not generated",
+).not.toBeNull();
 
 // Now the test fails HERE with a clear message, rather than timing out 30 seconds later on the JSP login page.
 await customerPortal.loginWith(data.email!, data.tempPassword!);
@@ -514,7 +549,7 @@ await customerPortal.loginWith(data.email!, data.tempPassword!);
 Use `expect.soft()` for verifications that shouldn't stop the flow. For example, if checking an analytics pixel fired, don't stop the multi-step business transaction.
 
 ```typescript
-await test.step('Verify analytics pixel', async () => {
+await test.step("Verify analytics pixel", async () => {
   // Use soft so the test continues even if the analytics pixel fails
   expect.soft(data.pixelFired).toBe(true);
 });
@@ -528,14 +563,14 @@ If Step 2 creates a record, and Step 3 fails, you need to clean up the record cr
 // Fixture implementation:
 crossSiteData: async ({ request }, use) => {
   const data: CrossSiteOnboardingData = { userId: null /* ... */ };
-  
+
   await use(data); // Test runs here
-  
+
   // Teardown ALWAYS runs, even if the test fails mid-flow
   if (data.userId) {
     await request.delete(`/api/users/${data.userId}`);
   }
-}
+};
 ```
 
 ## 🏋️ Practice Challenges
@@ -547,13 +582,14 @@ In a cross-website test, `data.userId` is set in Step 3 and needed in Step 9. Wh
 A) Module-level `let` variable — accessible to all test steps  
 B) Typed `data` accumulator object declared inside the test function  
 C) `localStorage` via `page.evaluate()`  
-D) URL query parameter passed to Site B  
+D) URL query parameter passed to Site B
 
 <details><summary>Answer</summary>
 
 **B** — The typed `data` accumulator object inside the test function.
 
 Module-level variables (A) are shared across parallel workers — Worker 2's test can overwrite Worker 1's `userId`. `localStorage` (C) is browser-storage, not available after navigating to a different domain or after context destruction. URL parameters (D) expose IDs in URLs and are fragile. The `data` object is just a JavaScript variable in Node.js memory — it's isolated per test, typed, and survives any page navigation.
+
 </details>
 
 ---
@@ -561,11 +597,11 @@ Module-level variables (A) are shared across parallel workers — Worker 2's tes
 ### Challenge 2 [Spot the Bug]
 
 ```typescript
-test('cross-site test', async ({ page }) => {
+test("cross-site test", async ({ page }) => {
   let userId: string;
   let tempPassword: string;
 
-  await test.step('Create user', async () => {
+  await test.step("Create user", async () => {
     const result = await adminPortal.users.createUser(testData);
     userId = result.userId;
     tempPassword = result.tempPassword;
@@ -573,7 +609,7 @@ test('cross-site test', async ({ page }) => {
 
   await customerPortal.goto();
 
-  await test.step('Login', async () => {
+  await test.step("Login", async () => {
     await customerPortal.loginWith(userId, tempPassword);
     //                               ↑ TypeScript: Variable used before assignment
   });
@@ -585,7 +621,10 @@ test('cross-site test', async ({ page }) => {
 TypeScript flags `userId` and `tempPassword` as potentially unassigned — the compiler cannot statically confirm that the `test.step()` callback ran before the `loginWith()` call. The fix is the Data Accumulator pattern:
 
 ```typescript
-const data = { userId: null as string | null, tempPassword: null as string | null };
+const data = {
+  userId: null as string | null,
+  tempPassword: null as string | null,
+};
 // Inside step:
 data.userId = result.userId;
 data.tempPassword = result.tempPassword;
@@ -593,6 +632,7 @@ data.tempPassword = result.tempPassword;
 await customerPortal.loginWith(data.userId!, data.tempPassword!);
 // The ! asserts non-null — safe because the previous step already asserted not-null
 ```
+
 </details>
 
 ---
@@ -624,6 +664,7 @@ async completeOnboarding(): Promise<{ displayName: string; setupComplete: boolea
   return { displayName, setupComplete };
 }
 ```
+
 </details>
 
 ---
@@ -644,8 +685,10 @@ Site B: https://portal.company.com → different domain ❌ Microsoft cookies NO
 // ── How to detect if auth carried over ─────────────────────────────────────
 // After navigating to Site B, check the browser's cookies and localStorage:
 const allCookies = await page.context().cookies();
-const siteBCookies = allCookies.filter(c => c.domain.includes('portal.company.com'));
-console.log('Site B cookies:', siteBCookies);
+const siteBCookies = allCookies.filter((c) =>
+  c.domain.includes("portal.company.com"),
+);
+console.log("Site B cookies:", siteBCookies);
 
 // If siteBCookies is empty → auth did NOT carry over.
 // You need to authenticate separately for Site B.
@@ -655,16 +698,18 @@ console.log('Site B cookies:', siteBCookies);
 // ── Fix 1: API token hand-off (no UI login for Site B) ─────────────────────
 // If Site B accepts the same Bearer token as Site A:
 
-await test.step('Inject auth token into Site B context', async () => {
+await test.step("Inject auth token into Site B context", async () => {
   // Set the token as a cookie that Site B will accept
-  await page.context().addCookies([{
-    name:   'auth_token',
-    value:  account.accessToken,           // from the account fixture
-    domain: new URL(process.env.CUSTOMER_PORTAL_URL!).hostname,  // portal.company.com
-    path:   '/',
-    secure: true,
-    httpOnly: false,   // false if JavaScript reads it; true if only HTTP headers
-  }]);
+  await page.context().addCookies([
+    {
+      name: "auth_token",
+      value: account.accessToken, // from the account fixture
+      domain: new URL(process.env.CUSTOMER_PORTAL_URL!).hostname, // portal.company.com
+      path: "/",
+      secure: true,
+      httpOnly: false, // false if JavaScript reads it; true if only HTTP headers
+    },
+  ]);
   // Now navigate — Site B reads the cookie and grants access
   await page.goto(process.env.CUSTOMER_PORTAL_URL!);
 });
@@ -676,7 +721,7 @@ await test.step('Inject auth token into Site B context', async () => {
 
 const customerPortal = new CustomerPortalPage(page);
 
-await test.step('Navigate and log in to Customer Portal separately', async () => {
+await test.step("Navigate and log in to Customer Portal separately", async () => {
   await customerPortal.goto();
   // Site B has its own login — use the credentials from the data accumulator:
   await customerPortal.loginWith(data.email!, data.tempPassword!);
@@ -686,7 +731,7 @@ await test.step('Navigate and log in to Customer Portal separately', async () =>
 // ── Fix 3: storageState injection at runtime (when you have a saved auth file)
 await page.context().addInitScript(() => {
   // Inject localStorage items BEFORE the page loads
-  localStorage.setItem('portal_token', 'your-portal-specific-token');
+  localStorage.setItem("portal_token", "your-portal-specific-token");
 });
 await page.goto(process.env.CUSTOMER_PORTAL_URL!);
 ```
@@ -717,30 +762,37 @@ await page.goto(process.env.CUSTOMER_PORTAL_URL!);
 **Root cause**: `crm.dynamics.com` is a Microsoft-owned domain. Azure AD cookies set there are scoped to `.dynamics.com` and will not be sent to `portal.yourcompany.com` (different domain). Playwright does not automatically cross domain boundaries with cookies.
 
 **Option 1 — API token injection (preferred):**
+
 ```typescript
 // Get the Bearer token from the fixture:
-await page.context().addCookies([{
-  name:   'auth_token',
-  value:  account.accessToken,
-  domain: new URL(process.env.CUSTOMER_PORTAL_URL!).hostname,
-  path:   '/',
-  secure: true,
-}]);
+await page.context().addCookies([
+  {
+    name: "auth_token",
+    value: account.accessToken,
+    domain: new URL(process.env.CUSTOMER_PORTAL_URL!).hostname,
+    path: "/",
+    secure: true,
+  },
+]);
 await page.goto(process.env.CUSTOMER_PORTAL_URL!);
 // Portal reads the auth_token cookie and bypasses the login page
 ```
+
 Works if: the customer portal accepts the same Bearer token as D365.
 
 **Option 2 — Separate login flow (robust fallback):**
+
 ```typescript
 const customerPortal = new CustomerPortalPage(page);
 await customerPortal.goto();
 // Use the credentials collected from Site A (data.email, data.tempPassword):
 await customerPortal.loginWith(data.email!, data.tempPassword!);
 ```
+
 Works if: the portal has its own login form and the user's credentials work there.
 
 **Key diagnosis step**: Run `await page.context().cookies()` after navigating to Site B and check which domain the cookies are scoped to. If none match `.yourcompany.com`, you need one of the above fixes.
+
 </details>
 
 ---
@@ -748,11 +800,13 @@ Works if: the portal has its own login form and the user's credentials work ther
 ## 📚 References & Further Reading
 
 ### Official Documentation
+
 - [Playwright `test.step`](https://playwright.dev/docs/api/class-test#test-step) — Official API for organizing long sequential flows into logical, reportable chunks
 - [Soft Assertions](https://playwright.dev/docs/test-assertions#soft-assertions) — Guide on using `expect.soft()` to prevent non-critical failures from terminating the sequence
 - [Playwright Cookies API](https://playwright.dev/docs/api/class-browsercontext#browser-context-add-cookies) — How to manually transfer authentication between domain boundaries
 
 ### Architecture Deep Dives
+
 - [Martin Fowler: Page Object Model](https://martinfowler.com/bliki/PageObject.html) — The definitive theory behind decoupling page structure from test logic (crucial when orchestrating multiple portals)
 
 ---

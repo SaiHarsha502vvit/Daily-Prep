@@ -1,6 +1,7 @@
 ﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
 
 # DAY 022 — Monday, March 24, 2026
+
 ## WEEK 04: Trie + Graph BFS/DFS + SQL Indexes
 
 > **Theme**: Trie data structure + Graph traversal mastery + SQL Performance
@@ -9,14 +10,14 @@
 
 ## 📅 SCHEDULE
 
-| Time Block | Duration | Topic |
-|------------|----------|-------|
-| 0:00–0:30 | 30 min | DS: Trie — Build from Scratch |
-| 0:30–1:00 | 30 min | ALGO: Graph BFS — Level-Order on Graphs |
-| 1:00–1:20 | 20 min | COMBO: LC 208 + LC 200 |
-| 1:20–1:40 | 20 min | REAL-WORLD: Autocomplete = Trie |
-| 1:40–2:20 | 40 min | SQL: Indexes — Why Queries Are Slow |
-| 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
+| Time Block | Duration | Topic                                   |
+| ---------- | -------- | --------------------------------------- |
+| 0:00–0:30  | 30 min   | DS: Trie — Build from Scratch           |
+| 0:30–1:00  | 30 min   | ALGO: Graph BFS — Level-Order on Graphs |
+| 1:00–1:20  | 20 min   | COMBO: LC 208 + LC 200                  |
+| 1:20–1:40  | 20 min   | REAL-WORLD: Autocomplete = Trie         |
+| 1:40–2:20  | 40 min   | SQL: Indexes — Why Queries Are Slow     |
+| 2:20–3:00  | 40 min   | PROBLEMS: Q1 + Q2                       |
 
 ---
 
@@ -28,10 +29,9 @@
 > | **ALGO: Graph BFS** | [Graph Fundamentals](../../03_Algorithms/05c_Graphs_Fundamentals.md) |
 > | **SQL: Indexes & Performance** | [SQL: Indexes & Performance](../../08_SQL/11_Indexes_Performance.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
 
 ## 🧱 DS BLOCK: Trie (Prefix Tree)
 
@@ -47,7 +47,6 @@ Trie approach:   Walk 3 nodes a→p→p → O(L) then collect children
 Trie = Tree where each edge is a CHARACTER
        Path from root = PREFIX
 ```
-
 
 ### WHAT: Trie Structure
 
@@ -80,7 +79,7 @@ class TrieNode {
 
 class Trie {
     TrieNode root = new TrieNode();
-    
+
     // INSERT: O(L) where L = word length
     void insert(String word) {
         TrieNode curr = root;
@@ -93,18 +92,18 @@ class Trie {
         }
         curr.isEnd = true;
     }
-    
+
     // SEARCH: O(L) — exact match
     boolean search(String word) {
         TrieNode node = findNode(word);
         return node != null && node.isEnd;
     }
-    
+
     // STARTS WITH: O(L) — prefix match
     boolean startsWith(String prefix) {
         return findNode(prefix) != null;
     }
-    
+
     private TrieNode findNode(String s) {
         TrieNode curr = root;
         for (char c : s.toCharArray()) {
@@ -128,17 +127,17 @@ class Trie {
 void bfs(List<List<Integer>> graph, int source) {
     boolean[] visited = new boolean[graph.size()];
     Queue<Integer> queue = new LinkedList<>();
-    
+
     visited[source] = true;
     queue.offer(source);
     int level = 0;
-    
+
     while (!queue.isEmpty()) {
         int size = queue.size();  // Process level by level
         for (int i = 0; i < size; i++) {
             int node = queue.poll();
             // Process node at this level
-            
+
             for (int neighbor : graph.get(node)) {
                 if (!visited[neighbor]) {
                     visited[neighbor] = true;
@@ -159,7 +158,7 @@ int numIslands(char[][] grid) {
     int count = 0;
     int rows = grid.length, cols = grid[0].length;
     int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
-    
+
     for (int r = 0; r < rows; r++) {
         for (int c = 0; c < cols; c++) {
             if (grid[r][c] == '1') {
@@ -168,12 +167,12 @@ int numIslands(char[][] grid) {
                 Queue<int[]> q = new LinkedList<>();
                 q.offer(new int[]{r, c});
                 grid[r][c] = '0';  // mark visited
-                
+
                 while (!q.isEmpty()) {
                     int[] cell = q.poll();
                     for (int[] d : dirs) {
                         int nr = cell[0] + d[0], nc = cell[1] + d[1];
-                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols 
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
                             && grid[nr][nc] == '1') {
                             grid[nr][nc] = '0';
                             q.offer(new int[]{nr, nc});
@@ -218,7 +217,6 @@ Level 2:    [A-C][D-G][H-K] [M-Q][R-U][V-Z]
 Finding 'Smith': root → R (go right) → S is in R-U → leaf → found!
 Only 3 levels checked instead of 1M rows
 ```
-
 
 ### HOW: Create and Use Indexes
 
@@ -277,7 +275,7 @@ trie.search("app");     // true
 ### Q2: Number of Islands (LC 200) — Medium
 
 ```
-Given m x n grid of '1's (land) and '0's (water), 
+Given m x n grid of '1's (land) and '0's (water),
 count the number of islands.
 
 Input: grid = [

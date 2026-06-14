@@ -15,7 +15,7 @@ Fact: Every AWS/Azure/GCP instance defaults to Linux
 Fact: Android = Linux kernel
 Fact: Your Spring Boot app in production = running on Linux
 
-If you can't use Linux CLI → you can't deploy, debug, or 
+If you can't use Linux CLI → you can't deploy, debug, or
 manage ANY production application.
 ```
 
@@ -24,13 +24,13 @@ manage ANY production application.
 ```
 1991: Linus Torvalds (Finnish CS student, age 21)
       "I'm doing a free operating system (just a hobby)"
-      
+
 Inspired by: UNIX (1969, Bell Labs)
              → Expensive, proprietary
-             
+
 GNU Project (1983, Richard Stallman)
              → Free tools but NO KERNEL
-             
+
 Linux = GNU tools + Linux kernel = FREE complete OS
 
 Today: Powers everything from your phone to Mars rovers
@@ -542,6 +542,7 @@ Find the most common error message
 ```bash
 grep "ERROR" app.log | awk '{$1=$2=$3=""; print $0}' | sed 's/^ *//' | sort | uniq -c | sort -rn | head -5
 ```
+
 Explanation: `grep ERROR` filters to error lines → `awk '{$1=$2=$3=""; print $0}'` blanks the first 3 fields (date, time, level) → `sed 's/^ *//'` trims the leading spaces left by awk → `sort` groups identical messages → `uniq -c` counts occurrences → `sort -rn` puts highest count first → `head -5` takes top 5. Alternative: `cut -d' ' -f4-` to remove first 3 space-delimited fields.
 
 </details>
@@ -557,6 +558,7 @@ tail -f /var/log/app/app.log | grep --line-buffered "OutOfMemoryError" | while r
     -d "{\"text\": \"🚨 OOM detected on $(hostname): $line\"}" &
 done
 ```
+
 Key points: `--line-buffered` prevents grep output buffering (otherwise alerts appear in bursts). The `while read line` loop triggers on every match. The `&` runs the curl in the background so the monitor doesn't block on slow network calls. In production this would be a systemd service or run inside a monitoring agent (Fluentd, Vector, Filebeat).
 
 </details>
@@ -573,7 +575,35 @@ Script that:
 
 ---
 
-**Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
+### Production Reality
+
+**Linux CLI and shell operations fail in production in these named ways:**
+
+- **`rm -rf` on wrong path** — `rm -rf /var/log/myapp/*` vs `rm -rf /var/log/myapp` has vastly different consequences. The first deletes files; the second deletes the directory itself, breaking any service that tries to create log files inside it. More severe: `rm -rf $DIR` where `$DIR` is empty expands to `rm -rf` (delete everything). This happens when environment variables are unset in systemd service context. NASA flight software postmortems document rm -rf incidents as a recurring cause of data loss.
+- **Permission misconfiguration security incidents** — `chmod -R 777 /opt/myapp` to "fix a permissions issue" exposes all application files (including config files with database credentials) to any process on the system. The 2017 Equifax breach was partly attributed to a misconfigured web application file permission. Conversely, overly restrictive `chmod 000` on a critical binary breaks the service without error messages.
+- **Zombie processes leaking file descriptors** — a JVM process that doesn't close `FileInputStream` or `ServerSocket` resources leaks file descriptors. Linux default limit is 1024 fds per process. Under sustained traffic, the process exhausts its fd limit and starts failing with "Too many open files" — requests start queuing, then failing. No OOM, no crash signal, just silent failure. `lsof -p <PID>` shows the leaked descriptors.
+- **No disk space monitoring** — `/var/log/` grows unbounded if logrotate is misconfigured or absent. When the disk fills, the application cannot write its current log file, typically throwing an `IOException` and failing silently. Database writes fail. The service appears to be running (process alive) but serves no requests. Real incident pattern: disk at 100% for 6 hours before anyone notices because there was no disk-usage alert.
+
+**Debug workflow:** For fd leaks: `ls /proc/<PID>/fd | wc -l` shows open fd count; `lsof -p <PID>` shows what files/sockets are open. For disk full: `df -h` shows which filesystem; `du -sh /var/* | sort -rh` shows which directory is consuming space.
+**Mitigation discipline:** Use `find /path -delete` with explicit filename patterns instead of `rm -rf *` with variable expansion. Set filesystem monitoring alerts at 80% capacity. Configure logrotate with size-based rotation (not just time-based). Set `nofile` ulimit in systemd service definition to catch fd exhaustion early.
 
 ---
 
+### Trade-off: Shell Variant Comparison
+
+| Aspect              | Bash              | Zsh               | Fish              | PowerShell        |
+|---------------------|-------------------|-------------------|-------------------|-------------------|
+| Default on Linux    | yes (most distros)| no (user choice)  | no                | no                |
+| Default on macOS    | yes (until 2019)  | yes (Catalina+)   | no                | no                |
+| Syntax              | POSIX + bashisms  | POSIX + extensions| non-POSIX         | cmdlet-based      |
+| Tab completion      | basic             | excellent         | best-in-class     | medium            |
+| Cross-platform      | Unix only         | Unix only         | Unix only         | Windows + Unix    |
+| Plugin ecosystem    | small             | oh-my-zsh         | fisher            | PSGallery         |
+| Year introduced     | 1989              | 1990              | 2005              | 2006              |
+| Best for            | scripting, system | interactive use   | interactive use   | Windows admins    |
+
+**Selection rule:** Bash for portability and scripting; Zsh for daily interactive use; Fish for those who want modern UX out of the box; PowerShell for Windows-centric teams.
+
+**Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
+
+---

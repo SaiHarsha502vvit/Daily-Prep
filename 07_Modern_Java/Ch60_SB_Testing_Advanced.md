@@ -2,53 +2,71 @@
 
 ---
 
+### Historical Evolution
+
+**Inventor / Originator:** JUnit 5 (Jupiter) by Marc Philipp and the JUnit team (2017) — the first major rewrite since JUnit 4 (2006).
+
+**Predecessor context:** JUnit 4 (2006) dominated for over a decade. Its `TestCase` inheritance was replaced by annotations. Mockito (2004, Emmanuel Bernard) succeeded EasyMock (2001). TestContainers (2016) didn't exist — integration tests used embedded databases (H2, Derby) that behaved differently from production Postgres.
+
+**Evolution narrative:** `@WebMvcTest` (Spring Boot 1.4, 2016) sliced the Spring context for controller tests — no full app startup needed. `@DataJpaTest` (Spring Boot 1.4.1, 2016) used an embedded database by default. TestContainers (AtomicJar, 2016) launched real Docker containers for integration tests — same Postgres version as production. ArchUnit (2019, ArchUnit Team) enforced architectural rules in unit tests: layer violations, cycle detection. Gatling (2012, Stephane Landelle) brought Scala-based load testing. JMeter (1998, Apache) was the legacy load testing tool. Mutation testing (PIT, 2012) automated bug injection to check test quality.
+
+**Modern practice:** JUnit 5 with `@SpringBootTest` for full integration tests, `@WebMvcTest` for slices, `@DataJpaTest` for repositories. `@MockBean` for Spring context mocks. TestContainers for Postgres, Redis, Kafka in `@Container` tests. ArchUnit for architecture enforcement. Consider mutation testing with Pitest (2020+) for critical code paths.
+
+- **`@WebMvcTest` — Spring Boot 1.4 (2016)**: Controller slice testing. Minimal context. Fast feedback.
+- **TestContainers — AtomicJar 2016**: Real Docker containers in tests. Same DB as production.
+- **ArchUnit — 2019**: Architecture rules in unit tests. Layer violations, package cycles, naming conventions.
+- **Gatling — 2012**: Scala-based load testing. Scenario recording. CI integration.
+- **Pitest (PIT) — 2012, matured 2020+**: Mutation testing. Injects bugs to verify test quality.
+
+---
+
 ```java
 @WebMvcTest(UserController.class)
 @Import(SecurityConfig.class)
 class SecuredControllerTest {
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @MockBean
     private UserService userService;
-    
+
     @Test
     @WithAnonymousUser
     void shouldDenyAnonymousAccess() throws Exception {
         mockMvc.perform(get("/api/users"))
             .andExpect(status().isUnauthorized());
     }
-    
+
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
     void shouldAllowAuthenticatedUser() throws Exception {
         when(userService.findAll()).thenReturn(List.of());
-        
+
         mockMvc.perform(get("/api/users"))
             .andExpect(status().isOk());
     }
-    
+
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void shouldAllowAdminToDelete() throws Exception {
         doNothing().when(userService).delete(1L);
-        
+
         mockMvc.perform(delete("/api/users/1"))
             .andExpect(status().isNoContent());
     }
-    
+
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
     void shouldDenyUserFromDeleting() throws Exception {
         mockMvc.perform(delete("/api/users/1"))
             .andExpect(status().isForbidden());
     }
-    
+
     @Test
     void shouldAuthenticateWithJwt() throws Exception {
         String token = generateTestJwtToken("user", List.of("ROLE_USER"));
-        
+
         mockMvc.perform(get("/api/users")
                 .header("Authorization", "Bearer " + token))
             .andExpect(status().isOk());
@@ -67,45 +85,45 @@ class SecuredControllerTest {
 @Testcontainers
 @ActiveProfiles("test")
 class OrderIntegrationTest {
-    
+
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
-    
+
     @Container
     static GenericContainer<?> redis = new GenericContainer<>("redis:7")
         .withExposedPorts(6379);
-    
+
     @LocalServerPort
     private int port;
-    
+
     @Autowired
     private TestRestTemplate restTemplate;
-    
+
     @Autowired
     private OrderRepository orderRepository;
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.redis.host", redis::getHost);
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
     }
-    
+
     @BeforeEach
     void setup() {
         orderRepository.deleteAll();
         userRepository.deleteAll();
-        
+
         // Create test user
         userRepository.save(User.builder()
             .name("Test User")
             .email("test@test.com")
             .build());
     }
-    
+
     @Test
     @DisplayName("Should create order through full flow")
     void shouldCreateOrderThroughFullFlow() {
@@ -114,26 +132,26 @@ class OrderIntegrationTest {
             1L,
             List.of(new OrderItemRequest("PROD-1", 2))
         );
-        
+
         // When
         ResponseEntity<OrderResponse> response = restTemplate.postForEntity(
             "/api/orders",
             request,
             OrderResponse.class
         );
-        
+
         // Then
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().getId());
         assertEquals(OrderStatus.CONFIRMED, response.getBody().getStatus());
-        
+
         // Verify in database
         Order savedOrder = orderRepository.findById(response.getBody().getId())
             .orElseThrow();
         assertEquals(OrderStatus.CONFIRMED, savedOrder.getStatus());
     }
-    
+
     @Test
     @DisplayName("Should handle concurrent orders correctly")
     void shouldHandleConcurrentOrders() throws Exception {
@@ -142,7 +160,7 @@ class OrderIntegrationTest {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfOrders);
         AtomicInteger successCount = new AtomicInteger(0);
-        
+
         // When
         for (int i = 0; i < numberOfOrders; i++) {
             executor.submit(() -> {
@@ -151,13 +169,13 @@ class OrderIntegrationTest {
                         1L,
                         List.of(new OrderItemRequest("PROD-1", 1))
                     );
-                    
+
                     ResponseEntity<OrderResponse> response = restTemplate.postForEntity(
                         "/api/orders",
                         request,
                         OrderResponse.class
                     );
-                    
+
                     if (response.getStatusCode() == HttpStatus.CREATED) {
                         successCount.incrementAndGet();
                     }
@@ -166,10 +184,10 @@ class OrderIntegrationTest {
                 }
             });
         }
-        
+
         latch.await(30, TimeUnit.SECONDS);
         executor.shutdown();
-        
+
         // Then
         assertEquals(numberOfOrders, successCount.get());
         assertEquals(numberOfOrders, orderRepository.count());
@@ -183,19 +201,19 @@ class OrderIntegrationTest {
 // JSON Serialization Test
 @JsonTest
 class UserJsonTest {
-    
+
     @Autowired
     private JacksonTester<UserDTO> json;
-    
+
     @Test
     void shouldSerializeUser() throws Exception {
         UserDTO user = new UserDTO(1L, "John", "john@test.com");
-        
+
         assertThat(json.write(user)).hasJsonPathNumberValue("@.id");
         assertThat(json.write(user)).extractingJsonPathStringValue("@.name")
             .isEqualTo("John");
     }
-    
+
     @Test
     void shouldDeserializeUser() throws Exception {
         String content = """
@@ -205,7 +223,7 @@ class UserJsonTest {
                 "email": "john@test.com"
             }
             """;
-        
+
         assertThat(json.parse(content)).isEqualTo(new UserDTO(1L, "John", "john@test.com"));
     }
 }
@@ -213,20 +231,20 @@ class UserJsonTest {
 // REST Client Test
 @RestClientTest(ExternalApiClient.class)
 class ExternalApiClientTest {
-    
+
     @Autowired
     private ExternalApiClient client;
-    
+
     @Autowired
     private MockRestServiceServer server;
-    
+
     @Test
     void shouldCallExternalApi() {
         server.expect(requestTo("/external/data"))
             .andRespond(withSuccess("{\"value\": \"test\"}", MediaType.APPLICATION_JSON));
-        
+
         String result = client.getData();
-        
+
         assertEquals("test", result);
     }
 }
@@ -234,16 +252,15 @@ class ExternalApiClientTest {
 
 ---
 
-
-
 🔬 **Section Challenge — Integration Testing**
 
 **Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
+
 <details><summary>Answer</summary>
 
 Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
-</details>
 
+</details>
 
 ## Test Containers
 
@@ -253,7 +270,7 @@ Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurat
 @SpringBootTest
 @Testcontainers
 class ContainerizedTest {
-    
+
     // PostgreSQL Container
     @Container
     @ServiceConnection
@@ -261,34 +278,34 @@ class ContainerizedTest {
         .withDatabaseName("testdb")
         .withUsername("test")
         .withPassword("test");
-    
+
     // MySQL Container
     @Container
     @ServiceConnection
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
         .withDatabaseName("testdb");
-    
+
     // MongoDB Container
     @Container
     @ServiceConnection
     static MongoDBContainer mongo = new MongoDBContainer("mongo:6.0");
-    
+
     // Redis Container
     @Container
     static GenericContainer<?> redis = new GenericContainer<>("redis:7-alpine")
         .withExposedPorts(6379);
-    
+
     // Kafka Container
     @Container
     static KafkaContainer kafka = new KafkaContainer(
         DockerImageName.parse("confluentinc/cp-kafka:7.4.0"));
-    
+
     // Elasticsearch Container
     @Container
     static ElasticsearchContainer elastic = new ElasticsearchContainer(
         "docker.elastic.co/elasticsearch/elasticsearch:8.9.0")
         .withEnv("xpack.security.enabled", "false");
-    
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.redis.host", redis::getHost);
@@ -296,7 +313,7 @@ class ContainerizedTest {
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
         registry.add("spring.elasticsearch.uris", elastic::getHttpHostAddress);
     }
-    
+
     @Test
     void testWithContainers() {
         assertTrue(postgres.isRunning());
@@ -310,21 +327,21 @@ class ContainerizedTest {
 ```java
 // Abstract base class for container-based tests
 public abstract class AbstractContainerBaseTest {
-    
+
     static final PostgreSQLContainer<?> POSTGRES;
     static final GenericContainer<?> REDIS;
-    
+
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withReuse(true);
         POSTGRES.start();
-        
+
         REDIS = new GenericContainer<>("redis:7-alpine")
             .withExposedPorts(6379)
             .withReuse(true);
         REDIS.start();
     }
-    
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
@@ -338,10 +355,10 @@ public abstract class AbstractContainerBaseTest {
 // Test class extending the base
 @SpringBootTest
 class UserServiceIntegrationTest extends AbstractContainerBaseTest {
-    
+
     @Autowired
     private UserService userService;
-    
+
     @Test
     void shouldWorkWithRealDatabase() {
         User user = userService.create("Test", "test@test.com");
@@ -352,16 +369,15 @@ class UserServiceIntegrationTest extends AbstractContainerBaseTest {
 
 ---
 
-
-
 🔬 **Section Challenge — Test Containers**
 
 **Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
+
 <details><summary>Answer</summary>
 
 Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
-</details>
 
+</details>
 
 ## Testing Best Practices
 
@@ -398,7 +414,7 @@ src/
 
 ```java
 public class TestDataFactory {
-    
+
     public static User createUser() {
         return User.builder()
             .name("Test User")
@@ -407,7 +423,7 @@ public class TestDataFactory {
             .createdAt(LocalDateTime.now())
             .build();
     }
-    
+
     public static User createUser(String name, String email) {
         return User.builder()
             .name(name)
@@ -416,13 +432,13 @@ public class TestDataFactory {
             .createdAt(LocalDateTime.now())
             .build();
     }
-    
+
     public static List<User> createUsers(int count) {
         return IntStream.range(0, count)
             .mapToObj(i -> createUser("User " + i, "user" + i + "@test.com"))
             .collect(Collectors.toList());
     }
-    
+
     public static Order createOrder(User user) {
         return Order.builder()
             .user(user)
@@ -432,7 +448,7 @@ public class TestDataFactory {
             .createdAt(LocalDateTime.now())
             .build();
     }
-    
+
     public static List<OrderItem> createOrderItems(int count) {
         return IntStream.range(0, count)
             .mapToObj(i -> OrderItem.builder()
@@ -443,38 +459,38 @@ public class TestDataFactory {
                 .build())
             .collect(Collectors.toList());
     }
-    
+
     // Builder pattern for complex test data
     public static UserBuilder userBuilder() {
         return new UserBuilder();
     }
-    
+
     public static class UserBuilder {
         private String name = "Default User";
         private String email = "default@test.com";
         private UserStatus status = UserStatus.ACTIVE;
         private Set<Role> roles = new HashSet<>();
-        
+
         public UserBuilder withName(String name) {
             this.name = name;
             return this;
         }
-        
+
         public UserBuilder withEmail(String email) {
             this.email = email;
             return this;
         }
-        
+
         public UserBuilder withStatus(UserStatus status) {
             this.status = status;
             return this;
         }
-        
+
         public UserBuilder withRole(Role role) {
             this.roles.add(role);
             return this;
         }
-        
+
         public User build() {
             return User.builder()
                 .name(name)
@@ -492,17 +508,17 @@ public class TestDataFactory {
 
 ```java
 public class CustomAssertions {
-    
+
     public static UserAssert assertThat(User user) {
         return new UserAssert(user);
     }
-    
+
     public static class UserAssert extends AbstractAssert<UserAssert, User> {
-        
+
         public UserAssert(User actual) {
             super(actual, UserAssert.class);
         }
-        
+
         public UserAssert hasName(String name) {
             isNotNull();
             if (!Objects.equals(actual.getName(), name)) {
@@ -511,7 +527,7 @@ public class CustomAssertions {
             }
             return this;
         }
-        
+
         public UserAssert hasEmail(String email) {
             isNotNull();
             if (!Objects.equals(actual.getEmail(), email)) {
@@ -520,7 +536,7 @@ public class CustomAssertions {
             }
             return this;
         }
-        
+
         public UserAssert isActive() {
             isNotNull();
             if (actual.getStatus() != UserStatus.ACTIVE) {
@@ -529,7 +545,7 @@ public class CustomAssertions {
             }
             return this;
         }
-        
+
         public UserAssert hasRole(String roleName) {
             isNotNull();
             boolean hasRole = actual.getRoles().stream()
@@ -546,7 +562,7 @@ public class CustomAssertions {
 @Test
 void shouldCreateActiveUserWithRole() {
     User user = userService.createAdmin("Admin", "admin@test.com");
-    
+
     CustomAssertions.assertThat(user)
         .hasName("Admin")
         .hasEmail("admin@test.com")
@@ -563,7 +579,7 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
-  
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -571,7 +587,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  
+
   main:
     allow-bean-definition-overriding: true
 
@@ -614,14 +630,14 @@ logging:
 ```java
 // Step 1: RED - Write failing test
 class CalculatorTest {
-    
+
     private Calculator calculator;
-    
+
     @BeforeEach
     void setup() {
         calculator = new Calculator();
     }
-    
+
     @Test
     @DisplayName("Should add two numbers")
     void shouldAddTwoNumbers() {
@@ -658,7 +674,7 @@ public class Calculator {
     public int add(int a, int b) {
         return a + b;
     }
-    
+
     public int subtract(int a, int b) {
         return a - b;
     }
@@ -668,7 +684,7 @@ public class Calculator {
 @Test
 @DisplayName("Should throw exception when dividing by zero")
 void shouldThrowWhenDividingByZero() {
-    assertThrows(ArithmeticException.class, 
+    assertThrows(ArithmeticException.class,
         () -> calculator.divide(10, 0));
 }
 
@@ -683,11 +699,11 @@ public class Calculator {
     public int add(int a, int b) {
         return a + b;
     }
-    
+
     public int subtract(int a, int b) {
         return a - b;
     }
-    
+
     public double divide(int a, int b) {
         if (b == 0) {
             throw new ArithmeticException("Cannot divide by zero");
@@ -706,19 +722,19 @@ public class Calculator {
 // Step 1: Write test for user registration
 @ExtendWith(MockitoExtension.class)
 class UserRegistrationServiceTest {
-    
+
     @Mock
     private UserRepository userRepository;
-    
+
     @Mock
     private PasswordEncoder passwordEncoder;
-    
+
     @Mock
     private EmailService emailService;
-    
+
     @InjectMocks
     private UserRegistrationService registrationService;
-    
+
     // RED: Test for happy path
     @Test
     @DisplayName("Should register new user successfully")
@@ -727,7 +743,7 @@ class UserRegistrationServiceTest {
         RegistrationRequest request = new RegistrationRequest(
             "john@example.com", "password123", "John Doe"
         );
-        
+
         when(userRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode(anyString())).thenReturn("encoded_password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
@@ -735,16 +751,16 @@ class UserRegistrationServiceTest {
             user.setId(1L);
             return user;
         });
-        
+
         // When
         User result = registrationService.register(request);
-        
+
         // Then
         assertNotNull(result.getId());
         assertEquals("john@example.com", result.getEmail());
         verify(emailService).sendWelcomeEmail(any(User.class));
     }
-    
+
     // RED: Test for duplicate email
     @Test
     @DisplayName("Should throw exception for duplicate email")
@@ -754,15 +770,15 @@ class UserRegistrationServiceTest {
             "existing@example.com", "password123", "John"
         );
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
-        
+
         // When & Then
         assertThrows(DuplicateEmailException.class,
             () -> registrationService.register(request));
-        
+
         verify(userRepository, never()).save(any());
         verifyNoInteractions(emailService);
     }
-    
+
     // RED: Test for password validation
     @Test
     @DisplayName("Should throw exception for weak password")
@@ -771,7 +787,7 @@ class UserRegistrationServiceTest {
         RegistrationRequest request = new RegistrationRequest(
             "john@example.com", "123", "John"
         );
-        
+
         // When & Then
         assertThrows(WeakPasswordException.class,
             () -> registrationService.register(request));
@@ -782,25 +798,25 @@ class UserRegistrationServiceTest {
 @Service
 @RequiredArgsConstructor
 public class UserRegistrationService {
-    
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    
+
     @Transactional
     public User register(RegistrationRequest request) {
         // Validate password strength
         if (request.getPassword().length() < 8) {
             throw new WeakPasswordException("Password must be at least 8 characters");
         }
-        
+
         // Check for duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateEmailException(
                 "Email already registered: " + request.getEmail()
             );
         }
-        
+
         // Create user
         User user = User.builder()
             .email(request.getEmail())
@@ -808,12 +824,12 @@ public class UserRegistrationService {
             .name(request.getName())
             .status(UserStatus.PENDING_VERIFICATION)
             .build();
-        
+
         User savedUser = userRepository.save(user);
-        
+
         // Send welcome email
         emailService.sendWelcomeEmail(savedUser);
-        
+
         return savedUser;
     }
 }
@@ -854,7 +870,7 @@ Feature: User Registration
   Scenario Outline: Registration with invalid password
     When I try to register with password "<password>"
     Then I should see an error message "<error>"
-    
+
     Examples:
       | password | error                                    |
       | 123      | Password must be at least 8 characters   |
@@ -868,23 +884,23 @@ Feature: User Registration
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRegistrationSteps {
-    
+
     @Autowired
     private TestRestTemplate restTemplate;
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     private ResponseEntity<?> lastResponse;
     private RegistrationRequest registrationRequest;
-    
+
     @Given("the registration system is available")
     public void theRegistrationSystemIsAvailable() {
         // Health check or setup
         ResponseEntity<String> health = restTemplate.getForEntity("/actuator/health", String.class);
         assertEquals(HttpStatus.OK, health.getStatusCode());
     }
-    
+
     @Given("a user with email {string} already exists")
     public void aUserWithEmailExists(String email) {
         userRepository.save(User.builder()
@@ -893,7 +909,7 @@ public class UserRegistrationSteps {
             .name("Existing User")
             .build());
     }
-    
+
     @When("I enter email {string}")
     public void iEnterEmail(String email) {
         if (registrationRequest == null) {
@@ -901,17 +917,17 @@ public class UserRegistrationSteps {
         }
         registrationRequest.setEmail(email);
     }
-    
+
     @When("I enter password {string}")
     public void iEnterPassword(String password) {
         registrationRequest.setPassword(password);
     }
-    
+
     @When("I enter name {string}")
     public void iEnterName(String name) {
         registrationRequest.setName(name);
     }
-    
+
     @When("I click the register button")
     public void iClickTheRegisterButton() {
         lastResponse = restTemplate.postForEntity(
@@ -920,38 +936,38 @@ public class UserRegistrationSteps {
             UserResponse.class
         );
     }
-    
+
     @When("I try to register with email {string}")
     public void iTryToRegisterWithEmail(String email) {
         registrationRequest = new RegistrationRequest(email, "ValidPass123!", "Test");
         iClickTheRegisterButton();
     }
-    
+
     @When("I try to register with password {string}")
     public void iTryToRegisterWithPassword(String password) {
         registrationRequest = new RegistrationRequest("test@test.com", password, "Test");
         iClickTheRegisterButton();
     }
-    
+
     @Then("I should see a success message")
     public void iShouldSeeASuccessMessage() {
         assertEquals(HttpStatus.CREATED, lastResponse.getStatusCode());
     }
-    
+
     @Then("I should see an error message {string}")
     public void iShouldSeeAnErrorMessage(String message) {
         assertTrue(lastResponse.getStatusCode().is4xxClientError());
         ErrorResponse error = (ErrorResponse) lastResponse.getBody();
         assertTrue(error.getMessage().contains(message));
     }
-    
+
     @Then("my account should be created with status {string}")
     public void myAccountShouldBeCreatedWithStatus(String status) {
         User user = userRepository.findByEmail(registrationRequest.getEmail())
             .orElseThrow();
         assertEquals(UserStatus.valueOf(status), user.getStatus());
     }
-    
+
     @Then("no new account should be created")
     public void noNewAccountShouldBeCreated() {
         long count = userRepository.count();
@@ -969,10 +985,10 @@ public class UserRegistrationSteps {
 ```java
 @SpringBootTest
 class PerformanceTest {
-    
+
     @Autowired
     private UserService userService;
-    
+
     @Test
     @Timeout(value = 1, unit = TimeUnit.SECONDS)
     void shouldCompleteUnder1Second() {
@@ -980,18 +996,18 @@ class PerformanceTest {
         List<User> users = userService.findAll();
         assertNotNull(users);
     }
-    
+
     @RepeatedTest(100)
     void shouldBeConsistentlyFast() {
         long start = System.nanoTime();
-        
+
         userService.findById(1L);
-        
+
         long duration = System.nanoTime() - start;
         assertTrue(duration < 10_000_000, // 10ms
             "Operation took too long: " + duration + " ns");
     }
-    
+
     @Test
     void shouldHandleConcurrentRequests() throws Exception {
         int threadCount = 100;
@@ -1000,7 +1016,7 @@ class PerformanceTest {
         CountDownLatch endLatch = new CountDownLatch(threadCount);
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
-        
+
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
@@ -1014,13 +1030,13 @@ class PerformanceTest {
                 }
             });
         }
-        
+
         startLatch.countDown(); // Start all threads simultaneously
         endLatch.await(30, TimeUnit.SECONDS);
-        
+
         assertEquals(threadCount, successCount.get());
         assertEquals(0, errorCount.get());
-        
+
         executor.shutdown();
     }
 }
@@ -1031,19 +1047,19 @@ class PerformanceTest {
 ```java
 // Gatling simulation (Scala)
 class UserApiSimulation extends Simulation {
-    
+
     val httpProtocol = http
         .baseUrl("http://localhost:8080")
         .acceptHeader("application/json")
         .contentTypeHeader("application/json")
-    
+
     val getUsers = scenario("Get Users")
         .exec(
             http("Get All Users")
                 .get("/api/users")
                 .check(status.is(200))
         )
-    
+
     val createUser = scenario("Create User")
         .exec(
             http("Create User")
@@ -1051,7 +1067,7 @@ class UserApiSimulation extends Simulation {
                 .body(StringBody("""{"name": "Test", "email": "test${userId}@test.com"}"""))
                 .check(status.is(201))
         )
-    
+
     setUp(
         getUsers.inject(
             rampUsers(100).during(10.seconds),
@@ -1070,22 +1086,22 @@ class UserApiSimulation extends Simulation {
 
 ---
 
-
-
 🔬 **Section Challenge — Performance Testing**
 
 **Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
+
 <details><summary>Answer</summary>
 
 Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
-</details>
 
+</details>
 
 ## Interview Questions
 
 ### Basic Questions
 
 **Q1: What's the difference between @Mock and @MockBean?**
+
 ```
 @Mock (Mockito):
 - Creates a mock for unit tests
@@ -1099,6 +1115,7 @@ Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurat
 ```
 
 **Q2: When would you use @WebMvcTest vs @SpringBootTest?**
+
 ```
 @WebMvcTest:
 - Tests only the web layer (controllers)
@@ -1114,6 +1131,7 @@ Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurat
 ```
 
 **Q3: What is the testing pyramid?**
+
 ```
 The testing pyramid suggests:
 - Many unit tests (fast, cheap, isolated)
@@ -1126,14 +1144,15 @@ Ratio: 70% Unit : 20% Integration : 10% E2E
 ### Advanced Questions
 
 **Q4: How do you test async operations?**
+
 ```java
 @Test
 void testAsyncMethod() throws Exception {
     CompletableFuture<String> future = asyncService.processAsync("input");
-    
+
     // Wait for completion with timeout
     String result = future.get(5, TimeUnit.SECONDS);
-    
+
     assertEquals("expected", result);
 }
 
@@ -1141,7 +1160,7 @@ void testAsyncMethod() throws Exception {
 @Test
 void testAsyncWithAwaitility() {
     asyncService.processAsync("input");
-    
+
     await()
         .atMost(5, TimeUnit.SECONDS)
         .pollInterval(100, TimeUnit.MILLISECONDS)
@@ -1150,6 +1169,7 @@ void testAsyncWithAwaitility() {
 ```
 
 **Q5: How do you handle flaky tests?**
+
 ```
 Strategies for flaky tests:
 1. Identify root cause (timing, state, external dependencies)
@@ -1162,6 +1182,7 @@ Strategies for flaky tests:
 ```
 
 **Q6: Explain the difference between verify() and ArgumentCaptor**
+
 ```java
 // verify() - Checks if method was called
 verify(repository).save(any(User.class));
@@ -1186,7 +1207,7 @@ public class ShoppingCartService {
     private final CartRepository cartRepository;
     private final ProductService productService;
     private final PricingService pricingService;
-    
+
     public Cart addItem(Long cartId, Long productId, int quantity);
     public Cart removeItem(Long cartId, Long productId);
     public BigDecimal calculateTotal(Long cartId);
@@ -1202,35 +1223,35 @@ public class ShoppingCartService {
 
 @ExtendWith(MockitoExtension.class)
 class ShoppingCartServiceTest {
-    
+
     @Mock private CartRepository cartRepository;
     @Mock private ProductService productService;
     @Mock private PricingService pricingService;
-    
+
     @InjectMocks
     private ShoppingCartService cartService;
-    
+
     // Your tests here...
-    
+
     @Test
     @DisplayName("Should add item to cart")
     void shouldAddItemToCart() {
         // Given
         Cart cart = new Cart(1L, new ArrayList<>());
         Product product = new Product(1L, "Laptop", new BigDecimal("999.99"));
-        
+
         when(cartRepository.findById(1L)).thenReturn(Optional.of(cart));
         when(productService.findById(1L)).thenReturn(Optional.of(product));
         when(cartRepository.save(any())).thenAnswer(i -> i.getArgument(0));
-        
+
         // When
         Cart result = cartService.addItem(1L, 1L, 2);
-        
+
         // Then
         assertEquals(1, result.getItems().size());
         assertEquals(2, result.getItems().get(0).getQuantity());
     }
-    
+
     // Continue with more tests...
 }
 ```
@@ -1299,8 +1320,7 @@ Testing is a critical skill for professional developers:
 
 ---
 
-*Next: Part 20 - Microservices Patterns (Service Discovery, API Gateway, Circuit Breakers)*
-
+_Next: Part 20 - Microservices Patterns (Service Discovery, API Gateway, Circuit Breakers)_
 
 ---
 
@@ -1309,7 +1329,9 @@ Testing is a critical skill for professional developers:
 🔬 **Section Challenge — Summary**
 
 **Challenge 1 (Reasoning):** The Quick Reference shows both `@MockBean` and `@SpyBean`. In practice, using `@MockBean` in integration tests causes a subtle but devastating performance problem. What is it, and when should you use `@SpyBean` instead?
+
 <details><summary>Answer</summary>
 
 Every `@MockBean` creates a **new Spring ApplicationContext** because it replaces a real bean with a mock, making the context unique. Spring caches contexts between tests — but if Test A uses `@MockBean UserRepository` and Test B uses `@MockBean ProductRepository`, Spring can't reuse the same context. With 50 test classes each mocking different beans, you get 50 separate context loads (~5-15 seconds each) instead of 1 shared context. This is the #1 cause of slow Spring Boot test suites. **`@SpyBean`** wraps the REAL bean (delegates to real methods by default, lets you stub specific calls). It's better when you only need to verify interactions or stub one method while keeping real behavior. Fix for `@MockBean` performance: (1) Use `@MockBean` on the SAME set of beans across all test classes → context is shared. (2) Use `@Import(TestConfig.class)` with pre-defined mocks. (3) Prefer `@WebMvcTest` (slice test) over `@SpringBootTest` — smaller context, faster loads.
+
 </details>

@@ -34,24 +34,24 @@
 
 Three reasons teams put API tests alongside UI tests:
 
-| Reason | Detail |
-|---|---|
-| **Setup is faster via API** | Creating a customer + order + invoice via UI takes 30s. Via API: 200ms. UI tests can use the API to seed data, then test only the UI behaviour. |
-| **Shared session** | The `request` fixture inherits the browser's cookies. UI logs in → API requests are automatically authenticated. |
-| **Same language, same types** | One TypeScript codebase, one fixture system, one reporter for both UI and API tests. No second framework to learn. |
-| **Cross-validation** | UI says "Saved." The API confirms the record actually exists in the DB. Catches success-theatre bugs. |
+| Reason                        | Detail                                                                                                                                          |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Setup is faster via API**   | Creating a customer + order + invoice via UI takes 30s. Via API: 200ms. UI tests can use the API to seed data, then test only the UI behaviour. |
+| **Shared session**            | The `request` fixture inherits the browser's cookies. UI logs in → API requests are automatically authenticated.                                |
+| **Same language, same types** | One TypeScript codebase, one fixture system, one reporter for both UI and API tests. No second framework to learn.                              |
+| **Cross-validation**          | UI says "Saved." The API confirms the record actually exists in the DB. Catches success-theatre bugs.                                           |
 
 Playwright's API testing is not as deep as dedicated tools (Postman, REST Assured, k6) — it's a competent HTTP client integrated with the test runner. For most teams that's the right trade-off.
 
 ### 1.1 When NOT to use Playwright for API tests
 
-| Scenario | Better tool |
-|---|---|
-| Load testing 1000+ RPS | k6, Gatling |
-| Performance benchmarking with statistics | k6, Locust |
-| Contract testing (consumer-driven) | Pact, Spring Cloud Contract |
-| Interactive API exploration | Postman, Insomnia, Bruno |
-| Spec-driven tests from OpenAPI/Swagger | Schemathesis, Dredd |
+| Scenario                                 | Better tool                 |
+| ---------------------------------------- | --------------------------- |
+| Load testing 1000+ RPS                   | k6, Gatling                 |
+| Performance benchmarking with statistics | k6, Locust                  |
+| Contract testing (consumer-driven)       | Pact, Spring Cloud Contract |
+| Interactive API exploration              | Postman, Insomnia, Bruno    |
+| Spec-driven tests from OpenAPI/Swagger   | Schemathesis, Dredd         |
 
 For functional + integration API tests in the same suite as UI tests, Playwright wins.
 
@@ -61,12 +61,12 @@ For functional + integration API tests in the same suite as UI tests, Playwright
 
 `APIRequestContext` is Playwright's HTTP client. One interface, multiple ways to obtain one:
 
-| Source | Cookie sharing | Use for |
-|---|---|---|
-| The `request` test fixture | Inherits the browser context | UI + API in same test |
-| `page.request` | Same as above (alias) | API calls in a UI test |
+| Source                            | Cookie sharing                | Use for                           |
+| --------------------------------- | ----------------------------- | --------------------------------- |
+| The `request` test fixture        | Inherits the browser context  | UI + API in same test             |
+| `page.request`                    | Same as above (alias)         | API calls in a UI test            |
 | `playwright.request.newContext()` | Isolated — no browser cookies | Pure API tests with custom config |
-| `browser.newContext().request` | Inherits new context | Multi-session tests |
+| `browser.newContext().request`    | Inherits new context          | Multi-session tests               |
 
 ### 2.1 What `APIRequestContext` provides
 
@@ -79,8 +79,11 @@ interface APIRequestContext {
   patch(url: string, options?: RequestOptions): Promise<APIResponse>;
   delete(url: string, options?: RequestOptions): Promise<APIResponse>;
   head(url: string, options?: RequestOptions): Promise<APIResponse>;
-  fetch(url: string, options?: RequestOptions & { method?: string }): Promise<APIResponse>;
-  
+  fetch(
+    url: string,
+    options?: RequestOptions & { method?: string },
+  ): Promise<APIResponse>;
+
   // State
   storageState(options?: { path?: string }): Promise<StorageState>;
   dispose(): Promise<void>;
@@ -93,16 +96,16 @@ interface APIRequestContext {
 interface APIResponse {
   status(): number;
   statusText(): string;
-  ok(): boolean;                    // true if status in [200, 299]
-  url(): string;                    // final URL after redirects
+  ok(): boolean; // true if status in [200, 299]
+  url(): string; // final URL after redirects
   headers(): Record<string, string>;
   headersArray(): { name: string; value: string }[];
-  
+
   // Body access
   body(): Promise<Buffer>;
   text(): Promise<string>;
   json(): Promise<any>;
-  
+
   // Failure path
   dispose(): Promise<void>;
 }
@@ -111,18 +114,18 @@ interface APIResponse {
 ### 2.3 Common pattern — full request/response cycle
 
 ```typescript
-test('GET /citations/:id returns citation', async ({ request }) => {
-  const response = await request.get('/api/citations/CIT-001', {
+test("GET /citations/:id returns citation", async ({ request }) => {
+  const response = await request.get("/api/citations/CIT-001", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
   expect(response.status()).toBe(200);
   expect(response.ok()).toBeTruthy();
-  expect(response.headers()['content-type']).toContain('application/json');
+  expect(response.headers()["content-type"]).toContain("application/json");
 
   const body = await response.json();
-  expect(body.id).toBe('CIT-001');
-  expect(body.status).toBe('PAID');
+  expect(body.id).toBe("CIT-001");
+  expect(body.status).toBe("PAID");
 });
 ```
 
@@ -152,18 +155,18 @@ These options apply to BOTH `request` and `page.request`. They merge with per-ca
 ### 3.2 Cookie inheritance from browser
 
 ```typescript
-test('UI login, API uses session', async ({ page, request }) => {
-  await page.goto('/login');
-  await page.getByLabel('Email').fill('admin@example.com');
-  await page.getByLabel('Password').fill('admin');
-  await page.getByRole('button', { name: 'Log in' }).click();
+test("UI login, API uses session", async ({ page, request }) => {
+  await page.goto("/login");
+  await page.getByLabel("Email").fill("admin@example.com");
+  await page.getByLabel("Password").fill("admin");
+  await page.getByRole("button", { name: "Log in" }).click();
   await page.waitForURL(/\/dashboard/);
 
   // request inherits the browser's cookies
-  const response = await request.get('/api/me');
+  const response = await request.get("/api/me");
   expect(response.ok()).toBeTruthy();
   const body = await response.json();
-  expect(body.email).toBe('admin@example.com');
+  expect(body.email).toBe("admin@example.com");
 });
 ```
 
@@ -173,7 +176,7 @@ If your test starts with `storageState`, the browser context has cookies but `re
 
 ```typescript
 // Always-safe pattern: use page.request, which guarantees cookie sharing
-const response = await page.request.get('/api/me');
+const response = await page.request.get("/api/me");
 ```
 
 `page.request` is identical to `request` but explicitly attached to the page's context.
@@ -185,15 +188,15 @@ const response = await page.request.get('/api/me');
 For tests that need different settings (different base URL, different auth, no cookie sharing):
 
 ```typescript
-import { test as base, request as playwrightRequest } from '@playwright/test';
+import { test as base, request as playwrightRequest } from "@playwright/test";
 
 const test = base.extend<{ adminApi: APIRequestContext }>({
   adminApi: async ({}, use) => {
     const ctx = await playwrightRequest.newContext({
-      baseURL: 'https://admin-api.example.com',
+      baseURL: "https://admin-api.example.com",
       extraHTTPHeaders: {
         Authorization: `Bearer ${process.env.ADMIN_TOKEN}`,
-        'x-admin-mode': 'true',
+        "x-admin-mode": "true",
       },
       timeout: 60_000,
     });
@@ -202,8 +205,10 @@ const test = base.extend<{ adminApi: APIRequestContext }>({
   },
 });
 
-test('admin API call', async ({ adminApi }) => {
-  const response = await adminApi.post('/users', { data: { email: 'new@example.com' } });
+test("admin API call", async ({ adminApi }) => {
+  const response = await adminApi.post("/users", {
+    data: { email: "new@example.com" },
+  });
   expect(response.ok()).toBeTruthy();
 });
 ```
@@ -214,14 +219,23 @@ For a request context that's expensive to create (e.g., one with mTLS certs load
 
 ```typescript
 const test = base.extend<{}, { apiCtx: APIRequestContext }>({
-  apiCtx: [async ({}, use) => {
-    const ctx = await playwrightRequest.newContext({
-      baseURL: process.env.API_URL,
-      clientCertificates: [{ origin: process.env.API_URL!, certPath: '/etc/certs/client.crt', keyPath: '/etc/certs/client.key' }],
-    });
-    await use(ctx);
-    await ctx.dispose();
-  }, { scope: 'worker' }],
+  apiCtx: [
+    async ({}, use) => {
+      const ctx = await playwrightRequest.newContext({
+        baseURL: process.env.API_URL,
+        clientCertificates: [
+          {
+            origin: process.env.API_URL!,
+            certPath: "/etc/certs/client.crt",
+            keyPath: "/etc/certs/client.key",
+          },
+        ],
+      });
+      await use(ctx);
+      await ctx.dispose();
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
@@ -236,9 +250,9 @@ All verbs share the same option shape; differences are semantic.
 ### 5.1 GET
 
 ```typescript
-const response = await request.get('/api/citations', {
-  params: { status: 'PAID', limit: 50 },         // adds ?status=PAID&limit=50
-  headers: { Accept: 'application/json' },
+const response = await request.get("/api/citations", {
+  params: { status: "PAID", limit: 50 }, // adds ?status=PAID&limit=50
+  headers: { Accept: "application/json" },
   timeout: 30_000,
 });
 ```
@@ -249,32 +263,36 @@ GET MUST NOT have a body per spec. Playwright will reject `data` on a GET. If yo
 
 ```typescript
 // JSON body (default for `data`)
-await request.post('/citations', {
-  data: { status: 'PENDING', amount: 150 },
+await request.post("/citations", {
+  data: { status: "PENDING", amount: 150 },
 });
 
 // Form-urlencoded body
-await request.post('/oauth/token', {
-  form: { grant_type: 'client_credentials', client_id: 'x', client_secret: 'y' },
+await request.post("/oauth/token", {
+  form: {
+    grant_type: "client_credentials",
+    client_id: "x",
+    client_secret: "y",
+  },
 });
 
 // Multipart form data (file upload)
-import * as fs from 'node:fs';
-await request.post('/upload', {
+import * as fs from "node:fs";
+await request.post("/upload", {
   multipart: {
     file: {
-      name: 'invoice.pdf',
-      mimeType: 'application/pdf',
-      buffer: fs.readFileSync('invoice.pdf'),
+      name: "invoice.pdf",
+      mimeType: "application/pdf",
+      buffer: fs.readFileSync("invoice.pdf"),
     },
-    description: 'Q4 invoice',         // text fields
+    description: "Q4 invoice", // text fields
   },
 });
 
 // Raw body (strings, buffers)
-await request.post('/raw', {
-  data: 'plain text body',
-  headers: { 'Content-Type': 'text/plain' },
+await request.post("/raw", {
+  data: "plain text body",
+  headers: { "Content-Type": "text/plain" },
 });
 ```
 
@@ -282,7 +300,7 @@ await request.post('/raw', {
 
 ```typescript
 await request.put(`/citations/${id}`, {
-  data: { status: 'PAID', amount: 150, paidAt: new Date().toISOString() },
+  data: { status: "PAID", amount: 150, paidAt: new Date().toISOString() },
 });
 ```
 
@@ -292,8 +310,8 @@ PUT replaces the resource. Send the full representation, not partial.
 
 ```typescript
 await request.patch(`/citations/${id}`, {
-  data: { status: 'PAID' },
-  headers: { 'Content-Type': 'application/merge-patch+json' },  // RFC 7396
+  data: { status: "PAID" },
+  headers: { "Content-Type": "application/merge-patch+json" }, // RFC 7396
 });
 ```
 
@@ -303,7 +321,7 @@ JSON Merge Patch is the most common; JSON Patch (RFC 6902) is also supported by 
 
 ```typescript
 const response = await request.delete(`/citations/${id}`);
-expect(response.status()).toBe(204);   // No Content
+expect(response.status()).toBe(204); // No Content
 ```
 
 DELETE typically returns 204 (success, no body) or 200 (success, with body). Both are correct per spec.
@@ -313,7 +331,7 @@ DELETE typically returns 204 (success, no body) or 200 (success, with body). Bot
 ```typescript
 const response = await request.head(`/citations/${id}`);
 expect(response.status()).toBe(200);
-expect(response.headers()['etag']).toBeDefined();
+expect(response.headers()["etag"]).toBeDefined();
 ```
 
 Useful for existence checks and cache validation. The body is always empty.
@@ -321,8 +339,8 @@ Useful for existence checks and cache validation. The body is always empty.
 ### 5.7 OPTIONS — CORS preflight
 
 ```typescript
-const response = await request.fetch(`/citations/${id}`, { method: 'OPTIONS' });
-expect(response.headers()['access-control-allow-origin']).toBe('*');
+const response = await request.fetch(`/citations/${id}`, { method: "OPTIONS" });
+expect(response.headers()["access-control-allow-origin"]).toBe("*");
 ```
 
 OPTIONS isn't exposed as a method but `fetch` accepts any verb. Use for testing CORS configuration.
@@ -333,12 +351,12 @@ OPTIONS isn't exposed as a method but `fetch` accepts any verb. Use for testing 
 
 The `RequestOptions` interface accepts:
 
-| Option | Format | Content-Type set | Notes |
-|---|---|---|---|
-| `data` (object) | JSON-stringified | `application/json` | Default for non-string data |
-| `data` (string) | Sent as-is | (caller must set) | For raw text bodies |
-| `data` (Buffer) | Sent as-is | (caller must set) | For binary uploads |
-| `form` (object) | URL-encoded | `application/x-www-form-urlencoded` | Each value coerced to string |
+| Option               | Format              | Content-Type set                    | Notes                          |
+| -------------------- | ------------------- | ----------------------------------- | ------------------------------ |
+| `data` (object)      | JSON-stringified    | `application/json`                  | Default for non-string data    |
+| `data` (string)      | Sent as-is          | (caller must set)                   | For raw text bodies            |
+| `data` (Buffer)      | Sent as-is          | (caller must set)                   | For binary uploads             |
+| `form` (object)      | URL-encoded         | `application/x-www-form-urlencoded` | Each value coerced to string   |
 | `multipart` (object) | Multipart/form-data | `multipart/form-data; boundary=...` | For file uploads + text fields |
 
 ### 6.1 Charset handling
@@ -346,37 +364,37 @@ The `RequestOptions` interface accepts:
 JSON bodies are encoded UTF-8 by default. For non-UTF-8 systems (legacy SOAP, Japanese mainframes):
 
 ```typescript
-import iconv from 'iconv-lite';
+import iconv from "iconv-lite";
 
-const sjisBody = iconv.encode(JSON.stringify({ name: 'テスト' }), 'shift_jis');
-await request.post('/legacy', {
+const sjisBody = iconv.encode(JSON.stringify({ name: "テスト" }), "shift_jis");
+await request.post("/legacy", {
   data: sjisBody,
-  headers: { 'Content-Type': 'application/json; charset=Shift_JIS' },
+  headers: { "Content-Type": "application/json; charset=Shift_JIS" },
 });
 ```
 
 ### 6.2 Multipart deep dive
 
 ```typescript
-await request.post('/api/documents', {
+await request.post("/api/documents", {
   multipart: {
     // Text field
-    title: 'Q4 Report',
+    title: "Q4 Report",
 
     // File from disk
-    document: fs.createReadStream('q4-report.pdf'),
+    document: fs.createReadStream("q4-report.pdf"),
 
     // File from buffer
     cover: {
-      name: 'cover.png',
-      mimeType: 'image/png',
-      buffer: fs.readFileSync('cover.png'),
+      name: "cover.png",
+      mimeType: "image/png",
+      buffer: fs.readFileSync("cover.png"),
     },
 
     // Multiple files for one field — pass an array
     attachments: [
-      { name: 'a.csv', mimeType: 'text/csv', buffer: csvBufferA },
-      { name: 'b.csv', mimeType: 'text/csv', buffer: csvBufferB },
+      { name: "a.csv", mimeType: "text/csv", buffer: csvBufferA },
+      { name: "b.csv", mimeType: "text/csv", buffer: csvBufferB },
     ],
   },
 });
@@ -387,13 +405,13 @@ await request.post('/api/documents', {
 For large uploads (>100 MB), use a stream to avoid loading the whole file into memory:
 
 ```typescript
-import * as fs from 'node:fs';
+import * as fs from "node:fs";
 
-await request.post('/upload', {
-  data: fs.createReadStream('large-file.bin'),
+await request.post("/upload", {
+  data: fs.createReadStream("large-file.bin"),
   headers: {
-    'Content-Type': 'application/octet-stream',
-    'Content-Length': fs.statSync('large-file.bin').size.toString(),
+    "Content-Type": "application/octet-stream",
+    "Content-Length": fs.statSync("large-file.bin").size.toString(),
   },
 });
 ```
@@ -405,50 +423,54 @@ await request.post('/upload', {
 ### 7.1 Status checks
 
 ```typescript
-const response = await request.get('/api/citations/CIT-001');
+const response = await request.get("/api/citations/CIT-001");
 
-response.status();      // 200
-response.statusText();  // 'OK'
-response.ok();          // true for 200–299
+response.status(); // 200
+response.statusText(); // 'OK'
+response.ok(); // true for 200–299
 
 // Common pattern
 expect(response.ok()).toBeTruthy();
 // Or with custom message
-expect(response.ok(), `GET citation failed: ${response.status()} ${await response.text()}`).toBeTruthy();
+expect(
+  response.ok(),
+  `GET citation failed: ${response.status()} ${await response.text()}`,
+).toBeTruthy();
 ```
 
 ### 7.2 Body extraction
 
 ```typescript
 // JSON — parsed
-const body = await response.json();     // any (or your typed cast)
+const body = await response.json(); // any (or your typed cast)
 const typed = (await response.json()) as Citation;
 
 // Text — UTF-8 string
 const text = await response.text();
 
 // Binary — raw bytes
-const buffer = await response.body();   // Buffer
-console.log(buffer.length, 'bytes');
+const buffer = await response.body(); // Buffer
+console.log(buffer.length, "bytes");
 ```
 
 > **Important:** `json()` / `text()` / `body()` can only be called ONCE per response (the underlying stream is consumed). If you need both bytes and JSON, read once and parse:
+>
 > ```typescript
 > const buf = await response.body();
-> const text = buf.toString('utf8');
+> const text = buf.toString("utf8");
 > const json = JSON.parse(text);
 > ```
 
 ### 7.3 Header inspection
 
 ```typescript
-const headers = response.headers();           // { 'content-type': '...', ... }
-const allValues = response.headersArray();    // [{name, value}, ...] — preserves duplicates
+const headers = response.headers(); // { 'content-type': '...', ... }
+const allValues = response.headersArray(); // [{name, value}, ...] — preserves duplicates
 
 // Common assertions
-expect(response.headers()['content-type']).toContain('application/json');
-expect(response.headers()['cache-control']).toBe('no-store');
-expect(response.headers()['x-correlation-id']).toBe(correlationId);
+expect(response.headers()["content-type"]).toContain("application/json");
+expect(response.headers()["cache-control"]).toBe("no-store");
+expect(response.headers()["x-correlation-id"]).toBe(correlationId);
 ```
 
 ### 7.4 Redirect handling
@@ -456,11 +478,11 @@ expect(response.headers()['x-correlation-id']).toBe(correlationId);
 Default behaviour: follow up to 20 redirects. To inspect redirects:
 
 ```typescript
-const response = await request.get('/api/v1/users', {
-  maxRedirects: 0,                          // don't follow
+const response = await request.get("/api/v1/users", {
+  maxRedirects: 0, // don't follow
 });
 expect(response.status()).toBe(301);
-expect(response.headers()['location']).toBe('/api/v2/users');
+expect(response.headers()["location"]).toBe("/api/v2/users");
 ```
 
 To capture the redirect chain (Playwright doesn't expose redirect history on `APIResponse`; use `page.route` interception for that).
@@ -468,11 +490,14 @@ To capture the redirect chain (Playwright doesn't expose redirect history on `AP
 ### 7.5 Error body inspection
 
 ```typescript
-const response = await request.post('/api/citations', { data: invalidPayload });
+const response = await request.post("/api/citations", { data: invalidPayload });
 if (!response.ok()) {
-  const errorBody = await response.json() as { error: string; details: string[] };
+  const errorBody = (await response.json()) as {
+    error: string;
+    details: string[];
+  };
   console.error(`API rejected: ${errorBody.error}`, errorBody.details);
-  expect(errorBody.error).toBe('VALIDATION_ERROR');
+  expect(errorBody.error).toBe("VALIDATION_ERROR");
 }
 ```
 
@@ -481,9 +506,9 @@ if (!response.ok()) {
 `APIResponse` should be disposed when you're done with it, especially for binary bodies. Playwright auto-disposes at test end, but explicit disposal frees memory sooner:
 
 ```typescript
-const response = await request.get('/large-file');
+const response = await request.get("/large-file");
 const buf = await response.body();
-await response.dispose();         // release stream resources
+await response.dispose(); // release stream resources
 ```
 
 For test code this is rarely necessary; for utilities that loop over many responses, it matters.
@@ -502,30 +527,30 @@ export class HeadersCrm {
   static auth(token: string, testId?: string): Record<string, string> {
     return {
       Authorization: `Bearer ${token}`,
-      'x-test-run': 'true',
-      'x-correlation-id': testId ?? randomUUID(),
-      Accept: 'application/json',
+      "x-test-run": "true",
+      "x-correlation-id": testId ?? randomUUID(),
+      Accept: "application/json",
     };
   }
 
   static jsonContent(token: string): Record<string, string> {
     return {
       ...HeadersCrm.auth(token),
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
   }
 
   static formContent(token: string): Record<string, string> {
     return {
       ...HeadersCrm.auth(token),
-      'Content-Type': 'application/x-www-form-urlencoded',
+      "Content-Type": "application/x-www-form-urlencoded",
     };
   }
 
   static withTenant(token: string, tenantId: string): Record<string, string> {
     return {
       ...HeadersCrm.auth(token),
-      'x-tenant-id': tenantId,
+      "x-tenant-id": tenantId,
     };
   }
 }
@@ -534,13 +559,13 @@ export class HeadersCrm {
 ### 8.2 Usage in tests
 
 ```typescript
-await request.post('/citations', {
+await request.post("/citations", {
   headers: HeadersCrm.jsonContent(token),
   data: payload,
 });
 
-await request.get('/admin/users', {
-  headers: HeadersCrm.withTenant(token, 'tenant-acme'),
+await request.get("/admin/users", {
+  headers: HeadersCrm.withTenant(token, "tenant-acme"),
 });
 ```
 
@@ -558,7 +583,7 @@ Same idea for URLs. Never inline string-templating in tests.
 
 ```typescript
 // constants/endpoints.ts
-const API = process.env.API_BASE_URL ?? 'https://api.example.com';
+const API = process.env.API_BASE_URL ?? "https://api.example.com";
 
 export const Endpoints = {
   citations: {
@@ -586,13 +611,16 @@ export const Endpoints = {
 ### 9.2 Usage
 
 ```typescript
-await request.get(Endpoints.citations.getById('CIT-001'));
-await request.post(Endpoints.citations.pay('CIT-001'), { data: { amount: 150 } });
+await request.get(Endpoints.citations.getById("CIT-001"));
+await request.post(Endpoints.citations.pay("CIT-001"), {
+  data: { amount: 150 },
+});
 ```
 
 ### 9.3 Why functions, not constants
 
 A constant has no parameters: `Endpoints.CITATION_GET = '/v1/citations/{id}'` requires manual templating in every call. Functions provide:
+
 - Parameter naming (`id` is explicit).
 - Encoding (you can `encodeURIComponent` in one place).
 - Composition (`Endpoints.payments.byCustomer(customerId)` calls into `Endpoints.customers`).
@@ -617,31 +645,37 @@ Test data builders that compose defaults with overrides.
 ```typescript
 // constants/payloads.citation.ts
 export class PayloadsCitation {
-  static pending(overrides: Partial<CitationCreatePayload> = {}): CitationCreatePayload {
+  static pending(
+    overrides: Partial<CitationCreatePayload> = {},
+  ): CitationCreatePayload {
     return {
-      type: 'PARKING',
-      status: 'PENDING',
+      type: "PARKING",
+      status: "PENDING",
       amount: 150,
-      currency: 'USD',
-      customerId: 'cust-default',
+      currency: "USD",
+      customerId: "cust-default",
       issuedAt: new Date().toISOString(),
-      testFlag: true,                         // marks as test data
-      ...overrides,                            // caller fields win
+      testFlag: true, // marks as test data
+      ...overrides, // caller fields win
     };
   }
 
-  static paid(overrides: Partial<CitationCreatePayload> = {}): CitationCreatePayload {
+  static paid(
+    overrides: Partial<CitationCreatePayload> = {},
+  ): CitationCreatePayload {
     return PayloadsCitation.pending({
-      status: 'PAID',
+      status: "PAID",
       paidAt: new Date().toISOString(),
       ...overrides,
     });
   }
 
-  static disputed(overrides: Partial<CitationCreatePayload> = {}): CitationCreatePayload {
+  static disputed(
+    overrides: Partial<CitationCreatePayload> = {},
+  ): CitationCreatePayload {
     return PayloadsCitation.pending({
-      status: 'DISPUTED',
-      disputeReason: 'Test dispute',
+      status: "DISPUTED",
+      disputeReason: "Test dispute",
       ...overrides,
     });
   }
@@ -655,10 +689,13 @@ export class PayloadsCitation {
 const default_ = PayloadsCitation.pending();
 
 // Override one field
-const custom = PayloadsCitation.pending({ amount: 9999, customerId: 'cust-vip' });
+const custom = PayloadsCitation.pending({
+  amount: 9999,
+  customerId: "cust-vip",
+});
 
 // Stack overrides
-const myPaid = PayloadsCitation.paid({ amount: 250, paymentMethod: 'CARD' });
+const myPaid = PayloadsCitation.paid({ amount: 250, paymentMethod: "CARD" });
 
 await request.post(Endpoints.citations.create(), {
   headers: HeadersCrm.jsonContent(token),
@@ -668,11 +705,11 @@ await request.post(Endpoints.citations.create(), {
 
 ### 10.3 Why factories over fixtures files
 
-| Approach | Pros | Cons |
-|---|---|---|
-| JSON fixtures (`citation-pending.json`) | Stable, version-controlled | Static; can't compose; verbose for variants |
-| Factories (`PayloadsCitation.pending()`) | Dynamic, composable, type-safe | Code, not data |
-| Faker.js + factories | Random, realistic | Non-deterministic — flakiness vector |
+| Approach                                 | Pros                           | Cons                                        |
+| ---------------------------------------- | ------------------------------ | ------------------------------------------- |
+| JSON fixtures (`citation-pending.json`)  | Stable, version-controlled     | Static; can't compose; verbose for variants |
+| Factories (`PayloadsCitation.pending()`) | Dynamic, composable, type-safe | Code, not data                              |
+| Faker.js + factories                     | Random, realistic              | Non-deterministic — flakiness vector        |
 
 The factory pattern hits the sweet spot for most enterprise teams.
 
@@ -693,7 +730,7 @@ static withRandomCustomer(): CitationCreatePayload {
 For tests that should NOT collide on data (e.g., parallel customer creation), random suffixes prevent unique-key violations. Seed `faker` with `testInfo.testId` for reproducibility:
 
 ```typescript
-faker.seed(testInfo.testId.charCodeAt(0));   // deterministic per test
+faker.seed(testInfo.testId.charCodeAt(0)); // deterministic per test
 ```
 
 ---
@@ -706,15 +743,23 @@ A thin wrapper over `APIRequestContext` that adds logging, timing, and assertion
 
 ```typescript
 // utilities/api/APIUtils.ts
-import { type APIRequestContext, type APIResponse, expect } from '@playwright/test';
+import {
+  type APIRequestContext,
+  type APIResponse,
+  expect,
+} from "@playwright/test";
 
 export class APIUtils {
   constructor(private readonly request: APIRequestContext) {}
 
-  async get(endpoint: string, headers: Record<string, string>, expectedStatus = 200): Promise<APIResponse> {
+  async get(
+    endpoint: string,
+    headers: Record<string, string>,
+    expectedStatus = 200,
+  ): Promise<APIResponse> {
     const start = Date.now();
     const response = await this.request.get(endpoint, { headers });
-    this.log('GET', endpoint, response.status(), Date.now() - start);
+    this.log("GET", endpoint, response.status(), Date.now() - start);
     expect(
       response.status(),
       `GET ${endpoint} expected ${expectedStatus}, got ${response.status()}`,
@@ -722,18 +767,31 @@ export class APIUtils {
     return response;
   }
 
-  async post<T>(endpoint: string, headers: Record<string, string>, payload: T, expectedStatus = 201): Promise<APIResponse> {
+  async post<T>(
+    endpoint: string,
+    headers: Record<string, string>,
+    payload: T,
+    expectedStatus = 201,
+  ): Promise<APIResponse> {
     const start = Date.now();
-    const response = await this.request.post(endpoint, { headers, data: payload });
-    this.log('POST', endpoint, response.status(), Date.now() - start);
+    const response = await this.request.post(endpoint, {
+      headers,
+      data: payload,
+    });
+    this.log("POST", endpoint, response.status(), Date.now() - start);
     expect(response.status()).toBe(expectedStatus);
     return response;
   }
 
   // ... PUT, PATCH, DELETE follow the same pattern
 
-  private log(method: string, endpoint: string, status: number, ms: number): void {
-    if (process.env.LOG_API_STEPS === 'true') {
+  private log(
+    method: string,
+    endpoint: string,
+    status: number,
+    ms: number,
+  ): void {
+    if (process.env.LOG_API_STEPS === "true") {
       console.log(`[${method}] ${endpoint}`);
       console.log(`  Status: ${status}`);
       console.log(`  Time:   ${ms}ms`);
@@ -744,24 +802,31 @@ export class APIUtils {
 
 ### 11.2 Why wrap
 
-| Benefit | Detail |
-|---|---|
-| Default status assertion | One line per call instead of two |
-| Timing for performance budgets | Catch slow APIs before they break SLOs |
-| Conditional logging | Off in CI; on locally for debugging |
-| Annotation for trace viewer | Steps appear in HTML report |
-| Single place to add retries, headers, telemetry | Cross-cutting concerns isolated |
+| Benefit                                         | Detail                                 |
+| ----------------------------------------------- | -------------------------------------- |
+| Default status assertion                        | One line per call instead of two       |
+| Timing for performance budgets                  | Catch slow APIs before they break SLOs |
+| Conditional logging                             | Off in CI; on locally for debugging    |
+| Annotation for trace viewer                     | Steps appear in HTML report            |
+| Single place to add retries, headers, telemetry | Cross-cutting concerns isolated        |
 
 ### 11.3 Composition over inheritance
 
 ```typescript
 // ❌ Don't inherit
-class MyClient extends APIUtils { /* ... */ }
+class MyClient extends APIUtils {
+  /* ... */
+}
 
 // ✅ Compose
 class MyClient {
-  constructor(private readonly api: APIUtils, private readonly token: string) {}
-  async list() { return this.api.get(Endpoints.list(), HeadersCrm.auth(this.token)); }
+  constructor(
+    private readonly api: APIUtils,
+    private readonly token: string,
+  ) {}
+  async list() {
+    return this.api.get(Endpoints.list(), HeadersCrm.auth(this.token));
+  }
 }
 ```
 
@@ -777,20 +842,20 @@ The next layer up. Tests speak the business domain, not HTTP.
 
 ```typescript
 // clients/CitationsClient.ts
-import { type APIRequestContext, expect } from '@playwright/test';
-import { HeadersCrm } from '../constants/headers.crm';
-import { Endpoints } from '../constants/endpoints';
+import { type APIRequestContext, expect } from "@playwright/test";
+import { HeadersCrm } from "../constants/headers.crm";
+import { Endpoints } from "../constants/endpoints";
 
 export interface Citation {
   id: string;
-  status: 'PENDING' | 'PAID' | 'DISPUTED' | 'DELETED';
+  status: "PENDING" | "PAID" | "DISPUTED" | "DELETED";
   amount: number;
   customerId: string;
   issuedAt: string;
 }
 
 export interface CreateCitationPayload {
-  status: 'PENDING' | 'DISPUTED';
+  status: "PENDING" | "DISPUTED";
   amount: number;
   customerId: string;
   testFlag?: boolean;
@@ -828,11 +893,17 @@ export class CitationsClient {
     return response.json();
   }
 
-  async waitForStatus(id: string, expected: Citation['status'], timeoutMs = 120_000): Promise<Citation> {
-    return await expect.poll(
-      async () => (await this.getById(id)).status,
-      { timeout: timeoutMs, intervals: [500, 1000, 2000, 5000] },
-    ).toBe(expected) as unknown as Citation;     // poll resolves when condition met
+  async waitForStatus(
+    id: string,
+    expected: Citation["status"],
+    timeoutMs = 120_000,
+  ): Promise<Citation> {
+    return (await expect
+      .poll(async () => (await this.getById(id)).status, {
+        timeout: timeoutMs,
+        intervals: [500, 1000, 2000, 5000],
+      })
+      .toBe(expected)) as unknown as Citation; // poll resolves when condition met
   }
 }
 ```
@@ -840,20 +911,20 @@ export class CitationsClient {
 ### 12.2 Tests speak business
 
 ```typescript
-test('citation lifecycle', async ({ request, oauthToken }) => {
+test("citation lifecycle", async ({ request, oauthToken }) => {
   const citations = new CitationsClient(request, oauthToken);
 
   const citation = await citations.create({
-    status: 'PENDING',
+    status: "PENDING",
     amount: 150,
-    customerId: 'cust-001',
+    customerId: "cust-001",
   });
-  expect(citation.status).toBe('PENDING');
+  expect(citation.status).toBe("PENDING");
 
   const paid = await citations.pay(citation.id, 150);
-  expect(paid.status).toBe('PAID');
+  expect(paid.status).toBe("PAID");
 
-  await citations.waitForStatus(citation.id, 'PAID');
+  await citations.waitForStatus(citation.id, "PAID");
 });
 ```
 
@@ -868,8 +939,10 @@ const test = base.extend<{ citations: CitationsClient }>({
   },
 });
 
-test('uses citations client', async ({ citations }) => {
-  const c = await citations.create({ /* ... */ });
+test("uses citations client", async ({ citations }) => {
+  const c = await citations.create({
+    /* ... */
+  });
 });
 ```
 
@@ -882,18 +955,23 @@ Catch API contract drift before it cascades into mysterious test failures.
 ### 13.1 Define the schema
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
-export const CitationStatus = z.enum(['PENDING', 'PAID', 'DISPUTED', 'DELETED']);
+export const CitationStatus = z.enum([
+  "PENDING",
+  "PAID",
+  "DISPUTED",
+  "DELETED",
+]);
 
 export const CitationSchema = z.object({
   id: z.string(),
   status: CitationStatus,
   amount: z.number().positive(),
-  currency: z.string().length(3),                  // ISO 4217
+  currency: z.string().length(3), // ISO 4217
   customerId: z.string(),
   customerName: z.string().optional(),
-  issuedAt: z.string().datetime(),                 // ISO 8601
+  issuedAt: z.string().datetime(), // ISO 8601
   paidAt: z.string().datetime().nullable(),
   metadata: z.record(z.unknown()).optional(),
 });
@@ -938,16 +1016,28 @@ You immediately know the API dropped `amount`. Fix the API contract or update th
 ### 13.4 The `parseResponse` helper
 
 ```typescript
-function parseResponse<T>(schema: z.ZodSchema<T>, raw: unknown, context: string): T {
+function parseResponse<T>(
+  schema: z.ZodSchema<T>,
+  raw: unknown,
+  context: string,
+): T {
   const result = schema.safeParse(raw);
   if (!result.success) {
-    throw new SchemaValidationError(`Schema validation failed at ${context}`, result.error, raw);
+    throw new SchemaValidationError(
+      `Schema validation failed at ${context}`,
+      result.error,
+      raw,
+    );
   }
   return result.data;
 }
 
 class SchemaValidationError extends Error {
-  constructor(message: string, public readonly zodError: z.ZodError, public readonly raw: unknown) {
+  constructor(
+    message: string,
+    public readonly zodError: z.ZodError,
+    public readonly raw: unknown,
+  ) {
     super(message);
   }
 }
@@ -984,11 +1074,11 @@ Each layer has one job. The trade-off: more files, but each is small and stable.
 
 Retries can live at any layer:
 
-| Layer | When |
-|---|---|
-| Domain client | For idempotent operations only (GET, DELETE) — retry the whole business action |
-| APIUtils | For network errors only — retry the HTTP call |
-| HTTP middleware | For 429 rate limits with backoff |
+| Layer           | When                                                                           |
+| --------------- | ------------------------------------------------------------------------------ |
+| Domain client   | For idempotent operations only (GET, DELETE) — retry the whole business action |
+| APIUtils        | For network errors only — retry the HTTP call                                  |
+| HTTP middleware | For 429 rate limits with backoff                                               |
 
 The framework convention: domain client owns retries because it knows what's idempotent. APIUtils retries only on connection errors.
 
@@ -1047,7 +1137,7 @@ try {
 ### 15.1 Bearer token (most common)
 
 ```typescript
-await request.get('/api/me', {
+await request.get("/api/me", {
   headers: { Authorization: `Bearer ${token}` },
 });
 ```
@@ -1071,15 +1161,15 @@ use: {
 ### 15.3 API key in header
 
 ```typescript
-await request.get('/api/data', {
-  headers: { 'x-api-key': process.env.API_KEY! },
+await request.get("/api/data", {
+  headers: { "x-api-key": process.env.API_KEY! },
 });
 ```
 
 ### 15.4 API key in query param
 
 ```typescript
-await request.get('/api/data', {
+await request.get("/api/data", {
   params: { api_key: process.env.API_KEY! },
 });
 ```
@@ -1093,7 +1183,7 @@ await request.get('/api/data', {
 await loginViaUi(page);
 
 // API calls inherit session
-const response = await page.request.get('/api/me');
+const response = await page.request.get("/api/me");
 ```
 
 ### 15.6 mTLS (client cert)
@@ -1107,7 +1197,7 @@ Configured in `playwright.config.ts` — see [`./05_auth.md#16-mtls`](./05_auth.
 ### 16.1 Per-call timeout
 
 ```typescript
-await request.get('/api/slow', { timeout: 60_000 });
+await request.get("/api/slow", { timeout: 60_000 });
 ```
 
 Default is 30s. For slow endpoints, increase per-call (don't change the global default).
@@ -1115,7 +1205,7 @@ Default is 30s. For slow endpoints, increase per-call (don't change the global d
 ### 16.2 maxRedirects
 
 ```typescript
-await request.get('/api/maybe-redirected', { maxRedirects: 5 });
+await request.get("/api/maybe-redirected", { maxRedirects: 5 });
 // Default: 20
 // 0 = don't follow redirects
 ```
@@ -1123,7 +1213,7 @@ await request.get('/api/maybe-redirected', { maxRedirects: 5 });
 ### 16.3 maxRetries (built-in since v1.49)
 
 ```typescript
-await request.get('/api/flaky', { maxRetries: 3 });
+await request.get("/api/flaky", { maxRetries: 3 });
 ```
 
 Retries on network errors (`ECONNRESET`, `ETIMEDOUT`, etc.). Does NOT retry on HTTP errors (5xx, 429). For that, use domain client logic.
@@ -1131,15 +1221,18 @@ Retries on network errors (`ECONNRESET`, `ETIMEDOUT`, etc.). Does NOT retry on H
 ### 16.4 Manual retry with backoff
 
 ```typescript
-async function retryWithBackoff<T>(fn: () => Promise<T>, max: number = 3): Promise<T> {
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  max: number = 3,
+): Promise<T> {
   let lastError: Error | undefined;
   for (let i = 0; i < max; i++) {
     try {
       return await fn();
     } catch (e) {
       lastError = e as Error;
-      const delay = Math.pow(2, i) * 1000;     // 1s, 2s, 4s
-      await new Promise(r => setTimeout(r, delay));
+      const delay = Math.pow(2, i) * 1000; // 1s, 2s, 4s
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
   throw lastError;
@@ -1149,14 +1242,16 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, max: number = 3): Promi
 ### 16.5 Conditional retry — only on 429
 
 ```typescript
-async function with429Retry<T>(fn: () => Promise<APIResponse>): Promise<APIResponse> {
+async function with429Retry<T>(
+  fn: () => Promise<APIResponse>,
+): Promise<APIResponse> {
   for (let i = 0; i < 5; i++) {
     const response = await fn();
     if (response.status() !== 429) return response;
-    const retryAfter = parseInt(response.headers()['retry-after'] ?? '5');
-    await new Promise(r => setTimeout(r, retryAfter * 1000));
+    const retryAfter = parseInt(response.headers()["retry-after"] ?? "5");
+    await new Promise((r) => setTimeout(r, retryAfter * 1000));
   }
-  throw new Error('Exceeded 429 retry limit');
+  throw new Error("Exceeded 429 retry limit");
 }
 ```
 
@@ -1175,6 +1270,7 @@ use: {
 ```
 
 Modes:
+
 - `'minimal'` — request/response headers, no bodies
 - `'full'` — everything including request and response bodies
 - `false` (default) — no recording
@@ -1200,7 +1296,7 @@ npx har-viewer test-results/network.har
 The HAR file can be replayed by `routeFromHAR`:
 
 ```typescript
-await page.routeFromHAR('test-results/network.har', { update: false });
+await page.routeFromHAR("test-results/network.har", { update: false });
 // Now navigations match recorded entries — no real network calls
 ```
 
@@ -1215,6 +1311,7 @@ Useful for offline testing or mocking with realistic traffic.
 `APIRequestContext` uses HTTP keep-alive by default. Sequential requests to the same host reuse the TCP connection.
 
 For 100 requests to the same API:
+
 - Without keep-alive: ~30s (50ms TLS handshake × 100 + transit)
 - With keep-alive: ~5s (single handshake + transit)
 
@@ -1224,15 +1321,15 @@ This is automatic. Don't disable keep-alive unless you have a specific reason.
 
 ```typescript
 // Sequential — 5s total
-const a = await request.get('/a');
-const b = await request.get('/b');
-const c = await request.get('/c');
+const a = await request.get("/a");
+const b = await request.get("/b");
+const c = await request.get("/c");
 
 // Parallel — 1.5s total
 const [a, b, c] = await Promise.all([
-  request.get('/a'),
-  request.get('/b'),
-  request.get('/c'),
+  request.get("/a"),
+  request.get("/b"),
+  request.get("/c"),
 ]);
 ```
 
@@ -1243,16 +1340,17 @@ Limited by the connection pool (default 6 per host). For >6 parallel requests, s
 `response.body()` loads the entire response into memory. For large responses (>100 MB), the worker may OOM.
 
 Workarounds:
+
 - Use `request.fetch` with streaming.
 - Test only the response headers + status; don't read the body.
 - Save to disk and inspect a sample:
 
 ```typescript
-const fs = require('fs');
+const fs = require("fs");
 const buf = await response.body();
-fs.writeFileSync('/tmp/response.bin', buf);
+fs.writeFileSync("/tmp/response.bin", buf);
 console.log(`Size: ${buf.length}`);
-console.log(`First 100 bytes: ${buf.slice(0, 100).toString('hex')}`);
+console.log(`First 100 bytes: ${buf.slice(0, 100).toString("hex")}`);
 ```
 
 ### 18.4 Worker-scoped request contexts
@@ -1269,10 +1367,10 @@ The killer pattern Playwright enables: a UI action plus an API verification, in 
 
 ```typescript
 // ❌ Success theatre
-test('citation can be paid', async ({ page }) => {
-  await page.goto('/citations/CIT-001');
-  await page.getByRole('button', { name: 'Pay' }).click();
-  await expect(page.getByText('Payment successful')).toBeVisible();
+test("citation can be paid", async ({ page }) => {
+  await page.goto("/citations/CIT-001");
+  await page.getByRole("button", { name: "Pay" }).click();
+  await expect(page.getByText("Payment successful")).toBeVisible();
   // Test passes — but did the citation actually get paid?
 });
 ```
@@ -1282,14 +1380,14 @@ The UI says "successful" but maybe the API call returned 200 with no DB write. R
 ### 19.2 The fix — verify via API
 
 ```typescript
-test('citation is paid in backend', async ({ page, citations }) => {
-  await page.goto('/citations/CIT-001');
-  await page.getByRole('button', { name: 'Pay' }).click();
-  await expect(page.getByText('Payment successful')).toBeVisible();
+test("citation is paid in backend", async ({ page, citations }) => {
+  await page.goto("/citations/CIT-001");
+  await page.getByRole("button", { name: "Pay" }).click();
+  await expect(page.getByText("Payment successful")).toBeVisible();
 
   // Cross-check via API
-  await citations.waitForStatus('CIT-001', 'PAID', 30_000);
-  const citation = await citations.getById('CIT-001');
+  await citations.waitForStatus("CIT-001", "PAID", 30_000);
+  const citation = await citations.getById("CIT-001");
   expect(citation.paidAt).toBeDefined();
 });
 ```
@@ -1297,33 +1395,40 @@ test('citation is paid in backend', async ({ page, citations }) => {
 ### 19.3 API setup, UI assertion
 
 ```typescript
-test('newly-created citation appears in dashboard', async ({ page, citations }) => {
+test("newly-created citation appears in dashboard", async ({
+  page,
+  citations,
+}) => {
   // Setup via API — fast (200ms instead of 30s of UI)
-  const c = await citations.create(PayloadsCitation.pending({ amount: 999.99 }));
+  const c = await citations.create(
+    PayloadsCitation.pending({ amount: 999.99 }),
+  );
 
   // Test the UI behaviour
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
   await expect(page.getByText(c.id)).toBeVisible();
-  await expect(page.getByText('$999.99')).toBeVisible();
+  await expect(page.getByText("$999.99")).toBeVisible();
 });
 ```
 
 ### 19.4 UI mutation, API verification (DB-level)
 
 ```typescript
-test('editing customer name persists', async ({ page, customers, db }) => {
-  await page.goto('/customers/CUST-001');
-  await page.getByLabel('Name').fill('New Name');
-  await page.getByRole('button', { name: 'Save' }).click();
-  await expect(page.getByText('Saved')).toBeVisible();
+test("editing customer name persists", async ({ page, customers, db }) => {
+  await page.goto("/customers/CUST-001");
+  await page.getByLabel("Name").fill("New Name");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("Saved")).toBeVisible();
 
   // Verify at the API layer
-  const apiCustomer = await customers.getById('CUST-001');
-  expect(apiCustomer.name).toBe('New Name');
+  const apiCustomer = await customers.getById("CUST-001");
+  expect(apiCustomer.name).toBe("New Name");
 
   // Verify at the DB layer (the ground truth)
-  const dbRow = await db.query('SELECT name FROM customers WHERE id = $1', ['CUST-001']);
-  expect(dbRow[0].name).toBe('New Name');
+  const dbRow = await db.query("SELECT name FROM customers WHERE id = $1", [
+    "CUST-001",
+  ]);
+  expect(dbRow[0].name).toBe("New Name");
 });
 ```
 
@@ -1422,26 +1527,26 @@ const body = text ? JSON.parse(text) : null;
 
 ## 21. Anti-pattern catalog
 
-| ❌ | ✅ |
-|---|---|
-| Hardcoded URLs in test bodies | Endpoint factories |
-| Hardcoded headers everywhere | Header factories |
-| Hardcoded payloads | Payload factories with overrides |
-| `response.json()` without status check | `APIUtils` or explicit `expect(response.ok())` |
-| Casting response to typed shape (no validation) | Zod schema validation |
-| Calling `body()` twice on the same response | Read once, parse multiple times |
-| API setup via UI (30s) for tests that test UI | API setup (200ms) + UI assertion |
-| Manual `Promise.all` for sequential operations | Sequential `await` chain |
-| Inline string-template URLs | Endpoint factory functions |
-| Catching all errors in API client | Type-specific errors; rethrow unknown |
-| Token in URL query string | Token in `Authorization: Bearer` header |
-| `request.delete(...)` without expecting 204 | Assert specific success status |
-| Polling with `for + waitForTimeout` | `expect.poll` |
-| Fixture that creates data without cleanup | Always pair create with delete in fixture teardown |
-| Schema definition in test file | Schemas in shared module, imported by clients |
-| Domain client with 50 methods | Split by resource (CitationsClient, CustomersClient) |
-| `baseURL` hardcoded in client constructor | Read from env config |
-| Worker token shared between read and write tests | Separate tokens by intended use |
+| ❌                                               | ✅                                                   |
+| ------------------------------------------------ | ---------------------------------------------------- |
+| Hardcoded URLs in test bodies                    | Endpoint factories                                   |
+| Hardcoded headers everywhere                     | Header factories                                     |
+| Hardcoded payloads                               | Payload factories with overrides                     |
+| `response.json()` without status check           | `APIUtils` or explicit `expect(response.ok())`       |
+| Casting response to typed shape (no validation)  | Zod schema validation                                |
+| Calling `body()` twice on the same response      | Read once, parse multiple times                      |
+| API setup via UI (30s) for tests that test UI    | API setup (200ms) + UI assertion                     |
+| Manual `Promise.all` for sequential operations   | Sequential `await` chain                             |
+| Inline string-template URLs                      | Endpoint factory functions                           |
+| Catching all errors in API client                | Type-specific errors; rethrow unknown                |
+| Token in URL query string                        | Token in `Authorization: Bearer` header              |
+| `request.delete(...)` without expecting 204      | Assert specific success status                       |
+| Polling with `for + waitForTimeout`              | `expect.poll`                                        |
+| Fixture that creates data without cleanup        | Always pair create with delete in fixture teardown   |
+| Schema definition in test file                   | Schemas in shared module, imported by clients        |
+| Domain client with 50 methods                    | Split by resource (CitationsClient, CustomersClient) |
+| `baseURL` hardcoded in client constructor        | Read from env config                                 |
+| Worker token shared between read and write tests | Separate tokens by intended use                      |
 
 ---
 

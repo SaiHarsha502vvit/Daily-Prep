@@ -64,16 +64,16 @@ PROMETHEUS ARCHITECTURE:
 METRIC TYPES:
   COUNTER: only goes UP. Total requests, total errors, total bytes sent.
     http_requests_total{method="GET", path="/api/users", status="200"} 15234
-  
+
   GAUGE: goes up AND down. Current temperature, queue size, active connections.
     active_connections{server="web-1"} 42
-  
+
   HISTOGRAM: distribution of values. Request latency, response size.
     Records: counts in buckets (≤50ms, ≤100ms, ≤250ms, ≤500ms, ≤1s, ≤5s).
     http_request_duration_seconds_bucket{le="0.25"} 9800
     http_request_duration_seconds_bucket{le="0.5"}  9950
     → 98% of requests complete in ≤250ms. 99.5% in ≤500ms.
-  
+
   SUMMARY: similar to histogram but calculates quantiles client-side.
     Less commonly used. Histograms are preferred (can aggregate server-side).
 ```
@@ -109,7 +109,7 @@ DB_POOL_USED = Gauge('db_connection_pool_used', 'Database connections in use')
 def handle_request(method, path):
     ACTIVE_REQUESTS.inc()
     start_time = time.time()
-    
+
     try:
         # ... your business logic ...
         status = "200"
@@ -204,20 +204,20 @@ print(f"GET /api/users returned 200 in 45.2ms for user usr_123")
 ```
 OPENTELEMETRY (OTel) = vendor-neutral standard for telemetry.
   One instrumentation → export to ANY backend (Prometheus, Jaeger, Datadog, etc.).
-  
+
   BEFORE OTel: instrument for Prometheus AND Jaeger AND Datadog → 3x work!
   WITH OTel: instrument ONCE → OTel Collector → routes to any backend.
-  
+
   OTel Collector:
   Your App → OTel SDK → OTel Collector → Prometheus (metrics)
                                         → Loki (logs)
                                         → Tempo (traces)
-  
+
   The Collector:
   - Receives telemetry from apps.
   - Processes: batch, filter, transform, sample.
   - Exports: to multiple backends simultaneously.
-  
+
   Supported languages: Python, Java, Go, Node.js, .NET, Rust, C++.
 ```
 
@@ -230,43 +230,43 @@ OPENTELEMETRY (OTel) = vendor-neutral standard for telemetry.
 ```yaml
 # ── PROMETHEUS ALERTING RULES ──
 groups:
-- name: application_alerts
-  rules:
-  - alert: HighErrorRate
-    expr: |
-      sum(rate(http_requests_total{status=~"5.."}[5m]))
-      / sum(rate(http_requests_total[5m]))
-      > 0.05
-    for: 5m                     # must be true for 5 minutes (avoid flapping)
-    labels:
-      severity: critical
-    annotations:
-      summary: "High error rate: {{ $value | humanizePercentage }}"
-      runbook: "https://wiki.mycompany.com/runbooks/high-error-rate"
+  - name: application_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status=~"5.."}[5m]))
+          / sum(rate(http_requests_total[5m]))
+          > 0.05
+        for: 5m # must be true for 5 minutes (avoid flapping)
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate: {{ $value | humanizePercentage }}"
+          runbook: "https://wiki.mycompany.com/runbooks/high-error-rate"
 
-  - alert: HighLatency
-    expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 2
-    for: 10m
-    labels:
-      severity: warning
-    annotations:
-      summary: "p99 latency above 2s: {{ $value }}s"
+      - alert: HighLatency
+        expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p99 latency above 2s: {{ $value }}s"
 
-  - alert: PodCrashLooping
-    expr: rate(kube_pod_container_status_restarts_total[15m]) > 0
-    for: 5m
-    labels:
-      severity: critical
-    annotations:
-      summary: "Pod {{ $labels.pod }} is crash-looping"
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod {{ $labels.pod }} is crash-looping"
 
-  - alert: DiskSpaceRunningOut
-    expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
-    for: 15m
-    labels:
-      severity: warning
-    annotations:
-      summary: "Disk space < 10% on {{ $labels.instance }}"
+      - alert: DiskSpaceRunningOut
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space < 10% on {{ $labels.instance }}"
 ```
 
 ```
@@ -300,12 +300,12 @@ ALERTING BEST PRACTICES:
 ```
 GRAFANA = visualization layer for ALL your telemetry data.
   Connects to: Prometheus, Loki, Tempo, Elasticsearch, MySQL, PostgreSQL.
-  
+
   THE RED METHOD (for microservices):
   Rate:    requests per second.
   Errors:  error rate (percentage of requests that fail).
   Duration: latency (p50, p95, p99).
-  
+
   THE USE METHOD (for infrastructure):
   Utilization: how full? (CPU %, disk %, memory %).
   Saturation: how queued? (run queue length, swap usage).
@@ -331,12 +331,12 @@ ELK = Elasticsearch + Logstash + Kibana.
   Elasticsearch: search engine + document store. Indexes logs for fast queries.
   Logstash: ETL pipeline. Receives → parses → transforms → sends to ES.
   Kibana: web UI for searching and visualizing logs.
-  
+
   MODERN ALTERNATIVE: Grafana Loki (lighter, cheaper, uses labels not full-text).
-  
+
   ARCHITECTURE:
   App → Filebeat/Fluent Bit → Logstash → Elasticsearch → Kibana
-  
+
 WHY NOT JUST grep ON SERVERS?
   1. 50 servers → grep on each one manually? No.
   2. Logs rotate/delete → old logs lost. ES retains them.
@@ -362,7 +362,7 @@ IN MICROSERVICES: one request touches 5-15 services.
 
 TRACE: the complete journey of ONE request through all services.
   Trace ID: req-abc123 (unique per request, propagated via headers).
-  
+
   Spans (each service creates one):
   ┌──────────────────┬──────────────────────────────────────────────┐
   │ API Gateway      │ ████ 5ms                                     │
@@ -378,12 +378,12 @@ TRACE PROPAGATION:
   Service A calls B → passes the header.
   B reads trace-id → creates its own span with same trace-id.
   Backend (Jaeger/Tempo) reassembles the full trace.
-  
+
 CORRELATION (the holy grail):
   Metrics: "error rate spiked at 14:23."
   Traces: "request req-abc123 at 14:23 took 45 seconds."
   Logs: "req-abc123: database connection timeout at pool.get()."
-  
+
   trace_id links all three → ONE click: metric spike → trace → exact log line.
 ```
 
@@ -391,14 +391,13 @@ CORRELATION (the holy grail):
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **K8s monitoring** | [Ch 18: K8s](18_Kubernetes_Complete.md) — pod metrics, HPA uses metrics |
-| **SRE (SLOs use metrics)** | [Ch 22: SRE](22_SRE_Practices.md) — SLIs, SLOs, error budgets |
-| **Docker stats** | [Ch 17: Docker](17_Docker_Complete.md) — container monitoring |
-| **Load balancer metrics** | [Ch 11: LB](11_Load_Balancing_Proxies.md) — upstream response time |
-| **SQL slow query logs** | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — query monitoring |
-| **Linux system monitoring** | [Ch 16: Linux](16_Linux_Administration.md) — USE method |
-| **CI/CD (deploy markers)** | [Ch 19: CI/CD](19_CICD_Pipelines.md) — correlate deploys with metrics |
-| **Network debugging** | [Ch 15: Debugging](15_Network_Debugging.md) — packet-level analysis |
-
+| Topic                       | Related Content                                                         |
+| --------------------------- | ----------------------------------------------------------------------- |
+| **K8s monitoring**          | [Ch 18: K8s](18_Kubernetes_Complete.md) — pod metrics, HPA uses metrics |
+| **SRE (SLOs use metrics)**  | [Ch 22: SRE](22_SRE_Practices.md) — SLIs, SLOs, error budgets           |
+| **Docker stats**            | [Ch 17: Docker](17_Docker_Complete.md) — container monitoring           |
+| **Load balancer metrics**   | [Ch 11: LB](11_Load_Balancing_Proxies.md) — upstream response time      |
+| **SQL slow query logs**     | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — query monitoring  |
+| **Linux system monitoring** | [Ch 16: Linux](16_Linux_Administration.md) — USE method                 |
+| **CI/CD (deploy markers)**  | [Ch 19: CI/CD](19_CICD_Pipelines.md) — correlate deploys with metrics   |
+| **Network debugging**       | [Ch 15: Debugging](15_Network_Debugging.md) — packet-level analysis     |

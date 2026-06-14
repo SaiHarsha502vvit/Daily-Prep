@@ -1,4 +1,5 @@
 # GRAPHS - Complete Guide
+
 ## From Fundamentals to Advanced Graph Algorithms
 
 > **Split from Trees_Graphs.md for better navigation**
@@ -2533,11 +2534,11 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 
 ---
 
-# A* (A-STAR) ALGORITHM — COMPLETE GUIDE
+# A\* (A-STAR) ALGORITHM — COMPLETE GUIDE
 
 ---
 
-## 🔵 WHY: Why Do We Need A*?
+## 🔵 WHY: Why Do We Need A\*?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -2573,7 +2574,7 @@ public boolean hasHamiltonianPath(int n, int[][] edges) {
 
 ---
 
-## 🔵 WHAT: How A* Works
+## 🔵 WHAT: How A\* Works
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -2828,7 +2829,7 @@ public class AStarAlgorithm {
 
 ---
 
-### A* with Weighted Graph (Non-Grid)
+### A\* with Weighted Graph (Non-Grid)
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2886,7 +2887,7 @@ public class AStarWeightedGraph {
 
 ---
 
-### A* vs Dijkstra — When to Use Which
+### A\* vs Dijkstra — When to Use Which
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -2924,16 +2925,16 @@ public class AStarWeightedGraph {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Practice Problems (A* / Shortest Path with Heuristic)
+### Practice Problems (A\* / Shortest Path with Heuristic)
 
-| # | Problem | Platform | Difficulty | Key Insight |
-|---|---------|----------|------------|-------------|
-| 1 | Shortest Path in Binary Matrix (LC 1091) | LeetCode | Medium | BFS on grid, adapt to A* |
-| 2 | Path With Minimum Effort (LC 1631) | LeetCode | Medium | Modified Dijkstra/A* on grid |
-| 3 | Swim in Rising Water (LC 778) | LeetCode | Hard | Binary search + BFS or A* |
-| 4 | Sliding Puzzle (LC 773) | LeetCode | Hard | A* with misplaced tile heuristic |
-| 5 | Minimum Cost Path on Grid | HackerEarth | Medium | Classic A* on weighted grid |
-| 6 | 8-Puzzle solver | Classic | Hard | A* with Manhattan distance heuristic |
+| #   | Problem                                  | Platform    | Difficulty | Key Insight                           |
+| --- | ---------------------------------------- | ----------- | ---------- | ------------------------------------- |
+| 1   | Shortest Path in Binary Matrix (LC 1091) | LeetCode    | Medium     | BFS on grid, adapt to A\*             |
+| 2   | Path With Minimum Effort (LC 1631)       | LeetCode    | Medium     | Modified Dijkstra/A\* on grid         |
+| 3   | Swim in Rising Water (LC 778)            | LeetCode    | Hard       | Binary search + BFS or A\*            |
+| 4   | Sliding Puzzle (LC 773)                  | LeetCode    | Hard       | A\* with misplaced tile heuristic     |
+| 5   | Minimum Cost Path on Grid                | HackerEarth | Medium     | Classic A\* on weighted grid          |
+| 6   | 8-Puzzle solver                          | Classic     | Hard       | A\* with Manhattan distance heuristic |
 
 ---
 
@@ -2946,93 +2947,93 @@ public class AStarWeightedGraph {
 
 ## Section 1: BFS & DFS Fundamentals
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Number of Islands (LC 200) | LeetCode | Medium | BFS/DFS | Grid flood fill — the #1 graph starter |
-| 2 | Flood Fill (LC 733) | LeetCode | Easy | DFS | Simple connected component on grid |
-| 3 | Max Area of Island (LC 695) | LeetCode | Medium | DFS | Track component size during DFS |
-| 4 | Number of Provinces (LC 547) | LeetCode | Medium | DFS/UF | Adjacency matrix, count components |
-| 5 | Clone Graph (LC 133) | LeetCode | Medium | BFS/DFS | HashMap to track visited clones |
-| 6 | Surrounded Regions (LC 130) | LeetCode | Medium | DFS | Border-connected DFS, flip remaining |
-| 7 | Pacific Atlantic Water Flow (LC 417) | LeetCode | Medium | BFS | Reverse BFS from both oceans |
-| 8 | Rotting Oranges (LC 994) | LeetCode | Medium | BFS | Multi-source BFS, track minutes |
-| 9 | 01 Matrix (LC 542) | LeetCode | Medium | BFS | Multi-source BFS from all 0s |
-| 10 | Walls and Gates (LC 286) | LeetCode | Medium | BFS | Multi-source BFS from gates |
-| 11 | Number of Connected Components (LC 323) | LeetCode | Medium | DFS/UF | Classic component counting |
-| 12 | Graph Valid Tree (LC 261) | LeetCode | Medium | DFS/UF | Connected + no cycle = tree |
+| #   | Problem                                 | Platform | Difficulty | Category | Key Technique                          |
+| --- | --------------------------------------- | -------- | ---------- | -------- | -------------------------------------- |
+| 1   | Number of Islands (LC 200)              | LeetCode | Medium     | BFS/DFS  | Grid flood fill — the #1 graph starter |
+| 2   | Flood Fill (LC 733)                     | LeetCode | Easy       | DFS      | Simple connected component on grid     |
+| 3   | Max Area of Island (LC 695)             | LeetCode | Medium     | DFS      | Track component size during DFS        |
+| 4   | Number of Provinces (LC 547)            | LeetCode | Medium     | DFS/UF   | Adjacency matrix, count components     |
+| 5   | Clone Graph (LC 133)                    | LeetCode | Medium     | BFS/DFS  | HashMap to track visited clones        |
+| 6   | Surrounded Regions (LC 130)             | LeetCode | Medium     | DFS      | Border-connected DFS, flip remaining   |
+| 7   | Pacific Atlantic Water Flow (LC 417)    | LeetCode | Medium     | BFS      | Reverse BFS from both oceans           |
+| 8   | Rotting Oranges (LC 994)                | LeetCode | Medium     | BFS      | Multi-source BFS, track minutes        |
+| 9   | 01 Matrix (LC 542)                      | LeetCode | Medium     | BFS      | Multi-source BFS from all 0s           |
+| 10  | Walls and Gates (LC 286)                | LeetCode | Medium     | BFS      | Multi-source BFS from gates            |
+| 11  | Number of Connected Components (LC 323) | LeetCode | Medium     | DFS/UF   | Classic component counting             |
+| 12  | Graph Valid Tree (LC 261)               | LeetCode | Medium     | DFS/UF   | Connected + no cycle = tree            |
 
 ---
 
 ## Section 2: Shortest Path (BFS / Dijkstra / Bellman-Ford)
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Shortest Path in Binary Matrix (LC 1091) | LeetCode | Medium | BFS | 8-directional BFS on grid |
-| 2 | Word Ladder (LC 127) | LeetCode | Hard | BFS | Transform string BFS, O(26*L) neighbors |
-| 3 | Network Delay Time (LC 743) | LeetCode | Medium | Dijkstra | Classic single-source shortest path |
-| 4 | Path With Minimum Effort (LC 1631) | LeetCode | Medium | Dijkstra | Min max-edge path, modified priority |
-| 5 | Cheapest Flights Within K Stops (LC 787) | LeetCode | Medium | BFS/BF | Bellman-Ford with K relaxation rounds |
-| 6 | Swim in Rising Water (LC 778) | LeetCode | Hard | Dijkstra | Min bottleneck path |
-| 7 | Minimum Cost to Make at Least One Valid Path (LC 1368) | LeetCode | Hard | 0-1 BFS | Deque BFS: 0-cost same dir, 1-cost change |
-| 8 | Shortest Path Visiting All Nodes (LC 847) | LeetCode | Hard | BFS+Bitmask | BFS with state = (node, visited_mask) |
-| 9 | Shortest Distance from All Buildings (LC 317) | LeetCode | Hard | BFS | Multi BFS + sum distances |
-| 10 | Find the City (LC 1334) | LeetCode | Medium | Dijkstra/FW | Run Dijkstra from each city or Floyd-Warshall |
+| #   | Problem                                                | Platform | Difficulty | Category    | Key Technique                                 |
+| --- | ------------------------------------------------------ | -------- | ---------- | ----------- | --------------------------------------------- |
+| 1   | Shortest Path in Binary Matrix (LC 1091)               | LeetCode | Medium     | BFS         | 8-directional BFS on grid                     |
+| 2   | Word Ladder (LC 127)                                   | LeetCode | Hard       | BFS         | Transform string BFS, O(26\*L) neighbors      |
+| 3   | Network Delay Time (LC 743)                            | LeetCode | Medium     | Dijkstra    | Classic single-source shortest path           |
+| 4   | Path With Minimum Effort (LC 1631)                     | LeetCode | Medium     | Dijkstra    | Min max-edge path, modified priority          |
+| 5   | Cheapest Flights Within K Stops (LC 787)               | LeetCode | Medium     | BFS/BF      | Bellman-Ford with K relaxation rounds         |
+| 6   | Swim in Rising Water (LC 778)                          | LeetCode | Hard       | Dijkstra    | Min bottleneck path                           |
+| 7   | Minimum Cost to Make at Least One Valid Path (LC 1368) | LeetCode | Hard       | 0-1 BFS     | Deque BFS: 0-cost same dir, 1-cost change     |
+| 8   | Shortest Path Visiting All Nodes (LC 847)              | LeetCode | Hard       | BFS+Bitmask | BFS with state = (node, visited_mask)         |
+| 9   | Shortest Distance from All Buildings (LC 317)          | LeetCode | Hard       | BFS         | Multi BFS + sum distances                     |
+| 10  | Find the City (LC 1334)                                | LeetCode | Medium     | Dijkstra/FW | Run Dijkstra from each city or Floyd-Warshall |
 
 ---
 
 ## Section 3: Topological Sort
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Course Schedule (LC 207) | LeetCode | Medium | Topo | Cycle detection via Kahn's BFS |
-| 2 | Course Schedule II (LC 210) | LeetCode | Medium | Topo | Return valid ordering |
-| 3 | Alien Dictionary (LC 269) | LeetCode | Hard | Topo | Build graph from word comparisons |
-| 4 | Minimum Height Trees (LC 310) | LeetCode | Medium | Topo | Peel leaves inward to find centroids |
-| 5 | Parallel Courses (LC 1136) | LeetCode | Medium | Topo+BFS | Level-by-level Kahn's = min semesters |
-| 6 | Longest Increasing Path in a Matrix (LC 329) | LeetCode | Hard | Topo+DP | DAG on grid, topological order + memo |
-| 7 | Sort Items by Groups (LC 1203) | LeetCode | Hard | Topo | Double topological sort (group + item) |
-| 8 | Sequence Reconstruction (LC 444) | LeetCode | Medium | Topo | Check unique topological order |
+| #   | Problem                                      | Platform | Difficulty | Category | Key Technique                          |
+| --- | -------------------------------------------- | -------- | ---------- | -------- | -------------------------------------- |
+| 1   | Course Schedule (LC 207)                     | LeetCode | Medium     | Topo     | Cycle detection via Kahn's BFS         |
+| 2   | Course Schedule II (LC 210)                  | LeetCode | Medium     | Topo     | Return valid ordering                  |
+| 3   | Alien Dictionary (LC 269)                    | LeetCode | Hard       | Topo     | Build graph from word comparisons      |
+| 4   | Minimum Height Trees (LC 310)                | LeetCode | Medium     | Topo     | Peel leaves inward to find centroids   |
+| 5   | Parallel Courses (LC 1136)                   | LeetCode | Medium     | Topo+BFS | Level-by-level Kahn's = min semesters  |
+| 6   | Longest Increasing Path in a Matrix (LC 329) | LeetCode | Hard       | Topo+DP  | DAG on grid, topological order + memo  |
+| 7   | Sort Items by Groups (LC 1203)               | LeetCode | Hard       | Topo     | Double topological sort (group + item) |
+| 8   | Sequence Reconstruction (LC 444)             | LeetCode | Medium     | Topo     | Check unique topological order         |
 
 ---
 
 ## Section 4: Union-Find (Disjoint Set)
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Number of Islands II (LC 305) | LeetCode | Hard | UF | Online connectivity with union-find |
-| 2 | Redundant Connection (LC 684) | LeetCode | Medium | UF | Extra edge creates cycle → UF detects it |
-| 3 | Accounts Merge (LC 721) | LeetCode | Medium | UF | Union emails, group by root |
-| 4 | Earliest Moment When Everyone Becomes Friends (LC 1101) | LeetCode | Medium | UF | Union until single component |
-| 5 | Satisfiability of Equality Equations (LC 990) | LeetCode | Medium | UF | Union equals, check not-equals |
-| 6 | Most Stones Removed (LC 947) | LeetCode | Medium | UF | Union by row/col, answer = n - components |
-| 7 | Smallest String With Swaps (LC 1202) | LeetCode | Medium | UF | Group by component, sort within group |
-| 8 | Minimize Malware Spread (LC 924) | LeetCode | Hard | UF | Component sizes, greedy removal |
+| #   | Problem                                                 | Platform | Difficulty | Category | Key Technique                             |
+| --- | ------------------------------------------------------- | -------- | ---------- | -------- | ----------------------------------------- |
+| 1   | Number of Islands II (LC 305)                           | LeetCode | Hard       | UF       | Online connectivity with union-find       |
+| 2   | Redundant Connection (LC 684)                           | LeetCode | Medium     | UF       | Extra edge creates cycle → UF detects it  |
+| 3   | Accounts Merge (LC 721)                                 | LeetCode | Medium     | UF       | Union emails, group by root               |
+| 4   | Earliest Moment When Everyone Becomes Friends (LC 1101) | LeetCode | Medium     | UF       | Union until single component              |
+| 5   | Satisfiability of Equality Equations (LC 990)           | LeetCode | Medium     | UF       | Union equals, check not-equals            |
+| 6   | Most Stones Removed (LC 947)                            | LeetCode | Medium     | UF       | Union by row/col, answer = n - components |
+| 7   | Smallest String With Swaps (LC 1202)                    | LeetCode | Medium     | UF       | Group by component, sort within group     |
+| 8   | Minimize Malware Spread (LC 924)                        | LeetCode | Hard       | UF       | Component sizes, greedy removal           |
 
 ---
 
 ## Section 5: Minimum Spanning Tree (MST)
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Min Cost to Connect All Points (LC 1584) | LeetCode | Medium | Prim/Kruskal | Classic MST on complete graph |
-| 2 | Connecting Cities With Minimum Cost (LC 1135) | LeetCode | Medium | Kruskal | Sort edges + Union-Find |
-| 3 | Optimize Water Distribution (LC 1168) | LeetCode | Hard | MST | Add virtual node for wells, then MST |
-| 4 | Find Critical and Pseudo-Critical Edges (LC 1489) | LeetCode | Hard | MST | Force include/exclude each edge |
+| #   | Problem                                           | Platform | Difficulty | Category     | Key Technique                        |
+| --- | ------------------------------------------------- | -------- | ---------- | ------------ | ------------------------------------ |
+| 1   | Min Cost to Connect All Points (LC 1584)          | LeetCode | Medium     | Prim/Kruskal | Classic MST on complete graph        |
+| 2   | Connecting Cities With Minimum Cost (LC 1135)     | LeetCode | Medium     | Kruskal      | Sort edges + Union-Find              |
+| 3   | Optimize Water Distribution (LC 1168)             | LeetCode | Hard       | MST          | Add virtual node for wells, then MST |
+| 4   | Find Critical and Pseudo-Critical Edges (LC 1489) | LeetCode | Hard       | MST          | Force include/exclude each edge      |
 
 ---
 
 ## Section 6: Advanced Graph Patterns
 
-| # | Problem | Platform | Difficulty | Category | Key Technique |
-|---|---------|----------|------------|----------|---------------|
-| 1 | Is Graph Bipartite? (LC 785) | LeetCode | Medium | Coloring | 2-color BFS/DFS |
-| 2 | Possible Bipartition (LC 886) | LeetCode | Medium | Coloring | Can we 2-color with dislikes? |
-| 3 | Find Eventual Safe States (LC 802) | LeetCode | Medium | Cycle | Reverse graph + topo or DFS with states |
-| 4 | Detect Cycles in 2D Grid (LC 1559) | LeetCode | Medium | DFS | Track parent to detect back edges |
-| 5 | Evaluate Division (LC 399) | LeetCode | Medium | DFS | Weighted graph, path multiplication |
-| 6 | Reconstruct Itinerary (LC 332) | LeetCode | Hard | Euler | Hierholzer's algorithm, lexicographic order |
-| 7 | Critical Connections (LC 1192) | LeetCode | Hard | Bridge | Tarjan's algorithm for bridges |
-| 8 | Strongly Connected Components | Classic | Hard | SCC | Kosaraju's or Tarjan's algorithm |
+| #   | Problem                            | Platform | Difficulty | Category | Key Technique                               |
+| --- | ---------------------------------- | -------- | ---------- | -------- | ------------------------------------------- |
+| 1   | Is Graph Bipartite? (LC 785)       | LeetCode | Medium     | Coloring | 2-color BFS/DFS                             |
+| 2   | Possible Bipartition (LC 886)      | LeetCode | Medium     | Coloring | Can we 2-color with dislikes?               |
+| 3   | Find Eventual Safe States (LC 802) | LeetCode | Medium     | Cycle    | Reverse graph + topo or DFS with states     |
+| 4   | Detect Cycles in 2D Grid (LC 1559) | LeetCode | Medium     | DFS      | Track parent to detect back edges           |
+| 5   | Evaluate Division (LC 399)         | LeetCode | Medium     | DFS      | Weighted graph, path multiplication         |
+| 6   | Reconstruct Itinerary (LC 332)     | LeetCode | Hard       | Euler    | Hierholzer's algorithm, lexicographic order |
+| 7   | Critical Connections (LC 1192)     | LeetCode | Hard       | Bridge   | Tarjan's algorithm for bridges              |
+| 8   | Strongly Connected Components      | Classic  | Hard       | SCC      | Kosaraju's or Tarjan's algorithm            |
 
 ---
 
@@ -3040,18 +3041,18 @@ public class AStarWeightedGraph {
 
 > These problems are less commonly seen in "Top 100" lists but teach deep graph intuition.
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Bus Routes (LC 815) | LeetCode | BFS on routes (not stops) — graph modeling insight |
-| 2 | Shortest Bridge (LC 934) | LeetCode | DFS to find island + BFS to expand — hybrid technique |
-| 3 | Time Needed to Inform All Employees (LC 1376) | LeetCode | Tree DFS as graph problem — max path sum |
-| 4 | Reorder Routes to Make All Paths Lead to City Zero (LC 1466) | LeetCode | Directed graph trick — reverse edges concept |
-| 5 | Number of Operations to Make Network Connected (LC 1319) | LeetCode | Components - 1 = min edges needed, UF elegance |
-| 6 | All Paths From Source to Target (LC 797) | LeetCode | DAG backtracking — no visited set needed |
-| 7 | Detonate the Maximum Bombs (LC 2101) | LeetCode | Build directed graph from geometry, then DFS from each |
-| 8 | Minimum Number of Vertices to Reach All Nodes (LC 1557) | LeetCode | Nodes with in-degree 0 — simple but teaches reachability |
-| 9 | Path with Maximum Probability (LC 1514) | LeetCode | Modified Dijkstra — maximize product instead of minimize sum |
-| 10 | Minimum Genetic Mutation (LC 433) | LeetCode | BFS string transformation — Word Ladder variant with biology |
+| #   | Problem                                                      | Platform | Why It's Valuable                                            |
+| --- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| 1   | Bus Routes (LC 815)                                          | LeetCode | BFS on routes (not stops) — graph modeling insight           |
+| 2   | Shortest Bridge (LC 934)                                     | LeetCode | DFS to find island + BFS to expand — hybrid technique        |
+| 3   | Time Needed to Inform All Employees (LC 1376)                | LeetCode | Tree DFS as graph problem — max path sum                     |
+| 4   | Reorder Routes to Make All Paths Lead to City Zero (LC 1466) | LeetCode | Directed graph trick — reverse edges concept                 |
+| 5   | Number of Operations to Make Network Connected (LC 1319)     | LeetCode | Components - 1 = min edges needed, UF elegance               |
+| 6   | All Paths From Source to Target (LC 797)                     | LeetCode | DAG backtracking — no visited set needed                     |
+| 7   | Detonate the Maximum Bombs (LC 2101)                         | LeetCode | Build directed graph from geometry, then DFS from each       |
+| 8   | Minimum Number of Vertices to Reach All Nodes (LC 1557)      | LeetCode | Nodes with in-degree 0 — simple but teaches reachability     |
+| 9   | Path with Maximum Probability (LC 1514)                      | LeetCode | Modified Dijkstra — maximize product instead of minimize sum |
+| 10  | Minimum Genetic Mutation (LC 433)                            | LeetCode | BFS string transformation — Word Ladder variant with biology |
 
 ---
 

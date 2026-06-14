@@ -24,14 +24,18 @@ export class LeaveListPage extends OrangeHRMBasePage {
     this.toDateInput = page.locator('.oxd-form-row .oxd-date-input input').nth(1);
     this.showStatusDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').first();
     this.leaveTypeDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').nth(1);
-    this.employeeNameInput = page.locator('.oxd-form-row input[placeholder="Type for hints..."]').first();
+    this.employeeNameInput = page
+      .locator('.oxd-form-row input[placeholder="Type for hints..."]')
+      .first();
     this.subUnitDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').nth(2);
     this.searchButton = page.getByRole('button', { name: 'Search' });
     this.resetButton = page.getByRole('button', { name: 'Reset' });
     this.addButton = page.getByRole('button', { name: 'Add' });
     this.recordsTable = page.locator('.oxd-table-body');
     this.noRecordsFound = page.getByText('No Records Found');
-    this.scheduleLeaveButton = page.locator('.orangehrm-header-container').getByRole('button', { name: 'Add' });
+    this.scheduleLeaveButton = page
+      .locator('.orangehrm-header-container')
+      .getByRole('button', { name: 'Add' });
   }
 
   async navigate(): Promise<void> {

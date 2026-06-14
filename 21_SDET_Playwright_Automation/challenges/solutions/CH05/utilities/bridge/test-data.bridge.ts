@@ -1,4 +1,4 @@
-import type { BridgeKeys } from './bridge-keys';
+import type { BridgeKeys } from "./bridge-keys";
 
 /**
  * Lightweight in-memory key-value store for passing data between test steps

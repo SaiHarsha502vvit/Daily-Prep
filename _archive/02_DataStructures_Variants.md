@@ -2997,52 +2997,52 @@ This guide covers ALL major variants of data structures with:
 
 ## Section 1: Trie Problems
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Implement Trie (LC 208) | LeetCode | Medium | insert/search/startsWith |
-| 2 | Design Add and Search Words (LC 211) | LeetCode | Medium | Trie + DFS for '.' wildcard |
-| 3 | Word Search II (LC 212) | LeetCode | Hard | Trie + backtracking on grid |
-| 4 | Replace Words (LC 648) | LeetCode | Medium | Trie prefix matching |
-| 5 | Map Sum Pairs (LC 677) | LeetCode | Medium | Trie with value at nodes |
-| 6 | Longest Word in Dictionary (LC 720) | LeetCode | Medium | Trie + BFS/DFS for completeness |
+| #   | Problem                              | Platform | Difficulty | Key Technique                   |
+| --- | ------------------------------------ | -------- | ---------- | ------------------------------- |
+| 1   | Implement Trie (LC 208)              | LeetCode | Medium     | insert/search/startsWith        |
+| 2   | Design Add and Search Words (LC 211) | LeetCode | Medium     | Trie + DFS for '.' wildcard     |
+| 3   | Word Search II (LC 212)              | LeetCode | Hard       | Trie + backtracking on grid     |
+| 4   | Replace Words (LC 648)               | LeetCode | Medium     | Trie prefix matching            |
+| 5   | Map Sum Pairs (LC 677)               | LeetCode | Medium     | Trie with value at nodes        |
+| 6   | Longest Word in Dictionary (LC 720)  | LeetCode | Medium     | Trie + BFS/DFS for completeness |
 
 ---
 
 ## Section 2: Heap / Priority Queue Variants
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Kth Largest Element (LC 215) | LeetCode | Medium | Min heap of size k |
-| 2 | Top K Frequent Elements (LC 347) | LeetCode | Medium | Min heap by frequency |
-| 3 | Find Median from Data Stream (LC 295) | LeetCode | Hard | Two heaps: max + min |
-| 4 | Merge k Sorted Lists (LC 23) | LeetCode | Hard | Min heap of list heads |
-| 5 | Reorganize String (LC 767) | LeetCode | Medium | Max heap by frequency |
-| 6 | K Closest Points to Origin (LC 973) | LeetCode | Medium | Max heap of size k |
-| 7 | Sliding Window Median (LC 480) | LeetCode | Hard | Two heaps + lazy deletion |
+| #   | Problem                               | Platform | Difficulty | Key Technique             |
+| --- | ------------------------------------- | -------- | ---------- | ------------------------- |
+| 1   | Kth Largest Element (LC 215)          | LeetCode | Medium     | Min heap of size k        |
+| 2   | Top K Frequent Elements (LC 347)      | LeetCode | Medium     | Min heap by frequency     |
+| 3   | Find Median from Data Stream (LC 295) | LeetCode | Hard       | Two heaps: max + min      |
+| 4   | Merge k Sorted Lists (LC 23)          | LeetCode | Hard       | Min heap of list heads    |
+| 5   | Reorganize String (LC 767)            | LeetCode | Medium     | Max heap by frequency     |
+| 6   | K Closest Points to Origin (LC 973)   | LeetCode | Medium     | Max heap of size k        |
+| 7   | Sliding Window Median (LC 480)        | LeetCode | Hard       | Two heaps + lazy deletion |
 
 ---
 
 ## Section 3: Monotonic Stack / Monotonic Queue
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Next Greater Element I (LC 496) | LeetCode | Easy | Classic monotonic stack |
-| 2 | Daily Temperatures (LC 739) | LeetCode | Medium | Stack stores indices, decreasing |
-| 3 | Largest Rectangle in Histogram (LC 84) | LeetCode | Hard | Monotonic stack for left/right bounds |
-| 4 | Trapping Rain Water (LC 42) | LeetCode | Hard | Stack or two-pointer approach |
-| 5 | Online Stock Span (LC 901) | LeetCode | Medium | Stack with (price, span) pairs |
-| 6 | Sliding Window Maximum (LC 239) | LeetCode | Hard | Monotonic deque |
+| #   | Problem                                | Platform | Difficulty | Key Technique                         |
+| --- | -------------------------------------- | -------- | ---------- | ------------------------------------- |
+| 1   | Next Greater Element I (LC 496)        | LeetCode | Easy       | Classic monotonic stack               |
+| 2   | Daily Temperatures (LC 739)            | LeetCode | Medium     | Stack stores indices, decreasing      |
+| 3   | Largest Rectangle in Histogram (LC 84) | LeetCode | Hard       | Monotonic stack for left/right bounds |
+| 4   | Trapping Rain Water (LC 42)            | LeetCode | Hard       | Stack or two-pointer approach         |
+| 5   | Online Stock Span (LC 901)             | LeetCode | Medium     | Stack with (price, span) pairs        |
+| 6   | Sliding Window Maximum (LC 239)        | LeetCode | Hard       | Monotonic deque                       |
 
 ---
 
 ## HIDDEN GEMS — DS Variants
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Maximum Frequency Stack (LC 895) | LeetCode | Stack per frequency — creative DS combo |
-| 2 | Stock Price Fluctuation (LC 2034) | LeetCode | TreeMap + HashMap design |
-| 3 | All O`one Data Structure (LC 432) | LeetCode | Doubly linked list + HashMap (hard design) |
-| 4 | Range Sum Query - Mutable (LC 307) | LeetCode | Segment tree or BIT |
-| 5 | Count of Smaller Numbers After Self (LC 315) | LeetCode | Merge sort or BIT — teaches augmented DS |
+| #   | Problem                                      | Platform | Why It's Valuable                          |
+| --- | -------------------------------------------- | -------- | ------------------------------------------ |
+| 1   | Maximum Frequency Stack (LC 895)             | LeetCode | Stack per frequency — creative DS combo    |
+| 2   | Stock Price Fluctuation (LC 2034)            | LeetCode | TreeMap + HashMap design                   |
+| 3   | All O`one Data Structure (LC 432)            | LeetCode | Doubly linked list + HashMap (hard design) |
+| 4   | Range Sum Query - Mutable (LC 307)           | LeetCode | Segment tree or BIT                        |
+| 5   | Count of Smaller Numbers After Self (LC 315) | LeetCode | Merge sort or BIT — teaches augmented DS   |
 
 ---

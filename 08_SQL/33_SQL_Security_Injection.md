@@ -3,6 +3,7 @@
 # Chapter 33 — SQL Security & Injection Prevention
 
 ## 5W-H Framework
+
 - **WHO** needs this? → EVERY developer who writes SQL — security is non-negotiable
 - **WHAT** is it? → Protecting databases from attacks, unauthorized access, and data breaches
 - **WHEN** to use? → Always. From the first line of SQL you write. Day 1, hour 0
@@ -15,18 +16,19 @@
 ## Part 1 — SQL Injection: The #1 Threat
 
 ### 1.1 What Is SQL Injection?
+
 ```
 Normal login:
   Username: alice
   Password: secret123
-  
+
   Query: SELECT * FROM users WHERE name = 'alice' AND pass = 'secret123'
   → Returns alice's row ✅
 
 SQL Injection attack:
   Username: ' OR '1'='1' --
   Password: anything
-  
+
   Query: SELECT * FROM users WHERE name = '' OR '1'='1' --' AND pass = 'anything'
   → The -- comments out the password check
   → '1'='1' is always TRUE
@@ -34,6 +36,7 @@ SQL Injection attack:
 ```
 
 ### 1.2 Types of SQL Injection
+
 ```
 ┌───────────────────┬────────────────────────────────────────────┐
 │ Type              │ Description                                 │
@@ -57,6 +60,7 @@ SQL Injection attack:
 ```
 
 ### 1.3 Real Attack Scenarios
+
 ```sql
 -- UNION-based data extraction
 -- Attacker in search box types:
@@ -76,12 +80,10 @@ SELECT * FROM products WHERE id = ''; DROP TABLE users; --'
 
 ---
 
-
-
-
 ## Part 2 — Prevention: Parameterized Queries
 
 ### 2.1 The ONLY Reliable Defense
+
 ```
 RULE: NEVER concatenate user input into SQL strings.
       ALWAYS use parameterized queries (prepared statements).
@@ -95,6 +97,7 @@ RULE: NEVER concatenate user input into SQL strings.
 ```
 
 ### 2.2 Python Examples (All Libraries)
+
 ```python
 # ✅ sqlite3 — use ? placeholders
 import sqlite3
@@ -124,6 +127,7 @@ df = pd.read_sql("SELECT * FROM users WHERE email = %s", conn, params=[user_emai
 ```
 
 ### 2.3 Java Examples
+
 ```java
 // ❌ VULNERABLE
 String query = "SELECT * FROM users WHERE name = '" + username + "'";
@@ -146,6 +150,7 @@ jdbcTemplate.query(
 ```
 
 ### 2.4 Dynamic Queries (Safe Patterns)
+
 ```python
 # Problem: dynamic WHERE clauses
 # ❌ VULNERABLE
@@ -165,7 +170,7 @@ if name:
 if city:
     conditions.append("city = %s")
     params.append(city)
-    
+
 where_clause = " AND ".join(conditions) if conditions else "TRUE"
 query = f"SELECT * FROM users WHERE {where_clause}"
 cursor.execute(query, params)
@@ -191,6 +196,7 @@ query = f"SELECT * FROM users ORDER BY {sort_col} {sort_dir}"
 ## Part 3 — Roles, Permissions & Access Control
 
 ### 3.1 Principle of Least Privilege
+
 ```sql
 -- PostgreSQL: Create roles with minimal permissions
 
@@ -224,6 +230,7 @@ GRANT app_writer TO web_app;
 ```
 
 ### 3.2 Column-Level Permissions
+
 ```sql
 -- Hide sensitive columns from reporting users
 REVOKE SELECT ON users FROM report_reader;
@@ -232,6 +239,7 @@ GRANT SELECT (user_id, name, email, created_at) ON users TO report_reader;
 ```
 
 ### 3.3 Row-Level Security (PostgreSQL)
+
 ```sql
 -- Each user can only see their own data
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
@@ -257,6 +265,7 @@ CREATE POLICY admin_sees_all ON orders
 ## Part 4 — Data Encryption
 
 ### 4.1 Encryption at Rest
+
 ```sql
 -- PostgreSQL: pgcrypto extension
 CREATE EXTENSION pgcrypto;
@@ -270,7 +279,7 @@ VALUES (
 );
 
 -- Decrypt when needed
-SELECT 
+SELECT
     name,
     pgp_sym_decrypt(ssn_encrypted, 'encryption_key_from_env') AS ssn
 FROM users
@@ -288,6 +297,7 @@ AND password_hash = crypt('user_password', password_hash);
 ```
 
 ### 4.2 Transparent Data Encryption (TDE)
+
 ```
 TDE encrypts the entire database at the disk level.
 No application changes needed!
@@ -299,6 +309,7 @@ Oracle:     ALTER TABLESPACE users ENCRYPTION ONLINE USING 'AES256';
 ```
 
 ### 4.3 Connection Encryption (SSL/TLS)
+
 ```python
 # Always use SSL for database connections
 import psycopg2
@@ -329,6 +340,7 @@ engine = create_engine(
 ## Part 5 — Audit Trails
 
 ### 5.1 Audit Trigger (PostgreSQL)
+
 ```sql
 -- Automatically log all changes
 CREATE TABLE audit_log (
@@ -373,9 +385,10 @@ CREATE TRIGGER orders_audit
 ```
 
 ### 5.2 Querying Audit Logs
+
 ```sql
 -- Who changed user 42's email?
-SELECT 
+SELECT
     changed_at,
     changed_by,
     action,
@@ -388,7 +401,7 @@ AND (old_data->>'email' != new_data->>'email' OR action = 'INSERT')
 ORDER BY changed_at;
 
 -- Suspicious activity: bulk deletes
-SELECT 
+SELECT
     changed_by,
     table_name,
     COUNT(*) AS delete_count,
@@ -407,10 +420,11 @@ ORDER BY delete_count DESC;
 ## Part 6 — Data Masking & Anonymization
 
 ### 6.1 Dynamic Data Masking
+
 ```sql
 -- Create a view that masks sensitive data for non-admin users
 CREATE OR REPLACE VIEW users_safe AS
-SELECT 
+SELECT
     user_id,
     name,
     -- Mask email: show first 2 chars + domain
@@ -429,6 +443,7 @@ GRANT SELECT ON users_safe TO report_reader;
 ```
 
 ### 6.2 GDPR: Right to Erasure
+
 ```sql
 -- Anonymize user data (keep analytics, remove PII)
 CREATE OR REPLACE FUNCTION anonymize_user(p_user_id INT)
@@ -442,13 +457,13 @@ BEGIN
         ssn = NULL,
         anonymized_at = NOW()
     WHERE user_id = p_user_id;
-    
+
     -- Keep orders for analytics but remove PII
     UPDATE orders SET
         shipping_address = 'ANONYMIZED',
         billing_address = 'ANONYMIZED'
     WHERE customer_id = p_user_id;
-    
+
     -- Log the anonymization
     INSERT INTO audit_log (table_name, record_id, action, new_data)
     VALUES ('users', p_user_id::text, 'ANONYMIZE', '{"reason":"GDPR erasure request"}'::jsonb);
@@ -457,9 +472,6 @@ $$ LANGUAGE plpgsql;
 ```
 
 ---
-
-
-
 
 ## Security Checklist
 
@@ -482,16 +494,29 @@ $$ LANGUAGE plpgsql;
 
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Security Checklist**
 
 **Challenge 1 (Reasoning):** A service uses prepared statements, but logs full SQL with parameter values on every failed login. What security problem remains, and how do you fix it without losing debuggability?
+
 <details><summary>Answer</summary>
 
 Parameterized queries prevent injection, but full parameter logging can leak passwords, tokens, emails, reset codes, tenant IDs, and sensitive filters into log storage. Fix by logging query shape, operation name, correlation ID, duration, row count, and sanitized parameter metadata such as lengths or hashes. Redact secrets at the logging layer, restrict log access, and keep database errors generic for users while preserving enough internal context to debug.
+
 </details>
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **SQL injection (Phrack)** (1998): The 1998 Phrack article "NT Web Technology Vulnerabilities" first demonstrated SQL injection attacks on web applications
+- **Parameterized queries (1990s)**: Database driver libraries began offering parameterized query APIs to separate code from data
+- **Microsoft parameterized queries** (1999): Microsoft promoted parameterized queries through MSDN and ASP.NET, evangelizing the practice
+- **OWASP Top 10** (2003): The Open Web Application Security Project formalized SQL injection as the #1 web vulnerability, driving industry awareness
+- **RBAC (NIST)** (1992): The National Institute of Standards and Technology formalized Role-Based Access Control, providing the authorization model behind least-privilege database users
+
+**Evolution narrative:**
+SQL injection emerged as the defining web vulnerability of the early internet, first documented in Phrack (1998) when web applications began accepting user input directly into SQL queries. The attack worked because SQL uses string concatenation, making code and data indistinguishable. Parameterized queries (1990s-2000s) solved this by having drivers send query structure and data separately, ensuring user input is always treated as data. OWASP (2003) formalized awareness, and RBAC (1992, widely adopted later) provided complementary defense through least-privilege principles.
+
+**Modern practice anchor:**
+Today's SQL security combines parameterized queries (never concatenate user input), least-privilege database users via RBAC, encryption at rest, and WAFs at the network perimeter—all defending against the attack surface that Phrack first exposed in 1998.

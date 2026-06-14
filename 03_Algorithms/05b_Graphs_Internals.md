@@ -39,17 +39,26 @@ See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
 🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+
 </details>
 
+### Historical Evolution
+
+Graph theory as a mathematical discipline traces its formal origin to **Leonhard Euler's 1736 paper on the Seven Bridges of Königsberg** — Euler proved it impossible to cross all seven bridges exactly once by introducing the concept of vertices and edges as abstract graph elements, founding the entire field of topology. The adjacency list and adjacency matrix representations emerged from early computer implementations: **Warshall (1962)** and **Floyd** popularized matrix-based graph algorithms, while **adjacency lists** became the standard for sparse graphs in the 1970s as researchers like **Tarjan** (1972) developed depth-first search and its applications. The memory tradeoff between these representations (list: $O(V+E)$, matrix: $O(V^2)$) was first quantified in **Knuth's 1968 analysis of graph algorithms**, and remains the fundamental decision point in production graph systems. Modern practice (post-2010) extends these representations: CSR (Compressed Sparse Row) format for efficient graph processing in libraries like NetworkX and Pregel, distributed graph processing (Pregel/GraphX) that partitions adjacency lists across machines, and graph databases (Neo4j) that use adjacency list representations optimized for traversal patterns.
+
+---
 
 ## 🧠 Graph Representation — Memory Deep Dive
 
@@ -133,21 +142,23 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+
 </details>
 
 **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+
 <details><summary>Answer</summary>
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
+</details>
 
 ## 📌 Edge List Representation
 
@@ -197,7 +208,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // EDGE LIST — Java Implementation
@@ -304,7 +314,6 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🔬 Shortest Path Algorithms — Internal Comparison
 
 ```
@@ -384,14 +393,14 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 📐 Modeling Problems as Graphs (Skiena's Approach)
 
-In *The Algorithm Design Manual*, Steven Skiena emphasizes that the hardest part of graph algorithms isn't the algorithm itself (BFS/DFS/Dijkstra)—it's **recognizing that the problem is a graph problem** and defining the vertices and edges correctly.
+In _The Algorithm Design Manual_, Steven Skiena emphasizes that the hardest part of graph algorithms isn't the algorithm itself (BFS/DFS/Dijkstra)—it's **recognizing that the problem is a graph problem** and defining the vertices and edges correctly.
 
 ### The 3 Core Questions to Ask:
+
 1. **What are the Vertices?** (States, objects, configurations)
 2. **What are the Edges?** (Transitions, relationships, dependencies)
 3. **Are the edges Directed or Undirected? Weighted or Unweighted?**
@@ -399,33 +408,41 @@ In *The Algorithm Design Manual*, Steven Skiena emphasizes that the hardest part
 ### Classic Modeling Archetypes
 
 #### 1. The State Space Graph (Implicit Graphs)
+
 **Problem:** Word Ladder (transform "hit" to "cog" changing one letter at a time).
 **Model:**
-*   **Vertices:** Every possible valid word in the dictionary.
-*   **Edges:** An undirected, unweighted edge connects two words if they differ by exactly one character.
-*   **Algorithm:** BFS to find the shortest path (minimum transitions).
-*   *Key Insight:* You don't build the entire graph upfront! You generate neighbors dynamically (Implicit Graph).
+
+- **Vertices:** Every possible valid word in the dictionary.
+- **Edges:** An undirected, unweighted edge connects two words if they differ by exactly one character.
+- **Algorithm:** BFS to find the shortest path (minimum transitions).
+- _Key Insight:_ You don't build the entire graph upfront! You generate neighbors dynamically (Implicit Graph).
 
 #### 2. The Dependency Graph
+
 **Problem:** Course Schedule (take courses given prerequisites).
 **Model:**
-*   **Vertices:** The courses.
-*   **Edges:** A directed edge from Course A to Course B if A is a prerequisite for B.
-*   **Algorithm:** Topological Sort (DFS or Kahn's). Cycle detection (if cycle exists, graduation is impossible).
+
+- **Vertices:** The courses.
+- **Edges:** A directed edge from Course A to Course B if A is a prerequisite for B.
+- **Algorithm:** Topological Sort (DFS or Kahn's). Cycle detection (if cycle exists, graduation is impossible).
 
 #### 3. The Grid Graph
+
 **Problem:** Number of Islands, Maze Solving.
 **Model:**
-*   **Vertices:** Each `(row, col)` cell in the 2D matrix.
-*   **Edges:** Implicit undirected edges connecting a cell to its Up, Down, Left, Right neighbors (if they are valid/passable).
-*   **Algorithm:** BFS/DFS.
-*   *Key Insight:* A 2D matrix *is* a graph. You don't need an Adjacency List to traverse it; just use a `int[][] directions = {{0,1}, {1,0}, {0,-1}, {-1,0}}` array.
+
+- **Vertices:** Each `(row, col)` cell in the 2D matrix.
+- **Edges:** Implicit undirected edges connecting a cell to its Up, Down, Left, Right neighbors (if they are valid/passable).
+- **Algorithm:** BFS/DFS.
+- _Key Insight:_ A 2D matrix _is_ a graph. You don't need an Adjacency List to traverse it; just use a `int[][] directions = {{0,1}, {1,0}, {0,-1}, {-1,0}}` array.
 
 #### 4. The Compatibility Graph
+
 **Problem:** Bipartite Matching (Assigning workers to jobs, scheduling exams without conflicts).
 **Model:**
-*   **Vertices:** Entities (e.g., Workers and Jobs).
-*   **Edges:** An undirected edge if Worker A can do Job B.
-*   **Algorithm:** Bipartite Graph checking (Coloring) or Maximum Flow.
+
+- **Vertices:** Entities (e.g., Workers and Jobs).
+- **Edges:** An undirected edge if Worker A can do Job B.
+- **Algorithm:** Bipartite Graph checking (Coloring) or Maximum Flow.
 
 ---

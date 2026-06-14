@@ -3,6 +3,7 @@
 # Spring Boot Part 18: Distributed Tracing - Sleuth, Zipkin & Micrometer
 
 ## Overview
+
 Distributed tracing tracks requests across multiple services, helping debug and understand complex microservice architectures.
 
 ---
@@ -50,12 +51,12 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 1. Tracing Fundamentals
 
 ### Core Concepts
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         TRACE                                   │
@@ -72,29 +73,27 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Key Terms
-| Term | Description | Example |
-|------|-------------|---------|
-| **Trace** | End-to-end request journey | Order creation flow |
-| **Span** | Single unit of work | Database query |
-| **Trace ID** | Unique identifier for entire trace | 64/128-bit hex |
-| **Span ID** | Unique identifier for span | 64-bit hex |
-| **Parent Span ID** | Links child to parent | Creates hierarchy |
-| **Baggage** | Key-value pairs propagated across services | user-id, tenant-id |
+
+| Term               | Description                                | Example             |
+| ------------------ | ------------------------------------------ | ------------------- |
+| **Trace**          | End-to-end request journey                 | Order creation flow |
+| **Span**           | Single unit of work                        | Database query      |
+| **Trace ID**       | Unique identifier for entire trace         | 64/128-bit hex      |
+| **Span ID**        | Unique identifier for span                 | 64-bit hex          |
+| **Parent Span ID** | Links child to parent                      | Creates hierarchy   |
+| **Baggage**        | Key-value pairs propagated across services | user-id, tenant-id  |
 
 ---
-
-
 
 🔬 **Section Challenge — 1. Tracing Fundamentals**
 
 **Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 
-
 ## 2. Spring Cloud Sleuth (Spring Boot 2.x)
 
 ### Dependencies
+
 ```xml
 <!-- pom.xml for Spring Boot 2.x -->
 <dependency>
@@ -122,6 +121,7 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 ```
 
 ### Configuration
+
 ```yaml
 
 
@@ -138,7 +138,7 @@ Sleuth was tightly coupled to the Brave tracing library. If you wanted to use Op
 spring:
   application:
     name: order-service
-    
+
   sleuth:
     enabled: true
     sampler:
@@ -151,7 +151,7 @@ spring:
         - tenant-id
       correlation-fields:
         - user-id
-        
+
   zipkin:
     base-url: http://localhost:9411
     sender:
@@ -163,7 +163,9 @@ logging:
 ```
 
 ### Auto-Instrumented Components
+
 Sleuth automatically traces:
+
 - **HTTP Controllers** - Incoming REST requests
 - **RestTemplate** - Outgoing HTTP calls
 - **WebClient** - Reactive HTTP calls
@@ -177,6 +179,7 @@ Sleuth automatically traces:
 ## 3. Micrometer Tracing (Spring Boot 3.x)
 
 ### Dependencies
+
 ```xml
 <!-- pom.xml for Spring Boot 3.x -->
 <dependency>
@@ -203,6 +206,7 @@ Sleuth automatically traces:
 ```
 
 ### Configuration
+
 ```yaml
 
 
@@ -234,7 +238,7 @@ management:
       correlation:
         fields:
           - user-id
-          
+
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
@@ -245,19 +249,20 @@ logging:
 ```
 
 ### Observation API (Modern Approach)
+
 ```java
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 
 @Service
 public class OrderService {
-    
+
     private final ObservationRegistry observationRegistry;
-    
+
     public OrderService(ObservationRegistry observationRegistry) {
         this.observationRegistry = observationRegistry;
     }
-    
+
     public Order createOrder(OrderRequest request) {
         // Create observation (creates span automatically)
         return Observation.createNotStarted("order.create", observationRegistry)
@@ -268,18 +273,18 @@ public class OrderService {
                 return processOrder(request);
             });
     }
-    
+
     // Observation with more control
     public Order processWithObservation(OrderRequest request) {
         Observation observation = Observation.start("order.process", observationRegistry);
-        
+
         try (Observation.Scope scope = observation.openScope()) {
             observation.event(Observation.Event.of("validation.started"));
             validateOrder(request);
-            
+
             observation.event(Observation.Event.of("processing.started"));
             Order order = doProcess(request);
-            
+
             observation.event(Observation.Event.of("completed"));
             return order;
         } catch (Exception e) {
@@ -297,36 +302,37 @@ public class OrderService {
 ## 4. Manual Span Creation
 
 ### Using Tracer (Sleuth/Brave)
+
 ```java
 import brave.Tracer;
 import brave.Span;
 
 @Service
 public class PaymentService {
-    
+
     private final Tracer tracer;
-    
+
     public PaymentService(Tracer tracer) {
         this.tracer = tracer;
     }
-    
+
     public PaymentResult processPayment(Payment payment) {
         // Create new span as child of current
         Span newSpan = tracer.nextSpan().name("payment.process");
-        
+
         try (Tracer.SpanInScope ws = tracer.withSpanInScope(newSpan.start())) {
             // Add tags
             newSpan.tag("payment.method", payment.getMethod());
             newSpan.tag("payment.amount", String.valueOf(payment.getAmount()));
-            
+
             // Add event/annotation
             newSpan.annotate("gateway.called");
-            
+
             PaymentResult result = callPaymentGateway(payment);
-            
+
             newSpan.annotate("gateway.responded");
             newSpan.tag("payment.status", result.getStatus());
-            
+
             return result;
         } catch (Exception e) {
             newSpan.error(e);
@@ -335,11 +341,11 @@ public class PaymentService {
             newSpan.finish();
         }
     }
-    
+
     public void processAsync(Payment payment) {
         // Get current span for async propagation
         Span currentSpan = tracer.currentSpan();
-        
+
         CompletableFuture.runAsync(() -> {
             // Continue with same span in different thread
             try (Tracer.SpanInScope ws = tracer.withSpanInScope(currentSpan)) {
@@ -352,6 +358,7 @@ public class PaymentService {
 ```
 
 ### Using Micrometer Tracing API
+
 ```java
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.Span;
@@ -359,22 +366,22 @@ import io.micrometer.tracing.ScopedSpan;
 
 @Service
 public class InventoryService {
-    
+
     private final Tracer tracer;
-    
+
     public InventoryService(Tracer tracer) {
         this.tracer = tracer;
     }
-    
+
     // Method 1: Using ScopedSpan (auto-closes)
     public void checkInventory(String productId) {
         ScopedSpan span = tracer.startScopedSpan("inventory.check");
         try {
             span.tag("product.id", productId);
-            
+
             int quantity = fetchQuantity(productId);
             span.tag("quantity.available", String.valueOf(quantity));
-            
+
             span.event("check.completed");
         } catch (Exception e) {
             span.error(e);
@@ -383,7 +390,7 @@ public class InventoryService {
             span.end();
         }
     }
-    
+
     // Method 2: Using Span builder
     public void reserveInventory(String productId, int quantity) {
         Span span = tracer.spanBuilder()
@@ -391,7 +398,7 @@ public class InventoryService {
             .tag("product.id", productId)
             .tag("quantity.requested", String.valueOf(quantity))
             .start();
-            
+
         try (Tracer.SpanInScope ws = tracer.withSpan(span)) {
             doReservation(productId, quantity);
             span.event("reservation.completed");
@@ -402,11 +409,11 @@ public class InventoryService {
             span.end();
         }
     }
-    
+
     // Method 3: Continue existing span in async context
     public CompletableFuture<Void> asyncOperation() {
         Span currentSpan = tracer.currentSpan();
-        
+
         return CompletableFuture.runAsync(() -> {
             try (Tracer.SpanInScope ws = tracer.withSpan(currentSpan)) {
                 // Async work with trace context preserved
@@ -422,6 +429,7 @@ public class InventoryService {
 ## 5. Baggage Propagation
 
 ### Configuration
+
 ```yaml
 # Sleuth (Spring Boot 2.x)
 spring:
@@ -448,31 +456,32 @@ management:
 ```
 
 ### Working with Baggage
+
 ```java
 import brave.baggage.BaggageField;
 
 // Sleuth/Brave approach
 @Service
 public class ContextAwareService {
-    
+
     // Define baggage fields
     private static final BaggageField USER_ID = BaggageField.create("user-id");
     private static final BaggageField TENANT_ID = BaggageField.create("tenant-id");
-    
+
     public void processRequest(HttpServletRequest request) {
         // Set baggage from header or other source
         USER_ID.updateValue(extractUserId(request));
         TENANT_ID.updateValue(extractTenantId(request));
-        
+
         // Baggage now propagates to downstream services automatically
         callDownstreamService();
     }
-    
+
     public void downstreamHandler() {
         // Read baggage in downstream service
         String userId = USER_ID.getValue();
         String tenantId = TENANT_ID.getValue();
-        
+
         log.info("Processing for user: {} in tenant: {}", userId, tenantId);
     }
 }
@@ -485,19 +494,19 @@ import io.micrometer.tracing.BaggageInScope;
 // Micrometer approach (Spring Boot 3.x)
 @Service
 public class ModernContextService {
-    
+
     private final Tracer tracer;
-    
+
     public void processWithBaggage(String userId, String tenantId) {
         // Create baggage that propagates
         try (BaggageInScope userId = tracer.createBaggageInScope("user-id", userId);
              BaggageInScope tenantId = tracer.createBaggageInScope("tenant-id", tenantId)) {
-            
+
             // Call downstream - baggage included in headers
             callDownstreamService();
         }
     }
-    
+
     public String readBaggage() {
         return tracer.getBaggage("user-id").get();
     }
@@ -505,25 +514,26 @@ public class ModernContextService {
 ```
 
 ### Baggage in Filters
+
 ```java
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class BaggageFilter extends OncePerRequestFilter {
-    
+
     private static final BaggageField USER_ID = BaggageField.create("user-id");
-    
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
+    protected void doFilterInternal(HttpServletRequest request,
                                      HttpServletResponse response,
                                      FilterChain chain) throws ServletException, IOException {
-        
+
         // Extract from JWT or session
         String userId = extractUserIdFromJwt(request);
-        
+
         if (userId != null) {
             USER_ID.updateValue(userId);
         }
-        
+
         try {
             chain.doFilter(request, response);
         } finally {
@@ -539,6 +549,7 @@ public class BaggageFilter extends OncePerRequestFilter {
 ## 6. Zipkin Integration
 
 ### Docker Setup
+
 ```yaml
 
 
@@ -565,7 +576,7 @@ services:
       - ES_HOSTS=elasticsearch:9200
     depends_on:
       - elasticsearch
-      
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: zipkin-elasticsearch
@@ -582,6 +593,7 @@ volumes:
 ```
 
 ### Using Different Transports
+
 ```yaml
 # HTTP (default)
 spring:
@@ -625,6 +637,7 @@ spring:
 ## 7. Log Correlation
 
 ### Logging Pattern
+
 ```yaml
 # application.yml
 logging:
@@ -634,6 +647,7 @@ logging:
 ```
 
 ### Log Output Example
+
 ```
 2024-01-15 10:30:45.123  INFO [order-service,abc123def456,span001] [http-nio-8080-exec-1] OrderController - Received order request
 2024-01-15 10:30:45.150  INFO [order-service,abc123def456,span002] [http-nio-8080-exec-1] OrderService - Processing order
@@ -642,17 +656,18 @@ logging:
 ```
 
 ### MDC for Custom Context
+
 ```java
 import org.slf4j.MDC;
 
 @Service
 public class EnhancedLoggingService {
-    
+
     public void processWithContext(Order order) {
         // Add custom MDC values alongside trace context
         MDC.put("orderId", order.getId());
         MDC.put("customerId", order.getCustomerId());
-        
+
         try {
             log.info("Processing order");  // Will include traceId, spanId, orderId, customerId
             doProcess(order);
@@ -665,20 +680,21 @@ public class EnhancedLoggingService {
 ```
 
 ### Logback Configuration for ELK
+
 ```xml
 <!-- logback-spring.xml -->
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    
+
     <springProperty scope="context" name="appName" source="spring.application.name"/>
-    
+
     <!-- Console appender with trace info -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [${appName},%X{traceId:-},%X{spanId:-}] [%t] %c{1} - %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <!-- JSON appender for ELK -->
     <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/${appName}.json</file>
@@ -693,7 +709,7 @@ public class EnhancedLoggingService {
             <customFields>{"service":"${appName}"}</customFields>
         </encoder>
     </appender>
-    
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="JSON"/>
@@ -706,6 +722,7 @@ public class EnhancedLoggingService {
 ## 8. Tracing Across Message Queues
 
 ### Kafka Integration
+
 ```java
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -713,10 +730,10 @@ import org.springframework.messaging.support.MessageBuilder;
 
 @Service
 public class KafkaTracingProducer {
-    
+
     private final KafkaTemplate<String, Order> kafkaTemplate;
     private final Tracer tracer;
-    
+
     public void sendOrder(Order order) {
         // Sleuth automatically adds trace headers to Kafka messages
         kafkaTemplate.send("orders", order.getId(), order);
@@ -726,11 +743,11 @@ public class KafkaTracingProducer {
 
 @Service
 public class KafkaTracingConsumer {
-    
+
     private final Tracer tracer;
-    
+
     @KafkaListener(topics = "orders")
-    public void receiveOrder(Order order, 
+    public void receiveOrder(Order order,
                              @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                              @Header(value = "b3", required = false) String traceHeader) {
         // Trace context automatically restored from headers
@@ -741,19 +758,20 @@ public class KafkaTracingConsumer {
 ```
 
 ### RabbitMQ Integration
+
 ```java
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 @Service
 public class RabbitTracingService {
-    
+
     private final RabbitTemplate rabbitTemplate;
-    
+
     public void sendMessage(Order order) {
         // Sleuth adds trace headers automatically via MessagePostProcessor
         rabbitTemplate.convertAndSend("orders-exchange", "orders.new", order);
     }
-    
+
     @RabbitListener(queues = "orders-queue")
     public void receiveMessage(Order order) {
         // Trace context automatically restored
@@ -764,33 +782,34 @@ public class RabbitTracingService {
 ```
 
 ### Manual Header Propagation
+
 ```java
 import brave.propagation.TraceContext;
 import brave.propagation.B3Propagation;
 
 @Service
 public class CustomHeaderPropagation {
-    
+
     private final Tracer tracer;
-    
+
     public Map<String, String> extractCurrentTraceHeaders() {
         Map<String, String> headers = new HashMap<>();
-        
+
         TraceContext context = tracer.currentSpan().context();
-        
+
         // B3 format (single header)
-        headers.put("b3", context.traceIdString() + "-" + 
+        headers.put("b3", context.traceIdString() + "-" +
                          context.spanIdString() + "-" +
                          (context.sampled() ? "1" : "0"));
-        
+
         // Or B3 multi-header format
         headers.put("X-B3-TraceId", context.traceIdString());
         headers.put("X-B3-SpanId", context.spanIdString());
         headers.put("X-B3-Sampled", context.sampled() ? "1" : "0");
-        
+
         return headers;
     }
-    
+
     public void injectHeaders(HttpRequest.Builder builder) {
         Map<String, String> headers = extractCurrentTraceHeaders();
         headers.forEach(builder::header);
@@ -799,8 +818,6 @@ public class CustomHeaderPropagation {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 8. Tracing Across Message Queues**
 
@@ -812,67 +829,68 @@ public class CustomHeaderPropagation {
 
 </details>
 
-
 ## 9. Sampling Strategies
 
 ### Configuration
+
 ```yaml
 spring:
   sleuth:
     sampler:
       # Always sample (development)
       probability: 1.0
-      
+
       # Sample 10% (production)
       # probability: 0.1
-      
+
       # Rate limiting sampler
-      rate: 100  # Max 100 traces per second
+      rate: 100 # Max 100 traces per second
 ```
 
 ### Custom Sampler
+
 ```java
 import brave.sampler.Sampler;
 import brave.sampler.RateLimitingSampler;
 
 @Configuration
 public class SamplerConfiguration {
-    
+
     // Always sample specific requests
     @Bean
     public Sampler customSampler() {
         return new Sampler() {
             private final Sampler rateLimiter = RateLimitingSampler.create(100);
-            
+
             @Override
             public boolean isSampled(long traceId) {
                 // Get current request info if available
                 HttpServletRequest request = getCurrentRequest();
-                
+
                 if (request != null) {
                     // Always sample errors
                     if (request.getAttribute("error") != null) {
                         return true;
                     }
-                    
+
                     // Always sample specific endpoints
                     String uri = request.getRequestURI();
                     if (uri.contains("/api/orders") || uri.contains("/api/payments")) {
                         return true;
                     }
-                    
+
                     // Never sample health checks
                     if (uri.contains("/actuator/health")) {
                         return false;
                     }
                 }
-                
+
                 // Use rate limiting for everything else
                 return rateLimiter.isSampled(traceId);
             }
         };
     }
-    
+
     // Priority-based sampling
     @Bean
     public Sampler prioritySampler() {
@@ -882,30 +900,31 @@ public class SamplerConfiguration {
 ```
 
 ### Micrometer Observation Predicate
+
 ```java
 import io.micrometer.observation.ObservationPredicate;
 
 @Configuration
 public class ObservationConfiguration {
-    
+
     @Bean
     public ObservationPredicate noActuatorObservations() {
         // Don't create spans for actuator endpoints
-        return (name, context) -> !name.startsWith("http.server.requests") 
+        return (name, context) -> !name.startsWith("http.server.requests")
             || !context.getLowCardinalityKeyValue("uri").getValue().startsWith("/actuator");
     }
-    
+
     @Bean
     public ObservationPredicate sampleByEndpoint() {
         return (name, context) -> {
             if (name.equals("http.server.requests")) {
                 String uri = context.getLowCardinalityKeyValue("uri").getValue();
-                
+
                 // Always observe critical paths
                 if (uri.startsWith("/api/orders") || uri.startsWith("/api/payments")) {
                     return true;
                 }
-                
+
                 // Random sample 10% of other requests
                 return Math.random() < 0.1;
             }
@@ -917,8 +936,6 @@ public class ObservationConfiguration {
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Sampling Strategies**
 
 **Challenge 1 (Sampling Strategy Tradeoff):** Your tracing config has `sampler.probability=0.1` (10% sampling). A bug only reproduces in 1% of requests. **Who** decides which requests are sampled? **When** does head-based sampling miss the bug? **What** sampling strategy would capture it?
@@ -929,10 +946,10 @@ public class ObservationConfiguration {
 
 </details>
 
-
 ## 10. Complete Microservices Example
 
 ### Project Structure
+
 ```
 distributed-tracing-demo/
 ├── api-gateway/
@@ -943,8 +960,8 @@ distributed-tracing-demo/
 └── docker-compose.yml
 ```
 
-
 ### API Gateway
+
 ```java
 // ApiGatewayApplication.java
 @SpringBootApplication
@@ -957,7 +974,7 @@ public class ApiGatewayApplication {
 // GatewayConfig.java
 @Configuration
 public class GatewayConfig {
-    
+
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
@@ -998,7 +1015,7 @@ spring:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
-            
+
 management:
   tracing:
     sampling:
@@ -1014,21 +1031,22 @@ eureka:
 ```
 
 ### Order Service
+
 ```java
 // OrderController.java
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-    
+
     private final OrderService orderService;
-    
+
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequest request) {
         log.info("Received order request for customer: {}", request.getCustomerId());
         Order order = orderService.createOrder(request);
         return ResponseEntity.ok(order);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable String id) {
         log.info("Fetching order: {}", id);
@@ -1039,29 +1057,29 @@ public class OrderController {
 // OrderService.java
 @Service
 public class OrderService {
-    
+
     private final InventoryClient inventoryClient;
     private final PaymentClient paymentClient;
     private final NotificationClient notificationClient;
     private final Tracer tracer;
     private final OrderRepository orderRepository;
-    
+
     @Transactional
     public Order createOrder(OrderRequest request) {
         // Create custom span for order creation
         ScopedSpan span = tracer.startScopedSpan("order.create");
         span.tag("customer.id", request.getCustomerId());
-        
+
         try {
             // 1. Check inventory
             log.info("Checking inventory for {} items", request.getItems().size());
             InventoryResponse inventory = inventoryClient.checkInventory(request.getItems());
-            
+
             if (!inventory.isAvailable()) {
                 span.tag("order.status", "INVENTORY_UNAVAILABLE");
                 throw new InsufficientInventoryException("Items not available");
             }
-            
+
             // 2. Create order
             Order order = new Order();
             order.setId(UUID.randomUUID().toString());
@@ -1069,43 +1087,43 @@ public class OrderService {
             order.setItems(request.getItems());
             order.setTotal(calculateTotal(request.getItems()));
             order.setStatus(OrderStatus.PENDING);
-            
+
             span.tag("order.id", order.getId());
             span.tag("order.total", order.getTotal().toString());
-            
+
             // 3. Reserve inventory
             log.info("Reserving inventory for order: {}", order.getId());
             inventoryClient.reserveInventory(order.getId(), request.getItems());
-            
+
             // 4. Process payment
             log.info("Processing payment for order: {}", order.getId());
             PaymentResponse payment = paymentClient.processPayment(
-                order.getId(), 
+                order.getId(),
                 request.getPaymentMethod(),
                 order.getTotal()
             );
-            
+
             if (payment.isSuccessful()) {
                 order.setStatus(OrderStatus.CONFIRMED);
                 order.setPaymentId(payment.getPaymentId());
                 span.tag("payment.id", payment.getPaymentId());
-                
+
                 // 5. Send notification (async)
                 log.info("Sending confirmation for order: {}", order.getId());
                 notificationClient.sendOrderConfirmation(order);
             } else {
                 order.setStatus(OrderStatus.PAYMENT_FAILED);
                 span.tag("order.status", "PAYMENT_FAILED");
-                
+
                 // Release reserved inventory
                 inventoryClient.releaseInventory(order.getId());
             }
-            
+
             Order savedOrder = orderRepository.save(order);
             span.tag("order.status", savedOrder.getStatus().name());
-            
+
             return savedOrder;
-            
+
         } catch (Exception e) {
             span.error(e);
             throw e;
@@ -1118,13 +1136,13 @@ public class OrderService {
 // InventoryClient.java (Feign)
 @FeignClient(name = "inventory-service")
 public interface InventoryClient {
-    
+
     @PostMapping("/api/inventory/check")
     InventoryResponse checkInventory(@RequestBody List<OrderItem> items);
-    
+
     @PostMapping("/api/inventory/reserve")
     void reserveInventory(@RequestParam String orderId, @RequestBody List<OrderItem> items);
-    
+
     @PostMapping("/api/inventory/release")
     void releaseInventory(@RequestParam String orderId);
 }
@@ -1137,7 +1155,7 @@ spring:
     name: order-service
   datasource:
     url: jdbc:postgresql://postgres:5432/orders
-    
+
 management:
   tracing:
     sampling:
@@ -1164,23 +1182,24 @@ eureka:
 ```
 
 ### Inventory Service
+
 ```java
 // InventoryController.java
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
-    
+
     private final InventoryService inventoryService;
     private final Tracer tracer;
-    
+
     @PostMapping("/check")
     public InventoryResponse checkInventory(@RequestBody List<OrderItem> items) {
         log.info("Checking inventory for {} items", items.size());
         return inventoryService.checkAvailability(items);
     }
-    
+
     @PostMapping("/reserve")
-    public ResponseEntity<Void> reserve(@RequestParam String orderId, 
+    public ResponseEntity<Void> reserve(@RequestParam String orderId,
                                          @RequestBody List<OrderItem> items) {
         log.info("Reserving inventory for order: {}", orderId);
         inventoryService.reserve(orderId, items);
@@ -1191,64 +1210,64 @@ public class InventoryController {
 // InventoryService.java
 @Service
 public class InventoryService {
-    
+
     private final InventoryRepository inventoryRepository;
     private final Tracer tracer;
-    
+
     @Transactional
     public InventoryResponse checkAvailability(List<OrderItem> items) {
         ScopedSpan span = tracer.startScopedSpan("inventory.check");
         span.tag("items.count", String.valueOf(items.size()));
-        
+
         try {
             boolean allAvailable = true;
             List<ItemAvailability> results = new ArrayList<>();
-            
+
             for (OrderItem item : items) {
                 Inventory inventory = inventoryRepository.findByProductId(item.getProductId());
-                
-                boolean available = inventory != null && 
+
+                boolean available = inventory != null &&
                                    inventory.getQuantity() >= item.getQuantity();
-                
+
                 results.add(new ItemAvailability(
                     item.getProductId(),
                     available,
                     inventory != null ? inventory.getQuantity() : 0
                 ));
-                
+
                 if (!available) {
                     allAvailable = false;
                 }
             }
-            
+
             span.tag("inventory.available", String.valueOf(allAvailable));
-            
+
             return new InventoryResponse(allAvailable, results);
-            
+
         } finally {
             span.end();
         }
     }
-    
+
     @Transactional
     public void reserve(String orderId, List<OrderItem> items) {
         ScopedSpan span = tracer.startScopedSpan("inventory.reserve");
         span.tag("order.id", orderId);
-        
+
         try {
             for (OrderItem item : items) {
                 Inventory inventory = inventoryRepository.findByProductIdForUpdate(item.getProductId());
-                
+
                 if (inventory.getQuantity() < item.getQuantity()) {
                     span.tag("reservation.failed", item.getProductId());
                     throw new InsufficientInventoryException(
                         "Not enough inventory for product: " + item.getProductId()
                     );
                 }
-                
+
                 inventory.setQuantity(inventory.getQuantity() - item.getQuantity());
                 inventoryRepository.save(inventory);
-                
+
                 // Create reservation record
                 Reservation reservation = new Reservation();
                 reservation.setOrderId(orderId);
@@ -1256,9 +1275,9 @@ public class InventoryService {
                 reservation.setQuantity(item.getQuantity());
                 reservationRepository.save(reservation);
             }
-            
+
             span.tag("reservation.status", "SUCCESS");
-            
+
         } finally {
             span.end();
         }
@@ -1267,14 +1286,15 @@ public class InventoryService {
 ```
 
 ### Payment Service
+
 ```java
 // PaymentController.java
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentController {
-    
+
     private final PaymentService paymentService;
-    
+
     @PostMapping("/process")
     public PaymentResponse process(@RequestBody PaymentRequest request) {
         log.info("Processing payment for order: {}", request.getOrderId());
@@ -1285,18 +1305,18 @@ public class PaymentController {
 // PaymentService.java
 @Service
 public class PaymentService {
-    
+
     private final PaymentGatewayClient gatewayClient;
     private final PaymentRepository paymentRepository;
     private final Tracer tracer;
-    
+
     @Transactional
     public PaymentResponse processPayment(PaymentRequest request) {
         ScopedSpan span = tracer.startScopedSpan("payment.process");
         span.tag("order.id", request.getOrderId());
         span.tag("payment.method", request.getPaymentMethod());
         span.tag("payment.amount", request.getAmount().toString());
-        
+
         try {
             // Create payment record
             Payment payment = new Payment();
@@ -1305,9 +1325,9 @@ public class PaymentService {
             payment.setAmount(request.getAmount());
             payment.setMethod(request.getPaymentMethod());
             payment.setStatus(PaymentStatus.PENDING);
-            
+
             span.tag("payment.id", payment.getId());
-            
+
             // Call external payment gateway
             span.event("gateway.calling");
             GatewayResponse gatewayResponse = gatewayClient.charge(
@@ -1316,7 +1336,7 @@ public class PaymentService {
                 request.getAmount()
             );
             span.event("gateway.responded");
-            
+
             if (gatewayResponse.isApproved()) {
                 payment.setStatus(PaymentStatus.COMPLETED);
                 payment.setTransactionId(gatewayResponse.getTransactionId());
@@ -1328,15 +1348,15 @@ public class PaymentService {
                 span.tag("payment.status", "FAILED");
                 span.tag("failure.reason", gatewayResponse.getErrorMessage());
             }
-            
+
             paymentRepository.save(payment);
-            
+
             return new PaymentResponse(
                 payment.getId(),
                 payment.getStatus() == PaymentStatus.COMPLETED,
                 gatewayResponse.getErrorMessage()
             );
-            
+
         } catch (Exception e) {
             span.error(e);
             span.tag("payment.status", "ERROR");
@@ -1349,9 +1369,10 @@ public class PaymentService {
 ```
 
 ### Docker Compose
+
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   zipkin:
@@ -1360,14 +1381,14 @@ services:
       - "9411:9411"
     networks:
       - microservices-net
-      
+
   eureka:
     build: ./eureka-server
     ports:
       - "8761:8761"
     networks:
       - microservices-net
-      
+
   api-gateway:
     build: ./api-gateway
     ports:
@@ -1380,7 +1401,7 @@ services:
       - zipkin
     networks:
       - microservices-net
-      
+
   order-service:
     build: ./order-service
     ports:
@@ -1395,7 +1416,7 @@ services:
       - postgres
     networks:
       - microservices-net
-      
+
   inventory-service:
     build: ./inventory-service
     ports:
@@ -1408,7 +1429,7 @@ services:
       - zipkin
     networks:
       - microservices-net
-      
+
   payment-service:
     build: ./payment-service
     ports:
@@ -1421,7 +1442,7 @@ services:
       - zipkin
     networks:
       - microservices-net
-      
+
   postgres:
     image: postgres:15
     environment:
@@ -1446,6 +1467,7 @@ volumes:
 ## 11. Debugging with Traces
 
 ### Finding Issues
+
 ```
 Zipkin UI (http://localhost:9411):
 
@@ -1467,23 +1489,23 @@ Common Issues Identified:
 └────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### Querying Zipkin API
+
 ```java
 @Service
 public class TracingAnalysisService {
-    
+
     private final RestTemplate restTemplate;
-    
+
     public List<TraceSpan> findSlowTraces(String serviceName, long minDuration) {
         String url = String.format(
             "http://zipkin:9411/api/v2/traces?serviceName=%s&minDuration=%d",
             serviceName, minDuration
         );
-        
+
         return restTemplate.getForObject(url, new ParameterizedTypeReference<>() {});
     }
-    
+
     public TraceSpan getTrace(String traceId) {
         String url = "http://zipkin:9411/api/v2/trace/" + traceId;
         return restTemplate.getForObject(url, TraceSpan.class);
@@ -1492,8 +1514,6 @@ public class TracingAnalysisService {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 11. Debugging with Traces**
 
@@ -1505,45 +1525,45 @@ public class TracingAnalysisService {
 
 </details>
 
-
 ## 12. Testing Traced Code
 
 ### Unit Testing with Mock Tracer
+
 ```java
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.test.simple.SimpleTracer;
 
 @ExtendWith(MockitoExtension.class)
 class TracedServiceTest {
-    
+
     private SimpleTracer tracer;
-    
+
     @BeforeEach
     void setUp() {
         tracer = new SimpleTracer();
     }
-    
+
     @Test
     void shouldCreateSpanForOperation() {
         TracedService service = new TracedService(tracer);
-        
+
         service.performOperation("test-data");
-        
+
         // Verify spans were created
         assertThat(tracer.getSpans()).hasSize(1);
         assertThat(tracer.getSpans().get(0).getName()).isEqualTo("operation.perform");
         assertThat(tracer.getSpans().get(0).getTags())
             .containsEntry("data.id", "test-data");
     }
-    
+
     @Test
     void shouldRecordErrorInSpan() {
         TracedService service = new TracedService(tracer);
-        
-        assertThrows(RuntimeException.class, () -> 
+
+        assertThrows(RuntimeException.class, () ->
             service.failingOperation()
         );
-        
+
         assertThat(tracer.getSpans().get(0).getError())
             .isInstanceOf(RuntimeException.class);
     }
@@ -1551,17 +1571,18 @@ class TracedServiceTest {
 ```
 
 ### Integration Testing
+
 ```java
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureObservability
 class TracingIntegrationTest {
-    
+
     @Autowired
     private TestRestTemplate restTemplate;
-    
+
     @Autowired
     private Tracer tracer;
-    
+
     @Test
     void shouldPropagateTraceAcrossServices() {
         // Create headers with trace context
@@ -1569,28 +1590,28 @@ class TracingIntegrationTest {
         headers.set("X-B3-TraceId", "463ac35c9f6413ad48485a3953bb6124");
         headers.set("X-B3-SpanId", "0020000000000001");
         headers.set("X-B3-Sampled", "1");
-        
+
         HttpEntity<OrderRequest> request = new HttpEntity<>(
             new OrderRequest("customer-1", List.of(new OrderItem("prod-1", 2))),
             headers
         );
-        
+
         ResponseEntity<Order> response = restTemplate.postForEntity(
             "/api/orders", request, Order.class
         );
-        
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        
+
         // Verify trace was used (check via Zipkin API or mock)
     }
-    
+
     @Test
     void shouldIncludeTraceIdInErrorResponse() {
         ResponseEntity<ErrorResponse> response = restTemplate.getForEntity(
             "/api/orders/non-existent",
             ErrorResponse.class
         );
-        
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody().getTraceId()).isNotBlank();
     }
@@ -1598,14 +1619,15 @@ class TracingIntegrationTest {
 ```
 
 ### WireMock with Trace Verification
+
 ```java
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)
 class ExternalServiceTracingTest {
-    
+
     @Autowired
     private PaymentService paymentService;
-    
+
     @Test
     void shouldPropagateTraceToExternalService() {
         // Stub external service
@@ -1613,9 +1635,9 @@ class ExternalServiceTracingTest {
             .willReturn(aResponse()
                 .withStatus(200)
                 .withBody("{\"approved\": true}")));
-        
+
         paymentService.processPayment(new PaymentRequest("order-1", BigDecimal.TEN));
-        
+
         // Verify trace headers were sent
         verify(postRequestedFor(urlPathEqualTo("/gateway/charge"))
             .withHeader("X-B3-TraceId", matching(".+")));
@@ -1624,8 +1646,6 @@ class ExternalServiceTracingTest {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 12. Testing Traced Code**
 
@@ -1637,10 +1657,10 @@ class ExternalServiceTracingTest {
 
 </details>
 
-
 ## 13. Quick Reference
 
 ### Annotation Cheat Sheet
+
 ```java
 // Spring Boot 2.x (Sleuth)
 @NewSpan("custom-span-name")
@@ -1650,23 +1670,25 @@ public void methodWithNewSpan() { }
 public void methodWithContinuedSpan(@SpanTag("tag-name") String param) { }
 
 // Spring Boot 3.x (Observation)
-@Observed(name = "operation.name", 
+@Observed(name = "operation.name",
           contextualName = "contextual-name",
           lowCardinalityKeyValues = {"key", "value"})
 public void observedMethod() { }
 ```
 
 ### Common Patterns
-| Pattern | Use Case |
-|---------|----------|
+
+| Pattern                    | Use Case                          |
+| -------------------------- | --------------------------------- |
 | `tracer.startScopedSpan()` | Create child span with auto-close |
-| `tracer.currentSpan()` | Access current span for tagging |
-| `tracer.withSpan()` | Set span as current in scope |
-| `span.tag(key, value)` | Add searchable metadata |
-| `span.event(name)` | Add timestamp annotation |
-| `span.error(exception)` | Record error details |
+| `tracer.currentSpan()`     | Access current span for tagging   |
+| `tracer.withSpan()`        | Set span as current in scope      |
+| `span.tag(key, value)`     | Add searchable metadata           |
+| `span.event(name)`         | Add timestamp annotation          |
+| `span.error(exception)`    | Record error details              |
 
 ### Header Formats
+
 ```
 B3 Single Header:
 b3: {TraceId}-{SpanId}-{Sampled}-{ParentSpanId}
@@ -1687,6 +1709,7 @@ tracestate: key1=value1,key2=value2
 ---
 
 ## Summary
+
 - **Traces** = Request journey across services
 - **Spans** = Individual units of work
 - **Sleuth** = Spring Boot 2.x tracing (deprecated)
@@ -1696,15 +1719,16 @@ tracestate: key1=value1,key2=value2
 - **Sampling** = Control trace volume in production
 - **Log Correlation** = Include traceId/spanId in logs
 
-
 ---
 
 **Navigation**: [< Previous](Ch47_SB_Security_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch59_SB_Testing_Fundamentals.md)
 
 🔬 **Section Challenge — Summary**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, Service A calls Service B via HTTP, then Service B publishes to Kafka, and Service C consumes. The user reports the Zipkin UI shows Service A → Service B, but the trace *breaks* at the Kafka boundary — Service C appears as a separate trace. What went wrong?
+**Challenge 1 (Reasoning):** In a microservice architecture, Service A calls Service B via HTTP, then Service B publishes to Kafka, and Service C consumes. The user reports the Zipkin UI shows Service A → Service B, but the trace _breaks_ at the Kafka boundary — Service C appears as a separate trace. What went wrong?
+
 <details><summary>Answer</summary>
 
 Kafka doesn't automatically propagate trace context the way HTTP does. HTTP propagation works because Sleuth/Micrometer instruments `RestTemplate`/`WebClient` to inject trace headers. For Kafka, you need **explicit instrumentation**: (1) The Kafka producer must inject trace headers into the Kafka message headers (Sleuth does this automatically if `spring-cloud-sleuth-zipkin` + `spring-kafka` are on the classpath). (2) The consumer must extract those headers and create a child span. The break happens when: (a) the consumer doesn't have the tracing dependency, (b) a non-Spring producer writes to Kafka without trace headers, or (c) you're using `KafkaTemplate` in a way that bypasses Sleuth's instrumentation (e.g., direct `Producer` API). Fix: ensure both producer and consumer have `spring-cloud-starter-sleuth` (or Micrometer Tracing + Brave Kafka instrumentation) on the classpath.
+
 </details>

@@ -1,0 +1,598 @@
+{
+  "id": "019ec497-e589-75c6-af06-dcffbf9146f3",
+  "name": "Upgrade 02 Data Structures Course",
+  "description": "Upgrade `02_Data_Structures/` and `03_Algorithms/` legacy folders and populate the empty academic folders `_Curriculum/S02/CSE201_Data_Structures/` and `_Curriculum/S02/CSE202_Algorithms_And_Complexity/` to MIT 6.006/6.046, KTH DD1337/DD2350, TUM IN0007/IN0019, and ETH Zurich academic standard — full rigor (theorem-proof style, recurrence analysis, asymptotic proofs, primary literature anchors), with hybrid parallel/sequential execution.\n\n## Constraints\n\n- **No removals** (D003) — upgrade in place, preserve 5W1H on every file (D014), preserve existing pedagogy standards (Core Teaching Shape, Challenge Block Standard, Constraint-First DSA, contamination-free blocks).\n- **No new dependencies** — pure markdown curriculum work; no new tooling required.\n- **University anchors use stable URLs** — lecture permalinks (e.g., MIT OCW 6.006 lecture notes PDFs), KTH course-syllabus pages, TUM Moodle/lecture captures.\n- **Hybrid execution** (user-selected) — parallel agents for independent variant files, sequential for canonical shared files (INDEX, CONTEXT, audit, decisions).\n- **Stale-check coordination** (D011) — every batch ends with `tools/update_context.ps1 -Mode update && check`.\n- **Combined Lens ≥ 2.0 avg on every upgraded file** — historical evolution (the weakest dimension at 0–1 across 17/21 folders) is the primary gap to close.\n- **Contamination guards** — duplicate answer blocks (two-pointer invariant, binary search trace, fibonacci O(2^N)) must be replaced with local challenges per `00_CONTEXT/CONTAMINATION_GUARDS.md`.\n- **Auto-mode execution** — ferment runs in yolo permissions mode for git/file operations, except destructive ops on protected branches.\n\n## Chunks\n\n### Chunk 1 — University Reference Framework (sequential, blocking)\n\n- **Scope**: New file `_Curriculum/S02/UNIVERSITY_REFERENCE_MAP.md` (canonical mapping table: every topic → MIT lecture # + permalink, KTH course code + module, TUM lecture #, ETH course code). Plus 4 sub-files: `MIT_6.046_Topics.md`, `KTH_DD2350_Topics.md`, `TUM_IN0019_Topics.md`, `ETH_Algowiki_Topics.md` — each ~30-50 reference entries with stable permalinks.\n- **Depends On**: none\n- **Accept When**:\n  1. `UNIVERSITY_REFERENCE_MAP.md` exists with ≥ 40 rows covering every CSE201 and CSE202 topic\n  2. Every row has stable permalink URL (not `main` HEAD)\n  3. Tool: `grep -c 'http' _Curriculum/S02/UNIVERSITY_REFERENCE_MAP.md` ≥ 40\n- **Open Questions**:\n  - MIT OCW 6.006 has 24 lectures, 6.046 has 23. **Assumption:** map both 6.006 (intro DS/Algo) and 6.046 (advanced algorithms) since CSE201/202 covers the full range. Confirm during execution if user prefers just 6.046.\n  - **Assumption:** KTH DD1337 (Algorithms & Data Structures, 7.5 ECTS) for DS basics and DD2350 (Algorithms, Advanced Course) for advanced. Confirm.\n  - **Assumption:** TUM IN0007 (Foundations of Algorithms & Data Structures) and IN0019 (Efficient Algorithms & Data Structures). Confirm.\n\n### Chunk 2 — Populate CSE201_Data_Structures (parallel batches, 4 subagents)\n\n- **Scope**: Build full academic content for `_Curriculum/S02/CSE201_Data_Structures/`. Currently only `README.md` exists. Files to create (parallel_group: 1, run concurrently):\n  - **Batch A — Foundations**: `01_Mathematical_Foundations.md` (sets, functions, relations, induction, proofs), `02_Asymptotic_Notation.md` (formal O/Ω/Θ/o/ω with limit definitions, MIT 6.046 Lec 1-2 anchor), `03_Recurrence_Relations.md` (Master Theorem proof, Akra-Bazzi intro, CLRS Ch 4), `04_Arrays_DynamicArrays.md` (formal array ADT, amortized analysis via accounting method)\n  - **Batch B — Linear Structures**: `05_LinkedLists.md` (formal singly/doubly/circular with invariants), `06_Stacks_Queues_Deques.md` (ADT specification + amortized), `07_HashTables.md` (universal hashing proof, MIT 6.006 Lec 8)\n  - **Batch C — Trees**: `08_BinaryTrees_Traversals.md`, `09_BST_AVL.md` (with rotation proofs), `10_RedBlack_Trees.md` (5 invariants + insert/delete proofs, MIT 6.046 Lec 4), `11_B_Trees.md` (disk-aware, MIT 6.046 Lec 11)\n  - **Batch D — Heaps, Tries, Graphs**: `12_Heaps_PriorityQueues.md` (heap property proof), `13_Tries_SuffixTrees.md`, `14_Graph_Representations.md`, `15_Disjoint_Sets_UnionFind.md` (with inverse-Ackermann proof, MIT 6.046 Lec 6)\n- **Depends On**: Chunk 1\n- **Accept When**:\n  1. 14 new files exist in `S02/CSE201_Data_Structures/`\n  2. Every file has: 5W1H block (preserved/added), formal theorem statement with proof sketch, MIT/KTH/TUM anchor permalink, local challenge with answer block, recurrence/complexity table\n  3. Tool: `grep -lE '^## 5W1H|^### 5W1H|5W1H —' _Curriculum/S02/CSE201_Data_Structures/*.md | wc -l` = 14\n- **Open Questions**:\n  - **Assumption:** each lecture-style file ~400-800 lines (matches existing legacy file sizes). Confirm if more condensed/longer preferred.\n\n### Chunk 3 — Populate CSE202_Algorithms_And_Complexity (parallel batches, 4 subagents)\n\n- **Scope**: Build full academic content for `_Curriculum/S02/CSE202_Algorithms_And_Complexity/`. Currently only `README.md`. Files (parallel_group: 1):\n  - **Batch A — Paradigms**: `01_Divide_And_Conquer.md` (Master Theorem application, MIT 6.046 Lec 2-3), `02_Greedy_Algorithms.md` (exchange argument proofs, matroid theory intro), `03_Dynamic_Programming.md` (Bellman 1957, optimal substructure proofs, MIT 6.046 Lec 9-11)\n  - **Batch B — Graph Algorithms**: `04_Graph_Traversals.md` (BFS/DFS with full correctness proofs), `05_Shortest_Paths.md` (Dijkstra 1959, Bellman-Ford 1958, Floyd-Warshall 1962 — full proofs), `06_Minimum_Spanning_Trees.md` (Prim 1957, Kruskal 1956, cut property proof)\n  - **Batch C — Advanced Topics**: `07_Network_Flow.md` (Ford-Fulkerson, Edmonds-Karp, MIT 6.046 Lec 14-15), `08_NP_Completeness.md` (Cook 1971, Karp 21, polynomial reduction), `09_Approximation_Algorithms.md` (PTAS, FPTAS), `10_Randomized_Algorithms.md` (Las Vegas/Monte Carlo, fingerprinting)\n  - **Batch D — Specialized**: `11_String_Algorithms.md` (KMP 1977, suffix arrays, MIT 6.046 Lec 19), `12_Computational_Geometry.md` (sweep line, Voronoi intro), `13_Parallel_Algorithms.md` (PRAM model intro, MIT 6.046 Lec 25-26)\n- **Depends On**: Chunk 1\n- **Accept When**:\n  1. 13 new files exist in `S02/CSE202_Algorithms_And_Complexity/`\n  2. Every file: 5W1H, formal theorem + proof, named inventor + year (fixes weakest HE dimension), anchor permalink, local challenge\n  3. Tool: `grep -lE '5W1H' _Curriculum/S02/CSE202_Algorithms_And_Complexity/*.md | wc -l` = 13\n- **Open Questions**: same lecture-length assumption as Chunk 2\n\n### Chunk 4 — Upgrade 03_Algorithms/ flagged files (batched by topic, 5 subagents)\n\n- **Scope**: Upgrade the 35 P2-flagged files per `03_ALGORITHMS_AUDIT_P2_UPGRADE_LIST.md`. Files grouped by topic (parallel_group: 1):\n  - **Sub-batch 4A — Sorting/Recursion** (sequential within batch, 6 files): `02a_Sorting_Fundamentals.md`, `02b_Sorting_Advanced.md`, `02c_Divide_And_Conquer.md`, `03b_Recursion_Fundamentals.md`, `03c_Recursion_Advanced.md`, `06c_Advanced_Algo_Deep.md`\n  - **Sub-batch 4B — DP/Greedy** (5 files): `04b_DP_Fundamentals.md`, `04c_DP_Advanced.md`, `11_Backtracking_Complete.md`, `12_Greedy_Algorithms_Complete.md`, `16_DSA_Deep_Reasoning.md`\n  - **Sub-batch 4C — Graphs** (4 files): `05_Trees.md`, `05b_Graphs_Internals.md`, `05c_Graphs_Fundamentals.md`, `05d_Graphs_Advanced_Algos.md`, `05e_Graphs_Patterns.md`\n  - **Sub-batch 4D — Strings/Number Theory** (5 files): `06_Math_Geometry_Java_Complete.md`, `06d_String_Algorithms.md`, `08a_NumberTheory_Core.md`, `08b_NumberTheory_Advanced.md`, `13_String_Algorithms_Complete.md`\n  - **Sub-batch 4E — Advanced/Patterns** (8 files): `06e_Algorithm_Patterns.md`, `07a_Advanced_DS_Core.md`, `07b_Advanced_DS_Patterns.md`, `07d_Probabilistic_DS_Deep.md`, `07e_Advanced_Algorithm_Engineering_Deep.md`, `17_DSA_Java_Implementation_Mastery.md`, `18_Bitwise_Trie_Java_Complete.md`, `19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md`, `20_DSA_Patterns_PDF_Java_Coverage_Map.md`, `03_PROBLEM_SETS.md`, `09_Pattern_Programs_Complete.md`, `10_Bit_Manipulation_Complete.md`\n  - **Plus canonical shared files** (SEQUENTIAL after all sub-batches): `00_INDEX.md`, `CONTEXT.md` — update with new academic references and Combined Lens scores.\n- **Depends On**: Chunk 1 (uses `UNIVERSITY_REFERENCE_MAP.md` for anchors)\n- **Accept When**:\n  1. All 35 flagged files have: (a) University Anchor section with stable permalink, (b) named inventor + year (e.g., \"Dijkstra 1959\", \"Huffman 1952\", \"Hoare 1959\", \"Knuth-Morris-Pratt 1977\"), (c) local-only challenge block (no duplicates), (d) Combined Lens avg ≥ 2.0\n  2. Tool: `python tools/pedagogy_lens.py 03_Algorithms/*.md` (or equivalent grep-based check) reports no file with avg < 2.0\n  3. `00_INDEX.md` updated with academic mapping table\n  4. `CONTEXT.md` references new anchor sources\n- **Open Questions**: none (scope is well-defined by existing audit)\n\n### Chunk 5 — Upgrade 02_Data_Structures/ (light touch, 1 subagent)\n\n- **Scope**: Apply lighter upgrade to the 14 DS files (already avg 2.4 per audit). Focus on:\n  - Add University Anchor section (MIT 6.006 lecture permalink) to each file\n  - Strengthen Historical Evolution (HE=2 currently → target HE=3) — add named inventors/years where missing\n  - Consolidate duplicate answer blocks per contamination guards\n  - Files: `01a_Memory_Foundations.md`, `01b_Arrays.md`, `01c_LinkedList.md`, `01d_Stack_Queue.md`, `01e_HashTable.md`, `01f_Trees_Heaps.md`, `01g_DS_Internals.md`, `02a_DS_Variants_Core.md`, `02b_DS_Variants_Advanced.md`, `03_Collections_Java.md`, `04_2D_Arrays_Matrix.md`, `05_DS_In_Production.md`\n- **Depends On**: Chunk 1, Chunk 4 (consistent anchor style)\n- **Accept When**:\n  1. All 14 DS files have a `## University Anchor` section with stable MIT/KTH/TUM permalink\n  2. Combined Lens score raises from 2.4 → ≥ 2.6\n  3. Tool: `grep -lE 'University Anchor' 02_Data_Structures/*.md | wc -l` = 14\n- **Open Questions**: none\n\n### Chunk 6 — Cross-linking & registry update (sequential, final)\n\n- **Scope**:\n  - Update `_Curriculum/S01/.../_Curriculum_Map.md` and `_Curriculum/S02/.../README.md` files with new file lists\n  - Update `00_CURRICULUM/CURRICULUM_OVERVIEW.md` references\n  - Update `00_CURRICULUM/SEMESTER_1_GUIDE.md` and `SEMESTER_2_GUIDE.md` \"Read\" column with new academic-folder paths\n  - Update `00_CONTEXT/FILE_REGISTRY.md` (auto-generated) and `REPO_MAP.md`\n  - Update `00_CONTEXT/CONTAMINATION_GUARDS.md` with any new contamination patterns discovered\n  - Update `00_CONTEXT/PEDAGOGY_AUDIT_2026.md` with post-upgrade scores\n  - Update `00_CONTEXT/CHANGE_JOURNAL.md` with chunk-by-changelog\n- **Depends On**: Chunks 2, 3, 4, 5\n- **Accept When**:\n  1. `SEMESTER_1_GUIDE.md` \"Read\" column references new CSE201 files where appropriate\n  2. `SEMESTER_2_GUIDE.md` \"Read\" column references new CSE202 files\n  3. `FILE_REGISTRY.md` regenerated and contains all new file paths\n  4. `tools/update_context.ps1 -Mode check` returns 0 stale files\n  5. Final overall Combined Lens avg for `03_Algorithms` ≥ 2.0, for `02_Data_Structures` ≥ 2.6\n- **Open Questions**: none\n\n### Chunk 7 — Verification gate (sequential, mandatory)\n\n- **Scope**: Run the verification-before-completion skill. Confirm:\n  - All files exist on disk (paths verified via `ls`)\n  - Every upgraded file passes the Combined Lens rubric (avg ≥ 2.0)\n  - 5W1H preserved on every file (D014 verification: `grep -l '5W1H' <folder>/*.md | wc -l` matches `.md` count)\n  - No duplicate `<details>` answer blocks remain (contamination guard check)\n  - Stale-check passes\n- **Depends On**: Chunk 6\n- **Accept When**:\n  1. All verification commands return exit 0\n  2. Summary report generated at `.kimchi/docs/ferment-ds-algo-upgrade-summary.md` listing: file count, score deltas, anchor sources used, contamination patterns resolved\n- **Open Questions**: none\n\n## Verification Strategy\n\n| Check | Command | Pass Criterion |\n|-------|---------|----------------|\n| 5W1H preserved | `grep -lE '5W1H' <folder>/*.md \\| wc -l` | equals `.md` count in folder |\n| Anchor presence | `grep -lE 'University Anchor\\|MIT 6\\|KTH DD\\|TUM IN\\|ETH' <folder>/*.md \\| wc -l` | equals number of upgraded files |\n| Combined Lens avg | `tools/pedagogy_lens.py <folder>/*.md` (or manual score) | no file < 2.0 |\n| Duplicate answer blocks | `grep -c 'Answer</summary>' <file>` per file | ≤ 1 per challenge |\n| Stale context | `tools/update_context.ps1 -Mode check` | exit 0 |\n| File existence | `ls -1 <expected_files>` | all present |\n\n## Decision Log\n\n| ID | Decision | Rationale | Rejected Alternatives |\n|----|----------|-----------|----------------------|\n| DL-01 | Use MIT 6.006 + 6.046 (both), not just 6.046 | CSE201 covers intro DS (6.006 territory), CSE202 covers advanced (6.046 territory) | Just 6.046 alone — misses intro DS framing |\n| DL-02 | Academic anchors use `pdf` permalinks from MIT OCW, KTH Canvas, TUM Moodle | Stable URLs that survive course updates | HEAD/main URLs — rot in weeks (D012) |\n| DL-03 | Parallel agents on independent variant files; sequential on canonical INDEX/CONTEXT/audit | Reduces contamination risk on shared files | Full parallel — risks parallel-agent conflicts (D011) |\n| DL-04 | Skip EXAM_BANK.md expansion (user didn't select it) | Scope discipline | Include — would inflate ferment scope |\n| DL-05 | Light touch on `02_Data_Structures/` (already avg 2.4) | Already passes threshold; effort better spent on weak files | Heavy rewrite — would discard high-quality existing content |\n| DL-06 | New academic content lives in `_Curriculum/S02/CSE201/` & `CSE202/`; legacy folders stay | Matches dual-track convention: practical (legacy) + academic (curriculum) | Merge into one — would create one giant folder |\n| DL-07 | Use CLRS + Sedgewick as primary text references; MIT/KTH/TUM as anchor | CLRS is the canonical CS algo text; Sedgewick is KTH's required text | Pure university anchors only — less portable |\n\n## Risks\n\n| Risk | Likelihood | Mitigation |\n|------|------------|------------|\n| **Subagent stale conflicts** when two agents edit the same canonical file (e.g., both touch `_Curriculum/S02/.../README.md`) | Medium | Stale-check before each batch; only one subagent owns each file path; canonical files (INDEX/CONTEXT) handled sequentially in Chunk 6 |\n| **Anchor URLs rot** after publication | Medium | Use stable permalinks (PDFs, archived lecture notes, course-syllabus pages), not lecture-recording streams |\n| **Scope creep** into other folders (e.g., 04_Patterns_Templates, 07_Modern_Java) | Medium | Hard boundary: only touch `02_Data_Structures/`, `03_Algorithms/`, `_Curriculum/S02/CSE201/`, `_Curriculum/S02/CSE202/`, and registry updates in Chunk 6 |\n| **Token budget** — 40+ new files × ~600 lines + 35 file upgrades | High | Use parallel agents to parallelize; defer chunk 4/5 long-tail files if budget tightens |\n| **Existing contamination patterns** (duplicate answer blocks) may be re-introduced | Medium | Each subagent prompt includes the contamination-guard list explicitly |\n| **5W1H removal** during upgrade | Low | Explicit per-subagent instruction + post-batch grep verification |\n| **MIT 6.046 vs 6.006 confusion** | Low | Each anchor explicitly names which course + lecture # |\n| **Heavily-flagged files in 03_Algorithms** (some at avg 1.0) need more than surface fix | Medium | Mark these (`03_PROBLEM_SETS.md`, `06d_String_Algorithms.md`, `09_Pattern_Programs_Complete.md`, `10_Bit_Manipulation_Complete.md`) for deeper rewrite rather than incremental patch |\n\n## Estimated Effort\n\n- Chunk 1: 1 subagent, ~30 min\n- Chunk 2: 4 parallel subagents, ~90 min wall-clock (longest subagent ~75 min)\n- Chunk 3: 4 parallel subagents, ~90 min wall-clock\n- Chunk 4: 5 parallel subagents, ~120 min wall-clock (longest subagent ~100 min for 12 files)\n- Chunk 5: 1 subagent, ~45 min\n- Chunk 6: 1 subagent (sequential), ~30 min\n- Chunk 7: 1 verification agent, ~15 min\n- **Total wall-clock**: ~7 hours with parallelism (vs ~14 hours sequential)\n- **Total subagent count**: ~16 subagent invocations\n\n## Assumptions Made (require user confirmation before execution)\n\n1. **MIT course coverage**: Mapping uses both 6.006 (intro DS/Algo) and 6.046 (advanced algorithms) — covers full CSE201/202 range. Alternative: just 6.046.\n2. **KTH course codes**: DD1337 (intro, 7.5 ECTS) and DD2350 (advanced, 7.5 ECTS). Alternative: DD1351, DD2440.\n3. **TUM course codes**: IN0007 (Foundations of Algorithms & Data Structures) and IN0019 (Efficient Algorithms & Data Structures). Alternative: IN0001, IN0002.\n4. **ETH course**: References informal Algowiki and 252-0026/252-0057 lecture notes since ETH doesn't have a single canonical Algo course.\n5. **Lecture-note file length**: ~400-800 lines per file (matches existing legacy folder sizes).\n6. **EXAM_BANK expansion is OUT of scope** (user didn't select it).\n7. **Tools script `tools/update_context.ps1` already exists** and works (assumption from existing audit files referring to it).\n\n<!-- PLAN_COMPLETE -->",
+  "status": "complete",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "91494e06de1af3efc27849d84b77112483be287f"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Upgrade `02_Data_Structures/` to **university-level course quality** (matching the MIT/KTH/ETH standard established in `00_CURRICULUM/`), so the folder stands as a complete, exam-ready Data Structures course with university-grade rigor — depth, invariants, problem sets, and production context. The upgrade approach is DS-specific depth (constraint-first reasoning per D004, memory model grounding, invariants, edge cases) chosen by the user.",
+      "confirmedAt": "2026-06-14T05:53:29.827Z"
+    },
+    "criteria": {
+      "answer": "`02_Data_Structures_AUDIT.md` exists with per-file university-readiness scoring (rigor, invariants, complexity proofs, edge cases, exam-style problems) for all 14 content files\nAll 14 content files in `02_Data_Structures/` contain a constraint-first treatment (brute force → constraint signals → DS choice → algorithm choice → when DS breaks → edge cases/invariants) per D004\nAll 14 content files retain the 5W1H framing block (D014) — `grep -lE '5W1H' 02_Data_Structures/*.md | wc -l` returns 14\nFormal complexity analysis (Big-O with justification, not just notation) is present in `01a` through `01g` (7 core structure files)\nInvariants are explicitly stated for `01c_LinkedList.md` (pointer integrity), `01e_HashTable.md` (load factor / hash uniformity), and `01f_Trees_Heaps.md` (BST ordering, heap property) — university-grade rigor\nExam-style problem set exists or is strengthened in `02_PROBLEM_SETS.md` covering all 6 core structures with constraints→DS-choice→solution→edge-cases structure\nProduction failure modes section is present in `03_Collections_Java.md` and `05_DS_In_Production.md` (bridges DS theory to real engineering)\n`python3 tools/update_context.py check` exits 0 after each phase completes",
+      "confirmedAt": "2026-06-14T05:53:29.827Z"
+    },
+    "constraints": {
+      "answer": "Target audience: university-level learners (matches the MIT/KTH/ETH benchmark set in `00_CURRICULUM/SEMESTER_1_GUIDE.md`) — content must teach reasoning, not just memorize, DS-specific depth only — no broader Combined Lens HE/PR/CD/TB scoring dimensions, per user direction, Preserve all existing content; upgrade by appending or refining, not deleting (D003), 5W1H framing block is the protected backbone; must remain on every file (D014), DSA constraint-first methodology (brute force baseline → constraint signals → DS choice → algorithm choice → when pattern breaks → optimized rewrite → edge cases/invariants) per D004, Run `python3 tools/update_context.py check` after every phase; fix any stale-context failures before advancing, Log every phase completion to `00_CONTEXT/CHANGE_JOURNAL.md`",
+      "confirmedAt": "2026-06-14T05:53:29.827Z"
+    },
+    "phases": {
+      "answer": "Audit, Foundations Upgrade 01a-01f, Internals and Variants Upgrade, Problem Sets, Collections, 2D Arrays, Production",
+      "confirmedAt": "2026-06-14T05:53:29.827Z"
+    },
+    "assumptions": {
+      "answer": "The 16-file 02_Data_Structures folder has 14 content files (excluding 00_INDEX.md and CONTEXT.md) — that is the working set for this upgrade. The user has confirmed DS-specific depth is the upgrade approach, so we will not run a full Combined Lens HE/PR/CD/TB scoring pass as the recent 13/14/15 ferments did. 5W1H is already present on all 14 content files (verified: `grep -lE '5W1H' 02_Data_Structures/*.md | wc -l` returns 14), so D014 preservation is the baseline audit, not a new addition. The MIT/KTH/ETH university-level benchmark is taken from `00_CURRICULUM/` (referenced in CHANGE_JOURNAL 2026-06-06 entry: \"MIT/KTH/ETH-level 4-semester curriculum with projects, problem sets, answer keys, JUnit stubs, and Erklärung failure tables\") and is the same standard this folder must meet.",
+      "confirmedAt": "2026-06-14T05:53:29.827Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Audit",
+      "goal": "Produce a university-readiness gap audit covering all 14 content files in `02_Data_Structures/`. Output is the contract that drives the three upgrade phases.",
+      "description": "Read every content file. Score each on university-readiness dimensions: (1) 5W1H preservation, (2) formal complexity analysis, (3) invariants stated, (4) constraint-first treatment, (5) brute force baseline, (6) when-DS-breaks, (7) edge cases, (8) exam-style problem coverage, (9) production failure mode coverage. Produce `02_Data_Structures/02_Data_Structures_AUDIT.md` with per-file table and prioritized gap list.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Read all 14 content files in 02_Data_Structures/ to inventory current state",
+          "status": "verified",
+          "verification": {
+            "command": "test -f 02_Data_Structures/01a_Memory_Foundations.md && test -f 02_Data_Structures/05_DS_In_Production.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:06:15.970Z",
+          "completedAt": "2026-06-14T06:06:49.364Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:06:49.364Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Write `02_Data_Structures/02_Data_Structures_AUDIT.md` with per-file university-readiness scoring table (5W1H, complexity, invariants, constraint-first, brute-force, when-DS-breaks, edge cases, exam problems, production failure modes)",
+          "status": "verified",
+          "verification": {
+            "command": "test -f 02_Data_Structures/02_Data_Structures_AUDIT.md && grep -c '^## ' 02_Data_Structures/02_Data_Structures_AUDIT.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:06:53.311Z",
+          "completedAt": "2026-06-14T06:09:54.079Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:09:54.079Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Verify 5W1H present on all 14 content files per D014",
+          "status": "verified",
+          "verification": {
+            "command": "[ \"$(grep -lE '5W1H' 02_Data_Structures/*.md | wc -l)\" = \"14\" ]",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:09:59.687Z",
+          "completedAt": "2026-06-14T06:11:23.271Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:11:23.271Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Run `python3 tools/update_context.py check`; capture result",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:11:26.197Z",
+          "completedAt": "2026-06-14T06:15:50.607Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:15:50.607Z"
+          }
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Log audit completion to `00_CONTEXT/CHANGE_JOURNAL.md`",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q '02_Data_Structures' 00_CONTEXT/CHANGE_JOURNAL.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:16:43.629Z",
+          "completedAt": "2026-06-14T06:16:51.054Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:16:51.054Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T05:53:32.561Z",
+      "completedAt": "2026-06-14T06:17:12.634Z",
+      "summary": "Phase 1 (Audit) complete. Produced `02_Data_Structures/02_Data_Structures_AUDIT.md` (17.7KB, 10 sections) covering rubric, per-file scoring matrix, gap notes, top-5 priority gaps, phase mapping, and verification targets. Inventoried all 14 content files (312-line doc). Verified 5W1H presence: 13/14 PASS, 1 FAIL (`02_PROBLEM_SETS.md` — D014 violation, deferred to Phase 4). Ran context check: initial stale (5 new files including 4 pre-existing A1-A4 supplements), updated registry, final check exit 0 with 1703 active Markdown files. Logged audit completion to `00_CONTEXT/CHANGE_JOURNAL.md` (line 7, top of file). Phase goal fully delivered: gap audit is the contract driving Phases 2-4.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T06:17:12.604Z"
+      }
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Foundations Upgrade 01a-01f",
+      "goal": "Bring memory foundations and the 5 core data structures (01a Memory, 01b Arrays, 01c LinkedList, 01d Stack/Queue, 01e HashTable, 01f Trees/Heaps) to university-level rigor.",
+      "description": "Per file: (a) 5W1H preserved at top; (b) formal complexity analysis (Big-O with justification, not just notation); (c) brute-force baseline present; (d) constraint signals section; (e) when-this-DS-breaks section; (f) invariants section where structurally relevant (01c, 01e, 01f); (g) edge cases list. University-grade means: a CS student could use the file to prepare for an exam.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Upgrade `01a_Memory_Foundations.md` — formal memory cost model (Big-O of allocation/copy/access), reference vs value semantics, DS-layout tradeoffs (cache locality, pointer chasing)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q 'constraint' 02_Data_Structures/01a_Memory_Foundations.md && grep -q '5W1H' 02_Data_Structures/01a_Memory_Foundations.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:17:28.195Z",
+          "completedAt": "2026-06-14T06:19:25.741Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:19:25.741Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Upgrade `01b_Arrays.md` — constraint signals (size, random access, contiguous memory), when-arrays-break (resize cost, fragmentation), brute-force baseline, edge cases (empty, single element)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'when.*break|brute.*force|complexity' 02_Data_Structures/01b_Arrays.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:19:29.531Z",
+          "completedAt": "2026-06-14T06:20:29.709Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:20:29.709Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Upgrade `01c_LinkedList.md` — invariants (prev/next integrity, head/tail sentinels), when-LL-breaks (cache misses, random access cost), pointer pitfalls edge cases (cycles, lost references)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'invariant' 02_Data_Structures/01c_LinkedList.md && grep -q '5W1H' 02_Data_Structures/01c_LinkedList.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:20:34.391Z",
+          "completedAt": "2026-06-14T06:21:26.868Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:21:26.868Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Upgrade `01d_Stack_Queue.md` — constraint signals, when-LIFO/FIFO-breaks (bounded vs unbounded, recursion depth), recursion-to-iterative conversion pitfalls",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'constraint|when.*break' 02_Data_Structures/01d_Stack_Queue.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:21:30.259Z",
+          "completedAt": "2026-06-14T06:22:19.474Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:22:19.474Z"
+          }
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Upgrade `01e_HashTable.md` — invariants (load factor threshold, hash uniformity, rehashing trigger), collision-driven failure modes, when-HashMap-breaks (pathological keys, resize cost)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'invariant' 02_Data_Structures/01e_HashTable.md && grep -q '5W1H' 02_Data_Structures/01e_HashTable.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:22:25.241Z",
+          "completedAt": "2026-06-14T06:23:18.444Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:23:18.444Z"
+          }
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "Upgrade `01f_Trees_Heaps.md` — invariants (BST ordering, heap property, AVL balance factor), rebalancing cost, when-trees-break (skewed BST, degenerate heap operations)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'invariant' 02_Data_Structures/01f_Trees_Heaps.md && grep -q '5W1H' 02_Data_Structures/01f_Trees_Heaps.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:23:21.856Z",
+          "completedAt": "2026-06-14T06:25:11.199Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:25:11.199Z"
+          }
+        },
+        {
+          "id": "step-7",
+          "index": 7,
+          "description": "Run `python3 tools/update_context.py check` and log to CHANGE_JOURNAL.md",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:25:13.798Z",
+          "completedAt": "2026-06-14T06:31:08.006Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:31:08.006Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T06:17:15.665Z",
+      "completedAt": "2026-06-14T06:31:25.526Z",
+      "summary": "Phase 2 (Foundations Upgrade 01a-01f) complete. 6/6 content files upgraded with University-Level Addenda totaling +1667 lines (991→1222, 1724→1933, 1045→1282, 930→1257, 701→990, 868→1242). Critical invariants gaps closed: 7 pointer invariants I1-I7 + Floyd proof (01c), S1-S3 + Q1-Q4 stack/queue invariants + circular buffer proof (01d), T1-T4/A1-A3/R1-R5/H1-H4/B1-B4 tree invariants + AVL/Red-Black height bound proofs (01f), H1-H7 hash table invariants + uniform-hashing O(1) lookup proof (01e). All files include constraint-first decision framework, when-breaks section with 5-8 formal failure modes, edge cases, formal complexity proofs, and cross-references. 5W1H preserved on all 6 files. Context check passes (exit 0, 1703 active files). Journal entry logged.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T06:31:25.499Z"
+      }
+    },
+    {
+      "id": "phase-3",
+      "index": 3,
+      "name": "Internals and Variants Upgrade",
+      "goal": "Bring Java internals and the variants catalog (01g, 02a, 02b) to university-level rigor — variant selection reasoning, formal complexity, invariants.",
+      "description": "For `01g_DS_Internals.md` (Java implementations) — formal cost annotations, when-implementation-breaks (resize, rehash, copy-on-write), memory layout per implementation. For `02a_DS_Variants_Core.md` (Deque, PQ, multimap) — variant-selection rationale: which constraints push you from DS A to variant B, with formal complexity comparison. For `02b_DS_Variants_Advanced.md` (skip list, bloom, trie) — invariants, sizing formulas (Bloom false-positive rate, skip list level probability), when-variant-breaks.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Upgrade `01g_DS_Internals.md` — when-implementation-breaks (ArrayList resize, HashMap rehash, TreeMap red-black rebalance), memory cost per implementation",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'when.*break|resize|rehash|complexity' 02_Data_Structures/01g_DS_Internals.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:31:40.629Z",
+          "completedAt": "2026-06-14T06:32:29.331Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:32:29.331Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Upgrade `02a_DS_Variants_Core.md` — variant-selection rationale per variant (Deque vs Queue, PQ vs sorted set, MultiMap vs Map<KEY, List<V>>) with formal complexity",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'when|constraint|complexity' 02_Data_Structures/02a_DS_Variants_Core.md && grep -q '5W1H' 02_Data_Structures/02a_DS_Variants_Core.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:32:33.971Z",
+          "completedAt": "2026-06-14T06:33:53.345Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:33:53.345Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Upgrade `02b_DS_Variants_Advanced.md` — invariants, sizing formulas (Bloom: m = -n*ln(p)/(ln 2)^2, skip list level p=1/4 or 1/2), when-variant-breaks",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'invariant' 02_Data_Structures/02b_DS_Variants_Advanced.md && grep -q '5W1H' 02_Data_Structures/02b_DS_Variants_Advanced.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:34:10.053Z",
+          "completedAt": "2026-06-14T06:36:11.956Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:36:11.956Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Run `python3 tools/update_context.py check` and log to CHANGE_JOURNAL.md",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:36:15.306Z",
+          "completedAt": "2026-06-14T06:43:15.259Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:43:15.259Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T06:31:36.507Z",
+      "completedAt": "2026-06-14T06:43:34.301Z",
+      "summary": "Phase 3 (Internals + Variants Upgrade) complete. 3/3 content files upgraded with University-Level Addenda totaling +1038 lines (1497→1797, 2075→2365, 1711→2159). Implementation-specific invariants formalized (AL1-AL5, HM1-HM6, TM1-TM4, LL1-LL4; DQ1-DQ4, PQ1-PQ5, SL1-SL4; SK1-SK5, TR1-TR4, BF1-BF4, L1-L4, SP1-SP3). 24 break modes across 3 files. Sizing formulas with derivations (Bloom filter m=-n·ln(p)/(ln 2)² + worked examples, skip list level probability, B-tree disk access, LSM write amplification). 6 decision frameworks. 6 complexity proofs. 5W1H preserved on all 3 files. Context check passes (exit 0, 1705 active files). Journal entry logged.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T06:43:34.271Z"
+      }
+    },
+    {
+      "id": "phase-4",
+      "index": 4,
+      "name": "Problem Sets, Collections, 2D Arrays, Production",
+      "goal": "Strengthen exam-style problem coverage, edge cases, invariants, and production failure modes in the application files — completing the university-course surface.",
+      "description": "For problem bridges (`00_DS_PROBLEM_BRIDGES.md`) and problem sets (`02_PROBLEM_SETS.md`) — ensure exam-style constraint-first framing on every problem (constraints → DS choice → solution → edge cases). For `03_Collections_Java.md` — add production failure modes (concurrent modification, iterator invalidation, resizing). For `04_2D_Arrays_Matrix.md` — add invariants (row/col traversal order) and edge cases (empty matrix, single row/col, non-rectangular). For `05_DS_In_Production.md` — strengthen production failure mode coverage so the folder bridges university theory to engineering practice.",
+      "parallel": false,
+      "status": "completed",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Upgrade `00_DS_PROBLEM_BRIDGES.md` — exam-style constraint-first framing on each problem bridge",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'constraint' 02_Data_Structures/00_DS_PROBLEM_BRIDGES.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:43:45.319Z",
+          "completedAt": "2026-06-14T06:44:58.764Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:44:58.764Z"
+          }
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Upgrade `02_PROBLEM_SETS.md` — ensure each core structure (array, LL, stack/queue, hash, tree/heap) has at least 2 exam-style problems with constraints → DS-choice → solution → edge-cases",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'constraint' 02_Data_Structures/02_PROBLEM_SETS.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:45:03.194Z",
+          "completedAt": "2026-06-14T06:46:19.515Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:46:19.515Z"
+          }
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Upgrade `03_Collections_Java.md` — production failure modes (concurrent modification, iterator invalidation, ArrayList resize cost, HashMap rehash)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'production|failure|concurrent' 02_Data_Structures/03_Collections_Java.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:46:24.029Z",
+          "completedAt": "2026-06-14T06:47:14.684Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:47:14.684Z"
+          }
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Upgrade `04_2D_Arrays_Matrix.md` — invariants (row-major traversal, in-place vs copy), edge cases (empty matrix, single row/col, non-rectangular)",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -i 'invariant' 02_Data_Structures/04_2D_Arrays_Matrix.md && grep -q '5W1H' 02_Data_Structures/04_2D_Arrays_Matrix.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:47:19.458Z",
+          "completedAt": "2026-06-14T06:48:30.806Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:48:30.806Z"
+          }
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "Upgrade `05_DS_In_Production.md` — strengthen production failure mode coverage with at least 3 concrete incidents or sizing rules",
+          "status": "verified",
+          "verification": {
+            "command": "grep -q -iE 'production|failure' 02_Data_Structures/05_DS_In_Production.md",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:48:36.452Z",
+          "completedAt": "2026-06-14T06:49:25.173Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:49:25.173Z"
+          }
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "Final `python3 tools/update_context.py check` and update CHANGE_JOURNAL with summary",
+          "status": "verified",
+          "verification": {
+            "command": "python3 tools/update_context.py check",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false,
+          "startedAt": "2026-06-14T06:49:28.115Z",
+          "completedAt": "2026-06-14T06:54:17.165Z",
+          "result": {
+            "success": true,
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "",
+            "completedAt": "2026-06-14T06:54:17.165Z"
+          }
+        }
+      ],
+      "startedAt": "2026-06-14T06:43:41.605Z",
+      "completedAt": "2026-06-14T06:54:33.674Z",
+      "summary": "Phase 4 (Final Application Files) complete. 5/5 content files upgraded totaling +1690 lines (235→705, 735→1180, 958→1252, 1614→1878, 807→1024). **D014 violation FIXED**: 5W1H block added to `02_PROBLEM_SETS.md`; all 14 content files now have 5W1H. 12 exam-style problems added across 6 core structures. 12 production failure modes documented (extending body's 4). 8 additional real-world incidents + 6 sizing rules. 2D array invariants + 15 edge cases + 8 break modes + 6 complexity proofs + 2 exam-style proofs. Final context check passes (exit 0, 1706 files). All 8 ferment success criteria verified PASS.",
+      "grade": {
+        "grade": "A",
+        "rationale": "All gates pass; project checks validate.",
+        "gradedAt": "2026-06-14T06:54:33.630Z"
+      }
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-14T05:25:49.577Z",
+  "updatedAt": "2026-06-14T06:57:13.511Z",
+  "goal": "Upgrade `02_Data_Structures/` to **university-level course quality** (matching the MIT/KTH/ETH standard established in `00_CURRICULUM/`), so the folder stands as a complete, exam-ready Data Structures course with university-grade rigor — depth, invariants, problem sets, and production context. The upgrade approach is DS-specific depth (constraint-first reasoning per D004, memory model grounding, invariants, edge cases) chosen by the user.",
+  "successCriteria": [
+    "`02_Data_Structures_AUDIT.md` exists with per-file university-readiness scoring (rigor, invariants, complexity proofs, edge cases, exam-style problems) for all 14 content files",
+    "All 14 content files in `02_Data_Structures/` contain a constraint-first treatment (brute force → constraint signals → DS choice → algorithm choice → when DS breaks → edge cases/invariants) per D004",
+    "All 14 content files retain the 5W1H framing block (D014) — `grep -lE '5W1H' 02_Data_Structures/*.md | wc -l` returns 14",
+    "Formal complexity analysis (Big-O with justification, not just notation) is present in `01a` through `01g` (7 core structure files)",
+    "Invariants are explicitly stated for `01c_LinkedList.md` (pointer integrity), `01e_HashTable.md` (load factor / hash uniformity), and `01f_Trees_Heaps.md` (BST ordering, heap property) — university-grade rigor",
+    "Exam-style problem set exists or is strengthened in `02_PROBLEM_SETS.md` covering all 6 core structures with constraints→DS-choice→solution→edge-cases structure",
+    "Production failure modes section is present in `03_Collections_Java.md` and `05_DS_In_Production.md` (bridges DS theory to real engineering)",
+    "`python3 tools/update_context.py check` exits 0 after each phase completes"
+  ],
+  "constraints": [
+    "Target audience: university-level learners (matches the MIT/KTH/ETH benchmark set in `00_CURRICULUM/SEMESTER_1_GUIDE.md`) — content must teach reasoning, not just memorize",
+    "DS-specific depth only — no broader Combined Lens HE/PR/CD/TB scoring dimensions, per user direction",
+    "Preserve all existing content; upgrade by appending or refining, not deleting (D003)",
+    "5W1H framing block is the protected backbone; must remain on every file (D014)",
+    "DSA constraint-first methodology (brute force baseline → constraint signals → DS choice → algorithm choice → when pattern breaks → optimized rewrite → edge cases/invariants) per D004",
+    "Run `python3 tools/update_context.py check` after every phase; fix any stale-context failures before advancing",
+    "Log every phase completion to `00_CONTEXT/CHANGE_JOURNAL.md`"
+  ],
+  "lastActiveAt": "2026-06-14T06:43:41.605Z"
+}

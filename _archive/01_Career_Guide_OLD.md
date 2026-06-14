@@ -813,30 +813,30 @@ Tech Stack:
 
 ```json
 {
-    "resourceType": "Patient",
-    "id": "example",
-    "identifier": [
-        {
-            "system": "http://hospital.com/patients",
-            "value": "12345"
-        }
-    ],
-    "name": [
-        {
-            "use": "official",
-            "family": "Smith",
-            "given": ["John"]
-        }
-    ],
-    "gender": "male",
-    "birthDate": "1990-01-15",
-    "address": [
-        {
-            "use": "home",
-            "city": "Mumbai",
-            "country": "India"
-        }
-    ]
+  "resourceType": "Patient",
+  "id": "example",
+  "identifier": [
+    {
+      "system": "http://hospital.com/patients",
+      "value": "12345"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Smith",
+      "given": ["John"]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1990-01-15",
+  "address": [
+    {
+      "use": "home",
+      "city": "Mumbai",
+      "country": "India"
+    }
+  ]
 }
 ```
 
@@ -3512,105 +3512,105 @@ output "database_endpoint" {
 name: CI/CD Pipeline
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
 
 env:
-    AWS_REGION: ap-south-1
-    ECR_REPOSITORY: myapp
-    ECS_SERVICE: myapp-service
-    ECS_CLUSTER: production
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: myapp
+  ECS_SERVICE: myapp-service
+  ECS_CLUSTER: production
 
 jobs:
-    # JOB 1: TEST
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+  # JOB 1: TEST
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Set up JDK 17
-              uses: actions/setup-java@v3
-              with:
-                  java-version: "17"
-                  distribution: "temurin"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
 
-            - name: Run Tests
-              run: ./mvnw test
+      - name: Run Tests
+        run: ./mvnw test
 
-            - name: Upload Coverage
-              uses: codecov/codecov-action@v3
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
 
-    # JOB 2: BUILD & PUSH
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
+  # JOB 2: BUILD & PUSH
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
-        steps:
-            - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Login to Amazon ECR
-              id: login-ecr
-              uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-            - name: Build and push Docker image
-              env:
-                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  IMAGE_TAG: ${{ github.sha }}
-              run: |
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # JOB 3: DEPLOY
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
+  # JOB 3: DEPLOY
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Deploy to ECS
-              run: |
-                  aws ecs update-service \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --service ${{ env.ECS_SERVICE }} \
-                    --force-new-deployment
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment
 
-            - name: Wait for deployment
-              run: |
-                  aws ecs wait services-stable \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --services ${{ env.ECS_SERVICE }}
+      - name: Wait for deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }}
 
-    # JOB 4: NOTIFY
-    notify:
-        needs: [test, build, deploy]
-        runs-on: ubuntu-latest
-        if: always()
+  # JOB 4: NOTIFY
+  notify:
+    needs: [test, build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
 
-        steps:
-            - name: Slack Notification
-              uses: 8398a7/action-slack@v3
-              with:
-                  status: ${{ job.status }}
-                  fields: repo,message,commit,author,action,workflow
-              env:
-                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 ```
 
 ---
@@ -4178,44 +4178,44 @@ my-react-app/
 import { useState, useEffect, useCallback } from "react";
 
 interface FetchState<T> {
-    data: T | null;
-    loading: boolean;
-    error: Error | null;
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
 }
 
 const cache = new Map<string, any>();
 
 export function useFetch<T>(
-    url: string,
-    options?: RequestInit,
+  url: string,
+  options?: RequestInit,
 ): FetchState<T> & { refetch: () => void } {
-    const [state, setState] = useState<FetchState<T>>({
-        data: cache.get(url) || null,
-        loading: !cache.has(url),
-        error: null,
-    });
+  const [state, setState] = useState<FetchState<T>>({
+    data: cache.get(url) || null,
+    loading: !cache.has(url),
+    error: null,
+  });
 
-    const fetchData = useCallback(async () => {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
+  const fetchData = useCallback(async () => {
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok)
-                throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
 
-            const data = await response.json();
-            cache.set(url, data);
-            setState({ data, loading: false, error: null });
-        } catch (error) {
-            setState({ data: null, loading: false, error: error as Error });
-        }
-    }, [url, options]);
+      const data = await response.json();
+      cache.set(url, data);
+      setState({ data, loading: false, error: null });
+    } catch (error) {
+      setState({ data: null, loading: false, error: error as Error });
+    }
+  }, [url, options]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-    return { ...state, refetch: fetchData };
+  return { ...state, refetch: fetchData };
 }
 
 // ============================================
@@ -4224,36 +4224,36 @@ export function useFetch<T>(
 import axios, { AxiosInstance, AxiosError } from "axios";
 
 const api: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    timeout: 10000,
-    headers: {
-        "Content-Type": "application/json",
-    },
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // Request interceptor - Add auth token
 api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error),
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor - Handle errors globally
 api.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            // Token expired - try refresh or logout
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-        }
-        return Promise.reject(error);
-    },
+  (response) => response,
+  async (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      // Token expired - try refresh or logout
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  },
 );
 
 export default api;
@@ -4265,51 +4265,51 @@ import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
 interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: "admin" | "user";
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
 }
 
 interface AuthState {
-    user: User | null;
-    token: string | null;
-    isAuthenticated: boolean;
-    login: (user: User, token: string) => void;
-    logout: () => void;
-    updateUser: (updates: Partial<User>) => void;
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (user: User, token: string) => void;
+  logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
-    devtools(
-        persist(
-            (set) => ({
-                user: null,
-                token: null,
-                isAuthenticated: false,
+  devtools(
+    persist(
+      (set) => ({
+        user: null,
+        token: null,
+        isAuthenticated: false,
 
-                login: (user, token) =>
-                    set({
-                        user,
-                        token,
-                        isAuthenticated: true,
-                    }),
+        login: (user, token) =>
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+          }),
 
-                logout: () =>
-                    set({
-                        user: null,
-                        token: null,
-                        isAuthenticated: false,
-                    }),
+        logout: () =>
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+          }),
 
-                updateUser: (updates) =>
-                    set((state) => ({
-                        user: state.user ? { ...state.user, ...updates } : null,
-                    })),
-            }),
-            { name: "auth-storage" },
-        ),
+        updateUser: (updates) =>
+          set((state) => ({
+            user: state.user ? { ...state.user, ...updates } : null,
+          })),
+      }),
+      { name: "auth-storage" },
     ),
+  ),
 );
 
 // ============================================
@@ -4319,26 +4319,26 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 
 interface ProtectedRouteProps {
-    children: React.ReactNode;
-    requiredRole?: "admin" | "user";
+  children: React.ReactNode;
+  requiredRole?: "admin" | "user";
 }
 
 export function ProtectedRoute({
-    children,
-    requiredRole,
+  children,
+  requiredRole,
 }: ProtectedRouteProps) {
-    const { isAuthenticated, user } = useAuthStore();
-    const location = useLocation();
+  const { isAuthenticated, user } = useAuthStore();
+  const location = useLocation();
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-    if (requiredRole && user?.role !== requiredRole) {
-        return <Navigate to="/unauthorized" replace />;
-    }
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 }
 
 // ============================================
@@ -4350,154 +4350,145 @@ import { z } from "zod";
 
 // Define schema
 const loginSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z
-        .string()
-        .min(8, "Password must be at least 8 characters")
-        .regex(/[A-Z]/, "Password must contain uppercase letter")
-        .regex(/[0-9]/, "Password must contain a number"),
-    rememberMe: z.boolean().optional(),
+  email: z.string().email("Invalid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain uppercase letter")
+    .regex(/[0-9]/, "Password must contain a number"),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 // Form component
 export function LoginForm() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const onSubmit = async (data: LoginFormData) => {
-        try {
-            const response = await api.post("/auth/login", data);
-            useAuthStore
-                .getState()
-                .login(response.data.user, response.data.token);
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
-    };
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const response = await api.post("/auth/login", data);
+      useAuthStore.getState().login(response.data.user, response.data.token);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-                <input {...register("email")} placeholder="Email" />
-                {errors.email && <span>{errors.email.message}</span>}
-            </div>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <input {...register("email")} placeholder="Email" />
+        {errors.email && <span>{errors.email.message}</span>}
+      </div>
 
-            <div>
-                <input
-                    {...register("password")}
-                    type="password"
-                    placeholder="Password"
-                />
-                {errors.password && <span>{errors.password.message}</span>}
-            </div>
+      <div>
+        <input
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+        />
+        {errors.password && <span>{errors.password.message}</span>}
+      </div>
 
-            <label>
-                <input {...register("rememberMe")} type="checkbox" />
-                Remember me
-            </label>
+      <label>
+        <input {...register("rememberMe")} type="checkbox" />
+        Remember me
+      </label>
 
-            <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Logging in..." : "Login"}
-            </button>
-        </form>
-    );
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Logging in..." : "Login"}
+      </button>
+    </form>
+  );
 }
 
 // ============================================
 // 6. DATA TABLE - Reusable component
 // ============================================
 interface Column<T> {
-    key: keyof T;
-    header: string;
-    render?: (value: T[keyof T], row: T) => React.ReactNode;
-    sortable?: boolean;
+  key: keyof T;
+  header: string;
+  render?: (value: T[keyof T], row: T) => React.ReactNode;
+  sortable?: boolean;
 }
 
 interface DataTableProps<T> {
-    data: T[];
-    columns: Column<T>[];
-    loading?: boolean;
-    onRowClick?: (row: T) => void;
+  data: T[];
+  columns: Column<T>[];
+  loading?: boolean;
+  onRowClick?: (row: T) => void;
 }
 
 export function DataTable<T extends { id: string | number }>({
-    data,
-    columns,
-    loading,
-    onRowClick,
+  data,
+  columns,
+  loading,
+  onRowClick,
 }: DataTableProps<T>) {
-    const [sortConfig, setSortConfig] = useState<{
-        key: keyof T;
-        direction: "asc" | "desc";
-    } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof T;
+    direction: "asc" | "desc";
+  } | null>(null);
 
-    const sortedData = useMemo(() => {
-        if (!sortConfig) return data;
+  const sortedData = useMemo(() => {
+    if (!sortConfig) return data;
 
-        return [...data].sort((a, b) => {
-            const aVal = a[sortConfig.key];
-            const bVal = b[sortConfig.key];
+    return [...data].sort((a, b) => {
+      const aVal = a[sortConfig.key];
+      const bVal = b[sortConfig.key];
 
-            if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-            return 0;
-        });
-    }, [data, sortConfig]);
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
 
-    if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
 
-    return (
-        <table>
-            <thead>
-                <tr>
-                    {columns.map((col) => (
-                        <th
-                            key={String(col.key)}
-                            onClick={() =>
-                                col.sortable &&
-                                setSortConfig({
-                                    key: col.key,
-                                    direction:
-                                        sortConfig?.direction === "asc"
-                                            ? "desc"
-                                            : "asc",
-                                })
-                            }
-                        >
-                            {col.header}
-                            {col.sortable && sortConfig?.key === col.key && (
-                                <span>
-                                    {sortConfig.direction === "asc"
-                                        ? " ↑"
-                                        : " ↓"}
-                                </span>
-                            )}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {sortedData.map((row) => (
-                    <tr key={row.id} onClick={() => onRowClick?.(row)}>
-                        {columns.map((col) => (
-                            <td key={String(col.key)}>
-                                {col.render
-                                    ? col.render(row[col.key], row)
-                                    : String(row[col.key])}
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    );
+  return (
+    <table>
+      <thead>
+        <tr>
+          {columns.map((col) => (
+            <th
+              key={String(col.key)}
+              onClick={() =>
+                col.sortable &&
+                setSortConfig({
+                  key: col.key,
+                  direction: sortConfig?.direction === "asc" ? "desc" : "asc",
+                })
+              }
+            >
+              {col.header}
+              {col.sortable && sortConfig?.key === col.key && (
+                <span>{sortConfig.direction === "asc" ? " ↑" : " ↓"}</span>
+              )}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {sortedData.map((row) => (
+          <tr key={row.id} onClick={() => onRowClick?.(row)}>
+            {columns.map((col) => (
+              <td key={String(col.key)}>
+                {col.render
+                  ? col.render(row[col.key], row)
+                  : String(row[col.key])}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 }
 ```
 
@@ -6154,77 +6145,77 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: backend-deployment
-    namespace: production
-    labels:
+  name: backend-deployment
+  namespace: production
+  labels:
+    app: backend
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # Max pods above desired
+      maxUnavailable: 0 # Zero downtime
+  template:
+    metadata:
+      labels:
         app: backend
         version: v1
-spec:
-    replicas: 3
-    selector:
-        matchLabels:
-            app: backend
-    strategy:
-        type: RollingUpdate
-        rollingUpdate:
-            maxSurge: 1 # Max pods above desired
-            maxUnavailable: 0 # Zero downtime
-    template:
-        metadata:
-            labels:
-                app: backend
-                version: v1
-        spec:
-            containers:
-                - name: backend
-                  image: myregistry/backend:v1.2.3
-                  ports:
-                      - containerPort: 8080
+    spec:
+      containers:
+        - name: backend
+          image: myregistry/backend:v1.2.3
+          ports:
+            - containerPort: 8080
 
-                  # Resource limits
-                  resources:
-                      requests:
-                          memory: "256Mi"
-                          cpu: "250m"
-                      limits:
-                          memory: "512Mi"
-                          cpu: "500m"
+          # Resource limits
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
 
-                  # Environment variables
-                  env:
-                      - name: SPRING_PROFILES_ACTIVE
-                        value: "production"
-                      - name: DB_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secrets
-                                key: password
+          # Environment variables
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "production"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: password
 
-                  # Health checks
-                  livenessProbe:
-                      httpGet:
-                          path: /actuator/health/liveness
-                          port: 8080
-                      initialDelaySeconds: 30
-                      periodSeconds: 10
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
 
-                  readinessProbe:
-                      httpGet:
-                          path: /actuator/health/readiness
-                          port: 8080
-                      initialDelaySeconds: 10
-                      periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
 
-                  # Volume mounts
-                  volumeMounts:
-                      - name: config-volume
-                        mountPath: /app/config
-                        readOnly: true
+          # Volume mounts
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+              readOnly: true
 
-            volumes:
-                - name: config-volume
-                  configMap:
-                      name: backend-config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: backend-config
 
 ---
 # ============================================
@@ -6233,16 +6224,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: backend-service
-    namespace: production
+  name: backend-service
+  namespace: production
 spec:
-    type: ClusterIP # Internal only
-    selector:
-        app: backend
-    ports:
-        - name: http
-          port: 80
-          targetPort: 8080
+  type: ClusterIP # Internal only
+  selector:
+    app: backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
 
 ---
 # ============================================
@@ -6251,36 +6242,36 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: app-ingress
-    namespace: production
-    annotations:
-        kubernetes.io/ingress.class: nginx
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/rate-limit: "100"
-        nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+  name: app-ingress
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
 spec:
-    tls:
-        - hosts:
-              - api.example.com
-          secretName: api-tls-secret
-    rules:
-        - host: api.example.com
-          http:
-              paths:
-                  - path: /api
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: backend-service
-                            port:
-                                number: 80
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: frontend-service
-                            port:
-                                number: 80
+  tls:
+    - hosts:
+        - api.example.com
+      secretName: api-tls-secret
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
 
 ---
 # ============================================
@@ -6289,16 +6280,16 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: backend-config
-    namespace: production
+  name: backend-config
+  namespace: production
 data:
-    application.yml: |
-        server:
-          port: 8080
-        logging:
-          level:
-            root: INFO
-            com.example: DEBUG
+  application.yml: |
+    server:
+      port: 8080
+    logging:
+      level:
+        root: INFO
+        com.example: DEBUG
 
 ---
 # ============================================
@@ -6307,12 +6298,12 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-    name: db-secrets
-    namespace: production
+  name: db-secrets
+  namespace: production
 type: Opaque
 data:
-    username: YWRtaW4= # base64 encoded
-    password: cGFzc3dvcmQ=
+  username: YWRtaW4= # base64 encoded
+  password: cGFzc3dvcmQ=
 
 ---
 # ============================================
@@ -6321,33 +6312,33 @@ data:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-    name: backend-hpa
-    namespace: production
+  name: backend-hpa
+  namespace: production
 spec:
-    scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: backend-deployment
-    minReplicas: 3
-    maxReplicas: 10
-    metrics:
-        - type: Resource
-          resource:
-              name: cpu
-              target:
-                  type: Utilization
-                  averageUtilization: 70
-        - type: Resource
-          resource:
-              name: memory
-              target:
-                  type: Utilization
-                  averageUtilization: 80
-    behavior:
-        scaleDown:
-            stabilizationWindowSeconds: 300 # Wait 5 min before scaling down
-        scaleUp:
-            stabilizationWindowSeconds: 60
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend-deployment
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300 # Wait 5 min before scaling down
+    scaleUp:
+      stabilizationWindowSeconds: 60
 
 ---
 # ============================================
@@ -6356,15 +6347,15 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: postgres-pvc
-    namespace: production
+  name: postgres-pvc
+  namespace: production
 spec:
-    accessModes:
-        - ReadWriteOnce
-    storageClassName: gp3
-    resources:
-        requests:
-            storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 50Gi
 
 ---
 # ============================================
@@ -6373,42 +6364,42 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-    name: postgres
-    namespace: production
+  name: postgres
+  namespace: production
 spec:
-    serviceName: postgres
-    replicas: 1
-    selector:
-        matchLabels:
-            app: postgres
-    template:
-        metadata:
-            labels:
-                app: postgres
-        spec:
-            containers:
-                - name: postgres
-                  image: postgres:15
-                  ports:
-                      - containerPort: 5432
-                  env:
-                      - name: POSTGRES_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secrets
-                                key: password
-                  volumeMounts:
-                      - name: postgres-storage
-                        mountPath: /var/lib/postgresql/data
-    volumeClaimTemplates:
-        - metadata:
-              name: postgres-storage
-          spec:
-              accessModes: ["ReadWriteOnce"]
-              storageClassName: gp3
-              resources:
-                  requests:
-                      storage: 50Gi
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: password
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 50Gi
 ```
 
 #### Helm - Kubernetes Package Manager
@@ -6547,61 +6538,61 @@ helm template my-release ./my-app --debug
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-    name: my-app
-    namespace: argocd
+  name: my-app
+  namespace: argocd
 spec:
-    project: default
+  project: default
 
-    source:
-        repoURL: https://github.com/myorg/my-app-manifests.git
-        targetRevision: main
-        path: kubernetes/production
+  source:
+    repoURL: https://github.com/myorg/my-app-manifests.git
+    targetRevision: main
+    path: kubernetes/production
 
-        # For Helm charts
-        helm:
-            valueFiles:
-                - values-production.yaml
-            parameters:
-                - name: image.tag
-                  value: v1.2.3
+    # For Helm charts
+    helm:
+      valueFiles:
+        - values-production.yaml
+      parameters:
+        - name: image.tag
+          value: v1.2.3
 
-    destination:
-        server: https://kubernetes.default.svc
-        namespace: production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
 
-    syncPolicy:
-        automated:
-            prune: true # Delete resources not in Git
-            selfHeal: true # Revert manual changes
-        syncOptions:
-            - CreateNamespace=true
-        retry:
-            limit: 5
-            backoff:
-                duration: 5s
-                factor: 2
-                maxDuration: 3m
+  syncPolicy:
+    automated:
+      prune: true # Delete resources not in Git
+      selfHeal: true # Revert manual changes
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
 
 ---
 # ArgoCD Project
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-    name: production
-    namespace: argocd
+  name: production
+  namespace: argocd
 spec:
-    description: Production applications
-    sourceRepos:
-        - "https://github.com/myorg/*"
-    destinations:
-        - namespace: production
-          server: https://kubernetes.default.svc
-    clusterResourceWhitelist:
-        - group: ""
-          kind: Namespace
-    namespaceResourceWhitelist:
-        - group: "*"
-          kind: "*"
+  description: Production applications
+  sourceRepos:
+    - "https://github.com/myorg/*"
+  destinations:
+    - namespace: production
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
 ```
 
 ```
@@ -8712,98 +8703,97 @@ Pods: myapp-abc (10.244.1.5:8080), myapp-def (10.244.2.8:8080)
 ```yaml
 # prometheus.yml - Prometheus Configuration
 global:
-    scrape_interval: 15s
-    evaluation_interval: 15s
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
 alerting:
-    alertmanagers:
-        - static_configs:
-              - targets: ["alertmanager:9093"]
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
 
 rule_files:
-    - /etc/prometheus/alerts/*.yml
+  - /etc/prometheus/alerts/*.yml
 
 scrape_configs:
-    # Prometheus itself
-    - job_name: "prometheus"
-      static_configs:
-          - targets: ["localhost:9090"]
+  # Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
 
-    # Spring Boot apps (via Actuator)
-    - job_name: "spring-boot"
-      metrics_path: "/actuator/prometheus"
-      static_configs:
-          - targets: ["backend:8080"]
-      relabel_configs:
-          - source_labels: [__address__]
-            target_label: instance
+  # Spring Boot apps (via Actuator)
+  - job_name: "spring-boot"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["backend:8080"]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
 
-    # Node Exporter (OS metrics)
-    - job_name: "node"
-      static_configs:
-          - targets: ["node-exporter:9100"]
+  # Node Exporter (OS metrics)
+  - job_name: "node"
+    static_configs:
+      - targets: ["node-exporter:9100"]
 
-    # Kubernetes pods (auto-discovery)
-    - job_name: "kubernetes-pods"
-      kubernetes_sd_configs:
-          - role: pod
-      relabel_configs:
-          - source_labels:
-                [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-            action: keep
-            regex: true
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-            action: replace
-            target_label: __metrics_path__
-            regex: (.+)
+  # Kubernetes pods (auto-discovery)
+  - job_name: "kubernetes-pods"
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
 
 ---
 # alerts.yml - Alert Rules
 groups:
-    - name: application
-      rules:
-          - alert: HighErrorRate
-            expr: |
-                sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) 
-                / sum(rate(http_server_requests_seconds_count[5m])) > 0.05
-            for: 5m
-            labels:
-                severity: critical
-            annotations:
-                summary: "High error rate detected"
-                description: "Error rate is {{ $value | humanizePercentage }}"
+  - name: application
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) 
+          / sum(rate(http_server_requests_seconds_count[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }}"
 
-          - alert: HighLatency
-            expr: |
-                histogram_quantile(0.95, 
-                  sum(rate(http_server_requests_seconds_bucket[5m])) by (le)
-                ) > 2
-            for: 5m
-            labels:
-                severity: warning
-            annotations:
-                summary: "High latency detected"
-                description: "95th percentile latency is {{ $value }}s"
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.95, 
+            sum(rate(http_server_requests_seconds_bucket[5m])) by (le)
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency detected"
+          description: "95th percentile latency is {{ $value }}s"
 
-          - alert: PodCrashLooping
-            expr: |
-                increase(kube_pod_container_status_restarts_total[1h]) > 3
-            for: 5m
-            labels:
-                severity: warning
-            annotations:
-                summary: "Pod is crash looping"
-                description: "Pod {{ $labels.pod }} restarted {{ $value }} times"
+      - alert: PodCrashLooping
+        expr: |
+          increase(kube_pod_container_status_restarts_total[1h]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pod is crash looping"
+          description: "Pod {{ $labels.pod }} restarted {{ $value }} times"
 
-          - alert: HighMemoryUsage
-            expr: |
-                (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
-            for: 5m
-            labels:
-                severity: warning
-            annotations:
-                summary: "High memory usage"
-                description: "Container using {{ $value | humanizePercentage }} of memory limit"
+      - alert: HighMemoryUsage
+        expr: |
+          (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Container using {{ $value | humanizePercentage }} of memory limit"
 ```
 
 ```java
@@ -9764,10 +9754,10 @@ import jwt from "jsonwebtoken";
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-    cors: {
-        origin: process.env.CLIENT_URL,
-        credentials: true,
-    },
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
 });
 
 // Redis adapter for multi-server support
@@ -9775,167 +9765,164 @@ const pubClient = createClient({ url: process.env.REDIS_URL });
 const subClient = pubClient.duplicate();
 
 Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
-    io.adapter(createAdapter(pubClient, subClient));
+  io.adapter(createAdapter(pubClient, subClient));
 });
 
 // Authentication middleware
 io.use(async (socket, next) => {
-    try {
-        const token = socket.handshake.auth.token;
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET!,
-        ) as JwtPayload;
-        socket.data.userId = decoded.userId;
-        socket.data.username = decoded.username;
-        next();
-    } catch (err) {
-        next(new Error("Authentication failed"));
-    }
+  try {
+    const token = socket.handshake.auth.token;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    socket.data.userId = decoded.userId;
+    socket.data.username = decoded.username;
+    next();
+  } catch (err) {
+    next(new Error("Authentication failed"));
+  }
 });
 
 // Connection handler
 io.on("connection", (socket: Socket) => {
-    const userId = socket.data.userId;
-    console.log(`User connected: ${userId}`);
+  const userId = socket.data.userId;
+  console.log(`User connected: ${userId}`);
 
-    // Join user's personal room (for direct messages)
-    socket.join(`user:${userId}`);
+  // Join user's personal room (for direct messages)
+  socket.join(`user:${userId}`);
 
-    // Update online status
+  // Update online status
+  pubClient.hSet(
+    "online_users",
+    userId,
+    JSON.stringify({
+      socketId: socket.id,
+      lastSeen: new Date().toISOString(),
+    }),
+  );
+
+  // Notify friends user is online
+  broadcastPresence(userId, "online");
+
+  // Join chat room
+  socket.on("join_room", async (roomId: string) => {
+    // Verify user has access to room
+    const hasAccess = await verifyRoomAccess(userId, roomId);
+    if (!hasAccess) {
+      socket.emit("error", { message: "Access denied" });
+      return;
+    }
+
+    socket.join(`room:${roomId}`);
+
+    // Load recent messages
+    const messages = await loadRecentMessages(roomId, 50);
+    socket.emit("room_history", { roomId, messages });
+
+    // Notify room
+    socket.to(`room:${roomId}`).emit("user_joined", {
+      userId,
+      username: socket.data.username,
+      roomId,
+    });
+  });
+
+  // Send message
+  socket.on(
+    "send_message",
+    async (data: {
+      roomId: string;
+      content: string;
+      type: "text" | "image" | "file";
+      replyTo?: string;
+    }) => {
+      const message = {
+        id: generateId(),
+        roomId: data.roomId,
+        senderId: userId,
+        senderName: socket.data.username,
+        content: data.content,
+        type: data.type,
+        replyTo: data.replyTo,
+        timestamp: new Date().toISOString(),
+        status: "sent",
+      };
+
+      // Save to database
+      await saveMessage(message);
+
+      // Broadcast to room (including sender for confirmation)
+      io.to(`room:${data.roomId}`).emit("new_message", message);
+    },
+  );
+
+  // Typing indicator
+  socket.on("typing_start", (roomId: string) => {
+    socket.to(`room:${roomId}`).emit("user_typing", {
+      userId,
+      username: socket.data.username,
+      roomId,
+    });
+  });
+
+  socket.on("typing_stop", (roomId: string) => {
+    socket.to(`room:${roomId}`).emit("user_stopped_typing", {
+      userId,
+      roomId,
+    });
+  });
+
+  // Direct message
+  socket.on(
+    "direct_message",
+    async (data: { recipientId: string; content: string }) => {
+      const message = {
+        id: generateId(),
+        senderId: userId,
+        recipientId: data.recipientId,
+        content: data.content,
+        timestamp: new Date().toISOString(),
+        read: false,
+      };
+
+      await saveDirectMessage(message);
+
+      // Send to recipient (if online)
+      io.to(`user:${data.recipientId}`).emit("direct_message", message);
+
+      // Confirm to sender
+      socket.emit("message_sent", { messageId: message.id });
+    },
+  );
+
+  // Message read receipt
+  socket.on(
+    "message_read",
+    async (data: { messageId: string; roomId: string }) => {
+      await markMessageRead(data.messageId, userId);
+
+      io.to(`room:${data.roomId}`).emit("message_read_receipt", {
+        messageId: data.messageId,
+        readBy: userId,
+        readAt: new Date().toISOString(),
+      });
+    },
+  );
+
+  // Disconnect
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${userId}`);
+
+    // Update last seen
     pubClient.hSet(
-        "online_users",
-        userId,
-        JSON.stringify({
-            socketId: socket.id,
-            lastSeen: new Date().toISOString(),
-        }),
+      "online_users",
+      userId,
+      JSON.stringify({
+        socketId: null,
+        lastSeen: new Date().toISOString(),
+      }),
     );
 
-    // Notify friends user is online
-    broadcastPresence(userId, "online");
-
-    // Join chat room
-    socket.on("join_room", async (roomId: string) => {
-        // Verify user has access to room
-        const hasAccess = await verifyRoomAccess(userId, roomId);
-        if (!hasAccess) {
-            socket.emit("error", { message: "Access denied" });
-            return;
-        }
-
-        socket.join(`room:${roomId}`);
-
-        // Load recent messages
-        const messages = await loadRecentMessages(roomId, 50);
-        socket.emit("room_history", { roomId, messages });
-
-        // Notify room
-        socket.to(`room:${roomId}`).emit("user_joined", {
-            userId,
-            username: socket.data.username,
-            roomId,
-        });
-    });
-
-    // Send message
-    socket.on(
-        "send_message",
-        async (data: {
-            roomId: string;
-            content: string;
-            type: "text" | "image" | "file";
-            replyTo?: string;
-        }) => {
-            const message = {
-                id: generateId(),
-                roomId: data.roomId,
-                senderId: userId,
-                senderName: socket.data.username,
-                content: data.content,
-                type: data.type,
-                replyTo: data.replyTo,
-                timestamp: new Date().toISOString(),
-                status: "sent",
-            };
-
-            // Save to database
-            await saveMessage(message);
-
-            // Broadcast to room (including sender for confirmation)
-            io.to(`room:${data.roomId}`).emit("new_message", message);
-        },
-    );
-
-    // Typing indicator
-    socket.on("typing_start", (roomId: string) => {
-        socket.to(`room:${roomId}`).emit("user_typing", {
-            userId,
-            username: socket.data.username,
-            roomId,
-        });
-    });
-
-    socket.on("typing_stop", (roomId: string) => {
-        socket.to(`room:${roomId}`).emit("user_stopped_typing", {
-            userId,
-            roomId,
-        });
-    });
-
-    // Direct message
-    socket.on(
-        "direct_message",
-        async (data: { recipientId: string; content: string }) => {
-            const message = {
-                id: generateId(),
-                senderId: userId,
-                recipientId: data.recipientId,
-                content: data.content,
-                timestamp: new Date().toISOString(),
-                read: false,
-            };
-
-            await saveDirectMessage(message);
-
-            // Send to recipient (if online)
-            io.to(`user:${data.recipientId}`).emit("direct_message", message);
-
-            // Confirm to sender
-            socket.emit("message_sent", { messageId: message.id });
-        },
-    );
-
-    // Message read receipt
-    socket.on(
-        "message_read",
-        async (data: { messageId: string; roomId: string }) => {
-            await markMessageRead(data.messageId, userId);
-
-            io.to(`room:${data.roomId}`).emit("message_read_receipt", {
-                messageId: data.messageId,
-                readBy: userId,
-                readAt: new Date().toISOString(),
-            });
-        },
-    );
-
-    // Disconnect
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${userId}`);
-
-        // Update last seen
-        pubClient.hSet(
-            "online_users",
-            userId,
-            JSON.stringify({
-                socketId: null,
-                lastSeen: new Date().toISOString(),
-            }),
-        );
-
-        broadcastPresence(userId, "offline");
-    });
+    broadcastPresence(userId, "offline");
+  });
 });
 
 // React client hook
@@ -9944,63 +9931,63 @@ import { useEffect, useState, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 
 export function useChat(token: string) {
-    const [socket, setSocket] = useState<Socket | null>(null);
-    const [connected, setConnected] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [typingUsers, setTypingUsers] = useState<Map<string, string>>(
-        new Map(),
-    );
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [connected, setConnected] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(
+    new Map(),
+  );
 
-    useEffect(() => {
-        const newSocket = io(process.env.NEXT_PUBLIC_WS_URL!, {
-            auth: { token },
-            transports: ["websocket"],
-        });
+  useEffect(() => {
+    const newSocket = io(process.env.NEXT_PUBLIC_WS_URL!, {
+      auth: { token },
+      transports: ["websocket"],
+    });
 
-        newSocket.on("connect", () => setConnected(true));
-        newSocket.on("disconnect", () => setConnected(false));
+    newSocket.on("connect", () => setConnected(true));
+    newSocket.on("disconnect", () => setConnected(false));
 
-        newSocket.on("new_message", (message: Message) => {
-            setMessages((prev) => [...prev, message]);
-        });
+    newSocket.on("new_message", (message: Message) => {
+      setMessages((prev) => [...prev, message]);
+    });
 
-        newSocket.on("room_history", ({ messages }) => {
-            setMessages(messages);
-        });
+    newSocket.on("room_history", ({ messages }) => {
+      setMessages(messages);
+    });
 
-        newSocket.on("user_typing", ({ userId, username }) => {
-            setTypingUsers((prev) => new Map(prev).set(userId, username));
-        });
+    newSocket.on("user_typing", ({ userId, username }) => {
+      setTypingUsers((prev) => new Map(prev).set(userId, username));
+    });
 
-        newSocket.on("user_stopped_typing", ({ userId }) => {
-            setTypingUsers((prev) => {
-                const next = new Map(prev);
-                next.delete(userId);
-                return next;
-            });
-        });
+    newSocket.on("user_stopped_typing", ({ userId }) => {
+      setTypingUsers((prev) => {
+        const next = new Map(prev);
+        next.delete(userId);
+        return next;
+      });
+    });
 
-        setSocket(newSocket);
-        return () => {
-            newSocket.close();
-        };
-    }, [token]);
+    setSocket(newSocket);
+    return () => {
+      newSocket.close();
+    };
+  }, [token]);
 
-    const sendMessage = useCallback(
-        (roomId: string, content: string) => {
-            socket?.emit("send_message", { roomId, content, type: "text" });
-        },
-        [socket],
-    );
+  const sendMessage = useCallback(
+    (roomId: string, content: string) => {
+      socket?.emit("send_message", { roomId, content, type: "text" });
+    },
+    [socket],
+  );
 
-    const joinRoom = useCallback(
-        (roomId: string) => {
-            socket?.emit("join_room", roomId);
-        },
-        [socket],
-    );
+  const joinRoom = useCallback(
+    (roomId: string) => {
+      socket?.emit("join_room", roomId);
+    },
+    [socket],
+  );
 
-    return { connected, messages, typingUsers, sendMessage, joinRoom };
+  return { connected, messages, typingUsers, sendMessage, joinRoom };
 }
 ```
 

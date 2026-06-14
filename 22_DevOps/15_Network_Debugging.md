@@ -20,23 +20,23 @@ THE SYSTEMATIC APPROACH:
 STEP 1 — IS THE NETWORK REACHABLE? (Layer 3 — IP)
   ping 8.8.8.8                          # Can I reach the internet at all?
   ping 192.168.1.1                      # Can I reach my gateway?
-  
+
   ping WORKS:   → IP connectivity is fine. Move up.
   ping FAILS:   → Check: cable/WiFi, interface up?, gateway reachable?
   ping to IP works but hostname fails: → DNS problem (skip to Step 2b).
-  
+
   NOTE: Some servers block ICMP (ping). Failure doesn't ALWAYS mean unreachable.
   → Confirm with: nc -zv or curl.
 
 STEP 2a — IS DNS WORKING? (Application support)
   nslookup api.myapp.com
   dig api.myapp.com +short
-  
+
   Returns IP:  → DNS is fine.
   NXDOMAIN:    → Domain doesn't exist (typo? expired? wrong DNS server?)
   SERVFAIL:    → DNS server had an error (check /etc/resolv.conf)
   Timeout:     → DNS server unreachable (firewall? DNS server down?)
-  
+
   Test different DNS servers:
   dig @8.8.8.8 api.myapp.com            # Google
   dig @1.1.1.1 api.myapp.com            # Cloudflare
@@ -45,12 +45,12 @@ STEP 2a — IS DNS WORKING? (Application support)
 STEP 2b — WHAT PATH DO PACKETS TAKE? (Layer 3 — Routing)
   traceroute api.myapp.com               # Linux/macOS
   tracert api.myapp.com                  # Windows
-  
+
   Shows every router hop. Look for where the trace STOPS or gets SLOW.
-  
+
   * * * at hop 5:  → router 5 blocks ICMP OR there's a routing problem there.
   Sudden high latency at hop 8: → congestion at that ISP router.
-  
+
   MTR (better than traceroute — continuous monitoring):
   mtr api.myapp.com
   → Shows: packet loss % and latency at EACH hop, updated live.
@@ -59,14 +59,14 @@ STEP 2b — WHAT PATH DO PACKETS TAKE? (Layer 3 — Routing)
 STEP 3 — IS THE PORT OPEN? (Layer 4 — TCP/UDP)
   nc -zv api.myapp.com 443               # netcat: test TCP port
   nc -zvu api.myapp.com 53               # test UDP port
-  
+
   "Connection succeeded":   → Port is open. Service is listening.
   "Connection refused":     → Port is closed. Service not running or wrong port.
   "Connection timed out":   → FIREWALL is blocking the port!
-  
+
   Scan multiple ports:
   nmap -p 22,80,443,5432,8080 api.myapp.com
-  
+
   Show what SERVICE is running on each port:
   nmap -sV api.myapp.com                # version detection
   # PORT    STATE SERVICE  VERSION
@@ -75,25 +75,25 @@ STEP 3 — IS THE PORT OPEN? (Layer 4 — TCP/UDP)
 
 STEP 4 — IS TLS WORKING? (Layer 6 — Presentation)
   openssl s_client -connect api.myapp.com:443 -servername api.myapp.com
-  
+
   Look for:
   "Verify return code: 0 (ok)"           → cert is valid
   "Verify return code: 10 (certificate has expired)" → cert expired!
   "certificate verify failed"            → wrong CA, self-signed, or hostname mismatch
-  
+
   Check cert details:
   echo | openssl s_client -connect api.myapp.com:443 2>/dev/null | openssl x509 -text -noout
 
 STEP 5 — IS THE HTTP ENDPOINT RESPONDING? (Layer 7 — Application)
   curl -v https://api.myapp.com/health
-  
+
   Look at the verbose output:
   * Trying 54.123.45.67:443...           → DNS resolved, connecting
   * Connected                            → TCP handshake succeeded
   * SSL connection using TLS1.3          → TLS handshake succeeded
   > GET /health HTTP/2                   → request sent
   < HTTP/2 200                           → SUCCESS!
-  
+
   Common errors:
   "Could not resolve host"  → DNS failure
   "Connection refused"      → port not open
@@ -179,7 +179,7 @@ sudo tcpdump -i eth0 port 8080 -n
 
 # "Is DNS working?"
 sudo tcpdump -i eth0 port 53 -vvv
-# Output: 
+# Output:
 #   192.168.1.100 > 8.8.8.8: ... api.myapp.com? A
 #   8.8.8.8 > 192.168.1.100: ... api.myapp.com A 54.123.45.67
 
@@ -201,17 +201,17 @@ sudo tcpdump -i eth0 port 8000 -n
 
 ```
 WIRESHARK = graphical packet analyzer. The gold standard.
-  
+
   Open a .pcap file captured by tcpdump → full visual analysis.
   Live capture on your local machine.
-  
+
   KEY FEATURES:
   1. Protocol dissection: automatically parses HTTP, TLS, DNS, etc.
   2. Conversation view: see all packets between two endpoints.
   3. Stream following: reconstruct entire TCP conversation.
   4. Coloring: different colors for different protocols.
   5. Export: extract files transmitted over HTTP, images, etc.
-  
+
 DISPLAY FILTERS (after capture):
   http                                    # only HTTP packets
   tcp.port == 443                         # only port 443
@@ -229,7 +229,7 @@ ANALYZE TCP PROBLEMS:
   Statistics → TCP Stream Graphs → Time-Sequence:
   Shows sequence number over time. Flat lines = retransmissions/stalls.
   Steep lines = fast data transfer. Staircase = steady.
-  
+
   Analyze → Expert Information:
   Shows all TCP errors: retransmissions, zero windows, resets, out-of-order.
 ```
@@ -281,7 +281,7 @@ sudo nmap -sU 54.123.45.67
 
 # Detect service version
 nmap -sV 54.123.45.67
-# Output: 
+# Output:
 # PORT     STATE SERVICE  VERSION
 # 22/tcp   open  ssh      OpenSSH 8.9p1 Ubuntu 3ubuntu0.1
 # 443/tcp  open  ssl/http nginx 1.24.0
@@ -416,14 +416,13 @@ kubectl exec -it myapp-pod -- tcpdump -i eth0 port 8080 -n -c 20
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| **TCP states** | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — understand what SYN, RST, FIN mean |
-| **DNS debugging** | [Ch 07: DNS](07_DNS_Complete.md) — dig +trace, record types |
-| **TLS certificates** | [Ch 09: TLS](09_TLS_Encryption.md) — openssl commands |
-| **Firewall rules** | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — iptables |
-| **K8s networking** | [Networking & Security](02_Networking_Security.md) — pods, services, ingress |
-| **Load balancer debugging** | [Ch 11: Load Balancing](11_Load_Balancing_Proxies.md) — 502/504 errors |
-| **SSH tunneling** | [Ch 14: SSH](14_SSH_Remote_Access.md) — access internal services for debugging |
-| **Python sockets** | [Asyncio Internals](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) |
-
+| Topic                       | Related Content                                                                |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| **TCP states**              | [Ch 06: TCP/UDP](06_TCP_UDP_Deep_Dive.md) — understand what SYN, RST, FIN mean |
+| **DNS debugging**           | [Ch 07: DNS](07_DNS_Complete.md) — dig +trace, record types                    |
+| **TLS certificates**        | [Ch 09: TLS](09_TLS_Encryption.md) — openssl commands                          |
+| **Firewall rules**          | [Ch 10: Firewalls](10_Firewalls_Access_Control.md) — iptables                  |
+| **K8s networking**          | [Networking & Security](02_Networking_Security.md) — pods, services, ingress   |
+| **Load balancer debugging** | [Ch 11: Load Balancing](11_Load_Balancing_Proxies.md) — 502/504 errors         |
+| **SSH tunneling**           | [Ch 14: SSH](14_SSH_Remote_Access.md) — access internal services for debugging |
+| **Python sockets**          | [Asyncio Internals](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md)    |

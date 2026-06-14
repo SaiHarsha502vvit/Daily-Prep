@@ -72,7 +72,7 @@ export class APIUtils {
     endpoint: string,
     headers: Record<string, string>,
     expectedStatus: number,
-    options: RequestOptions = {}
+    options: RequestOptions = {},
   ): Promise<APIResponse> {
     const url = this.buildUrl(endpoint, options.queryParams);
     const start = Date.now();
@@ -87,7 +87,7 @@ export class APIUtils {
     headers: Record<string, string>,
     payload: unknown,
     expectedStatus: number,
-    options: RequestOptions = {}
+    options: RequestOptions = {},
   ): Promise<APIResponse> {
     const url = this.buildUrl(endpoint, options.queryParams);
     const start = Date.now();
@@ -101,7 +101,7 @@ export class APIUtils {
     endpoint: string,
     headers: Record<string, string>,
     payload: unknown,
-    expectedStatus: number
+    expectedStatus: number,
   ): Promise<APIResponse> {
     const start = Date.now();
     const response = await this.request.patch(endpoint, { headers, data: payload });
@@ -113,7 +113,7 @@ export class APIUtils {
   async delete(
     endpoint: string,
     headers: Record<string, string>,
-    expectedStatus: number
+    expectedStatus: number,
   ): Promise<APIResponse> {
     const start = Date.now();
     const response = await this.request.delete(endpoint, { headers });

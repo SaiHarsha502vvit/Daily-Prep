@@ -9,7 +9,7 @@
  *   4. Is test-scoped (not worker-scoped)
  */
 
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect } from "@playwright/test";
 
 // ============================================================
 // Supporting types (mirrors a real API client interface)
@@ -17,13 +17,13 @@ import { test as base, expect } from '@playwright/test';
 
 interface CitationResponse {
   citationId: string;
-  status: 'PENDING' | 'PAID' | 'DISPUTED' | 'DELETED';
+  status: "PENDING" | "PAID" | "DISPUTED" | "DELETED";
   amount: number;
   issuedAt: string;
 }
 
 interface CreateCitationPayload {
-  status: 'PENDING' | 'DISPUTED';
+  status: "PENDING" | "DISPUTED";
   amount: number;
   type: string;
   testFlag?: boolean; // marks record as synthetic test data
@@ -34,7 +34,9 @@ interface CreateCitationPayload {
 class CitationsApiClient {
   constructor(private readonly baseUrl: string) {}
 
-  async createCitation(payload: CreateCitationPayload): Promise<CitationResponse> {
+  async createCitation(
+    payload: CreateCitationPayload,
+  ): Promise<CitationResponse> {
     // In a real implementation: POST /api/v1/citations
     return {
       citationId: `CIT-TEST-${Date.now()}`,
@@ -53,7 +55,7 @@ class CitationsApiClient {
     // In a real implementation: GET /api/v1/citations/:id
     return {
       citationId,
-      status: 'PAID',
+      status: "PAID",
       amount: 150,
       issuedAt: new Date().toISOString(),
     };
@@ -61,10 +63,10 @@ class CitationsApiClient {
 
   async updateStatus(
     citationId: string,
-    status: CitationResponse['status'],
+    status: CitationResponse["status"],
   ): Promise<CitationResponse> {
     // In a real implementation: PATCH /api/v1/citations/:id
-    return { citationId, status, amount: 150, issuedAt: '' };
+    return { citationId, status, amount: 150, issuedAt: "" };
   }
 }
 
@@ -81,7 +83,7 @@ export const test = base.extend<TestCitationFixtures>({
   // ── citationsClient fixture (test-scoped, stateless — no teardown) ──
   citationsClient: async ({}, use) => {
     const client = new CitationsApiClient(
-      process.env.API_BASE_URL ?? 'http://localhost:3000',
+      process.env.API_BASE_URL ?? "http://localhost:3000",
     );
     await use(client);
     // No teardown needed — the client itself holds no state.
@@ -91,9 +93,9 @@ export const test = base.extend<TestCitationFixtures>({
   testCitation: async ({ citationsClient }, use) => {
     // ── SETUP — create the citation ──
     const citation = await citationsClient.createCitation({
-      status: 'PENDING',
+      status: "PENDING",
       amount: 150,
-      type: 'PARKING',
+      type: "PARKING",
       testFlag: true, // marks this as synthetic test data for cleanup scripts
     });
     console.log(`[fixture] Created citation ${citation.citationId}`);
@@ -123,29 +125,29 @@ export const test = base.extend<TestCitationFixtures>({
 // Usage in tests
 // ============================================================
 
-test('citation starts PENDING', async ({ testCitation }) => {
+test("citation starts PENDING", async ({ testCitation }) => {
   // testCitation is freshly created, status should be PENDING
-  expect(testCitation.status).toBe('PENDING');
+  expect(testCitation.status).toBe("PENDING");
   expect(testCitation.amount).toBe(150);
   // ← teardown: citationsClient.deleteCitation runs automatically
 });
 
-test('citation can be paid', async ({ testCitation, citationsClient }) => {
-  expect(testCitation.status).toBe('PENDING');
+test("citation can be paid", async ({ testCitation, citationsClient }) => {
+  expect(testCitation.status).toBe("PENDING");
 
-  await citationsClient.updateStatus(testCitation.citationId, 'PAID');
+  await citationsClient.updateStatus(testCitation.citationId, "PAID");
 
   const updated = await citationsClient.getById(testCitation.citationId);
-  expect(updated.status).toBe('PAID');
+  expect(updated.status).toBe("PAID");
   // ← teardown: citation deleted even though status is now PAID
 });
 
-test('citation remains deleted even if test fails', async ({
+test("citation remains deleted even if test fails", async ({
   testCitation,
   citationsClient: _c,
 }) => {
   // Suppose this assertion fails:
-  expect(testCitation.status).toBe('PENDING');
+  expect(testCitation.status).toBe("PENDING");
   // ← teardown still runs — citation is always cleaned up
 });
 

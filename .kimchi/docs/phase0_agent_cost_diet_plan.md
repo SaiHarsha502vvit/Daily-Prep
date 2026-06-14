@@ -49,6 +49,7 @@ Replace the 7-step mandatory start sequence with:
   - Pointer to `_archive/MASTER_INDEX_LEGACY.md` for old detailed view
 
 ### Files touched:
+
 - ADD: `00_CONTEXT/AGENT_QUICK_INDEX.md`
 - MODIFY: `AGENTS.md`
 - MODIFY: `00_MASTER_INDEX.md`
@@ -86,6 +87,7 @@ Replace the 7-step mandatory start sequence with:
 - Just add a note at top that older entries live in `_archive/CHANGE_JOURNAL_2024_2025.md` (even if it doesn't exist yet; leave as placeholder).
 
 ### Files touched:
+
 - ADD: `00_CONTEXT/FILE_REGISTRY_SUMMARY.md`
 - ADD: `00_CONTEXT/FILE_REGISTRY.csv`
 - ADD: `00_CONTEXT/.manifest/manifest.json` (move)
@@ -98,10 +100,12 @@ Replace the 7-step mandatory start sequence with:
 ### 3.1 MODIFY `tools/update_context.ps1`
 
 Current behavior:
+
 - `Write-Registry` → `00_CONTEXT/FILE_REGISTRY.md`
 - `Write-Manifest` → `00_CONTEXT/CONTEXT_MANIFEST.json`
 
 New behavior:
+
 - `Write-Registry` → **remove** (old FILE_REGISTRY.md retired)
 - `Write-RegistrySummary` → `00_CONTEXT/FILE_REGISTRY_SUMMARY.md`
 - `Write-RegistryCsv` → `00_CONTEXT/FILE_REGISTRY.csv`
@@ -109,6 +113,7 @@ New behavior:
 - Keep `-Mode check` runtime unchanged (reads from `.manifest/manifest.json`)
 
 Specific script changes:
+
 1. Change `$RegistryPath` to `$SummaryPath` → `Join-Path $ContextDir "FILE_REGISTRY_SUMMARY.md"`
 2. Add `$CsvPath` → `Join-Path $ContextDir "FILE_REGISTRY.csv"`
 3. Change `$ManifestPath` → `Join-Path $ContextDir ".manifest/manifest.json"`
@@ -121,6 +126,7 @@ Specific script changes:
 8. Ensure `Test-ContextFreshness` reads manifest from new path
 
 ### Files touched:
+
 - MODIFY: `tools/update_context.ps1`
 
 ---

@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
+
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — How fixtures handle teardown
 - [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — Data isolation in parallel
 - [`21_Enterprise_Project_Structure.md`](../04_Enterprise_Architecture/21_Enterprise_Project_Structure.md) — Where test data utilities live
@@ -67,19 +68,18 @@ STRATEGY 5 — Synthetic data generated on-the-fly with unique identifiers
 // and unique enough to avoid collision with other tests running in parallel
 
 export const TestId = {
-
   // Generates: 'AUTO-1716892345678-k7m2x'
   // Format: prefix + timestamp (ms since epoch) + random suffix
   // Why: timestamp makes it sortable/searchable; random suffix prevents collision
   //      if two tests start in the same millisecond
-  create(prefix = 'AUTO'): string {
+  create(prefix = "AUTO"): string {
     const timestamp = Date.now();
-    const random = Math.random().toString(36).slice(2, 7);  // 5 random chars
+    const random = Math.random().toString(36).slice(2, 7); // 5 random chars
     return `${prefix}-${timestamp}-${random}`;
   },
 
   // Email version: 'auto-1716892345678-k7m2x@company-test.com'
-  createEmail(prefix = 'auto'): string {
+  createEmail(prefix = "auto"): string {
     return `${TestId.create(prefix).toLowerCase()}@company-test.com`;
   },
 
@@ -92,13 +92,13 @@ export const TestId = {
 
   // Is this a test-generated ID? (useful for cleanup scripts)
   isTestData(id: string): boolean {
-    return id.startsWith('AUTO-') || id.includes('@company-test.com');
+    return id.startsWith("AUTO-") || id.includes("@company-test.com");
   },
 };
 
 // Usage:
-const email = TestId.createEmail('agent');  // 'agent-1716892345678-k7m2x@company-test.com'
-const userId = TestId.create('USR');        // 'USR-1716892345678-k7m2x'
+const email = TestId.createEmail("agent"); // 'agent-1716892345678-k7m2x@company-test.com'
+const userId = TestId.create("USR"); // 'USR-1716892345678-k7m2x'
 ```
 
 ---
@@ -116,19 +116,19 @@ sequenceDiagram
     Test->>DB: 1. Create User A
     DB-->>Test: User A ID
     Test->>TDM: Push [Delete User A]
-    
+
     Test->>DB: 2. Create Citation (refs User A)
     DB-->>Test: Citation ID
     Test->>TDM: Push [Delete Citation]
-    
+
     Test->>DB: 3. Create Payment (refs Citation)
     DB-->>Test: Payment ID
     Test->>TDM: Push [Delete Payment]
 
     Note over Test: Test Fails or Completes
-    
+
     Test->>TDM: cleanup()
-    
+
     Note over TDM: Pops in Reverse Order (LIFO)
     TDM->>DB: Delete Payment
     TDM->>DB: Delete Citation
@@ -136,7 +136,7 @@ sequenceDiagram
 ```
 
 **Why LIFO? (Last-In, First-Out) / FK-Constraint Cleanup Order**
-It perfectly handles **Foreign Key (FK) constraints**. If you create a User, then a Citation for that user, the database enforces that you *cannot* delete the User while the Citation exists. By pushing cleanup tasks to a stack, popping them in reverse order guarantees that children (Citations) are deleted before their parents (Users), naturally respecting database constraints.
+It perfectly handles **Foreign Key (FK) constraints**. If you create a User, then a Citation for that user, the database enforces that you _cannot_ delete the User while the Citation exists. By pushing cleanup tasks to a stack, popping them in reverse order guarantees that children (Citations) are deleted before their parents (Users), naturally respecting database constraints.
 
 ```typescript
 // utils/TestDataManager.ts
@@ -166,17 +166,20 @@ export class TestDataManager {
           await resource.deleteAsync();
           console.log(`[TestDataManager] Cleaned up ${resource.type}`);
         } catch (error) {
-          console.warn(`[TestDataManager] Failed to clean up ${resource.type}:`, error);
-          throw error;  // re-throw so allSettled captures it as rejected
+          console.warn(
+            `[TestDataManager] Failed to clean up ${resource.type}:`,
+            error,
+          );
+          throw error; // re-throw so allSettled captures it as rejected
         }
-      })
+      }),
     );
 
-    const failures = results.filter(r => r.status === 'rejected');
+    const failures = results.filter((r) => r.status === "rejected");
     if (failures.length > 0) {
       console.warn(
         `[TestDataManager] ${failures.length}/${results.length} cleanup operations failed.` +
-        ' Test data may remain in the database.'
+          " Test data may remain in the database.",
       );
     }
 
@@ -184,17 +187,25 @@ export class TestDataManager {
   }
 
   // Convenience: register a citation
-  trackCitation(citation: CitationApiResponse, deleteAsync: () => Promise<void>): CitationApiResponse {
-    return this.track('citation', citation, deleteAsync);
+  trackCitation(
+    citation: CitationApiResponse,
+    deleteAsync: () => Promise<void>,
+  ): CitationApiResponse {
+    return this.track("citation", citation, deleteAsync);
   }
 
   // Convenience: register a user
-  trackUser(user: UserApiResponse, deleteAsync: () => Promise<void>): UserApiResponse {
-    return this.track('user', user, deleteAsync);
+  trackUser(
+    user: UserApiResponse,
+    deleteAsync: () => Promise<void>,
+  ): UserApiResponse {
+    return this.track("user", user, deleteAsync);
   }
 
   // How many resources are being tracked?
-  get size(): number { return this.resources.length; }
+  get size(): number {
+    return this.resources.length;
+  }
 }
 ```
 
@@ -207,7 +218,6 @@ export const test = base.extend<{
   testDataManager: TestDataManager;
   citationsClient: CitationsApiClient;
 }>({
-
   testDataManager: async ({}, use) => {
     const manager = new TestDataManager();
     await use(manager);
@@ -222,12 +232,13 @@ export const test = base.extend<{
     // Wrap the client's create method to auto-register with the manager
     const managedClient = {
       ...client,
-      create: async (payload: CreateCitationPayload): Promise<CitationApiResponse> => {
+      create: async (
+        payload: CreateCitationPayload,
+      ): Promise<CitationApiResponse> => {
         const citation = await client.create(payload);
         // Auto-register for cleanup
-        testDataManager.trackCitation(
-          citation,
-          () => client.delete(citation.citationId)
+        testDataManager.trackCitation(citation, () =>
+          client.delete(citation.citationId),
         );
         return citation;
       },
@@ -241,14 +252,20 @@ export const test = base.extend<{
 ### Using It in a Test
 
 ```typescript
-test('Create 3 citations and verify aggregation', async ({
-  citationsClient,  // This is the managed client — auto-registers for cleanup
+test("Create 3 citations and verify aggregation", async ({
+  citationsClient, // This is the managed client — auto-registers for cleanup
   account,
 }) => {
   // All three citations are automatically tracked for cleanup
-  const c1 = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
-  const c2 = await citationsClient.create(PayloadsCitation.paid({ customerId: account.userId }));
-  const c3 = await citationsClient.create(PayloadsCitation.overdue({ customerId: account.userId }));
+  const c1 = await citationsClient.create(
+    PayloadsCitation.pending({ customerId: account.userId }),
+  );
+  const c2 = await citationsClient.create(
+    PayloadsCitation.paid({ customerId: account.userId }),
+  );
+  const c3 = await citationsClient.create(
+    PayloadsCitation.overdue({ customerId: account.userId }),
+  );
 
   // Your test assertions...
   const summary = await citationsClient.getSummaryByUser(account.userId);
@@ -367,14 +384,14 @@ sharedTestCompany: [
 // scripts/seed-test-db.ts
 // Run once before the test suite in CI: npx ts-node scripts/seed-test-db.ts
 
-import { Pool } from 'pg';   // or whatever DB driver you use
+import { Pool } from "pg"; // or whatever DB driver you use
 
 const db = new Pool({
   connectionString: process.env.TEST_DB_URL,
 });
 
 async function seedReferenceData() {
-  console.log('Seeding reference data...');
+  console.log("Seeding reference data...");
 
   // Seed lookup tables (these never change during tests — no cleanup needed)
   await db.query(`
@@ -394,7 +411,7 @@ async function seedReferenceData() {
     ON CONFLICT (type, channel) DO NOTHING;
   `);
 
-  console.log('Reference data seeded.');
+  console.log("Reference data seeded.");
   await db.end();
 }
 
@@ -407,7 +424,7 @@ seedReferenceData().catch(console.error);
 // tests/globalSetup.ts — runs once before ALL tests
 
 export default async function globalSetup() {
-  console.log('[globalSetup] Starting...');
+  console.log("[globalSetup] Starting...");
 
   // 1. Authenticate and save auth state
   await setupAuthStates();
@@ -415,32 +432,34 @@ export default async function globalSetup() {
   // 2. Create shared test company (read by all tests, not modified)
   await seedSharedTestData();
 
-  console.log('[globalSetup] Complete.');
+  console.log("[globalSetup] Complete.");
 }
 
 async function seedSharedTestData() {
   // Use your API client directly (no Playwright page needed)
-  const { default: axios } = await import('axios');
+  const { default: axios } = await import("axios");
   const token = process.env.ADMIN_ACCESS_TOKEN!;
 
   const response = await axios.post(
     `${process.env.API_BASE_URL}/api/v1/companies`,
     {
-      name: 'GLOBAL-TEST-COMPANY',  // fixed name — if it already exists, skip
-      type: 'ENTERPRISE',
+      name: "GLOBAL-TEST-COMPANY", // fixed name — if it already exists, skip
+      type: "ENTERPRISE",
     },
-    { headers: { Authorization: `Bearer ${token}` } }
+    { headers: { Authorization: `Bearer ${token}` } },
   );
 
   if (response.status === 201) {
     // Save the company ID to a file so all tests can read it
-    const { writeFileSync } = await import('fs');
+    const { writeFileSync } = await import("fs");
     writeFileSync(
-      'test-data/shared-state.json',
-      JSON.stringify({ testCompanyId: response.data.companyId })
+      "test-data/shared-state.json",
+      JSON.stringify({ testCompanyId: response.data.companyId }),
     );
   } else if (response.status === 409) {
-    console.log('[globalSetup] Test company already exists — skipping creation');
+    console.log(
+      "[globalSetup] Test company already exists — skipping creation",
+    );
   }
 }
 ```
@@ -455,20 +474,21 @@ Sometimes teardown fails (CI killed mid-run, network error). Orphaned test data 
 // scripts/cleanup-orphaned-test-data.ts
 // Schedule nightly in CI: cleanup everything older than 24h tagged as test data
 
-import { citationsApiClient, usersApiClient } from '../clients';
+import { citationsApiClient, usersApiClient } from "../clients";
 
 async function sweepOrphanedData() {
-  console.log('[Sweeper] Starting orphaned test data cleanup...');
-  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();  // 24h ago
+  console.log("[Sweeper] Starting orphaned test data cleanup...");
+  const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(); // 24h ago
 
   // Find all test citations (created by automation, older than 24h)
   const testCitations = await citationsApiClient.search({
     createdBefore: cutoff,
-    customerId: undefined,  // search all
+    customerId: undefined, // search all
   });
 
-  const orphaned = testCitations.filter(c =>
-    TestId.isTestData(c.customerId) || c.notes?.includes('automated test')
+  const orphaned = testCitations.filter(
+    (c) =>
+      TestId.isTestData(c.customerId) || c.notes?.includes("automated test"),
   );
 
   console.log(`[Sweeper] Found ${orphaned.length} orphaned citations`);
@@ -503,15 +523,15 @@ graph TD
         W1[Worker 1]
         W2[Worker 2]
     end
-    
+
     subgraph Test Data
         D1[ID: AUTO-12345]
         D2[ID: AUTO-67890]
     end
-    
+
     W1 -->|Creates| D1
     W2 -->|Creates| D2
-    
+
     W1 -.->|Searches for AUTO-12345| D1
     W2 -.->|Searches for AUTO-67890| D2
 ```
@@ -522,10 +542,11 @@ When 4 workers run simultaneously, each creating citations for `account.userId`,
 // ❌ Problem: search returns ALL test users' citations
 await masterSearch.searchPanel.searchByUser(account.userId);
 const count = await masterSearch.resultsGrid.rows.count();
-expect(count).toBe(1);  // Fails: other workers created citations for the same userId
+expect(count).toBe(1); // Fails: other workers created citations for the same userId
 ```
 
 **Solution 1 — Search by the specific citation ID (always unique):**
+
 ```typescript
 await masterSearch.searchPanel.searchByCitationId(data.citationId!);
 // data.citationId is unique. Only this test's citation matches.
@@ -533,6 +554,7 @@ expect(await masterSearch.resultsGrid.rows.count()).toBe(1);
 ```
 
 **Solution 2 — Each worker uses its own test account:**
+
 ```typescript
 // playwright.config.ts — each project uses a different test account
 projects: [
@@ -547,6 +569,7 @@ projects: [
 ```
 
 **Solution 3 — Tag test data with the worker ID:**
+
 ```typescript
 account: [
   async ({}, use) => {
@@ -612,13 +635,14 @@ Your team is writing tests for a "search by location" feature. The location data
 A) Strategy 1: API fixture — create each postcode before the test, delete after  
 B) Strategy 2: Worker-scoped fixture — one set of postcodes per worker  
 C) Strategy 3: Database seeding script — seed once before the suite, never delete  
-D) Strategy 5: Generate on-the-fly with unique IDs  
+D) Strategy 5: Generate on-the-fly with unique IDs
 
 <details><summary>Answer</summary>
 
 **C** — Reference data that never changes and is only read belongs in a seeding script run once before the suite. Creating/deleting 200 postcodes before/after every test (A) is massively wasteful. Worker-scoped (B) is unnecessary if the data never changes. On-the-fly (D) doesn't apply to postal code validation — you need real, valid postcodes, not random UUIDs.
 
 SQL bulk seed: fast, correct, zero runtime overhead per test.
+
 </details>
 
 ---
@@ -647,6 +671,7 @@ citationPair: async ({ citationsClient, account }, use) => {
 Additionally, if `delete(parent)` throws, `delete(linked)` never runs — the child is never cleaned up.
 
 Fix:
+
 ```typescript
 try {
   await use({ parent, linked });
@@ -654,14 +679,19 @@ try {
   // Delete child FIRST, then parent — respect FK constraints
   // Separate try/catch for each so one failure doesn't block the other
   try {
-    await citationsClient.delete(linked.citationId);   // child first
-  } catch (e) { console.warn('Failed to delete linked citation:', e); }
+    await citationsClient.delete(linked.citationId); // child first
+  } catch (e) {
+    console.warn("Failed to delete linked citation:", e);
+  }
 
   try {
-    await citationsClient.delete(parent.citationId);   // parent second
-  } catch (e) { console.warn('Failed to delete parent citation:', e); }
+    await citationsClient.delete(parent.citationId); // parent second
+  } catch (e) {
+    console.warn("Failed to delete parent citation:", e);
+  }
 }
 ```
+
 </details>
 
 ---
@@ -669,6 +699,7 @@ try {
 ### Challenge 3 [Write It Yourself]
 
 Write a `SeedManager` class that:
+
 1. Keeps a typed registry: `Map<string, { id: string; deleteAsync: () => Promise<void> }>`
 2. Has `register(type: string, id: string, deleteAsync: () => Promise<void>)` method
 3. Has `cleanupAll()` that deletes in reverse registration order, collects all errors, logs them, but doesn't rethrow
@@ -690,7 +721,9 @@ export class SeedManager {
 
   register(type: string, id: string, deleteAsync: () => Promise<void>): void {
     this.records.push({ type, id, deleteAsync });
-    console.log(`[SeedManager] Registered ${type}:${id} (total: ${this.records.length})`);
+    console.log(
+      `[SeedManager] Registered ${type}:${id} (total: ${this.records.length})`,
+    );
   }
 
   async cleanupAll(): Promise<void> {
@@ -711,43 +744,53 @@ export class SeedManager {
     this.records = [];
 
     if (errors.length > 0) {
-      console.warn(`[SeedManager] ${errors.length} cleanup failures (see above). Test data may be orphaned.`);
+      console.warn(
+        `[SeedManager] ${errors.length} cleanup failures (see above). Test data may be orphaned.`,
+      );
     }
     // Note: we do NOT rethrow — cleanup failures should not mask the test failure
   }
 
   async cleanupByType(type: string): Promise<void> {
-    const matching = this.records.filter(r => r.type === type).reverse();
+    const matching = this.records.filter((r) => r.type === type).reverse();
     for (const record of matching) {
       try {
         await record.deleteAsync();
         console.log(`[SeedManager] Deleted ${record.type}:${record.id}`);
       } catch (e) {
-        console.warn(`[SeedManager] Failed to delete ${record.type}:${record.id}:`, e);
+        console.warn(
+          `[SeedManager] Failed to delete ${record.type}:${record.id}:`,
+          e,
+        );
       }
     }
-    this.records = this.records.filter(r => r.type !== type);
+    this.records = this.records.filter((r) => r.type !== type);
   }
 
-  get registeredCount(): number { return this.records.length; }
-  get types(): string[] { return [...new Set(this.records.map(r => r.type))]; }
+  get registeredCount(): number {
+    return this.records.length;
+  }
+  get types(): string[] {
+    return [...new Set(this.records.map((r) => r.type))];
+  }
 }
 ```
+
 </details>
 
 ---
 
 ## Summary — Test Data Lifecycle Rules
 
-| Rule | Why |
-|---|---|
-| Every piece of data created by a test must be deleted by that test | Otherwise data accumulates and pollutes other tests |
-| Use `try/finally` in fixtures — never bare cleanup code | Cleanup must run even when tests fail |
-| Delete children before parents | Foreign key constraints — wrong order = constraint violation |
-| Use unique IDs (`AUTO-timestamp-random`) | Parallel workers can't collide on unique data |
-| Tag test data so it's identifiable | Nightly sweeper can find and delete orphaned records |
-| Use strategy-appropriate seeding | Don't create/delete reference data 200 times per test run |
-| Run a monthly audit query | Know how much test data is in the DB at any given time |
+| Rule                                                               | Why                                                          |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ |
+| Every piece of data created by a test must be deleted by that test | Otherwise data accumulates and pollutes other tests          |
+| Use `try/finally` in fixtures — never bare cleanup code            | Cleanup must run even when tests fail                        |
+| Delete children before parents                                     | Foreign key constraints — wrong order = constraint violation |
+| Use unique IDs (`AUTO-timestamp-random`)                           | Parallel workers can't collide on unique data                |
+| Tag test data so it's identifiable                                 | Nightly sweeper can find and delete orphaned records         |
+| Use strategy-appropriate seeding                                   | Don't create/delete reference data 200 times per test run    |
+| Run a monthly audit query                                          | Know how much test data is in the DB at any given time       |
 
 ### Challenge 4 [MCQ] — Test Data Isolation Strategy
 
@@ -765,10 +808,12 @@ D) Use a separate staging database for each developer
 **Layer 1 — Unique ID prefixes**: All test-created data uses a prefix like `AUTO-TEST-${Date.now()}`. Orphaned data is identifiable and can be batch-deleted by prefix.
 
 **Layer 2 — Weekly cleanup job**: A scheduled CI job (e.g., Sunday 2am) runs:
+
 ```sql
 DELETE FROM citations WHERE citation_id LIKE 'AUTO-TEST-%'
   AND created_at < NOW() - INTERVAL '7 days';
 ```
+
 This removes all test data older than 7 days, regardless of which test created it or whether teardown ran.
 
 **Layer 3 — Fixture try/catch on teardown** (already covered in Ch23 with `ignoreStatuses: [404]`): Ensures teardown failures don't cascade into test failures, and logs which deletions failed so the weekly job can clean them up.
@@ -783,7 +828,7 @@ Layer 1 alone fails when the cleanup job isn't set up. Layer 2 alone fails when 
 
 ```typescript
 // tests/fixtures/index.ts
-const SHARED_CITATION_ID = 'CIT-FIXTURE-001';
+const SHARED_CITATION_ID = "CIT-FIXTURE-001";
 
 export const test = base.extend<{ sharedCitation: CitationApiResponse }>({
   sharedCitation: async ({ citationsClient }, use) => {
@@ -793,7 +838,7 @@ export const test = base.extend<{ sharedCitation: CitationApiResponse }>({
       citation = await citationsClient.getById(SHARED_CITATION_ID);
     } catch {
       citation = await citationsClient.create(
-        PayloadsCitation.pending({ customerId: 'USR-SHARED-001' })
+        PayloadsCitation.pending({ customerId: "USR-SHARED-001" }),
       );
     }
     await use(citation);
@@ -817,4 +862,5 @@ The correct pattern: if you need shared read-only data, create it in `globalSetu
 </details>
 
 ---
+
 **Navigation**: [← Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)

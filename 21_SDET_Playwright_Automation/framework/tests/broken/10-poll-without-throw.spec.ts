@@ -23,10 +23,9 @@ test('broken: poll swallows errors and returns default', async ({ request }) => 
     .poll(
       async () => {
         try {
-          const response = await request.get(
-            `${endpoints.reqres.USERS}/99999`,
-            { headers: COMMON_HEADERS }
-          );
+          const response = await request.get(`${endpoints.reqres.USERS}/99999`, {
+            headers: COMMON_HEADERS,
+          });
           if (response.status() === 404) {
             // BUG: We return a string instead of throwing. expect.poll now
             // keeps retrying until its own timeout, producing a useless
@@ -40,7 +39,7 @@ test('broken: poll swallows errors and returns default', async ({ request }) => 
           return 'error';
         }
       },
-      { intervals: [500], timeout: 5000 }
+      { intervals: [500], timeout: 5000 },
     )
     .toBe('Janet');
 });
@@ -55,10 +54,9 @@ test('fixed: poll throws on permanent failures', async ({ request }) => {
   await expect
     .poll(
       async () => {
-        const response = await request.get(
-          `${endpoints.reqres.USERS}/99999`,
-          { headers: COMMON_HEADERS }
-        );
+        const response = await request.get(`${endpoints.reqres.USERS}/99999`, {
+          headers: COMMON_HEADERS,
+        });
 
         // FIXED: Terminal errors are thrown immediately so expect.poll
         // surfaces the root cause instead of timing out cryptically.
@@ -76,7 +74,7 @@ test('fixed: poll throws on permanent failures', async ({ request }) => {
         intervals: [500],
         timeout: 5000,
         message: 'Polling for first_name to become "Janet"',
-      }
+      },
     )
     .toBe('Janet');
 });

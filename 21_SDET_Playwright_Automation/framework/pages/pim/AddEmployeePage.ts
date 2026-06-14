@@ -55,7 +55,9 @@ export class AddEmployeePage extends OrangeHRMBasePage {
   }
 
   async toggleCreateLoginDetails(): Promise<void> {
-    await clickElement(this.createLoginDetailsSwitch, { description: 'toggle create login details' });
+    await clickElement(this.createLoginDetailsSwitch, {
+      description: 'toggle create login details',
+    });
   }
 
   async setLoginCredentials(username: string, password: string): Promise<void> {

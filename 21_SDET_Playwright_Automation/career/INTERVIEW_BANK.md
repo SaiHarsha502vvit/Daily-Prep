@@ -4,7 +4,7 @@ Three sections: **system design** (50), **technical/practical** (depth, framewor
 
 ## How to use this
 
-- Don't memorise answers. Memorise *frameworks for thinking about the question*.
+- Don't memorise answers. Memorise _frameworks for thinking about the question_.
 - When you can answer 35/50 system design Qs confidently, you are interview-ready for senior SDET roles.
 - Every behavioural answer must be **a real story with numbers**. Vague = lying.
 
@@ -112,11 +112,11 @@ Answer each in writing the first time, then refine:
 
 Build at least **five** real stories from your own work. Template per story:
 
-### Story title: _______________________________
+### Story title: **************\_\_\_**************
 
 **Situation**: where, when, what was happening
 **Task**: what was your responsibility
-**Action**: what *you* did (not "we") — specifics
+**Action**: what _you_ did (not "we") — specifics
 **Result**: numbers — flakes dropped from X% to Y%, runtime cut from Am to Bm, etc.
 **Reflection**: what you'd do differently
 

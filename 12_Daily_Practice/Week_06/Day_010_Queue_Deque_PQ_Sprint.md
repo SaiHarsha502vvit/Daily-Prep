@@ -1,18 +1,21 @@
 # Day 10 - Queue, Deque, and Priority Queue (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 353 - Design Snake Game
 2. LeetCode Hard: 239 - Sliding Window Maximum
 3. Codeforces: 1303D - Fill The Bag
 4. Codeforces: 977C - Less or Equal
 
 ## Problem Links
+
 - LC 353 (Premium): Locked on LeetCode (no public official statement page)
 - LC 239: https://leetcode.com/problems/sliding-window-maximum/
 - CF 1303D: https://codeforces.com/problemset/problem/1303/D
 - CF 977C: https://codeforces.com/problemset/problem/977/C
 
 ## Why This Day Matters
+
 This day teaches data-structure choice by operation profile: FIFO queue, monotonic deque, and max/min retrieval under updates.
 
 ---
@@ -20,13 +23,16 @@ This day teaches data-structure choice by operation profile: FIFO queue, monoton
 ## Problem 1 - LC 353 (Premium): Design Snake Game
 
 ### Problem Statement
+
 Implement snake game with moves `U,D,L,R`. Return score or `-1` when game over.
 
 ### Why This DS/Algo
+
 - Need O(1) head insertion and tail deletion: deque.
 - Need O(1) collision check: hash set of occupied cells.
 
 ### Approach A - Brute Force board scan (O(mn) move)
+
 Maintain full board and scan for collision each move.
 
 ### Approach B - Better (Deque + HashSet) (O(1) avg move)
@@ -76,6 +82,7 @@ class SnakeGameBetter {
 ```
 
 ### Approach C - Optimal
+
 This O(1)-per-move design is asymptotically optimal.
 
 ---
@@ -83,9 +90,11 @@ This O(1)-per-move design is asymptotically optimal.
 ## Problem 2 - LC 239: Sliding Window Maximum
 
 ### Problem Statement
+
 For each window of size `k`, return maximum value.
 
 ### Why This DS/Algo
+
 - Need max over sliding window with insert-right/remove-left.
 - Monotonic deque stores candidate indices in decreasing values.
 
@@ -127,6 +136,7 @@ static int[] maxWindowOptimal(int[] a, int k) {
 ```
 
 ### Interview Notes
+
 Deque invariant: values are decreasing from front to back, so front is maximum.
 
 ---
@@ -134,12 +144,15 @@ Deque invariant: values are decreasing from front to back, so front is maximum.
 ## Problem 3 - CF 1303D: Fill The Bag
 
 ### Problem Statement
+
 Given powers-of-two pieces, minimum splits needed to make sum exactly `n`.
 
 ### Why This DS/Algo
+
 - Pieces are powers of two, so binary representation and greedy carry/split logic is natural.
 
 ### Approach A - Brute Force BFS over states
+
 State explosion.
 
 ### Approach B - Better (Count by bit + greedy split) (O(log MAX), O(log MAX))
@@ -173,6 +186,7 @@ static long fillBagBetter(long n, long[] pieces) {
 ```
 
 ### Approach C - Optimal
+
 Bit-count greedy is standard optimal strategy for this constraint.
 
 ---
@@ -180,12 +194,15 @@ Bit-count greedy is standard optimal strategy for this constraint.
 ## Problem 4 - CF 977C: Less or Equal
 
 ### Problem Statement
+
 Find integer `x` such that exactly `k` elements are `<= x`; else output `-1`.
 
 ### Why This DS/Algo
+
 Sort and inspect boundary between k-th and (k+1)-th elements.
 
 ### Approach A - Brute Force test many x values
+
 Inefficient and unnecessary.
 
 ### Approach B - Better (Sort + boundary logic) (O(n log n), O(1))
@@ -202,8 +219,10 @@ static int lessOrEqualBetter(int[] a, int k) {
 ```
 
 ### Approach C - Optimal
+
 Sort-based boundary check is optimal with arbitrary values.
 
 ### Pattern Takeaways
+
 - Monotonic deque solves sliding max/min in linear time.
 - Bitwise greedy appears often when numbers are powers of two.

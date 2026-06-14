@@ -10,7 +10,7 @@
  * QUESTION: What is the TypeScript error? How do you fix it?
  */
 
-import { type Page } from '@playwright/test';
+import { type Page } from "@playwright/test";
 
 // ============================================================
 // BUG — role: string is too broad
@@ -22,7 +22,11 @@ import { type Page } from '@playwright/test';
 // Error: Argument of type 'string' is not assignable to parameter of type 'AriaRole'
 
 // ❌ BUGGY
-async function clickByRole_BAD(page: Page, role: string, name: string): Promise<void> {
+async function clickByRole_BAD(
+  page: Page,
+  role: string,
+  name: string,
+): Promise<void> {
   // TypeScript error on the next line — 'string' is not assignable to 'AriaRole'
   // @ts-expect-error — intentionally showing the bug
   await page.getByRole(role as never, { name }).click();
@@ -35,9 +39,13 @@ async function clickByRole_BAD(page: Page, role: string, name: string): Promise<
 // getByRole directly from the Playwright type declaration.  This is future-
 // proof: if Playwright adds new roles, your type automatically picks them up.
 
-type AriaRole = Parameters<Page['getByRole']>[0];
+type AriaRole = Parameters<Page["getByRole"]>[0];
 
-async function clickByRole(page: Page, role: AriaRole, name: string): Promise<void> {
+async function clickByRole(
+  page: Page,
+  role: AriaRole,
+  name: string,
+): Promise<void> {
   await page.getByRole(role, { name }).click();
 }
 
@@ -63,45 +71,45 @@ async function clickByRole(page: Page, role: AriaRole, name: string): Promise<vo
 // FIX 3 — Explicit union (least preferred — must be kept in sync manually)
 // ============================================================
 type AriaRoleManual =
-  | 'button'
-  | 'checkbox'
-  | 'combobox'
-  | 'dialog'
-  | 'figure'
-  | 'heading'
-  | 'img'
-  | 'link'
-  | 'list'
-  | 'listitem'
-  | 'main'
-  | 'menuitem'
-  | 'menuitemcheckbox'
-  | 'menuitemradio'
-  | 'navigation'
-  | 'option'
-  | 'progressbar'
-  | 'radio'
-  | 'radiogroup'
-  | 'row'
-  | 'rowgroup'
-  | 'rowheader'
-  | 'scrollbar'
-  | 'search'
-  | 'searchbox'
-  | 'separator'
-  | 'slider'
-  | 'spinbutton'
-  | 'status'
-  | 'switch'
-  | 'tab'
-  | 'tablist'
-  | 'tabpanel'
-  | 'textbox'
-  | 'timer'
-  | 'tooltip'
-  | 'tree'
-  | 'treegrid'
-  | 'treeitem';
+  | "button"
+  | "checkbox"
+  | "combobox"
+  | "dialog"
+  | "figure"
+  | "heading"
+  | "img"
+  | "link"
+  | "list"
+  | "listitem"
+  | "main"
+  | "menuitem"
+  | "menuitemcheckbox"
+  | "menuitemradio"
+  | "navigation"
+  | "option"
+  | "progressbar"
+  | "radio"
+  | "radiogroup"
+  | "row"
+  | "rowgroup"
+  | "rowheader"
+  | "scrollbar"
+  | "search"
+  | "searchbox"
+  | "separator"
+  | "slider"
+  | "spinbutton"
+  | "status"
+  | "switch"
+  | "tab"
+  | "tablist"
+  | "tabpanel"
+  | "textbox"
+  | "timer"
+  | "tooltip"
+  | "tree"
+  | "treegrid"
+  | "treeitem";
 
 async function clickByRoleV3(
   page: Page,

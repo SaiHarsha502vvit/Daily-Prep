@@ -37,7 +37,7 @@ A fixture is a managed dependency. Playwright creates it, injects it into your t
 You've been using built-in fixtures since day one:
 
 ```typescript
-test('example', async ({ page, request, browser, context }) => {
+test("example", async ({ page, request, browser, context }) => {
   //                     ↑     ↑       ↑        ↑
   //                     All built-in fixtures.
   //                     You never wrote "const page = await browser.newPage()".
@@ -65,15 +65,16 @@ Without fixtures, every test duplicates setup:
 
 ```typescript
 test.beforeEach(async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('#username', process.env.TEST_USER!);
-  await page.fill('#password', process.env.TEST_PASSWORD!);
-  await page.click('#loginButton');
-  await page.waitForURL('**/dashboard');
+  await page.goto("/login");
+  await page.fill("#username", process.env.TEST_USER!);
+  await page.fill("#password", process.env.TEST_PASSWORD!);
+  await page.click("#loginButton");
+  await page.waitForURL("**/dashboard");
 });
 ```
 
 If 30 test files need this:
+
 - 30 copies of the same code.
 - If login changes, 30 files to update.
 - If login becomes slow, 30 places to optimise.
@@ -82,7 +83,7 @@ If 30 test files need this:
 With a fixture:
 
 ```typescript
-test('my test', async ({ authenticatedPage }) => {
+test("my test", async ({ authenticatedPage }) => {
   // already logged in — fixture handled it
 });
 ```
@@ -91,30 +92,30 @@ One definition, used everywhere.
 
 ### 1.3 What fixtures CAN do
 
-| Capability | Example |
-|---|---|
-| Construct an object before the test | `new MasterSearchPage(page)` |
-| Make an HTTP call to set up state | `await api.createUser()` |
-| Open a database connection | `await db.connect()` |
-| Generate test data | `const customer = faker.customer()` |
-| Authenticate (fetch a token) | `const token = await getOAuthToken()` |
-| Lock a shared resource | `await lockfile.lock('accounts.lock')` |
-| Set environment variables | `process.env.RUN_ID = '...'` |
-| Inject into the test | `await use(theThing)` |
-| Tear down after the test | `await db.disconnect()` |
-| Fail the test if setup fails | `throw new Error(...)` |
-| Skip the test conditionally | `test.skip(condition, 'reason')` |
+| Capability                          | Example                                |
+| ----------------------------------- | -------------------------------------- |
+| Construct an object before the test | `new MasterSearchPage(page)`           |
+| Make an HTTP call to set up state   | `await api.createUser()`               |
+| Open a database connection          | `await db.connect()`                   |
+| Generate test data                  | `const customer = faker.customer()`    |
+| Authenticate (fetch a token)        | `const token = await getOAuthToken()`  |
+| Lock a shared resource              | `await lockfile.lock('accounts.lock')` |
+| Set environment variables           | `process.env.RUN_ID = '...'`           |
+| Inject into the test                | `await use(theThing)`                  |
+| Tear down after the test            | `await db.disconnect()`                |
+| Fail the test if setup fails        | `throw new Error(...)`                 |
+| Skip the test conditionally         | `test.skip(condition, 'reason')`       |
 
 ### 1.4 What fixtures CANNOT do
 
-| Limitation | Why |
-|---|---|
-| Run before `test.describe()` | describe runs at file-evaluation time, before fixtures resolve |
-| Share state between workers | Each worker is a separate process |
-| Modify the test object after `test.extend` | Once extended, the test object is immutable |
-| Be created inside a test body | Fixtures are statically declared in the test signature |
-| Have circular dependencies | Cycle detection throws at config load |
-| Be conditionally injected | Either you depend on it or you don't (use options to vary behavior) |
+| Limitation                                 | Why                                                                 |
+| ------------------------------------------ | ------------------------------------------------------------------- |
+| Run before `test.describe()`               | describe runs at file-evaluation time, before fixtures resolve      |
+| Share state between workers                | Each worker is a separate process                                   |
+| Modify the test object after `test.extend` | Once extended, the test object is immutable                         |
+| Be created inside a test body              | Fixtures are statically declared in the test signature              |
+| Have circular dependencies                 | Cycle detection throws at config load                               |
+| Be conditionally injected                  | Either you depend on it or you don't (use options to vary behavior) |
 
 ---
 
@@ -154,12 +155,20 @@ Fixtures set up in DEPENDENCY order, not declaration order:
 
 ```typescript
 export const test = base.extend({
-  c: async ({ b }, use) => { /* depends on b */ await use(makeC()); },
-  a: async ({}, use)  => { /* no deps */     await use(makeA()); },
-  b: async ({ a }, use) => { /* depends on a */ await use(makeB()); },
+  c: async ({ b }, use) => {
+    /* depends on b */ await use(makeC());
+  },
+  a: async ({}, use) => {
+    /* no deps */ await use(makeA());
+  },
+  b: async ({ a }, use) => {
+    /* depends on a */ await use(makeB());
+  },
 });
 
-test('example', async ({ c }) => { /* ... */ });
+test("example", async ({ c }) => {
+  /* ... */
+});
 
 // Resolution:
 //   c depends on b.
@@ -172,25 +181,25 @@ test('example', async ({ c }) => { /* ... */ });
 
 ### 2.3 What runs synchronously vs asynchronously
 
-| Phase | Mode |
-|---|---|
-| Config file load | Sync top-level + async dynamic imports |
-| Fixture function calls | Async — fixtures are `async` functions |
-| `await use()` boundary | Async — this is the test body |
-| Teardown after `use()` | Async — fixtures continue |
-| Cross-fixture handoff (a's value to b) | Resolved before b's setup runs |
+| Phase                                  | Mode                                   |
+| -------------------------------------- | -------------------------------------- |
+| Config file load                       | Sync top-level + async dynamic imports |
+| Fixture function calls                 | Async — fixtures are `async` functions |
+| `await use()` boundary                 | Async — this is the test body          |
+| Teardown after `use()`                 | Async — fixtures continue              |
+| Cross-fixture handoff (a's value to b) | Resolved before b's setup runs         |
 
 ### 2.4 The hooks vs fixtures decision
 
 Both `beforeEach` and a setup fixture run before the test. Which to use?
 
-| Use beforeEach when | Use a fixture when |
-|---|---|
-| Setup is one-line (`await page.goto('/login')`) | Setup is non-trivial |
-| Only one test file needs it | Multiple files need the same setup |
-| You want explicit control over order | You want injected ergonomics (`async ({ x }) => ...`) |
-| Setup doesn't produce a value | Setup produces an object the test uses |
-| Cleanup is paired with setup tightly | Cleanup runs even on test failure (fixtures guarantee this) |
+| Use beforeEach when                             | Use a fixture when                                          |
+| ----------------------------------------------- | ----------------------------------------------------------- |
+| Setup is one-line (`await page.goto('/login')`) | Setup is non-trivial                                        |
+| Only one test file needs it                     | Multiple files need the same setup                          |
+| You want explicit control over order            | You want injected ergonomics (`async ({ x }) => ...`)       |
+| Setup doesn't produce a value                   | Setup produces an object the test uses                      |
+| Cleanup is paired with setup tightly            | Cleanup runs even on test failure (fixtures guarantee this) |
 
 Hooks and fixtures coexist — the same test can use both.
 
@@ -215,9 +224,21 @@ Each `extend` returns a NEW test object that includes its parent's fixtures. The
 
 ```typescript
 const test = base.extend<TestFixtures, WorkerFixtures>({
-  fixtureA: async ({}, use) => { /* test-scoped */ },
-  fixtureB: [async ({}, use) => { /* test-scoped */ }, { auto: true }],
-  fixtureC: [async ({}, use) => { /* worker-scoped */ }, { scope: 'worker' }],
+  fixtureA: async ({}, use) => {
+    /* test-scoped */
+  },
+  fixtureB: [
+    async ({}, use) => {
+      /* test-scoped */
+    },
+    { auto: true },
+  ],
+  fixtureC: [
+    async ({}, use) => {
+      /* worker-scoped */
+    },
+    { scope: "worker" },
+  ],
   fixtureD: [defaultValue, { option: true }],
 });
 ```
@@ -226,9 +247,9 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
 
 `base.extend<TestFixtures, WorkerFixtures>(...)` accepts two generic types:
 
-| Parameter | Purpose |
-|---|---|
-| `TestFixtures` | Type shape of all test-scoped fixtures |
+| Parameter        | Purpose                                  |
+| ---------------- | ---------------------------------------- |
+| `TestFixtures`   | Type shape of all test-scoped fixtures   |
 | `WorkerFixtures` | Type shape of all worker-scoped fixtures |
 
 ```typescript
@@ -242,16 +263,27 @@ interface MyWorkerFixtures {
 }
 
 const test = base.extend<MyTestFixtures, MyWorkerFixtures>({
-  citationsClient: async ({ request }, use) => { /* ... */ },
-  testCitation:    async ({ citationsClient }, use) => { /* ... */ },
-  authToken:       [async ({}, use) => { /* ... */ }, { scope: 'worker' }],
+  citationsClient: async ({ request }, use) => {
+    /* ... */
+  },
+  testCitation: async ({ citationsClient }, use) => {
+    /* ... */
+  },
+  authToken: [
+    async ({}, use) => {
+      /* ... */
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
 If you omit `WorkerFixtures`, all fixtures are inferred as test-scoped:
 
 ```typescript
-const test = base.extend<MyTestFixtures>({ /* ... */ });
+const test = base.extend<MyTestFixtures>({
+  /* ... */
+});
 // Cannot add worker-scoped fixtures here — TS will reject them.
 ```
 
@@ -282,7 +314,7 @@ async (deps, use, testInfo) => {
   // deps: object of dependencies (Playwright provides these)
   // use: function to inject the value into the test
   // testInfo: object with test metadata (only for test-scoped fixtures)
-}
+};
 ```
 
 `testInfo` parameter:
@@ -318,25 +350,25 @@ async ({}, use, workerInfo) => {
 
 ## 4. Test scope vs worker scope
 
-| Aspect | Test scope (default) | Worker scope |
-|---|---|---|
-| Lifetime | One per test | One per worker process |
-| Setup cost | Paid per test | Paid once per worker |
-| Teardown timing | After each test | When the worker shuts down |
-| State sharing | Isolated per test | Shared across all tests in a worker |
-| Failure isolation | Fixture failure → that test fails | Fixture failure → ALL tests in that worker fail |
-| Suitable for | Mutable state, data that tests modify | Read-only data, shared connections, auth tokens |
-| Example | `page`, `request`, page object, test data | Auth token, DB connection pool, file-locked account |
-| Syntax | Plain function | Tuple with `{ scope: 'worker' }` |
+| Aspect            | Test scope (default)                      | Worker scope                                        |
+| ----------------- | ----------------------------------------- | --------------------------------------------------- |
+| Lifetime          | One per test                              | One per worker process                              |
+| Setup cost        | Paid per test                             | Paid once per worker                                |
+| Teardown timing   | After each test                           | When the worker shuts down                          |
+| State sharing     | Isolated per test                         | Shared across all tests in a worker                 |
+| Failure isolation | Fixture failure → that test fails         | Fixture failure → ALL tests in that worker fail     |
+| Suitable for      | Mutable state, data that tests modify     | Read-only data, shared connections, auth tokens     |
+| Example           | `page`, `request`, page object, test data | Auth token, DB connection pool, file-locked account |
+| Syntax            | Plain function                            | Tuple with `{ scope: 'worker' }`                    |
 
 ### 4.1 The cost calculation
 
 A test-scoped fixture pays setup + teardown for EVERY test. With a 3s setup cost and 40 tests:
 
-| Scope | Setup calls | Setup cost |
-|---|---|---|
-| Test scope | 40 | 40 × 3s = 120s |
-| Worker scope, 4 workers | 4 | 4 × 3s = 12s |
+| Scope                   | Setup calls | Setup cost     |
+| ----------------------- | ----------- | -------------- |
+| Test scope              | 40          | 40 × 3s = 120s |
+| Worker scope, 4 workers | 4           | 4 × 3s = 12s   |
 
 A 10× reduction. For an OAuth token fetch (often 1–3s), worker scope is essential.
 
@@ -344,10 +376,10 @@ A 10× reduction. For an OAuth token fetch (often 1–3s), worker scope is essen
 
 For a file-locked account pool with 100 tests, 4 workers, and N accounts:
 
-| Account pool size | Worker scope | Test scope |
-|---|---|---|
-| 4 accounts | Each worker holds one for the whole run — works | Each test claims one; with 100 tests, accounts cycle 25 times per worker → contention |
-| 1 account | Workers block on the single lock | Tests block on the single lock |
+| Account pool size | Worker scope                                    | Test scope                                                                            |
+| ----------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 4 accounts        | Each worker holds one for the whole run — works | Each test claims one; with 100 tests, accounts cycle 25 times per worker → contention |
+| 1 account         | Workers block on the single lock                | Tests block on the single lock                                                        |
 
 Worker scope effectively partitions accounts across workers.
 
@@ -385,8 +417,8 @@ If you change the fixture between two test runs in the SAME worker (during inter
 The most subtle rule, and the source of cryptic errors:
 
 | Worker fixture can depend on | Worker scope ✅ | Test scope ❌ |
-|---|---|---|
-| Test fixture can depend on | Worker scope ✅ | Test scope ✅ |
+| ---------------------------- | --------------- | ------------- |
+| Test fixture can depend on   | Worker scope ✅ | Test scope ✅ |
 
 ### 5.1 The error message
 
@@ -398,12 +430,15 @@ const test = base.extend<{ user: User }, { db: Database }>({
     await use(db);
     await db.disconnect();
   },
-  user: [async ({ db }, use) => {
-    // worker-scoped — depends on test-scoped db
-    const u = await db.createUser({ name: 'TestUser' });
-    await use(u);
-    await db.deleteUser(u.id);
-  }, { scope: 'worker' }],
+  user: [
+    async ({ db }, use) => {
+      // worker-scoped — depends on test-scoped db
+      const u = await db.createUser({ name: "TestUser" });
+      await use(u);
+      await db.deleteUser(u.id);
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
@@ -447,14 +482,14 @@ Use when: each test needs a fresh user (or tests modify the user).
 
 For reference when planning your own fixture dependencies:
 
-| Built-in | Scope |
-|---|---|
-| `browser` | Worker |
+| Built-in      | Scope  |
+| ------------- | ------ |
+| `browser`     | Worker |
 | `browserName` | Worker |
-| `playwright` | Worker |
-| `context` | Test |
-| `page` | Test |
-| `request` | Test |
+| `playwright`  | Worker |
+| `context`     | Test   |
+| `page`        | Test   |
+| `request`     | Test   |
 
 So a worker-scoped fixture CAN depend on `browser` but NOT on `page`. This matters when, for example, you want a worker-scoped pre-authenticated context. The trick is to create a new context in the worker fixture rather than depending on the test-scoped `context`:
 
@@ -486,6 +521,7 @@ myFixture: async ({ dep }, use) => {
 ### 6.1 Why `use` is a function, not `yield`
 
 JavaScript has generator syntax (`yield`), but Playwright chose `use` to:
+
 - Stay in async/await world (no generators).
 - Make the injection point explicit.
 - Allow zero-yield fixtures: a fixture that throws before calling `use()` fails setup; a fixture that calls `use(undefined)` injects undefined.
@@ -526,6 +562,7 @@ test('demo', async ({ fixtureC }) => {
 ```
 
 Output:
+
 ```
 A setup
 B setup
@@ -596,12 +633,12 @@ Either form works. The `try/finally` makes intent explicit.
 
 If teardown throws, the test result depends on what happened in the test body:
 
-| Test body | Teardown | Final test result |
-|---|---|---|
-| Passed | Passed | Passed |
-| Passed | Threw | **Failed** — with teardown error |
-| Failed | Passed | Failed (original error) |
-| Failed | Threw | Failed (test error wins; teardown error logged) |
+| Test body | Teardown | Final test result                               |
+| --------- | -------- | ----------------------------------------------- |
+| Passed    | Passed   | Passed                                          |
+| Passed    | Threw    | **Failed** — with teardown error                |
+| Failed    | Passed   | Failed (original error)                         |
+| Failed    | Threw    | Failed (test error wins; teardown error logged) |
 
 A teardown that throws on a passing test is a fixture bug. Always wrap teardown that might fail (network calls, cleanup APIs) in try/catch IF the failure shouldn't mask a real test failure:
 
@@ -634,6 +671,7 @@ This matches "release in reverse order of acquisition" — a fundamental resourc
 Worker-scoped fixtures run their teardown when the worker process is about to exit. If the worker is killed (SIGKILL, OOM), teardown does NOT run.
 
 For critical cleanup (e.g., DB rows that must not leak), use both:
+
 - Fixture teardown for the normal case.
 - A nightly cleanup job for the abnormal case (search for `testFlag=true` records older than 24h).
 
@@ -662,14 +700,14 @@ Playwright ships these out of the box. Know what's available before extending.
 
 ### 8.1 Test-scoped built-ins
 
-| Fixture | Type | What it is |
-|---|---|---|
-| `page` | `Page` | The default page in a fresh context |
-| `context` | `BrowserContext` | The browser context (cookies, storage, etc.) |
-| `request` | `APIRequestContext` | HTTP request context, shares cookies with browser |
-| `browser` | `Browser` | The shared browser instance for the worker (yes — accessible from test scope) |
-| `browserName` | `'chromium' \| 'firefox' \| 'webkit'` | Which browser type is running |
-| `playwright` | `Playwright` | The Playwright API (advanced — for creating browsers) |
+| Fixture       | Type                                  | What it is                                                                    |
+| ------------- | ------------------------------------- | ----------------------------------------------------------------------------- |
+| `page`        | `Page`                                | The default page in a fresh context                                           |
+| `context`     | `BrowserContext`                      | The browser context (cookies, storage, etc.)                                  |
+| `request`     | `APIRequestContext`                   | HTTP request context, shares cookies with browser                             |
+| `browser`     | `Browser`                             | The shared browser instance for the worker (yes — accessible from test scope) |
+| `browserName` | `'chromium' \| 'firefox' \| 'webkit'` | Which browser type is running                                                 |
+| `playwright`  | `Playwright`                          | The Playwright API (advanced — for creating browsers)                         |
 
 ### 8.2 Worker-scoped built-ins
 
@@ -679,28 +717,28 @@ Same as test-scoped above for `browser`, `browserName`, `playwright` — these a
 
 Set via `test.use({})` at file/describe level:
 
-| Option | Default | What it does |
-|---|---|---|
-| `viewport` | from project | Set the viewport for this scope |
-| `geolocation` | from project | Set geolocation |
-| `locale` | from project | Set locale (Accept-Language, Date format) |
-| `timezoneId` | from project | Set timezone |
-| `colorScheme` | from project | 'light' / 'dark' / 'no-preference' |
-| `permissions` | from project | Granted permissions |
-| `extraHTTPHeaders` | from project | Headers on all requests |
-| `httpCredentials` | from project | HTTP Basic Auth |
-| `storageState` | from project | Pre-authenticated state file |
-| `userAgent` | from project | Browser user agent |
-| `baseURL` | from project | URL prefix for navigations |
+| Option             | Default      | What it does                              |
+| ------------------ | ------------ | ----------------------------------------- |
+| `viewport`         | from project | Set the viewport for this scope           |
+| `geolocation`      | from project | Set geolocation                           |
+| `locale`           | from project | Set locale (Accept-Language, Date format) |
+| `timezoneId`       | from project | Set timezone                              |
+| `colorScheme`      | from project | 'light' / 'dark' / 'no-preference'        |
+| `permissions`      | from project | Granted permissions                       |
+| `extraHTTPHeaders` | from project | Headers on all requests                   |
+| `httpCredentials`  | from project | HTTP Basic Auth                           |
+| `storageState`     | from project | Pre-authenticated state file              |
+| `userAgent`        | from project | Browser user agent                        |
+| `baseURL`          | from project | URL prefix for navigations                |
 
 Example:
 
 ```typescript
-test.describe('Italian locale tests', () => {
-  test.use({ locale: 'it-IT', timezoneId: 'Europe/Rome' });
-  test('date renders in Italian', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('.today')).toContainText('mercoledì');
+test.describe("Italian locale tests", () => {
+  test.use({ locale: "it-IT", timezoneId: "Europe/Rome" });
+  test("date renders in Italian", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".today")).toContainText("mercoledì");
   });
 });
 ```
@@ -775,6 +813,7 @@ test('shared', async ({ B, C, A }) => {
 ```
 
 Output (one run):
+
 ```
 A setup
 B uses A.value 0.4239...
@@ -808,13 +847,13 @@ This is sometimes preferable to feature flags inside tests — keeps test bodies
 
 ```typescript
 interface MyFixtures {
-  accountRole: 'standard' | 'admin' | 'read-only';   // the option
-  testAccount: TestAccount;                           // the actual fixture
+  accountRole: "standard" | "admin" | "read-only"; // the option
+  testAccount: TestAccount; // the actual fixture
 }
 
 const test = base.extend<MyFixtures>({
   // Option with a default value
-  accountRole: ['standard', { option: true }],
+  accountRole: ["standard", { option: true }],
 
   // Setup fixture that reads the option
   testAccount: async ({ accountRole }, use) => {
@@ -830,23 +869,23 @@ const test = base.extend<MyFixtures>({
 Default value applies if nothing overrides:
 
 ```typescript
-test('default role', async ({ testAccount }) => {
-  expect(testAccount.role).toBe('standard');
+test("default role", async ({ testAccount }) => {
+  expect(testAccount.role).toBe("standard");
 });
 ```
 
 Override for one describe block:
 
 ```typescript
-test.describe('admin tests', () => {
-  test.use({ accountRole: 'admin' });   // applies to every test below
+test.describe("admin tests", () => {
+  test.use({ accountRole: "admin" }); // applies to every test below
 
-  test('admin sees all records', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('admin');
+  test("admin sees all records", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("admin");
   });
 
-  test('admin can delete', async ({ testAccount }) => {
-    expect(testAccount.role).toBe('admin');
+  test("admin can delete", async ({ testAccount }) => {
+    expect(testAccount.role).toBe("admin");
   });
 });
 ```
@@ -854,35 +893,35 @@ test.describe('admin tests', () => {
 Override for one test:
 
 ```typescript
-test.use({ accountRole: 'read-only' });
+test.use({ accountRole: "read-only" });
 
-test('read-only user cannot edit', async ({ testAccount }) => {
-  expect(testAccount.role).toBe('read-only');
+test("read-only user cannot edit", async ({ testAccount }) => {
+  expect(testAccount.role).toBe("read-only");
 });
 ```
 
 ### 10.3 Options vs fixtures — the difference
 
-| | Fixture | Option |
-|---|---|---|
-| Default declared as | Function | Plain value |
-| Has setup/teardown | Yes | No |
-| Overridable per test | No | Yes |
-| Used by other fixtures | Yes | Yes (as a dependency) |
-| Default is a function | OK | The function itself becomes the default value |
+|                        | Fixture  | Option                                        |
+| ---------------------- | -------- | --------------------------------------------- |
+| Default declared as    | Function | Plain value                                   |
+| Has setup/teardown     | Yes      | No                                            |
+| Overridable per test   | No       | Yes                                           |
+| Used by other fixtures | Yes      | Yes (as a dependency)                         |
+| Default is a function  | OK       | The function itself becomes the default value |
 
 ### 10.4 Multi-option compositions
 
 ```typescript
 interface ExtendedFixtures {
-  accountRole: 'standard' | 'admin';
-  accountRegion: 'US' | 'EU' | 'APAC';
+  accountRole: "standard" | "admin";
+  accountRegion: "US" | "EU" | "APAC";
   testAccount: TestAccount;
 }
 
 const test = base.extend<ExtendedFixtures>({
-  accountRole:   ['standard',  { option: true }],
-  accountRegion: ['US',        { option: true }],
+  accountRole: ["standard", { option: true }],
+  accountRegion: ["US", { option: true }],
 
   testAccount: async ({ accountRole, accountRegion }, use) => {
     const account = await createRegionalUser(accountRole, accountRegion);
@@ -891,9 +930,11 @@ const test = base.extend<ExtendedFixtures>({
   },
 });
 
-test.describe('EU admin smoke', () => {
-  test.use({ accountRole: 'admin', accountRegion: 'EU' });
-  test('EU admin sees EU orders', async ({ testAccount }) => { /* ... */ });
+test.describe("EU admin smoke", () => {
+  test.use({ accountRole: "admin", accountRegion: "EU" });
+  test("EU admin sees EU orders", async ({ testAccount }) => {
+    /* ... */
+  });
 });
 ```
 
@@ -942,11 +983,11 @@ When the flag rolls out, every test using `dashboardPage` automatically uses the
 
 ### 11.1 Scope of `test.use`
 
-| Where `test.use({})` appears | Affects |
-|---|---|
-| Top of a file (outside any describe) | Every test in this file |
-| Inside `test.describe(...)` | Every test in that describe block |
-| Multiple `test.use` calls | Merged — later wins on conflict |
+| Where `test.use({})` appears         | Affects                           |
+| ------------------------------------ | --------------------------------- |
+| Top of a file (outside any describe) | Every test in this file           |
+| Inside `test.describe(...)`          | Every test in that describe block |
+| Multiple `test.use` calls            | Merged — later wins on conflict   |
 
 ### 11.2 What can be overridden
 
@@ -955,12 +996,12 @@ Any option fixture (built-in or custom). Common built-ins:
 ```typescript
 test.use({
   viewport: { width: 800, height: 600 },
-  locale: 'de-DE',
-  timezoneId: 'Europe/Berlin',
-  permissions: ['clipboard-read', 'clipboard-write'],
+  locale: "de-DE",
+  timezoneId: "Europe/Berlin",
+  permissions: ["clipboard-read", "clipboard-write"],
   geolocation: { latitude: 52.52, longitude: 13.41 },
-  storageState: 'auth-states/user.json',
-  baseURL: 'https://api.example.com',
+  storageState: "auth-states/user.json",
+  baseURL: "https://api.example.com",
 });
 ```
 
@@ -978,7 +1019,7 @@ Only fixtures declared with `{ option: true }` (or built-in option fixtures) acc
 ### 11.4 Combining `test.use` with conditional logic
 
 ```typescript
-test.use({ accountRole: process.env.ADMIN_MODE ? 'admin' : 'standard' });
+test.use({ accountRole: process.env.ADMIN_MODE ? "admin" : "standard" });
 ```
 
 `test.use` accepts any value, including computed ones. Evaluated when the test file loads.
@@ -992,19 +1033,21 @@ test.use({ accountRole: process.env.ADMIN_MODE ? 'admin' : 'standard' });
 ### 12.1 Use case — global logging
 
 ```typescript
-logger: [async ({}, use, testInfo) => {
-  const start = Date.now();
-  console.log(`[start] ${testInfo.title}`);
-  await use(undefined);
-  const ms = Date.now() - start;
-  console.log(`[end] ${testInfo.title} (${ms}ms)`);
-}, { auto: true }],
-
-// Now EVERY test logs start/end automatically — no need to mention `logger`.
-test('any test', async ({ page }) => {
-  await page.goto('/');
-  // Test doesn't reference logger, but logger runs anyway.
-});
+logger: ([
+  async ({}, use, testInfo) => {
+    const start = Date.now();
+    console.log(`[start] ${testInfo.title}`);
+    await use(undefined);
+    const ms = Date.now() - start;
+    console.log(`[end] ${testInfo.title} (${ms}ms)`);
+  },
+  { auto: true },
+],
+  // Now EVERY test logs start/end automatically — no need to mention `logger`.
+  test("any test", async ({ page }) => {
+    await page.goto("/");
+    // Test doesn't reference logger, but logger runs anyway.
+  }));
 ```
 
 ### 12.2 Use case — failure capture
@@ -1081,10 +1124,10 @@ You can replace a built-in fixture with your own implementation.
 const test = base.extend({
   page: async ({ page }, use) => {
     // Pre-navigation
-    await page.goto('/login');
-    await page.fill('#user', 'admin');
-    await page.fill('#pass', 'admin');
-    await page.click('#submit');
+    await page.goto("/login");
+    await page.fill("#user", "admin");
+    await page.fill("#pass", "admin");
+    await page.click("#submit");
     await page.waitForURL(/dashboard/);
 
     // Inject the now-authenticated page
@@ -1092,7 +1135,7 @@ const test = base.extend({
   },
 });
 
-test('test sees authenticated page', async ({ page }) => {
+test("test sees authenticated page", async ({ page }) => {
   // page is already on dashboard
   await expect(page).toHaveURL(/dashboard/);
 });
@@ -1103,7 +1146,9 @@ test('test sees authenticated page', async ({ page }) => {
 ```typescript
 const test = base.extend({
   context: async ({ context }, use) => {
-    await context.addCookies([{ name: 'preferences', value: 'theme=dark', url: process.env.APP_URL! }]);
+    await context.addCookies([
+      { name: "preferences", value: "theme=dark", url: process.env.APP_URL! },
+    ]);
     await use(context);
   },
 });
@@ -1116,7 +1161,7 @@ const test = base.extend({
   request: async ({ playwright }, use) => {
     const ctx = await playwright.request.newContext({
       baseURL: process.env.API_URL,
-      extraHTTPHeaders: { 'x-trace-id': randomUUID() },
+      extraHTTPHeaders: { "x-trace-id": randomUUID() },
     });
     await use(ctx);
     await ctx.dispose();
@@ -1129,7 +1174,9 @@ const test = base.extend({
 When overriding a built-in, you can reference it in the destructured deps:
 
 ```typescript
-page: async ({ page }, use) => { /* receives the original built-in page */ }
+page: async ({ page }, use) => {
+  /* receives the original built-in page */
+};
 ```
 
 Playwright resolves the inner `page` to the built-in, then your override wraps it. This is how you EXTEND built-ins rather than replace them entirely.
@@ -1144,10 +1191,10 @@ The cleanest way to eliminate per-test setup boilerplate.
 
 ```typescript
 // fixtures/page.fixture.ts
-import { test as base } from '@playwright/test';
-import { LoginPage } from '../websites/orangehrm/pages/LoginPage';
-import { DashboardPage } from '../websites/orangehrm/pages/DashboardPage';
-import { AdminPage } from '../websites/orangehrm/pages/AdminPage';
+import { test as base } from "@playwright/test";
+import { LoginPage } from "../websites/orangehrm/pages/LoginPage";
+import { DashboardPage } from "../websites/orangehrm/pages/DashboardPage";
+import { AdminPage } from "../websites/orangehrm/pages/AdminPage";
 
 interface Pages {
   loginPage: LoginPage;
@@ -1156,22 +1203,28 @@ interface Pages {
 }
 
 export const test = base.extend<Pages>({
-  loginPage:     async ({ page }, use) => { await use(new LoginPage(page)); },
-  dashboardPage: async ({ page }, use) => { await use(new DashboardPage(page)); },
-  adminPage:     async ({ page }, use) => { await use(new AdminPage(page)); },
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  },
+  dashboardPage: async ({ page }, use) => {
+    await use(new DashboardPage(page));
+  },
+  adminPage: async ({ page }, use) => {
+    await use(new AdminPage(page));
+  },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 14.2 Tests then read cleanly
 
 ```typescript
-import { test, expect } from '../../fixtures/page.fixture';
+import { test, expect } from "../../fixtures/page.fixture";
 
-test('login flow', async ({ loginPage, dashboardPage }) => {
+test("login flow", async ({ loginPage, dashboardPage }) => {
   await loginPage.goto();
-  await loginPage.login('Admin', 'admin123');
+  await loginPage.login("Admin", "admin123");
   await expect(dashboardPage.welcomeBanner).toBeVisible();
 });
 ```
@@ -1185,18 +1238,23 @@ POM construction is cheap (no DOM queries). Creating a POM for every test, even 
 For very large POM trees (50+ pages), you might want to construct lazily:
 
 ```typescript
-pages: async ({ page }, use) => {
+pages: (async ({ page }, use) => {
   const lazy = {
-    get login() { return new LoginPage(page); },
-    get dashboard() { return new DashboardPage(page); },
-    get admin() { return new AdminPage(page); },
+    get login() {
+      return new LoginPage(page);
+    },
+    get dashboard() {
+      return new DashboardPage(page);
+    },
+    get admin() {
+      return new AdminPage(page);
+    },
   };
   await use(lazy);
 },
-
-test('uses login', async ({ pages }) => {
-  await pages.login.goto();   // LoginPage instantiated here
-});
+  test("uses login", async ({ pages }) => {
+    await pages.login.goto(); // LoginPage instantiated here
+  }));
 ```
 
 The getter-based approach means only the POMs the test references get constructed.
@@ -1207,18 +1265,22 @@ For tests that need different auth states:
 
 ```typescript
 interface AuthPages {
-  page: Page;              // override of built-in
+  page: Page; // override of built-in
   adminPage: AdminPage;
 }
 
 const test = base.extend<AuthPages>({
   page: async ({ browser }, use) => {
-    const ctx = await browser.newContext({ storageState: 'auth-states/admin.json' });
+    const ctx = await browser.newContext({
+      storageState: "auth-states/admin.json",
+    });
     const page = await ctx.newPage();
     await use(page);
     await ctx.close();
   },
-  adminPage: async ({ page }, use) => { await use(new AdminPage(page)); },
+  adminPage: async ({ page }, use) => {
+    await use(new AdminPage(page));
+  },
 });
 ```
 
@@ -1248,21 +1310,21 @@ auth.fixture.ts (worker-scoped):
 
 ```typescript
 // fixtures/auth.fixture.ts
-import { test as base } from '@playwright/test';
-import lockfile from 'proper-lockfile';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
+import { test as base } from "@playwright/test";
+import lockfile from "proper-lockfile";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 
 interface Account {
   username: string;
   password: string;
 }
 
-const POOL_PATH = path.resolve('test-data/accounts.json');
-const LOCK_PATH = path.resolve('test-data/accounts.lock');
+const POOL_PATH = path.resolve("test-data/accounts.json");
+const LOCK_PATH = path.resolve("test-data/accounts.lock");
 
 async function readPool(): Promise<Account[]> {
-  const raw = await fs.readFile(POOL_PATH, 'utf8');
+  const raw = await fs.readFile(POOL_PATH, "utf8");
   return JSON.parse(raw);
 }
 
@@ -1275,7 +1337,7 @@ async function claimAccount(): Promise<Account> {
   try {
     const pool = await readPool();
     const claimed = pool.shift();
-    if (!claimed) throw new Error('Account pool exhausted');
+    if (!claimed) throw new Error("Account pool exhausted");
     await writePool(pool);
     return claimed;
   } finally {
@@ -1295,11 +1357,14 @@ async function returnAccount(account: Account): Promise<void> {
 }
 
 export const test = base.extend<NonNullable<unknown>, { account: Account }>({
-  account: [async ({}, use) => {
-    const account = await claimAccount();
-    await use(account);
-    await returnAccount(account);
-  }, { scope: 'worker' }],
+  account: [
+    async ({}, use) => {
+      const account = await claimAccount();
+      await use(account);
+      await returnAccount(account);
+    },
+    { scope: "worker" },
+  ],
 });
 ```
 
@@ -1313,12 +1378,12 @@ Rule of thumb: `accounts = workers + (safety margin of 1)`. For 4 workers, ship 
 
 Workers are separate Node processes. They cannot share JS memory. Options:
 
-| Strategy | Cross-process | Robust to worker crash |
-|---|---|---|
-| `Mutex` / `Semaphore` in JS | ❌ Per-process only | N/A |
-| Redis lock | ✅ Yes | ✅ TTL on lock |
-| File lock (`proper-lockfile`) | ✅ Yes | ✅ Stale lock removal |
-| OS file lock (`flock`) | ✅ Yes | ✅ Removed on process exit |
+| Strategy                      | Cross-process       | Robust to worker crash     |
+| ----------------------------- | ------------------- | -------------------------- |
+| `Mutex` / `Semaphore` in JS   | ❌ Per-process only | N/A                        |
+| Redis lock                    | ✅ Yes              | ✅ TTL on lock             |
+| File lock (`proper-lockfile`) | ✅ Yes              | ✅ Stale lock removal      |
+| OS file lock (`flock`)        | ✅ Yes              | ✅ Removed on process exit |
 
 `proper-lockfile` is the standard for Node — lightweight, no external service, handles stale locks.
 
@@ -1329,8 +1394,8 @@ If a worker crashes while holding the lock:
 ```typescript
 await lockfile.lock(LOCK_PATH, {
   retries: 50,
-  stale: 30_000,           // consider lock stale after 30 s
-  realpath: false,         // don't follow symlinks (security)
+  stale: 30_000, // consider lock stale after 30 s
+  realpath: false, // don't follow symlinks (security)
 });
 ```
 
@@ -1339,11 +1404,13 @@ Stale locks are auto-removed. The other waiting workers then claim them.
 ### 15.6 Why worker scope, not test scope
 
 Test scope:
+
 - 100 tests × 4 workers = 400 lock/unlock cycles.
 - Each cycle is ~10–50 ms.
 - Total: ~10 seconds wasted on file locking.
 
 Worker scope:
+
 - 4 workers × 1 claim each = 4 cycles.
 - Total: ~100 ms wasted.
 
@@ -1360,13 +1427,18 @@ The fixture pattern for HTTP clients (the framework's `APIUtils`, custom clients
 ### 16.1 Basic API client fixture
 
 ```typescript
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 class CitationsApiClient {
-  constructor(private readonly request: APIRequestContext, private readonly baseURL: string) {}
+  constructor(
+    private readonly request: APIRequestContext,
+    private readonly baseURL: string,
+  ) {}
 
   async create(payload: CreateCitation): Promise<Citation> {
-    const response = await this.request.post(`${this.baseURL}/citations`, { data: payload });
+    const response = await this.request.post(`${this.baseURL}/citations`, {
+      data: payload,
+    });
     return response.json();
   }
   // ... more methods
@@ -1385,16 +1457,23 @@ export const test = base.extend<{ citationsClient: CitationsApiClient }>({
 
 ```typescript
 const test = base.extend<{}, { authToken: string }>({
-  authToken: [async ({}, use) => {
-    const token = await fetchToken();
-    await use(token);
-    await revokeToken(token);
-  }, { scope: 'worker' }],
+  authToken: [
+    async ({}, use) => {
+      const token = await fetchToken();
+      await use(token);
+      await revokeToken(token);
+    },
+    { scope: "worker" },
+  ],
 });
 
 const testWithApi = test.extend<{ citationsClient: CitationsApiClient }>({
   citationsClient: async ({ request, authToken }, use) => {
-    const client = new CitationsApiClient(request, process.env.API_URL!, authToken);
+    const client = new CitationsApiClient(
+      request,
+      process.env.API_URL!,
+      authToken,
+    );
     await use(client);
   },
 });
@@ -1410,9 +1489,9 @@ The "create a test record, use it, delete it" pattern:
 const test = baseWithApi.extend<{ testCitation: Citation }>({
   testCitation: async ({ citationsClient }, use) => {
     const citation = await citationsClient.create({
-      status: 'PENDING',
+      status: "PENDING",
       amount: 150,
-      testFlag: true,                // marks as synthetic
+      testFlag: true, // marks as synthetic
     });
 
     await use(citation);
@@ -1425,7 +1504,7 @@ const test = baseWithApi.extend<{ testCitation: Citation }>({
   },
 });
 
-test('citation can be paid', async ({ testCitation, citationsClient }) => {
+test("citation can be paid", async ({ testCitation, citationsClient }) => {
   await citationsClient.pay(testCitation.id, { amount: 150 });
   // Cleanup runs even if pay() throws
 });
@@ -1439,20 +1518,21 @@ The `testFlag: true` marks the record as synthetic so a nightly cleanup job can 
 
 ### 17.1 Fixture setup cost
 
-| Fixture type | Typical cost |
-|---|---|
-| POM construction (`new LoginPage(page)`) | ~0.1 ms |
-| API client instantiation | ~0.1 ms |
-| HTTP token fetch | 100–2000 ms |
-| DB connection | 50–200 ms |
-| Account claim (file lock + JSON I/O) | 5–50 ms |
-| `storageState` load + new context | 30–100 ms |
-| browser launch (worker fixture) | 500–2000 ms |
-| File-based test data load | 10–100 ms |
+| Fixture type                             | Typical cost |
+| ---------------------------------------- | ------------ |
+| POM construction (`new LoginPage(page)`) | ~0.1 ms      |
+| API client instantiation                 | ~0.1 ms      |
+| HTTP token fetch                         | 100–2000 ms  |
+| DB connection                            | 50–200 ms    |
+| Account claim (file lock + JSON I/O)     | 5–50 ms      |
+| `storageState` load + new context        | 30–100 ms    |
+| browser launch (worker fixture)          | 500–2000 ms  |
+| File-based test data load                | 10–100 ms    |
 
 ### 17.2 When fixture cost dominates
 
 For a 1-second test with a 3-second setup fixture:
+
 - Test scope: 4 s × 40 tests = 160 s.
 - Worker scope (4 workers): 4 × 3 + 40 × 1 = 52 s.
 
@@ -1462,12 +1542,12 @@ Worker scoping saves 100+ seconds for a small suite. For large suites the saving
 
 Each fixture holds its value until teardown. For worker-scoped fixtures, the value lives in worker memory for the whole run:
 
-| Fixture | Held memory |
-|---|---|
-| String token (worker) | ~100 bytes |
-| Database connection pool (worker) | ~10–50 MB |
-| Browser context (worker, custom) | ~150–300 MB |
-| Test data array (worker) | depends on data |
+| Fixture                           | Held memory     |
+| --------------------------------- | --------------- |
+| String token (worker)             | ~100 bytes      |
+| Database connection pool (worker) | ~10–50 MB       |
+| Browser context (worker, custom)  | ~150–300 MB     |
+| Test data array (worker)          | depends on data |
 
 Worker memory is shared across all tests in that worker. A 10 MB test-data fixture in worker scope adds 10 MB × workers to total memory. With `workers: 8`, that's 80 MB total — usually fine. With `workers: 16` and a 100 MB fixture, OOM risk.
 
@@ -1496,7 +1576,7 @@ The expensive resource is only created when first accessed. Saves cost for tests
 Worker scope already gives you intra-worker sharing. For more granular sharing (e.g., a per-describe pool), use `test.beforeAll` instead:
 
 ```typescript
-test.describe('related tests', () => {
+test.describe("related tests", () => {
   let shared: SharedResource;
 
   test.beforeAll(async () => {
@@ -1507,8 +1587,12 @@ test.describe('related tests', () => {
     await destroyShared(shared);
   });
 
-  test('uses shared 1', async () => { /* ... */ });
-  test('uses shared 2', async () => { /* ... */ });
+  test("uses shared 1", async () => {
+    /* ... */
+  });
+  test("uses shared 2", async () => {
+    /* ... */
+  });
 });
 ```
 
@@ -1528,6 +1612,7 @@ myFixture: async ({}, use) => {
 ```
 
 Output:
+
 ```
 Error: Failed to initialize fixture "myFixture"
   at: createOrThrow ...
@@ -1669,13 +1754,18 @@ The UUID lets you correlate logs across parallel test runs.
 **Cause:** Fixture is using a captured value from before `test.use` runs — common when the fixture is defined in another file with its own `accountRole` import.
 
 **Fix:** Always read options from the fixture's destructured arg, not from imports:
+
 ```typescript
 // ❌
 const role = importedRole;
-testAccount: async ({}, use) => { use(await create(role)); }
+testAccount: async ({}, use) => {
+  use(await create(role));
+};
 
 // ✅
-testAccount: async ({ accountRole }, use) => { use(await create(accountRole)); }
+testAccount: async ({ accountRole }, use) => {
+  use(await create(accountRole));
+};
 ```
 
 ### Failure 7 — `auto: true` fixture not running
@@ -1701,9 +1791,11 @@ testAccount: async ({ accountRole }, use) => { use(await create(accountRole)); }
 **Cause:** Fixture setup or teardown takes longer than the test timeout.
 
 **Fix:** Either increase fixture timeout:
+
 ```typescript
 myFixture: [async ({}, use) => { /* ... */ }, { timeout: 60_000 }],
 ```
+
 Or speed up the fixture (move to worker scope, use cached values, etc.).
 
 ### Failure 10 — Worker fixture not torn down on Ctrl+C
@@ -1713,11 +1805,13 @@ Or speed up the fixture (move to worker scope, use cached values, etc.).
 **Cause:** Worker fixtures only tear down on graceful shutdown. SIGINT may bypass.
 
 **Fix:** Register process exit handlers:
+
 ```typescript
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   // teardown logic
 });
 ```
+
 Plus a nightly cleanup job for orphaned resources.
 
 ---
@@ -1726,25 +1820,25 @@ Plus a nightly cleanup job for orphaned resources.
 
 ### 20.1 Playwright vs pytest
 
-| Aspect | Playwright `test.extend` | pytest fixtures |
-|---|---|---|
-| Scope | `test` / `worker` | `function` / `class` / `module` / `session` |
-| Definition | Function in fixture file | `@pytest.fixture` decorator |
-| Injection | Destructured first arg | Function parameter name |
-| Teardown | After `use()` | `yield` then post-yield code |
-| Parametrise | `{ option: true }` + `test.use` | `@pytest.mark.parametrize` |
-| Conditional | `test.skip()` inside fixture | `pytest.skip()` |
+| Aspect      | Playwright `test.extend`        | pytest fixtures                             |
+| ----------- | ------------------------------- | ------------------------------------------- |
+| Scope       | `test` / `worker`               | `function` / `class` / `module` / `session` |
+| Definition  | Function in fixture file        | `@pytest.fixture` decorator                 |
+| Injection   | Destructured first arg          | Function parameter name                     |
+| Teardown    | After `use()`                   | `yield` then post-yield code                |
+| Parametrise | `{ option: true }` + `test.use` | `@pytest.mark.parametrize`                  |
+| Conditional | `test.skip()` inside fixture    | `pytest.skip()`                             |
 
 Both are excellent DI systems. pytest has 4 scopes vs Playwright's 2 — finer control. Playwright's option pattern is cleaner for runtime parametrisation.
 
 ### 20.2 Playwright vs JUnit 5
 
-| Aspect | Playwright | JUnit 5 |
-|---|---|---|
-| Setup/teardown | Fixture body | `@BeforeEach`, `@AfterEach`, `@BeforeAll`, `@AfterAll` |
-| Sharing across tests | Worker fixtures | `@TestInstance(Lifecycle.PER_CLASS)` |
-| Parametrise | Options pattern | `@ParameterizedTest`, `@MethodSource` |
-| DI | Fixture system | `@RegisterExtension`, Guice integrations |
+| Aspect               | Playwright      | JUnit 5                                                |
+| -------------------- | --------------- | ------------------------------------------------------ |
+| Setup/teardown       | Fixture body    | `@BeforeEach`, `@AfterEach`, `@BeforeAll`, `@AfterAll` |
+| Sharing across tests | Worker fixtures | `@TestInstance(Lifecycle.PER_CLASS)`                   |
+| Parametrise          | Options pattern | `@ParameterizedTest`, `@MethodSource`                  |
+| DI                   | Fixture system  | `@RegisterExtension`, Guice integrations               |
 
 JUnit's hook system is older and more explicit but verbose. Playwright's fixture system trades verbosity for type safety and composability.
 
@@ -1766,26 +1860,26 @@ WebdriverIO has hooks (`before`, `beforeEach`, `after`, `afterEach`) and a "serv
 
 ## 21. Anti-pattern catalog
 
-| ❌ Anti-pattern | ✅ Fix |
-|---|---|
-| `import { test } from '@playwright/test'` in test files | Import from your fixtures barrel |
-| Worker fixture depends on test fixture | Match scopes |
-| Mutable state in worker fixture | Use test scope for mutable state |
-| `await use()` forgotten | Always call exactly once |
-| Multiple `await use()` calls | Each fixture yields exactly once |
-| `try/catch` swallowing teardown errors silently | Log warnings; rethrow if test failed |
-| Worker fixture for per-test data | Per-test data must be test-scoped |
-| Test-scoped DB connection for every test | Worker-scoped connection pool |
-| `let myFixture` declared in spec, manually set in beforeEach | Use the fixture system |
-| Hardcoded values inside fixture | Use options + `test.use` |
-| 50-line fixture body | Extract helpers; fixtures should be thin |
-| Fixture depends on too many things (8+ params) | Group related fixtures into a single composite |
-| Fixture that ALSO runs assertions | Fixtures set up; tests assert |
-| Fixture mutates `process.env` | Only `globalSetup` should mutate env |
-| `console.log` in production fixture | Use `testInfo.attach()` or the logger pattern |
-| Loading 50 MB JSON per test | Cache in worker scope; load once |
-| File I/O in test fixture without lock | Use `proper-lockfile` for shared state |
-| Fixture returns `undefined` then test checks `if (x)` | Use `test.skip()` to actually skip |
+| ❌ Anti-pattern                                              | ✅ Fix                                         |
+| ------------------------------------------------------------ | ---------------------------------------------- |
+| `import { test } from '@playwright/test'` in test files      | Import from your fixtures barrel               |
+| Worker fixture depends on test fixture                       | Match scopes                                   |
+| Mutable state in worker fixture                              | Use test scope for mutable state               |
+| `await use()` forgotten                                      | Always call exactly once                       |
+| Multiple `await use()` calls                                 | Each fixture yields exactly once               |
+| `try/catch` swallowing teardown errors silently              | Log warnings; rethrow if test failed           |
+| Worker fixture for per-test data                             | Per-test data must be test-scoped              |
+| Test-scoped DB connection for every test                     | Worker-scoped connection pool                  |
+| `let myFixture` declared in spec, manually set in beforeEach | Use the fixture system                         |
+| Hardcoded values inside fixture                              | Use options + `test.use`                       |
+| 50-line fixture body                                         | Extract helpers; fixtures should be thin       |
+| Fixture depends on too many things (8+ params)               | Group related fixtures into a single composite |
+| Fixture that ALSO runs assertions                            | Fixtures set up; tests assert                  |
+| Fixture mutates `process.env`                                | Only `globalSetup` should mutate env           |
+| `console.log` in production fixture                          | Use `testInfo.attach()` or the logger pattern  |
+| Loading 50 MB JSON per test                                  | Cache in worker scope; load once               |
+| File I/O in test fixture without lock                        | Use `proper-lockfile` for shared state         |
+| Fixture returns `undefined` then test checks `if (x)`        | Use `test.skip()` to actually skip             |
 
 ---
 

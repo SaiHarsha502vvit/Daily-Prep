@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { api, OwnerList } from '../../api';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { api, OwnerList } from "../../api";
 
 export default function OwnersPage() {
   const [data, setData] = useState<OwnerList | null>(null);
@@ -20,7 +20,13 @@ export default function OwnersPage() {
       <div className="header">
         <div>
           <h1>Test Owners</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          <p
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "0.875rem",
+              marginTop: "0.25rem",
+            }}
+          >
             Browse tests by owner
           </p>
         </div>
@@ -36,7 +42,10 @@ export default function OwnersPage() {
       {!loading && !error && data && (
         <>
           {data.owners.length === 0 ? (
-            <div className="empty">No owner data available. Add an `owner` field to your test results.</div>
+            <div className="empty">
+              No owner data available. Add an `owner` field to your test
+              results.
+            </div>
           ) : (
             <div className="section">
               <div className="owner-list">
@@ -46,7 +55,10 @@ export default function OwnersPage() {
                     href={`/owner/${encodeURIComponent(o.name)}`}
                     className="owner-badge"
                   >
-                    {o.name} <span style={{ color: 'var(--text-muted)' }}>({o.testCount})</span>
+                    {o.name}{" "}
+                    <span style={{ color: "var(--text-muted)" }}>
+                      ({o.testCount})
+                    </span>
                   </Link>
                 ))}
               </div>

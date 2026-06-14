@@ -1,18 +1,21 @@
 # Day 13 - Graphs, DFS/BFS, and Union-Find (Reasoning-First Notes)
 
 ## Daily Problem Set
+
 1. LeetCode Premium: 323 - Number of Connected Components in an Undirected Graph
 2. LeetCode Medium: 200 - Number of Islands
 3. Codeforces: 510B - Fox And Two Dots
 4. Codeforces: 277A - Learning Languages
 
 ## Problem Links
+
 - LC 323 (Premium): Locked on LeetCode (no public official statement page)
 - LC 200: https://leetcode.com/problems/number-of-islands/
 - CF 510B: https://codeforces.com/problemset/problem/510/B
 - CF 277A: https://codeforces.com/problemset/problem/277/A
 
 ## Why This Day Matters
+
 Graph questions are often connectivity questions in disguise.
 
 ---
@@ -20,9 +23,11 @@ Graph questions are often connectivity questions in disguise.
 ## Problem 1 - LC 323 (Premium)
 
 ### Problem Statement
+
 Given `n` nodes and undirected edges, return number of connected components.
 
 ### Why This DS/Algo
+
 Connectivity can be solved by DFS/BFS traversal or DSU union operations.
 
 ### Approach A - Brute Force adjacency matrix DFS (O(n^2), O(n^2))
@@ -91,9 +96,11 @@ static int componentsOptimal(int n, int[][] edges) {
 ## Problem 2 - LC 200: Number of Islands
 
 ### Problem Statement
+
 Count connected components of `'1'` in grid using 4-direction adjacency.
 
 ### Why This DS/Algo
+
 Grid is an implicit graph. DFS/BFS flood fill marks each island once.
 
 ### Approach A - Brute Force repeated scans without marking (wasteful)
@@ -122,6 +129,7 @@ static void sink(char[][] g, int i, int j) {
 ```
 
 ### Approach C - Optimal (Iterative BFS flood fill) (O(mn), O(min(m,n)))
+
 Avoids recursion depth issues.
 
 ---
@@ -129,13 +137,16 @@ Avoids recursion depth issues.
 ## Problem 3 - CF 510B: Fox And Two Dots
 
 ### Problem Statement
+
 Detect cycle of same character in grid (cycle length >= 4).
 
 ### Why This DS/Algo
+
 Need cycle detection in undirected grid graph with color constraint.
 DFS with parent tracking is standard.
 
 ### Approach A - Brute Force start from each cell with full path memory
+
 Expensive.
 
 ### Approach B - Better (DFS + parent check) (O(mn), O(mn))
@@ -167,6 +178,7 @@ static boolean dfs(char[][] a, int x, int y, int px, int py, char ch, boolean[][
 ```
 
 ### Approach C - Optimal
+
 DFS parent-cycle check is asymptotically optimal.
 
 ---
@@ -174,9 +186,11 @@ DFS parent-cycle check is asymptotically optimal.
 ## Problem 4 - CF 277A: Learning Languages
 
 ### Problem Statement
+
 People know sets of languages. Two people are connected if they share language directly/indirectly. Minimum lessons needed so everyone can communicate.
 
 ### Why This DS/Algo
+
 Bipartite-like connectivity between people and language groups.
 DSU over people handles transitive communication quickly.
 
@@ -210,5 +224,6 @@ static int languagesOptimal(List<List<Integer>> knows, int maxLang) {
 ```
 
 ### Pattern Takeaways
+
 - Choose DFS/BFS when graph is explicit.
 - Choose DSU when operations are repeated connectivity unions.

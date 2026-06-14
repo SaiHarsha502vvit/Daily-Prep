@@ -26,15 +26,14 @@
 > | **ALGO: Heap Sort** | [Sorting Advanced](../../03_Algorithms/02b_Sorting_Advanced.md) |
 > | **SQL: Window Functions (Running SUM, LAG, LEAD)** | [SQL: Window Functions](../../08_SQL/09_Window_Functions.md) |
 >
-> *Open the linked file for full theory, diagrams, and practice problems.*
+> _Open the linked file for full theory, diagrams, and practice problems._
 
 ---
-
-
 
 ## 1. DS DEEP DIVE: Heap / Priority Queue (30 min)
 
 ### WHY?
+
 When you need "give me the largest/smallest element quickly" — heap is the answer. Used in task schedulers (OS), Dijkstra's algorithm, median finding, event-driven simulations. Java's `PriorityQueue` is a min-heap.
 
 ### WHAT — Heap Properties
@@ -67,19 +66,19 @@ PARENT/CHILD FORMULAS (0-indexed):
 class MinHeap {
     int[] heap;
     int size;
-    
+
     MinHeap(int capacity) {
         heap = new int[capacity];
         size = 0;
     }
-    
+
     // INSERT: Add at end, bubble UP — O(log n)
     void insert(int val) {
         heap[size] = val;
         siftUp(size);
         size++;
     }
-    
+
     private void siftUp(int i) {
         while (i > 0) {
             int parent = (i - 1) / 2;
@@ -89,7 +88,7 @@ class MinHeap {
             } else break;
         }
     }
-    
+
     // EXTRACT MIN: Remove root, move last to root, bubble DOWN — O(log n)
     int extractMin() {
         int min = heap[0];
@@ -97,27 +96,27 @@ class MinHeap {
         siftDown(0);
         return min;
     }
-    
+
     private void siftDown(int i) {
         while (2 * i + 1 < size) {
             int smallest = i;
             int left = 2 * i + 1;
             int right = 2 * i + 2;
-            
+
             if (left < size && heap[left] < heap[smallest])
                 smallest = left;
             if (right < size && heap[right] < heap[smallest])
                 smallest = right;
-            
+
             if (smallest == i) break;
             swap(i, smallest);
             i = smallest;
         }
     }
-    
+
     // PEEK: O(1)
     int peek() { return heap[0]; }
-    
+
     private void swap(int i, int j) {
         int tmp = heap[i]; heap[i] = heap[j]; heap[j] = tmp;
     }
@@ -148,7 +147,6 @@ Step 2: Sift up — 2 < 3? Yes, swap
 Step 3: Sift up — 2 < 1? No, stop. Done!
 ```
 
-
 ### Java PriorityQueue Usage
 
 ```java
@@ -172,6 +170,7 @@ PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
 ## 2. ALGO DEEP DIVE: Heap Sort (30 min)
 
 ### WHY?
+
 Heap Sort gives O(n log n) worst-case without extra space (unlike Merge Sort's O(n)). Not used much in practice (cache-unfriendly), but understanding it deepens your heap knowledge.
 
 ### HOW — Two Phases
@@ -187,7 +186,7 @@ Array: [4, 10, 3, 5, 1]
 
 BUILD MAX-HEAP (bottom-up):
   Start at index 1 (parent of last element)
-  
+
   [4, 10, 3, 5, 1]  → sift 10: no change (children 5,1 are smaller)
   [4, 10, 3, 5, 1]  → sift 4: swap with 10
   [10, 5, 3, 4, 1]  → Max-heap built!
@@ -197,20 +196,19 @@ EXTRACT PHASE:
   Step 2: Swap 5↔1  → [1, 4, 3, | 5, 10] → sift down 1 → [4, 1, 3, | 5, 10]
   Step 3: Swap 4↔3  → [3, 1, | 4, 5, 10] → sift down 3 → [3, 1, | 4, 5, 10]
   Step 4: Swap 3↔1  → [1, | 3, 4, 5, 10] → done!
-  
+
   Result: [1, 3, 4, 5, 10] ← SORTED!
 ```
-
 
 ```java
 void heapSort(int[] arr) {
     int n = arr.length;
-    
+
     // Phase 1: Build max-heap (bottom-up, O(n))
     for (int i = n / 2 - 1; i >= 0; i--) {
         siftDown(arr, n, i);
     }
-    
+
     // Phase 2: Extract max repeatedly
     for (int i = n - 1; i > 0; i--) {
         swap(arr, 0, i);         // Move max to end
@@ -280,7 +278,6 @@ order_date | amount | prev | change | next
                        ↑ LAG              ↑ LEAD
 ```
 
-
 ### Moving Average
 
 ```sql
@@ -311,8 +308,8 @@ FROM employees;
 SELECT month, total_sales,
     LAG(total_sales) OVER (ORDER BY month) AS prev_month,
     ROUND(
-        (total_sales - LAG(total_sales) OVER (ORDER BY month)) * 100.0 
-        / LAG(total_sales) OVER (ORDER BY month), 
+        (total_sales - LAG(total_sales) OVER (ORDER BY month)) * 100.0
+        / LAG(total_sales) OVER (ORDER BY month),
     2) AS growth_pct
 FROM monthly_sales;
 ```
@@ -324,6 +321,7 @@ FROM monthly_sales;
 **Link:** https://leetcode.com/problems/kth-largest-element-in-an-array/
 
 ### Problem
+
 Find the kth largest element in an unsorted array.
 
 ### Approach: Min-Heap of size K
@@ -344,7 +342,6 @@ Process:  3 → heap=[3]        (size < k, just add)
 Answer: peek() = 5  ← 2nd largest!
 ```
 
-
 ### Solution
 
 ```java
@@ -352,7 +349,7 @@ class Solution {
     // Approach 1: Min-Heap — O(n log k) time, O(k) space
     public int findKthLargest(int[] nums, int k) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-        
+
         for (int num : nums) {
             minHeap.offer(num);
             if (minHeap.size() > k) {
@@ -361,20 +358,20 @@ class Solution {
         }
         return minHeap.peek();  // kth largest
     }
-    
+
     // Approach 2: QuickSelect — O(n) average, O(n²) worst
     public int findKthLargestQuickSelect(int[] nums, int k) {
         int target = nums.length - k; // kth largest = (n-k)th smallest
         return quickSelect(nums, 0, nums.length - 1, target);
     }
-    
+
     private int quickSelect(int[] nums, int lo, int hi, int target) {
         int pivot = partition(nums, lo, hi);
         if (pivot == target) return nums[pivot];
         if (pivot < target) return quickSelect(nums, pivot + 1, hi, target);
         return quickSelect(nums, lo, pivot - 1, target);
     }
-    
+
     private int partition(int[] nums, int lo, int hi) {
         int pivot = nums[hi], i = lo;
         for (int j = lo; j < hi; j++) {
@@ -410,7 +407,6 @@ Step 2: Min-heap by frequency, size ≤ k
 Step 3: Extract from heap → [1, 2]
 ```
 
-
 ### Solution
 
 ```java
@@ -419,14 +415,14 @@ class Solution {
         // Step 1: Count frequencies
         Map<Integer, Integer> freq = new HashMap<>();
         for (int n : nums) freq.merge(n, 1, Integer::sum);
-        
+
         // Step 2: Min-heap of size k (by frequency)
         PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> a[1] - b[1]);
         for (var entry : freq.entrySet()) {
             minHeap.offer(new int[]{entry.getKey(), entry.getValue()});
             if (minHeap.size() > k) minHeap.poll();
         }
-        
+
         // Step 3: Extract results
         int[] result = new int[k];
         for (int i = 0; i < k; i++) result[i] = minHeap.poll()[0];
@@ -448,8 +444,6 @@ HEAP IN THE REAL WORLD:
   4. Merge K Sorted Lists: Min-heap of K heads → always extract smallest
   5. Event Queue: Process earliest event first (min-heap by timestamp)
 ```
-
-
 
 ---
 

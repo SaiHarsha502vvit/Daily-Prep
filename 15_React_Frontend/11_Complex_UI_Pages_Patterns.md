@@ -16,6 +16,46 @@
 
 ---
 
+### Historical Evolution
+
+Complex UI patterns in React evolved from jQuery plugins and imperative widgets to declarative, accessible components using portals, virtualization, and modern drag-and-drop primitives.
+
+| Year | Milestone |
+|------|-----------|
+| 2008 | jQuery UI Dialog becomes the standard modal pattern (imperative, inaccessible) |
+| 2017 | React 16.0 ships Portals — declarative modal rendering outside component hierarchy |
+| 2017 | react-virtualized pioneers list virtualization; react-window (2018) and react-virtuoso (2019) follow |
+| 2020 | dnd-kit released — modern accessible drag-and-drop with hooks and sensors |
+
+Before React Portals, modals were manual DOM append operations that broke event bubbling and focus management. Portals solved this declaratively. Similarly, virtualization moved from heavy imperative scroll handlers to React-managed virtual lists, and drag-and-drop evolved from complex class-based HOCs (react-dnd) to lightweight hook-based primitives (dnd-kit).
+
+**Predecessor:** jQuery UI (2008) and jQuery plugins — imperative widget libraries that manually managed DOM, events, and state
+**Modern anchor:** Modern React apps use Portals for overlays, react-window/virtuoso for large lists, and dnd-kit for drag interactions
+
+### Production Reality
+
+| Failure Mode | Where It Bites | Mitigation |
+|--------------|---------------|------------|
+| **Key prop misuse** | Draggable lists use array index as key; item state "teleports" after reorder, corrupting form inputs inside rows | Always use unique stable IDs from data model; regenerate IDs only when creating new items, never on re-sort |
+| **Ref forward mis-attachment** | Modal focus-trap library cannot find correct focusable element because ref is on wrapper div, not input | Forward refs directly to the first focusable child element; test modals with keyboard-only navigation |
+
+Complex UI failures are user-facing disasters — a corrupted form field after drag-and-drop or a trapped focus in an inaccessible modal directly impacts accessibility compliance and user trust.
+
+---
+
+### Variant Trade-offs: Styling Approaches in React
+
+| Approach | Bundle Size | Mental Model | Best For | Trade-off |
+|----------|------------|--------------|----------|-----------|
+| **CSS Modules** | 0 KB (build-time) | Scoped CSS classes via `.module.css` | Traditional teams, design handoffs, zero-runtime cost | Still separate files; dynamic theming requires extra setup |
+| **Tailwind CSS** | ~14 KB (purged) | Utility-first atomic classes | Rapid UI development, design-system consistency, responsive layouts | Long class strings; learning curve for utility naming |
+| **Styled-Components** | ~12 KB | CSS-in-JS with tagged template literals | Dynamic theming, prop-driven styles, component libraries | Runtime cost (style injection per render); SSR hydration complexity |
+| **CSS-in-JS (Emotion)** | ~8 KB | Object-style or template CSS-in-JS | Medium dynamic styling needs, better performance than styled-components | Still runtime overhead; less popular than Tailwind in 2024+ |
+
+**Selection rule:** Choose **Tailwind** for speed of development and design-system consistency (most modern startups). Choose **CSS Modules** when you need zero runtime overhead and traditional CSS separation (enterprise, government). Choose **Styled-Components/Emotion** when dynamic prop-based theming is central to your design system (component libraries like Chakra UI). Avoid mixing multiple approaches in one codebase.
+
+---
+
 ## Table of Contents
 
 1. [Dashboard Layout — Grid + Sidebar + Charts](#1-dashboard-layout--grid--sidebar--charts)
@@ -38,12 +78,12 @@
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <div className="dashboard">
       {/* Sidebar */}
-      <aside className={`dashboard__sidebar ${sidebarOpen ? 'open' : ''}`}>
+      <aside className={`dashboard__sidebar ${sidebarOpen ? "open" : ""}`}>
         <nav className="sidebar-nav">
           <SidebarItem icon="📊" label="Overview" active />
           <SidebarItem icon="👥" label="Users" />
@@ -140,15 +180,29 @@ function Dashboard() {
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-.stat-card__value { font-size: 2rem; font-weight: 700; }
-.stat-card__change--positive { color: #22c55e; }
-.stat-card__change--negative { color: #ef4444; }
+.stat-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.stat-card__change--positive {
+  color: #22c55e;
+}
+.stat-card__change--negative {
+  color: #ef4444;
+}
 
 /* Mobile: Stack everything */
 @media (max-width: 768px) {
-  .dashboard { grid-template-columns: 1fr; }
-  .dashboard__sidebar { position: fixed; z-index: 50; }
-  .dashboard__charts { grid-template-columns: 1fr; }
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  .dashboard__sidebar {
+    position: fixed;
+    z-index: 50;
+  }
+  .dashboard__charts {
+    grid-template-columns: 1fr;
+  }
 }
 ```
 
@@ -157,21 +211,19 @@ function Dashboard() {
 ## 2. Data Table — Sorting, Filtering, Pagination
 
 ```jsx
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from "react";
 
 function DataTable({ data, columns, pageSize = 10 }) {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [filterText, setFilterText] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [filterText, setFilterText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   // FILTER
   const filteredData = useMemo(() => {
     if (!filterText) return data;
     const lower = filterText.toLowerCase();
-    return data.filter(row =>
-      columns.some(col => 
-        String(row[col.key]).toLowerCase().includes(lower)
-      )
+    return data.filter((row) =>
+      columns.some((col) => String(row[col.key]).toLowerCase().includes(lower)),
     );
   }, [data, columns, filterText]);
 
@@ -181,8 +233,8 @@ function DataTable({ data, columns, pageSize = 10 }) {
     return [...filteredData].sort((a, b) => {
       const aVal = a[sortConfig.key];
       const bVal = b[sortConfig.key];
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
   }, [filteredData, sortConfig]);
@@ -191,13 +243,13 @@ function DataTable({ data, columns, pageSize = 10 }) {
   const totalPages = Math.ceil(sortedData.length / pageSize);
   const paginatedData = sortedData.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   const handleSort = (key) => {
-    setSortConfig(prev => ({
+    setSortConfig((prev) => ({
       key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
     }));
   };
 
@@ -214,7 +266,7 @@ function DataTable({ data, columns, pageSize = 10 }) {
         type="text"
         placeholder="Search..."
         value={filterText}
-        onChange={e => handleFilter(e.target.value)}
+        onChange={(e) => handleFilter(e.target.value)}
         className="data-table__search"
       />
 
@@ -222,11 +274,11 @@ function DataTable({ data, columns, pageSize = 10 }) {
       <table className="data-table">
         <thead>
           <tr>
-            {columns.map(col => (
+            {columns.map((col) => (
               <th key={col.key} onClick={() => handleSort(col.key)}>
                 {col.label}
                 {sortConfig.key === col.key && (
-                  <span>{sortConfig.direction === 'asc' ? ' ▲' : ' ▼'}</span>
+                  <span>{sortConfig.direction === "asc" ? " ▲" : " ▼"}</span>
                 )}
               </th>
             ))}
@@ -235,7 +287,7 @@ function DataTable({ data, columns, pageSize = 10 }) {
         <tbody>
           {paginatedData.map((row, i) => (
             <tr key={row.id ?? i}>
-              {columns.map(col => (
+              {columns.map((col) => (
                 <td key={col.key}>
                   {col.render ? col.render(row[col.key], row) : row[col.key]}
                 </td>
@@ -249,11 +301,19 @@ function DataTable({ data, columns, pageSize = 10 }) {
       <div className="data-table__pagination">
         <span>{sortedData.length} results</span>
         <div>
-          <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+          >
             Previous
           </button>
-          <span>Page {currentPage} of {totalPages}</span>
-          <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+          >
             Next
           </button>
         </div>
@@ -264,37 +324,40 @@ function DataTable({ data, columns, pageSize = 10 }) {
 
 // ═══ USAGE ═══
 const columns = [
-  { key: 'id', label: 'ID' },
-  { key: 'name', label: 'Customer' },
-  { key: 'email', label: 'Email' },
-  { key: 'amount', label: 'Amount', render: (val) => `$${val.toFixed(2)}` },
-  { key: 'status', label: 'Status', render: (val) => <StatusBadge status={val} /> },
+  { key: "id", label: "ID" },
+  { key: "name", label: "Customer" },
+  { key: "email", label: "Email" },
+  { key: "amount", label: "Amount", render: (val) => `$${val.toFixed(2)}` },
+  {
+    key: "status",
+    label: "Status",
+    render: (val) => <StatusBadge status={val} />,
+  },
 ];
 
-<DataTable data={orders} columns={columns} pageSize={20} />
+<DataTable data={orders} columns={columns} pageSize={20} />;
 ```
 
 ---
 
-
-
 🔬 **Section Challenge — 2. Data Table — Sorting, Filtering, Pagination**
 
 **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+
 <details><summary>Answer</summary>
 
 Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-</details>
 
+</details>
 
 ## 3. Modal System — Stacking, Focus Trap, Animations
 
 ```jsx
-import { useEffect, useRef, createContext, useContext, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef, createContext, useContext, useState } from "react";
+import { createPortal } from "react-dom";
 
 // Modal renders outside the component tree (in portal)
-function Modal({ isOpen, onClose, title, children, size = 'md' }) {
+function Modal({ isOpen, onClose, title, children, size = "md" }) {
   const modalRef = useRef(null);
   const previousFocus = useRef(null);
 
@@ -310,10 +373,10 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
 
     // Trap focus inside modal
     const handleTab = (e) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       const focusableElements = modalRef.current?.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       );
       if (!focusableElements?.length) return;
 
@@ -331,41 +394,53 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
 
     // Close on Escape
     const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
-    document.addEventListener('keydown', handleTab);
-    document.addEventListener('keydown', handleEscape);
-    document.body.style.overflow = 'hidden'; // Prevent background scroll
+    document.addEventListener("keydown", handleTab);
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden"; // Prevent background scroll
 
     return () => {
-      document.removeEventListener('keydown', handleTab);
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
+      document.removeEventListener("keydown", handleTab);
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
       previousFocus.current?.focus(); // Restore focus
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl' };
+  const sizeClasses = {
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    xl: "max-w-xl",
+  };
 
   return createPortal(
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div
+      className="modal-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
       <div
         ref={modalRef}
         className={`modal ${sizeClasses[size]}`}
-        onClick={e => e.stopPropagation()} // Don't close when clicking inside
+        onClick={(e) => e.stopPropagation()} // Don't close when clicking inside
         tabIndex={-1}
       >
         <div className="modal__header">
           <h2>{title}</h2>
-          <button onClick={onClose} aria-label="Close modal">&times;</button>
+          <button onClick={onClose} aria-label="Close modal">
+            &times;
+          </button>
         </div>
         <div className="modal__body">{children}</div>
       </div>
     </div>,
-    document.getElementById('modal-root') // Portal target
+    document.getElementById("modal-root"), // Portal target
   );
 }
 
@@ -376,9 +451,15 @@ function App() {
   return (
     <>
       <button onClick={() => setShowModal(true)}>Open Modal</button>
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="Confirm Action">
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Confirm Action"
+      >
         <p>Are you sure you want to proceed?</p>
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+        <div
+          style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}
+        >
           <button onClick={() => setShowModal(false)}>Cancel</button>
           <button onClick={handleConfirm}>Confirm</button>
         </div>
@@ -418,19 +499,31 @@ function App() {
   border-bottom: 1px solid #e2e8f0;
 }
 
-.modal__body { padding: 1.5rem; }
+.modal__body {
+  padding: 1.5rem;
+}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 ```
 
 ---
-
-
-
 
 ## 4. Form System — Multi-Step with Validation
 
@@ -439,40 +532,50 @@ function MultiStepForm() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1: Personal
-    firstName: '', lastName: '', email: '',
+    firstName: "",
+    lastName: "",
+    email: "",
     // Step 2: Address
-    street: '', city: '', zipCode: '',
+    street: "",
+    city: "",
+    zipCode: "",
     // Step 3: Payment
-    cardNumber: '', expiry: '',
+    cardNumber: "",
+    expiry: "",
   });
   const [errors, setErrors] = useState({});
 
   const updateField = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user types
     if (errors[field]) {
-      setErrors(prev => { const next = { ...prev }; delete next[field]; return next; });
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
     }
   };
 
   const validateStep = (stepNumber) => {
     const newErrors = {};
-    
+
     if (stepNumber === 1) {
-      if (!formData.firstName.trim()) newErrors.firstName = 'Required';
-      if (!formData.lastName.trim()) newErrors.lastName = 'Required';
+      if (!formData.firstName.trim()) newErrors.firstName = "Required";
+      if (!formData.lastName.trim()) newErrors.lastName = "Required";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        newErrors.email = 'Invalid email';
+        newErrors.email = "Invalid email";
       }
     }
     if (stepNumber === 2) {
-      if (!formData.street.trim()) newErrors.street = 'Required';
-      if (!formData.city.trim()) newErrors.city = 'Required';
-      if (!/^\d{5,6}$/.test(formData.zipCode)) newErrors.zipCode = 'Invalid zip code';
+      if (!formData.street.trim()) newErrors.street = "Required";
+      if (!formData.city.trim()) newErrors.city = "Required";
+      if (!/^\d{5,6}$/.test(formData.zipCode))
+        newErrors.zipCode = "Invalid zip code";
     }
     if (stepNumber === 3) {
-      if (!/^\d{16}$/.test(formData.cardNumber.replace(/\s/g, ''))) {
-        newErrors.cardNumber = 'Invalid card number';
+      if (!/^\d{16}$/.test(formData.cardNumber.replace(/\s/g, ""))) {
+        newErrors.cardNumber = "Invalid card number";
       }
     }
 
@@ -481,18 +584,21 @@ function MultiStepForm() {
   };
 
   const nextStep = () => {
-    if (validateStep(step)) setStep(s => s + 1);
+    if (validateStep(step)) setStep((s) => s + 1);
   };
 
-  const prevStep = () => setStep(s => s - 1);
+  const prevStep = () => setStep((s) => s - 1);
 
   return (
     <div className="form-wizard">
       {/* Progress indicator */}
       <div className="form-wizard__steps">
-        {['Personal', 'Address', 'Payment', 'Confirm'].map((label, i) => (
-          <div key={label} className={`step ${i + 1 <= step ? 'step--active' : ''} ${i + 1 < step ? 'step--completed' : ''}`}>
-            <div className="step__circle">{i + 1 < step ? '✓' : i + 1}</div>
+        {["Personal", "Address", "Payment", "Confirm"].map((label, i) => (
+          <div
+            key={label}
+            className={`step ${i + 1 <= step ? "step--active" : ""} ${i + 1 < step ? "step--completed" : ""}`}
+          >
+            <div className="step__circle">{i + 1 < step ? "✓" : i + 1}</div>
             <span className="step__label">{label}</span>
           </div>
         ))}
@@ -502,13 +608,23 @@ function MultiStepForm() {
       {step === 1 && (
         <div className="form-wizard__content">
           <FormField label="First Name" error={errors.firstName}>
-            <input value={formData.firstName} onChange={e => updateField('firstName', e.target.value)} />
+            <input
+              value={formData.firstName}
+              onChange={(e) => updateField("firstName", e.target.value)}
+            />
           </FormField>
           <FormField label="Last Name" error={errors.lastName}>
-            <input value={formData.lastName} onChange={e => updateField('lastName', e.target.value)} />
+            <input
+              value={formData.lastName}
+              onChange={(e) => updateField("lastName", e.target.value)}
+            />
           </FormField>
           <FormField label="Email" error={errors.email}>
-            <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)} />
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => updateField("email", e.target.value)}
+            />
           </FormField>
         </div>
       )}
@@ -516,13 +632,22 @@ function MultiStepForm() {
       {step === 2 && (
         <div className="form-wizard__content">
           <FormField label="Street" error={errors.street}>
-            <input value={formData.street} onChange={e => updateField('street', e.target.value)} />
+            <input
+              value={formData.street}
+              onChange={(e) => updateField("street", e.target.value)}
+            />
           </FormField>
           <FormField label="City" error={errors.city}>
-            <input value={formData.city} onChange={e => updateField('city', e.target.value)} />
+            <input
+              value={formData.city}
+              onChange={(e) => updateField("city", e.target.value)}
+            />
           </FormField>
           <FormField label="Zip Code" error={errors.zipCode}>
-            <input value={formData.zipCode} onChange={e => updateField('zipCode', e.target.value)} />
+            <input
+              value={formData.zipCode}
+              onChange={(e) => updateField("zipCode", e.target.value)}
+            />
           </FormField>
         </div>
       )}
@@ -531,9 +656,13 @@ function MultiStepForm() {
       <div className="form-wizard__nav">
         {step > 1 && <button onClick={prevStep}>← Back</button>}
         {step < 4 ? (
-          <button onClick={nextStep} className="btn-primary">Next →</button>
+          <button onClick={nextStep} className="btn-primary">
+            Next →
+          </button>
         ) : (
-          <button onClick={handleSubmit} className="btn-primary">Submit</button>
+          <button onClick={handleSubmit} className="btn-primary">
+            Submit
+          </button>
         )}
       </div>
     </div>
@@ -542,7 +671,7 @@ function MultiStepForm() {
 
 function FormField({ label, error, children }) {
   return (
-    <div className={`form-field ${error ? 'form-field--error' : ''}`}>
+    <div className={`form-field ${error ? "form-field--error" : ""}`}>
       <label>{label}</label>
       {children}
       {error && <span className="form-field__error">{error}</span>}
@@ -563,7 +692,7 @@ function VirtualList({ items, itemHeight, containerHeight }) {
   const startIndex = Math.floor(scrollTop / itemHeight);
   const endIndex = Math.min(
     startIndex + Math.ceil(containerHeight / itemHeight) + 1,
-    items.length
+    items.length,
   );
 
   const visibleItems = items.slice(startIndex, endIndex);
@@ -572,10 +701,10 @@ function VirtualList({ items, itemHeight, containerHeight }) {
 
   return (
     <div
-      style={{ height: containerHeight, overflow: 'auto' }}
-      onScroll={e => setScrollTop(e.target.scrollTop)}
+      style={{ height: containerHeight, overflow: "auto" }}
+      onScroll={(e) => setScrollTop(e.target.scrollTop)}
     >
-      <div style={{ height: totalHeight, position: 'relative' }}>
+      <div style={{ height: totalHeight, position: "relative" }}>
         <div style={{ transform: `translateY(${offsetY}px)` }}>
           {visibleItems.map((item, i) => (
             <div key={startIndex + i} style={{ height: itemHeight }}>
@@ -590,19 +719,16 @@ function VirtualList({ items, itemHeight, containerHeight }) {
 
 // ═══ USAGE ═══
 // Renders 100,000 items smoothly — only ~20 DOM nodes at a time!
-<VirtualList items={allItems} itemHeight={50} containerHeight={600} />
+<VirtualList items={allItems} itemHeight={50} containerHeight={600} />;
 ```
 
 ---
-
-
-
 
 ## 6. Search with Autocomplete & Suggestions
 
 ```jsx
 function SearchAutocomplete({ onSelect }) {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -617,8 +743,8 @@ function SearchAutocomplete({ onSelect }) {
     }
 
     fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`)
-      .then(r => r.json())
-      .then(data => {
+      .then((r) => r.json())
+      .then((data) => {
         setSuggestions(data);
         setIsOpen(true);
         setActiveIndex(-1);
@@ -630,20 +756,20 @@ function SearchAutocomplete({ onSelect }) {
     if (!isOpen) return;
 
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
-        setActiveIndex(i => Math.min(i + 1, suggestions.length - 1));
+        setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
-        setActiveIndex(i => Math.max(i - 1, 0));
+        setActiveIndex((i) => Math.max(i - 1, 0));
         break;
-      case 'Enter':
+      case "Enter":
         if (activeIndex >= 0) {
           selectItem(suggestions[activeIndex]);
         }
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         break;
     }
@@ -659,7 +785,7 @@ function SearchAutocomplete({ onSelect }) {
     <div ref={containerRef} className="search-autocomplete">
       <input
         value={query}
-        onChange={e => setQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         onFocus={() => suggestions.length > 0 && setIsOpen(true)}
         placeholder="Search products..."
@@ -672,7 +798,7 @@ function SearchAutocomplete({ onSelect }) {
           {suggestions.map((item, i) => (
             <li
               key={item.id}
-              className={i === activeIndex ? 'active' : ''}
+              className={i === activeIndex ? "active" : ""}
               onClick={() => selectItem(item)}
               role="option"
               aria-selected={i === activeIndex}
@@ -703,10 +829,9 @@ function highlightMatch(text, query) {
 
 ---
 
-
-
 🔬 **Section Challenge — 6. Search with Autocomplete & Suggestions**
->>
+
+> >
 
 ## 7. Tabs & Accordion — Content Organization
 
@@ -724,11 +849,12 @@ function Tabs({ tabs }) {
             role="tab"
             aria-selected={i === activeTab}
             aria-controls={`panel-${i}`}
-            className={i === activeTab ? 'tabs__tab active' : 'tabs__tab'}
+            className={i === activeTab ? "tabs__tab active" : "tabs__tab"}
             onClick={() => setActiveTab(i)}
             onKeyDown={(e) => {
-              if (e.key === 'ArrowRight') setActiveTab((i + 1) % tabs.length);
-              if (e.key === 'ArrowLeft') setActiveTab((i - 1 + tabs.length) % tabs.length);
+              if (e.key === "ArrowRight") setActiveTab((i + 1) % tabs.length);
+              if (e.key === "ArrowLeft")
+                setActiveTab((i - 1 + tabs.length) % tabs.length);
             }}
           >
             {tab.label}
@@ -764,14 +890,16 @@ function Accordion({ items }) {
             onClick={() => setOpenIndex(i === openIndex ? null : i)}
           >
             {item.title}
-            <span className="accordion__icon">{i === openIndex ? '−' : '+'}</span>
+            <span className="accordion__icon">
+              {i === openIndex ? "−" : "+"}
+            </span>
           </button>
           <div
             className="accordion__content"
             style={{
-              maxHeight: i === openIndex ? '500px' : '0',
-              overflow: 'hidden',
-              transition: 'max-height 0.3s ease',
+              maxHeight: i === openIndex ? "500px" : "0",
+              overflow: "hidden",
+              transition: "max-height 0.3s ease",
             }}
           >
             <div className="accordion__body">{item.content}</div>
@@ -800,7 +928,7 @@ function DragDropList({ initialItems }) {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
 
-    setItems(prev => {
+    setItems((prev) => {
       const updated = [...prev];
       const [removed] = updated.splice(draggedIndex, 1);
       updated.splice(index, 0, removed);
@@ -822,7 +950,7 @@ function DragDropList({ initialItems }) {
           onDragStart={() => handleDragStart(index)}
           onDragOver={(e) => handleDragOver(e, index)}
           onDragEnd={handleDragEnd}
-          className={`drag-list__item ${draggedIndex === index ? 'dragging' : ''}`}
+          className={`drag-list__item ${draggedIndex === index ? "dragging" : ""}`}
         >
           <span className="drag-handle">⠿</span>
           {item.content}
@@ -844,7 +972,9 @@ function DragDropList({ initialItems }) {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .drag-list__item.dragging {
@@ -853,7 +983,9 @@ function DragDropList({ initialItems }) {
   transform: scale(1.02);
 }
 
-.drag-list__item:active { cursor: grabbing; }
+.drag-list__item:active {
+  cursor: grabbing;
+}
 ```
 
 ---
@@ -861,7 +993,7 @@ function DragDropList({ initialItems }) {
 ## 9. Toast/Notification System
 
 ```jsx
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from "react";
 
 const ToastContext = createContext(null);
 
@@ -869,19 +1001,22 @@ const ToastContext = createContext(null);
 function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback(({ message, type = 'info', duration = 4000 }) => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
+  const addToast = useCallback(
+    ({ message, type = "info", duration = 4000 }) => {
+      const id = Date.now();
+      setToasts((prev) => [...prev, { id, message, type }]);
 
-    if (duration > 0) {
-      setTimeout(() => {
-        setToasts(prev => prev.filter(t => t.id !== id));
-      }, duration);
-    }
-  }, []);
+      if (duration > 0) {
+        setTimeout(() => {
+          setToasts((prev) => prev.filter((t) => t.id !== id));
+        }, duration);
+      }
+    },
+    [],
+  );
 
   const removeToast = useCallback((id) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   return (
@@ -889,7 +1024,7 @@ function ToastProvider({ children }) {
       {children}
       {/* Toast container — fixed at top-right */}
       <div className="toast-container" aria-live="polite">
-        {toasts.map(toast => (
+        {toasts.map((toast) => (
           <div key={toast.id} className={`toast toast--${toast.type}`}>
             <span>{toast.message}</span>
             <button onClick={() => removeToast(toast.id)}>&times;</button>
@@ -902,7 +1037,7 @@ function ToastProvider({ children }) {
 
 function useToast() {
   const context = useContext(ToastContext);
-  if (!context) throw new Error('useToast must be inside ToastProvider');
+  if (!context) throw new Error("useToast must be inside ToastProvider");
   return context;
 }
 
@@ -913,9 +1048,13 @@ function SaveButton() {
   const handleSave = async () => {
     try {
       await saveData();
-      addToast({ message: 'Saved successfully!', type: 'success' });
+      addToast({ message: "Saved successfully!", type: "success" });
     } catch (err) {
-      addToast({ message: `Error: ${err.message}`, type: 'error', duration: 6000 });
+      addToast({
+        message: `Error: ${err.message}`,
+        type: "error",
+        duration: 6000,
+      });
     }
   };
 
@@ -946,14 +1085,28 @@ function SaveButton() {
   animation: slideInRight 0.3s ease;
 }
 
-.toast--success { background: #22c55e; }
-.toast--error { background: #ef4444; }
-.toast--info { background: #3b82f6; }
-.toast--warning { background: #f59e0b; }
+.toast--success {
+  background: #22c55e;
+}
+.toast--error {
+  background: #ef4444;
+}
+.toast--info {
+  background: #3b82f6;
+}
+.toast--warning {
+  background: #f59e0b;
+}
 
 @keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 ```
 
@@ -964,7 +1117,7 @@ function SaveButton() {
 ```jsx
 function SidebarLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const sidebarRef = useClickOutside(() => isMobile && setIsOpen(false));
 
   return (
@@ -972,23 +1125,38 @@ function SidebarLayout({ children }) {
       {/* Mobile overlay */}
       {isMobile && isOpen && <div className="layout__overlay" />}
 
-      <aside ref={sidebarRef} className={`layout__sidebar ${isOpen ? 'open' : ''}`}>
+      <aside
+        ref={sidebarRef}
+        className={`layout__sidebar ${isOpen ? "open" : ""}`}
+      >
         <div className="sidebar__header">
           <img src="/logo.svg" alt="Logo" />
           {isMobile && (
-            <button onClick={() => setIsOpen(false)} aria-label="Close menu">&times;</button>
+            <button onClick={() => setIsOpen(false)} aria-label="Close menu">
+              &times;
+            </button>
           )}
         </div>
 
         <nav className="sidebar__nav">
-          <NavLink href="/dashboard" icon="📊">Dashboard</NavLink>
-          <NavLink href="/projects" icon="📁">Projects</NavLink>
-          <NavLink href="/team" icon="👥">Team</NavLink>
+          <NavLink href="/dashboard" icon="📊">
+            Dashboard
+          </NavLink>
+          <NavLink href="/projects" icon="📁">
+            Projects
+          </NavLink>
+          <NavLink href="/team" icon="👥">
+            Team
+          </NavLink>
 
           <div className="sidebar__divider" />
           <span className="sidebar__section-title">Settings</span>
-          <NavLink href="/profile" icon="👤">Profile</NavLink>
-          <NavLink href="/settings" icon="⚙️">Settings</NavLink>
+          <NavLink href="/profile" icon="👤">
+            Profile
+          </NavLink>
+          <NavLink href="/settings" icon="⚙️">
+            Settings
+          </NavLink>
         </nav>
 
         <div className="sidebar__footer">
@@ -998,7 +1166,11 @@ function SidebarLayout({ children }) {
 
       <main className="layout__main">
         <header className="layout__topbar">
-          <button className="menu-toggle" onClick={() => setIsOpen(true)} aria-label="Open menu">
+          <button
+            className="menu-toggle"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open menu"
+          >
             ☰
           </button>
           <h1>Page Title</h1>
@@ -1027,12 +1199,21 @@ function SidebarLayout({ children }) {
   top: 0;
 }
 
-.sidebar__nav { flex: 1; padding: 0.5rem; overflow-y: auto; }
-.sidebar__footer { padding: 1rem; border-top: 1px solid #1e293b; }
+.sidebar__nav {
+  flex: 1;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+.sidebar__footer {
+  padding: 1rem;
+  border-top: 1px solid #1e293b;
+}
 
 /* Mobile: sidebar becomes overlay */
 @media (max-width: 768px) {
-  .layout { grid-template-columns: 1fr; }
+  .layout {
+    grid-template-columns: 1fr;
+  }
 
   .layout__sidebar {
     position: fixed;
@@ -1042,7 +1223,9 @@ function SidebarLayout({ children }) {
     transition: transform 0.3s ease;
   }
 
-  .layout__sidebar.open { transform: translateX(0); }
+  .layout__sidebar.open {
+    transform: translateX(0);
+  }
 
   .layout__overlay {
     position: fixed;
@@ -1058,19 +1241,22 @@ function SidebarLayout({ children }) {
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Z-Index and Modals):** A junior engineer creates a Modal component but places it directly inside the deeply-nested `<Header>` component. When it opens, it is cut off by the `<main>` container's `overflow: hidden`. How do you fix this without changing the layout CSS?
+
 <details><summary>Answer</summary>
 
 **The Fix:** Use a **React Portal**. `createPortal(modalElement, document.body)`.
 **Why:** The modal was trapped inside the stacking context and overflow boundaries of its parent (`<Header>`). A Portal physically renders the DOM nodes at the end of `document.body`, completely escaping the parent's CSS trap, while maintaining its logical position in the React tree (so context and events still bubble).
+
 </details>
 
 **Challenge 2 (Search Performance):** Your `SearchAutocomplete` component fetches results on every keystroke. Typing "laptop" sends 6 API requests. How do you prevent this?
+
 <details><summary>Answer</summary>
 
 Use a **Debounce Hook**. Wrap the raw input query: `const debouncedQuery = useDebounce(query, 300);` and trigger the API `useEffect` using `debouncedQuery` instead of `query`. This waits until the user stops typing for 300ms before firing a single API request.
+
 </details>
 
 ---
 
 **Next Chapter**: [DevTools Debugging Mastery →](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
-

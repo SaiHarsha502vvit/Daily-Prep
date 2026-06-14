@@ -3,6 +3,7 @@
 **Navigation**: [← SDET × DSA](11_SDET_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [SDET × Spring Boot →](13_SDET_Plus_SpringBoot_Progressive.md)
 
 **Cross-links:**
+
 - [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals
 - [`02_Data_Structures/`](../02_Data_Structures/) — DSA foundations
 - [`10_Elite_Cross_Domain_Rounds.md`](10_Elite_Cross_Domain_Rounds.md) — applied elite challenges
@@ -40,6 +41,7 @@ Valid orders: C → B → A
 ### 🔍 The Spring Boot Connection
 
 When your Spring application starts, it has hundreds of beans. Some beans DEPEND on others:
+
 - `OrderService` needs `OrderRepository`
 - `OrderRepository` needs `DataSource`
 - `DataSource` needs `@ConfigurationProperties`
@@ -141,6 +143,7 @@ public class NotificationService implements ApplicationListener<PaymentProcessed
 ### 🎯 Similar Challenges
 
 **Challenge A**: Draw the dependency graph for the following beans and find a valid initialization order:
+
 ```
 UserService → UserRepository, CacheService
 UserRepository → DataSource
@@ -215,6 +218,7 @@ A linked list is a sequence of nodes where each node holds data AND a pointer to
 ```
 
 Key properties:
+
 - O(1) insertion at head or tail (no shifting)
 - O(n) traversal (must follow pointers)
 - Each node only knows its IMMEDIATE successor — not the full chain
@@ -224,6 +228,7 @@ Key properties:
 ### 🔍 The Spring Boot Connection
 
 Spring Security's filter chain and Spring MVC's interceptor chain are **linked lists of handler objects**. Each filter:
+
 1. Does its work (auth, logging, rate limiting)
 2. Calls `chain.doFilter(request, response)` — which passes control to the NEXT node
 
@@ -304,6 +309,7 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 ```
 
 **The linked list analogy made concrete**:
+
 - `@Order(1)` = head of the list
 - `chain.doFilter()` = `node.next()` — follow the pointer to the next handler
 - NOT calling `chain.doFilter()` = `node.next = null` — cut the chain here (short-circuit)
@@ -550,6 +556,7 @@ public class LRUCache<K, V> {
 ```
 
 **Why not use this in Spring?**
+
 1. **Thread safety**: This implementation is NOT thread-safe. Multiple threads accessing the cache concurrently will corrupt the LinkedList. EhCache uses lock striping or lock-free structures.
 2. **TTL**: Plain HashMap has no time-based eviction. EhCache supports TTL (time to live) and TTI (time to idle).
 3. **Distributed**: Redis-backed L2C shares cache across multiple JVM instances. An in-process HashMap is local to one instance.
@@ -578,6 +585,7 @@ Role hierarchy (a DAG):
 ### 🔍 The Spring Boot Connection
 
 Spring Security models permissions as a graph:
+
 - Roles inherit other roles (ADMIN inherits USER)
 - Permissions are attached to roles
 - `hasRole("ADMIN")` = traverse the role graph from ADMIN and check if the required permission is reachable
@@ -649,12 +657,14 @@ public class CitationController {
 
 **The graph traversal in action**:
 A user with `ROLE_MANAGER` calls `POST /citations/{id}/approve`:
+
 1. Spring checks `hasRole('MANAGER')`
 2. Traverses role hierarchy from MANAGER upward: `{MANAGER, OFFICER, USER}`
 3. Also traverses roles GRANTED to this user: `{MANAGER}` → expands to `{MANAGER, OFFICER, USER}`
 4. `MANAGER` is in the set → access GRANTED
 
 A user with `ROLE_OFFICER` calls the same endpoint:
+
 1. `hasRole('MANAGER')` → expand OFFICER: `{OFFICER, USER}`
 2. `MANAGER` NOT in set → access DENIED (403)
 
@@ -700,7 +710,7 @@ public void createUser(@RequestBody CreateUserRequest req) {}
 
 ### 🧠 Foundation — Applied Sliding Window
 
-*[See full foundation in file 11, Topic 1]*
+_[See full foundation in file 11, Topic 1]_
 
 Quick recap: a sliding window tracks events within a rolling time period. As time advances, old events fall out of the window; new ones enter.
 
@@ -745,9 +755,9 @@ resilience4j:
   ratelimiter:
     instances:
       dynamics-api:
-        limitForPeriod: 100           # 100 calls allowed
-        limitRefreshPeriod: 1s         # per 1 second
-        timeoutDuration: 100ms         # wait up to 100ms for a "slot" before failing
+        limitForPeriod: 100 # 100 calls allowed
+        limitRefreshPeriod: 1s # per 1 second
+        timeoutDuration: 100ms # wait up to 100ms for a "slot" before failing
 ```
 
 ```java
@@ -834,6 +844,7 @@ public class TieredRateLimitFilter extends AbstractGatewayFilterFactory<Object> 
 ### 🧠 Foundation — What is a Finite State Machine?
 
 A FSM has:
+
 - A finite set of **states** (e.g. CREATED, ACTIVE, DESTROYED)
 - **Transitions**: rules for moving from one state to another
 - **Events**: what triggers a transition
@@ -914,13 +925,13 @@ public class CitationCacheWarmer implements
 
 **The FSM decision guide**:
 
-| Callback | When it fires | Use for |
-|---|---|---|
-| Constructor | INSTANTIATED — no dependencies | Primitive initialization only |
-| `@Autowired` field | POPULATED | Injected dependencies |
-| `@PostConstruct` | INITIALIZED — after injection | Cache warming, connection setup |
-| `ContextRefreshedEvent` | ALL beans ready | Cross-bean initialization |
-| `@PreDestroy` | DESTROYING — before shutdown | Resource cleanup, graceful drain |
+| Callback                | When it fires                  | Use for                          |
+| ----------------------- | ------------------------------ | -------------------------------- |
+| Constructor             | INSTANTIATED — no dependencies | Primitive initialization only    |
+| `@Autowired` field      | POPULATED                      | Injected dependencies            |
+| `@PostConstruct`        | INITIALIZED — after injection  | Cache warming, connection setup  |
+| `ContextRefreshedEvent` | ALL beans ready                | Cross-bean initialization        |
+| `@PreDestroy`           | DESTROYING — before shutdown   | Resource cleanup, graceful drain |
 
 ---
 

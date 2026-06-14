@@ -24,11 +24,13 @@
 ### Topic: Array — The Foundation of Everything
 
 #### WHY does this exist?
+
 Arrays are the most fundamental data structure. Every other data structure (Stack, Queue, HashMap, Heap) is built on top of arrays internally. If you don't understand arrays deeply, you'll never understand anything else.
 
 **WHO invented it?** The concept comes from mathematics (ordered sequences). In computing, arrays were the first data structure implemented in assembly language — direct memory addressing.
 
 **WHERE is it used?**
+
 - Every programming language's standard library
 - Database tables (rows are essentially arrays of columns)
 - Image processing (2D array of pixels)
@@ -65,7 +67,6 @@ Delete at index i   O(n)      Must shift elements left
 ─────────────────────────────────────────────────────
 ```
 
-
 #### WHEN to use Arrays vs alternatives?
 
 ```
@@ -82,12 +83,11 @@ DON'T USE ARRAY WHEN:
   - Size changes dramatically → ArrayList (dynamic array)
 ```
 
-
 #### Code: Implement these by hand
 
 ```java
 public class ArrayBasics {
-    
+
     // 1. Find maximum element
     public static int findMax(int[] arr) {
         int max = arr[0];  // WHY arr[0] not Integer.MIN_VALUE? Think about empty arrays
@@ -96,7 +96,7 @@ public class ArrayBasics {
         }
         return max;
     }
-    
+
     // 2. Reverse array in-place (Two Pointer pattern - you know this!)
     public static void reverse(int[] arr) {
         int left = 0, right = arr.length - 1;
@@ -108,7 +108,7 @@ public class ArrayBasics {
             right--;
         }
     }
-    
+
     // 3. Remove duplicates from sorted array (in-place)
     // Returns new length
     public static int removeDuplicates(int[] arr) {
@@ -134,9 +134,11 @@ public class ArrayBasics {
 ### Topic: Linear Search + Introduction to Sorting
 
 #### WHY learn Linear Search first?
+
 Because EVERY search algorithm is an optimization of linear search. You must understand the brute-force baseline before you can appreciate why Binary Search, Hash-based search, or Tree-based search exist.
 
 **WHO?** Linear search is as old as computing itself. Sorting algorithms have rich history:
+
 - Bubble Sort: analyzed by Knuth (1968)
 - Selection Sort: one of the simplest comparison sorts
 - Insertion Sort: how humans naturally sort playing cards
@@ -175,7 +177,7 @@ SELECTION SORT: Find minimum, swap to front. Repeat.
 
 ```java
 public class SearchAndSort {
-    
+
     // Linear Search - the baseline
     public static int linearSearch(int[] arr, int target) {
         for (int i = 0; i < arr.length; i++) {
@@ -183,7 +185,7 @@ public class SearchAndSort {
         }
         return -1;  // Not found
     }
-    
+
     // Selection Sort - visual, easy to understand
     public static void selectionSort(int[] arr) {
         int n = arr.length;
@@ -200,7 +202,7 @@ public class SearchAndSort {
             arr[minIdx] = temp;
         }
     }
-    
+
     // Insertion Sort - how you sort cards in your hand
     public static void insertionSort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
@@ -230,7 +232,6 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 "Stable"   = equal elements keep their relative order
 ```
 
-
 > **Read more:** [03_Algorithms/02a_Sorting_Fundamentals.md](../../03_Algorithms/02a_Sorting_Fundamentals.md)
 
 ---
@@ -259,7 +260,7 @@ APPROACH 3: Two Binary Searches — O(log n)
 
 ```java
 public class CountOccurrences {
-    
+
     // Approach 3: Optimal — Two Binary Searches
     public static int countOccurrences(int[] arr, int target) {
         int first = findFirst(arr, target);
@@ -267,7 +268,7 @@ public class CountOccurrences {
         int last = findLast(arr, target);
         return last - first + 1;
     }
-    
+
     private static int findFirst(int[] arr, int target) {
         int lo = 0, hi = arr.length - 1, result = -1;
         while (lo <= hi) {
@@ -283,7 +284,7 @@ public class CountOccurrences {
         }
         return result;
     }
-    
+
     private static int findLast(int[] arr, int target) {
         int lo = 0, hi = arr.length - 1, result = -1;
         while (lo <= hi) {
@@ -303,6 +304,7 @@ public class CountOccurrences {
 ```
 
 **EDGE CASES to think about:**
+
 - Empty array → return 0
 - Target not in array → return 0
 - All elements are the target → return arr.length
@@ -315,6 +317,7 @@ public class CountOccurrences {
 ### Scenario: You're building an inventory system for a grocery store
 
 **Problem:** The store has 10,000 products. Each product has a barcode (integer ID) and a price. Design a data structure that supports:
+
 1. Lookup price by barcode — O(1)
 2. Find cheapest product — efficient
 3. Add new product — O(1)
@@ -349,7 +352,7 @@ public class InventorySystem {
     private Map<Integer, Double> products = new HashMap<>();  // barcode -> price
     private int cheapestBarcode = -1;
     private double cheapestPrice = Double.MAX_VALUE;
-    
+
     public void addProduct(int barcode, double price) {
         products.put(barcode, price);
         if (price < cheapestPrice) {
@@ -357,15 +360,15 @@ public class InventorySystem {
             cheapestBarcode = barcode;
         }
     }
-    
+
     public double getPrice(int barcode) {
         return products.getOrDefault(barcode, -1.0);
     }
-    
+
     public int getCheapestBarcode() {
         return cheapestBarcode;
     }
-    
+
     // CHALLENGE: What's the time complexity of delete?
     // How would you improve it? (Hint: think Heaps — you'll learn them in Week 7)
 }
@@ -401,7 +404,6 @@ There are 4 types of SQL commands:
   DCL (Control) : GRANT, REVOKE              → Permissions
   TCL (Txn)     : COMMIT, ROLLBACK, SAVEPOINT → Transaction safety
 ```
-
 
 #### HOW — Your First Queries
 
@@ -466,9 +468,9 @@ SELECT name, price FROM products ORDER BY price ASC;
 SELECT name, price FROM products ORDER BY price DESC;
 
 -- Combine filter + sort: Dairy products, cheapest first
-SELECT name, price 
-FROM products 
-WHERE category = 'Dairy' 
+SELECT name, price
+FROM products
+WHERE category = 'Dairy'
 ORDER BY price ASC;
 ```
 
@@ -483,6 +485,7 @@ ORDER BY price ASC;
 SELECT name, stock FROM products WHERE stock < 50;
 -- Returns: Butter(30), Chicken(25)
 ```
+
 </details>
 
 **Q2 (Easy):** Write a query to find the product with the highest price.
@@ -494,6 +497,7 @@ SELECT name, stock FROM products WHERE stock < 50;
 SELECT name, price FROM products ORDER BY price DESC LIMIT 1;
 -- Returns: Chicken, 250.00
 ```
+
 </details>
 
 **Q3 (Easy-Medium):** Write a query to find all Fruits that cost more than 100 rupees, sorted by name.
@@ -502,12 +506,13 @@ SELECT name, price FROM products ORDER BY price DESC LIMIT 1;
 <summary>Answer</summary>
 
 ```sql
-SELECT name, price 
-FROM products 
-WHERE category = 'Fruits' AND price > 100 
+SELECT name, price
+FROM products
+WHERE category = 'Fruits' AND price > 100
 ORDER BY name;
 -- Returns: Apple, 150.00
 ```
+
 </details>
 
 > **Read more:** [08_SQL/01_Foundations_Database_Basics.md](../../08_SQL/01_Foundations_Database_Basics.md)
@@ -528,8 +533,8 @@ Example 2: nums = [0, 1]    → Output: 2
 Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
-
 **Think before coding:** What approaches exist?
+
 1. Sort + check gaps → O(n log n)
 2. HashSet + check all numbers → O(n) time, O(n) space
 3. Math: sum formula → O(n) time, O(1) space
@@ -552,6 +557,7 @@ public int missingNumber(int[] nums) {
 // WHY this works: if one number is missing, the difference between
 // the expected sum and actual sum IS the missing number.
 ```
+
 </details>
 
 <details>
@@ -569,6 +575,7 @@ public int missingNumber(int[] nums) {
 // Every number that appears in BOTH [0..n] and nums[] cancels out.
 // The one remaining is the missing number.
 ```
+
 </details>
 
 ---
@@ -587,8 +594,8 @@ Example 2: [1, 1, 2]             → Output: 2
 Example 3: [7]                    → Output: 7
 ```
 
-
 **The XOR pattern (memorize this — it appears in 10+ problems):**
+
 ```
 PROPERTY: a ^ a = 0     (any number XOR itself = 0)
 PROPERTY: a ^ 0 = a     (any number XOR 0 = itself)
@@ -599,7 +606,6 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
   = 2 ^ 0 ^ 0 ^ 0
   = 2  ← The single element!
 ```
-
 
 <details>
 <summary>Solution</summary>
@@ -615,6 +621,7 @@ public int singleNumber(int[] nums) {
 // Time: O(n) | Space: O(1)
 // This is also LC 136 — Single Number
 ```
+
 </details>
 
 **Follow-up challenge:** What if every element appears THREE times except one? (This is LC 137 — harder, uses bit counting)
@@ -624,6 +631,7 @@ public int singleNumber(int[] nums) {
 ## End of Day 1
 
 ### What you learned today:
+
 1. **Array memory model** — why O(1) access works
 2. **When to use arrays vs other DS** — decision framework
 3. **Linear Search → Selection Sort → Insertion Sort** — the O(n^2) family
@@ -636,10 +644,9 @@ public int singleNumber(int[] nums) {
 
 ---
 
-> **Mentor Note:** Don't rush. If you didn't finish everything today, that's okay. 
+> **Mentor Note:** Don't rush. If you didn't finish everything today, that's okay.
 > The most important thing is understanding WHY, not just typing code.
 > If you understood the XOR pattern deeply, you've already won today.
-
 
 ---
 

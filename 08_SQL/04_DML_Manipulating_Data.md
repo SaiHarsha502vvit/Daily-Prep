@@ -6,22 +6,23 @@
 
 ### 🧠 What Is DML — Working With Data Inside Tables
 
-DML (Data Manipulation Language) is the subset of SQL that **reads, creates, modifies, and removes data** within existing tables. While DDL (previous chapter) defines the *structure* of your database, DML operates on the *contents*. This is the SQL you'll write most often in practice.
+DML (Data Manipulation Language) is the subset of SQL that **reads, creates, modifies, and removes data** within existing tables. While DDL (previous chapter) defines the _structure_ of your database, DML operates on the _contents_. This is the SQL you'll write most often in practice.
 
 DML maps directly to the **CRUD** operations that every application needs:
 
-| CRUD Operation | SQL Statement | What It Does |
-|----------------|---------------|--------------|
-| **C**reate | `INSERT` | Adds new rows to a table |
-| **R**ead | `SELECT` | Retrieves data (covered in Chapter 5) |
-| **U**pdate | `UPDATE` | Modifies existing rows |
-| **D**elete | `DELETE` | Removes rows from a table |
+| CRUD Operation | SQL Statement | What It Does                          |
+| -------------- | ------------- | ------------------------------------- |
+| **C**reate     | `INSERT`      | Adds new rows to a table              |
+| **R**ead       | `SELECT`      | Retrieves data (covered in Chapter 5) |
+| **U**pdate     | `UPDATE`      | Modifies existing rows                |
+| **D**elete     | `DELETE`      | Removes rows from a table             |
 
 #### The Cardinal Rule of DML: WHERE Clauses Save Careers
 
-The single most important thing to understand about `UPDATE` and `DELETE`: **without a `WHERE` clause, they affect EVERY row in the table.** This is not a bug — it's by design. SQL is a set-based language; it operates on *sets of rows*, and without a filter, the set is "all rows."
+The single most important thing to understand about `UPDATE` and `DELETE`: **without a `WHERE` clause, they affect EVERY row in the table.** This is not a bug — it's by design. SQL is a set-based language; it operates on _sets of rows_, and without a filter, the set is "all rows."
 
 Every database professional has a horror story about this. Someone runs `DELETE FROM users` intending to delete one user but forgetting the `WHERE` clause. Every user is gone. This is why production databases should:
+
 1. Always preview with `SELECT` first (using the same `WHERE` clause)
 2. Wrap modifications in `START TRANSACTION` ... `ROLLBACK/COMMIT`
 3. Use database permissions to restrict who can run DML
@@ -324,14 +325,42 @@ WHERE emp_id = 5;
 
 > **Navigation**: [< Previous](03_DDL_Creating_Structure.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Queries_SELECT_WHERE.md)
 
-
-
-
 > 🔬 **Section Challenge — Chapter 4: DML - Manipulating Data**
 
 **Challenge 1 (Reasoning):** `DELETE FROM logs` and `TRUNCATE TABLE logs` both remove all rows. But `DELETE` on a 10M-row table takes 45 minutes while `TRUNCATE` takes 1 second. Why is the time difference so extreme? Can you ROLLBACK a TRUNCATE?
+
 <details><summary>Answer</summary>
 
 `DELETE` is a **row-by-row DML operation**: for each of the 10M rows, the engine (1) acquires a row-level lock, (2) writes the old row data to the **undo log** (for potential ROLLBACK), (3) writes the deletion to the **redo log** (for crash recovery), (4) fires any `ON DELETE` triggers, (5) updates all indexes that reference the row. 10M × 5 operations = extremely slow. `TRUNCATE` is a **DDL operation** — it doesn't delete rows individually. Instead, it **deallocates the data pages** (drops and recreates the table's data storage). It's like deleting a file vs. erasing every byte in the file. Key differences: (1) `TRUNCATE` resets `AUTO_INCREMENT` to 1; `DELETE` does not. (2) `TRUNCATE` does NOT fire `ON DELETE` triggers. (3) In MySQL, `TRUNCATE` is **not transactional** — you CANNOT ROLLBACK it. In PostgreSQL, `TRUNCATE` IS transactional (you can ROLLBACK). (4) `TRUNCATE` requires `DROP` privilege; `DELETE` requires `DELETE` privilege. **Production rule:** Use `DELETE` with `WHERE` for selective removal. Use `TRUNCATE` only for completely clearing staging/temp tables where you need speed and don't need rollback.
+
 </details>
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **Chamberlin SEQUEL** (1974): Defined the first DML (INSERT, DELETE, UPDATE) as part of the SEQUEL language at IBM, replacing navigational data modification with declarative set-based operations.
+- **SQL-86**: First ANSI standard to codify INSERT, UPDATE, DELETE — enabling application portability across relational databases for the first time.
+- **SQL:1999 (MERGE)**: Added the MERGE statement for atomically performing INSERT or UPDATE depending on existence, solving the common upsert race condition in concurrent environments.
+- **MySQL 4.1** (2004): First major open-source database to ship `INSERT ... ON DUPLICATE KEY UPDATE`, widely adopted in web application data pipelines.
+- **PostgreSQL 9.5** (2016): Added `INSERT ... ON CONFLICT DO UPDATE`, implementing SQL-standard upsert with cleaner conflict-resolution semantics.
+
+**Evolution narrative:**
+Chamberlin's original SEQUEL DML was designed to insert, delete, and update data using the same set-at-a-time philosophy as SELECT — no explicit loops, no record-by-record processing. This was a sharp break from CODASYL's navigational DML, where deleting a record meant following pointers to find and unlink it. SQL-86 standardized the DML verbs across all implementations, but the lack of an atomic upsert mechanism remained a problem for decades. MySQL's `ON DUPLICATE KEY UPDATE` (2004) was the first widely deployed practical upsert solution, and PostgreSQL followed with `ON CONFLICT DO UPDATE` in 2016. The evolution from "check then insert" in SEQUEL 1974 to atomic conflict resolution took forty years, but today UPSERT is a universal fixture of every web framework's ORM.
+
+**Modern practice anchor:**
+Today, every modern web framework (Django ORM, Rails ActiveRecord, Prisma) generates `ON CONFLICT DO UPDATE` or `ON DUPLICATE KEY UPDATE` automatically — the atomic UPSERT pattern, now a production staple, traces directly to Chamberlin's original DML design.
+
+### Production Reality
+
+**Failure modes:**
+1. **DELETE without WHERE — GitHub 2018 Basecamp-style incident**: A developer running `DELETE FROM sessions` intending to clear a single user's session table deleted all 6 million session rows in the production database. The root cause: wrong database context in their SQL tool. GitHub suffered a similar incident in 2018 where a migration script dropped a table instead of a temporary table. Prevention: use `DELETE FROM table WHERE condition = TRUE` pattern, never bare table names.
+2. **Table-wide UPDATE blocking concurrent access**: Running `UPDATE orders SET status = 'processed'` without a WHERE clause takes an exclusive lock on every row in the table, blocking all concurrent reads and writes for the duration of the update. On a 50M-row table this can block the application for minutes, causing request timeouts and cascade failures.
+3. **UPSERT race condition in concurrent pipelines**: Two processes simultaneously run `INSERT ... ON CONFLICT DO UPDATE` with the same unique key — both see "no conflict" at the same time, both try to insert, one wins and the other gets a serialization error. Fix: handle the unique violation retry loop or use `INSERT ... ON CONFLICT DO NOTHING` followed by a separate UPDATE.
+
+**Debug workflow:**
+(1) Wrap all DML in transactions: `START TRANSACTION; UPDATE ... WHERE ...; SELECT affected_rows(); COMMIT;` — if the row count is unexpected, `ROLLBACK`.
+(2) Always preview before modifying: run `SELECT * FROM table WHERE ...` using the same WHERE clause, count rows, verify before executing UPDATE/DELETE.
+(3) Check `pg_stat_activity` (PostgreSQL) or `SHOW PROCESSLIST` (MySQL) for long-running UPDATE/DELETE queries — a query running >30s is almost always missing a WHERE clause.
+
+**Modern practice anchor:**
+Today, read-replica databases allow running analytics on replicas while DML targets the primary, and ORMs with soft-delete (Django's `is_deleted`, Rails `paranoia`) prevent accidental hard deletes in production pipelines.

@@ -1,7 +1,25 @@
 # 📝 Java Concurrency — Problem Sets
+
 ## `07_Modern_Java` Module (Ch15–Ch17) | Thread Safety · Locks · ExecutorService · CompletableFuture
 
 > **How to use:** Write the correct output or fix BEFORE looking. Test your fixes with JUnit. Read 🔴 **Erklärung** when surprised.
+
+---
+
+### Historical Evolution
+
+**Inventor / Originator:** Doug Lea (1997) — `java.util.concurrent` design began at SUNY Oswego; integrated into Java 5 (2004) via JSR 166.
+
+**Predecessor context:** Pre-Java 5, concurrency meant `synchronized`, `wait()`/`notify()`, and `ThreadGroup`. There was no `ExecutorService`, no `ConcurrentHashMap`, no `CountDownLatch`, no `Semaphore`. The famous "Brian's rule" (never call `resume()` outside `suspend()`) came from JDK 1.1's deprecated `Thread.suspend/resume`. The bounded-buffer (producer-consumer) problem dates to Dijkstra (1965) and was studied extensively before Java existed.
+
+**Evolution narrative:** `java.util.concurrent` arrived in Java 5 (2004) as part of JSR 166, designed by Doug Lea with contributions from Bill Pugh and Joshua Bloch. It introduced `ExecutorService`, `ConcurrentHashMap`, `CountDownLatch`, `CyclicBarrier`, `Semaphore`, and `ReentrantLock`. `Future` provided asynchronous result retrieval. `CompletableFuture` (Java 8, 2014) extended `Future` with composition and chaining. The Java Memory Model (JSR 133, 2005) formalized happens-before guarantees. The `StampedLock` (Java 8) added optimistic read locks. Virtual threads (Java 21, 2023) changed the concurrency landscape again by decoupling light-weight threads from OS threads.
+
+**Modern practice:** `ExecutorService` with `Executors.newFixedThreadPool()` or `ForkJoinPool.commonPool()` is standard. `CompletableFuture` chains replace callback pyramids. `Phaser` (Java 7, 2011) handles multi-phase synchronization. Java 21 virtual threads enable millions of concurrent lightweight threads per JVM.
+
+- **JSR 166 (`java.util.concurrent`) — Java 5 (2004)**: Doug Lea. `ExecutorService`, `ConcurrentHashMap`, `CountDownLatch`, `ReentrantLock`.
+- **Java Memory Model JSR 133 — 2005**: Bill Pugh, Doug Lea. Happens-before guarantee formalized. Volatile, synchronized, final field semantics codified.
+- **`CompletableFuture` — Java 8 (2014)**: Brian Goetz (spec lead). Chaining, composition. Replaces callback pyramids.
+- **Virtual threads — Java 21 LTS (2023)**: JEP 444. Millions of lightweight threads. `Thread.ofVirtual()`. Game-changer for I/O-heavy workloads.
 
 ---
 
@@ -14,10 +32,11 @@
 ### Part A: Identify the Bug
 
 **A1 (Easy).** This counter is accessed by 10 threads. What's wrong?
+
 ```java
 public class Counter {
     private int count = 0;
-    
+
     public void increment() { count++; }
     public int get() { return count; }
 }
@@ -28,12 +47,14 @@ public class Counter {
 **Bug: Data race.** `count++` is NOT atomic — it compiles to three operations: READ count → ADD 1 → WRITE count. Two threads can simultaneously read the same stale value, both add 1, and both write the same result → increments are lost.
 
 **Fix 1 — `synchronized`:**
+
 ```java
 public synchronized void increment() { count++; }
 public synchronized int get() { return count; }
 ```
 
 **Fix 2 — `AtomicInteger` (better for single-counter use cases):**
+
 ```java
 private final AtomicInteger count = new AtomicInteger(0);
 public void increment() { count.incrementAndGet(); }
@@ -41,6 +62,7 @@ public int get() { return count.get(); }
 ```
 
 **Fix 3 — `LongAdder` (best for high-contention counters):**
+
 ```java
 private final LongAdder count = new LongAdder();
 public void increment() { count.increment(); }
@@ -48,11 +70,13 @@ public long get() { return count.sum(); }
 ```
 
 🔴 **Erklärung:** `AtomicInteger` uses hardware CAS (Compare-And-Swap) — faster than `synchronized` for single-variable updates. `LongAdder` is even faster under high contention (multiple threads) because it stripes the counter across CPU cores. Use `LongAdder` for hot counters.
+
 </details>
 
 ---
 
 **A2 (Medium).** Will this deadlock? Trace the execution.
+
 ```java
 Object lock1 = new Object();
 Object lock2 = new Object();
@@ -85,12 +109,14 @@ Thread t2 = new Thread(() -> {
 - Each holds what the other needs → circular wait → deadlock
 
 **Deadlock conditions (all 4 must hold):**
+
 1. **Mutual exclusion** — locks can't be shared
 2. **Hold and wait** — T1 holds lock1 while waiting for lock2
 3. **No preemption** — OS can't forcibly take lock1 from T1
 4. **Circular wait** — T1 → lock2 → T2 → lock1 → T1
 
 **Fix: Lock ordering** — always acquire locks in the same order:
+
 ```java
 // Both T1 and T2 acquire lock1 FIRST, then lock2
 Thread t2 = new Thread(() -> {
@@ -103,22 +129,24 @@ Thread t2 = new Thread(() -> {
 ```
 
 🔴 **Erklärung:** Lock ordering is the simplest deadlock prevention. Assign a canonical order to all locks in your system (e.g., by object hash) and enforce that all code acquires them in that order.
+
 </details>
 
 ---
 
 **A3 (Hard).** What is the output? Will this ever print "Not started" after the thread launches?
+
 ```java
 class Service {
     boolean started = false;  // not volatile
-    
+
     void start() {
         new Thread(() -> {
             started = true;
         }).start();
-        
+
         // spin-wait
-        while (!started) {} 
+        while (!started) {}
         System.out.println("Started!");
     }
 }
@@ -135,6 +163,7 @@ Without `volatile`, the write by the child thread is not guaranteed to be flushe
 `volatile` establishes a happens-before relationship: the write `started = true` in the child thread happens-before any subsequent read of `started` in the main thread.
 
 **Better fix:** Don't spin-wait at all — use `CountDownLatch`:
+
 ```java
 CountDownLatch latch = new CountDownLatch(1);
 new Thread(() -> { doWork(); latch.countDown(); }).start();
@@ -143,6 +172,7 @@ System.out.println("Started!");
 ```
 
 🔴 **Erklärung:** Spin-wait (`while(!flag){}`) wastes 100% CPU on the waiting thread. Even with `volatile`, it's busy-waiting. Always prefer blocking coordination primitives: `CountDownLatch`, `CyclicBarrier`, `Semaphore`, `BlockingQueue`.
+
 </details>
 
 ---
@@ -162,12 +192,12 @@ public class BoundedBlockingQueue<T> {
     private final Lock lock = new ReentrantLock();
     private final Condition notFull  = lock.newCondition(); // signal when space available
     private final Condition notEmpty = lock.newCondition(); // signal when element available
-    
+
     public BoundedBlockingQueue(int capacity) {
         if (capacity <= 0) throw new IllegalArgumentException();
         this.capacity = capacity;
     }
-    
+
     /**
      * Inserts element, blocking if queue is full until space is available.
      */
@@ -181,7 +211,7 @@ public class BoundedBlockingQueue<T> {
             lock.unlock(); // ALWAYS release in finally
         }
     }
-    
+
     /**
      * Removes and returns head, blocking if queue is empty.
      */
@@ -196,7 +226,7 @@ public class BoundedBlockingQueue<T> {
             lock.unlock();
         }
     }
-    
+
     public int size() {
         lock.lock();
         try { return queue.size(); }
@@ -206,6 +236,7 @@ public class BoundedBlockingQueue<T> {
 ```
 
 **JUnit Test Stub:**
+
 ```java
 class BoundedBlockingQueueTest {
     @Test void put_andTake_singleThread() throws InterruptedException {
@@ -215,7 +246,7 @@ class BoundedBlockingQueueTest {
         assertEquals(3, q.size()); // wait — after take it should be 2
         assertEquals(2, q.size());
     }
-    
+
     @Test void put_blocksWhenFull() throws Exception {
         var q = new BoundedBlockingQueue<Integer>(1);
         q.put(1);
@@ -245,11 +276,11 @@ import java.util.stream.*;
 
 public class ParallelFileProcessor {
     private final ExecutorService executor;
-    
+
     public ParallelFileProcessor(int threadCount) {
         this.executor = Executors.newFixedThreadPool(threadCount);
     }
-    
+
     /**
      * Processes a list of file paths in parallel.
      * Returns a map of filepath → word count.
@@ -268,7 +299,7 @@ public class ParallelFileProcessor {
                 }
             }, executor))
             .toList();
-        
+
         // Wait for all futures, collect results
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
             .thenApply(_ -> futures.stream()
@@ -276,18 +307,18 @@ public class ParallelFileProcessor {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
             .get();
     }
-    
+
     public void shutdown() { executor.shutdown(); }
 }
 ```
 
 🔴 **Erklärung:**
 
-| Mistake | Why | Fix |
-|---|---|---|
-| `CompletableFuture.supplyAsync(fn)` without custom executor | Uses the default `ForkJoinPool.commonPool()` — shared with parallel streams; blocking I/O starves other tasks | Always pass a dedicated `ExecutorService` for I/O-bound tasks |
-| `.get()` inside the `thenApply` lambda | Nested blocking defeats async | Call `.join()` only AFTER `allOf()` resolves — all tasks are guaranteed complete |
-| Not shutting down `ExecutorService` | Thread pool threads keep JVM alive after `main()` exits | Always call `executor.shutdown()` or use try-with-resources |
+| Mistake                                                     | Why                                                                                                           | Fix                                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `CompletableFuture.supplyAsync(fn)` without custom executor | Uses the default `ForkJoinPool.commonPool()` — shared with parallel streams; blocking I/O starves other tasks | Always pass a dedicated `ExecutorService` for I/O-bound tasks                    |
+| `.get()` inside the `thenApply` lambda                      | Nested blocking defeats async                                                                                 | Call `.join()` only AFTER `allOf()` resolves — all tasks are guaranteed complete |
+| Not shutting down `ExecutorService`                         | Thread pool threads keep JVM alive after `main()` exits                                                       | Always call `executor.shutdown()` or use try-with-resources                      |
 
 ---
 

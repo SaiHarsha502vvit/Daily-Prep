@@ -6,14 +6,14 @@
 
 ## Quick Links
 
-| Action | File |
-|--------|------|
-| 🎯 Start Here | [01_Getting_Started/01_Start_Here.md](01_Getting_Started/01_Start_Here.md) |
+| Action                              | File                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| 🎯 Start Here                       | [01_Getting_Started/01_Start_Here.md](01_Getting_Started/01_Start_Here.md)                   |
 | 📅 Daily Timetable (Feb 19 - May 5) | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
-| 📅 Old Plan (Feb 10 reference) | [01_Getting_Started/03_Feb10_Study_Plan.md](01_Getting_Started/03_Feb10_Study_Plan.md) |
-| 🔥 Ultimate DSA Reference | [09_Career_Reference/02_Ultimate_DSA_Guide.md](09_Career_Reference/02_Ultimate_DSA_Guide.md) |
-| 📝 Practice Problems (210+) | [05_Problem_Solving/01_Intro_Checklist.md](05_Problem_Solving/01_Intro_Checklist.md) |
-| ⚡ Quick Reference Sheet | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
+| 📅 Old Plan (Feb 10 reference)      | [01_Getting_Started/03_Feb10_Study_Plan.md](01_Getting_Started/03_Feb10_Study_Plan.md)       |
+| 🔥 Ultimate DSA Reference           | [09_Career_Reference/02_Ultimate_DSA_Guide.md](09_Career_Reference/02_Ultimate_DSA_Guide.md) |
+| 📝 Practice Problems (210+)         | [05_Problem_Solving/01_Intro_Checklist.md](05_Problem_Solving/01_Intro_Checklist.md)         |
+| ⚡ Quick Reference Sheet            | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md)       |
 
 ---
 
@@ -136,12 +136,14 @@ Daily-Prep/
 ## 🔗 QUICK NAVIGATION BY TOPIC
 
 ### Data Structures
+
 - [Arrays & Strings](02_Data_Structures/01_DataStructures_Complete.md)
 - [All Variants (LinkedList, Stack, Queue, Heap, Hash)](02_Data_Structures/02_DataStructures_Variants.md)
 - [Java Collections](02_Data_Structures/03_Collections_Java.md)
 - [Matrix / 2D Arrays](02_Data_Structures/04_2D_Arrays_Matrix.md)
 
 ### Algorithms
+
 - [How to Think & Big O](03_Algorithms/01_Algorithm_Thinking.md)
 - [Sorting](03_Algorithms/02_Sorting_Algorithms.md)
 - [Recursion & Backtracking](03_Algorithms/03_Recursion_Complete.md)
@@ -159,6 +161,7 @@ Daily-Prep/
 - [Monotonic Stack & Queue](03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
 
 ### Coding Patterns
+
 - [Sliding Window](04_Patterns_Templates/01_Sliding_Window.md)
 - [Code Templates](04_Patterns_Templates/02_Code_Templates.md)
 - [Visual Diagrams](04_Patterns_Templates/03_Visual_Diagrams.md)
@@ -168,18 +171,21 @@ Daily-Prep/
 - [Two Pointers](04_Patterns_Templates/07_Two_Pointers_Complete.md)
 
 ### Practice & Problem Solving
+
 - [210+ Practice Problems](05_Problem_Solving/01_Intro_Checklist.md)
 - [Edge Cases](05_Problem_Solving/23_Edge_Cases.md)
 - [Common Mistakes](05_Problem_Solving/24_Common_Mistakes.md)
 - [Problem Origins](05_Problem_Solving/25_Problem_Origins.md)
 
 ### OOP & Design
+
 - [OOP Principles (SOLID)](06_OOP_Design/01_OOPS_Principles.md)
 - [Design Patterns](06_OOP_Design/02_Design_Patterns.md)
 - [System Design](06_OOP_Design/03_System_Design.md)
 - [User/System Flows](06_OOP_Design/04_User_System_Flows.md)
 
 ### Modern Java & Spring Boot
+
 - [Spring Boot Roadmap](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md)
 - [Functional Programming](07_Modern_Java/Ch06_Functional_Programming.md)
 - [Algorithm Engineering](07_Modern_Java/02_Algorithm_Engineering.md)
@@ -196,12 +202,14 @@ Daily-Prep/
 - [**📅 50-Day Spring Boot Curriculum**](07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md)
 
 ### SQL & Database
+
 - [Complete SQL Guide (6000+ lines)](08_SQL/01_SQL_Complete_Guide.md)
 - [SQL Foundations (WHY-HOW)](11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md)
 - [SQL Data Analysis (JOINs, CTEs)](11_SQL_Complete/02_SQL_Data_Analysis.md)
 - [SQL Practice Projects](11_SQL_Complete/04_SQL_Practice_Projects.md)
 
 ### Career & Reference
+
 - [Career Guide](09_Career_Reference/01_Career_Guide.md)
 - [Ultimate DSA Reference](09_Career_Reference/02_Ultimate_DSA_Guide.md)
 - [Quick Reference Sheet](09_Career_Reference/11_Quick_Reference.md)
@@ -210,6 +218,7 @@ Daily-Prep/
 - [Resources & Links](09_Career_Reference/14_Resources_Links.md)
 
 ### Enterprise & Real-World
+
 - [ERP Complete Guide](10_Enterprise_Systems/01_ERP_Complete_Guide.md)
 - [ERP Finance Deep Dive](10_Enterprise_Systems/02_ERP_Deep_Dive_Finance_RealWorld.md)
 - Real-World Problems: [Part 1](10_Enterprise_Systems/03_RealWorld_Problems_DSA.md) | [Part 2](10_Enterprise_Systems/04_RealWorld_Problems_Part2.md) | [Part 3](10_Enterprise_Systems/05_RealWorld_Problems_Part3.md)
@@ -219,20 +228,20 @@ Daily-Prep/
 
 ## 📊 FILE COUNT
 
-| Folder | Files | Content |
-|--------|-------|---------|
-| 01_Getting_Started | 3 | Start guide, Calendar, Old plan |
-| 02_Data_Structures | 4 | Arrays, Variants, Collections, Matrix |
-| 03_Algorithms | 15 | All algorithms (basic → advanced) |
-| 04_Patterns_Templates | 7 | Coding patterns & templates |
-| 05_Problem_Solving | 4 | Practice (210+ problems) |
-| 06_OOP_Design | 4 | OOP, Design, System |
-| 07_Modern_Java | 28 | Functional, Engineering, Spring Boot |
-| 08_SQL_Database | 1 | Complete SQL (6000+ lines) |
-| 09_Career_Reference | 6 | Career, Reference, Resources |
-| 10_Enterprise_Systems | 6 | ERP, Real-world problems |
-| 11_SQL_Complete | 4 | SQL Deep Dive + Projects |
-| **TOTAL** | **82** | **Complete learning system** |
+| Folder                | Files  | Content                               |
+| --------------------- | ------ | ------------------------------------- |
+| 01_Getting_Started    | 3      | Start guide, Calendar, Old plan       |
+| 02_Data_Structures    | 4      | Arrays, Variants, Collections, Matrix |
+| 03_Algorithms         | 15     | All algorithms (basic → advanced)     |
+| 04_Patterns_Templates | 7      | Coding patterns & templates           |
+| 05_Problem_Solving    | 4      | Practice (210+ problems)              |
+| 06_OOP_Design         | 4      | OOP, Design, System                   |
+| 07_Modern_Java        | 28     | Functional, Engineering, Spring Boot  |
+| 08_SQL_Database       | 1      | Complete SQL (6000+ lines)            |
+| 09_Career_Reference   | 6      | Career, Reference, Resources          |
+| 10_Enterprise_Systems | 6      | ERP, Real-world problems              |
+| 11_SQL_Complete       | 4      | SQL Deep Dive + Projects              |
+| **TOTAL**             | **82** | **Complete learning system**          |
 
 ---
 
@@ -240,12 +249,12 @@ Daily-Prep/
 
 **76-Day Journey: February 19 → May 5, 2026**
 
-| Phase | Weeks | Focus |
-|-------|-------|-------|
-| Phase 1: Foundations | Week 1-3 | Arrays, Strings, Sorting, Linked List, Recursion |
-| Phase 2: Core Patterns | Week 4-6 | Stack, Queue, HashMap, Sliding Window, Trees |
-| Phase 3: Advanced | Week 7-10 | Heaps, Graphs, DP, Greedy, Backtracking |
-| Phase 4: Integration | Week 11 | SQL, System Design, Mock Interviews |
+| Phase                  | Weeks     | Focus                                            |
+| ---------------------- | --------- | ------------------------------------------------ |
+| Phase 1: Foundations   | Week 1-3  | Arrays, Strings, Sorting, Linked List, Recursion |
+| Phase 2: Core Patterns | Week 4-6  | Stack, Queue, HashMap, Sliding Window, Trees     |
+| Phase 3: Advanced      | Week 7-10 | Heaps, Graphs, DP, Greedy, Backtracking          |
+| Phase 4: Integration   | Week 11   | SQL, System Design, Mock Interviews              |
 
 Open [02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) for the full day-by-day plan.
 

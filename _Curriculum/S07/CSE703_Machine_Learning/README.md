@@ -17,20 +17,20 @@ A rigorous introduction to machine learning covering the full pipeline from data
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | ML pipeline: data collection, cleaning, feature engineering, train/dev/test split |
-| 2 | Linear regression: MSE loss, gradient descent, normal equations, regularization (Ridge/Lasso) |
-| 3 | Classification: logistic regression, sigmoid, cross-entropy loss, decision boundaries |
-| 4 | Decision trees: ID3, C4.5, entropy, information gain, pruning strategies |
-| 5 | Ensemble methods: bagging (Random Forests), boosting (AdaBoost, XGBoost, LightGBM) |
-| 6 | Support Vector Machines: max-margin, kernel trick, RBF kernel, soft-margin |
-| 7 | Unsupervised learning: k-means, DBSCAN, hierarchical clustering, elbow method |
-| 8 | Dimensionality reduction: PCA, LDA, t-SNE, autoencoders intro |
-| 9 | Neural networks: perceptron, multi-layer perceptron, backpropagation from scratch |
-| 10 | Deep learning: CNNs, RNNs, LSTMs, attention mechanism intro |
-| 11 | NLP foundations: word embeddings (Word2Vec, GloVe), transformers, BERT intro |
-| 12 | Model deployment: model serialization, ONNX, serving infrastructure, monitoring drift |
+| Week | Topic                                                                                         |
+| ---- | --------------------------------------------------------------------------------------------- |
+| 1    | ML pipeline: data collection, cleaning, feature engineering, train/dev/test split             |
+| 2    | Linear regression: MSE loss, gradient descent, normal equations, regularization (Ridge/Lasso) |
+| 3    | Classification: logistic regression, sigmoid, cross-entropy loss, decision boundaries         |
+| 4    | Decision trees: ID3, C4.5, entropy, information gain, pruning strategies                      |
+| 5    | Ensemble methods: bagging (Random Forests), boosting (AdaBoost, XGBoost, LightGBM)            |
+| 6    | Support Vector Machines: max-margin, kernel trick, RBF kernel, soft-margin                    |
+| 7    | Unsupervised learning: k-means, DBSCAN, hierarchical clustering, elbow method                 |
+| 8    | Dimensionality reduction: PCA, LDA, t-SNE, autoencoders intro                                 |
+| 9    | Neural networks: perceptron, multi-layer perceptron, backpropagation from scratch             |
+| 10   | Deep learning: CNNs, RNNs, LSTMs, attention mechanism intro                                   |
+| 11   | NLP foundations: word embeddings (Word2Vec, GloVe), transformers, BERT intro                  |
+| 12   | Model deployment: model serialization, ONNX, serving infrastructure, monitoring drift         |
 
 ## Linked Existing Content
 

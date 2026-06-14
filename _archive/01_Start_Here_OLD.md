@@ -342,7 +342,7 @@
 | `05_Problem_Solving/`    | Practice (210+ problems) | Daily practice           |
 | `06_OOP_Design/`         | Design & architecture    | Week 6-8                 |
 | `07_Modern_Java/`        | Advanced Java            | Week 7-8                 |
-| `08_SQL/`       | SQL mastery              | Week 9-12                |
+| `08_SQL/`                | SQL mastery              | Week 9-12                |
 | `09_Career_Reference/`   | Quick refs & career      | Always                   |
 
 ---

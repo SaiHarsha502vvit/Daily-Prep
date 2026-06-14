@@ -17,20 +17,20 @@ Study of the principles, architectures, and patterns that underpin modern distri
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | Distributed system fundamentals: fallacies, network models, timing assumptions |
-| 2 | CAP theorem and PACELC: consistency, availability, partition tolerance trade-offs |
-| 3 | Logical clocks: Lamport timestamps, vector clocks, and causal consistency |
-| 4 | Consensus algorithms: Paxos, Raft, Multi-Paxos, and practical implementations |
-| 5 | Replication strategies: primary-backup, multi-leader, leaderless (CRDTs) |
-| 6 | Partitioning: consistent hashing, virtual nodes, rebalancing strategies |
-| 7 | Event-driven architecture: message brokers, Kafka topics, consumer groups |
-| 8 | Domain-Driven Design: bounded contexts, aggregates, domain events |
-| 9 | Event Sourcing: event store, projections, snapshots, and versioning |
-| 10 | Saga pattern: choreography vs. orchestration, compensating transactions |
-| 11 | Distributed transactions: two-phase commit, three-phase commit, Sagas |
-| 12 | Capstone: design and implement a distributed e-commerce system with event sourcing and saga |
+| Week | Topic                                                                                       |
+| ---- | ------------------------------------------------------------------------------------------- |
+| 1    | Distributed system fundamentals: fallacies, network models, timing assumptions              |
+| 2    | CAP theorem and PACELC: consistency, availability, partition tolerance trade-offs           |
+| 3    | Logical clocks: Lamport timestamps, vector clocks, and causal consistency                   |
+| 4    | Consensus algorithms: Paxos, Raft, Multi-Paxos, and practical implementations               |
+| 5    | Replication strategies: primary-backup, multi-leader, leaderless (CRDTs)                    |
+| 6    | Partitioning: consistent hashing, virtual nodes, rebalancing strategies                     |
+| 7    | Event-driven architecture: message brokers, Kafka topics, consumer groups                   |
+| 8    | Domain-Driven Design: bounded contexts, aggregates, domain events                           |
+| 9    | Event Sourcing: event store, projections, snapshots, and versioning                         |
+| 10   | Saga pattern: choreography vs. orchestration, compensating transactions                     |
+| 11   | Distributed transactions: two-phase commit, three-phase commit, Sagas                       |
+| 12   | Capstone: design and implement a distributed e-commerce system with event sourcing and saga |
 
 ## Linked Existing Content
 

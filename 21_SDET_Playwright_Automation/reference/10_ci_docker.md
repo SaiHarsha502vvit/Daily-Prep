@@ -31,40 +31,40 @@
 
 In CI:
 
-| Layer | What happens |
-|---|---|
-| Runner | Fresh VM or container per job. Default disk, RAM, CPU per CI tier. |
-| Setup | Clone repo, install Node, install dependencies, install browsers. |
-| Test | Run Playwright. |
-| Artifact upload | Save reports, traces, screenshots, videos. |
-| Teardown | Runner is destroyed (in most CI). |
+| Layer           | What happens                                                       |
+| --------------- | ------------------------------------------------------------------ |
+| Runner          | Fresh VM or container per job. Default disk, RAM, CPU per CI tier. |
+| Setup           | Clone repo, install Node, install dependencies, install browsers.  |
+| Test            | Run Playwright.                                                    |
+| Artifact upload | Save reports, traces, screenshots, videos.                         |
+| Teardown        | Runner is destroyed (in most CI).                                  |
 
 ### 1.1 Differences from local
 
-| Aspect | Local | CI |
-|---|---|---|
-| Browser presence | Likely installed | Must install per run (cache helps) |
-| OS dependencies | Likely installed | Must install per run |
-| Speed | Variable | Steadier (dedicated runner) |
-| Memory | Often plenty | Tightly bounded |
-| CPU | Bursty | Steady |
-| Network | Stable home network | Shared cloud network |
-| File system | Persistent | Wiped per job |
-| Stdout/stderr | Streamed to terminal | Captured to log file |
+| Aspect           | Local                | CI                                 |
+| ---------------- | -------------------- | ---------------------------------- |
+| Browser presence | Likely installed     | Must install per run (cache helps) |
+| OS dependencies  | Likely installed     | Must install per run               |
+| Speed            | Variable             | Steadier (dedicated runner)        |
+| Memory           | Often plenty         | Tightly bounded                    |
+| CPU              | Bursty               | Steady                             |
+| Network          | Stable home network  | Shared cloud network               |
+| File system      | Persistent           | Wiped per job                      |
+| Stdout/stderr    | Streamed to terminal | Captured to log file               |
 
 ### 1.2 What runs once per CI vs once per shard
 
-| Item | Per-CI-invocation | Per-shard |
-|---|---|---|
-| Repo checkout | If shards reuse — once | Per shard |
-| Node install | Once | Per shard |
-| `npm ci` | Once with cache | Per shard |
-| `npx playwright install` | Once with cache | Per shard |
-| Browser launch | N/A (per worker) | Per worker × workers |
-| Setup project | N/A | Per shard |
-| Tests | N/A | Per shard, partitioned |
-| Artifact upload | Per shard | Per shard |
-| Report merge | Once at end | N/A |
+| Item                     | Per-CI-invocation      | Per-shard              |
+| ------------------------ | ---------------------- | ---------------------- |
+| Repo checkout            | If shards reuse — once | Per shard              |
+| Node install             | Once                   | Per shard              |
+| `npm ci`                 | Once with cache        | Per shard              |
+| `npx playwright install` | Once with cache        | Per shard              |
+| Browser launch           | N/A (per worker)       | Per worker × workers   |
+| Setup project            | N/A                    | Per shard              |
+| Tests                    | N/A                    | Per shard, partitioned |
+| Artifact upload          | Per shard              | Per shard              |
+| Report merge             | Once at end            | N/A                    |
 
 ---
 
@@ -213,7 +213,7 @@ The `github` reporter writes annotations that show as inline failures on the PR'
 
 ```yaml
 - uses: actions/upload-artifact@v4
-  if: failure()              # only upload if a step failed
+  if: failure() # only upload if a step failed
   with:
     name: playwright-report
     path: playwright-report/
@@ -261,13 +261,13 @@ steps:
       versionSpec: $(NODE_VERSION)
 
   - script: npm ci
-    displayName: 'Install dependencies'
+    displayName: "Install dependencies"
 
   - script: npx playwright install --with-deps chromium
-    displayName: 'Install browsers'
+    displayName: "Install browsers"
 
   - script: npx playwright test
-    displayName: 'Run tests'
+    displayName: "Run tests"
     env:
       ORANGEHRM_USERNAME: $(orangehrmUsername)
       ORANGEHRM_PASSWORD: $(orangehrmPassword)
@@ -305,12 +305,12 @@ Azure DevOps automatically partitions jobs. `System.JobPositionInPhase` and `Sys
 
 ```yaml
 variables:
-  - group: production-secrets    # variable group from Library
-  
+  - group: production-secrets # variable group from Library
+
 steps:
   - script: npx playwright test
     env:
-      DB_PASSWORD: $(dbPassword)   # mapped from variable group
+      DB_PASSWORD: $(dbPassword) # mapped from variable group
 ```
 
 `variable group` lets you reuse secrets across pipelines.
@@ -336,7 +336,7 @@ steps:
 image: mcr.microsoft.com/playwright:v1.49.0-jammy
 
 variables:
-  CI: 'true'
+  CI: "true"
 
 stages:
   - test
@@ -469,11 +469,11 @@ pipeline {
 mcr.microsoft.com/playwright:v{version}-{ubuntu-codename}
 ```
 
-| Tag | Ubuntu | Notes |
-|---|---|---|
-| `v1.49.0-jammy` | 22.04 LTS | ✅ Recommended for prod CI |
+| Tag             | Ubuntu    | Notes                       |
+| --------------- | --------- | --------------------------- |
+| `v1.49.0-jammy` | 22.04 LTS | ✅ Recommended for prod CI  |
 | `v1.49.0-focal` | 20.04 LTS | Legacy — for older CI hosts |
-| `v1.49.0-noble` | 24.04 LTS | Newest — cutting-edge |
+| `v1.49.0-noble` | 24.04 LTS | Newest — cutting-edge       |
 
 Always pin the EXACT Playwright version. Mismatches between `FROM` tag and `package.json` `@playwright/test` version cause subtle browser-binary issues.
 
@@ -497,21 +497,21 @@ Always pin the EXACT Playwright version. Mismatches between `FROM` tag and `pack
 
 ### 7.4 Size
 
-| Tag | Compressed | Uncompressed |
-|---|---|---|
-| `v1.49.0-jammy` | ~1.4 GB | ~3.6 GB |
-| `v1.49.0-jammy` (after our COPY + npm ci) | ~2.2 GB | ~5.0 GB |
+| Tag                                       | Compressed | Uncompressed |
+| ----------------------------------------- | ---------- | ------------ |
+| `v1.49.0-jammy`                           | ~1.4 GB    | ~3.6 GB      |
+| `v1.49.0-jammy` (after our COPY + npm ci) | ~2.2 GB    | ~5.0 GB      |
 
 Pulls take 30–90 seconds on a fast CI connection. Cache the layer in CI.
 
 ### 7.5 Alternatives
 
-| Image | Use when |
-|---|---|
-| `mcr.microsoft.com/playwright:v1.49.0-jammy` | Default — recommended |
-| `mcr.microsoft.com/playwright/python` | Python tests (not relevant here) |
-| `mcr.microsoft.com/playwright/java` | Java tests |
-| Custom Dockerfile from scratch | You need custom fonts, system deps, or want a slimmer image |
+| Image                                        | Use when                                                    |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| `mcr.microsoft.com/playwright:v1.49.0-jammy` | Default — recommended                                       |
+| `mcr.microsoft.com/playwright/python`        | Python tests (not relevant here)                            |
+| `mcr.microsoft.com/playwright/java`          | Java tests                                                  |
+| Custom Dockerfile from scratch               | You need custom fonts, system deps, or want a slimmer image |
 
 ---
 
@@ -671,13 +671,13 @@ services:
 
 ### 9.3 Common flags
 
-| Flag | Purpose |
-|---|---|
-| `shm_size: "2gb"` | Avoid Chromium OOM on /dev/shm |
-| `depends_on.condition: service_healthy` | Wait for app readiness |
-| `volumes: ./report:/app/report` | Persist artifacts on host |
-| `env_file: .env` | Load env vars from file |
-| `command: ["npx", "playwright", "test", "--project=api"]` | Override the default test run |
+| Flag                                                      | Purpose                        |
+| --------------------------------------------------------- | ------------------------------ |
+| `shm_size: "2gb"`                                         | Avoid Chromium OOM on /dev/shm |
+| `depends_on.condition: service_healthy`                   | Wait for app readiness         |
+| `volumes: ./report:/app/report`                           | Persist artifacts on host      |
+| `env_file: .env`                                          | Load env vars from file        |
+| `command: ["npx", "playwright", "test", "--project=api"]` | Override the default test run  |
 
 ---
 
@@ -686,6 +686,7 @@ services:
 ### 10.1 The math
 
 For N shards on M machines:
+
 - Wall-clock = (total_runtime / N) + per_shard_ramp_up
 - Per-shard cost = ramp-up + (suite_size / N) × avg_test_duration
 
@@ -693,19 +694,20 @@ Ramp-up (clone, install, browser install, fixture setup): 60–120 seconds. If a
 
 ### 10.2 Optimal shard count
 
-| Suite size | Recommended shards |
-|---|---|
-| < 50 tests | 1 (don't shard — ramp-up dominates) |
-| 50–200 tests | 2–4 |
-| 200–1000 tests | 4–8 |
-| 1000–5000 tests | 8–16 |
-| > 5000 tests | 16+ (or multiple matrices) |
+| Suite size      | Recommended shards                  |
+| --------------- | ----------------------------------- |
+| < 50 tests      | 1 (don't shard — ramp-up dominates) |
+| 50–200 tests    | 2–4                                 |
+| 200–1000 tests  | 4–8                                 |
+| 1000–5000 tests | 8–16                                |
+| > 5000 tests    | 16+ (or multiple matrices)          |
 
 The break-even point: a shard should run for 3–10 minutes of tests. Less than 3 min, ramp-up dominates. More than 10 min, you could parallelise more.
 
 ### 10.3 Per-shard CI cost
 
 Each shard is a separate CI job. Costs scale linearly:
+
 - 4 shards = 4 jobs = 4× per-minute cost
 - 8 shards = 8 jobs = 8× per-minute cost
 
@@ -714,11 +716,13 @@ For paid CI, balance wall-clock vs cost. Many teams optimise for wall-clock duri
 ### 10.4 Shard imbalance
 
 Shards split by COUNT, not duration. If 10% of tests take 90% of time:
+
 - 4 shards each get 25% of tests.
 - One shard happens to have all the slow tests.
 - That shard takes 90% of total wall-clock; others finish in 10%.
 
 Mitigations:
+
 - Use `test.slow()` to mark known-slow tests; Playwright groups them across shards.
 - Run a profiling pass; identify slow tests; split them manually across files.
 - Accept imbalance; total wall-clock is bounded by the worst shard.
@@ -759,8 +763,8 @@ Job: shard 4 → blob-report-4.zip
 
 ```yaml
 merge:
-  needs: test                # depends on shard jobs
-  if: ${{ !cancelled() }}    # run even if some shards failed
+  needs: test # depends on shard jobs
+  if: ${{ !cancelled() }} # run even if some shards failed
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
@@ -792,6 +796,7 @@ Produces both `playwright-report/` (HTML) AND `test-results/junit.xml`. Useful f
 ### 11.4 The merged report's filtering
 
 The merged HTML report aggregates results across all shards. You can filter by:
+
 - Project (if you ran multiple projects)
 - Status (passed/failed/flaky/skipped)
 - Tag (if you used annotations)
@@ -805,21 +810,21 @@ Useful for triaging a 500-test suite where 5 failed.
 
 ### 12.1 What to keep
 
-| Artifact | Use | Retention |
-|---|---|---|
-| HTML report | Human triaging | 14 days |
-| Trace files | Detailed debugging | 7 days (large) |
-| Screenshots | Quick visual debugging | 7 days |
-| Videos | Edge-case debugging | 3 days (largest) |
-| JUnit XML | CI dashboard integration | 90 days (small) |
-| JSON results | Analytics pipeline | 90 days |
-| `blob-report/` | Sharded → merged | 1 day (intermediate) |
+| Artifact       | Use                      | Retention            |
+| -------------- | ------------------------ | -------------------- |
+| HTML report    | Human triaging           | 14 days              |
+| Trace files    | Detailed debugging       | 7 days (large)       |
+| Screenshots    | Quick visual debugging   | 7 days               |
+| Videos         | Edge-case debugging      | 3 days (largest)     |
+| JUnit XML      | CI dashboard integration | 90 days (small)      |
+| JSON results   | Analytics pipeline       | 90 days              |
+| `blob-report/` | Sharded → merged         | 1 day (intermediate) |
 
 ### 12.2 Conditional upload
 
 ```yaml
 - uses: actions/upload-artifact@v4
-  if: failure() && !cancelled()      # only on real failures
+  if: failure() && !cancelled() # only on real failures
   with:
     name: playwright-failures
     path: |
@@ -831,12 +836,12 @@ Useful for triaging a 500-test suite where 5 failed.
 
 ### 12.3 Artifact size limits
 
-| CI | Per-artifact limit | Total storage limit |
-|---|---|---|
-| GitHub Actions | 10 GB | Account-level, complex |
-| Azure DevOps | None (configurable) | Per-org |
-| GitLab.com | 1 GB | Per-tier |
-| CircleCI | 3 GB | Per-tier |
+| CI             | Per-artifact limit  | Total storage limit    |
+| -------------- | ------------------- | ---------------------- |
+| GitHub Actions | 10 GB               | Account-level, complex |
+| Azure DevOps   | None (configurable) | Per-org                |
+| GitLab.com     | 1 GB                | Per-tier               |
+| CircleCI       | 3 GB                | Per-tier               |
 
 If your trace files routinely exceed limits, switch to `trace: 'retain-on-failure'` and compress.
 
@@ -846,7 +851,7 @@ If your trace files routinely exceed limits, switch to `trace: 'retain-on-failur
 # .github/workflows/cleanup.yml
 on:
   schedule:
-    - cron: '0 0 * * 0'   # weekly
+    - cron: "0 0 * * 0" # weekly
 
 jobs:
   cleanup:
@@ -854,7 +859,7 @@ jobs:
     steps:
       - uses: c-hive/gha-remove-artifacts@v1
         with:
-          age: '14 days'
+          age: "14 days"
           skip-recent: 5
 ```
 
@@ -866,11 +871,11 @@ Removes artifacts older than 14 days, keeping the 5 most recent. Cost-saving for
 
 ### 13.1 The pattern
 
-| Stage | What |
-|---|---|
-| Local dev | `.env` file (gitignored) |
-| CI runner | CI platform's secret store, injected as env vars at job start |
-| Vault (advanced) | Pull from HashiCorp Vault / AWS Secrets Manager at runtime |
+| Stage            | What                                                          |
+| ---------------- | ------------------------------------------------------------- |
+| Local dev        | `.env` file (gitignored)                                      |
+| CI runner        | CI platform's secret store, injected as env vars at job start |
+| Vault (advanced) | Pull from HashiCorp Vault / AWS Secrets Manager at runtime    |
 
 ### 13.2 GitHub Actions secrets
 
@@ -923,6 +928,7 @@ Audit your reporter implementations. Treat CI logs as if anyone in the company c
 ### 13.6 Rotation
 
 Production credentials should rotate quarterly. CI secret stores let you update without code changes:
+
 - Update in CI secrets UI.
 - Next job uses the new value automatically.
 
@@ -958,13 +964,13 @@ Why: Chromium uses `/dev/shm` (shared memory) heavily for IPC. Docker's default 
 
 ### 14.2 Worker count
 
-| Runner | Memory | Recommended workers |
-|---|---|---|
-| GitHub Actions standard (Linux) | 7 GB, 2 CPU | 2 |
-| GitHub Actions large | 16 GB, 4 CPU | 4 |
-| GitHub Actions XL | 32 GB, 8 CPU | 8 |
-| Azure DevOps standard | 7 GB | 2 |
-| GitLab small | 4 GB | 1 |
+| Runner                          | Memory       | Recommended workers |
+| ------------------------------- | ------------ | ------------------- |
+| GitHub Actions standard (Linux) | 7 GB, 2 CPU  | 2                   |
+| GitHub Actions large            | 16 GB, 4 CPU | 4                   |
+| GitHub Actions XL               | 32 GB, 8 CPU | 8                   |
+| Azure DevOps standard           | 7 GB         | 2                   |
+| GitLab small                    | 4 GB         | 1                   |
 
 ```typescript
 workers: process.env.CI ? Math.min(parseInt(process.env.PLAYWRIGHT_WORKERS ?? '4'), 8) : undefined,
@@ -1018,6 +1024,7 @@ RUN npm ci --ignore-scripts
 ### 14.6 ramp-up time vs sharding
 
 For a 5-min test suite + 2-min ramp-up:
+
 - 1 shard: 7 min total.
 - 2 shards: 2.5 min tests + 2 min ramp-up = 4.5 min per shard, max 4.5 min total.
 - 4 shards: 1.25 min tests + 2 min ramp-up = 3.25 min per shard.
@@ -1031,12 +1038,12 @@ Beyond 4 shards, ramp-up dominates. Tune accordingly.
 
 ### 15.1 What to cache
 
-| Cache | Benefit |
-|---|---|
-| `node_modules/` (via `npm ci` + lock file) | 20–40 s |
-| `~/.cache/ms-playwright` (browsers) | 30–60 s |
-| Built test artifacts (rarely useful) | Variable |
-| Docker layers (in registry) | 60–120 s |
+| Cache                                      | Benefit  |
+| ------------------------------------------ | -------- |
+| `node_modules/` (via `npm ci` + lock file) | 20–40 s  |
+| `~/.cache/ms-playwright` (browsers)        | 30–60 s  |
+| Built test artifacts (rarely useful)       | Variable |
+| Docker layers (in registry)                | 60–120 s |
 
 ### 15.2 GitHub Actions cache
 
@@ -1142,13 +1149,16 @@ Use sparingly — logs get massive. For one-off CI debugging, enable temporarily
 ```typescript
 class FailureDumper implements Reporter {
   onTestEnd(test: TestCase, result: TestResult): void {
-    if (result.status === 'failed') {
-      console.log('=== FAILURE DETAILS ===');
-      console.log('Test:', test.title);
-      console.log('File:', test.location.file);
-      console.log('Error:', result.error?.message);
-      console.log('Stack:', result.error?.stack);
-      console.log('Attachments:', result.attachments.map(a => a.path));
+    if (result.status === "failed") {
+      console.log("=== FAILURE DETAILS ===");
+      console.log("Test:", test.title);
+      console.log("File:", test.location.file);
+      console.log("Error:", result.error?.message);
+      console.log("Stack:", result.error?.stack);
+      console.log(
+        "Attachments:",
+        result.attachments.map((a) => a.path),
+      );
     }
   }
 }
@@ -1207,6 +1217,7 @@ Outputs to stdout — visible in CI logs without needing to download trace files
 **Cause:** Linux without user namespace cloning. Common in nested containers.
 
 **Fix:** `--no-sandbox` flag:
+
 ```typescript
 launchOptions: {
   args: ['--no-sandbox'],
@@ -1246,6 +1257,7 @@ Only safe in trusted environments. Don't run user-supplied URLs without sandbox.
 **Cause:** Architecture mismatch.
 
 **Fix:** Use multi-arch images (Microsoft now ships ARM64 variants):
+
 ```bash
 docker pull --platform linux/arm64 mcr.microsoft.com/playwright:v1.49.0-jammy
 ```
@@ -1270,26 +1282,26 @@ docker pull --platform linux/arm64 mcr.microsoft.com/playwright:v1.49.0-jammy
 
 ## 18. Anti-pattern catalog
 
-| ❌ | ✅ |
-|---|---|
-| Default Docker `/dev/shm` (64 MB) | `--shm-size=2g` |
-| `npm install` in Dockerfile | `npm ci --ignore-scripts` |
-| `COPY . .` before `npm ci` | Layer order: manifests first, source second |
-| No `.dockerignore` | Comprehensive `.dockerignore` |
-| `workers: 16` on 2 GB runner | Cap by `min(cpus, ram_gb / 0.6)` |
-| `trace: 'on'` in CI | `trace: 'retain-on-failure'` |
-| Hardcoded secrets in workflow YAML | CI secret store |
-| `npm install --no-package-lock` to skip lock issues | Fix the lock file |
-| Browser install without cache | Cache `~/.cache/ms-playwright` |
-| Single 60-minute job for 500 tests | Shard 4–8 ways |
-| No timeout on CI job | `timeout-minutes: 60` |
-| Always upload all artifacts | `if: failure()` for traces/videos |
-| Different Playwright versions per shard | Pin in package.json + lock file |
-| `console.log(token)` for "debugging" | Masked output; remove before merge |
-| Production credentials in dev CI runs | Separate dev / prod credentials |
-| No `if: !cancelled()` on merge job | Without it, cancellation breaks merge |
-| Docker run as root (CVE risk) | `USER pwuser` |
-| Image without pinned Playwright version | `FROM ...:v1.49.0-jammy` exact pin |
+| ❌                                                  | ✅                                          |
+| --------------------------------------------------- | ------------------------------------------- |
+| Default Docker `/dev/shm` (64 MB)                   | `--shm-size=2g`                             |
+| `npm install` in Dockerfile                         | `npm ci --ignore-scripts`                   |
+| `COPY . .` before `npm ci`                          | Layer order: manifests first, source second |
+| No `.dockerignore`                                  | Comprehensive `.dockerignore`               |
+| `workers: 16` on 2 GB runner                        | Cap by `min(cpus, ram_gb / 0.6)`            |
+| `trace: 'on'` in CI                                 | `trace: 'retain-on-failure'`                |
+| Hardcoded secrets in workflow YAML                  | CI secret store                             |
+| `npm install --no-package-lock` to skip lock issues | Fix the lock file                           |
+| Browser install without cache                       | Cache `~/.cache/ms-playwright`              |
+| Single 60-minute job for 500 tests                  | Shard 4–8 ways                              |
+| No timeout on CI job                                | `timeout-minutes: 60`                       |
+| Always upload all artifacts                         | `if: failure()` for traces/videos           |
+| Different Playwright versions per shard             | Pin in package.json + lock file             |
+| `console.log(token)` for "debugging"                | Masked output; remove before merge          |
+| Production credentials in dev CI runs               | Separate dev / prod credentials             |
+| No `if: !cancelled()` on merge job                  | Without it, cancellation breaks merge       |
+| Docker run as root (CVE risk)                       | `USER pwuser`                               |
+| Image without pinned Playwright version             | `FROM ...:v1.49.0-jammy` exact pin          |
 
 ---
 

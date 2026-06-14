@@ -49,7 +49,6 @@ _"Once you understand IoC, everything in Spring makes sense"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # TIER 2: SPRING CORE (IoC & DI)
@@ -60,16 +59,15 @@ _"Once you understand IoC, everything in Spring makes sense"_
 
 ### 🔵 WHY: The Problem IoC Solves
 
-
-
 🔬 **Section Challenge — Chapter 1: Inversion of Control (IoC) - The Philosophy**
 
 **Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
+
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
-</details>
 
+</details>
 
 ## The Problem: Tight Coupling
 
@@ -85,26 +83,28 @@ public void processOrder(Order order) {
 }
 
 **Problems**:
+
 - ❌ Can't unit test (stuck with real database, real email)
 - ❌ Can't switch implementations (MySQL → PostgreSQL = rewrite!)
 - ❌ Configuration scattered everywhere (API keys in code!)
 - ❌ Every class manages its own dependencies (circular dependencies!)
-WITH IoC (Spring approach):
-public class OrderService {
-// Dependencies are INJECTED (someone else provides them)
-private final UserRepository userRepo;
-private final EmailService email;
-private final PaymentGateway payment;
-public OrderService(UserRepository userRepo,
-EmailService email,
-PaymentGateway payment) {
-this.userRepo = userRepo;
-this.email = email;
-this.payment = payment;
-}
-}
+  WITH IoC (Spring approach):
+  public class OrderService {
+  // Dependencies are INJECTED (someone else provides them)
+  private final UserRepository userRepo;
+  private final EmailService email;
+  private final PaymentGateway payment;
+  public OrderService(UserRepository userRepo,
+  EmailService email,
+  PaymentGateway payment) {
+  this.userRepo = userRepo;
+  this.email = email;
+  this.payment = payment;
+  }
+  }
 
 **Benefits**:
+
 - ✅ Easy unit testing (inject mocks!)
 - ✅ Switch implementations without changing code
 - ✅ Centralized configuration (application.yml)
@@ -154,7 +154,6 @@ this.payment = payment;
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### IoC Container Resolution — Step-by-Step Flow
 
@@ -221,10 +220,7 @@ this.payment = payment;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — The Problem: Tight Coupling**
 
@@ -238,14 +234,12 @@ this.payment = payment;
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
-</details>
 
+</details>
 
 ## Chapter 2: Spring Beans - The Building Blocks
 
 ### 🔵 WHAT: What is a Spring Bean?
-
-
 
 🔬 **Section Challenge — Chapter 2: Spring Beans - The Building Blocks**
 
@@ -259,22 +253,23 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
-</details>
 
+</details>
 
 ## Spring Bean Definition
 
 A Spring Bean is simply an object that is:
+
 1. Created by the Spring IoC Container
 2. Configured by Spring (dependencies injected)
 3. Managed by Spring (lifecycle, scope)
 
 **Plain Java Object**:
-User user = new User();  // You create it, you manage it
+User user = new User(); // You create it, you manage it
 
 **Spring Bean**:
 @Component
-public class UserService { ... }  // Spring creates and manages it
+public class UserService { ... } // Spring creates and manages it
 
 💡 **KEY INSIGHT:**
 Spring Beans are the objects that live in Spring's ApplicationContext
@@ -364,8 +359,6 @@ public class AppConfig { }
 
 ---
 
-
-
 🔬 **Section Challenge — Spring Bean Definition**
 
 **Challenge 1 (Bean Lifecycle @PostConstruct and @PreDestroy):** A `@Service` bean has `@PostConstruct void init()` and `@PreDestroy void cleanup()`. **Who** calls these? **When** exactly are they invoked relative to dependency injection? **What** happens if `init()` throws an exception?
@@ -378,8 +371,8 @@ public class AppConfig { }
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
-</details>
 
+</details>
 
 ## Chapter 3: Dependency Injection Methods
 
@@ -400,7 +393,6 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 1. Constructor Injection (RECOMMENDED)
 
@@ -530,16 +522,15 @@ class GoodServiceTest {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 3: Dependency Injection Methods**
 
 **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+
 <details><summary>Answer</summary>
 
 Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-</details>
 
+</details>
 
 ## Chapter 4: Resolving Dependencies (@Qualifier, @Primary)
 
@@ -659,8 +650,6 @@ public class UserService {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 4: Resolving Dependencies (@Qualifier, @Primary)**
 
 **Challenge 1 (@Primary vs @Qualifier Precedence):** Two `PaymentService` implementations: `StripePaymentService` annotated `@Primary` and `PayPalPaymentService`. You inject with `@Autowired @Qualifier("payPalPaymentService")`. **Who** wins? **When** does `@Primary` take effect? **What** if both `@Primary` and `@Qualifier` are present?
@@ -673,8 +662,8 @@ public class UserService {
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
-</details>
 
+</details>
 
 ## Chapter 5: Bean Scopes
 
@@ -700,7 +689,6 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Singleton Scope (Default)
 
@@ -889,7 +877,6 @@ public class OrderService {
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### Lifecycle Callbacks in Code
 
@@ -1174,8 +1161,6 @@ public class SpringContextHolder implements ApplicationContextAware {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: ApplicationContext - The IoC Container**
 
 **Challenge 1 (Trace — Who/When/What):** You call `new SpringApplication(App.class).run(args)`. **Who** creates the `ApplicationContext`? **When** does bean initialization happen relative to your `main()` completing? **What** is the exact order: `@Configuration` parsing → `@Bean` method execution → `@PostConstruct` → `CommandLineRunner`?
@@ -1185,7 +1170,6 @@ public class SpringContextHolder implements ApplicationContextAware {
 **Who?** `SpringApplication.run()` delegates to `AnnotationConfigServletWebServerApplicationContext` (for web apps) or `AnnotationConfigApplicationContext` (non-web). **Order:** (1) Parse `@Configuration` classes → build `BeanDefinition` map (metadata only, no instantiation yet). (2) Instantiate non-lazy singleton beans → call `@Bean` methods, constructor injection. (3) Call `@PostConstruct` methods on each bean after injection complete. (4) Publish `ApplicationReadyEvent`. (5) Execute `CommandLineRunner`/`ApplicationRunner` beans. **When does main() finish?** `run()` blocks until all runners complete, then returns. In an embedded server app, `run()` keeps the thread alive via Tomcat's accept loop. **Key insight:** `@Lazy` beans skip step 2 entirely — they initialize on first `getBean()` call, which can cause startup-time injection failures to appear only at runtime.
 
 </details>
-
 
 ## Chapter 8: Profiles and Conditional Beans
 
@@ -1451,17 +1435,17 @@ public class SecondListener {
 @Service
 public class OrderService {
     private final PaymentService paymentService;
-    
+
     @Autowired
     public OrderService(PaymentService paymentService) {  // Needs PaymentService
         this.paymentService = paymentService;
     }
 }
 
-@Service  
+@Service
 public class PaymentService {
     private final OrderService orderService;
-    
+
     @Autowired
     public PaymentService(OrderService orderService) {  // Needs OrderService
         this.orderService = orderService;
@@ -1497,7 +1481,7 @@ public class PaymentService {
 @Service
 public class OrderService {
     private final PaymentService paymentService;
-    
+
     @Autowired
     public OrderService(@Lazy PaymentService paymentService) {  // @Lazy here!
         this.paymentService = paymentService;
@@ -1515,7 +1499,7 @@ public class OrderService {
 @Service
 public class OrderService {
     private PaymentService paymentService;
-    
+
     @Autowired
     public void setPaymentService(PaymentService paymentService) {
         this.paymentService = paymentService;
@@ -1616,11 +1600,9 @@ EVENTS:
 □ Understand when to use events vs direct calls
 ```
 
-
 ---
 
 _Continue to Part 3: AOP (Aspect-Oriented Programming)_
-
 
 ---
 

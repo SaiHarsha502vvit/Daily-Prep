@@ -26,7 +26,7 @@
 ```
   WHO BENEFITS FROM ACCESSIBILITY:
   ────────────────────────────────
-  
+
   • Blind users           → Screen readers (NVDA, JAWS, VoiceOver)
   • Low vision users      → Screen magnification, high contrast
   • Deaf users            → Captions, visual indicators
@@ -35,7 +35,7 @@
   • Temporary injuries    → Broken arm? Now you're keyboard-only
   • Situational           → Bright sunlight? Need high contrast
   • Slow connections      → Semantic HTML works without CSS/JS
-  
+
   LEGAL: WCAG 2.1 AA is the standard. ADA, EAA (EU) require it.
   SEO: Screen readers read what Google reads. a11y = better SEO.
 ```
@@ -65,7 +65,6 @@ Screen reader hears: "group, group, group, group, group..."
 No structure, no navigation, no meaning.
 -->
 
-
 <!-- GOOD — Semantic HTML gives structure: -->
 <header>
   <nav aria-label="Main navigation">
@@ -91,7 +90,7 @@ User can jump between landmarks, headings, links!
 ```
   SEMANTIC ELEMENT CHEAT SHEET:
   ─────────────────────────────
-  
+
   ┌──────────────┬──────────────────────────────────────────────────┐
   │ Element      │ When to use                                      │
   ├──────────────┼──────────────────────────────────────────────────┤
@@ -123,10 +122,10 @@ User can jump between landmarks, headings, links!
 
 ```
   FIRST RULE OF ARIA: Don't use ARIA if native HTML can do it.
-  
+
   <div role="button" tabindex="0" onclick="submit()">Submit</div>
   ← WHY? Just use <button>Submit</button>!
-  
+
   ARIA is for CUSTOM widgets that don't have native HTML equivalents.
 ```
 
@@ -152,8 +151,8 @@ User can jump between landmarks, headings, links!
 </section>
 
 <!-- ARIA-DESCRIBEDBY — Additional description -->
-<input 
-  type="password" 
+<input
+  type="password"
   aria-describedby="password-help"
 
 <p id="password-help">Must be at least 8 characters with one number.</p>
@@ -184,7 +183,7 @@ User can jump between landmarks, headings, links!
 ```
   EXPECTED KEYBOARD BEHAVIOR:
   ───────────────────────────
-  
+
   ┌────────────┬───────────────────────────────────────────────┐
   │ Key        │ Expected behavior                             │
   ├────────────┼───────────────────────────────────────────────┤
@@ -206,8 +205,8 @@ function Dropdown({ options, value, onChange }) {
 
   const handleKeyDown = (e) => {
     switch (e.key) {
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         e.preventDefault();
         if (isOpen) {
           onChange(options[activeIndex]);
@@ -216,36 +215,36 @@ function Dropdown({ options, value, onChange }) {
           setIsOpen(true);
         }
         break;
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!isOpen) setIsOpen(true);
-        setActiveIndex(i => Math.min(i + 1, options.length - 1));
+        setActiveIndex((i) => Math.min(i + 1, options.length - 1));
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
-        setActiveIndex(i => Math.max(i - 1, 0));
+        setActiveIndex((i) => Math.max(i - 1, 0));
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         break;
-      case 'Home':
+      case "Home":
         setActiveIndex(0);
         break;
-      case 'End':
+      case "End":
         setActiveIndex(options.length - 1);
         break;
     }
   };
 
   return (
-    <div 
+    <div
       role="combobox"
       aria-expanded={isOpen}
       aria-haspopup="listbox"
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
-      <span>{value || 'Select...'}</span>
+      <span>{value || "Select..."}</span>
       {isOpen && (
         <ul role="listbox">
           {options.map((opt, i) => (
@@ -253,8 +252,11 @@ function Dropdown({ options, value, onChange }) {
               key={opt}
               role="option"
               aria-selected={i === activeIndex}
-              className={i === activeIndex ? 'active' : ''}
-              onClick={() => { onChange(opt); setIsOpen(false); }}
+              className={i === activeIndex ? "active" : ""}
+              onClick={() => {
+                onChange(opt);
+                setIsOpen(false);
+              }}
             >
               {opt}
             </li>
@@ -273,7 +275,7 @@ function Dropdown({ options, value, onChange }) {
 ```
   PROBLEM: In a SPA, clicking a link doesn't reload the page.
   Screen reader users don't know the page "changed."
-  
+
   SOLUTION: Manage focus on route changes.
 ```
 
@@ -291,7 +293,7 @@ function App() {
   }, [location]);
 
   return (
-    <main ref={mainRef} tabIndex={-1} style={{ outline: 'none' }}>
+    <main ref={mainRef} tabIndex={-1} style={{ outline: "none" }}>
       {/* tabIndex={-1} makes it focusable programmatically 
           but NOT part of tab order */}
       <Routes>
@@ -336,40 +338,37 @@ function App() {
 
 ---
 
-
-
-
 ## 6. Color & Contrast
 
 ```
   WCAG CONTRAST REQUIREMENTS:
   ───────────────────────────
-  
+
   AA (minimum):
   • Normal text (<18px): 4.5:1 contrast ratio
   • Large text (≥18px bold or ≥24px): 3:1 contrast ratio
   • UI components & graphics: 3:1 contrast ratio
-  
+
   AAA (enhanced):
   • Normal text: 7:1 contrast ratio
   • Large text: 4.5:1 contrast ratio
-  
-  
+
+
   COMMON FAILURES:
   ────────────────
-  
+
   ❌ Light gray on white:    #999 on #fff = 2.85:1 (FAILS AA)
   ❌ Placeholder text:       #aaa on #fff = 2.32:1 (FAILS AA)
   ✅ Dark gray on white:     #595959 on #fff = 7:1 (PASSES AAA!)
   ✅ Standard text:          #333 on #fff = 12.6:1 (PASSES AAA!)
-  
-  
+
+
   DON'T RELY ON COLOR ALONE:
   ──────────────────────────
-  
+
   ❌ BAD:  Red text for errors (colorblind users can't see red)
   ✅ GOOD: Red text + icon + message: "⚠️ Error: Email is required"
-  
+
   ❌ BAD:  Green = success, Red = error (only color difference)
   ✅ GOOD: ✓ Success (green + checkmark), ✗ Error (red + X icon)
 ```
@@ -384,29 +383,32 @@ function App() {
 <!-- Method 1: Wrapping (implicit association) -->
 <label>
   Email address
-  <input type="email" name="email" required>
+  <input type="email" name="email" required />
 </label>
 
 <!-- Method 2: for/id (explicit association) -->
 <label for="email">Email address</label>
-<input id="email" type="email" name="email" required
-       aria-describedby="email-error email-hint">
+<input
+  id="email"
+  type="email"
+  name="email"
+  required
+  aria-describedby="email-error email-hint"
+/>
 <p id="email-hint">We'll never share your email.</p>
 <p id="email-error" role="alert" hidden>Please enter a valid email.</p>
 
 <!-- Method 3: aria-label (when visual label not desired) -->
-<input type="search" aria-label="Search products" placeholder="Search...">
-
+<input type="search" aria-label="Search products" placeholder="Search..." />
 
 <!-- GROUP related fields with fieldset + legend -->
 <fieldset>
   <legend>Shipping Address</legend>
   <label for="street">Street</label>
-  <input id="street" type="text" required>
+  <input id="street" type="text" required />
   <label for="city">City</label>
-  <input id="city" type="text" required>
+  <input id="city" type="text" required />
 </fieldset>
-
 
 <!-- ACCESSIBLE ERROR HANDLING -->
 <form novalidate>
@@ -417,7 +419,7 @@ function App() {
     aria-invalid="true"
     aria-describedby="password-error password-requirements"
     required
-  >
+  />
   <p id="password-requirements">
     Must be 8+ characters with one number and one uppercase letter.
   </p>
@@ -450,17 +452,21 @@ function App() {
 
 ```html
 <!-- INFORMATIVE images — describe the content -->
-<img src="chart.png" alt="Bar chart showing 45% revenue increase in Q3 2024">
+<img src="chart.png" alt="Bar chart showing 45% revenue increase in Q3 2024" />
 
 <!-- DECORATIVE images — hide from screen readers -->
-<img src="decorative-swirl.svg" alt="" role="presentation">
+<img src="decorative-swirl.svg" alt="" role="presentation" />
 
 <!-- COMPLEX images — provide long description -->
 <figure>
-  <img src="org-chart.png" alt="Company organization chart" aria-describedby="org-desc">
+  <img
+    src="org-chart.png"
+    alt="Company organization chart"
+    aria-describedby="org-desc"
+  />
   <figcaption id="org-desc">
-    CEO reports to Board. CTO, CFO, and CMO report to CEO.
-    Engineering, Product, and Design report to CTO.
+    CEO reports to Board. CTO, CFO, and CMO report to CEO. Engineering, Product,
+    and Design report to CTO.
   </figcaption>
 </figure>
 
@@ -473,9 +479,15 @@ function App() {
 
 <!-- VIDEO — captions and transcripts -->
 <video controls>
-  <source src="tutorial.mp4" type="video/mp4">
-  <track kind="captions" src="captions.vtt" srclang="en" label="English" default>
-  <track kind="descriptions" src="descriptions.vtt" srclang="en">
+  <source src="tutorial.mp4" type="video/mp4" />
+  <track
+    kind="captions"
+    src="captions.vtt"
+    srclang="en"
+    label="English"
+    default
+  />
+  <track kind="descriptions" src="descriptions.vtt" srclang="en" />
 </video>
 ```
 
@@ -502,9 +514,7 @@ function App() {
 </div>
 
 <!-- STATUS: Polite status messages -->
-<div role="status">
-  Loading... 45% complete
-</div>
+<div role="status">Loading... 45% complete</div>
 ```
 
 ```jsx
@@ -516,9 +526,11 @@ function SearchResults({ results, query }) {
       <div role="status" aria-live="polite" className="sr-only">
         {results.length} results found for "{query}"
       </div>
-      
+
       <ul>
-        {results.map(r => <li key={r.id}>{r.name}</li>)}
+        {results.map((r) => (
+          <li key={r.id}>{r.name}</li>
+        ))}
       </ul>
     </div>
   );
@@ -542,44 +554,45 @@ function SearchResults({ results, query }) {
 
 ---
 
-
-
 🔬 **Section Challenge — 9. Live Regions — Dynamic Content Updates**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 ## 10. Testing Accessibility
 
 ```
   AUTOMATED TESTING (catches ~30% of issues):
   ──────────────────────────────────────────────
-  
+
   1. Lighthouse Accessibility Audit (Chrome DevTools)
   2. axe DevTools Extension (most popular)
   3. WAVE Evaluation Tool
   4. eslint-plugin-jsx-a11y (catches issues at build time)
-  
+
   MANUAL TESTING (catches the rest):
   ───────────────────────────────────
-  
+
   1. KEYBOARD TEST:
      • Tab through entire page — can you reach everything?
      • Is focus visible on every element?
      • Can you operate all controls (buttons, dropdowns, modals)?
      • Can you escape from modals?
      • Is tab order logical?
-  
+
   2. SCREEN READER TEST:
      • VoiceOver (Mac): Cmd+F5 to enable
      • NVDA (Windows): Free download
@@ -587,11 +600,11 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
      • Is all content readable?
      • Are interactive elements labeled?
      • Do dynamic changes get announced?
-  
+
   3. ZOOM TEST:
      • Zoom to 200% → Is content still usable?
      • Zoom to 400% → Can you still read and navigate?
-  
+
   4. COLOR TEST:
      • Use browser grayscale filter — Still usable?
      • Check contrast ratios (Colour Contrast Analyzer tool)
@@ -599,12 +612,12 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 
 ```javascript
 // Automated test with jest-axe:
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { render } from '@testing-library/react';
+import { axe, toHaveNoViolations } from "jest-axe";
+import { render } from "@testing-library/react";
 
 expect.extend(toHaveNoViolations);
 
-test('form is accessible', async () => {
+test("form is accessible", async () => {
   const { container } = render(<LoginForm />);
   const results = await axe(container);
   expect(results).toHaveNoViolations();
@@ -614,6 +627,3 @@ test('form is accessible', async () => {
 ---
 
 **Next Chapter**: [Advanced Web APIs →](../16_JavaScript/11_Advanced_Web_APIs.md)
-
-
-

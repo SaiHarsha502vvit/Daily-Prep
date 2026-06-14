@@ -68,14 +68,14 @@ Five flows, one decision tree. Pick the row that matches your app and follow the
 ### Pattern: drive the IdP UI inline
 
 ```typescript
-test('login via Okta', async ({ page }) => {
-  await page.goto('/');                                    // your app
-  await page.getByRole('button', { name: 'Sign in' }).click();
+test("login via Okta", async ({ page }) => {
+  await page.goto("/"); // your app
+  await page.getByRole("button", { name: "Sign in" }).click();
   // → browser is now on https://acme.okta.com/oauth2/...
 
   await page.fill('input[name="username"]', envConfig.okta.username);
   await page.fill('input[name="password"]', envConfig.okta.password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole("button", { name: "Sign in" }).click();
 
   // → browser returns to /, with the session cookie set
   await expect(page).toHaveURL(/\/dashboard/);
@@ -97,17 +97,17 @@ If the IdP supports the **Client Credentials** grant (machine-to-machine) or **R
 // 1. Get a token directly from the IdP token endpoint
 const res = await request.post(`${envConfig.okta.tokenUrl}`, {
   form: {
-    grant_type: 'client_credentials',
+    grant_type: "client_credentials",
     client_id: envConfig.okta.clientId,
     client_secret: envConfig.okta.clientSecret,
-    scope: 'api:read api:write',
+    scope: "api:read api:write",
   },
 });
 const { access_token } = await res.json();
 
 // 2. Inject the token into the browser before navigating
 await context.addCookies([
-  { name: 'session', value: access_token, domain: 'acme.test', path: '/' },
+  { name: "session", value: access_token, domain: "acme.test", path: "/" },
 ]);
 ```
 
@@ -136,10 +136,10 @@ const { access_token, id_token } = await res.json();
 
 ```typescript
 async function tokenIsExpired(jwt: string): Promise<boolean> {
-  const [, payload] = jwt.split('.');
+  const [, payload] = jwt.split(".");
   if (!payload) return true;
-  const { exp } = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
-  return Date.now() / 1000 >= exp - 30;  // refresh 30s before expiry
+  const { exp } = JSON.parse(Buffer.from(payload, "base64").toString("utf8"));
+  return Date.now() / 1000 >= exp - 30; // refresh 30s before expiry
 }
 ```
 
@@ -160,14 +160,14 @@ async function tokenIsExpired(jwt: string): Promise<boolean> {
 For most SAML apps, the IdP page is just a username/password screen. You drive it inline:
 
 ```typescript
-test('SAML SSO login', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Sign in with SSO' }).click();
+test("SAML SSO login", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Sign in with SSO" }).click();
   // → browser is on https://idp.corp.com/login (or ADFS, or Ping)
 
-  await page.fill('#userNameInput', envConfig.saml.username);
-  await page.fill('#passwordInput', envConfig.saml.password);
-  await page.click('#submitButton');
+  await page.fill("#userNameInput", envConfig.saml.username);
+  await page.fill("#passwordInput", envConfig.saml.password);
+  await page.click("#submitButton");
 
   // SAML POST happens automatically via JS; we just wait for the landing page
   await expect(page).toHaveURL(/\/dashboard/);
@@ -195,7 +195,7 @@ Some apps put the post-login URL in `RelayState`. If you mis-encode it, you land
 
 ```typescript
 // framework/utilities/auth/totp.helper.ts
-import { authenticator } from 'otplib';
+import { authenticator } from "otplib";
 
 export function generateTotp(secret: string): string {
   return authenticator.generate(secret);
@@ -204,29 +204,29 @@ export function generateTotp(secret: string): string {
 
 ```typescript
 // In your test
-import { generateTotp } from '../../utilities/auth/totp.helper';
+import { generateTotp } from "../../utilities/auth/totp.helper";
 
-await page.fill('#username', envConfig.mfa.username);
-await page.fill('#password', envConfig.mfa.password);
-await page.click('#login');
+await page.fill("#username", envConfig.mfa.username);
+await page.fill("#password", envConfig.mfa.password);
+await page.click("#login");
 
-const code = generateTotp(envConfig.mfa.totpSecret);  // 6-digit string
-await page.fill('#mfaCode', code);
-await page.click('#verify');
+const code = generateTotp(envConfig.mfa.totpSecret); // 6-digit string
+await page.fill("#mfaCode", code);
+await page.click("#verify");
 ```
 
 **Critical timing window**: TOTP codes change every 30 seconds. If your test grabs the code at second 29 and types it at second 31, the IdP rejects it. The `otplib` library exposes `authenticator.timeRemaining()` — if it's < 5 seconds, wait for the next window:
 
 ```typescript
-import { authenticator } from 'otplib';
+import { authenticator } from "otplib";
 
 function generateFreshTotp(secret: string): string {
   if (authenticator.timeRemaining() < 5) {
     // Wait for the next 30-second window
-    return new Promise<string>(resolve => {
+    return new Promise<string>((resolve) => {
       setTimeout(
         () => resolve(authenticator.generate(secret)),
-        (authenticator.timeRemaining() + 1) * 1000
+        (authenticator.timeRemaining() + 1) * 1000,
       );
     }) as unknown as string;
   }
@@ -280,7 +280,7 @@ That's a separate setting (Section 11 of Ch 56). It lets you accept **self-signe
 
 ## 8. The `storageState` chain — putting it all together
 
-The five flows above all end with the **same state**: a browser context with the cookies / localStorage entries needed for an authenticated session. The most expensive part is *getting there*. Don't repeat it per test.
+The five flows above all end with the **same state**: a browser context with the cookies / localStorage entries needed for an authenticated session. The most expensive part is _getting there_. Don't repeat it per test.
 
 Reuse pattern (also covered in Ch 16, expanded here):
 
@@ -308,33 +308,36 @@ For **API tests** (no UI), `storageState` doesn't apply — there's no browser c
 
 ```typescript
 // framework/fixtures/auth.oauth.fixture.ts (see file for the typed version)
-import { test as base, request as playwrightRequest } from '@playwright/test';
+import { test as base, request as playwrightRequest } from "@playwright/test";
 
 type OAuthFixtures = { oauthToken: string };
 
 export const test = base.extend<{}, OAuthFixtures>({
-  oauthToken: [async ({}, use) => {
-    const ctx = await playwrightRequest.newContext();
-    try {
-      const response = await ctx.post(process.env.OAUTH_TOKEN_URL!, {
-        form: {
-          grant_type: 'client_credentials',
-          client_id: process.env.OAUTH_CLIENT_ID!,
-          client_secret: process.env.OAUTH_CLIENT_SECRET!,
-        },
-      });
-      if (!response.ok()) {
-        throw new Error(`OAuth token endpoint returned ${response.status()}`);
+  oauthToken: [
+    async ({}, use) => {
+      const ctx = await playwrightRequest.newContext();
+      try {
+        const response = await ctx.post(process.env.OAUTH_TOKEN_URL!, {
+          form: {
+            grant_type: "client_credentials",
+            client_id: process.env.OAUTH_CLIENT_ID!,
+            client_secret: process.env.OAUTH_CLIENT_SECRET!,
+          },
+        });
+        if (!response.ok()) {
+          throw new Error(`OAuth token endpoint returned ${response.status()}`);
+        }
+        const body = (await response.json()) as { access_token: string };
+        await use(body.access_token);
+      } finally {
+        await ctx.dispose();
       }
-      const body = (await response.json()) as { access_token: string };
-      await use(body.access_token);
-    } finally {
-      await ctx.dispose();
-    }
-  }, { scope: 'worker' }],
+    },
+    { scope: "worker" },
+  ],
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 With `scope: 'worker'`, the token endpoint is hit **once per worker**, regardless of how many tests share that worker. If you have 4 workers and 100 tests, you fetch 4 tokens instead of 100. (Same savings calculation as Quiz 02 Q8.)
@@ -351,62 +354,76 @@ With `scope: 'worker'`, the token endpoint is hit **once per worker**, regardles
 ## 10. Anti-patterns — the auth hall of shame
 
 ❌ **Hardcoded credentials in spec files**
+
 ```typescript
-await page.fill('#username', 'admin@acme.com');
-await page.fill('#password', 'Admin123!');
+await page.fill("#username", "admin@acme.com");
+await page.fill("#password", "Admin123!");
 ```
+
 Anyone with read access to the repo has prod creds. **Fix**: env vars + secrets manager (Ch 51).
 
 ❌ **Logging in inside `beforeEach`**
+
 ```typescript
 test.beforeEach(async ({ page }) => {
-  await page.goto('/login');
-  await page.fill('#username', envConfig.username);
-  await page.fill('#password', envConfig.password);
-  await page.click('#login');
+  await page.goto("/login");
+  await page.fill("#username", envConfig.username);
+  await page.fill("#password", envConfig.password);
+  await page.click("#login");
 });
 ```
+
 60 tests × 3 s login = 3 minutes of overhead per CI run. **Fix**: `storageState` + `setup` project (Section 8).
 
 ❌ **Sharing one user across all parallel workers**
+
 ```typescript
 // Worker 1 logs in as admin → cookie set
 // Worker 2 logs in as admin → IdP invalidates worker 1's session
 // Worker 1's next request: 401
 ```
+
 Some IdPs (Okta, Azure AD) enforce single-session-per-user. **Fix**: account pool with file locking — see `framework/fixtures/auth.fixture.ts` for the existing OrangeHRM-style implementation.
 
 ❌ **TOTP secret in plain text in `.env`**
+
 ```
 TOTP_SECRET=JBSWY3DPEHPK3PXP
 ```
+
 That's a permanent backdoor into the test user's account. **Fix**: short-lived secrets from Vault / Doppler / GitHub Actions secrets; rotated weekly.
 
 ❌ **Not handling token expiry**
+
 ```typescript
 oauthToken: [async ({}, use) => {
   const token = await fetchToken();
   await use(token);  // good for 1 hour... what if the suite takes 2 hours?
 }, { scope: 'worker' }],
 ```
+
 **Fix**: Either time-box the run < token lifetime, or wrap the token in a function that re-fetches near expiry.
 
 ❌ **Mocking the IdP for production tests**
+
 ```typescript
-await page.route('**/oauth/token', route => route.fulfill({ body: '{"access_token":"fake"}' }));
+await page.route("**/oauth/token", (route) =>
+  route.fulfill({ body: '{"access_token":"fake"}' }),
+);
 ```
+
 You're now testing that your app accepts a fake token. **Fix**: Mock the IdP only for unit/integration tests of the auth middleware itself. For end-to-end suites, use a real test IdP tenant.
 
 ---
 
 ## 11. The framework's auth code, mapped
 
-| File | Purpose |
-|---|---|
-| [`framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts) | OrangeHRM account pool — file-locked, parallel-safe. Pattern: Section 10 sharing rule. |
-| [`framework/fixtures/auth.oauth.fixture.ts`](../framework/fixtures/auth.oauth.fixture.ts) | OAuth2 Client Credentials token cache. Pattern: Section 9. |
-| [`framework/utilities/auth/totp.helper.ts`](../framework/utilities/auth/totp.helper.ts) | TOTP generation (window-aware). Pattern: Section 6. |
-| [`framework/tests/auth-demo/oauth.api.spec.ts`](../framework/tests/auth-demo/oauth.api.spec.ts) | Smoke test for the OAuth fixture. Skips if `OAUTH_*` env vars aren't set. |
+| File                                                                                            | Purpose                                                                                |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [`framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts)                   | OrangeHRM account pool — file-locked, parallel-safe. Pattern: Section 10 sharing rule. |
+| [`framework/fixtures/auth.oauth.fixture.ts`](../framework/fixtures/auth.oauth.fixture.ts)       | OAuth2 Client Credentials token cache. Pattern: Section 9.                             |
+| [`framework/utilities/auth/totp.helper.ts`](../framework/utilities/auth/totp.helper.ts)         | TOTP generation (window-aware). Pattern: Section 6.                                    |
+| [`framework/tests/auth-demo/oauth.api.spec.ts`](../framework/tests/auth-demo/oauth.api.spec.ts) | Smoke test for the OAuth fixture. Skips if `OAUTH_*` env vars aren't set.              |
 
 ### Running the OAuth smoke test
 
@@ -438,6 +455,7 @@ Match the description to the flow:
 5. "ADFS-based SSO, the IdP POSTs a signed XML to our app."
 
 **Answers**:
+
 1. OAuth2 / OIDC Authorization Code (Section 3 or 4)
 2. OAuth2 Client Credentials (Section 3, second pattern) — and the worker-scoped fixture (Section 9)
 3. mTLS (Section 7)
@@ -451,35 +469,39 @@ Match the description to the flow:
 The OAuth fixture is `scope: 'worker'`. What goes wrong if you change it to test scope?
 
 **Answer**: Every test fetches a new token. With 4 workers and 100 tests, that's 100 token endpoint calls instead of 4 — 25× the IdP load and the latency. Worse, most IdPs rate-limit (Okta: 100 token requests/minute by default), so you start hitting 429s and the suite goes red intermittently.
+
 </details>
 
 <details>
 <summary><strong>Practice 3 — Spot the bug</strong></summary>
 
 ```typescript
-test('TOTP login', async ({ page }) => {
-  await page.fill('#username', user);
-  await page.fill('#password', pass);
-  await page.click('#login');
+test("TOTP login", async ({ page }) => {
+  await page.fill("#username", user);
+  await page.fill("#password", pass);
+  await page.click("#login");
 
   const code = generateTotp(secret);
-  await page.fill('#mfaCode', code);  // 28 seconds later
-  await page.click('#verify');
+  await page.fill("#mfaCode", code); // 28 seconds later
+  await page.click("#verify");
 });
 ```
 
 **Bug**: There's a race condition — `code` is generated at second 2 (of the 30s window), then typed at second 30 (window has rolled over). The IdP rejects the now-stale code.
 
-**Fix**: Generate the code *immediately before* typing it:
+**Fix**: Generate the code _immediately before_ typing it:
+
 ```typescript
 // Type other fields first, then generate at the last moment
-await page.click('#login');
-await page.waitForSelector('#mfaCode');
+await page.click("#login");
+await page.waitForSelector("#mfaCode");
 const code = generateTotp(secret);
-await page.fill('#mfaCode', code);
-await page.click('#verify');
+await page.fill("#mfaCode", code);
+await page.click("#verify");
 ```
+
 …or use the window-aware version that waits if `timeRemaining() < 5s`.
+
 </details>
 
 <details>
@@ -488,23 +510,26 @@ await page.click('#verify');
 You need to run the same E2E flow as both `admin` and `readonly-user` against the same test suite. Sketch the `playwright.config.ts` `projects[]` for this.
 
 **Answer**:
+
 ```typescript
 projects: [
-  { name: 'admin-setup',    testMatch: /admin\.setup\.ts/ },
-  { name: 'readonly-setup', testMatch: /readonly\.setup\.ts/ },
+  { name: "admin-setup", testMatch: /admin\.setup\.ts/ },
+  { name: "readonly-setup", testMatch: /readonly\.setup\.ts/ },
   {
-    name: 'admin',
-    dependencies: ['admin-setup'],
-    use: { ...devices['Desktop Chrome'], storageState: 'auth/admin.json' },
+    name: "admin",
+    dependencies: ["admin-setup"],
+    use: { ...devices["Desktop Chrome"], storageState: "auth/admin.json" },
   },
   {
-    name: 'readonly',
-    dependencies: ['readonly-setup'],
-    use: { ...devices['Desktop Chrome'], storageState: 'auth/readonly.json' },
+    name: "readonly",
+    dependencies: ["readonly-setup"],
+    use: { ...devices["Desktop Chrome"], storageState: "auth/readonly.json" },
   },
-]
+];
 ```
+
 Run all: `npx playwright test`. Run admin only: `--project=admin`.
+
 </details>
 
 ---

@@ -3,6 +3,7 @@
 # Chapter 37 — SQL 5W-H Deep Reasoning Framework
 
 ## What Is This File?
+
 This is the **capstone** of the SQL section. We apply the **5W-H framework** (Who, What, When, Where, Why, How) systematically to EVERY major SQL concept — giving you a mental model to reason about ANY SQL topic from first principles.
 
 "If you can't explain it simply, you don't understand it well enough." — Einstein
@@ -27,21 +28,19 @@ For ANY SQL concept, ask:
 
 ---
 
-
-
-
 ## 1. SELECT Statement
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Every developer, analyst, DBA — anyone querying data |
-| **WHAT** | Retrieves data from one or more tables based on conditions |
-| **WHEN** | Whenever you need to READ data (reports, APIs, dashboards) |
-| **WHERE** | Runs in the query execution engine; result goes to client |
-| **WHY** | Data has no value sitting in tables — SELECT extracts value |
-| **HOW** | Parser → Optimizer → Execution Engine → Fetch rows → Return |
+| Question  | Answer                                                      |
+| --------- | ----------------------------------------------------------- |
+| **WHO**   | Every developer, analyst, DBA — anyone querying data        |
+| **WHAT**  | Retrieves data from one or more tables based on conditions  |
+| **WHEN**  | Whenever you need to READ data (reports, APIs, dashboards)  |
+| **WHERE** | Runs in the query execution engine; result goes to client   |
+| **WHY**   | Data has no value sitting in tables — SELECT extracts value |
+| **HOW**   | Parser → Optimizer → Execution Engine → Fetch rows → Return |
 
 **Freeze Moment**: After WHERE but before GROUP BY — what rows exist?
+
 ```sql
 SELECT department, COUNT(*)              -- 5. Project columns + aggregate
 FROM employees                           -- 1. Scan table
@@ -56,16 +55,17 @@ LIMIT 10;                                -- 7. Truncate output
 
 ## 2. JOINs
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Anyone combining data from multiple tables |
-| **WHAT** | Combines rows from two tables based on a matching condition |
-| **WHEN** | When data is normalized (split across tables) — nearly always |
-| **WHERE** | Between FROM and WHERE in query execution order |
-| **WHY** | Normalization eliminates redundancy but splits data — JOINs reunite it |
-| **HOW** | Nested loop, hash join, or merge join (optimizer decides) |
+| Question  | Answer                                                                 |
+| --------- | ---------------------------------------------------------------------- |
+| **WHO**   | Anyone combining data from multiple tables                             |
+| **WHAT**  | Combines rows from two tables based on a matching condition            |
+| **WHEN**  | When data is normalized (split across tables) — nearly always          |
+| **WHERE** | Between FROM and WHERE in query execution order                        |
+| **WHY**   | Normalization eliminates redundancy but splits data — JOINs reunite it |
+| **HOW**   | Nested loop, hash join, or merge join (optimizer decides)              |
 
 **Freeze Moment**: What happens with NULL in a LEFT JOIN?
+
 ```sql
 -- Orders table has user_id = 42, but users table has NO user_id = 42
 SELECT u.name, o.amount
@@ -78,8 +78,6 @@ LEFT JOIN orders o ON u.user_id = o.user_id;
 
 ---
 
-
-
 🔬 **Section Challenge — 2. JOINs**
 
 **Challenge 1 (Freeze Moment — Who/When/What):** The query planner evaluates `orders (10M rows) INNER JOIN customers (50K rows) ON orders.customer_id = customers.id`. **Who** chooses the join algorithm? **When** will it use a Hash Join vs Nested Loop? **What** index would change the decision?
@@ -90,26 +88,26 @@ LEFT JOIN orders o ON u.user_id = o.user_id;
 
 </details>
 
-
 ## 3. Indexes
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | DBAs, backend devs optimizing query performance |
-| **WHAT** | A data structure (B-tree, hash, GIN) that speeds up data retrieval |
-| **WHEN** | Columns in WHERE, JOIN, ORDER BY that handle large datasets |
-| **WHERE** | Stored on disk alongside the table. Maintained on INSERT/UPDATE/DELETE |
-| **WHY** | Full table scan = O(n). Index lookup = O(log n). Massive speedup |
-| **HOW** | B-tree: sorted structure, binary search. Hash: direct lookup. GIN: inverted index |
+| Question  | Answer                                                                            |
+| --------- | --------------------------------------------------------------------------------- |
+| **WHO**   | DBAs, backend devs optimizing query performance                                   |
+| **WHAT**  | A data structure (B-tree, hash, GIN) that speeds up data retrieval                |
+| **WHEN**  | Columns in WHERE, JOIN, ORDER BY that handle large datasets                       |
+| **WHERE** | Stored on disk alongside the table. Maintained on INSERT/UPDATE/DELETE            |
+| **WHY**   | Full table scan = O(n). Index lookup = O(log n). Massive speedup                  |
+| **HOW**   | B-tree: sorted structure, binary search. Hash: direct lookup. GIN: inverted index |
 
 **Freeze Moment**: What happens when you INSERT with 5 indexes?
+
 ```
 INSERT INTO users (name, email, city, age, status) VALUES (...);
 
 FREEZE: The DB engine must:
 1. Write the row to the table heap          ← 1 write
 2. Update B-tree for idx_name               ← 1 B-tree insert
-3. Update B-tree for idx_email              ← 1 B-tree insert  
+3. Update B-tree for idx_email              ← 1 B-tree insert
 4. Update B-tree for idx_city               ← 1 B-tree insert
 5. Update B-tree for idx_age                ← 1 B-tree insert
 6. Update B-tree for idx_status             ← 1 B-tree insert
@@ -123,16 +121,17 @@ Rule: Index what you QUERY, not what you have.
 
 ## 4. Transactions & ACID
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Any system doing multi-step operations (payments, transfers) |
-| **WHAT** | A group of SQL statements that succeed or fail as ONE unit |
-| **WHEN** | Any operation where partial execution = data corruption |
-| **WHERE** | Managed by the DB engine's transaction manager + WAL (Write-Ahead Log) |
-| **WHY** | Without transactions: crash mid-transfer = money vanishes |
-| **HOW** | BEGIN → execute statements → COMMIT (all saved) or ROLLBACK (all undone) |
+| Question  | Answer                                                                   |
+| --------- | ------------------------------------------------------------------------ |
+| **WHO**   | Any system doing multi-step operations (payments, transfers)             |
+| **WHAT**  | A group of SQL statements that succeed or fail as ONE unit               |
+| **WHEN**  | Any operation where partial execution = data corruption                  |
+| **WHERE** | Managed by the DB engine's transaction manager + WAL (Write-Ahead Log)   |
+| **WHY**   | Without transactions: crash mid-transfer = money vanishes                |
+| **HOW**   | BEGIN → execute statements → COMMIT (all saved) or ROLLBACK (all undone) |
 
 **Freeze Moment**: What happens if power fails AFTER COMMIT but BEFORE data hits disk?
+
 ```
 BEGIN;
 UPDATE accounts SET balance = balance - 100 WHERE id = 1;
@@ -149,29 +148,29 @@ This is the D in ACID (Durability) — WAL guarantees it.
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Transactions & ACID**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## 5. Normalization
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Database designers, application architects |
-| **WHAT** | Organizing data to eliminate redundancy and dependency anomalies |
-| **WHEN** | Designing OLTP schemas (application databases) |
-| **WHERE** | At the schema design phase, before writing any code |
-| **WHY** | Redundancy → update anomalies → inconsistent data → bugs |
-| **HOW** | 1NF (atomic values) → 2NF (no partial deps) → 3NF (no transitive deps) → BCNF |
+| Question  | Answer                                                                        |
+| --------- | ----------------------------------------------------------------------------- |
+| **WHO**   | Database designers, application architects                                    |
+| **WHAT**  | Organizing data to eliminate redundancy and dependency anomalies              |
+| **WHEN**  | Designing OLTP schemas (application databases)                                |
+| **WHERE** | At the schema design phase, before writing any code                           |
+| **WHY**   | Redundancy → update anomalies → inconsistent data → bugs                      |
+| **HOW**   | 1NF (atomic values) → 2NF (no partial deps) → 3NF (no transitive deps) → BCNF |
 
 **Freeze Moment**: Why does denormalization exist if normalization is "correct"?
+
 ```
 Normalization: customers + addresses + orders + order_items = 4 JOINs per query
 Denormalization: one flat table = 0 JOINs, reads are FAST
@@ -186,16 +185,17 @@ Neither is "wrong" — they solve DIFFERENT problems.
 
 ## 6. Window Functions
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Analysts doing rankings, running totals, comparisons |
-| **WHAT** | Functions that compute across a set of rows RELATED to the current row |
-| **WHEN** | Rankings, running aggregates, lead/lag comparisons, percentiles |
-| **WHERE** | Executed AFTER WHERE/GROUP BY/HAVING, BEFORE ORDER BY/LIMIT |
-| **WHY** | Regular GROUP BY collapses rows. Window functions KEEP all rows |
-| **HOW** | OVER() defines the window: PARTITION BY (groups) + ORDER BY (sequence) |
+| Question  | Answer                                                                 |
+| --------- | ---------------------------------------------------------------------- |
+| **WHO**   | Analysts doing rankings, running totals, comparisons                   |
+| **WHAT**  | Functions that compute across a set of rows RELATED to the current row |
+| **WHEN**  | Rankings, running aggregates, lead/lag comparisons, percentiles        |
+| **WHERE** | Executed AFTER WHERE/GROUP BY/HAVING, BEFORE ORDER BY/LIMIT            |
+| **WHY**   | Regular GROUP BY collapses rows. Window functions KEEP all rows        |
+| **HOW**   | OVER() defines the window: PARTITION BY (groups) + ORDER BY (sequence) |
 
 **Freeze Moment**: ROW_NUMBER vs RANK vs DENSE_RANK
+
 ```
 Scores: 100, 90, 90, 80
 
@@ -211,29 +211,26 @@ When to use which:
 
 ---
 
-
-
 🔬 **Section Challenge — 6. Window Functions**
 
-
-
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-</details>
 
+</details>
 
 ## 7. Subqueries vs CTEs vs Temp Tables
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Every SQL developer making complex queries |
-| **WHAT** | Three ways to break complex queries into parts |
-| **WHEN** | Query needs intermediate results or self-references |
+| Question  | Answer                                                          |
+| --------- | --------------------------------------------------------------- |
+| **WHO**   | Every SQL developer making complex queries                      |
+| **WHAT**  | Three ways to break complex queries into parts                  |
+| **WHEN**  | Query needs intermediate results or self-references             |
 | **WHERE** | Subquery: inline. CTE: before main query. Temp table: in tempdb |
-| **WHY** | Readability, reusability, and sometimes performance |
-| **HOW** | See comparison below |
+| **WHY**   | Readability, reusability, and sometimes performance             |
+| **HOW**   | See comparison below                                            |
 
 ```
 ┌──────────────┬───────────────────────────────────────────────┐
@@ -252,16 +249,17 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 ## 8. Query Optimization
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Backend devs with slow queries, DBAs tuning production |
-| **WHAT** | Making queries run faster without changing results |
-| **WHEN** | Query takes > 100ms, full table scans on large tables, N+1 queries |
-| **WHERE** | Query planner/optimizer, EXPLAIN output, pg_stat_statements |
-| **WHY** | Slow queries = slow app = lost users = lost revenue |
-| **HOW** | EXPLAIN → identify bottleneck → add index / rewrite query / restructure |
+| Question  | Answer                                                                  |
+| --------- | ----------------------------------------------------------------------- |
+| **WHO**   | Backend devs with slow queries, DBAs tuning production                  |
+| **WHAT**  | Making queries run faster without changing results                      |
+| **WHEN**  | Query takes > 100ms, full table scans on large tables, N+1 queries      |
+| **WHERE** | Query planner/optimizer, EXPLAIN output, pg_stat_statements             |
+| **WHY**   | Slow queries = slow app = lost users = lost revenue                     |
+| **HOW**   | EXPLAIN → identify bottleneck → add index / rewrite query / restructure |
 
 **Optimization Checklist (in order)**:
+
 ```
 1. EXPLAIN ANALYZE — see what the DB is actually doing
 2. Check for Seq Scan on large tables → add index
@@ -279,79 +277,71 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 ## 9. SQL Injection
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | EVERY developer — this is the #1 web vulnerability |
-| **WHAT** | An attack where user input is executed as SQL code |
-| **WHEN** | Whenever user input is concatenated into SQL strings |
+| Question  | Answer                                                         |
+| --------- | -------------------------------------------------------------- |
+| **WHO**   | EVERY developer — this is the #1 web vulnerability             |
+| **WHAT**  | An attack where user input is executed as SQL code             |
+| **WHEN**  | Whenever user input is concatenated into SQL strings           |
 | **WHERE** | Web forms, API endpoints, search boxes — any user input to SQL |
-| **WHY** | One unparameterized query = entire database stolen |
-| **HOW** | Attacker enters SQL syntax as input; DB executes it as code |
+| **WHY**   | One unparameterized query = entire database stolen             |
+| **HOW**   | Attacker enters SQL syntax as input; DB executes it as code    |
 
 **Freeze Moment**: Why does parameterization work?
+
 ```
 Concatenation: "SELECT * FROM users WHERE name = '" + input + "'"
   → DB sees: SELECT * FROM users WHERE name = '' OR '1'='1' --'
   → The input BECAME PART OF THE SQL STRUCTURE
 
-Parameterization: "SELECT * FROM users WHERE name = $1" 
+Parameterization: "SELECT * FROM users WHERE name = $1"
   → DB sees: SELECT * FROM users WHERE name = [parameter: "' OR '1'='1' --"]
   → The input is treated as DATA, never as SQL CODE
   → Even if it contains SQL syntax, it's just a string value
-  
+
 The DB compiles the query FIRST, then plugs in parameters.
 The parameters can NEVER change the query structure.
 ```
 
 ---
 
-
-
-
 ## 10. Partitioning
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | DBAs managing tables with 100M+ rows |
-| **WHAT** | Splitting one logical table into multiple physical segments |
-| **WHEN** | Large tables with clear partition keys (date, region, tenant) |
-| **WHERE** | Transparent to the application — queries hit the main table name |
-| **WHY** | Partition pruning: skip irrelevant data. Faster deletes: DROP PARTITION |
-| **HOW** | RANGE (by date), LIST (by category), HASH (even distribution) |
+| Question  | Answer                                                                  |
+| --------- | ----------------------------------------------------------------------- |
+| **WHO**   | DBAs managing tables with 100M+ rows                                    |
+| **WHAT**  | Splitting one logical table into multiple physical segments             |
+| **WHEN**  | Large tables with clear partition keys (date, region, tenant)           |
+| **WHERE** | Transparent to the application — queries hit the main table name        |
+| **WHY**   | Partition pruning: skip irrelevant data. Faster deletes: DROP PARTITION |
+| **HOW**   | RANGE (by date), LIST (by category), HASH (even distribution)           |
 
 ---
 
-
-
-
 ## 11. Replication
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Ops teams ensuring high availability and read scalability |
-| **WHAT** | Copying data from primary DB to one or more replicas |
-| **WHEN** | Read-heavy apps, disaster recovery, geographic distribution |
-| **WHERE** | WAL streaming (PostgreSQL), binlog (MySQL), between servers |
-| **WHY** | Single server = single point of failure. Replicas = resilience |
-| **HOW** | Primary writes WAL → ships to replica → replica replays it |
+| Question  | Answer                                                         |
+| --------- | -------------------------------------------------------------- |
+| **WHO**   | Ops teams ensuring high availability and read scalability      |
+| **WHAT**  | Copying data from primary DB to one or more replicas           |
+| **WHEN**  | Read-heavy apps, disaster recovery, geographic distribution    |
+| **WHERE** | WAL streaming (PostgreSQL), binlog (MySQL), between servers    |
+| **WHY**   | Single server = single point of failure. Replicas = resilience |
+| **HOW**   | Primary writes WAL → ships to replica → replica replays it     |
 
 ---
 
 ## 12. JSON in SQL
 
-| Question | Answer |
-|----------|--------|
-| **WHO** | Full-stack devs, API builders, anyone storing semi-structured data |
-| **WHAT** | Storing and querying JSON documents inside a relational database |
-| **WHEN** | Flexible schemas, API payloads, configuration, audit logs |
-| **WHERE** | JSONB column + GIN index (PostgreSQL) or JSON type (MySQL) |
-| **WHY** | Avoids adding a NoSQL DB when you need SOME flexibility |
-| **HOW** | ->/->> operators (PG), JSON_EXTRACT (MySQL), OPENJSON (SQL Server) |
+| Question  | Answer                                                             |
+| --------- | ------------------------------------------------------------------ |
+| **WHO**   | Full-stack devs, API builders, anyone storing semi-structured data |
+| **WHAT**  | Storing and querying JSON documents inside a relational database   |
+| **WHEN**  | Flexible schemas, API payloads, configuration, audit logs          |
+| **WHERE** | JSONB column + GIN index (PostgreSQL) or JSON type (MySQL)         |
+| **WHY**   | Avoids adding a NoSQL DB when you need SOME flexibility            |
+| **HOW**   | ->/->> operators (PG), JSON_EXTRACT (MySQL), OPENJSON (SQL Server) |
 
 ---
-
-
-
 
 ## Master Mental Model: SQL Execution Flow
 
@@ -387,6 +377,7 @@ For each concept, try to complete this sentence:
 It works by [MECHANISM], and you should use it when [CONDITION]."
 
 **Examples**:
+
 - "**Indexes** exist because without them, every query would scan the entire table. They work by maintaining a sorted B-tree structure, and you should use them when columns appear in WHERE/JOIN/ORDER BY on large tables."
 
 - "**Transactions** exist because without them, a crash mid-operation would leave data in an inconsistent state. They work by writing changes to a WAL before applying them, and you should use them when multiple statements must succeed or fail together."
@@ -429,3 +420,31 @@ Professional:
 [ ] Python + SQL integration for analytics
 ```
 
+### Historical Evolution
+
+**Predecessors (with years):**
+- **5W1H Framework ( journalism)** (1800s): The question framework for comprehensive inquiry emerged from journalism's need for complete story coverage
+- **SQL-92** (1992): Major SQL standard revision that formalized query execution semantics and logical processing order
+- **Bloom's Taxonomy (Bloom)** (1956): Benjamin Bloom's educational taxonomy provided hierarchical cognitive classification framework
+- **Query optimization (Selinger)** (1979): Patricia Selinger's Access Path Selection paper formalized cost-based query optimization in System R
+- **SQL execution order formalization** (1990s): Database textbooks codified the logical evaluation order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY) for teaching
+
+**Evolution narrative:**
+SQL query design evolved from technical implementation details toward structured reasoning frameworks. The 5W1H journalism framework (1800s) provided the questioning structure that maps naturally to SQL's capability to answer who, what, when, where, why, and how. SQL-92 (1992) standardized the language while textbooks codified the logical evaluation order needed for optimization. Bloom's taxonomy (1956) provided educational structure for progressive skill development, helping curricula sequence SQL learning from basic retrieval toward complex analytical reasoning.
+
+**Modern practice anchor:**
+Today's SQL problem-solving combines 5W1H questioning to understand requirements, structured query decomposition for complex problems, and logical execution order awareness for optimization—enabling systematic approach to even novel analytical challenges.
+### Production Reality
+
+**Failure modes:**
+1. **N+1 query in ORM**: Application code iterates 10K users and executes `SELECT * FROM orders WHERE user_id = ?` per user — 10,001 queries in single request, response time 45s, connection pool exhausted
+2. **Slow query from missing index on join key**: Report query joining `orders` to `products` without index on `products.product_id` — hash join builds 50M row hash table, 8GB `work_mem` exceeded, spills to disk
+3. **Parameter sniffing in stored procedures**: SP compiled with first invocation's parameter (region='Northeast' with 100 rows) — subsequent calls with region='West' (10M rows) reuse same plan, 2s instead of 200ms
+
+**Debug workflow:**
+1. Enable `pg_stat_statements` and identify top queries: `SELECT query, calls, total_time, mean_time FROM pg_stat_statements ORDER BY total_time DESC LIMIT 20`
+2. Check for sequential scans in slow query plans: `EXPLAIN (ANALYZE, BUFFERS)` on affected query — look for `Seq Scan` on large tables
+3. Review parameter values causing sniffing: query `pg_stat_statements` with `pg_stat_statements_reset()` after known-good run to establish baseline, compare parameter hashes
+
+**Modern practice anchor:**
+N+1 queries are the most common ORM performance failure — always use JOIN or batch fetching, never iterate in application code.

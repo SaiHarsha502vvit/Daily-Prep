@@ -8,7 +8,7 @@
  *   - Returns the new tab's Page object
  */
 
-import { test, expect, type Page, type Locator } from '@playwright/test';
+import { test, expect, type Page, type Locator } from "@playwright/test";
 
 // ============================================================
 // ✅ SOLUTION — openInNewTab helper
@@ -20,13 +20,16 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
  * Uses Promise.all so the context 'page' listener is registered BEFORE
  * the click fires (avoids the race condition from Challenge 2).
  */
-async function openInNewTab(page: Page, triggerLocator: Locator): Promise<Page> {
+async function openInNewTab(
+  page: Page,
+  triggerLocator: Locator,
+): Promise<Page> {
   const [newTab] = await Promise.all([
-    page.context().waitForEvent('page'), // 1 — register listener FIRST
-    triggerLocator.click(),              // 2 — trigger click SECOND
+    page.context().waitForEvent("page"), // 1 — register listener FIRST
+    triggerLocator.click(), // 2 — trigger click SECOND
   ]);
 
-  await newTab.waitForLoadState('domcontentloaded');
+  await newTab.waitForLoadState("domcontentloaded");
   return newTab;
 }
 
@@ -34,29 +37,32 @@ async function openInNewTab(page: Page, triggerLocator: Locator): Promise<Page> 
 // Usage examples
 // ============================================================
 
-test('view order detail in new tab', async ({ page }) => {
+test("view order detail in new tab", async ({ page }) => {
   // Setup: navigate to orders list
-  await page.goto('https://example.com/orders');
+  await page.goto("https://example.com/orders");
 
   // Open the new tab via the reusable helper
-  const orderTab = await openInNewTab(page, page.locator('#viewOrderBtn'));
+  const orderTab = await openInNewTab(page, page.locator("#viewOrderBtn"));
 
   // Assertions on the new tab
-  await expect(orderTab.locator('.order-id')).toHaveText('ORD-001');
-  await expect(orderTab.locator('.order-status')).toBeVisible();
+  await expect(orderTab.locator(".order-id")).toHaveText("ORD-001");
+  await expect(orderTab.locator(".order-status")).toBeVisible();
 
   // Clean up (optional — Playwright closes all contexts on test end anyway)
   await orderTab.close();
 });
 
-test('open download PDF link in new tab', async ({ page }) => {
-  await page.goto('https://example.com/invoices');
+test("open download PDF link in new tab", async ({ page }) => {
+  await page.goto("https://example.com/invoices");
 
   // Trigger locator can be any Locator — not just buttons
-  const pdfTab = await openInNewTab(page, page.locator('a[href$=".pdf"]').first());
+  const pdfTab = await openInNewTab(
+    page,
+    page.locator('a[href$=".pdf"]').first(),
+  );
 
   // Wait for PDF viewer or content
-  await pdfTab.waitForLoadState('load');
+  await pdfTab.waitForLoadState("load");
   await expect(pdfTab).toHaveURL(/\.pdf/);
 
   await pdfTab.close();
@@ -76,15 +82,15 @@ async function openInNewTabAndWait(
   waitForSelector?: string,
 ): Promise<Page> {
   const [newTab] = await Promise.all([
-    page.context().waitForEvent('page'),
+    page.context().waitForEvent("page"),
     triggerLocator.click(),
   ]);
 
-  await newTab.waitForLoadState('domcontentloaded');
+  await newTab.waitForLoadState("domcontentloaded");
 
   if (waitForSelector) {
     await newTab.locator(waitForSelector).waitFor({
-      state: 'visible',
+      state: "visible",
       timeout: 30_000,
     });
   }
@@ -92,16 +98,16 @@ async function openInNewTabAndWait(
   return newTab;
 }
 
-test('open order with SPA content guard', async ({ page }) => {
-  await page.goto('https://example.com/orders');
+test("open order with SPA content guard", async ({ page }) => {
+  await page.goto("https://example.com/orders");
 
   const orderTab = await openInNewTabAndWait(
     page,
-    page.locator('#viewOrderBtn'),
-    '.order-details-loaded', // wait for SPA to finish rendering
+    page.locator("#viewOrderBtn"),
+    ".order-details-loaded", // wait for SPA to finish rendering
   );
 
-  await expect(orderTab.locator('.order-id')).toHaveText('ORD-001');
+  await expect(orderTab.locator(".order-id")).toHaveText("ORD-001");
   await orderTab.close();
 });
 

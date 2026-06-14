@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*You are a new engineer at a fintech startup. The CTO has decided to stop depending on Java's built-in collections for the core trading engine — they need full control over memory layout and performance characteristics. Your first task: build a production-quality, fully-tested DSA Toolkit that the team can use and extend.*
+_You are a new engineer at a fintech startup. The CTO has decided to stop depending on Java's built-in collections for the core trading engine — they need full control over memory layout and performance characteristics. Your first task: build a production-quality, fully-tested DSA Toolkit that the team can use and extend._
 
 ---
 
@@ -19,18 +19,18 @@
 
 You must implement the following classes in `JavaSolutions/cap01_dsa_toolkit/`:
 
-| Class | Contract |
-|---|---|
-| `DynamicArray<T>` | Resizable array, O(1) amortized add, O(1) get, O(n) insert/remove |
-| `SinglyLinkedList<T>` | O(1) addFirst/addLast, O(n) get/remove, cycle detection |
-| `Stack<T>` | O(1) push/pop/peek, backed by linked list |
-| `Queue<T>` | O(1) enqueue/dequeue, backed by circular array |
-| `Deque<T>` | O(1) addFirst/addLast/removeFirst/removeLast |
-| `HashMap<K,V>` | Chaining, O(1) amortized put/get, auto-resize at 0.75 load |
-| `MinHeap<T>` | O(log n) insert/extractMin, O(1) peek, O(n) buildHeap |
-| `BST<T>` | Insert, delete, search, inorder, height, isValid, kthSmallest |
-| `Graph` | BFS, DFS, Dijkstra, topological sort, cycle detection |
-| `Sorter` | MergeSort, QuickSort, HeapSort (in-place for primitives) |
+| Class                 | Contract                                                          |
+| --------------------- | ----------------------------------------------------------------- |
+| `DynamicArray<T>`     | Resizable array, O(1) amortized add, O(1) get, O(n) insert/remove |
+| `SinglyLinkedList<T>` | O(1) addFirst/addLast, O(n) get/remove, cycle detection           |
+| `Stack<T>`            | O(1) push/pop/peek, backed by linked list                         |
+| `Queue<T>`            | O(1) enqueue/dequeue, backed by circular array                    |
+| `Deque<T>`            | O(1) addFirst/addLast/removeFirst/removeLast                      |
+| `HashMap<K,V>`        | Chaining, O(1) amortized put/get, auto-resize at 0.75 load        |
+| `MinHeap<T>`          | O(log n) insert/extractMin, O(1) peek, O(n) buildHeap             |
+| `BST<T>`              | Insert, delete, search, inorder, height, isValid, kthSmallest     |
+| `Graph`               | BFS, DFS, Dijkstra, topological sort, cycle detection             |
+| `Sorter`              | MergeSort, QuickSort, HeapSort (in-place for primitives)          |
 
 ### Acceptance Criteria
 
@@ -73,6 +73,7 @@ JavaSolutions/
 ## 📝 Skeleton Code (Critical Classes)
 
 ### HashMap.java
+
 ```java
 package toolkit;
 
@@ -142,6 +143,7 @@ public class HashMap<K, V> {
 ```
 
 ### BST.java
+
 ```java
 package toolkit;
 
@@ -163,27 +165,27 @@ public class BST<T extends Comparable<T>> {
 
     // Time: O(h) where h = height = O(log n) average, O(n) worst
     public void insert(T val) { /* TODO: iterative or recursive */ }
-    
+
     // Time: O(h)
     public boolean contains(T val) { /* TODO */ return false; }
-    
+
     // Time: O(h) — handle 3 cases: no child, one child, two children (replace with inorder successor)
     public void delete(T val) { /* TODO */ }
-    
+
     // Time: O(n), Space: O(h) — returns sorted ascending list
     public List<T> inorder() { /* TODO */ return new ArrayList<>(); }
-    
+
     // Time: O(n)
     public int height() { /* TODO: recursive */ return 0; }
-    
+
     // Validates BST invariant using min/max bounds approach
     // Time: O(n)
     public boolean isValid() { /* TODO: helper(node, min, max) */ return true; }
-    
+
     // Returns the k-th smallest element (1-indexed)
     // Time: O(n)
     public T kthSmallest(int k) { /* TODO: inorder counter */ return null; }
-    
+
     // Returns LCA of nodes with values a and b
     // Time: O(h) using BST property
     public T lowestCommonAncestor(T a, T b) { /* TODO */ return null; }
@@ -194,14 +196,14 @@ public class BST<T extends Comparable<T>> {
 
 ## 🔴 Failure Scenarios & Erklärungen
 
-| Mistake | Why It Happens | The Fix |
-|---|---|---|
-| `DynamicArray.get()` throws AIOOBE | Not checking `index < size` (vs `index < data.length`) | Bounds check against `size`, not `capacity` |
-| `HashMap.put()` returns null for existing key | Not scanning bucket chain for existing key before adding | Linear search chain before creating new Entry |
-| `HashMap` loses entries after resize | Reusing old bucket index (modulo old capacity) | Rehash all entries using new capacity |
-| `MinHeap.extractMin()` returns wrong value | Not swapping root with last before removing | Swap first, then siftDown from root |
-| `BST.delete()` corrupts tree for 2-child node | Not replacing with inorder successor | Find min of right subtree, copy value, delete that min node |
-| `Graph.dijkstra()` gives wrong results on negative edges | Greedy assumption breaks | Use Bellman-Ford when negative edges exist |
+| Mistake                                                  | Why It Happens                                           | The Fix                                                     |
+| -------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- |
+| `DynamicArray.get()` throws AIOOBE                       | Not checking `index < size` (vs `index < data.length`)   | Bounds check against `size`, not `capacity`                 |
+| `HashMap.put()` returns null for existing key            | Not scanning bucket chain for existing key before adding | Linear search chain before creating new Entry               |
+| `HashMap` loses entries after resize                     | Reusing old bucket index (modulo old capacity)           | Rehash all entries using new capacity                       |
+| `MinHeap.extractMin()` returns wrong value               | Not swapping root with last before removing              | Swap first, then siftDown from root                         |
+| `BST.delete()` corrupts tree for 2-child node            | Not replacing with inorder successor                     | Find min of right subtree, copy value, delete that min node |
+| `Graph.dijkstra()` gives wrong results on negative edges | Greedy assumption breaks                                 | Use Bellman-Ford when negative edges exist                  |
 
 ---
 
@@ -219,13 +221,13 @@ Once the base project passes all tests:
 
 ## 📊 Self-Assessment Rubric
 
-| Criterion | 0 — Not Met | 1 — Partial | 2 — Met | 3 — Exceeded |
-|---|---|---|---|---|
-| All 10 classes implemented | <5 | 5-7 | 8-9 | All 10 + bonus |
-| Correct Big-O | Major errors | Minor errors | Mostly correct | All correct + benchmarked |
-| JUnit coverage | <50% | 50-75% | 75-90% | >90% |
-| Javadoc quality | Missing | Minimal | Complete | Complete + examples |
-| Generics correctness | Raw types | Mostly typed | Fully typed | Typed + bounded wildcards |
+| Criterion                  | 0 — Not Met  | 1 — Partial  | 2 — Met        | 3 — Exceeded              |
+| -------------------------- | ------------ | ------------ | -------------- | ------------------------- |
+| All 10 classes implemented | <5           | 5-7          | 8-9            | All 10 + bonus            |
+| Correct Big-O              | Major errors | Minor errors | Mostly correct | All correct + benchmarked |
+| JUnit coverage             | <50%         | 50-75%       | 75-90%         | >90%                      |
+| Javadoc quality            | Missing      | Minimal      | Complete       | Complete + examples       |
+| Generics correctness       | Raw types    | Mostly typed | Fully typed    | Typed + bounded wildcards |
 
 ---
 

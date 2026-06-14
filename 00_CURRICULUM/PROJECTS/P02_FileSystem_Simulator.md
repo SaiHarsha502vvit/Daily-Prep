@@ -10,9 +10,10 @@
 
 ## 🎯 Business Requirement (PM Brief)
 
-*CloudDrive Inc. is building a distributed object store. Before any real disk or network I/O is implemented, the engineering team needs a rigorous **mock in-memory file system** to serve as the backbone of the integration test suite. The mock must behave identically to a Unix file system from the caller's perspective, so every future microservice can be tested in isolation without touching real storage.*
+_CloudDrive Inc. is building a distributed object store. Before any real disk or network I/O is implemented, the engineering team needs a rigorous **mock in-memory file system** to serve as the backbone of the integration test suite. The mock must behave identically to a Unix file system from the caller's perspective, so every future microservice can be tested in isolation without touching real storage._
 
 **Acceptance criteria from the PM:**
+
 - All paths are Unix-style (e.g., `/home/user/docs/report.txt`).
 - The root `/` always exists; it can never be deleted.
 - `mkdir` is idempotent and creates all missing intermediate directories (Unix `mkdir -p` semantics).
@@ -27,15 +28,15 @@
 
 ### 5W1H Frame
 
-| Question | Answer |
-|---|---|
-| **What problem?** | Test suite needs deterministic file-system behavior without real I/O |
-| **Naive approach?** | One flat `HashMap<String, String>` keyed by full path |
-| **Repeated failure?** | `listDir` requires a full scan of the map (O(n)); `delete` of directory leaves orphaned children |
-| **Optimized solution?** | N-ary tree of `Node` objects; each `Node` holds a `Map<String, Node>` for O(1) child lookup |
-| **Invariant?** | Every path traversal splits on `/` and walks the node tree one component at a time — O(depth) |
-| **Breaking constraint?** | Hard-links and symlinks break the tree model; scope is excluded |
-| **Edge cases?** | Root `/`, empty segment from leading `/`, path not found, file vs. directory collision, delete root |
+| Question                 | Answer                                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| **What problem?**        | Test suite needs deterministic file-system behavior without real I/O                                |
+| **Naive approach?**      | One flat `HashMap<String, String>` keyed by full path                                               |
+| **Repeated failure?**    | `listDir` requires a full scan of the map (O(n)); `delete` of directory leaves orphaned children    |
+| **Optimized solution?**  | N-ary tree of `Node` objects; each `Node` holds a `Map<String, Node>` for O(1) child lookup         |
+| **Invariant?**           | Every path traversal splits on `/` and walks the node tree one component at a time — O(depth)       |
+| **Breaking constraint?** | Hard-links and symlinks break the tree model; scope is excluded                                     |
+| **Edge cases?**          | Root `/`, empty segment from leading `/`, path not found, file vs. directory collision, delete root |
 
 ### Node Internal Model
 
@@ -50,25 +51,25 @@ Root node  "/"
 
 ### API Contract
 
-| Method | Signature | Semantics |
-|---|---|---|
-| `mkdir` | `void mkdir(String path)` | Create all intermediate directories. Idempotent. |
-| `createFile` | `void createFile(String path, String content)` | Parent directory must exist. Throws if target is a directory. |
-| `readFile` | `String readFile(String path)` | Returns content. Throws `FileNotFoundException` if absent or is a dir. |
-| `listDir` | `List<String> listDir(String path)` | Returns child names sorted lexicographically. Throws if path is a file. |
-| `delete` | `void delete(String path)` | Recursive for directories. Throws if root or path missing. |
-| `move` | `void move(String src, String dest)` | Detach node from source parent, attach to destination parent. |
-| `search` | `List<String> search(String name)` | DFS from root; collect all paths whose leaf name equals `name`. |
+| Method       | Signature                                      | Semantics                                                               |
+| ------------ | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| `mkdir`      | `void mkdir(String path)`                      | Create all intermediate directories. Idempotent.                        |
+| `createFile` | `void createFile(String path, String content)` | Parent directory must exist. Throws if target is a directory.           |
+| `readFile`   | `String readFile(String path)`                 | Returns content. Throws `FileNotFoundException` if absent or is a dir.  |
+| `listDir`    | `List<String> listDir(String path)`            | Returns child names sorted lexicographically. Throws if path is a file. |
+| `delete`     | `void delete(String path)`                     | Recursive for directories. Throws if root or path missing.              |
+| `move`       | `void move(String src, String dest)`           | Detach node from source parent, attach to destination parent.           |
+| `search`     | `List<String> search(String name)`             | DFS from root; collect all paths whose leaf name equals `name`.         |
 
 ### Complexity Targets
 
-| Operation | Time | Space |
-|---|---|---|
-| `mkdir` / `createFile` / `readFile` | O(depth) | O(depth) for path split |
-| `listDir` | O(depth + k) where k = child count | O(k) |
-| `delete` | O(subtree size) | O(depth) recursion stack |
-| `move` | O(depth_src + depth_dest) | O(depth) |
-| `search` | O(total nodes) | O(depth) recursion stack |
+| Operation                           | Time                               | Space                    |
+| ----------------------------------- | ---------------------------------- | ------------------------ |
+| `mkdir` / `createFile` / `readFile` | O(depth)                           | O(depth) for path split  |
+| `listDir`                           | O(depth + k) where k = child count | O(k)                     |
+| `delete`                            | O(subtree size)                    | O(depth) recursion stack |
+| `move`                              | O(depth_src + depth_dest)          | O(depth)                 |
+| `search`                            | O(total nodes)                     | O(depth) recursion stack |
 
 ---
 
@@ -452,15 +453,15 @@ class FileSystemTest {
 
 ## 🔴 Failure Scenarios — Erklärung
 
-| # | Mistake | Why It Fails | Invariant Violated | Fix |
-|---|---|---|---|---|
-| 1 | `path.split("/")` produces `["", "home", "user"]` | Leading `/` creates an empty string at index 0; `root.children.get("")` returns `null` on every lookup | Path split must yield only non-empty components | Use `path.substring(1).split("/")` for non-root paths; return `[]` for `"/"` |
-| 2 | `delete` removes the node from the tree without recursing into children | The child subtree is disconnected from the tree, but the caller added no GC guarantee; in production any retained reference would leak; moreover tests that check child absence after delete still pass by accident | Subtree must be fully unreachable | Since `Node.children` holds the only strong references, removing the node from its parent's map is sufficient — but you MUST also check the node exists before removal and throw if it does not |
-| 3 | Flat `HashMap<String, String>` keyed by full path | `listDir` requires iterating the entire map and filtering by prefix — O(n); `delete` requires a separate scan to find orphaned child keys | O(depth) traversal invariant | Use the N-ary tree model; `listDir` reads `node.children.keySet()` directly |
-| 4 | `traverse` returns `null` silently instead of throwing | `mkdir("/a/b")` called after `createFile("/a", …)` silently overwrites; `listDir` on a file path gets `null.children.keySet()` → `NullPointerException` | Every traversal through a non-directory must be a contract violation, not a silent no-op | Check `!currentNode.isDirectory` and throw `IllegalArgumentException` immediately |
-| 5 | `search` starts from the first non-root node, skipping the root | Files stored directly at `/filename` are never found | DFS must start at root and include root's name check before recursing | Start `dfsSearch` at `root`; the root's own name `"/"` will never match a normal filename, but children at depth 1 are reached correctly |
-| 6 | `move` reuses the existing `Node` reference but forgets to remove it from the source parent | Source parent retains the node; after move, the file appears in BOTH locations | A `Node` must have exactly one parent at all times | Remove from source `parent.children` BEFORE adding to destination |
-| 7 | `listDir("/")` throws `ArrayIndexOutOfBoundsException` | `splitPath("/")` returns `[""]` instead of `[]`; traversal tries `root.children.get("")` → null → throws | Root is a special case that must map to the root node directly | Treat path `"/"` as a zero-part path: return root immediately in `traverse` |
+| #   | Mistake                                                                                     | Why It Fails                                                                                                                                                                                                        | Invariant Violated                                                                       | Fix                                                                                                                                                                                             |
+| --- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `path.split("/")` produces `["", "home", "user"]`                                           | Leading `/` creates an empty string at index 0; `root.children.get("")` returns `null` on every lookup                                                                                                              | Path split must yield only non-empty components                                          | Use `path.substring(1).split("/")` for non-root paths; return `[]` for `"/"`                                                                                                                    |
+| 2   | `delete` removes the node from the tree without recursing into children                     | The child subtree is disconnected from the tree, but the caller added no GC guarantee; in production any retained reference would leak; moreover tests that check child absence after delete still pass by accident | Subtree must be fully unreachable                                                        | Since `Node.children` holds the only strong references, removing the node from its parent's map is sufficient — but you MUST also check the node exists before removal and throw if it does not |
+| 3   | Flat `HashMap<String, String>` keyed by full path                                           | `listDir` requires iterating the entire map and filtering by prefix — O(n); `delete` requires a separate scan to find orphaned child keys                                                                           | O(depth) traversal invariant                                                             | Use the N-ary tree model; `listDir` reads `node.children.keySet()` directly                                                                                                                     |
+| 4   | `traverse` returns `null` silently instead of throwing                                      | `mkdir("/a/b")` called after `createFile("/a", …)` silently overwrites; `listDir` on a file path gets `null.children.keySet()` → `NullPointerException`                                                             | Every traversal through a non-directory must be a contract violation, not a silent no-op | Check `!currentNode.isDirectory` and throw `IllegalArgumentException` immediately                                                                                                               |
+| 5   | `search` starts from the first non-root node, skipping the root                             | Files stored directly at `/filename` are never found                                                                                                                                                                | DFS must start at root and include root's name check before recursing                    | Start `dfsSearch` at `root`; the root's own name `"/"` will never match a normal filename, but children at depth 1 are reached correctly                                                        |
+| 6   | `move` reuses the existing `Node` reference but forgets to remove it from the source parent | Source parent retains the node; after move, the file appears in BOTH locations                                                                                                                                      | A `Node` must have exactly one parent at all times                                       | Remove from source `parent.children` BEFORE adding to destination                                                                                                                               |
+| 7   | `listDir("/")` throws `ArrayIndexOutOfBoundsException`                                      | `splitPath("/")` returns `[""]` instead of `[]`; traversal tries `root.children.get("")` → null → throws                                                                                                            | Root is a special case that must map to the root node directly                           | Treat path `"/"` as a zero-part path: return root immediately in `traverse`                                                                                                                     |
 
 ---
 
@@ -468,6 +469,7 @@ class FileSystemTest {
 
 **Challenge (Tree Traversal Invariant):**
 Given this state:
+
 ```
 /
 ├── a/
@@ -476,6 +478,7 @@ Given this state:
 └── tmp/
     └── report.txt       (content="v2")
 ```
+
 Trace through `fs.search("report.txt")`. In which order does DFS pre-order visit nodes? What is returned? What changes if you switch to BFS?
 
 <details><summary>Answer</summary>
@@ -502,16 +505,21 @@ Level 3: `/a/b/report.txt` ✓
 ## 🚀 Extension Challenges
 
 ### Challenge 1 — `copyFile(src, dest)`
+
 Add `void copyFile(String src, String dest)` that deep-copies a file node (not a directory) to a destination directory. Think carefully: should this copy by value (new Node with same content string) or by reference? What invariant prevents sharing a mutable `content` field?
 
 ### Challenge 2 — File Versioning (Last 3 Versions)
+
 Modify the `Node` class so that when `createFile` is called on an existing path, the old content is pushed onto a `Deque<String> history` (max size 3). Add `String getVersion(String path, int n)` where `n=0` is current, `n=1` is previous, etc. What data structure gives O(1) push and O(1) indexed access? (Hint: `ArrayDeque` vs `LinkedList` — see [`02_Data_Structures/01d_Stack_Queue.md`](../../02_Data_Structures/01d_Stack_Queue.md))
 
 ### Challenge 3 — Permissions Model
+
 Add a `Permission` record:
+
 ```java
 record Permission(boolean read, boolean write, boolean execute) {}
 ```
+
 Store `Map<String, Permission> acl` on each `Node` (key = username). Modify `readFile`, `createFile`, `delete`, and `listDir` to accept a `String user` parameter and throw `SecurityException` if the user lacks the required permission. What invariant must hold for the root node's ACL?
 
 ---

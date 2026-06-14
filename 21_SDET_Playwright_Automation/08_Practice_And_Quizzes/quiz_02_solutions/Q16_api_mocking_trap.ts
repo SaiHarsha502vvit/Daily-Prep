@@ -11,7 +11,7 @@
  *           What is the correct way to "spy" without breaking the request?
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // ============================================================
 // BUG — route handler does nothing → request hangs forever
@@ -26,17 +26,17 @@ import { test, expect } from '@playwright/test';
 // The UI never receives a response, the page freezes, and the test times out.
 
 // ❌ BUGGY — silent interception causes a hung request
-test('intercept API — BUGGY', async ({ page }) => {
+test("intercept API — BUGGY", async ({ page }) => {
   let intercepted = false;
 
-  await page.route('**/api/v1/orders', (route) => {
+  await page.route("**/api/v1/orders", (route) => {
     intercepted = true;
     // ❌ Missing route.continue() — request hangs forever
     // (route itself is now blocking the browser)
   });
 
-  await page.goto('/dashboard');
-  await page.locator('#loadOrdersBtn').click();
+  await page.goto("/dashboard");
+  await page.locator("#loadOrdersBtn").click();
   // The orders API call hangs; the page may freeze or throw a timeout error
 
   expect(intercepted).toBe(true);
@@ -46,11 +46,11 @@ test('intercept API — BUGGY', async ({ page }) => {
 // FIX 1 — route.continue() for spy-only interception
 // ============================================================
 
-test('spy on API without breaking it — FIX 1', async ({ page }) => {
+test("spy on API without breaking it — FIX 1", async ({ page }) => {
   let intercepted = false;
   let requestPayload: unknown = null;
 
-  await page.route('**/api/v1/orders', async (route) => {
+  await page.route("**/api/v1/orders", async (route) => {
     intercepted = true;
     const request = route.request();
     requestPayload = request.postDataJSON?.() ?? null;
@@ -58,11 +58,11 @@ test('spy on API without breaking it — FIX 1', async ({ page }) => {
     await route.continue(); // ✅ let the request reach the real server
   });
 
-  await page.goto('/dashboard');
-  await page.locator('#loadOrdersBtn').click();
+  await page.goto("/dashboard");
+  await page.locator("#loadOrdersBtn").click();
 
   expect(intercepted).toBe(true);
-  console.log('Captured payload:', requestPayload);
+  console.log("Captured payload:", requestPayload);
 });
 
 // ============================================================
@@ -72,14 +72,14 @@ test('spy on API without breaking it — FIX 1', async ({ page }) => {
 // Use page.waitForResponse — it attaches to the network event stream
 // WITHOUT intercepting; the request flows normally.
 
-test('spy on API with waitForResponse — FIX 2 (preferred for read-only)', async ({
+test("spy on API with waitForResponse — FIX 2 (preferred for read-only)", async ({
   page,
 }) => {
   // Register the listener BEFORE triggering the action (same race-condition
   // rule as waitForEvent — see Challenge 2)
   const [response] = await Promise.all([
-    page.waitForResponse('**/api/v1/orders'), // ← register first
-    page.locator('#loadOrdersBtn').click(),   // ← trigger second
+    page.waitForResponse("**/api/v1/orders"), // ← register first
+    page.locator("#loadOrdersBtn").click(), // ← trigger second
   ]);
 
   expect(response.ok()).toBeTruthy();
@@ -106,15 +106,15 @@ test('spy on API with waitForResponse — FIX 2 (preferred for read-only)', asyn
 // Advanced: route.fulfill — mock a complete response
 // ============================================================
 
-test('mock orders API response — route.fulfill', async ({ page }) => {
-  await page.route('**/api/v1/orders', async (route) => {
+test("mock orders API response — route.fulfill", async ({ page }) => {
+  await page.route("**/api/v1/orders", async (route) => {
     await route.fulfill({
       status: 200,
-      contentType: 'application/json',
+      contentType: "application/json",
       body: JSON.stringify({
         orders: [
-          { id: 'ORD-001', status: 'PROCESSING', amount: 99.99 },
-          { id: 'ORD-002', status: 'SHIPPED', amount: 49.99 },
+          { id: "ORD-001", status: "PROCESSING", amount: 99.99 },
+          { id: "ORD-002", status: "SHIPPED", amount: 49.99 },
         ],
         total: 2,
       }),
@@ -122,10 +122,10 @@ test('mock orders API response — route.fulfill', async ({ page }) => {
     // ✅ No route.continue() needed — we fulfilled it ourselves
   });
 
-  await page.goto('/dashboard');
-  await page.locator('#loadOrdersBtn').click();
+  await page.goto("/dashboard");
+  await page.locator("#loadOrdersBtn").click();
 
-  await expect(page.locator('.order-row')).toHaveCount(2);
+  await expect(page.locator(".order-row")).toHaveCount(2);
 });
 
 // WHY

@@ -59,7 +59,7 @@ test('quiz-02-ch01-alt: parallel Promise.all + map for non-interacting ops', asy
   const hrefs: (string | null)[] = await Promise.all(
     Array.from({ length: count }, async (_, i) => {
       return links.nth(i).getAttribute('href');
-    })
+    }),
   );
 
   expect(hrefs.length).toBeGreaterThan(0);

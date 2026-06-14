@@ -13,9 +13,7 @@
 
 ## 🧠 THE 6 POWER TECHNIQUES - APPLY DAILY!
 
-
 > CHECKLIST: Did you use these today?
-
 
 ⬜ ACTIVE RECALL - Did you test yourself from memory?
 • Close notes, write what you remember, then check
@@ -37,10 +35,10 @@
 
 DAILY WORKFLOW:
 ───────────────
-Morning:  Look at problems FIRST → Study theory → Solve
-Lunch:    Blurt session - dump everything on paper
-Evening:  Revise today + previous days (2-3-7)
-Night:    Can you explain it simply? (Feynman test)
+Morning: Look at problems FIRST → Study theory → Solve
+Lunch: Blurt session - dump everything on paper
+Evening: Revise today + previous days (2-3-7)
+Night: Can you explain it simply? (Feynman test)
 
 ---
 
@@ -410,7 +408,6 @@ Night:    Can you explain it simply? (Feynman test)
 ---
 
 **Remember**: Progress is not linear. Bad days are part of the journey. 🚀
-
 
 ---
 

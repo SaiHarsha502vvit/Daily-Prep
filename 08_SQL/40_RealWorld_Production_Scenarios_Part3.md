@@ -9,50 +9,52 @@
 
 ## 📋 Scenario Master Index (Part 3: Scenarios 51–75)
 
-| # | Scenario | Category |
-|---|----------|----------|
-| 51 | Double-spend: two threads deduct same balance | Race Condition |
-| 52 | Overselling: 100 people buy the last 1 item | Race Condition |
-| 53 | Lost update: two users edit same record | Race Condition |
-| 54 | Deadlock: two transactions waiting on each other | Deadlock |
-| 55 | Phantom read: row appears mid-transaction | Isolation |
-| 56 | Non-repeatable read: same query, different results | Isolation |
-| 57 | Dirty read: seeing uncommitted changes | Isolation |
-| 58 | Write skew: constraint violated across rows | Anomaly |
-| 59 | Long-running transaction blocking all writes | Lock Contention |
-| 60 | Table lock escalation: row locks → table lock | Lock |
-| 61 | Dual-write inconsistency: DB + cache out of sync | Distributed |
-| 62 | Idempotency failure: duplicate payment processed | Distributed |
-| 63 | Read-your-own-writes with replicas | Distributed |
-| 64 | Eventually consistent counter going negative | Distributed |
-| 65 | Saga pattern failure: partial hotel+flight booking | Distributed |
-| 66 | Optimistic lock retry storm | Concurrency |
-| 67 | Batch job conflicting with OLTP traffic | Concurrency |
-| 68 | Auto-vacuum blocked by long transaction | PostgreSQL |
-| 69 | Gap lock causing unexpected blocks (MySQL) | Lock |
-| 70 | Serialization failure in SSI (PostgreSQL) | Isolation |
-| 71 | Queue table hot row contention | Concurrency |
-| 72 | Trigger cascade causing unexpected locks | Lock |
-| 73 | Constraint violation in concurrent INSERT | Race Condition |
-| 74 | Clock skew in distributed timestamp ordering | Distributed |
-| 75 | Connection leak: transactions never committed | Resource Leak |
+| #   | Scenario                                           | Category        |
+| --- | -------------------------------------------------- | --------------- |
+| 51  | Double-spend: two threads deduct same balance      | Race Condition  |
+| 52  | Overselling: 100 people buy the last 1 item        | Race Condition  |
+| 53  | Lost update: two users edit same record            | Race Condition  |
+| 54  | Deadlock: two transactions waiting on each other   | Deadlock        |
+| 55  | Phantom read: row appears mid-transaction          | Isolation       |
+| 56  | Non-repeatable read: same query, different results | Isolation       |
+| 57  | Dirty read: seeing uncommitted changes             | Isolation       |
+| 58  | Write skew: constraint violated across rows        | Anomaly         |
+| 59  | Long-running transaction blocking all writes       | Lock Contention |
+| 60  | Table lock escalation: row locks → table lock      | Lock            |
+| 61  | Dual-write inconsistency: DB + cache out of sync   | Distributed     |
+| 62  | Idempotency failure: duplicate payment processed   | Distributed     |
+| 63  | Read-your-own-writes with replicas                 | Distributed     |
+| 64  | Eventually consistent counter going negative       | Distributed     |
+| 65  | Saga pattern failure: partial hotel+flight booking | Distributed     |
+| 66  | Optimistic lock retry storm                        | Concurrency     |
+| 67  | Batch job conflicting with OLTP traffic            | Concurrency     |
+| 68  | Auto-vacuum blocked by long transaction            | PostgreSQL      |
+| 69  | Gap lock causing unexpected blocks (MySQL)         | Lock            |
+| 70  | Serialization failure in SSI (PostgreSQL)          | Isolation       |
+| 71  | Queue table hot row contention                     | Concurrency     |
+| 72  | Trigger cascade causing unexpected locks           | Lock            |
+| 73  | Constraint violation in concurrent INSERT          | Race Condition  |
+| 74  | Clock skew in distributed timestamp ordering       | Distributed     |
+| 75  | Connection leak: transactions never committed      | Resource Leak   |
 
 ---
 
 ## Scenario 51: Double-Spend — Two Threads Deduct the Same Balance
 
 ### 🔴 The Incident
+
 User has $100 balance. Two concurrent requests each deduct $80. Both pass the `IF balance >= amount` check. Final balance: -$60.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Race condition: both threads read balance=100, both see 100 >= 80, both deduct |
-| **Why** | No locking on the balance row; read-check-write is NOT atomic |
-| **When** | Under concurrent requests: double-click, network retry, microservice retry |
-| **Where** | Wallet systems, payment processing, inventory, credit systems |
-| **Who** | Devs who think "SELECT then UPDATE" is safe |
-| **How** | SELECT FOR UPDATE, or atomic UPDATE with WHERE check |
+
+| Question  | Answer                                                                         |
+| --------- | ------------------------------------------------------------------------------ |
+| **What**  | Race condition: both threads read balance=100, both see 100 >= 80, both deduct |
+| **Why**   | No locking on the balance row; read-check-write is NOT atomic                  |
+| **When**  | Under concurrent requests: double-click, network retry, microservice retry     |
+| **Where** | Wallet systems, payment processing, inventory, credit systems                  |
+| **Who**   | Devs who think "SELECT then UPDATE" is safe                                    |
+| **How**   | SELECT FOR UPDATE, or atomic UPDATE with WHERE check                           |
 
 ### SQL Solutions
 
@@ -64,8 +66,8 @@ User has $100 balance. Two concurrent requests each deduct $80. Both pass the `I
 -- Thread B: UPDATE wallets SET balance = balance - 80 WHERE user_id = 1;  → -60!
 
 -- FIX 1: Atomic UPDATE with condition (simplest, fastest)
-UPDATE wallets 
-SET balance = balance - 80 
+UPDATE wallets
+SET balance = balance - 80
 WHERE user_id = 1 AND balance >= 80;
 -- Returns rows_affected: 1 (success) or 0 (insufficient funds)
 -- No race condition — database does read+check+write atomically
@@ -100,8 +102,8 @@ CREATE TABLE balance_transactions (
 
 -- The complete safe debit operation:
 WITH debit AS (
-    UPDATE wallets 
-    SET balance = balance - 80 
+    UPDATE wallets
+    SET balance = balance - 80
     WHERE user_id = 1 AND balance >= 80
     RETURNING user_id, balance
 )
@@ -116,10 +118,10 @@ FROM debit;
 ```java
 @Service
 public class WalletService {
-    
+
     @Autowired
     private JdbcTemplate jdbc;
-    
+
     @Transactional
     public boolean debit(Long userId, BigDecimal amount, String txReference) {
         // Atomic UPDATE with balance check — no race condition
@@ -128,24 +130,25 @@ public class WalletService {
             "WHERE user_id = ? AND balance >= ?",
             amount, userId, amount
         );
-        
+
         if (rows == 0) {
             throw new InsufficientFundsException("Balance too low for debit: " + amount);
         }
-        
+
         // Record transaction
         jdbc.update(
             "INSERT INTO balance_transactions (user_id, amount, balance_after, tx_reference) " +
             "VALUES (?, ?, (SELECT balance FROM wallets WHERE user_id = ?), ?)",
             userId, amount.negate(), userId, txReference
         );
-        
+
         return true;
     }
 }
 ```
 
 ### DSA Connection
+
 - **Race condition** = Two threads modifying shared variable without mutex
 - **Atomic UPDATE** = Compare-and-Swap (CAS) instruction — CPU-level atomicity
 - **SELECT FOR UPDATE** = Mutex lock on a resource
@@ -153,14 +156,14 @@ public class WalletService {
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 51: Double-Spend — Two Threads Deduct the Same Balance**
+
 >
 
 ## Scenario 52: Overselling — 100 People Buy the Last 1 Item
 
 ### 🔴 The Incident
+
 Flash sale: 1 item left in stock. 100 concurrent requests all read `stock = 1`, all pass the check, all create orders. 100 orders for 1 item.
 
 ### SQL Solutions
@@ -172,15 +175,15 @@ SELECT stock FROM products WHERE id = 42;  -- stock = 1
 UPDATE products SET stock = stock - 1 WHERE id = 42;  -- stock = -99!
 
 -- FIX 1: Atomic decrement with check
-UPDATE products 
-SET stock = stock - 1 
+UPDATE products
+SET stock = stock - 1
 WHERE id = 42 AND stock >= 1
 RETURNING stock;
 -- Only ONE thread gets rows_affected = 1; the other 99 get 0
 
 -- FIX 2: SELECT FOR UPDATE (for complex validation)
 BEGIN;
-SELECT stock, price, max_per_customer 
+SELECT stock, price, max_per_customer
 FROM products WHERE id = 42 FOR UPDATE;
 -- All other threads WAIT here
 
@@ -196,7 +199,7 @@ SELECT pg_advisory_xact_lock(42);  -- Lock on product_id 42
 -- Lock automatically released at transaction end, lighter than row lock
 
 -- FIX 4: Optimistic locking with version column
-UPDATE products 
+UPDATE products
 SET stock = stock - 1, version = version + 1
 WHERE id = 42 AND stock >= 1 AND version = 7;
 -- If another thread updated first, version changed → 0 rows affected → retry
@@ -210,28 +213,28 @@ public class Product {
     @Id
     private Long id;
     private int stock;
-    
+
     @Version  // JPA optimistic locking
     private int version;
 }
 
 @Service
 public class OrderService {
-    
+
     @Retryable(value = OptimisticLockException.class, maxAttempts = 3)
     @Transactional
     public Order placeOrder(Long productId, int quantity) {
         Product product = productRepo.findById(productId)
             .orElseThrow(() -> new NotFoundException("Product not found"));
-        
+
         if (product.getStock() < quantity) {
             throw new OutOfStockException("Only " + product.getStock() + " left");
         }
-        
+
         product.setStock(product.getStock() - quantity);
         productRepo.save(product);  // @Version check happens here
         // If version mismatch → OptimisticLockException → @Retryable retries
-        
+
         return orderRepo.save(new Order(productId, quantity));
     }
 }
@@ -239,12 +242,10 @@ public class OrderService {
 
 ---
 
-
-
-
 ## Scenario 53: Lost Update — Two Users Edit Same Record
 
 ### 🔴 The Incident
+
 User A opens a profile page (version 5). User B opens same page (version 5). User A saves changes. User B saves changes — overwrites User A's changes completely.
 
 ### SQL Solution
@@ -289,7 +290,7 @@ public class UserProfile {
     private Long id;
     private String name;
     private String email;
-    
+
     @Version
     private Integer version;
     // JPA automatically checks version on save
@@ -300,12 +301,12 @@ public class UserProfile {
 public UserProfile updateUser(@PathVariable Long id, @RequestBody UpdateRequest req) {
     try {
         UserProfile user = userRepo.findById(id).orElseThrow();
-        
+
         // Check client's version matches current
         if (!user.getVersion().equals(req.getVersion())) {
             throw new StaleObjectStateException("Record modified by another user");
         }
-        
+
         user.setName(req.getName());
         return userRepo.save(user);
     } catch (OptimisticLockException e) {
@@ -317,14 +318,14 @@ public UserProfile updateUser(@PathVariable Long id, @RequestBody UpdateRequest 
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 53: Lost Update — Two Users Edit Same Record**
+
 >
 
 ## Scenario 54: Deadlock — Two Transactions Waiting on Each Other
 
 ### 🔴 The Incident
+
 ```
 Transaction A: UPDATE accounts SET balance=balance-100 WHERE id=1; -- locks row 1
 Transaction B: UPDATE accounts SET balance=balance-200 WHERE id=2; -- locks row 2
@@ -334,14 +335,15 @@ Transaction B: UPDATE accounts SET balance=balance+200 WHERE id=1; -- WAITS for 
 ```
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Circular wait: A holds lock 1, wants lock 2. B holds lock 2, wants lock 1 |
-| **Why** | Both transactions lock rows in DIFFERENT ORDER |
-| **When** | Under concurrent updates touching multiple rows in different orders |
-| **Where** | Transfer operations, batch updates, any multi-row transaction |
-| **Who** | Database detects it automatically and kills one transaction |
-| **How** | Always lock rows in CONSISTENT ORDER (e.g., by ascending ID) |
+
+| Question  | Answer                                                                    |
+| --------- | ------------------------------------------------------------------------- |
+| **What**  | Circular wait: A holds lock 1, wants lock 2. B holds lock 2, wants lock 1 |
+| **Why**   | Both transactions lock rows in DIFFERENT ORDER                            |
+| **When**  | Under concurrent updates touching multiple rows in different orders       |
+| **Where** | Transfer operations, batch updates, any multi-row transaction             |
+| **Who**   | Database detects it automatically and kills one transaction               |
+| **How**   | Always lock rows in CONSISTENT ORDER (e.g., by ascending ID)              |
 
 ### SQL Solution
 
@@ -366,11 +368,11 @@ COMMIT;
 -- PostgreSQL:
 SELECT * FROM pg_stat_activity WHERE wait_event_type = 'Lock';
 
--- MySQL: 
+-- MySQL:
 SHOW ENGINE INNODB STATUS;  -- "LATEST DETECTED DEADLOCK" section
 
 -- Monitor deadlock frequency:
-SELECT datname, deadlocks 
+SELECT datname, deadlocks
 FROM pg_stat_database WHERE deadlocks > 0;
 ```
 
@@ -379,13 +381,13 @@ FROM pg_stat_database WHERE deadlocks > 0;
 ```java
 @Service
 public class TransferService {
-    
+
     @Transactional
     public void transfer(Long fromId, Long toId, BigDecimal amount) {
         // CRITICAL: Always lock in ascending ID order to prevent deadlocks
         Long firstId = Math.min(fromId, toId);
         Long secondId = Math.max(fromId, toId);
-        
+
         // Lock both accounts in deterministic order
         Account first = jdbc.queryForObject(
             "SELECT * FROM accounts WHERE id = ? FOR UPDATE",
@@ -395,7 +397,7 @@ public class TransferService {
             "SELECT * FROM accounts WHERE id = ? FOR UPDATE",
             accountMapper, secondId
         );
-        
+
         // Perform transfer
         jdbc.update("UPDATE accounts SET balance = balance - ? WHERE id = ?", amount, fromId);
         jdbc.update("UPDATE accounts SET balance = balance + ? WHERE id = ?", amount, toId);
@@ -404,6 +406,7 @@ public class TransferService {
 ```
 
 ### DSA Connection
+
 - **Deadlock = Cycle in a directed graph** (wait-for graph)
 - **Prevention = Total ordering** — resources locked in consistent sequence
 - **Detection = DFS cycle detection** — database runs this periodically
@@ -411,16 +414,15 @@ public class TransferService {
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 54: Deadlock — Two Transactions Waiting on Each Other**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenario 55: Phantom Read — Row Appears Mid-Transaction
 
@@ -457,20 +459,20 @@ COMMIT;
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 55: Phantom Read — Row Appears Mid-Transaction**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenario 56–58: Isolation Anomalies Quick-Fire
 
 ### Scenario 56: Non-Repeatable Read
+
 ```sql
 -- Transaction A reads price = $100
 -- Transaction B updates price to $150 and commits
@@ -486,6 +488,7 @@ COMMIT;
 ```
 
 ### Scenario 57: Dirty Read
+
 ```sql
 -- Transaction A updates balance to 0 (but doesn't commit yet)
 -- Transaction B reads balance = 0 (uncommitted!)
@@ -497,6 +500,7 @@ COMMIT;
 ```
 
 ### Scenario 58: Write Skew
+
 ```sql
 -- Hospital rule: At least 1 doctor must be on-call at all times
 -- Doctor A and Doctor B are both on-call
@@ -526,13 +530,14 @@ SELECT COUNT(*) FROM on_call_doctors WHERE on_call = TRUE FOR UPDATE;
 ## Scenario 59: Long-Running Transaction Blocking All Writes
 
 ### 🔴 The Incident
+
 Developer runs `BEGIN` in psql, forgets to `COMMIT`. For 6 hours, autovacuum can't clean dead tuples, table bloat grows, all other transactions accumulate WAL.
 
 ### SQL Solution
 
 ```sql
 -- DETECT long-running transactions:
-SELECT 
+SELECT
     pid,
     usename,
     state,
@@ -575,20 +580,20 @@ spring:
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 59: Long-Running Transaction Blocking All Writes**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenario 60–63: Lock & Distributed Consistency Quick-Fire
 
 ### Scenario 60: Row Lock Escalation to Table Lock
+
 ```sql
 -- MySQL InnoDB: Too many individual row locks → escalates to table lock
 -- This blocks ALL other operations on the table
@@ -601,7 +606,7 @@ UPDATE orders SET status = 'archived' WHERE created_at < '2024-01-01';
 -- GOOD: Batch in chunks
 UPDATE orders SET status = 'archived'
 WHERE id IN (
-    SELECT id FROM orders 
+    SELECT id FROM orders
     WHERE created_at < '2024-01-01' AND status != 'archived'
     LIMIT 5000
 );
@@ -609,6 +614,7 @@ WHERE id IN (
 ```
 
 ### Scenario 61: Dual-Write Inconsistency (DB + Cache)
+
 ```java
 // PROBLEM: DB says one thing, Redis cache says another
 public void updateProduct(Product product) {
@@ -622,7 +628,7 @@ public Product getProduct(Long id) {
     String key = "product:" + id;
     Product cached = redisTemplate.opsForValue().get(key);
     if (cached != null) return cached;
-    
+
     Product product = productRepo.findById(id).orElseThrow();
     redisTemplate.opsForValue().set(key, product, Duration.ofMinutes(5));  // TTL!
     return product;
@@ -636,6 +642,7 @@ public void updateProduct(Product product) {
 ```
 
 ### Scenario 62: Idempotency Failure — Duplicate Payment
+
 ```sql
 -- PROBLEM: Network timeout → client retries → payment processed twice
 
@@ -665,19 +672,20 @@ RETURNING *;
 public ResponseEntity<Payment> createPayment(
     @RequestHeader("Idempotency-Key") String idempotencyKey,
     @RequestBody PaymentRequest request) {
-    
+
     // Check if already processed
     Optional<Payment> existing = paymentRepo.findByIdempotencyKey(idempotencyKey);
     if (existing.isPresent()) {
         return ResponseEntity.ok(existing.get());  // Return same result
     }
-    
+
     Payment payment = paymentService.process(request, idempotencyKey);
     return ResponseEntity.status(HttpStatus.CREATED).body(payment);
 }
 ```
 
 ### Scenario 63: Read-Your-Own-Writes with Replicas
+
 ```java
 // PROBLEM: Write goes to primary, immediate read goes to replica (stale!)
 @Transactional
@@ -711,6 +719,7 @@ public class ReadWriteRoutingDataSource extends AbstractRoutingDataSource {
 ## Scenario 64: Eventually Consistent Counter Going Negative
 
 ### SQL Solution
+
 ```sql
 -- PROBLEM: Multiple replicas each apply -1 to cached counter value
 -- Counter starts at 3, three replicas each think they're doing 3-1=2
@@ -739,12 +748,10 @@ FROM counter_events WHERE counter_name = 'stock_item_42';
 
 ---
 
-
-
-
 ## Scenario 65: Saga Pattern Failure — Partial Booking
 
 ### 🔴 The Incident
+
 Travel booking: (1) Reserve flight → success, (2) Reserve hotel → success, (3) Charge payment → FAILS. Flight and hotel are reserved but not paid.
 
 ### Spring Boot Saga Implementation
@@ -796,18 +803,17 @@ CREATE TABLE saga_executions (
 ```
 
 ### DSA Connection
+
 - **Saga = Stack-based undo** — push operations, pop to compensate
 - **Two-phase commit = Distributed consensus** — all-or-nothing
 - **Compensating transaction = Transaction log replay in reverse**
 
 ---
 
-
-
-
 ## Scenario 66: Optimistic Lock Retry Storm
 
 ### 🔴 The Incident
+
 Flash sale: 10,000 users updating the same product row with optimistic locking. 9,999 get `OptimisticLockException`, retry, conflict again → exponential retry storm. Database CPU at 100%.
 
 ### Spring Boot Solution
@@ -815,7 +821,7 @@ Flash sale: 10,000 users updating the same product row with optimistic locking. 
 ```java
 @Service
 public class FlashSaleService {
-    
+
     // FIX 1: Pessimistic lock for hot rows (don't retry, just queue)
     @Transactional
     public OrderResult purchaseWithPessimisticLock(Long productId, int qty) {
@@ -824,28 +830,28 @@ public class FlashSaleService {
             "SELECT * FROM products WHERE id = ? AND stock >= ? FOR UPDATE SKIP LOCKED",
             productMapper, productId, qty
         );
-        
+
         if (product == null) {
             return OrderResult.soldOut();
         }
-        
+
         jdbc.update("UPDATE products SET stock = stock - ? WHERE id = ?", qty, productId);
         return OrderResult.success();
     }
-    
+
     // FIX 2: Distribute the contention across "buckets"
     // Instead of 1 stock row, create 10 stock buckets
     // Each bucket holds stock/10, reducing contention 10x
     @Transactional
     public OrderResult purchaseFromBucket(Long productId, int qty) {
         int bucket = ThreadLocalRandom.current().nextInt(10);
-        
+
         int rows = jdbc.update(
             "UPDATE product_stock_buckets SET stock = stock - ? " +
             "WHERE product_id = ? AND bucket_id = ? AND stock >= ?",
             qty, productId, bucket, qty
         );
-        
+
         if (rows == 0) {
             // This bucket empty, try next
             for (int i = 0; i < 10; i++) {
@@ -858,7 +864,7 @@ public class FlashSaleService {
                 if (rows > 0) break;
             }
         }
-        
+
         return rows > 0 ? OrderResult.success() : OrderResult.soldOut();
     }
 }
@@ -883,6 +889,7 @@ FROM product_stock_buckets WHERE product_id = 42 GROUP BY product_id;
 ```
 
 ### DSA Connection
+
 - **Hot row = Hot spot** — like a hash table with all keys hashing to same bucket
 - **Stock buckets = Consistent hashing** — distribute load across buckets
 - **SKIP LOCKED = Non-blocking queue** — take next available, don't wait
@@ -911,7 +918,7 @@ BEGIN
             LIMIT batch_size
         );
         GET DIAGNOSTICS rows_updated = ROW_COUNT;
-        
+
         COMMIT;  -- Release locks between batches
         PERFORM pg_sleep(0.1);  -- 100ms pause to let OLTP through
     END LOOP;
@@ -926,15 +933,15 @@ END $$;
 ```java
 @Service
 public class ArchivalBatchJob {
-    
+
     @Autowired
     private JdbcTemplate jdbc;
-    
+
     @Scheduled(cron = "0 0 2 * * *")  // 2 AM daily
     public void archiveOldOrders() {
         int totalArchived = 0;
         int batchSize = 5000;
-        
+
         while (true) {
             int rows = jdbc.update(
                 "UPDATE orders SET status = 'archived' " +
@@ -942,22 +949,19 @@ public class ArchivalBatchJob {
                 "WHERE created_at < ? AND status != 'archived' LIMIT ?)",
                 LocalDate.now().minusYears(1), batchSize
             );
-            
+
             totalArchived += rows;
             if (rows == 0) break;
-            
+
             try { Thread.sleep(100); } catch (InterruptedException e) { break; }
         }
-        
+
         log.info("Archived {} orders", totalArchived);
     }
 }
 ```
 
 ---
-
-
-
 
 ## Scenario 68: Auto-Vacuum Blocked by Long Transaction
 
@@ -969,8 +973,8 @@ public class ArchivalBatchJob {
 -- Table bloat grows for hours
 
 -- Detect the blocker:
-SELECT 
-    pid, 
+SELECT
+    pid,
     backend_xid,
     backend_xmin,  -- This is the "horizon" — vacuum can't clean past this
     age(backend_xmin) AS xmin_age,
@@ -990,20 +994,20 @@ SET statement_timeout = '300000';  -- 5 minutes max
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 68: Auto-Vacuum Blocked by Long Transaction**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenarios 69–75: Lock & Concurrency Quick-Fire
 
 ### Scenario 69: Gap Lock Causing Unexpected Blocks (MySQL)
+
 ```sql
 -- MySQL InnoDB REPEATABLE READ uses gap locks
 -- Transaction A: SELECT * FROM orders WHERE status = 'pending' FOR UPDATE;
@@ -1016,6 +1020,7 @@ SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED;
 ```
 
 ### Scenario 70: Serialization Failure (PostgreSQL SSI)
+
 ```sql
 -- PostgreSQL SERIALIZABLE uses Serializable Snapshot Isolation (SSI)
 -- Detects conflicts without locking, but may abort transactions
@@ -1035,21 +1040,23 @@ public void criticalOperation() { ... }
 ```
 
 ### Scenario 71: Queue Table Hot Row Contention
+
 ```sql
 -- PROBLEM: Multiple workers polling same queue table
 SELECT * FROM job_queue WHERE status = 'pending' ORDER BY created_at LIMIT 1 FOR UPDATE;
 -- ALL workers block on the same row!
 
 -- FIX: SKIP LOCKED (PostgreSQL 9.5+, MySQL 8.0+)
-SELECT * FROM job_queue 
-WHERE status = 'pending' 
-ORDER BY created_at 
-LIMIT 1 
+SELECT * FROM job_queue
+WHERE status = 'pending'
+ORDER BY created_at
+LIMIT 1
 FOR UPDATE SKIP LOCKED;
 -- Each worker gets a DIFFERENT row, no blocking!
 ```
 
 ### Scenario 72: Trigger Cascade Causing Unexpected Locks
+
 ```sql
 -- UPDATE on table A fires trigger that UPDATEs table B
 -- Table B's trigger UPDATEs table C — unexpected lock chain!
@@ -1063,6 +1070,7 @@ WHERE tgrelid::regclass::text = 'orders';
 ```
 
 ### Scenario 73: Constraint Violation in Concurrent INSERT
+
 ```sql
 -- Two threads INSERT user with same email simultaneously
 -- Both pass the SELECT check (no user with this email exists)
@@ -1076,6 +1084,7 @@ RETURNING *;
 ```
 
 ### Scenario 74: Clock Skew in Distributed Timestamp Ordering
+
 ```sql
 -- Server A's clock is 3 seconds ahead of Server B
 -- Event order: B creates order at real 10:00:00 (clock says 09:59:57)
@@ -1091,6 +1100,7 @@ VALUES ('event data', CURRENT_TIMESTAMP);  -- Database clock, not app clock
 ```
 
 ### Scenario 75: Connection Leak — Transactions Never Committed
+
 ```java
 // BAD: Connection acquired but never returned
 public void processData() {
@@ -1127,22 +1137,33 @@ spring:
 
 ## 🧠 DSA Patterns Behind Concurrency Scenarios
 
-| Scenario | DSA Pattern |
-|----------|-------------|
-| Double-spend | **CAS (Compare-and-Swap)** — atomic read-modify-write |
-| Overselling | **Semaphore** — counting resource (stock) |
-| Lost update | **Versioning / optimistic lock** — conflict detection |
-| Deadlock | **Cycle detection in directed graph** |
-| Phantom read | **Snapshot isolation** — read from a point-in-time copy |
-| Saga pattern | **Stack-based undo** — compensating operations |
-| Retry storm | **Exponential backoff** — spread out retries over time |
-| Hot row / bucket | **Consistent hashing** — distribute load |
-| SKIP LOCKED queue | **Non-blocking dequeue** — CAS-based lock-free queue |
-| Idempotency | **Set / HashSet** — "already processed" check |
+| Scenario          | DSA Pattern                                             |
+| ----------------- | ------------------------------------------------------- |
+| Double-spend      | **CAS (Compare-and-Swap)** — atomic read-modify-write   |
+| Overselling       | **Semaphore** — counting resource (stock)               |
+| Lost update       | **Versioning / optimistic lock** — conflict detection   |
+| Deadlock          | **Cycle detection in directed graph**                   |
+| Phantom read      | **Snapshot isolation** — read from a point-in-time copy |
+| Saga pattern      | **Stack-based undo** — compensating operations          |
+| Retry storm       | **Exponential backoff** — spread out retries over time  |
+| Hot row / bucket  | **Consistent hashing** — distribute load                |
+| SKIP LOCKED queue | **Non-blocking dequeue** — CAS-based lock-free queue    |
+| Idempotency       | **Set / HashSet** — "already processed" check           |
 
 ---
 
 [⬅ Previous: 39_RealWorld_Production_Scenarios_Part2](39_RealWorld_Production_Scenarios_Part2.md) | [📚 Index](00_INDEX.md) | [Next: 41_RealWorld_Production_Scenarios_Part4 ➡](41_RealWorld_Production_Scenarios_Part4.md)
 
+### Historical Evolution
 
+**Predecessors (with years):**
+- **Edsger Dijkstra (1965)**: Introduced semaphores and the concept of mutual exclusion in concurrent processes — foundational theory behind all database locking
+- **Edward G. Coffman Jr. (1971)**: Formalized the four Coffman conditions necessary for deadlock — mutual exclusion, hold-and-wait, no preemption, circular wait; violating any one prevents deadlock
+- **David Reed (1978)**: MIT doctoral dissertation introducing Multi-Version Concurrency Control (MVCC) — readers see consistent snapshots, writers create new versions; eliminates read-write blocking
+- **Financial system engineers (1980s)**: Double-entry bookkeeping systems formalized double-spend prevention; ACID transactions emerged from the need to prevent financial inconsistencies in banking systems
 
+**Evolution narrative:**
+Concurrency control evolved from operating system theory (Dijkstra's semaphores, 1965) into database theory (Eswaran & Gray on lock granules, 1976) into production practice (IBM DB2, Oracle). The race condition / lost update problem predates databases — it exists in any concurrent system where two processes read-modify-write the same variable without synchronization. Database designers chose pessimistic locking (SELECT FOR UPDATE) for high-integrity workloads and optimistic locking (version columns) for high-throughput/low-contention systems. MVCC (Reed 1978) was the key insight that separated "old databases" (readers block writers) from "modern databases" (everyone works simultaneously on different row versions).
+
+**Modern practice anchor:**
+PostgreSQL's MVCC + VACUUM combination, MySQL InnoDB's gap locks, and SQL Server's optimisticSnapshot isolation are all modern implementations of these 1970s ideas. The anomalies (dirty read, non-repeatable read, phantom read, write skew) and their isolation-level countermeasures were formalized in SQL-92 and remain the vocabulary for discussing concurrent data access.

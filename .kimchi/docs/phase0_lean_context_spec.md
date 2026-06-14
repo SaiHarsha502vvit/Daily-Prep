@@ -1,11 +1,13 @@
 # Phase 0 Spec — Lean Context System
 
 ## Goal
+
 Reduce mandatory agent reading from ~67K to ~17K tokens by creating a lean `_Curriculum/` root context.
 
 ## Files to Create / Modify
 
 ### Create: `_Curriculum/00_AGENT_START.md`
+
 - Path: `/mnt/e/Dev_World/04_Practice/Daily-Prep/_Curriculum/00_AGENT_START.md`
 - Size target: < 3KB
 - Content: Lean start sequence with:
@@ -15,6 +17,7 @@ Reduce mandatory agent reading from ~67K to ~17K tokens by creating a lean `_Cur
   - Context update command reminder
 
 ### Create: `_Curriculum/01_FILE_MAP.md`
+
 - Path: `/mnt/e/Dev_World/04_Practice/Daily-Prep/_Curriculum/01_FILE_MAP.md`
 - Size target: < 7KB
 - Content: Condensed file map — each of the 22 folders listed with:
@@ -24,6 +27,7 @@ Reduce mandatory agent reading from ~67K to ~17K tokens by creating a lean `_Cur
   - 3–5 most important files inside (no full listing)
 
 ### Create: `_Curriculum/02_KNOWN_ISSUES.md`
+
 - Path: `/mnt/e/Dev_World/04_Practice/Daily-Prep/_Curriculum/02_KNOWN_ISSUES.md`
 - Size target: < 2KB
 - Content: Tracked issues template with sections:
@@ -32,6 +36,7 @@ Reduce mandatory agent reading from ~67K to ~17K tokens by creating a lean `_Cur
   - Verification notes
 
 ### Modify: `AGENTS.md`
+
 - Path: `/mnt/e/Dev_World/04_Practice/Daily-Prep/AGENTS.md`
 - Change: Replace or prefix the heavy start sequence with a redirect to `_Curriculum/00_AGENT_START.md`. Keep a short "For legacy context, see ..." note. Do NOT delete legacy files like FILE_REGISTRY.csv — just make AGENTS.md point to the lean start first.
 
@@ -58,11 +63,13 @@ Reduce mandatory agent reading from ~67K to ~17K tokens by creating a lean `_Cur
    If it fails, inspect the stale files and determine if they are related to your changes. If unrelated, document in `_Curriculum/02_KNOWN_ISSUES.md`.
 
 ## Constraints
+
 - Do NOT move or delete existing files in 22 content folders.
 - Preserve existing pedagogical patterns.
 - Windows PowerShell tooling must still work.
 
 ## Acceptance Criteria
+
 - `[ ]` `_Curriculum/00_AGENT_START.md` exists and `wc -c` < 3000
 - `[ ]` `_Curriculum/01_FILE_MAP.md` exists and `wc -c` < 7000
 - `[ ]` `_Curriculum/02_KNOWN_ISSUES.md` exists

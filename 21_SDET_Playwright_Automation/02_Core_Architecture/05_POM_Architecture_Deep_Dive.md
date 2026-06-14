@@ -3,6 +3,7 @@
 **Navigation**: [← Previous: JS/TS For Automation](../01_Foundations/04_JS_TS_For_Automation.md) | [Index](../../00_MASTER_INDEX.md) | [Next: Custom Fixtures →](./06_Custom_Fixtures_Architecture.md)
 
 **Cross-links:**
+
 - [`17_TypeScript/01_TS_Foundations.md`](../../17_TypeScript/01_TS_Foundations.md) — Classes, access modifiers, `readonly`
 - [`17_TypeScript/02_TS_Advanced_Types.md`](../../17_TypeScript/02_TS_Advanced_Types.md) — `as const`, interfaces, literal types
 - [`15_React_Frontend/07_React_Testing.md`](../../15_React_Frontend/07_React_Testing.md) — Page Object patterns from a developer perspective
@@ -12,7 +13,7 @@
 ## 5W1H — Why This Chapter?
 
 - **WHAT**: A deep analysis of the Page Object Model (POM) pattern, using your real `MasterSearchPage` and `CustomerDetailsTab` as the primary examples.
-- **WHY**: Your codebase mixes two different POM styles in the same class. Without understanding *why* each style exists and *when* each is correct, you will keep writing tests that are hard to maintain and flaky.
+- **WHY**: Your codebase mixes two different POM styles in the same class. Without understanding _why_ each style exists and _when_ each is correct, you will keep writing tests that are hard to maintain and flaky.
 - **WHO**: SDETs who can write a POM class but aren't sure if they're doing it "right."
 - **WHEN**: Before scaling up your POM library or onboarding another engineer to the codebase.
 - **HOW**: By dissecting real code, explaining every design decision, and showing how to evolve it into a clean, typed, maintainable architecture.
@@ -24,25 +25,29 @@
 The **Page Object Model** is a design pattern that says: **keep your locators and page interactions separate from your test logic.**
 
 Without POM:
+
 ```typescript
 // ❌ Test file doing everything — a maintenance nightmare
-test('search by citation', async ({ page }) => {
-  await page.goto('https://crm.dynamics.com/master-search');
-  await page.locator('#MasterSearchDropdown-option').waitFor({ state: 'visible', timeout: 60000 });
-  await page.locator('#transit-account-number-bank-card').fill('ACC-001');
-  await page.getByRole('button', { name: 'Search' }).nth(2).click();
-  await expect(page.locator('.result-row')).toBeVisible();
+test("search by citation", async ({ page }) => {
+  await page.goto("https://crm.dynamics.com/master-search");
+  await page
+    .locator("#MasterSearchDropdown-option")
+    .waitFor({ state: "visible", timeout: 60000 });
+  await page.locator("#transit-account-number-bank-card").fill("ACC-001");
+  await page.getByRole("button", { name: "Search" }).nth(2).click();
+  await expect(page.locator(".result-row")).toBeVisible();
 });
 // If the dropdown ID changes, you must find EVERY test that uses it and update each one.
 ```
 
 With POM:
+
 ```typescript
 // ✅ Locators in one place — tests stay clean
-test('search by citation', async ({ page }) => {
+test("search by citation", async ({ page }) => {
   const masterSearch = new MasterSearchPage(page);
   await masterSearch.waitForPageLoad();
-  await masterSearch.searchByTransitAccount('ACC-001');
+  await masterSearch.searchByTransitAccount("ACC-001");
   await masterSearch.verifyResultsAreVisible();
 });
 // If the dropdown ID changes, you update ONE file: MasterSearchPage.ts
@@ -57,15 +62,14 @@ test('search by citation', async ({ page }) => {
 Here is a clean reconstruction of your class with annotations on every design decision:
 
 ```typescript
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 export class MasterSearchPage {
-
   // ─── STATIC CONSTANTS ─────────────────────────────────────────────────────
   // Static: belongs to the CLASS itself, not any instance.
   // readonly: can never be reassigned after declaration.
   // Why: avoids the magic string 'button' scattered across the file.
-  static readonly BUTTON_ROLE = 'button' as const;
+  static readonly BUTTON_ROLE = "button" as const;
   //                                       ↑ "as const" makes it the literal
   //                                         type "button", not plain string.
   //                                         Required by Playwright's ARIA role types.
@@ -90,7 +94,10 @@ export class MasterSearchPage {
   readonly locators: {
     masterSearchDropdown: string;
     orderInputField: string;
-    customerSearchButton: { role: typeof MasterSearchPage.BUTTON_ROLE; name: string };
+    customerSearchButton: {
+      role: typeof MasterSearchPage.BUTTON_ROLE;
+      name: string;
+    };
     // ... etc.
   };
 
@@ -100,26 +107,32 @@ export class MasterSearchPage {
     // ─── STYLE 1 ASSIGNMENTS ────────────────────────────────────────────────
     // All of these create Locator objects immediately.
     // The DOM is NOT queried here. A Locator is just a "recipe" for finding elements.
-    this.cardTextLocator = this.page.getByText('Card', { exact: true });
-    this.smartcardTextLocator = this.page.getByText('Smartcard');
-    
+    this.cardTextLocator = this.page.getByText("Card", { exact: true });
+    this.smartcardTextLocator = this.page.getByText("Smartcard");
+
     // Why both getByRole AND locator('#id') for the same thing?
-    // Because one of them was added later and the comment "// Updated Locator" 
+    // Because one of them was added later and the comment "// Updated Locator"
     // shows the original was replaced. The old one wasn't cleaned up.
     // This is technical debt — exactly one should be kept.
-    this.transitAccountLocator = this.page.locator('#transit-account-number-bank-card');
-    
-    this.resetButtonLocator = this.page.getByRole('button', { name: 'Reset' });
-    this.SearchButtonInMasterSearch = this.page.getByRole('button', { name: 'Search' });
-    
+    this.transitAccountLocator = this.page.locator(
+      "#transit-account-number-bank-card",
+    );
+
+    this.resetButtonLocator = this.page.getByRole("button", { name: "Reset" });
+    this.SearchButtonInMasterSearch = this.page.getByRole("button", {
+      name: "Search",
+    });
+
     // .nth(2) = "the third element" (0-indexed)
     // Risk: if a new button is added above, this index shifts and the test breaks.
-    this.thirdSearchButtonInMasterSearch = this.page.getByRole('button', { name: 'Search' }).nth(2);
+    this.thirdSearchButtonInMasterSearch = this.page
+      .getByRole("button", { name: "Search" })
+      .nth(2);
 
     // ─── STYLE 2 ASSIGNMENTS ────────────────────────────────────────────────
     this.locators = {
-      masterSearchDropdown: '#MasterSearchDropdown-option',
-      orderInputField: '#orderNumberId',
+      masterSearchDropdown: "#MasterSearchDropdown-option",
+      orderInputField: "#orderNumberId",
       // ...
     };
   }
@@ -144,19 +157,22 @@ await expect(this.cardTextLocator).toBeVisible();
 ```
 
 **Advantages:**
+
 - Fully typed — TypeScript knows this is a `Locator` and gives you autocomplete on `.click()`, `.fill()`, `.isVisible()`, etc.
 - Playwright's lazy evaluation means defining it in the constructor is free — no DOM query happens at that point.
 - Can chain Playwright methods directly: `this.cardTextLocator.filter({ visible: true })`.
 
 **Disadvantages:**
+
 - Dynamic locators (those that take parameters) can't be class properties:
+
   ```typescript
   // ❌ Can't do this as a property — it needs a parameter at use time
   readonly customerRow: Locator; // Which customer? Unknown at construction time.
-  
+
   // ✅ Must be a method instead:
   customerRow(customerName: string): Locator {
-    return this.page.locator(`//div[contains(@data-automation-key, 'customerSearchResults') 
+    return this.page.locator(`//div[contains(@data-automation-key, 'customerSearchResults')
       and contains(text(), '${customerName}')]`);
   }
   ```
@@ -165,20 +181,24 @@ await expect(this.cardTextLocator).toBeVisible();
 
 ```typescript
 this.locators = {
-  masterSearchDropdown: '#MasterSearchDropdown-option',
-  orderInputField: '#orderNumberId',
-  customerSearchButton: { role: MasterSearchPage.BUTTON_ROLE, name: 'Search' },
+  masterSearchDropdown: "#MasterSearchDropdown-option",
+  orderInputField: "#orderNumberId",
+  customerSearchButton: { role: MasterSearchPage.BUTTON_ROLE, name: "Search" },
 };
 // In usage:
-await this.page.locator(this.locators.masterSearchDropdown).waitFor({ state: 'visible' });
+await this.page
+  .locator(this.locators.masterSearchDropdown)
+  .waitFor({ state: "visible" });
 ```
 
 **Advantages:**
+
 - Centralised — all selectors in one place, easy to scan.
 - Works well for CSS selector strings where you don't need chaining.
 - The object structure naturally groups related locators (e.g., all Customer Search locators together).
 
 **Disadvantages:**
+
 - Not typed as `Locator` — you lose Playwright-specific autocomplete until you call `page.locator(...)`.
 - Mixed types in the same dictionary (some are strings, some are `{ role, name }` descriptor objects) makes the TypeScript interface harder to write.
 - You have to remember to call `this.page.locator(this.locators.xxx)` every time — more verbose at usage sites.
@@ -198,20 +218,22 @@ export class MasterSearchPage {
   customerRow(customerName: string): Locator {
     return this.page.locator(
       `//div[contains(@data-automation-key, 'customerSearchResults') 
-        and contains(text(), '${customerName}')]`
+        and contains(text(), '${customerName}')]`,
     );
   }
 
   searchButton(index = 0): Locator {
     // No more fragile .nth(2) scattered around — controlled in one place
-    return this.page.getByRole('button', { name: 'Search' }).nth(index);
+    return this.page.getByRole("button", { name: "Search" }).nth(index);
   }
 
   constructor(page: Page) {
     this.page = page;
-    this.transitAccountInput = page.locator('#transit-account-number-bank-card');
-    this.resetButton = page.getByRole('button', { name: 'Reset' });
-    this.masterSearchDropdown = page.locator('#MasterSearchDropdown-option');
+    this.transitAccountInput = page.locator(
+      "#transit-account-number-bank-card",
+    );
+    this.resetButton = page.getByRole("button", { name: "Reset" });
+    this.masterSearchDropdown = page.locator("#MasterSearchDropdown-option");
   }
 }
 ```
@@ -246,9 +268,14 @@ await expect(this.cardTextLocator).toBeVisible(); // NOW it queries the DOM
 ## 5. The `.nth(2)` Problem — And How to Fix It
 
 Your codebase has this pattern:
+
 ```typescript
-this.thirdSearchButtonInMasterSearch = this.page.getByRole('button', { name: 'Search' }).nth(2);
-this.caseSearchButton = this.page.getByRole('button', { name: 'Search' }).nth(2);
+this.thirdSearchButtonInMasterSearch = this.page
+  .getByRole("button", { name: "Search" })
+  .nth(2);
+this.caseSearchButton = this.page
+  .getByRole("button", { name: "Search" })
+  .nth(2);
 ```
 
 **Why this is fragile:** If a developer adds a new "Search" button above the one you're targeting, `.nth(2)` now points to the wrong button. Your test fails. The DOM didn't break — your locator assumption broke.
@@ -286,6 +313,7 @@ caseSearchButton(): Locator {
 ## 6. The `as const` Requirement — Fully Explained
 
 Your `CustomerDetailsTab` uses this:
+
 ```typescript
 phonesTab: { role: 'tab' as const, options: { name: 'Phones' } }
 ```
@@ -312,7 +340,7 @@ const role = 'tab' as const;
 const locators = {
   phonesTab: { role: 'tab' },          // role is typed as: string
   //           ↑ TypeScript error when passed to getByRole — string ≠ AriaRole
-  
+
   phonesTab: { role: 'tab' as const }, // role is typed as: "tab" (the literal)
   //           ↑ Compiles correctly — "tab" IS part of AriaRole
 };
@@ -353,12 +381,14 @@ async verifyMasterSearchPageElementsAreVisible(): Promise<boolean> {
 ```
 
 **Design issue with this approach:** Returning a `boolean` from a verification method means the test file must check it:
+
 ```typescript
 const isValid = await masterSearch.verifyMasterSearchPageElementsAreVisible();
 expect(isValid).toBeTruthy(); // if false, the error says "expected false to be truthy" — not helpful
 ```
 
 **Better pattern:** Assert directly inside the POM method using Playwright's `expect`:
+
 ```typescript
 async verifyMasterSearchPageElementsAreVisible(): Promise<void> {
   await this.page.locator(this.locators.masterSearchDropdown).waitFor({
@@ -371,7 +401,7 @@ async verifyMasterSearchPageElementsAreVisible(): Promise<void> {
   await expect(this.smartcardTextLocator).toBeVisible();
   await expect(this.transitAccountLocator.first()).toBeVisible();
   await expect(this.resetButtonLocator).toBeVisible();
-  
+
   const searchButtonCount = await this.page.getByRole('button', { name: 'Search' }).count();
   expect(searchButtonCount).toBeGreaterThan(0);
 }
@@ -384,6 +414,7 @@ async verifyMasterSearchPageElementsAreVisible(): Promise<void> {
 ## 8. Typing the `this.locators` Dictionary
 
 Currently your `this.locators` object has no TypeScript interface, which means:
+
 - No autocomplete when you type `this.locators.` in a method.
 - Typos in property names (`this.locators.mastersearchdropdown`) fail at runtime, not compile time.
 
@@ -398,7 +429,7 @@ interface MasterSearchLocators {
   statusDropdown: string;
   // For role-based descriptors, use a specific type:
   customerSearchButton: {
-    role: 'button';  // literal type, not string
+    role: "button"; // literal type, not string
     name: string;
   };
   // For parameterised XPaths:
@@ -410,11 +441,11 @@ export class MasterSearchPage {
 
   constructor(page: Page) {
     this.locators = {
-      masterSearchDropdown: '#MasterSearchDropdown-option',
-      orderInputField: '#orderNumberId',
-      orderTypeDropdown: '#OrderTypeDropdown',
-      statusDropdown: '#StatusDropdown',
-      customerSearchButton: { role: 'button', name: 'Search' },
+      masterSearchDropdown: "#MasterSearchDropdown-option",
+      orderInputField: "#orderNumberId",
+      orderTypeDropdown: "#OrderTypeDropdown",
+      statusDropdown: "#StatusDropdown",
+      customerSearchButton: { role: "button", name: "Search" },
       customerSearchDetailsRow: (customerName: string) =>
         `//div[contains(@data-automation-key, 'customerSearchResults') 
           and contains(text(), '${customerName}')]`,
@@ -520,8 +551,7 @@ export abstract class BasePage {
 
   // Shared across ALL pages:
   async waitForSpinnerGone(timeout = 30_000): Promise<void> {
-    await expect(this.page.locator('.ms-Spinner'))
-      .toHaveCount(0, { timeout });
+    await expect(this.page.locator(".ms-Spinner")).toHaveCount(0, { timeout });
   }
 
   async navigateTo(path: string): Promise<void> {
@@ -540,13 +570,15 @@ export class MasterSearchPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.transitAccountInput = page.locator('#transit-account-number-bank-card');
+    this.transitAccountInput = page.locator(
+      "#transit-account-number-bank-card",
+    );
   }
 
   async searchByAccount(number: string): Promise<void> {
-    await this.waitForSpinnerGone();    // inherited
+    await this.waitForSpinnerGone(); // inherited
     await this.transitAccountInput.fill(number);
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await this.page.getByRole("button", { name: "Search" }).click();
   }
 }
 
@@ -569,15 +601,14 @@ export class WaitHelper {
   constructor(private readonly page: Page) {}
 
   async spinnerGone(timeout = 30_000) {
-    await expect(this.page.locator('.ms-Spinner'))
-      .toHaveCount(0, { timeout });
+    await expect(this.page.locator(".ms-Spinner")).toHaveCount(0, { timeout });
   }
 
   async d365RecordLoaded(fieldKey: string, timeout = 30_000) {
     await this.spinnerGone(timeout);
     await expect(
-      this.page.locator(`[data-automation-key="${fieldKey}"]`)
-    ).not.toHaveText('', { timeout });
+      this.page.locator(`[data-automation-key="${fieldKey}"]`),
+    ).not.toHaveText("", { timeout });
   }
 }
 
@@ -586,14 +617,16 @@ export class MasterSearchPage {
   private readonly wait: WaitHelper;
 
   constructor(page: Page) {
-    this.transitAccountInput = page.locator('#transit-account-number-bank-card');
+    this.transitAccountInput = page.locator(
+      "#transit-account-number-bank-card",
+    );
     this.wait = new WaitHelper(page);
   }
 
   async searchByAccount(number: string): Promise<void> {
-    await this.wait.spinnerGone();     // composed — not inherited
+    await this.wait.spinnerGone(); // composed — not inherited
     await this.transitAccountInput.fill(number);
-    await this.page.getByRole('button', { name: 'Search' }).click();
+    await this.page.getByRole("button", { name: "Search" }).click();
   }
 }
 
@@ -617,31 +650,35 @@ When automating complex enterprise applications (like Dynamics 365, Salesforce, 
 ### War Story 1: The `.nth(1)` Modal Trap (A Classic D365 Issue)
 
 **The Scenario:**
-You are testing a flow in D365 where a modal pops up. You enter details, submit, and a "Success" modal appears with a "Close" button. However, there is *another* "Close" button in the background UI, outside the modal.
+You are testing a flow in D365 where a modal pops up. You enter details, submit, and a "Success" modal appears with a "Close" button. However, there is _another_ "Close" button in the background UI, outside the modal.
 A previous engineer wrote this in the POM:
 `closeButton = this.page.getByRole('button', { name: 'Close' })`
 And the test uses `await page.closeButton.nth(1).click()` to target the modal's button.
 
 **The Failure:**
-In a slightly different flow, the background "Close" button doesn't render. Now, the modal's button is the *only* one on the page. `nth(1)` (which asks for the second button) fails because there is only one button (at index `nth(0)`). The test crashes.
+In a slightly different flow, the background "Close" button doesn't render. Now, the modal's button is the _only_ one on the page. `nth(1)` (which asks for the second button) fails because there is only one button (at index `nth(0)`). The test crashes.
 
 **The Fix — Modal Scoping:**
 Never use `.nth()` to resolve component overlap. Instead, **scope the locator to the active component's container** (the modal/dialog).
 
 ```typescript
 // ❌ The fragile nth() approach:
-this.closeButton = this.page.getByRole('button', { name: 'Close' });
+this.closeButton = this.page.getByRole("button", { name: "Close" });
 // await this.closeButton.nth(1).click();
 
 // ✅ The robust scoped approach (Playwright Filter):
-const activeModal = this.page.getByRole('dialog'); // Or .locator('.ms-Dialog') in Fluent UI
-this.modalCloseButton = activeModal.getByRole('button', { name: 'Close', exact: true });
+const activeModal = this.page.getByRole("dialog"); // Or .locator('.ms-Dialog') in Fluent UI
+this.modalCloseButton = activeModal.getByRole("button", {
+  name: "Close",
+  exact: true,
+});
 
 // ✅ The robust scoped approach (XPath):
 this.modalCloseButtonXPath = this.page.locator(
-  '//div[@role="dialog"]//button[normalize-space()="Close"]'
+  '//div[@role="dialog"]//button[normalize-space()="Close"]',
 );
 ```
+
 By explicitly scoping to `getByRole('dialog')` (or the specific modal container class), Playwright completely ignores any buttons in the background layer. If the background button disappears, the test still works perfectly.
 
 ### War Story 2: The Two-Phase Render "Empty Text" Trap
@@ -655,13 +692,14 @@ Your test checks: `const status = await statusCell.textContent(); expect(status)
 The test fails randomly in CI, reporting `Expected: "PAID", Received: ""`. The locator found the cell during Phase 1 before the data arrived.
 
 **The Fix — Auto-retrying Assertions:**
+
 ```typescript
 // ❌ Fails if data is still loading
 const status = await statusCell.textContent();
-expect(status).toBe('PAID');
+expect(status).toBe("PAID");
 
 // ✅ Waits for Phase 2 to complete automatically
-await expect(statusCell).toHaveText('PAID', { timeout: 15_000 });
+await expect(statusCell).toHaveText("PAID", { timeout: 15_000 });
 ```
 
 ### War Story 3: The "Save" vs "Save & Close" Ambiguity
@@ -674,12 +712,13 @@ Fluent UI command bars often contain buttons with similar names. You want to cli
 Playwright throws a strict mode violation: `strict mode violation: resolved to 2 elements`.
 
 **The Fix — Exact Matching:**
+
 ```typescript
 // ❌ Matches both "Save" and "Save & Close"
-this.saveBtn = this.page.getByText('Save');
+this.saveBtn = this.page.getByText("Save");
 
 // ✅ Matches ONLY the exact word "Save"
-this.saveBtn = this.page.getByText('Save', { exact: true });
+this.saveBtn = this.page.getByText("Save", { exact: true });
 
 // ✅ Or use aria-labels (Fluent UI usually sets these)
 this.saveBtn = this.page.locator('[aria-label="Save (CTRL+S)"]');
@@ -746,12 +785,12 @@ Rather than constructing POM objects manually in every test, expose them as fixt
 
 ```typescript
 // fixtures/pages.fixture.ts
-import { test as base } from '@playwright/test';
-import { MasterSearchPage }   from '../pages/crm/MasterSearchPage';
-import { CustomerDetailsTab } from '../pages/crm/CustomerDetailsTab';
+import { test as base } from "@playwright/test";
+import { MasterSearchPage } from "../pages/crm/MasterSearchPage";
+import { CustomerDetailsTab } from "../pages/crm/CustomerDetailsTab";
 
 type PageFixtures = {
-  masterSearch:    MasterSearchPage;
+  masterSearch: MasterSearchPage;
   customerDetails: CustomerDetailsTab;
 };
 
@@ -759,7 +798,7 @@ export const test = base.extend<PageFixtures>({
   masterSearch: async ({ page }, use) => {
     const searchPage = new MasterSearchPage(page);
     // Navigate to the page automatically before handing it to the test:
-    await searchPage.navigateTo('/master-search');
+    await searchPage.navigateTo("/master-search");
     await use(searchPage);
     // Optional teardown: take screenshot on failure
   },
@@ -770,7 +809,7 @@ export const test = base.extend<PageFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 
 // ── Usage in test file ─────────────────────────────────────────────────────
 // import { test, expect } from '../fixtures/pages.fixture';
@@ -793,33 +832,47 @@ export { expect } from '@playwright/test';
 ## 🏋️ Practice Challenges
 
 **Challenge 1 (Lazy Evaluation):** In your `MasterSearchPage` constructor, you have:
+
 ```typescript
-this.transitAccountLocator = this.page.locator('#transit-account-number-bank-card');
-this.fillTransitAccountInputField = this.page.locator('#transit-account-number-bank-card');
+this.transitAccountLocator = this.page.locator(
+  "#transit-account-number-bank-card",
+);
+this.fillTransitAccountInputField = this.page.locator(
+  "#transit-account-number-bank-card",
+);
 ```
+
 Both reference the same selector. What is the correct way to handle this? Is there any bug risk from having two separate Locator objects for the same element?
+
 <details><summary>Answer</summary>
 
 No bug risk — each call to `page.locator()` creates a new Locator object that describes the same element. They are both lazy and will query the DOM independently when used. However, having two properties pointing to the same selector is duplication (technical debt). The correct fix: remove `fillTransitAccountInputField` and use `transitAccountLocator` everywhere, or rename `transitAccountLocator` to `transitAccountInput` to better describe its purpose. Keep one, delete the other.
+
 </details>
 
 **Challenge 2 (`as const` Application):** Your `locators` dictionary has this entry:
+
 ```typescript
 customerSearchButton: { role: MasterSearchPage.BUTTON_ROLE, name: 'Search' }
 ```
+
 `BUTTON_ROLE` is declared as `static readonly BUTTON_ROLE = 'button'`. Will this compile correctly when passed to `page.getByRole()`? Why or why not?
+
 <details><summary>Answer</summary>
 
 It depends on how `BUTTON_ROLE` is declared. If declared as `static readonly BUTTON_ROLE = 'button'` without `as const`, TypeScript infers its type as `string`. When used in the locators object, `role` will be `string`, which is not assignable to `AriaRole`. Fix: declare it as `static readonly BUTTON_ROLE = 'button' as const` — then its type is the literal `"button"`, which IS assignable to `AriaRole`.
+
 </details>
 
 **Challenge 3 (Method Extraction):** Convert this property into a parameterised method:
+
 ```typescript
 // Current: works only for the 3rd search button
 readonly thirdSearchButtonInMasterSearch: Locator;
 // In constructor:
 this.thirdSearchButtonInMasterSearch = this.page.getByRole('button', { name: 'Search' }).nth(2);
 ```
+
 <details><summary>Answer</summary>
 
 ```typescript
@@ -832,6 +885,7 @@ searchButton(index = 0): Locator {
 // Old usage of thirdSearchButtonInMasterSearch → masterSearch.searchButton(2)
 // Default index 0 covers the most common single-button case
 ```
+
 </details>
 
 ---
@@ -841,11 +895,13 @@ searchButton(index = 0): Locator {
 <details><summary>Answer</summary>
 
 **Choose inheritance if:**
+
 - All three pages ALWAYS need both methods
 - The shared behaviour is stable (BasePage won't grow beyond 5-6 utility methods)
 - You want the simplest possible code (< 100 lines per class)
 
 **Choose composition if:**
+
 - Any page needs a DIFFERENT wait strategy (e.g., IFrame pages have different spinner selectors)
 - You anticipate adding more helper domains (API helpers, assertion helpers, date helpers)
 - You want to test the helpers independently
@@ -853,9 +909,11 @@ searchButton(index = 0): Locator {
 **The deciding factor**: Is the `is-a` relationship true? A `MasterSearchPage` IS a `Page` — inheritance is valid. But if BasePage grows to 20+ methods, switch to composition. Most large enterprise test suites end up with composition at scale.
 
 **Concrete recommendation for your codebase**: Start with inheritance (it's simpler, your codebase is small), but extract `WaitHelper` as a separate class that BasePage itself uses internally. This gives you the clean API of inheritance with the composability of helpers.
+
 </details>
 
 **Challenge 5 [Anti-Pattern Fix]:** This POM method has 3 anti-patterns. Identify and fix them:
+
 ```typescript
 async submitCitationForm(amount: string): Promise<boolean> {
   await this.page.locator('#amount').fill(amount);
@@ -872,11 +930,13 @@ async submitCitationForm(amount: string): Promise<boolean> {
 <details><summary>Answer</summary>
 
 3 anti-patterns:
+
 1. **Hardcoded waits** (`waitForTimeout`) — replace with content-based waits
 2. **Assertion inside POM method** (`expect(visible).toBe(true)`) — POMs return data, tests assert
 3. **Returning boolean that duplicates the assertion** — if you've asserted, the return value is redundant
 
 Fixed version:
+
 ```typescript
 async submitCitationForm(amount: string): Promise<void> {
   await this.page.locator('#amount').fill(amount);
@@ -893,6 +953,7 @@ await citationPage.submitCitationForm('150.00');
 await expect(citationPage.successBanner).toBeVisible();
 await expect(citationPage.successBanner).toContainText('Citation submitted successfully');
 ```
+
 </details>
 
 ---
@@ -900,11 +961,13 @@ await expect(citationPage.successBanner).toContainText('Citation submitted succe
 ## 📚 References & Further Reading
 
 ### Official Documentation — Playwright
+
 - [Page Object Model (Playwright Docs)](https://playwright.dev/docs/pom) — Official documentation and simple examples of POM
 - [Fixtures in Playwright](https://playwright.dev/docs/test-fixtures) — How to pass POM objects automatically to tests via fixtures
 - [Locators and strict mode](https://playwright.dev/docs/locators) — Why exact matching and specific filters are critical for reliable POMs
 
 ### Articles & Advanced Patterns
+
 - [Martin Fowler: Page Object](https://martinfowler.com/bliki/PageObject.html) — The original definition and intent of the Page Object pattern
 - [Component Object Model vs Page Object Model](https://playwright.dev/docs/pom) — Playwright's perspective on component-level vs page-level objects
 - [TypeScript `as const` assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) — Why ARIA roles require `as const` in dictionaries

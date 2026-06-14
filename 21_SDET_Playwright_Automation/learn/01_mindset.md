@@ -8,13 +8,13 @@
 
 A Software Development Engineer in Test (SDET) is a developer whose product is **confidence in the system**. The artifact is code, but the value is signal — does this work? will this break? when?
 
-| | Developer | SDET |
-|---|---|---|
-| Primary artifact | Production code | Test code + production observability |
-| Customer | End users | Other engineers + their customers |
-| Success metric | Features shipped, bugs absent | Bugs caught, false positives low, time-to-detection short |
-| Failure mode | Broken feature | Broken release confidence — bad signal |
-| Career ceiling | CTO, Principal Engineer | Test Architect, Director of QA, Principal Engineer (with caveat) |
+|                  | Developer                     | SDET                                                             |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------- |
+| Primary artifact | Production code               | Test code + production observability                             |
+| Customer         | End users                     | Other engineers + their customers                                |
+| Success metric   | Features shipped, bugs absent | Bugs caught, false positives low, time-to-detection short        |
+| Failure mode     | Broken feature                | Broken release confidence — bad signal                           |
+| Career ceiling   | CTO, Principal Engineer       | Test Architect, Director of QA, Principal Engineer (with caveat) |
 
 The "with caveat" matters. SDET → Senior SDE is the bridge most successful SDETs walk. Chapter 07 covers it.
 
@@ -49,6 +49,7 @@ It's a heuristic for "where should the bulk of tests live?" Answer: lower-level 
 ### Where the pyramid lies
 
 For modern frontend stacks:
+
 - "Unit tests" of a React component without rendering it test nothing useful — they test the wiring, not the behavior.
 - "Integration tests" between two services without the network are also mostly wiring tests.
 - The MEANINGFUL behavior often lives in the integration between layers.
@@ -69,6 +70,7 @@ The "diamond" or "trophy" model (Kent C. Dodds): heaviest in integration, with E
 ### What actually matters
 
 Not the shape. The questions:
+
 - Where do bugs typically originate? Test there.
 - Where is feedback fastest? Test there too.
 - What costs the most to maintain? Avoid stacking too much there.
@@ -81,15 +83,16 @@ A pyramid that's all E2E is slow and flaky. A pyramid with zero E2E is uninforme
 
 Every test investment serves one of:
 
-| Pillar | Question it answers | When to invest |
-|---|---|---|
-| **Correctness** | Does this do the right thing? | Always |
-| **Reliability** | Will it work tomorrow? | After hitting flakiness |
-| **Speed** | Can we iterate fast? | When feedback is too slow |
+| Pillar          | Question it answers           | When to invest            |
+| --------------- | ----------------------------- | ------------------------- |
+| **Correctness** | Does this do the right thing? | Always                    |
+| **Reliability** | Will it work tomorrow?        | After hitting flakiness   |
+| **Speed**       | Can we iterate fast?          | When feedback is too slow |
 
 These trade against each other. A perfectly correct test that takes 30 minutes blocks deployment. A 1-second test that's flaky teaches you nothing.
 
 The right balance shifts over time:
+
 - Early: optimize for correctness — get coverage of critical paths.
 - Mid: optimize for reliability — fix the flakes that erode trust.
 - Late: optimize for speed — sharding, parallel, dropping coverage that's not earning.
@@ -106,6 +109,7 @@ Tests are code that runs forever. They have:
 - Stakeholders (other engineers).
 
 This means:
+
 - Apply DRY where it matters.
 - Refactor when patterns emerge.
 - Write tests as if a junior will read them next year (because they will).

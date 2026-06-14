@@ -4,6 +4,12 @@
 
 # PART 4: FENWICK TREE (Binary Indexed Tree)
 
+### Historical Evolution
+
+The advanced data structures in this chapter emerged from specific hardware and application constraints that basic structures couldn't satisfy. **Union-Find with path compression and union by rank** (Disjoint Set Union) was optimized by **Robert Tarjan in 1975** — his landmark paper "Efficiency of a good but not linear set union algorithm" introduced the inverse Ackermann function $\alpha(n)$ as the amortized cost per operation, proving that DSU achieves amortized $O(\alpha(n))$ (practically constant time) — this remains one of the most elegant amortized analyses in computer science. **Lazy Propagation** in Segment Trees was developed to handle range updates where applying updates to individual elements would be $O(n)$ — the key insight is to tag nodes with pending updates and apply them only when needed. **Skip Lists** were introduced by **William Pugh in 1989** as an alternative to balanced trees — Pugh proved that randomized skip lists with $O(\log n)$ expected height provide $O(\log n)$ expected search/insert/delete, avoiding the complex rotation logic of AVL/Red-Black trees; Java's `ConcurrentSkipListMap` uses this structure for lock-free concurrent ordered maps. Modern practice (post-2010) applies these in database query engines (lazy evaluation for range predicates), distributed systems (Union-Find for connected components in graph processing frameworks like Pregel/GraphX), and concurrent data structures (Skip Lists in Redis sorted sets).
+
+---
+
 ## Concept
 
 ```
@@ -122,20 +128,19 @@ class FenwickTree {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ## Segment Tree Implementation (Range Sum + Point Update)
 
 ```java
 class SegmentTree {
     int[] tree;
     int n;
-    
+
     public SegmentTree(int[] arr) {
         n = arr.length;
         tree = new int[4 * n];  // 4× for safe sizing
         build(arr, 0, 0, n - 1);
     }
-    
+
     // BUILD: O(n)
     private void build(int[] arr, int node, int start, int end) {
         if (start == end) {
@@ -147,12 +152,12 @@ class SegmentTree {
             tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Merge
         }
     }
-    
+
     // POINT UPDATE: O(log n)
     public void update(int idx, int val) {
         update(0, 0, n - 1, idx, val);
     }
-    
+
     private void update(int node, int start, int end, int idx, int val) {
         if (start == end) {
             tree[node] = val;
@@ -163,12 +168,12 @@ class SegmentTree {
             tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
         }
     }
-    
+
     // RANGE QUERY: O(log n)
     public int query(int L, int R) {
         return query(0, 0, n - 1, L, R);
     }
-    
+
     private int query(int node, int start, int end, int L, int R) {
         if (R < start || end < L) return 0;            // No overlap
         if (L <= start && end <= R) return tree[node];  // Total overlap
@@ -185,14 +190,14 @@ class SegmentTree {
 class LazySegTree {
     int[] tree, lazy;
     int n;
-    
+
     public LazySegTree(int[] arr) {
         n = arr.length;
         tree = new int[4 * n];
         lazy = new int[4 * n];
         build(arr, 0, 0, n - 1);
     }
-    
+
     private void build(int[] arr, int node, int start, int end) {
         if (start == end) { tree[node] = arr[start]; return; }
         int mid = (start + end) / 2;
@@ -200,7 +205,7 @@ class LazySegTree {
         build(arr, 2*node+2, mid+1, end);
         tree[node] = tree[2*node+1] + tree[2*node+2];
     }
-    
+
     private void pushDown(int node, int start, int end) {
         if (lazy[node] != 0) {
             int mid = (start + end) / 2;
@@ -211,12 +216,12 @@ class LazySegTree {
             lazy[node] = 0;
         }
     }
-    
+
     // RANGE UPDATE: add val to all elements in [L,R]
     public void rangeUpdate(int L, int R, int val) {
         rangeUpdate(0, 0, n-1, L, R, val);
     }
-    
+
     private void rangeUpdate(int node, int start, int end, int L, int R, int val) {
         if (R < start || end < L) return;
         if (L <= start && end <= R) {
@@ -230,9 +235,9 @@ class LazySegTree {
         rangeUpdate(2*node+2, mid+1, end, L, R, val);
         tree[node] = tree[2*node+1] + tree[2*node+2];
     }
-    
+
     public int query(int L, int R) { return query(0, 0, n-1, L, R); }
-    
+
     private int query(int node, int start, int end, int L, int R) {
         if (R < start || end < L) return 0;
         if (L <= start && end <= R) return tree[node];
@@ -245,18 +250,18 @@ class LazySegTree {
 
 ## Curated Segment Tree / BIT Problems
 
-| # | Problem | LC# | Pattern | Difficulty |
-|---|---------|-----|---------|-----------|
-| 1 | [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) | 307 | BIT or Segment Tree | Medium |
-| 2 | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | 315 | BIT + coordinate compress | Hard |
-| 3 | [My Calendar I](https://leetcode.com/problems/my-calendar-i/) | 729 | Segment Tree / TreeMap | Medium |
-| 4 | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/) | 731 | Segment Tree with lazy | Medium |
-| 5 | [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) | 732 | Segment Tree with lazy | Hard |
-| 6 | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) | 327 | BIT / Merge Sort | Hard |
-| 7 | [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/) | 493 | BIT / Merge Sort | Hard |
-| 8 | [Rectangle Area II](https://leetcode.com/problems/rectangle-area-ii/) | 850 | Segment Tree + sweep | Hard |
-| 9 | [Falling Squares](https://leetcode.com/problems/falling-squares/) | 699 | Segment Tree (range max) | Hard |
-| 10 | [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) | 308 | 2D BIT | Hard |
+| #   | Problem                                                                                                   | LC# | Pattern                   | Difficulty |
+| --- | --------------------------------------------------------------------------------------------------------- | --- | ------------------------- | ---------- |
+| 1   | [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/)                       | 307 | BIT or Segment Tree       | Medium     |
+| 2   | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | 315 | BIT + coordinate compress | Hard       |
+| 3   | [My Calendar I](https://leetcode.com/problems/my-calendar-i/)                                             | 729 | Segment Tree / TreeMap    | Medium     |
+| 4   | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/)                                           | 731 | Segment Tree with lazy    | Medium     |
+| 5   | [My Calendar III](https://leetcode.com/problems/my-calendar-iii/)                                         | 732 | Segment Tree with lazy    | Hard       |
+| 6   | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/)                                   | 327 | BIT / Merge Sort          | Hard       |
+| 7   | [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/)                                             | 493 | BIT / Merge Sort          | Hard       |
+| 8   | [Rectangle Area II](https://leetcode.com/problems/rectangle-area-ii/)                                     | 850 | Segment Tree + sweep      | Hard       |
+| 9   | [Falling Squares](https://leetcode.com/problems/falling-squares/)                                         | 699 | Segment Tree (range max)  | Hard       |
+| 10  | [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/)                 | 308 | 2D BIT                    | Hard       |
 
 ---
 
@@ -422,7 +427,6 @@ Search for 6:
 
 Path: 1→9 (overshoot) ↓ 1→4→7 (overshoot) ↓ 4→6 ✓
 ```
-
 
 ## Implementation
 
@@ -653,7 +657,6 @@ Access B → Move B to front:
 HEAD ←→ B ←→ A ←→ C ←→ TAIL
 ```
 
-
 ## Implementation
 
 ```java
@@ -781,7 +784,6 @@ WHY B+ TREE for DATABASES?
 3. More keys per node → shallower tree → fewer disk reads
 ```
 
-
 ---
 
 # ⚖️ Part 10: Comparison Table
@@ -805,7 +807,6 @@ m = string length for Trie
 k = number of hash functions for Bloom Filter
 α = inverse Ackermann function (practically constant)
 ```
-
 
 ---
 
@@ -836,7 +837,6 @@ Sparse Table (for MIN):
 Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
 ```
-
 
 ```java
 class SparseTable {
@@ -917,7 +917,6 @@ Step by step (decreasing stack, process right to left):
 Result: [5, 10, 10, -1, -1]
 ```
 
-
 ```java
 // Next Greater Element
 public int[] nextGreater(int[] arr) {
@@ -982,11 +981,12 @@ public int largestRectangleArea(int[] heights) {
 🔬 **Section Challenge — Monotonic Stack**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Monotonic Deque (Sliding Window Maximum)
 
@@ -1009,7 +1009,6 @@ Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 
 Result: [3, 3, 5, 5, 6, 7]
 ```
-
 
 ```java
 public int[] maxSlidingWindow(int[] nums, int k) {
@@ -1046,17 +1045,20 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 🔬 **Section Challenge — Monotonic Deque (Sliding Window Maximum)**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Circular Buffer (Ring Buffer)
 
@@ -1088,7 +1090,6 @@ STRUCTURE:
 │          TAIL HEAD                                      │
 └─────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 class CircularBuffer<T> {
@@ -1202,7 +1203,6 @@ STRUCTURE:
 │      0      5      10                                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 class QuadTree {
@@ -1321,7 +1321,6 @@ STRUCTURE:
 │  Only need O(log n) hashes to verify any block!                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 import java.security.MessageDigest;
@@ -1460,7 +1459,6 @@ HEAP/PRIORITY QUEUE:
 └── LC 767: Reorganize String                     ⭐ Medium
 ```
 
-
 ---
 
 # 📋 Part 13: Complexity Cheat Sheet (extended)
@@ -1500,7 +1498,6 @@ HEAP/PRIORITY QUEUE:
 m = string/key length
 k = number of hash functions
 ```
-
 
 ---
 
@@ -1545,8 +1542,6 @@ START: What problem are you solving?
     └── Efficient proof of data? → MERKLE TREE
 ```
 
-
 ---
 
 _Master these structures, and you can build anything!_ 🚀
-

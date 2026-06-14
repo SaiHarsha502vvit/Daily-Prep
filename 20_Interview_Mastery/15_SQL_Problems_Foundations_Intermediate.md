@@ -18,6 +18,7 @@ Every SQL problem is: filter rows → join tables → group → aggregate → fi
 **WHAT**: Find the second highest distinct salary. Return NULL if it doesn't exist.
 
 **WHY this is trickier than it looks**:
+
 - "Second highest" means there could be ties at the top
 - Must handle edge cases: table is empty, only one salary, all salaries equal
 
@@ -26,25 +27,31 @@ Every SQL problem is: filter rows → join tables → group → aggregate → fi
 **HOW — The Logic Chain**:
 
 **Approach 1 — OFFSET/LIMIT**:
+
 ```
 SELECT DISTINCT salary → Remove duplicates
 ORDER BY salary DESC   → Sort highest first
 LIMIT 1 OFFSET 1       → Skip 1, take 1 = second row
 ```
+
 Problem: Returns empty result if no second salary. Wrap in subquery for NULL.
+
 ```
 SELECT (SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET 1) AS SecondHighestSalary
 ```
 
 **Approach 2 — MAX of less-than-MAX**:
+
 ```
 SELECT MAX(salary)
 FROM Employee
 WHERE salary < (SELECT MAX(salary) FROM Employee)
 ```
+
 Logic: "What's the highest salary that ISN'T the highest?" MAX naturally returns NULL if no rows qualify.
 
 **Approach 3 — DENSE_RANK**:
+
 ```
 SELECT salary FROM (
   SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rk
@@ -61,10 +68,12 @@ SELECT salary FROM (
 **WHAT**: Find all emails that appear more than once.
 
 **WHY GROUP BY + HAVING**:
+
 - GROUP BY email → consolidates rows per email
-- HAVING COUNT(*) > 1 → filters groups with duplicates
+- HAVING COUNT(\*) > 1 → filters groups with duplicates
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT email
 FROM Person
@@ -81,27 +90,33 @@ HAVING COUNT(*) > 1
 **WHAT**: Find customers with no orders.
 
 **WHY this tests LEFT JOIN understanding**:
+
 - Left join Customer to Order → customers without orders get NULL in order columns
 - Filter where order column IS NULL
 
 **HOW — Two approaches**:
 
 **LEFT JOIN + IS NULL**:
+
 ```
 SELECT c.name AS Customers
 FROM Customers c LEFT JOIN Orders o ON c.id = o.customerId
 WHERE o.id IS NULL
 ```
+
 Logic: Join everyone, then filter for "no match found" (NULLs).
 
 **NOT IN subquery**:
+
 ```
 SELECT name AS Customers FROM Customers
 WHERE id NOT IN (SELECT customerId FROM Orders)
 ```
+
 ⚠️ Warning: NOT IN with NULLs in subquery returns empty result! Use NOT EXISTS if customerId can be NULL.
 
 **NOT EXISTS (safest)**:
+
 ```
 SELECT name AS Customers FROM Customers c
 WHERE NOT EXISTS (SELECT 1 FROM Orders o WHERE o.customerId = c.id)
@@ -116,19 +131,23 @@ WHERE NOT EXISTS (SELECT 1 FROM Orders o WHERE o.customerId = c.id)
 **WHAT**: Find dates where temperature is higher than the previous day.
 
 **WHY self-join on date arithmetic**:
+
 - Join table to itself: today's row with yesterday's row
 - Compare temperatures across the join
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT w1.id
 FROM Weather w1
 JOIN Weather w2 ON w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY)
 WHERE w1.temperature > w2.temperature
 ```
+
 Logic: w1 is "today", w2 is matched to "yesterday". If today > yesterday → rising.
 
 **Alternative with LAG**:
+
 ```
 SELECT id FROM (
   SELECT id, temperature,
@@ -146,15 +165,18 @@ SELECT id FROM (
 **WHAT**: Delete all duplicate emails, keeping only the row with the smallest id.
 
 **WHY self-join for DELETE**:
+
 - Join the table to itself: match same email, different id
 - Delete the row with the larger id
 
 **HOW — The Logic Chain**:
+
 ```
 DELETE p1 FROM Person p1
-JOIN Person p2 
+JOIN Person p2
 ON p1.email = p2.email AND p1.id > p2.id
 ```
+
 Logic: "For every pair sharing an email, delete the one with the bigger id."
 
 **Why not subquery in MySQL**: `DELETE FROM Person WHERE id NOT IN (SELECT MIN(id) FROM Person GROUP BY email)` fails in MySQL because you can't SELECT from the table you're deleting from (unless you wrap in another subquery).
@@ -170,17 +192,20 @@ Logic: "For every pair sharing an email, delete the one with the bigger id."
 **WHAT**: Report firstName, lastName, city, state for every person, even those without an address.
 
 **WHY LEFT JOIN is essential**:
+
 - "For every person" means even if they have no address → LEFT JOIN
 - If it said "people with addresses" → INNER JOIN
 - The word "every" or "all" in the problem hints at LEFT/outer join
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT p.firstName, p.lastName, a.city, a.state
 FROM Person p LEFT JOIN Address a ON p.personId = a.personId
 ```
 
 **Interview mental model for JOIN types**:
+
 ```
 INNER JOIN = intersection (both must match)
 LEFT JOIN  = all left rows + matched right (NULL if no match)
@@ -196,16 +221,19 @@ CROSS JOIN = every row × every row (cartesian product)
 **WHAT**: Find employees whose salary exceeds their manager's.
 
 **WHY self-join on hierarchy**:
+
 - Employee table has managerId → join employee to their manager
 - Compare salaries across the join
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT e.name AS Employee
 FROM Employee e
 JOIN Employee m ON e.managerId = m.id
 WHERE e.salary > m.salary
 ```
+
 Logic: e = employee, m = their manager. Filter where employee earns more.
 
 ---
@@ -215,10 +243,12 @@ Logic: e = employee, m = their manager. Filter where employee earns more.
 **WHAT**: Find the highest salary in each department and who earns it.
 
 **WHY GROUP BY + JOIN back**:
+
 - First find max salary per department
 - Then join back to find the employees earning that max
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT d.name AS Department, e.name AS Employee, e.salary AS Salary
 FROM Employee e
@@ -229,6 +259,7 @@ WHERE (e.departmentId, e.salary) IN (
 ```
 
 **Alternative with RANK**:
+
 ```
 SELECT Department, Employee, Salary FROM (
   SELECT d.name as Department, e.name as Employee, e.salary as Salary,
@@ -246,12 +277,14 @@ SELECT Department, Employee, Salary FROM (
 **WHAT**: Find the top 3 unique salaries per department and employees earning them.
 
 **WHY DENSE_RANK is the right choice**:
+
 - DENSE_RANK: ties get same rank, no gaps → 100, 100, 90 → ranks 1, 1, 2
 - RANK: ties get same rank, WITH gaps → 100, 100, 90 → ranks 1, 1, 3
 - ROW_NUMBER: no ties → 100, 100, 90 → ranks 1, 2, 3
 - "Top 3 unique salaries" = DENSE_RANK ≤ 3
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT Department, Employee, Salary FROM (
   SELECT d.name AS Department, e.name AS Employee, e.salary AS Salary,
@@ -267,17 +300,19 @@ SELECT Department, Employee, Salary FROM (
 **WHAT**: For each student-subject pair, count how many exams they attended. Include zero counts.
 
 **WHY CROSS JOIN + LEFT JOIN + COUNT**:
+
 - CROSS JOIN Students × Subjects → all possible pairs
 - LEFT JOIN with Examinations → match actual exams
 - COUNT(exam column) → 0 for unmatched, real count for matched
 
 **HOW — The Logic Chain**:
+
 ```
 SELECT s.student_id, s.student_name, sub.subject_name,
        COUNT(e.student_id) AS attended_exams
 FROM Students s
 CROSS JOIN Subjects sub
-LEFT JOIN Examinations e 
+LEFT JOIN Examinations e
   ON s.student_id = e.student_id AND sub.subject_name = e.subject_name
 GROUP BY s.student_id, s.student_name, sub.subject_name
 ORDER BY s.student_id, sub.subject_name
@@ -285,11 +320,9 @@ ORDER BY s.student_id, sub.subject_name
 
 **The CROSS JOIN purpose**: Generates every possible student-subject combination so we see zeros. Without it, students who attended no exams in a subject wouldn't appear.
 
-**Why COUNT(e.student_id) not COUNT(*)**: COUNT(*) counts rows (always ≥ 1 from the CROSS JOIN). COUNT(column) counts non-NULL values, so unmatched LEFT JOINs give 0.
+**Why COUNT(e.student_id) not COUNT(\*)**: COUNT(\*) counts rows (always ≥ 1 from the CROSS JOIN). COUNT(column) counts non-NULL values, so unmatched LEFT JOINs give 0.
 
 ---
-
-
 
 🔬 **Section Challenge — JOINS**
 
@@ -301,7 +334,6 @@ ORDER BY s.student_id, sub.subject_name
 
 </details>
 
-
 ## AGGREGATIONS
 
 ---
@@ -311,6 +343,7 @@ ORDER BY s.student_id, sub.subject_name
 **WHAT**: Find first login date for each player.
 
 **WHY simple GROUP BY + MIN**:
+
 ```
 SELECT player_id, MIN(event_date) AS first_login
 FROM Activity
@@ -318,6 +351,7 @@ GROUP BY player_id
 ```
 
 **Follow-up — Players who logged in on consecutive days after first login**:
+
 ```
 SELECT DISTINCT a1.player_id
 FROM Activity a1
@@ -333,6 +367,7 @@ WHERE a1.event_date = DATE_ADD(f.first_login, INTERVAL 1 DAY)
 **WHAT**: Get price and quantity for each product's first year of sales.
 
 **WHY subquery to find first year, then filter**:
+
 ```
 SELECT product_id, year AS first_year, quantity, price
 FROM Sales
@@ -350,11 +385,13 @@ WHERE (product_id, year) IN (
 **WHAT**: Find the largest number that appears exactly once.
 
 **WHY GROUP BY + HAVING + MAX**:
+
 ```
 SELECT MAX(num) AS num FROM (
   SELECT num FROM MyNumbers GROUP BY num HAVING COUNT(*) = 1
 ) singles
 ```
+
 Logic: First filter to numbers appearing once (GROUP BY + HAVING). Then take the MAX of those. NULL if no singles exist (MAX of empty = NULL).
 
 ---
@@ -364,6 +401,7 @@ Logic: First filter to numbers appearing once (GROUP BY + HAVING). Then take the
 **WHAT**: What percentage of first orders were immediate (order_date = customer_pref_delivery_date)?
 
 **WHY identify first order per customer, then calculate**:
+
 ```
 SELECT ROUND(
   100 * SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END) / COUNT(*), 2
@@ -375,6 +413,7 @@ WHERE (delivery_id) IN (
 ```
 
 **Alternative — Cleaner with a CTE**:
+
 ```
 WITH first_orders AS (
   SELECT customer_id, MIN(order_date) AS first_order_date
@@ -394,6 +433,7 @@ JOIN first_orders f ON d.customer_id = f.customer_id AND d.order_date = f.first_
 **WHAT**: For each month and country, count transactions/approved and their total amounts.
 
 **WHY conditional aggregation**:
+
 ```
 SELECT DATE_FORMAT(trans_date, '%Y-%m') AS month,
        country,
@@ -414,6 +454,7 @@ GROUP BY DATE_FORMAT(trans_date, '%Y-%m'), country
 **WHAT**: Calculate the ratio of confirmed actions to total actions per user.
 
 **WHY LEFT JOIN + conditional aggregation + IFNULL**:
+
 ```
 SELECT s.user_id,
        ROUND(IFNULL(
@@ -426,34 +467,32 @@ GROUP BY s.user_id
 
 **Why IFNULL wraps the division**: Users with no confirmations → COUNT(c.action) = 0 → division by zero. IFNULL converts NULL result to 0.
 
-**Why COUNT(c.action) not COUNT(*)**: COUNT(*) would be 1 (from the LEFT JOIN row). COUNT(c.action) is 0 when action is NULL (no match).
+**Why COUNT(c.action) not COUNT(\*)**: COUNT(\*) would be 1 (from the LEFT JOIN row). COUNT(c.action) is 0 when action is NULL (no match).
 
 ---
 
 ## MASTER PROBLEM MAP — SQL Foundations, Joins, Aggregations
 
-| # | Problem | Core Technique | Key Pattern |
-|---|---------|---------------|-------------|
-| 1 | Second Highest Salary | DENSE_RANK / MAX of less-than-MAX | Nth element from ordered set |
-| 2 | Duplicate Emails | GROUP BY + HAVING COUNT > 1 | GROUP-level filtering |
-| 3 | Customers Never Order | LEFT JOIN + IS NULL / NOT EXISTS | Anti-join pattern |
-| 4 | Rising Temperature | Self-join on date arithmetic | Row comparison across days |
-| 5 | Delete Duplicates | Self-join for DELETE | DELETE with JOIN |
-| 6 | Combine Two Tables | LEFT JOIN | "every"/"all" = outer join |
-| 7 | Manager Salary Compare | Self-join on hierarchy | Employee↔Manager pattern |
-| 8 | Dept Highest Salary | GROUP BY + JOIN back / RANK | Per-group maximum |
-| 9 | Dept Top 3 Salaries | DENSE_RANK partitioned | Top-N per group |
-| 10 | Student Exam Count | CROSS JOIN + LEFT JOIN + COUNT | All combinations + zero |
-| 11 | First Login Date | MIN + GROUP BY | First per group |
-| 12 | Product First Year | Subquery MIN + filter | First per group + details |
-| 13 | Biggest Single Number | GROUP BY HAVING + MAX | Filter groups → aggregate |
-| 14 | Immediate Delivery % | Identify first + conditional % | First order + CASE |
-| 15 | Monthly Transactions | Conditional aggregation | SUM(CASE) pivoting |
-| 16 | Confirmation Rate | LEFT JOIN + conditional ratio | Ratio with NULL protection |
+| #   | Problem                | Core Technique                    | Key Pattern                  |
+| --- | ---------------------- | --------------------------------- | ---------------------------- |
+| 1   | Second Highest Salary  | DENSE_RANK / MAX of less-than-MAX | Nth element from ordered set |
+| 2   | Duplicate Emails       | GROUP BY + HAVING COUNT > 1       | GROUP-level filtering        |
+| 3   | Customers Never Order  | LEFT JOIN + IS NULL / NOT EXISTS  | Anti-join pattern            |
+| 4   | Rising Temperature     | Self-join on date arithmetic      | Row comparison across days   |
+| 5   | Delete Duplicates      | Self-join for DELETE              | DELETE with JOIN             |
+| 6   | Combine Two Tables     | LEFT JOIN                         | "every"/"all" = outer join   |
+| 7   | Manager Salary Compare | Self-join on hierarchy            | Employee↔Manager pattern     |
+| 8   | Dept Highest Salary    | GROUP BY + JOIN back / RANK       | Per-group maximum            |
+| 9   | Dept Top 3 Salaries    | DENSE_RANK partitioned            | Top-N per group              |
+| 10  | Student Exam Count     | CROSS JOIN + LEFT JOIN + COUNT    | All combinations + zero      |
+| 11  | First Login Date       | MIN + GROUP BY                    | First per group              |
+| 12  | Product First Year     | Subquery MIN + filter             | First per group + details    |
+| 13  | Biggest Single Number  | GROUP BY HAVING + MAX             | Filter groups → aggregate    |
+| 14  | Immediate Delivery %   | Identify first + conditional %    | First order + CASE           |
+| 15  | Monthly Transactions   | Conditional aggregation           | SUM(CASE) pivoting           |
+| 16  | Confirmation Rate      | LEFT JOIN + conditional ratio     | Ratio with NULL protection   |
 
 ---
-
-
 
 🔬 **Section Challenge — MASTER PROBLEM MAP — SQL Foundations, Joins, Aggregations**
 
@@ -464,7 +503,6 @@ GROUP BY s.user_id
 **Who determines?** The business question — specifically, whether you need rows with NO match on the right side. **Decision question:** "Do I need rows from the LEFT table even if there's NO corresponding row on the RIGHT?" YES → LEFT JOIN. NO → INNER JOIN. **Why LEFT JOIN gives wrong counts:** Problem 10 (Student Exams) uses `COUNT(e.student_id)` not `COUNT(*)` because `COUNT(*)` on a LEFT JOIN always ≥ 1 (the CROSS JOIN row). `COUNT(column)` counts non-NULLs, giving 0 for unmatched. Problem 16 (Confirmation Rate) wraps in `IFNULL` because `0/0 = NULL`, not 0. **Pattern comparison:** (3) Anti-join: LEFT JOIN + IS NULL = rows with NO match. (6) Outer preserve: LEFT JOIN, keep all people even without addresses. (10) Count with zeros: CROSS + LEFT JOIN, `COUNT(right_col)`. (16) Ratio with zeros: LEFT JOIN + IFNULL(SUM(CASE)/COUNT, 0). Each is a different flavor of the same tool — master these 4 and you handle 80% of real-world reporting queries.
 
 </details>
-
 
 ## The SQL Execution Order Mental Model
 
@@ -483,4 +521,3 @@ Think of it as:
 ```
 
 **Why this matters**: You can't use a SELECT alias in WHERE (SELECT runs after WHERE). You CAN use it in ORDER BY (ORDER BY runs after SELECT). Understanding order prevents debugging headaches.
-

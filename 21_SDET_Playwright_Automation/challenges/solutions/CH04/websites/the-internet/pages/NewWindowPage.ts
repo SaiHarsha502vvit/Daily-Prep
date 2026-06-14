@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { expect } from "@playwright/test";
 
 /**
  * Page Object Model for the new window content page served by the-internet.
@@ -8,7 +8,7 @@ export class NewWindowPage {
   constructor(private readonly page: Page) {}
 
   private get heading() {
-    return this.page.locator('h3', { hasText: 'New Window' });
+    return this.page.locator("h3", { hasText: "New Window" });
   }
 
   /**

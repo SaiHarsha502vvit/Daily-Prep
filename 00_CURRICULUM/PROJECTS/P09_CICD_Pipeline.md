@@ -9,7 +9,7 @@
 
 ## 🎯 Business Requirement (The PM Brief)
 
-*The Library API (P04) is ready for production. Before any team of engineers can collaborate, you need: a reproducible containerized environment, automated tests on every push, and a published Docker image. Set up the full CI/CD pipeline.*
+_The Library API (P04) is ready for production. Before any team of engineers can collaborate, you need: a reproducible containerized environment, automated tests on every push, and a published Docker image. Set up the full CI/CD pipeline._
 
 ---
 
@@ -17,12 +17,12 @@
 
 ### Deliverables
 
-| File | Description |
-|---|---|
-| `Dockerfile` | Multi-stage build for Spring Boot |
-| `docker-compose.yml` | API + PostgreSQL + (optional) Adminer |
-| `.github/workflows/ci.yml` | GitHub Actions: test → build → push |
-| `docker-compose.test.yml` | Compose file for integration tests (Testcontainers) |
+| File                       | Description                                         |
+| -------------------------- | --------------------------------------------------- |
+| `Dockerfile`               | Multi-stage build for Spring Boot                   |
+| `docker-compose.yml`       | API + PostgreSQL + (optional) Adminer               |
+| `.github/workflows/ci.yml` | GitHub Actions: test → build → push                 |
+| `docker-compose.test.yml`  | Compose file for integration tests (Testcontainers) |
 
 ### Pipeline Stages
 
@@ -52,6 +52,7 @@ Push to any branch:
 ## 📝 File Specs
 
 ### Dockerfile (Multi-Stage Build)
+
 ```dockerfile
 # ── Stage 1: Build ────────────────────────────────────────────
 FROM eclipse-temurin:17-jdk-alpine AS build
@@ -88,8 +89,9 @@ ENTRYPOINT ["java", \
 ```
 
 ### docker-compose.yml
+
 ```yaml
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -97,7 +99,7 @@ services:
     environment:
       POSTGRES_DB: library_db
       POSTGRES_USER: library_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}  # override via .env
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme} # override via .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -133,6 +135,7 @@ volumes:
 ```
 
 ### `.github/workflows/ci.yml`
+
 ```yaml
 name: Library API CI/CD
 
@@ -155,16 +158,16 @@ jobs:
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'          # caches ~/.m2 between runs
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven" # caches ~/.m2 between runs
 
       - name: Run Unit Tests
         run: ./mvnw test -P unit --no-transfer-progress
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v1
-        if: always()               # run even if tests fail
+        if: always() # run even if tests fail
         with:
           name: JUnit Test Results
           path: target/surefire-reports/*.xml
@@ -172,9 +175,9 @@ jobs:
 
   build-and-push:
     name: Build & Push Docker Image
-    needs: test                    # only runs if test job passes
+    needs: test # only runs if test job passes
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'   # only on main branch
+    if: github.ref == 'refs/heads/main' # only on main branch
     steps:
       - uses: actions/checkout@v4
 
@@ -195,7 +198,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha    # GitHub Actions cache for Docker layers
+          cache-from: type=gha # GitHub Actions cache for Docker layers
           cache-to: type=gha,mode=max
 
       - name: Image digest
@@ -219,15 +222,15 @@ jobs:
 
 ## 🔴 Failure Scenarios & Erklärungen
 
-| Mistake | Why | Fix |
-|---|---|---|
-| Single-stage Dockerfile with JDK | Final image ~600MB (includes compiler, JDK tools) | Multi-stage: build with JDK, run with JRE (~180MB) |
-| No `depends_on` health check | API starts before DB is ready → crash loop | `depends_on: db: condition: service_healthy` |
-| Hardcoded `POSTGRES_PASSWORD: mypassword` | Password visible in git history forever | Use `${DB_PASSWORD:-changeme}` + `.env` file (gitignored) |
-| Running container as root | Security vulnerability — exploited process has root access | `adduser spring && USER spring:spring` |
-| `COPY . .` before dependency download | Every source code change busts the Maven dependency cache layer | `COPY pom.xml .` + `dependency:go-offline` BEFORE `COPY src .` |
-| No `--no-transfer-progress` in CI | Maven logs 1000s of download progress lines | Add flag for clean, readable CI output |
-| Pushing on every PR | Pollutes Docker Hub with untested images | Add `if: github.ref == 'refs/heads/main'` guard |
+| Mistake                                   | Why                                                             | Fix                                                            |
+| ----------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------- |
+| Single-stage Dockerfile with JDK          | Final image ~600MB (includes compiler, JDK tools)               | Multi-stage: build with JDK, run with JRE (~180MB)             |
+| No `depends_on` health check              | API starts before DB is ready → crash loop                      | `depends_on: db: condition: service_healthy`                   |
+| Hardcoded `POSTGRES_PASSWORD: mypassword` | Password visible in git history forever                         | Use `${DB_PASSWORD:-changeme}` + `.env` file (gitignored)      |
+| Running container as root                 | Security vulnerability — exploited process has root access      | `adduser spring && USER spring:spring`                         |
+| `COPY . .` before dependency download     | Every source code change busts the Maven dependency cache layer | `COPY pom.xml .` + `dependency:go-offline` BEFORE `COPY src .` |
+| No `--no-transfer-progress` in CI         | Maven logs 1000s of download progress lines                     | Add flag for clean, readable CI output                         |
+| Pushing on every PR                       | Pollutes Docker Hub with untested images                        | Add `if: github.ref == 'refs/heads/main'` guard                |
 
 ---
 

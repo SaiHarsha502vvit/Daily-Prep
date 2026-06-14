@@ -61,7 +61,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- QUERY OPTIMIZATION EXAMPLES
@@ -252,16 +251,46 @@ flowchart TD
         B1["1. Read All Matching Index Pointers"]
         B2["2. Sort Pointers in Memory (Bitmap)"]
         B3["3. Read Heap Pages Sequentially"]
-        
+
         B1 --> B2
         B2 --> B3
-        
+
         B3 -->|Sequential I/O| H1["Page 2"]
         H1 -->|Sequential I/O| H2["Page 50"]
         H2 -->|Sequential I/O| H3["Page 90"]
     end
-    
+
 ```
 
 **Why Bitmap Heap Scans Exist:**
 If the optimizer realizes an Index Scan will jump around the disk too much (thrashing the physical arm or saturating random I/O IOPS on an SSD), it switches to a **Bitmap Heap Scan**. It reads the index first, builds a memory bitmap of all the heap pages it needs, **sorts them by physical disk location**, and then visits each page exactly once in a smooth, sequential sweep.
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **IBM System R Optimizer** (1974-1979): First cost-based optimizer using heuristics and statistics to select execution plans
+- **Selinger et al.** (1979): Published seminal paper on access path selection in a relational database system, founding the cost-based optimizer approach
+- **PostgreSQL Planner** (1986): Open-source inheritance of System R optimizer concepts, extensible with custom data types and operators
+- **MySQL 8.0** (2018): Added Hash Join algorithm and improved cost model, closing gap with enterprise databases
+- **SQLite Query Planner** (2000): Demonstrated that lightweight optimizers can still be highly effective for embedded use cases
+
+**Evolution narrative:**
+Early databases used rule-based optimizers that applied fixed rules (e.g., "use index if available"), which failed when data distributions varied widely. Selinger's System R optimizer revolutionized the field by computing estimated costs for multiple execution plans using statistics about table sizes, index selectivity, and I/O costs. This cost-based approach spread to Oracle, SQL Server, and PostgreSQL. The 2010s saw hybrid approaches combining rule-based hints with cost-based decisions, and modern optimizers like MySQL 8.0 now support Hash Join and Window Functions natively, matching capabilities that Oracle had for decades.
+
+**Modern practice anchor:**
+Understanding EXPLAIN ANALYZE output is critical for solving LeetCode performance problems and debugging slow queries in production systems like PostgreSQL and MySQL.
+
+### Production Reality
+
+**Failure modes:**
+1. **Stale statistics causing row estimate errors**: pg_statistic table not updated after 10M row bulk load — planner chooses nested loop instead of hash join, query takes 45s instead of 800ms
+2. **Parameter sniffing producing suboptimal plans**: Stored procedure compiled with first invocation's parameter values (e.g., date range 2024-01-01 to 2024-01-31) — subsequent calls with larger ranges use same small-result plan
+3. **Missing index on foreign key**: Fact table with 500M rows has FK to dimension but no index — JOIN causes sequential scan on dimension table, blocks for 30s under concurrent load
+
+**Debug workflow:**
+1. Run `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)` on the slow query — check estimated vs actual rows, identify which node consumes most time
+2. Query `pg_stat_user_indexes` and `pg_stat_user_tables` to verify index usage and table stats freshness (`SELECT relname, n_live_tup, n_dead_tup, last_analyze FROM pg_stat_user_tables`)
+3. Compare with `pg_stat_statements` top queries by total_time — normalize by calls to find per-execution cost
+
+**Modern practice anchor:**
+Production query optimization is an iterative cycle of EXPLAIN ANALYZE, index additions, and statistics refresh — not a one-time fix.

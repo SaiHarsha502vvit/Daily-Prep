@@ -81,7 +81,7 @@ function normalizeStatus(status: string): TestResult['status'] {
 }
 
 function extractErrors(
-  results: Array<{ error?: { message?: string }; status?: string }>
+  results: Array<{ error?: { message?: string }; status?: string }>,
 ): string[] {
   const messages: string[] = [];
   for (const r of results) {

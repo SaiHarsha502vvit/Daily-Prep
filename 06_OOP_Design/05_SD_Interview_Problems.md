@@ -11,7 +11,6 @@
 
 ## THE FRAMEWORK (Use for EVERY Problem)
 
-
 SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)
 
 STEP 1: Requirements (5 min)
@@ -40,12 +39,12 @@ STEP 5: Trade-offs & Edge Cases (5 min)
 → CAP theorem trade-offs
 → Failure scenarios & recovery
 
-
 ---
 
 # PROBLEM 1: Design URL Shortener (like bit.ly)
 
 ## Requirements
+
 ```
 Functional:
   - Given long URL → return short URL (e.g., bit.ly/abc123)
@@ -66,6 +65,7 @@ Back-of-envelope:
 ```
 
 ## High-Level Design
+
 ```mermaid
 flowchart LR
     Client --> LB[Load Balancer]
@@ -73,8 +73,6 @@ flowchart LR
     AS --> DB[(Database<br>URL mapping)]
     AS --> Cache[(Cache · Redis)]
 ```
-
-
 
 🔬 **Section Challenge — High-Level Design**
 
@@ -85,7 +83,6 @@ flowchart LR
 **Who?** The App Server, not the Load Balancer. The LB only routes TCP connections — it doesn't understand application semantics (which short URL maps to which long URL). **When?** After the App Server receives a redirect request (GET /abc123), it checks Redis FIRST. On hit: return 302 immediately (~1ms). On miss: query DB, populate cache for next time, return 302 (~10ms). **What determines hit/miss?** The short URL key's presence in Redis. The 80/20 rule applies: 20% of URLs get 80% of traffic, so caching hot URLs gives massive throughput gains with minimal memory.
 
 </details>
-
 
 ## Key Design Decisions
 
@@ -122,10 +119,7 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Key Design Decisions**
 
@@ -145,10 +139,10 @@ flowchart LR
 
 </details>
 
-
 # PROBLEM 2: Design Twitter / News Feed
 
 ## Requirements
+
 ```
 Functional:
   - Post tweets (140 chars + media)
@@ -162,7 +156,6 @@ Scale:
   - Average user views feed 5x/day → 750M feed reads/day
   - 500M tweets/day → ~6000 tweets/sec
 ```
-
 
 ## The Hard Part — Feed Generation
 
@@ -201,6 +194,7 @@ Scale:
 ```
 
 ## Architecture
+
 ```mermaid
 flowchart TD
     C[Client] --> AG[API Gateway]
@@ -217,6 +211,7 @@ flowchart TD
 # PROBLEM 3: Design Chat System (WhatsApp/Slack)
 
 ## Requirements & Architecture
+
 ```
 Functional: 1-on-1 chat, group chat, online status, read receipts
 Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
@@ -258,7 +253,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │  → Natural time-series data model                                               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -305,7 +299,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # PROBLEM 5: Design Notification System
@@ -339,7 +332,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │  8. Priority queues: password reset > marketing email                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -386,7 +378,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 │     Fix: Add random jitter to TTL values                                        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -439,7 +430,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # PROBLEM 8: Design Web Crawler (Google-like)
@@ -481,22 +471,179 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Production Reality
+
+- **URL Shortener — Rate-limit bypass attack**: A token-bucket rate limiter keyed by IP only (`key = "rate:{ip}:{minute}"`) is bypassed by an attacker using 999 different IPs to each send 1 request/minute, totaling 999req/min against a system limit of 1req/min per IP. Production fix: rate-limit by API key + user account tier + IP intersection, not just IP alone. Stripe's rate limiter uses a 3D composite key (user, API key, IP) and evaluates all three dimensions before rejecting — the intersection of all three dimensions prevents the distributed attack.
+- **Twitter Feed — Timeline inconsistency during high-write periods**: Twitter's hybrid fan-out (push for regular users, pull for celebrities) creates a delivery ordering bug: a celebrity's replies to a regular user's post can appear in the reply-ee's pre-computed push-cache feed but out of chronological order relative to on-demand pull-cache items. In 2020, a queue-depth saturation in the fan-out message broker (1M+ messages queued) caused a timeline ordering bug where replies from popular accounts appeared hours after newer replies, breaking the sequential ordering invariant clients expected.
+- **Chat System — Message ordering with eventual consistency**: Cassandra's eventual consistency means two devices of the same user can deliver messages out of order: Device A sends Message 1, then Message 2. Device B receives Message 2 first (via a different replica with lower replication lag), then Message 1. This is not a design bug — it is the expected trade-off of choosing AP (Cassandra) for write-heavy chat. Production mitigation: server-side monotonic sequence number per conversation + client-side gap detection that triggers a re-sync when sequence numbers skip. This is the Cassandra partition key = `conversation_id` + clustering key = `timestamp` design decision's explicit trade-off: fast writes with possible out-of-order reads.
+
+### Historical Evolution
+
+The eight interview problems trace a path from the earliest consumer internet to today's massive-scale systems. **URL shortening** was born out of the mobile era's character limits: **TinyURL launched in 2002** (Pavlos), and **bit.ly launched in 2008** during Twitter's rapid growth. The URL shortener problem encodes a fundamental tension in system design — deterministic IDs (predictable but collision-free) vs. hash-based IDs (unpredictable but collision-prone) — a trade-off that appears in every key-generation system. **Twitter launched in 2006**, pioneering the fan-out-on-write architecture for social feeds at a scale no one had attempted before; the hybrid push/pull approach (tweaked in later years) remains the state of the art for feed systems. **Chat systems** (WhatsApp, Slack) evolved from SMS-based architectures to WebSocket-driven real-time systems after 2010, driven by smartphone penetration and the need for free messaging. **Rate limiting** as a formal discipline traces back to **Leaky Bucket (1983)** and **Token Bucket** algorithms from early network QoS research; today it is implemented atomically in Redis with Lua scripts for distributed environments. The **distributed cache** problem (Redis-like) is rooted in **Memcached (2003)** at LiveJournal — the first widely-used in-memory cache — which pioneered the cache-aside pattern before Redis added persistence in 2009. **E-commerce systems** at scale (Amazon 1998, Shopify 2004) evolved from monolithic to microservices architectures after 2010, driven by the need for independent deployability. The **web crawler** problem traces to **Larry Page's PageRank (1998)** at Stanford — Google built the first large-scale distributed crawler to index the web at internet scale.
 
 ---
 
 ## QUICK REFERENCE — Which Concepts Each Problem Tests
 
-| Problem | Key Concepts Tested |
-|---------|--------------------|
-| **URL Shortener** | Hashing, base62, NoSQL, caching, HTTP redirects |
-| **Twitter Feed** | Fan-out, message queues, Redis sorted sets, hybrid approach |
-| **Chat System** | WebSocket, presence, Cassandra, message ordering |
-| **Rate Limiter** | Token bucket, sliding window, Redis Lua, distributed state |
+| Problem           | Key Concepts Tested                                         |
+| ----------------- | ----------------------------------------------------------- |
+| **URL Shortener** | Hashing, base62, NoSQL, caching, HTTP redirects             |
+| **Twitter Feed**  | Fan-out, message queues, Redis sorted sets, hybrid approach |
+| **Chat System**   | WebSocket, presence, Cassandra, message ordering            |
+| **Rate Limiter**  | Token bucket, sliding window, Redis Lua, distributed state  |
 | **Notifications** | Message queues, worker pools, templates, retry/backpressure |
-| **Dist. Cache** | Consistent hashing, LRU, cache patterns, cache stampede |
-| **E-Commerce** | Saga pattern, inventory locking, search, microservices |
-| **Web Crawler** | BFS, Bloom filter, politeness, robots.txt, URL frontier |
+| **Dist. Cache**   | Consistent hashing, LRU, cache patterns, cache stampede     |
+| **E-Commerce**    | Saga pattern, inventory locking, search, microservices      |
+| **Web Crawler**   | BFS, Bloom filter, politeness, robots.txt, URL frontier     |
 
 ---
 
-> **Navigation**: [< Previous](04_User_System_Flows.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Distributed_Systems_Fundamentals.md)
+## PLUS Enhancements
+
+### Crystal-Clear Diagrams
+
+#### 1. URL Shortener Architecture
+
+```
+                ┌──────────────┐
+   ┌────────┐   │ Load Balancer │   ┌─────────────┐   ┌─────────┐
+   │ Client │──▶│   (Nginx)    │──▶│ API Servers │──▶│ Redis   │
+   └────────┘   └──────────────┘   │ (stateless) │   │ (cache) │
+                                   └──────┬──────┘   └────┬────┘
+                                          │               │
+                                          │ miss          │ hit (95%+)
+                                          ▼               ▼
+                                   ┌─────────────────────────┐
+                                   │   Sharded DB (by hash)  │
+                                   │   S1: 0-25%, S2: 25-50% │
+                                   └─────────────────────────┘
+
+   Analytics Sidecar (Kafka consumer):
+   ┌──────────┐  ┌──────┐  ┌──────────────────┐  ┌────────────┐
+   │ API logs │─▶│ Kafka│─▶│ Analytics Worker │─▶│ ClickHouse │
+   └──────────┘  └──────┘  └──────────────────┘  └────────────┘
+```
+
+**Key design points**: API stateless (any server can handle any request), Redis for hot URLs (95%+ cache hit), DB sharded by hash(short_code) for write/read scalability, Kafka + ClickHouse for analytics (separate from serving path).
+
+#### 2. Twitter Hybrid Fan-out Architecture
+
+```
+Tweet by Regular User (≤1K followers):
+┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────────┐
+│ User X  │───▶│ Tweet   │───▶│ Fan-out  │───▶│ Push to all │ (write to each follower's
+│ tweets  │    │ Service │    │ Service  │    │ followers'  │  timeline cache in Redis)
+└─────────┘    └─────────┘    └──────────┘    │ timeline    │
+                                              └─────────────┘ (O(followers))
+
+Tweet by Celebrity (>1M followers):
+┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────────┐
+│ Celeb Y │───▶│ Tweet   │───▶│ Just     │    │ ONLY write  │ (O(1) write)
+│ tweets  │    │ Service │    │ store in │───▶│ to Celeb's  │
+└─────────┘    └─────────┘    │ Celeb's  │    │ tweet store │
+                              │ store    │    └─────────────┘
+                              └──────────┘
+
+Read path (regular user):
+┌──────────┐  ┌─────────┐  ┌──────────────────┐  ┌─────────┐
+│ User Z   │─▶│ Timeline│─▶│ Merge: pushed    │─▶│ Render  │
+│ requests │  │ Service │  │ timeline + celeb │  │ sorted  │
+│ feed     │  │         │  │ tweets (on read) │  │ feed    │
+└──────────┘  └─────────┘  └──────────────────┘  └─────────┘
+```
+
+**Trade-off**: Push (regular users) gives instant consistency but is O(followers). Pull (celebrities) is O(1) write but requires merge on read. Hybrid picks the cheaper side based on follower count.
+
+#### 3. Rate Limiter Architecture
+
+```
+  ┌─────────┐  ┌────────────┐  ┌──────────────────┐  ┌─────────────┐
+  │ Client  │─▶│ API Gateway│─▶│ Rate Limiter     │─▶│ Backend     │
+  └─────────┘  └────────────┘  │ (Redis + Lua)    │  │ Service     │
+                               └──────────────────┘  └─────────────┘
+
+Lua script atomic check:
+KEYS[1] = "rl:{user_id}"
+ARGV[1] = current_limit
+ARGV[2] = window_seconds
+
+local current = tonumber(redis.call('GET', KEYS[1]) or "0")
+if current >= tonumber(ARGV[1]) then
+  return 0  -- denied
+else
+  redis.call('INCR', KEYS[1])
+  redis.call('EXPIRE', KEYS[1], ARGV[2])
+  return 1  -- allowed
+end
+```
+
+**Why Lua + Redis**: Lua script runs atomically in Redis (single-threaded), preventing race conditions in token-bucket check-and-increment. Distributed limiter without a distributed lock.
+
+### In-Depth Explanations
+
+#### Mechanism Deep-Dive: Consistent Hashing
+
+**Problem with naive hashing**: `shard = hash(key) % N_servers`. Adding/removing one server invalidates ALMOST ALL keys (only K/N stay on the same shard). Cache miss storm.
+
+**Consistent hashing solution**: Hash both keys AND servers onto a ring of 0..2^32. Each key is stored on the next server clockwise from its hash.
+
+```
+   Ring (0..2^32):
+                 Server B
+                    ●
+                ╱     ╲
+           ╱             ╲
+        ╱                   ╲
+      ●                       ●
+   Server A                 Server D
+        ╲                   ╱
+           ╲             ╱
+                ╲     ╱
+                    ●
+                 Server C
+
+Key K1 → hash(K1) lands between A and B → stored on B
+Key K2 → hash(K2) lands between B and D → stored on D
+```
+
+**Adding Server E**: E is inserted somewhere on the ring. Only the keys that fall between E's position and the next-server-clockwise position move. This is approximately K/N keys. **95% cache hit preserved across server additions.**
+
+**Virtual nodes**: Real servers are placed at multiple positions on the ring (e.g., 200 positions each). This smooths out the distribution (without virtual nodes, an unlucky hash placement gives one server 10× the keys of another).
+
+#### Why-This-Not-That: Push vs Pull Fan-out
+
+| Aspect | Push (write fan-out) | Pull (read fan-out) |
+|--------|---------------------|---------------------|
+| **Write cost** | O(followers) per tweet | O(1) per tweet |
+| **Read cost** | O(1) timeline read | O(following) timeline merge |
+| **Consistency** | Instant (already pushed) | Eventual (tweet visible on next read) |
+| **Storage** | High (1 copy per follower) | Low (1 copy total) |
+| **Best for** | Users with few followers | Celebrities with many followers |
+| **Failure mode** | "Follower can't see tweet" if push fails | "Tweet missing on next reload" |
+
+**Hybrid**: classify user by follower count, route accordingly.
+
+### Breadth Comparisons
+
+#### Database Choice by Problem
+
+| Problem | Database Choice | Reason |
+|---------|----------------|--------|
+| URL shortener | Cassandra / DynamoDB | Massive write scale (billions of URLs), simple key-value lookup, no complex joins |
+| Twitter timeline | Cassandra / ScyllaDB | Wide-column for time-series with clustering key = timestamp, fan-out writes |
+| Chat system | Cassandra with partition key = conversation_id | Same wide-column pattern, message ordering preserved within partition |
+| Rate limiter | Redis (in-memory) | Microsecond read/write, atomic Lua scripts, TTL-based expiry |
+| Notification | Kafka (log) + DB | Append-only event log for delivery audit |
+
+#### Caching Strategies
+
+| Strategy | Read Path | Write Path | Consistency | Best For |
+|----------|-----------|-----------|-------------|----------|
+| **Cache-aside (lazy)** | App reads cache, on miss reads DB and populates cache | App writes DB, invalidates cache | Eventual (window of stale reads) | Read-heavy, tolerate staleness |
+| **Write-through** | App reads cache (always fresh) | App writes cache, cache writes DB synchronously | Strong | Read-heavy, must be fresh |
+| **Write-behind** | App reads cache (always fresh) | App writes cache, cache asynchronously writes DB | Eventual (data loss risk on crash) | Write-heavy, tolerate data loss |
+| **Read-through** | App reads cache, cache reads DB on miss | App writes DB, cache invalidates | Eventual | Read-heavy with lazy population |
+
+---
+
+**Navigation**: [< Previous](04_User_System_Flows.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Distributed_Systems_Fundamentals.md)

@@ -158,11 +158,11 @@ let employees = ["Zara", "Alice", "Bob"];
 // from the root on every call. Caching it in a JS variable means
 // all future accesses are O(1) pointer lookups in JS heap memory,
 // instead of O(n) DOM tree traversals crossing the JS→C++ bridge.
-const listElement = document.getElementById('employeeList');
-const inputElement = document.getElementById('nameInput');
-const addBtn = document.getElementById('addBtn');
-const sortBtn = document.getElementById('sortBtn');
-const countDisplay = document.getElementById('countDisplay');
+const listElement = document.getElementById("employeeList");
+const inputElement = document.getElementById("nameInput");
+const addBtn = document.getElementById("addBtn");
+const sortBtn = document.getElementById("sortBtn");
+const countDisplay = document.getElementById("countDisplay");
 
 // ─── YOUR CODE STARTS HERE ───────────────────────────────────────────
 

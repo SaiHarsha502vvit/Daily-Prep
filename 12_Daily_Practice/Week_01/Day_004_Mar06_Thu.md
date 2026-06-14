@@ -24,6 +24,7 @@
 ### Topic: Subarrays, Subsets, and Subsequences — Know the Difference
 
 #### WHY does it matter?
+
 Interviewers test whether you understand these precisely. Getting them confused leads to wrong algorithms.
 
 ```
@@ -78,7 +79,6 @@ BRUTE FORCE: Try all subarrays, compute sum
 OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
-
 ---
 
 ## BLOCK 2: ALGORITHM (30 min)
@@ -86,6 +86,7 @@ OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ### Topic: Kadane's Algorithm — Maximum Subarray Sum
 
 #### WHY is this fundamental?
+
 - LeetCode #53 (Maximum Subarray) — top 10 most-asked interview problem
 - Foundation for many DP problems
 - Used in finance (maximum profit period), signal processing (strongest signal window)
@@ -95,16 +96,15 @@ OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 KEY IDEA: At each position, decide:
   "Should I EXTEND the previous subarray, or START a new one here?"
-  
+
   currentMax = max(arr[i], currentMax + arr[i])
-  
+
   If currentMax + arr[i] < arr[i]
     → Previous subarray has negative sum, better to start fresh
-  
+
   If currentMax + arr[i] >= arr[i]
     → Extending is beneficial (or at least not harmful)
 ```
-
 
 #### Step-by-step trace
 
@@ -131,7 +131,7 @@ public static int[] kadane(int[] arr) {
     int currentMax = arr[0];
     int globalMax = arr[0];
     int start = 0, end = 0, tempStart = 0;
-    
+
     for (int i = 1; i < arr.length; i++) {
         if (arr[i] > currentMax + arr[i]) {
             currentMax = arr[i];
@@ -139,14 +139,14 @@ public static int[] kadane(int[] arr) {
         } else {
             currentMax = currentMax + arr[i];
         }
-        
+
         if (currentMax > globalMax) {
             globalMax = currentMax;
             start = tempStart;
             end = i;
         }
     }
-    
+
     return new int[]{globalMax, start, end};
     // Returns [maxSum, startIndex, endIndex]
 }
@@ -187,7 +187,7 @@ i=3: maxProd=max(4, -2*4, -12*4) = max(4, -8, -48) = 4
 ```java
 public int maxProduct(int[] nums) {
     int maxProd = nums[0], minProd = nums[0], result = nums[0];
-    
+
     for (int i = 1; i < nums.length; i++) {
         // If negative, swap max and min (negative flips sign)
         if (nums[i] < 0) {
@@ -195,7 +195,7 @@ public int maxProduct(int[] nums) {
             maxProd = minProd;
             minProd = temp;
         }
-        
+
         maxProd = Math.max(nums[i], maxProd * nums[i]);
         minProd = Math.min(nums[i], minProd * nums[i]);
         result = Math.max(result, maxProd);
@@ -205,6 +205,7 @@ public int maxProduct(int[] nums) {
 // Time: O(n) | Space: O(1)
 // The swap trick when negative is the elegant insight!
 ```
+
 </details>
 
 ---
@@ -214,17 +215,18 @@ public int maxProduct(int[] nums) {
 ### Scenario: Temperature Monitoring Alert System
 
 **Problem:** An IoT sensor sends temperature readings every minute. Design a system that:
+
 1. Detects if temperature rises continuously for 5+ readings (overheating alert)
 2. Finds the maximum temperature swing in any 10-minute window
 
 ```java
 public class TempMonitor {
-    
+
     // 1. Detect continuous rise of k+ readings
     public static List<Integer> detectOverheating(double[] temps, int threshold) {
         List<Integer> alerts = new ArrayList<>();
         int risingCount = 1;
-        
+
         for (int i = 1; i < temps.length; i++) {
             if (temps[i] > temps[i - 1]) {
                 risingCount++;
@@ -237,12 +239,12 @@ public class TempMonitor {
         }
         return alerts;
     }
-    
+
     // 2. Max swing in window of k readings (max - min in window)
     // Simple approach: O(n*k) — fine for moderate k
     public static double maxSwing(double[] temps, int windowSize) {
         double maxSwing = 0;
-        
+
         for (int i = 0; i <= temps.length - windowSize; i++) {
             double min = temps[i], max = temps[i];
             for (int j = i; j < i + windowSize; j++) {
@@ -271,11 +273,10 @@ DML = Data Manipulation Language — changes DATA, not structure
   INSERT — add rows
   UPDATE — modify existing rows
   DELETE — remove rows
-  
+
 DDL (yesterday) → changes schema (tables, columns)
 DML (today)     → changes data within tables
 ```
-
 
 #### UPDATE — the command you must FEAR and RESPECT
 
@@ -332,13 +333,14 @@ INSERT INTO products (product_name, price, stock, category) VALUES
 <summary>Answer</summary>
 
 ```sql
-UPDATE products 
-SET price = price * 1.10 
+UPDATE products
+SET price = price * 1.10
 WHERE category = 'Electronics';
 
 -- Verify: SELECT * FROM products WHERE category = 'Electronics';
 -- Laptop: 1099.99, Mouse: 32.99, Headphones: 164.99
 ```
+
 </details>
 
 **Q2:** Delete all products where stock is greater than 500 (surplus clearance).
@@ -354,6 +356,7 @@ SELECT * FROM products WHERE stock > 500;
 -- Step 2: Delete
 DELETE FROM products WHERE stock > 500;
 ```
+
 </details>
 
 **Q3 (Challenge):** Reduce stock by the ordered quantity for each product that has orders. (This would need a JOIN — preview of Week 2, but try to think about it!)
@@ -363,7 +366,7 @@ DELETE FROM products WHERE stock > 500;
 
 ```sql
 -- Using a subquery approach (JOIN version comes in Week 2)
-UPDATE products 
+UPDATE products
 SET stock = stock - (
     SELECT SUM(quantity) FROM orders WHERE orders.product_id = products.product_id
 )
@@ -375,6 +378,7 @@ WHERE product_id IN (SELECT product_id FROM orders);
 -- Notebook: 500 - 10 = 490
 -- Headphones: 75 - 1 = 74
 ```
+
 </details>
 
 > **Read more:** [08_SQL/04_DML_Manipulating_Data.md](../../08_SQL/04_DML_Manipulating_Data.md)
@@ -399,7 +403,7 @@ Output: 6 (subarray [4, -1, 2, 1])
 public int maxSubArray(int[] nums) {
     int currentMax = nums[0];
     int globalMax = nums[0];
-    
+
     for (int i = 1; i < nums.length; i++) {
         currentMax = Math.max(nums[i], currentMax + nums[i]);
         globalMax = Math.max(globalMax, currentMax);
@@ -409,6 +413,7 @@ public int maxSubArray(int[] nums) {
 // This IS Kadane's Algorithm — you learned it in Block 2!
 // Time: O(n) | Space: O(1)
 ```
+
 </details>
 
 ---
@@ -434,7 +439,7 @@ Output: -1 (no equilibrium)
 public int equilibriumIndex(int[] arr) {
     int totalSum = 0;
     for (int num : arr) totalSum += num;
-    
+
     int leftSum = 0;
     for (int i = 0; i < arr.length; i++) {
         int rightSum = totalSum - leftSum - arr[i];
@@ -447,6 +452,7 @@ public int equilibriumIndex(int[] arr) {
 // KEY INSIGHT: rightSum = totalSum - leftSum - arr[i]
 // No need for a separate prefix sum array!
 ```
+
 </details>
 
 ---
@@ -454,6 +460,7 @@ public int equilibriumIndex(int[] arr) {
 ## End of Day 4
 
 ### What you learned today:
+
 1. **Subarray vs Subsequence vs Subset** — precise definitions with counts
 2. **Kadane's Algorithm** — the single most important subarray algorithm
 3. **Max Product Subarray** — tracking min AND max (negative flipping)
@@ -465,10 +472,9 @@ public int equilibriumIndex(int[] arr) {
 
 ---
 
-> **Mentor Note:** Kadane's Algorithm is a MUST-KNOW. If you could only memorize 
-> one algorithm from this week, make it this one. It appears directly or as a 
+> **Mentor Note:** Kadane's Algorithm is a MUST-KNOW. If you could only memorize
+> one algorithm from this week, make it this one. It appears directly or as a
 > sub-problem in dozens of medium/hard problems.
-
 
 ---
 

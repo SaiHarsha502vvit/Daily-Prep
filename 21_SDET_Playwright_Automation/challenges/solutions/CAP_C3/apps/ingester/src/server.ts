@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import { z } from 'zod';
-import { initDatabase, query, getClient } from './db';
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import { z } from "zod";
+import { initDatabase, query, getClient } from "./db";
 
 // Zod schema for Playwright JSON report structure
 const TestResultSchema = z.object({
@@ -11,7 +11,7 @@ const TestResultSchema = z.object({
   file: z.string().optional(),
   line: z.number().optional(),
   column: z.number().optional(),
-  status: z.enum(['passed', 'failed', 'skipped', 'timedOut', 'interrupted']),
+  status: z.enum(["passed", "failed", "skipped", "timedOut", "interrupted"]),
   duration: z.number().optional(), // milliseconds
   error: z
     .object({
@@ -70,7 +70,7 @@ const PlaywrightReportSchema = z.object({
             timedOut: z.number().optional(),
           })
           .optional(),
-      })
+      }),
     )
     .optional(),
   // Simple flattened format also accepted
@@ -101,27 +101,27 @@ const RunSummarySchema = z.object({
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
 
 // Health check
-app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get("/health", (_req: Request, res: Response) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 // POST /api/runs — ingest a Playwright JSON report
-app.post('/api/runs', async (req: Request, res: Response) => {
+app.post("/api/runs", async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
-  const expectedToken = process.env.INGESTER_TOKEN || 'dev-token';
+  const expectedToken = process.env.INGESTER_TOKEN || "dev-token";
 
   if (authHeader !== `Bearer ${expectedToken}`) {
-    res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: "Unauthorized" });
     return;
   }
 
   const parsed = PlaywrightReportSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(422).json({
-      error: 'Invalid Playwright report format',
+      error: "Invalid Playwright report format",
       details: parsed.error.flatten(),
     });
     return;
@@ -132,7 +132,8 @@ app.post('/api/runs', async (req: Request, res: Response) => {
   const timestamp = (report as any).timestamp || new Date().toISOString();
   const branch = (report as any).branch || process.env.GITHUB_REF_NAME || null;
   const commitSha = (report as any).commitSha || process.env.GITHUB_SHA || null;
-  const workflowName = (report as any).workflowName || process.env.GITHUB_WORKFLOW || null;
+  const workflowName =
+    (report as any).workflowName || process.env.GITHUB_WORKFLOW || null;
   const runNumber = (report as any).runNumber
     ? parseInt((report as any).runNumber, 10)
     : null;
@@ -143,7 +144,7 @@ app.post('/api/runs', async (req: Request, res: Response) => {
 
   const client = await getClient();
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     // Upsert run (idempotent)
     await client.query(
@@ -156,15 +157,18 @@ app.post('/api/runs', async (req: Request, res: Response) => {
          workflow_name = EXCLUDED.workflow_name,
          run_number = EXCLUDED.run_number,
          updated_at = NOW()`,
-      [runId, timestamp, branch, commitSha, workflowName, runNumber]
+      [runId, timestamp, branch, commitSha, workflowName, runNumber],
     );
 
     // Delete existing tests for this run (for idempotent re-upload)
-    await client.query('DELETE FROM tests WHERE run_id = $1', [runId]);
+    await client.query("DELETE FROM tests WHERE run_id = $1", [runId]);
 
     // Insert tests
     for (const test of tests) {
-      const filePath = test.file || test.line !== undefined ? `${test.file}:${test.line}` : null;
+      const filePath =
+        test.file || test.line !== undefined
+          ? `${test.file}:${test.line}`
+          : null;
       await client.query(
         `INSERT INTO tests (run_id, test_name, file_path, status, duration_ms, error_message, error_stack, owner)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
@@ -177,32 +181,34 @@ app.post('/api/runs', async (req: Request, res: Response) => {
           test.error?.message ?? null,
           test.error?.stack ?? null,
           test.owner ?? null,
-        ]
+        ],
       );
     }
 
-    await client.query('COMMIT');
+    await client.query("COMMIT");
     res.status(201).json({ runId, testCount: tests.length });
   } catch (err) {
-    await client.query('ROLLBACK');
-    console.error('Error ingesting report:', err);
-    res.status(500).json({ error: 'Failed to ingest report' });
+    await client.query("ROLLBACK");
+    console.error("Error ingesting report:", err);
+    res.status(500).json({ error: "Failed to ingest report" });
   } finally {
     client.release();
   }
 });
 
 // GET /api/overview — dashboard overview data
-app.get('/api/overview', async (_req: Request, res: Response) => {
+app.get("/api/overview", async (_req: Request, res: Response) => {
   try {
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const thirtyDaysAgo = new Date(
+      Date.now() - 30 * 24 * 60 * 60 * 1000,
+    ).toISOString();
 
     // Total runs
     const runsResult = await query<{ count: string }>(
-      'SELECT COUNT(*) as count FROM runs WHERE timestamp >= $1',
-      [thirtyDaysAgo]
+      "SELECT COUNT(*) as count FROM runs WHERE timestamp >= $1",
+      [thirtyDaysAgo],
     );
-    const totalRuns = parseInt(runsResult[0]?.count || '0', 10);
+    const totalRuns = parseInt(runsResult[0]?.count || "0", 10);
 
     // Pass rate
     const passRateResult = await query<{ passed: string; total: string }>(
@@ -212,10 +218,10 @@ app.get('/api/overview', async (_req: Request, res: Response) => {
        FROM tests t
        JOIN runs r ON t.run_id = r.id
        WHERE r.timestamp >= $1`,
-      [thirtyDaysAgo]
+      [thirtyDaysAgo],
     );
-    const passed = parseInt(passRateResult[0]?.passed || '0', 10);
-    const total = parseInt(passRateResult[0]?.total || '0', 10);
+    const passed = parseInt(passRateResult[0]?.passed || "0", 10);
+    const total = parseInt(passRateResult[0]?.total || "0", 10);
     const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
 
     // Top 10 failing tests
@@ -237,7 +243,7 @@ app.get('/api/overview', async (_req: Request, res: Response) => {
        HAVING COUNT(CASE WHEN t.status = 'failed' THEN 1 END) > 0
        ORDER BY fail_count DESC, avg_duration_ms DESC
        LIMIT 10`,
-      [thirtyDaysAgo]
+      [thirtyDaysAgo],
     );
 
     // Top 10 slowest tests (by avg duration)
@@ -256,7 +262,7 @@ app.get('/api/overview', async (_req: Request, res: Response) => {
        GROUP BY t.test_name
        ORDER BY avg_duration_ms DESC
        LIMIT 10`,
-      [thirtyDaysAgo]
+      [thirtyDaysAgo],
     );
 
     res.json({
@@ -275,15 +281,17 @@ app.get('/api/overview', async (_req: Request, res: Response) => {
       })),
     });
   } catch (err) {
-    console.error('Error fetching overview:', err);
-    res.status(500).json({ error: 'Failed to fetch overview' });
+    console.error("Error fetching overview:", err);
+    res.status(500).json({ error: "Failed to fetch overview" });
   }
 });
 
 // GET /api/tests/:name — test detail (pass/fail history)
-app.get('/api/tests/:name', async (req: Request, res: Response) => {
+app.get("/api/tests/:name", async (req: Request, res: Response) => {
   const { name } = req.params;
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const thirtyDaysAgo = new Date(
+    Date.now() - 30 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   try {
     const history = await query<{
@@ -300,15 +308,18 @@ app.get('/api/tests/:name', async (req: Request, res: Response) => {
        WHERE t.test_name = $1 AND r.timestamp >= $2
        ORDER BY r.timestamp DESC
        LIMIT 100`,
-      [name, thirtyDaysAgo]
+      [name, thirtyDaysAgo],
     );
 
-    const branchHistory = history.reduce<Record<string, typeof history>>((acc, row) => {
-      const branch = row.branch || 'unknown';
-      if (!acc[branch]) acc[branch] = [];
-      acc[branch].push(row);
-      return acc;
-    }, {});
+    const branchHistory = history.reduce<Record<string, typeof history>>(
+      (acc, row) => {
+        const branch = row.branch || "unknown";
+        if (!acc[branch]) acc[branch] = [];
+        acc[branch].push(row);
+        return acc;
+      },
+      {},
+    );
 
     res.json({
       testName: name,
@@ -324,15 +335,17 @@ app.get('/api/tests/:name', async (req: Request, res: Response) => {
       })),
     });
   } catch (err) {
-    console.error('Error fetching test detail:', err);
-    res.status(500).json({ error: 'Failed to fetch test detail' });
+    console.error("Error fetching test detail:", err);
+    res.status(500).json({ error: "Failed to fetch test detail" });
   }
 });
 
 // GET /api/owners/:name — owner summary
-app.get('/api/owners/:name', async (req: Request, res: Response) => {
+app.get("/api/owners/:name", async (req: Request, res: Response) => {
   const { name } = req.params;
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const thirtyDaysAgo = new Date(
+    Date.now() - 30 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   try {
     // Owner test counts and failure rates
@@ -352,7 +365,7 @@ app.get('/api/owners/:name', async (req: Request, res: Response) => {
        FROM tests t
        JOIN runs r ON t.run_id = r.id
        WHERE t.owner = $1 AND r.timestamp >= $2`,
-      [name, thirtyDaysAgo]
+      [name, thirtyDaysAgo],
     );
 
     // Tests not run in 30 days (by owner, based on last seen)
@@ -363,7 +376,7 @@ app.get('/api/owners/:name', async (req: Request, res: Response) => {
        WHERE t.owner = $1
        GROUP BY t.test_name
        HAVING MAX(r.timestamp) < $2`,
-      [name, thirtyDaysAgo]
+      [name, thirtyDaysAgo],
     );
 
     // Top failing tests for this owner
@@ -378,57 +391,67 @@ app.get('/api/owners/:name', async (req: Request, res: Response) => {
        GROUP BY t.test_name
        ORDER BY fail_count DESC
        LIMIT 10`,
-      [name, thirtyDaysAgo]
+      [name, thirtyDaysAgo],
     );
 
     const s = summary[0];
     res.json({
       owner: name,
-      totalTests: parseInt(s?.total || '0', 10),
-      passed: parseInt(s?.passed || '0', 10),
-      failed: parseInt(s?.failed || '0', 10),
-      skipped: parseInt(s?.skipped || '0', 10),
+      totalTests: parseInt(s?.total || "0", 10),
+      passed: parseInt(s?.passed || "0", 10),
+      failed: parseInt(s?.failed || "0", 10),
+      skipped: parseInt(s?.skipped || "0", 10),
       passRate:
-        parseInt(s?.total || '0', 10) > 0
+        parseInt(s?.total || "0", 10) > 0
           ? Math.round(
-              (parseInt(s?.passed || '0', 10) / parseInt(s?.total || '0', 10)) * 100
+              (parseInt(s?.passed || "0", 10) / parseInt(s?.total || "0", 10)) *
+                100,
             )
           : 0,
-      avgDurationMs: parseInt(s?.avg_duration_ms || '0', 10),
-      notRunIn30Days: lastSeen.map((r) => ({ testName: r.test_name, lastRun: r.last_run })),
+      avgDurationMs: parseInt(s?.avg_duration_ms || "0", 10),
+      notRunIn30Days: lastSeen.map((r) => ({
+        testName: r.test_name,
+        lastRun: r.last_run,
+      })),
       topFailing: topFailing.map((t) => ({
         name: t.test_name,
         failCount: parseInt(t.fail_count, 10),
       })),
     });
   } catch (err) {
-    console.error('Error fetching owner summary:', err);
-    res.status(500).json({ error: 'Failed to fetch owner summary' });
+    console.error("Error fetching owner summary:", err);
+    res.status(500).json({ error: "Failed to fetch owner summary" });
   }
 });
 
 // GET /api/owners — list all owners
-app.get('/api/owners', async (_req: Request, res: Response) => {
+app.get("/api/owners", async (_req: Request, res: Response) => {
   try {
     const owners = await query<{ owner: string; test_count: string }>(
       `SELECT owner, COUNT(*) as test_count
        FROM tests
        WHERE owner IS NOT NULL AND owner != ''
        GROUP BY owner
-       ORDER BY test_count DESC`
+       ORDER BY test_count DESC`,
     );
     res.json({
-      owners: owners.map((o) => ({ name: o.owner, testCount: parseInt(o.test_count, 10) })),
+      owners: owners.map((o) => ({
+        name: o.owner,
+        testCount: parseInt(o.test_count, 10),
+      })),
     });
   } catch (err) {
-    console.error('Error fetching owners:', err);
-    res.status(500).json({ error: 'Failed to fetch owners' });
+    console.error("Error fetching owners:", err);
+    res.status(500).json({ error: "Failed to fetch owners" });
   }
 });
 
 // GET /api/runs — list recent runs
-app.get('/api/runs', async (req: Request, res: Response) => {
-  const limit = Math.min(parseInt(req.query.limit as string || '20', 10), 100);
+app.get("/api/runs", async (req: Request, res: Response) => {
+  const limit = Math.min(
+    parseInt((req.query.limit as string) || "20", 10),
+    100,
+  );
   try {
     const runs = await query<{
       id: string;
@@ -446,7 +469,7 @@ app.get('/api/runs', async (req: Request, res: Response) => {
        GROUP BY r.id
        ORDER BY r.timestamp DESC
        LIMIT $1`,
-      [limit]
+      [limit],
     );
     res.json({
       runs: runs.map((r) => ({
@@ -460,15 +483,15 @@ app.get('/api/runs', async (req: Request, res: Response) => {
       })),
     });
   } catch (err) {
-    console.error('Error fetching runs:', err);
-    res.status(500).json({ error: 'Failed to fetch runs' });
+    console.error("Error fetching runs:", err);
+    res.status(500).json({ error: "Failed to fetch runs" });
   }
 });
 
 // Error handling middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 function extractTests(report: PlaywrightReport): unknown[] {
@@ -483,15 +506,15 @@ function extractTests(report: PlaywrightReport): unknown[] {
 }
 
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
 // Start server
-const PORT = parseInt(process.env.PORT || '3001', 10);
+const PORT = parseInt(process.env.PORT || "3001", 10);
 
 async function start() {
   try {
@@ -500,7 +523,7 @@ async function start() {
       console.log(`Ingester server running on port ${PORT}`);
     });
   } catch (err) {
-    console.error('Failed to start server:', err);
+    console.error("Failed to start server:", err);
     process.exit(1);
   }
 }

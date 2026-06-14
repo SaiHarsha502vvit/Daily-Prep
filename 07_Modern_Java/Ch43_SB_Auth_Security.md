@@ -49,7 +49,6 @@ _"Security is not a feature, it's a requirement"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # SECTION 1: AUTHENTICATION vs AUTHORIZATION
@@ -58,49 +57,50 @@ _"Security is not a feature, it's a requirement"_
 
 ## Chapter 1: Understanding the Difference
 
-
-
 🔬 **Section Challenge — Chapter 1: Understanding the Difference**
 
 **Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
+
 <details><summary>Answer</summary>
 
 Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
-</details>
 
+</details>
 
 ## Authentication Vs Authorization
 
 ┬
-AUTHENTICATION (AuthN)      │      AUTHORIZATION (AuthZ)
+AUTHENTICATION (AuthN) │ AUTHORIZATION (AuthZ)
 ┼
 │
-"WHO are you?"                  │  "WHAT can you do?"
+"WHO are you?" │ "WHAT can you do?"
 │
-Verifies IDENTITY               │  Verifies PERMISSIONS
+Verifies IDENTITY │ Verifies PERMISSIONS
 │
-Happens FIRST                   │  Happens AFTER authentication
+Happens FIRST │ Happens AFTER authentication
 │
-Examples:                       │  Examples:
-- Username + Password           │  • User can view their own data
-- Fingerprint                   │  • Admin can delete any user
-- Face ID                       │  • Manager can approve requests
-- JWT Token                     │  • Guest can only read
-│
-HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden
-│
-┴
+Examples: │ Examples:
+
+- Username + Password │ • User can view their own data
+- Fingerprint │ • Admin can delete any user
+- Face ID │ • Manager can approve requests
+- JWT Token │ • Guest can only read
+  │
+  HTTP Status: 401 Unauthorized │ HTTP Status: 403 Forbidden
+  │
+  ┴
 
 💡 **REAL-WORLD ANALOGY:**
 ═══════════════════
 
 **Airport Security**:
+
 1. AUTHENTICATION: Show your ID/Passport at checkpoint
-"Are you really John Smith?" ✓
+   "Are you really John Smith?" ✓
 2. AUTHORIZATION: Check your boarding pass
-"Can you enter the First Class lounge?" ✗
-"Can you board Flight AA123?" ✓
-═══════════════════════════════════════════════════════════════════════════
+   "Can you enter the First Class lounge?" ✗
+   "Can you board Flight AA123?" ✓
+   ═══════════════════════════════════════════════════════════════════════════
 
 **In Code**:
 User logs in with email/password → AUTHENTICATION
@@ -172,27 +172,23 @@ System checks: Does this user have ADMIN role? No → 403 Forbidden
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — Chapter 2: Spring Security Architecture**
 
 **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+
 <details><summary>Answer</summary>
 
 JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-</details>
 
+</details>
 
 # SECTION 2: JWT AUTHENTICATION (Most Common)
 
 ---
 
 ## Chapter 3: JWT (JSON Web Token) Explained
-
-
 
 🔬 **Section Challenge — Chapter 3: JWT (JSON Web Token) Explained**
 
@@ -209,31 +205,30 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 **Local rewrite:** The `JwtService` above calls `Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)` — this delegates directly to jjwt's `DefaultJwtParser`. The `verifyWith()` call sets the expected signing key; `parseSignedClaims()` validates all three checks: signature, `exp`, `nbf`.  
 **Constraint warning:** jjwt uses HMAC-SHA256 by default (symmetric — same key signs and verifies). For a **resource server** that should only verify (not sign), use asymmetric RSA/EC. With jjwt: sign with `Keys.keyPairFor(SignatureAlgorithm.RS256)`, verify with the public key only.
 
-
 ## Jwt Structure
 
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
 eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4iLCJpYXQiOjE1MTYyMzkwMjJ9.
 SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ┬─────────────────────────────────────────┬
-| HEADER      |              PAYLOAD                    |   SIGNATURE |
-| (Base64)      |            (Base64)                     |   (Base64) |
+| HEADER | PAYLOAD | SIGNATURE |
+| (Base64) | (Base64) | (Base64) |
 ═══════════════════════════════════════════════════════════════════════════
 HEADER (Algorithm + Type):
 ══════════════════════════
 {
-"alg": "HS256",    ← Algorithm used to sign
-"typ": "JWT"       ← Token type
+"alg": "HS256", ← Algorithm used to sign
+"typ": "JWT" ← Token type
 }
 PAYLOAD (Claims - the actual data):
 ════════════════════════════════════
 {
-"sub": "1234567890",     ← Subject (user ID)
-"name": "John Doe",      ← Custom claim
+"sub": "1234567890", ← Subject (user ID)
+"name": "John Doe", ← Custom claim
 "email": "john@test.com",
 "roles": ["USER", "ADMIN"],
-"iat": 1516239022,       ← Issued At (Unix timestamp)
-"exp": 1516242622        ← Expiration (Unix timestamp)
+"iat": 1516239022, ← Issued At (Unix timestamp)
+"exp": 1516242622 ← Expiration (Unix timestamp)
 }
 
 **Signature**:
@@ -245,12 +240,13 @@ secret_key
 ═══════════════════════════════════════════════════════════════════════════
 WHY JWT?
 ════════
+
 - ✅ STATELESS: Server doesn't need to store sessions
 - ✅ SCALABLE: Works across multiple servers (no session sharing)
 - ✅ MOBILE-FRIENDLY: Easy to send in header
 - ✅ SELF-CONTAINED: Contains all user info needed
 - ✅ CROSS-DOMAIN: Works for APIs consumed by different clients
-⚠️ CAUTION:
+  ⚠️ CAUTION:
 - Cannot invalidate individual tokens (use short expiry + refresh tokens)
 - Payload is only Base64 encoded, NOT encrypted (don't put secrets)
 - Token size can grow large with many claims
@@ -334,7 +330,6 @@ WHY JWT?
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Chapter 5: Complete JWT Implementation
@@ -376,30 +371,30 @@ WHY JWT?
 @Setter
 @NoArgsConstructor
 public class User implements UserDetails {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false, unique = true)
     private String email;
-    
+
     @Column(nullable = false)
     private String password;
-    
+
     @Column(nullable = false)
     private String firstName;
-    
+
     private String lastName;
-    
+
     @Column(nullable = false)
     private boolean enabled = true;
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
-    
+
     // UserDetails implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -407,22 +402,22 @@ public class User implements UserDetails {
             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
             .collect(Collectors.toList());
     }
-    
+
     @Override
     public String getUsername() {
         return email;
     }
-    
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-    
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-    
+
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
@@ -441,41 +436,41 @@ public enum Role {
 @Service
 @Slf4j
 public class JwtService {
-    
+
     @Value("${app.jwt.secret}")
     private String secretKey;
-    
+
     @Value("${app.jwt.expiration}")
     private long accessTokenExpiration;  // e.g., 3600000 (1 hour)
-    
+
     @Value("${app.jwt.refresh-expiration}")
     private long refreshTokenExpiration;  // e.g., 604800000 (7 days)
-    
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    
+
     // Generate access token
     public String generateAccessToken(UserDetails userDetails) {
         return generateToken(userDetails, accessTokenExpiration);
     }
-    
+
     // Generate refresh token
     public String generateRefreshToken(UserDetails userDetails) {
         return generateToken(userDetails, refreshTokenExpiration);
     }
-    
+
     private String generateToken(UserDetails userDetails, long expiration) {
         Map<String, Object> claims = new HashMap<>();
-        
+
         if (userDetails instanceof User user) {
             claims.put("userId", user.getId());
             claims.put("roles", user.getRoles().stream()
                 .map(Enum::name)
                 .collect(Collectors.toList()));
         }
-        
+
         return Jwts.builder()
             .claims(claims)
             .subject(userDetails.getUsername())
@@ -484,23 +479,23 @@ public class JwtService {
             .signWith(getSigningKey())
             .compact();
     }
-    
+
     // Extract username from token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-    
+
     // Extract user ID from token
     public Long extractUserId(String token) {
         return extractClaim(token, claims -> claims.get("userId", Long.class));
     }
-    
+
     // Extract any claim
     public <T> T extractClaim(String token, Function<Claims, T> resolver) {
         final Claims claims = extractAllClaims(token);
         return resolver.apply(claims);
     }
-    
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
             .verifyWith(getSigningKey())
@@ -508,13 +503,13 @@ public class JwtService {
             .parseSignedClaims(token)
             .getPayload();
     }
-    
+
     // Validate token
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
-    
+
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
@@ -529,57 +524,57 @@ public class JwtService {
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        
+
         // Get Authorization header
         final String authHeader = request.getHeader("Authorization");
-        
+
         // Check if header exists and starts with "Bearer "
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         // Extract token (remove "Bearer " prefix)
         final String token = authHeader.substring(7);
-        
+
         try {
             // Extract username from token
             final String username = jwtService.extractUsername(token);
-            
+
             // If username exists and not already authenticated
-            if (username != null && 
+            if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
-                
+
                 // Load user from database
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                
+
                 // Validate token
                 if (jwtService.isTokenValid(token, userDetails)) {
                     // Create authentication object
-                    UsernamePasswordAuthenticationToken authToken = 
+                    UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                         );
-                    
+
                     // Add request details
                     authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                     );
-                    
+
                     // Set authentication in context
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    
+
                     log.debug("Authenticated user: {}", username);
                 }
             }
@@ -588,7 +583,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
         }
-        
+
         // Continue filter chain
         filterChain.doFilter(request, response);
     }
@@ -604,45 +599,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 @EnableMethodSecurity  // Enable @PreAuthorize, @PostAuthorize
 @RequiredArgsConstructor
 public class SecurityConfig {
-    
+
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // Disable CSRF (not needed for stateless API with JWT)
             .csrf(csrf -> csrf.disable())
-            
+
             // Configure authorization
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                
+
                 // Admin only endpoints
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                
+
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
             )
-            
+
             // Stateless session (no session cookies)
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            
+
             // Add JWT filter before UsernamePasswordAuthenticationFilter
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            
+
             // Exception handling
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setContentType("application/json");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.getWriter().write(
-                        "{\"error\": \"Unauthorized\", \"message\": \"" + 
+                        "{\"error\": \"Unauthorized\", \"message\": \"" +
                         authException.getMessage() + "\"}"
                     );
                 })
@@ -654,15 +649,15 @@ public class SecurityConfig {
                     );
                 })
             );
-        
+
         return http.build();
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
@@ -680,29 +675,29 @@ public class SecurityConfig {
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
-    
+
     private final AuthService authService;
-    
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         log.info("Registration attempt for email: {}", request.email());
         AuthResponse response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         log.info("Login attempt for email: {}", request.email());
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshRequest request) {
         AuthResponse response = authService.refresh(request);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         // For JWT, logout is handled client-side by deleting the token
@@ -721,18 +716,18 @@ public class AuthController {
 @Transactional
 @Slf4j
 public class AuthService {
-    
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    
+
     public AuthResponse register(RegisterRequest request) {
         // Check if email already exists
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException(request.email());
         }
-        
+
         // Create new user
         User user = new User();
         user.setEmail(request.email());
@@ -740,17 +735,17 @@ public class AuthService {
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
         user.setRoles(Set.of(Role.USER));
-        
+
         User saved = userRepository.save(user);
         log.info("User registered: {}", saved.getEmail());
-        
+
         // Generate tokens
         String accessToken = jwtService.generateAccessToken(saved);
         String refreshToken = jwtService.generateRefreshToken(saved);
-        
+
         return new AuthResponse(accessToken, refreshToken, "Bearer", 3600);
     }
-    
+
     public AuthResponse login(LoginRequest request) {
         // Authenticate
         authenticationManager.authenticate(
@@ -759,36 +754,36 @@ public class AuthService {
                 request.password()
             )
         );
-        
+
         // Load user
         User user = userRepository.findByEmail(request.email())
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        
+
         log.info("User logged in: {}", user.getEmail());
-        
+
         // Generate tokens
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
-        
+
         return new AuthResponse(accessToken, refreshToken, "Bearer", 3600);
     }
-    
+
     public AuthResponse refresh(RefreshRequest request) {
         // Extract username from refresh token
         String username = jwtService.extractUsername(request.refreshToken());
-        
+
         // Load user
         User user = userRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        
+
         // Validate refresh token
         if (!jwtService.isTokenValid(request.refreshToken(), user)) {
             throw new InvalidTokenException("Invalid refresh token");
         }
-        
+
         // Generate new access token
         String accessToken = jwtService.generateAccessToken(user);
-        
+
         return new AuthResponse(accessToken, request.refreshToken(), "Bearer", 3600);
     }
 }
@@ -839,64 +834,64 @@ public record AuthResponse(
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class SecuredController {
-    
+
     private final UserService userService;
     private final OrderService orderService;
-    
+
     // ─────────────────────────────────────────────────────────────────────────
     // ROLE-BASED ACCESS
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Only users with ADMIN role can access
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/users")
     public List<UserResponse> getAllUsers() {
         return userService.findAll();
     }
-    
+
     // Multiple roles (OR logic)
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.delete(id);
     }
-    
+
     // Multiple roles (AND logic)
     @PreAuthorize("hasRole('ADMIN') and hasRole('SUPER_USER')")
     @PostMapping("/system/reset")
     public void systemReset() {
         // dangerous operation
     }
-    
+
     // Any of these authorities
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'SUPERVISOR')")
     @GetMapping("/reports")
     public List<Report> getReports() {
         return reportService.findAll();
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // PERMISSION-BASED ACCESS (Fine-grained)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     @PreAuthorize("hasAuthority('user:read')")
     @GetMapping("/users/{id}")
     public UserResponse getUser(@PathVariable Long id) {
         return userService.findById(id);
     }
-    
+
     @PreAuthorize("hasAuthority('user:write')")
     @PostMapping("/users")
     public UserResponse createUser(@RequestBody CreateUserRequest request) {
         return userService.create(request);
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // EXPRESSION-BASED ACCESS (SpEL - Spring Expression Language)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Access method parameters
     // User can only view their own orders
     @PreAuthorize("#userId == authentication.principal.id")
@@ -904,16 +899,16 @@ public class SecuredController {
     public List<OrderResponse> getUserOrders(@PathVariable Long userId) {
         return orderService.findByUserId(userId);
     }
-    
+
     // User can only update their own profile
     @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @PutMapping("/users/{id}")
     public UserResponse updateUser(
-            @PathVariable Long id, 
+            @PathVariable Long id,
             @RequestBody UpdateUserRequest request) {
         return userService.update(id, request);
     }
-    
+
     // Check object properties
     @PreAuthorize("#request.departmentId == authentication.principal.departmentId " +
                   "or hasRole('ADMIN')")
@@ -921,12 +916,12 @@ public class SecuredController {
     public LeaveRequest createLeaveRequest(@RequestBody LeaveRequestDto request) {
         return leaveService.create(request);
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // @PostAuthorize - Check AFTER method execution (on return value)
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Only return if user owns the resource
     @PostAuthorize("returnObject.userId == authentication.principal.id " +
                    "or hasRole('ADMIN')")
@@ -934,19 +929,19 @@ public class SecuredController {
     public OrderResponse getOrder(@PathVariable Long id) {
         return orderService.findById(id);  // Check happens AFTER this returns
     }
-    
-    
+
+
     // ─────────────────────────────────────────────────────────────────────────
     // @PreFilter / @PostFilter - Filter collections
     // ─────────────────────────────────────────────────────────────────────────
-    
+
     // Filter input collection
     @PreFilter("filterObject.departmentId == authentication.principal.departmentId")
     @PostMapping("/bulk-update")
     public void bulkUpdate(@RequestBody List<UpdateRequest> requests) {
         // Only requests matching user's department are passed through
     }
-    
+
     // Filter output collection
     @PostFilter("filterObject.ownerId == authentication.principal.id " +
                 "or hasRole('ADMIN')")
@@ -960,8 +955,6 @@ public class SecuredController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: Method-Level Security**
 
 **Challenge 1 (@PreAuthorize vs @PostAuthorize):** `@PreAuthorize("#id == authentication.principal.id")` vs `@PostAuthorize("returnObject.ownerId == authentication.principal.id")`. **Who** checks authorization? **When** is `@PostAuthorize` necessary? **What** happens to the database write if `@PostAuthorize` fails?
@@ -971,7 +964,6 @@ public class SecuredController {
 **Who checks:** Spring Security's method security proxy. `@PreAuthorize` runs BEFORE the method body. `@PostAuthorize` runs AFTER the method body with access to `returnObject`. **When `@PostAuthorize` is necessary:** When the authorization decision depends on the RETURN VALUE. Example: `@PostAuthorize("returnObject.ownerId == authentication.principal.id")` on `findDocument(Long id)` — you don't know the document's owner UNTIL you load it from the database. You must load first, THEN check ownership. **What happens to database write if @PostAuthorize fails:** The method EXECUTES (including DB writes, side effects). The return value is checked AFTER completion. If unauthorized: throws `AccessDeniedException`. BUT any DB changes already committed are NOT rolled back (unless wrapped in `@Transactional` which gets rolled back by the exception). **@PostAuthorize + @Transactional:** If both are present, transaction commits after method, THEN `@PostAuthorize` checks. If `@PostAuthorize` throws, the transaction is already committed. Solution: Use `@PreAuthorize` with a repository check, or ensure the transaction rollbacks via `@Transactional(rollbackFor = AccessDeniedException.class)`. **Best practice:** Prefer `@PreAuthorize` for data access control. Use `@PostAuthorize` sparingly and only when pre-check is impossible.
 
 </details>
-
 
 ## Chapter 7: Custom Security Expressions
 
@@ -983,10 +975,10 @@ public class SecuredController {
 @Service("authz")  // Bean name used in SpEL
 @RequiredArgsConstructor
 public class AuthorizationService {
-    
+
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
-    
+
     // Check if user is project owner
     public boolean isProjectOwner(Long projectId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -994,36 +986,36 @@ public class AuthorizationService {
             return false;
         }
         User user = (User) auth.getPrincipal();
-        
+
         return projectRepository.findById(projectId)
             .map(project -> project.getOwnerId().equals(user.getId()))
             .orElse(false);
     }
-    
+
     // Check if user is team member
     public boolean isTeamMember(Long teamId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        
+
         return teamRepository.existsByIdAndMembersContaining(teamId, user);
     }
-    
+
     // Check if user can access resource
     public boolean canAccessResource(Long resourceId, String action) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) auth.getPrincipal();
-        
+
         // Complex business logic here
         // Check resource ownership, team membership, delegated access, etc.
-        
+
         return true; // or false based on logic
     }
-    
+
     // Check department access
     public boolean isInSameDepartment(Long targetUserId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) auth.getPrincipal();
-        
+
         return userRepository.findById(targetUserId)
             .map(target -> target.getDepartmentId().equals(currentUser.getDepartmentId()))
             .orElse(false);
@@ -1035,7 +1027,7 @@ public class AuthorizationService {
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
-    
+
     // Use custom authz service
     @PreAuthorize("@authz.isProjectOwner(#projectId)")
     @PutMapping("/{projectId}")
@@ -1044,14 +1036,14 @@ public class ProjectController {
             @RequestBody UpdateProjectRequest request) {
         return projectService.update(projectId, request);
     }
-    
+
     // Combine with roles
     @PreAuthorize("@authz.isTeamMember(#teamId) or hasRole('ADMIN')")
     @GetMapping("/teams/{teamId}/projects")
     public List<ProjectResponse> getTeamProjects(@PathVariable Long teamId) {
         return projectService.findByTeamId(teamId);
     }
-    
+
     // Complex condition
     @PreAuthorize("@authz.canAccessResource(#id, 'DELETE') and hasRole('MANAGER')")
     @DeleteMapping("/{id}")
@@ -1063,11 +1055,10 @@ public class ProjectController {
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 7: Custom Security Expressions**
 
 **Challenge 1 (Design):** Design a custom security expression `@authz.canAccessProject(#projectId, authentication)`. What inputs should it receive, where should ownership checks happen, and what must stay out of the controller?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
@@ -1081,8 +1072,8 @@ public class AuthorizationRules {
 ```
 
 The controller should express the rule, not implement it. Keep row-level authorization in a named bean so it can use repositories, be tested directly, and stay consistent across endpoints. Pass only stable identifiers and the authenticated principal; never trust request bodies for ownership.
-</details>
 
+</details>
 
 ## Chapter 8: Testing in Postman
 
@@ -1194,8 +1185,6 @@ The controller should express the rule, not implement it. Keep row-level authori
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 8: Testing in Postman**
 
 **Challenge 1 (JWT Expiry and Refresh Token Pattern):** Access token expires in 15 minutes. **Who** issues a new one? **When** should the client use the refresh token? **What** is the security risk if refresh tokens never expire?
@@ -1206,11 +1195,7 @@ The controller should express the rule, not implement it. Keep row-level authori
 
 </details>
 
-
 ## Chapter 9: OAuth2 / Social Login
-
-
-
 
 # 📌 Section 4: Other Auth Methods
 
@@ -1292,7 +1277,6 @@ The controller should express the rule, not implement it. Keep row-level authori
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
 // OAuth2 LOGIN (Google, GitHub, Facebook, etc.)
@@ -1318,7 +1302,7 @@ The controller should express the rule, not implement it. Keep row-level authori
 @Configuration
 @EnableWebSecurity
 public class OAuth2SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -1333,10 +1317,10 @@ public class OAuth2SecurityConfig {
                     .userService(customOAuth2UserService())
                 )
             );
-        
+
         return http.build();
     }
-    
+
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService() {
         return new CustomOAuth2UserService();
@@ -1347,19 +1331,19 @@ public class OAuth2SecurityConfig {
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-    
+
     private final UserRepository userRepository;
-    
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = 
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate =
             new DefaultOAuth2UserService();
         OAuth2User oauth2User = delegate.loadUser(request);
-        
+
         String provider = request.getClientRegistration().getRegistrationId();  // "google", "github"
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
-        
+
         // Find or create user
         User user = userRepository.findByEmail(email)
             .orElseGet(() -> {
@@ -1370,15 +1354,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 newUser.setRoles(Set.of(Role.USER));
                 return userRepository.save(newUser);
             });
-        
+
         return new CustomOAuth2User(oauth2User, user);
     }
 }
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — Chapter 9: OAuth2 / Social Login**
 
@@ -1390,9 +1372,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 </details>
 
-
-
-
 ## Chapter 10: API Key Authentication
 
 ```java
@@ -1403,34 +1382,34 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 @Component
 @RequiredArgsConstructor
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
-    
+
     private static final String API_KEY_HEADER = "X-API-Key";
-    
+
     private final ApiKeyService apiKeyService;
-    
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        
+
         String apiKey = request.getHeader(API_KEY_HEADER);
-        
+
         if (apiKey != null && !apiKey.isEmpty()) {
             ApiKeyDetails keyDetails = apiKeyService.validateKey(apiKey);
-            
+
             if (keyDetails != null) {
                 // Create authentication
-                ApiKeyAuthenticationToken authToken = 
+                ApiKeyAuthenticationToken authToken =
                     new ApiKeyAuthenticationToken(keyDetails, keyDetails.getPermissions());
-                
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        
+
         filterChain.doFilter(request, response);
     }
-    
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         // Skip for auth endpoints
@@ -1444,28 +1423,28 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 @Getter
 @Setter
 public class ApiKey {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(unique = true, nullable = false)
     private String keyHash;  // Store hashed key
-    
+
     private String name;
-    
+
     private String description;
-    
+
     @ManyToOne
     private User owner;
-    
+
     @ElementCollection
     private Set<String> permissions = new HashSet<>();
-    
+
     private boolean active = true;
-    
+
     private LocalDateTime expiresAt;
-    
+
     private LocalDateTime lastUsedAt;
 }
 
@@ -1473,14 +1452,14 @@ public class ApiKey {
 @Service
 @RequiredArgsConstructor
 public class ApiKeyService {
-    
+
     private final ApiKeyRepository apiKeyRepository;
     private final PasswordEncoder passwordEncoder;
-    
+
     public String generateKey(User owner, String name, Set<String> permissions) {
         // Generate random key
         String rawKey = "sk_" + UUID.randomUUID().toString().replace("-", "");
-        
+
         // Save hashed key
         ApiKey apiKey = new ApiKey();
         apiKey.setKeyHash(passwordEncoder.encode(rawKey));
@@ -1488,13 +1467,13 @@ public class ApiKeyService {
         apiKey.setName(name);
         apiKey.setPermissions(permissions);
         apiKey.setExpiresAt(LocalDateTime.now().plusYears(1));
-        
+
         apiKeyRepository.save(apiKey);
-        
+
         // Return raw key (show only once!)
         return rawKey;
     }
-    
+
     public ApiKeyDetails validateKey(String rawKey) {
         // Find all active keys and check hash
         // (In production, use prefix lookup for efficiency)
@@ -1506,7 +1485,7 @@ public class ApiKeyService {
                 // Update last used
                 key.setLastUsedAt(LocalDateTime.now());
                 apiKeyRepository.save(key);
-                
+
                 return new ApiKeyDetails(key);
             })
             .orElse(null);
@@ -1528,7 +1507,7 @@ public class ApiKeyService {
 // ═══════════════════════════════════════════════════════════════════════════════
 // BASIC AUTHENTICATION (Simple username:password in header)
 // ═══════════════════════════════════════════════════════════════════════════════
-// 
+//
 // Header format: Authorization: Basic base64(username:password)
 // Example: Authorization: Basic am9obkB0ZXN0LmNvbTpzZWNyZXQxMjM=
 //
@@ -1539,7 +1518,7 @@ public class ApiKeyService {
 @Configuration
 @EnableWebSecurity
 public class BasicAuthSecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -1549,10 +1528,10 @@ public class BasicAuthSecurityConfig {
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());  // Enable basic auth
-        
+
         return http.build();
     }
-    
+
     @Bean
     public UserDetailsService userDetailsService() {
         // In-memory users (for testing only!)
@@ -1561,16 +1540,16 @@ public class BasicAuthSecurityConfig {
             .password(passwordEncoder().encode("password"))
             .roles("USER")
             .build();
-        
+
         UserDetails admin = User.builder()
             .username("admin@test.com")
             .password(passwordEncoder().encode("admin123"))
             .roles("USER", "ADMIN")
             .build();
-        
+
         return new InMemoryUserDetailsManager(user, admin);
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -1627,11 +1606,9 @@ public class BasicAuthSecurityConfig {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Continue to Part 12: DSA in Spring Boot Applications_
-
 
 ---
 

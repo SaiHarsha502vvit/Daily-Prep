@@ -8,14 +8,14 @@
 
 # PART 0: The 5W+H Framework
 
-| Question | ML Algorithms Context |
-| :--- | :--- |
-| **WHAT** | The concrete mathematical models (Linear Regression, Decision Trees, SVM, etc.) that learn patterns from data. Each algorithm makes different assumptions about the data. |
-| **WHY** | No single algorithm is best for everything (No Free Lunch Theorem). Understanding multiple algorithms lets you pick the right tool for each problem. |
-| **WHEN** | After data preprocessing and feature engineering. The choice depends on: data size, feature types, interpretability needs, and compute constraints. |
-| **WHERE** | scikit-learn (classical ML), XGBoost/LightGBM (gradient boosting), PyTorch/TensorFlow (deep learning). |
-| **WHO** | Regression (Gauss 1795), Decision Trees (Quinlan 1986), SVM (Vapnik 1995), Random Forest (Breiman 2001), XGBoost (Chen 2016). |
-| **HOW** | Each algorithm defines: (1) a hypothesis function, (2) a loss function, (3) an optimization algorithm to find the best parameters. |
+| Question  | ML Algorithms Context                                                                                                                                                     |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **WHAT**  | The concrete mathematical models (Linear Regression, Decision Trees, SVM, etc.) that learn patterns from data. Each algorithm makes different assumptions about the data. |
+| **WHY**   | No single algorithm is best for everything (No Free Lunch Theorem). Understanding multiple algorithms lets you pick the right tool for each problem.                      |
+| **WHEN**  | After data preprocessing and feature engineering. The choice depends on: data size, feature types, interpretability needs, and compute constraints.                       |
+| **WHERE** | scikit-learn (classical ML), XGBoost/LightGBM (gradient boosting), PyTorch/TensorFlow (deep learning).                                                                    |
+| **WHO**   | Regression (Gauss 1795), Decision Trees (Quinlan 1986), SVM (Vapnik 1995), Random Forest (Breiman 2001), XGBoost (Chen 2016).                                             |
+| **HOW**   | Each algorithm defines: (1) a hypothesis function, (2) a loss function, (3) an optimization algorithm to find the best parameters.                                        |
 
 ---
 
@@ -40,14 +40,14 @@ GOAL: Minimize Mean Squared Error:
 
 CLOSED-FORM SOLUTION (Normal Equation):
       w = (XᵀX)⁻¹Xᵀy
-      
+
       ✅ Exact solution, no iterations
       ❌ Requires matrix inversion: O(n³) — slow for large n
 
 GRADIENT DESCENT SOLUTION:
       ∂L/∂w = -(2/n) · Xᵀ(y - Xw)
       w = w - α · ∂L/∂w
-      
+
       ✅ Scales to millions of samples
       ❌ Requires tuning learning rate and epochs
 
@@ -98,9 +98,9 @@ ANALOGY: Think of a smoke detector in your kitchen.
   The sigmoid function is the trigger mechanism that converts
   the continuous smoke level into a probability: "70% chance this is a fire."
   If probability > 0.5 → sound the alarm. Otherwise, keep quiet.
-      
+
       P(y=1|x) = σ(w · x + b) = 1 / (1 + e^-(w·x+b))
-      
+
       If P > 0.5 → predict class 1
       If P ≤ 0.5 → predict class 0
 
@@ -161,38 +161,38 @@ SPLITTING CRITERIA (the heart of decision trees):
 
   GINI IMPURITY — "How mixed are the classes in this node?"
     G = 1 - Σpᵢ²        (0 = perfectly pure, 0.5 = worst for binary)
-    
+
     STEP-BY-STEP CALCULATION:
     Suppose node has 30 data points: 20 cats, 10 dogs.
     P(cat) = 20/30 = 0.667
     P(dog) = 10/30 = 0.333
     Gini = 1 - (0.667² + 0.333²) = 1 - (0.445 + 0.111) = 0.444
-    
+
     Now consider splitting on feature "weight > 5kg":
     Left child (weight ≤ 5):  18 cats, 2 dogs  → G = 1 - (0.9² + 0.1²) = 0.18
     Right child (weight > 5): 2 cats, 8 dogs   → G = 1 - (0.2² + 0.8²) = 0.32
-    
+
     Weighted Gini = (20/30)·0.18 + (10/30)·0.32 = 0.12 + 0.107 = 0.227
     Reduction = 0.444 - 0.227 = 0.217 ← this feature is USEFUL!
-    
+
     Try ALL features, ALL thresholds → pick the one with HIGHEST reduction.
-  
+
   ENTROPY — "How much information is needed to classify a point?"
     H = -Σpᵢ·log₂(pᵢ)   (0 = pure, 1 = maximum uncertainty for binary)
     Info Gain = H(parent) - weighted_avg(H(children))
-  
+
   GINI vs ENTROPY:
     In practice, they give very similar trees.
     Gini is slightly faster (no log computation).
     scikit-learn default = Gini.
-  
+
   REGRESSION:
     Use Variance Reduction: minimize MSE of each split.
     Prediction at leaf = MEAN of all y values in that leaf.
 
 EXAMPLE:
   "Should I play tennis today?"
-  
+
                 [Outlook?]
               /     |      \
          Sunny   Overcast   Rain
@@ -321,29 +321,29 @@ print(f"Gradient Boosting Accuracy: {gb.score(X_test, y_test):.4f}")
 ```
 WHAT: Find the HYPERPLANE that maximizes the MARGIN between classes.
 
-ANALOGY: Imagine you're a security guard drawing a laser beam 
-  line between two groups of people. You want the line as FAR from 
-  both groups as possible — so even if someone moves a bit, they stay 
+ANALOGY: Imagine you're a security guard drawing a laser beam
+  line between two groups of people. You want the line as FAR from
+  both groups as possible — so even if someone moves a bit, they stay
   on the correct side. SVM finds this maximum-margin boundary.
 
 THE MATH — Maximum Margin Classification:
 
   Decision boundary: w · x + b = 0    (a hyperplane)
-  
+
   Distance from point xᵢ to the boundary:
     distance = |w · xᵢ + b| / ‖w‖
-  
+
   Margin = distance from boundary to NEAREST point on each side.
   Margin = 2 / ‖w‖
-  
+
   OPTIMIZATION PROBLEM:
     maximize  2 / ‖w‖   (margin)
     subject to yᵢ(w · xᵢ + b) ≥ 1  for all i
-    
+
   Equivalent to:
     minimize  ½‖w‖²
     subject to yᵢ(w · xᵢ + b) ≥ 1
-  
+
   This is a CONVEX quadratic programming problem → guaranteed global optimum!
 
 SUPPORT VECTORS:
@@ -354,40 +354,40 @@ SUPPORT VECTORS:
 
 SOFT MARGIN (real data isn't perfectly separable):
   Allow some points to be on the WRONG side, but penalize them:
-  
+
   minimize  ½‖w‖² + C · Σ ξᵢ
   subject to yᵢ(w · xᵢ + b) ≥ 1 - ξᵢ,   ξᵢ ≥ 0
-  
+
   ξᵢ (slack variable) = how much point i violates the margin
   C = regularization: controls tolerance for violations
-  
+
   Small C: wide margin, more violations allowed (underfit)
   Large C: narrow margin, few violations allowed (overfit)
 
 THE KERNEL TRICK — The Ingenious Shortcut:
   What if data ISN'T linearly separable in the original space?
-  
+
   IDEA: Map data to a HIGHER dimension where it becomes separable.
-  
+
   2D example: points in a circle (class A) surrounded by points (class B)
   No line can separate them in 2D!
-  
+
   Map to 3D: z = x² + y²
   → Class A (inside circle) has SMALL z values
   → Class B (outside circle) has LARGE z values
   → Now a HORIZONTAL PLANE separates them!
-  
+
   PROBLEM: explicitly mapping to high dimensions is expensive.
   SOLUTION: Kernel functions compute dot products IN the high-dimensional
            space WITHOUT actually transforming the data!
-  
+
   K(xᵢ, xⱼ) = φ(xᵢ) · φ(xⱼ)   (compute similarity in mapped space)
-  
+
   Common kernels:
   • Linear:      K(x,y) = x · y
   • Polynomial:  K(x,y) = (x · y + c)ᵈ        → d-degree polynomial features
   • RBF:         K(x,y) = exp(-γ · ‖x-y‖²)    → infinite-dimensional mapping!
-  
+
   RBF = "How similar are x and y?"
   Close points → K ≈ 1 (similar), far points → K ≈ 0 (different)
   γ controls the "reach" of each point's influence.
@@ -428,7 +428,7 @@ ANALOGY: You're a delivery driver in a new city without GPS.
 NO TRAINING: KNN stores all data and classifies at prediction time.
   → Training: O(1) (just store data)
   → Prediction: O(n·d) (compute distance to every training point)
-  
+
   KNN is a "LAZY LEARNER" — it memorizes, doesn't generalize.
   Contrast with "EAGER LEARNERS" (regression, trees) that build a model.
 
@@ -445,19 +445,19 @@ CHOOSING K:
   Use cross-validation to find optimal K.
 
 CURSE OF DIMENSIONALITY — Why KNN Fails in High Dimensions:
-  
+
   MATH: Volume of a unit hypersphere in d dimensions:
   V(d) = π^(d/2) / Γ(d/2 + 1)
-  
+
   As d → ∞, V(d) → 0, even though the unit hypercube has volume 1!
   Most of the volume is in the CORNERS, not near any data point.
-  
+
   PRACTICAL IMPACT:
   In 100 dimensions, to capture just 10% of training data,
   your "neighborhood" must span ~80% of each dimension.
   → The "neighborhood" is basically the ENTIRE dataset.
   → ALL points are equidistant → KNN is no better than random!
-  
+
   SOLUTION: Dimensionality reduction (PCA) before KNN, or use
   algorithms that handle high dimensions better (SVM, trees).
 
@@ -550,21 +550,21 @@ ALGORITHM:
 
 MATH — What K-Means Actually Optimizes:
   Minimize SSE (Sum of Squared Errors):
-  
+
   J = Σₖ Σ(xᵢ ∈ Cₖ) ‖xᵢ - μₖ‖²
-  
+
   Where μₖ = centroid of cluster k, Cₖ = points in cluster k
-  
+
   This is a NON-CONVEX problem → K-Means finds LOCAL minimum only.
   Different initializations → different results!
-  
+
   K-MEANS++ (smart initialization):
     1. Choose first centroid randomly from data
     2. For each remaining centroid:
        Choose next centroid with probability proportional to D(x)²
        where D(x) = distance to nearest existing centroid
     3. Repeat until K centroids chosen
-    
+
     WHY: centroids start spread out → much better convergence.
     scikit-learn uses K-Means++ by default!
 
@@ -585,13 +585,13 @@ MATH — What K-Means Actually Optimizes:
 
   Doesn't need K! Finds clusters of ANY SHAPE based on density.
   Parameters: ε (radius) and min_points (minimum neighbors)
-  
+
   Core point:   has ≥ min_points within ε radius → forms cluster center
   Border point: within ε of a core point but below min_points threshold
   Noise point:  neither core nor border → OUTLIER (labeled as -1)
-  
+
   Connected core points + their borders = one cluster.
-  
+
   WHEN TO USE:
   ✅ Non-spherical clusters (K-Means fails on crescents, rings)
   ✅ When you don't know K in advance
@@ -609,32 +609,32 @@ MATH — What K-Means Actually Optimizes:
   You can "cut" the tree at any height to get a meaningful grouping.
 
   Build a tree (DENDROGRAM) of clusters bottom-up:
-  
+
   ALGORITHM:
   1. Start: each point is its own cluster (N clusters)
   2. Find the two CLOSEST clusters
   3. MERGE them into one cluster (N-1 clusters)
   4. Repeat 2-3 until only one cluster remains
   5. Cut the dendrogram at desired height → get K clusters
-  
+
   "How do you measure distance between CLUSTERS?"
   → LINKAGE METHOD:
-  
+
   Single linkage:   min distance between any point in A and any point in B
     ✅ Finds elongated/chain-shaped clusters
     ❌ "Chaining effect" — can merge distant clusters through a bridge
-  
+
   Complete linkage: max distance between any point in A and any point in B
     ✅ Compact, spherical clusters
     ❌ Sensitive to outliers (one outlier → huge max distance)
-  
+
   Average linkage:  mean distance between all pairs of points (A × B)
     ✅ Balanced compromise between single and complete
-  
+
   Ward's method:    merge clusters that minimize INCREASE in total SSE
     ✅ Most commonly used, produces compact clusters
     ✅ Equivalent to "minimize variance within clusters"
-  
+
   DENDROGRAM INTERPRETATION:
     Height of merge = distance at which clusters joined
     Tall vertical lines = very different clusters being merged (natural cut point)
@@ -649,28 +649,28 @@ MATH — What K-Means Actually Optimizes:
 
   K-Means = HARD assignment: each point belongs to exactly ONE cluster.
   GMM = SOFT assignment: each point has a PROBABILITY of belonging to each cluster.
-  
+
   ASSUMPTION: Data is generated from K Gaussian (normal) distributions.
   Each Gaussian has: mean μₖ, covariance Σₖ, and weight πₖ
-  
+
   P(x) = Σₖ πₖ · N(x | μₖ, Σₖ)
-  
+
   THE EM (EXPECTATION-MAXIMIZATION) ALGORITHM:
-  
+
   E-STEP (Expectation): compute RESPONSIBILITIES
     r(k|xᵢ) = πₖ · N(xᵢ|μₖ,Σₖ) / Σⱼ πⱼ · N(xᵢ|μⱼ,Σⱼ)
-    
+
     "What's the probability that point xᵢ came from cluster k?"
     This is Bayes' theorem!
-  
+
   M-STEP (Maximization): update PARAMETERS using responsibilities
     Nₖ = Σᵢ r(k|xᵢ)                          (effective cluster size)
     μₖ = (1/Nₖ) Σᵢ r(k|xᵢ) · xᵢ              (weighted mean)
     Σₖ = (1/Nₖ) Σᵢ r(k|xᵢ) · (xᵢ-μₖ)(xᵢ-μₖ)ᵀ (weighted covariance)
     πₖ = Nₖ / N                                (cluster weight)
-  
+
   Repeat E→M→E→M... until log-likelihood converges.
-  
+
   WHY GMM OVER K-MEANS:
   ✅ Soft assignments → uncertainty quantification
   ✅ Elliptical clusters (not just spherical)
@@ -721,21 +721,21 @@ for name, labels in [("K-Means", labels_km), ("Hierarchical", labels_hc), ("GMM"
 WHY PREPROCESSING MATTERS:
   Raw data is messy: different scales, missing values, correlated features.
   Most ML algorithms assume CLEAN, SCALED, NUMERIC input.
-  
+
   "Garbage in, garbage out" — preprocessing is 80% of ML work.
 
 SCALING METHODS (when features have different ranges):
-  
+
   StandardScaler: z = (x - μ) / σ
     Transforms to mean=0, std=1
     Use when: data is approximately Gaussian
     Required by: SVM, Logistic Regression, KNN, Neural Networks
-  
+
   MinMaxScaler: x' = (x - min) / (max - min)
     Transforms to [0, 1] range
     Use when: you need bounded values (e.g., neural network inputs)
     Sensitive to outliers!
-  
+
   RobustScaler: x' = (x - median) / IQR
     Uses median and interquartile range (resistant to outliers)
     Use when: data has significant outliers
@@ -847,19 +847,19 @@ CROSS-VALIDATION — WHY TRAIN/TEST SPLIT ISN'T ENOUGH:
 
   Simple split: Train on 80%, test on 20%
   Problem: your test score depends on WHICH 20% you chose!
-  
+
   K-FOLD CROSS-VALIDATION:
   1. Split data into K equal folds (typically K=5 or K=10)
   2. For each fold i:
      • Train on all folds EXCEPT fold i
      • Test on fold i → get score_i
   3. Final score = mean(score_1, ..., score_K)
-  
+
   BENEFITS:
   ✅ Every data point is tested exactly once
   ✅ More reliable estimate of model performance
   ✅ Gives confidence interval (mean ± std)
-  
+
   STRATIFIED K-FOLD:
   Ensures each fold has the SAME class distribution as the full dataset.
   Critical for imbalanced datasets!
@@ -869,7 +869,7 @@ HYPERPARAMETER TUNING — GridSearchCV:
   • Random Forest: n_estimators, max_depth, min_samples_split
   • SVM: C, gamma, kernel
   • XGBoost: learning_rate, max_depth, n_estimators
-  
+
   GridSearchCV: try ALL combinations, pick the best via cross-validation.
   RandomizedSearchCV: sample random combinations (faster for large grids).
 ```
@@ -926,7 +926,7 @@ ANALOGY: If Gradient Boosting is a team of teachers correcting essays,
 
 1. REGULARIZED OBJECTIVE:
    L(θ) = Σ l(yᵢ, ŷᵢ) + Σ Ω(fₖ)
-   
+
    l = loss function (MSE for regression, log-loss for classification)
    Ω = regularization term on tree complexity:
        Ω(f) = γ·T + ½λ·‖w‖²
@@ -937,7 +937,7 @@ ANALOGY: If Gradient Boosting is a team of teachers correcting essays,
 2. SECOND-ORDER TAYLOR EXPANSION:
    XGBoost uses both FIRST (gradient) and SECOND (hessian) derivatives.
    This gives better optimization than standard gradient boosting.
-   
+
    gᵢ = ∂l/∂ŷᵢ    (gradient — direction)
    hᵢ = ∂²l/∂ŷᵢ²  (hessian — curvature)
 
@@ -995,32 +995,31 @@ for feat, imp in sorted(zip(load_iris().feature_names, model.feature_importances
 
 # Quick Reference — Algorithm Selection
 
-| Algorithm | Type | Best For | Avoid When |
-|---|---|---|---|
-| **Linear Regression** | Regression | Linear relationships, interpretability | Non-linear data |
-| **Logistic Regression** | Classification | Binary/multi-class baseline, probabilities | Complex boundaries |
-| **Decision Tree** | Both | Interpretability, mixed features | Overfitting risk |
-| **Random Forest** | Both | General-purpose, feature importance | Real-time prediction |
-| **XGBoost/LightGBM** | Both | Tabular data, Kaggle competitions | Small datasets |
-| **SVM** | Classification | High-dimensional, clear margins, kernel trick | Large datasets (slow), >100K samples |
-| **KNN** | Both | Simple baseline, few features | High dimensions, large data |
-| **Naive Bayes** | Classification | Text classification, fast baseline | Feature dependencies |
-| **K-Means** | Clustering | Known K, spherical clusters | Unknown K, non-spherical |
-| **DBSCAN** | Clustering | Unknown K, arbitrary shapes, outliers | Varying density |
-| **Hierarchical** | Clustering | Dendrogram visualization, small-medium data | Large data (O(n³)) |
-| **GMM** | Clustering | Soft assignments, elliptical clusters | Large dimensions |
+| Algorithm               | Type           | Best For                                      | Avoid When                           |
+| ----------------------- | -------------- | --------------------------------------------- | ------------------------------------ |
+| **Linear Regression**   | Regression     | Linear relationships, interpretability        | Non-linear data                      |
+| **Logistic Regression** | Classification | Binary/multi-class baseline, probabilities    | Complex boundaries                   |
+| **Decision Tree**       | Both           | Interpretability, mixed features              | Overfitting risk                     |
+| **Random Forest**       | Both           | General-purpose, feature importance           | Real-time prediction                 |
+| **XGBoost/LightGBM**    | Both           | Tabular data, Kaggle competitions             | Small datasets                       |
+| **SVM**                 | Classification | High-dimensional, clear margins, kernel trick | Large datasets (slow), >100K samples |
+| **KNN**                 | Both           | Simple baseline, few features                 | High dimensions, large data          |
+| **Naive Bayes**         | Classification | Text classification, fast baseline            | Feature dependencies                 |
+| **K-Means**             | Clustering     | Known K, spherical clusters                   | Unknown K, non-spherical             |
+| **DBSCAN**              | Clustering     | Unknown K, arbitrary shapes, outliers         | Varying density                      |
+| **Hierarchical**        | Clustering     | Dendrogram visualization, small-medium data   | Large data (O(n³))                   |
+| **GMM**                 | Clustering     | Soft assignments, elliptical clusters         | Large dimensions                     |
 
 ---
 
 ## 🔗 Cross-References
 
-| Topic | Related Content |
-|---|---|
-| Math foundations (Linear Algebra, Calculus) | [Math for ML](04_Math_For_ML.md) |
-| ML pipeline, bias-variance tradeoff | [ML Fundamentals](05_ML_Fundamentals.md) |
-| Deep Learning (CNNs, RNNs, Transformers) | [Deep Learning](07_Deep_Learning_Fundamentals.md) |
-| Decision Trees → Tree data structure | [Trees & Heaps DS](../02_Data_Structures/01f_Trees_Heaps.md) |
-| KNN → Distance metrics, Sorting | [Sorting Algorithms](../03_Algorithms/02a_Sorting_Fundamentals.md) |
-| NumPy/Pandas (data manipulation) | [NumPy & Pandas](03_NumPy_Pandas_Essentials.md) |
-| PyTorch/TensorFlow implementation | [Frameworks](09_Frameworks_PyTorch_TF.md) |
-
+| Topic                                       | Related Content                                                    |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| Math foundations (Linear Algebra, Calculus) | [Math for ML](04_Math_For_ML.md)                                   |
+| ML pipeline, bias-variance tradeoff         | [ML Fundamentals](05_ML_Fundamentals.md)                           |
+| Deep Learning (CNNs, RNNs, Transformers)    | [Deep Learning](07_Deep_Learning_Fundamentals.md)                  |
+| Decision Trees → Tree data structure        | [Trees & Heaps DS](../02_Data_Structures/01f_Trees_Heaps.md)       |
+| KNN → Distance metrics, Sorting             | [Sorting Algorithms](../03_Algorithms/02a_Sorting_Fundamentals.md) |
+| NumPy/Pandas (data manipulation)            | [NumPy & Pandas](03_NumPy_Pandas_Essentials.md)                    |
+| PyTorch/TensorFlow implementation           | [Frameworks](09_Frameworks_PyTorch_TF.md)                          |

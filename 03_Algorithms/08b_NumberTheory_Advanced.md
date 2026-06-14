@@ -2,6 +2,12 @@
 
 ---
 
+### Historical Evolution
+
+Advanced number theory algorithms bridge ancient mathematical discoveries and modern cryptographic infrastructure. **The Chinese Remainder Theorem (CRT)** was first described by **Sun Tzu in "The Sun Tzu Suan Ching" around 300 AD** in China, with a complete algorithm appearing in **Brahmagupta's Brahmasphutasiddhanta (628 AD)** in India — it solves the problem of finding a number that gives specific remainders when divided by several coprime moduli, enabling large-integer arithmetic via small-component computation. **Fermat's Little Theorem (1640)** established that $a^{p-1} \equiv 1 \pmod{p}$ for prime $p$, and **Euler (1760s)** extended this with the totient function $\phi(n)$ — both theorems are the theoretical backbone of RSA encryption. **Miller and Rabin (1976/1977)** developed the probabilistic primality test that makes large prime generation practical for cryptography; **AKS primality test (2002)** by Agrawal, Kayal, and Saxena at IIT Kanpur finally gave a deterministic polynomial-time primality proof, demonstrating that "prime or composite" can be answered without randomness. Modern practice (post-2010): RSA (1977, Rivest-Shamir-Adleman) remains the foundation of HTTPS/TLS, the Chinese Remainder Theorem is used in RSA decryption for speedup (using the Chinese Remainder representation), and modular arithmetic underpins virtually all cryptocurrency signature schemes (ECDSA in Bitcoin, Ed25519).
+
+---
+
 # 📌 Part 5: More Essential Algorithms
 
 # ═══════════════════════════════════════════════════════════
@@ -12,26 +18,26 @@
 /**
  * WHY: One of the most asked interview questions
  * WHERE: Stock profit analysis, signal processing, network traffic
- * 
+ *
  * REAL INCIDENT:
  *   Amazon retail team needed to find peak sales window
  *   Daily profit/loss: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
  *   Best contiguous period: [4, -1, 2, 1] = 6 profit
- * 
+ *
  * HOW: Track current sum, reset when it goes negative
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static int kadane(int[] arr) {
     int maxSum = arr[0];
     int currentSum = arr[0];
-    
+
     for (int i = 1; i < arr.length; i++) {
         // Either extend current subarray or start fresh
         currentSum = Math.max(arr[i], currentSum + arr[i]);
         maxSum = Math.max(maxSum, currentSum);
     }
-    
+
     return maxSum;
 }
 
@@ -39,7 +45,7 @@ public static int kadane(int[] arr) {
 public static int[] kadaneWithIndices(int[] arr) {
     int maxSum = arr[0], currentSum = arr[0];
     int start = 0, end = 0, tempStart = 0;
-    
+
     for (int i = 1; i < arr.length; i++) {
         if (arr[i] > currentSum + arr[i]) {
             currentSum = arr[i];
@@ -47,14 +53,14 @@ public static int[] kadaneWithIndices(int[] arr) {
         } else {
             currentSum += arr[i];
         }
-        
+
         if (currentSum > maxSum) {
             maxSum = currentSum;
             start = tempStart;
             end = i;
         }
     }
-    
+
     return new int[]{maxSum, start, end};
 }
 
@@ -69,11 +75,12 @@ public static int[] kadaneWithIndices(int[] arr) {
 🔬 **Section Challenge — Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 ## Algorithm: Dutch National Flag (3-Way Partition) ⭐⭐
 
@@ -81,24 +88,24 @@ public static int[] kadaneWithIndices(int[] arr) {
 /**
  * WHY: Sort array with only 3 distinct values in ONE pass
  * WHERE: Sorting 0s, 1s, 2s  |  Red, White, Blue balls
- * 
+ *
  * REAL INCIDENT:
  *   Priority queue at hospital ER:
  *   Priority 0 (Critical) → front
- *   Priority 1 (Urgent) → middle  
+ *   Priority 1 (Urgent) → middle
  *   Priority 2 (Normal) → end
  *   Need to sort patients in O(n) single pass
- * 
+ *
  * HOW: Three pointers - low, mid, high
  *   - 0s go to low region
  *   - 1s stay in middle
  *   - 2s go to high region
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static void dutchNationalFlag(int[] arr) {
     int low = 0, mid = 0, high = arr.length - 1;
-    
+
     while (mid <= high) {
         switch (arr[mid]) {
             case 0:
@@ -138,25 +145,25 @@ private static void swap(int[] arr, int i, int j) {
 /**
  * WHY: Find element that appears more than n/2 times
  * WHERE: Election vote counting, consensus in distributed systems
- * 
+ *
  * REAL INCIDENT:
  *   Online poll with millions of votes
  *   Need to find winner (if exists) without storing all counts
  *   Memory constraint: Only O(1) extra space!
- * 
+ *
  * HOW: Maintain candidate and count
  *   - Same as candidate → count++
  *   - Different → count--
  *   - Count reaches 0 → new candidate
- * 
+ *
  * INTUITION: Majority element will "survive" all the cancellations
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static int majorityElement(int[] nums) {
     int candidate = nums[0];
     int count = 1;
-    
+
     // Phase 1: Find candidate
     for (int i = 1; i < nums.length; i++) {
         if (count == 0) {
@@ -168,13 +175,13 @@ public static int majorityElement(int[] nums) {
             count--;
         }
     }
-    
+
     // Phase 2: Verify (optional, needed if majority not guaranteed)
     count = 0;
     for (int num : nums) {
         if (num == candidate) count++;
     }
-    
+
     return count > nums.length / 2 ? candidate : -1;
 }
 
@@ -192,54 +199,54 @@ public static int majorityElement(int[] nums) {
 /**
  * WHY: Detect cycles in linked lists or arrays
  * WHERE: Deadlock detection, finding duplicates, infinite loop detection
- * 
+ *
  * REAL INCIDENT:
  *   Database had circular foreign key references
  *   A → B → C → A (cycle!)
  *   Floyd's algorithm detected it without extra memory
- * 
+ *
  * HOW: Two pointers - slow (1 step) and fast (2 steps)
  *   If cycle exists, they WILL meet
  *   Finding start of cycle: Reset slow to head, both move 1 step
- * 
+ *
  * Time: O(n), Space: O(1)
  */
 public static boolean hasCycle(ListNode head) {
     if (head == null) return false;
-    
+
     ListNode slow = head;
     ListNode fast = head;
-    
+
     while (fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
-        
+
         if (slow == fast) return true; // Cycle detected!
     }
-    
+
     return false; // No cycle
 }
 
 // Find WHERE the cycle starts
 public static ListNode findCycleStart(ListNode head) {
     ListNode slow = head, fast = head;
-    
+
     // Phase 1: Detect cycle
     while (fast != null && fast.next != null) {
         slow = slow.next;
         fast = fast.next.next;
         if (slow == fast) break;
     }
-    
+
     if (fast == null || fast.next == null) return null; // No cycle
-    
+
     // Phase 2: Find start
     slow = head;
     while (slow != fast) {
         slow = slow.next;
         fast = fast.next;
     }
-    
+
     return slow; // Start of cycle
 }
 
@@ -248,20 +255,20 @@ public static ListNode findCycleStart(ListNode head) {
 public static int findDuplicate(int[] nums) {
     int slow = nums[0];
     int fast = nums[0];
-    
+
     // Phase 1: Find meeting point
     do {
         slow = nums[slow];
         fast = nums[nums[fast]];
     } while (slow != fast);
-    
+
     // Phase 2: Find duplicate
     slow = nums[0];
     while (slow != fast) {
         slow = nums[slow];
         fast = nums[fast];
     }
-    
+
     return slow;
 }
 ```
@@ -274,15 +281,15 @@ public static int findDuplicate(int[] nums) {
 /**
  * WHY: Find next greater/smaller element efficiently
  * WHERE: Stock price analysis, histogram problems, building skylines
- * 
+ *
  * REAL INCIDENT:
  *   Weather app needed "next warmer day" feature
- *   Given daily temperatures, for each day find how many days 
+ *   Given daily temperatures, for each day find how many days
  *   until a warmer temperature
- * 
+ *
  * HOW: Stack stores indices, maintain decreasing order
  *   When we find larger element, pop everything smaller
- * 
+ *
  * Time: O(n), Space: O(n)
  */
 
@@ -291,9 +298,9 @@ public static int[] nextGreaterElement(int[] arr) {
     int n = arr.length;
     int[] result = new int[n];
     Arrays.fill(result, -1); // Default: no greater element
-    
+
     Stack<Integer> stack = new Stack<>(); // Stores indices
-    
+
     for (int i = 0; i < n; i++) {
         // Pop elements smaller than current
         while (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
@@ -301,7 +308,7 @@ public static int[] nextGreaterElement(int[] arr) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 
@@ -309,9 +316,9 @@ public static int[] nextGreaterElement(int[] arr) {
 public static int[] dailyTemperatures(int[] temps) {
     int n = temps.length;
     int[] result = new int[n];
-    
+
     Stack<Integer> stack = new Stack<>();
-    
+
     for (int i = 0; i < n; i++) {
         while (!stack.isEmpty() && temps[stack.peek()] < temps[i]) {
             int prevDay = stack.pop();
@@ -319,7 +326,7 @@ public static int[] dailyTemperatures(int[] temps) {
         }
         stack.push(i);
     }
-    
+
     return result;
 }
 
@@ -327,19 +334,19 @@ public static int[] dailyTemperatures(int[] temps) {
 public static int largestRectangleInHistogram(int[] heights) {
     Stack<Integer> stack = new Stack<>();
     int maxArea = 0;
-    
+
     for (int i = 0; i <= heights.length; i++) {
         int currentHeight = (i == heights.length) ? 0 : heights[i];
-        
+
         while (!stack.isEmpty() && currentHeight < heights[stack.peek()]) {
             int height = heights[stack.pop()];
             int width = stack.isEmpty() ? i : (i - stack.peek() - 1);
             maxArea = Math.max(maxArea, height * width);
         }
-        
+
         stack.push(i);
     }
-    
+
     return maxArea;
 }
 
@@ -354,11 +361,12 @@ public static int largestRectangleInHistogram(int[] heights) {
 🔬 **Section Challenge — Algorithm: Monotonic Stack ⭐⭐**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Algorithm: Prefix Sum & Difference Array ⭐⭐
 
@@ -366,12 +374,12 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 /**
  * WHY: Answer range sum queries in O(1) after O(n) preprocessing
  * WHERE: Financial reports, analytics dashboards, image processing
- * 
+ *
  * REAL INCIDENT:
  *   Flipkart analytics: "Total revenue between day 50 and day 100?"
  *   Without prefix sum: scan 50 entries every query
  *   With prefix sum: ONE subtraction!
- * 
+ *
  * Time: Build O(n), Query O(1)
  */
 
@@ -393,16 +401,16 @@ public static long rangeSum(long[] prefix, int left, int right) {
 public static long[][] build2DPrefixSum(int[][] matrix) {
     int m = matrix.length, n = matrix[0].length;
     long[][] prefix = new long[m + 1][n + 1];
-    
+
     for (int i = 1; i <= m; i++) {
         for (int j = 1; j <= n; j++) {
-            prefix[i][j] = matrix[i-1][j-1] 
-                         + prefix[i-1][j] 
-                         + prefix[i][j-1] 
+            prefix[i][j] = matrix[i-1][j-1]
+                         + prefix[i-1][j]
+                         + prefix[i][j-1]
                          - prefix[i-1][j-1];
         }
     }
-    
+
     return prefix;
 }
 
@@ -431,11 +439,12 @@ public static int[] reconstructFromDiff(int[] diff) {
 🔬 **Section Challenge — Algorithm: Prefix Sum & Difference Array ⭐⭐**
 
 **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-</details>
 
+</details>
 
 # ═══════════════════════════════════════════════════════════
 
@@ -451,7 +460,7 @@ public static int[] reconstructFromDiff(int[] diff) {
 /**
  * WHY: Compilers use this to check code syntax
  * WHERE: IDE error highlighting, JSON/XML validation
- * 
+ *
  * REAL INCIDENT:
  *   A production config file had mismatched braces
  *   System crashed at midnight. Stack-based validator
@@ -459,20 +468,20 @@ public static int[] reconstructFromDiff(int[] diff) {
  */
 public static boolean isValidParentheses(String s) {
     Stack<Character> stack = new Stack<>();
-    
+
     for (char c : s.toCharArray()) {
         if (c == '(' || c == '{' || c == '[') {
             stack.push(c);
         } else {
             if (stack.isEmpty()) return false;
-            
+
             char top = stack.pop();
             if (c == ')' && top != '(') return false;
             if (c == '}' && top != '{') return false;
             if (c == ']' && top != '[') return false;
         }
     }
-    
+
     return stack.isEmpty();
 }
 
@@ -488,25 +497,25 @@ public static boolean isValidParentheses(String s) {
 /**
  * WHY: Need to track minimum while supporting push/pop
  * WHERE: Real-time min price tracker, job scheduler priority
- * 
+ *
  * TRICK: Store pairs (value, currentMin) or use two stacks
  */
 class MinStack {
     private Stack<int[]> stack = new Stack<>(); // [value, currentMin]
-    
+
     public void push(int val) {
         int min = stack.isEmpty() ? val : Math.min(val, stack.peek()[1]);
         stack.push(new int[]{val, min});
     }
-    
+
     public void pop() {
         stack.pop();
     }
-    
+
     public int top() {
         return stack.peek()[0];
     }
-    
+
     public int getMin() {
         return stack.peek()[1]; // O(1)!
     }
@@ -518,11 +527,12 @@ class MinStack {
 🔬 **Section Challenge — Stack Problems**
 
 **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+
 <details><summary>Answer</summary>
 
 In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-</details>
 
+</details>
 
 ## Queue & Deque Problems
 
@@ -532,12 +542,12 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 /**
  * WHY: Find maximum in every window of size k
  * WHERE: Stock market (max price in last k days), network monitoring
- * 
+ *
  * REAL INCIDENT:
- *   Network monitoring: Alert if max latency in any 5-minute 
+ *   Network monitoring: Alert if max latency in any 5-minute
  *   window exceeds 500ms. Need to compute this sliding max
  *   efficiently for millions of data points.
- * 
+ *
  * DSA: Monotonic Deque
  * Time: O(n), Space: O(k)
  */
@@ -545,26 +555,26 @@ public static int[] maxSlidingWindow(int[] nums, int k) {
     int n = nums.length;
     int[] result = new int[n - k + 1];
     Deque<Integer> deque = new ArrayDeque<>(); // Stores indices
-    
+
     for (int i = 0; i < n; i++) {
         // Remove elements outside current window
         while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
             deque.pollFirst();
         }
-        
+
         // Remove elements smaller than current (they'll never be max)
         while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
             deque.pollLast();
         }
-        
+
         deque.offerLast(i);
-        
+
         // Window is full, record result
         if (i >= k - 1) {
             result[i - k + 1] = nums[deque.peekFirst()];
         }
     }
-    
+
     return result;
 }
 
@@ -585,17 +595,17 @@ public static int[] maxSlidingWindow(int[] nums, int k) {
  */
 public static int[] twoSum(int[] nums, int target) {
     Map<Integer, Integer> map = new HashMap<>();
-    
+
     for (int i = 0; i < nums.length; i++) {
         int complement = target - nums[i];
-        
+
         if (map.containsKey(complement)) {
             return new int[]{map.get(complement), i};
         }
-        
+
         map.put(nums[i], i);
     }
-    
+
     return new int[]{-1, -1};
 }
 ```
@@ -606,7 +616,7 @@ public static int[] twoSum(int[] nums, int target) {
 /**
  * WHY: Count subarrays with given sum using prefix sum + hashmap
  * WHERE: Analytics - find all date ranges where revenue = target
- * 
+ *
  * TRICK: If prefix[j] - prefix[i] = k, subarray (i, j] has sum k
  * So we need: prefix[j] - k = prefix[i]
  * Count how many prefix[i] values we've seen
@@ -614,19 +624,19 @@ public static int[] twoSum(int[] nums, int target) {
 public static int subarraySum(int[] nums, int k) {
     Map<Integer, Integer> prefixCount = new HashMap<>();
     prefixCount.put(0, 1); // Empty subarray
-    
+
     int count = 0;
     int currentSum = 0;
-    
+
     for (int num : nums) {
         currentSum += num;
-        
+
         // How many prefix sums equal (currentSum - k)?
         count += prefixCount.getOrDefault(currentSum - k, 0);
-        
+
         prefixCount.merge(currentSum, 1, Integer::sum);
     }
-    
+
     return count;
 }
 
@@ -641,34 +651,34 @@ public static int subarraySum(int[] nums, int k) {
 /**
  * WHY: Find longest streak of consecutive numbers in O(n)
  * WHERE: Identify continuous time ranges in logs, find gaps in data
- * 
+ *
  * REAL INCIDENT:
  *   Server log had timestamps. Needed to find longest period
  *   of continuous minute-by-minute data (no gaps).
- * 
+ *
  * TRICK: Only start counting from sequence START (no num-1 in set)
  */
 public static int longestConsecutive(int[] nums) {
     Set<Integer> set = new HashSet<>();
     for (int num : nums) set.add(num);
-    
+
     int maxLength = 0;
-    
+
     for (int num : set) {
         // Only start counting if this is the START of a sequence
         if (!set.contains(num - 1)) {
             int current = num;
             int length = 1;
-            
+
             while (set.contains(current + 1)) {
                 current++;
                 length++;
             }
-            
+
             maxLength = Math.max(maxLength, length);
         }
     }
-    
+
     return maxLength;
 }
 
@@ -682,17 +692,20 @@ public static int longestConsecutive(int[] nums) {
 🔬 **Section Challenge — HashMap Problems**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-</details>
 
+</details>
 
 ## Tree Problems
 
@@ -701,21 +714,21 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ```java
 /**
  * WHY: Find common parent of two nodes
- * WHERE: 
+ * WHERE:
  *   - Organization chart: "Who supervises both person A and person B?"
  *   - File system: common parent directory
  *   - Git: merge base of two branches
- * 
+ *
  * REAL INCIDENT:
  *   HR system needed to find lowest-level manager who oversees
  *   both Employee X and Employee Y for conflict resolution
  */
 public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
     if (root == null || root == p || root == q) return root;
-    
+
     TreeNode left = lowestCommonAncestor(root.left, p, q);
     TreeNode right = lowestCommonAncestor(root.right, p, q);
-    
+
     if (left != null && right != null) return root; // Split point = LCA
     return left != null ? left : right;
 }
@@ -726,14 +739,14 @@ public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode 
 ```java
 /**
  * WHY: Convert tree to string and back
- * WHERE: 
+ * WHERE:
  *   - Send tree data over network (API responses)
  *   - Store tree in database
  *   - Cache tree structures in Redis
- * 
+ *
  * REAL INCIDENT:
  *   Menu hierarchy stored as tree in DB. Needed to cache
- *   in Redis (string storage). Serialize tree → store → 
+ *   in Redis (string storage). Serialize tree → store →
  *   deserialize on read.
  */
 public static String serialize(TreeNode root) {
@@ -749,7 +762,7 @@ public static TreeNode deserialize(String data) {
 private static TreeNode deserializeHelper(Queue<String> queue) {
     String val = queue.poll();
     if ("null".equals(val)) return null;
-    
+
     TreeNode node = new TreeNode(Integer.parseInt(val));
     node.left = deserializeHelper(queue);
     node.right = deserializeHelper(queue);
@@ -802,10 +815,9 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 | MapReduce                               | Divide and Conquer          | Parallel processing        |
 ```
 
-
 ---
 
-*This file is Part 1. See PART 8 (Study Plan) at the end of this guide*
+_This file is Part 1. See PART 8 (Study Plan) at the end of this guide_
 
 ---
 
@@ -829,7 +841,7 @@ Day 1 (Mon Feb 10): GCD algorithms (all 4 versions)
   → Write each from scratch 3 times
   → Solve: Rectangle cutting, Water jug
 
-Day 2 (Tue Feb 11): LCM + Prime checking  
+Day 2 (Tue Feb 11): LCM + Prime checking
   → isPrime (brute + optimized)
   → Solve: Fraction simplify, Array GCD
 
@@ -859,7 +871,7 @@ Day 8 (Mon Feb 17): Kadane's Algorithm
   → Basic + with indices
   → Solve 3 variants on LeetCode
 
-Day 9 (Tue Feb 18): Dutch National Flag + Boyer-Moore  
+Day 9 (Tue Feb 18): Dutch National Flag + Boyer-Moore
   → Sort colors, Majority element
   → Real-world: ER triage sorting
 
@@ -909,7 +921,7 @@ Day 20 (Sat Mar 1): Graph Problems
   → BFS, DFS, Topological Sort
   → Detect Cycle, Connected Components
 
-Day 21 (Sun Mar 2): REVISION 
+Day 21 (Sun Mar 2): REVISION
   → One problem from each DS category
   → Time yourself (30 min per problem)
 
@@ -918,7 +930,7 @@ WEEK 4 (Mar 3-9): REAL-WORLD PROBLEMS + MOCK
 Day 22 (Mon Mar 3): E-commerce problems (Part 1)
 Day 23 (Tue Mar 4): Banking + Finance problems
 Day 24 (Wed Mar 5): Food Delivery + Social Media
-Day 25 (Thu Mar 6): Streaming + Healthcare  
+Day 25 (Thu Mar 6): Streaming + Healthcare
 Day 26 (Fri Mar 7): Travel + Logistics
 Day 27 (Sat Mar 8): Payment + Gaming + Search
 Day 28 (Sun Mar 9): FULL MOCK INTERVIEW
@@ -949,55 +961,55 @@ Section 1 = fundamentals. Section 2 = medium applications. Section 3 = advanced/
 
 ## Section 1: GCD, LCM & Basic Math
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Greatest Common Divisor of Strings (LC 1071) | LeetCode | Easy | GCD on string lengths |
-| 2 | Count Primes (LC 204) | LeetCode | Medium | Sieve of Eratosthenes |
-| 3 | Power of Three (LC 326) | LeetCode | Easy | Modular arithmetic or log |
-| 4 | Happy Number (LC 202) | LeetCode | Easy | Cycle detection (Floyd's) |
-| 5 | Ugly Number II (LC 264) | LeetCode | Medium | 3-pointer merge (2,3,5 multiples) |
-| 6 | Nth Digit (LC 400) | LeetCode | Medium | Digit counting pattern |
-| 7 | Excel Sheet Column Number (LC 171) | LeetCode | Easy | Base-26 conversion |
-| 8 | Factorial Trailing Zeroes (LC 172) | LeetCode | Medium | Count factors of 5 |
+| #   | Problem                                      | Platform | Difficulty | Key Technique                     |
+| --- | -------------------------------------------- | -------- | ---------- | --------------------------------- |
+| 1   | Greatest Common Divisor of Strings (LC 1071) | LeetCode | Easy       | GCD on string lengths             |
+| 2   | Count Primes (LC 204)                        | LeetCode | Medium     | Sieve of Eratosthenes             |
+| 3   | Power of Three (LC 326)                      | LeetCode | Easy       | Modular arithmetic or log         |
+| 4   | Happy Number (LC 202)                        | LeetCode | Easy       | Cycle detection (Floyd's)         |
+| 5   | Ugly Number II (LC 264)                      | LeetCode | Medium     | 3-pointer merge (2,3,5 multiples) |
+| 6   | Nth Digit (LC 400)                           | LeetCode | Medium     | Digit counting pattern            |
+| 7   | Excel Sheet Column Number (LC 171)           | LeetCode | Easy       | Base-26 conversion                |
+| 8   | Factorial Trailing Zeroes (LC 172)           | LeetCode | Medium     | Count factors of 5                |
 
 ---
 
 ## Section 2: Modular Arithmetic & Combinatorics
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Pow(x, n) (LC 50) | LeetCode | Medium | Fast exponentiation (binary) |
-| 2 | Super Pow (LC 372) | LeetCode | Medium | Modular exponentiation |
-| 3 | Unique Paths (LC 62) | LeetCode | Medium | C(m+n-2, m-1) or DP |
-| 4 | Integer Break (LC 343) | LeetCode | Medium | Math: maximize product with 3s |
-| 5 | Perfect Squares (LC 279) | LeetCode | Medium | Lagrange's 4-square theorem or BFS |
-| 6 | Water and Jug Problem (LC 365) | LeetCode | Medium | GCD: solvable iff z % gcd(x,y) == 0 |
-| 7 | Smallest Good Base (LC 483) | LeetCode | Hard | Math + binary search |
+| #   | Problem                        | Platform | Difficulty | Key Technique                       |
+| --- | ------------------------------ | -------- | ---------- | ----------------------------------- |
+| 1   | Pow(x, n) (LC 50)              | LeetCode | Medium     | Fast exponentiation (binary)        |
+| 2   | Super Pow (LC 372)             | LeetCode | Medium     | Modular exponentiation              |
+| 3   | Unique Paths (LC 62)           | LeetCode | Medium     | C(m+n-2, m-1) or DP                 |
+| 4   | Integer Break (LC 343)         | LeetCode | Medium     | Math: maximize product with 3s      |
+| 5   | Perfect Squares (LC 279)       | LeetCode | Medium     | Lagrange's 4-square theorem or BFS  |
+| 6   | Water and Jug Problem (LC 365) | LeetCode | Medium     | GCD: solvable iff z % gcd(x,y) == 0 |
+| 7   | Smallest Good Base (LC 483)    | LeetCode | Hard       | Math + binary search                |
 
 ---
 
 ## Section 3: Advanced Math / Competitive
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Fraction to Recurring Decimal (LC 166) | LeetCode | Medium | Long division + cycle detection |
-| 2 | Largest Component Size by Common Factor (LC 952) | LeetCode | Hard | Union-Find by prime factors |
-| 3 | Count Primes (Sieve variants) | Codeforces | Medium | Segmented sieve, linear sieve |
-| 4 | Mirror Reflection (LC 858) | LeetCode | Medium | LCM to find which corner |
-| 5 | Broken Calculator (LC 991) | LeetCode | Medium | Work backwards (greedy + math) |
-| 6 | Reaching Points (LC 780) | LeetCode | Hard | Work backwards with modulo |
+| #   | Problem                                          | Platform   | Difficulty | Key Technique                   |
+| --- | ------------------------------------------------ | ---------- | ---------- | ------------------------------- |
+| 1   | Fraction to Recurring Decimal (LC 166)           | LeetCode   | Medium     | Long division + cycle detection |
+| 2   | Largest Component Size by Common Factor (LC 952) | LeetCode   | Hard       | Union-Find by prime factors     |
+| 3   | Count Primes (Sieve variants)                    | Codeforces | Medium     | Segmented sieve, linear sieve   |
+| 4   | Mirror Reflection (LC 858)                       | LeetCode   | Medium     | LCM to find which corner        |
+| 5   | Broken Calculator (LC 991)                       | LeetCode   | Medium     | Work backwards (greedy + math)  |
+| 6   | Reaching Points (LC 780)                         | LeetCode   | Hard       | Work backwards with modulo      |
 
 ---
 
 ## HIDDEN GEMS — Number Theory
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | X of a Kind in a Deck of Cards (LC 914) | LeetCode | GCD of all frequencies |
-| 2 | Bulb Switcher (LC 319) | LeetCode | Perfect squares insight — pure math |
-| 3 | Minimum Moves to Equal Array Elements (LC 453) | LeetCode | sum - n*min (math reduction) |
-| 4 | Valid Perfect Square (LC 367) | LeetCode | Binary search or 1+3+5+... series |
-| 5 | Distribute Candies to People (LC 1103) | LeetCode | Simulation with modular index |
+| #   | Problem                                        | Platform | Why It's Valuable                   |
+| --- | ---------------------------------------------- | -------- | ----------------------------------- |
+| 1   | X of a Kind in a Deck of Cards (LC 914)        | LeetCode | GCD of all frequencies              |
+| 2   | Bulb Switcher (LC 319)                         | LeetCode | Perfect squares insight — pure math |
+| 3   | Minimum Moves to Equal Array Elements (LC 453) | LeetCode | sum - n\*min (math reduction)       |
+| 4   | Valid Perfect Square (LC 367)                  | LeetCode | Binary search or 1+3+5+... series   |
+| 5   | Distribute Candies to People (LC 1103)         | LeetCode | Simulation with modular index       |
 
 ---
 

@@ -60,12 +60,14 @@ Given a string `s`, return the length of the longest substring that contains
 **at most two distinct characters**.
 
 **Constraints:**
+
 ```
 1 <= s.length <= 10⁵
 s consists of English letters
 ```
 
 **Examples:**
+
 ```
 Example 1:
   Input:  s = "eceba"
@@ -110,6 +112,7 @@ public int lengthOfLongestSubstringTwoDistinct_BF(String s) {
 ### Approach 2 — Optimal: Sliding Window + Frequency Map — O(n)
 
 **Why Sliding Window works here:**
+
 ```
 MONOTONE property:
   If window [l..r] has > 2 distinct chars → adding more chars only makes it worse
@@ -342,7 +345,7 @@ After right=12: formed=3 (A=1≥1, B=1≥1, C=1≥1 all met... but how?)
   SHRINK:
     remove E (left=4): not in need. left=5. minLen=min(6,12-4+1=9). No.
     remove C (left=5): window[C]=1 still ≥ need[C]=1, formed stays. left=6.
-    remove O (left=6): not in need. left=7. 
+    remove O (left=6): not in need. left=7.
     minLen=min(6,12-6+1=7). No.
     Hmm, wait: remove left=5 first.
     ...
@@ -352,6 +355,7 @@ Final answer: "BANC" ✅
 ```
 
 ### 💡 Key Insight
+
 > **"The 'formed' counter is the heart of this solution. Increment only when
 > a char's count EXACTLY reaches the required count (not just ≥). This gives
 > O(1) check for 'is window valid' instead of scanning the whole map."**
@@ -369,6 +373,7 @@ There are `n` books, each taking `t[i]` minutes to read. Vasya has exactly
 book). Find the maximum number of books Vasya can read in T minutes.
 
 **Constraints:**
+
 ```
 1 ≤ n ≤ 10⁵
 1 ≤ T ≤ 10⁹
@@ -376,22 +381,29 @@ book). Find the maximum number of books Vasya can read in T minutes.
 ```
 
 **Input:**
+
 ```
 4 5
 3 1 2 1
 ```
+
 **Output:**
+
 ```
 3
 ```
+
 **Explanation:** Books [1,2,1] take 4 ≤ 5 minutes → read 3 books.
 
 **Input:**
+
 ```
 5 3
 1 1 1 1 1
 ```
+
 **Output:**
+
 ```
 3
 ```
@@ -418,6 +430,7 @@ for (int i = 0; i < n; i++) {
 ### Approach 2 — Optimal: Sliding Window (All Positive = Perfect for SW) — O(n)
 
 **Why Sliding Window is perfect here:**
+
 ```
 All t[i] ≥ 1 (positive). So:
 - Adding a book INCREASES time used → if invalid, adding more won't help
@@ -489,12 +502,14 @@ Given a string `s` and an integer `k`, return the length of the longest
 substring of `s` that contains **at most k distinct characters**.
 
 **Constraints:**
+
 ```
 1 <= s.length <= 5 × 10⁴
 0 <= k <= 50
 ```
 
 **Examples:**
+
 ```
 Example 1:
   Input:  s = "eceba", k = 2
@@ -603,12 +618,12 @@ The window "state" changes per problem:
 
 ## 📊 Day 03 Summary
 
-| Problem | Window Type | Validity Condition | Time | Space |
-|---------|-------------|-------------------|------|-------|
-| LC 159 At Most 2 Distinct | Variable | distinct ≤ 2 | O(n) | O(1) |
-| LC 76 Min Window | Variable (min) | all t chars covered | O(n+m) | O(charset) |
-| CF 279B Books | Variable (max) | sum ≤ T | O(n) | O(1) |
-| LC 340 At Most K Distinct | Variable | distinct ≤ k | O(n) | O(k) |
+| Problem                   | Window Type    | Validity Condition  | Time   | Space      |
+| ------------------------- | -------------- | ------------------- | ------ | ---------- |
+| LC 159 At Most 2 Distinct | Variable       | distinct ≤ 2        | O(n)   | O(1)       |
+| LC 76 Min Window          | Variable (min) | all t chars covered | O(n+m) | O(charset) |
+| CF 279B Books             | Variable (max) | sum ≤ T             | O(n)   | O(1)       |
+| LC 340 At Most K Distinct | Variable       | distinct ≤ k        | O(n)   | O(k)       |
 
 ### 🎯 The Sliding Window Decision Tree
 

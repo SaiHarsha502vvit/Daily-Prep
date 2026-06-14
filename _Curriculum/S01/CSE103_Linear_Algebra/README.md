@@ -3,9 +3,11 @@
 **Semester:** S01 | **Hours:** ~15h | **Prerequisite:** None (high-school algebra recommended)
 
 ## Description
+
 Linear Algebra covers vectors, matrices, systems of linear equations, vector spaces, linear transformations, eigenvalues and eigenvectors, and orthogonality. Applications include computer graphics, machine learning (dimensionality reduction, PCA), quantum computing, and solving systems that arise in network analysis and numerical methods.
 
 ## Learning Outcomes
+
 - Perform matrix operations (add, multiply, transpose, invert) and interpret geometrically
 - Solve systems of linear equations using Gaussian elimination and LU decomposition
 - Compute and interpret eigenvalues and eigenvectors for matrix analysis
@@ -13,6 +15,7 @@ Linear Algebra covers vectors, matrices, systems of linear equations, vector spa
 - Apply linear algebra to practical problems in graphics, ML, and systems modeling
 
 ## Syllabus Outline
+
 - Vectors, vector operations, geometric interpretation
 - Matrices, matrix operations, linear transformations
 - Systems of linear equations, Gaussian elimination, LU decomposition
@@ -23,8 +26,10 @@ Linear Algebra covers vectors, matrices, systems of linear equations, vector spa
 - Applications: graphics transforms, PCA, network flows
 
 ## Content Status
+
 **Shell — TBD** — populated in Phase 2/3.
 
 ## Linked Content
+
 - [Machine Learning — vector/matrix ops](../../21_Python_ML_DL_NLP/) (future reference)
 - [Numerical Methods — matrix computations](../../00_CURRICULUM/) (Phase 3)

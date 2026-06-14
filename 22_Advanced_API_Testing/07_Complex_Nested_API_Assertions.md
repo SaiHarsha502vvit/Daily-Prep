@@ -3,6 +3,7 @@
 **Navigation**: [â† Chapter 06: DB Testing](06_DB_SQL_API_Bridge.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
+
 - [`21_SDET/05_Data_From_API_To_Test.md`](../21_SDET_Playwright_Automation/05_Data_From_API_To_Test.md) — Typed interfaces, basic extraction
 - [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) — Joining data from multiple sources
 - [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript_Deep_Dive/02_TS_Advanced_Types.md) — Mapped/utility types for API shapes
@@ -24,20 +25,20 @@
 ### Shape 1 — Flat Object (Easy)
 
 ```json
-{ "citationId": "CIT-001", "status": "PAID", "amount": 150.00 }
+{ "citationId": "CIT-001", "status": "PAID", "amount": 150.0 }
 ```
 
 ```typescript
 interface Citation {
   citationId: string;
-  status: 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED';
+  status: "PAID" | "PENDING" | "OVERDUE" | "DISPUTED";
   amount: number;
 }
 
-const body = await response.json() as Citation;
-expect(body.citationId).toBe('CIT-001');
-expect(body.status).toBe('PAID');
-expect(body.amount).toBe(150.00);
+const body = (await response.json()) as Citation;
+expect(body.citationId).toBe("CIT-001");
+expect(body.status).toBe("PAID");
+expect(body.amount).toBe(150.0);
 ```
 
 ### Shape 2 — Array of Objects (Most Common)
@@ -58,28 +59,28 @@ interface CitationsListResponse {
   totalCount: number;
 }
 
-const body = await response.json() as CitationsListResponse;
+const body = (await response.json()) as CitationsListResponse;
 
 // ✅ Exact count
 expect(body.citations).toHaveLength(2);
 
 // ✅ Check one specific item by ID (not by index — order may change)
-const citation001 = body.citations.find(c => c.id === 'CIT-001');
+const citation001 = body.citations.find((c) => c.id === "CIT-001");
 expect(citation001).toBeDefined();
-expect(citation001!.status).toBe('PAID');
+expect(citation001!.status).toBe("PAID");
 
 // ✅ Partial object match — check that at least this object exists somewhere in the array
 expect(body.citations).toContainEqual(
-  expect.objectContaining({ id: 'CIT-001', status: 'PAID' })
+  expect.objectContaining({ id: "CIT-001", status: "PAID" }),
 );
 
 // ✅ Array contains ALL required items (order-independent)
-expect(body.citations.map(c => c.id)).toEqual(
-  expect.arrayContaining(['CIT-001', 'CIT-002'])
+expect(body.citations.map((c) => c.id)).toEqual(
+  expect.arrayContaining(["CIT-001", "CIT-002"]),
 );
 
 // ✅ All items match a condition
-expect(body.citations.every(c => c.amount > 0)).toBe(true);
+expect(body.citations.every((c) => c.amount > 0)).toBe(true);
 ```
 
 ### Shape 3 — Array of Arrays (OData / D365)
@@ -87,24 +88,29 @@ expect(body.citations.every(c => c.amount > 0)).toBe(true);
 ```json
 {
   "value": [
-    ["CIT-001", "PAID", 150.00, "2026-01-15"],
-    ["CIT-002", "PENDING", 75.00, "2026-02-01"]
+    ["CIT-001", "PAID", 150.0, "2026-01-15"],
+    ["CIT-002", "PENDING", 75.0, "2026-02-01"]
   ]
 }
 ```
 
 ```typescript
 interface ODataArrayResponse {
-  value: [string, string, number, string][];  // typed tuple array
+  value: [string, string, number, string][]; // typed tuple array
 }
 
-const body = await response.json() as ODataArrayResponse;
+const body = (await response.json()) as ODataArrayResponse;
 
 // Transform to objects for readable assertions
-const citations = body.value.map(([id, status, amount, date]) => ({ id, status, amount, date }));
+const citations = body.value.map(([id, status, amount, date]) => ({
+  id,
+  status,
+  amount,
+  date,
+}));
 
 expect(citations).toContainEqual(
-  expect.objectContaining({ id: 'CIT-001', status: 'PAID' })
+  expect.objectContaining({ id: "CIT-001", status: "PAID" }),
 );
 ```
 
@@ -118,18 +124,14 @@ expect(citations).toContainEqual(
       "addresses": [
         {
           "type": "HOME",
-          "phones": [
-            { "number": "555-1234", "primary": true }
-          ]
+          "phones": [{ "number": "555-1234", "primary": true }]
         }
       ]
     },
     "citations": [
       {
         "id": "CIT-001",
-        "payments": [
-          { "id": "PAY-001", "amount": 150 }
-        ]
+        "payments": [{ "id": "PAY-001", "amount": 150 }]
       }
     ]
   }
@@ -143,7 +145,7 @@ interface PhoneEntry {
 }
 
 interface AddressEntry {
-  type: 'HOME' | 'WORK' | 'MAILING';
+  type: "HOME" | "WORK" | "MAILING";
   phones: PhoneEntry[];
 }
 
@@ -172,18 +174,20 @@ interface CustomerResponse {
 }
 
 // Assertions on deeply nested data:
-const body = await response.json() as CustomerResponse;
+const body = (await response.json()) as CustomerResponse;
 
 // ✅ Safe extraction with optional chaining (never throws on missing data)
-const primaryPhone = body.customer?.contact?.addresses?.[0]?.phones?.find(p => p.primary);
-expect(primaryPhone, 'Primary phone must exist').toBeDefined();
+const primaryPhone = body.customer?.contact?.addresses?.[0]?.phones?.find(
+  (p) => p.primary,
+);
+expect(primaryPhone, "Primary phone must exist").toBeDefined();
 expect(primaryPhone!.number).toMatch(/^\d{3}-\d{4}$/);
 
 // ✅ Verify nested array contains specific payment
-const citation001 = body.customer.citations.find(c => c.id === 'CIT-001');
+const citation001 = body.customer.citations.find((c) => c.id === "CIT-001");
 expect(citation001).toBeDefined();
 expect(citation001!.payments).toContainEqual(
-  expect.objectContaining({ id: 'PAY-001', amount: 150 })
+  expect.objectContaining({ id: "PAY-001", amount: 150 }),
 );
 
 // ✅ Verify counts at each level
@@ -212,31 +216,43 @@ expect(body.customer.contact.addresses[0].phones).toHaveLength(1);
 ```
 
 ```typescript
-interface Discount { code: string; pct: number; }
-interface OrderItem { sku: string; qty: number; discounts: Discount[]; }
-interface Order { orderId: string; items: OrderItem[]; }
-interface OrdersResponse { orders: Order[]; }
+interface Discount {
+  code: string;
+  pct: number;
+}
+interface OrderItem {
+  sku: string;
+  qty: number;
+  discounts: Discount[];
+}
+interface Order {
+  orderId: string;
+  items: OrderItem[];
+}
+interface OrdersResponse {
+  orders: Order[];
+}
 
-const body = await response.json() as OrdersResponse;
+const body = (await response.json()) as OrdersResponse;
 
 // ✅ Find specific order, check its items
-const order1 = body.orders.find(o => o.orderId === 'ORD-1');
+const order1 = body.orders.find((o) => o.orderId === "ORD-1");
 expect(order1).toBeDefined();
 expect(order1!.items).toHaveLength(1);
-expect(order1!.items[0].sku).toBe('A');
+expect(order1!.items[0].sku).toBe("A");
 
 // ✅ Verify discount in nested sub-array
 expect(order1!.items[0].discounts).toContainEqual(
-  expect.objectContaining({ code: 'SAVE10' })
+  expect.objectContaining({ code: "SAVE10" }),
 );
 
 // ✅ Verify empty case
-const order2 = body.orders.find(o => o.orderId === 'ORD-2');
+const order2 = body.orders.find((o) => o.orderId === "ORD-2");
 expect(order2!.items).toHaveLength(0);
 
 // ✅ Verify ALL items in ALL orders have valid SKUs
-const allSkus = body.orders.flatMap(o => o.items.map(i => i.sku));
-expect(allSkus.every(sku => /^[A-Z]/.test(sku))).toBe(true);
+const allSkus = body.orders.flatMap((o) => o.items.map((i) => i.sku));
+expect(allSkus.every((sku) => /^[A-Z]/.test(sku))).toBe(true);
 ```
 
 ---
@@ -244,22 +260,24 @@ expect(allSkus.every(sku => /^[A-Z]/.test(sku))).toBe(true);
 ## 2. The Complete Assertion Toolkit
 
 ```typescript
-import { expect } from '@playwright/test';
+import { expect } from "@playwright/test";
 
 // a. Exact array length
 expect(arr).toHaveLength(5);
 
 // b. Array contains a specific partial object (somewhere in the array)
-expect(arr).toContainEqual(expect.objectContaining({ id: 'X', status: 'PAID' }));
+expect(arr).toContainEqual(
+  expect.objectContaining({ id: "X", status: "PAID" }),
+);
 
 // c. Array contains ALL of these items (but may have more)
-expect(arr.map(i => i.id)).toEqual(expect.arrayContaining(['X', 'Y']));
+expect(arr.map((i) => i.id)).toEqual(expect.arrayContaining(["X", "Y"]));
 
 // d. Object contains these properties (but may have more)
-expect(obj).toEqual(expect.objectContaining({ status: 'PAID', amount: 150 }));
+expect(obj).toEqual(expect.objectContaining({ status: "PAID", amount: 150 }));
 
 // e. String contains substring
-expect(str).toEqual(expect.stringContaining('CIT-'));
+expect(str).toEqual(expect.stringContaining("CIT-"));
 
 // f. String matches regex
 expect(str).toEqual(expect.stringMatching(/^CIT-\d{6}$/));
@@ -275,11 +293,11 @@ expect(arr).toContainEqual(
     id: expect.stringMatching(/^CIT-/),
     status: expect.stringMatching(/PAID|PENDING/),
     amount: expect.any(Number),
-  })
+  }),
 );
 
 // i. Negating matchers
-expect(arr).not.toContainEqual(expect.objectContaining({ status: 'DELETED' }));
+expect(arr).not.toContainEqual(expect.objectContaining({ status: "DELETED" }));
 
 // j. Verify array is non-empty
 expect(arr.length).toBeGreaterThan(0);
@@ -308,40 +326,50 @@ expect.extend({
     const c = received as Record<string, unknown>;
     const errors: string[] = [];
 
-    if (typeof c.citationId !== 'string' || !c.citationId.startsWith('CIT-')) {
+    if (typeof c.citationId !== "string" || !c.citationId.startsWith("CIT-")) {
       errors.push(`citationId must start with 'CIT-', got: ${c.citationId}`);
     }
-    if (!['PAID', 'PENDING', 'OVERDUE', 'DISPUTED'].includes(c.status as string)) {
-      errors.push(`status must be one of PAID|PENDING|OVERDUE|DISPUTED, got: ${c.status}`);
+    if (
+      !["PAID", "PENDING", "OVERDUE", "DISPUTED"].includes(c.status as string)
+    ) {
+      errors.push(
+        `status must be one of PAID|PENDING|OVERDUE|DISPUTED, got: ${c.status}`,
+      );
     }
-    if (typeof c.amount !== 'number' || (c.amount as number) <= 0) {
+    if (typeof c.amount !== "number" || (c.amount as number) <= 0) {
       errors.push(`amount must be a positive number, got: ${c.amount}`);
     }
-    if (typeof c.issuedAt !== 'string' || !(c.issuedAt as string).match(/^\d{4}-\d{2}-\d{2}/)) {
+    if (
+      typeof c.issuedAt !== "string" ||
+      !(c.issuedAt as string).match(/^\d{4}-\d{2}-\d{2}/)
+    ) {
       errors.push(`issuedAt must be an ISO date string, got: ${c.issuedAt}`);
     }
 
     const pass = errors.length === 0;
     return {
       pass,
-      message: () => pass
-        ? 'Expected this to NOT be a valid citation'
-        : `Invalid citation:\n  ${errors.join('\n  ')}\nReceived: ${JSON.stringify(c, null, 2)}`,
+      message: () =>
+        pass
+          ? "Expected this to NOT be a valid citation"
+          : `Invalid citation:\n  ${errors.join("\n  ")}\nReceived: ${JSON.stringify(c, null, 2)}`,
     };
   },
 
   toBeValidPayment(received: unknown, minAmount = 0) {
     const p = received as Record<string, unknown>;
-    const pass = (
-      typeof p.id === 'string' && p.id.startsWith('PAY-') &&
-      typeof p.amount === 'number' && (p.amount as number) >= minAmount &&
-      ['SUCCESS', 'PENDING', 'REFUNDED'].includes(p.status as string)
-    );
+    const pass =
+      typeof p.id === "string" &&
+      p.id.startsWith("PAY-") &&
+      typeof p.amount === "number" &&
+      (p.amount as number) >= minAmount &&
+      ["SUCCESS", "PENDING", "REFUNDED"].includes(p.status as string);
     return {
       pass,
-      message: () => pass
-        ? 'Expected this NOT to be a valid payment'
-        : `Invalid payment: ${JSON.stringify(p)}`,
+      message: () =>
+        pass
+          ? "Expected this NOT to be a valid payment"
+          : `Invalid payment: ${JSON.stringify(p)}`,
     };
   },
 });
@@ -360,16 +388,16 @@ expect(body.citations[0].payments[0]).toBeValidPayment(50); // minimum $50
 
 ```typescript
 // âŒ Wrong — assumes index 0 is always the oldest citation
-expect(body.citations[0].id).toBe('CIT-001');
+expect(body.citations[0].id).toBe("CIT-001");
 
 // ✅ Correct — find by business key, then assert
-const targetCitation = body.citations.find(c => c.id === 'CIT-001');
-expect(targetCitation, 'CIT-001 must exist in the response').toBeDefined();
-expect(targetCitation!.status).toBe('PAID');
+const targetCitation = body.citations.find((c) => c.id === "CIT-001");
+expect(targetCitation, "CIT-001 must exist in the response").toBeDefined();
+expect(targetCitation!.status).toBe("PAID");
 
 // ✅ Also correct — use toContainEqual which is order-independent
 expect(body.citations).toContainEqual(
-  expect.objectContaining({ id: 'CIT-001', status: 'PAID' })
+  expect.objectContaining({ id: "CIT-001", status: "PAID" }),
 );
 ```
 
@@ -378,24 +406,26 @@ expect(body.citations).toContainEqual(
 ## 5. Before/After Diffing — Testing Mutations
 
 ```typescript
-test('PATCH citation status: only status and updatedAt change', async ({ request }) => {
+test("PATCH citation status: only status and updatedAt change", async ({
+  request,
+}) => {
   // Capture BEFORE state
   const beforeResponse = await request.get(`/api/citations/CIT-001`);
-  const before = await beforeResponse.json() as Citation;
+  const before = (await beforeResponse.json()) as Citation;
 
   // Perform the mutation
   const patchResponse = await request.patch(`/api/citations/CIT-001`, {
-    data: { status: 'PAID' },
+    data: { status: "PAID" },
   });
   expect(patchResponse.status()).toBe(200);
 
   // Capture AFTER state
   const afterResponse = await request.get(`/api/citations/CIT-001`);
-  const after = await afterResponse.json() as Citation;
+  const after = (await afterResponse.json()) as Citation;
 
   // Assert ONLY what should change
-  expect(after.status).toBe('PAID');
-  expect(after.updatedAt).not.toBe(before.updatedAt);  // timestamp changed
+  expect(after.status).toBe("PAID");
+  expect(after.updatedAt).not.toBe(before.updatedAt); // timestamp changed
 
   // Assert NOTHING ELSE changed (immutable fields)
   expect(after.citationId).toBe(before.citationId);
@@ -429,9 +459,9 @@ D365 Web API returns OData format:
 
 ```typescript
 interface ODataResponse<T> {
-  '@odata.context': string;
-  '@odata.count'?: number;
-  '@odata.nextLink'?: string;
+  "@odata.context": string;
+  "@odata.count"?: number;
+  "@odata.nextLink"?: string;
   value: T[];
 }
 
@@ -439,15 +469,15 @@ interface D365Contact {
   contactid: string;
   fullname: string;
   emailaddress1: string;
-  '@odata.etag'?: string;
+  "@odata.etag"?: string;
 }
 
 // Parse and assert:
-const body = await response.json() as ODataResponse<D365Contact>;
+const body = (await response.json()) as ODataResponse<D365Contact>;
 
 // Total record count (from @odata.count — requires $count=true in request)
-if (body['@odata.count'] !== undefined) {
-  expect(body['@odata.count']).toBeGreaterThan(0);
+if (body["@odata.count"] !== undefined) {
+  expect(body["@odata.count"]).toBeGreaterThan(0);
 }
 
 // Current page has records
@@ -455,12 +485,12 @@ expect(body.value).not.toHaveLength(0);
 
 // Specific record exists
 expect(body.value).toContainEqual(
-  expect.objectContaining({ emailaddress1: 'john@example.com' })
+  expect.objectContaining({ emailaddress1: "john@example.com" }),
 );
 
 // Pagination exists when there are more records
-if (body['@odata.count'] && body['@odata.count'] > body.value.length) {
-  expect(body['@odata.nextLink']).toBeDefined();
+if (body["@odata.count"] && body["@odata.count"] > body.value.length) {
+  expect(body["@odata.nextLink"]).toBeDefined();
 }
 ```
 
@@ -469,9 +499,11 @@ if (body['@odata.count'] && body['@odata.count'] > body.value.length) {
 ## 7. SOAP XML Response Parsing
 
 ```typescript
-import { XMLParser } from 'fast-xml-parser'; // npm install fast-xml-parser
+import { XMLParser } from "fast-xml-parser"; // npm install fast-xml-parser
 
-test('SOAP: SearchCitation returns correct citation data', async ({ request }) => {
+test("SOAP: SearchCitation returns correct citation data", async ({
+  request,
+}) => {
   const soapBody = `<?xml version="1.0"?>
   <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
@@ -481,31 +513,40 @@ test('SOAP: SearchCitation returns correct citation data', async ({ request }) =
     </soap:Body>
   </soap:Envelope>`;
 
-  const response = await request.post(`${process.env.SOAP_SERVICE_URL}/CitationService`, {
-    data: soapBody,
-    headers: {
-      'Content-Type': 'text/xml; charset=utf-8',
-      'SOAPAction': '"SearchCitation"',
+  const response = await request.post(
+    `${process.env.SOAP_SERVICE_URL}/CitationService`,
+    {
+      data: soapBody,
+      headers: {
+        "Content-Type": "text/xml; charset=utf-8",
+        SOAPAction: '"SearchCitation"',
+      },
     },
-  });
+  );
 
   expect(response.status()).toBe(200);
 
   const responseText = await response.text();
 
   // Parse XML to JS object
-  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
+  });
   const parsed = parser.parse(responseText);
 
   // Navigate the parsed structure
-  const soapEnvelope = parsed['soap:Envelope'] ?? parsed['Envelope'];
-  const soapBodyContent = soapEnvelope?.['soap:Body'] ?? soapEnvelope?.['Body'];
-  const citationResponse = soapBodyContent?.['SearchCitationResponse'];
+  const soapEnvelope = parsed["soap:Envelope"] ?? parsed["Envelope"];
+  const soapBodyContent = soapEnvelope?.["soap:Body"] ?? soapEnvelope?.["Body"];
+  const citationResponse = soapBodyContent?.["SearchCitationResponse"];
 
-  expect(citationResponse, 'SearchCitationResponse missing in SOAP response').toBeDefined();
-  expect(citationResponse.CitationId).toBe('CIT-001');
-  expect(citationResponse.Status).toBe('PAID');
-  expect(parseFloat(citationResponse.Amount)).toBe(150.00);
+  expect(
+    citationResponse,
+    "SearchCitationResponse missing in SOAP response",
+  ).toBeDefined();
+  expect(citationResponse.CitationId).toBe("CIT-001");
+  expect(citationResponse.Status).toBe("PAID");
+  expect(parseFloat(citationResponse.Amount)).toBe(150.0);
 });
 ```
 
@@ -520,13 +561,14 @@ An API returns `{ "items": [{ "id": "A" }, { "id": "B" }] }` but the order is no
 A) `expect(body.items[0].id).toBe('A'); expect(body.items[1].id).toBe('B');`  
 B) `expect(body.items.map(i => i.id)).toEqual(expect.arrayContaining(['A', 'B']));`  
 C) `expect(body.items.find(i => i.id === 'A')).toBeTruthy();`  
-D) `expect(body.items).toContainEqual({ id: 'A' });`  
+D) `expect(body.items).toContainEqual({ id: 'A' });`
 
 <details><summary>Answer</summary>
 
-**B** — `toEqual(expect.arrayContaining([...]))` verifies BOTH items are present, in ANY order. 
+**B** — `toEqual(expect.arrayContaining([...]))` verifies BOTH items are present, in ANY order.
 
 A = breaks if order changes. C = only checks for 'A', not 'B'. D = only checks for one item, and `toContainEqual` requires an exact match (not partial) — `{ id: 'A' }` matches `{ id: 'A' }` only if there are no other properties; if items have more fields like `{ id: 'A', name: 'Alpha' }` then you'd need `objectContaining`.
+
 </details>
 
 ---
@@ -534,8 +576,8 @@ A = breaks if order changes. C = only checks for 'A', not 'B'. D = only checks f
 ### Challenge 2 [Spot the Bug]
 
 ```typescript
-test('All citations are valid', async ({ request }) => {
-  const response = await request.get('/api/citations?customerId=C-001');
+test("All citations are valid", async ({ request }) => {
+  const response = await request.get("/api/citations?customerId=C-001");
   const body = await response.json();
 
   for (const citation of body.citations) {
@@ -557,6 +599,7 @@ Three bugs:
 3. **No count assertion** — if `body.citations` is an empty array `[]`, the loop never runs and all assertions are skipped.
 
 Fix:
+
 ```typescript
 expect(response.ok()).toBe(true);
 const body = await response.json();
@@ -565,6 +608,7 @@ for (const citation of body.citations) {
   expect(citation).toBeValidCitation(); // custom matcher from Section 3
 }
 ```
+
 </details>
 
 ---
@@ -576,8 +620,20 @@ Given this response shape, write the TypeScript interface AND two assertions: on
 ```json
 {
   "notifications": [
-    { "id": "N-001", "type": "ORDER_CONFIRMED", "channel": "email", "status": "delivered", "referenceId": "ORD-123" },
-    { "id": "N-002", "type": "ORDER_SHIPPED", "channel": "sms", "status": "sent", "referenceId": "ORD-123" }
+    {
+      "id": "N-001",
+      "type": "ORDER_CONFIRMED",
+      "channel": "email",
+      "status": "delivered",
+      "referenceId": "ORD-123"
+    },
+    {
+      "id": "N-002",
+      "type": "ORDER_SHIPPED",
+      "channel": "sms",
+      "status": "sent",
+      "referenceId": "ORD-123"
+    }
   ]
 }
 ```
@@ -585,9 +641,12 @@ Given this response shape, write the TypeScript interface AND two assertions: on
 <details><summary>Answer</summary>
 
 ```typescript
-type NotificationType = 'ORDER_CONFIRMED' | 'ORDER_SHIPPED' | 'PAYMENT_RECEIVED';
-type NotificationChannel = 'email' | 'sms' | 'push';
-type NotificationStatus = 'queued' | 'sent' | 'delivered' | 'failed';
+type NotificationType =
+  | "ORDER_CONFIRMED"
+  | "ORDER_SHIPPED"
+  | "PAYMENT_RECEIVED";
+type NotificationChannel = "email" | "sms" | "push";
+type NotificationStatus = "queued" | "sent" | "delivered" | "failed";
 
 interface Notification {
   id: string;
@@ -604,38 +663,43 @@ interface NotificationsResponse {
 // Assertion 1: toContainEqual (order-independent, partial match)
 expect(body.notifications).toContainEqual(
   expect.objectContaining({
-    type: 'ORDER_CONFIRMED',
-    channel: 'email',
-    status: 'delivered',
-    referenceId: 'ORD-123',
-  })
+    type: "ORDER_CONFIRMED",
+    channel: "email",
+    status: "delivered",
+    referenceId: "ORD-123",
+  }),
 );
 
 // Assertion 2: find() + property assertion (more specific, readable error on failure)
 const emailNotification = body.notifications.find(
-  n => n.type === 'ORDER_CONFIRMED' && n.channel === 'email'
+  (n) => n.type === "ORDER_CONFIRMED" && n.channel === "email",
 );
-expect(emailNotification, 'ORDER_CONFIRMED email notification must exist').toBeDefined();
-expect(emailNotification!.status).toBe('delivered');
-expect(emailNotification!.referenceId).toBe('ORD-123');
+expect(
+  emailNotification,
+  "ORDER_CONFIRMED email notification must exist",
+).toBeDefined();
+expect(emailNotification!.status).toBe("delivered");
+expect(emailNotification!.referenceId).toBe("ORD-123");
 ```
-</details>
 
+</details>
 
 ---
 
 ### Challenge 4 [Spot the Bug — Deeply Nested Null Propagation]
 
 ```typescript
-test('Notification delivery details are correct', async ({ notificationsClient }) => {
-  const res = await notificationsClient.getByUser('USR-001');
+test("Notification delivery details are correct", async ({
+  notificationsClient,
+}) => {
+  const res = await notificationsClient.getByUser("USR-001");
   const body = await res.json();
-  
+
   // The response sometimes has: body.data.notifications = null  (when no notifications)
   const emailNotif = body.data.notifications.find(
-    (n: any) => n.channel === 'EMAIL' && n.type === 'CITATION_CREATED'
+    (n: any) => n.channel === "EMAIL" && n.type === "CITATION_CREATED",
   );
-  
+
   expect(emailNotif.deliveryDetails.timestamp).toBeTruthy();
   expect(emailNotif.deliveryDetails.messageId).toBeDefined();
 });
@@ -655,18 +719,25 @@ If no email notification exists, `.find()` returns `undefined`. Accessing `.deli
 Even if `emailNotif` exists, `deliveryDetails` might be `null` (notification was sent but delivery details not yet populated).
 
 **Fix with proper guards**:
+
 ```typescript
-  const notifications = body?.data?.notifications ?? [];
-  
-  const emailNotif = notifications.find(
-    (n: any) => n.channel === 'EMAIL' && n.type === 'CITATION_CREATED'
-  );
-  
-  // Fail with a meaningful message, not a cryptic TypeError
-  expect(emailNotif, 'Expected EMAIL/CITATION_CREATED notification to exist').toBeDefined();
-  expect(emailNotif!.deliveryDetails, 'Delivery details must be populated').not.toBeNull();
-  expect(emailNotif!.deliveryDetails.timestamp).toBeTruthy();
-  expect(emailNotif!.deliveryDetails.messageId).toBeDefined();
+const notifications = body?.data?.notifications ?? [];
+
+const emailNotif = notifications.find(
+  (n: any) => n.channel === "EMAIL" && n.type === "CITATION_CREATED",
+);
+
+// Fail with a meaningful message, not a cryptic TypeError
+expect(
+  emailNotif,
+  "Expected EMAIL/CITATION_CREATED notification to exist",
+).toBeDefined();
+expect(
+  emailNotif!.deliveryDetails,
+  "Delivery details must be populated",
+).not.toBeNull();
+expect(emailNotif!.deliveryDetails.timestamp).toBeTruthy();
+expect(emailNotif!.deliveryDetails.messageId).toBeDefined();
 ```
 
 **SDE principle**: Use the `expect(value, message)` overload to add context. When tests fail in CI, a message like `"Expected EMAIL/CITATION_CREATED notification to exist"` is 10x faster to diagnose than `"received: undefined"`.
@@ -682,23 +753,23 @@ You are asserting on a citation API response. The API returns 20 fields. Your te
 ```typescript
 // Option A — full equality
 expect(await res.json()).toEqual({
-  id: 'CIT-001',
-  status: 'PENDING',
+  id: "CIT-001",
+  status: "PENDING",
   amount: 150,
   // ... must enumerate all 20 fields
 });
 
 // Option B — partial matching
 expect(await res.json()).toMatchObject({
-  id: 'CIT-001',
-  status: 'PENDING',
+  id: "CIT-001",
+  status: "PENDING",
   amount: 150,
 });
 
 // Option C — field-level assertions
 const body = await res.json();
-expect(body.id).toBe('CIT-001');
-expect(body.status).toBe('PENDING');
+expect(body.id).toBe("CIT-001");
+expect(body.status).toBe("PENDING");
 expect(body.amount).toBe(150);
 ```
 
@@ -706,13 +777,14 @@ expect(body.amount).toBe(150);
 
 **Recommended: Option B or C depending on context.**
 
-| Approach | When to use | Risk |
-|---|---|---|
-| **A (full equality)** | Contract tests where you must catch ANY unexpected field added/removed | Brittle — breaks whenever API adds a non-breaking field (e.g., a new `createdAt`). High maintenance. |
-| **B (toMatchObject)** | Most integration tests — assert the fields YOUR test cares about | Can miss breaking changes in fields you didn't list. Use Zod schema alongside for type-level protection. |
-| **C (field-level)** | Tests with complex logic between assertions (conditional checks, logging) | Most readable per assertion; produces the clearest failure messages. Verbose for many fields. |
+| Approach              | When to use                                                               | Risk                                                                                                     |
+| --------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **A (full equality)** | Contract tests where you must catch ANY unexpected field added/removed    | Brittle — breaks whenever API adds a non-breaking field (e.g., a new `createdAt`). High maintenance.     |
+| **B (toMatchObject)** | Most integration tests — assert the fields YOUR test cares about          | Can miss breaking changes in fields you didn't list. Use Zod schema alongside for type-level protection. |
+| **C (field-level)**   | Tests with complex logic between assertions (conditional checks, logging) | Most readable per assertion; produces the clearest failure messages. Verbose for many fields.            |
 
 **SDE guidance**:
+
 - Default to **B** (`toMatchObject` / `expect.objectContaining`) for integration tests — it tests what matters, not what happens to be there.
 - Use **A** only in **contract tests** whose explicit purpose is verifying the full response shape — pair it with a comment explaining why.
 - Use **C** when you need custom assertion messages or conditional logic per field.
@@ -720,8 +792,8 @@ expect(body.amount).toBe(150);
 ```typescript
 // Best of both: partial structure + meaningful error messages
 expect(body).toMatchObject({
-  id: expect.stringMatching(/^CIT-/),   // pattern match, not exact
-  status: 'PENDING',
+  id: expect.stringMatching(/^CIT-/), // pattern match, not exact
+  status: "PENDING",
   amount: expect.any(Number),
 });
 ```
@@ -729,4 +801,5 @@ expect(body).toMatchObject({
 </details>
 
 ---
+
 **Navigation**: [← Chapter 06: DB Testing](06_DB_Testing_SQL_Bridge.md) | [Index](./00_INDEX.md)

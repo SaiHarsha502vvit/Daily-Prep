@@ -11,60 +11,62 @@
 
 ## 📋 Scenario Master Index (Part 1: Scenarios 1–25)
 
-| # | Scenario | Category |
-|---|----------|----------|
-| 1 | INT ID Exhaustion — 2.1 billion limit hit | ID Crisis |
-| 2 | VARCHAR(9) ID space exhaustion | ID Crisis |
-| 3 | UUID migration from auto-increment | ID Strategy |
-| 4 | Snowflake ID generation for distributed systems | ID Strategy |
-| 5 | Composite key running out of combinations | ID Crisis |
-| 6 | Sequence gaps causing business panic | ID Behavior |
-| 7 | ID collision after database merge/acquisition | ID Crisis |
-| 8 | Table hitting 1 billion rows — everything slows | Data Growth |
-| 9 | Disk space 95% full — production alert | Storage Crisis |
-| 10 | LOG file eating all disk space | Storage Crisis |
-| 11 | BLOB/TEXT columns inflating table size 100x | Storage Crisis |
-| 12 | Index bloat — indexes bigger than data | Storage Crisis |
-| 13 | Dead tuples / table bloat in PostgreSQL | Storage Crisis |
-| 14 | Archive strategy — hot/warm/cold data | Data Growth |
-| 15 | Soft delete accumulation — 90% of rows are deleted | Data Growth |
-| 16 | Auto-increment reset after DELETE | ID Behavior |
-| 17 | Multi-tenant ID isolation | ID Strategy |
-| 18 | Time-series data flooding — 1M rows/hour | Data Growth |
-| 19 | Audit log table consuming 80% of storage | Data Growth |
-| 20 | TOAST table bloat in PostgreSQL | Storage Crisis |
-| 21 | Partition table reaching OS file handle limits | Data Growth |
-| 22 | Foreign key chains blocking deletes at scale | Data Growth |
-| 23 | Orphaned rows after failed cascade delete | Data Growth |
-| 24 | Character encoding mismatch wasting 3x storage | Storage Crisis |
-| 25 | Temp table / CTE memory explosion | Storage Crisis |
+| #   | Scenario                                           | Category       |
+| --- | -------------------------------------------------- | -------------- |
+| 1   | INT ID Exhaustion — 2.1 billion limit hit          | ID Crisis      |
+| 2   | VARCHAR(9) ID space exhaustion                     | ID Crisis      |
+| 3   | UUID migration from auto-increment                 | ID Strategy    |
+| 4   | Snowflake ID generation for distributed systems    | ID Strategy    |
+| 5   | Composite key running out of combinations          | ID Crisis      |
+| 6   | Sequence gaps causing business panic               | ID Behavior    |
+| 7   | ID collision after database merge/acquisition      | ID Crisis      |
+| 8   | Table hitting 1 billion rows — everything slows    | Data Growth    |
+| 9   | Disk space 95% full — production alert             | Storage Crisis |
+| 10  | LOG file eating all disk space                     | Storage Crisis |
+| 11  | BLOB/TEXT columns inflating table size 100x        | Storage Crisis |
+| 12  | Index bloat — indexes bigger than data             | Storage Crisis |
+| 13  | Dead tuples / table bloat in PostgreSQL            | Storage Crisis |
+| 14  | Archive strategy — hot/warm/cold data              | Data Growth    |
+| 15  | Soft delete accumulation — 90% of rows are deleted | Data Growth    |
+| 16  | Auto-increment reset after DELETE                  | ID Behavior    |
+| 17  | Multi-tenant ID isolation                          | ID Strategy    |
+| 18  | Time-series data flooding — 1M rows/hour           | Data Growth    |
+| 19  | Audit log table consuming 80% of storage           | Data Growth    |
+| 20  | TOAST table bloat in PostgreSQL                    | Storage Crisis |
+| 21  | Partition table reaching OS file handle limits     | Data Growth    |
+| 22  | Foreign key chains blocking deletes at scale       | Data Growth    |
+| 23  | Orphaned rows after failed cascade delete          | Data Growth    |
+| 24  | Character encoding mismatch wasting 3x storage     | Storage Crisis |
+| 25  | Temp table / CTE memory explosion                  | Storage Crisis |
 
 ---
 
 ## Scenario 1: INT Primary Key Exhaustion — The 2.1 Billion Wall
 
 ### 🔴 The Incident
+
 Your `orders` table uses `INT AUTO_INCREMENT`. After 7 years in production, the ID reaches 2,147,483,647. The next INSERT fails. No new orders can be placed. Revenue stops.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | `INT` (4 bytes signed) max = 2,147,483,647. Next insert throws `ERROR 1062: Duplicate entry '2147483647'` |
-| **Why** | Original schema assumed "2 billion is enough." Nobody monitored ID consumption rate |
-| **When** | After ~7 years at ~1000 inserts/day, or 2 years at ~3M inserts/day |
-| **Where** | High-volume tables: orders, transactions, events, logs, audit trails |
-| **Who** | Junior dev chose `INT` in 2017. Nobody reviewed the schema for growth |
-| **How** | Fix: ALTER to BIGINT. Prevent: monitoring, capacity planning |
+
+| Question  | Answer                                                                                                    |
+| --------- | --------------------------------------------------------------------------------------------------------- |
+| **What**  | `INT` (4 bytes signed) max = 2,147,483,647. Next insert throws `ERROR 1062: Duplicate entry '2147483647'` |
+| **Why**   | Original schema assumed "2 billion is enough." Nobody monitored ID consumption rate                       |
+| **When**  | After ~7 years at ~1000 inserts/day, or 2 years at ~3M inserts/day                                        |
+| **Where** | High-volume tables: orders, transactions, events, logs, audit trails                                      |
+| **Who**   | Junior dev chose `INT` in 2017. Nobody reviewed the schema for growth                                     |
+| **How**   | Fix: ALTER to BIGINT. Prevent: monitoring, capacity planning                                              |
 
 ### SQL Solution
 
 ```sql
 -- Step 1: CHECK how close you are to the limit
-SELECT 
+SELECT
     TABLE_NAME,
     AUTO_INCREMENT,
     ROUND(AUTO_INCREMENT / 2147483647 * 100, 2) AS pct_used,
-    CASE 
+    CASE
         WHEN AUTO_INCREMENT > 2000000000 THEN '🔴 CRITICAL'
         WHEN AUTO_INCREMENT > 1500000000 THEN '🟡 WARNING'
         ELSE '🟢 OK'
@@ -135,9 +137,9 @@ public class IdExhaustionHealthIndicator implements HealthIndicator {
             "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders'",
             Long.class
         );
-        
+
         double pctUsed = currentId / 2147483647.0 * 100;
-        
+
         if (pctUsed > 90) {
             return Health.down()
                 .withDetail("orders_id_pct_used", pctUsed)
@@ -156,29 +158,29 @@ public class IdExhaustionHealthIndicator implements HealthIndicator {
 ```
 
 ### DSA Connection
+
 - **Capacity planning** = Array resizing (like ArrayList doubling from 16→32→64)
 - **Shadow table migration** = Two-pointer merge pattern
 - **Batch copy** = Chunked processing (sliding window of size N)
 
 ---
 
-
-
-
 ## Scenario 2: VARCHAR(9) ID Space Exhaustion
 
 ### 🔴 The Incident
+
 Company uses `CHAR(9)` employee IDs: `EMP000001` to `EMP999999`. After acquisition merges two companies, they're at `EMP987342`. Only 12,658 IDs left.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Fixed-width business ID `EMP` + 6 digits = max 999,999 employees |
-| **Why** | Original design never planned for acquisitions or contractor IDs |
-| **When** | After company merger brings 50,000 new employees |
-| **Where** | HR systems, payroll, access control, every report ever printed |
-| **Who** | Affects EVERY system — this ID is used in 47 different applications |
-| **How** | Multiple strategies depending on constraints |
+
+| Question  | Answer                                                              |
+| --------- | ------------------------------------------------------------------- |
+| **What**  | Fixed-width business ID `EMP` + 6 digits = max 999,999 employees    |
+| **Why**   | Original design never planned for acquisitions or contractor IDs    |
+| **When**  | After company merger brings 50,000 new employees                    |
+| **Where** | HR systems, payroll, access control, every report ever printed      |
+| **Who**   | Affects EVERY system — this ID is used in 47 different applications |
+| **How**   | Multiple strategies depending on constraints                        |
 
 ### SQL Solutions
 
@@ -207,21 +209,21 @@ DECLARE
 BEGIN
     SELECT emp_id INTO last_id FROM employees ORDER BY emp_id DESC LIMIT 1;
     num_part := SUBSTRING(last_id FROM 4);
-    
+
     -- Convert base-36 to decimal
     next_val := 0;
     FOR i IN 1..6 LOOP
         next_val := next_val * 36 + POSITION(SUBSTRING(num_part FROM i FOR 1) IN charset) - 1;
     END LOOP;
     next_val := next_val + 1;
-    
+
     -- Convert back to base-36
     FOR i IN REVERSE 6..1 LOOP
         remainder := next_val % 36;
         result := SUBSTRING(charset FROM remainder + 1 FOR 1) || result;
         next_val := next_val / 36;
     END LOOP;
-    
+
     RETURN 'EMP' || result;
 END;
 $$ LANGUAGE plpgsql;
@@ -246,12 +248,12 @@ WHERE source_system = 'PARENT';
 ```java
 @Service
 public class EmployeeIdGenerator {
-    
+
     @Autowired
     private JdbcTemplate jdbc;
-    
+
     private static final String CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
+
     @Transactional
     public String generateNextId() {
         // Use SELECT FOR UPDATE to prevent race conditions
@@ -259,20 +261,20 @@ public class EmployeeIdGenerator {
             "SELECT emp_id FROM employees ORDER BY emp_id DESC LIMIT 1 FOR UPDATE",
             String.class
         );
-        
+
         String numPart = lastId.substring(3); // Remove "EMP"
         long decimal = fromBase36(numPart);
         decimal++;
-        
+
         if (decimal >= Math.pow(36, 6)) {
             throw new IdExhaustionException(
                 "All EMP IDs exhausted! Extend format immediately."
             );
         }
-        
+
         return "EMP" + toBase36(decimal, 6);
     }
-    
+
     private long fromBase36(String s) {
         long result = 0;
         for (char c : s.toCharArray()) {
@@ -280,7 +282,7 @@ public class EmployeeIdGenerator {
         }
         return result;
     }
-    
+
     private String toBase36(long num, int width) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < width; i++) {
@@ -293,6 +295,7 @@ public class EmployeeIdGenerator {
 ```
 
 ### DSA Connection
+
 - **Base conversion** = Number system problem (base-10 → base-36)
 - **ID generation** = Hashing / encoding problem
 - **Capacity calc** = Combinatorics: `prefix_options × charset^digit_count`
@@ -302,17 +305,19 @@ public class EmployeeIdGenerator {
 ## Scenario 3: UUID Migration from Auto-Increment
 
 ### 🔴 The Incident
+
 Microservices architecture needs globally unique IDs. Auto-increment doesn't work across 5 databases. Team migrates to UUID. Performance drops 40%.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | UUID v4 (random 128-bit) causes B-Tree fragmentation; inserts scatter across all leaf pages |
-| **Why** | Random UUIDs don't sort naturally → page splits on every insert |
-| **When** | Immediately on high-volume tables (>1M inserts/day) |
-| **Where** | InnoDB (MySQL), any B-Tree indexed primary key |
-| **Who** | Architecture team chose UUID without understanding index implications |
-| **How** | Use UUID v7 (time-ordered), ULID, or Snowflake IDs instead |
+
+| Question  | Answer                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------- |
+| **What**  | UUID v4 (random 128-bit) causes B-Tree fragmentation; inserts scatter across all leaf pages |
+| **Why**   | Random UUIDs don't sort naturally → page splits on every insert                             |
+| **When**  | Immediately on high-volume tables (>1M inserts/day)                                         |
+| **Where** | InnoDB (MySQL), any B-Tree indexed primary key                                              |
+| **Who**   | Architecture team chose UUID without understanding index implications                       |
+| **How**   | Use UUID v7 (time-ordered), ULID, or Snowflake IDs instead                                  |
 
 ### SQL Solutions
 
@@ -365,18 +370,18 @@ CREATE TABLE orders_hybrid (
 ```java
 @Component
 public class UUIDv7Generator {
-    
+
     // UUID v7: unix_timestamp_ms (48 bits) + version (4) + random (12) + variant (2) + random (62)
     public UUID generateV7() {
         long timestamp = System.currentTimeMillis();
         long random = ThreadLocalRandom.current().nextLong();
-        
+
         long msb = (timestamp << 16) | (0x7000L) | (random & 0x0FFFL);
         long lsb = (0x8000000000000000L) | (random & 0x3FFFFFFFFFFFFFFFL);
-        
+
         return new UUID(msb, lsb);
     }
-    
+
     // Convert UUID to BINARY(16) for MySQL storage
     public byte[] toBytes(UUID uuid) {
         ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
@@ -390,11 +395,11 @@ public class UUIDv7Generator {
 @Entity
 @Table(name = "orders")
 public class Order {
-    
+
     @Id
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
-    
+
     @PrePersist
     private void generateId() {
         if (id == null) {
@@ -405,18 +410,17 @@ public class Order {
 ```
 
 ### DSA Connection
+
 - **B-Tree insert patterns** = Binary Search Tree balancing (AVL rotations vs. appending to sorted array)
 - **UUID as hash** = Hash function distribution (uniform random vs. time-ordered)
 - **Page splits** = Array insertion at random index = O(n) shift vs. append = O(1)
 
 ---
 
-
-
-
 ## Scenario 4: Snowflake ID Generation for Distributed Systems
 
 ### 🔴 The Incident
+
 5 microservices each generate their own auto-increment IDs. When merging into analytics DB, IDs collide. Order #12345 exists in 3 different services.
 
 ### SQL + Backend Solution
@@ -474,25 +478,25 @@ SELECT * FROM decode_snowflake(123456789012345);
 ```java
 @Component
 public class SnowflakeIdGenerator {
-    
+
     private static final long EPOCH = 1704067200000L; // 2024-01-01
     private static final int MACHINE_BITS = 10;
     private static final int SEQUENCE_BITS = 12;
-    
+
     private final long machineId;
     private long lastTimestamp = -1L;
     private long sequence = 0L;
-    
+
     public SnowflakeIdGenerator(@Value("${app.machine-id:1}") long machineId) {
         if (machineId < 0 || machineId >= (1L << MACHINE_BITS)) {
             throw new IllegalArgumentException("Machine ID must be 0-1023");
         }
         this.machineId = machineId;
     }
-    
+
     public synchronized long nextId() {
         long timestamp = System.currentTimeMillis();
-        
+
         if (timestamp == lastTimestamp) {
             sequence = (sequence + 1) & ((1L << SEQUENCE_BITS) - 1);
             if (sequence == 0) {
@@ -504,9 +508,9 @@ public class SnowflakeIdGenerator {
         } else {
             sequence = 0;
         }
-        
+
         lastTimestamp = timestamp;
-        
+
         return ((timestamp - EPOCH) << (MACHINE_BITS + SEQUENCE_BITS))
              | (machineId << SEQUENCE_BITS)
              | sequence;
@@ -519,6 +523,7 @@ public class SnowflakeIdGenerator {
 ## Scenario 5: Composite Key Running Out of Combinations
 
 ### 🔴 The Incident
+
 Table uses `(year SMALLINT, sequence INT)` as composite PK. It's December 31st: sequence hits INT max within the year. Invoices can't be generated.
 
 ### SQL Solution
@@ -557,23 +562,22 @@ CREATE TABLE invoices_v2 (
 
 ---
 
-
-
-
 ## Scenario 6: Sequence Gaps Causing Business Panic
 
 ### 🔴 The Incident
+
 Auditor notices invoice numbers jump: INV-1042, INV-1043, INV-1047. "Where are 1044, 1045, 1046?! Is someone hiding revenue?"
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | Gaps in auto-increment sequence |
-| **Why** | Rolled-back transactions, failed inserts, bulk deletes, server restarts all consume sequence values |
-| **When** | Every database has this — it's NORMAL behavior |
-| **Where** | Any table using sequences/auto-increment |
-| **Who** | Auditors, compliance officers, non-technical stakeholders |
-| **How** | Separate the BUSINESS sequence from the DATABASE sequence |
+
+| Question  | Answer                                                                                              |
+| --------- | --------------------------------------------------------------------------------------------------- |
+| **What**  | Gaps in auto-increment sequence                                                                     |
+| **Why**   | Rolled-back transactions, failed inserts, bulk deletes, server restarts all consume sequence values |
+| **When**  | Every database has this — it's NORMAL behavior                                                      |
+| **Where** | Any table using sequences/auto-increment                                                            |
+| **Who**   | Auditors, compliance officers, non-technical stakeholders                                           |
+| **How**   | Separate the BUSINESS sequence from the DATABASE sequence                                           |
 
 ### SQL Solution
 
@@ -594,11 +598,11 @@ RETURNS VARCHAR(20) AS $$
 DECLARE
     v_next BIGINT;
 BEGIN
-    UPDATE invoice_sequences 
-    SET last_value = last_value + 1 
+    UPDATE invoice_sequences
+    SET last_value = last_value + 1
     WHERE prefix = p_prefix
     RETURNING last_value INTO v_next;
-    
+
     RETURN p_prefix || '-' || LPAD(v_next::TEXT, 6, '0');
 END;
 $$ LANGUAGE plpgsql;
@@ -630,10 +634,10 @@ WHERE LEAD(actual_num) OVER (ORDER BY actual_num) - actual_num > 1;
 ```java
 @Service
 public class InvoiceService {
-    
+
     @Autowired
     private JdbcTemplate jdbc;
-    
+
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public String createInvoice(InvoiceRequest request) {
         // This UPDATE locks the row — only one invoice at a time
@@ -642,12 +646,12 @@ public class InvoiceService {
             "WHERE prefix = ? RETURNING prefix || '-' || LPAD(last_value::TEXT, 6, '0')",
             String.class, "INV-2025"
         );
-        
+
         // If anything fails below, the whole transaction rolls back
         // including the sequence increment — NO GAP
         jdbc.update("INSERT INTO invoices (invoice_number, customer_id, total) VALUES (?, ?, ?)",
             invoiceNumber, request.getCustomerId(), request.getTotal());
-        
+
         return invoiceNumber;
     }
 }
@@ -655,12 +659,10 @@ public class InvoiceService {
 
 ---
 
-
-
-
 ## Scenario 7: ID Collision After Database Merge / Acquisition
 
 ### 🔴 The Incident
+
 Company A acquires Company B. Both have a `users` table with auto-increment IDs starting from 1. User #5000 in Company A is a different person than User #5000 in Company B.
 
 ### SQL Solution
@@ -710,6 +712,7 @@ SET u.user_code = CONCAT('A-', LPAD(u.id, 7, '0'));
 ```
 
 ### DSA Connection
+
 - **Merge with conflicts** = Merge Sort stability (preserving origin)
 - **ID remapping** = Hash Map (old_id → new_id)
 - **Offset strategy** = Array shifting / index remapping
@@ -719,17 +722,19 @@ SET u.user_code = CONCAT('A-', LPAD(u.id, 7, '0'));
 ## Scenario 8: Table Hitting 1 Billion Rows — Everything Slows
 
 ### 🔴 The Incident
+
 The `events` table has 1.2 billion rows. `SELECT COUNT(*)` takes 45 minutes. Simple JOINs timeout. Backup takes 18 hours.
 
 ### 5W-H Analysis
-| Question | Answer |
-|----------|--------|
-| **What** | All operations degrade: reads, writes, backups, index rebuilds |
-| **Why** | B-Tree depth increases, buffer pool can't cache enough, I/O dominates |
-| **When** | Typically above 500M rows for OLTP, depends on row size |
-| **Where** | Event logs, IoT data, transaction history, audit trails |
-| **Who** | Every engineer who touches this table |
-| **How** | Partition, archive, summarize, or move to specialized storage |
+
+| Question  | Answer                                                                |
+| --------- | --------------------------------------------------------------------- |
+| **What**  | All operations degrade: reads, writes, backups, index rebuilds        |
+| **Why**   | B-Tree depth increases, buffer pool can't cache enough, I/O dominates |
+| **When**  | Typically above 500M rows for OLTP, depends on row size               |
+| **Where** | Event logs, IoT data, transaction history, audit trails               |
+| **Who**   | Every engineer who touches this table                                 |
+| **How**   | Partition, archive, summarize, or move to specialized storage         |
 
 ### SQL Solution
 
@@ -755,7 +760,7 @@ ALTER TABLE events DROP PARTITION p202301;
 
 -- Step 3: MATERIALIZED VIEWS for aggregates (PostgreSQL)
 CREATE MATERIALIZED VIEW event_daily_stats AS
-SELECT 
+SELECT
     DATE(created_at) AS event_date,
     event_type,
     COUNT(*) AS event_count,
@@ -772,7 +777,7 @@ SELECT reltuples::BIGINT AS estimated_count
 FROM pg_class WHERE relname = 'events';
 
 -- MySQL fast estimate:
-SELECT TABLE_ROWS FROM information_schema.TABLES 
+SELECT TABLE_ROWS FROM information_schema.TABLES
 WHERE TABLE_NAME = 'events';
 
 -- Step 5: Vertical partition — move large columns to separate table
@@ -794,7 +799,7 @@ spring:
       maximum-pool-size: 20
       connection-timeout: 30000
       # Critical: prevent long queries from hogging connections
-      leak-detection-threshold: 60000 
+      leak-detection-threshold: 60000
   jpa:
     properties:
       hibernate:
@@ -810,17 +815,17 @@ spring:
 // Streaming large result sets (don't load 1B rows into memory!)
 @Repository
 public class EventRepository {
-    
+
     @PersistenceContext
     private EntityManager em;
-    
+
     public void processAllEvents(Consumer<Event> processor) {
         try (Stream<Event> stream = em.createQuery(
                 "SELECT e FROM Event e WHERE e.createdAt > :cutoff", Event.class)
             .setParameter("cutoff", LocalDate.now().minusDays(30))
             .setHint(QueryHints.HINT_FETCH_SIZE, 500)
             .getResultStream()) {
-            
+
             stream.forEach(processor);
         }
     }
@@ -829,23 +834,21 @@ public class EventRepository {
 
 ---
 
-
-
-
 ## Scenario 9: Disk Space 95% Full — Production Alert
 
 ### 🔴 The Incident
+
 PagerDuty fires: "DISK USAGE 95%". Database writes start failing within hours.
 
 ### Emergency SQL Triage
 
 ```sql
 -- Step 1: WHAT is consuming space? (PostgreSQL)
-SELECT 
+SELECT
     schemaname || '.' || tablename AS table_name,
     pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename)) AS total_size,
     pg_size_pretty(pg_relation_size(schemaname || '.' || tablename)) AS data_size,
-    pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename) - 
+    pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename) -
                    pg_relation_size(schemaname || '.' || tablename)) AS index_size
 FROM pg_tables
 WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
@@ -853,7 +856,7 @@ ORDER BY pg_total_relation_size(schemaname || '.' || tablename) DESC
 LIMIT 20;
 
 -- MySQL equivalent:
-SELECT 
+SELECT
     TABLE_NAME,
     ROUND(DATA_LENGTH / 1024 / 1024, 2) AS data_mb,
     ROUND(INDEX_LENGTH / 1024 / 1024, 2) AS index_mb,
@@ -867,7 +870,7 @@ LIMIT 20;
 -- Step 2: Find and kill space hogs
 
 -- 2a: Unused indexes consuming space
-SELECT 
+SELECT
     indexrelname AS index_name,
     pg_size_pretty(pg_relation_size(indexrelid)) AS index_size,
     idx_scan AS times_used
@@ -899,7 +902,7 @@ CREATE TABLE disk_usage_log (
 
 -- Daily job to track growth
 INSERT INTO disk_usage_log (table_name, total_bytes, row_count)
-SELECT 
+SELECT
     schemaname || '.' || tablename,
     pg_total_relation_size(schemaname || '.' || tablename),
     (SELECT reltuples FROM pg_class WHERE relname = tablename)
@@ -907,7 +910,7 @@ FROM pg_tables
 WHERE schemaname = 'public';
 
 -- Growth rate report
-SELECT 
+SELECT
     table_name,
     pg_size_pretty(MAX(total_bytes) - MIN(total_bytes)) AS growth_30d,
     ROUND((MAX(total_bytes) - MIN(total_bytes)) / 1024.0 / 1024 / 30, 2) AS mb_per_day
@@ -922,6 +925,7 @@ ORDER BY MAX(total_bytes) - MIN(total_bytes) DESC;
 ## Scenario 10: Transaction Log Eating All Disk Space
 
 ### 🔴 The Incident
+
 SQL Server: Transaction log file is 200 GB while the database is only 15 GB. Or PostgreSQL: WAL files consuming 100 GB.
 
 ### SQL Solution
@@ -931,7 +935,7 @@ SQL Server: Transaction log file is 200 GB while the database is only 15 GB. Or 
 DBCC SQLPERF(LOGSPACE);
 
 -- Why is the log so big?
-SELECT name, log_reuse_wait_desc 
+SELECT name, log_reuse_wait_desc
 FROM sys.databases WHERE name = DB_NAME();
 -- Common results:
 -- LOG_BACKUP         → No log backups configured!
@@ -944,7 +948,7 @@ BACKUP LOG YourDB TO DISK = 'D:\Backups\YourDB_log.trn';
 DBCC SHRINKFILE (YourDB_log, 1024);  -- Shrink to 1 GB
 
 -- Fix 2: Kill long-running transactions
-SELECT 
+SELECT
     session_id, start_time, status, command,
     DATEDIFF(MINUTE, start_time, GETDATE()) AS running_minutes
 FROM sys.dm_exec_requests
@@ -956,7 +960,7 @@ SELECT pg_size_pretty(SUM(size)) AS total_wal_size
 FROM pg_ls_waldir();
 
 -- PostgreSQL: Check replication lag (WAL retained for replicas)
-SELECT 
+SELECT
     client_addr,
     state,
     pg_size_pretty(pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn)) AS replication_lag
@@ -969,27 +973,27 @@ SELECT pg_reload_conf();
 
 ---
 
-
-
 🔬 **Section Challenge — Scenario 10: Transaction Log Eating All Disk Space**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Scenario 11: BLOB/TEXT Columns Inflating Table Size 100x
 
 ### 🔴 The Incident
+
 Product team added a `description TEXT` column to the `products` table. Someone uploaded 50MB product descriptions via bulk import. Table went from 500MB to 47GB.
 
 ### SQL Solution
 
 ```sql
 -- Diagnose: Find oversized TEXT/BLOB values
-SELECT 
+SELECT
     id,
     LENGTH(description) AS desc_bytes,
     pg_size_pretty(LENGTH(description)::BIGINT) AS desc_size
@@ -1005,14 +1009,14 @@ CREATE TABLE product_descriptions (
     description_html TEXT
 );
 
-INSERT INTO product_descriptions 
+INSERT INTO product_descriptions
 SELECT id, description, description_html FROM products;
 
 ALTER TABLE products DROP COLUMN description, DROP COLUMN description_html;
 -- Main table drops from 47GB back to ~500MB
 
 -- Fix 2: Add a CHECK constraint to prevent future abuse
-ALTER TABLE product_descriptions 
+ALTER TABLE product_descriptions
 ADD CONSTRAINT chk_desc_size CHECK (LENGTH(description) <= 50000);  -- 50KB max
 
 -- Fix 3: Compress on the application side before storing
@@ -1025,11 +1029,11 @@ ADD CONSTRAINT chk_desc_size CHECK (LENGTH(description) <= 50000);  -- 50KB max
 ```java
 @Entity
 public class Product {
-    
+
     @Column(length = 50000)  // Schema-level hint
     @Size(max = 50000, message = "Description cannot exceed 50KB")
     private String description;
-    
+
     // For truly large content, use lazy loading
     @Lob
     @Basic(fetch = FetchType.LAZY)  // Only load when accessed
@@ -1039,10 +1043,10 @@ public class Product {
 // Request validation to prevent abuse
 @RestController
 public class ProductController {
-    
+
     @PostMapping("/products")
     public Product create(@Valid @RequestBody ProductRequest req) {
-        if (req.getDescription() != null && 
+        if (req.getDescription() != null &&
             req.getDescription().getBytes(StandardCharsets.UTF_8).length > 50_000) {
             throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
                 "Description exceeds 50KB limit");
@@ -1054,24 +1058,22 @@ public class ProductController {
 
 ---
 
-
-
-
 ## Scenario 12: Index Bloat — Indexes Bigger Than the Data
 
 ### 🔴 The Incident
+
 Table data is 2 GB but indexes total 8 GB. Every INSERT is slow because 6 indexes must be updated.
 
 ### SQL Solution
 
 ```sql
 -- PostgreSQL: Find bloated indexes
-SELECT 
+SELECT
     indexrelname AS index_name,
     pg_size_pretty(pg_relation_size(indexrelid)) AS index_size,
     pg_size_pretty(pg_relation_size(indrelid)) AS table_size,
     idx_scan AS times_used,
-    CASE WHEN idx_scan = 0 THEN 'NEVER USED — DROP IT' 
+    CASE WHEN idx_scan = 0 THEN 'NEVER USED — DROP IT'
          WHEN idx_scan < 10 THEN 'RARELY USED — REVIEW'
          ELSE 'ACTIVE' END AS recommendation
 FROM pg_stat_user_indexes
@@ -1079,7 +1081,7 @@ JOIN pg_index ON pg_index.indexrelid = pg_stat_user_indexes.indexrelid
 ORDER BY pg_relation_size(indexrelid) DESC;
 
 -- Find duplicate/redundant indexes
-SELECT 
+SELECT
     a.indexrelname AS index_a,
     b.indexrelname AS index_b,
     pg_size_pretty(pg_relation_size(a.indexrelid)) AS size_a,
@@ -1096,7 +1098,7 @@ WHERE ia.indkey::text LIKE ib.indkey::text || '%'
 REINDEX INDEX CONCURRENTLY idx_orders_customer;  -- No downtime
 
 -- MySQL: Check index sizes
-SELECT 
+SELECT
     TABLE_NAME, INDEX_NAME,
     ROUND(STAT_VALUE * @@innodb_page_size / 1024 / 1024, 2) AS size_mb
 FROM mysql.innodb_index_stats
@@ -1109,13 +1111,14 @@ ORDER BY STAT_VALUE DESC;
 ## Scenario 13: Dead Tuples / Table Bloat in PostgreSQL
 
 ### 🔴 The Incident
+
 PostgreSQL table is 50 GB on disk but only has 5 GB of live data. `VACUUM` isn't reclaiming space. Queries scan 10x more pages than necessary.
 
 ### SQL Solution
 
 ```sql
 -- Check dead tuple ratio
-SELECT 
+SELECT
     schemaname || '.' || relname AS table_name,
     n_live_tup,
     n_dead_tup,
@@ -1149,9 +1152,6 @@ VACUUM FULL events;  -- Rewrites entire table, reclaims all dead space
 ```
 
 ---
-
-
-
 
 ## Scenario 14: Archive Strategy — Hot/Warm/Cold Data
 
@@ -1200,7 +1200,7 @@ BEGIN
     EXECUTE format(
         'DROP INDEX IF EXISTS idx_orders_%s_customer', cold_month
     );
-    
+
     -- Create next month's hot partition
     new_month := TO_CHAR(CURRENT_DATE + INTERVAL '1 month', 'YYYY_MM');
     EXECUTE format(
@@ -1219,6 +1219,7 @@ $$ LANGUAGE plpgsql;
 ## Scenario 15: Soft Delete Accumulation — 90% Rows Are "Deleted"
 
 ### 🔴 The Incident
+
 Table has `is_deleted BOOLEAN DEFAULT FALSE`. After 5 years, 90% of 800M rows are deleted. Every query scans dead rows. Indexes bloated with deleted entries.
 
 ### SQL Solution
@@ -1229,18 +1230,18 @@ SELECT * FROM users WHERE is_deleted = FALSE AND email = 'foo@bar.com';
 -- Index on email includes ALL 800M rows including 720M deleted ones
 
 -- Fix 1: PARTIAL INDEX (PostgreSQL) — index ONLY live rows
-CREATE INDEX idx_users_email_active ON users(email) 
+CREATE INDEX idx_users_email_active ON users(email)
 WHERE is_deleted = FALSE;
 -- Index size drops from 12GB to 1.2GB; queries use only this index
 
 -- MySQL equivalent: generated column + index
-ALTER TABLE users ADD COLUMN active_email VARCHAR(255) 
+ALTER TABLE users ADD COLUMN active_email VARCHAR(255)
 GENERATED ALWAYS AS (CASE WHEN is_deleted = FALSE THEN email END) STORED;
 CREATE INDEX idx_active_email ON users(active_email);
 
 -- Fix 2: PARTITION by delete status
 ALTER TABLE users RENAME TO users_old;
-CREATE TABLE users (LIKE users_old INCLUDING ALL) 
+CREATE TABLE users (LIKE users_old INCLUDING ALL)
 PARTITION BY LIST (is_deleted);
 CREATE TABLE users_active PARTITION OF users FOR VALUES IN (FALSE);
 CREATE TABLE users_deleted PARTITION OF users FOR VALUES IN (TRUE);
@@ -1252,8 +1253,8 @@ CREATE TABLE users_archive (LIKE users INCLUDING ALL);
 
 -- Nightly archive job
 WITH moved AS (
-    DELETE FROM users 
-    WHERE is_deleted = TRUE 
+    DELETE FROM users
+    WHERE is_deleted = TRUE
       AND deleted_at < CURRENT_DATE - INTERVAL '90 days'
     RETURNING *
 )
@@ -1284,6 +1285,7 @@ public class User {
 ## Scenario 16–25: Quick-Fire Production Scenarios
 
 ### Scenario 16: Auto-Increment Reset After DELETE
+
 ```sql
 -- Problem: Deleted all rows but auto_increment doesn't reset
 TRUNCATE TABLE temp_data;  -- Resets auto_increment (MySQL)
@@ -1297,6 +1299,7 @@ ALTER SEQUENCE temp_data_id_seq RESTART WITH 1;
 ```
 
 ### Scenario 17: Multi-Tenant ID Isolation
+
 ```sql
 -- Problem: Tenant A can guess Tenant B's order IDs (sequential)
 -- Solution: Per-tenant random-looking IDs using Hashids/Sqids
@@ -1305,7 +1308,7 @@ ALTER SEQUENCE temp_data_id_seq RESTART WITH 1;
 CREATE TABLE orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tenant_id INT NOT NULL,
-    public_id VARCHAR(20) NOT NULL,  -- "TN42-X7K9M2" 
+    public_id VARCHAR(20) NOT NULL,  -- "TN42-X7K9M2"
     UNIQUE KEY uk_public_id (tenant_id, public_id)
 );
 
@@ -1315,13 +1318,14 @@ CREATE SEQUENCE tenant_2_orders_seq;
 ```
 
 ### Scenario 18: Time-Series Data Flooding — 1M Rows/Hour
+
 ```sql
 -- Problem: IoT sensors sending 1M readings/hour, INSERT can't keep up
 -- Solution: Batch inserts + TimescaleDB hypertable
 
 -- Step 1: Batch INSERT (not row-by-row!)
 INSERT INTO sensor_readings (sensor_id, value, ts)
-VALUES 
+VALUES
     (1, 23.5, '2025-03-08 10:00:01'),
     (1, 23.6, '2025-03-08 10:00:02'),
     -- ... 1000 rows per batch
@@ -1331,7 +1335,7 @@ VALUES
 -- Step 2: Continuous aggregate (pre-computed summaries)
 CREATE MATERIALIZED VIEW sensor_hourly
 WITH (timescaledb.continuous) AS
-SELECT 
+SELECT
     sensor_id,
     time_bucket('1 hour', ts) AS hour,
     AVG(value) AS avg_value,
@@ -1343,13 +1347,14 @@ GROUP BY sensor_id, time_bucket('1 hour', ts);
 ```
 
 ### Scenario 19: Audit Log Table Consuming 80% of Storage
+
 ```sql
 -- Problem: audit_log table is 200GB, growing 2GB/day
 -- Solution: Tiered retention + compression
 
 -- Keep last 90 days full detail, summarize older
 CREATE TABLE audit_log_archive AS
-SELECT 
+SELECT
     DATE(action_time) AS action_date,
     action_type,
     table_name,
@@ -1365,12 +1370,13 @@ VACUUM FULL audit_log;
 ```
 
 ### Scenario 20: TOAST Table Bloat (PostgreSQL)
+
 ```sql
 -- Problem: Table is 5GB but pg_total_relation_size shows 40GB
 -- The extra 35GB is in the TOAST table (large values stored out-of-line)
 
 -- Diagnose:
-SELECT 
+SELECT
     c.relname AS main_table,
     pg_size_pretty(pg_relation_size(c.oid)) AS main_size,
     t.relname AS toast_table,
@@ -1385,6 +1391,7 @@ VACUUM FULL the_bloated_table;
 ```
 
 ### Scenario 21: Partition Table Reaching OS File Handle Limits
+
 ```sql
 -- Problem: 5000 daily partitions = 5000+ files. OS ulimit is 1024.
 -- Solution: Consolidate to monthly partitions, archive old ones
@@ -1393,7 +1400,7 @@ VACUUM FULL the_bloated_table;
 CREATE TABLE events_2024_01 PARTITION OF events
     FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
 
-INSERT INTO events_2024_01 
+INSERT INTO events_2024_01
 SELECT * FROM events_2024_01_01
 UNION ALL SELECT * FROM events_2024_01_02
 -- ... all 31 days
@@ -1401,17 +1408,18 @@ UNION ALL SELECT * FROM events_2024_01_02
 ```
 
 ### Scenario 22: Foreign Key Chains Blocking Deletes at Scale
+
 ```sql
 -- Problem: DELETE FROM customers WHERE id = 5 takes 30 minutes
 -- Because it cascades through: orders → order_items → shipments → tracking
 
 -- Solution 1: Batch delete bottom-up (reverse FK order)
-DELETE FROM tracking WHERE shipment_id IN 
-    (SELECT id FROM shipments WHERE order_id IN 
+DELETE FROM tracking WHERE shipment_id IN
+    (SELECT id FROM shipments WHERE order_id IN
         (SELECT id FROM orders WHERE customer_id = 5));
-DELETE FROM shipments WHERE order_id IN 
+DELETE FROM shipments WHERE order_id IN
     (SELECT id FROM orders WHERE customer_id = 5);
-DELETE FROM order_items WHERE order_id IN 
+DELETE FROM order_items WHERE order_id IN
     (SELECT id FROM orders WHERE customer_id = 5);
 DELETE FROM orders WHERE customer_id = 5;
 DELETE FROM customers WHERE id = 5;
@@ -1423,6 +1431,7 @@ DELETE FROM customers WHERE id = 5;
 ```
 
 ### Scenario 23: Orphaned Rows After Failed Cascade Delete
+
 ```sql
 -- Problem: Application crashed mid-delete. orders deleted but order_items remain.
 -- Find orphans:
@@ -1432,15 +1441,16 @@ LEFT JOIN orders o ON oi.order_id = o.id
 WHERE o.id IS NULL;
 
 -- Clean up orphans:
-DELETE FROM order_items 
+DELETE FROM order_items
 WHERE order_id NOT IN (SELECT id FROM orders);
 
 -- Prevent future orphans: Add FK constraint if missing
-ALTER TABLE order_items 
+ALTER TABLE order_items
 ADD CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE;
 ```
 
 ### Scenario 24: Character Encoding Mismatch Wasting 3x Storage
+
 ```sql
 -- Problem: Table uses latin1 but stores emoji/unicode → mojibake AND wasted space
 -- utf8mb4 with latin1 columns = 4 bytes per char instead of 1
@@ -1458,6 +1468,7 @@ ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 ### Scenario 25: CTE / Temp Table Memory Explosion
+
 ```sql
 -- Problem: CTE materializes 50M rows into memory, OOM kill
 WITH all_events AS (
@@ -1484,24 +1495,31 @@ SET work_mem = '128MB';      -- Per-operation sort/hash memory
 
 ## 🧠 DSA Patterns Behind These Scenarios
 
-| Scenario | DSA Pattern |
-|----------|-------------|
-| ID exhaustion | **Overflow detection** — checking bounds before increment |
-| Base-36 IDs | **Number base conversion** — div/mod loop |
-| UUID vs auto-inc | **BST insert patterns** — random vs sequential |
-| Snowflake IDs | **Bit manipulation** — shift and mask |
-| Merge conflicts | **Merge sort stability** — preserving origin |
-| Billion-row scan | **Binary search** — why O(log n) index beats O(n) scan |
-| Disk space triage | **Priority queue** — find top-K space consumers |
-| Dead tuples | **Garbage collection** — mark-and-sweep |
-| Archive strategy | **LRU cache** — eviction policy (hot/cold) |
-| Soft delete bloat | **Lazy deletion** — marking vs actual removal |
-| FK cascade delete | **DFS/BFS** — tree/graph traversal order |
-| Orphan detection | **Dangling pointer** — reference to freed memory |
+| Scenario          | DSA Pattern                                               |
+| ----------------- | --------------------------------------------------------- |
+| ID exhaustion     | **Overflow detection** — checking bounds before increment |
+| Base-36 IDs       | **Number base conversion** — div/mod loop                 |
+| UUID vs auto-inc  | **BST insert patterns** — random vs sequential            |
+| Snowflake IDs     | **Bit manipulation** — shift and mask                     |
+| Merge conflicts   | **Merge sort stability** — preserving origin              |
+| Billion-row scan  | **Binary search** — why O(log n) index beats O(n) scan    |
+| Disk space triage | **Priority queue** — find top-K space consumers           |
+| Dead tuples       | **Garbage collection** — mark-and-sweep                   |
+| Archive strategy  | **LRU cache** — eviction policy (hot/cold)                |
+| Soft delete bloat | **Lazy deletion** — marking vs actual removal             |
+| FK cascade delete | **DFS/BFS** — tree/graph traversal order                  |
+| Orphan detection  | **Dangling pointer** — reference to freed memory          |
 
 ---
 
 [⬅ Previous: 37_SQL_5WH_Deep_Reasoning](37_SQL_5WH_Deep_Reasoning.md) | [📚 Index](00_INDEX.md) | [Next: 39_RealWorld_Production_Scenarios_Part2 ➡](39_RealWorld_Production_Scenarios_Part2.md)
 
+### Historical Evolution (Extended)
 
+**Additional predecessors:**
+- **Dennis Ritchie (1970s)**: INT 32-bit signed integer (2^31-1 = 2.1B max) standardized in C for Unix — why database auto-increment columns hit walls
+- **Twitter (2010)**: Snowflake ID — 64-bit distributed ID with timestamp + machine + sequence; solved Twitter's multi-datacenter uniqueness problem
+- **Lehost & Padget (2001)**: UUID v1 (MAC address + timestamp) — early attempt at distributed IDs; clock-synchronization vulnerabilities discovered later
 
+**Brief evolution note:**
+Auto-increment INTEGER primary keys dominated from the 1970s-2000s because disk was precious and single-machine databases were the norm. The 2.1B ceiling was considered "unreachable." When social media and IoT hit billions of rows per table, teams scrambled to BIGINT or UUID migrations. UUID v4 (random) caused B-Tree write amplification, prompting UUID v7 (RFC 9562, 2024) — time-ordered 128-bit IDs that preserve B-Tree insert efficiency while remaining globally unique.

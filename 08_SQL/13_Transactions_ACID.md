@@ -15,14 +15,17 @@ A transaction is a **logical unit of work** — a group of SQL operations that m
 The ACID properties are not arbitrary rules — each one prevents a specific category of real-world disaster:
 
 #### Atomicity — "All or Nothing"
+
 **What it prevents:** Partial operations in a multi-step process. If you're processing a purchase (create order → deduct inventory → charge payment → send confirmation), atomicity ensures that if the payment fails, the inventory deduction is also rolled back. Without atomicity, you'd have "ghost orders" — inventory reduced but no payment collected.
 
 **How it works internally:** The database uses a **Write-Ahead Log (WAL)**. Before making any change to the actual data, the database first writes the change to a log file. If a crash occurs, the database reads this log during recovery and either replays committed transactions or undoes incomplete ones.
 
 #### Consistency — "Valid State to Valid State"
+
 **What it prevents:** Data that violates your schema's rules. Consistency means every transaction takes the database from one valid state to another. "Valid" is defined by your constraints — foreign keys must reference existing rows, CHECK constraints must be satisfied, unique values must remain unique. If a transaction would violate any constraint, the entire transaction is rejected.
 
 #### Isolation — "Transactions Don't Interfere"
+
 **What it prevents:** Concurrent transactions seeing each other's intermediate (incomplete) changes. This is the most complex ACID property because there's a fundamental tension between **correctness** and **performance**:
 
 - **Perfect isolation** (SERIALIZABLE) means transactions execute as if they were sequential — no concurrency at all. This is correct but slow — every transaction waits for others to finish.
@@ -30,12 +33,12 @@ The ACID properties are not arbitrary rules — each one prevents a specific cat
 
 The isolation levels represent a **spectrum of trade-offs**:
 
-| Isolation Level | Concurrency | Correctness | Use When |
-|----------------|-------------|-------------|----------|
-| **READ UNCOMMITTED** | Highest | Lowest (dirty reads possible) | Almost never — only for rough analytics where accuracy doesn't matter |
-| **READ COMMITTED** | High | Good (no dirty reads) | Default for PostgreSQL — good for most OLTP workloads |
-| **REPEATABLE READ** | Medium | Better (stable reads within a transaction) | Default for MySQL/InnoDB — good when you need consistent reads |
-| **SERIALIZABLE** | Lowest | Perfect (as if sequential) | Financial systems, inventory management — where correctness is critical |
+| Isolation Level      | Concurrency | Correctness                                | Use When                                                                |
+| -------------------- | ----------- | ------------------------------------------ | ----------------------------------------------------------------------- |
+| **READ UNCOMMITTED** | Highest     | Lowest (dirty reads possible)              | Almost never — only for rough analytics where accuracy doesn't matter   |
+| **READ COMMITTED**   | High        | Good (no dirty reads)                      | Default for PostgreSQL — good for most OLTP workloads                   |
+| **REPEATABLE READ**  | Medium      | Better (stable reads within a transaction) | Default for MySQL/InnoDB — good when you need consistent reads          |
+| **SERIALIZABLE**     | Lowest      | Perfect (as if sequential)                 | Financial systems, inventory management — where correctness is critical |
 
 #### How Modern Databases Achieve Isolation: MVCC
 
@@ -44,7 +47,9 @@ Most modern databases (PostgreSQL, MySQL InnoDB, Oracle) use **Multi-Version Con
 When you start a transaction, you get a "snapshot" of the database as of that moment. Your reads see that snapshot, even if other transactions modify the data. This means **readers never block writers, and writers never block readers.** The database maintains multiple versions of each row and garbage-collects old versions after all transactions that might need them have finished.
 
 #### Durability — "Committed Means Permanent"
+
 **What it prevents:** Data loss after the database confirms a commit. When the database says `COMMIT` succeeded, the changes are guaranteed to survive any failure — power outages, disk crashes, operating system panics. This is achieved through:
+
 - Writing to the **WAL** on disk before acknowledging the commit
 - **Flushing the WAL to disk** (fsync) to ensure the OS actually writes to the physical disk, not just an in-memory buffer
 - **Replication** to other servers (in production setups) for protection against hardware failure
@@ -96,7 +101,6 @@ When you start a transaction, you get a "snapshot" of the database as of that mo
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -249,16 +253,15 @@ SET lock_timeout = '10s';
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 15: Transactions & ACID Properties**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Part 2: Advanced Isolation Anomalies
 
@@ -285,12 +288,12 @@ BEGIN;
 -- Read current version
 SELECT balance, version FROM accounts WHERE id = 1; -- version = 5
 -- Application logic...
-UPDATE accounts SET balance = 150, version = 6 
+UPDATE accounts SET balance = 150, version = 6
 WHERE id = 1 AND version = 5; -- Fails if someone else updated it!
 COMMIT;
 
 -- 2. WRITE SKEW
--- Concept: Two concurrent transactions read a dataset, check a condition, 
+-- Concept: Two concurrent transactions read a dataset, check a condition,
 -- and then write to DIFFERENT rows, causing the overall condition to be violated.
 -- Example: Doctors on call. Rule: At least 1 doctor must be on call.
 -- Both Alice and Bob are on call. They both check concurrently.
@@ -335,16 +338,15 @@ COMMIT;
 
 ---
 
-
-
 🔬 **Section Challenge — Part 3: Distributed Transactions (Microservices)**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## Part 4: Concurrency Control Models
 
@@ -426,3 +428,19 @@ _"Part 5 Complete! You now understand Normalization, Indexes, Views, Stored Proc
 ---
 
 > **Navigation**: [< Previous](12_Views_StoredProcs_Triggers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Query_Optimization.md)
+
+### Historical Evolution
+
+**Predecessors (with years):**
+- **IBM System R** (1974-1979): Pioneered transaction processing with atomicity guarantees and the concept of transaction logs
+- **Gray & Reuter** (1979): Formalized ACID properties in "Transaction Processing: Concepts and Techniques" - Atomicity, Consistency, Isolation, Durability became the foundational contract
+- **Eswaran et al.** (1976): Introduced two-phase locking (2PL) to serializability, solving the core concurrency control problem
+- **Reed** (1978): Proposed Multi-Version Concurrency Control (MVCC), enabling readers to never block writers
+- **SQL-92** (1992): Standardized four isolation levels (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE)
+- **Garcia-Molina** (1987): Formalized the Saga pattern for distributed transactions across service boundaries
+
+**Evolution narrative:**
+Before ACID, database systems provided little guarantee about what happened if a transaction was interrupted mid-way. IBM System R's pioneering work in the 1970s established that transactions must be atomic (all-or-nothing), maintain consistency (leave DB in valid state), use isolation (appear concurrent despite serial execution), and survive failures (durability via write-ahead logging). Two-phase locking from Eswaran's work solved the core problem of concurrent transactions interfering with each other, while Reed's MVCC allowed the read-write conflict problem to be sidestepped by maintaining multiple versions. SQL-92 standardized these concepts, and modern systems like PostgreSQL (Snapshot Isolation) and MySQL (InnoDB with MVCC) implement variants optimized for real-world workloads.
+
+**Modern practice anchor:**
+Today, understanding ACID properties is essential for debugging isolation-level anomalies (dirty reads, non-repeatable reads, phantom reads) in LeetCode transaction problems and designing reliable microservices with Saga patterns for distributed consistency.

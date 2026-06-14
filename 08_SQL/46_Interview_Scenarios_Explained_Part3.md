@@ -7,27 +7,25 @@
 
 ## 📋 Scenarios in This File
 
-| # | Scenario | Interview Trigger |
-|---|----------|-------------------|
-| S21 | Schema Migration Gone Wrong | "Tell me about your worst deployment" |
-| S22 | Circular Foreign Key / Delete Cascade Crisis | "How do you handle referential integrity?" |
-| S23 | JSON Column Abuse | "When would you use JSON columns vs normalized tables?" |
-| S24 | Soft Delete Leading to Performance Decay | "How do you handle deletes in production?" |
-| S25 | Enum Column That Won't Scale | "How do you design for schema evolution?" |
-| S26 | Multi-Tenant Data Isolation Failure | "How would you design a multi-tenant system?" |
-| S27 | Time Zone Bugs in Production | "Tell me about a subtle bug that was hard to track down" |
-| S28 | Bulk Import Killing Production | "How do you handle large data imports?" |
-| S29 | Microservice Database Anti-Patterns | "What's the biggest mistake in microservice architecture?" |
-| S30 | Monitoring Blind Spots | "How do you know when something is wrong before users do?" |
+| #   | Scenario                                     | Interview Trigger                                          |
+| --- | -------------------------------------------- | ---------------------------------------------------------- |
+| S21 | Schema Migration Gone Wrong                  | "Tell me about your worst deployment"                      |
+| S22 | Circular Foreign Key / Delete Cascade Crisis | "How do you handle referential integrity?"                 |
+| S23 | JSON Column Abuse                            | "When would you use JSON columns vs normalized tables?"    |
+| S24 | Soft Delete Leading to Performance Decay     | "How do you handle deletes in production?"                 |
+| S25 | Enum Column That Won't Scale                 | "How do you design for schema evolution?"                  |
+| S26 | Multi-Tenant Data Isolation Failure          | "How would you design a multi-tenant system?"              |
+| S27 | Time Zone Bugs in Production                 | "Tell me about a subtle bug that was hard to track down"   |
+| S28 | Bulk Import Killing Production               | "How do you handle large data imports?"                    |
+| S29 | Microservice Database Anti-Patterns          | "What's the biggest mistake in microservice architecture?" |
+| S30 | Monitoring Blind Spots                       | "How do you know when something is wrong before users do?" |
 
 ---
-
-
-
 
 ## S21: Schema Migration Gone Wrong
 
 ### 🎤 Interview Question
+
 > "Tell me about your worst deployment experience."
 
 ### ✅ Professional Answer
@@ -65,6 +63,7 @@ ALTER TABLE users DROP COLUMN user_name;
 ```
 
 "**This is the expand-and-contract pattern:**
+
 1. **Expand:** Add new column alongside old one (both work)
 2. **Migrate:** New code uses new column; sync keeps old working
 3. **Contract:** Remove old column after all code updated
@@ -97,6 +96,7 @@ MAKE UNSAFE SAFE:
 ### 🔄 Variants
 
 **Variant A: Rolling back a migration**
+
 ```sql
 -- ALWAYS write reversible migrations
 -- Flyway: V1__add_discount.sql + V1__undo_add_discount.sql
@@ -111,6 +111,7 @@ MAKE UNSAFE SAFE:
 ## S22: Circular Foreign Key / Cascade Delete Crisis
 
 ### 🎤 Interview Question
+
 > "How do you handle complex referential integrity?"
 
 ### ✅ Professional Answer
@@ -124,7 +125,7 @@ MAKE UNSAFE SAFE:
 -- Could delete thousands of rows across 6 tables from ONE delete
 
 -- SOLUTION 1: Use RESTRICT + application-level cleanup
-ALTER TABLE orders ADD CONSTRAINT fk_user 
+ALTER TABLE orders ADD CONSTRAINT fk_user
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT;
 -- DELETE FROM users WHERE id = 100; → ERROR: still referenced by orders
 -- Force explicit cleanup in the right order
@@ -140,7 +141,7 @@ UPDATE users SET deleted_at = NOW() WHERE id = 100;
 WITH RECURSIVE cascade_count AS (
     SELECT 'orders' AS table_name, COUNT(*) AS cnt FROM orders WHERE user_id = 100
     UNION ALL
-    SELECT 'order_items', COUNT(*) FROM order_items WHERE order_id IN 
+    SELECT 'order_items', COUNT(*) FROM order_items WHERE order_id IN
         (SELECT id FROM orders WHERE user_id = 100)
     -- ... continue for all dependent tables
 )
@@ -153,6 +154,7 @@ SELECT * FROM cascade_count;
 ## S23: JSON Column Abuse
 
 ### 🎤 Interview Question
+
 > "When would you use JSON columns vs normalized tables?"
 
 ### ✅ Professional Answer
@@ -160,11 +162,13 @@ SELECT * FROM cascade_count;
 "JSON columns are powerful but frequently misused. Here's my decision framework:
 
 **Use JSON when:**
+
 - Schema-less data that varies per row (user preferences, form submissions)
 - Rarely queried/filtered — just stored and returned to the application
 - Third-party webhook payloads that you want to store raw
 
 **Use normalized tables when:**
+
 - You need to query/filter/join on the data
 - The structure is consistent across rows
 - You need UNIQUE constraints or foreign keys on the data
@@ -178,7 +182,7 @@ CREATE TABLE orders (
     data JSONB  -- everything as JSON
 );
 
--- Want to find orders over $100? 
+-- Want to find orders over $100?
 SELECT * FROM orders WHERE (data->>'total')::numeric > 100;
 -- Problems:
 -- 1. Can't use standard B-Tree index (need GIN or expression index)
@@ -219,6 +223,7 @@ CREATE INDEX idx_orders_metadata_source ON orders ((metadata->>'source'));
 ## S24: Soft Delete Performance Decay
 
 ### 🎤 Interview Question
+
 > "How do you handle deletes in a production system?"
 
 ### ✅ Professional Answer
@@ -236,13 +241,13 @@ SELECT * FROM orders WHERE status = 'pending' AND deleted_at IS NULL;
 -- But you only care about 5M active rows → 90% of index is waste
 
 -- SOLUTION: Partial index (PostgreSQL)
-CREATE INDEX idx_orders_status_active 
-ON orders (status) 
+CREATE INDEX idx_orders_status_active
+ON orders (status)
 WHERE deleted_at IS NULL;
 -- This index only contains the 5M active rows → 10x smaller → 10x faster
 
 -- MySQL equivalent: No partial indexes, but you can use a generated column
-ALTER TABLE orders ADD COLUMN is_active BOOLEAN GENERATED ALWAYS AS 
+ALTER TABLE orders ADD COLUMN is_active BOOLEAN GENERATED ALWAYS AS
     (CASE WHEN deleted_at IS NULL THEN TRUE ELSE NULL END) STORED;
 CREATE INDEX idx_orders_active ON orders (is_active, status);
 -- NULL values aren't indexed in MySQL → only active rows in index
@@ -286,6 +291,7 @@ Alternative: Partitioning by active/archived
 ## S25: Enum Column That Won't Scale
 
 ### 🎤 Interview Question
+
 > "How do you handle status fields that accumulate more values over time?"
 
 ### ✅ Professional Answer
@@ -308,7 +314,7 @@ CREATE TABLE orders (
 );
 -- Adding a value: Just modify the CHECK constraint (instant metadata change)
 ALTER TABLE orders DROP CONSTRAINT chk_status;
-ALTER TABLE orders ADD CONSTRAINT chk_status 
+ALTER TABLE orders ADD CONSTRAINT chk_status
     CHECK (status IN ('pending', 'confirmed', 'shipped', 'cancelled'));
 
 -- Approach 2: Lookup table (most flexible)
@@ -318,7 +324,7 @@ CREATE TABLE order_statuses (
     sort_order INT,
     is_terminal BOOLEAN DEFAULT FALSE
 );
-INSERT INTO order_statuses VALUES 
+INSERT INTO order_statuses VALUES
     ('pending', 'Pending', 1, false),
     ('confirmed', 'Confirmed', 2, false),
     ('shipped', 'Shipped', 3, false),
@@ -339,6 +345,7 @@ CREATE TABLE orders (
 ## S26: Multi-Tenant Data Isolation Failure
 
 ### 🎤 Interview Question
+
 > "How would you design a multi-tenant system?"
 
 ### ✅ Professional Answer
@@ -419,6 +426,7 @@ CREATE POLICY tenant_isolation ON orders
 ## S27: Time Zone Bugs in Production
 
 ### 🎤 Interview Question
+
 > "Tell me about a subtle bug that was hard to track down."
 
 ### ✅ Professional Answer
@@ -438,7 +446,7 @@ SELECT * FROM orders WHERE DATE(created_at) = CURRENT_DATE;
 -- GOOD: Always store as TIMESTAMPTZ, convert per user
 -- Store: 2025-07-24T22:30:00+09:00 → stored as 2025-07-24T13:30:00Z
 -- Query with user's timezone:
-SELECT * FROM orders 
+SELECT * FROM orders
 WHERE created_at >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Tokyo')
   AND created_at <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Tokyo') + INTERVAL '1 day';
 ```
@@ -449,7 +457,7 @@ WHERE created_at >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Tokyo')
 public class Order {
     @Column(columnDefinition = "TIMESTAMPTZ")
     private Instant createdAt;  // Always UTC — no timezone ambiguity
-    
+
     // Convert for display only:
     public ZonedDateTime getCreatedAtForUser(ZoneId userZone) {
         return createdAt.atZone(userZone);
@@ -465,12 +473,10 @@ public class Order {
 
 ---
 
-
-
-
 ## S28: Bulk Import Killing Production
 
 ### 🎤 Interview Question
+
 > "How do you handle large data imports in a live system?"
 
 ### ✅ Professional Answer
@@ -492,7 +498,7 @@ public void importOrders(List<Order> orders) {
     for (int i = 0; i < orders.size(); i += batchSize) {
         List<Order> batch = orders.subList(i, Math.min(i + batchSize, orders.size()));
         importBatch(batch);
-        
+
         if (i % 100000 == 0) {
             log.info("Imported {}/{} rows", i, orders.size());
             Thread.sleep(100);  // Brief pause to let other queries breathe
@@ -527,12 +533,10 @@ COPY orders (customer_id, amount, status) FROM '/tmp/orders.csv' CSV HEADER;
 
 ---
 
-
-
-
 ## S29: Microservice Database Anti-Patterns
 
 ### 🎤 Interview Question
+
 > "What's the biggest mistake teams make with microservice databases?"
 
 ### ✅ Professional Answer
@@ -587,11 +591,10 @@ Map<Long, User> users = userService.getUsersByIds(userIds);  // ONE call
 
 ---
 
-
-
 ## S30: Monitoring Blind Spots That Hide Production Issues
 
 ### 🎤 Interview Question
+
 > "How do you know when something is wrong before users complain?"
 
 ### ✅ Professional Answer
@@ -615,7 +618,7 @@ SELECT NOW() - pg_last_xact_replay_timestamp() AS replication_lag;
 -- Alert when: lag > 5 seconds
 
 -- 4. TABLE BLOAT (dead rows from soft deletes / MVCC)
-SELECT relname, n_dead_tup, n_live_tup, 
+SELECT relname, n_dead_tup, n_live_tup,
        ROUND(100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0), 1) AS dead_pct
 FROM pg_stat_user_tables
 WHERE n_dead_tup > 10000
@@ -652,21 +655,27 @@ MeterRegistryCustomizer<MeterRegistry> metricsConfig() {
 
 ---
 
-
-
-
 ## 🎯 Architecture Decision Interview Cheat Sheet
 
-| Decision Point | Junior Says | Senior Says |
-|---------------|------------|-------------|
-| Schema migration | "I'll just ALTER TABLE" | "I'll use expand-and-contract with zero-downtime migrations" |
-| Soft vs hard delete | "Just delete it" | "Soft delete with partial indexes and archival strategy" |
-| JSON columns | "Let's store everything as JSON" | "Structured data gets columns; dynamic metadata gets JSONB" |
-| Multi-tenancy | "Add tenant_id column" | "RLS + Hibernate filter for defense-in-depth isolation" |
-| Data import | "saveAll() with @Transactional" | "Batched JDBC inserts with throttling and COPY for large loads" |
-| Microservices DB | "All services use the same database" | "Database per service, events for synchronization" |
-| Monitoring | "We check logs when users complain" | "Golden signals + p99 latency alerts catch issues before users notice" |
+| Decision Point      | Junior Says                          | Senior Says                                                            |
+| ------------------- | ------------------------------------ | ---------------------------------------------------------------------- |
+| Schema migration    | "I'll just ALTER TABLE"              | "I'll use expand-and-contract with zero-downtime migrations"           |
+| Soft vs hard delete | "Just delete it"                     | "Soft delete with partial indexes and archival strategy"               |
+| JSON columns        | "Let's store everything as JSON"     | "Structured data gets columns; dynamic metadata gets JSONB"            |
+| Multi-tenancy       | "Add tenant_id column"               | "RLS + Hibernate filter for defense-in-depth isolation"                |
+| Data import         | "saveAll() with @Transactional"      | "Batched JDBC inserts with throttling and COPY for large loads"        |
+| Microservices DB    | "All services use the same database" | "Database per service, events for synchronization"                     |
+| Monitoring          | "We check logs when users complain"  | "Golden signals + p99 latency alerts catch issues before users notice" |
 
 ---
 
 [⬅ Previous: 45_Interview_Scenarios_Part2](45_Interview_Scenarios_Explained_Part2.md) | [📚 Index](00_INDEX.md) | [Next: 47_Theory_Deep_Dive ➡](47_Theory_Deep_Dive_Database_Internals.md)
+
+### Historical Evolution (Extended)
+
+**Additional predecessors:**
+- **Stripe Engineering (2015)**: Codified the expand-contract migration pattern as "parallel change" — adding columns in expand phase, swapping in contract phase, eliminating downtime migrations
+- **PostgreSQL Global Development Group (2014)**: JSONB added in PostgreSQL 9.4 — binary JSON storage with GIN indexing enabling schema-flexible tables without abandoning the relational model
+
+**Brief evolution note:**
+Schema migrations went from "schedule maintenance window" (1990s) to "tool-assisted zero-downtime" (2010s). GitHub's gh-ost (2016) proved that trigger-based online schema change was fragile; the binlog-based approach and expand-contract patterns are now the industry standard. The lesson: schema changes are fundamentally different from code changes because the old and new versions must coexist during rollout.

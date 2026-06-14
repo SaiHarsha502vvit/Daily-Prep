@@ -1,4 +1,5 @@
 # 📝 TypeScript — Problem Sets
+
 ## `17_TypeScript` Module | Type System · Generics · Mapped Types · Conditional Types
 
 > **How to use:** Write the type BEFORE checking answers. Part B code goes in `JavaSolutions/ps/ts/`. All code must pass TypeScript strict mode with zero errors.
@@ -17,19 +18,21 @@
 
 <details><summary>Answer</summary>
 
-| | `interface` | `type` |
-|---|---|---|
-| Merging | ✅ Declaration merging | ❌ Cannot re-declare |
-| Extension | `extends` | `&` intersection |
-| Primitives | ❌ Only object shapes | ✅ `type ID = string \| number` |
-| Computed | ❌ No mapped/conditional | ✅ Full type algebra |
-| Error messages | Slightly friendlier | Can be complex |
+|                | `interface`              | `type`                          |
+| -------------- | ------------------------ | ------------------------------- |
+| Merging        | ✅ Declaration merging   | ❌ Cannot re-declare            |
+| Extension      | `extends`                | `&` intersection                |
+| Primitives     | ❌ Only object shapes    | ✅ `type ID = string \| number` |
+| Computed       | ❌ No mapped/conditional | ✅ Full type algebra            |
+| Error messages | Slightly friendlier      | Can be complex                  |
 
 **When to use:**
+
 - `interface`: Public API shapes, class contracts — benefits from declaration merging in library code
 - `type`: Unions, intersections, utility types, computed types — anything `interface` can't express
 
 🔴 **Erklärung:** In practice, either works for object types. Choose `interface` when you expect consumers to extend/augment it. Choose `type` for everything else. Never mix needlessly — be consistent within a codebase.
+
 </details>
 
 ---
@@ -41,21 +44,22 @@
 ```typescript
 // any — disables type checking entirely
 let x: any = "hello";
-x.toUpperCase();           // ✅ TypeScript doesn't check
-x.nonExistentMethod();     // ✅ No error — dangerous!
+x.toUpperCase(); // ✅ TypeScript doesn't check
+x.nonExistentMethod(); // ✅ No error — dangerous!
 
 // unknown — forces type narrowing before use
 let y: unknown = "hello";
-y.toUpperCase();           // ❌ Error: Object is of type 'unknown'
+y.toUpperCase(); // ❌ Error: Object is of type 'unknown'
 
-if (typeof y === 'string') {
-  y.toUpperCase();         // ✅ TypeScript knows it's a string here
+if (typeof y === "string") {
+  y.toUpperCase(); // ✅ TypeScript knows it's a string here
 }
 ```
 
 **Rule:** Never use `any` except when migrating JavaScript. Use `unknown` for values whose type isn't known yet (e.g., API responses, `JSON.parse`) — forces you to narrow before using.
 
 🔴 **Erklärung:** `any` is an escape hatch that turns off the compiler. `unknown` keeps type safety — it's the type-safe equivalent. Always prefer `unknown` for external data.
+
 </details>
 
 ---
@@ -71,9 +75,9 @@ if (typeof y === 'string') {
 type UnpackPromise<T> = T extends Promise<infer U> ? U : T;
 
 // Usage:
-type A = UnpackPromise<Promise<string>>;  // string
+type A = UnpackPromise<Promise<string>>; // string
 type B = UnpackPromise<Promise<number[]>>; // number[]
-type C = UnpackPromise<string>;           // string (not a Promise, returns T itself)
+type C = UnpackPromise<string>; // string (not a Promise, returns T itself)
 
 // More complex: deeply unpack nested Promises
 type DeepUnpack<T> = T extends Promise<infer U> ? DeepUnpack<U> : T;
@@ -81,6 +85,7 @@ type D = DeepUnpack<Promise<Promise<boolean>>>; // boolean
 ```
 
 🔴 **Erklärung:** `infer` only works inside `extends` clauses of conditional types. Think of it as a "capture" — when the condition matches, `infer U` captures whatever type was in that position.
+
 </details>
 
 ---
@@ -92,12 +97,15 @@ type D = DeepUnpack<Promise<Promise<boolean>>>; // boolean
 ```typescript
 // ts/result.ts
 type Result<T, E extends Error = Error> =
-  | { ok: true;  value: T }
+  | { ok: true; value: T }
   | { ok: false; error: E };
 
 // Helper constructors
 const Ok = <T>(value: T): Result<T, never> => ({ ok: true, value });
-const Err = <E extends Error>(error: E): Result<never, E> => ({ ok: false, error });
+const Err = <E extends Error>(error: E): Result<never, E> => ({
+  ok: false,
+  error,
+});
 
 // Helper to unwrap or throw
 function unwrap<T, E extends Error>(result: Result<T, E>): T {
@@ -108,7 +116,7 @@ function unwrap<T, E extends Error>(result: Result<T, E>): T {
 // TODO: Implement Result.map — transforms T if ok, passes error through
 function mapResult<T, U, E extends Error>(
   result: Result<T, E>,
-  fn: (value: T) => U
+  fn: (value: T) => U,
 ): Result<U, E> {
   // TODO
   return result.ok ? Ok(fn(result.value)) : result;
@@ -154,10 +162,14 @@ type MyPick<T, K extends keyof T> = { [P in K]: T[P] };
 type MyRecord<K extends string, V> = { [P in K]: V };
 
 // Test (must compile):
-interface User { id: number; name: string; email: string; }
-type PartialUser = MyPartial<User>;          // { id?: number; name?: string; email?: string }
-type NameOnly = MyPick<User, 'name'>;        // { name: string }
-type Config = MyRecord<'host' | 'port', string>; // { host: string; port: string }
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+type PartialUser = MyPartial<User>; // { id?: number; name?: string; email?: string }
+type NameOnly = MyPick<User, "name">; // { name: string }
+type Config = MyRecord<"host" | "port", string>; // { host: string; port: string }
 ```
 
 <details><summary>Explanation of `[K in keyof T]` syntax</summary>
@@ -169,6 +181,7 @@ type Config = MyRecord<'host' | 'port', string>; // { host: string; port: string
 - `readonly` — makes the property readonly
 
 This is the foundation of ALL TypeScript's built-in utility types. Once you understand mapped types, you can build anything.
+
 </details>
 
 ---
@@ -199,36 +212,42 @@ type FrozenConfig = DeepReadonly<Config>;
 ```typescript
 // The event map defines what payload each event carries
 interface AppEvents {
-  'user:login':    { userId: string; timestamp: number };
-  'user:logout':   { userId: string };
-  'order:created': { orderId: string; amount: number };
-  'error':         { message: string; code: number };
+  "user:login": { userId: string; timestamp: number };
+  "user:logout": { userId: string };
+  "order:created": { orderId: string; amount: number };
+  error: { message: string; code: number };
 }
 
 class TypedEventBus<Events extends Record<string, unknown>> {
-  private listeners = new Map<keyof Events, Array<(payload: unknown) => void>>();
+  private listeners = new Map<
+    keyof Events,
+    Array<(payload: unknown) => void>
+  >();
 
-  on<K extends keyof Events>(event: K, listener: (payload: Events[K]) => void): void {
+  on<K extends keyof Events>(
+    event: K,
+    listener: (payload: Events[K]) => void,
+  ): void {
     const existing = this.listeners.get(event) ?? [];
     this.listeners.set(event, [...existing, listener as (p: unknown) => void]);
   }
 
   emit<K extends keyof Events>(event: K, payload: Events[K]): void {
     const handlers = this.listeners.get(event) ?? [];
-    handlers.forEach(h => h(payload));
+    handlers.forEach((h) => h(payload));
   }
 }
 
 // Usage — TypeScript enforces correct payload types:
 const bus = new TypedEventBus<AppEvents>();
 
-bus.on('user:login', ({ userId, timestamp }) => {
+bus.on("user:login", ({ userId, timestamp }) => {
   // userId: string, timestamp: number — fully typed!
   console.log(`User ${userId} logged in at ${new Date(timestamp)}`);
 });
 
-bus.emit('user:login', { userId: 'u1', timestamp: Date.now() }); // ✅
-bus.emit('user:login', { userId: 123 }); // ❌ Error: number not assignable to string
+bus.emit("user:login", { userId: "u1", timestamp: Date.now() }); // ✅
+bus.emit("user:login", { userId: 123 }); // ❌ Error: number not assignable to string
 ```
 
 ---
@@ -239,9 +258,12 @@ bus.emit('user:login', { userId: 123 }); // ❌ Error: number not assignable to 
 
 ```typescript
 // ts/useLocalStorage.ts
-import { useState } from 'react';
+import { useState } from "react";
 
-function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
+function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+): [T, (value: T | ((prev: T) => T)) => void] {
   const [stored, setStored] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -257,7 +279,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((pre
       setStored(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
-      console.error('useLocalStorage error:', error);
+      console.error("useLocalStorage error:", error);
     }
   };
 
@@ -265,9 +287,9 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((pre
 }
 
 // Usage (fully type-safe):
-const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'dark');
-const [count, setCount] = useLocalStorage<number>('count', 0);
-setCount(prev => prev + 1); // prev: number, return value must be number
+const [theme, setTheme] = useLocalStorage<"light" | "dark">("theme", "dark");
+const [count, setCount] = useLocalStorage<number>("count", 0);
+setCount((prev) => prev + 1); // prev: number, return value must be number
 ```
 
 ---

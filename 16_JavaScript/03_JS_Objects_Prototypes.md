@@ -4,22 +4,20 @@
 
 ## 5W1H — Why This Chapter?
 
-
 WHAT: Objects are JS's universal data structure. Prototypes are
 JS's inheritance mechanism. Classes (ES6) are sugar on top.
 
-WHY:  Everything in JS is (or behaves like) an object.
+WHY: Everything in JS is (or behaves like) an object.
 Understanding prototypes explains: why [].map works,
 how inheritance works, what `class` really does.
 
-WHO:  Anyone doing JS — React props are objects, APIs return
+WHO: Anyone doing JS — React props are objects, APIs return
 objects, DOM elements are objects.
 
 WHEN: After understanding functions and closures (Ch 2).
 
-HOW:  Every object has an internal [[Prototype]] link to another
+HOW: Every object has an internal [[Prototype]] link to another
 object. When you access a property, JS walks this chain.
-
 
 ---
 
@@ -28,14 +26,18 @@ object. When you access a property, JS walks this chain.
 ```javascript
 // WAY 1: Object literal (most common)
 const user = {
-    name: "Harsha",
-    age: 24,
-    greet() { return `Hi, I'm ${this.name}`; }
+  name: "Harsha",
+  age: 24,
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  },
 };
 
 // WAY 2: Object.create() (prototype-based)
 const personProto = {
-    greet() { return `Hi, I'm ${this.name}`; }
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  },
 };
 const user2 = Object.create(personProto);
 user2.name = "Harsha";
@@ -43,31 +45,39 @@ user2.name = "Harsha";
 
 // WAY 3: Constructor function (pre-ES6)
 function Person(name, age) {
-    this.name = name;
-    this.age = age;
+  this.name = name;
+  this.age = age;
 }
-Person.prototype.greet = function() {
-    return `Hi, I'm ${this.name}`;
+Person.prototype.greet = function () {
+  return `Hi, I'm ${this.name}`;
 };
 const user3 = new Person("Harsha", 24);
 
 // WAY 4: ES6 Class (syntactic sugar over Way 3)
 class PersonClass {
-    constructor(name, age) {
-        this.name = name;
-        this.age = age;
-    }
-    greet() { return `Hi, I'm ${this.name}`; }
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  greet() {
+    return `Hi, I'm ${this.name}`;
+  }
 }
 const user4 = new PersonClass("Harsha", 24);
 
 // WAY 5: Factory function (uses closures, no `this` needed)
 function createPerson(name, age) {
-    return {
-        getName() { return name; },  // closure over name
-        getAge() { return age; },    // closure over age
-        greet() { return `Hi, I'm ${name}`; }
-    };
+  return {
+    getName() {
+      return name;
+    }, // closure over name
+    getAge() {
+      return age;
+    }, // closure over age
+    greet() {
+      return `Hi, I'm ${name}`;
+    },
+  };
 }
 const user5 = createPerson("Harsha", 24);
 ```
@@ -89,7 +99,6 @@ state) and classes (old class components). Factory functions
 avoid `this` problems entirely — good for utility modules.
 ```
 
-
 ---
 
 ## 2. Property Descriptors — What Properties Really Are
@@ -108,32 +117,32 @@ console.log(Object.getOwnPropertyDescriptor(obj, "name"));
 
 // Define read-only property:
 Object.defineProperty(obj, "id", {
-    value: 42,
-    writable: false,       // Can't change
-    enumerable: true,
-    configurable: false    // Can't delete or reconfigure
+  value: 42,
+  writable: false, // Can't change
+  enumerable: true,
+  configurable: false, // Can't delete or reconfigure
 });
-obj.id = 100;   // Silently fails (strict mode: TypeError)
+obj.id = 100; // Silently fails (strict mode: TypeError)
 console.log(obj.id); // 42
 
 // GETTER/SETTER (computed properties):
 const person = {
-    firstName: "Sai",
-    lastName: "Harsha",
+  firstName: "Sai",
+  lastName: "Harsha",
 
-    get fullName() {
-        return `${this.firstName} ${this.lastName}`;
-    },
-    set fullName(value) {
-        const [first, last] = value.split(" ");
-        this.firstName = first;
-        this.lastName = last;
-    }
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  },
+  set fullName(value) {
+    const [first, last] = value.split(" ");
+    this.firstName = first;
+    this.lastName = last;
+  },
 };
 
-person.fullName;           // "Sai Harsha" (calls getter)
+person.fullName; // "Sai Harsha" (calls getter)
 person.fullName = "New Name"; // calls setter
-person.firstName;          // "New"
+person.firstName; // "New"
 ```
 
 ---
@@ -163,7 +172,6 @@ person.firstName;          // "New"
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ---
 
 ## 4. Prototypes — JS's Inheritance Mechanism
@@ -187,7 +195,6 @@ person.firstName;          // "New"
 ║        (deprecated but widely known).                                ║
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
-
 
 ```
 ╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
@@ -216,29 +223,28 @@ person.firstName;          // "New"
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ```javascript
 // HOW prototype works in practice:
 function Animal(name) {
-    this.name = name;
+  this.name = name;
 }
-Animal.prototype.speak = function() {
-    return `${this.name} makes a sound`;
+Animal.prototype.speak = function () {
+  return `${this.name} makes a sound`;
 };
 
 function Dog(name, breed) {
-    Animal.call(this, name);   // Call parent constructor
-    this.breed = breed;
+  Animal.call(this, name); // Call parent constructor
+  this.breed = breed;
 }
 Dog.prototype = Object.create(Animal.prototype); // Set up chain
-Dog.prototype.constructor = Dog;                  // Fix constructor ref
-Dog.prototype.bark = function() {
-    return `${this.name} barks!`;
+Dog.prototype.constructor = Dog; // Fix constructor ref
+Dog.prototype.bark = function () {
+  return `${this.name} barks!`;
 };
 
 const rex = new Dog("Rex", "German Shepherd");
-rex.bark();   // "Rex barks!"      â† found on Dog.prototype
-rex.speak();  // "Rex makes a sound" â† found on Animal.prototype
+rex.bark(); // "Rex barks!"      â† found on Dog.prototype
+rex.speak(); // "Rex makes a sound" â† found on Animal.prototype
 rex.toString(); // "[object Object]" â† found on Object.prototype
 
 // rex own properties: { name: "Rex", breed: "German Shepherd" }
@@ -249,75 +255,74 @@ rex.toString(); // "[object Object]" â† found on Object.prototype
 
 ---
 
-
-
 🔬 **Section Challenge — 4. Prototypes — JS's Inheritance Mechanism**
 
 **Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+
 <details><summary>Answer</summary>
 
 `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-</details>
 
+</details>
 
 ## 5. ES6 Classes — Syntactic Sugar
 
 ```javascript
 class Animal {
-    // CONSTRUCTOR: Called when you do `new Animal(...)`
-    constructor(name) {
-        this.name = name;  // Instance property
-    }
+  // CONSTRUCTOR: Called when you do `new Animal(...)`
+  constructor(name) {
+    this.name = name; // Instance property
+  }
 
-    // INSTANCE METHOD: Added to Animal.prototype
-    speak() {
-        return `${this.name} makes a sound`;
-    }
+  // INSTANCE METHOD: Added to Animal.prototype
+  speak() {
+    return `${this.name} makes a sound`;
+  }
 
-    // STATIC METHOD: On the class itself, NOT on instances
-    static kingdom() {
-        return "Animalia";
-    }
+  // STATIC METHOD: On the class itself, NOT on instances
+  static kingdom() {
+    return "Animalia";
+  }
 
-    // GETTER/SETTER
-    get info() {
-        return `Animal: ${this.name}`;
-    }
+  // GETTER/SETTER
+  get info() {
+    return `Animal: ${this.name}`;
+  }
 }
 
 class Dog extends Animal {
-    #tricks = [];  // PRIVATE FIELD (ES2022) — truly private!
+  #tricks = []; // PRIVATE FIELD (ES2022) — truly private!
 
-    constructor(name, breed) {
-        super(name);        // MUST call super() before using `this`
-        this.breed = breed;
-    }
+  constructor(name, breed) {
+    super(name); // MUST call super() before using `this`
+    this.breed = breed;
+  }
 
-    bark() {
-        return `${this.name} barks!`;
-    }
+  bark() {
+    return `${this.name} barks!`;
+  }
 
-    // OVERRIDE parent method
-    speak() {
-        return `${this.name} woofs!`;
-    }
+  // OVERRIDE parent method
+  speak() {
+    return `${this.name} woofs!`;
+  }
 
-    // Access private field
-    addTrick(trick) {
-        this.#tricks.push(trick);
-    }
+  // Access private field
+  addTrick(trick) {
+    this.#tricks.push(trick);
+  }
 
-    showTricks() {
-        return this.#tricks.join(", ");
-    }
+  showTricks() {
+    return this.#tricks.join(", ");
+  }
 }
 
 const rex = new Dog("Rex", "GSD");
-rex.bark();           // "Rex barks!"
-rex.speak();          // "Rex woofs!" (overridden)
-Animal.kingdom();     // "Animalia" (static)
+rex.bark(); // "Rex barks!"
+rex.speak(); // "Rex woofs!" (overridden)
+Animal.kingdom(); // "Animalia" (static)
 rex.addTrick("sit");
-rex.showTricks();     // "sit"
+rex.showTricks(); // "sit"
 // rex.#tricks;       // âŒ SyntaxError — truly private!
 ```
 
@@ -341,7 +346,6 @@ rex.showTricks();     // "sit"
 ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-
 ---
 
 ## 6. Object Methods — Essential Toolkit
@@ -350,9 +354,9 @@ rex.showTricks();     // "sit"
 const user = { name: "Harsha", age: 24, role: "developer" };
 
 // KEYS, VALUES, ENTRIES
-Object.keys(user);    // ["name", "age", "role"]
-Object.values(user);  // ["Harsha", 24, "developer"]
-Object.entries(user);  // [["name","Harsha"], ["age",24], ["role","developer"]]
+Object.keys(user); // ["name", "age", "role"]
+Object.values(user); // ["Harsha", 24, "developer"]
+Object.entries(user); // [["name","Harsha"], ["age",24], ["role","developer"]]
 
 // Destructuring from entries (convert to Map):
 const map = new Map(Object.entries(user));
@@ -367,13 +371,16 @@ const result = Object.assign({}, defaults, prefs);
 const result2 = { ...defaults, ...prefs }; // Same result, cleaner
 
 // fromEntries (opposite of entries)
-const entries = [["a", 1], ["b", 2]];
+const entries = [
+  ["a", 1],
+  ["b", 2],
+];
 const obj = Object.fromEntries(entries); // { a: 1, b: 2 }
 
 // USE CASE: Transform object values
 const prices = { apple: 1, banana: 2, cherry: 3 };
 const doubled = Object.fromEntries(
-    Object.entries(prices).map(([key, val]) => [key, val * 2])
+  Object.entries(prices).map(([key, val]) => [key, val * 2]),
 );
 // { apple: 2, banana: 4, cherry: 6 }
 ```
@@ -397,10 +404,12 @@ const { name, phone = "N/A" } = user;
 
 // NESTED
 const company = {
-    name: "Tech Corp",
-    address: { city: "Hyderabad", zip: "500001" }
+  name: "Tech Corp",
+  address: { city: "Hyderabad", zip: "500001" },
 };
-const { address: { city, zip } } = company;
+const {
+  address: { city, zip },
+} = company;
 // city = "Hyderabad", zip = "500001"
 
 // REST
@@ -409,7 +418,7 @@ const { name: n, ...rest } = user;
 
 // IN FUNCTION PARAMS (very common in React)
 function UserCard({ name, age, role = "viewer" }) {
-    return `<div>${name} (${age}) - ${role}</div>`;
+  return `<div>${name} (${age}) - ${role}</div>`;
 }
 UserCard(user); // <div>Harsha (24) - developer</div>
 
@@ -418,14 +427,12 @@ const [first, second, ...rest] = [1, 2, 3, 4, 5];
 // first = 1, second = 2, rest = [3, 4, 5]
 
 // SWAP
-let a = 1, b = 2;
+let a = 1,
+  b = 2;
 [a, b] = [b, a]; // a = 2, b = 1 — no temp variable needed!
 ```
 
 ---
-
-
-
 
 ## 8. Iterators & Symbols
 
@@ -437,31 +444,31 @@ id === id2; // false — always unique!
 
 // Use: Hidden/non-colliding property keys
 const user = {
-    name: "Harsha",
-    [id]: 12345    // Symbol as key — won't show in Object.keys()
+  name: "Harsha",
+  [id]: 12345, // Symbol as key — won't show in Object.keys()
 };
-Object.keys(user);           // ["name"] — symbol hidden!
+Object.keys(user); // ["name"] — symbol hidden!
 Object.getOwnPropertySymbols(user); // [Symbol(id)]
 
 // WELL-KNOWN SYMBOLS — customize built-in behavior:
 class Range {
-    constructor(start, end) {
-        this.start = start;
-        this.end = end;
-    }
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
 
-    // Make Range iterable with for...of
-    [Symbol.iterator]() {
-        let current = this.start;
-        const end = this.end;
-        return {
-            next() {
-                return current <= end
-                    ? { value: current++, done: false }
-                    : { done: true };
-            }
-        };
-    }
+  // Make Range iterable with for...of
+  [Symbol.iterator]() {
+    let current = this.start;
+    const end = this.end;
+    return {
+      next() {
+        return current <= end
+          ? { value: current++, done: false }
+          : { done: true };
+      },
+    };
+  }
 }
 
 const range = new Range(1, 5);
@@ -493,7 +500,6 @@ KEY INSIGHT: In Java, the class defines the shape forever.
 In JS, objects are "bags of properties" — you can add/remove
 properties at any time. More flexible, but less safe.
 ```
-
 
 ---
 
@@ -528,7 +534,6 @@ Q: How to check if a property exists?
   obj.hasOwnProperty("prop") (own only)
   Object.hasOwn(obj, "prop") (modern, own only — preferred)
 ```
-
 
 ---
 

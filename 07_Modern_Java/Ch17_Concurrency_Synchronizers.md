@@ -25,12 +25,11 @@
 
 ### Deep Reasoning
 
-
 THE CONCERT VENUE ANALOGY
 
 You're organizing a large concert. Different coordination needs:
 
-Semaphore     = Parking lot gate
+Semaphore = Parking lot gate
 "Only 50 cars at a time. Car leaves → next car enters."
 → Controls concurrent access to N resources
 
@@ -42,14 +41,13 @@ CyclicBarrier = Band performing in rounds
 "All 4 musicians ready? → Play verse. All ready? → Chorus."
 → N threads sync at a point, REUSABLE for multiple rounds.
 
-Phaser        = Flexible stage management
+Phaser = Flexible stage management
 "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."
 → Dynamic: participants can join/leave between phases.
 
-Exchanger     = Backstage pass swap
+Exchanger = Backstage pass swap
 "I give you my VIP pass, you give me your backstage pass."
 → Two threads each give and receive one item.
-
 
 ### Decision Matrix: Which Synchronizer to Use
 
@@ -75,16 +73,15 @@ Exchanger     = Backstage pass swap
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 2. Semaphore: The Parking Lot Pattern
 
 ### The Freeze Question
+
 "How is a Semaphore different from a Lock?"
 
 ### Deep Reasoning
-
 
 THE PARKING LOT ANALOGY
 
@@ -98,13 +95,12 @@ Semaphore = parking lot with N spots
 → When full, next thread waits until a spot opens
 
 KEY DIFFERENCE:
-Lock:      1 thread, owner releases
+Lock: 1 thread, owner releases
 Semaphore: N threads, anyone can release
 
 Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement
 → Thread A acquires, Thread B can release → INTENTIONAL!
 → Useful for signaling between threads
-
 
 ### Code — Connection Pool Limiter
 
@@ -179,10 +175,11 @@ All Java synchronizers (`Semaphore`, `CountDownLatch`, `ReentrantLock`) do not t
 
 **The Mechanics of AQS:**
 AQS is a physical implementation of a **CLH (Craig, Landin, and Hagersten) Spin Lock Queue**.
+
 1. **The State:** It uses a single `volatile int state` to track permits/locks.
 2. **The Hardware CAS:** When a thread wants a permit, AQS issues a CPU-level **CAS (Compare-And-Swap)** instruction. If the CAS succeeds, the thread gets the permit and the CPU pipeline continues instantly (0 nanoseconds of OS overhead).
 3. **The Queue:** If the CAS fails (contention), AQS creates a `Node` representing the thread and appends it to a doubly-linked list (the CLH Queue).
-4. **The OS Park:** Only *after* the thread is safely in the queue does AQS call `LockSupport.park()`. This issues a direct system call to the Linux kernel (e.g., `futex`) to violently yank the thread off the CPU core and put it to sleep. 
+4. **The OS Park:** Only _after_ the thread is safely in the queue does AQS call `LockSupport.park()`. This issues a direct system call to the Linux kernel (e.g., `futex`) to violently yank the thread off the CPU core and put it to sleep.
 5. **The Unpark:** When the owner releases the lock, they check the queue, find the next `Node`, and call `LockSupport.unpark(thread)`, which tells the OS scheduler to put the thread back onto a CPU core.
 
 This dual-mode architecture (try optimistic CPU CAS first, fallback to pessimistic OS Parking only if necessary) is why `java.util.concurrent` can process millions of operations per second without locking up the OS kernel.
@@ -194,14 +191,14 @@ flowchart TD
         START["Thread calls acquire()"]
         CAS{"CPU CAS Instruction\ncompareAndSwap(state, 0, 1)"}
         FAST_PATH["Success: Acquired!\n(0ns OS Overhead)"]
-        
+
         START --> CAS
         CAS -->|State was 0| FAST_PATH
 
     subgraph "AQS Fallback (Contention)"
         QUEUE["Create Node & Append to\nCLH Double-Linked List"]
         PARK["Syscall: LockSupport.park()\n(Thread dumped to RAM)"]
-        
+
         CAS -.->|State was 1\n(Failed)| QUEUE
         QUEUE --> PARK
 
@@ -209,30 +206,29 @@ flowchart TD
         OWNER["Owner calls release()"]
         UNPARK["Syscall: LockSupport.unpark(NextNode)"]
         WAKE["Parked Thread Wakes Up & Retries CAS"]
-        
+
         OWNER --> UNPARK
         UNPARK --> WAKE
         WAKE -.-> CAS
-    
+
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 2. Semaphore: The Parking Lot Pattern**
 
 **Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
+
 <details><summary>Answer</summary>
 
 Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-</details>
 
+</details>
 
 ## 3. CountDownLatch: The Rocket Launch Countdown
 
 ### The Freeze Question
+
 "How do you wait for multiple threads to complete before proceeding?"
 
 ### Deep Reasoning
@@ -259,7 +255,6 @@ Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writ
 ║  Need reusable? → Use CyclicBarrier.                             ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### Code — Service Startup Orchestration
 
@@ -336,6 +331,7 @@ startGun.countDown();      // BANG! All 10 threads released at once
 ## 4. CyclicBarrier: The Hiking Group at Checkpoints
 
 ### The Freeze Question
+
 "How is CyclicBarrier different from CountDownLatch?"
 
 ### Deep Reasoning
@@ -368,7 +364,6 @@ KEY DIFFERENCES from CountDownLatch:
 │ Can reset?         │ ❌              │ ✅ .reset()         │
 └────────────────────┴─────────────────┴───────────────────┘
 ```
-
 
 ### Code — Parallel Matrix Computation
 
@@ -441,7 +436,6 @@ public class ParallelSimulation {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 5. Phaser: The Flexible Multi-Phase Coordinator
@@ -470,7 +464,6 @@ public class ParallelSimulation {
 ║  Phaser can REPLACE both CountDownLatch and CyclicBarrier!       ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### Code — Dynamic Task Coordination
 
@@ -535,16 +528,15 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
 
 **Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
+
 <details><summary>Answer</summary>
 
 Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-</details>
 
+</details>
 
 ## 6. Exchanger: The Two-Person Handoff
 
@@ -570,7 +562,6 @@ Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writ
 ║  → Never idle — always one buffer being filled, one processed      ║
 ╚════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```java
 import java.util.concurrent.Exchanger;
@@ -601,21 +592,22 @@ new Thread(() -> {
 
 ---
 
-
-
 > 🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
 >
-> **Challenge 1 (Concurrency Design):** An `Exchanger` blocks until *both* threads arrive at the exchange point. What happens if the Producer thread crashes and dies before calling `exchange()`, and how do you prevent the Consumer from hanging infinitely?
+> **Challenge 1 (Concurrency Design):** An `Exchanger` blocks until _both_ threads arrive at the exchange point. What happens if the Producer thread crashes and dies before calling `exchange()`, and how do you prevent the Consumer from hanging infinitely?
+>
 > <details><summary>Answer</summary>
 >
 > **Scenario:** Handling Thread Death in Rendezvous Synchronizers.
 > **Trace:** If the Producer thread throws an unhandled exception and terminates, the Consumer thread will reach `exchange(buffer)` and block forever, waiting for a partner that no longer exists. This is a classic thread starvation/hang scenario.
 > **Debug/Fix:** Never use indefinite blocking in production pipelines. Always use the timed version: `exchanger.exchange(buffer, 5, TimeUnit.SECONDS)`. If a `TimeoutException` is thrown, the Consumer knows the Producer has stalled or died. The Consumer can then gracefully degrade, log an alert, or trigger a restart of the Producer thread.
+>
 > </details>
 
 ## 7. Livelock vs Deadlock vs Starvation
 
 ### The Freeze Question
+
 "What's the difference between deadlock, livelock, and starvation?"
 
 ### Deep Reasoning
@@ -645,7 +637,6 @@ new Thread(() -> {
 ║  → Thread with low priority never gets CPU time.                 ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### How to Detect and Prevent Each
 
@@ -723,7 +714,6 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock
@@ -754,7 +744,6 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 ║  only when you need tryLock, fairness, or multiple conditions.   ║
 ╚══════════════════════════════════════════════════════════════════╝
 ```
-
 
 ### ReadWriteLock: The Library Pattern
 
@@ -844,16 +833,15 @@ public void move(double deltaX, double deltaY) {
 
 ---
 
-
-
 🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
 
 **Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
+
 <details><summary>Answer</summary>
 
 Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-</details>
 
+</details>
 
 ## 9. Real-World Production Patterns
 
@@ -945,22 +933,20 @@ public class GracefulShutdown {
 
 ---
 
-
-
 ## 10. Quick-Fire Table
 
-| Interview Question | One-Line Senior Answer |
-|---|---|
-| "What is a Semaphore?" | A counter-based synchronizer: acquire() decrements, release() increments. Controls concurrent access to N resources. Not owner-based unlike locks. |
-| "CountDownLatch vs CyclicBarrier?" | CountDownLatch: one-shot countdown, any thread counts down, waiting threads released at zero. CyclicBarrier: reusable, threads themselves wait at barrier, auto-resets after all arrive. |
-| "What is Phaser?" | A flexible reusable barrier where participants can register/deregister dynamically between phases. Replaces both CountDownLatch and CyclicBarrier when participant count varies. |
-| "How to prevent deadlock?" | Break any of the 4 Coffman conditions: lock ordering (breaks circular wait), tryLock with timeout (breaks hold-and-wait), or use lock-free algorithms (breaks mutual exclusion). |
-| "Deadlock vs livelock?" | Deadlock: threads blocked, doing nothing, waiting on each other. Livelock: threads active, repeatedly changing state, but making zero progress. Fix livelock with random backoff. |
-| "When to use ReentrantLock over synchronized?" | When you need: tryLock(), fairness, lockInterruptibly(), multiple Conditions, or lock across method boundaries. Otherwise, prefer synchronized for simplicity. |
-| "What is StampedLock?" | A lock with optimistic reads: tryOptimisticRead() reads without blocking, validate() checks if a write happened. Falls back to read lock only on conflict. Best for 99%+ read workloads. |
-| "Semaphore(1) vs ReentrantLock?" | Both provide mutual exclusion, BUT: Semaphore has no ownership (any thread can release), isn't reentrant, and is permit-based. ReentrantLock tracks which thread holds it and supports re-entry. |
-| "What is starvation?" | A thread repeatedly loses resource contention to other threads (often higher priority). Prevented with fair locks `new ReentrantLock(true)` which enforce FIFO ordering. |
-| "Can CyclicBarrier recover from failure?" | If one thread fails/is interrupted, the barrier breaks with BrokenBarrierException for all waiters. Call `barrier.reset()` to repair it, but design-wise: handle the failure at the barrier action. |
+| Interview Question                             | One-Line Senior Answer                                                                                                                                                                              |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "What is a Semaphore?"                         | A counter-based synchronizer: acquire() decrements, release() increments. Controls concurrent access to N resources. Not owner-based unlike locks.                                                  |
+| "CountDownLatch vs CyclicBarrier?"             | CountDownLatch: one-shot countdown, any thread counts down, waiting threads released at zero. CyclicBarrier: reusable, threads themselves wait at barrier, auto-resets after all arrive.            |
+| "What is Phaser?"                              | A flexible reusable barrier where participants can register/deregister dynamically between phases. Replaces both CountDownLatch and CyclicBarrier when participant count varies.                    |
+| "How to prevent deadlock?"                     | Break any of the 4 Coffman conditions: lock ordering (breaks circular wait), tryLock with timeout (breaks hold-and-wait), or use lock-free algorithms (breaks mutual exclusion).                    |
+| "Deadlock vs livelock?"                        | Deadlock: threads blocked, doing nothing, waiting on each other. Livelock: threads active, repeatedly changing state, but making zero progress. Fix livelock with random backoff.                   |
+| "When to use ReentrantLock over synchronized?" | When you need: tryLock(), fairness, lockInterruptibly(), multiple Conditions, or lock across method boundaries. Otherwise, prefer synchronized for simplicity.                                      |
+| "What is StampedLock?"                         | A lock with optimistic reads: tryOptimisticRead() reads without blocking, validate() checks if a write happened. Falls back to read lock only on conflict. Best for 99%+ read workloads.            |
+| "Semaphore(1) vs ReentrantLock?"               | Both provide mutual exclusion, BUT: Semaphore has no ownership (any thread can release), isn't reentrant, and is permit-based. ReentrantLock tracks which thread holds it and supports re-entry.    |
+| "What is starvation?"                          | A thread repeatedly loses resource contention to other threads (often higher priority). Prevented with fair locks `new ReentrantLock(true)` which enforce FIFO ordering.                            |
+| "Can CyclicBarrier recover from failure?"      | If one thread fails/is interrupted, the barrier breaks with BrokenBarrierException for all waiters. Call `barrier.reset()` to repair it, but design-wise: handle the failure at the barrier action. |
 
 ---
 
@@ -1065,16 +1051,15 @@ class SimpleReentrantLock extends AbstractQueuedSynchronizer {
 
 ---
 
-
-
 🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
 
 **Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
+
 <details><summary>Answer</summary>
 
 Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
-</details>
 
+</details>
 
 ## 12. ThreadLocal — Per-Thread Storage Deep Dive
 
@@ -1287,4 +1272,3 @@ new Thread(() -> {
 // → NEVER use CachedThreadPool for untrusted/unbounded workloads
 // → Use FixedThreadPool or ThreadPoolExecutor with bounded queue instead
 ```
-

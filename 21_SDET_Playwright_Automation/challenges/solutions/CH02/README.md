@@ -29,6 +29,7 @@ CH02/
 ### 1. Page Object Model Pattern
 
 Each page is encapsulated in its own class with:
+
 - **Locators** defined as a readonly `locators` object for easy maintenance
 - **Locators as properties** for commonly used elements (usernameInput, passwordInput, etc.)
 - **High-level methods** that compose atomic actions (goto, loginWith, expectInvalidCredentials)
@@ -47,8 +48,11 @@ readonly loginButton: Locator;
 Timeouts are imported from a centralized constants file rather than magic numbers:
 
 ```typescript
-import { Timeouts } from '../../../framework/constants/timeouts';
-await this.usernameInput.waitFor({ state: 'visible', timeout: Timeouts.THIRTY_SECONDS });
+import { Timeouts } from "../../../framework/constants/timeouts";
+await this.usernameInput.waitFor({
+  state: "visible",
+  timeout: Timeouts.THIRTY_SECONDS,
+});
 ```
 
 ### 4. Atomic Helper Reuse
@@ -56,7 +60,10 @@ await this.usernameInput.waitFor({ state: 'visible', timeout: Timeouts.THIRTY_SE
 The solution leverages existing framework helpers (`clickElement`, `fillInput`) instead of duplicating logic:
 
 ```typescript
-import { clickElement, fillInput } from '../../../framework/utilities/helpers/action.helpers';
+import {
+  clickElement,
+  fillInput,
+} from "../../../framework/utilities/helpers/action.helpers";
 ```
 
 ### 5. Test Data Separation
@@ -64,13 +71,14 @@ import { clickElement, fillInput } from '../../../framework/utilities/helpers/ac
 Credentials are stored in JSON and imported, keeping tests readable:
 
 ```typescript
-import credentials from '../../test-data/orangehrm/credentials.json';
+import credentials from "../../test-data/orangehrm/credentials.json";
 await loginPage.loginWith(credentials.valid);
 ```
 
 ### 6. Test Tags
 
 Tests are tagged for selective execution:
+
 - `@smoke` — core functionality tests
 - `@regression` — full regression suite
 
@@ -78,18 +86,18 @@ Tests are tagged for selective execution:
 
 ### Login (`login.spec.ts`)
 
-| Test | Description |
-|------|-------------|
-| `valid credentials land on dashboard` | Verify successful login redirects to dashboard |
-| `wrong password shows invalid credentials` | Verify error message for wrong password |
-| `wrong username shows invalid credentials` | Verify error message for wrong username |
-| `empty fields show required errors` | Verify validation errors for empty form submission |
+| Test                                       | Description                                        |
+| ------------------------------------------ | -------------------------------------------------- |
+| `valid credentials land on dashboard`      | Verify successful login redirects to dashboard     |
+| `wrong password shows invalid credentials` | Verify error message for wrong password            |
+| `wrong username shows invalid credentials` | Verify error message for wrong username            |
+| `empty fields show required errors`        | Verify validation errors for empty form submission |
 
 ### PIM Search (`pim-search.spec.ts`)
 
-| Test | Description |
-|------|-------------|
-| `search for nonsense returns zero results` | Edge case: search with non-existent name |
+| Test                                        | Description                                   |
+| ------------------------------------------- | --------------------------------------------- |
+| `search for nonsense returns zero results`  | Edge case: search with non-existent name      |
 | `search for known employee returns results` | Happy path: search returns matching employees |
 
 ## Running the Tests
@@ -111,6 +119,7 @@ npx playwright test --ui
 ## Dependencies
 
 The solution imports from the framework located at `21_SDET_Playwright_Automation/framework/`:
+
 - `utilities/helpers/action.helpers` — `clickElement`, `fillInput`
 - `constants/timeouts` — `Timeouts` enum
 

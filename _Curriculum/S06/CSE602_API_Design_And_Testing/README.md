@@ -17,18 +17,18 @@ Systematic treatment of REST/HTTP API design from resource modeling through prod
 
 ## Syllabus Outline
 
-| Week | Topic |
-|------|-------|
-| 1 | REST fundamentals: resources, verbs, status codes, idempotency |
-| 2 | API design: query params vs path params, pagination (cursor vs offset), filtering |
-| 3 | Versioning strategies: URL path, header, content negotiation; HATEOAS |
-| 4 | OpenAPI 3.1: spec authoring, $ref, compose APIs, generating clients |
-| 5 | Error handling: problem details (RFC 9457), validation error aggregation |
-| 6 | Authentication: Bearer tokens, API keys, OAuth2 client credentials |
-| 7 | Integration testing: @SpringBootTest, MockMvc, slice tests |
-| 8 | Testcontainers: PostgreSQL, Redis, Kafka; test lifecycle management |
-| 9 | Contract testing: Pact broker, consumer contracts, provider verification |
-| 10 | Load testing: k6 scripts, thresholds, spike/stress tests, results analysis |
+| Week | Topic                                                                             |
+| ---- | --------------------------------------------------------------------------------- |
+| 1    | REST fundamentals: resources, verbs, status codes, idempotency                    |
+| 2    | API design: query params vs path params, pagination (cursor vs offset), filtering |
+| 3    | Versioning strategies: URL path, header, content negotiation; HATEOAS             |
+| 4    | OpenAPI 3.1: spec authoring, $ref, compose APIs, generating clients               |
+| 5    | Error handling: problem details (RFC 9457), validation error aggregation          |
+| 6    | Authentication: Bearer tokens, API keys, OAuth2 client credentials                |
+| 7    | Integration testing: @SpringBootTest, MockMvc, slice tests                        |
+| 8    | Testcontainers: PostgreSQL, Redis, Kafka; test lifecycle management               |
+| 9    | Contract testing: Pact broker, consumer contracts, provider verification          |
+| 10   | Load testing: k6 scripts, thresholds, spike/stress tests, results analysis        |
 
 ## Linked Existing Content
 

@@ -1,6 +1,7 @@
 # ADR-001: Adopt Playwright for End-to-End Testing
 
 ## Status
+
 - Accepted (2026-06-10)
 
 ## Context
@@ -16,15 +17,15 @@ The QA team evaluated three end-to-end testing frameworks — Cypress, Selenium 
 
 We evaluated each framework against the following criteria:
 
-| Criteria | Cypress | Selenium | Playwright |
-|----------|---------|----------|------------|
-| Auto-waiting | Yes | No | Yes |
-| Multi-browser support | Chromium only | All major browsers | All major browsers |
-| TypeScript support | Yes | Via WebDriverJS | Native |
-| Trace viewer | Third-party | No | Built-in |
-| CI/CD performance | Good | Slow | Excellent |
-| Codegen / Playwright CLI | Limited | No | Yes |
-| Community size | Large | Very large | Growing rapidly |
+| Criteria                 | Cypress       | Selenium           | Playwright         |
+| ------------------------ | ------------- | ------------------ | ------------------ |
+| Auto-waiting             | Yes           | No                 | Yes                |
+| Multi-browser support    | Chromium only | All major browsers | All major browsers |
+| TypeScript support       | Yes           | Via WebDriverJS    | Native             |
+| Trace viewer             | Third-party   | No                 | Built-in           |
+| CI/CD performance        | Good          | Slow               | Excellent          |
+| Codegen / Playwright CLI | Limited       | No                 | Yes                |
+| Community size           | Large         | Very large         | Growing rapidly    |
 
 ## Decision
 
@@ -61,12 +62,12 @@ We will adopt **Playwright 1.40+** as our primary end-to-end testing framework, 
 
 ### Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Team resists framework change | Medium | High | Conduct 2-hour hands-on workshop; provide migration cheat sheet |
-| Migration takes longer than 2 sprints | Medium | Medium | Prioritize critical-path tests; defer low-priority rewrites |
-| Playwright API breaking changes | Low | Medium | Pin Playwright version; review changelog before upgrades |
-| Docker image CI caching issues | Low | Low | Document cache-busting steps; use Buildkite layer caching |
+| Risk                                  | Likelihood | Impact | Mitigation                                                      |
+| ------------------------------------- | ---------- | ------ | --------------------------------------------------------------- |
+| Team resists framework change         | Medium     | High   | Conduct 2-hour hands-on workshop; provide migration cheat sheet |
+| Migration takes longer than 2 sprints | Medium     | Medium | Prioritize critical-path tests; defer low-priority rewrites     |
+| Playwright API breaking changes       | Low        | Medium | Pin Playwright version; review changelog before upgrades        |
+| Docker image CI caching issues        | Low        | Low    | Document cache-busting steps; use Buildkite layer caching       |
 
 ## Compliance
 

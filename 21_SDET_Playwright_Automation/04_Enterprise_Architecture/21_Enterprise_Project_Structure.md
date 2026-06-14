@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)
 
 **Cross-links:**
+
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Fixtures internals
 - [`05_POM_Architecture_Deep_Dive.md`](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) — POM structure
 - [`22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md`](../../22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md) — API layer
@@ -44,44 +45,46 @@ Let's start where everyone starts — the bad version:
 ```typescript
 // ❌ BAD: everything in the spec file — seen in every junior team's early days
 
-test('Create citation and verify notification', async ({ page, request }) => {
-
+test("Create citation and verify notification", async ({ page, request }) => {
   // Hardcoded URL — breaks when you deploy to staging
-  await page.goto('http://localhost:8080/crm');
+  await page.goto("http://localhost:8080/crm");
 
   // Hardcoded credentials — they expire, rotate, or change environments
-  await page.fill('#username', 'admin@company.com');
-  await page.fill('#password', 'Admin@123');
-  await page.click('#loginBtn');
+  await page.fill("#username", "admin@company.com");
+  await page.fill("#password", "Admin@123");
+  await page.click("#loginBtn");
 
   // Hardcoded API endpoint — breaks in every other environment
-  const response = await request.post('http://localhost:9090/api/citations', {
+  const response = await request.post("http://localhost:9090/api/citations", {
     headers: {
-      'Authorization': 'Bearer eyJhbGciOiJSUzI1NiJ9...',  // ← this expires!
-      'Content-Type': 'application/json',
-      'X-Tenant-ID': 'ACME-001',                            // ← different per environment
+      Authorization: "Bearer eyJhbGciOiJSUzI1NiJ9...", // ← this expires!
+      "Content-Type": "application/json",
+      "X-Tenant-ID": "ACME-001", // ← different per environment
     },
     data: {
-      customerId: 'C-001',
-      amount: 150.00,
-      status: 'PENDING',
-      citationType: 'PARKING',
-    }
+      customerId: "C-001",
+      amount: 150.0,
+      status: "PENDING",
+      citationType: "PARKING",
+    },
   });
 
   // Inline assertion — no shared expectation library
   expect(response.status()).toBe(201);
   const body = await response.json();
-  expect(body.status).toBe('PENDING');
+  expect(body.status).toBe("PENDING");
 
   // Checking a notification 3 lines below the API call — no separation
-  const notifResponse = await request.get(`http://localhost:9090/api/notifications?userId=C-001`);
+  const notifResponse = await request.get(
+    `http://localhost:9090/api/notifications?userId=C-001`,
+  );
   const notifs = await notifResponse.json();
-  expect(notifs[0].type).toBe('CITATION_CREATED');
+  expect(notifs[0].type).toBe("CITATION_CREATED");
 });
 ```
 
 **What breaks immediately:**
+
 1. Commits staging credentials to Git → **security incident**
 2. Another test has `localhost:8080` → when you run against staging, everything fails
 3. The Bearer token expires in 1 hour → CI fails at 2 AM
@@ -101,28 +104,28 @@ test('Create citation and verify notification', async ({ page, request }) => {
 
 export const Environments = {
   local: {
-    crmUrl: 'http://localhost:8080/crm',
-    customerPortalUrl: 'http://localhost:3000',
-    apiBaseUrl: 'http://localhost:9090',
-    notificationServiceUrl: 'http://localhost:9091',
+    crmUrl: "http://localhost:8080/crm",
+    customerPortalUrl: "http://localhost:3000",
+    apiBaseUrl: "http://localhost:9090",
+    notificationServiceUrl: "http://localhost:9091",
   },
   dev: {
-    crmUrl: 'https://dev-crm.company.com',
-    customerPortalUrl: 'https://dev-portal.company.com',
-    apiBaseUrl: 'https://dev-api.company.com',
-    notificationServiceUrl: 'https://dev-notifications.company.com',
+    crmUrl: "https://dev-crm.company.com",
+    customerPortalUrl: "https://dev-portal.company.com",
+    apiBaseUrl: "https://dev-api.company.com",
+    notificationServiceUrl: "https://dev-notifications.company.com",
   },
   staging: {
-    crmUrl: 'https://staging-crm.company.com',
-    customerPortalUrl: 'https://staging-portal.company.com',
-    apiBaseUrl: 'https://staging-api.company.com',
-    notificationServiceUrl: 'https://staging-notifications.company.com',
+    crmUrl: "https://staging-crm.company.com",
+    customerPortalUrl: "https://staging-portal.company.com",
+    apiBaseUrl: "https://staging-api.company.com",
+    notificationServiceUrl: "https://staging-notifications.company.com",
   },
 } as const;
 
 // Which environment to use — set by CI/CD or local .env file
 export type Environment = keyof typeof Environments;
-export const currentEnv = (process.env.TEST_ENV ?? 'local') as Environment;
+export const currentEnv = (process.env.TEST_ENV ?? "local") as Environment;
 export const config = Environments[currentEnv];
 ```
 
@@ -137,30 +140,32 @@ export const config = Environments[currentEnv];
 // WHY: API paths change across versions (v1 → v2) and environments.
 //      Centralising them means you change ONE line when a path changes.
 
-import { config } from './environments';
+import { config } from "./environments";
 
 // Functions, not constants — they compose the base URL + path at call time
 // This way, if config.apiBaseUrl changes, all endpoints update automatically.
 export const Endpoints = {
   citations: {
-    create:    () => `${config.apiBaseUrl}/api/v2/citations`,
-    getById:   (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
-    update:    (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
-    delete:    (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
-    search:    () => `${config.apiBaseUrl}/api/v2/citations/search`,
-    byUser:    (userId: string) => `${config.apiBaseUrl}/api/v2/citations?userId=${userId}`,
+    create: () => `${config.apiBaseUrl}/api/v2/citations`,
+    getById: (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
+    update: (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
+    delete: (id: string) => `${config.apiBaseUrl}/api/v2/citations/${id}`,
+    search: () => `${config.apiBaseUrl}/api/v2/citations/search`,
+    byUser: (userId: string) =>
+      `${config.apiBaseUrl}/api/v2/citations?userId=${userId}`,
   },
   notifications: {
-    getByUser: (userId: string) => `${config.notificationServiceUrl}/api/notifications?userId=${userId}`,
-    send:      () => `${config.notificationServiceUrl}/api/notifications`,
+    getByUser: (userId: string) =>
+      `${config.notificationServiceUrl}/api/notifications?userId=${userId}`,
+    send: () => `${config.notificationServiceUrl}/api/notifications`,
   },
   auth: {
-    login:     () => `${config.apiBaseUrl}/api/auth/login`,
-    refresh:   () => `${config.apiBaseUrl}/api/auth/refresh`,
+    login: () => `${config.apiBaseUrl}/api/auth/login`,
+    refresh: () => `${config.apiBaseUrl}/api/auth/refresh`,
   },
   users: {
-    create:    () => `${config.apiBaseUrl}/api/v1/users`,
-    getById:   (id: string) => `${config.apiBaseUrl}/api/v1/users/${id}`,
+    create: () => `${config.apiBaseUrl}/api/v1/users`,
+    getById: (id: string) => `${config.apiBaseUrl}/api/v1/users/${id}`,
   },
 } as const;
 
@@ -181,31 +186,31 @@ export const Endpoints = {
 //      TypeScript enums catch these at compile time, not after a 3-hour debug session.
 
 export enum CitationStatus {
-  PENDING   = 'PENDING',
-  PAID      = 'PAID',
-  OVERDUE   = 'OVERDUE',
-  DISPUTED  = 'DISPUTED',
-  CANCELLED = 'CANCELLED',
+  PENDING = "PENDING",
+  PAID = "PAID",
+  OVERDUE = "OVERDUE",
+  DISPUTED = "DISPUTED",
+  CANCELLED = "CANCELLED",
 }
 
 export enum CitationType {
-  PARKING    = 'PARKING',
-  SPEEDING   = 'SPEEDING',
-  BUS_LANE   = 'BUS_LANE',
-  NO_PERMIT  = 'NO_PERMIT',
+  PARKING = "PARKING",
+  SPEEDING = "SPEEDING",
+  BUS_LANE = "BUS_LANE",
+  NO_PERMIT = "NO_PERMIT",
 }
 
 export enum UserRole {
-  ADMIN      = 'ADMIN',
-  AGENT      = 'AGENT',
-  SUPERVISOR = 'SUPERVISOR',
-  CUSTOMER   = 'CUSTOMER',
+  ADMIN = "ADMIN",
+  AGENT = "AGENT",
+  SUPERVISOR = "SUPERVISOR",
+  CUSTOMER = "CUSTOMER",
 }
 
 export enum NotificationType {
-  CITATION_CREATED   = 'CITATION_CREATED',
-  PAYMENT_RECEIVED   = 'PAYMENT_RECEIVED',
-  ACCOUNT_SUSPENDED  = 'ACCOUNT_SUSPENDED',
+  CITATION_CREATED = "CITATION_CREATED",
+  PAYMENT_RECEIVED = "PAYMENT_RECEIVED",
+  ACCOUNT_SUSPENDED = "ACCOUNT_SUSPENDED",
 }
 ```
 
@@ -213,12 +218,12 @@ export enum NotificationType {
 
 ```typescript
 // ❌ BEFORE — magic strings, typos compile and fail at runtime
-await citationClient.createCitation({ status: 'Pending', type: 'parking' });
+await citationClient.createCitation({ status: "Pending", type: "parking" });
 // TypeScript: no error. API returns 400. You spend 20 minutes debugging.
 
 // ✅ AFTER — enums, typos fail at compile time in VS Code before you even run
 await citationClient.createCitation({
-  status: CitationStatus.PENDING,  // try typing CitationStatus.Pening — red underline immediately
+  status: CitationStatus.PENDING, // try typing CitationStatus.Pening — red underline immediately
   type: CitationType.PARKING,
 });
 ```
@@ -239,27 +244,27 @@ export class HeadersCrm {
   // Static: no instance needed — headers are just data, not stateful behaviour
   static auth(accessToken: string): Record<string, string> {
     return {
-      'Authorization': `Bearer ${accessToken}`,  // accessToken from fixture, NOT hardcoded
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,    // from env, NOT hardcoded
+      Authorization: `Bearer ${accessToken}`, // accessToken from fixture, NOT hardcoded
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!, // from env, NOT hardcoded
     };
   }
 
   // Different auth method for service-to-service (API key instead of Bearer)
   static apiKey(): Record<string, string> {
     return {
-      'X-API-Key': process.env.CRM_API_KEY!,
-      'Content-Type': 'application/json',
-      'X-Tenant-ID': process.env.TENANT_ID!,
+      "X-API-Key": process.env.CRM_API_KEY!,
+      "Content-Type": "application/json",
+      "X-Tenant-ID": process.env.TENANT_ID!,
     };
   }
 
   // Multipart for file uploads
   static multipart(accessToken: string): Record<string, string> {
     return {
-      'Authorization': `Bearer ${accessToken}`,
-      'X-Tenant-ID': process.env.TENANT_ID!,
+      Authorization: `Bearer ${accessToken}`,
+      "X-Tenant-ID": process.env.TENANT_ID!,
       // Note: NO Content-Type here — browser sets it automatically for multipart
     };
   }
@@ -283,7 +288,7 @@ Because the access token comes from the **fixture** (which may have refreshed it
 // WHY: API request bodies are big, complex objects. Defining them in spec
 //      files makes specs hard to read. A factory function keeps specs clean.
 
-import { CitationStatus, CitationType } from '../enums/citation.enums';
+import { CitationStatus, CitationType } from "../enums/citation.enums";
 
 // The TypeScript interface — defines exactly what the API expects
 export interface CreateCitationPayload {
@@ -291,23 +296,24 @@ export interface CreateCitationPayload {
   amount: number;
   status: CitationStatus;
   citationType: CitationType;
-  issueDate?: string;         // optional — API uses today's date if omitted
-  notes?: string;             // optional
+  issueDate?: string; // optional — API uses today's date if omitted
+  notes?: string; // optional
   registrationPlate?: string;
   locationCode?: string;
 }
 
 // Factory class — creates payloads with sensible test defaults
 export class PayloadsCitation {
-
   // The "standard" payload for happy-path tests
-  static create(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
+  static create(
+    overrides: Partial<CreateCitationPayload> = {},
+  ): CreateCitationPayload {
     return {
-      customerId: overrides.customerId ?? 'TEST-CUSTOMER-001',
-      amount: overrides.amount ?? 150.00,
+      customerId: overrides.customerId ?? "TEST-CUSTOMER-001",
+      amount: overrides.amount ?? 150.0,
       status: overrides.status ?? CitationStatus.PENDING,
       citationType: overrides.citationType ?? CitationType.PARKING,
-      issueDate: overrides.issueDate ?? new Date().toISOString().split('T')[0],
+      issueDate: overrides.issueDate ?? new Date().toISOString().split("T")[0],
       ...overrides,
     };
   }
@@ -317,7 +323,7 @@ export class PayloadsCitation {
     return PayloadsCitation.create({
       customerId,
       status: CitationStatus.PAID,
-      amount: 200.00,
+      amount: 200.0,
     });
   }
 
@@ -326,7 +332,7 @@ export class PayloadsCitation {
     return PayloadsCitation.create({
       customerId,
       status: CitationStatus.DISPUTED,
-      notes: 'Customer disputes this citation — automated test',
+      notes: "Customer disputes this citation — automated test",
     });
   }
 }
@@ -353,7 +359,7 @@ export class PayloadsCitation {
 export interface CitationApiResponse {
   citationId: string;
   customerId: string;
-  status: 'PENDING' | 'PAID' | 'OVERDUE' | 'DISPUTED' | 'CANCELLED';
+  status: "PENDING" | "PAID" | "OVERDUE" | "DISPUTED" | "CANCELLED";
   amount: number;
   citationType: string;
   issueDate: string;
@@ -366,8 +372,8 @@ export interface NotificationSummary {
   id: string;
   type: string;
   sentAt: string;
-  channel: 'email' | 'sms' | 'push';
-  status: 'queued' | 'sent' | 'delivered' | 'failed';
+  channel: "email" | "sms" | "push";
+  status: "queued" | "sent" | "delivered" | "failed";
 }
 
 export interface PaginatedResponse<T> {
@@ -392,15 +398,18 @@ export interface PaginatedResponse<T> {
 //      A client class hides all of that behind a clean method call.
 //      Tests say WHAT to do; clients handle HOW to do it via HTTP.
 
-import { type APIRequestContext } from '@playwright/test';
-import { Endpoints } from '../config/endpoints';
-import { HeadersCrm } from '../data/headers/HeadersCrm';
-import type { CitationApiResponse, CreateCitationPayload } from '../types/api-responses.types';
+import { type APIRequestContext } from "@playwright/test";
+import { Endpoints } from "../config/endpoints";
+import { HeadersCrm } from "../data/headers/HeadersCrm";
+import type {
+  CitationApiResponse,
+  CreateCitationPayload,
+} from "../types/api-responses.types";
 
 export class CitationsApiClient {
   constructor(
-    private readonly request: APIRequestContext,  // injected from fixture
-    private readonly accessToken: string,          // injected from account fixture
+    private readonly request: APIRequestContext, // injected from fixture
+    private readonly accessToken: string, // injected from account fixture
   ) {}
 
   async create(payload: CreateCitationPayload): Promise<CitationApiResponse> {
@@ -412,8 +421,8 @@ export class CitationsApiClient {
     if (!response.ok()) {
       throw new Error(
         `CitationsApiClient.create failed: ${response.status()} ${response.statusText()}\n` +
-        `URL: ${Endpoints.citations.create()}\n` +
-        `Response: ${await response.text()}`
+          `URL: ${Endpoints.citations.create()}\n` +
+          `Response: ${await response.text()}`,
       );
     }
 
@@ -421,28 +430,41 @@ export class CitationsApiClient {
   }
 
   async getById(citationId: string): Promise<CitationApiResponse> {
-    const response = await this.request.get(Endpoints.citations.getById(citationId), {
-      headers: HeadersCrm.auth(this.accessToken),
-    });
+    const response = await this.request.get(
+      Endpoints.citations.getById(citationId),
+      {
+        headers: HeadersCrm.auth(this.accessToken),
+      },
+    );
 
     if (response.status() === 404) {
       throw new Error(`Citation not found: ${citationId}`);
     }
     if (!response.ok()) {
-      throw new Error(`CitationsApiClient.getById failed: ${response.status()} for ${citationId}`);
+      throw new Error(
+        `CitationsApiClient.getById failed: ${response.status()} for ${citationId}`,
+      );
     }
 
     return response.json() as Promise<CitationApiResponse>;
   }
 
-  async updateStatus(citationId: string, status: string): Promise<CitationApiResponse> {
-    const response = await this.request.patch(Endpoints.citations.update(citationId), {
-      headers: HeadersCrm.auth(this.accessToken),
-      data: { status },
-    });
+  async updateStatus(
+    citationId: string,
+    status: string,
+  ): Promise<CitationApiResponse> {
+    const response = await this.request.patch(
+      Endpoints.citations.update(citationId),
+      {
+        headers: HeadersCrm.auth(this.accessToken),
+        data: { status },
+      },
+    );
 
     if (!response.ok()) {
-      throw new Error(`CitationsApiClient.updateStatus failed: ${response.status()}`);
+      throw new Error(
+        `CitationsApiClient.updateStatus failed: ${response.status()}`,
+      );
     }
 
     return response.json() as Promise<CitationApiResponse>;
@@ -465,12 +487,12 @@ Because tests should be about **assertions on business behaviour**, not about HT
 
 export const DateUtils = {
   today(): string {
-    return new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+    return new Date().toISOString().split("T")[0]; // 'YYYY-MM-DD'
   },
   daysAgo(n: number): string {
     const d = new Date();
     d.setDate(d.getDate() - n);
-    return d.toISOString().split('T')[0];
+    return d.toISOString().split("T")[0];
   },
   isoNow(): string {
     return new Date().toISOString(); // 'YYYY-MM-DDTHH:mm:ss.sssZ'
@@ -485,14 +507,14 @@ export const DateUtils = {
 
 // utils/string.utils.ts
 export const StringUtils = {
-  randomEmail(prefix = 'test'): string {
+  randomEmail(prefix = "test"): string {
     return `${prefix}-${Date.now()}@company-test.com`;
   },
   randomName(): string {
     return `AutoTest-${Date.now()}`;
   },
   truncate(str: string, maxLength = 50): string {
-    return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
+    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   },
 };
 ```
@@ -550,10 +572,10 @@ graph TD
     CRM --> CORE
     CRM --> API
     CRM --> POM
-    
+
     BILL --> CORE
     BILL --> API
-    
+
     CUST --> CORE
     CUST --> API
     CUST --> POM
@@ -564,20 +586,20 @@ Create an internal npm package (e.g., `@mycompany/test-core`) containing the set
 
 ```typescript
 // In CRM Tests: playwright.config.ts
-import { enterpriseConfig } from '@mycompany/test-core/config';
+import { enterpriseConfig } from "@mycompany/test-core/config";
 
 export default {
   ...enterpriseConfig, // Inherits workers, reporters, retries
-  testDir: './tests',
+  testDir: "./tests",
 };
 ```
 
 ```typescript
 // In CRM Tests: tests/login.spec.ts
-import { test, expect } from '@mycompany/test-core/fixtures';
-import { LoginPage } from '@mycompany/shared-poms';
+import { test, expect } from "@mycompany/test-core/fixtures";
+import { LoginPage } from "@mycompany/shared-poms";
 
-test('login to CRM', async ({ page, authAccount }) => {
+test("login to CRM", async ({ page, authAccount }) => {
   const loginPage = new LoginPage(page);
   await loginPage.login(authAccount.email, authAccount.password);
 });
@@ -588,10 +610,11 @@ test('login to CRM', async ({ page, authAccount }) => {
 ## 5. TSConfig Paths Strategy
 
 When your project gets deep, imports become unreadable:
+
 ```typescript
 // ❌ BAD: "Relative path hell"
-import { PayloadsCitation } from '../../../../data/payloads/PayloadsCitation';
-import { CitationsApiClient } from '../../../../clients/CitationsApiClient';
+import { PayloadsCitation } from "../../../../data/payloads/PayloadsCitation";
+import { CitationsApiClient } from "../../../../clients/CitationsApiClient";
 ```
 
 **The Fix:** Use `tsconfig.json` paths to map root directories to `@` aliases.
@@ -613,11 +636,11 @@ import { CitationsApiClient } from '../../../../clients/CitationsApiClient';
 
 ```typescript
 // ✅ GOOD: Absolute alias imports
-import { PayloadsCitation } from '@data/payloads/PayloadsCitation';
-import { CitationsApiClient } from '@clients/CitationsApiClient';
+import { PayloadsCitation } from "@data/payloads/PayloadsCitation";
+import { CitationsApiClient } from "@clients/CitationsApiClient";
 ```
 
-*Note: Playwright understands `tsconfig.json` paths automatically out of the box.*
+_Note: Playwright understands `tsconfig.json` paths automatically out of the box._
 
 ---
 
@@ -625,16 +648,17 @@ import { CitationsApiClient } from '@clients/CitationsApiClient';
 
 ### Challenge 1 [MCQ] — Why Endpoints Are Functions
 
-`Endpoints.citations.getById` is defined as `(id: string) => \`...\`` instead of `'https://api.example.com/citations/${id}'`. Why?
+`Endpoints.citations.getById` is defined as `(id: string) => \`...\``instead of`'https://api.example.com/citations/${id}'`. Why?
 
 A) Functions are faster than template literals  
 B) TypeScript enforces the `id` argument at compile time, and the base URL from `config` is composed at call time (so environment changes are automatic)  
 C) Arrow functions are required for `as const` to work  
-D) This is just convention — both approaches work identically  
+D) This is just convention — both approaches work identically
 
 <details><summary>Answer</summary>
 
 **B** — Two reasons:
+
 1. TypeScript sees `getById()` (missing `id`) as a compile-time error. A string constant like `'https://api.example.com/citations/undefined'` would produce a runtime error instead.
 2. The URL is assembled from `config.apiBaseUrl` at call time. When you switch from `local` to `staging`, `config.apiBaseUrl` changes → all endpoints change automatically. A hardcoded string in a constant wouldn't update.
 </details>
@@ -648,8 +672,8 @@ D) This is just convention — both approaches work identically
 export class PayloadsCitation {
   static create(): CreateCitationPayload {
     return {
-      customerId: 'FIXED-TEST-CUSTOMER',   // ← hardcoded
-      amount: 150.00,
+      customerId: "FIXED-TEST-CUSTOMER", // ← hardcoded
+      amount: 150.0,
       status: CitationStatus.PENDING,
       citationType: CitationType.PARKING,
     };
@@ -658,7 +682,7 @@ export class PayloadsCitation {
 
 // In test:
 const citation = await citationsClient.create(PayloadsCitation.create());
-expect(citation.customerId).toBe(account.userId);  // ← fails!
+expect(citation.customerId).toBe(account.userId); // ← fails!
 ```
 
 <details><summary>Answer</summary>
@@ -666,6 +690,7 @@ expect(citation.customerId).toBe(account.userId);  // ← fails!
 `PayloadsCitation.create()` always uses `'FIXED-TEST-CUSTOMER'` regardless of which test account is running. The `expect(citation.customerId).toBe(account.userId)` fails because the citation was created for `FIXED-TEST-CUSTOMER`, not the real test user.
 
 Fix — accept an override:
+
 ```typescript
 static create(overrides: Partial<CreateCitationPayload> = {}): CreateCitationPayload {
   return {
@@ -682,6 +707,7 @@ const citation = await citationsClient.create(
   PayloadsCitation.create({ customerId: account.userId }) // ← real user ID
 );
 ```
+
 </details>
 
 ---
@@ -689,6 +715,7 @@ const citation = await citationsClient.create(
 ### Challenge 3 [Write It Yourself]
 
 Write a `PayloadsUser` factory class with two methods:
+
 - `newAgent(email: string)` — creates an AGENT role user with the given email
 - `newSupervisor(email: string, teamId: string)` — creates a SUPERVISOR with an additional `teamId` field
 
@@ -697,14 +724,14 @@ Write a `PayloadsUser` factory class with two methods:
 ```typescript
 // data/payloads/PayloadsUser.ts
 
-import { UserRole } from '../enums/citation.enums';
+import { UserRole } from "../enums/citation.enums";
 
 export interface CreateUserPayload {
   email: string;
   role: UserRole;
   firstName: string;
   lastName: string;
-  teamId?: string;       // optional — only for SUPERVISOR and above
+  teamId?: string; // optional — only for SUPERVISOR and above
   isActive: boolean;
 }
 
@@ -714,7 +741,7 @@ export class PayloadsUser {
       email,
       role: UserRole.AGENT,
       firstName: `Agent-${Date.now()}`,
-      lastName: 'Automation',
+      lastName: "Automation",
       isActive: true,
     };
   }
@@ -724,17 +751,17 @@ export class PayloadsUser {
       email,
       role: UserRole.SUPERVISOR,
       firstName: `Supervisor-${Date.now()}`,
-      lastName: 'Automation',
+      lastName: "Automation",
       teamId,
       isActive: true,
     };
   }
 }
 ```
+
 </details>
 
 ---
-
 
 ### Challenge 4 [MCQ] — Where Does Error Handling Belong?
 
@@ -743,7 +770,7 @@ You have a `CitationsApiClient.create()` that gets a 422 Unprocessable Entity fr
 A) In the spec file: `if (!response.ok()) { console.warn(...); }` — so tests control their own error logic  
 B) Swallowed in the client: catch the error and return `null` — so tests don't crash on validation errors  
 C) Thrown in the client with a descriptive message — so the test step fails clearly with full context  
-D) In a global Playwright error handler — so one handler covers all API errors  
+D) In a global Playwright error handler — so one handler covers all API errors
 
 <details><summary>Answer</summary>
 
@@ -756,18 +783,21 @@ D) In a global Playwright error handler — so one handler covers all API errors
 **Why not D**: Global handlers catch all errors but can't add context specific to which client method failed. `CitationsApiClient.create` failing is different from `CitationsApiClient.getById` failing — you want the error message to reflect that.
 
 **The pattern:**
+
 ```typescript
 // In client (throw with context):
 if (!response.ok()) {
   throw new Error(
     `CitationsApiClient.create failed: ${response.status()} ${response.statusText()}\n` +
-    `URL: ${url}\nPayload: ${JSON.stringify(payload)}\nResponse: ${await response.text()}`
+      `URL: ${url}\nPayload: ${JSON.stringify(payload)}\nResponse: ${await response.text()}`,
   );
 }
 
 // In test (no error handling needed — if it throws, the test step fails with the above message):
-await test.step('Create citation via API', async () => {
-  citation = await citationsClient.create(PayloadsCitation.create({ customerId: account.userId }));
+await test.step("Create citation via API", async () => {
+  citation = await citationsClient.create(
+    PayloadsCitation.create({ customerId: account.userId }),
+  );
   // If create() throws 422, this step fails with full context. No need to check here.
 });
 ```
@@ -799,19 +829,22 @@ The response type is defined inline in the client's return type — which doesn'
 **Root cause**: The response type is not centralised in `types/api-responses.types.ts`. It's being defined ad-hoc in the client and again in the test.
 
 **Fix**:
+
 1. Define the full response type in `types/api-responses.types.ts`:
+
 ```typescript
 // types/api-responses.types.ts
 export interface CitationApiResponse {
   citationId: string;
   status: string;
-  createdAt: string;  // ← included once, in the shared type
+  createdAt: string; // ← included once, in the shared type
   amount: number;
   // ... all other fields
 }
 ```
 
 2. Import it everywhere:
+
 ```typescript
 // clients/CitationsApiClient.ts
 import type { CitationApiResponse } from '../types/api-responses.types';
@@ -831,4 +864,5 @@ One type definition. Used in 20 places. When the API adds a new field, you add i
 </details>
 
 ---
+
 **Navigation**: [← Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)

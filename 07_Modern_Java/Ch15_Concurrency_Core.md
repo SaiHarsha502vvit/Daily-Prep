@@ -20,7 +20,7 @@ x86 (Intel/AMD):          ARM (Graviton, Apple M-series, mobile):
 Strong memory model        Weak memory model
 Loads are NOT reordered    Loads CAN be reordered
 Stores are NOT reordered   Stores CAN be reordered
-                           
+
 Result: Racy code that     Result: Racy code visibly corrupts data.
   "works" on x86 because   ARM reorders more aggressively → races
   hardware enforces       →  that x86 suppressed are now visible.
@@ -49,9 +49,11 @@ REAL EXAMPLE:
 ```
 
 🔬 **Challenge:** You add `volatile` to `ready` but not `value`. Does the ARM race disappear?
+
 <details><summary>Answer</summary>
 
 Yes! The `volatile` write to `ready = true` in Thread 1 creates a happens-before with the `volatile` read of `ready` in Thread 2. JMM guarantees: ALL writes before a volatile write are visible to any thread that subsequently reads that volatile variable. So `value = "Hello"` (which happens before `ready = true`) is visible to Thread 2 after it reads `ready = true`. Only ONE volatile is needed: the "gate" variable.
+
 </details>
 
 ---
@@ -116,7 +118,6 @@ With mastery:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## Creating Threads — 3 Ways
 
 ```java
@@ -151,21 +152,27 @@ t.start();
 🔬 **Section Challenge — Thread Creation**
 
 **Challenge 1 (Reasoning):** You have a class `DataProcessor extends Thread`. Later you need `DataProcessor` to also extend `BaseService`. What breaks, and how do you redesign?
+
 <details><summary>Answer</summary>
 
 `extends Thread` blocks you — Java has no multiple inheritance. The fix: make `DataProcessor extends BaseService implements Runnable`, wrap in `new Thread(processor)` or submit to an `ExecutorService`. The task logic stays in `run()`, threading is handled externally. This is exactly why Runnable exists — decoupling.
+
 </details>
 
 **Challenge 2 (Trace):** A programmer writes `new Thread(task).run()` inside a `for` loop 1000 times. No new threads are created. Where's the bug and what's the actual execution behavior?
+
 <details><summary>Answer</summary>
 
 `run()` executes on the CALLING thread (sequential, blocking). All 1000 iterations run on the main thread, one after another. No parallelism whatsoever. Fix: `new Thread(task).start()` — or better: submit to `ExecutorService` which manages the pool.
+
 </details>
 
 **Challenge 3 (Design):** Why can the same `Runnable` instance be passed to multiple threads but it's dangerous if it has instance state?
+
 <details><summary>Answer</summary>
 
 `Runnable` is just a task description. Running the same `Runnable` on 5 threads = 5 threads sharing one object's fields. If `run()` reads/writes instance variables, you have a race condition. Solutions: (1) stateless Runnable (all data via parameters/local vars), (2) synchronized access, (3) create a new Runnable instance per thread with its own state.
+
 </details>
 
 ## 🔴 WHY Does Runnable Exist? — The Design Reasoning
@@ -369,6 +376,7 @@ public void run() {
 Because Thread itself has a `run()` method — it IS a `Runnable`! This means a `Thread` can be passed wherever a `Runnable` is expected. It also means Thread can be used polymorphically in frameworks that accept `Runnable`. It's a design consistency: everything that can run is a `Runnable`.
 
 **Q: Callable vs Runnable — what's the difference?**
+
 ```java
 // Runnable: no return value, no checked exception
 void run();
@@ -400,7 +408,6 @@ pool.execute(() -> logEvent());                          // Runnable lambda
 │  4. Thread's run() method executes                                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## Thread Lifecycle — The State Machine
 
@@ -437,7 +444,6 @@ pool.execute(() -> logEvent());                          // Runnable lambda
 │  Thread.currentThread().getState()                                              │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## Essential Thread Methods
 
@@ -482,21 +488,27 @@ daemon.start();
 🔬 **Section Challenge — Thread Lifecycle & Methods**
 
 **Challenge 1 (Reasoning):** `Thread.sleep(0)` — does this do anything? Why would a programmer ever use it?
+
 <details><summary>Answer</summary>
 
 `sleep(0)` briefly yields the CPU, allowing the OS scheduler to run other threads. It's a hint — not a guarantee. Used to: (1) prevent a tight loop from monopolizing the CPU, (2) insert a safepoint for GC (JVM executes safepoint checks at certain call sites like `sleep`). You rarely need this explicitly — `Thread.yield()` is more idiomatic.
+
 </details>
 
 **Challenge 2 (Reasoning):** When is a daemon thread dangerous? Give a concrete production scenario.
+
 <details><summary>Answer</summary>
 
 Daemon threads are killed when all non-daemon threads finish. Danger: a daemon thread writing a file or DB record gets killed mid-write when the main app exits → corrupted file, incomplete DB transaction, partial message sent. Rule: only use daemon threads for truly disposable work (log flushing that can be lost, background cache warming). Never for I/O or DB operations that must complete.
+
 </details>
 
 **Challenge 3 (Predict):** `t.join(2000)` — the thread `t` takes 5 seconds. What happens?
+
 <details><summary>Answer</summary>
 
 `join(2000)` blocks the calling thread for AT MOST 2000ms. After 2 seconds, `join()` returns — regardless of whether `t` is done. `t` KEEPS RUNNING in the background. The caller continues. Use `t.isAlive()` after `join(timeout)` to check if `t` actually finished.
+
 </details>
 
 # PART 2: THE VISIBILITY PROBLEM — Why Shared Data Breaks
@@ -527,7 +539,6 @@ Daemon threads are killed when all non-daemon threads finish. Danger: a daemon t
 │  volatile forces reads/writes to go through main memory                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // WITHOUT volatile — BROKEN (may loop forever!)
@@ -575,7 +586,6 @@ class CorrectStopFlag {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Part 3: Race Conditions & Synchronization
@@ -617,7 +627,6 @@ class BankAccount {
 │  The check and the act must be ATOMIC (indivisible).                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## synchronized — The Basic Lock
 
@@ -678,7 +687,6 @@ class SafeBankAccount {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## wait() / notify() — Thread Communication
 
 ```java
@@ -731,30 +739,35 @@ class BoundedBuffer<T> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 🔬 **Section Challenge — synchronized & wait/notify**
 
 **Challenge 1 (Bug Hunt):** What's wrong with this code?
+
 ```java
 synchronized(lock) {
     if (!conditionMet()) { lock.wait(); }
     doWork();
 }
 ```
+
 <details><summary>Answer</summary>
 
 Uses `if` instead of `while`. After `wait()` returns, the condition may no longer be true (spurious wakeup, or another thread consumed the condition). Must use `while (!conditionMet()) { lock.wait(); }` — re-check the condition on every wakeup.
+
 </details>
 
 **Challenge 2 (Reasoning):** `notify()` vs `notifyAll()` — when does using `notify()` cause a deadlock-like hang?
+
 <details><summary>Answer</summary>
 
 If multiple threads wait on the same lock for DIFFERENT conditions, `notify()` wakes one random thread. If it wakes a thread whose condition still isn't met, that thread goes back to waiting — but the thread whose condition WAS met is never woken. The system hangs. Rule: use `notifyAll()` when multiple threads wait for different conditions on the same lock. Use `notify()` only when ALL waiting threads are waiting for the SAME condition.
+
 </details>
 
 **Challenge 3 (Design):** Implement a proper "done" gate — 1 thread signals done, N other threads wait for it. Write it with `wait/notify` AND with `CountDownLatch`. Which is better?
+
 <details><summary>Answer</summary>
 
 ```java
@@ -770,7 +783,9 @@ CountDownLatch latch = new CountDownLatch(1);
 // N waiters: latch.await();
 // Signaling thread: latch.countDown();
 ```
+
 `CountDownLatch` is better: no missed signal risk, no spurious wakeup handling, self-documenting intent.
+
 </details>
 
 # PART 4: DEADLOCKS — The Silent Killer
@@ -798,7 +813,6 @@ CountDownLatch latch = new CountDownLatch(1);
 │  → Always acquire locks in the SAME ORDER                                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // DEADLOCK-PRONE CODE
@@ -840,12 +854,15 @@ class SafeTransfer {
 🔬 **Section Challenge — Deadlocks**
 
 **Challenge 1 (Diagnosis):** You have a thread dump. Thread A shows `BLOCKED on <0x12345> owned by Thread B`. Thread B shows `BLOCKED on <0x67890> owned by Thread A`. What is this and how do you fix it in code?
+
 <details><summary>Answer</summary>
 
 Classic deadlock — circular lock dependency. Fix strategies: (1) **Lock ordering**: always acquire locks in the same global order (sort by System.identityHashCode or a natural ID). (2) **tryLock with timeout**: `ReentrantLock.tryLock(100, ms)` — if can't acquire, release own locks and retry later. (3) **Single lock**: combine both operations under one lock if possible. (4) **Lock-free**: use `ConcurrentHashMap` + atomic operations to eliminate locks entirely.
+
 </details>
 
 **Challenge 2 (Design):** A money transfer system: `transfer(Account from, Account to, int amount)`. Multiple threads call this concurrently. Write a deadlock-free implementation.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -861,13 +878,17 @@ void transfer(Account from, Account to, int amount) {
     }
 }
 ```
+
 Same global order regardless of which direction the transfer goes → no circular wait → no deadlock.
+
 </details>
 
 **Challenge 3 (Reasoning):** Can `synchronized` on the same object cause a deadlock with itself?
+
 <details><summary>Answer</summary>
 
 No — `synchronized` in Java is **reentrant**. If Thread A holds lock X and calls a method also `synchronized` on X: it re-acquires without blocking (the JVM tracks the owning thread + reentry count). This is intentional — methods calling each other on the same object would deadlock in non-reentrant systems. `ReentrantLock` is also explicitly reentrant (hence the name).
+
 </details>
 
 # PART 5: ATOMIC CLASSES — Lock-Free Thread Safety
@@ -890,7 +911,6 @@ No — `synchronized` in Java is **reentrant**. If Thread A holds lock X and cal
 │  └──────────────────────────────────────────────┘                               │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 import java.util.concurrent.atomic.*;
@@ -933,7 +953,6 @@ adder.sum();         // Get final count (slightly delayed)
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # 📌 Part 6: Concurrent Collections
@@ -957,7 +976,6 @@ adder.sum();         // Get final count (slightly delayed)
 │    → Multiple threads can read/write different segments simultaneously          │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // ConcurrentHashMap — the king of concurrent collections
@@ -1019,7 +1037,6 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 │  A: Calling run() directly executes in current thread. No new thread created.   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -1508,7 +1525,7 @@ Before shipping any multithreaded code, verify:
 □ Is every shared mutable field either:
     - Confined to one thread (ThreadLocal)
     - volatile (simple flags/references)
-    - AtomicXxx (simple counters/references)  
+    - AtomicXxx (simple counters/references)
     - Behind a synchronized/Lock block
 
 □ Is every wait() inside a WHILE loop (not if)?
@@ -1565,6 +1582,7 @@ Main
 ```
 
 **Why**: `t.run()` executes `run()` on the **current (main) thread** — no new thread is created. It's just a plain method call. Output is sequential, not concurrent. This is the #1 beginner mistake.
+
 </details>
 
 ---
@@ -1593,6 +1611,7 @@ public class Q2 {
 **Any value between 1000 and 2000.**
 
 **Why**: `counter++` is NOT atomic. It's 3 operations: read → increment → write. Both threads can read the same value (say 500), both increment to 501, both write 501 — one increment is lost. This is a **race condition**. Fix: use `AtomicInteger` or `synchronized`.
+
 </details>
 
 ---
@@ -1633,12 +1652,14 @@ public class Q3 {
 - Neither can proceed. All 4 Coffman conditions are met.
 
 **Fix**: Always acquire locks in the **same global order**:
+
 ```java
 // Both threads acquire lock1 first, then lock2
 synchronized (lock1) {
     synchronized (lock2) { ... }
 }
 ```
+
 </details>
 
 ---
@@ -1671,14 +1692,18 @@ public class Q4 {
 **Prints `42` most of the time, BUT is NOT guaranteed.**
 
 **Why**: `flag` and `data` are not `volatile`. CPU caching and instruction reordering can cause:
+
 - Reader sees `flag = true` but still reads `data = 0` (stale cache)
 - Writer might execute `flag = true` BEFORE `data = 42` (CPU reordering)
 
 **Fix**:
+
 ```java
 static volatile boolean flag = false;  // volatile on flag creates happens-before
 ```
+
 Now: `data = 42` happens-before `flag = true` (program order) happens-before `while(!flag)` terminates (volatile read). By transitivity: reader WILL see `data = 42`.
+
 </details>
 
 ---
@@ -1700,11 +1725,14 @@ public class Q5 {
 <summary>Answer</summary>
 
 **Always**:
+
 ```
 Child
 Main
 ```
+
 `t.join()` blocks the main thread until `t` completes. This is GUARANTEED — `join()` establishes a happens-before relationship. "Child" will ALWAYS print before "Main".
+
 </details>
 
 ---
@@ -1734,6 +1762,7 @@ public class Q6 {
 **May NEVER print "Done" on some JVMs.**
 
 **Why**: `running` is not `volatile`. The JIT compiler may **hoist** the read of `running` out of the loop (since nothing in the loop writes to it from the thread's perspective). It compiles to effectively:
+
 ```java
 boolean cached = running;
 while (cached) {}    // infinite loop — never re-reads running from main memory!
@@ -1742,6 +1771,7 @@ while (cached) {}    // infinite loop — never re-reads running from main memor
 **Fix**: `static volatile boolean running = true;`
 
 This is why `volatile` for stop-flags is critical!
+
 </details>
 
 ---
@@ -1794,6 +1824,7 @@ for (int i = 0; i < THREADS; i++) {
 latch.await();
 System.out.println(counter.get());  // Must always print 1_000_000
 ```
+
 </details>
 
 ---
@@ -1869,6 +1900,7 @@ public class ProducerConsumer {
     }
 }
 ```
+
 </details>
 
 ---
@@ -1955,7 +1987,9 @@ class Foo {
     }
 }
 ```
+
 **Why Semaphore wins**: No spin-wasting. Thread parks efficiently while waiting. Clean, minimal code.
+
 </details>
 
 ---
@@ -1997,6 +2031,7 @@ class FooBar {
 }
 // Output for n=3: foobarfoobarfoobar
 ```
+
 </details>
 
 ---
@@ -2048,6 +2083,7 @@ class ZeroEvenOdd {
     }
 }
 ```
+
 </details>
 
 ---
@@ -2125,6 +2161,7 @@ class FizzBuzz {
     }
 }
 ```
+
 </details>
 
 ---
@@ -2183,6 +2220,7 @@ public class DiningPhilosophers {
 ```
 
 **Why lock ordering fixes deadlock**: With 5 philosophers all grabbing left first → deadlock (circular wait). By always grabbing the LOWER index fork, philosopher 4 grabs fork[0] first (lower) instead of fork[4]. This breaks the circular chain.
+
 </details>
 
 ---
@@ -2244,6 +2282,7 @@ public enum Singleton {
 }
 // Usage: Singleton.INSTANCE.doWork()
 ```
+
 </details>
 
 ---
@@ -2311,6 +2350,7 @@ public class ReadWriteCache<K, V> {
     }
 }
 ```
+
 </details>
 
 ---
@@ -2367,6 +2407,7 @@ public class ObjectPool<T> {
     // finally { dbPool.release(conn); }
 }
 ```
+
 </details>
 
 ---
@@ -2375,28 +2416,28 @@ public class ObjectPool<T> {
 
 **Answer each in 10 seconds, then check:**
 
-| # | Question | Answer |
-|---|---|---|
-| 1 | `t.start()` vs `t.run()` — which creates a new thread? | `start()` |
-| 2 | `volatile` guarantees atomicity of `x++`? | ❌ No — `x++` is 3 ops (read/inc/write) |
-| 3 | Can `synchronized` replace `volatile`? | ✅ Yes but overkill for simple flags |
-| 4 | `wait()` must be called inside `synchronized`? | ✅ Yes — always |
-| 5 | `wait()` releases the lock? | ✅ Yes — releases while waiting |
-| 6 | `sleep()` releases the lock? | ❌ No — holds lock while sleeping |
-| 7 | Use `if` or `while` with `wait()`? | ALWAYS `while` (spurious wakeups) |
-| 8 | `executor.submit(() -> throw ex)` — who sees the exception? | Nobody, unless you call `future.get()` |
-| 9 | `daemon` thread — runs when main exits? | ❌ No — JVM exits when only daemon threads remain |
-| 10 | `CountDownLatch` reusable? | ❌ No — use `CyclicBarrier` for reuse |
-| 11 | `ConcurrentHashMap.get()` needs synchronization? | ❌ No — thread-safe already |
-| 12 | `synchronized(this)` vs `synchronized(MyClass.class)`? | `this` = instance lock, `MyClass.class` = class-level (static) lock |
-| 13 | `ReentrantLock` auto-releases on exception like `synchronized`? | ❌ No — must call `unlock()` in `finally` |
-| 14 | `AtomicInteger` uses locks internally? | ❌ No — uses CAS (hardware instruction) |
-| 15 | `Thread.interrupt()` terminates the thread? | ❌ No — just sets the interrupted flag |
-| 16 | `InterruptedException` clears the interrupted flag? | ✅ Yes — must call `Thread.currentThread().interrupt()` to restore |
-| 17 | `LongAdder` vs `AtomicLong` — which is faster under high contention? | `LongAdder` (stripes the counter across cells) |
-| 18 | Virtual threads — can they run CPU-bound tasks faster? | ❌ No — only help for I/O-bound tasks |
-| 19 | `synchronized` blocks PREVENT virtual thread unmounting? | ✅ Yes — causes PINNING |
-| 20 | `Semaphore(1)` == `ReentrantLock`? | Not exactly — Semaphore has no owner, not reentrant |
+| #   | Question                                                             | Answer                                                              |
+| --- | -------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 1   | `t.start()` vs `t.run()` — which creates a new thread?               | `start()`                                                           |
+| 2   | `volatile` guarantees atomicity of `x++`?                            | ❌ No — `x++` is 3 ops (read/inc/write)                             |
+| 3   | Can `synchronized` replace `volatile`?                               | ✅ Yes but overkill for simple flags                                |
+| 4   | `wait()` must be called inside `synchronized`?                       | ✅ Yes — always                                                     |
+| 5   | `wait()` releases the lock?                                          | ✅ Yes — releases while waiting                                     |
+| 6   | `sleep()` releases the lock?                                         | ❌ No — holds lock while sleeping                                   |
+| 7   | Use `if` or `while` with `wait()`?                                   | ALWAYS `while` (spurious wakeups)                                   |
+| 8   | `executor.submit(() -> throw ex)` — who sees the exception?          | Nobody, unless you call `future.get()`                              |
+| 9   | `daemon` thread — runs when main exits?                              | ❌ No — JVM exits when only daemon threads remain                   |
+| 10  | `CountDownLatch` reusable?                                           | ❌ No — use `CyclicBarrier` for reuse                               |
+| 11  | `ConcurrentHashMap.get()` needs synchronization?                     | ❌ No — thread-safe already                                         |
+| 12  | `synchronized(this)` vs `synchronized(MyClass.class)`?               | `this` = instance lock, `MyClass.class` = class-level (static) lock |
+| 13  | `ReentrantLock` auto-releases on exception like `synchronized`?      | ❌ No — must call `unlock()` in `finally`                           |
+| 14  | `AtomicInteger` uses locks internally?                               | ❌ No — uses CAS (hardware instruction)                             |
+| 15  | `Thread.interrupt()` terminates the thread?                          | ❌ No — just sets the interrupted flag                              |
+| 16  | `InterruptedException` clears the interrupted flag?                  | ✅ Yes — must call `Thread.currentThread().interrupt()` to restore  |
+| 17  | `LongAdder` vs `AtomicLong` — which is faster under high contention? | `LongAdder` (stripes the counter across cells)                      |
+| 18  | Virtual threads — can they run CPU-bound tasks faster?               | ❌ No — only help for I/O-bound tasks                               |
+| 19  | `synchronized` blocks PREVENT virtual thread unmounting?             | ✅ Yes — causes PINNING                                             |
+| 20  | `Semaphore(1)` == `ReentrantLock`?                                   | Not exactly — Semaphore has no owner, not reentrant                 |
 
 ---
 
@@ -2424,11 +2465,13 @@ public class Config {
 <summary>Answer</summary>
 
 **3 bugs:**
+
 1. **Race condition** on `instance == null` check — two threads can both pass the check and create two instances
 2. **No `volatile`** — even with synchronization, the first check without a lock can see a partially constructed object due to CPU reordering
 3. **`props` not thread-safe** — if multiple threads read/write `props` concurrently, need `ConcurrentHashMap`
 
 **Fix**: Use Initialization-on-Demand Holder pattern or `synchronized` + `volatile`
+
 </details>
 
 ---
@@ -2455,6 +2498,7 @@ for (int i = 0; i < 10_000; i++) {
 `newCachedThreadPool()` uses `SynchronousQueue` (zero capacity) — every task submission creates a new thread if no idle worker exists. Under 10,000 tasks, it creates 10,000 threads × ~1MB stack = **10GB memory** → `OutOfMemoryError`.
 
 **Fix**:
+
 ```java
 // Use bounded thread pool + bounded queue
 ExecutorService pool = new ThreadPoolExecutor(
@@ -2464,6 +2508,7 @@ ExecutorService pool = new ThreadPoolExecutor(
     new ThreadPoolExecutor.CallerRunsPolicy()  // Backpressure
 );
 ```
+
 </details>
 
 ---
@@ -2493,22 +2538,25 @@ class BankAccount {
 **Critical bug: `lock` is not `final` — it can be reassigned!**
 
 If `resetLock()` is called while threads are waiting on the old `lock` object:
+
 - Thread A enters `synchronized(lock)` — holds reference to lock object X
 - `resetLock()` called — `lock` now points to object Y
 - Thread B enters `synchronized(lock)` — gets lock on object Y (different lock!)
 - **Both Thread A and B are now in the critical section simultaneously!** Race condition.
 
 **Fix**:
+
 ```java
 private final Object lock = new Object();  // ALWAYS make lock objects final!
 ```
+
 </details>
 
 ---
 
 # PART 11: THE GRAND UNIFIED THEORY OF THREAD PHYSICS (Deconstructed)
 
-> *"A Java `Thread` object is a dangerous abstraction. When you call `new Thread().start()`, you are not creating a lightweight programming concept. You are issuing a direct system call to the Linux Kernel to allocate a massive 1MB block of C-stack memory and demanding that the CPU context-switch its L1 Cache. If you do not understand the physics of `pthread_create()`, your concurrent applications will crash."*
+> _"A Java `Thread` object is a dangerous abstraction. When you call `new Thread().start()`, you are not creating a lightweight programming concept. You are issuing a direct system call to the Linux Kernel to allocate a massive 1MB block of C-stack memory and demanding that the CPU context-switch its L1 Cache. If you do not understand the physics of `pthread_create()`, your concurrent applications will crash."_
 
 This section strips away the `Runnable` and `ExecutorService` abstractions. We will look at exactly what the Linux Kernel and the CPU are doing when you spawn a thread.
 
@@ -2521,6 +2569,7 @@ This section strips away the `Runnable` and `ExecutorService` abstractions. We w
 **The Naked Truth:** Since Java 1.2, Java does not have its own thread scheduler. A Java Thread is mapped **1:1 directly to an Operating System Kernel Thread**. On Linux, calling `Thread.start()` in Java executes the `clone()` C system call, creating a POSIX thread (`pthread`).
 
 **The Mechanical Execution (Thread Allocation):**
+
 1. You call `new Thread().start()`.
 2. The JVM issues a system call to the OS kernel.
 3. **The Memory Cost:** The OS physically allocates **1 Megabyte of continuous RAM** just for the thread's call stack. (This is why `newCachedThreadPool` crashes your app with an `OutOfMemoryError` if you spawn 10,000 threads — you instantly burn 10GB of pure stack memory, regardless of what the thread is actually doing).
@@ -2533,13 +2582,14 @@ This section strips away the `Runnable` and `ExecutorService` abstractions. We w
 
 **The Abstraction:** "Using 100 threads makes my program faster."
 
-**The Naked Truth:** If you have an 8-core CPU, your hardware can *only execute 8 things at once*. If you have 100 threads, 92 of them are physically paused at any given microsecond. The OS creates the *illusion* of concurrency by frantically pausing and resuming threads. This is called a **Context Switch**, and it is violently expensive.
+**The Naked Truth:** If you have an 8-core CPU, your hardware can _only execute 8 things at once_. If you have 100 threads, 92 of them are physically paused at any given microsecond. The OS creates the _illusion_ of concurrency by frantically pausing and resuming threads. This is called a **Context Switch**, and it is violently expensive.
 
 **The Mechanical Execution (The Context Switch Penalty):**
 When the Linux CFS (Completely Fair Scheduler) decides to pause Thread A and run Thread B on CPU Core 1:
+
 1. **The Kernel Trap:** CPU Core 1 triggers a hardware interrupt. Execution jumps from User Space into Kernel Space (System Call overhead: ~100 nanoseconds).
 2. **Register Dumping:** The CPU takes all the current values in its internal hardware registers (Program Counter, Stack Pointer, General Registers) and dumps them into Thread A's TCB in main RAM.
-3. **Cache Invalidation (The Hidden Killer):** Thread A's data was sitting warmly in the ultra-fast L1 and L2 caches. When Thread B is loaded, it needs *different* data. As Thread B executes, it overwrites Thread A's data in the L1 cache. This is called **Cache Pollution**.
+3. **Cache Invalidation (The Hidden Killer):** Thread A's data was sitting warmly in the ultra-fast L1 and L2 caches. When Thread B is loaded, it needs _different_ data. As Thread B executes, it overwrites Thread A's data in the L1 cache. This is called **Cache Pollution**.
 4. **Register Loading:** The CPU reads Thread B's old register values from RAM and loads them into the hardware registers.
 5. **Resume:** CPU jumps back to User Space to execute Thread B.
 
@@ -2565,15 +2615,15 @@ sequenceDiagram
 ```
 
 **The Mathematical Cost:**
-A single context switch takes about **1 to 5 microseconds**. That sounds fast, until you do the math. 
-If you have 10,000 threads fighting for 8 CPU cores, the OS might context switch 100,000 times per second. 
+A single context switch takes about **1 to 5 microseconds**. That sounds fast, until you do the math.
+If you have 10,000 threads fighting for 8 CPU cores, the OS might context switch 100,000 times per second.
 $100,000 \times 5 \text{ microseconds} = 500,000 \text{ microseconds}$.
 **Your CPU is spending 50% of its total processing power just swapping out registers, doing zero actual work.** This is called **Thrashing**.
 
 **The Production Rule (Amdahl's Law applied to CPU Cores):**
-For CPU-bound tasks (math, data processing, encryption), the optimal thread pool size is EXACTLY the number of physical CPU cores you have. 
+For CPU-bound tasks (math, data processing, encryption), the optimal thread pool size is EXACTLY the number of physical CPU cores you have.
 `Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())`
-If you have 8 cores, creating 9 threads actually makes your math program *slower* because you have just introduced Context Switching overhead for zero hardware parallel gain.
+If you have 8 cores, creating 9 threads actually makes your math program _slower_ because you have just introduced Context Switching overhead for zero hardware parallel gain.
 
 ---
 
@@ -2584,23 +2634,25 @@ If you have 8 cores, creating 9 threads actually makes your math program *slower
 **The Naked Truth:** When a thread executes `resultSet.next()` or `httpClient.get()`, it initiates Network I/O. The network is infinitely slower than the CPU.
 
 **The Mechanical Execution (The Parked Thread):**
+
 1. Thread A sends the HTTP request to the NIC (Network Interface Card).
 2. The JVM issues the `read()` system call.
 3. The OS realizes there is no data on the socket yet.
-4. The OS physically moves Thread A out of the `READY` queue and puts it into the `WAITING` queue. 
+4. The OS physically moves Thread A out of the `READY` queue and puts it into the `WAITING` queue.
 5. **Thread A is PARKED.** It consumes 0% CPU, but it is still holding onto its 1MB of RAM, and any database connections or locks it acquired.
 
 **The Microservice Catastrophe:**
-If you have a Spring Boot Tomcat server with a maximum of 200 threads. 
-1. 200 users hit your API. 
+If you have a Spring Boot Tomcat server with a maximum of 200 threads.
+
+1. 200 users hit your API.
 2. Your API makes a slow HTTP call to a downstream microservice that takes 5 seconds to respond.
-3. All 200 Tomcat threads are instantly parked by the OS in the `WAITING` state. 
-4. User 201 hits your API. 
-5. Tomcat has no threads left. It refuses the connection. 
-Your 32-core server is sitting at 1% CPU utilization, but your entire website is completely offline. This is **Thread Exhaustion**, the number one killer of Java microservices.
+3. All 200 Tomcat threads are instantly parked by the OS in the `WAITING` state.
+4. User 201 hits your API.
+5. Tomcat has no threads left. It refuses the connection.
+   Your 32-core server is sitting at 1% CPU utilization, but your entire website is completely offline. This is **Thread Exhaustion**, the number one killer of Java microservices.
 
 **The Solution:**
-This physical limitation of the 1:1 Kernel Thread model is exactly why Java 21 introduced **Virtual Threads (Project Loom)**. Virtual Threads detach the Java code from the underlying OS thread, allowing Java to park the *virtual* thread on the heap (costing 200 bytes) instead of parking the *OS* thread (costing 1MB).
+This physical limitation of the 1:1 Kernel Thread model is exactly why Java 21 introduced **Virtual Threads (Project Loom)**. Virtual Threads detach the Java code from the underlying OS thread, allowing Java to park the _virtual_ thread on the heap (costing 200 bytes) instead of parking the _OS_ thread (costing 1MB).
 
 ---
 
@@ -2643,42 +2695,55 @@ Without hesitation, you should know:
 ## 🧠 Deep Conceptual Questions — Concurrency & Thread Safety
 
 **C1. What does "happens-before" actually mean in plain terms?**
+
 <details><summary>Deep Answer</summary>
 
 "A happens-before B" means: all effects of A (writes to memory) are guaranteed to be visible to B. It's NOT about time ordering — A might literally execute after B in wall-clock time on a different CPU. It's about **visibility guarantees** the JMM provides through specific synchronization actions (volatile, synchronized, join, etc.). Without happens-before: the compiler and CPU are FREE to reorder operations aggressively for performance, and your threads may see stale or absent writes. The JMM doesn't promise any ordering except what's guaranteed via the HB relation.
+
 </details>
 
 **C2. Why does `volatile` NOT solve the `count++` problem?**
+
 <details><summary>Deep Answer</summary>
 
 `count++` is three operations: (1) read `count` from main memory, (2) increment in CPU register, (3) write back. `volatile` guarantees each read/write is visible (no caching). But it doesn't prevent two threads from both reading count=5 (each sees 5 via volatile), both incrementing to 6, both writing 6. Count goes 5→6 instead of 5→7. `volatile` adds visibility but no atomicity for compound operations. Solutions: `AtomicInteger.incrementAndGet()` (CAS loop — atomic at hardware level), or `synchronized` (mutual exclusion).
+
 </details>
 
 **C3. What is CAS (Compare-And-Swap) and why is it "lock-free"?**
+
 <details><summary>Deep Answer</summary>
 
 CAS: a single CPU instruction `compareAndSwap(addr, expected, newValue)`: if the value at `addr` == `expected`, atomically set it to `newValue` and return true. Otherwise return false. Lock-free: no thread is BLOCKED — if CAS fails, retry in a loop. At least ONE thread always makes progress (the one that succeeds). Contrast with locks: a failed lock acquisition blocks the thread (OS sleep: ~100μs overhead). AtomicInteger.incrementAndGet() = CAS loop: read value, compute +1, CAS. Retry if someone else changed it between read and write. Under low contention: almost always succeeds first try. Under high contention: LongAdder is better (decentralizes to per-thread cells).
+
 </details>
 
 **C4. Why is `synchronized` using a "monitor" — what is a monitor?**
+
 <details><summary>Deep Answer</summary>
 
 A monitor is a concurrency construct that combines: (1) a **mutex** (only one thread can enter at a time), (2) a **wait set** (threads can wait for a condition and be notified). In Java: every object has an intrinsic lock (monitor). `synchronized(obj)` acquires the monitor. `obj.wait()` releases the monitor and adds current thread to the wait set. `obj.notify()` picks one thread from the wait set and marks it to re-acquire the monitor. The monitor concept comes from Hoare (1974). Java's implementation: object header contains a mark word that stores the lock state (unlocked → biased locked → thin lock → fat lock with OS mutex).
+
 </details>
 
 **C5. What is the difference between "thread safety" and "atomicity"?**
+
 <details><summary>Deep Answer</summary>
 
 **Thread safety**: a class is thread-safe if it behaves correctly when accessed from multiple threads concurrently WITHOUT requiring external synchronization. **Atomicity**: an operation is atomic if it completes entirely or not at all, with no intermediate state visible to other threads. Thread safety can be achieved without per-operation atomicity — you can use locks to protect a sequence of non-atomic operations. `Vector` is thread-safe (every method synchronized) but NOT atomically composable: `if(!v.isEmpty()) v.remove(0)` is not atomic — another thread can remove between the check and the remove. Thread safety at the class level doesn't compose into thread safety at the operation sequence level.
+
 </details>
 
 **C6. Why is `ThreadLocal` NOT the solution for sharing context between parent and child threads?**
+
 <details><summary>Deep Answer</summary>
 
 `ThreadLocal` is per-thread. A new thread has NO access to its parent's ThreadLocal values. If main thread sets `requestContext.set(ctx)` then submits a task to a thread pool — the pool thread has an EMPTY ThreadLocal. Solutions: (1) `InheritableThreadLocal`: child thread inherits parent's values at creation time, but pool threads are created ONCE and reused → no re-inheritance on submission. (2) Pass context explicitly to the task constructor. (3) Use `MDCAdapter` (SLF4J's MDC): designed for this, pool-aware. (4) Project Loom's `ScopedValue` (Java 21 preview): designed to replace ThreadLocal for this exact use case.
+
 </details>
 
 **C7. Deadlock: what are the 4 Coffman conditions and why must ALL 4 hold simultaneously?**
+
 <details><summary>Deep Answer</summary>
 
 1. **Mutual Exclusion**: resource held exclusively (locks can't be shared)
@@ -2687,17 +2752,21 @@ A monitor is a concurrency construct that combines: (1) a **mutex** (only one th
 4. **Circular Wait**: A→B→C→A chain of waiting
 
 These are NECESSARY conditions — ALL four must hold for deadlock to be possible (not sufficient on their own). Breaking ANY ONE prevents deadlock: eliminate mutual exclusion (lock-free algorithms), prevent hold-and-wait (acquire all locks at once), allow preemption (tryLock with timeout), prevent circular wait (global lock ordering). In practice: global lock ordering (breaking #4) is the most common and reliable prevention strategy.
+
 </details>
 
 **C8. What happens inside the JVM when `synchronized` is acquired?**
+
 <details><summary>Deep Answer</summary>
 
 JVM uses **lock escalation** based on contention:
+
 1. **Biased lock** (no contention): object header records the thread ID. No CAS needed — just check header. Fastest path.
 2. **Thin/lightweight lock**: CAS on object header to change lock state. Stack-allocated lock record. No OS call.
 3. **Heavyweight/fat lock**: when multiple threads contend. OS mutex via `pthread_mutex_lock` — expensive (~μs for context switch). Thread parked by OS.
 
 LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using OS primitives (futex on Linux). When `synchronized` is uncontested (> 95% of real-world cases): nearly free. Under contention: expensive. This is why `synchronized` in modern JVMs is much faster than pre-Java-6.
+
 </details>
 
 > **Navigation**: [< Previous](Ch25_Spring_Boot_50Day_Plan.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch16_Concurrency_Advanced.md)
