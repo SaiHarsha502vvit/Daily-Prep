@@ -3,20 +3,49 @@
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.006 L15–L19 / KTH DD2352 / RWTH Aachen Algo II layer** — Why dynamic programming is provably correct, and why the recurrence captures the optimal solution.
+
+### Optimal Substructure — The Cut-and-Paste Proof
+
+A DP is valid iff every subproblem solution it uses is itself optimal. The standard proof technique is **cut and paste**:
+
+**Claim**: If `dp[i]` is defined as the optimal value for the first `i` items, and the recurrence expresses `dp[i]` in terms of `dp[j]` for `j < i`, then `dp[i]` is correct.
+
+**Proof**: Suppose the recurrence gives `dp[i] = X`, but the true optimum is `Y > X`. The recurrence built `X` by combining optimal solutions to subproblems `dp[j₁], dp[j₂], ...`. Replace any non-optimal subproblem solution with its true optimum — the combined value becomes `Y` (or higher). This contradicts the assumption that `Y` was unattainable. ✓
+
+### Worked Example: 0/1 Knapsack Has Optimal Substructure
+
+**Recurrence**: `dp[i][w] = max(dp[i-1][w], dp[i-1][w - w[i]] + v[i])` — skip item i, or take it.
+
+**Cut-and-paste proof**: Suppose the optimal solution for `dp[i][w]` includes item `i`. Then the remaining items (1..i-1) must fit in capacity `w - w[i]`. If a better subset of items 1..i-1 fit in `w - w[i]`, replace it in the optimal solution — we get a strictly better solution. Contradiction. So the prefix must be optimal for the prefix subproblem. ✓
+
+### Overlapping Subproblems — Why Memoization Wins
+
+Without memoization, naive recursion for Fibonacci calls `F(n-1)` and `F(n-2)`; `F(n-1)` internally calls `F(n-2)` and `F(n-3)`, etc. Total recursive calls = 2·F(n) − 1 = Θ(φⁿ) — exponential.
+
+With memoization, each `F(k)` is computed once. Total work = n additions = Θ(n).
+
+The recursion tree has exponential **nodes** but polynomial **distinct values**. Memoization collapses the exponential redundancy to polynomial. This is what makes DP polynomial — and it is why DP applies only when subproblems repeat.
+
+> Full proofs: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 6: Optimal Substructure)
+
+---
+
 ## 🔗 JIT Connection — When You Need This
 
 **Got stuck on a DP problem? Identify which type you're dealing with:**
 
-
-| DP Pattern | State Definition | Problem Examples | PS Section |
-|---|---|---|---|
-| **1D Linear** | `dp[i]` = answer for first i items | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Grid (2D)** | `dp[i][j]` = answer at cell (i,j) | Unique Paths, Min Path Sum | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance | [DP PS](../05_Problem_Solving/07_DP.md) |
-| **Knapsack** | `dp[i][w]` = max value with i items, capacity w | 0/1 Knapsack, Coin Change | [DP PS](../05_Problem_Solving/07_DP.md) |
-
+| DP Pattern      | State Definition                                 | Problem Examples                   | PS Section                              |
+| --------------- | ------------------------------------------------ | ---------------------------------- | --------------------------------------- |
+| **1D Linear**   | `dp[i]` = answer for first i items               | Climbing Stairs, House Robber, LIS | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **Grid (2D)**   | `dp[i][j]` = answer at cell (i,j)                | Unique Paths, Min Path Sum         | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance                 | [DP PS](../05_Problem_Solving/07_DP.md) |
+| **Knapsack**    | `dp[i][w]` = max value with i items, capacity w  | 0/1 Knapsack, Coin Change          | [DP PS](../05_Problem_Solving/07_DP.md) |
 
 **The 5-Step Recipe (memorize this):**
+
 ```
 1. IDENTIFY subproblem: what is the last decision?
 2. DEFINE state: what changes between recursive calls?
@@ -53,6 +82,12 @@
 ║        Memoization (Top-Down) or Tabulation (Bottom-Up).                     ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
+
+### Historical Evolution
+
+**Dynamic Programming** was coined by **Richard Bellman in the 1950s** while working at the RAND Corporation on aerospace research — the name was deliberately chosen as a political shield ("dynamic" sounded impressive to his boss, who had been opposed to "mathematical" research), even though the core ideas of optimal substructure and overlapping subproblems had been studied independently. Bellman's landmark **1957 paper and book** formalized DP as a general method for solving optimization problems with optimal substructure: "An optimal policy has the property that whatever the initial state and initial decision are, the remaining decisions must constitute an optimal policy for the state arising from the first decision" (the Bellman optimality principle). The technique grew out of control theory and operations research, where real-world problems like inventory management, equipment replacement, and resource allocation naturally exhibited overlapping subproblems. **Knuth's 1970s optimizations** for specific DP recurrences (monotonicity, quadrangle inequality) showed that even within DP, structural properties enable faster algorithms. Modern practice (post-2010) applies DP everywhere: shortest path routing (used in GPS and network protocols), natural language processing (Viterbi algorithm for hidden Markov models), and bioinformatics (sequence alignment via Needleman-Wunsch).
+
+---
 
 ## What is Dynamic Programming?
 
@@ -278,17 +313,20 @@ THIS IS MEMOIZATION: Remember what you've already calculated.
 🔬 **Section Challenge — What is Dynamic Programming?**
 
 **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+
 <details><summary>Answer</summary>
 
 Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+
 </details>
 
 **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+
 <details><summary>Answer</summary>
 
 State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-</details>
 
+</details>
 
 # 📌 Part 2: Fibonacci — the Gateway to DP
 
@@ -825,7 +863,6 @@ TABULATION:
 - When you want to optimize space (sliding window)
 ```
 
-
 ---
 
 # ⚡ Part 8: Space Optimization
@@ -915,12 +952,11 @@ public int lcsOptimized(String s1, String s2) {
 
 ### 🔗 Cross-References — Navigate the Ecosystem
 
-| Topic | Related Content |
-|---|---|
-| DP pattern recognition | [DP Pattern Recognition](../04_Patterns_Templates/16_DP_Pattern_Recognition.md) |
-| DP practice problems | [Problem Solving — DP](../05_Problem_Solving/11_Dynamic_Programming.md) |
-| Knapsack family (DP) | [Knapsack Family](../04_Patterns_Templates/23_Knapsack_Family.md) |
-| Memoization in React (useMemo) | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md) |
-| Optimization in ML (gradient descent) | [Math for ML](../21_Python_ML_DL_NLP/04_Math_For_ML.md) |
-| Greedy vs DP | [Greedy Algorithms](12_Greedy_Algorithms_Complete.md) |
-
+| Topic                                 | Related Content                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| DP pattern recognition                | [DP Pattern Recognition](../04_Patterns_Templates/16_DP_Pattern_Recognition.md) |
+| DP practice problems                  | [Problem Solving — DP](../05_Problem_Solving/11_Dynamic_Programming.md)         |
+| Knapsack family (DP)                  | [Knapsack Family](../04_Patterns_Templates/23_Knapsack_Family.md)               |
+| Memoization in React (useMemo)        | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md)                       |
+| Optimization in ML (gradient descent) | [Math for ML](../21_Python_ML_DL_NLP/04_Math_For_ML.md)                         |
+| Greedy vs DP                          | [Greedy Algorithms](12_Greedy_Algorithms_Complete.md)                           |

@@ -7,18 +7,44 @@
 
 **Arrived here from a problem?** Here's where to go next:
 
-
-| Sorting sub-topic | Key Interview Fact | Jump to PS Problems |
-|---|---|---|
-| Choose sort algorithm | n<50 → Insertion; general → QuickSort; need stable → MergeSort | [Arrays PS](../05_Problem_Solving/01_Arrays.md) |
-| Custom comparator | `Arrays.sort(arr, (a,b) → a[1]-b[1])` | [Greedy PS](../05_Problem_Solving/13_Greedy.md) |
-| Timsort (Java Objects) | `Arrays.sort(Object[])` is stable TimSort | [Greedy PS](../05_Problem_Solving/13_Greedy.md) |
-| Sort + Two Pointer | Sort then scan — reduces O(n²) search to O(n) | [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md) |
-
+| Sorting sub-topic      | Key Interview Fact                                             | Jump to PS Problems                                        |
+| ---------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| Choose sort algorithm  | n<50 → Insertion; general → QuickSort; need stable → MergeSort | [Arrays PS](../05_Problem_Solving/01_Arrays.md)            |
+| Custom comparator      | `Arrays.sort(arr, (a,b) → a[1]-b[1])`                          | [Greedy PS](../05_Problem_Solving/13_Greedy.md)            |
+| Timsort (Java Objects) | `Arrays.sort(Object[])` is stable TimSort                      | [Greedy PS](../05_Problem_Solving/13_Greedy.md)            |
+| Sort + Two Pointer     | Sort then scan — reduces O(n²) search to O(n)                  | [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md) |
 
 **Study Path:** `Arrays` → `Sorting (this)` → `Binary Search` → `Two Pointers` → `Greedy`
 
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+## 🎓 University Proof Corner
+
+> **MIT 6.006 / KTH DD1352 layer** — Why these algorithms are provably correct, and why Θ(n log n) is the best any comparison sort can do.
+
+### Correctness: Insertion Sort Loop Invariant
+
+**Invariant**: At the start of iteration `i`, `A[0..i-1]` contains the original `A[0..i-1]` elements in sorted order.
+
+- **Init (i=1)**: `A[0..0]` is a single element — trivially sorted. ✓
+- **Maintenance**: The inner `while` loop shifts larger elements right until it finds the correct position for `A[i]`, preserving sorted order in `A[0..i]`. ✓
+- **Termination (i=n)**: `A[0..n-1]` is sorted. ✓
+
+### Why O(n log n) Is the Best Possible (Decision Tree Argument)
+
+Every comparison sort can be modeled as a **binary decision tree**: each internal node is a comparison (A[i] ≤ A[j]?), each leaf is one of the n! possible sorted output permutations.
+
+1. The tree needs **at least n! leaves** — one per permutation.
+2. A binary tree of height h has **at most 2ʰ leaves**.
+3. So h ≥ log₂(n!) ≥ (n/2)·log₂(n/2) = **Ω(n log n)**.
+
+**Consequence**: Merge sort and heap sort are **asymptotically optimal** among all comparison sorts. No new algorithm can beat Θ(n log n) in the worst case — the lower bound is proved.
+
+Sub-linear sorts (counting, radix, bucket) avoid this bound by exploiting value ranges rather than comparisons.
+
+> Full proofs: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) | [A3 — Lower Bounds](A3_Lower_Bounds_And_NP.md)
 
 ---
 
@@ -47,6 +73,12 @@
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
+### Historical Evolution
+
+Sorting algorithms have a rich history spanning over a century of computer science development. **Merge Sort** was the first practical $O(n \log n)$ sorting algorithm, invented by **John von Neumann in 1945**, who formalized the divide-and-conquer strategy and proved its stability properties for practical implementation. **Quicksort** was invented by **Tony Hoare in 1959** while working on a machine translation project at the University of Moscow — originally published as "Algorithm 64" in the Communications of the ACM — and it remains one of the most studied sorting algorithms due to its elegant in-place partitioning. **Heapsort** was introduced by **J. W. J. Williams in 1964**, providing the first practical comparison sort with guaranteed $O(n \log n)$ worst-case performance without requiring the $O(n)$ auxiliary space that Merge Sort needs. The early simple sorts (Bubble Sort, Selection Sort) were analyzed as early as 1956 but served primarily as pedagogical examples — their $O(n^2)$ behavior made them unsuitable for production use as dataset sizes grew. Modern practice (post-2010) combines these insights: Java's `Arrays.sort(Object[])` uses **Timsort (Peters 2002)**, a hybrid of Merge Sort and Insertion Sort, while primitive arrays use **Dual-Pivot Quicksort (Yaroslavskiy 2009)** for cache-friendly in-place performance.
+
+---
+
 ## From Bubble to Quick - With Tracing
 
 ---
@@ -56,12 +88,12 @@
 SORTING AT THE HARDWARE LEVEL - WHAT YOUR CPU ACTUALLY DOES
 
 Before learning sorting algorithms, understand what happens when you:
+
 - Compare two numbers
 - Swap two elements
 - Access array elements
 
 This knowledge separates "knows the algorithm" from "TRULY understands it"
-
 
 ## ⚖️ Comparison Operation — at CPU Instruction Level
 
@@ -108,13 +140,13 @@ SKIP:
 
 ### CPU cycles breakdown (approximate)
 
-| Operation | Cycles (approx.) |
-|---|---|
-| Load `arr[i]` from L1 cache | 4 cycles |
-| Load `arr[j]` from L1 cache | 4 cycles |
-| Compare (`cmp` instruction) | 1 cycle |
-| Conditional jump (predicted correctly) | 1 cycle |
-| Conditional jump (mispredicted) | ~15 cycles penalty |
+| Operation                              | Cycles (approx.)   |
+| -------------------------------------- | ------------------ |
+| Load `arr[i]` from L1 cache            | 4 cycles           |
+| Load `arr[j]` from L1 cache            | 4 cycles           |
+| Compare (`cmp` instruction)            | 1 cycle            |
+| Conditional jump (predicted correctly) | 1 cycle            |
+| Conditional jump (mispredicted)        | ~15 cycles penalty |
 
 - Total (best case): ~10 cycles
 - Total (cache miss path): ~400+ cycles
@@ -124,12 +156,14 @@ SKIP:
 Modern CPUs "guess" which branch path will be taken to keep the pipeline full.
 
 **Predictable pattern (Insertion Sort on nearly sorted data)**
+
 - `if (arr[i] > arr[j])` is almost always false.
 - CPU learns the pattern and predicts false.
 - Prediction accuracy can be ~99%.
 - Effective cost stays near ~1 cycle per comparison.
 
 **Unpredictable pattern (QuickSort on random data)**
+
 - `if (arr[i] > pivot)` is close to 50% true / 50% false.
 - CPU cannot reliably learn the pattern.
 - Prediction accuracy can drop to ~50%.
@@ -146,48 +180,52 @@ int temp = arr[i];
 arr[i] = arr[j];
 arr[j] = temp;
 Assembly:
-mov    eax, [rsi + rcx*4]     ; Load arr[i] into eax (temp)
-mov    ebx, [rsi + rdx*4]     ; Load arr[j] into ebx
-mov    [rsi + rcx*4], ebx     ; Store arr[j] into arr[i]
-mov    [rsi + rdx*4], eax     ; Store temp into arr[j]
+mov eax, [rsi + rcx*4] ; Load arr[i] into eax (temp)
+mov ebx, [rsi + rdx*4] ; Load arr[j] into ebx
+mov [rsi + rcx*4], ebx ; Store arr[j] into arr[i]
+mov [rsi + rdx*4], eax ; Store temp into arr[j]
 Cycles: 2 loads + 2 stores = ~8-16 cycles (cache hits)
 METHOD 2: XOR SWAP (No temp variable)
-arr[i] ^= arr[j];   // arr[i] = arr[i] XOR arr[j]
-arr[j] ^= arr[i];   // arr[j] = arr[j] XOR (arr[i] XOR arr[j]) = original i
-arr[i] ^= arr[j];   // arr[i] = (arr[i] XOR arr[j]) XOR original i = orig j
+arr[i] ^= arr[j]; // arr[i] = arr[i] XOR arr[j]
+arr[j] ^= arr[i]; // arr[j] = arr[j] XOR (arr[i] XOR arr[j]) = original i
+arr[i] ^= arr[j]; // arr[i] = (arr[i] XOR arr[j]) XOR original i = orig j
 ⚠️ WARNING: This is SLOWER on modern CPUs!
+
 - Requires 3 memory reads + 3 memory writes
 - Has DATA DEPENDENCIES (each line depends on previous)
 - Fails if i == j (element becomes 0!)
-USE temp variable swap - it's faster and safer!
+  USE temp variable swap - it's faster and safer!
 
 **Memory Access During Swap**:
 Array in memory:
 | Address | 0x1000 | 0x1004 | 0x1008 | 0x100C | 0x1010 | |
-| Index   |  [0]   |  [1]   |  [2]   |  [3]   |  [4]   | |
-| Value   |   5    |   2    |   8    |   1    |   9    | |
+| Index | [0] | [1] | [2] | [3] | [4] | |
+| Value | 5 | 2 | 8 | 1 | 9 | |
 Swap arr[0] and arr[3]:
+
 1. CPU reads 0x1000 → 5 (goes into register)
 2. CPU reads 0x100C → 1 (goes into another register)
 3. CPU writes 1 to 0x1000
 4. CPU writes 5 to 0x100C
-After swap:
-| Value   |   1    |   2    |   8    |   5    |   9    | |
-If arr[0] and arr[3] are in SAME cache line (64 bytes):
+   After swap:
+   | Value | 1 | 2 | 8 | 5 | 9 | |
+   If arr[0] and arr[3] are in SAME cache line (64 bytes):
+
 - Both loads are fast (data already in cache)
 - Total: ~8-10 cycles
-If arr[0] and arr[3] are in DIFFERENT cache lines:
+  If arr[0] and arr[3] are in DIFFERENT cache lines:
 - Each load might be a cache miss
 - Total: ~200-400 cycles (20-50x slower!)
 
 🔬 **Section Challenge — What Happens When You Swap Two Elements**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## 🔄 Cache Behavior — Why Some Sorts Are Faster
 
@@ -200,8 +238,8 @@ for (j = 0; j < n-1; j++) {
 if (arr[j] > arr[j+1]) swap(j, j+1);
 }
 Access pattern: [0], [1], [2], [3], [4], [5], ...
-Cache Line 1: arr[0-15]    ← All accessed sequentially!
-Cache Line 2: arr[16-31]   ← Loaded when we reach arr[16]
+Cache Line 1: arr[0-15] ← All accessed sequentially!
+Cache Line 2: arr[16-31] ← Loaded when we reach arr[16]
 Cache Line 3: arr[32-47]
 Cache hits: ~98%+
 This is "SEQUENTIAL ACCESS" - the best pattern for cache!
@@ -211,33 +249,35 @@ for (j = left; j < right; j++) {
 if (arr[j] < pivot) swap(i++, j);
 }
 Good partition: Sequential access (cache-friendly)
-Bad partition:  Swaps between distant elements (cache-unfriendly)
+Bad partition: Swaps between distant elements (cache-unfriendly)
 Average cache behavior: Good, but not as consistent as Bubble Sort
 HEAP SORT - POOR CACHE BEHAVIOR:
 Heapify accesses: parent, left child, right child
 Parent at index i → children at 2i+1 and 2i+2
 For large heap:
-- Index 0 → children at 1, 2        (same cache line)
-- Index 7 → children at 15, 16      (might be same line)
+
+- Index 0 → children at 1, 2 (same cache line)
+- Index 7 → children at 15, 16 (might be same line)
 - Index 1000 → children at 2001, 2002 (different cache lines!)
-Access pattern: 0, 1, 3, 7, 15, 31, ...  (exponential jumps!)
-Cache Line 1: arr[0-15]
-Cache Line 2: arr[16-31]   ← Jump here from index 7!
-...
-Cache Line 63: arr[1008-1023]  ← Jump here from index 500!
-Cache hits: ~60-70% for large arrays
-This is why HeapSort is O(n log n) but often slower than QuickSort!
-MERGE SORT - GOOD BUT USES MORE MEMORY:
+  Access pattern: 0, 1, 3, 7, 15, 31, ... (exponential jumps!)
+  Cache Line 1: arr[0-15]
+  Cache Line 2: arr[16-31] ← Jump here from index 7!
+  ...
+  Cache Line 63: arr[1008-1023] ← Jump here from index 500!
+  Cache hits: ~60-70% for large arrays
+  This is why HeapSort is O(n log n) but often slower than QuickSort!
+  MERGE SORT - GOOD BUT USES MORE MEMORY:
 - Sequential access during merge (cache-friendly)
 - But requires O(n) extra space
 - Extra memory = more cache pollution
 
 **Cache Performance Ranking**:
-1. Insertion Sort   - Sequential, best for small arrays
-2. Bubble Sort      - Sequential, but too many passes
-3. QuickSort        - Mostly sequential, occasional jumps
-4. Merge Sort       - Sequential but extra memory
-5. Heap Sort        - Random access pattern, worst for cache
+
+1. Insertion Sort - Sequential, best for small arrays
+2. Bubble Sort - Sequential, but too many passes
+3. QuickSort - Mostly sequential, occasional jumps
+4. Merge Sort - Sequential but extra memory
+5. Heap Sort - Random access pattern, worst for cache
 
 ## 🧠 Memory Access Patterns Visualization
 
@@ -290,7 +330,6 @@ MERGE SORT - GOOD BUT USES MORE MEMORY:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 📊 Why Arrays.sort() Uses Different Algorithms
 
 ## Java'S Arrays.Sort() - Internal Implementation
@@ -298,34 +337,35 @@ MERGE SORT - GOOD BUT USES MORE MEMORY:
 FOR PRIMITIVES (int[], double[], etc.):
 Algorithm: DUAL-PIVOT QUICKSORT (Vladimir Yaroslavskiy, 2009)
 Why not regular QuickSort?
+
 - Dual-pivot: Uses 2 pivots, creates 3 partitions
 - Fewer comparisons on average
 - Better cache utilization
-Regular:    [<pivot]      [>pivot]
-Dual:       [<P1]    [P1-P2]    [>P2]
-For small subarrays (< 47 elements):
-→ Switches to INSERTION SORT
-Why? Insertion sort is faster for small arrays due to:
+  Regular: [<pivot] [>pivot]
+  Dual: [<P1] [P1-P2] [>P2]
+  For small subarrays (< 47 elements):
+  → Switches to INSERTION SORT
+  Why? Insertion sort is faster for small arrays due to:
 - Less overhead (no recursion)
 - Better cache behavior
 - Branch prediction works well
-FOR OBJECTS (Object[], String[], etc.):
-Algorithm: TIMSORT (Tim Peters, 2002 - from Python)
-Why not QuickSort?
+  FOR OBJECTS (Object[], String[], etc.):
+  Algorithm: TIMSORT (Tim Peters, 2002 - from Python)
+  Why not QuickSort?
 - Stability required (equal elements keep order)
 - Real data often has "runs" of sorted elements
 - TimSort exploits existing order
-TimSort combines:
+  TimSort combines:
 - Find "runs" (already sorted sequences)
 - Extend short runs using Insertion Sort
 - Merge runs using smart merging strategy
-Best case (already sorted): O(n)
-Worst case: O(n log n)
-Space: O(n)
-SOURCE CODE LOCATION (OpenJDK):
-Primitives: java.util.DualPivotQuicksort
-Objects:    java.util.TimSort
-You can read the actual implementation!
+  Best case (already sorted): O(n)
+  Worst case: O(n log n)
+  Space: O(n)
+  SOURCE CODE LOCATION (OpenJDK):
+  Primitives: java.util.DualPivotQuicksort
+  Objects: java.util.TimSort
+  You can read the actual implementation!
 
 ## ⚖️ Counting Comparisons and Swaps
 
@@ -334,54 +374,60 @@ You can read the actual implementation!
 For array of n elements:
 
 **Bubble Sort**:
+
 - Comparisons: (n-1) + (n-2) + ... + 1 = n(n-1)/2 = O(n²)
 - Swaps (worst): n(n-1)/2 (already reverse sorted)
 - Swaps (best): 0 (already sorted)
 - Swaps (average): n(n-1)/4
-Example n=5 worst case:
-Comparisons: 4+3+2+1 = 10
-Swaps: 4+3+2+1 = 10
+  Example n=5 worst case:
+  Comparisons: 4+3+2+1 = 10
+  Swaps: 4+3+2+1 = 10
 
 **Selection Sort**:
+
 - Comparisons: n(n-1)/2 = O(n²) (always same!)
 - Swaps: n-1 (always, regardless of input)
-Better than Bubble when swaps are expensive!
+  Better than Bubble when swaps are expensive!
 
 **Insertion Sort**:
+
 - Comparisons (worst): n(n-1)/2
 - Comparisons (best): n-1 (already sorted - one compare per element)
 - Shifts (worst): n(n-1)/2
 - Shifts (best): 0
-BEST FOR NEARLY SORTED DATA!
+  BEST FOR NEARLY SORTED DATA!
 
 **Merge Sort**:
+
 - Comparisons: n⋅log₂(n) - (2^log₂(n) - 1) ≈ n⋅log₂(n)
 - For n=8: 8×3 - 7 = 17 comparisons
 - Copies: 2n⋅log₂(n) (copy to temp and back at each level)
 
 **Quicksort**:
+
 - Comparisons (average): ~1.39n⋅log₂(n)
 - Comparisons (worst - already sorted, first pivot): n(n-1)/2
 - Swaps (average): ~0.3n⋅log₂(n)
-Fewer swaps than Merge Sort (in-place partitioning)
-COMPARISON TABLE (n=1000):
-| Algorithm | Comparisons | Swaps/Copies | Cache Efficiency |
-|---|---|---|---|
-| Bubble Sort | ~500,000 | ~250,000 | Excellent |
-| Selection | ~500,000 | 999 | Good |
-| Insertion | ~250,000 (avg) | ~250,000 | Excellent |
-| Merge Sort | ~10,000 | ~20,000 | Good |
-| Quick Sort | ~14,000 | ~3,000 | Very Good |
-| Heap Sort | ~20,000 | ~10,000 | Poor |
+  Fewer swaps than Merge Sort (in-place partitioning)
+  COMPARISON TABLE (n=1000):
+  | Algorithm | Comparisons | Swaps/Copies | Cache Efficiency |
+  |---|---|---|---|
+  | Bubble Sort | ~500,000 | ~250,000 | Excellent |
+  | Selection | ~500,000 | 999 | Good |
+  | Insertion | ~250,000 (avg) | ~250,000 | Excellent |
+  | Merge Sort | ~10,000 | ~20,000 | Good |
+  | Quick Sort | ~14,000 | ~3,000 | Very Good |
+  | Heap Sort | ~20,000 | ~10,000 | Poor |
 
 🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
 
 **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+
 <details><summary>Answer</summary>
 
 Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-</details>
 
+</details>
 
 ## 📌 Real Benchmark Data
 
@@ -436,7 +482,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -623,7 +668,6 @@ PASS 4:
 [1, 2, 5, 8, 9]  SORTED! ✓
 ```
 
-
 ## Code
 
 ```java
@@ -667,7 +711,6 @@ Find second smallest → put at position 1
 ... continue
 ```
 
-
 ## Visual Trace
 
 ```
@@ -689,7 +732,6 @@ PASS 4: Find min in [8,9] → min is 8 at index 3
         Already in position
         [1, 2, 5, 8, 9] SORTED! ✓
 ```
-
 
 ## Code
 
@@ -752,7 +794,6 @@ Array: [5, 2, 8, 1, 9]
 [1, 2, 5, 8 | 9]  Insert 9: Compare with 8, 9 > 8, stay
 [1, 2, 5, 8, 9]   SORTED! ✓
 ```
-
 
 ## Code
 
@@ -843,7 +884,6 @@ Result: [1, 2, 5]
 Left exhausted, copy remaining from right
 Result: [1, 2, 5, 8] ✓
 ```
-
 
 ## Code
 
@@ -953,7 +993,6 @@ STEP 2: Recursively sort [2, 1] and [5, 9, 8]
 FINAL: [1, 2, 3, 5, 8, 9] ✓
 ```
 
-
 ## Code
 
 ```java
@@ -996,4 +1035,3 @@ private int partition(int[] arr, int low, int high) {
 
 // BEST FOR: General purpose, in-memory sorting
 ```
-

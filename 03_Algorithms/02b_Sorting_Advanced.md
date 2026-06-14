@@ -3,6 +3,53 @@
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.046J L7–L9 / KTH DD2352 layer** — Why these algorithms are provably correct, and why non-comparison sorts can break the Ω(n log n) barrier.
+
+### Correctness: Quicksort Partition Invariant
+
+**Invariant**: After `partition(A, lo, hi)` returns pivot index `p`, every element in `A[lo..p-1]` is ≤ `A[p]`, and every element in `A[p+1..hi]` is ≥ `A[p]`.
+
+- **Init**: Two pointers `i = lo - 1`, `j = lo` start. All unexamined elements are "unknown" — trivially satisfy the invariant on the empty known region.
+- **Maintenance**: When `A[j]` is examined: if ≤ pivot, advance `i` and swap `A[i] ↔ A[j]`. After the swap, `A[lo..i]` is "known ≤ pivot". Continue until `j > hi`, then place pivot at `A[i+1]`. The invariant is preserved.
+- **Termination**: When `j = hi + 1`, all elements have been classified. The pivot ends up at its final sorted position. By induction on the recursive calls, the array is sorted. ✓
+
+### Why Counting Sort Beats Ω(n log n)
+
+The Ω(n log n) lower bound from `A3 — Lower Bounds` applies **only to comparison sorts** — algorithms that learn element order only through pairwise `<` comparisons. **Counting sort** does not compare elements; it uses each element's value as an index into a frequency array.
+
+```
+For n elements with values in [0, k]:
+  1. Count occurrences:           O(n + k)
+  2. Cumulative sum:              O(k)
+  3. Place each element by count: O(n)
+  Total: O(n + k)
+```
+
+When `k = O(n)`, this is **O(n)** — strictly faster than any comparison sort. The Ω(n log n) bound is **model-specific**, not absolute: counting sort cannot sort arbitrary keys (strings, floats) in O(n) because such values don't have a small range to index into. Radix sort extends the trick to multi-digit keys.
+
+### Why Randomized Quicksort is Expected O(n log n)
+
+The deterministic quicksort can hit O(n²) on sorted input — an adversary can always construct the worst case. By picking the pivot uniformly at random:
+
+**Claim**: Pr[elements A[i] and A[j] are ever compared] = **2 / (j - i + 1)**.
+
+Two elements are compared iff one is the pivot before any element strictly between them. In the set S = {A[i], A[i+1], ..., A[j]} of size (j - i + 1), the first pivot chosen from S is equally likely to be any element, so Pr[it's A[i] or A[j]] = 2 / (j - i + 1).
+
+```
+Expected total comparisons
+  = Σᵢ<ⱼ 2 / (j - i + 1)
+  = 2n · H(n)        (H(n) = harmonic number = Θ(log n))
+  = O(n log n)
+```
+
+The randomness is in the algorithm, not the input — no adversary can construct a worst case without knowing the random seed.
+
+> Full proofs: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) · [A3 — Lower Bounds](A3_Lower_Bounds_And_NP.md) · [A4 — Randomized Algorithms](A4_Randomized_Algorithms.md)
+
+---
+
 # 📦 Advanced Sorting: Non-Comparison & Hybrid Algorithms
 
 ### 5W1H: Mastering Advanced Sorting
@@ -28,6 +75,12 @@
 ║        iteratively, or detecting existing "runs" to minimize comparisons.    ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
+
+### Historical Evolution
+
+Advanced sorting algorithms evolved through three distinct waves: non-comparison sorts for bounded domains, hybrid adaptive sorts for real-world data, and worst-case-guaranteed alternatives. **Counting Sort** and **Radix Sort** trace their lineage to **Herman Hollerith's 1887 punch card sorting machine** at the US Census Bureau — his electromechanical tabulating system sorted cards by column and row holes, predating digital computers by over 60 years but establishing the core insight: if keys are bounded or distributable, you can avoid pairwise comparisons entirely. **TimSort** was created by **Tim Peters in 2002** for Python's default `list.sort()` after analyzing that real-world data contains natural "runs" (already-sorted subsequences) — it hybridizes Insertion Sort (for small runs) with Merge Sort, achieving $O(n)$ best case on partially sorted data. **Dual-Pivot Quicksort** was developed by **Vladimir Yaroslavskiy in 2009** and adopted by Java 7's `Dual-Pivot Quicksort` for primitive arrays — it uses two pivots to partition into three segments instead of two, reducing the average number of comparisons from $2n \ln n$ to approximately $1.9n \ln n$ and improving cache behavior on modern CPUs.
+
+---
 
 ## Part 7: Heap Sort
 
@@ -74,7 +127,6 @@ STEP 2: Extract max and heapify
 
         Done!            [1, 3, 4, 5, 10] ✓
 ```
-
 
 ## Code
 
@@ -640,13 +692,14 @@ Arrays.sort(arr, fromIndex, toIndex);
 🔬 **Section Challenge — Custom Comparators in Java**
 
 **Challenge 1 (Bug Hunt):** You sort intervals with `(a, b) -> a[0] - b[0]`, and coordinates may be close to `Integer.MIN_VALUE` or `Integer.MAX_VALUE`. What can break, and what comparator should you use?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Subtraction can overflow, so a smaller value may look larger and the comparator can violate ordering rules. Broken comparators create wrong sorted order and can even trigger `Comparison method violates its general contract`.
 
 Use `Integer.compare(a[0], b[0])` for the primary key and add tie-breakers explicitly: `Comparator.<int[]>comparingInt(x -> x[0]).thenComparingInt(x -> x[1])`. The mental rule: comparator code must express ordering, not arithmetic shortcuts.
-</details>
 
+</details>
 
 ## Sorting Linked Lists
 
@@ -695,13 +748,14 @@ private ListNode merge(ListNode l1, ListNode l2) {
 🔬 **Section Challenge — Sorting Linked Lists**
 
 **Challenge 1 (Constraint Reasoning):** Why is merge sort usually the natural choice for sorting a linked list, while array-style QuickSort is awkward?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Linked lists have no random access, so partitioning around a pivot and jumping by index is painful. Merge sort fits the structure: split with slow/fast pointers, recursively sort halves, then merge by rewiring `next` pointers.
 
 The constraint lens is: no indexing means prefer pointer-friendly algorithms. Merge sort gives `O(N log N)` time, stable ordering, and can be implemented with low extra memory because merging lists does not require copying into an array.
-</details>
 
+</details>
 
 ## External Sorting (Large Files)
 
@@ -750,13 +804,14 @@ public void kWayMerge(List<Scanner> sortedFiles, PrintWriter output) {
 🔬 **Section Challenge — External Sorting (Large Files)**
 
 **Challenge 1 (Constraint Reasoning):** You must sort a `200GB` log file on a machine with `2GB` free RAM. Why does normal in-memory sorting fail, and what is the external sorting plan?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 The input is larger than memory, so loading everything into an array will page heavily or crash. The correct category is external memory sorting, not "find a faster comparator."
 
 Split the file into RAM-sized chunks, sort each chunk in memory, write sorted runs to disk, then k-way merge the runs with a min-heap over the current head of each run. Tune chunk size, merge fan-in, buffer size, and temp file cleanup around memory and file descriptor limits.
-</details>
 
+</details>
 
 # PART 15: Sorting-Based Interview Problems
 
@@ -981,13 +1036,14 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 🔬 **Section Challenge — 🔄 Radix Sort — Non — Comparison Based Sorting**
 
 **Challenge 1 (Constraint Reasoning):** `N = 1e6` non-negative integers are all below `1e9`. When can radix sort beat comparison sorting, and what hidden constraints must you check first?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 Comparison sorting has a lower bound of `O(N log N)`, but radix sort can run in `O(d * (N + base))`, where `d` is the number of digits/passes. It can win when keys are fixed-width integers and the digit count is small.
 
 Check whether values are negative, whether stability is required, how much extra memory counting buckets need, and whether the constant factors beat Java's highly optimized built-in sorts for the actual input size.
-</details>
 
+</details>
 
 ## 🔄 Timsort — the Real — World Champion
 
@@ -1052,7 +1108,6 @@ Check whether values are negative, whether stability is required, how much extra
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
 ```
@@ -1113,17 +1168,17 @@ Check whether values are negative, whether stability is required, how much extra
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
 
 **Challenge 1 (Systems Reasoning):** During k-way merge, you create 50,000 sorted temp files and the program fails before sorting finishes. What constraint did you ignore?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 External sorting is limited by RAM, disk bandwidth, and OS file descriptors. A k-way merge that opens every run at once can exceed the file descriptor limit even if the algorithm is correct on paper.
 
 Fix it with multi-pass merging: merge a safe fan-in like 128 or 512 runs at a time, write larger intermediate runs, and repeat. Keep buffered readers small but effective, close files promptly, and delete temp files after each pass.
-</details>
 
+</details>
 
 ## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
@@ -1185,17 +1240,17 @@ Fix it with multi-pass merging: merge a safe fan-in like 128 or 512 runs at a ti
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
 
 **Challenge 1 (Performance Reasoning):** Should you always replace `Arrays.sort()` with `Arrays.parallelSort()` for large inputs?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 No. Parallel sorting adds split/merge overhead, uses the common ForkJoinPool, and can become memory-bandwidth bound. It may help on very large primitive arrays with available CPU cores, but it can hurt small arrays or busy servers.
 
 The selection rule is benchmark under production-like load. Use parallel sort when input size is large enough, the machine has idle cores, comparator cost is not the bottleneck, and sharing the common pool will not starve other work.
-</details>
 
+</details>
 
 ## 🔄 Sorting Stability — Deep Explanation
 
@@ -1264,17 +1319,17 @@ The selection rule is benchmark under production-like load. Use parallel sort wh
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
 
 **Challenge 1 (Trace Reasoning):** You sort employees by `name`, then sort again by `department`. When does this produce employees grouped by department while still alphabetized inside each department?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 This works only if the second sort is stable. A stable sort preserves the relative order of equal keys, so employees with the same department keep the name order established by the first sort.
 
 If the second sort is unstable, equal-department rows may be rearranged. The safer Java approach is either use a stable object sort or express the full ordering in one comparator: `comparing(Employee::department).thenComparing(Employee::name)`.
-</details>
 
+</details>
 
 ## 🔄 Sorting in Competitive Programming
 
@@ -1361,7 +1416,6 @@ If the second sort is unstable, equal-department rows may be rearranged. The saf
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 _Master sorting and you master a huge portion of algorithm problems!_
@@ -1371,56 +1425,57 @@ _Master sorting and you master a huge portion of algorithm problems!_
 🔬 **Section Challenge — 🔄 Sorting in Competitive Programming**
 
 **Challenge 1 (Constraint Pattern):** Values are up to `1e9`, `N <= 2e5`, and queries ask for ranks/counts of values less than `x`. Why is a raw frequency array impossible, and what sorting-based rewrite works?
+
 <details><summary>Trace, Reasoning & Debug</summary>
 
 A raw array indexed by value would need size `1e9`, which is too large. But only `N` distinct input values can appear, so the real coordinate space is small after compression.
 
 Sort the unique values, map each value to its compressed rank, and answer counts/ranks with binary search or a Fenwick tree if updates are involved. The mental move is: huge value range plus limited item count means coordinate compression.
-</details>
 
+</details>
 
 ## PRACTICE PROBLEMS — Sorting & Searching
 
 ### Sorting Problems
 
-| # | Problem | Difficulty | Source | Which Sort / Technique |
-|---|---------|-----------|--------|----------------------|
-| 1 | Sort an Array | Medium | LC 912 | Implement merge/quick sort |
-| 2 | Sort Colors | Medium | LC 75 | Dutch National Flag (3-way) |
-| 3 | Kth Largest Element | Medium | LC 215 | QuickSelect or heap |
-| 4 | Merge Intervals | Medium | LC 56 | Sort by start + merge |
-| 5 | Meeting Rooms II | Medium | LC 253 | Sort events + count |
-| 6 | Largest Number | Medium | LC 179 | Custom comparator |
-| 7 | Sort List | Medium | LC 148 | Merge sort on linked list |
-| 8 | Wiggle Sort II | Medium | LC 324 | Median + 3-way partition |
-| 9 | H-Index | Medium | LC 274 | Counting sort |
-| 10 | Maximum Gap | Medium | LC 164 | Bucket sort — O(n)! |
-| 11 | Pancake Sorting | Medium | LC 969 | Selection sort variant |
-| 12 | Top K Frequent Words | Medium | LC 692 | Sort + tiebreak |
+| #   | Problem              | Difficulty | Source | Which Sort / Technique      |
+| --- | -------------------- | ---------- | ------ | --------------------------- |
+| 1   | Sort an Array        | Medium     | LC 912 | Implement merge/quick sort  |
+| 2   | Sort Colors          | Medium     | LC 75  | Dutch National Flag (3-way) |
+| 3   | Kth Largest Element  | Medium     | LC 215 | QuickSelect or heap         |
+| 4   | Merge Intervals      | Medium     | LC 56  | Sort by start + merge       |
+| 5   | Meeting Rooms II     | Medium     | LC 253 | Sort events + count         |
+| 6   | Largest Number       | Medium     | LC 179 | Custom comparator           |
+| 7   | Sort List            | Medium     | LC 148 | Merge sort on linked list   |
+| 8   | Wiggle Sort II       | Medium     | LC 324 | Median + 3-way partition    |
+| 9   | H-Index              | Medium     | LC 274 | Counting sort               |
+| 10  | Maximum Gap          | Medium     | LC 164 | Bucket sort — O(n)!         |
+| 11  | Pancake Sorting      | Medium     | LC 969 | Selection sort variant      |
+| 12  | Top K Frequent Words | Medium     | LC 692 | Sort + tiebreak             |
 
 ### Binary Search Problems
 
-| # | Problem | Difficulty | Source | BS Variant |
-|---|---------|-----------|--------|-----------|
-| 1 | Binary Search | Easy | LC 704 | Standard template |
-| 2 | Search Insert Position | Easy | LC 35 | Lower bound |
-| 3 | First Bad Version | Easy | LC 278 | Left boundary |
-| 4 | Search in Rotated Sorted Array | Medium | LC 33 | Modified BS |
-| 5 | Find Minimum in Rotated Array | Medium | LC 153 | Inflection point |
-| 6 | Search a 2D Matrix | Medium | LC 74 | Flatten + BS |
-| 7 | Find Peak Element | Medium | LC 162 | Gradient BS |
-| 8 | Koko Eating Bananas | Medium | LC 875 | BS on answer |
-| 9 | Capacity to Ship Packages | Medium | LC 1011 | BS on answer |
-| 10 | Split Array Largest Sum | Hard | LC 410 | BS + greedy check |
-| 11 | Median of Two Sorted Arrays | Hard | LC 4 | BS on partition |
-| 12 | Aggressive Cows (SPOJ) | Medium | SPOJ | BS on answer (classic!) |
+| #   | Problem                        | Difficulty | Source  | BS Variant              |
+| --- | ------------------------------ | ---------- | ------- | ----------------------- |
+| 1   | Binary Search                  | Easy       | LC 704  | Standard template       |
+| 2   | Search Insert Position         | Easy       | LC 35   | Lower bound             |
+| 3   | First Bad Version              | Easy       | LC 278  | Left boundary           |
+| 4   | Search in Rotated Sorted Array | Medium     | LC 33   | Modified BS             |
+| 5   | Find Minimum in Rotated Array  | Medium     | LC 153  | Inflection point        |
+| 6   | Search a 2D Matrix             | Medium     | LC 74   | Flatten + BS            |
+| 7   | Find Peak Element              | Medium     | LC 162  | Gradient BS             |
+| 8   | Koko Eating Bananas            | Medium     | LC 875  | BS on answer            |
+| 9   | Capacity to Ship Packages      | Medium     | LC 1011 | BS on answer            |
+| 10  | Split Array Largest Sum        | Hard       | LC 410  | BS + greedy check       |
+| 11  | Median of Two Sorted Arrays    | Hard       | LC 4    | BS on partition         |
+| 12  | Aggressive Cows (SPOJ)         | Medium     | SPOJ    | BS on answer (classic!) |
 
 **Hidden Gems:**
 
-| Problem | Source | Why It's Great |
-|---------|--------|---------------|
-| Custom Sort String | LC 791 | Custom ordering — tests comparator understanding |
-| Relative Sort Array | LC 1122 | Counting sort with custom order |
-| Minimum Number of Arrows | LC 452 | Sort intervals + greedy |
-| Count of Smaller Numbers After Self | Hard LC 315 | Merge sort + counting inversions |
-| Magnetic Force Between Two Balls | Medium LC 1552 | Binary search on answer (like Aggressive Cows) |
+| Problem                             | Source         | Why It's Great                                   |
+| ----------------------------------- | -------------- | ------------------------------------------------ |
+| Custom Sort String                  | LC 791         | Custom ordering — tests comparator understanding |
+| Relative Sort Array                 | LC 1122        | Counting sort with custom order                  |
+| Minimum Number of Arrows            | LC 452         | Sort intervals + greedy                          |
+| Count of Smaller Numbers After Self | Hard LC 315    | Merge sort + counting inversions                 |
+| Magnetic Force Between Two Balls    | Medium LC 1552 | Binary search on answer (like Aggressive Cows)   |

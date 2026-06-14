@@ -37,12 +37,12 @@
 
 **The Lookup Problem:** "Given a key, find its value."
 
-| Approach | Time Complexity |
-|----------|----------------|
-| Array lookup by index | O(1) — but you need an integer index! |
-| Array lookup by value | O(n) — must scan everything |
-| Sorted array + binary search | O(log n) — better, but not instant |
-| **Hash Table** | **O(1)** — converts any key into an index! |
+| Approach                     | Time Complexity                            |
+| ---------------------------- | ------------------------------------------ |
+| Array lookup by index        | O(1) — but you need an integer index!      |
+| Array lookup by value        | O(n) — must scan everything                |
+| Sorted array + binary search | O(log n) — better, but not instant         |
+| **Hash Table**               | **O(1)** — converts any key into an index! |
 
 💡 **Hash Table Breakthrough:**
 "What if we could CONVERT any key into an index?"
@@ -54,10 +54,11 @@ Keys can be strings, objects, anything — the hash function handles it.
 
 **1953: H.P. Luhn at IBM.** IBM's compilers had to look up variable names — with 10,000 variables, linear search meant 10,000 comparisons per lookup. Programs had thousands of lookups → **minutes to compile**.
 
-💡 **Luhn's insight:** Use a mathematical function to *compute* the location directly.
+💡 **Luhn's insight:** Use a mathematical function to _compute_ the location directly.
 `hash("myVariable") → index 4271 → O(1) direct access!`
 
 **Impact:**
+
 - Compilers went from **minutes to seconds**
 - Databases became practical (hash indexes)
 - Every modern language has built-in HashMap/Dictionary
@@ -66,6 +67,7 @@ Keys can be strings, objects, anything — the hash function handles it.
 ### When to Use (and NOT Use) Hash Tables
 
 **✅ USE Hash Table when:**
+
 - You need **O(1) average** lookup, insert, delete
 - You're counting frequencies ("how many times does X appear?")
 - You're checking for existence ("have I seen X before?")
@@ -73,10 +75,11 @@ Keys can be strings, objects, anything — the hash function handles it.
 - You need two-sum style "complement finding"
 
 **❌ DO NOT USE when:**
+
 - You need sorted/ordered data → Use **TreeMap** instead
 - You need range queries ("all keys between A and B") → **TreeMap**
 - Memory is very tight → Hash tables waste ~50% space
-- You need **worst-case** O(1) → Hash tables are O(1) *average*, O(n) worst
+- You need **worst-case** O(1) → Hash tables are O(1) _average_, O(n) worst
 - Input is very small (< 20 elements) → Simple array might be faster
 
 ### The Big Picture: How HashMap Works in Java
@@ -87,6 +90,7 @@ map.put("Alice", 85);
 ```
 
 **Step by Step:**
+
 1. Compute hash: `"Alice".hashCode()` → `63650081`
 2. Reduce to index: `63650081 % 16` → `1` (16 = default capacity)
 3. Store at `buckets[1]`: `("Alice", 85)`
@@ -94,25 +98,53 @@ map.put("Alice", 85);
 **Retrieval:** `map.get("Alice")` → hash → `1` → go to `buckets[1]` → found! Return `85`. Time: **O(1)**.
 
 ⚠️ **Collision handling:**
+
 - **Java 8+:** If chain length > 8 → convert to **Red-Black Tree** → O(log n) worst case
 - **Before Java 8:** Always linked list → O(n) worst case
 
 ### HashMap vs TreeMap vs LinkedHashMap — Decision Matrix
 
-| Feature | HashMap | TreeMap | LinkedHashMap |
-|---------|---------|---------|---------------|
-| Lookup | O(1) avg | O(log n) | O(1) avg |
-| Insert | O(1) avg | O(log n) | O(1) avg |
-| Ordered | ❌ No | ✅ Sorted by key | ✅ Insertion order |
-| Null key | ✅ 1 allowed | ❌ No | ✅ 1 allowed |
-| Thread-safe | ❌ No | ❌ No | ❌ No |
-| **Best for** | General lookup | Range queries | LRU cache |
+| Feature      | HashMap        | TreeMap          | LinkedHashMap      |
+| ------------ | -------------- | ---------------- | ------------------ |
+| Lookup       | O(1) avg       | O(log n)         | O(1) avg           |
+| Insert       | O(1) avg       | O(log n)         | O(1) avg           |
+| Ordered      | ❌ No          | ✅ Sorted by key | ✅ Insertion order |
+| Null key     | ✅ 1 allowed   | ❌ No            | ✅ 1 allowed       |
+| Thread-safe  | ❌ No          | ❌ No            | ❌ No              |
+| **Best for** | General lookup | Range queries    | LRU cache          |
 
 🎯 **Interview rule of thumb:**
+
 - "Need lookup?" → **HashMap**
 - "Need sorted keys?" → **TreeMap**
 - "Need insertion order?" → **LinkedHashMap**
 - "Need thread safety?" → **ConcurrentHashMap**
+
+### Hash Table Variants & Trade-offs
+
+Not all hash maps are created equal. Different implementations make different trade-offs across thread-safety, ordering, memory, and lookup guarantees. This table captures the key dimensions.
+
+| Variant                  | Structure                       | Key Equality                 | Thread-Safety               | Memory Overhead           | Lookup Complexity              | Use Case                                  |
+| ------------------------ | ------------------------------- | ---------------------------- | --------------------------- | ------------------------- | ------------------------------ | ----------------------------------------- |
+| **HashMap** (Java)       | Array +链表/红黑树              | `equals()`                   | None                        | ~40% empty (0.75 LF)      | O(1) avg / O(log n) worst      | General-purpose lookups                   |
+| **LinkedHashMap**        | HashMap + Doubly DLL            | `equals()`                   | None                        | +2 pointers per entry     | O(1) avg                       | LRU cache, insertion-order iteration      |
+| **TreeMap**              | Red-Black Tree                  | `compareTo()` / `Comparator` | None                        | O(log n) per node         | O(log n)                       | Sorted keys, range queries                |
+| **Hashtable** (legacy)   | Array +链表                     | `equals()`                   | Synchronized (full lock)    | High (full sync)          | O(1) avg                       | Legacy code compatibility                 |
+| **ConcurrentHashMap**    | Segment array + CAS             | `equals()`                   | Lock striping (16 segments) | Moderate                  | O(1) avg (read), O(n/16) worst | High-concurrency production use           |
+| **WeakHashMap**          | HashMap with `WeakReference<K>` | `equals()`                   | None                        | Low                       | O(1) avg                       | Cache entries that don't prevent GC       |
+| **IdentityHashMap**      | Open-addressing array           | `==` (reference equality)    | None                        | Minimal                   | O(1) avg                       | Security managers, system-level interning |
+| **EnumMap**              | Dense `Object[]` array          | Ordinal index                | None                        | Very low (no hash)        | O(1) constant                  | Enum-keyed maps (most efficient possible) |
+| **ImmutableMap** (Guava) | Hash array (copied on write)    | `equals()`                   | Immutable by design         | Moderate (copy on write)  | O(1) avg                       | Config objects, DTOs, defensive copying   |
+| **Caffeine**             | W-TinyLFU + LIRS + LRU          | `equals()`                   | Optional (async)            | Tunable (weigher, expiry) | O(1) amortized                 | High-performance in-memory cache          |
+
+> **Trade-off Discussion:** Choosing a hash map variant means choosing which axis to optimize:
+>
+> - **Memory vs. Speed:** Open-addressing (IdentityHashMap) uses less memory than chaining but degrades faster under high load. EnumMap has the lowest memory footprint of all — no hash computation needed, just ordinal indexing.
+> - **Thread-Safety vs. Performance:** `Hashtable` synchronizes every operation with a full lock — safe but slow under contention. `ConcurrentHashMap` uses lock striping (16 segments in JDK 8) so concurrent reads are lock-free and only writes that touch the same segment block each other. For single-threaded code, plain `HashMap` is always faster.
+> - **Sorted vs. Unsorted:** `TreeMap` maintains keys in sorted order (O(log n) for all operations) at the cost of a more complex structure. Use `TreeMap` only when you need `subMap()`, `firstKey()`, or range queries. Never use it for simple lookups.
+> - **Weak References vs. Strong:** `WeakHashMap` allows the GC to collect entries when the only remaining reference to the key is from within the map itself. This is ideal for canonicalization caches or memoization where you don't want long-lived map entries to prevent GC of the underlying objects. But beware: storing a strong reference to the key from the value (e.g., `map.put(key, new StrongRefToKey(key))`) resurrects the key and defeats the weak semantics entirely.
+
+---
 
 ### Mental Model: Library Card Catalog
 
@@ -133,8 +165,64 @@ It's a carefully researched balance between space efficiency and lookup performa
 
 ---
 
+### Explicit Invariants — What Must Always Be True
 
+Understanding invariants clarifies WHY hash tables work and WHY they break.
 
+> **Invariant 1 — HashMap Load Factor:**
+> `loadFactor = size / capacity` must stay ≤ `DEFAULT_LOAD_FACTOR (0.75)`. A resize is triggered when `(size + 1) > threshold` (where `threshold = capacity × loadFactor`). This guarantees average chain length stays O(1).
+
+> **Invariant 2 — Hash Table Collision Bound:**
+> Under **uniform hashing** (all keys equally likely across all bucket indices), the expected chain length is O(1). Pathological inputs that all hash to the same bucket break this invariant — chains grow to O(n), degrading all operations.
+
+> **Invariant 3 — Java String hashCode Determinism:**
+> `s.hashCode()` is deterministic: calling it twice on the same `String s` always returns the same int. This is guaranteed by the JLS. The same string always maps to the same bucket. This is why HashMap keys must produce consistent hash codes across all operations.
+
+> **Invariant 4 — equals() / hashCode() Contract:**
+> If `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must be true. Violating this breaks HashMap's bucket-based lookup entirely — objects that are equal may land in different buckets, making `containsKey()` and `get()` unreliable.
+
+---
+
+## 🎓 University Proof Corner
+
+> **MIT 6.006 L8 / RWTH Aachen Algo I layer** — Why hash tables give correct lookups, why they break down with bad hash functions, and why universal hashing makes O(1) a guarantee against any adversary.
+
+### Correctness: `get(k)` Returns the Right Value
+
+**Invariant**: After any sequence of `put(k, v)` and `remove(k)` operations, for every key `k'`, the chain at bucket `h(k')` contains exactly the live entries whose key equals `k'`.
+
+**Proof by induction on operation count**:
+
+- **Base case (empty table)**: All chains empty. Invariant holds vacuously. ✓
+- **Maintenance — `put(k, v)`**: Locate bucket `h(k)`. Walk the chain to find any existing entry with key `k`. If found, replace its value. If not, prepend a new entry `(k, v)`. Either way, the chain has exactly the live entries for `k` (plus any other keys that happen to hash to this bucket). ✓
+- **Maintenance — `remove(k)`**: Locate bucket `h(k)`. Walk chain; remove the entry with key `k`. The chain now has exactly the live entries (without `k`). ✓
+- **Termination**: `get(k)` walks the chain at `h(k)` and returns the value of the entry with key `k`, or `null` if none. By the invariant, this is exactly the live value (or absent). ✓
+
+### Why a Fixed Hash Function is Vulnerable
+
+For any fixed `h`, an adversary who knows `h` can construct `n` keys `k₁, ..., kₙ` that all hash to the same bucket. Then:
+
+- `put` of all n keys: O(n) per insert (chain traversal) → O(n²) total
+- `get` of any key: O(n) worst case
+
+This is the **HashDoS attack** — demonstrated in 2011 against PHP, Python, Ruby, Java (pre-7u6), and ASP.NET. A single HTTP request with crafted keys consumed minutes of CPU.
+
+### Why Universal Hashing Defeats the Adversary
+
+**Universal family H**: For any two distinct keys `x ≠ y`: Pr_{h∈H}[h(x) = h(y)] ≤ 1/m.
+
+**Standard construction**: `h_{a,b}(x) = ((a·x + b) mod p) mod m` for prime `p > |U|`, random `a ∈ {1, ..., p−1}`, random `b ∈ {0, ..., p−1}`.
+
+**Expected chain length**: For n keys and m ≥ n buckets:
+  E[chain at any bucket] = Σ_{y ≠ x} Pr[h(y) = h(x)] ≤ (n−1)/m ≤ 1
+
+So expected lookup = O(1) **regardless of input** — the adversary cannot construct a worst case because they cannot predict the random `a, b`.
+
+**In practice**: Java 7u6+, Python 3.3+, Ruby 1.9+ all randomize the hash seed per JVM/process. This is universal hashing against an external adversary — and the only reason HashDoS is no longer a single-request DoS.
+
+> Full proofs: [A4 — Randomized Data Structures](A4_Randomized_Data_Structures.md) · [A2 — DS Complexity](A2_DS_Complexity_FirstPrinciples.md)
+
+---
 
 ## 🧬 Nature & Behavior
 
@@ -162,17 +250,18 @@ EXAMPLE: Phone Book
 └────────────────────────────────────────────────────┘
 ```
 
-
 ### Collision Handling
 
 **Problem:** `hash("Alice") = 3` and `hash("David") = 3` — two keys hash to the same index!
 
 **Solution 1: Chaining** (LinkedList at each index)
+
 ```
 Index 3: Alice → David → null
 ```
 
 **Solution 2: Open Addressing** (find next empty slot)
+
 ```
 Index 3: Alice
 Index 4: David (probed to next)
@@ -183,6 +272,7 @@ Index 4: David (probed to next)
 **Problem (IBM 701 Compiler):** Program has thousands of variable names. Need to look up variable type/value quickly. Linear search through all variables: **TOO SLOW**.
 
 **Before Hash Tables:**
+
 ```
 variables = [
     {name: "x", type: "int"},
@@ -192,14 +282,13 @@ variables = [
 lookup("x") → search all 10,000 → O(n)
 ```
 
+**Solution by H.P. Luhn (1953):** "What if we could _calculate_ the position directly?"
 
-**Solution by H.P. Luhn (1953):** "What if we could *calculate* the position directly?"
 ```
 hash("x") = some_formula("x") → index 42
 variables[42] = {name: "x", type: "int"}
 lookup("x") → O(1)!
 ```
-
 
 ✅ **Impact:** Compilers became **100x faster**, databases became possible, every modern language has HashMap.
 
@@ -320,6 +409,83 @@ public class MyHashMap {
 }
 ```
 
+### Production Failure Modes & Debugging
+
+Hash tables are battle-tested, but they have sharp edges in production. These failure modes have caused real outages.
+
+#### Failure 1: Hash Collision DoS Attack (2011)
+
+**Mechanism:** An attacker submits keys designed to produce the same hash bucket. In Java's original `HashMap`, all colliding keys land in the same chain → every `get()` degenerates to O(n). With enough crafted keys, an attacker can freeze a server by forcing it into O(n²) hash lookups per request.
+
+**Root Cause:** Before JDK 7u6 (2012), `String.hashCode()` was deterministic with no per-JVM randomization. The same string always produced the same hash, so an attacker could pre-compute colliding keys.
+
+**Fix:** JDK 8 switched to a randomized hash seed (`-XX:StringTableSize` or the internal `hashSeed` in `Hashtable`). Each JVM instance computes a random seed at startup, making pre-computed collisions useless.
+
+**Debugging:** Use `-XX:+PrintStringTableStatistics` to monitor string table size; `jmap -histo:live <pid>` to spot abnormally large bucket chains. CPU spike with no obvious code cause → suspect hash collision DoS.
+
+#### Failure 2: HashMap Resize Storm
+
+**Mechanism:** With high-cardinality keys (e.g., user IDs, session tokens), a HashMap that starts at capacity 16 repeatedly resizes: 16 → 32 → 64 → ... Each resize is O(n) (all entries rehashed). Under high write throughput, repeated resizes cause CPU spikes and GC pressure.
+
+**Root Cause:** Failing to pre-size the HashMap when the expected size is known. Each resize doubles capacity and re-hashes every entry — an O(n) operation that blocks the thread.
+
+**Fix:** Pre-size: `new HashMap<>(expectedSize / 0.75 + 1)` or Guava's `Maps.newHashMapWithExpectedSize(1000)`. This allocates the correct capacity upfront, avoiding all resizes.
+
+**Debugging:** `jstack <pid>` during a spike will show threads in `HashMap.resize()` or `TransferData`. Add `-XX:HashMapInitCapacity=<N>` logging. Profile with `async-profiler` to find which `put()` calls dominate.
+
+#### Failure 3: WeakHashMap Entry Resurrection
+
+**Mechanism:** `WeakHashMap` uses `WeakReference` for keys — entries are eligible for GC when no other strong reference exists. However, if the **value** object holds a strong reference back to the key, the key is kept alive and the entry is never removed. The map appears to "leak" entries.
+
+```java
+// WRONG — value holds strong ref to key
+WeakHashMap<Key, Value> map = new WeakHashMap<>();
+map.put(new Key("session_1"), new Value(keyRef -> { /* captures key! */ }));
+// Key is never GC'd because Value captures it in a lambda closure!
+```
+
+**Debugging:** Use `jmap -histo:live <pid>` before and after `System.gc()` to see if WeakHashMap entries persist. If they do, check value objects for hidden key references in closures, inner classes, or caches.
+
+#### Failure 4: ConcurrentModificationException on HashMap Iteration
+
+**Mechanism:** Modifying a `HashMap` while iterating over it (via `entrySet()`, `keySet()`, or `values()`) throws `ConcurrentModificationException`. This is fail-fast: the iterator maintains a `modCount` and detects concurrent modification.
+
+```java
+Map<Integer, String> map = new HashMap<>();
+map.put(1, "one");
+for (Map.Entry<Integer, String> e : map.entrySet()) {
+    map.remove(e.getKey()); // throws CME!
+}
+```
+
+**Fix:** Use the iterator's own `remove()`: `Iterator<Map.Entry<Integer, String>> it = map.entrySet().iterator(); while (it.hasNext()) { it.remove(); }`. Or use `ConcurrentHashMap` which supports safe concurrent iteration.
+
+**Debugging:** `jstack <pid>` will show the `ConcurrentModificationException` stack trace pointing to the failing loop.
+
+---
+
+🔬 **Section Challenge — ⚡ Production Failure Modes**
+
+**Challenge (Real-World Reasoning):** In 2011, the hash collision DoS attack forced Java (and Ruby, PHP, Python) to switch to randomized hash seeds. Explain WHY this fix works, WHY it was necessary, and what the trade-off was. What other design decisions in `HashMap` (Java 8+) help mitigate similar attacks today?
+
+<details><summary>Answer</summary>
+
+**Why randomized seeds work:** Before randomization, `hash("foo")` was always the same integer across all JVMs. An attacker could pre-compute 100,000 strings that all hash to the same bucket and submit them as request parameters. Each lookup degenerates to O(n) → total O(n²) per request → server freeze. With a random seed S added to the hash (`hash = S ^ stringHashCode`), the attacker cannot pre-compute collisions — each JVM has a different S, so their colliding keys scatter unpredictably across buckets on each deployment.
+
+**Why it was necessary:** The O(n) lookup per collision means N colliding keys cause N² total work on a single request. At N=100,000, this is catastrophic even on modern hardware.
+
+**Trade-off:** The seed makes performance non-deterministic across JVM restarts (same input → different bucket). This breaks some unit tests that rely on hash order. More importantly, it means the same hash map state cannot be replicated exactly across machines without sharing the seed (a security risk). The seed is stored in `Hashtable.hashSeed` (not `HashMap`, since `HashMap` was always vulnerable).
+
+**Java 8+ mitigations beyond seeds:**
+
+1. **Treeification at chain length 8:** Even if collisions occur, the worst case is O(log n) per lookup (Red-Black tree), not O(n). This limits the attack's damage — N colliding keys cause O(N log N) total work, not O(N²).
+2. **Randomized seed** in `Hashtable` (JDK 6u26+) and `HashMap` (JDK 7u6+)
+3. **`-Djdk.map.althashing.threshold`** to disable alternate hashing entirely for trusted input
+
+The combination means the DoS attack surface is much smaller today — but not zero. Applications that accept arbitrary user strings as HashMap keys should still sanitize or limit input length.
+
+</details>
+
 ## 🎯 LeetCode → Real-World Connection
 
 ### Problem: LRU Cache
@@ -356,7 +522,6 @@ IMPACT:
 - Every CDN (Cloudflare, Akamai) uses this
 - Redis, Memcached are based on this
 ```
-
 
 ---
 
@@ -441,14 +606,14 @@ Map stores element → last seen index (or frequency in window). When window is 
 
 **Optimal (Prefix Sum + HashMap):** For each `prefix[j]`, count how many `prefix[i] = prefix[j] - K`:
 
-| j | prefix | need (prefix-K) | map state | matches |
-|---|--------|-----------------|-----------|---------|
-| 0 | 1 | -2 | {0:1} | 0 |
-| 1 | 3 | 0 | {0:1, 1:1} | **1** → subarray [0..1] |
-| 2 | 6 | 3 | {0:1, 1:1, 3:1} | **1** → subarray [0..2] |
-| 3 | 5 | 2 | {0:1, 1:1, 3:1, 6:1} | 0 |
-| 4 | 6 | 3 | {0:1, 1:1, 3:1, 5:1, 6:1} | **1** |
-| 5 | 8 | 5 | {0:1, 1:1, 3:1, 5:1, 6:2} | **1** |
+| j   | prefix | need (prefix-K) | map state                 | matches                 |
+| --- | ------ | --------------- | ------------------------- | ----------------------- |
+| 0   | 1      | -2              | {0:1}                     | 0                       |
+| 1   | 3      | 0               | {0:1, 1:1}                | **1** → subarray [0..1] |
+| 2   | 6      | 3               | {0:1, 1:1, 3:1}           | **1** → subarray [0..2] |
+| 3   | 5      | 2               | {0:1, 1:1, 3:1, 6:1}      | 0                       |
+| 4   | 6      | 3               | {0:1, 1:1, 3:1, 5:1, 6:1} | **1**                   |
+| 5   | 8      | 5               | {0:1, 1:1, 3:1, 5:1, 6:2} | **1**                   |
 
 ✅ **Total: 4 subarrays** sum to 3: `[1,2]`, `[3]`, `[3,-1,1]`, `[1,2]`
 
@@ -456,50 +621,50 @@ Map stores element → last seen index (or frequency in window). When window is 
 
 ---
 
-
-
-
 🔬 **Section Challenge — ⚡ Quick Problem Walkthrough: Subarray Sum Equals K**
 
 **Challenge 1 (Reasoning):** In the prefix sum approach, you initialize the map with `prefixCount.put(0, 1)`. Why is this necessary? What case does it handle that would be missed otherwise?
+
 <details><summary>Answer</summary>
 
 It handles subarrays that start at index 0. When `prefix[j] - K = 0`, it means the subarray `[0..j]` itself sums to K. Without the initial `(0, 1)` entry, this match wouldn't be found because the map would have no entry for prefix sum = 0. Example: array `[3]`, K = 3. After processing index 0: prefix = 3, need = 3 - 3 = 0. Without `(0,1)` in the map → count = 0 (wrong!). With `(0,1)` → count = 1 (correct — the subarray `[3]` sums to 3). This "seed" value represents the empty prefix before the array begins.
+
 </details>
 
 ## 🎯 Full Problem Set — HashMap / HashTable
 
-| # | Problem | Platform | Difficulty | Pattern |
-|---|---------|----------|------------|---------|
-| 1 | LC 1 — Two Sum | LeetCode | ⭐ Easy | Complement lookup |
-| 2 | LC 242 — Valid Anagram | LeetCode | ⭐ Easy | Frequency count |
-| 3 | LC 49 — Group Anagrams | LeetCode | ⭐⭐ Med | Sorted key grouping |
-| 4 | LC 560 — Subarray Sum Equals K | LeetCode | ⭐⭐ Med | Prefix Sum + HashMap |
-| 5 | LC 128 — Longest Consecutive Sequence | LeetCode | ⭐⭐ Med | HashSet O(n) |
-| 6 | LC 347 — Top K Frequent Elements | LeetCode | ⭐⭐ Med | Freq + Heap |
-| 7 | LC 146 — LRU Cache | LeetCode | ⭐⭐ Med | HashMap + DLL |
-| 8 | LC 76 — Minimum Window Substring | LeetCode | ⭐⭐⭐ Hard | Sliding Window + Map |
-| 9 | CF 4C — Registration System | Codeforces | Div2-C | HashMap counting |
-| 10 | CF 525A — Slavic's Exam | Codeforces | Div2-A | Char frequency |
+| #   | Problem                               | Platform   | Difficulty  | Pattern              |
+| --- | ------------------------------------- | ---------- | ----------- | -------------------- |
+| 1   | LC 1 — Two Sum                        | LeetCode   | ⭐ Easy     | Complement lookup    |
+| 2   | LC 242 — Valid Anagram                | LeetCode   | ⭐ Easy     | Frequency count      |
+| 3   | LC 49 — Group Anagrams                | LeetCode   | ⭐⭐ Med    | Sorted key grouping  |
+| 4   | LC 560 — Subarray Sum Equals K        | LeetCode   | ⭐⭐ Med    | Prefix Sum + HashMap |
+| 5   | LC 128 — Longest Consecutive Sequence | LeetCode   | ⭐⭐ Med    | HashSet O(n)         |
+| 6   | LC 347 — Top K Frequent Elements      | LeetCode   | ⭐⭐ Med    | Freq + Heap          |
+| 7   | LC 146 — LRU Cache                    | LeetCode   | ⭐⭐ Med    | HashMap + DLL        |
+| 8   | LC 76 — Minimum Window Substring      | LeetCode   | ⭐⭐⭐ Hard | Sliding Window + Map |
+| 9   | CF 4C — Registration System           | Codeforces | Div2-C      | HashMap counting     |
+| 10  | CF 525A — Slavic's Exam               | Codeforces | Div2-A      | Char frequency       |
 
 ---
-
-
 
 🔬 **Section Challenge — 🎯 Full Problem Set — HashMap / HashTable**
 
 **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+
 <details><summary>Answer</summary>
 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-</details>
 
+</details>
 
 ## 🧠 Pattern Fingerprint — HashMap
 
@@ -519,46 +684,43 @@ SEE THESE WORDS → USE THIS:
 
 ### 🚀 GO LEARN — When You Need More
 
-| Topic | File |
-|-------|------|
+| Topic                       | File                                                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------- |
 | HashMap + counting problems | 📖 [10_HashMap_Plus_Counting.md](../04_Patterns_Templates/10_HashMap_Plus_Counting.md) |
-| Practice problems | 📖 [17_HashMap_Hashing.md](../05_Problem_Solving/17_HashMap_Hashing.md) |
-| Java Collections | 📖 [03_Collections_Java.md](03_Collections_Java.md) |
+| Practice problems           | 📖 [17_HashMap_Hashing.md](../05_Problem_Solving/17_HashMap_Hashing.md)                |
+| Java Collections            | 📖 [03_Collections_Java.md](03_Collections_Java.md)                                    |
 
 ### 📅 Revisit Tracker
+
 - **Day 3:** Redo LC 1 (Two Sum) + LC 49 (Group Anagrams) from memory
 - **Day 7:** Redo LC 560 (Prefix Sum + HashMap) — write without hints
 
 ---
 
 📖 **Related Files:**
+
 - [04_Patterns_Templates/10_HashMap_Plus_Counting.md](../04_Patterns_Templates/10_HashMap_Plus_Counting.md) — HashMap pattern problems
 - [14_Mental_Models/04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md) — Prefix sum mental model
 - [03_Collections_Java.md](03_Collections_Java.md) — Java Collections framework
 
-
-
 ---
 
 ---
-
-
-
 
 ## ✅ You Know Hash Tables — Now Practice! (JIT Study Path)
 
 **Step 1 — Basic Problems (Warm Up):**
 
-| Problem | LC # | Pattern | Key Concept |
-|---|---|---|---|
-| Two Sum | LC 1 | Complement HashMap | Store num→index, look up target-num |
-| Group Anagrams | LC 49 | Grouping by key | Sort chars as key, group by map |
-| Top K Frequent Elements | LC 347 | Freq Map + Heap | Count then pick top K |
-| Valid Anagram | LC 242 | Frequency Map | Count chars in both strings |
-| Subarray Sum Equals K | LC 560 | Prefix Sum + HashMap | `prefixCount.get(sum - k)` |
-
+| Problem                 | LC #   | Pattern              | Key Concept                         |
+| ----------------------- | ------ | -------------------- | ----------------------------------- |
+| Two Sum                 | LC 1   | Complement HashMap   | Store num→index, look up target-num |
+| Group Anagrams          | LC 49  | Grouping by key      | Sort chars as key, group by map     |
+| Top K Frequent Elements | LC 347 | Freq Map + Heap      | Count then pick top K               |
+| Valid Anagram           | LC 242 | Frequency Map        | Count chars in both strings         |
+| Subarray Sum Equals K   | LC 560 | Prefix Sum + HashMap | `prefixCount.get(sum - k)`          |
 
 **Step 2 — Hit a wall? Learn these patterns:**
+
 - Prefix sum tracking → **[Prefix Sum Complete](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)**
 - Frequency + Top-K → **[HashMap + Counting](../04_Patterns_Templates/10_HashMap_Plus_Counting.md)**
 
@@ -567,17 +729,16 @@ SEE THESE WORDS → USE THIS:
 
 **Step 4 — Competitive Practice:**
 
-| CF Problem | Topic | Difficulty |
-|---|---|---|
-| [CF 1621C — Hidden Permutation](https://codeforces.com/problemset/problem/1621/C) | HashMap queries | ⭐⭐ Medium |
-| [CF 1360D — Buying Shovels](https://codeforces.com/problemset/problem/1360/D) | Counting with map | ⭐ Easy |
-| [CF 1399C — Boats Competition](https://codeforces.com/problemset/problem/1399/C) | Sorted + Two Pointer (compare with HashMap) | ⭐⭐ Medium |
-
+| CF Problem                                                                        | Topic                                       | Difficulty  |
+| --------------------------------------------------------------------------------- | ------------------------------------------- | ----------- |
+| [CF 1621C — Hidden Permutation](https://codeforces.com/problemset/problem/1621/C) | HashMap queries                             | ⭐⭐ Medium |
+| [CF 1360D — Buying Shovels](https://codeforces.com/problemset/problem/1360/D)     | Counting with map                           | ⭐ Easy     |
+| [CF 1399C — Boats Competition](https://codeforces.com/problemset/problem/1399/C)  | Sorted + Two Pointer (compare with HashMap) | ⭐⭐ Medium |
 
 🌍 **Real-World Connections:**
+
 - **DNS Cache** = HashMap of domain → IP (with TTL expiry)
 - **Git object store** = HashMap of SHA hash → file content (content-addressable storage)
 - **Database indexes** = Hash index for exact lookups (B-Tree for range queries)
 - **Java's HashMap** uses open-addressing (since Java 8: treeify at load factor 0.75)
 - **Redis** is essentially a distributed HashMap — all its data structures are hash-based
-

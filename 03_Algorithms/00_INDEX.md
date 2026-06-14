@@ -4,14 +4,25 @@
 
 ## Reading Order
 
+### 🎓 University Methodology Layer *(MIT 6.006 / KTH DD2352 / RWTH Aachen / TU Munich foundation)*
+
+> **Read these first if you want to know *why* algorithms work, not just *what* to implement.** These four chapters build the proof-based, complexity-based, lower-bound-based, and randomized-analysis toolbox that universities teach before the algorithm catalog.
+
+| #   | File                                                | What You'll Learn                       |
+| --- | --------------------------------------------------- | --------------------------------------- |
+| U1  | [Algorithm Correctness — Proving Why It Works](A1_Correctness_Proofs.md) | Loop invariants, exchange arguments, optimal substructure |
+| U2  | [Complexity from First Principles](A2_Complexity_FirstPrinciples.md) | Recurrence analysis, Master Theorem, amortized analysis (3 methods) |
+| U3  | [Lower Bounds & NP-Completeness](A3_Lower_Bounds_And_NP.md) | Decision-tree lower bounds, reductions, P vs NP, approximation |
+| U4  | [Randomized Algorithms](A4_Randomized_Algorithms.md) | Las Vegas vs Monte Carlo, indicator variables, universal hashing, Bloom filters |
+
 ### Foundations
 
-| # | File | What You'll Learn |
-|---|------|-------------------|
-| 1 | [Algorithm Thinking](01_Algorithm_Thinking.md) | How to approach ANY problem |
-| 2 | [Sorting Fundamentals](02a_Sorting_Fundamentals.md) | Bubble, selection, insertion, merge |
-| 3 | [Sorting Advanced](02b_Sorting_Advanced.md) | Quick sort, radix, bucket, counting |
-| 4 | [Divide & Conquer](02c_Divide_And_Conquer.md) | Split-solve-merge paradigm |
+| #   | File                                                | What You'll Learn                   |
+| --- | --------------------------------------------------- | ----------------------------------- |
+| 1   | [Algorithm Thinking](01_Algorithm_Thinking.md)      | How to approach ANY problem         |
+| 2   | [Sorting Fundamentals](02a_Sorting_Fundamentals.md) | Bubble, selection, insertion, merge |
+| 3   | [Sorting Advanced](02b_Sorting_Advanced.md)         | Quick sort, radix, bucket, counting |
+| 4   | [Divide & Conquer](02c_Divide_And_Conquer.md)       | Split-solve-merge paradigm          |
 
 ### Recursion & DP
 
@@ -68,10 +79,13 @@
 ## Roadmap
 
 ```
+🎓 University Methodology (U1–U4) ← read first for rigor
+    ↓
 Thinking → Sorting → Divide&Conquer → Recursion → DP → Trees → Graphs
     ↓
 Greedy → Strings → Advanced DS → Algorithm Engineering → Number Theory → Complete Guides → Java Deep Additions → Competitive Thinking
 ```
 
 ---
+
 [← Back to Master Index](../00_MASTER_INDEX.md)
