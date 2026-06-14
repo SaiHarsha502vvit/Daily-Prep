@@ -783,6 +783,74 @@ For α → ∞ without resize, E[X] = O(α) = O(n).
 
 This is why the load factor threshold (H1) is critical: keep α ≤ 0.75 and lookup is effectively O(1). Let α grow and lookup degrades to O(n).
 
+## 🔄 Brute Force → Optimal: Hash Table Motivation
+
+> **The university way**: before presenting a data structure, show why naive solutions fail. The hash table earns its existence by solving a real problem that O(n²) cannot.
+
+### Problem: Two Sum (the canonical hash-table problem)
+
+**Given**: array `nums` of n integers and a target value. Find two indices i, j such that `nums[i] + nums[j] == target`.
+
+**Brute force — O(n²)**:
+```java
+// For every pair (i, j), check if they sum to target
+for (int i = 0; i < n; i++)
+    for (int j = i+1; j < n; j++)
+        if (nums[i] + nums[j] == target) return new int[]{i, j};
+```
+- Time: O(n²) — checking every pair.
+- Space: O(1) — no extra storage.
+- **Failure at scale**: n = 10⁶ elements → 5×10¹¹ iterations → infeasible.
+
+**The insight**: For each element x, we don't need to scan all other elements for `target - x`. We just need to know if `target - x` EXISTS. Existence queries → hash table.
+
+**Optimal — O(n)**:
+```java
+Map<Integer, Integer> seen = new HashMap<>();
+for (int i = 0; i < n; i++) {
+    int complement = target - nums[i];
+    if (seen.containsKey(complement)) return new int[]{seen.get(complement), i};
+    seen.put(nums[i], i);
+}
+```
+- Time: O(n) — one pass, O(1) lookup per element.
+- Space: O(n) — at most n entries in the map.
+
+**The O(n²) → O(n) journey**:
+
+| Approach | Time | Space | Bottleneck removed |
+|----------|------|-------|--------------------|
+| Brute force (nested loop) | O(n²) | O(1) | None — checks all pairs |
+| Sort + two-pointer | O(n log n) | O(1) | Comparisons, but no index preservation |
+| **Hash table** | **O(n)** | O(n) | Existential lookup: O(n) → O(1) |
+
+**Rule**: use a hash table when you're doing repeated "does X exist?" or "how many times have I seen X?" queries that would otherwise require scanning.
+
+---
+
+### Problem: Frequency Count / Group Anagrams
+
+**Brute force — O(n² × L)** (L = string length):
+```java
+// For each string, compare with every other string to find anagram groups
+for (int i = 0; i < n; i++)
+    for (int j = i+1; j < n; j++)
+        if (isAnagram(strs[i], strs[j])) // ... group them
+```
+
+**Optimal — O(n × L log L)**:
+```java
+Map<String, List<String>> map = new HashMap<>();
+for (String s : strs) {
+    char[] chars = s.toCharArray(); Arrays.sort(chars);
+    String key = new String(chars);       // sorted chars = canonical key
+    map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+}
+```
+**Insight**: Two strings are anagrams iff their sorted character arrays are identical. Sort each string → use it as a hash key → O(1) grouping per string.
+
+---
+
 ## Constraint-First Decision Framework — Hash Table vs Alternatives
 
 ### Decision Tree

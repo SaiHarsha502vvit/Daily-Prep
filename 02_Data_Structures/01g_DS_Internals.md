@@ -1634,6 +1634,61 @@ For 10⁶ entries:
 
 **Implication:** Memory-constrained environments (mobile, IoT) should prefer primitive arrays or `IntIntMap` (fastutil/Trove) over boxed collections.
 
+---
+
+## 🔄 Brute Force → Optimal: Implementation-Level Decisions
+
+> **The internal view**: showing why each JDK collection's backing structure matters — not just what it does, but what the brute-force alternative costs and why the implementation wins.
+
+### Problem 1: Counting Word Frequencies — Array vs HashMap
+
+**Brute force with sorted array + binary search — O(n log n) build, O(log n) lookup**:
+```java
+// Keep parallel String[] keys and int[] counts, sorted by key
+// Insert: binary search O(log n), shift O(n) → O(n) per insert total
+// Lookup: binary search O(log n)
+```
+- Insert cost: O(n) per word due to array shifting.
+- **Failure at scale**: 10⁶ unique words → 10¹² comparison-and-shift ops.
+
+**With HashMap — O(1) amortized insert and lookup**:
+```java
+Map<String, Integer> freq = new HashMap<>();
+for (String word : words) freq.merge(word, 1, Integer::sum);
+```
+- Insert: O(1) amortized (amortized over resizes); lookup O(1) avg.
+- **Why it works internally**: HashMap uses an array of buckets. String's `hashCode()` maps the word to a bucket index in O(L) (L = word length). Chaining resolves collisions. The backing array doubles when load factor > 0.75, spreading cost over n inserts.
+
+| Approach | Build n words | Per lookup | Sorted iteration |
+|----------|--------------|------------|-----------------|
+| Sorted array | O(n²) worst | O(log n) | O(1) |
+| **HashMap** | **O(n) amortized** | **O(1) avg** | O(n log n) extra sort |
+| TreeMap | O(n log n) | O(log n) | O(n) in-order |
+
+**Rule**: HashMap for frequency counting; TreeMap if you also need sorted output; sorted array if data is static and lookups dominate.
+
+---
+
+### Problem 2: Stack DFS vs Recursion — Explicit Stack Implementation
+
+**Recursive DFS — O(depth) stack space, risk of StackOverflowError at depth > ~10,000**:
+```java
+void dfs(Node node) { visit(node); for (Node c : node.children) dfs(c); }
+```
+
+**Iterative DFS with explicit ArrayDeque — O(depth) heap space, no overflow risk**:
+```java
+Deque<Node> stack = new ArrayDeque<>();
+stack.push(root);
+while (!stack.isEmpty()) { Node n = stack.pop(); visit(n); for (Node c : n.children) stack.push(c); }
+```
+- **Why ArrayDeque beats Stack**: `java.util.Stack` extends `Vector` → every push/pop is `synchronized` → 10–50× slower under single-threaded use. `ArrayDeque` is unsynchronized and backed by a resizable array → no lock overhead, O(1) amortized push/pop, O(1) peek.
+- **Internal invariant**: ArrayDeque maintains `head` and `tail` indices into a circular array. Push increments `tail`; pop decrements `tail`. Resize copies to new array when `tail == head`.
+
+**Rule**: Always use `ArrayDeque` as a stack (not `Stack`). Use iterative DFS for graphs/trees of unknown depth.
+
+---
+
 ## Constraint-First Decision Framework — Which JDK Collection?
 
 ### Decision Tree

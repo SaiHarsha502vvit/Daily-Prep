@@ -1030,6 +1030,74 @@ Practical consequence: 2× the AVL bound, but fewer rotations on insert/delete.
 
 Sift-up is also O(log n) by symmetric argument.
 
+---
+
+## 🔄 Brute Force → Optimal: Tree / Heap Motivation
+
+> **The university way**: show the naive solution first so the tree earns its place.
+
+### Problem 1: Range Query — "Find all elements in [lo, hi]"
+
+**Given**: a set of n integers. Answer many queries of the form "list all elements between lo and hi."
+
+**Brute force — O(n) per query**:
+```java
+List<Integer> result = new ArrayList<>();
+for (int x : elements) if (x >= lo && x <= hi) result.add(x);
+```
+- Time: O(n) per query, O(nq) for q queries.
+- **Failure at scale**: n = 10⁶ elements, q = 10⁶ queries → 10¹² comparisons.
+
+**The insight**: A sorted structure lets binary search find each boundary in O(log n). A BST maintains sorted order dynamically — insertions and deletions keep the BST property intact.
+
+**Optimal with TreeSet — O(log n + k) per query** (k = result size):
+```java
+TreeSet<Integer> set = new TreeSet<>(elements);
+NavigableSet<Integer> range = set.subSet(lo, true, hi, true);
+// Internally: O(log n) to find lo, O(k) to iterate results
+```
+
+| Approach | Build | Per Query | Insert/Delete later |
+|----------|-------|-----------|---------------------|
+| Brute force (linear scan) | O(n) | O(n) | O(1) |
+| Sort + binary search | O(n log n) | O(log n + k) | O(n) — rebuild sort |
+| **BST (TreeSet)** | **O(n log n)** | **O(log n + k)** | **O(log n)** |
+
+**Advantage of BST**: the only structure that achieves O(log n) for ALL three: build, query, and modify.
+
+---
+
+### Problem 2: Repeated Minimum Extraction (Heap Motivation)
+
+**Given**: a stream of tasks with priorities. Always process the highest-priority (lowest-cost) task next.
+
+**Brute force — O(n) per extract**:
+```java
+int minIdx = 0;
+for (int i = 1; i < list.size(); i++) if (list.get(i) < list.get(minIdx)) minIdx = i;
+int min = list.remove(minIdx);  // O(n) scan + O(n) remove
+```
+- Time: O(n) per extraction. O(n²) total for n extractions.
+- **Failure at scale**: Dijkstra with n=10⁶ nodes calls extractMin ~10⁶ times → 10¹² ops.
+
+**The insight**: We don't need full sorted order — just the minimum. A heap maintains only the min-at-root invariant, using the heap property to achieve O(log n) sift-down after removal.
+
+**Optimal with PriorityQueue — O(log n) per extract**:
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<>(elements);
+int min = pq.poll();  // root removal + sift-down: O(log n)
+```
+
+| Approach | Insert | Extract-min | Peek-min |
+|----------|--------|-------------|----------|
+| Unsorted list | O(1) | O(n) | O(n) |
+| Sorted array | O(n) | O(1) | O(1) |
+| **Heap (PriorityQueue)** | **O(log n)** | **O(log n)** | **O(1)** |
+
+**Rule**: heap when you need repeated "give me the best" — Dijkstra, A*, merge k sorted lists, median maintenance, scheduling.
+
+---
+
 ## Constraint-First Decision Framework — Which Tree?
 
 ### Decision Tree

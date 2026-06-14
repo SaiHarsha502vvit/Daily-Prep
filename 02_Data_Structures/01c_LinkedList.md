@@ -1084,6 +1084,61 @@ Proof:
 
 See `02_PROBLEM_SETS.md` Part A for the full exam-style proof. Once a cycle is detected, the list violates I3 and the algorithm returns `false` for "is acyclic" — or breaks the cycle by setting `slow.next = null` at the meeting point.
 
+---
+
+## 🔄 Brute Force → Optimal: Linked List Motivation
+
+> **The canonical case where LL wins**: operations requiring O(1) arbitrary-position insert/remove that arrays cannot match.
+
+### Problem 1: LRU Cache — O(1) get and put
+
+**Given**: cache with capacity c. `get(key)` returns value or -1. `put(key, val)` inserts; if at capacity, evicts the least-recently-used item.
+
+**Brute force with ArrayList — O(n) per operation**:
+```java
+// On get: scan list for key O(n), move to front O(n shift)
+// On put: scan for existing key O(n), add/shift O(n), evict tail O(1)
+```
+- Time: O(n) per operation. At c = 10⁶ entries and high throughput → unusable.
+
+**The insight**: Need two things simultaneously — O(1) key lookup (HashMap) AND O(1) move-to-front / evict-tail. Only a doubly-linked list allows O(1) node removal given a pointer to the node. Combine both structures.
+
+**Optimal — O(1) with HashMap + DoublyLinkedList**:
+```java
+Map<Integer, Node> map = new HashMap<>();
+Node head, tail;  // sentinels
+
+int get(int key) {
+    if (!map.containsKey(key)) return -1;
+    moveToHead(map.get(key));  // O(1): update 4 pointers
+    return map.get(key).val;
+}
+void put(int key, int val) {
+    if (map.containsKey(key)) { map.get(key).val = val; moveToHead(map.get(key)); return; }
+    Node n = new Node(key, val); addToHead(n); map.put(key, n);
+    if (map.size() > capacity) { map.remove(tail.prev.key); removeTail(); }
+}
+```
+
+| Approach | get | put | Why |
+|----------|-----|-----|-----|
+| ArrayList linear scan | O(n) | O(n) | Shift on every move-to-front |
+| **HashMap + DoubleLinkedList** | **O(1)** | **O(1)** | Pointer swap; no shifting |
+
+**Why linked list, not deque/array**: only doubly-linked nodes with prev/next pointers allow O(1) removal at an arbitrary interior position (given a pointer). Arrays need O(n) shifting for interior removes.
+
+---
+
+### Problem 2: Iterator-based Insert — O(1) vs O(n)
+
+**ArrayList.add(int index, E)** — O(n): shifts elements right of `index`.
+
+**LinkedList.ListIterator.add(E)** — O(1): once the cursor is positioned, inserting before/after it is a pointer swap. Useful for building structures where you iterate and insert many times at the current position (e.g., interleaving two sorted streams without materializing both).
+
+**Rule for choosing**: if insert/delete positions are discovered during iteration (cursor-based), LinkedList wins. If insert/delete positions are random indices, ArrayList wins (random access O(1) vs LL's O(n)).
+
+---
+
 ## Constraint-First Decision Framework — When to Pick LL
 
 Use a linked list when **all three** constraints hold:
