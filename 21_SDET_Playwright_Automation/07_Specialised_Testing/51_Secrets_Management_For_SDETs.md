@@ -7,67 +7,262 @@
 ## 5W1H
 
 - **WHAT**: Where API tokens, credentials, and signing keys live so they (a) aren't in git, (b) are available in CI, and (c) can be rotated without a code change.
-- **WHY**: One leaked `.env` lands you in the security incident channel. SDETs are now the gate for a non-trivial blast radius — your tests use real tokens.
-- **WHO**: Every SDET writing API tests or running CI.
-- **WHEN**: From day one of a project. Retrofitting is painful but mandatory.
-- **HOW**: Local `.env` (gitignored) for dev, GitHub Actions/Azure DevOps secrets for CI, Doppler / Vault / AWS Secrets Manager for shared/rotated secrets.
+- **WHY**: One leaked `.env` lands you in the security incident channel. SDETs are now the gate for a non-trivial blast radius — your tests use real tokens with real permissions.
+- **WHO**: Every SDET writing API tests or running CI. Even if the security team "owns" secrets, SDETs own the implementation of how they're consumed.
+- **WHEN**: From day one. Retrofitting a secrets leak after it's been in git history requires `git filter-branch` and force-pushes — painful and incomplete if anyone forked.
+- **HOW**: Local `.env` (gitignored) for dev, GitHub Actions / Azure DevOps secrets for CI, Vault / AWS Secrets Manager for shared org-wide rotation.
 
 ---
 
-## 1. Threat model
+## War Stories — Before You Get Comfortable
 
-| Threat | Mitigation |
-|---|---|
-| `.env` committed | `.gitignore` + pre-commit hook scanning for `*_TOKEN=` patterns |
-| Token in test log | Reporter scrubbing + `mask()` in CI |
-| Token in trace artifact | `use: { trace: 'on' }` captures network — sanitise headers |
-| Token in screenshot | The login form briefly shows the password — never `value` attribute screenshot |
-| Long-lived token | Rotate quarterly; use short-lived OIDC tokens in CI when possible |
-| Token shared across envs | One secret per env; never reuse prod tokens in staging |
+### Story 1: The token in the trace artifact
+
+We enabled `trace: 'on'` for debugging a flaky test. The trace file captured the full HTTP request — including the `Authorization: Bearer ghp_1234567890abcdef...` header. We uploaded traces as CI artifacts. GitHub Actions artifacts are accessible to any collaborator on the repo. The token was a GitHub personal access token with `repo` scope — essentially full read/write access to all our private repos.
+
+We discovered it 11 days later when a security scanner flagged the public artifact. The token had been valid the whole time. It had made 3 API calls we didn't recognize (a GitHub API researcher scraping public artifacts for token patterns).
+
+**Fix:** Strip auth headers from traces. `playwright.config.ts` accepts `use: { extraHTTPHeaders: { Authorization: '' } }` to override them globally, or filter at the reporter level. We now only upload traces that have been scrubbed.
+
+### Story 2: The README with real values
+
+A new SDET wrote a `README.md` with a setup section:
+
+```bash
+# Copy and fill in your values
+cp .env.example .env
+
+# Or just run this (it works for the staging environment):
+export ORANGEHRM_PASSWORD=Admin1234!
+```
+
+That password worked in staging. The staging environment shared a database with an internal integration environment. The integration environment had production data from one customer who had opted into a beta. That customer's data was now accessible to anyone who read the README.
+
+The commit had been in `main` for 6 weeks. `git filter-branch` took 2 hours to rewrite history. Everyone with forks had to re-clone.
+
+**Fix:** `NEVER put values in docs, even staging values.` Use `your-value-here` as the placeholder. Values in docs will eventually be real.
+
+### Story 3: The token shared between team members
+
+A team of 5 shared one `STAGING_API_TOKEN` created by the tech lead. When the tech lead left, his account was deactivated. The token was revoked. All 5 teammates' CI pipelines broke at 11pm on a deployment Thursday. Production wasn't affected, but the team spent 4 hours rotating the token across 6 repos and 3 CI pipelines while debugging an unrelated deployment.
+
+**Fix:** Secrets belong to service accounts or CI-managed identities, not personal accounts. If the secret dies when a person leaves, it's a personal token in the wrong place.
+
+### Story 4: The Playwright log that captured a password
+
+```typescript
+// Dev added debug logging
+console.log(`Logging in as: ${credentials.email} / ${credentials.password}`);
+```
+
+This line made it into CI logs. GitHub Actions logs are retained for 90 days by default. The password was a staging password. Staging and production used the same password for the admin account (because "staging is internal").
+
+**Fix:** Never log credentials, ever. The `describeForLog` pattern in Section 4 is one mitigation. The better answer: never use the same password for staging and production, and never log request-level data without scrubbing it first.
 
 ---
 
-## 2. The three tiers
+## 1. Threat Model for SDET Work
+
+| Threat | Likelihood | Mitigation |
+|--------|-----------|-----------|
+| `.env` committed to git | High (developer accident) | `.gitignore` + pre-commit gitleaks hook |
+| Token in CI log | Medium (console.log in test) | Reporter scrubbing + `describeForLog` |
+| Token in trace artifact | Medium (trace: 'on' in CI) | Strip auth headers before trace upload |
+| Token in screenshot | Low (password visible briefly) | Never screenshot login form, or mask fields |
+| Long-lived token exposure | Medium (12-month tokens common) | Rotate quarterly; prefer short-lived OIDC |
+| Token shared across envs | High (convenience) | One secret per env, naming convention enforced |
+| Token in personal GitHub forks | Medium (artifact exposure) | Restrict artifact visibility to repo collaborators |
+| Stale token after team member leaves | High (most teams don't notice) | Service accounts only; human tokens = never |
+
+---
+
+## 2. The Three Tiers
 
 ```
-Local dev         CI                  Org-wide / shared
-──────────        ──────────────      ──────────────────
-.env (gitignored) GH Actions secrets  Doppler / Vault / AWS SM
-   │              │                   │
-   └─ Personal    └─ Per repo,        └─ Rotated, audited,
-      tokens          per env             centrally controlled
+Local dev              CI                      Org-wide / shared
+──────────────         ──────────────────      ──────────────────────
+.env (gitignored)      GH Actions secrets      Vault / Doppler / AWS SM
+   │                   │                       │
+   └─ Your personal    └─ Per repo, per env    └─ Rotated, audited,
+      token               managed by repo admin    centrally controlled
 ```
 
-### Local
-- `.env` file, **always** gitignored, **never** copy-pasted into Slack.
-- `cp .env.example .env` is the onboarding step.
-- Use your own personal API token in dev, not the team's.
+### Tier 1 — Local `.env`
 
-### CI — GitHub Actions example
+```bash
+# framework/.env.example  (commit this)
+BASE_URL=http://localhost:4200
+ADMIN_USER=Admin
+ADMIN_PASS=your-value-here
+REQRES_API_KEY=your-value-here
+
+# framework/.env  (never commit this — in .gitignore)
+BASE_URL=http://localhost:4200
+ADMIN_USER=Admin
+ADMIN_PASS=Admin1234!
+REQRES_API_KEY=abc123...
+```
+
+Rules:
+- `.env` stays local, `.env.example` is committed
+- Every team member uses their own credentials, not the team's shared account
+- Onboarding step: `cp .env.example .env`, then fill in your values
+
+### Tier 2 — GitHub Actions Secrets
+
 ```yaml
+# .github/workflows/ci.yml
 env:
-  API_TOKEN: ${{ secrets.STAGING_API_TOKEN }}
-  ORANGEHRM_PASSWORD: ${{ secrets.ORANGEHRM_PASSWORD }}
-steps:
-  - run: npm test
-```
-GitHub masks secrets in logs automatically. Don't `echo $SECRET` — that bypasses masking.
+  ADMIN_PASS: ${{ secrets.STAGING_ADMIN_PASS }}
+  REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
 
-### Org-wide — Doppler / Vault
-For multi-repo orgs, having `STAGING_API_TOKEN` in 12 different GH repos is unmaintainable. A central secrets manager (Doppler, HashiCorp Vault, AWS Secrets Manager) syncs secrets into CI on demand and lets you rotate once.
+steps:
+  - name: Run tests
+    run: npm test
+    working-directory: framework
+```
+
+GitHub Actions automatically masks secret values in logs — they appear as `***`. Rules:
+- PRs from forks do NOT get secrets by default (keep this default — forked PR malicious code cannot exfiltrate your tokens)
+- Never `echo $ADMIN_PASS` — bypasses masking
+- Use environment-specific secret names: `STAGING_ADMIN_PASS`, `PROD_ADMIN_PASS` — never share across environments
+
+### Tier 3 — Vault / Doppler / AWS Secrets Manager
+
+For multi-repo organizations, having `STAGING_ADMIN_PASS` in 12 different repos creates a rotation nightmare. Central secrets management solves this.
+
+**Doppler** (simplest integration):
+
+```yaml
+# .github/workflows/ci.yml with Doppler
+steps:
+  - uses: dopplerhq/cli-action@v3
+  - name: Run tests with Doppler-injected secrets
+    run: doppler run -- npm test
+    working-directory: framework
+    env:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+```
+
+Doppler fetches all secrets for the `ci` config at runtime, injects them as environment variables. You rotate in Doppler, every repo picks it up automatically.
+
+**HashiCorp Vault** (enterprise standard):
+
+```typescript
+// config/vault-loader.ts
+import * as vault from 'node-vault';
+
+export async function loadSecretsFromVault(): Promise<Record<string, string>> {
+  const client = vault.default({
+    apiVersion: 'v1',
+    endpoint: process.env.VAULT_ADDR!,
+    token: process.env.VAULT_TOKEN!, // short-lived token from OIDC auth
+  });
+
+  const secret = await client.read('secret/data/sdet/staging');
+  return secret.data.data as Record<string, string>;
+}
+
+// Usage in globalSetup
+export default async function globalSetup() {
+  const secrets = await loadSecretsFromVault();
+  process.env.ADMIN_PASS = secrets.ADMIN_PASS;
+  process.env.REQRES_API_KEY = secrets.REQRES_API_KEY;
+}
+```
+
+**AWS Secrets Manager** (AWS-native):
+
+```typescript
+// config/aws-secrets-loader.ts
+import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+
+export async function loadAWSSecret(secretName: string): Promise<Record<string, string>> {
+  const client = new SecretsManagerClient({ region: process.env.AWS_REGION ?? 'us-east-1' });
+  const response = await client.send(new GetSecretValueCommand({ SecretId: secretName }));
+
+  if (!response.SecretString) throw new Error(`Secret ${secretName} is empty`);
+  return JSON.parse(response.SecretString) as Record<string, string>;
+}
+
+// Usage
+const secrets = await loadAWSSecret('sdet/staging/credentials');
+```
 
 ---
 
-## 3. The `env.loader` discipline (revisited)
+## 3. Token Rotation Patterns
+
+Rotation is where most teams fail. "We should rotate secrets quarterly" is said; a calendar event is rarely set.
+
+### Rotation runbook (the part that's usually missing)
+
+Every secret in your test suite needs a runbook entry with:
+
+```markdown
+## STAGING_ADMIN_PASS rotation
+
+**Who owns it:** Platform SDET
+**Rotate every:** 90 days
+**Next rotation:** 2026-09-14 (add to calendar)
+
+**Steps:**
+1. Generate new password in LastPass (12+ chars, mixed case + symbols)
+2. Update the staging OrangeHRM admin password via admin UI
+3. Update GitHub Actions secret: Settings → Secrets → STAGING_ADMIN_PASS
+4. Run a manual CI trigger to confirm tests still pass
+5. Update this doc with next rotation date
+
+**Emergency (token leaked):**
+1. IMMEDIATELY change the staging password (don't wait for a meeting)
+2. Rotate the GH Actions secret within 1 hour
+3. Check CI logs from the last 90 days for unexpected usage
+4. File a security incident if any unauthorized API calls found
+```
+
+Without the runbook, rotation doesn't happen. With the runbook, any team member can rotate without tribal knowledge.
+
+### OIDC short-lived tokens (the future)
+
+GitHub Actions supports OpenID Connect (OIDC) to authenticate with AWS, Azure, GCP without storing any static credentials:
+
+```yaml
+# No static AWS credentials needed
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
+steps:
+  - uses: aws-actions/configure-aws-credentials@v4
+    with:
+      role-to-assume: arn:aws:iam::123456789:role/GitHubActionsSDETRole
+      aws-region: us-east-1
+
+  - name: Load secrets from AWS SM and run tests
+    run: |
+      export ADMIN_PASS=$(aws secretsmanager get-secret-value \
+        --secret-id sdet/staging/credentials \
+        --query 'SecretString' --output text | jq -r '.ADMIN_PASS')
+      npm test
+    working-directory: framework
+```
+
+The GitHub OIDC token expires after the job completes. There are no static `AWS_ACCESS_KEY_ID` or `AWS_SECRET_ACCESS_KEY` values to steal from logs.
+
+---
+
+## 4. The `describeForLog` Discipline
+
+Never log raw config objects. Scrub before logging:
 
 ```typescript
 // config/env.loader.ts
-const SECRET_KEYS = ['API_TOKEN', 'DB_PASSWORD'];
+const SENSITIVE_KEYS = new Set(['ADMIN_PASS', 'API_TOKEN', 'REQRES_API_KEY', 'DB_PASSWORD']);
 
-export function describeForLog(config: EnvironmentConfig): Record<string, string> {
+export function describeForLog(config: Record<string, unknown>): Record<string, string> {
   const safe: Record<string, string> = {};
   for (const [k, v] of Object.entries(config)) {
-    if (SECRET_KEYS.includes(k)) {
+    if (SENSITIVE_KEYS.has(k)) {
       safe[k] = v ? '***' : '<missing>';
     } else {
       safe[k] = String(v);
@@ -75,77 +270,126 @@ export function describeForLog(config: EnvironmentConfig): Record<string, string
   }
   return safe;
 }
+
+// Safe to log anywhere:
+console.log('Config loaded:', JSON.stringify(describeForLog(envConfig)));
+// Output: { "ADMIN_PASS": "***", "BASE_URL": "http://localhost:4200" }
 ```
 
-Now `console.log(describeForLog(envConfig))` is safe to put in failure paths. Without this, well-intentioned logging leaks tokens.
+### Playwright trace scrubbing
 
----
-
-## 4. Pre-commit scanning
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.0
-    hooks:
-      - id: gitleaks
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    // Strip Authorization headers from all traced requests
+    extraHTTPHeaders: {
+      Authorization: undefined, // removes the header from traces
+    },
+  },
+});
 ```
 
-Or in `package.json`:
+For finer control — scrub only in the trace, keep headers for actual test requests:
 
-```json
-"husky": {
-  "hooks": { "pre-commit": "npx gitleaks protect --staged" }
-}
+```typescript
+// framework/fixtures/auth.fixture.ts
+test.use({
+  contextOptions: {
+    // Headers for actual requests (not in trace)
+  },
+});
+
+// Override trace behavior per project
+// playwright.config.ts
+projects: [{
+  name: 'api',
+  use: {
+    // API project: no trace (tokens too sensitive)
+    trace: 'off',
+    screenshot: 'off',
+    video: 'off',
+  },
+}],
 ```
 
-Catches `AKIA...`, `ghp_...`, `xoxb-...` and other recognisable token patterns before they hit a remote.
+---
+
+## 5. Pre-Commit Scanning
+
+Catch secrets before they reach git:
+
+```bash
+# Install gitleaks as a dev dependency
+npm install -D gitleaks-binary
+
+# Or add as a pre-commit hook via Husky
+# framework/.husky/pre-commit (add this line)
+npx gitleaks protect --staged --verbose
+```
+
+The `.gitleaks.toml` in the framework root allows known-safe patterns:
+
+```toml
+# .gitleaks.toml
+[allowlist]
+description = "Known safe patterns in test fixtures"
+regexes = [
+  # OrangeHRM demo credentials (public, rotating, not real production)
+  "Admin1234!",
+  # reqres.in public API key (public test API)
+  "reqres_live_",
+]
+```
+
+**Never allowlist real tokens.** The allowlist is for known-safe patterns that look like secrets (short strings, base64) but aren't.
 
 ---
 
-## 5. CI hardening checklist
+## 6. CI Hardening Checklist
 
-- [ ] Secrets are env-vars at job time, not echoed.
-- [ ] PRs from forks **don't** get secrets (default in GitHub Actions — keep it that way).
-- [ ] Trace artifacts uploaded? Strip Authorization headers first (`playwright.config.ts` `httpCredentials`/`extraHTTPHeaders` filter).
-- [ ] Reports embedded in PR comments don't leak request bodies.
-- [ ] Rotation: who rotates `STAGING_API_TOKEN`, on what schedule? Calendar-ise it.
-
----
-
-## 6. Common mistakes
-
-1. **`.env` in the README example with real values.** Replace with `xxxxxxxx`.
-2. **Storing prod tokens in staging GH secrets** — instant cross-env contamination.
-3. **Hardcoding tokens in `playwright.config.ts` as "just for now."** No such thing.
-4. **Using one personal token for everyone**'s local dev — when that person leaves, everything breaks at once.
-5. **Logging the full `request.post` payload** in your APIUtils — if payload contains a token, it's now in CI logs.
+- [ ] Secrets are env-vars at job time, not hardcoded in YAML
+- [ ] PRs from forks do NOT get secrets (GitHub default — verify this hasn't been changed)
+- [ ] `echo $SECRET` never appears in any workflow file
+- [ ] Trace artifacts are scrubbed of auth headers before upload
+- [ ] Report artifacts don't embed request bodies with tokens
+- [ ] Secrets have rotation runbooks with calendar entries
+- [ ] Service accounts own all secrets — no personal tokens in CI
+- [ ] Secret names are environment-scoped: `STAGING_X`, `PROD_X` — never just `X`
+- [ ] gitleaks pre-commit hook is active and tested
 
 ---
 
-## 7. Senior SDET perspective
+## 7. Common Mistakes
 
-You don't need to be a security engineer to do this well. You need to make secret-handling **boring and consistent**. The hardest secrets bugs are the ones a tired engineer creates at 6 pm by pasting a token into Slack to debug something.
+1. **`.env` in the README example with real values.** Someone will copy-paste it into production.
+2. **Storing prod tokens in staging GH secrets** — instant cross-env contamination if staging is compromised.
+3. **`console.log(request.headers())` in debug mode** — auth headers are there, they go to CI logs.
+4. **One token for all team members** — when that person leaves, CI breaks across 6 repos simultaneously.
+5. **Long TTL tokens (12-month GitHub PATs)** — one leak gives an attacker a year of access.
+6. **Trace artifacts without scrubbing** — `Authorization: Bearer` headers are in every network call trace.
+7. **No rotation runbook** — quarterly rotation stays aspirational and never happens.
 
 ---
 
-## 8. DevSecOps progression
+## 8. Progressive Maturity Path
 
-| You're here | Next step |
-|---|---|
-| `.env` gitignored, GH secrets in CI | Adopt Doppler / Vault for shared envs |
-| Doppler / Vault wired | Migrate CI to short-lived OIDC tokens (GitHub Actions ↔ AWS, no static credentials) |
-| OIDC | Add per-env IAM scoping — staging tokens can't read prod |
-
-That progression is the SDET → DevSecOps career path for the security layer.
+| Stage | What you have | What to add next |
+|-------|--------------|-----------------|
+| Basic | `.env` gitignored, personal tokens locally | Add gitleaks pre-commit hook |
+| Team | GitHub Actions secrets, per-env naming | Add `describeForLog`, scrub traces |
+| Mature | Rotation runbook + calendar, service accounts | Migrate to Doppler/Vault for centralized rotation |
+| Advanced | OIDC short-lived tokens, no static creds in CI | Per-env IAM scoping (staging role ≠ prod role) |
 
 ---
 
 ## 9. Exercise
 
-1. Run `gitleaks detect --source=.` on the whole repo. Note any findings.
-2. Add a `.gitleaksignore` for any false positives (not real ones).
-3. Add the `gitleaks` pre-commit hook to [`framework/`](../framework/).
-4. Try to commit a fake `AKIA1234567890ABCDEF`. It should be blocked.
-5. Add `describeForLog` to your `env.loader.ts` and use it in any failure-path logging.
+1. Run `npx gitleaks detect --source=.` on the whole repo. Note any real findings vs false positives.
+2. Add `.gitleaks.toml` with an allowlist for the OrangeHRM demo credentials.
+3. Add the gitleaks pre-commit hook to `framework/`.
+4. Try committing `export SECRET=AKIAIOSFODNN7EXAMPLE`. Confirm gitleaks blocks it.
+5. Add `describeForLog` to `framework/config/env.loader.ts` and use it in the `globalSetup` log line.
+6. Write a one-paragraph rotation runbook for `STAGING_ADMIN_PASS` in your project's `docs/` folder. Include: who rotates it, how often, how to do it, what to do in an emergency.
+
+The runbook is the artifact that separates "we have secrets management" from "we have secrets management that survives a midnight incident."

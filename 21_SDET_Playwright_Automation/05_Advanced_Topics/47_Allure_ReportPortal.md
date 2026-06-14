@@ -14,14 +14,39 @@
 
 ---
 
+## 0. War Stories — Why Reporting Matters More Than You Think
+
+### The flaky test that was "passing" for 4 months
+
+A test had been retried 2 times on every CI run for 4 months. It passed on the retry, so the build was green, the test was marked passing. Nobody looked at it.
+
+Allure's "retry rate" metric showed the test was retrying 70% of the time. Without that metric, you need to grep CI logs manually — which nobody does at scale.
+
+When we finally looked at the retried test, we found a missing `await` that occasionally failed the timing assertion. The fix took 5 minutes. The 4-month delay cost: 100 extra minutes of CI time per week, and one engineer's trust in the test suite ("tests lie all the time anyway").
+
+**The metric that matters:** retry rate, not just pass rate. Allure shows both. Playwright's built-in HTML report shows neither.
+
+### The test failure that nobody owned
+
+350 tests. A test called `"Admin should be able to archive a citation"` started failing. Nobody investigated because:
+- Nobody knew who wrote it
+- The test had no @owner label
+- The failure message was "Timeout exceeded" — no indication of which line
+
+Two weeks later a product manager noticed the archive feature was broken in production. The test had been correctly detecting it. The failure was ignored for 2 weeks because nobody knew to investigate it.
+
+Allure's `@allure.label.owner('harsha@example.com')` decoration sends failure notifications to the named owner automatically. One decorator, two weeks earlier.
+
+---
+
 ## 1. The two flavours
 
-| | Allure | ReportPortal |
-|---|---|---|
-| **Hosting** | None — `npx allure open` locally | Self-hosted or SaaS |
-| **History** | Per artefact run | Persistent DB |
-| **Cost** | Free | Free OSS, paid SaaS |
-| **Best for** | Mid-size teams, CI artifact viewing | Large orgs, multi-team aggregation |
+|                    | Allure                                     | ReportPortal                            |
+| ------------------ | ------------------------------------------ | --------------------------------------- |
+| **Hosting**        | None — `npx allure open` locally           | Self-hosted or SaaS                     |
+| **History**        | Per artefact run                           | Persistent DB                           |
+| **Cost**           | Free                                       | Free OSS, paid SaaS                     |
+| **Best for**       | Mid-size teams, CI artifact viewing        | Large orgs, multi-team aggregation      |
 | **Killer feature** | Categories, severity, owners on every test | Failure auto-clustering, defect tracker |
 
 For most teams: **Allure first, ReportPortal when the org demands it.**
@@ -52,17 +77,17 @@ npx allure open allure-report
 ## 3. Allure — making it actually useful
 
 ```typescript
-import { test } from '@playwright/test';
-import { allure } from 'allure-playwright';
+import { test } from "@playwright/test";
+import { allure } from "allure-playwright";
 
-test('@smoke admin creates a customer', async ({ page }) => {
-  await allure.epic('Customer Management');
-  await allure.feature('Customer Creation');
-  await allure.story('Admin happy path');
-  await allure.severity('critical');
-  await allure.owner('mawa@example.com');
-  await allure.tms('JIRA-1234');
-  await allure.issue('JIRA-9876', 'Known flake on Friday');
+test("@smoke admin creates a customer", async ({ page }) => {
+  await allure.epic("Customer Management");
+  await allure.feature("Customer Creation");
+  await allure.story("Admin happy path");
+  await allure.severity("critical");
+  await allure.owner("mawa@example.com");
+  await allure.tms("JIRA-1234");
+  await allure.issue("JIRA-9876", "Known flake on Friday");
 
   // ...
 });
@@ -111,9 +136,11 @@ What ReportPortal does that Allure doesn't:
 Make this a code review rule:
 
 ```typescript
-test('@smoke @owner:sdet-team customers list paginates', async ({ page }, testInfo) => {
-  testInfo.annotations.push({ type: 'jira', description: 'PROJ-1234' });
-  testInfo.annotations.push({ type: 'severity', description: 'critical' });
+test("@smoke @owner:sdet-team customers list paginates", async ({
+  page,
+}, testInfo) => {
+  testInfo.annotations.push({ type: "jira", description: "PROJ-1234" });
+  testInfo.annotations.push({ type: "severity", description: "critical" });
   // ...
 });
 ```
@@ -344,15 +371,15 @@ fi
 
 ### How categories help triage
 
-| Category | Typical Owner | Typical Action |
-|---|---|---|
-| UI Failures | Frontend / SDET | Fix locator, update wait strategy |
-| API Failures | Backend / SDET | Fix test data, update contract |
-| Environment Issues | DevOps / Platform | Fix infra, update service URLs |
-| Product Bugs | Product / Dev | File JIRA, skip with known-bug annotation |
-| Flaky Tests | SDET | Add retry, improve waits, fix race conditions |
-| Auth Failures | Auth team | Fix token handling, update credentials |
-| Known Issues | QA Lead | Link to existing ticket, skip test |
+| Category           | Typical Owner     | Typical Action                                |
+| ------------------ | ----------------- | --------------------------------------------- |
+| UI Failures        | Frontend / SDET   | Fix locator, update wait strategy             |
+| API Failures       | Backend / SDET    | Fix test data, update contract                |
+| Environment Issues | DevOps / Platform | Fix infra, update service URLs                |
+| Product Bugs       | Product / Dev     | File JIRA, skip with known-bug annotation     |
+| Flaky Tests        | SDET              | Add retry, improve waits, fix race conditions |
+| Auth Failures      | Auth team         | Fix token handling, update credentials        |
+| Known Issues       | QA Lead           | Link to existing ticket, skip test            |
 
 With a well-structured categories.json, the first 5 minutes of a triage meeting becomes a prioritisation conversation instead of a scroll-through-an-enormous-list exercise.
 
@@ -390,11 +417,16 @@ ReportPortal's time series data answers: "Is quality improving or degrading?" Th
 
 ```javascript
 // Fetch pass rate trend and alert on SLA breach
-const launches = await fetch(`${RP_ENDPOINT}/api/v1/${RP_PROJECT}/launches?page.size=7`,
-  { headers: { Authorization: `Bearer ${RP_API_KEY}` } }).then(r => r.json());
-const passRates = launches.content.map(l => l.statistics.testItemPassed / l.statistics.testItemTotal);
+const launches = await fetch(
+  `${RP_ENDPOINT}/api/v1/${RP_PROJECT}/launches?page.size=7`,
+  { headers: { Authorization: `Bearer ${RP_API_KEY}` } },
+).then((r) => r.json());
+const passRates = launches.content.map(
+  (l) => l.statistics.testItemPassed / l.statistics.testItemTotal,
+);
 const avgPassRate = passRates.reduce((a, b) => a + b, 0) / passRates.length;
-if (avgPassRate < 0.90) console.log(`::error::SLA breach: ${(avgPassRate * 100).toFixed(1)}%`);
+if (avgPassRate < 0.9)
+  console.log(`::error::SLA breach: ${(avgPassRate * 100).toFixed(1)}%`);
 ```
 
 ### JIRA and YouTrack integration
@@ -407,11 +439,11 @@ ReportPortal enforces triage discipline. When a test fails, the analyst classifi
 
 ### Self-hosted vs SaaS
 
-| | ReportPortal SaaS | Self-hosted |
-|---|---|---|
-| Setup time | 10 minutes | 2–4 hours |
+|             | ReportPortal SaaS      | Self-hosted                          |
+| ----------- | ---------------------- | ------------------------------------ |
+| Setup time  | 10 minutes             | 2–4 hours                            |
 | Maintenance | None (EPAM handles it) | Your team owns DB, backups, upgrades |
-| Cost | ~$200/month | Infra cost (~$50–500/month on cloud) |
+| Cost        | ~$200/month            | Infra cost (~$50–500/month on cloud) |
 
 For most teams: **start with the hosted trial**. Migrate to self-hosted when you hit storage limits or need org-wide data residency.
 
@@ -421,22 +453,22 @@ For most teams: **start with the hosted trial**. Migrate to self-hosted when you
 
 The table below gives you an honest comparison across the dimensions that actually matter for SDET decision-making.
 
-| Dimension | Allure | ReportPortal | Playwright HTML | JUnit XML | Custom JSON |
-|---|---|---|---|---|---|
-| **Hosting required** | None — local or S3 | Self-hosted or SaaS | None | None | Custom endpoint |
-| **History persistence** | Per-artifact run (S3/manual) | Persistent DB | None | None | Custom implementation |
-| **Search across runs** | File-system grep | Full-text + filter | None | None | Custom implementation |
-| **Failure clustering** | Manual (categories) | Automatic AI | None | None | Custom |
-| **Cost** | Free (hosting is cost) | Free OSS / $200+ SaaS | Free | Free | Free |
-| **CI artifact size** | ~1–5 MB per run | ~0 (server-side) | ~500 KB | ~50 KB | ~200 KB |
-| **Learning curve** | Low | Medium-High | Very low | Low | High |
-| **Stakeholder audience** | Engineers, senior QA | QA leads, managers, devs | Engineers only | CI systems | Varies |
-| **Integration: JIRA** | Via TMS links | Native bidirectional | None | None | Custom |
-| **Integration: Slack** | Via webhooks (manual) | Native launch notifications | None | None | Custom |
-| **Flaky test tracking** | Manual (flaky:true flag) | Automatic per-launch | None | None | Custom |
-| **Test selection by history** | Not native | Pro feature | None | None | Custom |
-| **Setup time** | 1 hour | 1–2 days | 5 minutes | 10 minutes | Days–weeks |
-| **Best for** | Mid teams, CI artefacts | Enterprise, multi-team | Solo dev, quick checks | CI gate, XML consumers | Custom analytics pipelines |
+| Dimension                     | Allure                       | ReportPortal                | Playwright HTML        | JUnit XML              | Custom JSON                |
+| ----------------------------- | ---------------------------- | --------------------------- | ---------------------- | ---------------------- | -------------------------- |
+| **Hosting required**          | None — local or S3           | Self-hosted or SaaS         | None                   | None                   | Custom endpoint            |
+| **History persistence**       | Per-artifact run (S3/manual) | Persistent DB               | None                   | None                   | Custom implementation      |
+| **Search across runs**        | File-system grep             | Full-text + filter          | None                   | None                   | Custom implementation      |
+| **Failure clustering**        | Manual (categories)          | Automatic AI                | None                   | None                   | Custom                     |
+| **Cost**                      | Free (hosting is cost)       | Free OSS / $200+ SaaS       | Free                   | Free                   | Free                       |
+| **CI artifact size**          | ~1–5 MB per run              | ~0 (server-side)            | ~500 KB                | ~50 KB                 | ~200 KB                    |
+| **Learning curve**            | Low                          | Medium-High                 | Very low               | Low                    | High                       |
+| **Stakeholder audience**      | Engineers, senior QA         | QA leads, managers, devs    | Engineers only         | CI systems             | Varies                     |
+| **Integration: JIRA**         | Via TMS links                | Native bidirectional        | None                   | None                   | Custom                     |
+| **Integration: Slack**        | Via webhooks (manual)        | Native launch notifications | None                   | None                   | Custom                     |
+| **Flaky test tracking**       | Manual (flaky:true flag)     | Automatic per-launch        | None                   | None                   | Custom                     |
+| **Test selection by history** | Not native                   | Pro feature                 | None                   | None                   | Custom                     |
+| **Setup time**                | 1 hour                       | 1–2 days                    | 5 minutes              | 10 minutes             | Days–weeks                 |
+| **Best for**                  | Mid teams, CI artefacts      | Enterprise, multi-team      | Solo dev, quick checks | CI gate, XML consumers | Custom analytics pipelines |
 
 ### When each reporter shines
 
@@ -547,13 +579,13 @@ With S3/GCS hosting, stakeholders get a URL like `https://reports.yourorg.com/al
 
 ### Artifact retention policies
 
-| Artifact type | Size per test | 500-test suite | Recommended retention |
-|---|---|---|---|
-| Allure results (JSON) | ~5–20 KB | 2.5–10 MB | 7 days in CI, 30 days in S3 |
-| Allure report (HTML+JSON) | ~20–80 KB | 10–40 MB | 14 days in CI, 90 days in S3 |
-| Playwright video (on failure) | ~5–20 MB | Up to 500 MB | 7 days in CI only |
-| Playwright trace (on failure) | ~1–5 MB | Up to 250 MB | 7 days in CI only |
-| Screenshots (on failure) | ~100–500 KB | Up to 50 MB | 7 days in CI only |
+| Artifact type                 | Size per test | 500-test suite | Recommended retention        |
+| ----------------------------- | ------------- | -------------- | ---------------------------- |
+| Allure results (JSON)         | ~5–20 KB      | 2.5–10 MB      | 7 days in CI, 30 days in S3  |
+| Allure report (HTML+JSON)     | ~20–80 KB     | 10–40 MB       | 14 days in CI, 90 days in S3 |
+| Playwright video (on failure) | ~5–20 MB      | Up to 500 MB   | 7 days in CI only            |
+| Playwright trace (on failure) | ~1–5 MB       | Up to 250 MB   | 7 days in CI only            |
+| Screenshots (on failure)      | ~100–500 KB   | Up to 50 MB    | 7 days in CI only            |
 
 **Total worst case**: 500 tests × (20 MB video + 5 MB trace + 500 KB screenshots) = ~12.75 GB per run. This is why you only capture trace/video on failure (`video: 'on-first-retry'`, `trace: 'on-first-retry'`).
 
@@ -590,16 +622,22 @@ The report exists but tells you nothing actionable. "47 tests failed" with no ow
 
 ```typescript
 // Bad — no metadata
-test('checkout flow works', async ({ page }) => {
-  await page.goto('/checkout');
-  await expect(page.locator('.total')).toHaveText('$42.00');
+test("checkout flow works", async ({ page }) => {
+  await page.goto("/checkout");
+  await expect(page.locator(".total")).toHaveText("$42.00");
 });
 
 // Good
-test('checkout flow works', async ({ page }, testInfo) => {
-  await testInfo.annotations.push({ type: 'epic', description: 'Checkout' });
-  await testInfo.annotations.push({ type: 'owner', description: 'payments-team' });
-  await testInfo.annotations.push({ type: 'severity', description: 'critical' });
+test("checkout flow works", async ({ page }, testInfo) => {
+  await testInfo.annotations.push({ type: "epic", description: "Checkout" });
+  await testInfo.annotations.push({
+    type: "owner",
+    description: "payments-team",
+  });
+  await testInfo.annotations.push({
+    type: "severity",
+    description: "critical",
+  });
   // ...
 });
 ```
@@ -632,10 +670,10 @@ These are build artifacts. Versioning them is a waste of git storage and causes 
 
 ```typescript
 // Every test MUST have an owner. Enforce in code review:
-test('login page loads', async ({ page }) => {
+test("login page loads", async ({ page }) => {
   // Owner is mandatory — check testInfo.annotations before running assertions
-  const hasOwner = testInfo.annotations.some(a => a.type === 'owner');
-  if (!hasOwner) throw new Error('TEST WITHOUT OWNER: ' + testInfo.title);
+  const hasOwner = testInfo.annotations.some((a) => a.type === "owner");
+  if (!hasOwner) throw new Error("TEST WITHOUT OWNER: " + testInfo.title);
 });
 ```
 
@@ -645,15 +683,18 @@ The report is a **view** on the data. The source of truth is the JSON results. I
 
 ```typescript
 // Query allure results directly
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
-const results = fs.readdirSync('allure-results')
-  .filter(f => f.endsWith('-result.json'))
-  .flatMap(f => JSON.parse(fs.readFileSync(path.join('allure-results', f), 'utf8')));
+const results = fs
+  .readdirSync("allure-results")
+  .filter((f) => f.endsWith("-result.json"))
+  .flatMap((f) =>
+    JSON.parse(fs.readFileSync(path.join("allure-results", f), "utf8")),
+  );
 
-const failures = results.filter(r => r.status === 'failed');
-failures.forEach(f => console.log(f.fullName, f.statusDetails?.message));
+const failures = results.filter((r) => r.status === "failed");
+failures.forEach((f) => console.log(f.fullName, f.statusDetails?.message));
 ```
 
 ### 7. Ignoring history trends
@@ -670,18 +711,18 @@ Running Allure + JUnit XML + custom JSON in the same config seems thorough. But 
 
 Use this to choose between Allure and ReportPortal:
 
-| Scenario | Recommended | Why |
-|---|---|---|
-| Solo dev, <50 tests | Playwright HTML | No setup, good enough |
-| Team <20 engineers, <500 tests | Allure | Quick to set up, covers basics |
-| Team <20 engineers, single pipeline, no stakeholder reporting | Allure | History via S3, categories for triage |
-| Team <20 engineers, leadership wants metrics dashboard | ReportPortal (SaaS) | Less ops than self-hosted |
-| >20 engineers, >5 teams, shared suite | ReportPortal (self-hosted) | Centralised quality billboard |
-| Multi-pipeline, multi-project, same suite | ReportPortal | Unified view across pipelines |
-| Enterprise with compliance requiring audit trail | ReportPortal | Persistent DB with user activity logs |
-| Open source project | Allure (GitHub Pages) | Free hosting via GitHub Pages |
-| You need cross-run search ("which test failed with X?") | ReportPortal | Full-text search across all runs |
-| CI artifact only, no server, no maintenance | Allure (S3/GCS) | Static hosting, zero ops |
+| Scenario                                                      | Recommended                | Why                                   |
+| ------------------------------------------------------------- | -------------------------- | ------------------------------------- |
+| Solo dev, <50 tests                                           | Playwright HTML            | No setup, good enough                 |
+| Team <20 engineers, <500 tests                                | Allure                     | Quick to set up, covers basics        |
+| Team <20 engineers, single pipeline, no stakeholder reporting | Allure                     | History via S3, categories for triage |
+| Team <20 engineers, leadership wants metrics dashboard        | ReportPortal (SaaS)        | Less ops than self-hosted             |
+| >20 engineers, >5 teams, shared suite                         | ReportPortal (self-hosted) | Centralised quality billboard         |
+| Multi-pipeline, multi-project, same suite                     | ReportPortal               | Unified view across pipelines         |
+| Enterprise with compliance requiring audit trail              | ReportPortal               | Persistent DB with user activity logs |
+| Open source project                                           | Allure (GitHub Pages)      | Free hosting via GitHub Pages         |
+| You need cross-run search ("which test failed with X?")       | ReportPortal               | Full-text search across all runs      |
+| CI artifact only, no server, no maintenance                   | Allure (S3/GCS)            | Static hosting, zero ops              |
 
 **The transition signal**: when you find yourself answering "did test X fail yesterday?" by asking in Slack instead of checking a report, that's when you have outgrown Allure and need ReportPortal.
 
@@ -723,11 +764,17 @@ docker run -t owasp/zap2docker-stable zap-baseline.py -t ${APP_URL} -J zap-repor
 
 ```typescript
 // Attach ZAP findings to Allure
-const zapReport = JSON.parse(fs.readFileSync('zap-report.json', 'utf8'));
+const zapReport = JSON.parse(fs.readFileSync("zap-report.json", "utf8"));
 zapReport.site[0]?.alerts.forEach((f: any) => {
-  allure.severity(f.riskdesc?.includes('High') ? 'critical' : f.riskdesc?.includes('Medium') ? 'major' : 'normal');
+  allure.severity(
+    f.riskdesc?.includes("High")
+      ? "critical"
+      : f.riskdesc?.includes("Medium")
+        ? "major"
+        : "normal",
+  );
   allure.description(`[${f.alert}](${f.uri}) — ${f.desc}`);
-  allure.label('security', 'zap');
+  allure.label("security", "zap");
 });
 ```
 
@@ -736,13 +783,14 @@ zapReport.site[0]?.alerts.forEach((f: any) => {
 Track CVEs as test cases with `severity: critical`:
 
 ```typescript
-test('security: no high-severity CVEs in dependencies', async () => {
+test("security: no high-severity CVEs in dependencies", async () => {
   const { stdout } = await $`npm audit --json`;
   const audit = JSON.parse(stdout);
   const high = Object.values(audit.vulnerabilities).filter((v: any) =>
-    ['high', 'critical'].includes(v.severity));
+    ["high", "critical"].includes(v.severity),
+  );
   if (high.length > 0) {
-    allure.severity('critical');
+    allure.severity("critical");
     throw new Error(`${high.length} high/critical vulnerabilities found`);
   }
 });
@@ -776,15 +824,15 @@ Wire complete Allure annotations into your Playwright framework, generate a repo
 2. **Annotate three tests** — Pick three tests in your framework and annotate each with:
 
    ```typescript
-   test('admin creates a customer', async ({ page }) => {
-     await allure.epic('Customer Management');
-     await allure.feature('Customer Creation');
-     await allure.story('Admin happy path');
-     await allure.severity('critical');
-     await allure.owner('you@example.com');
-     await allure.tms('JIRA-1234');
-     await allure.label('team', 'sdet');
-     await allure.label('sprint', '24');
+   test("admin creates a customer", async ({ page }) => {
+     await allure.epic("Customer Management");
+     await allure.feature("Customer Creation");
+     await allure.story("Admin happy path");
+     await allure.severity("critical");
+     await allure.owner("you@example.com");
+     await allure.tms("JIRA-1234");
+     await allure.label("team", "sdet");
+     await allure.label("sprint", "24");
      // ... test body
    });
    ```
@@ -815,15 +863,15 @@ Wire complete Allure annotations into your Playwright framework, generate a repo
 
 ### Self-Grading Rubric
 
-| Criterion | 0 — Not done | 1 — Partially done | 2 — Complete |
-|---|---|---|---|
-| Allure installed and configured | Not installed | Configured but not running | Installed, configured, tests run |
-| At least 3 tests annotated (epic, feature, owner, severity) | <3 annotated | 3 annotated but missing ≥1 field | 3+ fully annotated |
-| categories.json generated in CI script | No script | Script exists but not wired | Script exists and runs in CI |
-| Failing test appears in correct category | N/A | Test fails but no category | Test fails and appears in correct category |
-| Categories view screenshot captured | Not captured | Partial screenshot | Full screenshot with legend visible |
-| CI artifact size documented | Not documented | Size documented | Size documented with context (per-test average) |
-| README or notes explaining the reporting setup | None | Brief description | Complete explanation of annotations, categories, and how to interpret the report |
+| Criterion                                                   | 0 — Not done   | 1 — Partially done               | 2 — Complete                                                                     |
+| ----------------------------------------------------------- | -------------- | -------------------------------- | -------------------------------------------------------------------------------- |
+| Allure installed and configured                             | Not installed  | Configured but not running       | Installed, configured, tests run                                                 |
+| At least 3 tests annotated (epic, feature, owner, severity) | <3 annotated   | 3 annotated but missing ≥1 field | 3+ fully annotated                                                               |
+| categories.json generated in CI script                      | No script      | Script exists but not wired      | Script exists and runs in CI                                                     |
+| Failing test appears in correct category                    | N/A            | Test fails but no category       | Test fails and appears in correct category                                       |
+| Categories view screenshot captured                         | Not captured   | Partial screenshot               | Full screenshot with legend visible                                              |
+| CI artifact size documented                                 | Not documented | Size documented                  | Size documented with context (per-test average)                                  |
+| README or notes explaining the reporting setup              | None           | Brief description                | Complete explanation of annotations, categories, and how to interpret the report |
 
 **Total: /14**
 

@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
 
 **Cross-references (read these alongside):**
+
 - [`../../06_OOP_Design/01_OOPS_Principles.md`](../../06_OOP_Design/01_OOPS_Principles.md) — SOLID, encapsulation, polymorphism — all in your POM
 - [`../../06_OOP_Design/02_Design_Patterns.md`](../../06_OOP_Design/02_Design_Patterns.md) — Full GoF catalogue with Java examples; map each to TypeScript test code
 - [`../../06_OOP_Design/08_Design_Patterns_Java.md`](../../06_OOP_Design/08_Design_Patterns_Java.md) — Java implementations of the same patterns
@@ -29,6 +30,40 @@ When you see "Factory" in your OOP guide, you'll see PayloadsCitation.
 When you see "Observer", you'll see page.on('pageerror').
 They are the same concept.
 ```
+
+---
+
+## 0. War Stories — When OOP Patterns (or Their Absence) Made the Difference
+
+### The 4000-line POM that broke on every sprint
+
+One engineer built the entire CRM test suite using one class: `CRMPage`. It handled navigation, search, data entry, table parsing, modal interactions, and pagination. After 8 months it was 4,000 lines. When the CRM's search component was redesigned, 4 engineers touched the same file for 3 weeks.
+
+This is the God Object anti-pattern. Ch18 (Mega POM) calls it the "18-month trap" — it always looks manageable at 600 lines.
+
+The fix was the **Single Responsibility Principle** (SRP) and the **Component POM** pattern: `CitationSearchForm`, `CitationResultsGrid`, `CitationDetailModal` — each class responsible for one UI component. When the search component changed, only one class changed. The refactor took 2 weeks. The payoff: every subsequent search change took 20 minutes instead of a sprint.
+
+### The factory that made bad test data for 6 months
+
+A team built a `CitationFactory` that created test citations with hardcoded `status: 'PENDING'`. When the product added a `DRAFT` state (the state before `PENDING`), 40 tests started using the wrong initial state. The factory was a single function, not a class, so there was no good place to add state-specific overrides.
+
+The fix was the **Builder Pattern**: a `CitationBuilder` class with chainable methods that let tests specify exactly what they need:
+
+```typescript
+const citation = new CitationBuilder()
+  .withStatus('DRAFT')
+  .withAmount(150)
+  .withOwner(testUser)
+  .build();
+```
+
+Now adding new states required adding one method, not touching every test.
+
+### The Observer that caught a production regression nobody else noticed
+
+An engineer added `page.on('pageerror', err => errors.push(err))` to the base fixture — a classic **Observer Pattern**. Three weeks later, a React rendering error appeared in the console on every page load. It didn't cause any test assertion to fail (the page rendered correctly despite the error). Without the Observer, it would have shipped to production.
+
+The Observer Pattern is the "why" behind `page.on('console')`, `page.on('requestfailed')`, and `ws.on('framereceived')` — all of which appear in the Playwright API for exactly this reason. The conceptual link between GoF Observer and Playwright's event emitters is the point of this chapter.
 
 ---
 
@@ -81,18 +116,18 @@ class CitationsPage {
   constructor(page: Page) {
     this.page = page;
     this.searchInput = page.locator('[data-testid="citation-search"]');
-    this.resultsGrid = page.locator('.citations-grid');
+    this.resultsGrid = page.locator(".citations-grid");
     this.statusBadge = page.locator('[data-testid="status-badge"]');
   }
 
   async goto(): Promise<void> {
-    await this.page.goto('/citations');
+    await this.page.goto("/citations");
     await expect(this.searchInput).toBeVisible({ timeout: 15_000 });
   }
 
   async searchById(citationId: string): Promise<void> {
     await this.searchInput.fill(citationId);
-    await this.searchInput.press('Enter');
+    await this.searchInput.press("Enter");
   }
   // NO API calls. NO assertions. UI interaction only.
 }
@@ -263,33 +298,46 @@ const payload = PayloadsCitation.pending({ customerId: account.userId });
 
 // Abstract factory interface:
 interface PayloadFactory {
-  createCitation(overrides?: Partial<CreateCitationPayload>): CreateCitationPayload;
+  createCitation(
+    overrides?: Partial<CreateCitationPayload>,
+  ): CreateCitationPayload;
   createUser(overrides?: Partial<CreateUserPayload>): CreateUserPayload;
 }
 
 // Concrete factories per environment:
 class UKPayloadFactory implements PayloadFactory {
   createCitation(overrides = {}): CreateCitationPayload {
-    return { amount: 150, currency: 'GBP', dateFormat: 'DD/MM/YYYY', ...overrides };
+    return {
+      amount: 150,
+      currency: "GBP",
+      dateFormat: "DD/MM/YYYY",
+      ...overrides,
+    };
   }
   createUser(overrides = {}): CreateUserPayload {
-    return { locale: 'en-GB', timezone: 'Europe/London', ...overrides };
+    return { locale: "en-GB", timezone: "Europe/London", ...overrides };
   }
 }
 
 class USPayloadFactory implements PayloadFactory {
   createCitation(overrides = {}): CreateCitationPayload {
-    return { amount: 200, currency: 'USD', dateFormat: 'MM/DD/YYYY', ...overrides };
+    return {
+      amount: 200,
+      currency: "USD",
+      dateFormat: "MM/DD/YYYY",
+      ...overrides,
+    };
   }
   createUser(overrides = {}): CreateUserPayload {
-    return { locale: 'en-US', timezone: 'America/New_York', ...overrides };
+    return { locale: "en-US", timezone: "America/New_York", ...overrides };
   }
 }
 
 // In fixtures: inject the right factory based on TEST_ENV
-const factory: PayloadFactory = process.env.TEST_ENV === 'us'
-  ? new USPayloadFactory()
-  : new UKPayloadFactory();
+const factory: PayloadFactory =
+  process.env.TEST_ENV === "us"
+    ? new USPayloadFactory()
+    : new UKPayloadFactory();
 
 // Tests use factory.createCitation() — never know which environment they're in
 ```
@@ -334,20 +382,20 @@ classDiagram
 // Observer: your callback function (receives events)
 
 // Register observers:
-page.on('pageerror', (error: Error) => {
+page.on("pageerror", (error: Error) => {
   console.error(`[JS ERROR] ${error.message}`);
   // You are OBSERVING unhandled JS errors
 });
 
-page.on('response', (response: Response) => {
+page.on("response", (response: Response) => {
   if (!response.ok()) {
     console.warn(`[HTTP ERROR] ${response.status()} ${response.url()}`);
   }
   // You are OBSERVING every HTTP response
 });
 
-page.on('console', (msg: ConsoleMessage) => {
-  if (msg.type() === 'error') console.error(`[CONSOLE] ${msg.text()}`);
+page.on("console", (msg: ConsoleMessage) => {
+  if (msg.type() === "error") console.error(`[CONSOLE] ${msg.text()}`);
   // You are OBSERVING console output
 });
 
@@ -368,13 +416,13 @@ class ApiCallObserver {
     const requestStartTimes = new Map<string, number>();
 
     // Subject: page. This observer tracks network timing.
-    page.on('request', (req) => {
-      if (req.url().includes('/api/')) {
+    page.on("request", (req) => {
+      if (req.url().includes("/api/")) {
         requestStartTimes.set(req.url(), Date.now());
       }
     });
 
-    page.on('response', (res) => {
+    page.on("response", (res) => {
       const start = requestStartTimes.get(res.url());
       if (start) {
         this.calls.push({
@@ -387,13 +435,15 @@ class ApiCallObserver {
   }
 
   assertCallCount(pattern: string, expected: number): void {
-    const matching = this.calls.filter(c => c.url.includes(pattern));
+    const matching = this.calls.filter((c) => c.url.includes(pattern));
     expect(matching.length).toBe(expected);
   }
 
   assertAllCallsUnder(maxDurationMs: number): void {
     for (const call of this.calls) {
-      expect(call.duration, `${call.method} ${call.url} too slow`).toBeLessThan(maxDurationMs);
+      expect(call.duration, `${call.method} ${call.url} too slow`).toBeLessThan(
+        maxDurationMs,
+      );
     }
   }
 }
@@ -401,9 +451,9 @@ class ApiCallObserver {
 // Usage:
 const observer = new ApiCallObserver();
 observer.attach(page);
-await citationDetail.goto('CIT-001');
-observer.assertCallCount('/api/v2/citations', 1);  // exactly 1 citation API call
-observer.assertAllCallsUnder(500);  // all calls under 500ms (performance assertion)
+await citationDetail.goto("CIT-001");
+observer.assertCallCount("/api/v2/citations", 1); // exactly 1 citation API call
+observer.assertAllCallsUnder(500); // all calls under 500ms (performance assertion)
 ```
 
 ---
@@ -495,28 +545,39 @@ interface WaitStrategy {
 
 class D365WaitStrategy implements WaitStrategy {
   async waitForPageReady(page: Page): Promise<void> {
-    await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 45_000 });
-    await expect(page.locator('[data-automation-key]').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+      timeout: 45_000,
+    });
+    await expect(page.locator("[data-automation-key]").first()).toBeVisible({
+      timeout: 30_000,
+    });
   }
 }
 
 class JspWaitStrategy implements WaitStrategy {
   async waitForPageReady(page: Page): Promise<void> {
-    await page.waitForLoadState('networkidle', { timeout: 15_000 });
-    await expect(page.locator('#mainContent')).toBeVisible({ timeout: 10_000 });
+    await page.waitForLoadState("networkidle", { timeout: 15_000 });
+    await expect(page.locator("#mainContent")).toBeVisible({ timeout: 10_000 });
   }
 }
 
 class AspxWaitStrategy implements WaitStrategy {
   async waitForPageReady(page: Page): Promise<void> {
-    await page.waitForFunction(() => document.readyState === 'complete', { timeout: 20_000 });
-    await expect(page.locator('form[runat="server"]').first()).toBeVisible({ timeout: 10_000 });
+    await page.waitForFunction(() => document.readyState === "complete", {
+      timeout: 20_000,
+    });
+    await expect(page.locator('form[runat="server"]').first()).toBeVisible({
+      timeout: 10_000,
+    });
   }
 }
 
 // Base POM uses the strategy:
 abstract class BasePage {
-  constructor(protected page: Page, private waitStrategy: WaitStrategy) {}
+  constructor(
+    protected page: Page,
+    private waitStrategy: WaitStrategy,
+  ) {}
 
   async waitForLoad(): Promise<void> {
     await this.waitStrategy.waitForPageReady(this.page);
@@ -612,7 +673,7 @@ classDiagram
 
 ```typescript
 // page.route() IS a proxy:
-await page.route('**/api/v2/citations/**', async (route) => {
+await page.route("**/api/v2/citations/**", async (route) => {
   // The route IS the proxy — it intercepts requests BEFORE they reach the real server
   // You control: forward to real server (route.continue())
   //              return mock (route.fulfill())
@@ -634,10 +695,14 @@ citationsClient: async ({ request, account, testDataManager }, use) => {
   // This IS a proxy — same interface, adds cleanup registration
   const proxiedClient = {
     ...realClient,
-    create: async (payload: CreateCitationPayload): Promise<CitationApiResponse> => {
-      const citation = await realClient.create(payload);  // delegates to real client
-      testDataManager.track('citation', citation, () => realClient.delete(citation.citationId));
-      return citation;  // same return type as real client
+    create: async (
+      payload: CreateCitationPayload,
+    ): Promise<CitationApiResponse> => {
+      const citation = await realClient.create(payload); // delegates to real client
+      testDataManager.track("citation", citation, () =>
+        realClient.delete(citation.citationId),
+      );
+      return citation; // same return type as real client
     },
   };
 
@@ -707,22 +772,26 @@ class SearchPanelComponent implements PageComponent {
   readonly searchButton: Locator;
 
   constructor(page: Page) {
-    this.customerSearch = new SearchInputComponent(page.locator('#customerSearch'));
-    this.citationSearch = new SearchInputComponent(page.locator('#citationSearch'));
-    this.searchButton   = page.locator('#searchBtn');
+    this.customerSearch = new SearchInputComponent(
+      page.locator("#customerSearch"),
+    );
+    this.citationSearch = new SearchInputComponent(
+      page.locator("#citationSearch"),
+    );
+    this.searchButton = page.locator("#searchBtn");
   }
 
   // Composite's waitForLoad delegates to its children
   async waitForLoad(): Promise<void> {
-    await this.customerSearch.waitForLoad();  // delegate to leaf
+    await this.customerSearch.waitForLoad(); // delegate to leaf
     await this.citationSearch.waitForLoad(); // delegate to leaf
   }
 }
 
 // COMPOSITE OF COMPOSITES — the full page
 class MasterSearchPage implements PageComponent {
-  readonly searchPanel: SearchPanelComponent;   // composite
-  readonly resultsGrid: ResultsGridComponent;   // composite
+  readonly searchPanel: SearchPanelComponent; // composite
+  readonly resultsGrid: ResultsGridComponent; // composite
 
   constructor(page: Page) {
     this.searchPanel = new SearchPanelComponent(page);
@@ -730,7 +799,7 @@ class MasterSearchPage implements PageComponent {
   }
 
   async waitForLoad(): Promise<void> {
-    await this.searchPanel.waitForLoad();  // delegate
+    await this.searchPanel.waitForLoad(); // delegate
     await this.resultsGrid.waitForLoad(); // delegate
     // The page is loaded when all components are loaded
   }
@@ -755,26 +824,29 @@ Your team wants to add a new assertion pattern: every test should automatically 
 
 // In fixtures/index.ts — add a consoleErrorGuard fixture
 export const test = base.extend<{ consoleErrorGuard: void }>({
-
   // Template Method: this runs for EVERY test (skeleton)
-  consoleErrorGuard: [async ({ page }, use) => {
-    // Observer setup: collect all JS errors
-    const jsErrors: string[] = [];
-    page.on('pageerror', (err) => jsErrors.push(err.message));
+  consoleErrorGuard: [
+    async ({ page }, use) => {
+      // Observer setup: collect all JS errors
+      const jsErrors: string[] = [];
+      page.on("pageerror", (err) => jsErrors.push(err.message));
 
-    await use();  // ← test runs here (the "variable" step — different per test)
+      await use(); // ← test runs here (the "variable" step — different per test)
 
-    // Template step: assert no JS errors (fixed — same for ALL tests)
-    if (jsErrors.length > 0) {
-      throw new Error(
-        `Test produced ${jsErrors.length} unhandled JS error(s):\n` +
-        jsErrors.map((e, i) => `  ${i + 1}. ${e}`).join('\n')
-      );
-    }
-  }, { auto: true }],  // ← auto: true means this fixture runs for EVERY test automatically
+      // Template step: assert no JS errors (fixed — same for ALL tests)
+      if (jsErrors.length > 0) {
+        throw new Error(
+          `Test produced ${jsErrors.length} unhandled JS error(s):\n` +
+            jsErrors.map((e, i) => `  ${i + 1}. ${e}`).join("\n"),
+        );
+      }
+    },
+    { auto: true },
+  ], // ← auto: true means this fixture runs for EVERY test automatically
   // No test needs to declare it. It's always active.
 });
 ```
+
 </details>
 
 ---
@@ -785,24 +857,32 @@ Analyse this class. Which SOLID principle does it violate? How would you fix it?
 
 ```typescript
 class CitationTestHelper {
-  async createAndVerify(page: Page, request: APIRequestContext, token: string): Promise<string> {
+  async createAndVerify(
+    page: Page,
+    request: APIRequestContext,
+    token: string,
+  ): Promise<string> {
     // Create via API
-    const resp = await request.post('/api/v2/citations', {
-      headers: { 'Authorization': `Bearer ${token}` },
-      data: { customerId: 'USR-001', amount: 150, status: 'PENDING' }
+    const resp = await request.post("/api/v2/citations", {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { customerId: "USR-001", amount: 150, status: "PENDING" },
     });
     const citation = await resp.json();
 
     // Verify in UI
     await page.goto(`/citations/${citation.citationId}`);
-    await page.waitForSelector('.citation-status');
-    const status = await page.locator('.citation-status').textContent();
-    if (status !== 'PENDING') throw new Error('Wrong status');
+    await page.waitForSelector(".citation-status");
+    const status = await page.locator(".citation-status").textContent();
+    if (status !== "PENDING") throw new Error("Wrong status");
 
     // Send notification
-    await request.post('/api/notifications', {
-      headers: { 'Authorization': `Bearer ${token}` },
-      data: { userId: 'USR-001', type: 'CITATION_CREATED', referenceId: citation.citationId }
+    await request.post("/api/notifications", {
+      headers: { Authorization: `Bearer ${token}` },
+      data: {
+        userId: "USR-001",
+        type: "CITATION_CREATED",
+        referenceId: citation.citationId,
+      },
     });
 
     return citation.citationId;
@@ -815,6 +895,7 @@ class CitationTestHelper {
 **Violates SRP (Single Responsibility) and ISP (Interface Segregation).**
 
 This one class does three completely different things:
+
 1. Creates a citation via API (CitationsApiClient's job)
 2. Verifies it in the UI (CitationDetailPage's job)
 3. Sends a notification via a different API (NotificationsClient's job)
@@ -824,15 +905,21 @@ Three reasons to change: API contract change, UI change, notification service ch
 Also violates ISP — takes both `page` AND `request`, forcing callers to provide both even if they only need the API part.
 
 Fix — separate into their proper layers:
+
 ```typescript
 // Each class does one thing:
-const citation = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
+const citation = await citationsClient.create(
+  PayloadsCitation.pending({ customerId: account.userId }),
+);
 await citationDetail.goto(citation.citationId);
-await expect(citationDetail.statusBadge).toHaveText('PENDING');
-await notificationsClient.send(PayloadsNotification.citationCreated(account.userId, citation.citationId));
+await expect(citationDetail.statusBadge).toHaveText("PENDING");
+await notificationsClient.send(
+  PayloadsNotification.citationCreated(account.userId, citation.citationId),
+);
 // The test script COMPOSES these — test is the only class that knows about all three.
 // Each client/POM class has one reason to change.
 ```
+
 </details>
 
 ### Challenge 3 [MCQ] — Strategy Pattern for Reporter Selection
@@ -859,22 +946,38 @@ interface TestReporter {
 
 // Strategy A: HTML reporter
 class HtmlReporter implements TestReporter {
-  onTestStart(testName: string) { /* write to HTML buffer */ }
-  onTestPass(testName: string, duration: number) { /* append pass row */ }
-  onTestFail(testName: string, error: Error) { /* append fail row with screenshot */ }
-  async onRunComplete(summary: RunSummary) { /* write HTML file */ }
+  onTestStart(testName: string) {
+    /* write to HTML buffer */
+  }
+  onTestPass(testName: string, duration: number) {
+    /* append pass row */
+  }
+  onTestFail(testName: string, error: Error) {
+    /* append fail row with screenshot */
+  }
+  async onRunComplete(summary: RunSummary) {
+    /* write HTML file */
+  }
 }
 
 // Strategy B: Slack webhook reporter
 class SlackReporter implements TestReporter {
   constructor(private webhookUrl: string) {}
-  onTestStart() { /* no-op: don't spam Slack per test */ }
-  onTestPass() { /* no-op */ }
-  onTestFail(testName: string, error: Error) { /* post failure immediately */ }
+  onTestStart() {
+    /* no-op: don't spam Slack per test */
+  }
+  onTestPass() {
+    /* no-op */
+  }
+  onTestFail(testName: string, error: Error) {
+    /* post failure immediately */
+  }
   async onRunComplete(summary: RunSummary) {
     await fetch(this.webhookUrl, {
-      method: 'POST',
-      body: JSON.stringify({ text: `${summary.passed}/${summary.total} tests passed` })
+      method: "POST",
+      body: JSON.stringify({
+        text: `${summary.passed}/${summary.total} tests passed`,
+      }),
     });
   }
 }
@@ -882,9 +985,9 @@ class SlackReporter implements TestReporter {
 // Context: selects strategy based on environment
 function createReporter(): TestReporter {
   const env = process.env.CI_SYSTEM;
-  if (env === 'github-actions') return new HtmlReporter();
-  if (env === 'azure-devops') return new JUnitReporter('./results/junit.xml');
-  if (env === 'local-dev') return new SlackReporter(process.env.SLACK_WEBHOOK!);
+  if (env === "github-actions") return new HtmlReporter();
+  if (env === "azure-devops") return new JUnitReporter("./results/junit.xml");
+  if (env === "local-dev") return new SlackReporter(process.env.SLACK_WEBHOOK!);
   return new HtmlReporter(); // default
 }
 
@@ -914,7 +1017,7 @@ class EventBus {
   }
 
   emit(event: string, data: unknown): void {
-    this.listeners.get(event)?.forEach(l => l(data));
+    this.listeners.get(event)?.forEach((l) => l(data));
   }
 }
 
@@ -925,7 +1028,7 @@ export const bus = new EventBus();
 export const test = base.extend<{ trackCitations: void }>({
   trackCitations: async ({}, use) => {
     const collected: string[] = [];
-    bus.on('citation:created', (id) => collected.push(id as string));
+    bus.on("citation:created", (id) => collected.push(id as string));
     await use();
     console.log(`Test collected ${collected.length} citations`);
   },
@@ -985,14 +1088,14 @@ Implement a Command pattern that wraps any API call with retry logic. The Comman
 // Command interface
 interface ApiCommand<T> {
   execute(): Promise<T>;
-  describe(): string;  // human-readable name for logging
+  describe(): string; // human-readable name for logging
 }
 
 // Invoker with retry logic — knows HOW to retry, not WHAT to execute
 class RetryInvoker {
   constructor(
     private maxAttempts: number = 3,
-    private baseDelayMs: number = 1000
+    private baseDelayMs: number = 1000,
   ) {}
 
   async invoke<T>(command: ApiCommand<T>): Promise<T> {
@@ -1002,26 +1105,28 @@ class RetryInvoker {
       try {
         const result = await command.execute();
         if (attempt > 1) {
-          console.log(`[RetryInvoker] ${command.describe()} succeeded on attempt ${attempt}`);
+          console.log(
+            `[RetryInvoker] ${command.describe()} succeeded on attempt ${attempt}`,
+          );
         }
         return result;
       } catch (error) {
         lastError = error as Error;
         console.warn(
-          `[RetryInvoker] ${command.describe()} attempt ${attempt}/${this.maxAttempts} failed: ${lastError.message}`
+          `[RetryInvoker] ${command.describe()} attempt ${attempt}/${this.maxAttempts} failed: ${lastError.message}`,
         );
 
         if (attempt < this.maxAttempts) {
           // Exponential backoff: 1s, 2s, 4s...
           const delay = this.baseDelayMs * Math.pow(2, attempt - 1);
           console.log(`[RetryInvoker] Waiting ${delay}ms before retry...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
 
     throw new Error(
-      `[RetryInvoker] ${command.describe()} failed after ${this.maxAttempts} attempts. Last error: ${lastError?.message}`
+      `[RetryInvoker] ${command.describe()} failed after ${this.maxAttempts} attempts. Last error: ${lastError?.message}`,
     );
   }
 }
@@ -1030,7 +1135,7 @@ class RetryInvoker {
 class CreateCitationCommand implements ApiCommand<CitationApiResponse> {
   constructor(
     private client: CitationsApiClient,
-    private payload: CreateCitationPayload
+    private payload: CreateCitationPayload,
   ) {}
 
   async execute(): Promise<CitationApiResponse> {
@@ -1045,7 +1150,10 @@ class CreateCitationCommand implements ApiCommand<CitationApiResponse> {
 // Usage in fixture:
 const invoker = new RetryInvoker(3, 500);
 const citation = await invoker.invoke(
-  new CreateCitationCommand(citationsClient, PayloadsCitation.pending({ customerId: account.userId }))
+  new CreateCitationCommand(
+    citationsClient,
+    PayloadsCitation.pending({ customerId: account.userId }),
+  ),
 );
 
 // The Command pattern decouples WHAT (CreateCitationCommand) from HOW (RetryInvoker).
@@ -1057,4 +1165,5 @@ const citation = await invoker.invoke(
 </details>
 
 ---
+
 **Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)

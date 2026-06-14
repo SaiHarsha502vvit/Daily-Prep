@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
 
 **Cross-references (read these alongside this chapter):**
+
 - [`../../14_Mental_Models/05_Universal_Problem_Framework.md`](../../14_Mental_Models/05_Universal_Problem_Framework.md) — Problem decomposition that applies to test design
 - [`../../14_Mental_Models/08_Debugging_DryRun.md`](../../14_Mental_Models/08_Debugging_DryRun.md) — The dry-run debugging model → identical to trace-viewer analysis
 - [`../../14_Mental_Models/18_Production_Debugging_Thinking.md`](../../14_Mental_Models/18_Production_Debugging_Thinking.md) — Production thinking that translates directly to test failure analysis
@@ -16,8 +17,84 @@
 - **WHAT**: The computer science mental models that transform a good SDET into a great one — how data structure knowledge makes you write better tests, how algorithm thinking makes you find bugs faster, how OOP design patterns are already in your test framework.
 - **WHY**: The gap between an SDET and an SDE is not "SDETs don't code." They do. The gap is **CS reasoning depth**. An SDE instinctively asks "what is the time complexity of this search?" An SDET who also thinks that way catches performance bugs, designs better test data structures, and can contribute to production code reviews.
 - **WHO**: SDETs who want to grow beyond automation scripting toward engineering leadership, code review, and SDE tracks.
-- **WHEN**: Read this alongside your DSA and OOP prep — the goal is to see the *same concept* appear in both worlds simultaneously.
+- **WHEN**: Read this alongside your DSA and OOP prep — the goal is to see the _same concept_ appear in both worlds simultaneously.
 - **HOW**: Each section takes a CS concept from your DSA/OOP guide and shows its exact equivalent in test engineering.
+
+---
+
+## 0. War Stories — When CS Thinking Changed the Outcome
+
+### HashMap vs O(n²): the test that took 45 minutes instead of 12 seconds
+
+A new SDET wrote a test that verified every employee record fetched from the API had a corresponding row in the UI table. Implementation: for each of the 800 employees from the API, loop through every table row until you find the match.
+
+```typescript
+// O(n²) — for 800 employees × 800 rows = 640,000 comparisons
+for (const employee of apiEmployees) {
+  let found = false;
+  for (const row of tableRows) {
+    if (await row.textContent() === employee.name) {
+      found = true;
+      break;
+    }
+  }
+  expect(found).toBe(true);
+}
+```
+
+Runtime: 45 minutes. CI timed out. The test never completed.
+
+Senior SDET with CS background looked at it for 10 seconds: "this is O(n²), we need a HashMap."
+
+```typescript
+// O(n) — build index once, then O(1) per lookup
+const tableIndex = new Map<string, true>();
+for (const row of tableRows) {
+  tableIndex.set((await row.textContent()) ?? '', true);
+}
+for (const employee of apiEmployees) {
+  expect(tableIndex.has(employee.name)).toBe(true);
+}
+```
+
+Runtime: 12 seconds.
+
+The SDET who spotted this was promoted within 6 months. The SDET who wrote the O(n²) version was not blamed — but they learned to ask "what's the time complexity?" before writing any loop that touches another loop.
+
+### Stack reasoning: the test teardown that leaked data for 3 months
+
+A fixture created a user, ran the test, and cleaned up. But the cleanup was in a `try/catch` block that silently swallowed errors:
+
+```typescript
+let userId: string;
+test.beforeEach(async () => { userId = await createUser(); });
+test.afterEach(async () => {
+  try { await deleteUser(userId); } catch { /* silently ignored */ }
+});
+```
+
+The `deleteUser` call was failing because the user had a foreign-key reference (a log entry created during the test). The catch silently swallowed the error. For 3 months, the test suite was creating users and never deleting them. The test database accumulated 40,000 orphaned users.
+
+An SDE reviewing the code recognized this immediately: teardown errors should propagate, not be swallowed. The correct pattern is the LIFO cleanup stack (Ch06 fixtures, `yield`-based teardown), where Playwright's own `afterEach` machinery ensures cleanup runs and propagates errors:
+
+```typescript
+// The fixture pattern: cleanup always runs, errors propagate
+test.extend({ user: async ({}, use) => {
+  const userId = await createUser();
+  await use(userId);
+  await deleteUser(userId); // if this throws, Playwright reports it
+}});
+```
+
+Understanding "the call stack propagates exceptions upward" — a CS fundamental — is what tells you why silent-catch in teardown is dangerous.
+
+### Concurrency reasoning: the race condition nobody else saw
+
+Two tests wrote to the same `auth-states/admin.json` file. Usually only one ran at a time. But when we enabled `fullyParallel: true`, both tests tried to write the file simultaneously. One wrote a partial JSON (the write was interrupted mid-byte), the second test read the partial JSON and parsed garbage, and it threw a cryptic `SyntaxError` with no obvious connection to the auth file.
+
+An SDE on the team recognized this pattern immediately: concurrent write to a shared file without a lock is a race condition. The fix was `proper-lockfile` — a file-level mutex that serializes access. But the insight that got us there was CS: "two workers writing the same file concurrently is undefined behavior."
+
+The SDET mindset alone would have blamed the JSON parser. The CS mindset named the root cause: concurrent mutation of shared state.
 
 ---
 
@@ -48,6 +125,7 @@ The CS skills are identical.
 ## 2. Hash Maps → Test Data Lookup
 
 **The DSA concept** (from [`../../02_Data_Structures/01e_HashTable.md`](../../02_Data_Structures/01e_HashTable.md)):
+
 - HashMap gives O(1) average lookup by key
 - Java: `HashMap<String, CitationRecord>`
 - TypeScript: `Map<string, CitationRecord>` or `Record<string, CitationRecord>`
@@ -62,17 +140,18 @@ The CS skills are identical.
 
 // ❌ Array — O(n) lookup
 const createdCitations: CitationApiResponse[] = [];
-const myCitation = createdCitations.find(c => c.citationId === 'CIT-001');
+const myCitation = createdCitations.find((c) => c.citationId === "CIT-001");
 // .find() scans the whole array — O(n)
 
 // ✅ Map — O(1) lookup
 const citationRegistry = new Map<string, CitationApiResponse>();
 citationRegistry.set(citation.citationId, citation);
 // ...
-const myCitation = citationRegistry.get('CIT-001');  // O(1)
+const myCitation = citationRegistry.get("CIT-001"); // O(1)
 ```
 
 **Why this matters in tests:**
+
 ```
 The TestDataManager (Ch28) is a Map internally.
 The locator registry in the Mega POM (Ch18) is a Record<LocatorName, Locator> — a hash map.
@@ -83,6 +162,7 @@ you are applying the hash map from your DSA guide.
 ```
 
 **Cross-reference interview bridge:**
+
 > If asked "implement a test data registry" in an SDE interview, you'd say:
 > "I'd use a HashMap keyed by entity ID for O(1) retrieval, with a LinkedList to preserve insertion order for reverse-order cleanup (since children reference parents by FK)."
 > That answer synthesises Ch28's TestDataManager + your DSA HashMap + LinkedList knowledge.
@@ -92,6 +172,7 @@ you are applying the hash map from your DSA guide.
 ## 3. Queues and Stacks → Cleanup Order and Event Ordering
 
 **The DSA concept** (from [`../../02_Data_Structures/01d_Stack_Queue.md`](../../02_Data_Structures/01d_Stack_Queue.md)):
+
 - **Stack (LIFO)**: Last In, First Out — `push`, `pop`
 - **Queue (FIFO)**: First In, First Out — `enqueue`, `dequeue`
 
@@ -108,7 +189,7 @@ class TestDataManager {
   private stack: (() => Promise<void>)[] = [];
 
   track(deleteAsync: () => Promise<void>): void {
-    this.stack.push(deleteAsync);  // push — like a stack
+    this.stack.push(deleteAsync); // push — like a stack
   }
 
   async cleanup(): Promise<void> {
@@ -143,9 +224,11 @@ class TestDataManager {
 
 const notifications = await notificationsClient.getByUser(account.userId);
 // notifications is in FIFO order (oldest first)
-const createIndex = notifications.findIndex(n => n.type === 'CITATION_CREATED');
-const payIndex = notifications.findIndex(n => n.type === 'PAYMENT_RECEIVED');
-expect(createIndex).toBeLessThan(payIndex);  // ← queue ordering assertion
+const createIndex = notifications.findIndex(
+  (n) => n.type === "CITATION_CREATED",
+);
+const payIndex = notifications.findIndex((n) => n.type === "PAYMENT_RECEIVED");
+expect(createIndex).toBeLessThan(payIndex); // ← queue ordering assertion
 ```
 
 ---
@@ -153,6 +236,7 @@ expect(createIndex).toBeLessThan(payIndex);  // ← queue ordering assertion
 ## 4. Trees → DOM Structure and POM Hierarchy
 
 **The DSA concept** (from [`../../03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md)):
+
 - A tree has a root, internal nodes, leaves
 - Tree traversal: depth-first (DFS) or breadth-first (BFS)
 - Parent → child relationships
@@ -180,12 +264,12 @@ document (root)
 ```typescript
 // Without tree thinking: use a single global CSS selector
 // Risk: matches elements anywhere in the document
-page.locator('.ms-DetailsRow:first-child')  // which table? there might be 2!
+page.locator(".ms-DetailsRow:first-child"); // which table? there might be 2!
 
 // With tree thinking: traverse from the root you care about
 // DFS-style scoping: narrow down the tree branch first
-const grid = page.locator('.results-section .ms-DetailsList');
-const rows = grid.locator('.ms-DetailsRow');  // scoped to ONLY this grid's subtree
+const grid = page.locator(".results-section .ms-DetailsList");
+const rows = grid.locator(".ms-DetailsRow"); // scoped to ONLY this grid's subtree
 const firstRow = rows.first();
 
 // You are doing a depth-first tree walk:
@@ -217,6 +301,7 @@ When you call `masterSearchPage.resultsGrid.rows.first()`, you're traversing:
 ## 5. Graph Algorithms → Test Dependency Graphs
 
 **The DSA concept** (from [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../03_Algorithms/05c_Graphs_Fundamentals.md)):
+
 - A directed graph has edges with direction: A → B means "A depends on B" or "A must come before B"
 - Topological sort: order nodes such that all dependencies come first
 
@@ -267,18 +352,18 @@ const test = base.extend({
 
 Every design pattern in your framework has a name in GoF (Gang of Four):
 
-| GoF Pattern | Where it appears in your test framework |
-|---|---|
-| **Factory Method** | `PayloadsCitation.pending()` — factory creates objects with defaults |
-| **Builder** | `PayloadsCitation.pending({ ...overrides })` — builder with optional parts |
-| **Singleton** | `config` object (one environment config per run) |
-| **Strategy** | Different seeding strategies (API vs DB vs globalSetup) |
-| **Observer** | `page.on('pageerror', handler)` — Playwright's event system |
-| **Decorator** | Managed client wrapping `CitationsApiClient.create()` to auto-track |
-| **Template Method** | `APIUtils.processResponse()` — the template; subclasses fill in the body type |
-| **Proxy** | `page.route()` — intercepts requests before they reach the server |
+| GoF Pattern                 | Where it appears in your test framework                                        |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| **Factory Method**          | `PayloadsCitation.pending()` — factory creates objects with defaults           |
+| **Builder**                 | `PayloadsCitation.pending({ ...overrides })` — builder with optional parts     |
+| **Singleton**               | `config` object (one environment config per run)                               |
+| **Strategy**                | Different seeding strategies (API vs DB vs globalSetup)                        |
+| **Observer**                | `page.on('pageerror', handler)` — Playwright's event system                    |
+| **Decorator**               | Managed client wrapping `CitationsApiClient.create()` to auto-track            |
+| **Template Method**         | `APIUtils.processResponse()` — the template; subclasses fill in the body type  |
+| **Proxy**                   | `page.route()` — intercepts requests before they reach the server              |
 | **Chain of Responsibility** | Playwright fixture chain: browser → context → page → account → citationsClient |
-| **Composite** | POM hierarchy — a `MasterSearchPage` composed of `SearchPanel` + `ResultsGrid` |
+| **Composite**               | POM hierarchy — a `MasterSearchPage` composed of `SearchPanel` + `ResultsGrid` |
 
 **Deep dive — the Factory pattern in test code:**
 
@@ -291,11 +376,15 @@ class PayloadsCitation {
   static pending(overrides = {}): CreateCitationPayload {
     // The factory decides the default values
     // The caller can override specific fields
-    return { status: 'PENDING', amount: 150, ...overrides };
+    return { status: "PENDING", amount: 150, ...overrides };
   }
 
   static paid(overrides = {}): CreateCitationPayload {
-    return PayloadsCitation.pending({ status: 'PAID', amount: 200, ...overrides });
+    return PayloadsCitation.pending({
+      status: "PAID",
+      amount: 200,
+      ...overrides,
+    });
     //                              ↑ delegation to the base factory
   }
 }
@@ -314,6 +403,7 @@ class PayloadsCitation {
 ## 7. Time Complexity → Test Performance Thinking
 
 **The CS concept** (from [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md)):
+
 - O(1): constant — doesn't grow with input size
 - O(n): linear — grows proportionally
 - O(n²): quadratic — danger zone
@@ -346,10 +436,10 @@ The right mental model:
 
 ```typescript
 // O(n) locator — scans ALL descendants of page
-page.locator('.ms-DetailsRow')  // n = all rows in all tables on the page
+page.locator(".ms-DetailsRow"); // n = all rows in all tables on the page
 
 // O(1) locator — scoped to a specific subtree
-page.locator('#citationsGrid .ms-DetailsRow')  // scoped to one specific grid
+page.locator("#citationsGrid .ms-DetailsRow"); // scoped to one specific grid
 
 // For D365 with 3 grids and 1000 rows total:
 // O(n) version scans all 1000 rows → slow and might match wrong table
@@ -363,6 +453,7 @@ page.locator('#citationsGrid .ms-DetailsRow')  // scoped to one specific grid
 ## 8. Recursion → `expect.poll()` and Retry Logic
 
 **The CS concept** (from [`../../03_Algorithms/03a_Recursion_Internals.md`](../../03_Algorithms/03a_Recursion_Internals.md)):
+
 - Recursion: a function that calls itself with a smaller problem
 - Base case: when to stop
 - Recursive case: subdivide and call again
@@ -373,12 +464,11 @@ page.locator('#citationsGrid .ms-DetailsRow')  // scoped to one specific grid
 // Conceptual model of expect.poll() as recursion:
 
 async function pollUntil<T>(
-  fn: () => Promise<T>,        // the check function
-  expected: T,                  // the target value
-  timeoutMs: number,            // deadline (base case trigger)
-  startTime = Date.now()
+  fn: () => Promise<T>, // the check function
+  expected: T, // the target value
+  timeoutMs: number, // deadline (base case trigger)
+  startTime = Date.now(),
 ): Promise<void> {
-
   // BASE CASE: timeout reached → throw
   if (Date.now() - startTime > timeoutMs) {
     throw new Error(`poll timed out after ${timeoutMs}ms`);
@@ -386,18 +476,20 @@ async function pollUntil<T>(
 
   // CHECK: did we reach the target?
   const current = await fn();
-  if (current === expected) return;  // BASE CASE: success
+  if (current === expected) return; // BASE CASE: success
 
   // RECURSIVE CASE: wait and try again
   await sleep(1000);
-  return pollUntil(fn, expected, timeoutMs, startTime);  // ← recursive call
+  return pollUntil(fn, expected, timeoutMs, startTime); // ← recursive call
 }
 
 // Playwright's expect.poll() does this with exponential backoff intervals:
-await expect.poll(
-  async () => (await citationsClient.getById(id)).status,
-  { timeout: 30_000, intervals: [500, 1000, 2000, 5000] }
-).toBe('DISPUTED');
+await expect
+  .poll(async () => (await citationsClient.getById(id)).status, {
+    timeout: 30_000,
+    intervals: [500, 1000, 2000, 5000],
+  })
+  .toBe("DISPUTED");
 ```
 
 **The tail recursion optimisation — why intervals grow:**
@@ -420,6 +512,7 @@ when results are fast, and don't hammers the API when they're slow.
 ## 9. Binary Search → Bisect Debugging (Finding Flaky Commits)
 
 **The CS concept** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+
 - Binary search: in a sorted space, eliminate half the search space each step → O(log n)
 - Precondition: the problem space must be monotonic (all passes before a point, all fails after)
 
@@ -466,6 +559,7 @@ git bisect run npx playwright test tests/specs/citations/dispute.spec.ts --grep 
 ## 10. Concurrency → Test Race Conditions and Parallel Execution
 
 **The CS concept** (from concurrent programming):
+
 - Race conditions: when the behavior of a program depends on the relative timing of events
 - Shared mutable state: the root of concurrency bugs when multiple threads read/write the same memory
 - Thread Local Storage (TLS): giving each thread its own isolated memory to prevent collisions
@@ -491,7 +585,7 @@ A "flaky test" is almost always just a concurrency bug: an unhandled race condit
 
 // SDET Test Automation Anti-pattern:
 // Two parallel workers modifying the same test account.
-const customer = await getTestCustomer('cust-001');
+const customer = await getTestCustomer("cust-001");
 await citationsClient.create(customer.id, { amount: 100 });
 // If Worker 1 and Worker 2 run this simultaneously, Worker 2 might see
 // Worker 1's citation in the UI and assert the wrong total amount.
@@ -515,14 +609,14 @@ await citationsClient.create(customer.id, { amount: 100 });
 // SDETs think about Playwright event synchronization:
 
 // The classic race condition (from Ch12):
-await page.click('#openInNewTab');
-const newPage = await context.waitForEvent('page');
+await page.click("#openInNewTab");
+const newPage = await context.waitForEvent("page");
 // Race condition: if the new tab opens BEFORE waitForEvent is called, the event is missed.
 
 // Synchronization fix (Promise.all ensures listeners are attached before action triggers):
 const [newPage] = await Promise.all([
-  context.waitForEvent('page'),
-  page.click('#openInNewTab')
+  context.waitForEvent("page"),
+  page.click("#openInNewTab"),
 ]);
 ```
 
@@ -616,6 +710,7 @@ cancelEarly(trackingId: string): void {
 // The lesson: choosing the right data structure depends on which operation
 // needs to be fast. HashMap is best for ID lookup. Bucket map for type lookup.
 ```
+
 </details>
 
 ---
@@ -625,6 +720,7 @@ cancelEarly(trackingId: string): void {
 Using concepts from: HashMap (O(1) lookup), Queue (ordering), dependency graph (creation order):
 
 Design (in pseudocode or TypeScript) a `ParallelDataRegistry` that:
+
 1. Multiple workers can write to it simultaneously without collision
 2. Lookup by ID is O(1)
 3. Cleanup respects FK order (children before parents)
@@ -642,29 +738,42 @@ Design (in pseudocode or TypeScript) a `ParallelDataRegistry` that:
 interface RegistryEntry {
   id: string;
   type: string;
-  workerId: string;             // isolation: only this worker deletes this
-  parentIds: string[];          // FK dependencies (parents)
+  workerId: string; // isolation: only this worker deletes this
+  parentIds: string[]; // FK dependencies (parents)
   deleteAsync: () => Promise<void>;
 }
 
 class ParallelDataRegistry {
-  private registry: Map<string, RegistryEntry> = new Map();  // O(1) lookup
+  private registry: Map<string, RegistryEntry> = new Map(); // O(1) lookup
   private readonly workerId: string;
 
   constructor(workerId: string) {
     this.workerId = workerId;
   }
 
-  register(id: string, type: string, parentIds: string[], deleteAsync: () => Promise<void>): void {
-    this.registry.set(id, { id, type, workerId: this.workerId, parentIds, deleteAsync });
+  register(
+    id: string,
+    type: string,
+    parentIds: string[],
+    deleteAsync: () => Promise<void>,
+  ): void {
+    this.registry.set(id, {
+      id,
+      type,
+      workerId: this.workerId,
+      parentIds,
+      deleteAsync,
+    });
   }
 
   // Topological sort for FK-correct cleanup order
   async cleanupAll(): Promise<void> {
-    const sorted = this.topologicalSort();  // leaves first, roots last
+    const sorted = this.topologicalSort(); // leaves first, roots last
     for (const entry of sorted) {
-      if (entry.workerId !== this.workerId) continue;  // only clean MY data
-      await entry.deleteAsync().catch(e => console.warn(`Failed to delete ${entry.id}:`, e));
+      if (entry.workerId !== this.workerId) continue; // only clean MY data
+      await entry
+        .deleteAsync()
+        .catch((e) => console.warn(`Failed to delete ${entry.id}:`, e));
     }
     this.registry.clear();
   }
@@ -679,9 +788,9 @@ class ParallelDataRegistry {
       visited.add(id);
       const entry = this.registry.get(id)!;
       for (const parentId of entry.parentIds) {
-        dfs(parentId);  // visit parents first → they go LATER in result (delete children first)
+        dfs(parentId); // visit parents first → they go LATER in result (delete children first)
       }
-      result.unshift(entry);  // prepend → children come before parents in deletion order
+      result.unshift(entry); // prepend → children come before parents in deletion order
     };
 
     for (const id of this.registry.keys()) dfs(id);
@@ -689,6 +798,7 @@ class ParallelDataRegistry {
   }
 }
 ```
+
 </details>
 
 ### Challenge 3 [MCQ] — Time Complexity of Test Assertion Loops
@@ -706,7 +816,10 @@ for (let i = 0; i < citations.length; i++) {
 // Option B: Set-based
 const seen = new Set<string>();
 for (const citation of citations) {
-  expect(seen.has(citation.citationId), `Duplicate: ${citation.citationId}`).toBe(false);
+  expect(
+    seen.has(citation.citationId),
+    `Duplicate: ${citation.citationId}`,
+  ).toBe(false);
   seen.add(citation.citationId);
 }
 ```
@@ -737,13 +850,19 @@ Memory trade-off: Option B uses O(n) memory (the Set). For test assertions on 10
 ### Challenge 4 [Spot the Bug — Sorting Assertion Logic]
 
 ```typescript
-test('API returns citations sorted by date descending', async ({ citationsClient, account }) => {
-  const citations = await citationsClient.search({ customerId: account.userId });
+test("API returns citations sorted by date descending", async ({
+  citationsClient,
+  account,
+}) => {
+  const citations = await citationsClient.search({
+    customerId: account.userId,
+  });
 
   // Verify sorted: each item should be >= the next item's date
   for (let i = 0; i < citations.length; i++) {
-    expect(new Date(citations[i].issuedAt).getTime())
-      .toBeGreaterThanOrEqual(new Date(citations[i + 1].issuedAt).getTime());
+    expect(new Date(citations[i].issuedAt).getTime()).toBeGreaterThanOrEqual(
+      new Date(citations[i + 1].issuedAt).getTime(),
+    );
   }
 });
 ```
@@ -759,17 +878,28 @@ If `citations` has 1 item, the loop runs once with `i=0`, accessing `citations[1
 **Fix**: stop the loop one index earlier so `i + 1` never exceeds the last valid index:
 
 ```typescript
-test('API returns citations sorted by date descending', async ({ citationsClient, account }) => {
-  const citations = await citationsClient.search({ customerId: account.userId });
+test("API returns citations sorted by date descending", async ({
+  citationsClient,
+  account,
+}) => {
+  const citations = await citationsClient.search({
+    customerId: account.userId,
+  });
 
   // Need at least 2 items to verify ordering
-  expect(citations.length, 'Need at least 2 citations to verify sort order').toBeGreaterThanOrEqual(2);
+  expect(
+    citations.length,
+    "Need at least 2 citations to verify sort order",
+  ).toBeGreaterThanOrEqual(2);
 
   // i goes to length - 2 so i+1 is always length - 1 (last valid index)
   for (let i = 0; i < citations.length - 1; i++) {
     const current = new Date(citations[i].issuedAt).getTime();
     const next = new Date(citations[i + 1].issuedAt).getTime();
-    expect(current, `Citation[${i}] should be >= Citation[${i+1}]`).toBeGreaterThanOrEqual(next);
+    expect(
+      current,
+      `Citation[${i}] should be >= Citation[${i + 1}]`,
+    ).toBeGreaterThanOrEqual(next);
   }
 });
 ```
@@ -796,9 +926,8 @@ async function findPageContaining(
   citationsClient: CitationsApiClient,
   customerId: string,
   targetId: string,
-  pageSize: number = 100
+  pageSize: number = 100,
 ): Promise<number> {
-
   // First: get total count to compute page range
   const meta = await citationsClient.searchMeta({ customerId });
   const totalPages = Math.ceil(meta.totalCount / pageSize);
@@ -808,27 +937,31 @@ async function findPageContaining(
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
-    const page = await citationsClient.search({ customerId, page: mid, size: pageSize });
+    const page = await citationsClient.search({
+      customerId,
+      page: mid,
+      size: pageSize,
+    });
 
     const firstId = page[0]?.citationId;
     const lastId = page[page.length - 1]?.citationId;
 
-    if (!firstId) break;  // empty page — not found
+    if (!firstId) break; // empty page — not found
 
     if (targetId >= firstId && targetId <= lastId) {
       // Target is within this page's range — verify exact presence
-      const found = page.some(c => c.citationId === targetId);
+      const found = page.some((c) => c.citationId === targetId);
       return found ? mid : -1;
     }
 
     if (targetId < firstId) {
-      high = mid - 1;  // search left half
+      high = mid - 1; // search left half
     } else {
-      low = mid + 1;   // search right half
+      low = mid + 1; // search right half
     }
   }
 
-  return -1;  // not found
+  return -1; // not found
 }
 
 // For 10,000 citations at 100 per page = 100 pages:
@@ -842,4 +975,5 @@ async function findPageContaining(
 </details>
 
 ---
+
 **Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
