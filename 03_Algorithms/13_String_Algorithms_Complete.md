@@ -1276,12 +1276,68 @@ Summary
 
 ---
 
-🔬 **Section Challenge — Summary**
+---
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+## 📎 Reference Anchor
 
-<details><summary>Answer</summary>
+**OpenJDK `String` and `Pattern` — string algorithms in production**
+- `String.indexOf(String)`: [StringLatin1.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/lang/StringLatin1.java) — uses a two-way string matching variant (not naive O(n×m)). **Invariant**: guarantees O(n+m) worst case without preprocessing the pattern each call.
+- `Pattern.compile()` + `Matcher.find()`: NFA-based regex. **Invariant**: `compile()` builds the NFA O(m); `find()` simulates in O(n×m) worst case for complex patterns. `(a+)+b` on `"aaa...a"` (no b) causes O(2ⁿ) backtracking — ReDoS.
+- **Local rewrite rule**: For fixed patterns known at compile time, prefer `String.contains()` or `indexOf()` over `Pattern.matches()`. `Pattern.matches(regex, input)` compiles the regex on EVERY call — O(m) overhead per invocation.
+- **Constraint warning**: Java `String.split(regex)` uses regex. For a simple character delimiter, use `String.split(",", -1)` with the `-1` limit to preserve trailing empty strings, OR use `StringTokenizer` for O(n) performance without regex overhead.
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+---
+
+## When String Algorithms Break
+
+### 1. KMP — Wrong Failure Function Computation
+**What breaks**: Computing `fail[]` (partial match table) with off-by-one: starting at `fail[0] = -1` vs `fail[0] = 0` differs by convention. Code from two different KMP implementations can have inconsistent base cases, causing wrong shifts.
+**Fix**: Commit to one convention. Common: `fail[0] = 0` where `fail[i]` = length of longest proper prefix of `pat[0..i]` that is also a suffix. Verify by hand on `"ABACABA"`.
+
+### 2. Rolling Hash — Collision Giving Wrong Results
+**What breaks**: Rabin-Karp compares hash values first, then the actual string only on match. If the hash modulus is small, many collisions occur. Rabin-Karp with `mod = 10⁹+7` has collision probability ≈ 1/10⁹ per comparison — negligible. Using `mod = 1000` causes ~1/1000 false positives and wrong match results.
+**Fix**: Use a large prime (10⁹+7 or 10¹⁸+9). For competitive programming, use double hashing (two different primes) to reduce collision probability to 1/(mod1 × mod2).
+
+### 3. Trie — Not Marking End of Word
+**What breaks**: Inserting `"app"` and `"apple"`. Searching for `"app"` without an `isEnd` flag returns `false` (because the node for 'p' exists but isn't marked as a word ending) — the trie finds the prefix but can't distinguish prefix from complete word.
+**Fix**: Always set `node.isEnd = true` after the last character of each inserted word.
+
+---
+
+## Proof Corner: KMP O(n+m) Time
+
+**Claim**: KMP searches for pattern P (length m) in text T (length n) in O(n+m) time.
+
+**Proof**:
+Define a "counter" that tracks the combined number of character comparisons. Observe:
+- Every comparison either advances `j` (match) or resets `j` via the failure function (mismatch).
+- `j` is incremented at most n times total (once per character of T matched).
+- Each failure function application decreases `j` by at least 1 (it can never go below 0).
+- Therefore total decreases of `j` ≤ total increases = n.
+- Total comparisons in the search phase ≤ 2n = O(n).
+- Building the failure function: same argument on P with itself → O(m).
+
+**Total**: O(n+m). □
+
+**Contrast with naïve**: Naïve O(n×m) occurs when every alignment tries all m characters before failing (e.g., pattern `"aab"` in text `"aaaa...aab"`). KMP's failure function skips redundant comparisons by exploiting the prefix-suffix structure of P.
+
+🔬 **Section Challenge — String Algorithms**
+
+**Challenge 1 (Analysis — 7 min):** Why is KMP's failure function computed in O(m) time? Walk through the computation for pattern `"ABACABA"`.
+
+<details><summary>Model Answer</summary>
+
+Same aggregate argument as the main search: `k` (the length of the current candidate prefix-suffix) is incremented at most m times total across all i. Each failure (`k = fail[k-1]`) decreases k, and decreases can happen at most as many times as increases. Total operations ≤ 2m = O(m).
+
+For `"ABACABA"`:
+- i=0: `fail[0]=0` (A: no proper prefix = suffix)
+- i=1: B != A → fail[1]=0
+- i=2: A == A → fail[2]=1 (prefix "A" = suffix "A")
+- i=3: C != B → fail[3]=0
+- i=4: A == A → fail[4]=1; B != B... wait, A == A so k=1, then B vs C → fail[4]=1
+- i=5: B == B → fail[5]=2 (prefix "AB" = suffix "AB")
+- i=6: A == A → fail[6]=3 (prefix "ABA" = suffix "ABA")
+
+Result: `[0, 0, 1, 0, 1, 2, 3]`.
 
 </details>

@@ -640,3 +640,52 @@ while (i > 0 && w > 0) {
 ```
 
 **Rule of Thumb:** Always use Implicit Tracking unless the transition logic is extremely complex or depends on non-deterministic ties where you must remember the exact tie-breaker you chose.
+
+---
+
+## 📎 Reference Anchor
+
+**Apache Commons Text `LevenshteinDistance` — production DP**
+- `LevenshteinDistance`: [LevenshteinDistance.java](https://github.com/apache/commons-text/blob/master/src/main/java/org/apache/commons/text/similarity/LevenshteinDistance.java) — bottom-up 2-row DP (space-optimized from O(m×n) to O(min(m,n))). **Invariant**: `dp[j]` = edit distance between first `i` chars of s1 and first `j` chars of s2. Rolling array: only current row and previous row needed.
+- Optional threshold version: early termination if distance exceeds threshold — prunes columns that can't possibly improve. Useful for fuzzy-match filtering on large corpora.
+- **Local rewrite rule**: Bottom-up DP avoids function call overhead. For n > 10⁴ subproblems, bottom-up is 2–5× faster than top-down due to elimination of recursion overhead and HashMap cache lookups.
+- **Constraint warning**: 2D DP `int[n+1][m+1]` with n=m=10⁴ = 400 MB — exceeds default heap. Use rolling array or set `JAVA_OPTS=-Xmx2g`.
+
+---
+
+## When DP Internals Break
+
+### 1. Traceback on Rolled Array — Lost Data
+**What breaks**: Using a 1D rolling array for space optimization but then trying to traceback the solution. The previous rows are overwritten and the path cannot be reconstructed.
+**Fix**: If solution reconstruction is needed, keep the full 2D table (or store a separate `choice[i][j]` matrix). Only use rolling array if you only need the optimal VALUE, not the path.
+
+### 2. Integer Overflow in DP Value Accumulation
+**What breaks**: Counting paths in a grid: `dp[i][j] = dp[i-1][j] + dp[i][j-1]`. For a 20×20 grid, dp[20][20] can exceed `Integer.MAX_VALUE`. Silent overflow produces negative values.
+**Fix**: Use `long[][]` for counting problems. Or take values mod 10⁹+7 if only the modular count is needed (common in competitive programming).
+
+### 3. Using HashMap for Memoization with Arrays as Keys
+**What breaks**: `HashMap<int[], Integer> memo` uses reference equality for `int[]` keys. Two arrays `{1,2,3}` and `{1,2,3}` (different objects, same values) are different keys. The cache is never hit.
+**Fix**: Convert array state to a canonical String key: `Arrays.toString(state)`. Or encode to a single int if bounds allow.
+
+---
+
+## Brute Force → Optimal: DP Warm-Up
+
+### Problem: Longest Increasing Subsequence (LIS)
+
+**Brute Force — O(2ⁿ) all subsequences:**
+Generate all 2ⁿ subsequences, check each for being increasing, track max length.
+
+**Naive DP — O(n²) pairwise comparison:**
+```java
+int[] dp = new int[n];
+Arrays.fill(dp, 1);
+for (int i = 1; i < n; i++)
+    for (int j = 0; j < i; j++)
+        if (arr[j] < arr[i]) dp[i] = Math.max(dp[i], dp[j]+1);
+```
+
+**Optimal — O(n log n) patience sorting + binary search:**
+Maintain a `tails[]` array where `tails[k]` = smallest tail element of all IS of length k+1. For each element, binary search in `tails[]` to find where it fits. Length of `tails` at the end = LIS length.
+
+**Why**: `tails[]` is always sorted. Binary search finds the correct position in O(log n) per element. Total: O(n log n).

@@ -1718,3 +1718,80 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 | Sum of Distances in Tree            | LC 834 | Re-rooting technique (Hard, teaches re-root) |
 | Check Completeness of Binary Tree   | LC 958 | BFS — null before value = incomplete         |
 | Count Complete Tree Nodes           | LC 222 | O(log²n) using height comparison             |
+
+---
+
+## 📎 Reference Anchor
+
+**OpenJDK `TreeMap` / `TreeSet` — Red-Black BST in production**
+- `TreeMap`: [TreeMap.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TreeMap.java) — a Red-Black BST. **Invariant**: Every path from root to null leaf has the same number of Black nodes; no two consecutive Red nodes. Provides `floorKey()`, `ceilingKey()`, `subMap()` — all O(log n).
+- `TreeMap.successor()` (private): used internally by iterators. Understanding it explains why `TreeMap` iteration is O(n) total even though each `next()` navigates the tree.
+- **Local rewrite rule**: Never use recursive DFS for `TreeMap` traversal on a tree with depth > ~8000 — JVM default stack hits `StackOverflowError`. `TreeMap`'s own iterator is iterative (Morris/stack-based). For large trees, use `TreeMap.entrySet().iterator()` instead of your own DFS.
+- **Constraint warning**: `TreeMap.get(key)` is O(log n) only if the comparator is O(1). A comparator that does string comparison on long strings is O(len_of_string × log n) total — can dominate for keys like UUIDs.
+
+---
+
+## When Trees Break
+
+### 1. Recursive DFS StackOverflow on Skewed Tree
+**What breaks**: A degenerate BST (all elements inserted in sorted order) becomes a linked list of depth n. Recursive DFS causes `StackOverflowError` at n ~= 8000 (default JVM stack). This is the real-world case — most textbook BST code breaks on sorted inputs.
+**Fix**: AVL/Red-Black tree (self-balancing) prevents degenerate depth. Or convert DFS to iterative with an explicit `ArrayDeque` stack.
+
+### 2. Null Check Missing — NPE on Leaf Children
+**What breaks**: `if (root.left.val == target)` throws NPE when `root.left` is null (a leaf node). Accessing `.val`, `.left`, `.right` without a null guard is the #1 tree bug.
+**Fix**: Always check `root != null` before accessing any field. Better: `if (root == null) return;` as the first line of every recursive tree method.
+
+### 3. BST Invariant Violation — Wrong Comparison in Insertion
+**What breaks**: Using `<=` instead of `<` for left subtree: `if (val <= node.val) insertLeft(...)`. This makes duplicates go left, which violates the strict BST invariant that `left.val < root.val`. Some BST algorithms (e.g., rank/select) break with duplicates in wrong subtrees.
+**Fix**: Define and document the invariant: does your BST allow duplicates? If yes, which side?
+
+### 4. Modifying Tree During Iteration
+**What breaks**: Iterating a tree while deleting nodes (e.g., pruning dead subtrees) without careful ordering. If you delete `node` and then try to access `node.parent`, it may be null/dangling.
+**Fix**: Post-order traversal for deletion — process children before parent. For pruning, return the modified subtree: `node.left = prune(node.left); node.right = prune(node.right); return shouldDelete(node) ? null : node;`.
+
+---
+
+## Brute Force → Optimal: Tree Patterns
+
+### Problem: Check if Two Trees are Identical
+
+**Brute Force — O(n²) serialize and compare:**
+Serialize both trees to strings, compare strings. Two serializations of the same tree are equal. O(n) to serialize but O(n) string comparison each time = O(n) per check, but with high constant factor.
+
+**Optimal — O(n) structural recursion:**
+```java
+boolean isSame(TreeNode p, TreeNode q) {
+    if (p == null && q == null) return true;
+    if (p == null || q == null) return false;
+    return p.val == q.val && isSame(p.left, q.left) && isSame(p.right, q.right);
+}
+```
+Returns on first mismatch. Short-circuit evaluation skips remaining subtrees.
+
+### Problem: Lowest Common Ancestor
+
+**Brute Force — O(n) per query via path-to-root:**
+Find path from root to p, path from root to q, find last common node. O(n) space + time per query.
+
+**Optimal — O(n) single DFS:**
+```java
+TreeNode lca(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+    TreeNode left = lca(root.left, p, q);
+    TreeNode right = lca(root.right, p, q);
+    return left != null && right != null ? root : (left != null ? left : right);
+}
+```
+**Why**: If p and q are in different subtrees, root IS the LCA. If both in same subtree, the recursive call returns the LCA directly.
+
+---
+
+## Proof Corner: Tree Height and Node Count
+
+**Claim**: A binary tree with n nodes has height h satisfying ⌈log₂(n+1)⌉ − 1 ≤ h ≤ n−1.
+
+**Lower bound** (complete binary tree is shortest): A complete binary tree of height h has 2^(h+1) − 1 nodes. So n ≤ 2^(h+1) − 1 → h ≥ log₂(n+1) − 1 → h ≥ ⌈log₂(n+1)⌉ − 1.
+
+**Upper bound** (path graph is tallest): A path (linked list) with n nodes has height n−1.
+
+**Leaves count in full binary tree**: A full binary tree (every node has 0 or 2 children) with n internal nodes has exactly n+1 leaves. *Proof by induction*: Base (n=0): 1 leaf. Step: Adding one internal node converts one leaf to an internal node and adds 2 new leaves: +1 internal, +1 leaf. Invariant: leaves = internal + 1. □

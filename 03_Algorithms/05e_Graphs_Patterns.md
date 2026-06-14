@@ -1132,3 +1132,58 @@ Which graph problem type am I facing?
 ```
 
 ---
+
+## 📎 Reference Anchor
+
+**Guava `Graphs` utility and OpenJDK `ArrayDeque` for graph traversal**
+- `Graphs.reachableNodes(graph, node)`: [Graphs.java](https://github.com/google/guava/blob/master/guava/src/com/google/common/graph/Graphs.java) — lazy BFS. **Invariant**: Returns a live `Set<N>` — iterating it TWICE triggers two full BFS traversals. Materialize: `new HashSet<>(Graphs.reachableNodes(graph, src))`.
+- `ArrayDeque` for BFS/DFS: [ArrayDeque.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayDeque.java) — O(1) amortized `offerLast/pollFirst` (BFS queue) and `push/pop` (DFS stack). Never use `LinkedList` — same API but worse cache locality.
+- **Local rewrite rule**: For multi-source BFS (e.g., "01 Matrix" — distances from all 0-cells), seed ALL source nodes into the queue at the start with distance 0. Single-pass O(V+E). Never run BFS from each source separately (O(k × (V+E))).
+- **Constraint warning**: Bidirectional BFS reduces worst-case explored nodes from O(b^d) to O(b^(d/2)) where b = branching factor and d = depth. Use it when the graph is large but source and target are both known and the graph is undirected.
+
+---
+
+## When Graph Patterns Break
+
+### 1. Flood Fill — Modifying Grid During BFS Causes Re-Visit
+**What breaks**: Flood fill that marks cells as visited by changing their value (e.g., `grid[r][c] = 2`) but then checks `grid[r][c] != original` — if the original value was the same as the "visited" marker, all cells are skipped.
+**Fix**: Use a separate `boolean[][] visited` matrix. Don't encode visited state into the grid value unless you're certain the marker value can't appear in valid input.
+
+### 2. Multi-Source BFS — Wrong Initial Distance
+**What breaks**: Seeding all source nodes with `dist = 1` instead of `dist = 0`. All computed distances are off by 1. The source nodes themselves should have distance 0 to themselves.
+
+### 3. Topological Sort — Processing in Wrong Order Breaks Dependency
+**What breaks**: In topological sort for course scheduling, adding a course to the result before removing its edges. Subsequent in-degree decrements use a stale queue, possibly re-adding already-added courses or missing others.
+**Fix**: Kahn's algorithm: poll from queue → add to result → decrement in-degrees of neighbors → enqueue any new in-degree-0 nodes. The order is strict.
+
+---
+
+## Brute Force → Optimal: Graph Pattern Matching
+
+### Problem: Number of Islands
+
+**Brute Force — O(n²m²) recount on every query:**
+Recount islands from scratch each time. Impractical for dynamic grids.
+
+**Optimal — O(n×m) single pass with DFS/BFS flood fill:**
+```java
+for each cell (r,c) if grid[r][c]=='1' and not visited:
+    islands++;
+    bfs/dfs to mark all connected '1' cells as visited
+```
+Each cell is visited exactly once across all flood fills → O(n×m) total.
+
+**For dynamic "add land" queries — Union-Find:**
+Maintain a DSU over grid cells. Each `addLand(r,c)` call: create node, union with adjacent existing land cells. `numIslands()` = `dsu.count()`. Each operation O(α(n×m)).
+
+---
+
+## Proof Corner: BFS Shortest Path Correctness
+
+**Claim**: BFS finds shortest path (minimum hops) in an unweighted graph.
+
+**Proof by induction on distance d**:
+- **Base**: All nodes at distance 0 (the source) are in the queue at the start with `dist = 0`. Correct.
+- **Step**: Assume all nodes at distance d have been correctly assigned `dist = d` when first dequeued. When we dequeue node u (dist=d), we examine all neighbors v. If v is unvisited, `dist[v] = d+1`. Since we process all nodes at distance d before any at distance d+1 (FIFO queue property), no shorter path to v can be discovered later — any path to v via an unprocessed node at distance d would be at least d+1+1 = d+2 > d+1. So `dist[v] = d+1` is optimal. □
+
+**Why DFS fails**: DFS might find a d=10 path before the d=2 path, depending on traversal order. The FIFO property of BFS is essential — it enforces level-by-level exploration.

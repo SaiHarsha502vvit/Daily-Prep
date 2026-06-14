@@ -427,3 +427,53 @@ If your problem can be mapped to finding the maximum-weight independent set of a
 In Fractional Knapsack, the domain of items is infinitely divisible. If we have a valid set $A$ (e.g. 6kg of item X) and a larger valid set $B$ (e.g. 5kg of Y, 5kg of Z), we don't have to take a _whole_ item from $B$. We can take exactly enough of an item from $B$ (e.g., 4kg) to fill $A$ up to the capacity limit. This continuous nature restores the Exchange Property (we can always exchange a fraction to grow $A$ towards $B$'s size without violating capacity). Thus, it's a matroid structure and greedy is optimal.
 
 </details>
+
+---
+
+## 📎 Reference Anchor
+
+**OpenJDK `PriorityQueue` — greedy's core data structure**
+- `PriorityQueue`: [PriorityQueue.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) — min-heap backed by `Object[]`. **Invariant**: `queue[k] <= queue[2k+1]` and `queue[k] <= queue[2k+2]` for all valid k (binary heap property). `offer/poll` are O(log n); `peek` is O(1).
+- **Local rewrite rule**: `PriorityQueue.iterator()` does NOT return elements in priority order — it returns in arbitrary (heap array) order. To drain in order, use `while (!pq.isEmpty()) pq.poll()`.
+- **Constraint warning**: `PriorityQueue.remove(Object)` is O(n) (linear scan, not log n). For Dijkstra, avoid `decrease-key` via `remove()` — use lazy deletion instead (insert the new priority pair, skip stale entries on poll).
+
+---
+
+## When Greedy + Bit Manipulation Break
+
+### 1. Greedy — Exchange Argument Assumed Without Verification
+**What breaks**: Applying greedy to a problem where the greedy choice property does NOT hold. E.g., "minimum number of operations to reduce n to 1" — greedy "always halve if even, subtract 1 if odd" fails for n=15: greedy does 15→14→7→6→3→2→1 (6 steps), but optimal is 15→16→8→4→2→1 (5 steps via +1 first).
+**Fix**: Always try to construct a counterexample before committing to greedy. If you can't find one in 5 minutes AND you can sketch an exchange argument, then trust greedy.
+
+### 2. Bit Shift Precedence in Compound Expressions
+**What breaks**: `int result = 1 << n + 1` evaluates as `1 << (n+1)` not `(1 << n) + 1` — addition has higher precedence than `<<`. This is correct if you want `2^(n+1)`, but wrong if you want `2^n + 1`.
+**Fix**: Always parenthesize shift expressions: `(1 << n) + 1`.
+
+---
+
+## Brute Force → Optimal: Greedy Pattern
+
+### Problem: Minimum Platforms (Interval Scheduling)
+
+**Brute Force — O(n²):**
+For each train's arrival time, count how many other trains are currently at the station. Track the max.
+
+**Optimal — O(n log n) sorting + two pointers:**
+Sort arrivals and departures separately. Use two pointers: if `arrival[i] <= departure[j]`, a new train arrives before one departs → need one more platform (i++). Otherwise a train leaves first (j++). The max simultaneous count is the answer.
+
+**Why greedy works**: Platforms are fungible. We never need to know WHICH platform — only HOW MANY are simultaneously occupied. Sorting lets us process events in chronological order and greedily reuse freed platforms.
+
+---
+
+## Proof Corner: Greedy Exchange Argument Template
+
+**Template for proving a greedy algorithm is correct**:
+
+1. **Assume** an optimal solution OPT differs from the greedy solution G at some step k.
+2. **Swap**: modify OPT to match G's choice at step k → call this OPT'.
+3. **Show OPT' is no worse than OPT**: cost(OPT') ≤ cost(OPT).
+4. **Conclude by induction**: after n swaps, OPT has been transformed into G without getting worse → G is optimal.
+
+**Worked example — Activity Selection (maximize non-overlapping intervals)**:
+- Greedy: always pick the activity with earliest finish time.
+- Exchange: Suppose OPT picks activity a (finish f_a) when greedy picks b (finish f_b ≤ f_a). Swap a for b in OPT: since f_b ≤ f_a, no later activity in OPT is blocked by b that wasn't already blocked by a. So OPT' is still valid with ≥ as many activities. The exchange never hurts. □

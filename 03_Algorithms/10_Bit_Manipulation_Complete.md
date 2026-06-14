@@ -1205,4 +1205,62 @@ int singleNumber(int[] nums) {
 
 ---
 
+## 📎 Reference Anchor
+
+**OpenJDK `Integer` and `Long` bit operations (JVM intrinsics)**
+- `Integer.bitCount(n)`: [Integer.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/lang/Integer.java) — parallel popcount SWAR technique; JIT converts to a single `POPCNT` CPU instruction on x86. O(1) hardware time.
+- `Integer.numberOfTrailingZeros(n)` / `Integer.highestOneBit(n)`: JVM intrinsics mapping to `BSF`/`BSR` x86 instructions.
+- **Local rewrite rule**: `n & (n-1)` (Brian Kernighan) clears the lowest set bit. Use it to count set bits in O(k) where k = popcount — faster than iterating all 32 positions for sparse bit sets.
+- **Constraint warning**: Java `>>` is arithmetic (sign-extends). Java `>>>` is logical (zero-fills). For unsigned bit math, always use `>>>`. Using `>> 1` on a negative number in a `while (n != 0)` loop causes an infinite loop.
+
+---
+
+## When Bit Manipulation Breaks
+
+### 1. Operator Precedence — Bitwise vs Comparison
+**What breaks**: `if (n & 1 == 0)` evaluates as `if (n & (1 == 0))` = `if (n & 0)` = always false. Comparison operators have HIGHER precedence than bitwise `&`, `|`, `^` in Java.
+**Fix**: Always parenthesize: `if ((n & 1) == 0)`. This is the #1 silent bug in bit manipulation.
+
+### 2. Signed Right Shift on Negative Numbers
+**What breaks**: `n >>= 1` on negative n fills with 1 (arithmetic shift). `while (n != 0) { n >>= 1; }` is an infinite loop for any negative n.
+**Fix**: Use `n >>>= 1` (unsigned shift) for bit-counting loops.
+
+### 3. Integer Overflow in Left Shift
+**What breaks**: `1 << 31` = `Integer.MIN_VALUE` in Java (−2147483648), not 2³¹ = 2147483648. `1 << 32` = 1 (shift amount is mod 32). Both are silent — no exception.
+**Fix**: Use `1L << n` when you need bit positions beyond 30.
+
+### 4. XOR Swap Aliasing
+**What breaks**: `a ^= b; b ^= a; a ^= b;` when a and b are the SAME variable. `a ^= a` sets it to 0; all three operations produce 0.
+**Fix**: Guard with `if (a != b)` or use a temp variable.
+
+---
+
+## Brute Force → Optimal: Count Set Bits in Range
+
+**Brute Force — O(n log n):**
+```java
+int count = 0;
+for (int i = 1; i <= n; i++) count += Integer.bitCount(i);  // too slow for n=10^9
+```
+
+**Optimal — O(log n) digit DP per bit position:**
+```java
+int total = 0;
+for (int k = 0; k < 30; k++) {
+    int cycle = 1 << (k+1), half = cycle >> 1;
+    total += (n / cycle) * half + Math.max(0, (n % cycle) - half + 1);
+}
+```
+**Why**: Bit k has period `2^(k+1)` and is set for exactly `2^k` consecutive numbers per period. Count full periods + remainder.
+
+---
+
+## Proof Corner: XOR Identities
+
+1. **Self-cancellation**: `a ^ a = 0`. Each bit: `0 XOR 0 = 0`, `1 XOR 1 = 0`. □
+2. **Self-inverse**: `a ^ b ^ b = a ^ 0 = a` (by associativity + self-cancellation). □
+3. **Find unique**: XOR of array where every element appears twice except one = the unique element. *Proof*: XOR is commutative and associative; pairs cancel by (1); unique element XORs with 0 = itself. □
+
+**Consequence**: Every XOR trick (missing number, single-non-repeating, single-in-triples) is an application of identity (3) under appropriate grouping.
+
 > **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)
