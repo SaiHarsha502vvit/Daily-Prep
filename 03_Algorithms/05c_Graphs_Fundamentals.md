@@ -809,3 +809,43 @@ HARD:
 > * [cp-algorithms/dijkstra](https://cp-algorithms.com/graph/dijkstra.html) -> **Invariant:** Always expands the minimum-distance unvisited node; requires non-negative edge weights.
 > * [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) -> **Local rewrite:** Dijkstra in Java heavily relies on `PriorityQueue`. Remember that Java's `PriorityQueue.remove(Object)` is O(N), so we don't update existing nodes in the queue — we just insert the new shorter distance and ignore the old one when we pop it (lazy deletion).
 > * **Constraint warning:** If the graph has negative weights, Dijkstra's greedy invariant breaks; use Bellman-Ford instead.
+
+---
+
+## Brute Force → Optimal: Graph Patterns
+
+### Problem: Shortest Path in Unweighted Graph
+
+**Brute Force — O(V! ) DFS exploring all paths:**
+Finding the shortest path by DFS without tracking visited nodes causes exponential blowup — the algorithm may revisit nodes and cycle indefinitely.
+
+**Better but still wrong — DFS with visited set:**
+DFS guarantees reaching every reachable node but does NOT guarantee shortest path. A DFS might find a 10-hop path before the 2-hop path — the first path found is not necessarily shortest.
+
+**Optimal — BFS, O(V+E):**
+```java
+int[] bfs(List<List<Integer>> adj, int src) {
+    int[] dist = new int[adj.size()];
+    Arrays.fill(dist, -1);
+    dist[src] = 0;
+    Queue<Integer> q = new ArrayDeque<>();
+    q.offer(src);
+    while (!q.isEmpty()) {
+        int u = q.poll();
+        for (int v : adj.get(u))
+            if (dist[v] == -1) { dist[v] = dist[u] + 1; q.offer(v); }
+    }
+    return dist;
+}
+```
+**Why BFS guarantees shortest path**: BFS explores layer by layer — all nodes at distance k before any node at distance k+1. The first time a node is reached, the path length equals the layer depth and is provably minimal (no negative weights possible in hop count).
+**Pattern signal**: Unweighted graph + shortest path → BFS. Weighted graph + non-negative weights → Dijkstra. Weighted + possibly negative → Bellman-Ford.
+
+### Problem: Number of Connected Components
+
+**Brute Force — O(V²) adjacency-matrix scan:**
+For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per query.
+
+**Optimal — Union-Find, O(E·α(V)) ≈ O(E):**
+Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../../JavaSolutions/AlgorithmExamples/UnionFind.java).
+**Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).

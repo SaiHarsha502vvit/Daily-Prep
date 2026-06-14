@@ -2149,6 +2149,37 @@ Compaction is background, doesn't block writes.
 - **Why B-Tree?** B-Tree has worse write throughput due to random disk writes on update.
 - **Why LSM-Tree?** All writes are sequential (memtable + SSTable); compaction is background.
 
+---
+
+## Proof Corner
+
+### Skip List Expected O(log n) Search
+
+**Claim**: Skip list `search(k)` costs O(log n) expected time with high probability when levels are chosen independently with probability p = 1/2.
+
+**Proof sketch** (backward analysis):
+Consider the path traversed during search in *reverse* — from the found element back to the head. At each step, we either:
+- Go *up* a level (probability 1/2): this is where we were promoted in the level-generation process.
+- Go *left* along the current level (probability 1/2): we stay at this level.
+
+This is equivalent to a random walk that climbs exactly log₁/p(n) levels in expectation. By standard Chernoff bounds, the path length is O(log n) with high probability (failure probability n^{-c} for any constant c > 1 by choosing number of levels L = c·log_{1/p}(n)).
+
+**Expected space**: Each element appears in L levels on average, each with probability p^level. Total expected nodes = n × Σ_{i=0}^{L} p^i = n/(1−p) = 2n for p=1/2. Space: O(n) expected.
+
+---
+
+### Bloom Filter False Positive Rate
+
+**Claim**: A Bloom filter with m bits, n elements, and k hash functions has false positive rate approximately (1 − e^{−kn/m})^k.
+
+**Derivation**: After inserting n elements with k hashes each:
+- Pr[a bit is still 0] = (1 − 1/m)^{kn} ≈ e^{−kn/m} for large m.
+- False positive: a non-member's k hash positions are all 1 → Pr = (1 − e^{−kn/m})^k.
+
+**Optimal k**: Minimize by differentiating w.r.t. k → k* = (m/n) ln 2 ≈ 0.693 m/n.
+
+**Java example**: For n = 10⁶ elements and FPR = 1%: m ≈ −n ln(FPR) / (ln 2)² ≈ 9.6 × 10⁶ bits ≈ 1.2 MB. Guava's `BloomFilter` implements exactly this formula.
+
 ## Cross-References
 
 - **`01e_HashTable.md`** — HashMap vs TreeMap vs ConcurrentSkipListMap; basic hash table theory.

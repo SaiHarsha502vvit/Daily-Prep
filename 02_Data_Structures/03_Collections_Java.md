@@ -1312,6 +1312,15 @@ Therefore, the invariant `compare == 0 ⟺ equals == true` is required. Violatin
 | `subList().clear()` to remove range | Sublist view complicates iteration; better to use `removeRange` | Use direct `removeAll` with a sublist |
 | `Collections.sort(list)` on nearly-sorted list | O(n log n) even when input is nearly sorted | Use insertion sort for small or nearly-sorted input |
 
+## 📎 Reference Anchor
+
+**OpenJDK Collections Framework source** — `java.util` package
+- `ArrayList`: [ArrayList.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayList.java) — **Invariant**: `size` is always ≤ `elementData.length`; `elementData[size..length-1]` are always `null`. Resize doubles capacity, never shrinks automatically.
+- `LinkedHashMap`: [LinkedHashMap.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedHashMap.java) — **Invariant**: A doubly-linked list threads through all entries in insertion (or access) order. Override `removeEldestEntry()` for O(1) LRU cache.
+- `TreeMap`: [TreeMap.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TreeMap.java) — **Invariant**: Red-Black BST; every path root→leaf has the same number of Black nodes. `floorKey()`/`ceilingKey()` are O(log n).
+- **Local rewrite rule**: `java.util.Stack` extends `Vector` (synchronized) — 10–50× slower single-threaded. Always use `ArrayDeque` as stack or queue.
+- **Constraint warning**: `Collections.synchronizedList(list)` is not sufficient for compound actions (check-then-act). Use `CopyOnWriteArrayList` for read-heavy concurrent access, or `ConcurrentHashMap` for maps.
+
 ## Cross-References
 
 - **`01a_Memory_Foundations.md`** — escape analysis, memory layout, cache behavior.

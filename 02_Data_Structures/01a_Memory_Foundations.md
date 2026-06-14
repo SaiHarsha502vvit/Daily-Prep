@@ -1288,4 +1288,35 @@ Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 byt
 
 </details>
 
+---
+
+## Proof Corner
+
+### Dynamic Array Amortized O(1) Append — Potential Method Proof
+
+**Claim**: Each `append()` on a doubling dynamic array costs O(1) amortized.
+
+**Define potential**: Φ = 2 × size − capacity
+- After resize: size = n+1, capacity = 2(n+1), Φ = 2(n+1) − 2(n+1) = 0. Potential is zero after resize.
+- Steady growth: Φ increases by 2 each cheap append (2·(size+1)−capacity = Φ+2).
+
+**Amortized cost of cheap append** (no resize, cost = 1):
+  ĉ = 1 + ΔΦ = 1 + 2 = 3
+
+**Amortized cost of expensive append** (resize from n to 2n, cost = n+1 copies):
+  ĉ = (n+1) + ΔΦ = (n+1) + (0 − n) = 1
+  (Potential drops by n, exactly paying for the n copy operations.)
+
+**Conclusion**: Every `append()` has amortized cost ≤ 3 = O(1). Over m appends: total real cost ≤ 3m = O(m).
+
+---
+
+### Memory Hierarchy Access Time Invariant
+
+**Claim**: Sequential access to a primitive array of n elements incurs at most ⌈n / 16⌉ cache misses for 4-byte ints on a 64-byte cache line.
+
+**Proof**: A 64-byte cache line holds 64/4 = 16 ints. First access to index k loads the line containing indices `[16⌊k/16⌋ .. 16⌊k/16⌋ + 15]`. Sequential access from 0 to n-1 touches exactly ⌈n/16⌉ distinct cache lines. Each line is loaded exactly once → ⌈n/16⌉ misses.
+
+**Corollary**: Column-major traversal of `int[R][C]` (treating rows as contiguous, accessing column c for all rows) loads R distinct cache lines but wastes 15 of 16 words per line → R cache misses vs ⌈R·C/16⌉ for row-major. For C >> 16, column-major is 16× worse.
+
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b_Arrays.md)

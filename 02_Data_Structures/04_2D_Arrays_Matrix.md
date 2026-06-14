@@ -1868,6 +1868,14 @@ This is the canonical 90° clockwise rotation. Each cell is moved exactly once. 
 
 **Edge case:** When `n` is odd, the center cell is at `(n/2, n/2)` and is rotated to itself — no swap needed. The loop bound `j in [i, n-i-1)` excludes this case.
 
+## 📎 Reference Anchor
+
+**OpenJDK / Apache Commons Math — 2D array patterns**
+- `Arrays.copyOfRange()`: [Arrays.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/Arrays.java) — copies a 1D slice; for 2D you must copy row by row. **Invariant**: The copy is a shallow copy; for `Object[][]`, nested arrays share references.
+- Apache Commons Math `BlockRealMatrix`: [BlockRealMatrix.java](https://github.com/apache/commons-math/blob/master/commons-math-core/src/main/java/org/apache/commons/math4/core/jdkmath/AccurateMath.java) — stores a flat 2D matrix in cache-friendly blocks to avoid column-major cache misses. **Invariant**: Block size = 52 rows × 52 cols (tuned for L1 cache); access pattern is always row-major within a block.
+- **Local rewrite rule**: For `int[n][m]` in Java, each row is a separate heap object. Column-major traversal (`matrix[r][c]` for all r, fixed c) causes n cache misses per column; row-major is 16× faster for 4-byte ints on 64-byte cache lines.
+- **Constraint warning**: `new int[n][m]` with n = 10⁴, m = 10⁴ = 400 MB — check heap size before allocating large 2D arrays. Consider flat `int[n*m]` with manual index arithmetic for large matrices.
+
 ## Cross-References
 
 - **`01a_Memory_Foundations.md`** — cache-line trashing on column-major traversal (Challenge 3).

@@ -1850,3 +1850,33 @@ Object header is **16 bytes** minimum (mark + class). This is why `new Object()`
 - **`02_PROBLEM_SETS.md`** — exam-style problem: derive ArrayList amortized cost, HashMap resize cost.
 - **`A1_DS_Correctness_Invariants.md`** — formal proofs of AL1-AL5, HM1-HM6, TM1-TM4, LL1-LL4.
 - **`A2_DS_Complexity_FirstPrinciples.md`** — formal Big-O derivations for all operations.
+
+---
+
+## Proof Corner
+
+### HashMap Load Factor Invariant — O(1) Average Lookup
+
+**Claim**: With load factor α < 1 and a good hash function, `HashMap.get()` costs O(1) expected.
+
+**Proof sketch** (indicator random variables):
+Let n keys be stored in a table of size m (α = n/m). For query key k, expected number of collisions at k's bucket:
+
+  E[# collisions] = (n−1) × Pr[two keys collide] = (n−1)/m ≤ n/m = α
+
+For α < 1 (Java default: 0.75): E[comparisons per lookup] ≤ 1 + α = 1.75 = O(1).
+
+**Key invariant**: Java maintains n ≤ 0.75 × capacity by resizing on threshold crossing. After resize, α ≤ 0.5 (new capacity = 2 × old, n unchanged). If α → 1, expected lookup becomes O(n) — the reason Java doesn't use α = 1.
+
+---
+
+### Red-Black Tree Height Bound — O(log n) Worst-Case
+
+**Claim**: A Red-Black tree with n internal nodes has height h ≤ 2 log₂(n+1).
+
+**Proof**:
+1. **Black-height bh(x)**: number of Black nodes on any path from x to leaf (uniform by RB property).
+2. **Subtree size lower bound**: subtree at x with black-height bh contains ≥ 2^bh − 1 internal nodes (induction: bh=0 → 0; step: each child bh ≥ bh−1, so ≥ 2·(2^(bh−1)−1)+1 = 2^bh−1).
+3. **Height bound**: No two consecutive Reds → bh ≥ h/2. From (2): n ≥ 2^(h/2) − 1 → h ≤ 2 log₂(n+1). □
+
+**Consequence**: Every `TreeMap.get/put/remove/floorKey` is O(log n) worst-case — unlike `HashMap` which degrades to O(n) when all keys collide (before the treeify-at-8 threshold was added in Java 8).

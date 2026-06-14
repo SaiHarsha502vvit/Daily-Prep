@@ -1178,4 +1178,66 @@ Take any recursive solution and:
 
 ---
 
+## Brute Force → Optimal: Recursion Patterns
+
+### Problem: Fibonacci (nth term)
+
+**Brute Force — O(2ⁿ) naive recursion:**
+```java
+int fib(int n) {
+    if (n <= 1) return n;
+    return fib(n - 1) + fib(n - 2);   // exponential: fib(40) = 10⁸ calls
+}
+```
+**Why it's bad**: The recursion tree has height n, branching factor 2. Every call to `fib(n)` recomputes `fib(n-2)` from scratch in both branches. `fib(40)` takes ~1s; `fib(60)` takes centuries.
+
+**The insight**: Overlapping subproblems — `fib(k)` is computed O(2ⁿ) times even though there are only n distinct values. Cache the results.
+
+**Optimal — O(n) memoized / O(1) bottom-up:**
+```java
+// Memoized top-down: O(n) time, O(n) space
+int fib(int n, int[] memo) {
+    if (n <= 1) return n;
+    if (memo[n] != -1) return memo[n];
+    return memo[n] = fib(n - 1, memo) + fib(n - 2, memo);
+}
+
+// Bottom-up: O(n) time, O(1) space
+int fib(int n) {
+    if (n <= 1) return n;
+    int prev2 = 0, prev1 = 1;
+    for (int i = 2; i <= n; i++) { int c = prev1 + prev2; prev2 = prev1; prev1 = c; }
+    return prev1;
+}
+```
+**Pattern signal**: If a recursive problem recomputes the same subproblems → memoize (top-down DP). If call order is clear → tabulate (bottom-up DP, lower overhead).
+
+### Problem: Power Set (all subsets)
+
+**Brute Force — O(n · 2ⁿ) via bitmask:**
+```java
+// Generate all 2^n subsets using bitmask; iterate through n bits for each
+for (int mask = 0; mask < (1 << n); mask++) {
+    List<Integer> subset = new ArrayList<>();
+    for (int i = 0; i < n; i++)
+        if ((mask >> i & 1) == 1) subset.add(nums[i]);
+    result.add(subset);
+}
+```
+
+**Optimal — O(n · 2ⁿ) recursive backtracking (same asymptotic, better constant):**
+```java
+void backtrack(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {
+    res.add(new ArrayList<>(cur));
+    for (int i = start; i < nums.length; i++) {
+        cur.add(nums[i]);
+        backtrack(nums, i + 1, cur, res);
+        cur.remove(cur.size() - 1);
+    }
+}
+```
+**Why backtracking wins**: It avoids allocating a list per bitmask and can prune branches early (for constrained subsets). The choose→recurse→unchoose pattern is the canonical recursion template.
+
+---
+
 **Navigation**: [< Previous](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03c_Recursion_Advanced.md)

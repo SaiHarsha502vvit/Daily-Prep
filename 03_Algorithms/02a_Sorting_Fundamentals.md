@@ -1040,3 +1040,26 @@ private int partition(int[] arr, int low, int high) {
 
 // BEST FOR: General purpose, in-memory sorting
 ```
+
+---
+
+## When Sorting Breaks
+
+### 1. Non-Transitive Comparator → `IllegalArgumentException`
+**What breaks**: Java's `Arrays.sort()` / `Collections.sort()` use TimSort, which requires a *total order* (transitive, antisymmetric, consistent). A comparator that violates transitivity (i.e., `cmp(a,b)<0` AND `cmp(b,c)<0` BUT `cmp(a,c)>=0`) causes `IllegalArgumentException: Comparison method violates its general contract!` in Java 7+ (enabled by `-Djava.util.Arrays.useLegacyMergeSort=false`).
+**Common cause**: `return o1.score - o2.score` overflows when scores differ by more than `Integer.MAX_VALUE`. Use `Integer.compare(o1.score, o2.score)`.
+**Fix**: Always use `Integer.compare()`, `Double.compare()`, or `Comparator.comparingInt()` — never subtract.
+
+### 2. Quicksort O(n²) on Already-Sorted Input
+**What breaks**: Naïve quicksort that always picks the last (or first) element as pivot degrades to O(n²) on sorted/reverse-sorted arrays — every partition produces one empty subarray.
+**Real incident**: Java's `Arrays.sort()` used a Bentley-McIlroy 3-way quicksort before Java 7. Pivot selection bugs caused O(n²) on pathological inputs, allowing DoS via crafted HTTP query parameters (sorted by the JVM's string sort).
+**Fix**: Java now uses DualPivotQuicksort (median-of-nine for large arrays) and TimSort for Object arrays. For custom sorts, use random pivot or median-of-three.
+
+### 3. Stable vs Unstable Sort — Silent Ordering Bug
+**What breaks**: `Arrays.sort(int[])` is unstable (DualPivotQuicksort). If you sort an array of objects by one key and later sort by another, the relative order of ties from the first sort is NOT preserved.
+**Example**: Sort employees by department (stable), then sort by salary (unstable) → employees within the same salary band are no longer in department order.
+**Fix**: `Arrays.sort(Object[])` IS stable (TimSort). For primitives needing stable sort, box to `Integer[]` or sort indices instead.
+
+### 4. Parallel Arrays Sort Desync
+**What breaks**: Sorting `names[]` and `scores[]` as two separate arrays — after `Arrays.sort(scores)`, the name-score correspondence is destroyed.
+**Fix**: Sort an array of pairs/objects; or sort an index array and apply the permutation.

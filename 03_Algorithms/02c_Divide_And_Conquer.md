@@ -763,6 +763,27 @@ Strassen:       T(n) = 7T(n/2) + O(n^2)
 
 ---
 
+## When Divide & Conquer Breaks
+
+### 1. Incorrect Base Case — Off-by-One or Missing Return
+**What breaks**: Merge sort / binary search missing the `lo >= hi` (or `lo == hi`) base case causes infinite recursion. Extremely common first-time bug: `while (lo < hi)` vs `while (lo <= hi)` produces different termination — one loses the last element.
+**Rule**: Prove the base case terminates and is correct before proving the recursive step. The invariant must hold *at* the base case, not just in the inductive step.
+
+### 2. Overflow in `mid` Computation
+**What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (2.1 billion). Classic bug filed against JDK's own `Arrays.binarySearch()` in 2006, present since 1946 in the research literature.
+**Fix**: `int mid = lo + (hi - lo) / 2`. The subtraction stays bounded because `hi - lo <= Integer.MAX_VALUE`.
+**Reference**: Josh Bloch's "Nearly All Binary Searches and Mergesorts are Broken" (Google AI Blog, 2006).
+
+### 3. Merge Step O(n) Ignored in Complexity Analysis
+**What breaks**: Students write T(n) = 2T(n/2) and forget the merge cost. The correct recurrence is T(n) = 2T(n/2) + O(n). Forgetting the merge makes the recurrence solve to O(n) — which contradicts the Ω(n log n) comparison sort lower bound.
+**Fix**: Always include the combine cost in the recurrence. For D&C correctness: conquer ≠ merge.
+
+### 4. Strassen Practical Crossover
+**What breaks**: Strassen's O(n^2.807) matrix multiplication has a large constant factor and poor cache behaviour. For n < ~1000 it is *slower* than the O(n³) naive algorithm due to recursion overhead, extra memory, and cache misses.
+**Real usage**: BLAS/LAPACK use naive blocked multiplication for n < 512; Strassen (or Winograd variant) only kicks in for very large matrices. Using Strassen blindly for small matrices is a performance regression, not an optimization.
+
+---
+
 📖 **Related Files:**
 
 - [02a_Sorting_Fundamentals](02a_Sorting_Fundamentals.md) — Merge Sort and Quick Sort details
