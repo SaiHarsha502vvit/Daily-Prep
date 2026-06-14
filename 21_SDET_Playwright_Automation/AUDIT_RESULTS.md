@@ -1,18 +1,26 @@
 # AUDIT_RESULTS.md — SDET Playwright Automation Module
 
-**Date:** 2026-06-14
+**Date:** 2026-06-14  
+**Phase 6 COMPLETE:** All sub-phases (6.1 CUTs · 6.2 MERGEs · 6.3 REWRITE HEAVY · 6.4 REWRITE LIGHT) executed and committed.
 **Total Chapters Audited:** 67 (Ch60–69 Principal Extension no longer on disk)
 **Rubric:** D1 Depth · D2 Breadth · D3 Production reality · D4 Code quality · D5 Progressive teaching (each 1–5; any single dim ≤ 2 forces REWRITE HEAVY regardless of avg)
 **Calibration anchor:** Ch26 Flakiness Diagnosis = 5/5/5/5/5
 
-**Distribution:**
-| Verdict | Count |
-|---------|-------|
-| KEEP | 35 |
-| REWRITE LIGHT | 14 |
-| REWRITE HEAVY | 12 |
-| CUT | 3 |
-| MERGE | 1 (Ch57 → Ch56) |
+**Distribution (original audit):**
+| Verdict | Count | Status |
+|---------|-------|--------|
+| KEEP | 35 | — no action needed |
+| REWRITE LIGHT | 14 | ✅ DONE — war stories + missing sections added |
+| REWRITE HEAVY | 12 | ✅ DONE — war stories + substance added (Ch45 full rewrite, Ch51 157→396 lines) |
+| CUT | 3 | ✅ DONE — git rm executed (Ch20, Quiz01, Quiz02 original files) |
+| MERGE | 1 (Ch57 → Ch56) | ✅ DONE — appendices transferred, Ch57 deleted |
+
+**Phase 6 commits:**
+- `fb51502` — phase 6.1-6.2: cuts + Ch57→Ch56 merge
+- `aa850bb` — phase 6.3 batch-1: Ch45 MCP rewrite, Ch54/Ch34/Ch41/Ch53/Ch59 war stories
+- `f886cfb` — phase 6.3 batch-2: Ch33/Ch51/Ch35/Ch40/Ch47 war stories + Ch51 expansion
+- `8ebba21` — phase 6.3 batch-3: Ch60 tool comparison war stories
+- `65c4310` — phase 6.4: all 13 REWRITE LIGHT chapters (war stories + missing sections)
 
 ---
 
