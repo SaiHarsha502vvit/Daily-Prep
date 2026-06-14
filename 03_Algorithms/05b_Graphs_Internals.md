@@ -36,6 +36,41 @@ See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.042J (Math for CS) / KTH DD1352 / TU Munich layer** — The mathematical foundations of graphs, a proof that adjacency list is space-optimal, and why graph theory began with a walk across Königsberg's bridges.
+
+### Handshaking Lemma (the founding theorem of graph theory)
+
+**Claim**: In any undirected graph, the sum of vertex degrees equals twice the number of edges.
+
+$$\sum_{v \in V} \deg(v) = 2|E|$$
+
+**Proof**: Each edge {u, v} contributes exactly 1 to deg(u) and 1 to deg(v) — contributing 2 to the total sum. Summing over all |E| edges: total = 2|E|. ✓
+
+**Corollary**: The number of odd-degree vertices is always even (an odd-sum total is impossible with even 2|E|).
+
+**Why it matters**: Euler (1736) proved that an Eulerian circuit (visiting every edge once, returning to start) exists **if and only if every vertex has even degree** — using exactly this handshaking argument on the Königsberg bridges. This problem — "is there a route crossing each of 7 bridges exactly once?" — is the birth of graph theory.
+
+### Adjacency List Space Complexity Proof
+
+For an undirected graph with V vertices and E edges:
+- Array of V list headers: O(V).
+- Each undirected edge {u, v} appears in two lists (u's and v's): exactly 2E entries.
+- **Total: O(V + E)** — provably space-optimal for representing every edge.
+
+Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse graphs (roads, social networks). For dense graphs (E ≈ V²), both representations are O(V²).
+
+**Rule of thumb**: Adjacency list when E ≪ V²; matrix when you need O(1) edge-existence queries or E ≈ V².
+
+### Historical Evolution
+
+**Leonhard Euler (1736)**: Königsberg bridge problem → invented graph theory. Proved no Eulerian circuit exists when odd-degree vertices > 0. **Arthur Cayley (1857)**: Introduced "trees" (connected acyclic graphs); proved Vᵛ⁻² labelled spanning trees exist on V vertices (Cayley's formula). **Dénes Kőnig (1931)**: Graph Theory textbook — first systematic treatment; König's theorem (bipartite max-matching = min vertex cover). **CLRS Introduction to Algorithms (1990)**: Standardized the adjacency list representation, BFS, DFS pseudocode now universal in CS education.
+
+> BFS/Dijkstra proofs: [05c — Graphs Fundamentals](05c_Graphs_Fundamentals.md) | Lower bound for graph problems: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
+
+---
+
 🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?

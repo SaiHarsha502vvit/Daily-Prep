@@ -29,3 +29,12 @@ Data Structures is a deep dive into the canonical data structures used in softwa
 
 - [02_Data_Structures — full content folder](../../02_Data_Structures/)
 - [Memory Foundations — prerequisite reading](../../02_Data_Structures/01a_Memory_Foundations.md)
+
+### University Methodology Layer (read these first for the formal foundation)
+
+| File | Maps to syllabus topic |
+|------|------------------------|
+| [A1 DS — DS Correctness & Invariants](../../02_Data_Structures/A1_DS_Correctness_Invariants.md) | BST/heap/hash structural invariants, AVL rotation correctness |
+| [A2 DS — DS Complexity](../../02_Data_Structures/A2_DS_Complexity_FirstPrinciples.md) | Amortized analysis for mutable structures (dynamic arrays, Union-Find) |
+| [A3 DS — Lower Bounds for DS](../../02_Data_Structures/A3_DS_Lower_Bounds.md) | Cell-probe lower bounds, comparison tree bounds, information-theoretic limits |
+| [A4 DS — Randomized Data Structures](../../02_Data_Structures/A4_Randomized_Data_Structures.md) | Skip lists, treaps, Bloom filters, cuckoo hashing, HyperLogLog |

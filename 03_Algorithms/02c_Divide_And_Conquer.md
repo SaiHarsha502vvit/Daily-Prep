@@ -10,6 +10,49 @@ _Extracted from 06a for discoverability — this is a core technique, not an app
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.046J / KTH DD2352 / ETH Zurich Algorithms layer** — Why divide-and-conquer is provably correct and how to derive its Θ(n log n) complexity from first principles.
+
+### Correctness: Structural Induction on Input Size
+
+Every D&C algorithm has this proof shape:
+- **Base**: Correct for n ≤ threshold (n=1 trivially sorted/merged).
+- **Hypothesis**: The algorithm correctly solves both halves of size n/2.
+- **Step**: The combine step produces a correct full solution from two correct sub-solutions.
+
+**Merge Sort (abbreviated proof)**: Base: `[x]` is sorted. ✓. Hypothesis: both recursive calls return sorted halves. Step: `merge(left, right)` always picks the smaller front element in one scan → merged output is sorted. ✓
+
+### Complexity from First Principles: Recursion Tree for T(n) = 2T(n/2) + n
+
+```
+Level 0:          n               → cost n
+Level 1:     n/2     n/2          → cost n
+Level 2:  n/4 n/4 n/4 n/4        → cost n
+...
+Level log₂n:   n leaves of 1      → cost n
+Total: n cost × log₂n levels = Θ(n log n)
+```
+
+**Master Theorem quick reference** (T(n) = aT(n/b) + f(n), critical exponent p = log_b a):
+
+| Case | Condition | Result |
+|------|-----------|--------|
+| 1 | f(n) = O(n^{p−ε}) — leaves dominate | Θ(n^p) |
+| 2 | f(n) = Θ(n^p) — equal work at every level | Θ(n^p log n) |
+| 3 | f(n) = Ω(n^{p+ε}) — root dominates + regularity | Θ(f(n)) |
+
+Merge sort: a=2, b=2, p=1, f(n)=n=Θ(n¹) → **Case 2 → Θ(n log n)**.
+Binary search: a=1, b=2, p=0, f(n)=1=Θ(1) → **Case 2 → Θ(log n)**.
+
+### Historical Evolution
+
+**Merge sort** — John von Neumann, 1945 (designed for ENIAC punched-card runs). **Binary search** — known informally for centuries; first correctly proven to terminate by Ackermann (1928); the infamous off-by-one bug `mid=(lo+hi)/2` overflows 32-bit integers and was in Java's JDK until 2006 (fixed to `lo + (hi-lo)/2`). **Quicksort** — Tony Hoare, 1959, originally called "Partition Sort"; still the fastest comparison sort in practice due to cache locality. **Strassen matrix multiply** — Volker Strassen, 1969: first algorithm to beat naive O(n³) multiplication, using a=7 subproblems of size n/2 → O(n^{log₂7}) ≈ O(n^{2.807}). **FFT (Cooley-Tukey)** — 1965: the most consequential D&C algorithm in practice (O(n log n) polynomial multiplication, underpins signal processing and cryptography).
+
+> Recurrence analysis (all 3 methods): [A2 — Complexity from First Principles](A2_Complexity_FirstPrinciples.md) | Correctness proofs: [A1](A1_Correctness_Proofs.md)
+
+---
+
 🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master Theorem**
 
 **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.

@@ -34,6 +34,37 @@ Backtracking as a systematic search technique traces its roots to **Charles Babb
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.006 / KTH DD1352 / RWTH Aachen layer** — Why backtracking is complete (finds all solutions, misses none) and how to bound the state-space cost.
+
+### Correctness: Backtracking is Complete by Construction
+
+**Claim**: The Choose-Explore-Unchoose pattern visits every valid solution exactly once.
+
+**Proof**:
+- The recursion builds an implicit search tree. Each node = partial assignment; each edge = one choice.
+- `unchoose` restores state to exactly what it was before the child was entered — so the parent state is preserved perfectly between branch explorations.
+- Every leaf reachable without constraint violation is a valid solution (no valid solution is skipped before the constraint check).
+- Because all choices are tried and state is restored after each, the DFS is complete. ✓
+
+**Pruning is sound**: Pruning removes only branches where a constraint C is already violated. Since C is monotone (once violated by a prefix, all extensions also violate it), no valid solution exists in the pruned subtree. ✓
+
+### State-Space Complexity
+
+| Problem | Tree size (no pruning) | With good pruning |
+|---|---|---|
+| Subsets of n elements | 2ⁿ leaves | O(2ⁿ) unavoidable |
+| Permutations of n elements | n! leaves | O(n!) worst-case |
+| N-Queens (n×n) | n! worst case | Empirically near-polynomial |
+| Sudoku (9×9) | 9^81 trivially | ≈20 guesses with arc-consistency |
+
+Exponential state space is unavoidable for NP-hard problems; pruning reduces the constant factor dramatically but cannot change the asymptotic class.
+
+> Backtracking completeness and constraint satisfaction: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
+
+---
+
 ## PART 9: Advanced Recursion Patterns
 
 ### Pattern 1: Include/Exclude Pattern

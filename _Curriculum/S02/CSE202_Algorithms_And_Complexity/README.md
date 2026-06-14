@@ -30,3 +30,12 @@ Algorithms & Complexity teaches the core algorithmic paradigms and the mathemati
 
 - [03_Algorithms — full content folder](../../03_Algorithms/)
 - [Algorithm Thinking — prerequisite reading](../../03_Algorithms/01_Algorithm_Thinking.md)
+
+### University Methodology Layer (read these first for the formal foundation)
+
+| File | Maps to syllabus topic |
+|------|------------------------|
+| [A1 — Algorithm Correctness](../../03_Algorithms/A1_Correctness_Proofs.md) | Loop invariants, structural induction, exchange argument, optimal substructure |
+| [A2 — Complexity from First Principles](../../03_Algorithms/A2_Complexity_FirstPrinciples.md) | Master theorem, recursion tree, amortized analysis (3 methods) |
+| [A3 — Lower Bounds & NP-Completeness](../../03_Algorithms/A3_Lower_Bounds_And_NP.md) | Decision-tree lower bounds, reductions, P vs NP, approximation algorithms |
+| [A4 — Randomized Algorithms](../../03_Algorithms/A4_Randomized_Algorithms.md) | Las Vegas vs Monte Carlo, indicator random variables, universal hashing, Bloom filters |

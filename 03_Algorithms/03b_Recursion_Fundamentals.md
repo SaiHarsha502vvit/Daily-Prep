@@ -27,6 +27,40 @@
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.042J / KTH DD1352 / TU Munich MA1401 layer** — How to prove any recursive algorithm correct using structural induction, and why "the recursive leap of faith" is induction in disguise.
+
+### Correctness: Structural Induction
+
+For recursive algorithms the proof mirrors the recursion itself:
+
+1. **Base case**: Prove the algorithm is correct for the smallest valid input (n = 0 or n = 1).
+2. **Inductive hypothesis**: Assume the recursive call on a **strictly smaller** input returns the correct answer.
+3. **Inductive step**: Show the current call is correct, given a correct result from the recursive call.
+
+**Worked example — `factorial(n)` returns n!:**
+- Base (n=0): returns 1 = 0!. ✓
+- Hypothesis: `factorial(n-1)` returns (n-1)!.
+- Step: `factorial(n) = n × factorial(n-1) = n × (n-1)! = n!`. ✓
+
+**Worked example — `fib(n)` returns the n-th Fibonacci number:**
+- Base (n=0, n=1): returns 0, 1 by definition. ✓
+- Hypothesis: `fib(n-1)` returns Fₙ₋₁ and `fib(n-2)` returns Fₙ₋₂.
+- Step: `fib(n) = fib(n-1) + fib(n-2) = Fₙ₋₁ + Fₙ₋₂ = Fₙ`. ✓
+
+### The Recursive Leap of Faith = The Inductive Hypothesis
+
+When you say "trust that the recursive call is correct for smaller input," you are stating the inductive hypothesis. The two mental models are identical — structural induction is the formal name for the leap of faith.
+
+### Historical Grounding
+
+Recursive function theory was formalized by **Wilhelm Ackermann (1928)** — the Ackermann function is the canonical example of a total computable function that is not primitive recursive. **Stephen Kleene (1936)** defined the full hierarchy of recursive functions as part of the theoretical foundations of computability. **John McCarthy (1960)** made recursion the primary control structure in LISP — the first language where recursive definitions were first-class citizens, replacing `for` and `while` as the universal iteration mechanism. Modern constraint: the JVM default stack allows ~10,000 recursive frames; iterative rewrites with explicit stacks are needed for deeper recursion in production.
+
+> Full structural induction proofs and worked examples: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 3)
+
+---
+
 # 🔁 Recursion Fundamentals: The Leap of Faith
 
 ### 5W1H: Mastering Recursion Fundamentals
