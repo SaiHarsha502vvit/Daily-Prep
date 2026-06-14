@@ -14,6 +14,60 @@
 
 ---
 
+## 0. War Stories — Component Testing Traps
+
+### Story 1: Context provider mocking that masked a real bug
+
+A payment form component was tested in isolation. The component used a `usePaymentContext()` hook. In the CT test, the tester mocked the context:
+
+```typescript
+// test/PaymentForm.ct.spec.tsx
+mount(<PaymentContext.Provider value={{ currency: 'USD', taxRate: 0.08 }}>
+  <PaymentForm />
+</PaymentContext.Provider>);
+```
+
+The mock returned a static `taxRate: 0.08`. The component rendered, calculated totals correctly, tests passed.
+
+In production: the `usePaymentContext()` hook fetched `taxRate` from a remote config service. When that service was slow (> 500ms), the hook returned `undefined`. The component divided by `undefined`, rendered `NaN`, and showed `$NaN` as the order total.
+
+The CT test never reproduced this because the mock provided an instant, complete value with no loading state.
+
+**What the test should have included:**
+```typescript
+// Also test the loading state — the context that matches production reality
+mount(<PaymentContext.Provider value={{ currency: 'USD', taxRate: undefined }}>
+  <PaymentForm />
+</PaymentContext.Provider>);
+await expect(canvas.getByText('Loading tax rate...')).toBeVisible();
+// NOT NaN, NOT $0.00 — should show a loading placeholder
+```
+
+**Lesson:** When mocking a context provider, always test the loading/undefined state. That's usually the production state during the first render. Static mock values test the happy path only.
+
+### Story 2: The CT suite that only ran locally — Vite config not in CI
+
+A team wrote 40 component tests using `@playwright/experimental-ct-react`. Every developer ran them locally. The CT suite never ran in CI — the `package.json` had `test:ct` but the CI workflow only ran `test:e2e`.
+
+An engineer refactored the shared `<DataTable>` component for performance, removing the `aria-label` prop from every cell. 40 CT tests would have caught it immediately. E2E tests didn't cover the component in isolation, so the label removal went undetected for 3 weeks.
+
+An accessibility audit then flagged 200 table cells with missing labels across the app.
+
+**Fix pattern for CI:**
+```yaml
+# .github/workflows/ci.yml — add CT as a separate parallel job
+ct-tests:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - run: npm ci && npx playwright install --with-deps chromium
+    - run: npm run test:ct
+```
+
+**Lesson:** CT tests only protect against regressions if they run in CI. A local-only CT suite is documentation, not a gate.
+
+---
+
 ## 1. Where it fits on the pyramid
 
 ```
@@ -41,12 +95,12 @@ npx playwright install
 
 ```typescript
 // playwright-ct.config.ts
-import { defineConfig, devices } from '@playwright/experimental-ct-react';
+import { defineConfig, devices } from "@playwright/experimental-ct-react";
 
 export default defineConfig({
-  testDir: './tests-ct',
+  testDir: "./tests-ct",
   use: {
-    ...devices['Desktop Chrome'],
+    ...devices["Desktop Chrome"],
     ctPort: 3100,
   },
 });
@@ -99,6 +153,7 @@ Note: a `Locator` is returned from `mount`. Treat it exactly like the rest of Pl
 ## 4. What CT can and can't do
 
 **Good fit:**
+
 - Form validation
 - Custom inputs (date pickers, color pickers, drag-drop)
 - Stateful components (modals, drawers, accordions)
@@ -106,6 +161,7 @@ Note: a `Locator` is returned from `mount`. Treat it exactly like the rest of Pl
 - Visual regression of one component
 
 **Bad fit:**
+
 - Network calls — mock at component boundary, not via HTTP. CT can intercept fetch, but you're betraying the layer.
 - Routing — components that need router context get awkward.
 - Auth flows — those belong to E2E.
@@ -148,13 +204,13 @@ The `@playwright/experimental-ct-vue` and `@playwright/experimental-ct-svelte` p
 
 ```typescript
 // playwright-ct.config.ts
-import { defineConfig, devices } from '@playwright/experimental-ct-vue';
+import { defineConfig, devices } from "@playwright/experimental-ct-vue";
 
 export default defineConfig({
-  testDir: './tests-ct-vue',
+  testDir: "./tests-ct-vue",
   use: {
-    ...devices['Desktop Chrome'],
-    ctPort: 3200,          // avoid port conflict with any running E2E config
+    ...devices["Desktop Chrome"],
+    ctPort: 3200, // avoid port conflict with any running E2E config
   },
 });
 ```
@@ -177,17 +233,21 @@ beforeMount(async ({ App }) => {
 
 ```typescript
 // tests-ct-vue/ModalDialog.spec.ts
-import { test, expect } from '@playwright/experimental-ct-vue';
-import ModalDialog from '../../src/components/ModalDialog.vue';
+import { test, expect } from "@playwright/experimental-ct-vue";
+import ModalDialog from "../../src/components/ModalDialog.vue";
 
-test('@ct emits close on backdrop click', async ({ mount }) => {
+test("@ct emits close on backdrop click", async ({ mount }) => {
   let closed = false;
   const component = await mount(ModalDialog, {
     props: { open: true },
-    on: { 'update:open': () => { closed = true; } },
+    on: {
+      "update:open": () => {
+        closed = true;
+      },
+    },
   });
 
-  await component.locator('.modal-backdrop').click();
+  await component.locator(".modal-backdrop").click();
   expect(closed).toBe(true);
 });
 ```
@@ -198,12 +258,12 @@ test('@ct emits close on backdrop click', async ({ mount }) => {
 
 ```typescript
 // playwright-ct.config.ts
-import { defineConfig, devices } from '@playwright/experimental-ct-svelte';
+import { defineConfig, devices } from "@playwright/experimental-ct-svelte";
 
 export default defineConfig({
-  testDir: './tests-ct-svelte',
+  testDir: "./tests-ct-svelte",
   use: {
-    ...devices['Desktop Chrome'],
+    ...devices["Desktop Chrome"],
     ctPort: 3300,
   },
 });
@@ -223,18 +283,20 @@ beforeMount(async ({ App }) => {
 
 ```typescript
 // tests-ct-svelte/Drawer.spec.ts
-import { test, expect } from '@playwright/experimental-ct-svelte';
-import Drawer from '../../src/components/Drawer.svelte';
+import { test, expect } from "@playwright/experimental-ct-svelte";
+import Drawer from "../../src/components/Drawer.svelte";
 
-test('@ct renders open state with navigation links', async ({ mount }) => {
+test("@ct renders open state with navigation links", async ({ mount }) => {
   const component = await mount(Drawer, { props: { open: true } });
-  await expect(component.getByRole('link', { name: 'Dashboard' })).toBeVisible();
-  await expect(component.getByRole('link', { name: 'Settings' })).toBeVisible();
+  await expect(
+    component.getByRole("link", { name: "Dashboard" }),
+  ).toBeVisible();
+  await expect(component.getByRole("link", { name: "Settings" })).toBeVisible();
 });
 
-test('@ct hides links when closed', async ({ mount }) => {
+test("@ct hides links when closed", async ({ mount }) => {
   const component = await mount(Drawer, { props: { open: false } });
-  await expect(component.getByRole('link')).toHaveCount(0);
+  await expect(component.getByRole("link")).toHaveCount(0);
 });
 ```
 
@@ -455,18 +517,18 @@ npx msw init ./public --save
 
 ```typescript
 // playwright/handlers.ts  — shared mock handlers
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
-  http.get('/api/users/:id', ({ params }) => {
+  http.get("/api/users/:id", ({ params }) => {
     return HttpResponse.json({
       id: params.id,
-      name: 'Mocked User',
-      email: 'mocked@example.com',
-      role: 'viewer',
+      name: "Mocked User",
+      email: "mocked@example.com",
+      role: "viewer",
     });
   }),
-  http.post('/api/users', async ({ request }) => {
+  http.post("/api/users", async ({ request }) => {
     const body = await request.json();
     return HttpResponse.json({ id: 99, ...(body as object) }, { status: 201 });
   }),
@@ -475,10 +537,10 @@ export const handlers = [
 
 ```typescript
 // playwright/index.tsx — wire MSW into the CT entry point
-import { beforeMount } from '@playwright/experimental-ct-react/hooks';
-import { mswDecorator } from 'msw-playwright';
-import { handlers } from './handlers';
-import './app.css';
+import { beforeMount } from "@playwright/experimental-ct-react/hooks";
+import { mswDecorator } from "msw-playwright";
+import { handlers } from "./handlers";
+import "./app.css";
 
 beforeMount(async ({ browserContext }) => {
   await mswDecorator(browserContext, handlers);
@@ -509,12 +571,12 @@ test('@ct shows error state on API failure', async ({ mount, page }) => {
 
 ### 10.3 When to Use Each Pattern
 
-| Situation | Recommended approach |
-|---|---|
-| Component receives all data via props | Callback/prop mocks — no MSW needed |
-| Component uses a data-fetching hook internally | MSW at entry point + test-specific overrides |
-| You want to test loading / error states | Combine prop mocks with explicit `loading` / `error` props |
-| You need to test the HTTP contract itself | That's E2E — not CT territory |
+| Situation                                      | Recommended approach                                       |
+| ---------------------------------------------- | ---------------------------------------------------------- |
+| Component receives all data via props          | Callback/prop mocks — no MSW needed                        |
+| Component uses a data-fetching hook internally | MSW at entry point + test-specific overrides               |
+| You want to test loading / error states        | Combine prop mocks with explicit `loading` / `error` props |
+| You need to test the HTTP contract itself      | That's E2E — not CT territory                              |
 
 ---
 
@@ -578,14 +640,14 @@ For dashboards with many dynamic widgets, create a reusable mask array in a shar
 
 ```typescript
 // fixtures/component-screenshot.ts
-import { Locator } from '@playwright/test';
+import { Locator } from "@playwright/test";
 
 export function dashboardMasks(root: Locator): Locator[] {
   return [
     root.locator('[data-testid="timestamp"]'),
     root.locator('[data-testid="user-avatar"]'),
     root.locator('[data-testid="notification-badge"]'),
-    root.locator('.chart-tooltip'),
+    root.locator(".chart-tooltip"),
   ];
 }
 ```
@@ -627,21 +689,22 @@ test('@ct screenshot — sidebar after animation settles', async ({ mount }) => 
 
 Use this matrix to decide which testing layer owns a given scenario. The right answer is usually "the highest level that still gives fast, reliable feedback."
 
-| Concern | CT | E2E | Jest / jsdom |
-|---|---|---|---|
-| **Speed** | Fast (~1s per test) | Slow (~30s per suite) | Fastest (~100ms per test) |
-| **Browser realism** | Real Chromium | Real Chromium | Fake DOM (jsdom) |
-| **Network layer** | Mocked or intercepted | Real HTTP | Mocked via `fetch.mock` |
-| **Component isolation** | Yes — one component at a time | No — full app | Yes — but no layout |
-| **CSS / layout testing** | Real rendering, accurate box model | Real rendering | Approximate — no layout engine |
-| **Auth complexity** | Avoid — belongs in E2E | Own it — test the real flow | Avoid — mock tokens in props |
-| **Type coverage** | High — TypeScript props | Medium — page-level assertions | High — unit function coverage |
-| **Flakiness** | Low — isolated, no network | High — network + timing | Very low — deterministic |
-| **Debugging experience** | Easy — focused component | Medium — full page context | Easy — unit-scale |
-| **When to choose** | Stateful UI, forms, complex components | Full journeys, auth, multi-page flows | Pure utility functions, hooks |
-| **Typical CI gate** | Every PR (sub-2 min) | Nightly or on-release | Every commit |
+| Concern                  | CT                                     | E2E                                   | Jest / jsdom                   |
+| ------------------------ | -------------------------------------- | ------------------------------------- | ------------------------------ |
+| **Speed**                | Fast (~1s per test)                    | Slow (~30s per suite)                 | Fastest (~100ms per test)      |
+| **Browser realism**      | Real Chromium                          | Real Chromium                         | Fake DOM (jsdom)               |
+| **Network layer**        | Mocked or intercepted                  | Real HTTP                             | Mocked via `fetch.mock`        |
+| **Component isolation**  | Yes — one component at a time          | No — full app                         | Yes — but no layout            |
+| **CSS / layout testing** | Real rendering, accurate box model     | Real rendering                        | Approximate — no layout engine |
+| **Auth complexity**      | Avoid — belongs in E2E                 | Own it — test the real flow           | Avoid — mock tokens in props   |
+| **Type coverage**        | High — TypeScript props                | Medium — page-level assertions        | High — unit function coverage  |
+| **Flakiness**            | Low — isolated, no network             | High — network + timing               | Very low — deterministic       |
+| **Debugging experience** | Easy — focused component               | Medium — full page context            | Easy — unit-scale              |
+| **When to choose**       | Stateful UI, forms, complex components | Full journeys, auth, multi-page flows | Pure utility functions, hooks  |
+| **Typical CI gate**      | Every PR (sub-2 min)                   | Nightly or on-release                 | Every commit                   |
 
 **Decision heuristics:**
+
 - **Choose CT** when you need to assert a component's behaviour in isolation with realistic styling, and speed matters more than network realism.
 - **Choose E2E** when the test must span multiple pages, touch real authentication, or verify end-to-end data flows.
 - **Choose Jest** when the function under test has no UI, no side effects, and pure unit coverage is the goal.
@@ -691,10 +754,10 @@ CSS-in-JS tools (styled-components, Emotion, vanilla-extract) hash class names b
 
 ```typescript
 // ANTI-PATTERN
-await expect(component.locator('.css-1abced')).toBeVisible();
+await expect(component.locator(".css-1abced")).toBeVisible();
 
 // PREFERRED
-await expect(component.getByRole('button', { name: 'Submit' })).toBeVisible();
+await expect(component.getByRole("button", { name: "Submit" })).toBeVisible();
 ```
 
 ### 4. Putting All Components in One Config
@@ -822,6 +885,7 @@ Build a CT test suite for a `SearchForm` component with three distinct states �
 ### Component Under Test
 
 `SearchForm` accepts:
+
 - `query: string` — current search text
 - `loading: boolean` — shows a spinner
 - `results: SearchResult[]` — array of `{ id: string; title: string; snippet: string }`
@@ -829,6 +893,7 @@ Build a CT test suite for a `SearchForm` component with three distinct states �
 - `onQueryChange: (query: string) => void` — called on keystroke
 
 States:
+
 1. **Empty** — no query, no results, submit button disabled
 2. **Loading** — query present, `loading={true}`, spinner visible, results hidden
 3. **Results** — query present, `loading={false}`, `results` array rendered as list
@@ -920,39 +985,46 @@ Create `tests-e2e/search-form.spec.ts`. Mount the full app at a route that rende
 
 ```typescript
 // tests-e2e/search-form.spec.ts
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, Page } from "@playwright/test";
 
 // Helper to seed the page with a particular state
-async function mountSearchForm(page: Page, state: { query: string; loading: boolean; results: unknown[] }) {
-  await page.goto('/search');
-  if (state.query) await page.getByRole('textbox').fill(state.query);
+async function mountSearchForm(
+  page: Page,
+  state: { query: string; loading: boolean; results: unknown[] },
+) {
+  await page.goto("/search");
+  if (state.query) await page.getByRole("textbox").fill(state.query);
   // E2E has no way to force loading/error/empty states without API mocking —
   // you'd need a backdoor or seed data. For fair comparison, time the full API round-trip.
 }
 
-test('search form — full round-trip', async ({ page }) => {
-  await page.goto('/search');
-  const input = page.getByRole('textbox');
-  await input.fill('Playwright');
-  await page.getByRole('button', { name: /search/i }).click();
+test("search form — full round-trip", async ({ page }) => {
+  await page.goto("/search");
+  const input = page.getByRole("textbox");
+  await input.fill("Playwright");
+  await page.getByRole("button", { name: /search/i }).click();
   // Wait for real API response
-  await expect(page.getByRole('listitem')).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator('[data-testid="result-title"]').first()).toBeVisible();
+  await expect(page.getByRole("listitem")).toBeVisible({ timeout: 10_000 });
+  await expect(
+    page.locator('[data-testid="result-title"]').first(),
+  ).toBeVisible();
 });
 
-test('search form — empty results', async ({ page }) => {
-  await page.goto('/search');
-  await page.getByRole('textbox').fill('this-wont-match-anything-xyz');
-  await page.getByRole('button', { name: /search/i }).click();
-  await expect(page.getByText(/no results found/i)).toBeVisible({ timeout: 10_000 });
+test("search form — empty results", async ({ page }) => {
+  await page.goto("/search");
+  await page.getByRole("textbox").fill("this-wont-match-anything-xyz");
+  await page.getByRole("button", { name: /search/i }).click();
+  await expect(page.getByText(/no results found/i)).toBeVisible({
+    timeout: 10_000,
+  });
 });
 
-test('search form — loading state during API call', async ({ page }) => {
-  await page.goto('/search');
-  await page.getByRole('textbox').fill('delay');
-  await page.getByRole('button', { name: /search/i }).click();
+test("search form — loading state during API call", async ({ page }) => {
+  await page.goto("/search");
+  await page.getByRole("textbox").fill("delay");
+  await page.getByRole("button", { name: /search/i }).click();
   // Capture loading spinner — E2E can see this, but timing is flaky
-  await expect(page.getByRole('status')).toBeVisible();
+  await expect(page.getByRole("status")).toBeVisible();
 });
 ```
 
@@ -965,20 +1037,20 @@ npx playwright test tests-ct/SearchForm.spec.ts --config=playwright-ct.config.ts
 npx playwright test tests-e2e/search-form.spec.ts --config=playwright.config.ts
 ```
 
-| Test suite | Tests | Total time | Avg per test |
-|---|---|---|---|
-| CT | 8 tests | ~8 seconds | ~1 second |
-| E2E | 3 tests | ~35 seconds | ~11 seconds |
+| Test suite | Tests   | Total time  | Avg per test |
+| ---------- | ------- | ----------- | ------------ |
+| CT         | 8 tests | ~8 seconds  | ~1 second    |
+| E2E        | 3 tests | ~35 seconds | ~11 seconds  |
 
 ### Part D — Self-Grading Rubric
 
-| Criterion | 0 (Not done) | 1 (Partial) | 2 (Complete) | 3 (Excellent) |
-|---|---|---|---|---|
-| All 4 states tested in CT | Fewer than 2 states | 2 states | 3 states | All 4 states |
-| Callback events verified | No event tests | 1 event test | 2 event tests | 3+ event tests |
-| E2E equivalents written | No E2E tests | 1 test | 2 tests | 3 tests with API wait |
-| Timing comparison documented | Not present | Rough estimate | Approximate timings | Exact timings with table |
-| Mask / visual regression (bonus) | Not attempted | Screenshot without mask | Screenshot with mask | Multiple states, masked |
-| Accessibility check (bonus) | Not attempted | `toBeVisible` only | One axe-core test | axe-core on all form elements |
+| Criterion                        | 0 (Not done)        | 1 (Partial)             | 2 (Complete)         | 3 (Excellent)                 |
+| -------------------------------- | ------------------- | ----------------------- | -------------------- | ----------------------------- |
+| All 4 states tested in CT        | Fewer than 2 states | 2 states                | 3 states             | All 4 states                  |
+| Callback events verified         | No event tests      | 1 event test            | 2 event tests        | 3+ event tests                |
+| E2E equivalents written          | No E2E tests        | 1 test                  | 2 tests              | 3 tests with API wait         |
+| Timing comparison documented     | Not present         | Rough estimate          | Approximate timings  | Exact timings with table      |
+| Mask / visual regression (bonus) | Not attempted       | Screenshot without mask | Screenshot with mask | Multiple states, masked       |
+| Accessibility check (bonus)      | Not attempted       | `toBeVisible` only      | One axe-core test    | axe-core on all form elements |
 
 **Passing score:** 8/12 (with E2E equivalence). Bonus points for accessibility and visual regression show senior-level initiative.

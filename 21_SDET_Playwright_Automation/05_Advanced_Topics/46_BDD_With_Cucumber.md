@@ -14,9 +14,48 @@
 
 ---
 
+## 0. War Stories — What BDD Actually Costs in Practice
+
+### Story 1: The 200-step definition orphan problem
+
+A healthcare product team adopted BDD in year 1 of the product. The rationale: clinical users would validate scenarios. Year 1: devs wrote 60 `.feature` files, 200 step definitions. The clinical team read and approved them. BDD delivered its value.
+
+Year 2: the product pivoted. The clinical team was absorbed into a new department. Step definitions stopped being reviewed. The `.feature` files kept growing but the human-readable promise evaporated — now only engineers read them.
+
+Year 3: the app's UI was redesigned. The step definitions broke. Updating them was twice the work of updating a plain Playwright spec because there were two layers: the Gherkin phrase AND the step definition implementation. A refactor that would have taken 2 days took 4.
+
+Year 4: a new SDET joined and saw 200 step definitions. He said: "I have no idea what most of these are testing — the Gherkin is too abstract to map to the UI without reading the step definition, and the step definition is too opaque to understand without reading the Gherkin."
+
+**The cost:** 4 years of double-layer maintenance for zero ongoing stakeholder value. BDD solved a year-1 communication problem, but the team never re-evaluated whether BDD still made sense in years 2–4.
+
+**Lesson:** Set an explicit re-evaluation milestone (e.g., "after 6 months, confirm stakeholders are still reading the feature files"). If they're not, migrate to native Playwright before the step definition count becomes a stranded asset.
+
+### Story 2: The orphaned step definition that silently passed for 3 months
+
+During a redesign, a developer renamed a page element. She updated the POM. She updated the spec. But there was also a Gherkin step that used the old element:
+
+```gherkin
+Then I should see the "Save Changes" button
+```
+
+```typescript
+Then('I should see the {string} button', async function (buttonText: string) {
+  // Old locator — no longer valid
+  await expect(this.page.locator(`button:has-text("${buttonText}")`)).toBeVisible();
+});
+```
+
+The new design used ARIA attributes, not `button:has-text`. The old locator matched a DIFFERENT button — one that was always visible on the page. The step continued to pass. The real "Save Changes" button was missing from the UI for 3 months, caught only when a real user filed a bug.
+
+**The mechanism:** the Gherkin step was too abstract to notice the locator drift. A named Playwright method (`await savePage.expectSaveButtonVisible()`) would have been specific enough to catch the mismatch. The Cucumber abstraction hid the broken locator.
+
+**Lesson:** BDD's indirection between spec and implementation is also indirection between spec and failure detection. When a locator drifts, the failure message from a named POM method is "expectSaveButtonVisible failed at pom.ts:42" — specific. The failure from a generic Gherkin step is "I should see the 'Save Changes' button" — which matched something else and passed.
+
+---
+
 ## 1. The honest pitch
 
-BDD is sold as "stakeholders can write tests." That almost never happens. What *does* happen is:
+BDD is sold as "stakeholders can write tests." That almost never happens. What _does_ happen is:
 
 - Engineers write the steps.
 - BAs/POs **read** them and catch mismatches early.
@@ -87,30 +126,33 @@ Feature: OrangeHRM login
 ## 4. Step definition (TypeScript)
 
 ```typescript
-import { Given, When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
-import { World } from '../support/world';
+import { Given, When, Then } from "@cucumber/cucumber";
+import { expect } from "@playwright/test";
+import { World } from "../support/world";
 
-Given('the user is on the login page', async function (this: World) {
+Given("the user is on the login page", async function (this: World) {
   await this.loginPage.goto();
 });
 
-When('the user logs in with valid admin credentials', async function (this: World) {
-  await this.loginPage.loginWith({ username: 'Admin', password: 'admin123' });
-});
-
 When(
-  'the user logs in with username {string} and password {string}',
-  async function (this: World, username: string, password: string) {
-    await this.loginPage.loginWith({ username, password });
-  }
+  "the user logs in with valid admin credentials",
+  async function (this: World) {
+    await this.loginPage.loginWith({ username: "Admin", password: "admin123" });
+  },
 );
 
-Then('the dashboard is displayed', async function (this: World) {
+When(
+  "the user logs in with username {string} and password {string}",
+  async function (this: World, username: string, password: string) {
+    await this.loginPage.loginWith({ username, password });
+  },
+);
+
+Then("the dashboard is displayed", async function (this: World) {
   await this.dashboardPage.expectLoaded();
 });
 
-Then('an invalid credentials alert is shown', async function (this: World) {
+Then("an invalid credentials alert is shown", async function (this: World) {
   await this.loginPage.expectInvalidCredentials();
 });
 ```
@@ -118,10 +160,13 @@ Then('an invalid credentials alert is shown', async function (this: World) {
 ## 5. The `World` — per-scenario state
 
 ```typescript
-import { setWorldConstructor, World as CucumberWorld } from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
-import { LoginPage } from '../../websites/orangehrm/pages/LoginPage';
-import { DashboardPage } from '../../websites/orangehrm/pages/DashboardPage';
+import {
+  setWorldConstructor,
+  World as CucumberWorld,
+} from "@cucumber/cucumber";
+import { Browser, BrowserContext, Page, chromium } from "@playwright/test";
+import { LoginPage } from "../../websites/orangehrm/pages/LoginPage";
+import { DashboardPage } from "../../websites/orangehrm/pages/DashboardPage";
 
 export class World extends CucumberWorld {
   browser!: Browser;
@@ -150,8 +195,8 @@ setWorldConstructor(World);
 ## 6. Hooks — browser per scenario
 
 ```typescript
-import { Before, After } from '@cucumber/cucumber';
-import { World } from './world';
+import { Before, After } from "@cucumber/cucumber";
+import { World } from "./world";
 
 Before(async function (this: World) {
   await this.init();
@@ -247,21 +292,24 @@ Feature: Employee Onboarding
 When the Gherkin step uses a `|` table, Playwright receives it as a `DataTable` object. You can transform it to a row object for cleaner POM calls:
 
 ```typescript
-import { Given, When, Then, DataTable } from '@cucumber/cucumber';
-import { World } from '../support/world';
+import { Given, When, Then, DataTable } from "@cucumber/cucumber";
+import { World } from "../support/world";
 
-When('the admin submits a new employee with:', async function (this: World, dataTable: DataTable) {
-  // Convert DataTable to array of plain objects
-  // The first row is treated as headers by hashes()
-  const rows = dataTable.hashes();
-  const employee = rows[0]; // only one row per scenario run
+When(
+  "the admin submits a new employee with:",
+  async function (this: World, dataTable: DataTable) {
+    // Convert DataTable to array of plain objects
+    // The first row is treated as headers by hashes()
+    const rows = dataTable.hashes();
+    const employee = rows[0]; // only one row per scenario run
 
-  await this.employeePage.create({
-    name: employee.name,
-    role: employee.role,
-    department: employee.department,
-  });
-});
+    await this.employeePage.create({
+      name: employee.name,
+      role: employee.role,
+      department: employee.department,
+    });
+  },
+);
 ```
 
 Each `Examples` row runs as a separate test iteration. Cucumber handles the looping — your step definition runs once per row.
@@ -272,10 +320,10 @@ Cucumber Expressions (`{string}`, `{int}`) are an alternative to `DataTable`. Th
 
 ```typescript
 When(
-  'the admin submits a new employee with name {string} and role {string}',
+  "the admin submits a new employee with name {string} and role {string}",
   async function (this: World, name: string, role: string) {
     await this.employeePage.create({ name, role });
-  }
+  },
 );
 ```
 
@@ -290,13 +338,16 @@ The World object is the per-scenario state container. In a real SDET framework, 
 ### 13.1 World with API Client Integration
 
 ```typescript
-import { setWorldConstructor, World as CucumberWorld } from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
-import { LoginPage } from '../../websites/orangehrm/pages/LoginPage';
-import { DashboardPage } from '../../websites/orangehrm/pages/DashboardPage';
-import { EmployeePage } from '../../websites/orangehrm/pages/EmployeePage';
-import { APIUtils } from '../../framework/api/APIUtils';
-import { AuthTokens } from '../../framework/api/AuthTokens';
+import {
+  setWorldConstructor,
+  World as CucumberWorld,
+} from "@cucumber/cucumber";
+import { Browser, BrowserContext, Page, chromium } from "@playwright/test";
+import { LoginPage } from "../../websites/orangehrm/pages/LoginPage";
+import { DashboardPage } from "../../websites/orangehrm/pages/DashboardPage";
+import { EmployeePage } from "../../websites/orangehrm/pages/EmployeePage";
+import { APIUtils } from "../../framework/api/APIUtils";
+import { AuthTokens } from "../../framework/api/AuthTokens";
 
 export class World extends CucumberWorld {
   browser!: Browser;
@@ -321,11 +372,11 @@ export class World extends CucumberWorld {
   async init(): Promise<void> {
     // 1. Launch browser
     this.browser = await chromium.launch({
-      args: ['--no-sandbox', '--disable-dev-shm-usage'],
+      args: ["--no-sandbox", "--disable-dev-shm-usage"],
     });
     this.context = await this.browser.newContext({
       viewport: { width: 1280, height: 720 },
-      recordVideo: { dir: 'test-results/videos' },
+      recordVideo: { dir: "test-results/videos" },
     });
     this.page = await this.context.newPage();
 
@@ -335,29 +386,43 @@ export class World extends CucumberWorld {
     this.employeePage = new EmployeePage(this.page);
 
     // 3. Initialize API client (base URL + auth token)
-    this.apiContext = new APIUtils('https://opensource-demo.orangehrmlive.com/webapi');
+    this.apiContext = new APIUtils(
+      "https://opensource-demo.orangehrmlive.com/webapi",
+    );
     this.authTokens = new AuthTokens();
 
     // 4. Seed auth tokens via API (so UI login can be skipped)
-    const tokenResponse = await this.apiContext.getAuthToken('Admin', 'admin123');
+    const tokenResponse = await this.apiContext.getAuthToken(
+      "Admin",
+      "admin123",
+    );
     this.authTokens.setAccessToken(tokenResponse.token);
 
     // 5. Set base storage state so UI sessions are pre-authenticated
-    await this.context.addInitScript(async (params) => {
-      await window.localStorage.setItem('authToken', params.token);
-    }, { token: this.authTokens.accessToken });
+    await this.context.addInitScript(
+      async (params) => {
+        await window.localStorage.setItem("authToken", params.token);
+      },
+      { token: this.authTokens.accessToken },
+    );
 
     // 6. Reset shared test data
-    this.testData = { employeeId: '', employeeName: '' };
+    this.testData = { employeeId: "", employeeName: "" };
   }
 
   async dispose(): Promise<void> {
     // Cleanup: delete any test employees created during scenario
     if (this.testData.employeeId) {
       try {
-        await this.apiContext.deleteEmployee(this.testData.employeeId, this.authTokens.accessToken);
+        await this.apiContext.deleteEmployee(
+          this.testData.employeeId,
+          this.authTokens.accessToken,
+        );
       } catch (err) {
-        console.warn(`Cleanup: failed to delete employee ${this.testData.employeeId}:`, err);
+        console.warn(
+          `Cleanup: failed to delete employee ${this.testData.employeeId}:`,
+          err,
+        );
       }
     }
 
@@ -375,23 +440,22 @@ Use tag-based hooks to control which scenarios trigger which setup:
 
 ```typescript
 // Browser-only scenarios (@ui, @smoke, @regression)
-Before({ tags: '@ui or @smoke or @regression' }, async function (this: World) {
+Before({ tags: "@ui or @smoke or @regression" }, async function (this: World) {
   await this.init();
 });
 
 // API-only — skip browser entirely
-Before({ tags: '@api' }, async function (this: World) {
-  this.apiContext = new APIUtils('https://opensource-demo.orangehrmlive.com/webapi');
-  const { token } = await this.apiContext.getAuthToken('Admin', 'admin123');
+Before({ tags: "@api" }, async function (this: World) {
+  this.apiContext = new APIUtils(
+    "https://opensource-demo.orangehrmlive.com/webapi",
+  );
+  const { token } = await this.apiContext.getAuthToken("Admin", "admin123");
   this.authTokens = new AuthTokens(token);
 });
 
-AfterStep({ tags: '@ui' }, async function (this: World, { result }) {
-  if (result?.status === 'FAILED') {
-    await this.attach(
-      await this.page.screenshot(),
-      'image/png'
-    );
+AfterStep({ tags: "@ui" }, async function (this: World, { result }) {
+  if (result?.status === "FAILED") {
+    await this.attach(await this.page.screenshot(), "image/png");
   }
 });
 
@@ -412,15 +476,19 @@ First, configure Cucumber to emit the `json` formatter:
 
 ```typescript
 // cucumber.config.ts
-import { defineConfig } from '@cucumber/ cucumber';
+import { defineConfig } from "@cucumber/ cucumber";
 
 export default defineConfig({
   parallel: 2,
-  format: ['html:test-results/cucumber-report.html', 'json:test-results/cucumber.json'],
-  paths: ['features/**/*.feature'],
-  require: ['step-definitions/**/*.ts', 'support/**/*.ts'],
+  format: [
+    "html:test-results/cucumber-report.html",
+    "json:test-results/cucumber.json",
+  ],
+  paths: ["features/**/*.feature"],
+  require: ["step-definitions/**/*.ts", "support/**/*.ts"],
   worldParameters: {
-    baseUrl: process.env.BASE_URL ?? 'https://opensource-demo.orangehrmlive.com',
+    baseUrl:
+      process.env.BASE_URL ?? "https://opensource-demo.orangehrmlive.com",
   },
 });
 ```
@@ -430,14 +498,22 @@ export default defineConfig({
 Cucumber's `IWorld` and `Pickle` objects carry full test context. A custom listener can emit Playwright-compatible events:
 
 ```typescript
-import { EventEmitter } from 'events';
-import { Pickle, ITestCase, ITestStep, ITestCaseStarted, ITestCaseFinished, ITestStepStarted, ITestStepFinished } from '@cucumber/messages';
-import { writeFileSync } from 'fs';
+import { EventEmitter } from "events";
+import {
+  Pickle,
+  ITestCase,
+  ITestStep,
+  ITestCaseStarted,
+  ITestCaseFinished,
+  ITestStepStarted,
+  ITestStepFinished,
+} from "@cucumber/messages";
+import { writeFileSync } from "fs";
 
 class CucumberPlaywrightBridge extends EventEmitter {
   private results: TestResult[] = [];
-  private currentScenario = '';
-  private currentStep = '';
+  private currentScenario = "";
+  private currentStep = "";
   private stepStartTime = 0;
 
   constructor() {
@@ -451,41 +527,59 @@ class CucumberPlaywrightBridge extends EventEmitter {
       name: this.currentScenario,
       tags: pickle.tags.map((t) => t.name),
       steps: [],
-      status: 'passed',
+      status: "passed",
       duration: 0,
     });
-    console.log(`[Cucumber→Playwright] Scenario started: ${this.currentScenario}`);
+    console.log(
+      `[Cucumber→Playwright] Scenario started: ${this.currentScenario}`,
+    );
   }
 
   // Called before each test step runs
   stepStarted(testStep: ITestStep): void {
     this.currentStep = testStep.text;
     this.stepStartTime = Date.now();
-    this.emit('step:started', { step: this.currentStep, scenario: this.currentScenario });
+    this.emit("step:started", {
+      step: this.currentStep,
+      scenario: this.currentScenario,
+    });
   }
 
   // Called after each test step completes
-  stepFinished(testStep: ITestStep, result: 'passed' | 'failed' | 'skipped'): void {
+  stepFinished(
+    testStep: ITestStep,
+    result: "passed" | "failed" | "skipped",
+  ): void {
     const duration = Date.now() - this.stepStartTime;
     const lastResult = this.results[this.results.length - 1];
     if (lastResult) {
-      lastResult.steps.push({ name: this.currentStep, duration, status: result });
-      if (result === 'failed') {
-        lastResult.status = 'failed';
+      lastResult.steps.push({
+        name: this.currentStep,
+        duration,
+        status: result,
+      });
+      if (result === "failed") {
+        lastResult.status = "failed";
       }
     }
-    this.emit('step:finished', { step: this.currentStep, status: result, duration });
+    this.emit("step:finished", {
+      step: this.currentStep,
+      status: result,
+      duration,
+    });
   }
 
   // Called after the entire scenario finishes
   scenarioFinished(pickle: Pickle, passed: boolean): void {
-    const status = passed ? 'passed' : 'failed';
-    console.log(`[Cucumber→Playwright] Scenario finished: ${pickle.name} → ${status}`);
-    this.emit('scenario:finished', { name: pickle.name, status });
+    const status = passed ? "passed" : "failed";
+    console.log(
+      `[Cucumber→Playwright] Scenario finished: ${pickle.name} → ${status}`,
+    );
+    this.emit("scenario:finished", { name: pickle.name, status });
   }
 
   // Flush results to disk for Playwright reporter to consume
-  flush(outputPath = 'test-results/bridge-results.json'): void {
+  flush(outputPath = "test-results/bridge-results.json"): void {
     writeFileSync(outputPath, JSON.stringify(this.results, null, 2));
     console.log(`[Cucumber→Playwright] Results written to ${outputPath}`);
   }
@@ -495,7 +589,7 @@ interface TestResult {
   name: string;
   tags: string[];
   steps: { name: string; duration: number; status: string }[];
-  status: 'passed' | 'failed';
+  status: "passed" | "failed";
   duration: number;
 }
 
@@ -510,18 +604,18 @@ Wire the bridge to Cucumber via the hooks file — call `bridge.flush()` in `Aft
 
 Use this table to evaluate whether BDD with Cucumber is the right tool for your project or team. There is no universally correct answer — context determines fitness.
 
-| Factor | BDD Good Fit | BDD Bad Fit |
-|---|---|---|
-| **Team size** | 5+ people across QA, BA, and dev | Solo dev or 2-person team |
-| **PO/BA involvement** | High — reads .feature files regularly | None — never opens feature files |
-| **Domain complexity** | Business-readable processes (onboarding, claims, orders) | Low-level infra, dev tooling, compilers |
-| **Regulatory domain** | Finance, healthcare, government — specs are contracts | Internal tooling with no compliance need |
-| **Existing test suite size** | <200 tests — migration is feasible | 2,000+ tests already in `@playwright/test` |
-| **Sprint structure** | Grooming → AC → dev → BDD test → verify | "Just ship it" — no ceremony |
-| **CI pipeline maturity** | Separate branch gates, quality gates per stage | Single-stage push to main |
-| **Reporting requirements** | Stakeholders need human-readable test reports | Team only cares about CI pass/fail |
-| **Parallelization need** | Moderate — 2–4 workers sufficient | High — needs 8+ workers with minimal overhead |
-| **Tooling budget** | Time to configure Cucumber + reporters properly | Need to ship features fast, no time for ceremony |
+| Factor                       | BDD Good Fit                                             | BDD Bad Fit                                      |
+| ---------------------------- | -------------------------------------------------------- | ------------------------------------------------ |
+| **Team size**                | 5+ people across QA, BA, and dev                         | Solo dev or 2-person team                        |
+| **PO/BA involvement**        | High — reads .feature files regularly                    | None — never opens feature files                 |
+| **Domain complexity**        | Business-readable processes (onboarding, claims, orders) | Low-level infra, dev tooling, compilers          |
+| **Regulatory domain**        | Finance, healthcare, government — specs are contracts    | Internal tooling with no compliance need         |
+| **Existing test suite size** | <200 tests — migration is feasible                       | 2,000+ tests already in `@playwright/test`       |
+| **Sprint structure**         | Grooming → AC → dev → BDD test → verify                  | "Just ship it" — no ceremony                     |
+| **CI pipeline maturity**     | Separate branch gates, quality gates per stage           | Single-stage push to main                        |
+| **Reporting requirements**   | Stakeholders need human-readable test reports            | Team only cares about CI pass/fail               |
+| **Parallelization need**     | Moderate — 2–4 workers sufficient                        | High — needs 8+ workers with minimal overhead    |
+| **Tooling budget**           | Time to configure Cucumber + reporters properly          | Need to ship features fast, no time for ceremony |
 
 ---
 
@@ -534,15 +628,17 @@ These eight patterns appear repeatedly on BDD projects and cause long-term maint
 **Root cause:** Engineers take the fastest path and call `page.locator()` directly in steps.
 
 **Bad:**
+
 ```typescript
-When('the user clicks save', async function (this: World) {
-  await this.page.locator('#btn-save').click(); // selector in step
+When("the user clicks save", async function (this: World) {
+  await this.page.locator("#btn-save").click(); // selector in step
 });
 ```
 
 **Good:**
+
 ```typescript
-When('the user clicks save', async function (this: World) {
+When("the user clicks save", async function (this: World) {
   await this.employeePage.clickSave(); // selector lives in POM
 });
 ```
@@ -554,6 +650,7 @@ The discipline: if a selector changes, it should break the POM test, not the fea
 **Root cause:** Teams map steps directly to button clicks rather than business intent.
 
 **Bad (40 steps for one workflow):**
+
 ```gherkin
 When the user clicks the menu
 When the user clicks the employees submenu
@@ -563,6 +660,7 @@ When the user types "Jane" in the name field
 ```
 
 **Good (3 steps for the same workflow):**
+
 ```gherkin
 When the user navigates to the employee list
 And the user creates a new employee with name "Jane Doe" and role "Engineer"
@@ -576,27 +674,29 @@ Let the POM compose the 40 low-level actions. Keep steps at the business level.
 **Root cause:** Trying to avoid Cucumber's `this` context or not knowing about the World object.
 
 **Bad:**
+
 ```typescript
 let createdEmployeeId: string; // module-level global
 
-When('the employee is created', async function () {
-  createdEmployeeId = await api.createEmployee('Jane');
+When("the employee is created", async function () {
+  createdEmployeeId = await api.createEmployee("Jane");
 });
 
-Then('the employee record is accessible', async function () {
+Then("the employee record is accessible", async function () {
   const emp = await api.getEmployee(createdEmployeeId); // fragile, not thread-safe
   expect(emp).toBeTruthy();
 });
 ```
 
 **Good:**
+
 ```typescript
 // World holds the state
-When('the employee is created', async function (this: World) {
-  this.testData.employeeId = await this.apiContext.createEmployee('Jane');
+When("the employee is created", async function (this: World) {
+  this.testData.employeeId = await this.apiContext.createEmployee("Jane");
 });
 
-Then('the employee record is accessible', async function (this: World) {
+Then("the employee record is accessible", async function (this: World) {
   const emp = await this.apiContext.getEmployee(this.testData.employeeId);
   expect(emp).toBeTruthy();
 });
@@ -684,13 +784,13 @@ Build a Cucumber implementation for OrangeHRM Employee Creation covering: valid 
 
 ### 19.1 Files to Produce
 
-| File | Purpose |
-|---|---|
-| `features/pim/employee-creation.feature` | 4 scenarios with data table: valid, duplicate, missing first name, missing last name |
-| `step-definitions/pim/employee-creation.steps.ts` | `Given/When/Then` glue calling POMs; receives `DataTable` for employee data |
-| `support/world.ts` | Per-scenario state: browser + context + page + API client + `testData` for cleanup |
-| `support/hooks.ts` | `Before` → `init()`, `After` → `dispose()`, `AfterStep` screenshot on failure |
-| `cucumber.config.ts` | Paths, `require`, format (HTML + JSON), parallel=2, `worldParameters` |
+| File                                              | Purpose                                                                              |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `features/pim/employee-creation.feature`          | 4 scenarios with data table: valid, duplicate, missing first name, missing last name |
+| `step-definitions/pim/employee-creation.steps.ts` | `Given/When/Then` glue calling POMs; receives `DataTable` for employee data          |
+| `support/world.ts`                                | Per-scenario state: browser + context + page + API client + `testData` for cleanup   |
+| `support/hooks.ts`                                | `Before` → `init()`, `After` → `dispose()`, `AfterStep` screenshot on failure        |
+| `cucumber.config.ts`                              | Paths, `require`, format (HTML + JSON), parallel=2, `worldParameters`                |
 
 ### 19.2 Feature File Skeleton
 
@@ -728,43 +828,64 @@ Feature: Employee Creation — PIM Module
 ### 19.3 Step Definitions Skeleton
 
 ```typescript
-import { Given, When, Then, DataTable } from '@cucumber/cucumber';
-import { World } from '../support/world';
+import { Given, When, Then, DataTable } from "@cucumber/cucumber";
+import { World } from "../support/world";
 
-Given('the admin is logged in to the PIM module', async function (this: World) {
+Given("the admin is logged in to the PIM module", async function (this: World) {
   await this.loginPage.goto();
-  await this.loginPage.loginWith({ username: 'Admin', password: 'admin123' });
+  await this.loginPage.loginWith({ username: "Admin", password: "admin123" });
   await this.pimPage.goto();
 });
 
-Given('an employee with ID {string} already exists', async function (this: World, id: string) {
-  await this.apiContext.createEmployee({ firstName: 'X', lastName: 'Y', employeeId: id }, this.authTokens.accessToken);
-  this.testData.employeeId = id;
-});
+Given(
+  "an employee with ID {string} already exists",
+  async function (this: World, id: string) {
+    await this.apiContext.createEmployee(
+      { firstName: "X", lastName: "Y", employeeId: id },
+      this.authTokens.accessToken,
+    );
+    this.testData.employeeId = id;
+  },
+);
 
-When('the admin creates an employee with:', async function (this: World, table: DataTable) {
-  const emp = table.hashes()[0];
-  await this.pimPage.addEmployee(emp);
-});
+When(
+  "the admin creates an employee with:",
+  async function (this: World, table: DataTable) {
+    const emp = table.hashes()[0];
+    await this.pimPage.addEmployee(emp);
+  },
+);
 
-Then('the employee {string} appears in the employee list', async function (this: World, name: string) {
-  await this.pimPage.searchEmployee(name);
-  expect(await this.pimPage.employeeVisibleInList(name)).toBeTruthy();
-});
+Then(
+  "the employee {string} appears in the employee list",
+  async function (this: World, name: string) {
+    await this.pimPage.searchEmployee(name);
+    expect(await this.pimPage.employeeVisibleInList(name)).toBeTruthy();
+  },
+);
 
-Then('the system shows the success message {string}', async function (this: World, msg: string) {
-  await this.pimPage.expectSuccessMessage(msg);
-});
+Then(
+  "the system shows the success message {string}",
+  async function (this: World, msg: string) {
+    await this.pimPage.expectSuccessMessage(msg);
+  },
+);
 
-Then('the system shows the error message {string}', async function (this: World, msg: string) {
-  await this.pimPage.expectErrorMessage(msg);
-});
+Then(
+  "the system shows the error message {string}",
+  async function (this: World, msg: string) {
+    await this.pimPage.expectErrorMessage(msg);
+  },
+);
 
-Then('the system shows a validation error for {string}', async function (this: World, field: string) {
-  await this.pimPage.expectValidationError(field);
-});
+Then(
+  "the system shows a validation error for {string}",
+  async function (this: World, field: string) {
+    await this.pimPage.expectValidationError(field);
+  },
+);
 
-Then('the employee is NOT saved', async function (this: World) {
+Then("the employee is NOT saved", async function (this: World) {
   expect(await this.pimPage.isOnAddPage()).toBeTruthy();
 });
 ```
@@ -781,13 +902,13 @@ Then('the employee is NOT saved', async function (this: World) {
 
 ### 19.5 Self-Grading Rubric
 
-| Criterion | 0 pts | 1 pt | 2 pts | 3 pts |
-|---|---|---|---|---|
-| **Feature file** | Missing | Exists, no tables | Data table on valid case | All 4 scenarios + tagging |
-| **Step definitions** | Missing | `page.locator()` in steps | Calls POM methods | Handles valid + invalid cases |
-| **World** | Missing | Browser/page only | Browser + POM | Browser + POM + API + cleanup |
-| **Hooks** | Missing | `Before` only | `Before` + `After` | + screenshot on failure |
-| **npm script** | Missing | Wrong command | Right command | + config file |
-| **Report** | None | HTML only | HTML + JSON | All three |
+| Criterion            | 0 pts   | 1 pt                      | 2 pts                    | 3 pts                         |
+| -------------------- | ------- | ------------------------- | ------------------------ | ----------------------------- |
+| **Feature file**     | Missing | Exists, no tables         | Data table on valid case | All 4 scenarios + tagging     |
+| **Step definitions** | Missing | `page.locator()` in steps | Calls POM methods        | Handles valid + invalid cases |
+| **World**            | Missing | Browser/page only         | Browser + POM            | Browser + POM + API + cleanup |
+| **Hooks**            | Missing | `Before` only             | `Before` + `After`       | + screenshot on failure       |
+| **npm script**       | Missing | Wrong command             | Right command            | + config file                 |
+| **Report**           | None    | HTML only                 | HTML + JSON              | All three                     |
 
 **Total: 18 points** — 0–6: incomplete · 7–12: functional · 13–18: production-ready

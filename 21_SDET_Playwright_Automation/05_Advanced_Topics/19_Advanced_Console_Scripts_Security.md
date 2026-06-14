@@ -1,14 +1,15 @@
-# 19. Advanced Browser Console Scripts & Security Testing for SDETs
+# 19. Advanced Browser Console Scripts — DevTools, Network & Security Diagnostics
 
 **Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md)
 
 **Cross-links:**
+
 - [`03_Browser_Console_Scripting.md`](../01_Foundations/03_Browser_Console_Scripting.md) — Foundation console scripting
 - [`10_Dynamics365_CRM_Testing.md`](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) — D365 element dump scripts
 - [`02_Enterprise_Locators_XPath.md`](../01_Foundations/02_Enterprise_Locators_XPath.md) — XPath patterns
 
-> [!IMPORTANT]
-> All security scripts in this chapter are for testing YOUR OWN applications in test/staging environments. Never run these against systems you don't own or have written authorisation to test.
+> [!NOTE]
+> This chapter covers **diagnostic scripts** — tools for discovering locators, inspecting network calls, and verifying security properties (cookie flags, CSP headers, token storage) in your own test environments. It is NOT a chapter on active security attack patterns. For OWASP-style attack pattern testing (IDOR, injection, auth bypasses), see [Ch 40: Security Testing](../07_Specialised_Testing/40_Security_Testing_OWASP.md). All scripts in Sections C and D are for authorized testing of YOUR OWN applications only.
 
 ---
 
@@ -33,11 +34,11 @@ Dumps every useful locator on the page in Playwright-ready format:
   const results = [];
 
   // 1. All data-automation-key elements (D365)
-  document.querySelectorAll('[data-automation-key]').forEach(el => {
-    const key = el.getAttribute('data-automation-key');
-    const text = el.textContent?.trim().substring(0, 40) ?? '';
+  document.querySelectorAll("[data-automation-key]").forEach((el) => {
+    const key = el.getAttribute("data-automation-key");
+    const text = el.textContent?.trim().substring(0, 40) ?? "";
     results.push({
-      type: 'data-automation-key',
+      type: "data-automation-key",
       playwright: `page.locator('[data-automation-key="${key}"]')`,
       tag: el.tagName,
       text,
@@ -45,9 +46,22 @@ Dumps every useful locator on the page in Playwright-ready format:
   });
 
   // 2. All ARIA roles (interactive elements)
-  ['button', 'menuitem', 'tab', 'option', 'link', 'checkbox', 'radio', 'textbox', 'combobox'].forEach(role => {
-    document.querySelectorAll(`[role="${role}"]`).forEach(el => {
-      const label = el.getAttribute('aria-label') || el.textContent?.trim().substring(0, 30) || '';
+  [
+    "button",
+    "menuitem",
+    "tab",
+    "option",
+    "link",
+    "checkbox",
+    "radio",
+    "textbox",
+    "combobox",
+  ].forEach((role) => {
+    document.querySelectorAll(`[role="${role}"]`).forEach((el) => {
+      const label =
+        el.getAttribute("aria-label") ||
+        el.textContent?.trim().substring(0, 30) ||
+        "";
       results.push({
         type: `role:${role}`,
         playwright: `page.getByRole('${role}', { name: '${label.replace(/'/g, "\\'")}' })`,
@@ -58,24 +72,28 @@ Dumps every useful locator on the page in Playwright-ready format:
   });
 
   // 3. All IFrames
-  document.querySelectorAll('iframe').forEach((f, i) => {
+  document.querySelectorAll("iframe").forEach((f, i) => {
     results.push({
-      type: 'iframe',
+      type: "iframe",
       playwright: `page.frameLocator('iframe[name="${f.name}"]')`,
-      tag: 'IFRAME',
+      tag: "IFRAME",
       text: `name="${f.name}" id="${f.id}" title="${f.title}"`,
     });
   });
 
   // 4. All form inputs (id, name, placeholder)
-  document.querySelectorAll('input, textarea, select').forEach(el => {
-    const id = el.getAttribute('id');
-    const name = el.getAttribute('name');
-    const placeholder = el.getAttribute('placeholder') ?? '';
-    const bestSelector = id ? `#${id}` : name ? `[name="${name}"]` : `[placeholder="${placeholder}"]`;
+  document.querySelectorAll("input, textarea, select").forEach((el) => {
+    const id = el.getAttribute("id");
+    const name = el.getAttribute("name");
+    const placeholder = el.getAttribute("placeholder") ?? "";
+    const bestSelector = id
+      ? `#${id}`
+      : name
+        ? `[name="${name}"]`
+        : `[placeholder="${placeholder}"]`;
     if (bestSelector) {
       results.push({
-        type: 'input',
+        type: "input",
         playwright: `page.locator('${bestSelector}')`,
         tag: el.tagName,
         text: id || name || placeholder,
@@ -98,26 +116,30 @@ Get the XPath and CSS selector for any element you can describe:
 ```javascript
 function getXPath(element) {
   if (element.id) return `//*[@id="${element.id}"]`;
-  if (element === document.body) return '/html/body';
+  if (element === document.body) return "/html/body";
 
   const siblings = Array.from(element.parentNode?.children ?? []);
-  const sameTagSiblings = siblings.filter(s => s.tagName === element.tagName);
+  const sameTagSiblings = siblings.filter((s) => s.tagName === element.tagName);
   const idx = sameTagSiblings.indexOf(element) + 1;
-  const position = sameTagSiblings.length > 1 ? `[${idx}]` : '';
+  const position = sameTagSiblings.length > 1 ? `[${idx}]` : "";
 
   return `${getXPath(element.parentNode)}/${element.tagName.toLowerCase()}${position}`;
 }
 
 function getCSSSelector(element) {
   if (element.id) return `#${element.id}`;
-  if (element.getAttribute('data-automation-key')) {
-    return `[data-automation-key="${element.getAttribute('data-automation-key')}"]`;
+  if (element.getAttribute("data-automation-key")) {
+    return `[data-automation-key="${element.getAttribute("data-automation-key")}"]`;
   }
-  if (element.getAttribute('data-testid')) {
-    return `[data-testid="${element.getAttribute('data-testid')}"]`;
+  if (element.getAttribute("data-testid")) {
+    return `[data-testid="${element.getAttribute("data-testid")}"]`;
   }
-  const classes = Array.from(element.classList).filter(c => !c.startsWith('is-') && !c.startsWith('ms-') && c.length > 3).join('.');
-  return classes ? `${element.tagName.toLowerCase()}.${classes}` : element.tagName.toLowerCase();
+  const classes = Array.from(element.classList)
+    .filter((c) => !c.startsWith("is-") && !c.startsWith("ms-") && c.length > 3)
+    .join(".");
+  return classes
+    ? `${element.tagName.toLowerCase()}.${classes}`
+    : element.tagName.toLowerCase();
 }
 
 // Use: Pass any element you get from DevTools "Inspect"
@@ -128,14 +150,16 @@ function getCSSSelector(element) {
 function analyzeElement(el) {
   const xpath = getXPath(el);
   const css = getCSSSelector(el);
-  console.log('=== Element Analysis ===');
-  console.log('Tag:', el.tagName);
-  console.log('Role:', el.getAttribute('role') ?? '(none)');
-  console.log('aria-label:', el.getAttribute('aria-label') ?? '(none)');
-  console.log('Text:', el.textContent?.trim().substring(0, 60));
-  console.log('');
-  console.log('Playwright locators (try in order):');
-  console.log(`1. page.getByRole('${el.getAttribute('role') ?? el.tagName.toLowerCase()}', { name: '${(el.getAttribute('aria-label') || el.textContent?.trim() || '').substring(0, 30).replace(/'/g, "\\'")}' })`);
+  console.log("=== Element Analysis ===");
+  console.log("Tag:", el.tagName);
+  console.log("Role:", el.getAttribute("role") ?? "(none)");
+  console.log("aria-label:", el.getAttribute("aria-label") ?? "(none)");
+  console.log("Text:", el.textContent?.trim().substring(0, 60));
+  console.log("");
+  console.log("Playwright locators (try in order):");
+  console.log(
+    `1. page.getByRole('${el.getAttribute("role") ?? el.tagName.toLowerCase()}', { name: '${(el.getAttribute("aria-label") || el.textContent?.trim() || "").substring(0, 30).replace(/'/g, "\\'")}' })`,
+  );
   console.log(`2. page.locator('${css}')`);
   console.log(`3. page.locator('${xpath}')`);
 }
@@ -150,30 +174,33 @@ function analyzeElement(el) {
 
 ```javascript
 function findByText(searchText, options = { exact: false }) {
-  const allElements = document.querySelectorAll('*');
+  const allElements = document.querySelectorAll("*");
   const matches = [];
 
-  allElements.forEach(el => {
+  allElements.forEach((el) => {
     if (el.children.length > 0) return; // Skip non-leaf elements
-    const text = el.textContent?.trim() ?? '';
+    const text = el.textContent?.trim() ?? "";
     const match = options.exact
       ? text === searchText
       : text.toLowerCase().includes(searchText.toLowerCase());
 
     if (match && text.length < 200) {
-      const role = el.getAttribute('role') || el.tagName.toLowerCase();
-      const ariaLabel = el.getAttribute('aria-label') || '';
-      const dataKey = el.getAttribute('data-automation-key') || '';
-      const id = el.getAttribute('id') || '';
+      const role = el.getAttribute("role") || el.tagName.toLowerCase();
+      const ariaLabel = el.getAttribute("aria-label") || "";
+      const dataKey = el.getAttribute("data-automation-key") || "";
+      const id = el.getAttribute("id") || "";
 
       matches.push({
         tag: el.tagName,
         role,
         text: text.substring(0, 60),
-        bestLocator: id ? `#${id}` :
-                     dataKey ? `[data-automation-key="${dataKey}"]` :
-                     ariaLabel ? `[aria-label="${ariaLabel}"]` :
-                     `${el.tagName.toLowerCase()}:has-text("${text.substring(0, 30)}")`,
+        bestLocator: id
+          ? `#${id}`
+          : dataKey
+            ? `[data-automation-key="${dataKey}"]`
+            : ariaLabel
+              ? `[aria-label="${ariaLabel}"]`
+              : `${el.tagName.toLowerCase()}:has-text("${text.substring(0, 30)}")`,
       });
     }
   });
@@ -198,15 +225,15 @@ function findInShadowDOM(searchText) {
   const results = [];
 
   function searchShadow(root, depth = 0) {
-    root.querySelectorAll('*').forEach(el => {
+    root.querySelectorAll("*").forEach((el) => {
       // Check text content
       if (el.textContent?.includes(searchText) && el.children.length === 0) {
         results.push({
           depth,
           tag: el.tagName,
           text: el.textContent.trim().substring(0, 50),
-          selector: el.id ? `#${el.id}` : el.className || '(no id/class)',
-          note: depth > 0 ? `Inside ${depth} shadow root(s)` : 'Regular DOM',
+          selector: el.id ? `#${el.id}` : el.className || "(no id/class)",
+          note: depth > 0 ? `Inside ${depth} shadow root(s)` : "Regular DOM",
         });
       }
       // Recurse into shadow roots
@@ -218,7 +245,9 @@ function findInShadowDOM(searchText) {
 
   searchShadow(document);
   console.table(results);
-  console.log('For shadow DOM elements in Playwright: page.locator("host-element >> css=.inner-element")');
+  console.log(
+    'For shadow DOM elements in Playwright: page.locator("host-element >> css=.inner-element")',
+  );
 }
 
 // Usage: findInShadowDOM('Submit')
@@ -231,21 +260,27 @@ function findInShadowDOM(searchText) {
 ```javascript
 function watchElement(cssSelector, options = {}) {
   const el = document.querySelector(cssSelector);
-  if (!el) { console.error(`Element not found: ${cssSelector}`); return null; }
+  if (!el) {
+    console.error(`Element not found: ${cssSelector}`);
+    return null;
+  }
 
   const log = [];
-  const observer = new MutationObserver(mutations => {
-    mutations.forEach(m => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
       const entry = {
         type: m.type,
         time: new Date().toISOString(),
         target: m.target.tagName,
-        change: m.type === 'characterData' ? `text: "${m.target.textContent?.substring(0, 50)}"` :
-                m.type === 'attributes' ? `attr ${m.attributeName}: "${m.target.getAttribute(m.attributeName)}"` :
-                `childList: added ${m.addedNodes.length}, removed ${m.removedNodes.length}`,
+        change:
+          m.type === "characterData"
+            ? `text: "${m.target.textContent?.substring(0, 50)}"`
+            : m.type === "attributes"
+              ? `attr ${m.attributeName}: "${m.target.getAttribute(m.attributeName)}"`
+              : `childList: added ${m.addedNodes.length}, removed ${m.removedNodes.length}`,
       };
       log.push(entry);
-      console.log('DOM CHANGE:', JSON.stringify(entry));
+      console.log("DOM CHANGE:", JSON.stringify(entry));
     });
   });
 
@@ -259,7 +294,9 @@ function watchElement(cssSelector, options = {}) {
   });
 
   console.log(`Watching "${cssSelector}". Call observer.disconnect() to stop.`);
-  console.log('Use: const obs = watchElement(".ms-DetailsList"); // later: obs.disconnect()');
+  console.log(
+    'Use: const obs = watchElement(".ms-DetailsList"); // later: obs.disconnect()',
+  );
   return observer;
 }
 
@@ -280,16 +317,22 @@ function watchElement(cssSelector, options = {}) {
 const _originalFetch = window.fetch;
 const _fetchLog = [];
 
-window.fetch = async function(...args) {
-  const url = typeof args[0] === 'string' ? args[0] : args[0]?.url ?? '(unknown)';
-  const method = args[1]?.method ?? 'GET';
+window.fetch = async function (...args) {
+  const url =
+    typeof args[0] === "string" ? args[0] : (args[0]?.url ?? "(unknown)");
+  const method = args[1]?.method ?? "GET";
   const startTime = Date.now();
 
   console.log(`→ ${method} ${url.substring(0, 80)}`);
   try {
     const response = await _originalFetch.apply(this, args);
     const duration = Date.now() - startTime;
-    const entry = { method, url: url.substring(0, 100), status: response.status, duration: `${duration}ms` };
+    const entry = {
+      method,
+      url: url.substring(0, 100),
+      status: response.status,
+      duration: `${duration}ms`,
+    };
     _fetchLog.push(entry);
     console.log(`← ${response.status} ${url.substring(0, 60)} (${duration}ms)`);
     return response;
@@ -299,7 +342,9 @@ window.fetch = async function(...args) {
   }
 };
 
-console.log('Fetch logger active. View log: console.table(window._fetchLog || [])');
+console.log(
+  "Fetch logger active. View log: console.table(window._fetchLog || [])",
+);
 window._fetchLog = _fetchLog;
 
 // Usage: Interact with the page, then:
@@ -313,7 +358,7 @@ window._fetchLog = _fetchLog;
 
 ```javascript
 function dumpAllStorage() {
-  console.log('\n=== SESSION STORAGE ===');
+  console.log("\n=== SESSION STORAGE ===");
   const session = {};
   for (let i = 0; i < sessionStorage.length; i++) {
     const key = sessionStorage.key(i);
@@ -321,24 +366,34 @@ function dumpAllStorage() {
   }
   console.table(session);
 
-  console.log('\n=== LOCAL STORAGE ===');
+  console.log("\n=== LOCAL STORAGE ===");
   const local = {};
   const sensitiveKeys = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    const value = localStorage.getItem(key) ?? '';
+    const value = localStorage.getItem(key) ?? "";
     local[key] = value.substring(0, 80);
-    const isSensitive = ['token', 'auth', 'jwt', 'session', 'key', 'secret', 'pass'].some(
-      k => key.toLowerCase().includes(k)
-    );
+    const isSensitive = [
+      "token",
+      "auth",
+      "jwt",
+      "session",
+      "key",
+      "secret",
+      "pass",
+    ].some((k) => key.toLowerCase().includes(k));
     if (isSensitive) {
-      sensitiveKeys.push({ key, preview: value.substring(0, 30) + '...', recommendation: 'Consider HttpOnly cookie instead' });
+      sensitiveKeys.push({
+        key,
+        preview: value.substring(0, 30) + "...",
+        recommendation: "Consider HttpOnly cookie instead",
+      });
     }
   }
   console.table(local);
 
   if (sensitiveKeys.length > 0) {
-    console.warn('\n⚠ Potentially sensitive data in localStorage:');
+    console.warn("\n⚠ Potentially sensitive data in localStorage:");
     console.table(sensitiveKeys);
   }
 }
@@ -357,41 +412,51 @@ function auditCookies() {
   // document.cookie only shows NON-httpOnly cookies
   // HttpOnly cookies are invisible to JavaScript BY DESIGN
   const visibleCookies = document.cookie
-    .split(';')
-    .map(c => c.trim())
-    .filter(c => c.length > 0)
-    .map(c => {
-      const eqIdx = c.indexOf('=');
+    .split(";")
+    .map((c) => c.trim())
+    .filter((c) => c.length > 0)
+    .map((c) => {
+      const eqIdx = c.indexOf("=");
       const name = c.substring(0, eqIdx);
       const value = c.substring(eqIdx + 1);
-      const isSensitiveName = ['token', 'auth', 'session', 'jwt'].some(k => name.toLowerCase().includes(k));
+      const isSensitiveName = ["token", "auth", "session", "jwt"].some((k) =>
+        name.toLowerCase().includes(k),
+      );
       return {
         name,
-        value: value.substring(0, 30) + (value.length > 30 ? '...' : ''),
-        httpOnly: 'NO (visible to JS) ⚠',
-        recommendation: isSensitiveName ? '🔴 AUTH COOKIE SHOULD BE httpOnly!' : '✓ OK',
+        value: value.substring(0, 30) + (value.length > 30 ? "..." : ""),
+        httpOnly: "NO (visible to JS) ⚠",
+        recommendation: isSensitiveName
+          ? "🔴 AUTH COOKIE SHOULD BE httpOnly!"
+          : "✓ OK",
       };
     });
 
-  console.log('=== VISIBLE COOKIES (JS-accessible) ===');
+  console.log("=== VISIBLE COOKIES (JS-accessible) ===");
   if (visibleCookies.length === 0) {
-    console.log('✓ No JS-accessible cookies found (all may be httpOnly or no cookies set)');
+    console.log(
+      "✓ No JS-accessible cookies found (all may be httpOnly or no cookies set)",
+    );
   } else {
     console.table(visibleCookies);
   }
 
-  console.log('\n=== HOW TO CHECK ALL COOKIES (including httpOnly) ===');
-  console.log('DevTools → Application tab → Cookies → select your domain');
-  console.log('Check columns: HttpOnly ✓, Secure ✓, SameSite: Lax or Strict');
-  console.log('');
-  console.log('EXPECTED (secure setup):');
-  console.log('  Session/auth cookies: HttpOnly=true, Secure=true, SameSite=Strict/Lax');
-  console.log('  Non-auth cookies: at least Secure=true');
-  console.log('');
-  console.log('RED FLAGS:');
-  console.log('  Auth cookie with HttpOnly=false → XSS can steal your session');
-  console.log('  Any cookie with Secure=false → sent over HTTP (man-in-middle risk)');
-  console.log('  SameSite=None without Secure → CSRF risk');
+  console.log("\n=== HOW TO CHECK ALL COOKIES (including httpOnly) ===");
+  console.log("DevTools → Application tab → Cookies → select your domain");
+  console.log("Check columns: HttpOnly ✓, Secure ✓, SameSite: Lax or Strict");
+  console.log("");
+  console.log("EXPECTED (secure setup):");
+  console.log(
+    "  Session/auth cookies: HttpOnly=true, Secure=true, SameSite=Strict/Lax",
+  );
+  console.log("  Non-auth cookies: at least Secure=true");
+  console.log("");
+  console.log("RED FLAGS:");
+  console.log("  Auth cookie with HttpOnly=false → XSS can steal your session");
+  console.log(
+    "  Any cookie with Secure=false → sent over HTTP (man-in-middle risk)",
+  );
+  console.log("  SameSite=None without Secure → CSRF risk");
 }
 
 auditCookies();
@@ -405,20 +470,30 @@ auditCookies();
 // tests/security/security-headers.spec.ts
 // Run this against your own staging environment
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 const REQUIRED_HEADERS = [
-  { header: 'content-security-policy', description: 'CSP — prevents XSS' },
-  { header: 'x-content-type-options', expectedValue: 'nosniff', description: 'Prevents MIME sniffing' },
-  { header: 'x-frame-options', pattern: /^(DENY|SAMEORIGIN)$/i, description: 'Prevents clickjacking' },
-  { header: 'strict-transport-security', description: 'Forces HTTPS (HSTS)' },
-  { header: 'referrer-policy', description: 'Controls referrer info' },
+  { header: "content-security-policy", description: "CSP — prevents XSS" },
+  {
+    header: "x-content-type-options",
+    expectedValue: "nosniff",
+    description: "Prevents MIME sniffing",
+  },
+  {
+    header: "x-frame-options",
+    pattern: /^(DENY|SAMEORIGIN)$/i,
+    description: "Prevents clickjacking",
+  },
+  { header: "strict-transport-security", description: "Forces HTTPS (HSTS)" },
+  { header: "referrer-policy", description: "Controls referrer info" },
 ] as const;
 
-test.describe('Security Headers @security @smoke', () => {
-  test('Main application page has required security headers', async ({ page }) => {
+test.describe("Security Headers @security @smoke", () => {
+  test("Main application page has required security headers", async ({
+    page,
+  }) => {
     const response = await page.goto(process.env.APP_URL!);
-    expect(response, 'Page must respond').not.toBeNull();
+    expect(response, "Page must respond").not.toBeNull();
 
     const headers = response!.headers();
 
@@ -427,21 +502,27 @@ test.describe('Security Headers @security @smoke', () => {
 
       expect(
         value,
-        `Missing header: ${requirement.header} — ${requirement.description}`
+        `Missing header: ${requirement.header} — ${requirement.description}`,
       ).toBeDefined();
 
-      if ('expectedValue' in requirement) {
-        expect(value, `${requirement.header} wrong value`).toBe(requirement.expectedValue);
+      if ("expectedValue" in requirement) {
+        expect(value, `${requirement.header} wrong value`).toBe(
+          requirement.expectedValue,
+        );
       }
-      if ('pattern' in requirement) {
-        expect(value, `${requirement.header} wrong value`).toMatch(requirement.pattern);
+      if ("pattern" in requirement) {
+        expect(value, `${requirement.header} wrong value`).toMatch(
+          requirement.pattern,
+        );
       }
     }
   });
 
-  test('Auth endpoint does not expose sensitive data in error responses', async ({ request }) => {
+  test("Auth endpoint does not expose sensitive data in error responses", async ({
+    request,
+  }) => {
     const response = await request.post(`${process.env.AUTH_URL}/api/login`, {
-      data: { email: 'nonexistent@test.com', password: 'wrongpassword' },
+      data: { email: "nonexistent@test.com", password: "wrongpassword" },
     });
 
     expect(response.status()).toBe(401);
@@ -449,10 +530,10 @@ test.describe('Security Headers @security @smoke', () => {
     const body = await response.json();
     // Error message must NOT reveal whether the email exists
     const errorMsg = JSON.stringify(body).toLowerCase();
-    expect(errorMsg).not.toContain('user not found');      // reveals email exists/doesn't exist
-    expect(errorMsg).not.toContain('invalid password');    // reveals email IS correct
-    expect(errorMsg).not.toContain('stack');               // no stack traces
-    expect(errorMsg).not.toContain('exception');           // no exception details
+    expect(errorMsg).not.toContain("user not found"); // reveals email exists/doesn't exist
+    expect(errorMsg).not.toContain("invalid password"); // reveals email IS correct
+    expect(errorMsg).not.toContain("stack"); // no stack traces
+    expect(errorMsg).not.toContain("exception"); // no exception details
     // Expected: generic "Invalid credentials" or similar
   });
 });
@@ -465,32 +546,38 @@ test.describe('Security Headers @security @smoke', () => {
 ```javascript
 // Browser console — test if removing auth kicks you out
 function testAuthEnforcement() {
-  console.log('=== Auth Enforcement Test ===');
+  console.log("=== Auth Enforcement Test ===");
 
   // Find auth-related localStorage keys
-  const authKeys = Object.keys(localStorage).filter(k =>
-    ['token', 'auth', 'jwt', 'session', 'user'].some(keyword =>
-      k.toLowerCase().includes(keyword)
-    )
+  const authKeys = Object.keys(localStorage).filter((k) =>
+    ["token", "auth", "jwt", "session", "user"].some((keyword) =>
+      k.toLowerCase().includes(keyword),
+    ),
   );
 
   if (authKeys.length === 0) {
-    console.log('No auth keys found in localStorage (may be using httpOnly cookies)');
-    console.log('To test httpOnly cookie enforcement: manually delete the cookie in');
-    console.log('DevTools → Application → Cookies → right-click → Delete');
-    console.log('Then reload and verify you are redirected to login');
+    console.log(
+      "No auth keys found in localStorage (may be using httpOnly cookies)",
+    );
+    console.log(
+      "To test httpOnly cookie enforcement: manually delete the cookie in",
+    );
+    console.log("DevTools → Application → Cookies → right-click → Delete");
+    console.log("Then reload and verify you are redirected to login");
     return;
   }
 
-  console.log('Found auth keys:', authKeys);
-  console.log('Clearing them and reloading...');
-  authKeys.forEach(key => localStorage.removeItem(key));
+  console.log("Found auth keys:", authKeys);
+  console.log("Clearing them and reloading...");
+  authKeys.forEach((key) => localStorage.removeItem(key));
 
   // Also try to clear session storage
   sessionStorage.clear();
 
-  console.log('Expected: redirect to login page');
-  console.log('If the page still shows protected content: AUTH ENFORCEMENT BUG');
+  console.log("Expected: redirect to login page");
+  console.log(
+    "If the page still shows protected content: AUTH ENFORCEMENT BUG",
+  );
   window.location.reload();
 }
 
@@ -501,10 +588,12 @@ function testAuthEnforcement() {
 **Playwright test version:**
 
 ```typescript
-test('Clearing auth token redirects to login', async ({ page, context }) => {
+test("Clearing auth token redirects to login", async ({ page, context }) => {
   // Start logged in
-  await page.goto(process.env.APP_URL + '/dashboard');
-  await expect(page.locator('.dashboard-header')).toBeVisible({ timeout: 15000 });
+  await page.goto(process.env.APP_URL + "/dashboard");
+  await expect(page.locator(".dashboard-header")).toBeVisible({
+    timeout: 15000,
+  });
 
   // Clear auth state
   await context.clearCookies();
@@ -517,7 +606,7 @@ test('Clearing auth token redirects to login', async ({ page, context }) => {
   await page.reload();
   await expect(page).toHaveURL(/\/(login|signin|auth)/, { timeout: 15000 });
   // Verify protected content is NOT visible
-  await expect(page.locator('.dashboard-header')).toHaveCount(0);
+  await expect(page.locator(".dashboard-header")).toHaveCount(0);
 });
 ```
 
@@ -529,23 +618,30 @@ test('Clearing auth token redirects to login', async ({ page, context }) => {
 // Finds ID patterns in the current URL that could be targets for IDOR testing
 function findIDPatterns() {
   const url = window.location.href;
-  console.log('Current URL:', url);
+  console.log("Current URL:", url);
 
   const patterns = {
-    uuid: url.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) ?? [],
+    uuid:
+      url.match(
+        /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
+      ) ?? [],
     numeric: url.match(/\/\d{4,}/g) ?? [],
     alphaNumeric: url.match(/\/[A-Z]{2,4}-?\d{3,}/g) ?? [],
     base64Like: url.match(/\/[A-Za-z0-9+/=]{20,}/g) ?? [],
   };
 
   console.table(patterns);
-  console.log('');
-  console.log('IDOR Test Approach:');
-  console.log('1. Note each ID above');
-  console.log('2. Log in as a DIFFERENT test user');
-  console.log('3. Replace the ID in the URL with one belonging to the first user');
-  console.log('4. Expected: 403 Forbidden or 404 Not Found');
-  console.log('5. FAIL: If you can see the first user\'s data — that\'s an IDOR vulnerability');
+  console.log("");
+  console.log("IDOR Test Approach:");
+  console.log("1. Note each ID above");
+  console.log("2. Log in as a DIFFERENT test user");
+  console.log(
+    "3. Replace the ID in the URL with one belonging to the first user",
+  );
+  console.log("4. Expected: 403 Forbidden or 404 Not Found");
+  console.log(
+    "5. FAIL: If you can see the first user's data — that's an IDOR vulnerability",
+  );
   return patterns;
 }
 
@@ -555,13 +651,19 @@ findIDPatterns();
 **Playwright test version:**
 
 ```typescript
-test('Cannot access another user\'s record by changing URL ID (IDOR check)', async ({ browser }) => {
+test("Cannot access another user's record by changing URL ID (IDOR check)", async ({
+  browser,
+}) => {
   // User A's context
-  const userAContext = await browser.newContext({ storageState: 'auth-states/customer-a-state.json' });
+  const userAContext = await browser.newContext({
+    storageState: "auth-states/customer-a-state.json",
+  });
   const userAPage = await userAContext.newPage();
 
   // User B's context
-  const userBContext = await browser.newContext({ storageState: 'auth-states/customer-b-state.json' });
+  const userBContext = await browser.newContext({
+    storageState: "auth-states/customer-b-state.json",
+  });
   const userBPage = await userBContext.newPage();
 
   try {
@@ -576,15 +678,19 @@ test('Cannot access another user\'s record by changing URL ID (IDOR check)', asy
     await userBPage.goto(`${process.env.APP_URL}/accounts/${userAId}`);
     const status = await userBPage.evaluate(() => {
       const meta = document.querySelector('meta[name="http-status"]');
-      return meta?.getAttribute('content') ?? 'unknown';
+      return meta?.getAttribute("content") ?? "unknown";
     });
 
     // Should get 403, 404, or be redirected to their own profile
     await expect(userBPage).not.toHaveURL(new RegExp(`/accounts/${userAId}`));
     // OR: verify an error message is shown
-    const errorVisible = await userBPage.locator('.access-denied-message, .error-403').isVisible();
-    expect(errorVisible, 'User B must NOT be able to access User A\'s data').toBe(true);
-
+    const errorVisible = await userBPage
+      .locator(".access-denied-message, .error-403")
+      .isVisible();
+    expect(
+      errorVisible,
+      "User B must NOT be able to access User A's data",
+    ).toBe(true);
   } finally {
     await userAContext.close();
     await userBContext.close();
@@ -613,22 +719,29 @@ function testXSSOnInput(inputCSSSelector) {
   const testPayload = `<img src="x" onerror="window._XSS_TRIGGERED=true; console.warn('XSS_DETECTED_IN: ${inputCSSSelector}')">`;
 
   // Inject the payload
-  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    "value",
+  )?.set;
   if (nativeInputValueSetter) {
     nativeInputValueSetter.call(input, testPayload);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
   console.log(`Payload injected into: ${inputCSSSelector}`);
 
   setTimeout(() => {
     if (window._XSS_TRIGGERED) {
-      console.error('🔴 XSS VULNERABILITY: The input rendered HTML and executed JavaScript!');
-      console.error('   Report to your development team immediately.');
+      console.error(
+        "🔴 XSS VULNERABILITY: The input rendered HTML and executed JavaScript!",
+      );
+      console.error("   Report to your development team immediately.");
     } else {
-      console.log('✓ Input appears to sanitise the payload (no script execution detected)');
-      console.log('   Note: Verify the stored/reflected value in the UI too');
+      console.log(
+        "✓ Input appears to sanitise the payload (no script execution detected)",
+      );
+      console.log("   Note: Verify the stored/reflected value in the UI too");
     }
   }, 1000);
 }
@@ -645,31 +758,31 @@ In enterprise CI pipelines, a test might pass while the browser console throws s
 
 ```typescript
 // tests/fixtures/console-aggregator.ts
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect } from "@playwright/test";
 
-type ConsoleMessageInfo = { type: string, text: string, location: string };
+type ConsoleMessageInfo = { type: string; text: string; location: string };
 
 export const test = base.extend<{ consoleErrors: ConsoleMessageInfo[] }>({
   consoleErrors: async ({ page }, use) => {
     const errors: ConsoleMessageInfo[] = [];
 
     // Listen for console events
-    page.on('console', msg => {
-      if (msg.type() === 'error' || msg.type() === 'warning') {
+    page.on("console", (msg) => {
+      if (msg.type() === "error" || msg.type() === "warning") {
         errors.push({
           type: msg.type(),
           text: msg.text(),
-          location: msg.location().url || 'inline',
+          location: msg.location().url || "inline",
         });
       }
     });
 
     // Listen for uncaught page errors
-    page.on('pageerror', exception => {
+    page.on("pageerror", (exception) => {
       errors.push({
-        type: 'uncaught_exception',
+        type: "uncaught_exception",
         text: exception.message,
-        location: exception.stack?.split('\n')[1] || 'unknown',
+        location: exception.stack?.split("\n")[1] || "unknown",
       });
     });
 
@@ -677,23 +790,26 @@ export const test = base.extend<{ consoleErrors: ConsoleMessageInfo[] }>({
 
     // Teardown: Evaluate aggregated errors
     if (errors.length > 0) {
-      console.warn(`\n[Console Aggregator] Detected ${errors.length} console issues:`);
+      console.warn(
+        `\n[Console Aggregator] Detected ${errors.length} console issues:`,
+      );
       console.table(errors);
-      
+
       // Optional: Fail the test if strict mode is enabled
       // if (process.env.FAIL_ON_CONSOLE_ERROR === 'true') {
       //   const severeErrors = errors.filter(e => e.type === 'uncaught_exception' || e.type === 'error');
       //   expect(severeErrors.length, 'Page must not have severe console errors').toBe(0);
       // }
     }
-  }
+  },
 });
 ```
 
 To use it, just include the `consoleErrors` fixture in any test to activate the silent monitoring:
+
 ```typescript
-test('Dashboard loads without JS errors', async ({ page, consoleErrors }) => {
-  await page.goto('/dashboard');
+test("Dashboard loads without JS errors", async ({ page, consoleErrors }) => {
+  await page.goto("/dashboard");
   // consoleErrors fixture monitors the background automatically!
 });
 ```
@@ -709,11 +825,12 @@ Your app's session cookie is visible via `document.cookie` in the browser consol
 A) The cookie is definitely not secure and should be fixed  
 B) The cookie is missing the `HttpOnly` flag — it can be stolen via XSS  
 C) The cookie is working correctly — all cookies should be JavaScript-readable  
-D) The browser is misconfigured  
+D) The browser is misconfigured
 
 <details><summary>Answer</summary>
 
 **B** — If a session cookie appears in `document.cookie`, it lacks the `HttpOnly` flag. `HttpOnly` cookies are hidden from JavaScript and cannot be stolen by XSS attacks. A session/auth cookie that is JavaScript-readable means a successful XSS attack could steal the user's session. This should be reported to the dev team as a security finding.
+
 </details>
 
 ---
@@ -721,25 +838,27 @@ D) The browser is misconfigured
 ### Challenge 2 [Spot the Bug — Security Test]
 
 ```typescript
-test('Auth enforcement', async ({ page, context }) => {
-  await page.goto('/dashboard');
+test("Auth enforcement", async ({ page, context }) => {
+  await page.goto("/dashboard");
   await page.evaluate(() => localStorage.clear());
   // Reload and check
   await page.reload();
-  await expect(page).toHaveURL('/login');
+  await expect(page).toHaveURL("/login");
 });
 ```
 
 <details><summary>Answer</summary>
 
 Only `localStorage` is cleared. If the app uses:
+
 - `sessionStorage` — still present, might keep the session alive
 - `HttpOnly` cookies — not clearable via JS, still sent to server → user stays logged in
 - Regular cookies — not cleared
 
 Fix:
+
 ```typescript
-await context.clearCookies();   // clears all cookies in the context
+await context.clearCookies(); // clears all cookies in the context
 await page.evaluate(() => {
   localStorage.clear();
   sessionStorage.clear();
@@ -747,6 +866,7 @@ await page.evaluate(() => {
 await page.reload();
 await expect(page).toHaveURL(/\/(login|signin)/);
 ```
+
 </details>
 
 ---
@@ -758,36 +878,44 @@ Write a Playwright test that verifies the login endpoint returns a 401 with a GE
 <details><summary>Answer</summary>
 
 ```typescript
-test.describe('Login security', () => {
-  test('Wrong email: returns generic 401 message', async ({ request }) => {
+test.describe("Login security", () => {
+  test("Wrong email: returns generic 401 message", async ({ request }) => {
     const response = await request.post(`${process.env.AUTH_URL}/api/login`, {
-      data: { email: 'doesnotexist@test.com', password: 'AnyPassword1!' },
+      data: { email: "doesnotexist@test.com", password: "AnyPassword1!" },
     });
     expect(response.status()).toBe(401);
     const body = await response.json();
     const errorText = JSON.stringify(body).toLowerCase();
     // Must NOT reveal the email doesn't exist
-    expect(errorText).not.toContain('user not found');
-    expect(errorText).not.toContain('email not found');
-    expect(errorText).not.toContain('no account');
+    expect(errorText).not.toContain("user not found");
+    expect(errorText).not.toContain("email not found");
+    expect(errorText).not.toContain("no account");
   });
 
-  test('Correct email, wrong password: returns SAME generic 401 message', async ({ request }) => {
+  test("Correct email, wrong password: returns SAME generic 401 message", async ({
+    request,
+  }) => {
     const response = await request.post(`${process.env.AUTH_URL}/api/login`, {
-      data: { email: process.env.EXISTING_TEST_EMAIL!, password: 'WrongPassword999!' },
+      data: {
+        email: process.env.EXISTING_TEST_EMAIL!,
+        password: "WrongPassword999!",
+      },
     });
     expect(response.status()).toBe(401);
     const body = await response.json();
     const errorText = JSON.stringify(body).toLowerCase();
     // Must NOT reveal the email IS correct
-    expect(errorText).not.toContain('invalid password');
-    expect(errorText).not.toContain('wrong password');
-    expect(errorText).not.toContain('password incorrect');
+    expect(errorText).not.toContain("invalid password");
+    expect(errorText).not.toContain("wrong password");
+    expect(errorText).not.toContain("password incorrect");
     // Both cases should return the same generic message:
-    expect(body.message).toMatch(/invalid credentials|login failed|authentication failed/i);
+    expect(body.message).toMatch(
+      /invalid credentials|login failed|authentication failed/i,
+    );
   });
 });
 ```
+
 </details>
 
 ---
@@ -801,13 +929,13 @@ test.describe('Login security', () => {
 ```typescript
 // tests/security/cookie-security.spec.ts
 
-import { test, expect, chromium } from '@playwright/test';
+import { test, expect, chromium } from "@playwright/test";
 
-test('Auth cookies have HttpOnly and Secure flags set', async ({}) => {
+test("Auth cookies have HttpOnly and Secure flags set", async ({}) => {
   // Must use chromium directly to access CDP
   const browser = await chromium.launch();
   const context = await browser.newContext({
-    storageState: 'auth-states/admin-state.json',
+    storageState: "auth-states/admin-state.json",
   });
   const page = await context.newPage();
 
@@ -818,60 +946,69 @@ test('Auth cookies have HttpOnly and Secure flags set', async ({}) => {
 
   // CDP: Network.getAllCookies — returns ALL cookies including HttpOnly ones
   // This is the only API that reveals HttpOnly status programmatically
-  const { cookies } = await cdpSession.send('Network.getAllCookies') as {
+  const { cookies } = (await cdpSession.send("Network.getAllCookies")) as {
     cookies: {
-      name:     string;
-      value:    string;
-      domain:   string;
-      path:     string;
+      name: string;
+      value: string;
+      domain: string;
+      path: string;
       httpOnly: boolean;
-      secure:   boolean;
+      secure: boolean;
       sameSite: string;
-      expires:  number;
+      expires: number;
     }[];
   };
 
   // Known auth cookie names for YOUR application (customise these):
-  const authCookieNames = ['sso_token', '.AspNet.ApplicationCookie', 'access_token'];
+  const authCookieNames = [
+    "sso_token",
+    ".AspNet.ApplicationCookie",
+    "access_token",
+  ];
 
-  const authCookies = cookies.filter(c =>
-    authCookieNames.some(name => c.name.toLowerCase().includes(name.toLowerCase()))
+  const authCookies = cookies.filter((c) =>
+    authCookieNames.some((name) =>
+      c.name.toLowerCase().includes(name.toLowerCase()),
+    ),
   );
 
   expect(
     authCookies.length,
-    `Expected to find at least one auth cookie. Found cookies: [${cookies.map(c => c.name).join(', ')}]`
+    `Expected to find at least one auth cookie. Found cookies: [${cookies.map((c) => c.name).join(", ")}]`,
   ).toBeGreaterThan(0);
 
   for (const cookie of authCookies) {
     expect(
       cookie.httpOnly,
-      `Auth cookie "${cookie.name}" must have HttpOnly=true (currently: ${cookie.httpOnly})`
+      `Auth cookie "${cookie.name}" must have HttpOnly=true (currently: ${cookie.httpOnly})`,
     ).toBe(true);
 
     expect(
       cookie.secure,
-      `Auth cookie "${cookie.name}" must have Secure=true (currently: ${cookie.secure})`
+      `Auth cookie "${cookie.name}" must have Secure=true (currently: ${cookie.secure})`,
     ).toBe(true);
 
     expect(
       cookie.sameSite,
-      `Auth cookie "${cookie.name}" must have SameSite=Lax or Strict (currently: ${cookie.sameSite})`
+      `Auth cookie "${cookie.name}" must have SameSite=Lax or Strict (currently: ${cookie.sameSite})`,
     ).toMatch(/^(Lax|Strict)$/);
   }
 
   // Verify NO sensitive cookie is readable from JavaScript:
   const jsAccessibleCookies = await page.evaluate(() =>
-    document.cookie.split(';').map(c => c.trim().split('=')[0]).filter(Boolean)
+    document.cookie
+      .split(";")
+      .map((c) => c.trim().split("=")[0])
+      .filter(Boolean),
   );
 
   for (const authName of authCookieNames) {
-    const visibleViaJS = jsAccessibleCookies.some(name =>
-      name.toLowerCase().includes(authName.toLowerCase())
+    const visibleViaJS = jsAccessibleCookies.some((name) =>
+      name.toLowerCase().includes(authName.toLowerCase()),
     );
     expect(
       visibleViaJS,
-      `Auth cookie "${authName}" MUST NOT be readable via document.cookie (missing HttpOnly)`
+      `Auth cookie "${authName}" MUST NOT be readable via document.cookie (missing HttpOnly)`,
     ).toBe(false);
   }
 
@@ -904,13 +1041,22 @@ test('Auth cookies have HttpOnly and Secure flags set', async ({}) => {
 // tests/security/rate-limiting.spec.ts
 // Verifies the login endpoint enforces rate limiting
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 const LOGIN_URL = `${process.env.AUTH_URL}/api/login`;
-const WRONG_CREDENTIALS = { email: 'test@example.com', password: 'WrongPass123!' };
+const WRONG_CREDENTIALS = {
+  email: "test@example.com",
+  password: "WrongPass123!",
+};
 
-test('Login endpoint enforces rate limiting after repeated failures', async ({ request }) => {
-  const responses: { attempt: number; status: number; retryAfter: string | null }[] = [];
+test("Login endpoint enforces rate limiting after repeated failures", async ({
+  request,
+}) => {
+  const responses: {
+    attempt: number;
+    status: number;
+    retryAfter: string | null;
+  }[] = [];
 
   // Send 15 consecutive wrong-password login attempts
   // Most production systems limit to 5-10 before rate limiting kicks in
@@ -919,7 +1065,7 @@ test('Login endpoint enforces rate limiting after repeated failures', async ({ r
     responses.push({
       attempt,
       status: resp.status(),
-      retryAfter: resp.headers()['retry-after'] ?? null,
+      retryAfter: resp.headers()["retry-after"] ?? null,
     });
 
     // Stop early if we hit the rate limit
@@ -929,34 +1075,36 @@ test('Login endpoint enforces rate limiting after repeated failures', async ({ r
   console.table(responses);
 
   // Verify rate limiting was triggered at some point
-  const rateLimitedResponse = responses.find(r => r.status === 429);
+  const rateLimitedResponse = responses.find((r) => r.status === 429);
 
   expect(
     rateLimitedResponse,
     [
       `Rate limiting NOT enforced after ${responses.length} failed login attempts.`,
-      `All returned: ${[...new Set(responses.map(r => r.status))].join(', ')}`,
+      `All returned: ${[...new Set(responses.map((r) => r.status))].join(", ")}`,
       `SECURITY RISK: No brute-force protection on the login endpoint.`,
-    ].join('\n')
+    ].join("\n"),
   ).toBeDefined();
 
   // Verify the 429 response includes a Retry-After header (tells clients when to retry)
   expect(
     rateLimitedResponse!.retryAfter,
-    'Rate limit response (429) must include a Retry-After header'
+    "Rate limit response (429) must include a Retry-After header",
   ).not.toBeNull();
 
   // Verify all attempts before rate limiting returned 401 (not 200, not 500)
-  const preRateLimitResponses = responses.filter(r => r.status !== 429);
+  const preRateLimitResponses = responses.filter((r) => r.status !== 429);
   for (const r of preRateLimitResponses) {
     expect(
       r.status,
-      `Login attempt ${r.attempt} returned ${r.status}; expected 401 for wrong credentials`
+      `Login attempt ${r.attempt} returned ${r.status}; expected 401 for wrong credentials`,
     ).toBe(401);
   }
 });
 
-test('Verify rate limit does NOT lock out after correct password', async ({ request }) => {
+test("Verify rate limit does NOT lock out after correct password", async ({
+  request,
+}) => {
   // Some systems lock out even correct logins after too many attempts — this is a UX bug
   // First: exhaust rate limit with wrong password
   for (let i = 0; i < 5; i++) {
@@ -966,7 +1114,7 @@ test('Verify rate limit does NOT lock out after correct password', async ({ requ
   // Then: try the CORRECT credentials
   const correctResp = await request.post(LOGIN_URL, {
     data: {
-      email:    process.env.TEST_USER_EMAIL!,
+      email: process.env.TEST_USER_EMAIL!,
       password: process.env.TEST_USER_PASSWORD!,
     },
   });
@@ -975,7 +1123,7 @@ test('Verify rate limit does NOT lock out after correct password', async ({ requ
   // NOT expected: 401 with wrong credentials error (would mean the account is permanently locked)
   expect(
     [200, 429],
-    `Correct credentials should return 200 or temporary 429, not: ${correctResp.status()}`
+    `Correct credentials should return 200 or temporary 429, not: ${correctResp.status()}`,
   ).toContain(correctResp.status());
 });
 ```
@@ -989,7 +1137,7 @@ You need to write a CI test that verifies your auth cookie has `HttpOnly=true`. 
 A) `document.cookie.includes('sso_token')` — if it's there, it has HttpOnly  
 B) Read the Playwright `storageState()` JSON — it includes httpOnly in the cookie objects  
 C) Use CDP `Network.getAllCookies` — returns full cookie metadata including httpOnly flag  
-D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are enabled  
+D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are enabled
 
 <details><summary>Answer</summary>
 

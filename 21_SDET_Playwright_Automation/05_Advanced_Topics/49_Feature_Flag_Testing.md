@@ -14,6 +14,64 @@
 
 ---
 
+## 0. War Stories — What Flag-Aware Tests Actually Prevent
+
+### Story 1: The silent flag kill that broke 28 tests for a week
+
+A team launched a feature behind a flag (`newCheckoutFlow: true`). They wrote tests for the new flow, pinned with `newCheckoutFlow: true` in the test fixture. Tests passed in CI for 3 months.
+
+Then product decided to kill the flag — the new checkout flow had a conversion problem. The flag was removed from the codebase entirely. No API call was needed to set it — the old code path was just... the code.
+
+The 28 tests that pinned `newCheckoutFlow: true` now tried to set a flag that didn't exist. The flag client silently returned the default (`false`). The tests were now testing the old checkout flow but asserting on new-flow UI elements. 28 failures, all "element not found."
+
+Root cause: the tests pinned a flag that could disappear without notice. No test tracked that the flag existed. When the flag died, nothing detected it.
+
+Fix: a smoke test that verifies the set of known flags:
+
+```typescript
+test('flag registry is complete', async ({ flagClient }) => {
+  const knownFlags = ['newCheckoutFlow', 'betaDashboard', 'v2Api'];
+  const actualFlags = await flagClient.getAllFlags();
+  const actualKeys = Object.keys(actualFlags);
+
+  for (const flag of knownFlags) {
+    expect(actualKeys, `Flag "${flag}" was deleted from the registry without removing its tests`).toContain(flag);
+  }
+});
+```
+
+When `newCheckoutFlow` disappears, this test fails immediately with a clear message: "Flag 'newCheckoutFlow' was deleted from the registry without removing its tests."
+
+### Story 2: The interaction bug that only appeared in one of four flag combinations
+
+A pricing page had two flags: `showDiscount: boolean` and `v2PricingEngine: boolean`. Tests covered both flags independently: 4 tests total (each flag × on/off).
+
+In production at 25% rollout: `showDiscount=true` + `v2PricingEngine=true` combined showed a negative price in the UI. The discount was applied twice: once by the frontend and once by the new pricing engine. The 4 independent tests never caught it because none tested the combination.
+
+The fix: test the matrix explicitly when flags interact:
+
+```typescript
+const PRICING_FLAG_MATRIX = [
+  { showDiscount: false, v2PricingEngine: false },
+  { showDiscount: true,  v2PricingEngine: false },
+  { showDiscount: false, v2PricingEngine: true  },
+  { showDiscount: true,  v2PricingEngine: true  }, // ← the bug lived here
+] as const;
+
+for (const combo of PRICING_FLAG_MATRIX) {
+  test(`pricing: discount=${combo.showDiscount}, v2engine=${combo.v2PricingEngine}`, async ({ page, flagClient }) => {
+    await flagClient.setFlags(combo);
+    await page.goto('/pricing');
+    const price = await page.locator('[data-testid="total-price"]').textContent();
+    expect(parseFloat(price!.replace('$', ''))).toBeGreaterThan(0);
+  });
+}
+```
+
+Cost of not testing combinations: a P0 production bug at 25% rollout. 3 hours of engineer time on a Saturday to roll back the flag.
+
+---
+
 ## 1. Why this fails without intent
 
 ```
@@ -36,7 +94,7 @@ If your flag service has an admin API:
 test.beforeEach(async ({ request }) => {
   await request.put(`${envConfig.flagsService}/overrides`, {
     headers: { Authorization: `Bearer ${process.env.FLAGS_ADMIN_TOKEN}` },
-    data: { user: 'test-user-1', flag: 'new_checkout', value: true },
+    data: { user: "test-user-1", flag: "new_checkout", value: true },
   });
 });
 ```
@@ -50,8 +108,8 @@ Many SDKs (LaunchDarkly, GrowthBook) accept a "bootstrap" payload in localStorag
 ```typescript
 await page.addInitScript(() => {
   localStorage.setItem(
-    'gb-features',
-    JSON.stringify({ new_checkout: { defaultValue: true } })
+    "gb-features",
+    JSON.stringify({ new_checkout: { defaultValue: true } }),
   );
 });
 ```
@@ -63,10 +121,10 @@ Pros: zero backend coordination. Cons: SDK-specific syntax.
 Intercept the SDK's poll/init call and replace the response:
 
 ```typescript
-await page.route('**/sdk/features**', async (route) => {
+await page.route("**/sdk/features**", async (route) => {
   await route.fulfill({
     status: 200,
-    contentType: 'application/json',
+    contentType: "application/json",
     body: JSON.stringify({ flags: { new_checkout: { value: true } } }),
   });
 });
@@ -76,19 +134,23 @@ Pros: no admin access needed, works in any env. Cons: tied to a specific URL pat
 
 ---
 
-## 3. Testing the *matrix*, not the flag
+## 3. Testing the _matrix_, not the flag
 
 The real risk isn't "does the new path work." It's "do the old path AND the new path coexist correctly during ramp." So every flagged behaviour gets at least **two tests**:
 
 ```typescript
-test.describe('checkout', () => {
-  test('@new-flow @flag:new_checkout=true completes via new flow', async ({ page }) => {
-    await pinFlag(page, 'new_checkout', true);
+test.describe("checkout", () => {
+  test("@new-flow @flag:new_checkout=true completes via new flow", async ({
+    page,
+  }) => {
+    await pinFlag(page, "new_checkout", true);
     // ...
   });
 
-  test('@old-flow @flag:new_checkout=false completes via old flow', async ({ page }) => {
-    await pinFlag(page, 'new_checkout', false);
+  test("@old-flow @flag:new_checkout=false completes via old flow", async ({
+    page,
+  }) => {
+    await pinFlag(page, "new_checkout", false);
     // ...
   });
 });
@@ -101,15 +163,19 @@ A clean ramp-down later means deleting the old test, not rewriting the new one.
 ## 4. Fixture for flag pinning
 
 ```typescript
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 type FlagOverrides = Record<string, unknown>;
 
-export const test = base.extend<{ pinFlags: (overrides: FlagOverrides) => Promise<void> }>({
+export const test = base.extend<{
+  pinFlags: (overrides: FlagOverrides) => Promise<void>;
+}>({
   pinFlags: async ({ page }, use) => {
     const pin = async (overrides: FlagOverrides): Promise<void> => {
       await page.addInitScript((flags) => {
-        const window = globalThis as unknown as { __FLAG_OVERRIDES__: FlagOverrides };
+        const window = globalThis as unknown as {
+          __FLAG_OVERRIDES__: FlagOverrides;
+        };
         window.__FLAG_OVERRIDES__ = flags;
       }, overrides);
     };
@@ -121,9 +187,9 @@ export const test = base.extend<{ pinFlags: (overrides: FlagOverrides) => Promis
 Now any test gets a single function call:
 
 ```typescript
-test('new checkout', async ({ page, pinFlags }) => {
-  await pinFlags({ new_checkout: true, payments_v2: 'fast-path' });
-  await page.goto('/checkout');
+test("new checkout", async ({ page, pinFlags }) => {
+  await pinFlags({ new_checkout: true, payments_v2: "fast-path" });
+  await page.goto("/checkout");
 });
 ```
 
@@ -164,28 +230,28 @@ Add a `pinFlags` fixture to [`framework/fixtures/page.fixture.ts`](../framework/
 
 The feature flag ecosystem has four major players. Here is a structured comparison to help teams choose.
 
-| | **LaunchDarkly** | **GrowthBook** | **Unleash** | **Split** |
-|---|---|---|---|---|
-| **Hosting** | SaaS + self-hosted | SaaS + self-hosted | SaaS + self-hosted | SaaS + self-hosted |
-| **Starting price** | Free < 5 users, then ~$20/mo per seat | Free self-hosted; $20/mo SaaS | Free open-source; ~$80/mo SaaS | Contact sales |
-| **Real-time updates** | Yes — streaming SSE/WebSocket | Polling (SDK polls, not streaming) | Yes — SSE streaming | Yes — streaming |
-| **Audit logs** | Full audit trail, all changes | Basic audit log | Audit log (Enterprise) | Full audit trail |
-| **SSO** | SAML/OIDC | OIDC (SaaS) | SAML/OIDC (Enterprise) | SAML/OIDC |
-| **On-premise** | Yes (Enterprise) | Yes (self-host) | Yes (self-host) | Yes (Enterprise) |
-| **SDK quality** | Excellent — 20+ SDKs | Good — 10+ SDKs | Good — 15+ SDKs | Good — 15+ SDKs |
-| **A/B testing** | Built-in, sophisticated | Built-in, good stats | No (integrates separately) | Built-in, sophisticated |
-| **Flag evaluation latency** | < 5 ms (edge), SDK caching built-in | Polling = delay risk | < 5 ms (edge) | < 5 ms (edge) |
+|                             | **LaunchDarkly**                      | **GrowthBook**                     | **Unleash**                    | **Split**               |
+| --------------------------- | ------------------------------------- | ---------------------------------- | ------------------------------ | ----------------------- |
+| **Hosting**                 | SaaS + self-hosted                    | SaaS + self-hosted                 | SaaS + self-hosted             | SaaS + self-hosted      |
+| **Starting price**          | Free < 5 users, then ~$20/mo per seat | Free self-hosted; $20/mo SaaS      | Free open-source; ~$80/mo SaaS | Contact sales           |
+| **Real-time updates**       | Yes — streaming SSE/WebSocket         | Polling (SDK polls, not streaming) | Yes — SSE streaming            | Yes — streaming         |
+| **Audit logs**              | Full audit trail, all changes         | Basic audit log                    | Audit log (Enterprise)         | Full audit trail        |
+| **SSO**                     | SAML/OIDC                             | OIDC (SaaS)                        | SAML/OIDC (Enterprise)         | SAML/OIDC               |
+| **On-premise**              | Yes (Enterprise)                      | Yes (self-host)                    | Yes (self-host)                | Yes (Enterprise)        |
+| **SDK quality**             | Excellent — 20+ SDKs                  | Good — 10+ SDKs                    | Good — 15+ SDKs                | Good — 15+ SDKs         |
+| **A/B testing**             | Built-in, sophisticated               | Built-in, good stats               | No (integrates separately)     | Built-in, sophisticated |
+| **Flag evaluation latency** | < 5 ms (edge), SDK caching built-in   | Polling = delay risk               | < 5 ms (edge)                  | < 5 ms (edge)           |
 
 ### Decision table — choosing a provider
 
-| Scenario | Recommended |
-|---|---|
-| Small team, budget < $50/mo | GrowthBook (SaaS) or Unleash (self-hosted) |
-| Enterprise with compliance requirements | LaunchDarkly or Split |
-| Need deep A/B testing with stats | LaunchDarkly or GrowthBook |
-| Need full on-premise control | Unleash (open-source) |
-| Already in GCP ecosystem | LaunchDarkly (GCP integration) |
-| Cost-sensitive, technical team | Unleash self-hosted |
+| Scenario                                | Recommended                                |
+| --------------------------------------- | ------------------------------------------ |
+| Small team, budget < $50/mo             | GrowthBook (SaaS) or Unleash (self-hosted) |
+| Enterprise with compliance requirements | LaunchDarkly or Split                      |
+| Need deep A/B testing with stats        | LaunchDarkly or GrowthBook                 |
+| Need full on-premise control            | Unleash (open-source)                      |
+| Already in GCP ecosystem                | LaunchDarkly (GCP integration)             |
+| Cost-sensitive, technical team          | Unleash self-hosted                        |
 
 ### What the SDET needs to know per provider
 
@@ -215,62 +281,74 @@ Creation → Rollout (0% → 100%) → Full adoption → Deprecation → Removal
 ### Stage 1 — Creation (flag at 0%)
 
 ```typescript
-test('@flag:new_algorithm is off at 0% rollout', async ({ page, pinFlags }) => {
+test("@flag:new_algorithm is off at 0% rollout", async ({ page, pinFlags }) => {
   await pinFlags({ new_algorithm: false });
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
   // App should use the legacy algorithm — assert here
-  await expect(page.locator('.algo-badge')).toHaveText('Classic');
+  await expect(page.locator(".algo-badge")).toHaveText("Classic");
 });
 ```
 
 ### Stage 2 — Gradual rollout (50% canary)
 
 ```typescript
-test('@flag:new_algorithm is enabled for treatment users', async ({ page, pinFlags }) => {
+test("@flag:new_algorithm is enabled for treatment users", async ({
+  page,
+  pinFlags,
+}) => {
   // Simulate a canary user (user ID in the 50th percentile hash bucket)
   await pinFlags({ new_algorithm: true });
-  await page.goto('/dashboard');
-  await expect(page.locator('.algo-badge')).toHaveText('Next Gen');
+  await page.goto("/dashboard");
+  await expect(page.locator(".algo-badge")).toHaveText("Next Gen");
 });
 ```
 
 ### Stage 3 — Full adoption (flag at 100%)
 
 ```typescript
-test('@flag:new_algorithm: full rollout — old path removed', async ({ page, pinFlags }) => {
+test("@flag:new_algorithm: full rollout — old path removed", async ({
+  page,
+  pinFlags,
+}) => {
   await pinFlags({ new_algorithm: true });
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
   // Confirm the old algorithm path no longer exists in the DOM
-  await expect(page.locator('.algo-badge')).toHaveText('Next Gen');
+  await expect(page.locator(".algo-badge")).toHaveText("Next Gen");
   // Confirm no legacy element present
-  await expect(page.locator('.legacy-alert-banner')).not.toBeAttached();
+  await expect(page.locator(".legacy-alert-banner")).not.toBeAttached();
 });
 ```
 
 ### Stage 4 — Deprecation
 
 ```typescript
-test('@flag:new_algorithm deprecated — fallback behaviour works', async ({ page, pinFlags }) => {
+test("@flag:new_algorithm deprecated — fallback behaviour works", async ({
+  page,
+  pinFlags,
+}) => {
   // Pin to both true and false; both should land on a known-good state
   await pinFlags({ new_algorithm: false }); // fallback to legacy
-  await page.goto('/dashboard');
-  await expect(page.locator('.algo-badge')).toHaveText('Classic');
+  await page.goto("/dashboard");
+  await expect(page.locator(".algo-badge")).toHaveText("Classic");
 
   await pinFlags({ new_algorithm: true }); // explicit on
-  await page.goto('/dashboard');
-  await expect(page.locator('.algo-badge')).toHaveText('Next Gen');
+  await page.goto("/dashboard");
+  await expect(page.locator(".algo-badge")).toHaveText("Next Gen");
 });
 ```
 
 ### Stage 5 — Removal (graceful degradation)
 
 ```typescript
-test('@flag:new_algorithm removed — app does not crash', async ({ page, pinFlags }) => {
+test("@flag:new_algorithm removed — app does not crash", async ({
+  page,
+  pinFlags,
+}) => {
   // Flag is removed from provider — simulate by not setting it at all
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
   // App should degrade gracefully — fallback to default behaviour
-  await expect(page.getByRole('alert')).not.toBeVisible();
-  await expect(page.locator('.algo-badge')).toBeVisible();
+  await expect(page.getByRole("alert")).not.toBeVisible();
+  await expect(page.locator(".algo-badge")).toBeVisible();
 });
 ```
 
@@ -279,15 +357,19 @@ test('@flag:new_algorithm removed — app does not crash', async ({ page, pinFla
 ```typescript
 // A synthetic user hash to deterministically pick a bucket
 function syntheticUserId(percentage: number, userId: string): string {
-  const hash = userId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % 100;
+  const hash =
+    userId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % 100;
   return hash < percentage ? `canary-${userId}` : `control-${userId}`;
 }
 
-test('canary user sees new algorithm at 50% rollout', async ({ page, pinFlags }) => {
-  const canaryUser = syntheticUserId(50, 'user-canary-001');
+test("canary user sees new algorithm at 50% rollout", async ({
+  page,
+  pinFlags,
+}) => {
+  const canaryUser = syntheticUserId(50, "user-canary-001");
   await pinFlags({ new_algorithm: true }, canaryUser);
-  await page.goto('/dashboard');
-  await expect(page.locator('.algo-badge')).toHaveText('Next Gen');
+  await page.goto("/dashboard");
+  await expect(page.locator(".algo-badge")).toHaveText("Next Gen");
 });
 ```
 
@@ -304,16 +386,22 @@ If your test suite uses real user IDs that also appear in your production analyt
 ### Isolation strategy 1 — Synthetic user segmentation
 
 ```typescript
-test('@ab:pricing CTA copy experiment — treatment', async ({ page, pinFlags }) => {
-  await pinFlags({ experiment_pricing_cta: 'treatment' });
-  await page.goto('/pricing');
-  await expect(page.locator('.cta-button')).toContainText('Start free');
+test("@ab:pricing CTA copy experiment — treatment", async ({
+  page,
+  pinFlags,
+}) => {
+  await pinFlags({ experiment_pricing_cta: "treatment" });
+  await page.goto("/pricing");
+  await expect(page.locator(".cta-button")).toContainText("Start free");
 });
 
-test('@ab:pricing CTA copy experiment — control', async ({ page, pinFlags }) => {
-  await pinFlags({ experiment_pricing_cta: 'control' });
-  await page.goto('/pricing');
-  await expect(page.locator('.cta-button')).toContainText('Get started');
+test("@ab:pricing CTA copy experiment — control", async ({
+  page,
+  pinFlags,
+}) => {
+  await pinFlags({ experiment_pricing_cta: "control" });
+  await page.goto("/pricing");
+  await expect(page.locator(".cta-button")).toContainText("Get started");
 });
 ```
 
@@ -328,8 +416,8 @@ await page.addInitScript(() => {
   const originalFetch = window.fetch;
   window.fetch = (input, init) => {
     const url = input instanceof Request ? input.url : input;
-    if (url.includes('/analytics')) {
-      return originalFetch('https://analytics-test.internal/collect', init);
+    if (url.includes("/analytics")) {
+      return originalFetch("https://analytics-test.internal/collect", init);
     }
     return originalFetch(input, init);
   };
@@ -339,16 +427,20 @@ await page.addInitScript(() => {
 ### Asserting experiment outcomes
 
 ```typescript
-test('treatment group sees variant B content', async ({ page, pinFlags }) => {
-  await pinFlags({ ab_homepage_hero: 'variant-b' });
-  await page.goto('/');
-  await expect(page.locator('.hero-headline')).toContainText('Your data, your way');
+test("treatment group sees variant B content", async ({ page, pinFlags }) => {
+  await pinFlags({ ab_homepage_hero: "variant-b" });
+  await page.goto("/");
+  await expect(page.locator(".hero-headline")).toContainText(
+    "Your data, your way",
+  );
 });
 
-test('control group sees original content', async ({ page, pinFlags }) => {
-  await pinFlags({ ab_homepage_hero: 'control' });
-  await page.goto('/');
-  await expect(page.locator('.hero-headline')).toContainText('Welcome to the platform');
+test("control group sees original content", async ({ page, pinFlags }) => {
+  await pinFlags({ ab_homepage_hero: "control" });
+  await page.goto("/");
+  await expect(page.locator(".hero-headline")).toContainText(
+    "Welcome to the platform",
+  );
 });
 ```
 
@@ -393,20 +485,53 @@ Pairwise combinations to cover:
 
 ```typescript
 const flagCombinations = [
-  { new_checkout: true,  dark_mode: true,  beta_dashboard: true,  payments_v2: true },
-  { new_checkout: true,  dark_mode: false, beta_dashboard: true,  payments_v2: false },
-  { new_checkout: false, dark_mode: true,  beta_dashboard: false, payments_v2: true },
-  { new_checkout: false, dark_mode: false, beta_dashboard: false, payments_v2: false },
-  { new_checkout: true,  dark_mode: true,  beta_dashboard: false, payments_v2: false },
-  { new_checkout: false, dark_mode: false, beta_dashboard: true,  payments_v2: true },
+  {
+    new_checkout: true,
+    dark_mode: true,
+    beta_dashboard: true,
+    payments_v2: true,
+  },
+  {
+    new_checkout: true,
+    dark_mode: false,
+    beta_dashboard: true,
+    payments_v2: false,
+  },
+  {
+    new_checkout: false,
+    dark_mode: true,
+    beta_dashboard: false,
+    payments_v2: true,
+  },
+  {
+    new_checkout: false,
+    dark_mode: false,
+    beta_dashboard: false,
+    payments_v2: false,
+  },
+  {
+    new_checkout: true,
+    dark_mode: true,
+    beta_dashboard: false,
+    payments_v2: false,
+  },
+  {
+    new_checkout: false,
+    dark_mode: false,
+    beta_dashboard: true,
+    payments_v2: true,
+  },
   // ... generated by an all-pairs tool
 ];
 
 for (const combo of flagCombinations) {
-  test(`flags ${JSON.stringify(combo)} renders correctly`, async ({ page, pinFlags }) => {
+  test(`flags ${JSON.stringify(combo)} renders correctly`, async ({
+    page,
+    pinFlags,
+  }) => {
     await pinFlags(combo);
-    await page.goto('/dashboard');
-    await expect(page.locator('body')).toBeVisible();
+    await page.goto("/dashboard");
+    await expect(page.locator("body")).toBeVisible();
     // Assert no crash
   });
 }
@@ -454,25 +579,25 @@ async function findStaleFlags(
   return staleFlags;
 }
 
-test('stale flag report', async () => {
+test("stale flag report", async () => {
   const stale = await findStaleFlags(launchDarklyClient, 90);
-  console.log(`Stale flags (> 90 days): ${stale.join(', ')}`);
-  expect(stale, 'Expected no flags unused for 90+ days').toHaveLength(0);
+  console.log(`Stale flags (> 90 days): ${stale.join(", ")}`);
+  expect(stale, "Expected no flags unused for 90+ days").toHaveLength(0);
 });
 ```
 
 ### Testing "flag removed" graceful degradation
 
 ```typescript
-test('@teardown flag removed — app falls back to default', async ({ page }) => {
+test("@teardown flag removed — app falls back to default", async ({ page }) => {
   const consoleErrors: string[] = [];
-  page.on('console', msg => {
-    if (msg.type() === 'error') consoleErrors.push(msg.text());
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text());
   });
 
-  await page.goto('/dashboard');
-  await expect(page.locator('.main-content')).toBeVisible();
-  expect(consoleErrors.filter(e => !e.includes('favicon'))).toHaveLength(0);
+  await page.goto("/dashboard");
+  await expect(page.locator(".main-content")).toBeVisible();
+  expect(consoleErrors.filter((e) => !e.includes("favicon"))).toHaveLength(0);
 });
 ```
 
@@ -515,18 +640,18 @@ test('@teardown flag removed — app falls back to default', async ({ page }) =>
 
 ## 15. Decision Matrix — Where to Test Flag Logic
 
-| Scenario | Best layer | Rationale |
-|---|---|---|
-| Flag SDK evaluation (what value does the SDK return?) | Unit test | No browser needed, fast, deterministic |
-| Default value when flag is missing | Unit test | No external dependency |
-| Flag state to UI element renders | E2E (Playwright) | User-visible behaviour |
-| Flag override mechanism (bootstrap/cookie) | E2E | Must verify the override actually reaches the app |
-| Multiple flags interacting (combinatorial) | E2E or integration | Browser context required |
-| Flag evaluation latency / streaming | E2E with timing assertions | Must measure real browser behaviour |
-| A/B experiment bucketing | E2E | Analytics event context lives in browser |
-| Flag deprecation / removal | E2E | End-to-end path must degrade gracefully |
-| Flag provider API contract | Integration / API test | Not a browser concern |
-| Stale flag detection | CI script / scheduled job | Not a browser test |
+| Scenario                                              | Best layer                 | Rationale                                         |
+| ----------------------------------------------------- | -------------------------- | ------------------------------------------------- |
+| Flag SDK evaluation (what value does the SDK return?) | Unit test                  | No browser needed, fast, deterministic            |
+| Default value when flag is missing                    | Unit test                  | No external dependency                            |
+| Flag state to UI element renders                      | E2E (Playwright)           | User-visible behaviour                            |
+| Flag override mechanism (bootstrap/cookie)            | E2E                        | Must verify the override actually reaches the app |
+| Multiple flags interacting (combinatorial)            | E2E or integration         | Browser context required                          |
+| Flag evaluation latency / streaming                   | E2E with timing assertions | Must measure real browser behaviour               |
+| A/B experiment bucketing                              | E2E                        | Analytics event context lives in browser          |
+| Flag deprecation / removal                            | E2E                        | End-to-end path must degrade gracefully           |
+| Flag provider API contract                            | Integration / API test     | Not a browser concern                             |
+| Stale flag detection                                  | CI script / scheduled job  | Not a browser test                                |
 
 **Rule of thumb**: If it affects what the user sees, it belongs in an E2E test. If it is pure logic internal to the SDK, it belongs in a unit test.
 
@@ -552,13 +677,13 @@ This is the difference between a test suite that exists and a test suite that en
 
 ### Maturity model
 
-| Level | Flag testing maturity |
-|---|---|
-| **L1** | Tests do not pin flag state — flaky, blamed on "the flag" |
-| **L2** | Flag pin fixture exists, used inconsistently |
-| **L3** | Every flagged behaviour has a test for both on/off states |
+| Level  | Flag testing maturity                                         |
+| ------ | ------------------------------------------------------------- |
+| **L1** | Tests do not pin flag state — flaky, blamed on "the flag"     |
+| **L2** | Flag pin fixture exists, used inconsistently                  |
+| **L3** | Every flagged behaviour has a test for both on/off states     |
 | **L4** | Combinatorial multi-flag coverage, stale flag detection in CI |
-| **L5** | Flag tests are the gate for promoting a flag to 100% rollout |
+| **L5** | Flag tests are the gate for promoting a flag to 100% rollout  |
 
 Most teams are L1-L2. L3 is achievable in one quarter. L4-5 require process discipline.
 
@@ -571,15 +696,18 @@ Feature flags are a first line of defence during active incidents. A tested kill
 ### The kill-switch pattern
 
 ```typescript
-test('@security:kill-switch disables payment processing', async ({ page, pinFlags }) => {
+test("@security:kill-switch disables payment processing", async ({
+  page,
+  pinFlags,
+}) => {
   await pinFlags({ payment_processing_enabled: false });
-  await page.goto('/checkout');
-  await page.fill('input[name=card]', '4111111111111111');
-  await page.click('button[type=submit]');
+  await page.goto("/checkout");
+  await page.fill("input[name=card]", "4111111111111111");
+  await page.click("button[type=submit]");
   // Payment endpoint should return an error or redirect to safe state
   const response = await page.evaluate(async () => {
-    const r = await fetch('/api/payment', {
-      method: 'POST',
+    const r = await fetch("/api/payment", {
+      method: "POST",
       body: JSON.stringify({ amount: 100 }),
     });
     return { status: r.status, ok: r.ok };
@@ -587,11 +715,14 @@ test('@security:kill-switch disables payment processing', async ({ page, pinFlag
   expect(response.status).toBeGreaterThanOrEqual(400);
 });
 
-test('@security:kill-switch disables new feature under DDoS', async ({ page, pinFlags }) => {
+test("@security:kill-switch disables new feature under DDoS", async ({
+  page,
+  pinFlags,
+}) => {
   await pinFlags({ new_api_endpoint: false });
-  await page.goto('/new-endpoint');
-  await expect(page.locator('.feature-disabled-notice')).toBeVisible();
-  await expect(page.url()).not.toContain('/new-endpoint');
+  await page.goto("/new-endpoint");
+  await expect(page.locator(".feature-disabled-notice")).toBeVisible();
+  await expect(page.url()).not.toContain("/new-endpoint");
 });
 ```
 
@@ -605,7 +736,10 @@ test('@security:kill-switch disables new feature under DDoS', async ({ page, pin
 ### Incident response integration
 
 ```typescript
-async function emergencyDisableFlag(flagKey: string, reason: string): Promise<void> {
+async function emergencyDisableFlag(
+  flagKey: string,
+  reason: string,
+): Promise<void> {
   await flagProvider.updateFlag(flagKey, false, {
     comment: `EMERGENCY DISABLE: ${reason} at ${new Date().toISOString()}`,
   });
@@ -628,13 +762,20 @@ Build a `flagProvider` fixture that supports three override patterns:
 
 ```typescript
 // framework/fixtures/flag.fixture.ts
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 export type FlagOverride = Record<string, unknown>;
 
 type FlagProviderFixture = {
-  pinFlag: (flagKey: string, value: unknown, strategy?: 'localStorage' | 'cookie' | 'api') => Promise<void>;
-  pinFlags: (overrides: FlagOverride, strategy?: 'localStorage' | 'cookie' | 'api') => Promise<void>;
+  pinFlag: (
+    flagKey: string,
+    value: unknown,
+    strategy?: "localStorage" | "cookie" | "api",
+  ) => Promise<void>;
+  pinFlags: (
+    overrides: FlagOverride,
+    strategy?: "localStorage" | "cookie" | "api",
+  ) => Promise<void>;
   clearFlags: () => Promise<void>;
 };
 
@@ -642,38 +783,48 @@ export const test = base.extend<{ flagProvider: FlagProviderFixture }>({
   flagProvider: [
     async ({ page }, use) => {
       const impl: FlagProviderFixture = {
-        async pinFlag(key, value, strategy = 'localStorage') {
-          if (strategy === 'api') {
+        async pinFlag(key, value, strategy = "localStorage") {
+          if (strategy === "api") {
             await page.request.put(`${process.env.FLAGS_ADMIN_URL}/overrides`, {
-              headers: { Authorization: `Bearer ${process.env.FLAGS_ADMIN_TOKEN}` },
-              data: { userId: 'test-user', flagKey: key, value },
+              headers: {
+                Authorization: `Bearer ${process.env.FLAGS_ADMIN_TOKEN}`,
+              },
+              data: { userId: "test-user", flagKey: key, value },
             });
-          } else if (strategy === 'cookie') {
+          } else if (strategy === "cookie") {
             await page.context().addCookies([
               {
                 name: `flag_${key}`,
                 value: String(value),
-                domain: 'localhost',
-                path: '/',
+                domain: "localhost",
+                path: "/",
               },
             ]);
           } else {
-            await page.addInitScript((args) => {
-              const store: Record<string, unknown> = JSON.parse(
-                localStorage.getItem('__FLAG_OVERRIDES__') || '{}'
-              );
-              store[args.key] = args.value;
-              localStorage.setItem('__FLAG_OVERRIDES__', JSON.stringify(store));
-            }, { key, value });
+            await page.addInitScript(
+              (args) => {
+                const store: Record<string, unknown> = JSON.parse(
+                  localStorage.getItem("__FLAG_OVERRIDES__") || "{}",
+                );
+                store[args.key] = args.value;
+                localStorage.setItem(
+                  "__FLAG_OVERRIDES__",
+                  JSON.stringify(store),
+                );
+              },
+              { key, value },
+            );
           }
         },
-        async pinFlags(overrides, strategy = 'localStorage') {
+        async pinFlags(overrides, strategy = "localStorage") {
           for (const [key, value] of Object.entries(overrides)) {
             await this.pinFlag(key, value, strategy);
           }
         },
         async clearFlags() {
-          await page.evaluate(() => localStorage.removeItem('__FLAG_OVERRIDES__'));
+          await page.evaluate(() =>
+            localStorage.removeItem("__FLAG_OVERRIDES__"),
+          );
           const ctx = page.context();
           const cookies = await ctx.cookies();
           await ctx.clearCookies();
@@ -681,7 +832,7 @@ export const test = base.extend<{ flagProvider: FlagProviderFixture }>({
       };
       await use(impl);
     },
-    { scope: 'test' },
+    { scope: "test" },
   ],
 });
 ```
@@ -697,18 +848,24 @@ export const test = base.extend<{ flagProvider: FlagProviderFixture }>({
 4. **Testing both flag states for `new_dashboard`**:
 
 ```typescript
-test('@flag:new_dashboard=true — new dashboard loads', async ({ page, flagProvider }) => {
-  await flagProvider.pinFlag('new_dashboard', true, 'localStorage');
-  await page.goto('/dashboard');
-  await expect(page.locator('.dashboard-v2')).toBeVisible();
-  await expect(page.locator('.dashboard-v1')).not.toBeAttached();
+test("@flag:new_dashboard=true — new dashboard loads", async ({
+  page,
+  flagProvider,
+}) => {
+  await flagProvider.pinFlag("new_dashboard", true, "localStorage");
+  await page.goto("/dashboard");
+  await expect(page.locator(".dashboard-v2")).toBeVisible();
+  await expect(page.locator(".dashboard-v1")).not.toBeAttached();
 });
 
-test('@flag:new_dashboard=false — legacy dashboard loads', async ({ page, flagProvider }) => {
-  await flagProvider.pinFlag('new_dashboard', false, 'localStorage');
-  await page.goto('/dashboard');
-  await expect(page.locator('.dashboard-v1')).toBeVisible();
-  await expect(page.locator('.dashboard-v2')).not.toBeAttached();
+test("@flag:new_dashboard=false — legacy dashboard loads", async ({
+  page,
+  flagProvider,
+}) => {
+  await flagProvider.pinFlag("new_dashboard", false, "localStorage");
+  await page.goto("/dashboard");
+  await expect(page.locator(".dashboard-v1")).toBeVisible();
+  await expect(page.locator(".dashboard-v2")).not.toBeAttached();
 });
 ```
 
@@ -716,7 +873,7 @@ test('@flag:new_dashboard=false — legacy dashboard loads', async ({ page, flag
 
 ```typescript
 const flagState = await page.evaluate(() =>
-  JSON.parse(localStorage.getItem('__FLAG_OVERRIDES__') || '{}')
+  JSON.parse(localStorage.getItem("__FLAG_OVERRIDES__") || "{}"),
 );
 if (expectedValue === true) {
   expect(flagState.new_dashboard).toBeTruthy();
@@ -727,16 +884,16 @@ if (expectedValue === true) {
 
 ### Self-grading rubric
 
-| Criterion | 0 (missing) | 1 (partial) | 2 (complete) |
-|---|---|---|---|
-| `pinFlag` function implemented for localStorage | Not implemented | Only one strategy works | All three strategies implemented |
-| `pinFlags` bulk override works | No bulk method | Manually pins each flag | `pinFlags` loops correctly |
-| `clearFlags` removes overrides | Not implemented | Clears localStorage only | Clears all override strategies |
-| Both `new_dashboard` states tested | Only one state | One state + one edge case | Both states with assertions |
-| Pin verification added | No verification | Partial check | Full `evaluate` assertion on flag value |
-| No `waitForTimeout` in tests | Used `waitForTimeout` | Partial use | Zero `waitForTimeout` calls |
-| Fixture scoped correctly | Global scope | Test scope declared but not used | `{ scope: 'test' }` correctly used |
-| **Total** | **0-6** | **1-12** | **8-16** |
+| Criterion                                       | 0 (missing)           | 1 (partial)                      | 2 (complete)                            |
+| ----------------------------------------------- | --------------------- | -------------------------------- | --------------------------------------- |
+| `pinFlag` function implemented for localStorage | Not implemented       | Only one strategy works          | All three strategies implemented        |
+| `pinFlags` bulk override works                  | No bulk method        | Manually pins each flag          | `pinFlags` loops correctly              |
+| `clearFlags` removes overrides                  | Not implemented       | Clears localStorage only         | Clears all override strategies          |
+| Both `new_dashboard` states tested              | Only one state        | One state + one edge case        | Both states with assertions             |
+| Pin verification added                          | No verification       | Partial check                    | Full `evaluate` assertion on flag value |
+| No `waitForTimeout` in tests                    | Used `waitForTimeout` | Partial use                      | Zero `waitForTimeout` calls             |
+| Fixture scoped correctly                        | Global scope          | Test scope declared but not used | `{ scope: 'test' }` correctly used      |
+| **Total**                                       | **0-6**               | **1-12**                         | **8-16**                                |
 
 **Passing threshold**: 12/16. Below 12, revisit and retest.
 

@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
 
 **Cross-links:**
+
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — Three-layer verification pattern
 - [`28_Test_Data_Lifecycle_and_Cleanup.md`](./28_Test_Data_Lifecycle_and_Cleanup.md) — DB seeding strategy
 - [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](../03_D365_And_Patterns/15_CrossSite_Pattern5_UI_API_Side_Effects.md) — When DB is the ground truth
@@ -16,6 +17,43 @@
 - **WHO**: SDETs on teams where they have DB access (most enterprise on-premise or internal test environments). Not for production-only deployments.
 - **WHEN**: For critical write operations — creation, status changes, financial records, audit logs. You don't need DB verification for every read operation.
 - **HOW**: A typed `DbClient` wrapper that opens a connection in the fixture, executes typed queries, and closes after each test.
+
+---
+
+## 0. War Stories — When SQL Saved the Day (and When It Didn't)
+
+### Story 1: The API that lied for 6 months
+
+The citation management service returned `{ status: "PENDING" }` for new citations. Tests asserted on the API response. Every test passed.
+
+Six months after launch, a support ticket: "Citations are never being processed." Investigation: the database had `status = 'OVERDUE'` for every citation created in the last 6 months. The API was returning stale values from a Redis cache that was seeded at startup and never invalidated. The write path had silently broken when a migration changed the column name from `status` to `citation_status`.
+
+The API read path was querying the old column name, getting null, and falling back to the cached "PENDING" value. The tests never checked the database.
+
+A single test with `await dbClient.query('SELECT citation_status FROM citations WHERE id = $1', [citationId])` would have caught this on day 1.
+
+**Cost of not verifying DB:** 6 months of broken data. 14,000 unprocessed citations. Entire backlog required manual review.
+
+### Story 2: The 40K connection pool exhaustion
+
+A team added DB verification to every test. 80 tests, each opening a new `pg.Client()` in `beforeEach` and closing in `afterEach`. Locally: fine. In CI with `workers: 4` and `fullyParallel: true`: 80 tests × 4 workers = up to 320 concurrent connections. The PostgreSQL server's `max_connections` was 100.
+
+Tests started failing with `too many connections for role "test_user"`. The failures were random — whichever test tried to open a connection when all 100 slots were taken.
+
+Fix: pool-scoped connection (Section 10 of this chapter):
+
+```typescript
+// worker-scoped: one pool per worker process, not per test
+db: [async ({ }, use) => {
+  const pool = new Pool({ max: 3 }); // 3 connections per worker
+  await use(pool);
+  await pool.end();
+}, { scope: 'worker' }]
+```
+
+4 workers × 3 connections = 12 total. No more exhaustion.
+
+**Lesson:** Every test tool that touches a shared resource (DB, queue, file system) needs a scoped strategy. `test`-scoped = one-per-test. `worker`-scoped = one-per-process. For DB connections, always use `worker`-scoped pooling.
 
 ---
 
@@ -54,7 +92,7 @@ npm install --save-dev @types/pg
 ```typescript
 // clients/DbClient.ts — your database client
 
-import { Pool, type PoolClient, type QueryResult } from 'pg';
+import { Pool, type PoolClient, type QueryResult } from "pg";
 
 export class DbClient {
   private pool: Pool;
@@ -62,13 +100,14 @@ export class DbClient {
 
   constructor() {
     this.pool = new Pool({
-      host:     process.env.DB_HOST!,
-      port:     parseInt(process.env.DB_PORT ?? '5432'),
+      host: process.env.DB_HOST!,
+      port: parseInt(process.env.DB_PORT ?? "5432"),
       database: process.env.DB_NAME!,
-      user:     process.env.DB_USER!,
+      user: process.env.DB_USER!,
       password: process.env.DB_PASSWORD!,
-      ssl:      process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-      max: 2,           // max 2 connections per test (keep it low)
+      ssl:
+        process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
+      max: 2, // max 2 connections per test (keep it low)
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 10_000,
     });
@@ -81,9 +120,10 @@ export class DbClient {
   // Execute a typed query: returns rows as T[]
   async query<T extends Record<string, unknown>>(
     sql: string,
-    params: unknown[] = []
+    params: unknown[] = [],
   ): Promise<T[]> {
-    if (!this.client) throw new Error('DbClient: not connected. Call connect() first.');
+    if (!this.client)
+      throw new Error("DbClient: not connected. Call connect() first.");
     const result: QueryResult<T> = await this.client.query(sql, params);
     return result.rows;
   }
@@ -91,17 +131,18 @@ export class DbClient {
   // Convenience: expect exactly one row
   async queryOne<T extends Record<string, unknown>>(
     sql: string,
-    params: unknown[] = []
+    params: unknown[] = [],
   ): Promise<T | null> {
     const rows = await this.query<T>(sql, params);
     if (rows.length === 0) return null;
-    if (rows.length > 1) throw new Error(`queryOne: expected 1 row, got ${rows.length}`);
+    if (rows.length > 1)
+      throw new Error(`queryOne: expected 1 row, got ${rows.length}`);
     return rows[0];
   }
 
   // Execute a write (INSERT/UPDATE/DELETE) — returns affected row count
   async execute(sql: string, params: unknown[] = []): Promise<number> {
-    if (!this.client) throw new Error('DbClient: not connected.');
+    if (!this.client) throw new Error("DbClient: not connected.");
     const result = await this.client.query(sql, params);
     return result.rowCount ?? 0;
   }
@@ -124,27 +165,30 @@ npm install --save-dev @types/mssql
 ```typescript
 // clients/SqlServerClient.ts
 
-import sql from 'mssql';
+import sql from "mssql";
 
 export class SqlServerClient {
   private pool: sql.ConnectionPool | null = null;
 
   async connect(): Promise<void> {
     this.pool = await sql.connect({
-      server:   process.env.MSSQL_HOST!,
+      server: process.env.MSSQL_HOST!,
       database: process.env.MSSQL_DATABASE!,
-      user:     process.env.MSSQL_USER!,
+      user: process.env.MSSQL_USER!,
       password: process.env.MSSQL_PASSWORD!,
-      port:     parseInt(process.env.MSSQL_PORT ?? '1433'),
+      port: parseInt(process.env.MSSQL_PORT ?? "1433"),
       options: {
-        encrypt: true,                         // required for Azure SQL
-        trustServerCertificate: process.env.MSSQL_TRUST_CERT === 'true',
+        encrypt: true, // required for Azure SQL
+        trustServerCertificate: process.env.MSSQL_TRUST_CERT === "true",
       },
     });
   }
 
-  async query<T>(sql: string, params: Record<string, unknown> = {}): Promise<T[]> {
-    if (!this.pool) throw new Error('SqlServerClient: not connected.');
+  async query<T>(
+    sql: string,
+    params: Record<string, unknown> = {},
+  ): Promise<T[]> {
+    if (!this.pool) throw new Error("SqlServerClient: not connected.");
     const request = this.pool.request();
     // Bind parameters to prevent SQL injection
     for (const [key, value] of Object.entries(params)) {
@@ -178,7 +222,7 @@ export const test = base.extend<{
     try {
       await use(client);
     } finally {
-      await client.disconnect();  // always disconnect after test
+      await client.disconnect(); // always disconnect after test
     }
   },
   // ... other fixtures
@@ -208,14 +252,14 @@ sequenceDiagram
 
     Test->>DB: 3. Query DB Record
     DB-->>Test: Assert Status='PENDING' ✅
-    
+
     Note over Test: If API cached stale data, DB assertion catches it.
 ```
 
 ```typescript
 // tests/specs/citations/create-citation-three-layer.spec.ts
 
-test('Create citation — verified at UI + API + DB level', async ({
+test("Create citation — verified at UI + API + DB level", async ({
   page,
   citationsClient,
   account,
@@ -225,17 +269,17 @@ test('Create citation — verified at UI + API + DB level', async ({
   const data = { citationId: null as string | null };
 
   // ── LAYER 1: Create via API ──────────────────────────────────────────────
-  await test.step('Create PENDING citation via API', async () => {
+  await test.step("Create PENDING citation via API", async () => {
     const citation = await citationsClient.create(
-      PayloadsCitation.pending({ customerId: account.userId })
+      PayloadsCitation.pending({ customerId: account.userId }),
     );
     data.citationId = citation.citationId;
-    expect(citation.status).toBe('PENDING');
+    expect(citation.status).toBe("PENDING");
     expect(citation.customerId).toBe(account.userId);
   });
 
   // ── LAYER 2: Verify in UI ────────────────────────────────────────────────
-  await test.step('Citation appears in CRM search', async () => {
+  await test.step("Citation appears in CRM search", async () => {
     await masterSearch.goto();
     await masterSearch.searchPanel.searchByCitationId(data.citationId!);
     await masterSearch.resultsGrid.waitForResults();
@@ -245,7 +289,7 @@ test('Create citation — verified at UI + API + DB level', async ({
   });
 
   // ── LAYER 3: Verify in DB (ground truth) ─────────────────────────────────
-  await test.step('DB: citation row is correct in database', async () => {
+  await test.step("DB: citation row is correct in database", async () => {
     // Direct SQL — this CANNOT lie like a caching API can
     const row = await dbClient.queryOne<{
       citation_id: string;
@@ -254,14 +298,14 @@ test('Create citation — verified at UI + API + DB level', async ({
       amount: number;
       created_at: Date;
     }>(
-      'SELECT citation_id, customer_id, status, amount, created_at FROM citations WHERE citation_id = $1',
-      [data.citationId]
+      "SELECT citation_id, customer_id, status, amount, created_at FROM citations WHERE citation_id = $1",
+      [data.citationId],
     );
 
-    expect(row, 'Citation must exist in database').not.toBeNull();
-    expect(row!.status).toBe('PENDING');
+    expect(row, "Citation must exist in database").not.toBeNull();
+    expect(row!.status).toBe("PENDING");
     expect(row!.customer_id).toBe(account.userId);
-    expect(row!.amount).toBe(150.00);
+    expect(row!.amount).toBe(150.0);
     // Verify it was created within the last 60 seconds
     const ageMs = Date.now() - row!.created_at.getTime();
     expect(ageMs).toBeLessThan(60_000);
@@ -283,24 +327,24 @@ Always type your DB query results — column names from SQL can be anything:
 export interface CitationDbRow {
   citation_id: string;
   customer_id: string;
-  status: 'PENDING' | 'PAID' | 'OVERDUE' | 'DISPUTED' | 'CANCELLED';
-  amount: number;             // DECIMAL in DB → number in TypeScript
+  status: "PENDING" | "PAID" | "OVERDUE" | "DISPUTED" | "CANCELLED";
+  amount: number; // DECIMAL in DB → number in TypeScript
   citation_type: string;
-  issue_date: Date;           // DATE in DB → Date in TypeScript
-  due_date: Date | null;      // nullable
+  issue_date: Date; // DATE in DB → Date in TypeScript
+  due_date: Date | null; // nullable
   notes: string | null;
   officer_id: string | null;
   created_at: Date;
   updated_at: Date;
-  is_deleted: boolean;        // soft-delete flag
+  is_deleted: boolean; // soft-delete flag
 }
 
 export interface NotificationDbRow {
   notification_id: string;
   user_id: string;
   type: string;
-  channel: 'email' | 'sms' | 'push';
-  status: 'queued' | 'sent' | 'delivered' | 'failed';
+  channel: "email" | "sms" | "push";
+  status: "queued" | "sent" | "delivered" | "failed";
   sent_at: Date | null;
   reference_id: string | null;
   created_at: Date;
@@ -310,10 +354,10 @@ export interface AuditLogDbRow {
   log_id: string;
   entity_type: string;
   entity_id: string;
-  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  action: "CREATE" | "UPDATE" | "DELETE";
   changed_by: string;
-  old_value: unknown;     // JSONB in DB
-  new_value: unknown;     // JSONB in DB
+  old_value: unknown; // JSONB in DB
+  new_value: unknown; // JSONB in DB
   changed_at: Date;
 }
 ```
@@ -325,7 +369,7 @@ export interface AuditLogDbRow {
 Enterprise apps must log every change for compliance (GDPR, financial regulations). Your tests should verify audit logs:
 
 ```typescript
-await test.step('DB: Audit log records the status change', async () => {
+await test.step("DB: Audit log records the status change", async () => {
   const auditRow = await dbClient.queryOne<AuditLogDbRow>(
     `SELECT log_id, entity_type, entity_id, action, changed_by, old_value, new_value, changed_at
      FROM audit_logs
@@ -334,18 +378,18 @@ await test.step('DB: Audit log records the status change', async () => {
        AND action = 'UPDATE'
      ORDER BY changed_at DESC
      LIMIT 1`,
-    [data.citationId]
+    [data.citationId],
   );
 
-  expect(auditRow, 'Audit log must record the status change').not.toBeNull();
-  expect(auditRow!.entity_type).toBe('citation');
-  expect(auditRow!.action).toBe('UPDATE');
+  expect(auditRow, "Audit log must record the status change").not.toBeNull();
+  expect(auditRow!.entity_type).toBe("citation");
+  expect(auditRow!.action).toBe("UPDATE");
 
   // Verify the old_value and new_value JSON
   const oldValue = auditRow!.old_value as { status: string };
   const newValue = auditRow!.new_value as { status: string };
-  expect(oldValue.status).toBe('PENDING');
-  expect(newValue.status).toBe('PAID');
+  expect(oldValue.status).toBe("PENDING");
+  expect(newValue.status).toBe("PAID");
 
   // Verify changed within 30 seconds
   const ageMs = Date.now() - auditRow!.changed_at.getTime();
@@ -424,37 +468,48 @@ async hardDeleteCitation(citationId: string): Promise<void> {
 Some operations must be atomic (all-or-nothing). Test that a failed mid-transaction rollback happens correctly:
 
 ```typescript
-test('Payment failure rolls back citation status change', async ({ citationsClient, dbClient }) => {
+test("Payment failure rolls back citation status change", async ({
+  citationsClient,
+  dbClient,
+}) => {
   // Create a citation to work with
   const citation = await citationsClient.create(
-    PayloadsCitation.pending({ customerId: 'CUST-001' })
+    PayloadsCitation.pending({ customerId: "CUST-001" }),
   );
 
   // Attempt payment with an invalid card — should fail
-  const paymentResponse = await citationsClient.processPayment(citation.citationId, {
-    cardNumber: '4000000000000002',  // Stripe test card that always declines
-    amount:     citation.amount,
-  });
+  const paymentResponse = await citationsClient.processPayment(
+    citation.citationId,
+    {
+      cardNumber: "4000000000000002", // Stripe test card that always declines
+      amount: citation.amount,
+    },
+  );
 
-  expect(paymentResponse.status).toBe(402);  // Payment Required (declined)
+  expect(paymentResponse.status).toBe(402); // Payment Required (declined)
 
   // KEY ASSERTION: Citation status must NOT have changed in the DB
   // A buggy implementation might change status to PROCESSING before the payment fails
   // and forget to roll back
   const dbRow = await dbClient.queryOne<CitationDbRow>(
-    'SELECT status FROM citations WHERE citation_id = $1',
-    [citation.citationId]
+    "SELECT status FROM citations WHERE citation_id = $1",
+    [citation.citationId],
   );
 
-  expect(dbRow!.status, 'Citation must remain PENDING after payment failure (transaction rolled back)')
-    .toBe('PENDING');
+  expect(
+    dbRow!.status,
+    "Citation must remain PENDING after payment failure (transaction rolled back)",
+  ).toBe("PENDING");
 
   // Also verify no payment record was created
   const paymentRecord = await dbClient.queryOne<{ payment_id: string }>(
-    'SELECT payment_id FROM payments WHERE citation_id = $1',
-    [citation.citationId]
+    "SELECT payment_id FROM payments WHERE citation_id = $1",
+    [citation.citationId],
   );
-  expect(paymentRecord, 'No payment record should exist after declined payment').toBeNull();
+  expect(
+    paymentRecord,
+    "No payment record should exist after declined payment",
+  ).toBeNull();
 });
 ```
 
@@ -465,11 +520,14 @@ test('Payment failure rolls back citation status change', async ({ citationsClie
 Most enterprise apps don't physically delete rows — they set `is_deleted = true` or `deleted_at = now()`. Verify both sides:
 
 ```typescript
-test('Citation delete: soft-deleted in DB, hidden in UI', async ({
-  page, citationsClient, dbClient, account,
+test("Citation delete: soft-deleted in DB, hidden in UI", async ({
+  page,
+  citationsClient,
+  dbClient,
+  account,
 }) => {
   const citation = await citationsClient.create(
-    PayloadsCitation.pending({ customerId: account.userId })
+    PayloadsCitation.pending({ customerId: account.userId }),
   );
 
   // Delete via API
@@ -479,10 +537,10 @@ test('Citation delete: soft-deleted in DB, hidden in UI', async ({
   // DB: row still exists (soft delete), but marked deleted
   const dbRow = await dbClient.queryOne<CitationDbRow>(
     // Note: query without WHERE is_deleted = false to see the soft-deleted row
-    'SELECT citation_id, is_deleted, deleted_at FROM citations WHERE citation_id = $1',
-    [citation.citationId]
+    "SELECT citation_id, is_deleted, deleted_at FROM citations WHERE citation_id = $1",
+    [citation.citationId],
   );
-  expect(dbRow, 'Row should still exist in DB (soft delete)').not.toBeNull();
+  expect(dbRow, "Row should still exist in DB (soft delete)").not.toBeNull();
   expect(dbRow!.is_deleted).toBe(true);
   expect(dbRow!.deleted_at).not.toBeNull();
 
@@ -514,13 +572,13 @@ export const test = base.extend<{}, { dbClient: DbClient }>({
       const client = new DbClient();
       try {
         await client.connect();
-        console.log('[dbClient] Connected to DB');
+        console.log("[dbClient] Connected to DB");
       } catch (e) {
         throw new Error(
           `[dbClient fixture] Failed to connect to database:\n` +
-          `  Host: ${process.env.DB_HOST}\n` +
-          `  Database: ${process.env.DB_NAME}\n` +
-          `  Error: ${e}`
+            `  Host: ${process.env.DB_HOST}\n` +
+            `  Database: ${process.env.DB_NAME}\n` +
+            `  Error: ${e}`,
         );
       }
 
@@ -528,9 +586,9 @@ export const test = base.extend<{}, { dbClient: DbClient }>({
 
       // Teardown: runs once per worker after ALL tests
       await client.disconnect();
-      console.log('[dbClient] Disconnected from DB');
+      console.log("[dbClient] Disconnected from DB");
     },
-    { scope: 'worker' },  // 1 connection per worker, not per test
+    { scope: "worker" }, // 1 connection per worker, not per test
   ],
 });
 
@@ -548,21 +606,23 @@ DB assertions are internal automation code, but still write them safely:
 
 ```typescript
 // ❌ NEVER: string concatenation (SQL injection risk, even in test code)
-const citationId = testData.citationId;  // could be "'; DROP TABLE citations; --"
+const citationId = testData.citationId; // could be "'; DROP TABLE citations; --"
 const rows = await client.query(
-  `SELECT * FROM citations WHERE citation_id = '${citationId}'`  // DANGEROUS
+  `SELECT * FROM citations WHERE citation_id = '${citationId}'`, // DANGEROUS
 );
 
 // ✅ ALWAYS: parameterized queries (prevents injection, also handles escaping)
 const rows = await client.query<CitationDbRow>(
-  'SELECT * FROM citations WHERE citation_id = $1',  // PostgreSQL positional param
-  [citationId]  // bound safely
+  "SELECT * FROM citations WHERE citation_id = $1", // PostgreSQL positional param
+  [citationId], // bound safely
 );
 
 // SQL Server parameterization:
 const request = this.pool.request();
-request.input('citationId', sql.NVarChar, citationId);  // typed param
-const result = await request.query('SELECT * FROM Citations WHERE CitationId = @citationId');
+request.input("citationId", sql.NVarChar, citationId); // typed param
+const result = await request.query(
+  "SELECT * FROM Citations WHERE CitationId = @citationId",
+);
 
 // Why this matters even in test code:
 // 1. If testData is ever read from a file or external source, injection is possible
@@ -578,11 +638,11 @@ export const Environments = {
   local: {
     // ... existing URL config ...
     db: {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      database: 'citations_test',
-      user: 'test_user',
-      password: 'test_password',
+      database: "citations_test",
+      user: "test_user",
+      password: "test_password",
       ssl: false,
     },
   },
@@ -590,7 +650,7 @@ export const Environments = {
     // ... existing URL config ...
     db: {
       host: process.env.DB_HOST!,
-      port: parseInt(process.env.DB_PORT ?? '5432'),
+      port: parseInt(process.env.DB_PORT ?? "5432"),
       database: process.env.DB_NAME!,
       user: process.env.DB_USER!,
       password: process.env.DB_PASSWORD!,
@@ -601,8 +661,15 @@ export const Environments = {
 ```
 
 **Add to `scripts/check-env.ts`:**
+
 ```typescript
-const DB_ENV_VARS = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'] as const;
+const DB_ENV_VARS = [
+  "DB_HOST",
+  "DB_PORT",
+  "DB_NAME",
+  "DB_USER",
+  "DB_PASSWORD",
+] as const;
 // Check these in addition to API env vars
 ```
 
@@ -617,13 +684,14 @@ Which scenario MOST warrants adding a DB assertion to an existing API test?
 A) GET /api/citations — returns a list of citations  
 B) GET /api/citations/CIT-001 — returns one citation's details  
 C) POST /api/payments — creates a financial payment record and debits an account  
-D) GET /api/notifications/count — returns a count  
+D) GET /api/notifications/count — returns a count
 
 <details><summary>Answer</summary>
 
 **C** — Financial write operations are the highest-stakes data in enterprise systems. A payment must be correctly recorded in the DB — the consequences of a silent write failure are severe (money processed but not recorded, or double-charged). Financial audits also require the data to be correct at the DB level, not just at the API response level.
 
 GET endpoints (A, B, D) are reads — DB verification would just compare the API response to the DB query, which mostly confirms the API is working correctly (useful but lower priority). POST/PATCH/DELETE for financial, compliance, or audit-sensitive data are where DB verification is non-negotiable.
+
 </details>
 
 ---
@@ -668,6 +736,7 @@ const citationNotif = notifications.find(n => n.type === 'CITATION_CREATED');
 expect(citationNotif).toBeDefined();
 expect(citationNotif!.status).toBe('sent');
 ```
+
 </details>
 
 ---
@@ -683,35 +752,44 @@ This indicates a **partial transaction commit** bug: the application wrote to `c
 Expected behavior: all 3 tables must update atomically — if any one fails, ALL should roll back.
 
 **Test that catches it:**
+
 ```typescript
-test('Payment updates citations + payments + audit_log atomically', async ({ citationsClient, dbClient }) => {
-  const citation = await citationsClient.create(PayloadsCitation.pending({ customerId: 'CUST-001' }));
+test("Payment updates citations + payments + audit_log atomically", async ({
+  citationsClient,
+  dbClient,
+}) => {
+  const citation = await citationsClient.create(
+    PayloadsCitation.pending({ customerId: "CUST-001" }),
+  );
   const beforePayment = new Date();
 
   await citationsClient.processPayment(citation.citationId, {
-    cardNumber: '4111111111111111',  // test success card
-    amount:     citation.amount,
+    cardNumber: "4111111111111111", // test success card
+    amount: citation.amount,
   });
 
   // Check ALL 3 tables in the same assertion step — they all must be updated
   const [citRow, payRow, auditRow] = await Promise.all([
     dbClient.queryOne<CitationDbRow>(
-      'SELECT status FROM citations WHERE citation_id = $1', [citation.citationId]
+      "SELECT status FROM citations WHERE citation_id = $1",
+      [citation.citationId],
     ),
     dbClient.queryOne<{ payment_id: string; status: string }>(
-      'SELECT payment_id, status FROM payments WHERE citation_id = $1', [citation.citationId]
+      "SELECT payment_id, status FROM payments WHERE citation_id = $1",
+      [citation.citationId],
     ),
     dbClient.queryOne<AuditLogDbRow>(
       `SELECT action FROM audit_logs WHERE entity_id = $1 AND action = 'UPDATE' AND changed_at > $2`,
-      [citation.citationId, beforePayment]
+      [citation.citationId, beforePayment],
     ),
   ]);
 
-  expect(citRow!.status,   'citations table').toBe('PAID');
-  expect(payRow!.status,   'payments table').toBe('COMPLETED');
-  expect(auditRow!.action, 'audit_log table').toBe('UPDATE');
+  expect(citRow!.status, "citations table").toBe("PAID");
+  expect(payRow!.status, "payments table").toBe("COMPLETED");
+  expect(auditRow!.action, "audit_log table").toBe("UPDATE");
 });
 ```
+
 </details>
 
 ---
@@ -723,7 +801,7 @@ You have 50 tests that need DB access. Your connection setup takes 300ms. Should
 A) `scope: 'test'` — 50 connections × 300ms = 15,000ms total overhead  
 B) `scope: 'worker'` — 4 connections × 300ms = 1,200ms total overhead  
 C) Both are the same — connection pooling handles it automatically  
-D) `scope: 'test'` is required because transactions must be per-test  
+D) `scope: 'test'` is required because transactions must be per-test
 
 <details><summary>Answer</summary>
 
@@ -732,15 +810,19 @@ D) `scope: 'test'` is required because transactions must be per-test
 **D** is a common misconception: worker scope doesn't prevent per-test transaction isolation. Each test should commit or rollback its own transactions before `use()` returns. The connection itself is reused, but transactions are test-specific.
 
 **C** is false: connection pooling reduces connection creation cost, but each `Pool.connect()` call still acquires a client from the pool (which takes time if all clients are in use). Worker-scoped fixture avoids pool churn.
+
 </details>
 
 ### Challenge 5 [Spot the Bug — SQL Injection in Test Queries]
 
 ```typescript
 // In a test helper:
-async function findCitationByPlate(db: Pool, plate: string): Promise<CitationRow | null> {
+async function findCitationByPlate(
+  db: Pool,
+  plate: string,
+): Promise<CitationRow | null> {
   const result = await db.query(
-    `SELECT * FROM citations WHERE registration_plate = '${plate}'`
+    `SELECT * FROM citations WHERE registration_plate = '${plate}'`,
   );
   return result.rows[0] ?? null;
 }
@@ -762,16 +844,21 @@ SELECT * FROM citations WHERE registration_plate = ''; DROP TABLE citations; --'
 This would truncate the `citations` table in the staging database.
 
 Why it matters in tests specifically:
+
 1. **Test data strings can contain special characters**: Plates, names, and addresses may contain apostrophes (e.g., `O'Brien-1234`). Without parameterization, these break the query with a syntax error.
 2. **Staging database destruction**: If staging is shared across teams, corrupting it blocks everyone's testing until the database is restored.
 3. **Developers copy test patterns**: If test code uses string concatenation for SQL, developers learn this pattern and may reproduce it in production code.
 
 The fix — always use parameterized queries:
+
 ```typescript
-async function findCitationByPlate(db: Pool, plate: string): Promise<CitationRow | null> {
+async function findCitationByPlate(
+  db: Pool,
+  plate: string,
+): Promise<CitationRow | null> {
   const result = await db.query(
-    'SELECT * FROM citations WHERE registration_plate = $1',
-    [plate]  // parameter binding — the driver handles escaping
+    "SELECT * FROM citations WHERE registration_plate = $1",
+    [plate], // parameter binding — the driver handles escaping
   );
   return result.rows[0] ?? null;
 }
@@ -786,4 +873,5 @@ Rule: never use string interpolation for SQL in ANY environment. Parameterized q
 </details>
 
 ---
+
 **Navigation**: [← Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)

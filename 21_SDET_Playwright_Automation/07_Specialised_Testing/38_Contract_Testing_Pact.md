@@ -3,17 +3,20 @@
 **Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
 
 **Open-Source Tools Referenced:**
+
 - **Pact** — https://github.com/pact-foundation/pact-js (MIT License) — the consumer-driven contract testing framework
 - **Pact Broker** — https://github.com/pact-foundation/pact_broker (MIT License) — contract registry
 - **PactFlow** — https://pactflow.io — managed Pact Broker (free tier + paid)
 
 **Online References:**
+
 - https://docs.pact.io/ — Official Pact documentation
 - https://martinfowler.com/bliki/ConsumerDrivenContracts.html — Martin Fowler's original article
 - https://docs.pact.io/consumer — Consumer test guide
 - https://docs.pact.io/provider — Provider verification guide
 
 **Cross-references (this repo):**
+
 - [`../../06_OOP_Design/03_System_Design.md`](../../06_OOP_Design/03_System_Design.md) — Microservices architecture that makes contract testing necessary
 - [`../../22_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../22_Advanced_API_Testing/01_API_Testing_Foundations.md) — REST fundamentals that Pact tests are built on
 
@@ -29,24 +32,70 @@
 
 ---
 
+## 0. War Stories — What Breaks Without Contract Testing
+
+### Story 1: The field rename that took 3 days to diagnose
+
+A citations backend team renamed `citationId` to `id` in the `GET /citations/{id}` response. They updated their own unit tests. The API team's CI was green.
+
+The frontend team's E2E tests mocked the API — they returned `{ citationId: '...' }` from their mock. Their CI was also green.
+
+On deployment Friday: the frontend couldn't display any citation. Every detail page showed "Citation not found." The real API was returning `{ id: '...' }` but the frontend was reading `response.citationId` (undefined).
+
+Diagnosis: 3 hours to identify the field rename. The backend team thought they were making a "backwards-compatible" change. They were not aware the frontend used the old field name.
+
+With Pact: the consumer test would have had:
+```typescript
+body: { citationId: like('CIT-001') } // consumer expects this field name
+```
+When the provider verification ran against `{ id: '...' }`, it would have failed immediately: `"citationId" is not present in the response body`. The PR that renamed the field would have had a failing CI gate before deployment.
+
+**Net cost without Pact:** 3-hour production outage on a Friday, requiring an emergency rollback. Total engineer time: ~8 hours across 3 teams.
+
+### Story 2: The Pact Broker that nobody queried (CI wasn't wired)
+
+A team set up Pact. Consumer tests published contracts to Pact Broker. Provider verification ran... manually, when someone remembered. The `can-i-deploy` check was not wired into CI.
+
+Six months later, a developer deployed the provider with a breaking change. The consumer contract verification had failed the previous week, but nobody saw it because no CI gate blocked the deployment.
+
+The missing CI wiring:
+```yaml
+# provider CI — this job must block deployment
+- name: Verify pact contracts
+  run: npx pact-provider-verifier verify
+  env:
+    PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_URL }}
+    PACT_PROVIDER_NAME: citations-service
+
+- name: Can I deploy?
+  run: npx pact-broker can-i-deploy --pacticipant citations-service --version ${{ github.sha }} --to production
+  env:
+    PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_URL }}
+```
+
+**Lesson:** Contract testing without CI integration is a manual audit tool, not a safety net. `can-i-deploy` in the deployment pipeline is the gate. Without it, the Pact Broker is an expensive dashboard nobody watches.
+
+---
+
 ## 1. The Problem Pact Solves — A Real Scenario
 
 **The Contract Testing Workflow:**
+
 ```mermaid
 sequenceDiagram
     participant Consumer
     participant PactBroker as Pact Broker
     participant Provider
-    
+
     Note over Consumer: 1. Consumer writes test<br/>defining expected response
     Consumer->>Consumer: Run tests against Mock Server
     Consumer->>PactBroker: 2. Publish Contract (pact.json)
-    
+
     Note over Provider: 3. Provider pulls contract<br/>during CI
     PactBroker->>Provider: Fetch pact.json
     Provider->>Provider: Run Verification against Real API
     Provider->>PactBroker: 4. Publish Verification Results
-    
+
     Note over Consumer,Provider: Both teams use `can-i-deploy` to check safe deployment status
 ```
 
@@ -107,154 +156,171 @@ The consumer test defines what your code SENDS and what it EXPECTS BACK:
 //  3. Verifies your client handles the response correctly
 //  4. Records the interaction as a "pact" (JSON contract file)
 
-import { PactV3, MatchersV3 } from '@pact-foundation/pact';
-import path from 'path';
+import { PactV3, MatchersV3 } from "@pact-foundation/pact";
+import path from "path";
 
 // Matchers: https://docs.pact.io/consumer/matching
-const { like, eachLike, regex, timestamp, string, integer, decimal } = MatchersV3;
+const { like, eachLike, regex, timestamp, string, integer, decimal } =
+  MatchersV3;
 
 // Create a Pact between your consumer and the provider
 const provider = new PactV3({
-  consumer: 'PlaywrightTestSuite',         // your consumer's name
-  provider: 'CitationManagementService',   // the API you're calling
-  dir: path.resolve(__dirname, '../../pacts'),  // where to save the contract file
-  logLevel: 'warn',
+  consumer: "PlaywrightTestSuite", // your consumer's name
+  provider: "CitationManagementService", // the API you're calling
+  dir: path.resolve(__dirname, "../../pacts"), // where to save the contract file
+  logLevel: "warn",
 });
 
-describe('Citation Management Service — Consumer Contract', () => {
-
+describe("Citation Management Service — Consumer Contract", () => {
   // Contract 1: GET a citation by ID
-  test('GET /api/v2/citations/:id → returns citation details', async () => {
+  test("GET /api/v2/citations/:id → returns citation details", async () => {
     await provider
       .addInteraction({
-        states: [{ description: 'citation CIT-001 exists' }],
-        uponReceiving: 'a request for citation CIT-001',
+        states: [{ description: "citation CIT-001 exists" }],
+        uponReceiving: "a request for citation CIT-001",
 
         withRequest: {
-          method: 'GET',
-          path: '/api/v2/citations/CIT-001',
+          method: "GET",
+          path: "/api/v2/citations/CIT-001",
           headers: {
-            Accept: 'application/json',
-            Authorization: regex({ generate: 'Bearer test-token', matcher: '^Bearer .+$' }),
+            Accept: "application/json",
+            Authorization: regex({
+              generate: "Bearer test-token",
+              matcher: "^Bearer .+$",
+            }),
           },
         },
 
         willRespondWith: {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
           body: {
             // Use matchers — not exact values.
             // like() means "I care about the TYPE and structure, not the exact value"
             // This makes the contract stable even when test data changes.
-            citationId: like('CIT-001'),       // string — must exist, exact value doesn't matter
-            customerId: like('USR-001'),        // string — must exist
+            citationId: like("CIT-001"), // string — must exist, exact value doesn't matter
+            customerId: like("USR-001"), // string — must exist
             status: regex({
-              generate: 'PENDING',
-              matcher: '^(PENDING|PAID|OVERDUE|DISPUTED|CANCELLED)$',  // only valid statuses
+              generate: "PENDING",
+              matcher: "^(PENDING|PAID|OVERDUE|DISPUTED|CANCELLED)$", // only valid statuses
             }),
-            amount:    decimal(150.00),         // number
-            issueDate: timestamp('yyyy-MM-dd', '2026-01-15'),  // ISO date string
+            amount: decimal(150.0), // number
+            issueDate: timestamp("yyyy-MM-dd", "2026-01-15"), // ISO date string
             // Optional field — use like() so contract still passes if it changes
-            notes: like('Sample note'),
+            notes: like("Sample note"),
           },
         },
       })
       .executeTest(async (mockServer) => {
         // Your REAL client code runs against the mock server:
-        const client = new CitationsApiClient(
-          mockServer.url,
-          'test-token'
-        );
-        const citation = await client.getById('CIT-001');
+        const client = new CitationsApiClient(mockServer.url, "test-token");
+        const citation = await client.getById("CIT-001");
 
         // Assert your client handles the response correctly:
-        expect(citation.citationId).toBe('CIT-001');
-        expect(['PENDING','PAID','OVERDUE','DISPUTED','CANCELLED']).toContain(citation.status);
-        expect(typeof citation.amount).toBe('number');
+        expect(citation.citationId).toBe("CIT-001");
+        expect([
+          "PENDING",
+          "PAID",
+          "OVERDUE",
+          "DISPUTED",
+          "CANCELLED",
+        ]).toContain(citation.status);
+        expect(typeof citation.amount).toBe("number");
       });
   });
 
   // Contract 2: POST to create a citation
-  test('POST /api/v2/citations → creates a new citation', async () => {
+  test("POST /api/v2/citations → creates a new citation", async () => {
     await provider
       .addInteraction({
-        states: [{ description: 'user USR-001 exists and can create citations' }],
-        uponReceiving: 'a request to create a PENDING citation',
+        states: [
+          { description: "user USR-001 exists and can create citations" },
+        ],
+        uponReceiving: "a request to create a PENDING citation",
 
         withRequest: {
-          method: 'POST',
-          path: '/api/v2/citations',
+          method: "POST",
+          path: "/api/v2/citations",
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: regex({ generate: 'Bearer test-token', matcher: '^Bearer .+$' }),
+            "Content-Type": "application/json",
+            Authorization: regex({
+              generate: "Bearer test-token",
+              matcher: "^Bearer .+$",
+            }),
           },
           body: {
-            customerId: like('USR-001'),
-            amount:     decimal(150),
-            status:     'PENDING',
+            customerId: like("USR-001"),
+            amount: decimal(150),
+            status: "PENDING",
             // 'citationType' is required by our client — contract verifies the provider accepts it
-            citationType: like('PARKING'),
+            citationType: like("PARKING"),
           },
         },
 
         willRespondWith: {
           status: 201,
           headers: {
-            'Content-Type': 'application/json',
-            'Location': regex({
-              generate: '/api/v2/citations/CIT-001',
-              matcher: '^/api/v2/citations/.+$',  // any valid citation path
+            "Content-Type": "application/json",
+            Location: regex({
+              generate: "/api/v2/citations/CIT-001",
+              matcher: "^/api/v2/citations/.+$", // any valid citation path
             }),
           },
           body: {
-            citationId: like('CIT-001'),    // a string ID is returned
-            status:     like('PENDING'),
-            amount:     decimal(150),
+            citationId: like("CIT-001"), // a string ID is returned
+            status: like("PENDING"),
+            amount: decimal(150),
           },
         },
       })
       .executeTest(async (mockServer) => {
-        const client = new CitationsApiClient(mockServer.url, 'test-token');
+        const client = new CitationsApiClient(mockServer.url, "test-token");
         const citation = await client.create({
-          customerId: 'USR-001',
+          customerId: "USR-001",
           amount: 150,
-          status: 'PENDING',
-          citationType: 'PARKING',
+          status: "PENDING",
+          citationType: "PARKING",
         });
 
         expect(citation.citationId).toBeTruthy();
-        expect(citation.status).toBe('PENDING');
+        expect(citation.status).toBe("PENDING");
       });
   });
 
   // Contract 3: 404 response when citation doesn't exist
-  test('GET /api/v2/citations/:id → 404 when citation not found', async () => {
+  test("GET /api/v2/citations/:id → 404 when citation not found", async () => {
     await provider
       .addInteraction({
-        states: [{ description: 'citation CIT-NONEXISTENT does not exist' }],
-        uponReceiving: 'a request for a non-existent citation',
+        states: [{ description: "citation CIT-NONEXISTENT does not exist" }],
+        uponReceiving: "a request for a non-existent citation",
         withRequest: {
-          method: 'GET',
-          path: '/api/v2/citations/CIT-NONEXISTENT',
-          headers: { Authorization: regex({ generate: 'Bearer t', matcher: '^Bearer .+$' }) },
+          method: "GET",
+          path: "/api/v2/citations/CIT-NONEXISTENT",
+          headers: {
+            Authorization: regex({
+              generate: "Bearer t",
+              matcher: "^Bearer .+$",
+            }),
+          },
         },
         willRespondWith: {
           status: 404,
           body: {
-            error: like('Citation not found'),
-            code:  like('CITATION_NOT_FOUND'),
+            error: like("Citation not found"),
+            code: like("CITATION_NOT_FOUND"),
           },
         },
       })
       .executeTest(async (mockServer) => {
-        const client = new CitationsApiClient(mockServer.url, 'test-token');
-        await expect(client.getById('CIT-NONEXISTENT')).rejects.toThrow(/404/);
+        const client = new CitationsApiClient(mockServer.url, "test-token");
+        await expect(client.getById("CIT-NONEXISTENT")).rejects.toThrow(/404/);
       });
   });
 });
 ```
 
 After running the consumer tests, Pact creates a contract file:
+
 ```
 pacts/
 └── PlaywrightTestSuite-CitationManagementService.json
@@ -303,36 +369,44 @@ The backend team (Java/Spring Boot) verifies their API satisfies the contract:
 // If your backend has a TypeScript test runner too:
 // tests/contracts/citation-provider.pact.spec.ts
 
-import { Verifier } from '@pact-foundation/pact';
+import { Verifier } from "@pact-foundation/pact";
 
-test('CitationManagementService satisfies PlaywrightTestSuite contract', async () => {
+test("CitationManagementService satisfies PlaywrightTestSuite contract", async () => {
   await new Verifier({
-    provider: 'CitationManagementService',
-    providerBaseUrl: process.env.PROVIDER_BASE_URL ?? 'http://localhost:8080',
+    provider: "CitationManagementService",
+    providerBaseUrl: process.env.PROVIDER_BASE_URL ?? "http://localhost:8080",
 
     // Load pact files from Pact Broker (or local files):
-    pactUrls: [`${__dirname}/../../pacts/PlaywrightTestSuite-CitationManagementService.json`],
+    pactUrls: [
+      `${__dirname}/../../pacts/PlaywrightTestSuite-CitationManagementService.json`,
+    ],
     // OR from Pact Broker:
     // pactBrokerUrl: process.env.PACT_BROKER_URL,
     // consumerVersionSelectors: [{ mainBranch: true }, { deployedOrReleased: true }],
 
     // Provider states: set up the DB for each interaction
     stateHandlers: {
-      'citation CIT-001 exists': async () => {
+      "citation CIT-001 exists": async () => {
         // Set up: insert CIT-001 into test DB
-        await db.query("INSERT INTO citations (citation_id, status) VALUES ('CIT-001', 'PENDING')");
+        await db.query(
+          "INSERT INTO citations (citation_id, status) VALUES ('CIT-001', 'PENDING')",
+        );
       },
-      'citation CIT-NONEXISTENT does not exist': async () => {
+      "citation CIT-NONEXISTENT does not exist": async () => {
         // Set up: ensure CIT-NONEXISTENT is deleted
-        await db.query("DELETE FROM citations WHERE citation_id = 'CIT-NONEXISTENT'");
+        await db.query(
+          "DELETE FROM citations WHERE citation_id = 'CIT-NONEXISTENT'",
+        );
       },
-      'user USR-001 exists and can create citations': async () => {
-        await db.query("INSERT INTO users (user_id, role) VALUES ('USR-001', 'CUSTOMER') ON CONFLICT DO NOTHING");
+      "user USR-001 exists and can create citations": async () => {
+        await db.query(
+          "INSERT INTO users (user_id, role) VALUES ('USR-001', 'CUSTOMER') ON CONFLICT DO NOTHING",
+        );
       },
     },
 
-    publishVerificationResult: process.env.CI === 'true',
-    providerVersion: process.env.GIT_COMMIT ?? 'local',
+    publishVerificationResult: process.env.CI === "true",
+    providerVersion: process.env.GIT_COMMIT ?? "local",
   }).verifyProvider();
 });
 ```
@@ -458,7 +532,7 @@ The test pyramid with contract testing:
   ║  Contract tests  ║  ←  API shape agreement (Pact)
   ╠══════════════════╣
   ║  Unit/API tests  ║  ←  Logic, edge cases
-  ╚══════════════════╝ 
+  ╚══════════════════╝
 ```
 
 ---
@@ -574,11 +648,11 @@ When a new consumer publishes a contract that the provider hasn't verified yet, 
 ```typescript
 // Provider verification — enable pending pacts:
 await new Verifier({
-  provider: 'CitationManagementService',
-  providerBaseUrl: 'http://localhost:8080',
+  provider: "CitationManagementService",
+  providerBaseUrl: "http://localhost:8080",
   pactBrokerUrl: process.env.PACT_BROKER_URL,
   consumerVersionSelectors: [
-    { mainBranch: true },        // contracts from consumer's main branch
+    { mainBranch: true }, // contracts from consumer's main branch
     { deployedOrReleased: true }, // contracts from currently-deployed consumer versions
   ],
 
@@ -588,10 +662,10 @@ await new Verifier({
 
   // Work in progress pacts — allow consumer to publish contracts from feature branches
   // without blocking provider CI (they're tracked but non-blocking)
-  includeWipPactsSince: '2026-01-01',
+  includeWipPactsSince: "2026-01-01",
 
-  publishVerificationResult: process.env.CI === 'true',
-  providerVersion: process.env.GIT_COMMIT ?? 'local',
+  publishVerificationResult: process.env.CI === "true",
+  providerVersion: process.env.GIT_COMMIT ?? "local",
 }).verifyProvider();
 
 /*
@@ -615,55 +689,74 @@ Write a Pact consumer test for the notification API: `GET /api/v1/notifications?
 <details><summary>Answer</summary>
 
 ```typescript
-test('GET /api/v1/notifications → returns notifications for user', async () => {
+test("GET /api/v1/notifications → returns notifications for user", async () => {
   await provider
     .addInteraction({
-      states: [{ description: 'USR-001 has at least one CITATION_CREATED notification' }],
-      uponReceiving: 'a request for CITATION_CREATED notifications for USR-001',
+      states: [
+        {
+          description: "USR-001 has at least one CITATION_CREATED notification",
+        },
+      ],
+      uponReceiving: "a request for CITATION_CREATED notifications for USR-001",
       withRequest: {
-        method: 'GET',
-        path: '/api/v1/notifications',
-        query: { userId: 'USR-001', type: 'CITATION_CREATED' },
+        method: "GET",
+        path: "/api/v1/notifications",
+        query: { userId: "USR-001", type: "CITATION_CREATED" },
         headers: {
-          Authorization: regex({ generate: 'Bearer t', matcher: '^Bearer .+$' }),
+          Authorization: regex({
+            generate: "Bearer t",
+            matcher: "^Bearer .+$",
+          }),
         },
       },
       willRespondWith: {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: {
-          data: eachLike({  // at least one element matching this shape
-            notificationId: like('NOTIF-001'),
+          data: eachLike({
+            // at least one element matching this shape
+            notificationId: like("NOTIF-001"),
             type: regex({
-              generate: 'CITATION_CREATED',
-              matcher: '^(CITATION_CREATED|PAYMENT_RECEIVED|DISPUTE_SUBMITTED|ACCOUNT_SUSPENDED)$',
+              generate: "CITATION_CREATED",
+              matcher:
+                "^(CITATION_CREATED|PAYMENT_RECEIVED|DISPUTE_SUBMITTED|ACCOUNT_SUSPENDED)$",
             }),
             status: regex({
-              generate: 'delivered',
-              matcher: '^(queued|sent|delivered|failed)$',
+              generate: "delivered",
+              matcher: "^(queued|sent|delivered|failed)$",
             }),
-            createdAt: timestamp('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'', '2026-01-15T10:30:00.000Z'),
+            createdAt: timestamp(
+              "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+              "2026-01-15T10:30:00.000Z",
+            ),
             // referenceId is optional — use like() for optionals
-            referenceId: like('CIT-001'),
+            referenceId: like("CIT-001"),
           }),
           pagination: like({ total: 1, page: 1, pageSize: 20 }),
         },
       },
     })
     .executeTest(async (mockServer) => {
-      const client = new NotificationsApiClient(mockServer.url, 'test-token');
-      const result = await client.search({ userId: 'USR-001', type: 'CITATION_CREATED' });
+      const client = new NotificationsApiClient(mockServer.url, "test-token");
+      const result = await client.search({
+        userId: "USR-001",
+        type: "CITATION_CREATED",
+      });
 
       expect(result.data.length).toBeGreaterThan(0);
-      expect(['queued','sent','delivered','failed']).toContain(result.data[0].status);
+      expect(["queued", "sent", "delivered", "failed"]).toContain(
+        result.data[0].status,
+      );
     });
 });
 ```
+
 </details>
 
 ---
 
 **Key References:**
+
 - [docs.pact.io](https://docs.pact.io/) — Complete Pact documentation
 - [github.com/pact-foundation/pact-js](https://github.com/pact-foundation/pact-js) — Pact JS (MIT)
 - [Martin Fowler — Consumer-Driven Contracts](https://martinfowler.com/bliki/ConsumerDrivenContracts.html)
@@ -685,17 +778,18 @@ Your provider team is making these API changes to `GET /api/v2/citations/:id`. C
 
 <details><summary>Answer</summary>
 
-| Change | Breaking? | Why |
-|---|---|---|
-| 1. Add `auditTrail` field | ✅ NON-BREAKING | Consumers that don't read this field are unaffected |
-| 2. Rename `issueDate` → `issuedAt` | ❌ BREAKING | All consumers reading `issueDate` get `undefined` |
-| 3. `amount`: number → string | ❌ BREAKING | Type mismatch — code doing `amount * taxRate` breaks |
-| 4. New optional query param | ✅ NON-BREAKING | Existing consumers don't send it; API ignores its absence |
-| 5. Remove `notes` field | ❌ BREAKING | Consumers reading `notes` get `undefined` |
-| 6. Add `'ARCHIVED'` enum value | ⚠ DEPENDS | Non-breaking if consumer uses regex matcher. Breaking if consumer uses switch/exhaustive match |
-| 7. `200` → `204 No Content` | ❌ BREAKING | Consumers that read the response body get nothing. Pact contract explicitly includes `status: 200` |
+| Change                             | Breaking?       | Why                                                                                                |
+| ---------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| 1. Add `auditTrail` field          | ✅ NON-BREAKING | Consumers that don't read this field are unaffected                                                |
+| 2. Rename `issueDate` → `issuedAt` | ❌ BREAKING     | All consumers reading `issueDate` get `undefined`                                                  |
+| 3. `amount`: number → string       | ❌ BREAKING     | Type mismatch — code doing `amount * taxRate` breaks                                               |
+| 4. New optional query param        | ✅ NON-BREAKING | Existing consumers don't send it; API ignores its absence                                          |
+| 5. Remove `notes` field            | ❌ BREAKING     | Consumers reading `notes` get `undefined`                                                          |
+| 6. Add `'ARCHIVED'` enum value     | ⚠ DEPENDS       | Non-breaking if consumer uses regex matcher. Breaking if consumer uses switch/exhaustive match     |
+| 7. `200` → `204 No Content`        | ❌ BREAKING     | Consumers that read the response body get nothing. Pact contract explicitly includes `status: 200` |
 
 With Pact: changes 2, 3, 5, and 7 immediately fail provider verification. Change 6 fails if the consumer used an exact regex. Change 1 and 4 pass silently.
+
 </details>
 
 ---
@@ -720,17 +814,20 @@ The distinction matters in practice:
 **The best answer**: Use BOTH. Validate your client against the OpenAPI spec for completeness, AND use Pact for consumer-specific regression detection and `can-i-deploy` safety gates.
 
 If the team is resistant to adopting Pact tooling on the provider side, use BDCT (Section 8) — the provider just uploads their OpenAPI spec; no Pact code required.
+
 </details>
 
 ---
 
 **Key References:**
+
 - [docs.pact.io](https://docs.pact.io/) — Complete Pact documentation
 - [github.com/pact-foundation/pact-js](https://github.com/pact-foundation/pact-js) — Pact JS (MIT)
 - [Martin Fowler — Consumer-Driven Contracts](https://martinfowler.com/bliki/ConsumerDrivenContracts.html)
 - [PactFlow — managed broker](https://pactflow.io) — free tier available
 
 ---
+
 **Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
 
 ### Challenge 4 [Spot the Bug — Over-specification in Consumer Contract]
@@ -738,23 +835,23 @@ If the team is resistant to adopting Pact tooling on the provider side, use BDCT
 ```typescript
 // In the Consumer test:
 provider.addInteraction({
-  state: 'a citation CIT-001 exists',
-  uponReceiving: 'a request to get the citation',
+  state: "a citation CIT-001 exists",
+  uponReceiving: "a request to get the citation",
   withRequest: {
-    method: 'GET',
-    path: '/api/v1/citations/CIT-001',
+    method: "GET",
+    path: "/api/v1/citations/CIT-001",
   },
   willRespondWith: {
     status: 200,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
     body: {
-      citationId: 'CIT-001',
-      amount: 150.00,
-      status: 'PENDING',
-      timestamp: '2023-10-15T08:30:00Z',  // ← Exact timestamp string
-      internalDbId: 99482,                 // ← Field our frontend doesn't even use
-    }
-  }
+      citationId: "CIT-001",
+      amount: 150.0,
+      status: "PENDING",
+      timestamp: "2023-10-15T08:30:00Z", // ← Exact timestamp string
+      internalDbId: 99482, // ← Field our frontend doesn't even use
+    },
+  },
 });
 ```
 
@@ -763,10 +860,10 @@ What are two major anti-patterns in this consumer contract?
 <details><summary>Answer</summary>
 
 **1. Exact Value Matching for Dynamic Data (Timestamp)**: The provider likely generates a dynamic timestamp. If the contract demands exactly `2023-10-15T08:30:00Z`, the provider verification will fail unless the provider mocks its clock perfectly.
-*Fix*: Use Pact matchers: `timestamp: Matchers.iso8601DateTime()`
+_Fix_: Use Pact matchers: `timestamp: Matchers.iso8601DateTime()`
 
-**2. Including Unused Fields (`internalDbId`)**: Contract testing is about the *Consumer-Driven* contract. If the consumer (frontend) doesn't use `internalDbId`, it shouldn't be in the contract. Including it means the provider team cannot remove or rename `internalDbId` without breaking the contract, unnecessarily tightly coupling the two systems.
-*Fix*: Remove fields the consumer doesn't actively parse.
+**2. Including Unused Fields (`internalDbId`)**: Contract testing is about the _Consumer-Driven_ contract. If the consumer (frontend) doesn't use `internalDbId`, it shouldn't be in the contract. Including it means the provider team cannot remove or rename `internalDbId` without breaking the contract, unnecessarily tightly coupling the two systems.
+_Fix_: Remove fields the consumer doesn't actively parse.
 
 **SDE Principle**: Postel's Law (Robustness Principle). Be conservative in what you send, be liberal in what you accept. Contracts should only specify the minimum viable schema needed by the consumer.
 
@@ -785,11 +882,12 @@ D) Pact is misconfigured because field types should not break contracts.
 
 <details><summary>Answer</summary>
 
-**C** — The Provider has successfully detected a breaking change *before* it reaches production.
+**C** — The Provider has successfully detected a breaking change _before_ it reaches production.
 
 This is the entire point of Contract Testing. The Provider's code might be functionally "correct" according to their new design (changing amount to string), but the Contract proves that the existing Consumer in production will crash if this is deployed.
 
 The fix isn't always "revert the Provider." The fix is a team conversation:
+
 1. Provider says: "We need to change to string for precision."
 2. Consumer says: "Okay, we will deploy an update that accepts string."
 3. Once Consumer deploys, the contract updates.
@@ -800,10 +898,12 @@ The fix isn't always "revert the Provider." The fix is a team conversation:
 ---
 
 **Key References:**
+
 - [docs.pact.io](https://docs.pact.io/) — Complete Pact documentation
 - [github.com/pact-foundation/pact-js](https://github.com/pact-foundation/pact-js) — Pact JS (MIT)
 - [Martin Fowler — Consumer-Driven Contracts](https://martinfowler.com/bliki/ConsumerDrivenContracts.html)
 - [PactFlow — managed broker](https://pactflow.io) — free tier available
 
 ---
+
 **Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)

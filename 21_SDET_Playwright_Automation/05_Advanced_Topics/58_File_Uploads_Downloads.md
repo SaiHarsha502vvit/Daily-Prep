@@ -14,13 +14,69 @@
 
 ---
 
+## 0. War Stories — File Tests That Looked Fine but Weren't
+
+### Story 1: Large-file upload that passed in 10MB tests but failed in 200MB production
+
+A test uploaded a 10MB CSV file and asserted on the success message. The test passed consistently in CI (90-second default timeout).
+
+In production, users regularly uploaded 150–300MB import files. The upload silently timed out on the backend after 60 seconds. The frontend showed "Upload complete" (it completed the HTTP PUT), but the backend processing job never received the full file and dropped it. Users saw "Upload complete" and then waited forever for the import to appear.
+
+The test never reproduced this because 10MB uploaded in < 2 seconds — well within the 60-second backend timeout. The test proved the upload UI worked, not that the backend could handle real file sizes.
+
+**What was missing:**
+```typescript
+test('large file upload completes processing', async ({ page }) => {
+  // Generate a file that exercises the real size constraint
+  const largeBuffer = Buffer.alloc(100 * 1024 * 1024); // 100MB
+  await page.locator('input[type=file]').setInputFiles({
+    name: 'large-import.csv',
+    mimeType: 'text/csv',
+    buffer: largeBuffer,
+  });
+  await page.locator('[data-testid="upload-btn"]').click();
+
+  // Wait longer than the default timeout — large file takes time
+  await expect(page.locator('[data-testid="import-status"]'))
+    .toHaveText('Import complete', { timeout: 120_000 });
+});
+```
+
+**Lesson:** Size is a test dimension. A 10MB test doesn't cover 200MB behavior. At minimum, test the boundary: what's the largest file your system claims to support? Test that file.
+
+### Story 2: The charset-mangled CSV that was accepted and silently corrupted
+
+A download test asserted: "clicking Export downloads a file named `export.csv`." Test passed.
+
+The export CSV contained employee names with accented characters (Español teams, French offices). The backend generated the file in ISO-8859-1. The frontend served it with no `Content-Type: charset` header. Excel opened it and showed `Ren├®e Poirier` instead of `Renée Poirier`.
+
+The test never read the file contents, only the filename.
+
+**What the test should have checked:**
+```typescript
+const download = await page.waitForEvent('download');
+const path = await download.path();
+const content = fs.readFileSync(path!, 'utf-8');
+
+// Check that known non-ASCII names survived the round-trip
+expect(content).toContain('Renée Poirier');
+expect(content).toContain('Ñoño García');
+// Also check the header declares the right encoding
+const resp = await page.request.get(download.url());
+expect(resp.headers()['content-type']).toContain('charset=utf-8');
+```
+
+**Lesson:** Download tests that check only filename prove the download button works, not that the file is correct. For CSV/XLSX exports, always read back at least one row and assert on the actual values.
+
+---
+
 ## 1. The honest pitch
 
 The Playwright docs make file I/O look like two lines:
 
 ```typescript
-await page.locator('input[type=file]').setInputFiles('path.csv');
-const download = await page.waitForEvent('download');
+await page.locator("input[type=file]").setInputFiles("path.csv");
+const download = await page.waitForEvent("download");
 ```
 
 That's the happy path. The reality:
@@ -42,31 +98,30 @@ The browser exposes `<input type="file">` as a JavaScript object with a `.files`
 ### Single file
 
 ```typescript
-await page.locator('input[type=file]').setInputFiles('./test-data/sample.csv');
+await page.locator("input[type=file]").setInputFiles("./test-data/sample.csv");
 ```
 
 ### Multiple files (multi-select)
 
 ```typescript
-await page.locator('input[type=file]').setInputFiles([
-  './test-data/a.csv',
-  './test-data/b.csv',
-]);
+await page
+  .locator("input[type=file]")
+  .setInputFiles(["./test-data/a.csv", "./test-data/b.csv"]);
 ```
 
 The element needs the `multiple` attribute. If it doesn't have it, Playwright takes only the last file silently. Verify:
 
 ```typescript
-await expect(input).toHaveAttribute('multiple', '');
+await expect(input).toHaveAttribute("multiple", "");
 ```
 
 ### In-memory buffer (no temp file on disk)
 
 ```typescript
-await page.locator('input[type=file]').setInputFiles({
-  name: 'inline.csv',
-  mimeType: 'text/csv',
-  buffer: Buffer.from('id,name\n1,Alice\n2,Bob\n', 'utf8'),
+await page.locator("input[type=file]").setInputFiles({
+  name: "inline.csv",
+  mimeType: "text/csv",
+  buffer: Buffer.from("id,name\n1,Alice\n2,Bob\n", "utf8"),
 });
 ```
 
@@ -75,7 +130,7 @@ This is the **right pattern for generated test data** — no `fs.writeFileSync` 
 ### Clear the input
 
 ```typescript
-await page.locator('input[type=file]').setInputFiles([]);
+await page.locator("input[type=file]").setInputFiles([]);
 ```
 
 Useful for testing "what happens when the user un-selects."
@@ -94,14 +149,16 @@ Modern UIs hide the input behind a styled button or drop-zone. The HTML typicall
 `page.click('#uploadBtn')` triggers `fileInput.click()` in JS, which opens the OS file picker. **Playwright cannot interact with the OS picker.**
 
 ❌ **Wrong**:
+
 ```typescript
-await page.click('#uploadBtn');
+await page.click("#uploadBtn");
 // → OS file picker appears, test hangs
 ```
 
 ✅ **Right** — set files directly on the hidden input:
+
 ```typescript
-await page.locator('#hiddenFileInput').setInputFiles('./test-data/sample.csv');
+await page.locator("#hiddenFileInput").setInputFiles("./test-data/sample.csv");
 // Bypasses the button entirely — the file is now in input.files
 ```
 
@@ -112,8 +169,8 @@ Works even for `display: none` and `visibility: hidden` inputs. `setInputFiles()
 Some UIs only insert the `<input>` after the user clicks the button. In that case, click first, then set files:
 
 ```typescript
-await page.click('#uploadBtn');
-await page.locator('input[type=file]').setInputFiles('./test-data/sample.csv');
+await page.click("#uploadBtn");
+await page.locator("input[type=file]").setInputFiles("./test-data/sample.csv");
 // Most pickers auto-submit on file selection
 ```
 
@@ -123,10 +180,10 @@ If the page uses `showOpenFilePicker()` (the File System Access API), there's no
 
 ```typescript
 const [chooser] = await Promise.all([
-  page.waitForEvent('filechooser'),
-  page.click('#uploadBtn'),
+  page.waitForEvent("filechooser"),
+  page.click("#uploadBtn"),
 ]);
-await chooser.setFiles('./test-data/sample.csv');
+await chooser.setFiles("./test-data/sample.csv");
 ```
 
 Same `Promise.all([listener, trigger])` pattern as new-tab handling (Ch 12) — the race condition is identical.
@@ -140,13 +197,13 @@ Drag-drop zones don't expose an `<input>`. The app listens to `dragenter`/`drop`
 You can drive this from Playwright by dispatching synthetic `drop` events:
 
 ```typescript
-const dropzone = page.locator('.dropzone');
-const buffer = Buffer.from('id,name\n1,Alice\n', 'utf8');
+const dropzone = page.locator(".dropzone");
+const buffer = Buffer.from("id,name\n1,Alice\n", "utf8");
 
-await dropzone.dispatchEvent('drop', {
+await dropzone.dispatchEvent("drop", {
   dataTransfer: await createDataTransfer(page, {
-    name: 'inline.csv',
-    mimeType: 'text/csv',
+    name: "inline.csv",
+    mimeType: "text/csv",
     buffer,
   }),
 });
@@ -157,17 +214,24 @@ Where `createDataTransfer` is a small helper (see `framework/utilities/helpers/f
 ```typescript
 async function createDataTransfer(
   page: Page,
-  file: { name: string; mimeType: string; buffer: Buffer }
+  file: { name: string; mimeType: string; buffer: Buffer },
 ): Promise<JSHandle<DataTransfer>> {
-  return page.evaluateHandle(async ({ name, mimeType, base64 }) => {
-    const dt = new DataTransfer();
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    const file = new File([bytes], name, { type: mimeType });
-    dt.items.add(file);
-    return dt;
-  }, { name: file.name, mimeType: file.mimeType, base64: file.buffer.toString('base64') });
+  return page.evaluateHandle(
+    async ({ name, mimeType, base64 }) => {
+      const dt = new DataTransfer();
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const file = new File([bytes], name, { type: mimeType });
+      dt.items.add(file);
+      return dt;
+    },
+    {
+      name: file.name,
+      mimeType: file.mimeType,
+      base64: file.buffer.toString("base64"),
+    },
+  );
 }
 ```
 
@@ -178,30 +242,37 @@ This is the most fragile of the upload patterns — it depends on the app actual
 ## 5. Upload anti-patterns
 
 ❌ **Calling `click()` on the visible button and praying**
+
 ```typescript
-await page.click('#uploadBtn');
+await page.click("#uploadBtn");
 // → hangs on OS picker
 ```
 
 ❌ **Using `setInputFiles` on the visible button**
+
 ```typescript
 await page.click('#uploadBtn').setInputFiles(...);  // TypeError
 ```
+
 Only `<input type=file>` accepts `setInputFiles`. Find the underlying input.
 
 ❌ **Writing test data to disk before every upload**
+
 ```typescript
-fs.writeFileSync('./tmp.csv', csvContents);
-await input.setInputFiles('./tmp.csv');
-fs.unlinkSync('./tmp.csv');  // race with parallel workers
+fs.writeFileSync("./tmp.csv", csvContents);
+await input.setInputFiles("./tmp.csv");
+fs.unlinkSync("./tmp.csv"); // race with parallel workers
 ```
+
 Use the buffer form (Section 2.3) instead.
 
 ❌ **Forgetting `multiple`**
+
 ```typescript
-await input.setInputFiles(['a.csv', 'b.csv']);
+await input.setInputFiles(["a.csv", "b.csv"]);
 // Input has no `multiple` attribute → only b.csv is uploaded
 ```
+
 Assert the attribute first, or handle one at a time.
 
 ---
@@ -212,12 +283,12 @@ Browsers fire a `'download'` event on `page` (or `context`) when a navigation re
 
 ```typescript
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.click('#downloadCsvBtn'),
+  page.waitForEvent("download"),
+  page.click("#downloadCsvBtn"),
 ]);
 
-const path = await download.path();        // path in Playwright's temp dir
-await download.saveAs('./out/report.csv'); // copy to your chosen location
+const path = await download.path(); // path in Playwright's temp dir
+await download.saveAs("./out/report.csv"); // copy to your chosen location
 ```
 
 Critical things to know:
@@ -233,8 +304,8 @@ Critical things to know:
 
 ```typescript
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.click('#downloadBtn'),
+  page.waitForEvent("download"),
+  page.click("#downloadBtn"),
 ]);
 
 expect(download.suggestedFilename()).toMatch(/^report-\d{4}-\d{2}-\d{2}\.csv$/);
@@ -247,18 +318,18 @@ The suggested filename comes from the `Content-Disposition` header. If the heade
 ## 8. Reading the downloaded bytes
 
 ```typescript
-import * as fs from 'node:fs';
+import * as fs from "node:fs";
 
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.click('#downloadCsvBtn'),
+  page.waitForEvent("download"),
+  page.click("#downloadCsvBtn"),
 ]);
 const path = await download.path();
-if (!path) throw new Error('Download failed: ' + (await download.failure()));
+if (!path) throw new Error("Download failed: " + (await download.failure()));
 
-const contents = fs.readFileSync(path, 'utf8');
-expect(contents).toContain('id,name');
-expect(contents.split('\n')).toHaveLength(11);  // header + 10 rows
+const contents = fs.readFileSync(path, "utf8");
+expect(contents).toContain("id,name");
+expect(contents.split("\n")).toHaveLength(11); // header + 10 rows
 ```
 
 ### The BOM gotcha
@@ -266,13 +337,14 @@ expect(contents.split('\n')).toHaveLength(11);  // header + 10 rows
 If your CSV starts with `﻿` (a UTF-8 BOM, three bytes `EF BB BF`), the first column header is invisible:
 
 ```javascript
-contents.split(',')[0]  // '﻿id'  — looks like 'id' in your IDE
-contents.startsWith('id')  // false!
+contents.split(",")[0]; // '﻿id'  — looks like 'id' in your IDE
+contents.startsWith("id"); // false!
 ```
 
 Strip it before comparing:
+
 ```typescript
-const clean = contents.replace(/^﻿/, '');
+const clean = contents.replace(/^﻿/, "");
 ```
 
 ### The line-ending gotcha
@@ -287,25 +359,25 @@ The framework ships a small typed wrapper around the patterns above so your spec
 
 ```typescript
 // Upload a file by path
-await uploadFile(input, './test-data/sample.csv');
+await uploadFile(input, "./test-data/sample.csv");
 
 // Upload an in-memory buffer (no temp file)
 await uploadBuffer(input, {
-  name: 'inline.csv',
-  mimeType: 'text/csv',
-  buffer: Buffer.from('id,name\n1,Alice\n'),
+  name: "inline.csv",
+  mimeType: "text/csv",
+  buffer: Buffer.from("id,name\n1,Alice\n"),
 });
 
 // Download a file, save it, and return its parsed contents
 const text = await downloadAndRead(
   page,
-  page.locator('#downloadCsvBtn'),
-  './test-results/downloads/report.csv'
+  page.locator("#downloadCsvBtn"),
+  "./test-results/downloads/report.csv",
 );
 
 // Parse CSV with header-aware row mapping
 const rows = parseCsv<{ id: string; name: string }>(text);
-expect(rows[0]?.name).toBe('Alice');
+expect(rows[0]?.name).toBe("Alice");
 ```
 
 Each helper:
@@ -324,20 +396,22 @@ See the file for the full implementations. Each is < 20 lines.
 ### Pattern: assert on the file before assertion-by-side-effect
 
 ❌ **Wrong** — assert only on the UI:
+
 ```typescript
-await page.click('#downloadBtn');
-await expect(page.locator('.toast')).toHaveText('Download started');
+await page.click("#downloadBtn");
+await expect(page.locator(".toast")).toHaveText("Download started");
 // Test passes even if the download was empty / corrupt / wrong format
 ```
 
 ✅ **Right** — assert on the actual bytes:
+
 ```typescript
 const [download] = await Promise.all([
-  page.waitForEvent('download'),
-  page.click('#downloadBtn'),
+  page.waitForEvent("download"),
+  page.click("#downloadBtn"),
 ]);
 const text = await readDownload(download);
-expect(text).toContain('expected,header,row');
+expect(text).toContain("expected,header,row");
 expect(parseCsv(text)).toHaveLength(10);
 ```
 
@@ -346,10 +420,10 @@ This is the "no success theatre" rule from Ch 15 applied to file downloads.
 ### Pattern: pin the file via `outputDir`
 
 ```typescript
-test('download report', async ({ page }, testInfo) => {
-  const dest = testInfo.outputPath('report.csv');  // resolves to test-results/.../report.csv
+test("download report", async ({ page }, testInfo) => {
+  const dest = testInfo.outputPath("report.csv"); // resolves to test-results/.../report.csv
   await download.saveAs(dest);
-  await testInfo.attach('report', { path: dest, contentType: 'text/csv' });
+  await testInfo.attach("report", { path: dest, contentType: "text/csv" });
 });
 ```
 
@@ -359,13 +433,13 @@ The HTML report links to the attached file, so reviewers can re-download what th
 
 For binary formats, byte-equality is brittle (PDF metadata changes per run). Use a parser:
 
-| Format | Parser | What to assert |
-|---|---|---|
-| CSV | `papaparse` or hand-rolled split | Header + row count + cell values |
-| XLSX | `exceljs` | Sheet name, cell at `A1`, row count |
-| PDF | `pdf-parse` | Extracted text contains expected strings |
-| JSON | `JSON.parse` | Object shape, key values |
-| ZIP | `adm-zip` | Entry names, decompressed contents of each |
+| Format | Parser                           | What to assert                             |
+| ------ | -------------------------------- | ------------------------------------------ |
+| CSV    | `papaparse` or hand-rolled split | Header + row count + cell values           |
+| XLSX   | `exceljs`                        | Sheet name, cell at `A1`, row count        |
+| PDF    | `pdf-parse`                      | Extracted text contains expected strings   |
+| JSON   | `JSON.parse`                     | Object shape, key values                   |
+| ZIP    | `adm-zip`                        | Entry names, decompressed contents of each |
 
 Parser deps are optional — the framework's `file.helpers.ts` exports CSV only. Add others as your app's downloads dictate.
 
@@ -374,32 +448,36 @@ Parser deps are optional — the framework's `file.helpers.ts` exports CSV only.
 ## 11. Anti-patterns — the download hall of shame
 
 ❌ **No `Promise.all`**
+
 ```typescript
-await page.click('#downloadBtn');
-const download = await page.waitForEvent('download');  // race
+await page.click("#downloadBtn");
+const download = await page.waitForEvent("download"); // race
 ```
 
 ❌ **Reading the file from a hardcoded path**
+
 ```typescript
-await page.click('#downloadBtn');
-const text = fs.readFileSync('/Users/you/Downloads/report.csv', 'utf8');
+await page.click("#downloadBtn");
+const text = fs.readFileSync("/Users/you/Downloads/report.csv", "utf8");
 // Doesn't work in CI, doesn't work for other developers, fragile to browser settings
 ```
 
 ❌ **Not handling download failures**
+
 ```typescript
-const download = await page.waitForEvent('download');
+const download = await page.waitForEvent("download");
 const path = await download.path();
-fs.readFileSync(path!, 'utf8');  // path may be null if download.failure() is set
+fs.readFileSync(path!, "utf8"); // path may be null if download.failure() is set
 ```
 
 ❌ **Comparing PDFs byte-for-byte**
+
 ```typescript
-expect(downloaded).toEqual(fs.readFileSync('expected.pdf'));
+expect(downloaded).toEqual(fs.readFileSync("expected.pdf"));
 // Fails on every run — PDF embeds creation timestamps
 ```
 
-✅ Parse and compare the *content*, not the bytes.
+✅ Parse and compare the _content_, not the bytes.
 
 ---
 
@@ -409,19 +487,21 @@ expect(downloaded).toEqual(fs.readFileSync('expected.pdf'));
 <summary><strong>Practice 1 — Spot the bug</strong></summary>
 
 ```typescript
-test('upload CSV', async ({ page }) => {
-  await page.click('#uploadBtn');
-  await page.locator('input[type=file]').setInputFiles('./data.csv');
-  await expect(page.locator('.success')).toBeVisible();
+test("upload CSV", async ({ page }) => {
+  await page.click("#uploadBtn");
+  await page.locator("input[type=file]").setInputFiles("./data.csv");
+  await expect(page.locator(".success")).toBeVisible();
 });
 ```
 
 **Bug**: The visible `#uploadBtn` opens the OS file picker. The picker hangs the test before `setInputFiles` runs.
 
 **Fix**: Skip the click and set files directly on the underlying input:
+
 ```typescript
-await page.locator('input[type=file]').setInputFiles('./data.csv');
+await page.locator("input[type=file]").setInputFiles("./data.csv");
 ```
+
 </details>
 
 <details>
@@ -430,18 +510,24 @@ await page.locator('input[type=file]').setInputFiles('./data.csv');
 Given a list of users, generate an in-memory CSV and upload it without writing to disk.
 
 ```typescript
-const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+const users = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+];
 ```
 
 **Solution**:
+
 ```typescript
-const csv = ['id,name', ...users.map(u => `${u.id},${u.name}`)].join('\n') + '\n';
-await page.locator('input[type=file]').setInputFiles({
-  name: 'users.csv',
-  mimeType: 'text/csv',
-  buffer: Buffer.from(csv, 'utf8'),
+const csv =
+  ["id,name", ...users.map((u) => `${u.id},${u.name}`)].join("\n") + "\n";
+await page.locator("input[type=file]").setInputFiles({
+  name: "users.csv",
+  mimeType: "text/csv",
+  buffer: Buffer.from(csv, "utf8"),
 });
 ```
+
 </details>
 
 <details>
@@ -450,16 +536,20 @@ await page.locator('input[type=file]').setInputFiles({
 Click `#exportBtn`, save the file to the test output dir, and assert the suggested filename matches `report-YYYY-MM-DD.csv`.
 
 **Solution**:
+
 ```typescript
-test('export report', async ({ page }, testInfo) => {
+test("export report", async ({ page }, testInfo) => {
   const [download] = await Promise.all([
-    page.waitForEvent('download'),
-    page.click('#exportBtn'),
+    page.waitForEvent("download"),
+    page.click("#exportBtn"),
   ]);
-  expect(download.suggestedFilename()).toMatch(/^report-\d{4}-\d{2}-\d{2}\.csv$/);
+  expect(download.suggestedFilename()).toMatch(
+    /^report-\d{4}-\d{2}-\d{2}\.csv$/,
+  );
   await download.saveAs(testInfo.outputPath(download.suggestedFilename()));
 });
 ```
+
 </details>
 
 <details>
@@ -468,12 +558,14 @@ test('export report', async ({ page }, testInfo) => {
 Upload `a.csv` and `b.csv` to an input that has the `multiple` attribute, then assert both filenames appear in the visible chip list.
 
 **Solution**:
+
 ```typescript
-await page.locator('input[type=file]').setInputFiles(['./a.csv', './b.csv']);
-await expect(page.locator('.file-chip')).toHaveCount(2);
-await expect(page.locator('.file-chip').first()).toContainText('a.csv');
-await expect(page.locator('.file-chip').last()).toContainText('b.csv');
+await page.locator("input[type=file]").setInputFiles(["./a.csv", "./b.csv"]);
+await expect(page.locator(".file-chip")).toHaveCount(2);
+await expect(page.locator(".file-chip").first()).toContainText("a.csv");
+await expect(page.locator(".file-chip").last()).toContainText("b.csv");
 ```
+
 </details>
 
 ---

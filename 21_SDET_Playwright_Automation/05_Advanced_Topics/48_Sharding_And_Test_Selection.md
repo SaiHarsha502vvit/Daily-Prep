@@ -14,6 +14,39 @@
 
 ---
 
+## 0. War Stories — When the Fast Path Bites Back
+
+### Story 1: Sharding broke test isolation (worker-shared state)
+
+A team enabled `--shard=1/4` and saw flakiness jump from 2% to 19%. The suite had 600 tests; the failures were random-looking and never the same test twice.
+
+Root cause: the team had a `globalSetup` that seeded a shared test database with a fixed dataset. With sharding, four CI agents ran simultaneously. All four called the same `globalSetup` function against the same database. Agents would seed records, then another agent would delete them in teardown, then the first agent's tests would fail finding no records.
+
+Fix: test data namespaced by shard number:
+
+```typescript
+// globalSetup.ts
+const shardIndex = parseInt(process.env.SHARD_INDEX ?? '0');
+const prefix = `shard-${shardIndex}`;
+await db.seed({ prefix }); // each shard seeds prefix-scoped records
+```
+
+**Lesson:** Sharding adds concurrency. Concurrency exposes shared-state bugs that were invisible with sequential runs. Before enabling `--shard`, audit every `globalSetup` and `globalTeardown` for shared resources.
+
+### Story 2: Test selection skipped the failing test for 3 weeks
+
+A team implemented git-diff-based test selection. Only tests that imported changed files would run on PRs. A backend developer changed `services/pricing.service.ts`. The affected tests for pricing were selected and ran. They passed.
+
+Three weeks later, a customer reported a UI bug: the pricing display on the checkout page was wrong. The test covering it: `tests/checkout/order-summary.spec.ts`. Why hadn't it caught the regression?
+
+The import chain was: `order-summary.spec.ts` → `OrderSummaryPage.ts` → `formatCurrency.util.ts`. The test imported a utility, not the service. The service change didn't affect `formatCurrency.util.ts` directly — it affected it through a runtime dependency (the API response shape), not a static import.
+
+The test selection correctly followed the static import graph. But the real dependency was dynamic (API response format), which the import graph can't see.
+
+**Lesson:** Static import analysis misses runtime dependencies: API contracts, event buses, environment variables, database schema. Test selection reduces CI time but is not a substitute for running the full suite periodically. Run full suite nightly; run affected-only on PRs.
+
+---
+
 ## 1. Sharding — Playwright already does this
 
 ```bash
@@ -40,7 +73,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with: { node-version: "20" }
       - run: npm ci
       - run: npx playwright install --with-deps
       - run: npx playwright test --shard=${{ matrix.shard }}/4
@@ -89,29 +122,29 @@ The `blob` reporter + `merge-reports` is the official way to recombine sharded r
 
 ```typescript
 // scripts/affected-tests.ts
-import { execSync } from 'child_process';
-import * as path from 'path';
+import { execSync } from "child_process";
+import * as path from "path";
 
-const changed = execSync('git diff --name-only origin/main...HEAD')
+const changed = execSync("git diff --name-only origin/main...HEAD")
   .toString()
-  .split('\n')
+  .split("\n")
   .filter(Boolean);
 
 const ALWAYS_RUN_SMOKE = changed.some((f) =>
-  /package\.json|playwright\.config|fixtures\//.test(f)
+  /package\.json|playwright\.config|fixtures\//.test(f),
 );
 if (ALWAYS_RUN_SMOKE) {
-  process.stdout.write('--grep @smoke\n');
+  process.stdout.write("--grep @smoke\n");
   process.exit(0);
 }
 
 // Map a changed POM/util to its likely test
 const testFiles = new Set<string>();
 for (const file of changed) {
-  if (file.endsWith('.spec.ts')) {
+  if (file.endsWith(".spec.ts")) {
     testFiles.add(file);
-  } else if (file.includes('websites/')) {
-    const site = file.split('/')[1];
+  } else if (file.includes("websites/")) {
+    const site = file.split("/")[1];
     testFiles.add(`tests/${site}`);
   }
 }
@@ -119,7 +152,7 @@ for (const file of changed) {
 if (testFiles.size === 0) {
   process.exit(0); // nothing relevant changed
 }
-console.log([...testFiles].join(' '));
+console.log([...testFiles].join(" "));
 ```
 
 ### Robust implementation — TS dependency graph
@@ -214,14 +247,14 @@ E2E tests have two properties that make time-based distribution problematic:
 
 ```typescript
 // This pattern only works if both tests are on the same shard
-test('setup: login', async ({ page }) => {
-  await page.goto('/login');
+test("setup: login", async ({ page }) => {
+  await page.goto("/login");
   // ... login steps
-  await context.storageState({ path: 'storage-state.json' });
+  await context.storageState({ path: "storage-state.json" });
 });
 
-test.use({ storageState: 'storage-state.json' });
-test('dashboard loads', async ({ page }) => {
+test.use({ storageState: "storage-state.json" });
+test("dashboard loads", async ({ page }) => {
   // Depends on login state — must be on same shard as setup test
 });
 ```
@@ -252,8 +285,8 @@ After each CI run, extract test durations from the Playwright JSON report:
 
 ```typescript
 // scripts/compute-test-durations.ts
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 interface TestDuration {
   file: string;
@@ -263,14 +296,15 @@ interface TestDuration {
 }
 
 function computeFileDurations(jsonReportPath: string): Map<string, number> {
-  const report = JSON.parse(fs.readFileSync(jsonReportPath, 'utf8'));
+  const report = JSON.parse(fs.readFileSync(jsonReportPath, "utf8"));
   const fileDurations = new Map<string, number>();
 
   for (const suite of report.suites ?? []) {
-    const file = suite.file ?? 'unknown';
+    const file = suite.file ?? "unknown";
     const fileDuration = suite.specs.reduce(
-      (sum: number, spec: any) => sum + (spec.tests[0]?.results[0]?.duration ?? 0),
-      0
+      (sum: number, spec: any) =>
+        sum + (spec.tests[0]?.results[0]?.duration ?? 0),
+      0,
     );
     fileDurations.set(file, (fileDurations.get(file) ?? 0) + fileDuration);
   }
@@ -282,7 +316,7 @@ function computeFileDurations(jsonReportPath: string): Map<string, number> {
 function mergeHistoricalData(
   current: Map<string, number>,
   historical: Map<string, number>,
-  decayFactor = 0.7
+  decayFactor = 0.7,
 ): Map<string, number> {
   const merged = new Map<string, number>();
 
@@ -291,7 +325,9 @@ function mergeHistoricalData(
     // Exponential moving average: recent runs count more
     merged.set(
       file,
-      Math.round(decayFactor * historicalDuration + (1 - decayFactor) * currentDuration)
+      Math.round(
+        decayFactor * historicalDuration + (1 - decayFactor) * currentDuration,
+      ),
     );
   }
 
@@ -301,7 +337,7 @@ function mergeHistoricalData(
 // Greedy bin-packing: assign each file to the shard with the current lowest total duration
 function assignFilesToShards(
   fileDurations: Map<string, number>,
-  numShards: number
+  numShards: number,
 ): Map<number, string[]> {
   const shards: Map<number, string[]> = new Map();
   const shardTotals: number[] = Array(numShards).fill(0);
@@ -322,7 +358,7 @@ function assignFilesToShards(
 }
 
 // Usage
-const currentDurations = computeFileDurations('blob-report/test-results.json');
+const currentDurations = computeFileDurations("blob-report/test-results.json");
 const historicalData = new Map<string, number>(); // loaded from CI cache
 const avgDurations = mergeHistoricalData(currentDurations, historicalData);
 const shardAssignment = assignFilesToShards(avgDurations, 4);
@@ -352,13 +388,13 @@ console.log(JSON.stringify(Object.fromEntries(shardAssignment), null, 2));
 
 ### Trade-offs of dynamic allocation
 
-| | Static (file hash) | Dynamic (duration-based) |
-|---|---|---|
-| Stability | Same files → same shard always | Files can move between shards |
-| Balance | Can be imbalanced by file size | Aims for equal duration |
-| Setup effort | None | Requires historical data pipeline |
-| Failure isolation | Easy (same file, same shard) | Harder (file moves, harder to reproduce) |
-| Best for | Stable file sizes | Highly imbalanced test files |
+|                   | Static (file hash)             | Dynamic (duration-based)                 |
+| ----------------- | ------------------------------ | ---------------------------------------- |
+| Stability         | Same files → same shard always | Files can move between shards            |
+| Balance           | Can be imbalanced by file size | Aims for equal duration                  |
+| Setup effort      | None                           | Requires historical data pipeline        |
+| Failure isolation | Easy (same file, same shard)   | Harder (file moves, harder to reproduce) |
+| Best for          | Stable file sizes              | Highly imbalanced test files             |
 
 For most teams: **start with static**. If a single slow-shard problem persists after profiling the slow files, evaluate dynamic allocation.
 
@@ -402,9 +438,9 @@ Madge gives you direct imports. To find all tests that **transitively** import a
 
 ```typescript
 // scripts/find-affected-tests.ts
-import { Project, SyntaxKind } from 'ts-morph';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Project, SyntaxKind } from "ts-morph";
+import * as fs from "fs";
+import * as path from "path";
 
 interface ImportGraph {
   [filePath: string]: string[]; // file → files it imports
@@ -415,14 +451,17 @@ function buildImportGraph(sourcePaths: string[]): ImportGraph {
   const project = new Project();
   const graph: ImportGraph = {};
 
-  sourcePaths.forEach(filePath => {
+  sourcePaths.forEach((filePath) => {
     const sourceFile = project.addSourceFileAtPath(filePath);
     const imports: string[] = [];
 
-    sourceFile.getImportDeclarations().forEach(decl => {
-      const moduleSpec = decl.getModuleSpecifier().getText().replace(/['"]/g, '');
+    sourceFile.getImportDeclarations().forEach((decl) => {
+      const moduleSpec = decl
+        .getModuleSpecifier()
+        .getText()
+        .replace(/['"]/g, "");
       // Resolve relative imports
-      if (moduleSpec.startsWith('.')) {
+      if (moduleSpec.startsWith(".")) {
         const resolved = path.resolve(path.dirname(filePath), moduleSpec);
         imports.push(resolved);
       }
@@ -437,7 +476,7 @@ function buildImportGraph(sourcePaths: string[]): ImportGraph {
 // Find all test files that transitively depend on changed files
 function findAffectedTests(
   changedFiles: string[],
-  importGraph: ImportGraph
+  importGraph: ImportGraph,
 ): Set<string> {
   const affected = new Set<string>();
   const queue = [...changedFiles];
@@ -447,10 +486,12 @@ function findAffectedTests(
 
     // Find all files that import current (reverse edges)
     for (const [file, imports] of Object.entries(importGraph)) {
-      if (imports.some(imp => imp.includes(current) || current.includes(imp))) {
-        if (file.includes('.spec.ts') && !affected.has(file)) {
+      if (
+        imports.some((imp) => imp.includes(current) || current.includes(imp))
+      ) {
+        if (file.includes(".spec.ts") && !affected.has(file)) {
           affected.add(file);
-        } else if (!file.includes('.spec.ts')) {
+        } else if (!file.includes(".spec.ts")) {
           // Non-test file — continue traversal
           if (!queue.includes(file)) queue.push(file);
         }
@@ -462,15 +503,15 @@ function findAffectedTests(
 }
 
 // Usage
-const changedFiles = execSync('git diff --name-only origin/main...HEAD')
+const changedFiles = execSync("git diff --name-only origin/main...HEAD")
   .toString()
-  .split('\n')
+  .split("\n")
   .filter(Boolean);
 
-const importGraph = buildImportGraph(findAllSourceFiles('src/'));
+const importGraph = buildImportGraph(findAllSourceFiles("src/"));
 const affectedTests = findAffectedTests(changedFiles, importGraph);
 
-console.log([...affectedTests].join('\n'));
+console.log([...affectedTests].join("\n"));
 ```
 
 ### Running only affected tests
@@ -502,9 +543,9 @@ A robust `affected-tests` script needs to handle edge cases that simple path heu
 
 ```typescript
 // scripts/affected-tests.ts
-import { execSync } from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
+import { execSync } from "child_process";
+import * as fs from "fs";
+import * as path from "path";
 
 interface TestFile {
   path: string;
@@ -513,43 +554,45 @@ interface TestFile {
 }
 
 // Parse git diff to get changed files
-function getChangedFiles(baseRef: string = 'origin/main'): string[] {
+function getChangedFiles(baseRef: string = "origin/main"): string[] {
   try {
-    return execSync(`git diff --name-only ${baseRef}...HEAD`, { encoding: 'utf8' })
-      .split('\n')
-      .filter(f => f.trim().length > 0);
+    return execSync(`git diff --name-only ${baseRef}...HEAD`, {
+      encoding: "utf8",
+    })
+      .split("\n")
+      .filter((f) => f.trim().length > 0);
   } catch {
-    console.warn('Could not diff against origin/main — using HEAD~1');
-    return execSync('git diff --name-only HEAD~1', { encoding: 'utf8' })
-      .split('\n')
-      .filter(f => f.trim().length > 0);
+    console.warn("Could not diff against origin/main — using HEAD~1");
+    return execSync("git diff --name-only HEAD~1", { encoding: "utf8" })
+      .split("\n")
+      .filter((f) => f.trim().length > 0);
   }
 }
 
 // Check for high-impact changes that always warrant full smoke
 function requiresFullSmoke(files: string[]): boolean {
   const SMOKE_TRIGGERS = [
-    /package\.json$/,           // dependencies changed
-    /playwright\.config/,       // config changed
-    /fixtures\.ts$/,            // shared fixtures changed
-    /conftest\.ts$/,            // test setup changed
-    /test-data\.json$/,         // shared test data changed
-    /\.github\/workflows/,      // CI pipeline changed
+    /package\.json$/, // dependencies changed
+    /playwright\.config/, // config changed
+    /fixtures\.ts$/, // shared fixtures changed
+    /conftest\.ts$/, // test setup changed
+    /test-data\.json$/, // shared test data changed
+    /\.github\/workflows/, // CI pipeline changed
   ];
 
-  return files.some(f => SMOKE_TRIGGERS.some(r => r.test(f)));
+  return files.some((f) => SMOKE_TRIGGERS.some((r) => r.test(f)));
 }
 
 // Map changed production files to test files via import graph
 function findAffectedTests(changedFiles: string[]): string[] {
   // Load the import graph from madge output
-  const graphPath = 'import-graph.json';
+  const graphPath = "import-graph.json";
   let importGraph: Record<string, string[]> = {};
 
   try {
-    importGraph = JSON.parse(fs.readFileSync(graphPath, 'utf8'));
+    importGraph = JSON.parse(fs.readFileSync(graphPath, "utf8"));
   } catch {
-    console.warn('No import graph found — falling back to path heuristics');
+    console.warn("No import graph found — falling back to path heuristics");
     return fallbackPathHeuristics(changedFiles);
   }
 
@@ -578,9 +621,9 @@ function findAffectedTests(changedFiles: string[]): string[] {
           path.basename(current, path.extname(current))
       ) {
         for (const f of importingFiles) {
-          if (f.includes('.spec.ts') && !affected.has(f)) {
+          if (f.includes(".spec.ts") && !affected.has(f)) {
             affected.add(f);
-          } else if (!f.includes('.spec.ts') && !queue.includes(f)) {
+          } else if (!f.includes(".spec.ts") && !queue.includes(f)) {
             queue.push(f);
           }
         }
@@ -596,17 +639,22 @@ function fallbackPathHeuristics(changedFiles: string[]): string[] {
   const testFiles = new Set<string>();
 
   for (const file of changedFiles) {
-    if (file.includes('.spec.ts') || file.includes('.test.ts')) {
+    if (file.includes(".spec.ts") || file.includes(".test.ts")) {
       testFiles.add(file);
-    } else if (file.startsWith('src/')) {
+    } else if (file.startsWith("src/")) {
       // src/OrderService.ts → tests/**/OrderService*.spec.ts
       const base = path.basename(file, path.extname(file));
       // Heuristic: look for matching spec files
-      const specCandidates = execSync(`find tests -name "${base}*.spec.ts" 2>/dev/null`, {
-        encoding: 'utf8',
-        stdio: 'pipe',
-      }).split('\n').filter(Boolean);
-      specCandidates.forEach(s => testFiles.add(s));
+      const specCandidates = execSync(
+        `find tests -name "${base}*.spec.ts" 2>/dev/null`,
+        {
+          encoding: "utf8",
+          stdio: "pipe",
+        },
+      )
+        .split("\n")
+        .filter(Boolean);
+      specCandidates.forEach((s) => testFiles.add(s));
     }
   }
 
@@ -617,7 +665,7 @@ function fallbackPathHeuristics(changedFiles: string[]): string[] {
 const changedFiles = getChangedFiles();
 
 if (requiresFullSmoke(changedFiles)) {
-  console.log('@smoke'); // Signal to CI to run smoke only
+  console.log("@smoke"); // Signal to CI to run smoke only
   process.exit(0);
 }
 
@@ -625,24 +673,24 @@ const affectedTests = findAffectedTests(changedFiles);
 
 if (affectedTests.length === 0) {
   // No affected tests found — run a minimal smoke
-  console.log('@smoke');
+  console.log("@smoke");
   process.exit(0);
 }
 
 // Output file paths for playwright
-console.log(affectedTests.join(' '));
+console.log(affectedTests.join(" "));
 ```
 
 ### Edge cases handled
 
-| Edge case | How it's handled |
-|---|---|
-| Deleted file | `git diff --name-only` includes deleted files; findAffectedTests checks if any test imported the deleted file |
-| Renamed import | ts-morph resolves the renamed path; the import graph will have the new name |
-| Shared fixture changed | `requiresFullSmoke` catches `fixtures.ts` changes and triggers @smoke |
-| No import graph exists | Falls back to path heuristics, then falls back to @smoke |
-| New file (not in graph) | Won't appear in changed files from diff — but new files that import nothing don't need tests |
-| Tests over-shattering | Each changed file triggers only its own test; shared util triggers all tests that import it |
+| Edge case               | How it's handled                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Deleted file            | `git diff --name-only` includes deleted files; findAffectedTests checks if any test imported the deleted file |
+| Renamed import          | ts-morph resolves the renamed path; the import graph will have the new name                                   |
+| Shared fixture changed  | `requiresFullSmoke` catches `fixtures.ts` changes and triggers @smoke                                         |
+| No import graph exists  | Falls back to path heuristics, then falls back to @smoke                                                      |
+| New file (not in graph) | Won't appear in changed files from diff — but new files that import nothing don't need tests                  |
+| Tests over-shattering   | Each changed file triggers only its own test; shared util triggers all tests that import it                   |
 
 ### Testing the script
 
@@ -672,24 +720,24 @@ Playwright's built-in project filtering handles this cleanly:
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   projects: [
     {
-      name: 'web-app',
-      testDir: './apps/web-app/e2e',
-      use: { ...devices['Desktop Chrome'] },
+      name: "web-app",
+      testDir: "./apps/web-app/e2e",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'mobile-app',
-      testDir: './apps/mobile-app/e2e',
-      use: { ...devices['iPhone 13'] },
+      name: "mobile-app",
+      testDir: "./apps/mobile-app/e2e",
+      use: { ...devices["iPhone 13"] },
     },
     {
-      name: 'admin-dashboard',
-      testDir: './apps/admin-dashboard/e2e',
-      use: { ...devices['Desktop Firefox'] },
+      name: "admin-dashboard",
+      testDir: "./apps/admin-dashboard/e2e",
+      use: { ...devices["Desktop Firefox"] },
     },
   ],
 });
@@ -751,11 +799,11 @@ fi
 
 ### Project-level vs file-level sharding
 
-| Strategy | How it works | Best for |
-|---|---|---|
-| **Project-level** | Each project (app) is a Playwright project; shard at the project level | Monorepo with 2–5 distinct apps |
-| **File-level** | All projects combined; Playwright distributes test files across shards | Single suite, 1 app |
-| **Hybrid** | Project-level first (apps), then file-level within each app | Large monorepo, many apps with many tests |
+| Strategy          | How it works                                                           | Best for                                  |
+| ----------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
+| **Project-level** | Each project (app) is a Playwright project; shard at the project level | Monorepo with 2–5 distinct apps           |
+| **File-level**    | All projects combined; Playwright distributes test files across shards | Single suite, 1 app                       |
+| **Hybrid**        | Project-level first (apps), then file-level within each app            | Large monorepo, many apps with many tests |
 
 ---
 
@@ -770,7 +818,7 @@ With `fail-fast: true` (default in some CI configs), if shard 1 fails, shards 2�
 jobs:
   e2e:
     strategy:
-      fail-fast: false  # Critical!
+      fail-fast: false # Critical!
       matrix:
         shard: [1, 2, 3, 4]
 ```
@@ -825,13 +873,13 @@ Your affected-tests script should detect `README.md`, `docs/`, `*.md` changes an
 try {
   const affected = findAffectedTests(changedFiles);
   if (affected.length === 0) {
-    console.log('@smoke');  // Always output something
+    console.log("@smoke"); // Always output something
   } else {
-    console.log(affected.join(' '));
+    console.log(affected.join(" "));
   }
 } catch (err) {
-  console.error('affected-tests failed, falling back to @smoke:', err);
-  console.log('@smoke');  // Never fail silently
+  console.error("affected-tests failed, falling back to @smoke:", err);
+  console.log("@smoke"); // Never fail silently
 }
 ```
 
@@ -871,16 +919,16 @@ If one shard consistently has 2× the failures of others, the distribution is no
 
 Use this to choose your execution strategy:
 
-| Scenario | Strategy | Why |
-|---|---|---|
-| Suite < 15 min, < 200 tests | No sharding needed | Overhead of sharding not worth it |
-| Suite 15–60 min, 200–500 tests | 2–4 way sharding only | Cut wall time without complexity |
-| Suite < 10 min, team < 5 | Test selection (affected-tests) | Running fewer tests is better than running same tests faster |
-| Suite > 60 min, > 500 tests | Sharding + test selection combined | Both needed: cut total tests AND reduce wall time per PR |
-| Monorepo, many apps | Project-level sharding + test selection per app | Each app has its own test suite; affected-tests per app |
-| Team > 20 engineers, > 5 pipelines | Sharding + selection + merge infrastructure | Enterprise scale needs all three |
-| Flaky tests, high variance | Sharding with fail-fast:false + report merge | Need full picture of all failures |
-| Solo dev, fast feedback needed | No sharding, affected-tests only | Minimise total tests run |
+| Scenario                           | Strategy                                        | Why                                                          |
+| ---------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| Suite < 15 min, < 200 tests        | No sharding needed                              | Overhead of sharding not worth it                            |
+| Suite 15–60 min, 200–500 tests     | 2–4 way sharding only                           | Cut wall time without complexity                             |
+| Suite < 10 min, team < 5           | Test selection (affected-tests)                 | Running fewer tests is better than running same tests faster |
+| Suite > 60 min, > 500 tests        | Sharding + test selection combined              | Both needed: cut total tests AND reduce wall time per PR     |
+| Monorepo, many apps                | Project-level sharding + test selection per app | Each app has its own test suite; affected-tests per app      |
+| Team > 20 engineers, > 5 pipelines | Sharding + selection + merge infrastructure     | Enterprise scale needs all three                             |
+| Flaky tests, high variance         | Sharding with fail-fast:false + report merge    | Need full picture of all failures                            |
+| Solo dev, fast feedback needed     | No sharding, affected-tests only                | Minimise total tests run                                     |
 
 **The transition signals**:
 
@@ -963,13 +1011,13 @@ jobs:
     # Prevent runaway parallelism
     concurrency:
       group: e2e-${{ github.ref }}
-      cancel-in-progress: false  # Don't cancel, but limit to 1 concurrent run per branch
-    
+      cancel-in-progress: false # Don't cancel, but limit to 1 concurrent run per branch
+
     # Set explicit timeout (prevents hung test from burning budget)
     timeout-minutes: 30
-    
+
     # Resource limits (for self-hosted runners)
-    runs-on: [self-hosted, small]  # Tagged by size: small/medium/large
+    runs-on: [self-hosted, small] # Tagged by size: small/medium/large
 ```
 
 ### Monthly CI budget tracking
@@ -1007,7 +1055,7 @@ InstanceMarketOptions:
   MarketType: spot
   SpotOptions:
     SpotInstanceType: persistent
-    InterruptionBehavior: stop  # Stop and restart later, don't terminate
+    InterruptionBehavior: stop # Stop and restart later, don't terminate
 ```
 
 Spot instances can reduce compute costs by 60–70%. The trade-off: they can be interrupted. For test runners, this is acceptable — CI reruns the job anyway. For long-running jobs that cannot be interrupted, use on-demand.
@@ -1087,16 +1135,16 @@ Build a GitHub Actions workflow with 4-way sharded Playwright tests, wire in an 
 
 ### Self-Grading Rubric
 
-| Criterion | 0 — Not done | 1 — Partially done | 2 — Complete |
-|---|---|---|---|
-| 4-way sharded workflow created | No workflow | Workflow exists but fails | Workflow runs, shards correctly, merges reports |
-| affected-tests script implemented | No script | Script exists but no fallback | Script exists, handles all edge cases, has smoke fallback |
-| affected-tests wired into CI | Not wired | Wired but not in matrix | Fully wired, outputs used in playwright test command |
-| PR 1 (docs) timed and documented | Not done | Partially documented | Screenshotted, duration recorded, test count noted |
-| PR 2 (code) timed and documented | Not done | Partially documented | Screenshotted, duration recorded, test count noted |
-| Delta calculation in experiment doc | No calculation | Basic calculation | Detailed breakdown with time saved and test ratio |
-| fail-fast: false confirmed | Not set | Set but untested | Confirmed: one shard failure doesn't cancel others |
-| Report merging confirmed | Not merged | Partial merge | Full merged report available with all shards |
+| Criterion                           | 0 — Not done   | 1 — Partially done            | 2 — Complete                                              |
+| ----------------------------------- | -------------- | ----------------------------- | --------------------------------------------------------- |
+| 4-way sharded workflow created      | No workflow    | Workflow exists but fails     | Workflow runs, shards correctly, merges reports           |
+| affected-tests script implemented   | No script      | Script exists but no fallback | Script exists, handles all edge cases, has smoke fallback |
+| affected-tests wired into CI        | Not wired      | Wired but not in matrix       | Fully wired, outputs used in playwright test command      |
+| PR 1 (docs) timed and documented    | Not done       | Partially documented          | Screenshotted, duration recorded, test count noted        |
+| PR 2 (code) timed and documented    | Not done       | Partially documented          | Screenshotted, duration recorded, test count noted        |
+| Delta calculation in experiment doc | No calculation | Basic calculation             | Detailed breakdown with time saved and test ratio         |
+| fail-fast: false confirmed          | Not set        | Set but untested              | Confirmed: one shard failure doesn't cancel others        |
+| Report merging confirmed            | Not merged     | Partial merge                 | Full merged report available with all shards              |
 
 **Total: /16**
 

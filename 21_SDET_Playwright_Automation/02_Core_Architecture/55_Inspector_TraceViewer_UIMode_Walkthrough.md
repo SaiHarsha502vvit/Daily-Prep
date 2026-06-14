@@ -93,7 +93,9 @@ This is the killer feature. Even most working SDETs underuse it.
 `playwright.config.ts` in your framework has:
 
 ```typescript
-use: { trace: 'retain-on-failure' }
+use: {
+  trace: "retain-on-failure";
+}
 ```
 
 That means: every failed test produces a `trace.zip` you can replay.
@@ -214,17 +216,43 @@ This loop is roughly **10× faster** than `npm run test` per cycle. New SDETs wh
 
 ---
 
+## War Stories — The Wrong Tool Costs Hours
+
+### Story 1: 4 hours of console.log vs 12 minutes of Trace Viewer
+
+A senior SDET spent a morning debugging a flaky test. The symptom: a `page.click()` on a "Save" button occasionally threw `Target closed` — the page navigated away before the click landed. The test passed locally 9/10 times; in CI it failed 4/10 times.
+
+Debugging approach: added `console.log` statements before every action, ran locally, watched logs. The timing varied but the log never showed anything wrong. Tried adding `await page.waitForLoadState('networkidle')` before the click. Still flaky.
+
+After 4 hours: a colleague suggested opening the CI trace artifact. Two clicks in, the Network tab showed the root cause: a `POST /api/save-draft` request was firing on every keystroke. The auto-save was triggering a page reload mid-test. The `console.log` approach had no visibility into network calls. The trace had captured it in the very first failed run.
+
+Fix: `await page.waitForResponse('**/api/save-draft')` before the click. Done in 12 minutes.
+
+**The lesson:** `console.log` is blind to network calls, async state, and frame-level events. Trace Viewer records all of these with zero setup. The 4 hours were lost because the right tool was available and unused.
+
+### Story 2: Inspector chosen for CI failure (wrong tool)
+
+A junior SDET saw a test fail in CI. Their debugging instinct: run `npm run test:debug` locally (Inspector). The test passed. Run again — still passes. "It works locally." This cycle repeated for three days. The bug was a timing issue specific to the CI machine's CPU speed.
+
+The trace artifact from the CI run was sitting in the GitHub Actions artifacts tab the whole time. It showed exactly which action timed out and the exact DOM state when it happened. The junior didn't know about Trace Viewer.
+
+The rule: **Inspector = live debugging on your machine. Trace Viewer = forensics on what already happened.**
+
+CI failures are forensic problems. Inspector is a surgery tool for live problems. Using surgery tools for forensics is why "it works on my machine" takes 3 days instead of 20 minutes.
+
+---
+
 ## Surface comparison — when to use which
 
-| Symptom | Tool | Why |
-|---|---|---|
-| "Test fails in CI, works locally" | **Trace Viewer** on the CI artifact | Time-travel is the only honest way |
-| "I'm writing a new test from scratch" | **UI Mode** + Watch | Edit-save-replay loop |
-| "I need to know what locator to use" | **Inspector** Pick Locator | Live DOM inspection |
-| "Test passes but is slow" | **Trace Viewer** | Timeline shows what took the time |
-| "Network call returns wrong data" | **Trace Viewer** Network tab | Headers, payloads, response shapes |
-| "Page is weird state, need to inspect" | **Inspector** pause | Step through to that moment |
-| "I changed the locator strategy, want to re-test 20 specs" | **UI Mode** filtered | Bulk re-run with watch |
+| Symptom                                                    | Tool                                | Why                                |
+| ---------------------------------------------------------- | ----------------------------------- | ---------------------------------- |
+| "Test fails in CI, works locally"                          | **Trace Viewer** on the CI artifact | Time-travel is the only honest way |
+| "I'm writing a new test from scratch"                      | **UI Mode** + Watch                 | Edit-save-replay loop              |
+| "I need to know what locator to use"                       | **Inspector** Pick Locator          | Live DOM inspection                |
+| "Test passes but is slow"                                  | **Trace Viewer**                    | Timeline shows what took the time  |
+| "Network call returns wrong data"                          | **Trace Viewer** Network tab        | Headers, payloads, response shapes |
+| "Page is weird state, need to inspect"                     | **Inspector** pause                 | Step through to that moment        |
+| "I changed the locator strategy, want to re-test 20 specs" | **UI Mode** filtered                | Bulk re-run with watch             |
 
 ---
 

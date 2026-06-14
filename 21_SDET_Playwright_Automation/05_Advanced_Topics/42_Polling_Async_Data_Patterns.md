@@ -3,9 +3,75 @@
 **Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
 **Cross-links:**
+
 - [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](../03_D365_And_Patterns/15_CrossSite_Pattern5_UI_API_Side_Effects.md) — expect.poll in side-effect verification
 - [`26_Flakiness_Diagnosis_and_Fixing.md`](./26_Flakiness_Diagnosis_and_Fixing.md) — waitForTimeout as flakiness root cause
 - [`23_APIUtils_HTTP_Library.md`](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md) — API client patterns
+
+---
+
+## 0. War Stories — Async Bugs With Consequences
+
+### Story 1: The payment poller that masked a fraud vector
+
+A payment processing flow submitted a charge and then polled `GET /api/v1/payments/{id}` until `status === 'settled'`. The test used `expect.poll()` with a 90-second timeout. Tests passed consistently.
+
+Six months later, a penetration test found that the payment service accepted duplicate request IDs — you could replay a payment request and it would settle twice. The test never caught it because it polled for ANY settled payment, not for THE specific payment with the submitted request ID.
+
+The polling condition:
+```typescript
+// ❌ Masks duplicate-payment bug
+await expect.poll(async () => {
+  const r = await apiClient.get(`/payments/${paymentId}`);
+  return r.body.status;
+}).toBe('settled');
+```
+
+The correct assertion checks the actual idempotency key in the response:
+```typescript
+// ✅ Verifies the correct payment, not just any payment
+await expect.poll(async () => {
+  const r = await apiClient.get(`/payments/${paymentId}`);
+  return r.body;
+}).toMatchObject({ status: 'settled', idempotencyKey: expectedKey });
+```
+
+**Lesson:** Polling on existence or simple status fields masks attribution bugs. Assert on the specific record's full identity, not just its terminal state.
+
+### Story 2: `Promise.race` timeout that swallowed the real error
+
+A test was written to "race" between a polling function and a timeout. The intent was: if the operation doesn't complete in 30 seconds, fail fast. The actual code:
+
+```typescript
+// ❌ Promise.race with unhandled rejection
+const result = await Promise.race([
+  pollForPaymentStatus(paymentId),
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Timeout')), 30_000)
+  ),
+]);
+```
+
+When `pollForPaymentStatus` threw an uncaught network error (`ECONNREFUSED`), the `Promise.race` ignored it — the timeout fired first (the network error caused a retry loop that outlasted the 30s). The test always reported "Timeout" regardless of the actual failure.
+
+**The trap:** `Promise.race` resolves or rejects with the FIRST to settle. If your polling function has internal retries, a transient failure causes it to retry, and the timeout settles first. You lose the real error message.
+
+The right pattern: **don't use `Promise.race` as a timeout mechanism.** Use `expect.poll` with a `timeout` option instead — it preserves the original error on failure:
+
+```typescript
+// ✅ expect.poll propagates the real failure message
+await expect.poll(
+  async () => {
+    const r = await apiClient.get(`/payments/${paymentId}`);
+    return r.body.status;
+  },
+  { timeout: 30_000, intervals: [1_000, 2_000, 5_000] }
+).toBe('settled');
+// On failure: "Expected 'pending' to equal 'settled'" — the real state is visible
+// On network error: the error propagates directly
+```
+
+**Lesson:** `Promise.race` as a timeout swallows real errors. `expect.poll` with `timeout` is safer because failure messages are preserved and meaningful.
 
 ---
 
@@ -42,26 +108,27 @@ The total wait time is unpredictable: 30 seconds minimum, 2 minutes maximum.
 // ❌ ANTI-PATTERN — for-loop with sleep
 // Seen in real enterprise test suites from multiple companies
 
-test('Citation payment flow', async ({ page, citationsClient }) => {
+test("Citation payment flow", async ({ page, citationsClient }) => {
   await paymentForm.submitPayment();
 
   // "Wait for status to change" — the wrong way
-  let status = '';
+  let status = "";
   let attempts = 0;
 
-  for (let i = 0; i < 120; i++) {          // loop up to 120 times
+  for (let i = 0; i < 120; i++) {
+    // loop up to 120 times
     const citation = await citationsClient.getById(citationId);
     status = citation.status;
 
-    if (status === 'PAID') {
-      break;                                // got it, exit loop
+    if (status === "PAID") {
+      break; // got it, exit loop
     }
 
-    await page.waitForTimeout(1000);        // sleep 1 second
+    await page.waitForTimeout(1000); // sleep 1 second
     attempts++;
   }
 
-  expect(status).toBe('PAID');             // assert AFTER the loop
+  expect(status).toBe("PAID"); // assert AFTER the loop
 });
 ```
 
@@ -139,20 +206,20 @@ sequenceDiagram
     participant Test
     participant PW as expect.poll() Engine
     participant Fn as Your Async Function
-    
+
     Test->>PW: Start Polling
-    
+
     loop Every Interval (until timeout or success)
         PW->>Fn: Execute Function
         Fn-->>PW: Return Value
-        
+
         alt Assertion Passes?
             PW-->>Test: ✅ Success (Test Continues)
         else Assertion Fails?
             PW->>PW: Wait for next interval
         end
     end
-    
+
     PW-->>Test: ❌ TimeoutError (Throws)
 ```
 
@@ -176,20 +243,23 @@ Key difference from for-loop:
 
 ```typescript
 // ✅ CORRECT: Payment status via API polling
-await expect.poll(
-  async () => {
-    const citation = await citationsClient.getById(citationId);
-    return citation.status;
-  },
-  {
-    message:   `Citation ${citationId} never reached PAID status. Check payment gateway logs.`,
-    timeout:   120_000,                          // 2 minute max
-    intervals: [1000, 2000, 5000, 10000],        // 1s → 2s → 5s → 10s → 10s → 10s...
-  }
-).toBe('PAID');
+await expect
+  .poll(
+    async () => {
+      const citation = await citationsClient.getById(citationId);
+      return citation.status;
+    },
+    {
+      message: `Citation ${citationId} never reached PAID status. Check payment gateway logs.`,
+      timeout: 120_000, // 2 minute max
+      intervals: [1000, 2000, 5000, 10000], // 1s → 2s → 5s → 10s → 10s → 10s...
+    },
+  )
+  .toBe("PAID");
 ```
 
 **What happens with this pattern:**
+
 ```
 T+0s:  First check → PENDING   (payment just triggered)
 T+1s:  Second check → PENDING  (still processing)
@@ -205,33 +275,45 @@ Total: 8 seconds, not 120 seconds
 // The UI polls the backend every 30 seconds — we need to wait for it to refresh
 
 // Option A: Reload the page and check (for non-real-time UIs)
-await expect.poll(
-  async () => {
-    await page.reload();
-    await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 15_000 });
-    return page.locator('[data-testid="citation-status-badge"]').textContent();
-  },
-  {
-    message:   'Citation status badge never showed PAID after payment',
-    timeout:   150_000,    // UI may lag behind API by 30s
-    intervals: [5000, 10000, 30000],  // reload at 5s, 15s, 45s, 75s...
-  }
-).toContain('PAID');
+await expect
+  .poll(
+    async () => {
+      await page.reload();
+      await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+        timeout: 15_000,
+      });
+      return page
+        .locator('[data-testid="citation-status-badge"]')
+        .textContent();
+    },
+    {
+      message: "Citation status badge never showed PAID after payment",
+      timeout: 150_000, // UI may lag behind API by 30s
+      intervals: [5000, 10000, 30000], // reload at 5s, 15s, 45s, 75s...
+    },
+  )
+  .toContain("PAID");
 
 // Option B: Click a "Refresh" button in the UI (if available)
-await expect.poll(
-  async () => {
-    await page.locator('[data-testid="refresh-btn"]').click();
-    await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 15_000 });
-    const statusText = await page.locator('[data-testid="status"]').textContent();
-    return statusText?.trim();
-  },
-  {
-    message:   'UI never reflected PAID status after payment processing',
-    timeout:   180_000,
-    intervals: [10000, 30000],
-  }
-).toBe('PAID');
+await expect
+  .poll(
+    async () => {
+      await page.locator('[data-testid="refresh-btn"]').click();
+      await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+        timeout: 15_000,
+      });
+      const statusText = await page
+        .locator('[data-testid="status"]')
+        .textContent();
+      return statusText?.trim();
+    },
+    {
+      message: "UI never reflected PAID status after payment processing",
+      timeout: 180_000,
+      intervals: [10000, 30000],
+    },
+  )
+  .toBe("PAID");
 ```
 
 ### Pattern 3 — Poll For a Complex Condition (boolean)
@@ -240,28 +322,31 @@ await expect.poll(
 // ✅ CORRECT: Wait for email delivery + open tracking
 // Email delivery can take 30 seconds to 5 minutes
 
-await expect.poll(
-  async () => {
-    const notifications = await notificationsClient.getForUser(userId, {
-      type:   'CITATION_PAYMENT_CONFIRMATION',
-      after:  testStartTime,  // only notifications sent during THIS test
-    });
+await expect
+  .poll(
+    async () => {
+      const notifications = await notificationsClient.getForUser(userId, {
+        type: "CITATION_PAYMENT_CONFIRMATION",
+        after: testStartTime, // only notifications sent during THIS test
+      });
 
-    // Check: delivered AND opened (both required)
-    const confirmed = notifications.find(n =>
-      n.channel === 'email' &&
-      n.status === 'delivered' &&
-      n.metadata?.citationId === citationId
-    );
+      // Check: delivered AND opened (both required)
+      const confirmed = notifications.find(
+        (n) =>
+          n.channel === "email" &&
+          n.status === "delivered" &&
+          n.metadata?.citationId === citationId,
+      );
 
-    return !!confirmed;
-  },
-  {
-    message:   `Payment confirmation email never delivered for citation ${citationId}`,
-    timeout:   300_000,      // 5 minutes — realistic email delivery window
-    intervals: [5000, 10000, 30000, 60000],  // aggressive early, relaxed later
-  }
-).toBe(true);
+      return !!confirmed;
+    },
+    {
+      message: `Payment confirmation email never delivered for citation ${citationId}`,
+      timeout: 300_000, // 5 minutes — realistic email delivery window
+      intervals: [5000, 10000, 30000, 60000], // aggressive early, relaxed later
+    },
+  )
+  .toBe(true);
 ```
 
 ### Pattern 4 — Poll And Get the Value (not just assert)
@@ -272,25 +357,27 @@ await expect.poll(
 
 let finalReport: Report | null = null;
 
-await expect.poll(
-  async () => {
-    const report = await reportsClient.getById(reportId);
-    finalReport = report;           // capture the last value for use after polling
+await expect
+  .poll(
+    async () => {
+      const report = await reportsClient.getById(reportId);
+      finalReport = report; // capture the last value for use after polling
 
-    if (report.status === 'FAILED') {
-      throw new Error(`Report ${reportId} FAILED: ${report.errorMessage}`);
-      // Throwing inside expect.poll() STOPS polling and fails the test immediately
-      // Don't throw on retryable states — only on permanent failures
-    }
+      if (report.status === "FAILED") {
+        throw new Error(`Report ${reportId} FAILED: ${report.errorMessage}`);
+        // Throwing inside expect.poll() STOPS polling and fails the test immediately
+        // Don't throw on retryable states — only on permanent failures
+      }
 
-    return report.status;
-  },
-  {
-    message:   `Report ${reportId} never reached READY status`,
-    timeout:   600_000,             // 10 minutes for large reports
-    intervals: [5000, 10000, 30000, 60000],
-  }
-).toBe('READY');
+      return report.status;
+    },
+    {
+      message: `Report ${reportId} never reached READY status`,
+      timeout: 600_000, // 10 minutes for large reports
+      intervals: [5000, 10000, 30000, 60000],
+    },
+  )
+  .toBe("READY");
 
 // Now use finalReport safely — it's the last value returned by the poll function
 expect(finalReport!.downloadUrl).toBeTruthy();
@@ -304,28 +391,32 @@ expect(reportContent.pageCount).toBeGreaterThan(0);
 // ✅ CORRECT: Verbose polling with progress logging (good for long operations)
 
 let attemptCount = 0;
-let lastStatus = '';
+let lastStatus = "";
 
-await expect.poll(
-  async () => {
-    attemptCount++;
-    const citation = await citationsClient.getById(citationId);
-    const status = citation.status;
+await expect
+  .poll(
+    async () => {
+      attemptCount++;
+      const citation = await citationsClient.getById(citationId);
+      const status = citation.status;
 
-    // Log progress on status changes (not every poll — too noisy)
-    if (status !== lastStatus) {
-      console.log(`[Poll attempt ${attemptCount}] ${citationId}: ${lastStatus || 'START'} → ${status}`);
-      lastStatus = status;
-    }
+      // Log progress on status changes (not every poll — too noisy)
+      if (status !== lastStatus) {
+        console.log(
+          `[Poll attempt ${attemptCount}] ${citationId}: ${lastStatus || "START"} → ${status}`,
+        );
+        lastStatus = status;
+      }
 
-    return status;
-  },
-  {
-    message: `Citation ${citationId} stuck at status '${lastStatus}' after ${attemptCount} attempts`,
-    timeout: 120_000,
-    intervals: [1000, 2000, 5000, 10000],
-  }
-).toBe('PAID');
+      return status;
+    },
+    {
+      message: `Citation ${citationId} stuck at status '${lastStatus}' after ${attemptCount} attempts`,
+      timeout: 120_000,
+      intervals: [1000, 2000, 5000, 10000],
+    },
+  )
+  .toBe("PAID");
 ```
 
 ---
@@ -347,25 +438,30 @@ waitForResponse()     → capturing the response AT THE MOMENT an action fires
 // ✅ CORRECT: Capture the exact payment POST response
 const [paymentApiResponse] = await Promise.all([
   page.waitForResponse(
-    response =>
-      response.url().includes('/api/v2/citations/payments') &&
-      response.request().method() === 'POST' &&
+    (response) =>
+      response.url().includes("/api/v2/citations/payments") &&
+      response.request().method() === "POST" &&
       response.status() === 202,
-    { timeout: 30_000 }
+    { timeout: 30_000 },
   ),
-  paymentForm.clickPayNow(),   // this triggers the POST
+  paymentForm.clickPayNow(), // this triggers the POST
 ]);
 
 // Now parse the response to get the jobId for subsequent polling
-const responseBody = await paymentApiResponse.json() as { jobId: string; status: string };
+const responseBody = (await paymentApiResponse.json()) as {
+  jobId: string;
+  status: string;
+};
 const { jobId } = responseBody;
-expect(responseBody.status).toBe('ACCEPTED');
+expect(responseBody.status).toBe("ACCEPTED");
 
 // Then poll the job status:
-await expect.poll(
-  async () => (await jobsClient.getStatus(jobId)).status,
-  { timeout: 120_000, intervals: [1000, 2000, 5000, 10000] }
-).toBe('COMPLETED');
+await expect
+  .poll(async () => (await jobsClient.getStatus(jobId)).status, {
+    timeout: 120_000,
+    intervals: [1000, 2000, 5000, 10000],
+  })
+  .toBe("COMPLETED");
 ```
 
 ### Pattern: Verify the Request Was Actually Sent
@@ -373,19 +469,19 @@ await expect.poll(
 ```typescript
 // ✅ CORRECT: Assert that clicking a button triggers the expected API call
 const requestPromise = page.waitForRequest(
-  request =>
-    request.url().includes('/api/v2/notifications/send') &&
-    request.method() === 'POST'
+  (request) =>
+    request.url().includes("/api/v2/notifications/send") &&
+    request.method() === "POST",
 );
 
-await page.getByRole('button', { name: 'Send Reminder' }).click();
+await page.getByRole("button", { name: "Send Reminder" }).click();
 
 const request = await requestPromise;
 
 // Verify the request body is correct
-const requestBody = JSON.parse(request.postData() ?? '{}');
+const requestBody = JSON.parse(request.postData() ?? "{}");
 expect(requestBody.recipientId).toBe(expectedUserId);
-expect(requestBody.type).toBe('PAYMENT_REMINDER');
+expect(requestBody.type).toBe("PAYMENT_REMINDER");
 ```
 
 ### Pattern: Wait for ALL Related API Calls
@@ -393,14 +489,21 @@ expect(requestBody.type).toBe('PAYMENT_REMINDER');
 ```typescript
 // ✅ CORRECT: A single UI action triggers 3 API calls — wait for all
 const apiCallPromises = [
-  page.waitForResponse(r => r.url().includes('/api/citations') && r.status() === 200),
-  page.waitForResponse(r => r.url().includes('/api/notifications') && r.status() === 202),
-  page.waitForResponse(r => r.url().includes('/api/audit') && r.status() === 201),
+  page.waitForResponse(
+    (r) => r.url().includes("/api/citations") && r.status() === 200,
+  ),
+  page.waitForResponse(
+    (r) => r.url().includes("/api/notifications") && r.status() === 202,
+  ),
+  page.waitForResponse(
+    (r) => r.url().includes("/api/audit") && r.status() === 201,
+  ),
 ];
 
-await page.getByRole('menuitem', { name: 'Process Payment' }).click();
+await page.getByRole("menuitem", { name: "Process Payment" }).click();
 
-const [citationResponse, notificationResponse, auditResponse] = await Promise.all(apiCallPromises);
+const [citationResponse, notificationResponse, auditResponse] =
+  await Promise.all(apiCallPromises);
 
 expect(citationResponse.status()).toBe(200);
 expect(notificationResponse.status()).toBe(202);
@@ -418,19 +521,19 @@ Use when you need to evaluate a JavaScript expression in the browser context to 
 const element = await page.waitForFunction(
   () => {
     const statusEl = document.querySelector('[data-testid="payment-status"]');
-    return statusEl?.textContent?.trim() === 'PAID'
+    return statusEl?.textContent?.trim() === "PAID"
       ? statusEl.textContent.trim()
-      : null;  // return null = keep polling; return any truthy value = done
+      : null; // return null = keep polling; return any truthy value = done
   },
   {
     timeout: 120_000,
-    polling: 1000,   // check every 1000ms (or 'raf' for animation-frame polling)
-  }
+    polling: 1000, // check every 1000ms (or 'raf' for animation-frame polling)
+  },
 );
 
 // element is a JSHandle<string> — the return value from the browser function
-const statusText = await element.jsonValue();  // 'PAID'
-expect(statusText).toBe('PAID');
+const statusText = await element.jsonValue(); // 'PAID'
+expect(statusText).toBe("PAID");
 ```
 
 ### `polling` Options for waitForFunction
@@ -474,7 +577,11 @@ export interface PollOptions<T> {
    * Called on every attempt with current attempt index and elapsed time.
    * Use for logging progress in long-running operations.
    */
-  onProgress?: (attempt: number, elapsedMs: number, lastValue: T | null) => void;
+  onProgress?: (
+    attempt: number,
+    elapsedMs: number,
+    lastValue: T | null,
+  ) => void;
 
   /**
    * Called when an error is thrown inside the poll function.
@@ -490,13 +597,13 @@ export class PollTimeoutError extends Error {
     description: string,
     public readonly lastValue: unknown,
     public readonly attempts: number,
-    public readonly elapsedMs: number
+    public readonly elapsedMs: number,
   ) {
     super(
       `[pollUntil] Timeout after ${attempts} attempts (${elapsedMs}ms): ${description}\n` +
-      `Last value: ${JSON.stringify(lastValue, null, 2)}`
+        `Last value: ${JSON.stringify(lastValue, null, 2)}`,
     );
-    this.name = 'PollTimeoutError';
+    this.name = "PollTimeoutError";
   }
 }
 
@@ -514,7 +621,7 @@ export class PollTimeoutError extends Error {
 export async function pollUntil<T>(
   fn: () => Promise<T | null | undefined | false>,
   condition: ((value: T) => boolean) | null,
-  options: PollOptions<T>
+  options: PollOptions<T>,
 ): Promise<T> {
   const startTime = Date.now();
   const intervals = Array.isArray(options.intervals)
@@ -528,7 +635,12 @@ export async function pollUntil<T>(
     const elapsed = Date.now() - startTime;
 
     if (elapsed >= options.timeout) {
-      throw new PollTimeoutError(options.description, lastValue ?? lastError, attempt, elapsed);
+      throw new PollTimeoutError(
+        options.description,
+        lastValue ?? lastError,
+        attempt,
+        elapsed,
+      );
     }
 
     attempt++;
@@ -549,7 +661,7 @@ export async function pollUntil<T>(
       lastError = error;
       const shouldRetry = options.isRetryableError?.(error) ?? false;
       if (!shouldRetry) {
-        throw error;  // Non-retryable error — propagate immediately
+        throw error; // Non-retryable error — propagate immediately
       }
       // Retryable error — log and continue
       console.warn(`[pollUntil] Attempt ${attempt}: retryable error: ${error}`);
@@ -563,8 +675,10 @@ export async function pollUntil<T>(
 
     // Wait for the interval, but stop early if timeout would be exceeded
     const remainingMs = options.timeout - (Date.now() - startTime);
-    if (remainingMs <= 0) continue;  // Will timeout on next iteration check
-    await new Promise(resolve => setTimeout(resolve, Math.min(intervalMs, remainingMs)));
+    if (remainingMs <= 0) continue; // Will timeout on next iteration check
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.min(intervalMs, remainingMs)),
+    );
   }
 }
 
@@ -576,7 +690,7 @@ export async function pollUntil<T>(
 export async function pollForStatus<T extends { status: string }>(
   fn: () => Promise<T>,
   expectedStatus: string,
-  options: Omit<PollOptions<T>, 'description'> & { description?: string }
+  options: Omit<PollOptions<T>, "description"> & { description?: string },
 ): Promise<T> {
   return pollUntil(
     async () => {
@@ -585,9 +699,10 @@ export async function pollForStatus<T extends { status: string }>(
     },
     null,
     {
-      description: options.description ?? `status to become '${expectedStatus}'`,
+      description:
+        options.description ?? `status to become '${expectedStatus}'`,
       ...options,
-    }
+    },
   );
 }
 
@@ -598,7 +713,7 @@ export async function pollForStatus<T extends { status: string }>(
 export async function pollForItem<T>(
   fn: () => Promise<T[]>,
   predicate: (item: T) => boolean,
-  options: PollOptions<T>
+  options: PollOptions<T>,
 ): Promise<T> {
   return pollUntil(
     async () => {
@@ -606,7 +721,7 @@ export async function pollForItem<T>(
       return items.find(predicate) ?? null;
     },
     null,
-    options
+    options,
   );
 }
 ```
@@ -617,31 +732,34 @@ export async function pollForItem<T>(
 // Example 1: Wait for report generation
 const report = await pollForStatus(
   () => reportsClient.getById(reportId),
-  'READY',
+  "READY",
   {
-    timeout:   600_000,         // 10 minutes
+    timeout: 600_000, // 10 minutes
     intervals: [5000, 10000, 30000, 60000],
     onProgress: (attempt, elapsed) => {
-      console.log(`Report ${reportId}: attempt ${attempt}, ${Math.round(elapsed / 1000)}s elapsed`);
+      console.log(
+        `Report ${reportId}: attempt ${attempt}, ${Math.round(elapsed / 1000)}s elapsed`,
+      );
     },
     isRetryableError: (err) => {
       // Retry on network errors and 503s, but not on 404 (report doesn't exist)
-      if (err instanceof ApiError) return err.status === 503 || err.status === 429;
-      return err instanceof TypeError;  // network error
+      if (err instanceof ApiError)
+        return err.status === 503 || err.status === 429;
+      return err instanceof TypeError; // network error
     },
-  }
+  },
 );
 expect(report.downloadUrl).toBeTruthy();
 
 // Example 2: Wait for notification email
 const notification = await pollForItem(
   () => notificationsClient.getForUser(userId, { after: testStart }),
-  n => n.type === 'PAYMENT_CONFIRMATION' && n.status === 'delivered',
+  (n) => n.type === "PAYMENT_CONFIRMATION" && n.status === "delivered",
   {
     description: `payment confirmation email for user ${userId}`,
     timeout: 300_000,
     intervals: [5000, 15000, 30000, 60000],
-  }
+  },
 );
 expect(notification.metadata.citationId).toBe(citationId);
 ```
@@ -653,78 +771,95 @@ expect(notification.metadata.citationId).toBe(citationId);
 ### Scenario A: Payment Processing (30s to 2 minutes)
 
 ```typescript
-test('Citation payment — full flow with polling', async ({
-  page, citationsClient, paymentsClient, dbClient, account
+test("Citation payment — full flow with polling", async ({
+  page,
+  citationsClient,
+  paymentsClient,
+  dbClient,
+  account,
 }) => {
   const testStart = new Date();
 
   // Step 1: Create pending citation
-  await test.step('API: Create pending citation', async () => {
-    citation = await citationsClient.create(PayloadsCitation.pending({ customerId: account.userId }));
-    expect(citation.status).toBe('PENDING');
+  await test.step("API: Create pending citation", async () => {
+    citation = await citationsClient.create(
+      PayloadsCitation.pending({ customerId: account.userId }),
+    );
+    expect(citation.status).toBe("PENDING");
   });
 
   // Step 2: Submit payment via UI
   let paymentJobId: string;
-  await test.step('UI: Submit payment and capture job ID', async () => {
+  await test.step("UI: Submit payment and capture job ID", async () => {
     const citationDetail = new CitationDetailPage(page);
     await citationDetail.goto(citation.citationId);
 
     // Capture the API response at click time
     const [paymentResponse] = await Promise.all([
       page.waitForResponse(
-        r => r.url().includes('/api/payments') && r.request().method() === 'POST',
-        { timeout: 30_000 }
+        (r) =>
+          r.url().includes("/api/payments") && r.request().method() === "POST",
+        { timeout: 30_000 },
       ),
       citationDetail.paymentPanel.clickPayNow(),
     ]);
 
     expect(paymentResponse.status()).toBe(202);
-    const body = await paymentResponse.json() as { jobId: string };
+    const body = (await paymentResponse.json()) as { jobId: string };
     paymentJobId = body.jobId;
   });
 
   // Step 3: Poll payment job until COMPLETED
-  await test.step('API: Poll payment job to COMPLETED', async () => {
-    await expect.poll(
-      async () => {
-        const job = await paymentsClient.getJobStatus(paymentJobId);
-        return job.status;
-      },
-      {
-        message:   `Payment job ${paymentJobId} never completed`,
-        timeout:   120_000,
-        intervals: [2000, 5000, 10000, 20000],
-      }
-    ).toBe('COMPLETED');
+  await test.step("API: Poll payment job to COMPLETED", async () => {
+    await expect
+      .poll(
+        async () => {
+          const job = await paymentsClient.getJobStatus(paymentJobId);
+          return job.status;
+        },
+        {
+          message: `Payment job ${paymentJobId} never completed`,
+          timeout: 120_000,
+          intervals: [2000, 5000, 10000, 20000],
+        },
+      )
+      .toBe("COMPLETED");
   });
 
   // Step 4: Poll API until citation is PAID (separate concern from job)
-  await test.step('API: Citation status is PAID', async () => {
-    await expect.poll(
-      () => citationsClient.getById(citation.citationId).then(c => c.status),
-      {
-        message:   `Citation ${citation.citationId} never reached PAID`,
-        timeout:   30_000,  // short: job completed, so this should be fast
-        intervals: [1000, 2000, 5000],
-      }
-    ).toBe('PAID');
+  await test.step("API: Citation status is PAID", async () => {
+    await expect
+      .poll(
+        () =>
+          citationsClient.getById(citation.citationId).then((c) => c.status),
+        {
+          message: `Citation ${citation.citationId} never reached PAID`,
+          timeout: 30_000, // short: job completed, so this should be fast
+          intervals: [1000, 2000, 5000],
+        },
+      )
+      .toBe("PAID");
   });
 
   // Step 5: UI reflects the change
-  await test.step('UI: Status badge shows PAID', async () => {
+  await test.step("UI: Status badge shows PAID", async () => {
     await page.reload();
-    await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 20_000 });
-    await expect(page.locator('[data-testid="citation-status"]')).toHaveText('PAID', { timeout: 30_000 });
+    await expect(page.locator(".ms-Spinner")).toHaveCount(0, {
+      timeout: 20_000,
+    });
+    await expect(page.locator('[data-testid="citation-status"]')).toHaveText(
+      "PAID",
+      { timeout: 30_000 },
+    );
   });
 
   // Step 6: DB ground truth
-  await test.step('DB: Citation status is PAID in database', async () => {
+  await test.step("DB: Citation status is PAID in database", async () => {
     const row = await dbClient.queryOne(
-      'SELECT status, paid_at FROM citations WHERE citation_id = $1',
-      [citation.citationId]
+      "SELECT status, paid_at FROM citations WHERE citation_id = $1",
+      [citation.citationId],
     );
-    expect(row?.status).toBe('PAID');
+    expect(row?.status).toBe("PAID");
     expect(row?.paid_at).not.toBeNull();
     const paidAt = new Date(row!.paid_at);
     expect(paidAt.getTime()).toBeGreaterThan(testStart.getTime());
@@ -735,42 +870,41 @@ test('Citation payment — full flow with polling', async ({
 ### Scenario B: Report Generation (up to 10 minutes)
 
 ```typescript
-test('Generate monthly citations report', async ({ request, account }) => {
+test("Generate monthly citations report", async ({ request, account }) => {
   // Trigger report generation
-  const triggerResponse = await request.post(
-    Endpoints.reports.generate(),
-    {
-      headers: HeadersCrm.auth(account.accessToken),
-      data: { type: 'CITATIONS_MONTHLY', month: '2026-05', format: 'PDF' },
-    }
-  );
+  const triggerResponse = await request.post(Endpoints.reports.generate(), {
+    headers: HeadersCrm.auth(account.accessToken),
+    data: { type: "CITATIONS_MONTHLY", month: "2026-05", format: "PDF" },
+  });
   expect(triggerResponse.status()).toBe(202);
-  const { reportId } = await triggerResponse.json() as { reportId: string };
+  const { reportId } = (await triggerResponse.json()) as { reportId: string };
 
   // Poll until READY — can take up to 10 minutes
   let completedReport: ReportResponse;
 
-  await expect.poll(
-    async () => {
-      const report = await request.get(Endpoints.reports.getById(reportId), {
-        headers: HeadersCrm.auth(account.accessToken),
-      });
-      const body = await report.json() as ReportResponse;
+  await expect
+    .poll(
+      async () => {
+        const report = await request.get(Endpoints.reports.getById(reportId), {
+          headers: HeadersCrm.auth(account.accessToken),
+        });
+        const body = (await report.json()) as ReportResponse;
 
-      // Permanent failure — stop polling, fail the test
-      if (body.status === 'FAILED') {
-        throw new Error(`Report generation FAILED: ${body.errorMessage}`);
-      }
+        // Permanent failure — stop polling, fail the test
+        if (body.status === "FAILED") {
+          throw new Error(`Report generation FAILED: ${body.errorMessage}`);
+        }
 
-      completedReport = body;
-      return body.status;
-    },
-    {
-      message:   `Report ${reportId} never became READY (stuck in generation)`,
-      timeout:   600_000,  // 10 minutes
-      intervals: [10_000, 30_000, 60_000],  // check at 10s, 40s, 100s, 160s...
-    }
-  ).toBe('READY');
+        completedReport = body;
+        return body.status;
+      },
+      {
+        message: `Report ${reportId} never became READY (stuck in generation)`,
+        timeout: 600_000, // 10 minutes
+        intervals: [10_000, 30_000, 60_000], // check at 10s, 40s, 100s, 160s...
+      },
+    )
+    .toBe("READY");
 
   // Verify the report
   expect(completedReport!.downloadUrl).toMatch(/^https:\/\//);
@@ -779,12 +913,12 @@ test('Generate monthly citations report', async ({ request, account }) => {
   // Download and verify the PDF
   const download = await request.get(completedReport!.downloadUrl);
   expect(download.status()).toBe(200);
-  expect(download.headers()['content-type']).toContain('application/pdf');
+  expect(download.headers()["content-type"]).toContain("application/pdf");
 
   const buffer = await download.body();
-  expect(buffer.length).toBeGreaterThan(1024);  // must be a real file, not empty
+  expect(buffer.length).toBeGreaterThan(1024); // must be a real file, not empty
   // PDF magic bytes: %PDF
-  expect(buffer.slice(0, 4).toString()).toBe('%PDF');
+  expect(buffer.slice(0, 4).toString()).toBe("%PDF");
 });
 ```
 
@@ -794,55 +928,58 @@ test('Generate monthly citations report', async ({ request, account }) => {
 // Mailosaur is a test email service with a real API
 // https://mailosaur.com/docs
 
-import Mailosaur from 'mailosaur';
+import Mailosaur from "mailosaur";
 
 const mailosaurClient = new Mailosaur(process.env.MAILOSAUR_API_KEY!);
 const MAILOSAUR_SERVER_ID = process.env.MAILOSAUR_SERVER_ID!;
 
-test('Welcome email sent after registration', async ({ page }) => {
+test("Welcome email sent after registration", async ({ page }) => {
   // Register a new user — email goes to Mailosaur test inbox
   const testEmail = `user-${Date.now()}@${MAILOSAUR_SERVER_ID}.mailosaur.net`;
 
-  await registrationPage.register({ email: testEmail, name: 'Test User' });
-  await expect(page.getByText('Check your email')).toBeVisible();
+  await registrationPage.register({ email: testEmail, name: "Test User" });
+  await expect(page.getByText("Check your email")).toBeVisible();
 
   // Poll Mailosaur for the welcome email (delivery can take 1-3 minutes)
-  await expect.poll(
-    async () => {
-      try {
-        const message = await mailosaurClient.messages.findOne(
-          MAILOSAUR_SERVER_ID,
-          { sentTo: testEmail, subject: 'Welcome to CitationsCRM' },
-          { timeout: 1000 }  // Mailosaur's own short timeout — we wrap it in expect.poll
-        );
-        return message?.id ?? null;
-      } catch {
-        return null;  // Not found yet — keep polling
-      }
-    },
-    {
-      message:   `Welcome email never arrived at ${testEmail}`,
-      timeout:   180_000,   // 3 minutes
-      intervals: [5000, 10000, 30000],
-    }
-  ).not.toBeNull();
+  await expect
+    .poll(
+      async () => {
+        try {
+          const message = await mailosaurClient.messages.findOne(
+            MAILOSAUR_SERVER_ID,
+            { sentTo: testEmail, subject: "Welcome to CitationsCRM" },
+            { timeout: 1000 }, // Mailosaur's own short timeout — we wrap it in expect.poll
+          );
+          return message?.id ?? null;
+        } catch {
+          return null; // Not found yet — keep polling
+        }
+      },
+      {
+        message: `Welcome email never arrived at ${testEmail}`,
+        timeout: 180_000, // 3 minutes
+        intervals: [5000, 10000, 30000],
+      },
+    )
+    .not.toBeNull();
 
   // Once we know the email arrived, fetch the full message
-  const email = await mailosaurClient.messages.findOne(
-    MAILOSAUR_SERVER_ID,
-    { sentTo: testEmail }
-  );
+  const email = await mailosaurClient.messages.findOne(MAILOSAUR_SERVER_ID, {
+    sentTo: testEmail,
+  });
 
-  expect(email.subject).toBe('Welcome to CitationsCRM');
+  expect(email.subject).toBe("Welcome to CitationsCRM");
   expect(email.html.body).toContain(testEmail);
 
   // Extract the activation link from the email body
-  const activationLink = email.html.links?.find(l => l.href?.includes('/activate'));
-  expect(activationLink, 'Activation link must be in the email').toBeTruthy();
+  const activationLink = email.html.links?.find((l) =>
+    l.href?.includes("/activate"),
+  );
+  expect(activationLink, "Activation link must be in the email").toBeTruthy();
 
   // Navigate to the activation link
   await page.goto(activationLink!.href!);
-  await expect(page.getByText('Account activated successfully')).toBeVisible();
+  await expect(page.getByText("Account activated successfully")).toBeVisible();
 });
 ```
 
@@ -862,13 +999,13 @@ graph TD
 // When the backend sends STATUS_UPDATE via WebSocket, you don't need to poll
 // You listen for the EXACT message
 
-test('Payment status updates in real-time via WebSocket', async ({ page }) => {
+test("Payment status updates in real-time via WebSocket", async ({ page }) => {
   // Collect all WebSocket messages during this test
   const wsMessages: string[] = [];
 
-  page.on('websocket', ws => {
-    ws.on('framesent', frame => wsMessages.push(frame.payload as string));
-    ws.on('framereceived', frame => wsMessages.push(frame.payload as string));
+  page.on("websocket", (ws) => {
+    ws.on("framesent", (frame) => wsMessages.push(frame.payload as string));
+    ws.on("framereceived", (frame) => wsMessages.push(frame.payload as string));
   });
 
   await citationDetailPage.goto(citationId);
@@ -877,43 +1014,56 @@ test('Payment status updates in real-time via WebSocket', async ({ page }) => {
   await citationDetailPage.paymentPanel.clickPayNow();
 
   // Wait for the specific WebSocket message that confirms payment processed
-  await expect.poll(
-    () => {
-      return wsMessages.some(msg => {
-        try {
-          const parsed = JSON.parse(msg);
-          return parsed.type === 'STATUS_UPDATE' &&
-                 parsed.citationId === citationId &&
-                 parsed.newStatus === 'PAID';
-        } catch { return false; }
-      });
-    },
-    {
-      message:   'WebSocket STATUS_UPDATE message for PAID never received',
-      timeout:   120_000,
-      intervals: [500, 1000, 2000],  // WebSocket is real-time — poll frequently
-    }
-  ).toBe(true);
+  await expect
+    .poll(
+      () => {
+        return wsMessages.some((msg) => {
+          try {
+            const parsed = JSON.parse(msg);
+            return (
+              parsed.type === "STATUS_UPDATE" &&
+              parsed.citationId === citationId &&
+              parsed.newStatus === "PAID"
+            );
+          } catch {
+            return false;
+          }
+        });
+      },
+      {
+        message: "WebSocket STATUS_UPDATE message for PAID never received",
+        timeout: 120_000,
+        intervals: [500, 1000, 2000], // WebSocket is real-time — poll frequently
+      },
+    )
+    .toBe(true);
 
   // UI should already reflect the change (WebSocket triggered re-render)
-  await expect(page.locator('[data-testid="status"]')).toHaveText('PAID');
+  await expect(page.locator('[data-testid="status"]')).toHaveText("PAID");
 });
 ```
 
 ### Scenario E: File Processing Queue (variable duration)
 
 ```typescript
-test('Upload citation evidence — file processing', async ({ page, evidenceClient }) => {
+test("Upload citation evidence — file processing", async ({
+  page,
+  evidenceClient,
+}) => {
   // Upload a PDF evidence file
-  await page.locator('[data-testid="evidence-upload"]').setInputFiles('./test-data/evidence.pdf');
+  await page
+    .locator('[data-testid="evidence-upload"]')
+    .setInputFiles("./test-data/evidence.pdf");
   await page.locator('[data-testid="upload-btn"]').click();
 
   // Capture the upload response (immediate — 202 Accepted with fileId)
   const [uploadResponse] = await Promise.all([
-    page.waitForResponse(r => r.url().includes('/api/evidence') && r.status() === 202),
+    page.waitForResponse(
+      (r) => r.url().includes("/api/evidence") && r.status() === 202,
+    ),
     page.locator('[data-testid="upload-btn"]').click(),
   ]);
-  const { fileId } = await uploadResponse.json() as { fileId: string };
+  const { fileId } = (await uploadResponse.json()) as { fileId: string };
 
   // Poll for processing completion — time varies with file size
   // Small files: 5 seconds. Large files (50MB+): 5 minutes.
@@ -921,22 +1071,25 @@ test('Upload citation evidence — file processing', async ({ page, evidenceClie
     async () => {
       const status = await evidenceClient.getFileStatus(fileId);
 
-      if (status.processingState === 'ERROR') {
+      if (status.processingState === "ERROR") {
         throw new Error(`File processing failed: ${status.errorDetails}`);
       }
 
-      return status.processingState === 'INDEXED' ? status : null;
+      return status.processingState === "INDEXED" ? status : null;
     },
     null,
     {
       description: `file ${fileId} to be INDEXED`,
-      timeout:     300_000,  // 5 minutes max
-      intervals:   [2000, 5000, 15000, 30000],
-      onProgress:  (attempt, elapsed, lastVal) => {
-        console.log(`File ${fileId}: attempt ${attempt} (${Math.round(elapsed/1000)}s) — ${JSON.stringify(lastVal)}`);
+      timeout: 300_000, // 5 minutes max
+      intervals: [2000, 5000, 15000, 30000],
+      onProgress: (attempt, elapsed, lastVal) => {
+        console.log(
+          `File ${fileId}: attempt ${attempt} (${Math.round(elapsed / 1000)}s) — ${JSON.stringify(lastVal)}`,
+        );
       },
-      isRetryableError: err => err instanceof NetworkError || err instanceof TimeoutError,
-    }
+      isRetryableError: (err) =>
+        err instanceof NetworkError || err instanceof TimeoutError,
+    },
   );
 
   expect(processedFile.indexedPages).toBeGreaterThan(0);
@@ -999,20 +1152,20 @@ NEVER — page.waitForTimeout
 
 ### Complete API Reference Table
 
-| Method | Returns | Auto-retry | Best for | Avoid when |
-|---|---|---|---|---|
-| `expect(locator).toHaveText(v)` | void (throws) | ✅ Yes | UI text appears | Text is already there (use `textContent()`) |
-| `expect(locator).toBeVisible()` | void (throws) | ✅ Yes | Element appears | Checking element state (use `isVisible()`) |
-| `expect(locator).toHaveCount(n)` | void (throws) | ✅ Yes | Number of elements | Complex counting logic |
-| `expect.poll(fn, opts)` | void (throws) | ✅ Yes | Any async value | Simple DOM assertions |
-| `page.waitForResponse(pred)` | `Promise<Response>` | ❌ No | Capturing API calls | Background jobs (use expect.poll) |
-| `page.waitForRequest(pred)` | `Promise<Request>` | ❌ No | Verifying API sent | Long-running ops |
-| `page.waitForURL(url)` | `Promise<void>` | ❌ No | Page navigation | SPA tab clicks |
-| `page.waitForFunction(fn)` | `Promise<JSHandle>` | ❌ No | Custom DOM/JS condition | Simple assertions |
-| `locator.waitFor({state})` | `Promise<void>` | ❌ No | Element lifecycle | Text content (use toHaveText) |
-| `page.waitForEvent(evt)` | `Promise<event>` | ❌ No | Downloads, new tabs, dialogs | API status |
-| `page.waitForLoadState(s)` | `Promise<void>` | ❌ No | MPA navigation | SPA navigation |
-| `page.waitForTimeout(ms)` | `Promise<void>` | ❌ No | Debugging ONLY | **All production use** |
+| Method                           | Returns             | Auto-retry | Best for                     | Avoid when                                  |
+| -------------------------------- | ------------------- | ---------- | ---------------------------- | ------------------------------------------- |
+| `expect(locator).toHaveText(v)`  | void (throws)       | ✅ Yes     | UI text appears              | Text is already there (use `textContent()`) |
+| `expect(locator).toBeVisible()`  | void (throws)       | ✅ Yes     | Element appears              | Checking element state (use `isVisible()`)  |
+| `expect(locator).toHaveCount(n)` | void (throws)       | ✅ Yes     | Number of elements           | Complex counting logic                      |
+| `expect.poll(fn, opts)`          | void (throws)       | ✅ Yes     | Any async value              | Simple DOM assertions                       |
+| `page.waitForResponse(pred)`     | `Promise<Response>` | ❌ No      | Capturing API calls          | Background jobs (use expect.poll)           |
+| `page.waitForRequest(pred)`      | `Promise<Request>`  | ❌ No      | Verifying API sent           | Long-running ops                            |
+| `page.waitForURL(url)`           | `Promise<void>`     | ❌ No      | Page navigation              | SPA tab clicks                              |
+| `page.waitForFunction(fn)`       | `Promise<JSHandle>` | ❌ No      | Custom DOM/JS condition      | Simple assertions                           |
+| `locator.waitFor({state})`       | `Promise<void>`     | ❌ No      | Element lifecycle            | Text content (use toHaveText)               |
+| `page.waitForEvent(evt)`         | `Promise<event>`    | ❌ No      | Downloads, new tabs, dialogs | API status                                  |
+| `page.waitForLoadState(s)`       | `Promise<void>`     | ❌ No      | MPA navigation               | SPA navigation                              |
+| `page.waitForTimeout(ms)`        | `Promise<void>`     | ❌ No      | Debugging ONLY               | **All production use**                      |
 
 ---
 
@@ -1022,9 +1175,9 @@ NEVER — page.waitForTimeout
 
 ```typescript
 // ❌ The original sin — seen in 70% of enterprise test suites
-let status = 'PENDING';
-while (status !== 'PAID') {
-  await page.waitForTimeout(5000);  // sleeps BEFORE checking (always wastes 5s minimum)
+let status = "PENDING";
+while (status !== "PAID") {
+  await page.waitForTimeout(5000); // sleeps BEFORE checking (always wastes 5s minimum)
   const r = await request.get(`/api/citations/${citationId}`);
   status = (await r.json()).status;
   // No timeout! This can loop FOREVER if payment gets stuck in PROCESSING
@@ -1033,25 +1186,28 @@ while (status !== 'PAID') {
 
 ```typescript
 // ✅ Fixed
-await expect.poll(
-  async () => (await citationsClient.getById(citationId)).status,
-  { message: `Citation ${citationId} stuck`, timeout: 120_000, intervals: [5000, 10000] }
-).toBe('PAID');
+await expect
+  .poll(async () => (await citationsClient.getById(citationId)).status, {
+    message: `Citation ${citationId} stuck`,
+    timeout: 120_000,
+    intervals: [5000, 10000],
+  })
+  .toBe("PAID");
 ```
 
 ### Anti-Pattern 2: The Safety Sleep After Every Action
 
 ```typescript
 // ❌ "Just to be safe" — seen everywhere
-await page.click('#saveBtn');
-await page.waitForTimeout(3000);  // "the page usually takes 2-3 seconds to save"
-await expect(page.locator('.success')).toBeVisible();
+await page.click("#saveBtn");
+await page.waitForTimeout(3000); // "the page usually takes 2-3 seconds to save"
+await expect(page.locator(".success")).toBeVisible();
 ```
 
 ```typescript
 // ✅ Fixed — Playwright's toBeVisible() already waits
-await page.click('#saveBtn');
-await expect(page.locator('.success')).toBeVisible({ timeout: 15_000 });
+await page.click("#saveBtn");
+await expect(page.locator(".success")).toBeVisible({ timeout: 15_000 });
 ```
 
 ### Anti-Pattern 3: Reading textContent() Without Waiting
@@ -1060,15 +1216,19 @@ await expect(page.locator('.success')).toBeVisible({ timeout: 15_000 });
 // ❌ Reads text immediately — might be empty during two-phase render
 await page.goto(`/citations/${citationId}`);
 const status = await page.locator('[data-testid="status"]').textContent();
-expect(status).toBe('PAID');  // fails 40% of the time — element exists but empty
+expect(status).toBe("PAID"); // fails 40% of the time — element exists but empty
 ```
 
 ```typescript
 // ✅ Fixed — wait for the text THEN read
 await page.goto(`/citations/${citationId}`);
-await expect(page.locator('[data-testid="status"]')).toHaveText('PAID', { timeout: 30_000 });
+await expect(page.locator('[data-testid="status"]')).toHaveText("PAID", {
+  timeout: 30_000,
+});
 // OR: if you need the value for something else:
-await expect(page.locator('[data-testid="status"]')).not.toHaveText('', { timeout: 30_000 });
+await expect(page.locator('[data-testid="status"]')).not.toHaveText("", {
+  timeout: 30_000,
+});
 const status = await page.locator('[data-testid="status"]').textContent();
 // NOW reading textContent is safe — you know it's populated
 ```
@@ -1077,15 +1237,17 @@ const status = await page.locator('[data-testid="status"]').textContent();
 
 ```typescript
 // ❌ Hangs indefinitely on apps with background heartbeat requests
-await page.goto('/dashboard');
-await page.waitForLoadState('networkidle');  // D365 polls CDS every 30s → never idle
+await page.goto("/dashboard");
+await page.waitForLoadState("networkidle"); // D365 polls CDS every 30s → never idle
 ```
 
 ```typescript
 // ✅ Fixed — wait for specific content that proves the page is ready
-await page.goto('/dashboard');
-await expect(page.locator('[data-testid="dashboard-grid"]')).toBeVisible({ timeout: 30_000 });
-await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
+await page.goto("/dashboard");
+await expect(page.locator('[data-testid="dashboard-grid"]')).toBeVisible({
+  timeout: 30_000,
+});
+await expect(page.locator(".ms-Spinner")).toHaveCount(0, { timeout: 30_000 });
 ```
 
 ### Anti-Pattern 5: Using `waitForNavigation()` in React/SPA
@@ -1093,7 +1255,7 @@ await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
 ```typescript
 // ❌ Hangs forever — SPAs don't trigger browser navigation events
 await Promise.all([
-  page.waitForNavigation(),         // times out — React router changes URL without navigation
+  page.waitForNavigation(), // times out — React router changes URL without navigation
   page.click('[role="tab"][name="Payments"]'),
 ]);
 ```
@@ -1101,54 +1263,63 @@ await Promise.all([
 ```typescript
 // ✅ Fixed — wait for URL hash change AND content
 await page.click('[role="tab"][name="Payments"]');
-await page.waitForURL('**#payments', { timeout: 10_000 });
-await expect(page.locator('.payments-panel')).toBeVisible();
+await page.waitForURL("**#payments", { timeout: 10_000 });
+await expect(page.locator(".payments-panel")).toBeVisible();
 ```
 
 ### Anti-Pattern 6: The Missing `await` on expect.poll
 
 ```typescript
 // ❌ Missing await — poll runs but test doesn't wait for it
-expect.poll(
-  async () => citationsClient.getById(id).then(c => c.status),
-  { timeout: 60_000 }
-).toBe('PAID');
+expect
+  .poll(async () => citationsClient.getById(id).then((c) => c.status), {
+    timeout: 60_000,
+  })
+  .toBe("PAID");
 // Test continues immediately! The poll is running but the test moves on.
 ```
 
 ```typescript
 // ✅ Fixed
-await expect.poll(   // <— must await
-  async () => citationsClient.getById(id).then(c => c.status),
-  { timeout: 60_000 }
-).toBe('PAID');
+await expect
+  .poll(
+    // <— must await
+    async () => citationsClient.getById(id).then((c) => c.status),
+    { timeout: 60_000 },
+  )
+  .toBe("PAID");
 ```
 
 ### Anti-Pattern 7: Not Throwing on Permanent Failures
 
 ```typescript
 // ❌ Polls for 10 minutes even when the job has permanently FAILED
-await expect.poll(
-  async () => {
-    const job = await jobsClient.getStatus(jobId);
-    return job.status === 'COMPLETED' ? job : null;  // returns null for FAILED too!
-  },
-  { timeout: 600_000 }
-).not.toBeNull();
+await expect
+  .poll(
+    async () => {
+      const job = await jobsClient.getStatus(jobId);
+      return job.status === "COMPLETED" ? job : null; // returns null for FAILED too!
+    },
+    { timeout: 600_000 },
+  )
+  .not.toBeNull();
 // If job status is FAILED, this polls for 10 full minutes before timing out
 ```
 
 ```typescript
 // ✅ Fixed — throw on permanent failure states
-await expect.poll(
-  async () => {
-    const job = await jobsClient.getStatus(jobId);
-    if (job.status === 'FAILED') throw new Error(`Job FAILED: ${job.errorMessage}`);
-    if (job.status === 'CANCELLED') throw new Error('Job was cancelled');
-    return job.status === 'COMPLETED' ? job.status : null;
-  },
-  { timeout: 600_000 }
-).toBe('COMPLETED');
+await expect
+  .poll(
+    async () => {
+      const job = await jobsClient.getStatus(jobId);
+      if (job.status === "FAILED")
+        throw new Error(`Job FAILED: ${job.errorMessage}`);
+      if (job.status === "CANCELLED") throw new Error("Job was cancelled");
+      return job.status === "COMPLETED" ? job.status : null;
+    },
+    { timeout: 600_000 },
+  )
+  .toBe("COMPLETED");
 // Fails IMMEDIATELY when FAILED — doesn't waste 10 minutes
 ```
 
@@ -1156,25 +1327,26 @@ await expect.poll(
 
 ```typescript
 // ❌ 5 seconds works locally, fails in CI (network latency to staging API)
-await expect.poll(
-  async () => citationsClient.getById(id).then(c => c.status),
-  { timeout: 5_000 }  // 5s total — staging API call alone takes 800ms
-).toBe('PAID');       // Only 6 attempts possible → fails in CI
+await expect
+  .poll(
+    async () => citationsClient.getById(id).then((c) => c.status),
+    { timeout: 5_000 }, // 5s total — staging API call alone takes 800ms
+  )
+  .toBe("PAID"); // Only 6 attempts possible → fails in CI
 ```
 
 ```typescript
 // ✅ Fixed — timeout accounts for environment variance
 const TIMEOUT_MS = process.env.CI
-  ? 120_000   // CI: staging API is slow, payment processing might be slow
-  : 30_000;   // Local: fast local API, fast response
+  ? 120_000 // CI: staging API is slow, payment processing might be slow
+  : 30_000; // Local: fast local API, fast response
 
-await expect.poll(
-  async () => citationsClient.getById(id).then(c => c.status),
-  {
-    timeout:   TIMEOUT_MS,
+await expect
+  .poll(async () => citationsClient.getById(id).then((c) => c.status), {
+    timeout: TIMEOUT_MS,
     intervals: [1000, 2000, 5000, 10000],
-  }
-).toBe('PAID');
+  })
+  .toBe("PAID");
 ```
 
 ---
@@ -1186,6 +1358,7 @@ await expect.poll(
 An API endpoint `POST /api/invoices` returns `202 { invoiceId }`. The invoice is generated asynchronously. `GET /api/invoices/{id}` returns `{ status: 'PENDING' | 'GENERATING' | 'READY' | 'FAILED', downloadUrl?: string, errorMessage?: string }`.
 
 Write a complete Playwright test that:
+
 1. Creates the invoice via API
 2. Polls until READY (permanent failure on FAILED state)
 3. Downloads the file
@@ -1194,55 +1367,72 @@ Write a complete Playwright test that:
 <details><summary>Answer</summary>
 
 ```typescript
-test('Invoice PDF is generated and downloadable', async ({ request, account }) => {
+test("Invoice PDF is generated and downloadable", async ({
+  request,
+  account,
+}) => {
   // Step 1: Create invoice
-  const createResponse = await request.post('/api/invoices', {
+  const createResponse = await request.post("/api/invoices", {
     headers: { Authorization: `Bearer ${account.accessToken}` },
-    data: { customerId: account.userId, period: '2026-05' },
+    data: { customerId: account.userId, period: "2026-05" },
   });
   expect(createResponse.status()).toBe(202);
-  const { invoiceId } = await createResponse.json() as { invoiceId: string };
+  const { invoiceId } = (await createResponse.json()) as { invoiceId: string };
 
   // Step 2: Poll until READY
-  let invoiceData: { status: string; downloadUrl?: string } = { status: 'PENDING' };
+  let invoiceData: { status: string; downloadUrl?: string } = {
+    status: "PENDING",
+  };
 
-  await expect.poll(
-    async () => {
-      const resp = await request.get(`/api/invoices/${invoiceId}`, {
-        headers: { Authorization: `Bearer ${account.accessToken}` },
-      });
-      const body = await resp.json() as { status: string; errorMessage?: string; downloadUrl?: string };
-      invoiceData = body;
+  await expect
+    .poll(
+      async () => {
+        const resp = await request.get(`/api/invoices/${invoiceId}`, {
+          headers: { Authorization: `Bearer ${account.accessToken}` },
+        });
+        const body = (await resp.json()) as {
+          status: string;
+          errorMessage?: string;
+          downloadUrl?: string;
+        };
+        invoiceData = body;
 
-      // Permanent failure — stop polling immediately
-      if (body.status === 'FAILED') {
-        throw new Error(`Invoice generation FAILED: ${body.errorMessage}`);
-      }
+        // Permanent failure — stop polling immediately
+        if (body.status === "FAILED") {
+          throw new Error(`Invoice generation FAILED: ${body.errorMessage}`);
+        }
 
-      return body.status;
-    },
-    {
-      message:   `Invoice ${invoiceId} never reached READY status`,
-      timeout:   300_000,   // 5 minutes max
-      intervals: [5000, 10000, 30000, 60000],
-    }
-  ).toBe('READY');
+        return body.status;
+      },
+      {
+        message: `Invoice ${invoiceId} never reached READY status`,
+        timeout: 300_000, // 5 minutes max
+        intervals: [5000, 10000, 30000, 60000],
+      },
+    )
+    .toBe("READY");
 
   // Step 3: Download and verify
-  expect(invoiceData.downloadUrl, 'READY invoice must have a downloadUrl').toBeTruthy();
+  expect(
+    invoiceData.downloadUrl,
+    "READY invoice must have a downloadUrl",
+  ).toBeTruthy();
 
   const downloadResponse = await request.get(invoiceData.downloadUrl!);
   expect(downloadResponse.status()).toBe(200);
-  expect(downloadResponse.headers()['content-type']).toContain('application/pdf');
+  expect(downloadResponse.headers()["content-type"]).toContain(
+    "application/pdf",
+  );
 
   const buffer = await downloadResponse.body();
-  expect(buffer.byteLength, 'PDF must not be empty').toBeGreaterThan(1024);
+  expect(buffer.byteLength, "PDF must not be empty").toBeGreaterThan(1024);
 
   // PDF magic bytes check: first 4 bytes must be %PDF
-  const magicBytes = buffer.slice(0, 4).toString('ascii');
-  expect(magicBytes, 'File must be a valid PDF').toBe('%PDF');
+  const magicBytes = buffer.slice(0, 4).toString("ascii");
+  expect(magicBytes, "File must be a valid PDF").toBe("%PDF");
 });
 ```
+
 </details>
 
 ---
@@ -1272,16 +1462,17 @@ E) Add retry: 3 to playwright.config.ts
 **E is partially helpful**: Retries catch intermittent failures but mask the root cause. It's not a fix — it's a band-aid. Fix the timeout first.
 
 The combined correct answer:
+
 ```typescript
-await expect.poll(
-  async () => checkEmailDelivery(userId),
-  {
-    timeout:   process.env.CI ? 180_000 : 60_000,  // D: environment-aware
+await expect
+  .poll(async () => checkEmailDelivery(userId), {
+    timeout: process.env.CI ? 180_000 : 60_000, // D: environment-aware
     intervals: [5000, 15000, 30000],
-    message:   `Welcome email never delivered to ${userId}`,
-  }
-).toBe(true);
+    message: `Welcome email never delivered to ${userId}`,
+  })
+  .toBe(true);
 ```
+
 </details>
 
 ---
@@ -1290,25 +1481,25 @@ await expect.poll(
 
 ```typescript
 // Scenario: polling payment status
-let paymentStatus = '';
+let paymentStatus = "";
 
 for (let i = 0; i < 120; i++) {
   const response = await request.get(`/api/payments/${paymentId}`);
   const body = await response.json();
   paymentStatus = body.status;
 
-  if (paymentStatus === 'COMPLETED') {
+  if (paymentStatus === "COMPLETED") {
     break;
   }
 
-  if (paymentStatus === 'FAILED') {
+  if (paymentStatus === "FAILED") {
     break;
   }
 
   await page.waitForTimeout(1000);
 }
 
-expect(paymentStatus, 'Payment must complete').toBe('COMPLETED');
+expect(paymentStatus, "Payment must complete").toBe("COMPLETED");
 ```
 
 Find all bugs.
@@ -1334,26 +1525,35 @@ If `request.get()` returns 503 or throws a network error, `body.status` is undef
 This imports a UI testing concern (`page`) into what should be a pure API test. Plus it's `waitForTimeout`.
 
 **The fix:**
+
 ```typescript
-await expect.poll(
-  async () => {
-    const response = await request.get(`/api/payments/${paymentId}`);
-    if (!response.ok()) {
-      throw new Error(`Payment API returned ${response.status()}: ${await response.text()}`);
-    }
-    const body = await response.json() as { status: string; errorMessage?: string };
-    if (body.status === 'FAILED') {
-      throw new Error(`Payment ${paymentId} FAILED: ${body.errorMessage}`);
-    }
-    return body.status;
-  },
-  {
-    message:   `Payment ${paymentId} never reached COMPLETED status`,
-    timeout:   120_000,
-    intervals: [1000, 2000, 5000, 10000],
-  }
-).toBe('COMPLETED');
+await expect
+  .poll(
+    async () => {
+      const response = await request.get(`/api/payments/${paymentId}`);
+      if (!response.ok()) {
+        throw new Error(
+          `Payment API returned ${response.status()}: ${await response.text()}`,
+        );
+      }
+      const body = (await response.json()) as {
+        status: string;
+        errorMessage?: string;
+      };
+      if (body.status === "FAILED") {
+        throw new Error(`Payment ${paymentId} FAILED: ${body.errorMessage}`);
+      }
+      return body.status;
+    },
+    {
+      message: `Payment ${paymentId} never reached COMPLETED status`,
+      timeout: 120_000,
+      intervals: [1000, 2000, 5000, 10000],
+    },
+  )
+  .toBe("COMPLETED");
 ```
+
 </details>
 
 ---
@@ -1373,9 +1573,10 @@ D) `expect.poll` is just syntactic sugar; there is no functional difference.
 
 <details><summary>Answer</summary>
 
-**B** — Playwright's `expect.poll` integrates with the test runner's timeout and reporting engine. 
+**B** — Playwright's `expect.poll` integrates with the test runner's timeout and reporting engine.
 
 If you write a custom `while` loop:
+
 1. If the test times out while your loop is sleeping, the `waitForTimeout` promise might dangle, causing the test runner to hang or report confusing teardown errors.
 2. The HTML report just shows a massive block of `page.waitForTimeout` calls with no context.
 3. `expect.poll` shows exactly what was being polled, what the intermediate values were, and handles the intervals (which you can configure) automatically.
@@ -1387,16 +1588,21 @@ If you write a custom `while` loop:
 ### Challenge 2 [Spot the Bug — Polling Scope]
 
 ```typescript
-test('Wait for citation status to become PAID', async ({ citationsClient }) => {
-  const citationId = 'CIT-001';
-  
+test("Wait for citation status to become PAID", async ({ citationsClient }) => {
+  const citationId = "CIT-001";
+
   // Fetch the citation once
   const citation = await citationsClient.getById(citationId);
 
   // Poll until the status is PAID
-  await expect.poll(async () => {
-    return citation.status;
-  }, { timeout: 10000 }).toBe('PAID');
+  await expect
+    .poll(
+      async () => {
+        return citation.status;
+      },
+      { timeout: 10000 },
+    )
+    .toBe("PAID");
 });
 ```
 
@@ -1406,14 +1612,19 @@ Why will this polling block either pass instantly or timeout every single time w
 
 **Bug**: The API call `citationsClient.getById(citationId)` is made **outside** the polling block. The `citation` variable is captured in the closure, so the polling function simply returns the exact same string (`'PENDING'`) over and over again without ever making a new network request.
 
-**Fix**: The state-fetching logic must be *inside* the polling function.
+**Fix**: The state-fetching logic must be _inside_ the polling function.
 
 ```typescript
-  await expect.poll(async () => {
-    // Make the network request inside the poll loop
-    const latestCitation = await citationsClient.getById(citationId);
-    return latestCitation.status;
-  }, { timeout: 10000 }).toBe('PAID');
+await expect
+  .poll(
+    async () => {
+      // Make the network request inside the poll loop
+      const latestCitation = await citationsClient.getById(citationId);
+      return latestCitation.status;
+    },
+    { timeout: 10000 },
+  )
+  .toBe("PAID");
 ```
 
 </details>
@@ -1427,16 +1638,21 @@ Write an `expect.poll` block that queries a `webhookClient.getRecent(userId)` en
 <details><summary>Answer</summary>
 
 ```typescript
-test('Payment triggers webhook', async ({ webhookClient, account }) => {
+test("Payment triggers webhook", async ({ webhookClient, account }) => {
   // ... trigger payment ...
 
-  await expect.poll(async () => {
-    const events = await webhookClient.getRecent(account.userId);
-    return events.some(e => e.type === 'PAYMENT_CONFIRMED');
-  }, { 
-    timeout: 15000, 
-    intervals: [2000] // poll every 2 seconds
-  }).toBe(true);
+  await expect
+    .poll(
+      async () => {
+        const events = await webhookClient.getRecent(account.userId);
+        return events.some((e) => e.type === "PAYMENT_CONFIRMED");
+      },
+      {
+        timeout: 15000,
+        intervals: [2000], // poll every 2 seconds
+      },
+    )
+    .toBe(true);
 });
 ```
 
@@ -1448,8 +1664,9 @@ test('Payment triggers webhook', async ({ webhookClient, account }) => {
 
 ### Challenge 4 [Architecture Decision — Polling vs WebSockets]
 
-Your frontend dashboard uses a WebSocket to receive live updates when a report generation finishes. 
+Your frontend dashboard uses a WebSocket to receive live updates when a report generation finishes.
 When writing the E2E test to verify report generation, should you:
+
 1. `expect.poll` the backend REST API `/reports/status` to see if it's done?
 2. Intercept and wait for the WebSocket frame in the browser?
 
@@ -1459,7 +1676,7 @@ When writing the E2E test to verify report generation, should you:
 
 If you are writing an **End-to-End** test, your goal is to verify the user experience. If you bypass the UI and poll the backend API, you prove the backend works, but you haven't proven that the frontend WebSocket connection successfully received the message and updated the DOM.
 
-Use Playwright's `page.waitForEvent('websocket')` and `ws.waitForEvent('framereceived')`, or simply wait for the DOM element to update (which implicitly waits for the WebSocket). Polling the API should be reserved for background processes that *don't* have a direct UI push mechanism.
+Use Playwright's `page.waitForEvent('websocket')` and `ws.waitForEvent('framereceived')`, or simply wait for the DOM element to update (which implicitly waits for the WebSocket). Polling the API should be reserved for background processes that _don't_ have a direct UI push mechanism.
 
 </details>
 
@@ -1476,13 +1693,14 @@ D) The database is locked by the test runner.
 
 <details><summary>Answer</summary>
 
-**B** — Caching interference. 
+**B** — Caching interference.
 
-When you aggressively poll a `GET` endpoint, intermediate caches (CDN, API Gateway, or Redis) or the browser cache might serve the old value until the cache TTL expires. 
+When you aggressively poll a `GET` endpoint, intermediate caches (CDN, API Gateway, or Redis) or the browser cache might serve the old value until the cache TTL expires.
 
 **Fix**: When polling APIs in tests, ensure the API client sends headers like `Cache-Control: no-cache` or appends a cache-busting query parameter (e.g., `?timestamp=${Date.now()}`), assuming the API respects them.
 
 </details>
 
 ---
+
 **Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
