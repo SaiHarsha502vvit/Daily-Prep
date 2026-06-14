@@ -6,39 +6,156 @@
 
 ---
 
+## Section 0 — When OOP Principles Break in Production
 
+> Inheritance and encapsulation sound clean until someone adds one exception. These incidents trace back to SOLID violations the team didn't catch in code review.
 
+---
+
+### Story 1 — The Inheritance Trap That Corrupted Premium User Billing (Liskov Substitution Violation)
+
+An e-commerce platform had a `User` class with `getDiscount()` returning a standard 0%. A `PremiumUser` extended it and returned 15%. Six months later, a `TrialUser` class was added, also extending `User`. The billing service accepted any `User` reference and called `getDiscount()` — that was fine. But `TrialUser` overrode `canPurchase()` to throw an `IllegalStateException` ("must upgrade first") while `User.canPurchase()` simply returned `false`. The billing service caught `false` and stopped — but `IllegalStateException` was uncaught and crashed the billing job, skipping all TrialUser orders silently for 3 weeks.
+
+Root cause: `TrialUser` **strengthened the precondition** — it changed the method contract from "returns false if blocked" to "throws exception if blocked." That's a Liskov Substitution Principle violation.
+
+```java
+// ❌ LSP violation — TrialUser changes the contract
+class User {
+    boolean canPurchase() { return true; }
+}
+class TrialUser extends User {
+    @Override
+    boolean canPurchase() {
+        throw new IllegalStateException("upgrade required"); // changed contract!
+    }
+}
+
+// ✅ Fix — use composition over inheritance; return a Result object
+class PurchaseResult {
+    final boolean allowed;
+    final String reason;
+    PurchaseResult(boolean allowed, String reason) { ... }
+}
+class TrialUser {
+    PurchaseResult canPurchase() {
+        return new PurchaseResult(false, "upgrade required");
+    }
+}
+// Caller handles both success and failure — no surprise exceptions
+```
+
+**What to learn from this**: Any time a subclass overrides a method to throw an exception that the parent never threw, you've broken the LSP. The caller was written for the parent contract — it can't know the child changed the rules.
+
+---
+
+### Story 2 — The God Class Refactor That Took 4 Months (Single Responsibility Violation)
+
+A startup's core `OrderService` class started with 300 lines. Two years later it had 4,200 lines, 47 public methods, and 12 direct dependencies injected (email, SMS, inventory, payment, fraud, analytics, shipping, PDF, auth, webhooks, audit log, A/B flags). Unit tests took 40 minutes because every test had to mock 12 dependencies. Adding a feature required reading 4,200 lines to understand side effects. A new engineer accidentally broke PDF generation while fixing a shipping bug — they were in the same method because "they both run at order completion."
+
+The team spent 4 months extracting the God Class into 8 focused services — work that could have been avoided by applying Single Responsibility from the start.
+
+```java
+// ❌ God class — one class, too many reasons to change
+class OrderService {
+    void placeOrder(Order order) {
+        validatePayment(order);    // payment concern
+        checkInventory(order);     // inventory concern
+        sendEmail(order);          // notification concern
+        generatePDF(order);        // document concern
+        logAudit(order);           // audit concern
+        updateAnalytics(order);    // analytics concern
+        // ... 41 more methods
+    }
+}
+
+// ✅ Single Responsibility — each class has one reason to change
+class PaymentService   { boolean validate(Order o) { ... } }
+class InventoryService { boolean check(Order o) { ... } }
+class NotificationService { void sendConfirmation(Order o) { ... } }
+class AuditLogger      { void log(Order o, String action) { ... } }
+
+class OrderOrchestrator {
+    // orchestrates the above; easy to test each piece independently
+    void placeOrder(Order order) {
+        payment.validate(order);
+        inventory.check(order);
+        notifications.sendConfirmation(order);
+        audit.log(order, "placed");
+    }
+}
+```
+
+**What to learn from this**: When your class has more than ~5 injected dependencies, it's doing too many things. Each dependency is a "reason to change" — the SRP says a class should have exactly one.
+
+---
+
+### Story 3 — The Interface Pollution That Forced Every Implementation to Lie (Interface Segregation Violation)
+
+A media platform had a single `MediaPlayer` interface: `play()`, `pause()`, `stop()`, `record()`, `stream()`, `export()`. Audio-only players had to implement `record()` by doing nothing (returning `null` or throwing `UnsupportedOperationException`). When the team added a "record to cloud" feature that called `record()` on every player, audio players silently discarded the call — the method was there but did nothing. 3 months of cloud recordings were lost from audio sessions.
+
+Root cause: forcing implementations to declare methods they can't fulfill (ISP violation).
+
+```java
+// ❌ Fat interface — all implementations must lie about unsupported methods
+interface MediaPlayer {
+    void play();
+    void pause();
+    void record();  // AudioPlayer can't record — must lie
+    void stream();  // OfflinePlayer can't stream — must lie
+}
+
+// ✅ Segregated interfaces — each implementation only declares what it does
+interface Playable { void play(); void pause(); }
+interface Recordable { void record(); }
+interface Streamable { void stream(); }
+
+class AudioPlayer implements Playable {}              // only what it supports
+class ProfessionalCamera implements Playable, Recordable {}
+class StreamingDevice implements Playable, Streamable {}
+
+// Call site can now check at compile time:
+void recordIfPossible(Object player) {
+    if (player instanceof Recordable r) {
+        r.record(); // only runs for things that can actually record
+    }
+}
+```
+
+**What to learn from this**: If a class implements an interface method by throwing `UnsupportedOperationException` or returning `null`, that's a sign the interface needs to be split. Every interface method is a contract — empty implementations break it.
+
+---
 
 # 📚 PART 0: The 5W+H Framework
 
 **Mental Model:** Think of Procedural Programming as a factory floor with tools scattered everywhere. Anyone can pick up any tool and mess with any machine. Object-Oriented Programming (OOP) is like organized workstations where each worker has their own specific tools and materials, and you must ask the worker to perform a task instead of grabbing their tools yourself.
 
-| Question | Object-Oriented Programming Context |
-| :--- | :--- |
-| **WHAT** | A programming paradigm where software is organized around **objects** — bundles of related *data* (attributes) and *behavior* (methods) that represent real-world entities or concepts. |
-| **WHY** | To manage exponential complexity in software. It prevents "spaghetti code" by keeping data and functions tightly coupled (Encapsulation), allowing safe code reuse (Inheritance/Composition), and hiding complex implementation details (Abstraction). |
-| **WHEN** | Used for medium-to-large applications, GUIs, simulations, and enterprise software where business logic models complex real-world relationships. |
-| **WHERE** | At the structural core of modern applications written in Java, C#, Python, C++, and TypeScript. |
-| **WHO** | Conceptualized in the 1960s with Simula and popularized in the 1970s/80s with Smalltalk and C++. |
-| **HOW** | By defining blueprints (`classes`) to instantiate concrete entities (`objects`) that interact with each other by sending messages (calling methods) rather than modifying each other's state directly. |
+| Question  | Object-Oriented Programming Context                                                                                                                                                                                                                    |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WHAT**  | A programming paradigm where software is organized around **objects** — bundles of related _data_ (attributes) and _behavior_ (methods) that represent real-world entities or concepts.                                                                |
+| **WHY**   | To manage exponential complexity in software. It prevents "spaghetti code" by keeping data and functions tightly coupled (Encapsulation), allowing safe code reuse (Inheritance/Composition), and hiding complex implementation details (Abstraction). |
+| **WHEN**  | Used for medium-to-large applications, GUIs, simulations, and enterprise software where business logic models complex real-world relationships.                                                                                                        |
+| **WHERE** | At the structural core of modern applications written in Java, C#, Python, C++, and TypeScript.                                                                                                                                                        |
+| **WHO**   | Conceptualized in the 1960s with Simula and popularized in the 1970s/80s with Smalltalk and C++.                                                                                                                                                       |
+| **HOW**   | By defining blueprints (`classes`) to instantiate concrete entities (`objects`) that interact with each other by sending messages (calling methods) rather than modifying each other's state directly.                                                 |
 
 ### Where It's Used in Real World
-*   **Video Games**: Modeling entities like `Player`, `Enemy`, and `Weapon` where each object manages its own health, position, and damage logic.
-*   **Banking Systems**: A `BankAccount` object encapsulating `balance` data, ensuring it can only be modified via controlled `deposit()` and `withdraw()` methods to prevent illegal states (like a negative balance).
-*   **GUI Libraries**: Creating reusable, hierarchical UI components like `Button` inheriting from a base `UIComponent` class.
-*   **E-Commerce**: Modeling the entire shopping flow with `Customer`, `ShoppingCart`, `Order`, and `Payment` objects interacting seamlessly.
+
+- **Video Games**: Modeling entities like `Player`, `Enemy`, and `Weapon` where each object manages its own health, position, and damage logic.
+- **Banking Systems**: A `BankAccount` object encapsulating `balance` data, ensuring it can only be modified via controlled `deposit()` and `withdraw()` methods to prevent illegal states (like a negative balance).
+- **GUI Libraries**: Creating reusable, hierarchical UI components like `Button` inheriting from a base `UIComponent` class.
+- **E-Commerce**: Modeling the entire shopping flow with `Customer`, `ShoppingCart`, `Order`, and `Payment` objects interacting seamlessly.
 
 💡 **Key Insight**: OOP isn't about "classes and objects" — it's about **managing complexity** through organization and abstraction.
 
 ### Historical Evolution
 
-| Era | Language | Contribution |
-|-----|----------|-------------|
-| 1960s | Simula (Norway) | First OOP language — built for simulations |
-| 1970s | Smalltalk (Xerox PARC) | Pure OOP, introduced the GUI |
-| 1980s | C++ (Bjarne Stroustrup) | Added OOP to C |
-| 1995 | Java (Sun Microsystems) | "Write once, run anywhere" — OOP goes mainstream |
-| Today | Python, JS, Kotlin | All support OOP natively |
+| Era   | Language                | Contribution                                     |
+| ----- | ----------------------- | ------------------------------------------------ |
+| 1960s | Simula (Norway)         | First OOP language — built for simulations       |
+| 1970s | Smalltalk (Xerox PARC)  | Pure OOP, introduced the GUI                     |
+| 1980s | C++ (Bjarne Stroustrup) | Added OOP to C                                   |
+| 1995  | Java (Sun Microsystems) | "Write once, run anywhere" — OOP goes mainstream |
+| Today | Python, JS, Kotlin      | All support OOP natively                         |
 
 **Paradigm Evolution**: Machine Code → Assembly → Procedural → OOP → Functional → **Hybrid**
 
@@ -56,7 +173,6 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
                   More functions ◄──────► Even more data
 ```
 
-
 - Anyone can modify any data from anywhere
 - Change one function, break 10 others
 - Hard to understand which functions use which data
@@ -67,14 +183,13 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 
 ```
      ┌─────────────┐       ┌─────────────┐
-     │   Object A   │       │   Object B   │
+     │   Object A  │       │   Object B  │
      │ ┌─────────┐ │       │ ┌─────────┐ │
      │ │  data   │ │       │ │  data   │ │
      │ │ methods │ │◄─────►│ │ methods │ │
      │ └─────────┘ │       │ └─────────┘ │
      └─────────────┘       └─────────────┘
 ```
-
 
 - Data + related functions **bundled together**
 - Clear boundaries — change inside without breaking outside
@@ -88,82 +203,81 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 ## Why Use OOP?
 
 1. **Modularity** — Break complex systems into manageable pieces
-   *"Can understand one class without understanding the entire system"*
+   _"Can understand one class without understanding the entire system"_
 2. **Maintainability** — Change implementation without affecting users
-   *"Internal engine change doesn't require changing how you drive"*
+   _"Internal engine change doesn't require changing how you drive"_
 3. **Reusability** — Inherit and extend existing code
-   *"Don't reinvent the wheel — extend it to make a car"*
+   _"Don't reinvent the wheel — extend it to make a car"_
 4. **Modeling** — Code structure matches your real-world mental model
-   *"Customer object has orders, Order has items — intuitive!"*
+   _"Customer object has orders, Order has items — intuitive!"_
 5. **Team Collaboration** — Clear interfaces between modules
-   *"You build PaymentService, I build OrderService — they just connect"*
+   _"You build PaymentService, I build OrderService — they just connect"_
 
 ### OOP vs Procedural vs Functional
 
-| Paradigm | Best For |
-|----------|----------|
-| Procedural | Simple scripts, system utilities, quick tasks |
-| OOP | Large applications, GUIs, simulations, enterprise |
-| Functional | Data transformations, parallel processing, math-heavy |
-| **Hybrid** ⭐ | Modern apps use **all paradigms** based on context! |
+| Paradigm      | Best For                                              |
+| ------------- | ----------------------------------------------------- |
+| Procedural    | Simple scripts, system utilities, quick tasks         |
+| OOP           | Large applications, GUIs, simulations, enterprise     |
+| Functional    | Data transformations, parallel processing, math-heavy |
+| **Hybrid** ⭐ | Modern apps use **all paradigms** based on context!   |
 
 ---
 
 ## When to Use Each OOP Principle
 
 **Encapsulation** — use when:
+
 - Data has rules/constraints (balance can't be negative)
 - Implementation might change (database → API)
 - You need to control access (read-only, write-only)
 
 **Abstraction** — use when:
+
 - Implementation details shouldn't concern the user
 - Multiple implementations are possible (different databases)
 - You want to hide complexity from users of your code
 
 **Inheritance** — use when:
+
 - There's a TRUE "is-a" relationship (`Dog` is-a `Animal`)
 - Shared behavior exists across related classes
-- ⚠️ *Prefer composition when in doubt!*
+- ⚠️ _Prefer composition when in doubt!_
 
 **Polymorphism** — use when:
+
 - Same operation applies to different types (calculate area of any shape)
 - You want extensibility (add new types without changing existing code)
 - Plugin architecture (add features without modifying core)
 
 ---
 
-
-
-
 ## How to Think in OOP
 
-| Step | Identify | Becomes | Example |
-|------|----------|---------|---------|
-| 1 | **Nouns** | Classes | "Customer places order for products" → `Customer`, `Order`, `Product`, `Store` |
-| 2 | **Verbs** | Methods | "places order" → `customer.placeOrder()` |
-| 3 | **Adjectives** | Attributes | "premium customer" → `customer.membershipLevel` |
-| 4 | **Relationships** | Composition / Inheritance | Customer HAS-A Cart, PremiumCustomer IS-A Customer |
+| Step | Identify          | Becomes                   | Example                                                                        |
+| ---- | ----------------- | ------------------------- | ------------------------------------------------------------------------------ |
+| 1    | **Nouns**         | Classes                   | "Customer places order for products" → `Customer`, `Order`, `Product`, `Store` |
+| 2    | **Verbs**         | Methods                   | "places order" → `customer.placeOrder()`                                       |
+| 3    | **Adjectives**    | Attributes                | "premium customer" → `customer.membershipLevel`                                |
+| 4    | **Relationships** | Composition / Inheritance | Customer HAS-A Cart, PremiumCustomer IS-A Customer                             |
 
 🧠 **The Mental Shift**:
-- **Procedural**: *"What steps do I need to do?"*
-- **OOP**: *"What things exist and what can they do?"*
+
+- **Procedural**: _"What steps do I need to do?"_
+- **OOP**: _"What things exist and what can they do?"_
 
 ---
 
-
-
-
 ## Difficulties & Common Mistakes
 
-| # | Mistake | Description | Solution |
-|---|---------|-------------|----------|
-| 1 | **Over-Engineering** | Creating classes for everything, too many layers | Start simple, refactor when needed (YAGNI) |
-| 2 | **Misusing Inheritance** | Inheritance for code reuse instead of true "is-a" (e.g., Square extends Rectangle — WRONG, violates LSP) | Use composition for code reuse |
-| 3 | **God Classes** | One class doing everything (1000+ lines) | Single Responsibility — one class, one job |
-| 4 | **Anemic Domain Model** | Classes with only getters/setters, no behavior | Put behavior WITH the data it operates on |
-| 5 | **Tight Coupling** | Depending on concrete implementations | Depend on abstractions (interfaces) |
-| 6 | **Exposing Internal State** | Returning mutable internal collections | Return copies or unmodifiable views |
+| #   | Mistake                     | Description                                                                                              | Solution                                   |
+| --- | --------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| 1   | **Over-Engineering**        | Creating classes for everything, too many layers                                                         | Start simple, refactor when needed (YAGNI) |
+| 2   | **Misusing Inheritance**    | Inheritance for code reuse instead of true "is-a" (e.g., Square extends Rectangle — WRONG, violates LSP) | Use composition for code reuse             |
+| 3   | **God Classes**             | One class doing everything (1000+ lines)                                                                 | Single Responsibility — one class, one job |
+| 4   | **Anemic Domain Model**     | Classes with only getters/setters, no behavior                                                           | Put behavior WITH the data it operates on  |
+| 5   | **Tight Coupling**          | Depending on concrete implementations                                                                    | Depend on abstractions (interfaces)        |
+| 6   | **Exposing Internal State** | Returning mutable internal collections                                                                   | Return copies or unmodifiable views        |
 
 ---
 
@@ -176,16 +290,14 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 - ✅ **Reusable**: Classes work in different contexts
 
 **Quality Metrics**:
+
 - **High Cohesion** — class does ONE thing well
 - **Low Coupling** — classes don't depend heavily on each other
 - **Small class sizes** — typically < 200 lines
 - **Shallow inheritance** — max 3 levels usually
 - **Interface segregation** — many small interfaces > one big one
 
-
 ---
-
-
 
 🔬 **Section Challenge — Signs of Good OOP Design**
 
@@ -197,12 +309,11 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 
 </details>
 
-
 # 🏛️ Part 1: OOP From First Principles
 
 ## What is OOP Really About?
 
-OOP isn't about "classes and objects" — it's about **managing complexity**. As software grows, complexity grows exponentially. OOP gives us tools to *organize* and *contain* that complexity.
+OOP isn't about "classes and objects" — it's about **managing complexity**. As software grows, complexity grows exponentially. OOP gives us tools to _organize_ and _contain_ that complexity.
 
 **Procedural Programming**: Data here, functions there, connections everywhere. Change one thing, break 10 things. Hard to reason about.
 
@@ -260,6 +371,7 @@ ACCESS MODIFIER SCOPE:
 │ public       │ ✔     │ ✔      │ ✔          │ ✔      │
 └──────────────┴───────┴─────────┴────────────┴─────────┘
 ```
+
 ```java
 // WITHOUT ENCAPSULATION:
 class BankAccountBad {
@@ -588,8 +700,6 @@ THIS IS DEPENDENCY INJECTION!
 
 ---
 
-
-
 🔬 **Section Challenge — The Interior Decorator Analogy**
 
 **Challenge 1 (Trace — Who/When/What):** In Java I/O, `new BufferedReader(new InputStreamReader(new FileInputStream("f.txt")))` stacks 3 decorators. **Who** does the actual file reading? **What** does each layer add? **When** you close only the outermost, do all layers close?
@@ -599,7 +709,6 @@ THIS IS DEPENDENCY INJECTION!
 **Who reads?** `FileInputStream` — it's the concrete component. `InputStreamReader` decorates it to convert bytes → chars (adds encoding). `BufferedReader` decorates that to add buffering (reduces system calls). **Closing:** Yes — `BufferedReader.close()` calls `InputStreamReader.close()`, which calls `FileInputStream.close()`. Each decorator delegates `close()` to its wrapped stream. BUT: if the constructor of `BufferedReader` threw an exception, `InputStreamReader` would leak because no variable holds its reference. Fix: use try-with-resources on each resource, or Java 9+ allows `var isr = new InputStreamReader(...); var br = new BufferedReader(isr)` in the try header.
 
 </details>
-
 
 # 📐 Part 3: SOLID Principles
 
@@ -635,9 +744,6 @@ class UserValidator {
 // WHY? When email logic changes, you only change EmailService.
 // UserService doesn't need to be retested.
 ```
-
-
-
 
 ## O - Open/Closed Principle
 
@@ -685,9 +791,6 @@ class AreaCalculator {
 }
 ```
 
-
-
-
 ## L - Liskov Substitution Principle
 
 ```java
@@ -732,9 +835,6 @@ class Rectangle implements Shape { /* ... */ }
 class Square implements Shape { /* ... */ }  // Separate class, no inheritance
 ```
 
-
-
-
 ## I - Interface Segregation Principle
 
 ```java
@@ -774,9 +874,6 @@ class Robot implements Workable {
     // Only implements what it needs
 }
 ```
-
-
-
 
 ## D - Dependency Inversion Principle
 
@@ -831,9 +928,6 @@ UserService userService = new UserService(new SMSNotificationService());
 ```
 
 ---
-
-
-
 
 # 🎨 Part 4: Common Design Patterns
 
@@ -958,8 +1052,6 @@ User user = new User.Builder("John", "john@email.com")
     .build();
 ```
 
-
-
 🔬 **Section Challenge — Creational Patterns**
 
 **Challenge 1 (Debug — Who/When/What):** `DatabaseConnection.getInstance()` is `synchronized`. **Who** pays the performance cost? **When** is synchronization actually needed? **What** optimization exists?
@@ -969,7 +1061,6 @@ User user = new User.Builder("John", "john@email.com")
 **Who pays?** EVERY caller, EVERY call — even after instance exists. **When needed?** Only the FIRST call, when `instance == null`. After that, it's just a field read. **Optimization:** Double-checked locking (first check without lock, then synchronize, check again), or enum approach (`enum DatabasePool { INSTANCE; }`) — JVM guarantees thread-safe lazy init with zero sync overhead.
 
 </details>
-
 
 ## Structural Patterns
 
@@ -1056,8 +1147,6 @@ System.out.println(myCoffee.getDescription());  // "Simple coffee, milk, sugar"
 System.out.println(myCoffee.getCost());         // 1.7
 ```
 
-
-
 🔬 **Section Challenge — Structural Patterns**
 
 **Challenge 1 (Reasoning — Who/When/What):** Both Adapter and Decorator use wrapping. `PrinterAdapter` wraps `NewPrinter`; `MilkDecorator` wraps `Coffee`. **What** is the fundamental difference in intent?
@@ -1067,7 +1156,6 @@ System.out.println(myCoffee.getCost());         // 1.7
 **Adapter:** Changes the INTERFACE without changing BEHAVIOR. `PrinterAdapter` doesn't add printing capability — it translates `printOld()` → `print()`. **Decorator:** Preserves the INTERFACE but changes BEHAVIOR. `MilkDecorator` keeps `Coffee` interface but ADDS extra cost. Key test: Does it add new functionality? Decorator. Does it just translate APIs? Adapter.
 
 </details>
-
 
 ## Behavioral Patterns
 
@@ -1173,8 +1261,6 @@ agency.publishNews("Breaking: Java 21 released!");
 
 ---
 
-
-
 🔬 **Section Challenge — Behavioral Patterns**
 
 **Challenge 1 (Debug — Who/When/What):** In the Observer example, `publishNews()` iterates the observers list. **What** happens if one subscriber's `update()` throws? Do remaining subscribers get notified? **Who** should handle errors?
@@ -1185,21 +1271,20 @@ agency.publishNews("Breaking: Java 21 released!");
 
 </details>
 
-
 # 📌 Part 5: When to Use What
 
-| Need | Use |
-|------|-----|
-| Share code between classes | Composition (HAS-A) |
-| True "is-a" relationship | Inheritance (sparingly) |
-| Multiple variations of algorithm | Strategy Pattern |
-| Add behavior dynamically | Decorator Pattern |
-| One global instance | Singleton |
-| Create objects without knowing type | Factory |
-| Complex object construction | Builder |
-| Make incompatible things work together | Adapter |
-| React to state changes | Observer |
-| Undo operations | Command Pattern |
+| Need                                   | Use                     |
+| -------------------------------------- | ----------------------- |
+| Share code between classes             | Composition (HAS-A)     |
+| True "is-a" relationship               | Inheritance (sparingly) |
+| Multiple variations of algorithm       | Strategy Pattern        |
+| Add behavior dynamically               | Decorator Pattern       |
+| One global instance                    | Singleton               |
+| Create objects without knowing type    | Factory                 |
+| Complex object construction            | Builder                 |
+| Make incompatible things work together | Adapter                 |
+| React to state changes                 | Observer                |
+| Undo operations                        | Command Pattern         |
 
 ---
 
@@ -1228,30 +1313,442 @@ For each, think about:
 
 ## OOP Coding Challenges
 
-| # | Problem | Platform | Difficulty | OOP Concept Tested |
-|---|---------|----------|------------|--------------------|
-| 1 | Design Parking System (LC 1603) | LeetCode | Easy | Encapsulation, simple class design |
-| 2 | Design HashMap (LC 706) | LeetCode | Easy | Encapsulation + array of linked lists |
-| 3 | Design Browser History (LC 1472) | LeetCode | Medium | Stack/List with encapsulated state |
-| 4 | Implement Queue using Stacks (LC 232) | LeetCode | Easy | Abstraction: queue interface, stack impl |
-| 5 | Design Twitter (LC 355) | LeetCode | Medium | Composition: User has Tweets, follows Set |
-| 6 | LRU Cache (LC 146) | LeetCode | Medium | Encapsulation: internal doubly-linked list |
-| 7 | Serialize/Deserialize Binary Tree (LC 297) | LeetCode | Hard | Abstraction: encode/decode interface |
-| 8 | Design Snake Game (LC 353) | LeetCode | Medium | State management, queue for body |
+| #   | Problem                                    | Platform | Difficulty | OOP Concept Tested                         |
+| --- | ------------------------------------------ | -------- | ---------- | ------------------------------------------ |
+| 1   | Design Parking System (LC 1603)            | LeetCode | Easy       | Encapsulation, simple class design         |
+| 2   | Design HashMap (LC 706)                    | LeetCode | Easy       | Encapsulation + array of linked lists      |
+| 3   | Design Browser History (LC 1472)           | LeetCode | Medium     | Stack/List with encapsulated state         |
+| 4   | Implement Queue using Stacks (LC 232)      | LeetCode | Easy       | Abstraction: queue interface, stack impl   |
+| 5   | Design Twitter (LC 355)                    | LeetCode | Medium     | Composition: User has Tweets, follows Set  |
+| 6   | LRU Cache (LC 146)                         | LeetCode | Medium     | Encapsulation: internal doubly-linked list |
+| 7   | Serialize/Deserialize Binary Tree (LC 297) | LeetCode | Hard       | Abstraction: encode/decode interface       |
+| 8   | Design Snake Game (LC 353)                 | LeetCode | Medium     | State management, queue for body           |
 
 ---
 
 ## OOP Design Exercises (Think + Sketch)
 
-| # | Exercise | Focus |
-|---|----------|-------|
-| 1 | Design a Library Management System | Inheritance (Book/EBook/AudioBook), Polymorphism |
-| 2 | Design a Vending Machine | State pattern, Encapsulation |
-| 3 | Design a Chess Game | Inheritance (Piece hierarchy), Polymorphism (move()) |
-| 4 | Design a Deck of Cards | Abstraction, Factory pattern |
-| 5 | Design an Elevator System | Observer pattern, State pattern |
+| #   | Exercise                           | Focus                                                |
+| --- | ---------------------------------- | ---------------------------------------------------- |
+| 1   | Design a Library Management System | Inheritance (Book/EBook/AudioBook), Polymorphism     |
+| 2   | Design a Vending Machine           | State pattern, Encapsulation                         |
+| 3   | Design a Chess Game                | Inheritance (Piece hierarchy), Polymorphism (move()) |
+| 4   | Design a Deck of Cards             | Abstraction, Factory pattern                         |
+| 5   | Design an Elevator System          | Observer pattern, State pattern                      |
 
 ---
 
 _OOP is about managing complexity through smart organization!_
 
+---
+
+## PLUS Enhancements
+
+### Diagram 1: Inheritance Hierarchy — Animal / Dog / Cat
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                     INHERITANCE HIERARCHY — Animal Family                  │
+└────────────────────────────────────────────────────────────────────────────┘
+
+                        ┌──────────────────────────┐
+                        │      <<abstract>>        │
+                        │         Animal           │
+                        ├──────────────────────────┤
+                        │ # name: String           │
+                        ├──────────────────────────┤
+                        │ + eat(): void            │
+                        │ + sleep(): void          │
+                        │ + makeSound(): <<abstract>>│
+                        └──────────────┬───────────┘
+                                       │ extends (IS-A)
+                    ┌──────────────────┴──────────────────┐
+                    ▼                                     ▼
+        ┌───────────────────┐                 ┌───────────────────┐
+        │      <<class>>    │                 │      <<class>>    │
+        │        Dog        │                 │        Cat        │
+        ├───────────────────┤                 ├───────────────────┤
+        │                   │                 │                   │
+        ├───────────────────┤                 ├───────────────────┤
+        │ + bark(): void    │                 │ + meow(): void    │
+        │ + fetch(): void   │                 │ + purr(): void    │
+        └───────────────────┘                 └───────────────────┘
+
+  Method resolution order at RUNTIME (dynamic dispatch):
+
+  dog.makeSound()
+       │
+       ▼ JVM looks up vtable for Dog class
+  Dog's vtable entry 0 ──▶ Animal.eat()      (inherited, not overridden)
+  Dog's vtable entry 1 ──▶ Dog.bark()        (own method)
+  Dog's vtable entry 2 ──▶ Animal.makeSound() overridden by Dog
+
+  super() call chain (constructor):
+
+  new Dog("Buddy")
+       │
+       ├─► Dog() constructor starts
+       │        │
+       │        ▼ implicit super() call
+       │   Animal() runs first  ──► sets name = "Buddy"
+       │   Animal() finishes
+       │        │
+       │        ▼
+       │   Dog() body runs  ──► additional Dog initialization
+       │        │
+       │        ▼
+       └─► Dog object fully constructed
+
+  ┌────────────────────────────────────────────────────────────────────────┐
+  │ FAILURE MODE: Deep Inheritance Chain                                   │
+  │                                                                        │
+  │  Animal                                                                │
+  │   └── Mammal                                                           │
+  │        └── Dog                                                         │
+  │             └── ServiceDog                                             │
+  │                  └── PoliceDog                                         │
+  │                                                                        │
+  │  Problem: A change to Animal.eat() ripples through 5 classes.          │
+  │  Adding a new method to Dog requires updating PoliceDog.               │
+  │  The "is-a" relationship weakens: is PoliceDog really an Animal?       │
+  │  Solution: Composition (ServiceDog HAS-A TrainingCertificate)          │
+  └────────────────────────────────────────────────────────────────────────┘
+```
+
+### Diagram 2: Diamond Inheritance — C++ vs Java 8 Default Methods
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│           DIAMOND PROBLEM — C++ vs Java 8 Default Methods                 │
+└────────────────────────────────────────────────────────────────────────────┘
+
+  C++ DIAMOND (multiple inheritance — AMBIGUOUS):
+
+       ┌──────────────┐
+       │     Base     │  class A { void foo(); }
+       │   foo()      │
+       └──────┬───────┘
+              │
+       ┌──────┴───────┐
+       ▼              ▼
+  ┌──────────┐  ┌──────────┐
+  │  Left    │  │  Right   │
+  │ extends A│  │ extends A│
+  │  foo()   │  │  foo()   │
+  └────┬─────┘  └────┬─────┘
+       │             │
+       └──────┬──────┘
+              │
+              ▼
+       ┌──────────────┐
+       │    Derived   │
+       │extends L, R  │  class D : public L, public R {}
+       └──────────────┘
+
+  PROBLEM: d.foo() ──► Compiler error: "request for member 'foo' is ambiguous"
+            Both L and R inherited foo() from A, and D has two copies.
+  FIX: D must explicitly say which one: d.L::foo(); or d.R::foo();
+
+  ────────────────────────────────────────────────────────────────────────────
+
+  JAVA 8 INTERFACE DIAMOND (compile ERROR + resolution):
+
+       ┌──────────────────┐
+       │   <<interface>>  │
+       │        A         │  interface A { default void foo(); }
+       │  default foo()   │
+       └────────┬─────────┘
+                │
+        ┌───────┴───────┐
+        ▼               ▼
+  ┌─────────────┐  ┌─────────────┐
+  │<<interface>> │  │<<interface>>│
+  │     B       │  │     C       │
+  │ implements A│  │ implements A│
+  └──────┬──────┘  └──────┬──────┘
+         │                │
+         └────────┬───────┘
+                  ▼
+         ┌────────────────┐
+         │    <<class>>   │
+         │       D        │
+         │ implements B,C │
+         └────────────────┘
+
+  PROBLEM: d.foo() ──► Java 7: compile error! Which foo()?
+           Java 8: RESOLVED automatically — more SPECIFIC wins.
+           Since D explicitly implements B and C, and neither overrides foo(),
+           A.foo() is inherited once (not twice) because Java does NOT
+           duplicate default method implementations through interfaces.
+
+  COMPILATION ERROR SCENARIO (Java 8+):
+
+  interface A    { default void x() { System.out.println("A"); } }
+  interface B extends A { @Override default void x() { System.out.println("B"); } }
+  interface C extends A { @Override default void x() { System.out.println("C"); } }
+  class D implements B, C {
+      // Which x()? B.x() and C.x() both override A.x() — AMBIGUOUS!
+      // Fix: D must override x() { B.super.x(); }
+  }
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ SUMMARY TABLE                                                          │
+  │                                                                        │
+  │  Language   │ Duplication  │ Resolution           │ Fix Required?      │
+  │  ────────────────────────────────────────────────────────────────────│
+  │  C++        │ YES (2 copies│ Explicit scope::     │ YES (always)       │
+  │  Java 7     │ No duplication│ N/A — compile error │ YES (diamond not   │
+  │             │ (not allowed)│                      │  allowed)          │
+  │  Java 8+    │ No duplication│ Nearest super wins   │ No (unless both    │
+  │             │ (single copy)│ (specificity rule)   │  override A)       │
+  └──────────────────────────────────────────────────────────────────────┘
+```
+
+### Diagram 3: SOLID Principles Pyramid
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                    SOLID PRINCIPLES PYRAMID                                │
+│              (layered by dependency direction and failure modes)           │
+└────────────────────────────────────────────────────────────────────────────┘
+
+                              ┌──────────────────────────┐
+                              │         DIP             │  Dependency Inversion
+                              │  Depend on abstractions  │  High-level → abstract
+                              │  not concretions         │
+                              └──────────┬───────────────┘
+                                         │
+                              ┌──────────┴───────────────┐
+                              │         ISP             │  Interface Segregation
+                              │  Many small interfaces   │  Clients shouldn't depend
+                              │  > one fat interface     │  on unused methods
+                              └──────────┬───────────────┘
+                                         │
+                              ┌──────────┴───────────────┐
+                              │         LSP             │  Liskov Substitution
+                              │  Substitutable for base │  Square isn't Rectangle
+                              │  everywhere             │  (behavioral contract)
+                              └──────────┬───────────────┘
+                                         │
+                              ┌──────────┴───────────────┐
+                              │         OCP             │  Open/Closed
+                              │  Open for extension      │  Don't modify existing
+                              │  Closed for modification │  code to add features
+                              └──────────┬───────────────┘
+                                         │
+                              ┌──────────┴───────────────┐
+                              │         SRP             │  Single Responsibility
+                              │  One reason to change    │  BASE OF PYRAMID
+                              │  One class, one job      │  All others build on this
+                              └──────────────────────────┘
+
+  FAILURE MODE MAP:
+
+  ┌────────────────┬───────────────────────────────────────────────────┐
+  │ Principle      │ Failure Mode (symptom)                            │
+  ├────────────────┼───────────────────────────────────────────────────┤
+  │ SRP            │ God class — 50 reasons to change, 3000 lines      │
+  │                │ Change in email logic breaks payment processing    │
+  ├────────────────┼───────────────────────────────────────────────────┤
+  │ OCP            │ if (type == DOG) ... else if (type == CAT) ...   │
+  │                │ Adding Cat means modifying the existing code       │
+  ├────────────────┼───────────────────────────────────────────────────┤
+  │ LSP            │ Square extends Rectangle → resize() breaks        │
+  │                │ NullPointerException from violating preconditions │
+  ├────────────────┼───────────────────────────────────────────────────┤
+  │ ISP            │ interface Worker { eat(); sleep(); work(); }      │
+  │                │ Robot forced to implement eat() and sleep()        │
+  ├────────────────┼───────────────────────────────────────────────────┤
+  │ DIP            │ new EmailService() inside UserService             │
+  │                │ Can't swap to SMSService without editing UserService│
+  └────────────────┴───────────────────────────────────────────────────┘
+```
+
+### Deep-Dive 1: Mechanism — Polymorphism at the JVM Bytecode Level
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│         POLYMORPHISM — Virtual Method Dispatch at Bytecode Level           │
+└────────────────────────────────────────────────────────────────────────────┘
+
+  THREE JVM BYTECODE INVOKE OPCODES — key difference:
+
+  ┌──────────────────┬──────────────────────────────────────────────────────┐
+  │ Opcode           │ Behavior                                              │
+  ├──────────────────┼──────────────────────────────────────────────────────┤
+  │ invokestatic     │ No dispatch — resolved at compile time (static)       │
+  │ invokevirtual    │ Virtual dispatch via vtable (dynamic)                 │
+  │ invokeinterface  │ Interface dispatch via itable (dynamic, slower)       │
+  └──────────────────┴──────────────────────────────────────────────────────┘
+
+  VTABLE (virtual table) — one per class, shared by all instances:
+
+  class Animal (vtable):
+    slot 0: Object.hashCode()      (inherited from Object)
+    slot 1: Object.equals()        (inherited from Object)
+    slot 2: Animal.eat()           (overridable)
+    slot 3: Animal.makeSound()     (abstract → slot set by subclass)
+
+  class Dog extends Animal (vtable):
+    slot 0: Object.hashCode()      (inherited, unchanged)
+    slot 1: Object.equals()        (inherited, unchanged)
+    slot 2: Dog.eat()              (OVERRIDDEN — new entry)
+    slot 3: Dog.makeSound()        (IMPLEMENTED — new entry)
+
+  Memory layout of a Dog object on the heap:
+
+  ┌─────────────────────────────────────────────┐
+  │ Object Header (mark word + klass pointer)   │  12 bytes (64-bit JVM)
+  ├─────────────────────────────────────────────┤
+  │ Animal fields (name)                       │  Reference (4 or 8 bytes)
+  ├─────────────────────────────────────────────┤
+  │ Dog fields (breed)                         │  Reference (4 or 8 bytes)
+  └─────────────────────────────────────────────┘
+
+  The vtable pointer lives IN the klass object (Dog.class), not in each instance.
+  Each Dog instance has a pointer to Dog.class, which has the vtable.
+
+  Method call: animal.makeSound()  where animal is actually a Dog
+
+  Bytecode: invokevirtual #12   // resolves to Animal.makeSound() in constant pool
+
+  At RUNTIME (JIT):
+    1. Load animal from local var
+    2. Read klass pointer from animal object header
+    3. Look up method at vtable[slot 3]
+    4. Jump to Dog.makeSound() address
+
+  THIS is why Java is polymorphic by default — the actual class determines
+  the method address at runtime, not the reference variable type.
+
+  invokeinterface is similar but uses an ITABLE (interface method table)
+  because a class can implement multiple interfaces, requiring separate lookup:
+
+  interface I1 { void m1(); }
+  interface I2 { void m2(); }
+  class C implements I1, I2 {
+    void m1() {}
+    void m2() {}
+  }
+
+  C's itable: [I1 → slot 0: C.m1()] [I2 → slot 0: C.m2()]
+  invokeinterface I1.m1() → itable lookup → C.m1()
+  invokeinterface is ~10-20% slower than invokevirtual due to 2-level lookup.
+```
+
+### Deep-Dive 2: Why Composition Over Inheritance — Side-by-Side
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│        COMPOSITION vs INHERITANCE — Side-by-Side Failure Analysis          │
+└────────────────────────────────────────────────────────────────────────────┘
+
+  INHERITANCE APPROACH (Vehicle → Car):
+
+  ┌─────────────────────────────┐
+  │ <<abstract>> Vehicle        │
+  ├─────────────────────────────┤
+  │ + start()                   │
+  │ + stop()                    │
+  │ + refuel()                  │
+  └─────────────┬───────────────┘
+                │
+    ┌───────────┴───────────────┐
+    ▼                           ▼
+  ┌──────────┐              ┌──────────┐
+  │   Car    │              │   Bike   │
+  │          │              │          │
+  └────┬─────┘              └──────────┘
+       │
+  ┌────┴─────┐
+  ▼          ▼
+┌─────────┐ ┌──────────┐
+│SportsCar│ │SedanCar  │
+│         │ │          │
+└─────────┘ └──────────┘
+
+  FAILURE MODE: What if a SportsCar needs to share engine behavior with SedanCar?
+  1. Add ElectricCar ──► must decide: IS-A Car? IS-A Vehicle?
+  2. Add HybridCar ──► IS-A SportsCar? IS-A SedanCar? Neither fits.
+  3. Add FlyingCar ──► The entire hierarchy collapses — mix flying + driving.
+  4. Result: 7 classes to model 4 vehicles with shared features.
+
+  ────────────────────────────────────────────────────────────────────────────
+
+  COMPOSITION APPROACH (Car HAS-A Engine, Transmission, etc.):
+
+  ┌───────────────────────────────────────────────────────────────────────┐
+  │                          Car (composition root)                       │
+  │  ┌─────────────────────────────────────────────────────────────────┐ │
+  │  │ - engine: Engine                                                │ │
+  │  │ - transmission: Transmission                                     │ │
+  │  │ - wheels: List<Wheel>                                            │ │
+  │  └─────────────────────────────────────────────────────────────────┘ │
+  └───────────────────────────────────────────────────────────────────────┘
+
+  Interfaces for swappable behavior:
+
+  ┌──────────────────┐   ┌──────────────────────┐   ┌────────────────────┐
+  │    <<interface>> │   │   <<interface>>      │   │  <<interface>>     │
+  │     Engine       │   │   Transmission       │   │  FuelSystem        │
+  ├──────────────────┤   ├──────────────────────┤   ├────────────────────┤
+  │ + start()        │   │ + shift(gear)        │   │ + refuel()         │
+  │ + stop()         │   │ + getCurrentGear()   │   │ + checkLevel()     │
+  └──────────────────┘   └──────────────────────┘   └────────────────────┘
+         ▲                        ▲                         ▲
+         │                        │                         │
+  ┌──────┴──────┐          ┌─────┴──────┐            ┌─────┴──────┐
+  │V8Engine     │          │AutoTrans   │            │ PetrolFuel │
+  │ElectricMotor│          │ManualTrans │            │ElectricFuel│
+  │HybridEngine │          │CVTTrans    │            │HybridFuel  │
+  └─────────────┘          └────────────┘            └────────────┘
+
+  FlyingCar? Just add: - flyingMechanism: FlyingMechanism
+  No class hierarchy change. Just compose a new capability.
+
+  ElectricCar? engine=ElectricMotor, fuelSystem=ElectricFuel, transmission=AutoTrans
+  No inheritance. All behavior is plug-and-play.
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │ PRODUCTION FAILURE MODE — The Deep Inheritance Chain                │
+  │                                                                       │
+  │ Real-world example from a production codebase:                       │
+  │                                                                       │
+  │  Entity (base)                                                        │
+  │    └── PersistentObject (adds save/load)                             │
+  │          └── UserObject (adds userId)                                │
+  │                └── AdminUserObject (adds admin flags)                │
+  │                      └── SuperAdminUserObject (adds super flags)     │
+  │                                                                       │
+  │  Problem at scale (10K+ users, 50+ fields):                          │
+  │  - Changing Entity.toString() requires retesting 5 classes           │
+  │  - PersistentObject.getId() null in unit tests → 4-level stack trace │
+  │  - New developer adds method to AdminUserObject, forgets SuperAdmin  │
+  │  - The "is-a" chain is fragile: is SuperAdmin really an Entity?      │
+  │                                                                       │
+  │  Fix: Replace with composition + traits (Java records + sealed)      │
+  │  record Auditable(id, createdAt, updatedAt) {}                        │
+  │  record Adminable(roles, permissions) {}                             │
+  │  class User implements Auditable, Adminable {}                        │
+  └──────────────────────────────────────────────────────────────────────┘
+```
+
+### Breadth Comparison 1: OOP vs Other Paradigms
+
+| Paradigm       | Core Idea                        | Strengths                                                                                       | Weaknesses                                                                                   | Best Use Cases                                                           |
+| -------------- | -------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **OOP**        | Objects bundle data + behavior   | Natural model for real-world entities; polymorphism for extensibility; encapsulation for safety | Can lead to deep inheritance; mutable state can cause bugs; over-engineering risk            | GUI apps, enterprise systems, simulations, domain modeling               |
+| **Procedural** | Functions act on data structures | Simple, fast, low overhead; predictable; great for scripts                                      | No reuse mechanism; data/function separation causes coupling; hard to scale                  | System scripts, shell pipelines, simple file processing                  |
+| **Functional** | Pure functions, no side effects  | Thread-safe by design; composable; easier to reason about; great for parallelism                | Not natural for stateful domains; steeper learning curve; performance overhead in some cases | Data transformation pipelines, compilers, concurrent/parallel processing |
+| **Reactive**   | Data streams + propagation       | Handles async/event-driven naturally; backpressure support; declarative                         | Debugging is harder; learning curve; can over-engineer simple sync problems                  | UI event streams, real-time data feeds, IoT, microservices               |
+| **Hybrid** ⭐  | Mix based on context             | Best of all worlds; pragmatic                                                                   | Requires team discipline; harder to maintain style guide                                     | Modern applications — all production systems use this                    |
+
+### Breadth Comparison 2: Inheritance Strategies Compared
+
+| Strategy                         | Language Support               | Coupling                      | Reuse Mechanism          | When to Use                               | Failure Mode                                                |
+| -------------------------------- | ------------------------------ | ----------------------------- | ------------------------ | ----------------------------------------- | ----------------------------------------------------------- |
+| **Single Inheritance (extends)** | Java, C#                       | Tight to parent               | Inherited methods        | True "is-a" + one parent only             | Diamond problem impossible, but limited reuse               |
+| **Multiple Interfaces**          | Java, C# (interface)           | Loose — contract only         | Method signatures        | "Can-do" relationships                    | Fat interfaces (ISP violation)                              |
+| **Multiple via Mixins/Traits**   | Scala, PHP traits, Ruby mixins | Medium                        | Injected into class body | Cross-cutting behavior (logging, caching) | Conflict resolution complexity                              |
+| **Composition (HAS-A)**          | All languages                  | Loose                         | Delegation               | Reuse without "is-a"; swappable behavior  | Boilerplate delegation code (solved by @Delegate in Lombok) |
+| **C++ Multiple Inheritance**     | C++ only                       | Very tight (multiple parents) | Full method inheritance  | True multiple parents needed              | Diamond ambiguity, order dependency                         |
