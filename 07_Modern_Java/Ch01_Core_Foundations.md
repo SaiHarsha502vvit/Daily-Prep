@@ -2,6 +2,91 @@
 
 **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
 
+## 0. War Stories — When Java's "Simple" Rules Break Production
+
+### Story 1: The HashMap cache that silently stopped caching
+
+A team built a user-role cache: `Map<User, Set<Role>> roleCache`. The `User` class had 10 fields. A dev added `equals()` to compare by `userId`. He did NOT add `hashCode()`.
+
+Result: `roleCache.get(user)` always returned `null` — even when the same user had been put() a second ago. The cache was useless. Every request hit the database.
+
+Root cause: HashMap locates buckets using `hashCode()`. The default `hashCode()` (from `Object`) returns a memory address. Two `User` objects with the same `userId` have different memory addresses → different hash codes → different buckets → `get()` looks in the wrong bucket → null.
+
+The contract: if `a.equals(b)` is true, `a.hashCode()` MUST equal `b.hashCode()`. Violate this contract → HashMap, HashSet, Hashtable, LinkedHashMap silently malfunction.
+
+```java
+// ❌ BROKEN — equals without hashCode
+@Override
+public boolean equals(Object o) {
+    if (!(o instanceof User)) return false;
+    return this.userId.equals(((User) o).userId);
+}
+// hashCode() not overridden → uses Object default (memory address) → cache never hits
+
+// ✅ CORRECT — both must use the same fields
+@Override
+public int hashCode() {
+    return Objects.hash(userId); // SAME field(s) as equals()
+}
+```
+
+### Story 2: The `ConcurrentModificationException` in production under load
+
+A billing service iterated over orders to apply discounts:
+
+```java
+for (Order order : orders) {
+    if (order.isEligible()) {
+        orders.remove(order); // ← production crash
+        discountedOrders.add(order);
+    }
+}
+```
+
+In dev (single-threaded, small list): worked fine. In production (high load, 800 orders): `ConcurrentModificationException` on random requests.
+
+Cause: `ArrayList`'s iterator is fail-fast — it tracks a `modCount` counter. Any structural modification (`remove`, `add`) while iterating increments `modCount`. The iterator checks `modCount` on every `next()` call and throws if it changed. No concurrency needed — a SINGLE thread modifying its own list mid-iteration triggers this.
+
+```java
+// ✅ Safe: collect removes, apply after iteration
+List<Order> toDiscount = new ArrayList<>();
+for (Order order : orders) {
+    if (order.isEligible()) toDiscount.add(order);
+}
+orders.removeAll(toDiscount); // modify AFTER iteration completes
+```
+
+### Story 3: The Integer comparison that worked in test and failed in prod
+
+A payment system compared order amounts as `Integer`:
+
+```java
+Integer orderId1 = 127;
+Integer orderId2 = 127;
+if (orderId1 == orderId2) // ✅ true in both test and prod
+
+Integer amount1 = 1500;
+Integer amount2 = 1500;
+if (amount1 == amount2) // ✅ true in test (small dataset)
+                        // ❌ false in PROD (different heap objects)
+```
+
+The bug: Java caches `Integer` objects for values -128 to 127 (the Integer cache). `Integer.valueOf(127)` always returns the SAME cached object. `Integer.valueOf(1500)` creates a NEW object each time. `==` compares object references, not values. For amounts above 127, `==` compares two different heap objects → false.
+
+In test: order amounts were seeded as small numbers (order #1, #5, #42) — all in the cache range. In prod: real payment amounts (1500, 2999) — outside the cache.
+
+```java
+// ❌ Never use == for Integer/Long/Double comparison
+if (amount1 == amount2)
+
+// ✅ Always use .equals() for wrapper type comparison
+if (amount1.equals(amount2))
+// Or unbox explicitly:
+if (amount1.intValue() == amount2.intValue())
+```
+
+---
+
 ## 🔑 JVM Class Loading Sequence — Why It Matters
 
 ```
@@ -42,25 +127,26 @@ WHY THIS MATTERS:
 ## PART 1: INNER CLASSES & INITIALIZATION
 
 ### 🧠 Theory Lens: Lexical Scoping and the State Encapsulation Problem
+
 Before memorizing Java's 4 types of inner classes, you must understand the language-design problem they solve structurally: **Object-to-Object State Coupling.**
 
-In pure Object-Oriented design, sibling objects should be strictly decoupled. However, certain helper entities (like Collection Iterators or UI ActionListeners) intrinsically make *no sense* unless they are deeply welded to a parent instance's hidden state. An `ArrayList.Iterator` *must* indiscriminately access the private internal array of its parent `ArrayList`.
+In pure Object-Oriented design, sibling objects should be strictly decoupled. However, certain helper entities (like Collection Iterators or UI ActionListeners) intrinsically make _no sense_ unless they are deeply welded to a parent instance's hidden state. An `ArrayList.Iterator` _must_ indiscriminately access the private internal array of its parent `ArrayList`.
 
-**The Architectural Compromise:** 
-Instead of forcing developers to break encapsulation (by exposing private fields as `public`) or manually passing `this` parent references backward through child constructors, Java's architects introduced Inner Classes. 
+**The Architectural Compromise:**
+Instead of forcing developers to break encapsulation (by exposing private fields as `public`) or manually passing `this` parent references backward through child constructors, Java's architects introduced Inner Classes.
 
 Fundamentally, Inner Classes are **Compiler Syntactic Sugar**. At the runtime JVM level, an "Inner Class" does not exist. The Java `javac` compiler simply extracts the nested class, flattens it, and silently injects a hidden pointer field (named `this$0`) so the child can silently deference the parent's memory address. Realizing that non-static inner classes are just "hidden memory anchors" makes it mathematically obvious why they cause massive memory leaks if allowed to outlive their parent.
 
 ---
 
-
-
 🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
 
 **Challenge (Reasoning):** A non-static inner class holds a hidden reference to the outer class (`Outer.this`). Why does this cause memory leaks in Android and why does `static` inner class fix it?
+
 <details><summary>Answer</summary>
 
 When you pass a non-static inner class instance (e.g., an AsyncTask or Handler) to a Thread/callback system, the inner object HOLDS a reference to the outer Activity/Fragment. If the outer is destroyed (user navigates away) but the inner is still running, the GC cannot collect the outer — memory leak. A `static` inner class has NO implicit reference to the outer instance, so the outer can be garbage collected freely. If the static inner needs to access the outer, use a `WeakReference<OuterClass>` — weak references don't prevent GC.
+
 </details>
 
 ## 1. Inner Classes — 4 Types
@@ -169,18 +255,17 @@ Runnable anon = new Runnable() {
 
 ---
 
-
-
 🔬 **Section Challenge — 1. Inner Classes — 4 Types**
 
 **Challenge 1 (Debug — Who/When/What):** A non-static inner class instance is stored in a long-lived cache. **Who** holds the implicit reference to the outer class? **What** memory leak does this cause? **When** does the outer class become eligible for GC?\n\n<details><summary>Answer</summary>\n\n**Who holds the implicit ref?** Every non-static inner class instance holds a hidden `OuterClass.this` reference — it's a synthetic field added by the compiler, invisible in your code. **Memory leak:** The cache keeps the inner class alive → inner class keeps the outer class alive → the entire outer class (and all its fields) cannot be GC'd even if nothing else references it. **When GC eligible?** Only when the cache entry is evicted AND the inner class instance is no longer reachable. **Fix:** Use a static nested class (no implicit outer reference) for cache entries: `static class CacheEntry { }`. Or extract to a top-level class. This is a classic Android/Swing memory leak: anonymous `Runnable`/`Listener` captures the enclosing Activity/Frame.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+
 <details><summary>Answer</summary>
 
 NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
 
+</details>
 
 ## 2. Initialization Order — The Exact Sequence
 
@@ -205,14 +290,14 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 class Parent {
     static { System.out.println("1. Parent   static block"); }
     { System.out.println("4. Parent   instance block"); }
-    
+
     Parent() { System.out.println("5. Parent   constructor"); }
 }
 
 class Child extends Parent {
     static { System.out.println("2. Child    static block"); }
     { System.out.println("6. Child    instance block"); }
-    
+
     Child() { System.out.println("7. Child    constructor"); }
 }
 
@@ -233,14 +318,14 @@ class Child extends Parent {
 
 ---
 
-
-
 🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
 
 **Challenge (Reasoning):** Parent constructor calls an overridable method `init()`. Child overrides `init()`. When `new Child()` is called, `init()` runs while Child's fields are still 0/null. Why is this dangerous?
+
 <details><summary>Answer</summary>
 
 Java initialization order: Parent static → Child static → Parent instance fields → Parent constructor → Child instance fields → Child constructor. The Parent constructor runs BEFORE Child's fields are initialized. If Parent's constructor calls `init()` (which is overridden), it runs the CHILD's version while the Child's fields are still at their default values (0/null). Pattern: never call overridable methods from constructors. Mark `init()` as `final` or use a factory method pattern instead.
+
 </details>
 
 ## 3. Wrapper Classes & Caching Trap
@@ -313,31 +398,29 @@ void method(int... x)  { }  // NOT called for method(5)
 
 ---
 
-
-
 🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
 
 **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+
 <details><summary>Answer</summary>
 
 Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-</details>
 
+</details>
 
 ## PART 2: COMPARABLE, COMPARATOR & OPTIONAL
 
 ---
 
-
-
 🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
 
 **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+
 <details><summary>Answer</summary>
 
 `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-</details>
 
+</details>
 
 ## 4. Comparable vs Comparator — Complete Guide
 
@@ -362,7 +445,7 @@ public class Employee implements Comparable<Employee> {
     private String name;
     private int age;
     private double salary;
-    
+
     @Override
     public int compareTo(Employee other) {
         return Integer.compare(this.age, other.age);  // Natural: by age
@@ -479,16 +562,15 @@ Optional.ofNullable(null);  // ✅ Returns Optional.empty()
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Optional — Deep Dive**
 
 **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+
 <details><summary>Answer</summary>
 
 `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-</details>
 
+</details>
 
 ## PART 3: ITERATOR, CLONE & VARARGS
 
@@ -574,7 +656,7 @@ for (Map.Entry<String, Integer> entry : map.entrySet()) {
 public class Employee implements Cloneable {
     String name;
     Address address;  // Mutable reference!
-    
+
     @Override
     public Employee clone() {
         try {
@@ -636,7 +718,7 @@ public static Employee copyOf(Employee other) {
 // ❌ BROKEN: Override equals() but NOT hashCode()
 class Point {
     int x, y;
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -682,14 +764,14 @@ public boolean equals(Object o) {
 
 ---
 
-
-
 🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
 
 **Challenge (Reasoning):** `@FunctionalInterface` is an annotation, not a compiler keyword. What does it actually do?
+
 <details><summary>Answer</summary>
 
 It's a marker annotation that causes the COMPILER to verify the interface has exactly one abstract method. It does NOT make the interface a functional interface — any interface with exactly one abstract method is already functional (lambdas can implement it). `@FunctionalInterface` just: (1) documents intent, (2) prevents accidental addition of a second abstract method. Without it: if someone later adds a second abstract method, the annotation causes a compile error instead of silently breaking all lambda usages.
+
 </details>
 
 ## 9. All Built-in Functional Interfaces
@@ -751,14 +833,14 @@ Converter<String, Integer> toInt = Integer::parseInt;
 
 ---
 
-
-
 🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
 
 **Challenge (Reasoning):** `Function<T,R>` vs `UnaryOperator<T>` — they look identical. When would you choose one over the other?
+
 <details><summary>Answer</summary>
 
 `UnaryOperator<T>` extends `Function<T,T>` (same input and output type). Choose `UnaryOperator<T>` when the transformation PRESERVES the type (e.g., `UnaryOperator<String> trim = String::trim`). This communicates intent: "I'm transforming a T into another T". Choose `Function<T,R>` when input and output types differ (e.g., `Function<String, Integer> length = String::length`). In practice: use the most specific interface — better readability and allows more specific composition methods.
+
 </details>
 
 ## 10. Java Module System (JPMS) — Java 9+
@@ -777,10 +859,10 @@ Converter<String, Integer> toInt = Integer::parseInt;
 module com.myapp.core {
     requires java.sql;              // I depend on java.sql
     requires transitive java.logging; // My users also get java.logging
-    
+
     exports com.myapp.core.api;     // Public API — other modules can use
     // com.myapp.core.internal is NOT exported — truly hidden!
-    
+
     opens com.myapp.core.model to com.fasterxml.jackson.databind;
     // Opens for reflection (needed for Jackson serialization)
 }
@@ -887,8 +969,8 @@ Cloneable is a marker interface with no methods (clone is on Object), default is
 ---
 
 **Key Takeaway**: Inner classes capture outer references (memory leak risk).
-Initialization follows parent-first, static-first order. Integer caching makes 
-`==` unreliable for wrappers. Use Comparator chains for complex sorting. 
+Initialization follows parent-first, static-first order. Integer caching makes
+`==` unreliable for wrappers. Use Comparator chains for complex sorting.
 Optional is for return types only. Clone is broken — use copy constructors.
 
 **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)

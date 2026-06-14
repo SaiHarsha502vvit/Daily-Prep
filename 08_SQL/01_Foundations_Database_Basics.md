@@ -1,6 +1,94 @@
 ﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DataTypes_Constraints.md)
 
-**SQL Chapter 01/20** |  | [Index](../00_MASTER_INDEX.md) | [Next →](02_DataTypes_Constraints.md)
+**SQL Chapter 01/20** | | [Index](../00_MASTER_INDEX.md) | [Next →](02_DataTypes_Constraints.md)
+
+---
+
+## Section 0: War Stories — When SQL Basics Burned Us in Production
+
+> These are real incidents caused by misunderstanding the exact concepts this chapter teaches. Read them first; they tell you which sections matter most.
+
+### Story 1: The Financial Report That Silently Lied for Two Months
+
+A fintech startup ran a monthly revenue report using this query:
+
+```sql
+SELECT department, AVG(revenue) AS avg_revenue
+FROM sales
+WHERE avg_revenue > 50000
+GROUP BY department;
+```
+
+In their MySQL dev environment the query errored immediately — `Unknown column 'avg_revenue' in where clause`. A developer "fixed" it by moving the condition, but misread the error and changed it to:
+
+```sql
+SELECT department, AVG(revenue) AS avg_revenue
+FROM sales
+WHERE revenue > 50000
+GROUP BY department;
+```
+
+This compiled and ran. Nobody noticed the difference: `WHERE revenue > 50000` filters **individual sale rows** before grouping. `HAVING AVG(revenue) > 50000` filters **department groups** after aggregating. The "fixed" query silently excluded all small individual transactions, making every department look more profitable than it was.
+
+Two months later an auditor flagged the totals as inconsistent with the source ledger. Root cause: misunderstanding execution order — WHERE runs at step 3 (row-level), HAVING runs at step 5 (group-level). The fix was one word: change WHERE to HAVING. The confusion cost two months of incorrect executive dashboards.
+
+**The lesson from this chapter:** understand the 9-step execution order before writing a single query. `WHERE` cannot filter aggregates. `HAVING` exists precisely because aggregates don't exist until after grouping.
+
+---
+
+### Story 2: Six Weeks of "No Orphaned Records" — Because NULL ≠ NULL
+
+A backend team was cleaning up a users table. They queried for users with no assigned manager:
+
+```sql
+SELECT * FROM users WHERE manager_id = NULL;
+```
+
+The query returned zero rows. The team concluded: "All users have managers — no orphans." They closed the Jira ticket.
+
+Six weeks later a cascade delete wiped 847 user accounts that had no manager assigned. The deletion logic correctly used `WHERE manager_id IS NULL`, which returned 847 rows that the original `= NULL` query had missed.
+
+**Why:** In SQL, `NULL = NULL` evaluates to `NULL` (unknown), not `TRUE`. A WHERE clause only keeps rows where the condition evaluates to `TRUE`. So `WHERE manager_id = NULL` matches zero rows — always. Only `IS NULL` and `IS NOT NULL` correctly test for null presence.
+
+```sql
+-- ✅ Correct — use IS NULL / IS NOT NULL for null checks
+SELECT * FROM users WHERE manager_id IS NULL;
+
+-- ❌ Wrong — always returns 0 rows regardless of data
+SELECT * FROM users WHERE manager_id = NULL;
+```
+
+This NULL trap is one of the top 3 sources of silent data bugs in SQL. It is covered in Section 2 of this chapter.
+
+---
+
+### Story 3: SELECT DISTINCT + ORDER BY — Works in MySQL, Explodes in PostgreSQL
+
+A team migrated their reporting database from MySQL to PostgreSQL. Within hours, one of their most-used queries failed:
+
+```sql
+SELECT DISTINCT customer_id FROM orders ORDER BY order_date DESC;
+```
+
+**MySQL:** runs fine (permissive — sorts by `order_date` even though it's not in the SELECT list).
+**PostgreSQL error:** `ERROR: for SELECT DISTINCT, ORDER BY expressions must appear in the select list`.
+
+The developer lost a day assuming it was a PostgreSQL version issue, then a connection config issue. The actual cause: execution order. DISTINCT runs at step 7 — it collapses the result set to only the columns in the SELECT list. ORDER BY runs at step 8. At that point, `order_date` no longer exists in the dataset — it was never selected, and DISTINCT sealed the result. PostgreSQL correctly refuses to sort by a column that doesn't exist post-DISTINCT.
+
+Fix — either include `order_date` in the SELECT:
+
+```sql
+SELECT DISTINCT customer_id, order_date FROM orders ORDER BY order_date DESC;
+```
+
+Or use a subquery so DISTINCT and ORDER BY operate on separate scopes:
+
+```sql
+SELECT DISTINCT customer_id
+FROM (SELECT customer_id FROM orders ORDER BY order_date DESC) sub;
+```
+
+**The lesson:** SQL is not just a declaration — it has a defined execution order. Databases that silently tolerate violations (MySQL) mask bugs that surface at migration time. Learn the order once, and it explains every "why does this fail?" question you'll ever have.
 
 ---
 
@@ -54,15 +142,19 @@ ANALOGY — A Restaurant Kitchen:
 🔬 **Section Challenge — SQL Query Execution Order**
 
 **Challenge 1 (Reasoning):** This query fails: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept WHERE avg_sal > 50000`. Identify 2 bugs and fix them.
+
 <details><summary>Answer</summary>
 
 Bug 1: WHERE must come before GROUP BY in the written order. Bug 2: WHERE cannot reference aggregate alias `avg_sal` — WHERE runs before SELECT. Fix: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept HAVING AVG(salary) > 50000`. HAVING is the correct clause for filtering after grouping.
+
 </details>
 
 **Challenge 2 (Reasoning):** `SELECT DISTINCT col FROM t ORDER BY col2` — why does this fail?
+
 <details><summary>Answer</summary>
 
 DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort by col2" but col2 is NOT in the SELECT list. After DISTINCT is applied, only `col` remains — there's no `col2` to sort by. Rule: When using DISTINCT, ORDER BY can only reference columns in the SELECT list.
+
 </details>
 
 ---
@@ -111,7 +203,6 @@ DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort 
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### RDBMS Architecture
 
@@ -164,7 +255,6 @@ DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### SQL Categories
 
 ```
@@ -206,11 +296,12 @@ DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # ═══════════════════════════════════════════════════════════════════
+
 # MERGED FROM: 01_SQL_Foundations_WHY_HOW.md (WHY-HOW Framework Edition)
+
 # ═══════════════════════════════════════════════════════════════════
 
 # 📊 SQL FOUNDATIONS - WHY-HOW Framework
@@ -249,7 +340,6 @@ For every SQL concept, we answer:
 
 ```
 
-
 ---
 
 # 🗄️ Part 1: Why Databases Exist
@@ -259,10 +349,11 @@ For every SQL concept, we answer:
 ## Chapter 1: Understanding the Problem Before the Solution
 
 ### 🧠 Theory Lens: Relational Theory vs State Machine Physics
+
 Before looking at tables and tablespaces, we must understand the fundamental dual-nature of a Database Management System (DBMS). A modern database elegantly solves two distinct theoretical problems:
 
-1. **Information Theory (The Set Theory Model)**: How do we mathematically guarantee data meaning? Edgar F. Codd created the relational algebra based on mathematical *Set Theory*. Tables correspond strictly to sets, and SQL is a declarative translation of set operations (Intersect, Union, Cartesian Product). This profoundly decoupled the *logical* organization of data from its *physical* implementation.
-2. **Concurrency & Failure Physics (ACID State)**: How do we handle thousands of concurrent users mutating data without entropy/corruption? At its core, a relational database is a **strictly serialized state-machine**. Through mechanisms like the Write-Ahead Log (WAL) and Two-Phase Locking, the DBMS guarantees that even if the physical server loses power mid-write, the state mathematically remains pristine and predictable. 
+1. **Information Theory (The Set Theory Model)**: How do we mathematically guarantee data meaning? Edgar F. Codd created the relational algebra based on mathematical _Set Theory_. Tables correspond strictly to sets, and SQL is a declarative translation of set operations (Intersect, Union, Cartesian Product). This profoundly decoupled the _logical_ organization of data from its _physical_ implementation.
+2. **Concurrency & Failure Physics (ACID State)**: How do we handle thousands of concurrent users mutating data without entropy/corruption? At its core, a relational database is a **strictly serialized state-machine**. Through mechanisms like the Write-Ahead Log (WAL) and Two-Phase Locking, the DBMS guarantees that even if the physical server loses power mid-write, the state mathematically remains pristine and predictable.
 
 Databases exist primarily because building a mathematically pure set-query engine merged with a physically indestructible concurrency engine inside standard application code is mathematically unsustainable.
 
@@ -270,56 +361,53 @@ Databases exist primarily because building a mathematically pure set-query engin
 
 ### 🔵 WHY: The World Before Databases
 
-
-
-
 ## Life Without Databases
-
 
 **Scenario**: E-commerce Company with 1 Million Users
 WITHOUT DATABASE (Using Files):
-users.txt                     orders.txt
-─────────                     ──────────
-1,John,john@email.com         1001,1,2024-01-15,500.00
-2,Jane,jane@email.com         1002,2,2024-01-15,250.00
-3,Bob,bob@email.com           1003,1,2024-01-16,750.00
-...1 million more lines        ...5 million more lines
+users.txt orders.txt
+───────── ──────────
+1,John,john@email.com 1001,1,2024-01-15,500.00
+2,Jane,jane@email.com 1002,2,2024-01-15,250.00
+3,Bob,bob@email.com 1003,1,2024-01-16,750.00
+...1 million more lines ...5 million more lines
 
 **Problems**:
+
 1. SPEED: Find all orders for user 567,823?
-→ Must read entire 5 million line file! Takes minutes.
+   → Must read entire 5 million line file! Takes minutes.
 2. CONSISTENCY: Two systems update same user simultaneously?
-→ Data corruption! Which version is correct?
+   → Data corruption! Which version is correct?
 3. INTEGRITY: Delete user but orders still reference them?
-→ Orphan data! Orders point to non-existent user.
+   → Orphan data! Orders point to non-existent user.
 4. CONCURRENT ACCESS: 10,000 users reading/writing files?
-→ File locks! System crashes! Data loss!
+   → File locks! System crashes! Data loss!
 5. RECOVERY: Power outage during file write?
-→ Partial data! Corrupted files! Business disaster!
-🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue
-when their flat-file booking system crashed during peak season.
-Recovery took 3 days. They migrated to Oracle within 6 months.
+   → Partial data! Corrupted files! Business disaster!
+   🔴 REAL INCIDENT: In 2003, a major airline lost $50M in revenue
+   when their flat-file booking system crashed during peak season.
+   Recovery took 3 days. They migrated to Oracle within 6 months.
 
 ### How Databases Solve These Problems
 
 ## Database Solutions
 
-| Problem               | Database Solution          | How It Works |
+| Problem | Database Solution | How It Works |
 ┼────────────────────────────┼
-| Slow Search           | INDEXES                    | B-Tree structure: O(log n) |
+| Slow Search | INDEXES | B-Tree structure: O(log n) |
 │ 1M rows → ~20 lookups
 ┼────────────────────────────┼
-| Data Corruption       | TRANSACTIONS + ACID        | All-or-nothing updates |
+| Data Corruption | TRANSACTIONS + ACID | All-or-nothing updates |
 │ Locks during writes
 ┼────────────────────────────┼
-| Orphan Data           | FOREIGN KEYS               | Can't delete parent if |
+| Orphan Data | FOREIGN KEYS | Can't delete parent if |
 │ children exist (CASCADE)
 ┼────────────────────────────┼
-| Concurrent Access     | LOCK MANAGER               | Row/Table level locks |
-MVCC (PostgreSQL)          │ Version control for data
+| Concurrent Access | LOCK MANAGER | Row/Table level locks |
+MVCC (PostgreSQL) │ Version control for data
 ┼────────────────────────────┼
-| Data Loss             | TRANSACTION LOGS (WAL)     | Replay logs after crash |
-Checkpoints                │ Regular state snapshots
+| Data Loss | TRANSACTION LOGS (WAL) | Replay logs after crash |
+Checkpoints │ Regular state snapshots
 
 ---
 
@@ -331,27 +419,26 @@ Checkpoints                │ Regular state snapshots
 
 ### 🔵 WHY: Why Do We Need DDL?
 
-
-
-
 ## Why Ddl Exists
-
 
 💡 **ANALOGY: Building a House**
 Before putting furniture (DATA), you need:
-1. BLUEPRINT (Schema)     → CREATE DATABASE
-2. ROOMS (Structure)      → CREATE TABLE
-3. ROOM TYPES (Rules)     → Data Types + Constraints
-4. RENOVATIONS            → ALTER TABLE
-5. DEMOLITION             → DROP TABLE
-🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015
+
+1. BLUEPRINT (Schema) → CREATE DATABASE
+2. ROOMS (Structure) → CREATE TABLE
+3. ROOM TYPES (Rules) → Data Types + Constraints
+4. RENOVATIONS → ALTER TABLE
+5. DEMOLITION → DROP TABLE
+   🔴 REAL INCIDENT: Flipkart's Big Billion Day 2015
 
 **What Happened**:
+
 - Expected 10M orders, got 15M in first hour
 - Original schema: Single 'orders' table with all columns
 - Result: Table locks, 30-minute delays, customer rage
 
 **What They Learned**:
+
 - Normalize tables: orders, order_items, order_status (separate tables)
 - Add proper indexes on order_id, customer_id, created_at
 - Partition tables by date for faster queries
@@ -567,7 +654,6 @@ CREATE TABLE order_items (
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Chapter 3: ALTER TABLE - Schema Evolution
@@ -619,7 +705,6 @@ CREATE TABLE order_items (
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: ALTER TABLE Operations
 
@@ -778,7 +863,6 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Chapter 4: DML - Data Manipulation Language
@@ -837,7 +921,6 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: INSERT Operations
 
@@ -1155,7 +1238,6 @@ DELETE FROM temp_import_data WHERE import_date < '2024-01-01';
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### 🟢 HOW: GRANT and REVOKE
 
 ```sql
@@ -1302,7 +1384,6 @@ SHOW GRANTS;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ### 🟢 HOW: ACID Properties
 
 ```
@@ -1373,7 +1454,6 @@ SHOW GRANTS;
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ### 🟢 HOW: Transaction Syntax
 
@@ -1532,16 +1612,15 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 
 ---
 
-
-
 🔬 **Section Challenge — Chapter 6: TCL - Transaction Control Language**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 # 💪 Practice Problems
 
@@ -1609,7 +1688,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
 
 _"Understanding WHY makes HOW unforgettable"_
@@ -1618,4 +1696,18 @@ _"Understanding WHY makes HOW unforgettable"_
 
 **NEXT: 02_SQL_Intermediate_JoinsWindows.md - JOINs, Subqueries, CTEs, Window Functions**
 
+### Historical Evolution
 
+**Predecessors (with years):**
+- **Edgar F. Codd** (1970): Published "A Relational Model of Data for Large Shared Data Banks" — introduced relational algebra, set-theory foundation for tables, rows, and columns as a mathematically grounded alternative to hierarchical/network databases.
+- **Donald D. Chamberlin & Raymond Boyce** (1974): Created SEQUEL (Structured English Query Language) at IBM San Jose Research — first declarative query language for Codd's relational model, addressing the practical problem that relational theory had no usable interface.
+- **IBM System R Project** (1974–1979): Built the first working relational DBMS implementing SEQUEL; demonstrated that the relational model was not only theoretically sound but practically achievable; introduced SQL, transactions, and multi-user concurrency control.
+- **Jim Gray** (1976): Published "Granularity of Locks and in DBMS" establishing ACID (Atomicity, Consistency, Isolation, Durability) principles that define how reliable databases behave under concurrent access and hardware failures.
+- **Michael Stonebraker & Eugene Wong** (1976): Built INGRES — the first relational DBMS (concurrent with System R), demonstrating that relational databases could handle complex queries at performance competitive with existing systems.
+- **SQL-86 / SQL-89 / SQL-92**: ANSI standardized SQL in stages, adding outer joins, CHECK constraints, and CASE expressions progressively, turning the competing IBM/Oracle/Informix dialects into an interoperable standard.
+
+**Evolution narrative:**
+Before 1970, databases were navigational — programmers navigated pointer structures (CODASYL network model) to retrieve data, tightly coupling application logic to physical storage layout. Codd's 1970 paper proposed a radical decoupling: data should be queried through a declarative mathematical language rather than procedural navigation, with the DBMS responsible for finding the optimal execution path. Chamberlin's SEQUEL (later SQL) at IBM transformed Codd's algebra into a readable English-like syntax that made relational databases accessible to non-programmers. System R proved this was practical at scale, adding transactions with atomic commits and rollbacks. By the early 1980s, Oracle (1979) commercialized the relational model, and the SQL standard unified the fragmented market. ACID properties, formalized through Gray's work on locking protocols, gave businesses the confidence to trust databases with financial data — the foundation of modern e-commerce and banking. SQL-92 brought outer joins and CASE, completing the feature set that persists in modern SQL interviews today.
+
+**Modern practice anchor:**
+Today, every SQL interview expects you to explain ACID properties and the query execution order — both direct inheritances from System R and Gray's locking research — while modern production OLTP systems (PostgreSQL, MySQL InnoDB) still implement MVCC concurrency control as a direct descendant of System R's locking research.
