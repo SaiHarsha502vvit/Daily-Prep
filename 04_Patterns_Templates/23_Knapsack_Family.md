@@ -547,29 +547,43 @@ Why `log(k)` virtual items suffice: any number from 0 to `k` can be written as a
 
 <details><summary>Answer</summary>
 
-Take items: `[{weight: 2, value: 3}, {weight: 2, value: 4}]` with capacity `W = 4`. The correct 0/1 knapsack answer is `7` (take both items, total value 3+4=7, total weight 4).
+Take items: `[{weight: 1, value: 10}, {weight: 2, value: 15}]` with capacity `W = 3`. The correct 0/1 knapsack answer is **25** (use both items, weight 1+2=3, value 10+15=25).
 
-With forward iteration (the bug):
-- Item 0 (w=2, v=3): iterate w from 0 to 4. dp[2] = max(dp[2], dp[0]+3) = 3. dp[3] = 3. dp[4] = max(dp[4], dp[2]+3) = 6 (read updated dp[2]=3). Now dp = [0,0,3,3,6].
-- Item 1 (w=2, v=4): iterate w from 0 to 4. dp[2] = max(3, dp[0]+4) = 4. dp[3] = max(3, dp[1]+4) = 4. dp[4] = max(6, dp[2]+4) = 8.
+With forward iteration (the bug), the algorithm behaves as if each item can be reused:
 
-So forward iteration gives answer 8 — which corresponds to using item 0 twice (weight 4, value 6) plus item 1 (weight 2... no wait, weight 4 already, can't add). Actually 8 = 4 + 4, meaning the algorithm thinks it used item 1 twice (and somehow item 0 also twice, totaling 4 copies, but capacity is only 4 so weight is 8... contradiction).
+```
+Initial: dp = [0, 0, 0, 0]
 
-Hmm let me re-trace. After item 0 forward: dp[4] = 6 = "use item 0 with weight 4" — but item 0 has weight 2, so this means item 0 was used twice. Yes, the bug has used item 0 twice in a single outer iteration. After item 1 forward: dp[4] = max(6, dp[2]+4) = max(6, 3+4) = 7. Wait — dp[2] after item 0 forward iteration is 3 (from dp[0]+3). So dp[4] = 7.
+Item 0 (w=1, v=10), forward iteration w = 1 → 3:
+  w=1: dp[1] = max(dp[1], dp[0] + 10) = 10      dp = [0, 10,  0,  0]
+  w=2: dp[2] = max(dp[2], dp[1] + 10) = 20      dp = [0, 10, 20,  0]  ← reads updated dp[1]
+  w=3: dp[3] = max(dp[3], dp[2] + 10) = 30      dp = [0, 10, 20, 30]  ← reads updated dp[2]
 
-So forward iteration accidentally gives 7 in this case (correct by coincidence — it used item 0 twice and item 1 once, total weight = 2*2 + 2 = 6, which exceeds capacity 4 — but the DP doesn't enforce this because it just sums values when reading updated cells).
+Item 1 (w=2, v=15), forward iteration w = 2 → 3:
+  w=2: dp[2] = max(20, dp[0] + 15) = 20         dp = [0, 10, 20, 30]
+  w=3: dp[3] = max(30, dp[1] + 15) = 30         dp = [0, 10, 20, 30]
+```
 
-OK the cleaner failure example: items `[{w:1, v:1}, {w:1, v:1}]`, capacity 1. Correct answer = 1 (use one item). Forward iteration gives:
-- Item 0: dp[1] = max(dp[1], dp[0]+1) = 1.
-- Item 1: dp[1] = max(1, dp[0]+1) = 1. (dp[0] is still 0 because we read dp[0] which is always 0.)
+Answer reported: `dp[3] = 30` — **wrong** (correct is 25).
 
-Hmm that also works. Let me try a worse case: items `[{w:1, v:10}, {w:2, v:15}]`, capacity 3. Correct = 25 (both). Forward:
-- Item 0: dp[1] = 10, dp[2] = max(0, dp[1]+10) = 20, dp[3] = max(0, dp[2]+10) = 30. dp = [0,10,20,30]. (Used item 0 three times!)
-- Item 1: dp[2] = max(20, dp[0]+15) = 20. dp[3] = max(30, dp[1]+15) = max(30, 25) = 30. Answer = 30.
+What went wrong: when processing item 0 forward, `dp[2]` read the *current* value of `dp[1]` (10), which already included item 0. So the algorithm "used item 0 twice" in a single outer iteration. The same happened again for `dp[3]`. The forward direction means each cell reads from cells that may have already been updated in *this* iteration — the same semantics as unbounded knapsack.
 
-But the correct answer is 25 (use item 0 once + item 1 once, weight 1+2=3, value 10+15=25). The bug gives 30 (item 0 three times, weight 3, value 30) because forward iteration let item 0 be used multiple times in one outer iteration.
+With backward iteration (correct):
 
-That's the failure mode: forward iteration under 0/1 semantics allows each item to be used multiple times — equivalent to unbounded knapsack instead of 0/1. The answer is systematically too large (or wrong in other ways depending on the problem). Small test cases that don't trigger the multiple-use behavior might still pass; large ones don't.
+```
+Item 0 (w=1, v=10), backward iteration w = 3 → 1:
+  w=3: dp[3] = max(0, dp[2] + 10) = 0           dp = [0, 0, 0, 0]   ← dp[2] still 0
+  w=2: dp[2] = max(0, dp[1] + 10) = 0           dp = [0, 0, 0, 0]
+  w=1: dp[1] = max(0, dp[0] + 10) = 10          dp = [0, 10, 0, 0]
+
+Item 1 (w=2, v=15), backward iteration w = 3 → 2:
+  w=3: dp[3] = max(0, dp[1] + 15) = 25          dp = [0, 10, 0, 25]  ✓
+  w=2: dp[2] = max(0, dp[0] + 15) = 15          dp = [0, 10, 15, 25]
+```
+
+Answer reported: `dp[3] = 25` ✓
+
+Failure-mode summary: forward iteration under 0/1 semantics systematically over-counts by allowing each item to be used multiple times. The result is the *unbounded* knapsack answer, not the 0/1 answer — and since unbounded answers can be larger, the output is typically too high. Small test cases with single-use items may pass by coincidence; larger inputs expose the bug deterministically.
 
 </details>
 

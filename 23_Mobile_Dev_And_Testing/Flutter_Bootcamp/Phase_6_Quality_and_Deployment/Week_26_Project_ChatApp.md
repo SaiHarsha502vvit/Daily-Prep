@@ -1,0 +1,1047 @@
+# Week 26 — Phase 6 Capstone: Real-Time Chat App
+### FCM push notifications, Firestore real-time streams, media sharing — the full production pattern
+
+---
+
+> Three lenses on every concept:
+> - 🧑‍💻 **Developer** — FCM token management, real-time streams, image upload, Clean Architecture + BLoC throughout
+> - 🎨 **Designer** — chat UI conventions, message bubble layout, status indicators, media previews
+> - 🧪 **Tester** — testing real-time streams, FCM notification handling, integration test for message send
+
+---
+
+## What You're Building
+
+A 1:1 chat app with:
+- Real-time messaging with Firestore streams
+- FCM push notifications (messages arrive even when app is backgrounded)
+- Image and file sharing via Firebase Storage
+- Online/typing indicators
+- Message status (sent → delivered → read)
+- Clean Architecture + BLoC + get_it (everything from Phase 5)
+- CI/CD pipeline from Week 25
+
+---
+
+## Architecture Overview
+
+```
+lib/
+  features/
+    auth/          ← reuse from Week 16
+    chat/
+      domain/
+        entities/
+          chat_user.dart
+          conversation.dart
+          message.dart
+        repositories/
+          chat_repository.dart
+          storage_repository.dart
+        usecases/
+          get_conversations.dart
+          get_messages.dart
+          send_message.dart
+          send_image_message.dart
+          mark_messages_read.dart
+          update_typing_status.dart
+      data/
+        models/
+          chat_user_model.dart
+          conversation_model.dart
+          message_model.dart
+        datasources/
+          chat_remote_datasource.dart   ← Firestore
+          storage_datasource.dart       ← Firebase Storage
+          notification_datasource.dart  ← FCM
+        repositories/
+          chat_repository_impl.dart
+          storage_repository_impl.dart
+      presentation/
+        screens/
+          conversations_screen.dart
+          chat_screen.dart
+          user_search_screen.dart
+          image_preview_screen.dart
+        bloc/
+          conversations_bloc.dart
+          messages_bloc.dart
+          typing_cubit.dart
+        widgets/
+          message_bubble.dart
+          conversation_tile.dart
+          chat_input_bar.dart
+          typing_indicator.dart
+          image_message_widget.dart
+  core/
+    notifications/
+      notification_service.dart
+    di/injection_container.dart
+```
+
+---
+
+## Domain Layer
+
+```dart
+// lib/features/chat/domain/entities/message.dart
+
+enum MessageType { text, image, file }
+enum MessageStatus { sending, sent, delivered, read }
+
+class Message {
+  final String id;
+  final String conversationId;
+  final String senderId;
+  final String content;       // text content or download URL for media
+  final MessageType type;
+  final MessageStatus status;
+  final DateTime timestamp;
+  final String? localPath;    // temporary local file path while uploading
+  final double? uploadProgress; // 0.0–1.0 during upload
+
+  const Message({
+    required this.id,
+    required this.conversationId,
+    required this.senderId,
+    required this.content,
+    required this.type,
+    required this.status,
+    required this.timestamp,
+    this.localPath,
+    this.uploadProgress,
+  });
+
+  bool get isSending => status == MessageStatus.sending;
+  bool get isRead => status == MessageStatus.read;
+
+  Message copyWith({
+    MessageStatus? status,
+    String? content,
+    double? uploadProgress,
+  }) => Message(
+    id: id, conversationId: conversationId, senderId: senderId,
+    content: content ?? this.content, type: type,
+    status: status ?? this.status, timestamp: timestamp,
+    localPath: localPath, uploadProgress: uploadProgress ?? this.uploadProgress,
+  );
+}
+
+// lib/features/chat/domain/entities/conversation.dart
+
+class Conversation {
+  final String id;
+  final List<String> participantIds;
+  final Map<String, ChatUser> participants;   // pre-fetched user data
+  final Message? lastMessage;
+  final Map<String, int> unreadCounts;        // userId → unread count
+  final Map<String, bool> typingStatus;       // userId → isTyping
+
+  const Conversation({
+    required this.id,
+    required this.participantIds,
+    required this.participants,
+    this.lastMessage,
+    required this.unreadCounts,
+    required this.typingStatus,
+  });
+
+  ChatUser otherParticipant(String myUserId) =>
+      participants.values.firstWhere((u) => u.id != myUserId);
+
+  bool isTyping(String userId) => typingStatus[userId] == true;
+  int unreadCount(String userId) => unreadCounts[userId] ?? 0;
+}
+
+// lib/features/chat/domain/entities/chat_user.dart
+class ChatUser {
+  final String id;
+  final String displayName;
+  final String? photoUrl;
+  final bool isOnline;
+  final DateTime? lastSeen;
+  final String? fcmToken;  // for sending push notifications
+
+  const ChatUser({
+    required this.id,
+    required this.displayName,
+    this.photoUrl,
+    required this.isOnline,
+    this.lastSeen,
+    this.fcmToken,
+  });
+
+  String get statusText => isOnline ? 'Online' : _formatLastSeen();
+  String _formatLastSeen() {
+    if (lastSeen == null) return 'Offline';
+    final diff = DateTime.now().difference(lastSeen!);
+    if (diff.inMinutes < 60) return 'Last seen ${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return 'Last seen ${diff.inHours}h ago';
+    return 'Last seen ${DateFormat('d MMM').format(lastSeen!)}';
+  }
+}
+```
+
+---
+
+## Firestore Data Model
+
+```
+chats/
+  {conversationId}/
+    participantIds: ['uid1', 'uid2']
+    participants/
+      {uid}/
+        displayName: 'Harsha'
+        photoUrl: '...'
+        isOnline: true
+        lastSeen: Timestamp
+    lastMessage: { content, senderId, timestamp, type }
+    unreadCounts: { uid1: 0, uid2: 3 }
+    typingStatus: { uid1: false, uid2: true }
+
+    messages/
+      {messageId}/
+        senderId: 'uid1'
+        content: 'Hello!'   or  'gs://bucket/images/...' for images
+        type: 'text'        or  'image'
+        status: 'read'
+        timestamp: Timestamp
+
+users/
+  {uid}/
+    displayName: 'Harsha'
+    photoUrl: '...'
+    isOnline: true
+    lastSeen: Timestamp
+    fcmToken: 'device_token_here'
+```
+
+---
+
+## Data Layer — Real-Time Streams
+
+```dart
+// lib/features/chat/data/datasources/chat_remote_datasource.dart
+
+abstract interface class ChatRemoteDatasource {
+  Stream<List<ConversationModel>> watchConversations(String userId);
+  Stream<List<MessageModel>> watchMessages(String conversationId);
+  Future<void> sendMessage(MessageModel message);
+  Future<void> updateMessageStatus(String convId, String messageId, MessageStatus status);
+  Future<void> markAllRead(String convId, String userId);
+  Future<void> updateTypingStatus(String convId, String userId, bool isTyping);
+  Future<void> updateOnlineStatus(String userId, bool isOnline);
+  Future<String> getOrCreateConversation(String uid1, String uid2);
+}
+
+class ChatFirebaseDatasource implements ChatRemoteDatasource {
+  final FirebaseFirestore _db;
+  final FirebaseAuth _auth;
+
+  ChatFirebaseDatasource(this._db, this._auth);
+
+  @override
+  Stream<List<ConversationModel>> watchConversations(String userId) {
+    return _db
+        .collection('chats')
+        .where('participantIds', arrayContains: userId)
+        .orderBy('lastMessage.timestamp', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs.map(ConversationModel.fromFirestore).toList());
+  }
+
+  @override
+  Stream<List<MessageModel>> watchMessages(String conversationId) {
+    return _db
+        .collection('chats/$conversationId/messages')
+        .orderBy('timestamp', descending: false)
+        .limitToLast(50)  // last 50 messages; paginate for history
+        .snapshots()
+        .map((snap) => snap.docs.map(MessageModel.fromFirestore).toList());
+  }
+
+  @override
+  Future<void> sendMessage(MessageModel message) async {
+    final convRef = _db.collection('chats').doc(message.conversationId);
+    final msgRef = convRef.collection('messages').doc(message.id);
+
+    // Batch write: message + conversation update (atomic)
+    final batch = _db.batch();
+
+    batch.set(msgRef, message.toFirestore());
+
+    batch.update(convRef, {
+      'lastMessage': {
+        'content': message.type == MessageType.text ? message.content : '📷 Photo',
+        'senderId': message.senderId,
+        'timestamp': FieldValue.serverTimestamp(),
+        'type': message.type.name,
+      },
+      // Increment unread count for all other participants
+      'unreadCounts.${_otherParticipantId(message)}': FieldValue.increment(1),
+    });
+
+    await batch.commit();
+
+    // Deliver status update after Firestore write
+    await msgRef.update({'status': MessageStatus.delivered.name});
+  }
+
+  @override
+  Future<void> markAllRead(String convId, String userId) async {
+    // Get all unread messages (status != read)
+    final unread = await _db
+        .collection('chats/$convId/messages')
+        .where('status', isNotEqualTo: MessageStatus.read.name)
+        .where('senderId', isNotEqualTo: userId)  // only others' messages
+        .get();
+
+    final batch = _db.batch();
+    for (final doc in unread.docs) {
+      batch.update(doc.reference, {'status': MessageStatus.read.name});
+    }
+    // Reset my unread count
+    batch.update(_db.doc('chats/$convId'), {'unreadCounts.$userId': 0});
+    await batch.commit();
+  }
+
+  @override
+  Future<void> updateTypingStatus(String convId, String userId, bool isTyping) {
+    return _db.doc('chats/$convId').update({'typingStatus.$userId': isTyping});
+  }
+
+  @override
+  Future<String> getOrCreateConversation(String uid1, String uid2) async {
+    final sorted = [uid1, uid2]..sort();
+    final convId = '${sorted[0]}_${sorted[1]}';  // deterministic ID
+    final ref = _db.doc('chats/$convId');
+    final snap = await ref.get();
+
+    if (!snap.exists) {
+      // Fetch user data for both participants
+      final users = await Future.wait([
+        _db.doc('users/$uid1').get(),
+        _db.doc('users/$uid2').get(),
+      ]);
+
+      await ref.set({
+        'participantIds': sorted,
+        'participants': {
+          uid1: users[0].data(),
+          uid2: users[1].data(),
+        },
+        'unreadCounts': {uid1: 0, uid2: 0},
+        'typingStatus': {uid1: false, uid2: false},
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    return convId;
+  }
+
+  String _otherParticipantId(MessageModel message) {
+    // Get participant IDs from the conversation document
+    // In practice, pass it through the model
+    return '';  // simplified for this example
+  }
+}
+```
+
+---
+
+## Firebase Storage — Image Upload With Progress
+
+```dart
+// lib/features/chat/data/datasources/storage_datasource.dart
+
+class StorageDatasource {
+  final FirebaseStorage _storage;
+  const StorageDatasource(this._storage);
+
+  // Returns a Stream of progress values (0.0–1.0) then the download URL
+  Stream<StorageUploadState> uploadChatImage({
+    required String conversationId,
+    required String messageId,
+    required File imageFile,
+  }) {
+    final controller = StreamController<StorageUploadState>();
+
+    final path = 'chats/$conversationId/$messageId.jpg';
+    final ref = _storage.ref().child(path);
+
+    final uploadTask = ref.putFile(
+      imageFile,
+      SettableMetadata(contentType: 'image/jpeg'),
+    );
+
+    uploadTask.snapshotEvents.listen(
+      (snapshot) {
+        final progress = snapshot.bytesTransferred / snapshot.totalBytes;
+        controller.add(StorageUploadState.progress(progress));
+      },
+      onError: (error) {
+        controller.add(StorageUploadState.error(error.toString()));
+        controller.close();
+      },
+    );
+
+    uploadTask.whenComplete(() async {
+      try {
+        final url = await ref.getDownloadURL();
+        controller.add(StorageUploadState.complete(url));
+      } catch (e) {
+        controller.add(StorageUploadState.error(e.toString()));
+      }
+      controller.close();
+    });
+
+    return controller.stream;
+  }
+}
+
+sealed class StorageUploadState {}
+class UploadProgress extends StorageUploadState { final double fraction; UploadProgress(this.fraction); }
+class UploadComplete extends StorageUploadState { final String downloadUrl; UploadComplete(this.downloadUrl); }
+class UploadError extends StorageUploadState { final String message; UploadError(this.message); }
+
+extension StorageUploadStateX on StorageUploadState {
+  static StorageUploadState progress(double f) => UploadProgress(f);
+  static StorageUploadState complete(String url) => UploadComplete(url);
+  static StorageUploadState error(String msg) => UploadError(msg);
+}
+```
+
+---
+
+## FCM — Push Notifications
+
+```dart
+// lib/core/notifications/notification_service.dart
+
+class NotificationService {
+  static final _messaging = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
+
+  static Future<void> initialize() async {
+    // Request permission (iOS)
+    await _messaging.requestPermission(
+      alert: true, badge: true, sound: true,
+    );
+
+    // Initialize local notifications (for foreground display)
+    await _localNotifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(),
+      ),
+      onDidReceiveNotificationResponse: _onNotificationTap,
+    );
+
+    // Handle foreground messages — FCM doesn't show them automatically
+    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
+    // Handle background/terminated message tap
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageTap);
+
+    // Token refresh — update Firestore when token changes
+    _messaging.onTokenRefresh.listen(_saveToken);
+  }
+
+  static Future<void> _saveToken(String token) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
+    await FirebaseFirestore.instance.doc('users/$uid').update({'fcmToken': token});
+  }
+
+  static void _handleForegroundMessage(RemoteMessage message) {
+    final notification = message.notification;
+    if (notification == null) return;
+
+    _localNotifications.show(
+      message.hashCode,
+      notification.title,
+      notification.body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'chat_channel',
+          'Chat Messages',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: true,
+        ),
+        iOS: DarwinNotificationDetails(presentAlert: true, presentBadge: true, presentSound: true),
+      ),
+      payload: message.data['conversationId'],
+    );
+  }
+
+  static void _handleMessageTap(RemoteMessage message) {
+    final convId = message.data['conversationId'];
+    if (convId != null) {
+      // Navigate to the conversation
+      NavigationService.navigateTo('/chat/$convId');
+    }
+  }
+
+  static void _onNotificationTap(NotificationResponse response) {
+    final convId = response.payload;
+    if (convId != null) {
+      NavigationService.navigateTo('/chat/$convId');
+    }
+  }
+}
+```
+
+```
+// Cloud Functions (functions/index.js) — send FCM when message arrives
+exports.onNewMessage = functions.firestore
+  .document('chats/{convId}/messages/{msgId}')
+  .onCreate(async (snap, context) => {
+    const message = snap.data();
+    const convSnap = await admin.firestore().doc(`chats/${context.params.convId}`).get();
+    const conversation = convSnap.data();
+
+    // Find the recipient's FCM token
+    const recipientId = conversation.participantIds.find(id => id !== message.senderId);
+    const recipientSnap = await admin.firestore().doc(`users/${recipientId}`).get();
+    const fcmToken = recipientSnap.data()?.fcmToken;
+
+    if (!fcmToken) return null;
+
+    const senderName = conversation.participants[message.senderId]?.displayName || 'Someone';
+
+    return admin.messaging().send({
+      token: fcmToken,
+      notification: {
+        title: senderName,
+        body: message.type === 'text' ? message.content : '📷 Photo',
+      },
+      data: { conversationId: context.params.convId },
+      android: { priority: 'high' },
+      apns: { payload: { aps: { 'content-available': 1 } } },
+    });
+  });
+```
+
+---
+
+## BLoC Layer — Messages
+
+```dart
+// Events
+sealed class MessagesEvent {}
+class LoadMessagesEvent extends MessagesEvent { final String conversationId; }
+class SendTextMessageEvent extends MessagesEvent { final String conversationId; final String text; }
+class SendImageMessageEvent extends MessagesEvent { final String conversationId; final File imageFile; }
+class MarkReadEvent extends MessagesEvent { final String conversationId; }
+class TypingStartedEvent extends MessagesEvent { final String conversationId; }
+class TypingStoppedEvent extends MessagesEvent { final String conversationId; }
+
+// States
+sealed class MessagesState {}
+class MessagesInitial extends MessagesState {}
+class MessagesLoaded extends MessagesState {
+  final List<Message> messages;
+  final bool isSending;
+  const MessagesLoaded({required this.messages, this.isSending = false});
+  MessagesLoaded copyWith({List<Message>? messages, bool? isSending}) =>
+      MessagesLoaded(messages: messages ?? this.messages, isSending: isSending ?? this.isSending);
+}
+class MessagesError extends MessagesState { final String message; }
+
+class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
+  final GetMessages _getMessages;
+  final SendMessage _sendMessage;
+  final SendImageMessage _sendImageMessage;
+  final MarkMessagesRead _markRead;
+  final UpdateTypingStatus _updateTyping;
+
+  StreamSubscription? _messagesSub;
+
+  MessagesBloc({
+    required GetMessages getMessages,
+    required SendMessage sendMessage,
+    required SendImageMessage sendImageMessage,
+    required MarkMessagesRead markRead,
+    required UpdateTypingStatus updateTyping,
+  })  : _getMessages = getMessages,
+        _sendMessage = sendMessage,
+        _sendImageMessage = sendImageMessage,
+        _markRead = markRead,
+        _updateTyping = updateTyping,
+        super(MessagesInitial()) {
+    on<LoadMessagesEvent>(_onLoad);
+    on<SendTextMessageEvent>(_onSendText);
+    on<SendImageMessageEvent>(_onSendImage);
+    on<MarkReadEvent>(_onMarkRead);
+    on<TypingStartedEvent>((e, _) => _updateTyping(TypingParams(conversationId: e.conversationId, isTyping: true)));
+    on<TypingStoppedEvent>((e, _) => _updateTyping(TypingParams(conversationId: e.conversationId, isTyping: false)));
+  }
+
+  Future<void> _onLoad(LoadMessagesEvent event, Emitter<MessagesState> emit) async {
+    await emit.forEach<List<Message>>(
+      _getMessages(GetMessagesParams(conversationId: event.conversationId)),
+      onData: (messages) => MessagesLoaded(messages: messages),
+      onError: (e, _) => MessagesError(message: e.toString()),
+    );
+    // emit.forEach keeps the BLoC subscribed to the stream
+    // Emits a new state whenever the stream emits new messages
+    // Cleans up the stream subscription when the BLoC closes
+  }
+
+  Future<void> _onSendText(SendTextMessageEvent event, Emitter<MessagesState> emit) async {
+    if (state is! MessagesLoaded) return;
+    final current = state as MessagesLoaded;
+
+    // Optimistic: show message immediately with 'sending' status
+    final optimisticMsg = Message(
+      id: const Uuid().v4(),
+      conversationId: event.conversationId,
+      senderId: _currentUserId,
+      content: event.text,
+      type: MessageType.text,
+      status: MessageStatus.sending,
+      timestamp: DateTime.now(),
+    );
+    emit(current.copyWith(messages: [...current.messages, optimisticMsg]));
+
+    await _sendMessage(SendMessageParams(
+      conversationId: event.conversationId,
+      content: event.text,
+      type: MessageType.text,
+    ));
+    // The stream from _onLoad will update the message to 'delivered' status
+    // No need to manually update state here
+  }
+
+  Future<void> _onSendImage(SendImageMessageEvent event, Emitter<MessagesState> emit) async {
+    if (state is! MessagesLoaded) return;
+    final current = state as MessagesLoaded;
+    final tempId = const Uuid().v4();
+
+    // Show local preview with progress = 0
+    final localMsg = Message(
+      id: tempId,
+      conversationId: event.conversationId,
+      senderId: _currentUserId,
+      content: '',
+      type: MessageType.image,
+      status: MessageStatus.sending,
+      timestamp: DateTime.now(),
+      localPath: event.imageFile.path,
+      uploadProgress: 0.0,
+    );
+    emit(current.copyWith(messages: [...current.messages, localMsg]));
+
+    // Upload with progress
+    await for (final uploadState in _sendImageMessage(SendImageParams(
+      conversationId: event.conversationId,
+      imageFile: event.imageFile,
+      messageId: tempId,
+    ))) {
+      if (state is! MessagesLoaded) break;
+      final curr = state as MessagesLoaded;
+
+      switch (uploadState) {
+        case UploadProgress(:final fraction):
+          final updated = curr.messages.map((m) =>
+              m.id == tempId ? m.copyWith(uploadProgress: fraction) : m).toList();
+          emit(curr.copyWith(messages: updated));
+        case UploadComplete(:final downloadUrl):
+          // Replace local message with final URL message
+          final updated = curr.messages.where((m) => m.id != tempId).toList();
+          emit(curr.copyWith(messages: updated));
+          // The Firestore stream will add the real message
+        case UploadError():
+          final updated = curr.messages.where((m) => m.id != tempId).toList();
+          emit(curr.copyWith(messages: updated));
+      }
+    }
+  }
+
+  String get _currentUserId => FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  Future<void> close() {
+    _messagesSub?.cancel();
+    return super.close();
+  }
+}
+```
+
+---
+
+## Chat UI
+
+```dart
+// lib/features/chat/presentation/screens/chat_screen.dart
+
+class ChatScreen extends StatefulWidget {
+  final String conversationId;
+  final ChatUser otherUser;
+  const ChatScreen({super.key, required this.conversationId, required this.otherUser});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
+  final _scrollController = ScrollController();
+  final _inputController = TextEditingController();
+  final _focusNode = FocusNode();
+  Timer? _typingTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _inputController.addListener(_onTyping);
+  }
+
+  void _onTyping() {
+    if (_inputController.text.isNotEmpty) {
+      context.read<MessagesBloc>().add(TypingStartedEvent(conversationId: widget.conversationId));
+      _typingTimer?.cancel();
+      _typingTimer = Timer(const Duration(seconds: 2), () {
+        if (mounted) {
+          context.read<MessagesBloc>().add(TypingStoppedEvent(conversationId: widget.conversationId));
+        }
+      });
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Update online status when app is backgrounded
+    if (state == AppLifecycleState.paused) {
+      _setOffline();
+    } else if (state == AppLifecycleState.resumed) {
+      _setOnline();
+    }
+  }
+
+  void _setOnline() => sl<ChatRepository>().updateOnlineStatus(true);
+  void _setOffline() => sl<ChatRepository>().updateOnlineStatus(false);
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
+    _inputController.dispose();
+    _focusNode.dispose();
+    _typingTimer?.cancel();
+    _setOffline();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<MessagesBloc>()
+        ..add(LoadMessagesEvent(conversationId: widget.conversationId))
+        ..add(MarkReadEvent(conversationId: widget.conversationId)),
+      child: Scaffold(
+        appBar: _ChatAppBar(otherUser: widget.otherUser),
+        body: Column(
+          children: [
+            // Message list
+            Expanded(
+              child: BlocBuilder<MessagesBloc, MessagesState>(
+                builder: (context, state) {
+                  if (state is! MessagesLoaded) return const LoadingView();
+
+                  // Auto-scroll to bottom when new messages arrive
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_scrollController.hasClients) {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                      );
+                    }
+                  });
+
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    itemCount: state.messages.length,
+                    itemBuilder: (context, index) {
+                      final message = state.messages[index];
+                      final isMe = message.senderId == FirebaseAuth.instance.currentUser!.uid;
+                      return MessageBubble(message: message, isMe: isMe)
+                          .animate()
+                          .fadeIn(duration: 200.ms)
+                          .slideY(begin: 0.1, end: 0);
+                    },
+                  );
+                },
+              ),
+            ),
+
+            // Typing indicator
+            TypingIndicator(conversationId: widget.conversationId, otherUser: widget.otherUser),
+
+            // Input bar
+            _ChatInputBar(
+              controller: _inputController,
+              focusNode: _focusNode,
+              conversationId: widget.conversationId,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Message bubble
+class MessageBubble extends StatelessWidget {
+  final Message message;
+  final bool isMe;
+
+  const MessageBubble({super.key, required this.message, required this.isMe});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.72),
+        decoration: BoxDecoration(
+          color: isMe
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(18),
+            topRight: const Radius.circular(18),
+            bottomLeft: Radius.circular(isMe ? 18 : 4),
+            bottomRight: Radius.circular(isMe ? 4 : 18),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (message.type == MessageType.text)
+              Text(
+                message.content,
+                style: TextStyle(color: isMe ? Colors.white : null),
+              )
+            else
+              ImageMessageWidget(message: message),
+
+            const SizedBox(height: 2),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  DateFormat('HH:mm').format(message.timestamp),
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: isMe ? Colors.white70 : Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                if (isMe) ...[
+                  const SizedBox(width: 4),
+                  _StatusIcon(status: message.status),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusIcon extends StatelessWidget {
+  final MessageStatus status;
+  const _StatusIcon({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (status) {
+      MessageStatus.sending => const SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 1.5, color: Colors.white70)),
+      MessageStatus.sent => const Icon(Icons.check, size: 12, color: Colors.white70),
+      MessageStatus.delivered => const Icon(Icons.done_all, size: 12, color: Colors.white70),
+      MessageStatus.read => const Icon(Icons.done_all, size: 12, color: Colors.lightBlueAccent),
+    };
+  }
+}
+```
+
+---
+
+## Typing Indicator
+
+```dart
+class TypingIndicator extends ConsumerWidget {
+  final String conversationId;
+  final ChatUser otherUser;
+
+  const TypingIndicator({super.key, required this.conversationId, required this.otherUser});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Stream typing status from Firestore
+    return StreamBuilder<bool>(
+      stream: sl<ChatRepository>().watchTypingStatus(conversationId, otherUser.id),
+      builder: (context, snapshot) {
+        final isTyping = snapshot.data ?? false;
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: isTyping
+              ? Padding(
+                  key: const ValueKey('typing'),
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${otherUser.displayName} is typing',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(width: 4),
+                      _ThreeDotsAnimation(),
+                    ],
+                  ),
+                )
+              : const SizedBox(key: ValueKey('not_typing'), height: 8),
+        );
+      },
+    );
+  }
+}
+
+// Animated bouncing dots
+class _ThreeDotsAnimation extends StatefulWidget {
+  @override
+  State<_ThreeDotsAnimation> createState() => _ThreeDotsAnimationState();
+}
+
+class _ThreeDotsAnimationState extends State<_ThreeDotsAnimation>
+    with TickerProviderStateMixin {
+  late final List<AnimationController> _controllers;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(3, (i) {
+      final c = AnimationController(vsync: this, duration: 400.ms);
+      Future.delayed(Duration(milliseconds: i * 133), () {
+        if (mounted) c.repeat(reverse: true);
+      });
+      return c;
+    });
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: _controllers.map((c) {
+        return AnimatedBuilder(
+          animation: c,
+          builder: (_, __) => Transform.translate(
+            offset: Offset(0, -3 * c.value),
+            child: Container(
+              width: 4, height: 4, margin: const EdgeInsets.symmetric(horizontal: 1),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+```
+
+---
+
+## Security Rules
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function isAuthenticated() { return request.auth != null; }
+    function isParticipant(convId) {
+      return isAuthenticated() &&
+             request.auth.uid in get(/databases/$(db)/documents/chats/$(convId)).data.participantIds;
+    }
+
+    match /chats/{convId} {
+      allow read: if isParticipant(convId);
+      allow create: if isAuthenticated()
+        && request.auth.uid in request.resource.data.participantIds;
+      allow update: if isParticipant(convId);
+
+      match /messages/{msgId} {
+        allow read, create: if isParticipant(convId);
+        allow update: if isParticipant(convId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+          // Only allow updating the 'status' field — not content
+      }
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+  }
+}
+```
+
+---
+
+## What You Built in Phase 6
+
+| Concept | Where applied |
+|--|--|
+| Unit tests | Use cases, entity properties |
+| Widget tests | `MessageBubble`, `ExpenseTile`, form validation |
+| BLoC tests | `MessagesBloc` event→state transitions |
+| Golden tests | `MessageBubble` visual contract |
+| Integration tests | Full message send flow |
+| Performance | `const` constructors, `ListView.builder`, `RepaintBoundary` |
+| Memory safety | `dispose()` in `_ChatScreenState`, `WidgetsBindingObserver` |
+| CI/CD | GitHub Actions: lint → test → build → distribute |
+| Flavors | Dev / staging / prod environments |
+| FCM | Push notifications via Cloud Functions |
+| Real-time streams | `emit.forEach` in `MessagesBloc` |
+| Firebase Storage | Image upload with progress |
+| Typing indicators | Firestore real-time + `AnimatedSwitcher` |
+
+---
+
+## Bootcamp Complete
+
+You've covered 26 weeks of Flutter from `void main()` to a production chat app with:
+
+| Phase | Key Skills |
+|--|--|
+| Phase 1 | Dart language, Flutter rendering, BoxConstraints, Navigation |
+| Phase 2 | Slivers, Forms, Animations, GestureDetector, CustomPainter |
+| Phase 3 | Provider → Riverpod, HTTP/Dio, Repository pattern |
+| Phase 4 | Firebase Firestore, Auth, Hive offline-first, Notes App |
+| Phase 5 | BLoC, Clean Architecture, get_it, Custom Charts, Expense Tracker |
+| Phase 6 | Testing pyramid, DevTools profiling, CI/CD, Chat App |
+
+**What's next:**
+- Explore `go_router` for declarative routing
+- Deep dive into accessibility (`Semantics`, `ExcludeSemantics`)
+- Explore `flutter_hooks` as an alternative to StatefulWidget
+- Study Dart isolates for true parallelism
+- Build something users actually use

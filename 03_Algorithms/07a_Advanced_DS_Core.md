@@ -1132,7 +1132,6 @@ Register this class in `META-INF/spring/org.springframework.boot.autoconfigure.A
 
 ---
 
-**Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)
 
 ---
 
@@ -1197,3 +1196,6 @@ class SegTree {
 // Used in: Netflix job scheduling, database range queries, competitive programming
 ```
 
+---
+
+**Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)

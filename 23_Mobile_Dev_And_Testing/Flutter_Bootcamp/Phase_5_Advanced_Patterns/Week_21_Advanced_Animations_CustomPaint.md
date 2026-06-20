@@ -1,0 +1,677 @@
+# Week 21 — Advanced Animations + CustomPainter Charts
+### When widgets aren't enough: paint pixels, choreograph sequences, breathe life into data
+
+---
+
+> Three lenses on every concept:
+> - 🧑‍💻 **Developer** — Canvas API, path construction, animation composition, flutter_animate
+> - 🎨 **Designer** — motion language, chart readability, animation as communication
+> - 🧪 **Tester** — golden tests for CustomPainter output, animation timing tests
+
+---
+
+## Why CustomPainter Exists
+
+> 📄 **Flutter Docs — CustomPainter:**
+> *"A delegate for painting. CustomPaint widgets call the paint method when the widget is being rendered. The canvas passed to paint is raster-backed: drawing on it is relatively cheap."*
+
+Flutter's built-in widgets cover ~80% of UI needs. The other 20% — pie charts, line graphs, waveform displays, circular progress rings, custom dial controls, heat maps — require direct pixel drawing.
+
+`CustomPainter` gives you a `Canvas` object. Canvas is a 2D drawing surface with methods for:
+- `drawLine`, `drawRect`, `drawCircle`, `drawRRect` — basic shapes
+- `drawPath` — arbitrary paths (arcs, curves, complex polygons)
+- `drawArc` — segments of circles
+- `drawParagraph` — text with full control
+- `drawImage` — raster images
+
+---
+
+## 1. CustomPainter Anatomy
+
+```dart
+class ExpenseDonutPainter extends CustomPainter {
+  final Map<ExpenseCategory, double> breakdown;
+  final double total;
+  final double animationValue;  // 0.0 to 1.0 from AnimationController
+
+  const ExpenseDonutPainter({
+    required this.breakdown,
+    required this.total,
+    required this.animationValue,
+  });
+
+  static const _colors = {
+    ExpenseCategory.food: Color(0xFF4CAF50),
+    ExpenseCategory.transport: Color(0xFF2196F3),
+    ExpenseCategory.entertainment: Color(0xFFFF9800),
+    ExpenseCategory.utilities: Color(0xFF9C27B0),
+    ExpenseCategory.health: Color(0xFFE91E63),
+    ExpenseCategory.other: Color(0xFF607D8B),
+  };
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.shortestSide / 2 - 16;
+    const strokeWidth = 28.0;
+
+    // Background ring
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = const Color(0xFFE0E0E0)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
+    );
+
+    if (total <= 0) return;
+
+    double startAngle = -math.pi / 2;  // Start at 12 o'clock
+
+    for (final entry in breakdown.entries) {
+      final sweep = (entry.value / total) * 2 * math.pi * animationValue;
+
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweep,
+        false,  // useCenter: false = arc without spokes (donut shape)
+        Paint()
+          ..color = _colors[entry.key] ?? Colors.grey
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round,
+      );
+
+      startAngle += sweep;
+    }
+
+    // Center text — total amount
+    _drawCenteredText(
+      canvas,
+      center,
+      total > 0 ? '₹${total.toStringAsFixed(0)}' : '',
+      const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+    );
+  }
+
+  void _drawCenteredText(Canvas canvas, Offset center, String text, TextStyle style) {
+    final paragraphBuilder = ui.ParagraphBuilder(
+      ui.ParagraphStyle(
+        textAlign: TextAlign.center,
+        fontSize: style.fontSize,
+        fontWeight: style.fontWeight,
+      ),
+    )
+      ..pushStyle(ui.TextStyle(color: style.color, fontSize: style.fontSize, fontWeight: style.fontWeight))
+      ..addText(text);
+
+    final paragraph = paragraphBuilder.build()
+      ..layout(ui.ParagraphConstraints(width: 100));
+
+    canvas.drawParagraph(
+      paragraph,
+      Offset(center.dx - 50, center.dy - paragraph.height / 2),
+    );
+  }
+
+  @override
+  bool shouldRepaint(ExpenseDonutPainter oldDelegate) {
+    // Only repaint when data or animation value changes
+    return oldDelegate.animationValue != animationValue ||
+        oldDelegate.breakdown != breakdown;
+  }
+}
+```
+
+```dart
+// Widget that uses it
+class ExpenseDonutChart extends StatefulWidget {
+  final Map<ExpenseCategory, double> breakdown;
+  const ExpenseDonutChart({super.key, required this.breakdown});
+
+  @override
+  State<ExpenseDonutChart> createState() => _ExpenseDonutChartState();
+}
+
+class _ExpenseDonutChartState extends State<ExpenseDonutChart>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(ExpenseDonutChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.breakdown != widget.breakdown) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final total = widget.breakdown.values.fold(0.0, (a, b) => a + b);
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, _) {
+        return CustomPaint(
+          painter: ExpenseDonutPainter(
+            breakdown: widget.breakdown,
+            total: total,
+            animationValue: _animation.value,
+          ),
+          size: const Size(220, 220),
+        );
+      },
+    );
+  }
+}
+```
+
+🎨 **Designer:** Donut charts communicate proportions. Rules for this chart:
+- Each category gets a distinct hue, not just saturation variations (accessible for color-blind users)
+- Gap between segments (`strokeCap.round` with `startAngle +=` creates a slight gap)
+- Label shows total in center — no legend needed for ≤5 categories
+- Animation draws from 12 o'clock clockwise — the eye traces the "filling up" motion
+
+---
+
+## 2. Bar Chart With Path
+
+```dart
+class MonthlyBarChartPainter extends CustomPainter {
+  final List<double> values;  // monthly totals, most recent last
+  final double maxValue;
+  final List<String> labels;  // e.g. ['Jan', 'Feb', 'Mar']
+  final double highlightIndex;  // -1 = none, index = highlight that bar
+  final Color barColor;
+  final Color highlightColor;
+
+  const MonthlyBarChartPainter({
+    required this.values,
+    required this.maxValue,
+    required this.labels,
+    this.highlightIndex = -1,
+    required this.barColor,
+    required this.highlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const bottomPadding = 24.0;   // space for labels
+    const topPadding = 16.0;
+    const sidePadding = 8.0;
+
+    final chartHeight = size.height - bottomPadding - topPadding;
+    final barWidth = (size.width - sidePadding * 2) / values.length;
+    const barSpacing = 4.0;
+
+    // Horizontal grid lines
+    final gridPaint = Paint()
+      ..color = Colors.grey.withValues(alpha: 0.15)
+      ..strokeWidth = 1;
+
+    for (int i = 1; i <= 4; i++) {
+      final y = topPadding + chartHeight * (1 - i / 4);
+      canvas.drawLine(
+        Offset(sidePadding, y),
+        Offset(size.width - sidePadding, y),
+        gridPaint,
+      );
+    }
+
+    // Bars
+    for (int i = 0; i < values.length; i++) {
+      final barHeight = maxValue > 0 ? (values[i] / maxValue) * chartHeight : 0;
+      final isHighlighted = i == highlightIndex.round();
+      final barLeft = sidePadding + i * barWidth + barSpacing / 2;
+
+      final rect = RRect.fromRectAndCorners(
+        Rect.fromLTWH(
+          barLeft,
+          topPadding + chartHeight - barHeight,
+          barWidth - barSpacing,
+          barHeight,
+        ),
+        topLeft: const Radius.circular(4),
+        topRight: const Radius.circular(4),
+      );
+
+      canvas.drawRRect(
+        rect,
+        Paint()
+          ..color = isHighlighted ? highlightColor : barColor
+          ..shader = isHighlighted
+              ? null
+              : LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [barColor.withValues(alpha: 0.9), barColor.withValues(alpha: 0.6)],
+                ).createShader(rect.outerRect),
+      );
+
+      // Value label on top of bar
+      if (values[i] > 0 && barHeight > 20) {
+        _drawText(
+          canvas,
+          '₹${values[i].toStringAsFixed(0)}',
+          Offset(barLeft + (barWidth - barSpacing) / 2, topPadding + chartHeight - barHeight - 14),
+          const TextStyle(fontSize: 9, color: Colors.black54),
+          align: TextAlign.center,
+        );
+      }
+
+      // X-axis label
+      if (i < labels.length) {
+        _drawText(
+          canvas,
+          labels[i],
+          Offset(barLeft + (barWidth - barSpacing) / 2, size.height - 14),
+          TextStyle(
+            fontSize: 10,
+            color: isHighlighted ? highlightColor : Colors.black54,
+            fontWeight: isHighlighted ? FontWeight.w600 : FontWeight.normal,
+          ),
+          align: TextAlign.center,
+        );
+      }
+    }
+  }
+
+  void _drawText(Canvas canvas, String text, Offset center, TextStyle style,
+      {TextAlign align = TextAlign.left}) {
+    final span = TextSpan(text: text, style: style);
+    final painter = TextPainter(text: span, textDirection: TextDirection.ltr, textAlign: align);
+    painter.layout(maxWidth: 60);
+    painter.paint(canvas, center - Offset(painter.width / 2, painter.height / 2));
+  }
+
+  @override
+  bool shouldRepaint(MonthlyBarChartPainter old) =>
+      old.values != values || old.highlightIndex != highlightIndex;
+}
+```
+
+```dart
+// Interactive bar chart — tap to highlight
+class MonthlyBarChart extends StatefulWidget {
+  final List<double> values;
+  final List<String> labels;
+  const MonthlyBarChart({super.key, required this.values, required this.labels});
+
+  @override
+  State<MonthlyBarChart> createState() => _MonthlyBarChartState();
+}
+
+class _MonthlyBarChartState extends State<MonthlyBarChart> {
+  double _highlightIndex = -1;
+  double get _barWidth => 280 / widget.values.length;  // approximate
+
+  @override
+  Widget build(BuildContext context) {
+    final maxValue = widget.values.isEmpty ? 1.0 : widget.values.reduce(math.max);
+    return GestureDetector(
+      onTapDown: (details) {
+        final index = ((details.localPosition.dx - 8) / _barWidth).floor();
+        if (index >= 0 && index < widget.values.length) {
+          setState(() => _highlightIndex = index.toDouble());
+        }
+      },
+      onTapUp: (_) => setState(() => _highlightIndex = -1),
+      child: CustomPaint(
+        painter: MonthlyBarChartPainter(
+          values: widget.values,
+          maxValue: maxValue,
+          labels: widget.labels,
+          highlightIndex: _highlightIndex,
+          barColor: Theme.of(context).colorScheme.primary,
+          highlightColor: Theme.of(context).colorScheme.tertiary,
+        ),
+        size: const Size(double.infinity, 160),
+      ),
+    );
+  }
+}
+```
+
+---
+
+## 3. Fluid Line Chart With Path
+
+```dart
+class SpendingLinePainter extends CustomPainter {
+  final List<double> values;
+  final double animationValue;  // 0.0→1.0, draws line progressively
+
+  const SpendingLinePainter({required this.values, required this.animationValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (values.length < 2) return;
+    const padding = EdgeInsets.fromLTRB(16, 16, 16, 24);
+
+    final chartWidth = size.width - padding.left - padding.right;
+    final chartHeight = size.height - padding.top - padding.bottom;
+    final maxVal = values.reduce(math.max);
+    final stepX = chartWidth / (values.length - 1);
+
+    Offset pointAt(int i) => Offset(
+      padding.left + i * stepX,
+      padding.top + chartHeight - (values[i] / maxVal) * chartHeight,
+    );
+
+    // Build smooth cubic bezier path
+    final linePath = Path();
+    linePath.moveTo(pointAt(0).dx, pointAt(0).dy);
+
+    for (int i = 0; i < values.length - 1; i++) {
+      final p0 = pointAt(i);
+      final p1 = pointAt(i + 1);
+      final controlX = (p0.dx + p1.dx) / 2;
+      linePath.cubicTo(controlX, p0.dy, controlX, p1.dy, p1.dx, p1.dy);
+    }
+
+    // Animate the line using PathMetrics
+    final metric = linePath.computeMetrics().first;
+    final animatedPath = metric.extractPath(0, metric.length * animationValue);
+
+    // Gradient fill under the line
+    final fillPath = Path.from(animatedPath)
+      ..lineTo(pointAt(values.length - 1).dx * animationValue + padding.left, size.height - padding.bottom)
+      ..lineTo(padding.left, size.height - padding.bottom)
+      ..close();
+
+    canvas.drawPath(
+      fillPath,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.blue.withValues(alpha: 0.3), Colors.blue.withValues(alpha: 0)],
+        ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
+    );
+
+    // The line itself
+    canvas.drawPath(
+      animatedPath,
+      Paint()
+        ..color = Colors.blue
+        ..strokeWidth = 2.5
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Dots at data points (only draw if animation has reached that point)
+    for (int i = 0; i < values.length; i++) {
+      final fraction = i / (values.length - 1);
+      if (fraction > animationValue) break;
+      canvas.drawCircle(
+        pointAt(i),
+        4,
+        Paint()..color = Colors.white,
+      );
+      canvas.drawCircle(
+        pointAt(i),
+        3,
+        Paint()..color = Colors.blue,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(SpendingLinePainter old) =>
+      old.animationValue != animationValue || old.values != values;
+}
+```
+
+---
+
+## 4. `flutter_animate` — Fast Choreography
+
+> 📄 **flutter_animate Docs:**
+> *"A library that makes it simple to animate almost anything in Flutter. Add effects such as fade, scale, slide, color, and more. Chain and sequence effects easily."*
+
+```yaml
+dependencies:
+  flutter_animate: ^4.5.0
+```
+
+```dart
+// Basic usage — chain effects with .animate()
+Text('₹ 45,230')
+  .animate()
+  .fadeIn(duration: 400.ms)
+  .slideY(begin: 0.3, end: 0, curve: Curves.easeOut)
+
+// Number counter roll-up effect
+Text(displayAmount)
+  .animate(target: amount)
+  .custom(
+    builder: (context, value, child) => Text(
+      '₹${(value * amount).toStringAsFixed(0)}',
+      style: Theme.of(context).textTheme.headlineLarge,
+    ),
+  )
+
+// Staggered list — each item enters with a delay
+ListView.builder(
+  itemCount: expenses.length,
+  itemBuilder: (context, index) {
+    return ExpenseTile(expense: expenses[index])
+      .animate(delay: (index * 60).ms)
+      .fadeIn(duration: 300.ms)
+      .slideX(begin: 0.1, end: 0);
+  },
+)
+
+// Conditional animation — trigger on data change
+BlocBuilder<ExpenseBloc, ExpenseState>(
+  builder: (context, state) {
+    if (state is! ExpenseLoaded) return const SizedBox();
+    return Column(
+      children: state.expenses
+          .map((e) => ExpenseTile(expense: e)
+              .animate()
+              .fadeIn()
+              .scale(begin: const Offset(0.95, 0.95)))
+          .toList(),
+    );
+  },
+)
+
+// Loop animation — pulsing notification badge
+Container(
+  width: 8,
+  height: 8,
+  decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+)
+  .animate(onPlay: (c) => c.repeat(reverse: true))
+  .scaleXY(begin: 1, end: 1.4, duration: 600.ms, curve: Curves.easeInOut)
+```
+
+🎨 **Designer:** `flutter_animate` lets you implement motion specs exactly:
+- `delay:` — offset items in a list to create cascade
+- `duration:` — match your timing tokens
+- `curve:` — match your easing tokens
+- `onPlay: (c) => c.repeat(reverse: true)` — ping-pong animation
+
+Every animation effect in Material Design 3 (`emphasized`, `emphasized-decelerate`) has an Easing + Duration pair. Use `flutter_animate` to implement them precisely.
+
+---
+
+## 5. Lottie Animations
+
+```yaml
+dependencies:
+  lottie: ^3.1.0
+```
+
+```dart
+// Play a Lottie animation once (e.g., success checkmark)
+class SuccessAnimation extends StatefulWidget {
+  final VoidCallback onComplete;
+  const SuccessAnimation({super.key, required this.onComplete});
+
+  @override
+  State<SuccessAnimation> createState() => _SuccessAnimationState();
+}
+
+class _SuccessAnimationState extends State<SuccessAnimation>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Lottie.asset(
+      'assets/animations/success.json',
+      controller: _controller,
+      onLoaded: (composition) {
+        _controller
+          ..duration = composition.duration
+          ..forward().then((_) => widget.onComplete());  // callback when done
+      },
+      width: 200,
+      height: 200,
+    );
+  }
+}
+
+// Infinite loading Lottie
+Lottie.asset(
+  'assets/animations/loading_dots.json',
+  width: 80,
+  height: 80,
+  repeat: true,
+)
+```
+
+**Rule:** Don't include large Lottie JSON files (>200KB) for simple animations. For bouncing dots or spinners, use Flutter's built-in widgets. Lottie is for brand illustrations, success states, and onboarding flows.
+
+---
+
+## 6. Parallax Scroll Effect
+
+```dart
+// Custom ScrollController-driven parallax
+class ParallaxAppHeader extends StatefulWidget {
+  final ScrollController scrollController;
+  const ParallaxAppHeader({super.key, required this.scrollController});
+
+  @override
+  State<ParallaxAppHeader> createState() => _ParallaxAppHeaderState();
+}
+
+class _ParallaxAppHeaderState extends State<ParallaxAppHeader> {
+  double _offset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (mounted) {
+      setState(() => _offset = widget.scrollController.offset);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Image moves at half the scroll speed → parallax effect
+    return SizedBox(
+      height: 200,
+      child: ClipRect(
+        child: Transform.translate(
+          offset: Offset(0, _offset * 0.4),  // 0.4 = parallax factor
+          child: Image.asset('assets/images/header_bg.jpg', fit: BoxFit.cover),
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+## Lab — Expense Breakdown Widget
+
+Build the `ExpenseDonutChart` and `MonthlyBarChart` from this file. Add them to a `SummaryCard` widget:
+
+```
+┌─────────────────────────────────────────────────┐
+│  June 2026                              ₹45,230  │
+│  ┌─────────────────┐  ┌──────────────────────┐  │
+│  │    DonutChart   │  │  Legend with %ages   │  │
+│  └─────────────────┘  └──────────────────────┘  │
+│  ─────────────────────────────────────────────  │
+│  │  MonthlyBarChart (last 6 months)           │  │
+│  └────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────┘
+```
+
+Requirements:
+- Donut animates in on first render
+- Bar chart tapping highlights a bar and shows the month's total
+- Legend shows each category with colored dot + percentage
+- Use `flutter_animate` for the legend items (staggered fade-in)
+
+---
+
+## Challenge — Line Chart With Touch Tooltip
+
+Add a tooltip to the `SpendingLinePainter`. When the user drags their finger along the chart:
+- Snap to the nearest data point
+- Draw a vertical dashed line at that point
+- Show a floating tooltip card above the line with the value
+- Tooltip dismisses when finger lifts
+
+Hint: Use `GestureDetector.onPanUpdate` to track the X position and calculate the nearest index.
+
+---
+
+## Week 21 Verify
+
+1. What does `shouldRepaint` do? What happens if you always return `true`?
+2. In the donut chart, `useCenter: false` in `drawArc` — what does this change?
+3. `PathMetrics.extractPath(0, metric.length * animationValue)` — what does this do visually?
+4. `flutter_animate`: how does `.animate(delay: (index * 60).ms)` create a staggered list effect?
+5. When should you use Lottie vs a CustomPainter animation vs an implicit Flutter animation?
+6. The parallax factor is `0.4` — what does this number mean? What would `1.0` do? What would `0.0` do?
+7. `ClipRect` wraps the parallax image — remove it mentally. What visual artifact would you see?
+
+---
+
+**Next → [Week 22: Project — Expense Tracker App](Week_22_Project_ExpenseTracker.md)**

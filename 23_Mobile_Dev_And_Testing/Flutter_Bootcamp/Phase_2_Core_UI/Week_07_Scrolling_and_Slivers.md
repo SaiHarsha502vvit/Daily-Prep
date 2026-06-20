@@ -1,264 +1,312 @@
 # Week 7 — Scrolling & Slivers
-### How Flutter builds scrollable UIs that feel native
+### How Flutter builds scrollable UIs that feel native — and why two APIs exist
 
 ---
 
-## 1. The Scrolling Problem
-
-Your app has more content than fits on screen. You have two tools:
-
-- `SingleChildScrollView` — scrolls ONE child (usually a Column). Good for forms and short content.
-- `ListView` / `GridView` — scrolls a LIST of items. Lazy — only builds what's visible.
-
-**Never put a `ListView` inside a `SingleChildScrollView`.** Both try to be scrollable in the same direction — they fight each other and you get an unbounded constraint error.
+> Three lenses on every concept:
+> - 🧑‍💻 **Developer** — how the scroll system works under the hood, when to use which API
+> - 🎨 **Designer** — scroll behavior, collapsing headers, parallax, Material scroll conventions
+> - 🧪 **Tester** — scrolling in tests, finding off-screen widgets, verifying scroll behavior
 
 ---
 
-## 2. ListView — Four Ways to Use It
+## Why Two Scroll APIs?
+
+> 📄 **Flutter Docs:**
+> *"Flutter has two categories of scrollable widgets: box protocol and sliver protocol. Box protocol widgets (like ListView and GridView) are easy to use and cover most use cases. Sliver protocol widgets are more efficient for variable-height content and required for complex scrollable layouts."*
+
+The simple answer: `ListView` is easy. Slivers are powerful.
+
+```
+ListView  → "Here is a list of items. Flutter, figure it out."
+Slivers   → "Here is exactly how I want each section of the scroll area to behave."
+```
+
+Every `ListView`, `GridView`, and `SingleChildScrollView` is secretly a `CustomScrollView` with slivers under the hood. When you need a collapsing AppBar, sticky section headers, or mixing a grid and a list in one scroll — you use slivers directly.
+
+---
+
+## 1. ListView — The Simple Case
+
+> 📄 **Flutter Docs:**
+> *"A scrollable list of widgets. ListView is the most commonly used scrolling widget. It displays its children one after another in the scroll direction. In the cross axis, the children are required to fill the ListView."*
+
+### `ListView` — When you already have all items
 
 ```dart
-// 1. ListView — all children built at once. Fine for < ~20 items.
+// Use ListView when items are few and already loaded
+// Flutter renders ALL children at once — don't use this for 1000+ items
 ListView(
   padding: const EdgeInsets.all(16),
   children: [
-    const Text('Item 1'),
-    const Divider(),
-    const Text('Item 2'),
+    ProfileHeader(),
+    const SizedBox(height: 16),
+    StatisticsCard(),
+    const SizedBox(height: 16),
+    ...actionItems.map((item) => ActionListTile(item: item)),
   ],
-)
-
-// 2. ListView.builder — lazy, only builds visible items. Use for any dynamic list.
-ListView.builder(
-  itemCount: items.length,
-  itemBuilder: (context, index) {
-    return ListTile(
-      leading: CircleAvatar(child: Text('${index + 1}')),
-      title: Text(items[index].name),
-      subtitle: Text(items[index].subtitle),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-      onTap: () => Navigator.push(context,
-        MaterialPageRoute(builder: (_) => DetailScreen(item: items[index]))),
-    );
-  },
-)
-
-// 3. ListView.separated — builder + a separator between items
-ListView.separated(
-  itemCount: items.length,
-  separatorBuilder: (context, index) => const Divider(height: 1),
-  itemBuilder: (context, index) => ItemCard(item: items[index]),
-)
-
-// 4. ListView.custom — maximum control, rarely needed
-ListView.custom(
-  childrenDelegate: SliverChildBuilderDelegate(
-    (context, index) => ItemCard(item: items[index]),
-    childCount: items.length,
-  ),
 )
 ```
 
-**→ Try this:** Build a contact list with 20 fake contacts (use a loop to generate them). Use `ListView.separated` with a `Divider`. Each contact has a `CircleAvatar` with their initial, name, and phone number.
+### `ListView.builder` — When items are dynamic or many
+
+```dart
+// ListView.builder is LAZY — only builds items visible on screen
+// Items scroll off screen? They are disposed. Scroll back? Rebuilt.
+// Safe for 10,000 items. Not safe for plain ListView.
+ListView.builder(
+  itemCount: messages.length,
+  itemExtent: 72,  // ← optimization: if all items are same height, set this
+  itemBuilder: (context, index) {
+    final message = messages[index];
+    return MessageTile(
+      key: ValueKey(message.id),  // key helps Flutter reuse elements correctly
+      message: message,
+    );
+  },
+)
+```
+
+### `ListView.separated` — When you need dividers
+
+```dart
+ListView.separated(
+  itemCount: contacts.length,
+  separatorBuilder: (context, index) => const Divider(height: 1),
+  itemBuilder: (context, index) => ContactTile(contact: contacts[index]),
+)
+```
+
+**Rule:** Always use `ListView.builder` unless your list is small (under ~20 items) and already fully loaded. Lazy building is never wrong — it's just slightly more code.
+
+🎨 **Designer:** Flutter's `ListView` respects the scroll physics of the platform. On iOS it bounces at the edges (elastic scroll). On Android it shows an overscroll glow. You can control this with `physics`:
+
+```dart
+ListView.builder(
+  physics: const ClampingScrollPhysics(),   // Android-style: no bounce on iOS
+  physics: const BouncingScrollPhysics(),   // iOS-style bounce on all platforms
+  physics: const NeverScrollableScrollPhysics(), // disable scrolling entirely
+  // ...
+)
+```
+
+🧪 **Tester:** Items not on screen don't exist in the widget tree — `find.text()` won't find them:
+
+```dart
+testWidgets('list renders items and scrolls', (tester) async {
+  await tester.pumpWidget(MaterialApp(
+    home: Scaffold(body: ContactsList(contacts: testContacts)),
+  ));
+
+  // Only the first few items are visible — find works for visible items
+  expect(find.text('Alice'), findsOneWidget);
+
+  // For off-screen items: scroll first, then find
+  await tester.scrollUntilVisible(
+    find.text('Zara'),          // what to look for
+    500.0,                       // how far to scroll each step
+    scrollable: find.byType(Scrollable),
+  );
+  expect(find.text('Zara'), findsOneWidget);
+});
+```
 
 ---
 
-## 3. GridView
+## 2. GridView
+
+> 📄 **Flutter Docs:**
+> *"A scrollable, 2D array of widgets. GridView's behavior is similar to ListView but it displays widgets in a grid format."*
 
 ```dart
-// Fixed columns
+// Fixed count grid — 2 columns, always
 GridView.count(
-  crossAxisCount: 3,
-  crossAxisSpacing: 8,
-  mainAxisSpacing: 8,
+  crossAxisCount: 2,
+  mainAxisSpacing: 12,
+  crossAxisSpacing: 12,
+  childAspectRatio: 0.75,   // taller than wide (like a product card)
   padding: const EdgeInsets.all(16),
   children: products.map((p) => ProductCard(product: p)).toList(),
 )
 
-// Adaptive columns (fills space based on item width)
+// Builder grid — lazy, for many items
 GridView.builder(
-  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-    maxCrossAxisExtent: 200,   // each item max 200px wide
-    crossAxisSpacing: 12,
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
     mainAxisSpacing: 12,
-    childAspectRatio: 0.75,    // height = width / 0.75
+    crossAxisSpacing: 12,
+    childAspectRatio: 0.75,
   ),
   itemCount: products.length,
   itemBuilder: (context, index) => ProductCard(product: products[index]),
 )
 
-// Fixed 2 columns (most common pattern)
+// Responsive grid — fills available space with fixed-size cells
 GridView.builder(
-  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: 12,
+  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    maxCrossAxisExtent: 200,   // each cell at most 200px wide
     mainAxisSpacing: 12,
-    childAspectRatio: 0.8,
+    crossAxisSpacing: 12,
+    childAspectRatio: 1.0,
   ),
-  itemCount: items.length,
-  itemBuilder: (context, index) => ItemCard(item: items[index]),
+  itemCount: photos.length,
+  itemBuilder: (context, index) => PhotoTile(photo: photos[index]),
 )
 ```
 
-**→ Try this:** Build a photo gallery: 2-column grid of 12 colored containers (use `Colors.primaries` list). Each has a random height between 100-200 (hint: use `Random().nextInt(100) + 100`). Tapping a tile opens a full-screen view of that color.
+🎨 **Designer:** `SliverGridDelegateWithMaxCrossAxisExtent` is the responsive grid — it automatically adds columns as screen width increases. On a phone (360px), `maxCrossAxisExtent: 180` gives 2 columns. On a tablet (760px), it gives 4. This is how you make a grid that works on all screen sizes without `LayoutBuilder`.
+
+**→ Try this:** Replace a fixed `crossAxisCount: 2` grid with `maxCrossAxisExtent: 180` and run it on both a phone and a tablet emulator. Watch the columns auto-adjust.
 
 ---
 
-## 4. Pull to Refresh
+## 3. CustomScrollView and Slivers — The Power API
 
-```dart
-RefreshIndicator(
-  onRefresh: () async {
-    // This future controls how long the spinner shows
-    await _loadData();  // make your actual data call here
-  },
-  child: ListView.builder(
-    itemCount: items.length,
-    itemBuilder: (context, index) => ItemTile(item: items[index]),
-  ),
-)
+> 📄 **Flutter Docs:**
+> *"A ScrollView that creates custom scroll effects using slivers. A CustomScrollView lets you supply slivers directly to create various scrolling effects, such as lists, grids, and expanding headers."*
+
+`CustomScrollView` is a container that takes a list of **slivers** — each sliver describes how a section of the scroll area behaves. Think of slivers as scroll-aware boxes that can change their height, stick, collapse, and overlap.
+
+```
+CustomScrollView
+├── SliverAppBar          ← the collapsing hero header
+├── SliverToBoxAdapter    ← wraps a normal (non-sliver) widget
+│     └── StatsRow
+├── SliverPadding
+│     └── SliverList
+│           └── item 0
+│           └── item 1
+│           └── item 2
+└── SliverGrid
+      └── photo 0
+      └── photo 1
 ```
 
-**Note:** `RefreshIndicator` only works with a scrollable that can be dragged. The list must be long enough to scroll — if all items fit on screen, the user can't pull down to trigger refresh.
+All of this scrolls as ONE continuous scroll. No nested scrollviews. One physics system.
 
----
-
-## 5. Infinite Scroll (Load More on Scroll)
-
-```dart
-class _InfiniteListState extends State<InfiniteList> {
-  final List<String> _items = [];
-  bool _isLoading = false;
-  bool _hasMore = true;
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMore();  // load first batch
-
-    _scrollController.addListener(() {
-      // When user is 200px from the bottom, load more
-      final position = _scrollController.position;
-      if (position.pixels >= position.maxScrollExtent - 200) {
-        _loadMore();
-      }
-    });
-  }
-
-  Future<void> _loadMore() async {
-    if (_isLoading || !_hasMore) return;
-    setState(() => _isLoading = true);
-
-    // Simulate a paginated API call
-    await Future.delayed(const Duration(seconds: 1));
-    final newItems = List.generate(20, (i) => 'Item ${_items.length + i + 1}');
-
-    setState(() {
-      _items.addAll(newItems);
-      _isLoading = false;
-      _hasMore = _items.length < 100;  // stop after 100 total items
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();  // always dispose controllers
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: _items.length + (_hasMore ? 1 : 0),  // +1 for loader at bottom
-      itemBuilder: (context, index) {
-        if (index == _items.length) {
-          // Last item — show loading spinner
-          return const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return ListTile(title: Text(_items[index]));
-      },
-    );
-  }
-}
-```
-
-**→ Try this:** Build an infinite news feed. Each "article" is a Card with a title, source, and 2-line preview. Load 10 articles at a time. Show a spinner at the bottom while loading. Stop at 60 articles total.
-
----
-
-## 6. Slivers — When You Need Full Control
-
-A **Sliver** is a portion of a scrollable area. They're what `ListView` and `GridView` are built on internally. You use them directly when you need effects that normal widgets can't do — like a collapsing header.
-
-All Slivers live inside a `CustomScrollView`:
+### `SliverAppBar` — Collapsing Header
 
 ```dart
 CustomScrollView(
   slivers: [
-    // Collapsing App Bar
     SliverAppBar(
-      expandedHeight: 250,            // height when fully expanded
-      pinned: true,                   // stays visible when collapsed
+      // how tall the app bar gets when fully expanded
+      expandedHeight: 300,
+
+      // stays at the top even when you scroll past the expanded portion
+      pinned: true,
+
+      // the expanded portion shrinks as you scroll down
       floating: false,
+
+      // the content inside the expanded area
       flexibleSpace: FlexibleSpaceBar(
-        title: const Text('Profile'),
-        background: Image.network(
-          'https://picsum.photos/400/250',
-          fit: BoxFit.cover,
+        title: const Text('Discover'),
+        // titlePadding controls where the title starts
+        titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
+        // collapseMode: how the background behaves during collapse
+        collapseMode: CollapseMode.parallax,  // ← parallax scroll effect
+        background: Image.asset('assets/images/hero.jpg', fit: BoxFit.cover),
+      ),
+
+      // actions always visible in the AppBar
+      actions: [
+        IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+      ],
+    ),
+
+    // ... rest of slivers
+  ],
+)
+```
+
+🎨 **Designer:** The three modes:
+- `pinned: true, floating: false` — AppBar shrinks when scrolling down, stays at top (Instagram, YouTube)
+- `pinned: false, floating: true` — AppBar hides on scroll down, reappears on any scroll up (Google Maps, Twitter)
+- `pinned: true, floating: true, snap: true` — AppBar snaps into view on scroll up (common in news apps)
+
+`CollapseMode.parallax` — background image scrolls at half speed, creating depth. Best for photography apps.
+`CollapseMode.pin` — background stays still while title slides. Cleaner for data-heavy apps.
+
+### `SliverList` and `SliverGrid`
+
+```dart
+// SliverList with builder — same lazy behavior as ListView.builder
+SliverList(
+  delegate: SliverChildBuilderDelegate(
+    (context, index) => ListTile(title: Text('Item ${index + 1}')),
+    childCount: items.length,  // ← REQUIRED for SliverList to know when to stop
+  ),
+),
+
+// SliverGrid
+SliverGrid(
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    mainAxisSpacing: 4,
+    crossAxisSpacing: 4,
+  ),
+  delegate: SliverChildBuilderDelegate(
+    (context, index) => PhotoTile(photo: photos[index]),
+    childCount: photos.length,
+  ),
+),
+```
+
+### `SliverToBoxAdapter` — Mix Normal Widgets Into a Sliver Layout
+
+```dart
+CustomScrollView(
+  slivers: [
+    SliverAppBar(expandedHeight: 200, pinned: true, ...),
+
+    // This is a normal widget (not a sliver) — wrap it
+    SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const SectionTitle('Popular This Week'),
+            const SizedBox(height: 12),
+            CategoryFilter(onChanged: _setFilter),
+          ],
         ),
       ),
     ),
 
-    // A section header (non-scrolling within the sliver)
-    SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Text('Recent Posts',
-          style: Theme.of(context).textTheme.titleLarge),
-      ),
-    ),
-
-    // A sliver list — like ListView.builder but inside CustomScrollView
-    SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => PostCard(index: index),
-        childCount: 20,
-      ),
-    ),
-
-    // A sliver grid
-    SliverGrid(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => Container(color: Colors.primaries[index % 18]),
-        childCount: 30,
+    // Now a sliver
+    SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (_, i) => ArticleCard(article: articles[i]),
+          childCount: articles.length,
+        ),
       ),
     ),
   ],
 )
 ```
 
-**When to use Slivers vs regular ListView:**
-- Regular `ListView`: 90% of cases. Simple list of items.
-- `CustomScrollView` + Slivers: when you need a collapsing header, mix of list and grid in one scroll, or sticky section headers.
+**Rule:** Use `SliverToBoxAdapter` to insert any regular widget (a banner, stats row, section header) between sliver sections. Never use a `Column` inside a `CustomScrollView` — the whole point of slivers is to avoid that.
 
 ---
 
-## 7. Sticky Section Headers
+## 4. Sticky Headers with `SliverPersistentHeader`
+
+> 📄 **Flutter Docs:**
+> *"A sliver whose size varies when the sliver is scrolled to the leading edge of the viewport. This is the mechanism by which SliverAppBar is implemented."*
 
 ```dart
-// Use SliverPersistentHeader for a header that sticks
-class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+// First, define a delegate for the header
+class _SectionHeaderDelegate extends SliverPersistentHeaderDelegate {
   final String title;
-  _StickyHeaderDelegate(this.title);
+  _SectionHeaderDelegate(this.title);
+
+  @override
+  double get minExtent => 40;  // height when collapsed (pinned)
+  @override
+  double get maxExtent => 40;  // height when expanded (same for non-collapsing)
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -266,145 +314,495 @@ class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
       color: Theme.of(context).colorScheme.surface,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(title, style: Theme.of(context).textTheme.titleMedium),
-    );
-  }
-
-  @override double get maxExtent => 48;
-  @override double get minExtent => 48;
-  @override bool shouldRebuild(_StickyHeaderDelegate old) => old.title != title;
-}
-
-// In CustomScrollView:
-SliverPersistentHeader(
-  pinned: true,
-  delegate: _StickyHeaderDelegate('Section A'),
-),
-SliverList(delegate: SliverChildBuilderDelegate(/* items in section A */)),
-SliverPersistentHeader(
-  pinned: true,
-  delegate: _StickyHeaderDelegate('Section B'),
-),
-SliverList(delegate: SliverChildBuilderDelegate(/* items in section B */)),
-```
-
-**→ Try this:** Build a contacts app with alphabetical section headers (A, B, C...). Each section header sticks as you scroll. Contacts are sorted alphabetically. Use `SliverPersistentHeader` for the sticky letters and `SliverList` for the contacts under each letter.
-
----
-
-## 8. PageView — Horizontal Swipeable Pages
-
-```dart
-class _OnboardingState extends State<OnboardingScreen> {
-  final _pageController = PageController();
-  int _currentPage = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) => setState(() => _currentPage = index),
-              children: const [
-                OnboardingPage(title: 'Welcome', icon: Icons.waving_hand),
-                OnboardingPage(title: 'Discover', icon: Icons.explore),
-                OnboardingPage(title: 'Get Started', icon: Icons.rocket_launch),
-              ],
-            ),
-          ),
-          // Dot indicators
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(3, (index) =>
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.all(4),
-                width: _currentPage == index ? 24 : 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: _currentPage == index
-                    ? Theme.of(context).colorScheme.primary
-                    : Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: _currentPage < 2
-              ? () => _pageController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut)
-              : () => Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const HomeScreen())),
-            child: Text(_currentPage < 2 ? 'Next' : 'Get Started'),
-          ),
-          const SizedBox(height: 48),
-        ],
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.8,
+        ),
       ),
     );
   }
 
   @override
+  bool shouldRebuild(_SectionHeaderDelegate old) => old.title != title;
+}
+
+// Use it in CustomScrollView
+CustomScrollView(
+  slivers: [
+    SliverPersistentHeader(
+      pinned: true,
+      delegate: _SectionHeaderDelegate('RECENT'),
+    ),
+    SliverList(delegate: SliverChildBuilderDelegate(
+      (_, i) => MessageTile(messages[i]),
+      childCount: recentMessages.length,
+    )),
+    SliverPersistentHeader(
+      pinned: true,
+      delegate: _SectionHeaderDelegate('OLDER'),
+    ),
+    SliverList(delegate: SliverChildBuilderDelegate(
+      (_, i) => MessageTile(olderMessages[i]),
+      childCount: olderMessages.length,
+    )),
+  ],
+)
+```
+
+🎨 **Designer:** Sticky section headers are a hallmark of polished apps — contacts list (A, B, C...), message inbox (Today, Yesterday, Last Week). The `pinned: true` makes the header stick to the top as its section scrolls. When the next section header reaches the top, it pushes the previous one up.
+
+---
+
+## 5. Scroll Controllers — Programmatic Scroll
+
+```dart
+class InboxScreen extends StatefulWidget { ... }
+
+class _InboxScreenState extends State<InboxScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for scroll position changes
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    // Show "scroll to top" FAB when scrolled past 300px
+    final shouldShowFab = _scrollController.offset > 300;
+    if (shouldShowFab != _showFab) {
+      setState(() => _showFab = shouldShowFab);
+    }
+  }
+
+  bool _showFab = false;
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
   void dispose() {
-    _pageController.dispose();
+    _scrollController.dispose();  // ALWAYS dispose scroll controllers
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView.builder(
+        controller: _scrollController,
+        itemCount: messages.length,
+        itemBuilder: (_, i) => MessageTile(message: messages[i]),
+      ),
+      floatingActionButton: _showFab
+          ? FloatingActionButton.small(
+              onPressed: _scrollToTop,
+              child: const Icon(Icons.keyboard_arrow_up),
+            )
+          : null,
+    );
   }
 }
 ```
 
----
-
-## Lab — Build a Social Feed App
-
-One screen. Everything in one scrollable `CustomScrollView`.
-
-**Structure from top to bottom:**
-1. `SliverAppBar` — shows "Feed" when collapsed, shows a large header image + "Good Morning, Harsha" when expanded. Pinned.
-2. `SliverToBoxAdapter` — a horizontal `PageView` of 3 "story" circles (like Instagram stories). Fixed height of 100px.
-3. `SliverToBoxAdapter` — section title "For You"
-4. `SliverList` — 10 post cards. Each card: author avatar + name, post image, like/comment/share row, like count.
-5. `SliverToBoxAdapter` — section title "Trending"
-6. `SliverGrid` (2 columns) — 6 trending image cards.
-
-**Interactions:**
-- Pull to refresh reloads the feed (new random order)
-- Like button on each post toggles liked state (red heart vs outline)
-- Bottom of the list loads 5 more posts (infinite scroll)
+**→ Try this:** Add a `ScrollController` to any `ListView.builder` and print `_scrollController.offset` in the listener. Scroll the list and watch the offset change in real time.
 
 ---
 
-## Challenge
+## 6. Infinite Scroll — Load More on Scroll
 
-Add **swipe to dismiss** on the feed posts. Swiping left reveals a "Save" action (bookmark icon). Swiping right reveals a "Hide" action. Hiding removes the post from the list with an animated removal (`AnimatedList`).
-
-Use `Dismissible` widget:
 ```dart
-Dismissible(
-  key: ValueKey(post.id),
-  background: Container(color: Colors.blue, /* Save icon left */),
-  secondaryBackground: Container(color: Colors.red, /* Hide icon right */),
-  onDismissed: (direction) {
-    if (direction == DismissDirection.startToEnd) { /* save */ }
-    else { /* hide */ }
-  },
-  child: PostCard(post: post),
-)
+class FeedScreen extends StatefulWidget { ... }
+
+class _FeedScreenState extends State<FeedScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final List<Post> _posts = [];
+  bool _isLoading = false;
+  int _page = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMore();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    // When within 200px of the bottom and not already loading
+    final nearBottom = _scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200;
+    if (nearBottom && !_isLoading) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoading) return;
+    setState(() => _isLoading = true);
+
+    final newPosts = await PostService.fetchPage(_page);
+
+    if (mounted) {
+      setState(() {
+        _posts.addAll(newPosts);
+        _page++;
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _posts.length + (_isLoading ? 1 : 0),  // +1 for loading indicator
+      itemBuilder: (context, index) {
+        if (index == _posts.length) {
+          return const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return PostCard(post: _posts[index]);
+      },
+    );
+  }
+}
+```
+
+🧪 **Tester:** Testing infinite scroll requires simulating a scroll all the way to the bottom:
+
+```dart
+testWidgets('loads more posts when reaching bottom', (tester) async {
+  // Setup mock that returns page 1 initially
+  when(mockPostService.fetchPage(1)).thenAnswer((_) async => page1Posts);
+  when(mockPostService.fetchPage(2)).thenAnswer((_) async => page2Posts);
+
+  await tester.pumpWidget(MaterialApp(home: FeedScreen()));
+  await tester.pumpAndSettle();
+
+  // Verify page 1 loaded
+  expect(find.byType(PostCard), findsNWidgets(page1Posts.length));
+
+  // Scroll to bottom
+  await tester.drag(find.byType(ListView), const Offset(0, -5000));
+  await tester.pumpAndSettle();
+
+  // Verify page 2 loaded automatically
+  expect(find.byType(PostCard), findsNWidgets(page1Posts.length + page2Posts.length));
+});
 ```
 
 ---
 
-## Before Week 8 — Verify
+## Scroll Widget Decision Chart
 
-1. Why use `ListView.builder` over `ListView` for long lists?
-2. What happens if you put a `ListView` inside a `Column` without `Expanded`?
-3. What is a Sliver? When do you need `CustomScrollView` instead of `ListView`?
-4. How does `RefreshIndicator` know when to show the spinner?
-5. In infinite scroll, why do you check `if (_isLoading) return` at the start of `_loadMore()`?
+```
+Content to scroll?
+├── Simple list, items known, < 20 items
+│     → ListView (children: [...])
+│
+├── Long list, items dynamic
+│     → ListView.builder
+│
+├── List with dividers
+│     → ListView.separated
+│
+├── Grid of cards
+│     → GridView.builder with SliverGridDelegate
+│
+├── Need collapsing AppBar / parallax header
+│     → CustomScrollView + SliverAppBar
+│
+├── Mix of header + list + grid in one scroll
+│     → CustomScrollView + SliverToBoxAdapter + SliverList + SliverGrid
+│
+├── Sticky section headers
+│     → CustomScrollView + SliverPersistentHeader (pinned: true)
+│
+└── Horizontal scroll (chips, tabs, category scroll)
+      → SingleChildScrollView(scrollDirection: Axis.horizontal)
+        or ListView(scrollDirection: Axis.horizontal)
+```
+
+---
+
+## Lab — News Feed App
+
+Build a news feed with the full sliver layout:
+
+**Structure (all in one CustomScrollView):**
+```
+SliverAppBar (expandedHeight: 240, pinned, floating, parallax)
+  └── background: hero image of "breaking news" or gradient
+  └── title: "The Daily Feed"
+
+SliverToBoxAdapter
+  └── Horizontal category scroll: [All] [Tech] [Sports] [Business] [Entertainment]
+
+SliverPersistentHeader (pinned: true)
+  └── "FEATURED"
+
+SliverGrid (2 columns, aspect 4:3)
+  └── 4 featured article cards with thumbnail + title
+
+SliverPersistentHeader (pinned: true)
+  └── "LATEST"
+
+SliverList
+  └── ArticleTile: thumbnail (80x80) + title + source + time
+      Infinite scroll: load next page when 200px from bottom
+```
+
+**Models:**
+```dart
+class Article {
+  final String id, title, source, category;
+  final DateTime publishedAt;
+  final String thumbnailUrl;
+  final bool isFeatured;
+}
+```
+
+**State:** Filter by category (tap a chip → filters both Featured and Latest sections). Page state (current page, isLoading, articles list).
+
+---
+
+## Challenge — Instagram Profile Grid
+
+Replicate the Instagram profile layout exactly using slivers:
+
+```
+SliverAppBar (pinned, expandedHeight: 160)
+  └── FlexibleSpaceBar → profile info (avatar, name, bio, follow button)
+
+SliverPersistentHeader (pinned)
+  └── Tab row: [Grid icon] [Reels icon] [Tagged icon]
+      → selected tab underlined
+
+SliverGrid (3 columns, aspect 1:1, crossAxisSpacing: 2, mainAxisSpacing: 2)
+  └── Photo tiles (square thumbnails)
+      → tap opens photo in a new screen (push navigation)
+```
+
+Requirements:
+- The tab row sticks to the top after scrolling past the profile header
+- Photos load lazily
+- Tapping a photo navigates to a `PhotoDetailScreen` that shows the full image, caption, like/comment counts
+- Back from `PhotoDetailScreen` returns to the exact scroll position (IndexedStack is not needed here — the scroll position is preserved by the Navigator naturally)
+
+---
+
+## 8. `NestedScrollView` — Collapsing Header + TabBarView
+
+> 📄 **Flutter Docs:**
+> *"A scrolling view inside of which can be nested other scrolling views, with their scroll positions being intrinsically linked."*
+
+The most common real-world pattern: a collapsing AppBar above a `TabBarView`. The two scroll views (the outer and each tab's list) must coordinate — the header collapses before the tab's list scrolls.
+
+```dart
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          // innerBoxIsScrolled = true when the tab's inner list is scrolling
+          // Use it to control pinned AppBar state
+          return [
+            SliverAppBar(
+              expandedHeight: 200,
+              pinned: true,
+              floating: false,
+              // forceElevated makes the AppBar look elevated when inner scrolling
+              forceElevated: innerBoxIsScrolled,
+              flexibleSpace: FlexibleSpaceBar(
+                title: const Text('Harsha Alasai'),
+                background: Image.asset('assets/profile_bg.jpg', fit: BoxFit.cover),
+                collapseMode: CollapseMode.parallax,
+              ),
+            ),
+            // Sticky TabBar — pinned below the collapsed AppBar
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _StickyTabBarDelegate(
+                tabBar: TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(text: 'Posts'),
+                    Tab(text: 'About'),
+                    Tab(text: 'Media'),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            _PostsTab(),
+            _AboutTab(),
+            _MediaTab(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Each tab's scroll list must use PrimaryScrollController
+// NestedScrollView hooks into the inner scroll automatically
+class _PostsTab extends StatelessWidget {
+  const _PostsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      // CRITICAL: do NOT pass a custom ScrollController here
+      // NestedScrollView provides the right one via PrimaryScrollController
+      itemCount: 30,
+      itemBuilder: (context, index) => ListTile(title: Text('Post $index')),
+    );
+  }
+}
+
+// SliverPersistentHeader delegate for sticky TabBar
+class _StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  const _StickyTabBarDelegate({required this.tabBar});
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Theme.of(context).colorScheme.surface,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_StickyTabBarDelegate old) => old.tabBar != tabBar;
+}
+```
+
+🧑‍💻 **Developer:** The most common NestedScrollView mistake is passing a custom `ScrollController` to the inner lists. NestedScrollView injects its own controller via `PrimaryScrollController`. Any inner `ListView` or `GridView` with no explicit controller automatically uses it.
+
+---
+
+## 9. `ScrollNotification` — React to Scroll Without a Controller
+
+```dart
+// When you don't own the scroll widget (it's inside a library widget)
+// but you still need to react to scroll — use NotificationListener
+
+NotificationListener<ScrollNotification>(
+  onNotification: (notification) {
+    if (notification is ScrollStartNotification) {
+      _onScrollStart();
+    } else if (notification is ScrollUpdateNotification) {
+      final pixels = notification.metrics.pixels;
+      final maxScroll = notification.metrics.maxScrollExtent;
+      if (pixels >= maxScroll - 200) {
+        _loadMoreIfNeeded();
+      }
+    } else if (notification is ScrollEndNotification) {
+      _onScrollEnd();
+    }
+    return false;  // return false to allow the notification to bubble up
+  },
+  child: ListView.builder(
+    itemCount: items.length,
+    itemBuilder: (context, index) => ItemTile(item: items[index]),
+  ),
+)
+
+// ScrollNotification types:
+// ScrollStartNotification  — user started scrolling
+// ScrollUpdateNotification — user is actively scrolling (fires many times)
+// ScrollEndNotification    — user stopped scrolling
+// OverscrollNotification   — scrolled past the end (bounce effect)
+// UserScrollNotification   — direction change detected
+```
+
+**Rule:** Use `ScrollController` when you own the scroll widget and need programmatic control (jump to position, infinite scroll). Use `NotificationListener<ScrollNotification>` when you only need to observe scroll events from the outside.
+
+---
+
+## 10. `Scrollbar` — Platform-Appropriate Scroll Indicator
+
+```dart
+// Flutter doesn't show a scrollbar by default on mobile
+// Add Scrollbar for desktop/web — it auto-hides on mobile
+
+Scrollbar(
+  thumbVisibility: true,      // always visible (default: only on hover/drag)
+  trackVisibility: true,      // show the full track
+  thickness: 6,               // width of the scrollbar thumb
+  radius: const Radius.circular(4),
+  child: ListView.builder(
+    itemCount: items.length,
+    itemBuilder: (context, index) => ItemTile(item: items[index]),
+  ),
+)
+
+// For web/desktop: CupertinoScrollbar (iOS-style)
+// Use Theme to choose:
+// MaterialApp → Scrollbar
+// CupertinoApp → CupertinoScrollbar
+```
+
+---
+
+## Week 7 Verify
+
+1. What is the key difference between `ListView` and `ListView.builder`? When should you never use `ListView(children: [])`?
+2. `SliverAppBar` has three boolean flags: `pinned`, `floating`, `snap`. What does each do? What combination gives you the "hide on scroll down, reappear on scroll up" behavior?
+3. You have a `CustomScrollView` and want to put a `Text` widget, a `Divider`, and a `Row` in it. Which sliver wraps them?
+4. What is `SliverPersistentHeader` used for? How is it different from a regular sticky header in a `ListView`?
+5. In infinite scroll, why do you check `_scrollController.position.pixels >= maxScrollExtent - 200` instead of `== maxScrollExtent`?
+6. You add a `GridView` inside a `Column` inside a `ListView`. What error do you get? How do you fix it using slivers?
+7. A tester runs `find.text('Item 99')` on a `ListView.builder` with 200 items. It finds nothing. Why? How do you fix the test?
 
 ---
 

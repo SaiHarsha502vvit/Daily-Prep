@@ -682,3 +682,7 @@ long fib(int n) {
 | Merge sort | Insertion sort (compare-swap adjacent) | O(n^2) | Recursive divide + merge | O(n log n) |
 
 **The key structural insight**: overlapping sub-problems are the signal to switch from brute-force recursion to memoized recursion or tabulation. If the recursion tree is a *tree* (no shared sub-problems), brute-force and memoized have the same complexity — memoization only helps when sub-problems repeat.
+
+---
+
+**Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)

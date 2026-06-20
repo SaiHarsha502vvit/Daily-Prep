@@ -1,202 +1,297 @@
 # Week 14 — Project: Weather App
-### Phase 3 Capstone | Real API, real state management, real error handling
+### Phase 3 Capstone | Real API + Riverpod + Repository Pattern + all error states
+
+---
+
+> Three lenses throughout:
+> - 🧑‍💻 **Developer** — clean architecture, async state, error handling, `family` providers
+> - 🎨 **Designer** — designing for all states, responsive weather UI, animated transitions
+> - 🧪 **Tester** — mocking the API, testing error states, testing state transitions
 
 ---
 
 ## What You're Building
 
-A weather app that uses live data from OpenWeatherMap. The user searches for any city and sees current conditions plus a 5-day forecast. The app handles every state: loading, error, empty, and data.
+A weather app connected to the free OpenWeatherMap API. The user searches for any city and sees current conditions plus a 7-day forecast. Every network state is designed: loading skeletons, clear error messages, empty/first-launch state, and the live data view.
 
-This project ties together everything from Phase 3: Riverpod, HTTP with Dio, error handling, JSON parsing, and clean architecture.
-
----
-
-## API Setup (Free — No Credit Card)
-
-1. Go to `openweathermap.org` → Sign up (free)
-2. Go to API Keys section → copy your key
-3. The free tier allows 60 calls/minute — more than enough
-
-**APIs you'll use:**
-
-```
-Current Weather:
-GET https://api.openweathermap.org/data/2.5/weather?q={city}&appid={key}&units=metric
-
-5-Day Forecast (every 3 hours):
-GET https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={key}&units=metric
-
-Weather by GPS coordinates:
-GET https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={key}&units=metric
-```
-
-**Storing your API key safely:**
-Never hardcode API keys in source code. Use dart-define:
-
-```bash
-# Run with:
-flutter run --dart-define=WEATHER_API_KEY=your_key_here
-
-# In code:
-const apiKey = String.fromEnvironment('WEATHER_API_KEY');
-```
+**OpenWeatherMap Setup:**
+1. Create a free account at openweathermap.org
+2. Get your API key from the API keys tab
+3. Use the `Current Weather Data` and `One Call API 3.0` endpoints
 
 ---
 
-## Data Models
+## App Architecture
 
-Parse the API response into these models:
+```
+lib/
+├── core/
+│   ├── network/
+│   │   ├── dio_client.dart
+│   │   └── app_exception.dart
+│   └── constants/
+│       └── api_keys.dart         ← store your key here (add to .gitignore)
+│
+├── features/
+│   └── weather/
+│       ├── data/
+│       │   ├── weather_api_client.dart
+│       │   ├── weather_repository.dart
+│       │   └── dto/
+│       │       ├── current_weather_dto.dart   ← raw API model
+│       │       └── forecast_dto.dart
+│       │
+│       ├── domain/
+│       │   ├── weather.dart          ← clean domain model (no API specifics)
+│       │   └── forecast_day.dart
+│       │
+│       └── presentation/
+│           ├── providers/
+│           │   └── weather_providers.dart
+│           └── screens/
+│               ├── weather_screen.dart
+│               └── search_screen.dart
+```
+
+---
+
+## Domain Models (Clean, API-Agnostic)
 
 ```dart
-class CurrentWeather {
+// lib/features/weather/domain/weather.dart
+
+enum WeatherCondition {
+  clear, cloudy, partlyCloudy, rainy, stormy, snowy, foggy, windy;
+
+  static WeatherCondition fromCode(int code) {
+    return switch (code) {
+      800 => WeatherCondition.clear,
+      801 || 802 => WeatherCondition.partlyCloudy,
+      803 || 804 => WeatherCondition.cloudy,
+      >= 300 && <= 321 => WeatherCondition.rainy,
+      >= 500 && <= 531 => WeatherCondition.rainy,
+      >= 600 && <= 622 => WeatherCondition.snowy,
+      >= 700 && <= 781 => WeatherCondition.foggy,
+      >= 200 && <= 232 => WeatherCondition.stormy,
+      _ => WeatherCondition.clear,
+    };
+  }
+
+  String get icon {
+    return switch (this) {
+      WeatherCondition.clear => '☀️',
+      WeatherCondition.cloudy => '☁️',
+      WeatherCondition.partlyCloudy => '⛅',
+      WeatherCondition.rainy => '🌧️',
+      WeatherCondition.stormy => '⛈️',
+      WeatherCondition.snowy => '❄️',
+      WeatherCondition.foggy => '🌫️',
+      WeatherCondition.windy => '💨',
+    };
+  }
+}
+
+class Weather {
   final String city;
   final String country;
-  final double temperature;
-  final double feelsLike;
-  final double tempMin;
-  final double tempMax;
+  final double temperatureCelsius;
+  final double feelsLikeCelsius;
+  final WeatherCondition condition;
+  final String description;
   final int humidity;
-  final double windSpeed;
-  final int visibility;       // in metres
-  final String condition;     // "clear sky", "light rain", etc.
-  final String iconCode;      // "01d", "04n", etc.
+  final double windSpeedMs;
+  final int uvIndex;
+  final double visibilityKm;
   final DateTime sunrise;
   final DateTime sunset;
-  final DateTime lastUpdated;
+  final DateTime fetchedAt;
 
-  const CurrentWeather({...});
+  const Weather({
+    required this.city,
+    required this.country,
+    required this.temperatureCelsius,
+    required this.feelsLikeCelsius,
+    required this.condition,
+    required this.description,
+    required this.humidity,
+    required this.windSpeedMs,
+    required this.uvIndex,
+    required this.visibilityKm,
+    required this.sunrise,
+    required this.sunset,
+    required this.fetchedAt,
+  });
 
-  factory CurrentWeather.fromJson(Map<String, dynamic> json) {
-    return CurrentWeather(
-      city: json['name'] as String,
-      country: json['sys']['country'] as String,
-      temperature: (json['main']['temp'] as num).toDouble(),
-      feelsLike: (json['main']['feels_like'] as num).toDouble(),
-      tempMin: (json['main']['temp_min'] as num).toDouble(),
-      tempMax: (json['main']['temp_max'] as num).toDouble(),
-      humidity: json['main']['humidity'] as int,
-      windSpeed: (json['wind']['speed'] as num).toDouble(),
-      visibility: json['visibility'] as int,
-      condition: json['weather'][0]['description'] as String,
-      iconCode: json['weather'][0]['icon'] as String,
-      sunrise: DateTime.fromMillisecondsSinceEpoch(
-        (json['sys']['sunrise'] as int) * 1000,
-      ),
-      sunset: DateTime.fromMillisecondsSinceEpoch(
-        (json['sys']['sunset'] as int) * 1000,
-      ),
-      lastUpdated: DateTime.now(),
-    );
+  String get temp => '${temperatureCelsius.round()}°';
+  String get feelsLike => '${feelsLikeCelsius.round()}°';
+  String get windSpeed => '${(windSpeedMs * 3.6).round()} km/h';
+  bool get isDaytime {
+    final now = DateTime.now();
+    return now.isAfter(sunrise) && now.isBefore(sunset);
   }
 }
 
-class ForecastItem {
-  final DateTime dateTime;
-  final double temperature;
-  final String condition;
-  final String iconCode;
-  final double windSpeed;
-  final int humidity;
-  final double precipitationProbability;
-
-  const ForecastItem({...});
-
-  factory ForecastItem.fromJson(Map<String, dynamic> json) {
-    return ForecastItem(
-      dateTime: DateTime.fromMillisecondsSinceEpoch(
-        (json['dt'] as int) * 1000,
-      ),
-      temperature: (json['main']['temp'] as num).toDouble(),
-      condition: json['weather'][0]['description'] as String,
-      iconCode: json['weather'][0]['icon'] as String,
-      windSpeed: (json['wind']['speed'] as num).toDouble(),
-      humidity: json['main']['humidity'] as int,
-      precipitationProbability: (json['pop'] as num?)?.toDouble() ?? 0.0,
-    );
-  }
-}
-
-// Group forecast items by day
-class DayForecast {
+class ForecastDay {
   final DateTime date;
-  final List<ForecastItem> hourlyItems;
+  final double maxTempCelsius;
+  final double minTempCelsius;
+  final WeatherCondition condition;
+  final int precipitationChance;
 
-  double get minTemp => hourlyItems.map((i) => i.temperature).reduce(min);
-  double get maxTemp => hourlyItems.map((i) => i.temperature).reduce(max);
-  String get dominantCondition => hourlyItems.first.condition;
-  String get dominantIconCode => hourlyItems.first.iconCode;
+  const ForecastDay({
+    required this.date,
+    required this.maxTempCelsius,
+    required this.minTempCelsius,
+    required this.condition,
+    required this.precipitationChance,
+  });
+
+  String get dayName {
+    final now = DateTime.now();
+    if (date.day == now.day) return 'Today';
+    if (date.day == now.day + 1) return 'Tomorrow';
+    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][date.weekday - 1];
+  }
 }
 ```
 
 ---
 
-## Repository
+## API Layer
 
 ```dart
-class WeatherRepository {
-  final Dio _dio;
-  static const _apiKey = String.fromEnvironment('WEATHER_API_KEY');
+// lib/features/weather/data/weather_api_client.dart
 
-  WeatherRepository()
+class WeatherApiClient {
+  static const _baseUrl = 'https://api.openweathermap.org';
+  final Dio _dio;
+  final String _apiKey;
+
+  WeatherApiClient(this._apiKey)
       : _dio = Dio(BaseOptions(
-          baseUrl: 'https://api.openweathermap.org/data/2.5',
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
+          baseUrl: _baseUrl,
+          queryParameters: {'appid': _apiKey, 'units': 'metric'},
+          connectTimeout: const Duration(seconds: 8),
+          receiveTimeout: const Duration(seconds: 8),
         ));
 
-  Future<CurrentWeather> getCurrentWeather(String city) async {
+  Future<Map<String, dynamic>> getCurrentWeather(String city) async {
     try {
-      final response = await _dio.get('/weather', queryParameters: {
-        'q': city,
-        'appid': _apiKey,
-        'units': 'metric',
-      });
-      return CurrentWeather.fromJson(response.data as Map<String, dynamic>);
+      final response = await _dio.get('/data/2.5/weather', queryParameters: {'q': city});
+      return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      throw _handleError(e);
+      throw _mapError(e);
     }
   }
 
-  Future<List<DayForecast>> getForecast(String city) async {
+  Future<Map<String, dynamic>> getForecast(double lat, double lon) async {
     try {
-      final response = await _dio.get('/forecast', queryParameters: {
-        'q': city,
-        'appid': _apiKey,
-        'units': 'metric',
-      });
-
-      final items = (response.data['list'] as List)
-          .map((json) => ForecastItem.fromJson(json as Map<String, dynamic>))
-          .toList();
-
-      // Group by day
-      final grouped = <String, List<ForecastItem>>{};
-      for (final item in items) {
-        final key = DateFormat('yyyy-MM-dd').format(item.dateTime);
-        grouped.putIfAbsent(key, () => []).add(item);
-      }
-
-      return grouped.entries
-          .skip(1) // skip today (already shown in current weather)
-          .take(5) // next 5 days
-          .map((e) => DayForecast(
-                date: DateTime.parse(e.key),
-                hourlyItems: e.value,
-              ))
-          .toList();
+      final response = await _dio.get(
+        '/data/2.5/forecast',
+        queryParameters: {'lat': lat, 'lon': lon, 'cnt': 40},
+      );
+      return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      throw _handleError(e);
+      throw _mapError(e);
     }
   }
 
-  AppException _handleError(DioException e) {
+  AppException _mapError(DioException e) {
     if (e.response?.statusCode == 404) {
-      return const NotFoundException();
+      return const NotFoundException('City');
+    }
+    if (e.response?.statusCode == 401) {
+      return const ServerException(401, 'Invalid API key');
     }
     if (e.type == DioExceptionType.connectionError) {
-      return const NoInternetException();
+      return const NetworkException();
     }
-    return NetworkException(e.message ?? 'Unknown error');
+    return ServerException(e.response?.statusCode ?? 0, 'Unexpected error');
+  }
+}
+```
+
+```dart
+// lib/features/weather/data/weather_repository.dart
+
+class WeatherRepository {
+  final WeatherApiClient _api;
+
+  const WeatherRepository(this._api);
+
+  Future<Weather> getWeather(String city) async {
+    final raw = await _api.getCurrentWeather(city);
+    return _parseWeather(raw);
+  }
+
+  Future<List<ForecastDay>> getForecast(String city) async {
+    final weatherRaw = await _api.getCurrentWeather(city);
+    final lat = weatherRaw['coord']['lat'] as double;
+    final lon = weatherRaw['coord']['lon'] as double;
+
+    final forecastRaw = await _api.getForecast(lat, lon);
+    return _parseForecast(forecastRaw);
+  }
+
+  Weather _parseWeather(Map<String, dynamic> json) {
+    final main = json['main'] as Map<String, dynamic>;
+    final wind = json['wind'] as Map<String, dynamic>;
+    final sys = json['sys'] as Map<String, dynamic>;
+    final weatherList = json['weather'] as List;
+    final weatherInfo = weatherList.first as Map<String, dynamic>;
+    final conditionCode = weatherInfo['id'] as int;
+
+    return Weather(
+      city: json['name'] as String,
+      country: sys['country'] as String,
+      temperatureCelsius: (main['temp'] as num).toDouble(),
+      feelsLikeCelsius: (main['feels_like'] as num).toDouble(),
+      condition: WeatherCondition.fromCode(conditionCode),
+      description: (weatherInfo['description'] as String).replaceFirstMapped(
+        RegExp(r'^.'), (m) => m.group(0)!.toUpperCase(),
+      ),
+      humidity: main['humidity'] as int,
+      windSpeedMs: (wind['speed'] as num).toDouble(),
+      uvIndex: 0,    // requires One Call API
+      visibilityKm: ((json['visibility'] as num? ?? 10000) / 1000).toDouble(),
+      sunrise: DateTime.fromMillisecondsSinceEpoch((sys['sunrise'] as int) * 1000),
+      sunset: DateTime.fromMillisecondsSinceEpoch((sys['sunset'] as int) * 1000),
+      fetchedAt: DateTime.now(),
+    );
+  }
+
+  List<ForecastDay> _parseForecast(Map<String, dynamic> json) {
+    final List<dynamic> list = json['list'];
+
+    // Group forecasts by day and take one entry per day (noon)
+    final Map<String, List<dynamic>> byDay = {};
+    for (final item in list) {
+      final date = DateTime.fromMillisecondsSinceEpoch((item['dt'] as int) * 1000);
+      final key = '${date.year}-${date.month}-${date.day}';
+      byDay.putIfAbsent(key, () => []).add(item);
+    }
+
+    return byDay.entries.take(7).map((entry) {
+      final dayItems = entry.value;
+      final temps = dayItems.map((i) => (i['main']['temp'] as num).toDouble()).toList();
+      final noonItem = dayItems.firstWhere(
+        (i) {
+          final hour = DateTime.fromMillisecondsSinceEpoch((i['dt'] as int) * 1000).hour;
+          return hour >= 11 && hour <= 14;
+        },
+        orElse: () => dayItems.first,
+      );
+      final condCode = (noonItem['weather'] as List).first['id'] as int;
+      final precipChance = ((noonItem['pop'] as num? ?? 0) * 100).round();
+
+      return ForecastDay(
+        date: DateTime.fromMillisecondsSinceEpoch((noonItem['dt'] as int) * 1000),
+        maxTempCelsius: temps.reduce((a, b) => a > b ? a : b),
+        minTempCelsius: temps.reduce((a, b) => a < b ? a : b),
+        condition: WeatherCondition.fromCode(condCode),
+        precipitationChance: precipChance,
+      );
+    }).toList();
   }
 }
 ```
@@ -206,275 +301,436 @@ class WeatherRepository {
 ## Riverpod Providers
 
 ```dart
-// Repository singleton
-final weatherRepositoryProvider = Provider<WeatherRepository>((_) => WeatherRepository());
+// lib/features/weather/presentation/providers/weather_providers.dart
 
-// Currently searched city (persists across refreshes)
-final cityProvider = StateProvider<String>((ref) => 'Hyderabad');
+// Current city being searched — persisted to shared_preferences (optional extension)
+final selectedCityProvider = StateProvider<String?>((ref) => null);
 
-// Temperature unit preference
-final tempUnitProvider = StateProvider<String>((ref) => 'C'); // 'C' or 'F'
+// Weather data — reloads whenever the selected city changes
+final weatherProvider = FutureProvider.autoDispose.family<Weather, String>((ref, city) async {
+  // Keep the data alive for 10 minutes to avoid refetch on tab switch
+  ref.keepAlive();
 
-// Current weather — re-fetches when city changes
-final currentWeatherProvider = FutureProvider<CurrentWeather>((ref) async {
-  final city = ref.watch(cityProvider);
-  if (city.isEmpty) throw const ValidationException('Enter a city name');
-  return ref.watch(weatherRepositoryProvider).getCurrentWeather(city);
+  final repo = ref.watch(weatherRepositoryProvider);
+  return repo.getWeather(city);
 });
 
-// Forecast — re-fetches when city changes
-final forecastProvider = FutureProvider<List<DayForecast>>((ref) async {
-  final city = ref.watch(cityProvider);
-  if (city.isEmpty) return [];
-  return ref.watch(weatherRepositoryProvider).getForecast(city);
+// Forecast — reloads with city
+final forecastProvider = FutureProvider.autoDispose.family<List<ForecastDay>, String>((ref, city) async {
+  final repo = ref.watch(weatherRepositoryProvider);
+  return repo.getForecast(city);
 });
 
-// Search history (last 5 searches)
+// Search history — recent searches
 class SearchHistoryNotifier extends Notifier<List<String>> {
   @override
   List<String> build() => [];
 
-  void add(String city) {
-    state = [city, ...state.where((c) => c != city)].take(5).toList();
+  void addSearch(String city) {
+    if (state.contains(city)) {
+      state = [city, ...state.where((c) => c != city)];
+    } else {
+      state = [city, ...state.take(9)];  // keep last 10
+    }
+  }
+
+  void remove(String city) {
+    state = state.where((c) => c != city).toList();
   }
 }
 
-final searchHistoryProvider =
-    NotifierProvider<SearchHistoryNotifier, List<String>>(SearchHistoryNotifier.new);
+final searchHistoryProvider = NotifierProvider<SearchHistoryNotifier, List<String>>(
+  SearchHistoryNotifier.new,
+);
+
+// Repository provider
+final weatherRepositoryProvider = Provider<WeatherRepository>((ref) {
+  return WeatherRepository(WeatherApiClient(ApiKeys.openWeather));
+});
 ```
 
 ---
 
-## Screens
-
-### Screen 1: Home — Current Weather
-
-**Layout (scrollable):**
-
-```
-┌──────────────────────────────────────────┐
-│  [Search bar]          [Location icon]   │
-├──────────────────────────────────────────┤
-│                                          │
-│           Hyderabad, IN                  │
-│                                          │
-│               ☁️                         │
-│             34°C                         │
-│         Partly Cloudy                    │
-│      Feels like 38°C                     │
-│                                          │
-│  💧 72%   💨 14km/h   👁️ 10km            │
-│  Humidity  Wind       Visibility         │
-│                                          │
-│  🌅 06:12 AM          🌇 06:48 PM        │
-│  Sunrise              Sunset             │
-│                                          │
-├──────────────────────────────────────────┤
-│  5-Day Forecast                          │
-│  ┌──────┬──────┬──────┬──────┬──────┐   │
-│  │ Mon  │ Tue  │ Wed  │ Thu  │ Fri  │   │
-│  │  🌤  │  🌧  │  ⛅  │  ☀  │  🌦  │   │
-│  │32°/27│28°/24│31°/26│35°/29│29°/25│   │
-│  └──────┴──────┴──────┴──────┴──────┘   │
-├──────────────────────────────────────────┤
-│  Hourly (tap a forecast day to see)     │
-│  [12am][3am][6am][9am][12pm][3pm]...    │
-└──────────────────────────────────────────┘
-```
-
-**Dynamic background:**
-Change the background gradient based on weather and time:
+## Main Weather Screen
 
 ```dart
-LinearGradient _backgroundForWeather(CurrentWeather weather) {
-  final hour = DateTime.now().hour;
-  final isNight = hour < 6 || hour > 20;
-  final code = weather.iconCode;
+// lib/features/weather/presentation/screens/weather_screen.dart
 
-  if (isNight) {
-    return const LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [Color(0xFF0F0C29), Color(0xFF302B63)],
-    );
+class WeatherScreen extends ConsumerWidget {
+  const WeatherScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final city = ref.watch(selectedCityProvider);
+
+    if (city == null) {
+      return const _FirstLaunchState();
+    }
+
+    return _WeatherContent(city: city);
   }
-
-  if (code.contains('01')) { // clear sky
-    return const LinearGradient(
-      colors: [Color(0xFF1A78C2), Color(0xFF00C6FB)],
-    );
-  }
-
-  if (code.contains('09') || code.contains('10')) { // rain
-    return const LinearGradient(
-      colors: [Color(0xFF4B6CB7), Color(0xFF182848)],
-    );
-  }
-
-  if (code.contains('11')) { // thunderstorm
-    return const LinearGradient(
-      colors: [Color(0xFF232526), Color(0xFF414345)],
-    );
-  }
-
-  return const LinearGradient( // cloudy default
-    colors: [Color(0xFF757F9A), Color(0xFFD7DDE8)],
-  );
 }
-```
 
----
-
-### Screen 2: Search Screen
-
-- Auto-focused search field
-- Recent searches shown as chips below the field (tap to search that city)
-- Error state specifically for "city not found" (404): "Couldn't find [city]. Check the spelling."
-- Error state for no internet: "No connection. Showing last known data." (if cached)
-
----
-
-### Screen 3: Forecast Detail
-
-Reached by tapping a day in the 5-day forecast row.
-
-- Day name + date (Monday, 16 June)
-- Hourly breakdown: horizontal scroll of time chips (12am, 3am, 6am...)
-- Each chip shows: time, icon, temperature
-- Below the hourly row: min/max temp, precipitation probability, humidity, wind for that day
-
----
-
-## State Handling — Every Case
-
-```dart
-// In your weather widgets, handle every AsyncValue state
-ref.watch(currentWeatherProvider).when(
-  // Initial load
-  loading: () => const WeatherLoadingSkeleton(),
-
-  // API error
-  error: (error, _) => WeatherErrorView(
-    error: error,
-    onRetry: () => ref.refresh(currentWeatherProvider),
-  ),
-
-  // Success
-  data: (weather) => WeatherDisplay(weather: weather),
-)
-
-// WeatherErrorView shows different messages for different error types
-class WeatherErrorView extends StatelessWidget {
-  final Object error;
-  final VoidCallback onRetry;
+class _FirstLaunchState extends StatelessWidget {
+  const _FirstLaunchState();
 
   @override
   Widget build(BuildContext context) {
-    final (icon, message) = switch (error) {
-      NoInternetException() => (Icons.wifi_off, 'No internet connection'),
-      NotFoundException() => (Icons.location_off, 'City not found. Check the spelling.'),
-      NetworkException(message: final msg) => (Icons.error_outline, msg),
-      _ => (Icons.error, 'Something went wrong'),
-    };
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 64, color: Colors.white54),
-          const SizedBox(height: 16),
-          Text(message, style: const TextStyle(color: Colors.white70)),
-          const SizedBox(height: 24),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(foregroundColor: Colors.white),
-            onPressed: onRetry,
-            child: const Text('Try Again'),
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('🌤️', style: TextStyle(fontSize: 80)),
+                const SizedBox(height: 24),
+                Text('Check the Weather',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+                Text(
+                  'Search for any city to see current conditions and forecast',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                FilledButton.icon(
+                  icon: const Icon(Icons.search),
+                  label: const Text('Search a city'),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
+
+class _WeatherContent extends ConsumerWidget {
+  final String city;
+  const _WeatherContent({required this.city});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weatherAsync = ref.watch(weatherProvider(city));
+    final forecastAsync = ref.watch(forecastProvider(city));
+
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.refresh(weatherProvider(city));
+          ref.refresh(forecastProvider(city));
+        },
+        child: weatherAsync.when(
+          loading: () => const _WeatherSkeleton(),
+          error: (error, _) => _WeatherError(
+            message: error is AppException ? error.message : 'Could not load weather',
+            city: city,
+            onRetry: () => ref.refresh(weatherProvider(city)),
+          ),
+          data: (weather) => _WeatherData(
+            weather: weather,
+            forecastAsync: forecastAsync,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WeatherData extends StatelessWidget {
+  final Weather weather;
+  final AsyncValue<List<ForecastDay>> forecastAsync;
+  const _WeatherData({required this.weather, required this.forecastAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Background gradient changes based on condition and day/night
+    final bgGradient = _backgroundGradient(weather);
+
+    return Container(
+      decoration: BoxDecoration(gradient: bgGradient),
+      child: CustomScrollView(
+        slivers: [
+          // Header with city name and current temp
+          SliverToBoxAdapter(
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    // Top row: back/settings
+                    Row(
+                      children: [
+                        Text('${weather.city}, ${weather.country}',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            )),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.search, color: Colors.white),
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const SearchScreen()),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Big temperature
+                    Text(
+                      weather.condition.icon,
+                      style: const TextStyle(fontSize: 80),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      weather.temp,
+                      style: const TextStyle(
+                        fontSize: 80,
+                        fontWeight: FontWeight.w200,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      weather.description,
+                      style: theme.textTheme.titleMedium?.copyWith(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Feels like ${weather.feelsLike}',
+                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white60),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Conditions strip
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _ConditionTile(icon: '💧', label: 'Humidity', value: '${weather.humidity}%'),
+                    _ConditionTile(icon: '💨', label: 'Wind', value: weather.windSpeed),
+                    _ConditionTile(icon: '👁️', label: 'Visibility', value: '${weather.visibilityKm.round()} km'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
+          // Forecast section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text('7-Day Forecast',
+                  style: theme.textTheme.titleMedium?.copyWith(color: Colors.white)),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 12)),
+          SliverToBoxAdapter(
+            child: forecastAsync.when(
+              loading: () => const _ForecastSkeleton(),
+              error: (_, __) => const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: Text('Could not load forecast', style: TextStyle(color: Colors.white60)),
+              ),
+              data: (forecast) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: forecast.map((day) => _ForecastRow(day: day)).toList(),
+                ),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 40)),
+        ],
+      ),
+    );
+  }
+
+  LinearGradient _backgroundGradient(Weather weather) {
+    final isDaytime = weather.isDaytime;
+    return switch (weather.condition) {
+      WeatherCondition.clear => isDaytime
+          ? const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0xFF1E88E5), Color(0xFF64B5F6)])
+          : const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0xFF1A237E), Color(0xFF283593)]),
+      WeatherCondition.rainy || WeatherCondition.stormy =>
+          const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0xFF37474F), Color(0xFF546E7A)]),
+      WeatherCondition.snowy =>
+          const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0xFFB0BEC5), Color(0xFFCFD8DC)]),
+      _ => const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+          colors: [Color(0xFF546E7A), Color(0xFF78909C)]),
+    };
+  }
+}
 ```
 
 ---
 
-## Weather Icon Helper
+## Search Screen
 
 ```dart
-// OpenWeatherMap icon codes map to their CDN images
-String weatherIconUrl(String iconCode) =>
-    'https://openweathermap.org/img/wn/$iconCode@2x.png';
+// lib/features/weather/presentation/screens/search_screen.dart
 
-// Usage
-Image.network(weatherIconUrl(weather.iconCode), width: 80, height: 80)
+class SearchScreen extends ConsumerStatefulWidget {
+  const SearchScreen({super.key});
 
-// OR map to local assets / emoji
-String weatherEmoji(String iconCode) => switch (iconCode.substring(0, 2)) {
-  '01' => '☀️',
-  '02' => '🌤',
-  '03' => '⛅',
-  '04' => '☁️',
-  '09' => '🌧',
-  '10' => '🌦',
-  '11' => '⛈',
-  '13' => '❄️',
-  '50' => '🌫',
-  _ => '🌡',
-};
+  @override
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends ConsumerState<SearchScreen> {
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-focus the search field when screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _selectCity(String city) {
+    ref.read(selectedCityProvider.notifier).state = city;
+    ref.read(searchHistoryProvider.notifier).addSearch(city);
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final history = ref.watch(searchHistoryProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          controller: _controller,
+          focusNode: _focusNode,
+          decoration: const InputDecoration(
+            hintText: 'Search city...',
+            border: InputBorder.none,
+            hintStyle: TextStyle(color: Colors.grey),
+          ),
+          textInputAction: TextInputAction.search,
+          onSubmitted: (city) {
+            if (city.trim().isNotEmpty) _selectCity(city.trim());
+          },
+        ),
+        actions: [
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _controller,
+            builder: (_, val, __) => val.text.isNotEmpty
+                ? IconButton(icon: const Icon(Icons.clear), onPressed: _controller.clear)
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+      body: history.isEmpty
+          ? const Center(
+              child: Text('Search for a city to see its weather',
+                  style: TextStyle(color: Colors.grey)),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Text('Recent', style: Theme.of(context).textTheme.labelLarge),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: history.length,
+                    itemBuilder: (context, index) {
+                      final city = history[index];
+                      return ListTile(
+                        leading: const Icon(Icons.history),
+                        title: Text(city),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () => ref.read(searchHistoryProvider.notifier).remove(city),
+                        ),
+                        onTap: () => _selectCity(city),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
 ```
 
 ---
 
-## Packages to Add
+## Phase 3 Concepts Exercised
 
-```yaml
-dependencies:
-  flutter_riverpod: ^2.5.0
-  dio: ^5.4.0
-  intl: ^0.19.0          # date formatting
-  geolocator: ^11.0.0    # GPS location (stretch goal)
-  permission_handler: ^11.3.0
-```
-
----
-
-## Build Order
-
-1. API key setup + WeatherRepository with just `getCurrentWeather()`
-2. Providers: `cityProvider` + `currentWeatherProvider`
-3. Home screen — hardcode city "Hyderabad", get it working first
-4. Search bar on Home — update `cityProvider` on submit
-5. All loading/error/data states on Home
-6. Add `getForecast()` to repo + `forecastProvider`
-7. 5-day forecast row on Home
-8. Search history (recent cities)
-9. Hourly forecast detail screen
-10. Dynamic backgrounds
-11. Temperature unit toggle (C/F)
+| Concept | Where |
+|---------|-------|
+| Repository pattern | `WeatherRepository` — all API calls isolated here |
+| Dio + error mapping | `WeatherApiClient` → `AppException` |
+| `FutureProvider.family` | `weatherProvider(city)`, `forecastProvider(city)` |
+| `StateProvider` | `selectedCityProvider` — simple nullable string |
+| `NotifierProvider` | `SearchHistoryNotifier` — list with add/remove |
+| `AsyncValue.when()` | Loading skeleton / error / data on both providers |
+| `ref.refresh()` | Pull-to-refresh on `RefreshIndicator` |
+| `keepAlive()` | Weather data survives tab switches |
+| Domain models | `Weather`, `ForecastDay` — clean, no API coupling |
+| Error types | `NotFoundException`, `NetworkException`, `ServerException` |
+| `ConsumerStatefulWidget` | `SearchScreen` needs lifecycle (focus management) |
 
 ---
 
-## Quality Checklist
+## Week 14 Verify — Project Self-Review
 
-- [ ] Changing city re-fetches both current weather and forecast
-- [ ] All 3 error types show different messages and have a retry button
-- [ ] Loading state shows a skeleton or spinner (not a blank screen)
-- [ ] Pull-to-refresh on Home triggers `ref.refresh()`
-- [ ] Temperature unit toggle converts all temperatures everywhere
-- [ ] App works without crashing on airplane mode
-- [ ] `flutter analyze` — zero issues
-- [ ] Recent searches persist across hot restarts (use `SharedPreferences`)
-
----
-
-## Stretch Goals
-
-- [ ] Location detection: "Use my location" button fetches weather by GPS
-- [ ] Multiple cities: add cities to a watchlist, swipe through them with `PageView`
-- [ ] Weather widgets / notifications using `home_widget` package
-- [ ] Unit tests for `WeatherRepository` using a mock Dio client
+1. `weatherProvider` is a `FutureProvider.autoDispose.family<Weather, String>`. Break this down: what does each modifier (autoDispose, family) do?
+2. Trace the call when the user searches for "Mumbai": what executes in what order — provider, repository, API client, parsing?
+3. When a `NetworkException` is thrown in `WeatherApiClient`, how does it travel up to the widget's `.when(error: ...)` handler?
+4. The `ForecastDay.dayName` getter returns "Today", "Tomorrow", or a weekday abbreviation. Where should this logic live — domain model, repository, or widget? Why?
+5. Why does `_WeatherContent` use `ref.watch(weatherProvider(city))` but `SearchScreen._selectCity` uses `ref.read(selectedCityProvider.notifier)`?
+6. `ref.keepAlive()` is called inside the provider. What problem does it solve for tab navigation?
+7. Design review: The app shows a gradient background based on weather condition. A user with color blindness cannot distinguish between "cloudy" and "rainy" by color alone. How would you fix this for accessibility?
 
 ---
 
-**Phase 3 Complete. Next → [Phase 4: Firebase & Storage](../Phase_4_Firebase_and_Storage/Week_15_Firebase_Firestore.md)**
+**Phase 3 Complete.**
+
+**Next → [Phase 4: Firebase & Storage](../Phase_4_Firebase_and_Storage/Phase_4_Overview.md)**

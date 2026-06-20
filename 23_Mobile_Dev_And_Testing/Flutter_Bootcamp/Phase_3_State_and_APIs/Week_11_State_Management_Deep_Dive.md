@@ -1,393 +1,419 @@
 # Week 11 — State Management Deep Dive
-### Why setState() breaks at scale, and the pattern that fixes it
+### Why setState breaks at scale, and how InheritedWidget, Provider, and the widget tree solve it
 
 ---
 
-## 1. The Problem — Prop Drilling
-
-You felt this in Phase 2 when you had to lift cart state to `MainScreen` and thread it through 3 levels of widgets. That was with 4 screens. Imagine 20.
-
-```
-MainScreen (_cartItems, _addToCart)
-  └── HomeTab(onAddToCart: _addToCart)
-        └── RestaurantListing(onAddToCart: onAddToCart)
-              └── MenuItem(onAddToCart: onAddToCart)
-                    └── AddButton(onTap: () => onAddToCart(item))
-```
-
-Every layer that doesn't use the data still has to pass it down. This is **prop drilling** — it creates tight coupling, makes refactoring painful, and fills constructors with parameters only needed 3 levels deeper.
-
-The real problem isn't `setState()`. It's that state lives in the wrong place.
+> Three lenses on every concept:
+> - 🧑‍💻 **Developer** — how state propagation works under the hood, what each pattern actually does
+> - 🎨 **Designer** — what state boundaries mean for screen design, consistency across screens
+> - 🧪 **Tester** — testing with mocked providers, verifying state changes across the widget tree
 
 ---
 
-## 2. How Flutter Actually Passes Data — InheritedWidget
+## The Problem: setState at Scale
 
-Before Riverpod, Provider, or BLoC existed, Flutter shipped with `InheritedWidget`. Everything else is built on top of it. Understanding it makes everything else click.
+> 📄 **Flutter Docs:**
+> *"If you want a simpler state management approach and the data you share doesn't change often, consider using InheritedWidget, which is what Provider is based on."*
+
+In Phase 2 you felt prop drilling — passing `_cartItems` and `_onAddToCart` from `MainScreen` through `HomeTab` through `ProductGrid` through `ProductCard` just to reach the "Add to Cart" button. That was 4 screens with 3 pieces of shared state.
+
+Real apps have 20+ screens and 10+ pieces of global state: the logged-in user, cart, theme preference, feature flags, notifications count... `setState` and prop drilling don't scale. You end up with:
 
 ```dart
-// A widget that holds data and makes it available to all descendants
-class ThemeData extends InheritedWidget {
-  final Color primaryColor;
-  final double fontSize;
+// ❌ After 3 months this is what your MainScreen looks like
+MainScreen(
+  user: user,
+  cartItems: cartItems,
+  cartCount: cartCount,
+  wishlistIds: wishlistIds,
+  theme: theme,
+  notifications: notifications,
+  onAddToCart: onAddToCart,
+  onRemoveFromCart: onRemoveFromCart,
+  onToggleWishlist: onToggleWishlist,
+  onMarkNotificationRead: onMarkNotificationRead,
+  onThemeChange: onThemeChange,
+  // ...
+)
+```
 
-  const ThemeData({
+Every widget in the tree that needs anything has to receive it as a constructor parameter. Add a new field? Update every widget along the path.
+
+---
+
+## 1. `InheritedWidget` — The Root of Flutter's State System
+
+> 📄 **Flutter Docs:**
+> *"Base class for widgets that efficiently propagate information down the tree. To obtain the nearest instance of a particular type of inherited widget from a build context, use BuildContext.dependOnInheritedWidgetOfExactType."*
+
+Every state management solution in Flutter (`Provider`, `Riverpod`, `Bloc`) is built on top of `InheritedWidget`. Understanding it means you understand why the solutions work.
+
+```dart
+// AuthState holds the logged-in user
+class AuthState extends InheritedWidget {
+  final User? currentUser;
+  final void Function() onSignOut;
+
+  const AuthState({
     super.key,
-    required this.primaryColor,
-    required this.fontSize,
-    required super.child,
+    required this.currentUser,
+    required this.onSignOut,
+    required super.child,    // the subtree that can access this data
   });
 
-  // The static method descendants call to access this data
-  static ThemeData of(BuildContext context) {
-    final data = context.dependOnInheritedWidgetOfExactType<ThemeData>();
-    assert(data != null, 'No ThemeData found in widget tree');
-    return data!;
+  // Static accessor — how any descendant reads this data
+  // "of(context)" is the Flutter convention for InheritedWidget access
+  static AuthState of(BuildContext context) {
+    final result = context.dependOnInheritedWidgetOfExactType<AuthState>();
+    assert(result != null, 'AuthState not found in widget tree. Wrap your app with AuthStateProvider.');
+    return result!;
   }
 
-  // Return true if the data changed and descendants should rebuild
+  // Called by Flutter to decide whether to notify dependents when this widget rebuilds
+  // Return true → notify all registered dependents → they rebuild
+  // Return false → skip rebuild (data didn't change in a meaningful way)
   @override
-  bool updateShouldNotify(ThemeData oldWidget) {
-    return oldWidget.primaryColor != primaryColor ||
-           oldWidget.fontSize != fontSize;
+  bool updateShouldNotify(AuthState old) {
+    return currentUser?.id != old.currentUser?.id;
   }
 }
 ```
 
-Place it high in the tree:
 ```dart
-ThemeData(
-  primaryColor: Colors.deepPurple,
-  fontSize: 16,
-  child: MaterialApp(/* ... */),
-)
+// Place it high in the tree — wraps everything that needs auth
+class App extends StatefulWidget { ... }
+
+class _AppState extends State<App> {
+  User? _currentUser;
+
+  @override
+  Widget build(BuildContext context) {
+    return AuthState(
+      currentUser: _currentUser,
+      onSignOut: () => setState(() => _currentUser = null),
+      child: MaterialApp(home: const HomeScreen()),
+    );
+  }
+}
+
+// Anywhere in the subtree — no prop drilling needed
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // dependOnInheritedWidgetOfExactType walks up the tree and finds AuthState
+    // It also REGISTERS this widget as a dependent — it rebuilds when AuthState changes
+    final auth = AuthState.of(context);
+    return Text('Logged in as: ${auth.currentUser?.name ?? "Guest"}');
+  }
+}
 ```
 
-Access it from anywhere below:
-```dart
-// No prop drilling — any widget anywhere in the tree can call this
-final theme = ThemeData.of(context);
-```
+### What `dependOnInheritedWidgetOfExactType` Does
 
-This is exactly how `Theme.of(context)`, `MediaQuery.of(context)`, and `Navigator.of(context)` work internally. You've been using `InheritedWidget` all along.
+When you call `AuthState.of(context)`:
+1. Flutter walks UP the Element tree from the current element
+2. It finds the first `AuthState` element
+3. It REGISTERS the current element as a dependent of that `AuthState`
+4. When `_currentUser` changes in `_AppState`, `setState` rebuilds `AuthState` with new data
+5. Flutter calls `updateShouldNotify(old)` → returns `true`
+6. All registered dependents are marked dirty → they rebuild
 
-**The downside of raw `InheritedWidget`:** it's immutable. To update the data, you have to wrap it in a `StatefulWidget` that rebuilds the `InheritedWidget` with new data. It works, but it's verbose. This is why `ChangeNotifier` + `Provider` exists.
+This is exactly how `Theme.of(context)`, `MediaQuery.of(context)`, and `Navigator.of(context)` work.
+
+🎨 **Designer:** The "of(context)" pattern means any widget at any nesting depth can access shared state without its parent needing to know about it. This lets you design screens without worrying about which parent holds which data — the data is "in the air" above every widget in the subtree.
 
 ---
 
-## 3. ChangeNotifier — Mutable State That Notifies
+## 2. `Provider` — InheritedWidget Made Ergonomic
 
-`ChangeNotifier` is a class that holds mutable state and announces when it changes. Any widget listening to it rebuilds automatically.
+> 📄 **Flutter Docs (pub.dev/packages/provider):**
+> *"A mixture of dependency injection (DI) and state management, built with widgets. Provider is recommended by the Flutter team as the state management solution to start with."*
+
+`InheritedWidget` requires significant boilerplate per type. `Provider` wraps `InheritedWidget` and removes that boilerplate.
 
 ```dart
+// With InheritedWidget (manual):
+class CartState extends InheritedWidget {
+  final List<CartItem> items;
+  final void Function(Product) onAdd;
+  static CartState of(BuildContext context) => context.dependOnInheritedWidgetOfExactType()!;
+  @override bool updateShouldNotify(CartState old) => items != old.items;
+  // constructor, etc...
+}
+
+// With Provider (same thing, 3 lines):
+// The "model" — plain Dart class with ChangeNotifier
 class CartModel extends ChangeNotifier {
   final List<CartItem> _items = [];
 
   List<CartItem> get items => List.unmodifiable(_items);
 
-  int get totalItems => _items.fold(0, (sum, item) => sum + item.quantity);
+  int get count => _items.fold(0, (sum, item) => sum + item.quantity);
 
-  double get totalPrice => _items.fold(
-    0.0, (sum, item) => sum + item.price * item.quantity,
-  );
+  double get total => _items.fold(0, (sum, item) => sum + item.totalPrice);
 
-  void addItem(MenuItem menuItem) {
-    final existing = _items.indexWhere((i) => i.id == menuItem.id);
-    if (existing >= 0) {
-      _items[existing].quantity++;
+  void addItem(Product product, String size) {
+    final existing = _items.where(
+      (i) => i.product.id == product.id && i.selectedSize == size
+    ).firstOrNull;
+
+    if (existing != null) {
+      existing.quantity++;
     } else {
-      _items.add(CartItem(menuItem: menuItem, quantity: 1));
+      _items.add(CartItem(product: product, selectedSize: size));
     }
-    notifyListeners();  // tells all listeners: "something changed, rebuild"
+
+    notifyListeners();    // ← tells Provider "something changed, rebuild my consumers"
   }
 
-  void removeItem(String itemId) {
-    _items.removeWhere((i) => i.id == itemId);
+  void removeItem(String productId, String size) {
+    _items.removeWhere((i) => i.product.id == productId && i.selectedSize == size);
     notifyListeners();
   }
 
-  void updateQuantity(String itemId, int quantity) {
-    if (quantity <= 0) {
-      removeItem(itemId);
-      return;
-    }
-    final index = _items.indexWhere((i) => i.id == itemId);
-    if (index >= 0) {
-      _items[index].quantity = quantity;
-      notifyListeners();
-    }
-  }
-
-  void clear() {
-    _items.clear();
-    notifyListeners();
-  }
-}
-```
-
-`notifyListeners()` is the key. Every widget that's "listening" to this `ChangeNotifier` will rebuild when this is called.
-
----
-
-## 4. ListenableBuilder — React to ChangeNotifier
-
-Without any package, you can connect a `ChangeNotifier` to your UI using `ListenableBuilder`:
-
-```dart
-class CartIconBadge extends StatelessWidget {
-  final CartModel cart;
-  const CartIconBadge({super.key, required this.cart});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: cart,         // rebuilds this widget when cart.notifyListeners() fires
-      builder: (context, _) {
-        return Stack(
-          children: [
-            const Icon(Icons.shopping_cart),
-            if (cart.totalItems > 0)
-              Positioned(
-                right: 0,
-                top: 0,
-                child: CircleAvatar(
-                  radius: 8,
-                  backgroundColor: Colors.red,
-                  child: Text(
-                    '${cart.totalItems}',
-                    style: const TextStyle(fontSize: 10, color: Colors.white),
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
+  void updateQuantity(String productId, String size, int delta) {
+    final item = _items.firstWhere(
+      (i) => i.product.id == productId && i.selectedSize == size
     );
+    item.quantity += delta;
+    if (item.quantity <= 0) removeItem(productId, size);
+    else notifyListeners();
   }
 }
 ```
 
-But you still need a way to put `CartModel` somewhere accessible to all widgets. That's where `Provider` comes in.
-
----
-
-## 5. Provider Package — The Practical Solution
-
-`Provider` wraps `InheritedWidget` and makes `ChangeNotifier` easy to place and access:
-
-```bash
-flutter pub add provider
-```
-
-**Place state at the top of the tree:**
 ```dart
+// Place providers at the top of the app
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartModel()),
-        ChangeNotifierProvider(create: (_) => UserModel()),
+        ChangeNotifierProvider(create: (_) => AuthModel()),
         ChangeNotifierProvider(create: (_) => ThemeModel()),
       ],
-      child: const MyApp(),
+      child: const App(),
     ),
   );
 }
-```
 
-**Read it anywhere in the tree:**
-```dart
-// Watch — widget rebuilds when CartModel changes (use in build())
-final cart = context.watch<CartModel>();
+// Read data anywhere in the tree
+class CartBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // context.watch<T>() — subscribes to changes, rebuilds when CartModel notifies
+    final cartCount = context.watch<CartModel>().count;
+    return Badge(label: Text('$cartCount'), child: const Icon(Icons.shopping_cart));
+  }
+}
 
-// Read — one-time read, doesn't subscribe to changes (use in callbacks)
-final cart = context.read<CartModel>();
-context.read<CartModel>().addItem(item);  // common pattern in onPressed
+// Trigger actions without subscribing to rebuilds
+class AddToCartButton extends StatelessWidget {
+  final Product product;
+  final String size;
 
-// Select — rebuild ONLY when a specific part of the model changes
-final total = context.select<CartModel, double>((cart) => cart.totalPrice);
-// This widget only rebuilds when totalPrice changes, not on every cart update
-```
-
-**Full example — a widget that shows cart info and adds items:**
-```dart
-class ProductCard extends StatelessWidget {
-  final MenuItem item;
-  const ProductCard({super.key, required this.item});
+  const AddToCartButton({super.key, required this.product, required this.size});
 
   @override
   Widget build(BuildContext context) {
-    // context.select rebuilds ONLY when this item's count changes
-    final itemCount = context.select<CartModel, int>(
-      (cart) => cart.items
-        .where((i) => i.id == item.id)
-        .fold(0, (sum, i) => sum + i.quantity),
+    return FilledButton(
+      // context.read<T>() — does NOT subscribe to changes, just reads current value or calls method
+      // Use for callbacks only — never call context.read inside build()
+      onPressed: () => context.read<CartModel>().addItem(product, size),
+      child: const Text('Add to Cart'),
     );
+  }
+}
 
-    return Card(
-      child: Row(
-        children: [
-          // ... item info ...
-          if (itemCount == 0)
-            ElevatedButton(
-              onPressed: () => context.read<CartModel>().addItem(item),
-              child: const Text('Add'),
-            )
-          else
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () => context.read<CartModel>().updateQuantity(item.id, itemCount - 1),
-                  icon: const Icon(Icons.remove),
-                ),
-                Text('$itemCount'),
-                IconButton(
-                  onPressed: () => context.read<CartModel>().updateQuantity(item.id, itemCount + 1),
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            ),
-        ],
+// Select only one field — rebuilds ONLY when that field changes
+class ProductPrice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // context.select<T, R>() — rebuilds only when the selected value changes
+    final total = context.select<CartModel, double>((cart) => cart.total);
+    return Text('Total: ₹${total.toStringAsFixed(0)}');
+  }
+}
+```
+
+### `context.watch` vs `context.read` vs `context.select`
+
+```
+context.watch<T>()
+  ↳ Subscribes to CartModel
+  ↳ Rebuilds this widget every time CartModel calls notifyListeners()
+  ↳ Use in build() when you need live updates
+
+context.read<T>()
+  ↳ One-time read, no subscription
+  ↳ Does NOT rebuild this widget when model changes
+  ↳ Use in callbacks (onTap, onPressed) — NEVER in build()
+
+context.select<T, R>((model) => model.someField)
+  ↳ Subscribes to CartModel but only rebuilds when someField changes
+  ↳ More efficient than watch when you only care about one property
+  ↳ Use when a widget should rebuild for one field but not all changes
+```
+
+**Rule:** `context.read` in callbacks. `context.watch` or `context.select` in `build()`. Never `context.watch` in an `initState` or inside a callback.
+
+---
+
+## 3. `Consumer` Widget — When You Can't Use `context`
+
+```dart
+// Problem: context is above the Provider — can't use context.watch
+// Solution: use Consumer<T> which uses its own context from below the Provider
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => ThemeModel())],
+      child: Consumer<ThemeModel>(    // Consumer has access to a context BELOW the provider
+        builder: (context, themeModel, child) {
+          return MaterialApp(
+            theme: themeModel.lightTheme,
+            darkTheme: themeModel.darkTheme,
+            themeMode: themeModel.mode,
+            home: child,             // child is not rebuilt when themeModel changes
+          );
+        },
+        child: const HomeScreen(),   // passed through as the non-rebuilding subtree
       ),
     );
   }
 }
 ```
 
-**→ Try this:** Refactor your Phase 2 Shopping App cart to use Provider + ChangeNotifier. Remove all cart callbacks from constructors. The `CartModel` should live in `main()` via `ChangeNotifierProvider`. Verify that adding an item from the listing updates the cart badge in the bottom nav bar.
+🧪 **Tester:** Testing with Provider:
 
----
-
-## 6. Ephemeral State vs App State
-
-Not all state needs Provider. This distinction matters.
-
-**Ephemeral state** — belongs to ONE widget, no one else cares:
-- Is this accordion expanded?
-- Which tab is selected in THIS widget?
-- Is this password field obscured?
-- Current value of a text field
-
-Use `setState()` for ephemeral state.
-
-**App state** — multiple widgets need it, persists across screens:
-- Is the user logged in?
-- What's in the cart?
-- What theme is selected?
-- What data did the API return?
-
-Use Provider / Riverpod for app state.
-
-**The rule:** Start with `setState()`. When you find yourself lifting state two or more levels up — move it to a `ChangeNotifier`.
-
----
-
-## 7. Common Mistakes
-
-**Mistake 1: Using `context.watch()` inside a callback**
 ```dart
-// WRONG — watch() in a callback, not in build()
-ElevatedButton(
-  onPressed: () {
-    final cart = context.watch<CartModel>(); // error at runtime
-    cart.clear();
-  },
-)
+testWidgets('add to cart increases badge count', (tester) async {
+  // Provide a test CartModel with known initial state
+  final testCart = CartModel();
 
-// RIGHT — read() in callbacks, watch() in build()
-ElevatedButton(
-  onPressed: () => context.read<CartModel>().clear(),
-)
-```
+  await tester.pumpWidget(
+    ChangeNotifierProvider.value(
+      value: testCart,
+      child: MaterialApp(home: ProductDetailScreen(product: testProduct)),
+    ),
+  );
 
-**Mistake 2: Calling `notifyListeners()` inside `build()`**
-```dart
-// WRONG — causes infinite rebuild loop
-class BrokenModel extends ChangeNotifier {
-  @override
-  Widget build(context) {
-    notifyListeners(); // DON'T
-  }
-}
-```
+  // Verify initial state
+  expect(find.text('0'), findsOneWidget);   // badge count is 0
 
-**Mistake 3: Putting everything in one giant ChangeNotifier**
-```dart
-// WRONG — one notifier for everything
-class AppState extends ChangeNotifier {
-  User? user;
-  List<Product> products;
-  List<CartItem> cart;
-  Theme theme;
-  // ... every widget rebuilds when ANY of this changes
-}
+  // Tap "Add to Cart"
+  await tester.tap(find.text('Add to Cart'));
+  await tester.pump();
 
-// RIGHT — separate models for separate concerns
-class UserModel extends ChangeNotifier { ... }
-class CartModel extends ChangeNotifier { ... }
-class ProductModel extends ChangeNotifier { ... }
+  // Badge should now show 1
+  expect(find.text('1'), findsOneWidget);
+
+  // Verify the model was updated
+  expect(testCart.count, equals(1));
+  expect(testCart.items.first.product.id, equals(testProduct.id));
+});
 ```
 
 ---
 
-## Lab — Shared Wishlist App
+## 4. When to Use Which State Management Level
 
-Build a 3-tab app with shared wishlist state using Provider.
+| State Type | Who Needs It | Solution |
+|-----------|-------------|---------|
+| UI-only (expanded/collapsed, hover) | Single widget | `StatefulWidget` + `setState` |
+| Screen-local (form values, tab index) | One screen | `StatefulWidget` + `setState` |
+| Shared between sibling widgets | Common ancestor | Lift state + callbacks |
+| Shared across multiple unrelated screens | Multiple places | `Provider` / `Riverpod` |
+| Server state (loading, cached data, refetch) | Anywhere | `Riverpod` (FutureProvider, StreamProvider) |
+| App-wide settings (theme, locale, auth) | App root | `Provider` at root, or `Riverpod` |
 
-**Data model:**
+🎨 **Designer:** From a design perspective, state scope maps to navigation scope:
+- Within one card → local state
+- Within one screen → screen-level state
+- Across tabs of a bottom navigation → lifted to `MainScreen` or Provider
+- Across entire app (cart, user, theme) → root Provider or Riverpod
+
+---
+
+## 5. `ChangeNotifier` vs Immutable State
+
 ```dart
-class Product {
-  final String id, name, category;
-  final double price;
-  final String imageUrl;
-}
+// ChangeNotifier (mutable) — simpler, good for straightforward use cases
+class CounterModel extends ChangeNotifier {
+  int _count = 0;
+  int get count => _count;
 
-class WishlistModel extends ChangeNotifier {
-  final Set<String> _wishedIds = {};
-  bool isWished(String id) => _wishedIds.contains(id);
-  void toggle(String id) {
-    _wishedIds.contains(id) ? _wishedIds.remove(id) : _wishedIds.add(id);
+  void increment() {
+    _count++;
     notifyListeners();
   }
-  int get count => _wishedIds.length;
+}
+
+// Immutable state (with copyWith) — safer, easier to test, no hidden mutations
+class CounterState {
+  final int count;
+  const CounterState({this.count = 0});
+  CounterState copyWith({int? count}) => CounterState(count: count ?? this.count);
+}
+
+class CounterNotifier extends ValueNotifier<CounterState> {
+  CounterNotifier() : super(const CounterState());
+
+  void increment() {
+    value = value.copyWith(count: value.count + 1);
+    // notifyListeners() is called automatically by ValueNotifier when value changes
+  }
 }
 ```
 
-**Tabs:**
-
-Tab 1 — Product Grid: 12 products in a 2-col grid. Each card has a heart icon (filled/outline based on wishlist state). Tapping the heart toggles the wishlist.
-
-Tab 2 — Wishlist: Shows all wishlisted products. Swipe to remove. Empty state illustration. The tab badge shows the count.
-
-Tab 3 — Categories: Group products by category. Each category is an expandable panel showing its products with wishlist toggles.
-
-**Requirements:**
-- Wishlist state updates INSTANTLY across all 3 tabs with no prop drilling
-- Tab 2 badge updates when wishlist count changes
-- Removing from Tab 2 also reflects in Tab 1's heart icon
+`ChangeNotifier` with mutable state is easier to start with. Immutable state with `copyWith` is safer at scale — you can never accidentally mutate state without going through a proper notifier method.
 
 ---
 
-## Challenge
+## Lab — Convert the Shopping App to Use Provider
 
-Extend the app with a `CompareModel`:
-- User can "compare" up to 3 products
-- A persistent bottom bar appears when at least 1 product is in the compare list
-- Bottom bar shows product thumbnails and a "Compare Now" button
-- Tapping "Compare Now" pushes a comparison screen showing all selected products' attributes side by side
+Take the Shopping App from Week 10 (which had all state in `_ShopAppState`) and convert it to use `Provider`:
 
-The compare state must be accessible from the product grid AND the wishlist tab.
+**Models to create:**
+1. `CartModel extends ChangeNotifier` — all cart operations
+2. `ProductModel extends ChangeNotifier` — products list, wishlist toggle, category filter
+3. `AuthModel extends ChangeNotifier` — mock user, login/logout state
+
+**Remove from `_ShopAppState`:**
+- All `_cartItems`, `_products`, `_onAddToCart`, `_onToggleWishlist` state and callbacks
+- Replace with `MultiProvider` at the root
+
+**Update each screen:**
+- `HomeTab` — use `context.watch<ProductModel>()` for products and filter
+- `ProductDetailScreen` — use `context.read<CartModel>().addItem(...)` in button callback
+- `CartTab` — use `context.watch<CartModel>()` for items, total, count
+- `MainScreen` AppBar badge — use `context.select<CartModel, int>((c) => c.count)`
+
+**Verify:** After conversion, `MainScreen` should have NO `List<Product>`, NO `List<CartItem>`, and NO callback parameters. Every widget reads exactly what it needs from the providers.
 
 ---
 
-## Before Week 12 — Verify
+## Challenge — Multi-Model Interaction
 
-1. What is `InheritedWidget`? How does `Theme.of(context)` use it?
-2. What does `notifyListeners()` do? Who listens to it?
-3. What is the difference between `context.watch()` and `context.read()`?
-4. When should you use `setState()` vs Provider?
-5. What does `context.select()` do that `context.watch()` doesn't?
+Build a "Notifications" screen where:
+- `NotificationModel extends ChangeNotifier` — holds `List<AppNotification>`, tracks unread count
+- Marking a notification as read decrements the unread badge in the AppBar
+- Clearing all notifications is confirmed via a dialog, then updates the model
+- The notification badge in the `BottomNavigationBar` uses `context.select<NotificationModel, int>((n) => n.unreadCount)` so ONLY the badge rebuilds when count changes — not the entire bottom bar
 
 ---
 
-**Next → [Week 12: Riverpod — Modern State Management](Week_12_Riverpod.md)**
+## Week 11 Verify
+
+1. What is `InheritedWidget`? How does `dependOnInheritedWidgetOfExactType` register a widget as a dependent?
+2. What does `notifyListeners()` do in a `ChangeNotifier`? What happens in the widget tree when it's called?
+3. What is the difference between `context.watch<T>()` and `context.read<T>()`? When is using `context.read()` inside `build()` wrong?
+4. You have `context.watch<CartModel>()` in a widget that only shows the cart total. Every time ANY item is added/removed, the whole widget rebuilds. How do you fix this with `context.select`?
+5. Why does `Consumer<T>` exist? In what situation can't you use `context.watch` directly?
+6. The `CartModel` has a `List<CartItem> _items` field. You expose it as `List<CartItem> get items => List.unmodifiable(_items)`. Why return `unmodifiable`?
+7. Explain the difference between lifting state up (Phase 1–2 approach) and Provider. What specific problem does Provider solve that lifting state cannot?
+
+---
+
+**Next → [Week 12: Riverpod](Week_12_Riverpod.md)**

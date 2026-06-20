@@ -2072,7 +2072,6 @@ variant can degrade performance by 10x to 1000x or cause memory exhaustion.
 
 ---
 
-> **Navigation**: [< Previous](01g_DS_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_DS_Variants_Advanced.md)
 
 ---
 
@@ -2398,3 +2397,7 @@ Where k = number of values for key, n = total entries.
 | Membership test | Linear scan — O(n) | O(nq) total | HashSet — O(1) expected | O(n) → O(1) |
 
 **Decision rule**: choose a DS by the *bottleneck operation* that is called most frequently. The data structure whose worst-case for that operation is best wins.
+
+---
+
+> **Navigation**: [< Previous](01g_DS_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_DS_Variants_Advanced.md)

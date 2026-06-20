@@ -804,7 +804,6 @@ By tuning the size of the Bit Array and the number of hash functions, engineers 
 
 ---
 
-> **Navigation**: [← 2D Arrays](04_2D_Arrays_Matrix.md) | [Back to Index](00_INDEX.md)
 
 ---
 
@@ -1074,3 +1073,7 @@ freq.merge("key", 1, Integer::sum); // atomic increment -- no synchronized neede
 | Rate limiting | Count all timestamps | O(events) per window | Sliding window ring buffer -- O(1) |
 | Deduplication at scale | HashSet in memory | OOM for > 10^9 elements | Bloom filter -- O(1) with 1% FP |
 | Priority task queue | Sort every dequeue | O(n log n) per dequeue | PriorityQueue -- O(log n) per op |
+
+---
+
+> **Navigation**: [← 2D Arrays](04_2D_Arrays_Matrix.md) | [Back to Index](00_INDEX.md)

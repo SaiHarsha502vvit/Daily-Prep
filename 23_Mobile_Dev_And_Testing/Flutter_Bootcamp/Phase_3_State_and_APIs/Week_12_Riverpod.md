@@ -1,398 +1,614 @@
 # Week 12 — Riverpod
-### The modern, compile-safe way to manage state in Flutter
+### Compile-safe, testable, context-free state management — the modern standard
+
+---
+
+> Three lenses on every concept:
+> - 🧑‍💻 **Developer** — how providers compose, the async providers, Notifier pattern
+> - 🎨 **Designer** — loading/error/data states and how to design for all three
+> - 🧪 **Tester** — overriding providers in tests, testing async state
 
 ---
 
 ## Why Riverpod Over Provider?
 
-Provider has one fundamental problem: it depends on `BuildContext` to find its providers. This means:
-- You can't access a provider outside of a widget (no provider in a service class)
-- Provider lookups can fail at runtime if you access the wrong context
-- Testing requires wrapping everything in a widget tree
+> 📄 **Flutter Docs (riverpod.dev):**
+> *"Riverpod is a reactive caching and data-binding framework that is immune to the widget tree. Unlike Provider, Riverpod allows you to declare providers outside of widgets, making them accessible globally, testable, and composable without BuildContext."*
 
-Riverpod solves all of this. Providers live globally, are compile-safe, and work anywhere in your code — in widgets, in repositories, in utility functions.
+Provider has real problems that surface in production:
 
-```bash
-flutter pub add flutter_riverpod riverpod_annotation
-flutter pub add dev:riverpod_generator dev:build_runner
+```dart
+// Provider problem 1: ProviderNotFoundException
+// If you call context.watch<CartModel>() but the Provider isn't above this widget → crash at runtime
+// Not a compile error. Crashes when users run the app.
+
+// Provider problem 2: cannot easily access providers outside of build()
+// In a background service, a repository, or a utility function:
+context.read<CartModel>()  // ← context not available here
+
+// Provider problem 3: async state is manual
+// You have to manage isLoading, hasError, data fields yourself in ChangeNotifier
+class ProductModel extends ChangeNotifier {
+  List<Product> products = [];
+  bool isLoading = false;
+  String? error;
+
+  Future<void> load() async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      products = await api.getProducts();
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+}
 ```
+
+Riverpod solves all three:
+- Providers are global — no `BuildContext` needed to access them
+- Compile-safe — wrong type = compile error, not runtime crash
+- Async built-in — `FutureProvider` and `StreamProvider` handle loading/error/data automatically
 
 ---
 
-## 1. Setup — ProviderScope
-
-Wrap your entire app in `ProviderScope`. This is the container that holds all provider state.
+## Setup
 
 ```dart
+// pubspec.yaml
+dependencies:
+  flutter_riverpod: ^2.5.0
+  riverpod_annotation: ^2.3.0  # optional: code generation for @riverpod annotation
+
+dev_dependencies:
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.0
+```
+
+```dart
+// lib/main.dart
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 void main() {
   runApp(
-    const ProviderScope(
+    const ProviderScope(    // ← wraps the ENTIRE app, exactly once
       child: MyApp(),
     ),
   );
 }
+```
 
-// Widgets extend ConsumerWidget instead of StatelessWidget
-// or ConsumerStatefulWidget instead of StatefulWidget
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+`ProviderScope` is the Riverpod equivalent of `MultiProvider`. It stores all provider state.
 
+---
+
+## 1. The Five Core Providers
+
+### `Provider` — Read-Only, Synchronous
+
+```dart
+// A value that never changes (or is externally injected)
+final appVersionProvider = Provider<String>((ref) => '2.1.0');
+
+// Computed value that depends on another provider
+final formattedVersionProvider = Provider<String>((ref) {
+  final version = ref.watch(appVersionProvider);
+  return 'v$version';
+});
+
+// Usage in a widget
+class VersionBadge extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ref is your access to ALL providers
-    return MaterialApp(/* ... */);
+    final version = ref.watch(formattedVersionProvider);
+    return Text(version);
   }
 }
 ```
 
----
+### `StateProvider` — Simple Mutable Value
 
-## 2. The 5 Core Providers
-
-**`Provider` — a value that never changes:**
 ```dart
-final appNameProvider = Provider<String>((ref) => 'My Flutter App');
-
-// In widget:
-final name = ref.watch(appNameProvider); // 'My Flutter App'
-```
-
-**`StateProvider` — a single changeable value:**
-```dart
+// For simple values: a counter, a selected tab index, a toggle
 final counterProvider = StateProvider<int>((ref) => 0);
-final themeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
+final selectedTabProvider = StateProvider<int>((ref) => 0);
+final isDarkModeProvider = StateProvider<bool>((ref) => false);
 
-// Read:
-final count = ref.watch(counterProvider);
-
-// Modify:
-ref.read(counterProvider.notifier).state++;
-ref.read(themeProvider.notifier).state = ThemeMode.dark;
+// Usage
+class CounterScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    return Column(
+      children: [
+        Text('Count: $count'),
+        ElevatedButton(
+          // ref.read() inside callbacks — no rebuild subscription
+          onPressed: () => ref.read(counterProvider.notifier).state++,
+          child: const Text('+1'),
+        ),
+      ],
+    );
+  }
+}
 ```
 
-**`FutureProvider` — async data, auto-handles loading/error/data:**
+### `FutureProvider` — Async Data, Once
+
 ```dart
-final userProvider = FutureProvider<User>((ref) async {
-  return await UserRepository().fetchCurrentUser();
+// Fetches data once. Returns AsyncValue<T> with three states: loading / error / data
+final userProfileProvider = FutureProvider.autoDispose<UserProfile>((ref) async {
+  // autoDispose: provider is destroyed when no widget is watching it
+  // Good for screen-specific data that should reload when screen reopens
+  final response = await http.get(Uri.parse('/api/profile'));
+  return UserProfile.fromJson(jsonDecode(response.body));
 });
 
-// In widget — the `.when()` handles all states for you:
-final userAsync = ref.watch(userProvider);
-return userAsync.when(
-  loading: () => const CircularProgressIndicator(),
-  error: (error, stack) => Text('Error: $error'),
-  data: (user) => Text('Hello, ${user.name}!'),
-);
+// Usage
+class ProfileScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileAsync = ref.watch(userProfileProvider);
+
+    return profileAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(error.toString()),
+            TextButton(
+              onPressed: () => ref.refresh(userProfileProvider),  // retry
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+      data: (profile) => ProfileContent(profile: profile),
+    );
+  }
+}
 ```
 
-**`StreamProvider` — real-time data from a Stream:**
+🎨 **Designer:** `AsyncValue.when()` is your contract with the designer for three states:
+- `loading` → skeleton screens, `CircularProgressIndicator`, shimmer effects — not blank white screens
+- `error` → clear error message + retry action — never just a red snackbar that disappears
+- `data` → the actual content
+
+Every screen with network data has all three states. Design all three.
+
+### `StreamProvider` — Real-Time Data
+
 ```dart
-final messagesProvider = StreamProvider<List<Message>>((ref) {
-  return MessageRepository().watchMessages();  // returns a Stream
+// Listens to a Stream — rebuilds every time a new event arrives
+final notificationsProvider = StreamProvider.autoDispose<List<Notification>>((ref) {
+  return FirebaseFirestore.instance
+      .collection('notifications')
+      .where('userId', isEqualTo: currentUserId)
+      .snapshots()
+      .map((snap) => snap.docs.map((d) => Notification.fromFirestore(d)).toList());
 });
 
-// In widget — works exactly like FutureProvider.when()
-final messagesAsync = ref.watch(messagesProvider);
-```
-
-**`NotifierProvider` — complex state with multiple operations:**
-```dart
-// Step 1: Define the Notifier
-class CounterNotifier extends Notifier<int> {
+// Usage — same .when() pattern as FutureProvider
+class NotificationBell extends ConsumerWidget {
   @override
-  int build() => 0;  // initial state
-
-  void increment() => state++;
-  void decrement() => state--;
-  void reset() => state = 0;
-  void setTo(int value) => state = value;
-}
-
-// Step 2: Create the provider
-final counterNotifierProvider = NotifierProvider<CounterNotifier, int>(
-  CounterNotifier.new,
-);
-
-// Step 3: Use in widget
-final count = ref.watch(counterNotifierProvider);
-ref.read(counterNotifierProvider.notifier).increment();
-```
-
----
-
-## 3. AsyncNotifierProvider — Async State with Operations
-
-This is the one you'll use most in real apps:
-
-```dart
-class CartNotifier extends AsyncNotifier<List<CartItem>> {
-  @override
-  Future<List<CartItem>> build() async {
-    // Called once when the provider is first used
-    // Return the initial state (load from local storage, etc.)
-    return await CartRepository().loadSavedCart();
-  }
-
-  Future<void> addItem(Product product) async {
-    // AsyncLoading shows while this runs
-    state = const AsyncLoading();
-
-    // AsyncValue.guard catches exceptions and converts them to AsyncError
-    state = await AsyncValue.guard(() async {
-      final current = state.valueOrNull ?? [];
-      final existing = current.indexWhere((i) => i.product.id == product.id);
-
-      if (existing >= 0) {
-        final updated = List<CartItem>.from(current);
-        updated[existing] = updated[existing].copyWith(
-          quantity: updated[existing].quantity + 1,
-        );
-        return updated;
-      }
-
-      return [...current, CartItem(product: product, quantity: 1)];
-    });
-  }
-
-  Future<void> removeItem(String productId) async {
-    state = await AsyncValue.guard(() async {
-      final current = state.valueOrNull ?? [];
-      return current.where((i) => i.product.id != productId).toList();
-    });
-  }
-
-  Future<void> clear() async {
-    state = const AsyncData([]);
-  }
-}
-
-final cartProvider = AsyncNotifierProvider<CartNotifier, List<CartItem>>(
-  CartNotifier.new,
-);
-```
-
----
-
-## 4. `ref.watch` vs `ref.read` vs `ref.listen`
-
-This is the most important thing to get right:
-
-```dart
-// ref.watch — use in build(). Widget rebuilds when value changes.
-@override
-Widget build(BuildContext context, WidgetRef ref) {
-  final cart = ref.watch(cartProvider); // rebuild on change ✓
-}
-
-// ref.read — use in callbacks/methods. Does NOT subscribe. One-time read.
-ElevatedButton(
-  onPressed: () {
-    ref.read(cartProvider.notifier).addItem(product); // in callback ✓
-  },
-)
-
-// WRONG — watch() inside a callback
-ElevatedButton(
-  onPressed: () {
-    final cart = ref.watch(cartProvider); // ❌ runtime error
-  },
-)
-
-// ref.listen — react to changes without rebuilding the whole widget
-@override
-Widget build(BuildContext context, WidgetRef ref) {
-  ref.listen<AsyncValue<List<CartItem>>>(cartProvider, (previous, next) {
-    next.whenOrNull(
-      error: (error, _) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cart error: $error')),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifications = ref.watch(notificationsProvider);
+    return notifications.when(
+      loading: () => const Icon(Icons.notifications),
+      error: (_, __) => const Icon(Icons.notifications_off),
+      data: (items) => Badge(
+        label: Text('${items.where((n) => !n.isRead).length}'),
+        child: const Icon(Icons.notifications),
       ),
     );
-  });
-  // ... rest of build
+  }
 }
 ```
 
 ---
 
-## 5. Provider Dependencies — ref.watch Inside a Provider
+## 2. `NotifierProvider` — The ChangeNotifier Replacement
 
-Providers can depend on other providers. When a dependency changes, the dependent provider rebuilds automatically.
+> 📄 **Riverpod Docs:**
+> *"Notifier is the replacement for ChangeNotifier in Riverpod. It is a class with state and methods to mutate that state. The big advantage over ChangeNotifier is that the state is exposed as an immutable object."*
 
 ```dart
-final selectedCityProvider = StateProvider<String>((ref) => 'Hyderabad');
+// The Notifier — pure Dart class, no BuildContext, no widgets
+class CartNotifier extends Notifier<List<CartItem>> {
+  @override
+  List<CartItem> build() {
+    return [];    // initial state — this is called like a provider's create function
+  }
 
-// This provider depends on selectedCityProvider
-// When city changes, this provider is automatically invalidated and re-fetched
-final weatherProvider = FutureProvider<Weather>((ref) async {
-  final city = ref.watch(selectedCityProvider);  // dependency declared here
-  return await WeatherApi().getWeather(city);
+  void addItem(Product product, String size) {
+    final existing = state.where(
+      (i) => i.product.id == product.id && i.selectedSize == size
+    ).firstOrNull;
+
+    if (existing != null) {
+      // Immutable update — create a new list with the updated item
+      state = state.map((item) {
+        if (item.product.id == product.id && item.selectedSize == size) {
+          return CartItem(product: item.product, selectedSize: item.selectedSize, quantity: item.quantity + 1);
+        }
+        return item;
+      }).toList();
+    } else {
+      state = [...state, CartItem(product: product, selectedSize: size)];
+    }
+  }
+
+  void removeItem(String productId, String size) {
+    state = state.where(
+      (i) => !(i.product.id == productId && i.selectedSize == size)
+    ).toList();
+  }
+
+  void updateQuantity(String productId, String size, int delta) {
+    state = state.map((item) {
+      if (item.product.id == productId && item.selectedSize == size) {
+        final newQty = item.quantity + delta;
+        return newQty <= 0
+            ? null  // mark for removal
+            : CartItem(product: item.product, selectedSize: item.selectedSize, quantity: newQty);
+      }
+      return item;
+    }).whereType<CartItem>().toList();
+  }
+
+  double get total => state.fold(0, (sum, item) => sum + item.totalPrice);
+  int get itemCount => state.fold(0, (sum, item) => sum + item.quantity);
+}
+
+// The provider — declared outside of any widget or class (global)
+final cartProvider = NotifierProvider<CartNotifier, List<CartItem>>(CartNotifier.new);
+
+// Computed providers that depend on cart — no extra code in CartNotifier needed
+final cartTotalProvider = Provider<double>((ref) {
+  final items = ref.watch(cartProvider);
+  return items.fold(0, (sum, item) => sum + item.totalPrice);
 });
 
-// In widget:
-// Changing selectedCityProvider triggers weatherProvider to re-fetch automatically
-ref.read(selectedCityProvider.notifier).state = 'Mumbai';
-// ^ this causes weatherProvider to re-run its Future with the new city
-```
-
-This reactive dependency chain is one of Riverpod's most powerful features.
-
----
-
-## 6. Family — Parameterised Providers
-
-When you need the same provider logic with different parameters:
-
-```dart
-// FutureProvider.family takes a parameter
-final productProvider = FutureProvider.family<Product, String>((ref, productId) async {
-  return await ProductRepository().getProduct(productId);
+final cartCountProvider = Provider<int>((ref) {
+  final items = ref.watch(cartProvider);
+  return items.fold(0, (sum, item) => sum + item.quantity);
 });
+```
 
-// Each unique ID gets its own cached provider instance
-final product = ref.watch(productProvider('product-123'));
-final otherProduct = ref.watch(productProvider('product-456'));
+```dart
+// Using CartNotifier in widgets
+class CartTab extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(cartProvider);       // subscribes to entire cart list
+    final total = ref.watch(cartTotalProvider);  // subscribes to just the total
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (_, index) => CartItemCard(
+              item: items[index],
+              onIncrease: () => ref.read(cartProvider.notifier).updateQuantity(
+                items[index].product.id, items[index].selectedSize, 1,
+              ),
+              onDecrease: () => ref.read(cartProvider.notifier).updateQuantity(
+                items[index].product.id, items[index].selectedSize, -1,
+              ),
+            ),
+          ),
+        ),
+        Text('Total: ₹${total.toStringAsFixed(0)}'),
+      ],
+    );
+  }
+}
+
+// From anywhere — add to cart without BuildContext or context.read
+// (in a repository, service class, or other provider)
+final container = ProviderContainer();  // or pass ref from parent provider
+container.read(cartProvider.notifier).addItem(product, size);
 ```
 
 ---
 
-## 7. select — Prevent Unnecessary Rebuilds
+## 3. `AsyncNotifierProvider` — Async State With Full Control
 
 ```dart
-// BAD: widget rebuilds whenever ANY part of the cart changes
-final cart = ref.watch(cartProvider);
-Text('${cart.valueOrNull?.length ?? 0} items');
+// Use when you need to: fetch initially + allow refresh + mutate + handle errors
+class ProductsNotifier extends AsyncNotifier<List<Product>> {
+  @override
+  Future<List<Product>> build() async {
+    // This is called on first use and on ref.refresh()
+    return _fetchProducts();
+  }
 
-// GOOD: widget only rebuilds when the COUNT changes
-final itemCount = ref.watch(
-  cartProvider.select((async) => async.valueOrNull?.length ?? 0),
-);
-Text('$itemCount items');
+  Future<List<Product>> _fetchProducts() async {
+    final response = await ProductApi.getAll();
+    return response.map(Product.fromJson).toList();
+  }
+
+  // Optimistic update — update UI immediately, rollback if server fails
+  Future<void> toggleWishlist(String productId) async {
+    final previousState = state;
+
+    // Immediately update UI (optimistic)
+    state = AsyncData(
+      state.requireValue.map((p) {
+        if (p.id == productId) return p.copyWith(isWishlisted: !p.isWishlisted);
+        return p;
+      }).toList(),
+    );
+
+    try {
+      await ProductApi.toggleWishlist(productId);
+    } catch (e) {
+      // Rollback on failure
+      state = previousState;
+      // Show error (via another provider or direct snackbar)
+    }
+  }
+}
+
+final productsProvider = AsyncNotifierProvider<ProductsNotifier, List<Product>>(ProductsNotifier.new);
 ```
-
-Use `.select()` to narrow what triggers a rebuild, especially in list items.
 
 ---
 
-## 8. ConsumerStatefulWidget — When You Need Both ref and Lifecycle
+## 4. `ConsumerWidget` and `ConsumerStatefulWidget`
 
 ```dart
-class SearchScreen extends ConsumerStatefulWidget {
-  const SearchScreen({super.key});
+// StatelessWidget → ConsumerWidget
+// The only change: add WidgetRef ref parameter to build()
+class MyWidget extends ConsumerWidget {
+  const MyWidget({super.key});
 
   @override
-  ConsumerState<SearchScreen> createState() => _SearchScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {  // ← WidgetRef
+    final value = ref.watch(someProvider);
+    return Text(value.toString());
+  }
 }
 
-class _SearchScreenState extends ConsumerState<SearchScreen> {
-  final _controller = TextEditingController();
+// StatefulWidget → ConsumerStatefulWidget + ConsumerState
+class MyStatefulWidget extends ConsumerStatefulWidget {
+  const MyStatefulWidget({super.key});
 
+  @override
+  ConsumerState<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends ConsumerState<MyStatefulWidget> {
+  // ref is available as a field — no parameter needed
   @override
   void initState() {
     super.initState();
-    // ref is available here (unlike Provider where context wasn't ready)
-    final initialQuery = ref.read(searchQueryProvider);
-    _controller.text = initialQuery;
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    // Use ref in initState safely
+    ref.listenManual(cartProvider, (prev, next) {
+      // called when cartProvider changes — use for side effects in initState
+      if (next.length > (prev?.length ?? 0)) {
+        print('Item added to cart');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final results = ref.watch(searchResultsProvider);
-    // ...
+    final count = ref.watch(cartCountProvider);  // ref is a field, no parameter
+    return Text('Cart: $count');
   }
 }
 ```
 
 ---
 
-## Lab — Rebuild the Shopping Cart with Riverpod
+## 5. Provider Composition — Providers Depending on Providers
 
-Take your Phase 2 Shopping App and replace all Provider + ChangeNotifier code with Riverpod.
+```dart
+// The user's ID comes from auth
+final authProvider = StateProvider<AuthUser?>((ref) => null);
+
+// The user's cart depends on their ID — auto-disposes and reloads when auth changes
+final userCartProvider = StreamProvider.autoDispose<List<CartItem>>((ref) {
+  final user = ref.watch(authProvider);
+  if (user == null) return Stream.value([]);
+
+  // When authProvider changes (login/logout), this provider rebuilds automatically
+  return FirebaseFirestore.instance
+      .collection('carts')
+      .doc(user.id)
+      .collection('items')
+      .snapshots()
+      .map((snap) => snap.docs.map((d) => CartItem.fromFirestore(d)).toList());
+});
+
+// The user's profile — auto-disposes and reloads when auth changes
+final userProfileProvider = FutureProvider.autoDispose<UserProfile>((ref) async {
+  final user = ref.watch(authProvider);
+  if (user == null) throw const UnauthorizedException();
+  return UserProfileRepository.fetch(user.id);
+});
+```
+
+🧑‍💻 **Developer:** This is Riverpod's superpower. When `authProvider` changes (user logs out), every provider that `ref.watch(authProvider)` is automatically invalidated and rebuilt. You don't need to manually reset anything on logout — the state clears itself.
+
+---
+
+## 6. `ref.listen` — Side Effects on State Change
+
+```dart
+// Side effects: navigation, showing SnackBars, analytics — triggered by state changes
+class AuthScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ref.listen does NOT subscribe this widget to rebuilds
+    // It only calls the callback when the value changes
+    ref.listen<AuthState>(authStateProvider, (previous, next) {
+      if (next == AuthState.authenticated) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else if (next == AuthState.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Authentication failed. Please try again.')),
+        );
+      }
+    });
+
+    return const LoginForm();
+  }
+}
+```
+
+**Rule:** `ref.watch` → reactive, rebuilds. `ref.read` → one-time, no rebuild. `ref.listen` → side effects on change, no rebuild.
+
+---
+
+## 7. Testing With Riverpod
+
+```dart
+testWidgets('cart shows items after adding', (tester) async {
+  // Override the cart provider with a pre-populated state
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        cartProvider.overrideWith(() => CartNotifier()..addItem(testProduct, 'M')),
+      ],
+      child: const MaterialApp(home: CartTab()),
+    ),
+  );
+
+  // Cart should show the pre-populated item
+  expect(find.text(testProduct.name), findsOneWidget);
+  expect(find.text('₹${testProduct.price}'), findsOneWidget);
+});
+
+// Unit testing a Notifier — no widgets needed
+test('addItem increases cart count', () {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  final notifier = container.read(cartProvider.notifier);
+  expect(container.read(cartCountProvider), equals(0));
+
+  notifier.addItem(testProduct, 'M');
+  expect(container.read(cartCountProvider), equals(1));
+
+  notifier.addItem(testProduct, 'M');  // same item + same size = quantity++
+  expect(container.read(cartCountProvider), equals(2));
+  expect(container.read(cartProvider).length, equals(1));  // still 1 cart item
+});
+
+// Testing FutureProvider with mock
+test('productsProvider loads and exposes data', () async {
+  final container = ProviderContainer(
+    overrides: [
+      // Override the HTTP client with a mock
+      httpClientProvider.overrideWithValue(MockHttpClient()),
+    ],
+  );
+  addTearDown(container.dispose);
+
+  // Wait for the async provider to complete
+  await container.read(productsProvider.future);
+
+  final products = container.read(productsProvider).requireValue;
+  expect(products, isNotEmpty);
+  expect(products.first.name, equals('Test Product'));
+});
+```
+
+---
+
+## Riverpod Provider Cheat Sheet
+
+| Provider Type | State Type | When to Use |
+|--------------|-----------|-------------|
+| `Provider<T>` | Synchronous, read-only | Computed values, DI |
+| `StateProvider<T>` | Simple mutable (int, bool, enum) | Tabs, toggles, counters |
+| `FutureProvider<T>` | Async, load once | One-time network requests |
+| `StreamProvider<T>` | Real-time stream | Firebase, WebSocket |
+| `NotifierProvider<N, T>` | Complex synchronous state | Cart, user, any multi-method state |
+| `AsyncNotifierProvider<N, T>` | Complex async state | Products list with refresh + filter |
+
+---
+
+## Lab — Convert the Shopping App to Riverpod
+
+Migrate the shopping app from Provider (Week 11 lab) to Riverpod:
 
 **Providers to create:**
+```dart
+// Global declarations (outside any class)
+final productsProvider = AsyncNotifierProvider<ProductsNotifier, List<Product>>(ProductsNotifier.new);
+final cartProvider = NotifierProvider<CartNotifier, List<CartItem>>(CartNotifier.new);
+final cartTotalProvider = Provider<double>((ref) {...});
+final cartCountProvider = Provider<int>((ref) {...});
+final selectedCategoryProvider = StateProvider<ProductCategory?>((ref) => null);
+final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {...});
+```
+
+**Convert each screen:**
+- Remove ALL `BuildContext`-based provider access (`context.watch`, `context.read`)
+- Replace with `ref.watch` and `ref.read`
+- `HomeTab extends ConsumerWidget` (not `StatelessWidget`)
+- `CartTab extends ConsumerWidget`
+- `ProductDetailScreen extends ConsumerWidget`
+
+**Test requirements:**
+- Unit test `CartNotifier.addItem()` — no widgets needed
+- Widget test `ProductDetailScreen` — override `productsProvider` with mock data
+- Widget test `CartBadge` — starts at 0, shows 1 after add
+
+---
+
+## Challenge — Search With Debounce
+
+Build a real-time search using Riverpod + debounce (avoid API call on every keystroke):
 
 ```dart
-// 1. Product catalog (loaded once)
-final productsProvider = FutureProvider<List<Product>>((ref) async {
-  await Future.delayed(const Duration(seconds: 1)); // simulate load
-  return hardcodedProducts;
-});
-
-// 2. Search query
+// Search query state
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-// 3. Filtered products (depends on products + search query)
-final filteredProductsProvider = Provider<List<Product>>((ref) {
-  final productsAsync = ref.watch(productsProvider);
-  final query = ref.watch(searchQueryProvider).toLowerCase();
-
-  return productsAsync.whenData((products) =>
-    query.isEmpty
-      ? products
-      : products.where((p) => p.name.toLowerCase().contains(query)).toList()
-  ).valueOrNull ?? [];
+// Debounced search — waits 400ms after last keystroke before firing
+final debouncedQueryProvider = Provider<String>((ref) {
+  final query = ref.watch(searchQueryProvider);
+  // Hint: use ref.onDispose + Timer for debounce
+  // cancelPreviousTimer, start new timer, update when timer fires
+  return query;  // replace with debounced version
 });
 
-// 4. Cart (AsyncNotifier)
-final cartProvider = AsyncNotifierProvider<CartNotifier, List<CartItem>>(CartNotifier.new);
-
-// 5. Cart total (derived from cart)
-final cartTotalProvider = Provider<double>((ref) {
-  final cartAsync = ref.watch(cartProvider);
-  return cartAsync.valueOrNull?.fold(
-    0.0, (sum, item) => sum + item.product.price * item.quantity,
-  ) ?? 0.0;
-});
-
-// 6. Cart item count (for badge)
-final cartCountProvider = Provider<int>((ref) {
-  final cartAsync = ref.watch(cartProvider);
-  return cartAsync.valueOrNull?.fold(0, (sum, item) => sum + item.quantity) ?? 0;
+// Search results — depends on debounced query
+final searchResultsProvider = FutureProvider.autoDispose<List<Product>>((ref) async {
+  final query = ref.watch(debouncedQueryProvider);
+  if (query.isEmpty) return [];
+  return ProductApi.search(query);
 });
 ```
 
-After the refactor:
-- Products load with a real loading state (show shimmer/spinner)
-- Search filters in real time as user types
-- Cart badge updates instantly across all tabs
-- No callbacks threading through constructors
+Requirements:
+- Search results show after 400ms of no typing
+- Show loading indicator while searching
+- Show "No results found" empty state
+- Pressing clear resets to empty results immediately
+- The search provider disposes itself when the screen is closed (`autoDispose`)
 
 ---
 
-## Challenge
+## Week 12 Verify
 
-Add a **"Recently Viewed"** feature using Riverpod:
-
-```dart
-class RecentlyViewedNotifier extends Notifier<List<Product>> {
-  @override
-  List<Product> build() => [];
-
-  void add(Product product) {
-    final current = state.where((p) => p.id != product.id).toList();
-    state = [product, ...current].take(10).toList(); // max 10 items
-  }
-
-  void clear() => state = [];
-}
-```
-
-When a user opens a product detail screen, add it to recently viewed. Show a "Recently Viewed" horizontal scroll section on the home page. The section only shows if the list is non-empty.
-
----
-
-## Before Week 13 — Verify
-
-1. What does `ProviderScope` do and where must it go?
-2. What is the difference between `FutureProvider` and `AsyncNotifierProvider`?
-3. Why must you use `ref.read()` in callbacks and `ref.watch()` in `build()`?
-4. What does `ref.watch(provider.select(...))` do differently from `ref.watch(provider)`?
-5. What does `AsyncValue.guard()` do — what problem does it solve?
+1. What does `ProviderScope` do? Where in the widget tree does it go and why?
+2. What is `AsyncValue<T>`? List its three states and show the `.when()` pattern.
+3. `ref.watch(cartProvider)` inside `build()` vs `ref.read(cartProvider.notifier)` inside `onPressed`. What is the rule and why?
+4. `FutureProvider.autoDispose` — what does `autoDispose` do? When is this useful?
+5. You want the cart to automatically reload when the user logs out. How does `ref.watch(authProvider)` inside `userCartProvider` achieve this?
+6. `ref.listen<T>(provider, (prev, next) {...})` — how is this different from `ref.watch`? What is it used for?
+7. In a unit test for `CartNotifier`, why do you use `ProviderContainer` instead of pumping a widget?
 
 ---
 

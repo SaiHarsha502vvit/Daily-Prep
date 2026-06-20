@@ -1167,7 +1167,6 @@ Because 3-SAT is NP-Complete, and TSP (Decision version) is in NP. By Cook's The
 
 ---
 
-> **Navigation**: [< Previous](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06d_String_Algorithms.md)
 
 ---
 
@@ -1221,3 +1220,6 @@ System.out.println(flow.getValue()); // max flow value
 // Hungarian algorithm for min-cost perfect bipartite matching -- O(n^3)
 ```
 
+---
+
+> **Navigation**: [< Previous](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06d_String_Algorithms.md)
