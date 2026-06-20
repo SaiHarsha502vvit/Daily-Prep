@@ -32,6 +32,7 @@ This file lists known wrong-domain copy patterns. Use it during review and clean
 | `list.stream().filter().map().collect()` laziness challenge      | `Ch06_Functional_Programming.md` stream fundamentals                                     | Creating Streams (source types), Intermediate Operations (flatMap), and Example sections needing terminal-operation comparisons.                                   |
 | Sliding window O(N) add/remove count challenge                   | Fixed sliding window template                                                            | Variable sliding window sections where shrink condition (while vs if) is the local teaching point.                                                                 |
 | JWT vs session cookies challenge                                 | Spring Security / auth architecture sections                                             | SQL injection, DSA math, server ports, or algorithm sections unless explicitly comparing auth storage/query behavior.                                              |
+| Prefix sum `prefix[0] = 0` challenge                             | Prefix sum / range query / subarray-sum sections                                         | Two-pointers, sliding-window, hashmap, binary-search, or pattern sections unless the chapter is explicitly comparing prefix-sum to those patterns.                     |
 
 ## Replacement Rule
 
