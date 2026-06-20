@@ -722,6 +722,165 @@ class NetworkAwareBuilder extends StatelessWidget {
 
 ---
 
+## 11. Certificate Pinning — Prevent Man-in-the-Middle Attacks
+
+> 🏢 **Enterprise Reality:**
+> *"Any app handling payments, health data, or financial information MUST pin its TLS certificate. Without pinning, a compromised CA or corporate proxy can intercept all API traffic — even over HTTPS."*
+
+```dart
+// Using dio_http2_adapter + certificate pinning
+import 'dart:io';
+
+Dio createPinnedDio() {
+  final dio = Dio(BaseOptions(baseUrl: 'https://api.yourapp.com'));
+
+  // Pin the server's public key SHA-256
+  (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+    final client = HttpClient();
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+      // Compare certificate fingerprint against known good value
+      final fingerprint = sha256.convert(cert.der).toString();
+      const expectedFingerprint = 'aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3xY5zA7bC9d';
+      return fingerprint == expectedFingerprint;
+    };
+    return client;
+  };
+
+  return dio;
+}
+```
+
+---
+
+## 12. Retry With Exponential Backoff
+
+```dart
+// Enterprise retry interceptor — don't hammer a failing server
+class RetryInterceptor extends Interceptor {
+  final Dio dio;
+  final int maxRetries;
+
+  RetryInterceptor({required this.dio, this.maxRetries = 3});
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (_shouldRetry(err) && err.requestOptions.extra['retryCount'] == null) {
+      for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        // Exponential backoff: 1s, 2s, 4s
+        final delay = Duration(seconds: math.pow(2, attempt - 1).toInt());
+        await Future.delayed(delay);
+
+        try {
+          logger.w('Retry attempt $attempt/${maxRetries} for ${err.requestOptions.path}');
+          err.requestOptions.extra['retryCount'] = attempt;
+          final response = await dio.fetch(err.requestOptions);
+          return handler.resolve(response);
+        } on DioException catch (e) {
+          if (attempt == maxRetries) return handler.next(e);
+        }
+      }
+    }
+    handler.next(err);
+  }
+
+  bool _shouldRetry(DioException err) {
+    return err.type == DioExceptionType.connectionTimeout ||
+           err.type == DioExceptionType.connectionError ||
+           (err.response?.statusCode ?? 0) >= 500;
+    // Never retry 4xx errors — those won't succeed on retry
+  }
+}
+```
+
+---
+
+## 13. Analytics Architecture — Event Tracking
+
+> 🏢 **Enterprise Reality:**
+> *"Product decisions are data-driven. Every screen view, button tap, and conversion funnel must be tracked. Analytics is not an afterthought — it's part of the architecture."*
+
+```dart
+// Analytics service — abstraction over Firebase Analytics / Mixpanel / Amplitude
+abstract class AnalyticsService {
+  void trackScreen(String screenName, {Map<String, dynamic>? params});
+  void trackEvent(String eventName, {Map<String, dynamic>? params});
+  void setUserProperty(String name, String value);
+  void setUserId(String? userId);
+}
+
+class FirebaseAnalyticsService implements AnalyticsService {
+  final _analytics = FirebaseAnalytics.instance;
+
+  @override
+  void trackScreen(String screenName, {Map<String, dynamic>? params}) {
+    _analytics.logScreenView(screenClass: screenName, screenName: screenName);
+  }
+
+  @override
+  void trackEvent(String eventName, {Map<String, dynamic>? params}) {
+    _analytics.logEvent(name: eventName, parameters: params);
+  }
+
+  @override
+  void setUserProperty(String name, String value) {
+    _analytics.setUserProperty(name: name, value: value);
+  }
+
+  @override
+  void setUserId(String? userId) {
+    _analytics.setUserId(id: userId);
+  }
+}
+
+// Analytics events — typed, not stringly-typed
+abstract class AnalyticsEvents {
+  static const addToCart = 'add_to_cart';
+  static const removeFromCart = 'remove_from_cart';
+  static const beginCheckout = 'begin_checkout';
+  static const purchase = 'purchase';
+  static const search = 'search';
+  static const screenView = 'screen_view';
+  static const signUp = 'sign_up';
+  static const login = 'login';
+}
+
+// Usage in BLoC — analytics are a side effect, not UI logic
+class CartBloc extends Bloc<CartEvent, CartState> {
+  final AnalyticsService _analytics;
+
+  CartBloc(this._repo, this._analytics) : super(CartEmpty()) {
+    on<AddItemEvent>((event, emit) async {
+      // Business logic first
+      final newState = /* ... */;
+      emit(newState);
+
+      // Track the event
+      _analytics.trackEvent(AnalyticsEvents.addToCart, params: {
+        'product_id': event.product.id,
+        'product_name': event.product.name,
+        'price': event.product.price,
+        'currency': 'INR',
+      });
+    });
+  }
+}
+
+// Navigator observer — auto-track screen views
+class AnalyticsNavigatorObserver extends NavigatorObserver {
+  final AnalyticsService analytics;
+  AnalyticsNavigatorObserver(this.analytics);
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    if (route.settings.name != null) {
+      analytics.trackScreen(route.settings.name!);
+    }
+  }
+}
+```
+
+---
+
 ## Lab — NewsApp With Real API
 
 Use the [newsapi.org](https://newsapi.org) free tier (100 requests/day) or any mock JSON server.
@@ -958,6 +1117,8 @@ class _CacheEntry<T> {
 5. `json_serializable` generates `fromJson` and `toJson`. What command do you run and what file is generated?
 6. What is a skeleton screen? When should you use a skeleton instead of a `CircularProgressIndicator`?
 7. In `FutureProvider.autoDispose.family<List<Article>, String>`, what does `family` do? Write the provider declaration.
+8. A `DioException` with `type: connectionError` reaches the UI. What should the user see? Write the user-friendly message and the UI action (button/link) you'd provide.
+9. Your app shows raw `Exception: SocketException` text to the user. Name two things wrong with this and how the error-mapping pattern fixes it.
 
 ---
 

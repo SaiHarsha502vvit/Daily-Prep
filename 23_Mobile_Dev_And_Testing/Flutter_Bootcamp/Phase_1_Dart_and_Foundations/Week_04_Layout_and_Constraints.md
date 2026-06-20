@@ -599,6 +599,70 @@ final width = MediaQuery.of(context).size.width;
 
 ---
 
+## Design System Spacing Tokens — Enterprise Pattern
+
+> 🏢 **Enterprise Reality:**
+> *"In a 50-screen app, hardcoded padding values like `EdgeInsets.all(16)` scattered across 200 files make design consistency impossible. Enterprise teams define spacing as tokens — named constants that the design system owns."*
+
+```dart
+// lib/core/design_system/spacing.dart
+abstract class AppSpacing {
+  static const double xxs = 2;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 16;
+  static const double lg = 24;
+  static const double xl = 32;
+  static const double xxl = 48;
+  static const double xxxl = 64;
+
+  // Named semantic tokens — used in code
+  static const double cardPadding = md;
+  static const double screenPadding = md;
+  static const double sectionGap = lg;
+  static const double listItemGap = sm;
+  static const double iconTextGap = xs;
+}
+
+// lib/core/design_system/radii.dart
+abstract class AppRadii {
+  static const double sm = 4;
+  static const double md = 8;
+  static const double lg = 12;
+  static const double xl = 16;
+  static const double full = 999;
+
+  static const card = BorderRadius.all(Radius.circular(lg));
+  static const chip = BorderRadius.all(Radius.circular(full));
+  static const button = BorderRadius.all(Radius.circular(md));
+  static const bottomSheet = BorderRadius.vertical(top: Radius.circular(xl));
+}
+
+// Usage — every layout references the design system, never raw numbers
+Padding(
+  padding: const EdgeInsets.all(AppSpacing.screenPadding),
+  child: Column(
+    spacing: AppSpacing.sectionGap,   // Flutter 3.27+ Column.spacing
+    children: [
+      _Header(),
+      _Content(),
+    ],
+  ),
+)
+
+Card(
+  shape: RoundedRectangleBorder(borderRadius: AppRadii.card),
+  child: Padding(
+    padding: const EdgeInsets.all(AppSpacing.cardPadding),
+    child: content,
+  ),
+)
+```
+
+**Rule:** If a designer says "increase card padding everywhere," you change ONE constant. Without tokens, you'd find-and-replace across 200 files. Design tokens are the bridge between Figma and code.
+
+---
+
 ## Lab — Four Real Layout Challenges
 
 Build each as a separate screen/widget:

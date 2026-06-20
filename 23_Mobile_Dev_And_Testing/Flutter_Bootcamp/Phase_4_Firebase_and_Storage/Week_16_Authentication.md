@@ -690,6 +690,147 @@ Future<void> handleLogin() async {
 
 ---
 
+## 10. Token Refresh Architecture — Enterprise Session Management
+
+> 🏢 **Enterprise Reality:**
+> *"Firebase Auth handles token refresh for you. But if you're integrating with your company's own backend API (which most enterprises do), YOU must handle token expiry, refresh, and retry transparently."*
+
+```dart
+// Auth interceptor — transparently refreshes expired tokens
+class AuthInterceptor extends QueuedInterceptor {
+  final SecureStorageService _storage;
+  final AuthService _authService;
+  final Dio _dio;
+
+  AuthInterceptor(this._storage, this._authService, this._dio);
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+    final token = await _storage.read(key: 'access_token');
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode == 401) {
+      // Token expired — try to refresh
+      try {
+        final refreshToken = await _storage.read(key: 'refresh_token');
+        if (refreshToken == null) {
+          _authService.forceLogout();
+          return handler.next(err);
+        }
+
+        // Get new access token using refresh token
+        final response = await _dio.post('/auth/refresh', data: {
+          'refresh_token': refreshToken,
+        });
+
+        final newAccessToken = response.data['access_token'] as String;
+        final newRefreshToken = response.data['refresh_token'] as String;
+
+        // Save new tokens
+        await _storage.write(key: 'access_token', value: newAccessToken);
+        await _storage.write(key: 'refresh_token', value: newRefreshToken);
+
+        // Retry the original request with the new token
+        err.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+        final retryResponse = await _dio.fetch(err.requestOptions);
+        return handler.resolve(retryResponse);
+
+      } on DioException {
+        // Refresh token also expired — force logout
+        _authService.forceLogout();
+        return handler.next(err);
+      }
+    }
+    handler.next(err);
+  }
+}
+```
+
+```dart
+// QueuedInterceptor is CRITICAL here — without it, if 5 API calls fail with 401
+// simultaneously, you'd trigger 5 refresh token requests. QueuedInterceptor
+// queues them: first request refreshes, remaining 4 retry with the new token.
+
+// Session timeout — automatically log out inactive users
+class SessionManager {
+  Timer? _inactivityTimer;
+  static const _timeout = Duration(minutes: 15);
+
+  void onUserActivity() {
+    _inactivityTimer?.cancel();
+    _inactivityTimer = Timer(_timeout, () {
+      logger.i('Session timed out due to inactivity');
+      _authService.forceLogout();
+    });
+  }
+
+  void dispose() => _inactivityTimer?.cancel();
+}
+```
+
+---
+
+## 11. Multi-Provider Auth — Enterprise SSO
+
+```dart
+// Enterprise apps often support multiple auth providers
+// Users might link Google + Email, or use company SSO (SAML/OIDC)
+
+class AuthService {
+  Future<UserCredential> signInWithSSO(String ssoProvider) async {
+    // For enterprise OIDC/SAML providers
+    final provider = OAuthProvider(ssoProvider);
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({'tenant': 'your-company-tenant-id'});
+
+    return FirebaseAuth.instance.signInWithProvider(provider);
+  }
+
+  // Link additional providers to existing account
+  Future<void> linkGoogleAccount() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Link to current user — they can now sign in with either method
+    await FirebaseAuth.instance.currentUser?.linkWithCredential(credential);
+  }
+
+  // Account deletion — GDPR + App Store requirement
+  Future<void> deleteAccount() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    // 1. Delete all user data from Firestore
+    await _deleteUserData(user.uid);
+
+    // 2. Delete from Firebase Auth
+    await user.delete();
+
+    // 3. Clear all local storage
+    await _secureStorage.deleteAll();
+    await Hive.deleteFromDisk();
+
+    // 4. Track for compliance audit
+    analytics.trackEvent('account_deleted', params: {'method': 'user_initiated'});
+  }
+}
+```
+
+---
+
 ## Lab — Complete Auth Flow
 
 Build a complete authentication system:
@@ -877,6 +1018,8 @@ Future<void> verifyOtp(String otp) async {
 5. `request.auth.uid` in Firestore security rules — where does this value come from?
 6. You protect a screen with `AuthGuard`. The user is on `ProfileEditScreen` and then signs out. What happens to the screen?
 7. Why do you use `FirebaseAuth.instance.authStateChanges()` instead of just reading `FirebaseAuth.instance.currentUser` in build?
+8. Rank these login methods by friction (lowest to highest): Email+Password, Google Sign-In, Biometric, Magic Link. Which should a returning user see first?
+9. `FirebaseAuthException.code` returns `'too-many-requests'`. What happened, what should you show the user, and what UX pattern prevents this from happening?
 
 ---
 

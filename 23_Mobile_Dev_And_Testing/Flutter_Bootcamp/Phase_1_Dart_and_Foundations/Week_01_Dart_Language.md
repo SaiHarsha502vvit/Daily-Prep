@@ -844,6 +844,156 @@ Can this value ever be null?
 
 ---
 
+## 14. Structured Error Handling — Enterprise Pattern
+
+> 🏢 **Enterprise Reality:**
+> *"In production, you don't catch `Exception`. You define your own error hierarchy, tag errors with severity, and route them to Crashlytics/Sentry. Every error your app throws must be categorized, loggable, and recoverable."*
+
+```dart
+// Enterprise error hierarchy — sealed classes, not raw exceptions
+sealed class AppFailure {
+  final String message;
+  final String code;
+  final StackTrace? stackTrace;
+  final Map<String, dynamic>? context;
+
+  const AppFailure(this.message, {required this.code, this.stackTrace, this.context});
+}
+
+class NetworkFailure extends AppFailure {
+  final int? statusCode;
+  const NetworkFailure(super.message, {required super.code, this.statusCode, super.stackTrace, super.context});
+}
+
+class CacheFailure extends AppFailure {
+  const CacheFailure(super.message, {required super.code, super.stackTrace, super.context});
+}
+
+class ValidationFailure extends AppFailure {
+  final Map<String, String> fieldErrors;
+  const ValidationFailure(super.message, {required super.code, this.fieldErrors = const {}, super.stackTrace});
+}
+
+class AuthFailure extends AppFailure {
+  final bool requiresReLogin;
+  const AuthFailure(super.message, {required super.code, this.requiresReLogin = false, super.stackTrace});
+}
+
+// Usage — never throw raw exceptions in enterprise code
+Future<Result<User>> getUser(String id) async {
+  try {
+    final response = await _dio.get('/users/$id');
+    return Success(User.fromJson(response.data));
+  } on DioException catch (e, stack) {
+    return Failure(NetworkFailure(
+      'Failed to load user profile',
+      code: 'USER_FETCH_FAILED',
+      statusCode: e.response?.statusCode,
+      stackTrace: stack,
+      context: {'userId': id},
+    ));
+  }
+}
+```
+
+```dart
+// Isolates — offload heavy computation to a separate thread
+// Enterprise apps parse large JSON, compress images, encrypt data — never on the main thread
+
+import 'dart:isolate';
+
+// Simple: compute() for one-shot work
+final parsed = await compute(parseJsonList, hugeJsonString);
+
+List<Product> parseJsonList(String json) {
+  final list = jsonDecode(json) as List;
+  return list.map((e) => Product.fromJson(e)).toList();
+}
+
+// Advanced: long-running Isolate for continuous work
+class ImageProcessingIsolate {
+  late final Isolate _isolate;
+  late final SendPort _sendPort;
+
+  Future<void> start() async {
+    final receivePort = ReceivePort();
+    _isolate = await Isolate.spawn(_processImages, receivePort.sendPort);
+    _sendPort = await receivePort.first as SendPort;
+  }
+
+  static void _processImages(SendPort mainSendPort) {
+    final port = ReceivePort();
+    mainSendPort.send(port.sendPort);
+    port.listen((message) {
+      // Heavy work: resize, compress, watermark — runs on separate thread
+      final result = _compressImage(message as Uint8List);
+      mainSendPort.send(result);
+    });
+  }
+
+  void kill() => _isolate.kill();
+}
+```
+
+**Rule:** If a synchronous operation takes >16ms (one frame at 60fps), it must run in an Isolate. JSON parsing for >100 items, image processing, encryption, and database queries are the common offenders.
+
+---
+
+## 15. Logging — Structured, Leveled, Production-Safe
+
+```dart
+// Enterprise logging — not debugPrint('something happened')
+import 'package:logger/logger.dart';
+
+final logger = Logger(
+  printer: PrettyPrinter(
+    methodCount: 0,
+    errorMethodCount: 5,
+    lineLength: 80,
+    colors: true,
+    printTime: true,
+  ),
+  // In production: filter out verbose/debug, only log warnings+
+  filter: ProductionFilter(),
+  output: MultiOutput([
+    ConsoleOutput(),            // dev: console
+    CrashlyticsOutput(),        // prod: send to Crashlytics
+  ]),
+);
+
+class ProductionFilter extends LogFilter {
+  @override
+  bool shouldLog(LogEvent event) {
+    // In release builds, only log warnings and above
+    if (kReleaseMode) return event.level.index >= Level.warning.index;
+    return true;
+  }
+}
+
+class CrashlyticsOutput extends LogOutput {
+  @override
+  void output(OutputEvent event) {
+    if (event.level == Level.error || event.level == Level.fatal) {
+      FirebaseCrashlytics.instance.recordError(
+        event.lines.join('\n'),
+        null,
+        reason: 'Logger: ${event.level.name}',
+      );
+    }
+  }
+}
+
+// Usage throughout the app
+logger.d('Cart updated: ${items.length} items');           // debug — dev only
+logger.i('User logged in: ${user.uid}');                   // info
+logger.w('API response slow: ${duration.inMs}ms');         // warning
+logger.e('Payment failed', error: e, stackTrace: stack);   // error → Crashlytics
+```
+
+**Rule:** Never use `print()` or `debugPrint()` in enterprise code. Use a structured logger with severity levels, production filtering, and crash reporting integration. Never log PII (emails, phone numbers, tokens).
+
+---
+
 ## Lab — Build a Todo Manager in Pure Dart
 
 Build a complete todo manager in pure Dart (no Flutter, just a `.dart` file run with `dart run`):

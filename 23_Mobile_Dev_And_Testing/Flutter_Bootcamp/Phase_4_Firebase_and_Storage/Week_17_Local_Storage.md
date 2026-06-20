@@ -688,6 +688,101 @@ Future<void> onAccountDelete() async {
 
 ---
 
+## 7. Database Migrations — Evolving Your Schema
+
+> 🏢 **Enterprise Reality:**
+> *"Your v1.0 database has 5 columns. Your v2.0 adds 3 more. 100,000 users have v1.0 databases on their phones. You can't drop the table — their data would be lost. You MUST migrate."*
+
+### SQLite Migrations
+
+```dart
+final database = await openDatabase(
+  'app.db',
+  version: 3,   // current schema version
+  onCreate: (db, version) async {
+    // Fresh install — create latest schema directly
+    await db.execute('''
+      CREATE TABLE notes (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL DEFAULT '',
+        category TEXT,
+        is_pinned INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )
+    ''');
+  },
+  onUpgrade: (db, oldVersion, newVersion) async {
+    // Existing user updating — run migrations sequentially
+    if (oldVersion < 2) {
+      // v1 → v2: add category column
+      await db.execute('ALTER TABLE notes ADD COLUMN category TEXT');
+      logger.i('Migration v1→v2: added category column');
+    }
+    if (oldVersion < 3) {
+      // v2 → v3: add is_pinned column
+      await db.execute('ALTER TABLE notes ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0');
+      logger.i('Migration v2→v3: added is_pinned column');
+    }
+    // A user updating from v1→v3 runs BOTH migrations in order
+  },
+);
+```
+
+### Hive Schema Versioning
+
+```dart
+// Hive doesn't have built-in migrations — handle it manually
+@HiveType(typeId: 0)
+class NoteHiveModel extends HiveObject {
+  @HiveField(0) late String id;
+  @HiveField(1) late String title;
+  @HiveField(2) late String content;
+  @HiveField(3) late int createdAt;
+  @HiveField(4) late int updatedAt;
+  // v2: added in update — Hive handles new fields gracefully (returns null)
+  @HiveField(5) String? category;
+  @HiveField(6, defaultValue: false) bool isPinned = false;
+}
+
+// CRITICAL: Never change existing HiveField numbers.
+// @HiveField(0) is ALWAYS 'id'. Adding a new field = use the next number.
+// Removing a field: leave the number unused, never reassign it.
+
+// Manual migration for data transformation
+Future<void> migrateHiveData() async {
+  final box = await Hive.openBox<NoteHiveModel>('notes');
+  final prefs = await SharedPreferences.getInstance();
+  final currentVersion = prefs.getInt('hive_schema_version') ?? 1;
+
+  if (currentVersion < 2) {
+    // Backfill category for existing notes
+    for (final note in box.values) {
+      if (note.category == null) {
+        note.category = 'uncategorized';
+        await note.save();
+      }
+    }
+    await prefs.setInt('hive_schema_version', 2);
+    logger.i('Hive migration v1→v2: backfilled categories');
+  }
+}
+```
+
+**Enterprise migration rules:**
+```
+1. Migrations are ADDITIVE — never delete columns, never rename columns
+2. New columns must have DEFAULT values (existing rows need them)
+3. Migrations run SEQUENTIALLY — v1→v2→v3, never skip
+4. Test migrations with real data from production (anonymized)
+5. Hive field numbers are permanent — never reuse a number
+6. Log every migration for debugging
+7. Wrap in a transaction — if migration fails, database stays consistent
+```
+
+---
+
 ## Lab — Notes App Offline Layer
 
 Add offline support to the Notes App from Week 15:

@@ -658,6 +658,121 @@ Initial state                  → test that Bloc starts in expected state
 
 ---
 
+## 11. BLoC Observer — Enterprise Logging & Debugging
+
+> 🏢 **Enterprise Reality:**
+> *"In production, you can't attach DevTools. You need every state transition logged to Crashlytics as breadcrumbs, so when a crash report comes in, you can see the exact sequence of events that led to it."*
+
+```dart
+class AppBlocObserver extends BlocObserver {
+  @override
+  void onEvent(Bloc bloc, Object? event) {
+    super.onEvent(bloc, event);
+    logger.d('${bloc.runtimeType} ← ${event.runtimeType}');
+
+    // Breadcrumbs for crash reporting
+    Sentry.addBreadcrumb(Breadcrumb(
+      message: '${bloc.runtimeType} received ${event.runtimeType}',
+      category: 'bloc.event',
+      data: {'bloc': bloc.runtimeType.toString(), 'event': event.toString()},
+    ));
+  }
+
+  @override
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
+    logger.d('${bloc.runtimeType}: ${transition.currentState.runtimeType} → ${transition.nextState.runtimeType}');
+  }
+
+  @override
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    super.onError(bloc, error, stackTrace);
+    logger.e('${bloc.runtimeType} error', error: error, stackTrace: stackTrace);
+
+    Sentry.captureException(error, stackTrace: stackTrace, withScope: (scope) {
+      scope.setTag('bloc', bloc.runtimeType.toString());
+    });
+  }
+}
+
+// Register in main.dart
+void main() {
+  Bloc.observer = AppBlocObserver();
+  runApp(const App());
+}
+```
+
+---
+
+## 12. Multi-BLoC Coordination — Enterprise Patterns
+
+```dart
+// Pattern: BLoC Facade — orchestrate multiple BLoCs for complex flows
+class CheckoutFacade {
+  final CartBloc _cartBloc;
+  final PaymentBloc _paymentBloc;
+  final OrderBloc _orderBloc;
+  final AnalyticsService _analytics;
+
+  CheckoutFacade(this._cartBloc, this._paymentBloc, this._orderBloc, this._analytics);
+
+  Future<void> processCheckout({required PaymentMethod method}) async {
+    final cartState = _cartBloc.state;
+    if (cartState is! CartLoaded || cartState.items.isEmpty) return;
+
+    // Step 1: Validate cart
+    _cartBloc.add(ValidateCartEvent());
+
+    // Step 2: Process payment
+    _paymentBloc.add(ProcessPaymentEvent(
+      amount: cartState.total,
+      method: method,
+      items: cartState.items,
+    ));
+
+    // Step 3: Create order (happens after payment succeeds via stream listener)
+    // Step 4: Clear cart
+    // Step 5: Track conversion
+
+    _analytics.trackEvent(AnalyticsEvents.beginCheckout, params: {
+      'item_count': cartState.items.length,
+      'total': cartState.total,
+      'payment_method': method.name,
+    });
+  }
+}
+
+// Pattern: Hydrated BLoC — persist and restore state across app restarts
+// pubspec.yaml: hydrated_bloc: ^9.1.0
+class SettingsBloc extends HydratedBloc<SettingsEvent, SettingsState> {
+  SettingsBloc() : super(const SettingsState.defaults()) {
+    on<ChangeThemeEvent>((event, emit) {
+      emit(state.copyWith(themeMode: event.mode));
+      // State is automatically persisted to disk by HydratedBloc
+    });
+    on<ChangeLocaleEvent>((event, emit) {
+      emit(state.copyWith(locale: event.locale));
+    });
+  }
+
+  @override
+  SettingsState fromJson(Map<String, dynamic> json) => SettingsState.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson(SettingsState state) => state.toJson();
+}
+
+// Initialize HydratedBloc storage before runApp
+void main() async {
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
+  runApp(const App());
+}
+```
+
+---
+
 ## Lab — Shopping Cart With BLoC
 
 Rebuild the shopping cart from Phase 2 using BLoC:
@@ -717,6 +832,9 @@ Write `blocTest` for every transition.
 5. A `BLoC` receives two events in quick succession. What happens? Are they processed simultaneously?
 6. `buildWhen: (prev, curr) => curr is ExpenseLoaded` — what does this do and why is it useful?
 7. You want to navigate to `/home` when auth succeeds. Should this logic go in `BlocBuilder` or `BlocListener`? Why?
+8. Write a `blocTest` that verifies an optimistic delete: the item is removed immediately, but restored when the server returns an error. How many states do you expect?
+9. `CartBloc` needs to react when `AuthBloc` emits `AuthUnauthenticated`. How do you wire this communication? Where do you cancel the subscription?
+10. A search BLoC receives a `SearchEvent` on every keystroke. You want to debounce to 300ms. Which `EventTransformer` do you use, and how do you apply it?
 
 ---
 

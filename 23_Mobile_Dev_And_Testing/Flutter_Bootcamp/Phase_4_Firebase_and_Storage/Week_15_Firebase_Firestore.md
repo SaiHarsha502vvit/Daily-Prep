@@ -811,6 +811,122 @@ Need to write multiple documents atomically?
 
 ---
 
+## 11. Offline-First Sync Engine — Enterprise Pattern
+
+> 🏢 **Enterprise Reality:**
+> *"Your users are on the subway, in elevators, in rural areas. An enterprise app must work fully offline — create, edit, delete — and sync automatically when connectivity returns. This is not a nice-to-have; it's table stakes."*
+
+```dart
+// Sync status for every document
+enum SyncStatus { synced, pendingCreate, pendingUpdate, pendingDelete }
+
+class SyncableNote {
+  final Note note;
+  final SyncStatus syncStatus;
+  final DateTime lastModified;
+
+  const SyncableNote({
+    required this.note,
+    required this.syncStatus,
+    required this.lastModified,
+  });
+}
+
+// Offline-first repository — local database is the source of truth
+class OfflineFirstNotesRepository {
+  final NotesLocalDatasource _local;    // Hive or SQLite
+  final NotesRemoteDatasource _remote;  // Firestore
+  final ConnectivityService _connectivity;
+
+  // WRITE: always write locally first, then attempt sync
+  Future<void> createNote(Note note) async {
+    // 1. Save to local DB immediately — user sees it instantly
+    await _local.save(SyncableNote(
+      note: note,
+      syncStatus: SyncStatus.pendingCreate,
+      lastModified: DateTime.now(),
+    ));
+
+    // 2. Attempt remote sync in background
+    if (await _connectivity.isOnline) {
+      try {
+        await _remote.create(note);
+        await _local.updateSyncStatus(note.id, SyncStatus.synced);
+      } catch (e) {
+        // Failed — stays as pendingCreate, will sync later
+        logger.w('Sync failed for note ${note.id}, will retry');
+      }
+    }
+  }
+
+  // READ: always read from local — it's the single source of truth
+  Stream<List<SyncableNote>> watchNotes() => _local.watchAll();
+
+  // SYNC: called when connectivity is restored
+  Future<SyncResult> syncPendingChanges() async {
+    final pending = await _local.getPending();
+    int synced = 0, failed = 0;
+
+    for (final item in pending) {
+      try {
+        switch (item.syncStatus) {
+          case SyncStatus.pendingCreate:
+            await _remote.create(item.note);
+          case SyncStatus.pendingUpdate:
+            await _remote.update(item.note);
+          case SyncStatus.pendingDelete:
+            await _remote.delete(item.note.id);
+          case SyncStatus.synced:
+            break;
+        }
+        await _local.updateSyncStatus(item.note.id, SyncStatus.synced);
+        synced++;
+      } catch (e) {
+        failed++;
+        logger.e('Sync failed for ${item.note.id}', error: e);
+      }
+    }
+
+    return SyncResult(synced: synced, failed: failed);
+  }
+}
+```
+
+```dart
+// Conflict resolution — when the same note is edited offline on two devices
+class ConflictResolver {
+  SyncableNote resolve(SyncableNote local, SyncableNote remote) {
+    // Strategy 1: Last-write-wins (simplest, used by most apps)
+    if (local.lastModified.isAfter(remote.lastModified)) {
+      return local;
+    }
+    return remote;
+
+    // Strategy 2: Merge fields (complex, used by collaborative editors)
+    // Strategy 3: Present both to user (used by Git-like systems)
+  }
+}
+
+// Connectivity listener — auto-sync when back online
+class SyncService {
+  StreamSubscription? _connectivitySub;
+
+  void startWatching() {
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((status) {
+      if (status != ConnectivityResult.none) {
+        _repository.syncPendingChanges().then((result) {
+          logger.i('Sync complete: ${result.synced} synced, ${result.failed} failed');
+        });
+      }
+    });
+  }
+
+  void dispose() => _connectivitySub?.cancel();
+}
+```
+
+---
+
 ## Lab — Notes App With Full Firestore
 
 Build a complete notes app with these features:

@@ -990,6 +990,124 @@ detached  → final save (not guaranteed to complete — keep it fast)
 
 ---
 
+## 14. Global Error Handling — Crash Reporting Architecture
+
+> 🏢 **Enterprise Reality:**
+> *"In production, uncaught exceptions must NEVER show a white screen. Every crash is captured, tagged with user/device context, and sent to Crashlytics/Sentry before the user sees a graceful fallback."*
+
+```dart
+// lib/main.dart — the enterprise app entry point
+Future<void> main() async {
+  // Zone-based error catching — catches ALL async errors not caught by try/catch
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+    // Catch Flutter framework errors (render errors, layout overflow, etc.)
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+      logger.e('Flutter error', error: details.exception, stackTrace: details.stack);
+    };
+
+    // Catch errors in the platform layer (native crashes)
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      logger.e('Platform error', error: error, stackTrace: stack);
+      return true;
+    };
+
+    // Set user context for crash reports
+    FirebaseCrashlytics.instance.setCustomKey('app_version', '2.1.0');
+    FirebaseCrashlytics.instance.setCustomKey('build_number', '142');
+
+    runApp(
+      ProviderScope(
+        child: const App(),
+      ),
+    );
+  }, (error, stack) {
+    // Catches ANY uncaught async error (e.g., unawaited Futures that throw)
+    FirebaseCrashlytics.instance.recordError(error, stack);
+    logger.e('Uncaught async error', error: error, stackTrace: stack);
+  });
+}
+```
+
+```dart
+// ErrorBoundary widget — graceful fallback instead of white screen
+class ErrorBoundary extends StatefulWidget {
+  final Widget child;
+  final Widget Function(FlutterErrorDetails)? errorBuilder;
+  const ErrorBoundary({super.key, required this.child, this.errorBuilder});
+
+  @override
+  State<ErrorBoundary> createState() => _ErrorBoundaryState();
+}
+
+class _ErrorBoundaryState extends State<ErrorBoundary> {
+  FlutterErrorDetails? _error;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_error != null) {
+      return widget.errorBuilder?.call(_error!) ?? const _DefaultErrorScreen();
+    }
+
+    return ErrorWidget.builder = (details) {
+      _error = details;
+      // In debug: show the red error screen
+      // In release: show the user-friendly fallback
+      if (kDebugMode) return ErrorWidget(details.exception);
+      return const _DefaultErrorScreen();
+    };
+  }
+}
+
+class _DefaultErrorScreen extends StatelessWidget {
+  const _DefaultErrorScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text('Something went wrong', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            const Text('We\'ve been notified. Please restart the app.'),
+            const SizedBox(height: 24),
+            FilledButton(
+              onPressed: () => SystemNavigator.pop(),
+              child: const Text('Close App'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+**Enterprise error handling layers:**
+```
+Layer 1: try/catch in BLoC event handlers      → expected errors (API, validation)
+Layer 2: FlutterError.onError                   → framework errors (layout, render)
+Layer 3: PlatformDispatcher.instance.onError    → native platform errors
+Layer 4: runZonedGuarded                        → unawaited Future crashes
+Layer 5: ErrorBoundary widget                   → graceful UI fallback
+All layers → Crashlytics / Sentry              → team gets notified
+```
+
+---
+
 ## Lab — Music Player Screen
 
 Build a music player screen that uses every lifecycle method meaningfully:

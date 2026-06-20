@@ -852,6 +852,8 @@ Scrollbar(
 5. In infinite scroll, why do you check `_scrollController.position.pixels >= maxScrollExtent - 200` instead of `== maxScrollExtent`?
 6. You add a `GridView` inside a `Column` inside a `ListView`. What error do you get? How do you fix it using slivers?
 7. A tester runs `find.text('Item 99')` on a `ListView.builder` with 200 items. It finds nothing. Why? How do you fix the test?
+8. A loading spinner appears at the bottom of your list during pagination. How do you make VoiceOver announce "Loading more items" when it appears?
+9. `findChildIndexCallback` in `SliverChildBuilderDelegate` — what problem does it solve? What happens without it when items are reordered?
 
 ---
 

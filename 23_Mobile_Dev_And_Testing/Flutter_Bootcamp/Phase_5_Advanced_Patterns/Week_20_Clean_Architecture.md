@@ -854,6 +854,138 @@ Each layer down the pyramid is 10x faster to test. Clean Architecture pushes as 
 
 ---
 
+## 10. Feature Flags — Ship Dark, Release Bright
+
+> 🏢 **Enterprise Reality:**
+> *"At scale, you deploy code to production every day but don't release features to users. Feature flags decouple deployment from release. A flag lets you turn features on for 1% of users, then 10%, then 100% — and instantly kill them if metrics drop."*
+
+```dart
+// Firebase Remote Config — feature flag service
+class FeatureFlagService {
+  final FirebaseRemoteConfig _config = FirebaseRemoteConfig.instance;
+
+  Future<void> initialize() async {
+    await _config.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),  // prod: 1h, dev: 0
+    ));
+    await _config.setDefaults({
+      'enable_dark_mode': false,
+      'enable_new_checkout': false,
+      'max_cart_items': 50,
+      'api_version': 'v2',
+      'maintenance_mode': false,
+    });
+    await _config.fetchAndActivate();
+  }
+
+  bool getBool(String key) => _config.getBool(key);
+  int getInt(String key) => _config.getInt(key);
+  String getString(String key) => _config.getString(key);
+}
+
+// Usage — gate features without if/else spaghetti
+class CheckoutScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final flags = ref.watch(featureFlagProvider);
+
+    if (flags.getBool('maintenance_mode')) {
+      return const MaintenanceScreen();
+    }
+
+    return flags.getBool('enable_new_checkout')
+        ? const NewCheckoutFlow()    // new version for 10% of users
+        : const LegacyCheckoutFlow();  // existing version
+  }
+}
+
+// Riverpod integration
+final featureFlagProvider = Provider<FeatureFlagService>((ref) {
+  return ref.watch(featureFlagServiceProvider);
+});
+```
+
+---
+
+## 11. Multi-Module Architecture — Scaling to 20+ Developers
+
+> 🏢 **Enterprise Reality:**
+> *"When 5 teams work on the same Flutter app, merge conflicts become the #1 productivity killer. Multi-module architecture gives each team their own package with clear boundaries."*
+
+```
+my_app/
+├── app/                          ← shell app (imports all features)
+│   ├── lib/main.dart
+│   └── pubspec.yaml              ← depends on all feature packages
+│
+├── packages/
+│   ├── core/                     ← shared code (no feature logic)
+│   │   ├── core_ui/              ← design system (buttons, colors, tokens)
+│   │   ├── core_network/         ← Dio setup, interceptors, base client
+│   │   ├── core_storage/         ← Hive/SecureStorage wrappers
+│   │   └── core_domain/          ← shared entities, Result type
+│   │
+│   ├── features/
+│   │   ├── feature_auth/         ← Team A owns this
+│   │   │   ├── lib/
+│   │   │   │   ├── domain/       ← auth entities, use cases
+│   │   │   │   ├── data/         ← Firebase Auth datasource
+│   │   │   │   └── presentation/ ← login/signup screens, auth BLoC
+│   │   │   ├── test/
+│   │   │   └── pubspec.yaml      ← depends on core_*, not other features
+│   │   │
+│   │   ├── feature_expenses/     ← Team B owns this
+│   │   ├── feature_chat/         ← Team C owns this
+│   │   └── feature_settings/     ← Team D owns this
+│   │
+│   └── shared/
+│       ├── analytics/            ← analytics abstraction
+│       └── feature_flags/        ← feature flag service
+```
+
+```yaml
+# packages/features/feature_expenses/pubspec.yaml
+name: feature_expenses
+dependencies:
+  core_ui:
+    path: ../../core/core_ui
+  core_network:
+    path: ../../core/core_network
+  core_domain:
+    path: ../../core/core_domain
+  # ❌ NEVER depend on feature_auth or feature_chat
+  # Features communicate through core_domain interfaces
+```
+
+```dart
+// Inter-feature communication — via abstract interfaces in core_domain
+// core_domain/lib/auth_port.dart
+abstract class AuthPort {
+  Stream<String?> get userIdStream;
+  String? get currentUserId;
+}
+
+// feature_auth provides the implementation
+class FirebaseAuthPort implements AuthPort { /* ... */ }
+
+// feature_expenses consumes it via DI — no import of feature_auth
+class ExpenseRepository {
+  final AuthPort _authPort;
+  ExpenseRepository(this._authPort);
+
+  Stream<List<Expense>> watchExpenses() {
+    final userId = _authPort.currentUserId;
+    if (userId == null) return Stream.value([]);
+    return _datasource.watchExpenses(userId);
+  }
+}
+```
+
+**Rule:** Features never import other features. Communication goes through interfaces defined in `core_domain`. The shell `app/` wires everything together with DI. This means Team A can refactor auth without breaking Team B's expenses.
+
+---
+
 ## Lab — Refactor Cart to Clean Architecture
 
 Take the shopping cart from Phase 2 and refactor it:
@@ -889,6 +1021,8 @@ That's dependency inversion working correctly.
 5. The `getMonthlySummary` logic (total, topCategory calculation) is in the use case, not the repository. Why?
 6. You want to switch from Firebase to Supabase. Which files change? Which files definitely don't change?
 7. What is the difference between a Data Source and a Repository? Why have both?
+8. Domain layer tests run in 0.1s, widget tests in 2s, integration in 30s+. How does Clean Architecture use this fact to make testing faster? What should you push into the domain layer?
+9. `sealed class Result<T>` with `Success<T>` and `Failure<T>` — how does this change your BLoC's event handlers? What does it replace?
 
 ---
 

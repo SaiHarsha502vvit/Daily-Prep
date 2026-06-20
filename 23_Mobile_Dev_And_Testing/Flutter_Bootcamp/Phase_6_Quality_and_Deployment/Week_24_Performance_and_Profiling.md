@@ -547,6 +547,135 @@ Async:
 
 ---
 
+## 13. Application Performance Monitoring (APM) — Production Observability
+
+> 🏢 **Enterprise Reality:**
+> *"DevTools only works when you're connected to a running app. In production, you need remote performance monitoring — dashboards showing p50/p95 frame times, API latency, crash rates, and slow screens across all users."*
+
+### Firebase Performance Monitoring
+
+```dart
+// Automatic traces — zero-code network monitoring
+// Add the plugin and every HTTP request is auto-traced
+// pubspec.yaml: firebase_performance: ^0.10.0
+
+// Custom traces — measure specific business operations
+Future<void> loadDashboard() async {
+  final trace = FirebasePerformance.instance.newTrace('dashboard_load');
+  trace.putAttribute('user_tier', isPremium ? 'premium' : 'free');
+  await trace.start();
+
+  try {
+    await Future.wait([
+      _getExpenses(),
+      _getMonthlySummary(),
+      _getSpendingTrend(),
+    ]);
+    trace.putMetric('expense_count', expenses.length);
+    trace.putAttribute('status', 'success');
+  } catch (e) {
+    trace.putAttribute('status', 'error');
+    trace.putAttribute('error_type', e.runtimeType.toString());
+  } finally {
+    await trace.stop();
+  }
+}
+```
+
+### Sentry — Error Tracking + Performance
+
+```dart
+// lib/main.dart — Sentry initialization
+Future<void> main() async {
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = const String.fromEnvironment('SENTRY_DSN');
+      options.tracesSampleRate = 0.2;   // sample 20% of transactions
+      options.profilesSampleRate = 0.1;  // profile 10% of sampled transactions
+      options.environment = const String.fromEnvironment('ENV', defaultValue: 'dev');
+      options.release = '2.1.0+142';
+
+      // Automatic breadcrumbs — trail of events before a crash
+      options.enableAutoNativeBreadcrumbs = true;
+      options.enableUserInteractionBreadcrumbs = true;
+    },
+    appRunner: () => runApp(
+      SentryNavigatorObserver(),  // auto-track screen transitions
+      const ProviderScope(child: App()),
+    ),
+  );
+}
+
+// Custom breadcrumbs — leave a trail for crash investigation
+Sentry.addBreadcrumb(Breadcrumb(
+  message: 'User applied filter',
+  category: 'ui.action',
+  data: {'filter': 'food', 'date_range': '30d'},
+));
+
+// Capture handled exceptions with context
+try {
+  await paymentService.charge(amount);
+} catch (e, stack) {
+  Sentry.captureException(
+    e,
+    stackTrace: stack,
+    withScope: (scope) {
+      scope.setTag('payment_provider', 'stripe');
+      scope.setExtra('amount', amount);
+      scope.setExtra('currency', 'INR');
+      scope.setUser(SentryUser(id: userId));
+    },
+  );
+}
+```
+
+### Performance Budgets — Automated Alerts
+
+```dart
+// Custom performance monitoring mixin
+mixin PerformanceTracking<T extends StatefulWidget> on State<T> {
+  Stopwatch? _buildStopwatch;
+
+  @override
+  Widget build(BuildContext context) {
+    _buildStopwatch = Stopwatch()..start();
+    final widget = buildTracked(context);
+    _buildStopwatch!.stop();
+
+    final buildTime = _buildStopwatch!.elapsedMilliseconds;
+    if (buildTime > 16) {  // exceeded one frame budget
+      logger.w('Slow build: ${T.runtimeType} took ${buildTime}ms');
+      Sentry.addBreadcrumb(Breadcrumb(
+        message: 'Slow build: ${buildTime}ms',
+        category: 'performance',
+        data: {'widget': T.toString()},
+        level: SentryLevel.warning,
+      ));
+    }
+
+    return widget;
+  }
+
+  Widget buildTracked(BuildContext context);
+}
+```
+
+**Enterprise performance targets:**
+```
+Metric                          Target        Alert if exceeded
+─────────────────────────────────────────────────────────────
+App startup (cold)              < 2s          > 4s
+App startup (warm)              < 500ms       > 1s
+Screen transition               < 300ms       > 600ms
+API response (p95)              < 1s          > 3s
+Frame build time (p99)          < 16ms        > 32ms
+Crash-free rate                 > 99.5%       < 99%
+ANR (App Not Responding)        < 0.1%        > 0.5%
+```
+
+---
+
 ## Lab — Profile the Expense Tracker
 
 1. Run the Expense Tracker in `--profile` mode

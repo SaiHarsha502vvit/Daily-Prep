@@ -1038,6 +1038,106 @@ Semantics(
 
 ---
 
+## 12. Internationalization (i18n) — Enterprise Multi-Language Support
+
+> 🏢 **Enterprise Reality:**
+> *"If your app ships to more than one country, every user-visible string must be externalized. Hardcoded strings are a blocking bug in enterprise code review. Flutter's `intl` + ARB files are the standard."*
+
+```yaml
+# pubspec.yaml
+dependencies:
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+
+flutter:
+  generate: true   # enables codegen for localization
+```
+
+```yaml
+# l10n.yaml (project root)
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+```
+
+```json
+// lib/l10n/app_en.arb — English (template)
+{
+  "@@locale": "en",
+  "appTitle": "Expense Tracker",
+  "addExpense": "Add Expense",
+  "totalSpent": "Total: {amount}",
+  "@totalSpent": {
+    "placeholders": {
+      "amount": { "type": "String", "example": "₹4,500" }
+    }
+  },
+  "itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "lastUpdated": "Updated {date}",
+  "@lastUpdated": {
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "yMMMd" }
+    }
+  }
+}
+```
+
+```json
+// lib/l10n/app_hi.arb — Hindi
+{
+  "@@locale": "hi",
+  "appTitle": "खर्च ट्रैकर",
+  "addExpense": "खर्च जोड़ें",
+  "totalSpent": "कुल: {amount}",
+  "itemCount": "{count, plural, =0{कोई आइटम नहीं} =1{1 आइटम} other{{count} आइटम}}"
+}
+```
+
+```dart
+// lib/main.dart — configure localization
+MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  locale: ref.watch(localeProvider),   // user's selected locale
+  // ...
+)
+
+// Usage in widgets — NEVER hardcode strings
+Text(AppLocalizations.of(context)!.appTitle)
+Text(AppLocalizations.of(context)!.totalSpent('₹4,500'))
+Text(AppLocalizations.of(context)!.itemCount(cartItems.length))
+
+// Shorthand with extension
+extension L10nX on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
+}
+// Then: Text(context.l10n.addExpense)
+```
+
+```bash
+# Generate localization files (runs automatically with flutter gen-l10n)
+flutter gen-l10n
+```
+
+**Enterprise i18n rules:**
+```
+1. ZERO hardcoded user-visible strings — all in ARB files
+2. Numbers: use NumberFormat(locale) — "1,234.56" in en, "1.234,56" in de
+3. Dates: use DateFormat(locale) — "Jun 20" in en, "20 juin" in fr
+4. Currency: format with locale — "₹1,500" in hi, "$1,500" in en
+5. Plurals: use ICU plural syntax — not if/else in Dart
+6. RTL: test with Arabic/Hebrew — Row children, padding, icons all flip
+7. String length: German strings are ~30% longer — test your layouts in de
+```
+
+---
+
 ## Lab — Build a Full Profile Screen
 
 Compose these components into a scrollable profile screen:

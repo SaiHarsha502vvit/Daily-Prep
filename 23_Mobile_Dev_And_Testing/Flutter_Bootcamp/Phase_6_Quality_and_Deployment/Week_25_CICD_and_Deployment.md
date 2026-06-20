@@ -635,6 +635,189 @@ end
 
 ---
 
+## 11. Staged Rollouts — Ship to 1% Before 100%
+
+> 🏢 **Enterprise Reality:**
+> *"No enterprise ships a release to 100% of users at once. You roll out to 1%, monitor crash rate for 24 hours, then 10%, then 50%, then 100%. If crashes spike, you halt the rollout instantly."*
+
+```yaml
+# Google Play Console staged rollout — set in CI
+- name: Staged rollout to production (1%)
+  uses: r0adkll/upload-google-play@v1
+  with:
+    serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT }}
+    packageName: com.yourname.expensetracker
+    releaseFiles: build/app/outputs/bundle/release/app-release.aab
+    track: production
+    rolloutPercentage: 0.01   # 1% of users
+    status: inProgress
+    # Manually increase to 10%, 50%, 100% in Play Console after monitoring
+```
+
+```
+Rollout timeline (enterprise standard):
+Day 0:  Deploy to internal (team only)      → smoke test
+Day 1:  Deploy to beta (1000 testers)       → monitor Crashlytics
+Day 2:  Production rollout: 1%              → monitor crash-free rate
+Day 3:  If crash-free > 99.5%: increase to 10%
+Day 5:  If metrics stable: increase to 50%
+Day 7:  Full rollout: 100%
+
+If crash-free drops below 99%: HALT rollout → investigate → hotfix
+```
+
+---
+
+## 12. Semantic Versioning — Enterprise Release Management
+
+```
+MAJOR.MINOR.PATCH+BUILD
+  │      │      │     │
+  │      │      │     └── CI build number (auto-incremented)
+  │      │      └── Bug fix (backward-compatible)
+  │      └── New feature (backward-compatible)
+  └── Breaking change (API change, migration required)
+
+Examples:
+  2.0.0+1    → Major redesign, requires data migration
+  2.1.0+45   → Added expense categories feature
+  2.1.1+46   → Fixed crash on empty category
+  2.1.2+47   → Fixed currency formatting in Hindi locale
+```
+
+```yaml
+# Automate version from git tags
+- name: Set version from git tag
+  run: |
+    VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
+    BUILD=${{ github.run_number }}
+    echo "VERSION=$VERSION" >> $GITHUB_ENV
+    echo "BUILD=$BUILD" >> $GITHUB_ENV
+
+- name: Build with version
+  run: flutter build appbundle --build-name=${{ env.VERSION }} --build-number=${{ env.BUILD }}
+```
+
+---
+
+## 13. Rollback Strategy — When Things Go Wrong
+
+```yaml
+# Hotfix workflow — branch from the release tag, not main
+# main may have unreleased features that can't ship yet
+
+# 1. Create hotfix branch from the last release tag
+# git checkout -b hotfix/2.1.1 v2.1.0
+
+# 2. Fix the bug, commit, tag
+# git commit -m "fix: crash on empty expense list"
+# git tag v2.1.1
+
+# 3. CI builds and deploys to internal → beta → 1% production
+
+# 4. Cherry-pick the fix back to main
+# git checkout main && git cherry-pick hotfix/2.1.1
+```
+
+```dart
+// Force update — when a critical bug requires all users to update
+class ForceUpdateChecker {
+  Future<void> check() async {
+    final remoteConfig = FirebaseRemoteConfig.instance;
+    await remoteConfig.fetchAndActivate();
+
+    final minVersion = remoteConfig.getString('min_app_version');  // "2.1.1"
+    final currentVersion = await PackageInfo.fromPlatform().then((p) => p.version);
+
+    if (_isVersionLower(currentVersion, minVersion)) {
+      // Show blocking dialog — user must update
+      showDialog(
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          title: const Text('Update Required'),
+          content: const Text('Please update to continue using the app.'),
+          actions: [
+            FilledButton(
+              onPressed: () => launchUrl(Uri.parse(_storeUrl)),
+              child: const Text('Update Now'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+}
+```
+
+---
+
+## 14. Security Hardening — Production Checklist
+
+```yaml
+# Android ProGuard/R8 — obfuscate release code
+# android/app/build.gradle
+android {
+  buildTypes {
+    release {
+      minifyEnabled true    # remove unused code
+      shrinkResources true  # remove unused assets
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+```
+
+```dart
+// Root/jailbreak detection
+import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
+
+Future<void> checkDeviceIntegrity() async {
+  final isJailbroken = await FlutterJailbreakDetection.jailbroken;
+  final isDeveloperMode = await FlutterJailbreakDetection.developerMode;
+
+  if (isJailbroken) {
+    // Log to analytics, show warning, or block sensitive features
+    logger.w('App running on jailbroken/rooted device');
+    analytics.trackEvent('security_warning', params: {'type': 'jailbroken'});
+  }
+}
+
+// Prevent screenshots on sensitive screens (banking, health)
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+
+@override
+void initState() {
+  super.initState();
+  if (Platform.isAndroid) {
+    FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+}
+
+@override
+void dispose() {
+  if (Platform.isAndroid) {
+    FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+  super.dispose();
+}
+```
+
+**Enterprise security checklist:**
+```
+□ ProGuard/R8 enabled for release builds (code obfuscation)
+□ Certificate pinning for all API calls
+□ Auth tokens in flutter_secure_storage (not SharedPreferences)
+□ No PII in logs (email, phone, name, tokens)
+□ FLAG_SECURE on sensitive screens (prevents screenshots)
+□ Root/jailbreak detection with appropriate response
+□ API keys injected via --dart-define, never in source code
+□ Firestore security rules tested and deployed
+□ App Transport Security (iOS) / Network Security Config (Android)
+□ Content Security Policy for WebView content
+```
+
+---
+
 ## Lab — Set Up CI for the Expense Tracker
 
 1. Create `.github/workflows/ci.yml` with the analyze + test job

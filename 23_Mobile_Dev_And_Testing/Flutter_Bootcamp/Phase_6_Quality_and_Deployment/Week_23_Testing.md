@@ -804,6 +804,153 @@ testWidgets('dashboard meets accessibility guidelines', (tester) async {
 
 ---
 
+## Part 8 — Contract Tests (API Testing)
+
+> 🏢 **Enterprise Reality:**
+> *"Your mobile team and backend team deploy independently. A contract test verifies that the API response matches the exact shape your app expects — before it hits production."*
+
+```dart
+// test/contracts/expense_api_contract_test.dart
+// This test hits the REAL staging API — not a mock
+
+@Tags(['contract'])  // run separately: flutter test --tags contract
+void main() {
+  late Dio dio;
+
+  setUpAll(() {
+    dio = Dio(BaseOptions(
+      baseUrl: 'https://staging-api.yourapp.com',
+      headers: {'Authorization': 'Bearer ${Platform.environment['STAGING_TOKEN']}'},
+    ));
+  });
+
+  test('GET /expenses returns valid expense list schema', () async {
+    final response = await dio.get('/expenses');
+
+    expect(response.statusCode, 200);
+    expect(response.data, isList);
+
+    if ((response.data as List).isNotEmpty) {
+      final first = response.data[0] as Map<String, dynamic>;
+
+      // Verify the shape — these fields MUST exist
+      expect(first, containsPair('id', isA<String>()));
+      expect(first, containsPair('title', isA<String>()));
+      expect(first, containsPair('amount', isA<num>()));
+      expect(first, containsPair('category', isA<String>()));
+      expect(first, containsPair('date', isA<String>()));
+
+      // Verify the model can parse it without crashing
+      expect(() => Expense.fromJson(first), returnsNormally);
+    }
+  });
+
+  test('POST /expenses accepts valid expense payload', () async {
+    final response = await dio.post('/expenses', data: {
+      'title': 'Contract Test',
+      'amount': 100,
+      'category': 'food',
+      'date': DateTime.now().toIso8601String(),
+    });
+
+    expect(response.statusCode, anyOf(200, 201));
+    expect(response.data['id'], isA<String>());
+
+    // Cleanup — delete the test expense
+    await dio.delete('/expenses/${response.data['id']}');
+  });
+}
+```
+
+---
+
+## Part 9 — Patrol — Native Integration Tests
+
+> 🏢 **Enterprise Reality:**
+> *"Flutter's built-in integration tests can't interact with native OS dialogs — permission prompts, notification banners, system date pickers. Patrol can."*
+
+```yaml
+# pubspec.yaml
+dev_dependencies:
+  patrol: ^3.6.0
+```
+
+```dart
+// integration_test/expense_flow_test.dart
+import 'package:patrol/patrol.dart';
+
+void main() {
+  patrolTest('complete expense creation flow including permission', ($) async {
+    await $.pumpWidgetAndSettle(const App());
+
+    // Patrol can interact with native dialogs
+    await $.tap(find.text('Add Expense'));
+    await $.pumpAndSettle();
+
+    // Fill Flutter form
+    await $.enterText(find.byType(TextFormField).first, 'Coffee');
+    await $.enterText(find.byType(TextFormField).at(1), '80');
+
+    // Tap date picker → opens native OS date picker
+    await $.tap(find.byIcon(Icons.calendar_today));
+    await $.pumpAndSettle();
+
+    // Patrol can tap native widgets
+    await $.native.tap(NativeSelector(text: 'OK'));
+
+    // Take a screenshot for visual verification
+    await $.takeScreenshot(name: 'expense_form_filled');
+
+    // Submit
+    await $.tap(find.text('Save Expense'));
+    await $.pumpAndSettle();
+
+    expect(find.text('Coffee'), findsOneWidget);
+    expect(find.text('₹80.00'), findsOneWidget);
+  });
+}
+```
+
+---
+
+## Part 10 — Test Coverage Gates in CI
+
+```yaml
+# .github/workflows/test.yml — fail CI if coverage drops
+- name: Run tests with coverage
+  run: flutter test --coverage
+
+- name: Check coverage threshold
+  run: |
+    TOTAL=$(lcov --summary coverage/lcov.info 2>&1 | grep "lines" | awk '{print $2}' | sed 's/%//')
+    echo "Coverage: $TOTAL%"
+    if (( $(echo "$TOTAL < 80" | bc -l) )); then
+      echo "❌ Coverage $TOTAL% is below 80% threshold"
+      exit 1
+    fi
+    echo "✅ Coverage $TOTAL% meets threshold"
+
+- name: Upload coverage to Codecov
+  uses: codecov/codecov-action@v3
+  with:
+    file: coverage/lcov.info
+    fail_ci_if_error: true
+```
+
+**Enterprise test coverage targets:**
+```
+Layer                    Target    Rationale
+──────────────────────────────────────────────
+Domain (entities)        100%      Pure logic, easy to test
+Domain (use cases)       100%      Business rules — the most critical code
+Data (repositories)      90%+      Transformation logic
+Presentation (BLoC)      95%+      Every event→state path
+Widgets                  70%+      Key interactions + golden tests
+Integration              Critical flows only (5-10 tests)
+```
+
+---
+
 ## Lab — Write Tests for `GetSpendingTrend`
 
 The `GetSpendingTrend` use case from Week 22 needs tests:

@@ -618,6 +618,80 @@ AutofillGroup(
 
 ---
 
+## 12. Form Submission Architecture — Enterprise Pattern
+
+> 🏢 **Enterprise Reality:**
+> *"A form submission is a state machine: idle → validating → submitting → success/error. Enterprise teams model this explicitly — no boolean spaghetti with `isLoading` and `hasError` and `isSubmitted`."*
+
+```dart
+// Form submission as a sealed state machine
+sealed class FormSubmissionState {}
+class FormIdle extends FormSubmissionState {}
+class FormValidating extends FormSubmissionState {}
+class FormSubmitting extends FormSubmissionState {}
+class FormSuccess extends FormSubmissionState { final String message; FormSuccess(this.message); }
+class FormError extends FormSubmissionState { final String error; final Map<String, String>? fieldErrors; FormError(this.error, {this.fieldErrors}); }
+
+// Form BLoC with explicit state machine
+class AddExpenseFormBloc extends Bloc<AddExpenseFormEvent, AddExpenseFormState> {
+  AddExpenseFormBloc(this._addExpense) : super(AddExpenseFormState.initial()) {
+    on<SubmitFormEvent>(_onSubmit);
+  }
+
+  Future<void> _onSubmit(SubmitFormEvent event, Emitter<AddExpenseFormState> emit) async {
+    // Step 1: Validate
+    emit(state.copyWith(submission: FormValidating()));
+    final errors = _validate(event);
+    if (errors.isNotEmpty) {
+      emit(state.copyWith(submission: FormError('Please fix the errors', fieldErrors: errors)));
+      return;
+    }
+
+    // Step 2: Submit
+    emit(state.copyWith(submission: FormSubmitting()));
+    final result = await _addExpense(event.toParams());
+
+    switch (result) {
+      case Success():
+        emit(state.copyWith(submission: FormSuccess('Expense added')));
+      case Failure(:final error):
+        emit(state.copyWith(submission: FormError(error.userMessage)));
+    }
+  }
+
+  Map<String, String> _validate(SubmitFormEvent event) {
+    final errors = <String, String>{};
+    if (event.title.trim().isEmpty) errors['title'] = 'Title is required';
+    if (event.amount <= 0) errors['amount'] = 'Amount must be positive';
+    return errors;
+  }
+}
+
+// In the widget — react to state machine, not booleans
+BlocConsumer<AddExpenseFormBloc, AddExpenseFormState>(
+  listener: (context, state) {
+    switch (state.submission) {
+      case FormSuccess(:final message):
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        Navigator.pop(context);
+      case FormError(:final error, :final fieldErrors):
+        // Server-side validation errors mapped to specific fields
+        if (fieldErrors != null) _showFieldErrors(fieldErrors);
+      default: break;
+    }
+  },
+  builder: (context, state) {
+    final isSubmitting = state.submission is FormSubmitting;
+    return FilledButton(
+      onPressed: isSubmitting ? null : () => bloc.add(SubmitFormEvent(/* ... */)),
+      child: isSubmitting ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Save'),
+    );
+  },
+)
+```
+
+---
+
 ## Lab — Registration Form
 
 Build a complete user registration form with these fields:
@@ -817,6 +891,8 @@ TextFormField(
 5. The keyboard is covering your password field. What two things must be true for this not to happen?
 6. `TextInputAction.next` puts "Next" on the keyboard. What code do you write in `onFieldSubmitted` to move focus to the next field?
 7. What is `AutovalidateMode.onUserInteraction`? When should you switch to it from `AutovalidateMode.disabled`?
+8. A `TextFormField` has `hintText: 'Email'` but no `labelText`. Why is this a problem for accessibility? What does VoiceOver announce when the field is empty vs. when it has text?
+9. `AutofillGroup` wraps your form. What does this enable? Name three `AutofillHints` constants and what they tell the OS.
 
 ---
 

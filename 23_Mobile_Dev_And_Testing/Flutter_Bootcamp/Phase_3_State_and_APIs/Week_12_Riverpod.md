@@ -762,6 +762,98 @@ void logout() {
 
 ---
 
+## 11. Enterprise Provider Organization — Scaling to 50+ Providers
+
+> 🏢 **Enterprise Reality:**
+> *"A real app has 50-200 providers. Without organization, you end up with a single `providers.dart` file with 2000 lines. Enterprise teams organize providers by feature, with clear dependency graphs."*
+
+```
+lib/
+├── features/
+│   ├── expenses/
+│   │   ├── domain/
+│   │   ├── data/
+│   │   └── presentation/
+│   │       ├── providers/
+│   │       │   ├── expense_providers.dart     ← all providers for this feature
+│   │       │   └── expense_providers.g.dart   ← generated
+│   │       ├── bloc/
+│   │       └── screens/
+│   │
+│   ├── auth/
+│   │   └── presentation/
+│   │       └── providers/
+│   │           └── auth_providers.dart
+│   │
+│   └── settings/
+│       └── presentation/
+│           └── providers/
+│               └── settings_providers.dart
+│
+├── core/
+│   └── providers/
+│       ├── dio_providers.dart          ← HTTP client, interceptors
+│       ├── storage_providers.dart      ← Hive, SecureStorage
+│       └── analytics_providers.dart    ← analytics service
+```
+
+```dart
+// Scoped providers — providers that only exist within a specific screen subtree
+// Use ProviderScope.overrides to inject screen-specific dependencies
+
+class ExpenseDetailScreen extends ConsumerWidget {
+  final String expenseId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        // This provider is scoped to this screen only
+        currentExpenseIdProvider.overrideWithValue(expenseId),
+      ],
+      child: const _ExpenseDetailContent(),
+    );
+  }
+}
+
+final currentExpenseIdProvider = Provider<String>((ref) {
+  throw UnimplementedError('Must be overridden');
+});
+
+final expenseDetailProvider = FutureProvider.autoDispose<Expense>((ref) {
+  final id = ref.watch(currentExpenseIdProvider);
+  return ref.watch(expenseRepoProvider).getExpense(id);
+});
+```
+
+```dart
+// Provider observers — enterprise logging and debugging
+class AppProviderObserver extends ProviderObserver {
+  @override
+  void didUpdateProvider(ProviderBase provider, Object? previousValue,
+      Object? newValue, ProviderContainer container) {
+    if (kDebugMode) {
+      logger.d('[${provider.name ?? provider.runtimeType}] updated');
+    }
+  }
+
+  @override
+  void providerDidFail(ProviderBase provider, Object error,
+      StackTrace stackTrace, ProviderContainer container) {
+    logger.e('Provider failed: ${provider.name}', error: error, stackTrace: stackTrace);
+    Sentry.captureException(error, stackTrace: stackTrace);
+  }
+}
+
+// Register in main.dart
+runApp(ProviderScope(
+  observers: [AppProviderObserver()],
+  child: const App(),
+));
+```
+
+---
+
 ## Challenge — Search With Debounce
 
 Build a real-time search using Riverpod + debounce (avoid API call on every keystroke):

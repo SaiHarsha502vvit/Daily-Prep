@@ -1026,22 +1026,142 @@ service cloud.firestore {
 
 ---
 
+## Enterprise Chat Architecture — Production Patterns
+
+> 🏢 **Enterprise Reality:**
+> *"A toy chat app stores messages in Firestore and calls it done. A production chat app handles message delivery guarantees, read receipts at scale, presence systems, message queuing, media CDN, abuse detection, and end-to-end encryption."*
+
+### Message Delivery Guarantees
+
+```dart
+// Message lifecycle: drafted → sending → sent → delivered → read
+enum MessageDeliveryStatus { drafted, sending, sent, delivered, read, failed }
+
+// Optimistic message sending with retry queue
+class MessageQueue {
+  final Queue<PendingMessage> _queue = Queue();
+  Timer? _retryTimer;
+
+  Future<void> enqueue(Message message) async {
+    final pending = PendingMessage(message: message, attempts: 0, maxAttempts: 3);
+    _queue.add(pending);
+    await _processQueue();
+  }
+
+  Future<void> _processQueue() async {
+    while (_queue.isNotEmpty) {
+      final pending = _queue.first;
+      try {
+        await _sendToServer(pending.message);
+        _queue.removeFirst();
+        _updateStatus(pending.message.id, MessageDeliveryStatus.sent);
+      } catch (e) {
+        pending.attempts++;
+        if (pending.attempts >= pending.maxAttempts) {
+          _queue.removeFirst();
+          _updateStatus(pending.message.id, MessageDeliveryStatus.failed);
+        } else {
+          // Exponential backoff
+          final delay = Duration(seconds: math.pow(2, pending.attempts).toInt());
+          _retryTimer = Timer(delay, _processQueue);
+          return;
+        }
+      }
+    }
+  }
+}
+```
+
+### Read Receipts at Scale
+
+```dart
+// Batched read receipts — don't write to Firestore for every message individually
+class ReadReceiptService {
+  final Set<String> _pendingReadReceipts = {};
+  Timer? _batchTimer;
+
+  void markAsRead(String messageId) {
+    _pendingReadReceipts.add(messageId);
+    _batchTimer?.cancel();
+    _batchTimer = Timer(const Duration(seconds: 2), _flushBatch);
+  }
+
+  Future<void> _flushBatch() async {
+    if (_pendingReadReceipts.isEmpty) return;
+    final batch = FirebaseFirestore.instance.batch();
+    for (final id in _pendingReadReceipts) {
+      batch.update(
+        _messagesRef.doc(id),
+        {'readBy.${currentUserId}': FieldValue.serverTimestamp()},
+      );
+    }
+    await batch.commit();
+    _pendingReadReceipts.clear();
+  }
+}
+```
+
+### Media CDN + Thumbnail Generation
+
+```dart
+// Never send full-resolution images in chat — generate thumbnails
+// Use Firebase Extensions: "Resize Images" — auto-generates thumbnails on upload
+// Original: gs://bucket/chat/img_001.jpg (3MB)
+// Generated: gs://bucket/chat/img_001_200x200.jpg (15KB)
+// Generated: gs://bucket/chat/img_001_800x800.jpg (80KB)
+
+class ChatMediaService {
+  Future<ChatImage> uploadAndGetThumbnail(File imageFile) async {
+    final originalPath = 'chat/${uuid.v4()}.jpg';
+    await _storage.ref(originalPath).putFile(imageFile);
+
+    // Wait for Cloud Function to generate thumbnails (fire-and-forget)
+    // Show the local file immediately as a preview
+    return ChatImage(
+      originalUrl: await _storage.ref(originalPath).getDownloadURL(),
+      thumbnailUrl: null, // populated when thumbnail is ready
+      localFile: imageFile,
+      width: /* from image_size_getter */,
+      height: /* from image_size_getter */,
+    );
+  }
+}
+```
+
+---
+
+## Week 26 Verify
+
+1. The user sends a message with no internet. Describe the full lifecycle: what status does the message show, what happens in the queue, and what triggers the retry?
+2. `ReadReceiptService` batches read receipts every 2 seconds. Why batch instead of writing immediately? What happens with Firestore billing if 1000 messages are read at once?
+3. `MessagesBloc` uses `emit.forEach` with a Firestore stream. What happens if the user opens a conversation with 10,000 messages? How does pagination prevent this?
+4. Cloud Functions trigger FCM on new messages. Why not send FCM directly from the client? Give two reasons.
+5. `MessageDeliveryStatus` has 6 states: drafted → sending → sent → delivered → read → failed. What event transitions a message from `sent` to `delivered`?
+6. The typing indicator uses three `AnimationController`s with staggered delays. Why three controllers instead of one? What does each control?
+7. Firestore security rules use `isParticipant(request.auth.uid)`. What would happen without this rule? Write a rule that prevents non-participants from reading messages.
+8. Your chat app shows a thumbnail immediately while uploading the full image. What is this pattern called? Where is the full-resolution URL populated?
+9. `QueuedInterceptor` is used for the auth token refresh. A chat sends 5 messages in 1 second, all get 401. Without `QueuedInterceptor`, what happens? With it?
+10. You need to add end-to-end encryption. Which layer of Clean Architecture does the encryption logic go in (domain, data, or presentation)? Why?
+
+---
+
 ## Bootcamp Complete
 
-You've covered 26 weeks of Flutter from `void main()` to a production chat app with:
+You've covered 26 weeks of Flutter — from `void main()` to a production-grade enterprise chat app with:
 
-| Phase | Key Skills |
-|--|--|
-| Phase 1 | Dart language, Flutter rendering, BoxConstraints, Navigation |
-| Phase 2 | Slivers, Forms, Animations, GestureDetector, CustomPainter |
-| Phase 3 | Provider → Riverpod, HTTP/Dio, Repository pattern |
-| Phase 4 | Firebase Firestore, Auth, Hive offline-first, Notes App |
-| Phase 5 | BLoC, Clean Architecture, get_it, Custom Charts, Expense Tracker |
-| Phase 6 | Testing pyramid, DevTools profiling, CI/CD, Chat App |
+| Phase | Key Skills | Enterprise Patterns |
+|--|--|--|
+| Phase 1 | Dart, rendering, constraints, navigation | Structured errors, isolates, i18n, design tokens |
+| Phase 2 | Slivers, forms, animations, gestures | Form state machines, accessibility, motion preferences |
+| Phase 3 | Riverpod, HTTP/Dio, repository | Certificate pinning, retry backoff, analytics, provider org |
+| Phase 4 | Firestore, Auth, Hive, offline-first | Token refresh, sync engine, migrations, data privacy |
+| Phase 5 | BLoC, Clean Architecture, charts | BLoC observer, feature flags, multi-module, HydratedBloc |
+| Phase 6 | Testing, profiling, CI/CD, chat | APM/Sentry, contract tests, staged rollouts, security hardening |
 
 **What's next:**
-- Explore `go_router` for declarative routing
-- Deep dive into accessibility (`Semantics`, `ExcludeSemantics`)
-- Explore `flutter_hooks` as an alternative to StatefulWidget
-- Study Dart isolates for true parallelism
-- Build something users actually use
+- Study platform channels for native iOS/Android integration
+- Explore WebSocket architecture for real-time beyond Firestore
+- Implement end-to-end encryption with Signal Protocol
+- Build a design system package shared across multiple apps
+- Practice system design interviews with mobile architecture questions
+- Ship an app to real users and learn from production metrics
