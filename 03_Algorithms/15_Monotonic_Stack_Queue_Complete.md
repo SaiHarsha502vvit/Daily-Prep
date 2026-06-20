@@ -1352,6 +1352,60 @@ public int sumSubarrayMins(int[] arr) {
 }
 ```
 
+### Why `left[i] * right[i]` Counts the Subarrays Where `arr[i]` Is the Minimum — Derived
+
+The code above calls `arr[i] * left[i] * right[i]` and trusts it. Most people do. The product looks like it fell out of the sky — but it's the *only* quantity that works, and once you see why, you can re-derive it on any "contribution-style" problem (subarray maximums, sum of subarray ranges, number of subarrays where X is the strict max/min). The trick is to stop thinking about subarrays and start thinking about each element's **territory**.
+
+**The territory view.** Every subarray has a minimum. So every subarray is "owned" by exactly one element — whichever element is its minimum. To compute the sum, you ask each element: *how many subarrays do you own, and what is your value in each one?* Then sum `value × count` over all elements. That's it. No clever enumeration of subarrays — just delegate.
+
+**The counting question: how many subarrays has `arr[i]` as its minimum?** A subarray `[L, R]` (with `L ≤ i ≤ R`) has `arr[i]` as its minimum if and only if:
+1. `arr[i]` is smaller than everything to its left inside the subarray: every element in `[L, i-1]` is `> arr[i]`. So `L` cannot extend past the nearest element to the left that is **≤ arr[i]** (call its index `L_min - 1` is the leftmost legal `L`). The number of valid `L` choices is `i - L_min + 1` = distance to previous-smaller-or-equal.
+2. `arr[i]` is smaller than everything to its right inside the subarray: every element in `[i+1, R]` is `≥ arr[i]`. So `R` cannot extend past the nearest element to the right that is **< arr[i]** (call its index `R_min - 1`). The number of valid `R` choices is `R_min - i` = distance to next-smaller-strict.
+
+**The multiplication is forced by independence.** Choosing `L` and choosing `R` are independent decisions — once you pick `L` (any legal one), every legal `R` still gives a valid subarray. So total subarrays owned by `arr[i]` = `(# valid L) × (# valid R)` = `left[i] * right[i]`. There's no other shape the answer can take; subarrays are products of left-extension and right-extension choices.
+
+```
+            i
+... [ ≤ ] [arr[i]] [ < ] ...
+     ↑                ↑
+   L choices      R choices
+   left[i]        right[i]
+   = i - prevSmallerOrEqual(i)
+   = nextSmallerStrict(i) - i
+```
+
+**The asymmetry that breaks the formula if you get it wrong.** Notice the *asymmetry* in the bounds: on the left we stop at "smaller OR EQUAL," on the right we stop at "smaller STRICT." Why? Because of duplicates. Suppose `arr = [3, 1, 3]`. Both the left `3` and the right `3` equal `arr[1] = 1`'s value… wait, that's not the case here. Better example: `arr = [1, 1]`. The subarrays are `[1]₀`, `[1]₁`, `[1, 1]`. The minimum of each is `1`. Naively, `arr[0]` "wants" to own `[1]₁` and `[1, 1]`, and `arr[1]` "wants" to own `[1]₀` and `[1, 1]`. Both can't own `[1, 1]`. The asymmetry rule says: equal values are "owned" by the leftmost one. So `arr[0]` owns all three; `arr[1]` owns only `[1]₁`. Implementation: use **strict** `<` on the left (prev smaller *strict*, so equals stay in stack and become `arr[1]`'s left boundary) and **non-strict** `<=` on the right (next smaller *or equal*, so equals block `arr[1]`'s right boundary). Or vice versa — pick one side to "own ties" and stick with it. **If both sides are strict, every duplicate is double-counted; if both sides are non-strict, every duplicate is missed.** This is the single most common bug in this problem.
+
+**The invariant you can feel.** Throughout the scan, the stack is not just "monotonic" — it's a **sorted list of elements still waiting to find their next-greater-or-smaller**. The invariant is: "for every element on the stack, the answer (whatever it is — NGE, prev smaller, etc.) has not yet arrived." The moment a new element arrives that *resolves* an answer, the affected element pops. Every pop is an "answer event." That's why the algorithm is O(n): every element experiences exactly one push (entering the waiting list) and exactly one pop (its answer event firing), so total work is 2n. The structure *is* the invariant.
+
+**Generalization recipe** (apply this to any "sum over subarrays where X is the min/max" problem):
+1. For each element, find its `left[i]` = distance to the previous element that would *disqualify* it from being the min/max on the left.
+2. Find its `right[i]` = distance to the next element that would *disqualify* it on the right.
+3. Contribution = `value[i] × left[i] × right[i]`. Sum.
+4. Decide tie-ownership direction once (left wins or right wins) and apply the corresponding strict/non-strict asymmetry consistently.
+
+This pattern also gives you: sum of subarray maximums (mirror with `>` instead of `<`), count of subarrays where `arr[i]` is the strict minimum (just `left[i] * right[i]` as a count), and the "subarray range sum" problem (sum of max - sum of min, same machinery on both sides).
+
+🔬 **Section Challenge — Contribution Counting**
+
+**Challenge 1 (Sum of Subarray Minimums, 12 min):** For `arr = [3, 1, 2, 4, 1]`, compute by hand the contribution of `arr[4] = 1` (the last element) to the total sum. Then compute `arr[1] = 1`'s contribution. Why are they different — and what does that tell you about the asymmetry rule?
+
+<details><summary>Answer</summary>
+
+For `arr[4] = 1`:
+- Previous smaller-or-equal: there is no element to the left that is `≤ 1` (the only equal-or-smaller candidate, `arr[1] = 1`, is `≤ 1`, but check: is `arr[1] ≤ arr[4]`? `1 ≤ 1`, yes — so prev smaller-or-equal index = 1). So `left[4] = 4 - 1 = 3`.
+- Next smaller-strict: nothing to the right is `< 1`. So `right[4] = n - 4 = 1`.
+- Contribution = `1 × 3 × 1 = 3`. The 3 subarrays owned by `arr[4]` are `[3,1,2,4,1]`, `[2,4,1]`, `[4,1]`.
+
+For `arr[1] = 1`:
+- Previous smaller-or-equal: nothing to the left. `left[1] = 1 + 1 = 2`.
+- Next smaller-strict: nothing to the right is `< 1`. `right[1] = 5 - 1 = 4`.
+- Contribution = `1 × 2 × 4 = 8`. The 8 subarrays owned by `arr[1]` are every subarray that contains index 1 except `[3,1]`, `[3,1,2]`, `[3,1,2,4]` — those three are "stolen" by `arr[4]` because `arr[4]` is also `1` and the asymmetry says left wins ties.
+
+Notice: `arr[1]` and `arr[4]` have the same value but vastly different contributions (`8` vs `3`). That's because `arr[4]` is closer to the right edge AND there are duplicates — and the asymmetry rule resolves the tie in `arr[1]`'s favor (left wins). If you used strict on both sides, both `1`s would claim the same 3 "middle" subarrays and you'd double-count. If you used non-strict on both sides, the middle ones would be claimed by neither. The asymmetry is the tiebreaker.
+
+</details>
+
 ---
 
 ## Quick Reference <a name="quick-reference"></a>
