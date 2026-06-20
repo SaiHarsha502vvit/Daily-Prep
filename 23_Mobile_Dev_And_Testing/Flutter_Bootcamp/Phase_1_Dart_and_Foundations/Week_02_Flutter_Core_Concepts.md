@@ -993,6 +993,51 @@ class AddToCartButton extends StatefulWidget { ... }
 
 ---
 
+## 11. Semantics — Making Widgets Accessible
+
+> 🍎 **Academy Golden Rule — Build for Everyone From Day One:**
+> *"At Apple Developer Academy, accessibility is not a 'nice to have'. It's tested in every review. Flutter's `Semantics` widget is how you communicate with screen readers."*
+
+```dart
+// Most Material widgets already have semantics built in:
+// Text → announced by VoiceOver/TalkBack automatically
+// ElevatedButton → announced as "button" + its label
+// IconButton with tooltip → announced as the tooltip text
+
+// When you build CUSTOM widgets, you must add semantics yourself:
+Semantics(
+  label: 'Product rating: 4 out of 5 stars',   // what VoiceOver says
+  child: RatingBar(rating: 4.0),                 // visual-only widget
+)
+
+// Images — ALWAYS provide a semantic description
+Image.network(
+  product.imageUrl,
+  semanticLabel: '${product.name}, ${product.color} color',
+  // VoiceOver: "Running Shoes, Blue color, image"
+)
+
+// Decorative images — exclude from screen reader
+Semantics(
+  excludeSemantics: true,
+  child: Image.asset('assets/background_pattern.png'),
+)
+
+// Custom button from a Container — tell the accessibility tree it's tappable
+Semantics(
+  button: true,
+  label: 'Add ${product.name} to cart',
+  child: GestureDetector(
+    onTap: () => _addToCart(product),
+    child: Container(/* custom button styling */),
+  ),
+)
+```
+
+**Rule:** Run your app with VoiceOver (iOS) or TalkBack (Android) enabled for 5 minutes. You'll immediately find widgets that are invisible to blind users. Fix them with `Semantics`, `semanticLabel`, and `tooltip`.
+
+---
+
 ## Lab — Build a Full Profile Screen
 
 Compose these components into a scrollable profile screen:
@@ -1050,6 +1095,8 @@ This is the foundation of responsive Flutter UI.
 5. You get "No Navigator found above this widget." What does that error mean about where your context is in the element tree?
 6. `const Text('Hello')` vs `Text('Hello')` — what is the difference during reconciliation?
 7. You have a heart icon that toggles liked/unliked. Should it be `StatelessWidget` or `StatefulWidget`? What if the liked state is also needed by the AppBar's icon count?
+8. `Image.network(url)` — a blind user opens your app. What does VoiceOver announce for this image? How do you fix it?
+9. `ColorScheme.fromSeed(seedColor: Colors.blue)` generates 30 color tokens. Name three tokens from the generated scheme and where you'd use each.
 
 ---
 

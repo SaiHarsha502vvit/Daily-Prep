@@ -789,6 +789,61 @@ void parseConfig(Map<String, dynamic> config) {
 
 ---
 
+## 13. Null Safety — The Billion Dollar Mistake, Fixed
+
+> 🍎 **Academy Golden Rule — Null is the Enemy:**
+> *"Tony Hoare called null references his 'billion dollar mistake.' Dart's sound null safety eliminates NullPointerException at compile time. Never use `!` (bang operator) unless you can prove the value is non-null."*
+
+```dart
+// Dart's null safety — the compiler enforces it
+String name = 'Harsha';     // cannot be null — guaranteed
+String? nickname;            // CAN be null — must check before use
+
+// ❌ The bang operator — crashes at runtime if null
+print(nickname!.length);     // NullPointerException if nickname is null
+
+// ✓ Safe patterns
+print(nickname?.length ?? 0);   // null-aware access + default
+
+if (nickname != null) {
+  print(nickname.length);       // Dart promotes to non-null inside the if block
+}
+
+// ✓ Switch on nullable — exhaustive handling
+final display = switch (nickname) {
+  String name => 'Nickname: $name',
+  null => 'No nickname set',
+};
+```
+
+```dart
+// late — "I promise this will be initialized before use"
+late final AnimationController _controller;
+
+@override
+void initState() {
+  super.initState();
+  _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+}
+// If you access _controller before initState runs → LateInitializationError
+
+// When to use late:
+// 1. initState initialization of controllers (can't use in field initializer)
+// 2. Expensive computation you want to defer
+late final expensiveResult = computeExpensiveValue();  // only computed on first access
+```
+
+**The null safety decision tree:**
+```
+Can this value ever be null?
+├── No → String, int, List<T> (non-nullable)
+├── Yes, from external data (API, database) → String? + null check at boundary
+├── Yes, but only temporarily (before init) → late final T
+└── Yes, user input that might be empty → String? in the model, validate at form level
+```
+
+---
+
 ## Lab — Build a Todo Manager in Pure Dart
 
 Build a complete todo manager in pure Dart (no Flutter, just a `.dart` file run with `dart run`):
@@ -847,6 +902,9 @@ extension OptionExtensions<T> on Option<T> {
 5. What is the difference between a `List` and a `Set`? When would you use a Set?
 6. What does `sealed class` do? Why does a switch on a sealed class not need a `default` case?
 7. Dart's `map`, `where`, and `fold` are higher-order functions. Explain each in one sentence and write the example that: takes `[1,2,3,4,5]`, keeps only even numbers, multiplies each by 10, and sums all values.
+8. What is the `!` (bang) operator? When is it safe to use? Give an example of when using it would crash at runtime.
+9. `late final _controller` — what does `late` mean? What exception is thrown if you access it before assignment?
+10. Write a Dart 3 switch expression that takes a nullable `String?` and returns the string's length for non-null values and `0` for null.
 
 ---
 

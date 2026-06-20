@@ -551,6 +551,73 @@ testWidgets('password toggle shows and hides password', (tester) async {
 
 ---
 
+## Form Accessibility
+
+> 🍎 **Academy Golden Rule — Forms Must Be Navigable By Everyone:**
+> *"A screen reader user should be able to fill out your form without sighted assistance. Every field needs a label. Every error needs to be announced. Keyboard navigation must follow visual order."*
+
+```dart
+// ✓ Accessible form field — label, error, and hint all announced by VoiceOver/TalkBack
+TextFormField(
+  decoration: const InputDecoration(
+    labelText: 'Email address',            // announced when field is focused
+    hintText: 'you@example.com',          // announced after the label
+    helperText: 'We will never share your email',
+  ),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';          // error state is auto-announced
+    }
+    return null;
+  },
+  autofillHints: const [AutofillHints.email],  // suggests saved emails
+  textInputAction: TextInputAction.next,        // keyboard shows "Next" → tab order
+)
+
+// ❌ NOT accessible — placeholder disappears when typing, no label for screen readers
+TextFormField(
+  decoration: const InputDecoration(
+    hintText: 'Email',      // disappears once user starts typing — useless
+  ),
+)
+```
+
+```dart
+// Autofill hints — tell the OS what data this field expects
+TextFormField(
+  autofillHints: const [AutofillHints.givenName],       // first name
+)
+TextFormField(
+  autofillHints: const [AutofillHints.familyName],      // last name
+)
+TextFormField(
+  autofillHints: const [AutofillHints.email],           // email
+)
+TextFormField(
+  autofillHints: const [AutofillHints.newPassword],     // password manager: generate
+)
+
+// Wrap the entire form in AutofillGroup for password managers
+AutofillGroup(
+  child: Form(
+    key: _formKey,
+    child: Column(children: [/* form fields */]),
+  ),
+)
+```
+
+**Form accessibility checklist:**
+```
+1. Every TextFormField has a labelText (not just hintText)
+2. textInputAction is set (next/done) for keyboard tab order
+3. autofillHints are set for common fields (email, name, password)
+4. Form is wrapped in AutofillGroup for password managers
+5. Error messages are descriptive ("Password must be 8+ characters", not "Invalid")
+6. FocusNode order matches visual top-to-bottom order
+```
+
+---
+
 ## Lab — Registration Form
 
 Build a complete user registration form with these fields:

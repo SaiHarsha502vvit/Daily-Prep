@@ -805,6 +805,55 @@ state.when(
 
 ---
 
+## 9. The Testing Advantage — Why Clean Architecture Exists
+
+> 🍎 **Academy Golden Rule — Testability Is Architecture:**
+> *"If you can't test a class in isolation, your architecture is wrong. Clean Architecture's entire purpose is to make every layer testable without importing the layer above or below it."*
+
+```dart
+// Domain layer — pure Dart, no Flutter, no Firebase, no packages
+// Run tests in 0.1 seconds with `dart test`
+test('AddExpense rejects zero amount', () {
+  final useCase = AddExpense(FakeExpenseRepo());
+  expect(
+    () => useCase(AddExpenseParams(title: 'X', amount: 0, date: DateTime.now(), category: ExpenseCategory.other)),
+    throwsA(isA<InvalidExpenseException>()),
+  );
+});
+// No Firebase setup, no widget pumping, no mock annotations
+
+// Data layer — test transformations, not Firebase
+test('ExpenseModel.fromFirestore handles missing fields', () {
+  final doc = FakeDocumentSnapshot(data: {'title': 'Coffee'});  // amount missing
+  final model = ExpenseModel.fromFirestore(doc);
+  expect(model.amount, 0.0);   // safe default
+});
+
+// Presentation layer — test BLoC in isolation with mocked use cases
+blocTest<ExpenseBloc, ExpenseState>(
+  'emits Loaded on successful GetExpenses',
+  build: () {
+    when(mockGetExpenses(any)).thenAnswer((_) async => [testExpense]);
+    return ExpenseBloc(getExpenses: mockGetExpenses, /* ... */);
+  },
+  act: (bloc) => bloc.add(LoadExpensesEvent()),
+  expect: () => [isA<ExpenseLoading>(), isA<ExpenseLoaded>()],
+);
+```
+
+**The testability payoff by layer:**
+```
+Domain (entities + use cases)  → dart test      → 0.1s    → runs in CI in 2s
+Data (models + repos)          → dart test      → 0.2s    → runs in CI in 3s
+Presentation (BLoC)            → flutter test   → 0.5s    → runs in CI in 5s
+Widgets (screens)              → flutter test   → 2s      → runs in CI in 15s
+Integration (full app)         → flutter test   → 30s+    → runs in CI in 3min
+```
+
+Each layer down the pyramid is 10x faster to test. Clean Architecture pushes as much logic as possible into the fastest layers.
+
+---
+
 ## Lab — Refactor Cart to Clean Architecture
 
 Take the shopping cart from Phase 2 and refactor it:

@@ -825,6 +825,60 @@ if (Navigator.canPop(context)) {
 
 ---
 
+## 8. Deep Linking & Platform Navigation Conventions
+
+> 🍎 **Academy Golden Rule — Navigation Must Feel Native:**
+> *"Android users expect the back button to go to the previous screen. iOS users expect a swipe-from-left-edge gesture. Web users expect the browser back button and URL sharing to work. Your navigation architecture must handle all three without separate code paths."*
+
+```dart
+// go_router handles deep linking automatically
+// This URL works in browser, shared link, and push notification tap:
+// myapp://expense-tracker/expenses/abc123
+GoRoute(
+  path: '/expenses/:id',
+  builder: (context, state) {
+    final id = state.pathParameters['id']!;
+    return ExpenseDetailScreen(expenseId: id);
+  },
+)
+
+// Android back button behavior:
+// - Navigator.pop() if there's a screen below → natural back
+// - If at root screen → exit app (or confirm exit dialog)
+// go_router handles this automatically with StatefulShellRoute
+
+// iOS swipe-to-go-back:
+// - Enabled by default on MaterialPageRoute and CupertinoPageRoute
+// - Disable ONLY for screens where accidental back would lose data:
+PopScope(
+  canPop: !_hasUnsavedChanges,
+  onPopInvokedWithResult: (didPop, result) {
+    if (!didPop) _showDiscardDialog(context);
+  },
+  child: NoteEditorScreen(),
+)
+```
+
+```dart
+// Handle incoming deep links (push notification, shared link)
+// go_router's redirect handles auth-gating automatically:
+GoRouter(
+  redirect: (context, state) {
+    final isLoggedIn = ref.read(authProvider) != null;
+    final isAuthRoute = state.matchedLocation.startsWith('/login');
+
+    if (!isLoggedIn && !isAuthRoute) return '/login';
+    if (isLoggedIn && isAuthRoute) return '/';
+    return null;   // no redirect needed
+  },
+  // User taps shared link: myapp://expenses/abc123
+  // → redirect checks auth → if logged in, goes to /expenses/abc123
+  // → if not logged in, goes to /login, then after login redirects to /expenses/abc123
+)
+```
+
+---
+
 ## Lab — Three-Screen App With Full Navigation
 
 Build a note-taking app with three screens and complete navigation:
@@ -884,6 +938,8 @@ This requires thinking about where `_notes` lives — it must be in the parent o
 5. You have a "liked" counter that needs to be shown in both the ProductCard and in the AppBar badge. Where should the state live?
 6. What is prop drilling? Why is it a problem? What phase of this course solves it?
 7. After `await authService.signIn()`, why must you check `mounted` before calling `Navigator.push()`?
+8. A user shares a deep link `myapp://expenses/abc123`. The user isn't logged in. Describe the redirect flow — what screens do they see, and how do they end up at the expense detail after login?
+9. `PopScope(canPop: !_hasUnsavedChanges)` — what does this do on Android back button? What about iOS swipe-to-go-back?
 
 ---
 

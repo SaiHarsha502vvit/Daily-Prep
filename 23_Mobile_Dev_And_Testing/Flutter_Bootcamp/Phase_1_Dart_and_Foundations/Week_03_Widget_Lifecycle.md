@@ -932,6 +932,64 @@ class _ProfileState extends State<ProfileScreen>
 
 ---
 
+## 13. `AppLifecycleListener` — Responding to App State Changes
+
+> 🍎 **Academy Golden Rule — Be a Good Citizen:**
+> *"When your app goes to background, stop consuming resources. When it comes back, refresh stale data. Battery life is a feature."*
+
+```dart
+class _HomeScreenState extends State<HomeScreen> {
+  late final AppLifecycleListener _lifecycleListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycleListener = AppLifecycleListener(
+      onResume: _onAppResumed,
+      onInactive: _onAppInactive,
+      onPause: _onAppPaused,
+      onDetach: _onAppDetached,
+    );
+  }
+
+  void _onAppResumed() {
+    // App came back to foreground — refresh stale data
+    ref.invalidate(notificationsProvider);
+    ref.invalidate(messagesProvider);
+  }
+
+  void _onAppInactive() {
+    // App is partially visible (phone call overlay, app switcher)
+    // Pause videos, stop intensive animations
+  }
+
+  void _onAppPaused() {
+    // App is fully in background — save draft, pause timers
+    _saveDraft();
+  }
+
+  void _onAppDetached() {
+    // App is about to be terminated — last chance to save
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
+  }
+}
+```
+
+**When to use each callback:**
+```
+resumed   → refresh data, reconnect WebSocket, resume camera
+inactive  → pause video, stop animations, blur sensitive content
+paused    → save drafts, persist state, disconnect non-essential streams
+detached  → final save (not guaranteed to complete — keep it fast)
+```
+
+---
+
 ## Lab — Music Player Screen
 
 Build a music player screen that uses every lifecycle method meaningfully:
@@ -992,6 +1050,9 @@ This requires managing two independent timers in the same State — the playback
 5. `build()` is called many times per second. Why is starting a network call inside `build()` catastrophic?
 6. What is the difference between `deactivate()` and `dispose()`?
 7. `super.initState()` goes first, `super.dispose()` goes last — why are these rules the opposite of each other?
+8. `AppLifecycleListener.onPause` fires when your app goes to background. Name three things you should do in this callback. What should you NOT do here?
+9. Your app displays sensitive financial data. The user switches to the app switcher (iOS) — your screen is visible as a thumbnail. How do you prevent this using `onInactive`?
+10. `wantKeepAlive` returns `true` in `AutomaticKeepAliveClientMixin`. What happens to this widget's state when the user swipes to another `PageView` page? What happens without it?
 
 ---
 

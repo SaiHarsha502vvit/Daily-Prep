@@ -743,6 +743,219 @@ RatingBar(
 
 ---
 
+## 7. Context Menus — Long Press & Right-Click
+
+> 🍎 **Academy Golden Rule — Platform Consistency:**
+> *"iOS users expect a long press to reveal actions. Android users expect the same, plus a right-click equivalent on desktop. Your app should feel native on every platform."*
+
+### PopupMenuButton — The Standard Pattern
+
+```dart
+PopupMenuButton<String>(
+  onSelected: (value) {
+    switch (value) {
+      case 'edit': _editNote(note);
+      case 'pin': _togglePin(note);
+      case 'share': _shareNote(note);
+      case 'delete': _confirmDelete(note);
+    }
+  },
+  itemBuilder: (context) => [
+    const PopupMenuItem(value: 'edit', child: ListTile(
+      leading: Icon(Icons.edit), title: Text('Edit'),
+      contentPadding: EdgeInsets.zero,
+    )),
+    const PopupMenuItem(value: 'pin', child: ListTile(
+      leading: Icon(Icons.push_pin), title: Text('Pin to Top'),
+      contentPadding: EdgeInsets.zero,
+    )),
+    const PopupMenuItem(value: 'share', child: ListTile(
+      leading: Icon(Icons.share), title: Text('Share'),
+      contentPadding: EdgeInsets.zero,
+    )),
+    const PopupMenuDivider(),
+    const PopupMenuItem(value: 'delete', child: ListTile(
+      leading: Icon(Icons.delete, color: Colors.red),
+      title: Text('Delete', style: TextStyle(color: Colors.red)),
+      contentPadding: EdgeInsets.zero,
+    )),
+  ],
+)
+```
+
+### Long Press Context Menu — Custom Position
+
+```dart
+// Show a menu at the exact position of the long press
+class NoteCard extends StatelessWidget {
+  final Note note;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const NoteCard({super.key, required this.note, required this.onEdit, required this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onLongPressStart: (details) {
+        _showContextMenu(context, details.globalPosition);
+      },
+      child: Card(/* ... note content ... */),
+    );
+  }
+
+  void _showContextMenu(BuildContext context, Offset position) {
+    showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx, position.dy,
+        position.dx, position.dy,
+      ),
+      items: [
+        const PopupMenuItem(value: 'edit', child: Text('Edit')),
+        const PopupMenuItem(value: 'duplicate', child: Text('Duplicate')),
+        const PopupMenuDivider(),
+        const PopupMenuItem(value: 'delete', child: Text('Delete',
+          style: TextStyle(color: Colors.red),
+        )),
+      ],
+    ).then((value) {
+      switch (value) {
+        case 'edit': onEdit();
+        case 'delete': onDelete();
+      }
+    });
+  }
+}
+```
+
+### `CupertinoContextMenu` — iOS Native Feel
+
+```dart
+// iOS-style context menu with 3D touch / long press preview
+CupertinoContextMenu(
+  actions: [
+    CupertinoContextMenuAction(
+      child: const Text('Share'),
+      trailingIcon: CupertinoIcons.share,
+      onPressed: () { Navigator.pop(context); _share(); },
+    ),
+    CupertinoContextMenuAction(
+      child: const Text('Copy'),
+      trailingIcon: CupertinoIcons.doc_on_doc,
+      onPressed: () { Navigator.pop(context); _copy(); },
+    ),
+    CupertinoContextMenuAction(
+      isDestructiveAction: true,
+      child: const Text('Delete'),
+      trailingIcon: CupertinoIcons.delete,
+      onPressed: () { Navigator.pop(context); _delete(); },
+    ),
+  ],
+  child: NotePreviewCard(note: note),   // this widget animates up on long press
+)
+```
+
+---
+
+## 8. `ReorderableListView` — Drag to Reorder
+
+```dart
+ReorderableListView.builder(
+  itemCount: tasks.length,
+  onReorder: (oldIndex, newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final item = tasks.removeAt(oldIndex);
+      tasks.insert(newIndex, item);
+    });
+  },
+  itemBuilder: (context, index) {
+    return ListTile(
+      key: ValueKey(tasks[index].id),  // ← REQUIRED: key for each item
+      leading: const Icon(Icons.drag_handle),
+      title: Text(tasks[index].title),
+      trailing: Checkbox(
+        value: tasks[index].isDone,
+        onChanged: (v) => _toggle(index),
+      ),
+    );
+  },
+  proxyDecorator: (child, index, animation) {
+    // Customize the dragged item's appearance
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) => Material(
+        elevation: lerpDouble(0, 8, animation.value)!,
+        borderRadius: BorderRadius.circular(8),
+        child: child,
+      ),
+      child: child,
+    );
+  },
+)
+```
+
+**Rule:** Every child of `ReorderableListView` must have a `Key`. Without keys, Flutter can't track which item is being moved. Use `ValueKey(item.id)`, not `ValueKey(index)` — the index changes during the reorder.
+
+---
+
+## 9. Accessibility for Custom Gestures
+
+> 🍎 **Academy Golden Rule — Accessibility Is Not Optional:**
+> *"If a user can't discover your gesture, it doesn't exist. Every custom gesture must have a semantic label and an alternative input method. VoiceOver users can't long press — provide a visible button fallback."*
+
+```dart
+// ❌ Custom gesture with NO accessibility — invisible to screen readers
+GestureDetector(
+  onDoubleTap: () => _addToFavorites(item),
+  child: ProductCard(product: item),
+)
+
+// ✓ Wrap in Semantics with a custom action
+Semantics(
+  label: '${item.name}, ${item.formattedPrice}',
+  customSemanticsActions: {
+    CustomSemanticsAction(label: 'Add to favorites'): () => _addToFavorites(item),
+    CustomSemanticsAction(label: 'Quick add to cart'): () => _addToCart(item),
+  },
+  child: GestureDetector(
+    onDoubleTap: () => _addToFavorites(item),
+    child: ProductCard(product: item),
+  ),
+)
+
+// For Dismissible — always show a visible delete button too
+Dismissible(
+  key: ValueKey(item.id),
+  onDismissed: (_) => _delete(item),
+  background: Container(color: Colors.red, child: const Icon(Icons.delete)),
+  child: ListTile(
+    title: Text(item.name),
+    trailing: IconButton(         // ← accessible alternative to swipe
+      icon: const Icon(Icons.delete_outline),
+      tooltip: 'Delete ${item.name}',  // ← announced by screen reader
+      onPressed: () => _confirmDelete(item),
+    ),
+  ),
+)
+```
+
+**The accessibility checklist for custom interactions:**
+```
+1. Can the gesture be discovered without seeing a tutorial?
+   └── Add a tooltip or hint text
+2. Can VoiceOver / TalkBack trigger this action?
+   └── Add Semantics with customSemanticsActions
+3. Does it meet minimum touch target (48×48dp Material, 44×44pt Apple)?
+   └── Wrap in SizedBox or use IconButton
+4. Is there a visible fallback for gestures that aren't obvious?
+   └── Long press: also show a ⋯ button
+   └── Swipe: also show a delete icon
+```
+
+---
+
 ## Gesture Decision Chart
 
 ```
@@ -822,6 +1035,9 @@ Requirements:
 5. `QuantitySelector` fires `onChanged` instead of managing `_quantity` internally. Why? What would break if it managed its own state?
 6. The `RatingBar` has `void Function(double)? onRatingChanged` as nullable. What does `onRatingChanged != null ?` check do in the `GestureDetector.onTap`?
 7. `Draggable` has three children: `child`, `feedback`, `childWhenDragging`. What does each show and when?
+8. `showMenu` takes a `RelativeRect` position. How do you get the position of a long press? Walk through `onLongPressStart → details.globalPosition → RelativeRect.fromLTRB`.
+9. `ReorderableListView` requires a `Key` on every child. What happens if you use `ValueKey(index)` instead of `ValueKey(item.id)`? Why does this break?
+10. You add a double-tap gesture to favorite an item. A VoiceOver user can't double-tap — what do you add to make this accessible? Name the specific Flutter widget/property.
 
 ---
 

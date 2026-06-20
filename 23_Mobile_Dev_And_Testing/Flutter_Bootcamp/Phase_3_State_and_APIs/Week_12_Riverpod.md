@@ -567,6 +567,201 @@ final filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {...}
 
 ---
 
+## 8. `@riverpod` — Code Generation (riverpod_generator)
+
+> 📄 **Riverpod Docs:**
+> *"The @riverpod annotation generates provider declarations for you. Instead of manually writing `final myProvider = Provider<T>((ref) => ...)`, annotate a function and let build_runner generate the provider."*
+
+Manual provider declarations are verbose and error-prone — wrong generic types, forgetting `autoDispose`, mismatching the Notifier type. Code generation eliminates all of it.
+
+```yaml
+# pubspec.yaml
+dependencies:
+  riverpod_annotation: ^2.3.0
+
+dev_dependencies:
+  riverpod_generator: ^2.4.0
+  build_runner: ^2.4.0
+```
+
+```dart
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'providers.g.dart';  // generated file
+
+// ──── Simple provider (replaces: final appVersionProvider = Provider<String>(...)) ────
+@riverpod
+String appVersion(AppVersionRef ref) => '2.1.0';
+// Generated: final appVersionProvider = AutoDisposeProvider<String>(...)
+
+// ──── FutureProvider (replaces: final userProvider = FutureProvider.autoDispose<User>(...)) ────
+@riverpod
+Future<UserProfile> userProfile(UserProfileRef ref) async {
+  final response = await http.get(Uri.parse('/api/profile'));
+  return UserProfile.fromJson(jsonDecode(response.body));
+}
+// Generated: final userProfileProvider = AutoDisposeFutureProvider<UserProfile>(...)
+
+// ──── Notifier class (replaces: class + NotifierProvider declaration) ────
+@riverpod
+class Cart extends _$Cart {
+  @override
+  List<CartItem> build() => [];   // initial state
+
+  void addItem(Product product, String size) {
+    state = [...state, CartItem(product: product, selectedSize: size)];
+  }
+
+  void removeItem(String productId) {
+    state = state.where((i) => i.product.id != productId).toList();
+  }
+}
+// Generated: final cartProvider = AutoDisposeNotifierProvider<Cart, List<CartItem>>(...)
+
+// ──── AsyncNotifier (replaces: class + AsyncNotifierProvider declaration) ────
+@riverpod
+class Products extends _$Products {
+  @override
+  Future<List<Product>> build() async {
+    return ProductApi.getAll();
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => ProductApi.getAll());
+  }
+}
+// Generated: final productsProvider = AutoDisposeAsyncNotifierProvider<Products, List<Product>>(...)
+
+// ──── Keep alive (disable autoDispose) ────
+@Riverpod(keepAlive: true)
+class Auth extends _$Auth {
+  @override
+  AuthState build() => const AuthState.unauthenticated();
+  // This provider persists for the entire app lifecycle
+}
+```
+
+```bash
+# Generate the providers
+dart run build_runner build --delete-conflicting-outputs
+
+# Watch mode — regenerates on file save
+dart run build_runner watch
+```
+
+**Manual vs Generated — side by side:**
+```dart
+// ❌ Manual — verbose, easy to get generics wrong
+final cartProvider = NotifierProvider<CartNotifier, List<CartItem>>(CartNotifier.new);
+
+class CartNotifier extends Notifier<List<CartItem>> {
+  @override List<CartItem> build() => [];
+}
+
+// ✓ Generated — the annotation handles everything
+@riverpod
+class Cart extends _$Cart {
+  @override List<CartItem> build() => [];
+}
+// Use as: ref.watch(cartProvider)  ← same API, less boilerplate
+```
+
+**Rule:** Use `@riverpod` for new projects. For existing projects, migrate gradually — both styles work together in the same app.
+
+---
+
+## 9. `.select()` — Fine-Grained Rebuilds
+
+> 🍎 **Academy Golden Rule — Performance by Design:**
+> *"Don't rebuild a widget for data it doesn't display. Select only the slice of state you need."*
+
+```dart
+// ❌ This widget rebuilds when ANY cart item changes (added, removed, quantity changed)
+class CartBadge extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(cartProvider);     // subscribes to the entire list
+    return Badge(label: Text('${items.length}'));
+  }
+}
+
+// ✓ This widget ONLY rebuilds when the count changes
+class CartBadge extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(cartProvider.select((items) => items.length));
+    return Badge(label: Text('$count'));
+  }
+}
+```
+
+```dart
+// Select a computed value — only rebuild when THIS specific value changes
+final userName = ref.watch(
+  userProfileProvider.select((profile) => profile.valueOrNull?.displayName ?? ''),
+);
+
+// Select from AsyncValue — common pattern for loading indicators
+final isLoading = ref.watch(
+  productsProvider.select((async) => async.isLoading),
+);
+
+// Multiple selects in one widget — each tracked independently
+class OrderSummary extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final itemCount = ref.watch(cartProvider.select((c) => c.length));
+    final total = ref.watch(cartTotalProvider);
+    final currency = ref.watch(settingsProvider.select((s) => s.currency));
+    // Rebuilds only when count, total, OR currency changes — not when
+    // unrelated settings (theme, language) change
+    return Text('$itemCount items · $currency${total.toStringAsFixed(2)}');
+  }
+}
+```
+
+**When to use `.select()`:**
+- A provider holds a large object but your widget only needs one field
+- You notice a widget rebuilding too often in DevTools
+- The provider is shared widely and changes frequently
+
+---
+
+## 10. `ref.invalidate()` vs `ref.refresh()`
+
+```dart
+// ref.invalidate — marks provider as stale, rebuilds on NEXT read
+ref.invalidate(productsProvider);
+// If no widget is watching productsProvider, nothing happens yet
+// When a widget next reads it, it rebuilds from scratch
+
+// ref.refresh — invalidate + immediately read the new value
+final freshProducts = ref.refresh(productsProvider);
+// Forces rebuild NOW and returns the new value
+
+// Common patterns:
+// Pull-to-refresh
+RefreshIndicator(
+  onRefresh: () async {
+    ref.invalidate(productsProvider);
+    // Wait for the provider to complete its async rebuild
+    await ref.read(productsProvider.future);
+  },
+  child: ProductList(),
+)
+
+// Logout — invalidate everything user-specific
+void logout() {
+  ref.invalidate(userProfileProvider);
+  ref.invalidate(userCartProvider);
+  ref.invalidate(ordersProvider);
+  ref.read(authProvider.notifier).signOut();
+}
+```
+
+---
+
 ## Challenge — Search With Debounce
 
 Build a real-time search using Riverpod + debounce (avoid API call on every keystroke):
@@ -609,6 +804,9 @@ Requirements:
 5. You want the cart to automatically reload when the user logs out. How does `ref.watch(authProvider)` inside `userCartProvider` achieve this?
 6. `ref.listen<T>(provider, (prev, next) {...})` — how is this different from `ref.watch`? What is it used for?
 7. In a unit test for `CartNotifier`, why do you use `ProviderContainer` instead of pumping a widget?
+8. `@riverpod class Cart extends _$Cart` — what does this annotation generate? Why is `_$Cart` the base class?
+9. `ref.watch(cartProvider.select((items) => items.length))` — what does `.select()` do? When would you use it over a plain `ref.watch`?
+10. `ref.invalidate(productsProvider)` vs `ref.refresh(productsProvider)` — what is the difference? Which one do you use in a pull-to-refresh?
 
 ---
 

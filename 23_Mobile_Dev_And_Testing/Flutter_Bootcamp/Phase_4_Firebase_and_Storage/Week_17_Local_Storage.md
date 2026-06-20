@@ -620,6 +620,74 @@ class _AuthInterceptor extends Interceptor {
 
 ---
 
+## 6. Data Privacy — What to Store and Where
+
+> 🍎 **Academy Golden Rule — Protect User Data Like It's Yours:**
+> *"Apple rejects apps that store sensitive data insecurely. Google Play flags apps that log PII. Know what goes where — your career depends on it."*
+
+```dart
+// ✓ CORRECT storage locations
+// Auth token → flutter_secure_storage (encrypted)
+await secureStorage.write(key: 'auth_token', value: token);
+
+// User preferences → SharedPreferences (not sensitive)
+await prefs.setBool('dark_mode', true);
+
+// Offline cache → Hive/SQLite (structured data, not sensitive)
+await notesBox.put(note.id, noteModel);
+
+// ❌ NEVER do this
+// Auth token in SharedPreferences → not encrypted, readable by rooted devices
+await prefs.setString('token', authToken);   // INSECURE
+
+// Passwords in plain text anywhere → never store passwords locally
+await prefs.setString('password', userPassword);  // CATASTROPHIC
+
+// PII in logs → Apple/Google will reject your app
+debugPrint('User email: ${user.email}');  // logs are readable in debug builds
+```
+
+```dart
+// Data cleanup on logout — clear sensitive local data
+Future<void> onLogout() async {
+  // 1. Delete auth tokens
+  await secureStorage.deleteAll();
+
+  // 2. Clear user-specific cache
+  await Hive.box<NoteModel>('notes').clear();
+
+  // 3. Keep non-sensitive preferences (theme, language)
+  // Don't clear SharedPreferences entirely — it includes app settings
+
+  // 4. Navigate to login
+  router.go('/login');
+}
+
+// Data cleanup on account deletion — GDPR/App Store requirement
+Future<void> onAccountDelete() async {
+  // Delete ALL local data
+  await secureStorage.deleteAll();
+  await Hive.deleteFromDisk();
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
+  // Delete server-side data (Firebase)
+  await FirebaseAuth.instance.currentUser?.delete();
+}
+```
+
+**Storage security checklist:**
+```
+1. Auth tokens, API keys, passwords → flutter_secure_storage only
+2. Never log PII (email, phone, name) in debugPrint or print
+3. Clear sensitive data on logout
+4. Delete ALL user data on account deletion (GDPR requirement)
+5. Use flutter_secure_storage's key encryption (iOS Keychain, Android EncryptedSharedPrefs)
+6. Don't store more than you need — less data = less risk
+```
+
+---
+
 ## Lab — Notes App Offline Layer
 
 Add offline support to the Notes App from Week 15:
@@ -652,6 +720,9 @@ Add offline support to the Notes App from Week 15:
 5. In SQLite, you store a `bool` field. What type do you use in the SQL schema and how do you convert when reading?
 6. `HiveObject.save()` vs `box.put(key, value)` — what is the difference? When can you use `.save()`?
 7. What is `connectivity_plus` used for? Write the code to listen for when the device reconnects to the internet.
+8. A developer stores the user's auth token in `SharedPreferences`. Why is this a security risk? What should they use instead?
+9. The user deletes their account. List everything you must clean up — both local storage and server-side. What regulation requires this?
+10. `prefs.setString('password', userPassword)` appears in a code review. What do you say and why?
 
 ---
 

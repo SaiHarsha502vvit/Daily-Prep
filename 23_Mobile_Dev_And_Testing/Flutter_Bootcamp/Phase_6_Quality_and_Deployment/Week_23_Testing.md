@@ -634,6 +634,176 @@ Full user flow end-to-end?                    → integration test (sparingly)
 
 ---
 
+## Part 5 — Test Data Builders
+
+> 🍎 **Academy Golden Rule — Test Readability:**
+> *"A test should read like a specification. If someone reads only your test file and never sees the production code, they should understand what the feature does."*
+
+Raw constructors inside tests are brittle — when you add a field to `Expense`, every test that constructs one breaks. Test data builders solve this.
+
+```dart
+// test/helpers/builders.dart
+
+class ExpenseBuilder {
+  String _id = 'test-id';
+  String _userId = 'test-user';
+  String _title = 'Test Expense';
+  double _amount = 100;
+  DateTime _date = DateTime(2026, 6, 15);
+  ExpenseCategory _category = ExpenseCategory.food;
+
+  ExpenseBuilder withId(String id) { _id = id; return this; }
+  ExpenseBuilder withTitle(String title) { _title = title; return this; }
+  ExpenseBuilder withAmount(double amount) { _amount = amount; return this; }
+  ExpenseBuilder withDate(DateTime date) { _date = date; return this; }
+  ExpenseBuilder withCategory(ExpenseCategory cat) { _category = cat; return this; }
+  ExpenseBuilder forUser(String userId) { _userId = userId; return this; }
+
+  Expense build() => Expense(
+    id: _id, userId: _userId, title: _title,
+    amount: _amount, date: _date, category: _category,
+  );
+}
+
+// Usage in tests — readable, resilient, only specify what matters
+test('isLarge returns true for amount > 1000', () {
+  final expense = ExpenseBuilder()
+      .withAmount(1500)    // only the field that matters for THIS test
+      .build();
+  expect(expense.isLarge, true);
+});
+
+test('food expenses show restaurant icon', () {
+  final expense = ExpenseBuilder()
+      .withCategory(ExpenseCategory.food)
+      .build();
+  expect(expense.icon, Icons.restaurant);
+});
+
+// Batch creation for list tests
+List<Expense> buildExpenseList(int count, {ExpenseCategory? category}) {
+  return List.generate(count, (i) => ExpenseBuilder()
+      .withId('id-$i')
+      .withTitle('Expense $i')
+      .withAmount((i + 1) * 50.0)
+      .withCategory(category ?? ExpenseCategory.values[i % ExpenseCategory.values.length])
+      .build(),
+  );
+}
+```
+
+**Why builders over raw constructors:**
+```dart
+// ❌ Fragile — when you add a 'receipt' field to Expense, all 47 tests break
+final expense = Expense(id: '1', userId: 'u1', title: 'Coffee', amount: 80,
+    date: DateTime(2026, 6, 15), category: ExpenseCategory.food);
+
+// ✓ Builder — defaults handle the new field, only this test cares about amount
+final expense = ExpenseBuilder().withAmount(80).build();
+```
+
+---
+
+## Part 6 — WidgetTester Methods Reference
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                     WidgetTester Quick Reference                        │
+├──────────────────────────┬───────────────────────────────────────────────┤
+│ Method                   │ What it does                                 │
+├──────────────────────────┼───────────────────────────────────────────────┤
+│ pumpWidget(widget)       │ Renders the widget tree for the first time   │
+│ pump()                   │ Triggers a single frame (one build pass)     │
+│ pump(Duration(ms: 500))  │ Advances the clock by 500ms + one frame      │
+│ pumpAndSettle()          │ Pumps frames until no animations are pending │
+│ pumpFrames(count, dur)   │ Pumps exactly N frames with given interval   │
+├──────────────────────────┼───────────────────────────────────────────────┤
+│ tap(finder)              │ Simulates a tap at the center of the widget  │
+│ longPress(finder)        │ Simulates a long press                       │
+│ drag(finder, offset)     │ Simulates a drag from center by offset       │
+│ fling(finder, offset, v) │ Drag with velocity (for scroll physics)      │
+│ enterText(finder, text)  │ Types text into a TextField                  │
+├──────────────────────────┼───────────────────────────────────────────────┤
+│ find.text('...')         │ Finds widgets displaying this text           │
+│ find.byType(Widget)      │ Finds all widgets of this type               │
+│ find.byIcon(Icons.x)     │ Finds Icon widgets with this icon data       │
+│ find.byKey(Key('k'))     │ Finds by ValueKey / Key                      │
+│ find.widgetWithText(T,s) │ Finds type T that contains text s            │
+│ find.descendant(of, m)   │ Finds matcher m inside ancestor of           │
+├──────────────────────────┼───────────────────────────────────────────────┤
+│ findsOneWidget           │ Matcher: exactly one widget found             │
+│ findsNothing             │ Matcher: no widgets found                     │
+│ findsWidgets             │ Matcher: one or more widgets found            │
+│ findsNWidgets(n)         │ Matcher: exactly n widgets found              │
+│ findsAtLeastNWidgets(n)  │ Matcher: at least n widgets found             │
+└──────────────────────────┴───────────────────────────────────────────────┘
+```
+
+**`pump()` vs `pumpAndSettle()` — when to use each:**
+```dart
+// pump() — advance exactly one frame
+// Use when: you need precise control, or the animation is infinite (loading spinner)
+await tester.tap(find.byType(FloatingActionButton));
+await tester.pump();   // process the tap
+await tester.pump(const Duration(milliseconds: 300));  // advance animation
+
+// pumpAndSettle() — pump until quiescent (no scheduled frames)
+// Use when: you want all animations to complete (page transition, dialog open)
+// ⚠️ Will HANG if there's an infinite animation (CircularProgressIndicator)
+await tester.tap(find.text('Next'));
+await tester.pumpAndSettle();  // waits for page transition to finish
+
+// pumpAndSettle with timeout — safety net
+await tester.pumpAndSettle(const Duration(seconds: 5));
+```
+
+---
+
+## Part 7 — Accessibility Testing
+
+> 🍎 **Academy Golden Rule — Accessibility Is Not Optional:**
+> *"Every app you ship must work with VoiceOver, Dynamic Type, and high contrast. Testing accessibility is testing correctness."*
+
+```dart
+testWidgets('ExpenseTile is accessible', (tester) async {
+  final semantics = tester.getSemantics(find.byType(ExpenseTile));
+
+  // Check that screen readers announce meaningful content
+  expect(semantics.label, contains('Coffee'));
+  expect(semantics.label, contains('₹80'));
+
+  // Verify tappable elements have semantic labels
+  expect(
+    find.bySemanticsLabel('Delete expense'),
+    findsOneWidget,
+  );
+});
+
+// Built-in accessibility checks — run on ALL widget tests
+testWidgets('dashboard meets accessibility guidelines', (tester) async {
+  final handle = tester.ensureSemantics();
+
+  await tester.pumpWidget(const MaterialApp(home: DashboardScreen()));
+  await tester.pumpAndSettle();
+
+  // Check minimum tap target sizes (48x48 per Material, 44x44 per Apple HIG)
+  await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+  await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
+
+  // Check text contrast ratios
+  await expectLater(tester, meetsGuideline(textContrastGuideline));
+
+  // Check that all tappable elements have semantic labels
+  await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+
+  handle.dispose();
+});
+```
+
+**Rule:** Add `meetsGuideline` checks to your most important screens. They catch real accessibility bugs — a tiny icon button without a label, a light-gray text on white background, a 32x32 tap target.
+
+---
+
 ## Lab — Write Tests for `GetSpendingTrend`
 
 The `GetSpendingTrend` use case from Week 22 needs tests:
@@ -662,9 +832,12 @@ Run `flutter test --coverage` and view the coverage report. Reach 100% line cove
 2. In `blocTest`, what does `seed:` do? Why is it needed for the delete test?
 3. `verifyNever(mockRepo.addExpense(any))` — what does this assert? Why is this important?
 4. Why do widget tests require `tester.pumpAndSettle()` after a tap?
-5. What's the difference between `pump()` and `pumpAndSettle()`?
+5. What's the difference between `pump()` and `pumpAndSettle()`? When would `pumpAndSettle` hang, and what do you do?
 6. Golden tests fail after a legitimate UI change. What's the right process?
 7. You have a BLoC handler that makes a network call and then updates local storage. How do you test this with two separate mock objects?
+8. Why is a test data builder better than calling the `Expense` constructor directly in every test? What happens when you add a new required field to `Expense`?
+9. `meetsGuideline(androidTapTargetGuideline)` fails for a small icon. What is the minimum tap target size? How do you fix it without changing the icon's visual size?
+10. You run `pumpAndSettle()` on a screen with a `CircularProgressIndicator`. What happens and why? How do you fix the test?
 
 ---
 

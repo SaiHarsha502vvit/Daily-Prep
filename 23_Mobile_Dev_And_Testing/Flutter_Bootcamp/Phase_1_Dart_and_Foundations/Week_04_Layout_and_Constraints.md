@@ -500,6 +500,105 @@ Wrap(
 
 ---
 
+## Responsive & Adaptive Layout
+
+> 🍎 **Academy Golden Rule — Design for Every Device:**
+> *"Your app runs on a 4-inch SE, a 6.7-inch Pro Max, a 12.9-inch iPad Pro, and a 27-inch iMac with desktop Chrome. A single hardcoded layout won't survive."*
+
+```dart
+// LayoutBuilder — the widget that tells you how much space you have
+class ProductGrid extends StatelessWidget {
+  final List<Product> products;
+  const ProductGrid({super.key, required this.products});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // constraints.maxWidth tells you how wide THIS widget can be
+        final crossAxisCount = switch (constraints.maxWidth) {
+          < 600 => 2,      // phone portrait
+          < 900 => 3,      // phone landscape / small tablet
+          < 1200 => 4,     // tablet
+          _ => 6,          // desktop
+        };
+
+        return GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: 0.75,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+          ),
+          itemCount: products.length,
+          itemBuilder: (_, i) => ProductCard(product: products[i]),
+        );
+      },
+    );
+  }
+}
+```
+
+```dart
+// Breakpoint helper — reuse across the app
+enum ScreenSize { compact, medium, expanded }
+
+ScreenSize getScreenSize(BuildContext context) {
+  final width = MediaQuery.sizeOf(context).width;
+  if (width < 600) return ScreenSize.compact;
+  if (width < 840) return ScreenSize.medium;
+  return ScreenSize.expanded;
+}
+
+// Adaptive navigation — bottom bar on phone, rail on tablet, drawer on desktop
+@override
+Widget build(BuildContext context) {
+  return switch (getScreenSize(context)) {
+    ScreenSize.compact => Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+        destinations: _destinations,
+      ),
+    ),
+    ScreenSize.medium => Scaffold(
+      body: Row(children: [
+        NavigationRail(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+          destinations: _railDestinations,
+        ),
+        Expanded(child: _pages[_selectedIndex]),
+      ]),
+    ),
+    ScreenSize.expanded => Scaffold(
+      body: Row(children: [
+        NavigationDrawer(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+          children: _drawerDestinations,
+        ),
+        Expanded(child: _pages[_selectedIndex]),
+      ]),
+    ),
+  };
+}
+```
+
+**`MediaQuery.sizeOf(context)` vs `MediaQuery.of(context).size`:**
+```dart
+// ✓ Only rebuilds when SIZE changes (not when keyboard appears, or orientation locks, etc.)
+final width = MediaQuery.sizeOf(context).width;
+
+// ❌ Rebuilds when ANY MediaQuery property changes — wasteful
+final width = MediaQuery.of(context).size.width;
+```
+
+**Rule:** Use `LayoutBuilder` when you need the space available to *this specific widget*. Use `MediaQuery.sizeOf` when you need the *entire screen* dimensions (for choosing navigation patterns).
+
+---
+
 ## Lab — Four Real Layout Challenges
 
 Build each as a separate screen/widget:
@@ -567,6 +666,8 @@ Use `LayoutBuilder` for breakpoints. Use `GridView.builder` with `SliverGridDele
 5. When would you use `Stack` instead of `Column`?
 6. `CrossAxisAlignment.stretch` vs `CrossAxisAlignment.center` — what does stretch do differently?
 7. What is `LayoutBuilder` and why is it better than `MediaQuery.of(context).size.width` for responsive layouts inside nested widgets?
+8. Your app runs on phone, tablet, and desktop. How do you show `NavigationBar` on phone, `NavigationRail` on tablet, and `NavigationDrawer` on desktop — without three separate scaffolds?
+9. `MediaQuery.sizeOf(context).width` vs `MediaQuery.of(context).size.width` — what rebuilds differently? Which should you prefer and why?
 
 ---
 

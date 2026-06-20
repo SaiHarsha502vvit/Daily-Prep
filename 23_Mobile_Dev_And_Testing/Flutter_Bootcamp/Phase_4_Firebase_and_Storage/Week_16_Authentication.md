@@ -619,6 +619,77 @@ testWidgets('shows LoginScreen when signed out', (tester) async {
 
 ---
 
+## 9. Auth UX — Academy Principles
+
+> 🍎 **Academy Golden Rule — Reduce Friction, Protect Trust:**
+> *"Every extra step in your login flow loses users. Biometrics > single tap social login > email+password. But when something goes wrong, the error message must tell the user exactly what to do — never 'invalid credentials'."*
+
+```dart
+// Error messages that help vs. error messages that frustrate
+String authErrorMessage(FirebaseAuthException e) {
+  return switch (e.code) {
+    'user-not-found' => 'No account found with this email. Would you like to sign up?',
+    'wrong-password' => 'Incorrect password. Tap "Forgot password?" to reset.',
+    'email-already-in-use' => 'An account with this email already exists. Try logging in.',
+    'weak-password' => 'Password must be at least 8 characters with a number and uppercase letter.',
+    'too-many-requests' => 'Too many attempts. Please wait a moment and try again.',
+    'network-request-failed' => 'No internet connection. Check your Wi-Fi and try again.',
+    'invalid-email' => 'Please enter a valid email address.',
+    'user-disabled' => 'This account has been disabled. Contact support for help.',
+    _ => 'Something went wrong. Please try again.',
+  };
+}
+```
+
+```dart
+// Biometric authentication — fastest possible login for returning users
+import 'package:local_auth/local_auth.dart';
+
+class BiometricService {
+  final _auth = LocalAuthentication();
+
+  Future<bool> isBiometricAvailable() async {
+    final canCheck = await _auth.canCheckBiometrics;
+    final isDeviceSupported = await _auth.isDeviceSupported();
+    return canCheck && isDeviceSupported;
+  }
+
+  Future<bool> authenticate() async {
+    return _auth.authenticate(
+      localizedReason: 'Verify your identity to access your account',
+      options: const AuthenticationOptions(
+        stickyAuth: true,           // keep auth dialog up if app goes to background
+        biometricOnly: false,       // allow PIN/pattern fallback
+      ),
+    );
+  }
+}
+
+// Login flow with biometric shortcut
+Future<void> handleLogin() async {
+  final hasToken = await secureStorage.read(key: 'auth_token');
+  if (hasToken != null && await biometricService.isBiometricAvailable()) {
+    final authenticated = await biometricService.authenticate();
+    if (authenticated) {
+      // Skip the login screen entirely — user is verified
+      router.go('/home');
+      return;
+    }
+  }
+  // Fall through to email/password or social login
+}
+```
+
+**The Academy Auth UX Hierarchy:**
+```
+1. Biometric (Face ID / fingerprint) — instant, returning users
+2. Social login (Google / Apple) — one tap, new users
+3. Magic link (email) — no password to remember
+4. Email + password — last resort, highest friction
+```
+
+---
+
 ## Lab — Complete Auth Flow
 
 Build a complete authentication system:

@@ -542,6 +542,55 @@ Content to scroll?
 
 ---
 
+## 11. Scroll Accessibility & Performance
+
+> 🍎 **Academy Golden Rule — Infinite Content, Finite Patience:**
+> *"A feed that takes 3 seconds to render the next page loses users. A list that VoiceOver can't navigate is inaccessible. Build scrolling that is fast AND inclusive."*
+
+```dart
+// Announce dynamic content to screen readers
+ListView.builder(
+  itemCount: items.length + (isLoadingMore ? 1 : 0),
+  itemBuilder: (context, index) {
+    if (index == items.length) {
+      return Semantics(
+        liveRegion: true,   // VoiceOver announces "Loading more items"
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    return Semantics(
+      label: 'Item ${index + 1} of ${items.length}. ${items[index].title}',
+      child: ListTile(title: Text(items[index].title)),
+    );
+  },
+)
+
+// Scroll-to-top button for long lists (accessibility + UX)
+FloatingActionButton.small(
+  onPressed: () => _scrollController.animateTo(
+    0,
+    duration: const Duration(milliseconds: 500),
+    curve: Curves.easeOut,
+  ),
+  tooltip: 'Scroll to top',   // announced by screen reader
+  child: const Icon(Icons.arrow_upward),
+)
+
+// findChildIndexCallback for stable reorders
+SliverList(
+  delegate: SliverChildBuilderDelegate(
+    (context, index) => NoteCard(key: ValueKey(notes[index].id), note: notes[index]),
+    childCount: notes.length,
+    findChildIndexCallback: (key) {
+      final id = (key as ValueKey<String>).value;
+      return notes.indexWhere((n) => n.id == id);
+    },
+  ),
+)
+```
+
+---
+
 ## Lab — News Feed App
 
 Build a news feed with the full sliver layout:

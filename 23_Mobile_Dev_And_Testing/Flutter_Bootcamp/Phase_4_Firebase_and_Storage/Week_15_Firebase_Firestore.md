@@ -586,6 +586,231 @@ ref.watchNotes().snapshots().listen((snapshot) {
 
 ---
 
+## 8. Pagination — `startAfterDocument`
+
+> 🍎 **Academy Golden Rule — Respect the User's Device:**
+> *"Never load 10,000 documents into memory. Paginate. Your app should feel fast on a 5-year-old phone with 2 GB RAM."*
+
+Firestore charges per document read. Loading all documents is wasteful and slow. Pagination loads one page at a time.
+
+```dart
+class PaginatedNotesRepository {
+  final FirebaseFirestore _db;
+  final String _userId;
+  static const _pageSize = 20;
+
+  PaginatedNotesRepository({required FirebaseFirestore db, required String userId})
+      : _db = db, _userId = userId;
+
+  CollectionReference<Map<String, dynamic>> get _notesRef =>
+      _db.collection('users').doc(_userId).collection('notes');
+
+  // First page — no cursor needed
+  Future<PaginatedResult<Note>> getFirstPage() async {
+    final snapshot = await _notesRef
+        .orderBy('updatedAt', descending: true)
+        .limit(_pageSize)
+        .get();
+
+    return PaginatedResult(
+      items: snapshot.docs.map(Note.fromFirestore).toList(),
+      lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null,
+      hasMore: snapshot.docs.length == _pageSize,
+    );
+  }
+
+  // Next page — start AFTER the last document from previous page
+  Future<PaginatedResult<Note>> getNextPage(DocumentSnapshot lastDocument) async {
+    final snapshot = await _notesRef
+        .orderBy('updatedAt', descending: true)
+        .startAfterDocument(lastDocument)   // ← cursor-based pagination
+        .limit(_pageSize)
+        .get();
+
+    return PaginatedResult(
+      items: snapshot.docs.map(Note.fromFirestore).toList(),
+      lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null,
+      hasMore: snapshot.docs.length == _pageSize,
+    );
+  }
+}
+
+class PaginatedResult<T> {
+  final List<T> items;
+  final DocumentSnapshot? lastDocument;
+  final bool hasMore;
+
+  const PaginatedResult({
+    required this.items,
+    required this.lastDocument,
+    required this.hasMore,
+  });
+}
+```
+
+```dart
+// Riverpod notifier for paginated loading
+class PaginatedNotesNotifier extends AsyncNotifier<PaginatedNotesState> {
+  @override
+  Future<PaginatedNotesState> build() async {
+    final repo = ref.watch(paginatedNotesRepoProvider);
+    final result = await repo.getFirstPage();
+    return PaginatedNotesState(
+      notes: result.items,
+      lastDocument: result.lastDocument,
+      hasMore: result.hasMore,
+      isLoadingMore: false,
+    );
+  }
+
+  Future<void> loadMore() async {
+    final current = state.requireValue;
+    if (!current.hasMore || current.isLoadingMore) return;
+
+    state = AsyncData(current.copyWith(isLoadingMore: true));
+
+    final repo = ref.read(paginatedNotesRepoProvider);
+    final result = await repo.getNextPage(current.lastDocument!);
+
+    state = AsyncData(PaginatedNotesState(
+      notes: [...current.notes, ...result.items],
+      lastDocument: result.lastDocument,
+      hasMore: result.hasMore,
+      isLoadingMore: false,
+    ));
+  }
+}
+```
+
+```dart
+// Infinite scroll in the UI
+NotificationListener<ScrollNotification>(
+  onNotification: (scroll) {
+    if (scroll.metrics.pixels >= scroll.metrics.maxScrollExtent - 200) {
+      ref.read(paginatedNotesProvider.notifier).loadMore();
+    }
+    return false;
+  },
+  child: ListView.builder(
+    itemCount: notes.length + (hasMore ? 1 : 0),
+    itemBuilder: (_, index) {
+      if (index == notes.length) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return NoteCard(note: notes[index]);
+    },
+  ),
+)
+```
+
+**Why `startAfterDocument` instead of `offset`?**
+Firestore has no `offset(100)`. Even if it did, offset-based pagination is slow on large datasets — the database must count and skip N documents. Cursor-based pagination (`startAfter`) jumps directly to the right position using the index.
+
+---
+
+## 9. Compound Indexes
+
+> 📄 **Firebase Docs:**
+> *"Cloud Firestore automatically creates indexes for single-field queries. Queries that combine equality filters with a range filter or order on a different field require a composite (compound) index."*
+
+```dart
+// This query works WITHOUT a custom index — single-field equality
+_notesRef.where('isPinned', isEqualTo: true).get();
+
+// This query works WITHOUT a custom index — single-field ordering
+_notesRef.orderBy('createdAt', descending: true).get();
+
+// ❌ This query FAILS without a compound index
+// Combining equality filter on one field + orderBy on another field
+_notesRef
+    .where('isPinned', isEqualTo: true)
+    .orderBy('updatedAt', descending: true)
+    .get();
+// Error: "The query requires an index. You can create it here: <link>"
+```
+
+Firestore gives you the exact link to create the index when the query fails. Click it.
+
+```json
+// firestore.indexes.json — define indexes as code (deploy with firebase deploy)
+{
+  "indexes": [
+    {
+      "collectionGroup": "notes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isPinned", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "notes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "tags", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    }
+  ]
+}
+```
+
+```bash
+# Deploy indexes
+firebase deploy --only firestore:indexes
+```
+
+**Rule:** When a Firestore query fails with "requires an index", the error message contains a direct link to the Firebase console that pre-fills the index. Click it, create it, wait 2-3 minutes for it to build. Store the index definition in `firestore.indexes.json` so it deploys with your project.
+
+---
+
+## 10. Transactions — Atomic Read-Modify-Write
+
+```dart
+// A batch write (Section 4) writes multiple documents atomically
+// but cannot READ data during the write.
+// A transaction can READ first, then WRITE based on what it read.
+
+// Use case: transfer credits between users
+Future<void> transferCredits({
+  required String fromUserId,
+  required String toUserId,
+  required int amount,
+}) async {
+  await FirebaseFirestore.instance.runTransaction((transaction) async {
+    // Step 1: READ both accounts inside the transaction
+    final fromDoc = await transaction.get(
+      _db.collection('users').doc(fromUserId),
+    );
+    final toDoc = await transaction.get(
+      _db.collection('users').doc(toUserId),
+    );
+
+    final fromBalance = fromDoc.data()!['credits'] as int;
+    final toBalance = toDoc.data()!['credits'] as int;
+
+    if (fromBalance < amount) {
+      throw Exception('Insufficient credits');
+    }
+
+    // Step 2: WRITE both updates — they succeed or fail together
+    transaction.update(fromDoc.reference, {'credits': fromBalance - amount});
+    transaction.update(toDoc.reference, {'credits': toBalance + amount});
+  });
+  // If another client modifies either document between READ and WRITE,
+  // Firestore automatically RETRIES the entire transaction.
+}
+```
+
+**Transaction vs Batch:**
+```
+Need to write multiple documents atomically?
+├── Don't need to read first → WriteBatch (simpler, up to 500 ops)
+└── Need to read-then-write → Transaction (auto-retries on conflict)
+```
+
+---
+
 ## Lab — Notes App With Full Firestore
 
 Build a complete notes app with these features:
@@ -631,6 +856,9 @@ Extend the notes app to a shared workspace:
 5. What is `FieldValue.serverTimestamp()`? Why is it better than `Timestamp.fromDate(DateTime.now())`?
 6. Write the Firestore security rule that allows a user to read their own notes but deny everyone else.
 7. Explain Firestore's offline support. What is `metadata.hasPendingWrites`? What does Firestore do with writes when the device is offline?
+8. You query `where('isPinned', isEqualTo: true).orderBy('updatedAt')` and Firestore throws an error. Why? What do you need to create, and where do you define it in code?
+9. `startAfterDocument(lastDoc)` vs a hypothetical `offset(100)` — why is cursor-based pagination faster? What happens if a document is inserted before the cursor position?
+10. A transaction reads user A's balance, then writes a deduction. Another client modifies user A's balance between the read and write. What does Firestore do?
 
 ---
 

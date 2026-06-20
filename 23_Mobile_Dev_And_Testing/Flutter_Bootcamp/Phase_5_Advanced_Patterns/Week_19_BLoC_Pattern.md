@@ -604,6 +604,60 @@ sl.registerFactory(() => CartBloc(sl<CartRepository>(), sl<AuthBloc>()));
 
 ---
 
+## 10. BLoC Testing Philosophy
+
+> 🍎 **Academy Golden Rule — If You Can't Test It, You Can't Ship It:**
+> *"BLoC's entire value proposition is testability. Every event-to-state transition is deterministic and testable without a widget, without a device, without Firebase. If your BLoC tests require pumpWidget, your architecture is wrong."*
+
+```dart
+// The ideal BLoC test: zero Flutter imports, runs in < 0.1 seconds
+import 'package:test/test.dart';   // NOT flutter_test
+import 'package:bloc_test/bloc_test.dart';
+
+blocTest<CartBloc, CartState>(
+  'adding same item twice increments quantity instead of duplicating',
+  build: () => CartBloc(FakeCartRepository()),
+  act: (bloc) {
+    bloc.add(AddItemEvent(product: testShoe, size: 'M'));
+    bloc.add(AddItemEvent(product: testShoe, size: 'M'));
+  },
+  expect: () => [
+    isA<CartLoaded>().having((s) => s.items.length, 'item count', 1),
+    isA<CartLoaded>()
+        .having((s) => s.items.length, 'item count', 1)
+        .having((s) => s.items.first.quantity, 'quantity', 2),
+  ],
+);
+
+// Test error recovery — optimistic delete with rollback
+blocTest<CartBloc, CartState>(
+  'restores item when server delete fails',
+  seed: () => CartLoaded(items: [testItem]),
+  build: () {
+    final repo = MockCartRepository();
+    when(repo.deleteItem(any)).thenThrow(Exception('Network'));
+    return CartBloc(repo);
+  },
+  act: (bloc) => bloc.add(RemoveItemEvent(productId: 'shoe-1', size: 'M')),
+  expect: () => [
+    isA<CartLoaded>().having((s) => s.items, 'optimistic', isEmpty),
+    isA<CartLoaded>().having((s) => s.items.length, 'rolled back', 1),
+  ],
+);
+```
+
+**BLoC test coverage targets:**
+```
+Every event type               → at least one test
+Every state type               → at least one test produces it
+Error paths                    → test that errors emit error states, not crash
+Optimistic updates             → test rollback on failure
+Event ordering                 → test two events in sequence
+Initial state                  → test that Bloc starts in expected state
+```
+
+---
+
 ## Lab — Shopping Cart With BLoC
 
 Rebuild the shopping cart from Phase 2 using BLoC:

@@ -594,6 +594,58 @@ Need to animate a property change?
 
 ---
 
+## Animation Accessibility
+
+> 🍎 **Academy Golden Rule — Respect Motion Preferences:**
+> *"Some users experience motion sickness from excessive animations. iOS has 'Reduce Motion', Android has 'Remove Animations'. Your app must check and respond."*
+
+```dart
+// Check the user's accessibility preference
+class AnimatedProductCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+
+    return AnimatedContainer(
+      duration: reduceMotion
+          ? Duration.zero          // no animation — instant change
+          : const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      transform: _isSelected
+          ? Matrix4.identity()
+          : (Matrix4.identity()..scale(0.95)),
+      child: ProductContent(),
+    );
+  }
+}
+
+// For explicit animations — skip to end state
+class PulsingDot extends StatefulWidget { /* ... */ }
+
+class _PulsingDotState extends State<PulsingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+
+    // Don't loop animations for users who prefer reduced motion
+    if (!MediaQuery.of(context).disableAnimations) {
+      _controller.repeat(reverse: true);
+    }
+  }
+}
+```
+
+**Three rules for accessible animation:**
+1. **Always check `MediaQuery.disableAnimations`** before looping or large-motion animations
+2. **Hero transitions and page transitions** — Flutter handles these automatically via the platform
+3. **Loading indicators** — keep these even with reduced motion (progress feedback is essential)
+
+---
+
 ## Lab — Profile Card With Micro-Interactions
 
 Build a profile card with these animations:
@@ -643,6 +695,7 @@ Implement this using `AnimationController` + `TweenSequence` with `Interval`. No
 5. You have two `AnimationController`s in one `State`. Which mixin do you use? Why can't you use `SingleTickerProviderStateMixin`?
 6. `Hero` tags must be unique. You have a `GridView` with 20 product photos. What should the `Hero` tag for each one be?
 7. You want "Card 3" to start its slide-in animation 300ms after the screen opens. How do you use `Interval` to achieve this?
+8. `MediaQuery.of(context).disableAnimations` returns `true`. What should your app do with looping animations? What about loading indicators?
 
 ---
 

@@ -665,6 +665,9 @@ Add a second job `build-android` to your workflow that:
 5. Why is the keystore file encoded as base64 before storing in GitHub Secrets?
 6. What is the difference between `internal`, `alpha`, `beta`, and `production` tracks on the Play Store?
 7. `String.fromEnvironment('API_KEY')` — what does this return if the key was not passed at build time?
+8. What does `match(type: "appstore", readonly: true)` do on CI? Why is `readonly: true` important for CI but not your local machine?
+9. Fastlane Match stores certificates in a Git repo. Why is this better than each team member generating their own certificate? What problem does it solve with iOS provisioning profiles?
+10. `upload_to_testflight(skip_waiting_for_build_processing: true)` — what does this flag do? Why would you set it to `true` in CI?
 
 ---
 

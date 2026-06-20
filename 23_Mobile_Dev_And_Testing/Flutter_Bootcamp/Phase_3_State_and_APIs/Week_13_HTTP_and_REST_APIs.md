@@ -657,6 +657,71 @@ void main() {
 
 ---
 
+## 10. Network Error UX — Academy Principles
+
+> 🍎 **Academy Golden Rule — Never Show a Blank Screen:**
+> *"Your app WILL lose connectivity. Plan for it on day one, not after the first bug report. Every network-dependent screen must have loading, error, empty, and offline states designed before writing code."*
+
+```dart
+// The four states every networked screen must handle
+sealed class ScreenState<T> {}
+class Loading<T> extends ScreenState<T> {}
+class Loaded<T> extends ScreenState<T> { final T data; Loaded(this.data); }
+class Empty<T> extends ScreenState<T> {}    // data loaded but list is empty
+class Error<T> extends ScreenState<T> { final String message; final VoidCallback retry; Error(this.message, this.retry); }
+```
+
+```dart
+// Connectivity-aware widget pattern
+class NetworkAwareBuilder extends StatelessWidget {
+  final AsyncValue<dynamic> state;
+  final Widget Function() loading;
+  final Widget Function(dynamic data) data;
+  final Widget Function(String message, VoidCallback retry) error;
+
+  @override
+  Widget build(BuildContext context) {
+    return state.when(
+      loading: loading,
+      error: (e, _) => error(
+        _userFriendlyMessage(e),
+        () => /* retry logic */,
+      ),
+      data: data,
+    );
+  }
+
+  String _userFriendlyMessage(Object error) {
+    if (error is DioException) {
+      return switch (error.type) {
+        DioExceptionType.connectionTimeout => 'Connection timed out. Check your internet.',
+        DioExceptionType.connectionError => 'No internet connection.',
+        DioExceptionType.badResponse => switch (error.response?.statusCode) {
+          401 => 'Session expired. Please log in again.',
+          403 => 'You don\'t have permission to view this.',
+          404 => 'Content not found.',
+          500 => 'Server error. Try again later.',
+          _ => 'Something went wrong (${error.response?.statusCode}).',
+        },
+        _ => 'Network error. Please try again.',
+      };
+    }
+    return 'Something went wrong. Please try again.';
+  }
+}
+```
+
+**The Academy Error Checklist:**
+```
+1. Never show raw exception messages to users (stack traces, "SocketException", "404")
+2. Always provide a retry action (button, pull-to-refresh)
+3. Show WHAT failed + WHAT the user can do about it
+4. Cache the last successful response — show stale data + "Couldn't refresh" banner
+5. Use Connectivity plugin to detect offline BEFORE making the request
+```
+
+---
+
 ## Lab — NewsApp With Real API
 
 Use the [newsapi.org](https://newsapi.org) free tier (100 requests/day) or any mock JSON server.
