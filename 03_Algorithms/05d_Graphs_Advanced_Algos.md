@@ -213,7 +213,33 @@ public int[][] floydWarshall(int[][] graph) {
 // dist[0][2] = min(dist[0][2], dist[0][1] + dist[1][2])
 ```
 
-## Minimum Spanning Tree - Prim's Algorithm
+## Minimum Spanning Tree — Why Greedy Even Works Here
+
+Before the code: MST is the rare problem where **being greedy is provably optimal**, and understanding *why* is worth more than memorizing Prim and Kruskal. Greedy fails for most problems (coin change, knapsack) — so what's special about MST? One theorem, and it's intuitive once you see it.
+
+### The cut property — the entire reason MST greedy is safe
+
+> **Cut property:** Take *any* way to split the vertices into two groups (a "cut"). Look at all edges crossing between the groups. **The cheapest crossing edge is in some MST.** Always. No exceptions.
+
+Why is this true? Suppose the cheapest crossing edge `e` were *not* in the MST. The MST still has to connect the two groups somehow, so it uses some *other* crossing edge `f`, which is more expensive (`e` was the cheapest). Now do an **exchange**: add `e` to the tree — this creates a cycle (the tree already connected the groups via `f`) — then delete `f` to break the cycle. You still have a spanning tree, it's still connected, and you swapped a costlier edge `f` for a cheaper edge `e`, so total weight *went down*. That contradicts "the MST was minimal." Therefore `e` must have been in the MST all along. ∎
+
+That swap-and-improve move is the **exchange argument** — the same proof skeleton behind every correct greedy algorithm. Here it has teeth because the cut property guarantees a *locally* cheapest choice (the min crossing edge) is *globally* safe (it's in an optimal tree). That's exactly what greedy needs and almost never gets.
+
+### Prim and Kruskal are the *same* greedy, applying the cut property differently
+
+Once you have the cut property, both famous algorithms fall out of it — they just choose *which cut* to apply it to:
+
+| | **Prim** | **Kruskal** |
+|--|----------|-------------|
+| The cut it uses | {visited vertices} vs {everyone else} — grows one blob | every edge induces the cut {one component} vs {the rest} |
+| Greedy pick | cheapest edge leaving the current blob | cheapest edge in the *whole graph* that doesn't form a cycle |
+| "Safe because…" | min crossing edge of the visited/unvisited cut → in MST | min edge across the cut between the two components it joins → in MST |
+| Data structure | min-heap of frontier edges | sort all edges + Union-Find for cycle check |
+| Best when | dense graphs (E ≈ V²) — heap of frontier stays small | sparse graphs (E ≈ V) — sorting E edges is cheap |
+
+**Prim grows one tree outward**, always grabbing the cheapest edge on its expanding border — that border *is* a cut, so the cut property says the grab is safe. **Kruskal considers edges globally cheapest-first**, adding any that doesn't close a cycle — and "doesn't close a cycle" means it joins two separate components, i.e., it's the cheapest edge across *their* cut, so again the cut property says it's safe. Same theorem, two scanning strategies. Neither is "smarter"; they're optimized for different graph densities.
+
+> **Why Kruskal needs Union-Find specifically:** the only question Kruskal asks per edge is "do these two endpoints already sit in the same component?" (if yes, adding the edge makes a cycle — skip it). That is *exactly* the connectivity query Union-Find answers in near-O(1). The MST algorithm and the data structure are co-designed — which is why [Union-Find](14_Union_Find_DSU_Complete.md) is taught right next to this.
 
 ```java
 public int primMST(int n, List<int[]>[] graph) {

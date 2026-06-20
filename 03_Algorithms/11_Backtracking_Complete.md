@@ -269,6 +269,71 @@ public class BacktrackingTemplate {
 
 ---
 
+## Why "Unchoose" Is Mandatory — The One Idea That Makes Backtracking Click
+
+Everyone copies the choose → explore → unchoose template. Almost nobody can say why step 3 (unchoose) *has* to be there, and that gap is why backtracking feels like magic instead of mechanics. Here's the whole thing, made concrete.
+
+### There is ONE list, and every recursive call is borrowing it
+
+The mental trap is imagining each recursive call has "its own" `current`. It does not. There is a **single** `current` list in memory, and the recursion is passing that same object up and down the call tree. Each call **mutates the shared list, explores, and must put it back exactly as it found it** — like borrowing a book, writing in it, and erasing your notes before returning it so the next borrower sees a clean copy.
+
+`unchoose` *is* the erasing. Without it, your scribbles leak into the sibling's exploration.
+
+### Watch it break — `[1,2]` without unchoose
+
+Trace generating subsets of `[1,2]`, but **delete** the `current.remove(...)` line:
+
+```
+current = []          backtrack(start=0)
+  record []                                  result: [ [] ]
+  i=0: choose 1 → current=[1]
+       backtrack(start=1)
+         record [1]                          result: [ [], [1] ]
+         i=1: choose 2 → current=[1,2]
+              backtrack(start=2)
+                record [1,2]                 result: [ [], [1], [1,2] ]
+              (no unchoose — current STAYS [1,2])
+       (no unchoose — current STAYS [1,2])
+  i=1: choose 2 → current=[1,2,2]   ← BUG. We wanted to explore just "[2]",
+       record [1,2,2]                          but the leftover [1,2] poisoned it
+```
+
+We wanted the `i=1` branch at the top level to explore the subset `{2}`. But because the `i=0` branch never cleaned up its `1`, the list still held `[1,2]`, and we got garbage `[1,2,2]`. **The leftover state from one branch corrupts the next branch.** Unchoose exists to guarantee that when control returns to a node and moves to the *next* sibling choice, the state is exactly what it was before the previous sibling ran. That's the invariant:
+
+> **Backtracking invariant:** every call returns `current` to the precise state it received. So at each `for`-loop iteration, `current` reflects only the choices on the path from the root to *this* node — nothing from already-explored siblings.
+
+### The recursion tree IS the search space
+
+A backtracking algorithm is a depth-first walk over a tree of *partial solutions*. For subsets of `[1,2]`:
+
+```
+                      []                     ← root: empty partial solution
+              /                  \
+   choose 1 /                     \ skip-to-i=1 (choose 2)
+          [1]                      [2]
+        /     \                      \
+choose 2/       \ (end)               \ (end)
+     [1,2]      [1]                    [2]
+
+Every NODE is a valid subset → that's why we record at every node (subsets).
+For permutations/combinations we'd only record at LEAVES.
+```
+
+- **Going down an edge** = choose (add an element, mutate `current`).
+- **Returning up an edge** = unchoose (remove it, restore `current`).
+- **The `for` loop** = fanning out to all the children of the current node.
+- **Pruning (`if (!isValid) continue;`)** = refusing to descend into a subtree you can prove holds no solution — you chop the whole branch, turning exponential work into something tractable. This is the *only* lever that makes NP-flavored search feasible: a good prune kills millions of nodes.
+
+Once you see the tree, the three template rules stop being arbitrary: **choose** walks down, **explore** recurses into the subtree, **unchoose** walks back up so the parent can try its next child with a clean slate. Choose and unchoose are mirror operations on the *same edge* of the tree — that's why they must be paired and symmetric.
+
+### Why "copy before adding to result" is the same bug, caught at the finish line
+
+`result.add(new ArrayList<>(current))` — the copy is non-negotiable for the *identical* reason. `result.add(current)` stores a **reference** to the one shared list. Since `current` keeps mutating as the walk continues, every entry in `result` would point at the same object and end up showing its *final* state (usually empty, after all the unchooses). You'd get a result list of N identical empty lists. The copy freezes a snapshot at the moment of recording. Same root cause as the unchoose lesson — **one mutable object, shared across the whole traversal** — surfacing in two places.
+
+> **The complete mental model in one breath:** there is a single `current` list; the recursion is a DFS over a tree of partial solutions; going down mutates it, coming back up un-mutates it, and you snapshot-copy whenever you record an answer — because everything is aliasing the same object.
+
+---
+
 ## Subsets Pattern <a name="subsets-pattern"></a>
 
 ### Problem: Subsets (LeetCode 78)
