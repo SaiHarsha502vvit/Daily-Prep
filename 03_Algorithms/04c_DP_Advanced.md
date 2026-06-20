@@ -219,7 +219,89 @@ public class AssignmentProblem {
 
 
 
-## Pattern 3: Interval DP
+### Why Bitmask DP Works — The State-Equals-Subset Trick and the 2^n Feasibility Rule
+
+TSP and assignment problems are bitmask DP staples, and the code above looks like a normal DFS-with-memo — but the *mask parameter* is doing something more interesting than caching: it's encoding the full history of choices ("which cities have I visited?"). That's the bitmask DP insight: when the answer depends on *which subset of elements has been used so far*, the natural state is the subset itself, and a bitmask is just a compact representation of that subset.
+
+**The 2^n state space is forced.** There are 2^n subsets of n elements. Each subset is one possible "what have I done so far" state. If the recurrence depends on the full subset (not just the current position), then DP needs an entry per subset — that's 2^n entries. The bitmask is just an efficient encoding: bit `i` set means "element `i` is in the subset." Operations like "add element `i` to subset" become `mask | (1 << i)`, "is element `i` in subset" becomes `(mask & (1 << i)) != 0`, and "remove element `i`" becomes `mask & ~(1 << i)`. The n-bit integer is the canonical representation.
+
+**Why n ≤ 20.** The state space is 2^n and the transition is typically O(n) per state (try each remaining element). Total cost: O(n × 2^n). At `n = 20`, that's `20 × 2^20 ≈ 2 × 10^7` operations — fast. At `n = 25`, that's `25 × 2^25 ≈ 8 × 10^8` — borderline. At `n = 30`, that's `8 × 10^10` — impossible. So bitmask DP is the technique for the "small n" regime where brute force over subsets is feasible.
+
+**The two flavors.**
+
+*Flavor 1: state = "set of visited/processed elements."* The position is also part of the state, but the set is what makes the state count exponential. Example: TSP — `dp[mask][pos]` = min tour cost having visited exactly the cities in `mask` and currently at city `pos`. Without the mask, two different visit orders that end at the same city would be indistinguishable — but they have different remaining-work properties (different cities remain to visit), so they need separate states.
+
+*Flavor 2: state = "set of chosen elements."* No position in the state; the answer is "given this subset, what value can I achieve?" Example: assignment problem — `dp[mask]` = min cost of assigning workers 0..(popcount(mask)) to jobs in `mask`. The "worker index" is implicit in the subset size.
+
+**The subset-iteration trick — enumerate submasks of a mask.** Sometimes you need to iterate over all subsets of a given mask (e.g., "for every subset of the visited set, compute X"). The naive way is to check `(sub & mask) == sub` for every `sub` in `[0, 2^n)` — that's O(2^n × 2^n). The clever way uses the recurrence `sub = (sub - 1) & mask` to enumerate exactly the submasks in O(2^popcount(mask)) total:
+
+```java
+for (int sub = mask; sub > 0; sub = (sub - 1) & mask) {
+    // sub is a non-empty subset of mask
+}
+// Don't forget sub = 0 (the empty subset) if needed
+```
+
+Why this works: when you subtract 1 from a bitmask, all the trailing zeros become 1s and the lowest 1-bit becomes 0. Then `& mask` clears any bits that aren't in `mask`, leaving a strictly smaller subset. Starting from `mask` and iterating reaches all subsets in reverse-lexicographic order, with O(1) work per subset. This is essential for "for every submask" DP transitions like SOS-DP (Sum over Subsets DP), where you compute `dp[mask] = sum of f[sub] for all sub ⊆ mask` in O(n × 2^n) total using this iteration.
+
+**When bitmask DP fails or isn't worth it.**
+- n > 25 → state space too large; look for a different decomposition or use approximation
+- The recurrence doesn't actually depend on the full subset → use a different state (e.g., just the position), getting O(n) instead of O(n × 2^n)
+- The transitions are expensive (e.g., O(2^n) per state) → total becomes O(4^n), almost never feasible
+
+**A surprising crossover with bit tricks.** Bitmask DP rewards fluency with bit manipulation. `mask & -mask` extracts the lowest set bit (the one set). `Integer.bitCount(mask)` gives the subset size (useful for "how many workers have I assigned"). `mask ^ (1 << i)` toggles bit `i`. These become natural building blocks once you've written a few bitmask recurrences. The same bit tricks are also why the XOR-trie (chapter 18) works — same fluency, different problem.
+
+🔬 **Section Challenge — Bitmask DP**
+
+**Challenge 1 (State Decomposition, 5 min):** You're given an n×n grid (n ≤ 15) with cells either empty or blocked. You start at (0,0) and want to visit every empty cell exactly once, returning to (0,0) at the end. This is the "bitmask TSP" generalization. What's the state? What's the recurrence? What's the complexity?
+
+<details><summary>Answer</summary>
+
+State: `dp[mask][r][c]` = true if there's a Hamiltonian path starting from (0,0), visiting exactly the cells in `mask` (each cell corresponds to a bit), and ending at cell (r,c).
+
+But that's 2^n × n × n = O(n² × 2^n) which is large. We can simplify: fix the start at (0,0) and only allow paths that *started* there (i.e., the only way to "reach" (0,0) is via the start, not via wrap-around). Then `dp[mask][r][c]` = can we reach (r,c) having visited exactly `mask` worth of cells starting from (0,0).
+
+Recurrence:
+```
+dp[mask | (1<<(r*n+c))][r][c] |= dp[mask][r'][c']  for each (r',c') adjacent to (r,c)
+                                where (r*n+c) wasn't in mask
+                                and cell (r,c) isn't blocked
+```
+
+Complexity: O(n² × 2^n × 4) — for each state, try up to 4 neighbors. At n = 15: 15² × 2^15 × 4 ≈ 2 × 10^8. Borderline but feasible.
+
+Note the state-space optimization: if (0,0) is the only "start" and we always end there, we can use `dp[mask][r][c]` = reachable without tracking "where did we come from" — the path is implicit in the order of bits set in `mask`. This is what makes bitmask TSP feasible.
+
+</details>
+
+**Challenge 2 (Subset Iteration, 5 min):** Given `mask = 0b10110` (= 22), enumerate all non-empty subsets of `mask` in the order produced by `for (int sub = mask; sub > 0; sub = (sub - 1) & mask)`. List them.
+
+<details><summary>Answer</summary>
+
+```
+mask = 0b10110 = 22
+
+sub = 22 = 0b10110
+sub = (22-1) & 22 = 21 & 22 = 0b10101 & 0b10110 = 0b10100 = 20
+sub = (20-1) & 22 = 19 & 22 = 0b10011 & 0b10110 = 0b10010 = 18
+sub = (18-1) & 22 = 17 & 22 = 0b10001 & 0b10110 = 0b10000 = 16
+sub = (16-1) & 22 = 15 & 22 = 0b01111 & 0b10110 = 0b00110 = 6
+sub = (6-1) & 22 = 5 & 22 = 0b00101 & 0b10110 = 0b00100 = 4
+sub = (4-1) & 22 = 3 & 22 = 0b00011 & 0b10110 = 0b00010 = 2
+sub = (2-1) & 22 = 1 & 22 = 0b00001 & 0b10110 = 0b00010 = 2  (same as before? Let me recheck)
+
+Wait, (2-1) & 22 = 1 & 22 = 0b00001 & 0b10110 = 0b00000 = 0. So sub=0, loop exits.
+
+So the sequence is: 22, 20, 18, 16, 6, 4, 2. Then sub becomes 0 and the loop exits.
+
+That's 7 subsets (= 2^popcount(22) - 1 = 2^3 - 1 = 7 non-empty subsets of a 3-bit mask, where the 3 set bits are at positions 1, 2, 4).
+
+The pattern: each iteration visits the next-smaller subset, in decreasing order, never revisiting. Total O(2^popcount(mask)) iterations regardless of n — that's why this is efficient for sparse masks.
+
+</details>
+
+
+## Pattern 3: Interval DP## Pattern 3: Interval DP
 
 CONCEPT:
 Solve problems on intervals/subarrays by considering all ways
