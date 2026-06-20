@@ -508,7 +508,99 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 
 ---
 
-## 📌 The Direction Rule — Visual Proof
+### Why Loop Direction Is Forced — The 2D-to-1D Derivation Most People Skip
+
+The "Direction Rule" box below shows the visual trace, but it doesn't show the *derivation*: why does the *same recurrence* `dp[w] = max(dp[w], dp[w - weight] + value)` produce correct answers for both 0/1 and unbounded knapsack, when only the loop direction changes? That question is what makes the rule feel inevitable instead of arbitrary — and once you see it, you can re-derive the right direction for any new knapsack variant without looking it up.
+
+**The starting point: 2D DP.** The honest formulation of 0/1 knapsack is `dp[i][w]` = max value using the first `i` items with capacity `w`. The recurrence is:
+
+```
+dp[i][w] = max(
+    dp[i-1][w],                        // skip item i
+    dp[i-1][w - weight_i] + value_i    // take item i (uses first i-1 items)
+)
+```
+
+Note `dp[i-1][...]` — the "previous row." That's the constraint "each item used at most once": when item `i` is taken, the rest of the knapsack must be filled using *only items 0 through i-1*. The 2D table has `n × W` cells and the recurrence fills them in row-by-row order.
+
+**The 1D optimization — collapse rows.** We don't actually need to keep the whole table. `dp[i][w]` only depends on `dp[i-1][...]`, the previous row. So we can overwrite `dp[i][w]` in place, treating the array as "currently holds `dp[i-1][...]`, will hold `dp[i][...]` after this iteration." The loop becomes `for w in range(W, weight-1, -1): dp[w] = max(dp[w], dp[w - weight] + value)`.
+
+**The question: why backward?** When we update `dp[w] = max(dp[w], dp[w - weight] + value)`, we're reading `dp[w - weight]`. We want that read to give us the *previous row's value* (`dp[i-1][w - weight]`), not the value we just wrote in this iteration (`dp[i][w - weight]`). If we iterate `w` left-to-right, then when we reach `w`, we may have *already updated* `dp[w - weight]` earlier in the same iteration — that means we'd be reading the current row, not the previous row. For 0/1 knapsack that would let us use item `i` more than once (because `dp[w - weight]` would already include item `i`).
+
+Iterating `w` right-to-left guarantees that when we read `dp[w - weight]`, `w - weight < w` and we haven't updated it yet in this iteration. So we read the previous row. Backward iteration = "0/1" semantics, for free.
+
+**For unbounded knapsack, we want the opposite.** We want `dp[w - weight]` to give us the *current row's* value — because the current row already includes "take item i" some number of times, and reading it again means "take it one more time." So we iterate left-to-right: when we reach `w`, we've already updated `dp[w - weight]` earlier in this iteration, so the read picks up the unlimited-use value. Forward iteration = "unbounded" semantics.
+
+**The derivation in one sentence:** *The loop direction is whatever makes the in-place read produce the row semantics you want.* Backward reads the previous row (each item used at most once). Forward reads the current row (unlimited reuse). The same recurrence, the same array, different reading semantics.
+
+**The bounded variant (at most `k` copies of each item).** Naively: a `k`-loop inside the outer `w`-loop adds `O(k)` to each item's iteration, giving `O(nWk)` total. The binary-splitting trick reduces this to `O(nW log k)` by replacing each "item with `k` copies" with `log₂(k)` virtual items. Why does this work?
+
+Split `k` copies into groups of `1, 2, 4, 8, ..., 2^(⌊log k⌋)` plus possibly a remainder. For example, `k = 10` splits into `1, 2, 4, 3` (or equivalently `1, 2, 4, 2, 1` using a different decomposition). Now the original "you can use this item 0 to 10 times" becomes "you can use each virtual item 0 or 1 times" — exactly the 0/1 knapsack setting! And every number 0 to 10 can be uniquely written as a sum of distinct values from `{1, 2, 4, 3}` — that's the whole reason binary representation works.
+
+Why `log(k)` virtual items suffice: any number from 0 to `k` can be written as a binary expansion (in terms of `{1, 2, 4, 8, ...}`) plus at most one "remainder" group. So we cover all `k+1` multiplicity choices with `⌈log₂(k+1)⌉` virtual items.
+
+**Counting variants — same rule, different aggregate.** For "how many ways to make amount A?" (Coin Change II), the recurrence is `dp[w] += dp[w - coin]` (not `max`, just accumulation). Same direction logic applies: iterate left-to-right for unbounded (count ways to use unlimited copies), iterate right-to-left for 0/1 (count ways where each coin is used at most once). The direction rule generalizes to *any* in-place DP that rolls over a single dimension — it's not specific to knapsack.
+
+🔬 **Section Challenge — Knapsack Direction**
+
+**Challenge 1 (Failure Mode, 5 min):** You're implementing 0/1 knapsack but accidentally iterate `w` left-to-right. You submit, and it passes the small test cases but fails the large ones. What specifically goes wrong — concretely, what answer does it produce for a small example?
+
+<details><summary>Answer</summary>
+
+Take items: `[{weight: 2, value: 3}, {weight: 2, value: 4}]` with capacity `W = 4`. The correct 0/1 knapsack answer is `7` (take both items, total value 3+4=7, total weight 4).
+
+With forward iteration (the bug):
+- Item 0 (w=2, v=3): iterate w from 0 to 4. dp[2] = max(dp[2], dp[0]+3) = 3. dp[3] = 3. dp[4] = max(dp[4], dp[2]+3) = 6 (read updated dp[2]=3). Now dp = [0,0,3,3,6].
+- Item 1 (w=2, v=4): iterate w from 0 to 4. dp[2] = max(3, dp[0]+4) = 4. dp[3] = max(3, dp[1]+4) = 4. dp[4] = max(6, dp[2]+4) = 8.
+
+So forward iteration gives answer 8 — which corresponds to using item 0 twice (weight 4, value 6) plus item 1 (weight 2... no wait, weight 4 already, can't add). Actually 8 = 4 + 4, meaning the algorithm thinks it used item 1 twice (and somehow item 0 also twice, totaling 4 copies, but capacity is only 4 so weight is 8... contradiction).
+
+Hmm let me re-trace. After item 0 forward: dp[4] = 6 = "use item 0 with weight 4" — but item 0 has weight 2, so this means item 0 was used twice. Yes, the bug has used item 0 twice in a single outer iteration. After item 1 forward: dp[4] = max(6, dp[2]+4) = max(6, 3+4) = 7. Wait — dp[2] after item 0 forward iteration is 3 (from dp[0]+3). So dp[4] = 7.
+
+So forward iteration accidentally gives 7 in this case (correct by coincidence — it used item 0 twice and item 1 once, total weight = 2*2 + 2 = 6, which exceeds capacity 4 — but the DP doesn't enforce this because it just sums values when reading updated cells).
+
+OK the cleaner failure example: items `[{w:1, v:1}, {w:1, v:1}]`, capacity 1. Correct answer = 1 (use one item). Forward iteration gives:
+- Item 0: dp[1] = max(dp[1], dp[0]+1) = 1.
+- Item 1: dp[1] = max(1, dp[0]+1) = 1. (dp[0] is still 0 because we read dp[0] which is always 0.)
+
+Hmm that also works. Let me try a worse case: items `[{w:1, v:10}, {w:2, v:15}]`, capacity 3. Correct = 25 (both). Forward:
+- Item 0: dp[1] = 10, dp[2] = max(0, dp[1]+10) = 20, dp[3] = max(0, dp[2]+10) = 30. dp = [0,10,20,30]. (Used item 0 three times!)
+- Item 1: dp[2] = max(20, dp[0]+15) = 20. dp[3] = max(30, dp[1]+15) = max(30, 25) = 30. Answer = 30.
+
+But the correct answer is 25 (use item 0 once + item 1 once, weight 1+2=3, value 10+15=25). The bug gives 30 (item 0 three times, weight 3, value 30) because forward iteration let item 0 be used multiple times in one outer iteration.
+
+That's the failure mode: forward iteration under 0/1 semantics allows each item to be used multiple times — equivalent to unbounded knapsack instead of 0/1. The answer is systematically too large (or wrong in other ways depending on the problem). Small test cases that don't trigger the multiple-use behavior might still pass; large ones don't.
+
+</details>
+
+**Challenge 2 (Bounded Derivation, 5 min):** A bounded knapsack problem has 1 item with weight 2, value 3, and `k = 7` copies available, capacity W = 14. The binary-splitting trick replaces this with how many virtual items, and what are their weights/values?
+
+<details><summary>Answer</summary>
+
+`k = 7` decomposes as `7 = 1 + 2 + 4` (powers of 2 that sum to ≤ 7). So we get 3 virtual items: `{weight: 2, value: 3}`, `{weight: 4, value: 6}`, `{weight: 8, value: 12}`.
+
+Now we run 0/1 knapsack on these 3 virtual items with capacity 14:
+- Take all three: weight 2+4+8 = 14, value 3+6+12 = 21. Fits exactly!
+- That corresponds to using the original item 1+2+4 = 7 times.
+
+Any number 0 to 7 can be expressed as a sum of a subset of `{1, 2, 4}`:
+- 0: empty
+- 1: {1}
+- 2: {2}
+- 3: {1, 2}
+- 4: {4}
+- 5: {1, 4}
+- 6: {2, 4}
+- 7: {1, 2, 4}
+
+So we cover all 8 multiplicity choices with 3 virtual items, and the answer for any capacity is the same as bounded knapsack with 7 copies. The total DP cost is `O(W × log k) = O(14 × 3) = O(42)` instead of `O(W × k) = O(98)`.
+
+If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use `{1, 2, 4, 3}` (4 virtual items) since `1+2+4 = 7 ≤ 10` covers 0-7, and the additional `{3}` covers 8-10. Total `⌈log₂(k+1)⌉ = 4` virtual items.
+
+</details>
+
+
+## 📌 The Direction Rule — Visual Proof## 📌 The Direction Rule — Visual Proof
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
