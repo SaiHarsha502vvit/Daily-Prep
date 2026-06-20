@@ -1017,423 +1017,120 @@ prefer the extended GCD — it's equally fast and doesn't silently fail.
 
 ---
 
-# ═══════════════════════════════════════════════════════════
+## Euler's Theorem — Generalizing Fermat to Composite Moduli
 
-# PART 4: PATTERN PROGRAMS ⭐ (Loop Mastery)
+Fermat's Little Theorem says `a^(p−1) ≡ 1 (mod p)` for prime `p`. But what if
+the modulus isn't prime? You can't use Fermat — but Euler's theorem fills the gap.
 
-# ═══════════════════════════════════════════════════════════
+### The totient function: counting what's coprime
+
+**Definition.** `φ(n)` (Euler's totient) = how many integers in `{1, 2, ..., n−1}`
+are coprime to `n` (i.e., share no common factor with `n` other than 1).
+
+Examples by hand:
+- `φ(7) = 6` — all of `{1,2,3,4,5,6}` are coprime to 7 (it's prime)
+- `φ(12) = 4` — only `{1, 5, 7, 11}` are coprime to 12
+- `φ(p) = p − 1` for any prime `p` (every non-zero residue is coprime)
+
+### Deriving the formula for φ(n)
+
+**For a prime power `p^k`:** Which numbers in `{1, ..., p^k}` are NOT coprime to
+`p^k`? Exactly those divisible by `p`: that's `{p, 2p, 3p, ..., p^(k-1)·p}`,
+which is `p^(k-1)` numbers. So:
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHY PATTERN PROGRAMS?                                                       ║
-║                                                                              ║
-║  "Pattern programs are NOT just for beginners" - Every Senior Dev            ║
-║                                                                              ║
-║  They teach:                                                                 ║
-║  1. Nested loop thinking → Essential for 2D arrays, matrices                 ║
-║  2. Index relationships → The KEY to solving any grid problem                ║
-║  3. Space management → Teaches precision with boundaries                     ║
-║  4. How to convert visual output to code logic                               ║
-║                                                                              ║
-║  REAL USE: Table formatting, report generation, ASCII art for CLIs           ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+φ(p^k) = p^k − p^(k−1) = p^(k−1)(p − 1)
 ```
 
-### Pattern 1: Right Triangle
+Check: `φ(8) = φ(2³) = 2²(2−1) = 4`. The coprimes are `{1,3,5,7}` — correct.
+
+**For general `n = p₁^a₁ · p₂^a₂ · ... · pₖ^aₖ`:** The Chinese Remainder
+Theorem tells us that `ℤ/nℤ ≅ ℤ/p₁^a₁ℤ × ... × ℤ/pₖ^aₖℤ`, so:
+
+```
+φ(n) = n · ∏(1 − 1/pᵢ)  for each prime factor pᵢ of n
+```
+
+Example: `φ(12) = 12 · (1 − 1/2) · (1 − 1/3) = 12 · 1/2 · 2/3 = 4`. Correct.
+
+### Euler's theorem: the same permutation trick, on a smaller set
+
+Recall Fermat's proof: we multiplied `a` by every nonzero residue mod `p`, got a
+permutation, and concluded `a^(p−1) ≡ 1`. The same argument works if we restrict
+to the **coprime residues** mod `n`:
+
+Let `G = {r₁, r₂, ..., r_{φ(n)}}` be the integers in `{1, ..., n−1}` coprime
+to `n`. Multiplying every element by `a` (where `gcd(a, n) = 1`) gives a
+permutation of `G`:
+- Products stay coprime: if `gcd(a, n) = 1` and `gcd(rᵢ, n) = 1`, then
+  `gcd(a·rᵢ, n) = 1`.
+- Products are distinct: same cancellation argument as in the Fermat proof.
+
+So `aG` is a permutation of `G`. Multiply all elements:
+
+```
+a^φ(n) · (r₁·r₂·...·r_{φ(n)}) ≡ (r₁·r₂·...·r_{φ(n)})  (mod n)
+```
+
+Cancel the product (it's coprime to `n`):
+
+```
+a^φ(n) ≡ 1  (mod n)    whenever gcd(a, n) = 1
+```
+
+**That's Euler's theorem.** Fermat's is the special case where `n = p` and
+`φ(p) = p − 1`.
+
+### Why this matters: modular inverse for composite moduli
+
+From `a^φ(n) ≡ 1 (mod n)`, divide by `a`:
+
+```
+a^(φ(n)−1) ≡ a⁻¹  (mod n)    whenever gcd(a, n) = 1
+```
+
+So to compute modular inverse mod a composite `n`, compute `φ(n)` then use
+`modPow(a, φ(n) − 1, n)`. The catch: computing `φ(n)` requires `n`'s prime
+factorization, which is expensive for large `n`. That's why the extended GCD
+is preferred in practice — it gives the inverse in `O(log n)` without needing
+the factorization.
 
 ```java
-/**
- * OUTPUT (n=5):
- * *
- * * *
- * * * *
- * * * * *
- * * * * * *
- *
- * FORMULA: Row i has (i+1) stars
- */
-public static void rightTriangle(int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j <= i; j++) {
-            System.out.print("* ");
+// Euler's totient function
+public static long eulerTotient(long n) {
+    long result = n;
+    for (long p = 2; p * p <= n; p++) {
+        if (n % p == 0) {
+            while (n % p == 0) n /= p;
+            result -= result / p;  // result *= (1 - 1/p)
         }
-        System.out.println();
     }
+    if (n > 1) result -= result / n;  // remaining prime factor
+    return result;
 }
 ```
 
-### Pattern 2: Inverted Right Triangle
+### The edge everyone hits: φ(p^k) ≠ p − 1
 
-```java
-/**
- * OUTPUT (n=5):
- * * * * * *
- * * * * *
- * * * *
- * * *
- * *
- *
- * FORMULA: Row i has (n-i) stars
- */
-public static void invertedTriangle(int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n - i; j++) {
-            System.out.print("* ");
-        }
-        System.out.println();
-    }
-}
-```
+A common mistake: treating `φ(p^k)` as `p − 1`. That formula only works for
+`φ(p)`. For prime powers: `φ(p^k) = p^(k−1)(p − 1)`. This matters in RSA
+key generation, where `φ(p·q) = (p−1)(q−1)` but `φ(p²·q)` is NOT `(p−1)(q−1)`.
 
-### Pattern 3: Pyramid (Centered Triangle)
+### Decision: which inverse method when?
 
-```java
-/**
- * OUTPUT (n=5):
- *         *
- *       * * *
- *     * * * * *
- *   * * * * * * *
- * * * * * * * * * *
- *
- * FORMULA: Row i has (2*i+1) stars, (n-1-i) leading spaces
- */
-public static void pyramid(int n) {
-    for (int i = 0; i < n; i++) {
-        // Leading spaces
-        for (int s = 0; s < n - 1 - i; s++) {
-            System.out.print(" ");
-        }
-        // Stars
-        for (int j = 0; j < 2 * i + 1; j++) {
-            System.out.print("*");
-        }
-        System.out.println();
-    }
-}
-```
-
-### Pattern 4: Diamond ⭐
-
-```java
-/**
- * OUTPUT (n=5):
- *     *
- *    ***
- *   *****
- *  *******
- * *********
- *  *******
- *   *****
- *    ***
- *     *
- *
- * TRICK: Upper half pyramid + inverted lower half
- */
-public static void diamond(int n) {
-    // Upper half (including middle)
-    for (int i = 0; i < n; i++) {
-        for (int s = 0; s < n - 1 - i; s++) System.out.print(" ");
-        for (int j = 0; j < 2 * i + 1; j++) System.out.print("*");
-        System.out.println();
-    }
-    // Lower half
-    for (int i = n - 2; i >= 0; i--) {
-        for (int s = 0; s < n - 1 - i; s++) System.out.print(" ");
-        for (int j = 0; j < 2 * i + 1; j++) System.out.print("*");
-        System.out.println();
-    }
-}
-```
-
-### Pattern 5: Number Pyramid
-
-```java
-/**
- * OUTPUT (n=5):
- *     1
- *    1 2
- *   1 2 3
- *  1 2 3 4
- * 1 2 3 4 5
- */
-public static void numberPyramid(int n) {
-    for (int i = 1; i <= n; i++) {
-        for (int s = 0; s < n - i; s++) System.out.print(" ");
-        for (int j = 1; j <= i; j++) System.out.print(j + " ");
-        System.out.println();
-    }
-}
-```
-
-### Pattern 6: Pascal's Triangle ⭐⭐
-
-```java
-/**
- * OUTPUT (n=5):
- *         1
- *       1   1
- *     1   2   1
- *   1   3   3   1
- * 1   4   6   4   1
- *
- * FORMULA: Each number = sum of two numbers above it
- * OR: C(row, col) = row! / (col! * (row-col)!)
- *
- * REAL USE:
- *   - Binomial coefficients
- *   - Probability calculations
- *   - Polynomial expansion
- */
-public static void pascalsTriangle(int n) {
-    for (int i = 0; i < n; i++) {
-        // Leading spaces
-        for (int s = 0; s < n - 1 - i; s++) System.out.print("  ");
-
-        int val = 1;
-        for (int j = 0; j <= i; j++) {
-            System.out.printf("%4d", val);
-            val = val * (i - j) / (j + 1); // Next nCr value
-        }
-        System.out.println();
-    }
-}
-```
-
-### Pattern 7: Floyd's Triangle
-
-```java
-/**
- * OUTPUT (n=5):
- * 1
- * 2  3
- * 4  5  6
- * 7  8  9  10
- * 11 12 13 14 15
- *
- * Numbers flow continuously
- */
-public static void floydsTriangle(int n) {
-    int num = 1;
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= i; j++) {
-            System.out.printf("%-4d", num++);
-        }
-        System.out.println();
-    }
-}
-```
-
-### Pattern 8: Butterfly Pattern ⭐⭐
-
-```java
-/**
- * OUTPUT (n=4):
- * *            *
- * * *        * *
- * * * *    * * *
- * * * * ** * * *
- * * * * ** * * *
- * * * *    * * *
- * * *        * *
- * *            *
- */
-public static void butterfly(int n) {
-    // Upper half
-    for (int i = 1; i <= n; i++) {
-        // Left stars
-        for (int j = 1; j <= i; j++) System.out.print("* ");
-        // Middle spaces
-        for (int j = 1; j <= 2 * (n - i); j++) System.out.print("  ");
-        // Right stars
-        for (int j = 1; j <= i; j++) System.out.print("* ");
-        System.out.println();
-    }
-    // Lower half
-    for (int i = n; i >= 1; i--) {
-        for (int j = 1; j <= i; j++) System.out.print("* ");
-        for (int j = 1; j <= 2 * (n - i); j++) System.out.print("  ");
-        for (int j = 1; j <= i; j++) System.out.print("* ");
-        System.out.println();
-    }
-}
-```
-
-### Pattern 9: Hollow Square & Rectangle
-
-```java
-/**
- * OUTPUT (n=5):
- * * * * * *
- * *       *
- * *       *
- * *       *
- * * * * * *
- *
- * Print star only at edges: i==0, i==n-1, j==0, j==n-1
- */
-public static void hollowSquare(int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i == 0 || i == n - 1 || j == 0 || j == n - 1) {
-                System.out.print("* ");
-            } else {
-                System.out.print("  ");
-            }
-        }
-        System.out.println();
-    }
-}
-```
-
-### Pattern 10: Spiral Number Matrix ⭐⭐⭐
-
-```java
-/**
- * OUTPUT (n=4):
- *  1  2  3  4
- * 12 13 14  5
- * 11 16 15  6
- * 10  9  8  7
- *
- * REAL USE: This pattern appears in matrix traversal interview questions!
- *
- * DSA Connection: Spiral Matrix traversal (LeetCode 54)
- */
-public static void spiralMatrix(int n) {
-    int[][] matrix = new int[n][n];
-    int num = 1;
-    int top = 0, bottom = n - 1, left = 0, right = n - 1;
-
-    while (num <= n * n) {
-        // Go right
-        for (int j = left; j <= right; j++) matrix[top][j] = num++;
-        top++;
-
-        // Go down
-        for (int i = top; i <= bottom; i++) matrix[i][right] = num++;
-        right--;
-
-        // Go left
-        for (int j = right; j >= left; j--) matrix[bottom][j] = num++;
-        bottom--;
-
-        // Go up
-        for (int i = bottom; i >= top; i--) matrix[i][left] = num++;
-        left++;
-    }
-
-    // Print
-    for (int[] row : matrix) {
-        for (int val : row) {
-            System.out.printf("%3d", val);
-        }
-        System.out.println();
-    }
-}
-```
-
-### Pattern 11: Alphabet Patterns
-
-```java
-/**
- * OUTPUT (n=5):
- * A
- * A B
- * A B C
- * A B C D
- * A B C D E
- */
-public static void alphabetTriangle(int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j <= i; j++) {
-            System.out.print((char)('A' + j) + " ");
-        }
-        System.out.println();
-    }
-}
-
-/**
- * OUTPUT (n=5):
- * A
- * B B
- * C C C
- * D D D D
- * E E E E E
- */
-public static void alphabetTriangle2(int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j <= i; j++) {
-            System.out.print((char)('A' + i) + " ");
-        }
-        System.out.println();
-    }
-}
-
-/**
- * Alphabet Diamond:
- *     A
- *    A B A
- *   A B C B A
- *  A B C D C B A
- * A B C D E D C B A
- */
-public static void alphabetDiamond(int n) {
-    for (int i = 0; i < n; i++) {
-        // Spaces
-        for (int s = 0; s < n - 1 - i; s++) System.out.print(" ");
-        // Forward alphabet
-        for (int j = 0; j <= i; j++) System.out.print((char)('A' + j));
-        // Backward alphabet
-        for (int j = i - 1; j >= 0; j--) System.out.print((char)('A' + j));
-        System.out.println();
-    }
-}
-```
-
-### Pattern 12: Zigzag Pattern
-
-```java
-/**
- * OUTPUT (n=3, str="PAYPALISHIRING"):
- * P   A   H   N
- * A P L S I I G
- * Y   I   R
- *
- * REAL USE: This is LeetCode Problem #6 (ZigZag Conversion)!
- * Used in some encryption methods
- */
-public static String zigzagConvert(String s, int numRows) {
-    if (numRows == 1) return s;
-
-    StringBuilder[] rows = new StringBuilder[numRows];
-    for (int i = 0; i < numRows; i++) rows[i] = new StringBuilder();
-
-    int currentRow = 0;
-    boolean goingDown = false;
-
-    for (char c : s.toCharArray()) {
-        rows[currentRow].append(c);
-
-        if (currentRow == 0 || currentRow == numRows - 1) {
-            goingDown = !goingDown;
-        }
-
-        currentRow += goingDown ? 1 : -1;
-    }
-
-    StringBuilder result = new StringBuilder();
-    for (StringBuilder row : rows) result.append(row);
-    return result.toString();
-}
-```
+| Modulus type | Best method | Why |
+|---|---|---|
+| Prime `p` | Fermat: `a^(p-2)` | Simple, O(log p) |
+| Composite, factorization known | Euler: `a^(φ(n)-1)` | Need φ(n), then O(log n) |
+| Composite, factorization unknown | Extended GCD | O(log n), no factorization |
+| Any coprime pair (general) | Extended GCD | Always works, always fast |
 
 ---
 
-# ═══════════════════════════════════════════════════════════
-
----
-
+> **Pattern programs** (star triangles, pyramids, diamonds, zigzag) were
+> previously in this file but have been moved to their dedicated chapter:
+> **[09_Pattern_Programs_Complete.md](09_Pattern_Programs_Complete.md)** (2000+ lines, 30+ patterns).
+> That chapter covers nested loop mastery in depth.
 
 ---
 
