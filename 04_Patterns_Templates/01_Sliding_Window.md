@@ -398,6 +398,57 @@ When your solution is O(N²) when you expected O(N), or fails on specific inputs
 
 ---
 
+## The Two Things Everyone Gets Wrong — Both Explained, Not Just Warned
+
+The chapter above tells you sliding window is O(n) and that negatives are "tricky." Both deserve the *why*, because they're the two questions an interviewer uses to separate pattern-memorizers from people who understand.
+
+### "Isn't it O(n²)? There's a `while` loop inside the `for` loop!"
+
+This is the single most common doubt, and the answer is the most important amortization argument in all of pattern-based interviewing. Look at the variable-window skeleton:
+
+```java
+int left = 0;
+for (int right = 0; right < n; right++) {   // outer: right moves n times
+    add(arr[right]);
+    while (windowInvalid()) {                // inner: looks like it could run n times each → O(n²)?
+        remove(arr[left]);
+        left++;
+    }
+    updateAnswer();
+}
+```
+
+The naive fear: "for each of n `right` positions, the inner `while` could run up to n times → n × n = O(n²)." **Wrong, and here's the precise reason.** Don't count the inner loop *per outer iteration* — count `left`'s **total** movement across the *entire* run. `left` starts at 0, only ever **increases**, and can never exceed `n` (it can't pass `right`, which stops at n). So across the *whole algorithm*, the inner `while` body executes **at most n times total — not n times per outer step.**
+
+```
+right moves forward:  n times total      (the for loop)
+left  moves forward:  ≤ n times total    (left only goes up, capped at n)
+                      ─────────────
+total pointer moves:  ≤ 2n  →  O(n)
+```
+
+The key shift in thinking: **amortized accounting charges the work to the pointer, not to the iteration.** Each element is added once (by `right`) and removed at most once (by `left`) — so each element is touched ≤ 2 times over the algorithm's *lifetime*, regardless of how the inner-loop bursts are distributed. Some `right` steps trigger a long shrink burst; most trigger none; but the bursts *sum* to ≤ n because there are only n elements `left` can ever march past. This is the exact same amortization that makes the monotonic stack/queue O(n) (each element pushed once, popped once) — recognize the pattern and you'll never miscount a two-pointer complexity again.
+
+### Why negatives break it — and the precise property sliding window *requires*
+
+The chapter says "negative numbers are tricky → use Kadane's." But *why*? Understanding this tells you, for any new problem, whether sliding window is even **legal** before you write a line.
+
+Sliding window works only when the window has a **monotonic relationship with the constraint** — formally:
+
+> **The validity precondition:** *growing* the window must move the quantity monotonically in one direction, so that once the window becomes invalid, the *only* way to fix it is to **shrink from the left** — and shrinking can *only* help, never hurt.
+
+Concretely, "longest subarray with sum ≤ K, all numbers positive":
+- Adding an element on the right → sum **only goes up** (positives). So if the window overshoots K, it's *definitely* too big, and removing from the left → sum **only goes down**. Shrinking is guaranteed to make progress toward valid. **Monotonic → sliding window is correct.**
+
+Now allow **negatives**, same problem:
+- Adding a right element might *decrease* the sum (a negative). So a window that overshot K could become valid *again by extending further right* — without shrinking at all. The core assumption ("once invalid, shrink to fix") is **false**. Worse: shrinking from the left might *remove a negative*, making the sum *go up* and the situation *worse*. The greedy "shrink when invalid" logic now gives wrong answers, silently. That's why you switch to **Kadane's** (which is really a different DP recurrence) or a **prefix-sum + hashmap** approach (which doesn't rely on monotonic shrinking).
+
+> **The reusable test — apply it to any candidate problem:** *"If I extend the window, does my tracked quantity move in one consistent direction? And if the window goes invalid, is shrinking from the left guaranteed to recover validity?"* If **yes** to both → sliding window is valid and O(n). If **no** (negatives, or a non-monotonic constraint) → you need prefix sums, DP, or a different tool. This precondition — not the template — is what you're actually being tested on.
+
+This is also exactly why the "at most K distinct characters" family works beautifully (adding a char can only *increase* distinct count, removing can only *decrease* it → monotonic), while "subarray summing to exactly K with negatives" does not.
+
+---
+
 ## 🔥 THE CRITICAL CONFUSION (And How To Never Have It Again)
 
 **This is the #1 confusion that stops 90% of students from mastering sliding window.**
