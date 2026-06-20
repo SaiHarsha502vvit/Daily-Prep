@@ -166,6 +166,61 @@ public static int gcdOneLine(int a, int b) {
 // gcd(same, same) → same
 ```
 
+### Why Euclid Works — The Invariant That Survives Every Step
+
+The one-liner above is short enough to memorize in five seconds — and that is exactly the problem. Once you've typed it three times, you stop thinking about why it's correct, and then in an interview you can't recover when asked "why does this terminate?" or "how do you know the answer is right?" The invariant makes both questions trivial. Without it, Euclid is a trick; with it, Euclid is the obvious algorithm.
+
+**The invariant: `gcd(a, b) = gcd(b, a mod b)`** — the gcd of the pair never changes. This is what makes the algorithm correct, and the proof is one sentence: any common divisor `d` of `a` and `b` divides `a - q*b` for any integer `q` (a basic property of divisibility), so `d` divides `a mod b`. Conversely, any divisor of `b` and `a mod b` also divides `a = (a mod b) + q*b`. So the *sets of common divisors* of `(a, b)` and `(b, a mod b)` are identical — same divisors, same maximum, same gcd. The algorithm swaps `(a, b)` for a pair with the same gcd but smaller second argument, and it does this until the second argument hits 0. When `b == 0`, `gcd(a, 0) = a` by convention (every number divides 0), so `a` is the answer.
+
+**Why it terminates in O(log min(a, b)) steps** — the second argument strictly decreases, and it decreases *fast*. Look at two consecutive iterations:
+
+```
+gcd(a, b) → gcd(b, a mod b) → gcd(a mod b, b mod (a mod b))
+```
+
+In the second step, the new second argument is `b mod (a mod b)`. Now `a mod b < b`, so the *next* second argument is even smaller than `a mod b`. But how fast? Here's the trick: in any two consecutive iterations, the smaller of the two arguments at least halves. If `a > b`, after one step you have `(b, a mod b)` where `a mod b < b ≤ a`. If `b > a mod b`, after another step the second argument becomes `b mod (a mod b)` which is strictly less than `a mod b`. If `b ≤ a mod b`, then `b < a mod b < a`, and `b` *is* the smaller, and we just halved. Either way, within two steps the smaller argument has at least halved. After `k` doublings of the smaller argument, you've exhausted `min(a, b)`, so `k ≤ log₂(min(a, b))` iterations. That's the "O(log min)" complexity — not from any single step being logarithmic, but from the cumulative halving across pairs of steps.
+
+**Why this is fast in practice for huge numbers.** For `gcd(10^18, 10^18 - 1)` (which are coprime — their only common divisor is 1), Euclid takes maybe 60 iterations to discover that. Compare to brute force (try every integer up to 10^18): impossible. Or subtraction Euclid: 10^18 iterations. The modulo version is doing in 60 iterations what subtraction would need a billion billion iterations to do — because modulo is "how many subtractions can I skip in one step?" The mathematical answer is `floor(a/b)` of them, but the algorithm only needs the remainder to know it's done.
+
+**The deeper pattern: invariant + monotone shrink.** Euclid's algorithm has the same shape as binary search (invariant: target is in `[lo, hi]`; each step halves the range) and the same shape as the master theorem's divide step (shrink the input; recurse on the smaller part). The three are the same idea: maintain a property the answer must satisfy, and shrink the candidate space monotonically. Once you see this shape, you can re-derive Euclid, prove it, and recognize the same template in a dozen other algorithms. That's the durable lesson — not "remember `gcd(a, b) = gcd(b, a mod b)`" but "remember: find an invariant the answer satisfies, shrink the space while keeping it intact."
+
+**Why the subtraction variant is also correct but slow.** `gcd(a, b) = gcd(a - b, b)` if `a > b` (a special case of the modulo identity with `q = 1`). So you can implement Euclid with subtraction only. The invariant is the same, the algorithm is the same — but the shrink rate is `O(1)` per step instead of "halving in two steps," giving `O(max(a, b))` worst case. For `gcd(10^18, 1)`, subtraction would take 10^18 steps. This is the perfect illustration of *why modulo matters*: it's the shortcut that compresses many subtractions into one.
+
+**Common bug — modulo with negatives.** Java's `%` operator returns the sign of the dividend: `-7 % 3 = -1` (Java), but mathematically `(-7) mod 3 = 2`. If `a` or `b` can be negative, Euclid will eventually misfire because `a % b` may be negative even when `a, b > 0` was assumed. Fix: always pass `Math.abs(...)` to your gcd implementation, or check `b < 0` and recurse with `gcd(a, -b)`.
+
+🔬 **Section Challenge — Euclid Correctness**
+
+**Challenge 1 (Proof, 8 min):** Prove that the Euclid recursive algorithm `gcd(a, b) = b == 0 ? a : gcd(b, a % b)` terminates for all non-negative inputs `a, b`. Hint: focus on the second argument and use the fact that `a mod b < b` whenever `b > 0`.
+
+<details><summary>Answer</summary>
+
+The second argument `b` is strictly decreasing on each recursive call (until termination), because:
+
+1. The base case `b == 0` terminates immediately, returning `a`.
+2. In the recursive case, the new second argument is `a % b`, which is the remainder when `a` is divided by `b`. By definition, `a % b < b` whenever `b > 0`. So the new `b` is strictly less than the old `b`.
+3. The new first argument is the old `b`, which is non-negative (since we only recurse with `b > 0`).
+4. So we have a strictly decreasing sequence of non-negative integers — by well-ordering of the naturals, such a sequence must reach 0 in finitely many steps.
+
+Termination depth: at most `b` steps (since each step decreases `b` by at least 1), but in practice the halving argument gives `O(log min(a, b))` steps.
+
+</details>
+
+**Challenge 2 (Variant Reasoning, 5 min):** The LCM is given by `lcm(a, b) = a / gcd(a, b) * b`. Why does this formula hold — i.e., what's the number-theoretic reason that the product equals `gcd × lcm`?
+
+<details><summary>Answer</summary>
+
+**Prime factorization view.** Write `a = p1^α1 × p2^α2 × ... × pk^αk` and `b = p1^β1 × p2^β2 × ... × pk^βk` (allowing αi or βi to be 0). Then:
+
+- `gcd(a, b)` has prime `pi` to the power `min(αi, βi)` — the smaller exponent.
+- `lcm(a, b)` has prime `pi` to the power `max(αi, βi)` — the larger exponent.
+- `a × b` has prime `pi` to the power `αi + βi` — the sum.
+
+Since `min(α, β) + max(α, β) = α + β`, the exponents in `gcd × lcm` are exactly the exponents in `a × b`. So `gcd(a, b) × lcm(a, b) = a × b`, and rearranging gives `lcm(a, b) = a × b / gcd(a, b)`.
+
+**Implementation gotcha.** Compute as `(a / gcd(a, b)) * b`, NOT as `(a * b) / gcd(a, b)`. The first form does the division early, preventing integer overflow when `a * b` exceeds `Integer.MAX_VALUE`. For example, `lcm(10^9, 10^9 - 1)` is roughly `10^18`, which overflows int but fits in long if you divide first.
+
+</details>
+
 ---
 
 ## Algorithm 4: Binary GCD (Stein's Algorithm)
@@ -583,6 +638,42 @@ public static int countPrimes(int n) {
 // getPrimes(30) → [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 // countPrimes(100) → 25
 ```
+
+### Why `O(n log log n)` and Why Start at `i*i` — The Sieve Made Felt
+
+Two questions that look like implementation details but are actually the whole algorithm: (1) why is the total work `n log log n` and not something worse? (2) why does the inner loop start at `i*i` and not at `2*i`? Get these and the sieve is no longer a recipe — it's the obvious way to find primes.
+
+**Why `O(n log log n)` — the cost function is harmonic, not exponential.** Each prime `p ≤ n` does work proportional to `n/p` (marking multiples from `p²` to `n` is `n/p` operations). Total work is therefore:
+
+```
+  sum over primes p ≤ n  of  n/p  =  n × sum_{p prime, p ≤ n} 1/p
+```
+
+The right side, `sum 1/p` over primes, is the *prime harmonic series*. Unlike the regular harmonic series (which diverges), the prime harmonic series grows *very* slowly — it's bounded by `log log n + M` for some constant `M` (Mertens' second theorem). So total work is `n × (log log n + constant) = O(n log log n)`. For `n = 10^9`, `log log n ≈ log(20.7) ≈ 3.03`, so the sieve is barely 3× slower than a linear scan — effectively linear in practice. That's why it's the algorithm of choice for "find all primes up to N" whenever `N ≥ ~10^5`.
+
+**Why start at `i*i` and not `2*i` — every composite is "owned" by its smallest prime factor.** Consider any composite `c ≤ n`. It has at least one prime factor `p ≤ √c` (otherwise `c` would be a product of primes all bigger than `√c`, forcing `c > n`). The smallest such prime factor is `p ≤ √c ≤ √n`. When the outer loop reaches `i = p`, the inner loop will mark `c` as composite (because `p * (c/p) = c` and `c/p ≥ p` since `p` is the smallest factor). So `c` is marked by the iteration that processes its *smallest* prime factor.
+
+Now the key observation: every composite has a *unique* smallest prime factor. So every composite is marked exactly once across the entire execution. If we started the inner loop at `2*i` instead of `i*i`, we would redundantly mark composites whose smallest prime factor is *less* than `i` — for example, `12` would be marked by `i=2` (correct), `i=3` (redundant: 12 = 3*4, smallest prime factor is 2, already marked), and `i=6` doesn't run since 6 isn't prime. By starting at `i*i`, the inner loop *only* marks composites whose smallest prime factor is exactly `i`. The inner loop work for prime `p` is then `n/p - p + 1 ≤ n/p`, and the sum becomes `n × (sum 1/p)` exactly, giving `O(n log log n)`. Starting at `2*i` would give `O(n log n)` — still fast, but loses a factor of `log log n / log n`, which matters when `n` is huge.
+
+**The invariant.** Throughout the sieve: "for every prime `p ≤ √current_i`, all multiples of `p` up to `n` are marked composite." Equivalently: at the start of iteration `i`, the only numbers still marked prime in `[2, i-1]` are the actual primes. The loop maintains this invariant by marking multiples of `i` if and only if `i` itself is prime. If `i` is composite (say `i = pq` with `p ≤ q`), it was already marked when we processed `p` — so the `if (isPrime[i])` check skips it and avoids re-marking.
+
+**Comparison with alternatives.** The naive trial division (check each `n` against divisors up to `√n`) is `O(n√n)` — `10^6` operations to find primes up to `10^6`. The sieve is `O(n log log n)` — `5 × 10^6` operations to find primes up to `10^9`. The sieve wins by ~3 orders of magnitude at large `n`, and is also simpler to code. Trade-off: the sieve uses `O(n)` memory (the boolean array), which limits it to `n ≤ ~10^9` in practice (4 GB for a `boolean[]` if bit-packed, more if using Java `boolean` which is actually 1 byte). For truly huge `n` (10^12+), use a segmented sieve (process in chunks of size `√n`).
+
+**Common bug — using `i*i` when `i*i` overflows.** For `int i`, `i*i` overflows when `i > ~46340` (since `46341² = 2,147,488,681 > Integer.MAX_VALUE`). If you naively write `for (int i = 2; i*i <= n; i++)` and `n` is large, the overflow makes `i*i` negative and the loop runs forever (or for a very long time). Fix: use `long` for the multiplication, or test `(long) i * i <= n`.
+
+🔬 **Section Challenge — Sieve Mechanics**
+
+**Challenge 1 (Bound Reasoning, 5 min):** In the sieve code above, the outer loop is `for (int i = 2; i*i <= n; i++)`. Why is `i*i <= n` (i.e., `i ≤ √n`) the correct termination condition? What does it mean to keep iterating past `√n`?
+
+<details><summary>Answer</summary>
+
+Once `i > √n`, any composite `c ≤ n` has a prime factor `p ≤ √n < i`. That means `c` has *already* been marked by the time we reach iteration `i`. So we don't need to process any `i > √n` — all composites up to `n` have a prime factor `≤ √n`, and they've all been handled.
+
+The condition `i*i <= n` is the same as `i <= √n` (for non-negative `i`). Past `√n`, every `i` is either composite (already marked) or prime but contributes nothing new (its smallest multiple `i*i > n`, so the inner loop wouldn't execute even if we entered it). Stopping at `√n` is both correct and optimal.
+
+The remaining unmarked numbers in `[√n, n]` are exactly the primes in that range — because every composite in that range has a smallest prime factor ≤ √n and was marked.
+
+</details>
 
 ---
 
@@ -1219,7 +1310,6 @@ public static String zigzagConvert(String s, int numRows) {
 
 ---
 
-> **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)
 
 ---
 
@@ -1276,3 +1366,6 @@ import org.apache.commons.math3.util.ArithmeticUtils;
 long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
 ```
 
+---
+
+> **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)
