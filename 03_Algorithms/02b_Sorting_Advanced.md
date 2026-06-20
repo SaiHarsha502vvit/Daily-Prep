@@ -50,6 +50,78 @@ The randomness is in the algorithm, not the input — no adversary can construct
 
 ---
 
+## Why No Comparison Sort Can Beat n log n — Building the Floor From Scratch
+
+Everyone repeats "comparison sorting is Ω(n log n)." Almost nobody can say *why*, and the why is one of the most beautiful arguments in all of CS. Here it is, built — not cited.
+
+### The setup: a comparison sort is a question game
+
+A comparison sort learns about the input through exactly one kind of move: ask "is `a[i] < a[j]`?" and branch on the yes/no answer. That's it — it cannot peek at values, only compare them. So **any comparison sort is a binary decision tree**: each internal node is a comparison, each branch is an answer, and each leaf is the algorithm finally announcing "here is the sorted order."
+
+```
+                 a[0] < a[1] ?
+                /             \
+              yes              no
+          a[1]<a[2]?        a[1]<a[2]?
+           /     \           /     \
+        ...     ...        ...     ...
+       leaf    leaf       leaf    leaf
+   (a permutation of the input = the answer this path produces)
+```
+
+### The counting punch line
+
+To sort correctly, the tree **must have a distinct leaf for every possible answer** — because different inputs require different rearrangements, and the algorithm can only "output" what's at the leaf it lands on. How many distinct answers (orderings) are there for n elements? **n!** (n-factorial) permutations.
+
+So the tree needs at least **n! leaves**.
+
+Now the geometry: a binary tree of height **h** has at most **2ʰ** leaves (each level at most doubles them). To fit n! leaves you therefore need:
+
+```
+2ʰ  ≥  n!
+ h  ≥  log₂(n!)
+```
+
+And the height **h is exactly the worst-case number of comparisons** — the longest root-to-leaf path is the input that makes the algorithm ask the most questions. So:
+
+```
+worst-case comparisons  ≥  log₂(n!)
+```
+
+### Finishing: log₂(n!) is Θ(n log n)
+
+By Stirling's approximation, n! ≈ (n/e)ⁿ, so:
+
+```
+log₂(n!) ≈ n·log₂(n) − n·log₂(e)  =  n log₂ n − 1.44n  =  Θ(n log n)
+```
+
+Or without Stirling, a one-line lower bound: at least half the terms in n! = n·(n−1)···1 are ≥ n/2, so n! ≥ (n/2)^(n/2), giving log₂(n!) ≥ (n/2)log₂(n/2) = Ω(n log n). **Done.**
+
+> **What this sentence actually means:** the bound is not "sorting is hard." It says *any* algorithm restricted to yes/no comparisons must, on its worst input, ask at least ~n log n questions — because it must be able to distinguish n! outcomes and each question only halves the candidates. Mergesort and heapsort *achieve* this floor (they're asymptotically optimal). And it tells you precisely how counting/radix sort "cheat": they don't play the comparison game at all, so the n!-leaves argument simply doesn't apply to them — there's no contradiction in their O(n).
+
+This is also why the lower bound is **model-specific**, the deepest idea in the chapter: a lower bound is a statement about a *model of computation* (here, "you may only compare"), not about the problem in the abstract. Change the allowed operations (let the algorithm index by value) and the floor moves.
+
+---
+
+## Why Quicksort Beats Mergesort in Practice — Despite Identical O(n log n)
+
+Both are O(n log n). On a benchmark, quicksort is usually 2–3× faster. Big-O *cannot* explain this — and that gap is exactly where junior and senior understanding diverge. Three concrete reasons, none visible in the asymptotic notation:
+
+1. **In-place vs. extra memory.** Quicksort partitions *within* the array — O(log n) stack, no allocation. Mergesort's merge step needs a scratch array of size n, so it allocates O(n) and writes every element twice (to scratch, then back). That allocation + double-write is real wall-clock time the Big-O hides behind its constant factor.
+
+2. **Cache locality.** Quicksort's partition scans the array **sequentially** from both ends — the CPU prefetcher loves this, nearly every access is an L1 hit. Mergesort's merge interleaves reads from two separate subarrays and writes to a third region; the access pattern jumps around, causing more cache misses. On modern hardware a cache miss costs ~100–200 cycles vs. ~1 for a hit, so locality often dominates the actual runtime more than comparison count does.
+
+3. **Smaller constant per comparison.** Quicksort does little beyond compare-and-swap in a tight loop the JIT compiles beautifully. Mergesort carries index bookkeeping for three arrays.
+
+**So why does Java use mergesort (TimSort) for objects and quicksort for primitives?** Because the tradeoff *flips* with the data:
+- **Primitives (`int[]`)** → `Arrays.sort` uses **dual-pivot quicksort**: no stability needed (two equal ints are indistinguishable), so take quicksort's speed and cache wins.
+- **Objects (`Object[]`)** → `Arrays.sort` uses **TimSort**: objects have *identity*, so stability matters (equal-by-comparator objects must keep input order — critical for multi-key sorts). Quicksort is unstable; mergesort is stable. And TimSort is **adaptive**: it detects already-sorted "runs" in real-world data (logs, timestamps, partially-updated lists) and merges them in O(n) on the best case. Real object data is rarely random, so adaptivity pays.
+
+**The lesson that outlives the algorithms:** two algorithms with the same Big-O are *not* interchangeable. Big-O ranks growth rates; it deliberately discards the constant factor, the memory traffic, the cache behavior, and the input distribution — all of which decide the actual winner. "What's the time complexity?" is the *start* of the analysis, not the end.
+
+---
+
 # 📦 Advanced Sorting: Non-Comparison & Hybrid Algorithms
 
 ### 5W1H: Mastering Advanced Sorting

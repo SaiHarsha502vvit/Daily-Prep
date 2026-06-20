@@ -292,6 +292,52 @@ CONNECTED: All nodes reachable from any node
 
 # 🕸️ Part 6: Graph Traversals
 
+## The Big Idea First — BFS, DFS, and Dijkstra Are *One* Algorithm
+
+Before the comparison tables, internalize the thing they never tell you: **BFS, DFS, and Dijkstra are the same algorithm with one knob changed.** Every graph search is this skeleton:
+
+```
+seen = {start}
+frontier = container holding {start}      ← the ONLY thing that varies
+while frontier not empty:
+    node = take one node out of frontier   ← which one? the knob.
+    for each neighbor of node:
+        if neighbor not in seen:
+            seen.add(neighbor)
+            put neighbor into frontier
+```
+
+The *only* difference between the three famous searches is **which node you pull out of the frontier next** — i.e., what data structure `frontier` is:
+
+| `frontier` is a… | "take one out" returns… | You get… | Because… |
+|------------------|------------------------|----------|----------|
+| **Queue** (FIFO) | the *oldest* waiting node | **BFS** | oldest = closest to start, so you finish distance-d nodes before distance-(d+1) |
+| **Stack** (LIFO) | the *newest* waiting node | **DFS** | newest = the node you just discovered, so you plunge deeper before widening |
+| **Min-heap** (by distance) | the *cheapest* node so far | **Dijkstra** | cheapest-first generalizes "closest-first" to weighted edges |
+
+That is the whole secret. BFS isn't a different beast from DFS — swap the queue for a stack and the *identical code* changes its personality completely. Dijkstra isn't a different beast either — it's BFS where "closest" means "least total weight" instead of "fewest edges," which is why it needs a priority queue instead of a plain queue. Once you see the skeleton, you stop memorizing three algorithms and remember one with a knob.
+
+### Why FIFO ⟹ shortest path (the intuition behind the proof above)
+
+Picture dropping a stone in water. The ripple reaches all points 1 step away, *then* all points 2 steps away, never skipping. A FIFO queue enforces exactly this: a node at distance d is enqueued before any node at distance d+1 (its neighbors), and FIFO drains them in that order. So the **first time** you reach a node is necessarily by a shortest route — there is no later, shorter path waiting, because shorter paths were already drained. That "first arrival is optimal arrival" is the entire content of the formal induction in the Proof Corner; the queue *is* the proof, mechanized.
+
+### When DFS gives you a *wrong* answer (not just a slow one)
+
+The trap: people use DFS for shortest path because it's the recursion they know. DFS finds *a* path, committing to the first branch it sees and only widening on backtrack — so the path it returns can be arbitrarily longer than optimal. Concretely:
+
+```
+start → A → B → C → target     (DFS dives this branch first: length 4)
+start ─────────────→ target     (the real answer: length 1, found only after backtracking)
+```
+
+If you `return` on first reaching `target` in DFS, you report 4. BFS reports 1 because it exhausts distance-1 before ever touching distance-2. **Shortest-path-by-DFS is a correctness bug, not a performance one** — it returns confidently wrong numbers. (DFS is *correct* for "does a path exist?", cycle detection, topological order, and connected components — anywhere the *length* doesn't matter.)
+
+### Why Dijkstra needs non-negative weights (the one-line reason)
+
+Dijkstra "finalizes" a node the moment it pulls it off the heap, trusting that no cheaper route can exist later. That trust is only valid if every remaining edge can *only add* cost. A single negative edge can swoop in after finalization and undercut the committed distance — breaking the invariant. That's the entire reason negative weights force you to Bellman-Ford (which never finalizes; it relaxes every edge n−1 times). Hold this: **"finalize on extract" is safe iff edges are non-negative.**
+
+---
+
 ## DFS vs BFS - When to Use Which
 
 ```

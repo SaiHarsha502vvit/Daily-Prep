@@ -57,6 +57,75 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 </details>
 
+## How to Derive a DP From Scratch — The Part Nobody Teaches
+
+Most DP material shows you the finished recurrence and says "memoize it." That is like showing the answer key and calling it teaching. The hard part — the *only* hard part — is turning a problem into a state and a transition. Here is the actual procedure, and it is mechanical once you see it.
+
+### The five questions, in order
+
+Every DP is built by answering these, in this sequence. Skip one and you get stuck.
+
+1. **What decision do I make at each step?** (the "choice")
+2. **What is the smallest set of facts I need to remember to make that choice correctly?** (the *state* — this is the whole game)
+3. **What are the choices from a state, and where do they lead?** (the *transition*)
+4. **What does the answer to a state mean, in one sentence?** (the *definition* — write it down literally)
+5. **Where does it bottom out?** (the *base case*)
+
+The mistake 95% of people make is jumping to step 3 (writing transitions) before nailing step 2 (state) and step 4 (definition). If you cannot finish the sentence *"`dp[i]` = the ____ using ____"*, you do not have a DP yet — you have a guess.
+
+### Worked derivation: House Robber (LeetCode 198), thinking out loud
+
+> Houses in a row, each with money `a[i]`. You cannot rob two adjacent houses. Maximize the total.
+
+**Q1 — the decision.** Standing at house i, I choose: rob it, or skip it. That binary choice is the engine.
+
+**Q2 — the state.** What must I remember to decide correctly at house i? Naively: "which houses I've robbed so far" — but that is exponential (2ⁱ subsets). Ask the sharper question: *what about the past actually constrains my choice now?* Only one thing — **whether house i−1 was robbed**, because that is the only adjacency rule. And even that I can fold in by defining the answer over a *prefix*. So the state is just the index `i`: "the best I can do considering houses `0..i`." One number. That collapse from "remember the whole subset" to "remember the index" is the leap — and it is the same leap in every DP.
+
+**Q4 — the definition (write it literally, before any transition).**
+> `dp[i]` = the maximum money robbed considering only houses `0..i`.
+
+**Q3 — the transition.** At house i, my two choices from Q1:
+- **Skip i:** then my total is whatever was best up to i−1 → `dp[i-1]`.
+- **Rob i:** then I get `a[i]`, but i−1 is now forbidden, so the rest must come from `0..i-2` → `a[i] + dp[i-2]`.
+
+I want the better one:
+```
+dp[i] = max(dp[i-1],  a[i] + dp[i-2])
+        └ skip ┘       └─ rob ──┘
+```
+
+**Q5 — base cases.** The recurrence reaches back two steps, so I must seed two:
+- `dp[0] = a[0]` (one house — rob it)
+- `dp[1] = max(a[0], a[1])` (two adjacent — take the richer)
+
+That's the entire DP, and notice we *derived* it — we never guessed. The answer is `dp[n-1]`.
+
+### Why "optimal substructure" and "overlapping subproblems" are not jargon
+
+Two conditions make DP work, and the derivation above shows both concretely:
+
+- **Optimal substructure** — the best answer for `0..i` was built from the best answers for `0..i-1` and `0..i-2`, not from some *suboptimal* sub-answer. (If robbing optimally up to i somehow required robbing *sub*-optimally up to i−2, DP would be invalid. It doesn't, because the adjacency rule only couples neighbors.) This is what lets you reuse a stored sub-answer instead of reconsidering it.
+- **Overlapping subproblems** — the naive recursion `rob(i) = max(rob(i-1), a[i]+rob(i-2))` calls `rob(i-2)` from *both* `rob(i)` and `rob(i-1)`. The same subproblem recurs exponentially. Storing each `dp[i]` once collapses 2ⁿ calls into n. **No overlap → no DP payoff** (that's just divide-and-conquer; merge sort has optimal substructure but *no* overlap, so memoizing it buys nothing).
+
+### The state-design instinct, generalized
+
+The single skill that separates people who "get" DP from people who don't is **state minimization** — answering Q2. The pattern repeats across every classic problem:
+
+| Problem | Naive "remember everything" state | The minimal state that actually suffices |
+|---------|-----------------------------------|------------------------------------------|
+| House Robber | which subset of houses robbed (2ⁿ) | index `i` |
+| Coin Change | which coins used, in what order | remaining `amount` |
+| LCS | which characters matched | the two prefix lengths `(i, j)` |
+| Knapsack 0/1 | which items taken (2ⁿ) | `(item index i, remaining capacity w)` |
+| Edit Distance | the full edit script | the two prefix lengths `(i, j)` |
+| LIS | every increasing subsequence | `i` = "longest ending exactly at i" |
+
+In every row the win is the same move: throw away the *history of how you got here* and keep only the *summary that affects the future*. That summary is the state. Get it right and the transition writes itself; get it wrong (too big → TLE/MLE, too small → wrong answer) and nothing downstream can save you.
+
+> **Drill this:** before coding any DP, force yourself to fill the blank out loud — *"`dp[state]` = the [max/min/count/boolean] of [precise quantity] given [exactly what the state fixes]."* If you can't, you're not ready to write the loop. Everything after this section (memory layout, rolling arrays, cache behavior) is optimization of a recurrence you must first be able to *derive*.
+
+---
+
 # 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
 ```

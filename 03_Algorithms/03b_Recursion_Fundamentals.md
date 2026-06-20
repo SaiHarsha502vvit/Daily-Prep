@@ -475,7 +475,7 @@ public int fibonacci(int n) {
 // fib(3) computed 2 times
 // fib(2) computed 3 times
 // This is why we need MEMOIZATION (see DP guide)
-````
+```
 
 🔬 **Section Challenge — Type 2: Binary/Tree Recursion**
 
@@ -486,22 +486,93 @@ public int fibonacci(int n) {
 **Total calls for height h:** A complete binary tree has 2^h leaf nodes and 2^h - 1 internal nodes. Total nodes = 2^(h+1) - 1. `height()` visits EVERY node once (each node is a recursive call) + the root call. Total = 2^(h+1) - 1 recursive calls. For h=20: ~2 million calls. **Who pays O(n):** Every node in the tree. This is unavoidable — to find the height, you MUST visit every node to know which subtree is deepest. **When binary recursion is acceptable:** When the problem is inherently tree-shaped (tree height, tree traversal, merge sort). Work at each call is O(1), total work = O(n nodes). **When it explodes:** Naive Fibonacci! `fib(n)` calls `fib(n-1)` and `fib(n-2)`. Total calls = O(2^n) because subproblems OVERLAP (fib(n-2) is computed separately by both `fib(n-1)` and `fib(n-2)`). Fix: memoization or DP. Binary recursion is only safe when subproblems DON'T overlap (like divide-and-conquer on disjoint ranges).
 
 </details>
-<details><summary>Answer</summary>
 
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+**Challenge 2 (Bug Hunt):**
 
-</details>
-
-**Challenge 2 (Bug Hunt):** ```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+```java
+int fib(int n) { return n <= 1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
+```
 
-````
-Why and what are the 3 fixes?
+Why, and what are the 3 fixes?
+
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
 </details>
+
+---
+
+### The Recursion → DP Ladder — Same Computation, Four Rungs
+
+The Fibonacci bug above isn't a special case; it's the doorway to dynamic programming. There is a **mechanical four-rung ladder** from a slow recursion to an optimal loop, and every DP you will ever write climbs these same rungs. Watch the *same* computation transform without ever changing what it computes:
+
+**Rung 1 — Naive recursion. O(2ⁿ) time.** The call tree branches twice per node:
+
+```java
+long fib(int n) {
+    if (n <= 1) return n;
+    return fib(n-1) + fib(n-2);
+}
+```
+
+Why it's exponential: `fib(5)` recomputes `fib(3)` twice, `fib(2)` three times, `fib(1)` five times… the recomputation count *is* a Fibonacci number. The tree has ~φⁿ nodes (φ ≈ 1.618). **The disease is overlapping subproblems** — the same `fib(k)` solved over and over.
+
+**Rung 2 — Top-down memoization. O(n) time, O(n) space.** Keep the *exact same recursion*; add a cache that remembers each answer the first time:
+
+```java
+long[] memo;                       // sized n+1, filled with -1
+long fib(int n) {
+    if (n <= 1) return n;
+    if (memo[n] != -1) return memo[n];          // already solved? return it
+    return memo[n] = fib(n-1) + fib(n-2);       // solve once, store, reuse forever
+}
+```
+
+This is the *minimal* change that cures the disease: the call tree collapses into a DAG because each `fib(k)` is computed once and read thereafter. n+1 distinct subproblems × O(1) work each = **O(n)**. Notice you did not redesign anything — you bolted a memo onto Rung 1. *This is why memoization is the gateway: it's DP you get for free from a recursion you already wrote.*
+
+**Rung 3 — Bottom-up tabulation. O(n) time, O(n) space.** Now flip the direction. Instead of recursing *down* from n and caching on the way back, fill an array *up* from the base cases. Same dependency graph, walked forward:
+
+```java
+long fib(int n) {
+    if (n <= 1) return n;
+    long[] dp = new long[n+1];
+    dp[0] = 0; dp[1] = 1;
+    for (int i = 2; i <= n; i++)
+        dp[i] = dp[i-1] + dp[i-2];   // every dependency already computed (i-1, i-2 < i)
+    return dp[n];
+}
+```
+
+The loop order isn't arbitrary — it's a **topological sort of the subproblem dependency graph**. `dp[i]` needs `dp[i-1]` and `dp[i-2]`, so iterating `i` upward guarantees both are ready. (That ordering question — "which subproblem must I solve before which?" — is the whole skill of writing tabulated DP. Here it's trivially left-to-right; in grid DP it's row-by-row; in interval DP it's by increasing length.) Bonus: no recursion means no call-stack, so no `StackOverflowError` for large n.
+
+**Rung 4 — Rolling-array space optimization. O(n) time, O(1) space.** Look at the loop body: `dp[i]` only ever reads `dp[i-1]` and `dp[i-2]`. You never look further back. So why store the whole array? Keep two variables:
+
+```java
+long fib(int n) {
+    if (n <= 1) return n;
+    long prev2 = 0, prev1 = 1;       // dp[i-2], dp[i-1]
+    for (int i = 2; i <= n; i++) {
+        long cur = prev1 + prev2;    // dp[i]
+        prev2 = prev1;               // slide the window forward
+        prev1 = cur;
+    }
+    return prev1;
+}
+```
+
+The general rule this illustrates: **if `dp[i]` depends only on the last k rows/cells, you need only k rows/cells of memory, not all n.** This is exactly the trick behind the 1D-rolling knapsack and the two-row edit-distance table — same move, different problem.
+
+**The ladder as a table — memorize the rungs, not the problems:**
+
+| Rung | Technique | Time | Space | What changed from the rung above |
+|------|-----------|------|-------|----------------------------------|
+| 1 | Naive recursion | O(2ⁿ) | O(n) stack | — (the starting point) |
+| 2 | + Memoization | O(n) | O(n) | bolted a cache onto the recursion |
+| 3 | Bottom-up tabulation | O(n) | O(n) | reversed direction; loop = topo-sort of deps |
+| 4 | Rolling array | O(n) | **O(1)** | dropped cells the recurrence never reads |
+
+You climb this *exact* ladder for House Robber, Climbing Stairs, Coin Change, Knapsack — every linear DP. The problem changes; the rungs don't. When an interviewer says "optimize further," they are asking you to climb one rung. (Full DP state-design method: [04a_DP_Internals.md](04a_DP_Internals.md) → "How to Derive a DP From Scratch".)
 
 
 ## Type 3: Tail Recursion
