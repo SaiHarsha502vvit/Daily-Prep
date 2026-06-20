@@ -549,6 +549,57 @@ Left child of i: 2*i + 1
 Right child of i: 2*i + 2
 ```
 
+### Why a Tree Fits in a Flat Array With No Pointers
+
+That index arithmetic isn't a coincidence to memorize — it falls out of one fact: **a heap is a _complete_ binary tree** (every level full, except possibly the last, which fills left-to-right). Completeness is what lets you throw away pointers entirely.
+
+Number the nodes in level order — row by row, left to right — starting at 0:
+
+```
+            0              ← level 0: index 0
+          /   \
+        1       2          ← level 1: indices 1–2
+       / \     / \
+      3   4   5   6        ← level 2: indices 3–6
+```
+
+Now stare at any node `i` and its children. Node 1's children are 3 and 4. Node 2's children are 5 and 6. The pattern `left = 2i+1, right = 2i+2` is *forced* by completeness: before node `i`'s children appear, every node to `i`'s left on the same row has already placed its two children, and all earlier rows are full. Count them and the arithmetic is exact — there are no gaps to throw it off, precisely because a complete tree has no holes. Lose completeness (allow gaps) and the formula breaks, which is *why* heaps insist on it.
+
+This is a genuine win, not a trick: **O(1) navigation, zero pointer overhead, perfect cache locality** (the whole tree is one contiguous block, so a parent and its children often sit on the same cache line). A pointer-based tree scatters nodes across the heap and chases references; the array heap walks multiplication. That's the real reason library priority queues (`java.util.PriorityQueue`) are backed by an array, not a linked tree.
+
+### Why Building a Heap Is O(n), Not O(n log n) — The Surprising One
+
+Here's a result that trips up almost everyone. To build a heap from an unordered array, you "sift down" each non-leaf node. Each sift-down is O(log n). There are ~n/2 non-leaves. So the build is n/2 × log n = **O(n log n)**, right?
+
+**Wrong — it's O(n).** And the reason is the single most important insight about heaps.
+
+The flaw in the n log n estimate is assuming *every* node can sift down a full log n levels. It can't. **A node's sift-down cost is bounded by its _height_ (distance to the bottom), not the tree's height.** And in a complete binary tree, the overwhelming majority of nodes are *near the bottom*, where height is tiny:
+
+```
+Height of node   # of nodes at that height   sift-down cost each
+       0  (leaves)        n/2                       0   ← half the nodes do NOTHING
+       1                  n/4                        1
+       2                  n/8                        2
+       3                  n/16                       3
+       ...                ...                       ...
+   log n (root)            1                      log n  ← only ONE node pays full price
+```
+
+The expensive nodes (high up, big sift-down) are *rare*; the cheap nodes (near the bottom, tiny sift-down) are *most* of the tree. Total work is the sum:
+
+```
+Total = Σ (number of nodes at height h) × h
+      = Σ (n / 2^(h+1)) × h
+      = (n/2) · Σ  h / 2^h        for h = 0,1,2,...
+                  └──────────┘
+            this sum converges to 2 (a fixed constant, not growing with n)
+      = (n/2) · 2  =  O(n)
+```
+
+The series `Σ h/2^h = 0/1 + 1/2 + 2/4 + 3/8 + … = 2` converges because the node count halves each level *faster* than the cost grows. So the whole build is linear.
+
+> **The lesson, felt:** "n/2 nodes × O(log n) each" overcounts wildly because it pretends every node is the worst case. The truth — *most nodes live near the bottom and barely move* — is why **`heapify` builds a heap in O(n)**, beating the O(n log n) you'd get from inserting elements one at a time. (This is also why heapsort's build phase is free relative to its O(n log n) extraction phase.)
+
 ### 🔴 Real-World Origin: Emergency Room Triage (1970s)
 
 **Problem in Hospitals:** Patients arrive randomly — some critical, some minor. Need to treat the most urgent first, **NOT** first-come-first-served!

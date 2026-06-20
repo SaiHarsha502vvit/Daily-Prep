@@ -102,6 +102,30 @@ map.put("Alice", 85);
 - **Java 8+:** If chain length > 8 → convert to **Red-Black Tree** → O(log n) worst case
 - **Before Java 8:** Always linked list → O(n) worst case
 
+### Why O(1) Is True — and the Honest Conditions Under Which It's a Lie
+
+"Hash tables are O(1)" is the most-repeated and least-understood claim in data structures. The real statement has conditions, and a senior engineer knows all of them. Let's build the truth.
+
+**The actual cost is O(1 + α), where α = load factor = n / (number of buckets).** A lookup does two things: (1) compute the hash and jump to a bucket — genuinely O(1); (2) scan that bucket's chain for the matching key — O(chain length). So the whole cost rides on **how long the chains are**, and the average chain length is exactly α.
+
+Why is average chain length α? If you spread n keys across m buckets and the hash function scatters them *uniformly*, each bucket holds n/m keys on average — that's the definition of α. So:
+
+- α = 0.5 → average half an element per bucket → lookups touch ~1 element → O(1).
+- α = 5 → average 5 per bucket → every lookup scans ~5 → still constant, but 5× slower.
+- α = n (one bucket, everything collides) → one chain of length n → **O(n).** The hash table has degenerated into a linked list.
+
+**This is why resizing exists and isn't optional.** Java's HashMap watches α and, when it crosses **0.75**, doubles the bucket count and rehashes every entry into the bigger table. Doubling halves α, pulling chains back down to ~1. That rehash costs O(n) — but it happens rarely (only at 0.75, 1.5×0.75, …), so amortized over all the insertions it adds only O(1) per insert. (Exact same doubling/amortization argument as the dynamic array — [memory foundations](01a_Memory_Foundations.md).) **Keeping α bounded is the whole job; lose that and O(1) evaporates.**
+
+**Now the honest part — O(1) is a probabilistic claim, and it has enemies:**
+
+1. **It assumes the hash function spreads keys uniformly.** That's an *assumption about the distribution of your keys vs. your hash function*, not a guarantee. A terrible `hashCode()` that returns the same value for every object dumps all n keys into one bucket → O(n), with no exception thrown, just mysterious slowness.
+
+2. **An adversary can force the worst case (HashDoS).** If keys come from untrusted input (HTTP form fields, JSON keys) and the attacker knows your hash function, they can craft thousands of keys that *all hash to the same bucket* — turning your O(1) map into an O(n) chain and your O(n) request-processing loop into O(n²). This was a real, weaponized CVE across web frameworks around 2011. Two defenses, both shipped in production:
+   - **Randomized/seeded hashing** so the attacker can't predict the bucket (used in many language runtimes).
+   - **Treeify the bucket** — Java 8's fix: when a single chain exceeds 8 entries, convert that bucket from a linked list to a **red-black tree**, capping the worst case at **O(log n)** per bucket instead of O(n). So Java's true worst case is O(log n), not O(n), specifically because the designers refused to trust the uniformity assumption.
+
+> **State it precisely, the way a staff engineer would:** hash-table operations are **O(1) _expected_, amortized over resizes, _assuming_ the hash function distributes keys uniformly across buckets.** Every word in that sentence is load-bearing. "Expected" (not guaranteed — depends on key distribution), "amortized" (individual inserts can trigger an O(n) resize), "assuming uniform" (a bad hashCode or an adversary breaks it). The interview answer "O(1)" is the *headline*; this sentence is the *article*.
+
 ### HashMap vs TreeMap vs LinkedHashMap — Decision Matrix
 
 | Feature      | HashMap        | TreeMap          | LinkedHashMap      |
