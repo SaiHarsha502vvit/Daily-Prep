@@ -761,6 +761,34 @@ Strassen:       T(n) = 7T(n/2) + O(n^2)
                 Case 1: T(n) = O(n^2.807)
 ```
 
+### Where the Three Cases Actually Come From — Draw the Tree, Don't Memorize the Table
+
+The three cases look arbitrary until you draw the recursion tree. Then they become *the only three things that can happen*, and you'll never need the table again. The single question the Master Theorem answers is: **which level of the recursion tree does the most work — the top, the bottom, or are all levels tied?**
+
+Take `T(n) = aT(n/b) + f(n)`. Expand it as a tree and tally the work at each level:
+
+```
+Level 0 (root):     1 node,   problem size n      → work = f(n)
+Level 1:            a nodes,  size n/b each       → work = a·f(n/b)
+Level 2:            a² nodes, size n/b² each      → work = a²·f(n/b²)
+...
+Level i:            aⁱ nodes, size n/bⁱ each       → work = aⁱ·f(n/bⁱ)
+...
+Bottom (leaves):    a^(log_b n) = n^(log_b a) leaves, each O(1) work
+```
+
+Two quantities are racing as you go *down* the tree: the **number of nodes multiplies by a** each level, while the **work per node shrinks** (problem size divides by b). The total is the sum over all levels. Whether that sum is dominated by the top, the bottom, or spread evenly is decided by comparing `f(n)` against `n^c` where **c = log_b(a)** — and `n^c` is exactly the number of leaves. That comparison *is* the three cases:
+
+- **Case 1 — leaves win (work piles up at the bottom).** If `f(n)` grows *slower* than `n^c`, the node-count explosion outruns the per-node shrinkage. Each level down has *more* total work than the one above, so the **bottom level dominates** and the geometric series is bottom-heavy → `T(n) = Θ(n^c)`. *The leaves (the n^c of them) do all the work.* (Strassen: 7 children each level outruns the n² merge cost, so the leaf count n^2.81 dominates.)
+
+- **Case 2 — every level ties (work is flat).** If `f(n) = Θ(n^c)`, the growth in node-count *exactly cancels* the shrink in per-node work — **every level does the same total amount**, ~`f(n)`. There are `log_b n` levels, so total = `f(n) × log n` → `T(n) = Θ(n^c log n)`. *This is why merge sort is n log n:* each of the log n levels does Θ(n) merge work — n work per level, log n levels. The log factor is literally the *height of the tree*, and it appears precisely because all levels are tied so you multiply by how many there are.
+
+- **Case 3 — the root wins (work piles up at the top).** If `f(n)` grows *faster* than `n^c` (and the regularity condition holds, meaning the work really does shrink going down), the **top level dominates** — the first `f(n)` is bigger than everything below it combined → `T(n) = Θ(f(n))`. *The root's own work swamps all the recursion.*
+
+> **The mental picture that replaces the table:** a recursion tree is a tug-of-war between *branching* (a, pulling work toward the many leaves) and *shrinking* (b and f, pulling work toward the few-but-big top nodes). Case 1 = branching wins (bottom-heavy). Case 3 = shrinking is so weak the root's work wins (top-heavy). Case 2 = perfect tie, and the tie introduces the `log n` factor because you're summing equal contributions over the tree's height. You don't memorize which case — you ask *"is f(n) smaller than, equal to, or bigger than the leaf count n^c?"* and the tree tells you where the work lives.
+
+This is also exactly why the Master Theorem **has gaps** (e.g., `T(n)=2T(n/2)+n log n` falls *between* cases 2 and 3 — f is bigger than n¹ but not polynomially bigger): the clean three-way split only works when f sits cleanly below, on, or above n^c by a polynomial factor. In the gaps you fall back to drawing the tree and summing by hand — which is what you were really doing all along.
+
 ---
 
 ## When Divide & Conquer Breaks
