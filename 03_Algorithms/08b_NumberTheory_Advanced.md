@@ -14,18 +14,46 @@ Advanced number theory algorithms bridge ancient mathematical discoveries and mo
 
 ## Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐
 
+### Why Kadane's Works — It's a DP, Not a Trick
+
+**The problem:** Given an array of integers (positive and negative), find the
+contiguous subarray with the largest sum.
+
+**Brute force:** Try every pair `(i, j)`, sum `arr[i..j]` → O(n³). With prefix
+sums the inner sum becomes O(1), giving O(n²). Can we do O(n)?
+
+**The DP insight that makes it O(n).**  Define:
+
+```
+dp[i] = maximum sum of any subarray that ENDS at index i
+```
+
+Why "ends at i"? Because every subarray ends *somewhere*. If we compute dp[i]
+for every i, then `max(dp[0], dp[1], ..., dp[n-1])` is the answer.
+
+**The recurrence.** A subarray ending at index `i` either:
+- **Extends** the best subarray ending at `i − 1` by appending `arr[i]`, giving
+  `dp[i-1] + arr[i]`, OR
+- **Starts fresh** at `i` alone, giving `arr[i]`.
+
+There's no third option — any subarray ending at `i` either includes position
+`i − 1` (extend) or doesn't (restart). So:
+
+```
+dp[i] = max(arr[i], dp[i-1] + arr[i])
+```
+
+**Why restart wins exactly when dp[i-1] < 0.** If the best subarray ending at
+`i − 1` has a negative sum, extending it means carrying a penalty. Starting fresh
+at `arr[i]` alone is strictly better because `arr[i] > dp[i-1] + arr[i]` when
+`dp[i-1] < 0`. The algorithm isn't "resetting when negative" by heuristic — it's
+choosing the optimal DP transition at every step.
+
+**Space optimization.** `dp[i]` depends only on `dp[i-1]`, so we replace the
+array with a single variable `currentSum`. That's the code below:
+
 ```java
 /**
- * WHY: One of the most asked interview questions
- * WHERE: Stock profit analysis, signal processing, network traffic
- *
- * REAL INCIDENT:
- *   Amazon retail team needed to find peak sales window
- *   Daily profit/loss: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
- *   Best contiguous period: [4, -1, 2, 1] = 6 profit
- *
- * HOW: Track current sum, reset when it goes negative
- *
  * Time: O(n), Space: O(1)
  */
 public static int kadane(int[] arr) {

@@ -893,6 +893,130 @@ public class ModularArithmetic {
 
 ---
 
+## Why Fermat's Little Theorem Works — and Why a^(p-2) Is the Modular Inverse
+
+The code above uses `modPow(a, mod - 2, mod)` to compute modular inverse, citing
+"Fermat's little theorem." But *why* does raising `a` to the power `p − 2` give
+you `a`'s multiplicative inverse mod `p`? The answer is a counting argument that
+takes five minutes and unlocks most of modular arithmetic.
+
+### The problem that forces the idea
+
+Division doesn't exist in modular arithmetic. You can't compute `(a / b) % p`
+the way you compute `(a * b) % p` — try it: `(7 / 3) % 5 = 2.33... % 5`, which
+is meaningless in integers. What you *can* do is find a number `b⁻¹` such that
+`b × b⁻¹ ≡ 1 (mod p)`, and then "dividing by b" becomes "multiplying by b⁻¹."
+
+The question is: does such a `b⁻¹` always exist, and how do you find it?
+
+### Step 1: Multiplication by a nonzero element permutes residues
+
+Fix a prime `p` and pick any `a` with `1 ≤ a ≤ p − 1` (i.e., `a` is not divisible
+by `p`). Now multiply every nonzero residue by `a`:
+
+```
+S = {1, 2, 3, ..., p−1}          (the p−1 nonzero residues mod p)
+aS = {a·1 mod p, a·2 mod p, ..., a·(p−1) mod p}
+```
+
+**Claim:** `aS` is a *permutation* of `S` — the same set of numbers, just reordered.
+
+**Proof:** Two things to check:
+1. *No element of `aS` is zero.* If `a·k ≡ 0 (mod p)`, then `p | a·k`. Since `p`
+   is prime and `p ∤ a`, we'd need `p | k`. But `1 ≤ k ≤ p−1`, so `p ∤ k`.
+   Contradiction — no product is zero.
+2. *No two elements collide.* If `a·i ≡ a·j (mod p)` with `i ≠ j`, then
+   `a·(i − j) ≡ 0 (mod p)`, which we just ruled out.
+
+So `aS` has `p−1` distinct nonzero residues, and `S` also has `p−1` distinct
+nonzero residues. They must be the same set.
+
+### Step 2: Multiply all elements together
+
+Since `aS` is a permutation of `S`, their products mod `p` are equal:
+
+```
+(a·1)(a·2)(a·3)···(a·(p−1)) ≡ 1·2·3···(p−1)   (mod p)
+```
+
+Factor out the `a`'s on the left side — there are `p−1` of them:
+
+```
+a^(p−1) · (1·2·3···(p−1)) ≡ (1·2·3···(p−1))   (mod p)
+```
+
+Let `W = (p−1)!`. Since every factor of `W` is between `1` and `p−1`, none is
+divisible by `p`, so `W ≢ 0 (mod p)`. We can cancel `W` from both sides
+(this cancellation is valid because `gcd(W, p) = 1`):
+
+```
+a^(p−1) ≡ 1   (mod p)
+```
+
+**That's Fermat's Little Theorem.** For any prime `p` and any `a` not divisible
+by `p`: `a^(p−1) ≡ 1 (mod p)`.
+
+### Step 3: Why a^(p−2) is the inverse
+
+Divide both sides of `a^(p−1) ≡ 1` by `a`:
+
+```
+a^(p−2) · a ≡ 1   (mod p)
+```
+
+By definition, the number you multiply `a` by to get `1` is `a`'s multiplicative
+inverse. So `a⁻¹ ≡ a^(p−2) (mod p)`.
+
+That's why `modPow(a, mod - 2, mod)` works — it computes `a^(p−2) mod p`, which
+is exactly `a⁻¹ mod p`. And it only works when `mod` is prime, because the
+permutation argument in Step 1 requires primality (otherwise `a·k` can be zero
+without `k` being zero).
+
+### The edge that catches people
+
+Fermat's Little Theorem requires `gcd(a, p) = 1`. If `a` is a multiple of `p`,
+then `a ≡ 0 (mod p)` and no inverse exists — you can't divide by zero even in
+modular arithmetic. In contest code, this means you must check `a % mod != 0`
+before calling `modInverse(a, mod)`, or handle the zero case separately.
+
+### When the modulus isn't prime: Extended Euclidean Algorithm
+
+Fermat's theorem only works for prime moduli. For composite `m`, use the extended
+GCD: find `x, y` such that `a·x + m·y = gcd(a, m)`. If `gcd(a, m) = 1`, then
+`x mod m` is the inverse. The extended Euclidean algorithm runs in `O(log m)` —
+same asymptotic cost as `modPow` but works for any coprime pair:
+
+```java
+// Returns {gcd, x, y} such that a*x + b*y = gcd(a, b)
+public static long[] extGcd(long a, long b) {
+    if (b == 0) return new long[]{a, 1, 0};
+    long[] r = extGcd(b, a % b);
+    return new long[]{r[0], r[2], r[1] - (a / b) * r[2]};
+}
+
+// Modular inverse for any modulus (a and mod must be coprime)
+public static long modInverseGeneral(long a, long mod) {
+    long[] r = extGcd(a % mod, mod);
+    if (r[0] != 1) throw new ArithmeticException("Inverse doesn't exist");
+    return (r[1] % mod + mod) % mod;
+}
+```
+
+### Decision: Fermat vs Extended GCD
+
+| | Fermat (`a^(p−2)`) | Extended GCD |
+|---|---|---|
+| **Requires** | `mod` is prime | `gcd(a, mod) = 1` |
+| **Time** | O(log p) | O(log mod) |
+| **When to use** | Contest problems with `mod = 10⁹+7` | Composite moduli, CRT |
+| **Gotcha** | Silent wrong answer if `mod` isn't prime | Returns error if not coprime |
+
+In competitive programming, `mod = 10⁹ + 7` is prime by design, so Fermat's
+approach is the standard idiom. In production code dealing with arbitrary moduli,
+prefer the extended GCD — it's equally fast and doesn't silently fail.
+
+---
+
 # ═══════════════════════════════════════════════════════════
 
 # PART 4: PATTERN PROGRAMS ⭐ (Loop Mastery)

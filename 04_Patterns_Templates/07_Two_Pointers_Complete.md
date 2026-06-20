@@ -118,50 +118,41 @@ From Simple Traversals to Complex Multi-Pointer Techniques
 
 ## Two Pointers Fundamentals <a name="fundamentals"></a>
 
-### The Core Concept
+### The Problem That Forces the Idea
 
-TWO POINTERS IN ONE SENTENCE
+You have a sorted array and need a pair whose sum equals a target. Brute force checks all n(n−1)/2 pairs — O(n²). For n = 100,000, that's 5 billion comparisons. Too slow.
 
-"Use two references to traverse data structure
-efficiently, reducing O(n²) to O(n)."
+But you have sorted order. Can you use it to eliminate candidates *without checking them*?
 
-Why it works:
+### The Elimination Argument — Why O(n) Is Possible
 
-- Avoids nested loops by moving pointers intelligently
-- Makes decisions based on current state
-- Exploits sorted/structured properties of data
+Place one pointer at the start (`left = 0`) and one at the end (`right = n-1`). Compute `sum = arr[left] + arr[right]`.
 
-### Visual: The Power of Two Pointers
+Three cases:
+- **`sum == target`**: done.
+- **`sum < target`**: you need a bigger sum. Moving `right--` makes sum *even smaller* (sorted!). The only productive move is `left++`. But you're not just skipping one pair — you're eliminating **every pair `(left, r)` for all `r ≤ right`**, because `arr[left] + arr[r] ≤ arr[left] + arr[right] < target`. One comparison kills an entire column of the pair space.
+- **`sum > target`**: symmetric. `right--` eliminates an entire row.
+
+**Each step eliminates at least one candidate that provably can't be the answer.** After at most `n` steps, the entire search space is exhausted. That's O(n) from O(n²) — not by being clever with data structures, but by proving that what you skip can't matter.
 
 ```
-Problem: Find pair with target sum in SORTED array
+Pair space for arr = [1, 2, 4, 6, 8, 9], target = 10
 
-Brute Force O(n²):                  Two Pointers O(n):
-┌────────────────────┐              ┌────────────────────────┐
-│ for i = 0 to n:    │              │ left → ... ... ← right │
-│   for j = i+1 to n:│              │                        │
-│     check(i,j)     │              │ Move based on sum:     │
-│                    │              │ sum < target: left++   │
-│                    │              │ sum > target: right--  │
-└────────────────────┘              └────────────────────────┘
+        1   2   4   6   8   9       ← right pointer (starts at 9)
+   1  [ 2   3   5   7   9  10]  ✓  sum=10 found at (1,9)
+   2  [     4   6   8  10  11]      ← left pointer (starts at 1)
+   4  [         8  10  12  13]
+   6  [            12  14  15]      Brute force visits all 15 cells.
+   8  [                16  17]      Two pointers walks the L-shaped
+   9  [                    18]      border: at most 6 steps.
 
-Array [1, 2, 4, 6, 8, 9], target = 10
-
-Brute: Check all 15 pairs
-Two Pointers: At most 6 moves
+Each left++ eliminates a ROW (every remaining right for that left).
+Each right-- eliminates a COLUMN (every remaining left for that right).
 ```
 
----
+### The Single Principle Behind All Four Variants
 
-🔬 **Section Challenge — Two Pointers Fundamentals <a name="fundamentals"></a>**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
+The four "types" in the table above look like four different algorithms. They're not — they're four instances of one principle: **at every step, prove that the candidates you skip cannot contain the answer, then move the pointer that skips them.** Once you see the principle, you can re-derive any of them and invent new two-pointer techniques for problems you've never seen. The four types differ only in *which axis* the elimination runs along. (The full derivation for each variant is in "Why Each Pointer Move Is Safe" at the end of this chapter.)
 
 ## Pattern Categories <a name="categories"></a>
 
@@ -989,16 +980,6 @@ public int compareVersion(String version1, String version2) {
 ```
 
 ---
-
-🔬 **Section Challenge — Multi-Array Two Pointers <a name="multi-array"></a>**
-
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-
-<details><summary>Answer</summary>
-
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-
-</details>
 
 ## Advanced Patterns <a name="advanced"></a>
 

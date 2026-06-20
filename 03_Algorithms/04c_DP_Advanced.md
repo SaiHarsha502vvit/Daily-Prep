@@ -510,10 +510,6 @@ private int maxPath(TreeNode node, int[] maxSum) {
 }
 ```
 
-    return node.val + Math.max(leftMax, rightMax);
-}
-```
-
 ### Why Tree DP Works — and the Reroot Technique That Makes O(n²) Problems O(n)
 
 The House Robber III code above computes an answer for a single root. Most tree DP problems stop there. But a huge class of problems — "for each node, compute the answer as if it were the root" — is *naively* O(n²): re-do the whole DP at every root. The reroot technique reduces this to O(n) total. It's the most useful tree DP technique after the basic post-order, and almost no textbook teaches it cleanly.
@@ -1071,6 +1067,17 @@ MISTAKE 6: Redundant states
 ---
 
 # 🚀 PART FINAL: ADVANCED DP PATTERNS & TECHNIQUES
+
+> **Reader's note:** The Digit DP, Bitmask DP, Interval DP, and Tree DP
+> sections below are **template-style recaps** — quick-reference code for
+> contests. For the deep derivations (why bitmask DP forces 2^n states,
+> the "burst last" trick, the reroot technique), see Parts 1–3 above.
+>
+> **Unique content in this section** (not covered above):
+> - Interval DP → "Minimum Cost to Cut a Stick" example, Decision Guide table
+> - **Convex Hull Trick** (optimizing linear DP transitions)
+> - **Divide & Conquer DP Optimization** (when opt[i] is monotone)
+> - **Broken Profile DP** (tiling/grid problems with bitmask rows)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗

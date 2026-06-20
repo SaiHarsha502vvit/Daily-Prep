@@ -442,16 +442,6 @@ Result: [5, 5, 6, -1, 3, -1]
 
 ---
 
-🔬 **Section Challenge — Monotonic Stack Basics <a name="monotonic-stack"></a>**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
 ## Next Greater Element Pattern <a name="next-greater"></a>
 
 ### Template: Next Greater Element
@@ -798,16 +788,6 @@ Window [-1, -3, 5]:
 
 ---
 
-🔬 **Section Challenge — Monotonic Queue <a name="monotonic-queue"></a>**
-
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-
-<details><summary>Answer</summary>
-
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-
-</details>
-
 ## Sliding Window Maximum/Minimum <a name="sliding-window"></a>
 
 ### Sliding Window Maximum (LeetCode 239)
@@ -911,24 +891,6 @@ public int[] minSlidingWindow(int[] nums, int k) {
 ```
 
 ---
-
-🔬 **Section Challenge — Sliding Window Maximum/Minimum <a name="sliding-window"></a>**
-
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-
-<details><summary>Answer</summary>
-
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-
-</details>
 
 ## Advanced Applications <a name="advanced"></a>
 
