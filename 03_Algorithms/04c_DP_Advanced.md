@@ -301,7 +301,7 @@ The pattern: each iteration visits the next-smaller subset, in decreasing order,
 </details>
 
 
-## Pattern 3: Interval DP## Pattern 3: Interval DP
+## Pattern 3: Interval DP
 
 CONCEPT:
 Solve problems on intervals/subarrays by considering all ways

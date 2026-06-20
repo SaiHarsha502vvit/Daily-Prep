@@ -600,7 +600,7 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 </details>
 
 
-## 📌 The Direction Rule — Visual Proof## 📌 The Direction Rule — Visual Proof
+## 📌 The Direction Rule — Visual Proof
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐

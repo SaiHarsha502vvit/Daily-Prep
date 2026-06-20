@@ -336,7 +336,7 @@ OK the key insight is just: the LPS construction is KMP-searching the pattern ag
 </details>
 
 
-### KMP Applications### KMP Applications
+### KMP Applications
 
 ```java
 // Application 1: Check if pattern exists

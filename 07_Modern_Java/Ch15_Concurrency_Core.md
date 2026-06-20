@@ -158,7 +158,7 @@ The combination of `final` fields + a volatile reference is the canonical "immut
 </details>
 
 
-## ❓ Why This Matters## ❓ Why This Matters
+## ❓ Why This Matters
 
 REALITY CHECK
 
