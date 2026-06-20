@@ -198,15 +198,36 @@ public final class BitwiseTrie {
 
 ## 5. Classic Problem 1 - Maximum XOR of Two Numbers
 
+### Why a *trie* is the right tool — and why greedy bit-by-bit is provably optimal
+
+Brute force tries all pairs: O(n²). The trie gets it to O(n·L) (L = number of bits, ~32). But the real lesson isn't the speedup — it's *why a greedy, most-significant-bit-first walk gives the maximum XOR*. This is the same "high bit dominates everything below it" principle from the [two-unique XOR partition](10_Bit_Manipulation_Complete.md), and once you see it the algorithm is forced.
+
+**The key fact about positional value:** in a 32-bit number, **a single high bit outweighs _all_ lower bits combined**. Bit 31 is worth 2³¹; bits 30 down to 0 sum to 2³¹ − 1 < 2³¹. So if you can make the result's bit 31 a `1`, *nothing* you do in the lower 31 bits can ever beat that — even setting every one of them. This means:
+
+> **Maximize XOR greedily from the most significant bit down. At each bit, grab a 1 if you possibly can; that choice is never worth sacrificing for any combination of lower bits.**
+
+Now the trie makes the greedy choice checkable in O(1) per level. Store every number as a root-to-leaf path of its bits, MSB first. To find the best partner for `x`:
+
+```
+At each bit of x (from MSB down):
+    I WANT the result bit to be 1.
+    XOR gives 1 only when the two bits DIFFER.
+    So I want to walk to the child with the OPPOSITE bit of x's current bit.
+    - If that opposite-bit child exists in the trie → take it. (locked in a 1 at this position)
+    - If it doesn't exist → forced to take the same-bit child. (a 0 here, unavoidable)
+```
+
+Each step is a single pointer hop — "does a number sharing my prefix but differing at this bit exist?" — answered in O(1) by checking `node.children[oppositeBit]`. Greedy is **safe** here, unlike most problems, precisely because of positional dominance: committing to a 1 at a high bit can never be regretted, so there's no need to look ahead or backtrack. That's the whole algorithm, and it's *correct by the value argument*, not by luck.
+
 ### Logic first
 
 For each number `x`:
 
-- query max XOR against numbers already inserted
+- query max XOR against numbers already inserted (greedy MSB-first walk above)
 - insert `x`
 - update global maximum
 
-This avoids O(n^2) brute force.
+This avoids O(n²) brute force: each query and insert is O(L) ≈ O(32) = O(1) for fixed-width ints, so the whole pass is O(n).
 
 ### Java implementation
 
@@ -232,11 +253,19 @@ public final class MaxXorTwoNumbers {
 
 🔬 **Section Challenge — 5. Classic Problem 1 - Maximum XOR of Two Numbers**
 
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+**Challenge 1 (Reasoning):** The greedy walk always tries to take the *opposite* bit first, and only falls back to the same bit if the opposite child is missing. Why is this greedy choice safe — why can't grabbing a 1 at a high bit ever cost us a *larger* total in the lower bits?
 
 <details><summary>Answer</summary>
 
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+Because of positional value: bit `k` is worth 2^k, and the sum of all lower bits (k-1 down to 0) is 2^k − 1, which is strictly **less** than 2^k. So a single 1 at bit k outweighs every possible combination of 1s below it. Once we can secure a 1 at the highest available bit, no lower-bit arrangement can beat it — there is nothing to trade away and nothing to look ahead for. This is exactly why the greedy MSB-first walk is optimal and needs no backtracking: each high-bit win is unconditionally worth more than the entire remaining suffix.
+
+</details>
+
+**Challenge 2 (Design):** Why store numbers MSB-first in the trie rather than LSB-first? What breaks if you build the trie from the least significant bit up?
+
+<details><summary>Answer</summary>
+
+The greedy maximization must decide the *highest-value* bit first, because that's the bit that dominates the result. An MSB-first trie places that decision at the root, so the very first hop commits the most valuable bit. LSB-first would force you to commit low-value bits at the top of the trie and only reach the decisive high bits at the leaves — by then the greedy choices you already made (on bits worth less) can't be undone, and you'd need to explore exponentially many paths to recover the optimum. MSB-first aligns the trie's traversal order with the order of decreasing positional value, which is exactly what makes one greedy descent correct.
 
 </details>
 
@@ -483,7 +512,6 @@ The bitwise trie supports several variants beyond max XOR, each exploiting diffe
 
 Select **max XOR trie** when the problem asks for maximum XOR of any pair or pair with a query value. Select **array-based** when space is severely constrained and n is small. Default to the **bitwise trie** for any problem where you need to pick optimal bit branches for XOR objectives.
 
-**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
 🔬 **Section Challenge — 12. Summary**
 
@@ -547,3 +575,7 @@ PatriciaTrie<Integer> trie = new PatriciaTrie<>();
 trie.put("hello", 1);
 SortedMap<String, Integer> prefix = trie.prefixMap("he"); // all keys starting with "he"
 ```
+
+---
+
+**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
