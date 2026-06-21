@@ -599,7 +599,7 @@ Today, production systems use views for column-level security (hiding salary/SSN
 **Debug workflow:**
 (1) Disable all triggers temporarily: `ALTER TABLE employees DISABLE TRIGGERS ALL;` — if the operation completes normally, a trigger is causing the issue. Re-enable one at a time to isolate the culprit.
 (2) For stored procedure N+1, run `SHOW PROFILES` (MySQL) or `pg_stat_statements` after calling the procedure — look for high query count from a single procedure invocation.
-(3) For recursive trigger loops, set `max_sp_recursion_depth = 10` (MySQL) and wrap trigger logic with a recursion guard: `IF (SELECT触发_depth FROM trigger_context) > 5 THEN SIGNAL SQLSTATE '99999'; END IF;`
+(3) For recursive trigger loops, set `max_sp_recursion_depth = 10` (MySQL) and wrap trigger logic with a recursion guard: `IF (SELECT trigger_depth FROM trigger_context) > 5 THEN SIGNAL SQLSTATE '99999'; END IF;`
 
 **Modern practice anchor:**
 Today, stored procedures are largely replaced by application-layer logic (better testability, version control) and triggers are avoided for critical paths — production systems use event-driven pipelines (Kafka, SQS) for audit logging instead of invisible database triggers, making query behavior fully visible to application monitoring.

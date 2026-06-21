@@ -371,7 +371,7 @@ Today, hybrid multi-model databases (PostgreSQL with JSONB, Cosmos DB, FaunaDB) 
 **Debug workflow:**
 1. Check shard distribution: `db.currentOp().inprog.forEach(op => printjson(op.shard))` or `sh.status()` — look for one shard with 80%+ docs.
 2. Verify TTL index exists: `db.events.getIndexes().find(i => i.expireAfterSeconds !== undefined)` — if undefined, add: `db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 2592000 })` (30-day retention).
-3. Monitor replica election timing: `rs.status().electionTime` — if elections take > 5 seconds, check `选举超时` (election timeout) settings and clock sync via NTP.
+3. Monitor replica election timing: `rs.status().electionTime` — if elections take > 5 seconds, check election timeout (`electionTimeoutMillis`) settings and clock sync via NTP.
 
 **Modern practice anchor:**
 Production MongoDB requires shard keys with high cardinality (e.g., `userId` hash), TTL indexes on all time-series collections, and NTP-synchronized clocks across all replica set members.

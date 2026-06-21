@@ -458,10 +458,10 @@ Ferment `019ec468-fe3f-71fe-bf24-9cc66c0087d9` applied the Combined Lens pedagog
   - **Cache-line false sharing**, JVM warm-up stalls (file 12: multi-threaded performance anti-patterns).
   - **Facebook News Feed precompute**, brute O(n^2) feed computation at scale (file 14).
   - **Netflix Cassandra tuning**, **Spotify CAP tradeoffs**, **Uber dispatch** CAP consistency tradeoffs (file 15).
-  - **S3 2017 typo** (s3://n精美0 instead of ninox), **AWS US-East-1 2017** outage, **DynamoDB Paxos bug** (file 16).
+  - **S3 2017 typo** (fat-fingered bucket name instead of ninox), **AWS US-East-1 2017** outage, **DynamoDB Paxos bug** (file 16).
   - **Next.js hydration mismatch** — server-rendered HTML mismatching client state (file 17).
   - **Knight Capital 2012** (same root cause as 2013 KCG), **GitLab 2017** (database deletion incident), **Cloudflare 2017** ( BGP leak), **Facebook 2021** (BGP/DNS outage) (file 18).
-  - **Cloudflare 2019 ReDoS** — catastrophic backtracking in正则 expression took down 400+ sites (file 22).
+  - **Cloudflare 2019 ReDoS** — catastrophic backtracking in regular expression took down 400+ sites (file 22).
 - Verify: `grep -lE '### Production Reality|## Production Reality' 14_Mental_Models/*.md | wc -l` = 22 (up from ~1 baseline).
 
 **Diagram Enhancement (Step 3/4):**
@@ -507,7 +507,7 @@ Ferment `019ec468-fe3f-71fe-bf24-9cc66c0087d9` applied the Combined Lens pedagog
   - CAP + scaling patterns (file 15): availability vs consistency, sharding, replication, consensus.
   - Consistency models + consensus (file 16): linearizability, sequential, eventual, Paxos, Raft, ZAB.
   - State management (file 17): URL state, memory, localStorage, sessionStorage, IndexedDB with lifecycle.
-  - Observability pillars (file 18): metrics/logs/traces with对应的 production tooling.
+  - Observability pillars (file 18): metrics/logs/traces with corresponding production tooling.
   - Signal categories (file 20): performance, reliability, security, maintainability with priority weights.
   - Problem classes (file 21): warm-up, medium, hard with time budgets and strategy frameworks.
   - Optimization levers (file 22): algorithm choice, data structure, caching, precomputation, lazy evaluation.

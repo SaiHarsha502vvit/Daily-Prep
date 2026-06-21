@@ -1031,7 +1031,7 @@ Spring Boot fails in production in patterns that are entirely absent from tutori
 | Framework | Use Case | Latency | Throughput | Complexity | When to Prefer |
 |-----------|----------|---------|------------|------------|----------------|
 | **Spring Boot** | Enterprise Java, rich ecosystem | Medium (JVM startup ~2-3s) | Very high (optimized for throughput) | Medium (convention over configuration) | Long-running services; team already knows Spring; need integration with 200+ starters |
-| **Quarkus** | Cloud-native, GraalVM native | Very low (<50ms startup) | High (optimized for lower memory) | Medium (Spring-like DI,略有不同) | Kubernetes/serverless; need <100MB memory; want faster reload in dev |
+| **Quarkus** | Cloud-native, GraalVM native | Very low (<50ms startup) | High (optimized for lower memory) | Medium (Spring-like DI, slightly different) | Kubernetes/serverless; need <100MB memory; want faster reload in dev |
 | **Micronaut** | Microservices, compile-time DI | Low (<1s startup) | High (low memory footprint) | Medium-High (newer, less community) | Extreme testability needs; want compile-time AOT (no reflection); microservices with low memory budget |
 
 **Key insight:** Spring Boot wins on ecosystem and team familiarity. Quarkus wins on cold-start performance for serverless. Micronaut wins on testability and compile-time optimization. For most enterprise Java teams, start with Spring Boot; evaluate Quarkus only if serverless cold-start is a proven bottleneck.

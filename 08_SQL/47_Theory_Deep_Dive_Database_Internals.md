@@ -743,4 +743,4 @@ Database theory crystallized in the 1970s-1980s around the relational model (Cod
 3. Check WAL usage: `SELECT pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn) AS replication_lag, pg_wal_location_name(pg_current_wal_lsn()) AS current_lsn`
 
 **Modern practice anchor:**
-Database internals knowledge translates directly to production debugging — understanding VACUUM, WAL, and B-Tree behavior separates运维 from development engineers.
+Database internals knowledge translates directly to production debugging — understanding VACUUM, WAL, and B-Tree behavior separates operations engineers from application developers.

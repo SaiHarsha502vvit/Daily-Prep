@@ -1300,7 +1300,7 @@ The simple "choose 2" framing is a pedagogical shorthand. Gilbert and Lynch's 20
 │  │ ✗ Latency: Write latency = round-trip to replica (often 5-50ms extra)  │ │
 │  │ ✗ Throughput: Limited by slowest/reachable replica                     │ │
 │  │ ✗ Availability: If ANY replica is down, writes fail (semi-sync helps)  │ │
-│  │ ✗ Geographic:跨 region sync replication is very expensive              │ │
+│  │ ✗ Geographic: cross-region sync replication is very expensive           │ │
 │  │                                                                          │ │
 │  │ USE WHEN:                                                               │ │
 │  │ • Financial transactions, ledger entries, inventory deductions         │ │

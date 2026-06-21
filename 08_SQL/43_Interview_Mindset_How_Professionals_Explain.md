@@ -503,7 +503,7 @@ Before your interview, for each scenario you study, verify:
 - **Harvard Business School (1980s)**: Case method pedagogy adapted to technical interviews; "explain your reasoning" became standard in consulting/engineering hiring
 
 **Brief evolution note:**
-Technical interviews evolved from pure trivia问答 (1990s) to systems-design discussions (2000s web scale) to production-scenario drills (2010s+ DevOps culture). The shift from "what's the answer" to "walk me through your debugging process" mirrors how software engineering itself shifted from writing code to operating systems.
+Technical interviews evolved from pure trivia Q&A (1990s) to systems-design discussions (2000s web scale) to production-scenario drills (2010s+ DevOps culture). The shift from "what's the answer" to "walk me through your debugging process" mirrors how software engineering itself shifted from writing code to operating systems.
 
 ### Production Reality
 
