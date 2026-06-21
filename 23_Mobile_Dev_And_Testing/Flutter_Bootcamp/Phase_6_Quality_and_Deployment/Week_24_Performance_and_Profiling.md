@@ -427,6 +427,87 @@ class LeakyWidget extends State<MyWidget> with SingleTickerProviderStateMixin {
 
 **Rule:** For every `addListener` there must be a `removeListener`. For every `subscribe` there must be a `cancel`. For every `Controller` there must be a `dispose`. The Memory tab in DevTools will show growing object counts if you miss these.
 
+### How to Read the DevTools Memory Tab
+
+```
+Memory Tab Workflow — finding a real leak in 5 steps:
+
+1. Open DevTools → Memory tab
+2. Click "GC" (garbage collect) to baseline — removes temporary allocations
+3. Reproduce the suspected leak: navigate to screen → navigate back → repeat 5×
+4. Click "GC" again
+5. Click "Snapshot" — this captures all live objects in the Dart heap
+
+Reading the snapshot:
+┌────────────────────────────────────────────────────────┐
+│ Class              │ Instances │ Shallow Size │ % Total │
+├────────────────────┼───────────┼──────────────┼─────────┤
+│ AnimationController│     47    │    12 KB     │   0.3%  │ ← 47 instances AFTER 5 nav cycles
+│ StreamSubscription │     12    │     3 KB     │   0.1%  │ ← 12 when there should be 1
+│ TextEditingController│   23   │     6 KB     │   0.2%  │ ← growing count = leak
+└────────────────────────────────────────────────────────┘
+
+Expected: 1 controller per screen visit, destroyed on pop → count stays ~1-2
+Actual:   count grows with each navigation cycle = not being disposed
+```
+
+```dart
+// The "Track Allocations" workflow — for pinpointing WHERE a leak originates
+
+// Step 1: In DevTools Memory tab, click "Track" next to the suspicious class
+// Step 2: Reproduce the navigation
+// Step 3: DevTools shows the stack trace for each allocation of that class
+//         → it will point to the exact initState() line creating the controller
+//         → if dispose() was called, that instance wouldn't be in the live set
+
+// Common leak signatures in the snapshot:
+//
+// AnimationController count grows → not disposed in dispose()
+// _StreamSubscription count grows → .cancel() never called  
+// Image cache growing → using Image.network without cache bounds
+// OverlayEntry count grows → OverlayEntry.remove() not called
+
+// Quick check — add this to any suspect screen:
+@override
+void dispose() {
+  debugPrint('${widget.runtimeType} disposed — if you see this, lifecycle is correct');
+  _controller.dispose();
+  super.dispose();
+}
+// If "disposed" never prints on navigation back → dispose() isn't firing
+// (usually means the widget is referenced somewhere keeping it alive)
+```
+
+```dart
+// The Memory timeline view — detecting leaks over time
+//
+// X-axis: time  Y-axis: heap size in MB
+//
+// Healthy:    ╭──╮    ╭──╮    ╭──╮     (sawtooth — GC cleans up each time)
+//            ╯    ╰──╯    ╰──╯    ╰──
+//
+// Leaking:   ╭──╮╭───╮╭────╮╭─────╮   (staircase — heap never fully returns to baseline)
+//            ╯   ╯     ╯     ╯
+//
+// If your app shows the staircase pattern → something is not being released.
+// Run GC manually, then Snapshot, then look for growing class instance counts.
+```
+
+🧪 **Tester:** Write a leak-detection test using `flutter_test`'s `LeakTesting` (Flutter 3.18+):
+```dart
+testWidgets('ExpenseScreen disposes all controllers', (tester) async {
+  await tester.pumpWidget(const MaterialApp(home: ExpenseScreen()));
+  await tester.pumpAndSettle();
+
+  // Navigate away — dispose() should fire
+  await tester.tap(find.byType(BackButton));
+  await tester.pumpAndSettle();
+
+  // LeakTesting will throw if any tracked objects weren't GC'd
+  // Add to flutter_test_config.dart: LeakTesting.settings = ...
+});
+```
+
 ---
 
 ## 11. Build Modes — Debug vs Profile vs Release

@@ -1108,6 +1108,163 @@ class _CacheEntry<T> {
 
 ---
 
+## 14. Cursor-Based Pagination — Load More Pattern
+
+> 🏢 **Enterprise Reality:**
+> *"Offset pagination (`?page=2&limit=20`) breaks when items are inserted mid-list. Production apps use cursor-based pagination — every response returns a `nextCursor` token pointing to the next page. The client passes that token back on the next request."*
+
+```dart
+// Domain model — page result with cursor
+class PageResult<T> {
+  final List<T> items;
+  final String? nextCursor;   // null = no more pages
+  final bool hasMore;
+
+  const PageResult({
+    required this.items,
+    this.nextCursor,
+    required this.hasMore,
+  });
+}
+
+// Repository — cursor-based fetch
+Future<PageResult<Expense>> getExpenses({
+  required String userId,
+  String? cursor,        // null = first page
+  int pageSize = 20,
+}) async {
+  final response = await _dio.get('/expenses', queryParameters: {
+    'userId': userId,
+    if (cursor != null) 'cursor': cursor,
+    'limit': pageSize,
+  });
+  final items = (response.data['items'] as List)
+      .map((e) => ExpenseModel.fromJson(e).toEntity())
+      .toList();
+  return PageResult(
+    items: items,
+    nextCursor: response.data['nextCursor'] as String?,
+    hasMore: response.data['hasMore'] as bool,
+  );
+}
+```
+
+```dart
+// Riverpod — paginated notifier
+@riverpod
+class PaginatedExpenses extends _$PaginatedExpenses {
+  String? _nextCursor;
+  bool _isLoadingMore = false;
+
+  @override
+  Future<List<Expense>> build(String userId) async {
+    _nextCursor = null;
+    final result = await ref.watch(expenseRepoProvider).getExpenses(userId: userId);
+    _nextCursor = result.nextCursor;
+    return result.items;
+  }
+
+  Future<void> loadMore() async {
+    if (_isLoadingMore || _nextCursor == null) return;
+    _isLoadingMore = true;
+
+    final current = state.valueOrNull ?? [];
+    final result = await ref.read(expenseRepoProvider).getExpenses(
+      userId: ref.read(currentUserProvider)!.id,
+      cursor: _nextCursor,
+    );
+
+    _nextCursor = result.nextCursor;
+    _isLoadingMore = false;
+    state = AsyncData([...current, ...result.items]);
+  }
+
+  bool get hasMore => _nextCursor != null;
+}
+```
+
+```dart
+// UI — ScrollController triggers loadMore near bottom
+class ExpenseListScreen extends ConsumerStatefulWidget {
+  final String userId;
+  const ExpenseListScreen({required this.userId, super.key});
+
+  @override
+  ConsumerState<ExpenseListScreen> createState() => _ExpenseListScreenState();
+}
+
+class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
+  final _scrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtrl.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final pos = _scrollCtrl.position;
+    // Trigger 200px before the bottom — feels instant to the user
+    if (pos.pixels >= pos.maxScrollExtent - 200) {
+      ref.read(paginatedExpensesProvider(widget.userId).notifier).loadMore();
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(paginatedExpensesProvider(widget.userId));
+    final notifier = ref.read(paginatedExpensesProvider(widget.userId).notifier);
+
+    return state.when(
+      loading: () => const ExpenseListSkeleton(),
+      error: (e, _) => ErrorView(message: e.toString()),
+      data: (expenses) => ListView.builder(
+        controller: _scrollCtrl,
+        // +1 for the loading footer at the bottom
+        itemCount: expenses.length + (notifier.hasMore ? 1 : 0),
+        itemBuilder: (context, i) {
+          // Last item = loading footer
+          if (i == expenses.length) {
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return ExpenseTile(expense: expenses[i]);
+        },
+      ),
+    );
+  }
+}
+```
+
+**Rule:** Always trigger `loadMore()` 200px before the bottom — not exactly at `maxScrollExtent`. The 200px buffer means the next page starts loading while the user is still scrolling, so they never see a loading spinner mid-list.
+
+🎨 **Designer:** The loading footer (spinner at list bottom) only appears when there's more data. When all pages are loaded, it disappears. Never show "Page 2 of 7" — that's web thinking. Mobile pagination is infinite scroll.
+
+🧪 **Tester:**
+```dart
+test('loadMore appends to existing items and updates cursor', () async {
+  final container = ProviderContainer(overrides: [
+    expenseRepoProvider.overrideWith((_) => FakeExpenseRepo()),
+  ]);
+  final notifier = container.read(paginatedExpensesProvider('u1').notifier);
+  await container.read(paginatedExpensesProvider('u1').future);
+
+  expect(container.read(paginatedExpensesProvider('u1')).value!.length, 20);
+  await notifier.loadMore();
+  expect(container.read(paginatedExpensesProvider('u1')).value!.length, 40);
+});
+```
+
+---
+
 ## Week 13 Verify
 
 1. What is the repository pattern? What is the repository's responsibility vs the API client's?

@@ -239,6 +239,109 @@ void main() {
 For most use case tests: Mockito mock + `when(...).thenAnswer(...)`.
 For repo tests: write a `FakeExpenseDatasource` that stores in memory.
 
+### Mock vs Fake — Side by Side
+
+The distinction matters because they test different things:
+
+```dart
+// The interface — what both Mock and Fake must implement
+abstract class ExpenseLocalDatasource {
+  Future<List<ExpenseModel>> getAll(String userId);
+  Future<void> save(ExpenseModel expense);
+  Future<void> delete(String id);
+  Future<void> clear(String userId);
+}
+
+// ─── MOCK (Mockito generated) ─────────────────────────────────────────────
+// Use when: you need to VERIFY that a method was called with specific args,
+// or control exactly what each call returns.
+// Drawback: brittle — must configure every call that happens during the test.
+
+@GenerateMocks([ExpenseLocalDatasource])
+void main() {
+  test('AddExpense use case saves to datasource', () async {
+    final mock = MockExpenseLocalDatasource();
+
+    // Configure: what to return when save() is called
+    when(mock.save(any)).thenAnswer((_) async {});
+    when(mock.getAll(any)).thenAnswer((_) async => []);
+
+    final useCase = AddExpense(ExpenseRepositoryImpl(local: mock));
+    await useCase(AddExpenseParams(expense: testExpense));
+
+    // VERIFY: save() was called exactly once with the right model
+    verify(mock.save(argThat(isA<ExpenseModel>()))).called(1);
+    verifyNoMoreInteractions(mock);  // nothing else was called
+  });
+}
+
+// ─── FAKE (hand-written) ──────────────────────────────────────────────────
+// Use when: you want REAL behaviour without the real dependency (Firebase, SQLite).
+// Advantage: tests multiple operations in sequence — add, get, delete — they interact.
+// Perfect for repository integration tests.
+
+class FakeExpenseLocalDatasource implements ExpenseLocalDatasource {
+  // In-memory store — acts exactly like a real database, but in RAM
+  final Map<String, List<ExpenseModel>> _store = {};
+
+  @override
+  Future<List<ExpenseModel>> getAll(String userId) async {
+    return List.from(_store[userId] ?? []);
+  }
+
+  @override
+  Future<void> save(ExpenseModel expense) async {
+    _store.putIfAbsent(expense.userId, () => []);
+    final list = _store[expense.userId]!;
+    final idx = list.indexWhere((e) => e.id == expense.id);
+    if (idx >= 0) {
+      list[idx] = expense;  // update
+    } else {
+      list.add(expense);    // insert
+    }
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    for (final list in _store.values) {
+      list.removeWhere((e) => e.id == id);
+    }
+  }
+
+  @override
+  Future<void> clear(String userId) async => _store.remove(userId);
+}
+
+// Using the Fake — tests real interaction sequences
+void main() {
+  test('offline-first: save locally, verify retrievable', () async {
+    final fake = FakeExpenseLocalDatasource();
+    final repo = ExpenseRepositoryImpl(local: fake);
+
+    // Add — works without configuring return values
+    await repo.addExpense(testExpense);
+
+    // Get — Fake actually stores it, so this works end-to-end
+    final result = await repo.getExpenses('user-1');
+    expect(result, contains(testExpense));
+
+    // Delete — Fake handles the interaction
+    await repo.deleteExpense(testExpense.id);
+    final afterDelete = await repo.getExpenses('user-1');
+    expect(afterDelete, isEmpty);
+  });
+}
+```
+
+**Decision rule:**
+| Situation | Use |
+|-----------|-----|
+| Verify a method was called with specific args | Mock |
+| Test a sequence of operations (add → get → delete) | Fake |
+| Test error handling (throw on 3rd call) | Mock |
+| Test complex state that builds up over multiple calls | Fake |
+| Widget test needing a simple provider override | Stub (inline `overrideWith`) |
+
 ---
 
 ## Part 2 — Widget Tests

@@ -392,6 +392,69 @@ void deactivate() {
 
 **Rule:** You will almost never override `deactivate()`. Use `dispose()` for cleanup. The only reason to override `deactivate()` is if you need to unhook from something in the current tree location before potentially moving to a new location.
 
+### The One Real Case: GlobalKey Reparenting
+
+`GlobalKey` lets Flutter move a widget's element — and its `State` — to a completely different position in the widget tree without destroying it. `deactivate()` fires during that move, before the state lands in its new position.
+
+```dart
+// Real scenario: a video player widget that must survive tab switches
+// You want the SAME VideoPlayerState (same video, same position) to
+// move from Tab1's subtree into Tab2's subtree without restarting.
+
+class PersistentVideoPlayer extends StatefulWidget {
+  // GlobalKey = this element can be reparented — same State survives the move
+  PersistentVideoPlayer({GlobalKey? key}) : super(key: key ?? GlobalKey());
+
+  @override
+  State<PersistentVideoPlayer> createState() => _PersistentVideoPlayerState();
+}
+
+class _PersistentVideoPlayerState extends State<PersistentVideoPlayer> {
+  late VideoController _controller;
+  Duration _savedPosition = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoController();
+  }
+
+  @override
+  void deactivate() {
+    // Widget is being MOVED (GlobalKey reparenting) — not destroyed
+    // Save position in case we need to restore it
+    _savedPosition = _controller.position;
+    // Don't dispose here — the widget might come back!
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    // ONLY here do we truly clean up — permanent removal
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+// Usage: pass the same GlobalKey to keep the player alive across moves
+final _playerKey = GlobalKey();
+
+// In Tab1:
+PersistentVideoPlayer(key: _playerKey)
+
+// Later, move to Tab2 — same key = Flutter reparents the element,
+// deactivate() fires during the move, dispose() is NOT called.
+// The video keeps playing from the same position.
+```
+
+**Key distinction:**
+```
+deactivate() → "I'm being moved or temporarily hidden" → save state, DON'T release resources
+dispose()    → "I'm permanently gone"                 → release everything
+```
+
+The `IndexedStack` widget internally uses a similar pattern — widgets in hidden tabs are deactivated but not disposed, preserving their state.
+
 ---
 
 ## 7. `dispose()`

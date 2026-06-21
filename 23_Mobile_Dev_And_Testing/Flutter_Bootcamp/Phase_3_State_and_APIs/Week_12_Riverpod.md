@@ -854,6 +854,99 @@ runApp(ProviderScope(
 
 ---
 
+## 12. `.family` — Parameterized Providers
+
+> 📄 **riverpod.dev:**
+> *"The `.family` modifier allows creating a provider from external parameters. A family provider creates a new provider per unique argument passed to it — each argument results in an independent provider instance."*
+
+Every real app needs parameterized providers: load user by ID, load product by slug, load weather by city. Without `.family` you'd create one provider per entity — which doesn't scale.
+
+```dart
+// WITHOUT family — doesn't scale
+final user123Provider = FutureProvider<User>((ref) => api.getUser('123'));
+final user456Provider = FutureProvider<User>((ref) => api.getUser('456'));
+// ← you can't do this for dynamic IDs
+
+// WITH family — one provider definition, N instances at runtime
+final userProvider = FutureProvider.autoDispose.family<User, String>(
+  (ref, userId) async {
+    // userId is the parameter — different value = different provider instance
+    return ref.watch(userRepoProvider).getUser(userId);
+  },
+);
+
+// Usage — pass the argument when watching
+class UserProfile extends ConsumerWidget {
+  final String userId;
+  const UserProfile({required this.userId, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ref.watch creates/reuses the provider instance for THIS userId
+    final user = ref.watch(userProvider(userId));
+    return user.when(
+      loading: () => const UserSkeleton(),
+      error: (e, _) => ErrorView(message: e.toString()),
+      data: (u) => UserCard(user: u),
+    );
+  }
+}
+```
+
+```dart
+// Common .family patterns
+
+// 1. Product detail — by product ID
+final productProvider = FutureProvider.autoDispose.family<Product, String>(
+  (ref, productId) => ref.watch(productRepoProvider).getProduct(productId),
+);
+
+// 2. Expenses filtered by category
+final expensesByCategoryProvider = FutureProvider.autoDispose.family<List<Expense>, ExpenseCategory>(
+  (ref, category) => ref.watch(expenseRepoProvider).getByCategory(category),
+);
+
+// 3. Weather by city — from Week 14
+final weatherProvider = FutureProvider.autoDispose.family<Weather, String>(
+  (ref, city) => ref.watch(weatherRepoProvider).getWeather(city),
+);
+
+// 4. Multi-param family — use a record (Dart 3)
+final pagedExpensesProvider = FutureProvider.autoDispose
+    .family<List<Expense>, (String userId, int page)>(
+  (ref, params) {
+    final (userId, page) = params;
+    return ref.watch(expenseRepoProvider).getPaged(userId: userId, page: page);
+  },
+);
+// Usage: ref.watch(pagedExpensesProvider(('u1', 1)))
+```
+
+```dart
+// Caching behaviour — important to understand
+// .autoDispose.family: provider is destroyed when last listener leaves
+// .family (no autoDispose): provider instance stays alive for the app's lifetime
+
+// Rule: use autoDispose on family for screen-scoped data (detail screens)
+// Don't use autoDispose on family for global data that's reused (user profile)
+
+// In tests — override a specific family instance
+test('shows user name', () {
+  final container = ProviderContainer(overrides: [
+    userProvider('user-123').overrideWith(
+      (ref) => Future.value(User(id: 'user-123', name: 'Harsha')),
+    ),
+  ]);
+  // ...
+});
+```
+
+**Rule:** `.family` creates a provider per unique argument. Combine with `.autoDispose` for data tied to a specific screen (dispose on navigation), or omit `.autoDispose` for shared cached data. Use Dart 3 records for multi-parameter families.
+
+> **TypeScript comparison:** `.family` is like a memoized factory function — `const getUser = memoize((id: string) => createFetcher(id))`. Each unique argument gets its own cached instance. React Query's `useQuery(['user', userId], ...)` is the closest equivalent — same idea, the key array is the "family argument."
+
+---
+
 ## Challenge — Search With Debounce
 
 Build a real-time search using Riverpod + debounce (avoid API call on every keystroke):
