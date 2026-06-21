@@ -572,6 +572,106 @@ If an attacker tries to forge the IP address, they cannot forge the signature wi
 
 ---
 
+## 🔬 Section Challenges
+
+---
+
+🔬 **Section Challenge — DNS Resolution Flow Reasoning**
+
+**Challenge 1 (Reasoning):** When you type `example.com` in your browser, the recursive resolver queries the root server, then the TLD server, then the authoritative server — in three separate round trips. WHY this hierarchical design? Why not have one central database that knows every domain name?
+
+<details><summary>Answer</summary>
+
+**The WHY behind the hierarchy:** A central database is a single point of failure and a scaling bottleneck. In 1983, ARPANET collapsed under the weight of HOSTS.TXT (one file, one maintainer, everyone downloading the same huge file). The DNS hierarchy solves this with delegation.
+
+**Derivation:**
+1. **Delegation = load distribution.** The root servers don't know `github.com`'s IP — they only know who manages `.com`. Each TLD server only knows its own subtrees. No single server holds all 500M+ domain records.
+2. **Single point of failure eliminated.** Take down any one TLD (.com, .io, .org) and the others keep working. Take down the root and you can't find NEW TLDs, but existing cached responses still work.
+3. **Autonomy.** Each organization manages its own zone. GitHub can change `github.com`'s IP without calling a central authority — they just update their authoritative NS.
+4. **Cache efficiency.** Root and TLD responses are highly cacheable (high TTL, stable data). Most queries never reach the root — recursive resolvers cache these results for hours or days.
+
+**The flip side:** If the root servers are unreachable and the resolver has no cached data, the resolver literally cannot begin resolution — it doesn't know where to ask for `.com`. This is why root server reachability is critical infrastructure. Anycast (1,700+ physical instances globally) makes the roots extremely hard to take down.
+
+</details>
+
+---
+
+🔬 **Section Challenge — TTL Strategy and Cache Invalidation**
+
+**Challenge 1 (Reasoning):** A DNS record has `TTL=300` (5 minutes). You change the record to point to a new IP. After exactly 10 minutes, some users still see the OLD IP. WHY? Doesn't TTL=300 mean "all caches clear after 5 minutes"?
+
+<details><summary>Answer</summary>
+
+**The critical misconception:** TTL is not a timer that starts when the record is changed. It is a countdown that starts when a resolver first caches the record.
+
+**Derivation:**
+1. **Before your change:** A recursive resolver cached `api.myapp.com → 1.2.3.4` at time T=0, with TTL=300. That resolver's cache entry expires at T=300.
+2. **At T=2 hours (7200s):** You change the record to `1.2.3.5`. But resolvers that cached at T=0 won't check again until T=300. If the next query for `api.myapp.com` at that resolver doesn't arrive until T=400, the stale answer is served and not replaced until T=400+300=T=700.
+3. **The "10 minutes" scenario:** If a resolver cached the old record just before you made the change, its TTL=300 starts from that moment. You change the record at T=0. At T=10, that resolver still has a valid cached entry (expires at T=300). Your change won't be seen until T=300+.
+
+**Why some users still see the old IP at 10 minutes:**
+- The resolver that served them cached the OLD record right before you made the change. TTL hasn't expired yet.
+- Some ISP resolvers enforce a minimum TTL (often 300-600s) even if you set it lower. This is a common misconception — TTL is advisory, not enforced.
+- The propagation delay = old TTL remaining on the last resolver to cache the old record.
+
+**When TTL matters MOST for cache invalidation:**
+- **Failover scenarios:** If your server goes down, low TTL (60-300s) lets clients switch to the backup quickly. High TTL (86400s) means clients keep hitting the dead server for up to 24 hours.
+- **Migration windows:** Pre-migration, reduce TTL to 60s and wait 2x the old TTL before making the change.
+- **DNSSEC re-signing:** When rolling DNSSEC keys, old cached signatures must expire before the new ones are trusted — TTL of the DNSKEY record controls this.
+
+</details>
+
+---
+
+🔬 **Section Challenge — DNS Security: DNSSEC vs DoH**
+
+**Challenge 1 (Reasoning):** DNSSEC cryptographically authenticates DNS responses — the resolver can verify the answer came from the real authoritative server and wasn't tampered with. However, an attacker on the same WiFi network can still see every domain name you query in plaintext (your ISP sees it too). How does DoH (DNS over HTTPS) complement DNSSEC? What does each protect against, and what does each NOT protect against?
+
+<details><summary>Answer</summary>
+
+**The two different threat models:**
+
+DNSSEC and DoH solve orthogonal problems. They are complementary, not substitutes.
+
+**DNSSEC — Integrity (authentication, not privacy):**
+- **Protects against:** DNS cache poisoning. An attacker on the network who races the real DNS server with a fake IP address will fail — the cryptographic signature won't verify. DNSSEC prevents the "you are going to evil-bank.com" problem.
+- **Does NOT protect:** Your ISP, WiFi operator, or employer can still see every domain you query (e.g., `bankofamerica.com`, `whistleblower.site`). DNSSEC is plaintext — the queries and answers are visible to any network observer.
+
+**DoH — Privacy (encryption, not authentication):**
+- **Protects against:** Network observers (ISP, employer, WiFi operator) seeing your DNS queries. The query to `bankofamerica.com` is encrypted inside TLS — they see you connected to `dns.google` or `cloudflare-dns.com` but not which domain you asked for.
+- **Does NOT protect against:** A man-in-the-middle who can intercept and forge DNS responses. An attacker who compromises the DoH endpoint (or spoofs its TLS certificate) can send you any IP address, and your client will trust it because TLS is authenticated — but the domain was never verified with DNSSEC.
+
+**The complementarity:**
+- DoH without DNSSEC: encrypted but potentially receiving forged answers (encrypted lies).
+- DNSSEC without DoH: authenticated answers but visible to your ISP (public truth).
+- DoH + DNSSEC: encrypted AND authenticated — no network observer sees the query, and the answer is cryptographically verified as from the real server.
+
+**The controversy:** DoH by default on browsers (Chrome, Firefox) bypasses enterprise DNS filtering. Organizations that block `malware-domain.com` at the DNS level lose that capability when users use DoH with an external resolver. Privacy advocates counter that employers shouldn't monitor employee browsing. Both positions are valid — it is a policy question with technical implications.
+
+</details>
+
+---
+
+🔬 **Section Challenge — CNAME at the Apex and Record Type Constraints**
+
+**Challenge 1 (Reasoning):** You want `www.example.com` to resolve to `example.com`. You naturally use a CNAME record (`www.example.com CNAME example.com`). But when you try to put a CNAME on the APEX (root/naked domain: `example.com`), your DNS provider rejects it. WHY? If a CNAME is just an alias, what could possibly go wrong?
+
+<details><summary>Answer</summary>
+
+**The core contradiction:** DNS RFCs state that a domain name that has a CNAME record cannot have any other DNS records (MX, TXT, A, AAAA, NS, etc.) at the same name. The apex domain MUST have SOA and NS records. If you put a CNAME at the apex, you would be claiming "the IP for `example.com` is whatever `example.com` resolves to" — but `example.com` itself is the name you're defining. This creates a circular dependency that the DNS protocol cannot resolve.
+
+**Derivation:**
+1. **The apex must have NS records.** `example.com NS ns1.cloudflare.com` — this is how the internet knows which servers are authoritative for `example.com`. Without NS records, no resolver can find the authoritative server for any subdomain of `example.com`.
+2. **CNAME is mutually exclusive with other records.** RFC 2181 explicitly states: "If a CNAME RR is present at a node, no other data should be present; this ensures that the data for a canonical name and its aliases cannot be different." Putting CNAME at the apex means `example.com` cannot also have NS, SOA, MX, or TXT — the domain becomes unresolvable at a protocol level.
+3. **The circular reference problem.** If `example.com CNAME example.com` → infinite recursion. If `example.com CNAME www.example.com` → `www.example.com CNAME example.com` → infinite loop.
+4. **Delegation and zone cuts.** The DNS delegation model relies on the apex being the boundary between the parent zone (`.com` TLD) and your zone. The TLD has NS records pointing to your servers. Your zone's apex must have the SOA record (defining your zone's authority) and the NS records (defining sub-zone delegation). A CNAME cannot exist at this boundary.
+
+**The practical workaround:** DNS providers like Cloudflare and Route 53 invented the ALIAS record (non-standard, provider-specific). An ALIAS record at the apex resolves the target at query time and expands to an A/AAAA record before being returned — it bypasses the CNAME restriction by not technically being a CNAME. Your resolver sees an A record at the apex, not a CNAME, satisfying the protocol.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                      | Related Content                                                                   |

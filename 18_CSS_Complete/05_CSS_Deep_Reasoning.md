@@ -8,16 +8,43 @@
 
 ## Table of Contents
 
-1. [Why z-index "Doesn't Work": Stacking Contexts](#1-why-z-index-doesnt-work-stacking-contexts)
-2. [The Cascade: How CSS ACTUALLY Decides Which Rule Wins](#2-the-cascade-how-css-actually-decides-which-rule-wins)
-3. [Specificity: It's NOT Just "ID > Class > Element"](#3-specificity-its-not-just-id--class--element)
-4. [Box Model: `content-box` vs `border-box` — Why Everyone Switches](#4-box-model-content-box-vs-border-box--why-everyone-switches)
-5. [Block Formatting Context (BFC): The Invisible Layout Force](#5-block-formatting-context-bfc-the-invisible-layout-force)
-6. [Margin Collapse: The Behavior That Confuses Everyone](#6-margin-collapse-the-behavior-that-confuses-everyone)
-7. [Flexbox vs Grid: Not "Which Is Better" — When Each Shines](#7-flexbox-vs-grid-not-which-is-better--when-each-shines)
-8. [`position: sticky` Gotchas: Why It Randomly Stops Working](#8-position-sticky-gotchas-why-it-randomly-stops-working)
-9. [CSS Units: When to Use px, em, rem, %, vh/vw](#9-css-units-when-to-use-px-em-rem--vhvw)
-10. [Reflow vs Repaint: Why Some CSS Changes Are Expensive](#10-reflow-vs-repaint-why-some-css-changes-are-expensive)
+- [Chapter 5 — CSS Deep Reasoning: The Questions That Freeze People](#chapter-5--css-deep-reasoning-the-questions-that-freeze-people)
+  - [Table of Contents](#table-of-contents)
+  - [1. Why z-index "Doesn't Work": Stacking Contexts](#1-why-z-index-doesnt-work-stacking-contexts)
+    - [The Freeze Question](#the-freeze-question)
+    - [Deep Reasoning](#deep-reasoning)
+  - [2. The Cascade: How CSS ACTUALLY Decides Which Rule Wins](#2-the-cascade-how-css-actually-decides-which-rule-wins)
+    - [The Freeze Question](#the-freeze-question-1)
+  - [3. Specificity: It's NOT Just "ID \> Class \> Element"](#3-specificity-its-not-just-id--class--element)
+    - [The Freeze Question](#the-freeze-question-2)
+  - [4. Box Model: `content-box` vs `border-box` — Why Everyone Switches](#4-box-model-content-box-vs-border-box--why-everyone-switches)
+    - [The Freeze Question](#the-freeze-question-3)
+  - [5. Block Formatting Context (BFC): The Invisible Layout Force](#5-block-formatting-context-bfc-the-invisible-layout-force)
+    - [The Freeze Question](#the-freeze-question-4)
+  - [6. Margin Collapse: The Behavior That Confuses Everyone](#6-margin-collapse-the-behavior-that-confuses-everyone)
+    - [The Freeze Question](#the-freeze-question-5)
+  - [7. Flexbox vs Grid: Not "Which Is Better" — When Each Shines](#7-flexbox-vs-grid-not-which-is-better--when-each-shines)
+    - [The Freeze Question](#the-freeze-question-6)
+  - [8. `position: sticky` Gotchas: Why It Randomly Stops Working](#8-position-sticky-gotchas-why-it-randomly-stops-working)
+    - [The Freeze Question](#the-freeze-question-7)
+  - [9. CSS Units: When to Use px, em, rem, %, vh/vw](#9-css-units-when-to-use-px-em-rem--vhvw)
+    - [The Freeze Question](#the-freeze-question-8)
+  - [10. Reflow vs Repaint: Why Some CSS Changes Are Expensive](#10-reflow-vs-repaint-why-some-css-changes-are-expensive)
+    - [The Freeze Question](#the-freeze-question-9)
+  - [11. CSS Containment \& Performance — Skip the Work You Don't Need](#11-css-containment--performance--skip-the-work-you-dont-need)
+    - [The Freeze Question](#the-freeze-question-10)
+    - [Deep Reasoning](#deep-reasoning-1)
+    - [`contain` — The Isolation Property](#contain--the-isolation-property)
+      - [`contain: layout`](#contain-layout)
+      - [`contain: style`](#contain-style)
+      - [`contain: paint`](#contain-paint)
+      - [`contain: size`](#contain-size)
+      - [Combinations](#combinations)
+    - [`content-visibility: auto` — The Modern Performance Tool](#content-visibility-auto--the-modern-performance-tool)
+    - [`contain-intrinsic-size` — Placeholder Dimensions](#contain-intrinsic-size--placeholder-dimensions)
+    - [When Containment Helps vs Breaks Layout](#when-containment-helps-vs-breaks-layout)
+      - [Common Pitfalls](#common-pitfalls)
+  - [Interview Quick-Fire: CSS Freeze Busters](#interview-quick-fire-css-freeze-busters)
 
 ---
 
@@ -462,6 +489,283 @@ WHEN IT DOESN'T:
 } /* Creates own composite layer */
 /* ⚠️ Don't overuse — each layer costs GPU memory */
 ```
+
+---
+
+## 11. CSS Containment & Performance — Skip the Work You Don't Need
+
+### The Freeze Question
+
+"Why does a page with 10,000 list items still lag, even with virtualization libraries?"
+
+### Deep Reasoning
+
+Before we can fix performance, we need to understand what the browser ACTUALLY does when rendering:
+
+```
+BROWSER RENDER PIPELINE (simplified)
+
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│    HTML     │──▶│   Layout    │───▶│    Paint    │──▶│  Composite  │
+│   (Parse)   │    │  (Reflow)   │    │  (Repaint)  │    │  (GPU)      │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+     cheap              expensive           medium           cheap
+
+Each frame: recalculate style → reflow → repaint → composite
+```
+
+The PROBLEM: Even off-screen elements go through ALL steps. An element 5,000px below the viewport still:
+1. Has its layout calculated (browser asks: "what size is this?")
+2. Gets painted to a bitmap
+3. Gets composited as a layer
+
+This is wasted CPU/GPU work if the user never sees it.
+
+**CSS Containment** gives the browser a promise: "This element's internals won't affect anything outside it. You can optimize accordingly." It's like telling your manager "I've got this module covered" — they can stop checking your work constantly.
+
+---
+
+### `contain` — The Isolation Property
+
+The `contain` property tells the browser which aspects of an element should be isolated:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CONTAINMENT VALUE MATRIX                         │
+├──────────────────┬──────────────────────────────────────────────────┤
+│      VALUE       │                  WHAT IT PREVENTS                │
+├──────────────────┼──────────────────────────────────────────────────┤
+│  layout          │ Internal layout won't affect outside elements    │
+│  style           │ Counters/quotes won't escape                     │
+│  paint           │ Descendants can't paint outside border-box       │
+│  size            │ Element size won't depend on descendants         │
+│  content         │ Shorthand: layout + style + paint                │
+│  strict          │ Shorthand: layout + style + paint + size         │
+└──────────────────┴──────────────────────────────────────────────────┘
+```
+
+#### `contain: layout`
+```css
+.container {
+  contain: layout;
+}
+```
+Creates a new containing block for `position: absolute/fixed` children. Changes inside don't affect external floats.
+
+```html
+<!-- Without containment: inner div affects outside float -->
+<div style="float: left; width: 100px; height: 200px;"></div>
+<div style="contain: layout;">I won't affect the float</div>
+```
+
+#### `contain: style`
+```css
+.card {
+  contain: style;
+}
+```
+Scopes counters and quotes — changes inside don't affect sibling/parent counters.
+
+#### `contain: paint`
+```css
+.widget {
+  contain: paint;
+}
+```
+Element is painted into its own compositing layer. Descendants clip to border-box (like `overflow: hidden` visually).
+
+#### `contain: size`
+```css
+.card {
+  /* ⚠️ WARNING: Requires explicit size or element collapses! */
+  contain: size;
+  height: 200px;
+}
+```
+Element's size is fixed regardless of descendants. Without `contain-intrinsic-size`, element collapses to 0x0.
+
+#### Combinations
+```css
+/* content = layout + style + paint (most common) */
+.list-item {
+  contain: content;
+}
+
+/* strict = everything (most restrictive) */
+.isolated-widget {
+  contain: strict;
+  height: 300px;
+}
+```
+
+---
+
+### `content-visibility: auto` — The Modern Performance Tool
+
+Not the same as virtualization libraries! With virtualization:
+- You remove elements from DOM when off-screen
+- You re-create them when scrolling back
+- Complex, requires JavaScript, breaks scroll position
+
+With `content-visibility: auto`:
+- Elements stay in DOM
+- Browser SKIPS rendering work (layout, paint) for off-screen content
+- No JavaScript required
+- Works with scrolling in both directions
+
+```css
+.article-list article {
+  content-visibility: auto;
+  /* Best paired with contain-intrinsic-size */
+  contain-intrinsic-size: 0 200px;
+}
+
+.search-results .result {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 0 80px;
+}
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CONTENT-VISIBILITY: AUTO                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Viewport: ┌──────────────────┐                                    │
+│             │   VISIBLE ZONE   │  ← Browser renders normally        │
+│             │  (full render)   │                                    │
+│             └──────────────────┘                                    │
+│   Above:    ░░░░░░░░░░░░░░░░░░  ← Browser SKIPS rendering          │
+│   Below:    ░░░░░░░░░░░░░░░░░░  ← (layout, paint skipped)          │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Use cases:**
+- Long article/comment lists
+- Search result pages
+- Dashboard widgets that are off-screen
+- Any scrollable container with many items
+
+---
+
+### `contain-intrinsic-size` — Placeholder Dimensions
+
+When `content-visibility: auto` skips rendering, the browser doesn't know the element's size. Without this, you get layout shift (CLS penalty) when content becomes visible.
+
+```css
+/* Syntax: width height (or just one dimension) */
+
+/* Set both dimensions */
+.card {
+  contain-intrinsic-size: 300px 200px;
+}
+
+/* Set height only (width is 0) */
+.list-item {
+  contain-intrinsic-size: 0 150px;
+}
+
+/* Browser remembers last rendered size (modern spec) */
+.article {
+  contain-intrinsic-size: auto 0 400px;
+}
+```
+
+The `auto` keyword: browser stores the size after first render. Next time the element is off-screen, it uses the remembered size. No CLS when it becomes visible again.
+
+---
+
+### When Containment Helps vs Breaks Layout
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    CONTAINMENT DECISION GUIDE                       │
+├───────────────────────┬─────────────────────────────────────────────┤
+│         HELPS         │                BREAKS                       │
+├───────────────────────┼─────────────────────────────────────────────┤
+│ Long article lists    │ Dynamic content with unknown height         │
+│ Off-screen sections   │ Nested contain: paint (doesn't compose)     │
+│ Isolated widgets      │ contain: size without explicit dimensions   │
+│ Large data grids      │ Any case where size MUST depend on children │
+│ Scrollable containers │                                                 │
+└───────────────────────┴─────────────────────────────────────────────┘
+```
+
+#### Common Pitfalls
+
+**Pitfall 1: `contain: size` collapses element**
+```css
+/* ❌ BAD: Element collapses to 0x0 */
+.card {
+  contain: size;
+}
+
+/* ✅ FIXED: Use contain-intrinsic-size as placeholder */
+.card {
+  contain: size;
+  contain-intrinsic-size: 300px 200px;
+}
+```
+
+**Pitfall 2: `contain: style` with counters**
+```css
+/* ❌ BAD: Counter changes inside aren't visible to siblings */
+.section {
+  contain: style;
+}
+.counter {
+  counter-increment: items;
+}
+/* If siblings try to reference same counter, they see stale value */
+
+/* ✅ FIXED: Don't use style containment if counters are shared */
+.section {
+  contain: content; /* Excludes style */
+}
+```
+
+---
+
+🔬 **Section Challenge — 11. CSS Containment & Performance**
+
+**Challenge 1 (Containment Collapse):** Why would `contain: size` cause an element to collapse to 0x0 dimensions? How does `contain-intrinsic-size` fix this without changing the actual layout when the element becomes visible?
+
+<details><summary>Answer</summary>
+
+**Why `contain: size` collapses the element:**
+
+When you add `contain: size`, you're telling the browser: "Don't look at my descendants to determine my size." This means the browser calculates intrinsic size ONLY from explicit dimensions (width/height properties). If no explicit size is set, the element has no intrinsic size, so it collapses to 0x0.
+
+**How `contain-intrinsic-size` fixes it:**
+
+`contain-intrinsic-size` provides a DECLARED intrinsic size — a fake "this is approximately how big I am" hint. The browser uses this for layout calculations while the element is off-screen, preventing collapse. When the element becomes visible:
+1. With just `contain-intrinsic-size`: the element uses that placeholder size until content loads, then may shift (CLS)
+2. With `content-visibility: auto`: browser remembers the actual rendered size; element snaps to real size without reflow
+
+The key insight: `contain-intrinsic-size` is a LAYOUT hint, not a visual constraint. It affects layout calculations but doesn't change what's displayed — the real content fills the space when rendered.
+
+</details>
+
+**Challenge 2 (Performance Reasoning):** A developer adds `content-visibility: auto` to thousands of list items but sees no performance improvement. What did they likely forget, and why does it matter?
+
+<details><summary>Answer</summary>
+
+**They likely forgot `contain-intrinsic-size`** (or the element's layout was still being calculated somehow).
+
+While `content-visibility: auto` does skip rendering work, the browser still needs to know the element's dimensions for scroll calculations. Without `contain-intrinsic-size`, the browser must still calculate the element's intrinsic size (which requires looking at children) to determine scrollbar size and element positions.
+
+**The fix:**
+```css
+.list-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 100px; /* Browser skips size calculation */
+}
+```
+
+Now the browser knows the placeholder size upfront, can skip ALL rendering work, and still correctly calculate scrollbar and layout positions.
+
+</details>
 
 ---
 

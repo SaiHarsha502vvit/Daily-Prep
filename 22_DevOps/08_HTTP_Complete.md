@@ -382,6 +382,96 @@ PRINCIPLES:
 
 ---
 
+## 🔬 Section Challenges
+
+---
+
+🔬 **Section Challenge — HTTP/1.1 vs HTTP/2 vs HTTP/3 Evolution**
+
+**Challenge 1 (Reasoning):** HTTP/3 replaced TCP with QUIC over UDP. WHY did HTTP/3 make this radical change? And WHAT problem with TCP persisted even in HTTP/2's binary framing layer?
+
+<details><summary>Answer</summary>
+
+**WHY HTTP/3 switched from TCP to UDP:**
+TCP's reliability guarantees come with a cost: head-of-line blocking at the transport layer. TCP tracks all bytes in sequence, so if one segment is lost, the TCP stack on both ends MUST wait for retransmission before delivering ANY data to the application — even data from OTHER logical streams. HTTP/1.1 solved this at the application layer (with 6 parallel connections) but couldn't eliminate the underlying TCP problem. HTTP/2 tried to solve it by multiplexing over one TCP connection — but HTTP/2 streams still share ONE TCP sequence number space. If the underlying TCP segment for ANY HTTP/2 stream is lost, the TCP stack blocks delivery of ALL subsequent data to the application, regardless of which stream the lost segment belonged to. HTTP/2 eliminated HTTP-layer head-of-line blocking but TCP-layer head-of-line blocking remained.
+
+**WHAT problem persisted in HTTP/2:** TCP head-of-line blocking. One lost TCP segment stalls all HTTP/2 streams simultaneously. You could have a response ready on Stream 5, but Stream 5's data is sitting in the TCP receive buffer waiting for Stream 3's retransmitted segment — because TCP guarantees ordered delivery at the byte-stream level, not at the HTTP stream level.
+
+**HTTP/3's solution (QUIC):** QUIC is built on UDP but adds its own reliability layer. Crucially, QUIC tracks each HTTP/3 stream independently at the transport layer. If Stream A loses a packet, Stream B is delivered to the application immediately — Stream B doesn't wait for Stream A's retransmission. QUIC uses connection IDs (not IP+port tuples) to enable seamless WiFi-to-cellular handoff. This is why YouTube doesn't buffer when you walk between networks.
+
+</details>
+
+**Challenge 2 (Reasoning):** Browsers opened 6 TCP connections per domain in the HTTP/1.1 era as a workaround. This 6-connection limit is still enforced today (and is why domain sharding was a thing). WHY was it introduced, and WHY did HTTP/2's multiplexing make it obsolete?
+
+<details><summary>Answer</summary>
+
+**WHY the 6-connection limit was introduced:** HTTP/1.1 introduced persistent TCP connections (keep-alive), allowing multiple requests to reuse one connection. But it also introduced head-of-line blocking: if Request 1 is slow, Requests 2-N on that same connection must wait. To work around this, browsers opened 6 parallel TCP connections per origin domain. Each connection could independently pipeline requests. The limit of 6 was a compromise: enough parallelism for reasonable page load, but limited enough to avoid overwhelming servers. HTTP/1.1 pipelining was specified but NEVER widely deployed in browsers due to the head-of-line blocking problem — so the 6-connection trick was the only real parallelism.
+
+**WHY HTTP/2 made it obsolete:** HTTP/2 multiplexes multiple requests simultaneously over a SINGLE TCP connection. If Request A is slow, Request B is delivered to the application immediately — no blocking. The single connection also means only one TCP handshake, one TLS handshake (for HTTPS), and one TCP slow-start ramp. With HTTP/1.1, 6 connections each had to go through slow start independently. HTTP/2 is more TCP-efficient by design, making domain sharding (splitting assets across multiple domains to get more than 6 connections) counterproductive — it actually hurts performance by adding DNS lookup and TCP handshake overhead for additional domains.
+
+</details>
+
+---
+
+🔬 **Section Challenge — HTTP Status Code Semantics**
+
+**Challenge 1 (Reasoning):** A client makes a request. The server responds with 404. Is this necessarily the client's fault? Now consider 503 and 301. WHY do status code families (4xx vs 5xx vs 3xx) matter for client retry logic and state management?
+
+<details><summary>Answer</summary>
+
+**404 Not Found — Is it the client's fault?** Not necessarily. 404 means the URL has no resource at this path — but the REASON depends on context: (1) Client error: the client typed `/usres/123` instead of `/users/123` (typo in URL). (2) Stale link: the resource existed when a crawler indexed the page, but was deleted — the client followed a valid-looking link that no longer exists. (3) Missing static asset: `/assets/logo.png` returns 404 — but this is often a deployment issue (file not copied to CDN), not a client bug. The 4xx family signals that the REQUEST as framed cannot be fulfilled — but it doesn't always mean the client made a mistake, and retrying won't help.
+
+**503 Service Unavailable — Is it the server's fault?** Yes, primarily. 503 means the server is temporarily unable to handle the request (overloaded, under maintenance). The 5xx family signals server-side failure — the problem is on the server side, not in how the request was formulated. This matters for retry logic: a 503 with a `Retry-After` header tells the client exactly when to retry. The client SHOULD retry, and exponential backoff is appropriate.
+
+**301 Moved Permanently — Is it the server's fault?** Neither — it's a routing decision. 3xx codes tell the client to take additional action, typically following a redirect. 301 means the resource lives elsewhere permanently (browsers cache this permanently; search engines update their index). A 301 response with `Location: https://api.example.com/v2/users` means: "Your request was correct, but the resource moved. Go there next time."
+
+**WHY status code families matter for retry logic:**
+- **4xx**: Do NOT retry. The request is fundamentally wrong (bad URL, bad auth, bad method). Retrying without fixing the issue will just fail again. Exception: 429 (rate limited) — retry after the specified delay.
+- **5xx**: MAY retry with backoff. The server had a problem; it might recover. Use exponential backoff with jitter. Distinguish: 500 (generic crash — retry) vs 502/504 (upstream problem — retry) vs 503 (retry after Retry-After).
+- **3xx**: Do NOT retry the original request blindly. Follow the redirect (handle redirects with a maximum hop count to prevent redirect loops). A client that blindly retries a POST on 301 becomes a GET on 307/308 (depending on whether the redirect preserves method).
+
+</details>
+
+---
+
+🔬 **Section Challenge — HTTP Caching Headers**
+
+**Challenge 1 (Reasoning):** A server responds with `Cache-Control: max-age=3600`. After 30 minutes, the client makes the exact same request. Does it send a conditional revalidation request, or does it serve from cache directly? WHAT header would change this behavior, and WHY would a server set it?
+
+<details><<summary>Answer</summary>
+
+**Does the client revalidate after 30 minutes with `max-age=3600`?** No. With `max-age=3600` (1 hour), the cached response is still FRESH. The client serves it directly from cache — zero network request. The cache is valid for the full hour. No `If-None-Match` or `If-Modified-Since` is sent.
+
+**What changes this behavior?** Adding `no-cache` to the request or response. `Cache-Control: no-cache` on a RESPONSE means: cache this, but revalidate on every use — always send a conditional request. This is useful for sensitive data (bank account balance) where staleness is dangerous, but you still want the efficiency of a shared cache for the round-trip savings of a 304 response.
+
+**WHY would a server set `no-cache`?** Consider an API that returns user-specific data. The server wants browsers to cache it (saves bandwidth) but cannot risk serving stale data (imagine the user's permissions changed but they're seeing old data). `Cache-Control: no-cache` forces the browser to ALWAYS revalidate. The server checks the `If-None-Match` (ETag) or `If-Modified-Since` header — if the resource hasn't changed, it returns 304 (not modified) and the browser uses the cached copy (minimal overhead). If it HAS changed, it returns 200 with the new body. The alternative, `Cache-Control: private, no-store`, tells all caches (including CDNs) to never store the response — the client must refetch every time.
+
+</details>
+
+---
+
+🔬 **Section Challenge — TLS Handshake**
+
+**Challenge 1 (Reasoning):** TLS 1.2 requires 2 round trips (2 RTT) for a new HTTPS connection. TLS 1.3 reduces this to 1 RTT. For a 50ms RTT connection, this is 50ms of latency saved. WHY does this matter so much, and WHAT did TLS 1.3 sacrifice — in terms of legacy compatibility and cryptographic features — to achieve this 1-RTT improvement?
+
+<details><summary>Answer</summary>
+
+**WHY 50ms saved matters:** On a 50ms RTT connection (typical for US-West to US-East), a TLS 1.2 handshake costs 100ms before the first HTTP byte is sent. For a mobile user on a 100ms RTT connection, the TLS 1.2 handshake alone costs 200ms. Research shows every 100ms of latency costs ~1% in conversions. For HTTP/2 or HTTP/3 where the handshake is followed by HTTP requests, the TLS overhead can dominate total page load time for above-the-fold content. TLS 1.3's 1-RTT handshake is a direct user-perceivable latency win.
+
+**WHAT TLS 1.3 sacrificed for 1-RTT:**
+
+1. **RSA key exchange is gone.** TLS 1.2 allowed RSA-based key exchange: the client generates a pre-master secret, encrypts it with the server's RSA public key, and sends it. The server decrypts it. This is 1-RTT — but it has a critical flaw: if an attacker records the handshake and later steals the server's private key, they can decrypt ALL past sessions (forward secrecy failure). TLS 1.3 mandates Diffie-Hellman (DH) key exchange. With DH, the session key is derived from both parties' randomness — stealing the private key later does NOT expose past sessions (perfect forward secrecy). This is the tradeoff: TLS 1.3 sacrificed RSA key exchange (simpler but insecure) to gain forward secrecy.
+
+2. **Legacy cipher suite support.** TLS 1.3 removed support for cipher suites that use CBC mode (like TLS_RSA_WITH_AES_256_CBC_SHA) and static RSA signatures. These were vulnerable to attacks like BEAST and Lucky13. TLS 1.3 only supports AEAD ciphers (AES-GCM, ChaCha20-Poly1305) which provide authenticated encryption — data is encrypted AND integrity-checked in one step. This simplifies the attack surface significantly.
+
+3. **Downgrade protection mechanism.** TLS 1.3 added a mechanism that makes it harder for attackers to force clients and servers to negotiate TLS 1.2. TLS 1.2 can be exploited more easily — so TLS 1.3 implementations reject handshakes that look like downgrade attempts.
+
+**0-RTT resumption (the bonus round):** TLS 1.3 also supports 0-RTT resumption for repeat connections using session tickets. The client sends encrypted data in the first flight (using a cached session key). This saves the entire RTT for returning connections. The tradeoff: 0-RTT data is vulnerable to replay attacks (the server might accept the same ticket twice) — so 0-RTT is not used for non-idempotent requests like POST/PUT/DELETE.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                      | Related Content                                                                 |

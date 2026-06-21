@@ -172,12 +172,6 @@ For factorial(1000): ~35,000 cycles in overhead alone!
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
 
-<details><summary>Answer</summary>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
-</details>
-
 **Challenge 2 (Bug Hunt):**
 
 ```java

@@ -323,6 +323,94 @@ FAIL2BAN (brute force protection):
 
 ---
 
+## 🔬 Section Challenges
+
+---
+
+🔬 **Section Challenge — SSH Key Authentication**
+
+**Challenge 1 (Reasoning):** You generate `ssh-keygen -t ed25519`. Your private key stays on your laptop. Your public key is added to `~/.ssh/authorized_keys` on the server. When you connect, the server sends a challenge encrypted with your public key. A passive attacker captures this entire exchange (including the challenge and your signed response). Why can't they impersonate you?
+
+<details><summary>Answer</summary>
+
+**Because the private key never crosses the wire — only the proof (signature) crosses.**
+
+The SSH key auth flow works like this: (1) Client announces "I want to auth with my ed25519 key for user alice." (2) Server looks up alice's `~/.ssh/authorized_keys`, finds the public key, and generates a random challenge. (3) Server encrypts the challenge with the public key and sends it to the client. (4) Client's SSH agent (which holds the decrypted private key in memory) decrypts the challenge, signs it, and returns the signature. (5) Server verifies the signature with the stored public key.
+
+**The attacker's problem:** The captured signature is a one-time proof for that specific challenge. It cannot be replayed because the server generates a fresh random challenge every time. More critically, the attacker has no way to sign NEW challenges — that requires the private key, which they don't have. The public key encrypts; only the private key decrypts and signs. This is the fundamental asymmetry of RSA/Ed25519. The attacker captured the output of the signing algorithm but cannot reverse-engineer the private key from it.
+
+</details>
+
+---
+
+🔬 **Section Challenge — SSH Port Forwarding**
+
+**Challenge 1 (Reasoning):** You run `ssh -L 8080:internal-db:5432 bastion.example.com`. Now you connect to `localhost:8080` and transparently reach `internal-db:5432`. WHY does this work? What does `-L` actually bind, and what is the difference versus `ssh -R` (remote) and `ssh -D` (dynamic)?
+
+<details><summary>Answer</summary>
+
+**`-L` = Local port forwarding: bind on YOUR machine, tunnel through SSH to remote network.**
+
+When you run `-L 8080:internal-db:5432`, SSH on your laptop opens a TCP listener on `127.0.0.1:8080`. When you connect to `localhost:8080`, your SSH client intercepts it, encrypts it, and sends it through the existing SSH connection to `bastion.example.com`. The bastion then resolves `internal-db` from its own network perspective (i.e., within the private subnet) and connects to port 5432. The response travels back through the same tunnel. From the database's perspective, the connection came from the bastion — your laptop's IP is never seen.
+
+**`-R` = Remote port forwarding: bind on the REMOTE machine, tunnel back to your local network.**
+
+`ssh -R 8080:localhost:3000 user@bastion.example.com` makes `bastion` listen on `0.0.0.0:8080` (or `127.0.0.1:8080` depending on `GatewayPorts`). When someone on the bastion's network hits `bastion:8080`, the traffic is tunneled back through SSH and exits on your laptop, reaching your local port 3000. This is how you expose a local dev server to a remote team — like a reverse ngrok. The asymmetry: `-L` is "I reach out and pull a remote service to me." `-R` is "I push my local service to the remote side."
+
+**`-D` = Dynamic port forwarding: create a SOCKS proxy, no fixed destination.**
+
+`ssh -D 1080 user@bastion.example.com` creates a SOCKS5 proxy on `localhost:1080`. Instead of hardcoding one destination, you configure your browser or app to use `localhost:1080` as a SOCKS proxy. Your app then sends requests like `CONNECT internal-app:443` through the proxy, and the SSH client on your laptop decides where to forward them based on the SOCKS protocol — effectively routing all traffic through the bastion. This is how you "browse as if you were on the bastion network."
+
+**Key difference summary:** `-L` binds locally (you as client pull remote services to you). `-R` binds remotely (remote side pulls your local service to them). `-D` binds locally and routes arbitrary traffic dynamically.
+
+</details>
+
+---
+
+🔬 **Section Challenge — SSH Agent Forwarding**
+
+**Challenge 1 (Reasoning):** You SSH from laptop to bastion to internal-server. You want to `git pull` on `internal-server` using your laptop's SSH key. `ForwardAgent yes` is set on the bastion config. WHY does this expose your key to the bastion, and what is the actual security tradeoff?
+
+<details><summary>Answer</summary>
+
+**The private key NEVER leaves your machine. But the agent socket IS accessible to root on bastion.**
+
+Agent forwarding doesn't copy your private key to the bastion. Instead, it forwards the SSH agent's Unix socket through the SSH connection. When you're logged into bastion and run `git pull`, Git invokes `ssh -T git@github.com`. SSH looks for an agent socket, finds the forwarded socket pointing to your laptop's agent, and asks your laptop's agent to sign the challenge. Your laptop's agent returns the signature; the key never moved.
+
+**The tradeoff — and the danger:** Anyone with root access on bastion can read your agent socket (`SSH_AUTH_SOCK`). With that socket, they can request signatures for arbitrary challenges — effectively impersonating you for any SSH connection your key is authorized for (GitHub, production servers, etc.). They cannot extract the private key itself, but they can use the agent as a live oracle for as long as the socket is active. This is called agent hijacking.
+
+**When to use it:** Only forward your agent to machines you fully trust (i.e., you control the root account, the machine is isolated, and no untrusted users have sudo). The security model assumes bastion's root is trustworthy — if that assumption is broken, your agent is compromised. For partially trusted environments, use dedicated deploy keys (scoped per repository) instead of agent forwarding.
+
+</details>
+
+---
+
+🔬 **Section Challenge — SSH Jump Hosts & ProxyJump**
+
+**Challenge 1 (Reasoning):** `ssh -J bastion internal-server` works, but requires `internal-server` to allow direct SSH from your IP address — which it doesn't (firewall blocks it). How does `ProxyCommand` with `ssh -W` solve this, and why is `ProxyJump` generally preferred over raw `ProxyCommand`?
+
+<details><summary>Answer</summary>
+
+**The firewall problem:** `internal-server` has a firewall rule allowing SSH only from `bastion`'s IP (same private subnet). Your laptop's public IP is blocked. So you cannot SSH directly to `internal-server` — you MUST tunnel through bastion.
+
+**How `ProxyCommand` solves it:**
+```bash
+ssh -o "ProxyCommand=ssh -W %h:%p bastion" internal-server
+```
+Here, your SSH client first spawns a helper connection to bastion. That helper opens a stdio tunnel. Your actual SSH client then uses this tunnel as its transport — connecting to `internal-server` through bastion's stdin/stdout. The traffic flows: laptop → bastion → internal-server. The key insight: from `internal-server`'s perspective, the connection originated from bastion's IP (because bastion opened the outbound connection). The firewall sees this as an allowed connection.
+
+**How ProxyJump (`-J`) is syntactic sugar for this:**
+```bash
+ssh -J bastion internal-server
+```
+OpenSSH translates this internally into the equivalent `ProxyCommand` setup. It handles the tunnel lifecycle automatically (starting the helper, keeping it alive, cleaning it up).
+
+**Why ProxyJump is preferred:** (1) Cleaner syntax — no string quoting or `%h:%p` tokens. (2) Automatically handles host key verification for intermediate hops. (3) With OpenSSH 7.3+, supports multiple jump hosts via comma: `-J bastion,jump2,internal-server`. (4) In `~/.ssh/config`, `ProxyJump bastion` is far more readable than the `ProxyCommand` equivalent. (5) Error handling is better — OpenSSH manages the intermediate connection lifecycle for you.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                             | Related Content                                                            |

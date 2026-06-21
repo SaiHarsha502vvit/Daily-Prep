@@ -348,12 +348,6 @@ int fib(int n) {
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
 
-<details><summary>Answer</summary>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS -> explicit stack. Factorial -> accumulator variable (tail recursion -> loop). Tree traversal -> stack with nodes + visited flag. Recursion is cleaner when depth is bounded; iteration is safer when depth is unbounded or performance-critical.
-
-</details>
-
 **Challenge 2 (Bug Hunt):**
 
 ```java

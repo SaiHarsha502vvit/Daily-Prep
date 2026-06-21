@@ -692,6 +692,132 @@ CULTURE:
 
 ---
 
+## 🔬 Section Challenges
+
+---
+
+🔬 **Section Challenge — SLOs vs SLIs vs SLAs**
+
+**Challenge 1 (Reasoning):** Your SLA with a customer promises 99.9% monthly uptime. Your measured SLI reports "99.2% of requests returned non-5xx this month." Your SLO target is internally set at 99.5%. WHY might all three numbers differ? What happens to your business when your SLO (internal target) is stricter than your SLA (customer contract)?
+
+<details><summary>Answer</summary>
+
+Three numbers, three different perspectives:
+
+- **SLI** is what you **measure**. In this case, your real error rate is 0.8%. Monitoring missed something, or there's an underlying issue.
+
+- **SLO** is your **internal promise to yourself**. Set at 99.5% (0.5% error budget = ~21.6 min/month downtime). This is tighter than the SLA because you want early warning — when you breach your SLO, you still have time to fix things before breaching the SLA.
+
+- **SLA** is your **legal contract with the customer**. Set at 99.9% (looser than SLO) to give yourself a safety buffer. If your SLO is 99.5% but SLA is 99.9%, you're in trouble — you're already below the legal threshold before you even breach your internal target!
+
+**When SLO > SLA (SLO is stricter):** You risk a legal breach every time your SLO is breached — because your SLO already crossed below your SLA. The SLO should ALWAYS be stricter (higher) than the SLA. The typical pattern:
+
+- SLA: 99.9% (43.2 min downtime/month) — what you promise customers
+- SLO: 99.95% (21.6 min downtime/month) — your internal target
+- SLI: what you actually measure
+
+If your SLI shows 99.2% (48 min downtime): you've already breached the SLA and owe customer credits. The SLO should have caught this earlier and triggered a reliability sprint before it hit the SLA.
+
+**Key insight:** SLOs are your **early warning system**. If they're tighter than SLAs, you catch regressions before customers notice and before legal consequences kick in.
+
+</details>
+
+---
+
+🔬 **Section Challenge — Error Budgets**
+
+**Challenge 1 (Reasoning):** Your service has an SLO of 99.9% availability — an error budget of 43.2 minutes of downtime per month. In the first week of the month, a cascading infrastructure failure burns through your entire error budget (all 43.2 minutes consumed). The product team wants to ship a major new feature by end of sprint. WHY does the SRE handbook say "stop deploying new features" and what does the math say about continued development?
+
+<details><summary>Answer</summary>
+
+**The math first:** If the error budget (0.1% of the month) is gone in 7 days, the burn rate is ~6x faster than sustainable. You have 23 days left and zero budget. Every new deployment is a coin flip that adds more downtime on top of already-exhausted budget.
+
+**Why "stop deploying":**
+
+1. **Every deploy is a risk.** Even a perfect deploy requires a brief rolling restart (some downtime). With zero error budget, any additional downtime directly breaches your SLO. You can't afford the risk of deploying when you're already in the red.
+
+2. **Feature velocity is a trade-off against reliability.** The SRE error budget creates a self-regulating system: you can't have both maximum features AND maximum reliability. Budget is the negotiation point.
+
+3. **You're in a reliability sprint now.** The burned budget signals that something is fundamentally wrong — bad infrastructure, missing redundancy, undetected degradations. Fixing those systematically takes priority over new features.
+
+4. **The business already got its "feature budget" for this month.** The product team consumed the reliability budget with infrastructure failures AND wants to add new feature risk on top. That's double-dipping.
+
+**The SRE principle:** Error budgets turn a political argument ("should we ship or not?") into a mathematical one ("we have X% budget remaining — here are the trade-offs"). When budget is zero, the math is unambiguous: fix reliability first.
+
+**What happens next:** The SRE team formally notifies stakeholders that the service is in an error-budget-exhausted state. Feature freeze is declared. A reliability post-mortem and remediation plan is initiated. Shipping resumes only after the SLO is back within target.
+
+</details>
+
+---
+
+🔬 **Section Challenge — Incident Response**
+
+**Challenge 1 (Reasoning):** It's 3 AM. A P1 incident is active — all checkout transactions are failing across your platform. You're the primary on-call SRE. A senior engineer (Subject Matter Expert on the payments system) is paged. The Incident Commander role is also being filled. WHY does the SRE model explicitly separate the Incident Commander (IC) from the Subject Matter Expert (SME)? Why not let the payments expert just fix it while managing the incident?
+
+<details><summary>Answer</summary>
+
+**The IC-SME separation is a cognitive load management pattern. Here is WHY it matters:**
+
+**The problem at 3 AM with a live P1:**
+- The SME is stressed, sleep-deprived, and deeply familiar with the payment system — which means they have strong opinions about the fix.
+- They also need to: monitor Slack, coordinate with other teams, make real-time decisions about customer impact, write status page updates, remember to mark the incident resolved, loop in stakeholders...
+- Doing both at once creates cognitive overload. The SME either rushes the fix (making mistakes) or handles logistics slowly (prolonging the outage).
+
+**The IC role exists to:**
+- Shield the SME from all non-technical distractions (Slack, status pages, stakeholder updates, coordination).
+- Make decisions about severity, escalation, and customer communication — freeing the SME to focus 100% on the technical problem.
+- Take notes in real-time for the post-mortem (the SME is busy fixing things).
+- Be the stable "air traffic controller" who sees the whole picture, while the SME is the "pilot" focused on their instrument panel.
+
+**The separation principle:** The person closest to the problem (SME) should spend maximum time solving the problem, not managing the logistics of the incident. The IC is the multiplier — they make the SME more effective by removing overhead.
+
+**When you don't separate roles (common mistake):** The on-call engineer tries to be both IC and SME, handles a Slack storm of questions while trying to debug, misses a critical signal in the logs because they were typing a customer update, and the incident lasts 2 hours instead of 20 minutes.
+
+**The 3 AM rule:** If you're the on-call SME, your ONLY job is to fix the incident. The IC owns everything else.
+
+</details>
+
+---
+
+🔬 **Section Challenge — Blameless Post-Mortems**
+
+**Challenge 1 (Reasoning):** An engineer pushed a production config change at 2 AM without a code review (the CI system had a bypass flag enabled). It took down checkout for all customers for 47 minutes. The post-mortem is scheduled. At the meeting, a manager asks: "Who made this decision and why weren't they more careful?" WHY is this question harmful to the blameless post-mortem process? WHY does SRE culture say "focus on the system, not the person" — and what actually happens when you blame the individual?
+
+<details><summary>Answer</summary>
+
+**The manager's question is the wrong question. Here's WHY:**
+
+**Question 1: "Who made this decision?"**
+This frames a complex system failure as an individual failure. It assumes: (a) the engineer had full information and chose poorly, and (b) if we punish this person, it won't happen again. Both assumptions are wrong.
+
+**What actually happened (the SYSTEM perspective):**
+- A bypass flag existed in CI that allowed merges without reviews.
+- That flag was accessible to engineers working at 2 AM under pressure.
+- No automated guard prevented prod config changes from bypassing review.
+- There was no policy (or enforcement) against 2 AM production changes.
+- The monitoring system didn't alert on the config change being deployed.
+
+**When you blame the person, you get:**
+- The engineer is punished.
+- Other engineers become afraid to admit mistakes or push fast.
+- The bypass flag stays in CI.
+- The next engineer at 2 AM makes the same mistake because the SYSTEM wasn't fixed.
+- You fix one person. You don't fix one system.
+
+**Why "focus on the system":**
+- Systems can be changed. People are complex and don't change reliably.
+- A good system makes it HARD to do the wrong thing. With proper CI guardrails, this engineer couldn't have pushed to production without review — regardless of their skill, intent, or fatigue level at 2 AM.
+- Fix the system: require review for prod config changes, disable bypass flags by default, add a pre-deploy smoke test, require two-person review for prod changes.
+
+**The blameless post-mortem question to ask instead:**
+"What was true about our system that made this failure possible?" — not "who failed?"
+
+**What blameless does NOT mean:** It does NOT mean "no one is responsible." It means responsibility is shared across the system, not concentrated on one individual. The engineer is invited to the post-mortem (unlike a blame culture where they dread it) and helps design the fix — because they understand the failure better than anyone.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                             | Related Content                                                                               |

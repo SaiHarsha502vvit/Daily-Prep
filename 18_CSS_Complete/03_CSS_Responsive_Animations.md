@@ -736,6 +736,212 @@ RULE: Animate ONLY transform and opacity for 60fps.
 
 ---
 
+## 7. Scroll-Snap — Native Carousels Without JavaScript
+
+### The Alignment Problem: Why Scroll-Snap Exists
+
+Native scroll behavior on the web is inherently "loose" — scroll containers let users stop at ANY arbitrary position. This creates two problems:
+
+```
+THE CAROUSEL PROBLEM:
+
+Without scroll-snap:
+┌─────────────────────────────┐
+│ [Card 1]    [Card 2]   [Card 3...]   ← Stop anywhere!
+└─────────────────────────────┘
+      ↑                         ↑
+   23.7%                  47.3%
+
+Users see half of one card and half of another. Broken UX.
+
+The web ecosystem solved this with JavaScript carousels (Owl Carousel,
+Slick, Swiper) — but these are 50-200KB of JS for what CSS can do natively.
+```
+
+**Scroll-Snap** is the CSS-native answer. It was designed to let containers "lock" to specific positions after scrolling stops, creating structured, predictable, carousel-like experiences — no JavaScript required.
+
+### `scroll-snap-type` — The Container's Behavior
+
+```css
+.scroll-container {
+  /* SYNTAX: scroll-snap-type: <axis> <strictness> */
+  
+  /* Axis: */
+  scroll-snap-type: x mandatory;     /* Snap on X axis (horizontal) */
+  scroll-snap-type: y mandatory;     /* Snap on Y axis (vertical) */
+  scroll-snap-type: both mandatory;  /* Snap on both axes */
+  
+  /* Strictness (when browser FORCES snap vs. soft snap): */
+  scroll-snap-type: x mandatory;     /* ALWAYS snaps when scroll stops */
+  scroll-snap-type: x proximity;     /* Snap only when CLOSE to a snap point */
+}
+```
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  MANDATORY vs PROXIMITY — The Critical Distinction               ║
+║                                                                  ║
+║  mandatory: Browser ALWAYS snaps to nearest snap point           ║
+║             when scroll stops. Forces alignment.                 ║
+║                                                                  ║
+║  proximity: Browser snaps ONLY if current position is            ║
+║             near a snap point. Otherwise, stays where it is.     ║
+║                                                                  ║
+║  WHY MANDATORY CAN CAUSE PROBLEMS:                               ║
+║  If a child has NO valid snap point (or snap points are          ║
+║  unevenly distributed), mandatory forces the browser to          ║
+║  skip past content the user wanted to see. Imagine scrolling     ║
+║  slowly and landing between two snap points — mandatory          ║
+║  jumps you to the next one, skipping content.                    ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+### `scroll-snap-align` — Where Children Lock
+
+```css
+.scroll-item {
+  /* Define which edge/center snaps to container: */
+  scroll-snap-align: start;   /* Child's START edge aligns */
+  scroll-snap-align: center;  /* Child's CENTER aligns */
+  scroll-snap-align: end;     /* Child's END edge aligns */
+  
+  scroll-snap-align: none;    /* Opt this child OUT of snapping */
+}
+```
+
+The `start`/`center`/`end` values respect writing direction. In RTL languages, `start` means the RIGHT edge, not the left.
+
+### `scroll-snap-stop` — Preventing Skip-Through
+
+```css
+.scroll-item {
+  /* normal (default): Fast scrolling MAY skip snap points */
+  scroll-snap-stop: normal;
+  
+  /* always: Browser MUST stop at every snap point */
+  /* Critical for paginated content — don't skip pages! */
+  scroll-snap-stop: always;
+}
+```
+
+Use `always` for paginated carousels, slideshows, or any content users must see sequentially.
+
+### Carousel Pattern — Practical Implementation
+
+```html
+<div class="carousel">
+  <div class="carousel-slide">1</div>
+  <div class="carousel-slide">2</div>
+  <div class="carousel-slide">3</div>
+  <div class="carousel-slide">4</div>
+</div>
+```
+
+```css
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-snap-align: start;
+  gap: 1rem;
+  padding: 0 2rem 2rem;
+  /* Hide scrollbar but keep functionality: */
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar { display: none; }
+
+.carousel-slide {
+  flex: 0 0 85vw;        /* Each slide = 85% of viewport */
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* Don't skip slides on fast swipe */
+  height: 300px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+```
+
+### Full-Page Scroll — Vertical Snap Sections
+
+```css
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+.section {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: grid;
+  place-items: center;
+}
+```
+
+```html
+<section class="section">Section 1</section>
+<section class="section">Section 2</section>
+<section class="section">Section 3</section>
+```
+
+**Gotcha:** Each section MUST be exactly viewport-height (or have explicit snap points). If content overflows, the section scrolls internally instead of snapping to the next page.
+
+### Mobile Considerations: iOS Safari Behavior
+
+```
+╔══════════════════════════════════════════════════════════════════╗
+║  MOBILE SCROLL-SNAP GOTCHAS:                                     ║
+║                                                                  ║
+║  iOS Safari adds MOMENTUM scrolling (inertia). On fast swipes,   ║
+║  the scroll position "overshoots" then springs back.             ║
+║                                                                  ║
+║  This can cause:                                                 ║
+║  • Snap animations firing AFTER you intended to stop             ║
+║  • Content being skipped on fast swipes                          ║
+║                                                                  ║
+║  SOLUTIONS:                                                      ║
+║  1. scroll-snap-stop: always — forces landing on each point      ║
+║  2. -webkit-overflow-scrolling: touch — enables momentum on      ║
+║     overflow containers (legacy but still useful)                ║
+║  3. touch-action: pan-x — prevents vertical swipe conflicts      ║
+║     in horizontal carousels (user intended horizontal only)      ║
+╚══════════════════════════════════════════════════════════════════╝
+```
+
+```css
+.carousel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* iOS momentum */
+  touch-action: pan-x;               /* Horizontal swipes only */
+  scroll-snap-type: x mandatory;
+}
+.carousel-slide {
+  scroll-snap-align: start;
+  scroll-snap-stop: always; /* Always land on each slide */
+}
+```
+
+---
+
+🔬 **Section Challenge — Scroll-Snap: The Alignment Problem**
+
+**Challenge 1 (Debug — Who/When/What):** A horizontal carousel has 5 slides, but users complain that scrolling fast skips straight from slide 1 to slide 4. You inspect and see `scroll-snap-type: x mandatory` but NO `scroll-snap-stop` property. **Who** creates the snap behavior? **When** does mandatory force a snap? **What** property fixes the skip problem, and why?
+
+<details><summary>Answer</summary>
+
+**Who creates the snap behavior?** `scroll-snap-type: x mandatory` on the `.carousel` container establishes the snap context. This tells the browser to snap along the X axis whenever scroll stops. **When does mandatory force a snap?** Every time the user stops scrolling — even if they stopped between snap points. The browser recalculates the nearest snap point and jumps there. **What fixes the skip problem?** Add `scroll-snap-stop: always` to each `.carousel-slide`. This tells the browser: "Do NOT skip past this snap point during fast scrolling." Without it, momentum scrolling (especially on iOS) lets users "throw" the carousel fast enough that it overshoots intermediate snap points. With `always`, every snap point becomes a mandatory landing zone regardless of scroll velocity. **Why mandatory alone wasn't enough:** `mandatory` controls WHEN snapping happens (after every scroll stop), but not WHETHER intermediate points can be jumped. `scroll-snap-stop: always` is the gatekeeper — it forces the browser to honor each point during the scroll gesture itself, not just after.
+
+</details>
+
+---
+
+> **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)
+
+---
+
 ## Interview Quick-Fire
 
 ```
