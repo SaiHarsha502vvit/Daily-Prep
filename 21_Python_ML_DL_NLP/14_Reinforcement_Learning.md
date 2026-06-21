@@ -470,6 +470,270 @@ ALTERNATIVES TO RLHF:
 
 ---
 
+---
+
+🔬 **Section Challenge — Exploration-Exploitation Trade-off**
+
+> You're building a recommendation system using a multi-armed bandit. Using ε-greedy: explore 10%, exploit 90%. After 1 week of training, the bandit converges to one "best" arm (say, recommending product X). But then NEW CONTENT arrives on the platform. The bandit never explores it. WHY does pure ε-greedy fail in non-stationary environments?
+
+<details>
+<summary>Answer</summary>
+
+```
+THE CORE PROBLEM:
+Pure ε-greedy has NO mechanism to detect or adapt to change.
+
+WHY ε-GREEDY FAILS IN NON-STATIONARY ENVIRONMENTS:
+
+1. CONVERGENCE LOCK-IN:
+   After enough exploration, Q(a) estimates stabilize.
+   The greedy action (argmax Q) locks onto one arm permanently.
+   With ε=0.1, you only explore 10% of the time.
+   Even during exploration, each arm gets only 1/(n) chance.
+   → A new arm needs ~n * (1/ε) * (1/α) samples to get reliable estimate.
+   → If content arrives mid-run, it's starved of exploration samples.
+
+2. STALE Q-ESTIMATES:
+   Q(s,a) is a running average: Q ← Q + α(r - Q)
+   This is a LOW-PASS FILTER — it smoothly blends new info.
+   BUT: if the "true reward" of an arm changes (non-stationary),
+   the Q-estimate slowly tracks it, with lag proportional to 1/α.
+   → The agent is ALWAYS behind the current reality.
+
+3. NO RECENCY WEIGHTING:
+   Standard Q-learning weights ALL past experiences equally.
+   A week of data from Monday matters as much as data from today.
+   → The model is dominated by HISTORICAL patterns, not current reality.
+
+UCB (Upper Confidence Bound) vs THOMPSON SAMPLING:
+
+UCB: Q(a) + c * sqrt(ln(t) / N(a))
+  → Uses CONFIDENCE BOUNDS to balance explore/exploit.
+  → N(a) is low → confidence interval is WIDE → higher exploration.
+  → When an arm's reward changes, N(a) stays fixed, but Q(a) updates.
+  → The confidence bound HELPS detect non-stationarity (wider bounds when uncertain).
+
+  WHEN UCB WINS:
+  - When you need theoretic regret bounds (provably bounded exploration).
+  - When rewards are STOCHASTIC but slowly changing.
+  - When you need EXPLAINABLE exploration (you can see the confidence bonus).
+
+Thompson Sampling: Sample from posterior distribution P(Q(a)|data)
+  → If arm X has narrow posterior (well-estimated), you mostly exploit it.
+  → If new arm Y has wide posterior (uncertain), you explore it.
+  → When arm X's reward CHANGES, its posterior WIDENS → more exploration naturally.
+
+  WHEN THOMPSON SAMPLING WINS:
+  - When rewards are TRULY BAYESIAN (have prior distributions).
+  - When you need fast initial exploration.
+  - When n_arms is LARGE and most arms have near-zero reward.
+  - Contextual bandits (flexibly handle covariate information).
+
+SOLUTION FOR NON-STATIONARY ENVIRONMENTS:
+  1. DECAY ε over time (not just decay — RE-SET it periodically).
+  2. USE EXPONENTIAL RECENCY WEIGHTING: weight recent samples by γ^t.
+  3. SLIDING WINDOW: only use samples from last N timesteps.
+  4. CHANGE DETECTION: restart exploration when reward distribution shifts.
+```
+
+</details>
+
+---
+
+🔬 **Section Challenge — Reward Shaping Reasoning**
+
+> Your robot agent's task is to navigate a maze. Sparse reward: R(s) = +1 at the goal, 0 elsewhere. After weeks of training, the agent has barely learned — it never reaches the goal reliably. You add shaping reward: R'(s) = -distance_to_goal(s). Now the agent learns much faster. But then it gets stuck in a LOCAL MINIMUM — a dead-end corner that's geometrically close to the start but far from the goal. WHY did reward shaping help initially but cause local minima? What does POTENTIAL-BASED SHAPING guarantee?
+
+<details>
+<summary>Answer</summary>
+
+```
+WHY SPARSE REWARDS FAIL:
+  With R = {+1 at goal, 0 elsewhere}:
+  - 99.9% of trajectories get reward = 0.
+  - Agent receives NO gradient signal 99.9% of the time.
+  - Credit assignment problem: which of the last 1000 steps led to failure?
+  - Random exploration finds the goal with probability ≈ 0 in large mazes.
+
+WHY NAIVE SHAPING HELPS INITIALLY:
+  R'(s) = -distance_to_goal(s)
+  - Now EVERY step provides gradient signal.
+  - "Getting closer" → positive reward → increase probability of that action.
+  - "Getting stuck" → no reward → decrease probability of that action.
+  - Agent learns via TEMPORAL DIFFERENCE: intermediate gradients guide exploration.
+
+  THIS IS HINDSIGHT BIAS IN ACTION: We know the goal is at position G.
+  But does the AGENT know this? The agent must discover the goal FIRST,
+  THEN learn to navigate to it. With sparse rewards, it can't discover it.
+  Shaping gives the agent a "compass" to follow.
+
+WHY NAIVE SHAPING CAUSES LOCAL MINIMA:
+
+  Consider this trap:
+  ```
+  Start → A → B → [DEAD END - close to start but wrong direction!]
+             ↓
+             C → Goal
+  ```
+
+  R'(A) = -d(A, goal) = -3 (say)
+  R'(B) = -d(B, goal) = -1 (B is geometrically closer to start, further from goal?)
+  Wait — let me redraw:
+
+  ```
+  Robot starts here
+       ↓
+  A ── B ── C ── D ── [DEAD END - corner, very close spatially]
+       ↓
+       E ── F ── G = GOAL
+  ```
+
+  The dead end D is only 1 step from start in spatial terms,
+  but 4 steps away from the goal along the correct path.
+  The goal G is 4 steps from start, but the robot takes the "shortcut" to D.
+
+  R'(D) = -1 (very close spatially to start)
+  R'(G) = -4 (further from start)
+
+  The agent learns: "D is good! Distance = 1 → reward = +1 equivalent."
+  It never learns about G because D gave immediate positive feedback.
+  This is equivalent to a local minimum in policy space.
+
+THE KEY INSIGHT: SHAPING REWARD CONFLICTS WITH TRUE OBJECTIVE
+  - True objective: maximize probability of reaching G.
+  - Shaping objective: minimize distance to the geometric center.
+  - These are NOT the same when the environment has obstacles!
+
+POTENTIAL-BASED SHAPING (Ng et al., 1999) — THE GUARANTEE:
+
+  Instead of R'(s) = -d(s, goal), use:
+  F(s, s') = γ·φ(s') - φ(s)
+
+  Where φ(s) = potential function (e.g., φ(s) = -d(s, goal))
+
+  THEOREM: If shaping reward is potential-based, then
+  OPTIMAL POLICY under shaped reward = OPTIMAL POLICY under original reward.
+
+  WHY? The shaping doesn't change the RELATIVE VALUE of states,
+  only their absolute values. The agent still PREFERS the same actions.
+
+  WORKED EXAMPLE:
+  φ(s) = -distance_to_goal(s)
+  F(s, s') = γ·(-d(s', goal)) - (-d(s, goal))
+           = d(s, goal) - γ·d(s', goal)
+
+  Key difference: γ < 1 discounts future potential.
+  → If d decreases by 1 step, shaping reward = 1 - γ·0.9 = 0.1 (small positive).
+  → This prevents "shortcut" exploits because you need CONSISTENT progress.
+
+  PRACTICAL GUARANTEE:
+  Potential-based shaping is INVARIANT to optimal policy.
+  → You can safely add it to speed learning without corrupting the objective.
+  → The agent will still find the optimal path, just faster.
+```
+
+</details>
+
+---
+
+🔬 **Section Challenge — Policy Gradient Variance**
+
+> REINFORCE updates the policy with ∇log π(a|s; θ) · Gₜ, where Gₜ is the return (cumulative reward). In practice, variance is HUGE — gradients swing wildly between episodes, and training is unstable. You add a baseline: subtract V(sₜ) from the return, giving ∇log π(a|s; θ) · (Gₜ - V(sₜ)). Variance drops dramatically. WHY does subtracting a baseline NOT CHANGE the expected gradient (it's still unbiased!) but reduce variance? What if the baseline is BAD (e.g., V(s) has high variance itself)?
+
+<details>
+<summary>Answer</summary>
+
+```
+THE POLICY GRADIENT THEOREM (RECAP):
+  ∇_θ J(θ) = E[∇_θ log π(a|s; θ) · Q(s, a)]
+
+  For REINFORCE: Q(s,a) = Gₜ (Monte Carlo return)
+  ∇_θ J(θ) = E[∇_θ log π(a|s; θ) · Gₜ]
+
+THE CLAIM: E[∇log π · (Gₜ - b)] = E[∇log π · Gₜ]
+  for ANY scalar b that depends ONLY on s (not on a).
+
+PROOF:
+  E[∇log π(a|s) · b] = Σ_a π(a|s) · ∇log π(a|s) · b
+                      = b · Σ_a π(a|s) · (∇π(a|s) / π(a|s))
+                      = b · ∇[Σ_a π(a|s)]
+                      = b · ∇[1]           ← π is a probability distribution
+                      = b · 0
+                      = 0
+
+  Therefore: E[∇log π · (Gₜ - b)] = E[∇log π · Gₜ] - E[∇log π · b]
+                                   = E[∇log π · Gₜ] - 0
+                                   = E[∇log π · Gₜ]
+
+  THE CONDITION IS CRITICAL: b can ONLY depend on s, not on a.
+  This is why V(s) is valid (it's a function of state only),
+  but Q(s,a) is NOT valid as a baseline (depends on action).
+
+WHY DOES THIS REDUCE VARIANCE?
+  Intuition: We want to estimate E[X] where X = Gₜ is noisy.
+
+  If Gₜ has mean μ and variance σ², then:
+  Var(X) = σ² (this is what we suffer from)
+
+  If we subtract a constant b: Y = Gₜ - b
+  Var(Y) = Var(Gₜ - b) = Var(Gₜ) + Var(b) - 2·Cov(Gₜ, b)
+
+  If b is perfectly correlated with Gₜ (b = Gₜ exactly):
+  Var(Y) = 0 → perfect variance reduction!
+  But then E[Y] = 0 → we're adding 0 to gradient → no learning.
+
+  If b = E[Gₜ] (the true expected return):
+  E[Y] = μ - μ = 0 → unbiased (E[Y] = E[Gₜ] - μ = μ - μ = 0?)
+  Wait — re-check: E[Y] = E[Gₜ] - E[b] = μ - μ = 0
+  But we need E[Y] = E[Gₜ] = μ for unbiasedness!
+
+  CORRECTION: The baseline doesn't need to be E[Gₜ]. It needs to satisfy:
+  E[∇log π · b] = 0. If b is constant, this holds trivially.
+  The optimal baseline for MINIMAL VARIANCE is b = E[Gₜ · ∇log π] / E[(∇log π)²]
+  But V(s) ≈ E[Gₜ | s] is a good practical choice because:
+
+  1. V(s) captures the "expected" return from state s.
+  2. (Gₜ - V(s)) = advantage of the specific action (how much better than average).
+  3. If Gₜ = V(s) + noise, then Var(Gₜ - V(s)) = Var(Gₜ) + Var(V(s)) - 2Var(Gₜ)
+     = Var(Gₜ) - Var(V(s)) ≤ Var(Gₜ)  ← variance is reduced!
+
+WHAT IF THE BASELINE IS BAD (high variance)?
+  Bad baseline means V(s) is a POOR estimate of E[Gₜ | s].
+
+  Problem 1: V(s) itself adds NOISE.
+  - If V(s) is random/unstructured, Var(V(s)) is large.
+  - Var(Gₜ - V(s)) = Var(Gₜ) + Var(V(s)) - 2·Cov(Gₜ, V(s))
+  - If Cov is small, variance INCREASES (we made things worse).
+
+  Problem 2: BIASED GRADIENT ESTIMATE.
+  - If V(s) is systematically wrong (e.g., always predicts 0 when true μ = 100),
+  - Then Gₜ - V(s) systematically overestimates advantage.
+  - Policy gradient is still unbiased (E[∇log π · b] = 0 if b is constant?)
+  - Wait — if V(s) is correlated with s, then E[∇log π(a|s) · V(s)] = ?
+
+  PROOF: If V(s) is a function of s only:
+  E[∇log π(a|s) · V(s)] = Σ_s P(s) · V(s) · Σ_a ∇π(a|s)
+                        = Σ_s P(s) · V(s) · ∇[Σ_a π(a|s)]
+                        = Σ_s P(s) · V(s) · ∇[1] = 0
+
+  So ANY function of s is an UNBIASED baseline, even if it's terrible!
+  V(s) = 0 always → still unbiased. V(s) = random noise → still unbiased.
+
+  But BAD BASELINE = LARGER VARIANCE = SLOWER CONVERGENCE.
+  Not wrong, just inefficient.
+
+  PRACTICAL TAKEAWAY:
+  - Use V(s) as baseline (Actor-Critic).
+  - If V(s) is learned badly, convergence is slow but not wrong.
+  - Better V(s) → better variance reduction → faster learning.
+  - The bias-variance trade-off: better baseline = more bias (approximation)
+    but less variance. This is why A2C/PPO use learned V with bootstrapping.
+```
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                                        | Related Content                                                           |

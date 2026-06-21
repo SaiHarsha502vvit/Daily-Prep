@@ -479,6 +479,115 @@ WHERE TO START:
 
 ---
 
+---
+
+## 🔬 Section Challenge — Model Drift Detection
+
+> Your fraud detection model was trained on 2023 data and deployed in 2024. Six months in, performance degrades. You suspect concept drift — fraud patterns changed. You consider three monitoring strategies:
+>
+> **(a)** Monitor input feature distributions (e.g., via KS test or PSI)
+> **(b)** Monitor prediction distributions (distribution of model outputs)
+> **(c)** Monitor ground-truth-labeled accuracy (track precision/recall on recent labels)
+>
+> **Which is most reliable for catching concept drift, and WHY? Specifically: WHY might monitoring input feature distributions (a) miss concept drift entirely?**
+
+<details>
+<summary>Answer</summary>
+
+**Why (c) — ground-truth accuracy — is most reliable:**
+
+Concept drift means the relationship P(y&#124;X) has changed. The only way to know if your model is still predicting the correct label is to compare predictions against actual labels. Accuracy/precision/recall on a recent labeled window directly measures prediction quality. If fraudster behavior changes, the model's decisions become wrong — this shows up in accuracy before anywhere else.
+
+**Why (a) — monitoring input feature distributions — can completely MISS concept drift:**
+
+Because concept drift does NOT require input features to change. The fraudster adapted their behavior, but the population of transactions (features like amount, time, location) may look statistically identical. The model sees the same inputs but now needs to weight them differently.
+
+Example: Imagine your fraud model learned: `amount > $10,000 AND time = weekend → fraud`. In 2023 this correlated perfectly with fraud. In 2024, fraudsters adapted — they now do small amounts ($9,000) on weekends instead. Feature distributions look unchanged (same mean, same std), but the PATTERN that predicts fraud has flipped. You'd miss this entirely if you only watch input distributions.
+
+**Why (b) — prediction distributions — is a proxy, not the signal:**
+
+Prediction distribution (e.g., % flagged as fraud) drifting is a symptom — it tells you something changed, but not whether the model got better or worse. If legitimate patterns change, predictions shift without model quality changing. It's useful as an alert but needs ground-truth to interpret.
+
+**Practical recommendation:** Use (a) + (b) as early warning systems (cheap, no labels needed), but always gate retraining decisions on (c) — actual accuracy. Without labels, you can't know if drift means "model is wrong" or "population shifted in a neutral way."
+
+</details>
+
+---
+
+## 🔬 Section Challenge — A/B Testing Design
+
+> You deploy a new recommendation model to 5% of traffic as a canary. After 1 week, the new model shows +2% click-through rate, and the result is statistically significant (p < 0.05). You roll out to 100% of traffic. The +2% CTR effect disappears completely. **WHY might this happen?**
+
+<details>
+<summary>Answer</summary>
+
+**Possibility 1 — Novelty Effect:**
+
+Users in the 5% canary group noticed a change in recommendations and explored more out of curiosity. This wears off as novelty fades. The "improvement" was behavioral change from users responding to novelty, not genuine model quality. After full rollout, users adapt back to normal behavior, and the effect vanishes.
+
+Detection: Did engagement increase uniformly, or spike in the first 2-3 days then decay? Also: check retention curves for the canary period.
+
+**Possibility 2 — Sample Ratio Mismatch (SRM):**
+
+Your 5%/95% split isn't actually 5%/95%. A bug or cache inconsistency causes, say, 12% of users to be exposed to the new model. You're comparing 12% new-model users vs 88% old-model users, not 5% vs 95%. The composition of the treatment group is wrong, making results non-generalizable.
+
+Detection: Check actual traffic split matches intended split. Fix before drawing any conclusions.
+
+**Possibility 3 — Seasonality / Time-Based Confound:**
+
+Your 1-week canary happened to overlap with a period where the new model is advantaged. Example: new model recommends summer products; canary ran during a summer spike. After full rollout, it's now partly fall — the seasonal signal disappears. A 1-week window is almost never long enough to average out weekly cycles, day-of-week effects, or campaign-driven spikes.
+
+Detection: Run canary for at minimum 2-4 weeks. Compare same day-of-week in both groups (don't compare Monday to Saturday).
+
+**Possibility 4 — Interaction with Traffic Segment:**
+
+The 5% canary happened to land on a favorable user segment (e.g., more mobile users, more new users). When you roll out to 100%, you include the segments where the model performs worse. The model is genuinely better for some users but worse for others — the 5% sample didn't represent the full population.
+
+Detection: Check treatment vs control characteristics. Are the groups balanced? If mobile users are overrepresented in canary, results won't generalize.
+
+**The meta-lesson:** Statistical significance (p < 0.05) on a canary means "the difference is unlikely to be random noise." It does NOT mean the difference will persist at full rollout. Canaries measure effect direction and magnitude under controlled conditions; full rollout introduces all the real-world complexity they were insulated from.
+
+</details>
+
+---
+
+## 🔬 Section Challenge — Feature Store Architecture Reasoning
+
+> Your team has 5 different models using the same `user_features` table. Each model's training pipeline computes features differently — inconsistent aggregations, different time windows, different imputation logic. Training-serving skew is causing silent prediction errors. You propose a feature store.
+>
+> **(a)** WHY would a feature store fix the training-serving skew?
+> **(b)** What consistency guarantees does a feature store need to provide, and WHY is this hard in practice?
+
+<details>
+<summary>Answer</summary>
+
+**(a) — WHY a feature store fixes training-serving skew:**
+
+Training-serving skew happens because the same logical feature is computed by two different code paths. Training uses Python (pandas), batch, with one set of window definitions and imputation defaults. Serving uses Java/C++ (real-time), with different defaults. Same input row → different feature value.
+
+A feature store centralizes feature computation into ONE code path. When a data scientist writes: "`user_age_days = (current_ts - user_birthdate) / 86400`" and registers it in the feature store, BOTH the offline pipeline (for training) AND the online pipeline (for serving) call the same function with the same parameters. There is one source of truth for the computation logic — skew is structurally impossible because the divergence point (separate code paths) is eliminated.
+
+Additional benefit: the feature registry documents exactly what each feature means. If training pipeline A uses a 30-day rolling window for `user_transaction_count` and pipeline B uses 14 days, this goes unnoticed until the models behave differently. With a feature store, there's ONE canonical definition — the discrepancy can't hide.
+
+**(b) — Consistency guarantees and why it's hard:**
+
+The feature store has two stores with fundamentally different consistency needs:
+
+**Offline store (training):** Needs historical completeness. When you query features for a training example from March 2024, the offline store must return features computed AS OF March 2024, not the latest value. This is point-in-time correctness — you need a time-travel capability or careful event-time slicing. If the offline store returns "current" `user_age_days` instead of what it was in March 2024, you have label leakage or feature leakage.
+
+**Online store (serving):** Needs freshness and low latency. When a fraud detection request comes in at 10:00:00.123, the online store must return the feature value as of 10:00:00 — not stale from 5 minutes ago. For features like `last_transaction_amount`, a 5-minute staleness window is catastrophic.
+
+**The hard part:** The online and offline stores are built on different infrastructure (Redis/DynamoDB vs Parquet/Delta Lake), and keeping them in sync in real-time is expensive. You can:
+- **Batch sync** (hourly): online store is up to 1 hour stale → acceptable for slowly changing features (user age, account type), unacceptable for fast-changing ones (current balance, recent click count)
+- **Streaming sync** (Kafka/Kinesis → online store): near-real-time, but adds latency to feature materialization and cost. Some features simply cannot be served online from the same computation (e.g., a 30-day rolling count requires scanning too much history for a real-time request)
+
+**The fundamental tension:**
+Training needs point-in-time correctness (what was the feature value when this event happened?). Serving needs current correctness (what is the feature value right now?). A feature store that only guarantees "the same number is returned" but not "the number is from the same point in time" does NOT fully solve skew — it just makes skew more consistent.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                       | Related Content                                                                         |

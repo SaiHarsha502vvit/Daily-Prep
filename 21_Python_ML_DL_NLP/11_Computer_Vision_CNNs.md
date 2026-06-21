@@ -668,6 +668,108 @@ optimizer = torch.optim.AdamW([
 
 ---
 
+---
+
+## 🔬 Section Challenge — Receptive Field Calculation
+
+You stack 3 convolutional layers, each with 3×3 kernels, stride=1, and **no padding** (padding=0). What is the receptive field of a single output neuron in the third layer? Why does stacking small (3×3) kernels often outperform using a single large (7×7) kernel, even though both can reach the same effective receptive field?
+
+<details>
+<summary>Answer</summary>
+
+**Step-by-step calculation:**
+
+Layer 3 output is computed from Layer 2 via a 3×3 conv. Each Layer 2 output "sees" a 5×5 region of Layer 1 (because Layer 2 was itself a 3×3 conv on top of Layer 1's 3×3). Therefore, the Layer 3 output "sees": 3 + (3-1) + (3-1) = **7×7** pixels of the original input. The formula for stacked 3×3 layers (no padding) is: `receptive_field = 1 + n_layers × (kernel_size - 1)`. For 3 layers: 1 + 3×(3-1) = 7×7.
+
+**WHY stacking 3×3 beats one 7×7:**
+
+1. **Parameter count:** Three 3×3 layers have 3 × (3×3×C²) = 27C² parameters (per channel). One 7×7 layer has 49C². Stacking is ~45% fewer parameters — cheaper and less overfitting risk.
+
+2. **More non-linearities:** Three ReLU activations vs one. More complex decision boundaries can be learned with the same receptive field.
+
+3. **Deeper = richer representations:** Each 3×3 layer learns a non-linear transformation of the previous layer's features. Three layers extract progressively more abstract features than a single linear 7×7 filter.
+
+4. **Same receptive field, better modeling:** The effective receptive field (ERF) is 7×7 for both, but the *functional* receptive field — how much each layer actually *uses* the input — is different. Stacked 3×3 layers produce a more uniform contribution from all pixels in the 7×7 window, whereas a single 7×7 filter weights the center more heavily (the Gaussian-like concentration of information through conv layers). In practice: VGG-16 used stacked 3×3 convs and outperformed AlexNet's larger-kernel approach.
+
+</details>
+
+---
+
+## 🔬 Section Challenge — Transfer Learning Trade-offs
+
+You have 1000 labeled medical images and want to use a ResNet-50 pretrained on ImageNet (1.4M images, 1000 diverse classes). Compare two strategies:
+
+- **Strategy A:** Fine-tune only the final classification layer (freeze all backbone weights).
+- **Strategy B:** Unfreeze and fine-tune *all* ResNet-50 layers.
+
+**WHY might Strategy B (full fine-tuning) fail or underperform with only 1000 images?** Also: when you *do* unfreeze layers, WHY freeze early layers (which learn edges/textures) instead of later layers (which learn task-specific features)?
+
+<details>
+<summary>Answer</summary>
+
+**WHY full fine-tuning (Strategy B) often fails on small datasets:**
+
+The pretrained backbone learned millions of rich, general visual features from ImageNet — edges, textures, shapes, object parts. Fine-tuning *all* layers means updating ALL 23M+ parameters on your tiny dataset of 1000 images.
+
+The core problem: **overfitting and catastrophic forgetting**.
+
+1. **Overfitting:** With 23M+ trainable parameters and only 1000 samples, the model has massive capacity to memorize training images instead of learning generalizable features. Validation accuracy will likely be worse than with frozen backbone.
+
+2. **Catastrophic forgetting:** The low-level pretrained features (edges, Gabor-like filters) are extremely valuable for any visual task. When you fine-tune everything with a high learning rate, you *overwrite* these robust features. The network "forgets" what it learned from 1.4M images and replaces it with noise fitted to 1000 images.
+
+3. **Gradient instability:** Early layers have very general features that benefit from large-scale data. Updating them with tiny-dataset gradients propagates noisy, unreliable signals backward.
+
+**Strategy A (frozen backbone) works better because:** Only the classification head (2,050 parameters for ResNet-50 → 5 classes: 2048×5 + 5 biases) is trainable. The rich ImageNet feature extractor is preserved intact. With so few parameters, overfitting is minimal. This is why frozen-backbone + new head is the standard starting point for small-dataset transfer learning.
+
+**WHY freeze EARLY layers and fine-tune LATER layers:**
+
+Early convolutional layers (conv1, conv2_x) learn universal features — edges, blobs, oriented gradients. These are almost identical whether the task is ImageNet, medical imaging, or satellite imagery. Updating them with task-specific gradients is wasteful and risky.
+
+Later layers (conv4_x, conv5_x) learn more abstract, task-specific patterns — object parts, textures, semantic concepts. In medical imaging, late layers might learn "tumor-like texture" or "abnormal cell morphology." These ARE task-specific and should be adapted to your domain.
+
+**Practical recipe:** Freeze all → train head → unfreeze layer4 (very low LR 1e-5) → unfreeze layer3 if data allows → keep early layers frozen always. The rule of thumb: the closer the layer is to the classification head, the more it should be fine-tuned on your data.
+
+</details>
+
+---
+
+## 🔬 Section Challenge — Augmentation Policy Reasoning
+
+Your image classifier is overfitting on training data (training accuracy 95%, validation accuracy 62%). You add two augmentations: random horizontal flips and small rotations (±10°). Validation accuracy improves to 78%. Then you add aggressive CutOut — randomly removing 32×32 pixel patches from 224×224 images — and validation accuracy drops to 65%. **WHY might aggressive augmentation hurt?**
+
+<details>
+<summary>Answer</summary>
+
+**The core principle: augmentation must preserve label semantics.**
+
+**WHAT went wrong with the 32×32 CutOut:**
+
+32×32 pixels on a 224×224 image removes **roughly 2%** of the image area per cutout patch. But more importantly, a 32×32 patch is a *large* removal relative to fine-grained medical/scientific detail. If your classifier relies on small but critical features — a lesion, a crack, a specific part — cutting them out removes their signal entirely for some training samples. The model never sees those features during training, so it cannot learn to recognize them.
+
+**WHY moderate augmentations (flips, small rotations) HELPED:**
+
+- **Horizontal flip:** For most object categories (animals, buildings, cells), flipping preserves the class identity. The model sees the same object from a mirrored viewpoint and generalizes better.
+- **Small rotation (±10°):** Captures natural camera/viewing angle variation. Preserves object identity. The model learns rotation-invariant features.
+
+**The Augmentation Spectrum:**
+
+| Augmentation | Effect on signal | When it helps |
+|---|---|---|
+| Horizontal flip | Preserves label | Object-centric tasks |
+| Small rotation (±5-15°) | Preserves label | Natural variation |
+| Color jitter (small) | Preserves label | Lighting robustness |
+| CutOut 8×8 | Mild label change | Prevents reliance on small regions |
+| CutOut 32×32 | **Significant information loss** | Only if destroyed features are non-critical |
+| Random erasing 50% | Near-destroyed image | Almost never useful |
+
+**The deeper WHY:** Each augmented sample should still be *recognizably the same class*. Aggressive CutOut pushes the input distribution too far from the real data distribution. The model trains on distorted images that don't represent what it will see at inference. This is called **dataset distribution shift from augmentation** — you are training on a harder distribution than you test on, which paradoxically hurts generalization.
+
+**Rule:** If you can't reliably identify the class in an augmented image, neither can the model. Aggressive augmentation is only beneficial when the destroyed features are genuinely uninformative (e.g., background texture removal) or when you have enough data that the model can still learn from surviving features.
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                      | Related Content                                                       |
