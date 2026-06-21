@@ -789,6 +789,52 @@ Two quantities are racing as you go *down* the tree: the **number of nodes multi
 
 This is also exactly why the Master Theorem **has gaps** (e.g., `T(n)=2T(n/2)+n log n` falls *between* cases 2 and 3 — f is bigger than n¹ but not polynomially bigger): the clean three-way split only works when f sits cleanly below, on, or above n^c by a polynomial factor. In the gaps you fall back to drawing the tree and summing by hand — which is what you were really doing all along.
 
+### Akra-Bazzi — Beyond the Master Theorem
+
+The Master Theorem handles recurrences where subproblems are equal fractions of n (e.g., T(n) = 2T(n/2) + n). But many real-world recurrences have **unequal subproblem sizes**:
+
+- T(n) = T(2n/3) + T(n/3) + O(n) — Karatsuba-style splits
+- T(n) = T(n/3) + T(2n/3) + O(1) — unbalanced D&C
+- T(n) = ⅓T(n/2) + ⅔T(n/3) + O(n) — randomized median-of-three
+
+The **Akra-Bazzi theorem** (1998) generalizes Master Theorem to arbitrary subproblem sizes and counts.
+
+#### Statement
+
+For T(x) satisfying T(x) = Σᵢ₌₁ᵏ aᵢ T(bᵢ x) + f(x) where aᵢ > 0, 0 < bᵢ < 1, then:
+
+T(x) = Θ(x^p · (1 + ∫₁ˣ f(u) / uᵖ⁺¹ du))
+
+where p solves Σᵢ₌₁ᵏ aᵢ · bᵢᵖ = 1.
+
+#### Worked Example — T(n) = T(2n/3) + T(n/3) + n
+
+Here a₁ = 1, b₁ = 2/3 (subproblem 1 of size 2n/3), a₂ = 1, b₂ = 1/3 (subproblem 2 of size n/3), f(n) = n.
+
+**Step 1: Find p.** Solve a₁·b₁ᵖ + a₂·b₂ᵖ = 1:
+- (2/3)ᵖ + (1/3)ᵖ = 1
+
+Try p = 1: (2/3) + (1/3) = 1. ✓
+
+So **p = 1**.
+
+**Step 2: Apply the integral.**
+T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
+     = Θ(n · (1 + [ln u]₁ⁿ))
+     = Θ(n · (1 + ln n - 0))
+     = **Θ(n log n)**
+
+#### When to Use Akra-Bazzi vs Master Theorem
+
+| Recurrence | Master Theorem | Akra-Bazzi |
+|---|---|---|
+| T(n) = 2T(n/2) + n | ✓ Θ(n log n) | ✓ p=1, Θ(n log n) — same result |
+| T(n) = T(n/2) + T(n/4) + n | ✗ unequal sizes | ✓ p solves (1/2)ᵖ + (1/4)ᵖ = 1 |
+| T(n) = T(2n/3) + T(n/3) + n | ✗ | ✓ p=1, Θ(n log n) |
+| T(n) = ⅓T(n/2) + ⅔T(n/3) + n | ✗ | ✓ unique p solves (1/3)(1/2)ᵖ + (2/3)(1/3)ᵖ = 1 |
+
+**Rule of thumb:** If all subproblems are equal fractions AND each has weight aᵢ = 1 (or all equal), use Master Theorem. Otherwise use Akra-Bazzi.
+
 ---
 
 ## When Divide & Conquer Breaks

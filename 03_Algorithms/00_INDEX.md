@@ -61,11 +61,12 @@
 | 25 | [Bit Manipulation](10_Bit_Manipulation_Complete.md) | All bit tricks and problems |
 | 26 | [Backtracking](11_Backtracking_Complete.md) | N-Queens, Sudoku, permutations |
 | 27 | [Greedy](12_Greedy_Algorithms_Complete.md) | Activity selection, Huffman |
-| 28 | [String Algorithms](13_String_Algorithms_Complete.md) | Complete string processing |
-| 29 | [Union Find / DSU](14_Union_Find_DSU_Complete.md) | Disjoint sets, path compression |
-| 30 | [Monotonic Stack/Queue](15_Monotonic_Stack_Queue_Complete.md) | Next greater element patterns |
-| 31 | [DSA Deep Reasoning](16_DSA_Deep_Reasoning.md) | Why algorithms work — proofs & intuition |
-| 32 | [Java Implementation](17_DSA_Java_Implementation_Mastery.md) | Java-specific DSA implementation |
+| 28 | [Algorithms In Production](13_Algorithms_In_Production.md) | React diffing, PageRank, Bloom filters |
+| 29 | [String Algorithms](14_String_Algorithms_Complete.md) | Complete string processing |
+| 30 | [Union Find / DSU](15_Union_Find_DSU_Complete.md) | Disjoint sets, path compression |
+| 31 | [Monotonic Stack/Queue](16_Monotonic_Stack_Queue_Complete.md) | Next greater element patterns |
+| 32 | [DSA Deep Reasoning](17_DSA_Deep_Reasoning.md) | Why algorithms work — proofs & intuition |
+| 33 | [Java Implementation](18_DSA_Java_Implementation_Mastery.md) | Java-specific DSA implementation |
 
 ### Java Deep Additions
 
