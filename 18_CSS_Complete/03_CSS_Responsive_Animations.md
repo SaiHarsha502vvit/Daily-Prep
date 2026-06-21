@@ -979,6 +979,214 @@ Q: What is animation-fill-mode: forwards?
 
 ---
 
+## 8. CSS Scroll Snap — Controlled Scrolling Without JavaScript
+
+WHY: Before CSS Scroll Snap, implementing carousels, full-page slides,
+or any "scroll and land on a target" UX required JavaScript to listen to
+scroll events, calculate positions, and call `scrollTo()`. This was
+janky, laggy, and accessibility-unfriendly. Scroll Snap solves this at
+the browser paint/composite level — zero JavaScript, no scroll listeners.
+
+### The Core Problem
+
+```
+User scrolls through a photo gallery.
+Without snap: photo lands between two images — partial, disorienting.
+With snap: scroll COMPLETES on the nearest clean boundary automatically.
+```
+
+### How It Works — Container + Item Protocol
+
+Scroll Snap is a two-part API: the **scroll container** declares the
+snap type; each **snap item** declares its alignment.
+
+```css
+/* CONTAINER — defines the snap axis and strictness */
+.gallery {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  /*                 ^   ^
+                     |   mandatory = snaps always; no stopping between
+                     |   (alternative: proximity = snap if "close enough")
+                     axis: x (horizontal) or y (vertical) or both        */
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* ITEM — declares where scrolling "lands" on this element */
+.gallery-slide {
+  flex: 0 0 100%;          /* each slide = full container width */
+  scroll-snap-align: start;
+  /*                  ^
+                      start = snap to the START edge of the element
+                      (alternatives: center, end)                    */
+  scroll-snap-stop: always; /* NEVER skip this slide, even on fast fling */
+}
+```
+
+### scroll-snap-type breakdown
+
+```
+scroll-snap-type: <axis> <strictness>
+
+axis:
+  x          — horizontal scroll only
+  y          — vertical scroll only
+  both       — snap in both dimensions (rare; use for tile grids)
+  block      — logical axis: vertical in horizontal writing mode
+  inline     — logical axis: horizontal in horizontal writing mode
+
+strictness:
+  mandatory  — MUST snap; browser snaps after every scroll event
+               WHY: carousels, full-page experiences where partial slides are wrong
+               WHEN IT BREAKS: if snap targets are too close together, the
+               browser can jump unexpectedly. Items must be well-spaced.
+
+  proximity  — snaps ONLY if the scroll position lands within a threshold
+               WHY: long scrolling lists where you still want smooth reading
+               WHEN IT BREAKS: threshold is browser-defined; behavior differs
+               across Chrome, Firefox, Safari. Hard to test predictably.
+```
+
+### scroll-snap-align breakdown
+
+```
+scroll-snap-align: <block-alignment> <inline-alignment>
+(or shorthand: scroll-snap-align: <value>  — applies to both axes)
+
+start   — the START edge of the item aligns with the START edge of the container
+center  — the CENTER of the item aligns with the CENTER of the container
+          WHY: use for carousels where the selected slide is visually centered
+end     — the END edge of the item aligns with the END edge of the container
+
+Example — centered carousel with peeking sides:
+.carousel-track { scroll-snap-type: x mandatory; overflow-x: scroll; }
+.carousel-slide { scroll-snap-align: center; }
+/* Result: each slide snaps to center; adjacent slides peek at edges */
+```
+
+### scroll-snap-stop — Don't Skip Slides
+
+```css
+/* Without scroll-snap-stop: a fast fling can jump 3 slides */
+/* With it: EVERY slide must be visited before moving to next */
+.carousel-slide {
+  scroll-snap-stop: always; /* enforces one-at-a-time navigation */
+}
+
+/* Use "normal" (default) to allow fast-fling to jump multiple */
+.infinite-list-item {
+  scroll-snap-stop: normal; /* fast scroll still works */
+}
+```
+
+### Real Patterns
+
+**Full-page vertical scroll (slide deck UX):**
+```css
+html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100vh; }
+section { height: 100vh; scroll-snap-align: start; }
+```
+
+**Horizontal image carousel with center-lock:**
+```css
+.carousel {
+  display: flex;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 2rem; /* offset: first item doesn't snap flush to edge */
+}
+.carousel img {
+  flex: 0 0 80%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+```
+
+### When Scroll Snap Breaks
+
+```
+PROBLEM: snap items overlap or snap targets too dense
+→ Browser can't find a valid snap position → scrolling feels sticky.
+FIX: Ensure each snap target has enough space. Use scroll-padding on
+     the container to create a gap before the first snap point.
+
+PROBLEM: combining scroll-snap with position: sticky
+→ sticky headers interfere with snap target calculation.
+FIX: Use scroll-padding-top on the container equal to the sticky header height.
+
+PROBLEM: mobile iOS safari and mandatory scroll-snap
+→ Older iOS may ignore mandatory in some orientations.
+FIX: Test on iOS 15+ real device. Proximity is safer for fallback support.
+
+PROBLEM: keyboard navigation breaks inside snapped containers
+→ Tab order and snap order can diverge.
+FIX: Ensure DOM order matches visual order of snap items. Use tabindex carefully.
+```
+
+### Mobile vs Desktop Behavior
+
+```
+Mobile:  Touch-scroll deceleration is natural; snap snaps at the end of
+         the momentum scroll. Feels native (like native app carousels).
+
+Desktop: Mouse-wheel scroll is discrete (tick-by-tick). With mandatory,
+         each wheel tick may snap to the next item immediately.
+         Use proximity if you want the wheel to scroll freely.
+
+Desktop trackpad: Behaves like mobile momentum scroll. Snap works well.
+```
+
+---
+
+### Section Challenge — Scroll Snap Decision
+
+> You're building a mobile-first product page with 5 full-width feature
+> sections. Users should scroll through them one at a time. A sticky nav
+> bar takes 60px at the top. Fast swipes should NOT skip sections.
+
+<details>
+<summary>Answer</summary>
+
+```
+CONTAINER SETUP:
+  html {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    scroll-padding-top: 60px; /* compensates for sticky nav */
+  }
+
+ITEM SETUP:
+  section {
+    min-height: 100vh;        /* each section fills the viewport */
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* disables skip-snapping on fast swipe */
+  }
+
+WHY mandatory (not proximity):
+  You want hard-stop behavior — no partial sections visible.
+  proximity would let fast swipes land between sections.
+
+WHY scroll-snap-stop: always:
+  Without it, a hard swipe on mobile jumps 2-3 sections.
+  always enforces one-section-at-a-time, matching the design intent.
+
+WHY scroll-padding-top: 60px:
+  Without it, scroll-snap-align: start would snap the section's TOP
+  edge to the viewport top — but the sticky nav covers the first 60px,
+  hiding the section header. scroll-padding offsets the snap calculation.
+
+FAILURE BOUNDARY:
+  If you add more sections and they're shorter than viewport height,
+  mandatory snap can trap users who can't scroll to the right offset.
+  Guard: each section should be ≥ 100vh.
+```
+
+</details>
+
+---
+
 > [← Layout Systems](02_CSS_Layout_Systems.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern Architecture](04_CSS_Modern_Architecture.md)
 
 ---

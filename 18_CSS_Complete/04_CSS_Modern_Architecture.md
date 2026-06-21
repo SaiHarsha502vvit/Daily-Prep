@@ -1043,3 +1043,195 @@ border-left: 1px solid; /* border-inline-start: 1px solid; */
 **Debug/Fix:** Write the constraint directly in CSS: `font-size: clamp(0.875rem, 4cqi, 1.5rem)`, `width: min(400px, 100%)`, and `padding: max(1rem, 3vw)`. Then test narrow, normal, and wide containers instead of only viewport sizes.
 
 </details>
+
+---
+
+## 12. CSS Containment & Performance — Virtualization Without JavaScript
+
+WHY: Browser rendering has a single critical problem at scale: **any
+style change can theoretically affect any element on the page**. If you
+change the `width` of one element, the browser must recalculate layout
+for everything that could be affected — the whole document by default.
+CSS Containment tells the browser: "This element's internals cannot
+affect outside elements." That promise lets the browser skip huge
+portions of the layout/paint pipeline.
+
+### The Rendering Pipeline Problem
+
+```
+Without containment:
+  You update 50 list items in a feed (add, remove, resize).
+  Browser must re-layout the ENTIRE document to see if anything shifted.
+  On large pages: 200ms+ of janky reflow for every update.
+
+With containment:
+  Each list item declares contain: layout.
+  Browser reflows ONLY that item's subtree.
+  50 updates = 50 isolated recalculations, not 1 global one.
+```
+
+### The contain Property — Four Values
+
+```css
+/* Syntax: contain: <one or more values> */
+/* Values can be combined: contain: layout style; */
+
+contain: layout;
+/* PROMISE: this element's layout does not affect anything outside it.
+   Floats, positioned elements, flexbox — contained within this box.
+   WHY USE: feed items, card grids, any component that is visually self-contained.
+   WHAT BREAKS: absolutely-positioned children that need to escape the box
+                (e.g., a tooltip that renders outside the component bounds)
+                → they're now clipped to the contain boundary.              */
+
+contain: style;
+/* PROMISE: CSS counters and quotes generated inside don't affect outside.
+   WHAT IT DOES: prevents counter-increment from escaping component scope.
+   WHY USE: component libraries where CSS counters must stay isolated.
+   WHAT BREAKS: if you have global CSS counters that count across components,
+                style containment will break the counting sequence.          */
+
+contain: paint;
+/* PROMISE: the element's subtree won't be rendered outside its border-box.
+   EFFECT: implies overflow: hidden behavior (anything outside is not painted).
+   WHY USE: elements where you know nothing inside escapes visually.
+   WHAT BREAKS: box shadows, outline, pseudo-elements that extend beyond border —
+                they'll be clipped.                                            */
+
+contain: size;
+/* PROMISE: the element does not depend on its children to determine its size.
+   You MUST specify explicit width and height (or block-size/inline-size).
+   WHY USE: required for content-visibility (see below); or when element size
+            is always known in advance.
+   WHAT BREAKS: auto-sizing layouts. If you forget to set explicit dimensions,
+                the element collapses to 0x0.                                  */
+
+/* SHORTHAND: strict = layout + style + paint + size */
+contain: strict;
+
+/* SHORTHAND: content = layout + style + paint (excludes size) */
+contain: content;
+```
+
+### content-visibility: auto — Virtualization Without JavaScript
+
+```css
+.feed-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px; /* placeholder dimensions while off-screen */
+}
+```
+
+**What it does:**
+The browser **skips rendering** (layout + paint) for elements outside
+the viewport. When an element scrolls into view, the browser renders it
+just-in-time. This is JavaScript list-virtualization (react-window,
+vue-virtual-scroll) implemented natively in CSS.
+
+**Why `contain-intrinsic-size` matters:**
+When `content-visibility: auto` skips an element, the browser still
+needs to reserve space for it in the scroll layout (otherwise the
+scrollbar jumps as you scroll). `contain-intrinsic-size` provides the
+estimated size — a placeholder the browser uses while the real size
+is unknown.
+
+```css
+/* Syntax: contain-intrinsic-size: <width> <height> */
+/* Or the newer "auto" prefix (uses last known size): */
+contain-intrinsic-size: auto 200px;
+/*                       ^    ^
+                         |    fallback if no prior render exists
+                         auto = browser uses the LAST RENDERED size
+                                (much more accurate for variable-height items) */
+```
+
+### Real Performance Impact
+
+```
+Google's web.dev measurements on a Wikipedia-style page:
+  Without content-visibility: rendering time ~232ms (full page first render)
+  With content-visibility: auto on sections: ~30ms initial render
+  → 7.5x improvement in first render for long-document pages
+
+WHY: The below-fold content (80% of the page) is simply not rendered.
+Only the viewport-visible content is painted. The placeholder size
+keeps the scrollbar accurate.
+```
+
+### When Containment Helps vs Breaks Layout
+
+```
+USE contain: layout ON:
+  ✅ Card components, feed items, product listing tiles
+  ✅ Any component that is visually self-contained
+  ✅ Dashboard widgets, sidebar items, table rows
+
+DO NOT USE contain: layout ON:
+  ❌ An element with absolutely-positioned tooltips that extend outside it
+     → tooltips get clipped
+  ❌ An element where you need overflowing floats to affect parent height
+  ❌ Any element participating in a sticky-header/scroll-offset pattern
+
+USE content-visibility: auto ON:
+  ✅ Long lists, article sections, documentation pages
+  ✅ Comment threads, product reviews, any paginated feed
+  ✅ Below-the-fold UI that doesn't need to be interactive immediately
+
+DO NOT USE content-visibility: auto ON:
+  ❌ Interactive elements (forms, buttons) that users may tab to off-screen
+     → they won't be in the accessibility tree while skipped
+  ❌ Elements with CSS animations that must run even when off-screen
+  ❌ Elements with IntersectionObserver that fires on page load
+     → the element is never "intersecting" in the observer's view while skipped
+```
+
+### Section Challenge — Containment Decision
+
+> You have a social feed with 500 items. Each item is a `<article>`
+> with text, an image, and a "like" button. Scrolling is janky on
+> lower-end Android phones. You also have a tooltip on each item
+> that appears above the item's top edge (outside the article's
+> border-box). Which containment properties do you apply, and which
+> do you avoid?
+
+<details>
+<summary>Answer</summary>
+
+```
+APPLY:
+  article {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 320px; /* estimated item height */
+  }
+
+  content-visibility: auto implies contain: layout style paint size
+  while the item is off-screen — full isolation during skip phase.
+  When the item enters the viewport, the browser renders it normally.
+
+AVOID:
+  contain: paint (or any paint containment) explicitly on the article —
+  because the tooltip renders ABOVE the article's top edge (outside its
+  border-box). paint containment clips anything rendered outside the
+  border-box, so the tooltip would be invisible.
+
+WHY content-visibility is safe here despite the tooltip:
+  content-visibility: auto only applies containment while the element is
+  OFF-SCREEN. By the time a user can see or interact with the tooltip,
+  the item is on-screen and content-visibility has rendered it normally
+  (no paint containment active). The tooltip works correctly.
+
+CONTAIN-INTRINSIC-SIZE CHOICE:
+  Use "auto 320px" (not just "320px") because feed items likely vary
+  in height (some have long text). "auto" lets the browser use each
+  item's last-rendered height as the placeholder, keeping scroll
+  position accurate as items load in.
+
+FAILURE BOUNDARY:
+  If a "like" button triggers a network request and the user tabs to
+  the button while it's still off-screen (keyboard-only navigation),
+  content-visibility: auto may hide the button from the accessibility
+  tree. Solution: add a keyboard focus handler that ensures the
+  focused item is scrolled into view before the interaction fires.
+```
+
+</details>

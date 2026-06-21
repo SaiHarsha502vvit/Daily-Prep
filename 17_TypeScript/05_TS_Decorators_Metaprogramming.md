@@ -1,6 +1,6 @@
-**Navigation**: [< Previous](04_TS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >]()
+**Navigation**: [< Previous](04_TS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_TS_Module_System_Performance.md)
 
-**TypeScript Chapter 5/5** | [← Deep Reasoning](04_TS_Deep_Reasoning.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
+**TypeScript Chapter 5/6** | [← Deep Reasoning](04_TS_Deep_Reasoning.md) | [Index](../00_MASTER_INDEX.md) | [Next → Module System](06_TS_Module_System_Performance.md)
 
 # TypeScript Decorators & Metaprogramming — Runtime Behavior in a Compile-Time World
 

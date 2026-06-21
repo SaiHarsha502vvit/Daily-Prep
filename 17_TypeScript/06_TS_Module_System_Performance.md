@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](05_TS_Decorators_Metaprogramming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >]()
+**Navigation**: [< Previous](05_TS_Decorators_Metaprogramming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Series →](../18_CSS_Complete/01_CSS_Foundations.md)
 
 **TypeScript Chapter 6/6** | [← Decorators](05_TS_Decorators_Metaprogramming.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
 
