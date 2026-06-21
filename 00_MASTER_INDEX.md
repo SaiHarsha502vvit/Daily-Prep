@@ -1,6 +1,6 @@
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**336+ files | 22 folders | Last Updated: April 2026**
+**560+ files | 25 folders | Last Updated: June 2026**
 
 ---
 
@@ -40,7 +40,7 @@
 | `08_SQL`                  | SQL foundations, joins, windows, CTEs, analytics, internals | [00_INDEX.md](08_SQL/00_INDEX.md)                  |
 | `09_Career_Reference`     | Career guides, behavioral prep, project reference           | [00_INDEX.md](09_Career_Reference/00_INDEX.md)     |
 | `10_Enterprise_Systems`   | ERP, DDD, finance/order/inventory systems                   | [00_INDEX.md](10_Enterprise_Systems/00_INDEX.md)   |
-| `12_Daily_Practice`       | Daily practice plans and problem drills                     | [00_INDEX.md](12_Daily_Practice/00_INDEX.md)       |
+| `12_Daily_Practice`       | Daily practice plans and problem drills                     | [00_INDEX.md](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
 | `13_Developer_Essentials` | Git, Docker, CI/CD, networking, concurrency                 | [00_INDEX.md](13_Developer_Essentials/00_INDEX.md) |
 | `14_Mental_Models`        | Thinking frameworks, pattern triggers, reasoning ladders    | [00_INDEX.md](14_Mental_Models/00_INDEX.md)        |
 | `15_React_Frontend`       | React, hooks, state, architecture, deep reasoning           | [00_INDEX.md](15_React_Frontend/00_INDEX.md)       |
@@ -50,7 +50,10 @@
 | `19_Frontend_Integration` | Browser debugging, build tools, performance, a11y           | [00_INDEX.md](19_Frontend_Integration/00_INDEX.md) |
 | `20_Interview_Mastery`    | Interview synthesis, problems, scripts, final prep          | [00_INDEX.md](20_Interview_Mastery/00_INDEX.md)    |
 | `21_Python_ML_DL_NLP`     | Python, ML, DL, NLP, LLM/RAG, MLOps                         | [00_INDEX.md](21_Python_ML_DL_NLP/00_INDEX.md)     |
+| `21_SDET_Playwright`      | Enterprise SDET automation with Playwright/TypeScript        | [00_INDEX.md](21_SDET_Playwright_Automation/00_INDEX.md) |
+| `22_Advanced_API_Testing` | REST, SOAP, contract testing, API test architecture         | [00_INDEX.md](22_Advanced_API_Testing/00_INDEX.md) |
 | `22_DevOps`               | Linux, Docker, Kubernetes, CI/CD, SRE, deployment           | [00_INDEX.md](22_DevOps/00_INDEX.md)               |
+| `23_Mobile_Dev_Testing`   | Android, Flutter, mobile testing                            | [CONTEXT.md](23_Mobile_Dev_And_Testing/CONTEXT.md) |
 
 ---
 
