@@ -9,6 +9,20 @@ The three pillars: Metrics, Logs, Traces — how to know what your system is doi
 
 ---
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: You cannot fix what you cannot see. Production systems fail in unexpected ways, and the difference between a 5-minute outage and a 5-hour outage is usually the quality of observability. Google's SRE research (Beyer, Jones, Petoff, Murphy, "Site Reliability Engineering", 2016) shows that organizations with mature observability practices resolve incidents 3× faster. The Three Pillars (metrics, logs, traces) work together — metrics tell you *what* is broken, logs tell you *why*, traces tell you *where in the request path*.
+
+**WHAT**: The Three Pillars of observability (metrics, logs, traces); Golden Signals (latency, traffic, errors, saturation); RED method (Rate, Errors, Duration); USE method (Utilization, Saturation, Errors); SLI/SLO/Error Budget concepts and calculations; structured logging with correlation IDs; distributed tracing with OpenTelemetry; alerting design (symptom-based vs cause-based); on-call practices; runbook templates; dashboard design.
+
+**WHERE**: Every production system post-2015. Google's SRE book (2016) formalized the methodology. Etsy pioneered StatsD (2008/2011). SoundCloud created Prometheus (2012, inspired by Borgmon). Grafana (2014) became the standard dashboard tool. Honeycomb (2016) popularized wide-event structured logging. OpenTelemetry (2019, merger of OpenTracing + OpenCensus) is the modern instrumentation standard, supported by all major cloud vendors.
+
+**WHEN**: When designing any new service (instrument from day 1 — retrofitting observability later is painful). When migrating from monolith to microservices (distributed tracing becomes essential). When on-call rotations are added (alerting design + runbooks). When MTTR (mean time to recovery) is high (symptom-based alerts and structured logs cut MTTR dramatically).
+
+**WHO**: Google SRE team (Beyer, Jones, Petoff, Murphy — "Site Reliability Engineering", 2016). Baron Schwartz ("Practical Guide to Enterprise Monitoring", 2007; "Percona Toolkit"). Brendan Gregg (USENIX/LISA talks; "Systems Performance", 2013). Peter Bourgon ("Metrics, Logs, and Traces" talk at Craft Conference, 2017). Cindy Sridharan ("Distributed Systems Observability", O'Reilly, 2017).
+
+**HOW**: Three Pillars overview first (what each pillar measures, what question it answers), then Golden Signals / RED / USE method comparison, then SLO/SLI/Error Budget calculation with concrete examples, then OpenTelemetry instrumentation (metrics + traces + logs SDK), then alerting design (symptom vs cause; page vs ticket; alert routing), then runbook templates, then dashboard design (what makes a useful Grafana dashboard). Each major section ends with a local challenge.
+
 ## The Three Pillars
 
 PILLAR 1: METRICS (What is happening?)
@@ -233,6 +247,563 @@ Correlation IDs show you **what** happened (which log lines belong to the same r
 
 **Debug workflow:** For log loss: verify log shipping pipeline with `kubectl logs <pod>` against centralized store; for alert fatigue: calculate signal-to-noise ratio (true alerts / total pages); for high-cardinality: `Prometheus cardinality API` shows top label combinations by series count.
 **Mitigation discipline:** Instrument all log lines with `correlationId` via MDC/slog; ship logs to remote store before containers terminate; alert on leading indicators (queue depth, error budget burn rate); use `histogram_quantile(0.99)` not averages; publish SLOs and enforce error budget freeze policy.
+
+## SLO, SLI, and Error Budget
+
+The Three Pillars tell you **what is happening** in production. SLI/SLO/Error Budget tell you **whether the user experience is acceptable** — and provide a framework for trading off reliability against velocity.
+
+### Definitions
+
+- **SLI (Service Level Indicator)**: a measurement of service quality. Examples: request latency (p99 < 200ms), success rate (>99.9%), availability (uptime).
+- **SLO (Service Level Objective)**: a target value for an SLI over a time window. Example: "99.9% of requests return successfully in any 30-day window."
+- **Error Budget**: the inverse of the SLO. For SLO = 99.9%, the error budget = 0.1% of requests = ~43 minutes of downtime per 30-day month.
+
+### Why Error Budgets Matter
+
+Without an error budget, "reliability" is unbounded — engineers push for 100% uptime, which means no new deploys, no experiments, no progress. With an error budget:
+
+- **When you're under budget**: deploy freely, take risks, run experiments
+- **When you're at budget**: stop non-critical deploys, focus on stability
+- **When you've burned the budget**: postmortem required before resuming deploys
+
+This is Google's SRE model, codified in "Site Reliability Engineering" (2016).
+
+### SLO Calculation Examples
+
+| SLO | Per-request | Per-day (1M req/day) | Per-month (30M req) |
+|---|---|---|---|
+| **99%** (2 nines) | 1 in 100 fails OK | 10,000 failures/day | 300,000 failures/month |
+| **99.9%** (3 nines) | 1 in 1,000 fails OK | 1,000 failures/day | 30,000 failures/month |
+| **99.95%** (3.5 nines) | 1 in 2,000 fails OK | 500 failures/day | 15,000 failures/month |
+| **99.99%** (4 nines) | 1 in 10,000 fails OK | 100 failures/day | 3,000 failures/month |
+
+The cost difference between 99.9% and 99.99% is roughly 10× in infrastructure. Most services should target 99.9% — chasing 99.99% requires multi-region redundancy, automated failover, and ops investment that doesn't pay off unless revenue is tied to uptime (e.g., ad serving, payment processing).
+
+### SLO Document Template
+
+```yaml
+# SLO: Checkout API
+service: checkout-api
+owner: payments-team
+
+slis:
+  - name: availability
+    description: HTTP 200 responses as fraction of total responses
+    query: |
+      sum(rate(http_requests_total{status=~"2.."}[30d]))
+      /
+      sum(rate(http_requests_total[30d]))
+    target: 0.999  # 99.9%
+
+  - name: latency
+    description: 99th percentile request duration under 300ms
+    query: |
+      histogram_quantile(0.99, 
+        sum(rate(http_request_duration_seconds_bucket[30d])) by (le))
+    target: 0.99  # 99% of requests <300ms
+
+  - name: error_rate
+    description: 5xx responses as fraction of total responses
+    query: |
+      sum(rate(http_requests_total{status=~"5.."}[30d]))
+      /
+      sum(rate(http_requests_total[30d]))
+    target: 0.001  # <0.1% errors
+```
+
+### Burn Rate Alerting
+
+Traditional alerting: "alert when error rate > 1%". This fires too late (when SLO is already breached) and too noisy (a brief spike during deploy).
+
+**Burn rate alerting**: alert based on **how fast you're burning the error budget**.
+
+```
+1-hour burn at 14.4× rate = entire monthly budget consumed in 2 days
+6-hour burn at 6× rate = entire monthly budget consumed in 5 days
+3-day burn at 1× rate = entire monthly budget consumed in 30 days (exactly on schedule)
+```
+
+```yaml
+# Prometheus alerting rule
+- alert: ErrorBudgetBurningFast
+  expr: |
+    (
+      sum(rate(http_requests_total{status=~"5.."}[1h]))
+      /
+      sum(rate(http_requests_total[1h]))
+    ) > (1 - 0.999) * 14.4
+  for: 2m
+  labels:
+    severity: page
+  annotations:
+    summary: "Burning error budget at 14.4× rate"
+    description: "At current rate, monthly error budget will be exhausted in {{ humanizeDuration $budget_exhaustion_time }}"
+```
+
+This alert fires when the burn rate is unsustainable — it would burn the entire monthly budget in 2 days if sustained. Fast feedback, low noise.
+
+🔬 **Section Challenge — SLO Burn Rate Alert**
+
+Your service has SLO 99.9% (error budget = 0.1%). Current error rate over the last hour is 0.5%. Should the burn-rate alert fire? At what burn rate is the alert set, and how does it differ from a traditional "alert if error >1%" alert?
+
+<details>
+<summary>Answer</summary>
+
+**Calculation**:
+- Current error rate: 0.5%
+- SLO target: 0.1% (error budget)
+- Burn rate: 0.5% / 0.1% = **5×**
+- At 5× burn, monthly budget (0.1% × 30 days = 0.1% × 720 hours) is consumed in 720 / 5 = **144 hours = 6 days**
+
+**Alert firing**:
+- The Prometheus rule fires when burn rate > 14.4× (1-hour window) — this would consume the budget in 2 days.
+- 5× burn is alarming but not yet critical. A 6-hour burn at 6× would fire the more sensitive alert.
+
+**Difference from traditional alert**:
+- Traditional "alert if error >1%": does NOT fire (0.5% < 1%). Misses the issue.
+- Burn-rate alert at 14.4×: does NOT fire yet (5× < 14.4×). But the operator should investigate.
+- The two alerts form a multi-window strategy:
+  - Fast burn (1h × 14.4×): page on-call immediately
+  - Slow burn (6h × 6×): ticket for next-day investigation
+  - Steady burn (3d × 1×): ticket for weekly review
+
+**Why burn-rate is better**:
+- A 5-minute spike of 5% errors = 5 minutes × (5%/0.1%) = 250 minutes of budget consumed in 5 minutes. Without burn-rate, this is invisible (5-minute error rate is rarely alerted).
+- The 1-hour burn rate smooths over short spikes; the 14.4× threshold catches sustained problems.
+
+**Production note**: a well-tuned SLO has 3-5 burn-rate alerts at different windows and multipliers. The Prometheus book ("Prometheus: Up & Running", 2018) and Google's SRE workbook detail this multi-window strategy.
+</details>
+
+## Sampling Strategies for Distributed Tracing
+
+Tracing every request is expensive. A single trace for a 10-service call generates 10+ spans with metadata. At 10,000 req/sec, that's 100,000 spans/sec — gigabytes of trace data per hour.
+
+**Sampling** reduces this volume while preserving statistical validity for debugging.
+
+### Head-Based Sampling
+
+Decision made at the start of the trace (at the root span):
+
+```java
+public boolean shouldSample(String traceId, long requestDurationMs) {
+    // Always sample errors
+    if (isError()) return true;
+    
+    // Always sample slow requests (>1s)
+    if (requestDurationMs > 1000) return true;
+    
+    // Sample 1% of normal traffic
+    return Math.abs(traceId.hashCode()) % 100 == 0;
+}
+```
+
+**Trade-off**: simple, no cross-service coordination, but you miss interesting traces (e.g., a rare bug that only fires on certain inputs may never be sampled).
+
+### Tail-Based Sampling
+
+Decision made at the END of the trace (after all spans collected):
+
+```java
+public boolean shouldKeep(CompletedTrace trace) {
+    // Always keep errors
+    if (trace.hasErrors()) return true;
+    
+    // Always keep slow requests
+    if (trace.getDuration() > 1000) return true;
+    
+    // Always keep traces that touched a "suspicious" service
+    if (trace.touchedService("payments")) return true;
+    
+    // Sample 1% of normal traces
+    return trace.getTraceId().hashCode() % 100 == 0;
+}
+```
+
+**Trade-off**: requires buffering full trace before deciding. But you can keep 100% of errors and only 1% of healthy traffic. This is what production systems like Honeycomb and Lightstep use.
+
+### OpenTelemetry Tail Sampling
+
+```yaml
+# OpenTelemetry Collector config
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 50000
+    expected_new_traces_per_sec: 100
+    policies:
+      - name: errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
+      - name: slow-traces
+        type: latency
+        latency:
+          threshold_ms: 1000
+      - name: probabilistic
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 1
+```
+
+### Sampling Rate Selection
+
+| Traffic volume | Sampling rate | Trace volume | Storage/day |
+|---|---|---|---|
+| 1,000 req/sec | 100% | 1,000 traces/sec | ~100GB/day |
+| 1,000 req/sec | 10% | 100 traces/sec | ~10GB/day |
+| 1,000 req/sec | 1% | 10 traces/sec | ~1GB/day |
+| 10,000 req/sec | 1% | 100 traces/sec | ~10GB/day |
+
+**Rule of thumb**: keep 100% of errors and slow traces, sample 1-10% of normal traffic. This gives you debugging power for ~10% of the cost.
+
+### W3C Trace Context Propagation
+
+The trace ID flows across service boundaries via HTTP headers:
+
+```http
+GET /api/orders HTTP/1.1
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+tracestate: congo=t61rcWkgMzE
+```
+
+The `traceparent` header carries:
+- Version (00)
+- Trace ID (32 hex chars = 128 bits)
+- Parent span ID (16 hex chars = 64 bits)
+- Trace flags (01 = sampled)
+
+OpenTelemetry injects this automatically when you use the SDK's HTTP instrumentation.
+
+🔬 **Section Challenge — Sampling Strategy Selection**
+
+You run a payment processing service at 5,000 req/sec. Last quarter, an intermittent bug caused 0.01% of requests to double-charge customers. The bug was traced via logs (not tracing) and took 4 days to identify. You're adding distributed tracing. What sampling strategy catches similar bugs reliably?
+
+<details>
+<summary>Answer</summary>
+
+**The bug signature**: 0.01% = 1 in 10,000 requests. The bug is rare but high-impact (financial).
+
+**Head-based sampling analysis**:
+- 1% sampling = 1 in 100 traces kept = 50 traces/sec total
+- Of those, 0.01% × 1% = 0.0001% of traces capture the bug = 5 traces per 10 million
+- **Verdict**: head-based at 1% misses the bug in most time windows. Even at 10%, only 1 in 1000 bug occurrences is captured.
+
+**Tail-based sampling analysis**:
+- 100% of errors captured → if the bug surfaces as a 5xx or logs an error, ALL occurrences are kept
+- If the bug surfaces as a successful double-charge (visible only via downstream reconciliation), you need a custom policy: "keep all traces that touch the `chargeCustomer` operation in payment-service"
+- **Verdict**: tail-based catches the bug 100% of the time IF the trace shows an error or unusual pattern.
+
+**Recommended strategy**:
+1. **Tail-based sampling with custom policies**:
+   - Keep 100% of traces with errors (status_code: ERROR)
+   - Keep 100% of traces where the duration > 1 second
+   - Keep 100% of traces that touch specific operations: `chargeCustomer`, `refundPayment`, `applyDiscount`
+   - Probabilistic 1% for the rest
+
+2. **Configure trace logging**: every charge event logs the trace_id, so reconciliation can find the trace later:
+   ```java
+   log.info("charge_completed trace_id={} amount={}", 
+       span.getContext().getTraceId(), 
+       amount);
+   ```
+
+3. **Cost**: at 5,000 req/sec with 0.01% errors and 1% slow = 0.5 + 50 = ~50 traces/sec. Plus 1% of healthy traffic = ~50 traces/sec. Total ~100 traces/sec. Storage ~10GB/day. Affordable.
+
+**The lesson**: tail-based sampling is the right choice when bugs are rare-but-impactful. The slight increase in cost (buffering full trace before deciding) pays for itself in debugging speed.
+</details>
+
+## Runbook Templates
+
+A runbook is a step-by-step playbook for handling specific incidents. Without one, on-call engineers waste time under pressure figuring out "what do I do?" instead of executing. With one, MTTR (mean time to recovery) drops dramatically.
+
+### Anatomy of a Runbook
+
+```markdown
+## Runbook: [Service] [Symptom]
+
+**Severity**: P0 / P1 / P2
+**On-call rotation**: payments-oncall
+**Escalation**: payments-team-lead (Slack: #payments-escalation)
+
+### Symptoms
+
+What the alert / user report looks like:
+- "Checkout API 5xx rate > 1%"
+- "Latency p99 > 5 seconds"
+- "PagerDuty alert: payments_error_budget_burn"
+
+### Quick Diagnosis (5 minutes)
+
+1. **Check the dashboard**: [link to Grafana dashboard]
+   - Look for: error rate spike, latency spike, traffic spike
+2. **Check recent deploys**: `kubectl rollout history deployment/payments`
+   - Has there been a deploy in the last hour? If yes, roll back.
+3. **Check upstream/downstream**: are dependencies (DB, cache, queue) healthy?
+   - `kubectl get pods -n payments` — all pods running?
+   - `pg_stat_activity` — DB connections exhausted?
+
+### Mitigation (15 minutes)
+
+**If recent deploy caused the issue**:
+```bash
+kubectl rollout undo deployment/payments
+kubectl rollout status deployment/payments
+```
+
+**If DB connections exhausted**:
+```bash
+# Identify long-running queries
+SELECT pid, query, state, query_start 
+FROM pg_stat_activity 
+WHERE state = 'active' 
+ORDER BY query_start;
+
+# Kill the long-running query (use sparingly)
+SELECT pg_terminate_backend(pid);
+```
+
+**If cache (Redis) is down**:
+```bash
+# Failover to secondary
+redis-cli -h redis-primary CLUSTER FAILOVER
+
+# Or temporarily disable cache (degraded mode)
+kubectl set env deployment/payments CACHE_ENABLED=false
+```
+
+### Long-Term Fix
+
+- File a ticket for root-cause investigation
+- Add a regression test that catches this scenario
+- Update the runbook if any step was unclear or missing
+
+### Related
+
+- Dashboard: [link]
+- Logs: [link to Datadog/Splunk]
+- Metrics: [link]
+- Recent postmortems: [link]
+```
+
+### Example: Runbook for "Payments 5xx Spike"
+
+```markdown
+## Runbook: Payments API 5xx Spike
+
+**Severity**: P1 (customer-facing impact)
+**Owner**: payments-team
+
+### Symptoms
+- Alert: `payments_5xx_rate > 1% for 5 minutes`
+- Customer reports: "My payment failed but I was charged"
+- Dashboard spike: https://grafana.example.com/d/payments
+
+### Step 1: Verify the alert is real (2 min)
+- Check Grafana for actual 5xx count (not synthetic)
+- If alert is from synthetic monitoring only, investigate test infra
+
+### Step 2: Check for recent changes (3 min)
+```bash
+# Recent deploys
+kubectl rollout history deployment/payments-api -n payments
+
+# Recent config changes
+kubectl get configmap payments-config -o yaml | grep -i "last_modified"
+```
+If anything changed in the last 30 min, **rollback**:
+```bash
+kubectl rollout undo deployment/payments-api -n payments
+kubectl rollout status deployment/payments-api -n payments
+```
+
+### Step 3: Check dependencies (5 min)
+- **Database**: `pg_stat_activity` — connections > 80% of max?
+- **Redis**: `redis-cli ping` — responding?
+- **Stripe API**: https://status.stripe.com — outage?
+- **Internal services**: `kubectl get pods -A | grep -v Running`
+
+### Step 4: Apply targeted mitigation (5 min)
+Based on diagnosis:
+- DB exhausted → kill long-running queries (see SQL above)
+- Redis down → disable cache (degraded mode)
+- Stripe down → enable circuit breaker (`STRIPE_CIRCUIT_BREAKER=true`)
+- Unknown → scale up + page secondary on-call
+
+### Step 5: Communicate
+- Post in #incidents: "P1 incident, payments 5xx spike, investigating"
+- Update status page: https://status.example.com (if customer-facing)
+- Post updates every 15 min until resolved
+
+### Step 6: Post-incident
+- File ticket for root-cause analysis within 24h
+- Schedule postmortem within 5 business days
+- Update this runbook based on learnings
+```
+
+### Runbook Maintenance
+
+- **Test the runbook quarterly**: walk through it on a non-incident Tuesday. Steps that don't work or are unclear get fixed.
+- **Update after every incident**: if a step was unclear or missing during a real incident, fix it.
+- **Link to dashboards, not screenshots**: dashboards evolve; screenshots become stale.
+
+🔬 **Section Challenge — Runbook Anti-Patterns**
+
+A team writes a runbook with these steps: "1. SSH into the production server. 2. Run `kill -9 $(pgrep java)` to restart the app. 3. Verify it's back up." What are the anti-patterns here, and how would you fix them?
+
+<details>
+<summary>Answer</summary>
+
+**Anti-patterns**:
+1. **"SSH into the production server"** — direct SSH access to production is a security anti-pattern in 2024 (no audit trail, no MFA enforcement, can't be revoked centrally). Use `kubectl exec` or break-glass procedures with audit logging.
+2. **"kill -9"** — SIGKILL doesn't allow graceful shutdown. In-flight requests fail; database connections leak (until TCP timeout); logs may be lost. Use `kubectl rollout restart` (sends SIGTERM, waits for graceful shutdown) or scale to 0 and back up.
+3. **No verification step beyond "verify it's back up"** — vague. Specific verification: hit the health endpoint, check error rate returns to baseline, check dependency connections are re-established.
+4. **No rollback mention** — if a bad deploy caused the issue, restart doesn't fix the root cause. Always check rollout history first and offer rollback as the primary mitigation.
+5. **No communication step** — incident response without status updates makes customers anxious and team coordination chaotic.
+6. **No escalation path** — what if the on-call can't resolve? Who to page?
+
+**Fixed runbook**:
+```markdown
+### Step 1: Check for recent deploys
+```bash
+kubectl rollout history deployment/payments-api -n payments
+```
+If anything in the last 30 min, **rollback first**:
+```bash
+kubectl rollout undo deployment/payments-api -n payments
+kubectl rollout status deployment/payments-api -n payments
+```
+
+### Step 2: If no deploy, restart gracefully
+```bash
+kubectl rollout restart deployment/payments-api -n payments
+kubectl rollout status deployment/payments-api -n payments
+```
+This sends SIGTERM (allows graceful shutdown), then starts new pods.
+
+### Step 3: Verify recovery
+```bash
+# Health endpoint
+curl -f https://payments.example.com/actuator/health
+
+# Check error rate in Grafana (link)
+# Target: 5xx rate < 0.1% within 5 minutes
+```
+
+### Step 4: Communicate
+Post in #incidents and update status page.
+```
+
+**Why this is better**: every step is reproducible, idempotent, and audit-logged. The bad-deploy case is caught early. Graceful shutdown prevents cascade failures.
+</details>
+
+## Alert Routing and PagerDuty
+
+Alerting without routing = noise. Every engineer gets paged for everything = alert fatigue = real alerts ignored.
+
+### Severity Levels
+
+| Severity | When to use | Response | Example |
+|---|---|---|---|
+| **SEV-1** | Customer-facing outage; revenue loss; data loss | Page on-call immediately; expect response in <5 min | Payments 5xx > 5%, DB primary down |
+| **SEV-2** | Degraded service; partial impact; SLO at risk | Page on-call; expect response in <30 min | Single pod crash-looping; cache miss rate spike |
+| **SEV-3** | Potential issue; needs investigation but no immediate impact | Ticket; review in next business day | Disk usage > 70%; slow query logged |
+| **SEV-4** | Informational; no action needed | Log only; weekly review | New version deployed; scheduled maintenance |
+
+### Routing Rules
+
+```yaml
+# PagerDuty / Opsgenie routing rules
+- name: payments-p1-immediate
+  match:
+    service: payments
+    severity: SEV-1
+  route_to: payments-oncall-primary
+  escalation_after: 5min
+  escalate_to: payments-oncall-secondary
+  
+- name: payments-p2-business-hours
+  match:
+    service: payments
+    severity: SEV-2
+  route_to: payments-oncall-primary
+  escalation_after: 30min
+  escalate_to: payments-team-lead
+  only_during_business_hours: true
+  
+- name: payments-p3-ticket
+  match:
+    service: payments
+    severity: SEV-3
+  create_ticket: true
+  assign_to: payments-team-backlog
+```
+
+### Alert Quality: The "Page-Worthy" Test
+
+Before adding an alert, ask:
+1. **Is this actionable?** (Can the on-call DO something to fix it?)
+2. **Is this urgent?** (Does it require response in <30 min?)
+3. **Is this specific?** (Does the alert point to a clear root cause?)
+
+If any answer is "no", the alert is not page-worthy. Demote to a ticket.
+
+### Anti-Patterns
+
+- **Alert on every restart**: every Kubernetes pod restart triggers an alert. Result: 50 alerts/day, all noise. Alert on restart **rate** (>5 restarts in 5 minutes), not individual restarts.
+- **Alert on every error**: a 404 is an error too. Alert on **5xx** rate, not total error rate.
+- **Alert without runbook**: if the alert doesn't link to a runbook, the on-call spends 20 minutes figuring out what to do. Always link the runbook URL in the alert annotation.
+- **Alert on symptom AND cause**: alert on user-facing symptom (5xx rate, latency). Don't alert on CPU > 80% (cause). Operators should be able to fix symptoms directly.
+
+### The Alert Funnel
+
+```
+All incidents in production
+        ↓
+  Symptom-based alert (5xx rate, latency)
+        ↓
+  On-call pages, runs runbook
+        ↓
+  Identifies cause (DB connection leak)
+        ↓
+  Fixes cause, symptoms resolve
+        ↓
+  Postmortem adds alerts for the CAUSE
+  (so we catch it earlier next time)
+```
+
+Most monitoring setups have this backwards — alerting on causes (CPU, memory, disk) without alerting on symptoms. The user notices symptoms first. Alert on symptoms; investigate causes.
+
+🔬 **Section Challenge — Alert Design Review**
+
+Review these alerts:
+1. CPU usage > 80%
+2. 5xx error rate > 1% for 5 minutes
+3. Disk usage > 90%
+4. p99 latency > 2 seconds for 10 minutes
+5. Pod restart count > 0 in last hour
+6. Memory usage > 1GB
+
+Which are page-worthy? Which should be tickets? Which should be removed entirely?
+
+<details>
+<summary>Answer</summary>
+
+**Page-worthy** (actionable, urgent, specific):
+- ✅ **5xx error rate > 1% for 5 minutes**: customer-facing impact, action is "check runbook, rollback or restart"
+- ✅ **p99 latency > 2 seconds for 10 minutes**: user-facing degradation, action is "check dashboard, identify slow endpoint"
+
+**Tickets** (actionable but not urgent):
+- 🎫 **Disk usage > 90%**: action is "expand disk or clean up logs", can wait until business hours
+- 🎫 **Memory usage > 1GB**: action is "profile memory leak or set higher limit", not urgent unless trending up
+
+**Remove or rewrite**:
+- ❌ **CPU usage > 80%**: not specific (CPU spikes during deploys, GC pauses, batch jobs). Action unclear. Either remove or rewrite as "CPU usage > 80% AND not during scheduled job window AND error rate > baseline".
+- ❌ **Pod restart count > 0 in last hour**: too noisy (every Kubernetes deploy restarts pods). Rewrite as "Pod restart count > 5 in last 10 minutes" or "CrashLoopBackOff state".
+
+**The principle**: every alert should answer "what should the on-call DO?" If the answer is unclear or "investigate" without specifics, the alert is not page-worthy.
+
+**Production tip**: start with FEWER alerts. Add alerts only after a real incident where you wished you had one. The cost of a missed alert is lower than the cost of alert fatigue (real alerts being ignored).
+</details>
 
 ---
 ---

@@ -34,7 +34,12 @@ git commit -m "save"
 
 **The commit contains `v1`, NOT `v2`.** `git add` snapshots the file at that moment. Subsequent edits are NOT included in the commit unless you `git add` again.
 
-🔴 **Erklärung:** This is the most common Git surprise for beginners. `git add` does NOT create a "live link" to the file — it copies the file's current content into the staging area. Always `git status` before committing.
+<details>
+<summary>Key Insight</summary>
+
+This is the most common Git surprise for beginners. `git add` does NOT create a "live link" to the file — it copies the file's current content into the staging area. Always `git status` before committing.
+
+</details>
 
 </details>
 
@@ -62,7 +67,12 @@ feature:  └─D─E         (D, E get new hashes D', E')
 
 **Golden rule:** Never rebase commits that have been pushed to a shared branch. Rebase rewrites commit hashes — other developers' branches will diverge.
 
-🔴 **Erklärung:** `git rebase` is NOT "better" than merge. It creates a clean LINEAR history, but REWRITES commits (new hashes). On a shared branch, this forces everyone else to `git pull --force` — destructive. Use rebase only on LOCAL unpushed branches.
+<details>
+<summary>Key Insight</summary>
+
+`git rebase` is NOT "better" than merge. It creates a clean LINEAR history, but REWRITES commits (new hashes). On a shared branch, this forces everyone else to `git pull --force` — destructive. Use rebase only on LOCAL unpushed branches.
+
+</details>
 
 </details>
 
@@ -104,7 +114,12 @@ git push origin --force --tags
 
 **Step 4:** Rotate the secret. The old key is compromised even after history rewrite — it exists in clones, forks, and CI caches. **Always rotate credentials after exposure.**
 
-🔴 **Erklärung:** `git rm` only removes from the CURRENT commit. The secret is still in the reflog and in every previous commit's tree object. History rewriting tools (filter-branch or BFG) rebuild every commit's tree from the point of introduction. This changes ALL subsequent commit hashes — coordinate with your team before running.
+<details>
+<summary>Key Insight</summary>
+
+`git rm` only removes from the CURRENT commit. The secret is still in the reflog and in every previous commit's tree object. History rewriting tools (filter-branch or BFG) rebuild every commit's tree from the point of introduction. This changes ALL subsequent commit hashes — coordinate with your team before running.
+
+</details>
 
 </details>
 
@@ -187,7 +202,12 @@ desktop.ini
 - Collections use plural nouns (`/posts`, NOT `/post`)
 - No verbs in paths (`/api/posts`, NOT `/api/createPost`)
 
-🔴 **Erklärung:** The most common API design mistake is returning 200 for everything. HTTP status codes exist for a reason — use them. Clients (especially React Query) rely on status codes for error handling.
+<details>
+<summary>Key Insight</summary>
+
+The most common API design mistake is returning 200 for everything. HTTP status codes exist for a reason — use them. Clients (especially React Query) rely on status codes for error handling.
+
+</details>
 
 </details>
 
@@ -323,7 +343,12 @@ management:
       probability: 1.0 # sample 100% in dev, 10% in production
 ```
 
-🔴 **Erklärung:** Logs tell you WHAT happened. Metrics tell you HOW MUCH is happening. Traces tell you WHERE the bottleneck is. You need ALL three — logs without metrics = blind to trends; metrics without traces = can't pinpoint the slow service.
+<details>
+<summary>Key Insight</summary>
+
+Logs tell you WHAT happened. Metrics tell you HOW MUCH is happening. Traces tell you WHERE the bottleneck is. You need ALL three — logs without metrics = blind to trends; metrics without traces = can't pinpoint the slow service.
+
+</details>
 
 </details>
 
@@ -399,5 +424,338 @@ CREATE INDEX idx_orders_customer ON orders(customer_id);
 **Why this matters for this chapter:** The observability tools and patterns in these problem sets are not arbitrary — each emerged from a specific production failure or scale challenge at a major engineering organization. Prometheus (SoundCloud, 2012) solved pull-based metric collection at scale. OpenTelemetry (2019) solved vendor lock-in in tracing instrumentation. The Three Pillars model (Bourgon, ~2017) gave teams a shared vocabulary for debugging distributed systems.
 
 ---
+
+## DEV-PS4: Docker — File and Compose (Medium)
+
+You are containerizing a Spring Boot 3.x application that depends on Postgres 15 and Redis 7.
+
+### Task 1: Multi-stage Dockerfile
+
+Write a `Dockerfile` that:
+1. Uses `eclipse-temurin:21-jdk-alpine` as the build stage
+2. Uses `eclipse-temurin:21-jre-alpine` as the runtime stage (smaller attack surface — no JDK tools)
+3. Copies the Gradle wrapper, builds with `./gradlew bootJar`, then extracts layers
+4. Runs as non-root user (`spring:spring`)
+5. Has a HEALTHCHECK that hits `/actuator/health`
+
+### Task 2: docker-compose.yml
+
+Write a `docker-compose.yml` that:
+1. Defines 3 services: `app`, `postgres`, `redis`
+2. Uses named volumes for Postgres data persistence
+3. Wires the app's `DATABASE_URL` and `REDIS_URL` env vars from compose env
+4. Sets `depends_on` with health conditions (not just `service_started`)
+5. Exposes only the app port (5432 and 6379 stay internal)
+
+### Task 3: Identify the bug
+
+```yaml
+# Buggy compose snippet
+services:
+  app:
+    image: myapp:latest
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+```
+
+What's wrong with this configuration for a production deployment?
+
+<details>
+<summary>Answer</summary>
+
+**Multi-stage Dockerfile answer**:
+
+```dockerfile
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY gradlew settings.gradle build.gradle ./
+COPY gradle ./gradle
+RUN ./gradlew dependencies --no-daemon
+COPY src ./src
+RUN ./gradlew bootJar --no-daemon
+
+# Runtime stage
+FROM eclipse-temurin:21-jre-alpine
+RUN addgroup -S spring && adduser -S spring -G spring
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+USER spring:spring
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+Layer caching: copy Gradle wrapper and `build.gradle` BEFORE `COPY src` — this way, source code changes don't invalidate the dependency download layer (saves ~30s on rebuild).
+
+**docker-compose.yml answer**:
+
+```yaml
+services:
+  app:
+    image: myapp:latest
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/myapp
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    # NO ports exposed — stays internal
+
+  redis:
+    image: redis:7
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    # NO ports exposed — stays internal
+
+volumes:
+  postgres-data:
+```
+
+**Task 3 — the bugs**:
+1. **POSTGRES_PASSWORD hardcoded in YAML** — should use `${POSTGRES_PASSWORD}` env var (or Docker secrets). Hardcoded secrets in version-controlled YAML leak to anyone with repo access.
+2. **Postgres port 5432 exposed externally** — anyone on the network can attempt connection. For local dev, fine; for production, never expose DB ports.
+3. **No `depends_on` health conditions** — app may start before Postgres is ready, causing connection-refused errors on first request.
+4. **No named volume for Postgres data** — when the container is removed, all data is lost.
+
+Production-grade compose: secrets via env or Docker secrets, internal-only DB ports, health checks with conditions, persistent volumes.
+</details>
+
+---
+
+## DEV-PS5: CI/CD — GitHub Actions Pipeline (Medium)
+
+You are designing a CI/CD pipeline for a Spring Boot 3.x microservice deployed to AWS ECS. The service has unit tests, integration tests, and a Docker image build.
+
+### Task 1: Pipeline stages
+
+Design a GitHub Actions workflow with these stages, with appropriate dependencies:
+1. **Lint** — runs ESLint (JavaScript), Checkstyle (Java), shellcheck (shell scripts)
+2. **Unit Test** — runs `./gradlew test`, generates coverage report
+3. **Integration Test** — runs `./gradlew integrationTest`, requires Postgres + Redis services
+4. **Build** — builds the JAR, produces coverage artifact
+5. **Docker Build** — multi-stage build, pushes to ECR
+6. **Deploy Staging** — updates ECS service
+7. **Deploy Production** — requires manual approval
+
+### Task 2: Write the workflow file
+
+Write `.github/workflows/ci.yml` that implements the pipeline. Use:
+- `ubuntu-latest` runners
+- Postgres 15 + Redis 7 service containers for integration tests
+- Matrix strategy for Java 17 and Java 21
+- Artifact upload for the JAR and coverage report
+- Concurrency limit to cancel outdated runs on the same PR
+- Environment protection for production (manual approval required)
+
+### Task 3: Identify the bug
+
+```yaml
+# Buggy workflow snippet
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: mypassword
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./gradlew integrationTest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - run: aws ecs update-service --cluster prod --service myapp
+```
+
+What's wrong with this configuration?
+
+<details>
+<summary>Answer</summary>
+
+**Task 1 — Pipeline design**:
+
+```
+lint → unit-test → build ─┐
+              │             │
+              └─→ integration-test ─→ docker-build ─→ deploy-staging ─→ [manual approval] ─→ deploy-production
+```
+
+Concurrency: only one run per branch. Use `concurrency: group: ${{ github.ref }}, cancel-in-progress: true`.
+
+**Task 2 — Workflow file**:
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: ./gradlew checkstyleMain checkstyleTest
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [17, 21]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - run: ./gradlew test integrationTest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.java }}
+          path: build/reports/jacoco/test/jacocoTestReport.xml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: ./gradlew bootJar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: build/libs/*.jar
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write   # for OIDC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: us-east-1
+      - uses: aws-actions/amazon-ecr-login@v2
+      - run: docker build -t $ECR_REGISTRY/myapp:$GITHUB_SHA .
+      - run: docker push $ECR_REGISTRY/myapp:$GITHUB_SHA
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    environment: staging
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: us-east-1
+      - run: |
+          aws ecs update-service \
+            --cluster staging \
+            --service myapp \
+            --force-new-deployment
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    environment:
+      name: production
+      url: https://myapp.example.com
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: us-east-1
+      - run: |
+          aws ecs update-service \
+            --cluster production \
+            --service myapp \
+            --force-new-deployment
+```
+
+**Task 3 — the bugs**:
+
+1. **Hardcoded POSTGRES_PASSWORD** in workflow YAML — secret in version control. Use GitHub Secrets: `POSTGRES_PASSWORD: ${{ secrets.TEST_DB_PASSWORD }}`.
+2. **No health checks on service containers** — integration tests may run before Postgres is ready, causing flaky failures. Add `options: --health-cmd ...` as shown above.
+3. **Deploy job has no `environment` block** — production deploys without manual approval, which is reckless. Add `environment: production` with required reviewers in GitHub repo settings.
+4. **No OIDC for AWS auth** — long-lived AWS access keys in `secrets.AWS_ACCESS_KEY_ID` are a security risk. Use OIDC (`role-to-assume` + `id-token: write`) for short-lived credentials.
+5. **No concurrency limit** — multiple pushes to the same PR create queued jobs that consume runner minutes. Add `concurrency: cancel-in-progress: true`.
+6. **No matrix strategy** — only tests against one Java version. Production may run Java 21 while tests only ran Java 17.
+
+**Production hardening**:
+- Pin action versions to SHA, not tag (`@actions/checkout@b4ffde...` instead of `@v4`) — tags can be moved
+- Add SBOM generation for supply chain security
+- Cache Gradle dependencies: `cache: 'gradle'` in setup-java
+- Add OPA/Conftest to enforce policy (e.g., "no direct main commits")
+</details>
 
 [← Back to Curriculum Overview](../00_CURRICULUM/CURRICULUM_OVERVIEW.md)

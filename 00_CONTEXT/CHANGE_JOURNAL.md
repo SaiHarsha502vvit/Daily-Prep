@@ -4,6 +4,91 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-06-21 — 13_Developer_Essentials Folder Audit + Remediation (No Ferment)
+
+Comprehensive audit and 52-issue remediation across all 22 files in `13_Developer_Essentials/`. Triggered by user request for file-by-file pedagogical review. No new ferment — work was scoped by an inline master review (`/mnt/e/Dev_World/04_Practice/Daily-Prep/.kimchi/docs/audit_13_dev_essentials/MASTER_REVIEW.md`).
+
+### Pre-audit state
+
+| Group | Avg score | Key issues |
+|---|---:|
+| A: Git/Linux/Docker/CI-CD (4 files) | 2.55 | Missing WHEN/WHO headers in 02, 03, 04 |
+| B: Clean Code/Testing/API/Security (4 files) | 2.00 | SQL contamination in 05, duplicate block in 08 |
+| C: System Design/Dev Tools/Production/Monitoring/Agile/Problem Sets (6 files) | 1.95 | Stub files 11 (300 lines) and 12 (200 lines), thin history |
+| D: Code Review/Cloud/IaC/Networking/Backend/Concurrency (6 files) | 2.40 | Missing 5W1H block in 14/15/16/18/19 |
+| **Folder overall** | **2.22** | 13 files missing canonical scaffold |
+
+### Issues resolved (52 fixes applied)
+
+**P0 — Standards violations (14 fixes)**:
+- ROW_NUMBER contamination in 05_Clean_Code replaced with Command/Query Separation Violation challenge
+- Orphaned duplicate "Secure a Spring Boot App" block removed from 08_Security
+- Docker layer invalidation challenge in 04_CICD replaced with CI/CD Dependency Graph Failure Recovery challenge
+- Canonical WHY/WHAT/WHERE/WHEN/WHO/HOW block added to 5 files (14, 15, 16, 18, 19)
+- Missing WHO/WHEN section headers added to 02, 03, 04
+- 09 System Design typo fixed (concurrent connections vs req/sec)
+- 03 Docker reference format converted to canonical D012 (📎 Reference Anchor)
+
+**P1 — Structural completeness (12 fixes)**:
+- WHO section added to 06, 07, 08, 09, 10, 13 (with predecessor timelines, named inventors)
+- Historical Evolution section added to 07, 08, 12, 14
+- WHEN section added to 07, 08, 09, 10, 13
+- 11 Production and 12 Monitoring received lightweight scaffold blocks
+- Kanban vs Scrum comparison table extended (7 new rows in 13)
+- Test Naming Challenge 1 rewritten to reference local examples in 06
+- 13_PROBLEM_SETS: 5 `Erklärung` blocks replaced with canonical `<details>` format
+
+**P2 — Content depth (18 fixes)**:
+- **11_Production_Code_Practices.md expanded from 300 → 805 lines**: added Database Migration Strategies (Flyway), Feature Flags, Deployment Strategies (rolling/blue-green/canary), Testing in Production (dark launch/A/B/chaos)
+- **12_Monitoring_Observability.md expanded from 200 → 809 lines**: added SLO/SLI/Error Budget (with burn-rate alerting), Sampling Strategies (head-based vs tail-based with OpenTelemetry config), Runbook Templates (with anti-patterns), Alert Routing and PagerDuty
+- 13_PROBLEM_SETS: added DEV-PS4 (Docker) and DEV-PS5 (CI/CD GitHub Actions)
+- 01 Git: added CVS/SVN/BitKeeper predecessor context + operation selection table (merge vs rebase vs reset vs revert)
+- 14 Code Review: added Historical Evolution (Fagan 1976 → modern research)
+- 17 Networking: Historical Evolution moved into WHO position (was appendix)
+- 18 Backend: pizza analogy replaced with Spring-Boot-specific deployment analogy
+- 19 Concurrency: decision workflow added after Summary Comparison Table
+- 02 Linux: Exercise 3 challenge + "everything is a file descriptor" invariant
+- 06 Testing: Mockito Spy vs Mock + Boundary Value Analysis challenges
+
+**P3 — Polish (8 fixes)**:
+- Explicit invariant statements added to 5 files (05 SOLID, 14 code review, 15 cloud spectrum, 16 IaC drift detection, 17 networking 7-layer diagnostic)
+- Generic challenge titles replaced with topic-specific names across 8 files
+- 05 Historical Evolution merged into WHO section (deleted standalone)
+- 09 bridge sentence added pointing to 11_Production_Code_Practices
+
+### Net changes
+
+- **20 files modified** (all chapters + 13_PROBLEM_SETS, plus CONTEXT.md untouched)
+- **+2334 / -197 lines** added (net +2137)
+- **Stub files**: 11 Production 300→805 lines (+505), 12 Monitoring 200→809 lines (+609)
+- **Total challenges added**: ~30 new section challenges across the folder
+- **5W1H/WHY-WHO scaffold**: 7 files (was 1 — file 17)
+
+### Permanent rules added to CONTAMINATION_GUARDS.md
+
+5 new entries appended:
+1. ROW_NUMBER challenge in Clean Code → belongs in SQL files
+2. Docker layer invalidation challenge in CI/CD → belongs in Docker chapters
+3. `Erklärung` non-standard answer block → canonical `<details>` format
+4. 5W1H/WHY-WHO canonical block missing → required per D014 Preservation Guarantees
+5. Generic challenge titles `(Reasoning)`/`(Bug Hunt)`/`(Design)` → topic-specific names
+
+Also added a folder-adaptation note explaining 13's 6-section variant of the standard 5W1H scaffold.
+
+### Audit documents on disk
+
+- `.kimchi/docs/audit_13_dev_essentials/MASTER_REVIEW.md` (29KB)
+- `.kimchi/docs/audit_13_dev_essentials/group_A_infrastructure.md`
+- `.kimchi/docs/audit_13_dev_essentials/group_B_code_quality.md`
+- `.kimchi/docs/audit_13_dev_essentials/group_C_architecture_practices.md`
+- `.kimchi/docs/audit_13_dev_essentials/group_D_cloud_distributed.md`
+
+### No changes to boundaries
+
+The folder's `CONTEXT.md` (boundaries, writing style) was NOT modified — all changes were refinements within existing scope (Git, Docker, CI/CD, Clean Code, Testing, API, Security, System Design, Dev Tools, Production Code, Monitoring, Agile, Code Review, Cloud, IaC, Networking, Backend, Concurrency).
+
+---
+
 ## 2026-06-21 — 10_Enterprise_Systems Folder Audit + Remediation (No Ferment)
 
 Comprehensive audit and 35-issue remediation across all 14 files in `10_Enterprise_Systems/`. Triggered by user request for file-by-file pedagogical review against `PEDAGOGY_STANDARDS.md` 5-dimension Combined Lens. No new ferment — work was scoped by an inline master review (`/mnt/e/Dev_World/04_Practice/Daily-Prep/.kimchi/docs/audit_10_enterprise/MASTER_REVIEW.md`).

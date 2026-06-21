@@ -235,6 +235,16 @@ T(n) = T(n-1) + 1
 
 T(n) = Θ(n). (Each unrolling is straightforward since we subtract by 1.)
 
+### Generalizations Beyond Master Theorem — Akra-Bazzi Reference
+
+The Master Theorem handles T(n) = aT(n/b) + f(n) where all subproblems are the same size. For **unequal subproblem sizes** (e.g., Karatsuba, randomized median-of-three), use the Akra-Bazzi theorem.
+
+**Statement:** T(x) = Σ aᵢ T(bᵢ x) + f(x) → Θ(x^p (1 + ∫₁ˣ f(u)/uᵖ⁺¹ du)) where p solves Σ aᵢ bᵢᵖ = 1.
+
+**See** `02c_Divide_And_Conquer.md` for the full worked example (T(n) = T(2n/3) + T(n/3) + n, yielding Θ(n log n)) and a comparison table of when to use Master Theorem vs Akra-Bazzi.
+
+**When in doubt:** Use Akra-Bazzi. It subsumes Master Theorem as a special case and handles unequal subproblems, weighted subproblems, and continuous fraction splits.
+
 ---
 
 ## 4. Amortized Analysis — Three Methods

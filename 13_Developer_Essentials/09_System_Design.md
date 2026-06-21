@@ -232,6 +232,41 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 
 ---
 
+## WHEN: Decision Guide
+
+| Situation | Pattern | Why |
+|---|---|---|
+| Read-heavy, <10K QPS, simple data | **Single server + DB** | Cheapest, fastest to ship; redis only if needed |
+| Read-heavy, >10K QPS, simple key-value | **Cache + DB** | memcached/Redis fronting Postgres; 80% hit rate reduces DB load by 5× |
+| Read-heavy, >100K QPS, large objects | **CDN** | Geographic edge caching; users get from nearest PoP |
+| Write-heavy, >1K writes/sec, single master | **Vertical scale + read replicas** | Cheaper than sharding; works until master is saturated |
+| Write-heavy, >10K writes/sec, large dataset | **Sharding by key** | Split data across N shards; each handles 1/N load |
+| Sequential writes (events, logs) | **Append-only log + consumers** | Kafka's model; scales linearly with partition count |
+| Search across large text corpus | **Inverted index** (Elasticsearch) | Sub-100ms full-text search across billions of docs |
+| Time-series data (metrics, IoT) | **TSDB** (InfluxDB, TimescaleDB) | Compression optimized for sequential timestamps |
+| Global users, low-latency reads | **Multi-region replication** | Read from nearest region; accept eventual consistency |
+| Cross-service async coordination | **Message queue** (Kafka, RabbitMQ, SQS) | Decouples services; buffer for traffic spikes |
+| Synchronous inter-service calls | **Service mesh + circuit breaker** (Istio, Resilience4j) | Prevents cascade failure; retries with backoff |
+
+**Sharding key selection**:
+- **User ID hash mod N**: even distribution, but resharding is hard (need consistent hashing or re-shard)
+- **Geographic region**: predictable distribution, but uneven if one region dominates
+- **Tenant ID** (for SaaS): isolation per customer, but "elephant tenants" cause hot shards
+- **Time-based** (logs, events): natural partition, but old data may need to be archived
+
+**Replication factor selection**:
+- **RF=1**: dev/test only — single point of failure
+- **RF=3**: production standard — survives 1 broker failure; second failure risks data loss
+- **RF=5**: critical data (financial transactions) — survives 2 broker failures
+- **Trade-off**: more replicas = more storage cost + write latency. RF=3 is the sweet spot for most use cases.
+
+**CAP choice for your domain**:
+- **Banking, payments, inventory**: pick **CP** — you'd rather refuse a transaction than double-charge
+- **Social media feeds, shopping carts (pre-checkout), analytics dashboards**: pick **AP** — temporary inconsistency is better than downtime
+- **Hybrid**: many systems use CP for the "money path" and AP for the "engagement path" — e.g., Uber uses CP for payment, AP for driver location
+
+---
+
 🔬 **Section Challenge — 5. CDN (Content Delivery Network)**
 
 **Challenge 1 (Reasoning):** You deploy a new JS bundle to your server. CDN edge servers globally are still serving the old cached version. Walk through the two standard strategies to force cache invalidation.
@@ -249,6 +284,35 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 **(b) `GET /api/users/me` should NOT be cached on CDN.** (a) Product images ✅ — static, change rarely, perfect for CDN with long TTL + fingerprinted URL. (b) `/api/users/me` ❌ — user-specific private data. If CDN caches it, User B gets User A's data (catastrophic data leak). Even with `Cache-Control: private`, CDN misconfigurations cause leaks. Never cache authenticated API responses on shared CDN. (c) React bundle ✅ — fingerprinted filename, long TTL, identical for all users. (d) Company logo ✅ — static asset, rarely changes, huge benefit from edge caching. Rule: CDN caches public, user-agnostic content only.
 
 </details>
+
+## WHO: Origin Story
+
+**Eric Brewer** formulated the **CAP Theorem** in a 1998 keynote at PODC (Principles of Distributed Computing). The conjecture: a distributed data store can simultaneously deliver only two of three guarantees — **Consistency**, **Availability**, **Partition tolerance**. **Seth Gilbert and Nancy Lynch** proved it formally in **2002** (Gilbert-Lynch paper).
+
+**The load balancer lineage**:
+- **HAProxy** (2001, Willy Tarreau) — open-source TCP/HTTP load balancer, born from single-process-event-driven design
+- **LVS (Linux Virtual Server)** (1998, Wensong Zhang) — kernel-level load balancing
+- **nginx** (2004, Igor Sysoev) — high-performance HTTP server with load-balancing capability, now ~33% of all websites
+- **AWS ELB** (2009) — managed load balancing; **ALB** (2016) added Layer 7 routing; **NLB** (2017) added ultra-low-latency Layer 4
+
+**The cache lineage**:
+- **memcached** (2003, Brad Fitzpatrick at LiveJournal) — in-memory key-value cache, simple protocol
+- **Redis** (2009, Salvatore Sanfilippo) — in-memory data structure server (lists, sets, sorted sets, streams)
+- **Varnish** (2005, Poul-Henning Kamp) — HTTP accelerator, full-page caching
+- **CDNs** (Akamai 1998, Cloudflare 2010, CloudFront 2008) — geographic edge caching
+
+**Message queue lineage**:
+- **RabbitMQ** (2007, originally developed by LShift and CohesiveFT) — AMQP-based broker
+- **Apache Kafka** (2011, LinkedIn; open-sourced 2011; donated to Apache 2012) — distributed commit log
+- **AWS SQS** (2004) — first managed queue service
+- **NATS** (2010, Derek Collison at Apcera) — lightweight, JetStream for persistence added 2019
+
+**The CAP tradeoff in production**:
+- **CP systems** (consistency + partition tolerance, sacrifice availability): etcd, ZooKeeper, HBase, MongoDB in default config
+- **AP systems** (availability + partition tolerance, sacrifice consistency): Cassandra, DynamoDB, CouchDB
+- **CA systems** (consistency + availability, no partition tolerance): single-node RDBMS — partitions aren't relevant if there's only one node
+
+The choice between CP and AP is not always binary — many systems offer tunable consistency per-operation (Cassandra's `consistency level`, DynamoDB's `Read/Write Capacity` with `ConsistentRead=true`).
 
 # HOW: Design Patterns
 
@@ -412,7 +476,10 @@ Useful numbers to memorize:
   Read from disk:          10 ms   (100,000x slower)
   Network round trip:      1-100 ms
 
-  1 server handles:        ~10,000 concurrent connections
+  **Per-server capacity (typical)**:
+  - **Concurrent connections**: ~10,000 (modern Linux with epoll, Tomcat default 200 threads × 50 idle connections per thread). The connection lives until the request completes.
+  - **Requests per second**: ~1,000–5,000 (depends on request complexity). A request taking 200ms = 5 req/sec per thread; with 200 threads = 1,000 req/sec.
+  - **Why the distinction matters**: connection limits are about socket/FD exhaustion; throughput is about CPU/I/O saturation. A server at 10K connections but 100 req/sec has slow requests; a server at 1K connections but 5,000 req/sec has fast requests.
   1 day has:               86,400 seconds
   1 million requests/day:  ~12 QPS (queries per second)
 
@@ -503,5 +570,7 @@ Think about:
 **Practical signal:** If your "highly available" database returns stale data after a network blip without an error, you're AP (and the data may be wrong). If your "strongly consistent" database returns errors under load, you're CP.
 
 ---
+
+→ **Next:** Now that you know how to design scalable systems, let's look at how to implement them in production: [11_Production_Code_Practices.md](11_Production_Code_Practices.md). The patterns you learned here (load balancing, caching, sharding) need production-grade code practices (12-Factor App, database migrations, deployment strategies) to actually run reliably.
 
 **Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)

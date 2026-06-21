@@ -2,6 +2,20 @@
 
 # Chapter 19 — Concurrency Models, Coroutines & Continuations: Deep Reasoning
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Modern services must handle 10K–1M concurrent connections per node. Choosing the wrong concurrency model causes either thread pool exhaustion (OS threads: 1MB stack × 1M connections = 1TB RAM, impossible) or callback hell (async callbacks: unreadable, error-prone). Virtual threads + structured concurrency resolve the 25-year tension between throughput and code clarity. Java 21's virtual threads (Project Loom) deliver Go-like concurrency with Java's mature ecosystem.
+
+**WHAT**: Process vs thread vs coroutine taxonomy; concurrency vs parallelism distinction (Rob Pike's definition); async/await across 5 languages (JavaScript, Kotlin, C#, Python, Rust); Java virtual threads (Project Loom, JEP 444); Go goroutines and CSP; continuation theory; deadlock, livelock, starvation; performance characteristics (stack size, context-switch cost, scheduling).
+
+**WHERE**: Every production service handling I/O at scale: web servers (nginx, Tomcat, Netty), API gateways, message consumers (Kafka, RabbitMQ), database connection pools, gRPC servers, WebSocket handlers. The choice of concurrency model is the single most impactful architectural decision for I/O-bound services.
+
+**WHEN**: When designing new services (pick the right model upfront — migration is painful). When scaling beyond 1K concurrent users per node (thread pool becomes the bottleneck). When migrating from thread-per-request to async (e.g., Spring MVC → Spring WebFlux, or Java 8 → Java 21 virtual threads). When optimizing tail latency (p99 spikes from thread pool queueing).
+
+**WHO**: Erlang 1986 (Joe Armstrong at Ericsson) — first production actor model. Go 2009 (Robert Griesemer, Rob Pike, Ken Thompson at Google) — CSP + goroutines + Go's killer proverb "Don't communicate by sharing memory; share memory by communicating." Kotlin Coroutines 2017 (JetBrains, led by Roman Elizarov). Rust async/await 2019. Java Virtual Threads 2023 (Project Loom, Oracle, led by Ron Pressler).
+
+**HOW**: Taxonomy first (process / thread / coroutine, with stack size and scheduling), then concurrency vs parallelism distinction (Rob Pike's juggling analogy — concurrency is structure, parallelism is execution), then async/await comparison across 5 languages (each with its specific mechanism), then virtual threads deep dive (carrier threads, fork-join pool, pinning), then Go's CSP and channel semantics, then deadlock/livelock/starvation patterns, then a decision matrix mapping problem type to model.
+
 **"Anyone can say 'threads run in parallel.' The senior engineer explains WHY coroutines aren't threads, WHAT a continuation actually is, and HOW async/await works differently in Java, Kotlin, JavaScript, and Go."**
 
 ---
@@ -94,7 +108,7 @@ OS threads are heavy. Each thread requires a dedicated memory stack (typically 1
 
 </details>
 
-**Challenge 2 (Debug):** A junior developer says: "Node.js is fast because it creates a new process for every request, isolating the memory." Correct the two fundamental errors in this statement using the restaurant analogy.
+**Challenge 2 (Node.js Concurrency Model):** A junior developer says: "Node.js is fast because it creates a new process for every request, isolating the memory." Correct the two fundamental errors in this statement using the restaurant analogy.
 
 <details><summary>Answer</summary>
 
@@ -335,7 +349,7 @@ Yes, a Python generator is a type of coroutine because it can suspend (`yield`) 
 
 🔬 **Section Challenge — 5. How async/await Works In Different Languages**
 
-**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+**Challenge 1 (Promise.all Concurrency):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
 
 <details><summary>Answer</summary>
 
@@ -343,7 +357,7 @@ Yes, a Python generator is a type of coroutine because it can suspend (`yield`) 
 
 </details>
 
-**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+**Challenge 2 (Async Error Handling):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
 
 <details><summary>Answer</summary>
 
@@ -680,6 +694,52 @@ Memory comparison (1M concurrent tasks):
 
 \*With preemption points added by the runtime  
 \*\*Unless dispatched to multi-thread pool (Kotlin)
+
+### Decision Workflow: "Given My Problem, Pick a Model"
+
+**Start here: is your workload CPU-bound or I/O-bound?**
+
+```
+Is the bottleneck CPU (computation, math) or I/O (network, disk, database)?
+```
+
+**If CPU-bound** (math, image processing, encryption, compression):
+- Use **OS threads** with a thread pool sized to `Runtime.getRuntime().availableProcessors()`.
+- Adding more threads doesn't help — you're already CPU-saturated.
+- Language: any (Java, Go, Rust, C++).
+- Example: image processing pipeline, encryption service.
+
+**If I/O-bound** (HTTP calls, database queries, message consumption):
+- Use **async/concurrency primitives** that multiplex many I/O operations onto few threads.
+- Choice depends on language:
+  - **Java (21+)**: virtual threads. Drop-in replacement for OS threads; no callback hell.
+  - **Java (8–20)**: async (CompletableFuture) or reactive (Reactor/RxJava).
+  - **Go**: goroutines. First-class; 1 goroutine per HTTP request is normal.
+  - **Kotlin**: coroutines (structured concurrency; integrates with Spring).
+  - **Python**: asyncio (single-threaded event loop; can't parallelize CPU work).
+  - **Rust**: async/await with tokio runtime.
+  - **JavaScript/Node.js**: event loop (single-threaded; non-blocking I/O).
+
+**Decision matrix**:
+
+| Problem type | Language | Best model | Why |
+|---|---|---|---|
+| HTTP API server, 10K concurrent users | Java 21+ | Virtual threads | 1 thread per request, 1MB stack → 1KB stack, 10K threads = 10MB not 10GB |
+| HTTP API server, 10K concurrent users | Go | Goroutines | First-class concurrency; goroutine per request |
+| HTTP API server, 10K concurrent users | Java 8–20 | Reactive (WebFlux) | Non-blocking I/O; learning curve for operators |
+| Background job processor | Any | Thread pool + queue | Bounded concurrency; backpressure via queue depth |
+| Real-time event stream (Kafka consumer) | Any | Async with backpressure | Don't OOM; process as fast as you can without lag |
+| Long-running stateful actor (chat bot, game agent) | Erlang / Elixir | Actor model (BEAM) | Hot code reload; supervision trees; fault tolerance |
+| Heavy parallel compute (matrix math, simulations) | Any | Thread pool sized to cores | CPU-bound; async doesn't help |
+
+**The trap to avoid**: choosing async/reactive for CPU-bound work. Async saves you from blocking on I/O; if you're not blocking on I/O, async adds complexity without benefit.
+
+**Migration path** (if you're on Java 8–20 today):
+1. Identify I/O-bound endpoints (`p99 latency > 100ms`, blocked on database/external calls).
+2. Migrate ONE endpoint to virtual threads (Java 21) or reactive (Java 17).
+3. Measure: latency, throughput, error rate, CPU usage.
+4. If positive, migrate more endpoints incrementally.
+5. Don't rewrite the entire application in one go — incremental migration de-risks the change.
 
 ---
 

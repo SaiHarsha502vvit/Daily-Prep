@@ -240,11 +240,6 @@ public void sumArray(int[] arr, int index) {
 
 **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
 
-<details><summary>Answer</summary>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
-</details>
 
 **Challenge 2 (Bug Hunt):**
 
@@ -418,8 +413,6 @@ public List<List<Integer>> subsetsCascade(int[] nums) {
 **Preorder vs Inorder change:** In inorder, you push nodes going LEFT, then process on POP, then move RIGHT. For preorder: PROCESS the node BEFORE pushing left. Change: `process(current); stack.push(current.right); stack.push(current.left);` (push right first so left is processed first from stack). Or: set `current = current.left` after pushing right child. The key shift: inorder processes on POP, preorder processes on PUSH. **When Morris traversal works:** Always, for any binary tree traversal (inorder/preorder). Morris uses the tree's own `null` right-child pointers as temporary links back to ancestors (threaded binary tree). **Who pays the modification cost:** The TREE itself — Morris temporarily modifies right-child pointers, then restores them. This means: (1) Morris is NOT thread-safe (another thread reading the tree during traversal sees corrupt pointers). (2) The modification cost is O(N) total but constant per node. (3) After traversal, the tree is fully restored. Use Morris in single-threaded contexts where O(1) extra space is critical (embedded systems, memory-constrained environments).
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -670,8 +663,6 @@ private void helper(String num, int target, int index,
 
 </details>
 
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -746,8 +737,6 @@ public int fib(int n) {
 **Master Theorem framework:** `T(n) = aT(n/b) + f(n)`. Compare f(n) with n^(log_b(a)). Case 1: f(n) < n^(log_b a) → T(n) = Θ(n^(log_b a)). Case 2: f(n) = n^(log_b a) → T(n) = Θ(n^(log_b a) log n). Case 3: f(n) > n^(log_b a) AND regularity → T(n) = Θ(f(n)). **(A) T(n) = 4T(n/2) + n:** log_2(4) = 2. n^2 vs. n: f(n) = n < n^2. **Case 1 → T(n) = Θ(n²).** Work dominated by leaves. **(B) T(n) = 2T(n/2) + n²:** log_2(2) = 1. n^1 vs. n²: f(n) = n² > n^1. **Case 3 → T(n) = Θ(n²).** Work dominated by root. **(C) T(n) = 3T(n/3) + n:** log_3(3) = 1. n^1 vs. n: equal. **Case 2 → T(n) = Θ(n log n).** Like Merge Sort but with base 3 split. **Real application:** Merge Sort = 2T(n/2)+n = Case 2 = O(N log N). Binary search = T(n/2)+1 = log_2(1)=0, f(n)=1 > n^0=1? Equal → Case 2 = O(log N).
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -844,8 +833,6 @@ Example: Check if tree is balanced
 **Step 1 — Define:** `reverseList(head)` returns the head of the REVERSED list starting at `head`. **Step 2 — Base case:** `if (head == null || head.next == null) return head;` (single node or empty is already reversed). **Step 3 — Delegate:** `Node reversedHead = reverseList(head.next);` — TRUST that this reverses the sub-list starting at `head.next` and returns the new head of the reversed sub-list. **Step 4 — Use result:** At this point, `head.next` is the TAIL of the reversed sub-list. Attach `head` after it: `head.next.next = head; head.next = null;`. Return `reversedHead`. **The key insight (who is delegated to):** `reverseList(head.next)` reverses everything except `head`. We trust it completely. Our only job is to take the current `head` node and append it to the END of the reversed sub-list (which is the current `head.next`). Don't simulate the recursion — trust it and just wire the ONE extra connection.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -978,8 +965,6 @@ public long factorial(int n) {
 **Who discards the answer:** The caller — `find(root.left, target)` and `find(root.right, target)` are called but their RETURN VALUES are ignored. The results are computed and then thrown away. **When `true` gets swallowed:** When `find(root.left, target)` correctly finds the target and returns `true`, that `true` is discarded. Execution continues to `find(root.right, target)` (also discarded), then falls through to `return false`. **One-line fix:** `return find(root.left, target) || find(root.right, target);`. This propagates the `true` up the call stack via short-circuit evaluation — if left subtree finds it, right subtree isn't even searched. **Common pattern:** Whenever a recursive function returns a meaningful value (boolean, int, object), you MUST capture or propagate that return value. The compiler doesn't warn you that `find(root.left, target)` without `return` discards a `boolean` — it's legal but wrong.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -1132,8 +1117,6 @@ class Parser {
 **Who ensures termination:** The BASE CASE in both functions. For mutual recursion, BOTH functions must independently handle the base case. **Standard structure:** `isEven(0) = true` (base), `isOdd(0) = false` (base). Each non-base call reduces n by 1, ensuring convergence. **When it causes infinite loop:** If the base case is missing from ONE of the pair. E.g., if `isOdd` has no base case for n=0, then `isEven(1)` calls `isOdd(0)` which calls `isEven(-1)` which calls `isOdd(-2)`... infinite recursion into negative numbers. **Key requirement for mutual recursion termination:** (1) Both functions must have base cases that terminate the chain. (2) Each recursive call must strictly move toward the base case (decreasing n, shrinking problem). (3) The "entry point" function should be called with a non-negative argument. **Java note:** Java doesn't optimize tail calls, so deep mutual recursion (n > ~5000) risks `StackOverflowError`. For large n, convert to iterative using a loop with a boolean flag.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -1325,8 +1308,6 @@ Function<Integer, Integer> factorial = new Function<>() {
 **Who provides self-reference:** The Y-combinator itself, by passing the function as an argument to itself. **The structural trick:** Instead of `Factorial f = n -> f.apply(n-1)` (illegal, `f` not in scope during assignment), you use a higher-order function that accepts "self" as a parameter: `Function<Function<Integer,Integer>, Function<Integer,Integer>> factorial = self -> n -> n <= 1 ? 1 : n * self.apply(self).apply(n-1);`. Then: `Function<Integer,Integer> fact = factorial.apply(factorial);`. **How it works:** `factorial.apply(factorial)` creates a function where `self = factorial`. When it calls `self.apply(self)`, it re-creates the same function with `self` again — infinite self-application, but lazy (only when called). **Why this matters in Java:** Java `var` and lambdas can't reference themselves during initialization. Y-combinator is the principled way to do anonymous recursion without naming the function. Used in: functional programming frameworks, rule engines, DSLs where functions must be composable without names.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -1719,8 +1700,6 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 
 </details>
 
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1803,8 +1782,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 **Who makes recursion faster for trees:** The JIT compiler. Tree traversal has irregular branching (left vs right, null checks) that is hard to vectorize or unroll. The recursive code is SIMPLER, giving the JIT a cleaner view to optimize (e.g., inlining leaf calls). The iterative version with an explicit stack adds heap allocation overhead (push/pop `Stack<TreeNode>`) that the JIT can't optimize as aggressively. **Why pattern flips for `Factorial(1000)`:** Factorial is a SIMPLE linear recursion. The iterative version is 8 bytes (two variables) vs. recursive's 32KB of stack frames (each frame holds: return address, local variables, parameter n). 1000 method frames \* 32 bytes/frame = 32KB — all on the JVM call stack which is NOT the heap. Every frame is a cache miss relative to the tiny iterative loop. **JVM StackOverflow threshold:** Default JVM stack size = 512KB-1MB (JVM flag: `-Xss`). A typical Java stack frame = 32-128 bytes. So: `512KB / 64 bytes/frame ≈ 8,192 frames` — about 8K recursive calls before `StackOverflowError`. `Factorial(100000)` = 100,000 frames = overflow. `Factorial(1000)` = 1,000 frames = fine (10x safety margin).
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -1891,8 +1868,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 </details>
 
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -1971,8 +1946,6 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 **Subproblem:** `flatten(nestedList)` — the smaller version is `flatten(innerList)` where `innerList` is one element's nested content. **("smaller" = fewer nesting levels)** **Base cases:** (1) `nestedList` is empty → return empty list. (2) `element.isInteger()` → add its integer value, no recursive call. **What each call returns:** A flat `List<Integer>` of all integers nested within the given structure. **Max depth:** Equal to nesting depth of the list. For a list nested 5 deep, max depth = 5. For a list of 10,000 integers (flat), depth = 1. No overflow risk for typical inputs. **Overlapping subproblems:** NO. Each inner list is unique — there's no shared sub-problem that's computed twice. Therefore NO memoization needed. Straight recursion is optimal. **The recursive implementation:** `for each item: if integer, add; else flatten(item.getList()) and add all`. Classic D&C without memoization.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 
@@ -2064,8 +2037,6 @@ Every backtracking problem is recursion + choice/undo. Master the base first.
 
 </details>
 
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-
 </details>
 
 **Challenge 2 (Bug Hunt):**
@@ -2141,8 +2112,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 **Who does pruning:** The backtracking algorithm, through early termination conditions. **When pruning fires to be tractable:** (1) If total sum of matchsticks is not divisible by 4 → return false immediately (no valid square possible). (2) If any single matchstick exceeds `sum/4` → return false immediately (can never fit in a side). (3) During DFS: if adding current matchstick to a side EXCEEDS `target` → skip this branch. (4) **Key optimization:** Sort matchsticks in DESCENDING order — longer sticks placed first increase pruning efficiency (large violations found early, cutting off more branches). Without pruning, worst case is O(4^N) where N=15 sticks = ~1 billion operations. With good pruning, practical running time is milliseconds. **What makes it harder than subset sum:** Standard subset sum partitions into 2 groups (one target value). Matchsticks partitions into EXACTLY 4 equal groups. This is equivalent to `Partition to K Equal Sum Subsets (LC 698)` with K=4. The 4-way constraint exponentially increases the branching factor vs. 2-way partition. The order in which you fill each "bucket" matters for pruning efficiency.
 
 </details>
-
-An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 
 </details>
 

@@ -1,0 +1,219 @@
+{
+  "id": "019ee8c3-3119-740f-8158-343ee2db432f",
+  "name": "Apply 02-03 P0 fixes",
+  "description": "Apply the P0 (critical) fixes identified in the file-by-file MIT/KTH/ETH-level audits of two folders. User said \"go ahead with A\".\n\nThe P0 list comes from these two reviews at `/home/ash/.config/kimchi/docs/`:\n- `02_Data_Structures_REVIEW.md` (809 lines)\n- `03_Algorithms_REVIEW.md` (740 lines)\n\nThe 6 P0 fixes in scope:\n\n**02_Data_Structures (3 P0s):**\n1. `01c_LinkedList.md` — Add invariants section. Pointer integrity, head/tail sentinel invariants are CRITICAL for a pointer-manipulation DS. Currently file has no invariants at all (audit scored MISSING). Suggested: invariant blocks for head.prev==null, tail.next==null, n.next.prev==n, cycle detection (Floyd's proof).\n2. `02_PROBLEM_SETS.md` — Add 5W1H block at top (D014 violation). Content is otherwise near-perfect MIT 6.006 quality. The block must follow the same format as other catalog files (01a-01g, 02a-02b, 03, 04, 05).\n3. `01f_Trees_Heaps.md` — Add invariants section. BST ordering invariant (\"for every node n, all left descendants ≤ n.key, all right descendants ≥ n.key\"), heap property (\"parent ≤ both children for min-heap\"), AVL balance factor invariant (|height(left) - height(right)| ≤ 1).\n\n**03_Algorithms (3 P0s):**\n4. `02c_Divide_And_Conquer.md` + `A2_Complexity_FirstPrinciples.md` — Add Akra-Bazzi. The Master Theorem table is correct but Akra-Bazzi is absent. T(n) = T(2n/3) + T(n/3) + O(n) cannot be solved by Master Theorem; needs Akra-Bazzi: T(x) = Σ aᵢ T(bᵢ x) + f(x) → Θ(x^p (1 + ∫₁^x f(t)/t^{p+1} dt)) where p solves Σ aᵢ bᵢ^p = 1. Add to both files (02c as primary treatment, A2 as methodology reference).\n5. `12_Algorithms_In_Production.md` and `12_Greedy_Algorithms_Complete.md` — Resolve duplicate `12_` numbering collision. The first file (306 lines, production survey) should be renamed to `11_Algorithms_In_Production.md` (it's a bridge file that logically precedes the Complete guides). Update `00_INDEX.md` accordingly. The second file keeps `12_` and is the actual Greedy guide.\n6. `Stack<State> replaces call stack challenge` — Java contamination. This challenge is duplicated between `05_Trees.md` and `01_Algorithm_Thinking.md` with the same answer. Keep one, remove the duplicate. Also check `02a_Sorting_Fundamentals.md` for Java x86-64 assembly contamination in domain-neutral algorithm content (may or may not need fixing — judge per section).\n\nOut of scope: P1 and P2 issues from the reviews (separate future ferments). No changes to existing rubric audits. No changes to canonical context files (DECISIONS.md, CONTAMINATION_GUARDS.md, PEDAGOGY_STANDARDS.md, REPO_MAP.md) unless absolutely required for the fix.\n\nConstraints:\n- Preserve all existing 5W1H blocks (except where we're ADDING one to 02_PROBLEM_SETS.md), Core Teaching Shape sections, `<details>` answer blocks per PEDAGOGY_STANDARDS.md preservation guarantees.\n- After each file edit, verify with grep that no contamination was introduced.\n- Each fix must produce a verifiable result (file changed, diff visible, grep signature matches expected).\n- File renames use `git mv` so history is preserved.\n\nVerification targets (per file):\n- 02_Data_Structures/01c_LinkedList.md: `grep -ic \"invariant\" 01c_LinkedList.md` >= 3 (was 0)\n- 02_Data_Structures/02_PROBLEM_SETS.md: `grep -c \"5W1H\\|^## WHAT\\|^## WHY\\|^## HOW\" 02_PROBLEM_SETS.md` >= 3 (was 0)\n- 02_Data_Structures/01f_Trees_Heaps.md: `grep -ic \"invariant\" 01f_Trees_Heaps.md` >= 3 (was 0)\n- 03_Algorithms/02c_Divide_And_Conquer.md: `grep -c \"Akra-Bazzi\\|Akra.Bazzi\" 02c_Divide_And_Conquer.md` >= 2\n- 03_Algorithms/A2_Complexity_FirstPrinciples.md: `grep -c \"Akra-Bazzi\\|Akra.Bazzi\" A2_Complexity_FirstPrinciples.md` >= 2\n- 03_Algorithms/12_Algorithms_In_Production.md: should NOT exist (renamed to 11_)\n- 03_Algorithms/11_Algorithms_In_Production.md: should exist (renamed)\n- 03_Algorithms/00_INDEX.md: reference updated to 11_",
+  "status": "planned",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "f8350f41c6798c0b04f8ba30fef14653629f0de9"
+  },
+  "scoping": {
+    "goal": {
+      "answer": "Fix the 3 remaining P0 issues from the MIT/KTH/ETH-level audits of `02_Data_Structures/` and `03_Algorithms/` (3 of 6 originally scoped were already applied by parallel agents; user chose to skip those). After completion, no P0 issue from the original 6 remains; all fixes must be verifiable via file diff and grep; no new contamination may be introduced; INDEX.md must reflect the new file ordering.\n\n## Scope: 3 P0 Fixes (revised from original 6)\n\n**03_Algorithms (3 P0s):**\n\n1. **`02c_Divide_And_Conquer.md` + `A2_Complexity_FirstPrinciples.md`** — Add Akra-Bazzi. The Master Theorem table is correct but Akra-Bazzi is absent. T(n) = T(2n/3) + T(n/3) + O(n) cannot be solved by Master Theorem; needs Akra-Bazzi: T(x) = Σ aᵢ T(bᵢ x) + f(x) → Θ(x^p (1 + ∫₁^x f(t)/t^{p+1} dt)) where p solves Σ aᵢ bᵢ^p = 1. Add to both files (02c as primary treatment, A2 as methodology reference).\n\n2. **`12_Algorithms_In_Production.md` → `13_Algorithms_In_Production.md`** — Resolve duplicate `12_` numbering collision (the audit's proposed target `11_` was taken by `11_Backtracking_Complete.md`; user chose `13_` instead). Use `git mv` to preserve history. Update `00_INDEX.md` reference.\n\n3. **`Stack<State>` paragraph duplication** — The exact same paragraph \"An explicit `Stack<State>` where State holds...\" appears **15 times across 5 files**: 03a×3, 03b×5, 03c×5, 04a×1, 05×1. This is paragraph-level contamination (not challenge duplication as audit framed it). Keep ONE canonical copy in `03a_Recursion_Internals.md` (line 40 — the recursion-to-iteration chapter is the canonical home per CONTAMINATION_GUARDS.md \"Stack<State> replaces call stack challenge\" pattern). Remove the other 14 copies.\n\n## Out of Scope\n- All P1 and P2 issues from the reviews (separate future ferments).\n- Modifications to canonical context files (`DECISIONS.md`, `CONTAMINATION_GUARDS.md`, `PEDAGOGY_STANDARDS.md`, `REPO_MAP.md`).\n- The existing rubric audits.\n- The review documents at `/home/ash/.config/kimchi/docs/`.\n- The 3 already-applied P0s (LinkedList invariants, Problem Sets 5W1H, Trees invariants) — verified already in place.\n\n## Constraints\n- Preserve all existing 5W1H blocks, Core Teaching Shape sections, `<details>` answer blocks per `PEDAGOGY_STANDARDS.md` preservation guarantees.\n- No new contamination introduced (cross-check against `00_CONTEXT/CONTAMINATION_GUARDS.md` after each fix).\n- File renames use `git mv` so history is preserved.\n- For Stack<State> removal: each paragraph is identical, so Edit tool requires disambiguating context (the section heading above or the paragraph immediately preceding each occurrence).\n- INDEX.md update must keep all files visible and numbered consistently.\n\n## Assumptions\n- The 3 already-applied P0s (verified by sanity check) are correctly formatted and complete — no need to re-apply.\n- The canonical home for the Stack<State> paragraph is `03a_Recursion_Internals.md` (Recursion-to-iteration chapter) per CONTAMINATION_GUARDS.md.\n- The `12_` → `13_` rename does NOT collide with anything else in 03_Algorithms (verified: 11_ taken by Backtracking, 12_ taken by Greedy, no existing 13_ file).\n- Akra-Bazzi treatment in 02c (algorithm context) and A2 (methodology reference) can share the same worked example without redundancy if framed differently.",
+      "confirmedAt": "2026-06-21T06:27:56.201Z"
+    },
+    "criteria": {
+      "answer": "**P0.4 Akra-Bazzi added** to `03_Algorithms/02c_Divide_And_Conquer.md` AND `03_Algorithms/A2_Complexity_FirstPrinciples.md`. Each file must contain: (a) the Akra-Bazzi statement, (b) the characteristic equation p solving Σ aᵢ bᵢ^p = 1, (c) at least one worked example using unequal subproblems. Verify: `grep -c \"Akra-Bazzi\" 03_Algorithms/02c_Divide_And_Conquer.md` >= 2 AND same for A2.\n**P0.5 12_ collision resolved**: `12_Algorithms_In_Production.md` renamed via `git mv` to `13_Algorithms_In_Production.md`. `03_Algorithms/00_INDEX.md` updated. Verify: `ls 03_Algorithms/13_Algorithms_In_Production.md` returns the file; `ls 03_Algorithms/12_Algorithms_In_Production.md` does NOT; `grep -c \"13_Algorithms_In_Production\" 03_Algorithms/00_INDEX.md` >= 1.\n**P0.6 Stack<State> dedup**: 14 duplicates removed across 03a, 03b, 03c, 04a, 05_Trees. Keep 1 canonical copy in `03a_Recursion_Internals.md`. Verify: `grep -rln \"Stack<State>\" 03_Algorithms/` shows ONLY `03a_Recursion_Internals.md` (and the 14 duplicates are gone).\nNo new contamination introduced. Verify: targeted grep for known contamination patterns (per `00_CONTEXT/CONTAMINATION_GUARDS.md`) returns no NEW hits in wrong files.\nCanonical context files UNTOUCHED. Verify: `git diff --stat -- 00_CONTEXT/` shows zero changes from this ferment.\nWritten verification report at `/home/ash/.config/kimchi/docs/P0_FIXES_02_03_APPLIED.md` listing the 3 fixes with before/after evidence (>= 50 lines).",
+      "confirmedAt": "2026-06-21T06:27:56.201Z"
+    },
+    "phases": {
+      "answer": "Apply 03_Algorithms P0 fixes (3 fixes, 6 files modified), Cross-folder verification and report",
+      "confirmedAt": "2026-06-21T06:27:56.201Z"
+    }
+  },
+  "phases": [
+    {
+      "id": "phase-1",
+      "index": 1,
+      "name": "Apply 03_Algorithms P0 fixes (3 fixes, 6 files modified)",
+      "goal": "Apply all 3 remaining P0 fixes in 03_Algorithms: (1) Akra-Bazzi added to 02c + A2, (2) rename 12_Algorithms_In_Production → 13_, (3) Stack<State> dedup across 5 files.",
+      "description": "Fix P0 issues in 03_Algorithms",
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Read review at /home/ash/.config/kimchi/docs/03_Algorithms_REVIEW.md and target files.",
+          "status": "pending",
+          "verification": {
+            "command": "Confirm files exist and locate insertion points.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "P0.4 (Step A): Add Akra-Bazzi section to 02c_Divide_And_Conquer.md. Insert after the Master Theorem table. Include: (a) Akra-Bazzi statement with full formula, (b) characteristic equation Σ aᵢ bᵢ^p = 1, (c) worked example T(n) = T(2n/3) + T(n/3) + n showing p=1, derivation of Θ(n log n) result.",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Akra-Bazzi\" 03_Algorithms/02c_Divide_And_Conquer.md` >= 2.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "P0.4 (Step B): Add Akra-Bazzi cross-reference to A2_Complexity_FirstPrinciples.md. Insert as a \"Generalizations\" subsection after Master Theorem. Include: (a) brief recap of Akra-Bazzi statement, (b) reference to 02c for worked examples, (c) note when Akra-Bazzi is the systematic tool.",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Akra-Bazzi\" 03_Algorithms/A2_Complexity_FirstPrinciples.md` >= 2.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "P0.5: Rename 12_Algorithms_In_Production.md → 13_Algorithms_In_Production.md via git mv. Update 00_INDEX.md reference.",
+          "status": "pending",
+          "verification": {
+            "command": "`ls 03_Algorithms/13_Algorithms_In_Production.md` exists; `ls 03_Algorithms/12_Algorithms_In_Production.md` does NOT; `grep -c \"13_Algorithms_In_Production\" 03_Algorithms/00_INDEX.md` >= 1.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-5",
+          "index": 5,
+          "description": "P0.6 (Step A): Keep Stack<State> paragraph in 03a_Recursion_Internals.md (canonical home, line 40). Remove the OTHER 2 duplicates in 03a (lines 361, 478).",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Stack<State>\" 03_Algorithms/03a_Recursion_Internals.md` == 1.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-6",
+          "index": 6,
+          "description": "P0.6 (Step B): Remove Stack<State> paragraph from 03b_Recursion_Fundamentals.md (5 duplicates at lines 326, 438, 613, 661, 743).",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Stack<State>\" 03_Algorithms/03b_Recursion_Fundamentals.md` == 0.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-7",
+          "index": 7,
+          "description": "P0.6 (Step C): Remove Stack<State> paragraph from 03c_Recursion_Advanced.md (5 duplicates at lines 245, 422, 673, 750, 848).",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Stack<State>\" 03_Algorithms/03c_Recursion_Advanced.md` == 0.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-8",
+          "index": 8,
+          "description": "P0.6 (Step D): Remove Stack<State> paragraph from 04a_DP_Internals.md (1 duplicate at line 41) and 05_Trees.md (1 duplicate at line 217).",
+          "status": "pending",
+          "verification": {
+            "command": "`grep -c \"Stack<State>\" 03_Algorithms/04a_DP_Internals.md 03_Algorithms/05_Trees.md` == 0 for both.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-9",
+          "index": 9,
+          "description": "Verify no contamination introduced and no canonical 5W1H blocks lost.",
+          "status": "pending",
+          "verification": {
+            "command": "`git diff --stat -- 03_Algorithms/` shows expected files changed; contamination grep clean.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "index": 2,
+      "name": "Cross-folder verification and report",
+      "goal": "Verify all 3 fixes are present, no contamination introduced, no canonical context files modified. Produce written report.",
+      "description": "Final verification pass",
+      "parallel": false,
+      "status": "planned",
+      "steps": [
+        {
+          "id": "step-1",
+          "index": 1,
+          "description": "Run targeted grep for all 3 fix signatures.",
+          "status": "pending",
+          "verification": {
+            "command": "All grep checks pass.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-2",
+          "index": 2,
+          "description": "Run contamination grep from `00_CONTEXT/CONTAMINATION_GUARDS.md` patterns across 03_Algorithms; compare to baseline.",
+          "status": "pending",
+          "verification": {
+            "command": "No new contamination patterns in wrong files.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-3",
+          "index": 3,
+          "description": "Verify `00_CONTEXT/` untouched (this ferment's changes only).",
+          "status": "pending",
+          "verification": {
+            "command": "`git diff --stat -- 00_CONTEXT/` shows zero changes from this ferment.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        },
+        {
+          "id": "step-4",
+          "index": 4,
+          "description": "Produce summary report at `/home/ash/.config/kimchi/docs/P0_FIXES_02_03_APPLIED.md` listing the 3 fixes with before/after evidence.",
+          "status": "pending",
+          "verification": {
+            "command": "`wc -l /home/ash/.config/kimchi/docs/P0_FIXES_02_03_APPLIED.md` >= 50 lines.",
+            "retries": 2,
+            "retryDelayMs": 1000
+          },
+          "parallel": false
+        }
+      ]
+    }
+  ],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-21T05:59:26.745Z",
+  "updatedAt": "2026-06-21T06:27:56.201Z",
+  "goal": "Fix the 3 remaining P0 issues from the MIT/KTH/ETH-level audits of `02_Data_Structures/` and `03_Algorithms/` (3 of 6 originally scoped were already applied by parallel agents; user chose to skip those). After completion, no P0 issue from the original 6 remains; all fixes must be verifiable via file diff and grep; no new contamination may be introduced; INDEX.md must reflect the new file ordering.\n\n## Scope: 3 P0 Fixes (revised from original 6)\n\n**03_Algorithms (3 P0s):**\n\n1. **`02c_Divide_And_Conquer.md` + `A2_Complexity_FirstPrinciples.md`** — Add Akra-Bazzi. The Master Theorem table is correct but Akra-Bazzi is absent. T(n) = T(2n/3) + T(n/3) + O(n) cannot be solved by Master Theorem; needs Akra-Bazzi: T(x) = Σ aᵢ T(bᵢ x) + f(x) → Θ(x^p (1 + ∫₁^x f(t)/t^{p+1} dt)) where p solves Σ aᵢ bᵢ^p = 1. Add to both files (02c as primary treatment, A2 as methodology reference).\n\n2. **`12_Algorithms_In_Production.md` → `13_Algorithms_In_Production.md`** — Resolve duplicate `12_` numbering collision (the audit's proposed target `11_` was taken by `11_Backtracking_Complete.md`; user chose `13_` instead). Use `git mv` to preserve history. Update `00_INDEX.md` reference.\n\n3. **`Stack<State>` paragraph duplication** — The exact same paragraph \"An explicit `Stack<State>` where State holds...\" appears **15 times across 5 files**: 03a×3, 03b×5, 03c×5, 04a×1, 05×1. This is paragraph-level contamination (not challenge duplication as audit framed it). Keep ONE canonical copy in `03a_Recursion_Internals.md` (line 40 — the recursion-to-iteration chapter is the canonical home per CONTAMINATION_GUARDS.md \"Stack<State> replaces call stack challenge\" pattern). Remove the other 14 copies.\n\n## Out of Scope\n- All P1 and P2 issues from the reviews (separate future ferments).\n- Modifications to canonical context files (`DECISIONS.md`, `CONTAMINATION_GUARDS.md`, `PEDAGOGY_STANDARDS.md`, `REPO_MAP.md`).\n- The existing rubric audits.\n- The review documents at `/home/ash/.config/kimchi/docs/`.\n- The 3 already-applied P0s (LinkedList invariants, Problem Sets 5W1H, Trees invariants) — verified already in place.\n\n## Constraints\n- Preserve all existing 5W1H blocks, Core Teaching Shape sections, `<details>` answer blocks per `PEDAGOGY_STANDARDS.md` preservation guarantees.\n- No new contamination introduced (cross-check against `00_CONTEXT/CONTAMINATION_GUARDS.md` after each fix).\n- File renames use `git mv` so history is preserved.\n- For Stack<State> removal: each paragraph is identical, so Edit tool requires disambiguating context (the section heading above or the paragraph immediately preceding each occurrence).\n- INDEX.md update must keep all files visible and numbered consistently.\n\n## Assumptions\n- The 3 already-applied P0s (verified by sanity check) are correctly formatted and complete — no need to re-apply.\n- The canonical home for the Stack<State> paragraph is `03a_Recursion_Internals.md` (Recursion-to-iteration chapter) per CONTAMINATION_GUARDS.md.\n- The `12_` → `13_` rename does NOT collide with anything else in 03_Algorithms (verified: 11_ taken by Backtracking, 12_ taken by Greedy, no existing 13_ file).\n- Akra-Bazzi treatment in 02c (algorithm context) and A2 (methodology reference) can share the same worked example without redundancy if framed differently.",
+  "successCriteria": [
+    "**P0.4 Akra-Bazzi added** to `03_Algorithms/02c_Divide_And_Conquer.md` AND `03_Algorithms/A2_Complexity_FirstPrinciples.md`. Each file must contain: (a) the Akra-Bazzi statement, (b) the characteristic equation p solving Σ aᵢ bᵢ^p = 1, (c) at least one worked example using unequal subproblems. Verify: `grep -c \"Akra-Bazzi\" 03_Algorithms/02c_Divide_And_Conquer.md` >= 2 AND same for A2.",
+    "**P0.5 12_ collision resolved**: `12_Algorithms_In_Production.md` renamed via `git mv` to `13_Algorithms_In_Production.md`. `03_Algorithms/00_INDEX.md` updated. Verify: `ls 03_Algorithms/13_Algorithms_In_Production.md` returns the file; `ls 03_Algorithms/12_Algorithms_In_Production.md` does NOT; `grep -c \"13_Algorithms_In_Production\" 03_Algorithms/00_INDEX.md` >= 1.",
+    "**P0.6 Stack<State> dedup**: 14 duplicates removed across 03a, 03b, 03c, 04a, 05_Trees. Keep 1 canonical copy in `03a_Recursion_Internals.md`. Verify: `grep -rln \"Stack<State>\" 03_Algorithms/` shows ONLY `03a_Recursion_Internals.md` (and the 14 duplicates are gone).",
+    "No new contamination introduced. Verify: targeted grep for known contamination patterns (per `00_CONTEXT/CONTAMINATION_GUARDS.md`) returns no NEW hits in wrong files.",
+    "Canonical context files UNTOUCHED. Verify: `git diff --stat -- 00_CONTEXT/` shows zero changes from this ferment.",
+    "Written verification report at `/home/ash/.config/kimchi/docs/P0_FIXES_02_03_APPLIED.md` listing the 3 fixes with before/after evidence (>= 50 lines)."
+  ],
+  "constraints": []
+}

@@ -2,6 +2,20 @@
 
 # Infrastructure as Code — Terraform & DevOps
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Manual infrastructure drifts from documented state. Disaster recovery takes days when it should take minutes. IaC makes infrastructure reproducible, reviewable, and recoverable — every change is a PR with a diff, every state is version-controlled, every disaster is a `terraform apply` away from recovery. Without IaC, infrastructure knowledge lives in tribal memory; with it, knowledge is encoded in code.
+
+**WHAT**: Declarative vs imperative IaC; Terraform HCL syntax (resources, modules, variables, outputs); state management (local vs remote, locking, drift detection); count vs for_each vs dynamic blocks; module composition patterns; GitOps workflow; CI/CD for infrastructure; OIDC federation for cloud auth (replacing static access keys).
+
+**WHERE**: Every production deployment post-2015; AWS CloudFormation (2009), Azure ARM/Bicep, GCP Deployment Manager, Terraform (2014), Pulumi (2018), Ansible (2012) for configuration. The HashiCorp State of Cloud Strategy 2023 report shows 76% of organizations use Terraform or OpenTofu.
+
+**WHEN**: When you have >1 environment (dev/staging/prod) — even two environments justify IaC. When disaster recovery matters (always for production). When infrastructure changes need audit trails (SOX, HIPAA, PCI-DSS). When team >3 engineers and changes are coordinated. **Counter**: when you have a single dev environment that nobody else touches, a config file is enough.
+
+**WHO**: HashiCorp founded 2012 (Mitchell Hashimoto and Armon Dadgar, both MIT 2011). Terraform 1.0 released July 2014; HashiCorp Configuration Language (HCL) became the de facto IaC standard. The HashiCorp-to-IBM licensing change in 2023 led to the **OpenTofu** fork (Linux Foundation, December 2023), which remains API-compatible.
+
+**HOW**: Declarative syntax first (the desired-state model and its drift-detection invariant), then state file mechanics (remote backend, locking, sensitivity), then module composition (DRY without over-abstraction), then GitOps workflow (PR → plan → apply), then production failure modes (state corruption, drift, plan-time secrets, accidental destruction). Each section ends with a local challenge testing the rule against a real scenario.
+
 ## What is Infrastructure as Code (IaC)?
 
 BEFORE IaC:
@@ -548,6 +562,12 @@ Failure scenarios: (1) **Automatic destructive change**: a typo in `engine_versi
 Long-lived static credentials are an anti-pattern: (1) They don't expire — if leaked (via log output, compromised runner), they're valid indefinitely until manually rotated. (2) They're hard to rotate — every place using the secret must be updated. (3) They have no scope — the key holder has whatever permissions the IAM user has, often over-broad. Correct approach: **OIDC (OpenID Connect) federation** between GitHub Actions and AWS. Setup: (1) Create an IAM Identity Provider in AWS for GitHub Actions (`token.actions.githubusercontent.com`). (2) Create an IAM Role with a trust policy that allows only your specific repo/branch to assume it: `Condition: { StringLike: { "token.actions.githubusercontent.com:sub": "repo:myorg/myrepo:ref:refs/heads/main" } }`. (3) In the GitHub Actions workflow: `- uses: aws-actions/configure-aws-credentials@v4` with `role-to-assume: arn:aws:iam::123:role/terraform-role`. GitHub Actions gets a **short-lived token** (1 hour max) via OIDC. No static credentials stored anywhere. If the token is captured, it expires in <1 hour. Principle of least privilege: the role only has the permissions Terraform needs (EC2, RDS, VPC — not IAM or S3 for other buckets).
 
 </details>
+
+**The declarative IaC invariant**: "Desired state + drift detection = safety; state file is the source of truth."
+
+A declarative IaC tool (Terraform, CloudFormation, Pulumi) takes a description of the desired end state and converges actual state toward it. The state file tracks what's currently deployed. Drift detection (running `terraform plan` regularly) surfaces divergence between desired and actual — manual changes, deleted resources, external modifications.
+
+This invariant is non-negotiable because: (1) without drift detection, manual emergency fixes become permanent and undocumented; (2) without the state file, the tool can't compute the diff between desired and actual; (3) without a declared desired state, "infrastructure" is just tribal knowledge. Violations cause the specific failure mode: a teammate manually fixes a production issue, the fix is forgotten, the next deploy reverts the fix, production breaks again.
 
 ```yaml
 # .github/workflows/terraform.yml

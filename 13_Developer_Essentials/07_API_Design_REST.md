@@ -267,6 +267,17 @@ CHANGING types    → BREAKING change (string → int)
 CHANGING URL      → BREAKING change (new version)
 ```
 
+**Versioning strategy comparison**:
+
+| Aspect | URI versioning | Header versioning | Query param versioning |
+|---|---|---|---|
+| Client discoverability | High (`/api/v1` is visible in URL) | Low (hidden in `Accept` header) | Medium (`?version=2` is visible) |
+| CDN cacheability | High (different URI = different cache entry) | Low (CDN must vary on `Accept` header) | Medium (different query = different cache key) |
+| Documentation burden | Low (Swagger groups by URI prefix) | Medium (need to document `Accept` header values) | Medium |
+| Breaking change visibility | Highest (URL change is obvious) | Low (header change is silent) | Medium |
+| Browser-testable | Yes (paste URL in browser) | Hard (need to set headers) | Yes |
+| REST purity | Low (resource URIs shouldn't change) | High (resources are version-independent) | Low |
+
 ## Level 6 — Filtering, Sorting, Field Selection
 
 ```
@@ -372,6 +383,30 @@ Standard rate limit headers: `X-RateLimit-Limit: 100` (the total allowed per win
 
 </details>
 
+## WHEN: REST vs GraphQL vs gRPC Decision Guide
+
+| Situation | Pick | Why |
+|---|---|---|
+| Public API for third-party developers | **REST** | Universal HTTP support, well-understood, easy documentation, OpenAPI tooling |
+| Mobile app with variable screen layouts | **GraphQL** | Client requests exactly the fields needed; reduces over-fetching on slow networks |
+| Internal microservice-to-microservice | **gRPC** | Strongly-typed contracts (protobuf), 5-10× faster than REST/JSON, bidirectional streaming |
+| File uploads / large binary payloads | **REST** (multipart) | gRPC supports streaming but tooling is immature; GraphQL file uploads require special handling |
+| Real-time bidirectional (chat, live updates) | **WebSocket** or **gRPC streaming** | REST is request-response only; GraphQL subscriptions exist but are complex |
+| Quick prototype, small team | **REST** | Lowest tooling overhead; can migrate to GraphQL/gRPC later if needed |
+
+**Pagination style selection**:
+- **Offset pagination** (`?page=2&size=20`): simple, but breaks when records are inserted between requests (drift)
+- **Cursor pagination** (`?cursor=eyJpZCI6MTAwfQ==`): stable under writes, used by Stripe, GitHub
+- **Keyset pagination** (`?after_id=100&limit=20`): most efficient, requires indexed sort key
+- **Use offset** for admin UIs where drift is acceptable; **use cursor** for user-facing infinite scroll; **use keyset** for high-throughput internal APIs
+
+**Versioning strategy selection**:
+- **URI versioning** when: clients cache responses, third-party developers, mobile apps that ship infrequently
+- **Header versioning** when: internal APIs, strict REST compliance required, all clients are within your control
+- **No versioning** when: GraphQL (use schema evolution with deprecation) or additive-only changes (new endpoints, never break old ones)
+
+---
+
 # 🧭 API Design Cheat Sheet
 
 ```
@@ -383,6 +418,30 @@ Errors:      Consistent JSON with status, message, details
 Security:    Bearer token in Authorization header
 Versioning:  /api/v1/ in URL path
 ```
+
+---
+
+## Historical Evolution
+
+**Roy Fielding** published his **dissertation "Architectural Styles and the Design of Network-Based Software Architectures"** in **2000** at UC Irvine — the document that formalized REST (Representational State Transfer). Fielding was one of the principal authors of HTTP/1.1 (RFC 2616, 1999); REST was the architectural philosophy behind HTTP's design.
+
+**HTTP versions**:
+- **HTTP/0.9** (1991) — single-line protocol, GET only, no headers
+- **HTTP/1.0** (1996, RFC 1945) — request/response format, headers, status codes, methods beyond GET
+- **HTTP/1.1** (1999, RFC 2616; revised RFC 7230-7235 in 2014) — persistent connections, chunked transfer, host header
+- **HTTP/2** (2015, RFC 7540) — binary framing, multiplexing, server push, header compression (HPACK)
+- **HTTP/3** (2022, RFC 9114) — QUIC transport (UDP-based), 0-RTT handshake, connection migration
+
+**REST alternatives motivated by REST limitations**:
+- **GraphQL** (Facebook, 2015, open-sourced) — solves over-fetching and under-fetching; client specifies exact fields needed. Trade-off: no HTTP caching, complex server-side query planning.
+- **gRPC** (Google, 2015, open-sourced 2017) — binary protocol (Protocol Buffers), HTTP/2 multiplexing, strongly-typed contracts. Trade-off: not browser-friendly without a proxy; steep tooling learning curve.
+- **Webhook pattern** (2007, term coined by Jeff Lindsay) — server pushes events via HTTP POST. Used for Stripe, GitHub, Slack integrations.
+
+**API versioning evolution**:
+- **URI versioning**: `/api/v1/users` — oldest, easiest for clients to discover
+- **Header versioning**: `Accept: application/vnd.myapi.v2+json` — purer REST, harder to discover
+- **Query param versioning**: `/api/users?version=2` — easy to test in browser, often considered an anti-pattern
+- **GraphQL**: versioning largely unnecessary (schema evolution with deprecation)
 
 ---
 

@@ -391,6 +391,13 @@ Commitment │ Sprint backlog │ WIP limits
 Metrics │ Velocity │ Lead time, cycle time
 Ceremonies │ 5 ceremonies │ Just standups
 Best for │ Product development │ Support/ops/bugs
+**Timeboxed sprints** │ Yes (2-4 weeks) │ No (continuous flow)
+**Interrupt handling** │ Interrupts defer to next sprint (backlog buffer) │ Interrupts pull capacity from current flow immediately
+**Bug fix priority** │ Bugs enter backlog, prioritized in next sprint planning │ Bugs enter current flow, prioritized against in-flight work
+**Tech debt allocation** │ Reserve % of sprint capacity (e.g., 20%) │ Limit WIP, debt work pulls from same capacity as features
+**Team structure** │ Cross-functional Scrum team (all roles embedded) │ Specialized functions; work flows across team boundaries
+**Cadence** │ Sprint boundary forces stop-and-reflect │ Continuous delivery, no natural stop points
+**Predictability** │ Sprint goal + burndown chart │ Cycle time histogram (when does X-sized work typically complete?)
 
 ---
 
@@ -537,6 +544,20 @@ They violate the core manifesto values, not just surface ceremonies: (1) **Worki
 The objection conflates **Scrum** with **Agile** — they are not the same thing. Agile is a set of values and principles (the Manifesto). Scrum is ONE framework for implementing those values. Kanban is ALSO an Agile framework. Both prioritize continuous delivery, feedback, and adaptation. The Scrum Master's objection is an example of Agile fundamentalism: treating the framework as the goal instead of treating the team's effectiveness as the goal. Manifesto Principle 12: "At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly." If Kanban serves the team better (e.g., they have high-priority support tickets interrupting sprints), switching is the most Agile thing they can do. The correct response: "What problem are we solving by switching? What outcomes do we expect to improve?" Choose the framework that serves the work, not the work that serves the framework.
 
 </details>
+
+## WHO: Origin Story
+
+**Ken Schwaber and Jeff Sutherland** co-created **Scrum in 1993** at the OOPSLA conference. Sutherland had been applying Scrum-like patterns at Easel Corporation; Schwaber independently developed similar ideas at his company. They merged approaches and presented jointly. The original 1993 paper formalized the sprint, daily standup, and retrospective.
+
+**The pre-Manifesto method wars (1990s)**: software development was dominated by heavyweight methodologies — **CMM** (Capability Maturity Model, SEI 1987/1993), **RUP** (Rational Unified Process, 1996), **SSADM** (UK government standard). These had hundreds of artifacts and months-long phases. Practitioners rebelled.
+
+**Kent Beck** published **Extreme Programming Explained (1999)** — TDD, pair programming, continuous integration. Beck explicitly said "turn all the good practices up to eleven."
+
+**Beck, Schwaber, and 15 other practitioners** met at **Snowbird, Utah in February 2001** and signed the **Agile Manifesto**. Other signatories included representatives from Crystal (Alistair Cockburn), DSDM, FDD (Jeff De Luca), and Pragmatic Programming (Andy Hunt, Dave Thomas). Scrum was ONE of multiple signatories, not the origin.
+
+**Mike Cohn** created the **Testing Pyramid** concept in **2009** (Succeeding with Agile) — the unit-heavy, integration-light, e2e-sparse pattern that became canonical.
+
+**Eric Ries** published **The Lean Startup (2011)** — applied agile to startup product development via the build-measure-learn loop and MVP concept. This extended agile thinking beyond engineering teams to product/market fit.
 
 ### Conceptual Depth: The Agile Manifesto Invariant
 

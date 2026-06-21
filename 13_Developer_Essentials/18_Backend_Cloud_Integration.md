@@ -4,6 +4,20 @@
 
 # Backend + Cloud Integration — From Local to Production
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Spring Boot apps running on cloud platforms have unique deployment, observability, and resilience requirements that differ from on-premise. Wrong integration patterns cause ECS connection pool exhaustion (Tomcat default 200 threads × 30s timeout = 200 stuck requests), CloudFront cache stampedes when Authorization headers leak into cache keys, and Lambda cold start cascades (10s init time on 512MB functions). Each of these failure modes has a specific, named fix.
+
+**WHAT**: Deployment evolution (Physical → VM → Container → Serverless); Spring Boot → AWS service mapping; ECS rolling deployment patterns (especially SIGTERM handling); CloudFront caching with Spring Boot (the Authorization-header trap); Lambda + Spring Cloud Function; observability integration (Spring Boot Actuator + CloudWatch); JPA N+1 query patterns in cloud DBs; resilience patterns (circuit breaker, retry, bulkhead) for cloud inter-service calls.
+
+**WHERE**: Every production Spring Boot deployment on AWS, Azure, or GCP; microservices architectures; event-driven systems; serverless backends. The Spring Boot ecosystem (50M+ downloads/month in 2024) means this chapter applies to a majority of Java backend teams.
+
+**WHEN**: When migrating from monolith to containers (ECS/EKS); when scaling beyond single instance (multi-AZ, multi-region); when targeting serverless (Lambda with Spring Cloud Function); when adopting microservices (inter-service resilience); when integrating with managed databases (RDS, DynamoDB); when wiring observability for production operations.
+
+**WHO**: Docker released March 2013 (Solomon Hykes at dotCloud). Kubernetes released June 2014 (Google, derived from Borg). Spring Boot 1.0 released April 2014 (Pivotal, now VMware Tanzu). ECS launched November 2014 (AWS); EKS June 2018; Fargate November 2017; Lambda November 2014. The CNCF (Cloud Native Computing Foundation, founded July 2015) maintains Kubernetes and the broader cloud-native ecosystem.
+
+**HOW**: Deployment evolution first (the control-vs-maintenance spectrum anchors all subsequent decisions), then Spring Boot → AWS service mapping table, then ECS rolling deployment specifics (SIGTERM is load-bearing, not optional), then CloudFront caching pitfalls (Authorization header kills cache hit rate), then observability integration (Actuator endpoints + CloudWatch metrics), then production failure modes with named fixes.
+
 ## 5W1H — Why This Chapter?
 
 WHAT: How backend applications are deployed, scaled, and
@@ -57,30 +71,19 @@ ERA 4: SERVERLESS / PLATFORM (2020+)
 
 ## 2. Cloud Service Models
 
-```
-IaaS vs PaaS vs SaaS — The Pizza Analogy:
+**The deployment spectrum — cooking at home vs meal kit vs restaurant delivery**:
 
-┌────────────┬────────────┬────────────┬────────────┐
-│ ON-PREMISE │  IaaS      │  PaaS      │  SaaS      │
-│ (home cook)│ (grocery)  │ (delivery) │ (dine out) │
-├────────────┼────────────┼────────────┼────────────┤
-│ You manage │ You manage │ You manage │ You manage │
-│ EVERYTHING │ Apps       │ Apps       │ Nothing    │
-│ Hardware   │ Data       │ Data       │ (just use) │
-│ OS         │ Runtime    │            │            │
-│ Middleware │ Middleware │            │            │
-│ Runtime    │            │            │            │
-│ Apps       │ Cloud gives│ Cloud gives│ Cloud gives│
-│ Data       │ Hardware   │ Hardware   │ Everything │
-│            │ Storage    │ OS         │            │
-│            │ Networking │ Runtime    │            │
-│            │ OS         │ Middleware │            │
-├────────────┼────────────┼────────────┼────────────┤
-│ Example:   │ AWS EC2    │ Heroku     │ Gmail      │
-│ Your rack  │ Azure VM   │ AWS EBS    │ Salesforce │
-│            │ GCP CE     │ Azure App  │ GitHub     │
-└────────────┴────────────┴────────────┴────────────┘
-```
+- **IaaS (cook at home)**: you rent a kitchen (EC2 instance), buy ingredients (configure the OS, install Java), and cook from scratch. Maximum control over ingredients and process, but you handle shopping, prep, and cleanup. **Spring Boot example**: deploy a JAR to EC2 with custom bash scripts; you manage systemd, log rotation, health checks.
+
+- **PaaS (meal kit)**: the provider ships pre-measured ingredients and a recipe. You still cook, but shopping and prep are done. **Spring Boot example**: deploy to AWS Elastic Beanstalk or Google App Engine; you provide the JAR, the platform handles capacity provisioning, load balancing, OS patching.
+
+- **FaaS / Serverless (restaurant delivery)**: you place an order, food arrives ready-to-eat. No kitchen, no cooking, no cleanup. **Spring Boot example**: AWS Lambda with Spring Cloud Function; you provide the function handler, the platform handles everything else. Pay only when the function runs.
+
+- **Container (food truck)**: a self-contained unit you can park anywhere. The truck has the kitchen, ingredients, and chef; you just pick the location. **Spring Boot example**: deploy a Docker image to ECS or EKS; the container has everything needed, the platform schedules and scales.
+
+**The control-versus-maintenance spectrum**: as you move right (IaaS → FaaS), you give up control but gain operational simplicity. IaaS lets you tune JVM flags, kernel parameters, and network stack — but you're responsible for OS patching, capacity planning, and failure recovery. FaaS abstracts all of this but constrains runtime (15-minute max execution time, 512MB typical memory limit).
+
+**Decision rule**: pick the leftmost option that meets your requirements. Don't reach for FaaS unless your workload is event-driven and short-lived; don't pick IaaS unless you need specific hardware or kernel tuning.
 
 ---
 
@@ -325,7 +328,7 @@ ALB returns 502 for in-flight requests during phase 2.
 
 🔬 **Section Challenge — 6. CI/CD Pipeline for Spring Boot**
 
-**Challenge 1 (Debug):** A Spring Boot pipeline builds a Docker image using `FROM maven:3.9-eclipse-temurin-21` and copies the source code to run `mvn clean package` inside the Dockerfile. The final image is 1.2GB. Why is this an anti-pattern and how do you fix it?
+**Challenge 1 (Docker Image Size):** A Spring Boot pipeline builds a Docker image using `FROM maven:3.9-eclipse-temurin-21` and copies the source code to run `mvn clean package` inside the Dockerfile. The final image is 1.2GB. Why is this an anti-pattern and how do you fix it?
 
 <details><summary>Answer</summary>
 
@@ -333,7 +336,7 @@ This is a single-stage build. It includes the entire JDK, Maven, all downloaded 
 
 </details>
 
-**Challenge 2 (Reasoning):** The CI/CD pipeline deploys a new container image to ECS. During the rolling update, 5% of user requests randomly fail with HTTP 502/504 errors, then everything stabilizes. What is missing in the Spring Boot configuration?
+**Challenge 2 (Graceful Shutdown):** The CI/CD pipeline deploys a new container image to ECS. During the rolling update, 5% of user requests randomly fail with HTTP 502/504 errors, then everything stabilizes. What is missing in the Spring Boot configuration?
 
 <details><summary>Answer</summary>
 

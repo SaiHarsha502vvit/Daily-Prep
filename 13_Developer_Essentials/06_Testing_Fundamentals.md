@@ -1,4 +1,4 @@
-# 🧪 Testing Fundamentals — Complete Guide
+# 🧪 Testing Fundamentals - Complete Guide
 
 **Navigation**: [< Clean Code](05_Clean_Code.md) | [Index](00_INDEX.md) | [Next: API Design >](07_API_Design_REST.md)
 
@@ -46,13 +46,13 @@ E2E Tests:         10% of all tests (test full user workflows)
 
 ---
 
-🔬 **Section Challenge — The Testing Pyramid**
+🔬 **Section Challenge - The Testing Pyramid**
 
-**Challenge 1 (Reasoning):** A team has 500 E2E tests, 100 integration tests, and 50 unit tests — an inverted pyramid. Name two concrete consequences they experience in CI/CD.
+**Challenge 1 (Reasoning):** A team has 500 E2E tests, 100 integration tests, and 50 unit tests - an inverted pyramid. Name two concrete consequences they experience in CI/CD.
 
 <details><summary>Answer</summary>
 
-1. **Slow CI pipeline**: E2E tests launch a browser, boot the full stack, and run real HTTP calls. 500 of them take 30–60 minutes per run. Developers stop waiting for CI and merge blindly. 2. **Flaky test hell**: E2E tests fail for non-code reasons — network latency, race conditions in UI rendering, external API timeouts. A 2% flake rate across 500 tests = 10 random failures per run. The team learns to ignore red CI, which defeats the entire purpose. Unit tests run in milliseconds, are fully deterministic, and have zero external dependencies. 70% unit / 20% integration / 10% E2E is the target because it maximizes coverage speed and reliability.
+1. **Slow CI pipeline**: E2E tests launch a browser, boot the full stack, and run real HTTP calls. 500 of them take 30-60 minutes per run. Developers stop waiting for CI and merge blindly. 2. **Flaky test hell**: E2E tests fail for non-code reasons - network latency, race conditions in UI rendering, external API timeouts. A 2% flake rate across 500 tests = 10 random failures per run. The team learns to ignore red CI, which defeats the entire purpose. Unit tests run in milliseconds, are fully deterministic, and have zero external dependencies. 70% unit / 20% integration / 10% E2E is the target because it maximizes coverage speed and reliability.
 
 </details>
 
@@ -60,7 +60,7 @@ E2E Tests:         10% of all tests (test full user workflows)
 
 <details><summary>Answer</summary>
 
-1. **Parallelize**: Split tests across multiple runners (GitHub Actions matrix, JUnit Platform parallel execution `junit.jupiter.execution.parallel.enabled=true`). 45 min ÷ 8 runners = ~6 min. 2. **Layer isolation**: Convert integration tests that only test business logic (no DB interaction) to unit tests with mocks. The bulk of time is usually Spring context startup — each `@SpringBootTest` class boots a full context. Annotate shared context tests with `@TestMethodOrder` so they reuse one context. 3. **Shard E2E by feature**: Run E2E tests only for the features changed in the PR (use file-change path filtering in CI). 4. **TestContainers reuse**: Set `testcontainers.reuse.enable=true` so the Postgres container survives between test runs locally.
+1. **Parallelize**: Split tests across multiple runners (GitHub Actions matrix, JUnit Platform parallel execution `junit.jupiter.execution.parallel.enabled=true`). 45 min ÷ 8 runners = ~6 min. 2. **Layer isolation**: Convert integration tests that only test business logic (no DB interaction) to unit tests with mocks. The bulk of time is usually Spring context startup - each `@SpringBootTest` class boots a full context. Annotate shared context tests with `@TestMethodOrder` so they reuse one context. 3. **Shard E2E by feature**: Run E2E tests only for the features changed in the PR (use file-change path filtering in CI). 4. **TestContainers reuse**: Set `testcontainers.reuse.enable=true` so the Postgres container survives between test runs locally.
 
 </details>
 
@@ -106,13 +106,13 @@ void shouldRejectNegativePercentage() {
 }
 ```
 
-🔬 **Section Challenge — Unit Testing**
+🔬 **Section Challenge - Unit Testing**
 
 **Challenge 1 (Reasoning):** A "unit test" calls a real PostgreSQL database and a real Stripe HTTP API. What specifically makes it no longer a unit test, and what are the two concrete failure modes it introduces?
 
 <details><summary>Answer</summary>
 
-A unit test must be **isolated** — it tests one unit of logic with all dependencies replaced by mocks/stubs. Calling real external systems violates isolation. Failure modes: (1) **Flakiness**: the test fails when Postgres is down, the network is slow, or Stripe’s sandbox has an outage — for reasons completely unrelated to your code. (2) **Slowness**: a real DB call + HTTP round-trip takes 200–1000ms per test. With 1,000 tests, that’s 200 seconds vs 200ms for true unit tests. Proper fix: mock the repository with `@Mock OrderRepository repo; when(repo.save(any())).thenReturn(savedOrder)` and stub the Stripe client. Test the DB and HTTP separately in integration tests.
+A unit test must be **isolated** - it tests one unit of logic with all dependencies replaced by mocks/stubs. Calling real external systems violates isolation. Failure modes: (1) **Flakiness**: the test fails when Postgres is down, the network is slow, or Stripe's sandbox has an outage - for reasons completely unrelated to your code. (2) **Slowness**: a real DB call + HTTP round-trip takes 200-1000ms per test. With 1,000 tests, that's 200 seconds vs 200ms for true unit tests. Proper fix: mock the repository with `@Mock OrderRepository repo; when(repo.save(any())).thenReturn(savedOrder)` and stub the Stripe client. Test the DB and HTTP separately in integration tests.
 
 </details>
 
@@ -120,7 +120,7 @@ A unit test must be **isolated** — it tests one unit of logic with all depende
 
 <details><summary>Answer</summary>
 
-**Branch coverage** minimum: 3 cases — one input per branch (e.g., 5%, 25%, 75%). This proves all branches execute. **Boundary value analysis** adds cases at the edges where off-by-one bugs hide: 0 (minimum valid), 10 (upper edge of branch 1), 11 (lower edge of branch 2), 50 (upper edge of branch 2), 51 (lower edge of branch 3), 100 (maximum valid), -1 (just below minimum — should throw), 101 (just above maximum — should throw). Total: 3 branch + 8 boundary = 11 meaningful test cases. This is why high coverage % doesn’t mean good tests — 3 tests can hit 100% branch coverage while missing all the boundary bugs.
+**Branch coverage** minimum: 3 cases - one input per branch (e.g., 5%, 25%, 75%). This proves all branches execute. **Boundary value analysis** adds cases at the edges where off-by-one bugs hide: 0 (minimum valid), 10 (upper edge of branch 1), 11 (lower edge of branch 2), 50 (upper edge of branch 2), 51 (lower edge of branch 3), 100 (maximum valid), -1 (just below minimum - should throw), 101 (just above maximum - should throw). Total: 3 branch + 8 boundary = 11 meaningful test cases. This is why high coverage % doesn't mean good tests - 3 tests can hit 100% branch coverage while missing all the boundary bugs.
 
 </details>
 
@@ -158,13 +158,13 @@ class OrderControllerIntegrationTest {
 }
 ```
 
-🔬 **Section Challenge — Integration Testing**
+🔬 **Section Challenge - Integration Testing**
 
 **Challenge 1 (Reasoning):** `@SpringBootTest` boots the full Spring context. For a large app this takes 30 seconds per test class. Name two specific strategies to reduce this overhead.
 
 <details><summary>Answer</summary>
 
-1. **Context caching**: Spring Test caches the application context and reuses it across test classes that share the same configuration. To maximize reuse: avoid `@MockBean` (it forces a new context per class), use `@TestConfiguration` with the same beans, and don’t use `@DirtiesContext` unless necessary. 2. **Slice tests**: Instead of loading the full context, use targeted slice annotations — `@WebMvcTest` loads only the web layer (controllers, filters, no service/repo beans), `@DataJpaTest` loads only JPA (H2 + repositories, no web layer). A controller test with `@WebMvcTest` starts in ~3 seconds vs 30 seconds for `@SpringBootTest`.
+1. **Context caching**: Spring Test caches the application context and reuses it across test classes that share the same configuration. To maximize reuse: avoid `@MockBean` (it forces a new context per class), use `@TestConfiguration` with the same beans, and don't use `@DirtiesContext` unless necessary. 2. **Slice tests**: Instead of loading the full context, use targeted slice annotations - `@WebMvcTest` loads only the web layer (controllers, filters, no service/repo beans), `@DataJpaTest` loads only JPA (H2 + repositories, no web layer). A controller test with `@WebMvcTest` starts in ~3 seconds vs 30 seconds for `@SpringBootTest`.
 
 </details>
 
@@ -172,7 +172,7 @@ class OrderControllerIntegrationTest {
 
 <details><summary>Answer</summary>
 
-**Test isolation failure**: parallel test runs share the same database, so orders created by other tests bleed into this test’s count. Fixes: (1) **`@Transactional` on the test class** — each test runs inside a transaction that is rolled back after the test, leaving the DB clean for the next test. (2) **`@Sql` cleanup scripts** — `@Sql(scripts = "/cleanup.sql", executionPhase = BEFORE_TEST_METHOD)` truncates tables before each test. (3) **TestContainers with `@DirtiesContext`** — each test class gets a fresh container. Don’t assert absolute counts (`count() == 1`) in shared-DB tests; assert relative changes (`countBefore + 1`) or use `@Transactional` rollback.
+**Test isolation failure**: parallel test runs share the same database, so orders created by other tests bleed into this test's count. Fixes: (1) **`@Transactional` on the test class** - each test runs inside a transaction that is rolled back after the test, leaving the DB clean for the next test. (2) **`@Sql` cleanup scripts** - `@Sql(scripts = "/cleanup.sql", executionPhase = BEFORE_TEST_METHOD)` truncates tables before each test. (3) **TestContainers with `@DirtiesContext`** - each test class gets a fresh container. Don't assert absolute counts (`count() == 1`) in shared-DB tests; assert relative changes (`countBefore + 1`) or use `@Transactional` rollback.
 
 </details>
 
@@ -198,7 +198,7 @@ void userCanLoginAndViewDashboard() {
 
 ---
 
-🔬 **Section Challenge — E2E / Acceptance Testing**
+🔬 **Section Challenge - E2E / Acceptance Testing**
 
 **Challenge 1 (Trace):** Trace through the following test and identify which phase of Arrange-Act-Assert each block belongs to. Then explain what the `assertEquals` is actually verifying at the domain level.
 
@@ -222,7 +222,7 @@ void shouldCalculateTotalWithTax() {
 
 <details><summary>Answer</summary>
 
-**Block A = Arrange**: creates the system under test (`OrderService`) and the input data (`Order` with 2 items). No production behavior is triggered here. **Block B = Act**: calls exactly ONE method — the unit of behavior being tested. **Block C = Assert**: verifies the result. Domain interpretation: subtotal = 50 + 10 = 60.00. Tax = 60 × 0.18 = 10.80. Total = 70.80. The assertion proves the tax calculation formula is correct. Key insight: this test also implicitly tests that `Item` prices are summed before applying tax (not per-item tax then summed) — a business rule embedded in the assertion value.
+**Block A = Arrange**: creates the system under test (`OrderService`) and the input data (`Order` with 2 items). No production behavior is triggered here. **Block B = Act**: calls exactly ONE method - the unit of behavior being tested. **Block C = Assert**: verifies the result. Domain interpretation: subtotal = 50 + 10 = 60.00. Tax = 60 × 0.18 = 10.80. Total = 70.80. The assertion proves the tax calculation formula is correct. Key insight: this test also implicitly tests that `Item` prices are summed before applying tax (not per-item tax then summed) - a business rule embedded in the assertion value.
 
 </details>
 
@@ -230,7 +230,7 @@ void shouldCalculateTotalWithTax() {
 
 <details><summary>Answer</summary>
 
-1. **Timing/async rendering**: Selenium clicks a button before React has re-rendered the result — `findElement(By.id("result"))` throws `NoSuchElementException`. Fix: use `WebDriverWait` + `ExpectedConditions.visibilityOfElementLocated()` instead of implicit waits. 2. **Test environment drift**: the E2E test environment has a different database seed, different feature flags, or a different version of a third-party widget than production. The test passes in CI but fails against staging. 3. **Browser version mismatch**: ChromeDriver version must exactly match the installed Chrome version. A Chrome auto-update breaks all Selenium tests overnight. Fix: use `WebDriverManager` to auto-match driver versions.
+1. **Timing/async rendering**: Selenium clicks a button before React has re-rendered the result - `findElement(By.id("result"))` throws `NoSuchElementException`. Fix: use `WebDriverWait` + `ExpectedConditions.visibilityOfElementLocated()` instead of implicit waits. 2. **Test environment drift**: the E2E test environment has a different database seed, different feature flags, or a different version of a third-party widget than production. The test passes in CI but fails against staging. 3. **Browser version mismatch**: ChromeDriver version must exactly match the installed Chrome version. A Chrome auto-update breaks all Selenium tests overnight. Fix: use `WebDriverManager` to auto-match driver versions.
 
 </details>
 
@@ -280,21 +280,44 @@ void shouldCalculateDiscount() {
 @Test void shouldNotChargeShipping_whenOrderExceedsFreeThreshold() {}
 ```
 
-🔬 **Section Challenge — Test Naming Convention**
+🔬 **Section Challenge - Test Naming Critique**
 
-**Challenge 1 (Trace):** These test names are bad: `testCalculateDiscount()`, `test1()`, `shouldWork()`. What specific information is absent from each that a good test name must convey?
+The section above shows examples of test names like `shouldReturnZero_whenCartIsEmpty()` and `shouldThrowException_whenAmountIsNegative()`. Compare these to three bad examples from real codebases:
 
-<details><summary>Answer</summary>
+1. `testCalculateDiscount()`
+2. `test1()`
+3. `shouldWork()`
 
-`testCalculateDiscount()`: tells you the method under test but not the **scenario** (which input?) or the **expected behavior** (what should happen?). `test1()`: reveals absolutely nothing — scenario, behavior, and subject are all missing. `shouldWork()`: "work" is undefined; this is the verbal equivalent of a magic number. A good test name answers 3 questions: (1) **What** method/behavior is under test? (2) **When** / under what conditions? (3) **What** is the expected outcome? Template: `should[ExpectedBehavior]_when[Condition]`. Renamed: `shouldApplyTenPercentDiscount_whenCouponIsValid()`, `shouldReturnZero_whenCartIsEmpty()`, `shouldThrowException_whenDiscountExceedsHundredPercent()`.
+For each bad name, explain exactly what information is missing that the good names convey. Then write a test name for: testing that `InventoryService.deductStock(sku, quantity)` throws an `InsufficientStockException` when the requested quantity exceeds available stock for a SKU that's been soft-deleted.
 
+<details>
+<summary>Answer</summary>
+
+**Information missing from each bad name**:
+1. `testCalculateDiscount()` - does not specify the input condition (which discount scenario?) nor the expected outcome (what does the result equal?). Reader must read the test body to know what's tested.
+2. `test1()` - provides zero information. Reader cannot tell what behavior is verified; impossible to find this test in a CI failure log.
+3. `shouldWork()` - "work" is undefined. The reader doesn't know what behavior is being verified.
+
+**The good names** convey three things:
+- **The expected outcome**: `shouldReturnZero`, `shouldThrowException`
+- **The triggering condition**: `whenCartIsEmpty`, `whenAmountIsNegative`
+- **The subject under test**: implicit in the method name (`calculateDiscount`, `validateAmount`)
+
+**Test name for the challenge**: `shouldThrowInsufficientStockException_whenDeductingMoreThanAvailableForSoftDeletedSku()`. This name tells you:
+- Outcome: throws `InsufficientStockException`
+- Trigger: deducting more than available
+- Edge case: SKU is soft-deleted (not permanently removed from DB)
+
+**Why the long name is OK**: test names are NOT APIs. They are documentation. A reader scanning a CI failure log or test report sees the full name and knows immediately what scenario failed. Compare to a 10-character log message that requires grep + code-reading to understand.
+
+**Trade-off**: very long names clutter IDE displays. The solution is `should_X_when_Y` convention with 3-8 words - enough to be specific, short enough to fit on one line in most IDEs.
 </details>
 
 **Challenge 2 (Design):** A codebase has `shouldThrowException_whenAmountIsNegative()` failing. A developer changes it to `@Disabled` and comments "fix later." What is the exact risk this creates and what is the correct fix?
 
 <details><summary>Answer</summary>
 
-`@Disabled` is the test equivalent of `TODO: fix later` — it never gets fixed. The risk: the bug the test was catching (negative amounts not rejected) now silently exists in production. The correct fix is to treat a failing test as a **blocking issue**: either (1) fix the bug in the production code so the test passes, or (2) if the behavior is intentionally changing, update the test to match the new spec (and document why). Disabling tests to make CI green is a form of technical debt that always costs more later — the negative-amount path may cause a downstream accounting bug discovered months later.
+`@Disabled` is the test equivalent of `TODO: fix later` - it never gets fixed. The risk: the bug the test was catching (negative amounts not rejected) now silently exists in production. The correct fix is to treat a failing test as a **blocking issue**: either (1) fix the bug in the production code so the test passes, or (2) if the behavior is intentionally changing, update the test to match the new spec (and document why). Disabling tests to make CI green is a form of technical debt that always costs more later - the negative-amount path may cause a downstream accounting bug discovered months later.
 
 </details>
 
@@ -317,6 +340,51 @@ void shouldCalculateDiscount() {
 @Test void shouldAccept_whenAgeIs150() {}         // boundary
 @Test void shouldReject_whenAgeIs151() {}         // just over boundary
 ```
+
+🔬 **Section Challenge — Boundary Value Analysis Edge Cases**
+
+A function `validateAge(int age)` must return `true` if `age` is between 18 and 65 inclusive. Using boundary value analysis (BVA), what are the test cases you should write? Why is BVA better than testing only "typical" values?
+
+<details>
+<summary>Answer</summary>
+
+**BVA test cases for `validateAge(int age)`** (valid range 18–65 inclusive):
+
+| Input | Expected | Why |
+|---|---|---|
+| `age = 17` | `false` | Just below lower boundary |
+| `age = 18` | `true` | At lower boundary |
+| `age = 19` | `true` | Just above lower boundary |
+| `age = 64` | `true` | Just below upper boundary |
+| `age = 65` | `true` | At upper boundary |
+| `age = 66` | `false` | Just above upper boundary |
+
+Total: 6 boundary tests + 2 nominal tests (`age = 30`, `age = 50`) for sanity.
+
+**Why BVA catches bugs "typical" tests miss**:
+
+Off-by-one bugs at boundaries are extremely common. Consider:
+- Developer A writes `if (age >= 18 && age <= 65)` (correct, boundary inclusive).
+- Developer B writes `if (age > 18 && age < 65)` (off-by-one — rejects 18 and 65).
+- Developer C writes `if (age >= 18 && age < 65)` (off-by-one on upper).
+
+A test suite that only checks `age = 30` passes for all three implementations. A test at `age = 18` and `age = 65` distinguishes them.
+
+**Why not exhaustive testing** (test every value 0–120)?
+- 121 test cases for a single integer input is too many
+- Most values (e.g., `age = 30`, `age = 45`) test the same code path
+- BVA identifies the boundary points where code branches change
+
+**The principle**: bugs cluster at decision boundaries. Test the boundaries + one nominal value, not the middle of ranges.
+
+**Real-world BVA application**:
+- Date ranges (first day of month, last day of month, leap year Feb 29)
+- Array indices (empty array, single element, last element)
+- Numeric limits (INT_MIN, 0, INT_MAX)
+- String length (empty string, single char, max length)
+
+Coverage % is a misleading proxy for "tests are good." A 100% coverage test suite with no boundary tests is worse than a 60% coverage suite with thorough BVA.
+</details>
 
 ## Mocking with Mockito
 
@@ -364,31 +432,81 @@ class OrderServiceTest {
 }
 ```
 
-🔬 **Section Challenge — Mocking with Mockito**
+🔬 **Section Challenge - Mocking with Mockito**
 
 **Challenge 1 (Reasoning):** What is the difference between `@Mock` and `@Spy` in Mockito? Give a concrete scenario where you must use `@Spy` instead of `@Mock`.
 
 <details><summary>Answer</summary>
 
-`@Mock` creates a **complete fake** of the class — all methods return null/0/false by default. No real code runs. `@Spy` creates a **partial mock** — it wraps a real object; real methods are called unless you explicitly stub them with `doReturn(...).when(spy).method()`. Use `@Spy` when you want to test ONE method of a class while letting the rest of the class execute normally. Concrete scenario: you have a `ReportGenerator` class with `generatePDF()` calling `fetchData()` internally. You want to test `generatePDF()` with real logic but stub `fetchData()` to return test data without hitting the database. `@Mock ReportGenerator` would make ALL methods fake. `@Spy ReportGenerator` + `doReturn(testData).when(spy).fetchData()` lets the real `generatePDF()` run while intercepting only `fetchData()`.
+`@Mock` creates a **complete fake** of the class - all methods return null/0/false by default. No real code runs. `@Spy` creates a **partial mock** - it wraps a real object; real methods are called unless you explicitly stub them with `doReturn(...).when(spy).method()`. Use `@Spy` when you want to test ONE method of a class while letting the rest of the class execute normally. Concrete scenario: you have a `ReportGenerator` class with `generatePDF()` calling `fetchData()` internally. You want to test `generatePDF()` with real logic but stub `fetchData()` to return test data without hitting the database. `@Mock ReportGenerator` would make ALL methods fake. `@Spy ReportGenerator` + `doReturn(testData).when(spy).fetchData()` lets the real `generatePDF()` run while intercepting only `fetchData()`.
 
 </details>
 
-**Challenge 2 (Trace):** `verify(orderRepo, never()).save(any())` — what does this assertion prove, and why is it more powerful than just asserting the exception was thrown?
+**Challenge 2 (Trace):** `verify(orderRepo, never()).save(any())` - what does this assertion prove, and why is it more powerful than just asserting the exception was thrown?
 
 <details><summary>Answer</summary>
 
-`verify(orderRepo, never()).save(any())` proves that **the repository’s `save` method was never called** during the test. This is more powerful than just `assertThrows(PaymentFailedException.class, ...)` because: asserting the exception only proves the exception was thrown. It does NOT prove that no side effects occurred before the throw. The bug scenario: a buggy implementation calls `orderRepo.save(order)` THEN calls `paymentGateway.charge()`, which throws. The exception propagates, your exception assertion passes — but the order was already persisted to the database in a failed state. `verify(orderRepo, never()).save(any())` catches this bug: it proves the save was never called, meaning the failure is truly atomic. This is **behavior-based testing** — verifying interactions, not just outputs.
+`verify(orderRepo, never()).save(any())` proves that **the repository's `save` method was never called** during the test. This is more powerful than just `assertThrows(PaymentFailedException.class, ...)` because: asserting the exception only proves the exception was thrown. It does NOT prove that no side effects occurred before the throw. The bug scenario: a buggy implementation calls `orderRepo.save(order)` THEN calls `paymentGateway.charge()`, which throws. The exception propagates, your exception assertion passes — but the order was already persisted to the database in a failed state. `verify(orderRepo, never()).save(any())` catches this bug: it proves the save was never called, meaning the failure is truly atomic. This is **behavior-based testing** — verifying interactions, not just outputs.
 
+</details>
+
+🔬 **Section Challenge — Mockito Spy vs Mock**
+
+You have a `UserService` that delegates to a `UserRepository`. You want to test that `UserService.registerUser()` calls `repository.save(user)` exactly once with the correct User object. You have two options:
+
+```java
+// Option A: Mock the repository
+@Mock UserRepository repository;
+
+@Test
+void testRegisterUser() {
+    UserService service = new UserService(repository);
+    User user = new User("alice@example.com");
+    service.registerUser(user);
+    verify(repository).save(user);
+}
+
+// Option B: Spy on the real repository
+@Spy UserRepository repository = new UserRepository();
+
+@Test
+void testRegisterUser() {
+    UserService service = new UserService(repository);
+    User user = new User("alice@example.com");
+    service.registerUser(user);
+    verify(repository).save(user);
+}
+```
+
+What's the difference between `@Mock` and `@Spy`? When would you choose each?
+
+<details>
+<summary>Answer</summary>
+
+**`@Mock`**: creates a stub. All methods return default values (null, 0, false) unless stubbed. The repository isn't a real instance — it's a placeholder.
+
+**`@Spy`**: wraps a real instance. Real methods are called unless explicitly stubbed. You can verify SOME calls while letting others execute normally.
+
+**When to use each**:
+- **`@Mock`**: when the dependency is complex or has side effects you don't want (e.g., `UserRepository.save()` actually writes to a database — you don't want that in a unit test).
+- **`@Spy`**: when you want to verify SOME behavior while executing the rest. E.g., spy on a `Cache` to verify `get()` was called, but let it actually retrieve from the underlying store.
+
+**For the `registerUser` test**: `@Mock` is the right choice. You don't want `UserRepository.save()` to actually write to a database in a unit test — you only want to verify the call happened.
+
+**Anti-pattern**: using `@Spy` on a real repository that writes to the actual database. The test now requires database setup, runs slowly, and can leave dirty data.
+
+**The line**: if the dependency is "outside the unit" (database, network, file system), use `@Mock`. If the dependency is "inside the unit" and you want partial verification, use `@Spy`.
+
+**Production note**: Mockito 5.x deprecated `verifyNoMoreInteractions()` and other strict verifications. Use `verify(...)` for what you care about; don't assert on every interaction.
 </details>
 
 ## TDD (Test-Driven Development)
 
 ```
 TDD Cycle:
-  1. RED   — Write a FAILING test first
-  2. GREEN — Write the MINIMUM code to make it pass
-  3. REFACTOR — Clean up without breaking tests
+  1. RED   - Write a FAILING test first
+  2. GREEN - Write the MINIMUM code to make it pass
+  3. REFACTOR - Clean up without breaking tests
 
 Example:
   Step 1 (RED): Write test → shouldCalculateAreaOfCircle(radius=5) → 78.54
@@ -453,25 +571,37 @@ IMPORTANT: High coverage ≠ good tests!
 
 ---
 
+## WHO: Origin Story
+
+**Kent Beck** created **SUnit in 1989** (Smalltalk) - the first xUnit framework, originally as a tool for himself. He didn't intend to create a movement; he just wanted help debugging Smalltalk code.
+
+**Kent Beck and Erich Gamma** released **JUnit in 1997** - the Java port of SUnit that catalyzed the xUnit adoption wave. Gamma was visiting Beck at Apple; they pair-programmed the first version over a weekend. JUnit's design was so clean it became the template for xUnit frameworks in 30+ languages (Python's unittest, .NET's NUnit, JavaScript's Jest, Go's testing, Rust's cargo test).
+
+**Dan North** introduced **Behavior-Driven Development (BDD)** in **2006** - the observation that "test" was the wrong metaphor for stakeholder communication. The shift to "given/when/then" scenarios (later formalized in Gherkin by Aslak Hellesøy for Cucumber, 2008) made tests readable by product owners.
+
+**JUnit 5** released **September 2017** after 5+ years in development - a complete rewrite under JUnit Lambda (championed by Marc Philipp and Stefan Bechtold), introducing the `@DisplayName` annotation, nested tests, and parameterized tests with method sources.
+
+The lineage matters: Beck's 1989 motivation (write a tiny test, then refactor confidently) drove Gamma's 1997 implementation (make it Java-idiomatic) which North's 2006 BDD reframed (make it business-readable). Modern testing culture descends from these three decisions.
+
 ### Historical Evolution
 
 **Testing frameworks and practices have evolved from Smalltalk to JavaScript:**
 
-- **1989** — SUnit (Smalltalk Unit Testing Framework) created by Kent Beck at Tektronix, introducing the xUnit pattern: `setUp()`, `tearDown()`, `assert*` methods, and the test runner. Every modern testing framework (JUnit, NUnit, pytest, Jest) descends directly from SUnit's design.
-- **1997** — Kent Beck and Erich Gamma released JUnit at the PLoP conference (pattern languages conference). JUnit established Java as a first-class testing language and introduced the `TestCase`, `TestSuite`, and `assert*` patterns that became the universal testing vocabulary.
-- **2003** — Kent Beck's "Test-Driven Development by Example" (Addison-Wesley) formalized TDD as a disciplined practice: Red (failing test), Green (make it pass), Refactor. This book evangelized TDD across the industry and remains the canonical TDD reference.
-- **2006** — JUnit 4 released, adopting Java 5 annotations (`@Test`, `@Before`, `@After`) instead of method naming conventions, and integrating with modern build tools (Maven, Ant). The framework matured from a tool into an ecosystem.
-- **2006** — Dan North introduced BDD (Behavior-Driven Development) in his article "Introducing BDD" (dannorth.net), reframing tests as specifications of behavior using a Given-When-Then vocabulary. JBehave and then Cucumber popularized this outside-in testing approach.
-- **2014** — Jest released by Facebook (originally for React testing). Jest's focus on zero-configuration, integrated mocking, and fast execution (Jest uses jsdom + isolated sandboxed tests) established the modern standard for JavaScript testing.
-- **2017** — JUnit 5 (Codename: JUnit Lambda) released after three years of development. JUnit 5 introduced a modular architecture (JUnit Platform, Jupiter, Vintage), native support for lambdas in tests, parameterized tests, and improved extensibility — modernizing the framework for Java 8+.
+- **1989** - SUnit (Smalltalk Unit Testing Framework) created by Kent Beck at Tektronix, introducing the xUnit pattern: `setUp()`, `tearDown()`, `assert*` methods, and the test runner. Every modern testing framework (JUnit, NUnit, pytest, Jest) descends directly from SUnit's design.
+- **1997** - Kent Beck and Erich Gamma released JUnit at the PLoP conference (pattern languages conference). JUnit established Java as a first-class testing language and introduced the `TestCase`, `TestSuite`, and `assert*` patterns that became the universal testing vocabulary.
+- **2003** - Kent Beck's "Test-Driven Development by Example" (Addison-Wesley) formalized TDD as a disciplined practice: Red (failing test), Green (make it pass), Refactor. This book evangelized TDD across the industry and remains the canonical TDD reference.
+- **2006** - JUnit 4 released, adopting Java 5 annotations (`@Test`, `@Before`, `@After`) instead of method naming conventions, and integrating with modern build tools (Maven, Ant). The framework matured from a tool into an ecosystem.
+- **2006** - Dan North introduced BDD (Behavior-Driven Development) in his article "Introducing BDD" (dannorth.net), reframing tests as specifications of behavior using a Given-When-Then vocabulary. JBehave and then Cucumber popularized this outside-in testing approach.
+- **2014** - Jest released by Facebook (originally for React testing). Jest's focus on zero-configuration, integrated mocking, and fast execution (Jest uses jsdom + isolated sandboxed tests) established the modern standard for JavaScript testing.
+- **2017** - JUnit 5 (Codename: JUnit Lambda) released after three years of development. JUnit 5 introduced a modular architecture (JUnit Platform, Jupiter, Vintage), native support for lambdas in tests, parameterized tests, and improved extensibility - modernizing the framework for Java 8+.
 
 **Key references:**
-- Kent Beck — SUnit (1989) and JUnit (1997) — The originator of the xUnit testing pattern; every modern testing framework in any language traces back to Beck's Smalltalk implementation.
-- Kent Beck — *Test-Driven Development by Example* (2003) — The canonical TDD reference; introduced the Red-Green-Refactor cycle and demonstrated TDD as a design practice, not just a testing technique.
-- Dan North — BDD article "Introducing BDD" (2006) — Reframed testing from checking behavior to specifying behavior; the Given-When-Then vocabulary became the standard for acceptance testing.
-- JUnit Team — JUnit 5 / JUnit Lambda (2017) — Modernized the 20-year-old JUnit framework with Java 8+ features, a modular architecture, and the `@Tag`, `@Nested`, and `@DisplayName` annotations that make large test suites maintainable.
+- Kent Beck - SUnit (1989) and JUnit (1997) - The originator of the xUnit testing pattern; every modern testing framework in any language traces back to Beck's Smalltalk implementation.
+- Kent Beck - *Test-Driven Development by Example* (2003) - The canonical TDD reference; introduced the Red-Green-Refactor cycle and demonstrated TDD as a design practice, not just a testing technique.
+- Dan North - BDD article "Introducing BDD" (2006) - Reframed testing from checking behavior to specifying behavior; the Given-When-Then vocabulary became the standard for acceptance testing.
+- JUnit Team - JUnit 5 / JUnit Lambda (2017) - Modernized the 20-year-old JUnit framework with Java 8+ features, a modular architecture, and the `@Tag`, `@Nested`, and `@DisplayName` annotations that make large test suites maintainable.
 
-**Why this matters for testing:** The testing pyramid (70% unit, 20% integration, 10% E2E) and the Arrange-Act-Assert pattern are not arbitrary — they emerged from 30 years of empirical evidence about what makes test suites fast, reliable, and maintainable. Understanding the SUnit (1989) → JUnit (1997) → JUnit 5 (2017) evolution explains why modern testing frameworks work the way they do.
+**Why this matters for testing:** The testing pyramid (70% unit, 20% integration, 10% E2E) and the Arrange-Act-Assert pattern are not arbitrary - they emerged from 30 years of empirical evidence about what makes test suites fast, reliable, and maintainable. Understanding the SUnit (1989) → JUnit (1997) → JUnit 5 (2017) evolution explains why modern testing frameworks work the way they do.
 
 ---
 
@@ -519,10 +649,10 @@ Handle: negative amounts, insufficient funds, null account
 
 **Testing practices fail in production in these named ways:**
 
-- **Flaky test tax** — Google research (2020, Luo et al.): 16% of CI failures are flaky tests (tests that fail non-deterministically, passing on re-run). At Google scale, flaky tests cost millions in developer hours per year. The 30% of test suite time spent re-running flaky tests reduces effective code review bandwidth. The real danger: developers learn to ignore red CI, and when a real failure appears in the noise, it is dismissed as "another flake."
-- **Test coverage as misleading proxy** — 80% line coverage can hide zero assertions on critical paths. A test that calls `order.calculateTotal()` and has 100% line coverage but no assertion (only `// assert result > 0`) passes but catches nothing. Capers Jones research: coverage metrics correlate weakly with defect removal efficiency. The test might be executing code without verifying that the output is correct.
-- **Integration test with shared state** — a `@SpringBootTest` that doesn't use `@Transactional` rollback shares state with other test classes running in parallel. Test A creates a user; Test B finds 2 users instead of 1. Test execution order in CI differs from local, making the failure appear intermittently. This is the "works on my machine" of test suites.
-- **E2E test fragility on environment drift** — a Selenium test passes in CI against staging but fails in production because production has different feature flags, a newer third-party JS library, or a different CDN response. Browser auto-updates can break ChromeDriver compatibility overnight. Tests that depend on exact DOM element ordering are the most fragile.
+- **Flaky test tax** - Google research (2020, Luo et al.): 16% of CI failures are flaky tests (tests that fail non-deterministically, passing on re-run). At Google scale, flaky tests cost millions in developer hours per year. The 30% of test suite time spent re-running flaky tests reduces effective code review bandwidth. The real danger: developers learn to ignore red CI, and when a real failure appears in the noise, it is dismissed as "another flake."
+- **Test coverage as misleading proxy** - 80% line coverage can hide zero assertions on critical paths. A test that calls `order.calculateTotal()` and has 100% line coverage but no assertion (only `// assert result > 0`) passes but catches nothing. Capers Jones research: coverage metrics correlate weakly with defect removal efficiency. The test might be executing code without verifying that the output is correct.
+- **Integration test with shared state** - a `@SpringBootTest` that doesn't use `@Transactional` rollback shares state with other test classes running in parallel. Test A creates a user; Test B finds 2 users instead of 1. Test execution order in CI differs from local, making the failure appear intermittently. This is the "works on my machine" of test suites.
+- **E2E test fragility on environment drift** - a Selenium test passes in CI against staging but fails in production because production has different feature flags, a newer third-party JS library, or a different CDN response. Browser auto-updates can break ChromeDriver compatibility overnight. Tests that depend on exact DOM element ordering are the most fragile.
 
 **Debug workflow:** For flaky tests: `git bisect` across commits to find the commit that introduced the flake; check for async timing issues (`Thread.sleep`), shared mutable state, or random data generation. For coverage proxy failures: use mutation testing (Pitest) to verify tests actually catch defects, not just execute lines.
 **Mitigation discipline:** Configure CI to auto-retry flaky tests once (`--retries=1` in most test frameworks); use `@DirtiesContext` or TestContainers with unique ports per test class to eliminate shared state; maintain a "flaky test quarantine" dashboard to track and fix flakes before they accumulate.

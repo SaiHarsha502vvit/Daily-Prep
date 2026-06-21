@@ -89,16 +89,12 @@ VMs have **hardware-level isolation**: each VM runs its own kernel on virtualize
 
 </details>
 
-## WHO: Origin
+## WHO: Origin Story
 
-```
-2013: Solomon Hykes at dotCloud
-      Built Docker as internal tool
-      Open-sourced it → Revolutionized deployment
+**2013: Solomon Hykes at dotCloud** built Docker as an internal tool, open-sourced it, and revolutionized deployment.
 
 Based on: Linux cgroups + namespaces (existed since 2008)
 Docker's genius = Made containers EASY to use
-```
 
 ---
 
@@ -524,42 +520,24 @@ The JDK includes: `javac` (compiler), `jdb` (debugger), `jcmd`/`jmap`/`jstack` (
 3. Verify data persistence after container restart
 ```
 
----
-
-### Production Reality
-
-**Docker and container operations fail in production in these named ways:**
-
-- **Container escape via privileged mode** — `docker run --privileged` disables all container isolation, giving the container kernel-level access to the host. CVE-2019-5736: a malicious container could overwrite the host's Docker binary by writing to `/proc/self/exe`, escaping to root on the host. Privileged containers bypass cgroup namespace isolation and can access host devices directly. Always use `--cap-drop=ALL` and add only required capabilities (`--cap-add=NET_ADMIN` only when needed).
-- **Image layer bloat slowing CI** — a Dockerfile that copies the entire source tree before `RUN mvn install` creates image layers where every code change invalidates the Maven dependency cache. Each CI build downloads 500MB of dependencies. Multi-stage builds that don't use `--mount=type=cache` for Maven/Gradle caches lose minutes per build. A 200MB Docker image vs a 1.2GB image means 6x faster pod startup on Kubernetes.
-- **Registry auth token expiration blocking deploys** — `docker login` stores credentials in `~/.docker/config.json` with an expiration (typically 12-24 hours). CI/CD pipelines that don't refresh credentials fail at the worst time: during an incident when you need to push an emergency image. AWS ECR tokens expire after 12 hours; GitHub Container Registry tokens expire when the GitHub token used to obtain them expires.
-- **OOM-killed container loses logs** — when the Linux OOM killer terminates a container (memory limit exceeded), all stdout logs in the kernel ring buffer are lost if they haven't been flushed to a remote log aggregator. `docker logs` returns nothing. The postmortem has no evidence of what happened in the final seconds. Kubernetes liveness probe also fails, restarting the container before logs are preserved. Fix: ship logs to a remote store (Fluentd, Fluent Bit) before the container terminates.
-
-**Debug workflow:** For container escapes: audit running containers with `docker ps --format '{{.ID}} {{.Privileged}}'`; privileged containers show `true`. For image bloat: `docker history <image>` shows layer sizes; identify large COPY or RUN layers. For registry auth: check `~/.docker/config.json` token expiry; use `AWS ECR get-login-password` in CI.
-**Mitigation discipline:** Run containers with `--security-opt no-new-privileges` and drop all capabilities; use multi-stage builds with small run-time images (alpine or distroless); use Kubernetes podDisruptionBudgets to ensure logshipping sidecars are prioritized for graceful shutdown before application containers; rotate registry credentials automatically via Kubernetes external secrets operators.
-
-**Next Chapter**: [CI/CD Pipelines →](04_CICD_Pipelines.md)
-
----
-
----
-
 🔬 **Section Challenge — Exercise 3: Compose Full Stack**
 
 **Challenge 1 (Reasoning):** In the multi-stage Dockerfile, `COPY pom.xml .` and `RUN mvn dependency:resolve` appear BEFORE `COPY src/ ./src/`. Why does this specific ordering matter, and what happens to build times if you reverse them?
 
-<details><summary>Answer</summary>
+<details>
+<summary>Answer</summary>
 
 Docker builds images **layer by layer**, and each layer is **cached**. If a layer's input hasn't changed, Docker reuses the cached result instead of re-executing it. Dependencies (`pom.xml`) change rarely — maybe once a week when you add a new library. Source code (`src/`) changes on every commit. By copying `pom.xml` FIRST and resolving dependencies, Docker creates a cached layer containing all downloaded JARs (~200-500MB). On subsequent builds where only `src/` changed, Docker skips the dependency download entirely (cache hit on layers 1-2) and only rebuilds from `COPY src/` onward. **If reversed** (`COPY . .` then `RUN mvn dependency:resolve`), ANY change to ANY file (even a one-line code fix) invalidates the COPY layer, which invalidates ALL subsequent layers — forcing a full `mvn dependency:resolve` on every build. This turns a 10-second rebuild into a 3-5 minute rebuild. **The general rule:** In Dockerfiles, order instructions from **least frequently changing to most frequently changing**. This is called **layer cache optimization** and is the single most impactful Docker performance technique.
 
 </details>
 
-> [!NOTE]
-> **Open Source Reference: Docker Layer Caching (BuildKit)**
->
-> - [moby/buildkit](https://github.com/moby/buildkit) -> **Invariant:** Layer invalidation cascades downwards. A change in layer $N$ invalidates layers $N$ through the end of the Dockerfile.
-> - **Local rewrite:** While the standard `COPY pom.xml` trick caches dependencies as an image layer, BuildKit's `RUN --mount=type=cache,target=/root/.m2` mounts a persistent compiler cache directory directly into the build container, skipping dependency downloads even if the `pom.xml` layer itself is invalidated.
-> - **Constraint warning:** BuildKit cache mounts are build-time only. They are not persisted in the final image, and they don't share cache automatically across distributed CI runners without explicit registry cache-export configuration.
+📎 **Reference Anchor:** [moby/buildkit](https://github.com/moby/buildkit)
+
+**Invariant learned:** Layer invalidation cascades downward — modifying a file in layer N invalidates all subsequent layers, requiring rebuild from N+1.
+
+**Local rewrite:** Use BuildKit's `RUN --mount=type=cache,target=/root/.maven` to mount dependency caches outside the layer cache, so they don't trigger layer invalidation when source code changes.
+
+**Constraint warning:** BuildKit's `--mount=type=cache` syntax requires BuildKit-enabled Docker (Docker 23.0+ or BuildKit standalone). On older Docker versions, the syntax fails silently and dependencies are cached in the layer as before.
 
 ---
 

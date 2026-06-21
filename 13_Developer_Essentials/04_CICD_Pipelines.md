@@ -126,22 +126,25 @@ jobs:
 
 ## Full Pipeline: Build → Test → Docker → Deploy
 
-🔬 **Section Challenge — Full Pipeline: Build → Test → Docker → Deploy**
+🔬 **Section Challenge — CI/CD Dependency Graph Failure Recovery**
 
-**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+Your CI pipeline has jobs: `lint` → `test` → `docker-build` → `deploy`. The `docker-build` job fails because the base image registry returns 503. The `test` job already passed and produced test artifacts. What happens to the deploy job? Can you retry just `docker-build` and resume the pipeline from there, or must you restart from `test`?
 
-<details><summary>Answer</summary>
+<details>
+<summary>Answer</summary>
 
-In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+**Behavior depends on CI tool**:
+- **GitHub Actions**: `needs: docker-build` creates a dependency edge; if `docker-build` fails, `deploy` is skipped. You can re-run just the failed `docker-build` job from the GitHub UI; dependent jobs resume automatically. Test artifacts persist across retries (30-day retention by default).
+- **GitLab CI**: Similar — failed jobs can be retried individually; artifacts from upstream jobs are available to downstream jobs via `dependencies:` keyword.
+- **Jenkins**: Pipeline jobs have more granular retry semantics; you can use `retry()` in declarative pipeline syntax. Artifacts are archived per-stage.
 
-</details>
+**The "restart from where" question**:
+- Yes — modern CI tools support per-job retry. You do NOT need to re-run `lint` or `test`.
+- Test artifacts (coverage reports, screenshots, JUnit XML) persist between retries and are still available to downstream jobs.
 
-**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+**Failure-mode trap**: if the registry 503 is transient, a single retry succeeds. If it's a network partition affecting all jobs, retrying just `docker-build` loops until the partition heals. Add a `retry: { max: 3, when: 'always' }` strategy with exponential backoff to avoid hammering an unavailable registry.
 
-<details><summary>Answer</summary>
-
-`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-
+**Production note**: configure artifact retention for at least the typical incident response window (7 days). If a job fails on Friday and you return Monday, the test artifacts should still be there for debugging.
 </details>
 
 ```yaml
@@ -414,6 +417,39 @@ Azure DevOps    → Best for Microsoft ecosystem
 - Kohsuke Kawaguchi — Jenkins/Hudson fork (2011) — The fork made Jenkins the dominant open-source CI engine; the plugin ecosystem established the extensibility model still used today.
 
 **Why this matters for CI/CD:** Understanding the 2009-2019 arc explains why modern pipelines emphasize GitOps, declarative configuration, and container-native execution — these emerged from the convergence of REST architecture, DevOps culture, and cloud container platforms. The 12-Factor App (Adam Wiggins, Heroku, 2011) added the build/release/run separation that is now the universal CI/CD stage structure.
+
+---
+
+## WHO: Origin Story
+
+**Patrick Debois** coined the term "DevOps" at the first DevOpsDays in Ghent, Belgium, **October 2009**. The conference emerged from frustrations with the wall between developers (who wanted fast iteration) and operations (who wanted stability). The Agile community's "Dev" focus left out operations; DebOps / DevOps was the explicit bridge.
+
+**Jez Humble and David Farley** published *Continuous Delivery* in **2010** — the first book to codify the build-test-deploy pipeline as an automated, repeatable practice. Their "deployment pipeline" concept is the ancestor of every modern CI/CD tool.
+
+**Kohsuke Kawaguchi** created **Hudson** at Sun Microsystems in **2005** as a CI server. After Oracle's acquisition of Sun, the community forked Hudson as **Jenkins** in **2011** due to governance disputes. Jenkins remains the most widely deployed CI server globally.
+
+**Travis CI** (2011) and **CircleCI** (2011) pioneered CI-as-a-Service. **GitHub Actions** launched in **2018** (public beta) and 2019 (GA), bringing CI/CD directly into the version-control platform — the "GitHub-native" model now dominant in open source.
+
+**Adam Wiggins and the Heroku team** published the **12-Factor App** methodology in **2011**, codifying deployment best practices (stateless processes, declarative config, dev/prod parity) that became the philosophical foundation for cloud-native CI/CD.
+
+---
+
+## WHEN: Decision Guide
+
+| Situation | Trigger | Use It When |
+|---|---|---|
+| **Every push to feature branch** | `on: push` | Every commit should pass automated gates before review |
+| **Pull request opened/updated** | `on: pull_request` | Verify PR doesn't break main before merge |
+| **Scheduled (nightly)** | `on: schedule: cron: '0 2 * * *'` | Long-running tests (load, security scans, dependency audits) that don't fit per-PR |
+| **Manual workflow_dispatch** | `on: workflow_dispatch` | Deployment jobs requiring human approval |
+| **Tag push (release)** | `on: push: tags: ['v*']` | Release builds with version stamping and artifact publishing |
+| **Path filter** | `on: push: paths: ['docs/**']` | Skip expensive CI for doc-only changes |
+
+**Path filtering trade-off**: aggressive path filtering (only run CI on `src/**` changes) speeds feedback but misses cross-cutting changes. A config change in `package.json` doesn't touch `src/**` but might break builds.
+
+**Concurrency limit**: use `concurrency: group: ${{ github.ref }}, cancel-in-progress: true` to cancel outdated runs on the same branch. Without this, multiple pushes to the same PR create a backlog of queued jobs.
+
+**Manual approval gate**: production deployments should NEVER auto-deploy from `main`. Use `environment: production` with required reviewers in GitHub, or a manual `workflow_dispatch` step in GitLab. Auto-deploy to staging is fine; auto-deploy to prod is reckless.
 
 ---
 

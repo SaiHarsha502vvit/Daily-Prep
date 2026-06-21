@@ -26,6 +26,41 @@ HOW: Through real-world analogies that make it stick.
 
 ---
 
+## WHO: Origin Story
+
+**Networking protocols have evolved through 40 years of internet standardization:**
+
+- **1974** — Vint Cerf and Bob Kahn published "A Protocol for Packet Network Interconnection" (IEEE Transactions on Communications), laying the theoretical foundation for TCP/IP.
+- **1983** — ARPANET officially switched from NCP to TCP/IP on January 1 ("flag day"). This is the official birth of the modern Internet. Paul Mockapetris invented DNS, publishing RFC 882/883 (later superseded by RFC 1034/1035 in 1987).
+- **1991** — Tim Berners-Lee at CERN introduced HTTP/0.9, a single-line protocol: `GET /page.html\r\n`. No headers, no status codes, no verbs beyond GET. The World Wide Web was born.
+- **1996** — HTTP/1.0 published as RFC 1945, adding headers, POST/HEAD methods, status codes, and content negotiation. The Web became a programmable platform.
+- **1999** — HTTP/1.1 published as RFC 2616, adding persistent connections (keep-alive), chunked transfers, virtual hosting. This remained the dominant protocol for 15 years.
+- **1999** — TLS 1.0 (SSL 3.0 successor) published as RFC 2246, enabling encrypted HTTPS at web scale. SSL 3.0 deprecated due to POODLE attack in 2014.
+- **2008** — TLS 1.2 published as RFC 5246, adding SHA-256 signatures and AES-GCM cipher suites. TLS 1.2 remains the minimum recommended version into the 2020s.
+- **2009** — Google began developing SPDY ("speedy"), an experimental protocol to reduce web latency. SPDY introduced header compression, multiplexing, and server push — the foundations of HTTP/2.
+- **2015** — HTTP/2 published as RFC 7540, based directly on Google's SPDY (2009-2015). Binary framing, multiplexing, header compression (HPACK) became standard in all major browsers by 2016.
+- **2018** — TLS 1.3 published as RFC 8446, reducing handshake from 2 RTTs to 1 (or 0-RTT resumption), removing insecure cipher suites, and improving forward secrecy. Dramatically faster and more secure.
+- **2022** — HTTP/3 published as RFC 9114, based on Google's QUIC protocol (2013). Uses UDP instead of TCP, eliminating head-of-line blocking — the primary remaining performance limitation of HTTP/2.
+- **2000** — Roy Fielding's doctoral dissertation "Architectural Styles and the Design of Network-based Software Architectures" formalized REST (Representational State Transfer), providing the constraints (client-server, stateless, cacheable, uniform interface) that modern web APIs are built on.
+
+**Key references:**
+- Vint Cerf & Bob Kahn — "A Protocol for Packet Network Interconnection" (1974) — The foundational paper for TCP/IP; established the concept of packet switching and network-layer addressing that the entire Internet runs on.
+- Paul Mockapetris — DNS specification (1983, RFC 882/883; 1987 RFC 1034/1035) — The phone book of the Internet; enabled human-readable domain names as the primary interface to IP addresses, without which modern web hosting, load balancing, and CDN routing would be impossible.
+- Tim Berners-Lee — HTTP/0.9 (1991) — The original web protocol; a single GET command over a TCP connection. Every subsequent HTTP version descends from this single-line protocol.
+- Google Chromium Team — SPDY (2009-2015) — The experimental foundation of HTTP/2; demonstrated that binary framing and multiplexing could halve page load times.
+- Roy Fielding — REST dissertation (2000) — The architectural foundation for modern web APIs; REST constraints (statelessness, cacheability, uniform interface) are what enable CD pipelines, API gateways, and microservices to interoperate reliably.
+
+**The networking invariant**: "Every network request flows through 7 layers of the OSI model, and failure at any layer produces a specific, named symptom."
+
+- Layer 1-2 failure (physical/data link): cable disconnected, switch down → no link light, ARP fails silently
+- Layer 3 failure (network): wrong subnet, router down → "no route to host", packets silently dropped
+- Layer 4 failure (transport): port closed, firewall blocks → "connection refused" (TCP RST received) vs "connection timed out" (packets dropped silently)
+- Layer 7 failure (application): server crashed, app returns 500 → HTTP status code; connection is open, request fails
+
+This invariant predicts failure: when a connection fails, knowing WHICH layer broke down tells you exactly where to look. "Connection refused" → check the listening process (Layer 4/7 boundary). "Connection timed out" → check the network path (firewalls, security groups, routing). "DNS not found" → check name resolution. The diagnostic tree starts at the symptom and walks down through the layers.
+
+---
+
 ## 1. What Is a Server?
 
 ```
@@ -500,7 +535,7 @@ SSL handshake failed │ Certificate expired or invalid.
 
 🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
 
-**Challenge 1 (Debug):** A Spring Boot app deployed on EC2 port 8080 works fine when curled via `localhost:8080` from SSH, but the public IP `http://1.2.3.4:8080` gives "Connection timed out". What are the two most likely causes at the infrastructure layer?
+**Challenge 1 (Connection Refused vs Timed Out):** A Spring Boot app deployed on EC2 port 8080 works fine when curled via `localhost:8080` from SSH, but the public IP `http://1.2.3.4:8080` gives "Connection timed out". What are the two most likely causes at the infrastructure layer?
 
 <details><summary>Answer</summary>
 
@@ -508,37 +543,13 @@ SSL handshake failed │ Certificate expired or invalid.
 
 </details>
 
-**Challenge 2 (Debug):** The same application is put behind an Nginx reverse proxy. Nginx handles SSL and forwards to Spring Boot on `localhost:8080`. Users report occasional "502 Bad Gateway" errors during traffic spikes. Spring Boot logs show no crashes. What is happening?
+**Challenge 2 (502 During Traffic Spikes):** The same application is put behind an Nginx reverse proxy. Nginx handles SSL and forwards to Spring Boot on `localhost:8080`. Users report occasional "502 Bad Gateway" errors during traffic spikes. Spring Boot logs show no crashes. What is happening?
 
 <details><summary>Answer</summary>
 
 "502 Bad Gateway" means the proxy (Nginx) tried to connect to the upstream (Spring Boot), but the upstream failed to respond or accept the connection. Since Spring isn't crashing, it's **resource exhaustion at the connection layer**: (1) **Tomcat Thread Pool Exhaustion**: Spring Boot defaults to 200 max threads. During a spike, if all 200 are busy, new connections from Nginx are queued or rejected. Nginx gives up and returns 502. (2) **Keep-Alive race condition**: Nginx reuses TCP connections to Spring Boot. If Spring Boot closes an idle connection exactly as Nginx sends a new request on it, Nginx gets a connection reset (ECONNRESET) and returns 502. Fix: Ensure Tomcat's `server.tomcat.keep-alive-timeout` is slightly LONGER than Nginx's `keepalive_timeout` so Nginx is always the one to close idle connections.
 
 </details>
-
-### Historical Evolution
-
-**Networking protocols have evolved through 40 years of internet standardization:**
-
-- **1974** — Vint Cerf and Bob Kahn published "A Protocol for Packet Network Interconnection" (IEEE Transactions on Communications), laying the theoretical foundation for TCP/IP.
-- **1983** — ARPANET officially switched from NCP to TCP/IP on January 1 ("flag day"). This is the official birth of the modern Internet. Paul Mockapetris invented DNS, publishing RFC 882/883 (later superseded by RFC 1034/1035 in 1987).
-- **1991** — Tim Berners-Lee at CERN introduced HTTP/0.9, a single-line protocol: `GET /page.html\r\n`. No headers, no status codes, no verbs beyond GET. The World Wide Web was born.
-- **1996** — HTTP/1.0 published as RFC 1945, adding headers, POST/HEAD methods, status codes, and content negotiation. The Web became a programmable platform.
-- **1999** — HTTP/1.1 published as RFC 2616, adding persistent connections (keep-alive), chunked transfers, virtual hosting. This remained the dominant protocol for 15 years.
-- **1999** — TLS 1.0 (SSL 3.0 successor) published as RFC 2246, enabling encrypted HTTPS at web scale. SSL 3.0 deprecated due to POODLE attack in 2014.
-- **2008** — TLS 1.2 published as RFC 5246, adding SHA-256 signatures and AES-GCM cipher suites. TLS 1.2 remains the minimum recommended version into the 2020s.
-- **2009** — Google began developing SPDY ("speedy"), an experimental protocol to reduce web latency. SPDY introduced header compression, multiplexing, and server push — the foundations of HTTP/2.
-- **2015** — HTTP/2 published as RFC 7540, based directly on Google's SPDY (2009-2015). Binary framing, multiplexing, header compression (HPACK) became standard in all major browsers by 2016.
-- **2018** — TLS 1.3 published as RFC 8446, reducing handshake from 2 RTTs to 1 (or 0-RTT resumption), removing insecure cipher suites, and improving forward secrecy. Dramatically faster and more secure.
-- **2022** — HTTP/3 published as RFC 9114, based on Google's QUIC protocol (2013). Uses UDP instead of TCP, eliminating head-of-line blocking — the primary remaining performance limitation of HTTP/2.
-- **2000** — Roy Fielding's doctoral dissertation "Architectural Styles and the Design of Network-based Software Architectures" formalized REST (Representational State Transfer), providing the constraints (client-server, stateless, cacheable, uniform interface) that modern web APIs are built on.
-
-**Key references:**
-- Vint Cerf & Bob Kahn — "A Protocol for Packet Network Interconnection" (1974) — The foundational paper for TCP/IP; established the concept of packet switching and network-layer addressing that the entire Internet runs on.
-- Paul Mockapetris — DNS specification (1983, RFC 882/883; 1987 RFC 1034/1035) — The phone book of the Internet; enabled human-readable domain names as the primary interface to IP addresses, without which modern web hosting, load balancing, and CDN routing would be impossible.
-- Tim Berners-Lee — HTTP/0.9 (1991) — The original web protocol; a single GET command over a TCP connection. Every subsequent HTTP version descends from this single-line protocol.
-- Google Chromium Team — SPDY (2009-2015) — The experimental foundation of HTTP/2; demonstrated that binary framing and multiplexing could halve page load times.
-- Roy Fielding — REST dissertation (2000) — The architectural foundation for modern web APIs; REST constraints (statelessness, cacheability, uniform interface) are what enable CD pipelines, API gateways, and microservices to interoperate reliably.
 
 ### Production Reality
 

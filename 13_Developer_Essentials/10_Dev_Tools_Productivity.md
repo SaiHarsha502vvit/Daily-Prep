@@ -34,6 +34,24 @@ Profiling         │ VisualVM / JProfiler  │ Find performance bottlenecks
 Monitoring        │ Prometheus + Grafana  │ Watch production metrics
 ```
 
+## WHO: Origin Story
+
+**JetBrains** was founded in **2000** in Prague by three Russian developers (Valentin Kipyatkov, Eugene Belyaev, Sergey Dmitriev). The first product was **IntelliJ IDEA**, released **2001**. JetBrains pioneered many IDE features now standard: deep refactoring, smart completion, inline documentation, version-control integration. Today JetBrains products (IntelliJ, PyCharm, WebStorm, GoLand) are used by ~6M developers.
+
+**Maven** (2002, Jason van Zyl) — formalized the XML-based declarative build system. Apache Maven 1.0 released **2004**. Maven's contribution: standardized project layout (`src/main/java`), dependency resolution from a central repo, and the concept of "convention over configuration" in build systems.
+
+**Gradle** (2007, Hans Dockter, Adam Murdoch) — first stable release **2009**. Gradle combined Maven's dependency management with Groovy DSL flexibility and incremental builds. Today Gradle is the build tool for Android, Spring Boot 3.x, and Kotlin Multiplatform.
+
+**Git** was created by **Linus Torvalds in April 2005** (covered in detail in file 01). GitHub launched **2008**, GitLab **2011**, Bitbucket **2008**.
+
+**Postman** was founded in **2014** by Abhinav Asthana and Ankit Sobti; originally a Chrome extension. Postman popularized API-first development; today 500+ million developers use it.
+
+**Spring Boot** launched **April 2014** (covered in detail in `07_Modern_Java`). Spring Boot's `@SpringBootApplication` convention and starter dependencies made the Java ecosystem match the "ship in minutes" experience of Node.js / Rails.
+
+**Visual Studio Code** released by Microsoft **April 2015**. VS Code's success (most popular editor per Stack Overflow surveys since 2017) is due to its Electron-based extension model and Microsoft's embrace of open source.
+
+**Docker Desktop** launched **2015** (alongside Docker Engine). Docker's developer experience transformed container adoption — before Docker, container tooling was esoteric (LXC, OpenVZ); after Docker, `docker run` was a household command.
+
 ---
 
 # HOW: Mastering Each Tool
@@ -279,9 +297,41 @@ public class PerformanceAspect {
 
 ---
 
+## WHEN: Tool Selection Decision Guide
+
+| Need | Tool | Why |
+|---|---|---|
+| Java/Kotlin development | **IntelliJ IDEA Ultimate** | Best-in-class refactoring, Spring Boot support, database tools |
+| Polyglot team (Python + JS + Go) | **VS Code** with language extensions | Single editor, language server protocol, broad ecosystem |
+| Heavy data work (SQL, notebooks) | **DataGrip** (JetBrains) or **DBeaver** | Schema-aware SQL editor; query plan visualization |
+| Vim/Emacs power user | **Neovim** + LSP plugins | Modal editing, full keyboard control, terminal-native |
+| REST API development/testing | **Postman** or **Insomnia** | Request collections, environment variables, mock servers |
+| gRPC API development | **grpcurl** + **BloomRPC** | Protocol-buffer introspection; like curl for gRPC |
+| Container builds locally | **Docker Desktop** or **Rancher Desktop** | Same engine as production; integrates with IDE |
+| Local Kubernetes | **kind**, **minikube**, or **k3d** | Lightweight K8s in Docker; matches prod topology |
+| Secret management (dev) | **HashiCorp Vault** or **AWS Secrets Manager** | Never commit secrets; rotate automatically |
+| Local DNS / service mesh | **Telepresence** or **Tilt** | Develop locally against remote cluster; fast feedback |
+| Database migrations | **Flyway** or **Liquibase** | Version-controlled schema changes; rollback support |
+
+**IDE shortcut learning curve**:
+- **Phase 1 (Day 1)**: 10 essential shortcuts (open file, find symbol, run test, go to definition, rename, extract method)
+- **Phase 2 (Month 1)**: 20 more (debug step over/into/out, refactor menu, version control panel)
+- **Phase 3 (Year 1)**: 40+ — at this point, the IDE becomes a force multiplier
+
+**Don't learn shortcuts for tools you won't use in 6 months**: shortcuts have high decay rate. Focus on the tools you use daily.
+
+**Build tool selection (Maven vs Gradle)**:
+- **Maven**: simpler, wider enterprise adoption, verbose XML, slower incremental builds
+- **Gradle**: faster (incremental + build cache), flexible DSL (Groovy/Kotlin), steeper learning curve
+- **Spring Boot 3.x default**: Gradle (since 2023)
+- **Android**: Gradle (only option)
+- **Recommendation**: pick Gradle for new projects; pick Maven if team is already on Maven
+
+---
+
 🔬 **Section Challenge — Level 6 — Performance Profiling**
 
-**Challenge 1 (Scenario):** Your Spring Boot service has an API endpoint that takes 3 seconds to respond. `htop` shows CPU at 15% and memory stable. Walk through your exact diagnostic steps to find the bottleneck.
+**Challenge 1 (Production Debug):** Your Spring Boot service has an API endpoint that takes 3 seconds to respond. `htop` shows CPU at 15% and memory stable. Walk through your exact diagnostic steps to find the bottleneck.
 
 <details><summary>Answer</summary>
 

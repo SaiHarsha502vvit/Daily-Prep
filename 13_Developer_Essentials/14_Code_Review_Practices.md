@@ -2,6 +2,46 @@
 
 # Code Review — Best Practices & Checklist
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Code is read 10× more than it is written; code review is where institutional knowledge transfers between engineers. Without review, the codebase fragments into individual ownership — every change becomes a context-switch for the original author. The cost of poor review compounds: 5× higher defect rates on un-reviewed code (Capers Jones), 5+ days debugging for code that wasn't reviewed at PR time (Microsoft research). Reviews are the highest-leverage engineering practice for team velocity.
+
+**WHAT**: Code review as a structured practice — tone pyramid (MUST FIX → SUGGESTION → NIT → PRAISE), reviewer's mindset vs author's mindset, PR size discipline (cognitive load limits), 10 named code smells with detection patterns, and the post-merge learning loop. Covers both human and technical dimensions.
+
+**WHERE**: Every team with 2+ engineers; mandatory at FAANG, fintechs, and any production codebase. Open-source projects (Kubernetes, React, Spring) all require review before merge. Even solo founders benefit from external review (paid code review services, mentor relationships).
+
+**WHEN**: Before merge to main, before release branches, for every PR regardless of size (yes, even 3-line changes). Particularly critical for: security-sensitive code (auth, payments), shared infrastructure, public API surfaces, and database migrations.
+
+**WHO**: Michael Fagan formalized the inspection process at IBM in 1976 (Fagan inspection). The open-source patch-review model (Linux kernel, BSD) from the 1990s evolved into the modern pull request. GitHub introduced the GitHub-flow PR model in 2008, making it the dominant review interface. Microsoft Research (Bird et al., 2009) and Capers Jones (2010s) provided empirical studies on review effectiveness.
+
+**HOW**: Tone pyramid first (4 levels with concrete comment templates), then PR size discipline (200–400 lines max per the cognitive load research), then code smell identification (10 named patterns with examples), then review etiquette (the human dimension). Each major section ends with a local challenge that applies the rule to a concrete code scenario.
+
+**The code review invariant**: "A review's value is proportional to the knowledge transferred, not the number of comments made."
+
+A 30-minute review that teaches the author a better pattern is worth more than a 30-comment review that nitpicks variable names. Review for: (1) correctness bugs the author missed, (2) design patterns the author doesn't know, (3) production failure modes the author hasn't seen, (4) knowledge transfer for shared understanding. Avoid: bikeshedding naming, asserting style preferences as universal, nitpicking without explaining the underlying issue.
+
+This invariant is non-negotiable because review time is the most expensive engineering activity (25% of senior engineer time at Google per Sadowski et al. 2018). Spending it on trivial comments wastes the team's most valuable resource.
+
+## Historical Evolution
+
+**Michael Fagan** at IBM published **"Design and Code Inspections to Reduce Errors in Program Development"** in **1976** — the original formal code inspection process. Fagan inspection requires a structured meeting: presenter walks through the code, reviewers raise issues, a moderator records defects, the author fixes them. Studies showed Fagan inspections reduced defects by 60-90% (per Fagan's own IBM research).
+
+**The 1990s open-source revolution** changed review culture. Projects like **Linux (1991)**, **Apache (1995)**, **Mozilla (1998)** developed lightweight patch-review processes: contributor submits patch via mailing list, maintainer reviews, community discusses, maintainer applies. This was the ancestor of the modern pull request.
+
+**GitHub launched in 2008** and introduced the **pull request** as a first-class workflow primitive. Before GitHub, "patch review" was mailing-list-based and ad-hoc. The PR model formalized: fork → branch → commit → push → PR → review → merge. GitHub's social layer (comments, reactions, review status) made review a public, traceable activity.
+
+**Modern code review research**:
+- **Microsoft Research (Bird et al., 2009)**: studied Windows Vista and Windows 7 code reviews; found that files with code review had significantly fewer post-release defects
+- **Capeers Jones** (2010s): large-scale study across 12,000+ projects; correlated review coverage with defect rates
+- **Google's engineering productivity research** (Sadowski et al., 2018): showed that code review at Google takes ~25% of senior engineer time; CR is the highest-cost engineering practice, justifying investment in tooling
+- **SmartBear Software** (2008-2018): the original "Best Practices for Code Review" whitepaper; introduced the **"400 lines, 60-90 minutes"** heuristic that's still cited
+
+**The shift to lightweight review** (2010s onward): Fagan's formal inspection (multi-hour meeting, structured roles) was replaced by asynchronous, tool-mediated review (GitHub PR, GitLab MR, Bitbucket PR). The modern approach trades formal rigor for speed and continuous feedback.
+
+**Trunk-based development** (2015-2020, popularized by Google's engineering blog and the Accelerate book by Forsgren, Humble, Kim 2018) pushed review even further: small, frequent PRs (<200 lines) reviewed within hours, with feature flags hiding incomplete work. This is the modern extreme of code review practice.
+
+**Today**: code review is the highest-leverage engineering practice for team velocity. Tools like **GitHub Copilot** (2021) and **CodeRabbit** (2023) add AI-assisted review, suggesting improvements and catching common bugs before human review. The practice continues to evolve.
+
 ## Why Code Reviews Matter
 
 ```
@@ -263,7 +303,7 @@ Technical approach. Key design decisions and trade-offs.
 
 🔬 **Section Challenge — Testing**
 
-**Challenge 1 (Bug Hunt):** A PR has 95% code coverage and all tests pass CI. A reviewer flags it as inadequate testing. What specific test quality issues should the reviewer look for that coverage metrics don't catch?
+**Challenge 1 (Code Coverage Quality):** A PR has 95% code coverage and all tests pass CI. A reviewer flags it as inadequate testing. What specific test quality issues should the reviewer look for that coverage metrics don't catch?
 
 <details><summary>Answer</summary>
 

@@ -129,6 +129,15 @@ This happened _every day_ in the 1990s–2000s at every company.
 
 The name "Git" comes from British slang for "unpleasant person." Linus: _"I name all my projects after myself."_
 
+**Predecessors — the centralized VCS era**:
+
+Before distributed VCS, two systems dominated:
+- **CVS (Concurrent Versions System)** — released **1986** by Dick Grune at the Vrije Universiteit Amsterdam. CVS introduced the concept of multiple developers committing to a shared repository. Limitation: rename tracking was broken (file renames were delete + add, losing history).
+- **Subversion (SVN)** — released **2000** by CollabNet, led by Karl Fogel and Ben Collins-Sussman. SVN was designed as "CVS done right" — atomic commits, proper rename tracking, directory versioning. SVN remained dominant in enterprise through ~2010.
+- **BitKeeper** — proprietary SCM (1998-2005) used for Linux kernel development until 2005, when its owner revoked the free-use license. This dispute motivated Linus Torvalds to write Git in 10 days.
+
+**Why distributed VCS won**: CVS and SVN had a single central server. If the server was down, no commits. If the server's disk failed, history was lost (unless backups existed). Git's distributed model — every clone is a full backup — eliminated this single point of failure. The offline commit capability (commit on a plane, push later) was a usability win.
+
 ---
 
 🔬 **Section Challenge — WHO: The Origin Story**
@@ -593,6 +602,22 @@ node_modules/
 | When to merge vs rebase? | `merge` for shared branches, `rebase` for personal cleanup               |
 | When to force push?      | **Only** on your personal branch after rebase. **Never** on main/develop |
 | When to use stash?       | Switching tasks mid-work (not for long-term storage)                     |
+
+### Operation Selection: merge vs rebase vs reset vs revert
+
+| Operation | Rewrites history? | Safe on shared branches? | Generates new commit? | Recoverable via reflog? | Use when |
+|---|---|---|---|---|---|
+| **merge** | No | Yes | Yes (merge commit) | N/A | Integrating feature branch back to main |
+| **rebase** | Yes (rewrites SHA) | NO on pushed branches | No (commits replayed) | Yes (within 90 days) | Cleaning up local feature branch before PR |
+| **reset --soft** | No (HEAD moves) | Yes (local only) | No | Yes | Undoing last commit, keeping changes staged |
+| **reset --mixed** | No (HEAD + index moves) | Yes (local only) | No | Yes | Undoing last commit, keeping changes unstaged |
+| **reset --hard** | No (HEAD + working tree) | Yes (local only) | No | Yes (if not GC'd) | WIP — discards all uncommitted changes; dangerous |
+| **revert** | No (creates new commit) | Yes | Yes (revert commit) | Yes | Undoing a commit on a shared/pushed branch |
+| **cherry-pick** | No (applies commit) | Yes | Yes (new SHA) | Yes | Picking specific commit from one branch to another |
+
+**Critical rule**: NEVER rebase commits that exist on a shared branch (after `git push`). Rebase rewrites SHAs, breaking everyone else's clones.
+
+**The "golden rule of rebasing"**: `git pull --rebase` on your local feature branch is safe. `git push --force-with-lease` after a local rebase is safe (with `--force-with-lease` instead of `--force`). `git rebase` after push is NOT safe.
 
 ---
 

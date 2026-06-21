@@ -291,6 +291,36 @@ DEPENDENCIES:
 
 ---
 
+## WHEN: Authentication Strategy Decision Guide
+
+| Use Case | Pick | Reason |
+|---|---|---|
+| Traditional server-rendered web app | **Sessions** (server-side cookie) | Mature tooling (Spring Security `HttpSession`); automatic expiration; revocable server-side |
+| SPA (React/Vue/Angular) + REST API | **JWT** (access token) + refresh token | Stateless API scales horizontally; refresh token rotation limits exposure |
+| Third-party "Login with X" | **OAuth 2.0 / OpenID Connect** | Industry standard; user doesn't create new password; you delegate identity |
+| Service-to-service (microservices) | **mTLS** (mutual TLS) or **API keys** | mTLS: zero-trust, no shared secrets, requires PKI; API keys: simple, scoped per service |
+| Mobile app + backend | **OAuth 2.0 + PKCE** | PKCE prevents authorization code interception; refresh tokens for long sessions |
+| B2B SaaS multi-tenant | **OAuth 2.0 + tenant context** | Each tenant is an OAuth client; isolate via `aud` claim |
+
+**Password hashing decision**:
+- **bcrypt** (1999): proven, widely supported, CPU-only cost factor. Limitation: GPU attacks beat it at cost ≤ 12.
+- **scrypt** (2009): memory-hard, designed to resist GPU/ASIC. Slower than bcrypt.
+- **Argon2** (2015, PHC winner): memory-hard + tunable parallelism. **OWASP recommends Argon2id for new systems** (since 2017).
+- **PBKDF2** (2000, RFC 2898): NIST-approved, used in FIPS-compliant systems. Limitation: not memory-hard, GPU-vulnerable.
+
+**CORS strategy**:
+- **Same-origin only** (no CORS): safest; applies to backend-for-frontend patterns
+- **`allowedOrigins(specific.com)`**: explicit allowlist, blocks everything else — use this for production
+- **`allowedOriginPatterns("https://*.mycompany.com")`**: allow subdomains; useful for internal tools
+- **`allowedOrigins("*")`**: NEVER with `allowCredentials(true)` — enables CSRF; NEVER in production
+
+**CSRF token vs SameSite cookies**:
+- **SameSite=Strict** alone is sufficient for most browser-based apps (cookie not sent cross-site at all)
+- **CSRF token** required when: SameSite=None is needed (cross-site embeds), legacy browsers, double-submit cookie pattern is preferred
+- **Stateless JWT** (no cookie): CSRF tokens NOT needed (the attack vector requires browser to auto-attach a credential)
+
+---
+
 # 🧭 Security Cheat Sheet
 
 ```
@@ -349,6 +379,48 @@ Build a Spring Boot REST API with:
 
 ---
 
+## WHO: Origin Story
+
+**OWASP (Open Worldwide Application Security Project)** — non-profit foundation founded **2001**, maintains the **OWASP Top 10** (first published **2003**, revised every 3-4 years: 2004, 2007, 2010, 2013, 2017, 2021, 2024). The Top 10 is the de facto standard for web application vulnerability awareness; cited in PCI-DSS, HIPAA, and many enterprise security audits.
+
+**Niels Provos and David Mazières** published the **bcrypt paper** at USENIX in **1999** — "A Future-Adaptable Password Scheme". bcrypt was designed as a deliberately-slow hash to resist GPU-accelerated brute force. Provos was at University of Michigan; Mazières at Stanford.
+
+**JWT (JSON Web Token)** standardized as **RFC 7519 in May 2015**. JWT drew on the earlier **JOSE** (JSON Object Signing and Encryption) working group work (2011-2014). The authors: Michael Jones (Microsoft), John Bradley (Ping Identity), Nat Sakimura (NRI).
+
+**OAuth 1.0** published as RFC 5849 in **April 2010** (Twitter was a primary driver). **OAuth 2.0** published as RFC 6749 in **October 2012** (notable: the RFC was controversial; the lead editor Eran Hammer resigned during the process). OAuth 2.0 is more widely adopted despite being less formally specified than 1.0.
+
+**OpenSSL** maintained since **1998** by the OpenSSL project. The **Heartbleed vulnerability** (CVE-2014-0160, disclosed April 2014) was a buffer over-read in TLS heartbeat extension — affected ~17% of SSL servers globally, leaked private keys. This was the watershed moment that made "library hygiene" a C-suite concern.
+
+**The bcrypt cat-and-mouse game**: bcrypt cost 10 (default) was designed for 2009 hardware. By 2018, GPU attacks at 100k hashes/sec meant cost 10 was insufficient for short passwords. OWASP raised the recommended minimum to cost **12 in 2018** and **13 in 2023**. Argon2 (winner of the Password Hashing Competition, 2015) is now preferred for new systems — its memory-hard design resists GPU/ASIC attacks.
+
+## Historical Evolution
+
+**The rise of public vulnerability disclosure**:
+- **1988** — Morris Worm (first internet-wide incident; led to formation of CERT)
+- **1995** — SQL injection first described by Jeff Forristal (using "drop table" as a username)
+- **2000s** — XSS formalized; cross-site scripting named
+- **2007** — CSRF formalized in academic paper; OWASP begins tracking
+- **2010s** — Cloud breaches dominate; Capital One 2019 ($300M settlement) becomes IAM cautionary tale
+- **2020** — SolarWinds supply-chain attack (nation-state actors compromised build pipeline)
+- **2021** — Log4Shell (CVE-2021-44228) — single log line exploitation, 14× cost increase for unpatched systems
+
+**OWASP Top 10 evolution** (key changes by year):
+- **2013**: Injection, Broken Auth, XSS, IDOR, Security Misconfig, Sensitive Data Exposure, Missing Function Level Access, CSRF, Known Vulns, Redirects
+- **2017**: Injection, Broken Auth, XSS, IDOR (renamed "Broken Access Control"), Security Misconfig, Sensitive Data Exposure, **XXE** (new), Deserialization (new), Known Vulns, Insufficient Logging
+- **2021**: Broken Access Control (moved to #1), Cryptographic Failures (renamed), Injection (still high), Insecure Design (**new category**), Security Misconfig, Vuln & Outdated Components, ID & Auth Failures, Software & Data Integrity Failures (Log4Shell drove this), Security Logging Failures, SSRF (new)
+- **2024 draft**: focus shifts to supply chain, AI/ML vulnerabilities, API security (Broken Object Level Authorization)
+
+**Authentication evolution**:
+- **HTTP Basic Auth** (1996, RFC 2617) — username:password base64, no encryption without TLS
+- **Form-based auth + session cookie** (1996+) — server-side session store, JSESSIONID / session ID
+- **OAuth 1.0** (2010) — delegated auth for third-party apps (Twitter, Flickr)
+- **OAuth 2.0** (2012) — simpler, more flexible; foundation for "Login with Google"
+- **JWT** (2015, RFC 7519) — stateless tokens for API auth
+- **WebAuthn / FIDO2** (2019, W3C Recommendation) — phishing-resistant, public-key cryptography
+- **Passkeys** (2022, Apple/Google/Microsoft collaboration) — WebAuthn-based, syncs across devices
+
+---
+
 ### Production Reality
 
 **Security fundamentals fail in production in these named ways:**
@@ -363,28 +435,6 @@ Build a Spring Boot REST API with:
 **Mitigation discipline:** Use OWASP ZAP or Burp Suite for automated security scanning in CI/CD; rotate all secrets that were ever committed (assume compromise within 60 seconds of push to public repos); use `sechub` or `trivy` to scan container images for known CVEs; enforce MFA on all cloud console accounts.
 
 **Next Chapter**: [System Design →](09_System_Design.md)
-
----
-
-**Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)
-
-🔬 **Section Challenge - Exercise 2: Secure a Spring Boot App**
-
-**Challenge 1 (Design):** You've built a Spring Boot REST API with BCrypt + JWT. A security reviewer says your JWTs are a liability because they can't be revoked before expiry. What is the standard pattern to solve this without abandoning JWTs?
-
-<details><summary>Answer</summary>
-
-Use a **refresh token + short-lived access token** pattern. Access JWTs expire in 15 minutes - short enough that a stolen token has limited blast radius. Store a long-lived refresh token (UUID, 7 days) in an **HttpOnly, Secure cookie** (not accessible to JS, preventing XSS theft). When the access JWT expires, the client posts to `/auth/refresh` with the cookie - server validates the refresh token against a database record, issues a new access JWT, and optionally rotates the refresh token. To "revoke" access: delete the refresh token DB record. The user's next request after the 15-min window fails. This gives you ~15 minutes of revocation lag - acceptable for most systems. For zero-lag revocation: maintain a Redis blocklist of revoked JWT JTI (JWT ID) values checked on every request.
-
-</details>
-
-**Challenge 2 (Senior):** Your Spring Boot app has `@PreAuthorize("hasRole('ADMIN')")` on all admin endpoints. A penetration tester reports a **Broken Access Control** finding even though roles are enforced. How is this possible?
-
-<details><summary>Answer</summary>
-
-Broken Access Control is #1 on OWASP Top 10 and often bypasses role checks via **object-level authorization failures**. Example: `GET /api/orders/{id}` checks that the caller is authenticated, but doesn't verify that order `{id}` belongs to the caller. User A (role USER) calls `GET /api/orders/9999` — order 9999 belongs to User B, but the endpoint returns it anyway. Fix: always add **ownership checks**: `if (!order.getOwnerId().equals(currentUser.getId())) throw new ForbiddenException()`. `@PreAuthorize` only checks role; you must write the data-level check yourself. This is called **IDOR (Insecure Direct Object Reference)**.
-
-</details>
 
 ---
 

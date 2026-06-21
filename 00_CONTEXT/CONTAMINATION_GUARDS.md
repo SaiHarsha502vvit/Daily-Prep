@@ -37,8 +37,15 @@ This file lists known wrong-domain copy patterns. Use it during review and clean
 | Java Streams `list.stream().filter().map().collect()` laziness   | `07_Modern_Java/Ch23_Streams_Deep_Reasoning.md` and `Ch06_Functional_Programming.md`     | Production streaming-platform sections (Netflix/Hotstar), ERP finance, distributed patterns, or any file that uses the term "streaming" to mean video/event streaming. |
 | Sliding-window O(N) add/remove count boilerplate (cross-file)    | Single file that introduces the sliding-window topic                                     | Copy-pasted verbatim across multiple Part files in the same folder; should appear at most once with locally-rooted variants per file.                                  |
 | Minimum Window Substring bug-hunt boilerplate (cross-file)       | Single file that introduces the sliding-window shrink logic                              | Copy-pasted verbatim across multiple Part files in the same folder; should appear at most once with locally-rooted variants per file.                                  |
+| ROW_NUMBER() vs RANK() vs DENSE_RANK() challenge in Clean Code | `08_SQL` window function files                                                       | Any non-SQL file including Java clean code, Spring Boot guides, developer tooling files. |
+| Docker layer invalidation challenge in CI/CD                 | `03_Docker_Containers.md` or Docker chapters                                        | CI/CD chapters, deployment chapters, or any non-Docker file unless the local topic is explicitly about Docker image caching. |
+| `Erklärung` / `Explanation` non-standard answer block        | Files using canonical `<details><summary>Answer</summary>` format                   | Problem sets, exercises, or any teaching file that uses a local `🟡 Erklärung` / `🔴 Erklärung` pattern that diverges from the canonical format. |
+| 5W1H / WHY-WHO canonical block missing                       | Every chapter per the folder's stated scaffold                                       | Any chapter file in any folder that does not have the required framing block per `PEDAGOGY_STANDARDS.md` Preservation Guarantees (D014). |
+| Generic challenge titles `(Reasoning)` / `(Bug Hunt)` / `(Design)` / `(Scenario)` | Specific topic in parentheses: `(Docker Layer Caching)`, `(Code Coverage Quality)`, etc. | Any challenge title that uses a generic placeholder without naming the specific local topic being tested. |
 
 ## Replacement Rule
+
+**13_Developer_Essentials folder adaptations**: The folder uses a WHY/WHAT/WHERE/WHEN/WHO/HOW scaffold (6 sections) instead of the standard 5W1H. This is an intentional adaptation for the developer-tooling domain per the folder's `00_INDEX.md`. All other contamination and craftsmanship standards apply unchanged. Files in this folder must have all 6 sections, with `## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW` as the canonical heading format.
 
 When a copied challenge is wrong for the local section:
 

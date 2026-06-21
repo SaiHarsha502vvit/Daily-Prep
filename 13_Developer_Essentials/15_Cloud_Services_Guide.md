@@ -2,6 +2,26 @@
 
 # Cloud Services — AWS, Azure & GCP Guide
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Cloud shifts infrastructure from capital expense to operational practice. Without understanding service boundaries, teams either over-provision (waste: 60% of cloud spend is wasted per Gartner 2023) or under-provision (outages under load). Choosing the wrong service tier — e.g., EC2 when Lambda fits, or RDS when DynamoDB is right — compounds: harder to operate, more expensive to scale, harder to recover.
+
+**WHAT**: Compute (EC2 / ECS / Lambda), Containers (EKS / Fargate), Serverless, Storage (S3 / EBS / Glacier), Database (RDS / DynamoDB / Aurora), Networking (VPC / CloudFront / Route53), IAM, monitoring, and cost. Service mapping across AWS, Azure, and GCP with selection rules and breakeven analysis.
+
+**WHERE**: Every production system post-2015; startups to FAANG. AWS holds 32% market share, Azure 23%, GCP 11% (Synergy Research 2024). The 80% of breaches exploiting over-permissioned IAM roles (Cloud Security Alliance 2023) make this chapter security-critical, not just cost-critical.
+
+**WHEN**: When scaling beyond a single server; when availability requirements exceed 99% (need managed services); when team lacks ops expertise (managed services reduce ops burden); when time-to-market matters (managed services ship faster). Specifically: pick Lambda when traffic is bursty and request duration <15 minutes; pick ECS/Fargate when you need long-running processes or specific runtimes; pick EC2 when you need full control or specialized hardware.
+
+**WHO**: AWS launched 2006 (S3, EC2); Azure 2010 (Microsoft); GCP 2008 (App Engine, then 2011 for full IaaS). Lambda 2014 (serverless revolution). EKS 2017, Fargate 2017. The CNCF (Cloud Native Computing Foundation, founded 2015) maintains Kubernetes and the cloud-native ecosystem standards.
+
+**HOW**: Service mapping first (10 categories × 3 providers), then selection rule (managed > self-managed when ops burden > control benefit), then cost breakeven analysis (Lambda vs EC2 with concrete numbers), then production failure modes (IAM privilege creep, region outages, data egress costs). Each service category gets a comparison table and a "when to use" decision guide.
+
+**The cloud service invariant**: "Every cloud service sits on a control-versus-maintenance spectrum — more managed service means less control but less operational burden."
+
+Choosing a service is choosing a point on this spectrum. IaaS (EC2) gives full control but requires patching, capacity planning, and failure recovery. FaaS (Lambda) abstracts everything but constrains runtime (15-min max, limited memory). The "best" choice is the leftmost option on the spectrum that meets your requirements.
+
+This invariant predicts failure: when teams reach for IaaS for a workload that doesn't need that control, they waste effort on ops. When they reach for FaaS for a workload that needs control, they hit the abstraction's limits. The decision is always about which trade-off is acceptable.
+
 ## Why Cloud Knowledge is Essential
 
 95% of companies use at least one cloud provider.

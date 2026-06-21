@@ -1706,7 +1706,7 @@ public class TreeSerializer {
 
 ---
 
-_Trees and graphs are everywhere - master them and unlock many problems!_
+*Trees and graphs are everywhere - master them and unlock many problems!*
 
 ---
 
@@ -1783,18 +1783,22 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 ## When It Breaks -- Trees
 
 ### 1. Recursive DFS StackOverflow on Skewed Tree
+
 **What breaks**: A degenerate BST (all elements inserted in sorted order) becomes a linked list of depth n. Recursive DFS causes `StackOverflowError` at n ~= 8000 (default JVM stack). This is the real-world case — most textbook BST code breaks on sorted inputs.
 **Fix**: AVL/Red-Black tree (self-balancing) prevents degenerate depth. Or convert DFS to iterative with an explicit `ArrayDeque` stack.
 
 ### 2. Null Check Missing — NPE on Leaf Children
+
 **What breaks**: `if (root.left.val == target)` throws NPE when `root.left` is null (a leaf node). Accessing `.val`, `.left`, `.right` without a null guard is the #1 tree bug.
 **Fix**: Always check `root != null` before accessing any field. Better: `if (root == null) return;` as the first line of every recursive tree method.
 
 ### 3. BST Invariant Violation — Wrong Comparison in Insertion
+
 **What breaks**: Using `<=` instead of `<` for left subtree: `if (val <= node.val) insertLeft(...)`. This makes duplicates go left, which violates the strict BST invariant that `left.val < root.val`. Some BST algorithms (e.g., rank/select) break with duplicates in wrong subtrees.
 **Fix**: Define and document the invariant: does your BST allow duplicates? If yes, which side?
 
 ### 4. Modifying Tree During Iteration
+
 **What breaks**: Iterating a tree while deleting nodes (e.g., pruning dead subtrees) without careful ordering. If you delete `node` and then try to access `node.parent`, it may be null/dangling.
 **Fix**: Post-order traversal for deletion — process children before parent. For pruning, return the modified subtree: `node.left = prune(node.left); node.right = prune(node.right); return shouldDelete(node) ? null : node;`.
 

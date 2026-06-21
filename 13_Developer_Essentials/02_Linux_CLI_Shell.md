@@ -122,6 +122,14 @@ KEY INSIGHT: Everything in Linux is a FILE
   - Devices → files (/dev/sda)
   - Processes → files (/proc/1234)
   - Network sockets → files
+
+**The invariant: everything exposed by the kernel is a file descriptor.**
+
+Every I/O operation in Linux — disk, network, process control, device — is represented as a numeric file descriptor (fd) that can be read, written, or polled. This invariant is what makes Linux tooling composable: `cat`, `grep`, `awk`, and `sed` work on any fd, not just files. The same `read()` syscall reads from a regular file, a socket, a pipe, or a device.
+
+**Why this invariant is non-negotiable**: any system that exposes a non-fd interface (e.g., a separate `network_read()` syscall) breaks composability. Tools that work on regular files wouldn't work on network streams. The fd-centric design is why you can `cat /proc/cpuinfo`, `netcat < /dev/tcp/example.com/80`, and `dd if=/dev/zero of=/dev/null` — all using the same `read`/`write` syscalls.
+
+**Consequence for debugging**: when a process hangs, the first question is "what fds is it holding?" `/proc/<PID>/fd/` shows all open fds. A fd leak (file opened but never closed) appears as a growing list of fds in this directory.
 ```
 
 ---
@@ -444,7 +452,7 @@ ss -tlnp | grep 8080
 
 🔬 **Section Challenge — Debugging a Production Issue**
 
-**Challenge 1 (Scenario):** You SSH into a production server and run `systemctl status my-app` — status shows `active (running)`. But users report the API returns 502 Bad Gateway. What are the next 3 commands you run and what does each tell you?
+**Challenge 1 (502 During Traffic Spikes):** You SSH into a production server and run `systemctl status my-app` — status shows `active (running)`. But users report the API returns 502 Bad Gateway. What are the next 3 commands you run and what does each tell you?
 
 <details><summary>Answer</summary>
 
@@ -547,7 +555,7 @@ Explanation: `grep ERROR` filters to error lines → `awk '{$1=$2=$3=""; print $
 
 </details>
 
-**Challenge 2 (Senior):** You need to monitor a log file in real-time and send an alert (e.g., `curl` to a webhook) the moment an `OutOfMemoryError` appears. Write the shell one-liner.
+**Challenge 2 (Production Debug):** You need to monitor a log file in real-time and send an alert (e.g., `curl` to a webhook) the moment an `OutOfMemoryError` appears. Write the shell one-liner.
 
 <details><summary>Answer</summary>
 
@@ -573,6 +581,96 @@ Script that:
 4. Logs actions to a log file
 ```
 
+🔬 **Section Challenge — Backup Script Failure Mode**
+
+The backup script from Exercise 3 is:
+
+```bash
+#!/bin/bash
+BACKUP_DIR="/var/backups/db"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+pg_dump mydb > "$BACKUP_DIR/backup_$TIMESTAMP.sql"
+find "$BACKUP_DIR" -name "backup_*.sql" -mtime +7 -delete
+```
+
+A junior developer runs this on production. It works for 6 months. On month 7, the disk fills up and the script fails with "No space left on device" — but `pg_dump` had already started writing a partial backup. The partial file is left on disk, and the `find -mtime +7 -delete` doesn't catch it because it's only minutes old.
+
+What are the bugs in this script, and how would you fix them?
+
+<details>
+<summary>Answer</summary>
+
+**Bugs**:
+1. **No disk space check before writing**: `pg_dump` writes a partial file before failing. The partial file occupies disk space.
+2. **No atomic write**: even if `pg_dump` succeeds, a crash mid-write leaves a partial backup that's indistinguishable from a complete one.
+3. **No compression**: an uncompressed Postgres dump can be 10x larger than the compressed version. Wasted disk.
+4. **No verification**: there's no check that the backup is valid (e.g., `gunzip -t` on the compressed file, or restore-test on a separate server).
+5. **No error handling**: if `pg_dump` fails, the script exits 0 (success). The cron daemon thinks the backup succeeded.
+6. **Race condition**: two backup jobs running simultaneously could overwrite each other's output.
+7. **No off-site copy**: backups on the same disk as the data are vulnerable to disk failure (both backup and source lost).
+
+**Fixed version**:
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+BACKUP_DIR="/var/backups/db"
+S3_BUCKET="s3://mycompany-db-backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="$BACKUP_DIR/backup_$TIMESTAMP.sql.gz"
+MIN_FREE_DISK_MB=1024  # require 1GB free
+
+# 1. Pre-flight: check disk space
+FREE_DISK_MB=$(df --output=avail "$BACKUP_DIR" | tail -1 | awk '{print int($1/1024)}')
+if [ "$FREE_DISK_MB" -lt "$MIN_FREE_DISK_MB" ]; then
+    echo "ERROR: Only ${FREE_DISK_MB}MB free, need ${MIN_FREE_DISK_MB}MB" >&2
+    exit 1
+fi
+
+# 2. Atomic write: dump to temp file, then rename
+TEMP_FILE="$BACKUP_FILE.tmp.$$"
+pg_dump mydb | gzip > "$TEMP_FILE"
+
+# 3. Verify the compressed file is valid
+if ! gunzip -t "$TEMP_FILE"; then
+    echo "ERROR: Backup file failed integrity check" >&2
+    rm -f "$TEMP_FILE"
+    exit 1
+fi
+
+# 4. Atomic move
+mv "$TEMP_FILE" "$BACKUP_FILE"
+
+# 5. Off-site copy (in parallel; don't block on failure)
+aws s3 cp "$BACKUP_FILE" "$S3_BUCKET/$(basename $BACKUP_FILE)" || \
+    echo "WARNING: S3 copy failed; local backup saved only"
+
+# 6. Cleanup old backups (keep 7 days locally)
+find "$BACKUP_DIR" -name "backup_*.sql.gz" -mtime +7 -delete
+
+# 7. Verify today's backup exists and is non-empty
+if [ ! -s "$BACKUP_FILE" ]; then
+    echo "ERROR: Backup file missing or empty" >&2
+    exit 1
+fi
+
+echo "Backup completed: $BACKUP_FILE ($(du -h $BACKUP_FILE | cut -f1))"
+```
+
+**Key improvements**:
+- `set -euo pipefail`: exit on any error, undefined variable, or pipe failure
+- Pre-flight disk check prevents partial backups
+- Atomic write via temp file + rename
+- gzip compression reduces disk by ~10x
+- Integrity verification (`gunzip -t`)
+- Off-site copy to S3 (survives disk failure)
+- Non-empty check at the end
+- Explicit error messages to stderr
+
+**Production note**: pair this with a separate **restore-test job** that runs weekly — picks the most recent backup, restores to a test DB, runs a smoke test against it. The only way to know backups work is to actually restore them.
+</details>
+
 ---
 
 ### Production Reality
@@ -589,7 +687,16 @@ Script that:
 
 ---
 
-### Trade-off: Shell Variant Comparison
+### WHEN: Decision Guide
+
+| Situation | Trigger | Use It When |
+|---|---|---|
+| **When to use `kill -3` vs `kill -9`** | `kill -3` sends SIGQUIT (generates thread dump for JVM, doesn't kill); `kill -9` sends SIGKILL (immediate termination, no cleanup, cannot be caught) | Use -3 for debugging stuck JVMs; use -9 only as last resort |
+| **When to use `top` vs `htop` vs `ps`** | `top` for live process monitoring (interactive, refreshes every 3s); `htop` for richer interactive view (mouse support, tree view, easier filtering); `ps aux` for one-shot snapshots in scripts | Interactive debugging use top/htop; scripting/CI use ps aux |
+
+---
+
+## Trade-off: Shell Variant Comparison
 
 | Aspect              | Bash              | Zsh               | Fish              | PowerShell        |
 |---------------------|-------------------|-------------------|-------------------|-------------------|

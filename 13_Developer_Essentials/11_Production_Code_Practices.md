@@ -9,6 +9,20 @@ What separates hobby code from production-ready software
 
 ---
 
+## 📌 WHY / WHAT / WHERE / WHEN / WHO / HOW
+
+**WHY**: Code that runs in production is fundamentally different from tutorial code. Tutorial code runs in ideal conditions with a single user and infinite resources; production code must handle partial failures, concurrent requests, and adversarial inputs. The cost difference is measurable: Heroku's "12-Factor App" methodology codifies patterns that reduce production incidents by 40–60% (per the methodology's published case studies). Without production-aware code practices, every deployment is a high-risk event.
+
+**WHAT**: The 12-Factor App methodology (config, dependencies, backing services, build/release/run stages, processes, port binding, concurrency, disposability, dev/prod parity, logs, admin processes); structured logging with correlation IDs (MDC); error handling patterns that don't leak stack traces; configuration externalization; database migration patterns; feature flags; deployment strategies (blue-green, canary, rolling); testing in production (dark launches, A/B tests).
+
+**WHERE**: Every production service post-2015. The 12-Factor methodology was published by **Heroku co-founder Adam Wiggins et al. in 2011** and has been adopted by Netflix, Uber, Airbnb, and most YC-funded startups. Heroku itself runs millions of apps on these principles. The Spring Boot framework explicitly supports 12-Factor patterns (external config via `application.yml`, embedded servers for port binding, Actuator for health checks).
+
+**WHEN**: When designing any new service (start with 12-Factor). When migrating from monolith to microservices. When debugging production incidents (often reveals gaps in 12-Factor adherence). When onboarding a new engineer to a codebase (12-Factor is the shared vocabulary).
+
+**WHO**: Adam Wiggins (Heroku co-founder) authored the original 12-Factor blog post in **2011**; the methodology crystallized patterns Heroku observed across thousands of customer deployments. Spring Boot (Pivotal, **April 2014**) and Cloud Foundry (**2011**) adopted these patterns as framework defaults. Cloud-native as a movement gained traction ~2015 with the founding of the Cloud Native Computing Foundation (CNCF).
+
+**HOW**: 12-Factor overview first (each factor with a concrete Spring Boot example), then structured logging with MDC correlation IDs, then error handling that doesn't leak stack traces, then configuration externalization (env vars, Vault, AWS Secrets Manager). Database migrations, feature flags, deployment strategies, and testing-in-production are covered in detail in subsequent sections. Each factor ends with a local challenge testing the rule against a concrete code scenario.
+
 ## Part 1: The 12-Factor App
 
 12 principles for building cloud-native, production-ready applications
@@ -311,3 +325,481 @@ public PaymentResult processPayment(PaymentRequest req) {
 **Constraint that breaks the invariant:** Long-lived mutable state in the filesystem (Factor VI violation). The moment you write to local disk and assume it persists across deploys, you lose portability.
 
 **Practical signal:** If your "production deploy" requires a 47-step runbook that diverges from staging by 12 steps, you have violated multiple factors.
+
+---
+
+## Part 8: Database Migration Strategies
+
+Database schemas evolve. Without disciplined migration, schema changes cause outages: a column rename deployed before the application update crashes every request reading the old column. The two production-grade migration tools are **Flyway** (SQL-first, simpler) and **Liquibase** (XML/YAML/JSON changelog, more flexible). Both support versioned, reversible migrations.
+
+### Why Migrations Matter
+
+A migration tool answers: "what schema changes were applied to production, in what order, and can we roll them back?" Without this, schema changes are tribal knowledge — every new engineer must read Slack history to know what the schema looks like today.
+
+### Flyway Example
+
+```
+src/main/resources/db/migration/
+├── V1__create_users_table.sql
+├── V2__add_email_verified_column.sql
+├── V3__create_orders_table.sql
+└── V4__add_index_on_user_id.sql
+```
+
+```sql
+-- V1__create_users_table.sql
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- V2__add_email_verified_column.sql
+ALTER TABLE users ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- V3__create_orders_table.sql
+CREATE TABLE orders (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+Flyway runs migrations in order on application startup. The `flyway_schema_history` table tracks which migrations have been applied.
+
+### Spring Boot Integration
+
+```yaml
+# application.yml
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+```
+
+### Migration Best Practices
+
+1. **Never modify a committed migration**: once `V2__add_email_verified_column.sql` runs in production, you cannot edit it. Create `V5__fix_email_verified_default.sql` instead.
+2. **Forward-only is safer than rollback**: rollbacks are rarely tested and often fail in production. Plan migrations that don't need rollback.
+3. **Backward-compatible changes only during deployment**: if V3 renames a column, the application must work with BOTH old and new column names until the next deploy.
+4. **Test migrations against production data**: use a production snapshot in staging. A migration that works on empty tables may fail on tables with 100M rows.
+
+🔬 **Section Challenge — Database Migration Strategy**
+
+You're adding a `middle_name` column to a `users` table with 50M rows in production. The deployment must complete within a 5-minute maintenance window. What's the migration approach, and why is `ALTER TABLE users ADD COLUMN middle_name VARCHAR(100)` dangerous on a large table?
+
+<details>
+<summary>Answer</summary>
+
+**The danger**: `ALTER TABLE` on a large table in MySQL/Postgres can lock the table for the duration of the operation. On 50M rows, adding a column with a default value can take 5-30 minutes — far longer than the 5-minute window. During this time, all writes to `users` are blocked, and reads are queued.
+
+**Safe approach**:
+1. **V1 — Add column without default** (instant in MySQL 8.0+, Postgres 11+): `ALTER TABLE users ADD COLUMN middle_name VARCHAR(100) NULL;`. No row rewrite, completes in milliseconds.
+2. **Deploy application version A** that writes to the new column but tolerates NULL values.
+3. **V2 — Backfill in batches**: `UPDATE users SET middle_name = '' WHERE middle_name IS NULL LIMIT 10000;` repeated until done. Each batch is fast; the operation can run during normal traffic.
+4. **V3 — Add NOT NULL constraint** (after backfill completes): `ALTER TABLE users ALTER COLUMN middle_name SET NOT NULL;`. Now the column is required.
+
+**Total downtime**: zero — the application tolerates NULL middle names during the migration window.
+
+**Alternative tools for zero-downtime migrations**:
+- **gh-ost** (GitHub) — online schema migration for MySQL; creates a shadow table, replicates changes, swaps atomically
+- **pg_repack** (Postgres) — reclaims space without exclusive locks
+- **pt-online-schema-change** (Percona) — similar to gh-ost
+
+**The principle**: never lock a table on a long-running ALTER. Always split the operation into (1) schema change that's metadata-only, (2) backfill in batches, (3) constraint enforcement.
+</details>
+
+---
+
+## Part 9: Feature Flags
+
+Feature flags decouple deploy from release. You ship code to production (deploy) but the feature is hidden behind a flag (release). This lets you deploy Friday afternoon without fear: if the feature breaks, toggle the flag off; users never see the broken code.
+
+### Flag Types
+
+| Type | Use case | Lifecycle |
+|---|---|---|
+| **Release flag** | Hide new feature during rollout | Short-lived (days to weeks) |
+| **Experiment flag** | A/B test variants for analytics | Medium-lived (weeks to months) |
+| **Ops flag** | Toggle system behavior under load | Long-lived (months to years) |
+| **Permission flag** | Premium-tier feature gating | Permanent (until tier changes) |
+
+### Implementation: Simple Toggle
+
+```java
+@Component
+public class FeatureFlags {
+    private final Map<String, Boolean> flags = new HashMap<>();
+
+    public boolean isEnabled(String flagName) {
+        return flags.getOrDefault(flagName, false);
+    }
+
+    public void setFlag(String flagName, boolean enabled) {
+        flags.put(flagName, enabled);
+    }
+}
+
+// Usage in service
+if (featureFlags.isEnabled("new-checkout-flow")) {
+    return newCheckoutFlow.process(order);
+} else {
+    return legacyCheckoutFlow.process(order);
+}
+```
+
+### Implementation: Production-Grade (LaunchDarkly-style)
+
+```java
+@Component
+public class FeatureFlagService {
+    private final LDClient ldClient;
+
+    public boolean isEnabled(String key, LDUser user, boolean defaultValue) {
+        return ldClient.boolVariation(key, user, defaultValue);
+    }
+}
+
+// Usage
+LDUser user = new LDUser.Builder(userId)
+    .custom("email", email)
+    .custom("plan", "premium")
+    .build();
+
+if (flagService.isEnabled("new-checkout", user, false)) {
+    return newCheckoutFlow.process(order);
+}
+```
+
+### Rollout Strategy
+
+```
+Day 1:   Flag OFF — deploy code, no users see new feature
+Day 2:   Flag ON for internal employees (5 users)
+Day 3:   Flag ON for 1% of users (canary)
+Day 5:   Flag ON for 10% of users
+Day 7:   Flag ON for 50% of users
+Day 10:  Flag ON for 100% — flag removed in next sprint
+```
+
+### Cleanup Discipline
+
+Every flag has a deadline. A flag left in code for 6+ months is technical debt:
+- New engineers don't know what the flag does
+- The flag has 4 conditional branches (the original, 2 intermediate states, and "always on")
+- Removing the flag requires re-testing the full feature
+
+**Rule**: add the flag with a "remove by" date in the code comment. Remove the flag (and the conditional) within 30 days of 100% rollout.
+
+🔬 **Section Challenge — Feature Flag Cleanup**
+
+A flag `enable-new-pricing` was added 8 months ago. The code has the following conditional:
+
+```java
+if (flags.isEnabled("enable-new-pricing")) {
+    return calculatePriceV2(items, user);
+} else {
+    return calculatePriceV1(items, user);
+}
+```
+
+You need to remove the flag. What's the migration plan to ensure no behavior change?
+
+<details>
+<summary>Answer</summary>
+
+**The plan**:
+1. **Verify the flag is at 100%** for all users. Check the feature flag service dashboard.
+2. **Run the new pricing calculation in shadow mode**: call `calculatePriceV2` for every user, log the difference vs `calculatePriceV1`. Confirm zero divergence over 7 days.
+3. **Switch the default**: make `calculatePriceV2` the default, but keep the flag check for one more deploy cycle.
+4. **Remove the flag check entirely**:
+   ```java
+   return calculatePriceV2(items, user);  // flag removed
+   ```
+5. **Remove `calculatePriceV1`** if no other code calls it.
+6. **Remove the flag from the feature flag service** (LaunchDarkly dashboard).
+
+**Why the shadow-mode step**: 8 months is a long time. Code paths may have diverged, edge cases may have been added to one branch but not the other. Shadow mode (run both, log differences, no user impact) catches divergence before users see it.
+
+**The trade-off**: shadow mode doubles compute for 7 days. For pricing — a critical correctness path — the 7 days of double-compute is worth the safety.
+
+**Anti-pattern**: removing the flag without shadow mode. "It's been on for 8 months, so it must be safe." No — the conditional branches may have diverged in ways that only show under specific inputs.
+</details>
+
+---
+
+## Part 10: Deployment Strategies
+
+The naive deployment (stop the old version, start the new version) causes downtime. Modern deployment strategies keep at least one version running during the deploy.
+
+### Rolling Deployment
+
+Replace instances one at a time:
+
+```
+Before: [v1] [v1] [v1] [v1]
+After:  [v1] [v1] [v1] [v2]  ← rolling: replace one
+After:  [v1] [v1] [v2] [v2]  ← next
+After:  [v1] [v2] [v2] [v2]
+After:  [v2] [v2] [v2] [v2]  ← done
+```
+
+**Trade-off**: zero downtime, but for the duration of the deploy, BOTH v1 and v2 receive traffic. If v2 has a bug, some users hit it. Use health checks: only proceed to the next instance after the new one passes health checks.
+
+### Blue-Green Deployment
+
+Two identical environments (blue = current, green = new). Switch all traffic at once:
+
+```
+Before: 100% traffic → Blue (v1)
+Deploy Green (v2), run smoke tests on Green
+Switch: 100% traffic → Green (v2)
+Keep Blue running for 24h (rollback insurance)
+Decommission Blue
+```
+
+**Trade-off**: instant rollback (flip traffic back to Blue), but requires 2× infrastructure during deploy. Database migrations are tricky — both versions must be compatible with the same schema.
+
+### Canary Deployment
+
+Deploy to a small percentage first, then ramp:
+
+```
+Day 1: 99% traffic → v1, 1% → v2
+Day 2: 95% traffic → v1, 5% → v2 (if error rate OK)
+Day 3: 50% traffic → v1, 50% → v2
+Day 5: 0% traffic → v1, 100% → v2
+```
+
+**Trade-off**: catches bugs with minimal blast radius (1% of users see the broken version). Slower to full rollout. Requires sophisticated traffic splitting (Istio, Linkerd, AWS App Mesh, or the load balancer's weighted routing).
+
+### Implementation: Kubernetes Rolling Update
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1           # +1 instance during deploy
+      maxUnavailable: 0     # never reduce below 4 instances
+  template:
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:v2
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 10"]  # let in-flight requests finish
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+```
+
+**Key**: `preStop` sleep gives in-flight requests time to complete before SIGTERM. Without this, requests get 502'd mid-response.
+
+### The Database Migration Problem
+
+All three strategies share one challenge: **database schema changes must be compatible with BOTH old and new code during the deploy**.
+
+```
+v1 code: reads `users.email_verified` column
+v2 code: reads `users.is_verified` column (column renamed)
+
+During deploy: some pods run v1, some run v2
+v1 pods crash because `is_verified` doesn't exist
+v2 pods crash because `email_verified` doesn't exist
+```
+
+**Solution**: multi-step migration
+1. **V1 migration**: add new column (`is_verified`) without removing old (`email_verified`)
+2. **Deploy v2 code**: v2 reads `is_verified`, but writes to BOTH columns
+3. **V2 migration**: backfill `is_verified` from `email_verified`
+4. **Deploy v3 code**: v3 reads and writes only `is_verified`
+5. **V3 migration**: drop `email_verified`
+
+This 5-step process takes 2-3 deploy cycles but ensures zero downtime.
+
+🔬 **Section Challenge — Database-Compatible Deployment**
+
+You're renaming a column `users.email_verified` to `users.is_verified`. The deploy uses rolling updates (4 instances, replace one at a time, 5 minutes per instance). What's the migration plan, and why can't you just rename the column in one migration?
+
+<details>
+<summary>Answer</summary>
+
+**Why one-step rename fails**: during the 20-minute rolling deploy, both v1 (old column) and v2 (new column) are running simultaneously. v1 pods crash when they try to read `email_verified` (which has been renamed and no longer exists). v2 pods crash when they try to read `is_verified` (which doesn't exist yet).
+
+**The safe plan**:
+1. **V1 migration (Day 1)**: `ALTER TABLE users ADD COLUMN is_verified BOOLEAN;` — adds the new column without touching the old one. Old code (v1) still reads `email_verified`; new code (v2) reads `is_verified`. Both columns coexist.
+2. **Deploy v2 (Day 1-2)**: v2 reads `is_verified`, writes to BOTH `is_verified` and `email_verified`. v1 still reads `email_verified` — works because the column still exists.
+3. **V2 migration (Day 3)**: `UPDATE users SET is_verified = email_verified WHERE is_verified IS NULL;` — backfill new column. Run in batches to avoid long locks.
+4. **Deploy v3 (Day 3-4)**: v3 reads and writes only `is_verified`. Old column no longer referenced.
+5. **V3 migration (Day 5)**: `ALTER TABLE users DROP COLUMN email_verified;` — clean up.
+
+**Total deploy time**: 5 days, but zero downtime and zero errors.
+
+**Anti-pattern**: trying to do this in one shot with a single migration. The "rename column" DDL locks the table, breaks v1, and crashes half the fleet during the rolling update.
+
+**The principle**: schema changes must be **backward-compatible** during the deploy window. If v1 and v2 must coexist for 20 minutes, the schema must support both.
+</details>
+
+---
+
+## Part 11: Testing in Production
+
+Pre-production testing (unit, integration, staging) catches 80% of bugs. The remaining 20% only manifest under real traffic patterns: specific data distributions, concurrent users, network conditions. **Testing in production** is the disciplined practice of validating behavior with real users and real data.
+
+### Dark Launch / Shadow Traffic
+
+Deploy the new code path, but route only the response — not the actual user-facing action:
+
+```java
+public OrderConfirmation checkout(Cart cart) {
+    OrderConfirmation result = legacyCheckout.process(cart);
+    
+    // Shadow: call new code path, but discard the result
+    try {
+        OrderConfirmation shadowResult = newCheckout.process(cart);
+        metrics.record("shadow.divergence", 
+            divergence(result, shadowResult));
+    } catch (Exception e) {
+        // Swallow exception — never affect user response
+        metrics.incrementCounter("shadow.error");
+    }
+    
+    return result;
+}
+```
+
+**Use case**: high-risk change (pricing algorithm, recommendation engine). Validate that the new code produces the same output as the old, under real traffic, before flipping the switch.
+
+### A/B Testing
+
+Split users into cohorts and compare metrics:
+
+```java
+public RecommendationPage getRecommendations(String userId) {
+    String cohort = cohortAssigner.assign(userId);  // "A" or "B"
+    
+    if (cohort.equals("A")) {
+        return legacyRecommendations.get(userId);
+    } else {
+        return newRecommendations.get(userId);
+    }
+}
+```
+
+**Metrics to compare**:
+- Conversion rate (A vs B)
+- Click-through rate
+- Time on page
+- Error rate (must be equal — A/B shouldn't introduce new errors)
+
+**Statistical significance**: need ~10,000 users per cohort to detect a 5% difference with 95% confidence. Use a tool like Optimizely, GrowthBook, or Eppo.
+
+### Feature Flag-Driven Rollout (covered in Part 9)
+
+This is the most common testing-in-production technique. Roll out to 1%, monitor metrics, ramp to 10%, 50%, 100%.
+
+### Synthetic Monitoring
+
+Send fake requests through your system continuously:
+
+```yaml
+# Blackbox exporter config (Prometheus)
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      valid_status_codes: [200]
+      method: GET
+      url: https://myapp.com/api/health
+      interval: 30s
+```
+
+Synthetic monitors catch issues BEFORE users do. Run from multiple regions to catch geo-specific outages.
+
+### Chaos Engineering
+
+Inject failures deliberately to validate resilience:
+
+```bash
+# Chaos Toolkit example
+chaos run experiment.json
+```
+
+```json
+{
+  "title": "Database connection failure",
+  "steady-state-hypothesis": {
+    "title": "Service responds",
+    "probes": [{
+      "type": "probe",
+      "name": "service-responds",
+      "tolerance": 200
+    }]
+  },
+  "method": [{
+    "type": "action",
+    "name": "terminate-db-connection",
+    "provider": {
+      "type": "python",
+      "module": "chaosaws.ec2.actions",
+      "func": "stop_instances",
+      "arguments": {"instances": ["db-primary"]}
+    }
+  }]
+}
+```
+
+Netflix's **Chaos Monkey** (2011) is the canonical chaos tool. The principle: if you don't test failure modes, you don't know they work. Better to discover issues during controlled chaos exercises than during a 3am outage.
+
+🔬 **Section Challenge — Choosing a Testing-in-Production Technique**
+
+You're deploying a new payment processing flow. The change touches the most critical code path in the system (every transaction goes through it). What's your testing-in-production strategy, and why?
+
+<details>
+<summary>Answer</summary>
+
+**For payment processing, the strategy must be conservative**:
+
+1. **Code review and unit tests** (pre-prod): the new flow must have 100% line coverage on the critical path and explicit tests for race conditions, idempotency, and refund edge cases.
+
+2. **Staging environment with production data snapshot** (pre-prod): replay the last 30 days of payment transactions through the new flow. Compare output with legacy. Surface divergences.
+
+3. **Shadow traffic** (early production): deploy new flow, route shadow traffic (no user impact). Run for 7 days. Validate:
+   - Result divergence: <0.01% (payment rounding errors are tolerable; logic differences are not)
+   - Error rate: equal to legacy
+   - Latency: within 10% of legacy
+
+4. **Canary 1%** (after shadow): route 1% of real traffic to new flow. Monitor:
+   - Successful charge rate: must match legacy within 0.1%
+   - Refund correctness: all refunds within 1 minute of request
+   - Idempotency: duplicate requests produce same result
+
+5. **Canary 10% → 50% → 100%** (over 2 weeks): each step requires 24-48 hours of clean metrics before ramping.
+
+6. **Keep legacy code path active for 30 days** post-100%: instant rollback available if production behavior diverges.
+
+**Why not A/B testing for payments**: A/B is for measuring which variant performs better (e.g., new checkout button). For payments, both variants must work correctly — there's no "better" to optimize for. You're validating safety, not improvement.
+
+**Why not chaos engineering here**: chaos engineering tests resilience to failures. Payment flow changes aren't about resilience — they're about correctness. Different problem, different technique.
+
+**The principle**: critical paths use the most conservative techniques (shadow + gradual canary). Lower-risk changes (UI tweaks, recommendation algorithms) can use faster techniques (A/B testing with statistical significance).
+
+**Production monitoring during rollout**: every payment event must log (a) which code path processed it, (b) result, (c) latency. Dashboards for: divergence rate, error rate, refund rate. PagerDuty alert if divergence >0.5% or error rate >legacy's rate.
+</details>
+
