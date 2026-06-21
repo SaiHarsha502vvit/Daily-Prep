@@ -1023,6 +1023,8 @@ That's dependency inversion working correctly.
 7. What is the difference between a Data Source and a Repository? Why have both?
 8. Domain layer tests run in 0.1s, widget tests in 2s, integration in 30s+. How does Clean Architecture use this fact to make testing faster? What should you push into the domain layer?
 9. `sealed class Result<T>` with `Success<T>` and `Failure<T>` — how does this change your BLoC's event handlers? What does it replace?
+10. `FeatureFlagService` wraps Firebase Remote Config. You gate a new payment flow behind `enable_new_checkout`. How do you roll it out to 10% of users? What happens to the other 90%?
+11. In a multi-module architecture with `packages/core/` and `packages/features/`, the `auth` feature needs to notify `expenses` when the user logs out. But features can't import each other. How do abstract `Port` interfaces in `core_domain` solve this?
 
 ---
 

@@ -985,6 +985,9 @@ Run `flutter test --coverage` and view the coverage report. Reach 100% line cove
 8. Why is a test data builder better than calling the `Expense` constructor directly in every test? What happens when you add a new required field to `Expense`?
 9. `meetsGuideline(androidTapTargetGuideline)` fails for a small icon. What is the minimum tap target size? How do you fix it without changing the icon's visual size?
 10. You run `pumpAndSettle()` on a screen with a `CircularProgressIndicator`. What happens and why? How do you fix the test?
+11. A contract test fetches `/api/v1/expenses` from staging and validates the JSON schema matches your `Expense.fromJson`. Why is this test tagged `@Tags(['contract'])` and run separately from unit tests? What does it catch that a mock-based test misses?
+12. Patrol can interact with native OS dialogs (permission prompts, date pickers). Why can't `integration_test` do this? Give an example of a test that requires Patrol.
+13. CI fails because test coverage dropped below 80%. Your team's layer targets are: domain 100%, BLoC 95%, widgets 70%. Why are the targets different per layer? What command generates the coverage report?
 
 ---
 

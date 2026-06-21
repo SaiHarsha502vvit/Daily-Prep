@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
 
 **Problems 01/14** | | [Index](../00_MASTER_INDEX.md) | [Next](02_Math_Numbers.md)
 
@@ -841,7 +841,7 @@ Here are problem names to search on LeetCode/HackerRank:
 
 ---
 
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
 
 ---
 

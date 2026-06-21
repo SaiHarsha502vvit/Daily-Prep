@@ -975,6 +975,43 @@ Future<void> setupDI() async {
 
 ---
 
+## Enterprise Challenges
+
+> 🏢 **Enterprise Reality:**
+> *"The Expense Tracker is your first full-stack production app. These challenges take it from 'works on my machine' to 'ready for 10,000 users.'"*
+
+**1. Structured Error Handling**
+Replace all raw `try/catch` with the `sealed class AppFailure` pattern from Week 1. Every Dio call in `ExpenseRemoteDatasource` should return `Result<T>` — never throw. The BLoC maps `Failure` to user-friendly messages.
+
+**2. BLoC Observer + Crashlytics Breadcrumbs**
+Add `AppBlocObserver` from Week 19. Every `onTransition` writes a Sentry breadcrumb. When a crash happens, the Sentry dashboard shows the last 10 BLoC transitions that led to it.
+
+**3. Feature Flag: New Dashboard**
+Gate the `SpendingLinePainter` chart behind a Firebase Remote Config flag `enable_trend_chart`. 50% of users see the old view (donut + bar only), 50% see the trend chart. Measure engagement via analytics events.
+
+**4. Database Migration**
+The `ExpenseHiveModel` needs a new `receiptUrl` field. Write the migration so users upgrading from version 1 don't lose data. Test by pre-populating Hive with v1 data and verifying v2 reads succeed.
+
+**5. Offline-First Sync with Conflict Resolution**
+Currently, offline writes use a `pendingSync` boolean. Upgrade to `SyncStatus` enum (synced/pendingCreate/pendingUpdate/pendingDelete) from Week 15. Add a `ConflictResolver` that handles the case where an expense was edited on two devices.
+
+**6. Contract Test**
+Write a contract test that hits your staging Firestore (or a mock API) and validates the JSON schema matches `Expense.fromJson`. Tag it `@Tags(['contract'])` and run it separately from unit tests.
+
+---
+
+## Week 22 Verify — Project Self-Review
+
+1. Trace the full flow when a user adds an expense while offline: tap "Save" → what fires in the BLoC → what writes to Hive → what happens when connectivity returns?
+2. `ExpenseBloc` receives `DeleteExpenseEvent`. The BLoC optimistically removes the item from the UI state. The server returns an error. How do you restore the item? Write the state sequence.
+3. `GetMonthlySummary` is a use case, not a repository method. Why? What computation does it do that doesn't belong in the data layer?
+4. The `injection_container.dart` registers BLoCs with `registerFactory` but repositories with `registerLazySingleton`. Why the different registration types?
+5. The donut chart renders category percentages. A user has expenses in 12 categories. The chart becomes unreadable. What design pattern solves this? (Hint: group small categories.)
+6. Your `ExpenseFirebaseDatasource` catches `FirebaseException` and maps it to `AppFailure`. A new developer adds a raw `throw Exception('something broke')` in the repository. What breaks downstream? How does the sealed error hierarchy prevent this?
+7. The `DashboardBloc` depends on `GetMonthlySummary`, `GetSpendingTrend`, and `GetExpenses` — three use cases. How do you write a `blocTest` that mocks all three? Show the test setup.
+
+---
+
 ## Phase 5 Complete — Up Next: Phase 6 (Quality)
 
 Phase 6 is about making this app production-ready:

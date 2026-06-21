@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+**Navigation**: [< Previous](22_Recursion_Subsets.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
 
 # ⚡ Edge Cases Master Guide
 
@@ -761,7 +761,7 @@ _The difference between a good programmer and a great programmer is edge case ha
 
 ---
 
-> **Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+> **Navigation**: [< Previous](22_Recursion_Subsets.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
 
 ---
 

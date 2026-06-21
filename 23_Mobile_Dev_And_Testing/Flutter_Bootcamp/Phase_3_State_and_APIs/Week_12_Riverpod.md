@@ -899,6 +899,8 @@ Requirements:
 8. `@riverpod class Cart extends _$Cart` — what does this annotation generate? Why is `_$Cart` the base class?
 9. `ref.watch(cartProvider.select((items) => items.length))` — what does `.select()` do? When would you use it over a plain `ref.watch`?
 10. `ref.invalidate(productsProvider)` vs `ref.refresh(productsProvider)` — what is the difference? Which one do you use in a pull-to-refresh?
+11. In a 50-provider app, you organize providers into `lib/features/auth/providers/`, `lib/features/expenses/providers/`, etc. Why is this better than a single `providers.dart` file? What does `ProviderScope.overrides` let you do per-feature?
+12. `ProviderObserver.didUpdateProvider` fires on every state change. In production, what would you log here? Why is this useful for debugging crash reports?
 
 ---
 

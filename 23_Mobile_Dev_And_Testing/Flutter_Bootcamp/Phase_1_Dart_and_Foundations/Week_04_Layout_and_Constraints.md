@@ -19,6 +19,22 @@ New Flutter developers constantly hit these errors:
 
 All of these have the same root cause: not understanding Flutter's constraint system. This week removes that confusion permanently.
 
+> **TypeScript/CSS comparison:** If you're coming from web/React, Flutter's layout is fundamentally different from CSS:
+> | CSS/Web | Flutter |
+> |---|---|
+> | `display: flex` | `Row` / `Column` |
+> | `flex: 1` | `Expanded` (fills remaining space) |
+> | `flex-grow: 0` | `Flexible(fit: FlexFit.loose)` |
+> | `justify-content` | `MainAxisAlignment` |
+> | `align-items` | `CrossAxisAlignment` |
+> | `position: absolute` | `Stack` + `Positioned` |
+> | `overflow: scroll` | `ListView` / `SingleChildScrollView` |
+> | `max-width: 360px` | `ConstrainedBox(constraints: BoxConstraints(maxWidth: 360))` |
+> | `padding: 16px` | `Padding(padding: EdgeInsets.all(16))` |
+> | `gap: 8px` | `SizedBox(height: 8)` between children, or `Column(spacing: 8)` in Flutter 3.27+ |
+>
+> The biggest mental shift: CSS is **additive** (you stack properties onto one element), Flutter is **compositional** (each behavior is a separate widget wrapping another). There's no `style` prop — padding, alignment, decoration, and constraints are each their own widget.
+
 ---
 
 ## The Golden Rule of Flutter Layout
@@ -732,6 +748,7 @@ Use `LayoutBuilder` for breakpoints. Use `GridView.builder` with `SliverGridDele
 7. What is `LayoutBuilder` and why is it better than `MediaQuery.of(context).size.width` for responsive layouts inside nested widgets?
 8. Your app runs on phone, tablet, and desktop. How do you show `NavigationBar` on phone, `NavigationRail` on tablet, and `NavigationDrawer` on desktop — without three separate scaffolds?
 9. `MediaQuery.sizeOf(context).width` vs `MediaQuery.of(context).size.width` — what rebuilds differently? Which should you prefer and why?
+10. A designer says "increase card padding globally." With `AppSpacing` tokens, how many files do you change? Without tokens, what do you face? Why are semantic tokens like `AppSpacing.cardPadding` better than raw `AppSpacing.md`?
 
 ---
 

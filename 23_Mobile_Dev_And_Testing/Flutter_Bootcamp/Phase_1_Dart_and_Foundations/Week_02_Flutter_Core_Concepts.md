@@ -153,7 +153,19 @@ class Text extends Widget {
 
 Every time your `build()` method runs, it produces a fresh set of widget objects. The old ones are thrown away. This is intentional — widgets are designed to be **cheap to create and cheap to discard**.
 
-🧑‍💻 **Java comparison:** Think of Widget like a DTO (Data Transfer Object) in Java. A `UserResponseDTO` is just a plain object holding data — no logic, no database connections, created freely and GC'd quickly. Widgets work the same way.
+🧑‍💻 **Java/TypeScript comparison:** Think of Widget like a DTO in Java or a typed props object in TypeScript/React. It's just data — no rendering logic, no side effects.
+
+```typescript
+// TypeScript/React — props are just data, React decides when to re-render
+interface ProductCardProps {
+  name: string;
+  price: number;
+  imageUrl: string;
+  // No rendering logic here. Just data.
+}
+// Flutter widgets work the same way — they're immutable descriptions.
+// The framework decides what to rebuild, not you.
+```
 
 ```java
 // Java DTO — just data, created and discarded freely
@@ -454,6 +466,20 @@ class _QuantitySelectorState extends State<QuantitySelector> {
 
 **Why two classes?** The `StatefulWidget` gets recreated (thrown away and rebuilt) every time the parent rebuilds. But the `State` object survives rebuilds — Flutter keeps it alive. The separation exists so the data (`State`) can outlive the blueprint (`Widget`).
 
+> **TypeScript/React comparison:** Flutter's `StatefulWidget` = React class component (or `useState` hook). `setState` = React's `setState`/`setX`. But there's a key architectural difference:
+> ```typescript
+> // React — state and rendering live in one function/class
+> function QuantitySelector({ initial, max, onChange }: Props) {
+>   const [qty, setQty] = useState(initial);  // state lives inside the component
+>   return <button onClick={() => setQty(q => q + 1)}>+</button>;
+> }
+>
+> // Flutter — state and widget are SEPARATE CLASSES
+> // Widget = props (immutable, recreated on every parent rebuild)
+> // State = useState hooks (mutable, survives rebuilds)
+> ```
+> In React, re-rendering a component preserves hooks because React tracks them by call order. In Flutter, the `State` object is a separate long-lived object that the framework keeps alive — same outcome, more explicit mechanism.
+
 > 📄 **Flutter Docs:**
 > *"The framework calls createState whenever it inflates a StatefulWidget, which means that multiple State objects might be associated with the same StatefulWidget if that widget has been inserted into the tree in multiple places."*
 
@@ -526,6 +552,8 @@ testWidgets('QuantitySelector increments and disables at max', (tester) async {
 > *"A handle to the location of a widget in the widget tree. This class presents a set of methods that can be used from StatelessWidget.build methods and from methods on State objects."*
 
 `BuildContext` is not a bag of random data. It is a **reference to where your widget sits in the element tree** — its address. Because it's an address, it knows what's *above* it.
+
+> **TypeScript/React comparison:** `BuildContext` is like React's Context API + `useContext` — but more fundamental. In React, you create explicit contexts (`createContext`) and consume them with `useContext(ThemeContext)`. In Flutter, `BuildContext` is always there — `Theme.of(context)`, `Navigator.of(context)`, `MediaQuery.of(context)` all walk UP the tree from the current widget's position. It's the same lookup-from-ancestors pattern, just built into the framework at a deeper level.
 
 ```dart
 @override
@@ -1197,6 +1225,8 @@ This is the foundation of responsive Flutter UI.
 7. You have a heart icon that toggles liked/unliked. Should it be `StatelessWidget` or `StatefulWidget`? What if the liked state is also needed by the AppBar's icon count?
 8. `Image.network(url)` — a blind user opens your app. What does VoiceOver announce for this image? How do you fix it?
 9. `ColorScheme.fromSeed(seedColor: Colors.blue)` generates 30 color tokens. Name three tokens from the generated scheme and where you'd use each.
+10. Your app supports English and Hindi. The ARB file has `"itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}"`. What is this syntax called? What command generates the Dart localization classes from ARB files?
+11. `AppLocalizations.of(context)!.itemCount(3)` — why does this need `context`? What happens if you forget to add `AppLocalizations.delegate` to `MaterialApp.localizationsDelegates`?
 
 ---
 

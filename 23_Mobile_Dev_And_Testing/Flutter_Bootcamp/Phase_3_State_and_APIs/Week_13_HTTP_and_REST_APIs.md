@@ -1119,6 +1119,9 @@ class _CacheEntry<T> {
 7. In `FutureProvider.autoDispose.family<List<Article>, String>`, what does `family` do? Write the provider declaration.
 8. A `DioException` with `type: connectionError` reaches the UI. What should the user see? Write the user-friendly message and the UI action (button/link) you'd provide.
 9. Your app shows raw `Exception: SocketException` text to the user. Name two things wrong with this and how the error-mapping pattern fixes it.
+10. What is certificate pinning? Your app pins a SHA-256 fingerprint of your API server's certificate. The server rotates its certificate. What happens to your app? How do you handle certificate rotation without shipping a new build?
+11. A `RetryInterceptor` retries on 503 with exponential backoff: 1s, 2s, 4s. Why should it NOT retry on 401 or 422? What is the maximum number of retries you'd allow before giving up?
+12. `AnalyticsService` abstracts Firebase Analytics and Mixpanel behind one interface. Why is this abstraction useful? What does `AnalyticsNavigatorObserver` auto-track without any manual code?
 
 ---
 

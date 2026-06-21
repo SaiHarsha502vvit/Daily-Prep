@@ -893,6 +893,7 @@ TextFormField(
 7. What is `AutovalidateMode.onUserInteraction`? When should you switch to it from `AutovalidateMode.disabled`?
 8. A `TextFormField` has `hintText: 'Email'` but no `labelText`. Why is this a problem for accessibility? What does VoiceOver announce when the field is empty vs. when it has text?
 9. `AutofillGroup` wraps your form. What does this enable? Name three `AutofillHints` constants and what they tell the OS.
+10. A form uses `bool isLoading`, `bool hasError`, `String? errorMessage` to track submission state. What bug can occur with these independent booleans? How does `sealed class FormSubmissionState` with `Idle`, `Validating`, `Submitting`, `Success`, `Error` subtypes prevent it?
 
 ---
 

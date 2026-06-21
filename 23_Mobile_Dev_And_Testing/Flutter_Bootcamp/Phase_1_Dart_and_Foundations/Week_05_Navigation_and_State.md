@@ -17,6 +17,8 @@
 
 In Flutter, every screen is a **Route**. The `Navigator` manages a **stack of Routes** — pushing new screens on top, popping them off when going back. It's exactly like a stack data structure: last in, first out.
 
+> **TypeScript/React comparison:** Flutter's `Navigator` is conceptually similar to React Router, but with a key difference — Flutter uses an **imperative stack** (push/pop), while React Router uses **declarative URLs** (`<Route path="/product/:id">`). Flutter's `go_router` package (covered later) brings declarative URL-based routing closer to React Router's model. The data-passing pattern is also different: React Router uses URL params and `useParams()`, while Flutter passes data directly through widget constructors — type-safe, no parsing needed.
+
 ```
 Navigator Stack (think of it as a stack of cards)
 

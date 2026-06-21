@@ -413,6 +413,8 @@ Build a "Notifications" screen where:
 5. Why does `Consumer<T>` exist? In what situation can't you use `context.watch` directly?
 6. The `CartModel` has a `List<CartItem> _items` field. You expose it as `List<CartItem> get items => List.unmodifiable(_items)`. Why return `unmodifiable`?
 7. Explain the difference between lifting state up (Phase 1–2 approach) and Provider. What specific problem does Provider solve that lifting state cannot?
+8. In a 50-screen app, every `ChangeNotifier.notifyListeners()` call triggers rebuilds in all listening widgets. How does `context.select<CartModel, int>((c) => c.count)` prevent unnecessary rebuilds? What happens internally when a selected value hasn't changed?
+9. A new developer puts `context.watch<AuthModel>()` inside a button's `onPressed` callback. What exception is thrown? Why does Provider enforce this rule?
 
 ---
 

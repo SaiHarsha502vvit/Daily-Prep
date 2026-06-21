@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+**Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # 🌍 Real-World Problem Origins: Where DSA Concepts Were Born
 
@@ -1188,7 +1188,7 @@ _Reference this guide whenever you learn a new topic to understand its origin!_ 
 
 ---
 
-> **Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+> **Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 

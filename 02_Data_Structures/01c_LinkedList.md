@@ -1066,23 +1066,168 @@ A linked list's correctness rests entirely on **pointer invariants**. Violate an
 
 These invariants must be preserved by **every** mutation: insert, delete, reverse, splice, merge. The Java `LinkedList` class enforces them via `checkForComodification` (see production failure mode 4 in the body of this chapter).
 
-### Formal Proof Sketch — Floyd's Cycle Detection Preserves I3
+## 🔬 Proof Corner — Three Derivations from First Principles
 
-Floyd's tortoise-and-hare algorithm proves I3 (acyclicity) by:
+### Derivation 1: The Contiguous-Memory Tradeoff — Why Linked Lists Must Exist
+
+**The problem that forces the idea.** An array stores elements at addresses `base + i × sizeof(T)`. This formula gives O(1) random access — compute the address, dereference once. But it creates a structural constraint: **contiguity**. Every element must sit at its computed address, with no gaps.
+
+**Why contiguity forces O(n) insert.** Suppose you insert element `x` at position `k` in an array of `n` elements. After the insert, element `k` must live at `base + k × sizeof(T)`, element `k+1` at `base + (k+1) × sizeof(T)`, and so on. But positions `k` through `n-1` are already occupied. The contiguity invariant forces a cascade:
 
 ```
-Theorem: If a linked list has a cycle, the fast pointer (2 steps) eventually meets the slow pointer (1 step).
-
-Proof:
-  Let L = length before cycle, C = cycle length.
-  After k iterations, slow has moved k steps; fast has moved 2k steps.
-  They meet when 2k - k = mC for some m, i.e., k = mC.
-  At k = mC, slow has moved mC steps; it must be inside the cycle (mC ≥ L if mC ≥ L; otherwise it has not entered yet).
-  At k = mC, fast has moved 2mC steps, also inside the cycle.
-  Both pointers are now inside the cycle and one full lap apart at most → they must meet.
+Before:  [a₀][a₁]...[aₖ₋₁][aₖ][aₖ₊₁]...[aₙ₋₁]
+                              ↓ insert x here
+After:   [a₀][a₁]...[aₖ₋₁][ x ][aₖ][aₖ₊₁]...[aₙ₋₁]
+                                  └── n-k elements shifted right
 ```
 
-See `02_PROBLEM_SETS.md` Part A for the full exam-style proof. Once a cycle is detected, the list violates I3 and the algorithm returns `false` for "is acyclic" — or breaks the cycle by setting `slow.next = null` at the meeting point.
+Shifting `n - k` elements costs Θ(n - k). For `k = 0` (insert at front), that's Θ(n). No algorithm can avoid this — the contiguity invariant is structural, not a limitation of any particular implementation.
+
+**The linked list breaks contiguity.** Each node lives at an arbitrary heap address. There is no `base + i × sizeof(T)` formula — you can't compute a node's address from its index. But precisely because nodes aren't constrained to contiguous slots, inserting a new node requires only redirecting pointers:
+
+```
+Before:  prev → next_node
+After:   prev → new_node → next_node    (2 pointer writes, O(1))
+```
+
+No element moves. No cascade. The tradeoff is exact: **you lose O(1) random access (no address formula) and gain O(1) interior insert/delete (no shifting invariant)**.
+
+| Property | Array | Linked List | Root cause |
+|----------|-------|-------------|------------|
+| Access by index | O(1) | O(n) | Contiguous address formula vs pointer traversal |
+| Insert at known position | O(n) | O(1) | Shifting to preserve contiguity vs pointer redirect |
+| Cache behavior | Excellent | Poor | Sequential prefetch vs pointer-chasing |
+| Memory per element | `sizeof(T)` | `sizeof(T) + 8–16` | No overhead vs pointer storage |
+
+**The takeaway.** Linked lists don't exist because someone thought they were clever. They exist because the contiguous-memory invariant that makes arrays fast for reads makes them structurally incapable of fast interior writes. Every data structure is a tradeoff — this one trades the address formula for pointer freedom.
+
+---
+
+### Derivation 2: Floyd's Cycle Detection — Why Two Speeds Guarantee a Meeting
+
+**The problem.** Given a linked list that might contain a cycle, detect the cycle using O(1) extra space. A visited-set approach uses O(n) space — can we do better?
+
+**Step 1 — The relative-velocity insight.** Place two pointers at the head: `slow` moves 1 step per iteration, `fast` moves 2 steps. Consider what happens once both are inside the cycle (length C):
+
+- After one iteration, `fast` is 1 step farther ahead of `slow` than before.
+- The gap between them grows by 1 each step — equivalently, the gap *shrinks* by 1 in the other direction (modular arithmetic on a cycle of length C).
+
+If the initial gap (once both are in the cycle) is `d`, they meet after exactly `C - d` more steps, when the gap has shrunk to 0. This is guaranteed: `C - d` is finite, and every iteration reduces the gap by exactly 1.
+
+**Step 2 — Formal proof of meeting.**
+
+```
+Let μ = distance from head to cycle entry (the "tail" length).
+Let C = cycle length.
+Let n = μ + C (total nodes).
+
+After k steps:
+  slow is at position k (from head)
+  fast is at position 2k (from head)
+
+Both are inside the cycle when k ≥ μ.
+Inside the cycle, positions wrap: slow is at (k - μ) mod C,
+                                   fast is at (2k - μ) mod C.
+
+They meet when: (2k - μ) mod C = (k - μ) mod C
+              ⟺ k mod C = 0
+              ⟺ k is a multiple of C.
+
+The smallest k ≥ μ that is a multiple of C: k = ⌈μ/C⌉ × C.
+Total iterations ≤ μ + C ≤ n. ∎
+```
+
+**Step 3 — Phase 2: finding the cycle entry (the non-obvious part).**
+
+After `slow` and `fast` meet at some node `M` inside the cycle, how do you find where the cycle *starts*?
+
+**Claim:** Reset `slow` to head. Move both `slow` and `fast` at speed 1. They meet at the cycle entry.
+
+**Derivation.** At the meeting point, slow has traveled `k` steps, fast has traveled `2k` steps. Fast has gone around the cycle some number of times more than slow:
+
+```
+2k - k = k = m × C    (for some integer m ≥ 1)
+```
+
+Now reset `slow` to head. Both move at speed 1.
+
+- After `μ` steps, `slow` reaches the cycle entry.
+- After `μ` steps, `fast` (starting from the meeting point) has moved `μ` more steps.
+  Fast's total distance from cycle entry: (meeting point offset) + μ.
+  Meeting point offset from entry = (k - μ) mod C = (mC - μ) mod C = (-μ) mod C = C - (μ mod C).
+  After μ more steps: C - (μ mod C) + μ = C + μ - (μ mod C).
+  This is a multiple of C (since μ - (μ mod C) = ⌊μ/C⌋ × C).
+  So fast is also at the cycle entry. ∎
+```
+
+**Worked trace.** List: `1 → 2 → 3 → 4 → 5 → 3` (cycle entry at node 3, μ = 2, C = 3).
+
+```
+Phase 1 (detect):
+  Step 0: slow=1, fast=1
+  Step 1: slow=2, fast=3
+  Step 2: slow=3, fast=5
+  Step 3: slow=4, fast=4  ← meet! (both at node 4)
+
+Phase 2 (find entry):
+  Reset slow to head (node 1). Both move at speed 1.
+  Step 1: slow=2, fast=5
+  Step 2: slow=3, fast=3  ← meet at node 3 = cycle entry ✓
+```
+
+**Why speed 2, specifically?** Any speed ratio where fast is exactly 1 step faster per iteration works — the gap decreases by 1 each step, guaranteeing a meeting within one full cycle. Speed 3 would make the gap decrease by 2, but then on a cycle of odd length, they could *skip* each other (gap goes from 1 to -1 mod C, never hitting 0). Speed 2 is the smallest speed that guarantees meeting for all cycle lengths.
+
+---
+
+### Derivation 3: The Sentinel Node Trick — Why It Eliminates Edge Cases
+
+**The problem.** Write `insertAfter(prev, data)` for a singly-linked list. Without sentinels, you need this:
+
+```java
+void insertAfter(Node prev, int data) {
+    Node n = new Node(data);
+    if (prev == null) {          // Case 1: insert at head
+        n.next = head;
+        head = n;
+    } else {                     // Case 2: insert after prev
+        n.next = prev.next;
+        prev.next = n;
+    }
+    size++;
+}
+```
+
+Two branches. For `deleteNode`, it's worse — you need cases for (a) empty list, (b) deleting the head, (c) deleting the tail, (d) deleting a middle node. Four branches, four places for pointer bugs.
+
+**The sentinel insight.** Create a dummy node that is always present and is never removed:
+
+```java
+Node sentinel = new Node(0);  // dummy — data is irrelevant
+sentinel.next = null;          // empty list
+```
+
+Now "insert at head" is just "insert after sentinel." There is no special case:
+
+```java
+void insertAfter(Node prev, int data) {
+    Node n = new Node(data);
+    n.next = prev.next;
+    prev.next = n;
+    size++;
+}
+// To insert at head: insertAfter(sentinel, data)
+// To insert at position k: walk k steps from sentinel, then insertAfter
+```
+
+**Why this works — the formal argument.** The sentinel statically guarantees invariant I1 (head is never null). With I1 always holding:
+
+- "Insert at head" collapses into "insert after sentinel" — the `if (prev == null)` branch is dead code.
+- "Delete head" collapses into "delete sentinel.next" — no special-case needed because `sentinel` is never the node being deleted.
+- "Empty list" means `sentinel.next == null` — but `sentinel` itself exists, so code that accesses `head.next` (now `sentinel.next`) never throws NPE.
+
+The case analysis shrinks from 4 branches to 1. Each eliminated branch is one fewer place for a pointer bug. In production code (Java's `LinkedList`, Linux kernel's `list_head`), sentinels are universal precisely because they convert a 4-case operation into a 1-case operation.
+
+**The cost.** One extra node of memory (~32 bytes on JVM). The tradeoff is always worth it — 32 bytes to eliminate an entire class of null-pointer bugs.
 
 ---
 

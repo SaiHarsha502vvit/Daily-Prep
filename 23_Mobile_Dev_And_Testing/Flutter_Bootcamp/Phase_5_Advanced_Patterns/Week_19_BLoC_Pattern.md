@@ -835,6 +835,9 @@ Write `blocTest` for every transition.
 8. Write a `blocTest` that verifies an optimistic delete: the item is removed immediately, but restored when the server returns an error. How many states do you expect?
 9. `CartBloc` needs to react when `AuthBloc` emits `AuthUnauthenticated`. How do you wire this communication? Where do you cancel the subscription?
 10. A search BLoC receives a `SearchEvent` on every keystroke. You want to debounce to 300ms. Which `EventTransformer` do you use, and how do you apply it?
+11. `AppBlocObserver.onTransition` logs every state transition. In production, you also add Sentry breadcrumbs. Why is this useful when investigating a crash that happened 5 transitions ago?
+12. `HydratedBloc` persists BLoC state across app restarts. Name one BLoC where this is valuable (e.g., user preferences) and one where it would be harmful (e.g., form input). What methods must you implement?
+13. A checkout flow needs `CartBloc`, `PaymentBloc`, and `OrderBloc` to coordinate. Why is a `CheckoutFacade` that orchestrates all three better than having BLoCs listen to each other directly?
 
 ---
 

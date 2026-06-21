@@ -818,6 +818,8 @@ Add offline support to the Notes App from Week 15:
 8. A developer stores the user's auth token in `SharedPreferences`. Why is this a security risk? What should they use instead?
 9. The user deletes their account. List everything you must clean up — both local storage and server-side. What regulation requires this?
 10. `prefs.setString('password', userPassword)` appears in a code review. What do you say and why?
+11. Your SQLite database is at version 3. A user updates from version 1. The `onUpgrade` callback receives `oldVersion: 1, newVersion: 3`. How do you structure the migration code so it applies v1→v2 AND v2→v3 sequentially? Why must you never skip a version?
+12. A Hive model has `@HiveField(0) String name` and `@HiveField(1) int age`. You add a new field `email`. What field number do you assign? What happens if you reuse `@HiveField(0)` for the new field?
 
 ---
 

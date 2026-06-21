@@ -735,6 +735,9 @@ Run with vs without `itemExtent: 72` and compare.
 5. `ListView` vs `ListView.builder` — if you have 5 items, does the choice matter? What about 500 items?
 6. Why can't you pass a method on an instance to `compute()`? Why must it be a top-level or static function?
 7. You see memory growing steadily in DevTools. What are the three most likely causes in a Flutter app?
+8. Firebase Performance's `HttpMetric` tracks an API call's duration. Sentry's `tracesSampleRate: 0.2` samples 20% of transactions. Why don't you sample at 100%? What's the tradeoff?
+9. Your team's performance budget says cold start must be under 2 seconds and screen transitions under 300ms. A new feature adds 500ms to cold start. What do you do — ship it or optimize? How do you measure cold start time?
+10. `SentryNavigatorObserver` is added to your `GoRouter`. What does it automatically create for every route navigation? How does this help when investigating a crash that happened on a specific screen?
 
 ---
 

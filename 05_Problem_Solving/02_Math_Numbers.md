@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
+﻿> **Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
 
 > **Problems 02/14** | [Prev](01_Intro_Checklist.md) | [Index](../00_MASTER_INDEX.md) | [Next](03_Strings.md)
 
@@ -980,7 +980,7 @@ private int gcd(int a, int b) {
 
 ---
 
-> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
+> **Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
 
 ---
 

@@ -728,6 +728,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 5. Why does `_WeatherContent` use `ref.watch(weatherProvider(city))` but `SearchScreen._selectCity` uses `ref.read(selectedCityProvider.notifier)`?
 6. `ref.keepAlive()` is called inside the provider. What problem does it solve for tab navigation?
 7. Design review: The app shows a gradient background based on weather condition. A user with color blindness cannot distinguish between "cloudy" and "rainy" by color alone. How would you fix this for accessibility?
+8. The weather API returns a 503 (server overload). Your app shows "Something went wrong." How would a `RetryInterceptor` with exponential backoff handle this before the error even reaches the UI? How many retries and what delays?
+9. You want to track which cities users search for most. Where would you fire an analytics event — in the widget, the provider, or the repository? Why?
 
 ---
 

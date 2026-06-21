@@ -19,7 +19,33 @@ Dart was designed specifically with two goals Flutter needs:
 1. **Fast compilation** — both to native code (mobile/desktop) and JavaScript (web)
 2. **Sound null safety** — the compiler enforces that null errors are impossible at runtime
 
-If you know Java, Dart will feel familiar. The major differences are: cleaner syntax, sound null safety built in, first-class functions, and async built on `Future`/`Stream` instead of threads.
+If you know Java or TypeScript, Dart will feel familiar. The major differences from Java: cleaner syntax, sound null safety built in, first-class functions, and async built on `Future`/`Stream` instead of threads. If you're coming from TypeScript, almost everything maps 1:1 — the async model is nearly identical.
+
+### Dart ↔ TypeScript ↔ Java — Quick Reference
+
+| Concept | Dart | TypeScript | Java |
+|---------|------|-----------|------|
+| Variable (mutable) | `var x = 5;` | `let x = 5;` | `int x = 5;` |
+| Constant (runtime) | `final x = 5;` | `const x = 5;` | `final int x = 5;` |
+| Constant (compile-time) | `const x = 5;` | `as const` (different) | `static final` |
+| Nullable type | `String?` | `string \| null` | `@Nullable String` |
+| Null-safe access | `user?.name` | `user?.name` | `Optional` |
+| Default value | `name ?? 'anon'` | `name ?? 'anon'` | `Optional.orElse()` |
+| Arrow function | `(x) => x * 2` | `(x) => x * 2` | `x -> x * 2` (lambda) |
+| Async function | `Future<String>` | `Promise<string>` | `CompletableFuture<String>` |
+| Await | `await fetchData()` | `await fetchData()` | `.get()` / reactive |
+| Interface | `abstract class` | `interface` | `interface` |
+| Sealed/Union | `sealed class` | discriminated union | `sealed class` (17+) |
+| Enum with data | `enum E { a('x'); }` | `enum` (no data) | `enum E { A("x"); }` |
+| Spread | `[...list1, ...list2]` | `[...arr1, ...arr2]` | `Stream.concat()` |
+| String interpolation | `'Hello $name'` | `` `Hello ${name}` `` | `"Hello " + name` |
+| Named params | `fn({required x})` | `fn({x}: Props)` (object) | N/A (builder pattern) |
+| Pattern matching | `switch(x) { Case() => }` | type narrowing / `in` | `instanceof` chain |
+| Extension methods | `extension on String` | N/A (prototype, module augmentation) | N/A |
+| Streams | `Stream<T>` | `Observable<T>` (RxJS) | `Flux<T>` (Reactor) |
+| Package manager | `pub` | `npm`/`pnpm` | Maven/Gradle |
+
+> 🧑‍💻 **Coming from TypeScript?** Dart's `Future` = TS `Promise`. Dart's `Stream` = RxJS `Observable`. Dart's `sealed class` = TS discriminated union with exhaustive `switch`. Dart's `extension` = no direct TS equivalent (closest is module augmentation). The biggest mental shift: Dart is **sound** — if the type says non-null, it's guaranteed, unlike TS where `strictNullChecks` can be bypassed at runtime via `any`.
 
 ---
 
@@ -56,6 +82,16 @@ anything = null;   // OK
 ```
 
 **Rule:** Use `var` for local variables. Use `final` for values set once. Use `const` for compile-time constants. Use explicit types in function signatures and class fields. Avoid `dynamic`.
+
+> **TypeScript comparison:**
+> ```typescript
+> // TS                           // Dart equivalent
+> let city = 'Hyderabad';         // var city = 'Hyderabad';
+> const platform = 'Flutter';     // final platform = 'Flutter';
+> // TS has no compile-time const // const pi = 3.14159;  ← Dart only
+> let anything: any = 'hello';    // dynamic anything = 'hello';
+> ```
+> Dart's `var` = TS `let` (mutable, type-inferred). Dart's `final` = TS `const` (immutable binding). Dart's `const` has no TS equivalent — it means the value is baked into the binary at compile time. Dart's `dynamic` = TS `any` — and you should avoid both.
 
 🧑‍💻 **Developer tip:** `final` vs `const`:
 - `final` runs at runtime: `final now = DateTime.now()` — computed when this line runs
@@ -95,6 +131,16 @@ void initState() {
   userId = FirebaseAuth.instance.currentUser!.uid;  // assigned before first use
 }
 ```
+
+> **TypeScript comparison:**
+> ```typescript
+> // TS with strictNullChecks     // Dart
+> let name: string | null = null;  // String? name = null;
+> name?.toUpperCase();              // name?.toUpperCase();
+> name ?? 'default';                // name ?? 'default';
+> name!.length;                     // name!.length;  (bang = same in both)
+> ```
+> The syntax is almost identical. The critical difference: TS null checks are **unsound** — you can bypass them with `as`, `any`, or at runtime boundaries (API responses typed as `string` might actually be `null`). Dart's null safety is **sound** — if the type says `String` (non-nullable), the runtime **guarantees** it's never null. No escape hatch.
 
 🧪 **Tester:** Sound null safety means `NullPointerException` is a compile error, not a runtime crash. If your code compiles without `!`, it is guaranteed null-safe. This is why:
 
@@ -182,9 +228,20 @@ Text(
 
 Every Flutter widget constructor uses named parameters — this is why Flutter code is readable without documentation.
 
+> **TypeScript comparison:**
+> ```typescript
+> // TS                                    // Dart equivalent
+> const add = (a: number, b: number) => a + b;  // int add(int a, int b) => a + b;
+> function greet(name: string, title?: string)   // String greet(String name, [String? title])
+> function createUser({name, email}: Props)       // void createUser({required String name, required String email})
+> type Validator = (v: string | null) => string | null;  // typedef Validator = String? Function(String?);
+> const doubled = [1,2,3].map(n => n * 2);       // final doubled = [1,2,3].map((n) => n * 2).toList();
+> ```
+> Arrow functions are nearly identical. The key difference: TS uses `?` suffix for optional params (`title?: string`), Dart uses `[]` brackets for positional optionals and `{}` for named params. Dart requires `.toList()` after `.map()` because it returns a lazy `Iterable`, not a `List` — TS arrays eagerly evaluate.
+
 ---
 
-## 4. Classes — Dart vs Java
+## 4. Classes — Dart vs Java and TypeScript
 
 > 📄 **Dart Docs:**
 > *"Dart is an object-oriented language with classes and mixin-based inheritance. Every object is an instance of a class, and all classes except Null descend from Object."*
@@ -244,6 +301,23 @@ print(olderHarsha.age); // 25
 
 **Rule:** In Flutter, domain models (Note, User, Product) should be immutable (all fields `final`). Use `copyWith` to create modified copies. This makes state management predictable — state changes create new objects, they don't mutate existing ones.
 
+> **TypeScript comparison:**
+> ```typescript
+> // TS class                               // Dart class
+> class Person {                            // class Person {
+>   readonly name: string;                  //   final String name;
+>   readonly age: number;                   //   final int age;
+>   bio?: string;                           //   String? bio;
+>   constructor(                            //   const Person({
+>     public name: string,                  //     required this.name,
+>     public age: number,                   //     required this.age,
+>     public bio?: string                   //     this.bio,
+>   ) {}                                    //   });
+>   get isAdult() { return this.age >= 18 } //   bool get isAdult => age >= 18;
+> }                                         // }
+> ```
+> Key differences: (1) Dart's `this.name` in the constructor is shorthand that auto-assigns — TS needs `public name` in constructor params for the same effect. (2) Dart has `const` constructors — the object is a compile-time constant. TS has `as const` for literals but not for class instances. (3) Dart has no `public`/`private`/`protected` keywords — prefix with `_` for library-private. (4) Dart's `copyWith` pattern is like TS spread `{...obj, age: 25}` but type-safe with named params.
+
 ### Inheritance and Mixins
 
 ```dart
@@ -263,6 +337,8 @@ class Circle extends Shape {
 }
 
 // Mixin — reusable behavior that multiple classes can use
+// TS has no mixins — closest is intersection types or decorator patterns
+// Java has no mixins — closest is default methods in interfaces
 mixin Serializable {
   Map<String, dynamic> toJson();      // classes using this mixin must implement
 
@@ -378,6 +454,20 @@ final values = scores.values.toList();
 final hasAlice = scores.containsKey('Alice');
 ```
 
+> **TypeScript comparison:**
+> ```typescript
+> // TS                                        // Dart
+> const fruits: string[] = ['apple', 'banana']; // final fruits = ['apple', 'banana'];
+> fruits.push('cherry');                         // fruits.add('cherry');
+> const evens = nums.filter(n => n % 2 === 0);  // final evens = nums.where((n) => n.isEven).toList();
+> const doubled = nums.map(n => n * 2);          // final doubled = nums.map((n) => n * 2).toList();
+> const sum = nums.reduce((a, b) => a + b, 0);   // final sum = nums.fold(0, (a, n) => a + n);
+> const tags = new Set(['a', 'b']);               // final tags = {'a', 'b'};
+> const scores = new Map([['Alice', 95]]);        // final scores = {'Alice': 95};
+> const combined = [...arr1, ...arr2];             // final combined = [...list1, ...list2];
+> ```
+> Key difference: Dart's `.map()`, `.where()` return lazy `Iterable`s — call `.toList()` to get a `List`. TS arrays eagerly evaluate. Dart's collection-if (`if (x) item`) and collection-for have no TS equivalent — you'd use ternary or `.filter()` chains.
+
 🎨 **Designer:** Collection-if and collection-for make widget lists read like UI logic:
 
 ```dart
@@ -400,9 +490,11 @@ Column(
 > 📄 **Dart Docs:**
 > *"Asynchronous programming in Dart uses the Future and Stream classes. A Future represents the result of an asynchronous operation. A Stream provides a sequence of asynchronous events."*
 
+> **TypeScript comparison:** Dart's async model is nearly identical to TS. `Future<T>` = `Promise<T>`. `async`/`await` work the same way. `Future.wait()` = `Promise.all()`. The one major addition: Dart has `Stream<T>` built into the language — this is like RxJS `Observable<T>` but native, no library needed. `async*` + `yield` = a generator that produces a stream.
+
 ```dart
 // Future — a value that will be available at some point
-// Like a "promise" in JavaScript
+// Like a "promise" in JavaScript / TypeScript
 
 // Return type: Future<String> means "will eventually return a String"
 Future<String> fetchUserName(String userId) async {
@@ -426,6 +518,7 @@ Future<void> loadProfile() async {
 // Future.wait — run multiple futures in parallel
 Future<void> loadDashboard() async {
   // These run AT THE SAME TIME, not one after the other
+  // TS equivalent: await Promise.all([...])
   final results = await Future.wait([
     fetchUserName('123'),
     fetchUserProfile('123'),
@@ -436,6 +529,7 @@ Future<void> loadDashboard() async {
 
 // Stream — multiple values over time
 // Like an async Iterator — emits events as they happen
+// TS equivalent: RxJS Observable — but Dart has Streams built into the language
 
 // A stream that emits a new value every second
 Stream<int> countdown(int from) async* {
@@ -557,6 +651,24 @@ Widget buildUI(NetworkResult<User> result) {
 
 **Rule:** Use sealed classes for state that has a fixed set of variants. `AsyncValue` in Riverpod is a sealed class — it's `Loading`, `Error`, or `Data`. The `when()` method is essentially a pattern match.
 
+> **TypeScript comparison:** Dart's `sealed class` solves the same problem as TS discriminated unions:
+> ```typescript
+> // TypeScript discriminated union
+> type NetworkResult<T> =
+>   | { kind: 'loading' }
+>   | { kind: 'success'; data: T }
+>   | { kind: 'failure'; message: string };
+>
+> function buildUI(result: NetworkResult<User>) {
+>   switch (result.kind) {
+>     case 'loading': return <Spinner />;
+>     case 'failure': return <Error msg={result.message} />;
+>     case 'success': return <UserProfile user={result.data} />;
+>   }
+> }
+> ```
+> Same idea, different syntax. Dart sealed classes are actual classes with methods, constructors, and inheritance — TS unions are structural types. Dart enforces exhaustiveness at the compiler level with a hard error; TS requires `satisfies` or a helper function for the same guarantee.
+
 ---
 
 ## 9. Extension Methods — Add Methods to Existing Types
@@ -564,7 +676,7 @@ Widget buildUI(NetworkResult<User> result) {
 > 📄 **Dart Docs:**
 > *"Extension methods, introduced in Dart 2.7, are a way to add functionality to existing libraries. You can use extension methods to add methods and other members to a type using a new syntax that's invisible to users."*
 
-Extension methods let you add methods to ANY existing type — even types you don't own (String, int, DateTime, BuildContext).
+Extension methods let you add methods to ANY existing type — even types you don't own (String, int, DateTime, BuildContext). TypeScript has no direct equivalent — the closest is prototype extension or module augmentation, but those are discouraged. In Dart, extensions are first-class, safe, and the standard way to add utility methods.
 
 ```dart
 // Extend String to add common validation methods
@@ -727,6 +839,19 @@ final (expenses, hasMore) = await fetchExpensesPage(1);
 
 **Rule:** Use records when a function naturally returns 2-3 related values but creating a named class is overkill. For 4+ values or reusable structures, define a proper class.
 
+> **TypeScript comparison:**
+> ```typescript
+> // TS tuple return                           // Dart record
+> function getMinMax(vals: number[]): [number, number] {  // (int, int) getMinMax(List<int> vals)
+>   return [Math.min(...vals), Math.max(...vals)];        //   return (vals.reduce(min), vals.reduce(max));
+> }
+> const [min, max] = getMinMax([3,1,4]);                  // final (min, max) = getMinMax([3,1,4]);
+>
+> // TS object return                          // Dart named record
+> function fetchUser(): {name: string, age: number}       // ({String name, int age}) fetchUser()
+> ```
+> Dart records are type-safe tuples with optional named fields — like TS tuples but with named destructuring built in. TS tuples are positional arrays; Dart records support both positional and named access.
+
 ---
 
 ## 12. Switch Expressions + Pattern Matching (Dart 3)
@@ -786,6 +911,22 @@ void parseConfig(Map<String, dynamic> config) {
 ```
 
 🧑‍💻 **Developer:** Dart 3 patterns are used constantly in Flutter code — `when()` on Riverpod `AsyncValue`, switch on BLoC states, and sealed class hierarchies all use this. Understanding it means reading any modern Flutter codebase fluently.
+
+> **TypeScript comparison:** Dart 3 pattern matching is more powerful than TS type narrowing:
+> ```typescript
+> // TS — type narrowing with discriminated union
+> if (result.kind === 'success') {
+>   console.log(result.data);  // TS narrows type inside the block
+> }
+> // TS has no destructuring inside switch cases, no guard clauses (when), no range patterns (>= 90)
+>
+> // Dart — all of these work in switch expressions:
+> // Destructuring: Success(:final data) => ...
+> // Guard clause: case int x when x >= 90 => 'A'
+> // Range pattern: >= 90 => 'A'
+> // Map/list patterns: {'key': final value} => ...
+> ```
+> If you've wished TS `switch` could destructure and guard in one line, Dart 3 patterns are that wish granted.
 
 ---
 
@@ -1055,6 +1196,9 @@ extension OptionExtensions<T> on Option<T> {
 8. What is the `!` (bang) operator? When is it safe to use? Give an example of when using it would crash at runtime.
 9. `late final _controller` — what does `late` mean? What exception is thrown if you access it before assignment?
 10. Write a Dart 3 switch expression that takes a nullable `String?` and returns the string's length for non-null values and `0` for null.
+11. Why does an enterprise app use `sealed class AppFailure` with typed subclasses (`NetworkFailure`, `AuthFailure`) instead of catching `Exception`? What two things does every `AppFailure` carry that a raw exception doesn't?
+12. `compute(parseJsonList, rawString)` runs on a separate isolate. Why can't you pass a closure or an instance method to `compute`? What happens to the main thread while the isolate runs?
+13. Your production logger uses `ProductionFilter` that only passes warnings and above. A `Level.info` log about "user tapped checkout" never reaches Crashlytics. Is this correct? What severity level should analytics events use?
 
 ---
 

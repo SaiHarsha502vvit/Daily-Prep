@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
+> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
 
 # 🚨 COMMON MISTAKES & HOW TO AVOID THEM
 
@@ -755,7 +755,7 @@ Check edges, check bounds, and you'll catch 80% of bugs before they happen.
 
 ---
 
-> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
+> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
 
 ---
 

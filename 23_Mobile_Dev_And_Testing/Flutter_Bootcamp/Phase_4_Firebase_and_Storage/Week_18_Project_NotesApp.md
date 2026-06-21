@@ -690,6 +690,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 5. After the user signs out, `currentUserProvider` returns null. Which providers are invalidated? Trace the effect through the provider graph.
 6. You store notes in both Hive and Firestore. When a note is edited on another device and the Firestore stream emits the update — how does the local Hive get updated? Show the code path.
 7. The editor has `expands: true` on the content TextField. What does this require the parent to be, and why?
+8. A user edits a note on their phone while offline. Meanwhile, they edit the same note on their tablet (online). When the phone reconnects, the sync engine detects a conflict. Describe what `ConflictResolver` with last-write-wins does. What data could be lost?
+9. Your Hive model for `Note` adds a new `tags` field in version 2. A user updates the app from version 1. How do you handle the migration so existing notes don't crash on read? What happens to the `tags` field for old notes?
+10. The app stores the user's auth token. A security audit flags it. What storage mechanism should you use instead of Hive or SharedPreferences? Name the package and explain why it's more secure.
 
 ---
 

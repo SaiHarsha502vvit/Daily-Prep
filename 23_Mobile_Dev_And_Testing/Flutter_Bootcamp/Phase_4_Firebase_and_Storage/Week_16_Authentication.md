@@ -1020,6 +1020,9 @@ Future<void> verifyOtp(String otp) async {
 7. Why do you use `FirebaseAuth.instance.authStateChanges()` instead of just reading `FirebaseAuth.instance.currentUser` in build?
 8. Rank these login methods by friction (lowest to highest): Email+Password, Google Sign-In, Biometric, Magic Link. Which should a returning user see first?
 9. `FirebaseAuthException.code` returns `'too-many-requests'`. What happened, what should you show the user, and what UX pattern prevents this from happening?
+10. Five API calls hit 401 simultaneously. Without a `QueuedInterceptor`, all five try to refresh the token at once. What goes wrong? How does `QueuedInterceptor` fix this?
+11. Your app supports Google, Apple, and enterprise SSO (OIDC). A user signs in with Google, then later tries Apple with the same email. What is "account linking"? What must you show the user before merging accounts?
+12. A user requests GDPR account deletion. List three things your app must delete beyond just calling `user.delete()` — both client-side and server-side.
 
 ---
 

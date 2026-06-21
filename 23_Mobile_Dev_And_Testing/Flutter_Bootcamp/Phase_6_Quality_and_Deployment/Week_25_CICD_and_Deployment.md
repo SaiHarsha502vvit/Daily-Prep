@@ -851,6 +851,9 @@ Add a second job `build-android` to your workflow that:
 8. What does `match(type: "appstore", readonly: true)` do on CI? Why is `readonly: true` important for CI but not your local machine?
 9. Fastlane Match stores certificates in a Git repo. Why is this better than each team member generating their own certificate? What problem does it solve with iOS provisioning profiles?
 10. `upload_to_testflight(skip_waiting_for_build_processing: true)` — what does this flag do? Why would you set it to `true` in CI?
+11. Your staged rollout is at 10% and crash-free rate drops to 98.5% (below the 99% threshold). What do you do? Describe the exact steps from halt to hotfix to re-rollout.
+12. `MAJOR.MINOR.PATCH+BUILD` — you add a new optional field to the API response. Which number do you bump? You remove a deprecated screen. Which number? You fix a crash. Which number?
+13. Your security checklist includes ProGuard/R8 obfuscation, root/jailbreak detection, and `FLAG_SECURE` on sensitive screens. What does each of these protect against? Which one prevents screenshots in the app switcher?
 
 ---
 

@@ -975,6 +975,8 @@ Extend the notes app to a shared workspace:
 8. You query `where('isPinned', isEqualTo: true).orderBy('updatedAt')` and Firestore throws an error. Why? What do you need to create, and where do you define it in code?
 9. `startAfterDocument(lastDoc)` vs a hypothetical `offset(100)` — why is cursor-based pagination faster? What happens if a document is inserted before the cursor position?
 10. A transaction reads user A's balance, then writes a deduction. Another client modifies user A's balance between the read and write. What does Firestore do?
+11. In an offline-first sync engine, a `SyncableNote` has `syncStatus: pendingUpdate`. The device reconnects. Describe the sync flow — what does the `SyncService` do? What happens if the server version was also modified (conflict)?
+12. `ConflictResolver` uses last-write-wins by default. Name one scenario where last-write-wins loses data. What alternative strategy could you use for a collaborative notes app?
 
 ---
 

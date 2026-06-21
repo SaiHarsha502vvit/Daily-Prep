@@ -16,6 +16,19 @@
 
 `StatefulWidget` has **seven lifecycle methods**. Each one fires at a specific moment in the widget's life. If you put code in the wrong method, you get bugs that are extremely hard to debug — memory leaks, crashes on navigation, UI that doesn't update when it should, double-initialization.
 
+> **TypeScript/React comparison:** If you know React hooks, here's the mapping:
+> | Flutter Lifecycle | React Equivalent |
+> |---|---|
+> | `initState()` | `useEffect(() => { ... }, [])` (mount) |
+> | `build()` | The render/return of a component |
+> | `didUpdateWidget(oldWidget)` | `useEffect(() => { ... }, [prop])` (prop change) |
+> | `dispose()` | `useEffect`'s cleanup function (`return () => { ... }`) |
+> | `setState()` | `setX()` from `useState` |
+> | `didChangeDependencies()` | No direct equivalent — closest is `useContext` re-render |
+> | `deactivate()` | No equivalent — React unmounts, Flutter can temporarily remove |
+>
+> The biggest conceptual difference: React hooks fire top-to-bottom on every render; Flutter lifecycle methods fire at specific moments. Flutter separates "one-time setup" (`initState`) from "prop change reaction" (`didUpdateWidget`) — React merges them both into `useEffect` with different dependency arrays.
+
 This week you learn every method, exactly when it fires, and exactly what belongs in it.
 
 ---
@@ -1171,6 +1184,8 @@ This requires managing two independent timers in the same State — the playback
 8. `AppLifecycleListener.onPause` fires when your app goes to background. Name three things you should do in this callback. What should you NOT do here?
 9. Your app displays sensitive financial data. The user switches to the app switcher (iOS) — your screen is visible as a thumbnail. How do you prevent this using `onInactive`?
 10. `wantKeepAlive` returns `true` in `AutomaticKeepAliveClientMixin`. What happens to this widget's state when the user swipes to another `PageView` page? What happens without it?
+11. Name the 5 layers of global error handling in a production Flutter app, from innermost to outermost. Which layer catches errors thrown during `build()`? Which catches platform-level errors like codec failures?
+12. `runZonedGuarded` wraps your entire `runApp()`. A Future completes with an error but nobody awaits it. Which layer catches this? What would happen without `runZonedGuarded`?
 
 ---
 

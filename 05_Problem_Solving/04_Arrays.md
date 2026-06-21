@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](25_Problem_Origins.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Sliding_Window.md)
+﻿> **Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Sliding_Window.md)
 
 > **Problems 04/14** | [Prev](03_Strings.md) | [Index](../00_MASTER_INDEX.md) | [Next](05_Sliding_Window.md)
 

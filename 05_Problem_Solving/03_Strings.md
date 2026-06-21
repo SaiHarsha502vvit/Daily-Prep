@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
+﻿> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 > **Problems 03/14** | [Prev](02_Math_Numbers.md) | [Index](../00_MASTER_INDEX.md) | [Next](04_Arrays.md)
 
@@ -709,7 +709,7 @@ public boolean canPermutePalindromeSet(String s) {
 
 ---
 
-> **Navigation**: [< Previous](24_Common_Mistakes.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Problem_Origins.md)
+> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 ---
 
