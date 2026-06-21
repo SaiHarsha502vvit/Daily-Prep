@@ -117,6 +117,30 @@ WHEN 2PC IS OK:
   NOT OK for: loosely-coupled microservices, cross-cloud, long transactions
 ```
 
+🔬 **Section Challenge — When 2PC is Still the Right Choice**
+
+Setup: Despite the well-known throughput collapse and deadlock risk, give 2 examples where 2PC IS the right choice over Saga. For each, name the property that makes 2PC preferable.
+
+<details>
+<summary>Answer</summary>
+
+**Example 1 — Database-local XA transactions across multiple schemas in the same DB cluster.**
+
+A single Oracle/SQL Server instance uses 2PC natively for cross-schema updates. Both "databases" are in the same cluster, network latency is <1ms, and the lock duration is short. The throughput cost is minimal. The alternative (Saga + compensation) requires writing compensating logic for every cross-schema operation, which is significantly more code.
+
+Property: **low-latency, same-cluster coordinator**. 2PC's cost is dominated by lock duration; if lock duration is <10ms (because network is local), the throughput collapse is acceptable.
+
+**Example 2 — Single-row financial postings where atomicity is non-negotiable.**
+
+A bank's "transfer $X from account A to account B" operation requires that A is debited AND B is credited, or neither. A failed partial transfer is a regulatory violation (unreconciled funds). Saga compensation cannot guarantee this because each step is independently committed; if the compensation itself fails, the system is in an inconsistent state.
+
+2PC across the two account rows in the same DB gives true atomicity. The throughput is acceptable because each transfer is a small fast operation and accounts are sharded by customer ID (low contention).
+
+Property: **regulatory atomicity requirement** with **low-contention, single-DB coordination**.
+
+**General rule**: use 2PC only when all three hold — (1) same-cluster coordination, (2) lock duration is short, (3) atomicity is non-negotiable (regulatory, not just convenient). Otherwise, prefer Saga.
+</details>
+
 ---
 
 # PART 3: SAGA Pattern — The Modern Solution
@@ -252,6 +276,28 @@ public class OrderSagaOrchestrator {
 }
 ```
 
+🔬 **Section Challenge — Saga Compensation Order Under Failure**
+
+Setup: An order saga has 4 steps: (1) Reserve Inventory, (2) Charge Payment, (3) Send Confirmation Email, (4) Update Analytics. Step 2 fails after Step 1 succeeded. The orchestrator triggers compensation: (1') Release Inventory, (3') Send Failure Email. What is the compensation order, and why does the orchestrator NOT compensate Step 4 (analytics)?
+
+<details>
+<summary>Answer</summary>
+
+Compensation order follows the reverse of the original execution order, skipping steps that didn't execute:
+- Reverse-original: Step 4 → Step 3 → Step 2 → Step 1
+- Skip non-executed: Step 4 was never executed (Step 2 failed before it), so skip.
+- Reverse-remaining: Step 3 → Step 2 → Step 1
+- Compensate Step 3 first: undo the email send (send a "your order failed" email — note: this is a NEW email, not a "delete the original email")
+- Compensate Step 2 next: refund the payment
+- Compensate Step 1 last: release the inventory
+
+Step 4 (Update Analytics) is NOT compensated because (a) it never executed, and (b) even if it had executed, analytics events are append-only and idempotent — a "failed order" analytics event would be a separate new event, not a "delete the success event."
+
+Production invariant: compensations must be **idempotent** (safe to retry) because the compensation itself can fail. The orchestrator must track which compensations succeeded and retry only the failed ones.
+
+This is why email send (Step 3') is a "send failure email" not "delete confirmation email" — you cannot un-send an email.
+</details>
+
 ---
 
 # PART 4: Outbox Pattern — Guaranteed Event Publishing
@@ -361,6 +407,103 @@ public class OutboxRelayService {
 
 ---
 
+## Circuit Breaker Pattern
+
+The Circuit Breaker prevents cascade failure when a synchronous downstream service becomes slow or unavailable. Without it, every slow downstream call holds a worker thread; under load, the thread pool exhausts and the upstream service crashes even when its own logic is healthy.
+
+### State machine
+
+```
+       success rate ≥ threshold
+   CLOSED ──────────────────────► (stays CLOSED)
+       │                                │
+       │ failure rate ≥ threshold       │
+       ▼                                │
+     OPEN ──────── after reset_timeout ──┤
+       │                                │
+       │ trial request                  │
+       ▼                                │
+   HALF_OPEN ──────► success → CLOSED
+       │
+       │ failure
+       ▼
+     OPEN (reset timer restarts)
+```
+
+**CLOSED**: requests pass through normally. Failures are counted over a sliding window (e.g., last 100 requests or last 10 seconds).
+
+**OPEN**: requests fail immediately without calling the downstream. After `reset_timeout` (e.g., 30 seconds), transition to HALF_OPEN.
+
+**HALF_OPEN**: a single trial request is allowed. If it succeeds, transition to CLOSED. If it fails, return to OPEN and reset the timer.
+
+### Resilience4j example
+
+```java
+CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+    .failureRateThreshold(50)              // open if 50% of last 100 calls fail
+    .waitDurationInOpenState(Duration.ofSeconds(30))
+    .slidingWindowSize(100)
+    .permittedNumberOfCallsInHalfOpenState(3)
+    .build();
+
+CircuitBreaker breaker = CircuitBreaker.of("paymentService", config);
+
+Supplier<PaymentResult> decorated = CircuitBreaker
+    .decorateSupplier(breaker, paymentService::charge);
+
+Try.ofSupplier(decorated)
+    .recover(CallNotPermittedException.class, this::cachedFallback);
+```
+
+### Failure mode: cascade failure
+
+Thread pool exhaustion from slow downstream:
+- 1,000 concurrent users × 30s downstream timeout = 30,000 thread-seconds blocked.
+- Tomcat default thread pool is 200. After 200 requests pile up, new requests are rejected with 503.
+- The upstream service appears down even though the bug is in the downstream.
+
+Circuit Breaker prevents this by failing fast (returning fallback in <1ms once OPEN) instead of waiting 30s per request.
+
+### Selection criterion
+
+- **Use Circuit Breaker** for synchronous calls to a downstream that may be slow or unavailable.
+- **Use Outbox + Saga** for asynchronous event publishing with at-least-once guarantee.
+- **Use Retry** for transient failures (network blip, brief 503) — pair with Circuit Breaker so retry storm doesn't trip the breaker.
+
+🔬 **Section Challenge — Circuit Breaker Failure Rate Threshold**
+
+You set `failureRateThreshold(50)` over a `slidingWindowSize(100)`. During normal operation, 1 in 1000 requests fails (transient timeout). The downstream has a brief incident: 60 requests fail in a row over 2 seconds, then recovers. Does the breaker trip? When does it return to CLOSED? What's the production risk of the 50% threshold with this traffic pattern?
+
+<details>
+<summary>Answer</summary>
+
+The breaker trips because the sliding window sees 60 failures out of the last 100 calls (60% failure rate, above the 50% threshold). It transitions to OPEN. After the 30-second wait, it transitions to HALF_OPEN and allows 3 trial calls. If those succeed (likely, since the incident is over), it transitions to CLOSED.
+
+**Production risk**: the 50% threshold is **too low** for high-traffic services. A 1-in-1000 baseline failure rate means the breaker sees a failure every ~1000 calls. A small incident (60 failures in a row) easily crosses the 50% line and trips the breaker for a non-issue from the user's perspective (60/1000 = 6% of users briefly affected).
+
+**Better config**: use `minimumNumberOfCalls(20)` (don't evaluate until at least 20 calls have been made) AND `failureRateThreshold(50)` (still 50%, but only over a meaningful sample). For high-traffic, raise to `failureRateThreshold(80)` with a larger window like `slidingWindowSize(200)`. Tune via chaos testing (e.g., Netflix's Chaos Monkey).
+
+**Alternative**: use a **slow-call rate threshold** in addition to failure rate — count calls slower than 2s as failures. This catches degradation (slow downstream) before it becomes hard failure.
+</details>
+
+🔬 **Section Challenge — Outbox Relay Polling vs CDC Trade-off**
+
+Setup: Two ways to publish outbox events to the broker — (a) a polling job that runs `SELECT * FROM outbox WHERE published = false` every second, or (b) a CDC connector (Debezium) that tails the database WAL. Compare these on latency, load on the DB, and exactly-once guarantee. Which is preferred for a payment service with 1000 events/sec?
+
+<details>
+<summary>Answer</summary>
+
+**Polling**: latency = poll interval (1s typical), DB load = constant `SELECT` queries even when outbox is empty, exactly-once guarantee = requires careful `UPDATE ... WHERE published = false RETURNING id` with `SELECT ... FOR UPDATE SKIP LOCKED` to avoid double-publish under multi-replica polling. Risk: missed events if a poll is interrupted between SELECT and UPDATE.
+
+**CDC (Debezium)**: latency = ~100ms (near real-time), DB load = zero (Debezium reads WAL directly, doesn't query tables), exactly-once guarantee = depends on WAL durability + Kafka transactional producer (Kafka 0.11+ EOS). Lower operational risk because Debezium handles offsets atomically with WAL position.
+
+**For 1000 events/sec**: CDC wins. Polling at 1s intervals would batch 1000 events per poll, causing Kafka producer backpressure and consumer lag spikes. CDC distributes the load continuously.
+
+**Trade-off**: CDC requires Kafka Connect / Debezium operational expertise; polling is simpler but slower. Start with polling for low-volume services (<10 events/sec); graduate to CDC when latency or DB load becomes a concern.
+</details>
+
+---
+
 # PART 5: CQRS — Command Query Responsibility Segregation
 
 ---
@@ -460,6 +603,26 @@ public class OrderProjectionHandler {
 }
 ```
 
+🔬 **Section Challenge — Read Model Consistency Lag and Order History**
+
+Setup: An order service uses CQRS. The write model commits a new order at 10:00:00. The read model projection processes the event at 10:00:03. A customer refreshes their order history page at 10:00:01 and at 10:00:05. What does each refresh show, and under what business condition is this acceptable vs. a correctness violation?
+
+<details>
+<summary>Answer</summary>
+
+10:00:01 refresh: read model is 2 seconds behind, so the new order does NOT appear.
+10:00:05 refresh: read model has caught up, so the new order DOES appear.
+
+**Acceptable**: most user-facing scenarios (order history, product catalog, dashboards). The 2–5 second lag is imperceptible to humans and well within "eventual consistency" tolerance.
+
+**Correctness violation**: any scenario where the user makes a decision based on stale data:
+- **Inventory check**: if the user is deciding whether to add an item to cart based on "in stock" status, a 5s lag could let 100 users add the last 5 units → oversell.
+- **Payment confirmation**: showing "payment pending" when the payment actually failed (because the failure event hasn't propagated) → user confused, support tickets.
+- **Idempotency key uniqueness check**: a duplicate-request check via read model misses the first request for 5s → duplicate order created.
+
+**Production fix**: for correctness-critical reads, query the **write model directly** (bypass the read model). For example, after `placeOrder()`, the response should come from the write model (which just committed) and include the canonical order ID — not from the read model.
+</details>
+
 ---
 
 # PART 6: Event Sourcing — State as a Stream of Events
@@ -507,6 +670,27 @@ WHEN TO USE EVENT SOURCING:
   ✗ User profile (no meaningful history needed)
   ✗ Session data (ephemeral, no audit value)
 ```
+
+🔬 **Section Challenge — Event Schema Evolution Breaking Replay**
+
+Setup: An event-sourced aggregate has 10M historical events. The event schema evolves: the `OrderPlaced` event added a new required field `currency` (3-letter ISO code). Old events don't have this field. A new service attempts to replay all 10M events to rebuild the read model. What breaks, and what is the migration strategy?
+
+<details>
+<summary>Answer</summary>
+
+Direct deserialization fails because old events lack the required `currency` field. Depending on the serializer:
+- **JSON / Protobuf with strict schema**: throws `MissingFieldException` on first old event → replay halts.
+- **Avro with default values**: reads old events with `currency = null` (or schema default "USD") → replay succeeds but data is wrong if business default differs.
+- **Java records with required fields**: throws on construction → replay halts.
+
+**Migration strategies**:
+1. **Upcaster (recommended)**: write an event transformer that converts old `OrderPlaced` (no currency) → new `OrderPlaced` (currency = inferred from context, e.g., the company's default currency at the time). The transformer is versioned; new events skip it.
+2. **Lazy migration**: read events with the new schema; if a required field is missing, look it up from a side table (slow, but works for occasional historical reads).
+3. **Snapshot + selective replay**: take periodic snapshots of aggregate state; only replay events since the snapshot. Snapshots are stored in the new schema, so historical events are not deserialized at all.
+4. **Big-bang rewrite**: write a one-time script to read all old events, transform them, and write them back in the new format. Risky but simplest for one-off migrations.
+
+**Production note**: the EventCatalog or schema-registry must enforce backward compatibility (new schema can read old data, but old consumers can't read new data). Avro and Protobuf support this; JSON requires manual discipline.
+</details>
 
 ---
 

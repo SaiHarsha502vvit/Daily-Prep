@@ -4,7 +4,23 @@
 
 ## Chapter 21: 100 Practice Problems
 
+## 5W1H — Why Practice Problems?
+
+**WHY:** Reading about SQL concepts builds familiarity, but only deliberate practice develops the fluency needed to write correct, efficient queries under interview or production pressure. Practice problems bridge the gap between knowing window functions exist and being able to deploy them correctly in a 20-minute coding interview.
+
+**WHO:** Anyone preparing for SQL technical screens at tech companies, students reinforcing foundations from files 01–09, analysts who need to write ad-hoc queries without a reference sheet, and developers who want to move beyond Stack Overflow copy-paste SQL.
+
+**WHAT:** 100 progressively challenging problems covering SELECT through recursive CTEs, island detection, running totals, and cohort analysis. Each level (EASY / MEDIUM / HARD) builds on the techniques of the previous one.
+
+**WHEN:** Work through EASY after completing files 01–09. Attempt MEDIUM once JOINs, GROUP BY, and window functions feel comfortable. Reserve HARD for final interview prep or when tackling files 30–37 (recursive queries, JSON, partitioning).
+
+**WHERE:** Practice locally in a sandbox DB (PostgreSQL, MySQL, or SQLite). For interview prep, practice on a whiteboard or in a live coding platform with no autocomplete.
+
+**HOW:** One problem every 10–15 minutes in timed sessions. After each problem, compare your answer to the provided solution and note the mechanism gap — the WHY behind the correct query matters more than the query itself.
+
 ### EASY Level (1-30)
+
+These problems consolidate foundational SQL mechanics from files 01–09. Each query reinforces a single concept: filtering, aggregation, or basic joins. Master these before attempting MEDIUM — if a problem takes more than 5 minutes on EASY, revisit the relevant chapter.
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -109,6 +125,8 @@ SELECT * FROM products ORDER BY price DESC;
 -- 30. Find employees with no manager
 SELECT * FROM employees WHERE manager_id IS NULL;
 ```
+
+These problems combine multiple concepts — window functions, CTEs, subqueries, and multi-table joins — into single queries. Expect to use `RANK()`, correlated subqueries, and `LAG()`/`LEAD()` here. Each problem requires assembling 2–3 techniques from the foundations. If you get stuck, identify which clause is the bottleneck and solve that sub-problem first.
 
 ### MEDIUM Level (31-65)
 
@@ -278,6 +296,8 @@ FROM orders;
 -- 64. Time between events
 -- 65. Detecting anomalies in time series
 ```
+
+HARD problems simulate the most complex production and interview challenges: recursive CTEs for graph traversal, temporal calculations, pattern matching, and multi-step analytical pipelines. A correct HARD answer demonstrates you understand query shape, intermediate result sets, and the execution model — not just syntax. Spend up to 20 minutes per problem before consulting the answer.
 
 ### HARD Level (66-100)
 

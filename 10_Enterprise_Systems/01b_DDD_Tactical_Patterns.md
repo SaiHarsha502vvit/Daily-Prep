@@ -144,7 +144,7 @@ The exact phrases spoken by the business become the method signatures. The code 
 
 </details>
 
-**C3. Why is an Anemic Domain Model considered an anti-pattern in DDD?**
+**Challenge 3 (Anemic Domain Model):** Why is an Anemic Domain Model considered an anti-pattern in DDD?
 
 <details><summary>Deep Answer</summary>
 An anemic domain model has Entities that are just data bags (getters/setters only) and Services that contain all the rules. This violates encapsulation completely. An Entity is no longer in charge of its own validity; any Service can set any field to an invalid state. In true DDD (Rich Domain Model), Entities refuse to let external code mutate them improperly. They expose business intent methods (`order.confirm()`, not `order.setStatus("CONFIRMED")`) ensuring state is always legal 100% of the time without relying on a loosely coupled Service to "remember" to validate it first.
@@ -288,6 +288,20 @@ sequenceDiagram
 5. **The Death Blow:** If the Coordinator crashes exactly after `DB2` replies `READY` but before it sends `COMMIT`, `DB2` is stuck. It cannot commit, and it cannot rollback (because the Coordinator might wake up and demand a commit). The row is locked indefinitely. The DBA has to manually intervene to kill the transaction.
 
 **Conclusion:** 2PC is mathematically incapable of scaling. It trades availability for a false sense of consistency.
+
+🔬 **Section Challenge — 2PC Throughput Under Cross-Region Latency**
+
+**Challenge (2PC — The Throughput Collapse):** A payment service uses 2PC to coordinate Order DB (us-east-1) and Payment DB (eu-west-1). Network round-trip is 150ms. The coordinator must hold a row lock on both DBs from PREPARE to COMMIT. Calculate the maximum TPS a single payment row can sustain, and identify the network-partition scenario where the "READY but uncommitted" state becomes permanent.
+
+<details>
+<summary>Answer</summary>
+
+TPS calculation: a single 2PC transaction holds the row lock for at least `2 × RTT = 300ms` (PREPARE round trip + COMMIT round trip). So max TPS = `1000ms / 300ms ≈ 3.3 TPS` per row. Compared to a single-DB transaction (~1000 TPS), that's a **300× throughput collapse**.
+
+Permanent-READY scenario: if the coordinator crashes AFTER both DBs have replied READY but BEFORE sending COMMIT, the rows are locked indefinitely. The DBs cannot autonomously decide to commit (the heuristic transaction manager might guess, but a wrong guess means inconsistent state). A DBA must manually intervene: query the prepared transactions log, identify the coordinator's intent, and either COMMIT or ROLLBACK.
+
+This is the "2PC death blow" scenario. Production fix: never use 2PC for cross-region distributed transactions. Use **Saga + compensating transactions** instead, which avoid holding locks during network waits.
+</details>
 
 ---
 
@@ -438,6 +452,25 @@ flowchart LR
 
 **The Guarantee:** At-Least-Once Delivery. The event is mathematically guaranteed to reach Kafka.
 
+🔬 **Section Challenge — Outbox Relay Crash and Idempotent Replay**
+
+**Challenge (Outbox Pattern — Relay Crash + Idempotent Consumer):** The Outbox relay uses Debezium to read the Postgres WAL and publish events to Kafka. Debezium reads up to offset 1000 and crashes before confirming offset 1000 to its internal store. On restart, what events does Debezium re-publish? How does the idempotent consumer downstream handle the duplicates?
+
+<details>
+<summary>Answer</summary>
+
+Debezium re-reads from its last confirmed offset (e.g., offset 999). So events from offsets 999 and 1000 are re-published. The downstream consumer receives duplicate events.
+
+Idempotent consumer pattern:
+1. Each event has a unique `event_id` (UUID).
+2. Consumer maintains a `processed_events` table: `(event_id PRIMARY KEY, processed_at TIMESTAMP)`.
+3. Before processing, consumer does `INSERT ... ON CONFLICT DO NOTHING`. If insert succeeds (rowcount = 1), it's a new event — process it. If insert fails (rowcount = 0), it's a duplicate — skip and commit the Kafka offset.
+
+This guarantees **at-least-once delivery** with **exactly-once processing** semantics. The trade-off: the `processed_events` table grows unbounded — production systems use TTL-based cleanup (e.g., delete entries older than 7 days) or partition the table by date.
+
+Saga compensation consideration: if the duplicate is a saga step event (e.g., `PaymentCharged`), the saga orchestrator must verify the step is not already in `COMPLETED` state before applying the compensation. Without this guard, a duplicate `PaymentCharged` event could trigger a double-charge compensation (refund of a payment that wasn't actually charged twice).
+</details>
+
 ---
 
 ## 4.4 Event Sourcing: Deconstructing the "State" Abstraction
@@ -469,6 +502,26 @@ When the user opens the app, the system loads all events for `A-123` from disk, 
 1. **Time Travel:** You can rebuild the exact state of the system at any millisecond in history by replaying the events up to that timestamp.
 2. **Absolute Auditability:** It is physically impossible to fake a transaction without rewriting the entire cryptographic history of the ledger.
 3. **Zero Lock Contention:** Because you are ONLY doing `INSERT` operations (append-only), there are absolutely ZERO database row locks. The database engine never has to halt threads to manage `UPDATE` contention. Write throughput scales linearly to the maximum sequential IOPS of the NVMe SSD.
+
+### Event Sourcing vs Traditional State Storage vs Hybrid
+
+| Aspect | Traditional State Storage | Event Sourcing | Hybrid (CQRS + Snapshot) |
+|---|---|---|---|
+| **Write pattern** | Update row in place (UPDATE) | Append event (INSERT) | Append event + update read model |
+| **Read pattern** | SELECT current state | Replay events (slow) or rebuild projection | SELECT from read model |
+| **Audit trail** | Implicit (only current state visible) | Explicit (every state change is an event) | Explicit for events; current state in snapshot |
+| **Bug recovery** | Restore from backup (loses recent writes) | Replay events with fixed handler | Roll back handler, replay events |
+| **Schema evolution** | Migration scripts (ALTER TABLE) | Upcasters or versioned events | Event upcasters + snapshot migration |
+| **Storage growth** | Constant (state size only) | Linear (every event stored) | Bounded (snapshot + recent events) |
+| **Query complexity** | O(1) — direct SELECT | O(n) — replay or projection lookup | O(1) — projection read |
+| **Write throughput** | Limited by row update contention | Limited by append-only insert (high) | Limited by insert + projection update |
+| **Best for** | CRUD apps, simple domain models | Audit-heavy domains (finance, healthcare), complex domains | Most production systems — balance |
+| **Anti-pattern** | "Just store current state" loses history | "Replay all events every read" is O(n) per query | Mixing event store and current state without clear boundary |
+
+**Selection criteria**:
+- **Traditional State Storage**: when the domain is simple, history doesn't matter, and you need fast O(1) reads (most CRUD apps).
+- **Event Sourcing**: when audit trail is regulatory (finance, healthcare), when you need time-travel debugging, or when the domain naturally models state changes as events (workflow engines, trading systems).
+- **Hybrid (CQRS + Snapshot)**: when you need both audit trail AND fast reads. Most production systems. Store events as source of truth, project to a read model for queries.
 
 ---
 

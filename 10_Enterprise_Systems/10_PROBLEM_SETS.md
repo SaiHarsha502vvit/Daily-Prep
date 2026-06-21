@@ -33,6 +33,25 @@
 
 ---
 
+🔬 **Section Challenge — Bounded Contexts:** A developer says "there should be one Patient class since there's only one patient in the real world." Explain why this reasoning leads to the wrong design.
+
+<details>
+<summary>Answer</summary>
+
+A patient in the real world is ONE entity, but a patient in a healthcare system interacts with **multiple bounded contexts**, each with its own model:
+
+- **Patient Registration context**: stores demographics, insurance, contact info. The `Patient` entity here has `name`, `dob`, `address`.
+- **Clinical context**: stores medical history, allergies, medications. The `Patient` here has `conditions`, `medications`, `lastVisit`.
+- **Billing context**: stores financial info, payment plans, insurance claims. The `Patient` here has `accountBalance`, `paymentMethod`.
+- **Scheduling context**: stores appointments, providers, availability. The `Patient` here has `upcomingVisits`, `preferredProvider`.
+
+Forcing these into ONE `Patient` class couples all four contexts — a change to billing fields requires recompiling clinical code, and a security bug in scheduling could leak medical history. The right design: each context has its own `Patient` aggregate with its own identity (e.g., `patient_id` for clinical, `account_id` for billing), and they communicate via **domain events** (`PatientAdmitted`, `InsuranceVerified`) or **anti-corruption layer** translation.
+
+This is Bounded Context (Evans 2003): the same real-world concept becomes multiple domain models, each owned by one context, with explicit translation at the boundaries.
+</details>
+
+---
+
 **A2 (Medium).** Explain the difference between an **Entity** and a **Value Object** using `Address` as an example. When should `Address` be an Entity and when should it be a Value Object?
 
 <details><summary>Answer</summary>
@@ -49,6 +68,22 @@ record Address(String street, String city, String state, String pin) {}
 
 🔴 **Erklärung:** Students make `Address` an Entity because "it's stored in the DB with an `id`." Database rows always have a PK — that doesn't determine whether it's an Entity in the DDD sense. The domain behavior determines it, not the schema.
 
+</details>
+
+---
+
+🔬 **Section Challenge — Aggregate Design:** Two orders have the same shipping address. Is it the same entity? Can you modify the street on one order and see it change on the other? What invariant does this violate?
+
+<details>
+<summary>Answer</summary>
+
+**Same real-world address, different entities.** The shipping address on Order #1234 is a snapshot at order time; the address on Order #5678 is a different snapshot. They are two distinct Value Objects (in DDD terminology), even if their field values happen to match.
+
+**Can you modify one and see the change on the other?** Only if you implemented Address as a shared, mutable reference (an anti-pattern). The correct design: Address is a Value Object — immutable, structural equality, owned by exactly one Aggregate at a time. Modifying Order #1234's address means creating a NEW Address Value Object and assigning it to Order #1234; Order #5678's address is unaffected.
+
+**Invariant violated by mutable shared Address**: **Aggregate consistency**. In DDD, an Aggregate is a consistency boundary — all invariants are checked within one transaction on one Aggregate. If two Orders reference the same mutable Address, modifying the Address affects both Orders, and the transaction boundary is broken.
+
+**Production fix**: implement Address as `record` (JVM-enforced immutability) or `final class` with all-`final` fields, no setters. Two Orders with the same shipping address have two structurally-equal but reference-distinct Address Value Objects.
 </details>
 
 ---
@@ -152,6 +187,90 @@ class MoneyTest {
 }
 ```
 
+<details>
+<summary>Answer — Money Value Object Implementation</summary>
+
+```java
+public record Money(BigDecimal amount, Currency currency) {
+
+    public Money {
+        if (amount == null) {
+            throw new IllegalArgumentException("amount must not be null");
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException("currency must not be null");
+        }
+        // Reject weird precision artifacts (e.g., 1.003 stored as 1.0029999...)
+        if (amount.scale() > currency.getDefaultFractionDigits()) {
+            amount = amount.setScale(currency.getDefaultFractionDigits(), RoundingMode.HALF_EVEN);
+        }
+    }
+
+    public Money add(Money other) {
+        requireSameCurrency(other);
+        return new Money(this.amount.add(other.amount), this.currency);
+    }
+
+    public Money subtract(Money other) {
+        requireSameCurrency(other);
+        return new Money(this.amount.subtract(other.amount), this.currency);
+    }
+
+    public Money multiply(BigDecimal multiplier) {
+        return new Money(this.amount.multiply(multiplier), this.currency);
+    }
+
+    private void requireSameCurrency(Money other) {
+        if (!this.currency.equals(other.currency)) {
+            throw new CurrencyMismatchException(
+                "Cannot operate on " + this.currency + " and " + other.currency);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Money other)) return false;
+        return amount.compareTo(other.amount) == 0 && currency.equals(other.currency);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount.stripTrailingZeros(), currency);
+    }
+}
+```
+
+**Why `record` is the right type for a Value Object:**
+1. **Immutability enforced by the JVM** — every field is `final`, no setter can exist. Value Objects must be immutable to be safely shared across threads and transactions.
+2. **Structural equality + hashCode auto-generated** — two `Money(100, USD)` instances are equal regardless of object identity. This is critical for hash-based collections and DB lookups.
+3. **Compact constructor for validation** — the validation block runs at construction time, so an invalid Money can never exist (fail-fast).
+4. **No boilerplate** — equals, hashCode, toString are auto-generated, eliminating the most common source of Value Object bugs (incorrect equals that compares `BigDecimal` with `==` instead of `.compareTo()`).
+
+**Production notes:**
+- `BigDecimal` (not `double`) for `amount` — `double` causes IEEE 754 rounding errors on fractional cents (e.g., 0.1 + 0.2 = 0.30000000000000004).
+- `Currency` from `java.util.Currency` (not a string) — provides ISO 4217 validation and `getDefaultFractionDigits()` (USD = 2, JPY = 0, BHD = 3).
+- `stripTrailingZeros()` in hashCode — `new BigDecimal("1.0")` and `new BigDecimal("1.00")` should be equal as Money but differ as BigDecimal. Stripping avoids hash collisions in collections.
+- Validation in compact constructor — runs before fields are assigned, so `this.amount` is still null inside the validation block (use the parameter name `amount`, not `this.amount`).
+
+**Test:**
+```java
+@Test
+void moneyAddSameCurrency() {
+    Money a = new Money(new BigDecimal("100.50"), Currency.getInstance("USD"));
+    Money b = new Money(new BigDecimal("50.25"), Currency.getInstance("USD"));
+    assertEquals(new BigDecimal("150.75"), a.add(b).amount());
+}
+
+@Test
+void moneyAddDifferentCurrencyThrows() {
+    Money usd = new Money(BigDecimal.TEN, Currency.getInstance("USD"));
+    Money eur = new Money(BigDecimal.TEN, Currency.getInstance("EUR"));
+    assertThrows(CurrencyMismatchException.class, () -> usd.add(eur));
+}
+```
+</details>
+
 ---
 
 ### Part C: Challenge
@@ -220,6 +339,30 @@ kafkaTemplate.send("orders", order); // 2. Kafka send succeeds
 
 ---
 
+🔬 **Section Challenge — Dual-Write Problem:** Your outbox relay processes events in FIFO order. Event 3 (PaymentCharged) arrives at the saga consumer before Event 2 (InventoryReserved). What goes wrong in the saga? How does the Saga Orchestrator handle this?
+
+<details>
+<summary>Answer</summary>
+
+The saga expects this order: `OrderPlaced → InventoryReserved → PaymentCharged → OrderConfirmed`. If the consumer receives `PaymentCharged` first (out of order), the saga's state machine is in an inconsistent state — it has not yet processed `InventoryReserved` (which should be the precondition for charging payment).
+
+**Symptoms**:
+- Inventory is not actually reserved when the payment is charged → risk of overselling.
+- Saga compensation logic gets confused: if a later `InventoryReservationFailed` arrives, the saga tries to compensate `PaymentCharged` (refund) but the original charge was already problematic.
+
+**How the Saga Orchestrator handles out-of-order events**:
+
+**Option 1 — Per-saga instance buffer**: the orchestrator buffers events in a per-saga queue, reordering them by event sequence number before processing. Simple but requires sequence numbers on events and bounded buffers (what if event 2 is delayed by 30 minutes?).
+
+**Option 2 — State machine guards**: each saga step checks preconditions before executing. `PaymentCharged` step checks `if (state == INVENTORY_RESERVED)` — if not, the event is parked in a "waiting" state until `InventoryReserved` arrives. The orchestrator has a timeout per waiting step; if the precondition never arrives, the saga compensates (refund the payment if it was charged, or send a "payment failed" notification).
+
+**Option 3 — Idempotent step execution with version checks**: each step records the saga version it expects. Out-of-order events with the wrong version are rejected, and the consumer re-fetches the current saga state from the orchestrator before deciding what to do.
+
+**Production choice**: Option 2 (state machine guards) is most common. Kafka guarantees within-partition ordering, so if all events for one saga are routed to the same partition (via `saga_id` as the partition key), out-of-order delivery only happens on rebalance or retry. Use Option 2 as the default, Option 1 only for saga instances with strict ordering requirements (rare).
+</details>
+
+---
+
 **A2 (Hard).** Compare Choreography Saga and Orchestration Saga. Design a 4-step `PlaceOrder` saga using BOTH approaches. Explain which you would choose for a team of 8 microservices and why.
 
 <details><summary>Answer</summary>
@@ -267,6 +410,23 @@ OrderOrchestrator:
 
 ## Historical Evolution
 
+The problem-set format is one lineage, but the **domain content** in this file (Bounded Context, Aggregate, Domain Event, Saga) has its own historical root:
+
+**Eric Evans — "Domain-Driven Design: Tackling Complexity in the Heart of Software" (2003)**: This book coined the terms **Bounded Context**, **Aggregate**, **Aggregate Root**, **Entity**, **Value Object**, **Repository**, **Domain Service**, **Ubiquitous Language**, and **Context Map**. The DDD tactical patterns (PS1 in this file) are direct applications of Evans's vocabulary. The Saga pattern (PS2) was formalized later but the underlying idea of distributed transactions with compensation predates DDD.
+
+**Vaughn Vernon — "Implementing Domain-Driven Design" (2013)**: Translated Evans's conceptual patterns into concrete Java/C# implementations. The Aggregate consistency boundary ("one transaction, one aggregate"), Repository pattern with Spring Data, and Domain Event publishing are all from Vernon. This is the practical companion to Evans's conceptual book.
+
+**Chris Richardson — "Microservices Patterns" (2018)**: Formalized the Saga pattern (PS2) as a microservices-specific solution to distributed transactions. Also codified the "smart endpoints, dumb pipes" principle that drives event-driven architecture.
+
+**Modern practice anchors**:
+- **Spring Modulith** (2023): Spring's reference implementation of DDD tactical patterns for Spring Boot applications. Bounded Context becomes a Java package; Aggregate Root enforcement via ArchUnit.
+- **Axon Framework** (2010, ongoing): Java framework specifically for DDD + CQRS + Event Sourcing. Production-grade at scale.
+- **jMolecules** (2020): Annotations like `@AggregateRoot`, `@Entity`, `@ValueObject` that integrate with Spring, Jakarta EE, and ArchUnit for architectural verification.
+
+When you read `Bounded Context` in PS1, that's Evans 2003. When you read `Saga` in PS2, that's Richardson 2018 (with roots in Garcia-Molina 1987 and Bernstein/Hadzilacos 1987). When you see code using `@AggregateRoot` annotations, that's jMolecules 2020 or Axon.
+
+---
+
 The problem-set format used here (theoretical + implementation + design challenge per topic) descends from MIT's 6.006 course. Two threads:
 
 **1. The MIT OCW Lineage (2006-2010)**
@@ -284,17 +444,39 @@ The problem-set format used here (theoretical + implementation + design challeng
 
 ### Production Reality
 
-**Failure Mode 1 — Production Off-By-One in Edge Cases**: The textbook solution assumes `n >= 1` and `arr != null`. Production data violates these: empty arrays, null inputs, max-integer boundaries. Symptom: `ArrayIndexOutOfBoundsException` at 3 AM from a corner-case payload. Fix: defensive coding + property-based testing (jqwik, ScalaCheck) covering empty/null/boundary inputs.
+**Debug workflows for DDD and Saga failures:**
 
-**Failure Mode 2 — Memory Leaks in Long-Running Processes**: A batch process accumulates state in a static `Map` that never gets cleared. After 30 days, the heap is full. Symptom: `OutOfMemoryError` on day 30+ every month. Fix: explicit lifecycle management (WeakHashMap, Caffeine cache with size+time bound, scheduled cleanup).
+**Aggregate boundary violation**:
+- **Symptom**: deadlock, optimistic-lock retry storm, slow writes.
+- **Detection**: `grep -r "@Transactional" src/main/java/ | xargs grep -l "AggregateRoot"` — find any `@Transactional` method that touches more than one Aggregate Root. Each such method is a boundary violation.
+- **Fix**: split the transaction into separate operations, one per Aggregate. Use a Saga (PS2) to coordinate multi-Aggregate workflows.
 
-**Failure Mode 3 — Thread-Safety in "Obviously Safe" Concurrent Implementations**: A developer writes `private List<Item> cache = new ArrayList<>();` thinking reads are safe. Concurrent reads + writes produce `ConcurrentModificationException` or corrupted iteration. Fix: `CopyOnWriteArrayList` for read-heavy; `ConcurrentHashMap` for write-heavy; explicit locking for complex operations.
+**Domain event ordering issue**:
+- **Symptom**: saga compensation fails because event N arrived before event N-1.
+- **Detection**: in the saga orchestrator log, look for `STEP_EXECUTION_ORDER` mismatches. Each saga step records the sequence number it expected.
+- **Fix**: ensure all events for one saga instance route to the same Kafka partition (use `saga_id` as the partition key). Add per-saga instance buffer in the orchestrator for out-of-order tolerance.
 
-**Debug Workflow**:
-1. **Property-based test suite**: generate 1000 random inputs (including empty/null/boundary); run solution against each; log failures
-2. **Heap dump after 24h uptime**: compare to 24h baseline; identify growing collections
-3. **Thread-sanitizer run** (Java: `-XX:+UseThreadPriorities` + `Java Flight Recorder`; C++: `-fsanitize=thread`); identify data races
-4. **Stress test under concurrent load**: 100 concurrent threads × 1000 ops; verify no exceptions
+**Bounded Context leakage**:
+- **Symptom**: a change in one context breaks another context's tests.
+- **Detection**: `archunit: no_classes_that_reside_in_a_package("..billing..").should_access_classes_in_package("..orders..")` (ArchUnit rule).
+- **Fix**: introduce an anti-corruption layer (ACL) at the context boundary. The ACL translates foreign concepts to local ones, isolating changes.
+
+**Anemic domain model**:
+- **Symptom**: business logic lives in Service classes; entities are just data bags with getters/setters.
+- **Detection**: `grep -r "Service" src/main/java/ | grep -v "Repository\|Config\|Controller\|Application"` — too many `Service` classes with business logic. Also check: if entities have NO behavior methods (only getters/setters), they're anemic.
+- **Fix**: move business logic INTO the entity. `Order.applyDiscount(code)` instead of `OrderService.applyDiscount(order, code)`.
+
+**Saga compensation loop**:
+- **Symptom**: a saga step keeps compensating and retrying indefinitely.
+- **Detection**: monitor `saga_compensation_attempts_total` Prometheus counter; if it exceeds 5 for the same saga ID, alert.
+- **Fix**: add a dead-letter queue for stuck sagas. Manual investigation required.
+
+**Aggregate size explosion**:
+- **Symptom**: an Aggregate grows to 50+ fields; modifications require loading the entire aggregate.
+- **Detection**: `find src/main/java -name "*Aggregate.java" -exec wc -l {} +` — sort by line count; anything >500 lines is suspicious.
+- **Fix**: split the Aggregate by responsibility. E.g., split `CustomerAggregate` into `CustomerProfile`, `CustomerBilling`, `CustomerPreferences` — three smaller aggregates with their own consistency boundaries.
+
+These debug patterns come from real production incidents — see `08_RealWorld_Incidents_DSA.md` for full case studies.
 
 ---
 

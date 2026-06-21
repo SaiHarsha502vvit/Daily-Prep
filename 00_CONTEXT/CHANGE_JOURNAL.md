@@ -4,6 +4,88 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-06-21 — 10_Enterprise_Systems Folder Audit + Remediation (No Ferment)
+
+Comprehensive audit and 35-issue remediation across all 14 files in `10_Enterprise_Systems/`. Triggered by user request for file-by-file pedagogical review against `PEDAGOGY_STANDARDS.md` 5-dimension Combined Lens. No new ferment — work was scoped by an inline master review (`/mnt/e/Dev_World/04_Practice/Daily-Prep/.kimchi/docs/audit_10_enterprise/MASTER_REVIEW.md`).
+
+### Audit results
+
+| Group | Files | Avg pre-fix | Avg post-fix | Notes |
+|---|---|---:|---:|---|
+| A: ERP Fundamentals + DDD + Entity Design | 4 | 1.75 | 2.05 | +0.30 |
+| B: ERP Advanced + Finance Core + Finance Real-World | 3 | 2.07 | 2.25 | +0.18 |
+| C: Real-World Problems + Incidents | 4 | 2.30 | 2.55 | +0.25 |
+| D: Distributed Patterns + Kafka + Problem Sets | 3 | 2.00 | 2.30 | +0.30 |
+| **Folder overall** | **14** | **2.05** | **2.30** | **+0.25** |
+
+### Issues resolved
+
+**P0 — Standards violations (8 fixes)**:
+- Added 5W1H framing block to 5 files (01, 01c, 02, 03, 04) — preservation guarantee restored
+- Replaced 2 contamination challenges (ROW_NUMBER in 04, Java Streams in 06) with locally-rooted alternatives
+- Added 10_KAFKA and 10_PROBLEM_SETS to 00_INDEX (was invisible to index-driven students)
+- Fixed broken prerequisite reference (10_KAFKA line 4 — non-existent 05_Messaging_Kafka.md → 09_Distributed_Patterns.md)
+- Fixed orphaned file opening in 02 (mid-document paste artifact removed)
+- Removed orphaned bulk-insert code block from 04 top
+- Renamed 03 from misleading "Finance, Real-World DSA & Junior Developer's Path" to "ERP Finance Core"
+
+**P1 — Pedagogical scaffold (11 fixes)**:
+- Added 34 new section challenges across 02 (×6), 03 (×4), 01b (×2), 09 (×5), 10_PROBLEM_SETS (×3), 10_KAFKA (×2), 06 (×2), 07 (×1)
+- Replaced 6 cross-file duplicate challenges in 05/06/07 (boilerplate contamination) with locally-rooted variants
+- Completed 3 skeleton answer blocks (10_KAFKA B1 idempotent consumer, 10_KAFKA B2 YAML config, 10_PROBLEM_SETS B1 Money Value Object)
+- Added new Circuit Breaker section to 09 (between Outbox and CQRS) with state machine, Resilience4j example, failure mode analysis, and section challenge
+
+**P2 — Depth and breadth (8 fixes)**:
+- Replaced `synchronized` with `AtomicLong` in SnowflakeIdGenerator (01) — fixes internal inconsistency with "no coordination" claim
+- Added enumeration-attack / IDOR security paragraph (01)
+- Stated double-entry bookkeeping invariant explicitly (01) with Pacioli 1494 + SOX 2002 + SQL CHECK constraint example
+- Added Event Sourcing vs Traditional State vs Hybrid comparison table (01b §4.4) — 10 dimensions
+- Strengthened 01c Challenge 2 answer with Event Sourcing + Projection pattern (TripEvent source-of-truth + Trip materialized projection)
+- Added Rental Cars challenge to 01c (tests 4-step framework on novel scenario)
+- Added production annotations to 5 DSA examples in 04 (O(log n) invariant, hash collision risk, BigDecimal precision, etc.)
+- Added Evans 2003 / Vernon 2013 / Richardson 2018 to Historical Evolution in 10_PROBLEM_SETS (was missing the foundational source)
+- Replaced generic debug workflow in 10_PROBLEM_SETS with 6 DDD/saga-specific debug patterns
+
+**P3 — Polish (8 fixes)**:
+- Annotated 00_INDEX with Prerequisites column for all 11 rows
+- Removed "Your Anna" dedication from 02, replaced with generic acknowledgment
+- Unified challenge numbering in 01b and 01c (C1/C2/C3 → Challenge 1/2/3 with section-challenge headers)
+- Replaced generic `(Reasoning)` / `(Bug Hunt)` challenge titles with topic-specific names in 05 and 07
+- Added condensed 2-week plan alternative to 04 (for working professionals with 1–2h/day)
+- Added 3 new challenges to 06 (LRU Cache Concurrency, Cold-Start for New Users) and 07 (Duplicate File Finder I/O Performance)
+- Added Incident 11 — Cloudflare 2019 ReDoS Outage to 08 (diversifies incident types beyond data-structure failures; introduces algorithmic-complexity lesson)
+
+### Net changes
+
+- **14 files modified** (all files in the folder except CONTEXT.md)
+- **+1243 lines / -113 lines** added (net +1130)
+- **Challenge count: ~17 → ~51** (3× increase)
+- **5W1H coverage: 1 → 6 files** (all 5 chapter files now compliant)
+- **Contamination events: 4 → 0**
+- **Broken cross-file references: 1 → 0**
+
+### Permanent rules added to CONTAMINATION_GUARDS.md
+
+4 new entries:
+1. `ROW_NUMBER() vs RANK() vs DENSE_RANK()` challenge → belongs in SQL files
+2. Java Streams `list.stream().filter().map().collect()` laziness → belongs in Java Streams files
+3. Sliding-window O(N) boilerplate → cross-file duplicate pattern
+4. Minimum Window Substring bug-hunt → cross-file duplicate pattern
+
+### Audit documents on disk
+
+- `.kimchi/docs/audit_10_enterprise/MASTER_REVIEW.md` (consolidated review)
+- `.kimchi/docs/audit_10_enterprise/group_A_erp_fundamentals_ddd.md`
+- `.kimchi/docs/audit_10_enterprise/group_B_erp_advanced_finance.md`
+- `.kimchi/docs/audit_10_enterprise/group_C_realworld_dsa.md`
+- `.kimchi/docs/audit_10_enterprise/group_D_distributed_kafka.md`
+
+### No changes to boundaries
+
+The folder's `CONTEXT.md` (boundaries, writing style) was NOT modified — all changes were refinements within existing scope (ERP, DDD, finance, order, inventory, workflow, saga, outbox, enterprise production systems).
+
+---
+
 ## 2026-06-14 — Upgrade 02_Data_Structures Folder — Phase 4 Final Application Files (Ferment 019ec497)
 
 Phase 4 complete: 5 application files upgraded. **CRITICAL D014 FIX**: 5W1H block added to `02_PROBLEM_SETS.md`, resolving the audit's flagged D014 violation — all 14 content files now have the 5W1H framing block.

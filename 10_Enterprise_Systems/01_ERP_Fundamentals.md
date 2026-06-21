@@ -2,6 +2,15 @@
 
 ---
 
+## 📌 5W1H
+
+**WHAT** — ERP architecture, core modules (Finance, AP/AR, Inventory, Order), ID generation strategies, and the 5-step domain-to-code translation framework.
+**WHY** — Separates junior CRUD engineers from senior developers who can model real enterprise workflows; teaches the historical context (SAP R/3 → S/4HANA) that interviews and production work assume.
+**WHO** — Backend engineers with 1–3 years of Java/Spring experience moving into enterprise or fintech roles.
+**WHEN** — 2026 — SAP ECC 6.0 EOL 2027 makes S/4HANA migration live; ERP modernization projects are at peak hiring.
+**WHERE** — SAP (S/4HANA, ECC), Oracle ERP Cloud, Workday, Microsoft Dynamics; integration via RFC/BAPI/IDoc/OData/Kafka.
+**HOW** — Business process first → domain model → data flow → transaction boundary → failure mode; taught via realistic enterprise examples (Amazon-style order IDs, double-entry bookkeeping, three-way matching).
+
 # 🏢 Enterprise Resource Planning (ERP) - Complete Developer Guide
 
 ## From Domain Knowledge to Working Code - Oracle ERP as Example
@@ -715,6 +724,18 @@ public class Order {
 }
 ```
 
+**Security implication — enumeration attacks and IDOR:**
+
+Sequential IDs (auto-increment) and predictable composite IDs (e.g., order number derived from timestamp) are vulnerable to enumeration attacks: an attacker can iterate `/orders/1001`, `/orders/1002`, `/orders/1003` and access other customers' orders. This is the OWASP IDOR (Insecure Direct Object Reference) vulnerability.
+
+**Defense layers:**
+1. **Use unguessable IDs** — UUID v4 or Snowflake with embedded node ID are not enumerable.
+2. **Server-side authorization check** — even with UUIDs, verify the authenticated user owns the resource before returning data: `if (order.userId != currentUser.id) throw Forbidden`.
+3. **Composite IDs with checksums** — the Luhn-checksum example above (e.g., AAAA1234567) provides tamper detection but NOT secrecy — an attacker who knows the algorithm can still enumerate valid IDs.
+4. **Rate limiting on lookup endpoints** — limit `/orders/{id}` to N requests per minute per user; enumeration becomes impractical.
+
+Production pattern: UUID v4 + authorization check is the standard. Composite IDs with checksums are useful for human-readable identifiers (order numbers, invoice numbers) where you want typo detection but NOT for security-sensitive lookups.
+
 ### Strategy 2: UUID (Universally Unique Identifier)
 
 ```java
@@ -723,6 +744,7 @@ public class Order {
 // ═══════════════════════════════════════════════════════════════════
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class OrderService {
 
@@ -927,8 +949,8 @@ public class SnowflakeIdGenerator {
     private static final long MAX_SEQUENCE = (1L << SEQUENCE_BITS) - 1; // 4095
 
     private final long nodeId;
-    private long lastTimestamp = -1L;
-    private long sequence = 0L;
+    private volatile long lastTimestamp = -1L;
+    private final AtomicLong sequence = new AtomicLong(0L);
 
     public SnowflakeIdGenerator(long nodeId) {
         if (nodeId < 0 || nodeId > MAX_NODE_ID) {
@@ -937,28 +959,30 @@ public class SnowflakeIdGenerator {
         this.nodeId = nodeId;
     }
 
-    public synchronized long nextId() {
+    public long nextId() {
         long currentTimestamp = System.currentTimeMillis();
+        long currentSeq;
 
-        // Same millisecond - increment sequence
-        if (currentTimestamp == lastTimestamp) {
-            sequence = (sequence + 1) & MAX_SEQUENCE;
+        // Narrow synchronized block — only protects the (timestamp, sequence) check-and-update
+        synchronized (this) {
+            if (currentTimestamp == lastTimestamp) {
+                currentSeq = sequence.incrementAndGet() & MAX_SEQUENCE;
 
-            // Sequence exhausted for this millisecond - wait for next
-            if (sequence == 0) {
-                currentTimestamp = waitNextMillis(currentTimestamp);
+                // Sequence exhausted for this millisecond (more than 4096 IDs in 1ms) — wait
+                if (currentSeq == 0) {
+                    currentTimestamp = waitNextMillis(currentTimestamp);
+                }
+            } else {
+                sequence.set(0L);
+                currentSeq = 0L;
+                lastTimestamp = currentTimestamp;
             }
-        } else {
-            // New millisecond - reset sequence
-            sequence = 0;
         }
 
-        lastTimestamp = currentTimestamp;
-
-        // Construct the ID
+        // Construct the ID — lock-free, no coordination needed
         return ((currentTimestamp - CUSTOM_EPOCH) << (NODE_ID_BITS + SEQUENCE_BITS))
              | (nodeId << SEQUENCE_BITS)
-             | sequence;
+             | currentSeq;
     }
 
     private long waitNextMillis(long currentTimestamp) {
@@ -1285,6 +1309,29 @@ public class JournalEntry {
         }
     }
 }
+
+**The invariant — every journal entry must balance:**
+
+For every journal entry, `sum(debitAmounts) == sum(creditAmounts)`. This is enforced at the database level via `@PrePersist` validation (see the `JournalEntry.validateBalance()` method) and at the business level by the chart of accounts structure (every account has a normal balance side — debit for assets/expenses, credit for liabilities/equity/revenue).
+
+**Why this invariant is non-negotiable:**
+- The accounting equation `Assets = Liabilities + Equity` MUST hold at every moment in time. If a journal entry violates the debit-equals-credit rule, the books don't balance, and the trial balance fails.
+- Pacioli's 1494 framework (see Historical Evolution) formalized this constraint, and it has remained unchanged for 530 years.
+- SOX 2002 audit-trail requirements: every journal entry must be reproducible — given the source documents, the same debit/credit lines must be derivable. A violation is a material weakness.
+
+**Edge cases the invariant must catch:**
+- 3 debit lines + 2 credit lines with equal totals → passes the sum check, but is structurally unusual. Real journal entries usually have 1 debit + 1 credit (simple) or N debits + N credits (compound). The current `validateBalance()` only checks totals — consider also flagging unusual line counts.
+- Negative debit amount (refund within a journal entry) → mathematically allowed but semantically wrong. Refunds should be separate journal entries, not line items.
+- Zero-amount journal entry → a bug; reject at validation.
+
+The `JournalEntry.validateBalance()` method enforces the invariant at the JPA layer. A more rigorous design would enforce it at the database level via a CHECK constraint:
+```sql
+ALTER TABLE journal_entries ADD CONSTRAINT balanced_entry CHECK (
+    (SELECT SUM(debit_amount) FROM journal_entry_lines WHERE entry_id = journal_entries.id) =
+    (SELECT SUM(credit_amount) FROM journal_entry_lines WHERE entry_id = journal_entries.id)
+);
+```
+This is a defense-in-depth pattern — even if the JPA validation is bypassed (e.g., via a raw SQL migration), the DB rejects the imbalance.
 
 // ═══════════════════════════════════════════════════════════════════
 // ENTITY: Journal Entry Line (Individual debit/credit)

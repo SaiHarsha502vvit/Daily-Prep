@@ -426,20 +426,52 @@ public class FraudDetector {
 
 🔬 **Section Challenge — Problem 4: Transaction Fraud Detection (Sliding Window)**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 1 (System Design):** Fraud Detector Deque Growth Under Bot Attack
 
-<details><summary>Answer</summary>
+The FraudDetector in Problem 4 uses a `Deque<Transaction>` storing all transactions from the last 30 minutes. If one cardholder is targeted by a bot making 10,000 tiny transactions, what happens to the Deque size over time, and why does this break the O(n) per-check guarantee?
 
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+<details>
+<summary>Answer</summary>
 
+The Deque grows unboundedly per cardholder under the bot attack — even though each individual transaction is small, the cumulative Deque size for that cardholder reaches 10,000 entries.
+
+The O(n) per-check guarantee assumes n is bounded by the legitimate transaction rate (~1–10 transactions per cardholder per 30 minutes). Under attack, n scales with the attacker's bot throughput, not the legitimate rate.
+
+**Memory impact**: 10,000 transactions × ~200 bytes each = 2MB per attacked cardholder. With 1,000 attacked cardholders, that's 2GB just for one fraud detector instance.
+
+**O(n) check failure**: each fraud check scans the entire Deque to compute the sum over the last 30 minutes. With 10,000 entries, each check becomes O(10,000) instead of O(1–10). At 1,000 checks/sec, that's 10M operations/sec just for one cardholder.
+
+**Production fix**: time-bucketed aggregation. Instead of a per-transaction Deque, maintain a per-minute counter array of length 30 (`int[] transactionsPerMinute`). The sliding window sum is the sum of the last 30 buckets. Each check is O(30) = O(1) regardless of attack volume. Memory is bounded at 30 integers per cardholder.
+
+**Why this matters**: the O(n) guarantee in the original code was correct only under the assumption of bounded legitimate traffic. Under adversarial input, the data structure must be redesigned for the worst case, not the average.
 </details>
 
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+**Challenge 2 (Debt Simplifier Floating-Point Edge Case):**
 
-<details><summary>Answer</summary>
+The debt simplifier in Problem 10 uses `Math.min(creditor.amount, debtor.amount)` to settle each round. If floating-point rounding errors accumulate (e.g., 3 friends splitting ₹1000 as 333.333... each), what edge case breaks the algorithm?
 
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+<details>
+<summary>Answer</summary>
 
+`333.333...` cannot be exactly represented in IEEE 754 double. The actual stored values are something like 333.3333333333333 and the algorithm loses or gains sub-cent amounts over many rounds.
+
+**Concrete bug**: with 100 transactions per round × 1000 rounds, the accumulated rounding error can reach ±0.01 (1 cent). For a small settlement this is acceptable, but for inter-bank transfers it triggers **reconciliation breaks** — the bank's settlement file shows different totals than the internal ledger, which fails SOX audits.
+
+**Production fix**: use `BigDecimal` (or integer cents). For ₹1000 split 3 ways:
+- `BigDecimal("333.33")` + `BigDecimal("333.33")` + `BigDecimal("333.34")` = `1000.00` exactly.
+- The "extra penny" rule: distribute the rounding remainder to one party explicitly.
+
+```java
+BigDecimal total = new BigDecimal("1000.00");
+int people = 3;
+BigDecimal perPerson = total.divide(BigDecimal.valueOf(people), 2, RoundingMode.DOWN);
+BigDecimal remainder = total.subtract(perPerson.multiply(BigDecimal.valueOf(people)));
+// remainder = 0.01; assign to the first person
+```
+
+**Alternative**: use integer cents (`long` representing cents, never decimals). 1000 INR = 100000 cents. Split as 33333 + 33333 + 33334 = 100000 exactly. No rounding possible.
+
+This is the same lesson as B1 Money Value Object in `10_PROBLEM_SETS.md` — money is always BigDecimal or integer, never `double`.
 </details>
 
 ## Problem 5: Loan EMI Calculator (Math + Loops)

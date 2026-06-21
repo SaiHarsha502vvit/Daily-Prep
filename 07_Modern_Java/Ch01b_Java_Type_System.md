@@ -199,7 +199,7 @@ RULE: T must be a type that can be stored as an Object reference.
 
 > **🔥 3+ YOE God-Level Insight: Type Erasure and the Object Contract**
 >
-> Generics in Java are a purely compile-time construct. When javac processes `ArrayList<String>`, it inserts invisible type-checks (casts) at every read point in your code, then strips the `<String>` entirely before producing the `.class` file. At runtime, the JVM only ever sees a raw `ArrayList`. This design decision—called **type erasure**—was made to maintain backward compatibility with pre-Java-5 code that used raw types.
+> Generics in Java are a purely compile-time construct. When javac processes `ArrayList<String>`, it inserts invisible type-checks (casts) at every read point in your code, then strips the `<String>` entirely before producing the `.class` file. At runtime, the JVM only ever sees a raw `ArrayList`. This design decision—called **type erasure** (JLS §4.4)—was made to maintain backward compatibility with pre-Java-5 code that used raw types.
 >
 > **The Internal Storage Problem**
 > The erasure design creates a fundamental constraint: whatever you put in a generic type parameter `<T>` must be storable as a Java `Object` reference inside the backing `Object[]` array that most collections use internally. A primitive `int` cannot be stored as an `Object` reference because it has no reference—it IS the value, not a pointer to a value. The JVM has no way to represent `int` in a slot that expects an `Object`.

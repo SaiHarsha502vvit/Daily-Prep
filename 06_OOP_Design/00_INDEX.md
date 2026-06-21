@@ -11,7 +11,9 @@
 | 3   | [System Design](03_System_Design.md)                          | HLD fundamentals, scalability, load balancing         |
 | 4   | [User System Flows](04_User_System_Flows.md)                  | End-to-end flow: login, checkout, payment             |
 | 5   | [SD Interview Problems](05_SD_Interview_Problems.md)          | URL shortener, Twitter, Netflix design                |
+| 5b  | [System Design Fundamentals](05b_System_Design_Fundamentals.md) | Walking Skeleton, scaling primitives, observability   |
 | 6   | [Distributed Systems](06_Distributed_Systems_Fundamentals.md) | CAP theorem, consensus, replication                   |
+| 6b  | [Problem Sets](06b_PROBLEM_SETS.md)                            | ETH-style problem sets with JUnit stubs               |
 | 7   | [LLD Solved Problems](07_LLD_Solved_Problems.md)              | Low-level design: parking lot, elevator               |
 | 8   | [Design Patterns Java](08_Design_Patterns_Java.md)            | Java implementations of design patterns               |
 
@@ -93,6 +95,8 @@ OOP Principles → Design Patterns → System Design → Interview Problems
 | 4   | 04_User_System_Flows     | End-to-end flows         | ⭐⭐⭐ Medium   | ⭐⭐⭐⭐⭐ Wide | 20%                | 30%            |
 | 5   | 05_SD_Interview_Problems | Interview prep           | ⭐⭐⭐ Medium   | ⭐⭐⭐⭐ Broad  | 30%                | 30%            |
 | 6   | 06_Distributed_Systems   | CAP, consensus           | ⭐⭐⭐⭐ Deep   | ⭐⭐⭐⭐ Broad  | 5%                 | 15%            |
+| 5b  | 05b_System_Design_Fundamentals | Theory foundations  | ⭐⭐⭐⭐ Deep   | ⭐⭐⭐ Medium   | 15%                | 25%            |
+| 6b  | 06b_PROBLEM_SETS         | Problem-solving scaffold | ⭐⭐⭐ Medium | ⭐⭐⭐⭐⭐ Wide | 25%                | 35%            |
 | 7   | 07_LLD_Solved_Problems   | LLD implementation       | ⭐⭐⭐⭐⭐ Deep | Medium          | 50%                | 40%            |
 | 8   | 08_Design_Patterns_Java  | Java pattern impl        | ⭐⭐⭐⭐ Deep   | Low             | 20%                | 80%            |
 

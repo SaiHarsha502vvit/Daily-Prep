@@ -2,31 +2,15 @@
 
 ---
 
-```java
-public void bulkInsertOrders(List<Order> orders) {
-    int batchSize = 500;
+## 📌 5W1H
 
-    for (int i = 0; i < orders.size(); i += batchSize) {
-        List<Order> batch = orders.subList(i,
-            Math.min(i + batchSize, orders.size()));
+**WHAT** — DSA in production ERP finance: binary search for slab pricing, HashMap for inventory lookup, two-pointers for payment reconciliation, sliding window for sliding-window-rate algorithms, tree traversal for org hierarchy. Plus a 30-day Junior-to-Senior learning plan, six learning techniques (Feynman, Active Recall, Blurting, 2-3-7 revision, 45-15 blocks, Question First), and production failure-mode postmortems (phantom inventory, reconciliation breaks, SOX audit-trail gaps).
+**WHY** — DSA applied to enterprise contexts is the interview sweet spot (L5/L6 at FAANG, senior roles at fintechs); the learning-techniques section accelerates mastery beyond what most curricula offer.
+**WHO** — Backend engineers preparing for senior interviews, plus working professionals with 1–2 hours/day who want a structured upgrade path from Junior to Senior.
+**WHEN** — 2026 — DSA interview format is mature (LeetCode 2015, HackerRank 2009, Codeforces 2010); binary search (Mauchly 1946), HashMap (Luhn 1953), and sliding window (TCP RFC 793, 1981) are foundational; regulatory context is SOX 2002, Dodd-Frank 2010, IFRS 9/ASC 606 (2018), Basel III, PSD2.
+**WHERE** — Any enterprise system with bounded-latency DSA requirements (billing engines, payment reconciliation, fraud detection, org-chart APIs); finance-specific examples use BigDecimal for money, BigInteger for tax IDs.
+**HOW** — DSA pattern → enterprise scenario → why-this-algorithm selection criterion → code → test cases → production failure mode; layered with a 30-day action plan and six learning techniques.
 
-        // Use JDBC batch insert
-        jdbcTemplate.batchUpdate(
-            "INSERT INTO orders (order_number, customer_id, total) VALUES (?, ?, ?)",
-            batch,
-            batchSize,
-            (ps, order) -> {
-                ps.setString(1, order.getOrderNumber());
-                ps.setLong(2, order.getCustomerId());
-                ps.setBigDecimal(3, order.getTotal());
-            }
-        );
-
-        // Clear persistence context to free memory
-        entityManager.clear();
-    }
-}
-```
 
 ### Strategy 5: Read Replicas
 
@@ -193,6 +177,12 @@ public class ElectricityBillingService {
 }
 ```
 
+**Production annotations**:
+- **O(log n) invariant**: with 50+ slabs, binary search is O(log 50) ≈ 6 comparisons vs O(n) = 50 for linear. At 10M calculations/sec, binary search saves ~440M comparisons/sec.
+- **Sorted array requirement**: `SLAB_LIMITS` must be sorted ascending. If a junior developer adds a slab out of order, the binary search returns wrong slab without error. Add a unit test: `assertArrayEquals(sortedLimits, originalLimits.clone().sort())` runs on application startup.
+- **Float precision**: `units` should be `BigDecimal` or integer (paise/cents), not `double`. Electricity billing in India uses integer units (kWh) but the rate × units calculation is decimal — use BigDecimal for the rate calculation, then round to integer paise for storage.
+- **Boundary case**: what if `units == SLAB_LIMITS[0]`? The current `low = 0, high = arr.length` initialization handles this (target found at index 0). Test: `slabFor(0)`, `slabFor(SLAB_LIMITS[0])`, `slabFor(SLAB_LIMITS[last])`, `slabFor(Integer.MAX_VALUE)`.
+
 ### Example 2: HashMap in Inventory Management
 
 ```java
@@ -301,6 +291,12 @@ public class InventoryAvailabilityService {
     }
 }
 ```
+
+**Production annotations**:
+- **Hash collision risk**: `warehouseStock.get(sku)` uses `sku.hashCode()`. If two SKUs hash to the same bucket, lookup is O(1) average but O(n) worst case (in Java 8+, hash collisions are stored in a tree within the bucket, so worst case is O(log n)). For 100K SKUs with poor `hashCode()`, lookup latency can spike.
+- **String interning for hot SKUs**: for high-frequency lookups, use `String.intern()` to ensure identical SKUs reference the same `String` object. This reduces memory and improves cache locality. Trade-off: `String.intern()` itself is expensive; only intern SKUs that are known hot.
+- **Concurrency**: `HashMap` is NOT thread-safe. Under concurrent reads and writes, it can produce corrupted internal structure (infinite loops in older Java versions). Use `ConcurrentHashMap` instead for production inventory systems.
+- **Memory growth**: each entry is ~80 bytes (key + value + entry overhead). At 1M SKUs, that's ~80MB. For larger catalogs, consider storing in Redis or a database with proper indexing.
 
 ### Example 3: Two Pointers in Payment Reconciliation
 
@@ -427,6 +423,12 @@ public class PaymentReconciliationService {
 }
 ```
 
+**Production annotations**:
+- **BigDecimal precision**: amounts use `BigDecimal` (good). The comparison `compareTo` is the correct way (NOT `equals`, which compares scale too — `new BigDecimal("1.00")` and `new BigDecimal("1.0")` are unequal with `equals` but equal with `compareTo`).
+- **Sorted input requirement**: both lists must be pre-sorted by amount. If the source data is unsorted, you must sort first — at O(n log n), this dominates the O(n) two-pointer pass. For very large datasets, consider database-side sorting (`ORDER BY amount`) to leverage indexes.
+- **Tolerance for rounding**: bank reconciliations often need a tolerance (e.g., amounts within ₹0.01 are considered matched). The current code requires exact equality. Production version: `if (left.amount.subtract(right.amount).abs().compareTo(new BigDecimal("0.01")) <= 0) { match }`.
+- **Edge case**: what if one list has duplicates? The current code advances both pointers when amounts match, missing duplicate matches. Production fix: advance only the right pointer when matching, allowing the left pointer to find all duplicates.
+
 ### Example 4: Sliding Window in Sales Analytics
 
 ```java
@@ -538,6 +540,12 @@ public class SalesAnalyticsService {
     }
 }
 ```
+
+**Production annotations**:
+- **Data gap handling**: what if a day has no transactions (e.g., Sunday for a B2B system)? The sliding window continues but the gap shows zero. Some algorithms normalize by dividing by the number of non-zero days, others treat zero as valid. Be explicit about which.
+- **Time zone handling**: "last 7 days" in UTC vs. user's local time differs by up to 24 hours. For a global API, always use UTC for the window boundary. For a user-facing report, use the user's timezone.
+- **Clock skew**: if the producer and consumer are on different machines, clock skew of a few hundred milliseconds is normal. The window should tolerate small skew (use timestamps as longs, not absolute `Instant.now()` comparisons).
+- **Bounded memory**: the window is a `Deque` (or array), bounded at 7 entries. Memory is constant regardless of input rate.
 
 ### Example 5: Tree Traversal in Organization Chart
 
@@ -669,16 +677,28 @@ public class OrganizationService {
 }
 ```
 
+**Production annotations**:
+- **Stack overflow on deep hierarchies**: recursive DFS can stack overflow on org trees >10K levels deep. For corporate hierarchies, this is rare (max ~12 levels), but for arbitrarily deep trees (comment threads, bill of materials), use iterative DFS with an explicit stack.
+- **JPA lazy loading**: each `employee.getReports()` may trigger a DB query. For a tree with 10K nodes, recursive DFS = 10K queries = N+1 anti-pattern. Use a single bulk fetch: `SELECT * FROM employees WHERE manager_id IN (...)` per level (BFS), or use `@Fetch(FetchMode.SUBSELECT)` to fetch all reports in one query.
+- **Cycle detection**: if the data has a cycle (employee A reports to B, B reports to A), recursive DFS infinite-loops. Production fix: maintain a `Set<Long> visited` and throw on duplicate visit.
+- **LCA algorithm**: the Lowest Common Ancestor algorithm shown is correct for binary trees. For general N-ary trees (org hierarchies), you need a different approach — store parent pointers and compute depth, then walk up from the deeper node until depths match.
+
 ---
 
-🔬 **Section Challenge — 🎯 From Problem to Function**
+🔬 **Section Challenge — Dunning FIFO Assignment**
 
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+A dunning process must assign overdue invoices to collection agents, prioritizing the oldest-overdue invoice and routing to the least-busy agent. Design the algorithm and data structure choice. What happens if two invoices have the same age? What if an agent is at capacity?
 
-<details><summary>Answer</summary>
+<details>
+<summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+Use a **priority queue (min-heap)** ordered by (invoice_age_days DESC, invoice_amount DESC), and a separate min-heap for agents ordered by (current_assignment_count ASC, last_assigned_at ASC). Pop the oldest invoice, pop the least-busy eligible agent, assign, and re-insert the agent with updated count.
 
+Edge case 1 (tie age): secondary sort by invoice_amount ensures deterministic ordering and recovers largest debt first.
+
+Edge case 2 (agent at capacity): agents with count ≥ max_capacity are skipped; if no agents remain, the invoice waits in a delay queue with exponential backoff retry.
+
+Production consideration: invoice aging is updated by a daily scheduled job; the queue should be rebuilt on aging refresh, not incrementally, to avoid drift. Use BigDecimal for amounts (not double) to avoid IEEE 754 rounding errors on partial cent values.
 </details>
 
 # PART 5: JUNIOR DEVELOPER'S LEARNING PATH
@@ -909,6 +929,25 @@ WEEK 4: BUILD MINI-MODULE
 │ This is a COMPLETE small project using everything you learned!             │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+### Condensed 2-Week Plan (1–2 hours/day for working professionals)
+
+If you can't commit 4 hours/day, here's a condensed path that prioritizes the highest-leverage topics:
+
+| Day | Focus | Time | Outcome |
+| --- | ----- | ---- | ------- |
+| 1–2 | ERP Finance vocabulary + chart of accounts | 2h × 2 | Can discuss finance terms with accountants |
+| 3–4 | SAP Finance Module landscape (FI/CO/AP/AR) | 1.5h × 2 | Can navigate SAP t-codes for common queries |
+| 5–6 | AP/AR workflows + three-way matching | 1.5h × 2 | Can design AP/AR data models |
+| 7–8 | Double-entry bookkeeping + journal entries | 2h × 2 | Can implement journal entry validation |
+| 9–10 | Optimization patterns (indexing, partitioning, caching) | 1.5h × 2 | Can apply at production scale |
+| 11–12 | Binary search + HashMap + two-pointers in finance | 2h × 2 | Can solve DSA problems in finance context |
+| 13 | Production failure modes (phantom inventory, reconciliation) | 1.5h | Can debug real incidents |
+| 14 | Feynman review + 30-day action item selection | 1.5h | Choose 3–5 topics to deep-dive next month |
+
+**Trade-off**: the 2-week plan covers breadth but not depth. You'll understand WHAT each topic is and WHEN to apply it, but you won't have the practice to debug novel failures without reference material. Plan a follow-up month to deepen 2–3 topics from the 30-day plan that you skipped.
 
 ---
 

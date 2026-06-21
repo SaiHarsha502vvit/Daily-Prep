@@ -7,6 +7,18 @@
 
 Why every production Java application needs concurrency mastery
 
+
+## Roadmap
+
+This chapter covers thread fundamentals, JMM happens-before, synchronized/wait/notify, concurrent utilities, and performance. Suggested future splits (approximate — actual breaks follow the file's `## ` headers):
+
+- **Part A (lines ~1-750):** Thread basics, memory ordering, JMM happens-before, race conditions
+- **Part B (lines ~750-1200):** Synchronization primitives — synchronized, wait/notify, ReentrantLock, Condition
+- **Part C (lines ~1200-1900):** Concurrent utilities — BlockingQueue, CountDownLatch, CyclicBarrier, Semaphore; Thread pools and exceptions
+- **Part D (lines ~1900-end):** Challenges and production skills — lock prediction drills, MCQ, code review, context switching
+
+Use these markers as approximation; the file has not been split yet.
+
 ## 🔑 Critical Context: ARM vs x86 Memory Ordering
 
 [!WARNING]
@@ -45,7 +57,7 @@ REAL EXAMPLE:
   On ARM: Can print null — CPU reordered ready=true before value="Hello"
 
   Fix: volatile boolean ready = false;
-  volatile creates a happens-before relationship guaranteed by JMM.
+  volatile creates a happens-before relationship (JLS §17.4) guaranteed by JMM.
 ```
 
 🔬 **Challenge:** You add `volatile` to `ready` but not `value`. Does the ARM race disappear?

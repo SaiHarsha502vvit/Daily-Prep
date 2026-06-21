@@ -75,21 +75,36 @@
 
 ## 📚 Table of Contents
 
-1. [JPA Entity Lifecycle Annotations](#jpa-entity-lifecycle-annotations)
-2. [JPA Mapping Annotations](#jpa-mapping-annotations)
-3. [Spring Data Auditing](#spring-data-auditing)
-4. [Validation Annotations](#validation-annotations)
-5. [Spring Core Annotations](#spring-core-annotations)
-6. [Web & REST Annotations](#web--rest-annotations)
-7. [Security Annotations](#security-annotations)
-8. [Caching Annotations](#caching-annotations)
-9. [Async & Scheduling Annotations](#async--scheduling-annotations)
-10. [Transaction Annotations](#transaction-annotations)
-11. [Testing Annotations](#testing-annotations)
-12. [Lombok Annotations](#lombok-annotations)
-13. [Conditional Annotations](#conditional-annotations)
-14. [Hibernate-Specific Annotations](#hibernate-specific-annotations)
-15. [Interview Questions](#interview-questions)
+- [Spring Boot Part 22: Complete Annotations Reference](#spring-boot-part-22-complete-annotations-reference)
+  - [Every Important Annotation You Need to Know](#every-important-annotation-you-need-to-know)
+- [🎯 WHY-HOW-WHEN-WHICH FRAMEWORK](#-why-how-when-which-framework)
+  - [📚 Table of Contents](#-table-of-contents)
+  - [JPA Entity Lifecycle Annotations](#jpa-entity-lifecycle-annotations)
+    - [Lifecycle Callback Methods](#lifecycle-callback-methods)
+    - [Complete Entity Lifecycle Example](#complete-entity-lifecycle-example)
+    - [Using @EntityListeners (Recommended Approach)](#using-entitylisteners-recommended-approach)
+  - [JPA Mapping Annotations](#jpa-mapping-annotations)
+    - [Entity \& Table Annotations](#entity--table-annotations)
+    - [Primary Key Annotations](#primary-key-annotations)
+    - [Column Annotations](#column-annotations)
+    - [Relationship Annotations](#relationship-annotations)
+    - [Embedded Objects](#embedded-objects)
+    - [Inheritance Annotations](#inheritance-annotations)
+  - [Spring Data Auditing](#spring-data-auditing)
+    - [Setup Auditing](#setup-auditing)
+    - [Auditing Annotations](#auditing-annotations)
+  - [Validation Annotations](#validation-annotations)
+    - [Bean Validation (JSR-380)](#bean-validation-jsr-380)
+    - [Custom Validators](#custom-validators)
+    - [Cross-Field Validation](#cross-field-validation)
+    - [Validation Groups](#validation-groups)
+  - [Spring Core Annotations](#spring-core-annotations)
+    - [Bean Definition](#bean-definition)
+    - [Dependency Injection](#dependency-injection)
+    - [Bean Scope](#bean-scope)
+    - [Lifecycle Annotations](#lifecycle-annotations)
+    - [Property Injection](#property-injection)
+    - [Production Reality](#production-reality)
 
 ---
 
@@ -777,6 +792,16 @@ Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally ju
 
 </details>
 
+
+**Challenge 1 (Reasoning):** JPA entities annotated with `@Entity` are picked up by `HibernateEntityManagerFactory` via classpath scanning. Why does using `@Table(name = "users")` over the implicit default (class name as table name) matter for production systems?
+
+<details><summary>Answer</summary>
+
+Schema Stability and Migration Safety. Explicit `@Table` names prevent Hibernate from inferring table names from class names, which can change during refactoring. In production, Flyway and Liquibase migrations reference physical table names. If renaming a class (e.g., `UserAccount` → `Account`) silently changes the table name, existing migration scripts break or reference the wrong table. Always use explicit `@Table(name = "...")` to decouple the class name from the physical schema.
+
+</details>
+
+
 ## Spring Data Auditing
 
 ### Setup Auditing
@@ -872,11 +897,11 @@ public class Product extends Auditable {
 
 🔬 **Section Challenge — Spring Data Auditing**
 
-**Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
+**Challenge 1 (Reasoning):** The `@CreatedDate` and `@LastModifiedDate` annotations automatically populate timestamp fields. What mechanism does Spring Data JPA use to set these values, and why does `@EnableJpaAuditing` require a bean implementing `AuditorAware<T>`?
 
 <details><summary>Answer</summary>
 
-Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
+Callback-based Population via `AuditingEntityListener`. Spring Data JPA registers `AuditingEntityListener` (a JPA entity listener) with every managed entity. When `EntityManager.persist()` or `merge()` is called, this listener intercepts the lifecycle event and calls `DateTimeProvider` to get the current instant. The `AuditorAware<T>` interface is needed because `@LastModifiedBy` requires a principal name — the auditor — which cannot be derived without access to Spring's `SecurityContext`. Without `@EnableJpaAuditing`, these annotations have no effect.
 
 </details>
 

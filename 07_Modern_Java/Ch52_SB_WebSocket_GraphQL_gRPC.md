@@ -45,6 +45,18 @@ Every topic here is asked in interviews or used in production.
 
 ---
 
+
+## Roadmap
+
+This chapter covers 14 independent topics: WebSocket, SSE, GraphQL, gRPC, Spring Batch, Pagination, HATEOAS, i18n, Multi-Tenancy, Java 17+ features, GraalVM, Modulith, Rate Limiting, and Liquibase. Suggested future splits (approximate — actual breaks follow the file's `## ` headers):
+
+- **Part A (lines ~1-400):** Real-time — WebSocket/SSE (WHY/HOW), GraphQL (WHY/HOW)
+- **Part B (lines ~400-800):** Service communication — gRPC (WHY/HOW), Spring Batch fundamentals
+- **Part C (lines ~800-1200):** Data patterns — Pagination, HATEOAS
+- **Part D (lines ~1200-1911):** Platform features — i18n, Multi-Tenancy, Spring Boot 3.x upgrades, GraalVM Native Image, Modulith, Rate Limiting, Liquibase
+
+Use these markers as approximation; the file has not been split yet.
+
 # 1. WebSockets & Server-Sent Events (SSE)
 
 ## WHY WebSockets?

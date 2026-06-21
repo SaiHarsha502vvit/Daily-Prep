@@ -67,6 +67,7 @@
 | 6 | [Aggregations & GROUP BY](06_Aggregations_GroupBy.md) | COUNT, SUM, AVG, HAVING |
 | 7 | [JOINs Complete](07_JOINs_Complete.md) | INNER, LEFT, RIGHT, FULL, CROSS, self-join |
 | 8 | [Subqueries & CTEs](08_Subqueries_CTEs.md) | Correlated subqueries, recursive CTEs |
+| 8b | [Problem Sets](08b_PROBLEM_SETS.md) | MySQL/Oracle dual-syntax practice with mistake explanations |
 | 9 | [Window Functions](09_Window_Functions.md) | ROW_NUMBER, RANK, LAG, LEAD, frames |
 
 ### Advanced

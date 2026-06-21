@@ -303,34 +303,9 @@ Distributed systems theory emerged from the practical necessity of making multip
 - **Knight Capital 2012**: Deployed untested trading software, lost **$440M in 45 minutes** due to a single conditional that was supposed to be removed but remained enabled by a legacy config flag. Cause: dead-code activation bug, classic regression-test failure. Violated "test before deploy" SDLC/SRP principles. This is the canonical failure for the CAP-consistency trade-off lesson: the distributed nature of trading systems means state can diverge rapidly and silently — without end-to-end integration tests that cover production configuration, a single config flag can activate a code path that was "known to be untested."
 - **Healthcare.gov 2013**: A **$1.7B** system crashed on launch. Cause: monolithic architecture with no load balancing, tightly-coupled components, and synchronous blocking calls between every layer — when one component saturated, it back-pressured all others synchronously. Violated SRP at the system level (one monolith with N reasons to change), DIP at the component level (no dependency injection between services — every service called every other directly with no abstraction layer), and AP principles (the system was designed as a CP monolith that couldn't degrade gracefully under load). The fix was decomposing into independent services with load balancers, circuit breakers, and async communication — exactly the distributed system patterns taught in this chapter.
 
-#### In Production: Diamond Inheritance (Multiple Inheritance of Behavior)
+#### Related: Multiple Inheritance in OOP
 
-The consistency models govern _state_ across machines. A different class of failure occurs when a _single object_ inherits from multiple parents that both define the same method — the **diamond inheritance problem**.
-
-**C++ Diamond Problem:**
-
-```cpp
-class A { public: void foo() { /* ... */ } };
-class B : public A {};
-class C : public A {};
-class D : public B, public C {  // D inherits from B AND C, both from A
-    void bar() { foo(); }  // ERROR: ambiguous — B::foo() or C::foo()?
-};
-```
-
-Calling `D.foo()` is ambiguous because `D` inherits two copies of `A`'s state via two paths. Solutions: explicit disambiguation (`D::B::foo()`) or **virtual inheritance** (`class B : virtual public A {}; class C : virtual public A {};`) which collapses to one `A` — but adds vptr indirection cost and complex constructor ordering.
-
-**Java Interface Diamond (Java 8+ default methods):**
-
-```java
-interface I { default void foo() { System.out.println("I"); } }
-interface J { default void foo() { System.out.println("J"); } }
-class C implements I, J { }  // COMPILE ERROR: unrelated defaults for foo()
-// Must override:
-class C implements I, J { public void foo() { I.super.foo(); } }
-```
-
-Java forbids class multiple inheritance but allows interface multiple inheritance. When two interfaces both provide a `default` implementation of the same method, the implementing class must override it — Java does NOT auto-resolve left-to-right. **Production failure mode**: Java's Collections framework partially sidesteps this by using abstract classes (`AbstractList`, `AbstractSet`) instead of interfaces with defaults. If both were interfaces with `default toArray()` implementations, any class implementing both would hit the diamond compile error. **Debug workflow**: when you see "inherits unrelated defaults for foo() from types I and J", override the conflicting method in the implementing class. Explicitly state which interface's default wins: `I.super.foo()` or `J.super.foo()`.
+Multiple inheritance of behavior (the "diamond problem") is an OOP-language issue, not a distributed-systems one. For C++/Java mechanics on diamond inheritance, default methods, and `Interface.super.foo()` resolution, see `01_OOPS_Principles.md` (which contains the canonical C++/Java diamond diagrams at lines 1418+).
 
 ## Part 8: Interview Quick-Fire Questions
 

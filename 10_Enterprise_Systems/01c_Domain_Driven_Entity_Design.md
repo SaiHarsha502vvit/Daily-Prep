@@ -1,5 +1,14 @@
 # 🏗️ Entity Design Based on Domain: The Hardest Skill
 
+## 📌 5W1H
+
+**WHAT** — The 4-step domain-to-entity framework (Flow → Domains → Responsibilities → Entities), with worked examples (Uber case study, TripEvent append-only log, DriverOnboardingRequest separation).
+**WHY** — Entity redesign after deployment is 10× more expensive than design-time generalization; this framework prevents the most common breakage patterns (anemic models, mutated VOs, request/final entity confusion).
+**WHO** — Backend engineers and tech leads designing or migrating domain models in Java/Spring or .NET enterprises.
+**WHEN** — 2026 — Domain-Driven Design is now mainstream in enterprise Java (Spring Modulith, Axon Framework, jMolecules); Eric Evans's 2003 book is the canonical reference, with Vaughn Vernon's 2013 "Implementing DDD" as the Java implementation guide.
+**WHERE** — Spring Boot, Jakarta EE, Axon, EventStore; applicable to any bounded context (orders, inventory, payments, identity).
+**HOW** — 4-step framework applied via Uber case study, then generalization patterns (TripPassenger for Uber Pool), then failure-mode enumeration (mutated Money, lost identity, reference vs. DTO confusion).
+
 > **🔥 4+ YOE God-Level Architectural Insight**
 > Unlike static technologies (e.g., MySQL, Redis) whose internal workings remain constant, **entities must continuously evolve alongside business requirements**.
 >
@@ -70,6 +79,38 @@ Applying the 4-step framework to a ride-hailing system reveals distinct domains,
 
 ---
 
+🔬 **Section Challenge — Applying the 4-Step Framework to Rental Cars**
+
+A new "Rental Car" feature is added to the Uber-style platform. Users can rent a car for self-driven trips (different from Uber's driver-rides). Apply the 4-step framework:
+
+**Step 1 — Understand the Flow**: Pickup → Car selection → Identity verification → Unlock → Drive → Return → Inspection → Charge.
+**Step 2 — Identify Domains**: Pricing (per-km + per-hour), Identity (driver's license verification), Fleet (car availability and location), Trip (rental trip lifecycle), Billing (rental charges + deposits).
+**Step 3 — Write Responsibilities**: Each domain has clear responsibilities — Fleet owns car state; Trip owns rental lifecycle; Identity verifies the renter.
+**Step 4 — Extract Entities**: `RentalCar`, `RentalTrip`, `Renter`, `Reservation`, `InspectionRecord`, `Deposit`.
+
+Draw the domain boundary decision: does `RentalCar` share a domain with the existing `Trip` entity? Does `Reservation` belong in Trip or Fleet? What cross-domain events fire when a `RentalTrip` is completed (e.g., `RentalCompleted` → Fleet marks car available, Billing releases deposit)?
+
+<details>
+<summary>Answer</summary>
+
+**Domain boundary decision**:
+- `RentalCar` belongs in a **Fleet** bounded context (separate from the existing Trip context). The Fleet context owns car availability, location, and maintenance state. The Trip context owns lifecycle events.
+- `RentalTrip` is a NEW context, NOT shared with the existing `Trip` context. A rental trip has different lifecycle events (CAR_UNLOCKED, CAR_RETURNED, INSPECTION_PASSED) than a driver-ride trip (DRIVER_ASSIGNED, RIDE_STARTED).
+- `Reservation` belongs in **Fleet** (it's a reservation against a specific car, not against a driver). Reservations are about car availability; Trip is about ride progress.
+
+**Cross-domain events when a RentalTrip is completed**:
+1. `RentalCompleted` event fires from Trip context.
+2. Fleet context listens, marks the car AVAILABLE, releases the parking spot assignment.
+3. Billing context listens, releases the deposit hold, charges the final amount.
+4. Analytics context listens, updates fleet utilization metrics.
+
+**Shared Kernel consideration**: Identity (renter's driver's license, KYC status) is shared between Reservation (to verify renter) and Billing (to charge the right person). This is a Shared Kernel — both contexts read from the same Identity schema. Document the coupling explicitly and add a contract test that ensures Identity schema changes don't break consumers.
+
+**Anti-pattern to avoid**: collapsing RentalCar into the existing Trip context "because trips involve cars." A Trip's lifecycle is the rider's journey; a RentalCar's lifecycle is the asset's utilization. Conflating these leads to a bloated aggregate that locks the entire car record on every ride state change — the same mistake as the Order-Product anti-pattern in PS1 A3 of `10_PROBLEM_SETS.md`.
+
+**Lesson**: the 4-step framework exists precisely to surface these domain boundary decisions BEFORE writing code. After deployment, refactoring bounded context boundaries is 10× more expensive.
+</details>
+
 ## 3. Crucial System Architecture Pitfalls (Why Entities Break)
 
 Entities will inevitably break if they are designed strictly for the current **happy path**. You must mathematically generalize the flow before locking in entities.
@@ -115,6 +156,31 @@ The business concept of an "Application to become a driver" is physically differ
 **The Flaw:** Overwriting a status destroys historical state (Architectural Amnesia). If a customer complains that the driver took 30 minutes to arrive, the system has no record of _when_ the status changed from `WAITING` to `IN_PROGRESS`, only the current state.
 
 **The DDD Solution:** By extracting `TripEvent` as an append-only entity, you create an auditable chronological ledger. You can reconstruct the exact timeline of the trip for customer support, calculate precise driver wait times, and debug anomalies. The `Trip` entity can still hold the "current status" for fast queries, but the `TripEvent` acts as the source of truth.
+
+**The complete solution — Event Sourcing + Projection pattern:**
+
+The standard pattern is to have BOTH:
+
+1. **`TripEvent` (append-only event log)** — source of truth. Records every state change: `TripRequested`, `DriverAssigned`, `TripStarted`, `TripCompleted`, `TripCancelled`. Never updated; only appended.
+
+2. **`Trip` (materialized projection)** — fast-query view. Has `status`, `driverId`, `currentLocation`, etc. Maintained by a **background projector** that listens to the TripEvent stream and updates the `Trip` table on each new event.
+
+**Read path**: queries use the `Trip` projection (O(1) SELECT).
+**Write path**: appends a new `TripEvent` (O(1) INSERT), and the projector eventually updates the `Trip` projection (eventual consistency, typically <1s lag).
+**Recovery path**: replay all events to rebuild the projection if it gets corrupted.
+
+**Storage growth calculation**:
+- ~10 events per trip × 100M trips/year = 1B events/year.
+- Average event size ~500 bytes → 500GB/year for the event log.
+- Mitigation: partition the `trip_events` table by date (`PARTITION BY RANGE (created_at)`), archive completed trips older than 12 months to cold storage (S3 Glacier: ~$0.004/GB/month).
+- The `Trip` projection stays small (100M rows × ~1KB = 100GB, fits in memory on a single DB node).
+
+**Why not just use TripEvent directly?**
+- Reading "current status of trip 12345" would require `SELECT * FROM trip_events WHERE trip_id = 12345 ORDER BY created_at DESC LIMIT 1` — fast for one trip but slow for "all trips in DRIVER_ASSIGNED state" (full table scan with aggregation).
+- The projection pre-computes the aggregation: `SELECT * FROM trips WHERE status = 'DRIVER_ASSIGNED'` is O(matching rows).
+- Trade-off: storage cost (events + projection) for query speed. Worth it for production systems where both are needed.
+
+**Anti-pattern**: using only TripEvent and computing aggregates on every read (e.g., "how many trips are currently active?" requires `SELECT COUNT(*) FROM trip_events WHERE type='STARTED' AND ... AND not exists ENDED event`). This is O(n) per query and doesn't scale. Always project to a materialized view for aggregate queries.
 
 </details>
 

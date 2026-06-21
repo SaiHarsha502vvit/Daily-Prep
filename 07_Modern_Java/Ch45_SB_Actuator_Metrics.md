@@ -196,17 +196,6 @@ public record CreateUserRequest(
 ## Chapter 6: Multipart File Handling
 
 ```yaml
-
-
-🔬 **Section Challenge — Chapter 6: Multipart File Handling**
-
-**Challenge 1 (Reasoning):** Why must you NEVER expose the `/actuator/env` or `/actuator/heapdump` endpoints publicly without strict authentication?
-<details><summary>Answer</summary>
-
-Catastrophic Information Leak. The `/env` endpoint dumps all environment variables, which often contain raw database passwords, AWS access keys, and JWT secrets. The `/heapdump` endpoint generates a live snapshot of the JVM memory. An attacker can download this binary dump and extract plaintext passwords, user session tokens, and encrypted private keys directly from the live memory. Exposing these endpoints is an immediate critical severity breach.
-</details>
-
-
 # application.yml
 spring:
     servlet:

@@ -330,20 +330,62 @@ public class RateLimiterService {
 
 🔬 **Section Challenge — Problem 24: Rate Limiter (Sliding Window / Token Bucket)**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 1 (System Design):** Rate Limiter Fixed Window Boundary Burst
 
-<details><summary>Answer</summary>
+The Rate Limiter in Problem 24 uses a fixed window counter: `currentWindow = now / windowSizeMs`, incrementing `requestCount[currentWindow]`. At exactly the window boundary, what happens when two bursts of `maxRequests` arrive 1ms apart but on different sides of the divide?
 
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+<details>
+<summary>Answer</summary>
 
+At time `t = windowSizeMs`, the window changes from N to N+1. If burst 1 arrives at `t = windowSizeMs - 1ms` (window N) and burst 2 arrives at `t = windowSizeMs + 1ms` (window N+1), both bursts are within their respective windows.
+
+**Result**: 2 × `maxRequests` requests are processed in a 2ms span. The rate limiter allowed 2× the intended limit.
+
+**This is the fixed-window boundary problem**: the counter resets at each window boundary, allowing a "double burst" if traffic aligns with the boundary.
+
+**Production fix**: use **sliding window log** (store every request timestamp, count requests in the last 60 seconds) or **sliding window counter** (weight the previous window's count by overlap with the current window):
+```java
+double weightedCount = previousWindowCount * overlapRatio + currentWindowCount;
+// overlapRatio = (windowSizeMs - elapsedInCurrentWindow) / windowSizeMs
+```
+
+**Trade-off**: sliding window is more accurate but uses more memory (per-request log) or requires more state (per-window counter with timestamps). Fixed window is simpler but allows 2× bursts at boundaries.
+
+**Real-world choice**: most production rate limiters use **token bucket** instead, which avoids the boundary problem by continuously refilling tokens at a fixed rate. See `09_Distributed_Patterns.md § Circuit Breaker` for state machine details (token bucket uses a similar continuous-state approach).
 </details>
 
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+**Challenge 2 (External Sort Comparator Exception in Chunk Processing):**
 
-<details><summary>Answer</summary>
+The external sort in Problem 27 splits 100M records into chunks of 100,000 and sorts each chunk in memory. If the comparator throws an exception on a malformed record (e.g., non-numeric salary "N/A"), what defensive pattern should wrap the comparator, and how does this affect chunk processing?
 
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+<details>
+<summary>Answer</summary>
 
+A single malformed record crashes the entire chunk sort, halting the external sort with partial output. For a 100M-record sort that took 30 minutes, this means restart from scratch after fixing the data.
+
+**Production fix — three layers**:
+
+1. **Sanitize at ingestion**: validate records as they enter the system. Reject or quarantine malformed records before they reach the sort. Best fix.
+
+2. **Defensive comparator**: wrap the sort in try-catch per record. Log the malformed record's offset, skip it, and continue sorting the rest of the chunk:
+```java
+try {
+    records.sort(comparator);
+} catch (Exception e) {
+    log.warn("Skipping malformed record at offset {}", e.getOffset());
+    records.removeIf(r -> isMalformed(r));
+    records.sort(comparator);
+}
+```
+
+3. **Quarantine to a dead-letter file**: rather than dropping malformed records, write them to a separate file for offline review. The sort completes successfully; ops investigates the quarantine later.
+
+**Chunk processing impact**:
+- Without defensive comparator: 1 bad record in 100,000 → entire chunk fails → external sort halts.
+- With defensive comparator: 1 bad record in 100,000 → 99,999 records sorted, 1 logged → external sort continues with next chunk.
+- Total impact: minimal (1 record lost per chunk); downstream consumers see clean data; ops get a quarantine report.
+
+**Production invariant**: external sort must be **resilient to single-record corruption**. The pipeline should never halt due to one bad input. Either validate at ingestion or wrap the comparator defensively.
 </details>
 
 # PART 12: SEARCH SYSTEMS (Google/Elasticsearch)
@@ -987,6 +1029,39 @@ public class DuplicateFileFinder {
     }
 }
 ```
+
+🔬 **Section Challenge — Duplicate File Finder I/O Performance**
+
+The Duplicate File Finder uses a 3-stage pipeline: (1) group by file size, (2) group by partial hash (first 4KB), (3) full SHA-256 hash. For a directory with 1M files totaling 5TB, what's the I/O and CPU cost of each stage? How does the pipeline handle false positives in stage 2?
+
+<details>
+<summary>Answer</summary>
+
+**Stage 1 — group by file size**:
+- I/O: 1 `stat()` call per file = ~1M syscalls = ~10 seconds total (stat is fast).
+- CPU: minimal — hash table insert O(1).
+- Output: groups of files sharing the same size. Most unique-sized files (e.g., 1KB JPEG, 2KB text) are eliminated immediately — typically ~80% of files.
+
+**Stage 2 — group by partial hash (first 4KB)**:
+- I/O: read first 4KB of each remaining file = ~200K files × 4KB = ~800MB of reads. On SSD: ~5 seconds. On HDD: ~30+ seconds.
+- CPU: SHA-256 of 4KB = ~100K ops/sec/core → 2 seconds on 8 cores.
+- Output: groups of files sharing the first 4KB. **False positive risk**: two different files can have the same first 4KB by coincidence (rare but possible — birthday paradox suggests ~1 collision per 2^32 / 4KB chunks).
+
+**Stage 3 — full SHA-256 hash**:
+- I/O: read entire file = ~200GB total (the smaller of each group, not all files). On SSD: ~30 minutes.
+- CPU: SHA-256 of 200GB = ~10 minutes on 8 cores.
+- Output: definitive groups of duplicate files.
+
+**False positive handling in stage 2**: a partial hash collision triggers a full hash (stage 3) — this is exactly the design. False positives in stage 2 cost ~10ms per file (the stage 3 hash); false negatives are impossible (collisions in full SHA-256 are astronomically unlikely).
+
+**Production optimizations**:
+1. **Skip stage 2 if group size is 1**: if stage 1 produced a group with only 1 file, no need to partial-hash.
+2. **Parallelize stage 3 with thread pool**: 8 threads × 100MB/s = 800MB/s; full pipeline runs in 4 minutes instead of 40.
+3. **Skip stage 3 for known-unique hashes**: maintain a Bloom filter of recently-seen full hashes; skip files whose full hash is in the filter.
+4. **Use faster hash in stage 2**: MD5 is ~2× faster than SHA-256 and collision probability is still acceptable for the filtering step (full SHA-256 in stage 3 catches the rare collisions).
+
+This is a real production pattern — `fdupes` (Linux CLI) and `dupeGuru` use this exact 3-stage pipeline.
+</details>
 
 ---
 

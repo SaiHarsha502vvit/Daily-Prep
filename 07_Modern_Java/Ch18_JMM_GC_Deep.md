@@ -735,7 +735,7 @@ Holder h = ref.get();      // Thread B — guaranteed to see fully constructed H
 │  static final field            Class loading is safe pub                        │
 │  volatile field                volatile write happens-before volatile read      │
 │  synchronized (same lock)      unlock happens-before lock                       │
-│  final fields in constructor   visible after constructor exits (JMM §17.5)     │
+│  final fields in constructor   visible after constructor exits (JLS §17.5)     │
 │  AtomicReference.set/get       CAS provides ordering                           │
 │  BlockingQueue.put/take        internal synchronization provides ordering       │
 │  Futures/.join()               completion happens-before join() return          │

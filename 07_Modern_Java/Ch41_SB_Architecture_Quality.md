@@ -577,17 +577,7 @@ public class OrderService {
 
 ---
 
-🔬 **Section Challenge — Chapter 4: Writing Quality Service Methods**
-
-**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
-
-<details><summary>Answer</summary>
-
-Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
-
-</details>
-
-## Chapter 5: Configuration Best Practices
+## Chapter 4: Writing Quality Service Methods
 
 ```yaml
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -929,17 +919,7 @@ public class GlobalExceptionHandler {
 
 ---
 
-🔬 **Section Challenge — Chapter 6: Error Handling Strategy**
-
-**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
-
-<details><summary>Answer</summary>
-
-Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
-
-</details>
-
-## Chapter 7: Testing Strategy
+## Chapter 6: Error Handling Strategy
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1145,17 +1125,7 @@ class UserApiIntegrationTest {
 
 ---
 
-🔬 **Section Challenge — Chapter 7: Testing Strategy**
-
-**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
-
-<details><summary>Answer</summary>
-
-Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
-
-</details>
-
-## Chapter 8: Final Checklist
+## Chapter 7: Testing Strategy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1223,16 +1193,6 @@ Framework Agnosticism. The core principle of Hexagonal Architecture is that the 
 ```
 
 ---
-
-🔬 **Section Challenge — Chapter 8: Final Checklist**
-
-**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
-
-<details><summary>Answer</summary>
-
-Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
-
-</details>
 
 # 🎓 SPRING BOOT MASTERY COMPLETE!
 

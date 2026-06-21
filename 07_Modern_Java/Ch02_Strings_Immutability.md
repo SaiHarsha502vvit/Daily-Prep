@@ -125,7 +125,7 @@ Security: strings are used as HashMap keys, class names, file paths. If mutable,
 ```java
 // String is declared as:
 public final class String {           // final — can't be subclassed
-    private final byte[] value;       // final — reference can't change
+    private final byte[] value;       // final (JLS §4.3.3) — reference can't change
     private final byte coder;         // final — encoding flag
     private int hash;                 // cached hashCode (computed once)
 }

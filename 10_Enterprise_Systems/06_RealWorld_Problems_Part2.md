@@ -6,22 +6,39 @@
 
 ---
 
-🔬 **Section Challenge — Streaming, Healthcare, Travel & More**
+🔬 **Section Challenge — Adaptive Bitrate Spike Recovery**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+Problem 15 (Adaptive Bitrate Streaming) uses a sliding window of 5 chunks to compute `avgSpeed * 0.8` for quality selection. If a user on a stable 5000 Kbps connection hits a 200 Kbps spike (transient network dropout lasting 2 chunks), describe the window state after the spike clears. Will the quality decision recover correctly, or will the user be permanently downgraded?
 
-<details><summary>Answer</summary>
+<details>
+<summary>Answer</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+The sliding window contains the last 5 chunks. If 2 of 5 are 200 Kbps and 3 are 5000 Kbps, `avgSpeed = (5000×3 + 200×2) / 5 = 3080 Kbps`. The bitrate selector picks `3080 × 0.8 = 2464 Kbps` — a quality drop from 5000 Kbps to ~2400 Kbps for 2 chunks.
 
+**Recovery**: as the 2 spike chunks age out of the window, the average climbs back to 5000 Kbps, and quality recovers within 2 chunks after the spike clears. So recovery IS automatic — but during the spike, the user experiences unnecessary degradation.
+
+**Why this happens**: the window treats all chunks equally; there is no weighting by recency. A weighted moving average (exponentially decaying, with weight = 0.7^position_from_now) would react faster to spikes and recover faster. The cost is that transient noise also has more influence, potentially causing flicker.
+
+**Production note**: adaptive bitrate systems use a hybrid — short-window for spike detection (fast downshift), long-window for sustained quality (avoid flicker on recovery). This is the same pattern used in TCP congestion control (Reno/Cubic).
 </details>
 
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+🔬 **Section Challenge — Cold-Start Recommendation Fallback**
 
-<details><summary>Answer</summary>
+Problem 14 (Collaborative Filtering) uses a `Map<String, Map<String, Integer>>` co-watch matrix. A new product is added to the catalog with zero co-watch entries. What does the recommendation engine return for a user who has only watched the new product, and why does this create a cold-start problem?
 
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+<details>
+<summary>Answer</summary>
 
+The co-watch matrix returns an empty intersection for the new product — the recommendation engine returns an empty list OR falls back to a popularity-based ranking.
+
+**Cold-start problem**: new products have no co-watch signal until enough users watch them alongside other products. For the first ~1000 viewers, recommendations are popularity-based (top-10 globally watched), which means new niche content never gets discovered.
+
+**Production fixes**:
+1. **Content-based fallback** — use product metadata (genre, director, tags) to recommend similar products when co-watch data is sparse.
+2. **Exploration boost** — assign new products a small random slot in recommendations (epsilon-greedy, ~5% of recommendation slots) to seed co-watch data.
+3. **Hybrid model** — combine collaborative filtering (CF) with content-based (CB) using a weighted score: `final_score = α × cf_score + β × cb_score`, where α increases as co-watch data accumulates.
+
+This is the same cold-start problem that plagues any collaborative filtering system at Netflix, Spotify, YouTube, and Amazon. The fix is always to combine CF with content-based or popularity signals during the cold-start window.
 </details>
 
 # PART 6: STREAMING PLATFORMS (Netflix/Hotstar)
@@ -262,6 +279,31 @@ public class VideoRecommender {
 }
 ```
 
+🔬 **Section Challenge — Cold-Start for New Users**
+
+The collaborative filtering recommendation system uses a user-item co-watch matrix. A new user signs up and watches 3 movies in their first hour. What does the recommendation engine return for this user, and why does this create a different cold-start problem than new products?
+
+<details>
+<summary>Answer</summary>
+
+The new user has only 3 entries in the co-watch matrix (against the 3 movies they watched). The recommendation engine looks up similar users via co-watch overlap — but with only 3 data points, the overlap is sparse. Most "similar users" computations return near-zero similarity scores.
+
+**Result**: the engine falls back to popularity-based recommendations (top-10 globally watched), which means the new user gets the same recommendations as every other new user. No personalization.
+
+**Difference from new-product cold-start**:
+- New products have no ratings but ARE searchable by metadata (genre, director).
+- New users have NO metadata to leverage — they're anonymous until they provide preferences.
+
+**Production fixes**:
+1. **Onboarding preference selection** ("Select 3 movies you like"): bootstrap the user vector with explicit preferences. The 3 onboarding picks become the seed for collaborative filtering.
+2. **Demographic-based initial recommendations**: use age, location, signup source to bucket the user into a cohort. Use cohort-level popularity instead of global popularity.
+3. **Content-based initial recommendations**: for the 3 movies watched, recommend similar movies based on genre/director metadata (same fallback used for new products).
+4. **Exploration boost** (epsilon-greedy): 10% of recommendation slots are randomized, letting the user "explore" and generate co-watch data quickly.
+5. **Hybrid model** (CF + CB + popularity): weighted combination; weights shift as data accumulates. New user: `0.1 × cf + 0.5 × cb + 0.4 × popularity`. Returning user: `0.7 × cf + 0.2 × cb + 0.1 × popularity`.
+
+This is a fundamental challenge for any recommendation system at scale. See `10_KAFKA_PROBLEM_SETS.md § Cold-Start Recommendation Fallback` for the new-product perspective.
+</details>
+
 ---
 
 ## Problem 15: Video Buffering - Predict Network Speed (Moving Average)
@@ -361,6 +403,30 @@ public class AdaptiveBitrateController {
 // Speed: 5000 Kbps, Avg: 2960 Kbps, Quality: 720p
 // ...
 ```
+
+🔬 **Section Challenge — LRU Cache Concurrency**
+
+The LRU Cache uses a `LinkedHashMap` (or manual doubly-linked list) for O(1) get/put. Under concurrent reads and writes (e.g., 1000 threads accessing the same cache), what race conditions can corrupt the linked-list structure? How does `ConcurrentHashMap` alone NOT solve the problem? What's the production solution?
+
+<details>
+<summary>Answer</summary>
+
+A standard `LinkedHashMap` is NOT thread-safe. Concurrent access can:
+1. **Corrupt the linked-list pointers** — thread A moves a node to head while thread B removes the same node; the result is a node pointing to a deleted node, causing a NullPointerException or infinite loop.
+2. **Double-insert a key** — two threads see "cache miss" simultaneously, both insert, the map now has duplicate logical entries.
+3. **Lose evictions** — thread A evicts the LRU entry while thread B is reading it; thread B reads stale data.
+
+`ConcurrentHashMap` alone does NOT solve the problem because the LRU semantics (move-to-head on access, evict from tail) require coordinated multi-step operations on the linked-list structure. `ConcurrentHashMap` only protects individual map operations, not the multi-step cache algorithm.
+
+**Production solutions** (in order of complexity):
+1. **Synchronize all cache operations**: wrap with `synchronized (cache) { ... }`. Simple, correct, but limits throughput to single-threaded cache access.
+2. **Use `Collections.synchronizedMap(new LinkedHashMap<>(...))`**: similar to #1; locks at the map level.
+3. **Use Caffeine cache** (Java): thread-safe LRU + TinyLFU. Eliminates manual concurrency management. Production-grade at scale. https://github.com/ben-manes/caffeine
+4. **Use `ConcurrentLinkedHashMap` (deprecated)**: original Guava library version, replaced by Caffeine.
+5. **Sharded caches**: split the cache into N segments by hash(key) % N. Each segment is independently synchronized. Throughput scales with N.
+
+For a high-throughput system (10K+ cache ops/sec), use Caffeine or sharded caches. For lower throughput, synchronized access is fine.
+</details>
 
 ---
 
@@ -606,16 +672,86 @@ public class MedicineInteractionChecker {
 
 ---
 
+> 🔬 **Section Challenge — Problem 16: Doctor Appointment Scheduling (Interval Scheduling)**
+>
+> **Challenge 1 (System Design):** Appointment Slot Reuse in Double-Booking Prevention
+>
+> The AppointmentScheduler in Problem 16 uses a 30-minute slot grid. Two users click "book 2:30 PM with Dr. Smith" within the same second. Without a database-level constraint, what race condition produces double-booking?
+>
+> <details>
+> <summary>Answer</summary>
+>
+> The scheduler's `bookSlot(slotId)` method performs:
+> 1. `SELECT * FROM slots WHERE id = ? AND booked = false` — returns the slot if available.
+> 2. If available, `UPDATE slots SET booked = true WHERE id = ?` — marks booked.
+>
+> Between step 1 and step 2, another concurrent request can perform the same SELECT and see `booked = false`. Both requests proceed to step 2 and both UPDATEs succeed (last write wins). Result: two appointments for the same slot.
+>
+> **Production fix — three options**:
+>
+> 1. **Conditional UPDATE** (most efficient):
+> ```sql
+> UPDATE slots SET booked = true, appointment_id = ?
+> WHERE id = ? AND booked = false
+> ```
+> If `rowCount == 0`, the slot was already booked — return a 409 Conflict. No SELECT needed.
+>
+> 2. **Unique partial index**:
+> ```sql
+> CREATE UNIQUE INDEX one_appointment_per_slot
+> ON appointments (slot_id)
+> WHERE status != 'CANCELLED';
+> ```
+> Database-level constraint; concurrent inserts cause one to fail with `UniqueViolation`.
+>
+> 3. **Pessimistic lock** (`SELECT ... FOR UPDATE`):
+> ```sql
+> BEGIN;
+> SELECT * FROM slots WHERE id = ? FOR UPDATE;
+> -- check booked = false
+> UPDATE slots SET booked = true WHERE id = ?;
+> COMMIT;
+> ```
+> Holds a row lock until commit. Correct but adds contention.
+>
+> **Invariant**: at most one non-cancelled appointment exists per slot at any time. Enforce at the database level (unique index), not in application code.
+>
+> This is the same lesson as Problem 6 (BankAccount thread safety) in `05_RealWorld_Problems_DSA.md` — multi-step check-then-act logic must be enforced atomically.
+> </details>
+
+---
+
 > 🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
 >
-> **Challenge 1 (System Design):** A junior developer implements the Medicine Interaction Checker. They use DFS to find a path between `Medicine A` and `Medicine B` in the interaction graph. If a path exists, they flag it as a dangerous combination. Why is this logically catastrophic for drug interactions, and what exact graph property should they be checking instead?
+> **Challenge 1 (System Design):** Drug Interaction Checker Wrong Graph Algorithm
 >
-> <details><summary>Answer</summary>
+> The Medicine Interaction Checker in Problem 17 uses DFS path-finding to determine if drug A interacts with drug B. The challenge in the file already notes "DFS path-finding is catastrophic for drug interactions." Expand: what is the correct graph algorithm, and why is path existence the wrong question?
 >
-> **Scenario:** Mapping business requirements to the correct graph algorithm.
-> **Trace:** If `A` interacts with `B` (e.g., Warfarin + Aspirin), and `B` interacts with `C` (e.g., Aspirin + Ibuprofen), it does NOT mathematically mean `A` interacts with `C`. Drug interactions are direct chemical conflicts, not transitive relationships. DFS finds _connected components_ (transitive paths). If the developer uses DFS, they will falsely flag almost every medicine in the database as dangerous because most drugs are loosely connected through intermediate interactions.
-> **Debug/Fix:** The developer is solving the wrong graph problem. They should NOT be running a traversal or path-finding algorithm. They simply need to check for **Edge Existence** between two specific nodes. This should be an `O(1)` check using an Adjacency Matrix or a `HashSet` lookup in an Adjacency List, rather than an `O(V + E)` DFS.
+> <details>
+> <summary>Answer</summary>
 >
+> The correct question for drug interaction is: **does a direct edge exist between A and B in the interaction graph**, not "is there a path."
+>
+> A "path" of A → X → Y → B would mean A interacts with X, X interacts with Y, and Y interacts with B. But these are pairwise interactions — they don't compose into "A interacts with B through X and Y." Drug interactions are direct pharmacological effects, not transitive.
+>
+> **Correct algorithm**:
+> ```java
+> boolean interacts(String drugA, String drugB) {
+>     return interactionGraph.get(drugA).contains(drugB);
+> }
+> // O(1) lookup using HashSet, not graph traversal
+> ```
+>
+> **Why DFS path-finding is wrong**:
+> 1. **False positives** — A → X → B suggests A interacts with B via X, but in reality, only the pairwise edges matter.
+> 2. **False negatives** — the algorithm might miss a direct edge if it explores a long path first and returns true without checking all neighbors.
+> 3. **Confused model** — drug interactions are a property of pairs, not chains.
+>
+> **When graph path-finding IS the right algorithm**:
+> - Drug contraindications: A and B are contraindicated if they share ANY interaction (one edge in common). Use `BFS` to find all drugs A interacts with, then check overlap with B's list.
+> - Multi-drug synergy: A + B + C together is dangerous even if no pairwise interaction exists. Use **3-clique detection** in the interaction graph.
+>
+> **Production fix**: model drug interactions as a `Map<String, Set<String>>` (drug → set of drugs it directly interacts with). Pairwise check is `O(1)`. Store in Redis for fast lookup if the graph is large (>10K drugs).
 > </details>
 
 # PART 8: TRAVEL BOOKING (MakeMyTrip/Goibibo)

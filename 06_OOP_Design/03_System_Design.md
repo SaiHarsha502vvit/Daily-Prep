@@ -1157,6 +1157,10 @@ FOR EACH PROBLEM:
     └─────────────────────────────────────────────────────────────────────────┘
 ```
 
+### CAP Refinement: PACELC and the "Choose 2" Misnomer
+
+The simple "choose 2" framing is a pedagogical shorthand. Gilbert and Lynch's 2002 proof (MIT / Brewer's conjecture formalized) showed that during a partition you must sacrifice either consistency OR availability — but the trade-off is not binary in normal operation. **PACELC** (Daniel Abadi, 2010) extends CAP: if Partition (P), choose Availability or Consistency (A or C); **E**lse (no partition), choose **L**atency or **C**onsistency. A real-world CP system like ZooKeeper trades latency for consistency even when partitions are rare. The point: "during a partition" is the only time the C/A trade-off forces your hand.
+
 ---
 
 ### Deep-Dive: Database Read Replicas

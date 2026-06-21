@@ -1,7 +1,7 @@
 # 📝 Enterprise Systems — Kafka & Messaging Problem Sets
 
 > **Problem Sets PS3 & PS4** — Semester 4 Unit  
-> **Module:** `10_Enterprise_Systems/05_Messaging_Kafka.md`  
+> **Module:** `09_Distributed_Patterns.md` (especially the Outbox Pattern and Saga sections)  
 > **Prerequisites:** Kafka architecture fundamentals · Spring Kafka · Enterprise Integration Patterns
 
 ---
@@ -69,6 +69,38 @@ kafkaTemplate.send("order-events",
 
 ---
 
+🔬 **Section Challenge — Slow Consumer Rebalance:**
+A partition with 80% of messages is assigned to a slow consumer (GC pause or downstream slowness). The consumer crashes and is replaced. What does the rebalance look like? How does cooperative rebalancing (KIP-429) change this compared to eager rebalancing?
+
+<details>
+<summary>Answer</summary>
+
+**Eager rebalancing (default before KIP-429):**
+1. All consumers in the group revoke ALL their partitions.
+2. Group coordinator computes new partition assignment.
+3. All consumers rejoin and get their new partitions.
+4. Processing resumes.
+
+This is a "stop-the-world" rebalance — even healthy consumers stop processing during the rebalance. For a 10-partition topic with 5 consumers, the entire group pauses for ~5–10 seconds during a single slow-consumer rebalance.
+
+**Cooperative rebalancing (KIP-429, Kafka 2.4+):**
+1. Only the affected partition is revoked (the partition assigned to the crashed consumer).
+2. Healthy consumers keep processing their existing partitions during the rebalance.
+3. New consumer joins and takes over the revoked partition.
+4. Processing continues on all other partitions throughout.
+
+The rebalance is "incremental" — only the affected partition moves. Healthy consumers don't pause. This dramatically reduces rebalance-induced latency spikes.
+
+**Trade-off**: cooperative rebalancing requires the consumer to handle the case where it's processing a partition, briefly loses it, and then re-acquires it. This is more complex than eager rebalancing's "stop everything, restart cleanly" model. The complexity is usually worth it for low-latency services.
+
+**Configuration**:
+```properties
+partition.assignment.strategy=org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+```
+</details>
+
+---
+
 **A3 (Hard).** Explain the difference between **at-least-once**, **at-most-once**, and **exactly-once** delivery in Kafka. What are the production trade-offs for each?
 
 <details><summary>Answer</summary>
@@ -100,6 +132,33 @@ public void handle(OrderEvent event) {
 
 🔴 **Erklärung:** Exactly-once sounds desirable but adds enormous complexity. Start with at-least-once + idempotent consumers. Only add Kafka transactions when you have a concrete business requirement (financial audit) and measure the throughput cost first.
 
+</details>
+
+---
+
+🔬 **Section Challenge — Idempotency Table Growth:**
+Your idempotency table (`processed_events`) hits 50M rows and consumes 100GB of disk. The TTL cleanup job deletes entries older than 7 days. What is the trade-off between longer TTL (more safety) and shorter TTL (less disk)? What's the alternative for very high event volume?
+
+<details>
+<summary>Answer</summary>
+
+**TTL trade-off**:
+- **Long TTL (30 days)**: safe against delayed/replayed events up to 30 days old. Disk usage scales linearly: 50M × 30 days = 1.5B rows = ~3TB.
+- **Short TTL (1 day)**: minimal disk (200M rows × 1 day ≈ 4GB), but a Kafka backlog that replays events older than 1 day will produce duplicates that the consumer cannot detect.
+
+**Standard production TTL: 7 days** — covers the typical Kafka retention (also 7 days) and operational delays (e.g., a consumer outage over a long weekend).
+
+**Alternatives for very high volume (>10K events/sec)**:
+
+1. **Partition by date**: `PARTITION BY RANGE (processed_at)` with one partition per day. Drop old partitions instead of deleting rows. Cleanup is O(1) instead of O(rows).
+
+2. **Bloom filter for recent events**: in-memory Bloom filter holds the last ~1 hour of event IDs (~36M IDs at 10K/sec, ~500MB RAM with 1% false positive rate). On lookup: check Bloom filter first, then DB only if Bloom says "maybe". Trades 1% false-positive rate (rare duplicate processing) for massive speedup.
+
+3. **Use Kafka exactly-once semantics (EOS)**: with `isolation.level=read_committed` and transactional producers, Kafka guarantees no duplicates. Eliminate the idempotency table entirely. Trade-off: requires careful producer/consumer configuration and only works within one Kafka cluster (no cross-system exactly-once).
+
+4. **Switch to a TTL database**: Redis with `EXPIRE` on each key (auto-cleanup), or DynamoDB with TTL attribute. Trade-off: operational cost, and Redis is not durable by default (need AOF + fsync for crash safety).
+
+**Production recommendation**: start with DB + daily TTL cleanup. Move to partition-by-date when row count exceeds 100M. Move to EOS when the idempotency table itself becomes a bottleneck (>1M lookups/sec).
 </details>
 
 ---
@@ -194,6 +253,67 @@ record OrderPlacedEvent(
     String deliveryAddress,
     Instant occurredAt
 ) {}
+
+<details>
+<summary>Answer — Idempotent Consumer Implementation</summary>
+
+```java
+@Service
+public class OrderEventConsumer {
+
+    private final ProcessedEventRepository processedRepo;
+    private final OrderService orderService;
+
+    @KafkaListener(topics = "orders", groupId = "order-processor")
+    @Transactional
+    public void consume(ConsumerRecord<String, OrderPlacedEvent> record) {
+        OrderPlacedEvent event = record.value();
+        String eventId = event.eventId();
+
+        // 1. Check if already processed (idempotency guard)
+        if (processedRepo.existsById(eventId)) {
+            log.info("Skipping duplicate event {}", eventId);
+            return;
+        }
+
+        // 2. Record this event as processed BEFORE doing the work
+        //    (this ensures the @Transactional commits the processed_events row
+        //     atomically with the business logic; if either fails, both roll back)
+        processedRepo.save(new ProcessedEvent(eventId, Instant.now()));
+
+        // 3. Do the business work
+        orderService.handleOrderPlaced(event);
+    }
+}
+```
+
+**Why `@Transactional` is critical:**
+
+The `processed_events` table insert and the business logic (e.g., order creation, inventory reservation) MUST commit atomically. Without `@Transactional`:
+- If `processedRepo.save()` succeeds but `orderService.handleOrderPlaced()` throws, the next consumer poll re-reads the same offset and reprocesses the event (duplicate order).
+- If we reversed the order (process business logic first, then save processed_events), a crash between the two would also cause reprocessing on retry.
+
+With `@Transactional`, the entire method runs in one DB transaction. Either both the processed_events row and the business work commit, or both roll back. Combined with Kafka's at-least-once delivery (the consumer commits the offset after the DB transaction), this gives **exactly-once processing** semantics.
+
+**Trade-off: at-least-once vs exactly-once delivery:**
+
+- **At-least-once + idempotent consumer** (this pattern): Kafka guarantees the event is delivered at least once (may duplicate on retry). The consumer handles duplicates via the idempotency table. This is the standard production pattern.
+- **Exactly-once** (Kafka 0.11+ with transactional producer + read_committed consumer): Kafka itself guarantees no duplicates within one Kafka cluster. Requires using `KafkaTemplate.send()` with transactions and `isolation.level=read_committed`. More complex but eliminates the idempotency table.
+- **At-most-once**: consumer commits the offset BEFORE processing. If processing fails, the event is lost. Used only for non-critical metrics/log streams.
+
+**Production recommendation**: start with at-least-once + idempotent consumer. Move to Kafka exactly-once only if the idempotency table becomes a bottleneck (very high event volume).
+
+**Operational concern — processed_events table growth:**
+
+At 10,000 events/sec, the table grows by ~860M rows/day. Solutions:
+1. TTL cleanup: delete entries older than 7 days (`DELETE FROM processed_events WHERE processed_at < now() - interval '7 days'`). Run as a daily scheduled job.
+2. Partition by date: `PARTITION BY RANGE (processed_at)` and drop old partitions.
+3. Use a Bloom filter for the recent window (last hour) and fall back to the table for older events. Trades accuracy for performance.
+</details>
+
+---
+
+**B2.**
 ```
 
 ---
@@ -239,6 +359,46 @@ kafka:
 | `replication-factor: 3`          | Survive 2 broker failures; standard for production                                        |
 | `driver-location: 24 partitions` | Location updates arrive 10× more frequently than orders; needs more parallelism           |
 
+</details>
+
+<details>
+<summary>Answer — Kafka Broker Configuration Rationale</summary>
+
+```yaml
+# Broker configuration for a production 3-broker cluster
+listeners: PLAINTEXT://0.0.0.0:9092
+advertised.listeners: PLAINTEXT://broker1.kafka.prod:9092
+
+# Replication
+default.replication.factor: 3
+min.insync.replicas: 2
+unclean.leader.election.enable: false
+
+# Log retention (1 week for most topics)
+log.retention.hours: 168
+log.segment.bytes: 1073741824  # 1GB segments
+
+# Performance
+num.network.threads: 8
+num.io.threads: 16
+log.flush.interval.messages: 10000
+```
+
+**Rationale per setting:**
+
+- **`default.replication.factor: 3`** — every new topic gets 3 replicas (one leader + 2 followers). This survives the loss of 1 broker without data loss. For critical topics (orders, payments), use 5 replicas.
+
+- **`min.insync.replicas: 2`** — the producer with `acks=all` requires at least 2 in-sync replicas before considering a write successful. Combined with replication factor 3, this means: 1 leader + 1 follower must acknowledge before the producer gets a success response. If only 1 replica is in-sync, the producer fails fast (rather than writing to a single point of failure).
+
+- **`unclean.leader.election.enable: false`** — if all in-sync replicas are lost, Kafka does NOT elect an out-of-sync follower as leader (which would cause data loss). The topic becomes unavailable for writes until an in-sync replica recovers. This is the safer choice for financial data.
+
+- **`log.retention.hours: 168`** — keep messages for 1 week. After that, log segments are deleted. This bounds disk usage: at 10,000 events/sec × 1KB/event = 10MB/sec = ~860GB/day. With 3 replicas, that's ~2.5TB/day; 1 week retention = ~17TB. Plan disk accordingly.
+
+- **`log.segment.bytes: 1073741824`** — 1GB per log segment. Kafka rotates to a new segment when the current one fills. Smaller segments mean more files (more file-handle pressure); larger segments mean slower log compaction. 1GB is the typical production sweet spot.
+
+- **`num.network.threads: 8`, `num.io.threads: 16`** — Kafka uses thread pools for network (handling client connections) and disk I/O (writing log segments). The defaults (3 and 8) are too low for production; tune based on `kafka.server:type=BrokerTopicMetrics` JMX metrics showing thread pool saturation.
+
+- **`log.flush.interval.messages: 10000`** — Kafka flushes in-memory batches to disk every 10,000 messages (or every `log.flush.interval.ms`, whichever comes first). This is a durability/latency trade-off — more frequent flushes = lower data loss on crash but higher I/O latency. Production: pair with `log.flush.interval.ms=1000` (1 second) for a 1-second worst-case data loss window.
 </details>
 
 ---

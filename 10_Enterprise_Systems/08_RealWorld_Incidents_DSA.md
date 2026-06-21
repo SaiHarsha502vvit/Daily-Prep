@@ -1176,6 +1176,42 @@ public class VersionedSurge {
 >
 > </details>
 
+## Incident 11 — Cloudflare 2019 ReDoS Outage
+
+**The setup**: Cloudflare's WAF (Web Application Firewall) used a regex to validate HTTP request headers. The regex was added in a recent update to catch a new attack pattern.
+
+**The naive regex**: `(.*)*` — meant to match anything, but written as a quantified group inside a quantified group.
+
+**The trigger**: a crafted HTTP request with a long string of "a" characters followed by an exclamation mark (e.g., `aaaaaaaaaaaaaa!`). The regex engine attempts to find every possible way to match the pattern; with `O(2^n)` backtracking, the CPU spins on each request.
+
+**The failure**: at peak, Cloudflare's WAF consumed 100% CPU on every node. Legitimate requests timed out. The outage lasted ~30 minutes and affected 1.1.1.1 DNS resolver and many Cloudflare-protected sites.
+
+**The fix**:
+1. **Remove the offending regex** — replaced with a simpler pattern.
+2. **Add regex complexity analyzer** — ReScue (https://github.com/cloudflare/cf-regexp) analyzes regex for catastrophic backtracking before deployment.
+3. **CPU circuit breaker** — if a regex takes >X ms, abort and treat as no-match. Prevents CPU exhaustion from any single regex.
+4. **WAF rule testing harness** — fuzz WAF rules against pathological inputs before deployment.
+
+**DSA lesson — algorithmic complexity in security tooling**:
+
+```text
+Pattern:                 Backtracking complexity:
+(.*)*                    O(2^n) — catastrophic
+a+b+c+                   O(n) — linear
+[abc]+                   O(n) — linear
+```
+
+A regex's backtracking behavior is the same algorithmic complexity lesson as any other nested-loop algorithm: when the input can grow unbounded, the algorithm's worst-case complexity determines whether the system survives or crashes. **ReDoS is a denial-of-service attack that exploits algorithmic complexity, not infrastructure capacity.**
+
+**Production invariant**: every regex in production must be checked for catastrophic backtracking (O(2^n) or worse). Tools: ReScue, regex-static-analysis, or manual analysis using the simple rule: nested quantifiers `((...)*)+` are almost always catastrophic.
+
+**Why this lesson matters beyond security**: the same algorithmic-complexity trap applies to:
+- Recursive parsers without memoization (exponential parse trees)
+- Graph traversal without visited-set (infinite loops on cycles)
+- Database query planners that don't recognize cartesian-explosion patterns
+
+Anywhere the algorithm's complexity depends on input shape, adversarial input can trigger the worst case. This is the bridge from "DSA in production" (the rest of this file) to "algorithmic complexity in production" — same lesson, different surface.
+
 # ═══════════════════════════════════════════════════════════
 
 # 📖 Part 4: Quick Reference — Incident to DSA Mapping
