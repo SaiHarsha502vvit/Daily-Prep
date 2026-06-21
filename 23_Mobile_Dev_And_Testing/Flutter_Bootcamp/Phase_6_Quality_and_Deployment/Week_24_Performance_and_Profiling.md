@@ -757,6 +757,342 @@ ANR (App Not Responding)        < 0.1%        > 0.5%
 
 ---
 
+## 14. Background Processing — Work That Outlives the UI
+
+> 📄 **Flutter Docs:**
+> *"When the user switches away from your app, or when the device screen turns off, the operating system may suspend your app at any time. Work that needs to continue — syncing data, processing uploads, handling notifications — requires explicit background execution."*
+
+Your app doesn't own the CPU. The operating system does. When the user presses Home, your app enters the background, and the OS can freeze, throttle, or kill it at any moment. If your expense tracker is mid-sync, that upload dies silently. Background processing is how you tell the OS: "This work matters — keep it alive."
+
+---
+
+### App Lifecycle States
+
+Before you run work in the background, you need to detect when your app enters and leaves the foreground:
+
+```dart
+class AppLifecycleWatcher extends StatefulWidget {
+  final Widget child;
+  const AppLifecycleWatcher({super.key, required this.child});
+
+  @override
+  State<AppLifecycleWatcher> createState() => _AppLifecycleWatcherState();
+}
+
+class _AppLifecycleWatcherState extends State<AppLifecycleWatcher>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App is in the foreground, fully visible
+        // → Reconnect WebSocket, refresh data
+        break;
+      case AppLifecycleState.inactive:
+        // App is still visible but not receiving input
+        // (e.g., incoming phone call overlay, split-screen transition)
+        // → Pause animations, pause video
+        break;
+      case AppLifecycleState.paused:
+        // App is in the background, not visible
+        // → Save draft, flush analytics, cancel expensive timers
+        break;
+      case AppLifecycleState.detached:
+        // App is still running but has no view
+        // (rare — mainly during engine restart or before first frame)
+        break;
+      case AppLifecycleState.hidden:
+        // App is hidden (iOS: entered background; Android: in recent apps tray)
+        // → Release camera, pause audio
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
+```
+
+**The critical distinction:** `paused` means the OS *may* kill your app at any time. Any work that must survive should already be persisted or handed off to a background mechanism.
+
+---
+
+### Background Isolates — CPU-Heavy Work Off the UI Thread
+
+Flutter's UI runs on a single thread. If you parse a 2MB JSON response, sort 50,000 records, or encrypt a file on the main thread, the UI freezes — dropped frames, ANR dialogs, angry users.
+
+```dart
+// Dart 3 — simple, clean
+Future<List<Expense>> parseExpenses(String jsonString) async {
+  return await Isolate.run(() {
+    final List<dynamic> decoded = jsonDecode(jsonString);
+    return decoded.map((e) => Expense.fromJson(e)).toList();
+  });
+}
+```
+
+**When to use `Isolate.run`:**
+- JSON parsing of payloads > 100KB
+- Image resizing or compression
+- Encryption/decryption
+- CSV/Excel file generation
+- Any computation > 16ms (one frame budget)
+
+**Critical limitation:** Isolates can't access Flutter plugins. No `SharedPreferences`, no `Dio`, no `FirebaseFirestore` inside an isolate. They only have access to pure Dart code. If you need to read from Hive and process the data, read it on the main thread, send the data to the isolate for processing, and get the result back.
+
+```dart
+// This WILL crash inside Isolate.run:
+// final prefs = await SharedPreferences.getInstance();  ← PluginNotRegistered
+
+// Do this instead:
+final prefs = await SharedPreferences.getInstance();
+final rawData = prefs.getString('cached_expenses') ?? '[]';
+final processed = await Isolate.run(() => heavyProcessing(rawData));
+```
+
+---
+
+### `workmanager` Package — Deferred and Periodic Background Tasks
+
+For work that must happen even if the app is killed — syncing pending changes, cleaning old cache, uploading queued analytics — use `workmanager`. It wraps Android's `WorkManager` and iOS's `BGTaskScheduler`.
+
+**Setup:**
+
+```yaml
+# pubspec.yaml
+dependencies:
+  workmanager: ^0.5.2
+```
+
+```dart
+// main.dart — register the callback dispatcher OUTSIDE any class
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    switch (taskName) {
+      case 'syncPendingExpenses':
+        await _syncExpenses(inputData);
+        return true; // success
+      case 'cleanOldCache':
+        await _deleteOldCacheFiles();
+        return true;
+      default:
+        return false; // task not recognized
+    }
+  });
+}
+
+// The callback MUST be a top-level or static function.
+// It runs in its own isolate — no access to your app's state, providers, or BLoCs.
+
+Future<void> _syncExpenses(Map<String, dynamic>? inputData) async {
+  // Initialize what you need from scratch
+  final dio = Dio(BaseOptions(baseUrl: 'https://api.myapp.com'));
+  final localDb = await Hive.openBox('pending_expenses');
+
+  final pending = localDb.values.toList();
+  for (final expense in pending) {
+    await dio.post('/expenses', data: expense);
+    await localDb.delete(expense['id']);
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Workmanager().initialize(callbackDispatcher, isInDebugMode: kDebugMode);
+
+  runApp(const MyApp());
+}
+```
+
+**Scheduling tasks:**
+
+```dart
+// One-off task — runs once, as soon as constraints are met
+await Workmanager().registerOneOffTask(
+  'sync-expenses-1',         // unique task name
+  'syncPendingExpenses',     // matches switch case in callbackDispatcher
+  constraints: Constraints(
+    networkType: NetworkType.connected,     // only when online
+    requiresBatteryNotLow: true,           // don't drain a dying battery
+  ),
+  inputData: {'userId': currentUser.id},   // passed to the callback
+  backoffPolicy: BackoffPolicy.exponential,
+  initialDelay: const Duration(seconds: 10),
+);
+
+// Periodic task — runs repeatedly
+await Workmanager().registerPeriodicTask(
+  'cache-cleanup',
+  'cleanOldCache',
+  frequency: const Duration(hours: 12),    // minimum ~15 min on Android
+  constraints: Constraints(
+    requiresBatteryNotLow: true,
+    requiresCharging: false,
+  ),
+);
+```
+
+**Rule:** The callback dispatcher runs in a completely fresh isolate with no connection to your running app. You must re-initialize everything — database connections, HTTP clients, service locators. Think of it as a separate mini-app that wakes up, does one job, and dies.
+
+---
+
+### FCM `onBackgroundMessage` — Notifications When the App Is Dead
+
+Week 26's Chat App uses FCM. When a message arrives and your app is killed, `onBackgroundMessage` handles it:
+
+```dart
+// MUST be a top-level function — same constraint as workmanager
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  // You can update local storage (e.g., increment unread badge count)
+  final prefs = await SharedPreferences.getInstance();
+  final current = prefs.getInt('unread_count') ?? 0;
+  await prefs.setInt('unread_count', current + 1);
+
+  // DON'T try to update UI, navigate, or access providers here.
+  // The app may not even have a Flutter engine running.
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  runApp(const MyApp());
+}
+```
+
+**Limitations of background message handlers:**
+- No access to `BuildContext`, `Navigator`, providers, or BLoCs
+- Must complete quickly (Android kills it after ~30 seconds)
+- Cannot show custom UI — only platform notifications via `flutter_local_notifications`
+- On iOS, if the handler takes too long, the OS will deprioritize your app's future notifications
+
+---
+
+### iOS vs Android — The Platform Gap
+
+Background processing is where Android and iOS diverge the most. You must understand both:
+
+| Capability | Android (WorkManager) | iOS (BGTaskScheduler) |
+|---|---|---|
+| Minimum periodic interval | ~15 minutes | ~15 minutes (but OS decides when) |
+| Max background execution time | 10 minutes | 30 seconds (`BGAppRefreshTask`) or ~minutes (`BGProcessingTask`) |
+| Network constraint | ✓ `NetworkType.connected` | ✗ No direct equivalent |
+| Battery constraint | ✓ `requiresBatteryNotLow` | ✗ OS decides implicitly |
+| Guaranteed execution | Nearly — WorkManager persists across reboots | No guarantee — OS can skip entirely |
+| Exact timing | No — system batches for efficiency | No — system chooses optimal time |
+| User can disable | Battery optimization settings | Background App Refresh toggle |
+
+**Key iOS restrictions:**
+- iOS is far more aggressive about killing background work. Apple prioritizes battery life over developer convenience.
+- `BGAppRefreshTask` gets ~30 seconds — enough for a quick API call, not for processing 1000 photos.
+- `BGProcessingTask` gets more time but only runs when the device is charging and on Wi-Fi.
+- If your background task crashes or takes too long repeatedly, iOS will stop scheduling it entirely — a silent, permanent punishment.
+- You must register task identifiers in `Info.plist` under `BGTaskSchedulerPermittedIdentifiers`.
+
+**Android Doze mode:**
+- When the device is stationary and screen-off for a while, Android enters Doze mode.
+- Doze defers all jobs, alarms, and network access to "maintenance windows" (every ~15 min initially, then less frequent).
+- WorkManager handles Doze correctly — your tasks run in the next maintenance window.
+- Don't tell users to disable battery optimization. Google Play policy penalizes apps that do this without a strong reason (e.g., medical monitoring).
+
+**Testing background behavior:**
+
+```bash
+# Android — force Doze mode
+adb shell dumpsys deviceidle force-idle
+
+# Android — check if your WorkManager task is scheduled
+adb shell dumpsys jobscheduler | grep com.myapp
+
+# Android — trigger immediate execution for testing
+adb shell cmd jobscheduler run -f com.myapp <job-id>
+
+# iOS — trigger background fetch in Xcode
+# Debug menu → Simulate Background Fetch
+```
+
+---
+
+### Testing Background Tasks in Development
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true,  // prints task execution logs to console
+  );
+
+  runApp(const MyApp());
+}
+```
+
+For unit testing the logic inside your callback, extract it into a pure function:
+
+```dart
+// Testable — no workmanager dependency
+Future<SyncResult> syncPendingExpenses(ExpenseApi api, LocalStore store) async {
+  final pending = await store.getPending();
+  int synced = 0;
+  for (final expense in pending) {
+    try {
+      await api.upload(expense);
+      await store.markSynced(expense.id);
+      synced++;
+    } catch (_) {
+      break; // will retry next time
+    }
+  }
+  return SyncResult(total: pending.length, synced: synced);
+}
+
+// In tests:
+test('syncs pending expenses and marks them done', () async {
+  final api = FakeExpenseApi();
+  final store = FakeLocalStore(pending: [mockExpense1, mockExpense2]);
+
+  final result = await syncPendingExpenses(api, store);
+
+  expect(result.synced, 2);
+  expect(store.getPending(), isEmpty);
+});
+```
+
+**Rule:** Never test the WorkManager scheduling itself — that's the plugin's responsibility. Test your business logic by extracting it into pure functions that take dependencies as parameters.
+
+---
+
+> **🔀 Coming from TypeScript?**
+>
+> Background processing in Flutter maps to several web concepts:
+> - **`Isolate.run`** ≈ **Web Workers** — run CPU-heavy code off the main thread. Same constraint: no DOM access (no Flutter plugins).
+> - **`workmanager`** ≈ **Service Workers + Background Sync API** — the OS wakes your code to do work even when the app/tab is closed.
+> - **FCM `onBackgroundMessage`** ≈ **Push API + Service Worker push event** — handle push notifications without the page being open.
+>
+> The biggest difference: in web, Service Workers can run for as long as the browser allows (often minutes). On mobile, the OS is much more aggressive — iOS gives you 30 seconds, and even Android's 10-minute limit is enforced. Mobile background processing is a constant negotiation with the OS for execution time.
+
+---
+
 ## Lab — Profile the Expense Tracker
 
 1. Run the Expense Tracker in `--profile` mode
@@ -819,6 +1155,8 @@ Run with vs without `itemExtent: 72` and compare.
 8. Firebase Performance's `HttpMetric` tracks an API call's duration. Sentry's `tracesSampleRate: 0.2` samples 20% of transactions. Why don't you sample at 100%? What's the tradeoff?
 9. Your team's performance budget says cold start must be under 2 seconds and screen transitions under 300ms. A new feature adds 500ms to cold start. What do you do — ship it or optimize? How do you measure cold start time?
 10. `SentryNavigatorObserver` is added to your `GoRouter`. What does it automatically create for every route navigation? How does this help when investigating a crash that happened on a specific screen?
+11. Your Expense Tracker syncs pending expenses to the server using `workmanager`. The callback dispatcher runs in a fresh isolate. Can it access your Riverpod providers or `get_it` service locator? What must it do instead to get a Dio client and database connection?
+12. On iOS, `BGAppRefreshTask` gives your app ~30 seconds of background execution. On Android, WorkManager gives ~10 minutes. Your sync task takes 2 minutes for users with 500+ pending expenses. How do you handle this platform gap? What happens on iOS if your task repeatedly exceeds its time limit?
 
 ---
 

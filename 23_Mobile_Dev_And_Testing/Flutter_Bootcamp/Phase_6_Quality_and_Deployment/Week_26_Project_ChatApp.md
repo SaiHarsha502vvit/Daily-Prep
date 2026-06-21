@@ -1145,6 +1145,63 @@ class ChatMediaService {
 
 ---
 
+## Pre-Launch Checklist — The Shipping Gate
+
+Before you submit to app stores, run through this checklist. Every item exists because real apps have been rejected or pulled for missing it.
+
+### Google Play Store
+
+- [ ] **App signing:** Upload key registered in Google Play Console, signing key managed by Google (Play App Signing)
+- [ ] **Target API level:** Must target the current required `targetSdkVersion` (Google enforces this annually — check the current requirement)
+- [ ] **64-bit support:** Flutter handles this by default with `flutter build appbundle`, but verify if you have native dependencies
+- [ ] **Content rating questionnaire:** Complete the IARC questionnaire in Play Console — without it, your app can be removed
+- [ ] **Data safety form:** Declare all data collected, shared, and security practices. If you use Firebase Analytics, Crashlytics, or FCM, you're collecting data — disclose it
+- [ ] **Privacy policy URL:** Required if your app collects any personal data. Must be a publicly accessible URL, not a PDF
+- [ ] **App screenshots:** At least 2 screenshots per form factor. Recommended: phone (16:9) + 7" tablet + 10" tablet
+- [ ] **Store listing:** Short description (80 chars), full description (4000 chars), feature graphic (1024×500)
+- [ ] **App category and tags:** Choose carefully — this affects search discoverability
+- [ ] **Testing track:** Use Internal Testing → Closed Testing → Open Testing → Production. Never go straight to Production
+
+### Apple App Store
+
+- [ ] **Apple Developer Account:** $99/year enrolled in the Apple Developer Program
+- [ ] **App Store Connect metadata:** App name, subtitle (30 chars), promotional text, description, keywords (100 chars)
+- [ ] **Screenshots:** Required for 6.7" (iPhone 15 Pro Max) and 5.5" (iPhone 8 Plus) at minimum. iPad if you support it
+- [ ] **App preview video:** Optional but strongly recommended — 15-30 second video showing your app in action
+- [ ] **Privacy nutrition labels:** Declare data types collected (contact info, usage data, diagnostics, etc.) and whether they're linked to identity
+- [ ] **Export compliance:** If your app uses encryption (HTTPS counts), you need to declare it. Most apps select "Yes, but only standard encryption" — this avoids the full export compliance review
+- [ ] **App Review guidelines:** Read Apple's [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) — common rejection reasons:
+  - Crashes or bugs during review
+  - Placeholder content or lorem ipsum
+  - Login required but no demo account provided
+  - Missing purpose string for camera/photos/location permissions
+  - App is too similar to a web wrapper (must provide native value)
+- [ ] **TestFlight beta:** Always run a TestFlight beta with real users before submitting to App Review
+
+### Privacy Policy
+
+Your privacy policy must cover:
+
+- What data you collect (user email, device info, crash logs, analytics events)
+- Why you collect it (authentication, crash reporting, feature improvement)
+- Third-party SDKs that collect data (Firebase Analytics, Crashlytics, Sentry, AdMob)
+- How long you retain data
+- How users can request data deletion (required by GDPR and App Store)
+- Contact information
+
+**Rule:** If you use Firebase, you're collecting data. Firebase Analytics collects device info, app usage, and crash data by default. Your privacy policy must disclose this even if you never wrote a single analytics call yourself.
+
+### App Store Optimization (ASO) Basics
+
+- **Title:** Include your primary keyword naturally (e.g., "ExpenseTrack — Budget & Spending Tracker")
+- **Subtitle (iOS) / Short Description (Android):** Your second-most important keyword opportunity
+- **Keywords (iOS):** 100 characters total, comma-separated, no spaces after commas. Don't repeat words from your title
+- **Description:** First 1-3 lines matter most (visible without expanding). Lead with the core value proposition
+- **Localization:** If targeting multiple countries, localize at minimum the title, subtitle, and screenshots — even rough translations outperform English-only in non-English markets
+- **Category:** Pick the most specific category. "Finance" for expense tracker, not "Utilities"
+
+---
+
 ## Bootcamp Complete
 
 You've covered 26 weeks of Flutter — from `void main()` to a production-grade enterprise chat app with:
@@ -1159,9 +1216,9 @@ You've covered 26 weeks of Flutter — from `void main()` to a production-grade 
 | Phase 6 | Testing, profiling, CI/CD, chat | APM/Sentry, contract tests, staged rollouts, security hardening |
 
 **What's next:**
-- Study platform channels for native iOS/Android integration
 - Explore WebSocket architecture for real-time beyond Firestore
 - Implement end-to-end encryption with Signal Protocol
 - Build a design system package shared across multiple apps
+- Write federated plugins that work on all platforms (Android, iOS, Web, Desktop)
 - Practice system design interviews with mobile architecture questions
 - Ship an app to real users and learn from production metrics

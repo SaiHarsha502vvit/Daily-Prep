@@ -93,7 +93,7 @@ Use Cubit when there's only one trigger. Use full BLoC when multiple event types
 
 ---
 
-## Week 18 — Clean Architecture + SOLID
+## Week 18 — Clean Architecture + SOLID + Platform Channels
 
 **The 3 Layers:**
 
@@ -281,6 +281,7 @@ Presentation: BLoC for expense state, Cubit for UI state (selected month, select
 After this phase:
 - You understand BLoC and can implement it from scratch
 - You can structure a feature using clean architecture
+- You understand platform channels (MethodChannel, EventChannel, Pigeon) and where they fit in the architecture
 - You can write custom animations and CustomPainter widgets
 - You can add Lottie animations
 - You understand SOLID principles and can explain each with a Flutter example

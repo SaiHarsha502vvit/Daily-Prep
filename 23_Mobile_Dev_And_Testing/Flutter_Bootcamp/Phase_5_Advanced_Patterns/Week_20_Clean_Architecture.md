@@ -986,6 +986,330 @@ class ExpenseRepository {
 
 ---
 
+## 12. Platform Channels — Crossing the Native Bridge
+
+> 📄 **Flutter Docs:**
+> *"Platform channels allow Flutter to call platform-specific APIs on Android and iOS. They provide a simple mechanism for communicating between your Dart code and your platform-specific host code."*
+
+Flutter gives you 95% of what you need. But some things live on the other side of the wall — battery level, biometric authentication, Bluetooth pairing, NFC, native camera controls, platform-specific encryption APIs. Platform channels are how you reach across.
+
+**The mental model:**
+
+```
+Dart (your Flutter code)
+  │
+  │  MethodChannel / EventChannel
+  │  (async message passing, like postMessage in web)
+  │
+  ▼
+Native Host (Kotlin on Android, Swift on iOS)
+  │
+  ▼
+Platform APIs (Android SDK / iOS SDK)
+```
+
+It's not a function call. It's async message passing — you send a method name + arguments as a serialized message, the native side handles it, and sends back a result. Like `postMessage` between an iframe and its parent in web development.
+
+---
+
+### MethodChannel — Call Native, Get a Result
+
+**Dart side — sending the request:**
+
+```dart
+import 'package:flutter/services.dart';
+
+class BatteryPlatformDataSource {
+  static const _channel = MethodChannel('com.myapp/battery');
+
+  Future<int> getBatteryLevel() async {
+    try {
+      final int level = await _channel.invokeMethod('getBatteryLevel');
+      return level;
+    } on PlatformException catch (e) {
+      throw BatteryException('Failed to get battery: ${e.message}');
+    }
+  }
+}
+```
+
+**Android side — Kotlin handler in `MainActivity.kt`:**
+
+```kotlin
+// android/app/src/main/kotlin/.../MainActivity.kt
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
+import android.os.BatteryManager
+import android.content.Context
+
+class MainActivity : FlutterActivity() {
+    private val CHANNEL = "com.myapp/battery"
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "getBatteryLevel" -> {
+                        val batteryManager =
+                            getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                        val level = batteryManager
+                            .getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
+                        if (level != -1) {
+                            result.success(level)
+                        } else {
+                            result.error("UNAVAILABLE", "Battery level not available", null)
+                        }
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+}
+```
+
+**iOS side — Swift handler in `AppDelegate.swift`:**
+
+```swift
+// ios/Runner/AppDelegate.swift
+import Flutter
+import UIKit
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+    override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        let controller = window?.rootViewController as! FlutterViewController
+        let batteryChannel = FlutterMethodChannel(
+            name: "com.myapp/battery",
+            binaryMessenger: controller.binaryMessenger
+        )
+
+        batteryChannel.setMethodCallHandler { (call, result) in
+            switch call.method {
+            case "getBatteryLevel":
+                UIDevice.current.isBatteryMonitoringEnabled = true
+                let level = Int(UIDevice.current.batteryLevel * 100)
+                if level >= 0 {
+                    result(level)
+                } else {
+                    result(FlutterError(
+                        code: "UNAVAILABLE",
+                        message: "Battery level not available",
+                        details: nil
+                    ))
+                }
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
+
+        GeneratedPluginRegistrant.register(with: self)
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+}
+```
+
+**Critical rules:**
+- The channel name (`com.myapp/battery`) must match exactly on both sides — it's a string key, not a type.
+- Communication is always async. `invokeMethod` returns a `Future`.
+- Only standard types cross the bridge: `null`, `bool`, `int`, `double`, `String`, `Uint8List`, `Int32List`, `Float64List`, `List`, `Map`. No custom Dart classes.
+- Always handle `PlatformException` — the native side might not implement the method.
+
+---
+
+### EventChannel — Stream Continuous Native Events
+
+MethodChannel is request/response. EventChannel is a persistent stream — battery level changes, GPS updates, sensor readings, Bluetooth scan results.
+
+```dart
+class BatteryStreamDataSource {
+  static const _eventChannel = EventChannel('com.myapp/battery_stream');
+
+  Stream<int> watchBatteryLevel() {
+    return _eventChannel
+        .receiveBroadcastStream()
+        .map((event) => event as int);
+  }
+}
+```
+
+**Android Kotlin side:**
+
+```kotlin
+EventChannel(flutterEngine.dartExecutor.binaryMessenger, "com.myapp/battery_stream")
+    .setStreamHandler(object : EventChannel.StreamHandler {
+        private var receiver: BroadcastReceiver? = null
+
+        override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+            receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                    events.success(level)
+                }
+            }
+            registerReceiver(receiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        }
+
+        override fun onCancel(arguments: Any?) {
+            unregisterReceiver(receiver)
+            receiver = null
+        }
+    })
+```
+
+**Rule:** `onCancel` is called when the Dart `StreamSubscription` is cancelled. You MUST clean up native resources there — unregister receivers, stop location updates, close connections. Failing to do so leaks native resources.
+
+---
+
+### Where Platform Channels Fit in Clean Architecture
+
+This is why platform channels are in the Clean Architecture week. They are a **data source** — they belong in the data layer, behind a repository abstraction.
+
+```
+Presentation Layer
+  └─ BatteryBloc
+       └─ uses GetBatteryLevel (UseCase)
+
+Domain Layer
+  └─ BatteryRepository (abstract — pure Dart interface)
+       └─ Stream<int> watchBatteryLevel()
+       └─ Future<int> getBatteryLevel()
+
+Data Layer
+  └─ BatteryRepositoryImpl implements BatteryRepository
+       └─ BatteryPlatformDataSource (wraps MethodChannel + EventChannel)
+           └─ MethodChannel('com.myapp/battery')
+           └─ EventChannel('com.myapp/battery_stream')
+```
+
+The domain layer doesn't know that battery data comes from a platform channel. It could come from a mock, a WebSocket, or a REST API — the domain doesn't care. This means:
+- Unit tests for `GetBatteryLevel` use case need zero native code
+- You can swap the platform implementation without touching business logic
+- The BLoC never imports `package:flutter/services.dart`
+
+---
+
+### Pigeon — Type-Safe Code Generation
+
+Hand-written channels are stringly-typed. You pass `'getBatteryLevel'` as a string, and if you misspell it, you get a runtime error, not a compile error. Pigeon fixes this.
+
+**Define your API in Dart:**
+
+```dart
+// pigeons/battery_api.dart
+import 'package:pigeon/pigeon.dart';
+
+class BatteryInfo {
+  final int level;
+  final bool isCharging;
+  final String? powerSource;
+
+  BatteryInfo({
+    required this.level,
+    required this.isCharging,
+    this.powerSource,
+  });
+}
+
+@HostApi()
+abstract class BatteryHostApi {
+  BatteryInfo getBatteryInfo();
+}
+```
+
+**Run code generation:**
+
+```bash
+dart run pigeon --input pigeons/battery_api.dart
+```
+
+This generates:
+- `lib/src/battery_api.g.dart` — Dart client code (type-safe, no string method names)
+- `android/app/src/main/kotlin/.../BatteryApi.g.kt` — Kotlin implementation interface
+- `ios/Runner/BatteryApi.g.swift` — Swift implementation interface
+
+**When to use Pigeon vs raw MethodChannel:**
+
+| | Raw MethodChannel | Pigeon |
+|---|---|---|
+| Setup | Zero — just use `MethodChannel` | Needs code gen step |
+| Type safety | Stringly-typed | Compile-time checked |
+| Complex types | Manual serialization | Auto-generated |
+| Best for | One-off simple calls | Rich API surfaces with multiple methods and custom types |
+
+**Rule:** If you're passing more than two arguments or returning a custom object, use Pigeon. The 10 minutes of setup saves hours of debugging serialization errors.
+
+---
+
+### Plugin vs Custom Channel
+
+Before writing a custom channel, check [pub.dev](https://pub.dev):
+
+| Need | Plugin to use | Don't write your own |
+|---|---|---|
+| Battery | `battery_plus` | ✓ |
+| GPS/Location | `geolocator` | ✓ |
+| Biometrics | `local_auth` | ✓ |
+| Camera | `camera` | ✓ |
+| Bluetooth | `flutter_blue_plus` | ✓ |
+| Sensors | `sensors_plus` | ✓ |
+
+**Write a custom channel when:**
+- No plugin exists for your specific native API
+- The existing plugin is abandoned or doesn't support your platform version
+- You need very specific native behavior the plugin doesn't expose
+- Your company has proprietary native SDKs you need to bridge
+
+---
+
+### Testing Platform Channels
+
+You don't test the native side from Dart — you mock the channel:
+
+```dart
+void main() {
+  late BatteryPlatformDataSource dataSource;
+
+  setUp(() {
+    dataSource = BatteryPlatformDataSource();
+
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('com.myapp/battery'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'getBatteryLevel') {
+          return 85;
+        }
+        return null;
+      },
+    );
+  });
+
+  test('getBatteryLevel returns native value', () async {
+    final level = await dataSource.getBatteryLevel();
+    expect(level, 85);
+  });
+}
+```
+
+In Clean Architecture, you test at the repository level with a mock data source — the channel is an implementation detail that the rest of your code never sees.
+
+---
+
+> **🔀 Coming from TypeScript / React Native?**
+>
+> Platform channels are Flutter's equivalent of React Native's **Native Modules** (old architecture) or **Turbo Modules** (new architecture). The core difference: React Native uses a JSON bridge that serializes everything, while Flutter's platform channels use a binary codec (`StandardMessageCodec`) that's faster for large payloads. Pigeon is conceptually similar to React Native's **Codegen** in the new architecture — both generate type-safe native interfaces from a declaration file.
+>
+> In web TypeScript, the closest analogy is `postMessage` between a web page and a Web Worker or iframe — async message passing with serialization constraints.
+
+---
+
 ## Lab — Refactor Cart to Clean Architecture
 
 Take the shopping cart from Phase 2 and refactor it:
@@ -1025,6 +1349,8 @@ That's dependency inversion working correctly.
 9. `sealed class Result<T>` with `Success<T>` and `Failure<T>` — how does this change your BLoC's event handlers? What does it replace?
 10. `FeatureFlagService` wraps Firebase Remote Config. You gate a new payment flow behind `enable_new_checkout`. How do you roll it out to 10% of users? What happens to the other 90%?
 11. In a multi-module architecture with `packages/core/` and `packages/features/`, the `auth` feature needs to notify `expenses` when the user logs out. But features can't import each other. How do abstract `Port` interfaces in `core_domain` solve this?
+12. Your app needs to read the device's battery level. In Clean Architecture, which layer does the `MethodChannel` call live in — domain, data, or presentation? Draw the dependency chain from BLoC to native Kotlin code. Why does the domain layer never import `package:flutter/services.dart`?
+13. You're building a platform channel that sends a `User` object with 6 fields between Dart and native code. Should you use a raw `MethodChannel` with a `Map`, or Pigeon? What specific problem does Pigeon solve that raw channels don't?
 
 ---
 

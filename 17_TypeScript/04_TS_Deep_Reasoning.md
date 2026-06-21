@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_TS_Decorators_Metaprogramming.md)
 
 # Chapter 4 — TypeScript Deep Reasoning: The Questions That Freeze People
 

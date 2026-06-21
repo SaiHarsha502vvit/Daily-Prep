@@ -379,11 +379,9 @@ You are now a Flutter developer who can build production apps. Not a tutorial co
 
 **Deepen your Dart:**
 - Dart macros (code generation, coming to mainstream Dart)
-- Dart isolates (true parallelism for heavy computation)
 - Dart FFI (call native C/C++ code from Dart)
 
-**Platform-specific:**
-- Platform channels (call native Android/iOS APIs from Flutter)
+**Platform-specific (building on Week 20's platform channels and Week 24's background processing):**
 - Federated plugins (write Flutter plugins that work on all platforms)
 - Flutter Web: differences from mobile Flutter, WASM
 
