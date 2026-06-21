@@ -929,6 +929,129 @@ What `USER` does NOT protect against: capabilities granted to the container (e.g
 
 ---
 
+## Section Challenges
+
+### 🔬 Challenge 1 — Multi-Stage Build Size Diagnosis
+
+> You have a Node.js API image that is 1.2 GB. A colleague says
+> "just add a .dockerignore" — the image drops to 950 MB. Still too large.
+> Your tech lead says "use multi-stage." Walk through WHY the image is
+> large and what multi-stage actually changes at the layer level.
+
+<details>
+<summary>Answer</summary>
+
+```
+WHY 1.2 GB BEFORE DOCKERIGNORE:
+  Docker COPY . . without .dockerignore copies EVERYTHING in the build
+  context: node_modules/, .git/, test fixtures, local env files, seed data.
+  node_modules alone is often 400-600 MB for a medium Node project.
+  .git history adds another 50-200 MB.
+  The .dockerignore drops these from the COPY — correct first step.
+
+WHY STILL 950 MB AFTER .DOCKERIGNORE:
+  Even without local node_modules, the Dockerfile runs npm install INSIDE
+  the image, pulling ALL dependencies (including devDependencies: jest,
+  ts-node, eslint, prettier, ts-jest — typically 200-400 MB of dev tools).
+  The base image (node:18) is itself ~950 MB.
+
+MULTI-STAGE: WHAT ACTUALLY CHANGES
+
+Stage 1 (builder):
+  FROM node:18 AS builder
+  COPY package*.json ./
+  npm ci                    # installs ALL deps including devDeps
+  COPY . .
+  npm run build             # TypeScript compiles to /dist
+
+Stage 2 (production):
+  FROM node:18-alpine        # alpine: ~50 MB vs 950 MB for slim debian
+  COPY package*.json ./
+  npm ci --omit=dev          # only production deps (~50-100 MB)
+  COPY --from=builder /app/dist ./dist
+
+WHAT THE FINAL IMAGE CONTAINS:
+  - node:18-alpine base: ~50 MB
+  - Production node_modules only: ~80 MB
+  - Compiled JS in /dist: ~5 MB
+  TOTAL: ~135 MB vs 950 MB
+
+LAYER MECHANICS:
+  Multi-stage doesn't "optimize" — it THROWS AWAY the builder stage.
+  Stage 1 can be 2 GB of build tools; Stage 2 starts fresh from alpine.
+  Docker never includes Stage 1 in the final image push.
+
+FAILURE BOUNDARY:
+  If your app dynamically requires files from its source tree at runtime
+  (e.g., reads markdown files from __dirname), multi-stage breaks because
+  only /dist is copied. Always check which files the app reads at runtime,
+  not just at build time.
+```
+
+</details>
+
+---
+
+### 🔬 Challenge 2 — Docker Network Choice: Bridge vs Host
+
+> A high-frequency trading service running in Docker shows 15% higher
+> latency than the same binary running on bare metal. A network engineer
+> says "switch from bridge to host networking." The security team objects.
+> Explain why bridge adds latency and what you actually lose with host.
+
+<details>
+<summary>Answer</summary>
+
+```
+WHY BRIDGE ADDS LATENCY:
+  Bridge networking uses Linux namespaces + a virtual network interface (veth pair).
+  Each packet from container → host → external destination crosses:
+    1. Container's eth0 (virtual interface in container namespace)
+    2. veth peer on the host-side bridge (docker0)
+    3. NAT (iptables MASQUERADE rule) to translate container IP → host IP
+    4. Host's physical NIC
+
+  Each crossing involves:
+  - Namespace context switch (kernel crosses from container ns to host ns)
+  - iptables rules evaluation (NAT + forwarding rules, often 50-100 rules)
+  - Memory copy for packet headers
+
+  For most workloads: ~0.1-0.3ms overhead. Negligible.
+  For HFT: at 10,000 messages/second, that's 1-3 seconds of pure
+  overhead per second. Unacceptable.
+
+WHAT HOST NETWORKING DOES:
+  docker run --network=host myapp
+  The container shares the HOST's network namespace.
+  No veth pair, no bridge, no NAT.
+  Container's process opens port 8080 directly on the host.
+  Latency: same as running the binary bare metal.
+
+WHAT YOU LOSE WITH HOST:
+  1. PORT ISOLATION: two containers running --network=host cannot
+     both bind port 8080. One wins; the other fails at startup.
+     → With bridge, each container has its own IP; port conflicts
+     are per-IP, not per-host.
+
+  2. NETWORK NAMESPACE ISOLATION: if the container process opens a
+     raw socket or sniffs traffic, it sees ALL host network traffic.
+     A compromised container can monitor other services' packets.
+
+  3. PORTABILITY: --network=host works only on Linux.
+     Docker Desktop (Mac/Windows) runs containers in a Linux VM;
+     host networking means the VM's host, not your Mac.
+     The promise "runs the same everywhere" breaks.
+
+RESOLUTION: For HFT, host networking is the right call with:
+  - One service per container (port conflict prevention).
+  - Read-only filesystem + seccomp profile (reduce blast radius of isolation loss).
+  - Deploy on Linux only (document Mac/Windows incompatibility).
+```
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                        | Related Content                                                               |

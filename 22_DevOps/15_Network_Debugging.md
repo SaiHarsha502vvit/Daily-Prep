@@ -414,6 +414,170 @@ kubectl exec -it myapp-pod -- tcpdump -i eth0 port 8080 -n -c 20
 
 ---
 
+## Section Challenges
+
+### 🔬 Challenge 1 — Diagnose a Silent Failure
+
+> Your frontend calls `api.myapp.com/v1/users`. The browser console shows
+> a network error but no HTTP status code. The backend team says their service
+> is healthy. Walk through your debugging methodology from Layer 1 up.
+
+<details>
+<summary>Answer</summary>
+
+```
+LAYER 1/2 — Physical/Link:
+  Is the machine on a network at all?
+  ip addr (Linux) / ipconfig (Windows) — do you have a valid IP?
+  If no IP or 169.254.x.x (APIPA): DHCP failed or cable/WiFi is down.
+
+LAYER 3 — IP reachability:
+  ping 8.8.8.8
+  If fails: default route problem. Check: ip route | grep default
+  If passes: IP stack is healthy. Move up.
+
+LAYER 3 → DNS:
+  dig api.myapp.com +short
+  NXDOMAIN: domain doesn't exist for your DNS server.
+    Try: dig @1.1.1.1 api.myapp.com — if Cloudflare resolves it,
+    your corporate DNS is missing the record.
+  Timeout: your DNS server is unreachable.
+    Check: cat /etc/resolv.conf — is the nameserver correct?
+
+LAYER 4 — TCP:
+  nc -zv api.myapp.com 443
+  "Connection refused": port 443 not listening on the server.
+    → backend service is down, nginx/envoy not running, or wrong port.
+  "No route to host": firewall dropping packets before TCP handshake.
+  Timeout (no response at all): stateful firewall silently dropping.
+    → try traceroute to find where packets stop.
+
+LAYER 7 — TLS:
+  openssl s_client -connect api.myapp.com:443
+  Certificate expired: TLS handshake fails before any HTTP.
+  Self-signed cert: client rejects; browser shows "network error" not 400/500.
+  SNI mismatch: wrong cert returned for this hostname.
+
+WHY "no HTTP status code":
+  The browser only shows an HTTP status if the TCP+TLS handshake
+  succeeded AND the server returned a response. "Network error" in
+  the console means the connection NEVER reached HTTP — the failure
+  was below Layer 7. This is why you always debug bottom-up.
+```
+
+</details>
+
+---
+
+### 🔬 Challenge 2 — Intermittent Connection Drops
+
+> A service drops connections randomly, roughly once every 5 minutes.
+> `ping` to the server always works. `curl` to the HTTPS endpoint
+> works 95% of the time. What are the most likely causes and how
+> do you isolate each?
+
+<details>
+<summary>Answer</summary>
+
+```
+PING WORKS but HTTPS intermittently fails → problem is above Layer 3.
+
+CAUSE 1 — TCP keepalive timeout / idle connection recycled:
+  Load balancers and firewalls have idle TCP timeout (often 300s = 5 min).
+  If the client holds a connection open without keepalive, the LB silently
+  drops it after the timeout. Next request on the stale connection → RST.
+
+  Diagnose:
+  → tcpdump -i eth0 'tcp[13] == 4' (RST flag) — watch for RST packets
+    arriving from the load balancer at ~5-minute intervals.
+  Fix: enable TCP keepalive on the client socket, or configure Connection
+  pool to discard connections older than 4.5 minutes.
+
+CAUSE 2 — TLS session timeout:
+  TLS session tickets expire (default: 24h, but some servers set lower).
+  Less likely at 5-minute intervals, but check if the pattern correlates
+  with TLS renegotiation in the server logs.
+
+CAUSE 3 — Load balancer health-check flapping:
+  If the backend fails a health check briefly, LB marks it unhealthy and
+  stops sending traffic → next connection hangs/times out.
+  Diagnose: check LB access logs for 5xx or connection-draining events
+  at the same timestamps as failures.
+
+CAUSE 4 — OOM killer or process restart:
+  App server runs out of memory every 5 minutes and restarts.
+  → Check: journalctl -u myapp.service | grep -i 'killed\|OOM'
+  → uptime or systemctl show myapp.service --property=ActiveState
+
+ISOLATION APPROACH:
+  1. tcpdump for RST packets during a failure window.
+  2. Check LB access logs for 5xx at failure times.
+  3. Check server memory/CPU usage graphs.
+  4. Add "X-Request-ID" header and correlate client-side failure timestamps
+     with server-side logs to confirm which layer drops.
+```
+
+</details>
+
+---
+
+### 🔬 Challenge 3 — Kubernetes Pod Can't Reach External API
+
+> A pod running in Kubernetes calls `https://api.stripe.com` and gets
+> `connection timed out`. The same curl works from a developer's laptop.
+> The pod's other external calls (to S3) work fine. What is the specific
+> debugging path inside a K8s cluster?
+
+<details>
+<summary>Answer</summary>
+
+```
+OBSERVATION: S3 works, Stripe doesn't → it's NOT a blanket egress block.
+Specific destination is blocked. This points to NetworkPolicy or a
+firewall rule targeting specific IPs/CIDRs.
+
+STEP 1 — Verify egress from inside the pod:
+  kubectl exec -it <pod-name> -n <namespace> -- /bin/sh
+  (if no curl/ping: kubectl run debug --rm -it --image=nicolaka/netshoot)
+
+  curl -v https://api.stripe.com      # timeout?
+  ping 104.18.0.0                     # Stripe's anycast IP — ICMP blocked?
+
+STEP 2 — Check NetworkPolicy:
+  kubectl get networkpolicy -n <namespace>
+  kubectl describe networkpolicy <name>
+
+  Look for:
+  - egress rules that allow only specific CIDRs (if S3 CIDR is in the allow
+    list but Stripe's CIDR isn't)
+  - a "deny-all-egress" policy with specific whitelist
+  - policies that allow port 443 to S3 endpoints only (via CIDR)
+
+STEP 3 — Check if the CNI enforces egress:
+  Not all CNIs enforce NetworkPolicy equally. Confirm with:
+  kubectl get pods -n kube-system | grep -E 'cilium|calico|weave'
+  A Calico/Cilium CNI enforces NetworkPolicy properly; Flannel alone does not.
+
+STEP 4 — Check cluster-level firewall (cloud provider):
+  If NetworkPolicy is clean, check the VPC/security group rules.
+  Some cloud setups block egress on 443 to non-approved destinations at
+  the VPC NAT Gateway level (separate from K8s NetworkPolicy).
+
+STEP 5 — DNS for external names:
+  nslookup api.stripe.com (from inside the pod)
+  If NXDOMAIN: the CoreDNS forward config may not forward external queries.
+  Check: kubectl get configmap coredns -n kube-system -o yaml
+  Look for "forward" entry pointing to an upstream resolver that works.
+
+ROOT CAUSE (most common): A NetworkPolicy with egress CIDR whitelist was
+written for S3 but forgot to include Stripe's IP range. Fix: add Stripe
+CIDR block (or use FQDN-based policy with Cilium's CiliumNetworkPolicy).
+```
+
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                       | Related Content                                                                |
