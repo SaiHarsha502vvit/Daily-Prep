@@ -1,13 +1,26 @@
 # Curriculum Buildout Plan — Populating S01-S08 CSE Course Shells
 
-> **Status:** Active plan (June 2026). Replaces "12 TBD shells" line in `02_KNOWN_ISSUES.md` — actual count is 30 stubs.
+> **Status:** Phase 1 + Phase 2 COMPLETE (June 2026). All 15 Tier-A wrappers shipped. Phase 3 (Tier-B bridging) and Phase 4 (Tier-C ground-up) remain.
+
+## Progress Snapshot (after Phase 2)
+
+| Tier | Total | Done | Remaining |
+|------|-------|------|-----------|
+| Built before this work (CSE401 OS, CSE402 Networks) | 2 | 2 | 0 |
+| **Tier A — Wrapper courses** | 15 | **15 ✅** | 0 |
+| **Tier B — Partial content + bridging chapters** | 10 | 0 | 10 |
+| **Tier C — Ground-up content** | 4 | 0 | 4 |
+| **TOTAL** | 32 | **17 (53%)** | 14 |
+
+Tier-A wrappers completed: CSE102, CSE201, CSE202, CSE301, CSE302, CSE501, CSE502, CSE503, CSE504, CSE601, CSE602, CSE603, CSE604, CSE703, CSE804.
 
 ## Reality Check
 
 `_Curriculum/` is an 8-semester academic structure (S01-S08) with 4 CSE courses per semester = **32 courses total**. Current state:
 
 - **2 fully built** (~1000 lines each, CSE401 standard): CSE401 Operating Systems, CSE402 Computer Networks
-- **30 stubs** (~35-45 lines each): have title + description + learning outcomes + syllabus outline + linked content. Missing: week-by-week plan, section challenges, problem-set references, capstone connection
+- **15 wrapper courses** (180-360 lines each, ~3,500 lines total) added in Phase 1 + 2
+- **14 stubs** remaining: have title + description + learning outcomes + syllabus outline. Missing: week-by-week plan, section challenges, problem-set references, capstone connection
 
 ## Three-Tier Effort Classification
 
