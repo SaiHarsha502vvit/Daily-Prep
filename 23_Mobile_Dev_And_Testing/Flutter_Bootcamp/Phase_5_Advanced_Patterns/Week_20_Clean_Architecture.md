@@ -1302,6 +1302,661 @@ In Clean Architecture, you test at the repository level with a mock data source 
 
 ---
 
+### BasicMessageChannel — Arbitrary Messages, Either Direction
+
+Flutter has three channel types, not two. The third one — `BasicMessageChannel` — is for sending arbitrary messages in either direction without the request/response semantics of `MethodChannel`.
+
+```dart
+// For sending raw strings, JSON, binary blobs, or custom codec payloads
+const channel = BasicMessageChannel<String>(
+  'com.myapp/logging',
+  StringCodec(),
+);
+
+// Send Dart → Native (no expected response)
+await channel.send('User opened analytics dashboard');
+
+// Receive Native → Dart
+channel.setMessageHandler((String? message) async {
+  print('Got native message: $message');
+  return 'ack'; // optional reply
+});
+```
+
+**When to use BasicMessageChannel:**
+- Streaming logs from native to Dart (or vice versa)
+- Bidirectional communication where neither side is strictly the "caller"
+- Sending binary blobs that don't fit MethodChannel's request/response model
+- Bridging existing native messaging systems (NSNotificationCenter on iOS, LocalBroadcastManager on Android)
+
+---
+
+### Binary Codecs — Choosing the Right Serialization
+
+All channels go through a codec. Picking the right one matters for performance:
+
+| Codec | Use For | Wire Format | Performance |
+|---|---|---|---|
+| `StandardMessageCodec` (default) | Mixed types: maps, lists, primitives | Binary | Fast for typical payloads |
+| `StandardMethodCodec` | MethodChannel default | Wraps StandardMessageCodec | Same |
+| `JSONMessageCodec` | When native side expects JSON strings | UTF-8 JSON | Slower (string conversion) |
+| `JSONMethodCodec` | MethodChannel with JSON | UTF-8 JSON | Slower, but easier to debug |
+| `StringCodec` | Pure string passing | UTF-8 bytes | Fastest for strings |
+| `BinaryCodec` | Raw bytes (images, files) | Pass-through `ByteData` | Fastest, zero conversion |
+
+**Rule:** Use the default unless you have a reason. Switch to `BinaryCodec` for image/file blobs (avoids unnecessary serialization). Switch to `JSONMessageCodec` only when bridging an existing native system that already speaks JSON.
+
+```dart
+// Sending a 5MB image to native for processing
+const imageChannel = BasicMessageChannel<ByteData>(
+  'com.myapp/image_processor',
+  BinaryCodec(),
+);
+
+final imageBytes = await rootBundle.load('assets/photo.jpg');
+await imageChannel.send(imageBytes); // zero-copy on most platforms
+```
+
+---
+
+### Reverse Direction — Native Calling Dart
+
+`MethodChannel` is bidirectional. The native side can call methods on Dart, not just respond to them. This is critical for things like push notification taps, deep links, and native UI events.
+
+**Dart side — register the handler:**
+
+```dart
+class NotificationBridge {
+  static const _channel = MethodChannel('com.myapp/notifications');
+
+  void initialize() {
+    _channel.setMethodCallHandler(_handleNativeCall);
+  }
+
+  Future<dynamic> _handleNativeCall(MethodCall call) async {
+    switch (call.method) {
+      case 'onNotificationTapped':
+        final payload = call.arguments as Map;
+        final conversationId = payload['conversationId'] as String;
+        _navigateToConversation(conversationId);
+        return null;
+
+      case 'onDeepLink':
+        final url = call.arguments as String;
+        _router.go(url);
+        return null;
+
+      default:
+        throw MissingPluginException('Method ${call.method} not implemented');
+    }
+  }
+}
+```
+
+**Android Kotlin side — invoke Dart:**
+
+```kotlin
+class MyFirebaseMessagingService : FirebaseMessagingService() {
+    override fun onMessageReceived(message: RemoteMessage) {
+        // When user taps notification, invoke Dart
+        val channel = MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "com.myapp/notifications"
+        )
+        channel.invokeMethod("onNotificationTapped", message.data)
+    }
+}
+```
+
+**Critical gotcha:** Native → Dart calls only work when the Flutter engine is running. If the app is killed and a push notification arrives, you can't invoke Dart directly — you must queue the payload in native storage (SharedPreferences/UserDefaults) and let Dart consume it on next launch.
+
+---
+
+### Task Queues — Don't Block the Platform Thread
+
+By default, MethodChannel handlers run on the **platform thread** (Android: main thread, iOS: main UI thread). If your handler does heavy work — file I/O, network, computation — it blocks the UI of native overlay screens (system dialogs, app switcher).
+
+**The fix — `TaskQueue`:**
+
+```kotlin
+// Android
+val taskQueue = flutterEngine.dartExecutor.binaryMessenger.makeBackgroundTaskQueue()
+
+MethodChannel(
+    flutterEngine.dartExecutor.binaryMessenger,
+    "com.myapp/heavy_work",
+    StandardMethodCodec.INSTANCE,
+    taskQueue  // ← handler now runs on background thread
+).setMethodCallHandler { call, result ->
+    when (call.method) {
+        "processLargeFile" -> {
+            val path = call.argument<String>("path")!!
+            val processed = heavyFileProcessing(path) // safe to block here
+            result.success(processed)
+        }
+    }
+}
+```
+
+**Rule:** If your native handler takes more than 10ms, use a background TaskQueue. The `result.success()` callback is automatically marshalled back to the platform thread before reaching Dart.
+
+---
+
+### Complete Walkthrough — Biometric Authentication
+
+Theory's done. Let's build a real channel end-to-end. Goal: prompt fingerprint/Face ID, return `true`/`false`/`error`.
+
+**Step 1 — Define the contract in Dart:**
+
+```dart
+// lib/data/datasources/biometric_platform_datasource.dart
+sealed class BiometricResult {
+  const BiometricResult();
+}
+class BiometricSuccess extends BiometricResult { const BiometricSuccess(); }
+class BiometricFailure extends BiometricResult {
+  final String reason;
+  const BiometricFailure(this.reason);
+}
+class BiometricUnavailable extends BiometricResult {
+  const BiometricUnavailable();
+}
+
+class BiometricPlatformDataSource {
+  static const _channel = MethodChannel('com.myapp/biometric');
+
+  Future<BiometricResult> authenticate({required String reason}) async {
+    try {
+      final result = await _channel.invokeMethod<Map>('authenticate', {
+        'reason': reason,
+      });
+      return result?['success'] == true
+          ? const BiometricSuccess()
+          : BiometricFailure(result?['error'] as String? ?? 'Unknown');
+    } on PlatformException catch (e) {
+      if (e.code == 'NOT_AVAILABLE') return const BiometricUnavailable();
+      return BiometricFailure(e.message ?? 'Platform error');
+    }
+  }
+}
+```
+
+**Step 2 — Android implementation (`MainActivity.kt`):**
+
+```kotlin
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
+
+class MainActivity : FlutterFragmentActivity() {
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.myapp/biometric")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "authenticate") {
+                    val reason = call.argument<String>("reason") ?: "Authenticate"
+                    authenticate(reason, result)
+                }
+            }
+    }
+
+    private fun authenticate(reason: String, result: MethodChannel.Result) {
+        val biometricManager = androidx.biometric.BiometricManager.from(this)
+        when (biometricManager.canAuthenticate(
+            androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+        )) {
+            androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS -> {
+                val executor = ContextCompat.getMainExecutor(this)
+                val prompt = BiometricPrompt(this, executor,
+                    object : BiometricPrompt.AuthenticationCallback() {
+                        override fun onAuthenticationSucceeded(
+                            r: BiometricPrompt.AuthenticationResult
+                        ) {
+                            result.success(mapOf("success" to true))
+                        }
+                        override fun onAuthenticationError(code: Int, msg: CharSequence) {
+                            result.success(mapOf("success" to false, "error" to msg.toString()))
+                        }
+                    })
+
+                val info = BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Authenticate")
+                    .setSubtitle(reason)
+                    .setNegativeButtonText("Cancel")
+                    .build()
+
+                prompt.authenticate(info)
+            }
+            else -> result.error("NOT_AVAILABLE", "Biometrics not set up", null)
+        }
+    }
+}
+```
+
+**Step 3 — iOS implementation (`AppDelegate.swift`):**
+
+```swift
+import LocalAuthentication
+
+@main
+@objc class AppDelegate: FlutterAppDelegate {
+    override func application(/*...*/) -> Bool {
+        let controller = window?.rootViewController as! FlutterViewController
+        let channel = FlutterMethodChannel(
+            name: "com.myapp/biometric",
+            binaryMessenger: controller.binaryMessenger
+        )
+
+        channel.setMethodCallHandler { (call, result) in
+            guard call.method == "authenticate" else {
+                result(FlutterMethodNotImplemented); return
+            }
+            let args = call.arguments as? [String: Any]
+            let reason = args?["reason"] as? String ?? "Authenticate"
+
+            let context = LAContext()
+            var error: NSError?
+            if !context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+                result(FlutterError(code: "NOT_AVAILABLE", message: error?.localizedDescription, details: nil))
+                return
+            }
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, err in
+                DispatchQueue.main.async {
+                    result(["success": success, "error": err?.localizedDescription ?? ""])
+                }
+            }
+        }
+
+        return super.application(/*...*/)
+    }
+}
+```
+
+**Step 4 — Wire into Clean Architecture:**
+
+```dart
+// domain/repositories/auth_repository.dart
+abstract class AuthRepository {
+  Future<BiometricResult> authenticateWithBiometrics(String reason);
+}
+
+// data/repositories/auth_repository_impl.dart
+class AuthRepositoryImpl implements AuthRepository {
+  final BiometricPlatformDataSource _biometric;
+  AuthRepositoryImpl(this._biometric);
+
+  @override
+  Future<BiometricResult> authenticateWithBiometrics(String reason) {
+    return _biometric.authenticate(reason: reason);
+  }
+}
+
+// presentation/bloc/auth_bloc.dart — knows nothing about channels
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final AuthenticateWithBiometrics _useCase;
+  // ...
+}
+```
+
+**Notice:** The BLoC never imports `package:flutter/services.dart`. The use case never imports it. Only the data source touches the channel. This is Clean Architecture applied to the platform boundary.
+
+---
+
+### Federated Plugin Architecture — How Real Plugins Are Built
+
+When you publish a plugin to pub.dev that supports multiple platforms, you don't put all the code in one package. You use the **federated plugin architecture** — separate packages per platform.
+
+```
+my_battery_plugin/
+├── my_battery_plugin/                    ← app-facing package (the one users add)
+│   └── lib/my_battery_plugin.dart        ← high-level API
+│
+├── my_battery_plugin_platform_interface/ ← shared contract
+│   └── lib/my_battery_plugin_platform_interface.dart
+│       (abstract class MyBatteryPluginPlatform { ... })
+│
+├── my_battery_plugin_android/            ← Android implementation
+│   ├── lib/my_battery_plugin_android.dart
+│   └── android/src/main/kotlin/...
+│
+├── my_battery_plugin_ios/                ← iOS implementation
+│   ├── lib/my_battery_plugin_ios.dart
+│   └── ios/Classes/...
+│
+└── my_battery_plugin_web/                ← Web implementation (uses JS interop, not channels)
+```
+
+**Why this structure:**
+- A third party can write `my_battery_plugin_linux` without touching the original author's code
+- Each platform package can be updated independently
+- The app-facing package stays tiny — just imports the interface
+- Users can override the implementation in tests by setting `MyBatteryPluginPlatform.instance = MockMyBatteryPluginPlatform()`
+
+**Rule:** If your plugin only supports Android and iOS, you can skip federation. As soon as you add a third platform (Web, Windows, macOS, Linux), federate it — otherwise the package becomes unmaintainable.
+
+---
+
+### FFI — When Channels Are Too Slow
+
+For pure performance — calling C/C++/Rust code with zero serialization overhead — Flutter has `dart:ffi`. Use it when:
+- You need to call an existing C library (OpenSSL, SQLite, FFmpeg)
+- The data is large and serialization across the channel boundary would dominate
+- You're doing real-time work (audio processing, ML inference, image filters)
+
+```dart
+import 'dart:ffi';
+import 'package:ffi/ffi.dart';
+
+// Load the native library
+final dylib = Platform.isAndroid
+    ? DynamicLibrary.open('libimage_processing.so')
+    : DynamicLibrary.process();
+
+// Type-safe binding to a C function: int process_image(uint8_t* data, int length)
+typedef ProcessImageNative = Int32 Function(Pointer<Uint8>, Int32);
+typedef ProcessImageDart = int Function(Pointer<Uint8>, int);
+
+final processImage = dylib
+    .lookup<NativeFunction<ProcessImageNative>>('process_image')
+    .asFunction<ProcessImageDart>();
+
+// Zero-copy call — no serialization, no channel hop, runs at native speed
+final ptr = malloc<Uint8>(imageBytes.length);
+ptr.asTypedList(imageBytes.length).setAll(0, imageBytes);
+final result = processImage(ptr, imageBytes.length);
+malloc.free(ptr);
+```
+
+**Channels vs FFI decision:**
+
+| | Platform Channels | FFI |
+|---|---|---|
+| Best for | Calling platform APIs (camera, Bluetooth, biometrics) | Calling C/C++/Rust libraries |
+| Performance | ~1ms per call overhead | Direct call, nanoseconds |
+| Async | All calls are async | Synchronous by default |
+| Memory | Serialization required | Direct pointers, no copies |
+| Complexity | Lower (just register handler) | Higher (manual memory mgmt) |
+| Use when | Native SDK or platform feature | Performance-critical C library |
+
+---
+
+### Hot Reload Gotchas
+
+Platform channels survive hot reload, but the native handlers don't get re-registered. This causes:
+
+- **Symptom:** Channel call works on first run, hangs forever after hot reload
+- **Cause:** Hot reload swaps Dart code but doesn't restart the native side
+- **Fix:** Do a hot restart (R, not r) after touching any code that registers channel handlers
+
+**Other pitfalls:**
+- **Channel name collisions:** Always prefix with reverse-DNS (`com.mycompany.app/feature`). A second plugin using the same name silently overrides yours.
+- **Memory leaks in handlers:** Native handlers can capture the FlutterEngine or Activity context. Use weak references on iOS (`[weak self]`) and check `isDestroyed()` on Android before calling back.
+- **Forgotten `result.success()`:** Every code path in your handler MUST call `result.success()`, `result.error()`, or `result.notImplemented()` exactly once. Forgetting causes the Dart `Future` to hang forever. Calling twice crashes the app.
+- **Thread safety:** Always marshal `result` callbacks to the main thread on iOS (`DispatchQueue.main.async`). Calling from a background thread is undefined behavior.
+
+---
+
+### PlatformView — Embedding Native Views Inside Flutter
+
+Sometimes you don't want to *call* native code — you want to *display* a native view inside your Flutter UI. Examples: Google Maps, WebView, native camera preview, third-party SDK widgets that don't have a Flutter port.
+
+```dart
+// Dart side — declares where to put the native view
+class NativeMapView extends StatelessWidget {
+  const NativeMapView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const viewType = 'com.myapp/native_map';
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return AndroidView(
+        viewType: viewType,
+        creationParams: const {'lat': 37.7749, 'lng': -122.4194, 'zoom': 14},
+        creationParamsCodec: const StandardMessageCodec(),
+      );
+    }
+    return UiKitView(
+      viewType: viewType,
+      creationParams: const {'lat': 37.7749, 'lng': -122.4194, 'zoom': 14},
+      creationParamsCodec: const StandardMessageCodec(),
+    );
+  }
+}
+```
+
+**Android side — register a `PlatformViewFactory`:**
+
+```kotlin
+class NativeMapViewFactory : PlatformViewFactory(StandardMessageCodec.INSTANCE) {
+    override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
+        val params = args as Map<String, Any>
+        return NativeMapPlatformView(context, viewId, params)
+    }
+}
+
+class NativeMapPlatformView(
+    context: Context,
+    id: Int,
+    params: Map<String, Any>
+) : PlatformView {
+    private val mapView: MapView = MapView(context).apply {
+        // Configure with params
+    }
+    override fun getView(): View = mapView
+    override fun dispose() { mapView.onDestroy() }
+}
+
+// In MainActivity.kt configureFlutterEngine:
+flutterEngine.platformViewsController.registry
+    .registerViewFactory("com.myapp/native_map", NativeMapViewFactory())
+```
+
+#### Hybrid Composition vs Virtual Display vs Texture Layer Hybrid Composition
+
+Android offers three rendering modes for PlatformView. Choosing wrong = bad performance or broken accessibility.
+
+| Mode | How it works | Pros | Cons | Use when |
+|---|---|---|---|---|
+| **Virtual Display** (`AndroidView`) | Native view rendered to a virtual display, captured as a texture | Best perf, GPU-composited | Some input events broken, accessibility weak, keyboard issues | Read-only displays (maps, charts) — pre-Android 10 |
+| **Hybrid Composition** (`AndroidViewSurface` / `PlatformViewLink`) | Native view rendered directly, Flutter composes on top | Full input/a11y/keyboard support | 30-50% perf hit due to thread synchronization | Interactive native views (WebView, input fields) |
+| **Texture Layer Hybrid Composition** (default on Flutter 3.10+) | New default — best of both worlds, native rendered to texture but with full input/a11y | Near virtual-display perf + full input/a11y | Android 10+ only | Default choice on modern Android |
+
+**iOS:** No equivalent debate — `UiKitView` always uses hybrid composition (Apple doesn't expose a virtual display mode). Performance impact is smaller because UIKit composes well with Flutter's Metal rendering pipeline.
+
+**Rule:** Avoid PlatformView when a Flutter equivalent exists. A `WebView` PlatformView is the single biggest performance hit you can put in a Flutter app — every scroll causes a thread sync. If you must embed a WebView, consider keeping it isolated in its own route, not nested inside scrollable lists.
+
+---
+
+### Texture Widget — Streaming Native Pixels At 60fps
+
+For continuous pixel streams — camera preview, video playback, GPU-rendered content — `Texture` is the right primitive. Native code renders to a texture buffer, Flutter composes it into the widget tree like any other widget. No per-frame channel call needed.
+
+```dart
+class CameraPreview extends StatefulWidget {
+  @override
+  State<CameraPreview> createState() => _CameraPreviewState();
+}
+
+class _CameraPreviewState extends State<CameraPreview> {
+  static const _channel = MethodChannel('com.myapp/camera');
+  int? _textureId;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    // Native side creates texture, returns its ID
+    final id = await _channel.invokeMethod<int>('startCamera');
+    setState(() => _textureId = id);
+  }
+
+  @override
+  void dispose() {
+    _channel.invokeMethod('stopCamera', {'textureId': _textureId});
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_textureId == null) return const CircularProgressIndicator();
+    return Texture(textureId: _textureId!);
+  }
+}
+```
+
+**iOS — `FlutterTexture` protocol:**
+
+```swift
+class CameraTexture: NSObject, FlutterTexture {
+    private var pixelBuffer: CVPixelBuffer?
+
+    func copyPixelBuffer() -> Unmanaged<CVPixelBuffer>? {
+        guard let buffer = pixelBuffer else { return nil }
+        return Unmanaged.passRetained(buffer)
+    }
+
+    func updateFrame(_ newBuffer: CVPixelBuffer, registry: FlutterTextureRegistry, textureId: Int64) {
+        pixelBuffer = newBuffer
+        registry.textureFrameAvailable(textureId)  // Tells Flutter to redraw
+    }
+}
+```
+
+**Android — `SurfaceTextureEntry`:**
+
+```kotlin
+val textureEntry = flutterEngine.renderer.createSurfaceTexture()
+val surface = Surface(textureEntry.surfaceTexture())
+
+// Hand surface to camera2 API or MediaCodec
+camera.startCapture(surface)
+
+// Return textureEntry.id() to Dart
+result.success(textureEntry.id())
+```
+
+**Performance note:** A `Texture` widget can render at full display refresh rate (60/120fps) with zero channel overhead. The native side updates the buffer, Flutter's renderer reads it. This is how `camera`, `video_player`, and `webview_flutter` plugins achieve smooth playback.
+
+---
+
+### Plugin Publishing Workflow
+
+When your platform channel code matures into a reusable package, publish it. The workflow:
+
+**1. Bootstrap a plugin:**
+```bash
+flutter create --template=plugin --platforms=android,ios my_biometric_plugin
+```
+
+**2. Add metadata to `pubspec.yaml`:**
+```yaml
+name: my_biometric_plugin
+description: Production-ready biometric auth for Flutter
+version: 1.0.0
+homepage: https://github.com/you/my_biometric_plugin
+repository: https://github.com/you/my_biometric_plugin
+issue_tracker: https://github.com/you/my_biometric_plugin/issues
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.my_biometric_plugin
+        pluginClass: MyBiometricPlugin
+      ios:
+        pluginClass: MyBiometricPlugin
+```
+
+**3. Score well on pub.dev:**
+- ✓ Provide example app under `example/`
+- ✓ Add `CHANGELOG.md` with version notes
+- ✓ Add `LICENSE` (MIT/BSD/Apache-2.0)
+- ✓ Document with dartdoc comments on every public API
+- ✓ Aim for 130/140 score (the cap for plugins)
+
+**4. Validate before publishing:**
+```bash
+flutter pub publish --dry-run
+```
+
+**5. Publish:**
+```bash
+flutter pub publish
+```
+
+#### Melos — Monorepo Management for Federated Plugins
+
+Once you split into federated packages (interface + Android + iOS + main), you have 4+ pubspec.yaml files. Updating versions, running tests, and publishing across them is tedious. `melos` solves this:
+
+```yaml
+# melos.yaml
+name: my_biometric_workspace
+packages:
+  - packages/**
+
+scripts:
+  test:all:
+    run: melos exec --concurrency=1 -- "flutter test"
+  publish:all:
+    run: melos publish --no-private --yes
+  bump:
+    run: melos version --no-private
+```
+
+```bash
+melos bootstrap          # Links all local packages together
+melos run test:all       # Runs flutter test in every package
+melos run bump           # Bumps versions based on conventional commits
+melos run publish:all    # Publishes all changed packages to pub.dev
+```
+
+**Rule:** Use melos as soon as your plugin has more than one package. Without it, you'll forget to bump a dependency version and ship a broken federated plugin to pub.dev (a hassle to recover from — you cannot retract a published version, only mark it discontinued).
+
+---
+
+### Securing Platform Channels
+
+Channels are a privilege boundary. Your Dart code can be tampered with (apps can be repackaged). If your native code blindly trusts arguments from Dart, you have a vulnerability.
+
+**Threats and mitigations:**
+
+| Threat | Example | Mitigation |
+|---|---|---|
+| Path traversal | Dart passes `path: '../../../etc/passwd'` to native file reader | Validate paths stay within app sandbox |
+| SQL injection at channel boundary | Dart passes raw SQL string for native execution | Native side uses parameterized queries, never string concat |
+| Sensitive operation without auth | Channel call `deleteAllUserData` invoked from compromised Dart | Re-prompt biometrics natively before destructive ops |
+| Channel hijacking | Malicious library registers the same channel name | Use UUID-based channel names generated at app build time |
+
+**Defensive native handler pattern:**
+
+```kotlin
+"readFile" -> {
+    val path = call.argument<String>("path") ?: run {
+        result.error("INVALID_ARG", "path required", null); return@setMethodCallHandler
+    }
+    val file = File(filesDir, path).canonicalFile  // resolves ../ etc.
+    if (!file.absolutePath.startsWith(filesDir.absolutePath)) {
+        result.error("FORBIDDEN", "path escapes sandbox", null)
+        return@setMethodCallHandler
+    }
+    result.success(file.readText())
+}
+```
+
+**Rule:** Treat every channel argument as untrusted input — exactly like an HTTP request body. Validate, sanitize, and authorize on the native side. Never assume Dart is the only caller.
+
+---
+
 > **🔀 Coming from TypeScript / React Native?**
 >
 > Platform channels are Flutter's equivalent of React Native's **Native Modules** (old architecture) or **Turbo Modules** (new architecture). The core difference: React Native uses a JSON bridge that serializes everything, while Flutter's platform channels use a binary codec (`StandardMessageCodec`) that's faster for large payloads. Pigeon is conceptually similar to React Native's **Codegen** in the new architecture — both generate type-safe native interfaces from a declaration file.

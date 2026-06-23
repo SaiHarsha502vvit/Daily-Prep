@@ -1202,6 +1202,564 @@ Your privacy policy must cover:
 
 ---
 
+### App Signing — The Single Most Recoverable Mistake
+
+**The horror story:** You ship v1.0, signed with `release.jks` on your laptop. Six months later your laptop dies. You restore from backup but forgot the keystore was in `~/.gradle/` (excluded). You can never publish an update to your app. Your only options: convince every existing user to uninstall and install a new app with a different package ID, losing all reviews, ratings, and install base.
+
+**Android — Play App Signing (use this, always):**
+
+```
+You generate an UPLOAD key (kept on your machine)
+   ↓
+You upload .aab signed with upload key to Play Console
+   ↓
+Play Console re-signs with the APP key (Google manages this)
+   ↓
+Users install APK signed with APP key
+```
+
+If you lose your upload key: you reset it via Play Console support (your APP key is safe).
+If you didn't use Play App Signing and lose your signing key: you cannot publish updates. Ever.
+
+```bash
+# Generate upload key (do this ONCE per app, store securely)
+keytool -genkey -v -keystore upload-keystore.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+
+# Store this file in:
+# 1. Your password manager (with the alias password)
+# 2. An encrypted cloud backup
+# 3. A second offline location
+```
+
+**iOS — App Store Connect signing:**
+- Distribution certificate + provisioning profile auto-managed by Xcode
+- The actual signing identity lives in your Apple Developer account
+- Even if you lose your Mac, you can re-download certificates anytime
+- Less risky than Android — but always enable two-factor auth on your Apple Developer account
+
+**Rule:** Set up Play App Signing on day one. Add `upload-keystore.jks` and `key.properties` to your password manager *before* writing any release-mode code.
+
+---
+
+### Privacy Compliance — The Legal Layer
+
+You will be sued or fined if you ignore this. Even small apps.
+
+**GDPR (EU users):**
+- Required: privacy policy that lists every data point collected and the legal basis
+- Required: a way for users to request all their data ("right to access")
+- Required: a way for users to delete their account and data ("right to erasure")
+- Penalty: up to €20M or 4% of global revenue, whichever is higher
+
+**CCPA (California users):**
+- Required: "Do Not Sell My Personal Information" link if you sell data
+- Required: privacy policy with disclosures of categories collected/sold
+
+**COPPA (children under 13 in US):**
+- If your app targets children OR you know children use it, you must:
+  - Obtain verifiable parental consent before collecting any personal info
+  - Not use ad networks that collect behavioral data on children
+  - Apple/Google may pull you for non-compliance
+- The "Made for Kids" label has strict requirements
+
+**Apple's App Tracking Transparency (ATT):**
+- Required since iOS 14.5 if you track users across apps/websites you don't own
+- Must show the system prompt before calling any tracking API
+- If user denies: IDFA returns zeros, ad networks return generic targeting
+- Plan for this: many apps lost 60%+ of ad revenue when ATT launched
+
+```dart
+// Always check ATT status before tracking
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+
+final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+if (status == TrackingStatus.notDetermined) {
+  await AppTrackingTransparency.requestTrackingAuthorization();
+}
+final canTrack = (await AppTrackingTransparency.trackingAuthorizationStatus)
+    == TrackingStatus.authorized;
+```
+
+**Privacy Manifest (required by Apple since 2024):**
+- New `PrivacyInfo.xcprivacy` file required in every iOS app
+- Declares which APIs you use (UserDefaults, file timestamps, disk space, system boot time)
+- Required for many common SDKs (Firebase, Google Sign-In)
+- Without it, your app is rejected at review
+
+---
+
+### Deferred Deep Linking — Attribution and First-Run UX
+
+**The problem:** User clicks an ad → goes to App Store → installs app → opens it for the first time. How does your app know which ad they clicked?
+
+**The solution — deferred deep linking:**
+
+```dart
+// Using AppsFlyer, Branch.io, or Firebase Dynamic Links
+// On first launch, check for a deferred deep link
+FirebaseDynamicLinks.instance.getInitialLink().then((data) {
+  if (data != null) {
+    final referralCode = data.link.queryParameters['ref'];
+    // Track install attribution: "User came from Instagram ad #1234"
+    _analytics.logInstallSource(data.link);
+    // Apply special first-run flow
+    _navigateToReferralBonus(referralCode);
+  }
+});
+```
+
+**Why it matters:**
+- Marketing teams need to know which channels actually drive installs (not just clicks)
+- "First-time user" flows can be personalized based on referrer
+- Some apps offer signup bonuses tied to referral codes
+
+**Note:** Firebase Dynamic Links is being deprecated (August 2025). Migration paths: Branch.io, AppsFlyer, or build your own with universal links + a fallback web page.
+
+---
+
+### A/B Testing Your Store Listing
+
+You can ship the best app ever and still get few installs because your screenshots don't convert. Both stores let you test:
+
+**Google Play — Store Listing Experiments:**
+- Test up to 3 variants against control
+- Variables: app icon, screenshots, description, feature graphic
+- Minimum 7-day run, statistical significance shown
+- Typical lift from a good test: 5-20% install conversion
+
+**App Store — Product Page Optimization:**
+- Up to 3 alternate product pages
+- Test different screenshots, app previews, promotional text
+- Traffic split: 1-99% per variant
+- Results available in App Analytics
+
+**What to test (in order of typical impact):**
+1. First screenshot (highest impact — most users never scroll)
+2. App icon
+3. Subtitle / short description
+4. App preview video vs static screenshots
+5. Description first paragraph
+
+---
+
+### Versioning Strategy — Semver For Apps
+
+```yaml
+# pubspec.yaml
+version: 2.4.1+247
+#        │ │ │  │
+#        │ │ │  └─ Build number (must increment every store upload)
+#        │ │ └─── Patch: bug fixes only, no new features (2.4.0 → 2.4.1)
+#        │ └───── Minor: new features, backward compatible (2.4.x → 2.5.0)
+#        └─────── Major: breaking changes, redesigns, account migrations (2.x.x → 3.0.0)
+```
+
+**Build number rules:**
+- Strictly monotonic per platform (Apple and Google enforce this)
+- Common convention: use CI build number, or timestamp like `YYYYMMDDHH`
+- Never decrement, never reuse
+
+**Release notes culture:**
+```
+GOOD:
+"Faster message sending (50% improvement)
+Fixed: typing indicator stuck after backgrounding
+Added: pull-to-refresh on conversations"
+
+BAD:
+"Bug fixes and performance improvements"
+```
+
+Users actually read release notes when deciding whether to update. Specific notes drive higher update adoption, which means fewer users running old buggy versions you can't easily debug.
+
+---
+
+### Phased Rollout — How To Not Brick Your App For Everyone
+
+**Never ship to 100% on day one.** Even with great QA, production has edge cases your tests don't cover.
+
+**Google Play — Staged Rollout:**
+- Day 1: 5% of users
+- Day 3 (if no crash spike): 20%
+- Day 5: 50%
+- Day 7: 100%
+- If crashes spike at any stage: halt rollout, fix, push as new version (you can't "unstage" a release)
+
+**Apple App Store — Phased Release for Automatic Updates:**
+- Day 1: 1%
+- Day 2: 2%
+- Day 3: 5%
+- Day 4: 10%
+- Day 5: 20%
+- Day 6: 50%
+- Day 7: 100%
+- Users who manually update get the new version immediately regardless
+
+**What to watch during rollout:**
+- Crash-free rate (target: ≥ 99.5%)
+- ANR rate Android (target: < 0.5%)
+- Performance regressions (cold start time, screen render times)
+- API error rates on your backend
+- App Store / Play Store reviews mentioning the new version
+
+**Halt criteria — pause rollout immediately if:**
+- Crash-free rate drops by more than 0.5 percentage points
+- A single crash affects > 1% of sessions
+- ANR rate doubles
+- Reviews show consistent bug reports for a new behavior
+
+---
+
+### First 24 Hours — Post-Launch Monitoring
+
+You shipped. Here's your shift schedule for the next 24 hours.
+
+**T+0 to T+1 hour:**
+- Watch Crashlytics dashboard live
+- Check Sentry alerts firing
+- Monitor backend error rates (5xx percentage)
+- Test the install flow on a fresh device yourself
+- Verify push notifications still work
+
+**T+1 to T+6 hours:**
+- Check crash rate by version (`crashes_in_v2.4.1 / sessions_in_v2.4.1`)
+- Sample reviews — are users hitting unexpected issues?
+- Verify analytics events are flowing (no schema mismatches)
+- Check key conversion funnels haven't regressed
+
+**T+6 to T+24 hours:**
+- Compare engagement metrics to previous version baseline
+- Review support tickets for new patterns
+- Verify deferred deep linking attribution is working
+- If staged rollout: review metrics before advancing to next stage
+
+**The 1% rule:** If a new bug affects 1% of users and you have 100K users, that's 1000 angry customers. Always have a hotfix path ready to ship within 24 hours.
+
+---
+
+### Hotfix Process — When To Ship, How Fast, What To Skip
+
+**Severity tiers and response:**
+
+| Severity | Example | Response Time | Process |
+|---|---|---|---|
+| P0 — Critical | App crashes on launch | < 2 hours | Skip code review, skip QA, hotfix branch directly to release |
+| P1 — High | Core feature broken (login, sync) | < 24 hours | Code review, smoke test, expedited rollout |
+| P2 — Medium | Edge case bug affecting < 5% | Next sprint | Normal release cycle |
+| P3 — Low | Cosmetic, rare conditions | Next minor release | Normal release cycle |
+
+**The expedited path:**
+1. Branch from the production tag, not from `main` (avoid pulling in untested changes)
+2. Cherry-pick the fix
+3. Bump patch version (2.4.1 → 2.4.2)
+4. Build → upload → submit
+5. Apple: request expedited review (24-48h vs normal 1-3d). Use this sparingly — overuse and Apple notices
+6. Google: no expedited process needed (review is faster, typically hours)
+7. After 24h: confirm the fix is working in production metrics
+
+**What NOT to do:**
+- Don't combine the hotfix with other changes "while you're at it" — that's how you ship two bugs
+- Don't skip writing a regression test for the bug you fixed
+- Don't forget to merge the hotfix branch back into `main`
+
+---
+
+### Post-Launch Operating Checklist
+
+**Daily (first week):**
+- [ ] Review crash dashboard (Crashlytics + Sentry)
+- [ ] Check P0/P1 support tickets
+- [ ] Monitor App Store / Play Store reviews
+
+**Weekly (first month):**
+- [ ] Review key metrics (DAU, retention, conversion)
+- [ ] Triage new bugs into next sprint
+- [ ] Update CHANGELOG with shipped fixes
+
+**Monthly (ongoing):**
+- [ ] Review analytics for declining funnels
+- [ ] Audit dependencies for security updates
+- [ ] Review battery / performance metrics for regressions
+- [ ] Check for new platform requirements (Apple/Google policy updates)
+
+**Quarterly:**
+- [ ] Bump min/target SDK versions
+- [ ] Review and update privacy policy
+- [ ] Audit third-party SDKs for new data collection
+- [ ] Renew certificates (iOS distribution cert expires yearly)
+
+---
+
+### App Store Rejection Catalog — The Top 20
+
+Apple's review team rejects ~30% of submissions on first attempt. Most rejections fall into the same patterns. This catalog covers the top 20 with the exact fix.
+
+**Guideline 2.1 — Performance & Completeness:**
+
+| Rejection | Fix |
+|---|---|
+| App crashes during review | Test on the lowest-spec supported device (iPhone SE 2nd gen) with airplane mode toggling. Reviewers test offline first |
+| Placeholder content visible (lorem ipsum, "TODO") | Strip all debug strings from release builds. Use `String.fromEnvironment('FLAVOR')` to assert in CI |
+| Login required, no demo account provided | Always include `Demo Account: demo@app.com / Password123` in App Review notes |
+| Broken links in app | Verify all in-app webview destinations resolve. Use `flutter_url_launcher` with fallback handling |
+
+**Guideline 2.5.x — Software Requirements:**
+
+| Rejection | Fix |
+|---|---|
+| Uses non-public API | Run `xcrun otool -L Runner.app/Runner` and check for `__Z*Private` symbols. Most often caused by old plugins — update them |
+| App calls home / sends data before user consent | Move analytics SDK init AFTER privacy consent dialog. Never auto-collect in `main()` |
+| Uses `IDFA` without ATT prompt | If your app links AdSupport.framework, you MUST call `requestTrackingAuthorization`. Don't link the framework if you don't use it |
+
+**Guideline 3.x — Business:**
+
+| Rejection | Fix |
+|---|---|
+| Sells digital content without In-App Purchase | If your app unlocks features for money, it MUST use IAP. Apple takes 15-30%. No web checkout escapes |
+| Subscription terms unclear | Display: title, length, price-per-period, auto-renews, link to ToS/Privacy. All before the user taps Subscribe |
+| External payment links | You CANNOT direct users to your website to pay (with very narrow Reader app exceptions). Use IAP |
+
+**Guideline 4.x — Design:**
+
+| Rejection | Fix |
+|---|---|
+| Web wrapper (just a website in a WebView) | Add native UI value: notifications, offline mode, native widgets, biometrics. A pure webview is a guaranteed rejection |
+| Mimics iOS UI poorly | If you build a custom UI that looks like iOS Settings, copy the patterns precisely. Otherwise use Material |
+| App doesn't work in landscape (if declared in supported orientations) | Either declare portrait-only in `Info.plist` (`UISupportedInterfaceOrientations`) OR support landscape properly |
+| Splash screen lingers too long | Show first content within 2 seconds. Static splash > 1s = bad UX, > 3s = potential rejection |
+
+**Guideline 5.x — Legal:**
+
+| Rejection | Fix |
+|---|---|
+| Missing privacy policy URL | Must be on App Store Connect AND accessible from within the app (Settings screen) |
+| Privacy nutrition labels don't match actual data collection | Auditor cross-references. If you log analytics events with user_id, declare "User ID + linked to identity" |
+| Children's app without proper labeling | If targeting children, complete the "Made for Kids" questionnaire AND comply with COPPA AND don't use third-party advertising |
+| Missing purpose strings | Every `*UsageDescription` in `Info.plist` must explain WHY in user-friendly terms. "We need camera" → "Take photos to add to your expense receipts" |
+
+**Guideline 1.x — Safety:**
+
+| Rejection | Fix |
+|---|---|
+| User-generated content without moderation tools | If users can post text/images, you need: (1) Block user, (2) Report content, (3) ToS prohibiting objectionable content, (4) Moderation pipeline (manual or AI) |
+| No way to delete account from within the app | Required since June 2022. Must be functional, not just "email us to delete" |
+
+**Process tip:** When rejected, Apple sends specific guideline numbers in the email. Respond within Resolution Center referencing the exact guideline, your fix, and the file/screen where you made the change. Vague replies get re-rejected.
+
+---
+
+### Crash-Free Rate — SLO Methodology
+
+"99.5% crash-free sessions" sounds good. But it hides a lot. Build your SLO (Service Level Objective) properly.
+
+**The naive metric (don't use alone):**
+```
+crash_free_sessions = (total_sessions - crashed_sessions) / total_sessions
+```
+
+**Problems:**
+- A user who crashes once and abandons the app counts as 1 crashed session
+- A power user with 1000 sessions / day dilutes the metric
+- Crashes during onboarding (highest impact) weigh same as crashes in a rarely-used settings screen
+
+**The right metrics — split by:**
+
+1. **Crash-free sessions** (industry standard, baseline)
+2. **Crash-free users** (more honest — counts unique people, not sessions)
+3. **Crash-free new users** (most critical — first impression determines retention)
+4. **Crash rate by critical path** (sign-up, first message, first purchase)
+
+**SLO target structure:**
+
+```
+Tier 1 (must-have):       crash_free_users >= 99.5%
+Tier 2 (excellent):       crash_free_users >= 99.8%
+Tier 3 (industry-leading): crash_free_users >= 99.9%
+
+Critical path SLOs:
+  signup_completion_rate >= 95%
+  first_message_send_success >= 99%
+  payment_completion_rate >= 99.5%
+```
+
+**Error budget calculation:**
+- If your SLO is 99.5% crash-free over 30 days and you have 100K MAU
+- Error budget = 0.5% × 100,000 = 500 users can crash per month
+- Burn rate alerts: if you burn 50% of budget in 5 days, page someone immediately
+
+**Tooling:**
+
+```dart
+// Set custom keys in Crashlytics for high-signal filtering
+FirebaseCrashlytics.instance.setCustomKey('user_tier', user.tier);
+FirebaseCrashlytics.instance.setCustomKey('feature_flag_new_checkout', enabled);
+FirebaseCrashlytics.instance.setUserIdentifier(user.id);
+
+// Manually report non-fatal errors
+try {
+  await sendMessage();
+} catch (e, stack) {
+  await FirebaseCrashlytics.instance.recordError(
+    e, stack,
+    reason: 'message_send_failure',
+    fatal: false,
+    information: ['conversation_id: $convId', 'queue_size: $queueSize'],
+  );
+  rethrow;
+}
+```
+
+**Rule:** Set an error budget. When you've consumed it, freeze feature work and fix stability. This is how Google SRE manages reliability and it works for apps too.
+
+---
+
+### Customer Support Setup — In-App, Not Email-Only
+
+Support tickets are signal for product. Set up properly from day one or you'll regret it post-launch.
+
+**The minimum viable stack:**
+
+1. **In-app feedback widget** (don't make users hunt for your email)
+2. **Crash report linking** (every crash creates a ticket auto-tagged with stack trace + user ID)
+3. **Help center / FAQ** (deflects 60-70% of tickets without human involvement)
+4. **Status page** (so users know when there's a known issue)
+
+**Implementation pattern:**
+
+```dart
+// Feedback widget — accessible from every screen via shake or settings
+class FeedbackWidget extends StatelessWidget {
+  Future<void> _submit(String message, BuildContext context) async {
+    // Capture context automatically
+    final user = await getCurrentUser();
+    final attachments = {
+      'user_id': user.id,
+      'app_version': await PackageInfo.fromPlatform().then((i) => i.version),
+      'device': Platform.operatingSystem,
+      'os_version': Platform.operatingSystemVersion,
+      'last_screen': RouterHistory.lastVisitedRoute,
+      'session_id': AnalyticsService.currentSessionId,
+      'recent_errors': ErrorLog.lastFive(),  // local error breadcrumbs
+    };
+
+    await ZendeskAPI.createTicket(
+      subject: 'In-app feedback',
+      body: message,
+      requesterEmail: user.email,
+      customFields: attachments,
+    );
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thanks! We\'ll get back to you in 24h.')),
+      );
+    }
+  }
+}
+```
+
+**Why automatic context capture matters:**
+- "App is broken" → useless ticket, hours of back-and-forth
+- "App is broken + user_id + app_version + device + last_screen + recent errors" → support can reproduce in 5 minutes
+
+**Crash → ticket pipeline:**
+
+```dart
+FirebaseCrashlytics.instance.setCustomKey('contact_user', user.allowsContact);
+
+// In your Cloud Function triggered by new Crashlytics issue:
+exports.onNewCrashIssue = functions.crashlytics.issue().onNew(async (issue) => {
+  if (issue.affectedUsers > 100) {
+    await Zendesk.createIncident({
+      title: `New crash affecting ${issue.affectedUsers} users: ${issue.issueTitle}`,
+      priority: 'high',
+      tags: ['crash', `version:${issue.appInfo.appVersion}`],
+    });
+    await Slack.postToChannel('#mobile-incidents', issueAlert);
+  }
+});
+```
+
+**Tooling tiers:**
+
+| Stage | Stack |
+|---|---|
+| MVP (< 10K users) | Email forwarding to founders + in-app mailto: |
+| Growth (10K-100K) | Zendesk free + in-app feedback widget + FAQ on Notion |
+| Scale (100K+) | Zendesk paid + Intercom (in-app chat) + dedicated support engineer + status page (statuspage.io) |
+
+---
+
+### International Launch Strategy
+
+Shipping to 175 countries on day one is rarely the right call. A staged international rollout reduces support burden and lets you fix locale-specific bugs before they affect everyone.
+
+**Recommended order:**
+
+1. **English-speaking primary market** (US, UK, AU, CA, NZ) — week 1
+2. **Western Europe** (DE, FR, ES, IT, NL) — after fixing first wave of bugs
+3. **Asia-Pacific** (JP, KR, SG, IN) — after localization tested
+4. **Latin America** (BR, MX, AR) — Portuguese/Spanish locales
+5. **Rest of world** — final wave
+
+**What you actually need per locale:**
+- App name and subtitle in local language (mandatory for App Store)
+- Description (machine translation is acceptable for launch, refine later)
+- Screenshots with localized text overlays (most impactful)
+- Currency / number / date formatting via `intl` package
+- Local privacy compliance (e.g., LGPD for Brazil, PIPL for China)
+
+**Country-specific gotchas:**
+
+| Country | Watch For |
+|---|---|
+| China | Mainland China requires separate "icp" filing; Apple removes apps without it. Google Play not available |
+| Japan | Different in-app rating system; certain content types restricted |
+| Germany | GDPR enforcement strictest in EU; expect 1-2% of users to request data deletion |
+| Brazil | LGPD privacy law requires data protection officer for any app collecting personal data |
+| India | Data localization rules for fintech; payment SDKs limited to local providers |
+
+**Rule:** Pick 5 launch countries based on where your users actually are. A "global launch" usually means "I'll deal with locale bugs from 175 countries simultaneously" — don't do that.
+
+---
+
+### Cost Analysis — Hidden Bills To Plan For
+
+Beyond developer time, an app has real cash costs. Plan for these in your runway:
+
+**One-time:**
+- Apple Developer Program: $99/year (individual) or $299/year (organization)
+- Google Play Developer: $25 one-time
+- Code signing certificate (Apple): included in Apple Developer Program
+- App icon design + screenshots: $200-2000 if outsourced
+
+**Recurring per month (typical small app, 10K MAU):**
+
+| Service | Cost |
+|---|---|
+| Firebase (Spark plan free tier covers most until 50K users) | $0 - $500 |
+| Sentry (or Crashlytics free) | $0 - $80 |
+| Push notifications (FCM free) | $0 |
+| Backend hosting (Render, Fly.io, Cloud Run) | $20 - $200 |
+| Storage (S3 / Firebase Storage) | $5 - $50 |
+| CDN (Cloudflare R2 free tier) | $0 - $30 |
+| Email (Resend, Postmark for transactional) | $0 - $50 |
+| Customer support (Zendesk Suite Team) | $55/agent |
+| Analytics (Mixpanel, Amplitude free tier) | $0 - $200 |
+| Domain + SSL | $1 |
+| **Estimated total** | **$80 - $1200/mo** |
+
+**At 100K MAU:**
+- Firebase Blaze plan: $200 - $2000/mo
+- Apple developer percentage of IAP: 15-30% off the top
+- Support staffing: 1 person per ~20K active users
+- Backend scales linearly with traffic
+
+**Rule:** Estimate cost-per-MAU before launch. If you can't sustain $0.10-$0.50 per MAU per month from your revenue model, you'll run out of money at growth.
+
+---
+
 ## Bootcamp Complete
 
 You've covered 26 weeks of Flutter — from `void main()` to a production-grade enterprise chat app with:

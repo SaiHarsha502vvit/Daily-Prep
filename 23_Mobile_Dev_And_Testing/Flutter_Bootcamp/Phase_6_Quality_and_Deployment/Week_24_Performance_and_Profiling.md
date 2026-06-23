@@ -1082,6 +1082,588 @@ test('syncs pending expenses and marks them done', () async {
 
 ---
 
+### `compute` vs `Isolate.run` vs `Isolate.spawn` — Which Tool For Which Job
+
+Three ways to escape the main thread. They are NOT interchangeable.
+
+| API | Lifetime | Use For | Setup Cost |
+|---|---|---|---|
+| `compute(fn, arg)` | One-shot | Single computation, simple input → output | Low (legacy API, predates `Isolate.run`) |
+| `Isolate.run(fn)` | One-shot | Single computation, closures over local data | Low (Dart 3+, preferred) |
+| `Isolate.spawn(fn, sendPort)` | Long-lived | Worker isolate that handles multiple jobs | High (manual port management) |
+
+**One-shot examples:**
+
+```dart
+// compute — older API, top-level function required
+String _expensiveHash(String input) => sha256.convert(utf8.encode(input)).toString();
+final hash = await compute(_expensiveHash, 'large string');
+
+// Isolate.run — preferred, closures work
+final input = 'large string';
+final hash = await Isolate.run(() => sha256.convert(utf8.encode(input)).toString());
+```
+
+**Long-lived worker isolate — when you process a stream of jobs:**
+
+```dart
+class ImageProcessor {
+  late SendPort _sendPort;
+  late ReceivePort _receivePort;
+  final _pending = <int, Completer<Uint8List>>{};
+  int _nextId = 0;
+
+  Future<void> initialize() async {
+    _receivePort = ReceivePort();
+    await Isolate.spawn(_worker, _receivePort.sendPort);
+
+    // First message from worker is its own SendPort
+    final completer = Completer<SendPort>();
+    _receivePort.listen((msg) {
+      if (msg is SendPort) {
+        completer.complete(msg);
+      } else if (msg is _ProcessedImage) {
+        _pending.remove(msg.id)?.complete(msg.bytes);
+      }
+    });
+    _sendPort = await completer.future;
+  }
+
+  Future<Uint8List> process(Uint8List bytes) {
+    final id = _nextId++;
+    final completer = Completer<Uint8List>();
+    _pending[id] = completer;
+    _sendPort.send(_ProcessRequest(id, bytes));
+    return completer.future;
+  }
+
+  void dispose() {
+    _receivePort.close();
+    _sendPort.send('shutdown');
+  }
+}
+
+void _worker(SendPort hostPort) {
+  final port = ReceivePort();
+  hostPort.send(port.sendPort); // hand back our port
+
+  port.listen((msg) {
+    if (msg == 'shutdown') {
+      port.close();
+      return;
+    }
+    if (msg is _ProcessRequest) {
+      final processed = _heavyImageProcessing(msg.bytes);
+      hostPort.send(_ProcessedImage(msg.id, processed));
+    }
+  });
+}
+```
+
+**Rule:** Use `Isolate.run` for one-off work. Spin up a long-lived worker only when you'll send it many jobs and the spawn cost (~10ms) would otherwise be paid repeatedly.
+
+---
+
+### Android Foreground Services — When Your Work Must Be Visible
+
+`workmanager` is for deferred, system-controlled work. Foreground services are for work the user is actively aware of and that must NOT be killed — music playback, fitness tracking, navigation, file uploads with progress.
+
+**The trade-off:**
+- The user sees a persistent notification (mandated by Android)
+- In exchange, your service runs continuously with no time limit
+- Battery-sensitive — if abused, users uninstall
+
+**Setup with `flutter_foreground_task`:**
+
+```dart
+class FitnessTrackerTaskHandler extends TaskHandler {
+  StreamSubscription? _stepSubscription;
+  int _steps = 0;
+
+  @override
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    _stepSubscription = Pedometer.stepCountStream.listen((event) {
+      _steps = event.steps;
+      FlutterForegroundTask.updateService(
+        notificationTitle: 'Tracking your run',
+        notificationText: '$_steps steps',
+      );
+      // Send to main isolate
+      FlutterForegroundTask.sendDataToMain({'steps': _steps});
+    });
+  }
+
+  @override
+  Future<void> onRepeatEvent(DateTime timestamp) async {}
+
+  @override
+  Future<void> onDestroy(DateTime timestamp) async {
+    await _stepSubscription?.cancel();
+  }
+}
+
+// Start the foreground service
+await FlutterForegroundTask.startService(
+  notificationTitle: 'Fitness Tracker',
+  notificationText: 'Starting...',
+  callback: () => FlutterForegroundTask.setTaskHandler(FitnessTrackerTaskHandler()),
+);
+```
+
+**When you need a foreground service (Android only):**
+- Music or video playback
+- Active turn-by-turn navigation
+- Fitness/health tracking during workouts
+- Large file uploads with user-visible progress
+- Real-time communication (voice/video calls)
+
+**When you DON'T need one:**
+- Background sync (use WorkManager)
+- Periodic data refresh (use WorkManager)
+- One-off uploads that can defer (use WorkManager)
+
+iOS doesn't have a direct equivalent — instead, you declare specific `UIBackgroundModes` in `Info.plist` (audio, location, voip, fetch, processing). iOS grants execution time based on which mode you declared.
+
+---
+
+### iOS Background Modes — Apple's Allowlist
+
+iOS doesn't have generic "foreground services." Instead, Apple defines specific modes. You declare which you need in `Info.plist`, and iOS gives your app execution time for that purpose only — abuse it for something else and your app is rejected at review.
+
+```xml
+<!-- ios/Runner/Info.plist -->
+<key>UIBackgroundModes</key>
+<array>
+    <string>audio</string>           <!-- Music/podcast playback -->
+    <string>location</string>        <!-- GPS tracking -->
+    <string>voip</string>            <!-- Voice/video calls (WhatsApp, Zoom) -->
+    <string>fetch</string>           <!-- Periodic background fetch -->
+    <string>processing</string>      <!-- BGProcessingTask -->
+    <string>remote-notification</string> <!-- Silent push wakes the app -->
+    <string>bluetooth-central</string>   <!-- Bluetooth peripheral comms -->
+</array>
+```
+
+**The unlock pattern — silent push:**
+
+```dart
+// Server sends an APNs payload with content-available: 1
+// iOS wakes your app for ~30 seconds to handle it
+FirebaseMessaging.onBackgroundMessage((message) async {
+  if (message.data['type'] == 'sync_required') {
+    await _performBackgroundSync();
+  }
+});
+```
+
+This is the most reliable way to wake an iOS app for background work. The OS allocates time because YOU told it new data arrived. Apple still throttles if you abuse it (sending too many silent pushes that don't justify the wake).
+
+---
+
+### Geofencing — Background Location, Done Right
+
+Geofencing is the "send a notification when user enters/leaves an area" feature. It's a great example because it requires background processing AND respects battery.
+
+```dart
+// Using geofence_service package
+final geofenceService = GeofenceService.instance.setup(
+  interval: 5000,
+  accuracy: 100,
+  loiteringDelayMs: 60000,
+  statusChangeDelayMs: 10000,
+);
+
+await geofenceService.addGeofence(
+  Geofence(
+    id: 'office',
+    latitude: 37.7749,
+    longitude: -122.4194,
+    radius: [GeofenceRadius(id: 'radius_100m', length: 100)],
+  ),
+);
+
+geofenceService.addGeofenceStatusChangedListener(
+  (geofence, radius, status, location) async {
+    if (status == GeofenceStatus.ENTER) {
+      await flutterLocalNotificationsPlugin.show(
+        0, 'Welcome to the office', 'Clocked in automatically', notifDetails);
+    }
+  },
+);
+
+geofenceService.start();
+```
+
+**Why geofencing is the right approach (vs polling location):**
+- The OS uses cellular tower triangulation and Wi-Fi BSSIDs to detect rough location changes — almost zero battery
+- Your app is only woken when the user actually crosses a geofence boundary
+- Apple/Google allow up to 20 geofences per app — beyond that, you must rotate them
+
+**Anti-pattern — polling location in the background:**
+```dart
+// DON'T do this in production
+Timer.periodic(Duration(seconds: 30), (_) async {
+  final position = await Geolocator.getCurrentPosition();
+  // ... check if user is near a geofence
+});
+```
+This drains battery in hours, gets killed by iOS aggressively, and shows up as a battery hog in iOS Settings — users will uninstall.
+
+---
+
+### Wake Locks — How To Avoid Them
+
+A wake lock keeps the CPU running even when the screen is off. On Android, you can hold one indefinitely — but if you do, the user's battery dies in hours and Google Play will flag your app.
+
+**The rule: never hold a wake lock for more than a few seconds without explicit user consent.**
+
+Acceptable wake lock scenarios:
+- Brief network call to complete a critical sync (release immediately after)
+- Workout tracking with a visible foreground service notification
+- Active phone/video call
+
+Unacceptable:
+- Polling for new messages every minute "to feel responsive"
+- Keeping a websocket alive when the user isn't actively chatting
+- Pre-fetching content the user might never scroll to
+
+**The right alternative — push notifications wake the app when there's actually something new:**
+
+```
+BAD:  App polls every 60s, holding wake lock → drains battery
+GOOD: Server sends FCM push when there's new data → app wakes only when needed
+```
+
+---
+
+### Complete Walkthrough — Offline-First Sync With WorkManager
+
+Putting it all together. Goal: user adds expenses offline, they sync when network returns.
+
+**Architecture:**
+
+```
+1. User adds expense (UI)
+   ↓
+2. ExpenseRepository.add() → save to Hive (instant)
+   ↓
+3. Mark as 'unsynced' in local DB
+   ↓
+4. Enqueue WorkManager task with NetworkType.connected constraint
+   ↓
+5. WorkManager waits for network
+   ↓
+6. When online → fires callback → uploads expense → marks 'synced'
+```
+
+**Implementation:**
+
+```dart
+// domain/usecases/add_expense.dart
+class AddExpense {
+  final ExpenseRepository _repo;
+  AddExpense(this._repo);
+
+  Future<void> call(Expense expense) async {
+    // 1. Save locally — never blocks on network
+    await _repo.saveLocal(expense.copyWith(syncStatus: SyncStatus.pending));
+
+    // 2. Enqueue sync — runs when network is available
+    await Workmanager().registerOneOffTask(
+      'sync-expense-${expense.id}',  // unique name = idempotent
+      'syncExpense',
+      inputData: {'expenseId': expense.id},
+      constraints: Constraints(networkType: NetworkType.connected),
+      backoffPolicy: BackoffPolicy.exponential,
+      backoffPolicyDelay: const Duration(seconds: 30),
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+    );
+  }
+}
+
+// Callback dispatcher
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((taskName, inputData) async {
+    if (taskName != 'syncExpense') return false;
+
+    // Re-initialize dependencies from scratch
+    await Hive.initFlutter();
+    final box = await Hive.openBox<Expense>('expenses');
+    final dio = Dio(BaseOptions(baseUrl: 'https://api.myapp.com'));
+
+    final expenseId = inputData!['expenseId'] as String;
+    final expense = box.get(expenseId);
+    if (expense == null) return true; // deleted while pending, nothing to do
+
+    try {
+      await dio.post('/expenses', data: expense.toJson());
+      await box.put(expenseId, expense.copyWith(syncStatus: SyncStatus.synced));
+      return true;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        // Conflict — server already has this expense (idempotency key matched)
+        await box.put(expenseId, expense.copyWith(syncStatus: SyncStatus.synced));
+        return true;
+      }
+      return false; // WorkManager will retry with exponential backoff
+    }
+  });
+}
+```
+
+**Critical patterns in this code:**
+
+1. **Idempotency:** Using `expense.id` as the task name + `ExistingWorkPolicy.replace` means tapping "save" 5 times schedules ONE sync, not five.
+2. **Server-side idempotency:** The server uses the expense ID as an idempotency key. If WorkManager retries after a successful upload (because we didn't get the 200 OK), the server returns 409 Conflict and we mark it synced.
+3. **Local-first:** The user's UI never waits for network. The expense appears instantly.
+4. **Backoff:** Exponential backoff means 30s → 60s → 120s → 240s... until success or 5 retries.
+5. **Crash safety:** If the app crashes mid-sync, WorkManager persists the task. It runs again on next boot.
+
+---
+
+### Battery Profiling — Measure Your Impact
+
+You can't fix what you don't measure. Both platforms give you tools:
+
+**Android — Battery Historian:**
+```bash
+# Capture a battery snapshot
+adb bugreport > bugreport.zip
+
+# Open in Battery Historian (https://github.com/google/battery-historian)
+# Shows: wake locks, GPS usage, network activity, app wakeups per hour
+```
+
+**iOS — Xcode Energy Log:**
+- Connect device → Xcode → Window → Devices and Simulators
+- Open Console → Energy Log
+- Shows: CPU usage, energy impact rating, location/network activity
+
+**Google Play Console — Bad Behavior dashboard:**
+- Automatic detection of: excessive wakeups, partial wake locks, stuck wake locks, excessive background WiFi scans
+- If your app appears here, fix it before Google penalizes your store ranking
+
+**Apple App Store — no equivalent dashboard, but:**
+- Users see your app in Settings → Battery → Last 24 Hours / Last 10 Days
+- If you appear high in that list, users will uninstall
+- Apple Insights (in App Store Connect) sometimes flags "consumes excessive energy"
+
+**Performance budget for background work:**
+```
+Total background CPU per hour    < 30 seconds
+Wakeups per hour                 < 10
+Network requests per hour        < 20 (when idle)
+Wake locks held                  0 (or < 5s if briefly needed)
+```
+
+---
+
+### Android 14+ Foreground Service Types (Mandatory)
+
+Since Android 14 (API 34), every foreground service MUST declare a `foregroundServiceType` in `AndroidManifest.xml`. Apps targeting API 34+ that start an FGS without a declared type will crash with `SecurityException`. Google enforces this strictly — it's a Play Store policy issue, not a developer convenience.
+
+```xml
+<!-- android/app/src/main/AndroidManifest.xml -->
+<manifest>
+    <!-- Declare the permission for each FGS type you use -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <service
+            android:name=".SyncService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+        <service
+            android:name=".FitnessTrackerService"
+            android:foregroundServiceType="location|health"
+            android:exported="false" />
+    </application>
+</manifest>
+```
+
+**The 11 foreground service types (Android 14+):**
+
+| Type | Use For | Approval Required? |
+|---|---|---|
+| `camera` | Continuous camera access (video calls) | No |
+| `connectedDevice` | Bluetooth, USB, network device interaction | No |
+| `dataSync` | Cloud upload/download, file transfer | No |
+| `health` | Fitness tracking, medical monitoring | No |
+| `location` | GPS tracking, navigation | No |
+| `mediaPlayback` | Audio/video playback, podcast apps | No |
+| `mediaProjection` | Screen recording, casting | No |
+| `microphone` | Recording audio, voice notes | No |
+| `phoneCall` | VoIP, telephony apps | No |
+| `remoteMessaging` | Real-time chat (Signal-style) | No |
+| `specialUse` | Anything else | **YES — Play Console declaration required** |
+
+**Critical:** If you use `specialUse`, you must declare WHY in Play Console under "App content → Foreground services" with a written justification. Google reviews this manually — get it wrong and your app is suspended.
+
+**The runtime check Google's lint enforces:**
+```kotlin
+val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+    .setContentTitle("Syncing...")
+    .setSmallIcon(R.drawable.ic_sync)
+    .build()
+
+// startForeground with type — required since Android 14
+ServiceCompat.startForeground(
+    this,
+    NOTIFICATION_ID,
+    notification,
+    ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+)
+```
+
+**Migration tip:** If your `flutter_foreground_task` setup worked on Android 13 but crashes on Android 14, you're missing the type declaration. Update both the manifest and the call to `startForeground`.
+
+---
+
+### iOS Background URLSession — Resumable Downloads That Survive App Death
+
+`URLSession` with a background configuration is iOS's mechanism for downloads/uploads that continue even when your app is killed by the OS. The system handles the transfer; your app is woken up only when it completes (or fails).
+
+**The use case:** Your user starts a 500MB video download in your media app. They switch to another app. iOS kills your app to free memory. Without background URLSession, the download dies. With it, iOS continues the download in `nsurlsessiond`, and wakes your app to handle completion.
+
+**Implementation pattern (via platform channel):**
+
+```swift
+// AppDelegate.swift
+class AppDelegate: FlutterAppDelegate {
+    var backgroundCompletionHandler: (() -> Void)?
+
+    override func application(
+        _ application: UIApplication,
+        handleEventsForBackgroundURLSession identifier: String,
+        completionHandler: @escaping () -> Void
+    ) {
+        // iOS calls this when a background download finishes while app was suspended
+        backgroundCompletionHandler = completionHandler
+
+        // Wake Flutter, let Dart code react
+        let channel = FlutterMethodChannel(
+            name: "com.myapp/downloads",
+            binaryMessenger: (window?.rootViewController as! FlutterViewController).binaryMessenger
+        )
+        channel.invokeMethod("onDownloadCompleted", arguments: ["sessionId": identifier])
+    }
+}
+
+// DownloadManager.swift
+class DownloadManager: NSObject, URLSessionDownloadDelegate {
+    static let shared = DownloadManager()
+
+    lazy var session: URLSession = {
+        let config = URLSessionConfiguration.background(withIdentifier: "com.myapp.downloads")
+        config.isDiscretionary = false  // false = run ASAP, true = run when system decides optimal
+        config.sessionSendsLaunchEvents = true  // wake app on completion
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+
+    func startDownload(url: URL, taskId: String) {
+        var request = URLRequest(url: url)
+        request.setValue(taskId, forHTTPHeaderField: "X-Task-Id")
+        let task = session.downloadTask(with: request)
+        task.resume()
+    }
+
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
+                    didFinishDownloadingTo location: URL) {
+        // Move file to permanent storage immediately — `location` is deleted when this returns
+        let destination = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent(downloadTask.taskDescription ?? UUID().uuidString)
+        try? FileManager.default.moveItem(at: location, to: destination)
+    }
+}
+```
+
+**Capabilities required:**
+- Add `Background Modes → Background fetch` and `Background processing` to `Info.plist`
+- For uploads: `Background Modes → Audio, AirPlay, and Picture in Picture` is NOT needed unless you actually do those things — Apple rejects apps that declare unused background modes
+
+**Rule:** For any download > 50MB or upload > 10MB in a user-experience-critical flow (avatar upload, photo backup, video download), use background URLSession. The Flutter HTTP / Dio libraries won't survive app death.
+
+**Android equivalent:** WorkManager with `OneTimeWorkRequest` + `Constraints` does the same thing automatically. Android is more lenient — even regular `HttpURLConnection` calls inside a `Worker` will survive the app being killed.
+
+---
+
+### Notification Permissions — The UX That Breaks Wrong
+
+**Android 13+ (API 33+):** Notifications are no longer auto-granted. You must request `POST_NOTIFICATIONS` permission at runtime, like camera or location.
+
+```dart
+import 'package:permission_handler/permission_handler.dart';
+
+Future<bool> requestNotificationPermission() async {
+  // Returns granted/denied/permanentlyDenied
+  final status = await Permission.notification.request();
+
+  if (status.isPermanentlyDenied) {
+    // User checked "Don't ask again" — must direct them to settings
+    await openAppSettings();
+    return false;
+  }
+  return status.isGranted;
+}
+```
+
+**The wrong UX (what most apps do):**
+- Show the system prompt on first app launch
+- User has no idea why your app needs notifications yet
+- User taps "Don't allow"
+- You never get a second chance — the system won't show the prompt again
+
+**The right UX — "soft ask before hard ask":**
+1. Let the user use your app for 1-3 sessions
+2. When they hit a moment notifications are obviously useful (e.g., they just sent a message and you want to notify them of replies), show a friendly in-app screen explaining the value
+3. Only if they tap "Enable Notifications" on YOUR screen do you trigger the system prompt
+4. Acceptance rate goes from ~30% (cold prompt) to ~70%+ (warmed up)
+
+**iOS Provisional Authorization** — the silent acceptance trick:
+
+```dart
+// Request provisional auth — no prompt shown, notifications arrive silently
+// in Notification Center (not as banners). User can later "promote" them to full.
+await FirebaseMessaging.instance.requestPermission(
+  alert: true,
+  badge: true,
+  sound: true,
+  provisional: true,  // ← magic flag
+);
+```
+
+With provisional auth:
+- No system prompt = no rejection risk
+- Notifications appear silently in Notification Center (not as banners or sounds)
+- User can swipe down on one and tap "Keep" to promote to full delivery
+- Use for low-stakes notifications (digest emails, weekly summaries)
+
+**Rule:** Never ask for notification permission on first launch. Earn the permission by demonstrating value first.
+
+---
+
+### Migration Strategy — Replacing AsyncTask / JobIntentService / IntentService
+
+If you're consulting on a legacy Flutter project that wraps an old Android codebase, you'll see deprecated background APIs. Here's the migration table:
+
+| Deprecated API | Replacement | Why deprecated |
+|---|---|---|
+| `AsyncTask` | Kotlin coroutines / `Executor` | Memory leaks (holds Activity ref), serial executor surprises |
+| `IntentService` | `JobIntentService` then `WorkManager` | No background restrictions in Oreo+ |
+| `JobIntentService` | `WorkManager` | Deprecated in Android 12 |
+| `JobScheduler` directly | `WorkManager` | WorkManager handles boot persistence, retry, constraints uniformly |
+| `AlarmManager.setExact` | `WorkManager` for non-time-critical; `AlarmManager.setExactAndAllowWhileIdle` only for alarms users explicitly set (clocks, calendars) |
+| `SyncAdapter` | `WorkManager` | Tied to deprecated `AccountManager` UX |
+
+**Rule for new code:** WorkManager is the default. Reach for `AlarmManager` only when you genuinely need exact wall-clock timing for a user-visible event (alarm clock, reminder).
+
+---
+
 > **🔀 Coming from TypeScript?**
 >
 > Background processing in Flutter maps to several web concepts:
