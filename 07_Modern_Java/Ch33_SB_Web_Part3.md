@@ -1241,3 +1241,18 @@ _Continue to Part 4: Data Access (JPA & Hibernate), Security, Web & Testing_
 ---
 
 > **Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
+
+
+---
+
+## Reality Check
+
+**"@RestController returns JSON automatically for any object"** → `@RestController` adds `@ResponseBody` to all methods, meaning return values are serialized via `HttpMessageConverter`s. By default, Spring Boot includes Jackson, which serializes POJOs to JSON. What it does NOT do: it won't serialize `Map<String, Object>` with mixed types in surprising ways (nulls, dates, enums all depend on Jackson configuration). Common surprises: `LocalDate` serializes to an array `[2024, 1, 15]` without `jackson-datatype-jsr310` on the classpath + `spring.jackson.serialization.write-dates-as-timestamps=false`. Always verify your actual JSON output, not just "it compiles."
+
+**"HTTP status codes are set automatically"** → Spring MVC defaults: successful controller method → 200 OK. `void` method → 200 OK (unless `@ResponseStatus` specifies otherwise). Exceptions → 500 unless you map them. `@ResponseStatus(HttpStatus.CREATED)` on the controller method → 201. `ResponseEntity<T>` lets you set status programmatically: `ResponseEntity.created(locationUri).body(dto)`. POST that creates a resource should return 201 + `Location` header — NOT 200. Don't just default to 200 for everything; HTTP status codes communicate semantics to clients and proxies.
+
+**"ControllerAdvice handles all exceptions from all parts of the application"** → `@ControllerAdvice` handles exceptions thrown from `@Controller`/`@RestController` methods and their called service methods (within the same thread). It does NOT handle: exceptions from `@Async` methods (different thread — use AsyncUncaughtExceptionHandler), filter-level exceptions (before the servlet reaches your controller), exceptions from `@Scheduled` methods, exceptions in reactive pipelines. For filter exceptions, extend `OncePerRequestFilter` and override `doFilterInternal` with a try-catch that writes the error response.
+
+**"Spring MVC and Spring WebFlux can be mixed in the same application"** → They CANNOT coexist in the same application. Spring MVC (servlet-based, blocking) and Spring WebFlux (Reactor, non-blocking) use different infrastructure — you pick one at application startup. `spring-webmvc` vs `spring-webflux` on the classpath. If both are present, Spring Boot picks one (usually MVC). To use WebFlux for one endpoint and MVC for others is not supported — they're entire programming models, not route handlers you mix. WebFlux shines for streaming, high-concurrency I/O-bound scenarios; MVC is simpler for typical CRUD APIs.
+
+**"@Valid annotation validates in all layers"** → `@Valid` triggers Bean Validation (Hibernate Validator) when Spring invokes the method through its proxying infrastructure. It works on: controller method parameters (validated before method executes), `@Service` method parameters (if spring-aspects is configured and AOP proxy is enabled for services — `@Validated` on the class + `@Valid` on parameters). It does NOT work: when you call a `@Valid`-annotated method directly (no AOP proxy in the way), when you instantiate an object with `new` and call validate manually. Always test validation actually fires in your layer.

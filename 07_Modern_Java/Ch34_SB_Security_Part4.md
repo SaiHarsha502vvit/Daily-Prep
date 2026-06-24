@@ -1357,3 +1357,18 @@ _You now have a complete Spring Boot foundation. Practice with real projects!_
 ---
 
 > **Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
+
+
+---
+
+## Reality Check
+
+**"Spring Security's default login page is production-ready"** → Spring Security's auto-generated login page (`/login`) is a development convenience. In production: you'll have your own branded login page, OAuth2/OIDC login (delegate to an identity provider), or a mobile app that exchanges credentials for JWT tokens (no form login at all). The auto-generated page is useful for getting auth working quickly; disable or replace it before going to production. Also: the auto-generated in-memory user (`spring.security.user.name/password`) must never be deployed to production.
+
+**"permitAll() means the endpoint is publicly accessible without any security"** → `permitAll()` allows all requests to match the URL pattern — including unauthenticated requests. BUT: if a request includes an invalid JWT or expired session cookie, Spring Security may still reject it before reaching your `permitAll()` rule (depending on filter order and error handling). The common case: a request with an invalid `Authorization: Bearer <expired>` header → `401 Unauthorized` even though the path is `permitAll()`. Reason: the JWT filter runs before the authorization check and rejects the request on authentication failure. Configure the JWT filter to ignore missing/invalid tokens for `permitAll()` paths.
+
+**"@PreAuthorize runs before the method and @PostAuthorize after — that's the only difference"** → `@PreAuthorize` checks authorization BEFORE executing the method — the method body runs only if the check passes. `@PostAuthorize` checks AFTER executing the method using the `returnObject` variable — the method DOES execute, but the result is not returned if the check fails. Use `@PostAuthorize` for: "user can only see their own data" checks where the ownership is determined by the result (you had to run the query to find out). But: the side effects of the method already happened if `@PostAuthorize` rejects — don't use it to "undo" write operations.
+
+**"CSRF protection is optional for REST APIs"** → CSRF (Cross-Site Request Forgery) protection is unnecessary for truly stateless REST APIs that use JWT or API key authentication (not cookies). Browsers don't automatically attach JWT headers to cross-origin requests — only to cookies. If your API uses cookie-based sessions, CSRF protection IS needed. Spring Security disables CSRF by default when you configure a custom security filter chain. If you're using Spring Security for a traditional server-rendered web app WITH cookies, enabling CSRF is mandatory.
+
+**"Method security and URL security are equivalent"** → URL-based security (`requestMatchers("/admin/**").hasRole("ADMIN")`) is coarse-grained — it secures endpoints by URL pattern. Method-level security (`@PreAuthorize("hasRole('ADMIN')")`) is fine-grained — secures individual methods regardless of how they're called. Use URL security for: broad access control, public vs authenticated. Use method security for: data-level access (user can only access their own resources), service-layer security that bypasses the controller layer, or when the same method is called from multiple entry points (REST endpoint + message consumer + scheduler).

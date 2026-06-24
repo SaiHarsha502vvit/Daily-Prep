@@ -674,3 +674,18 @@ long fib(int n) {
 ---
 
 **Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
+
+
+---
+
+## Reality Check
+
+**"The call stack frame contains only the local variables and return address"** → A stack frame contains: return address, saved registers (callee-saved registers that the callee may modify), local variables, parameters (in many calling conventions), and a frame pointer. In Java's JVM, the stack frame contains: local variable array, operand stack (for bytecode execution), and reference to the constant pool. The JVM stack frame structure differs from native x86/ARM frames — the JVM uses a stack-based virtual machine, not a register-based one. Understanding the actual frame structure helps when debugging stack overflows: you can calculate approximately how deep recursion can go based on frame size × stack size.
+
+**"Mutual recursion is always convertible to iteration"** → Any recursive function can be converted to iteration using an explicit stack. Mutual recursion (A calls B calls A) can be converted too, but it's harder: you need a state machine or a single stack that tracks which function "context" you're in. `isEven(n) = isOdd(n-1)` and `isOdd(n) = isEven(n-1)` can be inlined into a single loop with a toggle flag. More complex mutual recursion (parsers, tree processors with mutually recursive types) typically use continuation-passing style (CPS) or explicit work queues.
+
+**"Tail recursion optimisation always works in Java"** → Java does NOT perform tail call optimisation (TCO). Even a perfectly tail-recursive function in Java will still build stack frames and overflow for large n. The JVM specification doesn't require TCO. Scala (on the JVM) optimises `@tailrec` annotated methods — by rewriting the tail call to a loop at compile time, not by JVM-level TCO. Kotlin does the same with `tailrec` modifier. For Java: manually convert tail recursion to iteration (trampoline pattern or explicit loop).
+
+**"The base case of recursion is always checking n == 0 or n == 1"** → Base cases must cover ALL minimal inputs where the recursive definition doesn't apply. For binary trees: base case is null node (not just leaf nodes — otherwise you handle left child but crash on the right child being null). For arrays: base case is empty array AND single-element array (some algorithms require both). For strings: base case is empty string. Missing base cases cause: StackOverflow (if the recursion never terminates), wrong answers (if a smaller valid input falls through to the recursive case and produces nonsense).
+
+**"Recursion on a tree is always DFS"** → Recursive tree traversal IS DFS — the call stack implicitly implements the DFS stack. BFS on a tree requires an explicit queue (deque); it cannot be implemented naturally with recursion (you'd need to simulate the queue with the call stack, which is awkward). The depth-first nature of recursion is a consequence of the LIFO structure of the call stack — you finish exploring one branch completely before moving to the next.

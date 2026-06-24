@@ -605,3 +605,18 @@ Select **prefix sum + two-pointer** when array is non-negative and you need slid
 ---
 
 **Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
+
+
+---
+
+## Reality Check
+
+**"Prefix sums only work for sum queries"** → Prefix sums work for any operation that is invertible. Sum: `query(l,r) = prefix[r] - prefix[l-1]` (subtraction is the inverse of addition). XOR: `query(l,r) = prefix[r] XOR prefix[l-1]` (XOR is self-inverse). Product: requires modular inverse or range product with division if gcd(product, modulus)=1. MIN/MAX: NOT invertible (cannot recover range min from prefix mins). For range min/max without point updates: use sparse tables (O(n log n) build, O(1) query). For range min/max WITH updates: segment tree or sparse table with updates.
+
+**"2D prefix sum is just applying 1D prefix sum twice"** → Yes, conceptually. Build: `P[i][j] = A[i][j] + P[i-1][j] + P[i][j-1] - P[i-1][j-1]` (inclusion-exclusion). Query (top-left (r1,c1) to bottom-right (r2,c2)): `P[r2][c2] - P[r1-1][c2] - P[r2][c1-1] + P[r1-1][c1-1]`. The inclusion-exclusion prevents double-counting the top-left overlap. Off-by-one errors are the main source of bugs here — always trace through the formula with a 2x2 example first.
+
+**"Prefix XOR is for range XOR queries only"** → Prefix XOR has a surprising second use: finding subarrays with XOR equal to a target. For all subarrays ending at r with XOR = k: you need `prefix[r] XOR prefix[l-1] = k`, so `prefix[l-1] = prefix[r] XOR k`. This is the "XOR subarray" pattern — use a HashMap to count how many previous prefix XOR values equal `prefix[r] XOR k`. Same pattern as "subarray sum equals k" but with XOR instead of subtraction. Two XOR properties make this work: XOR is self-inverse, and XOR is associative and commutative.
+
+**"Difference arrays are just the inverse of prefix sums"** → Difference array enables O(1) range update + O(n) query (vs prefix sum which is O(1) query + O(n) update). Difference array D: `D[i] = A[i] - A[i-1]`. Range update [l, r] by +k: `D[l] += k; D[r+1] -= k`. After all updates, reconstruct A by prefix summing D. Perfect for: applying many range updates to an array, then reading final values (airline seat booking, scheduling, painting fence segments). Use when: many range updates, then read all final values at once.
+
+**"Prefix sums require an extra element at index 0"** → The 0-indexed prefix sum trick: `prefix[0] = 0`, `prefix[i+1] = prefix[i] + arr[i]`. This makes `sum(l, r) = prefix[r+1] - prefix[l]` work cleanly without off-by-one special cases. Without the 0-sentinel, `sum(0, r) = prefix[r] - prefix[-1]` requires a special case for l=0. Always add the 0-element to prefix arrays — it costs one extra slot and eliminates an entire class of bugs. The same applies to difference arrays: a 0-indexed difference array is cleaner with a 0-sentinel.

@@ -565,3 +565,18 @@ String result = skipMap.get(3); // O(log n) expected
 | Sorted concurrent access | TreeMap | O(n log n) | ConcurrentSkipListMap | O(n log n) | exact (no error) |
 
 **Rule**: Use probabilistic structures when space is the bottleneck and a bounded error is acceptable. Use exact structures when correctness is mandatory.
+
+
+---
+
+## Reality Check
+
+**"Count-Min Sketch gives exact counts"** → Count-Min Sketch is a probabilistic data structure that gives approximate counts with guaranteed overestimation. It NEVER undercounts. The estimate `count(x) = min over hash functions of table[h_j(x)]` is exact OR overestimates due to hash collisions. The error bound: with high probability, the estimate is at most `actual + ε*N` where N = total insertions, ε depends on table width. Used in: network monitoring (approximate flow counts), streaming analytics, approximate top-K, Flink/Spark streaming aggregations. For exact counts: use HashMap (requires memory proportional to distinct elements).
+
+**"HyperLogLog is exact cardinality estimation"** → HyperLogLog estimates the number of distinct elements in a stream using O(log log N) memory — hence the name. The estimate has configurable precision: standard error ≈ 1.04/√m where m = number of registers. Redis uses HyperLogLog for `PFCOUNT` (count distinct IPs, unique visitors) — 12KB of memory estimates cardinality of up to 10^15 elements with ~0.81% standard error. HyperLogLog is NOT exact — it's a statistical estimator. For exact cardinality: you need to store all distinct elements.
+
+**"MinHash computes exact similarity between sets"** → MinHash approximates Jaccard similarity (|A∩B| / |A∪B|) between sets. The probability that min(h(A)) = min(h(B)) for a random hash h equals the Jaccard similarity. By using k independent hash functions and averaging, you get an estimator with variance 1/(k). Used in: LSH (Locality-Sensitive Hashing) for near-duplicate document detection, collaborative filtering at scale, plagiarism detection (TurnItIn), web page similarity (Google's deduplication). Exact Jaccard similarity requires comparing every element in both sets — infeasible for web-scale documents.
+
+**"Bloom filters can be scaled by just making them bigger"** → Bloom filters have a fixed false positive rate at a fixed size. Inserting more than the designed n elements increases the false positive rate beyond the target. Scalable Bloom Filters (SBF): add a new Bloom filter when the current one is full, query all filters on lookup. Each new filter is a bit bigger with a slightly stricter false positive rate, so the compound false positive rate stays bounded. Alternatively: Counting Bloom Filters replace single bits with counters, enabling deletion (standard Bloom filters cannot delete elements — a 1 bit might represent multiple elements).
+
+**"Reservoir sampling requires knowing the stream length in advance"** → Algorithm R (Knuth, 1985): maintain a reservoir of k samples. For each new item n (1-indexed): if n ≤ k, add to reservoir. If n > k, pick a random index j in [1, n]; if j ≤ k, replace reservoir[j] with the new item. After processing all n items, each item has exactly k/n probability of being in the reservoir — perfectly uniform sampling from a stream of unknown length. The algorithm requires only O(k) memory and one pass. Used in: database system random sampling, A/B testing log analysis, reservoir sampling in Apache Spark's `takeSample()`.

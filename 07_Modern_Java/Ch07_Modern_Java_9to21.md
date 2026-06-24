@@ -595,3 +595,18 @@ user.getAddress().getCity().toUpperCase();
 ---
 
 > **Navigation**: [< Previous](Ch16_Concurrency_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch54_Message_Queues_Kafka.md)
+
+
+---
+
+## Reality Check
+
+**"Java modules (JPMS) are the same as Maven/Gradle modules"** → Java modules (Java 9 Platform Module System, `module-info.java`) are language-level: they define which packages a JAR exports and which modules it requires, enforced by the JVM at compile and runtime. Maven/Gradle modules are build-system concepts: how a project is split into independently-built sub-projects. The two are independent — you can have a Maven multi-module project where none of the modules use JPMS (most real projects). JPMS adoption outside of the JDK itself has been slow due to complexity with reflection and the existing ecosystem.
+
+**"Records are just immutable data classes"** → Java Records (Java 16+) are: implicitly final classes, all fields are `final` (set in constructor), automatic `equals()`, `hashCode()`, `toString()` based on all components, a canonical constructor. But: Records CAN have custom methods, custom constructors (compact constructor: just the validation body), implement interfaces, and be generic. Records CANNOT: extend another class (implicitly extends `java.lang.Record`), declare mutable instance fields. They're Kotlin's `data class` equivalent, but Java records are immutable by design.
+
+**"Sealed classes are just classes where subclassing is restricted"** → Sealed classes (Java 17+) define an exhaustive hierarchy: `sealed interface Shape permits Circle, Rectangle, Triangle`. The compiler knows all permitted subtypes — enabling exhaustive pattern matching in `switch` without a default case. This is the key use case: `switch (shape) { case Circle c -> ...; case Rectangle r -> ...; case Triangle t -> ...; }` — the compiler warns if a case is missing. Sealed classes + pattern matching switch = algebraic data types in Java, matching Kotlin sealed classes or Haskell ADTs.
+
+**"Text blocks (Java 15+) are just multi-line strings"** → Text blocks handle indentation: the incidental indentation (leading whitespace common to all lines) is stripped. `String json = """ { "key": "value" } """` strips the leading spaces, giving you `{ "key": "value" }` without the indentation. This is not what `"{\n  \"key\": \"value\"\n}"` does (no stripping). Text blocks also disable the need to escape double quotes within the block (unless you need `"""`). The trailing `"""` position determines how much indentation is stripped.
+
+**"Virtual threads (Java 21) replace thread pools"** → Virtual threads (Project Loom, Java 21) are JVM-managed lightweight threads: you can create millions of them, and blocking I/O does NOT block the underlying OS thread (the JVM parks the virtual thread and reuses the carrier thread). This means blocking code (JDBC, REST calls, file I/O) scales to millions of concurrent operations without the callback-hell of reactive programming. Thread pools for I/O-bound work: replace with virtual threads. Thread pools for CPU-bound work: keep using platform threads with pools sized to CPU cores. Virtual threads don't speed up CPU work.

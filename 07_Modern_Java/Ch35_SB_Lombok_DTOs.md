@@ -1485,3 +1485,18 @@ _Continue to Part 6: Service Layer & Repository Best Practices_
 ---
 
 > **Navigation**: [< Previous](Ch34_SB_Security_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch36_SB_Service_Repository.md)
+
+
+---
+
+## Reality Check
+
+**"Lombok's @Data is the right annotation for entity classes"** → `@Data` generates: `@ToString`, `@EqualsAndHashCode`, `@Getter`, `@Setter`, `@RequiredArgsConstructor`. For JPA entities, `@Data` is dangerous: `@EqualsAndHashCode` and `@ToString` both traverse associations — calling `toString()` on a User entity eagerly loads all lazy associations, causing N+1 queries or `LazyInitializationException`. `@EqualsAndHashCode` using all fields breaks entity identity (two entities with the same DB id but different lazy-loaded collections will not be equal). For entities: use only `@Getter`/`@Setter` and implement `equals()`/`hashCode()` based on the ID field.
+
+**"DTO and domain model must be separate classes"** → The separation IS a best practice but not always mandatory. For simple CRUD with no behavioral logic, a single class is fine. The case for separation: your domain entity has business methods (validateStatus(), calculateTotal()) that don't belong in an API response; your API response shape differs from your DB schema (computed fields, nested objects, renamed fields); your entity has fields you should NOT expose (password hash). The case against: duplicate code for simple cases. Decide based on complexity — don't split prematurely, but don't ignore the need when complexity grows.
+
+**"MapStruct is slower than manual mapping"** → MapStruct generates plain Java code at compile time — it produces `TargetDto target = new TargetDto(); target.setName(source.getName()); ...`. There is zero runtime reflection. The generated code is identical to what you'd write manually. MapStruct can be faster than manual mapping because it generates null checks and handles complex mappings without reflection. Compared to Dozer or ModelMapper (which use reflection at runtime): MapStruct is significantly faster and catches mapping errors at compile time.
+
+**"@Builder from Lombok creates immutable objects"** → `@Builder` generates a builder pattern. The built object's fields are whatever you declared — if the fields are not `final`, the object is mutable. `@Builder` does NOT make fields final. For an immutable builder pattern: combine `@Builder` with `@Value` (which makes all fields private final). Or use Java Records (which are immutable by design and have a compact constructor for validation). Lombok's `@Builder` with mutable fields creates a convenient construction API but NOT immutability.
+
+**"Jackson and Lombok work seamlessly together"** → They work well with configuration: Lombok's `@Builder` requires Jackson to use `@JsonDeserialize(builder = MyClass.MyClassBuilder.class)` for deserialization (otherwise Jackson can't construct the object without a default constructor). `@Data` classes need `@JsonProperty` if field names differ from getter names. `@Value` (immutable) needs Jackson's parameter names module or `@JsonCreator` constructor. Common pitfall: `@NoArgsConstructor` added for Jackson + `@AllArgsConstructor` added for other purposes — these can conflict. Always test Jackson serialization/deserialization with Lombok annotations, don't assume.

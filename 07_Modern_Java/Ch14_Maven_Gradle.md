@@ -662,3 +662,18 @@ Build tools fail in production in ways that are invisible in local development. 
 ---
 
 **Next Chapter**: [Java Networking & NIO →](Ch13_Networking_NIO.md)
+
+
+---
+
+## Reality Check
+
+**"Maven's dependency management resolves the 'closest definition wins'"** → Maven resolves dependency conflicts with nearest-definition-wins (the dependency closest to your project in the tree wins). If you depend on A:1.0 and B:1.0, and A transitively brings C:2.0 while B brings C:1.0, Maven picks... whichever appears first in your POM (breadth-first traversal). This is NOT always the latest version. The dependency you see in `mvn dependency:tree` is what's used. Force a specific version with `<dependencyManagement>` — this overrides all transitive versions without declaring the dependency directly.
+
+**"Gradle builds are always faster than Maven because of incremental builds"** → Gradle incremental builds skip tasks whose inputs and outputs haven't changed. Maven has incremental compilation in some plugins. Gradle's build cache (local and remote) can reuse outputs from previous builds on other machines. But: Gradle's Groovy/Kotlin DSL is slower to configure (script compilation). For large multi-project builds, Gradle's parallel execution and caching win significantly. For simple projects, the difference is small. Both support incremental compilation via the Java compiler plugin.
+
+**"A SNAPSHOT version is just a pre-release marker"** → `1.0.0-SNAPSHOT` is a version that Maven/Gradle treat specially: repositories always check for a newer snapshot (by timestamp), even if a cached version exists. In release mode, Maven refuses to build if your project depends on a SNAPSHOT. `SNAPSHOT` means "latest unstable build" — each CI build publishes a new SNAPSHOT. Final releases use `1.0.0` (no SNAPSHOT). Never depend on a SNAPSHOT in production builds; pin to a specific release version.
+
+**"The local Maven repository (~/.m2) is always a source of truth"** → The `~/.m2/repository` is a local cache. It can contain: corrupt downloads (interrupted downloads), outdated snapshots, artifacts published locally via `mvn install` from a different branch. If a build mysteriously fails because of wrong dependency versions, try `mvn dependency:purge-local-repository` to force re-download from remote. In CI environments, the local repo is often cleared between runs precisely to avoid stale cache issues. `mvn -U` (update snapshots) forces checking for newer SNAPSHOT versions.
+
+**"Dependency scope 'provided' means it's available at runtime"** → `provided` scope means: available for compilation and test, but NOT included in the packaged artifact. The expectation is that the runtime environment (application server, servlet container) provides this dependency. Spring Boot starters typically have `spring-boot-starter-tomcat` at `provided` scope when you deploy to an external Tomcat. For standalone fat JARs, include Tomcat at `compile` scope (the default). Getting scope wrong: `provided` JAR not found at runtime → ClassNotFoundException; `compile`-scoped server JARs in WAR → duplicate class problems.

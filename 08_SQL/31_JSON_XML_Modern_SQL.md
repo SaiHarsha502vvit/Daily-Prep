@@ -566,3 +566,18 @@ Today's SQL databases treat JSON as a first-class citizen with JSONB storage, GI
 **Modern practice anchor:**
 JSONB requires explicit GIN indexing for query performance — storage flexibility does not mean query performance is free.
 ```
+
+
+---
+
+## Reality Check
+
+**"Storing JSON in a database column is always an antipattern"** → JSON columns are appropriate when: the data has genuinely variable schema (different products have different attributes), the data is always read/written as a whole document, you need schema flexibility without migrations. They're problematic when: you query individual JSON fields in WHERE clauses frequently (index needed, limited pushdown), you need relational integrity on JSON content (no FK constraints into JSON), the data is actually structured (use columns, not JSON). PostgreSQL JSONB is indexable and queryable — it's not "JSON in a text column." Use it deliberately, not to avoid schema design.
+
+**"PostgreSQL's JSONB and MySQL's JSON are equivalent"** → PostgreSQL JSONB: binary representation, supports GIN/GiST indexes for efficient queries, preserves value types (numbers, booleans distinct from strings), removes duplicate keys (keeps last). PostgreSQL JSON (not JSONB): stored as text, no binary parsing, preserves insertion order and duplicate keys, slower for queries. MySQL JSON: validated JSON, stored in a binary format, supports JSON_EXTRACT, generated columns on JSON fields as indexes. The querying syntax differs significantly: PostgreSQL uses `->`, `->>`, `@>` operators; MySQL uses `JSON_EXTRACT()` or `column->>'$.field'` shorthand.
+
+**"JSON in SQL replaces the need for a document database"** → For simple document storage and retrieval, yes — PostgreSQL with JSONB handles many MongoDB use cases. The limitations of SQL JSON vs dedicated document DBs: no horizontal sharding built-in, no native document-oriented query language (aggregation pipelines), schema validation must be application-side (unless using CHECK constraints with JSON schema validators). The advantage of SQL JSON: you can JOIN JSON data with relational tables in the same query — impossible across a separate MongoDB instance.
+
+**"SQL's XML support is legacy and should be avoided"** → XML in SQL is not just legacy. XML is still the primary format for: SOAP web services (enterprise integrations), Microsoft Office files (DOCX, XLSX are ZIP archives of XML), many industry standard data exchange formats (HL7 FHIR in healthcare, FpML in finance, many government standards). PostgreSQL XML type, SQL Server XML type with XQuery support, and Oracle XMLType are production features used in enterprise systems. The industry has largely moved to JSON for APIs, but XML remains in many integration contexts.
+
+**"JSON functions are always O(1) lookups"** → JSON field extraction is NOT O(1) unless there's a functional index. `column->>'name'` parses the entire JSON value each time. For PostgreSQL JSONB, a GIN index on the whole column: `CREATE INDEX ON t USING GIN (data)` enables fast `@>` (contains) queries. For a specific field: `CREATE INDEX ON t ((data->>'name'))` — a functional index on that expression. Without an index, `WHERE data->>'name' = 'Alice'` is a full table scan parsing every JSONB value. Index your JSON access patterns like any other column.

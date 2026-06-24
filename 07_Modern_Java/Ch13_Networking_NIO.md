@@ -722,3 +722,18 @@ Thread-per-connection vs Multiplexing. Traditional IO `InputStream.read()` block
 ---
 
 **Back to Index**: [Master Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"NIO (java.nio) is always faster than classic java.io"** → NIO is non-blocking and channel-based, designed for high-concurrency I/O with a selector model (one thread can handle thousands of connections). Classic `java.io` uses blocking I/O — one thread per connection, simpler to program. For a simple application reading one file or handling a few connections: blocking I/O is simpler and plenty fast. NIO's complexity pays off at high concurrency (thousands of simultaneous connections). Netty, Vert.x, and NIO2 (`AsynchronousFileChannel`) are built on NIO; Spring WebFlux uses Reactor Netty on top of NIO.
+
+**"DatagramSocket (UDP) delivers packets in order"** → UDP provides no ordering, no delivery guarantee, no deduplication. Packets sent in order may arrive out of order, some may be lost, and some may be duplicated. Use UDP when: speed > reliability (video streaming, VoIP, gaming — a dropped frame is better than waiting), or when the application implements its own reliability (QUIC protocol on top of UDP implements ordered, reliable delivery). TCP provides ordering and reliability; UDP provides speed and simplicity.
+
+**"Sockets are always network connections"** → Unix domain sockets are sockets that communicate between processes on the same machine using the filesystem (a socket file) instead of a network interface. They bypass the TCP/IP stack entirely — faster and more secure (filesystem permissions). Docker uses Unix sockets for the Docker daemon API (`/var/run/docker.sock`). PostgreSQL defaults to Unix socket for local connections. Java (NIO, since Java 16) supports Unix domain sockets via `UnixDomainSocketAddress`. Windows also supports Unix domain sockets since Windows 10 Build 17063.
+
+**"HTTP/2 is just HTTP/1.1 with compression"** → HTTP/2 is a binary protocol (HTTP/1.1 is text). Key features: multiplexing (multiple requests on one TCP connection in parallel, solving HTTP/1.1's head-of-line blocking), server push (server can send resources before client requests them), header compression (HPACK — headers are compressed and sent as binary fields). HTTP/2 is negotiated via ALPN (TLS extension). HTTP/3 moves from TCP to QUIC (UDP-based) — eliminates TCP's head-of-line blocking at the transport layer. Java's `java.net.http.HttpClient` (Java 11+) supports HTTP/1.1 and HTTP/2 natively.
+
+**"SSL/TLS is handled by your web server — your Java code doesn't need to know"** → When using Spring Boot with embedded Tomcat, you configure TLS in `application.properties`. But for Java clients making outbound HTTPS calls: the JVM has a truststore (cacerts) with trusted CA certificates — if you call an API with a self-signed cert, the JVM throws `SSLHandshakeException` (untrusted cert) unless you add the cert to the truststore or configure a custom `SSLContext`. API integrations with internal services, mTLS (mutual TLS), and certificate pinning all require explicit SSL configuration in Java client code.

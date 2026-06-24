@@ -579,3 +579,18 @@ Today's SQL applications use recursive CTEs for organizational hierarchies, grap
 
 **Modern practice anchor:**
 Production recursive queries always include cycle detection and recursion depth limits — infinite loops are not theoretical edge cases.
+
+
+---
+
+## Reality Check
+
+**"Recursive CTEs are slow for deep hierarchies"** → Recursive CTEs can be slow for: very deep trees (thousands of levels — stack pressure), very wide trees (millions of nodes — if each level fetches all children via a JOIN on the whole table). Optimizations: ensure the hierarchy key (parent_id) has an index, use `MAXRECURSION` (SQL Server) or add a depth counter with early termination to prevent infinite loops (cyclic data). For very large hierarchies, consider: Nested Sets (precompute left/right bounds for each node — O(1) subtree queries), or Materialized Path (store full path string like `/1/3/7/` — easy prefix queries, hard to update).
+
+**"Hierarchical data must be stored as adjacency lists (parent_id)"** → Four models: Adjacency List (parent_id column — easy to modify, hard to query subtrees without recursion), Nested Sets (left/right values — fast read, slow writes), Materialized Path (path string — fast reads, easy to understand, path length limits), Closure Table (all ancestor-descendant pairs in a separate table — fast reads and writes at the cost of more storage). The right model depends on read/write ratio and hierarchy depth. Adjacency list + recursive CTE is the modern default with good database support.
+
+**"Cycle detection in recursive CTEs is automatic"** → It's NOT automatic. A recursive CTE on data with cycles (A is parent of B, B is parent of A) will recurse infinitely. SQL Server: `OPTION (MAXRECURSION n)` limits depth and throws an error when exceeded. PostgreSQL: no built-in limit — you must add an explicit depth counter or a visited-path array: `WHERE path_array NOT @> ARRAY[child_id]` (check if child_id is already in the path). Always test recursive CTEs against data with cycles — they will hang or error without cycle detection.
+
+**"The CONNECT BY syntax (Oracle) and recursive CTEs do the same thing"** → Both express hierarchical queries. CONNECT BY: Oracle-specific (`START WITH parent_id IS NULL CONNECT BY PRIOR id = parent_id`). Recursive CTEs: SQL standard, supported in PostgreSQL, SQL Server, MySQL 8+, SQLite. CONNECT BY adds Oracle-specific features: `LEVEL` pseudocolumn (depth), `SYS_CONNECT_BY_PATH` (materialized path string), `CONNECT_BY_ISLEAF` (is this a leaf node?). These must be replicated manually in recursive CTEs. If you're migrating from Oracle, recursive CTEs are the portable replacement.
+
+**"Self-joins and recursive CTEs solve different problems"** → Self-join: join a table to itself — finds relationships AT A FIXED DEPTH. `employees e1 JOIN employees e2 ON e2.id = e1.manager_id` finds immediate manager-employee pairs (depth 1). For grandparents: add another self-join (depth 2, 3, ... — each requires a new join, complexity grows). Recursive CTE: handles arbitrary depth in one query. Use self-join when depth is fixed and small (1 or 2 levels). Use recursive CTE when depth is unknown or varies.

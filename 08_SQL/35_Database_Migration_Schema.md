@@ -462,3 +462,18 @@ Early database deployments used manual SQL scripts with no versioning, making co
 
 **Modern practice anchor:**
 Today's schema migrations combine versioned migration tools (Flyway/Liquibase/Alembic) with expand-contract patterns for safe online changes, automated testing in staging, and rollback procedures tested before production deployment.```
+
+
+---
+
+## Reality Check
+
+**"Database migrations are just SQL scripts run in order"** → That's the basic mechanism. The real challenge: migrations must be idempotent and reversible (or at least safely re-runnable if interrupted), multiple developers adding migrations simultaneously creates ordering conflicts, migrations on live production data must not lock tables (see ADD COLUMN with default, NOT VALID constraints), and rollbacks are often harder than the forward migration (data transformed cannot easily be un-transformed). Tools (Flyway, Liquibase, Alembic) enforce ordering via version numbers and checksums — they track which migrations ran and refuse to re-run already-applied migrations.
+
+**"You can always roll back a migration"** → DDL changes: adding a column or table is easily rolled back (drop). But: removing a column or table DESTROYS DATA — rollback restores the column/table but not the data unless you have a backup. Changing a column type (VARCHAR → INTEGER) may truncate or fail for existing data. Data migrations (populating a new column from existing data) are hard to reverse. The "expand-contract" pattern for zero-downtime migrations: first add the new column (backward compatible), deploy new code that writes to both, migrate data, deploy code that reads from new column only, then drop the old column.
+
+**"Flyway and Liquibase are equivalent migration tools"** → Different philosophies: Flyway uses versioned SQL files (`V1__description.sql`) — simple, SQL-native, the tool just runs files in version order. Liquibase uses an XML/YAML/JSON changelog format with database-agnostic change types (`<createTable>`, `<addColumn>`) that it translates to the target database's SQL. Liquibase enables: multi-database portability, checksum validation, rollback scripts per changeset, conditional execution. Flyway is simpler to get started; Liquibase is more powerful for complex multi-DB scenarios.
+
+**"Schema migration in production is the same as in development"** → Development: migration runs on empty or small dataset — fast, errors visible immediately. Production: migration runs on tables with millions of rows — an ALTER TABLE can take hours and lock the table. Production migration considerations: use CONCURRENTLY for index creation, use NOT VALID for constraint addition, batch large data migrations (UPDATE WHERE id BETWEEN x AND y), use a maintenance window or ensure migration is non-locking, test on a production-sized dataset before running live. Timing your migration on 100 rows tells you nothing about timing on 100M rows.
+
+**"The migration tool handles all schema changes"** → Migration tools handle structural changes but not: application-level data integrity (migrating data from old format to new must be coded in the migration), stored procedure changes that depend on data (may need data migration first), permissions/role changes (grant/revoke), database-specific features not in the migration tool's abstraction (partial indexes in PostgreSQL, spatial types, custom operators), and managing multiple databases in a distributed system (each database may be at a different version during rolling deployment).

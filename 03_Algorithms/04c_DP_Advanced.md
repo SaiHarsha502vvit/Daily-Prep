@@ -2074,3 +2074,18 @@ for (int[] row : dp) Arrays.fill(row, -1);
 | Matrix Chain | Try all n! orderings | O(n!) | Interval DP dp[i][j] = min over k | O(n^3) |
 
 **The structural insight**: brute force fails when sub-problems *overlap* (same (i,j) computed many times). DP trades time for space by storing sub-problem answers. When sub-problems don't overlap, divide-and-conquer without memoization is sufficient.
+
+
+---
+
+## Reality Check
+
+**"Interval DP is rare in practice"** → Interval DP (dp[i][j] = optimal for interval i..j, built from smaller intervals) solves: matrix chain multiplication (order of matrix multiplications), optimal BST construction (given frequencies of keys, minimise expected search cost), burst balloons (pop order to maximise coins), minimum cost polygon triangulation, Stone Merge, and parsing (CYK algorithm for CFGs is interval DP). These appear in compilers (expression optimization), computational geometry, and competitive programming. Matrix chain multiplication IS used in neural network computation graph optimization.
+
+**"Bitmask DP is only for TSP (Traveling Salesman)"** → Bitmask DP (dp[mask][node] where mask = set of visited nodes) solves any problem over subsets of a small universe (n ≤ 20). Applications: TSP (n ≤ 20 exactly), covering all jobs with minimum cost (assignment with subsets), counting Hamiltonian paths, AND logical inference with subset constraints, feature selection in ML (evaluate all 2^n feature subsets). The trick: iterate over subsets of mask with `for (int sub = mask; sub > 0; sub = (sub-1) & mask)` — enumerates all subsets of mask efficiently.
+
+**"DP on trees is just DP with parent-child relationships"** → Tree DP is DP where states represent subtrees: dp[v] = answer for the subtree rooted at v. The state depends on children's states. Rerooting technique (tree DP in two DFS passes): first DFS computes dp[v] for each subtree from the root's perspective. Second DFS propagates from parent to child, allowing dp[v] as-if the whole tree were rooted at v. This enables O(n) solutions for problems like "for each node v, find the farthest node in the tree if v is the root" — without rerooting, this is O(n) per node = O(n²).
+
+**"Digit DP is a niche optimization"** → Digit DP counts integers in [L, R] satisfying some property defined on the digits (count of integers with no two consecutive equal digits, count with digit sum divisible by k, count of non-decreasing digit sequences). The template: process digits left to right, track (tight=whether we're still bounded by the limit, leading_zeros=whether we've started, any_additional_state). Digit DP converts an O(R - L) brute force into O(d * state_size) where d = number of digits. Critical for problems involving ranges up to 10^18.
+
+**"Optimised DP (convex hull trick, divide and conquer DP) requires special conditions"** → Convex hull trick (also called Li Chao tree) optimises DP transitions of the form `dp[i] = min over j<i of (dp[j] + cost(j, i))` when `cost(j, i) = a[j] * x[i] + b[j]` (linear in x[i]). The lines form a lower envelope (convex hull); queries are monotone or can be random. Divide and conquer DP optimises transitions where the optimal split point is monotone: `opt[i-1] ≤ opt[i]`. These optimisations reduce O(n²) DP to O(n log n). They require deriving the exact form of the transition and proving the monotonicity/concavity condition before applying.

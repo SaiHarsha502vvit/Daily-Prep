@@ -946,3 +946,18 @@ to Spring beans to Kafka messages. The core pattern is always the same:
 Learn to identify these 3 parts in ANY system.
 
 **Navigation**: [< Reflection & Annotations](Ch10_Reflection_Annotations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Enums, Records & Sealed >](Ch03_Enums_Records_Sealed.md)
+
+
+---
+
+## Reality Check
+
+**"Event listeners are automatically garbage collected when done"** → Listeners are NOT automatically garbage collected. If an object registers a listener on a long-lived source (`EventBus.register(this)`, `button.addActionListener(this)`) and is then "released" by the application, the long-lived source still holds a reference via the listener — the object cannot be garbage collected. This is the classic observer-pattern memory leak: many objects registered but never unregistered. Always unregister listeners when done: `button.removeActionListener(this)`, `EventBus.unregister(this)`. Use WeakReference-based listener lists if auto-cleanup is needed.
+
+**"@EventListener in Spring handles events synchronously by default"** → Spring's `@EventListener` is synchronous by default: the publisher's thread blocks until all listeners for the event have completed. For long-running listeners, this delays the publisher. `@Async @EventListener` runs the listener in a separate thread pool — the publisher does not wait. `ApplicationEventPublisher.publishEvent()` vs `@TransactionalEventListener(phase = AFTER_COMMIT)`: the transactional variant fires AFTER the transaction commits (useful for sending an email only if the DB write succeeded — not before).
+
+**"Observer pattern and event-driven architecture are the same pattern"** → Observer pattern is a design pattern: one observable, multiple observers, direct reference. Event-driven architecture is a broader system design: events flow through a message bus or queue (Kafka, RabbitMQ), producers and consumers are decoupled (producer doesn't know who listens), events are durable (persisted on the bus), and consumers can be in different services or even different datacenters. Observer pattern = in-process tight coupling. EDA = cross-service loose coupling via a message infrastructure.
+
+**"Property change listeners are unique to Java Swing"** → `PropertyChangeSupport` and `PropertyChangeListener` are in `java.beans` — part of the JavaBeans specification, not Swing-specific. Any class can use `PropertyChangeSupport` to fire `propertyChange(PropertyChangeEvent)` when its properties change. JavaFX uses `ObservableProperty` and `ChangeListener`. Spring has `ApplicationEvent`/`ApplicationListener`. Android has `LiveData` and `StateFlow`. The pattern is universal; the implementation varies by framework.
+
+**"GUI event listeners run on any available thread"** → Swing event listeners MUST run on the Event Dispatch Thread (EDT). Long-running work on the EDT freezes the UI. `SwingUtilities.invokeLater(runnable)` schedules work on the EDT from any thread. `SwingWorker` runs work on a background thread and publishes results back to the EDT. JavaFX uses `Platform.runLater()` for the same purpose. This single-threaded GUI model is universal: Android also requires all UI updates on the main thread. Background work → update UI → must post back to UI thread.

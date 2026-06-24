@@ -527,3 +527,18 @@ boolean dfs(int u, int target, boolean[] visited, List<List<Integer>> adj) {
 
 **Optimal for connectivity — O(α(n)) Union-Find:**
 Build DSU once from all edges, then answer `connected(src, dst)` in O(1) per query after O(E·α(V)) build. For repeated queries, Union-Find dominates BFS/DFS by 10–100× on query throughput.
+
+
+---
+
+## Reality Check
+
+**"Adjacency list and adjacency matrix give the same BFS/DFS results"** → Same traversal order with deterministic neighbor ordering. But time complexity differs: BFS/DFS with adjacency list = O(V + E). BFS/DFS with adjacency matrix = O(V²) because you always scan all V possible neighbors even if the vertex has degree 2. For sparse graphs (E << V²), adjacency list is dramatically faster. For dense graphs (E ≈ V²), adjacency matrix is equivalent and often faster due to cache-friendly sequential access.
+
+**"'Visited' array size should be V (number of vertices)"** → Yes for dense graphs with vertices labeled 0..V-1. For graphs with string/arbitrary keys, use a HashSet as visited. For multi-state problems (coloring graph nodes 0=unvisited, 1=in-progress, 2=done to detect back edges in directed graph cycle detection), use an int array. For problems where you visit the same node multiple times with different state (e.g., 0/1 BFS — visited[node][fuel_remaining]), you need a 2D visited array or a set of (node, state) tuples.
+
+**"Adding an edge to an undirected graph in adjacency list requires one line"** → Undirected edges require TWO insertions: `adj[u].add(v)` AND `adj[v].add(u)`. Forgetting the second insert is a common bug that creates a directed graph instead of undirected. For weighted undirected graphs: both `adj[u].add((v, w))` and `adj[v].add((u, w))`. For directed graphs: only `adj[u].add(v)`. Always check after building the graph: sum of all adjacency list sizes should equal 2E for undirected, E for directed.
+
+**"Disconnected graphs break standard BFS/DFS"** → Standard BFS/DFS from a single source only visits the source's connected component. For disconnected graphs, wrap the BFS/DFS in a loop: `for each vertex v: if not visited[v]: BFS(v)`. This pattern processes all connected components. Problems where this matters: counting connected components, detecting cycles in the full graph (not just from one source), finding all nodes in any component. Not wrapping the outer loop is a common bug for disconnected graph problems.
+
+**"Cycle detection in directed graphs is the same as in undirected graphs"** → Different algorithms for different properties. Undirected: BFS/DFS — mark visited, if you reach a visited node that isn't the parent → cycle. Directed: DFS with 3-color marking (white=unvisited, gray=in-progress, black=done) — if you reach a gray node → back edge → cycle. The parent-check trick for undirected graphs doesn't work for directed graphs: a directed graph with edges A→B, A→C, B has no cycle, but A→B→C and A→C→... — the directed reachability is different. Union-Find detects cycles in undirected only.

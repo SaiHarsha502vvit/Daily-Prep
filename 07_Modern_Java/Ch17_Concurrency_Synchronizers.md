@@ -1272,3 +1272,18 @@ new Thread(() -> {
 // → NEVER use CachedThreadPool for untrusted/unbounded workloads
 // → Use FixedThreadPool or ThreadPoolExecutor with bounded queue instead
 ```
+
+
+---
+
+## Reality Check
+
+**"Semaphore is just a mutex with a count"** → A binary Semaphore (count=1) can be used as a mutex, but with a critical difference: a mutex is owned by the thread that acquired it (only the owning thread can release it). A Semaphore has no ownership — any thread can release it, even if it didn't acquire it. This enables producer-consumer patterns: producer does `semaphore.release()` (signal) without first doing `acquire()`. It also means Semaphore can't protect against priority inversion in the same way a proper mutex can. Java's `ReentrantLock` is an owned mutex; `Semaphore` is not.
+
+**"Phaser is just a reusable CyclicBarrier"** → Phaser is more flexible: parties can register/deregister dynamically during execution (CyclicBarrier parties are fixed at creation). Phaser has a phase number that advances each time all parties arrive. Phaser supports hierarchical composition (a tree of Phasers for divide-and-conquer synchronisation). CyclicBarrier is simpler for fixed-party synchronisation; Phaser is for dynamic party counts and tree-structured parallelism (e.g., parallel merge sort where threads register/deregister as they split/merge).
+
+**"Exchanger is rarely needed in practice"** → `Exchanger<V>` allows two threads to exchange objects at a synchronisation point — each thread presents an object, waits for the other, and receives the other's object. Uses: double-buffering (one thread fills a buffer while the other processes the previous buffer — they swap when both are done), genetic algorithm crossover (two thread populations exchange genes), pipeline stages where adjacent stages need to swap data.
+
+**"StampedLock is always better than ReadWriteLock"** → `StampedLock` adds optimistic read (try reading without a lock, then validate — no lock acquired at all if no write happened). Much faster than `ReentrantReadWriteLock` for read-heavy workloads with rare writes. But: StampedLock is NOT reentrant — the same thread trying to acquire a lock it already holds DEADLOCKS (unlike ReentrantReadWriteLock). StampedLock is also not condition-variable capable. Use `StampedLock` for performance-critical read-heavy access; use `ReentrantReadWriteLock` when reentrancy is needed.
+
+**"Thread.interrupt() terminates the thread"** → `Thread.interrupt()` sets the thread's interrupted flag — it does NOT stop the thread. The thread must check `Thread.interrupted()` or `Thread.currentThread().isInterrupted()` and cooperatively handle the interruption. Blocking operations (sleep, wait, I/O) throw `InterruptedException` when interrupted and CLEAR the flag. After catching `InterruptedException`, you must: either re-throw it, or re-set the flag (`Thread.currentThread().interrupt()`). Swallowing `InterruptedException` without restoring the flag breaks thread cancellation.

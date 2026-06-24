@@ -828,3 +828,18 @@ SLF4J + Logback + MDC + JSON logging form the observability foundation for
 any production Java application.
 
 **Navigation**: [< Generics & Exceptions](Ch04_Generics_Exceptions.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"JDBC's ResultSet.getString(1) and ResultSet.getString("column_name") are equivalent"** → Both work but with important differences: column index (1-based) is faster (no name lookup) and breaks silently if the SELECT column order changes. Column name is more robust to query refactoring. ResultSet column indexes start at 1, not 0 — a common gotcha. Also: `ResultSet.wasNull()` must be called immediately after getting a primitive type (int, long, double) from a ResultSet to detect SQL NULL — the primitive value returned is 0 for int/long and 0.0 for double when the column is NULL.
+
+**"The ClassLoader hierarchy doesn't matter for normal applications"** → It matters when: loading plugins (each plugin gets its own classloader — isolation from each other), application servers (Tomcat loads each webapp in its own classloader — preventing `ClassCastException` across webapp boundaries), OSGi bundles (each bundle has its own classloader), and when you get `ClassCastException` even though the classes "look the same" — they were loaded by different classloaders. The parent-delegation model: bootstrap → extension → system (application) classloader. Custom classloaders break this chain deliberately.
+
+**"java.util.logging (JUL) and SLF4J are the same"** → JUL is Java's built-in logging API. SLF4J is a facade (Simple Logging Facade for Java) — it provides a common API that routes to different implementations: Logback (default in Spring Boot), Log4j2, JUL. Log4j2 and Logback are NOT JUL — they are separate logging frameworks with their own configuration. Spring Boot by default uses SLF4J API + Logback implementation. `import org.slf4j.Logger` is the correct import for portable logging. Using `java.util.logging.Logger` in Spring Boot works but bypasses your Logback configuration.
+
+**"Connection.close() commits the current transaction"** → In JDBC, `Connection.close()` with `autoCommit=false` while a transaction is in progress: behavior is undefined by the JDBC spec but most drivers ROLLBACK the transaction (the safe choice). Never rely on close() to commit — always explicitly call `connection.commit()` or `connection.rollback()`. With Spring's transaction management: the `@Transactional` proxy commits before closing the connection. Manual JDBC: always commit/rollback before close.
+
+**"PreparedStatement prevents all SQL injection because parameters are escaped"** → PreparedStatement doesn't "escape" parameters — it separates code from data at the protocol level. The SQL query structure is sent to the DB first (`SELECT * FROM users WHERE id = ?`), then the parameter value is sent separately as data. The DB engine treats it as data, never as SQL code, regardless of what characters it contains. This is fundamentally safer than string escaping (which is fragile — edge cases in character encodings, contexts). Parameterization = send code and data separately. Escaping = try to sanitize data inserted into code.

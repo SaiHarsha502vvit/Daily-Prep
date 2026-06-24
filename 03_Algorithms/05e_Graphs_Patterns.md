@@ -1187,3 +1187,18 @@ Maintain a DSU over grid cells. Each `addLand(r,c)` call: create node, union wit
 - **Step**: Assume all nodes at distance d have been correctly assigned `dist = d` when first dequeued. When we dequeue node u (dist=d), we examine all neighbors v. If v is unvisited, `dist[v] = d+1`. Since we process all nodes at distance d before any at distance d+1 (FIFO queue property), no shorter path to v can be discovered later — any path to v via an unprocessed node at distance d would be at least d+1+1 = d+2 > d+1. So `dist[v] = d+1` is optimal. □
 
 **Why DFS fails**: DFS might find a d=10 path before the d=2 path, depending on traversal order. The FIFO property of BFS is essential — it enforces level-by-level exploration.
+
+
+---
+
+## Reality Check
+
+**"If a problem has paths or connections, it must need a graph algorithm"** → Not necessarily. Many "path" problems on grids are solved with DP (minimum path sum), sliding window, or prefix sums — not Dijkstra. The graph model is appropriate when: vertices have discrete state, edges have meaningful weights or existence, and the relationship is genuinely non-linear (not a simple grid DP). Before reaching for a graph algorithm, ask: does this have uniform cost? Can I model it as DP? Is the "graph" actually a DAG where DP applies?
+
+**"BFS finds the shortest path — always use BFS first"** → BFS finds shortest path in UNWEIGHTED graphs (or unit-weight graphs). For non-unit weights: Dijkstra's (non-negative weights), Bellman-Ford (negative weights). For 0-1 BFS (edges have weight 0 or 1): use a deque — push to front for 0-weight edges, push to back for 1-weight edges. O(V+E) like BFS but handles non-unit weights. Recognising when to use 0-1 BFS vs Dijkstra saves implementing a priority queue for a problem that a deque handles.
+
+**"Topological sort only applies to DAGs — no use for graphs with cycles"** → True that topological sort is undefined for graphs with cycles (cycle detection is the first step — if a cycle is found, no topological order exists). The pattern is: can you model your problem as dependencies where A must come before B? Build systems (Makefile targets), course prerequisites, spreadsheet recalculation order, instruction scheduling in compilers — all DAG problems. If the problem has a cycle in dependencies (circular dependency in a build system), that's the error to report.
+
+**"Multi-source BFS is just BFS from multiple starting nodes"** → Multi-source BFS initialises the queue with ALL source nodes at distance 0 simultaneously. This finds the distance from the nearest source for every node in O(V + E) — same as single-source BFS. Without multi-source BFS, you'd run BFS once per source: O(k * (V + E)) for k sources. Applications: "nearest exit" problems, spreading fire/infection from multiple origins, 0-1 matrix distance to nearest 0, walls and gates. The key insight: add all sources to the queue at time 0 before starting BFS.
+
+**"The shortest path in a DAG always uses Dijkstra"** → DAG shortest path doesn't need Dijkstra (which handles cycles via visited marking). For DAGs: topological sort + DP in O(V + E). Process vertices in topological order; relax outgoing edges of each vertex. This handles negative edge weights correctly (no negative cycle possible in a DAG). Single-source shortest path in a DAG: O(V + E) vs Dijkstra's O(E log V). Longest path in a DAG: negate weights and find shortest path, or directly do DP in reverse topological order. (Longest path in general graphs is NP-hard.)

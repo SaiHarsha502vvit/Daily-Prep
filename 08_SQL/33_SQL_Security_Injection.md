@@ -520,3 +520,17 @@ SQL injection emerged as the defining web vulnerability of the early internet, f
 
 **Modern practice anchor:**
 Today's SQL security combines parameterized queries (never concatenate user input), least-privilege database users via RBAC, encryption at rest, and WAFs at the network perimeter—all defending against the attack surface that Phrack first exposed in 1998.
+
+---
+
+## Reality Check
+
+**"Prepared statements make you immune to SQL injection"** → Parameterised queries (prepared statements) ARE the correct defense against SQL injection — they separate code from data, so user input is always treated as data, never as SQL. But: they protect parameters only. Dynamic table names, column names, or ORDER BY directions cannot be parameterised — `"SELECT * FROM " + tableName` is still vulnerable. For dynamic table/column names, use an allowlist validation against known good values. Also: some ORMs with "native query" modes let you interpolate strings — check your ORM's raw query API.
+
+**"Storing passwords with SHA-256 is secure"** → SHA-256 (and MD5, SHA-1) are fast hash functions — designed for speed. This is a problem for passwords: an attacker can compute 10 billion SHA-256 hashes per second on a GPU and crack common passwords from a breach dump in minutes. Password hashing requires a SLOW, purpose-built algorithm: BCrypt, Argon2, or scrypt. These are intentionally slow and include a salt automatically. Spring Security uses BCrypt by default (`BCryptPasswordEncoder`). Never use general-purpose hash functions for passwords.
+
+**"Row-level security is just application-side filtering"** → Row-Level Security (RLS) in PostgreSQL enforces access policies inside the database engine — the application cannot bypass them. `CREATE POLICY user_isolation ON documents USING (user_id = current_user_id())` means even a `SELECT * FROM documents` returns only the rows the current database role is allowed to see. This prevents: bugs where an API endpoint accidentally returns another user's data, compromised application code exposing all rows, direct DB access bypassing application logic. RLS is a defense-in-depth layer, not a replacement for application auth.
+
+**"GRANT SELECT is enough to prevent data leakage"** → SELECT access to a table grants access to all rows and all columns. For column-level security: `GRANT SELECT (name, email) ON users TO reporting_role` (PostgreSQL) grants access to only those columns. For row-level security: RLS policies (above). Principle of least privilege: reporting users should see aggregate data, not individual user records; the DB role for your API should not be the superuser; each microservice should have its own DB user with access only to its tables.
+
+**"SQL injection only affects web applications"** → SQL injection affects any application that constructs SQL strings from external input: desktop applications, ETL pipelines (user-uploaded CSV with SQL in a field), batch job configuration files, log processing systems, even database stored procedures that accept parameters and build dynamic SQL. The vulnerability is in string concatenation, not in web-ness. GraphQL APIs, mobile app backends, message queue consumers, and data pipeline scripts are all attack surfaces if they construct SQL strings from untrusted input.

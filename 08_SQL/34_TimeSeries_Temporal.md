@@ -474,3 +474,18 @@ Today's time-series SQL combines native date/time types with window functions fo
 
 **Modern practice anchor:**
 TimescaleDB requires explicit chunk interval tuning based on data volume — auto-tuning often produces suboptimal chunk sizes in production.
+
+
+---
+
+## Reality Check
+
+**"TIMESTAMP and DATETIME are the same in SQL"** → They differ across databases. MySQL: `TIMESTAMP` stores as UTC, converts to/from server timezone on read/write (range: 1970-2038), `DATETIME` stores literally with no timezone (range: 1000-9999). PostgreSQL: `TIMESTAMP WITHOUT TIME ZONE` (naive, no TZ), `TIMESTAMP WITH TIME ZONE` (stores as UTC, displays in session timezone). SQL Server: `DATETIME` (no TZ), `DATETIMEOFFSET` (stores offset). Always use timezone-aware types for anything that crosses timezone boundaries or deals with historical data where DST transitions matter.
+
+**"Time-series data should always be stored in a relational database"** → Relational databases work for time-series, but specialised time-series databases (TimescaleDB, InfluxDB, QuestDB, ClickHouse) offer: automatic time-based partitioning (data tiered to cheaper storage as it ages), columnar compression for time-series patterns (repeating sensor IDs, similar timestamps), purpose-built aggregation functions (time_bucket(), first(), last()), continuous aggregates (auto-updating materialized views for frequent time-bucket queries). For IoT sensor data at millions of points per second, a specialised TSDB significantly outperforms PostgreSQL on both ingestion rate and query performance.
+
+**"Temporal tables track all historical versions"** → SQL:2011 temporal tables: `SYSTEM TIME` (DB manages start/end timestamps automatically — version history) and `APPLICATION TIME` (application manages validity periods — "valid from X to Y"). System-versioned tables: every UPDATE/DELETE creates a history row in a history table. Query past state: `SELECT * FROM orders FOR SYSTEM_TIME AS OF '2023-01-15'`. PostgreSQL 16+ supports temporal tables. SQL Server has had them since 2016. Used for: audit trails, point-in-time recovery of application data, slowly changing dimensions in data warehouses.
+
+**"Querying time-series data with BETWEEN is always correct"** → `BETWEEN start AND end` is inclusive on both ends. For timestamp ranges: `BETWEEN '2024-01-01 00:00:00' AND '2024-01-31 23:59:59.999'` misses events on 2024-01-31 23:59:59.9999999 due to fractional seconds. Safe pattern: `ts >= '2024-01-01' AND ts < '2024-02-01'` (exclusive end). Also: BETWEEN is start ≤ ts ≤ end — be careful with timezone conversions. A timestamp stored as UTC '2024-01-01 00:30:00' might be '2023-12-31 19:30:00' in US Eastern time — your BETWEEN range must be in the same timezone as the stored values.
+
+**"Aggregating by day/month requires extracting date parts"** → `EXTRACT(DAY FROM ts)` extracts the day-of-month number — NOT useful for grouping by calendar day (it would group all 5th-of-month days together). For grouping by calendar day: `DATE_TRUNC('day', ts)` (PostgreSQL), `CAST(ts AS DATE)` (most databases), `DATE(ts)` (MySQL). Similarly, `DATE_TRUNC('hour', ts)` rounds down to the start of the hour. For custom intervals: TimescaleDB's `time_bucket('15 minutes', ts)` buckets into 15-minute windows. These are fundamental for time-series analysis — verify the function returns a date/timestamp value, not just a number.

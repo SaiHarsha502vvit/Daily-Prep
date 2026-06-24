@@ -986,3 +986,18 @@ If you have a loop calling `animal.speak()`:
 ---
 
 **Navigation**: [< Streams Deep Reasoning](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Concurrency Synchronizers >](Ch17_Concurrency_Synchronizers.md)
+
+
+---
+
+## Reality Check
+
+**"Every object in Java has the same memory overhead"** → Java object header: 12 bytes (JVM with compressed oops, the default for heap < 32GB) or 16 bytes. Every object pays this overhead, regardless of size. A `Boolean` object: 12-byte header + 1-byte field = 13 bytes → padded to 16 bytes (8-byte alignment). An int[] of 1 element: 12-byte header + 4-byte length + 4-byte element = 20 bytes → padded to 24 bytes. For millions of small objects, this overhead dominates. This is why Java primitive arrays beat boxed arrays for numeric computation.
+
+**"Object layout in Java matches declaration order"** → JVM reorders fields to minimise padding. Fields are ordered: object references (8 bytes), doubles (8), longs (8), ints (4), floats (4), shorts (2), chars (2), bytes (1), booleans (1). Subclass fields follow parent fields. The declared order in source code is not the memory layout order. Tools to inspect layout: Java Object Layout (JOL) library. Layout matters for cache line sharing: two longs that are logically independent but in the same object share a 64-byte cache line — false sharing in concurrent access causes cache thrashing.
+
+**"instanceof is always a runtime check"** → `instanceof` is a runtime type check — it asks the JVM "is this object an instance of this class/interface?" Java 16+ pattern matching for instanceof: `if (obj instanceof String s) { ... }` combines the check and cast. Java 21 pattern matching in switch: `switch (obj) { case Integer i -> ...; case String s -> ...; }`. These reduce boilerplate but are still runtime checks. The compiler can sometimes eliminate the check via type narrowing (after an if-instanceof branch, the type is known). JIT can also devirtualize calls if the runtime type can be proven.
+
+**"String interning is always beneficial for memory"** → String interning stores the string in the JVM's string pool (PermGen before Java 8, Metaspace/heap after). Interning allows == comparison instead of .equals(). Benefits: reduced memory for many equal strings, faster equality checks. Costs: the intern pool itself takes memory, `intern()` has overhead (hash table lookup), interns are held for the JVM lifetime (GC cannot collect them until Metaspace is full). For a fixed set of strings (enum-like values appearing millions of times): intern. For user-generated strings of unbounded variety: don't intern — you'll fill Metaspace.
+
+**"Weak, Soft, and Phantom references are all just weaker versions of regular references"** → They serve distinct purposes: WeakReference — GC can collect the referent at ANY time (used for caches where entries should not prevent GC, `WeakHashMap` key-value pairs). SoftReference — GC collects when memory is tight (better for caches you want to keep as long as memory allows). PhantomReference — referent has already been finalized; used for post-finalization cleanup (replacing `finalize()` which is deprecated). Using the wrong type: WeakReference for a cache gets too aggressive GC; SoftReference for a canonicalization map prevents memory-pressure GC.

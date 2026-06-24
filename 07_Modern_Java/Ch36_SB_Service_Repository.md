@@ -1427,3 +1427,18 @@ _Continue to Part 7: Controllers & REST API Best Practices_
 ---
 
 > **Navigation**: [< Previous](Ch35_SB_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch37_SB_Controllers_REST.md)
+
+
+---
+
+## Reality Check
+
+**"@Service and @Repository beans are always singletons"** → By default, yes — Spring beans are singleton-scoped (one instance per application context). This means: NO instance variables that hold request-specific state (your @Service shared by all threads — a field like `private User currentUser` is a concurrency disaster). Use method parameters to pass request-specific data, or `@RequestScope`/`@SessionScope` beans for request/session-scoped dependencies. `@Scope("prototype")` creates a new instance each time the bean is requested — rarely needed but available.
+
+**"The repository layer should only contain database access methods"** → Repository layer: data access only (CRUD, queries, pagination). Service layer: business logic, orchestration, transaction boundaries, validation, calling multiple repositories, publishing events. Common mistake: business logic in repositories (conditional logic, business rules), or direct repository calls from controllers (bypasses transaction management and makes controllers fat). The layering is a convention for maintainability — keep it consistent so every developer knows where to find what.
+
+**"Optional in repository return types means the field might be null"** → `Optional<User> findById(Long id)` means: either the user exists (Optional.isPresent()) or no user with that ID exists (Optional.isEmpty()). This is not "the user has a nullable field" — it's "the entity might not exist." Using `Optional` properly: `repository.findById(id).orElseThrow(() -> new EntityNotFoundException())`. NOT: `Optional<User> opt = repository.findById(id); User user = opt.get();` — calling `get()` without checking throws `NoSuchElementException`. `Optional` is a container for an optional result, not a null-friendly wrapper.
+
+**"Calling another @Transactional method from within the same service uses a new transaction"** → By default, `@Transactional` propagation is `REQUIRED`: if a transaction already exists, the called method JOINS it. Self-invocation (calling `this.otherMethod()` within the same bean) bypasses the proxy — the `@Transactional` annotation on `otherMethod` is ignored entirely because the call goes directly to the bean, not through Spring's proxy. To get separate transactions or to respect the annotation: inject the bean into itself (ugly), use `ApplicationContext.getBean()`, or extract to a separate service class.
+
+**"Spring Data's save() always performs an INSERT"** → `save()` performs INSERT for new entities, UPDATE for existing ones. Determination: if the entity's ID is null (or 0 for numeric IDs) → INSERT. If ID is set → `entityManager.merge()` → UPDATE. If you set the ID manually (for a new entity with a client-assigned ID), Spring Data's `CrudRepository.save()` will treat it as an existing entity and attempt UPDATE, which finds nothing and effectively does a merge (upsert in some configs). Use `saveAll()` for batches — but check your JPA batch settings (`spring.jpa.properties.hibernate.jdbc.batch_size`) or Hibernate may still issue individual INSERT statements.

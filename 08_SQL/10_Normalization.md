@@ -285,3 +285,18 @@ Today, every SQL interview tests your ability to identify normalization violatio
 
 **Modern practice anchor:**
 Today, hybrid approaches dominate — OLTP systems (banking, e-commerce) use 3NF schemas with FK constraints enforced at the application layer via Prisma/Hibernate, while analytical platforms (Snowflake, BigQuery) use denormalized wide tables for single-pass aggregation queries.
+
+
+---
+
+## Reality Check
+
+**"Normalization always means fewer tables"** → No — normalization typically means MORE tables, each with fewer columns, less data redundancy, and cleaner update semantics. 1NF: atomic values (no repeating groups in a column). 2NF: remove partial dependencies (non-key column depends on ALL of composite key). 3NF: remove transitive dependencies (non-key column depends on another non-key column). Each normal form can split tables. You end up with more JOIN queries but fewer anomalies.
+
+**"A table in 3NF is always in BCNF"** → 3NF allows a non-prime attribute to determine a prime attribute. BCNF (Boyce-Codd NF) requires every functional dependency X → Y to have X as a superkey. BCNF is strictly stronger than 3NF. Example: a table with composite key (student, course) and a dependency course → instructor: 3NF (instructor is non-prime determining prime, special 3NF case), but BCNF violation (course is not a superkey). In practice, 3NF decomposition is preferred over BCNF because BCNF decomposition may lose some functional dependencies.
+
+**"Denormalized tables are always bad"** → Denormalization is deliberately introducing redundancy for read performance. Data warehouses, reporting systems, and analytics databases (OLAP) are intentionally denormalized: star schema (one fact table, multiple dimension tables) and snowflake schema. Column-oriented databases (BigQuery, Redshift, Parquet files) benefit from wide, denormalized tables because they read columns, not rows. The decision is always: how often are data read vs written? Read-heavy with complex joins: denormalize. Write-heavy with many updates: normalize.
+
+**"The HAVING clause can reference SELECT aliases"** → In standard SQL, HAVING executes before SELECT (logical order: FROM → WHERE → GROUP BY → HAVING → SELECT). So SELECT aliases don't exist yet in HAVING — you should repeat the expression: `GROUP BY category HAVING SUM(amount) > 1000`. Some databases (MySQL, SQLite) allow HAVING to reference SELECT aliases as an extension. For cross-database portability, don't rely on this — repeat the aggregate expression in HAVING.
+
+**"Functional dependencies can always be inferred from sample data"** → Sample data can only DISPROVE a functional dependency (find a counterexample: two rows with the same X but different Y means X → Y doesn't hold). Sample data can NEVER confirm a functional dependency holds for all possible data — the next row added might violate it. Functional dependencies are semantic constraints based on business rules, not statistical observations. "In our data, every order_id maps to one customer_id" could be an accident; the FK constraint is what actually enforces the business rule.

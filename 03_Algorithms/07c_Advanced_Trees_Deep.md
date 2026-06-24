@@ -651,3 +651,18 @@ System.out.println(tm.subMap(3, 7));  // {3=three, 5=five} -- [3,7) range
 | Prefix search | Scan all keys | O(n*L) | Trie | O(L) per query |
 | Range overlap queries | Scan all intervals | O(n) per query | Interval Tree | O(log n + k) where k=matches |
 | Large dataset on disk | Full scan | O(n/B) disk I/Os | B-Tree | O(log_B n) disk I/Os |
+
+
+---
+
+## Reality Check
+
+**"Red-black trees are the fastest balanced BST implementation"** → Red-black trees guarantee O(log n) height. But "fastest" depends on the operation mix. AVL trees: stricter balance (height ≤ 1.44 log₂n) → faster lookups (shorter paths). Red-black trees: looser balance → fewer rotations on insert/delete. For write-heavy workloads: red-black. For read-heavy: AVL. B-trees: optimal for disk (minimise I/O by maximising branching factor — one node per disk page). Treap (BST + heap priorities): simpler implementation via randomisation. Java's `TreeMap` uses red-black trees.
+
+**"Splay trees are impractical because they don't guarantee balance"** → Splay trees restructure on every access (move accessed node to root via rotations). No O(log n) worst case per operation, but O(log n) amortised. Their advantage: recently accessed items stay near the root — O(1) access if the same items are repeatedly accessed. Real uses: splay trees appear in some LRU caches, network packet schedulers, and compiler implementations. Splaying provides temporal locality exploitation that balanced BSTs don't.
+
+**"2-3-4 trees are just textbook examples — nobody uses them"** → A 2-3-4 tree is isomorphic to a red-black tree: each 2-3-4 node maps to one or two red-black nodes. This is precisely why red-black tree insertion is complex — it's implementing 2-3-4 node splits and promotions via rotation+recoloring. Understanding 2-3-4 trees (what each rotation actually represents conceptually) makes red-black tree insertion comprehensible. B-trees generalise 2-3-4 trees: a B-tree of order 3 is a 2-3 tree; order 4 is a 2-3-4 tree. Database index internals are B-trees.
+
+**"Treaps are less efficient than AVL or red-black trees"** → Same O(log n) expected height. Treap = BST on keys, Heap on random priorities. The random priority ensures the expected tree structure matches a random BST, which has O(log n) expected height. Advantages: simpler implementation than AVL/red-black (no rotations for balance, priority determines structure), naturally supports split/merge in O(log n) — useful for competitive programming where you need to split and merge sorted sequences. Persistent treaps (used in functional programming) exploit the split/merge without complex rotation bookkeeping.
+
+**"AVL tree rotations are complex and error-prone"** → Four rotation cases: LL (single right rotation), RR (single left rotation), LR (left-right double rotation), RL (right-left double rotation). Once you derive WHY each case occurs (unbalanced after insert in a specific subtree), the rotations follow mechanically. The key insight: rotations preserve BST order while reducing height. In production Java, you never implement these manually (`TreeMap` handles it). In interview/competitive programming, implement a treap instead — same O(log n), simpler implementation using only split/merge.

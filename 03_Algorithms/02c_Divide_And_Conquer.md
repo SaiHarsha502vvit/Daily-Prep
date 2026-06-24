@@ -867,3 +867,18 @@ T(n) = Θ(n¹ · (1 + ∫₁ⁿ u / u² du))
 ---
 
 **Navigation**: [← Sorting Advanced](02b_Sorting_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Recursion Internals →](03a_Recursion_Internals.md)
+
+
+---
+
+## Reality Check
+
+**"Divide and Conquer always has a recurrence T(n) = 2T(n/2) + O(n)"** → The 2T(n/2) + O(n) pattern (Master Theorem Case 2: O(n log n)) is merge sort's recurrence. D&C recurrences vary: Binary search: T(n) = T(n/2) + O(1) → O(log n). Karatsuba multiplication: T(n) = 3T(n/2) + O(n) → O(n^log₂3) ≈ O(n^1.585). Strassen matrix multiplication: T(n) = 7T(n/2) + O(n²) → O(n^log₂7) ≈ O(n^2.807). Quicksort (balanced): T(n) = 2T(n/2) + O(n) → O(n log n) but worst case T(n) = T(n-1) + O(n) → O(n²).
+
+**"The merge step in divide and conquer is always simple"** → The divide step (split the problem) is usually simple; the combine (merge) step is where the real work happens. Merge sort: the merge is O(n). Counting inversions: during the merge step you count how many inversions involve elements from different halves — O(n). Closest pair of points: after recursively solving each half, you must merge by finding the closest pair that straddles the dividing line — the clever O(n) strip scan. The key insight in D&C design is "what information from the recursive solution do I need to combine correctly?"
+
+**"Divide and Conquer requires the subproblems to be equal in size"** → Not required but balanced division gives the best complexity. Unequal splits: QuickSort with bad pivot splits n into 1 and n-1 → O(n²). Matrix multiplication by splitting into n/4-size submatrices is standard. The recurrence handles any split ratio; the Master Theorem applies for any fixed fraction. Practical example: finding the k-th smallest (QuickSelect) divides unequally every time (partition by pivot) but achieves O(n) expected.
+
+**"Binary search is divide and conquer"** → Binary search IS D&C: divides the search space in half, searches only one half, does not combine results. The D&C template: divide (pick midpoint), conquer (search left or right half), combine (trivial — return the result from the recursive call). Binary search's O(log n) comes from T(n) = T(n/2) + O(1), Master Theorem Case 2 where f(n) = O(n^(log_b a - ε)) → T(n) = O(n^log_b a) = O(n^0) = O(1)... wait, that's Case 1. Binary search: T(n) = T(n/2) + O(1), log_2 1 = 0, f(n) = O(n^0) = O(1), so Case 2: T(n) = O(log n).
+
+**"D&C and DP solve the same problems differently"** → D&C: subproblems are independent (no overlap). DP: subproblems overlap (solving the same subproblem multiple times). Fibonacci with D&C: exponential (recomputes fib(3) for fib(5) and fib(4) separately). Fibonacci with DP: linear (store fib(3) once). The test: draw the recursion tree. If subproblems repeat (same input to multiple recursive calls), D&C wastes work — use memoisation (top-down DP) or tabulation (bottom-up DP). If subproblems never repeat (merge sort's subarrays are distinct), D&C is fine.

@@ -299,3 +299,18 @@ Today, every SQL interview tests your understanding of DECIMAL vs FLOAT for mone
 
 **Modern practice anchor:**
 Today, schema validation tools (Liquibase, Flyway, Prisma Migrate) enforce column types in CI/CD, and application-layer libraries like Stripe's decimal.js handle currency arithmetic before it reaches the database — catching FLOAT/DECIMAL mismatches before deployment.
+
+
+---
+
+## Reality Check
+
+**"VARCHAR(255) is the safe default for any text column"** → 255 is a common default for "small text" but is arbitrary. In MySQL, `VARCHAR(255)` vs `VARCHAR(256)` matters for index length (767-byte row format limit). In PostgreSQL, VARCHAR(n) is stored identically to VARCHAR(n+1) unless you actually enforce the limit. An unrestricted `TEXT` type in PostgreSQL stores the same way as VARCHAR without a length check. Setting VARCHAR(255) without thinking about actual max length wastes opportunities: you can't prevent overly long inputs if you set it too large, and setting it too small breaks valid inputs.
+
+**"NOT NULL with a default value eliminates NULL problems"** → `DEFAULT ''` (empty string) and DEFAULT 0 create different problems than NULL: they are valid values that may be confused with meaningful data. An empty string email is not a missing email — it's a broken one. Default 0 for a price is not "no price set" — it's a price of zero. The right approach: NOT NULL without a default forces the INSERT to provide a value (which is often the correct behavior), rather than silently substituting a meaningless default.
+
+**"UNIQUE constraint and PRIMARY KEY both prevent duplicates"** → UNIQUE allows NULL in most databases (except some configurations): multiple NULLs are allowed in a UNIQUE column because NULL != NULL. PRIMARY KEY = NOT NULL + UNIQUE. A table can have one PRIMARY KEY and multiple UNIQUE constraints. UNIQUE constraints create an index automatically (same as PRIMARY KEY). Partial UNIQUE constraints (PostgreSQL): `CREATE UNIQUE INDEX ON users (email) WHERE deleted_at IS NULL` — unique email only among non-deleted users.
+
+**"CHECK constraints run on every INSERT and UPDATE"** → Yes, but: in PostgreSQL, constraints can be `NOT VALID` (added without checking existing rows). `CHECK (age >= 0)` is verified at INSERT/UPDATE but the database trusts existing rows. Some databases (MySQL) define CHECK constraints syntactically but historically did NOT enforce them (this changed in MySQL 8.0.16). Always test that CHECK constraints are actually enforced in your target database version. Also: CHECK constraints cannot reference other tables — for cross-table constraints, use triggers or application logic.
+
+**"ENUM types are efficient and type-safe"** → ENUMs look type-safe but have real problems: adding a new value requires an `ALTER TABLE ... MODIFY COLUMN` (which rewrites the table in older MySQL, or is instant in PostgreSQL via catalog update). ENUMs are DB-engine specific — not portable between PostgreSQL and MySQL. An alternative: a VARCHAR with a CHECK constraint (`CHECK (status IN ('active', 'inactive'))`) is more portable. A lookup table with a foreign key is more flexible: you can add new values by inserting a row, no schema migration needed.

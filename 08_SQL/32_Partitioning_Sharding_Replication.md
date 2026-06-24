@@ -486,3 +486,17 @@ Database scaling evolved from vertical growth (bigger servers) toward horizontal
 
 **Modern practice anchor:**
 Modern database scaling combines partitioning for data lifecycle management, read replicas for read scaling, and application-level or proxy sharding for write scaling—often using cloud-native managed databases that handle distribution automatically.
+
+---
+
+## Reality Check
+
+**"Partitioning always speeds up queries"** → Partitioning improves performance ONLY when queries filter on the partition key (partition pruning — the planner skips irrelevant partitions). A query without a filter on the partition key scans ALL partitions — potentially slower than a single table due to planning overhead. Partitioning also adds complexity: FOREIGN KEY constraints cannot reference partitioned tables in PostgreSQL (as of v15). Partitioning is most useful for: time-series data (partition by month, archive old partitions), very large tables where you want to DROP old partitions instead of DELETE.
+
+**"Sharding is just database partitioning at a larger scale"** → Partitioning splits a table across multiple physical locations within the SAME database instance. Sharding distributes data across MULTIPLE independent database instances (each shard is a separate DB server). Sharding requires: application-level routing (which shard holds this user?), cross-shard queries (JOINs across shards are very hard or impossible), distributed transactions (expensive), schema migration complexity (migrate all shards). Only introduce sharding when a single database cannot handle the load — it adds significant operational complexity.
+
+**"Replication provides both high availability and read scaling"** → Replication provides both, but with trade-offs. Asynchronous replication (default in most setups): low latency writes, possible data loss on primary failure, reads from replica may be stale (replication lag). Synchronous replication: no data loss, but write latency includes replica acknowledgment. Read scaling from replicas works only when reads can tolerate stale data. Use replicas for analytics/reporting (stale OK) but not for "just wrote and immediately read back" patterns.
+
+**"Connection pooling is optional for small applications"** → Database connections are expensive: TCP handshake + TLS + authentication + session setup = ~50-200ms per connection. Applications that open a new connection per request will hit connection limits quickly and suffer latency. Connection pooling (PgBouncer for PostgreSQL, ProxySQL for MySQL, HikariCP in Java) reuses connections. Even small applications should use a connection pool — the default Spring Boot HikariCP configuration does this automatically. The connection limit is per-database-server; a connection pool multiplexes many application threads through few actual connections.
+
+**"Replication lag is always small (milliseconds)"** → Replication lag depends on: write throughput (high-write primary builds a queue of WAL/binlog to replay), replica hardware (slower I/O = slower replay), network latency (cross-region replication adds RTT), long-running transactions (WAL cannot advance past an open transaction on the primary). During a high-write event (data migration, bulk import), replication lag can reach seconds, minutes, or hours. Monitor lag with `pg_stat_replication` (PostgreSQL) or `SHOW SLAVE STATUS` (MySQL). Applications reading from replicas must handle stale reads gracefully.

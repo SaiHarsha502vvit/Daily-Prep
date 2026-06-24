@@ -1607,3 +1607,18 @@ _Continue to Part 3: AOP (Aspect-Oriented Programming)_
 ---
 
 > **Navigation**: [< Previous](Ch31_SB_Core_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch33_SB_Web_Part3.md)
+
+
+---
+
+## Reality Check
+
+**"Spring Data JPA findAll() is safe for any entity"** → `findAll()` fetches every row in the table. For a 10-million-row table, this loads all 10 million objects into memory. Always use: `findAll(Pageable pageable)` for pagination, `findAll(Specification spec)` for filtered queries, or write a custom JPQL/native query. Blindly calling `findAll()` is a common performance disaster in growing applications. Add logging (`spring.jpa.show-sql=true`) and see what SQL `findAll()` actually generates before using it in production paths.
+
+**"@Query with nativeQuery=true is always faster than JPQL"** → Native queries bypass Hibernate's query parser and hit the DB directly. But: native queries don't participate in Hibernate's second-level cache, can't return managed entities without a result mapping, and are database-specific (breaking portability). JPQL is translated to SQL by Hibernate — the resulting SQL is often identical to hand-written SQL for simple queries. Profile before assuming native is faster. Use native queries for: DB-specific features (PostgreSQL's `UNNEST`, window functions), bulk operations, or when JPQL translation produces suboptimal SQL.
+
+**"Spring Data's Specification API replaces all custom query methods"** → Specifications (based on JPA Criteria API) are dynamic — build queries at runtime by combining predicates. They're verbose and hard to read but solve: dynamic search forms (user can filter by any combination of fields), query generation from programmatic criteria. They're NOT a replacement for static named queries (prefer `@Query` or repository method naming for static, known queries). Specifications shine for search UIs; they're overkill for "find by status where status is always known at coding time."
+
+**"Connection leak is impossible with Spring's @Transactional"** → `@Transactional` manages transaction boundaries and connection release. But: if you acquire a connection outside a `@Transactional` context (direct `EntityManager` injection without a transaction, `@PersistenceContext` accessed in a non-transactional method), the connection may not be released promptly. HikariCP's `leakDetectionThreshold` setting logs when a connection is held longer than expected — enable this in development. Connection pool exhaustion (all connections in use) manifests as the application hanging on new requests — all waiting for a connection.
+
+**"@Transactional(readOnly = true) is just a hint with no real effect"** → `readOnly = true` effects: Hibernate flushes no dirty checking at transaction end (skips the overhead of detecting entity changes), the underlying JDBC driver may optimise (e.g., Oracle and some drivers skip redo log generation), Spring routes to a read replica if you configure a routing DataSource. For high-traffic read endpoints, the flush-skipping alone provides meaningful performance improvement. Use `readOnly = true` on every `@Transactional` method that only reads data.
