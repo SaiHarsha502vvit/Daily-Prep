@@ -858,3 +858,18 @@ test("Citation detail modal is accessible", async ({ page }) => {
 ---
 
 **Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
+
+
+---
+
+## Reality Check
+
+**"Accessibility testing means running axe and fixing what it reports"** → axe-core (and similar) catch roughly 30-40% of WCAG 2.1 violations automatically. The remaining 60-70% require human judgment: does this image's alt text actually describe the image meaningfully? Is the reading order logical when using a screen reader? Can keyboard-only users complete this complex interaction? Does the focus indicator have sufficient contrast? Are error messages announced to screen readers at the right time? Automated testing is a necessary starting point, not the finish line.
+
+**"ARIA attributes fix accessibility issues"** → ARIA (Accessible Rich Internet Applications) attributes should enhance, not compensate for, broken HTML structure. `<div role="button" onclick="...">` is worse than `<button>` — you'd need to manually add keyboard handlers (Enter/Space key events), focus management, and all the built-in button semantics. First rule of ARIA: don't use ARIA if native HTML can do it. Bad ARIA (`aria-label` on a `<span>` to describe a whole unlabelled form section) adds complexity without fixing the fundamental structure problem.
+
+**"WCAG compliance means the site is accessible to everyone"** → WCAG (Web Content Accessibility Guidelines) is a legal and technical baseline, not a guarantee of usability. A site can be WCAG 2.1 AA compliant and still be unusable for many users: all images have alt text (compliant) but the alt text is "image001.jpg" (technically compliant, useless), all form fields have labels (compliant) but the label is hidden off-screen (compliant) instead of visible, keyboard navigation works (compliant) but the tab order is non-intuitive. Accessibility usability testing with actual disabled users reveals what automated compliance testing misses.
+
+**"axe violations in tests must all be fixed immediately"** → axe reports violations, needs-review, and incomplete (items that need human review). Not all violations are equal: `critical` (prevents access) must be fixed; `serious` (significant barrier) should be prioritized; `moderate` (some users affected) can be backlogged; `minor` (annoying but navigable) are improvements. Integrate axe into your test suite with allowlists for known violations that are tracked in your backlog — prevent REGRESSION of fixed violations while you systematically work through new ones. A zero-violations policy may not be achievable immediately on legacy codebases.
+
+**"Playwright's accessibility snapshot is the same as axe"** → `await page.accessibility.snapshot()` takes an accessibility tree snapshot — the logical structure as a screen reader would see it (node labels, roles, children). This is useful for: verifying the accessibility tree structure is correct, snapshot testing the accessible names and roles. It does NOT check against WCAG rules — it's a raw data capture. `axe-core` + `@axe-core/playwright` runs rule checks against WCAG success criteria. The two tools are complementary: snapshot = "what does the tree look like?", axe = "does it violate known rules?"

@@ -544,3 +544,18 @@ Run all: `npx playwright test`. Run admin only: `--project=admin`.
 - **Ch 58** — File uploads & downloads (the next sharp-edge feature).
 
 **Navigation**: [← 56. Playwright Config Deep-Dive](../02_Core_Architecture/56_Playwright_Config_Deep_Dive.md) | [Index](../00_INDEX.md) | [→ 58. File Uploads & Downloads](./58_File_Uploads_Downloads.md)
+
+
+---
+
+## Reality Check
+
+**"OAuth 2.0 and OpenID Connect are the same thing"** → OAuth 2.0 is an authorization framework: grants third-party apps limited access to a resource (your Google contacts). It does NOT tell the app WHO the user is. OpenID Connect (OIDC) is an identity layer on top of OAuth 2.0: it adds an `id_token` (JWT containing the user's identity) and a `/userinfo` endpoint. "Login with Google" is OIDC — it provides identity. "Access my Google Drive files" is OAuth 2.0 — it provides authorization. Many systems use "OAuth for login" loosely meaning OIDC. The distinction matters when you need to understand what tokens contain and what they prove.
+
+**"Storing OAuth access tokens in localStorage is fine because they're short-lived"** → Access tokens in localStorage are accessible to ANY JavaScript on the page — including injected malicious scripts via XSS. Short lifetime (1 hour) reduces but doesn't eliminate the risk. Best practice: store tokens in memory (JavaScript variable) or in httpOnly cookies (not accessible to JavaScript). httpOnly cookies are sent automatically by the browser, can't be stolen via XSS, and are protected from CSRF with SameSite=Strict. If XSS is possible in your app, localStorage tokens are vulnerable; httpOnly cookies are not.
+
+**"SAML is legacy and everyone has moved to OIDC"** → Enterprise software, especially Microsoft products and large corporations, still heavily uses SAML. Salesforce, Okta, Azure AD, and most enterprise SSO systems support both. You'll encounter SAML when: testing enterprise line-of-business apps (D365, SharePoint, SAP), integrating with government or banking systems, working with older authentication infrastructure. In test automation: SAML SSO flows often redirect through a corporate IdP, which requires handling the SAML redirect, form-posting to the IdP, and receiving the SAML assertion callback. Different Playwright approach than OIDC flows.
+
+**"storageState captures authentication for all types of login"** → `page.context().storageState()` saves cookies and localStorage. This works for: cookie-based sessions, OAuth tokens stored in localStorage. It does NOT work for: browser Basic Auth (HTTP Authorization header — must be passed per request), certificate-based auth (mTLS — requires browser client certificate configuration), windows-based auth (NTLM/Kerberos — integrated with the OS), or in-memory tokens that aren't persisted to storage. For each auth type, Playwright has a different configuration approach.
+
+**"MFA (multi-factor auth) makes automation impossible"** → MFA can be handled in tests: TOTP (time-based one-time passwords like Google Authenticator): generate the code programmatically using the TOTP secret (`otpauth://...` URI). Libraries like `speakeasy` or `@otplib/preset-node` generate valid TOTP codes. Email/SMS OTP: intercept the OTP from a test email service (Mailosaur, Mailhog) or test phone number, then enter it. Hardware security keys: bypass with a test user that has a known TOTP seed or with an API that generates bypass tokens. Most enterprise apps have a test/automation bypass for MFA configured for service accounts.

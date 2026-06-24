@@ -1638,3 +1638,18 @@ await page.context().storageState({ path: "auth.json" });
 - Secrets management: [`../deep_dives/security.md`](../deep_dives/security.md)
 - Auth-related practice problems: Q6 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)
 - Real auth fixtures in code: [`../framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts) (account pool), [`../framework/fixtures/auth.oauth.fixture.ts`](../framework/fixtures/auth.oauth.fixture.ts) (OAuth client credentials), [`../framework/utilities/auth/totp.helper.ts`](../framework/utilities/auth/totp.helper.ts) (TOTP)
+
+
+---
+
+## Reality Check
+
+**"Saving storageState once is enough for all tests"** → `storageState` captures cookies and localStorage at a point in time. Tokens expire — a `storageState` saved with a 1-hour access token will fail tests run after the hour. Strategy: save `storageState` in `globalSetup` (runs before each test run), use it across the test run. If tests take longer than token lifetime: implement token refresh in the `loginUser` fixture, or use long-lived service account tokens, or re-authenticate per worker (worker-scoped fixture). Never commit `storageState.json` with real credentials to version control.
+
+**"HTTP-only cookies automatically bypass CSRF"** → HttpOnly cookies: JavaScript cannot read them (XSS-resistant). SameSite=Strict: cookies only sent for same-origin requests (CSRF-resistant). These are browser-level protections. In Playwright: when you use `page.context().addCookies([...])` or `storageState`, Playwright sends cookies directly in requests — the browser's SameSite policy is enforced at the browser level. For testing cross-origin requests: use Playwright's API request context (`context.request`) which also respects cookies but may need explicit cookie handling for cross-origin scenarios.
+
+**"Multi-user test scenarios require separate browsers"** → Multi-user scenarios need separate browser CONTEXTS, not separate browsers. A browser can have multiple independent contexts: each has its own cookies, localStorage, sessions. `const adminCtx = await browser.newContext(); const userCtx = await browser.newContext()` — two users, one browser process. Pages from each context can interact (admin creates a record, user context sees it). This pattern tests permission-separated workflows efficiently: admin approves, user sees the approved state — without restarting a browser.
+
+**"Playwright's basicAuth option handles all HTTP authentication"** → `page.context().setHTTPCredentials({ username, password })` handles HTTP Basic Authentication challenges (401 prompts). But: many modern "login" forms are HTML forms, not HTTP Basic Auth. For form-based login: navigate to the login page, fill username/password, click submit, wait for success, save storageState. For OAuth/OIDC: use the token endpoint directly via API request, set the resulting tokens as cookies or localStorage. Each auth mechanism requires a different automation approach — understand which mechanism your app uses.
+
+**"Token theft is impossible in test environments"** → Test environments often have relaxed security: short-lived tokens without revocation, CORS policies that accept `localhost` origins, test accounts with elevated privileges. If test credentials are ever in source control, CI logs, error messages, or screenshot metadata: they can be extracted and misused against the test environment (and if the test environment shares infrastructure with staging, further). Treat test credentials with the same security hygiene as production: use secrets management (GitHub Secrets, Azure Key Vault), rotate them, and audit access.

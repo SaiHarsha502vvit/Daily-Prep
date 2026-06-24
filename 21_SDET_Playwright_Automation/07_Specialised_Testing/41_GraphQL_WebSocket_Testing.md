@@ -1005,3 +1005,18 @@ query {
 ---
 
 **Navigation**: [← Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md) | [→ Chapter 42: Polling & Async Data](../05_Advanced_Topics/42_Polling_Async_Data_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"Testing GraphQL is the same as testing REST"** → GraphQL uses a single endpoint (POST /graphql) — you can't test routes by URL. Testing requires: asserting on the `operationName` and `query` in the request body, not the URL path. GraphQL errors can come with HTTP 200 (partial success — some resolvers failed, others succeeded): always check `response.errors` even for 200 responses. GraphQL introspection (enabled by default in development): `{__schema { types { name }}}` returns the full schema — useful for test data discovery but disable in production to prevent schema enumeration by attackers.
+
+**"WebSocket connections are just HTTP connections that stay open"** → WebSockets start as HTTP (the upgrade handshake), then switch to a binary-framed persistent TCP connection. Key differences: bidirectional (server pushes without client request), stateful (the connection persists), messages are not request/response pairs, no standard message format (JSON, MessagePack, Protocol Buffers — whatever the app uses). Testing WebSockets in Playwright: `page.on('websocket', ws => ...)` intercepts WebSocket connections; `ws.on('framesent', ...)` and `ws.on('framereceived', ...)` capture messages. Asserting WebSocket messages requires waiting for the specific message with `ws.waitForEvent('framereceived')`.
+
+**"Mocking GraphQL is complex because of query variability"** → Playwright's `page.route('/graphql', ...)` can inspect the request body (JSON with `query` and `variables`) and return mock responses. Complexity: clients may send slightly different whitespace/formatting — compare by `operationName` (if present) rather than exact query string. Libraries like `msw` (Mock Service Worker) handle GraphQL mocking idiomatically: `graphql.query('GetUser', (req, res, ctx) => res(ctx.data({...})))`. For GraphQL mocking at scale: a mock GraphQL server (graphql-tools, faker-js for data generation) is more maintainable than per-test route interception.
+
+**"Subscription testing requires a real WebSocket server"** → GraphQL subscriptions use WebSockets. For testing: you can mock the WebSocket connection using Playwright's route interception + WebSocket mock server (`ws` library in Node.js) — the test controls what subscription data gets pushed. The mock server connects on the Playwright-intercepted WebSocket endpoint, sends fake subscription events, and your test asserts on what the UI does with those events. This isolates the subscription behavior from the real backend and makes tests deterministic.
+
+**"HTTP/2 and HTTP/3 tests are the same as HTTP/1.1 tests"** → From the test perspective, the request/response semantics are the same. But: HTTP/2 multiplexing means multiple requests share one TCP connection — if a test expects exactly one connection, HTTP/2 breaks that assumption. HTTP/2 server push (deprecated in Chrome): the server can push resources before the client requests them — tests checking network waterfalls may see unexpected pre-pushed resources. HTTP/3 (QUIC) uses UDP — some network mocking techniques that work for TCP may not apply. Playwright handles the protocol differences transparently for most tests, but performance and network-level assertions require understanding which protocol is in use.

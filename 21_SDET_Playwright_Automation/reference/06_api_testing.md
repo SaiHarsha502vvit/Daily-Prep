@@ -1557,3 +1557,18 @@ const body = text ? JSON.parse(text) : null;
 - Test data lifecycle: [`./12_data.md`](./12_data.md)
 - Real implementations: [`../framework/utilities/api/APIUtils.ts`](../framework/utilities/api/APIUtils.ts)
 - 5-layer architecture deep dive: [`Ch44 Enterprise API Client Library`](../05_Advanced_Topics/44_Enterprise_API_Client_Library.md)
+
+
+---
+
+## Reality Check
+
+**"API testing in Playwright requires a browser"** → Playwright's `APIRequestContext` (`context.request` or `request` fixture) makes HTTP calls WITHOUT a browser: `await request.get('/api/users')`. No browser process, no page, no DOM. This is faster than browser-based API testing and appropriate for: seeding test data, cleaning up after tests, verifying API responses independently of the UI, contract testing with mocks. The browser is needed only when testing the UI's consumption of the API — not for API testing itself.
+
+**"Status code 200 means the API request succeeded"** → 200 OK means the server processed the request. Business logic failure can return 200: `{ "status": "error", "message": "insufficient funds" }` with status 200 is a common antipattern. Also: `{ "data": null }` with 200 might mean "not found" in some APIs. Always assert on BOTH the status code AND the response body. For well-designed APIs: 200 = success, 201 = created, 204 = success no body, 400 = bad request, 401 = unauthorized, 403 = forbidden, 404 = not found, 422 = validation error, 500 = server error. But APIs in the wild often violate these conventions.
+
+**"REST APIs always return JSON"** → REST is an architectural style, not a format requirement. APIs can return: JSON (most common), XML (enterprise/legacy), Protocol Buffers (binary, used by gRPC), CSV (data exports), plain text, HTML fragments (server-rendered partial updates), binary (file downloads). The `Content-Type` response header tells you the format: `application/json`, `application/xml`, `text/csv`. Always check `Content-Type` before parsing — parsing XML as JSON throws an error; parsing a 503 HTML error page as JSON throws a confusing error.
+
+**"Response time under 200ms means the API is fast"** → 200ms measured from your test runner to your test environment's API is not what users experience. Real API latency = network latency (user to CDN to origin) + server processing + database query + response transmission. In CI, your test runner may be in the same datacenter as the API server — 200ms round trip. A user in Australia hitting a US-only server: add 150-300ms network latency before even counting processing time. Measure from the user's perspective (Real User Monitoring) and from test infrastructure (for regression detection) — both matter, with different baselines.
+
+**"Pagination is simple — just increment the page number"** → Multiple pagination strategies: offset/page-based (`?page=2&per_page=20`), cursor-based (`?cursor=eyJ1c2VyX2lkIjo...`), keyset (`?after_id=1000`), link header (the response includes `Link: <url>; rel="next"`). Offset pagination has the "page drift" problem: if items are added/deleted between requests, you may skip or duplicate items. Cursor pagination is stable but can only go forward. Test pagination: first page, last page, empty page, single item page, and the exact boundary between pages. And: does requesting page 10 of a 2-page result return an empty page or a 404?

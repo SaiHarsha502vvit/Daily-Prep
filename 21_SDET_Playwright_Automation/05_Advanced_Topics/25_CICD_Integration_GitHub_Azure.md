@@ -819,3 +819,18 @@ env:
 ---
 
 **Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
+
+
+---
+
+## Reality Check
+
+**"CI/CD and DevOps are the same thing"** → CI (Continuous Integration): developers merge code frequently, automated builds and tests run on every merge. CD (Continuous Delivery): every code change that passes CI is automatically deployable (may require manual approval). CD (Continuous Deployment): every change that passes tests is deployed automatically without human approval. DevOps is broader: a culture and set of practices combining development and operations — CI/CD pipelines are one tool within DevOps, alongside infrastructure-as-code, monitoring, incident response, and cross-functional team structures.
+
+**"Playwright tests in CI should use the same config as local dev"** → CI environments differ: no display (headless mandatory), different CPU/memory (shared CI runners are slower — increase timeouts), different network (API calls to external services may be blocked), different timezone/locale (affects date/time tests), different font rendering (affects visual regression screenshots), no persistent browser cache. Maintain separate `playwright.config.ci.ts` (or environment variables): `CI=true` in environment → headless, more workers, higher timeouts, no video by default. Never assume local and CI are identical.
+
+**"Sharding splits tests across multiple CI machines and is always faster"** → Sharding (`--shard=1/4`) distributes tests across machines — useful when your test suite takes longer than your CI timeout. But: each shard must set up its environment independently (slower if setup is expensive), you need to merge reports from all shards, flaky tests mean only one shard fails (the job that ran that shard retries the full shard, not just the flaky test). Sharding reduces wall-clock time at the cost of CI resource cost (4 machines × test time instead of 1 machine × test time × 4). Use sharding when: total test time exceeds acceptable CI wait time; don't use it prematurely.
+
+**"GitHub Actions and Azure DevOps Playwright setup is the same"** → Both support Playwright but with different configurations: GitHub Actions uses YAML workflows with `uses: actions/...` steps and `${{ secrets.* }}` for secrets. Azure DevOps uses YAML pipelines with `task: ...` steps and `$(variableName)` syntax. Playwright's `--reporter=github` produces GitHub Actions-compatible annotations (errors appear inline in PR diffs); for Azure DevOps use JUnit XML reporter (`--reporter=junit`) and Azure's `PublishTestResults` task. Browser installation differs: `npx playwright install --with-deps` on both, but Docker images and cache strategies differ.
+
+**"Tests that pass CI are ready for production"** → CI tests catch regressions in tested scenarios. They don't catch: performance regressions (unless you have perf tests in CI), security vulnerabilities (requires SAST, DAST, dependency scanning), configuration differences between CI and production, edge cases not in your test suite, data migration issues (if your CI uses fresh test data every run), or issues that only appear at production traffic scale. CI green = "the code change didn't break the things we test" — a necessary but not sufficient condition for production readiness.

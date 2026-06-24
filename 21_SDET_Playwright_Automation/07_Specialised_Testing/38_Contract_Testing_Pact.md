@@ -907,3 +907,18 @@ The fix isn't always "revert the Provider." The fix is a team conversation:
 ---
 
 **Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
+
+
+---
+
+## Reality Check
+
+**"Contract testing replaces integration testing"** → Contract testing verifies: the consumer's expectations (what fields/types it needs) match what the provider actually sends. Integration testing verifies: the actual end-to-end flow works with real network calls and real data. Contract tests run in isolation (no real network) and are fast. They don't test: the database query that fills the response, error handling under real failure conditions, authentication/authorization in the real system, or performance. Contract tests complement integration tests; they prevent breaking changes from being deployed, but don't prove the system works end-to-end.
+
+**"Pact tests must be run against a deployed service"** → Consumer-driven contract testing with Pact: consumers write contracts (expected interactions), Pact generates a contract JSON file, the provider verifies the contract against its own code running locally — no deployed service needed. This is the point: you can verify provider compliance before deployment, in CI, before merging. Pact Broker (or PactFlow) stores contracts and allows CI pipelines to: auto-verify consumer contracts on each provider PR, query `can-i-deploy` before deploying (are all my consumers' contracts satisfied by this version?).
+
+**"API versioning makes contract testing unnecessary"** → API versioning (v1, v2) creates separate endpoint namespaces. But: within a version, you can still break backwards compatibility (removing a field, changing a field's type). Contract testing detects these breaking changes within a version. When you release v2, contract tests for v1 still run — ensuring v1 consumers are not broken while v2 is being adopted. Versioning and contract testing are complementary: versioning manages planned breaking changes; contract testing catches unintended breaking changes.
+
+**"OpenAPI/Swagger specs are the same as contract tests"** → An OpenAPI spec describes the API surface (endpoints, request/response schemas). It's producer-driven documentation. Pact contracts are consumer-driven: they record what specific consumers actually USE (often a subset of the full API). A consumer might only use 3 of 20 fields in a response — the OpenAPI spec doesn't know or care. Pact tests that the consumer gets exactly those 3 fields. The difference matters: a provider can change unused fields freely while keeping Pact contracts satisfied, even if the OpenAPI spec is updated. OpenAPI = documentation; Pact = usage-based verification.
+
+**"Contract testing is only for microservices"** → Any API boundary benefits from contract testing: frontend-to-backend (a React app consuming a REST API), mobile-to-backend (iOS app consuming a GraphQL API), service-to-third-party API (your service consuming Stripe or Twilio). For third-party APIs, you can use a Pact mock server: record the interactions you depend on and test against the mock — if Stripe changes their API, your mock keeps working (you need a different mechanism to detect Stripe changes). Contract testing is about defining and verifying interface expectations across any boundary.

@@ -941,3 +941,18 @@ By running as a blocking gate in Staging, you catch vulnerabilities _before_ the
 ---
 
 **Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSockets](./41_GraphQL_WebSocket_Testing.md)
+
+
+---
+
+## Reality Check
+
+**"Security testing in Playwright means testing login forms"** → Security testing includes: authentication bypass (can you access protected pages without login?), authorization bypass (can user A see user B's data?), injection testing (does the app handle SQL injection/XSS payloads safely?), CSRF (does the app validate CSRF tokens?), sensitive data exposure (are passwords/tokens visible in page source, network requests, localStorage?), and broken access control (can a regular user call admin API endpoints?). Login form testing is one small part. Playwright enables much of this — direct API calls, localStorage inspection, network interception for header checking.
+
+**"OWASP ZAP is the only tool for security testing"** → OWASP ZAP is a DAST (Dynamic Application Security Testing) proxy scanner — it passively observes and actively probes your running application. Complementary tools: SAST (Static Application Security Testing — `semgrep`, `SonarQube` analyzes source code), IAST (Interactive — instruments the running app, triggered by tests running through it), SCA (Software Composition Analysis — `npm audit`, `snyk` checks dependency vulnerabilities), and infrastructure scanning (Trivy for Docker images, checkov for IaC). A complete security testing program uses multiple layers; Playwright-based tests can drive the application while ZAP proxies the traffic.
+
+**"XSS attacks only happen through form inputs"** → XSS injection points include: URL parameters (reflected XSS in search results), stored data (stored XSS in user profile names, comments), DOM manipulation (DOM-based XSS — JavaScript reads from `location.hash` or `document.referrer` and writes to DOM), JSON responses rendered without escaping, SVG uploads that are served with `Content-Type: image/svg+xml` (SVG can execute JavaScript), and HTTP headers reflected in error pages (e.g., the `User-Agent` header displayed in an error message). Test all untrusted data sources, not just form inputs.
+
+**"HTTPS guarantees the content is safe"** → HTTPS (TLS) provides: confidentiality (third parties can't read the traffic), integrity (traffic can't be modified in transit), and authentication (you're talking to the real server). It does NOT guarantee: the server's content is not malicious (phishing sites use HTTPS), the application code is secure (SQL injection works over HTTPS), or that the response isn't poisoned at the server. A malicious application or compromised server can serve malicious content over a valid HTTPS connection. HTTPS = secure channel; secure application = separate concern.
+
+**"Playwright can't test WebSockets for security issues"** → Playwright's WebSocket interception: `page.on('websocket', ws => ...)` captures all WebSocket frames. Security tests: does the WebSocket connection authenticate before accepting messages? (`ws.on('framesent', frame => checkAuthFrame(frame))`), does the server reject malformed messages? (intercept and modify frames), does the connection enforce message size limits? (send oversized frames), does the app leak sensitive data via WebSocket? (capture all `framereceived` events and check for token/PII exposure). WebSocket security is often overlooked — Playwright makes it testable.

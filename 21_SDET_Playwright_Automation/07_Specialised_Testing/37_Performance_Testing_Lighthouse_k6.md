@@ -884,3 +884,18 @@ await playAudit({
 ---
 
 **Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+
+
+---
+
+## Reality Check
+
+**"Performance testing and load testing are the same"** → Different focuses: Performance testing: measures response time, throughput, and resource usage under a specific load. Load testing: gradually increases users to find the breaking point. Stress testing: pushes beyond normal load to see failure behavior. Soak/endurance testing: runs at normal load for hours/days to find memory leaks or degradation over time. Spike testing: sudden large increase in load. Lighthouse: client-side performance metrics (LCP, FID, CLS, TTI) — browser rendering performance. k6: server-side performance under concurrent users — API throughput and latency. Both are needed; neither covers the other's domain.
+
+**"Lighthouse score of 90+ means the site performs well for users"** → Lighthouse lab score measures performance under ideal conditions: a simulated mid-tier mobile device, throttled network, no other browser tabs, cached DNS. Real users have: different devices (old phones, slow connections), browser extensions, cached/uncached states, geographic distance to servers, concurrent network requests. Field data (Core Web Vitals from Chrome User Experience Report, aka CrUX) reflects actual user experiences. The gap between lab score (90) and field data (poor) is common and reveals what Lighthouse misses. Both lab and field data are needed.
+
+**"k6 tests show how many users your app can handle"** → k6 shows how many simulated virtual users (VUs) your app handles — under the specific k6 test scenario. Real user behavior is more complex: users browse multiple pages (not just one endpoint), they interact with a mix of features, they have variable think time between requests, real HTTP clients have different connection behavior than k6's VUs. k6 results are directional, not exact. They identify bottlenecks (database connection pool, specific slow endpoint, memory growth) and regressions (this deployment made the API 30% slower). They don't predict exact user capacity with confidence.
+
+**"Page weight reduction is always the most impactful performance improvement"** → Reducing JavaScript bundle size helps, but impact depends on the bottleneck. If LCP (Largest Contentful Paint) is slow because of a blocking server-side API call: no amount of JS reduction helps — fix the API. If FID (First Input Delay) is high because of long tasks on the main thread: JS optimization helps. If TTFB (Time To First Byte) is slow: server/CDN optimization, not JS bundling. Use Lighthouse's opportunities and diagnostics to identify the ACTUAL bottleneck before optimizing. "Reduce bundle size" is not the answer to every performance problem.
+
+**"Performance tests should run in CI for every PR"** → For performance tests that take 30 minutes (load tests, endurance tests): running per PR is too slow. Strategy: lightweight Lighthouse audit per PR (fast, catches client-side regressions), nightly or release-branch full load tests (catches server-side capacity regressions), production monitoring (CrUX, synthetic monitoring with your production traffic pattern) for ongoing measurement. Three layers: per-PR fast checks, periodic heavy tests, and continuous production monitoring. Treating all performance tests as per-PR tests defeats the purpose of fast CI feedback.

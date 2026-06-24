@@ -912,3 +912,18 @@ Then("the employee is NOT saved", async function (this: World) {
 | **Report**           | None    | HTML only                 | HTML + JSON              | All three                     |
 
 **Total: 18 points** — 0–6: incomplete · 7–12: functional · 13–18: production-ready
+
+
+---
+
+## Reality Check
+
+**"BDD means writing tests in Gherkin (Given/When/Then)"** → BDD (Behavior-Driven Development) is a development PROCESS: product owners, developers, and QA collaborate to write concrete examples (scenarios) of behavior BEFORE coding — these examples drive the implementation. Gherkin is one notation for recording these examples. The value is in the CONVERSATION (Three Amigos: business, dev, test) and shared understanding, not the syntax. Many teams use Gherkin syntax without BDD (they write Gherkin after the fact to document finished features) — this gets the formatting but misses the process benefit. Real BDD: scenarios are written before implementation, and they reveal unclear requirements.
+
+**"Cucumber/Playwright integration means all my Playwright tests are now BDD"** → Integrating `@cucumber/cucumber` with Playwright gives you Gherkin syntax over Playwright steps. It does NOT automatically make your process BDD. You still need: collaborative scenario writing, three-amigos meetings, scenarios as living documentation. The integration is a formatting choice — you can write E2E tests in Gherkin that are no more collaborative than non-Gherkin Playwright tests. BDD is a team practice; the tool stack is secondary.
+
+**"Step definitions should be highly reusable across all features"** → Over-generalising step definitions creates fragile, hard-to-read scenarios. `When I click the button` is too generic — which button? Scenarios should be business-readable, not generic: `When the customer submits their order`. Step definitions that are too reusable force the Gherkin to contain implementation details (`When I click element with id "submit-order-btn"`) — this defeats BDD's readable documentation goal. Write steps that read like business scenarios; accept some duplication in step definitions rather than forcing artificial generalization.
+
+**"Scenario Outlines replace parameterized tests"** → Scenario Outlines: one scenario template with multiple example rows — Cucumber runs the scenario once per row. Playwright's parameterized tests (`test.each([...])`) do the same. The choice: Scenario Outlines for business-level data variation (test with different customer types: gold/silver/bronze), Playwright test.each for implementation-level parameterization (test the same component with different props). Mixing both adds complexity without value. If you're already using Cucumber, use Scenario Outlines. If you're not using BDD, test.each is simpler.
+
+**"Cucumber tags are just for filtering which tests run"** → Cucumber tags serve multiple purposes: filtering (`--tags "@smoke"` runs only smoke tests), reporting (Allure can group by tags), conditional hooks (`Before('@admin') { loginAsAdmin() }` runs only for admin-tagged scenarios), and documentation (tags as living metadata about what each scenario covers). Tag strategy: `@smoke` (critical path), `@regression` (full regression), `@feature-name` (feature grouping), `@JIRA-1234` (ticket traceability), `@wip` (work in progress — excluded from CI), `@skip` (temporarily disabled). Tag discipline compounds over time — establish conventions early.

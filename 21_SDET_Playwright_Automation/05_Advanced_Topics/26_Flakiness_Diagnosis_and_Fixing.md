@@ -863,3 +863,18 @@ The correct protocol: after applying a fix, run `--repeat-each=200`. If 0 failur
 ---
 
 **Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
+
+
+---
+
+## Reality Check
+
+**"A test that fails 10% of the time is flaky — just add a retry"** → Retries hide flakiness; they don't fix it. A flaky test that passes on retry consumed: extra time (retry adds latency to your CI pipeline), extra browser resources (retried tests run the full browser again), and masked signal (CI shows green but the test is non-deterministic). Retries are a temporary bandage — correct for CI reporting, but always file a follow-up to fix the root cause. Root causes: timing (use `waitFor` not `sleep`), test isolation (shared state between tests), environment differences (CI vs local viewport, locale, fonts).
+
+**"Playwright's auto-wait eliminates flakiness"** → Auto-wait handles actionability (element exists, is visible, is enabled, is stable). It does NOT handle: background API calls completing, WebSocket messages arriving, animations finishing (if not using `waitForLoadState('networkidle')`), third-party scripts loading, server-side session state propagating. For "I clicked submit and expect the record to appear in a separate list" — auto-wait on the submit button fires immediately after click; the auto-wait on the list element only starts when you interact with the list. The gap between click and data appearing requires explicit waiting.
+
+**"Increasing timeout fixes flakiness"** → Higher timeouts mask slow execution — they don't fix the underlying race condition. A test with `timeout: 60000` that was failing at 30s now passes, but: the test runs slower (wasted 30s of CI time each run), the underlying slowness may indicate a performance regression (an API that should respond in 200ms now takes 30s), and the root cause is still present. Set timeouts to what SHOULD work on healthy infrastructure; investigate when they're exceeded rather than increasing them.
+
+**"Flaky tests are always caused by the test, not the application"** → Flaky tests can be caused by: the test (timing, state isolation — fix in tests), the application (non-deterministic behavior, race conditions in backend logic — fix in application), the infrastructure (CI machine with inconsistent performance, shared test database, flaky test service), or the environment (browser version differences, network timeouts to external services). Diagnose by eliminating variables: run in isolation (no parallelism), with fixed network conditions, and on consistent infrastructure. Blame assignment requires evidence, not assumption.
+
+**"Video recording helps debug all flaky tests"** → Video recording helps when the flakiness is visual — a UI state that's wrong at the moment of assertion. It doesn't help when: the flakiness is in network requests (a missing or out-of-order API call), in test state (data from a previous test leaked), or in timing between video frames. For network flakiness: Playwright's network trace (in the HTML report) shows every request and response with timing. For data flakiness: add debug assertions before the failing assertion to narrow down the state. Use the right diagnostic tool for the symptom.

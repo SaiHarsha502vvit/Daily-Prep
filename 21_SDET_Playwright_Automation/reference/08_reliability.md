@@ -1172,3 +1172,18 @@ Real production bugs and their resolution.
 - Trace viewer setup: [`./11_reporting.md`](./11_reporting.md)
 - D365 patterns deep dive: [`../deep_dives/d365.md`](../deep_dives/d365.md)
 - Practice problems: Q01, Q02, Q04 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)
+
+
+---
+
+## Reality Check
+
+**"Reliable tests are achieved by adding more waits"** → Reliability comes from correct waiting — waiting for the right condition, not just sleeping or increasing timeouts. `await page.waitForTimeout(2000)` is a sleep (bad); `await page.waitForSelector('.success-message')` waits for a specific condition (good). The right condition to wait for: the exact DOM/network state your next assertion depends on. Incorrect waits: waiting for a button to be visible when you need the API response it triggers to complete. Map your wait conditions to the actual state your test requires, not to an arbitrary time.
+
+**"flaky: true in test config hides the problem"** → `test('name', { retries: 3 }, ...)` adds retries. This makes CI green while masking a real problem. Each retry: reruns the full test, consumes browser resources, extends pipeline duration. Track retry usage: if a test consistently needs 2 retries, the test is broken. Add to your CI reporting: tests with any retries on the last N runs are flagged for investigation. The goal: retries as a temporary buffer while you diagnose, not a permanent state.
+
+**"test.beforeAll() for database setup is always reliable"** → `test.beforeAll()` in one test file doesn't guarantee ordering relative to `test.beforeAll()` in another file (they may run in different workers simultaneously). If test file A depends on data created by test file B's `beforeAll`, the dependency is implicit and fragile. Use: worker-scoped fixtures to guarantee one-time setup per worker, a global setup file (`globalSetup` in playwright.config.ts) for one-time database seeding before all workers start, or API calls in each test to create its own data (slowest but most isolated).
+
+**"Network conditions in tests match what users experience"** → Playwright's default network is your local network (effectively unlimited speed). To simulate real user conditions: `await page.emulateNetworkConditions(devices['Desktop Chrome'].networkConditions)` — predefined throttle profiles. For slow-3G: `{download: 0.5 * 1024 * 1024 / 8, upload: 0.5 * 1024 * 1024 / 8, latency: 400}`. Unreliable network behavior (dropped packets, intermittent failures): Playwright's route API with conditional delays or abort. Tests under real-network simulation catch loading states and timeout conditions that local fast-network tests miss.
+
+**"Using data-testid on all elements guarantees test stability"** → `data-testid` is the most stable locator (no coupling to CSS class names or text content). But: test IDs without meaningful names (`data-testid="button-1"`) provide no readability benefit. If the `data-testid` is added by a developer as an afterthought without understanding the test's intent, it may be placed on the wrong element or removed during refactoring. SDETs and developers must agree on: naming conventions (`data-testid="submit-order-button"`), what elements get IDs, and that removing them breaks tests. `data-testid` discipline requires team agreement and code review.

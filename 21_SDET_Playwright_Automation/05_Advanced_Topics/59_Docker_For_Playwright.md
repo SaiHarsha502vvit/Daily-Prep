@@ -748,3 +748,18 @@ jobs:
 ---
 
 **← [Ch 58: File Uploads & Downloads](./58_File_Uploads_Downloads.md) | [Index](../00_INDEX.md) | [Ch 60: Tool Comparison →](../06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md)**
+
+
+---
+
+## Reality Check
+
+**"Playwright's Docker image is just Ubuntu with Node"** → Microsoft provides official Playwright Docker images (`mcr.microsoft.com/playwright`) with: specific browser versions pinned to the Playwright version, system dependencies for each browser (libatk, libgbm, etc.), fonts needed for consistent rendering, and configuration optimized for headless operation. These are NOT just Ubuntu + Node + `npm install playwright`. The browser binaries need 50+ system libraries to run — the official image installs them all. Building your own image requires replicating the full dependency list from Playwright's own Dockerfile.
+
+**"Containers solve all 'works on my machine' problems"** → Docker ensures consistent: OS, Node version, browser version, system libraries, and installed packages. It does NOT ensure consistent: timezone (container timezone may differ from expected), locale (affects date formatting in tests), available fonts (missing fonts cause text rendering differences in visual tests), hardware performance (CI container may be CPU/memory-constrained vs local machine), and network conditions (DNS, proxies, firewalls in CI environment). 'Works in Docker' is a necessary improvement but not a guarantee of identical behavior everywhere.
+
+**"Running Playwright in Docker requires --privileged mode"** → Playwright requires: `--shm-size=2g` (shared memory for Chrome's renderer processes — default 64MB is too small and crashes Chrome), or `--ipc=host`. NOT `--privileged` (full host capabilities — a security risk). Additional flags for headless Chrome: `--no-sandbox` (when running as root in a container — Chrome's sandbox requires user namespaces which some Docker configurations don't allow). Principle of least privilege: `--shm-size=2g` + `--no-sandbox` are the minimum flags; never add `--privileged` unless you've verified it's actually needed.
+
+**"Each test run should use a fresh Docker container"** → Using fresh containers per run: guarantees isolation, prevents state contamination, but has overhead (pull image, start container, install deps). For CI: cache Docker layers (node_modules layer, browser binaries layer) aggressively. The browser binary layer is the heaviest (Chromium + Firefox + WebKit = ~1.5GB). Strategy: pre-build and push a tagged Docker image to your container registry in a weekly job; CI pulls the pre-built image (fast) instead of installing browsers every run. `mcr.microsoft.com/playwright:v1.x.x-focal` is a stable, pre-built base.
+
+**"Docker networking is transparent to Playwright tests"** → In Docker: `localhost` inside the container is the container, not the host machine. If your application runs on the host: use `host.docker.internal` (Docker Desktop) or the host's gateway IP (Linux Docker). In Docker Compose: services communicate by service name: `http://app:3000` (not `http://localhost:3000`). Playwright tests running in a container and testing an app in another container must use the service name, not localhost. This is a common "connection refused" failure when moving from local to Docker: the test is connecting to itself rather than the app service.

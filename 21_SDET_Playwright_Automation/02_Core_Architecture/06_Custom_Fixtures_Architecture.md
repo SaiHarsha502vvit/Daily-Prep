@@ -944,3 +944,18 @@ Key: both accounts are worker-scoped (one login each per worker, not per test). 
 ---
 
 **Navigation**: [← Chapter 05: POM Architecture](./05_POM_Architecture_Deep_Dive.md) | [Index](../00_INDEX.md) | [→ Chapter 07: E2E Test Architecture](./07_test_step_E2E_Architecture.md)
+
+
+---
+
+## Reality Check
+
+**"Playwright fixtures are similar to JUnit's @BeforeEach"** → Both provide setup/teardown. Key differences: Playwright fixtures are composable (fixture A can use fixture B), scoped (test vs worker scope), injectable into specific tests rather than running for all tests in a suite, and typed (TypeScript knows the fixture's type in the test function). JUnit's `@BeforeEach` runs for every test in the class; Playwright fixtures run only for tests that declare them. The composability enables: an `authenticatedPage` fixture that depends on a `loginUser` fixture which depends on a `testUser` fixture — clean dependency injection.
+
+**"Worker-scoped fixtures are always faster than test-scoped"** → Worker-scoped fixtures (created once per worker, shared across tests in that worker) are faster when: setup is expensive (e.g., cold browser launch, database seeding). But: worker-scoped fixtures must be stateless between tests or explicitly reset. If a test modifies worker-scoped state (e.g., adds items to a shared cart), the next test in the same worker sees that state. Test-scoped fixtures guarantee clean state at the cost of more frequent setup. Profile your suite: if setup is fast, test-scoped is safer. If setup is expensive and state can be reset, worker-scoped is worth the complexity.
+
+**"Auto-use fixtures are equivalent to test.beforeAll()"** → `{ auto: true }` fixtures run for every test in the scope without being declared in test parameters. `test.beforeAll()` runs once per test file (suite). Auto-use fixtures can be worker-scoped (once per worker, across multiple files) or test-scoped (before each test). Auto-use fixtures are composable and can depend on other fixtures; `beforeAll` cannot use fixtures. For cross-cutting concerns (request tracing, performance logging, screenshot on failure): auto-use test-scoped fixtures are the idiomatic Playwright approach.
+
+**"Fixture teardown always runs even if the test fails"** → Playwright fixtures use the async generator pattern: everything after `await use(fixture)` is teardown, which runs after the test body (regardless of pass or fail). This guarantees cleanup. But: if the FIXTURE SETUP itself throws (before `use()` is called), the cleanup code after `use()` does NOT run. Structure sensitive setup: wrap the setup in try-catch if cleanup is needed even when setup partially fails. Standard pattern: `let resource; try { resource = await create(); await use(resource); } finally { await resource?.cleanup(); }`.
+
+**"Extending test with multiple fixture files requires one global extend"** → You can chain extends: `import { test as base } from '@playwright/test'; const test1 = base.extend<{fixture1}>(...)({...}); const test2 = test1.extend<{fixture2}>()({...})`. Each extend wraps the previous, adding fixtures cumulatively. In large projects: create a central `fixtures/index.ts` that imports and merges all fixture extensions, then all test files import from there. If test files import from different fixture files, they get different `test` functions and can't share fixtures — centralized extension prevents this fragmentation.
