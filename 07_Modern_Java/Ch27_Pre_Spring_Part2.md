@@ -1892,3 +1892,18 @@ _This foundation makes Spring LOGICAL instead of MAGICAL!_
 ---
 
 > **Navigation**: [< Previous](Ch26_Pre_Spring_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch21_AlgoEng_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"Inversion of Control (IoC) and Dependency Injection are the same thing"** → IoC is the PRINCIPLE: control of object creation and lifecycle is inverted — instead of your code creating its dependencies, a framework creates and manages them. Dependency Injection is one IMPLEMENTATION of IoC: dependencies are injected (pushed) into your objects. Other IoC implementations: Service Locator (your code pulls dependencies from a registry — an antipattern compared to DI), Template Method (framework calls your hook methods — classic IoC in Java's `Collections.sort` with a Comparator). DI is the most common IoC implementation; they're not synonymous.
+
+**"HTTP is stateless, so sessions must be stored server-side"** → HTTP IS stateless. Sessions can be managed in three ways: server-side sessions (session ID in cookie → server looks up session state in memory/database/Redis), client-side sessions (JWT — all session data encoded in a signed token, no server storage), or a hybrid (JWT with a server-side blocklist for revocation). Server-side: easy revocation, server must share session store in clusters. JWT: no server state, stateless scaling, but revocation requires a blocklist (negating some statelessness). Neither is universally better — choose based on revocation requirements.
+
+**"Bean lifecycle in Spring is just `@PostConstruct` and `@PreDestroy`"** → The full lifecycle: instantiation → population of properties → `BeanNameAware.setBeanName()` → `BeanFactoryAware.setBeanFactory()` → `ApplicationContextAware.setApplicationContext()` → `BeanPostProcessor.postProcessBeforeInitialization()` → `@PostConstruct` / `InitializingBean.afterPropertiesSet()` → custom init method → `BeanPostProcessor.postProcessAfterInitialization()` (HERE Spring AOP proxies are created) → bean is ready → `@PreDestroy` / `DisposableBean.destroy()`. Spring AOP proxies are created in `postProcessAfterInitialization` — this is why calling a `@Transactional` method from `@PostConstruct` doesn't work (the proxy isn't created yet at `@PostConstruct` time).
+
+**"Spring's @Qualifier just picks by name"** → `@Qualifier("myBean")` provides a narrowing hint that the injected bean must have that qualifier value. But: a bean's qualifier defaults to its bean name (defined by @Component("name") or method name in @Bean). @Primary marks one bean as the preferred candidate when multiple match — used without @Qualifier. `@Qualifier` with a custom annotation (meta-annotation approach) enables semantic qualification: `@CachingService` annotation marked with `@Qualifier("caching")` — more expressive than string-based qualification. Combining `@Primary` and `@Qualifier`: the @Qualifier always wins over @Primary.
+
+**"Circular dependencies in Spring are an error"** → Constructor injection: circular dependencies throw `BeanCurrentlyInCreationException` — no way to create A (needs B) and B (needs A) simultaneously. Field/setter injection: Spring resolves circular dependencies by partially creating one bean (setting it as a placeholder), injecting the other, then completing the first. But: this creates beans in an inconsistent state at injection time. Spring Boot 2.6+ disabled circular dependency resolution by default and requires `spring.main.allow-circular-references=true` to re-enable it. The right fix: refactor to break the cycle (extract a third bean that both depend on, or split one bean's responsibilities).

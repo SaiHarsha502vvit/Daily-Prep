@@ -603,3 +603,18 @@ Today, production systems use views for column-level security (hiding salary/SSN
 
 **Modern practice anchor:**
 Today, stored procedures are largely replaced by application-layer logic (better testability, version control) and triggers are avoided for critical paths — production systems use event-driven pipelines (Kafka, SQS) for audit logging instead of invisible database triggers, making query behavior fully visible to application monitoring.
+
+
+---
+
+## Reality Check
+
+**"Views are always up-to-date — they always reflect current data"** → Regular views (CREATE VIEW) are virtual — they re-run the underlying query each time the view is queried. They ARE always current. Materialized views (PostgreSQL, Oracle, SQL Server with indexed views): stored query results on disk. They are NOT automatically updated when base tables change — you must `REFRESH MATERIALIZED VIEW` manually, or use auto-refresh (some databases support this). Using a materialized view with stale data without knowing it is a common production data quality bug.
+
+**"You can always update data through a view"** → Simple views (single table, no aggregation, no DISTINCT, no GROUP BY, no HAVING, no set operations) are typically updatable. Complex views are not. PostgreSQL rules: a view is updatable if it references exactly one table/view, has no aggregate/window functions, no DISTINCT/GROUP BY/HAVING, no set operations (UNION/INTERSECT/EXCEPT), no limit/offset. For non-updatable views, use `INSTEAD OF` triggers to intercept DML. SQL Server uses `INSTEAD OF` triggers similarly for updating through complex views.
+
+**"Triggers are a good way to maintain audit logs"** → Triggers CAN maintain audit logs but with caveats: trigger fires in the same transaction as the DML — if the transaction rolls back, the trigger's audit log insert also rolls back (you lose the audit trail of the failed operation, which might be useful). For audit logging that survives rollbacks: use PostgreSQL's `pg_audit` extension, the database's own audit logging, or application-level logging to a separate system. For audit logs that must capture the attempt (not just the success), trigger-based audit logs are insufficient.
+
+**"A stored procedure call is always faster than equivalent application code"** → Stored procedures reduce network round trips (send one call, get one result vs send N queries). But: stored procedures run in the database server's process, using the database's CPU (which may be a shared resource). Complex procedural logic in stored procedures can be slower than the same logic in application code (a well-optimized JVM with JIT is often faster for CPU work than the database's procedural language interpreter). Use stored procedures for: data-intensive operations, reducing round trips, atomically combining multiple related operations. Use application code for: complex business logic, string manipulation, external API calls.
+
+**"DROP VIEW is the same as DROP TABLE for cleanup"** → Dropping a view is safe — it removes the view definition, not the underlying data. Views have no data of their own. `DROP VIEW` is always reversible (re-create the view). `DROP TABLE` is irreversible (destroys data) without a backup. `DROP MATERIALIZED VIEW` destroys the materialized (cached) data, but the underlying tables are untouched — safe. Always know whether you're dropping a view (safe) or a table (dangerous) when running cleanup scripts.

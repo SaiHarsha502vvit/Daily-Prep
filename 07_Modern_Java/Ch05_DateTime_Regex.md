@@ -745,3 +745,18 @@ Regex is a powerful tool but compile patterns once and watch for ReDoS.
 Both are daily-use skills in any Java role.
 
 **Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)
+
+
+---
+
+## Reality Check
+
+**"Date and time is simple — just use long milliseconds"** → Storing timestamps as milliseconds-since-epoch (long) loses timezone information. Displaying a Unix timestamp requires a timezone: 1700000000000ms could be "2023-11-14 22:13:20" in UTC or "2023-11-14 17:13:20" in US Eastern. The java.time API (Java 8+) forces you to be explicit: `Instant` (UTC moment), `LocalDateTime` (no timezone), `ZonedDateTime` (moment + timezone), `OffsetDateTime` (moment + UTC offset). Never use `java.util.Date` or `java.util.Calendar` in new code — they're legacy and deeply broken (months are 0-indexed, mutable, not thread-safe).
+
+**"Regex is always the right tool for text parsing"** → Regex works for pattern matching on regular languages. For structured data: HTML/XML parsing with regex is notorious — `<(.*)>` matches from the first to the LAST `>` (greedy). HTML cannot be parsed with a regular expression because HTML is not a regular language (it has nested structure requiring a stack). Use a proper parser: JSOUP for HTML, DOM/SAX for XML. Regex is appropriate for: validating formats (email-ish check, date format, postal code), extracting simple patterns from text, simple string manipulation.
+
+**"`LocalDate.now()` is safe to use in production code"** → `LocalDate.now()` uses the JVM default timezone and the system clock. Problems: timezone differences across environments (CI runs in UTC, dev machine is UTC+5:30), daylight saving transitions (2am may not exist or may occur twice), different results on different machines. For reproducible, testable code: inject a `Clock` and use `LocalDate.now(clock)`. Spring Boot can inject `Clock` as a bean: `@Bean public Clock clock() { return Clock.systemDefaultZone(); }`. Tests inject `Clock.fixed(...)` for deterministic dates.
+
+**"Pattern.compile() is an optimization you can skip for simple patterns"** → `Pattern.compile()` compiles the regex into an internal state machine representation — this is the expensive step. `"abc".matches("a.*c")` compiles the pattern every call (equivalent to `Pattern.compile("a.*c").matcher("abc").matches()`). In a loop or hot path, compile once and reuse: `private static final Pattern P = Pattern.compile("\\d+")`. The `matches()` convenience method is correct but inefficient for repeated use. Pre-compile regex patterns used in any loop or frequently called method.
+
+**"Duration and Period are interchangeable for measuring time differences"** → `Duration` measures time in seconds and nanoseconds — for clock-based elapsed time: hours, minutes, seconds, nanoseconds. `Period` measures calendar-based differences in years, months, days. `LocalDate.of(2023, 1, 31).until(LocalDate.of(2023, 3, 1))` as Period: 1 month 1 day. As Duration: not meaningful for dates (Duration needs a time component). Adding 1 month to Jan 31 → Feb 28 (end of month), not Feb 31. Calendar arithmetic is non-trivial — use `Period` for date differences, `Duration` for time differences.

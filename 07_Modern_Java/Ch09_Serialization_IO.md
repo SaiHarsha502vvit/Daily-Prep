@@ -712,3 +712,18 @@ with explicit UTF-8 encoding. Buffering and the Decorator pattern are the
 design foundations of Java I/O.
 
 **Navigation**: [< ClassLoader/JDBC/Logging](Ch12_ClassLoader_JDBC_Logging.md) | [Back to Index](../00_MASTER_INDEX.md) | [JMM & GC Deep >](Ch18_JMM_GC_Deep.md)
+
+
+---
+
+## Reality Check
+
+**"Serializable is safe to use for persistence"** → Java's built-in serialization has three critical problems: (1) Security — `ObjectInputStream.readObject()` on attacker-controlled bytes executes arbitrary code (it calls the class's `readResolve`/`readObject` methods during deserialization). This has caused dozens of critical CVEs in Java EE servers. (2) Fragility — adding a non-transient field to a Serializable class breaks deserialization of old bytes unless you set `serialVersionUID`. (3) Performance — Java serialization is slower and produces larger output than alternatives. Use JSON (Jackson), protobuf, or Avro instead.
+
+**"`transient` fields are excluded from serialization — they become null on deserialization"** → `transient` fields are skipped during serialization. On deserialization, they are initialised to their type's default value: null for objects, 0 for int/long/double, false for boolean. If your class relies on computing `transient` fields from `serialVersionUID`-stable fields, implement `readObject(ObjectInputStream)` to recompute them. Common use: `transient` for cached computed values (hashCode cache), connection objects (can't serialize a socket), or security-sensitive fields (passwords).
+
+**"NIO.2 (java.nio.file) is just a modern file API with better names"** → NIO.2 (Java 7) adds: `Path` (composable, immutable file path), `Files` (utility methods — `Files.copy`, `Files.move`, `Files.walk`), file system watching (`WatchService` — monitors directory for changes without polling), symbolic link support, file attributes (creation time, permissions, owner via `BasicFileAttributes`), and pluggable file system providers (zip file systems, in-memory file systems for testing). The critical upgrade over `java.io.File`: `Files.delete()` throws meaningful `IOException` on failure; `File.delete()` returns false silently.
+
+**"Files.walk() is safe for large directory trees"** → `Files.walk()` returns a lazy `Stream<Path>` — it doesn't load all paths into memory at once. But: it holds file system resources (open directory handles) until the stream is closed. Always use try-with-resources: `try (var stream = Files.walk(path)) { ... }`. Also: `Files.walk()` follows symbolic links by default? No — by default it DOES NOT follow symlinks. Add `FileVisitOption.FOLLOW_LINKS` to follow them. And it will throw if it encounters a directory it can't read — add a filter or catch `UncheckedIOException`.
+
+**"Buffered streams are always faster than unbuffered"** → Buffered streams batch I/O operations. For sequential reads of large files: yes, buffered is dramatically faster. For a stream that already reads large chunks (e.g., reading a 4MB block from a `RandomAccessFile`): adding a BufferedInputStream adds memory overhead with minimal benefit. For reading one byte at a time: BufferedInputStream reduces system calls from n to n/8192. The rule: buffer streams when your code reads/writes small units; skip buffering when your code already handles large chunks.

@@ -638,3 +638,18 @@ for (int mask = 0; mask < (1 << n); mask++) {
 // For n=40: 2^40 = 1T -- infeasible without pruning
 ```
 
+
+
+---
+
+## Reality Check
+
+**"The P vs NP problem just asks if NP problems can be solved faster"** → P = class of problems solvable in polynomial time. NP = class of problems where a proposed solution can be VERIFIED in polynomial time (not solved). P ⊆ NP (if you can solve it fast, you can verify fast too). The question: does P = NP? If yes, every problem whose solution can be quickly verified can also be quickly solved — which would break most modern cryptography (RSA, AES rely on NP problems being hard to solve). The consensus: P ≠ NP, but this remains unproven. A proof either way would be one of the greatest mathematical achievements in history.
+
+**"NP-completeness means a problem is unsolvable"** → NP-completeness means no polynomial-time algorithm is KNOWN. Solutions still exist (exponential-time, exact), approximate (polynomial-time, near-optimal), heuristic (no guarantee, fast in practice). TSP: Concorde solver finds provably optimal solutions for 100,000+ cities using branch-and-bound + LP relaxation. SAT: industrial SAT solvers (Z3, MiniSat) solve instances with millions of variables in practice. NP-completeness is a theoretical classification, not an engineering death sentence.
+
+**"The Ω notation and the O notation are the same thing"** → O (Big-Oh): upper bound — the algorithm runs in AT MOST f(n) time (up to constants). Ω (Big-Omega): lower bound — the algorithm runs in AT LEAST f(n) time. Θ (Big-Theta): tight bound — both upper and lower. When we say "comparison sorting is Ω(n log n)", we mean NO comparison-based sorting algorithm can do better — proven by the decision tree lower bound (at least n! leaves, so height ≥ log(n!) ≥ n log n - n). O is a claim about your algorithm; Ω is a claim about the PROBLEM.
+
+**"Reduction only goes one way"** → Reduction A ≤p B means A reduces TO B: a solver for B can be used to solve A. This proves B is at least as hard as A (if B were easy, A would be easy too). But A ≤p B does NOT mean B ≤p A. For NP-completeness: first show B ∈ NP (verifiable in polynomial time), then show an NP-complete problem A ≤p B (B is at least as hard as an NP-hard problem). Both steps are required. Missing either step is an incomplete proof.
+
+**"Time hierarchy theorem proves P ≠ NP"** → The time hierarchy theorem proves that more time enables more computation: DTIME(n) ⊊ DTIME(n² log n). It proves P ⊊ EXPTIME (problems solvable in 2^n time that cannot be solved in polynomial time). But P and NP are both within polynomial-to-exponential — the hierarchy theorem doesn't separate them. P vs NP requires a different argument. The hierarchy theorem tells you that: given a problem proved to require exponential time, it's NOT in P. But most NP problems haven't been proved to need exponential time — only that no polynomial algorithm is known.

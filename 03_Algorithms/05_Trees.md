@@ -1842,3 +1842,18 @@ TreeNode lca(TreeNode root, TreeNode p, TreeNode q) {
 **Upper bound** (path graph is tallest): A path (linked list) with n nodes has height n−1.
 
 **Leaves count in full binary tree**: A full binary tree (every node has 0 or 2 children) with n internal nodes has exactly n+1 leaves. *Proof by induction*: Base (n=0): 1 leaf. Step: Adding one internal node converts one leaf to an internal node and adds 2 new leaves: +1 internal, +1 leaf. Invariant: leaves = internal + 1. □
+
+
+---
+
+## Reality Check
+
+**"Binary trees and binary search trees are the same"** → Binary tree: each node has at most two children. No ordering requirement. Binary Search Tree: a binary tree where for every node, all values in the LEFT subtree are less, and all values in the RIGHT subtree are greater. Every BST is a binary tree, but NOT every binary tree is a BST. Common mistake: treating a binary tree problem as requiring BST ordering when the tree is just a structural binary tree (expression trees, Huffman trees, complete binary heaps).
+
+**"Tree height and tree depth are the same"** → Height of a node: number of edges on the longest downward path to a leaf. Height of the tree: height of the root. Depth of a node: number of edges from the root to that node. Height of a leaf = 0. Depth of the root = 0. A tree with 3 levels (root + 2 more): height = 2 (from root to deepest leaf), depth of deepest leaf = 2. These are inverses: height is measured bottom-up, depth is measured top-down. Confusing them causes off-by-one errors in recursion base cases.
+
+**"Level-order traversal requires BFS — you can't use recursion"** → Level-order (BFS) is naturally iterative using a queue. Recursive level-order is possible but unusual: maintain a list-of-lists, pass depth as a parameter — `addToLevel(node, depth, result)` appends node.val to result[depth]. The recursive approach uses the call stack, not an explicit queue, but it performs DFS internally while building the result in BFS order. Standard practice: use iterative BFS with a queue for level-order — it's clearer and avoids the DFS call stack.
+
+**"Inorder traversal of a BST gives sorted order — same for any binary tree"** → Inorder traversal (Left → Node → Right) gives sorted order ONLY for BSTs (where the BST property holds at every node). For a general binary tree, inorder traversal gives nodes in the order they appear in the inorder traversal — which has no meaningful sorting interpretation. Preorder (Node → Left → Right) is useful for: copying a tree, serializing (root comes first, easy to reconstruct). Postorder (Left → Right → Node) is useful for: deleting a tree (delete children before parent), computing expression tree values.
+
+**"Morris traversal is an exotic technique"** → Morris traversal enables inorder traversal of a binary tree in O(n) time and O(1) SPACE (no stack, no recursion). It temporarily modifies the tree using threaded binary tree links: sets the inorder predecessor's right pointer to the current node, then restores it when visiting. After traversal, the tree is restored to its original structure. Used when: space is critically constrained (embedded systems, very deep trees where a recursion stack would overflow). Understanding it demonstrates deep understanding of tree structure and pointer manipulation.

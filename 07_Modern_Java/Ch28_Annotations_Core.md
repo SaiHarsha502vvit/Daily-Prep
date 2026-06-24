@@ -1462,3 +1462,18 @@ Annotations are compile-time promises that have runtime consequences. These are 
 Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Annotations without retention RUNTIME are useless"** → Annotations with `SOURCE` retention are processed at compile time — Lombok, MapStruct, Dagger, and Error Prone all work this way. No bytecode or runtime presence needed. They generate code or perform compile-time checks. Annotations with `CLASS` retention are in bytecode — tools that read bytecode (bytecode instrumentation, build tools, static analysis) can read them. `RUNTIME` retention is only needed when you read annotations via reflection at runtime (Spring, JUnit). Understanding retention determines where annotation processing happens.
+
+**"You can annotate any element with any annotation"** → Annotations have a `@Target` meta-annotation restricting where they can be placed: `ElementType.METHOD`, `ElementType.FIELD`, `ElementType.PARAMETER`, `ElementType.TYPE` (class/interface/enum), `ElementType.CONSTRUCTOR`, `ElementType.LOCAL_VARIABLE`, `ElementType.TYPE_USE` (anywhere a type is used — Java 8+, enables `@NonNull String name`), `ElementType.MODULE`. Using an annotation on an element not in its `@Target` is a compile error. `@NonNull` on a type use requires `ElementType.TYPE_USE` target — many annotation libraries added this in Java 8+.
+
+**"Annotation processors run after compilation"** → Annotation processors run DURING compilation, in rounds. `javac` first processes source code, then runs annotation processors, then may process newly generated source files (in subsequent rounds), then continues compilation. This is why Lombok's generated code is available to the compiler for type-checking — it's generated as part of the compilation, not after. `javax.annotation.processing.Processor` is the API. Maven uses `maven-compiler-plugin` with `<annotationProcessorPaths>` to configure processors in the classpath for compilation.
+
+**"Repeatable annotations are a recent Java feature"** → `@Repeatable` (Java 8+) allows using the same annotation multiple times on the same element. Requires a container annotation: `@RequestMapping` is repeatable, with `@RequestMappings` as the container. Before Java 8: workaround was a single container annotation with an array: `@RolesAllowed({"ADMIN", "USER"})`. With `@Repeatable`: `@RoleRequired("ADMIN") @RoleRequired("USER")` on the same method. At runtime, `getAnnotationsByType(RoleRequired.class)` returns all of them; `getAnnotation(RequestMappings.class)` returns the container.
+
+**"Spring's @Component and CDI's @Named are equivalent"** → Both mark a class as a managed bean for injection. But they're from different specifications: Spring's annotation-based DI (`@Component`, `@Autowired`) is Spring-proprietary. CDI (`@Named`, `@Inject`) is the Jakarta EE standard. `@Inject` is in `javax.inject`/`jakarta.inject` — supported by both Spring and CDI containers. If you use `@Inject` instead of `@Autowired` and `@Named` instead of `@Component`, your code is portable between Spring and other CDI containers (Weld, OpenWebBeans). Spring intentionally supports JSR-330 (`@Inject`) for this portability.

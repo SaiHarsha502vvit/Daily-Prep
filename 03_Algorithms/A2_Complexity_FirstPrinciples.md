@@ -714,3 +714,18 @@ int idx = Arrays.binarySearch(sortedArr, key);
 ```
 
 *[← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)*
+
+
+---
+
+## Reality Check
+
+**"O(n log n) is always better than O(n²)"** → Asymptotically yes. In practice: for n < 50, O(n²) insertion sort beats O(n log n) merge sort due to smaller constants (no merge buffer allocation, simple loop, good cache behavior). TimSort uses insertion sort for runs of < 64 elements precisely for this reason. The crossover point n₀ where an asymptotically better algorithm actually wins depends on the constants hidden in Big O. For practical n, constants and cache behavior often dominate.
+
+**"O(1) means instant"** → O(1) means constant time — NOT fast. HashTable lookup is O(1) amortised but the constant includes: computing the hash function (which may be O(key_length)), checking equality on collision (O(key_length)), cache misses for separate chaining. A memory-resident red-black tree with O(log n) may be faster than a hash table with O(1) due to cache behavior (tree traversal is sequential in memory if the tree is small; hash table access is random). Measure, don't assume.
+
+**"Space complexity doesn't include the input"** → By convention, space complexity refers to AUXILIARY space (additional space beyond the input). An algorithm that uses O(n) extra space has space complexity O(n), even if the input itself is O(n) (otherwise all algorithms would be O(n) space just for holding the input). This distinction matters: in-place algorithms (O(1) auxiliary space, like heapsort) vs algorithms that copy the input (O(n) auxiliary space, like merge sort). The convention varies by context — always clarify whether "space complexity" means total or auxiliary.
+
+**"Amortised O(1) means every operation is O(1)"** → Amortised O(1) means the AVERAGE cost per operation over a sequence of operations is O(1). Individual operations can be expensive. ArrayList.add(): usually O(1), occasionally O(n) when resizing. The expensive resize costs are "amortised" over the cheap additions — total cost of n additions = O(n), so amortised cost per add = O(1). In real-time systems, amortised cost may be unacceptable: if one operation per 1000 takes 1ms (while others take microseconds), the system has a latency spike every 1000 operations. Prefer worst-case O(1) for real-time constraints.
+
+**"The recurrence T(n) = T(n-1) + O(1) is always O(n)"** → T(n) = T(n-1) + O(1) unrolls to O(n). T(n) = T(n-1) + O(n) unrolls to O(n²). T(n) = 2T(n/2) + O(n) → O(n log n) by Master Theorem. T(n) = T(n/2) + O(n) → O(n) (geometric series: n + n/2 + n/4 + ... = 2n). T(n) = 2T(n-1) + O(1) → O(2ⁿ) (exponential). The shape of the recurrence (how many subproblems, what fraction of n, what extra work) determines the solution — always unfold the first few steps or apply the Master Theorem correctly.

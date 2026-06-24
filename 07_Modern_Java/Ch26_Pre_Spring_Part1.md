@@ -1828,3 +1828,18 @@ public final class MoneySerializer extends JsonSerializer<BigDecimal> {
 Attach the serializer at the field/type/module boundary depending on blast radius: field for one DTO, module for a shared money format. Handle `null`, scale/rounding, locale/currency prefixes, and legacy numeric strings during deserialization; otherwise a formatting feature becomes a breaking API change.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Design patterns are solutions you apply from a catalog"** → Design patterns are REUSABLE SOLUTIONS to RECURRING PROBLEMS — not a checklist to apply. Over-engineering: applying the Strategy pattern for a switch with 2 options, adding a Factory for a class that's never subclassed, creating an AbstractFactoryFactory. The pattern makes sense when the PROBLEM it solves is actually present. Identify the problem first: "I have multiple algorithms that are interchangeable" → Strategy. "I need to create objects without specifying their concrete class" → Factory. Pattern NAMES are vocabulary for discussing design; they're not targets.
+
+**"SOLID principles are absolute rules"** → SOLID is a set of guidelines with trade-offs. Single Responsibility: taken to extremes, creates too many tiny classes with unclear ownership. Open/Closed: adding a case to a switch violates OCP, but is sometimes clearer than adding another subclass. Liskov Substitution: requires that subclasses honor all contracts — often violated in practice (Rectangle/Square problem). Dependency Inversion: interfaces everywhere adds abstraction; sometimes a direct dependency is clearer for simple cases. Apply SOLID where it reduces coupling and increases clarity; don't cargo-cult it in simple code.
+
+**"Interfaces are for polymorphism — abstract classes are for code reuse"** → This is the historical Java guidance (pre-Java 8). Since Java 8, interfaces can have default methods and static methods — enabling code reuse without inheritance. The remaining structural difference: abstract classes can have instance state (non-static, non-final fields); interfaces cannot (only static final constants). Use interfaces for: defining types/capabilities (Runnable, Comparable, AutoCloseable), API contracts. Use abstract classes for: shared stateful implementation (a base class with shared instance variables and protected methods).
+
+**"Dependency injection means using a DI framework like Spring"** → Dependency injection is a TECHNIQUE: instead of `this.service = new ConcreteService()` (hard dependency), receive the dependency via constructor or setter: `this.service = service` (injected). This works WITHOUT a framework: `new OrderController(new EmailService(), new OrderRepository())` — manual DI, perfectly valid for small applications. Spring/Guice/Dagger automate the wiring and lifecycle management. Understanding DI as a technique (not a framework feature) lets you write testable, loosely-coupled code in any context.
+
+**"A static method is just a regular method that doesn't need `this`"** → Static methods belong to the class, not to any instance. Implications: static methods cannot call instance methods (no `this`), cannot access instance fields, cannot be overridden (they can be hidden — `@Override` on a static method is a compile error), are resolved at compile time (not virtual dispatch). In Spring: `@Transactional`, `@Async`, and other proxy-based annotations have no effect on static methods (the proxy wraps instance method calls). Static methods in interfaces (Java 8+) are NOT inherited by implementing classes — must be called via the interface name.

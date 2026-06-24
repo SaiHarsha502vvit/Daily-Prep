@@ -1223,3 +1223,18 @@ Every async bug in Playwright traces back to one of these patterns. Use this tab
 ---
 
 **Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)
+
+
+---
+
+## Reality Check
+
+**"TypeScript types disappear at runtime — they can't protect you"** → Correct that TypeScript types are erased at runtime (the JavaScript that runs has no type information). But types provide: compile-time error detection (wrong argument type, missing property, undefined variable — caught before the test even runs), IDE autocompletion and navigation, refactoring safety (rename a page object method and TypeScript flags all callsites). The benefit is in development speed and catching errors before CI, not in runtime protection.
+
+**"async/await is simpler than Promises — just use await everywhere"** → `await` can only appear inside an `async` function. Awaiting in a loop: `for (const item of items) { await doSomething(item); }` processes items sequentially. Parallel execution: `await Promise.all(items.map(item => doSomething(item)))` processes all items concurrently. Sequential vs parallel matters enormously for test performance: 10 API calls each taking 200ms = 2000ms sequential vs 200ms parallel. Know when you want sequential (ordered dependency) vs parallel (independent operations).
+
+**"JavaScript closures are just nested functions"** → A closure is a function that captures variables from its enclosing scope — the captured variables live as long as the closure lives (even after the enclosing function returns). Classic trap: `for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 100); }` prints 3,3,3 (not 0,1,2). Reason: `var` is function-scoped; the closure captures the variable `i`, not its value at creation time. Fix: `let` (block-scoped — each iteration has its own `i`) or `setTimeout((i => () => console.log(i))(i), 100)` (IIFE captures current value).
+
+**"TypeScript generics in Playwright code are for library authors only"** → Page object factories, test fixtures, and API helpers benefit from generics. Example: `async function getAs<T>(url: string, schema: ZodSchema<T>): Promise<T>` — strongly typed API helper that validates and returns the correct type. Generic page state: `class Table<T extends Record<string, unknown>> { async getRows(): Promise<T[]> }` — typed table extraction. Generics eliminate casting (`as any`, `as SomeType`) which silences type errors. Team-written automation utilities benefit from generics just as much as library code.
+
+**"Optional chaining (?.) handles all null/undefined cases"** → `obj?.prop` short-circuits to `undefined` if `obj` is null/undefined. But: `await page.locator('.btn')?.click()` — optional chaining on a Playwright Locator is almost never right (the locator object always exists, the element in the DOM may not; `?.` doesn't help here). Use Playwright's built-in auto-waiting and `waitFor()` instead. Optional chaining is for JavaScript objects that may be null/undefined — not for async DOM existence checks where the right tool is Playwright's locator API.

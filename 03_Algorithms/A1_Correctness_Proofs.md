@@ -504,3 +504,18 @@ assert java.util.Arrays.binarySearch(arr, target) < 0;
 
 Rule: assertions document the invariant AND catch violations during development; formal proofs prevent the invariant from being wrong in the first place.
 
+
+
+---
+
+## Reality Check
+
+**"Testing proves correctness"** → Testing shows the presence of bugs, not their absence (Dijkstra). Testing on 1,000 cases with correct output doesn't prove the algorithm is correct on all inputs — the 1,001st case could be wrong. Correctness proofs use: loop invariants (a property true before the loop, maintained by each iteration, and sufficient to conclude correctness when the loop exits), induction (if the algorithm is correct for all inputs of size < n, prove it's correct for n), and structural induction (for recursive algorithms). Testing is essential for catching implementation bugs; proofs establish algorithmic correctness.
+
+**"Greedy algorithms are correct if they work on examples"** → A greedy algorithm feels right on every example you try — then fails on an adversarial input. Correctness requires proof. The two standard approaches: exchange argument (assume an optimal solution differs from greedy, show you can "swap" greedy's choice in without worsening — therefore greedy is optimal), and matroid theory (greedy is optimal iff the problem structure is a matroid). Examples motivate the algorithm; the proof establishes it. Without proof, "greedy" is just "a heuristic that works on examples I've tried."
+
+**"Loop invariants are academic — real programmers don't use them"** → Loop invariants are the mental model every experienced programmer uses when writing loops, whether or not they write them down. "After the k-th iteration, the first k elements of the array are sorted" is the loop invariant for insertion sort. Verifying: initialisation (true before first iteration), maintenance (if true before iteration, true after), termination (invariant + loop exit condition = correctness). Explicitly writing the invariant as a comment prevents bugs: when you wonder "is this >= or >?", the invariant tells you.
+
+**"Proving time complexity is the same as proving correctness"** → Separate concerns. Correctness: the algorithm produces the right output for all valid inputs. Time complexity: how many operations the algorithm performs as a function of input size. An incorrect algorithm can have perfect time complexity analysis. A correct algorithm can have a wrong time complexity analysis (e.g., mistakenly claiming amortised O(1) for something that's O(n)). Both correctness and complexity proofs are needed; neither implies the other.
+
+**"If the algorithm passed all test cases, the proof is unnecessary"** → Proof and testing serve different purposes. Proof establishes that the algorithm is correct FOR ALL inputs, including adversarial ones you didn't test. Tests catch implementation bugs (off-by-one errors, wrong operator, missed edge case). Both are needed: a provably correct algorithm implemented with an off-by-one error fails tests. A well-tested implementation of an incorrect algorithm passes all non-adversarial tests. In competitive programming: incorrect algorithm = wrong answer on judge. In security: incorrect algorithm = vulnerability waiting to be exploited.

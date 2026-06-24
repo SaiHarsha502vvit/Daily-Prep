@@ -1423,3 +1423,18 @@ _This completes the Spring Boot Annotations Reference - bookmark this for quick 
 ---
 
 > **Navigation**: [< Previous](Ch28_Annotations_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch52_SB_WebSocket_GraphQL_gRPC.md)
+
+
+---
+
+## Reality Check
+
+**"APT (Annotation Processing Tool) is the only way to process annotations"** → APT was deprecated and removed. Modern annotation processing uses `javax.annotation.processing.Processor` in the javac compiler via the standard `ServiceLoader` mechanism (or `annotationProcessorPaths` in Maven). Additionally: ByteBuddy and ASM can process annotations at LOAD time (instrument bytecode when classes load — no compile step). Spring AOP processes annotations at RUNTIME (reflection + dynamic proxy). Three different processing times: compile, load, runtime.
+
+**"Annotation metadata is always available via getDeclaredAnnotations()"** → `getDeclaredAnnotations()` returns annotations directly on the element. `getAnnotations()` includes inherited annotations (only `@Inherited`-meta-annotated annotations on classes are inherited — method annotations are NOT inherited). A method override does NOT inherit annotations from the overridden method. Spring's `@Transactional` on an interface method may or may not apply to the implementation, depending on proxy type. This is why Spring recommends putting `@Transactional` on the implementation, not the interface.
+
+**"Custom annotation validation (@Constraint) requires a framework"** → Java Bean Validation (Jakarta Validation, formerly JSR-303) is part of the Java EE/Jakarta EE standard, implemented by Hibernate Validator. Creating a custom constraint: (1) define an annotation with `@Constraint(validatedBy = MyValidator.class)`, (2) implement `ConstraintValidator<MyAnnotation, TargetType>`, (3) implement `isValid()`. Spring Boot validates `@Validated` beans with Hibernate Validator automatically. Custom validators can: check against the database, enforce cross-field constraints, validate against external APIs.
+
+**"Annotation arrays must be empty or have at least one element"** → Annotation array attributes can be empty: `@SuppressWarnings({})` is valid (though pointless). Single-element arrays have shorthand: `@SuppressWarnings("unchecked")` instead of `@SuppressWarnings({"unchecked"})`. When an annotation attribute type is an array, you must use curly braces for multiple values: `@SuppressWarnings({"unchecked", "rawtypes"})`. The shorthand works ONLY for single elements — two elements require `{}`.
+
+**"You can read annotation values from any class at runtime"** → Reading annotation values at runtime requires `RUNTIME` retention. Also: annotations must be on a class visible to the classloader performing the reflection. Reading annotations from a class in a separate module (Java 9+) requires the module to `opens` its packages for reflection. Spring's component scanning respects module boundaries — if a Spring component is in a module that doesn't open to Spring's module, Spring cannot read its annotations. This is why some libraries require `--add-opens` JVM flags when used with Spring Boot in a modular application.

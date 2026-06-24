@@ -927,3 +927,18 @@ hierarchies. Combined with pattern matching, they eliminate entire categories
 of bugs by making illegal states unrepresentable.
 
 **Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)
+
+
+---
+
+## Reality Check
+
+**"Enum values are just constants with names"** → Java enums are full classes: they can have fields, constructors, methods, and implement interfaces. `enum Planet { MERCURY(3.303e+23, 2.4397e6); final double mass, radius; Planet(double m, double r) { mass=m; radius=r; } double surfaceGravity() { ... } }`. Each enum constant is an instance of the enum class. `EnumSet` and `EnumMap` use bitmask/array internally — they are the most efficient Set/Map implementations for enum keys. Switching on enums generates a `tableswitch` instruction — O(1).
+
+**"switch on enums requires a default case"** → In a plain `switch` statement, a `default` case is recommended for safety. In a switch EXPRESSION (Java 14+) or with sealed classes + pattern matching (Java 21), the compiler can enforce exhaustiveness: if all enum constants are covered, no `default` needed (and its omission causes a compile error if a new constant is added — making it refactoring-safe). This exhaustiveness checking is one of the key benefits of enums in switch expressions over strings or integers.
+
+**"Records can implement business logic like regular classes"** → Records CAN have methods: `record Point(int x, int y) { double distance() { return Math.sqrt(x*x + y*y); } }`. What they CANNOT do: mutable instance fields, inheritance (records implicitly extend `java.lang.Record`), no-arg constructors without providing the required components. The compact constructor: `record Range(int lo, int hi) { Range { if (lo > hi) throw new IllegalArgumentException(); } }` — the compact constructor body runs inside the canonical constructor, receiving parameters before they're assigned.
+
+**"Sealed classes require all subclasses in the same file"** → Sealed classes require all permitted subclasses in the same PACKAGE (Java 17+). They can be in different files, but must be in the same package AND the same compilation unit (module). Permitted subclasses must explicitly declare `extends`/`implements` the sealed parent. Subclasses must be: `final` (no further subclassing), `sealed` (extends the hierarchy with more permits), or `non-sealed` (opens the hierarchy — explicitly breaks the seal). `non-sealed` is unusual but exists for cases where you want to extend the sealed hierarchy at specific points.
+
+**"Pattern matching instanceof replaces all explicit casts"** → `if (obj instanceof String s) { s.toUpperCase(); }` — the cast is gone. But: pattern matching does NOT remove the need to understand the type hierarchy. You still need to handle all relevant types and default cases. The power of pattern matching shines in switch expressions with sealed types: all permitted subtypes covered → no default needed → compiler catches missed cases when you add a new subtype. Without sealed classes, `instanceof` pattern matching is syntactic sugar; WITH sealed classes, it becomes an exhaustiveness-checked type dispatch.

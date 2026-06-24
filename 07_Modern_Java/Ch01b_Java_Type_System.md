@@ -706,3 +706,18 @@ Caution with null:
 | What happens when you unbox a null Integer?                       | `NullPointerException` — `null.intValue()`                                                |
 | What does `? extends T` mean?                                     | Wildcard for reading (producer): collection contains T or a subtype of T                  |
 | What does `? super T` mean?                                       | Wildcard for writing (consumer): collection accepts T or a supertype of T                 |
+
+
+---
+
+## Reality Check
+
+**"Java is strongly typed — type errors always cause compile errors"** → Java is statically typed (types checked at compile time) and strongly typed (implicit unsafe conversions are not allowed). But runtime type errors still occur: `ClassCastException` (wrong cast at runtime), `ArrayStoreException` (storing wrong type in array — covariant arrays: `String[] sarr = new String[3]; Object[] oarr = sarr; oarr[0] = 42;` compiles but throws at runtime), heap pollution with raw types (`List list = new ArrayList(); list.add("hello"); List<Integer> ints = list; int x = ints.get(0);` compiles, fails at runtime). The type system has gaps.
+
+**"Autoboxing is transparent — int and Integer are interchangeable"** → Autoboxing (int → Integer) and unboxing (Integer → int) happen automatically. The traps: `Integer a = 127; Integer b = 127; a == b` is true (Integer cache). `Integer a = 128; Integer b = 128; a == b` is false (separate objects). `Integer x = null; int y = x;` → `NullPointerException` (unboxing null). `List<Integer>` vs `int[]`: autoboxing is O(1) but each Integer is a separate heap object. In a tight loop boxing millions of ints: significant GC pressure. Use primitive arrays or `IntStream` for numeric computation.
+
+**"Type inference (var) makes Java dynamically typed"** → `var x = "hello"` uses LOCAL VARIABLE TYPE INFERENCE — the compiler infers the type as `String` at compile time. `x` IS a `String` everywhere in scope; you cannot reassign `x = 42`. `var` is NOT dynamic typing; it's syntactic sugar for explicit type declarations. The byte code is identical to `String x = "hello"`. `var` cannot be used for: fields, method parameters, return types — only local variables. It reduces verbosity (`var map = new HashMap<String, List<Integer>>()`) without sacrificing type safety.
+
+**"Generic type erasure only affects library code"** → Type erasure affects your code too: `List<String>` and `List<Integer>` are the same class at runtime (`List`). Consequences: `instanceof List<String>` is a compile error (can't check generic type at runtime), you can't create `new T[]` in a generic method (type is unknown at runtime), `catch (Exception e)` but not `catch (MyException<String> e)` (can't catch on generic type), and reflective code that creates instances must use Class<T> tokens explicitly. Libraries like Gson and Spring handle this with TypeToken/ResolvableType — explicit type tokens.
+
+**"Covariance in Java means List<Dog> is a subtype of List<Animal>"** → `Dog extends Animal` does NOT make `List<Dog>` a subtype of `List<Animal>` in Java. If it did: `List<Animal> animals = new ArrayList<Dog>(); animals.add(new Cat());` — you'd put a Cat in a Dog list, breaking type safety. Arrays ARE covariant (`Animal[] arr = new Dog[3]`) but throw `ArrayStoreException` at runtime. Generics are INVARIANT by default. For read-only variance: `List<? extends Animal>` (producer — you can read Animal, can't add). For write-only: `List<? super Dog>` (consumer — you can add Dog, read only as Object).

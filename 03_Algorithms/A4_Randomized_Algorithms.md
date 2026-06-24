@@ -629,3 +629,18 @@ Collections.shuffle(arr, ThreadLocalRandom.current());
 **The trade-off**: Randomized algorithms trade deterministic worst-case guarantees for expected-case performance. They require a source of randomness, and the analysis assumes the randomness is independent of the input. Always document what "expected" means in your algorithm's contract.
 
 *[← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [Back to Index](00_INDEX.md)*
+
+
+---
+
+## Reality Check
+
+**"Randomised algorithms give different answers every run"** → Las Vegas algorithms give the SAME correct answer every run, only the runtime varies randomly. Monte Carlo algorithms give answers that are correct with high probability — but running multiple times and taking the majority vote increases confidence. Miller-Rabin primality test: each round is a Monte Carlo test with error probability ≤ 1/4. After 40 rounds: error probability ≤ (1/4)^40 ≈ 10^-24. Essentially certain. The key design goal: make the probability of error arbitrarily small while keeping polynomial time.
+
+**"The rand() function is random enough for cryptography"** → `Math.random()` (Java) and `rand()` (C) are pseudo-random number generators (PRNGs) — deterministic sequences that appear random. They are NOT cryptographically secure: given enough output values, an attacker can predict future values. For cryptography: use `java.security.SecureRandom` (CSPRNG — Cryptographically Secure PRNG) which uses OS entropy sources (/dev/urandom, hardware RNG). For Monte Carlo simulations: `Math.random()` is fine (statistical properties are good, predictability doesn't matter). Never use `Math.random()` for: session tokens, CSRF tokens, password resets, or any security-sensitive value.
+
+**"Randomised quicksort and quicksort with median-of-three are equivalent"** → Both reduce the probability of hitting O(n²). Random pivot: pivot is uniformly random in the array — adversary cannot construct a worst-case without knowing the random choices. Median-of-three: pick the median of first, middle, last elements. Adversary CAN construct a worst-case for median-of-three (it's deterministic). Random pivot: no adversary-constructable worst case. Median-of-three: better practical performance for random data (avoids some pathological cases) but not adversarially robust. Production sort implementations (like Java's dual-pivot) use deterministic strategies with analysis showing good average-case.
+
+**"Hashing with a random hash function is always uniform"** → Universal hashing: a randomly chosen hash function from a universal family guarantees that for any two distinct keys x, y: `Pr[h(x) = h(y)] ≤ 1/m` (m = table size). This is not the same as saying all keys hash to different slots — collisions still occur. Universal hashing gives a probabilistic BOUND on collisions, not a guarantee of zero collisions. The expected number of keys that collide with a given key is ≤ n/m (load factor). This bound is achievable regardless of the key distribution — including adversarial keys.
+
+**"Random sampling requires a large sample for statistical significance"** → Sample size depends on the margin of error and confidence level you need, not just on the population size. For a binary outcome (yes/no, works/fails), 1,000 samples gives ±3% margin of error at 95% confidence, regardless of whether the population is 10,000 or 10 billion. This is why A/B tests for large-scale features can reach significance with a tiny fraction of users. The surprising result: statistical significance depends on the absolute sample size, not the fraction of the population sampled.

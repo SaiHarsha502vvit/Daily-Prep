@@ -1077,3 +1077,18 @@ freq.merge("key", 1, Integer::sum); // atomic increment -- no synchronized neede
 ---
 
 > **Navigation**: [← 2D Arrays](04_2D_Arrays_Matrix.md) | [Back to Index](00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Production code uses textbook data structures directly"** → Libraries like Java's `HashMap`, `TreeMap`, `ArrayDeque` ARE textbook data structures. But production code typically uses them through higher-level abstractions: JPA repositories (not raw HashMaps for entity lookup), message queues (not raw queues for async work), Redis sorted sets (not hand-rolled skip lists for leaderboards). The textbook understanding tells you WHICH abstraction to reach for and WHY — it doesn't mean you implement red-black trees in production code.
+
+**"CPU cache effects don't matter in Java"** → Java objects are heap-allocated. Object fields in the same class share a cache line (64 bytes). Two longs in the same object: one cache line fetch for both. A `HashMap` entry with a `String` key: the HashMap array holds references, not values — to access the key and value you follow two pointers, causing two cache misses per entry. This is why arrays of primitives outperform arrays of boxed types: arrays of int are contiguous in memory; arrays of Integer are arrays of references each pointing elsewhere.
+
+**"Memory usage is the JVM heap size you configured"** → JVM memory = heap + metaspace + thread stacks + JIT compiled code cache + off-heap (direct ByteBuffers). With `-Xmx2G`: heap is 2GB. Metaspace (class metadata): 200-500MB in large applications. Thread stacks (each thread gets ~256KB–1MB): 500 threads × 256KB = 128MB. Code cache (JIT compiled code): 200MB default. Total JVM process = 3-4GB for a `-Xmx2G` application. Monitoring: `Runtime.getRuntime().totalMemory()`/`freeMemory()` see heap; `ps`/`top`/`jcmd <pid> VM.native_memory` see the full picture.
+
+**"Profiling is only needed when there's a performance problem"** → Profiling should be part of the normal development cycle for performance-sensitive applications: baseline profile in CI (alert if a key metric regresses), periodic profiling of production under real load (synthetic benchmarks miss real access patterns), flame graphs before and after performance-impacting changes. Waiting until production is slow means diagnosing under pressure. JFR (Java Flight Recorder) has near-zero overhead and can run in production continuously. VisualVM and async-profiler for development.
+
+**"Thread-local storage eliminates contention"** → `ThreadLocal<T>` gives each thread its own instance — no synchronisation needed. But: ThreadLocal values are stored in the Thread object and persist until the thread is reused or terminated. In thread pool environments (servlet containers, Java EE app servers), threads are reused across requests. A forgotten `ThreadLocal.remove()` in a request filter → the next request on the same thread sees the previous request's data (user ID, transaction context, tenant ID). Always `remove()` in a `finally` block. Spring's `TransactionSynchronizationManager` uses ThreadLocal for this — it handles cleanup properly; your own ThreadLocal must too.
