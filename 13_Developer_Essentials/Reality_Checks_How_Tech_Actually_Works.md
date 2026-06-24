@@ -24,6 +24,11 @@
 16. [What "Async" Actually Means at the Hardware Level](#16-what-async-actually-means-at-the-hardware-level)
 17. [Encryption — What It Actually Does and Does Not Protect](#17-encryption--what-it-actually-does-and-does-not-protect)
 18. [What Happens When You Type a URL and Press Enter](#18-what-happens-when-you-type-a-url-and-press-enter)
+19. [SSL Certificates — You Can Make One Yourself, Free](#19-ssl-certificates--you-can-make-one-yourself-free)
+20. [Self-Hosting on Your Own Server — The Full Reality](#20-self-hosting-on-your-own-server--the-full-reality)
+21. [Practical Hosting Problems Nobody Warns You About](#21-practical-hosting-problems-nobody-warns-you-about)
+22. [Domain Names — How They Actually Work](#22-domain-names--how-they-actually-work)
+23. [Ports — What They Are and Why 80 and 443 Are Special](#23-ports--what-they-are-and-why-80-and-443-are-special)
 
 ---
 
@@ -1031,6 +1036,450 @@ User sees page.
 ```
 
 Total time: 100ms (fast, nearby server) to 5+ seconds (slow server, many resources, bad network).
+
+---
+
+## 19. SSL Certificates — You Can Make One Yourself, Free
+
+### The confusion
+
+People think: "I need to buy an SSL certificate from Verisign or GoDaddy for $100/year or my website won't be secure." This was true in 2013. It is completely false today, and was never the full picture even then.
+
+### What a certificate actually is
+
+An SSL/TLS certificate is a file containing three things:
+1. **Your public key** (used by visitors to encrypt data sent to you)
+2. **Metadata** — your domain name, company name, expiry date, what it's valid for
+3. **A digital signature** from a Certificate Authority (CA) certifying that the above is legitimate
+
+The certificate is NOT the thing that encrypts your connection. Your private key + the certificate together enable TLS. The certificate just answers: "Who are you, and can I trust that your public key is really yours?"
+
+### Three types of certificates
+
+**1. Self-signed certificate (you sign it yourself)**
+
+You are both the certificate owner AND the signer. Zero cost, instant creation. The browser will show a scary red warning "Your connection is not private" because your signature is not from a trusted CA.
+
+Create one in one command:
+```bash
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes \
+  -subj "/CN=localhost"
+```
+
+This generates `key.pem` (private key) and `cert.pem` (self-signed certificate). nginx or Apache can use these immediately. The connection IS encrypted — TLS is working. But the browser has no way to verify YOU own `localhost` vs an attacker intercepting. Hence the warning.
+
+**When to use self-signed:** Local development, internal tools where you trust the cert manually, machine-to-machine communication where you control both sides.
+
+**2. Let's Encrypt (free, browser-trusted)**
+
+Let's Encrypt is a non-profit Certificate Authority launched in 2014 by Mozilla, EFF, Cisco, and Akamai. They issue certificates for FREE and automate the entire process.
+
+**How it works (the ACME protocol):**
+
+You run Certbot (a program) on your server:
+```bash
+sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+```
+
+Certbot does this automatically:
+1. Generates a private key + certificate request on your server
+2. Tells Let's Encrypt: "I claim to own yourdomain.com"
+3. Let's Encrypt issues a challenge: "Place this specific random string at `http://yourdomain.com/.well-known/acme-challenge/RANDOM_TOKEN`"
+4. Let's Encrypt's servers visit that URL and verify the file is there
+5. Since only the actual domain owner can place files at that URL, Let's Encrypt is satisfied
+6. Let's Encrypt signs your certificate and sends it back
+7. Certbot installs it in nginx/Apache automatically
+8. Certificate is valid 90 days (auto-renewal runs via cron)
+
+**Result:** Free, browser-trusted, automated HTTPS. After 2016, the majority of new HTTPS certificates come from Let's Encrypt.
+
+**3. Paid certificates (DigiCert, Comodo, GlobalSign)**
+
+Same encryption as Let's Encrypt. The difference:
+- **Organization Validation (OV):** CA verifies your company actually exists (checks business registration). Certificate shows company name. Costs ~$100-$300/year.
+- **Extended Validation (EV):** Stricter verification process. Previously showed green bar with company name in browser. Browsers removed the green bar in 2019 because research showed users didn't notice it. Now almost pointless.
+- **Wildcard:** `*.yourdomain.com` — covers all subdomains. Let's Encrypt supports free wildcards too (DNS challenge required).
+- **Multi-domain (SAN):** One cert for `yourdomain.com`, `api.yourdomain.com`, `shop.yourdomain.com`. Let's Encrypt supports this too.
+
+**The real reason people still buy certs:** Compliance requirements in some regulated industries, older systems that don't support automated ACME, or getting OV/EV for the company name display in enterprise contexts.
+
+### The certificate chain of trust
+
+When Let's Encrypt signs your certificate, the chain looks like:
+
+```
+Root CA (ISRG Root X1) ← built into your OS/browser by default
+  └── Intermediate CA (Let's Encrypt R3) ← signed by Root CA
+        └── Your certificate (yourdomain.com) ← signed by Intermediate CA
+```
+
+Your browser has ISRG Root X1's public key built in. It verifies:
+- Is yourdomain.com cert signed by Let's Encrypt R3? → yes
+- Is Let's Encrypt R3 signed by ISRG Root X1? → yes
+- Is ISRG Root X1 in my trusted root store? → yes
+- Trusted chain! Show green padlock.
+
+Your server must send ALL three certificates (yours + intermediate + sometimes root) in what's called the **certificate chain** or **full chain**. Let's Encrypt's Certbot handles this automatically (`fullchain.pem`).
+
+### Development with mkcert (trusted self-signed for local use)
+
+The problem with standard self-signed certs: the browser warning is annoying in development and some APIs (like webcam/microphone access) require HTTPS even on localhost.
+
+**mkcert** solves this:
+```bash
+mkcert -install          # installs a local CA into your system trust store ONCE
+mkcert localhost 127.0.0.1 ::1   # generates a cert trusted for these addresses
+```
+
+Now your browser trusts `https://localhost` with no warning. The CA is only installed on YOUR machine — nobody else trusts it. Perfect for development.
+
+### What happens when a certificate expires
+
+The browser shows an error. Connections are blocked. Your site is effectively down.
+
+Let's Encrypt certs last 90 days. If you use Certbot with the systemd timer or cron job it installs, it auto-renews. If you forget to set up auto-renewal: your site goes down every 90 days.
+
+**The 2021 Let's Encrypt root expiry incident:** Let's Encrypt's root certificate (DST Root CA X3) expired on September 30, 2021. Millions of sites showed certificate errors — but only on old Android phones (≤Android 7.1) and old OpenSSL versions. The root certificate was no longer in their trust store. Modern browsers were unaffected. This highlighted that certificate trust is device-specific.
+
+### Summary
+
+| Certificate type | Cost | Browser trusted | How to get |
+|-----------------|------|----------------|-----------|
+| Self-signed | Free | No (manual trust only) | `openssl req -x509 ...` |
+| Let's Encrypt | Free | Yes | `certbot --nginx -d domain.com` |
+| mkcert (dev) | Free | Yes (your machine only) | `mkcert -install && mkcert localhost` |
+| Paid OV/EV | $100-$2000/year | Yes | Buy from DigiCert/Comodo, prove identity |
+| Wildcard (LE) | Free | Yes | `certbot --nginx -d domain.com -d *.domain.com` |
+
+---
+
+## 20. Self-Hosting on Your Own Server — The Full Reality
+
+### What "self-hosting" means
+
+Self-hosting means running your own server software rather than paying a managed service. Examples:
+- Running your own GitLab instead of GitHub
+- Running your own Nextcloud instead of Google Drive
+- Hosting your own website on a VPS instead of Vercel/Netlify
+- Running your own email server instead of Gmail
+- Running your own Bitwarden (Vaultwarden) instead of 1Password
+
+### Option 1: VPS (Virtual Private Server)
+
+A VPS is the most common self-hosting setup. You rent a virtual machine from a provider (DigitalOcean, Linode/Akamai, Vultr, Hetzner, AWS EC2).
+
+**What you get:** A root-access Linux server with a public IP address, in a data center, connected to fast internet (1-10 Gbps), running 24/7, starting at $4-6/month.
+
+**What you must set up yourself (nothing is automatic):**
+1. Choose a Linux distro (Ubuntu 22.04 LTS is most common)
+2. Initial server hardening (disable root SSH, create non-root user, configure firewall)
+3. Install your web server (nginx or Apache)
+4. Install your application runtime (Node, Python, Java, PHP, etc.)
+5. Configure your application as a systemd service (so it restarts on crash/reboot)
+6. Point your domain's DNS to this IP address
+7. Get a TLS certificate via Certbot
+8. Configure firewall rules (ufw on Ubuntu)
+9. Set up automated backups (to S3, Backblaze B2, or another server)
+10. Set up monitoring (know when the server is down before your users tell you)
+11. Keep the server patched (unattended-upgrades on Ubuntu)
+
+**The complete nginx + Node.js + HTTPS stack on a VPS:**
+
+```bash
+# 1. Initial setup on fresh Ubuntu 22.04
+adduser deploy
+usermod -aG sudo deploy
+# Copy your SSH key to deploy user, disable root SSH
+
+# 2. Firewall
+ufw allow OpenSSH
+ufw allow 80
+ufw allow 443
+ufw enable
+
+# 3. Install nginx
+apt install nginx
+
+# 4. Install Node.js (via nvm or NodeSource)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+apt install -y nodejs
+
+# 5. Deploy your app (git pull, npm install, etc.)
+# Your app listens on port 3000 (NOT 80/443 directly)
+
+# 6. Create systemd service for your app
+# /etc/systemd/system/myapp.service
+[Unit]
+Description=My Node App
+After=network.target
+
+[Service]
+User=deploy
+WorkingDirectory=/home/deploy/myapp
+ExecStart=/usr/bin/node server.js
+Restart=always
+Environment=NODE_ENV=production PORT=3000
+
+[Install]
+WantedBy=multi-user.target
+
+systemctl enable myapp
+systemctl start myapp
+
+# 7. nginx config as reverse proxy
+# /etc/nginx/sites-available/yourdomain.com
+server {
+    listen 80;
+    server_name yourdomain.com www.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+# 8. Get HTTPS certificate
+certbot --nginx -d yourdomain.com -d www.yourdomain.com
+# Certbot modifies nginx config automatically, adds HTTPS, sets up auto-renewal
+```
+
+After this: visiting `https://yourdomain.com` → nginx → proxies to `localhost:3000` (your Node app). Your app never handles TLS — nginx does.
+
+### Option 2: Home server with port forwarding
+
+You run a server on hardware you own at home (old laptop, Raspberry Pi, mini PC). Problems unique to this setup:
+
+**NAT (Network Address Translation):** Your ISP gives your house ONE public IP address. Your router assigns private IPs (192.168.x.x) to all devices. Your server has a private IP that nobody on the internet can reach directly.
+
+**Port forwarding:** You tell the router: "Any connection arriving on port 80 → forward to 192.168.1.100." Now external connections reach your server.
+
+**Dynamic IP:** Most residential ISPs change your public IP every few days or weeks. Your domain's DNS points to an IP that becomes stale. Fix: Dynamic DNS (DDNS) — a program runs on your router or server, detects IP changes, and updates your DNS record automatically. Cloudflare has a free DDNS API. DuckDNS is a free DDNS service.
+
+**ISP blocking ports 80 and 443:** Many ISPs block inbound connections on ports 80/443 for residential customers. They do not want you running web servers at home (it competes with their commercial hosting). Check your ISP's terms. Workarounds: use a non-standard port (but then your URL looks like `http://yourdomain.com:8080`), or use a tunnel (see below).
+
+**Cloudflare Tunnel (formerly Argo Tunnel):** Free tool that punches through NAT and ISP port blocking entirely. Run a Cloudflare daemon on your home server. It creates an outbound HTTPS connection to Cloudflare. Traffic flows: visitor → Cloudflare → your home server (through the tunnel). You never open any ports on your router. Completely free for personal use.
+
+### Option 3: Running on your own hardware in a data center (colocation)
+
+You buy a physical server (~$500-5000), ship it to a data center ("colo facility"), pay $50-200/month for rack space, power, and internet connection. You own the hardware, they provide the facility and connectivity. Used by companies with very specific hardware requirements or large-scale operations.
+
+### What self-hosting is NOT good for (for most people)
+
+**Email server:** Running your own email server is notoriously painful.
+- Getting email delivered (not to spam): requires PTR records, SPF records, DKIM signing, DMARC policy, IP reputation. Takes weeks to build up reputation.
+- Gmail/Outlook aggressively reject email from new IPs or misconfigured servers.
+- You are responsible for handling spam, virus scanning, queuing, bounce handling.
+- Most experienced developers recommend using SendGrid/SES/Postmark for outbound and a paid email host (Fastmail, ProtonMail) for inboxes, rather than running your own.
+
+**High-traffic websites:** A $6/month VPS has 1 vCPU and 1GB RAM. Under heavy traffic, it will struggle. Managed platforms (Vercel, Railway, Render) autoscale for you. Self-hosted scaling requires load balancers, horizontal scaling, database replication — all manageable but significant work.
+
+---
+
+## 21. Practical Hosting Problems Nobody Warns You About
+
+### Problem 1: Your app crashes at 3 AM and you don't know for 8 hours
+
+**What happens:** Node.js app throws an unhandled exception. Process exits. Port 3000 is now empty. nginx returns 502 Bad Gateway to all visitors.
+
+**Why you don't know:** No one told you. Your server has no monitoring.
+
+**Fix:**
+1. Systemd with `Restart=always` restarts your process within seconds. Set this up.
+2. UptimeRobot (free): pings your URL every 5 minutes, emails you if it gets a bad response. Takes 2 minutes to set up.
+3. Structured logging + log shipping so you can see what crashed.
+
+### Problem 2: The disk fills up silently
+
+**What happens:** Your app logs to `/var/log/` or writes data. After weeks, disk is 100% full. Writes fail. App behaves strangely. Database corrupts.
+
+**Fix:**
+```bash
+# Check disk usage
+df -h
+# Find what's large
+du -sh /* 2>/dev/null | sort -hr | head -20
+# Log rotation (should be automatic but check)
+cat /etc/logrotate.d/nginx
+```
+
+Set up disk usage monitoring. Alert at 80%.
+
+### Problem 3: SSH locked yourself out
+
+**What happens:** You edit `/etc/ssh/sshd_config` incorrectly, restart SSH, disconnect. Now no SSH connections work. You cannot get back in.
+
+**Fix before it happens:** Most VPS providers have a web-based console (DigitalOcean Recovery Console, Linode Lish). This bypasses SSH entirely. Use it to fix the config. Always have this URL bookmarked.
+
+**The mistake:** Restarting sshd from the same SSH session without first testing `sshd -t` (syntax check) and opening a SECOND SSH connection to verify it still works.
+
+### Problem 4: Environment variables in production are wrong
+
+**What happens:** Your app works locally with `.env` file. On the server, the env var is set but the app reads a different one (wrong name, case sensitivity, loading order).
+
+**Debug:**
+```bash
+systemctl show myapp --property=Environment  # see what envs systemd injects
+sudo -u deploy env                            # see env as the deploy user
+journalctl -u myapp -n 100                   # last 100 log lines of your service
+```
+
+**Fix:** Explicitly set ALL environment variables in the systemd unit file or a `.env` file loaded by your startup script. Never rely on "it's in my shell's .bashrc" — systemd does not source .bashrc.
+
+### Problem 5: "It worked in HTTP but broke in HTTPS"
+
+**What happens:** Your site runs fine on HTTP. After adding HTTPS, some things break.
+
+**Common causes:**
+- **Mixed content:** Your HTTPS page loads an image/script/font via `http://`. Browsers block mixed content. Fix: use `//domain.com/path` (protocol-relative) or `https://`.
+- **Secure cookies:** If you set cookies without the `Secure` flag, they are not sent over HTTPS by some configs.
+- **Hard-coded URLs:** Your app generates links as `http://yourdomain.com/page` — behind a proxy this becomes a problem. Fix: use `X-Forwarded-Proto` header to detect the original scheme, or set `proxy_set_header X-Forwarded-Proto https;` in nginx.
+- **WebSocket upgrade:** WebSocket connections (`ws://`) must become `wss://` on HTTPS sites. Fix in nginx: pass the `Upgrade` and `Connection` headers (shown in the nginx config above).
+
+### Problem 6: Database is accessible from the internet
+
+**What happens:** You install PostgreSQL. It listens on port 5432 on all interfaces. Anyone can try to connect and brute-force passwords.
+
+**Fix:**
+```bash
+# PostgreSQL should only listen on localhost
+# In /etc/postgresql/15/main/postgresql.conf:
+listen_addresses = 'localhost'
+
+# UFW: do NOT open port 5432 to the internet
+# Only allow from specific IPs if you need remote access:
+ufw allow from 203.0.113.5 to any port 5432
+```
+
+**Connect remotely via SSH tunnel instead of opening port:**
+```bash
+ssh -L 5432:localhost:5432 user@yourserver.com
+# Now psql -h localhost -p 5432 connects to the remote database via SSH tunnel
+```
+
+### Problem 7: Your SSL certificate expired because auto-renewal failed
+
+**What happens:** Certbot auto-renewal failed silently because nginx config changed, or the port 80 challenge path is blocked by your nginx config, or the systemd timer was not enabled.
+
+**Test auto-renewal manually:**
+```bash
+certbot renew --dry-run   # simulates renewal without actually renewing
+```
+
+**Check timer:**
+```bash
+systemctl status certbot.timer
+systemctl list-timers | grep certbot
+```
+
+**Set up monitoring:** UptimeRobot or certificate monitoring services alert you when a cert expires within 30 days.
+
+### Problem 8: Your server gets hit by a bot scan and CPU spikes
+
+**What happens:** Within hours of setting up a server with a public IP, bots are scanning it. `fail2ban` logs show thousands of SSH login attempts. Your nginx logs show requests for `/wp-admin`, `/phpmyadmin`, `/.env`, `/config.php` — paths that don't exist on your server but attackers scan for.
+
+**This is normal and expected.** The internet is adversarial. Any IP that exists will be scanned within minutes.
+
+**Basic protections:**
+```bash
+# fail2ban: auto-ban IPs with too many failed SSH logins
+apt install fail2ban
+# Default config bans IPs after 5 failed attempts
+
+# Change SSH port to something non-standard (stops script-kiddie bots)
+# In /etc/ssh/sshd_config:
+Port 2222
+
+# Disable password auth entirely (SSH keys only)
+PasswordAuthentication no
+```
+
+**More protection:**
+- Cloudflare as reverse proxy: hides your real IP, provides DDoS protection, bot detection
+- Rate limiting in nginx
+- ModSecurity WAF (Web Application Firewall)
+
+---
+
+## 22. Domain Names — How They Actually Work
+
+### The history
+
+In the early 1970s ARPANET, each computer had a local text file called `HOSTS.TXT` that listed all known hostnames and their IP addresses. The file was maintained by the Stanford Research Institute and distributed to every host. By 1982, this was unsustainable — hosts were added faster than the file could be distributed.
+
+Paul Mockapetris designed DNS in 1983, published in RFC 882 and 883. The distributed database structure that DNS uses has scaled to handle the entire modern internet without fundamental redesign.
+
+### Who owns the domain name system
+
+**ICANN** (Internet Corporation for Assigned Names and Numbers): Non-profit that coordinates domain names globally. They decide which TLDs exist (.com, .org, .io, .dev, etc.) and who operates them.
+
+**Registry:** The organization that operates a TLD. Verisign operates `.com`. The Public Interest Registry operates `.org`. Each country has its own registry (NIXI for `.in`, DENIC for `.de`).
+
+**Registrar:** A company you buy domain names from (GoDaddy, Namecheap, Google Domains/Squarespace, Cloudflare). They interact with the registry on your behalf. You pay the registrar, who pays the registry. You can transfer between registrars (your domain is locked to the registrar for 60 days after purchase to prevent transfer fraud).
+
+**When you "buy" a domain:** You are renting it, typically 1-10 years. If you stop paying, it expires and anyone can buy it. Companies have lost domains worth millions by forgetting to renew.
+
+### DNS record types
+
+| Record | What it does | Example |
+|--------|-------------|---------|
+| `A` | Domain → IPv4 address | `yourdomain.com → 93.184.216.34` |
+| `AAAA` | Domain → IPv6 address | `yourdomain.com → 2606:2800::1` |
+| `CNAME` | Alias → another domain | `www.yourdomain.com → yourdomain.com` |
+| `MX` | Mail exchange → where to deliver email | `yourdomain.com → mail.google.com priority 10` |
+| `TXT` | Arbitrary text | Used for SPF, DKIM, domain verification |
+| `NS` | Nameserver → who answers DNS queries | `yourdomain.com → ns1.cloudflare.com` |
+| `SOA` | Start of Authority | Zone metadata, serial number for updates |
+| `PTR` | Reverse lookup: IP → domain | `34.216.184.93.in-addr.arpa → yourdomain.com` |
+| `SRV` | Service location | Used by SIP, XMPP, game servers |
+
+### Propagation is not magic
+
+When you change a DNS record, the new value does not instantly reach everyone. DNS records have a **TTL (Time To Live)** — a number of seconds that resolvers should cache the answer.
+
+If your A record has TTL 3600 (1 hour), resolvers cache it for up to 1 hour. After you change the IP, some users still get the old IP for up to 1 hour. If you set TTL to 60 seconds before a migration, changes propagate in 1 minute.
+
+**"DNS propagation takes 24-48 hours"** is outdated advice from when TTLs were commonly 86400 (24 hours). With Cloudflare or modern DNS, changes propagate in seconds to minutes if TTL is set low.
+
+---
+
+## 23. Ports — What They Are and Why 80 and 443 Are Special
+
+### What a port is
+
+An IP address identifies a machine. A port identifies a specific process on that machine. When your OS receives a TCP packet addressed to `93.184.216.34:80`, it looks up which process has registered to listen on port 80 and delivers the packet there.
+
+Ports are 16-bit numbers: 0-65535.
+
+**Port ranges:**
+- 0-1023: **Well-known/system ports**. Require root/admin privileges to bind on Linux/macOS. HTTP=80, HTTPS=443, SSH=22, FTP=21, SMTP=25, DNS=53.
+- 1024-49151: **Registered ports**. Commonly used by applications. PostgreSQL=5432, MySQL=3306, MongoDB=27017, Redis=6379, Node.js convention=3000.
+- 49152-65535: **Dynamic/ephemeral ports**. Used by OS for client-side connections.
+
+### Why port 80 and 443 are special
+
+**HTTP=80:** When a browser visits `http://example.com` with no port specified, it uses port 80 by default. This is defined in RFC 2616.
+
+**HTTPS=443:** When visiting `https://example.com`, port 443. Defined in RFC 2818.
+
+Because 80 and 443 are below 1024, only root can start a process that listens on them. This is a Unix security feature — system services like web servers should be started by root, then drop privileges. But best practice for Node.js/Python apps is: run your app on a high port (3000, 8080) and put nginx in front on port 80/443. nginx runs as root briefly, then drops to `nginx` user.
+
+**Why your home ISP blocks 80 and 443:** Preventing customers from running web servers. ISP terms of service typically prohibit running servers on residential connections. Commercial accounts (business internet) usually allow it.
+
+**Why `localhost:3000` in development:** You cannot bind to port 3000 as a non-root user. Port 3000 requires no privileges. It's just a convention that many frameworks use.
+
+**Firewall and ports:** Your server firewall (`ufw`, `iptables`, cloud security groups) controls which ports are reachable from the internet. A service can be running and listening on a port, but if the firewall blocks it, external connections fail. Always check both: is the service running? Is the firewall allowing the port?
+
+```bash
+ss -tlnp                   # show all TCP listening ports + which process
+ufw status verbose         # show firewall rules
+curl -I http://localhost   # test from inside the server
+curl -I http://YOUR_IP     # test from outside
+```
 
 ---
 
