@@ -444,3 +444,18 @@ Before ACID, database systems provided little guarantee about what happened if a
 
 **Modern practice anchor:**
 Today, understanding ACID properties is essential for debugging isolation-level anomalies (dirty reads, non-repeatable reads, phantom reads) in LeetCode transaction problems and designing reliable microservices with Saga patterns for distributed consistency.
+
+
+---
+
+## Reality Check
+
+**"BEGIN / COMMIT is only needed when you have multiple related statements"** → Even single statements in PostgreSQL run in an implicit transaction. But the isolation level and locking behaviour differ. For long-running reads that must see a consistent snapshot (reporting queries), wrapping in an explicit transaction with `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ` prevents phantom reads mid-report — something you cannot do with implicit single-statement transactions.
+
+**"ROLLBACK undoes everything since the BEGIN"** → Only if you haven't used `SAVEPOINT`. With savepoints, `ROLLBACK TO SAVEPOINT sp1` rolls back only to that point — statements before the savepoint are still pending (not committed). Used in batch processing: process 1000 rows, set savepoint, process next 1000, if batch fails roll back to savepoint and retry that batch without losing the first 1000.
+
+**"Serializable isolation level prevents all concurrency"** → Serializable isolates transactions as if they ran one after another serially. But modern databases (PostgreSQL's SSI — Serializable Snapshot Isolation) achieve this with optimistic concurrency, not by blocking all writes. Most transactions proceed in parallel; only transactions with true serialization conflicts are aborted and retried. Much more concurrent than traditional locking-based serializable.
+
+**"Dirty reads are the only concurrency issue"** → Dirty reads (reading uncommitted data) are just one of four read phenomena. Non-repeatable reads: read same row twice, get different values (another transaction committed between reads). Phantom reads: read a range, run the query again, get different rows (another transaction inserted/deleted). Lost updates: two transactions read-modify-write the same row; one's update overwrites the other's. Each requires a different isolation level to prevent.
+
+**"Auto-commit mode is fine for application code"** → In JDBC, auto-commit is ON by default — every statement is its own transaction. This is correct for simple reads. For multi-statement operations, auto-commit causes partial failures to leave the database in an inconsistent state. Spring's `@Transactional` disables auto-commit for the duration of the method. Connection pools (HikariCP) configure `autoCommit=true` by default — verify this matches your framework's transaction management.

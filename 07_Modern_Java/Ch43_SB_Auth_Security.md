@@ -1613,3 +1613,18 @@ _Continue to Part 12: DSA in Spring Boot Applications_
 ---
 
 > **Navigation**: [< Previous](Ch42_SB_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch50_SB_DSA_Applications.md)
+
+
+---
+
+## Reality Check
+
+**"Storing passwords as MD5 or SHA-256 hashes is secure"** → MD5 and SHA-256 are fast hashing algorithms — intentionally so. For passwords, speed is a vulnerability: a GPU can compute 10 billion MD5 hashes per second. Pre-computed rainbow tables defeat unsalted hashes. Use bcrypt, scrypt, or Argon2 — deliberately slow password hashing algorithms with built-in salting. Spring Security's `BCryptPasswordEncoder` is correct. SHA-256 for passwords is a security bug.
+
+**"HTTPS means my API is secure"** → HTTPS encrypts data in transit. It does NOT protect against: SQL injection in your query layer, broken access control (user A accessing user B's data), IDOR (Insecure Direct Object Reference), XSS if you render unsanitized user content, misconfigured CORS allowing any origin, storing secrets in application.properties in git.
+
+**"JWT tokens are encrypted — the user cannot read them"** → Standard JWTs are BASE64-ENCODED, not encrypted. Base64 is trivially reversible. The payload (claims: user ID, roles, expiry) is readable by anyone holding the token. JWT provides *integrity* (the signature prevents tampering) but NOT *confidentiality*. Never put sensitive data (SSN, credit card, passwords) in a JWT payload unless you use JWE (JSON Web Encryption).
+
+**"Session-based auth is old; JWT is always better"** → Session auth stores state server-side — easy to invalidate (logout = delete session). JWT is stateless — you cannot invalidate a token before its expiry without a server-side blocklist (which re-introduces state, defeating the benefit). For short-lived access tokens + refresh token rotation, JWT makes sense. For server-rendered apps or when immediate revocation is needed, sessions may be better.
+
+**"Disabling CORS restrictions fixes my CORS error"** → CORS (Cross-Origin Resource Sharing) is enforced by the *browser*. API clients (curl, Postman, server-side code) are not subject to CORS. If you disable CORS via `@CrossOrigin(origins = "*")`, your API accepts requests from ANY website's JavaScript — including malicious ones that can make authenticated requests using the user's cookies. Only allow specific trusted origins.

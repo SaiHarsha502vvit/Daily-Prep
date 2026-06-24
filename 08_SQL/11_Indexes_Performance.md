@@ -311,3 +311,18 @@ Today, every database performance interview tests B-tree index understanding —
 
 **Modern practice anchor:**
 Today, Percona's PMM, Datadog's database monitoring, and PostgreSQL's `pg_stat_statements` automatically surface missing index candidates by comparing seq_scan frequency against table size — catching the Stripe-style index removal incident in staging before it reaches production.
+
+
+---
+
+## Reality Check
+
+**"An index on column A covers queries filtering on A and B"** → A single-column index on `(A)` only helps queries filtering on A. A query filtering on BOTH `A AND B` can use a composite index `(A, B)` more efficiently (covering both predicates in one index scan). A composite index `(A, B)` also covers queries filtering on A alone (left-prefix rule) but does NOT help queries filtering only on B.
+
+**"The database always uses your index"** → The query planner may ignore your index if: the table is small (full scan is faster), the WHERE clause covers too many rows (index on a boolean column with 90% TRUE values — full scan wins), the index is outdated (statistics not refreshed), or the query uses a function on the indexed column (`WHERE LOWER(email) = ...` won't use an index on `email`; create a functional index on `LOWER(email)` instead).
+
+**"Deleting rows makes the index smaller and queries faster"** → Deleting rows marks space as deleted in the index but doesn't immediately reclaim it (B-tree pages with mostly-deleted entries remain). In PostgreSQL, dead tuples accumulate until VACUUM runs. High-frequency delete workloads need regular VACUUM/ANALYZE. Index bloat (oversized index with mostly dead entries) is a real production problem.
+
+**"Covering index means the index covers all possible queries"** → A covering index for a specific query is one that contains ALL columns the query needs — enabling an index-only scan (no heap access). `SELECT email, name FROM users WHERE status = 'active'` is covered by index `(status, email, name)`. It only "covers" that specific query pattern. Design covering indexes for your most performance-critical queries.
+
+**"EXPLAIN shows exactly what the database will do"** → `EXPLAIN` shows the *planned* execution — what the planner *intends* to do based on statistics. `EXPLAIN ANALYZE` shows what *actually happened* (runs the query). Statistics can be stale; the plan can change between planning and execution. Always use `EXPLAIN ANALYZE` when diagnosing real performance issues, not just `EXPLAIN`.

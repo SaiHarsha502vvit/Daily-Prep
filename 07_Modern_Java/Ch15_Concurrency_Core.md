@@ -2882,3 +2882,18 @@ LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using
 </details>
 
 > **Navigation**: [< Previous](Ch25_Spring_Boot_50Day_Plan.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch16_Concurrency_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"volatile ensures atomicity"** → `volatile` ensures *visibility* — all threads see the latest write. It does NOT ensure atomicity of compound operations. `volatile int counter; counter++` is NOT thread-safe: read-modify-write is three operations, any of which can interleave with another thread. Use `AtomicInteger.incrementAndGet()` for thread-safe increment.
+
+**"synchronized(this) locks 'this object' for all operations"** → It locks *the synchronized block/method* using `this` as the lock monitor. Other non-synchronized methods on the same object run freely — they don't acquire `this`'s lock. Two synchronized methods on the same object do mutually exclude each other. But a synchronized method and an unsynchronized method on the same object CAN run concurrently.
+
+**"Creating more threads always makes parallel code faster"** → Thread creation has overhead (~1MB stack per thread by default on Linux). Context switching between threads has cost (~1-10µs). For CPU-bound work, optimal thread count ≈ number of CPU cores. Beyond that, more threads = more context switching = slower. The right abstraction: use `ExecutorService` with a thread pool, not raw `new Thread()` everywhere.
+
+**"sleep(0) does nothing"** → `Thread.sleep(0)` causes the current thread to yield its remaining time slice, allowing other threads of equal or higher priority to run. It is a hint to the scheduler, not a guarantee. Used occasionally for fairness in tight loops. `Thread.yield()` is more explicit for this purpose.
+
+**"Deadlock only happens with many threads and complex code"** → Deadlock requires only 2 threads and 2 locks. Thread A holds Lock1, waits for Lock2. Thread B holds Lock2, waits for Lock1. Classic deadlock, two threads. Prevention: always acquire locks in the same global order across all threads, or use `tryLock()` with timeout, or use higher-level structures (avoid explicit lock management).

@@ -1105,3 +1105,18 @@ Safe publication requires an explicit happens-before — final fields, volatile,
 GC is generational because most objects die young. G1 collects "garbage-first"
 regions for predictable pauses. ZGC uses read barriers to eliminate STW entirely.
 Always set HeapDumpOnOOM and monitor GC pauses in production.
+
+
+---
+
+## Reality Check
+
+**"The JVM always runs GC when memory is low"** → The JVM runs GC when specific conditions are met (young generation fills up, old generation fills up, explicit `System.gc()` — which is a hint, not a command). There is no guarantee GC runs "when you need it." `System.gc()` is rarely appropriate in application code; calling it can hurt performance by triggering a major GC at the wrong time.
+
+**"GC pauses are always short (milliseconds)"** → Old-generation (major/full) GCs in serial or parallel GC can cause multi-second stop-the-world pauses for large heaps. G1GC aims for configurable pause targets but can exceed them. ZGC and Shenandoah target sub-millisecond pauses by doing most GC work concurrently. Choosing the wrong GC for your latency requirements causes missed SLAs, not crashes.
+
+**"Java has no pointers"** → Java has references, which ARE pointers — they hold memory addresses. The difference: you cannot do arithmetic on Java references (no `ptr + 1`), you cannot access raw memory through them, and the GC can move objects (updating all references automatically — this is transparent to you). Saying "Java has no pointers" is a simplification for beginners, not an accurate statement.
+
+**"The JVM memory model means all threads share the same view of memory"** → The Java Memory Model (JMM) DOES NOT guarantee that all threads see the same values without synchronization. Modern CPUs have per-core L1/L2 caches. A write by Thread A may sit in A's cache without being flushed to shared memory. Thread B may read a stale value from its own cache. `volatile`, `synchronized`, and `java.util.concurrent` constructs create *happens-before* relationships that force memory visibility.
+
+**"Increasing heap size (-Xmx) always improves performance"** → Larger heap = less frequent GC (good) but longer GC pauses when GC does run (bad). A very large heap on G1GC might take 5+ seconds to scan during a full GC. For latency-sensitive services, keep heap size manageable (4-8GB) and tune GC algorithm. Beyond a point, adding RAM to the heap actively worsens tail latency.

@@ -843,6 +843,117 @@ Scrollbar(
 
 ---
 
+## The Invisible Machinery — How Scrolling Works at the Protocol Level
+
+When you scroll a `ListView`, the motion feels instant. Under the surface, two separate systems run on every pixel of movement — one translating your finger into a scroll delta, one translating that delta into a rendered list.
+
+### Part 1: Finger to Scroll Delta (The Hardware Journey)
+
+Your finger doesn't "touch" anything in a software sense. It changes the **electrical capacitance** of a 2D grid of transparent electrodes embedded in the touchscreen glass (Indium Tin Oxide — ITO).
+
+```
+Finger touches glass
+    ↓ changes capacitance at specific electrode intersections
+Touch controller chip (separate IC on the phone PCB, not the main CPU)
+    ↓ scans all electrode cells ~120-240 times per second
+    ↓ computes which cells changed → calculates (x, y) coordinate
+    ↓ sends interrupt to main CPU via I2C or SPI bus
+OS kernel touchscreen driver
+    ↓ converts raw data to MotionEvent (Android) or UITouch (iOS)
+    ↓ computes velocity (pixels per second) from recent events
+Flutter engine receives PointerMoveEvent
+    ↓ ScrollGestureRecognizer claims the gesture (not a tap, not a pinch)
+    ↓ emits scroll delta: "moved 12px downward this frame"
+ScrollPosition.applyUserOffset(-12.0) — scroll offset increases by 12
+```
+
+This chain runs for every millimeter your finger moves — potentially hundreds of events per second. The touch controller chip processes this at the hardware level, independently of your Flutter app.
+
+### Part 2: Scroll Delta to Rendered Frame (The Sliver Protocol)
+
+Once Flutter has the new `scrollOffset`, the **Sliver Protocol** runs. This is a two-message conversation between the `Viewport` and each sliver on every frame:
+
+```
+Viewport has: scrollOffset = 412px
+
+Step 1 — Viewport sends SliverConstraints to SliverList:
+  {
+    scrollOffset: 412,           // how far we've scrolled
+    remainingPaintExtent: 800,   // screen height remaining
+    viewportMainAxisExtent: 800, // total screen height
+    crossAxisExtent: 375,        // screen width
+  }
+
+Step 2 — SliverList computes which items are in the range [412, 1212]:
+  → itemBuilder(context, 5)   // item at offset 360-432px — partially visible
+  → itemBuilder(context, 6)   // item at offset 432-504px
+  → ...
+  → itemBuilder(context, 16)  // item at offset 1152-1224px — partially visible
+  (items 0-4 and 17+ are NOT built — the protocol never asks for them)
+
+Step 3 — SliverList returns SliverGeometry to Viewport:
+  {
+    scrollExtent: 50000,    // total height of all items (even unbuilt ones)
+    paintExtent: 800,       // how much was actually painted this frame
+    hasVisualOverflow: false,
+  }
+
+Viewport clips, offsets each item, produces a Layer Tree → GPU → display
+```
+
+**The key insight:** `ListView.builder` doesn't build 10,000 items and discard the invisible ones. The Sliver Protocol **never asks for off-screen items at all**. Items 0-4 don't exist as Dart objects. They have never been built. This is why `ListView.builder` uses the same ~12 widgets in memory whether your list has 20 items or 20,000,000.
+
+### Why `itemExtent` Is a Superpower
+
+Without `itemExtent`, the sliver must build each item just to measure its height before it knows where the next item starts. This means items near the top of a scrolled-far list get built purely for measurement, then discarded.
+
+With `itemExtent: 72.0`, the sliver calculates any item's offset with pure arithmetic: `index × 72.0`. No items are built for measurement purposes. Jumping to item 500,000 = computing offset `500000 × 72.0 = 36,000,000px` instantly.
+
+```dart
+ListView.builder(
+  itemCount: 1000000,
+  itemExtent: 72.0,          // tells sliver: every item is exactly 72px tall
+  itemBuilder: (ctx, i) => ItemTile(items[i]),
+)
+// Scroll to the very end: arithmetic, no builds, O(1)
+// Without itemExtent: the sliver must have built every preceding item at least once
+```
+
+### What Momentum (Fling) Scrolling Is
+
+When you lift your finger, Flutter measures finger velocity (pixels/second) and hands it to a `ScrollPhysics` simulator. These are mathematical models of physical systems implemented entirely in Dart:
+
+```
+BouncingScrollPhysics (iOS-style):
+  drag coefficient: 0.135
+  elastic boundary: allows ~60px overshoot, spring force pulls back
+  
+ClampingScrollPhysics (Android-style):
+  deceleration: ~0.025 pixels/millisecond²
+  hard stop at boundaries (no overshoot)
+```
+
+`SchedulerBinding` calls `simulateScrollDecay()` every VSYNC frame with a decreasing velocity. Each result becomes the new `scrollOffset`. The Sliver Protocol runs again with the new offset. The display shows each frame. The physics math runs entirely in Dart — the display hardware never touches it.
+
+**What this means for your code:**
+
+```dart
+// O(n) memory — all widgets created before first frame — AVOID for dynamic lists
+ListView(children: items.map((i) => ItemTile(i)).toList())
+
+// O(1) memory — sliver protocol never asks for off-screen items
+ListView.builder(itemCount: items.length, itemBuilder: (ctx, i) => ItemTile(items[i]))
+
+// O(1) memory + O(1) scroll-position computation — fastest possible
+ListView.builder(
+  itemCount: items.length,
+  itemExtent: 72.0,   // ← arithmetic replaces measurement builds
+  itemBuilder: (ctx, i) => ItemTile(items[i]),
+)
+```
+
+---
+
 ## Week 7 Verify
 
 1. What is the key difference between `ListView` and `ListView.builder`? When should you never use `ListView(children: [])`?

@@ -441,3 +441,18 @@ Subqueries were present from SEQUEL's beginning but early implementations were l
 
 **Modern practice anchor:**
 Today, every SQL interview expects you to write CTEs (WITH clause) for multi-step queries and recursive CTEs for hierarchy problems — the WITH syntax and recursive evaluation model date directly to SQL:1999, and companies like Snowflake and BigQuery rely on recursive CTEs to flatten deeply nested JSON and traverse hierarchical data in production pipelines.
+
+
+---
+
+## Reality Check
+
+**"CTEs are always materialised (run once)"** → In PostgreSQL before version 12, CTEs were always materialised (optimisation fence). From PostgreSQL 12+, the planner can inline CTEs if they are referenced exactly once and have no side effects. MySQL and SQL Server have always inlined non-recursive CTEs. Assuming CTE materialisation for performance reasons is version-dependent. Use `MATERIALIZED` or `NOT MATERIALIZED` keywords explicitly in PostgreSQL 12+ if you need to control this.
+
+**"A subquery in the WHERE clause runs once"** → A *correlated subquery* runs once per row of the outer query — O(n) subquery executions. `WHERE salary > (SELECT AVG(salary) FROM employees)` is a *non-correlated* subquery — runs once. `WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e2.dept = e1.dept)` is correlated — runs once per row. Correlated subqueries in large tables are a common performance killer.
+
+**"EXISTS is the same as IN for checking membership"** → Semantically similar but differ on NULLs and performance. `WHERE id IN (SELECT id FROM ...)`: if the subquery returns ANY NULL, `NOT IN` returns false for all rows (because `x NOT IN (1, NULL)` = `x <> 1 AND x <> NULL` = NULL for all x). `NOT EXISTS` does not have this NULL trap. For large subquery results, `EXISTS` short-circuits at the first match; `IN` builds the full result set first.
+
+**"Recursive CTEs are only for hierarchical data"** → Recursive CTEs solve: tree/graph traversal (org charts, file systems, category trees), number series generation, path finding, transitive closure. The syntax requires a base case (anchor) and a recursive step. PostgreSQL, SQL Server, MySQL 8.0+, and SQLite support recursive CTEs. They are the SQL equivalent of recursion in programming languages.
+
+**"CTEs make queries more readable but have no other benefit"** → Beyond readability: CTEs can be used to name intermediate results that are referenced multiple times (avoiding repetition). Recursive CTEs enable queries impossible with standard SELECT. In some databases, materialised CTEs provide optimisation fences — preventing the planner from "seeing through" the CTE, which can be useful when you know a better plan than the optimizer would choose.

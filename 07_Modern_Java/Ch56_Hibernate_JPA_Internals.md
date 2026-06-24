@@ -1102,3 +1102,18 @@ public class Department {
 **Debug/Fix:** Cap method derivation to simple lookups (e.g., `findByEmail(String email)`). For complex conditions, use the `@Query` annotation with a clean, readable method name: `@Query("SELECT u FROM User u WHERE u.status = :status AND u.department.name = :deptName AND...") List<User> findTargetUsers(...)`. This decouples the method signature from the entity field names and centralizes the SQL logic for easier tuning.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Hibernate generates efficient SQL"** → Hibernate generates correct SQL; efficient is another matter. The N+1 problem (load 100 orders, then Hibernate fires 100 additional queries for related customers) is Hibernate's most common performance problem. Fix: `JOIN FETCH` in JPQL, `@EntityGraph`, or `FetchType.EAGER` with care. Always log Hibernate SQL in development (`spring.jpa.show-sql=true`, `format_sql=true`). Production slow queries almost always turn out to be Hibernate-generated queries you didn't know were running.
+
+**"@OneToMany with CascadeType.ALL is safe"** → `CascadeType.ALL` includes `REMOVE`. If you have `@OneToMany(cascade = CascadeType.ALL)` on a parent, deleting the parent cascades deletes to all children — often correct. But `MERGE` cascade means merging the parent also merges all children from the detached graph, which can unintentionally persist or update children you didn't intend to touch. Each CascadeType has semantics — explicitly list only the ones you need: `{PERSIST, MERGE}` if you don't want cascade delete.
+
+**"FetchType.EAGER loads data immediately — it's always ready"** → `EAGER` does load immediately, but HOW depends on the relationship type. `@ManyToOne(fetch = EAGER)` typically generates a JOIN. `@OneToMany(fetch = EAGER)` can cause N+1 even with EAGER — Hibernate may issue a separate SELECT per parent for the collection. EAGER is dangerous on collections: if you load 1,000 parent entities, Hibernate may load all their EAGER children too — a massive unexpected query. The default (`LAZY`) is usually better; fetch eagerly only when needed via explicit join fetch.
+
+**"The persistence context (EntityManager) is always active in @Service methods"** → By default in Spring, the EntityManager's scope is the transaction. Outside a `@Transactional` method, the EntityManager is closed. Accessing a LAZY-loaded association after the EntityManager closes throws `LazyInitializationException`. The "Open Session In View" antipattern keeps the session open for the whole HTTP request — it avoids this exception but hides the problem and causes unexpected queries during view rendering. Fix properly: eager-load what you need within the transaction, or use DTOs.
+
+**"merge() updates the entity in place"** → `entityManager.merge(detachedEntity)` does NOT update the passed object — it returns a NEW managed entity that is the updated version. The original detached object is unchanged and still detached. `Employee updated = em.merge(detachedEmployee); // use 'updated', not 'detachedEmployee'`. This is one of the most common JPA bugs: calling `merge()` and continuing to use the original detached object which reflects none of the merge's effects.

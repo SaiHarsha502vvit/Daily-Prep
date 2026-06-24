@@ -1647,6 +1647,28 @@ With provisional auth:
 
 ---
 
+### The Backstory — Why WorkManager Exists (The Android Battery Wars)
+
+Understanding WorkManager requires understanding the mess it replaced.
+
+**2008–2014: The Wild West.** Android's first years had no guidelines for background work. Developers used `AlarmManager` to schedule repeating tasks — fire an alarm every 15 minutes, wake the CPU, check for new messages, go back to sleep. `WakeLock` kept the CPU alive during the work. If you forgot to release the `WakeLock`, the CPU stayed on forever and the battery died overnight.
+
+**Project Volta (Android 5.0 Lollipop, 2014):** Google measured battery usage across millions of Android devices and found a pattern: dozens of apps all waking the CPU independently, each for 30 seconds, staggered throughout the night. Each app thought it was being efficient, but the aggregate effect was that the CPU never had a sustained sleep period. Battery life was terrible.
+
+Google's solution: `JobScheduler`. Instead of each app setting its own alarm, apps *register jobs with the OS*. The OS batches jobs that have similar constraints (need network, battery not low, etc.) and runs them together, giving the CPU a long sleep period between batches. Better for battery. But `JobScheduler` was Android 5.0+ only and required adapting your code to a new API.
+
+**Doze Mode (Android 6.0 Marshmallow, 2015):** Google went further. If your phone is stationary and screen-off for 30+ minutes, it enters Doze mode: all background jobs, alarms, and network access are blocked, except during "maintenance windows" that grow longer over time. `AlarmManager.setExact()` no longer fires in Doze. The only escape: Firebase Cloud Messaging (push notifications can still wake the device).
+
+This broke many apps that relied on exact alarms. Developers were angry. Google's position: battery life > developer convenience.
+
+**Firebase JobDispatcher, GcmNetworkManager...** (2015–2018): Google released several intermediate APIs to handle this new reality. Each had a different API, different compatibility requirements, and different failure modes. The ecosystem was fragmented.
+
+**WorkManager (2018):** Google's unified solution — one API that works across all Android versions, handles Doze mode automatically, persists jobs across reboots, retries failed jobs with configurable backoff, and supports constraints. Under the hood, WorkManager picks the best available backend (`JobScheduler` on modern Android, `AlarmManager` on old devices), hiding the complexity from you.
+
+This is a 10-year arc from "anything goes" to "the OS controls everything." WorkManager represents Google's final answer to background processing on Android — the product of a decade of iterations, user complaints about battery drain, and developer complaints about broken APIs.
+
+---
+
 ### Migration Strategy — Replacing AsyncTask / JobIntentService / IntentService
 
 If you're consulting on a legacy Flutter project that wraps an old Android codebase, you'll see deprecated background APIs. Here's the migration table:

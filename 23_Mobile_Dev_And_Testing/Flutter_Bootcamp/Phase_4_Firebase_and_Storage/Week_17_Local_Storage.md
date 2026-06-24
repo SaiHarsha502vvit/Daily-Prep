@@ -806,6 +806,167 @@ Add offline support to the Notes App from Week 15:
 
 ---
 
+## The Invisible Machinery — What SQLite Actually Is and How the App Sandbox Works
+
+When you call `await db.insert('notes', note.toMap())`, you are invoking one of the most battle-tested pieces of software ever written — and it runs entirely inside your app's process, reading and writing a single file on the device's flash storage.
+
+### SQLite Has No Server
+
+Every other database you've heard of — PostgreSQL, MySQL, MongoDB, Firebase Firestore — runs as a separate server process. Your app connects to it over a TCP socket (even "localhost" is a socket). SQLite is completely different: it is a **C library linked directly into your app binary**. There is no server. No port. No connection string. Just a file.
+
+```
+Your Flutter app process
+    ↓ Dart calls sqflite (pub.dev package)
+    ↓ sqflite bridges to SQLite's C library via dart:ffi
+SQLite C library reads/writes one file directly:
+    Android: /data/data/com.yourapp/databases/app.db
+    iOS:     /var/mobile/Containers/Data/Application/[UUID]/Documents/app.db
+```
+
+The entire SQLite engine — SQL parser, query optimizer, B-tree implementation, WAL — is ~700KB of C code that has been in continuous production use since 2000. It's on every iPhone, every Android phone, every macOS, every Windows installation. It powers the iOS Contacts database, the Chrome history file, the macOS Messages archive.
+
+### The File Format: A B-Tree on Disk
+
+The `.db` file is a structured binary file divided into fixed-size **pages** (4096 bytes by default). Each page holds part of a **B-tree** — a sorted tree data structure where every node can have many children.
+
+```
+B-tree lookup for: SELECT * FROM notes WHERE id = 'abc123'
+
+Root page: "ids starting with 'a'-'m' go left, 'n'-'z' go right"
+     ↓ follow left branch
+Interior page: "ids 'a'-'f' go left, 'g'-'m' go right"
+     ↓ follow left branch
+Leaf page: actual row data — id='abc123', title='...'
+Found in 3 page reads.
+
+A table with 1,000,000 rows: at most ~20 page reads.
+B-tree lookup = O(log n). Not O(n). Not O(n²).
+```
+
+This is why SQLite handles millions of rows efficiently. Hive, which loads entire boxes into a Dart `Map`, cannot scale like this — it's O(n) memory and startup time.
+
+### WAL Mode: Why Reads Never Block Writes
+
+SQLite has two write modes:
+
+**Default (DELETE) mode — problematic for mobile:**
+```
+Write transaction starts → locks the ENTIRE .db file
+                        → all reads must wait for the lock to release
+Write finishes → file unlocked → readers can proceed
+Crash mid-write → SQLite replays a journal file on next open to roll back
+```
+
+**WAL mode (Write-Ahead Log) — use this for mobile:**
+```
+Write transaction → writes new page versions to app.db-wal (a separate file)
+                 → does NOT touch app.db at all
+                 → readers continue reading app.db (their snapshot) — UNBLOCKED
+Write commits    → WAL entry is finalized
+Checkpoint       → WAL is periodically merged back into app.db (in background)
+```
+
+```dart
+// Always enable WAL mode when opening the database:
+final db = await openDatabase('app.db', version: 1, onOpen: (db) async {
+  await db.execute('PRAGMA journal_mode=WAL');
+  await db.execute('PRAGMA synchronous=NORMAL');   // faster than FULL, still crash-safe
+});
+
+// Without WAL: UI thread reads stutter whenever a background isolate writes
+// With WAL: reads and writes happen concurrently → smooth UI during syncs
+```
+
+### ACID: What Actually Happens When Your App Crashes Mid-Write
+
+ACID is a set of guarantees SQLite makes about your data:
+
+```
+Atomicity:   You start a transaction and insert 5 notes. App crashes after 3.
+             WAL has a partial transaction with no COMMIT record.
+             On next open, SQLite ignores it — all 5 are rolled back.
+             Your database never shows partial state.
+
+Consistency: Your schema says title NOT NULL. You pass null.
+             SQLite rejects the insert before writing a single byte.
+             The database stays consistent with your schema.
+
+Isolation:   Your UI thread reads while a background isolate writes.
+             The UI thread sees the database exactly as it was when its read started —
+             no half-written data bleeds through.
+
+Durability:  After db.insert() returns, the data is durable.
+             SQLite called fsync() — a system call telling the OS kernel:
+             "flush your in-memory write buffers to the actual storage hardware NOW."
+             Even if power is cut immediately after, the data survives.
+```
+
+**fsync** is why database writes feel slower than writing to an in-memory Dart `Map`. The OS normally buffers writes in RAM for performance (writing to RAM is nanoseconds, writing to flash is microseconds to milliseconds). `fsync()` waits for the flash hardware to confirm the write. Without it, a "committed" database row could silently disappear on power loss.
+
+### How Hive Works — A Binary Append Log, Not a Database
+
+Hive takes a completely different architectural approach:
+
+```
+box.put('key1', note):
+  1. serialize NoteHiveModel → binary bytes (using the generated TypeAdapter)
+  2. append binary blob to end of notes.hive file (a log, not a B-tree)
+  3. update in-memory Map: _cache['key1'] = note
+
+box.get('key1'):
+  1. return _cache['key1'] from the Dart Map — zero disk I/O
+  (The entire box is loaded into memory when you call Hive.openBox())
+
+box.delete('key1'):
+  1. write a tombstone/deletion marker to notes.hive
+  2. remove from _cache Map
+
+box.compact():
+  1. rewrite notes.hive from scratch, skipping tombstoned entries
+  (like a full garbage collection pass over the log file)
+```
+
+This architecture explains every Hive behavior:
+- **Reads are fastest** — return from a Dart Map, no disk
+- **No queries** — a `Map<dynamic, dynamic>` has no `WHERE`, no `ORDER BY`, no `JOIN`
+- **Breaks on large datasets** — opening a box with 100,000 objects = 100,000 Dart objects in RAM simultaneously
+- **Compact manually** — deleted entries still occupy disk until you call `compact()`
+
+### The App Sandbox: Why the Kernel Blocks Other Apps From Your Database
+
+On Linux (Android's kernel), every running process has a **user ID (UID)**. File permissions are enforced by the kernel based on UIDs — not by Android, not by Flutter, but by Linux itself.
+
+```
+At app install time, Android assigns each app a unique UID:
+  com.yourapp      → uid = 10157   (stable for the app's lifetime)
+  com.bankapp      → uid = 10158
+  com.malwareapp   → uid = 10202
+
+Your app's data directory is created with:
+  /data/data/com.yourapp/                   owner: uid=10157, mode: 700
+  /data/data/com.yourapp/databases/app.db   owner: uid=10157, mode: 600
+
+  mode 700 = owner: read+write+execute, group: nothing, others: nothing
+  mode 600 = owner: read+write,          group: nothing, others: nothing
+
+com.malwareapp (uid=10202) attempts to open /data/data/com.yourapp/databases/app.db:
+  → Linux kernel checks: requesting uid=10202 ≠ file owner uid=10157
+  → mode 600 gives "others" zero permissions
+  → kernel returns EACCES (Permission Denied) immediately
+  → the malware app never reads a single byte — blocked at the kernel level
+```
+
+This is a **Linux kernel primitive from the 1970s** — not an Android feature, not a Flutter feature. The same mechanism protects your database on every Android phone. iOS uses Mach ports with entitlement checks for the same result.
+
+**What breaks the sandbox:**
+- **Root access (uid=0)** bypasses all permission checks — why rooted devices can steal app data
+- **Android Content Provider / FileProvider** — an intentional opt-in mechanism if you want to share specific files between apps
+- **Android Backup** — `allowBackup="true"` in `AndroidManifest.xml` (the default!) means Google can back up your SQLite database to Google Drive. Set `allowBackup="false"` for apps storing sensitive user data.
+
+**`flutter_secure_storage` goes further:** it uses the **Android Keystore** (keys in hardware-backed trusted execution environment) or **iOS Keychain** (hardware-backed on Apple Silicon). Even with root access on Android, a key stored in the Keystore cannot be extracted in plaintext — the TEE hardware physically prevents it.
+
+---
+
 ## Week 17 Verify
 
 1. List the three local storage solutions and their appropriate use case.

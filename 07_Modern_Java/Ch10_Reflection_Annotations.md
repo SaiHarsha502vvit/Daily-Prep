@@ -1034,3 +1034,18 @@ You use it indirectly every time you write `@Autowired`, `@Entity`, or `@Test`.
 Understanding reflection = understanding HOW frameworks work.
 
 **Navigation**: [< Java Networking & NIO](Ch13_Networking_NIO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Events & Listeners >](Ch11_Events_Listeners.md)
+
+
+---
+
+## Reality Check
+
+**"Reflection is slow — never use it"** → Reflection IS slower than direct calls (it bypasses JIT optimizations, involves security checks, and has overhead). But this matters only in hot paths. Spring, Hibernate, Jackson, and JUnit are all reflection-heavy and are production-grade. `Method.invoke()` on a cold class is slow; on a pre-cached `Method` object in a warm JVM it's ~5-10x slower than direct call — not catastrophic for one-per-request use. Profile before condemning.
+
+**"Annotations are just comments for the compiler"** → Annotations can be processed at three stages: compile time (annotation processors generate code — Lombok, MapStruct, Dagger all work this way — no reflection at runtime), class-loading time (read from bytecode without running the app), or runtime (read via reflection — Spring `@Autowired`, JUnit `@Test`). Different retention policies: `SOURCE` (javac only), `CLASS` (in bytecode, not visible at runtime), `RUNTIME` (visible via reflection). Most framework annotations are `RUNTIME`.
+
+**"setAccessible(true) breaks encapsulation permanently"** → `setAccessible(true)` bypasses access checks for that specific `Field`/`Method` object — it doesn't modify the class. The private field is still private to normal Java code. `setAccessible(true)` requires permission — in Java 9+ modules, accessing private members of other modules requires the module to `opens` the package. This is why some libraries require `--add-opens` JVM flags. This is module encapsulation enforced by the JVM, not just the compiler.
+
+**"Annotation processors run at runtime"** → Annotation processors run at **compile time**, in a separate round(s) of compilation. They can generate new source files, which are then compiled in subsequent rounds. This is why Lombok doesn't need to be on your runtime classpath — it only runs during `javac`. Contrast with runtime reflection-based processing: Spring reads `@Component` at startup via runtime reflection, not compile-time processing.
+
+**"Dynamic proxies require a concrete class"** → `java.lang.reflect.Proxy` only creates proxies for **interfaces**. To proxy concrete classes you need a bytecode manipulation library (cglib, Byte Buddy — which Spring Boot uses). This is why `@Transactional` must be on a class that implements an interface (JDK proxy) or use Spring's cglib-based subclass proxy. Methods that are `final` cannot be proxied by cglib — Spring's `@Transactional` on a `final` method is silently ignored.

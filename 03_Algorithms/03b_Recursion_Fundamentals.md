@@ -1277,3 +1277,18 @@ void backtrack(int[] nums, int start, List<Integer> cur, List<List<Integer>> res
 ---
 
 **Navigation**: [< Previous](03a_Recursion_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03c_Recursion_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"Memoizing a recursive function always makes it faster"** → Memoization helps when subproblems repeat (overlapping subproblems). If subproblems do NOT repeat (like plain binary search: each call is on a unique interval), memoization adds hash table overhead with zero benefit. Apply memoization only when you see the same arguments recurring in the recursion tree.
+
+**"The base case just needs to be 'when n == 0 return'"** → Missing base cases or wrong base cases are the most common recursion bugs. For a function on trees, base cases needed: null node, leaf node, single-node subtree. For divide-and-conquer on arrays: empty array AND single-element array. Think: what are all the smallest inputs where the recursive breakdown doesn't apply?
+
+**"Recursion depth = number of elements in input"** → Only for linear recursion (like traversing a list). For balanced binary recursion (merge sort), depth = log n. For poorly written recursion (exponential recursion without memoization), depth can still be O(n) but total calls is O(2^n). The *depth* (stack frames alive simultaneously) determines stack usage; the *total calls* determines time.
+
+**"I can always convert recursion to a loop using a for/while"** → Simple tail recursion: yes, trivially. General recursion (with work after the recursive call): requires an explicit stack to simulate. Tree traversal, DFS, expression evaluation — these convert to loops by maintaining an explicit `Stack<>`. It is not always simpler than the recursive version.
+
+**"Fibonacci memoized is O(n) time"** → Yes — but O(n) *space* too (memo table). You can compute Fibonacci in O(1) space iteratively by keeping only the last two values. Even better: closed-form Binet's formula (O(1) time, though floating-point precision limits it). For CS problems, memoized Fibonacci teaches the pattern; for production, use the iterative approach.

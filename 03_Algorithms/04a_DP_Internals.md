@@ -786,3 +786,18 @@ Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1
 **4. HashMap with array keys** -- using `dp[int[]]` or `Map<int[], V>` in Java compares by reference, not content. Two `new int[]{1,2}` keys never collide. Fix: encode as `String.valueOf(arr)`, use `Arrays.toString()`, or encode as a long if dimensions allow (e.g., i*1000+j for 0<=i,j<1000).
 
 **5. Off-by-one in string indices** -- LCS/Edit Distance tables are (n+1)x(m+1). dp[i][j] represents prefixes A[0..i-1] and B[0..j-1]. A common mistake: `dp[i][j] = dp[i-1][j-1]` when `A[i] == B[j]` (off by one -- should be `A[i-1]` and `B[j-1]`). Produces wrong answers that only show up for certain string pairs.
+
+
+---
+
+## Reality Check
+
+**"Top-down memoization and bottom-up tabulation always have the same time complexity"** → Both have the same asymptotic complexity in most cases. Differences: top-down only computes states that are actually needed (useful when many states are unreachable); bottom-up fills the entire table including states never needed. Bottom-up is cache-friendlier (sequential memory access). Top-down uses the call stack (risk of stack overflow for deep recursion). Bottom-up enables space optimisation — if dp[i] depends only on dp[i-1], you can use two variables instead of an array.
+
+**"The hardest part of DP is figuring out the transitions"** → The hardest part is **defining the state** correctly. The transition (the recurrence) follows naturally from the state definition. If your transitions require passing context that isn't in the state, the state definition is incomplete. Common mistake: defining state as `dp[i]` = something about just the first i elements, but then discovering you need to know something about the current element — the state needs that information. Redefine: `dp[i][last_state]` or similar.
+
+**"Knapsack and LCS are different problem families"** → Both are 2D DP problems with similar structural patterns. Knapsack: `dp[i][w]` = max value using items 1..i with weight limit w. LCS: `dp[i][j]` = LCS length of first i chars of s1, first j chars of s2. The transition logic differs, but the state-space setup (2D grid, fill row by row) and space optimization (use two rows) are identical. Recognising structural similarity lets you apply techniques from one family to the other.
+
+**"DP is inherently sequential — it can't be parallelised"** → Standard DP has dependencies (dp[i] depends on dp[i-1]). But many DP problems can be parallelised: matrix-chain multiplication has no inter-row dependencies within the same diagonal — you can fill an entire anti-diagonal in parallel. LCS can be computed one anti-diagonal at a time. Parallel DP is used in bioinformatics (Smith-Waterman on GPUs). The dependency graph, not "it's DP," determines parallelisability.
+
+**"Space-optimised DP (two rows instead of full table) always works"** → Only when dp[i][j] depends solely on the previous row (dp[i-1][...]) and possibly the current row to its left (dp[i][j-1]). It breaks when the recurrence needs values from two rows ago, or multiple diagonals. For LCS: safe (each cell depends only on the cell above, left, and upper-left). For edit distance: safe. For all-pairs shortest path (Floyd-Warshall): needs the full table — space optimisation is not straightforward.

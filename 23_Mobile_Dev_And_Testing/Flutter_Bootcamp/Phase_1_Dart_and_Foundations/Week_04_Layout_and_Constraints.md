@@ -39,6 +39,34 @@ All of these have the same root cause: not understanding Flutter's constraint sy
 
 ## The Golden Rule of Flutter Layout
 
+### The Backstory — How Layout Systems Evolved (And Why Flutter's Is Different)
+
+To appreciate Flutter's constraint system, you need to know how broken layout systems were before it.
+
+**The CSS box model disaster (1996–2012):**
+
+When CSS was invented, it defined `width` as the width of the *content area only* — padding and borders were *added on top*. So if you wrote `width: 200px; padding: 10px; border: 2px solid`, the actual rendered width was `200 + 10 + 10 + 2 + 2 = 224px`. This broke every layout calculation.
+
+Internet Explorer, ironically, got it right: IE's `width` included padding and border. Developers preferred this but IE was considered "broken" because it didn't follow the spec.
+
+Eventually CSS introduced `box-sizing: border-box` to make `width` include padding and border. But it wasn't widely adopted until 2012 when web developer Paul Irish published a blog post advocating `* { box-sizing: border-box }`. Suddenly the entire web started using it. A 16-year design mistake fixed with a global CSS override.
+
+**React Native's approach (2015):** Facebook shipped React Native with Yoga, their custom flexbox layout engine. Everything uses flexbox. This was actually a significant improvement — flexbox is well-specified and predictable. But Yoga still used CSS's multi-pass layout model: the browser can lay out elements in multiple passes (first pass to measure, second pass to position), which is why certain CSS layouts are slow.
+
+**Flutter's decision (2018): single-pass layout + explicit constraints.**
+
+Flutter's team studied every layout system before them and made an explicit choice: layout must be **O(n)** — linear time, one pass, no back-tracking. The constraint system enforces this:
+
+- Constraints only flow *downward* (parent to child). A child cannot change its parent's size.
+- A child's size is reported *upward* to its parent as a single value (not a suggestion that might get re-negotiated).
+- No element can force a layout recalculation anywhere else in the tree.
+
+This is why `ListView` inside `Column` crashes with "unbounded height" — the Column passes down "be as tall as you want" to the ListView, and ListView says "I need to know my height before I can lay out" — the constraint system detects this paradox and crashes loudly rather than silently making something wrong. That crash is a *feature*, not a bug.
+
+**Why this matters for you:** Every Flutter layout error has a mechanical cause traceable to this system. Once you internalize "constraints go down, sizes go up," you can debug any layout problem methodically instead of trying random fixes.
+
+---
+
 > 📄 **Flutter Docs (Understanding Constraints):**
 > *"Constraints go down. Sizes go up. Parent sets position."*
 

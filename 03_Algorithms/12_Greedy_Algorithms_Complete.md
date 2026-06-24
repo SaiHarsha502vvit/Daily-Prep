@@ -1918,3 +1918,18 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 ### 4. Greedy Activity Selection with Weights — Must Use DP
 **What breaks**: Weighted job scheduling ("maximize total value of non-overlapping intervals"). Greedy by earliest finish no longer works because a low-value early-finishing job might displace a high-value later job. This problem requires DP + binary search (O(n log n)).
 **Signal**: As soon as intervals carry weights and you want maximum total weight — not maximum count — greedy fails; DP is required.
+
+
+---
+
+## Reality Check
+
+**"If it optimises something, greedy works"** → Greedy only works with proof of the greedy-choice property. The classic test: can you always swap a non-greedy choice for the greedy choice without worsening the solution? If yes (exchange argument), greedy is correct. Without this proof, you are guessing — and the guess is often wrong (fractional knapsack: greedy works; 0/1 knapsack: greedy fails).
+
+**"Greedy is always faster than DP"** → Greedy is typically O(n log n) or O(n) — yes, faster than DP's O(n²) or O(n*k). But greedy is only applicable to a subset of problems. When both apply (e.g., Dijkstra vs Bellman-Ford for shortest path with non-negative weights), greedy wins on speed. When only DP applies, greedy gives wrong answers regardless of speed.
+
+**"Kruskal's and Prim's both build MSTs — they're the same algorithm"** → Both produce a minimum spanning tree but work differently. Kruskal's sorts all edges and adds them if they don't form a cycle (uses Union-Find). Prim's grows a tree from one vertex by always adding the minimum-weight edge connecting the tree to a non-tree vertex (uses a priority queue). Performance difference: Kruskal's O(E log E); Prim's with binary heap O(E log V) — Prim's better for dense graphs, Kruskal's for sparse.
+
+**"Activity selection: always pick the activity with the shortest duration"** → Wrong greedy. The correct greedy for maximum number of non-overlapping activities: always pick the activity with the **earliest finish time** (not shortest duration, not earliest start). Proof: earliest-finish-time leaves the maximum remaining time for subsequent activities. Shortest duration does NOT maximise count — a 1-hour activity at midnight doesn't help if it's followed by nothing.
+
+**"Huffman coding always produces optimal prefix codes"** → Yes — Huffman coding is provably optimal for fixed-symbol variable-length prefix-free codes. But it is NOT optimal if you allow grouping symbols into blocks first (arithmetic coding achieves closer to entropy). For practical compression, Huffman is used as one stage within larger algorithms (LZ77 + Huffman = DEFLATE used in zip/gzip/PNG).

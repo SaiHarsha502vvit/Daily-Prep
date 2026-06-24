@@ -15,6 +15,43 @@
 > 📄 **Flutter Docs:**
 > *"Dart is an approachable, portable, and productive language for high-quality apps on any platform. Dart is the programming language Flutter is written in and that you use when writing Flutter apps."*
 
+### The Backstory — How Dart Actually Came To Be
+
+In 2011, Google assigned two of its most respected engineers — **Lars Bak** (the man who built V8, Chrome's JavaScript engine, making JS fast enough that the modern web is possible) and **Kasper Lund** — to a secret project: design a language that would *replace JavaScript in the browser*.
+
+The plan was serious. Google built a fork of Chrome called **Dartium** that had a Dart VM baked in. Dart code would run natively in the browser at speeds JavaScript couldn't match. Google expected Microsoft, Mozilla, and Apple to follow and ship Dart VMs in their own browsers.
+
+They didn't. The web community rallied behind JavaScript. By 2015, Google quietly shelved the plan.
+
+**Dart 1.x (2013–2017)** was in an awkward middle phase — not dead, but without the "replace JS" mission, unclear what it was for. The type system was optional. Null was everywhere. The language drifted.
+
+Then Flutter happened.
+
+In 2017, the Flutter team was evaluating languages for their new UI framework. They tried 11+ languages. Dart won — not because it was popular (it wasn't), but for very specific technical reasons:
+
+1. **AOT compilation** — Dart compiles to native machine code ahead-of-time, like C++. This is how Flutter achieves 60/120fps. There's no interpreter overhead at runtime.
+2. **JIT compilation in development** — Dart also runs in JIT (just-in-time) mode during development, enabling hot reload. Most languages can do one or the other. Dart does both.
+3. **Same language, no bridge** — Flutter's framework code (widgets, rendering) is written in Dart. Your app code is Dart. One language, no serialization boundary. React Native was slow because JS called native APIs across a bridge — Flutter has no bridge to cross.
+4. **The team was available** — Lars Bak's team was at Google. Flutter needed a language partner that would co-evolve with the framework. "We can just walk down the hall and ask the Dart team to add a feature" is a real competitive advantage.
+
+**Dart 2.0 (2018)** was essentially a rewrite. Types became mandatory, the type system became sound, and Dart stopped pretending to be a JavaScript competitor and became a Flutter language.
+
+**Null safety (2021)** — the final major shift. After a decade of mobile apps crashing with `NullPointerException`, Dart made null safety *sound*. If the type says `String` (not `String?`), the compiler *guarantees* it cannot be null at runtime. Not "probably won't be" — cannot be. TypeScript has `strictNullChecks`, but type assertions (`as string`) can lie. Dart's null safety cannot be bypassed.
+
+The arc: failed web language → ideal Flutter language. Dart's failures shaped exactly what Flutter needed.
+
+---
+
+> **When to use `var` vs explicit types vs `final` vs `const` — the decision framework:**
+>
+> - **`var`** — when the type is obvious from the right side: `var user = User()`. Saves typing, same safety.
+> - **Explicit type** — when the type isn't obvious, or when you're declaring without initializing: `String? cachedName;`
+> - **`final`** — default for almost everything you declare inside a class or function. Set once, never reassigned. Signals immutability intent.
+> - **`const`** — only for values known at compile time (numbers, strings, empty collections). Every `const` widget skips Flutter's rebuild diff entirely — this is a performance optimization, not just a style choice.
+> - **`dynamic`** — almost never. Only when integrating with external untyped data (JSON parsing intermediary, legacy interop). Every `dynamic` reference is a null crash waiting to happen.
+
+---
+
 Dart was designed specifically with two goals Flutter needs:
 1. **Fast compilation** — both to native code (mobile/desktop) and JavaScript (web)
 2. **Sound null safety** — the compiler enforces that null errors are impossible at runtime

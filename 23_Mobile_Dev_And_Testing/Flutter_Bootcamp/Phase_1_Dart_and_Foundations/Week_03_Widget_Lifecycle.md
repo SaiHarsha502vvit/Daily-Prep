@@ -12,6 +12,30 @@
 
 ## Why Lifecycle Matters
 
+### The Backstory — How Mobile Lifecycle Was Designed
+
+Every platform has always needed lifecycle methods, but they were chaotic before modern frameworks standardized them.
+
+**iOS (2007–2013):** UIViewController had `viewDidLoad`, `viewWillAppear`, `viewDidAppear`, `viewWillDisappear`, `viewDidDisappear`, `viewDidUnload` (and more). Developers got confused about the differences between `viewWillAppear` and `viewDidAppear`, or why `viewDidUnload` existed at all (it was removed in iOS 6 when Apple changed memory management). The order wasn't always predictable.
+
+**Android (2008–2015):** Activity had `onCreate`, `onStart`, `onResume`, `onPause`, `onStop`, `onDestroy` — six states. Then Fragments added another full lifecycle that ran *inside* the Activity lifecycle and could get out of sync in ways that caused notoriously hard bugs. Android Fragment lifecycle was so confusing that it spawned blog posts, StackOverflow answers with 2000+ upvotes, and eventually an entirely new ViewModel system (2017) to avoid needing to know it.
+
+**React (2013):** When Facebook released React for the web, they made a deliberate choice: simplify. Three lifecycle phases — mounting, updating, unmounting. The method names (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`) were designed to be self-documenting. You could read the name and know exactly when it fired.
+
+**Flutter (2018) drew heavily from React's model.** You can see the direct influence:
+- React's `componentDidMount` → Flutter's `initState()`
+- React's `componentWillUnmount` → Flutter's `dispose()`
+- React's `render()` → Flutter's `build()`
+- React's `componentDidUpdate` → Flutter's `didUpdateWidget()`
+
+But Flutter added one method React doesn't have: `deactivate()` — because Flutter can temporarily remove a widget from the tree and re-insert it (React always destroys and recreates). This maps to Flutter's architecture where the Element tree persists while Widgets are recreated.
+
+**React Hooks (2019)** took this further — instead of lifecycle class methods, hooks like `useEffect` and `useState` let you colocate lifecycle logic with the code that needs it. Flutter's StatefulWidget predates hooks, so it still uses the class method pattern — but if you've used hooks, the concepts translate directly.
+
+The key design insight both React and Flutter share: **separate "what to show" from "when to do things."** `build()` is pure — it describes the UI given current state. The lifecycle methods are side-effect hooks — they fire when something structurally changes.
+
+---
+
 `StatelessWidget` has one method: `build()`. That's its entire lifecycle — called when the parent gives it new data, done.
 
 `StatefulWidget` has **seven lifecycle methods**. Each one fires at a specific moment in the widget's life. If you put code in the wrong method, you get bugs that are extremely hard to debug — memory leaks, crashes on navigation, UI that doesn't update when it should, double-initialization.

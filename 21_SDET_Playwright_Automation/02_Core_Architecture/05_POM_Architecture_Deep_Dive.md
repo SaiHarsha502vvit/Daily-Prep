@@ -975,3 +975,18 @@ await expect(citationPage.successBanner).toContainText('Citation submitted succe
 ---
 
 **Navigation**: [← Previous: JS/TS For Automation](../01_Foundations/04_JS_TS_For_Automation.md) | [Index](../../00_MASTER_INDEX.md) | [Next: Custom Fixtures →](./06_Custom_Fixtures_Architecture.md)
+
+
+---
+
+## Reality Check
+
+**"Page Object Model means one class per URL"** → POM maps to *logical components*, not necessarily pages. A complex page might have Header, Sidebar, DataGrid, and Modal as separate page objects. A wizard spanning 5 URLs might be one page object representing the workflow. Organise by user-facing functionality, not URL structure.
+
+**"Page objects should have assertions inside them"** → There are two schools of thought. Classic POM: page objects are *actions only* (no assertions — the test file asserts). Screen Object / Screenplay pattern: components include expect calls. The argument against assertions in page objects: they make page objects opinionated about what the test verifies, reducing reusability. The argument for: encapsulating complex assertion logic. Dominant convention in enterprise Playwright projects: keep assertions in test files, page objects in actions.
+
+**"Reusing a page object instance across tests saves initialisation time"** → Sharing page object instances across tests shares browser context state — cookies, localStorage, page URL. If Test A leaves the page in a certain state and Test B reuses the same page object (same page instance), Test B inherits that state. Always create fresh page objects per test (or at most per test file with a beforeEach setup). The initialisation cost is negligible compared to test isolation benefits.
+
+**"A large page object with 50 methods is fine — it's still one class per page"** → A page object with 50+ methods is a God Object anti-pattern. Symptoms: no clear single responsibility, test methods scroll for minutes, adding one feature touches the same class as unrelated features. Split by widget/section: `UserFormSection`, `UserTableSection`, `UserFiltersSection` as separate classes, composed inside `UsersPage`. Each focused section is more readable and maintainable.
+
+**"Fixtures and page objects serve the same purpose"** → Fixtures (Playwright's `test.extend()`) handle *test infrastructure*: setting up database state, creating authenticated sessions, providing configuration. Page objects handle *UI interactions*: navigating to pages, filling forms, clicking buttons, reading displayed data. Fixtures create and inject page objects into tests. They complement each other — fixtures are the "before each" layer; page objects are the "how to interact" layer.

@@ -1570,3 +1570,18 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 | Negative weights, no negative cycles | Bellman-Ford | O(VE) |
 | All-pairs, small V | Floyd-Warshall | O(V³) |
 | DAG (any weights) | Topo-order relaxation | O(V+E) |
+
+
+---
+
+## Reality Check
+
+**"Dijkstra's works on any weighted graph"** → Dijkstra's algorithm requires **non-negative edge weights**. With negative edges, the greedy expansion (always expand cheapest unvisited) breaks: expanding a node finalises its shortest path, but a later negative edge could provide a shorter path. Use Bellman-Ford for graphs with negative edges (O(VE)). Use SPFA (Shortest Path Faster Algorithm) as a practical optimisation. For negative cycles: Bellman-Ford detects them; Dijkstra's has undefined behaviour.
+
+**"A* is just Dijkstra's with a heuristic — the heuristic doesn't matter"** → The heuristic must be *admissible* (never overestimates the true distance) for A* to find the optimal path. With an inadmissible heuristic, A* may find suboptimal paths. The *consistency* property (heuristic satisfies triangle inequality) is stronger and guarantees monotone decrease in f-values. Euclidean distance is a perfect heuristic for 2D grid pathfinding; Manhattan distance for 4-direction grids.
+
+**"Prim's algorithm only works on dense graphs"** → Prim's with a binary heap: O(E log V) — good for sparse graphs. Prim's with a Fibonacci heap: O(E + V log V) — asymptotically optimal. Prim's with an adjacency matrix and linear scan: O(V²) — good for dense graphs (E ≈ V²). The algorithm works on any connected undirected weighted graph; the data structure choice optimises for graph density.
+
+**"Bellman-Ford is always slow — just use Dijkstra's"** → Bellman-Ford is O(VE) vs Dijkstra's O(E log V). For graphs without negative edges, Dijkstra's wins. But Bellman-Ford solves problems Dijkstra's cannot: negative edges, negative cycle detection, distributed shortest-path computation (each node independently runs a version of Bellman-Ford — this IS how BGP routing protocol works on the internet).
+
+**"Strongly Connected Components are only relevant for theoretical CS"** → SCCs solve: condensation graph computation (all nodes in an SCC are equivalent, collapse to one), finding circular dependencies in build systems and package managers, network vulnerability analysis (nodes in the same SCC can reach each other — removing one node can disconnect the whole SCC), web page ranking (SCC structure of the web link graph). Tarjan's and Kosaraju's algorithms find all SCCs in O(V + E).

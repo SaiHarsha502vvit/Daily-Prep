@@ -12,6 +12,26 @@
 
 ## Why Riverpod Over Provider?
 
+### The Backstory — Why The Provider Author Rewrote Their Own Package
+
+In 2019, Remi Rousselet released `provider`. Google endorsed it at Google I/O. The Flutter team made it the recommended state management solution. It had 5,000+ pub.dev likes within a year.
+
+Then Remi started getting reports of bugs that were architecturally impossible to fix without breaking everyone's code:
+
+**Problem 1: ProviderNotFoundException crashes.** If you call `context.watch<CartModel>()` but no CartModel provider is above the current widget in the tree, you get a runtime crash — not a compile-time error. The `context` lookup happens at runtime, so the compiler can't catch it. In large apps with hundreds of providers, this was a real source of production bugs.
+
+**Problem 2: BuildContext dependency.** Provider is fundamentally tied to `BuildContext`. You can't read a provider from a repository class, a background isolate, a service, or anywhere outside a widget's `build()` method. State management that can only work inside widgets is genuinely limiting for Clean Architecture.
+
+**Problem 3: Type-unsafe access.** `context.watch<CartModel>()` passes the type as a generic parameter. If you rename `CartModel` to `CartNotifier` but forget to update one call site, the compiler doesn't catch it until runtime.
+
+Remi's conclusion: these weren't bugs — they were architectural decisions baked into how `InheritedWidget` works. Fixing them properly would require breaking everyone's existing Provider code. 
+
+So in 2020 he started over. He released Riverpod as a completely separate package — "Provider" with the letters rearranged, signaling continuity of intent but a clean break from the old implementation. Riverpod stores providers in a global `ProviderContainer` instead of the widget tree, eliminating the `BuildContext` dependency entirely.
+
+**Why "Riverpod" instead of "Provider 2.0"?** Because Remi explicitly did NOT want to force existing Provider users to migrate. A new name signals a new tool, not a mandatory upgrade. Provider still works. Riverpod is the better choice for new projects.
+
+---
+
 > 📄 **Flutter Docs (riverpod.dev):**
 > *"Riverpod is a reactive caching and data-binding framework that is immune to the widget tree. Unlike Provider, Riverpod allows you to declare providers outside of widgets, making them accessible globally, testable, and composable without BuildContext."*
 

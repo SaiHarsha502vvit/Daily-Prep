@@ -1063,3 +1063,18 @@ private int partition(int[] arr, int low, int high) {
 ### 4. Parallel Arrays Sort Desync
 **What breaks**: Sorting `names[]` and `scores[]` as two separate arrays — after `Arrays.sort(scores)`, the name-score correspondence is destroyed.
 **Fix**: Sort an array of pairs/objects; or sort an index array and apply the permutation.
+
+
+---
+
+## Reality Check
+
+**"Java's Arrays.sort() uses Quicksort"** → For *primitive* arrays (`int[]`, `long[]`, `double[]`): Java uses a **dual-pivot Quicksort** (Vladimir Yaroslavskiy's variant, faster than classic Quicksort in practice). For *object* arrays (`Integer[]`, `String[]`, custom objects): Java uses **Timsort** (hybrid merge sort + insertion sort). They are fundamentally different algorithms with different stability guarantees.
+
+**"Quicksort worst case doesn't happen in practice"** → Naive Quicksort with first-element pivot runs O(n²) on sorted or reverse-sorted input — extremely common in real data. Java's dual-pivot Quicksort uses randomisation and fallback strategies to avoid this. If you implement Quicksort from scratch, always use median-of-three or random pivot.
+
+**"Stable sort means the algorithm is correct; unstable means it has bugs"** → Stability means equal elements maintain their original relative order. This is a *semantic property*, not a correctness bug. Unstable sorts produce valid sorted output. Stability matters when you sort by multiple keys sequentially: sort by name first, then by age — if the sort is stable, ties in age preserve the name order. If unstable, ties in age are arbitrary.
+
+**"Counting sort is just a weird version of bucket sort"** → Counting sort is O(n + k) where k = value range — strictly better than comparison sorts when k = O(n). It requires integer keys and O(k) space. Bucket sort is O(n) average for uniformly distributed floats. Radix sort is O(d × n) where d = number of digits. These three are NOT comparison-based and bypass the Ω(n log n) lower bound — but each has specific applicability conditions.
+
+**"Merge sort always uses O(n) extra space"** → Standard top-down merge sort: O(n) auxiliary space for the merge buffer. Bottom-up merge sort: same. Block merge sort (√n buffer): O(√n) extra. In-place merge sort exists but is either O(n log² n) time or O(log n) extra space — usually not worth it vs the simplicity of standard merge sort with O(n) space.

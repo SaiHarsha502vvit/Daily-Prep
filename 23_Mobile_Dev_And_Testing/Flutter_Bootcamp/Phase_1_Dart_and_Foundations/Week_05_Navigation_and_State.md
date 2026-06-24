@@ -12,6 +12,47 @@
 
 ## What Is Navigation in Flutter?
 
+### The Backstory — Three Generations of Flutter Navigation
+
+Flutter's navigation system has gone through three distinct generations in seven years. Understanding *why* each generation replaced the previous one explains every design decision you'll encounter.
+
+---
+
+**Generation 1 — Navigator 1.0: The Mobile-Native Model (2018)**
+
+Flutter launched with `Navigator.push()` and `Navigator.pop()`. This was a direct port of how mobile apps had always worked:
+- iOS: `UINavigationController.push()` / `.pop()` (since 2007)
+- Android: `FragmentManager.replace()` / the back stack (since 2010)
+
+For mobile apps, this is perfect. You push screens onto a stack, the back button pops them, and state is preserved. Simple, predictable, type-safe because you pass data as constructor arguments to the next screen.
+
+**The problem that appeared:** deep links. If someone sends you a link to a specific product page (`myapp://shop/products/shoe-123`), how does the app know to show:
+- Home → Shop → Products List → Shoe 123
+
+Navigator 1.0 had no way to construct a route stack from a URL. You could *open* a screen from a URL, but the back button went to the app's empty state, not through the logical route history. This was frustrating for users.
+
+---
+
+**Generation 2 — Navigator 2.0 / Router API: The Over-Engineering (2020)**
+
+Google released Navigator 2.0 in May 2020. The idea was to make routing declarative and URL-aware — closer to how the web works with React Router.
+
+The community's reaction was almost universally negative. Chris Sells (Flutter product manager at the time) wrote the announcement blog post. Within days, developers were posting that the new API required hundreds of lines of boilerplate to do what Navigator 1.0 did in ten. The API introduced four new abstractions (`RouterDelegate`, `RouteInformationParser`, `BackButtonDispatcher`, `RouterConfiguration`) just to replace `push()`.
+
+It solved the deep linking problem but made everything else worse.
+
+---
+
+**Generation 3 — GoRouter: Community Fixes the Problem (2022)**
+
+Brett Morgan, an independent developer, built `go_router` to solve the deep-linking problem with a simple API. Google noticed the community adopting it en masse, hired Brett, and made `go_router` an officially recommended package in 2022. Flutter then absorbed it into the `flutter/packages` monorepo.
+
+`go_router` uses declarative URL-based routing with a simple API that any React Router user immediately understands. Under the hood it uses Navigator 2.0, but it hides all the complexity.
+
+**The lesson:** three generations in seven years. Mobile-first (Navigator 1.0) → web-first overcorrection (Navigator 2.0) → pragmatic hybrid (GoRouter). You'll use all three in real projects because codebases don't always migrate immediately.
+
+---
+
 > 📄 **Flutter Docs (Navigation):**
 > *"Flutter provides a complete system for navigating between screens and handling deep links. Small applications without complex deep linking can use Navigator, while apps with specific deep linking and navigation requirements should also consider using the Router to optionally integrate with the platform's navigation APIs."*
 
@@ -577,6 +618,16 @@ Future<void> _submitForm() async {
 
 > 📄 **flutter.dev/go_router:**
 > *"A declarative routing package for Flutter that uses the Router API to provide a convenient, url-based API for navigating between different screens. It supports deep links, redirects, nested routes, and typed parameters."*
+
+> **Why does this package exist?** Navigator 1.0's `push`/`pop` is simple and works perfectly for 80% of apps. But it has three problems it can never fix:
+>
+> 1. **Deep links:** If a user taps a push notification that says "You have a new message in conversation #42", Navigator 1.0 can open the chat screen — but the back button goes to a blank app state, not to the conversations list. GoRouter builds the full route stack from a URL, so back works correctly.
+>
+> 2. **Auth redirects:** In Navigator 1.0, you write auth guards in every `initState()`. If the user's session expires mid-session, catching it means checking in every screen. GoRouter's `redirect` callback runs before every navigation — one place, catches everything.
+>
+> 3. **Flutter Web:** Browser URLs must match routes. A web app with Navigator 1.0 has the same URL on every page (`http://myapp.com/`). GoRouter creates proper `/home`, `/shop/product/123` URLs — essential for web SEO and sharing links.
+>
+> **When to keep using Navigator 1.0:** If your app has no deep links, no web target, and fewer than ~10 screens, Navigator 1.0 is fine. GoRouter has a setup cost; don't pay it if you don't need the features.
 
 Navigator 1.0 (`push`/`pop`) works for simple apps. `go_router` is what production apps use because it supports deep links, typed route parameters, and redirect-based auth guards.
 

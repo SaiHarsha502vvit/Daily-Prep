@@ -12,6 +12,28 @@
 
 ## The Problem: setState at Scale
 
+### The Backstory — Seven Years of Flutter State Management Evolution
+
+State management is the most debated topic in Flutter. The reason is historical: Flutter launched without an opinion, the community tried everything, and the "right answer" changed three times in five years.
+
+**2018 — Flutter launches.** The only built-in tools are `setState` and `InheritedWidget`. `setState` is simple but causes prop drilling. `InheritedWidget` is the low-level primitive Flutter uses internally — powerful but requires writing 40+ lines of boilerplate for every state model.
+
+**2018 — `scoped_model` becomes popular.** A thin wrapper over `InheritedWidget` by Brian Egan. Better than raw InheritedWidget, but not much.
+
+**2019 — `provider` launches** (created by Remi Rousselet). Provider wrapped `InheritedWidget` in a clean API. Google officially endorsed it at Google I/O 2019. The Flutter team added it to the starter template. It became the "official" recommendation.
+
+**2019–2021 — BLoC rises in parallel.** Paolo Soares at Google (working on the Hamilton musical app — Flutter's first high-profile production app) had been using a Stream-based architecture since 2018. He presented it at DartConf 2018. Felix Angelov packaged it as `flutter_bloc`. Large companies (Alibaba, Nubank) adopted it. It was more structured than Provider, better for teams.
+
+**2021 — Riverpod launches** (also by Remi Rousselet, the Provider author). Remi identified fundamental design mistakes in Provider that couldn't be fixed without breaking changes — the `BuildContext` dependency being the biggest. He rewrote Provider from scratch as Riverpod ("Provider" with the letters rearranged). Riverpod was completely incompatible with Provider but solved its problems correctly.
+
+**2022 — Riverpod 2.0 (with code generation).** The Notifier pattern replaced the old StateNotifier. Code generation eliminated provider boilerplate. Riverpod became the default choice for new Flutter projects.
+
+**Today (2024–2025):** Three first-class options — `provider` (legacy, don't start new projects with it), `flutter_bloc` (teams, complex state machines), `riverpod` (modern default, strong typing, excellent tooling). The Flutter team officially recommends Riverpod for most apps in their architecture guide.
+
+**Why this history matters:** when you search StackOverflow or YouTube for "Flutter state management," you'll find tutorials for all three eras. A 2019 Provider tutorial is outdated. A 2020 Riverpod tutorial uses the old API. Knowing the timeline helps you recognize which era you're looking at and whether the advice is still current.
+
+---
+
 > 📄 **Flutter Docs:**
 > *"If you want a simpler state management approach and the data you share doesn't change often, consider using InheritedWidget, which is what Provider is based on."*
 

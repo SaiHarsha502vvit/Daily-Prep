@@ -990,3 +990,18 @@ public int lcsOptimized(String s1, String s2) {
 ### 4. Unbounded vs 0/1 vs Bounded — Wrong Loop Direction
 **What breaks**: 0/1 Knapsack requires iterating the weight dimension *backwards* (to prevent reusing the same item). Iterating forwards accidentally makes it unbounded knapsack (each item usable many times). This is the single most common knapsack implementation bug.
 **Fix**: 0/1 → inner loop `for (w = capacity; w >= weight[i]; w--)`. Unbounded → inner loop `for (w = weight[i]; w <= capacity; w++)`.
+
+
+---
+
+## Reality Check
+
+**"If I use recursion + memoization, I'm doing DP"** → Top-down memoization IS one form of DP. Bottom-up tabulation is the other. Both exploit overlapping subproblems and optimal substructure. The distinction: top-down computes only needed subproblems (sparse), bottom-up computes all subproblems in a systematic order (often space-optimizable to O(n) or O(1)).
+
+**"DP and greedy both solve optimisation problems — they're interchangeable"** → Greedy makes the locally-optimal choice at each step and never reconsiders. DP considers all possibilities and picks the globally optimal. Greedy is correct only when the greedy-choice property holds (proved by exchange argument). For coin change with arbitrary denominations, DP is required; greedy fails. You cannot swap them without proof.
+
+**"DP always needs a 2D table"** → Many classic DP problems are 2D (knapsack, LCS, edit distance). But Fibonacci, coin change, house robber, max subarray — these are 1D DPs. And many 2D DPs can be space-optimised to 1D (one rolling row). The table dimension follows from the number of independent state variables, not from the problem category.
+
+**"I need to figure out the DP formula before writing code"** → Start by writing the brute-force recursive solution first. Profile which calls are repeated (add a counter). Those repeated calls are exactly the subproblems to memoize. The DP formula IS the recursive relation — you've already written it. This approach avoids getting stuck on "finding the formula" abstractly.
+
+**"DP guarantees finding the globally optimal solution"** → DP finds the optimal *within the problem formulation you defined*. If your state definition is wrong (missing a dimension that actually matters), DP gives the correct answer to the *wrong problem*. State-design errors produce code that runs but gives wrong answers on certain inputs — the hardest DP bugs to find.

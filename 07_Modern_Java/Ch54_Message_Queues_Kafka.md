@@ -308,3 +308,18 @@ Don't store current state — **store all events as the source of truth**.
 ```
 
 → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
+
+
+---
+
+## Reality Check
+
+**"Kafka is just a message queue like RabbitMQ"** → RabbitMQ is a traditional message broker: messages are pushed to consumers and deleted after acknowledgment. Kafka is an append-only distributed log: messages are retained for a configurable period (days/weeks), consumers maintain their own offset, and multiple consumer groups can independently replay the same messages from any point. Kafka = event streaming platform. RabbitMQ = message routing/queueing. Use Kafka when: messages need to be replayed, multiple services need the same event stream, you need event sourcing. Use RabbitMQ for: simple task queues, complex routing, guaranteed per-message delivery.
+
+**"Kafka guarantees exactly-once delivery"** → Kafka has three delivery guarantees: at-most-once (fire and forget, possible message loss), at-least-once (default — a message may be delivered multiple times if the consumer crashes after processing but before committing the offset), and exactly-once (requires: idempotent producers, transactional API, and exactly-once semantics on the consumer side). Exactly-once Kafka requires careful producer and consumer configuration and has performance overhead. Most Kafka deployments use at-least-once and make consumers idempotent instead.
+
+**"Kafka partitions are like database shards"** → Kafka partitions ARE how Kafka scales horizontally — each partition is an independent ordered log on a different broker. But the analogy has limits: ordering is guaranteed WITHIN a partition, not across partitions. If you need all events for a particular user in order, all those events must go to the same partition (use user ID as the partition key). A Kafka consumer group assigns each partition to exactly one consumer — more partitions = more parallelism, but each partition goes to exactly one consumer in the group.
+
+**"Consumer offset is managed by Kafka automatically"** → Kafka stores consumer offsets in a special topic (`__consumer_offsets`). Auto-commit (`enable.auto.commit=true`) periodically commits the offset — this is "at-least-once" because if the consumer processes a message but crashes before the auto-commit interval, it reprocesses on restart. For exactly-once-style consumer behavior, disable auto-commit and manually commit AFTER successful processing. The offset IS your position in the log — committing it is your responsibility.
+
+**"Kafka topics should have many partitions for performance"** → More partitions = more parallelism (more consumers in a group can read simultaneously). But: each partition requires a leader on a broker, more partitions = more open file handles on the broker, more memory for buffering, longer leader election times during failures. Kafka's own guidance: don't use more than 10K partitions per broker. Over-partitioning is a real problem. Start with a reasonable number (equal to your expected max consumer parallelism) and increase if needed.

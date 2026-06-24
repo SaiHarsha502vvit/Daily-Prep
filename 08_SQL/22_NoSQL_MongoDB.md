@@ -375,3 +375,18 @@ Today, hybrid multi-model databases (PostgreSQL with JSONB, Cosmos DB, FaunaDB) 
 
 **Modern practice anchor:**
 Production MongoDB requires shard keys with high cardinality (e.g., `userId` hash), TTL indexes on all time-series collections, and NTP-synchronized clocks across all replica set members.
+
+
+---
+
+## Reality Check
+
+**"NoSQL is better than SQL for big data"** → Scale depends on access pattern, not storage type. PostgreSQL handles terabytes with proper indexing and partitioning. MongoDB handles terabytes too. The real question: what's your query pattern? Relational (complex joins, ad hoc queries, strong consistency): SQL wins. Document (whole documents read/written together, flexible schema, horizontal scale at the cost of joins): MongoDB. Key-value with extreme throughput: Redis or DynamoDB. "Big data" alone doesn't determine the choice.
+
+**"MongoDB documents are just JSON"** → MongoDB stores BSON (Binary JSON) — a binary-encoded superset of JSON. BSON adds types JSON lacks: Date, ObjectId, Int32, Int64, Decimal128, Binary, Timestamp. `_id` is an ObjectId by default (12 bytes: 4 timestamp + 5 random + 3 counter). BSON is more efficient to parse than JSON but larger on disk than compact JSON. When you query MongoDB, BSON is deserialized to your language's types; what you see in Compass/mongosh is the JSON representation.
+
+**"Document databases don't need schema design"** → Schemaless means the database doesn't enforce a schema — NOT that you don't need one. Without application-level schema discipline, documents in the same collection drift: field names become inconsistent (`user_name`, `username`, `userName`), missing fields cause null-pointer errors in code, queries return unexpected shapes. MongoDB 3.6+ supports JSON Schema validation at the collection level. Real-world MongoDB: you define and enforce the schema in your application code and schema validation rules.
+
+**"MongoDB's aggregate pipeline is less powerful than SQL"** → MongoDB's aggregation pipeline is Turing-complete and handles: `$lookup` (left outer join between collections), `$group` (SQL GROUP BY + aggregates), `$unwind` (explode arrays into rows), `$graphLookup` (recursive graph traversal in the database), `$facet` (multiple aggregation paths in one pipeline), `$bucket` (histogram binning). Complex multi-collection analytics are more verbose than SQL but are possible. For interactive ad hoc analytics, SQL's expressive JOIN syntax is genuinely more ergonomic.
+
+**"You don't need transactions in MongoDB because documents are atomic"** → A single document write is atomic in MongoDB — all fields update or none do. But multi-document operations (updating a user balance AND writing a transaction record) were NOT atomic before MongoDB 4.0. Multi-document ACID transactions landed in 4.0 (single replica set) and 4.2 (sharded clusters). They come with performance overhead. Design to keep related data in the same document where possible — but multi-document transactions ARE available when you need them.

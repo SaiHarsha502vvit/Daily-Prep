@@ -1082,3 +1082,18 @@ try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 ---
 
 **Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](Ch15_Concurrency_Core.md)
+
+
+---
+
+## Reality Check
+
+**"ReentrantLock is always better than synchronized"** → `synchronized` is simpler, handled by the JVM, and the JIT aggressively optimises uncontended synchronised blocks (biased locking, lock elision). `ReentrantLock` offers: tryLock() with timeout, interruptible lock acquisition, fairness policy, multiple condition variables. Choose `synchronized` for simple mutual exclusion; `ReentrantLock` when you need these extra features. Don't reach for ReentrantLock by default.
+
+**"CompletableFuture always runs tasks in a new thread"** → By default, `CompletableFuture.supplyAsync(() -> ...)` uses the common ForkJoinPool. Chaining operations with `.thenApply()` (synchronous) may run on the same thread that completed the previous stage — NOT necessarily a new thread. `.thenApplyAsync()` dispatches to the pool. Understanding which thread runs each stage matters when stages must not run on certain threads (e.g., don't block the event loop thread).
+
+**"Atomic classes eliminate all race conditions"** → `AtomicInteger.incrementAndGet()` atomically increments. But a compound operation — read-then-conditionally-modify — is still a race: `if (atomic.get() == 0) atomic.set(1)` is two separate atomic operations with a gap in between. Use `atomic.compareAndSet(0, 1)` for compare-and-swap — one atomic operation. For complex compound operations, explicit synchronization or `synchronized` may still be necessary.
+
+**"The ForkJoinPool is the same as a regular thread pool"** → ForkJoinPool uses *work-stealing*: idle threads steal tasks from the queues of busy threads. This is designed for divide-and-conquer tasks where subtasks are similar in size (parallel merge sort, parallel stream processing). Standard thread pools (Executors.newFixedThreadPool) have a shared queue — better for many independent tasks with unpredictable duration. Misusing ForkJoinPool for blocking I/O work starves the common pool (used by parallel streams and CompletableFuture).
+
+**"CountDownLatch and CyclicBarrier solve the same problem"** → Both synchronise threads at a point. Key difference: `CountDownLatch` counts down to zero and CANNOT be reset — one-time use. `CyclicBarrier` resets after all parties arrive — reusable across multiple rounds (useful in iterative simulations: all threads complete round N before any starts round N+1). CountDownLatch: one event that everyone waits for (e.g., DB initialised). CyclicBarrier: multiple rounds where all parties must reach the same checkpoint.

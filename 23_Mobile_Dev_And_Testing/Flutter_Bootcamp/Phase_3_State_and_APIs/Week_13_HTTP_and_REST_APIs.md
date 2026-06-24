@@ -12,6 +12,26 @@
 
 ## The Network Data Architecture
 
+### The Backstory — How Mobile Networking Evolved
+
+When iOS launched (2007) and Android launched (2008), networking was hard. Developers manually managed `NSURLConnection` and `HttpClient` — bare-metal HTTP with manual threading, manual JSON parsing, and manual error handling. An API call was 50-100 lines of boilerplate.
+
+**2012 — The repository revolution.** Square released **Retrofit** for Android — a library where you define your API as an annotated interface and the library generates the HTTP code. A GET request became a single method declaration. This was a paradigm shift: describe *what* you want, not *how* to fetch it.
+
+**2012 — AFNetworking / Alamofire for iOS.** The iOS community built similar abstractions. By 2015, almost every iOS app used Alamofire for networking.
+
+**2015 — Interceptors.** The concept of "interceptors" — code that runs on every request or response without modifying individual call sites — became standard. This is how you add authentication headers everywhere, log every request, or retry on 401 without touching each individual API call.
+
+**Flutter's http package (2018):** Flutter launched with the basic `http` package — functional but minimal. No interceptors, no retry, no cancellation, no timeout management.
+
+**Dio (2018–2019):** The community independently built **Dio** — a Dart equivalent of Retrofit + Alamofire. Dio added interceptors, FormData, download progress, request cancellation, timeouts, and a clean API. It became the de-facto standard for Flutter networking.
+
+**The repository pattern's importance:** Every major mobile platform eventually learned the same lesson — HTTP libraries should not be called directly from UI code. A "RepositoryLayer" between the network client and the UI has become standard practice across iOS (Clean Architecture), Android (Google Architecture Components), Flutter, and React Native. The reason: testability. Unit tests shouldn't hit real servers. A repository can be replaced with a fake in tests; a raw Dio call cannot.
+
+**Today's standard:** Dio + Repository pattern + Riverpod `AsyncNotifier`. This is what you're building in this week.
+
+---
+
 > 📄 **Flutter Docs:**
 > *"Most non-trivial apps use the network to fetch data. In Dart, use the http package or a higher-level library like Dio. Parse JSON with dart:convert or code generation with json_serializable."*
 
@@ -30,6 +50,297 @@ REST API (server)
 ```
 
 Each layer has one job. Widgets don't know about HTTP. Repositories don't know about Dio internals. This separation makes each layer independently testable.
+
+---
+
+## The Invisible Machinery — What Actually Happens When Dio Makes a Request
+
+When you write `await dio.get('https://api.example.com/expenses')`, you get data back a few hundred milliseconds later. What actually happened in between? This section strips away every abstraction and shows you the machinery underneath — because when network calls fail, this is what you're debugging.
+
+---
+
+### First: What Is a "Protocol"? Is It Code or Law?
+
+This is the question most people never get answered clearly.
+
+A **protocol** is a written specification — a document that says: "If you want to communicate with other computers, your messages must look exactly like this, in this byte order, at these timing intervals."
+
+The most famous specification body is the **IETF (Internet Engineering Task Force)**. They publish documents called **RFCs (Request for Comments)**. RFC 2616 defined HTTP/1.1 in 1999. RFC 7540 defined HTTP/2 in 2015. These are just text documents — PDFs you can read online.
+
+**So is a protocol code or law?**
+
+Neither exactly. It's closer to a **building code** — a specification that everyone who builds a building must follow. The specification itself is just words on paper. But:
+
+- **Chip manufacturers** (Broadcom, Qualcomm, Intel) read the IEEE 802.11 WiFi spec and build WiFi chips that implement it in silicon — literally transistors arranged to process these specific byte patterns
+- **OS kernel developers** (the Linux kernel team, Apple's kernel team, Google's Android team) read the IETF TCP spec and implement the TCP/IP stack in C code that runs in the operating system
+- **Browser and library developers** (the Chromium team, Mozilla, Dart's team) read the HTTP spec and implement HTTP/1.1 and HTTP/2 in software
+
+When your Flutter app calls `dio.get(...)`, Dart calls into the OS networking layer, which uses the TCP/IP implementation in the kernel, which talks to the WiFi driver, which talks to the WiFi chip, which uses the IEEE 802.11 protocol implemented in hardware to send radio waves.
+
+**You are sitting at the very top of this stack.** Every layer underneath was built by someone reading a specification document and implementing it in hardware or code.
+
+---
+
+### The Layers Stack — From Dart to the Wire
+
+Here's the complete stack with no abstraction omitted:
+
+```
+Your Flutter App (Dart)
+    │  dio.get('https://api.example.com/expenses')
+    │
+    ▼
+Dart's http library / HttpClient
+    │  Serializes your request into HTTP/1.1 or HTTP/2 format
+    │
+    ▼
+TLS Layer (Transport Layer Security)
+    │  Encrypts every byte before it leaves your device
+    │  (This is the "S" in HTTPS — HTTP + TLS = HTTPS)
+    │
+    ▼
+TCP Layer (Transmission Control Protocol)
+    │  Implemented in the OS kernel (Android = Linux kernel, iOS = XNU kernel)
+    │  Breaks your encrypted bytes into numbered "segments"
+    │  Guarantees they arrive in order, resends lost ones
+    │
+    ▼
+IP Layer (Internet Protocol)
+    │  Also in the OS kernel
+    │  Wraps each TCP segment in an "IP packet" with source and destination address
+    │  (like putting a letter in an envelope with a "To:" and "From:" address)
+    │
+    ▼
+WiFi Driver (software, in the OS)
+    │  Hands IP packets to the WiFi chip
+    │
+    ▼
+WiFi Chip (hardware — Qualcomm, Broadcom, etc.)
+    │  Implements IEEE 802.11 (the WiFi spec)
+    │  Converts your IP packets into radio waves
+    │
+    ▼
+        ))) Radio waves travel through air )))
+    │
+    ▼
+Your WiFi Router
+    │  Receives radio waves, extracts IP packets
+    │  "Routes" them toward the destination IP address
+    │
+    ▼
+Your ISP's Network (Jio, Airtel, Comcast, etc.)
+    │  Routes packets through a hierarchy of routers
+    │
+    ▼
+Internet Backbone
+    │  High-speed fiber optic cables between cities, countries, continents
+    │  Operated by companies like Tata Communications, NTT, Level 3
+    │
+    ▼
+Data Center / Cloud (AWS, GCP, Azure)
+    │  Receives the IP packet
+    │  Passes it up through IP → TCP → TLS → HTTP
+    │
+    ▼
+Server Software (Node.js, Python, Java, etc.)
+    │  Reads your HTTP request
+    │  Returns an HTTP response with JSON data
+    │
+    ▼
+The same stack in reverse — response travels back to your phone
+```
+
+This entire journey happens in ~50-200 milliseconds for a typical mobile API call. Every step in that stack is someone's implementation of a specification document.
+
+---
+
+### Step 1 — DNS: How "api.example.com" Becomes an IP Address
+
+Computers don't know "api.example.com". They only understand numbers — **IP addresses** like `104.21.48.200`. Before Dio can even connect to a server, it needs to translate the domain name into an IP address. This is called **DNS — Domain Name System**.
+
+```
+Your phone asks:
+  "Hey, what's the IP address of api.example.com?"
+
+DNS Resolver (usually your ISP's server, or 8.8.8.8 = Google, or 1.1.1.1 = Cloudflare):
+  Checks its cache first
+  If not cached: asks the root DNS servers → the .com DNS servers → example.com's own DNS server
+  Returns: "api.example.com is at 104.21.48.200"
+
+Your phone caches this (TTL = Time To Live, often 5 minutes to 1 hour)
+Now it knows where to connect
+```
+
+DNS is why:
+- The first request to a domain is slightly slower (DNS lookup time, usually 10-50ms)
+- Subsequent requests are faster (cached)
+- Changing a server's IP address takes time to "propagate" — old cached answers haven't expired yet
+- VPNs can intercept DNS queries (DNS leak problem)
+
+**For Flutter:** When you see a `SocketException: Failed host lookup` error, the DNS step failed. Either the domain doesn't exist, your device has no internet, or a DNS server is unreachable.
+
+---
+
+### Step 2 — TCP: The Reliable Pipe
+
+Now your phone knows the IP address. But before sending HTTP data, it needs to establish a **TCP connection**.
+
+**Why does TCP exist?** The internet's basic layer (IP) is "best effort" — it routes packets toward a destination but makes NO guarantee they arrive. Packets can be lost, duplicated, or arrive out of order. IP doesn't care.
+
+TCP (Transmission Control Protocol) was invented in 1974 by **Vint Cerf and Bob Kahn** to build reliability on top of the unreliable IP layer. TCP guarantees:
+- Every byte arrives (lost packets are resent)
+- Bytes arrive in order (out-of-order packets are resequenced)
+- The receiver isn't overwhelmed (flow control)
+
+**The TCP Three-Way Handshake** — before a single byte of your HTTP request is sent, TCP does this:
+
+```
+Phone                              Server
+  │                                  │
+  │──── SYN ("I want to connect") ──▶│   Step 1: Phone initiates
+  │                                  │
+  │◀── SYN-ACK ("OK, I'm ready") ───│   Step 2: Server acknowledges
+  │                                  │
+  │──── ACK ("Great, starting") ───▶│   Step 3: Phone confirms
+  │                                  │
+  │    Connection established        │
+  │    Now HTTP can be sent          │
+```
+
+This handshake adds ~1 round-trip of latency before data can flow. For a Mumbai → US server connection (round trip ~150ms), this is 150ms just to say hello before any data moves. This is one reason why:
+- APIs in your own country/region are faster (shorter round trips)
+- HTTP/2 multiplexing matters (reuse one TCP connection for many requests)
+- Connection pooling in Dio matters (don't handshake for every single request)
+
+**The TCP segment:** Your HTTP request (maybe 500 bytes) gets split into **segments** — each one is a numbered packet of ~1,460 bytes maximum (the MTU — Maximum Transmission Unit). The server receives all segments and reassembles them in order. If segment #5 doesn't arrive, TCP automatically requests a resend.
+
+---
+
+### Step 3 — TLS: The Encryption Layer
+
+Right after the TCP handshake, but before HTTP data is sent, **TLS (Transport Layer Security)** does its own handshake. This is what makes HTTPS secure.
+
+**The problem TLS solves:** Without encryption, everyone between your phone and the server (your WiFi router, your ISP, anyone with a packet sniffer on the same WiFi) can read your HTTP traffic in plain text. Your auth token, your personal data, everything — visible to anyone.
+
+**How TLS actually works** (simplified but not wrong):
+
+```
+PHASE 1 — Server Identity (prevents fake servers)
+─────────────────────────────────────────────────
+Server has a "certificate" — a document that says:
+  "I am api.example.com, and I was verified by Let's Encrypt [a trusted authority]"
+
+Your phone has a built-in list of "Certificate Authorities" (trusted stamp-givers)
+  (Android: /system/etc/security/cacerts
+   iOS: Apple's built-in root certificate store)
+
+Phone checks: Is this server's certificate signed by someone on my trusted list?
+  Yes → continue
+  No  → "Your connection is not private" warning (or crash in Dio)
+
+
+PHASE 2 — Key Exchange (establishes a shared secret)
+─────────────────────────────────────────────────────
+Using a math technique called "Elliptic Curve Diffie-Hellman":
+
+  Phone and server each generate a random number (private key)
+  They exchange derived "public" numbers — even if intercepted, these leak nothing
+  Both sides independently compute the SAME shared secret from the exchange
+  (This is the mathematical magic: you can agree on a secret without ever sending it)
+
+
+PHASE 3 — Encrypted Communication
+───────────────────────────────────
+Both sides now have the same shared secret key
+Every byte sent is encrypted using AES-256 (symmetric encryption — very fast)
+Even if someone captures every packet, they see only random noise
+```
+
+**Why certificate pinning matters (from Week 13's security section):** By default, your phone trusts any certificate from any CA in its list. There are hundreds of CAs. If one is compromised (hacked), an attacker can get a "real" certificate for your server and intercept traffic. Certificate pinning says "I only trust THIS specific certificate — not just any valid one." Your Dio client contains the expected certificate's fingerprint and rejects any other.
+
+---
+
+### Step 4 — HTTP: The Actual Request
+
+Now you finally have a TCP connection wrapped in TLS encryption. HTTP can flow.
+
+**HTTP is just formatted text.** When Dio sends `dio.get('/expenses?month=2025-06')`, the actual bytes sent over the wire look like this:
+
+```
+GET /expenses?month=2025-06 HTTP/1.1\r\n
+Host: api.example.com\r\n
+Authorization: Bearer eyJhbGciOiJSUzI1NiJ9...\r\n
+Content-Type: application/json\r\n
+Accept: application/json\r\n
+Accept-Encoding: gzip, deflate\r\n
+User-Agent: Dart/3.0 (dart:io)\r\n
+\r\n
+```
+
+That's it. An HTTP request is just text with a specific format:
+- **Line 1:** Method + path + HTTP version
+- **Lines 2-N:** Headers (key: value pairs)
+- **Blank line:** Separates headers from body
+- **Body:** For POST/PUT requests, the JSON data goes here
+
+The server reads these bytes, processes the request, and sends back:
+
+```
+HTTP/1.1 200 OK\r\n
+Content-Type: application/json\r\n
+Content-Length: 1842\r\n
+Content-Encoding: gzip\r\n
+Cache-Control: max-age=300\r\n
+\r\n
+[1842 bytes of gzip-compressed JSON]
+```
+
+Dio reads this response, decompresses the gzip, parses the JSON, and gives you a `Response` object. The entire exchange — TCP handshake, TLS handshake, HTTP request, HTTP response — happened inside those 200ms.
+
+---
+
+### Step 5 — HTTP/2: Why Modern APIs Are Faster
+
+HTTP/1.1 (1999) had a problem: **head-of-line blocking**. One TCP connection could only handle one request at a time. Your app needs 5 API calls? They queue up and fire sequentially: call 1 completes → call 2 starts → call 3 starts...
+
+Browsers worked around this by opening 6-8 TCP connections per domain simultaneously — wasteful (each connection = its own TCP + TLS handshake) but faster than waiting in line.
+
+**HTTP/2 (2015)** fixed this at the protocol level with **multiplexing**: one TCP connection carries many requests simultaneously, each assigned a "stream ID."
+
+```
+HTTP/1.1 (sequential, slow):
+Connection 1:  [Request 1]━━━━[Response 1][Request 2]━━━━[Response 2]
+
+HTTP/2 (multiplexed, fast):
+Connection 1:  [Req 1]━━[Req 2]━━[Req 3]━━[Req 4]━━[Req 5]
+               [Resp 3]━━[Resp 1]━━[Resp 5]━━[Resp 2]━━[Resp 4]
+               (responses arrive in any order — stream IDs sort them out)
+```
+
+HTTP/2 also added **header compression** (headers are repeated on every request — HTTP/2 compresses them) and **server push** (server can send data before the client requests it).
+
+Dio uses HTTP/2 automatically when the server supports it. Firebase and most modern APIs support HTTP/2.
+
+**HTTP/3 (2022):** Replaces TCP with QUIC (a protocol built on UDP). Eliminates the TCP handshake overhead entirely. Especially beneficial on lossy mobile connections. Adoption is growing — you'll hear about it more in the next few years.
+
+---
+
+### The Decision Framework: What Does This Mean For Your Flutter Code?
+
+Now that you know the machinery, every networking decision has a reason:
+
+| Decision | Why |
+|---|---|
+| Use `connectTimeout: 10s` in Dio | TCP handshake + TLS handshake can stall if the server is unreachable. 10s prevents the user waiting forever. |
+| Use `receiveTimeout: 10s` | Server might start responding, then stall mid-transfer. Separate from connect timeout. |
+| Always use HTTPS, never HTTP | Without TLS, your auth tokens travel as plain text. Anyone on the same WiFi can steal them. |
+| Use certificate pinning for banking/health apps | Default trust model has hundreds of CAs. Pinning means only YOUR server's cert is accepted. |
+| Cache API responses with `Cache-Control` | DNS + TCP + TLS + HTTP = 200ms minimum. Cached data is instant. |
+| Connection pooling (Dio does this automatically) | Reuses existing TCP+TLS connections. Skips the handshake for repeat requests to the same server. |
+| Exponential backoff on retry | Failed request = server overloaded or network flapping. Immediately retrying hammers a struggling server. Wait 1s, 2s, 4s, 8s — give it time to recover. |
+| Gzip compression | JSON is highly compressible text. A 50KB JSON response compresses to ~8KB. On mobile data, this cuts both latency and data cost. |
+
+---
 
 ---
 

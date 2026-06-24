@@ -416,6 +416,180 @@ extension StorageUploadStateX on StorageUploadState {
 
 ## FCM — Push Notifications
 
+### The Invisible Machinery — How a Push Notification Travels from Phone A to Phone B
+
+When Harsha sends a chat message and Priya's phone buzzes with a notification — even though Priya's app is closed — what physically happened? Walk through every step.
+
+---
+
+**The problem push notifications solve:**
+
+A phone's battery lasts all day because the CPU sleeps most of the time. Sleeping means no code runs. No code = no WebSocket connections = no real-time anything. If Priya's phone has to maintain open connections to every app she uses, the battery dies in hours.
+
+The solution: **one persistent connection per phone, owned by the OS vendor.** Apple maintains a single long-lived TCP connection from every iPhone to **APNs (Apple Push Notification service)**. Google maintains a single long-lived TCP connection from every Android phone to **FCM (Firebase Cloud Messaging)**. These connections use almost no battery because they sit idle 99.9% of the time — they're just waiting for a signal.
+
+**The journey of one notification:**
+
+```
+STEP 1 — Harsha sends a message in the chat app
+
+Harsha's Flutter app → dio.post('/messages', data: message)
+                       ↓
+            Your backend server receives it
+            Stores message in database
+                       ↓
+            Your server sends an HTTP request to FCM:
+            POST https://fcm.googleapis.com/v1/projects/yourapp/messages:send
+            Authorization: Bearer [your Firebase service account token]
+            Body: {
+              "token": "dGhlIGZCcmVhbHMgY...",  ← Priya's device token
+              "notification": {
+                "title": "Harsha",
+                "body": "Hey, did you see the match last night?"
+              },
+              "data": {
+                "type": "chat_message",
+                "conversationId": "conv_xyz",
+                "messageId": "msg_abc"
+              }
+            }
+
+
+STEP 2 — FCM routes to Priya's device
+
+Google's FCM servers receive the request
+They look up Priya's device token in their database
+They find: "this token belongs to a Google account connected to Android device with IMEI xxx"
+They know which FCM connection is currently active for that device
+
+
+STEP 3 — The persistent connection carries the notification
+
+[Priya's Android phone]
+   OS kernel maintains a dormant TCP connection to Google's servers
+   99.9% of the time this connection is completely idle — carrying nothing
+
+   FCM server sends a tiny message down this connection:
+   "Wake up — there's a notification for app com.yourapp.chat"
+
+   The OS kernel wakes from idle (consumes a burst of battery for ~100ms)
+   Delivers the notification payload to the OS notification system
+
+
+STEP 4 — Android / iOS handles it without your app
+
+The OS reads the notification payload
+Displays a system notification: "Harsha: Hey, did you see the match last night?"
+Shows the notification on lock screen
+Plays the notification sound
+Updates the badge number on the app icon
+
+YOUR APP'S CODE HAS NOT RUN YET.
+The OS handled everything up to this point.
+
+
+STEP 5 — Priya taps the notification
+
+OS launches your Flutter app (or brings it to foreground)
+Passes the notification payload to your app's notification handler
+Your app navigates to the right conversation screen
+```
+
+---
+
+**The two different notification systems: FCM vs APNs**
+
+Apple and Google each run their own push notification infrastructure. They interoperate through a clear division:
+
+| | Android (FCM) | iOS (APNs) |
+|---|---|---|
+| OS vendor | Google | Apple |
+| Endpoint | `fcm.googleapis.com` | `api.push.apple.com` |
+| Auth | Service account JSON key | p8 auth key or p12 cert |
+| Delivery guarantee | "Best effort" (usually < 1 second) | "Best effort" (usually < 1 second) |
+| Long-lived connection | Google services process | iOS system daemon (`apsd`) |
+
+Firebase Cloud Messaging (FCM) acts as a gateway — you send ONE HTTP request to FCM, and FCM handles routing to either an Android device (direct FCM) or iOS device (FCM calls APNs on your behalf). This is why Flutter apps only need FCM, not separate FCM + APNs integrations.
+
+---
+
+**Device tokens — the address of a specific app on a specific device**
+
+```dart
+// This is the "address" FCM uses to find Priya's phone
+final String? token = await FirebaseMessaging.instance.getToken();
+// e.g. "dGhlIGZCcmVhbHMgY29kZXMgdGhlIHdvcmxk..."
+```
+
+The token is a ~200-character string that uniquely identifies:
+- This specific app (your bundle ID / package name)
+- On this specific device
+- With this user's Google account (on Android)
+
+Your backend stores this token in your database when the user logs in. When sending a notification to Priya, you look up Priya's current token and send to that.
+
+**Why tokens change:**
+- User uninstalls and reinstalls the app → new token
+- User clears app data → new token
+- User switches devices → new token on new device, old token becomes invalid (FCM returns `404` when you try to send to it)
+- Periodically refreshed by FCM for security
+
+**This is why production apps listen for token refresh:**
+```dart
+FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+  // Update the token in your backend database
+  userRepository.updateFcmToken(userId, newToken);
+});
+```
+If you don't handle token refresh, users who refreshed their token stop receiving notifications silently.
+
+---
+
+**What "data-only" vs "notification" messages mean**
+
+FCM supports two types of payloads:
+
+```
+Notification message:
+  OS displays the notification automatically (title, body, icon)
+  When user taps → opens your app
+  Works even when app is killed
+  You have no control over display format
+
+Data-only message:
+  No automatic OS notification displayed
+  YOUR app code handles it (onBackgroundMessage callback runs)
+  Works when app is killed (spawns a background isolate briefly)
+  You control what happens with the data
+  Use case: silent sync, badge count update, refresh a cache
+
+Combined (most chat apps):
+  Both notification payload (OS shows banner) + data payload (your code gets context)
+  When user taps the banner → your code uses data payload to navigate to correct screen
+```
+
+---
+
+**Why Cloud Functions send FCM, not your Flutter app directly**
+
+You might think: when Harsha sends a message, Harsha's Flutter app could call the FCM API directly to notify Priya. This is wrong for two reasons:
+
+1. **Security:** The FCM server key is a credential that lets anyone send notifications to anyone in your app. Embedding it in the Flutter app means every user who decompiles your app gets that key — they could spam all your users with fake notifications.
+
+2. **Logic:** Your backend needs to know WHICH users to notify (Priya is in the conversation), what message to send, and whether to increment unread counts. This is business logic that belongs on the server.
+
+The correct architecture:
+```
+Flutter app → Write message to Firestore
+Firestore → Triggers Cloud Function (serverless backend)
+Cloud Function → Queries who's in the conversation
+Cloud Function → Looks up their FCM tokens from database
+Cloud Function → Calls FCM API with server key (safe, never leaves the server)
+FCM → Delivers notification to each recipient's device
+```
+
+---
+
 ```dart
 // lib/core/notifications/notification_service.dart
 

@@ -1449,3 +1449,18 @@ always chain the original cause, **and handle UncaughtExceptionHandler in every 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Generics provide runtime type safety"** → Generics are **erased at runtime** (type erasure). `List<String>` and `List<Integer>` are both just `List` at runtime — the JVM cannot distinguish them. `instanceof List<String>` is a compile error because the generic type doesn't exist at runtime. This is why you see `@SuppressWarnings("unchecked")` — the compiler knows the cast cannot be verified. Generic type information IS available via reflection on class/method declarations (not instances).
+
+**"The wildcard `? extends T` and `? super T` are interchangeable"** → PECS: Producer Extends, Consumer Super. `List<? extends Number>`: can READ as Number, CANNOT ADD (compiler can't know actual type — could be `List<Integer>`). `List<? super Integer>`: can ADD Integer, can only READ as Object. A method that reads from a collection: use `extends`. A method that writes to a collection: use `super`. A method that does both: use concrete type `T`.
+
+**"Checked exceptions are always superior to unchecked"** → Checked exceptions were Java's attempt to make error handling mandatory. They force callers to handle or declare. The controversy: they break functional interfaces (lambdas can't throw checked exceptions without a wrapper), they pollute method signatures, and popular libraries (Spring, Hibernate) almost universally wrap them in unchecked exceptions. Kotlin and C# deliberately have no checked exceptions. Modern Java style increasingly wraps checked exceptions in RuntimeException. Neither is always right.
+
+**"try-with-resources is just syntactic sugar for try-finally"** → Mostly, but with an important difference: if both the body AND the `close()` throw exceptions, try-finally loses the body's exception (the close exception replaces it). try-with-resources **suppresses** the close exception and attaches it to the body exception via `Throwable.getSuppressed()`. This means the primary exception (likely more useful) is not lost. `AutoCloseable.close()` is allowed to throw any Exception.
+
+**"Generic methods and generic classes have the same type parameter scope"** → A generic class `class Box<T>` defines T for all instance methods. A generic METHOD `<T> T identity(T t)` defines T only for that invocation — T is resolved fresh each time `identity()` is called. You can have a generic method on a non-generic class, and you can have a generic method that introduces a different type parameter than the class's T. The `<T>` before the return type declares a method-level type parameter.

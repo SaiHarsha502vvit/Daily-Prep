@@ -852,3 +852,18 @@ await grid
 ---
 
 **Navigation**: [← Playwright Basics](./01_Playwright_TS_Basics.md) | [Index](../00_INDEX.md) | [→ Browser Console Scripting](./03_Browser_Console_Scripting.md)
+
+
+---
+
+## Reality Check
+
+**"XPath is more powerful than CSS selectors — use it for everything"** → XPath allows upward traversal (finding a parent from a child) and more complex predicates. CSS selectors cannot traverse upward (no parent selector in traditional CSS). However, Playwright's `:has()` and `:near()` pseudo-selectors cover most "find parent" use cases. XPath is verbose, slower to parse, and harder to read. Use CSS or Playwright's `getBy*` methods as the default; reach for XPath only when you need parent/ancestor traversal.
+
+**"Text locators are the most stable because they're visible in the UI"** → Text content changes with copy edits, translations, and A/B tests. A button labelled "Add to Cart" becomes "Add to Basket" after a copy review and your tests fail. `data-testid` attributes change only when a developer intentionally modifies them. Text locators are human-readable but fragile for long-term test maintenance in applications with active UX writing.
+
+**"page.locator('#id') is always fast because IDs are unique"** → ID-based selectors are fast in the browser's DOM engine but require the ID to exist and be unique. In SPAs and component frameworks (React, Angular), IDs are often generated dynamically (`id="input-123"` where 123 is a counter) — they change between renders. Component libraries (Material UI, Ant Design) often generate their own IDs. Use `data-testid` for elements you control.
+
+**"If an element is visible on screen, Playwright can click it"** → "Visible" in the CSS sense (opacity > 0, display not none) and "actionable" in Playwright's sense differ. An element might be visible but covered by another element (z-index overlay, sticky header), disabled via pointer-events: none, or inside a scrollable area not scrolled into view. Playwright's `click()` waits for the element to be actionable — including receiving pointer events — and scrolls it into view automatically.
+
+**"Strict mode causes false failures when there are duplicate elements"** → Strict mode (`locator.strict()` or the default in Playwright 1.14+) throws `Error: strict mode violation` when a locator matches multiple elements. This is a *feature*, not a bug — it prevents silently clicking the wrong element. Fix: make your locator more specific (scope to a container, add an attribute), not by disabling strict mode. The error tells you your locator is ambiguous.

@@ -317,3 +317,18 @@ Database internals evolved from research prototypes (System R, Ingres) to produc
 
 **Modern practice anchor:**
 Understanding B-tree index mechanics, MVCC snapshot isolation, WAL durability, and buffer pool LRU is essential for debugging MySQL and PostgreSQL performance in production at scale.
+
+
+---
+
+## Reality Check
+
+**"A page/block is the fundamental unit of I/O"** → Databases never read individual rows from disk — they read entire pages (PostgreSQL default: 8KB, MySQL InnoDB: 16KB). Even if you read one column of one row, the whole 8KB page loads into the buffer pool. This is why column-oriented storage (Parquet, columnar databases) is faster for analytics — reading one column means reading only that column's pages, not loading rows that mix all columns.
+
+**"The buffer pool is just a cache"** → The buffer pool is a database-managed memory area that mirrors disk pages. "Dirty pages" (modified but not yet written to disk) stay in the buffer pool for performance — if the database crashes, the WAL (Write-Ahead Log) is used to replay changes. The buffer pool replacement policy (LRU variants with clock sweep in PostgreSQL, LRU-K in MySQL) determines which pages survive in memory. The buffer pool size is one of the most important tuning parameters for database performance.
+
+**"B-tree and B+ tree are the same thing"** → B-tree: data records can be stored at internal nodes AND leaf nodes. B+ tree: all data at leaf nodes, internal nodes contain only routing keys, leaf nodes are linked in a doubly-linked list. All relational database indexes (PostgreSQL, MySQL InnoDB, SQL Server) use B+ trees. The linked leaf list enables efficient range scans — after finding the start key, you walk the leaf list. B-trees are used in filesystems; B+ trees in database indexes.
+
+**"WAL (Write-Ahead Log) is just for crash recovery"** → WAL enables: crash recovery (replay log on startup), point-in-time recovery (PITR — replay log to any timestamp), replication (stream WAL to replicas — PostgreSQL streaming replication, MySQL binlog), backup (take a base backup + WAL for consistent snapshots without locking). WAL writes are sequential I/O (fast on spinning disks) vs random I/O for the data pages — this is why WAL improves write performance.
+
+**"Vacuum (PostgreSQL) / purge (MySQL) are maintenance tasks, not query-critical"** → PostgreSQL's MVCC retains old row versions for concurrent readers — dead tuples accumulate until VACUUM reclaims space. Without regular VACUUM, tables bloat and query scans slow down. The XID (transaction ID) wraparound problem: PostgreSQL uses 32-bit XIDs that wrap around after ~2 billion transactions — this causes visible data corruption. PostgreSQL will force shutdown to prevent this; autovacuum prevents it by keeping the XID horizon fresh.

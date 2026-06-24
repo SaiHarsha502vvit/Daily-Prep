@@ -1025,3 +1025,18 @@ With 4 workers and `scope: 'worker'`: only 4 logins needed instead of 80. So 76 
 ---
 
 **Navigation**: [← Previous: Parallel Execution](../02_Core_Architecture/09_Parallel_Execution_Workers.md) | [Index](../00_INDEX.md) | [Master Index](../../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Dynamics 365 is just another web app for automation purposes"** → D365 has idiosyncrasies that make Playwright automation harder: forms use dynamically generated control IDs that change with form customization, the grid component uses virtual scrolling (rows not in viewport don't exist in DOM), loading indicators appear/disappear asynchronously in non-standard ways, and certain controls (lookup fields, date pickers, multi-select) are custom components that don't behave like native HTML inputs. Selector strategy must account for these: use `data-id` attributes and control-specific interaction patterns over CSS/XPath targeting inner elements.
+
+**"Waiting for page load is sufficient before interacting with D365 forms"** → D365 forms have multiple async loading phases: page navigation completes, then JavaScript initializes the form, then fields bind to data, then business rules run, then conditional field visibility resolves. `page.waitForLoadState('networkidle')` covers initial load but not all of these. For D365: wait for specific elements to appear (form title, a key field to be enabled/visible, the save button to be interactable). Always use locator-based waits tied to the actual state you need, not generic load state.
+
+**"Power Platform automation is the same as web automation"** → Power Apps (canvas apps, model-driven apps) run in an iframe within the D365 shell in some configurations. Playwright must switch to the correct frame context before interacting. `page.frameLocator('iframe[name="modelAppIframe"]')` and then target elements within that frame. Missing the iframe context is the #1 cause of "element not found" failures in D365 automation — the element exists, just in a different frame than the default.
+
+**"Test data for D365 must be set up through the UI"** → D365 has robust Web API (OData endpoint): `GET/POST/PATCH/DELETE https://{org}.api.crm.dynamics.com/api/data/v9.2/accounts`. Use Playwright's `request` context to create/update/delete records via API before the UI test runs. API setup is 10-100x faster than UI setup, doesn't create flaky dependencies between tests, and can be parallelised. For test teardown, prefer API deletion over UI navigation to the record and finding a delete button.
+
+**"D365 security roles don't affect automation"** → The service account or OAuth token used by Playwright tests has the security roles assigned to that user in D365. Tests may pass under an admin account and fail under a restricted account because: required fields are hidden by security roles, certain entities are inaccessible, business rules fire differently based on role. Always run tests under a dedicated test user with the same security role as the user persona being tested. Auth state should be captured per persona using Playwright's `storageState`.

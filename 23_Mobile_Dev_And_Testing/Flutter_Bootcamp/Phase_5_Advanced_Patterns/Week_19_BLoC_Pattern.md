@@ -12,6 +12,30 @@
 
 ## What BLoC Is
 
+### The Backstory — How BLoC Was Born From a Real Production App
+
+BLoC didn't come from an architecture theorist. It came from a production problem.
+
+In 2018, Google built the **Hamilton musical app** — a Flutter showcase app for the Broadway musical. The lead developer, **Paolo Soares**, needed to manage complex UI states: tickets that could be available, sold out, loading, or in a cart; authentication flows; real-time seat availability updates. The app had multiple features sharing the same state, with different screens reacting to the same events.
+
+`setState` didn't scale. Provider-style ChangeNotifier worked but made the business logic hard to test — it was entangled with the UI. Paolo wanted to write unit tests for the "buy ticket" flow without launching the Flutter UI at all.
+
+His solution: **Streams.** Dart's built-in Stream system is a first-class async primitive — you can listen to a stream of values, transform them, filter them, and subscribe from anywhere (not just widgets). He designed the BLoC pattern around this:
+
+- The UI sends **Events** into a `StreamSink` (like pushing events into a queue)
+- The BLoC processes each event and pushes **States** into an output `Stream`
+- Widgets listen to the output stream and rebuild accordingly
+
+He presented this at **DartConf 2018**, and the community immediately saw the value: business logic was now completely separated from the UI, and every state transition was a pure function (`Event → State`) that could be unit-tested in isolation.
+
+**Felix Angelov** saw the presentation and built `flutter_bloc` as a formal package, adding `BlocBuilder`, `BlocListener`, and test utilities. He published it in 2019. It became one of the most-downloaded Flutter packages in history.
+
+**The key insight that made BLoC popular at large companies** (Alibaba, Nubank, Google): when five developers are working on the same feature, "what caused this UI state?" is the most common debugging question. BLoC's explicit Event log makes this traceable. In Riverpod, state changes via direct method calls — you see the current state, but not always why it changed. In BLoC, every state change was triggered by a named Event that's logged, trackable, and testable.
+
+**When Cubit was added (2020):** Felix added `Cubit` to `flutter_bloc` for simple cases where a full event/state machine is overkill. Cubit lets you call methods directly (like Riverpod's Notifier) while keeping the full BLoC test infrastructure. Today, most BLoC code in real apps is a mix: Cubits for simple state, full BLoCs for complex flows.
+
+---
+
 > 📄 **flutter_bloc Docs:**
 > *"The BLoC (Business Logic Component) pattern separates the presentation layer from the business logic layer. BLoC receives Events from the UI and emits States. Widgets rebuild based on states, not direct method calls."*
 

@@ -1307,3 +1307,18 @@ Java 8 (2014) Streams are **lazy** — intermediate operations build a pipeline,
 ---
 
 > **Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
+
+
+---
+
+## Reality Check
+
+**"Lambda expressions create new method objects every time they're called"** → Each *unique* lambda is compiled to a single class (via `invokedynamic`). After the first call, subsequent invocations may reuse the same instance (if the lambda captures no state or only constant state). Lambda creation is generally NOT expensive — fear of creating lambdas is misplaced in most application code.
+
+**"Stream.parallel() makes any stream operation faster"** → Parallel streams use the ForkJoinPool (default: number of CPU cores - 1 threads). Overhead: splitting the source, merging results, thread coordination. For small collections or operations with significant per-element overhead (I/O, DB calls), parallel streams are SLOWER than sequential. Benefit only for: CPU-bound operations, large collections (n > 10,000), easily splittable sources (ArrayList: good, LinkedList: poor splitter).
+
+**"Streams are lazy — they never do work until terminal operation"** → Intermediate operations (filter, map, flatMap) ARE lazy — they build a pipeline. But `sorted()` and `distinct()` are *stateful intermediate operations* — they may buffer the entire stream before passing elements downstream. A `stream().sorted().findFirst()` still sorts the entire stream to find the first element.
+
+**"Optional.get() is the right way to get a value from Optional"** → `Optional.get()` throws `NoSuchElementException` if the Optional is empty — no better than `NullPointerException`. Use: `orElse(default)`, `orElseGet(() -> expensive())`, `orElseThrow()`, or `ifPresent(consumer)`. `Optional.get()` without a prior `isPresent()` check defeats the purpose of Optional entirely.
+
+**"Method references are just shorter lambdas with identical semantics"** → Method references and lambdas are functionally equivalent in most cases but differ in one important way: `ClassName::instanceMethod` captures the method but NOT a specific instance — the instance is the first argument when invoked. `instance::method` captures both the method and a specific instance. The distinction matters when the instance has mutable state that may change between capture and invocation.

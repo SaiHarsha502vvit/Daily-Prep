@@ -489,3 +489,18 @@ Today, every SQL interview expects candidates to explain why `WHERE` filters bef
 
 **Modern practice anchor:**
 Today, query analyzers like `pt-query-digest` (Percona), MySQL `performance_schema`, and PostgreSQL `pg_stat_statements` surface slow queries with high row counts — catching SELECT * abuse and unindexed LIKE patterns automatically in production.
+
+
+---
+
+## Reality Check
+
+**"WHERE filters the original table rows"** → Conceptually true, but the query planner can reorder operations significantly. The logical evaluation order is: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. This means you CANNOT use a SELECT alias in WHERE (the alias doesn't exist yet). You CAN use a SELECT alias in ORDER BY in most databases (they evaluate SELECT before ORDER BY). HAVING vs WHERE: HAVING filters AFTER aggregation, WHERE filters BEFORE.
+
+**"LIMIT makes the whole query faster"** → LIMIT reduces the number of rows returned to the client, and the planner may short-circuit execution for simple queries. But for `ORDER BY col LIMIT 10` without an index on col, the database must sort ALL rows then take 10 — the sort cost is still paid. With an index on col, the planner can do an index scan and stop after 10 rows. LIMIT without ORDER BY returns an arbitrary subset — not "the first N rows" in any meaningful sense.
+
+**"OR in WHERE is always slower than two separate queries"** → OR can prevent index usage: `WHERE city = 'NYC' OR zip = '10001'` may do two index scans unioned, or a full table scan. But two separate queries have network overhead and transaction isolation issues. Modern query planners handle simple OR conditions well with index-merge optimizations. Profile before splitting queries. UNION ALL (instead of OR) is a common rewrite that often helps the planner use two separate index scans.
+
+**"BETWEEN is inclusive on both ends in all databases"** → `BETWEEN a AND b` is `>= a AND <= b` (inclusive on both ends) in all major SQL databases. The gotcha is with dates and timestamps: `BETWEEN '2024-01-01' AND '2024-01-31'` excludes any timestamps on 2024-01-31 after midnight (e.g., 2024-01-31 14:00:00). For dates with timestamps, use `>= '2024-01-01' AND < '2024-02-01'` instead of BETWEEN.
+
+**"SELECT DISTINCT is the right way to remove duplicates from results"** → DISTINCT deduplicate by comparing all selected columns. It requires sorting or hashing the entire result set — O(n log n) or O(n). If you're using DISTINCT to fix a broken JOIN (you joined a one-to-many and got duplicate parent rows), fixing the JOIN is better than patching with DISTINCT. DISTINCT is correct for: "what unique values exist in this column?" Suspicious for: "why am I getting duplicates from this join?"

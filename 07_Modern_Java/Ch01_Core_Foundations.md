@@ -974,3 +974,18 @@ Initialization follows parent-first, static-first order. Integer caching makes
 Optional is for return types only. Clone is broken — use copy constructors.
 
 **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Java is purely object-oriented — everything is an object"** → Not true. The 8 primitive types (`int`, `long`, `double`, `boolean`, `byte`, `short`, `char`, `float`) are NOT objects. They have no methods, no null, no identity. `int x = 5` stores the value directly on the stack or in object fields. Autoboxing (`Integer x = 5`) wraps them in objects but creates allocation and unboxing overhead. This distinction matters for generics (can't use `List<int>`) and performance.
+
+**"The main() method is just a convention — I could name it anything"** → The JVM entry-point contract requires exactly: `public static void main(String[] args)`. The JVM looks for this specific signature at startup. You can have other methods named anything, but the JVM won't call them at startup. `public static void main(String... args)` works (varargs is compatible). `public void main(String[] args)` (missing `static`) compiles but the JVM cannot call it without an instance.
+
+**"Java pass-by-reference means objects are passed directly"** → Java is ALWAYS pass-by-value. For objects, the value passed is the *reference* (memory address). The method receives a copy of that address — it can use it to mutate the object, but reassigning the parameter to a new object does not affect the caller's variable. No Java mechanism passes the variable itself.
+
+**"An interface can only have abstract methods"** → Since Java 8: default methods (concrete implementation). Since Java 9: private methods (for code reuse within the interface). Static methods always worked. Constant fields (`public static final`) always worked. A Java interface today is much closer to an abstract class than the original design — the main remaining distinctions are no instance fields and multiple inheritance support.
+
+**"Integer.MAX_VALUE + 1 throws an exception"** → Silent integer overflow. `Integer.MAX_VALUE + 1 = Integer.MIN_VALUE` (-2,147,483,648). No exception is thrown — Java integer arithmetic wraps around silently (two's complement). For safe arithmetic, use `Math.addExact()` (throws `ArithmeticException` on overflow), `long` for larger ranges, or `BigInteger` for arbitrary precision.

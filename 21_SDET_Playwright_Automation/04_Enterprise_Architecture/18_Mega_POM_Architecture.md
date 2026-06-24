@@ -874,3 +874,18 @@ This ensures that even if a fixture provides access to 50 POMs, zero memory is w
 ---
 
 **Navigation**: [← Chapter 17: D365 Advanced Timing](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 19: Console Scripts & Security](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)
+
+
+---
+
+## Reality Check
+
+**"The test framework architecture is decided once and never changes"** → Test architectures evolve with the product. A POM-only structure outgrows itself when the product adds API layers. A fixture-only approach hits limits when component coverage requirements emerge. Build architecture that can absorb: new test types (component, API, visual), new environments (mobile, different browsers), new team members. The best architecture is the one your team can maintain and understand — not the theoretically purest one.
+
+**"TypeScript generics in test utilities are premature optimization"** → Generic test utilities eliminate an entire class of runtime errors: passing the wrong page object type to a utility function. TypeScript-typed fixtures, generic base page classes, and typed API clients turn runtime `undefined is not a function` errors into compile-time errors. For a large test suite, this pays off immediately. The investment is small (type parameters on 5-10 base classes) with disproportionate returns.
+
+**"CI/CD test failures are always flaky tests"** → Flaky tests are real but not the only cause of CI failures. Other causes: test environment differences (different Chrome version, different screen resolution, missing font, different locale/timezone), race conditions exposed by CI's slower machines, shared test data contamination (tests run in parallel on CI, sharing a test database), missing test isolation (test B depends on test A's state), missing wait for async events in local environment masked by slower CI. Profile failure frequency: true flaky tests fail 10-30% of the time; environment failures fail 100% on CI, 0% locally.
+
+**"Allure/HTML reports are just for showing management dashboards"** → Test reports serve developers: Playwright's HTML report shows screenshots at failure, video replay, DOM snapshot at the moment of failure, network timeline, and console logs — all time-correlated. This lets you debug a CI failure without re-running it locally. Allure additionally provides: historical trend analysis (is this flakier than last week?), retry analysis (how many retries were needed?), epic/story tagging for feature coverage mapping. Good reporting cuts debugging time by 50%+ on large suites.
+
+**"Test data management is a test concern, not a developer concern"** → Test data management is a shared concern. Application developers should: build factories/seeds for test data, document what data assumptions tests rely on, keep test-critical APIs stable. SDET/QA should: not rely on production data shapes, use builders/factories to generate test data, reset state between tests, version test data schemas alongside application schema migrations. Data management debt compounds — fix it early with `factory` patterns and `fixture` databases.

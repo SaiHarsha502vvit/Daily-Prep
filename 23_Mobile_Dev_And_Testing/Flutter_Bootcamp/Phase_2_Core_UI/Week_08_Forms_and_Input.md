@@ -882,6 +882,104 @@ TextFormField(
 
 ---
 
+## The Invisible Machinery — How the Software Keyboard Works
+
+When your `TextField` gets focus and the keyboard slides up, that keyboard is not part of your app. It is a completely separate application, running in a completely separate OS process, communicating with your app through a system-mediated protocol.
+
+### The Keyboard Is Its Own App
+
+On Android, the keyboard is an **Input Method Editor (IME)** — a system app (GBoard, SwiftKey, Samsung Keyboard) running its own process. On iOS, the keyboard is an extension (a `UIInputViewController` in its own extension sandbox). Both platforms enforce strict isolation: the keyboard cannot read your app's memory, and your app cannot read the keyboard's internal state.
+
+```
+User taps TextField → focus is assigned
+     ↓
+Flutter calls TextInput.show() via platform channel
+     ↓ (Dart → method channel → Kotlin/Swift native layer)
+OS receives "activate input method" request
+     ↓ starts/brings forward the IME process
+     ↓ IME window is drawn above your app's window (higher z-order)
+User types "H"
+     ↓ IME process captures the physical key event
+     ↓ runs autocorrect/spellcheck (IME's own dictionaries, IME's own process)
+     ↓ decides what text to insert: "H" (or a corrected word, or a prediction)
+IME sends a text delta to the OS
+     ↓ OS routes it to your app via InputConnection (Android) / UITextInput (iOS)
+Flutter's text input plugin receives the delta
+     ↓ TextEditingController.value updates
+     ↓ setState fires → TextField redraws
+```
+
+Every keystroke crosses 4 process boundaries. Under memory pressure, this IPC (inter-process communication) overhead is why text input can occasionally feel slightly laggy.
+
+### Why `keyboardType` Is a Suggestion, Not a Command
+
+`keyboardType: TextInputType.emailAddress` tells the OS to **suggest** an email-optimized keyboard. The OS decides what to show. GBoard might add `@` and `.com` keys. QuickType might disable autocorrect for the email field. A custom third-party IME (Gboard, SwiftKey, custom enterprise keyboards) might ignore your hint entirely — it's another app, and you can't override its behavior. `TextInputType` is a hint that well-behaved IMEs respect.
+
+### What Autocorrect Actually Does (And Doesn't Do)
+
+When you set `autocorrect: true`, your Flutter code performs zero spell-checking. You are instructing the OS to route typed text through the IME's correction engine before forwarding it to your app. The dictionary lookup, the correction suggestion, the "tap to dismiss" underline — all run inside the IME process. Your Flutter code receives the corrected output.
+
+This is why there is no useful "flutter_spellcheck" package. The spell-checking system belongs to the keyboard app. You can turn the OS feature on (`autocorrect: true`) or off (`autocorrect: false`). That is the full extent of your control.
+
+### Why `FocusNode.requestFocus()` Does More Than You Think
+
+```dart
+onFieldSubmitted: (_) {
+  FocusScope.of(context).requestFocus(_passwordFocusNode);
+}
+```
+
+This one line triggers a cascade across the OS:
+1. Flutter's focus system updates which widget owns the active text input session
+2. Flutter calls `TextInput.setClient()` with the new field's configuration — a platform channel call to native code
+3. The OS closes the current IME input session for the email field
+4. The OS opens a new input session for the password field, passing its `TextInputConfiguration` (different `keyboardType`, `textInputAction`, `obscureText`, `autocorrect` settings)
+5. If `keyboardType` changed (e.g., email address → default), the keyboard may visually transition between layouts
+6. All subsequent keystrokes go to the password field's `TextEditingController`
+
+`FocusNode` is your handle into the OS-level IME session management system — not just a boolean tracking "is this focused."
+
+### The Keyboard Overlap Problem: How It Actually Works
+
+When the keyboard appears, the OS notifies Flutter that the screen's usable area has changed. Flutter updates `MediaQuery.viewInsets.bottom` — and rebuilds your widget tree with the new value on **every frame of the keyboard animation** (the keyboard slides up over ~250ms):
+
+```
+Keyboard hidden:   MediaQuery.viewInsets.bottom = 0
+Keyboard animating: viewInsets.bottom grows: 0 → 80 → 160 → 240 → 320 → 340
+Keyboard fully up:  MediaQuery.viewInsets.bottom = 340  (keyboard height in logical px)
+```
+
+```dart
+// Mechanical explanation of "field stays above keyboard":
+SingleChildScrollView(
+  child: Padding(
+    padding: EdgeInsets.only(
+      bottom: MediaQuery.of(context).viewInsets.bottom,  // grows as keyboard opens
+    ),
+    child: Column(children: [ /* form fields */ ]),
+  ),
+)
+
+// Frame 1 (keyboard hidden):    padding-bottom = 0     → content at normal position
+// Frame 8 (keyboard halfway):   padding-bottom = 160   → content shifted up 160px
+// Frame 15 (keyboard fully up): padding-bottom = 340   → content shifted up 340px
+// → the focused field is now above the keyboard
+```
+
+Flutter rebuilds the padding widget on every animation frame as `viewInsets.bottom` changes. The rebuilds don't cause jank because they're scheduled as part of the same frame pipeline as the keyboard animation.
+
+**Decision table — keyboard problems:**
+
+| Problem | Root cause | Fix |
+|---------|------------|-----|
+| Field hidden behind keyboard | No `viewInsets` padding, no scroll | Wrap in `SingleChildScrollView` + `EdgeInsets.only(bottom: viewInsets.bottom)` |
+| `textInputAction.next` key does nothing | `onFieldSubmitted` handler missing | Add `onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(nextNode)` |
+| `autocorrect: false` still autocorrects | Third-party IME ignores the hint | Expected — the keyboard is an independent app you cannot override |
+| Keyboard flickers when switching fields | `keyboardType` changes between fields | Intentional OS behavior — keep `keyboardType` consistent to avoid it |
+| Password field shows suggested passwords on iOS | `autofillHints` is set to `AutofillHints.password` by default | Set `autofillHints: const []` or `enableSuggestions: false` to disable |
+
+---
+
 ## Week 8 Verify
 
 1. What is the difference between `TextField` and `TextFormField`? When do you use each?

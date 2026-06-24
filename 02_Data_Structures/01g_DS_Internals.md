@@ -1880,3 +1880,18 @@ For α < 1 (Java default: 0.75): E[comparisons per lookup] ≤ 1 + α = 1.75 = O
 3. **Height bound**: No two consecutive Reds → bh ≥ h/2. From (2): n ≥ 2^(h/2) − 1 → h ≤ 2 log₂(n+1). □
 
 **Consequence**: Every `TreeMap.get/put/remove/floorKey` is O(log n) worst-case — unlike `HashMap` which degrades to O(n) when all keys collide (before the treeify-at-8 threshold was added in Java 8).
+
+
+---
+
+## Reality Check
+
+**"Data structure choice is just a performance micro-optimisation"** → Data structure choice determines the *asymptotic complexity class* of your algorithm. Choosing a list where a set is needed turns O(n) membership tests; choosing HashMap where TreeMap is needed loses sorted order. These are correctness and scalability differences, not tweaks.
+
+**"Amortized O(1) and worst-case O(1) are both 'constant time'"** → Worst-case O(1): every single operation takes constant time (array index access). Amortized O(1): the *average* over a sequence of operations is constant, but individual operations may spike (ArrayList resize: O(n) for that single call). For real-time systems or latency-sensitive paths, the occasional O(n) spike from amortized structures is unacceptable. Use fixed-capacity ring buffers or pre-sized structures instead.
+
+**"The JVM always lays objects out the way you declare fields"** → The JVM can reorder fields for alignment and padding. A class with `byte b; long l; byte b2;` may be laid out as `b, b2, [6 padding bytes], l` to align `long` on an 8-byte boundary. Object header on HotSpot JVM: 12–16 bytes (mark word + class pointer). Every small Java object carries this overhead regardless of fields.
+
+**"More memory = always worse"** → The time-space tradeoff is fundamental. Memoization (DP) and caching trade memory for speed. Hash tables trade memory (load factor < 1 → wasted buckets) for O(1) access. Precomputed lookup tables trade memory for computation time. The right choice depends on which resource is the bottleneck.
+
+**"Thread-safe data structures are always safe to use from multiple threads"** → Thread-safe (synchronized) means individual operations are atomic. But compound operations across two thread-safe calls are NOT atomic: `if (queue.isEmpty()) queue.poll()` has a TOCTOU (time-of-check-time-of-use) race even if both methods are synchronized. Use `ConcurrentLinkedQueue.poll()` which returns null on empty — one atomic operation.

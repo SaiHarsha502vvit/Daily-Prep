@@ -1439,3 +1439,18 @@ _Continue to Part 9: Clean Architecture & Quality Code_
 ---
 
 > **Navigation**: [< Previous](Ch37_SB_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch41_SB_Architecture_Quality.md)
+
+
+---
+
+## Reality Check
+
+**"Hibernate/JPA manages the database schema automatically in production"** → `spring.jpa.hibernate.ddl-auto=create-drop` (or `create`) drops and recreates tables on startup — catastrophic in production. Safe production values: `validate` (checks schema matches entities, throws on mismatch) or `none`. Schema migrations should use Flyway or Liquibase, not Hibernate's DDL.
+
+**"@Transactional on a private method works"** → Spring's `@Transactional` uses a proxy (either JDK dynamic proxy or CGLIB). Proxies intercept calls from *outside* the bean. A private method cannot be overridden by a proxy — the annotation is silently ignored. Same for calls from within the same class: `this.doSomething()` bypasses the proxy and the transaction. Call through an injected self-reference or restructure the code.
+
+**"Lazy loading works anywhere in the application"** → Lazy loading (`FetchType.LAZY`, the default for `@OneToMany`) only works within an active Hibernate session. If you access a lazy collection after the session is closed (e.g., in the view layer), you get `LazyInitializationException`. Solutions: use eager fetching (`JOIN FETCH`), keep the session open longer (Open Session in View pattern — controversial), or use DTOs populated within the transaction.
+
+**"@Entity classes should be used directly as API response objects"** → Returning JPA entities from REST controllers exposes your database schema, risks infinite loops (circular JSON from bidirectional relationships), bypasses field-level security, and makes schema changes break the API. Always map to DTOs/projections for API responses. Jackson serialization of lazy-loaded collections causes `LazyInitializationException` or unexpected database queries.
+
+**"JPA merge() and save() are equivalent"** → `EntityManager.merge()` creates a new managed copy of a detached entity — changes to the ORIGINAL (detached) entity after merge are NOT tracked. `save()` in Spring Data JPA calls `persist()` for new entities, `merge()` for detached — but the return value of `save()` is the managed instance. Always use the returned object after save/merge, not the parameter you passed in.

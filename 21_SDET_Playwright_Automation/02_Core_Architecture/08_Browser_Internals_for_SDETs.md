@@ -1047,3 +1047,18 @@ Key insight: optimizing individual action speed is almost never the bottleneck. 
 ---
 
 **Navigation**: [← Chapter 07: E2E Architecture](./07_test_step_E2E_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 09: Parallel Execution](./09_Parallel_Execution_Workers.md)
+
+
+---
+
+## Reality Check
+
+**"Headless and headed Playwright tests should behave identically"** → Almost always true. Exceptions: some browser features (print dialog, file pickers, some camera/mic permissions) behave differently in headless. Some sites detect headless mode via JavaScript and show different content. Rare GPU-accelerated rendering differences can cause visual regression failures between headed (uses GPU) and headless (software renderer). Run final regression tests in headed mode before major releases.
+
+**"Browser contexts are the same as browser profiles"** → A browser context is a lightweight in-memory isolation unit: separate cookies, localStorage, sessionStorage, permissions, and service workers. A browser profile is heavier — it includes downloaded files, extensions, browser history on disk. Playwright's browser contexts are created in milliseconds; loading a full profile is much slower. For most test scenarios, contexts are the right isolation granularity.
+
+**"Network interception always intercepts before the request reaches the server"** → `page.route()` intercepts requests made by the page's JavaScript. Requests made by the browser itself (navigation, service workers, browser-level caches) may bypass route handlers. Specifically, cached resources may be served from cache without making a network request — your route handler is never called for cached responses unless you explicitly clear the cache or disable caching in the browser context.
+
+**"page.evaluate() runs JavaScript in the same context as my test code"** → `page.evaluate()` runs in the BROWSER's JavaScript context (same V8 as the page's JS, with access to `document`, `window`, DOM APIs). Your test code runs in Node.js. They are separate processes. Data passed between them must be serializable (JSON-serializable). You cannot pass Node.js objects, functions, or module references into `page.evaluate()` — only primitive data.
+
+**"requestInterception makes tests run without any backend"** → Mocking all API calls via `page.route()` removes the network dependency — fast and deterministic. But you are now testing your frontend against your mock data, not against your actual backend. A contract between your mock and your real API can drift. Use mocked tests for frontend-unit-level coverage and real-backend tests for integration coverage. Both are necessary; neither replaces the other.

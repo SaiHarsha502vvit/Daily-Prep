@@ -375,3 +375,18 @@ Today, every SQL join interview tests your understanding of LEFT vs INNER joins 
 **Who decides?** The query optimizer — it analyzes table statistics and available indexes. **Are they identical?** Functionally YES (both produce INNER JOIN semantics), but the optimizer has more freedom with explicit JOIN syntax. **When does join order matter?** With 3+ tables: `A JOIN B JOIN C` — the optimizer can reorder joins (swap B and C) for efficiency. With comma syntax in old code, some optimizers treat the listed order as a hint. **The real difference:** Explicit JOIN is unambiguous about intent; the optimizer uses table size statistics to determine the actual join algorithm (nested loop if one side is small + indexed, hash join if neither side has useful indexes, merge join if both sides are already sorted). Check with `EXPLAIN FORMAT=JSON` to see which algorithm was chosen and why.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"INNER JOIN is the default and almost always what you want"** → INNER JOIN excludes rows with no match — it silently loses data if your join condition doesn't match. For reporting and analytics, this is frequently wrong. A sales report INNER JOINing customers and orders would exclude customers with no orders — wrong for "customers who haven't ordered." Always explicitly decide: should unmatched rows appear (LEFT JOIN) or be excluded (INNER JOIN)?
+
+**"A JOIN on a non-indexed column will use a full table scan — always add an index"** → Not always. For small tables (< a few thousand rows), a sequential scan is faster than an index lookup (index has overhead: read index entry, follow pointer to heap). The query planner knows table sizes and will choose the faster strategy. Index every foreign key used in joins, but don't blindly index every column — measure first.
+
+**"CROSS JOIN creates every possible row combination — it's a mistake"** → CROSS JOIN is intentional when you need the Cartesian product: generating all combinations of two sets (size-color matrix, hour-day schedule slots). Accidental CROSS JOINs (forgetting the ON clause) happen and are devastating for large tables. Modern SQL engines should warn when you write `FROM a, b` without a WHERE connecting them, but they don't always do so.
+
+**"Self-JOIN is a workaround — real tables don't need to join themselves"** → Self-JOIN is the standard SQL technique for hierarchical data (employee-manager: both rows in the same employees table), finding pairs (all employee pairs in the same department), or comparing rows within the same table (products with price greater than the average product price in their category). It's not a workaround — it's a fundamental pattern.
+
+**"Multiple joins always return fewer rows than the first table"** → LEFT JOINs can INCREASE the number of rows if the right table has multiple matching rows for a single left-table row. A customer with 10 orders LEFT JOINed on orders produces 10 result rows for that customer. Unexpected row multiplication is a very common SQL bug that causes wrong aggregates (SUM doubles if you LEFT JOIN a one-to-many and then GROUP BY).

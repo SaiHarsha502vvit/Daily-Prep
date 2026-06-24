@@ -1579,3 +1579,18 @@ Every operation is O(1) amortised. ✓
 **Amortised O(1)**: Each element enters and exits the deque at most once → O(n) total deque operations for n enqueues. ✓
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"A stack is a data structure; recursion is an algorithm"** → The call stack IS a stack data structure, managed by the OS/JVM. Every recursive call is a push onto the call stack (stack frame with local variables + return address). Every return is a pop. Iterative DFS with an explicit Stack<> replicates exactly what the call stack does — they have identical semantics, just different ownership of the stack.
+
+**"A PriorityQueue is a type of Queue"** → It implements the `Queue` interface but violates queue's defining property: FIFO order. A `PriorityQueue` returns the *minimum* (or maximum) element regardless of insertion order. Calling it a "queue" misleads. It is a heap with a Queue interface grafted on.
+
+**"Stack and Queue are just for CS theory — real code uses Lists"** → Monotonic stacks solve problems like "next greater element" and "largest rectangle in histogram" in O(n) that would be O(n²) with a list scan. Browser history (back/forward), undo/redo, expression evaluation, syntax validation (balanced parentheses) — all are stacks. BFS (shortest path in unweighted graphs) requires a queue, not a list.
+
+**"Java's `Stack` class is the right stack to use"** → Java's `Stack` extends `Vector` (synchronized on every operation, from 1998). It is deprecated in practice. Use `ArrayDeque` as a stack: `push = addFirst`, `pop = removeFirst`, `peek = peekFirst`. It is unsynchronized and faster, with the same O(1) operations.
+
+**"Circular buffer / ring buffer is just a deque"** → A circular buffer is a *fixed-capacity* deque backed by an array with head and tail pointers that wrap modulo capacity. It is O(1) for all operations and uses a single contiguous memory block. A dynamic deque (like `ArrayDeque` in Java) also uses a circular buffer internally but doubles in size when full — it is NOT fixed-capacity. For bounded producer-consumer queues (e.g., audio buffers, kernel ring buffers), fixed circular buffers are the standard implementation.

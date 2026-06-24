@@ -12,6 +12,41 @@
 
 ## The Testing Pyramid
 
+### The Backstory — Why We Test, And Why The Pyramid Has That Shape
+
+In the 1960s and 1970s, software testing was manual — humans clicked through the program and noted bugs. Testing was a separate job done by a separate "QA department." Developers wrote code; testers found bugs. This was expensive (large teams), slow (days per release), and unreliable (testers couldn't explore every code path).
+
+**The first test automation tools** appeared in the 1970s for mainframe software. But the real shift came with Kent Beck's work in the late 1990s. Beck invented **Extreme Programming (XP)** — a set of software development practices — and one of its pillars was **Test-Driven Development (TDD)**: write the test *before* the code. His JUnit framework (for Java, 2000) made writing unit tests fast enough that developers would actually do it.
+
+The "testing pyramid" as a concept was formalized by **Mike Cohn** in his 2009 book *Succeeding with Agile*. His insight was that different test types have different costs and benefits:
+
+```
+Cost:       low ←─────────────────────────────→ high
+Speed:      fast ←───────────────────────────→ slow
+Count:      many ←───────────────────────────→ few
+
+Unit tests        → cheapest, fastest, most numerous
+Integration tests → expensive, slow, few
+```
+
+The "pyramid" shape tells you the *ratio*: run hundreds of unit tests, dozens of integration tests. An "inverted pyramid" (mostly integration tests) is slow and expensive — the system is brittle and tests take 30 minutes to run, so developers skip running them.
+
+**Why Flutter has widget tests (a middle layer):**
+
+Most testing pyramids have two layers: unit and integration. Flutter added a third — **widget tests** — because Flutter's architecture enables something other frameworks can't: running a widget completely in isolation, on a simulated "canvas," in milliseconds, without launching a real app or device.
+
+A Flutter widget test can:
+- Render a complex multi-widget UI
+- Simulate taps, scrolls, and text input
+- Assert what text/icons are visible
+- Check accessibility semantics
+
+...all in ~200ms, running in pure Dart without a device or simulator. This is unique to Flutter's architecture. React Native's "widget tests" require a JS runtime and can't easily test the full render. Native iOS/Android tests require a simulator. Flutter widget tests run as fast as unit tests but test much more.
+
+The pyramid shape tells you this: **your codebase should have far more unit tests than integration tests, with widget tests in the middle.** If you find yourself writing more integration tests than unit tests, your business logic is probably entangled with your UI — Clean Architecture solves this.
+
+---
+
 > 📄 **Flutter Docs:**
 > *"Flutter supports three kinds of tests: unit tests, widget tests, and integration tests. Each kind has a different cost/fidelity tradeoff."*
 

@@ -1711,3 +1711,18 @@ Before 1970, databases were navigational — programmers navigated pointer struc
 
 **Modern practice anchor:**
 Today, every SQL interview expects you to explain ACID properties and the query execution order — both direct inheritances from System R and Gray's locking research — while modern production OLTP systems (PostgreSQL, MySQL InnoDB) still implement MVCC concurrency control as a direct descendant of System R's locking research.
+
+
+---
+
+## Reality Check
+
+**"SQL databases and NoSQL databases are competitors — choose one"** → Most production systems use both for different purposes. PostgreSQL for transactional data (orders, users, accounts). Redis for caching, sessions, pub/sub. Elasticsearch for full-text search. MongoDB for flexible document storage (content management, catalogs). The "SQL vs NoSQL" framing is a false dichotomy — they solve different problems.
+
+**"A relational database is just a way to store tables"** → A relational database enforces the *relational model*: data integrity (constraints, foreign keys), ACID transactions, and a query language (SQL) that lets you ask arbitrary questions without predefining access patterns. A spreadsheet also stores tables but has none of these guarantees. The key value is the *database engine* — the software that enforces constraints, manages concurrent access, maintains durability, and optimises queries.
+
+**"Database normalisation makes everything slower"** → Normalisation reduces data redundancy, prevents update anomalies, and keeps data consistent. Performance impact depends on JOIN cost — which indexes eliminate for most queries. Denormalisation (intentional redundancy for performance) is an *optimisation* applied after profiling, not a starting design choice. Most applications should start normalised and denormalise only where measured bottlenecks exist.
+
+**"SQLite is a toy database for small projects"** → SQLite is used in: every iPhone (iOS uses it for contacts, calendar, mail), every Android device, every browser (Chrome, Firefox, Safari store history/cookies in SQLite), Adobe products, Airbus flight software, and countless embedded systems. SQLite is the most widely deployed database engine in the world. It is production-quality for single-writer use cases, read-heavy workloads, and embedded applications.
+
+**"The database automatically optimises all queries — I don't need to think about it"** → The query planner optimises given the schema, available indexes, and table statistics. If statistics are stale (`ANALYZE` not run), indexes are missing, or queries are written in ways that prevent index use (functions on indexed columns, leading wildcards in LIKE), the planner makes poor choices. Understanding `EXPLAIN`/`EXPLAIN ANALYZE` output is a required skill for backend developers.

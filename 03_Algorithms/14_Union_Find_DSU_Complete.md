@@ -1734,3 +1734,18 @@ class UnionFind {
 **Both together**: Union by rank ensures trees stay "structured" (bounded height). Path compression then effectively short-circuits future finds. The combined analysis (Tarjan 1975, Seidel-Sharir 2005) shows the amortized cost is O(α(n)) — below O(log* n) and for all practical n, O(1).
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Union-Find is O(1) per operation"** → The inverse Ackermann function α(n) describes the amortized complexity per operation with both path compression AND union by rank. α(n) < 5 for all practical n (it's ≤ 4 for n < 10^600). So it is *practically* O(1) but not strictly O(1). Without union by rank (using union by size or rank): still α(n). Without path compression but with rank: O(log n). Without either: O(n) worst case.
+
+**"Path compression changes the logical structure of the union-find"** → Path compression flattens the tree structure (makes nodes point directly to root) but does NOT change which component each node belongs to. The "which component" relationship is preserved; only the internal representation changes. This is safe because the root is the canonical representative.
+
+**"Union-Find can detect cycles only in undirected graphs"** → Correct. In a directed graph, Union-Find doesn't model directed reachability correctly — `union(a, b)` and `union(b, a)` would create the same component, losing direction information. Use DFS with three-color marking for directed cycle detection (detecting back edges).
+
+**"I need to re-build Union-Find from scratch for each query"** → For offline problems (all queries known upfront), you build once and answer all queries. For online problems (queries arrive dynamically), build incrementally — Union-Find supports this naturally (add elements, perform unions, check connectivity). Kruskal's MST builds Union-Find incrementally as it processes sorted edges.
+
+**"Union-Find only works for connectivity"** → Union-Find also solves: number of connected components (count roots), minimum spanning tree (Kruskal's), checking if adding an edge creates a cycle, finding redundant connections in a graph, grouping elements by equivalence relations (same island, same account, same friend group). Any problem asking "are these two things in the same group" maps to Union-Find.

@@ -1099,3 +1099,18 @@ expect(
 ---
 
 **Navigation**: [← Enterprise Locators](./02_Enterprise_Locators_XPath.md) | [Index](../00_INDEX.md) | [→ JS/TS for Automation](./04_JS_TS_For_Automation.md)
+
+
+---
+
+## Reality Check
+
+**"Playwright's tracing is the same as console.log debugging"** → Playwright trace files are binary archives containing screenshots, DOM snapshots, network requests, console messages, and action timelines — all time-correlated. `npx playwright show-trace trace.zip` opens an interactive timeline viewer. This is far more powerful than console.log: you can scrub to any point in the test, see the exact DOM at that moment, see which network requests were in-flight, and replay the exact action sequence that caused a failure.
+
+**"fixture setup runs once for the whole test suite"** → Playwright fixtures have three scopes: `'test'` (setup/teardown per test), `'worker'` (per worker process — shared across tests in same worker), and `'worker'` with `auto: true` (set up automatically without importing). Using `test`-scoped fixtures for expensive operations (login, database seed) slows the suite. Move stable shared state to `worker` scope. But `worker` scope fixtures must handle concurrency — multiple tests in the same worker run sequentially but different workers are truly parallel.
+
+**"expect() assertions are synchronous checks"** → Playwright's `expect(locator).toBeVisible()` is ASYNCHRONOUS — it polls repeatedly until the condition is true or the timeout expires. This is the auto-wait mechanism. `expect(value).toBe(x)` (for plain values, not locators) IS synchronous — no waiting. Distinguishing these is critical: `await expect(page.locator('.btn')).toBeVisible()` waits; `expect(response.status()).toBe(200)` does not. Forgetting `await` on an async expect is a silent bug.
+
+**"Playwright test files must be named *.spec.ts"** → By default, Playwright finds tests in files matching `**/*.{spec,test}.{js,ts,mjs}`. This is configurable via `testMatch` or `testDir` in `playwright.config.ts`. Teams commonly name files `*.e2e.ts` or `*.pw.ts` — just update `testMatch`. The `spec` convention comes from Jest and Jasmine; Playwright inherited it but does not require it.
+
+**"page.waitForSelector() and page.locator().waitFor() are equivalent"** → Both wait for a selector, but `waitForSelector` returns an `ElementHandle` (snapshot in time), while `locator().waitFor()` returns the locator itself (live, auto-retrying). `ElementHandle` is considered legacy in modern Playwright — it can go stale. The locator API is preferred for all interactions. Use `waitForSelector` only when you need a one-time check on existence and don't plan to interact with the element further.

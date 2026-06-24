@@ -1320,3 +1320,18 @@ Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 byt
 **Corollary**: Column-major traversal of `int[R][C]` (treating rows as contiguous, accessing column c for all rows) loads R distinct cache lines but wastes 15 of 16 words per line → R cache misses vs ⌈R·C/16⌉ for row-major. For C >> 16, column-major is 16× worse.
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b_Arrays.md)
+
+
+---
+
+## Reality Check
+
+**"Stack memory is faster because it's a special hardware chip"** → The stack and heap are both regions of RAM. The stack is faster because it is *used* differently: push/pop is a single pointer increment, and the working set stays in L1/L2 cache. The heap involves a memory allocator (malloc/GC), bookkeeping headers, and scattered allocations that cause cache misses.
+
+**"When a function returns, its local variables are freed immediately"** → The stack pointer moves back — but the bytes aren't erased. They still exist in RAM until overwritten by the next stack frame. Reading a deallocated stack slot returns stale data (undefined behaviour in C). Java prevents this; C/C++ do not.
+
+**"Virtual memory = RAM"** → Virtual memory is an OS abstraction. Your process sees a large contiguous address space (e.g., 48 bits = 256 TB) even though physical RAM may be 8 GB. The MMU (Memory Management Unit, hardware in the CPU) translates virtual → physical on every access using a page table. Pages not in RAM are stored on disk (swap); accessing them triggers a page fault and a disk read.
+
+**"64-bit addresses mean the program can use 16 EB of memory"** → The CPU supports 64-bit addresses in theory but the OS limits user-space to 47–48 bits (128 TB) in practice. And physical RAM limits practical use further. The 64-bit pointer size itself wastes memory: each pointer in a linked list or object header is 8 bytes vs 4 bytes on 32-bit — a significant cost for pointer-heavy data structures.
+
+**"Garbage collection in Java/Python makes memory management a non-issue"** → GC prevents use-after-free crashes but not logical memory leaks (objects reachable but logically dead — static collections, event listeners, ThreadLocal). GC also introduces pause latency (stop-the-world events) and throughput overhead. Memory tuning (heap size, GC algorithm choice) is a real production concern.

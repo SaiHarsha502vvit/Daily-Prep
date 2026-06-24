@@ -1009,6 +1009,147 @@ Future<void> verifyOtp(String otp) async {
 
 ---
 
+## The Invisible Machinery — How Firebase Auth and OAuth 2.0 Actually Work
+
+You tap "Sign in with Google." A moment later you have a `User` with a UID. What happened in that moment is one of the most important security mechanisms on the internet — and once you understand it, every auth-related decision you make becomes clearer.
+
+### The Problem OAuth 2.0 Solves
+
+Before OAuth (pre-2006), "sign in with Google" meant: give the third-party app your Google username and password. The app logged into Google on your behalf. This was catastrophic — every app you used held your Google credentials. One breached app meant all your accounts were compromised.
+
+OAuth 2.0 (finalized in RFC 6749, 2012) solved this with **delegation without credential sharing**: your app proves that a user authenticated with Google — without ever seeing the user's Google password. The user's password stays entirely inside Google's systems.
+
+### The Full Authorization Code Flow (Unfolded)
+
+```
+User taps "Sign in with Google"
+     ↓
+Firebase SDK opens accounts.google.com in a browser or system webview
+─────────────────────────────────────────────────────────────────────
+YOUR APP CANNOT SEE THIS WEBVIEW — Google controls it
+─────────────────────────────────────────────────────────────────────
+User types their Google password into Google's own UI
+(Your app process never receives these keystrokes)
+     ↓
+Google verifies the password
+→ generates a single-use authorization code: 4/0AbCDefg123xyz
+→ redirects back: yourapp://oauth-callback?code=4/0AbCDefg123xyz
+     ↓
+Firebase SDK captures the redirect, extracts the code
+     ↓
+Firebase SDK sends the code to Firebase's servers (NOT directly to Google):
+  POST https://us-central1-your-project.cloudfunctions.net/auth/token
+     ↓
+Firebase's servers forward to Google's token endpoint:
+  POST https://oauth2.googleapis.com/token
+  Body: {
+    code: "4/0AbCDefg123xyz",
+    client_secret: "ABC_SECRET",       ← stored on Firebase's servers ONLY
+    grant_type: "authorization_code"   ← never inside your Flutter binary
+  }
+     ↓
+Google verifies code + client_secret → returns:
+  { access_token: "...", id_token: "<JWT>", refresh_token: "..." }
+     ↓
+Firebase creates or signs in the user account
+Returns UserCredential to your Flutter app
+```
+
+The authorization code is single-use and expires in minutes. Even if intercepted in transit, it is useless without the `client_secret` — which lives on Firebase's servers and never touches your device.
+
+### What a JWT Is (Inside the ID Token)
+
+Every `await user.getIdToken()` call returns a **JWT** (JSON Web Token, pronounced "jot"). It looks opaque, but it is three base64url-encoded sections separated by dots: `header.payload.signature`
+
+```
+eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleTEyMyJ9          ← header
+.eyJ1aWQiOiJhYmMxMjMiLCJlbWFpbCI6Imhhc3NoYUBnbWFpbC5jb20iLCJleHAiOjE3MDQwNjcyMDB9  ← payload
+.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c      ← signature
+```
+
+**Decoded header:**
+```json
+{
+  "alg": "RS256",    // signing algorithm: RSA with SHA-256 hash
+  "kid": "key123"    // which of Google's signing keys was used (they rotate)
+}
+```
+
+**Decoded payload — this is what Firestore security rules read:**
+```json
+{
+  "uid": "abc123def456",
+  "email": "harsha@gmail.com",
+  "email_verified": true,
+  "iss": "https://securetoken.google.com/your-project",
+  "aud": "your-project-id",
+  "iat": 1704063600,     // issued at (Unix timestamp)
+  "exp": 1704067200      // expires at (iat + 3600 seconds = exactly 1 hour)
+}
+```
+
+**The signature — why this is tamper-proof:**
+
+Google's private key — stored in their HSM (Hardware Security Module, hardware that never lets the key leave its memory) — cryptographically signs the concatenation `base64(header) + "." + base64(payload)` using RSA-SHA256.
+
+Firestore downloads Google's **public key** from a well-known URL (`https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com`) and mathematically verifies the signature.
+
+If you change even one character in the payload, the signature verification fails. You cannot forge a JWT without Google's private key. This is why `request.auth.uid` in Firestore rules is trustworthy — Firestore cryptographically verified the entire token before extracting the UID.
+
+### Why Tokens Expire in 1 Hour
+
+If your ID token is stolen (man-in-the-middle, leaked in a log file, device compromise), the attacker has access for **at most 1 hour**. Short expiry = small attack window. Firebase's SDK handles renewal invisibly:
+
+```dart
+// SDK's internal logic (not your code):
+// Every call to user.getIdToken() runs this:
+// 1. Decode the JWT, read the "exp" field
+// 2. If current time > exp (or within 5 minutes of exp):
+//    POST refresh_token to Firebase → receive a new JWT
+// 3. Return the valid JWT
+
+// This is why getIdToken() is always async:
+final token = await FirebaseAuth.instance.currentUser!.getIdToken();
+// ^ May be instant (cached, still valid) or take ~200ms (silent network refresh)
+```
+
+The **refresh token** is long-lived (valid until the user signs out or you revoke it server-side). Firebase SDK stores it in platform secure storage: **iOS Keychain** or **Android EncryptedSharedPreferences backed by the Keystore**. Other apps cannot read it. Even on rooted Android, the Android Keystore protects keys with hardware-backed encryption that makes them unextractable in plaintext.
+
+### How Biometric Auth Fits In (It's Not What You Think)
+
+Face ID and fingerprint don't re-authenticate with Firebase. They prove the physical user is present before your app proceeds with the existing Firebase session:
+
+```
+Firebase Auth already has a valid refresh token (from previous login)
+     ↓
+Your app calls local_auth.authenticate()
+     ↓ OS sends the biometric request to the Secure Enclave (Apple Silicon)
+       or Trusted Execution Environment — TEE (Android)
+     ↓ Secure Enclave / TEE compares the live scan against the stored template
+       ─────────────────────────────────────────────────────────
+       TEMPLATES NEVER LEAVE THE SECURE ENCLAVE
+       Your app, Firebase, and even the main OS never see raw biometric data
+       ─────────────────────────────────────────────────────────
+Secure Enclave signs a challenge proving verification succeeded → returns true
+     ↓
+Your app receives `true` → proceeds to use the existing Firebase session
+Firebase is not involved at this step at all
+```
+
+Biometric authentication is a **local presence check** — it gates access to an already-authenticated session. This is why biometrics can work offline: they don't contact any server.
+
+**Decision framework:**
+
+| Situation | What it means | What to do |
+|-----------|---------------|------------|
+| `getIdToken()` takes 200ms intermittently | Refresh token being exchanged for new JWT | Normal — show loading state before sensitive API calls that need fresh tokens |
+| User deleted from Firebase Console, but app still works | Refresh token still valid in device Keychain | Call `user.reload()` to force auth state sync; revoke tokens server-side for immediate effect |
+| `email_verified: false` in the JWT payload | User registered but never clicked verification email | Block sensitive features behind `user.emailVerified == true` check |
+| Firestore `request.auth != null` passes but UID rule fails | JWT valid, but rule condition checks a different field | Use Firebase Console → Firestore → Rules Playground to debug with actual token payload |
+| Token works in dev, fails in prod | `aud` (audience) claim mismatch — different Firebase project | Ensure `google-services.json` / `GoogleService-Info.plist` match the project in use |
+
+---
+
 ## Week 16 Verify
 
 1. `FirebaseAuth.instance.authStateChanges()` returns a `Stream<User?>`. When does it emit a new value?

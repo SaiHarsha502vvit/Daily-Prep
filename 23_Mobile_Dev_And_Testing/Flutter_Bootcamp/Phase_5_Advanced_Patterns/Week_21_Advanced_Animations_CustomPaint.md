@@ -662,6 +662,138 @@ Hint: Use `GestureDetector.onPanUpdate` to track the X position and calculate th
 
 ---
 
+## The Invisible Machinery — How Flutter Draws on the GPU
+
+Your `canvas.drawArc(rect, startAngle, sweep, false, paint)` line is one of the most direct paths from Dart code to physical hardware in all of Flutter. Here is the full journey from your method call to lit-up pixels.
+
+### From Widget Tree to Layer Tree (The Fourth Tree)
+
+You know Flutter has three trees: Widget (description) → Element (live instance) → RenderObject (geometry). After RenderObject layout completes, Flutter builds a **fourth representation: the Layer Tree**. Layers are like transparent acetate sheets stacked on each other — each drawn independently, then composited into the final image.
+
+```
+Widget tree       → "what I want" (immutable descriptions, rebuilt often)
+Element tree      → "live instances" (maintain identity and state)
+RenderObject tree → "geometry" (size, position, clip regions)
+Layer tree        → "drawing commands grouped for GPU compositing"
+```
+
+`RepaintBoundary` creates a new layer boundary. Everything inside it is drawn onto a **separate GPU texture** — a dedicated bitmap in GPU VRAM. When those widgets need to redraw, only their texture is regenerated. Widgets outside use their cached GPU textures unchanged.
+
+```dart
+// Without RepaintBoundary:
+// DonutChart animates every frame → entire parent layer redraws
+// → every sibling widget (title, legend, buttons) also repaints → wasted work
+
+// With RepaintBoundary:
+RepaintBoundary(
+  child: AnimatedDonutChart(),  // → isolated GPU texture
+)
+// Chart redraws only its own texture.
+// Everything else composites using their unchanged cached textures.
+// On a complex screen this is the difference between 8ms and 2ms per frame.
+```
+
+### The Layer Tree Becomes GPU Commands
+
+Flutter sends the Layer Tree to the **Raster thread** — a separate background thread the Flutter engine maintains purely for GPU work. Here, one of two backends converts it into actual GPU commands:
+
+**Skia** (older backend):
+- Converts drawing commands → OpenGL ES commands (Android) or Metal commands (iOS)
+- Problem: fragment shaders are compiled the **first time a new shape is drawn** → visible hitch on first render (the infamous "shader jank")
+- Every new app release, new shapes = new shaders = new jank on users' first launch
+
+**Impeller** (new backend — default on iOS since Flutter 3.10, Android since Flutter 3.19):
+- All shaders are **pre-compiled at app build time** and bundled in the binary
+- Zero runtime shader compilation → no first-frame jank, ever
+- Uses Metal (iOS) and Vulkan (Android) directly
+
+### What the GPU Actually Does With Those Commands
+
+The GPU receives a **stream of draw calls** — not "draw a circle" but low-level vertex data and shader programs:
+
+```
+Vertex shader program:    "Here are 64 triangles approximating an arc.
+                           Vertex 0 at (150.0, 200.0),
+                           vertex 1 at (154.9, 192.1)... [64 × 3 vertices]"
+
+Fragment shader program:  "For every pixel whose (x,y) falls inside these triangles:
+                           output RGBA(76, 175, 80, 255)"  ← the green segment
+```
+
+The GPU runs the fragment shader on **thousands of pixels simultaneously** using its dedicated shader cores. A typical mobile GPU has 1,000–10,000 shader cores. A CPU has 6–8 cores. This massive parallelism is why rasterization belongs on the GPU thread — the CPU simply cannot match it.
+
+Results are written into the **framebuffer**: a region of GPU VRAM holding pixel values for the entire screen.
+
+### The Display Reads the Framebuffer
+
+The **display controller** — a dedicated chip on the phone PCB — reads the framebuffer at 60Hz or 120Hz and sends pixel values to the display panel via the MIPI DSI bus (a high-speed serial interface running at ~6 Gbps). The panel's OLED or LCD cells respond to the electrical signal and emit light.
+
+```
+GPU VRAM (framebuffer)
+    ↓ display controller reads RGBA pixel values, 60 times per second
+MIPI DSI bus (electrical signal)
+    ↓ scan lines sent top-to-bottom, left-to-right
+Display panel cells (OLED emits light; LCD modulates backlight)
+    ↓
+Photons → your retina
+```
+
+This is why DevTools shows **two performance bars per frame**: the UI thread bar (Dart code, widget builds) and the Raster thread bar (GPU rendering). **Both must finish within 16.67ms**. A complex `CustomPainter` producing slow Raster thread bars is distinct from a slow `build()` method producing slow UI thread bars.
+
+### Why `CustomPainter` Bypasses the Widget System
+
+When you write `canvas.drawCircle(center, 50, paint)` inside `paint()`, you are **not** going through Widget → Element → RenderObject. You are directly issuing drawing commands that Flutter translates to GPU instructions:
+
+```dart
+@override
+void paint(Canvas canvas, Size size) {
+  // Direct path: Dart method call → Skia/Impeller → GPU draw call → pixels
+  // No build(), no element diffing, no layout pass — none of that
+  canvas.drawArc(rect, startAngle, sweepAngle * animationValue, false, paint);
+}
+
+@override
+bool shouldRepaint(ExpenseDonutPainter old) =>
+  old.animationValue != animationValue;
+  // false = GPU reuses the cached texture = zero work this frame
+  // true  = full repaint = draw calls regenerated and sent to GPU
+```
+
+This is why `CustomPainter` is appropriate for highly dynamic content (charts, waveforms, games, drawing apps) — it skips every layer of the Flutter framework above it and goes straight to the GPU.
+
+### RepaintBoundary: The Most Underused Optimization
+
+```dart
+// Every animated widget should be wrapped in RepaintBoundary
+// if it sits inside a complex, static parent:
+
+Stack(
+  children: [
+    // This is complex and static — built once, GPU-cached forever
+    const DashboardBackground(),
+
+    // This animates 60 times per second
+    // Without RepaintBoundary: the entire Stack layer (including DashboardBackground) repaints
+    // With RepaintBoundary: only this widget's isolated GPU texture repaints
+    RepaintBoundary(
+      child: AnimatedDonutChart(value: animationValue),
+    ),
+  ],
+)
+```
+
+**Decision table — GPU rendering:**
+
+| Symptom | Root cause | Fix |
+|---------|------------|-----|
+| Smooth on iPhone, stutters on first Android run | Skia compiles shaders at runtime | Enable Impeller (`--enable-impeller`) or upgrade to Flutter 3.19+ |
+| Raster thread bar always high in DevTools | Too many repaints or complex paths | Audit `shouldRepaint` — return false when data unchanged; wrap in `RepaintBoundary` |
+| `shouldRepaint` always returns `true` | Every animation frame triggers full repaint of unchanged painter | Compare all fields affecting output; return false when equal |
+| Both bars are green but real device still stutters | Thermal throttling — device CPU/GPU clocked down from heat | Profile with cool device; reduce looping animations that run 24/7 |
+| Chart looks correct in widget test but glitchy on device | Size passed to `paint()` differs from assumed size | Always use the `size` parameter; never hardcode pixel values |
+
+---
+
 ## Week 21 Verify
 
 1. What does `shouldRepaint` do? What happens if you always return `true`?

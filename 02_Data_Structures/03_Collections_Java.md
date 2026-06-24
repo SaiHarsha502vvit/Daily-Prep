@@ -1332,3 +1332,18 @@ Therefore, the invariant `compare == 0 ⟺ equals == true` is required. Violatin
 - **`02_PROBLEM_SETS.md`** — exam-style collection selection problems.
 - **`05_DS_In_Production.md`** — production failure modes for storage engines and databases.
 - **`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`** — concurrency patterns and backpressure.
+
+
+---
+
+## Reality Check
+
+**"Collections.sort() and Arrays.sort() use the same algorithm"** → They use the same underlying strategy (Timsort for objects) but `Arrays.sort(int[])` (primitive array) uses a *dual-pivot quicksort* — different algorithm, no stability guarantee, faster in practice because no boxing. `Collections.sort()` and `Arrays.sort(Integer[])` use Timsort, which IS stable. Choosing between primitives and boxed types affects both performance and sort stability.
+
+**"Removing elements from a List while iterating with a for-each loop is fine"** → `ConcurrentModificationException`. The for-each loop uses an `Iterator` that checks a `modCount` field. Calling `list.remove()` during iteration modifies `modCount`, causing the iterator to throw. Fix: use `iterator.remove()`, `removeIf()`, or collect into a new list.
+
+**"Unmodifiable collection = immutable collection"** → `Collections.unmodifiableList(list)` returns a *view* that prevents mutations through the wrapper — but the backing list is still mutable. If someone holds a reference to the original list and modifies it, the "unmodifiable" view reflects those changes. `List.copyOf()` (Java 10+) creates a truly immutable snapshot.
+
+**"EnumSet and EnumMap are just sugar over HashSet/HashMap"** → `EnumSet` is backed by a `long` bitmask (or multiple longs for > 64 values). Membership test = bitwise AND, O(1) with zero GC overhead. For enum-typed sets, `EnumSet` is both faster and more memory-efficient than `HashSet` by orders of magnitude. Same principle for `EnumMap`. Always use these when keys/elements are enums.
+
+**"Map.getOrDefault() and computeIfAbsent() do the same thing"** → `getOrDefault(key, default)` returns the default without inserting it — map is unchanged. `computeIfAbsent(key, fn)` inserts `fn.apply(key)` into the map if absent and returns it — map IS modified. For building multimap-style structures (`map.computeIfAbsent(k, k -> new ArrayList<>()).add(v)`), only `computeIfAbsent` works correctly.

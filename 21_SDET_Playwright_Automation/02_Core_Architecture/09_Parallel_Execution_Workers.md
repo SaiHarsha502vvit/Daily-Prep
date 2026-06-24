@@ -995,3 +995,18 @@ jobs:
 ---
 
 **Navigation**: [← Chapter 08: Browser Internals](./08_Browser_Internals_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 10: Dynamics 365 CRM Testing](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md)
+
+
+---
+
+## Reality Check
+
+**"More workers always makes the test suite faster"** → Each Playwright worker launches a browser process. On a machine with 4 CPU cores, running 8 workers causes CPU contention — all workers compete for cores. Optimal workers ≈ number of CPU cores (or cores - 1 to keep the OS responsive). For I/O-bound tests (mostly waiting for network), you can go higher. For CPU-bound (heavy JS rendering), stay at core count.
+
+**"Parallel tests need separate databases"** → Separate databases is one strategy (most isolated). Alternatives: unique data per test (each test creates data with a unique timestamp-based identifier), database transactions rolled back after each test (transactional fixtures — only works if tests don't commit), test data namespacing (each worker gets a userId prefix). The right choice depends on your test setup speed constraints and database type.
+
+**"shardTotal and shardIndex are for splitting tests across machines"** → Correct — Playwright's `--shard=i/n` divides the test suite into n shards and runs shard i. Used in CI to distribute across parallel machines. Within one machine, use `--workers=n`. Sharding is for horizontal CI scaling (multiple machines); workers is for vertical scaling (multiple CPU cores on one machine).
+
+**"test.describe.parallel() makes all tests in a describe block parallel"** → `test.describe.configure({ mode: 'parallel' })` runs tests within that describe block in parallel within the same worker (if the worker has capacity). BUT tests in a parallel describe block lose the ability to depend on shared beforeAll setup safely (each test gets its own context). It is different from file-level parallelism. Use it carefully — easier to create isolation problems.
+
+**"--reporter=html generates reports that work everywhere"** → Playwright's HTML report is a standalone HTML file with embedded assets. It works by opening a local HTTP server (`playwright show-report`). Opening the HTML file directly (`file://`) may not work in all browsers due to CORS restrictions on file:// origins. In CI: upload the report folder as an artifact, use `playwright show-report` to serve it, or use a CI-native report integration (GitHub Actions test reporter, Azure Pipelines test results).

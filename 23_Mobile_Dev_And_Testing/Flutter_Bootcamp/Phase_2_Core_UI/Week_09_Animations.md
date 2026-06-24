@@ -686,6 +686,105 @@ Implement this using `AnimationController` + `TweenSequence` with `Interval`. No
 
 ---
 
+## The Invisible Machinery — How a Flutter Animation Actually Moves
+
+You call `_controller.forward()`. 300 milliseconds later, a widget has fully animated in. Between those two facts is a chain of hardware, kernel code, and Dart runtime you've never seen.
+
+### The Display Sends a VSYNC Pulse
+
+Every phone display sends a signal called **VSYNC** (vertical synchronization) to the GPU. At 60Hz it fires every 16.67 milliseconds. At 120Hz (ProMotion iPhones, some Android flagships) every 8.33ms. This is a physical electrical signal from the display controller chip — not software — that says: *"I am about to scan the next frame into the pixels. Have something ready."*
+
+```
+Display panel hardware
+    ↓ sends VSYNC electrical signal
+GPU driver in OS kernel receives it
+    ↓ posts a frame callback to the system event loop
+Flutter engine's SchedulerBinding.handleBeginFrame() fires
+    ↓ notifies all registered Tickers
+AnimationController computes: elapsed / duration → value 0.0 → 1.0
+    ↓ Tween maps the value (e.g. 0.37 → 74.0 pixels)
+    ↓ AnimatedBuilder / addListener triggers a rebuild
+Flutter rebuilds the listening widget with the new value
+    ↓ sends updated layer tree to the Raster thread
+GPU renders into the framebuffer (video RAM)
+Display controller scans framebuffer → pixels light up
+```
+
+### What `vsync: this` Actually Does
+
+```dart
+_controller = AnimationController(
+  vsync: this,    // ← this
+  duration: const Duration(milliseconds: 300),
+);
+```
+
+`SingleTickerProviderStateMixin` makes your `State` implement `TickerProvider`. This gives the `AnimationController` a `Ticker` — an object that registers with `SchedulerBinding` to be called on every VSYNC signal. Without `vsync`, the controller would fire on every Dart event loop tick, generating frames the display will never show. Wasted CPU. Wasted battery. With `vsync`, the animation is perfectly synchronized with the display hardware — never ahead of it, never behind it.
+
+### The 16.67ms Frame Budget
+
+Each VSYNC gives you **16.67 milliseconds total** to complete:
+1. Dart code running (setState, event handling)
+2. Widget `build()` methods
+3. RenderObject layout (computing sizes and positions)
+4. Paint (converting RenderObjects to drawing commands)
+5. GPU compositing (rasterizing the final frame)
+
+If you exceed 16.67ms: the display scans the *previous* frame again. That's one frame of **jank** — the hitch your users feel during animations.
+
+```
+Frame A: 13ms total ✓  → new frame displayed
+Frame B: 13ms total ✓  → new frame displayed
+Frame C: 24ms total ✗  → MISSED VSYNC → Frame B repeats → visible stutter
+Frame D: 13ms total ✓  → back to normal
+```
+
+Flutter DevTools shows this as red bars in the performance view. Every red bar is exactly one missed VSYNC.
+
+### Why Curves Don't Change Duration
+
+`Curves.easeInOut` doesn't slow or speed up total animation time. It changes **how the 0.0→1.0 value distributes across frames**. A linear curve advances by the same amount each frame. `easeInOut` starts slow, accelerates in the middle, slows at the end — but the integral over all frames still equals 1.0, so total duration is unchanged:
+
+```
+Linear:    0.0──0.1──0.2──0.3──0.4──0.5──0.6──0.7──0.8──0.9──1.0  (even)
+EaseInOut: 0.0──0.02──0.1──0.3──0.5──0.7──0.9──0.98──1.0           (slow-fast-slow)
+```
+
+The Tween maps whichever 0.0–1.0 the curve produces onto your actual range (0.0px to 200.0px, red to blue, etc.). Same number of frames. Same total duration. Different rhythm.
+
+### Why `const` Widgets Speed Up Animations
+
+`const` widgets are excluded from the rebuild step entirely. Flutter knows at compile time that a `const Text('Label')` can never change, so step 2 above skips it completely. In a frame where only one widget is animating, `const` on everything else means the entire frame budget is spent on that one widget's rebuild — not wasted rebuilding unchanged neighbors. This is why `const` is a performance optimization, not just a style preference.
+
+### What Jank Actually Looks Like at the Hardware Level
+
+```
+60Hz display, 16.67ms budget:
+
+UI thread (Dart builds):    ████░░░░░░░░░░░░  4ms   ✓
+Raster thread (GPU):        ████████░░░░░░░░  9ms   ✓
+Total:                      13ms — frame delivered before display scanned
+
+UI thread (Dart builds):    ████░░░░░░░░░░░░  4ms
+Raster thread (GPU):        ██████████████████████  22ms  ✗
+Total:                      26ms — display scanned at 16.67ms and found NO NEW FRAME
+                            → shows last frame again → user sees jank
+```
+
+The Raster thread (GPU work) is often the culprit for complex `CustomPainter` or too many `RepaintBoundary` layers. The UI thread (Dart builds) is often the culprit for expensive `build()` methods. DevTools shows both as separate bars.
+
+**Decision framework — animation performance:**
+
+| Symptom | Diagnosis | Fix |
+|---------|-----------|-----|
+| Stutters only on very first play | Shader compilation at runtime (Skia) | Upgrade Flutter 3.16+ for Impeller, which pre-compiles shaders |
+| Smooth on iPhone, janky on first Android render | Skia shader jank specific to Android | Enable Impeller: `flutter run --enable-impeller` |
+| DevTools bars are green but device still stutters | Thermal throttling — device too hot, CPU/GPU clocked down | Test when device is cool; reduce continuous looping animations |
+| 120Hz device shows same smoothness as 60Hz | Flutter adapts automatically | Expected — `AnimationController` receives VSYNC at whatever rate the display runs |
+| `AnimatedBuilder` rebuilds too many widgets | `builder:` recreates expensive children each frame | Pass static children via the `child:` parameter — they're built once outside `builder` |
+
+---
+
 ## Week 9 Verify
 
 1. What does an `AnimationController` produce? What do `Tween` and `Curve` add to it?

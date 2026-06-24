@@ -1064,3 +1064,18 @@ public static int binarySearch(int[] arr, int target) {
 // Test: assert binarySearch(new int[]{1,3,5,7}, 5) == 2;
 // Test: assert binarySearch(new int[]{1,3,5,7}, 4) == -1;
 ```
+
+
+---
+
+## Reality Check
+
+**"Once you identify the pattern, the solution is obvious"** → Pattern recognition tells you the *category* (sliding window, BFS, DP). It doesn't hand you the recurrence, the state definition, the index logic, or the edge cases. Recognising "this is a DP problem" is like knowing "this is a chemistry problem" — you still have to do the chemistry.
+
+**"Brute force is never acceptable in an interview"** → Brute force is always the starting point. State it first, analyse its complexity, then optimise. A correct O(n²) solution beats a buggy O(n log n) solution every time. Interviewers want to see the progression: understand → brute force → optimise → code → test.
+
+**"Time complexity is the only thing that matters"** → Space complexity is equally important in constrained environments (mobile, embedded, GPU memory). Readability and maintainability matter in production. A 2× faster algorithm that nobody on your team can debug or modify is often the wrong choice.
+
+**"An algorithm that works on the examples must be correct"** → Examples in problems are usually the happy path. Edge cases that kill algorithms: empty input, single element, all-same elements, sorted/reverse-sorted input, max integer values causing overflow, floating-point rounding. Always test these explicitly.
+
+**"Big O tells you how fast an algorithm is"** → Big O tells you the *growth rate* relative to input size, not the absolute speed. An O(n) algorithm with constant C=10^8 (e.g., touching 100M bytes per element) can be slower than O(n²) with C=1 for n < 10^4. Big O hides constants, lower-order terms, and cache behaviour — all of which matter in practice.

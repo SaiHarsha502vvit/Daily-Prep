@@ -1176,3 +1176,18 @@ Java shortcut: `new LinkedHashMap<>(c, 0.75f, true)` with `removeEldestEntry` ov
 **Implication**: At α = 0.5, expected probes = 2. At α = 0.9, expected probes = 10. At α = 0.99, expected probes = 100. This is why keeping LF < 0.75 matters enormously.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"If I override equals(), I don't need to override hashCode()"** → Java's contract: objects that are `equals()` MUST have the same `hashCode()`. Breaking this makes your objects invisible in HashMaps: you `put(key, value)`, then `get(key)` with an equal key returns `null` because the two objects hash to different buckets. The compiler won't warn you. Always override both together.
+
+**"HashMap preserves insertion order"** → `HashMap` makes NO order guarantee. `LinkedHashMap` preserves insertion order (uses a doubly-linked list alongside the hash table). `TreeMap` maintains sorted key order. Relying on HashMap order is a bug waiting to appear when the JVM version changes its hashing strategy.
+
+**"A good hash function just needs to be fast"** → Speed matters but distribution is critical. A hash function that maps many keys to the same bucket degrades HashMap from O(1) to O(n) — or O(log n) with Java 8's tree-ification. For strings, Java's `hashCode()` uses a polynomial rolling hash (31 as the base). Simple hashes like `return length` or `return 0` are catastrophically bad.
+
+**"HashSet is just a wrapper around a list that removes duplicates"** → `HashSet` is backed by a `HashMap` where each element is a key and the value is a constant dummy `Object`. Membership test is O(1) average, not O(n) like a list scan. For n = 1,000,000 elements, `set.contains(x)` is microseconds; `list.contains(x)` is milliseconds.
+
+**"ConcurrentHashMap makes all compound operations thread-safe"** → `ConcurrentHashMap` makes individual operations (`get`, `put`, `remove`) thread-safe. But compound operations like "check then put" are NOT atomic: `if (!map.containsKey(k)) map.put(k, v)` has a race between the check and the put. Use `map.putIfAbsent(k, v)` or `map.computeIfAbsent(k, ...)` instead — these are single atomic operations.

@@ -1221,3 +1221,18 @@ _Continue to Part 2: Spring Core (IoC & Dependency Injection)_
 ---
 
 > **Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
+
+
+---
+
+## Reality Check
+
+**"Spring Boot auto-configuration is magic"** → Spring Boot's auto-configuration is conditional bean registration driven by `@ConditionalOnClass`, `@ConditionalOnMissingBean`, `@ConditionalOnProperty` etc. `spring-boot-autoconfigure.jar` contains hundreds of `@Configuration` classes. A class like `DataSourceAutoConfiguration` fires only if a JDBC driver is on the classpath AND no `DataSource` bean is already defined. You can see what's happening: `--debug` flag logs the auto-configuration report showing what was applied and why. Nothing is magic; it's just conditional programming.
+
+**"@Autowired requires the field to be non-final"** → Field injection (`@Autowired` on a field) makes the field non-final — you cannot use `final` because Spring must set the field after construction. Constructor injection (the preferred pattern) works with final fields: Spring injects via the constructor, which runs before the object is used. Final fields with constructor injection: testable without Spring (just call `new MyService(mockDependency)`), immutable, and explicit about required dependencies. Spring Boot's own guidance recommends constructor injection.
+
+**"The Spring context loads once at startup"** → The application context loads once in production. In tests, the context is cached and reused across test classes if the configuration is identical. The moment you add `@MockBean` or change any context configuration in a test class, a NEW context is created. Excessive `@MockBean` usage in tests causes context cache misses — each unique combination creates a new full context. This is why large test suites with many `@MockBean`s take a long time: they're starting many Spring contexts.
+
+**"@Component, @Service, @Repository, @Controller are all the same"** → All four trigger component scanning and register a bean. The functional difference: `@Repository` enables exception translation — Spring wraps persistence exceptions (SQL exceptions, JPA exceptions) into Spring's `DataAccessException` hierarchy. `@Controller` enables Spring MVC routing. `@Service` is purely semantic — no extra behavior, just a label for your service layer. The architectural layering convention is valuable even if the annotations are semantically equivalent.
+
+**"Spring profiles are for environment configuration only"** → Profiles are for any conditional bean registration. Common non-environment uses: `@Profile("test")` for test doubles/mocks, `@Profile("demo")` for demo data population, `@Profile("batch")` for batch job beans only, `@Profile("!production")` for development-only features. Profile conditions can be combined: `@Profile({"dev", "staging"})` means dev OR staging. Spring Boot's `spring.profiles.include` property composes profiles declaratively.

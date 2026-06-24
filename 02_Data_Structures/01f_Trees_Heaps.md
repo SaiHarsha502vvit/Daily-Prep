@@ -1469,3 +1469,18 @@ Contrast with n insertions: each costs O(log n) → O(n log n) total. Build-heap
 `insert()` and `deleteMin()` are O(log n) — at most 2 heap operations (insert + possible rebalance move). ✓
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"A Binary Search Tree is always balanced"** → A plain BST has NO self-balancing guarantee. Insert sorted data (1, 2, 3, 4, 5...) into a BST and it degrades to a linked list — every operation becomes O(n). Self-balancing BSTs (AVL, Red-Black) pay a small constant rotation cost to guarantee O(log n). Java's `TreeMap` uses a Red-Black tree. Never use a plain BST for production — use a self-balancing variant or a library.
+
+**"A heap is a type of tree you build like a BST"** → A heap satisfies the *heap property* (parent ≥ all children for max-heap) but NOT BST ordering (left child < parent < right child). You cannot binary-search a heap. A heap's power is O(1) peek-max and O(log n) extract-max. It is stored as an array (index math: left child = 2i+1, right = 2i+2) with no pointers — cache-friendly and compact.
+
+**"Building a heap from n elements takes O(n log n)"** → `heapify` (Floyd's algorithm, bottom-up) takes **O(n)**, not O(n log n). The math: most nodes are near the bottom (leaves) and need 0 or 1 swaps. The height-weighted sum converges to O(n). This is why `heapq.heapify(list)` in Python and `PriorityQueue(collection)` in Java are O(n), while repeatedly calling `add()` n times is O(n log n).
+
+**"Tree height and tree depth mean the same thing"** → Height of a *node*: length of the longest path FROM that node TO a leaf. Height of a tree = height of the root. Depth of a *node*: length of the path FROM the root TO that node. Depth of root = 0. They are complementary, not synonymous. Many textbooks and problems use them interchangeably — always check the definition given.
+
+**"Inorder traversal of any binary tree gives sorted output"** → Inorder (Left, Root, Right) gives sorted output ONLY for a Binary SEARCH Tree. For a generic binary tree or a heap, inorder traversal gives no meaningful order guarantee.

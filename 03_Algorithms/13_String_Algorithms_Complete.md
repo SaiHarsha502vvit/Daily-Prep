@@ -1418,3 +1418,18 @@ For `"ABACABA"`:
 Result: `[0, 0, 1, 0, 1, 2, 3]`.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"String comparison with == works in Java when strings have the same content"** → Only if BOTH strings are interned (string literals). String objects from user input, `new String(...)`, or `.substring()` are NOT automatically interned. Use `.equals()` for content comparison. This is covered in the Java chapter but kills string algorithm tests: `if (word == "hello")` silently fails at runtime.
+
+**"KMP is just a smarter version of brute-force string search"** → Brute force: O(n*m). KMP (Knuth-Morris-Pratt): O(n+m). The key insight is the **failure function** (partial match table): when a mismatch occurs, don't restart from scratch — use previously matched characters to know the next safe alignment. The failure function is computed in O(m) and encodes the longest proper prefix that is also a suffix for each prefix of the pattern.
+
+**"Trie and HashMap both solve prefix matching — they're equivalent"** → HashMap: `map.containsKey(prefix)` checks exact key existence, not prefixes. You'd need to check all stored strings against the prefix — O(total characters). Trie: navigate character-by-character, prefix search is O(len(prefix)). For autocomplete (all strings with given prefix), Trie naturally enumerates them; HashMap requires scanning all keys. Trie uses more memory but enables prefix operations that HashMap cannot.
+
+**"Anagram check: sort both strings and compare"** → Correct, O(n log n). But O(n) is possible: frequency count array of size 26 (for lowercase ASCII). Increment for string1, decrement for string2, check all zeros. This pattern (character frequency array) solves many string problems: valid anagram, minimum window substring, group anagrams, permutation in string.
+
+**"Rolling hash in Rabin-Karp is collision-free"** → Rolling hash can collide (two different substrings produce the same hash — false positive). Rabin-Karp must verify actual character equality on hash matches. With a single 32-bit hash and adversarial input, collisions are common. Production implementations use double hashing (two different mod values) to reduce false-positive probability to ~10^(-18).

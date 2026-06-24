@@ -1434,3 +1434,18 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 **Alternative**: Swap `nums[i]` with `nums[start]`, recurse on `nums[start+1..n-1]`, then swap back. This avoids the `used[]` array entirely — O(1) space for the marker — but changes iteration order.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Backtracking explores all possibilities — it's just brute force"** → Backtracking IS structured brute force, but with *pruning*. The key: at each decision point, check feasibility *before* exploring further. Good pruning can reduce an O(n!) search space to something tractable. Without pruning it IS brute force; with pruning it's often the only known approach for NP-hard problems.
+
+**"Backtracking always uses recursion"** → Conceptually yes. Practically, you can implement it iteratively with an explicit stack. The recursive version is cleaner and maps directly to the decision tree. Iterative backtracking (used in SAT solvers, constraint propagation) is harder to write but avoids stack overflow for deep search trees.
+
+**"Restoring state after backtracking is optional if I track which choices I made"** → State restoration is what makes backtracking work. If you don't undo your changes (restore the array, unmark visited cells, remove the last-added element from the current path), subsequent branches of the search tree see corrupted state. Every `add(choice)` in the recurse call must be paired with `remove(choice)` after the recursive call returns.
+
+**"If backtracking gives correct answers on small inputs, it's correct"** → Off-by-one errors in pruning conditions silently skip valid solutions on larger inputs. The most common bug: pruning too aggressively (cutting a branch that has valid sub-solutions). Always verify with a brute-force crosscheck on small inputs AND manually trace the boundary conditions of your pruning logic.
+
+**"Backtracking is only for permutations and combinations"** → Backtracking solves: N-Queens, Sudoku solver, word search in grid, expression add operators, palindrome partitioning, graph coloring, constraint satisfaction problems. The pattern is always the same: build a partial solution, check validity, recurse, undo. The data structure of the "partial solution" varies — it can be a path, a grid state, a partition, an expression.

@@ -1154,3 +1154,18 @@ D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are 
 ---
 
 **Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md)
+
+
+---
+
+## Reality Check
+
+**"Visual regression testing catches all UI bugs"** → Visual regression compares pixel-by-pixel screenshots — it catches layout shifts, color changes, missing elements, and rendering differences. It does NOT catch: wrong data displayed (pixel-perfect layout with wrong text passes), missing accessibility attributes, incorrect event handling (button looks right, does nothing), race conditions visible only under load. Visual testing complements functional tests; it does not replace them.
+
+**"Custom fixtures are only for advanced users"** → Fixtures are the recommended way to avoid repeated setup code. Even beginner teams should use fixtures for authentication state (`storageState` fixture), database seeding, and common page objects. The fixture pattern is how Playwright recommends sharing setup logic. Not using fixtures usually means `beforeEach` blocks that duplicate logic across test files — harder to maintain and easier to forget.
+
+**"API testing in Playwright requires a separate tool"** → `request` context in Playwright performs API calls without a browser: `const response = await request.get('/api/users')`. You can mix UI and API in one test: set up state via API (fast), then verify via UI. This hybrid approach is recommended for test speed — avoid setting up state through the UI when the API is faster and more reliable. `playwright/test` ships with `APIRequestContext` built in.
+
+**"Component testing requires Playwright's component test runner"** → Playwright has a component testing mode (`@playwright/experimental-ct-react`) that mounts components in a real browser without a full application. This sits between unit tests (Jest + jsdom, which is not a real browser) and E2E tests (full app). The component tests use real browser rendering. This is useful for testing component interactions that jsdom cannot accurately simulate (complex CSS, browser-specific behavior, custom events). It IS experimental — Playwright itself labels it so.
+
+**"test.skip() and test.fixme() are the same"** → `test.skip()` skips unconditionally (or conditionally with a predicate) — the test is ignored. `test.fixme()` marks a test as expected to fail and skips it — semantically communicates "this is broken and we know it." Both skip the test body. Prefer `fixme()` for known failures so the skip is intentional and documented in the report. `test.fail()` (not skip) runs the test but expects it to fail — marks as passed if it fails, failed if it passes.

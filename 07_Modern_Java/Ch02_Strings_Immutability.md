@@ -666,3 +666,18 @@ classes: `final` class, `final` fields, defensive copies, no setters.
 Records are shorthand but need defensive copies for mutable fields.
 
 **Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)
+
+
+---
+
+## Reality Check
+
+**"String.substring() is always O(k) where k is substring length"** → In Java 7 update 6+, `substring()` creates a NEW string object — it copies the characters. O(k) time, O(k) space. (In older Java, it reused the backing array — O(1) but caused memory leaks for large parent strings.) Always be aware of this when calling `substring()` in a loop on a large string.
+
+**"intern() makes all string operations faster"** → `String.intern()` puts the string in the JVM's string pool, enabling `==` comparison. But the pool is a global hashtable — `intern()` itself is slow (synchronization, hash computation). Interning every user-provided string is a performance pessimisation, not optimisation. Use `equals()` instead.
+
+**"StringBuilder and StringBuffer are interchangeable"** → `StringBuffer` is synchronized (thread-safe, every method is synchronized). `StringBuilder` is NOT synchronized. In single-threaded code (virtually all string building), `StringBuilder` is faster. `StringBuffer` exists for legacy code. Do not use `StringBuffer` in new code unless you genuinely need thread-safe string mutation (which is rare — typically a higher-level lock is better).
+
+**"String.format() is the modern way to build strings"** → `String.format()` uses `printf`-style formatting but is slow — it parses the format string on every call. For simple concatenation, `StringBuilder` is faster. For Java 15+, text blocks (`"""..."""`) are the modern approach for multiline strings. For logging, use parameterised logging (`log.debug("user {} logged in", userId)`) which avoids string building when the log level is disabled.
+
+**"Char comparison in Java strings works with =="** → `char` is a primitive — `==` compares values correctly. But `Character` (boxed) uses object identity with `==`. String character access: `str.charAt(i)` returns a `char` (primitive), safe to compare with `==`. But comparing Java chars against non-BMP Unicode (emoji, rare CJK characters beyond U+FFFF) fails because those code points require 2 chars (surrogate pairs). Use `String.codePointAt(i)` for correct Unicode handling.

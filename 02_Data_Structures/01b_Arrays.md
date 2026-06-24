@@ -2075,3 +2075,18 @@ return missing;
 **Overflow note**: For large n, use `long` arithmetic. `(long)(n+1)*(n+2)/2` avoids int overflow.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"ArrayList and Array are the same thing"** → `int[]` is a contiguous block of raw ints in memory — no object headers, no capacity metadata, fixed size. `ArrayList<Integer>` stores *boxed* Integer objects (each 16 bytes on JVM), holds pointers to them, has a capacity buffer (1.5× growth), and incurs boxing/unboxing on every access. For numeric data, a primitive array is 4-8× more memory-efficient.
+
+**"Array index out of bounds crashes are just off-by-one errors"** → Off-by-one is *one cause*. The actual check: the JVM verifies `0 ≤ index < length` on every array access. In C, there is no such check — you silently read/write adjacent memory (buffer overflow). This is a major class of security vulnerabilities. Java's bounds checking costs ~1 CPU cycle per access but prevents entire exploit categories.
+
+**"`array2 = array1` makes a copy"** → It copies the *reference*. Both variables now point to the same array object. Mutating `array2[0]` changes `array1[0]` too. To copy: `Arrays.copyOf(array1, array1.length)` or `array1.clone()`.
+
+**"2D arrays in Java are rectangular grids stored in a grid"** → A Java `int[][]` is an array of *references to* `int[]` arrays. Each row is a separate heap object. They need not be the same length (jagged arrays). Memory is NOT contiguous between rows — cache misses on row transitions. For performance-critical matrix math, use a flattened 1D array and compute `[row * cols + col]` manually.
+
+**"Passing an array to a method is pass-by-value, so the original won't change"** → Java is always pass-by-value, but for arrays the *value* passed is the reference (memory address). The method receives the same reference and CAN mutate the array contents. What it cannot do is make the caller's variable point to a different array.

@@ -895,3 +895,18 @@ For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per 
 **Optimal — Union-Find, O(E·α(V)) ≈ O(E):**
 Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../../JavaSolutions/AlgorithmExamples/UnionFind.java).
 **Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).
+
+
+---
+
+## Reality Check
+
+**"BFS finds the shortest path in any graph"** → BFS finds the shortest path in terms of *number of edges* in an **unweighted** graph. For weighted graphs, BFS gives wrong answers. Use Dijkstra (non-negative weights) or Bellman-Ford (negative weights). Applying BFS to a weighted graph is a very common interview mistake.
+
+**"DFS and BFS visit the same nodes, just in a different order"** → They visit the same nodes only if the graph is fully connected and you start from the same source. In disconnected graphs, BFS and DFS from the same source visit the same component — but the traversal order produces different things: BFS produces a shortest-path tree; DFS produces a DFS tree with back edges, tree edges, forward edges, and cross edges — each with different meaning for cycle detection, topological sort, and SCCs.
+
+**"An adjacency matrix is the standard way to represent a graph"** → Adjacency matrix: O(V²) space. For sparse graphs (most real graphs: social networks, road networks, web graphs where E << V²), this is wasteful. Adjacency list: O(V + E) space. Standard in practice for sparse graphs. Adjacency matrix wins for dense graphs (E ≈ V²) and for fast edge-existence checks (O(1) vs O(degree) for adjacency list).
+
+**"Detecting a cycle in a directed graph is the same as in an undirected graph"** → For undirected graphs: DFS cycle detection uses a `visited` set — finding a visited node (other than parent) = cycle. For directed graphs: you need three states — unvisited, in-stack (currently in recursion), done. A back edge to an in-stack node = cycle. Marking nodes as "visited" (not "in-stack") in directed graphs gives false positives: finding a visited node just means you've been there before, not that there's a cycle in the current path.
+
+**"Topological sort is only for DAGs — I'll never use it on real graphs"** → Build systems (Gradle, Make), course prerequisite resolution, package dependency managers (npm, Maven), task scheduling, spreadsheet formula evaluation — all are topological sorts on real DAGs. If your "sort" needs to handle cycles (circular dependencies), add cycle detection first (Kahn's algorithm naturally detects cycles: if output doesn't include all nodes, a cycle exists).

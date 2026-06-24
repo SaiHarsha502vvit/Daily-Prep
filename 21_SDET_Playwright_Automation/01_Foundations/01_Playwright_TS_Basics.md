@@ -851,3 +851,18 @@ With ElementHandle, every re-render risks a "detached from DOM" error. With Loca
 ---
 
 **Navigation**: [← Foundations](./00_SDET_Foundations_Mindset.md) | [Index](../00_INDEX.md) | [→ Enterprise Locators](./02_Enterprise_Locators_XPath.md)
+
+
+---
+
+## Reality Check
+
+**"Playwright tests are slow because they run a real browser"** → Playwright launches a real Chromium/Firefox/WebKit browser — but headless mode (no GUI rendering) is substantially faster than headed. The bottleneck is almost never the browser itself — it is network latency to your app, app server startup, and database operations in the test setup. Optimise fixtures and app startup time before blaming Playwright.
+
+**"Each test file gets a fresh browser context automatically"** → Playwright gives each *test* a fresh browser context by default (isolated cookies, storage, permissions). The *browser process* is shared across tests within a worker for efficiency. This distinction matters: browser-level state (installed extensions, GPU settings) is shared; page/session-level state is isolated. Most tests only need page isolation, which the default provides.
+
+**"page.goto() waits for the page to be fully loaded before continuing"** → `goto()` waits until the `load` event fires (default `waitUntil: 'load'`). But SPAs often fire `load` before the JavaScript framework has initialised and rendered the content. Use `waitUntil: 'networkidle'` for apps with AJAX on load, or wait for a specific element that signals app readiness: `await page.waitForSelector('[data-ready]')`.
+
+**"Playwright's auto-waiting means I never need explicit waits"** → Playwright's built-in auto-wait covers: element visible, enabled, stable, attached to DOM, actionable. It does NOT cover: API response arrival, data appearing after an async operation, animation completing before screenshot, third-party iframe loading, WebSocket message arrival. For these, use `waitForResponse()`, `waitForSelector()`, `waitForFunction()`, or `expect().toBeVisible()` with a condition.
+
+**"Test IDs in HTML are only needed for Playwright tests"** → `data-testid` attributes benefit more than just testing. They are used in analytics (tracking user interactions), feature flag targeting (LaunchDarkly targets elements), A/B testing frameworks, monitoring tools (Datadog RUM), and accessibility audits. They are low-cost additions to the DOM that provide high value across tooling. Add them during feature development, not as an afterthought.

@@ -294,3 +294,18 @@ Understanding EXPLAIN ANALYZE output is critical for solving LeetCode performanc
 
 **Modern practice anchor:**
 Production query optimization is an iterative cycle of EXPLAIN ANALYZE, index additions, and statistics refresh — not a one-time fix.
+
+
+---
+
+## Reality Check
+
+**"Rewriting a query differently always changes performance"** → The query planner normalises many logically equivalent queries to the same execution plan. `WHERE a = 1 AND b = 2` and `WHERE b = 2 AND a = 1` produce identical plans. But some rewrites DO matter: `NOT IN` vs `NOT EXISTS` (NOT EXISTS is often faster with NULLs involved), correlated subquery vs JOIN (JOIN usually faster), `DISTINCT` vs `GROUP BY` (often same plan but not always). Measure with EXPLAIN ANALYZE before assuming a rewrite helps.
+
+**"Adding more indexes always makes queries faster"** → The optimizer can use at most one index per table per query (in most databases, though PostgreSQL can combine via bitmap scan). Adding a redundant index on a column already covered by a composite index wastes disk and write performance. Run `pg_stat_user_indexes` (PostgreSQL) to find unused indexes and drop them.
+
+**"ORM-generated queries are equivalent to hand-written SQL in performance"** → ORMs can generate cartesian products, correlated subqueries instead of joins, missing LIMIT clauses, or redundant round-trips. Enable SQL logging in development and examine every query. Key red flags: `SELECT *`, repeated similar queries (N+1), queries without LIMIT on large tables, missing WHERE clauses.
+
+**"Query hints (USE INDEX, FORCE INDEX) are the right fix for bad plans"** → Query hints lock the planner into a choice that may become wrong as data changes. Better fixes: update statistics (`ANALYZE`), create a better index, rewrite the query, or adjust planner cost parameters. Hints are a last resort for cases where the planner consistently makes the wrong choice despite accurate statistics.
+
+**"Materialized views automatically stay up to date"** → Materialized views store a snapshot of query results. They do NOT update automatically on base table changes. In PostgreSQL: `REFRESH MATERIALIZED VIEW` is a manual operation (or scheduled). `REFRESH MATERIALIZED VIEW CONCURRENTLY` allows reads during refresh but requires a unique index. Views (non-materialized) always show live data but re-run the query on every access. Choose based on staleness tolerance vs access speed.

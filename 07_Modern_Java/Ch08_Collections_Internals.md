@@ -832,3 +832,18 @@ for (String s : safeList) {
 Two approaches: (1) `TreeMap<Integer, Set<String>>` keyed by score — O(log N) update, O(log N) top-10 via `tailMap()`. Problem: ties (two players same score). (2) `PriorityQueue<PlayerScore>` of size 10 (min-heap) — O(log 10) = O(1) insert, O(1) top check. But no fast lookup by player name. Production solution: HashMap<playerId, score> for O(1) score lookup PLUS a sorted structure (TreeMap or heap) for ranking. Same dual-structure pattern as LRU cache (HashMap + LinkedList).
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"TreeMap is a HashMap that keeps keys sorted"** → TreeMap and HashMap are completely different data structures. HashMap uses a hash table (O(1) average get/put, unordered). TreeMap uses a Red-Black tree (O(log n) get/put, keys in sorted order). They are not variants of each other. LinkedHashMap is a HashMap variant (adds insertion-order doubly-linked list). Know which of the three you need: fast random access (HashMap), sorted iteration (TreeMap), insertion order (LinkedHashMap).
+
+**"PriorityQueue.poll() removes a random element"** → `poll()` always removes and returns the *head* — the minimum element (default comparator is natural ordering, min-heap). It is NOT random. For a max-heap, pass `Collections.reverseOrder()` comparator: `new PriorityQueue<>(Collections.reverseOrder())`. For custom ordering: pass a `Comparator` to the constructor.
+
+**"Collections.synchronizedList() is all I need for thread-safe list operations"** → `Collections.synchronizedList()` synchronizes individual methods. But iteration is NOT thread-safe: you must manually synchronize the list while iterating: `synchronized(list) { for (E e : list) {...} }`. Without this, another thread can modify the list during iteration causing `ConcurrentModificationException`. Prefer `CopyOnWriteArrayList` for read-heavy, or use proper concurrent data structures.
+
+**"Deque stands for 'Double Queue'"** → Deque stands for **Double-Ended Queue**. It supports efficient insertion and removal at BOTH ends (head and tail). Not to be confused with two queues. `ArrayDeque` implements `Deque` — use it as a stack (faster than `Stack`) or queue (faster than `LinkedList`). It does NOT allow null elements.
+
+**"The fail-fast iterator throws immediately when collection is modified"** → Fail-fast iterators detect structural modification via a `modCount` counter and throw `ConcurrentModificationException` on the NEXT iterator call (next `hasNext()` or `next()`), not at the moment of modification. The detection is best-effort — it is NOT guaranteed to catch every concurrent modification. It should not be used for thread-safety logic, only for detecting programming bugs.

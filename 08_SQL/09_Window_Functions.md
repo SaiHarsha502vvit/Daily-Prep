@@ -1958,3 +1958,18 @@ Window functions were the missing piece between GROUP BY (which collapses rows) 
 
 **Modern practice anchor:**
 Today, window functions appear in virtually every SQL analytics interview and production analytics pipeline — ROW_NUMBER() for deduplication, LAG/LEAD for period-over-period analysis, and SUM() OVER() for running totals are workhorses in every data analyst's toolkit, all directly inherited from SQL:1999.
+
+
+---
+
+## Reality Check
+
+**"Window functions and GROUP BY both aggregate — they're interchangeable"** → GROUP BY collapses rows into one row per group. Window functions compute aggregates WITHOUT collapsing rows — every input row appears in the output with the aggregate value added as a column. `SUM(amount) OVER (PARTITION BY customer_id)` gives each order row a column showing that customer's total. You cannot replicate this with GROUP BY without a self-join.
+
+**"PARTITION BY in window functions is the same as GROUP BY"** → `PARTITION BY` defines the window — the group of rows used for calculating the function for each row. The rows are NOT collapsed. `GROUP BY` collapses. They look similar syntactically but have fundamentally different output shapes.
+
+**"ROW_NUMBER(), RANK(), and DENSE_RANK() give the same results"** → They differ on ties. Given scores 90, 85, 85, 80: ROW_NUMBER: 1, 2, 3, 4 (arbitrary tiebreaker). RANK: 1, 2, 2, 4 (gap after tie — no rank 3). DENSE_RANK: 1, 2, 2, 3 (no gap). For "top 3 distinct scores" use DENSE_RANK. For "3rd place record exactly" use ROW_NUMBER with an ORDER BY tiebreaker. For "Olympic-style ranking with gaps" use RANK.
+
+**"LEAD and LAG require sorting within the window"** → Yes — `LAG(col, 1) OVER (PARTITION BY group ORDER BY date)` looks at the previous row within each partition in date order. Without ORDER BY in the OVER clause, "previous" is undefined. Omitting ORDER BY when using LAG/LEAD is a logical error that returns unpredictable results without an error message.
+
+**"Window functions are slower than equivalent subqueries"** → Not necessarily. Window functions use a single pass through sorted data. Equivalent self-joins or correlated subqueries may require multiple passes. Modern query planners optimise window functions well. The readable window function version is usually not slower than the equivalent subquery — profile before assuming.

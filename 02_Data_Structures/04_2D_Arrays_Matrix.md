@@ -1884,3 +1884,18 @@ This is the canonical 90° clockwise rotation. Each cell is moved exactly once. 
 - **`01g_DS_Internals.md`** — ArrayList of ArrayList (ragged 2D) vs flat 2D array trade-offs.
 - **`02_PROBLEM_SETS.md`** — exam-style problems on 2D arrays (spiral, rotation, Kadane's 2D, prefix sum).
 - **`A2_DS_Complexity_FirstPrinciples.md`** — formal Big-O derivations for 2D operations.
+
+
+---
+
+## Reality Check
+
+**"Accessing matrix[row][col] and matrix[col][row] are equivalent"** → They are semantically equivalent only if the matrix is square. For an n×m matrix with n≠m, transposing indices accesses a different row — likely an ArrayIndexOutOfBoundsException. Beyond correctness: `matrix[row][col]` iterating row-by-row is cache-friendly (C-order / row-major). `matrix[col][row]` iterating column-by-column causes a cache miss per access — can be 10× slower for large matrices.
+
+**"A 2D array in Java is stored as a contiguous 2D grid in memory"** → Java's `int[][]` is an array of *references to* `int[]` arrays. The rows are separate heap objects at arbitrary memory addresses. Only within a single row is memory contiguous. For numerical computing (matrix multiply, image processing), use a 1D array of size n*m and compute index as `row * cols + col` — truly contiguous, cache-optimal.
+
+**"In-place matrix rotation requires a temporary matrix"** → Classic 90° clockwise rotation can be done in-place in two passes: (1) transpose (swap `[i][j]` with `[j][i]`) (2) reverse each row. No extra matrix needed, O(1) space. Understanding these geometric operations comes from recognizing the composition of reflections.
+
+**"Matrix multiplication is O(n²) like element-wise operations"** → Element-wise multiplication (Hadamard product) is O(n²). Matrix multiplication (dot product, used in linear algebra and ML) is O(n³) for naive implementation. Strassen's algorithm is O(n^2.807). Modern ML frameworks use highly optimised BLAS routines and GPU parallelism — naive loops are 100-1000× slower than cuBLAS for large matrices.
+
+**"Diagonal traversal and anti-diagonal traversal are the same"** → Main diagonal: `matrix[i][i]` — top-left to bottom-right. Anti-diagonal: `matrix[i][n-1-i]` — top-right to bottom-left. The common "diagonals of a matrix" interview problem (print all diagonals) requires tracking which diagonal group each cell belongs to: `row - col` (constant on each main diagonal), `row + col` (constant on each anti-diagonal).

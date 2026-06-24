@@ -12,6 +12,29 @@
 
 ## Why Architecture Matters
 
+### The Backstory — Where Clean Architecture Came From
+
+**Robert C. Martin** (universally known as "Uncle Bob") published *Clean Architecture: A Craftsman's Guide to Software Structure and Design* in 2017. But the ideas in the book had been building since the late 1990s.
+
+Martin was writing software at a time when enterprise Java applications were drowning in their own complexity. A "simple change" to business rules required modifications in the database layer, the UI layer, the service layer, and the test layer simultaneously — because all four layers were tightly coupled. Adding a new database meant rewriting business logic. Adding a new UI meant duplicating database access code.
+
+His insight was deceptively simple: **make dependencies point in one direction only.** Business rules should not depend on databases. Databases should not know about UI. The core of your application — what it *does* — should be completely isolated from the details of *how it does it*.
+
+He called this the **Dependency Rule**: source code dependencies can only point inward. The inner circles of architecture (business rules, entities) never depend on outer circles (databases, frameworks, UI).
+
+This was not a new idea — it drew on the earlier work of:
+- **Alistair Cockburn's Hexagonal Architecture (2005):** the "ports and adapters" pattern — business logic in the center, external systems plugged in via adapters
+- **Jeffrey Palermo's Onion Architecture (2008):** same concept, different metaphor
+- **Eric Evans' Domain-Driven Design (2003):** the domain model as the core, infrastructure as supporting concerns
+
+Martin synthesized all of these and gave them a unified name and book.
+
+**Why Flutter developers care:** Mobile apps have historically been the worst offenders at architecture. The original iOS/Android tutorials from Apple and Google put networking code directly in ViewControllers and Activities. The "quick start" approach couples everything to everything. It works for toy apps. It collapses at 10,000 lines of code.
+
+The Clean Architecture pattern is not Flutter-specific — it's used in Android (Google officially recommends it in their architecture guide), iOS (used at companies like Airbnb), and every other platform. When you learn it in Flutter, you're learning a skill that transfers everywhere.
+
+---
+
 You've already seen the problem. After 18 weeks of building apps, you likely have:
 
 ```
