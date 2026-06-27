@@ -1074,3 +1074,18 @@ flattenCitationIds(root);
 ---
 
 **Navigation**: [‚Üê Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"TypeScript type system is just like Java/C# types"** ? TypeScript has STRUCTURAL typing (shape compatibility) while Java and C# have NOMINAL typing (name-based compatibility). In TypeScript, any object with matching properties is assignable to an interface ó no explicit implements needed. This means: accidental type compatibility (two unrelated types with the same shape are interchangeable), no runtime type information (typeof returns JavaScript types, not TypeScript types), and branded types needed for nominal behavior.
+
+**"Union types are just overloaded parameters"** ? Union types (string | number | null) represent values that could be ANY of the listed types at runtime. TypeScript requires narrowing (type guards) before using union-typed values. A function accepting string | number cannot call .toUpperCase() without first checking typeof value === 'string'. This forces handling of all possible types, catching errors that untyped JavaScript would surface only at runtime.
+
+**"Template literal types are too complex for test code"** ? Template literal types enable typed endpoint paths: type Endpoint = /api/${string}/${number} ensures API utility functions receive valid URL patterns at compile time. This catches typos like /api/userss/123 during development instead of as 404 errors in test execution. The complexity investment pays for itself in reduced debugging time.
+
+**"Mapped types and conditional types are compiler magic"** ? Mapped types ({[K in keyof T]: Validator<T[K]>}) generate types from other types. In test frameworks: generate validator types from page object types, create mock types from service interfaces, and derive fixture types from test configuration. Understanding mapped types lets you build type-safe test utilities that ADAPT to application type changes automatically.
+
+**"Type narrowing with discriminated unions is over-engineering"** ? A test API response typed as { status: 'success'; data: User } | { status: 'error'; message: string } forces the test code to check status before accessing data or message. Without this, TypeScript allows response.data (which might not exist on error responses), and the test fails at runtime with undefined is not an object. Discriminated unions make impossible states unrepresentable.

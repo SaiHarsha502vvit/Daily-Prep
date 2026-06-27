@@ -1692,3 +1692,18 @@ const user = await client.get("/api/users/1", UserSchema);
 ---
 
 **Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
+
+
+---
+
+## Reality Check
+
+**"A generic HTTP wrapper is a good API client library"** ? A wrapper around fetch that adds headers and parses JSON is a utility, not a client library. An enterprise API client library includes: typed request and response interfaces, endpoint-specific methods (getUser, createOrder), error type mapping (404 ? UserNotFoundError), retry policies per endpoint, and authentication token management. The typing and domain semantics are the value, not the HTTP abstraction.
+
+**"API client libraries should be auto-generated from OpenAPI specs"** ? Auto-generated clients from OpenAPI work when: the spec is complete and accurate (not always true), the spec is versioned and published (not always done), and the generated code matches your style and patterns (never true). Generated clients are a starting point. Production clients need: custom error handling, caching strategies, and test-specific overrides that generators cannot produce.
+
+**"One API client instance per test suite"** ? A shared client instance may accumulate state: authentication tokens that expire, request interceptors added by previous tests, or connection pools at capacity. Create client instances per test or per worker with fresh configuration. The creation cost is negligible compared to the debugging cost of shared state interference.
+
+**"API client errors should be caught and returned as null"** ? Swallowing errors and returning null hides failures: a test that checks if (user !== null) passes when the API is down because null is falsy. Let API errors propagate as exceptions so tests fail with clear error messages. Only catch errors when the test specifically tests error handling: expect(apiClient.getUser(999)).rejects.toThrow(NotFoundError).
+
+**"Type safety in the API client is optional for tests"** ? Without types, a test calling apiClient.createUser({ nmae: 'John' }) (typo in name) sends a request with a wrong field and gets a 400 error that looks like a test failure rather than a test BUG. TypeScript interfaces on the client catch this at compile time. The investment in typing the API client pays for itself in the first week of use.

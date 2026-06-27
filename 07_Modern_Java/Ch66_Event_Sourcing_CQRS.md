@@ -811,3 +811,18 @@ In complex workflows, Choreography leads to a **"Distributed Monolith"** or **"P
 Event Sourcing introduces immense accidental complexity: managing Event Stores, writing asynchronous Projections, handling eventual consistency in the UI, and dealing with event versioning/upcasting. For a simple domain like desk assignments with no regulatory audit requirements and no complex business invariants, a traditional CRUD relational database will take 1/10th the time to build and maintain. Event Sourcing should be reserved for core domains where the history of state changes is highly valuable (e.g., finance, cart lifecycle).
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Event sourcing is the correct way to model all domains"** ? Event sourcing stores every state change as an immutable event. For an entity with 10000 state changes, reconstructing current state requires replaying all 10000 events (mitigated by snapshots). For simple CRUD domains like user profiles or configuration settings, event sourcing adds enormous complexity for no business value. Use it for domains where audit history IS the business requirement: financial transactions, medical records, legal documents.
+
+**"CQRS means separate read and write databases"** ? CQRS means separate read and write MODELS, not necessarily separate databases. A single database with a normalized schema for writes and materialized views for reads is CQRS. Separate databases add eventual consistency challenges. Start with CQRS at the code level (separate command and query DTOs/services), then introduce separate data stores only when read and write scaling requirements diverge.
+
+**"Events are just messages"** ? Events represent facts that HAPPENED (past tense: OrderPlaced, PaymentReceived). Commands represent intentions (imperative: PlaceOrder, ProcessPayment). This distinction matters: events cannot be rejected (they already happened), but commands can be validated and rejected. An event handler that rejects an event creates an inconsistent system because the event is already in the event store.
+
+**"Eventual consistency means it will be consistent eventually"** ? Eventual consistency means if no new updates arrive, all replicas CONVERGE to the same state. But in a live system, updates never stop arriving. The practical question is: what is the consistency WINDOW? If your read model is 50ms behind the write model, users who write and immediately read see stale data. Solutions include read-your-writes consistency (routing reads to the write model after a write) or UI optimistic updates.
+
+**"Event replay gives you a time machine"** ? Replaying events to reconstruct past state works IF the event handlers have not changed. If you deployed a new version that processes OrderPlaced differently, replaying old events through new handlers produces different state than what existed at that time. For true time-travel, you need versioned event handlers or immutable snapshots at each point in time.

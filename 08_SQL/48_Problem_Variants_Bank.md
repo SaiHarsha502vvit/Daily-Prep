@@ -717,3 +717,18 @@ Today's SQL interview preparation combines LeetCode-style pattern drilling (vari
 
 **Modern practice anchor:**
 Problem variants must include production failure scenarios â€” interview-ready engineers explain not just the solution but what breaks when the solution fails.
+
+
+---
+
+## Reality Check
+
+**"Solving the problem once means you understand it"** ? Each problem variant tests a different SQL concept. Finding the second highest salary uses DENSE_RANK. Finding employees earning more than their manager uses a self-join. Finding departments with no employees uses LEFT JOIN with IS NULL. These are PATTERN families, not individual problems. Recognize the pattern (ranking, self-comparison, existence check) and you can solve any variant.
+
+**"Problem banks should be solved in order"** ? SQL problems are not sequential — they test independent patterns. If you struggle with window functions, practice 10 window function problems in a row. If self-joins confuse you, do 10 self-join problems. Targeted practice on weak patterns produces faster improvement than sequentially working through a mixed problem bank.
+
+**"The expected output defines the only correct query"** ? Multiple queries can produce identical output with different performance characteristics. An EXISTS subquery stopping at the first match is faster than an IN subquery materializing the entire subquery result. A JOIN solution may produce duplicates requiring DISTINCT. Practice writing multiple solutions for the same problem and understanding the tradeoffs between them.
+
+**"Practice on small datasets prepares you for real databases"** ? Small datasets mask performance problems. A quadratic self-join that runs in 1ms on 100 rows takes 10 seconds on 100000 rows. When practicing, mentally evaluate: would this query scale? If it involves a correlated subquery running per row, consider whether a JOIN or window function achieves the same result with better complexity.
+
+**"SQL problems have fixed difficulty levels"** ? The difficulty of a SQL problem depends on YOUR pattern recognition. Nth highest salary is easy if you know DENSE_RANK, hard if you try nested subqueries. Consecutive sequences are easy if you know the gaps-and-islands technique, impossibly hard if you do not. Investment in learning patterns reduces the difficulty of entire problem categories simultaneously.

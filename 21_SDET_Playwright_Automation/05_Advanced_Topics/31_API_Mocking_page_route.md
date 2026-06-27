@@ -849,3 +849,18 @@ test("Shows error banner on API failure", async ({ page }) => {
 ---
 
 **Navigation**: [‚Üê Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [‚Üí Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
+
+
+---
+
+## Reality Check
+
+**"Mocking API responses makes tests deterministic"** ? Mocking makes tests deterministic against KNOWN responses. It does NOT test: actual API response format changes (your mock is now wrong), error response handling (your mock always succeeds), and performance characteristics (your mock responds instantly but the real API takes 2 seconds). Complement mocked tests with a smaller suite of unmocked tests that hit real APIs.
+
+**"page.route intercepts all network traffic"** ? page.route intercepts requests from the PAGE context (fetch, XHR, image loads). It does NOT intercept: requests from Service Workers, requests from Web Workers in some configurations, or requests made by the browser itself (favicon, prefetch). Also, route handlers run in Node.js context, not browser context ó you cannot access page DOM from a route handler.
+
+**"Mocking should return minimal data"** ? Returning minimal mock data (only the fields your test uses) can cause the application to crash on unmocked fields that it references. Return REALISTIC mock data with all fields the application expects, then override specific fields for your test scenario. Use a factory function that generates complete response objects.
+
+**"Mock all external APIs by default"** ? Mock external APIs that are: slow (adds test execution time), flaky (reduces test reliability), rate-limited (causes CI failures), or require authentication (test credentials management). Do NOT mock your OWN APIs between frontend and backend ó those test the real integration contract. The boundary for mocking is the boundary of your system.
+
+**"page.route and page.unroute are always paired"** ? If you set up a route in a test and forget to unroute, subsequent tests in the same page context inherit the route handler, causing mysterious test interference. Use test fixtures that automatically clean up routes: create the route in beforeEach and unroute in afterEach, or use page.unrouteAll as cleanup.

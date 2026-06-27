@@ -861,3 +861,18 @@ test("No fraud-pattern citation pairs exist", async ({ citationsClient }) => {
 ---
 
 **Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
+
+
+---
+
+## Reality Check
+
+**"Test automation does not need algorithmic thinking"** → Finding the shortest test execution path through a dependency graph is a topological sort problem. Detecting duplicate test scenarios across a test suite is a string similarity problem. Selecting the minimum set of tests that covers all changed code paths is a set cover problem. Algorithmic thinking is not optional for building efficient test infrastructure at scale.
+
+**"Brute force is acceptable in test code because performance does not matter"** → A test utility that compares two arrays with nested loops runs in O(n squared). Called once with 10 items, it takes microseconds. Called by 500 tests with 1000 items each, it adds minutes to the suite. Test code performance matters because it multiplies across the entire test suite. Use appropriate data structures (Set for membership checks, Map for lookups) in test utilities.
+
+**"Sorting and searching algorithms are irrelevant to testing"** → Custom comparators for sorting test results, binary search for finding elements in sorted test data, and hash-based lookups for test configuration are daily operations. Understanding that Array.sort without a comparator sorts lexicographically (10 comes before 9) prevents subtle test data ordering bugs.
+
+**"Graph algorithms are too theoretical for SDETs"** → Test dependency graphs, page navigation flows, and API call chains are all graphs. Detecting circular dependencies between test fixtures is cycle detection. Finding all tests affected by a code change is reachability analysis. Building the minimum set of API calls to reach a test state is shortest path. These are practical applications of graph algorithms that SDETs encounter regularly.
+
+**"Algorithmic optimization is premature in test code"** → Optimization is premature when the code is fast enough. But test suites that take 60 minutes instead of 10 minutes delay deployments by 50 minutes per pipeline run. Across 20 daily deployments, that is 16 hours of developer wait time per day. Optimizing test infrastructure has a direct and measurable ROI in developer productivity.

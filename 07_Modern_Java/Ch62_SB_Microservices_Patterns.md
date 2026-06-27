@@ -1304,3 +1304,18 @@ _Next: Part 21 - Cloud Deployment (AWS/Azure/GCP Integration)_
 HALF-OPEN is dangerous because it's a **probe state** — you're testing if the downstream service has recovered. **Too many requests in HALF-OPEN:** If you allow 100 probe requests and the service is still down, all 100 fail, wasting resources and potentially cascading the failure to YOUR callers (they're waiting for your timeouts). You also hammer the recovering service with 100 requests when it can barely handle 1 — preventing recovery. **Too few requests:** If you allow only 1 probe and it fails due to a transient network glitch (not because the service is actually down), the circuit opens again for another `waitDurationInOpenState` (e.g., 60s). The service may have recovered at second 2, but you don't retry until second 62 — unnecessary downtime. **Best practice:** `permittedNumberOfCallsInHalfOpenState: 3-5`, `slowCallDurationThreshold: 2s`, `slowCallRateThreshold: 80`. If 3 out of 5 probes succeed within 2s, close the circuit. Resilience4j also supports `automaticTransitionFromOpenToHalfOpenEnabled: true` to avoid needing a request to trigger the transition.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Circuit breaker prevents cascading failures"** ? A circuit breaker stops calling a FAILED service, but it does not handle what YOUR service should do when the dependency is unavailable. Without a fallback strategy (cached data, default response, queue for later retry), your service returns 503 to the caller, who also needs a fallback, creating the cascade you tried to prevent. Circuit breaker is the detection mechanism; fallback is the recovery mechanism.
+
+**"Saga pattern solves distributed transactions"** ? Sagas provide eventual consistency, not transactional consistency. Between saga steps, the system is in a partially committed state visible to other operations. Compensating actions (rollbacks) may fail themselves, requiring manual intervention. A saga that books a flight, then fails to book a hotel, then fails to cancel the flight, leaves the system in an inconsistent state that requires human resolution.
+
+**"API Gateway is just a reverse proxy"** ? A reverse proxy forwards requests. An API Gateway adds: authentication, rate limiting, request transformation, response aggregation, protocol translation (REST to gRPC), SSL termination, and API versioning. But putting too much logic in the gateway creates a single point of failure and a bottleneck. Keep the gateway thin � authentication and routing only. Business logic belongs in services.
+
+**"Service discovery eliminates configuration"** ? Service discovery (Eureka, Consul) automates finding service instances, but it introduces its own operational complexity: what happens when the discovery server is down? (Services cache the last known registry.) What about split-brain in a discovery cluster? What about stale registrations from crashed instances? Health check intervals mean newly deployed instances are invisible for 30 seconds and crashed instances remain registered for 30 seconds.
+
+**"Event-driven architecture is always better than synchronous"** ? Events add latency (message broker round-trip), complexity (ordering, deduplication, dead letter queues), and debugging difficulty (no request-response trace). A user clicking Submit and waiting 5 seconds for an event to propagate through 3 services is worse UX than a synchronous 200ms response. Use events for operations where the caller does not need an immediate result: notifications, analytics, eventual updates.

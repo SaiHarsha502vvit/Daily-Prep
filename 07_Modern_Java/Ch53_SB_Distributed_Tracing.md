@@ -1732,3 +1732,18 @@ tracestate: key1=value1,key2=value2
 Kafka doesn't automatically propagate trace context the way HTTP does. HTTP propagation works because Sleuth/Micrometer instruments `RestTemplate`/`WebClient` to inject trace headers. For Kafka, you need **explicit instrumentation**: (1) The Kafka producer must inject trace headers into the Kafka message headers (Sleuth does this automatically if `spring-cloud-sleuth-zipkin` + `spring-kafka` are on the classpath). (2) The consumer must extract those headers and create a child span. The break happens when: (a) the consumer doesn't have the tracing dependency, (b) a non-Spring producer writes to Kafka without trace headers, or (c) you're using `KafkaTemplate` in a way that bypasses Sleuth's instrumentation (e.g., direct `Producer` API). Fix: ensure both producer and consumer have `spring-cloud-starter-sleuth` (or Micrometer Tracing + Brave Kafka instrumentation) on the classpath.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Logging is enough for debugging distributed systems"** ? In a microservices architecture, a single user request can touch 5-10 services. Logs from each service are stored separately. Without a trace ID propagated across all services, correlating log lines from one request across 10 services is impossible. Distributed tracing provides the causal chain — Service A called Service B which called Service C — that logs alone cannot show.
+
+**"Adding tracing to Spring Boot requires significant code changes"** ? Spring Boot 3.x with Micrometer Tracing auto-instruments: RestTemplate, WebClient, JDBC, JMS, Kafka, and Spring MVC. Adding spring-boot-starter-actuator plus micrometer-tracing-bridge-otel (OpenTelemetry) and an exporter dependency enables tracing with ZERO code changes. Trace context propagates automatically through Spring-managed HTTP clients and message listeners.
+
+**"Sampling 100 percent of traces is necessary for accuracy"** ? Tracing every request in a system handling 10000 requests per second generates massive data volumes and export overhead. Tail-based sampling (sample only traces with errors or high latency) captures the interesting traces while discarding the 99 percent that succeeded normally. Head-based sampling at 1-10 percent is sufficient for understanding system topology and latency distributions.
+
+**"Trace IDs and span IDs are the same thing"** ? A trace ID identifies the entire request journey across all services. A span ID identifies ONE operation within that journey (one HTTP call, one database query, one message send). A trace contains multiple spans in a parent-child tree. The trace ID stays the same across all services; each service creates new span IDs for its operations.
+
+**"OpenTelemetry replaced all other tracing standards"** ? OpenTelemetry is the convergence of OpenTracing and OpenCensus, and it is the current standard. But many production systems still use Zipkin (B3 propagation format) or AWS X-Ray (X-Amzn-Trace-Id format). Spring Boot supports all of these through Micrometer Tracing bridges. When integrating with legacy systems, you may need to support multiple propagation formats simultaneously using CompositeTextMapPropagator.

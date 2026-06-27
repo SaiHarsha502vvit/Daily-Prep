@@ -1365,3 +1365,18 @@ _"The journey of a thousand algorithms begins with a single data structure."_ ðŸ
 ---
 
 > **Navigation**: [< Previous](Ch27_Pre_Spring_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch31_SB_Core_Part1.md)
+
+
+---
+
+## Reality Check
+
+**"Amortized O(1) means every operation is fast"** ? Amortized analysis guarantees the AVERAGE over a sequence is O(1), not that any individual operation is fast. ArrayList.add is amortized O(1), but a single add can take O(n) during resize. In real-time systems like trading or game loops, one slow operation in 1000 is unacceptable — use pre-allocated arrays instead.
+
+**"Graph algorithms work the same regardless of representation"** ? Adjacency matrix uses O(V squared) space and O(1) edge lookup but O(V) neighbor iteration. Adjacency list uses O(V+E) space and O(degree) edge lookup but O(degree) neighbor iteration. BFS on a sparse graph with E approximately equal to V runs O(V squared) with a matrix but O(V) with a list. Wrong representation choice can add an entire order of magnitude.
+
+**"Dynamic programming always needs a 2D table"** ? Many DP problems labeled as 2D actually only need the previous row. Fibonacci does not need an array — two variables suffice. Knapsack with O(nW) space can be reduced to O(W) by iterating backwards through the weight dimension. Space optimization is not premature — it is the difference between fitting in L1 cache or thrashing main memory.
+
+**"Greedy algorithms are just heuristics that might fail"** ? Greedy algorithms are provably optimal for specific problem structures — matroid intersection, submodular function maximization, and problems satisfying the greedy-choice property plus optimal substructure. Dijkstra is greedy and provably correct for non-negative weights. The discipline is proving the greedy choice is safe, not guessing.
+
+**"Parallelizing an algorithm makes it faster by the number of cores"** ? Amdahl law: if 10 percent of your algorithm is sequential, maximum speedup is 10x regardless of core count. Java parallelStream uses the common ForkJoinPool shared across the entire JVM. A slow stream operation in one module starves all other parallel streams. For arrays under roughly 10000 elements, the overhead of parallelization exceeds the speedup.

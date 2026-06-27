@@ -788,3 +788,18 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ---
 
 > **Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
+
+
+---
+
+## Reality Check
+
+**"Java passes objects by reference"** ? Java ALWAYS passes by value. For objects, it passes the value of the REFERENCE (a pointer copy). Reassigning a parameter inside a method has no effect on the caller variable. You can mutate the object the reference points to, but you cannot change which object the caller variable refers to. This distinction is fundamental and frequently tested in interviews.
+
+**"final means immutable"** ? final on a variable means the reference cannot be reassigned. A final List of String can still have elements added, removed, or replaced — the list is fully mutable. For actual immutability, use Collections.unmodifiableList or List.of. final on a class means it cannot be subclassed — completely different semantic.
+
+**"String.intern is free memory savings"** ? intern stores strings in the string pool which moved to heap in Java 7+. The pool uses a fixed-size hashtable with default 60013 buckets. Interning millions of distinct strings causes hash collisions that degrade lookup to O(n). The pool is never garbage collected until the classloader is unloaded. Use it for a bounded set of repeated values, not as a general deduplication strategy.
+
+**"Checked exceptions force better error handling"** ? Checked exceptions force callers to either catch or declare — but the most common response is catch Exception e then throw new RuntimeException wrapping e, which is strictly worse than unchecked exceptions because it wraps the stack trace and hides the root cause. Modern Java frameworks like Spring use unchecked exceptions exclusively because checked exceptions couple implementation details to API signatures.
+
+**"equals and == behave consistently for wrapper types"** ? For Integer values between -128 and 127, == returns true because the JVM caches these instances via IntegerCache. Integer a = 127 and Integer b = 127, a == b is true. Integer a = 128 and Integer b = 128, a == b is false. This cache boundary causes bugs that appear only with large values. Same applies to Short, Byte, Character, and Long.

@@ -519,3 +519,18 @@ Technical interviews evolved from pure trivia Q&A (1990s) to systems-design disc
 
 **Modern practice anchor:**
 Production mindset means monitoring your monitoring â€” false positives breed ignore, and ignored alerts miss real incidents.
+
+
+---
+
+## Reality Check
+
+**"Explaining SQL concepts technically impresses interviewers"** ? Technical accuracy without business context falls flat. Saying an index is a B-tree data structure for O(log n) lookup is correct but unhelpful. Saying we add an index on the customer_email column because our login query searches by email 10000 times per minute and the table scan was causing 2-second page loads demonstrates understanding of WHY indexes matter in practice.
+
+**"Interviewers want the most complex solution"** ? Interviewers want the RIGHT solution: correct, readable, and appropriate for the context. Starting with a simple GROUP BY and explaining how you would optimize for production (adding indexes, considering materialized views, evaluating partitioning) shows more depth than jumping to a complex window function query. Show your thought process, not just the end result.
+
+**"Database knowledge is not needed for software engineering interviews"** ? Backend engineering interviews at mid-to-senior level consistently include: schema design (design a schema for X), query optimization (this query is slow, why?), and concurrency scenarios (two users update the same row, what happens?). Candidates who only know ORM syntax without understanding the SQL underneath fail these questions consistently.
+
+**"Memorizing SQL syntax is sufficient preparation"** ? Interviewers test REASONING, not syntax. Explain WHY you choose LEFT JOIN over INNER JOIN (to preserve unmatched rows). Explain WHY you put a condition in WHERE vs HAVING (performance — WHERE filters before grouping). Explain WHY you use EXISTS instead of IN (performance with NULLs and large subquery results). The explanation reveals depth; the syntax reveals practice.
+
+**"Answering quickly shows competence"** ? Taking 30 seconds to think about the problem, asking one clarifying question about edge cases (are there NULLs? what if there are ties?), and then writing a structured solution shows more competence than immediately writing a query that misses corner cases. Professionals think before coding — interviewers value that deliberateness.

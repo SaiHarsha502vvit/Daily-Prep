@@ -1157,3 +1157,18 @@ The JPA/Hibernate era (2000s-2010s) dramatically increased Java developer produc
 
 **Modern practice anchor:**
 Today, Spring Boot's auto-configuration manages HikariCP pools, JPA's @Transactional boundary management is well-understood, and tools like Spring Data JPA's @EntityGraph and @Query with JOIN FETCH give developers explicit control over SQL generation. The lessons from these 2000s production disasters are codified in Spring Boot's default configurations (open-in-view disabled by default, connection pool sized appropriately).
+
+
+---
+
+## Reality Check
+
+**"Database encryption at rest means data is secure"** ? Encryption at rest protects against physical disk theft. It does NOT protect against: SQL injection (the database decrypts for authorized queries), compromised application credentials (the application has decryption access), or database administrators (who have decryption keys). Column-level encryption with application-managed keys adds defense-in-depth for sensitive fields like SSN or payment data, but adds query complexity since you cannot search encrypted columns.
+
+**"Cloud database managed services handle everything"** ? Managed databases (RDS, Cloud SQL) handle: OS patching, storage management, automated backups, and minor version upgrades. You still manage: query performance, schema design, connection pool sizing, monitoring and alerting, major version upgrades (which may require downtime), parameter tuning (innodb_buffer_pool_size, work_mem), and cost optimization (right-sizing instances).
+
+**"Horizontal sharding scales infinitely"** ? Sharding distributes data across multiple database instances by a shard key. Cross-shard queries (JOIN across shards) are extremely expensive or impossible. Resharding (changing the shard key or adding shards) requires data migration. Uneven data distribution (hot shards) creates bottlenecks. Shard management adds operational complexity: monitoring N databases, coordinating schema migrations, and handling shard failures independently.
+
+**"Materialized views are always faster than complex queries"** ? Materialized views precompute results but become stale until refreshed. REFRESH MATERIALIZED VIEW runs the underlying query (which is slow by definition — that is why you materialized it). In PostgreSQL, REFRESH locks the view for the duration. CONCURRENTLY refresh avoids the lock but requires a unique index and takes longer. The refresh strategy (how often, triggered vs scheduled) is the key design decision.
+
+**"Connection pooling at the application level is sufficient"** ? Application-level pools (HikariCP) pool connections within one JVM. In a Kubernetes deployment with 20 pods each having a pool of 10 connections, the database sees 200 connections. Each connection consumes roughly 10MB of database server memory. A server-level pooler like PgBouncer or ProxySQL multiplexes hundreds of application connections into tens of database connections, dramatically reducing database memory usage.

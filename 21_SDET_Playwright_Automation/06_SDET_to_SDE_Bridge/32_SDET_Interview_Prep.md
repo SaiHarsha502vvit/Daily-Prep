@@ -955,3 +955,18 @@ You read logs systematically, isolate hypotheses by likelihood, know where to fi
 ---
 
 **Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"SDET interviews are easier than SDE interviews"** → At top companies (Microsoft, Google, Amazon), SDET interviews include: data structures and algorithms (same difficulty as SDE), system design for test infrastructure (design a distributed test execution system), and testing domain expertise (test plan for a complex feature, debugging a flaky test, designing a test framework). The bar is SDE-equivalent with additional testing depth.
+
+**"Knowing one automation tool is enough"** → Interviewers evaluate: framework design ability (not tool usage), language proficiency (TypeScript/Java fluency), API testing (REST, GraphQL), and CI/CD understanding. Tool-specific knowledge (Playwright API) matters less than demonstrating you can design a maintainable test framework from scratch using ANY tool. The transferable skills are architecture and engineering, not API memorization.
+
+**"Practice coding problems on LeetCode"** → LeetCode builds algorithm skills but SDET interviews also include: design questions (design a test data management system), testing questions (how would you test a parking lot system), debugging questions (given this flaky test, diagnose the root cause), and behavioral questions (tell me about a time you caught a critical bug). Balance algorithm practice with testing scenario practice.
+
+**"A strong portfolio replaces interview preparation"** → A portfolio demonstrates what you HAVE done. Interviews evaluate how you THINK: can you approach a novel problem systematically, communicate your reasoning, handle ambiguity, and adjust based on feedback? A candidate with a strong portfolio who cannot whiteboard a solution to a new problem fails interviews. Practice thinking out loud while solving problems.
+
+**"Failing an interview means you are not qualified"** → Interviews are probabilistic: the question set, the interviewer expectations, your energy level, and problem familiarity all affect the outcome. A candidate who fails one interview loop may pass the next with different questions. Interview failure indicates insufficient preparation or poor fit with that specific interview, not lack of qualification.

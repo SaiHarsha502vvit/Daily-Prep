@@ -364,3 +364,18 @@ Today, every modern web framework (Django ORM, Rails ActiveRecord, Prisma) gener
 
 **Modern practice anchor:**
 Today, read-replica databases allow running analytics on replicas while DML targets the primary, and ORMs with soft-delete (Django's `is_deleted`, Rails `paranoia`) prevent accidental hard deletes in production pipelines.
+
+
+---
+
+## Reality Check
+
+**"UPDATE without WHERE updates one row"** ? UPDATE without WHERE updates EVERY row in the table. DELETE without WHERE deletes EVERY row. This is the most common destructive mistake in SQL. Always write the WHERE clause FIRST, test with SELECT using the same WHERE, then convert to UPDATE or DELETE. Production databases should restrict direct UPDATE/DELETE access and require WHERE clauses via linting tools.
+
+**"INSERT INTO ... VALUES is the fastest way to load data"** ? Single-row INSERT in a loop is the SLOWEST approach. Each INSERT is a separate transaction with its own commit and WAL/redo log write. Bulk INSERT with multiple value sets in one statement is 10-50x faster. COPY (PostgreSQL) or LOAD DATA INFILE (MySQL) for file-based loading is 100x faster because it bypasses SQL parsing entirely. For initial data loads, disable indexes, bulk load, then rebuild indexes.
+
+**"Transactions make everything safe"** ? Transactions provide atomicity (all-or-nothing) and isolation (other transactions see a consistent view). But long-running transactions hold locks that block other operations. A transaction that reads data, waits for user input, then writes — holding a lock for minutes — blocks all other writes to those rows. Keep transactions short. Do reads outside the transaction, compute results, then open a transaction only for the writes.
+
+**"MERGE/UPSERT eliminates the need for existence checks"** ? MERGE (SQL Server) and INSERT ON CONFLICT (PostgreSQL) handle insert-or-update atomically, but they can still have race conditions with concurrent operations in some isolation levels. Also, MERGE in SQL Server can fire triggers multiple times for the same row in unexpected ways. Test MERGE behavior under concurrent load before relying on it for high-throughput upsert patterns.
+
+**"Deleting data frees disk space"** ? DELETE removes rows from the logical view but does not immediately free disk space. The database marks pages as reusable but the file does not shrink. In PostgreSQL, VACUUM reclaims space for reuse within the table but does not return it to the OS — only VACUUM FULL does (which locks the table exclusively). In MySQL InnoDB, OPTIMIZE TABLE rebuilds the table file. Without periodic maintenance, deleted data still occupies disk.

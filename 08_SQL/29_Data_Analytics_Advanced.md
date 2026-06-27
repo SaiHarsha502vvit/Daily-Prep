@@ -633,3 +633,18 @@ Today's advanced SQL analytics implements statistical testing (t-tests, chi-squa
 
 **Modern practice anchor:**
 Production analytics requires statistical rigor at experimental design phase — not post-hoc correction of flawed experiments.
+
+
+---
+
+## Reality Check
+
+**"A/B test results are valid after a few days"** ? Statistical significance requires sufficient sample size, which depends on: baseline conversion rate, minimum detectable effect, and desired confidence level. A 2 percent conversion rate with a 10 percent relative improvement requires roughly 39000 observations per variant. Running the test for 3 days with 500 users produces noise, not signal. Peeking at results before reaching significance inflates false positive rates.
+
+**"Funnel analysis shows where users drop off"** ? Funnel analysis shows WHAT percentage drops at each step but not WHY. A 60 percent drop at checkout could be: price shock, complex form, payment failures, page load timeout, or users comparison-shopping. Combine funnel metrics with session recordings, error logs, and user surveys to understand the reason behind the drop. Quantitative data reveals the problem; qualitative data reveals the cause.
+
+**"Retention metrics predict business health"** ? Retention measures whether users RETURN, not whether they DERIVE VALUE. A user who logs in daily to check if a bug is fixed has perfect retention but zero satisfaction. Combine retention with engagement depth metrics: feature usage, time-in-app, conversion events. Healthy retention is users returning because they get value, not because they are stuck.
+
+**"Time series analysis requires specialized databases"** ? SQL window functions handle most time series analysis: LAG and LEAD for period comparisons, running averages with ROWS BETWEEN, gap detection with date arithmetic, and seasonality with EXTRACT and GROUP BY. TimescaleDB and InfluxDB optimize for high-frequency ingestion (millions of data points per second), but analytical queries on daily or hourly aggregates work fine in PostgreSQL.
+
+**"Machine learning replaces SQL analytics"** ? ML models are black boxes that predict but do not explain. A model predicting customer churn with 85 percent accuracy does not tell you WHY customers churn. SQL-based cohort analysis, segmentation, and funnel analysis provide the explanatory understanding. Use SQL analytics to formulate hypotheses about what matters, then ML to scale predictions based on those hypotheses. ML without analytical foundation is automated guessing.

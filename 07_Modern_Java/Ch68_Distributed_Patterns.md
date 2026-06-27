@@ -715,3 +715,18 @@ A single Redis node is a single point of failure. If the master crashes _after_ 
 Because of the **At-Least-Once** delivery guarantee. If the background publisher successfully sends the message to Kafka, but its server crashes _before_ it can update the `published = true` flag in the database, it will restart, read the table, and publish the exact same event again. The consumer is guaranteed to see every message _at least once_, but will likely see duplicates during failure recoveries.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Distributed systems are just networked applications"** ? The fallacies of distributed computing are not theoretical: the network IS unreliable (packets drop), latency IS nonzero (cross-region calls take 60-200ms), bandwidth IS limited (serializing large objects saturates links), and the network IS insecure (man-in-the-middle without mTLS). Every remote call can fail in ways local calls cannot: timeout, partial failure, duplicate delivery, and out-of-order messages.
+
+**"Idempotency is just handling duplicate requests"** ? Idempotency means the EFFECT of a repeated operation is the same as doing it once. For a payment endpoint, idempotency requires: storing the idempotency key with the result, checking for existing results before processing, and returning the cached result for duplicates. Without this, a network timeout causes the client to retry, and the customer is charged twice. Idempotency is a correctness requirement, not an optimization.
+
+**"CAP theorem means choose two of three"** ? CAP is more nuanced: in the ABSENCE of a network partition, you can have both consistency and availability. The choice between C and A only matters DURING a partition. Most systems are CP (reject requests during partition to stay consistent) or AP (serve potentially stale data during partition to stay available). But partitions are rare — the real tradeoff in practice is between consistency and LATENCY (the PACELC theorem).
+
+**"Leader election is a solved problem"** ? Leader election algorithms (Raft, Paxos, ZAB) are proven correct but their implementations have edge cases: clock skew causing split-brain, network partitions causing multiple leaders, and slow followers causing leader re-election storms. Even using a coordination service like ZooKeeper or etcd, your application must handle: becoming leader mid-operation, losing leadership while holding locks, and the window between losing leadership and detecting it.
+
+**"Retry with exponential backoff handles all transient failures"** ? Exponential backoff prevents overwhelming a recovering service, but without jitter (randomization), all clients retry at the same exponential intervals creating thundering herd spikes. Also, retrying is only safe for IDEMPOTENT operations — retrying a non-idempotent payment creates duplicate charges. And retrying indefinitely keeps connections open, eventually exhausting connection pools. Set a maximum retry count and a circuit breaker.

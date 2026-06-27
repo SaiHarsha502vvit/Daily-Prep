@@ -1374,3 +1374,18 @@ _Continue to Part 13: Industry-Level Real Projects_
 ---
 
 > **Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
+
+
+---
+
+## Reality Check
+
+**"Data structures knowledge is irrelevant for Spring Boot developers"** ? Choosing between HashMap and TreeMap for an in-memory cache changes lookup from O(1) to O(log n). Using a LinkedList where an ArrayList would do makes iteration 10x slower due to cache misses. Implementing rate limiting requires understanding sliding window algorithms. Spring Boot abstracts infrastructure, not algorithmic thinking.
+
+**"Database queries replace in-memory data structures"** ? Databases optimize for durability and concurrent access, not in-process speed. A database round-trip takes 1-5 milliseconds. An in-memory HashMap lookup takes 50 nanoseconds — five orders of magnitude faster. For frequently accessed, rarely changed data (configuration, feature flags, permission maps), loading into memory and querying in-process is orders of magnitude faster than hitting the database per request.
+
+**"Spring handles concurrency so I do not need concurrent data structures"** ? Spring makes beans SINGLETON by default — one instance shared across all request threads. If your singleton bean has a HashMap field that gets read and written by concurrent requests, you get ConcurrentModificationException or silent data corruption. Use ConcurrentHashMap, or make the bean @Scope(prototype), or make the field ThreadLocal.
+
+**"Algorithm optimization does not matter in web applications"** ? A controller that processes a list of 10000 items with an O(n squared) algorithm takes 100 million operations. At 100 requests per second, that is 10 billion operations per second. Replacing with an O(n log n) algorithm reduces to 130000 operations per request — a 770x improvement. Backend performance is cumulative: small inefficiencies multiplied by request volume become visible bottlenecks.
+
+**"Caching always uses Redis or Memcached"** ? Distributed caches add 1-3 milliseconds network round-trip per lookup. A local in-process cache with Caffeine or Guava returns in microseconds. For data that is the same across all instances (country codes, config values, exchange rates), a local cache with time-based expiration is simpler and faster than Redis. Use distributed caches when instances MUST share state or cache size exceeds JVM heap.

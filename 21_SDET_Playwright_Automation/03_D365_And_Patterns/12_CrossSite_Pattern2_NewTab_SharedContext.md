@@ -1007,3 +1007,18 @@ Never rely purely on `waitForLoadState` when SSO redirects are involved in a new
 ---
 
 **Navigation**: [← Chapter 11: Sequential Flow](./11_CrossSite_Pattern1_Sequential_Flow.md) | [Index](../00_INDEX.md) | [→ Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md)
+
+
+---
+
+## Reality Check
+
+**"page.waitForEvent('popup') catches all new tabs"** ? waitForEvent('popup') only catches tabs opened by window.open or target=_blank links. Tabs opened by browser extensions, JavaScript that modifies window.location, or server-side redirects with new windows may not trigger the popup event. Always race the popup event listener with a click action: const [popup] = await Promise.all([page.waitForEvent('popup'), page.click(link)]).
+
+**"New tabs in the same context share all state"** ? Tabs in the same BrowserContext share cookies, localStorage origin-scoped storage, and service workers. But they do NOT share: in-memory JavaScript state, Web Worker instances, or IndexedDB locks. A web application that uses in-memory state management (React context, Vuex store) has independent state per tab even in the same browser context.
+
+**"Closing a popup tab is simple cleanup"** ? Closing a popup tab that has unsaved form data may trigger a beforeunload dialog that Playwright cannot dismiss automatically. Add page.on('dialog', dialog => dialog.accept()) before closing. Also, closing a tab that initiated a long-running operation (file upload, API call) may leave the server-side operation orphaned.
+
+**"The parent page remains stable while working on a popup"** ? Background tabs may receive: WebSocket messages that update state, setTimeout callbacks that modify the DOM, or server-push events that show notifications. When you switch back to the parent page after working on a popup, the page state may have changed. Re-verify the parent page state before continuing assertions.
+
+**"SharedContext means tests can depend on each other"** ? Shared context in the SAME test allows multi-tab interactions. But shared context between DIFFERENT tests creates order-dependent, non-parallelizable tests. Each test should be independently runnable. If test B depends on the state created by test A, a failure in test A cascades to test B, making root cause analysis harder.

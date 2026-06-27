@@ -1024,3 +1024,18 @@ test("Citations grid loads within acceptable OData thresholds", async ({
 ---
 
 **Navigation**: [← Chapter 16: StorageState Chaining](./16_CrossSite_Pattern6_StorageState_Chaining.md) | [Index](../00_INDEX.md) | [→ Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md)
+
+
+---
+
+## Reality Check
+
+**"waitForLoadState('networkidle') means the page is ready"** ? networkidle fires when no network requests have been made for 500ms. But: single-page applications may have lazy-loaded components that fire requests after user interaction, WebSocket connections are not counted as network activity, and long-polling requests may keep the network permanently non-idle. Wait for specific DOM elements that indicate readiness rather than relying on network silence.
+
+**"Fixed timeouts (await page.waitForTimeout) are acceptable"** ? Fixed timeouts are the primary source of test flakiness: too short causes failures on slow CI runners, too long wastes execution time. Replace every waitForTimeout with a condition-based wait: waitForSelector, waitForResponse, or expect with polling. The only acceptable use of fixed timeout is as a last-resort debounce after a known animation that has no programmatic completion signal.
+
+**"Slow applications need longer test timeouts"** ? Increasing timeouts masks performance problems. If a page takes 15 seconds to load in test, it takes 15 seconds in production too � that is a bug, not a test configuration issue. Set timeouts to the ACCEPTABLE performance threshold (page loads in 3 seconds) and let tests fail when the application is too slow. This turns your test suite into a performance monitoring tool.
+
+**"Race conditions in tests are caused by bad test code"** ? Some race conditions are in the APPLICATION: a button that is clickable before its event handler is attached, a form that submits before validation completes, or a list that renders before its data loads. These are real bugs that real users experience. Tests that expose race conditions are finding application defects, not test defects.
+
+**"D365 applications follow standard web timing patterns"** ? Dynamics 365 uses a custom rendering engine with: ribbon controls that load asynchronously, form sections that populate incrementally, business rules that fire after field changes with variable delay, and modal dialogs that animate in over 300-500ms. Generic web testing strategies (wait for DOM ready) are insufficient. D365 testing requires waiting for specific Xrm SDK events or polling for control-specific readiness states.

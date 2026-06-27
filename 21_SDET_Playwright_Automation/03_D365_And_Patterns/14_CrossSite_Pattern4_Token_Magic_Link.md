@@ -918,3 +918,18 @@ Testing this edge case manually is notoriously difficult (requiring testers to s
 ---
 
 **Navigation**: [← Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md) | [Index](../00_INDEX.md) | [→ Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md)
+
+
+---
+
+## Reality Check
+
+**"Testing magic link flows requires an email inbox"** ? You do not need a real email service. Approaches: intercept the API call that sends the email and extract the token from the request payload, query the database directly for the token, or use a test-mode API endpoint that returns the magic link without sending email. Real email services (Mailinator, Guerrilla Mail) add flakiness from delivery delays and rate limits.
+
+**"Token extraction from URLs is reliable"** ? Tokens in URLs may be: URL-encoded (spaces become %20 or +), Base64-encoded (containing / and + that are URL-special), or contain query parameters that your URL parsing splits incorrectly. Use URL and URLSearchParams APIs for parsing rather than string splitting. Also, tokens may have short expiry � extract and use them immediately.
+
+**"Magic link authentication is simpler to test than password login"** ? Magic links add testing complexity: token generation timing, token expiry validation, single-use enforcement (second click should fail), cross-device scenarios (link opened on different device than requested), and deep linking (magic link should land on the intended page, not just the home page). Each of these is a distinct test case that password login does not require.
+
+**"Token-based auth in tests can use hardcoded tokens"** ? Hardcoded tokens expire. JWT tokens have an exp claim that makes them invalid after a fixed time. API keys may be rotated. A test suite with hardcoded tokens works for weeks then suddenly fails on a Monday morning when the token expires. Generate tokens dynamically in test setup using the same mechanism the application uses.
+
+**"Testing SSO flows requires the identity provider"** ? SSO testing can bypass the identity provider: mock the SAML response or OAuth callback with a pre-signed assertion, use the identity provider test mode or sandbox, or intercept the redirect and inject a valid token. Depending on a production identity provider for tests creates: rate limiting issues, test account management burden, and network dependency that makes tests flaky.

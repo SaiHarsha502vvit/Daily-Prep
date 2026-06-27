@@ -903,3 +903,18 @@ if (expectedValue === true) {
 - Write a pairwise combinatorial test covering 5 boolean flags with 8 configurations using a pairwise generator.
 - Add a stale flag detection test that reads the flag provider API and asserts no flag is > 90 days unused.
 - Integrate the flag provider fixture into `playwright.config.ts` so every project inherits it automatically via `globalSetup`.
+
+
+---
+
+## Reality Check
+
+**"Feature flags are just if-else statements"** ? Feature flags represent: gradual rollouts (5 percent of users see the new feature), A/B experiments (variant A vs variant B with metric tracking), kill switches (disable a broken feature instantly), and entitlements (premium users see additional features). Testing each type requires different strategies: toggle-based tests for kill switches, variant-based tests for experiments, and segment-based tests for rollouts.
+
+**"Testing with all flags on and all flags off covers everything"** ? The combinatorial explosion of N feature flags creates 2-to-the-N possible configurations. Two flags interacting (new checkout with new payment processor) can produce bugs that neither flag alone surfaces. Test the MEANINGFUL combinations: flags that affect the same user flow, flags that modify shared components, and the production default configuration.
+
+**"Feature flag state can be set in the test"** ? Client-side feature flags can be overridden in tests by: injecting flag values into localStorage, intercepting the flag service API response, or setting environment variables. Server-side feature flags require: API calls to the flag service (LaunchDarkly, Split), database updates, or test-specific configuration. The approach depends on where the flag is evaluated.
+
+**"Feature flags should be removed after full rollout"** ? Old feature flags that remain in code after full rollout become dead code paths that still need testing, increase cognitive load for developers reading the code, and accumulate as technical debt. Establish a flag lifecycle: create, test, rollout, verify, REMOVE. Track flag age and alert when flags exceed their expected lifetime.
+
+**"Feature flag testing is a CI concern only"** ? Feature flags in production can be changed WITHOUT deployment. A flag toggled at 3 PM can break a feature that passed all CI tests. Production monitoring must verify features work correctly AFTER flag changes. Synthetic monitoring (running test scenarios against production continuously) catches flag-related regressions that CI cannot.

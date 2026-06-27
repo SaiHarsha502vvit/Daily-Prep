@@ -1165,3 +1165,18 @@ Query performance problems are as old as SQL itself. Early databases ran on expe
 
 **Modern practice anchor:**
 Today, every major ORM (Hibernate, Django, ActiveRecord, EF Core) includes query logging, N+1 detection tools, and JOIN FETCH / eager loading options â€” a direct response to the decade of production pain caused by these patterns.
+
+
+---
+
+## Reality Check
+
+**"Database locks are always a problem"** ? Locks are the mechanism that ensures data consistency. A SELECT FOR UPDATE correctly locks a row during a read-modify-write cycle to prevent lost updates. The problem is UNINTENDED locks: queries that accidentally lock entire tables (missing index causes table scan with row locks escalating to table lock), or transactions held open during user think-time. Understand lock GRANULARITY (row vs page vs table) and lock DURATION (transaction scope).
+
+**"Connection pooling is a set-and-forget configuration"** ? Pool size depends on: concurrent request count, average query duration, and database max_connections. A pool of 50 connections with queries averaging 10ms handles 5000 queries per second. But if one slow query takes 5 seconds, it holds a connection for 500x longer, starving other requests. Monitor pool utilization, wait time, and timeout events. Adjust pool size based on production metrics, not defaults.
+
+**"Schema migrations should run during deployments"** ? Large-scale migrations (adding a column to a billion-row table, rebuilding an index) can take hours and lock the table. Running them during deployment means the deployment takes hours or the application serves errors during migration. Separate schema migrations from application deployments: migrate first with backward-compatible changes, deploy new code that uses the new schema, then clean up the old schema in a subsequent migration.
+
+**"Deadlocks are rare and can be ignored"** ? Deadlocks occur when two transactions wait for each other's locks. The database automatically detects and kills one (the victim). In high-concurrency systems, deadlocks happen multiple times per minute. The application must: catch the deadlock exception, retry the transaction, and log the occurrence. Consistent lock ordering (always update tables in the same order across transactions) prevents most deadlocks.
+
+**"Partitioning makes queries faster"** ? Partitioning by range (e.g., by month) speeds up queries that include the partition key in the WHERE clause because the optimizer skips irrelevant partitions (partition pruning). But queries WITHOUT the partition key scan ALL partitions — potentially slower than a single-table index scan. Partition only tables where queries consistently filter by the partition key and where the table is too large for indexes alone.

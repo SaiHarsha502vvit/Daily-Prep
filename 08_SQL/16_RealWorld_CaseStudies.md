@@ -1227,3 +1227,18 @@ Database disasters pre-2010 were often caused by hardware failures or natural di
 
 **Modern practice anchor:**
 Modern production systems implement circuit breakers, blue-green deployments, automated backup verification, and chaos engineering to prevent these exact disaster scenarios from occurring.
+
+
+---
+
+## Reality Check
+
+**"Real-world queries look like textbook examples"** ? Textbook queries operate on 3-4 tables with clean data. Production queries join 8-12 tables, handle NULL-heavy columns from incomplete data entry, work around legacy schema quirks (a column named type that stores 47 different enum values), and include CASE WHEN blocks to normalize inconsistent data formats. The SQL skill gap between tutorials and production is wider than in any other domain.
+
+**"Query optimization is done after writing the query"** ? Schema design IS query optimization. Denormalizing a frequently joined table, adding composite indexes that match your WHERE+ORDER BY patterns, and choosing the right data types happen at design time. Once the schema is in production with 100 million rows, adding missing indexes can take hours and lock the table. Design the indexes alongside the queries, not as an afterthought.
+
+**"The database handles scaling automatically"** ? Databases scale vertically (bigger hardware) until they do not. A single PostgreSQL instance handles roughly 10000 transactions per second. Beyond that, you need: read replicas for read-heavy workloads, table partitioning for large tables, connection pooling with PgBouncer for connection-heavy workloads, or sharding for write-heavy workloads. Each adds operational complexity.
+
+**"Production data is clean and consistent"** ? Real databases have: phone numbers in 17 different formats, dates stored as strings in varying formats, addresses with typos, nullable columns that business logic assumes are always populated, and rows that violate constraints added after initial data was loaded. Writing queries that handle dirty data (COALESCE, NULLIF, TRIM, CASE WHEN) is a core production SQL skill.
+
+**"One correct query exists for each business question"** ? Multiple query approaches often produce the same result with different performance: subquery vs JOIN, EXISTS vs IN, CTE vs derived table, window function vs self-join. The correct approach depends on data distribution, index availability, and query optimizer behavior in your specific database version. EXPLAIN ANALYZE reveals which approach the optimizer handles best for your data.

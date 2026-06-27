@@ -641,3 +641,17 @@ Today's Python/SQL integration combines SQLAlchemy for connection management and
 
 **Modern practice anchor:**
 Production Python/SQL requires SQL injection scanning in CI/CD (Bandit/Semgrep), connection pool metrics in observability dashboards, and Django N+1 detection in staging before every deploy.
+
+---
+
+## Reality Check
+
+**"String formatting is fine for building SQL queries"** ? String concatenation (f"SELECT * FROM users WHERE id = {user_id}") creates SQL injection vulnerabilities. Even for internal tools and data scripts, use parameterized queries. A data analyst running a script with f-strings against production accidentally injects a semicolon from user input and drops a table. Always use cursor.execute(query, params) with placeholder syntax.
+
+**"pandas.read_sql loads data efficiently"** ? pandas.read_sql loads the ENTIRE result set into memory as a DataFrame. A query returning 10 million rows creates a multi-gigabyte DataFrame. Use chunksize parameter to process in batches: for chunk in pd.read_sql(query, conn, chunksize=10000). Better yet, use database-side aggregation to reduce the result set before loading into Python.
+
+**"ORM replaces the need to know SQL"** ? SQLAlchemy generates SQL from Python objects, but: complex analytical queries (window functions, recursive CTEs, lateral joins) are harder to express in ORM than in raw SQL; the generated SQL may be suboptimal (N+1 queries, unnecessary joins); and debugging requires reading the generated SQL anyway. Use ORM for CRUD operations and raw SQL for complex queries. Know both.
+
+**"Connection pooling is handled automatically"** ? Python database drivers create one connection per cursor.execute call unless you explicitly use a connection pool. Each connection is a TCP socket to the database. Scripts that process 10000 records with one connection per record exhaust database connection limits and run 100x slower than using a single persistent connection. Use SQLAlchemy engine (which pools connections) or explicit connection management.
+
+**"Database migrations can be done with ALTER TABLE in a script"** ? Manual ALTER TABLE scripts have no version tracking, no rollback mechanism, and no way to ensure the same migrations run in dev, staging, and production. Use Alembic (for SQLAlchemy) or Django migrations. These tools generate migration files, track which migrations have been applied, and provide downgrade capabilities. The migration file IS the documentation of schema evolution.

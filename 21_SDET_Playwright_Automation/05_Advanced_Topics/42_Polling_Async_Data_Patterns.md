@@ -1704,3 +1704,18 @@ When you aggressively poll a `GET` endpoint, intermediate caches (CDN, API Gatew
 ---
 
 **Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
+
+
+---
+
+## Reality Check
+
+**"expect with toPass handles all polling needs"** ? expect.toPass retries the entire assertion block, but it does not handle: progressive state transitions (pending ? processing ? completed where you need to verify intermediate states), timeout with custom error messages (generic timeout error does not tell you what state the system was in when it timed out), or conditional branching (stop polling if an ERROR state is reached instead of waiting for timeout).
+
+**"Polling intervals should be short for fast tests"** ? Polling every 100ms for a state that takes 5 seconds to change generates 50 unnecessary API calls. These calls consume test environment resources and can trigger rate limiting. Match polling interval to expected state change time: poll every 1-2 seconds for processes that take 5-30 seconds; poll every 100ms only for sub-second state changes like UI animations.
+
+**"Async patterns are only needed for slow operations"** ? Even fast operations can be asynchronous: a button click that triggers an API call and re-renders a component, a form submission that shows a loading spinner then redirects, or a delete action that removes an element from the DOM. Playwright auto-waits for many of these, but explicit waits are needed when the auto-wait target is ambiguous.
+
+**"Promise.all parallelizes independent assertions"** ? Promise.all runs promises concurrently, but Playwright assertions that interact with the same page share a single browser connection. Two assertions polling the same page element can interfere with each other if one triggers a navigation or page reload. Use Promise.all for truly independent checks (different API endpoints, different pages) but sequential assertions for same-page checks.
+
+**"Retry logic in tests compensates for application bugs"** ? If your polling tests consistently need 3 retries before passing, the application has a reliability problem that affects real users too. Track retry frequency as a metric: increasing retry rates indicate application instability, not test flakiness. Fix the application, do not increase the retry count.

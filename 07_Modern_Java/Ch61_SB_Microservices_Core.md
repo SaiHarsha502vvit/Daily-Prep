@@ -1265,3 +1265,18 @@ public class ConfigServerApplication {
 ---
 
 > **Navigation**: [< Previous](Ch60_SB_Testing_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch62_SB_Microservices_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"Microservices are the default architecture for new projects"** → Microservices trade code complexity for operational complexity: service discovery, distributed transactions, network failures, data consistency, deployment coordination, and debugging across services. A team of 3 developers does not need 10 services — they need a well-structured monolith. Start monolithic, extract services when a specific boundary has independent scaling or deployment needs.
+
+**"Each microservice should have its own database"** → Database-per-service is a guideline for loose coupling, not a rule. Two services that always query together (Order + OrderItem) gain nothing from separate databases but lose JOIN capability and transactional consistency. Shared databases with schema-per-service achieve logical separation without distributed transaction overhead. True database separation is for services with different data lifecycle or scaling requirements.
+
+**"REST is the correct protocol between microservices"** → REST over HTTP/1.1 adds JSON serialization/deserialization overhead, connection management, and no streaming support. For high-throughput internal communication, gRPC with Protocol Buffers is 2-5x faster and generates client/server code from the proto definition. For asynchronous communication, message brokers like Kafka or RabbitMQ provide decoupling, buffering, and retry. REST is best for synchronous public APIs.
+
+**"Service mesh handles all networking concerns"** → Service mesh (Istio, Linkerd) handles transport-level concerns: mTLS, retries, circuit breaking, load balancing. It does NOT handle application-level concerns: request validation, business-level routing, idempotency, saga orchestration, or data transformation. A service mesh makes the network reliable; your application still must be correct.
+
+**"Eventual consistency is just a delayed update"** → Eventual consistency means different services may see DIFFERENT states of the same data for an unbounded period. A user updates their email in the User Service, but the Order Service still shows the old email until the event is consumed and processed. Your UI must handle showing stale data, your business logic must handle making decisions on potentially outdated information, and your users must understand that changes are not instant.

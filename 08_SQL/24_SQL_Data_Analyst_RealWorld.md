@@ -923,3 +923,18 @@ Modern data analysts use SQL daily for cohort analysis (d30 retention), funnel a
 
 **Modern practice anchor:**
 Production analytics requires running segmented analysis (not just aggregate), calibrating session thresholds against real distribution data, and validating RFM segments against frequency histograms before trusting them for campaign targeting.
+
+
+---
+
+## Reality Check
+
+**"Analysts should query production databases directly"** ? Production queries compete with application traffic for database resources. A full table scan on a 100-million-row table can saturate I/O and slow down the application for all users. Use read replicas for analytical queries, or extract data into a data warehouse (BigQuery, Redshift, Snowflake) where analytical queries run against a separate engine optimized for full scans.
+
+**"Data accuracy is the database responsibility"** ? The database stores what applications write. If the application writes incorrect timestamps due to timezone confusion, if ETL jobs silently drop rows on error, or if business logic changes without updating historical records, the database contains inaccurate data that perfectly passes constraint checks. Data validation is an end-to-end concern: application validation, database constraints, and data quality monitoring together.
+
+**"Aggregated numbers tell the story"** ? A company-wide average salary of 75000 dollars tells nothing useful if half the employees earn 40000 and half earn 110000. Always pair averages with: median (P50), standard deviation, min/max, and distribution histograms. A SUM that increased 20 percent could mean uniform 20 percent growth across all segments or one segment exploding while others decline. Drill into the segments before drawing conclusions.
+
+**"SQL is enough for data analysis"** ? SQL excels at aggregation, filtering, and joining structured data. But statistical analysis (hypothesis testing, regression), time series forecasting, machine learning, and data visualization require Python (pandas, scikit-learn, matplotlib) or R. The ideal data analyst workflow is: SQL for extraction and initial aggregation, Python for analysis and visualization. Using SQL for everything means contorting window functions into statistical tests they were not designed for.
+
+**"Dashboards equal data-driven decisions"** ? A dashboard that shows yesterday revenue and today revenue with a green up arrow does not explain WHY revenue changed. Was it a new marketing campaign, a seasonal pattern, a bug that double-counted transactions, or a one-time bulk order? Dashboards show WHAT happened. Analysis notebooks explain WHY. Organizations that only build dashboards have metrics without understanding.

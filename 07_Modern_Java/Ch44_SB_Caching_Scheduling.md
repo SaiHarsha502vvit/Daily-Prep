@@ -1032,3 +1032,18 @@ Content-Type: application/json
 ---
 
 > **Navigation**: [< Previous](Ch51_SB_Industry_Projects.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch45_SB_Actuator_Metrics.md)
+
+
+---
+
+## Reality Check
+
+**"@Cacheable makes everything faster"** → @Cacheable caches method return values by key. If the underlying data changes, the cache serves stale data until expiration or explicit eviction. Without @CacheEvict on write operations, your read cache becomes a stale data factory. Cache invalidation is one of the hardest problems in computing — adding @Cacheable without an invalidation strategy creates subtle correctness bugs.
+
+**"@Scheduled with fixedRate runs exactly at intervals"** → @Scheduled runs on a single-threaded scheduler by default. If a scheduled task takes 10 seconds and the fixedRate is 5 seconds, the NEXT execution starts immediately after the previous one completes — not 5 seconds later. Use fixedDelay for delay BETWEEN completions, or configure a thread pool scheduler for true parallel execution of scheduled tasks.
+
+**"Spring cache is a cache implementation"** → Spring Cache is a ABSTRACTION layer, not an implementation. It provides annotations like @Cacheable, @CacheEvict, and @CachePut. The actual cache is provided by a CacheManager backed by: ConcurrentHashMap (default, no eviction), Caffeine (recommended for local cache with eviction), Redis (distributed), or EhCache (disk-backed). The default ConcurrentHashMap cache grows unbounded — it is a memory leak in production.
+
+**"Cron expressions in Spring work like Unix cron"** → Spring cron has 6 fields (seconds, minutes, hours, day-of-month, month, day-of-week) while Unix cron has 5 (no seconds field). A Unix cron expression pasted into @Scheduled will misalign all fields. Also, Spring uses 0-7 for day-of-week where both 0 and 7 mean Sunday, while some Unix crons use 1-7.
+
+**"Scheduling is the right tool for periodic tasks"** → @Scheduled runs within a single JVM instance. In a horizontally scaled deployment with 4 instances, the same scheduled task runs 4 times concurrently. Use ShedLock or Quartz for distributed lock-based scheduling where only one instance executes. Alternatively, externalize scheduling to Kubernetes CronJobs or AWS EventBridge which invoke a single instance.

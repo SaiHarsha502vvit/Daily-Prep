@@ -937,3 +937,18 @@ The `fork()` and `exec()` system calls. The JVM first calls `fork()` to create a
 ---
 
 **Next Chapter**: [Event Sourcing & CQRS â†’](Ch66_Event_Sourcing_CQRS.md)
+
+
+---
+
+## Reality Check
+
+**"The JVM abstracts away the operating system"** ? The JVM runs ON an OS and is constrained by it. File descriptor limits (ulimit -n) limit concurrent socket connections. Thread stack size is OS memory. The JVM's memory-mapped file I/O depends on the OS page cache. Linux OOM killer can terminate the JVM process without triggering shutdown hooks. Container cgroup limits override JVM's view of available CPUs and memory — Java 10+ reads cgroup limits, older versions see the host's total resources and overallocate.
+
+**"Threads are lightweight"** ? Platform threads in Java map 1:1 to OS kernel threads. Each thread consumes 512KB-1MB stack memory. Creating 10000 threads requires 5-10GB just for stacks, plus kernel scheduling overhead. This is why Tomcat defaults to 200 threads and NIO non-blocking I/O is used for high concurrency. Virtual threads (Java 21+) solve this by mapping many virtual threads to few carrier (platform) threads.
+
+**"More RAM is always better for Java applications"** ? More heap means longer garbage collection pauses. A 32GB heap with G1GC can pause for 200-500ms during mixed GC. A 4GB heap with the same collector pauses for 10-50ms. Right-sizing the heap, choosing the appropriate GC algorithm (ZGC for low latency, G1 for balanced, Parallel for throughput), and reducing allocation rate matter more than raw heap size.
+
+**"Linux file permissions are simple: read, write, execute"** ? File permissions are the first layer. SELinux/AppArmor add mandatory access controls that override file permissions. Container security contexts add another layer. Kubernetes PodSecurityPolicies restrict what containers can do. A file with chmod 777 can still be inaccessible if SELinux policy blocks the process category. Production debugging often requires checking ALL permission layers, not just rwx.
+
+**"TCP connections are instant"** ? TCP three-way handshake takes one round-trip time (RTT). TLS adds 1-2 more round-trips. Connection to a database in another availability zone with 2ms RTT takes 6-8ms to establish. A request handler that opens a new database connection per request adds this latency to every response. Connection pooling (HikariCP) amortizes this cost by reusing established connections across requests.

@@ -553,3 +553,18 @@ Deep SQL reasoningâ€”understanding NULL propagation, three-valued logic pitfalls
 
 **Modern practice anchor:**
 Production SQL debugging requires running queries with `EXPLAIN (ANALYZE, BUFFERS)` on representative data volumes â€” edge cases that pass on 100 rows fail catastrophically at 10M rows.
+
+
+---
+
+## Reality Check
+
+**"SQL is a declarative language so execution order does not matter"** ? SQL is declarative in that you specify WHAT you want, not HOW to get it. But understanding the logical execution order (FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT) is essential for correctness. You cannot use a column alias from SELECT in the WHERE clause because WHERE executes before SELECT. You cannot use window functions in WHERE because window functions execute during SELECT after WHERE.
+
+**"Subqueries are always slower than JOINs"** ? The optimizer often rewrites subqueries as joins internally. A correlated subquery that runs once per row is slow. An uncorrelated subquery that runs once and returns a set is often as fast as a join. EXISTS with a correlated subquery short-circuits (stops at first match), which can be faster than a JOIN that returns all matching rows then deduplicates. Performance depends on data volume and index availability.
+
+**"Window functions are advanced SQL that most developers do not need"** ? Window functions solve problems that are otherwise impossible or extremely complex in SQL: running totals, rankings, percentiles, comparing a row to its neighbors, and detecting gaps or duplicates. Without window functions, these require self-joins or application-level processing that is 10-100x slower. They are not advanced — they are essential for analytical queries.
+
+**"NULL handling is intuitive once you learn IS NULL"** ? NULL propagates through expressions: NULL + 5 is NULL. NULL || 'text' is NULL in standard SQL (but not MySQL). CASE WHEN NULL THEN 'yes' never matches because NULL is not TRUE. COALESCE(NULL, NULL, 'default') returns 'default'. NULLIF(x, x) returns NULL. Incorrect NULL handling in aggregations, joins, and comparisons is the root cause of the majority of subtle SQL bugs in production.
+
+**"CTEs improve query performance"** ? Standard CTEs (WITH clauses) are syntactic sugar in most databases — the optimizer inlines them. In PostgreSQL versions before 12, CTEs were optimization FENCES that prevented the optimizer from pushing predicates into the CTE. Recursive CTEs have genuine execution differences. In MySQL, CTEs are always inlined. Never assume a CTE is materialized or unmaterialized — check EXPLAIN for your database version.

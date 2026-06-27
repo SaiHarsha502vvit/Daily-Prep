@@ -297,3 +297,18 @@ The Network panel in Trace Viewer is the single most useful place to check wheth
 5. Run `npm run test:debug`. Step through the test manually. Note how slow this is compared to UI Mode for the same diagnostic.
 
 Result: you now know which of the three to reach for in any future failure. That's the actual skill.
+
+
+---
+
+## Reality Check
+
+**"Playwright Inspector is only for generating locators"** ? Inspector is a real-time debugging tool: pause tests mid-execution, step through actions one at a time, modify locators and test them against the live page, and inspect the DOM state at any point. Using Inspector only for codegen misses its primary value as a debugging environment for understanding why tests fail.
+
+**"Trace Viewer is only useful after a test fails"** ? Trace files capture: every DOM snapshot, network request and response, console log, and action with timing. Even for PASSING tests, traces reveal: unnecessary waits, slow network requests, redundant navigations, and race conditions that happened to resolve favorably. Review traces of slow-passing tests to find optimization opportunities.
+
+**"UI Mode replaces the CLI test runner"** ? UI Mode is a DEVELOPMENT tool for writing and debugging tests interactively. It reruns tests on file change, shows live browser preview, and provides instant feedback. But CI/CD must use the CLI runner (npx playwright test) for headless execution, parallel distribution, and artifact collection. UI Mode is your inner development loop; CLI is your outer CI/CD loop.
+
+**"Screenshots are enough for debugging test failures"** ? Screenshots capture ONE moment — the state when the failure was detected. But the failure cause may have happened BEFORE the screenshot: a brief error toast that disappeared, a network request that timed out, or a race condition where an element appeared and disappeared. Traces capture the ENTIRE timeline, making them far more valuable than point-in-time screenshots.
+
+**"codegen produces production-ready test code"** ? codegen generates locators and actions based on your interactions, but: it uses whatever locator is most specific (often fragile CSS selectors or text content), it does not add assertions (tests without assertions verify nothing), and it does not organize code into page objects or reusable functions. Use codegen to discover locator strategies, then rewrite the test with proper architecture and assertions.

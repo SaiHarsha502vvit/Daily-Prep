@@ -1241,3 +1241,18 @@ _End of Spring Boot Mastery Guide_
 ---
 
 > **Navigation**: [< Previous](Ch40_SB_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch42_SB_HTTP_Deep_Dive.md)
+
+
+---
+
+## Reality Check
+
+**"Code coverage percentage equals code quality"** → 100 percent coverage means every line executes during tests, not that every behavior is verified. You can have 100 percent coverage with zero assertions — the code runs but nothing checks the output. Mutation testing (changing code and checking if tests fail) reveals whether tests actually verify behavior. Aim for meaningful assertions, not a coverage number.
+
+**"Static analysis tools catch all bugs"** → Static analysis tools like SonarQube, SpotBugs, and PMD detect patterns that CORRELATE with bugs: null dereferences, resource leaks, unused variables. They cannot detect logic bugs (calculating price incorrectly), integration bugs (wrong database query), or design bugs (wrong abstraction). Treat static analysis as a first filter, not the final quality gate.
+
+**"Architecture Decision Records are documentation overhead"** → ADRs capture WHY a decision was made, not WHAT was decided (the code shows that). Without ADRs, a team 6 months later sees a Kafka integration and asks why not RabbitMQ. The answer involves constraints that existed at decision time but are invisible in the code: throughput requirements, existing infrastructure, team expertise. ADRs take 15 minutes to write and save hours of re-investigation.
+
+**"Technical debt is always bad"** → Deliberate technical debt is a valid strategy: shipping a simpler solution now with a plan to refactor later. The problem is UNTRACKED debt — shortcuts taken without awareness or documentation. A hardcoded configuration that you KNOW needs to become configurable is manageable debt. A copy-pasted validation block that nobody realizes exists is unmanageable debt. Track it or it compounds silently.
+
+**"Microservices improve architecture quality"** → Microservices move complexity from code to infrastructure: service discovery, distributed transactions, network failures, data consistency across services, deployment coordination. A poorly designed monolith becomes a poorly designed distributed system — with added network latency and operational overhead. Fix the module boundaries in the monolith first. If the monolith is well-structured, extracting services later is straightforward.

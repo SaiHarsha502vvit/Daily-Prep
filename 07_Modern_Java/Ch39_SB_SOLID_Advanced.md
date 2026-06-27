@@ -1132,3 +1132,18 @@ A: LSP ensures subtypes can replace base types without breaking code.
 **END OF PART 16: SOLID PRINCIPLES DEEP DIVE**
 
 ➡️ **Next: Part 17 - Database Security (User Management, Roles)**
+
+
+---
+
+## Reality Check
+
+**"Design patterns solve problems"** → Design patterns name SOLUTIONS to recurring problems — but applying a pattern without the problem creates complexity. A Strategy pattern with one strategy is a pointless interface. A Factory that creates one type is a constructor with extra steps. Identify the problem first, then check if a named pattern addresses it. Pattern-first thinking produces architecturally impressive code that is hard to change.
+
+**"Composition over inheritance means never use inheritance"** → Inheritance is appropriate when there is a genuine IS-A relationship with shared behavior: HttpServlet extending GenericServlet, or IOException extending Exception. Composition is better when the relationship is HAS-A or USES-A. Template Method pattern legitimately uses inheritance. The guideline is about preferring composition as a DEFAULT, not banning inheritance.
+
+**"Liskov Substitution is just about method signatures"** → LSP requires behavioral compatibility, not just type compatibility. If a base class method never throws exceptions, a subclass version that throws breaks LSP even though it compiles fine. If a base class guarantees sorted output, a subclass returning unsorted data breaks LSP. The contract includes preconditions, postconditions, and invariants — not just parameter and return types.
+
+**"Clean Architecture means layers"** → Clean Architecture means dependency rules: outer layers depend on inner layers, never the reverse. But implementations that create Controller-Service-Repository-Entity layers for every feature regardless of complexity produce boilerplate-heavy code where a simple operation touches 8 files across 4 layers. If the service layer just delegates to the repository, the layer adds no value.
+
+**"Hexagonal Architecture is different from Clean Architecture"** → Both enforce the same core principle: business logic has no dependency on infrastructure. Hexagonal Architecture calls them ports and adapters. Clean Architecture calls them use cases and interface adapters. The terminology differs but the dependency arrow points the same direction: inward toward domain logic. Choosing between them is a naming preference, not an architectural decision.

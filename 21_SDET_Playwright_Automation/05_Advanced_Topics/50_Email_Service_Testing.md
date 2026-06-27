@@ -1251,3 +1251,18 @@ grep -rn 'waitForTimeout' tests/
 - Swap the `MailHogClient` for `MailosaurClientImpl` using only an environment variable change. Verify the test still passes.
 - Write a multi-step approval chain test (request -> approve -> notify) with no `waitForTimeout`.
 - Write a password reset security test for token reuse (see section 16). Integrate it into the test suite as a separate spec file `tests/security/password-reset.spec.ts`.
+
+
+---
+
+## Reality Check
+
+**"Real email services should be used in test environments"** ? Real email services (SendGrid, SES) have: rate limits that test suites can exceed, delivery delays (seconds to minutes) that slow tests, and costs per email that accumulate with frequent CI runs. Use: local SMTP servers (MailHog, Mailpit) for test environments, API interception to verify email CONTENT without sending, or test-mode endpoints that return email content without delivery.
+
+**"Email delivery verification is binary — sent or not sent"** ? Email delivery involves: application sending to SMTP server (verifiable), SMTP server delivering to recipient MTA (eventual, not guaranteed), and email landing in inbox vs spam (depends on SPF, DKIM, DMARC configuration). Test automation can verify: email was sent to the SMTP server with correct content. Production monitoring should verify: delivery rates, bounce rates, and spam classification.
+
+**"Email content testing means checking the subject and body"** ? Email rendering varies dramatically across email clients (Gmail, Outlook, Apple Mail). HTML emails that look correct in one client may be broken in another. Email content testing should verify: subject line, body text content, link URLs (not just that links exist, but that they point to correct destinations), attachment presence and type, and sender address.
+
+**"Email verification in E2E tests should wait for delivery"** ? Instead of sending an email and polling a mailbox (slow, flaky), intercept the email at the APPLICATION level: mock the email service to capture the email content, query the email sending queue or log, or use an event listener for the email-sent event. This approach is instant, deterministic, and does not depend on email infrastructure.
+
+**"Testing email unsubscribe is a low-priority test"** ? CAN-SPAM and GDPR require functioning unsubscribe mechanisms. A broken unsubscribe link is a compliance violation with potential fines. Test that: unsubscribe links in emails are valid, clicking unsubscribe actually removes the user from the mailing list, and subsequent emails are NOT sent to unsubscribed users. Compliance testing is non-negotiable, not low-priority.

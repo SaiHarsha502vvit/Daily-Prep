@@ -1018,3 +1018,18 @@ Parallel streams use the shared common pool and give weak operational control ov
 ---
 
 **Navigation**: [< Java Deep Reasoning](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [JVM Object Model >](Ch19_JVM_Object_Model.md)
+
+
+---
+
+## Reality Check
+
+**"Streams are always more readable than loops"** → A stream chain with multiple flatMap, filter, map, and collect operations can be harder to debug than a simple for-loop with if-statements. Streams have no breakpoints mid-pipeline, and peek is debugging-only and not guaranteed to execute with short-circuit operations. When the logic requires index access, mutation of external state, or early exit with a computed value, a loop is clearer.
+
+**"parallelStream is a free performance upgrade"** → parallelStream uses the common ForkJoinPool shared across the entire JVM. A slow stream operation in one module starves all other parallel streams. The common pool defaults to Runtime.availableProcessors minus 1 threads. Blocking I/O in a parallel stream like database calls or HTTP requests can deadlock the pool. Never use parallelStream for I/O-bound work.
+
+**"Collectors.toList returns an ArrayList"** → The specification says it returns a List with no specific implementation guaranteed. In practice current JDK returns ArrayList, but code that casts the result or relies on ArrayList-specific behavior like null element support is fragile. Use Collectors.toCollection with ArrayList::new when you need a specific type. Stream.toList from Java 16+ returns an UNMODIFIABLE list — a subtle but breaking difference.
+
+**"Stream operations are lazy so unused streams cost nothing"** → Creating a stream pipeline allocates multiple objects including Spliterator, pipeline stages, and lambda captures. If you create streams speculatively and only consume some, you pay allocation cost for all of them. The laziness means COMPUTATION is deferred, not that OBJECT CREATION is free.
+
+**"reduce and collect are interchangeable"** → reduce produces a single immutable value by combining elements with an associative accumulator. collect mutates a mutable container. Using reduce to concatenate strings creates O(n squared) intermediate String objects. Using collect with StringBuilder is O(n). Wrong choice means quadratic behavior hidden behind clean-looking code.

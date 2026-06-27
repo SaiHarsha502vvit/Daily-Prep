@@ -869,3 +869,18 @@ Score ≥ 20: Excellent — production-ready synthetic pipeline.
 Score 13-19: Good — core loop is sound, address error handling gaps.
 Score 6-12: Developing — re-run Part A with a simpler app to validate the runner first.
 Score < 6: Review sections 9-10 and retry.
+
+
+---
+
+## Reality Check
+
+**"Synthetic monitoring is just running E2E tests in production"** ? Synthetic monitoring differs from E2E testing in: execution frequency (every 5-15 minutes, not per-commit), assertion scope (health verification, not comprehensive validation), alerting integration (PagerDuty, Slack, not CI status), and isolation requirements (must not create real data, must not affect real users). Production tests need: dedicated test accounts, data cleanup, and read-only verification where possible.
+
+**"Monitoring covers everything testing misses"** ? Monitoring detects CURRENT failures. Testing prevents FUTURE failures. A synthetic monitor that catches a broken login page alerts the team in 5 minutes. A test suite that catches the broken login before deployment prevents the 5-minute outage entirely. Monitoring is detection; testing is prevention. Both are necessary but serve different purposes.
+
+**"Running synthetic tests from one location is sufficient"** ? Users access your application from different geographic locations with different network characteristics. A synthetic test from US-East may pass while users in Asia-Pacific experience timeout errors due to CDN misconfiguration or regional service degradation. Run synthetic monitors from multiple regions that represent your user base.
+
+**"Synthetic monitoring should test every feature"** ? Monitor the features that generate REVENUE and the features that cause INCIDENTS. Login, search, checkout, and payment are almost always monitored. The about page, privacy policy, and help center are almost never monitored. Monitor based on business impact, not feature count.
+
+**"5-minute monitoring intervals are fast enough"** ? A 5-minute interval means a 5-minute detection window. An outage starting at minute 0 is detected at minute 5, investigated by minute 10, and fixed by minute 20. For revenue-critical flows (payment processing, order placement), 1-minute intervals reduce detection time. For non-critical flows (blog, documentation), 15-minute intervals reduce cost without meaningful risk.

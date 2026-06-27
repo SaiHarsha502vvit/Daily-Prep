@@ -383,3 +383,18 @@ System R's DDL was revolutionary: before it, database schemas were defined throu
 
 **Modern practice anchor:**
 Today, production schema migrations at companies like Shopify and GitHub run via gh-ost or Liquibase â€” online migration tools whose design is only understandable against the backdrop of System R's original DDL limitations. Every senior SQL interview tests whether you understand that `ALTER TABLE` is not instantaneous on large tables.
+
+
+---
+
+## Reality Check
+
+**"CREATE TABLE is a reversible operation"** ? DROP TABLE permanently destroys data and structure. ALTER TABLE DROP COLUMN permanently destroys column data. In production, DDL statements should go through migration tools (Flyway, Liquibase) with tested rollback scripts. A mistaken DROP TABLE on a production database without backups is an unrecoverable data loss event. Always test migrations against a copy of production data first.
+
+**"Primary keys are just unique identifiers"** ? In InnoDB (MySQL/MariaDB), the primary key IS the clustered index — data rows are physically ordered by PK. Choosing a random UUID as PK causes page splits on every insert because the new row rarely belongs at the end. Auto-increment integer PKs append sequentially, which is why they outperform random UUIDs for write-heavy tables by 2-5x. In PostgreSQL, the heap is separate from indexes, so PK choice has less physical impact.
+
+**"VARCHAR(255) is a safe default for string columns"** ? VARCHAR(255) has historical significance: in MySQL, lengths up to 255 use 1 byte to store the length prefix; 256+ use 2 bytes. But the real problem is semantic: an email field with VARCHAR(255) accepts 255-character strings that are not valid emails. Use domain-appropriate lengths (VARCHAR(320) for email per RFC, VARCHAR(15) for phone) combined with CHECK constraints for validation.
+
+**"NULL means empty or zero"** ? NULL means UNKNOWN. NULL = NULL is not TRUE — it is NULL. NULL in a SUM is ignored, not treated as 0. COUNT(*) counts rows; COUNT(column) excludes NULLs. A WHERE column != 5 does NOT return rows where column is NULL because NULL != 5 is NULL (not TRUE). Every NULL comparison requires IS NULL or IS NOT NULL — equals and not-equals do not work.
+
+**"Foreign keys slow down the database"** ? Foreign keys add overhead on INSERT (parent existence check) and DELETE (child existence check). This overhead is typically less than 1 millisecond per operation. Without foreign keys, you get orphaned records (child rows pointing to deleted parents), inconsistent data that corrupts reports, and application-level validation that is slower and less reliable than database-enforced constraints. The small write overhead prevents data corruption.

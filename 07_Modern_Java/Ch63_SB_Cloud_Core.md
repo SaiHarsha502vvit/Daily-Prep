@@ -1111,3 +1111,18 @@ cloudWatch:
     <artifactId>spring-cloud-azure-starter-servicebus</artifactId>
 </dependency>
 ```
+
+
+---
+
+## Reality Check
+
+**"Cloud-native means running on AWS or Azure"** → Cloud-native is an ARCHITECTURE APPROACH: containerization, microservices, declarative APIs, and immutable infrastructure. You can run cloud-native on bare metal with Kubernetes. Conversely, deploying a monolithic WAR to an EC2 instance is cloud-HOSTED but not cloud-native. The distinction is how you build (12-factor app principles), not where you deploy.
+
+**"Containers solve dependency problems"** → Containers isolate filesystem and process namespace, but they do not isolate: CPU (by default, containers share host CPU), memory (OOM kills affect the host), network (misconfigured networking exposes internal services), and storage (volume mounts bypass container isolation). Resource limits must be explicitly configured, and a container with a memory leak will be killed by the OOM killer, causing the same availability issue as a bare-metal deployment.
+
+**"Kubernetes auto-scales based on load"** → Horizontal Pod Autoscaler (HPA) scales based on METRICS you configure — typically CPU or memory utilization. It does NOT understand request queue depth, database connection pool exhaustion, or business metrics like orders per second. Custom metrics require Prometheus adapter or KEDA. Also, scaling UP takes time: pulling container images, starting JVM, warming up Spring context. Without readiness probes, traffic hits pods that are still starting.
+
+**"Environment variables are the correct way to manage configuration"** → Environment variables work for simple values but have limitations: no type safety, no validation at startup, visible in process listings and crash dumps, and no encryption. Spring Boot Config Server, HashiCorp Vault for secrets, or Kubernetes ConfigMaps and Secrets provide structured, versioned, and access-controlled configuration. Use environment variables for overrides, not as the primary configuration source.
+
+**"Health checks with /actuator/health are sufficient"** → Default health check verifies the Spring context is alive. Production health checks must distinguish between LIVENESS (is the process stuck?) and READINESS (can this instance handle traffic?). A JVM in a long GC pause is alive but not ready. An instance with an exhausted connection pool is alive but not ready. Kubernetes uses separate liveness and readiness probes for different remediation: liveness failure restarts the pod, readiness failure removes it from the load balancer.

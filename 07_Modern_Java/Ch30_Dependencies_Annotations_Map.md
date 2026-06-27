@@ -565,3 +565,18 @@ The invariant of dependency injection is: a component should declare its depende
 ---
 
 > **Navigation**: [< Previous](Ch54_Message_Queues_Kafka.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch22_Java_Deep_Reasoning.md)
+
+
+---
+
+## Reality Check
+
+**"@Autowired is the only way to inject dependencies"** → Constructor injection with no annotation needed since Spring 4.3 for single-constructor classes is the recommended approach. @Autowired on fields bypasses immutability since fields cannot be final, makes testing harder because you need reflection or Spring context, and hides dependencies from the class API. Constructor injection makes dependencies explicit and allows plain new instantiation in tests.
+
+**"Adding a starter dependency auto-configures everything"** → Starters include transitive dependencies AND auto-configuration classes. But auto-configuration classes have @Conditional annotations — they only activate when conditions are met. spring-boot-starter-data-jpa auto-configures only if a DataSource bean exists AND entity classes are found on the classpath. Missing one condition and the auto-configuration silently does nothing with no error, just absent beans.
+
+**"@Component @Service @Repository and @Controller are interchangeable"** → Functionally they all register beans. But @Repository adds persistence exception translation converting JDBC SQLExceptions to Spring DataAccessException hierarchy. @Controller enables handler mapping for HTTP requests. @Service is purely semantic — it adds nothing over @Component. Using the wrong stereotype means missing framework behavior, not just wrong naming.
+
+**"Maven and Gradle dependency versions do not conflict"** → Spring Boot dependency management BOM pins compatible versions. But adding explicit version overrides or dependencies outside the BOM can cause classpath conflicts: two versions of Jackson, two versions of SLF4J, or javax and jakarta package splits. The symptom is NoSuchMethodError at runtime — the JVM loaded class version A but your code expects method from version B.
+
+**"All annotations are processed at startup"** → Annotations have different processing times: @Component scan happens during BeanDefinition registration in early startup. @PostConstruct runs after dependency injection. @Scheduled and @EventListener activate after the context is fully refreshed. @ConditionalOnProperty is evaluated before bean creation. Confusing these timings causes bugs like scheduling a method that depends on a bean not yet initialized.

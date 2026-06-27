@@ -1303,3 +1303,18 @@ POST-RELEASE:
 **Next file**: [02_Smoke_Sanity_Regression_Deep_Dive.md](./02_Smoke_Sanity_Regression_Deep_Dive.md) — goes deeper into the three most confused test types with real CI/CD pipeline integration examples.
 
 **Back to series**: [23_Mobile_Dev_And_Testing](../..)
+
+
+---
+
+## Reality Check
+
+**"Unit tests catch the most bugs"** ? Unit tests verify individual functions in isolation. Integration bugs (wrong API contract, database migration mismatch, serialization incompatibility) are invisible to unit tests. A system with perfect unit test coverage can still fail at every service boundary. The testing PYRAMID works because each layer catches different bug categories: unit tests for logic, integration tests for contracts, E2E tests for user flows.
+
+**"Regression testing means running all tests"** ? Running ALL tests after every change is expensive and slow. Effective regression testing targets: tests related to the changed code (impact analysis), tests for historically flaky areas, and a smoke suite for critical paths. Test selection based on code change analysis (which tests cover the modified code paths) provides 80 percent of regression confidence in 20 percent of the time.
+
+**"Performance testing happens at the end"** ? Performance characteristics are architectural decisions. A system designed for 100 users per second cannot be tuned to handle 10000 without architectural changes (caching layers, async processing, database read replicas). Performance TESTING happens at the end; performance DESIGN happens at the beginning. Testing late discovers problems that are expensive to fix.
+
+**"Security testing is a separate discipline"** ? Basic security testing is every tester's responsibility: SQL injection in form fields, XSS in text inputs, authentication bypass by direct URL access, sensitive data in API responses. Specialized penetration testing is a separate discipline, but failing to test OWASP Top 10 vulnerabilities in regular test cycles is a quality gap, not a scope issue.
+
+**"Smoke tests and sanity tests are the same thing"** ? Smoke tests verify core functionality after a BUILD (does the application start, can a user log in, does the main page load). Sanity tests verify specific FIXES or features after a targeted change (does the bug fix actually resolve the reported issue). Smoke tests are broad and shallow; sanity tests are narrow and deep. Running smoke tests after a bug fix is wasteful; running sanity tests on an untested build is premature.

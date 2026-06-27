@@ -1201,3 +1201,18 @@ public class UserDatabaseService {
 ---
 
 > **Navigation**: [< Previous](Ch45_SB_Actuator_Metrics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch49_SB_WebFlux_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"WebFlux is faster than Spring MVC"** → WebFlux is not faster for individual requests — it is more efficient for HIGH CONCURRENCY. A single request through WebFlux has MORE overhead (reactive pipeline, scheduler hops) than the same request through MVC. WebFlux shines when you have thousands of concurrent connections with mostly I/O waiting. For CPU-bound work or low concurrency, MVC is simpler and often faster.
+
+**"Reactive programming means asynchronous"** → Reactive programming is about declarative data flow composition with backpressure. You can write reactive code that runs entirely on one thread (synchronously). Asynchronous execution is one OPTION within reactive programming, not a requirement. Conversely, you can write asynchronous code with CompletableFuture without any reactive framework.
+
+**"Mono and Flux are like Optional and List"** → Mono represents 0 or 1 element emitted OVER TIME (possibly asynchronously). Flux represents 0 to N elements emitted over time. Unlike Optional and List, they are LAZY — nothing happens until you subscribe. They can also represent infinite streams, emit errors, signal backpressure, and retry on failure. Treating them as simple containers misses the temporal and push-based nature.
+
+**"You can mix blocking and reactive code freely"** → Calling a blocking operation (JDBC query, Thread.sleep, synchronized block) inside a reactive pipeline blocks the event loop thread, degrading throughput for ALL concurrent requests. One blocked event loop thread stalls thousands of connections. Use Schedulers.boundedElastic for unavoidable blocking calls, or use R2DBC instead of JDBC for truly non-blocking database access.
+
+**"WebFlux requires a complete rewrite"** → You can incrementally adopt reactive: use WebClient (reactive HTTP client) in a Spring MVC application, or use a reactive database driver while keeping servlet-based controllers. Spring MVC and WebFlux can coexist in the same application at the annotation level but not at the runtime level — you choose one embedded server type (Tomcat for MVC, Netty for WebFlux).

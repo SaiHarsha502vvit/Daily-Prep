@@ -899,3 +899,18 @@ async waitForStatus(
 ---
 
 **Navigation**: [â† Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [â†’ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)
+
+
+---
+
+## Reality Check
+
+**"Playwright APIRequestContext is the only way to make API calls in tests"** ? APIRequestContext shares the browser authentication state, which is convenient for testing API + UI flows. But for pure API testing, direct HTTP clients (fetch, axios) may be simpler. Choose based on whether you need browser cookie forwarding (use APIRequestContext) or independent API authentication (use fetch with explicit headers).
+
+**"Wrapping every API call in a utility function is necessary"** ? Wrap calls that are REUSED: login, create test data, verify side effects. Do not wrap one-off API calls made in a single test — the wrapper adds indirection without reuse benefit. The threshold: if the same API call appears in 3+ test files with the same setup, extract it into a utility.
+
+**"API response assertions should check the full response body"** ? Asserting the entire response body makes tests brittle: any new field added to the API response breaks the test. Assert on the fields your test DEPENDS ON: status code, specific field values, and array lengths. Use expect(response).toMatchObject for partial matching — verify the structure you care about while ignoring fields you do not.
+
+**"API test utilities should handle retries internally"** ? Internal retries mask flaky APIs. If an API call needs retries, that indicates either a bug (fix it) or eventual consistency (test it explicitly). Retries in API utilities hide failures from test reports. If the API is genuinely eventually consistent, make the retry visible: await pollUntil(() => getOrder(id), order => order.status === 'confirmed').
+
+**"Error responses do not need testing"** ? Error response testing catches: missing error codes that client applications depend on, information leakage in error messages (stack traces, SQL queries, internal paths), inconsistent error formats across endpoints, and missing rate limit headers. Test that error responses return the correct HTTP status, a consistent error body format, and no sensitive information.

@@ -710,3 +710,18 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 ---
 
 **Previous Chapter**: [Distributed Patterns & Consensus ‚Üê](Ch68_Distributed_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"Premature optimization is the root of all evil"** ? The full Knuth quote includes: except in the 3 percent of critical code. The advice is against optimizing CODE you have not profiled. It does not apply to DESIGN decisions: choosing an appropriate data structure, indexing database queries, and avoiding N+1 queries are not premature optimization ó they are correct engineering. Optimizing a linked list traversal is premature. Adding a database index on a column you query 1000 times per second is necessary.
+
+**"Profiling in development reveals production bottlenecks"** ? Development data (10 rows vs 10 million rows), load patterns (1 user vs 1000 concurrent), and infrastructure (local SSD vs network storage) differ dramatically from production. A query that returns in 1ms on 10 rows takes 500ms on 10 million rows with missing indexes. Profile with production-representative data volumes and load patterns, or use production profiling tools like async-profiler with minimal overhead.
+
+**"JVM warmup is negligible"** ? The JVM interprets bytecode initially, then JIT-compiles hot methods after thousands of invocations. A Spring Boot application's first 100 requests are 5-20x slower than steady-state because: class loading happens on first access, JIT compilation runs in background threads, and inline caches are empty. For latency-sensitive applications, use warmup scripts that exercise all code paths before accepting real traffic.
+
+**"Garbage collection tuning is the most important JVM optimization"** ? GC tuning helps when GC is the bottleneck, but the most impactful optimization is REDUCING ALLOCATION RATE. Object creation cost is cheap (5-10ns) but GC cost is proportional to live object count and allocation rate. Reusing objects, using primitive types instead of wrappers, and avoiding unnecessary string concatenation reduce allocation pressure more than GC parameter tuning.
+
+**"Horizontal scaling solves all performance problems"** ? Adding more instances distributes load but does not fix: slow database queries (all instances hit the same database), lock contention (distributed locks are slower than local locks), memory leaks (every instance leaks equally), and algorithmic inefficiency (O(n squared) on 4 instances is still O(n squared)). Scale AFTER optimizing the single-instance performance. Scaling hides problems until they become 4x bigger.

@@ -1070,3 +1070,18 @@ Schema migration was largely ignored as a problem until social-media-scale compa
 
 **Modern practice anchor:**
 Today, tools like Flyway and Liquibase formalize expand-contract as migration scripts, gh-ost handles MySQL online DDL, and PostgreSQL 11+ makes ADD COLUMN with DEFAULT instantaneous. The industry learned that schema changes are fundamentally different from code changes: during deployment, both old and new code must work with both old and new schema simultaneously.
+
+
+---
+
+## Reality Check
+
+**"High availability means zero downtime"** ? High availability (HA) means MINIMAL downtime. A PostgreSQL primary with synchronous standby achieves 99.99 percent uptime — which is still 52 minutes of downtime per year. Failover takes 10-60 seconds during which writes are unavailable. Planned maintenance (version upgrades, security patches) requires either downtime or rolling upgrades with backward-compatible schemas. Zero downtime is aspirational, not achievable for stateful systems.
+
+**"Replication makes backups unnecessary"** ? Replication protects against HARDWARE failure (primary dies, replica takes over). It does NOT protect against LOGICAL errors (DROP TABLE propagates to all replicas instantly). A junior developer running DELETE FROM users without WHERE replicates to every replica within milliseconds. Point-in-time recovery from WAL-based backups is the only protection against logical errors.
+
+**"Connection timeout and query timeout are the same"** ? Connection timeout is how long the application waits to ESTABLISH a TCP connection to the database (typically 5-10 seconds). Query timeout (statement timeout) is how long the database allows a query to RUN before killing it. Without a query timeout, a missing-index query scanning 100 million rows runs for 30 minutes, holding a connection pool slot. Set BOTH timeouts in production.
+
+**"Read replicas double read capacity"** ? Read replicas handle INDEPENDENT read queries. But if every read follows a write (read-your-writes consistency requirement), the read must go to the primary, gaining nothing from replicas. Read replicas benefit: dashboard queries, report generation, search indexing, and reads where slight staleness is acceptable. Measure your read-after-write percentage before adding replicas.
+
+**"Database performance degrades linearly with data size"** ? B-tree index performance degrades LOGARITHMICALLY — doubling the data adds one tree level, increasing lookup from 3 to 4 I/O operations. Sequential scans degrade linearly. This means indexed queries remain fast as data grows (1ms on 1 million rows, 1.3ms on 1 billion rows), but unindexed queries degrade proportionally (100ms on 1 million rows, 100000ms on 1 billion rows). The index/no-index gap widens exponentially with data growth.

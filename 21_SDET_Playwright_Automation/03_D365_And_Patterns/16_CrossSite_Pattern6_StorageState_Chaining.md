@@ -922,3 +922,18 @@ Note: Even better when parallelized — with `Promise.all` for all 5 API calls, 
 ---
 
 **Navigation**: [← Chapter 15: UI-API Side Effects](./15_CrossSite_Pattern5_UI_API_Side_Effects.md) | [Index](../00_INDEX.md) | [→ Chapter 17: D365 Advanced Timing](./17_D365_Advanced_Timing_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"storageState saves everything needed for authentication"** ? storageState saves cookies and localStorage. It does NOT save: sessionStorage (cleared per tab), IndexedDB data, service worker registrations, or in-memory authentication state. If your application stores the auth token in sessionStorage or an in-memory JavaScript variable, storageState alone does not restore the authenticated state.
+
+**"Saved storageState can be reused indefinitely"** ? Authentication state expires: session cookies have maxAge, JWT tokens have expiry timestamps, and server-side sessions timeout after inactivity. A storageState file saved at the start of a test run may be invalid by the end of a long suite. Set storageState generation in globalSetup with appropriate session lifetime, or regenerate before each test file.
+
+**"storageState chaining between tests is efficient"** ? Chaining where test A saves state and test B loads it creates ORDER DEPENDENCY: test B cannot run without test A, test A failure cascades to test B, and tests cannot run in parallel. Use globalSetup to generate storageState ONCE, then load it in all tests independently. Each test should be runnable in isolation.
+
+**"storageState eliminates the need for login in tests"** ? storageState skips the login UI flow but your test suite should still have at least ONE test that exercises the actual login flow (type username, type password, click submit, verify redirect). storageState optimizes test speed; login tests verify login functionality. Both are needed.
+
+**"storageState works across different domains"** ? Cookies are domain-scoped. A storageState file containing cookies for app.example.com does not authenticate against api.example.com unless the cookies are set with domain=.example.com (note the leading dot for subdomain sharing). Cross-domain authentication requires separate storageState entries or API-based token generation.

@@ -1167,3 +1167,18 @@ Concurrency control evolved from operating system theory (Dijkstra's semaphores,
 
 **Modern practice anchor:**
 PostgreSQL's MVCC + VACUUM combination, MySQL InnoDB's gap locks, and SQL Server's optimisticSnapshot isolation are all modern implementations of these 1970s ideas. The anomalies (dirty read, non-repeatable read, phantom read, write skew) and their isolation-level countermeasures were formalized in SQL-92 and remain the vocabulary for discussing concurrent data access.
+
+
+---
+
+## Reality Check
+
+**"EXPLAIN shows exactly how the query will run"** ? EXPLAIN shows the PLANNED execution. EXPLAIN ANALYZE shows the ACTUAL execution with real timing and row counts. The plan can differ from reality because: statistics are stale, parameter values change the optimal plan, and concurrent operations affect resource availability. Always use EXPLAIN ANALYZE (which actually runs the query) for accurate performance analysis. Wrap destructive queries in a transaction and rollback after analyzing.
+
+**"Stored procedures are faster than application queries"** ? Stored procedures eliminate one network round-trip by running multiple statements server-side. But: they are harder to version control, harder to test, harder to debug, and vendor-specific. The network savings (1-5ms per avoided round-trip) are negligible compared to query execution time (10-100ms). Use stored procedures for complex operations that benefit from reduced round-trips, not as a universal performance strategy.
+
+**"Database triggers maintain data consistency"** ? Triggers run inside the triggering transaction and add latency to every INSERT, UPDATE, or DELETE on the table. A BEFORE INSERT trigger that validates data across related tables adds a query to every insert. An AFTER UPDATE trigger that logs changes doubles the write load. Triggers are invisible to application developers, making behavior hard to debug. Use application-level event handlers or database-level constraints (CHECK, FOREIGN KEY) instead.
+
+**"Query hints override the optimizer for better performance"** ? Hints force a specific execution plan, but the optimal plan changes with data distribution. A hint that forces an index scan works when the table has 1000 rows but hurts when the table grows to 1 million rows and a sequential scan would be faster. If the optimizer makes a wrong choice, update statistics (ANALYZE) or restructure the query. Use hints only as a last resort with a comment explaining why.
+
+**"NoSQL eliminates SQL database problems"** ? NoSQL databases trade SQL constraints for different constraints: MongoDB has no JOINs (you denormalize and update multiple documents), Cassandra requires designing tables around specific query patterns (no ad-hoc queries), DynamoDB has throughput pricing that punishes scan operations. NoSQL does not eliminate complexity — it moves it from the database to the application layer.

@@ -1074,3 +1074,18 @@ DECISION: What tests do you run, in what order?
 **Next**: Continue to Ch00 Foundations â†’ [`../00_SDET_Foundations_Mindset.md`](../00_SDET_Foundations_Mindset.md)
 
 **Back to**: [Series Index](../..)
+
+
+---
+
+## Reality Check
+
+**"A bigger smoke suite is a better smoke suite"** ? A smoke suite that takes 30 minutes is no longer a smoke test — it is a regression suite mislabeled. Smoke tests should complete in under 5 minutes and answer one question: is the build fundamentally broken? If yes, reject immediately without waiting for the full suite. A 3-minute smoke suite that catches 70 percent of broken builds is more valuable than a 30-minute suite that catches 90 percent.
+
+**"Regression suite should grow with every bug fix"** ? Every bug fix adding a regression test creates a suite that grows monotonically. After two years, you have 2000 regression tests taking 4 hours to run. Periodically audit the regression suite: remove tests for features that no longer exist, consolidate overlapping tests, and archive tests for bugs that cannot recur (the underlying code was rewritten). A curated 500-test suite beats an accumulated 2000-test suite.
+
+**"Smoke tests should not fail"** ? Smoke tests SHOULD fail when the build is broken — that is their purpose. A smoke suite that never fails either covers too little or runs against too-stable functionality. Track the smoke failure rate: if it is zero for 3 months, the suite is not covering enough critical paths. If it fails on every build, the suite is too fragile or the build quality is too low.
+
+**"Regression testing catches all regressions"** ? Regression tests verify KNOWN behaviors. They cannot catch regressions in behaviors that were never explicitly tested. If a test checks that the login button navigates to the dashboard but does not verify that the user session is created, a regression that breaks session creation passes the test. Regression test quality depends on assertion DEPTH, not test COUNT.
+
+**"Sanity testing after a fix is always quick"** ? The scope of sanity testing depends on the fix's blast radius. A CSS color change requires checking the changed page. A database schema migration requires verifying every feature that queries the modified table. Estimating sanity scope requires understanding the dependency graph of the changed code, not just the changed file.

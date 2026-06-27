@@ -1921,3 +1921,18 @@ databaseChangeLog:
 ---
 
 _Now Parts 0-23 cover EVERY important Spring Boot topic from beginner to expert level._
+
+
+---
+
+## Reality Check
+
+**"WebSocket is the best choice for real-time features"** ? WebSocket maintains persistent connections that consume server memory per connection. At 10000 concurrent users, you have 10000 open TCP connections on your server. Server-Sent Events (SSE) provides server-to-client streaming over standard HTTP/2 with automatic multiplexing, lower resource usage, and works through all HTTP proxies. Use WebSocket only when the CLIENT needs to send data frequently, not just receive.
+
+**"GraphQL replaces REST"** ? GraphQL solves over-fetching and under-fetching that are problems in mobile clients with limited bandwidth. But it introduces complexity: query cost analysis to prevent denial-of-service via deeply nested queries, N+1 problems in resolvers requiring DataLoader, no built-in caching since every query can be different, and more complex error handling. For server-to-server communication or simple CRUD APIs, REST is simpler and better cached.
+
+**"gRPC is always faster than REST"** ? gRPC uses Protocol Buffers (binary serialization) and HTTP/2 multiplexing, which is faster than JSON over HTTP/1.1. But the speed difference between JSON and Protobuf serialization is 2-5x — not 100x. If your bottleneck is database queries at 10 milliseconds per request, saving 0.1 milliseconds on serialization is irrelevant. gRPC benefits are strongest for high-throughput, low-latency service-to-service communication.
+
+**"GraphQL subscriptions are production-ready out of the box"** ? Spring for GraphQL supports subscriptions over WebSocket, but production deployment requires: connection authentication, subscription rate limiting, heartbeat/keepalive for connection health, graceful reconnection when the server restarts, and subscription state management across horizontally scaled instances. The getting-started guide skips all of these.
+
+**"Protocol choice is a permanent decision"** ? API gateway patterns allow exposing REST externally while using gRPC internally. A BFF (Backend For Frontend) layer can translate between GraphQL for the mobile app and REST for the web app while the backend services use gRPC. Protocol choice is per-boundary, not per-system. The internal protocol can differ from the external one.

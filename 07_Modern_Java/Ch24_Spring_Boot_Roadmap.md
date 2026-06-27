@@ -1039,3 +1039,18 @@ Spring Boot fails in production in patterns that are entirely absent from tutori
 ---
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch06_Functional_Programming.md)
+
+
+---
+
+## Reality Check
+
+**"You need to learn Spring Framework before Spring Boot"** → Spring Boot IS Spring Framework — it is an auto-configuration layer on top, not a different framework. Learning raw Spring first means manually wiring XML configurations and servlet containers that Spring Boot eliminates. Start with Spring Boot, then learn what it auto-configures by peeling back layers.
+
+**"Spring Boot is only for microservices"** → Spring Boot powers monoliths, batch processing with Spring Batch, message consumers with Spring Kafka or RabbitMQ, CLI tools with CommandLineRunner, serverless functions with Spring Cloud Function, and desktop applications. Most enterprise Java shops run monolithic Spring Boot applications. Microservices are one deployment pattern, not the only use case.
+
+**"Knowing Spring Boot annotations is enough"** → Annotations are the WHAT. The real skill is understanding the lifecycle they trigger — @Transactional creates a proxy, @Async spawns a thread from a pool, @Cacheable checks a cache before method invocation. Without understanding proxies, you will write @Transactional on a private method and wonder why rollback does not work because the proxy cannot intercept private methods.
+
+**"Spring Boot auto-configuration means you cannot customize"** → Every auto-configuration class has @ConditionalOnMissingBean — if you define your own bean of the same type, Spring Boot backs off and uses yours. You can override ANY default: provide your own DataSource, ObjectMapper, SecurityFilterChain, or ErrorController. Auto-configuration provides defaults, not mandates.
+
+**"REST APIs are the only way to build web services in Spring Boot"** → Spring Boot supports GraphQL, gRPC, WebSocket, Server-Sent Events via SseEmitter, RSocket, and SOAP via spring-boot-starter-web-services. REST is the most common but choosing it without evaluating alternatives means you might be building request-response where streaming or pub-sub fits better.

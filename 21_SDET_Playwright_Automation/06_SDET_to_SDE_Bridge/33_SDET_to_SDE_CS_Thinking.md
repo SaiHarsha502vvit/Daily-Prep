@@ -977,3 +977,18 @@ async function findPageContaining(
 ---
 
 **Navigation**: [‚Üê Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [‚Üí Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
+
+
+---
+
+## Reality Check
+
+**"CS fundamentals are irrelevant for SDETs"** ? Big-O analysis determines whether your test data generation scales or crashes on large datasets. Data structure choice determines whether your test utilities run in milliseconds or seconds. Concurrency understanding determines whether your parallel tests are safe or create race conditions. CS fundamentals are not academic ó they are the engineering foundation that separates automation scripters from software engineers.
+
+**"SDETs do not write production code"** ? Test infrastructure IS production code: test frameworks run in CI/CD pipelines that gate deployments, test utilities are used by the entire engineering team, and test reporting tools are monitored by managers and stakeholders. Code quality, maintainability, and reliability standards for test infrastructure should match production code standards. Unmaintainable test code becomes an organizational bottleneck.
+
+**"Moving from SDET to SDE requires starting over"** ? SDETs who build test frameworks already practice: software design (framework architecture), API development (test utilities), database operations (test data management), CI/CD (pipeline configuration), and debugging (test failure investigation). The gap is in: product feature development workflow, code review from a feature perspective, and on-call/incident response. The engineering skills transfer; the domain context needs building.
+
+**"Algorithm knowledge is only for interviews"** ? Algorithm patterns appear in test automation: graph traversal for dependency resolution in test ordering, dynamic programming for optimal test selection, and hashing for test data deduplication. An SDET who understands these patterns builds more efficient test infrastructure. The interview algorithm practice has direct utility in daily work.
+
+**"CS theory is separate from practical engineering"** ? Theory predicts practical outcomes: understanding computational complexity tells you that your O(n squared) test data comparison will timeout on 10000 records before you waste 30 minutes running it. Understanding concurrency theory tells you that your shared HashMap will corrupt data before you spend a day debugging intermittent test failures. Theory is not academic ó it is predictive engineering.

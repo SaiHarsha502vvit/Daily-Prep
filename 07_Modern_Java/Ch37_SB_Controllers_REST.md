@@ -1288,3 +1288,18 @@ _Continue to Part 8: JPA & Hibernate Deep Dive_
 ---
 
 > **Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
+
+
+---
+
+## Reality Check
+
+**"@RestController means the class handles REST calls"** ? @RestController is just @Controller plus @ResponseBody on every method. It means return values are serialized to the response body, usually JSON, instead of resolved as view names. A @Controller method returning the string users looks for a view template called users.html. A @RestController method returning users writes the literal string users as the JSON response body.
+
+**"ResponseEntity is always better than returning raw objects"** ? ResponseEntity gives control over status codes and headers, but for standard 200 OK responses with JSON body, returning the object directly is cleaner. Use ResponseEntity when you need 201 Created with a Location header, 204 No Content, or conditional status codes. Over-using ResponseEntity adds verbosity without value.
+
+**"@PathVariable and @RequestParam are the same with different names"** ? @PathVariable extracts from the URL path like /users/42, @RequestParam extracts from query parameters like /users?id=42. Path variables identify a RESOURCE, query parameters modify the REQUEST. Using query parameters for resource identification breaks REST semantics and makes URLs un-bookmarkable for the specific resource.
+
+**"@Valid triggers validation automatically on all parameters"** ? @Valid triggers validation ONLY if a Bean Validation implementation like Hibernate Validator is on the classpath AND the parameter is a request body or model attribute. It does NOT validate @PathVariable or @RequestParam — you need @Validated on the controller class AND constraint annotations directly on the parameters for those. Missing @Validated on the class is the most common validation bug.
+
+**"Returning null from a controller returns an empty response"** ? Returning null from a @ResponseBody method returns the literal JSON null with 200 OK — not an empty body and not a 404. To return 204 No Content, use ResponseEntity.noContent().build(). To return 404, throw a ResponseStatusException. Returning null is almost never the correct behavior for a REST API.

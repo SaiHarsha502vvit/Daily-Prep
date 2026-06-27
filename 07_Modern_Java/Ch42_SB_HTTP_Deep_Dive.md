@@ -1632,3 +1632,18 @@ _Continue to Part 11: Authentication & Authorization_
 **Who blocks?** `RestTemplate` always blocks the calling thread â€” it's synchronous. `WebClient` is non-blocking by default. **When pick WebClient in non-reactive?** (1) When you need reactive features like streaming, SSE, or connection pooling with backpressure. (2) RestTemplate is in maintenance mode since Spring 5 â€” new features only in WebClient. (3) When consuming microservices with variable latency â€” `WebClient` can aggregate multiple parallel calls with `Mono.zip()`. **What does `block()` do?** Subscribes to the reactive pipeline and blocks the current thread until the result arrives â€” similar to `CompletableFuture.get()`. You get the convenience of sync code while the underlying HTTP layer remains non-blocking. Downside: defeats reactive scalability â€” avoid in reactive contexts.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"HTTP is stateless so the server remembers nothing"** ? HTTP the PROTOCOL is stateless — each request is independent. But applications build statefulness ON TOP: session cookies, JWT tokens, server-side session stores. Spring Security's SecurityContextPersistenceFilter restores the authentication context from the HTTP session on every request. The protocol is stateless; the application is not.
+
+**"HTTPS encrypts everything"** ? HTTPS encrypts the request BODY, headers, and path, but the destination HOSTNAME is visible in the TLS SNI (Server Name Indication) extension — sent in plaintext during the TLS handshake. The IP address is always visible. DNS queries (unless using DoH/DoT) reveal the domain. HTTPS protects content confidentiality, not connection metadata.
+
+**"REST is a protocol"** ? REST is an ARCHITECTURAL STYLE, not a protocol. The protocol is HTTP. REST defines constraints: statelessness, uniform interface, resource identification via URIs, and representation transfer. Most APIs called RESTful are actually RPC-over-HTTP — they use HTTP as transport but violate REST constraints like HATEOAS. This matters because true REST enables client evolution without server changes.
+
+**"Connection: keep-alive is the default since HTTP/1.1"** ? True for HTTP/1.1 but misleading in practice. Spring Boot with embedded Tomcat defaults to keep-alive with a timeout of 60 seconds and a max of 100 requests per connection. Load balancers, proxies, and CDNs may close connections sooner based on their own timeouts. A keep-alive timeout mismatch between client and server causes connection reset errors that are difficult to diagnose.
+
+**"HTTP status codes have strict definitions"** ? The RFC defines status codes, but real APIs use them inconsistently. Some APIs return 200 for everything with an error field in the body. Others return 400 for business rule violations that are not technically bad requests. Spring Boot default error handling returns 500 for any unhandled exception — whether it is a bug or a known business error. Consistent status code semantics are a DESIGN choice your team makes, not a guarantee from the framework.

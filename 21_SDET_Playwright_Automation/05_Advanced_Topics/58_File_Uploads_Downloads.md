@@ -579,3 +579,18 @@ await expect(page.locator(".file-chip").last()).toContainText("b.csv");
 - **Ch 59** — Docker; `/dev/shm` and chromium's behaviour with downloads in containers.
 
 **Navigation**: [← 57. Login Taxonomy](./57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | [Index](../00_INDEX.md) | [→ 59. Docker for Playwright](./59_Docker_For_Playwright.md)
+
+
+---
+
+## Reality Check
+
+**"File upload testing only needs happy path"** ? File uploads have more edge cases than any other form interaction: empty files (0 bytes), maximum size files (server limit, client limit, proxy limit may differ), incorrect MIME types (renaming .exe to .jpg), special characters in filenames (spaces, unicode, dots), multiple files when single expected, and file format validation (a valid JPEG header with corrupt data). Test at minimum: valid file, oversized file, wrong type, and empty file.
+
+**"page.setInputFiles is the only upload mechanism"** ? setInputFiles works for standard HTML file inputs. But modern applications use: drag-and-drop upload zones (requires DataTransfer event simulation), paste from clipboard (requires clipboard API mocking), chunked upload with progress (requires monitoring multiple API requests), and third-party upload widgets (Dropzone, Uppy) with custom DOM structures.
+
+**"Download testing means checking the file exists"** ? Verify downloads completely: file exists at expected path, file size is non-zero and matches expected size, file content is valid (open and parse for structured formats like CSV, JSON, PDF), and filename matches expected pattern. A download that produces a 0-byte file or an HTML error page saved as .csv passes existence checks but represents a bug.
+
+**"File operations in tests use local filesystem paths"** ? In CI environments: paths differ from local development (Linux CI vs Windows local), temporary directories have different locations, file permissions may restrict write access, and container filesystems may have limited space. Use platform-agnostic path construction (path.join, os.tmpdir) and clean up temporary files to prevent CI disk space exhaustion.
+
+**"Large file uploads can use production-size files"** ? Uploading a 500MB file in every test run wastes CI time and storage. Generate test files dynamically at the minimum size needed to test the behavior: 1KB for basic upload verification, just-over-limit size for rejection testing, and use API-level tests for large file processing logic. Reserve actual large file uploads for dedicated performance tests.

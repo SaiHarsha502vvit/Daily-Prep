@@ -1335,3 +1335,18 @@ _Next: Part 20 - Microservices Patterns (Service Discovery, API Gateway, Circuit
 Every `@MockBean` creates a **new Spring ApplicationContext** because it replaces a real bean with a mock, making the context unique. Spring caches contexts between tests — but if Test A uses `@MockBean UserRepository` and Test B uses `@MockBean ProductRepository`, Spring can't reuse the same context. With 50 test classes each mocking different beans, you get 50 separate context loads (~5-15 seconds each) instead of 1 shared context. This is the #1 cause of slow Spring Boot test suites. **`@SpyBean`** wraps the REAL bean (delegates to real methods by default, lets you stub specific calls). It's better when you only need to verify interactions or stub one method while keeping real behavior. Fix for `@MockBean` performance: (1) Use `@MockBean` on the SAME set of beans across all test classes → context is shared. (2) Use `@Import(TestConfig.class)` with pre-defined mocks. (3) Prefer `@WebMvcTest` (slice test) over `@SpringBootTest` — smaller context, faster loads.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Contract testing replaces integration testing"** ? Contract tests verify that API providers honor their contracts (request/response schemas). They do NOT verify business logic, data integrity, or end-to-end flows. A provider can pass all contract tests while returning semantically wrong data. Contract tests prevent BREAKING CHANGES between services. Integration tests verify CORRECT BEHAVIOR. You need both.
+
+**"WireMock perfectly simulates external services"** ? WireMock returns preconfigured responses. Real services have: variable latency, rate limits, connection timeouts, partial failures, non-deterministic response ordering, and behavior that changes with deployment. WireMock tests verify your code handles EXPECTED responses correctly. Chaos engineering and production monitoring verify your code handles UNEXPECTED behavior.
+
+**"Performance testing in CI catches all performance regressions"** ? CI environments have variable resources (shared runners, noisy neighbors, different hardware). A test that passes in 50ms locally might take 200ms in CI due to CPU throttling. Performance tests in CI should use RELATIVE comparisons (this commit vs previous commit on the same runner) or percentile thresholds with wide margins, not absolute values.
+
+**"End-to-end tests catch the most bugs"** ? E2E tests catch integration bugs but are slow, flaky, and expensive to maintain. The testing pyramid (many unit tests, fewer integration tests, few E2E tests) exists because: unit tests run in milliseconds and pinpoint failures; E2E tests run in minutes and fail with unhelpful messages like page element not found. Maximize test confidence per time spent, not test scope per test.
+
+**"Parallel test execution is always faster"** ? Parallel tests sharing a database cause flaky failures: test A inserts a user, test B queries all users and finds an unexpected one. Use @Sql to reset state, separate schemas per thread, or TestContainers with database-per-test. Thread-safety bugs in your application code also surface only in parallel execution � which is useful for finding them but confusing when you just want tests to pass.

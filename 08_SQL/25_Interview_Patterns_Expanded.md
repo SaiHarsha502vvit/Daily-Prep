@@ -1061,3 +1061,18 @@ Modern SQL interviews at Google, Meta, and Amazon test pattern recognitionâ€”can
 
 **Modern practice anchor:**
 Production SQL debugging requires `pg_stat_statements` / `performance_schema` for frequency + duration analysis, not just slow query logs which miss medium-duration high-frequency queries.
+
+
+---
+
+## Reality Check
+
+**"Interview SQL problems represent real work"** ? Interview problems test algorithmic SQL thinking: self-joins, window functions, recursive CTEs. Real work involves: understanding a 200-table schema, writing queries against poorly named columns with tribal knowledge requirements, optimizing slow queries on production data, and translating vague business questions into precise SQL. Practice interview problems for interviews but build schema understanding skills for the job.
+
+**"The fastest query is always the best answer in an interview"** ? Interviewers evaluate: correctness first, readability second, then performance. A correct, readable CTE-based solution that an interviewer can follow beats a clever single-query solution using obscure syntax that requires explanation. Write the readable version first, then offer the optimized version if asked about performance.
+
+**"You should always normalize your SQL answers"** ? Interview problems often require denormalized thinking: self-joins on the same table, conditional aggregation with CASE WHEN, and pivot-style queries. Over-normalizing your approach (creating temporary views for every subquery) adds complexity without value. Match your approach to the problem — some problems are naturally solved with denormalized patterns.
+
+**"Window functions solve every ranking problem"** ? ROW_NUMBER, RANK, and DENSE_RANK handle rankings differently: ROW_NUMBER gives unique ranks (1,2,3), RANK gives tied ranks with gaps (1,1,3), DENSE_RANK gives tied ranks without gaps (1,1,2). Using the wrong ranking function is a common interview mistake. Know the difference by considering: should ties share a rank? Should the next rank account for the number of ties?
+
+**"NULL-safe comparisons are optional"** ? Interview queries often have NULLs in test data that break naive solutions. A self-join comparing manager_id = employee_id misses rows where manager_id is NULL. A NOT IN subquery with NULL values returns empty results because NOT IN (1, 2, NULL) is never TRUE (anything compared to NULL yields UNKNOWN). Use NOT EXISTS or explicit IS NOT NULL checks. Interviewers deliberately include NULLs to test this awareness.

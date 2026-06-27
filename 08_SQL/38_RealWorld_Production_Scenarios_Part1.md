@@ -1523,3 +1523,18 @@ SET work_mem = '128MB';      -- Per-operation sort/hash memory
 
 **Brief evolution note:**
 Auto-increment INTEGER primary keys dominated from the 1970s-2000s because disk was precious and single-machine databases were the norm. The 2.1B ceiling was considered "unreachable." When social media and IoT hit billions of rows per table, teams scrambled to BIGINT or UUID migrations. UUID v4 (random) caused B-Tree write amplification, prompting UUID v7 (RFC 9562, 2024) — time-ordered 128-bit IDs that preserve B-Tree insert efficiency while remaining globally unique.
+
+
+---
+
+## Reality Check
+
+**"Production queries run the same as development queries"** ? A query returning 100 rows from a 1000-row dev table in 2ms can return 100 rows from a 50-million-row production table in 30 seconds. The optimizer chooses different plans based on table size: index scan for small tables, sequential scan for large tables when the result set is a significant percentage of total rows. Always test queries against production-volume data before deploying.
+
+**"Read replicas are always consistent with the primary"** ? Asynchronous replication means read replicas can be seconds to minutes behind the primary. A user writes data to the primary, then the next page load reads from a replica and shows stale data. Solutions: route reads-after-writes to the primary for a configurable window, use synchronous replication (at the cost of write latency), or accept eventual consistency with user-facing indicators.
+
+**"Database monitoring means watching CPU and memory"** ? The most important database metrics are: active connections vs max connections, lock wait time, replication lag, long-running queries, cache hit ratio, and transaction rate. CPU and memory are SYMPTOMS, not causes. High CPU might be a missing index (fix: add index) or a runaway query (fix: kill and optimize). Monitor the database-specific metrics that reveal root causes.
+
+**"Indexes solve all slow query problems"** ? A query doing SELECT * FROM orders WHERE YEAR(created_at) = 2024 cannot use an index on created_at because the function wraps the column. Rewrite as WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01' to use the index. Functions on indexed columns, implicit type casts, and OR conditions across different columns prevent index usage. Learn to read EXPLAIN output to verify index usage.
+
+**"Database backups guarantee recovery"** ? Backups guarantee recovery IF: you test restoring them regularly, the backup includes WAL/binlog for point-in-time recovery, the backup completes before the data changes, and the restore process is documented and practiced. A backup that has never been tested restored is a hope, not a guarantee. Schedule monthly restore drills to a separate environment.

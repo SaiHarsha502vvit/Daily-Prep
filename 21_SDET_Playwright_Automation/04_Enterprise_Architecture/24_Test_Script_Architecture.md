@@ -907,3 +907,18 @@ Summary of fixes: move credentials to environment variables + fixtures, rename s
 ---
 
 **Navigation**: [‚Üê Chapter 23: APIUtils ‚Äî Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Arrange-Act-Assert is enough structure for test scripts"** ? AAA structures individual tests but does not address: how tests share setup code (fixtures vs beforeEach), how tests share data (factory functions vs inline data), and how tests share assertions (custom matchers vs utility functions). Test script architecture is about the patterns BETWEEN tests, not just within them.
+
+**"beforeAll should set up data, afterAll should clean it up"** ? beforeAll runs once per worker, not once per suite. In parallel execution with 4 workers, beforeAll runs 4 times ó potentially creating duplicate data or racing on shared resources. Use globalSetup for truly one-time setup. Use beforeAll only for worker-scoped resources (database connections, browser contexts).
+
+**"Test independence means no shared state at all"** ? Tests should be independently RUNNABLE, not independently ISOLATED. Sharing read-only reference data (list of countries, configuration values) between tests is fine and efficient. Sharing MUTABLE state (a user that test A modifies and test B reads) creates order dependencies. The boundary is mutability, not sharing.
+
+**"Descriptive test names are enough documentation"** ? A test named should display error when payment fails does not explain: what kind of payment failure (declined card, network timeout, insufficient funds), what error is displayed (toast, inline message, error page), or what the preconditions are (logged in, cart has items). Test names should be specific enough that a failure report tells you exactly what scenario broke without reading the test code.
+
+**"Test files should mirror the application structure"** ? Test files should mirror USER JOURNEYS, not application structure. The application has: LoginPage, ProductPage, CartPage, CheckoutPage. Tests should be: purchase-flow.spec.ts, return-flow.spec.ts, account-management.spec.ts. Users do not think in pages ó they think in goals. Test organization should reflect goals, not implementation.

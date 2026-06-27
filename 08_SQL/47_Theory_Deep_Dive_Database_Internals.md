@@ -744,3 +744,18 @@ Database theory crystallized in the 1970s-1980s around the relational model (Cod
 
 **Modern practice anchor:**
 Database internals knowledge translates directly to production debugging â€” understanding VACUUM, WAL, and B-Tree behavior separates operations engineers from application developers.
+
+
+---
+
+## Reality Check
+
+**"B-tree is the only index structure that matters"** ? B-tree handles equality and range queries. Hash indexes handle only equality (faster than B-tree for exact match but no range support). GIN indexes handle full-text search and JSONB containment. GiST indexes handle geometric and geographic queries. BRIN indexes handle very large tables with naturally ordered data (10000x smaller than B-tree). Choosing the wrong index type is as bad as having no index.
+
+**"MVCC means readers never block writers"** ? In PostgreSQL MVCC, readers see a snapshot and do not block writers — true. But writers CAN block writers: two transactions updating the same row results in one waiting for the other to commit. Also, long-running transactions prevent VACUUM from reclaiming dead tuples, causing table bloat. MVCC is not free — it trades lock contention for storage overhead (dead rows) and maintenance requirements (VACUUM).
+
+**"Write-ahead log (WAL) is just for crash recovery"** ? WAL serves three purposes: crash recovery (replay committed transactions after crash), replication (stream WAL to replicas for data synchronization), and point-in-time recovery (apply WAL from a base backup to reach any point in time). Understanding WAL explains: why fsync matters for durability, why synchronous_commit=off risks data loss, and why WAL archiving is essential for backup strategy.
+
+**"Query optimizer always chooses the best plan"** ? The optimizer estimates costs based on statistics (row counts, value distributions, correlation). Stale statistics cause wrong estimates — the optimizer thinks a table has 1000 rows when it has 1 million. Skewed data distributions confuse histogram-based estimation — if 99 percent of rows have status='active', the optimizer may choose a table scan for WHERE status='active' but an index scan for WHERE status='inactive'. Run ANALYZE after large data changes.
+
+**"Database normalization reduces storage"** ? Normalization reduces DATA redundancy but increases STRUCTURAL overhead: more tables, more foreign keys, more joins, more indexes. A denormalized table storing customer_name directly in orders uses more storage for customer_name (repeated per order) but eliminates the JOIN between orders and customers for the most common query. Storage is cheap; latency is expensive. Optimize for access patterns, not storage.
