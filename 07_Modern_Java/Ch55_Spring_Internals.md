@@ -20,6 +20,14 @@
 10. [How Profiles & @Conditional Work — The Decision Engine](#10-how-profiles--conditional-work--the-decision-engine)
 11. [How Spring Resolves Circular Dependencies](#11-how-spring-resolves-circular-dependencies)
 12. [How Spring MVC Processes a Request — All 14 Steps](#12-how-spring-mvc-processes-a-request--all-14-steps)
+    - 12A. [Servlet Filters — The Gate Before Spring](#12a-servlet-filters--the-gate-before-spring)
+    - 12B. [Spring Security's FilterChainProxy — The Filter That Contains Filters](#12b-spring-securitys-filterchainproxy--the-filter-that-contains-filters)
+    - 12C. [DispatcherServlet — The Front Controller Pattern](#12c-dispatcherservlet--the-front-controller-pattern)
+    - 12D. [HandlerInterceptor — Spring-Level Request Hooks](#12d-handlerinterceptor--spring-level-request-hooks)
+    - 12E. [Filter vs Interceptor — The Complete Comparison](#12e-filter-vs-interceptor--the-complete-comparison)
+    - 12F. [Request/Response Wrapping — Why the Body Disappears](#12f-requestresponse-wrapping--why-the-body-disappears)
+    - 12G. [CORS — Where It Lives in the Pipeline](#12g-cors--where-it-lives-in-the-pipeline)
+    - 12H. [Exception Handling Across Layers — Who Catches What](#12h-exception-handling-across-layers--who-catches-what)
 13. [The Entire Spring Ecosystem — How Pieces Fit Together](#13-the-entire-spring-ecosystem--how-pieces-fit-together)
 
 ---
@@ -1656,6 +1664,1066 @@ class B {
 **Who returns 404 for no handler:** `DispatcherServlet`'s `HandlerMapping` phase (step 2 of 14). If no `HandlerMapping` finds a handler for `GET /api/users/123`, `DispatcherServlet` checks `throwExceptionIfNoHandlerFound` (default false). If false, it tries to find a default handler (static resource handler). If none found, sends 404 response directly via `response.sendError(404)` — bypassing `@ControllerAdvice`. **When in 14 steps:** After step 2 (HandlerMapping), before step 3 (HandlerAdapter). The response is committed directly — `@ExceptionHandler` and `@ControllerAdvice` are NOT invoked. **Difference from handler-thrown 404:** When your `@GetMapping` method throws `ResponseStatusException(HttpStatus.NOT_FOUND)` or a `@ResponseStatus(NOT_FOUND)` exception, the flow COMPLETES through all 14 steps to step 12 (HandlerExceptionResolver). `@ControllerAdvice @ExceptionHandler` IS invoked. You can customize the error body. **Production fix for no-handler 404:** Set `spring.mvc.throw-exception-if-no-handler-found=true` + `spring.web.resources.add-mappings=false` → converts no-handler 404 to `NoHandlerFoundException` which CAN be caught by `@ControllerAdvice`.
 
 </details>
+
+---
+
+### 12A. Servlet Filters — The Gate Before Spring
+
+**The key insight most developers miss:** Filters are NOT a Spring concept. They belong to the **Servlet specification** (javax.servlet / jakarta.servlet). They existed before Spring. They run OUTSIDE Spring's ApplicationContext. This means a Filter executes even for requests that never reach DispatcherServlet.
+
+#### What a Filter Actually Is — The Interface
+
+```java
+// This is a SERVLET API interface, not Spring
+public interface Filter {
+
+    // Called once when the filter is first loaded into the servlet container
+    // Tomcat calls this during startup, NOT Spring
+    default void init(FilterConfig filterConfig) throws ServletException {}
+
+    // Called for EVERY request that matches this filter's URL pattern
+    // The chain parameter is how you pass control to the next filter
+    void doFilter(ServletRequest request, ServletResponse response,
+                  FilterChain chain) throws IOException, ServletException;
+
+    // Called once when the servlet container shuts down
+    default void destroy() {}
+}
+```
+
+**The FilterChain mechanic — this is the part that confuses people:**
+
+```
+  Request arrives at Tomcat
+  │
+  ▼
+  Filter A.doFilter() {
+      // PRE-processing (runs BEFORE the request goes deeper)
+      log("Filter A: before");
+
+      chain.doFilter(request, response);   // ← passes control to next filter
+      //                                      If you DON'T call this, the
+      //                                      request STOPS HERE. The servlet
+      //                                      never sees it. Response goes
+      //                                      back to the client.
+
+      // POST-processing (runs AFTER the response comes back UP)
+      log("Filter A: after");
+  }
+      │
+      ▼ chain.doFilter() invokes...
+  Filter B.doFilter() {
+      log("Filter B: before");
+      chain.doFilter(request, response);   // passes to next filter or servlet
+      log("Filter B: after");
+  }
+      │
+      ▼ chain.doFilter() invokes...
+  DispatcherServlet.service() {
+      // Spring MVC processing happens here
+      // (HandlerMapping → Interceptors → Controller → etc.)
+  }
+      │
+      ▼ returns from service()
+  Filter B: "after" runs
+      │
+      ▼ returns from chain.doFilter()
+  Filter A: "after" runs
+      │
+      ▼
+  Response sent to client
+
+  EXECUTION ORDER (stack-based, like Russian dolls):
+  A.before → B.before → Servlet → B.after → A.after
+```
+
+**Why this matters:** If Filter A doesn't call `chain.doFilter()`, Filter B and the servlet NEVER execute. This is how Spring Security rejects unauthenticated requests — the security filter simply doesn't call `chain.doFilter()`, writes a 401 to the response, and returns.
+
+#### Implementing a Custom Filter — Three Approaches
+
+**Approach 1: Raw @Component Filter (simplest but limited)**
+
+```java
+@Component
+@Order(1)  // lower number = runs first
+public class RequestTimingFilter implements Filter {
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
+
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        long start = System.nanoTime();
+
+        chain.doFilter(request, response);  // let the request proceed
+
+        long duration = System.nanoTime() - start;
+        // This runs AFTER the controller has returned
+        System.out.printf("%s %s took %d ms%n",
+            httpReq.getMethod(), httpReq.getRequestURI(),
+            TimeUnit.NANOSECONDS.toMillis(duration));
+    }
+}
+```
+
+**Problem with @Component:** Applies to ALL URLs. No way to restrict to `/api/**` only.
+
+**Approach 2: FilterRegistrationBean (full control)**
+
+```java
+@Configuration
+public class FilterConfig {
+
+    @Bean
+    public FilterRegistrationBean<RequestTimingFilter> timingFilter() {
+        FilterRegistrationBean<RequestTimingFilter> reg = new FilterRegistrationBean<>();
+        reg.setFilter(new RequestTimingFilter());  // NOT a @Component — you manage it
+        reg.addUrlPatterns("/api/*");               // only /api paths
+        reg.setOrder(1);                           // explicit ordering
+        reg.setName("requestTimingFilter");
+        return reg;
+    }
+
+    @Bean
+    public FilterRegistrationBean<TenantFilter> tenantFilter() {
+        FilterRegistrationBean<TenantFilter> reg = new FilterRegistrationBean<>();
+        reg.setFilter(new TenantFilter());
+        reg.addUrlPatterns("/api/*");
+        reg.setOrder(2);  // runs AFTER timing filter
+        return reg;
+    }
+}
+```
+
+**Why FilterRegistrationBean exists:** The Servlet spec has no annotation for URL patterns on filters. Spring Boot's `FilterRegistrationBean` bridges this gap. Without it, you're stuck with `@WebFilter` (which requires `@ServletComponentScan` and doesn't support `@Order`).
+
+**Approach 3: OncePerRequestFilter (the one you should usually use)**
+
+```java
+@Component
+@Order(1)
+public class RequestIdFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     FilterChain filterChain)
+            throws ServletException, IOException {
+
+        String requestId = UUID.randomUUID().toString();
+        // MDC = Mapped Diagnostic Context (SLF4J) — attaches to all log lines
+        MDC.put("requestId", requestId);
+        response.setHeader("X-Request-Id", requestId);
+
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.remove("requestId");  // clean up thread-local
+        }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Skip static resources
+        return request.getRequestURI().startsWith("/static/");
+    }
+}
+```
+
+**Why OncePerRequestFilter exists — the problem it solves:**
+
+```
+  Request: GET /dashboard
+  │
+  ▼
+  YourFilter.doFilter() runs  ← first invocation
+  │
+  ▼
+  Controller calls:
+    request.getRequestDispatcher("/error").forward(request, response);
+  │
+  ▼
+  YourFilter.doFilter() runs AGAIN  ← second invocation!
+  // Because a forward() is treated as a NEW request by the servlet container
+```
+
+A regular `Filter` runs again on internal forwards and includes. `OncePerRequestFilter` tracks whether it already ran (via a request attribute) and skips the second invocation. In production, almost every filter should extend `OncePerRequestFilter`.
+
+#### Spring Boot's Built-in Filters and Their Order
+
+```
+  ORDER    FILTER                             PURPOSE
+  ──────   ──────────────────────────────     ──────────────────────────────────
+  -105     OrderedCharacterEncodingFilter     Sets request/response charset UTF-8
+  -100     OrderedFormContentFilter           Parses form data for PUT/PATCH/DELETE
+  -100     OrderedHiddenHttpMethodFilter      Converts _method param to HTTP method
+  -100     OrderedRequestContextFilter        Exposes request to non-web threads
+   0       (your @Component filters)          Default order if no @Order specified
+   100     Spring Security FilterChainProxy   The entire security filter chain
+                                              (registered via DelegatingFilterProxy)
+```
+
+---
+
+### 12B. Spring Security's FilterChainProxy — The Filter That Contains Filters
+
+**The architecture that confuses everyone:** Spring Security doesn't register 15 separate servlet filters with Tomcat. It registers exactly ONE servlet filter — `DelegatingFilterProxy` — which delegates to a Spring bean called `FilterChainProxy`, which internally runs its own chain of Spring-managed security filters.
+
+```
+  Tomcat's Filter Chain (servlet-level):
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │                                                                      │
+  │  CharacterEncodingFilter                                             │
+  │  ↓                                                                   │
+  │  HiddenHttpMethodFilter                                              │
+  │  ↓                                                                   │
+  │  DelegatingFilterProxy (name="springSecurityFilterChain")            │
+  │  │                                                                   │
+  │  │  This is a SERVLET filter that looks up a SPRING BEAN             │
+  │  │  by name and delegates to it.                                     │
+  │  │                                                                   │
+  │  │  ┌── Spring Bean: FilterChainProxy ───────────────────────────┐  │
+  │  │  │                                                             │  │
+  │  │  │  Holds List<SecurityFilterChain>                            │  │
+  │  │  │  For each request, finds the FIRST chain whose              │  │
+  │  │  │  RequestMatcher matches the URL, then runs THAT chain.     │  │
+  │  │  │                                                             │  │
+  │  │  │  SecurityFilterChain for /api/** (15 filters):             │  │
+  │  │  │  ┌─────────────────────────────────────────────────────┐   │  │
+  │  │  │  │ 1. DisableEncodeUrlFilter                           │   │  │
+  │  │  │  │ 2. WebAsyncManagerIntegrationFilter                 │   │  │
+  │  │  │  │ 3. SecurityContextHolderFilter                      │   │  │
+  │  │  │  │ 4. HeaderWriterFilter                               │   │  │
+  │  │  │  │ 5. CorsFilter                                       │   │  │
+  │  │  │  │ 6. CsrfFilter                                       │   │  │
+  │  │  │  │ 7. LogoutFilter                                     │   │  │
+  │  │  │  │ 8. UsernamePasswordAuthenticationFilter             │   │  │
+  │  │  │  │    (or BearerTokenAuthenticationFilter for JWT)      │   │  │
+  │  │  │  │ 9. DefaultLoginPageGeneratingFilter                 │   │  │
+  │  │  │  │ 10. BasicAuthenticationFilter                       │   │  │
+  │  │  │  │ 11. RequestCacheAwareFilter                         │   │  │
+  │  │  │  │ 12. SecurityContextHolderAwareRequestFilter         │   │  │
+  │  │  │  │ 13. AnonymousAuthenticationFilter                   │   │  │
+  │  │  │  │ 14. ExceptionTranslationFilter                      │   │  │
+  │  │  │  │ 15. AuthorizationFilter                             │   │  │
+  │  │  │  └─────────────────────────────────────────────────────┘   │  │
+  │  │  │                                                             │  │
+  │  │  │  SecurityFilterChain for /public/** (3 filters):           │  │
+  │  │  │  ┌─────────────────────────────────────────────────────┐   │  │
+  │  │  │  │ 1. SecurityContextHolderFilter                      │   │  │
+  │  │  │  │ 2. HeaderWriterFilter                               │   │  │
+  │  │  │  │ 3. AuthorizationFilter (permitAll)                  │   │  │
+  │  │  │  └─────────────────────────────────────────────────────┘   │  │
+  │  │  │                                                             │  │
+  │  │  └─────────────────────────────────────────────────────────┘  │
+  │  │                                                                   │
+  │  ↓                                                                   │
+  │  YourCustomFilter                                                    │
+  │  ↓                                                                   │
+  │  DispatcherServlet                                                   │
+  │                                                                      │
+  └──────────────────────────────────────────────────────────────────────┘
+```
+
+**Why this three-layer architecture?**
+
+| Layer                  | Why It Exists                                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| `DelegatingFilterProxy` | Bridges servlet world → Spring world. Tomcat can't inject Spring beans, so this proxy does the lookup. |
+| `FilterChainProxy`     | Manages multiple `SecurityFilterChain` beans. Picks the right chain per URL pattern.                   |
+| `SecurityFilterChain`  | The actual ordered list of security filters. You configure this in `SecurityFilterChain @Bean`.         |
+
+**How you configure it in code:**
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
+        return http
+            .securityMatcher("/api/**")           // this chain handles /api paths
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/public/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+            .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
+            .csrf(csrf -> csrf.disable())         // stateless API, no CSRF needed
+            .build();
+        // This creates a SecurityFilterChain with ~12 filters (no login page filters)
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+        return http
+            .securityMatcher("/**")               // everything else
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/login", "/css/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(Customizer.withDefaults())  // adds login page filters
+            .build();
+        // This creates a SecurityFilterChain with ~15 filters (including login page)
+    }
+}
+```
+
+**The critical detail:** `FilterChainProxy` tries each `SecurityFilterChain` in `@Order` and uses the FIRST one whose `securityMatcher` matches. It does NOT run multiple chains — only ONE chain processes each request.
+
+---
+
+### 12C. DispatcherServlet — The Front Controller Pattern
+
+**What DispatcherServlet actually is:** It's a regular `javax.servlet.http.HttpServlet` registered with Tomcat. Every Spring MVC application has exactly one (usually). ALL HTTP requests to your application that pass through the filter chain land here.
+
+```
+  WHY THE FRONT CONTROLLER PATTERN EXISTS:
+  ─────────────────────────────────────────
+
+  WITHOUT DispatcherServlet (raw servlets — how Java web worked in 2000):
+  ┌─────────────────────────────────┐
+  │  web.xml                        │
+  │                                 │
+  │  /users  →  UserServlet         │  Each URL needs its own servlet class
+  │  /orders →  OrderServlet        │  registered in XML. No dependency injection.
+  │  /items  →  ItemServlet         │  Duplicate boilerplate in every servlet.
+  │  /auth   →  AuthServlet         │  No central exception handling.
+  └─────────────────────────────────┘
+
+  WITH DispatcherServlet (Front Controller pattern):
+  ┌─────────────────────────────────┐
+  │  Auto-configured by Spring Boot │
+  │                                 │
+  │  /*  →  DispatcherServlet       │  ONE servlet handles ALL requests.
+  │         │                       │  Delegates to @Controller methods
+  │         ├→ UserController       │  via reflection. Central error
+  │         ├→ OrderController      │  handling. Full DI support.
+  │         └→ ItemController       │
+  └─────────────────────────────────┘
+```
+
+**How Spring Boot auto-registers DispatcherServlet — the chain you never see:**
+
+```
+  1. DispatcherServletAutoConfiguration (triggered by spring-boot-starter-web on classpath)
+     │
+  2. Creates DispatcherServlet bean
+     │
+  3. Creates DispatcherServletRegistrationBean
+     │  Sets urlMappings = "/" (catches all paths not handled by other servlets)
+     │  Sets loadOnStartup = -1 (loaded when first request arrives, not at boot)
+     │  Sets name = "dispatcherServlet"
+     │
+  4. Registers it with Tomcat's ServletContext
+     │
+  5. On first request → Tomcat calls DispatcherServlet.init()
+     │  → creates its own WebApplicationContext (child of root context)
+     │  → initializes HandlerMappings, HandlerAdapters, ViewResolvers,
+     │     ExceptionResolvers, and all other MVC infrastructure
+```
+
+**DispatcherServlet's internal dispatch loop (what happens inside service()):**
+
+```java
+// Simplified from actual Spring source code — DispatcherServlet.doDispatch()
+protected void doDispatch(HttpServletRequest request,
+                          HttpServletResponse response) throws Exception {
+
+    HandlerExecutionChain mappedHandler = null;
+    ModelAndView mv = null;
+    Exception dispatchException = null;
+
+    try {
+        // STEP 1: Find the handler (controller method) for this request
+        mappedHandler = getHandler(request);
+        // Iterates all HandlerMappings in order:
+        //   RequestMappingHandlerMapping → checks @RequestMapping annotations
+        //   BeanNameUrlHandlerMapping   → checks bean names matching URL
+        //   RouterFunctionMapping       → checks functional endpoints
+        // Returns HandlerExecutionChain = handler + list of interceptors
+
+        if (mappedHandler == null) {
+            noHandlerFound(request, response);  // → 404
+            return;
+        }
+
+        // STEP 2: Find the adapter that knows how to invoke this handler type
+        HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+        // RequestMappingHandlerAdapter → for @Controller methods
+        // HttpRequestHandlerAdapter    → for HttpRequestHandler
+        // SimpleControllerHandlerAdapter → for old-style Controller interface
+
+        // STEP 3: Run interceptor preHandle methods
+        if (!mappedHandler.applyPreHandle(request, response)) {
+            return;  // an interceptor said STOP — short circuit
+        }
+
+        // STEP 4: Actually invoke the controller method
+        mv = ha.handle(request, response, mappedHandler.getHandler());
+        // Inside here: argument resolution, method invocation,
+        // return value handling (JSON serialization, view resolution)
+
+        // STEP 5: Run interceptor postHandle methods
+        mappedHandler.applyPostHandle(request, response, mv);
+
+    } catch (Exception ex) {
+        dispatchException = ex;
+    }
+
+    // STEP 6: Process result — render view or handle exception
+    processDispatchResult(request, response, mappedHandler, mv, dispatchException);
+    // If dispatchException != null → HandlerExceptionResolver chain runs
+    //   → @ExceptionHandler methods in @ControllerAdvice
+    //   → ResponseStatusExceptionResolver
+    //   → DefaultHandlerExceptionResolver
+
+    // STEP 7: afterCompletion on interceptors (ALWAYS runs, even on exception)
+    // Called inside processDispatchResult → triggerAfterCompletion
+}
+```
+
+---
+
+### 12D. HandlerInterceptor — Spring-Level Request Hooks
+
+**HandlerInterceptor is NOT a servlet concept.** It's pure Spring. It only runs for requests that reach DispatcherServlet AND match a handler. If a servlet filter rejects the request, or if no handler is found, interceptors never execute.
+
+#### The Interface
+
+```java
+public interface HandlerInterceptor {
+
+    // Runs BEFORE the controller method
+    // Return true = continue; return false = stop here
+    default boolean preHandle(HttpServletRequest request,
+                               HttpServletResponse response,
+                               Object handler) throws Exception {
+        return true;
+    }
+
+    // Runs AFTER the controller method, BEFORE the response is committed
+    // Only runs if the controller did NOT throw an exception
+    // The ModelAndView is available for modification
+    default void postHandle(HttpServletRequest request,
+                            HttpServletResponse response,
+                            Object handler,
+                            @Nullable ModelAndView modelAndView) throws Exception {
+    }
+
+    // ALWAYS runs — even if the controller threw an exception
+    // Use for cleanup: closing resources, logging elapsed time
+    default void afterCompletion(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 Object handler,
+                                 @Nullable Exception ex) throws Exception {
+    }
+}
+```
+
+#### When Each Method Fires — The Exact Timeline
+
+```
+  Request arrives at DispatcherServlet
+  │
+  ├─ HandlerMapping finds: UserController.getUser()
+  │  Returns: HandlerExecutionChain containing:
+  │    handler = UserController.getUser()
+  │    interceptors = [LoggingInterceptor, AuthInterceptor, TimingInterceptor]
+  │
+  ├─ Interceptor A: preHandle()   → returns true (continue)
+  ├─ Interceptor B: preHandle()   → returns true (continue)
+  ├─ Interceptor C: preHandle()   → returns true (continue)
+  │
+  ├─ Controller method executes   → returns ResponseEntity
+  │
+  ├─ Interceptor C: postHandle()  → runs (REVERSE order)
+  ├─ Interceptor B: postHandle()  → runs
+  ├─ Interceptor A: postHandle()  → runs
+  │
+  ├─ Interceptor C: afterCompletion() → runs (REVERSE order)
+  ├─ Interceptor B: afterCompletion() → runs
+  ├─ Interceptor A: afterCompletion() → runs
+  │
+  ▼
+  Response sent
+
+  IF Interceptor B.preHandle() returns FALSE:
+  ├─ Interceptor A: preHandle()   → returns true
+  ├─ Interceptor B: preHandle()   → returns FALSE ← STOPS HERE
+  │
+  │  Controller NEVER executes
+  │  postHandle() NEVER runs for any interceptor
+  │
+  ├─ Interceptor A: afterCompletion() → runs (only for interceptors
+  │                                      whose preHandle() returned true)
+  │  Interceptor B: afterCompletion() → does NOT run
+  ▼
+  Response sent (whatever B wrote to the response)
+```
+
+#### Implementing and Registering a Custom Interceptor
+
+```java
+// Step 1: Create the interceptor
+@Component
+public class RequestTimingInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+                              HttpServletResponse response,
+                              Object handler) {
+        request.setAttribute("startTime", System.nanoTime());
+        return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 Object handler,
+                                 Exception ex) {
+        long start = (long) request.getAttribute("startTime");
+        long elapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+        // handler is the actual controller method — you can inspect it
+        if (handler instanceof HandlerMethod hm) {
+            String controller = hm.getBeanType().getSimpleName();
+            String method = hm.getMethod().getName();
+            log.info("{}.{} completed in {} ms (status: {})",
+                controller, method, elapsed, response.getStatus());
+        }
+    }
+}
+
+// Step 2: Register the interceptor with path patterns
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private RequestTimingInterceptor timingInterceptor;
+
+    @Autowired
+    private TenantInterceptor tenantInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(timingInterceptor)
+                .addPathPatterns("/api/**")          // only API paths
+                .excludePathPatterns("/api/health"); // skip health checks
+
+        registry.addInterceptor(tenantInterceptor)
+                .addPathPatterns("/api/**")
+                .order(1);  // explicit ordering (lower = first)
+    }
+}
+```
+
+**The `handler` parameter — what it actually is:**
+
+```java
+@Override
+public boolean preHandle(HttpServletRequest request,
+                          HttpServletResponse response,
+                          Object handler) {
+
+    // For @Controller methods: handler is HandlerMethod
+    if (handler instanceof HandlerMethod hm) {
+        Class<?> controllerClass = hm.getBeanType();     // UserController.class
+        Method method = hm.getMethod();                   // getUser(Long)
+        // You can check for annotations on the method:
+        RequiresAdmin ann = hm.getMethodAnnotation(RequiresAdmin.class);
+        if (ann != null && !isAdmin(request)) {
+            response.sendError(403);
+            return false;
+        }
+    }
+
+    // For static resources: handler is ResourceHttpRequestHandler
+    // For functional endpoints: handler is HandlerFunction
+
+    return true;
+}
+```
+
+#### AsyncHandlerInterceptor — For @Async Controllers
+
+```java
+// Regular interceptors have a problem with async controllers:
+//   afterCompletion() fires when the async processing STARTS, not when it ends
+// AsyncHandlerInterceptor adds one more callback:
+
+public interface AsyncHandlerInterceptor extends HandlerInterceptor {
+
+    // Called when a controller returns Callable, DeferredResult, or CompletableFuture
+    // Fires INSTEAD OF postHandle/afterCompletion on the initial thread
+    // Then when async completes, a NEW request dispatch happens and
+    // preHandle/postHandle/afterCompletion run again on the new thread
+    default void afterConcurrentHandlingStarted(HttpServletRequest request,
+                                                 HttpServletResponse response,
+                                                 Object handler) {
+    }
+}
+```
+
+---
+
+### 12E. Filter vs Interceptor — The Complete Comparison
+
+```
+  ┌────────────────────┬────────────────────────────┬────────────────────────────┐
+  │                    │       SERVLET FILTER       │    HANDLER INTERCEPTOR     │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Specification      │ Servlet API                │ Spring MVC                 │
+  │                    │ (javax.servlet.Filter)     │ (HandlerInterceptor)       │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Scope              │ ALL requests to the        │ Only requests that reach   │
+  │                    │ servlet container —         │ DispatcherServlet AND      │
+  │                    │ including static files,    │ match a handler.           │
+  │                    │ error pages, forwards      │ Static resources: NO       │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Spring Context     │ NOT available by default   │ Full access — interceptors │
+  │ Access             │ (unless you use            │ are Spring beans. Can      │
+  │                    │ DelegatingFilterProxy or   │ @Autowire services.        │
+  │                    │ register as @Bean)         │                            │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Handler Info       │ No — filters don't know    │ Yes — receives the actual  │
+  │                    │ which controller will      │ HandlerMethod object.      │
+  │                    │ handle the request         │ Can inspect annotations.   │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Request/Response   │ Can wrap/replace the       │ Cannot replace request     │
+  │ Wrapping           │ request and response       │ or response objects.       │
+  │                    │ objects entirely            │                            │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Exception Handling │ Must catch exceptions      │ afterCompletion() receives │
+  │                    │ yourself in try-catch.     │ the exception parameter.   │
+  │                    │ No integration with        │ @ControllerAdvice handles  │
+  │                    │ @ControllerAdvice          │ controller exceptions.     │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Short-Circuit      │ Don't call                 │ Return false from          │
+  │                    │ chain.doFilter()           │ preHandle()                │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Post-Processing    │ Code after                 │ postHandle() — only if no  │
+  │                    │ chain.doFilter() runs      │ exception                  │
+  │                    │ regardless of exceptions   │ afterCompletion() — always │
+  ├────────────────────┼────────────────────────────┼────────────────────────────┤
+  │ Use Cases          │ Security, CORS, encoding,  │ Logging, timing, auth      │
+  │                    │ request ID injection,      │ checks that need handler   │
+  │                    │ rate limiting, body        │ info, audit trails,        │
+  │                    │ caching/logging            │ tenant resolution          │
+  └────────────────────┴────────────────────────────┴────────────────────────────┘
+```
+
+**Decision Guide:**
+
+```
+  Should I use a Filter or an Interceptor?
+
+  Do you need to see/modify the RAW request body?
+    → FILTER (wrap request with ContentCachingRequestWrapper)
+
+  Do you need to run even for static resources and error pages?
+    → FILTER (interceptors only run for matched handlers)
+
+  Do you need to know WHICH controller method will handle the request?
+    → INTERCEPTOR (handler parameter gives you the method + annotations)
+
+  Do you need to wrap/replace the HttpServletRequest object?
+    → FILTER (interceptors can't modify the request/response objects)
+
+  Are you implementing cross-cutting security (authentication)?
+    → FILTER (Spring Security is entirely filter-based for this reason)
+
+  Are you implementing business-level authorization ("only admins can...")?
+    → INTERCEPTOR (you can check handler annotations like @RequiresAdmin)
+
+  Do you need to log the response body?
+    → FILTER (wrap response with ContentCachingResponseWrapper)
+
+  Do you need clean integration with @ControllerAdvice error handling?
+    → INTERCEPTOR (filter exceptions bypass @ControllerAdvice entirely)
+```
+
+---
+
+### 12F. Request/Response Wrapping — Why the Body Disappears
+
+**The problem every developer hits:** You write a filter to log the request body. It works. Then the controller returns 400 — the body is empty. Why?
+
+```
+  The Servlet API's InputStream can only be read ONCE:
+
+  Filter reads body:    request.getInputStream().readAllBytes()  → body bytes ✓
+  Controller reads body: @RequestBody → request.getInputStream() → EMPTY
+
+  The stream has already been consumed. There's no rewind.
+```
+
+**The solution: ContentCachingRequestWrapper**
+
+```java
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)  // run before everything else
+public class RequestBodyCachingFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     FilterChain chain)
+            throws ServletException, IOException {
+
+        // Wrap the request — this caches the body as it's read
+        ContentCachingRequestWrapper wrappedRequest =
+            new ContentCachingRequestWrapper(request);
+
+        // Wrap the response — this captures the response body
+        ContentCachingResponseWrapper wrappedResponse =
+            new ContentCachingResponseWrapper(response);
+
+        try {
+            chain.doFilter(wrappedRequest, wrappedResponse);
+        } finally {
+            // Log after the controller has processed
+            byte[] requestBody = wrappedRequest.getContentAsByteArray();
+            byte[] responseBody = wrappedResponse.getContentAsByteArray();
+
+            log.info("Request: {} {} body={}",
+                request.getMethod(), request.getRequestURI(),
+                new String(requestBody, request.getCharacterEncoding()));
+            log.info("Response: status={} body={}",
+                response.getStatus(),
+                new String(responseBody, response.getCharacterEncoding()));
+
+            // CRITICAL: copy the cached body to the actual response output
+            // Without this line, the client receives an EMPTY response!
+            wrappedResponse.copyBodyToResponse();
+        }
+    }
+}
+```
+
+**Why ContentCachingRequestWrapper works differently than you expect:**
+
+```
+  ContentCachingRequestWrapper does NOT eagerly read the body.
+  It wraps the InputStream so that when something ELSE reads it
+  (like Jackson in @RequestBody processing), the bytes are ALSO
+  copied into an internal ByteArrayOutputStream.
+
+  After chain.doFilter() returns, you call getContentAsByteArray()
+  to get the cached copy. The original stream is still consumed —
+  you read the COPY.
+
+  Timeline:
+  1. Filter wraps request
+  2. chain.doFilter() → eventually @RequestBody triggers Jackson
+  3. Jackson reads request.getInputStream()
+  4. ContentCachingRequestWrapper intercepts each read() call,
+     copies bytes to internal buffer AND passes them to Jackson
+  5. Jackson finishes — stream consumed
+  6. Filter calls getContentAsByteArray() — gets the cached copy
+```
+
+---
+
+### 12G. CORS — Where It Lives in the Pipeline
+
+**CORS is a browser-enforced mechanism, not a server mechanism.** The server sets headers; the browser decides whether to allow the request. Understanding where CORS headers get set in the Spring pipeline matters because getting it wrong means preflight requests fail silently.
+
+```
+  PREFLIGHT (OPTIONS) REQUEST FLOW:
+  ─────────────────────────────────
+
+  Browser wants to POST to: https://api.example.com/users
+  Origin: https://app.example.com (different domain)
+
+  Step 1: Browser sends OPTIONS preflight automatically:
+          OPTIONS /users HTTP/1.1
+          Origin: https://app.example.com
+          Access-Control-Request-Method: POST
+          Access-Control-Request-Headers: Content-Type, Authorization
+
+  Step 2: This OPTIONS request enters Spring's filter chain:
+          ┌─────────────────────────────────────────────────────┐
+          │ CharacterEncodingFilter                             │
+          │ ↓                                                   │
+          │ Spring Security FilterChainProxy                    │
+          │ │                                                   │
+          │ │ CorsFilter (security's internal)                  │
+          │ │ ↓                                                 │
+          │ │ IF CORS configured properly:                      │
+          │ │   Sets Access-Control-Allow-Origin                │
+          │ │   Sets Access-Control-Allow-Methods               │
+          │ │   Sets Access-Control-Allow-Headers               │
+          │ │   Returns 200 with these headers                  │
+          │ │   → Request SHORT-CIRCUITED here                  │
+          │ │   → DispatcherServlet never sees it               │
+          │ │                                                   │
+          │ │ IF CORS NOT configured:                           │
+          │ │   No CORS headers set                             │
+          │ │   OPTIONS continues to DispatcherServlet          │
+          │ │   → 403 Forbidden (CSRF blocks it)                │
+          │ │   → Browser blocks the actual POST                │
+          └─────────────────────────────────────────────────────┘
+```
+
+**Three ways to configure CORS (and where each lives in the pipeline):**
+
+```java
+// WAY 1: @CrossOrigin on controller (lives in DispatcherServlet layer)
+// Handled by HandlerMapping — only applies to matched handlers
+// PROBLEM: preflight OPTIONS might be blocked by Security filters BEFORE
+//          it reaches DispatcherServlet
+@RestController
+@CrossOrigin(origins = "https://app.example.com")
+public class UserController {
+    @GetMapping("/users")
+    public List<User> getUsers() { ... }
+}
+
+// WAY 2: Global CORS via WebMvcConfigurer (lives in DispatcherServlet layer)
+// Same problem as @CrossOrigin — processed too late for preflight
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**")
+                .allowedOrigins("https://app.example.com")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
+}
+
+// WAY 3: CorsFilter as a servlet filter (lives in filter chain — BEFORE security)
+// This is the CORRECT approach when using Spring Security
+@Configuration
+public class CorsConfig {
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("https://app.example.com"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", config);
+        return new CorsFilter(source);
+    }
+}
+
+// WAY 4: Spring Security's CORS integration (RECOMMENDED with Security)
+// Tells Security to use your CorsConfigurationSource for its internal CorsFilter
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .build();
+}
+
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("https://app.example.com"));
+    config.setAllowedMethods(List.of("*"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+}
+```
+
+**Why Way 4 is correct with Spring Security:** Spring Security's `CorsFilter` runs INSIDE `FilterChainProxy`, BEFORE the `CsrfFilter` and `AuthorizationFilter`. This means preflight OPTIONS requests get CORS headers and return 200 before security checks can reject them.
+
+---
+
+### 12H. Exception Handling Across Layers — Who Catches What
+
+**The most confusing aspect of the request pipeline:** Different layers handle exceptions differently, and an exception thrown in one layer may not be catchable by mechanisms in another.
+
+```
+  EXCEPTION THROWN IN...              CAUGHT BY...
+  ──────────────────────────────────  ──────────────────────────────────────────
+
+  Filter (before DispatcherServlet)   → NOT caught by @ControllerAdvice
+                                      → NOT caught by @ExceptionHandler
+                                      → Tomcat's default error page (ugly HTML)
+                                      → OR: custom ErrorController if configured
+
+  HandlerInterceptor.preHandle()      → afterCompletion() of already-run interceptors
+                                      → NOT caught by @ControllerAdvice
+                                      → Same as filter-level: goes to ErrorController
+
+  Controller method                   → @ExceptionHandler in the controller
+                                      → @ControllerAdvice @ExceptionHandler (global)
+                                      → HandlerExceptionResolver chain
+                                      → afterCompletion() on interceptors
+
+  HandlerInterceptor.postHandle()     → afterCompletion() of interceptors
+                                      → NOT caught by @ControllerAdvice
+                                      → Goes to ErrorController
+
+  HandlerInterceptor.afterCompletion()→ Logged and swallowed by DispatcherServlet
+                                        (never reaches the client)
+```
+
+**The ErrorController — catching what @ControllerAdvice cannot:**
+
+```java
+// When a filter throws, Tomcat catches it and forwards to /error
+// Spring Boot's BasicErrorController handles /error by default
+// You can replace it:
+
+@RestController
+public class GlobalErrorController implements ErrorController {
+
+    @RequestMapping("/error")
+    public ResponseEntity<Map<String, Object>> handleError(HttpServletRequest request) {
+        // Tomcat stores the original exception and status code as request attributes
+        Integer status = (Integer) request.getAttribute(
+            RequestDispatcher.ERROR_STATUS_CODE);
+        Throwable exception = (Throwable) request.getAttribute(
+            RequestDispatcher.ERROR_EXCEPTION);
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", status != null ? status : 500);
+        body.put("error", exception != null ? exception.getMessage() : "Unknown");
+        body.put("path", request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
+        body.put("timestamp", Instant.now());
+
+        return ResponseEntity.status(status != null ? status : 500).body(body);
+    }
+}
+```
+
+**How Tomcat's error forwarding works internally:**
+
+```
+  Filter throws RuntimeException
+  │
+  ▼
+  Tomcat catches it (because filters run inside Tomcat's request processing)
+  │
+  ▼
+  Tomcat looks up error-page mapping for the exception type or status code
+  │  Spring Boot auto-configures: all errors → /error
+  │
+  ▼
+  Tomcat creates an INTERNAL FORWARD to /error
+  │  RequestDispatcher.forward(request, response)
+  │  This is a NEW dispatch through the SAME filter chain!
+  │  (OncePerRequestFilter prevents double-execution)
+  │
+  ▼
+  DispatcherServlet handles /error → routes to ErrorController
+  │
+  ▼
+  ErrorController reads original exception from request attributes
+  Returns JSON/HTML error response
+  │
+  ▼
+  Response sent to client
+
+  KEY INSIGHT: The /error dispatch passes through filters AGAIN.
+  If the filter that threw the exception doesn't handle the error
+  dispatch differently, you get an infinite loop!
+  OncePerRequestFilter prevents this by skipping on the second pass.
+```
+
+**Complete exception handling setup for production:**
+
+```java
+// 1. Controller-level exceptions → @ControllerAdvice
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(404)
+            .body(new ErrorResponse(404, ex.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(
+            MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+            .map(e -> e.getField() + ": " + e.getDefaultMessage())
+            .collect(Collectors.joining(", "));
+        return ResponseEntity.badRequest()
+            .body(new ErrorResponse(400, message));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
+        log.error("Unhandled exception", ex);
+        return ResponseEntity.status(500)
+            .body(new ErrorResponse(500, "Internal server error"));
+    }
+}
+
+// 2. Filter-level exceptions → ErrorController
+// (See GlobalErrorController above)
+
+// 3. Filter that wants to return JSON errors WITHOUT going through /error:
+@Component
+@Order(1)
+public class ApiKeyFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     FilterChain chain)
+            throws ServletException, IOException {
+
+        String apiKey = request.getHeader("X-API-Key");
+        if (apiKey == null || !isValid(apiKey)) {
+            // Write error response directly — don't throw
+            response.setStatus(401);
+            response.setContentType("application/json");
+            response.getWriter().write(
+                "{\"status\":401,\"error\":\"Invalid or missing API key\"}");
+            // Do NOT call chain.doFilter() — stop here
+            return;
+        }
+        chain.doFilter(request, response);
+    }
+}
+```
+
+🔬 **Section Challenge — 12A-12H Request Pipeline Deep Dive**
+
+**Challenge 1 (Filter Order Debugging):** You have a `LoggingFilter` that logs the request body and a Spring Security `FilterChainProxy`. The logging filter runs AFTER security. An unauthenticated request arrives. **What** does the logging filter see? **Why** is this a problem? **How** do you fix it?
+
+<details><summary>Answer</summary>
+
+**What it sees:** Nothing — the logging filter never executes. Spring Security's `FilterChainProxy` (order 100) runs first. For an unauthenticated request, `AuthorizationFilter` inside the security chain returns 401 without calling `chain.doFilter()`. The `LoggingFilter` (higher order) is never reached. **Why it's a problem:** You can't log failed authentication attempts. **How to fix:** Either (1) set `LoggingFilter` order to something below 100 (e.g., `@Order(-1)`) so it runs before security, or (2) add a custom security filter INSIDE the `SecurityFilterChain` using `http.addFilterBefore(loggingFilter, AuthorizationFilter.class)` — this way logging runs inside the security chain before the auth check.
+
+</details>
+
+**Challenge 2 (Interceptor vs Filter Trap):** You write a `HandlerInterceptor` to check if the user has a "Premium" role before allowing access to `/api/reports/**`. It works in tests. In production, users can still access reports without the Premium role by requesting `/api/reports/../reports/dashboard`. **Why?** **Where** in the pipeline does path normalization happen?
+
+<details><summary>Answer</summary>
+
+**Why:** The `HandlerInterceptor`'s `addPathPatterns("/api/reports/**")` matches against the RAW request URI. The path `/../` traversal is normalized LATER — by `DispatcherServlet`'s `HandlerMapping` when resolving the controller. So `/api/reports/../reports/dashboard` does NOT match the interceptor's pattern `/api/reports/**` (it resolves to `/api/reports/dashboard` only after normalization). **Where normalization happens:** `UrlPathHelper.getPathWithinApplication()` inside `HandlerMapping`, which runs AFTER interceptor registration matching but BEFORE `preHandle()`. **Fix:** Use a servlet `Filter` instead — filters can call `request.getServletPath()` which is already normalized by Tomcat. Or use Spring Security's `requestMatchers()` which normalizes paths before matching.
+
+</details>
+
+**Challenge 3 (The Disappearing Exception):** A `HandlerInterceptor.afterCompletion()` throws `NullPointerException`. The controller returned a valid 200 response. **What** does the client receive? **Where** does the NPE go?
+
+<details><summary>Answer</summary>
+
+**What the client receives:** The original 200 response — unchanged. **Where the NPE goes:** `DispatcherServlet` catches exceptions from `afterCompletion()`, logs them at WARN level, and swallows them. The response is already committed (written to the socket buffer) by the time `afterCompletion` runs, so changing the status code is impossible. The NPE appears in server logs but never reaches the client. This is by design — `afterCompletion` is for cleanup, not for modifying the response. **Source:** `DispatcherServlet.triggerAfterCompletion()` wraps each interceptor's `afterCompletion()` call in a try-catch that logs but does not rethrow.
+
+</details>
+
+---
 
 ## 13. The Entire Spring Ecosystem — How Pieces Fit Together
 

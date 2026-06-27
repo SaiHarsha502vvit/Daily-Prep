@@ -864,3 +864,18 @@ The correct pattern: if you need shared read-only data, create it in `globalSetu
 ---
 
 **Navigation**: [← Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Test data cleanup is optional if tests run in an isolated environment"** → Even in isolated environments (test database per CI run, fresh schema per test), cleanup matters: test data from earlier tests in the same run can interfere with later tests if the earlier test didn't complete its assertions. A failed test that created data but didn't delete it leaves the database in a partial state — the next test in the same run may see that orphaned data and fail. Use `afterEach` or fixture teardown to clean up regardless of test outcome. Idempotent cleanup (try-delete, ignore if already gone) is safer than conditional cleanup.
+
+**"Using the same test user account across all tests is fine"** → Shared test accounts are the #1 cause of test interference. Test A adds items to cart; Test B checks that cart is empty. If both run in parallel (or if A doesn't clean up), Test B fails because of Test A's data. Strategy: unique test data per test run (generate usernames like `testuser_${Date.now()}`), or test isolation via transaction rollback (each test runs in a database transaction that is rolled back — not possible with Playwright's external test target), or API-based setup/teardown per test.
+
+**"Factory functions that create test data don't need cleanup logic"** → Test data factories create data and return it. Without pairing creation with deletion (or a cleanup registry), factories accumulate data. Pattern: a `cleanup` registry that all created resources are added to, with a fixture that deletes them all in teardown. `const { user, cleanup } = await createUser(ctx); test.afterEach(cleanup);`. Alternatively: create data with a unique `testRunId` marker and delete all records with that marker in global teardown. Either way, the creation function must have a corresponding deletion path.
+
+**"API-created test data is faster than UI-created test data"** → API setup is typically 10-50x faster than UI setup. But: API-created data may bypass validation that the application UI would enforce — you might create states via API that the UI would never create. This can make tests less realistic. For critical flows: ensure your API factory creates data in a state that represents real user-created data (either call the same API the UI calls, or call business logic directly). For simple CRUD entities: API setup is correct and fast.
+
+**"Hard-deleting test data is always safe"** → Some applications soft-delete (mark as deleted, keep the record). Hard-deleting bypasses soft-delete and may break: audit trails (the record is missing from history), referential integrity (other records reference the deleted ID), and replication lag (replica may serve the old record for milliseconds). In applications with soft-delete: always use the application's DELETE endpoint (which soft-deletes) for cleanup, not direct database deletion. Direct database cleanup is acceptable only in truly isolated test databases with no replication and no audit requirements.

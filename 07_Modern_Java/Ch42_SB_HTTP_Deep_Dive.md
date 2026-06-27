@@ -130,7 +130,12 @@ _"Every API call is a journey through layers of protocols"_
 │  STEP 5: SERVER PROCESSES (Spring Boot)                                         │
 │  ═══════════════════════════════════════                                        │
 │                                                                                 │
-│  Tomcat → DispatcherServlet → HandlerMapping → Controller → Service → DB        │
+│  Tomcat → Filters → Security FilterChainProxy → DispatcherServlet              │
+│  → HandlerMapping → Interceptor.preHandle() → Controller → Service → DB        │
+│  → Interceptor.postHandle() → Interceptor.afterCompletion()                    │
+│  → Filters (reverse) → Tomcat writes response                                  │
+│                                                                                 │
+│  (Full 14-step breakdown with code examples: see Ch55 Section 12A-12H)         │
 │                                                                                 │
 │  STEP 6: HTTP RESPONSE RETURNED                                                 │
 │  ══════════════════════════════                                                 │

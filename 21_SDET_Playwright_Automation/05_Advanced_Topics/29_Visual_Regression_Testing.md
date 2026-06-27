@@ -904,3 +904,18 @@ Option A skips review entirely — you'll auto-approve regressions you didn't in
 ---
 
 **Navigation**: [← Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)
+
+
+---
+
+## Reality Check
+
+**"Visual regression tests detect all UI changes"** → Visual regression compares screenshots pixel-by-pixel. It detects: layout shifts, color changes, missing elements, wrong images. It does NOT detect: functional changes (button looks correct but doesn't work), data changes (wrong text that looks "right" visually in a diff), dynamic content that changes between runs (timestamps, user IDs, ads — these create false positives). Filter dynamic content: `mask: [page.locator('.timestamp')]` in Playwright tells the screenshotter to ignore that region.
+
+**"A 0% pixel difference means the UI is unchanged"** → On CI machines: font rendering varies by OS (Linux vs Mac vs Windows), anti-aliasing differs, browser subpixel rendering varies. A test that passes locally (Mac) may fail on CI (Linux) with 0.5% pixel differences due to font rendering alone. Use `threshold: 0.2` (allow 20% of pixels to differ by up to 20% brightness) for cross-OS stability, or run all visual regression tests in Docker (consistent renderer). Store baseline screenshots from the CI environment, not from local development.
+
+**"Updating baselines is always safe"** → `npx playwright test --update-snapshots` regenerates all baseline images. If you run this blindly, you accept all current visual regressions as the new baseline — including bugs that visual regression was supposed to catch. Update baselines with intent: look at ALL changed images, verify they represent intentional design changes, not regressions. Some teams require baseline updates to be reviewed in PRs like any other code change (the .png files are committed to version control).
+
+**"Visual testing replaces functional assertions"** → Visual testing and functional assertions test different things. Functional: `expect(page.locator('[data-testid="order-total"]')).toHaveText('$45.00')` — the price is correct. Visual: a screenshot of the order summary — the layout is correct. A bug where the price is wrong but the layout is correct: functional assertion catches it, visual does not. A bug where the price column shifts 10px: visual catches it, functional does not. Both are necessary for different failure modes.
+
+**"Percy/Chromatic are better than Playwright's built-in screenshot comparison"** → Playwright's built-in: `expect(page).toHaveScreenshot()` — stores baselines in your repo, pixel comparison, runs in your CI. Percy/Chromatic: cloud-based baseline storage, perceptual diff (smarter than pixel diff — accounts for anti-aliasing), cross-browser comparison from one snapshot upload, review workflows (approve/reject in UI). The trade-off: built-in is free, offline, simple; Percy/Chromatic costs money but has better diff tooling and cross-browser without running multiple browser tests. For large design systems with many components: Percy/Chromatic pay for themselves in review time saved.
