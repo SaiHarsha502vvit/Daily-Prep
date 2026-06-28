@@ -1116,3 +1116,18 @@ static long modPow(long base, long exp, long mod) {
 | Modular inverse | Extended Euclid | O(log m) | Fermat (prime mod only) | O(log p) |
 | Factorisation | Trial division | O(sqrt(n)) | Pollard's rho | O(n^{1/4}) |
 **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)
+
+
+---
+
+## Reality Check
+
+**"Euler totient function is obscure"** → Euler totient phi(n) counts integers from 1 to n that are coprime to n. This directly appears in: RSA encryption (computing d = e^-1 mod phi(n)), computing modular exponentiation efficiently (a^k mod n = a^(k mod phi(n)) mod n by Euler theorem), and counting fractions in lowest terms with denominator n. It is foundational to modern cryptography.
+
+**"Chinese Remainder Theorem is just a mathematical curiosity"** → CRT enables: parallel computation (split a large modular computation into independent smaller moduli, compute separately, reconstruct), RSA-CRT (4x speedup of RSA decryption by computing mod p and mod q separately), and solving systems of modular equations (scheduling problems where events repeat at different intervals).
+
+**"Discrete logarithm is the inverse of modular exponentiation"** → Computing a^k mod p is efficient with fast exponentiation O(log k). Computing k given a, a^k mod p, and p (discrete log) has no known efficient algorithm for general groups — this asymmetry is the basis of Diffie-Hellman key exchange and ElGamal encryption. Baby-step giant-step solves it in O(sqrt(p)) time and space, which is exponential in the bit length of p.
+
+**"Fermat Little Theorem only proves primality"** → Fermat Little Theorem states a^(p-1) = 1 mod p for prime p. It is used for: fast modular inverse computation (a^(p-2) mod p), exponent reduction in modular arithmetic (reducing large exponents mod p-1), and as a primality TEST (not proof — Carmichael numbers are composite but pass the Fermat test for all bases). Miller-Rabin strengthens Fermat to avoid Carmichael number false positives.
+
+**"Number theory algorithms do not need implementation care"** → Modular multiplication of two 64-bit numbers can overflow even a long (64 bits). Computing (a * b) mod m where a and b are near 10^18 overflows. Solutions: use Math.multiplyHigh in Java 9+ for 128-bit intermediate results, use BigInteger for correctness, or use the Russian peasant multiplication approach (repeated doubling with mod at each step). Ignoring overflow produces silently wrong answers.

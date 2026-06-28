@@ -1718,3 +1718,18 @@ int[] bit = new int[n + 1]; // 1-indexed
 ---
 
 _Master these structures, and you can build anything!_ 🚀
+
+
+---
+
+## Reality Check
+
+**"Knowing the data structure is enough"** → Knowing that a segment tree supports range queries is the first step. The pattern skill is recognizing WHEN a problem maps to range queries: stock price range minimums, interval scheduling conflicts, histogram largest rectangle. The data structure is the tool; the pattern is knowing which tool fits which problem shape.
+
+**"Advanced data structures require advanced implementations"** → Many competitive programmers use simplified implementations: segment tree as a flat array of size 4n with recursive build/query/update, Union-Find as two arrays (parent and rank), and monotonic stack as a regular stack with a while loop. The elegance is in the usage pattern, not in complex class hierarchies. Clean, minimal implementations are easier to debug under time pressure.
+
+**"Combining data structures is always better"** → A HashMap inside a TreeMap inside a priority queue adds complexity and constant factors. Each layer adds indirection and cache misses. Often a single well-chosen structure suffices: LRU cache uses LinkedHashMap (one structure), not separate HashMap and DoublyLinkedList. Combine structures only when a single structure genuinely cannot meet the time complexity requirements.
+
+**"Persistent data structures are academic"** → Persistent data structures (versions that preserve previous states after modification) appear in: version control systems (git object model), functional programming runtimes, database MVCC (multiversion concurrency control), and undo/redo systems. A persistent segment tree enables time-travel queries — answering range queries about the state of the array at any historical point.
+
+**"Augmented data structures are hard to design"** → Augmentation follows a systematic recipe: take a standard data structure, add extra information to each node, maintain that information during standard operations. An order-statistic tree augments a BST with subtree sizes to support find-kth-element in O(log n). The key constraint: the augmented data must be maintainable during rotations and updates without increasing asymptotic complexity.

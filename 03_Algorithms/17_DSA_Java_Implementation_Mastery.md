@@ -882,3 +882,18 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 ---
 
 **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
+
+
+---
+
+## Reality Check
+
+**"Java Collections are interchangeable implementations of the same interface"** → ArrayList and LinkedList both implement List, but their performance profiles are opposite. ArrayList provides O(1) random access but O(n) insertion at arbitrary positions. LinkedList provides O(1) insertion at known positions but O(n) random access. In practice, ArrayList wins almost always because CPU cache prefetching makes sequential array access 10-100x faster than pointer-chasing through linked nodes scattered in memory.
+
+**"TreeMap is just a sorted HashMap"** → TreeMap provides O(log n) operations (vs HashMap O(1) average), but offers capabilities HashMap cannot: floorKey, ceilingKey, subMap, headMap, tailMap — all O(log n) range operations. When you need ordered iteration or range queries, TreeMap is the right choice. When you only need key-value lookup, HashMap is always faster.
+
+**"Comparable and Comparator are equivalent"** → Comparable defines the NATURAL ordering of a class (String alphabetical, Integer numerical). A class has exactly one natural ordering. Comparator defines an EXTERNAL ordering and a class can have many: sort Employees by name, by salary, by hire date. Use Comparable when there is one obvious ordering. Use Comparator when you need multiple orderings or cannot modify the class.
+
+**"Iterator is just a convenience for for-each loops"** → Iterator supports concurrent modification detection (ConcurrentModificationException when the collection is modified during iteration). Iterator.remove is the ONLY safe way to remove elements while iterating. Without iterator: for(int i=0; i < list.size; i++) list.remove(i) silently skips elements because indices shift after removal. Iterator tracks the internal state correctly.
+
+**"Generics are just type safety"** → Generics enable type-safe algorithm implementations that work across types: a single mergeSort method for Integer, String, or any Comparable. But Java generics use TYPE ERASURE — generic type information is removed at compile time. You cannot create a generic array (new T[n] fails), cannot use instanceof with generic types, and cannot call new T(). These constraints shape how you implement generic data structures in Java.

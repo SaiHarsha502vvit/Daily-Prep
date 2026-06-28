@@ -1075,3 +1075,18 @@ Every experienced interviewer tests these. Mention them **before** the interview
 ---
 
 **Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
+
+
+---
+
+## Reality Check
+
+**"Understanding algorithms means knowing how they work"** → Understanding algorithms means knowing WHY they work: why quicksort partitions around a pivot (reducing the problem by one element guaranteeing progress), why BFS finds shortest paths in unweighted graphs (it explores all nodes at distance d before distance d+1), why dynamic programming works (optimal substructure means optimal solutions contain optimal sub-solutions). The reasoning transfers to new problems; the mechanics do not.
+
+**"Proof of correctness is academic"** → Loop invariants catch bugs that testing misses. If your binary search invariant is "answer is in [lo, hi]" and your code sets lo = mid (not mid+1), the invariant can fail to narrow the range, causing infinite loops on specific inputs. Testing might miss this (it only triggers when hi - lo == 1 with certain values). The invariant catches it during reasoning.
+
+**"Reductions are only for proving NP-hardness"** → Reduction is a problem-solving technique: if you can transform problem A into problem B that you already know how to solve, you have solved A. Finding the median reduces to the selection problem. 2D closest pair reduces to sorted 1D merge. Recognizing that a new problem is a disguised version of a known problem is the most powerful algorithmic problem-solving skill.
+
+**"Amortized analysis only applies to dynamic arrays"** → Amortized analysis applies to any structure where occasional expensive operations are compensated by many cheap ones: splay tree rotations, Union-Find with path compression, hash table resizing, incrementing a binary counter, and Fibonacci heap operations. The potential method (assigning a potential function to the data structure state) is the general framework.
+
+**"Solving problems fast means thinking fast"** → Fast problem solving comes from pattern recognition built through deliberate practice. Experts do not think faster — they recognize structures faster because they have seen similar structures before. The path to speed is: solve many problems, analyze WHY each solution works (not just WHAT it does), and categorize problems by the technique that solves them, not by their surface-level description.

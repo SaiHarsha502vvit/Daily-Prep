@@ -1190,3 +1190,18 @@ long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
 ---
 
 > **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"Primality testing requires checking all divisors"** → You only need to check divisors up to sqrt(n), reducing O(n) to O(sqrt(n)). For cryptographic-size numbers (hundreds of digits), even O(sqrt(n)) is infeasible. The Miller-Rabin probabilistic primality test runs in O(k log^2 n) for k rounds and is used in practice. The deterministic AKS primality test proves primality in polynomial time but is slower in practice than probabilistic methods.
+
+**"Sieve of Eratosthenes is memory-intensive"** → The basic sieve stores a boolean array of size n, using n bytes. A bitwise sieve reduces this to n/8 bytes. A segmented sieve processes the range in sqrt(n)-sized blocks, using only O(sqrt(n)) memory while still achieving O(n log log n) time. For sieving primes up to 10^9, the segmented approach uses megabytes instead of gigabytes.
+
+**"Modular arithmetic is only for competitive programming"** → Modular arithmetic is fundamental to: cryptography (RSA, Diffie-Hellman), hash functions (polynomial rolling hash), error-correcting codes (CRC), random number generation (linear congruential generators), and database sharding (hash partitioning). Understanding modular inverse, Fermat little theorem, and Chinese Remainder Theorem has direct practical applications.
+
+**"Large number multiplication is just the schoolbook method"** → Schoolbook multiplication is O(n squared) for n-digit numbers. Karatsuba algorithm reduces this to O(n^1.585) by splitting each number into halves and using 3 multiplications instead of 4. For even larger numbers, Toom-Cook and FFT-based multiplication achieve near-linear time. Java BigInteger switches algorithms based on operand size: schoolbook for small, Toom-Cook for medium, and Schonhage-Strassen (FFT-based) for large.
+
+**"GCD extended form (Bezout coefficients) is theoretical"** → The Extended Euclidean Algorithm finds x and y such that ax + by = gcd(a,b). This directly computes modular inverse: if gcd(a,m) = 1, then ax + my = 1, so x is the modular inverse of a mod m. Modular inverse is required for: modular division, RSA key generation, solving linear congruences, and Chinese Remainder Theorem reconstruction.

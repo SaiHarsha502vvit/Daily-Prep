@@ -471,3 +471,18 @@ Sort arrivals and departures separately. Use two pointers: if `arrival[i] <= dep
 **Worked example — Activity Selection (maximize non-overlapping intervals)**:
 - Greedy: always pick the activity with earliest finish time.
 - Exchange: Suppose OPT picks activity a (finish f_a) when greedy picks b (finish f_b ≤ f_a). Swap a for b in OPT: since f_b ≤ f_a, no later activity in OPT is blocked by b that wasn't already blocked by a. So OPT' is still valid with ≥ as many activities. The exchange never hurts. □
+
+
+---
+
+## Reality Check
+
+**"Greedy algorithms are educated guesses"** ? Greedy algorithms require PROOF that the greedy choice is optimal. The exchange argument (swapping any non-greedy choice with the greedy choice does not worsen the solution) or matroid theory provides this proof. Without proof, a greedy approach is a heuristic that may fail on specific inputs. Activity selection, Huffman coding, and Dijkstra are provably optimal greedy algorithms.
+
+**"Bit manipulation is a niche optimization"** ? Bit operations are fundamental: checking if a number is a power of 2 (n & (n-1) == 0), finding the single non-duplicate in an array (XOR all elements), extracting subsets (iterating from 0 to 2^n-1), and implementing permission flags (read|write|execute as bits). These patterns appear in system programming, competitive programming, and database indexing.
+
+**"XOR is just a curiosity"** ? XOR has unique properties: a ^ a = 0 (self-inverse), a ^ 0 = a (identity), and associativity/commutativity. These enable: finding the single element that appears once when all others appear twice (XOR all elements), swapping two variables without a temporary (a ^= b; b ^= a; a ^= b), and detecting bit differences between two numbers (a ^ b gives differing bit positions).
+
+**"Bitmask DP is too complex for interviews"** ? Bitmask DP appears in problems involving: visiting all nodes in a graph (Traveling Salesman), assigning tasks to workers (assignment problem), and choosing subsets with constraints. The pattern is consistent: state is a bitmask representing which elements are included, transition adds one element. With n up to 20, the 2^n states fit in memory. This is a standard interview pattern at senior level.
+
+**"Bit shifts are just multiplication and division by 2"** ? Left shift (<<) multiplies by 2 but can overflow silently. Right shift has two variants: >> (arithmetic, preserves sign bit) and >>> (logical, fills with zeros). -1 >> 1 equals -1 in Java (sign-extending), while -1 >>> 1 equals Integer.MAX_VALUE (zero-filling). Using the wrong shift on negative numbers produces unexpected results.

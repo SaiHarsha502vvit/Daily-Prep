@@ -302,3 +302,18 @@ public class AlgorithmBenchmark {
 | **B-Tree (Binary Search in DB)**        | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md)                               |
 | **Consistent hashing**                  | [Enterprise Systems](../10_Enterprise_Systems/09_Distributed_Patterns.md)         |
 | **PageRank â†’ Graph algorithms**         | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                  |
+
+
+---
+
+## Reality Check
+
+**"Production code does not need algorithmic thinking"** ? Every database query involves algorithm choices: B-tree vs hash index, nested loop vs hash join vs merge join, full table scan vs index scan. The query optimizer makes these decisions, but understanding them lets you write queries the optimizer can handle efficiently and diagnose performance problems when it makes poor choices.
+
+**"Big-O is all that matters in production"** ? An O(n log n) algorithm with poor cache locality can be slower than an O(n squared) algorithm with sequential memory access for n under 10000. Production performance depends on: constant factors, cache behavior, branch prediction, memory allocation patterns, and I/O costs. Profile before optimizing — the bottleneck is often not where you expect.
+
+**"Algorithms textbook implementations are production-ready"** ? Textbook implementations optimize for clarity, not robustness. Production implementations must handle: integer overflow in index calculations, concurrent access (ConcurrentHashMap vs HashMap), graceful degradation under memory pressure, and monitoring/observability (execution time histograms, cache hit rates). Java standard library implementations include these concerns; custom implementations often miss them.
+
+**"Distributed algorithms are just parallel algorithms"** ? Distributed systems face challenges absent in parallel computing: network partitions (CAP theorem), clock skew (no global time ordering), partial failures (one node crashes mid-operation), and message ordering (messages arrive out of send order). Consensus algorithms (Raft, Paxos) exist specifically because distributed agreement is fundamentally harder than local coordination.
+
+**"Choosing the right algorithm is a one-time decision"** ? Data characteristics change: a dataset that started small grows large, access patterns shift from read-heavy to write-heavy, and new query types emerge. An ArrayList chosen for sequential access becomes a bottleneck when random insertions increase. Production systems need monitoring to detect when algorithmic assumptions no longer hold and the implementation should be reconsidered.

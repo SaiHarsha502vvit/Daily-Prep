@@ -1290,3 +1290,18 @@ int idx = haystack.indexOf(needle); // prefer over manual KMP for single-pattern
 // HashCode hc = Hashing.murmur3_128().hashString(s, StandardCharsets.UTF_8);
 // For rolling hash, implement manually: hashCode = (hashCode * BASE + c) % MOD
 ```
+
+
+---
+
+## Reality Check
+
+**"String matching only needs indexOf or contains"** ? Built-in string search methods use naive O(nm) algorithms in many implementations. For searching a pattern in a large text (log file analysis, DNA sequence matching, network packet inspection), KMP or Rabin-Karp run in O(n+m). When searching for MULTIPLE patterns simultaneously, Aho-Corasick processes the text once regardless of pattern count. The algorithm choice matters when text size reaches megabytes.
+
+**"String immutability in Java is just a design choice"** ? String immutability enables: string pool sharing (two variables pointing to the same "hello" literal share one object), safe use as HashMap keys (hash code is cached and never changes), and thread-safe usage without synchronization. But it means EVERY string operation creates a new object. Concatenating strings in a loop creates n intermediate String objects — use StringBuilder for O(n) instead of O(n squared).
+
+**"Regular expressions handle all string pattern matching"** ? Regex engines have worst-case exponential time on pathological patterns (catastrophic backtracking). The pattern (a+)+ matching against "aaaaaaaab" causes 2^n backtracking steps in NFA-based engines (Java, Python, JavaScript). Finite automaton-based engines (RE2, Go regex) guarantee linear time but lack backreferences. For safety-critical text processing, use algorithms with guaranteed time bounds.
+
+**"Trie is the best data structure for string operations"** ? Tries provide O(m) lookup for a string of length m, but each node stores pointers for every alphabet character (26 for lowercase, 128 for ASCII). A trie storing 10000 short words may use more memory than a sorted array with binary search. Patricia tries (radix trees) compress single-child chains, reducing memory. Hash maps with string keys often outperform tries for practical workloads due to better cache behavior.
+
+**"String comparison is O(1)"** ? String comparison is O(m) where m is the shorter string length. Comparing two 1000-character strings requires up to 1000 character comparisons. Sorting n strings of average length m costs O(nm log n), not O(n log n). When strings share long common prefixes (URLs, file paths), comparisons become expensive because they must traverse the entire prefix before finding a difference.

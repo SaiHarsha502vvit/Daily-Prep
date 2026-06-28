@@ -934,3 +934,18 @@ System.out.println("Max heap: " + heapMax / (1024*1024) + " MB");
 | String search | Naive O(nm) | Redundant comparisons | KMP O(n+m) | Asymptotic + cache-friendly |
 | Sorting stability | Extra allocation | N/A | TimSort (in-place for primitives) | 0 allocation for int[] |
 | Priority queue | LinkedList sorted | Pointer chasing | int[] binary heap | 16x cache speedup |
+
+
+---
+
+## Reality Check
+
+**"Asymptotically optimal algorithms are always fastest in practice"** ? Insertion sort O(n squared) beats merge sort O(n log n) for arrays under about 50 elements because of lower constant factors and no allocation overhead. TimSort (Java and Python default) uses this insight: it runs insertion sort on small chunks then merges them. Algorithm engineering is about finding the crossover points where theoretical superiority actually becomes practical.
+
+**"Cache performance is a hardware concern, not an algorithm concern"** ? Accessing L1 cache takes about 1ns. Accessing main memory takes about 100ns — 100 times slower. An algorithm that traverses a linked list with nodes scattered in memory causes cache misses on every node access. An array-based algorithm on the same data accesses contiguous memory, keeping the cache warm. For large inputs, cache-friendly algorithms can be 10-50x faster than cache-unfriendly ones with identical asymptotic complexity.
+
+**"Theoretical lower bounds are unbeatable"** ? Comparison-based sorting has an omega of n log n lower bound, but radix sort achieves O(nk) for k-digit numbers — it sidesteps the lower bound by not using comparisons. Lower bounds always come with assumptions. When you change the model (comparison vs non-comparison, deterministic vs randomized, sequential vs parallel), different lower bounds apply.
+
+**"Parallelism always speeds up algorithms"** ? Amdahl Law: if 10 percent of your algorithm is sequential, no amount of parallelism gives more than 10x speedup. Also, parallelism introduces overhead: thread creation, synchronization, cache coherence traffic, and load balancing. An algorithm must have enough parallel work to overcome these costs. Work-efficient parallel algorithms minimize total work while maximizing parallelism.
+
+**"Benchmarking is just timing the code"** ? Reliable benchmarking requires: warm-up runs (JIT compilation and cache population), multiple iterations with statistical analysis (median, percentiles, not just average), controlling for background processes and CPU frequency scaling, and testing on representative input distributions. JMH (Java Microbenchmark Harness) handles these concerns. A single System.nanoTime measurement is nearly meaningless.

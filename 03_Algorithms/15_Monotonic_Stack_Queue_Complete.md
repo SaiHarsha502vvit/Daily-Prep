@@ -1579,3 +1579,18 @@ Therefore: total work = O(pushes + pops + n comparisons) = O(n + n + n) = O(n).
 The `while` loop amortizes over all iterations of the `for` loop — it can run a total of at most n times, not n times per iteration.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Monotonic stack is a niche technique"** → Monotonic stack solves an entire family of problems in O(n): next greater element, previous smaller element, largest rectangle in histogram, maximal rectangle in binary matrix, stock span problem, and trapping rain water. These problems appear frequently in interviews and have direct applications in computational geometry and time series analysis.
+
+**"Monotonic stack processes each element once"** → Each element is pushed onto the stack once AND popped from the stack at most once — total operations across all elements are O(n), not O(n) per element. This amortized analysis is crucial: the inner while loop that pops elements may run multiple times for a single element, but across all elements, total pops cannot exceed total pushes (n pushes total, n pops total, O(2n) = O(n)).
+
+**"You need separate passes for next greater and previous greater"** → A single monotonic stack pass from left to right simultaneously determines: the previous greater element (what was on the stack when the current element was pushed) and the next greater element (when an element is popped, the element causing the pop is its next greater). The largest rectangle in histogram solution exploits this dual information in one pass.
+
+**"Monotonic deque is just a deque with extra constraints"** → A monotonic deque (used in sliding window maximum/minimum) maintains elements in sorted order within the deque. It supports O(1) amortized insertion and O(1) maximum/minimum query. This makes it equivalent to a sliding window priority queue without the O(log n) overhead. The sliding window maximum of an array of size n with window size k runs in O(n) total, not O(n log k).
+
+**"Stack-based problems always use explicit stacks"** → Recursion IS a stack (the call stack). Converting a recursive DFS to iterative DFS uses an explicit stack. Monotonic stack, expression evaluation stacks, and bracket matching stacks all use the same LIFO principle. Recognizing that a problem involves processing elements in LIFO order is the pattern — whether you use java.util.Stack, ArrayDeque, or recursion is an implementation choice.

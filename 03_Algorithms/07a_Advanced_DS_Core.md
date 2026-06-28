@@ -1199,3 +1199,18 @@ class SegTree {
 ---
 
 **Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"Balanced BSTs are interchangeable"** ? AVL trees maintain stricter balance (height difference at most 1) than Red-Black trees (path lengths differ by at most 2x). AVL trees are faster for lookups because they are more balanced, but Red-Black trees are faster for insertions and deletions because they require fewer rotations. Java TreeMap uses Red-Black trees (optimized for mixed operations). Databases often use B-trees, which are balanced but optimized for disk access patterns rather than in-memory comparisons.
+
+**"Hash tables are always O(1)"** ? O(1) is the AVERAGE case with a good hash function and low load factor. With a poor hash function, all keys can hash to the same bucket, degrading to O(n) linked list traversal. Java 8 HashMap mitigates this by converting long chains to Red-Black trees (O(log n) worst case). Also, hash table resize operations are O(n) amortized — a single insert can trigger a full rehash of all existing entries.
+
+**"Priority queue is a queue"** ? A priority queue shares no implementation with a FIFO queue. It is typically implemented as a binary heap (array-based complete binary tree). Elements are not processed in insertion order but in priority order. Java PriorityQueue is a min-heap by default — the smallest element comes out first, not the largest. For a max-heap, pass Comparator.reverseOrder to the constructor.
+
+**"Disjoint Set Union is only for connected components"** ? Union-Find with path compression and union-by-rank achieves near-O(1) amortized operations (inverse Ackermann function). Beyond graph connectivity, it powers: Kruskal MST algorithm (cycle detection during edge addition), image segmentation (merging similar pixel regions), percolation theory (does a grid connect top to bottom), and equivalence class maintenance (compiler type inference).
+
+**"Segment trees are overkill for range queries"** ? Prefix sums handle static range sum queries in O(1). But when elements UPDATE between queries, prefix sums require O(n) rebuild. Segment trees handle both range queries AND point updates in O(log n). Fenwick trees (BIT) are simpler for range sum + point update, but segment trees generalize to range min, max, GCD, and lazy propagation for range updates — capabilities prefix sums and Fenwick trees cannot match.

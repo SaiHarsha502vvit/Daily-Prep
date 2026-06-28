@@ -1223,3 +1223,18 @@ System.out.println(flow.getValue()); // max flow value
 ---
 
 > **Navigation**: [< Previous](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06d_String_Algorithms.md)
+
+
+---
+
+## Reality Check
+
+**"Advanced algorithms are only for competitive programming"** ? Segment trees power range queries in databases and analytics engines. Suffix arrays and suffix trees power full-text search in search engines. Network flow algorithms solve resource allocation, bipartite matching (job assignment), and maximum bandwidth routing. Advanced algorithms are infrastructure-level tools that appear in production systems at scale.
+
+**"Understanding the concept is enough without implementation"** ? Implementing a segment tree with lazy propagation or a suffix array with LCP array reveals edge cases that conceptual understanding misses: off-by-one errors in range boundaries, handling lazy propagation correctly during queries, and managing the transition between recursive and iterative implementations. Implementation experience builds the intuition needed to debug algorithmic code under time pressure.
+
+**"Algorithm complexity is the only factor in choosing between approaches"** ? A balanced BST and a skip list both provide O(log n) operations. But skip lists are easier to implement correctly, support concurrent access more naturally, and have better cache locality for sequential access. A B-tree is O(log n) like a BST but is specifically designed for disk-based storage where minimizing I/O operations matters more than minimizing comparisons.
+
+**"Randomized algorithms are unreliable"** ? Randomized algorithms with high-probability guarantees (like randomized quicksort, skip lists, or Bloom filters) fail with probability so low it is negligible in practice. Quicksort with random pivot selection has O(n log n) expected time with probability 1 - 1/n^c for any constant c. The probability of worst-case O(n squared) is astronomically small — you are more likely to experience hardware failure.
+
+**"Amortized analysis and average-case analysis are the same"** ? Average-case analysis assumes a probability distribution over inputs (e.g., random input). Amortized analysis makes NO distributional assumptions — it guarantees that ANY sequence of n operations takes at most f(n) total time. Amortized O(1) for dynamic array append means EVERY sequence of n appends costs O(n) total. Average-case O(1) means the EXPECTED cost over random inputs is O(1), but specific inputs could be worse.

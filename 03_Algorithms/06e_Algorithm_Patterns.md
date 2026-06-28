@@ -787,3 +787,18 @@ int query(int node, int l, int r, int ql, int qr) {
 }
 // Key: tree[node] covers [l,r]. Children cover [l,mid] and [mid+1,r]. 4*n space for safety.
 ```
+
+
+---
+
+## Reality Check
+
+**"Learning more algorithms is better than mastering patterns"** ? Knowing 50 algorithms at surface level is less useful than deeply understanding 10 patterns that each apply to dozens of problems. Sliding window, two pointers, binary search on answer, BFS/DFS, dynamic programming, and greedy cover 80 percent of algorithmic problems. Recognizing WHICH pattern applies to a new problem is the skill that transfers.
+
+**"Pattern recognition is about memorizing problem-solution mappings"** ? Pattern recognition is about identifying the STRUCTURAL similarity between a new problem and known patterns. A problem asking for the longest substring with at most k distinct characters maps to sliding window, not because you memorized that specific problem, but because you recognize the constraint of maintaining a window property while maximizing window size.
+
+**"Each problem has exactly one correct pattern"** ? Many problems can be solved with multiple patterns: finding the kth largest element can use sorting (O(n log n)), a max-heap of size k (O(n log k)), or quickselect (O(n) average). The optimal choice depends on constraints: quickselect for one-time queries, a heap for streaming data where new elements arrive continuously.
+
+**"Dynamic programming is the hardest pattern"** ? DP difficulty comes from two separate skills: identifying that a problem has overlapping subproblems (pattern recognition) and defining the recurrence relation (mathematical modeling). Many developers who struggle with DP can solve the same problems with memoized recursion (top-down DP), which requires only recognizing the recursive structure and adding a cache. Bottom-up DP is an optimization of top-down, not a prerequisite.
+
+**"Two pointers is a simple pattern"** ? Two pointers has multiple variants: converging pointers (sorted array sum pairs), slow-fast pointers (cycle detection, middle of linked list), sliding window (variable-size subarray), and partition pointers (Dutch national flag problem). Each variant has different invariants and termination conditions. Treating all two-pointer problems as the same pattern leads to incorrect solutions.
