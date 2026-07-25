@@ -49,9 +49,9 @@
 | `18_CSS_Complete`         | CSS layout, architecture, responsive design                 | [00_INDEX.md](18_CSS_Complete/00_INDEX.md)         |
 | `19_Frontend_Integration` | Browser debugging, build tools, performance, a11y           | [00_INDEX.md](19_Frontend_Integration/00_INDEX.md) |
 | `20_Interview_Mastery`    | Interview synthesis, problems, scripts, final prep          | [00_INDEX.md](20_Interview_Mastery/00_INDEX.md)    |
-| `21_Python_ML_DL_NLP`     | Python, ML, DL, NLP, LLM/RAG, MLOps                         | [00_INDEX.md](21_Python_ML_DL_NLP/00_INDEX.md)     |
+| `25_Python_ML_DL_NLP`     | Python, ML, DL, NLP, LLM/RAG, MLOps                         | [00_INDEX.md](25_Python_ML_DL_NLP/00_INDEX.md)     |
 | `21_SDET_Playwright`      | Enterprise SDET automation with Playwright/TypeScript        | [00_INDEX.md](21_SDET_Playwright_Automation/00_INDEX.md) |
-| `22_Advanced_API_Testing` | REST, SOAP, contract testing, API test architecture         | [00_INDEX.md](22_Advanced_API_Testing/00_INDEX.md) |
+| `24_Advanced_API_Testing` | REST, SOAP, contract testing, API test architecture         | [00_INDEX.md](24_Advanced_API_Testing/00_INDEX.md) |
 | `22_DevOps`               | Linux, Docker, Kubernetes, CI/CD, SRE, deployment           | [00_INDEX.md](22_DevOps/00_INDEX.md)               |
 | `23_Mobile_Dev_Testing`   | Android, Flutter, mobile testing                            | [CONTEXT.md](23_Mobile_Dev_And_Testing/CONTEXT.md) |
 

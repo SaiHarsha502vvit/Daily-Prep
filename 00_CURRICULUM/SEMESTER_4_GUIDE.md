@@ -22,10 +22,10 @@
 
 | Day | Topic                                                             | Read                                                | Do                                                              |
 | --- | ----------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------- |
-| 1   | Python types, dynamic typing, `None` vs `null`                    | `21_Python_ML_DL_NLP/01_Python_Core.md` §1          | Rewrite a Java class in Python using dataclass                  |
-| 2   | Comprehensions: list, dict, set, generator expressions            | `21_Python_ML_DL_NLP/01_Python_Core.md` §2          | Rewrite 5 for-loops as comprehensions                           |
-| 3   | Decorators — `@property`, `@classmethod`, `@staticmethod`, custom | `21_Python_ML_DL_NLP/01_Python_Core.md` §Decorators | Write a `@timer` decorator that logs execution time             |
-| 4   | Context managers — `with`, `__enter__`, `__exit__`                | `21_Python_ML_DL_NLP/01_Python_Core.md` §ContextMgr | Write a `@contextmanager` for DB connection management          |
+| 1   | Python types, dynamic typing, `None` vs `null`                    | `25_Python_ML_DL_NLP/01_Python_Core.md` §1          | Rewrite a Java class in Python using dataclass                  |
+| 2   | Comprehensions: list, dict, set, generator expressions            | `25_Python_ML_DL_NLP/01_Python_Core.md` §2          | Rewrite 5 for-loops as comprehensions                           |
+| 3   | Decorators — `@property`, `@classmethod`, `@staticmethod`, custom | `25_Python_ML_DL_NLP/01_Python_Core.md` §Decorators | Write a `@timer` decorator that logs execution time             |
+| 4   | Context managers — `with`, `__enter__`, `__exit__`                | `25_Python_ML_DL_NLP/01_Python_Core.md` §ContextMgr | Write a `@contextmanager` for DB connection management          |
 | 5   | Lab                                                               | —                                                   | Build a `TextProcessor` class: clean, tokenize, frequency-count |
 | 6–7 | Python Problem Set PS-1                                           | —                                                   | 10 Python core challenges                                       |
 
@@ -33,10 +33,10 @@
 
 | Day | Topic                                                  | Read                                               | Do                                              |
 | --- | ------------------------------------------------------ | -------------------------------------------------- | ----------------------------------------------- |
-| 1   | NumPy: arrays, broadcasting, vectorized ops            | `21_Python_ML_DL_NLP/02_NumPy_Pandas.md` §NumPy    | Replace all for-loops with vectorized NumPy ops |
-| 2   | Pandas: DataFrame, Series, indexing, slicing           | `21_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Pandas   | Load a CSV, clean nulls, group-aggregate        |
-| 3   | Pandas: `groupby`, `merge`, `pivot_table`, `apply`     | `21_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Advanced | Replicate SQL-PS1 Query 1 using Pandas          |
-| 4   | Data cleaning: missing values, outliers, type coercion | `21_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Cleaning | Clean the Titanic dataset                       |
+| 1   | NumPy: arrays, broadcasting, vectorized ops            | `25_Python_ML_DL_NLP/02_NumPy_Pandas.md` §NumPy    | Replace all for-loops with vectorized NumPy ops |
+| 2   | Pandas: DataFrame, Series, indexing, slicing           | `25_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Pandas   | Load a CSV, clean nulls, group-aggregate        |
+| 3   | Pandas: `groupby`, `merge`, `pivot_table`, `apply`     | `25_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Advanced | Replicate SQL-PS1 Query 1 using Pandas          |
+| 4   | Data cleaning: missing values, outliers, type coercion | `25_Python_ML_DL_NLP/02_NumPy_Pandas.md` §Cleaning | Clean the Titanic dataset                       |
 | 5   | Lab                                                    | —                                                  | Build a Pandas-based sales analytics script     |
 | 6–7 | Pandas Problem Set                                     | —                                                  | 5 Pandas challenges                             |
 
@@ -44,12 +44,12 @@
 
 | Day  | Topic                                                               | Read                                                | Do                                               |
 | ---- | ------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------ |
-| 1    | ML fundamentals: supervised vs unsupervised, bias-variance tradeoff | `21_Python_ML_DL_NLP/03_ML_Fundamentals.md` §1      | Draw the bias-variance diagram; classify models  |
-| 2    | Linear Regression — gradient descent internals                      | `21_Python_ML_DL_NLP/03_ML_Fundamentals.md` §LinReg | Implement gradient descent from scratch in NumPy |
-| 3    | Logistic Regression + classification metrics                        | `21_Python_ML_DL_NLP/03_ML_Fundamentals.md` §LogReg | Evaluate model with precision/recall/F1/ROC-AUC  |
-| 4    | Decision Trees + Random Forest + Feature Importance                 | `21_Python_ML_DL_NLP/04_ML_Models.md` §Trees        | Train a churn prediction model                   |
-| 5    | Cross-validation, hyperparameter tuning (GridSearchCV)              | `21_Python_ML_DL_NLP/04_ML_Models.md` §CV           | Run 5-fold CV on Random Forest; tune `max_depth` |
-| 6    | Feature engineering: encoding, scaling, pipelines                   | `21_Python_ML_DL_NLP/04_ML_Models.md` §Features     | Build a `Pipeline([scaler, encoder, model])`     |
+| 1    | ML fundamentals: supervised vs unsupervised, bias-variance tradeoff | `25_Python_ML_DL_NLP/03_ML_Fundamentals.md` §1      | Draw the bias-variance diagram; classify models  |
+| 2    | Linear Regression — gradient descent internals                      | `25_Python_ML_DL_NLP/03_ML_Fundamentals.md` §LinReg | Implement gradient descent from scratch in NumPy |
+| 3    | Logistic Regression + classification metrics                        | `25_Python_ML_DL_NLP/03_ML_Fundamentals.md` §LogReg | Evaluate model with precision/recall/F1/ROC-AUC  |
+| 4    | Decision Trees + Random Forest + Feature Importance                 | `25_Python_ML_DL_NLP/04_ML_Models.md` §Trees        | Train a churn prediction model                   |
+| 5    | Cross-validation, hyperparameter tuning (GridSearchCV)              | `25_Python_ML_DL_NLP/04_ML_Models.md` §CV           | Run 5-fold CV on Random Forest; tune `max_depth` |
+| 6    | Feature engineering: encoding, scaling, pipelines                   | `25_Python_ML_DL_NLP/04_ML_Models.md` §Features     | Build a `Pipeline([scaler, encoder, model])`     |
 | 7    | Lab                                                                 | —                                                   | Build a customer churn predictor (end-to-end)    |
 | 8–14 | ML Problem Set                                                      | —                                                   | 5 model-building challenges                      |
 
@@ -57,10 +57,10 @@
 
 | Day | Topic                                                     | Read                                               | Do                                                             |
 | --- | --------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------- |
-| 1   | Neural network fundamentals: neurons, layers, activations | `21_Python_ML_DL_NLP/05_Deep_Learning.md` §1       | Build a 2-layer network from scratch with NumPy                |
-| 2   | PyTorch basics: Tensor, autograd, backward()              | `21_Python_ML_DL_NLP/05_Deep_Learning.md` §PyTorch | Rewrite the NumPy network using PyTorch                        |
-| 3   | NLP basics: tokenization, TF-IDF, word embeddings         | `21_Python_ML_DL_NLP/06_NLP.md` §1-3               | Build a text classifier using TF-IDF + LogReg                  |
-| 4   | Transformers & BERT — attention mechanism intuition       | `21_Python_ML_DL_NLP/06_NLP.md` §Transformers      | Run sentiment analysis using HuggingFace pipeline              |
+| 1   | Neural network fundamentals: neurons, layers, activations | `25_Python_ML_DL_NLP/05_Deep_Learning.md` §1       | Build a 2-layer network from scratch with NumPy                |
+| 2   | PyTorch basics: Tensor, autograd, backward()              | `25_Python_ML_DL_NLP/05_Deep_Learning.md` §PyTorch | Rewrite the NumPy network using PyTorch                        |
+| 3   | NLP basics: tokenization, TF-IDF, word embeddings         | `25_Python_ML_DL_NLP/06_NLP.md` §1-3               | Build a text classifier using TF-IDF + LogReg                  |
+| 4   | Transformers & BERT — attention mechanism intuition       | `25_Python_ML_DL_NLP/06_NLP.md` §Transformers      | Run sentiment analysis using HuggingFace pipeline              |
 | 5   | Lab                                                       | —                                                  | Build a simple Q&A system using embeddings + cosine similarity |
 | 6–7 | NLP Problem Set                                           | —                                                  | 5 NLP challenges                                               |
 
@@ -101,8 +101,8 @@
 
 | Day | Topic                                                  | Read                                                        | Do                                               |
 | --- | ------------------------------------------------------ | ----------------------------------------------------------- | ------------------------------------------------ |
-| 1   | API testing with REST Assured                          | `22_Advanced_API_Testing/01_REST_Assured.md`                | Write 10 REST Assured tests for the Book API     |
-| 2   | Contract testing with Pact                             | `22_Advanced_API_Testing/02_Contract_Testing.md`            | Write a consumer contract for the Book API       |
+| 1   | API testing with REST Assured                          | `24_Advanced_API_Testing/01_REST_Assured.md`                | Write 10 REST Assured tests for the Book API     |
+| 2   | Contract testing with Pact                             | `24_Advanced_API_Testing/02_Contract_Testing.md`            | Write a consumer contract for the Book API       |
 | 3   | Performance testing: k6, load profiles                 | `21_SDET_Playwright_Automation/09_Performance.md`           | Run a 100 VU load test on `GET /api/books`       |
 | 4   | Interpreting performance results: p95, p99, error rate | `21_SDET_Playwright_Automation/09_Performance.md` §Analysis | Identify the bottleneck in the load test results |
 | 5   | Lab                                                    | —                                                           | Full test suite review                           |

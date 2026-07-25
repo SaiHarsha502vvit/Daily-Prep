@@ -4,7 +4,7 @@
 
 **Cross-links:**
 
-- [`22_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../22_Advanced_API_Testing/01_API_Testing_Foundations.md) — How to call the email/notification service API
+- [`24_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../24_Advanced_API_Testing/01_API_Testing_Foundations.md) — How to call the email/notification service API
 - [`19_Advanced_Console_Scripts_Security.md`](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md) — Auth enforcement testing
 - [`16_CrossSite_Pattern6_StorageState_Chaining.md`](./16_CrossSite_Pattern6_StorageState_Chaining.md) — JWT in cookies
 

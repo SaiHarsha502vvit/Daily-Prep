@@ -6,7 +6,7 @@
 
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — Data Accumulator DTO pattern
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Multi-site fixtures
-- [`22_Advanced_API_Testing/05_Data_From_API_To_Test.md`](../../22_Advanced_API_Testing/05_Data_From_API_To_Test.md) — Typed response interfaces
+- [`24_Advanced_API_Testing/05_Data_From_API_To_Test.md`](../../24_Advanced_API_Testing/05_Data_From_API_To_Test.md) — Typed response interfaces
 
 ---
 

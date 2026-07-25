@@ -322,7 +322,7 @@ try {
 
 ---
 
-- **API Testing**: [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/00_INDEX.md) — REST, SOAP, APIUtils, DB testing, nested assertions (Ch07)
+- **API Testing**: [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/00_INDEX.md) — REST, SOAP, APIUtils, DB testing, nested assertions (Ch07)
 - **TypeScript**: [`17_TypeScript/`](../17_TypeScript/00_INDEX.md) — TS foundations and advanced types
 - **Browser Internals**: [`16_JavaScript/09_Browser_Internals_Rendering.md`](../16_JavaScript/09_Browser_Internals_Rendering.md) — Deep rendering pipeline
 - **React/SPA**: [`15_React_Frontend/`](../15_React_Frontend/00_INDEX.md) — React rendering lifecycle

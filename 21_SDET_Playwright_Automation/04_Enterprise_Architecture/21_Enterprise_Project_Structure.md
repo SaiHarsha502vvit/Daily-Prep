@@ -6,7 +6,7 @@
 
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — Fixtures internals
 - [`05_POM_Architecture_Deep_Dive.md`](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) — POM structure
-- [`22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md`](../../22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md) — API layer
+- [`24_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md`](../../24_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md) — API layer
 
 ---
 

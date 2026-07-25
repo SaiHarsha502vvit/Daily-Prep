@@ -13,7 +13,7 @@ For each of the following 7 modules:
 3. `13_Developer_Essentials`
 4. `15_React_Frontend`
 5. `19_Frontend_Integration`
-6. `21_Python_ML_DL_NLP`
+6. `25_Python_ML_DL_NLP`
 7. `22_DevOps`
 
 You must:

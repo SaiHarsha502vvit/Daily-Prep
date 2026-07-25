@@ -179,7 +179,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 
 | Topic                                                     | Where                                                                           |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| API Testing (REST, SOAP, APIUtils, DB assertions)         | [`22_Advanced_API_Testing/00_INDEX.md`](../22_Advanced_API_Testing/00_INDEX.md) |
+| API Testing (REST, SOAP, APIUtils, DB assertions)         | [`24_Advanced_API_Testing/00_INDEX.md`](../24_Advanced_API_Testing/00_INDEX.md) |
 | TypeScript foundations and advanced types                 | [`17_TypeScript/00_INDEX.md`](../17_TypeScript/00_INDEX.md)                     |
 | DevOps / CI-CD pipelines                                  | [`22_DevOps/19_CICD_Pipelines.md`](../22_DevOps/19_CICD_Pipelines.md)           |
 | SQL / Database (JOINs, CTEs, transactions for DB testing) | [`08_SQL/00_INDEX.md`](../08_SQL/00_INDEX.md)                                   |

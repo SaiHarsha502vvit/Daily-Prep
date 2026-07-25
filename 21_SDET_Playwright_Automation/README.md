@@ -187,7 +187,7 @@ test("flow", async ({ page, account, citationsClient }) => {
 
 | Topic                                          | Where                                                                                             |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| API testing depth (REST, SOAP, contract)       | [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/)                                         |
+| API testing depth (REST, SOAP, contract)       | [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/)                                         |
 | TypeScript foundations and advanced types      | [`17_TypeScript/`](../17_TypeScript/)                                                             |
 | JavaScript fundamentals (async, DOM, closures) | [`16_JavaScript/`](../16_JavaScript/)                                                             |
 | CSS selectors in depth                         | [`18_CSS_Complete/`](../18_CSS_Complete/)                                                         |

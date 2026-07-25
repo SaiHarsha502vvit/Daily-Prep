@@ -99,7 +99,7 @@
 | `daily-prep-developer-essentials` | 13_Developer_Essentials (20 files, 298KB) |
 | `daily-prep-react-frontend`       | 15_React_Frontend (13 files, 302KB)       |
 | `daily-prep-frontend-integration` | 19_Frontend_Integration (9 files, 170KB)  |
-| `daily-prep-python-ml`            | 21_Python_ML_DL_NLP (17 files, 383KB)     |
+| `daily-prep-python-ml`            | 25_Python_ML_DL_NLP (17 files, 383KB)     |
 | `daily-prep-devops`               | 22_DevOps (25 files, 464KB)               |
 
 ---

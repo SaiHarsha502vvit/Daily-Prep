@@ -431,7 +431,7 @@ test.describe("Citation — Full E2E Flow @crm @regression", () => {
 
     // ── STEP 15 ── DB verification ────────────────────────────────────────
     await test.step("Verify citation record exists in database with PAID status", async () => {
-      // DB verification — see 22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md
+      // DB verification — see 24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md
       // const result = await dbPool.request()...
       // expect(result.recordset[0].status).toBe('PAID');
       data.dbRecordConfirmed = true; // placeholder

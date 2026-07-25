@@ -4,7 +4,7 @@
 
 **Cross-links:**
 
-- [`22_Advanced_API_Testing/05_Data_From_API_To_Test.md`](../../22_Advanced_API_Testing/05_Data_From_API_To_Test.md) — API client patterns
+- [`24_Advanced_API_Testing/05_Data_From_API_To_Test.md`](../../24_Advanced_API_Testing/05_Data_From_API_To_Test.md) — API client patterns
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — Data Accumulator for orderId
 
 ---
