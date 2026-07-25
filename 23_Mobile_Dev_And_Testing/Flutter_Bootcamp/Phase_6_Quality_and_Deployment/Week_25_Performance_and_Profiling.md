@@ -1,4 +1,4 @@
-# Week 24 — Performance and Profiling
+# Week 25 — Performance and Profiling
 ### DevTools, unnecessary rebuilds, const optimization — making your app feel instant
 
 ---
@@ -952,7 +952,7 @@ await Workmanager().registerPeriodicTask(
 
 ### FCM `onBackgroundMessage` — Notifications When the App Is Dead
 
-Week 26's Chat App uses FCM. When a message arrives and your app is killed, `onBackgroundMessage` handles it:
+Week 27's Chat App uses FCM. When a message arrives and your app is killed, `onBackgroundMessage` handles it:
 
 ```dart
 // MUST be a top-level function — same constraint as workmanager
@@ -1747,7 +1747,171 @@ Run with vs without `itemExtent: 72` and compare.
 
 ---
 
-## Week 24 Verify
+## The Invisible Machinery — How Flutter DevTools Sees Inside Your App
+
+Flutter DevTools is a web app. It talks to a WebSocket server running inside your running Flutter app. Understanding this architecture explains what DevTools can see, why it only works in certain modes, and what the flame chart is actually showing.
+
+### The Dart VM Observatory
+
+```
+Your running Flutter app (debug or profile mode)
+    ↓ Dart runtime starts an HTTP/WebSocket server on a random port
+      (printed in the terminal as: "Observatory listening on http://127.0.0.1:XXXXX/...")
+    ↓ exposes: Dart VM Service Protocol (JSON-RPC over WebSocket)
+    ↓ available endpoints: getVM, getIsolate, getMemoryUsage, streamListen('Timeline')...
+
+Flutter DevTools (web app at http://127.0.0.1:9100)
+    ↓ receives the Observatory URL from flutter run's output
+    ↓ opens: WebSocket to ws://127.0.0.1:XXXXX/ws
+    ↓ sends: {"method": "streamListen", "params": {"streamId": "Timeline"}}
+    ↓ receives: stream of JSON events — one per frame, per GC, per async operation
+
+This is why DevTools shows "Connecting..." — it's opening a WebSocket.
+This is why DevTools requires a running app — no app, no server, no data.
+This is why release builds have no DevTools — the Observatory server is stripped out.
+```
+
+### What `--debug` vs `--profile` Mode Actually Means
+
+```
+--debug mode:                         --profile mode:
+  JIT compiled (Dart VM interprets)     AOT compiled (native machine code)
+  2-5× slower than production           Production speed
+  Type checks on every cast             Type checks removed
+  Bounds checking active                Bounds checking removed
+  Assertion statements run              Assertions removed
+  Observable overhead                   Minimal observability overhead
+  DevTools: widget inspector, logging   DevTools: timeline, memory, CPU profiler
+  Cannot give meaningful perf data      Gives accurate production-representative data
+
+Profiling in --debug is measuring the JIT VM, not your app.
+A build that feels smooth in --profile may still have hidden frame budget issues
+in --debug, or vice versa. Always profile in --profile mode.
+
+--release mode:
+  AOT compiled, no Observatory server
+  No DevTools connection possible
+  Smallest binary, fastest execution
+  What goes to users
+```
+
+### The Timeline — What the Flame Chart Is
+
+```
+Flutter frame execution produces a stream of Timeline events:
+  Each event: { name, category, start_time_microseconds, duration_microseconds }
+
+UI thread events (from Dart isolate):
+  'Flutter.Build'       → the build() pass for a frame
+  'Flutter.Layout'      → the layout pass
+  'Flutter.Paint'       → the paint pass
+  'Framework workload'  → total Dart-side frame time
+
+Raster thread events (from C++ Skia/Impeller):
+  'GPURasterizer::Draw' → GPU command submission
+  'Rasterizer::DoDraw'  → total raster thread frame time
+
+The flame chart:
+  x-axis = time (microseconds)
+  y-axis = call stack depth at that moment
+  bar width = how long that function call took
+  bar color = which thread (blue = UI, green = raster, orange = GPU)
+  
+  A WIDE bar = expensive call = investigate this
+  A DEEP stack = many nested calls (usually OK — check the widest one)
+```
+
+### Jank in DevTools — The Definition
+
+```
+A "janky" frame (shown in red in the Frame Chart):
+  Total time > 16.67ms  → missed 60fps deadline
+  Total time > 8.33ms   → missed 120fps deadline (high refresh rate devices)
+
+Total time = UI thread time + Raster thread time (they run in parallel,
+             but the LONGER one determines when the frame finishes)
+
+Example janky frame:
+  UI thread: 12ms (build + layout + paint)    ← under 16.67ms alone
+  Raster thread: 14ms (GPU compile + draw)    ← under 16.67ms alone
+  Total: 26ms → JANK  ← both threads together exceed the budget
+  
+Jank from UI thread:
+  → build() is doing too much work
+  → Fix: move expensive computation to Isolate.run(), cache results, use const
+
+Jank from Raster thread:
+  → paint callbacks are too complex (many drawPath, drawShadow calls)
+  → Fix: RepaintBoundary (caches layer as GPU texture), simpler CustomPainter
+  → Fix: avoid drawImage with large bitmaps each frame (cache as Picture)
+```
+
+### The Memory Profiler — How Leak Detection Works
+
+```
+Dart VM maintains an allocation table in the heap.
+Memory profiler mode activates allocation hooks in the runtime.
+
+Every object allocation logs: { type, size_bytes, timestamp, stack_trace }
+The memory chart shows: heap size over time
+
+Memory leak pattern in the chart:
+  Object allocated (appears in allocation table)
+  Object never collected (not in GC log)
+  Heap grows steadily → sawtooth pattern with rising floor
+
+Common leak in Flutter:
+  StreamSubscription never cancelled in dispose()
+      → subscription holds reference to StreamController
+      → StreamController held by BLoC or Provider
+      → BLoC never collected
+      → Every navigation creates another BLoC that's never freed
+      → Heap grows by ~BLoC size per navigation
+
+How to find it:
+  1. Open DevTools Memory tab
+  2. Trigger the suspected navigation 10 times
+  3. Force GC (DevTools "GC" button)
+  4. Check if heap returns to baseline
+  5. If heap is 10× larger: you have a leak
+  6. Look at the "Allocation Tracing" tab for the leaking type
+```
+
+### The CPU Profiler — Sampling vs Tracing
+
+```
+DevTools CPU profiler uses SAMPLING:
+  Every 250 microseconds: "what function is the Dart VM executing right now?"
+  Record: { function_name, file, line, call_stack }
+  Run for 10 seconds → ~40,000 samples
+
+Flame chart from samples:
+  Functions that appear in many samples = wide bars = hot paths
+  Functions that appear rarely = narrow bars = cheap
+  
+This is statistical, not exact:
+  A function called once for 251ms shows as 100% of samples
+  A function called 1000 times for 0.1ms each shows as ~4% of samples
+  Both cost the same wall-clock time but profile very differently
+
+For exact timing: use Timeline events (Flutter.Build, etc.)
+For finding HOT functions: use CPU profiler sampling
+For finding LEAKS: use Memory profiler
+```
+
+**Decision table:**
+
+| Symptom | What the profiler shows | Fix |
+|---------|------------------------|-----|
+| Slow scrolling | UI thread: wide 'Flutter.Build' bars | Too many widgets rebuilding; use `const`, add `RepaintBoundary` |
+| Scroll feels choppy but UI thread is fast | Raster thread wide bars | Complex CustomPainter; cache with `Picture.toImage()` or `RepaintBoundary` |
+| App slows down after 10 minutes | Memory chart rising floor; heap growing | Memory leak; find with allocation tracing, fix with proper `dispose()` |
+| First frame slow, then fast | Skia shader compilation | Switch to Impeller or pre-warm shaders with `ShaderWarmUp` |
+| Profiling shows nothing wrong but app feels slow | Profiling in --debug mode | Switch to `flutter run --profile` |
+
+---
+
+## Week 25 Verify
 
 1. Why must you profile in `--profile` mode, not `--debug` mode?
 2. `const Text('Hello')` vs `Text('Hello')` — what's the actual difference Flutter sees at runtime?
@@ -1764,4 +1928,4 @@ Run with vs without `itemExtent: 72` and compare.
 
 ---
 
-**Next → [Week 25: CI/CD and Deployment](Week_25_CICD_and_Deployment.md)**
+**Next → [Week 26: CI/CD and Deployment](Week_26_CICD_and_Deployment.md)**

@@ -1,4 +1,4 @@
-# Week 23 — Testing Flutter Apps
+# Week 24 — Testing Flutter Apps
 ### Unit, widget, integration — write tests that actually catch bugs
 
 ---
@@ -1091,7 +1091,7 @@ Integration              Critical flows only (5-10 tests)
 
 ## Lab — Write Tests for `GetSpendingTrend`
 
-The `GetSpendingTrend` use case from Week 22 needs tests:
+The `GetSpendingTrend` use case from Week 23 needs tests:
 
 1. Test: 30-day range, expenses on days 1, 15, 30 — verify correct daily totals
 2. Test: no expenses in range — all daily totals are 0, average is 0
@@ -1111,7 +1111,159 @@ Run `flutter test --coverage` and view the coverage report. Reach 100% line cove
 
 ---
 
-## Week 23 Verify
+## The Invisible Machinery — How Flutter's Test Harness Works
+
+Flutter widget tests run in a headless Dart environment with no real display, no real OS keyboard, and no real timing. The test framework is a fake Flutter engine that gives you manual control over every part of the rendering pipeline.
+
+### How `pump()` Works — Manual Frame Control
+
+```
+Normal Flutter app:
+  Display hardware sends VSYNC signal every 16.67ms
+      → SchedulerBinding.handleBeginFrame() fires
+      → Widgets build, layout, paint
+      → Frame drawn to screen
+
+Flutter widget test:
+  NO display hardware → NO VSYNC
+  Rendering does NOT happen automatically
+  You must manually trigger frames
+```
+
+```dart
+// pump() — manually trigger EXACTLY ONE frame:
+await tester.pump();
+// 1. Drains the microtask queue (pending Future completions)
+// 2. Calls SchedulerBinding.handleBeginFrame(timestamp)
+//    → fires animation tick callbacks
+// 3. Calls SchedulerBinding.handleDrawFrame()
+//    → runs build(), layout(), paint()
+// 4. Returns when the frame is complete
+
+// pump(duration) — advance fake time AND trigger a frame:
+await tester.pump(const Duration(milliseconds: 300));
+// → FakeAsync clock advances 300ms
+// → Any timers/animations scheduled within that window fire
+// → Then one frame runs
+
+// pumpAndSettle() — runs frames until the UI stops changing:
+await tester.pumpAndSettle();
+// Internally: while (hasPendingFrames || hasRunningAnimations) { pump(); }
+// Risk: if your widget has an infinite animation (loading spinner),
+//       pumpAndSettle() will loop forever
+// Fix: use pump(duration) to advance past the animation manually
+```
+
+### How Finders Walk the Element Tree
+
+```dart
+// find.byType(ElevatedButton)
+// Algorithm:
+//   1. Walk element tree depth-first from root
+//   2. For each element: widget.runtimeType == ElevatedButton?
+//   3. Collect matching elements into a list
+//   4. Return Finder wrapping that list
+
+// find.text('Add to Cart')
+// Algorithm:
+//   1. Walk element tree, find Text/RichText/SelectableText elements
+//   2. For each: render its TextSpan to extract plain string
+//   3. Match string against 'Add to Cart'
+//   Note: case-sensitive by default; use findRichText: true for RichText
+
+// find.byKey(const Key('add-button'))
+// Algorithm:
+//   1. Walk element tree
+//   2. For each element: element.widget.key == Key('add-button')?
+//   3. Return match
+//   → Most reliable finder: immune to text changes and widget type refactors
+
+// find.descendant(of: find.byType(Card), matching: find.text('Price'))
+// → First collect all Card elements
+// → For each Card element: walk its subtree for Text('Price')
+// → Scoped finder: won't match Text('Price') outside a Card
+```
+
+### Fake Time — Testing Animations and Debounces
+
+```dart
+// The test harness replaces the real clock with FakeAsync.
+// FakeAsync allows advancing time without actually waiting.
+
+testWidgets('fade in animation completes', (tester) async {
+  await tester.pumpWidget(const FadeInWidget());
+  // Widget starts at opacity 0.0
+
+  expect(find.byType(Opacity), findsOneWidget);
+  expect(
+    tester.widget<Opacity>(find.byType(Opacity)).opacity,
+    0.0,
+  );
+
+  await tester.pump(const Duration(milliseconds: 250));
+  // FakeAsync: clock at 250ms → animation 50% through 500ms duration
+  expect(
+    tester.widget<Opacity>(find.byType(Opacity)).opacity,
+    closeTo(0.5, 0.01),
+  );
+
+  await tester.pumpAndSettle();
+  // Runs frames until animation finishes
+  expect(
+    tester.widget<Opacity>(find.byType(Opacity)).opacity,
+    1.0,
+  );
+});
+
+// Testing a debounced search (waits 400ms after last keystroke):
+testWidgets('search debounce fires after 400ms', (tester) async {
+  await tester.pumpWidget(const SearchScreen());
+  await tester.enterText(find.byType(TextField), 'flutter');
+
+  await tester.pump(const Duration(milliseconds: 399));
+  // 399ms passed — debounce timer NOT fired yet
+  verify(mockApi.search(any)).called(0);
+
+  await tester.pump(const Duration(milliseconds: 1));
+  // 400ms total — debounce timer fires
+  await tester.pump();  // process the result
+  verify(mockApi.search('flutter')).called(1);
+});
+```
+
+### The Fake Text Input — Why No OS Keyboard Appears
+
+```dart
+// Tests use a FakeTextInputClient — no IME, no OS keyboard process
+// MediaQuery.viewInsets.bottom is always 0 in widget tests
+
+// Typing in a test:
+await tester.enterText(find.byType(TextField), 'hello world');
+// → Injects 'hello world' directly into the TextEditingController
+// → No keystrokes → no IME protocol → no keyboard animation
+// → TextChanged callbacks fire as if the user typed it
+
+// Simulating keyboard appearance for viewInsets tests:
+tester.view.viewInsets = const FakeViewPadding(bottom: 336);
+await tester.pump();
+// → MediaQuery.of(context).viewInsets.bottom now returns 336
+// → Any keyboard-aware layout adjustments fire
+```
+
+### What Widget Tests Can and Cannot Do
+
+| Can test | Cannot test |
+|---------|-------------|
+| Widget tree structure after interactions | Native OS rendering |
+| Tap, scroll, drag, long-press gestures | Real network calls (use fakes/mocks) |
+| Animation frames at specific timestamps | Camera, GPS, Bluetooth |
+| Provider/BLoC state changes | Real keyboard animation (use FakeViewPadding) |
+| Navigation pushes and pops | Pixel-perfect screenshots (use golden tests) |
+| `find.byType`, `find.text`, `find.byKey` | Platform channel responses (use `TestDefaultBinaryMessenger`) |
+
+---
+
+## Week 24 Verify
 
 1. What is the difference between a Mock and a Fake? Give an example of when you'd use each.
 2. In `blocTest`, what does `seed:` do? Why is it needed for the delete test?
@@ -1129,4 +1281,4 @@ Run `flutter test --coverage` and view the coverage report. Reach 100% line cove
 
 ---
 
-**Next → [Week 24: Performance and Profiling](Week_24_Performance_and_Profiling.md)**
+**Next → [Week 25: Performance and Profiling](Week_25_Performance_and_Profiling.md)**

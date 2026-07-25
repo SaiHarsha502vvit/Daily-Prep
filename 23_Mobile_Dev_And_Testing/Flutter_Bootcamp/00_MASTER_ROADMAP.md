@@ -32,55 +32,70 @@ Each project has its own file with full UI/UX flow, screen descriptions, data mo
 
 ---
 
-## The 6-Month Calendar
+## The 6-Month Calendar (27 Weeks)
 
-### Phase 1 — Dart & Flutter Foundations (Month 1)
-```
-Week 1  → Dart Language: Types, OOP, Async, Null Safety
-Week 2  → Flutter Basics: Widgets, StatelessWidget, hot reload
-Week 3  → Layouts & Navigation: Column, Row, Stack, Navigator
-Week 4  → PROJECT: Personal Profile App
-```
+Every week below is a real file. Click through — each phase also has an overview file that maps the month.
 
-### Phase 2 — Core UI Mastery (Month 2)
-```
-Week 5  → Advanced Widgets: CustomScrollView, Slivers, Animations basics
-Week 6  → Forms & Input: TextFormField, validation, keyboard handling
-Week 7  → Lists, Grids, Infinite Scroll
-Week 8  → PROJECT: Shopping UI Clone
-```
+### [Phase 1 — Dart & Flutter Foundations](Phase_1_Dart_and_Foundations/Phase_1_Overview.md) (Month 1, Weeks 1-6)
 
-### Phase 3 — State Management & APIs (Month 3)
-```
-Week 9  → State Deep Dive: setState, InheritedWidget, Context
-Week 10 → Riverpod: Providers, Notifiers, AsyncNotifier
-Week 11 → HTTP & REST APIs: Dio, JSON parsing, error handling
-Week 12 → PROJECT: Weather App (live API data)
-```
+| Week | File | Focus |
+|------|------|-------|
+| 1 | [Dart Language](Phase_1_Dart_and_Foundations/Week_01_Dart_Language.md) | Types, OOP, async, null safety, the Dart VM |
+| 2 | [Flutter Core Concepts](Phase_1_Dart_and_Foundations/Week_02_Flutter_Core_Concepts.md) | Widgets, the three trees, setState, reconciliation |
+| 3 | [Widget Lifecycle](Phase_1_Dart_and_Foundations/Week_03_Widget_Lifecycle.md) | initState, dispose, mounted, controllers |
+| 4 | [Layout & Constraints](Phase_1_Dart_and_Foundations/Week_04_Layout_and_Constraints.md) | Constraints down, sizes up, Expanded, LayoutBuilder |
+| 5 | [Navigation & State](Phase_1_Dart_and_Foundations/Week_05_Navigation_and_State.md) | Navigator stack, routes, lifting state up |
+| 6 | [PROJECT: Profile App](Phase_1_Dart_and_Foundations/Week_06_Project_ProfileApp.md) | First complete app |
 
-### Phase 4 — Firebase & Persistence (Month 4)
-```
-Week 13 → Firebase: Firestore CRUD, real-time listeners
-Week 14 → Authentication: Firebase Auth, Google Sign-In
-Week 15 → Local Storage: Hive, SQLite, SharedPreferences
-Week 16 → PROJECT: Notes App (cloud + local sync)
-```
+### [Phase 2 — Core UI Mastery](Phase_2_Core_UI/Phase_2_Overview.md) (Month 2, Weeks 7-11)
 
-### Phase 5 — Advanced Patterns (Month 5)
-```
-Week 17 → BLoC Pattern: Events, States, Cubits
-Week 18 → Clean Architecture: Layers, SOLID, Repository pattern
-Week 19 → Animations: Hero, Lottie, CustomPainter, AnimationController
-Week 20 → Capstone Start: Expense Tracker design + BLoC architecture
-```
+| Week | File | Focus |
+|------|------|-------|
+| 7 | [Scrolling & Slivers](Phase_2_Core_UI/Week_07_Scrolling_and_Slivers.md) | ListView, GridView, infinite scroll, SliverAppBar |
+| 8 | [Forms & Input](Phase_2_Core_UI/Week_08_Forms_and_Input.md) | TextFormField, validation, FocusNode, keyboard |
+| 9 | [Animations](Phase_2_Core_UI/Week_09_Animations.md) | Implicit, explicit, Hero, page transitions |
+| 10 | [Gestures & Custom Widgets](Phase_2_Core_UI/Week_10_Gestures_and_Custom_Widgets.md) | GestureDetector, drag-drop, Dismissible, composition |
+| 11 | [PROJECT: Shopping App UI](Phase_2_Core_UI/Week_11_Project_ShoppingApp.md) | Real app UI clone |
 
-### Phase 6 — Production Engineering (Month 6)
-```
-Week 21 → Testing: Unit, Widget, Integration tests
-Week 22 → Performance: Flutter DevTools, rebuild optimization, profiling
-Week 23 → CI/CD: GitHub Actions, Fastlane, App Store / Play Store
-Week 24 → Capstone: Chat App (finish + deploy + portfolio)
-```
+### [Phase 3 — State Management & APIs](Phase_3_State_and_APIs/Phase_3_Overview.md) (Month 3, Weeks 12-15)
+
+| Week | File | Focus |
+|------|------|-------|
+| 12 | [State Management Deep Dive](Phase_3_State_and_APIs/Week_12_State_Management_Deep_Dive.md) | InheritedWidget, ChangeNotifier, Provider |
+| 13 | [Riverpod](Phase_3_State_and_APIs/Week_13_Riverpod.md) | Providers, Notifiers, AsyncValue, family |
+| 14 | [HTTP & REST APIs](Phase_3_State_and_APIs/Week_14_HTTP_and_REST_APIs.md) | Dio, JSON parsing, Repository pattern, errors |
+| 15 | [PROJECT: Weather App](Phase_3_State_and_APIs/Week_15_Project_WeatherApp.md) | Live API data end-to-end |
+
+### [Phase 4 — Firebase & Persistence](Phase_4_Firebase_and_Storage/Phase_4_Overview.md) (Month 4, Weeks 16-19)
+
+| Week | File | Focus |
+|------|------|-------|
+| 16 | [Firebase & Firestore](Phase_4_Firebase_and_Storage/Week_16_Firebase_Firestore.md) | Firestore CRUD, real-time listeners, offline cache |
+| 17 | [Authentication](Phase_4_Firebase_and_Storage/Week_17_Authentication.md) | Firebase Auth, Google Sign-In, security rules |
+| 18 | [Local Storage](Phase_4_Firebase_and_Storage/Week_18_Local_Storage.md) | SharedPreferences, Hive, SQLite, offline-first |
+| 19 | [PROJECT: Notes App](Phase_4_Firebase_and_Storage/Week_19_Project_NotesApp.md) | Cloud + local sync |
+
+### [Phase 5 — Advanced Patterns](Phase_5_Advanced_Patterns/Phase_5_Overview.md) (Month 5, Weeks 20-23)
+
+| Week | File | Focus |
+|------|------|-------|
+| 20 | [BLoC Pattern](Phase_5_Advanced_Patterns/Week_20_BLoC_Pattern.md) | Events, States, Cubits, stream mechanics |
+| 21 | [Clean Architecture](Phase_5_Advanced_Patterns/Week_21_Clean_Architecture.md) | Layers, SOLID, DI, platform channels |
+| 22 | [Advanced Animations & CustomPaint](Phase_5_Advanced_Patterns/Week_22_Advanced_Animations_CustomPaint.md) | AnimationController, CustomPainter, Lottie |
+| 23 | [PROJECT: Expense Tracker](Phase_5_Advanced_Patterns/Week_23_Project_ExpenseTracker.md) | Clean Architecture + BLoC + charts |
+
+### [Phase 6 — Production Engineering](Phase_6_Quality_and_Deployment/Phase_6_Overview.md) (Month 6, Weeks 24-27)
+
+| Week | File | Focus |
+|------|------|-------|
+| 24 | [Testing](Phase_6_Quality_and_Deployment/Week_24_Testing.md) | Unit, widget, integration, blocTest |
+| 25 | [Performance & Profiling](Phase_6_Quality_and_Deployment/Week_25_Performance_and_Profiling.md) | DevTools, rebuilds, background processing |
+| 26 | [CI/CD & Deployment](Phase_6_Quality_and_Deployment/Week_26_CICD_and_Deployment.md) | GitHub Actions, Fastlane, store submission |
+| 27 | [PROJECT: Chat App](Phase_6_Quality_and_Deployment/Week_27_Project_ChatApp.md) | Capstone — build, test, ship |
+
+### Reference Shelf (read alongside any week)
+
+Deep-dive documents in [Reference/](Reference/README.md): rendering pipeline, widget catalog, Material 3 theming, BuildContext, InheritedWidget & keys, async patterns.
 
 ---
 

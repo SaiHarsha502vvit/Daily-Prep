@@ -1,4 +1,4 @@
-# Week 25 — CI/CD and Deployment
+# Week 26 — CI/CD and Deployment
 ### Automate everything: lint, test, build, ship — every commit
 
 ---
@@ -997,7 +997,7 @@ Add a second job `build-android` to your workflow that:
 
 ---
 
-## Week 25 Verify
+## Week 26 Verify
 
 1. What is the difference between CI and CD? Give an example of each in a Flutter context.
 2. Why does the `build-android` job have `needs: test`? What would happen without it?
@@ -1015,4 +1015,4 @@ Add a second job `build-android` to your workflow that:
 
 ---
 
-**Next → [Week 26: Project — Chat App (Phase 6 Capstone)](Week_26_Project_ChatApp.md)**
+**Next → [Week 27: Project — Chat App (Phase 6 Capstone)](Week_27_Project_ChatApp.md)**

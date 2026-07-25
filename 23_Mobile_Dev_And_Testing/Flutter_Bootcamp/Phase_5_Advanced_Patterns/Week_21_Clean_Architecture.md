@@ -1,4 +1,4 @@
-# Week 20 — Clean Architecture + SOLID in Flutter
+# Week 21 — Clean Architecture + SOLID in Flutter
 ### The architecture that survives team growth, tech swaps, and deadline pressure
 
 ---
@@ -1997,7 +1997,7 @@ Take the shopping cart from Phase 2 and refactor it:
 3. Create use cases: `AddToCart`, `RemoveFromCart`, `UpdateQuantity`, `GetCartTotal`, `ClearCart`
 4. Create `CartRepositoryImpl` with an in-memory datasource (no Firebase needed)
 5. Register everything with `get_it`
-6. Connect to `CartBloc` from Week 19
+6. Connect to `CartBloc` from Week 20
 7. Write unit tests for all 5 use cases — no widget imports
 
 ---
@@ -2014,7 +2014,161 @@ That's dependency inversion working correctly.
 
 ---
 
-## Week 20 Verify
+## The Invisible Machinery — How Dependency Injection Actually Works
+
+Clean Architecture is a dependency rule: outer layers depend on inner layers, never the reverse. Dependency injection is the mechanism that makes this work at runtime without the inner layers ever importing the outer ones.
+
+### GetIt: A Service Locator Is Just a Map
+
+```dart
+// GetIt internals (simplified):
+class _GetIt {
+  final Map<Type, _ServiceFactory> _factories = {};
+  
+  void registerSingleton<T>(T instance) {
+    _factories[T] = _ServiceFactory.singleton(instance);
+  }
+  
+  T get<T>([String? instanceName]) {
+    final factory = _factories[T] ?? _factories[(T, instanceName)];
+    return factory!.get() as T;
+  }
+}
+
+final sl = GetIt.instance;
+
+// What sl<IExpenseRepository>() does:
+// → _factories[IExpenseRepository] → returns the registered instance
+// → the instance IS a FirebaseExpenseRepository, but the type key is IExpenseRepository
+```
+
+**Registration in production:**
+
+```dart
+void configureDependencies() {
+  // Data layer
+  sl.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
+  sl.registerSingleton<IExpenseRepository>(
+    FirebaseExpenseRepository(firestore: sl<FirebaseFirestore>()),
+  );
+  
+  // Domain layer
+  sl.registerFactory<GetExpensesUseCase>(
+    () => GetExpensesUseCase(repository: sl<IExpenseRepository>()),
+  );
+  
+  // Presentation layer
+  sl.registerFactory<ExpenseBLoC>(
+    () => ExpenseBLoC(getExpenses: sl<GetExpensesUseCase>()),
+  );
+}
+```
+
+**Swapping in tests — the entire point:**
+
+```dart
+void setUp() {
+  // Unregister production instance
+  sl.unregister<IExpenseRepository>();
+  
+  // Register test double
+  sl.registerSingleton<IExpenseRepository>(
+    MockExpenseRepository(),
+  );
+  // Map: { IExpenseRepository: MockExpenseRepository }
+  
+  // GetExpensesUseCase still calls sl<IExpenseRepository>()
+  // → gets the mock
+  // UseCase code is UNCHANGED. No conditional imports. No if-test-then-mock.
+}
+```
+
+This is the Dependency Inversion Principle in practice: high-level code (`GetExpensesUseCase`) depends on an abstraction (`IExpenseRepository`). Low-level code (`FirebaseExpenseRepository`) implements that abstraction. The test swaps which implementation is behind the abstraction.
+
+### `injectable` — Code Generation Eliminates Boilerplate
+
+Manually writing every `sl.registerSingleton<T>()` call is error-prone (wrong order, missing registration). The `injectable` package generates this code from annotations:
+
+```dart
+// You write:
+@injectable
+class GetExpensesUseCase {
+  GetExpensesUseCase(this._repository);
+  final IExpenseRepository _repository;
+}
+
+@Injectable(as: IExpenseRepository)
+class FirebaseExpenseRepository implements IExpenseRepository {
+  FirebaseExpenseRepository(@Named('firestore') this._firestore);
+  final FirebaseFirestore _firestore;
+}
+
+// build_runner generates: injection.config.dart
+// Contents (what you no longer write by hand):
+void $initGetIt(GetIt g, {String? environment}) {
+  g.registerSingleton<FirebaseFirestore>(FirebaseFirestore.instance);
+  g.registerFactory<IExpenseRepository>(() => FirebaseExpenseRepository(
+    g<FirebaseFirestore>(),
+  ));
+  g.registerFactory<GetExpensesUseCase>(() => GetExpensesUseCase(
+    g<IExpenseRepository>(),
+  ));
+}
+```
+
+Run `flutter pub run build_runner build` to regenerate after adding new classes.
+
+### The Dependency Rule — Why Domain Has Zero Imports
+
+The domain layer (`lib/domain/`) must contain only pure Dart:
+
+```dart
+// ALLOWED in domain:
+import 'dart:async';
+import 'dart:math';
+
+// FORBIDDEN in domain:
+import 'package:cloud_firestore/cloud_firestore.dart';  // ← data layer detail
+import 'package:flutter/material.dart';                 // ← UI layer detail
+import 'package:dio/dio.dart';                          // ← network library
+import 'package:hive/hive.dart';                        // ← storage library
+```
+
+Why: if domain imports Firestore, you cannot run domain tests without a Firebase project, an emulator, or complex mocking. Pure Dart domain code runs with `dart test` in 50ms — no simulator, no emulator, no network.
+
+The data layer imports Firestore. The domain layer imports nothing. The data layer implements the domain interface. The dependency arrow points inward: data → domain, never domain → data.
+
+### `registerFactory` vs `registerSingleton` vs `registerLazySingleton`
+
+```
+registerSingleton<T>(instance):
+  → instance is created NOW, at registration time
+  → same instance returned every call
+  → use for: Firestore, Dio, shared services you always need
+
+registerFactory<T>(() => T()):
+  → creates a NEW instance on every sl<T>() call
+  → use for: BLoCs (each widget should get its own BLoC instance)
+
+registerLazySingleton<T>(() => T()):
+  → creates instance only on FIRST sl<T>() call, then caches it
+  → use for: expensive services you might not always need
+  → example: a Bluetooth service on a non-BLE feature screen
+```
+
+**Decision table:**
+
+| Situation | What's happening | Fix |
+|-----------|-----------------|-----|
+| `GetIt` throws "type not registered" | `configureDependencies()` not called before first `sl<T>()` | Call it in `main()` before `runApp()` |
+| Test uses production Firebase | Mock not registered in setUp | `sl.unregister<T>()` then `sl.registerSingleton<T>(mock)` |
+| UseCase tightly coupled to Firebase | Missing interface abstraction layer | Extract `IRepository` interface, make `FirebaseRepository` implement it |
+| `build_runner` generates wrong order | Injectable dependency order | Check that all dependencies of a class are declared/annotated |
+| BLoC state shared across screens unintentionally | BLoC registered as singleton | Use `registerFactory` — each widget gets its own instance |
+
+---
+
+## Week 21 Verify
 
 1. Draw the three layers on paper. Which direction do dependencies point? Why is the domain layer "pure Dart"?
 2. What is the Dependency Inversion Principle? Give an example from this week using `ExpenseRepository`.
@@ -2032,4 +2186,4 @@ That's dependency inversion working correctly.
 
 ---
 
-**Next → [Week 21: Advanced Animations + CustomPainter Charts](Week_21_Advanced_Animations_CustomPaint.md)**
+**Next → [Week 22: Advanced Animations + CustomPainter Charts](Week_22_Advanced_Animations_CustomPaint.md)**

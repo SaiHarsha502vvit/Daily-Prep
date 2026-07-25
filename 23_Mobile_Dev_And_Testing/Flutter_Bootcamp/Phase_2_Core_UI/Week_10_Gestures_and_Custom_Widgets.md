@@ -1,4 +1,4 @@
-# Week 11 — Gestures & Custom Widgets
+# Week 10 — Gestures & Custom Widgets
 ### Detect any touch interaction and build truly reusable components
 
 ---
@@ -22,6 +22,135 @@ Touch goes through Flutter's gesture arena:
 4. The winning widget gets its callback called
 
 This is why you can scroll a `ListView` by dragging even when each `ListTile` has an `onTap` — the scroll gesture wins over the tap gesture during drag.
+
+---
+
+## The Gesture Origin Story — From Buxton's Touch Tablet to the iPhone's Pinch
+
+### Multi-Touch Was a Research Project for 25 Years Before It Was a Product
+
+**Bill Buxton** (then at the University of Toronto) built the first multi-touch input research system in 1982 — a transparent touch surface that could track multiple fingers simultaneously. He published research on two-handed interaction and "chording" (pressing multiple points simultaneously). Nobody was ready to ship it as a product.
+
+In 1999, **Wayne Westerman** completed his PhD thesis at the University of Delaware: *"Hand Tracking, Finger Identification, and Chordic Manipulation on a Multi-Touch Surface."* He and his advisor, John Elias, founded **Fingerworks** to commercialize their hardware — full-hand touchpads that replaced keyboard and mouse.
+
+In **2005**, Apple quietly acquired Fingerworks and absorbed the entire team. Nobody knew why. Two years later:
+
+**January 9, 2007**: Steve Jobs walked on stage and demonstrated a device with a 3.5" multi-touch display. Two-finger pinch-to-zoom on a map. Two-finger scroll. Double-tap to zoom a web page. The entire gesture vocabulary that 5 billion people now use on smartphones was demonstrated in one 90-minute keynote. The iPhone sold more in its first year than Apple had sold Macs in three years.
+
+The consequence: every OS on every device now needed to define **what gestures mean** and, more importantly, how to resolve **ambiguity** when multiple widgets want the same touch.
+
+### The Gesture Conflict Problem
+
+Consider a `ListView` where each row is tappable. The user puts their finger on a row and drags:
+- The `ListTile`'s tap recognizer says: "this touch started on me — I want it"
+- The `ListView`'s scroll recognizer says: "this looks like a drag — I want it"
+- Who wins?
+
+iOS solves this with `UIGestureRecognizer` and dependency chains (`requiresFailureOf`). Android solves it with `requestDisallowInterceptTouchEvent`. Flutter invented a new solution: the **gesture arena** — a competition model where recognizers compete, and the OS referees.
+
+---
+
+## The Invisible Machinery — How the Gesture Arena Actually Works
+
+When your finger touches the screen, it doesn't go directly to `GestureDetector.onTap`. It travels through a system that has to resolve ambiguity in real time.
+
+### Step 1: Hit Testing (Who Could Possibly Want This Touch?)
+
+Flutter traverses the widget tree and performs a **hit test**: for every widget, does the touch's (x, y) position fall within the widget's painted bounds? Every widget that passes this test adds itself to the `HitTestResult` list.
+
+```
+Touch at position (150, 320)
+     ↓
+GestureBinding receives PointerDownEvent{x: 150, y: 320}
+     ↓
+Hit test traversal: walks the render tree checking bounds
+  RenderBox(Scaffold) → contains (150, 320)? YES → add to list
+    RenderBox(ListView) → contains? YES → add
+      RenderBox(ListTile at index 4) → contains? YES → add
+        RenderBox(Text inside ListTile) → contains? NO
+        RenderBox(Icon inside ListTile) → contains? YES → add
+     ↓
+HitTestResult = [Scaffold, ListView, ListTile, Icon]
+```
+
+All four widgets are candidates. Now the arena opens.
+
+### Step 2: The Arena — Every Recognizer Enters the Competition
+
+Each widget in the hit test list has `GestureRecognizer`s registered. They all receive the `PointerDownEvent` and call `arena.add(this)` — registering themselves as competitors.
+
+```
+Arena contestants:
+  - TapGestureRecognizer (from ListTile.onTap)
+  - ScrollGestureRecognizer (from ListView's scroll physics)
+  - LongPressGestureRecognizer (if ListTile has onLongPress)
+```
+
+### Step 3: Subsequent Events — Who Drops Out?
+
+As more pointer events arrive, recognizers make decisions:
+
+```
+PointerMoveEvent{dx: 0, dy: 3px}  → "moved 3px down"
+  TapGestureRecognizer: "small movement, still within threshold — I'll wait"
+  ScrollGestureRecognizer: "movement detected — I'm probably the scroll — I'll wait"
+
+PointerMoveEvent{dx: 0, dy: 8px}  → "moved 8px down"
+  TapGestureRecognizer: "too much movement for a tap — I give up" → DEFEATED
+    (calls arena.reject(this))
+  ScrollGestureRecognizer: "I'm the last one standing — I WIN"
+    (calls arena.claim(this) → fires onScrollStart, begins scrolling)
+```
+
+If the finger lifts before any movement threshold:
+```
+PointerUpEvent
+  Arena: no winner yet, but all movement has ended
+  → default winner = whoever has been waiting longest = TapGestureRecognizer
+  TapGestureRecognizer fires onTap → ListTile callback executes
+```
+
+### Why This Explains Your Code
+
+```dart
+// This WORKS — tap and scroll can coexist because:
+// - movement → scroll wins, tap gets defeated
+// - no movement → tap wins by default
+ListView.builder(
+  itemBuilder: (ctx, i) => ListTile(
+    onTap: () {},          // TapGestureRecognizer enters arena
+    title: Text('Item'),
+  ),
+)
+
+// This CONFLICT — you have TWO drag-type recognizers fighting
+GestureDetector(
+  onPanUpdate: (d) {},   // PanGestureRecognizer
+  onTap: () {},          // TapGestureRecognizer — this never fires after movement
+                         // because Pan claims the arena the moment movement starts
+)
+
+// This ALSO CONFLICT — Dismissible and ReorderableListView both want the drag
+// You must pick one or the other for swipeable+reorderable lists
+ListView(
+  children: items.map((item) =>
+    Dismissible(           // claims horizontal drag
+      child: ReorderableListView(...),  // claims vertical drag → conflict on diagonal swipes
+    )
+  ).toList()
+)
+```
+
+**Decision framework:**
+
+| Gesture combination | Does it work? | Why |
+|--------------------|---------------|-----|
+| Tap + Scroll (in ListView) | ✓ | Different recognizers, clear threshold: movement = scroll, no movement = tap |
+| Tap + LongPress | ✓ | Time-based: <500ms = tap, >500ms = long press |
+| Tap + DoubleTap | ✓ but delayed | Tap waits for double-tap timeout (300ms) before firing — adds latency |
+| Pan + Tap | ✗ messy | Pan claims arena on any movement; tap only fires on quick touch |
+| Vertical scroll + Dismissible (horizontal swipe) | ✓ | Different axes, clear threshold |
+| Two nested scrollable widgets, same axis | ✗ conflict | Inner scroll wins by default; `NeverScrollableScrollPhysics` on inner to disable |
 
 ---
 
@@ -1026,7 +1155,7 @@ Requirements:
 
 ---
 
-## Week 11 Verify
+## Week 10 Verify
 
 1. What is Flutter's "gesture arena"? Give a concrete example of two gestures competing and how Flutter resolves it.
 2. When would you use `GestureDetector` instead of `InkWell`? Give a real example.
@@ -1041,4 +1170,4 @@ Requirements:
 
 ---
 
-**Next → [Phase 3: State Management & APIs](../Phase_3_State_and_APIs/Phase_3_Overview.md)**
+**Next → [Week 11: Project — Shopping App](Week_11_Project_ShoppingApp.md)**

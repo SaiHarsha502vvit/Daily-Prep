@@ -1221,6 +1221,140 @@ extension OptionExtensions<T> on Option<T> {
 
 ---
 
+## The Invisible Machinery — How the Dart VM Compiles and Runs Your Code
+
+You write Dart. The phone runs machine code that its ARM CPU understands. Between those two facts is a compilation pipeline that Flutter uses differently depending on whether you're developing or shipping — and a memory model that eliminates entire categories of bugs that plague other mobile platforms.
+
+### JIT vs AOT: Two Compilation Modes, Two Purposes
+
+Dart has two compilers that produce completely different outputs:
+
+**JIT (Just-In-Time) — what runs during `flutter run`:**
+
+```
+Your .dart files
+    ↓ Dart frontend compiler parses → Dart IR (intermediate representation)
+    ↓ Dart VM receives the IR
+    ↓ Interprets it directly (slow but immediate)
+    ↓ Watches which code runs frequently ("hot paths")
+    ↓ JIT compiler optimizes hot paths to native machine code
+    ↓ Deoptimizes if assumptions break (e.g., type changed)
+```
+
+JIT enables **hot reload**: the Dart VM swaps in new code without restarting because it's already running the IR interpreter. You change a widget, press `r`, the VM patches the class — your app state is preserved. This only works because JIT is dynamic.
+
+**AOT (Ahead-Of-Time) — what runs in production builds:**
+
+```
+Your .dart files
+    ↓ Dart AOT compiler performs type inference, tree-shaking, inlining
+    ↓ Produces native machine code for ARM64 (iOS) or ARM/x64 (Android)
+    ↓ Code is bundled into the .ipa or .apk binary
+    ↓ At startup: no compilation step — the CPU runs the machine code directly
+```
+
+AOT startup is faster (no compilation delay). AOT code runs faster (pre-optimized). AOT disables hot reload (there's no VM to patch). This is why production builds feel snappier than debug builds — they literally run different code.
+
+**Flutter uses both**: JIT during development, AOT for release. This is unusual — most languages pick one.
+
+### Isolates: Why Dart Has No Race Conditions
+
+In Java, Android threads share memory. Two threads can both write to the same variable simultaneously — you get a race condition. You need mutexes, synchronized blocks, `volatile` keywords. Getting this wrong causes sporadic, nearly impossible to reproduce bugs.
+
+Dart's answer: **make sharing impossible**.
+
+```
+Dart program starts → creates one isolate
+  Isolate = an independent thread of execution with its OWN heap (memory space)
+  
+You create another isolate (Isolate.run(() => heavyComputation()))
+  → creates a SECOND heap, completely separate from the first
+  → the two isolates cannot see each other's variables AT ALL
+  → they can only communicate by SENDING VALUES through a port
+  → the value is serialized (copied), not referenced
+```
+
+```dart
+// This is IMPOSSIBLE in Dart — unlike Java
+List<int> sharedList = [];
+
+// You cannot do this across isolates:
+// Isolate A: sharedList.add(1);
+// Isolate B: sharedList.add(2);  // concurrent modification
+// → Dart doesn't allow it — you'd have to SEND sharedList through a port,
+//   which copies it, giving each isolate its own version
+
+// What you CAN do: send messages
+await Isolate.run(() {
+  // This function runs in a NEW isolate with its OWN copy of any data you pass
+  return expensiveCalculation(data);  // result is COPIED back to main isolate
+});
+```
+
+This is why you never need mutexes in Dart. You never write `synchronized`. There are no volatile variables. The language architecture prevents the problem entirely.
+
+The Flutter UI thread is one isolate. Every `await`, every `Future`, every `setState` happens in the same isolate — safely sequential. `Isolate.run()` and `compute()` create worker isolates for heavy CPU work.
+
+### Dart's Garbage Collector: Why Widget Objects Are Free
+
+Flutter creates and throws away widget objects on every frame. If you scroll a list of 1000 items, Flutter builds and discards widget instances continuously. In languages with reference-counting GC (like Swift pre-ARC improvements), this could be expensive. In Dart, it's nearly free.
+
+Dart uses a **generational garbage collector**:
+
+```
+New object created (e.g., Text('Hello') in build())
+    ↓ placed in "young generation" (Nursery)
+    ↓ small, fast GC runs frequently on young generation
+    → most young objects collected immediately (the Text widget was used, then rebuild happened)
+    → some objects survive multiple GC cycles → promoted to "old generation"
+
+Old generation:
+    → contains long-lived objects (your Providers, BLoCs, repositories)
+    → major GC runs rarely and takes longer
+    → most app objects live here stably
+```
+
+Key insight for Flutter: **widget objects die young**. They're created in `build()`, used once for layout, then the next frame's `build()` creates new ones. The young-generation collector handles this efficiently — it doesn't need to scan the entire heap.
+
+Each isolate has its own GC. Flutter's UI isolate runs GC between frames (not during them). This is why Flutter scroll animations don't stutter from GC pauses — the GC is scheduled to run in the gaps between 16.67ms frame windows.
+
+### The Event Loop: Why `await` Doesn't Block
+
+The Dart event loop processes two queues:
+
+```
+Microtask queue (higher priority):
+  - Completions of await expressions
+  - Future.microtask() callbacks
+  - Runs IMMEDIATELY after current synchronous code, before any event queue items
+
+Event queue (lower priority):
+  - I/O completions (network response, file read)
+  - Timer callbacks (Future.delayed)
+  - Platform channel responses (Flutter framework ← iOS/Android)
+  - User input events
+```
+
+When you write `await dio.get('/api/data')`:
+1. Dart registers a callback in the event queue ("call me when the network responds")
+2. The current function suspends (returns control to the event loop)
+3. The event loop processes other events (UI rendering, user input)
+4. Network response arrives → event queue callback fires → your function resumes
+
+This is why `await` doesn't freeze the UI — it suspends only the awaiting function, not the whole isolate. Other events keep processing. The event loop is the mechanism that makes async Dart work without threads.
+
+**Decision framework:**
+
+| Situation | What's happening | Solution |
+|-----------|-----------------|----------|
+| `Future` result not updating UI | Forgot `setState` after await | Wrap state changes in `setState(() { ... })` |
+| Sequential code runs before `await` completes | Expected — async is non-blocking | Use `await` or `.then()` to chain dependent logic |
+| Heavy computation stutters animations | Computation runs on UI isolate, blocking frame renders | Move to `Isolate.run()` or `compute()` |
+| Two `await` calls run one after another slowly | Sequential awaiting | Use `Future.wait([future1, future2])` to run in parallel |
+| List of Futures, need all results | `.wait()` collects when all complete | `final results = await Future.wait(futures)` |
+
+---
+
 ## Week 1 Verify
 
 1. What is the difference between `var`, `final`, and `const`? Give an example where each is correct.

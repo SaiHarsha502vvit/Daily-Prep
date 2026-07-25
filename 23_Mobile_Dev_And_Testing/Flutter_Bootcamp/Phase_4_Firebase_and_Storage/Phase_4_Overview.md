@@ -1,5 +1,5 @@
 # Phase 4 — Firebase & Persistence
-### Month 4 | Weeks 13-16
+### Month 4 | Weeks 16-19
 
 ---
 
@@ -11,7 +11,18 @@ By the end, you'll build a full Notes App where users can sign in, create notes 
 
 ---
 
-## Week 13 — Firebase & Cloud Firestore
+## Week Map
+
+| File | Topic | Core Skills |
+|------|-------|-------------|
+| [Week_16_Firebase_Firestore.md](Week_16_Firebase_Firestore.md) | Firebase & Firestore | Firestore CRUD, real-time listeners, offline cache, StreamProvider |
+| [Week_17_Authentication.md](Week_17_Authentication.md) | Authentication | Firebase Auth, Google Sign-In, auth state streams, security rules |
+| [Week_18_Local_Storage.md](Week_18_Local_Storage.md) | Local Storage | SharedPreferences, Hive, SQLite, offline-first pattern |
+| [Week_19_Project_NotesApp.md](Week_19_Project_NotesApp.md) | Project: Notes App | Cloud sync + offline cache + auth, feature-based architecture |
+
+---
+
+## Week 16 — Firebase & Cloud Firestore
 
 **Setup:**
 1. Create a Firebase project at console.firebase.google.com
@@ -93,7 +104,7 @@ final notesProvider = StreamProvider<List<Note>>((ref) {
 
 ---
 
-## Week 14 — Authentication
+## Week 17 — Authentication
 
 **Firebase Auth flows:**
 - Email/password (the baseline)
@@ -166,7 +177,7 @@ service cloud.firestore {
 
 ---
 
-## Week 15 — Local Storage: Hive, SQLite, SharedPreferences
+## Week 18 — Local Storage: Hive, SQLite, SharedPreferences
 
 Not everything needs the cloud. Store small, quick data locally.
 
@@ -243,7 +254,7 @@ User creates a note
 
 ---
 
-## Week 16 — Project: Notes App
+## Week 19 — Project: Notes App
 
 **Full-featured, cloud-synced, offline-capable notes application.**
 
@@ -302,5 +313,5 @@ After this phase:
 - You can implement complete auth flows (login, register, password reset, Google)
 - You can build offline-first apps that sync when online
 
-**→ Start with [Week_13_Firebase_Firestore.md](Week_13_Firebase_Firestore.md)**
+**→ Start with [Week_16_Firebase_Firestore.md](Week_16_Firebase_Firestore.md)**
 *(detailed file — ask to build when you reach here)*

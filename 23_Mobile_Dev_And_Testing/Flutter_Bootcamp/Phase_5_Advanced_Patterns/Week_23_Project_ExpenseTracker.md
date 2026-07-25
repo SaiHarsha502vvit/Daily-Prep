@@ -1,4 +1,4 @@
-# Week 22 — Phase 5 Capstone: Expense Tracker App
+# Week 23 — Phase 5 Capstone: Expense Tracker App
 ### Clean Architecture + BLoC + Custom Charts — everything from Phases 4 & 5 in one production-quality app
 
 ---
@@ -13,12 +13,12 @@
 ## App Scope
 
 A personal expense tracker with:
-- Firebase Auth (email + Google Sign-In from Week 16)
-- Firestore for remote storage (Week 15)
-- Hive for offline-first local storage (Week 17)
-- Clean Architecture (Week 20)
-- BLoC for all state management (Week 19)
-- Custom donut + bar + line charts (Week 21)
+- Firebase Auth (email + Google Sign-In from Week 17)
+- Firestore for remote storage (Week 16)
+- Hive for offline-first local storage (Week 18)
+- Clean Architecture (Week 21)
+- BLoC for all state management (Week 20)
+- Custom donut + bar + line charts (Week 22)
 - flutter_animate staggered transitions
 
 **What the user can do:**
@@ -27,6 +27,42 @@ A personal expense tracker with:
 3. Filter/search expenses by category or date range
 4. See per-category spending totals
 5. Works offline — syncs when back online
+
+---
+
+## Why Expense Tracking Is the Phase 5 Capstone Domain
+
+### Envelope Budgeting (1950s) → YNAB (2004) → Your App
+
+In the 1950s, before credit cards were common, many families used **envelope budgeting**: physically divide the paycheck into envelopes labeled "Rent," "Food," "Transport," "Entertainment." When the Food envelope is empty, you stop buying food until next payday. The physical constraint made the abstract concept of "spending within budget" viscerally real.
+
+**YNAB** (You Need A Budget, Jesse Mecham, 2004) digitized this: virtual "envelopes," real-time balance tracking, mobile apps. YNAB charges $99/year and in 2024 has hundreds of thousands of paying subscribers who consistently report changing their relationship with money. People pay $99/year for a category picker and a bar chart. The product is the behavior change, not the software.
+
+The apps that fail (most of them): **data entry friction kills habit formation**. If logging an expense takes 10 taps, users stop doing it by week 2. YNAB survived by making entry as fast as possible and then adding the analysis layer. This is the UX constraint that shapes this project: the expense input form must be under 3 taps from home screen to saved.
+
+### Why This Project Requires the Full Phase 5 Architecture
+
+Every Phase 5 topic was chosen because expense tracking genuinely needs it — not because it's a good teaching exercise:
+
+```
+Clean Architecture (Week 21)
+  → Firestore layer must be swappable (you might move from Firebase to a REST API)
+  → The domain UseCase for "add expense" must not know about Firestore
+  
+BLoC (Week 20)
+  → Every user action is auditable: AddExpenseEvent, FilterByDateEvent, SyncEvent
+  → Enterprise apps need an explicit event log for debugging and analytics
+  
+CustomPainter Charts (Week 22)
+  → The donut chart showing category breakdown requires raw drawing — no widget does this
+  → The monthly bar chart for trend analysis is the #1 feature users actually look at
+  
+Platform-level background sync (Week 25, optional)
+  → If the user adds an expense while offline and then closes the app, it must sync
+  → WorkManager / BGTaskScheduler are how that sync survives app closure
+```
+
+The architecture is not over-engineering. Every layer earns its place.
 
 ---
 
@@ -40,7 +76,7 @@ lib/
     router/app_router.dart
   features/
     auth/
-      presentation/screens/ (LoginScreen, RegisterScreen from Week 16)
+      presentation/screens/ (LoginScreen, RegisterScreen from Week 17)
       domain/               (entities, repo interface, use cases)
       data/                 (firebase impl, model)
     expenses/
@@ -965,7 +1001,7 @@ Future<void> setupDI() async {
 | Concept | Where used |
 |--|--|
 | BLoC + Events/States | `ExpenseBloc`, `DashboardBloc`, `AuthBloc` |
-| Cubit | `ThemeCubit` (from Week 19 lab) |
+| Cubit | `ThemeCubit` (from Week 20 lab) |
 | Clean Architecture | All 3 layers: domain entities, use cases, data impl |
 | get_it DI | `injection_container.dart` — full app wiring |
 | SOLID principles | Dependency inversion on every repository + datasource |
@@ -984,7 +1020,7 @@ Future<void> setupDI() async {
 Replace all raw `try/catch` with the `sealed class AppFailure` pattern from Week 1. Every Dio call in `ExpenseRemoteDatasource` should return `Result<T>` — never throw. The BLoC maps `Failure` to user-friendly messages.
 
 **2. BLoC Observer + Crashlytics Breadcrumbs**
-Add `AppBlocObserver` from Week 19. Every `onTransition` writes a Sentry breadcrumb. When a crash happens, the Sentry dashboard shows the last 10 BLoC transitions that led to it.
+Add `AppBlocObserver` from Week 20. Every `onTransition` writes a Sentry breadcrumb. When a crash happens, the Sentry dashboard shows the last 10 BLoC transitions that led to it.
 
 **3. Feature Flag: New Dashboard**
 Gate the `SpendingLinePainter` chart behind a Firebase Remote Config flag `enable_trend_chart`. 50% of users see the old view (donut + bar only), 50% see the trend chart. Measure engagement via analytics events.
@@ -993,14 +1029,14 @@ Gate the `SpendingLinePainter` chart behind a Firebase Remote Config flag `enabl
 The `ExpenseHiveModel` needs a new `receiptUrl` field. Write the migration so users upgrading from version 1 don't lose data. Test by pre-populating Hive with v1 data and verifying v2 reads succeed.
 
 **5. Offline-First Sync with Conflict Resolution**
-Currently, offline writes use a `pendingSync` boolean. Upgrade to `SyncStatus` enum (synced/pendingCreate/pendingUpdate/pendingDelete) from Week 15. Add a `ConflictResolver` that handles the case where an expense was edited on two devices.
+Currently, offline writes use a `pendingSync` boolean. Upgrade to `SyncStatus` enum (synced/pendingCreate/pendingUpdate/pendingDelete) from Week 16. Add a `ConflictResolver` that handles the case where an expense was edited on two devices.
 
 **6. Contract Test**
 Write a contract test that hits your staging Firestore (or a mock API) and validates the JSON schema matches `Expense.fromJson`. Tag it `@Tags(['contract'])` and run it separately from unit tests.
 
 ---
 
-## Week 22 Verify — Project Self-Review
+## Week 23 Verify — Project Self-Review
 
 1. Trace the full flow when a user adds an expense while offline: tap "Save" → what fires in the BLoC → what writes to Hive → what happens when connectivity returns?
 2. `ExpenseBloc` receives `DeleteExpenseEvent`. The BLoC optimistically removes the item from the UI state. The server returns an error. How do you restore the item? Write the state sequence.
@@ -1015,11 +1051,11 @@ Write a contract test that hits your staging Firestore (or a mock API) and valid
 ## Phase 5 Complete — Up Next: Phase 6 (Quality)
 
 Phase 6 is about making this app production-ready:
-- Week 23: Unit tests, widget tests, integration tests, BLoC testing
-- Week 24: Performance — DevTools, rebuild analysis, const optimization
-- Week 25: CI/CD — GitHub Actions, automated builds, deployment
-- Week 26: Chat App capstone with FCM and real-time messaging
+- Week 24: Unit tests, widget tests, integration tests, BLoC testing
+- Week 25: Performance — DevTools, rebuild analysis, const optimization
+- Week 26: CI/CD — GitHub Actions, automated builds, deployment
+- Week 27: Chat App capstone with FCM and real-time messaging
 
 ---
 
-**Next → [Week 23: Testing](../Phase_6_Quality_and_Deployment/Week_23_Testing.md)**
+**Next → [Week 24: Testing](../Phase_6_Quality_and_Deployment/Week_24_Testing.md)**

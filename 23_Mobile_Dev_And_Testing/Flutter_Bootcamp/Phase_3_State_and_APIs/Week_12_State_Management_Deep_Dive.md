@@ -1,4 +1,4 @@
-# Week 11 — State Management Deep Dive
+# Week 12 — State Management Deep Dive
 ### Why setState breaks at scale, and how InheritedWidget, Provider, and the widget tree solve it
 
 ---
@@ -395,7 +395,7 @@ class CounterNotifier extends ValueNotifier<CounterState> {
 
 ## Lab — Convert the Shopping App to Use Provider
 
-Take the Shopping App from Week 10 (which had all state in `_ShopAppState`) and convert it to use `Provider`:
+Take the Shopping App from Week 11 (which had all state in `_ShopAppState`) and convert it to use `Provider`:
 
 **Models to create:**
 1. `CartModel extends ChangeNotifier` — all cart operations
@@ -426,7 +426,135 @@ Build a "Notifications" screen where:
 
 ---
 
-## Week 11 Verify
+## The Invisible Machinery — How InheritedWidget and Provider Actually Work
+
+Every state management system in Flutter — Provider, Riverpod, BLoC, `context.watch()` — is built on one low-level primitive: `InheritedWidget`. Understanding the actual mechanism explains why `watch` rebuilds but `read` doesn't, why `select` is faster, and why Provider is not magic.
+
+### The `_dependents` Set
+
+Every `InheritedElement` (the element backing an `InheritedWidget`) holds:
+
+```dart
+Map<Element, Object?> _dependents = {};
+```
+
+This is the dependency registration list. When a widget calls `Theme.of(context)` or `context.watch<CartModel>()`, the underlying call is:
+
+```dart
+// Inside Theme.of():
+context.dependOnInheritedWidgetOfExactType<MaterialApp>();
+
+// What this does:
+// 1. Walk UP the element tree from 'context' (the calling element)
+// 2. Find the nearest InheritedElement of type MaterialApp
+// 3. Add 'context' to that InheritedElement._dependents map
+//    _dependents[context] = null  (null = no aspect — full dependency)
+// 4. Return the InheritedWidget's data
+```
+
+### The Notification Cascade
+
+When the `InheritedWidget` is rebuilt with new data (e.g., theme changed):
+
+```
+InheritedElement.updated(newWidget) is called
+    ↓
+widget.updateShouldNotify(oldWidget) → returns true if data changed
+    ↓ (if true)
+InheritedElement.notifyClients(oldWidget)
+    ↓
+Iterates _dependents map:
+  for each dependent element:
+    → element.didChangeDependencies()
+    → element.markNeedsBuild()
+    → element is scheduled for rebuild on the next frame
+```
+
+Every widget that called `dependOnInheritedWidgetOfExactType` gets rebuilt. That's the entire mechanism — a set, iteration, `markNeedsBuild()`.
+
+### Why `read` vs `watch` Matters
+
+```dart
+// context.watch<CartModel>()
+// → calls: context.dependOnInheritedWidgetOfExactType<InheritedProvider<CartModel>>()
+// → REGISTERS in _dependents → will rebuild when CartModel notifies
+// Use in: build()
+
+// context.read<CartModel>()
+// → calls: context.getInheritedWidgetOfExactType<InheritedProvider<CartModel>>()
+// → does NOT register in _dependents → no rebuild
+// Use in: callbacks, initState() — one-time access, don't want rebuild
+
+// Using context.watch() INSIDE a callback is a bug:
+ElevatedButton(
+  onPressed: () {
+    // Every time CartModel notifies, this widget rebuilds
+    // The rebuild re-runs build(), which re-registers the dependency
+    // The callback fires again, reads again — but this pattern can cause
+    // unexpected behavior if the listener causes more state changes
+    context.watch<CartModel>().clearCart();  // WRONG: use read() in callbacks
+  },
+)
+```
+
+### How `ChangeNotifier.notifyListeners()` Connects to InheritedWidget
+
+```
+CartModel.add(item)
+    ↓
+CartModel.notifyListeners()
+    ↓ (CartModel is a ChangeNotifier)
+    ↓ iterates its List<VoidCallback> _listeners
+    ↓ one of those listeners was registered by Provider's InheritedElement setup
+    ↓
+Provider's InheritedElement.markNeedsNotifyDependents()
+    ↓
+Next frame: InheritedElement.notifyClients() runs
+    ↓
+All elements in _dependents get markNeedsBuild()
+    ↓
+All context.watch<CartModel>() callers rebuild
+    ↓
+context.read<CartModel>() callers do NOT rebuild (not in _dependents)
+```
+
+### `context.select<T, R>()` — Surgical Rebuilds
+
+```dart
+// Normal context.watch<CartModel>(): rebuilds when ANYTHING in CartModel changes
+// context.select<CartModel, int>(): rebuilds ONLY when the selected value changes
+
+final itemCount = context.select<CartModel, int>((cart) => cart.items.length);
+
+// Under the hood:
+// 1. Registers in _dependents with the selector function as the "aspect"
+//    _dependents[context] = (cart) => cart.items.length
+// 2. On notifyListeners():
+//    InheritedElement runs: selector(newWidget.value) vs selector(oldWidget.value)
+//    i.e.: newCart.items.length vs oldCart.items.length
+//    Only schedules rebuild if the int changed
+// 3. If 10 other fields in CartModel changed but items.length stayed the same:
+//    this widget does NOT rebuild
+
+// Real-world use case: a BottomNavigationBar badge showing unread notification count
+// Only the badge rebuilds when the count changes
+// The entire navigation bar does NOT rebuild when other notification fields change
+final unreadCount = context.select<NotificationModel, int>((n) => n.unreadCount);
+```
+
+**Decision table:**
+
+| Method | Registers as dependent? | Rebuilds? | Use in |
+|--------|------------------------|-----------|--------|
+| `context.watch<T>()` | Yes (full) | On any change | `build()` |
+| `context.read<T>()` | No | Never | Callbacks, `initState()` |
+| `context.select<T,R>(fn)` | Yes (partial) | Only if `fn(value)` result changes | `build()` — surgical rebuild |
+| `Provider.of<T>(context, listen: false)` | No | Never | Old API, same as `read()` |
+| `Provider.of<T>(context)` | Yes | On any change | Old API, same as `watch()` |
+
+---
+
+## Week 12 Verify
 
 1. What is `InheritedWidget`? How does `dependOnInheritedWidgetOfExactType` register a widget as a dependent?
 2. What does `notifyListeners()` do in a `ChangeNotifier`? What happens in the widget tree when it's called?
@@ -440,4 +568,4 @@ Build a "Notifications" screen where:
 
 ---
 
-**Next → [Week 12: Riverpod](Week_12_Riverpod.md)**
+**Next → [Week 13: Riverpod](Week_13_Riverpod.md)**

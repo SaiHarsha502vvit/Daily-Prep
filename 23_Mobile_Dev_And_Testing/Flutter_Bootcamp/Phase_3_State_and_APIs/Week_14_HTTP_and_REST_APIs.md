@@ -1,4 +1,4 @@
-# Week 13 — HTTP & REST APIs
+# Week 14 — HTTP & REST APIs
 ### Calling real servers, parsing JSON, handling errors, and building a clean data layer
 
 ---
@@ -256,7 +256,7 @@ Every byte sent is encrypted using AES-256 (symmetric encryption — very fast)
 Even if someone captures every packet, they see only random noise
 ```
 
-**Why certificate pinning matters (from Week 13's security section):** By default, your phone trusts any certificate from any CA in its list. There are hundreds of CAs. If one is compromised (hacked), an attacker can get a "real" certificate for your server and intercept traffic. Certificate pinning says "I only trust THIS specific certificate — not just any valid one." Your Dio client contains the expected certificate's fingerprint and rejects any other.
+**Why certificate pinning matters (from Week 14's security section):** By default, your phone trusts any certificate from any CA in its list. There are hundreds of CAs. If one is compromised (hacked), an attacker can get a "real" certificate for your server and intercept traffic. Certificate pinning says "I only trust THIS specific certificate — not just any valid one." Your Dio client contains the expected certificate's fingerprint and rejects any other.
 
 ---
 
@@ -1203,7 +1203,7 @@ Use the [newsapi.org](https://newsapi.org) free tier (100 requests/day) or any m
 4. `headlinesProvider` (`FutureProvider.autoDispose.family<List<Article>, String>`) — `family` modifier lets you pass a category parameter
 5. `HeadlinesScreen` using `ref.watch` + `.when()` skeleton/error/data
 6. Pull-to-refresh with `RefreshIndicator` → `ref.refresh(headlinesProvider(category).future)`
-7. `SearchScreen` with debounced search query (from Week 12 challenge)
+7. `SearchScreen` with debounced search query (from Week 13 challenge)
 
 **API response format you'll receive:**
 ```json
@@ -1576,7 +1576,7 @@ test('loadMore appends to existing items and updates cursor', () async {
 
 ---
 
-## Week 13 Verify
+## Week 14 Verify
 
 1. What is the repository pattern? What is the repository's responsibility vs the API client's?
 2. A Dio interceptor's `onError` method receives a `DioException`. What does `handler.next(error)` do? What does `handler.resolve(response)` do?
@@ -1593,4 +1593,4 @@ test('loadMore appends to existing items and updates cursor', () async {
 
 ---
 
-**Next → [Week 14: Project — Weather App](Week_14_Project_WeatherApp.md)**
+**Next → [Week 15: Project — Weather App](Week_15_Project_WeatherApp.md)**

@@ -1,4 +1,4 @@
-# Week 21 — Advanced Animations + CustomPainter Charts
+# Week 22 — Advanced Animations + CustomPainter Charts
 ### When widgets aren't enough: paint pixels, choreograph sequences, breathe life into data
 
 ---
@@ -23,6 +23,36 @@ Flutter's built-in widgets cover ~80% of UI needs. The other 20% — pie charts,
 - `drawArc` — segments of circles
 - `drawParagraph` — text with full control
 - `drawImage` — raster images
+
+---
+
+## The History of Drawing on Screen — From Sketchpad to CustomPainter
+
+### Ivan Sutherland's Sketchpad (1963)
+
+In 1963, **Ivan Sutherland** submitted his MIT PhD thesis and demonstrated **Sketchpad** — the first computer drawing program in history. Using a light pen on a cathode ray tube display, users could draw lines, circles, and arcs. Shapes could be constrained ("this line must stay horizontal"), copied, and organized hierarchically. Sutherland introduced the concepts of objects with properties, inheritance, and constraints — foundational to both object-oriented programming and UI design.
+
+The API shape that emerged: `draw(shape, position, properties)`. Sixty years later, `canvas.drawCircle(center, radius, paint)` is still exactly this.
+
+### The Same Pattern, Four Decades Running
+
+Every graphics library generation converges on the same interface because it maps naturally to how drawing works: a surface, a state (color, stroke, transform), and drawing commands.
+
+- **1984**: Apple Macintosh launched with **QuickDraw** (written by Bill Atkinson) — `DrawLine()`, `DrawRect()`, `DrawOval()`. The rendering engine for every Mac app for 20 years.
+- **1995**: Java shipped `java.awt.Graphics` — `g.drawLine()`, `g.drawRect()`, `g.drawOval()`.
+- **2001**: **Processing** — a language for creative coders, created by Casey Reas and Ben Fry at the MIT Media Lab. `void draw() { ellipse(mouseX, mouseY, 50, 50); }`. Called 60 times per second, drawing a circle that follows your mouse. Processing taught a generation of artists to code.
+- **2004**: Apple added `<canvas>` to Safari for Mac OS X Dashboard widgets. Mozilla and Opera adopted it. HTML5 formalized it. Every data visualization library — D3.js, Chart.js, Recharts — runs on this canvas element.
+- **Flutter**: `void paint(Canvas canvas, Size size) { canvas.drawArc(...); }`. Same shape. Sixty years of convergence.
+
+### Florence Nightingale and Why Visualization Has Stakes
+
+In 1854, **Florence Nightingale** was a nurse during the Crimean War. She collected mortality data and discovered that more soldiers were dying from preventable diseases (cholera, dysentery) than from battle wounds. She knew this — but she needed to *convince the British Parliament* to fund sanitation reforms. A table of numbers wasn't enough.
+
+She invented the **polar area chart** (the "rose diagram") — the first data visualization explicitly designed to *persuade* rather than just report. Each wedge showed deaths by cause in a given month. The pattern was visually undeniable. Politicians who would have ignored a spreadsheet funded the reforms. Sanitation improved. Tens of thousands of lives were saved.
+
+This is why `CustomPainter` matters beyond "making things look good." A chart that makes a pattern visible that was invisible in raw numbers is doing exactly what Nightingale's rose diagram did. The `ExpenseDonutPainter` showing "78% of your spending is food" communicates something in 0.1 seconds that would take 5 seconds of mental arithmetic from a table.
+
+**Edward Tufte**'s 1983 book *The Visual Display of Quantitative Information* codified the principles that still apply to your charts: maximize the data-ink ratio (every pixel should carry information), eliminate chartjunk (3D effects, drop shadows, gradient fills that add no data), label directly rather than via a legend when possible.
 
 ---
 
@@ -794,7 +824,7 @@ Stack(
 
 ---
 
-## Week 21 Verify
+## Week 22 Verify
 
 1. What does `shouldRepaint` do? What happens if you always return `true`?
 2. In the donut chart, `useCenter: false` in `drawArc` — what does this change?
@@ -806,4 +836,4 @@ Stack(
 
 ---
 
-**Next → [Week 22: Project — Expense Tracker App](Week_22_Project_ExpenseTracker.md)**
+**Next → [Week 23: Project — Expense Tracker App](Week_23_Project_ExpenseTracker.md)**

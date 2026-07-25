@@ -19,6 +19,53 @@ Users make mistakes. Networks fail. Keyboards overlap content. Validation must b
 
 ---
 
+## The History of Mobile Input — From T9 to Touch ID to Sign In With Apple
+
+### How We Got Here: T9, Touchscreens, and Steve Jobs's Gamble
+
+Before touchscreen keyboards, mobile text input was **T9** (Tegic Communications, 1995): press "7" once for "p", twice for "q", three times for "r", four times for "s". Writing "stop" required 28 key presses. Entire text messages were typed this way. A generation of teenagers got alarmingly fast at it.
+
+The first iPhone (2007) replaced the physical keyboard with a full touchscreen. Steve Jobs opened that section of the keynote directly: *"The most advanced phones out there are called smartphones. The problem is: they're not so smart... they all have these keyboards that are there whether you need them or not. What we're going to do is get rid of all these buttons and just make a giant screen."* The audience laughed nervously.
+
+What made the virtual keyboard work was not the layout — it was the error correction. Apple modeled each keystroke as a **probability distribution**: a Gaussian curve centered on the touch point, spread across the keys near it. The software calculated which key you *most likely intended* based on both your tap position and the word you were probably forming. The keyboard forgave you.
+
+### HTML Forms Meet Mobile (2010-2013): The `type=` Attribute
+
+Web forms had existed since 1996 (HTML 2.0). When smartphones arrived, the mismatch was painful: forms designed for physical keyboards showed the wrong keyboard type on mobile. A phone number field showed a QWERTY keyboard. A search field showed a number pad.
+
+HTML5 (2010 draft, finalized 2014) added `<input type="email">`, `<input type="tel">`, `<input type="number">`, `<input type="search">` — type hints that told mobile browsers which keyboard to show. This is the direct ancestor of Flutter's `TextInputType.emailAddress` and `TextInputType.phone`. Same problem, 14 years later, same solution.
+
+### Touch ID — When Biometrics Went Mainstream (September 2013)
+
+In 2012, Apple quietly acquired **AuthenTec** — the world's leading fingerprint sensor company — for **$356 million**. Nobody outside Apple knew why. The answer appeared 14 months later: **iPhone 5s with Touch ID**.
+
+The sensor was embedded in the Home button. It read fingerprints in under 0.5 seconds. It used radio frequency to scan beneath the outer skin layer to the dermis — making it resistant to fake fingerprints. The Secure Enclave stored templates in isolated hardware that no iOS app could access.
+
+The architecture principle that Touch ID established: **you never handle biometric data**. The OS mediates everything. Your app calls `authenticate()` and receives `true` or `false`. The fingerprint template stays in hardware. This is why `LocalAuthentication().authenticate()` has no way to return a fingerprint image — the API is intentionally designed to make it impossible to access the raw data.
+
+Android manufacturers scrambled to add fingerprint sensors. The race to match iPhone biometrics drove the diversity of fingerprint implementations (front-mounted, rear-mounted, in-display) that you need to test Flutter apps against today.
+
+### Sign In With Apple — The Forced Hand (WWDC, June 2019)
+
+At WWDC 2019, Apple announced **Sign In With Apple** and simultaneously announced **App Store Review Guideline 4.8**: any app offering third-party sign-in (Google, Facebook, Twitter) must also offer Sign In With Apple as an equivalent option.
+
+Apple's differentiator: **Hide My Email**. Sign In With Apple can generate a random relay address (`xyz123@privaterelay.appleid.com`) that forwards to your real address. The app never sees your real email. You can disable the relay at any time, revoking the app's ability to email you with one tap.
+
+This is why `sign_in_with_apple` is a mandatory package for any Flutter app on iOS that offers Google Sign-In. It is an **App Store submission requirement** — missing it triggers a rejection with Guideline 4.8 cited.
+
+**Auth method requirement matrix:**
+
+```
+What you offer     iOS App Store            Android Play Store
+──────────────     ──────────────────────   ──────────────────────
+Google Sign-In     MUST also offer Apple    No extra requirements
+Facebook Sign-In   MUST also offer Apple    No extra requirements  
+Email + password   No extra requirements    No extra requirements
+Only Apple         Fine                     N/A (Apple not on Android)
+```
+
+---
+
 ## 1. `TextField` vs `TextFormField`
 
 ```dart

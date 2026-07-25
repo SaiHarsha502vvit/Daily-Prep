@@ -34,6 +34,62 @@ Flutter animations fit into two tiers: **implicit** (Flutter handles the control
 
 ---
 
+## The Animation Origin Story — Disney, Matias Duarte, and Why Your App Should Feel Physical
+
+### Disney's 12 Principles (1930s) — The Rulebook That Predated Computers by 50 Years
+
+In 1981, Disney's legendary senior animators published *The Illusion of Life: Disney Animation*. In it, they documented **12 principles of animation** developed over four decades of hand-drawn film:
+
+- **Squash and stretch**: a ball hitting the ground squashes; bouncing back, it stretches. This communicates mass — a heavy object squashes more than a light one.
+- **Anticipation**: before a character jumps, they crouch. Before a button confirms, it depresses slightly. The anticipation tells the user what's *about to happen*.
+- **Slow in / slow out**: most natural motion starts slow, accelerates through the middle, and slows at the end. `Curves.easeInOut` is the mathematical version of this — not an arbitrary choice.
+- **Follow-through**: when a character stops running, their hair keeps moving for a moment. Objects have inertia even after their main motion ends.
+
+For 60 years, these principles lived in film schools and animation studios. Then, in 2013, they became the engineering spec for a mobile OS.
+
+### Matias Duarte and Material Design (Google I/O, June 2013)
+
+In 2010, Google hired **Matias Duarte** — the designer who led UI design at Palm (webOS), famous for its card-based animations and physical metaphors. Duarte looked at Android's UI: inconsistent, flat, with no sense of depth or physics. He spent three years redesigning it from the ground up.
+
+At Google I/O 2013, Duarte unveiled **Material Design**. The core metaphor: *digital paper and ink*. Material Design defined surfaces (like sheets of paper) that:
+
+- Exist at different elevations on the z-axis, casting shadows that communicate hierarchy
+- Move with purpose: entering elements accelerate, exiting elements decelerate (not arbitrary linear motion)
+- Respond physically: taps create ripples (ink spreading on paper), transitions maintain continuity (shared element transitions show where the new screen came from)
+
+The motion specification explicitly referenced Disney's principles. `Curves.fastOutSlowIn` (entering elements) and `Curves.fastLinearToSlowEaseIn` (exiting elements) are not arbitrary — they are the mathematical encoding of slow-in/slow-out and the principle that *entering elements decelerate into position* while *exiting elements accelerate away*.
+
+**Flutter was designed to implement Material Design's motion spec.** When you use `Curves.easeInOut` or a spring simulation or a staggered entrance animation, you are using a system whose design lineage goes from a 1981 book about animating cartoon rabbits → Matias Duarte's 2013 presentation → Flutter's animation primitives.
+
+### The Decision Framework: When Animation Adds Value vs. When It Distracts
+
+Material Design's motion philosophy: **animation serves communication, not aesthetics.** An animation should tell the user where content came from, where it went, or what its relationship is to other elements. It should not exist to impress.
+
+```
+Good animation                      Bad animation
+──────────────────────────────────  ──────────────────────────────────
+Hero transition: "this detail       Spinning logo on every screen load
+  screen came from that list tile"   for no reason
+
+Staggered list entrance: items       All items bouncing simultaneously
+  cascade in to suggest order         with no communicative purpose
+
+Shared element: search result        Complex particle effect on button tap
+  expands from the card you tapped    that delays the action by 300ms
+
+Error shake: input field shakes      Elaborate multi-step animation
+  horizontally (like shaking head     before critical user feedback
+  "no") when validation fails         appears
+```
+
+**Duration guidelines from the Material spec (adopted in Flutter's material widgets):**
+- Simple transitions (fade, scale small change): 100–200ms
+- Complex transitions (page change, content expansion): 200–400ms  
+- Informational animations (progress, looping): unconstrained
+- Never exceed 500ms for anything a user waits for — patience breaks at 400ms
+
+---
+
 ## 1. Implicit Animations — Flutter Does the Work
 
 > 📄 **Flutter Docs:**
@@ -798,4 +854,4 @@ The Raster thread (GPU work) is often the culprit for complex `CustomPainter` or
 
 ---
 
-**Next → [Week 10: Project — Shopping App](Week_10_Project_ShoppingApp.md)**
+**Next → [Week 10: Gestures & Custom Widgets](Week_10_Gestures_and_Custom_Widgets.md)**

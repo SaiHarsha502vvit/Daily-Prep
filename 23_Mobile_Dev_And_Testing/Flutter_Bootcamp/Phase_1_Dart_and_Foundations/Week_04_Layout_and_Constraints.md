@@ -765,6 +765,168 @@ Use `LayoutBuilder` for breakpoints. Use `GridView.builder` with `SliverGridDele
 
 ---
 
+## The Invisible Machinery — Flutter's Layout Protocol
+
+Flutter's layout algorithm can be summarized in three sentences that explain nearly every layout bug you will ever encounter:
+
+> **Constraints go down. Sizes go up. Parent sets position.**
+
+That's the entire system. Every layout widget — Column, Row, Stack, Expanded, SizedBox, Scaffold — is an implementation of this protocol. Here's what it actually does.
+
+### The RenderBox Protocol
+
+Every visible widget is backed by a `RenderBox`. The layout pass works as follows:
+
+```
+Parent calls child.layout(constraints, parentUsesSize: true)
+    ↓
+Child's performLayout() runs
+    ↓
+Child tells its own children their constraints (may transform them)
+    ↓
+Children call back: child.size = Size(width, height)
+    ↓
+Child picks its own size (must be within the constraints it received)
+    ↓
+Parent reads child.size, decides where to position it (x, y offset)
+```
+
+In code, `BoxConstraints` is:
+
+```dart
+BoxConstraints({
+  double minWidth,   // child must be at least this wide
+  double maxWidth,   // child must be at most this wide (can be infinity)
+  double minHeight,  
+  double maxHeight,  // can be infinity — this is what causes the unbounded crash
+})
+```
+
+**Tight vs Loose:**
+
+```
+Tight:  minWidth == maxWidth && minHeight == maxHeight
+        The child has NO choice — it must be exactly this size.
+        Example: Scaffold gives its body tight constraints = screen size
+        
+Loose:  min = 0, max = some limit
+        The child can be anything from 0 up to the limit.
+        Example: Column gives its children loose height constraints = "be as tall as you like"
+```
+
+### Why `Container(width: 100)` Fills the Screen
+
+```
+Scaffold receives tight constraints = screen size from the OS
+    ↓
+Scaffold gives its body child tight constraints = screen size
+    ↓
+Container receives tight constraints (e.g., 390×844)
+    ↓
+Container WANTS to be 100 wide — but constraints say min/maxWidth = 390
+    ↓
+Container must honor constraints: picks 390 wide (ignores its width preference)
+    ↓
+Container fills the screen
+```
+
+The Container's `width: 100` is a **preference**. But constraints are a mandate. Preferences are only honored within the allowed range.
+
+Fix: wrap with `Align` or `UnconstrainedBox` to loosen the constraints:
+
+```dart
+Align(
+  alignment: Alignment.topLeft,
+  child: Container(width: 100, height: 100, color: Colors.blue),
+)
+// Align loosens the constraints before passing to Container
+// Container now receives: minWidth=0, maxWidth=390 → can choose 100 ✓
+```
+
+### The Unbounded Constraint Crash
+
+```
+SingleChildScrollView
+    ↓ gives Column: maxHeight = infinity (scroll = unlimited vertical space)
+Column
+    ↓ passes unbounded height to children
+Expanded  ← CRASH: "Vertical viewport was given unbounded height"
+    ↑ Expanded calculates: remaining space = parent_height - fixed_children
+    ↑ parent_height = infinity
+    ↑ infinity - something = still infinity
+    ↑ Cannot render a box with infinite height
+```
+
+This crash means: somewhere in the ancestor chain, a widget is giving unbounded constraints, and a child is trying to expand to fill them.
+
+### How Column Calculates Flex Space
+
+```dart
+@override
+void performLayout() {
+  // Step 1: lay out all NON-flexible children first (SizedBox, Text, etc.)
+  double usedHeight = 0;
+  for (final child in nonFlexChildren) {
+    child.layout(BoxConstraints(
+      minWidth: 0, maxWidth: constraints.maxWidth,
+      minHeight: 0, maxHeight: double.infinity,  // ← loose height
+    ), parentUsesSize: true);
+    usedHeight += child.size.height;
+  }
+  
+  // Step 2: remaining space goes to flex children
+  final remainingHeight = constraints.maxHeight - usedHeight;
+  final totalFlex = flexChildren.fold(0, (sum, c) => sum + c.flex);
+  
+  // Step 3: give each flex child a tight height proportional to its flex value
+  for (final child in flexChildren) {
+    final childHeight = remainingHeight * child.flex / totalFlex;
+    child.layout(BoxConstraints.tightFor(
+      width: constraints.maxWidth,
+      height: childHeight,           // ← TIGHT: must be exactly this
+    ));
+  }
+  
+  // Step 4: position each child at its y offset
+  // Step 5: Column's own size = constrained to parent's constraints
+}
+```
+
+`Expanded(flex: 2)` + `Expanded(flex: 1)` in a Column with 300px remaining:
+- Total flex = 3
+- First child gets: 300 × 2/3 = 200px
+- Second child gets: 300 × 1/3 = 100px
+
+`Flexible` vs `Expanded`: `Flexible` lets the child be SMALLER than its share (child gets loose constraints). `Expanded` forces the child to fill its exact share (child gets tight constraints).
+
+### The Baseline Exception (Two-Pass Layout)
+
+```
+CrossAxisAlignment.baseline in a Row
+    ↓ requires: where is the text baseline in each child?
+    ↓ cannot know until each child has laid out
+    
+Two-pass layout:
+  Pass 1: lay out all children normally → get their sizes and baseline offsets
+  Pass 2: calculate common baseline, adjust each child's y position
+
+This is why CrossAxisAlignment.baseline is slightly more expensive
+→ Flutter only does it when you explicitly ask for it
+→ Normal CrossAxisAlignment.center = single pass
+```
+
+**Decision table:**
+
+| Symptom | Root cause | Fix |
+|---------|-----------|-----|
+| `Container(width: X)` fills screen | Tight constraints from parent override preference | Wrap in `Align` or `UnconstrainedBox` |
+| "Unbounded height" crash | Expanded inside scrollable | Use `shrinkWrap: true` OR replace Expanded with fixed `SizedBox` |
+| Widget too small / too large | Constraints mandate size | Use `LayoutBuilder` to inspect what constraints are coming in |
+| `Expanded` has no effect | Not in a Row/Column/Flex | Expanded only works inside flex containers |
+| Two children want full width in Row | Each gets loose constraints and picks full width → overlap | Wrap each in `Expanded` to divide space |
+
+---
+
 ## Week 4 Verify — Answer Without Looking
 
 1. `Container(width: 100)` as a direct `Scaffold.body` child fills the full screen. Explain using the words "tight", "constraints", and "preference".

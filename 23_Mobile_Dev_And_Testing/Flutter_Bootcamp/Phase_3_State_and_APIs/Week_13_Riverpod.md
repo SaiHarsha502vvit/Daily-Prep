@@ -1,4 +1,4 @@
-# Week 12 — Riverpod
+# Week 13 — Riverpod
 ### Compile-safe, testable, context-free state management — the modern standard
 
 ---
@@ -560,7 +560,7 @@ test('productsProvider loads and exposes data', () async {
 
 ## Lab — Convert the Shopping App to Riverpod
 
-Migrate the shopping app from Provider (Week 11 lab) to Riverpod:
+Migrate the shopping app from Provider (Week 12 lab) to Riverpod:
 
 **Providers to create:**
 ```dart
@@ -926,7 +926,7 @@ final expensesByCategoryProvider = FutureProvider.autoDispose.family<List<Expens
   (ref, category) => ref.watch(expenseRepoProvider).getByCategory(category),
 );
 
-// 3. Weather by city — from Week 14
+// 3. Weather by city — from Week 15
 final weatherProvider = FutureProvider.autoDispose.family<Weather, String>(
   (ref, city) => ref.watch(weatherRepoProvider).getWeather(city),
 );
@@ -1000,7 +1000,154 @@ Requirements:
 
 ---
 
-## Week 12 Verify
+## The Invisible Machinery — How Riverpod Works Without BuildContext
+
+Riverpod looks similar to Provider but works on a fundamentally different architecture. The key difference: Riverpod stores all state in a plain Dart object (`ProviderContainer`), not in the widget tree. This is why providers can be read from anywhere — other providers, background isolates, even `main()`.
+
+### ProviderScope and ProviderContainer
+
+```
+ProviderScope (at root of widget tree)
+    → creates a ProviderContainer
+    
+ProviderContainer internals:
+    Map<ProviderBase, ProviderElement> _stateReaders = {};
+    
+    // 'ProviderBase' = the provider declaration (e.g., final cartProvider = ...)
+    // 'ProviderElement' = the live state of that provider
+    //   - holds the current value
+    //   - holds the list of listeners (widgets watching it)
+    //   - holds the Ref object used by the provider function
+```
+
+When a `ConsumerWidget` calls `ref.watch(cartProvider)`:
+
+```
+1. Look up cartProvider in container._stateReaders
+   → first call: create ProviderElement, run provider function, store result
+   → subsequent calls: return cached value from ProviderElement
+
+2. Register the ConsumerWidget as a listener on the ProviderElement
+   → stored in ProviderElement._dependents (same concept as InheritedWidget)
+
+3. Return ProviderElement.state (the current value)
+```
+
+### Why Riverpod Doesn't Need BuildContext
+
+Provider (the package) finds values by walking the widget tree (InheritedWidget lookup). This requires a `BuildContext` — you must be inside the widget tree to look up Provider values.
+
+Riverpod skips the widget tree entirely:
+
+```dart
+// Provider (the package): context required — must be in a widget
+final cart = Provider.of<CartModel>(context);
+
+// Riverpod: Ref goes directly to ProviderContainer — no widget tree walk
+// 'ref' is a Ref object bound to the ProviderContainer
+final cart = ref.watch(cartProvider);
+
+// You can watch providers from other providers:
+final cartTotalProvider = Provider<double>((ref) {
+  final items = ref.watch(cartItemsProvider);  // ← no context needed
+  return items.fold(0.0, (sum, item) => sum + item.price);
+});
+// cartTotalProvider automatically re-runs when cartItemsProvider changes
+```
+
+### `autoDispose` — Reference Counting
+
+```
+cartProvider.autoDispose — provider is ref-counted
+
+ConsumerWidget subscribes via ref.watch(cartProvider):
+    → ProviderElement._listenersCount increases to 1
+
+Widget removed from tree (e.g., user navigates away):
+    → ProviderElement._listenersCount decreases to 0
+    → Timer starts (grace period: a few hundred milliseconds)
+    → If count stays 0 after grace period:
+        → provider's onDispose callback runs
+        → ProviderElement removed from container._stateReaders
+        → value is garbage collected
+
+Next ref.watch(cartProvider) after disposal:
+    → ProviderElement does not exist → re-create from scratch
+    → provider function re-runs → fresh value
+
+Why the grace period?
+    Navigation push briefly removes old screen's consumers.
+    Without grace period: provider disposes on every push/pop.
+    With grace period: stays alive through transitions.
+```
+
+### `family` — One Provider Per Argument
+
+```dart
+final userProvider = FutureProvider.family<User, String>((ref, userId) async {
+  return ref.watch(apiServiceProvider).fetchUser(userId);
+});
+
+// Under the hood, the ProviderContainer map key is a PAIR:
+// (userProvider, 'user_123') → ProviderElement A
+// (userProvider, 'user_456') → ProviderElement B
+// (userProvider, 'user_789') → ProviderElement C
+
+// Each userId gets its own ProviderElement, cached independently
+// ref.watch(userProvider('user_123')) === ref.watch(userProvider('user_123'))
+// Same argument = same element = cached value, not re-fetched
+
+// With .autoDispose:
+// When no widget watches userProvider('user_123') → that specific element disposes
+// userProvider('user_456') is unaffected — different element
+```
+
+### `AsyncValue<T>` — Why All Three States Are Modeled Explicitly
+
+Every network or async provider returns `AsyncValue<T>` — a sealed class with three variants:
+
+```dart
+// In Riverpod's source:
+sealed class AsyncValue<T> {
+  const factory AsyncValue.data(T value)         = AsyncData<T>;
+  const factory AsyncValue.loading()             = AsyncLoading<T>;
+  const factory AsyncValue.error(Object e, StackTrace st) = AsyncError<T>;
+}
+
+// Why sealed? The compiler forces you to handle all three states.
+// No accidental "I forgot the error case" — it's a compile error.
+
+final products = ref.watch(productsProvider);
+return products.when(
+  data:    (list)    => ProductGrid(list),       // ← required
+  loading: ()        => const Spinner(),         // ← required
+  error:   (e, st)   => ErrorBanner(e.toString()), // ← required
+);
+
+// During a refresh: previous data is still accessible
+products.when(
+  data:    (list) => ProductGrid(list),
+  // isLoading: true during refresh — but data is still available
+  loading: () => products.hasValue
+      ? ProductGrid(products.value!)  // show stale data while refreshing
+      : const Spinner(),              // first load = no stale data
+  error:   (e, st) => ErrorBanner(e.toString()),
+);
+```
+
+**Decision table:**
+
+| Situation | What's happening | Fix |
+|-----------|-----------------|-----|
+| Provider rebuilds entire widget subtree | Using `ref.watch()` at the top of a large widget | Break into smaller `ConsumerWidget`s or use `ref.select()` |
+| Data re-fetches on every navigation | Provider not `.autoDispose` (stays alive) OR `.autoDispose` with too short grace period | Remove `.autoDispose` if you want persistent state |
+| `family` provider caches stale data | Argument didn't change so element was reused | Call `ref.invalidate(userProvider(id))` to force refresh |
+| `ref.watch()` in a callback (onPressed) | Watch in callbacks is a bug — causes rebuild loops | Use `ref.read()` in callbacks |
+| `AsyncValue.loading()` shown on refresh | UI doesn't distinguish first load from refresh | Check `previousValue` or `hasValue` in the loading branch |
+
+---
+
+## Week 13 Verify
 
 1. What does `ProviderScope` do? Where in the widget tree does it go and why?
 2. What is `AsyncValue<T>`? List its three states and show the `.when()` pattern.
@@ -1017,4 +1164,4 @@ Requirements:
 
 ---
 
-**Next → [Week 13: HTTP & REST APIs](Week_13_HTTP_and_REST_APIs.md)**
+**Next → [Week 14: HTTP & REST APIs](Week_14_HTTP_and_REST_APIs.md)**

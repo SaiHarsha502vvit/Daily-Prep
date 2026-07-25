@@ -18,8 +18,8 @@ The capstone: a **Shopping App UI Clone** — you pick a real app and replicate 
 | [Week_07_Scrolling_and_Slivers.md](Week_07_Scrolling_and_Slivers.md) | Scrolling & Slivers | ListView variants, GridView, infinite scroll, SliverAppBar, PageView |
 | [Week_08_Forms_and_Input.md](Week_08_Forms_and_Input.md) | Forms & Input | TextFormField, Form validation, FocusNode, DatePicker, Dropdown |
 | [Week_09_Animations.md](Week_09_Animations.md) | Animations | Implicit, explicit, staggered, Hero, page transitions |
-| [Week_10_Project_ShoppingApp.md](Week_10_Project_ShoppingApp.md) | Project: Shopping App | All Phase 2 skills combined in a real clone |
-| [Week_11_Gestures_and_Custom_Widgets.md](Week_11_Gestures_and_Custom_Widgets.md) | Gestures & Custom Widgets | GestureDetector, drag-drop, Dismissible, widget composition |
+| [Week_10_Gestures_and_Custom_Widgets.md](Week_10_Gestures_and_Custom_Widgets.md) | Gestures & Custom Widgets | GestureDetector, drag-drop, Dismissible, widget composition |
+| [Week_11_Project_ShoppingApp.md](Week_11_Project_ShoppingApp.md) | Project: Shopping App | All Phase 2 skills combined in a real clone |
 
 ---
 
@@ -29,7 +29,7 @@ The capstone: a **Shopping App UI Clone** — you pick a real app and replicate 
 - Contact list with alphabetical sticky headers + swipe to delete (Week 07)
 - Multi-section job application form with real-time validation (Week 08)
 - Animated onboarding flow with staggered entrance animations (Week 09)
-- Swipeable card stack (Tinder-style) with gesture physics (Week 11)
+- Swipeable card stack (Tinder-style) with gesture physics (Week 10)
 
 **Phase capstone:**
 A full shopping app UI clone (Zomato / Myntra / Swiggy) with:

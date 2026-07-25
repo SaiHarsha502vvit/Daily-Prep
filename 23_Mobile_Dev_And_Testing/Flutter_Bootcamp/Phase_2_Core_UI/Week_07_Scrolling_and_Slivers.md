@@ -26,6 +26,46 @@ Every `ListView`, `GridView`, and `SingleChildScrollView` is secretly a `CustomS
 
 ---
 
+## The Scrolling Wars — Why 60fps Became the Mobile Quality Standard
+
+### The Demo That Set the Bar (January 2007)
+
+When Steve Jobs introduced the original iPhone at Macworld 2007, he spent an outsized amount of time on one interaction: *scrolling through a contacts list*. He scrolled. He scrolled past the bottom — and the list stretched like a rubber band and snapped back. The audience gasped and applauded. No phone had ever felt like a physical object before.
+
+Apple patented the rubber-band (elastic) scroll behavior in 2007 (US Patent 7,469,381). It was part of a broader iPhone UI patent portfolio. Android manufacturers couldn't copy it without litigation risk.
+
+That demo established the cultural expectation: **a great mobile app must scroll smoothly**. Choppy scrolling meant a bad app. Smooth scrolling meant quality.
+
+### Android's Problem (2008-2011)
+
+Android launched in 2008. Scrolling was functional. But side-by-side with an iPhone, Android lists stuttered. Lists lagged on finger movement. Grids would occasionally freeze for a frame. Tech reviewers used the word "laggy" constantly.
+
+The architectural reason: Android was drawing UI on the main thread. Drawing was not tied to the display's refresh signal. Any background work — garbage collection, network callback, file access — that ran on the main thread would delay a frame. Users felt every one of those delays.
+
+Additionally, Android couldn't use elastic bounce (Apple's patent). Google chose *overscroll glow* — an orange/blue glow at the edge of a list when you scroll past. It worked. It did not feel as magical.
+
+### Project Butter (Android 4.1 Jelly Bean, June 2012)
+
+Google engineers **Romain Guy** and **Chet Haase** — who would later write the book "Androids: The Team That Built the Android Operating System" — led the effort. At Google I/O 2012, they revealed three changes shipped as **Project Butter**:
+
+1. **VSYNC everywhere**: every draw operation was now timed to the display's 16.67ms vertical sync signal. No more arbitrary draw timing.
+2. **Triple buffering**: three frame buffers in the GPU — one being displayed, one being drawn by the CPU, one being composed by the GPU. No waiting.
+3. **Touch boost**: when a finger touched the screen, the CPU and GPU clocked up immediately — before the first scroll event even arrived, giving those critical first frames maximum compute.
+
+Android 4.1 launched. Scrolling was "buttery smooth." The nickname stuck.
+
+### Why Flutter Learned Every Lesson From This History
+
+Flutter was built at Google after Project Butter, by engineers who lived through the Android scrolling wars:
+
+- **VSYNC-first by design**: `AnimationController(vsync: this)` is required, not optional. Flutter's scheduler never draws outside VSYNC boundaries.
+- **UI thread ≠ Raster thread**: your Dart code and GPU rasterization run on separate threads. A slow network response or a database query cannot drop a scroll frame.
+- **The Sliver Protocol from scratch**: rather than optimizing an existing "render everything" approach, Flutter built a protocol that physically never constructs off-screen widgets. `ListView.builder` with 10,000 items creates a maximum of ~15 widgets at any moment — not because it discards 9,985, but because it never creates them.
+
+When you choose `ListView.builder` over `ListView(children: [...])`, you are applying a lesson that took Google's Android team from 2008 to 2012 to learn — and cost millions of users a frustrating mobile experience in the meantime.
+
+---
+
 ## 1. ListView — The Simple Case
 
 > 📄 **Flutter Docs:**

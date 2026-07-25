@@ -982,6 +982,135 @@ This requires thinking about where `_notes` lives — it must be in the parent o
 
 ---
 
+## The Invisible Machinery — How Navigator and Routes Actually Work
+
+The Navigator widget is a stack of `Route` objects. That's it. But the details of how routes create overlays, preserve state, and pass data back explain every navigation behavior you'll encounter.
+
+### The Navigator's Internal Stack
+
+```
+Navigator._history: List<Route<dynamic>>
+
+Initial state:
+  _history = [MaterialPageRoute(HomePage)]
+  Overlay entries: [HomePageEntry]   ← visible on screen
+
+Navigator.push(MaterialPageRoute(DetailPage)):
+  _history = [MaterialPageRoute(HomePage), MaterialPageRoute(DetailPage)]
+  Overlay entries: [HomePageEntry, DetailPageEntry]
+                    ← both in the Overlay
+                    ← Detail is on top → visible
+                    ← Home is UNDERNEATH → hidden, but STILL IN THE TREE
+                    ← Home's State object is still alive in memory
+                    ← No build() is called on Home during Detail's lifetime
+
+Navigator.pop():
+  _history = [MaterialPageRoute(HomePage)]
+  → Detail route calls route.didPop(result)
+  → Detail's OverlayEntry is animated out, then removed
+  → Detail's State.dispose() is called
+  → Home was never destroyed → becomes visible instantly
+```
+
+This is why Flutter navigation feels instant when you pop back — the previous page was always in the tree. The `PageRouteBuilder` transition animates the overlay entry in/out, not the underlying widgets.
+
+### The Overlay System
+
+The Navigator is built on `Overlay` — Flutter's system for rendering widgets on top of everything else. `Overlay` manages a list of `OverlayEntry` objects, rendering them in Z-order.
+
+```
+Overlay (the entire screen)
+  ├── OverlayEntry: HomePage        ← sits at the bottom
+  ├── OverlayEntry: DetailPage      ← sits on top (visible)
+  └── (OverlayEntry: Dialog)        ← if you show a dialog, it inserts here
+```
+
+Every `Route` creates one or more `OverlayEntry` objects. `BottomSheet`, `Dialog`, `SnackBar`, `Tooltip` all work the same way — they insert `OverlayEntry` objects into the nearest `Navigator`'s `Overlay`.
+
+### Passing Data Back — What `await` Actually Awaits
+
+```dart
+// The navigation API:
+final Color? picked = await Navigator.push<Color>(
+  context,
+  MaterialPageRoute(builder: (_) => ColorPickerPage()),
+);
+
+// What happens under the hood:
+// 1. push() creates a Completer<Color?> stored on the Route
+// 2. push() returns Future<Color?> = completer.future
+// 3. Your function suspends at 'await', returns to the event loop
+// 4. User picks a color and taps "Done":
+//    Navigator.pop(context, pickedColor)
+// 5. Route.didPop(pickedColor) runs
+// 6. completer.complete(pickedColor)
+// 7. The Future resolves → your function resumes with picked = pickedColor
+```
+
+If the user presses the back button (hardware or `AppBar.leading`), `Navigator.pop(context)` is called with no argument → `completer.complete(null)` → `picked == null`. Always null-check the result.
+
+### GoRouter — URL Pattern Matching Under the Hood
+
+GoRouter adds a URL layer on top of Navigator 2.0. When the app opens `/shop/item/42`:
+
+```
+1. Platform delivers URL string to Flutter via platform channel
+   (from a notification deep link, or typed in Safari/Chrome)
+   
+2. GoRouter's RouteInformationParser receives the URL string
+
+3. Pattern matching — GoRouter walks its declared routes list:
+   '/'          → HomeRoute        (no match)
+   '/shop'      → ShopRoute        (no match — partial)
+   '/shop/item/:id' → ItemRoute    (match! ':id' is a named capture group)
+   
+   Captured: { 'id': '42' }
+
+4. RouteMatchList built: [ShopRoute, ItemRoute(id:'42')]
+
+5. RouterDelegate receives the match list
+   → builds GoRouterState for each match
+   → calls each route's builder:
+     [ShopPage(), ItemDetailPage(id: '42')]
+
+6. Navigator receives these pages and syncs its _history stack
+   → user sees ItemDetailPage
+   → pressing Back pops to ShopPage (it was in the stack)
+```
+
+This is how deep links work: the URL is parsed, a page stack is reconstructed from scratch, and the user lands on the right screen even if they've never opened the app.
+
+### State Preservation with `IndexedStack`
+
+Regular tab navigation destroys and recreates tabs when you switch. `IndexedStack` keeps all tabs alive simultaneously:
+
+```
+IndexedStack(index: 1)
+  ├── HomeTab()    index 0 — built, in the tree, State alive, NOT rendered
+  ├── SearchTab()  index 1 — built, in the tree, State alive, IS rendered (index == 1)
+  └── ProfileTab() index 2 — built, in the tree, State alive, NOT rendered
+
+Switching to index 0:
+  → only 'index' changes on the IndexedStack
+  → all three widgets stay in the tree (no dispose/initState)
+  → SearchTab scroll position, loaded data: still there
+  → HomeTab renders, other two hidden
+```
+
+Trade-off: all tabs consume memory simultaneously. Instagram, YouTube, and most tab-heavy apps use this pattern because the cost of re-fetching data on every tab switch is worse than the memory overhead.
+
+**Decision table:**
+
+| Situation | What's happening | Fix |
+|-----------|-----------------|-----|
+| State lost when navigating and popping back | Route was replaced not pushed | Use `push()` not `pushReplacement()` |
+| Tab state resets on every switch | Widget is being recreated | Use `IndexedStack` or `AutomaticKeepAliveClientMixin` |
+| Deep link opens wrong screen | GoRouter route pattern mismatch | Check route declaration order — GoRouter matches first-wins |
+| `await Navigator.push()` returns null | User pressed back (no pop argument) | Null-check the return value before using it |
+| `Navigator.of(context)` throws "no Navigator found" | Context is above the MaterialApp | Use `navigatorKey.currentState` or restructure widget tree |
+
+---
+
 ## Week 5 Verify — Answer Without Looking
 
 1. What is the Navigator "stack"? What happens when you push? What happens when you pop?

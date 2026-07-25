@@ -1,5 +1,5 @@
 # Phase 5 — Advanced Patterns
-### Month 5 | Weeks 17-20
+### Month 5 | Weeks 20-23
 
 ---
 
@@ -11,7 +11,18 @@ The capstone: an **Expense Tracker** built with Clean Architecture and BLoC.
 
 ---
 
-## Week 17 — BLoC: Business Logic Component
+## Week Map
+
+| File | Topic | Core Skills |
+|------|-------|-------------|
+| [Week_20_BLoC_Pattern.md](Week_20_BLoC_Pattern.md) | BLoC Pattern | Events, States, Cubits, BlocBuilder/BlocListener, stream mechanics |
+| [Week_21_Clean_Architecture.md](Week_21_Clean_Architecture.md) | Clean Architecture | Layers, SOLID, Repository pattern, DI, platform channels |
+| [Week_22_Advanced_Animations_CustomPaint.md](Week_22_Advanced_Animations_CustomPaint.md) | Advanced Animations & CustomPaint | Explicit animations, CustomPainter, Lottie, staggered sequences |
+| [Week_23_Project_ExpenseTracker.md](Week_23_Project_ExpenseTracker.md) | Project: Expense Tracker | Clean Architecture + BLoC + charts, the Phase 5 capstone |
+
+---
+
+## Week 20 — BLoC: Business Logic Component
 
 BLoC is an architecture pattern, not just a package. It separates business logic from UI completely.
 
@@ -93,7 +104,7 @@ Use Cubit when there's only one trigger. Use full BLoC when multiple event types
 
 ---
 
-## Week 18 — Clean Architecture + SOLID + Platform Channels
+## Week 21 — Clean Architecture + SOLID + Platform Channels
 
 **The 3 Layers:**
 
@@ -151,7 +162,7 @@ lib/
 
 ---
 
-## Week 19 — Animations: From Basic to Custom
+## Week 22 — Animations: From Basic to Custom
 
 **Explicit Animations:**
 ```dart
@@ -242,7 +253,7 @@ Lottie.network('https://lottiefiles.com/...json');
 
 ---
 
-## Week 20 — Capstone Start: Expense Tracker
+## Week 23 — Capstone Start: Expense Tracker
 
 **App Concept:** Personal finance tracker. Track daily expenses, view spending by category, see monthly trends.
 
@@ -268,7 +279,7 @@ Presentation: BLoC for expense state, Cubit for UI state (selected month, select
 - Create the BLoC with all events and states
 - Wire up the data layer with Hive
 
-**Next phase (Week 20 continuation into Phase 6):**
+**Next phase (Week 23 continuation into Phase 6):**
 - Build all screens
 - Add animations to charts
 - Add CSV export
@@ -286,5 +297,5 @@ After this phase:
 - You can add Lottie animations
 - You understand SOLID principles and can explain each with a Flutter example
 
-**→ Start with [Week_17_BLoC_Pattern.md](Week_17_BLoC_Pattern.md)**
+**→ Start with [Week_20_BLoC_Pattern.md](Week_20_BLoC_Pattern.md)**
 *(detailed file — ask to build when you reach here)*

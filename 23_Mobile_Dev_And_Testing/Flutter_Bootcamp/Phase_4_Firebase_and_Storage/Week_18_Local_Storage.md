@@ -1,4 +1,4 @@
-# Week 17 — Local Storage
+# Week 18 — Local Storage
 ### SharedPreferences, Hive, SQLite — when to use each and how to use them right
 
 ---
@@ -38,6 +38,45 @@ SQLite (sqflite)   → relational tables, SQL queries
                      Max data: millions of records
                      Query: full SQL
 ```
+
+---
+
+## The Storage Origin Story — From a US Navy Destroyer to Every Phone on Earth
+
+### SQLite Was Born on a Warship (January 2000)
+
+**D. Richard Hipp** was a software contractor in January 2000. He was building software for the **USS Oscar Austin** (DDG-79), a US Navy destroyer. The system tracked equipment failures and maintenance records. The original design used an **Informix** database — a full client-server database running on a dedicated server on the ship.
+
+The problem: when the Informix server was unavailable (which happened on a warship), the tracking software crashed. Completely. It couldn't operate at all without its server.
+
+Hipp's solution: *what if the database was just a file you linked into your program?* No server. No connection string. No port. No dependency on another process. Just a C library and a file. He built the first version of SQLite over the next few months.
+
+The constraints he designed under are why SQLite still suits mobile perfectly today:
+- **No server**: the library runs in your process — exactly right for a mobile app where there's no backend
+- **Single file**: trivial to back up, copy, delete, or move
+- **Small footprint**: the complete library compiled to under 500KB (targeting embedded systems on ships)
+- **Crash-safe**: must not corrupt data if power is cut mid-write (important on a ship that might take battle damage)
+
+### Deployment: From Ships to Every Device on Earth
+
+- 2004: **Motorola** added SQLite to their phones — the first mobile deployment
+- 2006: **Nokia** followed
+- 2007: **Apple** included SQLite in iPhone OS 1.0 — it still powers the iOS Contacts database, the Calendar database, and dozens of system databases
+- 2008: **Android** included SQLite — it powers the SMS database, the Browser history, the Settings store
+- 2009: **Adobe AIR** included SQLite for desktop apps
+- 2014: **Python** included SQLite in its standard library
+
+SQLite is estimated to have **more deployed instances than any other database software in history**. There are more SQLite databases on Earth right now than there are people. It runs on aircraft, satellites, medical devices, ATMs, and in every web browser (Firefox uses it for history, Chrome for cookie storage).
+
+Hipp maintains it as a solo developer (later with a small team) to this day. He holds the copyright. The source code is **public domain** — no license, no attribution required. It has no known data-corruption bugs in production. The test suite has more code than the production code — a deliberate policy Hipp set from the beginning.
+
+### SharedPreferences: NSUserDefaults, 1989
+
+`SharedPreferences` is a Flutter wrapper around platform-native key-value stores. On iOS, this is **NSUserDefaults** — a system Apple introduced in 1989 for Mac OS to store application preferences (screen position, user settings, last-used values). It predates SQLite by 11 years and was never designed for structured data, only for simple settings.
+
+On Android, SharedPreferences was added in Android 1.0 (2008) as a direct equivalent to NSUserDefaults — a simple XML file of key-value pairs in the app's private directory.
+
+Both systems are perfect for their original purpose (user preferences) and terrible for anything else (large datasets, complex queries, structured objects). This is why the rule is simple: `SharedPreferences` for settings, Hive/SQLite for everything else.
 
 ---
 
@@ -785,7 +824,7 @@ Future<void> migrateHiveData() async {
 
 ## Lab — Notes App Offline Layer
 
-Add offline support to the Notes App from Week 15:
+Add offline support to the Notes App from Week 16:
 
 **Goal:** The app must work completely without internet. Notes created offline sync to Firestore when connection is restored.
 
@@ -967,7 +1006,7 @@ This is a **Linux kernel primitive from the 1970s** — not an Android feature, 
 
 ---
 
-## Week 17 Verify
+## Week 18 Verify
 
 1. List the three local storage solutions and their appropriate use case.
 2. `SharedPreferences.getInstance()` is async. After the first call, are reads synchronous or async?
@@ -984,4 +1023,4 @@ This is a **Linux kernel primitive from the 1970s** — not an Android feature, 
 
 ---
 
-**Next → [Week 18: Project — Notes App](Week_18_Project_NotesApp.md)**
+**Next → [Week 19: Project — Notes App](Week_19_Project_NotesApp.md)**

@@ -1,4 +1,4 @@
-# Week 18 — Project: Notes App
+# Week 19 — Project: Notes App
 ### Phase 4 Capstone | Authentication + Firestore + Offline + Full Feature Set
 
 ---
@@ -53,6 +53,57 @@ SETTINGS TAB
   Sign Out (with confirmation dialog)
   Account: Delete account (with double confirmation)
 ```
+
+---
+
+## Why Notes Is the Hardest Sync Problem
+
+### Evernote's Rise and Fall
+
+**Evernote** launched in 2008 and was genuinely revolutionary: one app, all your notes, synced across every device. By 2011 it had 11 million users and a billion-dollar valuation. Phil Libin (CEO) called it "the 100-year company."
+
+By 2022, Evernote had been sold to an Italian company (Bending Spoons), laid off most of its engineering team, and was running on a skeleton crew. The 100-year company lasted 14 years before collapse.
+
+The cause: **scope creep combined with neglect of the core**. Evernote added web clipping, business plans, handwriting recognition, Moleskine notebook integration, food journaling, presentation mode, and email integration. Meanwhile: the core experience — "open the app, find my note, edit it" — got slower and buggier. Users fled to Apple Notes (fast, reliable, built into the OS) and Notion (2018, designed from the ground up for rich documents).
+
+**Notion** (Ivan Zhao, 2018) took the opposite approach: a single, flexible block-based model that could express documents, tables, kanban boards, and wikis with the same primitives. It grew to 30 million users by 2023 — proving the market for notes apps is enormous if the execution is right.
+
+### Why Sync Is Hard: The Conflict Problem
+
+The offline sync you build in this project handles the easy case: **one writer, sequential edits**. But real sync gets complicated:
+
+```
+Easy case (what you'll build):
+  Phone writes note → queued locally → syncs to Firestore when online
+  No conflict because Firestore timestamps sort writes sequentially
+
+Hard case (what Notion/Apple Notes battle with):
+  You edit Note A on your phone (offline in the subway)
+  Your iPad (with different cached version) also edits Note A (offline on the plane)
+  Both come online → which version wins?
+  
+Strategies:
+  "Last write wins"         → simpler, can silently discard edits
+  "Show conflict"           → user chooses, more friction
+  "Operational transform"   → Google Docs uses this; mathematical merge of character-level operations
+  "CRDT (Conflict-free Replicated Data Type)" → Figma uses this; mathematically guaranteed no conflicts
+```
+
+Firestore's `serverTimestamp()` and the `merge: true` option in `set()` give you "last write wins" for simple fields. That's what this project uses. Understanding the limits is what separates a developer who can build notes apps from one who can build collaborative ones.
+
+### Why This Is the Phase 4 Capstone
+
+This project is harder than it looks because **five systems must work together without any one failing**:
+
+```
+Firebase Auth     → gate all Firestore access behind authentication
+Cloud Firestore   → real-time sync of notes across devices
+Hive              → offline-first local cache, pessimistic write queue
+SharedPreferences → theme, font size, onboarding flag (persisted across reinstalls)
+Riverpod          → connect all four systems into a single reactive provider graph
+```
+
+The first three times you build an architecture like this, something breaks in ways that don't have obvious error messages. A Firestore permission denial looks like a silent failure. An offline write that succeeds locally but fails sync shows as stale data with no error. Building this project teaches you to diagnose invisible failures — the core skill of senior mobile development.
 
 ---
 
@@ -681,7 +732,7 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
 ---
 
-## Week 18 Verify — Project Self-Review
+## Week 19 Verify — Project Self-Review
 
 1. The `notesStreamProvider` is a `StreamProvider.autoDispose`. What does `autoDispose` do here? Would removing it cause any bugs?
 2. Trace what happens step by step when a user creates a note while offline. Include both the local and remote paths.

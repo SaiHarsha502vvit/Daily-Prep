@@ -1,5 +1,5 @@
 # Phase 3 — State Management & APIs
-### Month 3 | Weeks 11-14
+### Month 3 | Weeks 12-15
 
 ---
 
@@ -15,19 +15,19 @@ The capstone: a **Weather App** using live OpenWeatherMap data.
 
 | File | Topic | Core Skills |
 |------|-------|-------------|
-| [Week_11_State_Management_Deep_Dive.md](Week_11_State_Management_Deep_Dive.md) | State Deep Dive | InheritedWidget, ChangeNotifier, Provider, ListenableBuilder, ephemeral vs app state |
-| [Week_12_Riverpod.md](Week_12_Riverpod.md) | Riverpod | All 5 provider types, ref.watch/read/listen, select, family, ConsumerWidget |
-| [Week_13_HTTP_and_REST_APIs.md](Week_13_HTTP_and_REST_APIs.md) | HTTP & REST APIs | Dio, JSON parsing, Repository pattern, error handling, Interceptors |
-| [Week_14_Project_WeatherApp.md](Week_14_Project_WeatherApp.md) | Project: Weather App | Live API + Riverpod + full error/loading/data states |
+| [Week_12_State_Management_Deep_Dive.md](Week_12_State_Management_Deep_Dive.md) | State Deep Dive | InheritedWidget, ChangeNotifier, Provider, ListenableBuilder, ephemeral vs app state |
+| [Week_13_Riverpod.md](Week_13_Riverpod.md) | Riverpod | All 5 provider types, ref.watch/read/listen, select, family, ConsumerWidget |
+| [Week_14_HTTP_and_REST_APIs.md](Week_14_HTTP_and_REST_APIs.md) | HTTP & REST APIs | Dio, JSON parsing, Repository pattern, error handling, Interceptors |
+| [Week_15_Project_WeatherApp.md](Week_15_Project_WeatherApp.md) | Project: Weather App | Live API + Riverpod + full error/loading/data states |
 
 ---
 
 ## What You'll Build This Phase
 
 **Weekly labs:**
-- Shared wishlist app using Provider + ChangeNotifier (Week 11)
-- Shopping cart refactored to Riverpod (Week 12)
-- GitHub User Explorer with search, profile, and repos (Week 13)
+- Shared wishlist app using Provider + ChangeNotifier (Week 12)
+- Shopping cart refactored to Riverpod (Week 13)
+- GitHub User Explorer with search, profile, and repos (Week 14)
 
 **Phase capstone:**
 A weather app with live OpenWeatherMap data:
@@ -52,4 +52,4 @@ After completing all 4 weeks, you should be able to:
 
 ---
 
-**Start → [Week 11: State Management Deep Dive](Week_11_State_Management_Deep_Dive.md)**
+**Start → [Week 12: State Management Deep Dive](Week_12_State_Management_Deep_Dive.md)**

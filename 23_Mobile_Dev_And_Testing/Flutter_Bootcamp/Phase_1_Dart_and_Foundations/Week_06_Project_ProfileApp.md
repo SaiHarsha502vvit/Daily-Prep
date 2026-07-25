@@ -12,6 +12,21 @@
 
 ---
 
+## Why Your First Project Should Be Your Portfolio
+
+**The portfolio/profile format** was codified by LinkedIn (2003) and adapted to mobile by apps like Behance, Dribbble, and LinkedIn itself. A mobile profile is the 2024 equivalent of the 2001 personal website: photo, skills, work, contact. Every developer has seen dozens of them. That familiarity is a feature — you can evaluate your own work against a clear mental model.
+
+The reason this is Week 6's project instead of a "Todo App": a portfolio requires all five Phase 1 concepts simultaneously:
+- **Dart fundamentals** → your data models (`Project`, `Skill`, `Experience`)
+- **Flutter core concepts** → widget composition (the header, the skills list, the work grid)
+- **Widget lifecycle** → `AnimationController` in `initState`, disposed in `dispose`
+- **Layout and constraints** → the collapsing header, the skill progress bars
+- **Navigation and state** → tab navigation, the contact action sheet
+
+A Todo App exercises none of the UI challenge. A portfolio does. And when you finish, you have a real thing to show someone.
+
+---
+
 ## Project Brief
 
 > 📄 **Flutter Docs:**
@@ -1093,4 +1108,4 @@ Answer these before marking the project done:
 
 **Phase 1 Complete.** You now have the foundations. Next phase covers the widget toolkit — deep dives into every widget category Flutter offers.
 
-**Next → [Phase 2 Overview: Widget Mastery](../Phase_2_Widget_Mastery/README.md)**
+**Next → [Phase 2 Overview: Core UI Mastery](../Phase_2_Core_UI/Phase_2_Overview.md)**

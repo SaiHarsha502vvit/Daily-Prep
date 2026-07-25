@@ -1259,6 +1259,120 @@ This requires managing two independent timers in the same State — the playback
 
 ---
 
+## The Invisible Machinery — How the Element Calls Lifecycle Methods
+
+The `StatefulWidget` lifecycle is not Flutter magic — it's a precise sequence of method calls on the `Element` class that manages your `State` object. Understanding the sequence explains every "why does this crash?" question.
+
+### The Birth Sequence
+
+```
+StatefulWidget.createElement()
+    → creates a StatefulElement
+    → calls widget.createState() → your State object now exists in memory
+    
+StatefulElement.mount(parent, slot)
+    → State._element = this          ← State now knows its Element
+    → State._widget = widget
+    → State.initState()              ← called HERE
+        ↑ At this moment: the element IS in the tree, but
+          InheritedWidget dependency registration hasn't started yet.
+          Theme.of(context) FAILS — walking up the ancestor chain to
+          register a dependency is not yet set up.
+    → State.didChangeDependencies()  ← called immediately after
+        ↑ Now: InheritedWidget lookup fully available.
+          Theme.of(context), MediaQuery.of(context) all work here.
+    → State.build(context)           ← widget tree rendered
+```
+
+### The Update Sequence (parent rebuilds)
+
+```
+Parent's build() produces a new widget instance for this position
+    → Element.update(newWidget) is called
+    → State._widget = newWidget                ← widget reference updated
+    → State.didUpdateWidget(oldWidget) called  ← your chance to react
+    → State.build(context)                     ← rebuild
+```
+
+`didUpdateWidget()` is called when the parent passes a **new config** to your widget. This is your only chance to respond when a parent changes your URL, color, ID, or other input:
+
+```dart
+@override
+void didUpdateWidget(covariant VideoPlayer oldWidget) {
+  if (oldWidget.videoUrl != widget.videoUrl) {
+    _controller.dispose();
+    _initController(widget.videoUrl);   // restart with new URL
+  }
+  // no URL change → do nothing, save the expensive re-init
+}
+```
+
+Without this: the parent changes `videoUrl`, `initState()` is never re-called (element is reused), and your video keeps playing the old URL.
+
+### The Death Sequence
+
+```
+Widget is removed from its parent position
+    → StatefulElement.deactivate()
+    → State.deactivate()   ← element leaves the tree (may be re-inserted!)
+                             pause work but DON'T release resources yet
+
+Element is not re-inserted before the end of the frame:
+    → StatefulElement.unmount()
+    → State.dispose()      ← permanent destruction: cancel timers,
+                             close streams, dispose controllers
+    → State._element = null
+    → State._debugLifecycleState = LifecycleState.defunct
+```
+
+### The `mounted` Property — Why It Exists
+
+`State.mounted` is literally:
+
+```dart
+bool get mounted => _element != null;
+```
+
+When `dispose()` runs, `_element` is set to null. If an async callback fires after that and calls `setState()`, Flutter checks `_debugLifecycleState` and throws the familiar crash:
+
+```
+setState() called after dispose()
+```
+
+The fix:
+
+```dart
+Future<void> _loadData() async {
+  final data = await api.fetch();
+  // The user may have navigated away while the network call was running.
+  // dispose() may have already run. Check before touching state.
+  if (!mounted) return;
+  setState(() => _data = data);
+}
+```
+
+### Why `initState()` Cannot Use `Theme.of(context)`
+
+`Theme.of(context)` calls `context.dependOnInheritedWidgetOfExactType<MaterialApp>()`. This method:
+1. Walks UP the element tree from the current element
+2. Finds the nearest `ThemeData` InheritedElement
+3. Adds the current element to that InheritedElement's `_dependents` set
+
+Step 3 requires the current element to be fully mounted with a parent. During `initState()`, the element is freshly created but the dependency registration system isn't ready yet. `didChangeDependencies()` fires immediately after — that's the earliest safe place.
+
+### Lifecycle Method Decision Table
+
+| Method | Safe to call `context.of<T>()`? | When to use |
+|--------|--------------------------------|-------------|
+| `initState()` | No | One-time setup: create controllers, register listeners, start loading |
+| `didChangeDependencies()` | Yes | Setup that reads from the tree (Theme, Provider, MediaQuery) |
+| `didUpdateWidget()` | Yes | Respond to parent changing your widget's properties |
+| `build()` | Yes | Pure: read state, return widget tree (called many times) |
+| `deactivate()` | No (leaving tree) | Pause work temporarily (rare) |
+| `dispose()` | No | Release everything: dispose controllers, cancel subscriptions |
+
+---
+
 ## Week 3 Verify — Answer Without Looking
 
 1. `initState()` wants to call `Theme.of(context)`. Is this safe? What should you use instead and why?

@@ -1,4 +1,4 @@
-# Week 14 — Project: Weather App
+# Week 15 — Project: Weather App
 ### Phase 3 Capstone | Real API + Riverpod + Repository Pattern + all error states
 
 ---
@@ -18,6 +18,52 @@ A weather app connected to the free OpenWeatherMap API. The user searches for an
 1. Create a free account at openweathermap.org
 2. Get your API key from the API keys tab
 3. Use the `Current Weather Data` and `One Call API 3.0` endpoints
+
+---
+
+## Why Weather Is the Canonical "First Real API App"
+
+### OpenWeatherMap, Dark Sky, and the $49M Acquisition
+
+Weather data was historically proprietary — national meteorological agencies charged for access. **OpenWeatherMap** (founded 2012, based in London) changed this: they aggregated public data sources and offered a free API tier. This made weather a tractable first-API project for developers who didn't have a budget.
+
+Meanwhile, **Dark Sky** (founded 2012, YCombinator batch) built the most visually polished weather app iOS had ever seen. Hyperlocal minute-by-minute precipitation predictions. Beautiful gradients that changed with weather conditions. By 2015 they had 5 million users. In 2020, Apple acquired Dark Sky for an estimated $49 million and shut down the public API. Everyone migrated to OpenWeatherMap as the free alternative. The app you're building today uses the exact same API that replaced the one Apple killed.
+
+### Why Weather Is the Best Learning Domain
+
+Weather hits every technical pattern at once — in a domain every student can verify against the real world:
+
+```
+API Key authentication    → Required to call OpenWeatherMap (no credit card)
+Async state management    → Loading / Success / Error → three distinct UI states
+JSON parsing              → Nested objects (current + hourly + daily), array of forecast days
+Multiple screens          → Search → Results → Detail, all navigable
+Real user feedback        → "Is my app showing the right temperature right now?" Yes? Ship it.
+Geographic reality        → Search "Mumbai" → temperature is 32°C → you can feel it
+```
+
+A todo app returns data you invented. A weather app returns data the real world validates. When your API call works and shows the right forecast for your city, the accomplishment is real in a way that a static mock cannot match.
+
+### How Location Actually Works (The Invisible Machinery)
+
+When you call `geolocator.getCurrentPosition()`, here is what happens before your `Lat/Lng` appears in Dart:
+
+```
+Device checks available location sources:
+  → GPS chip: uses satellite signals (requires clear sky, 30–60s cold start)
+  → Wi-Fi positioning: compares visible WiFi networks against a global DB (Google/Apple collected via Street View cars, maps to lat/lng within 10-30m)
+  → Cell tower triangulation: compares signal strength from nearby towers (50–300m accuracy)
+  → IP geolocation: last resort, city-level only
+     
+Android LocationManager / iOS CLLocationManager negotiates:
+  → combines available sources, weights by accuracy and freshness
+  → returns best estimate as CLLocation/Location object
+     
+Flutter geolocator plugin calls platform channel
+  → converts to Dart Position{latitude, longitude, accuracy}
+```
+
+This is why `locationPermission` is not just a polite request — the OS is granting your app access to data from the GPS chip, the Wi-Fi card's scan results, and cell tower signal measurements. On iOS, this request can only be made once per app install in the "request" form — if the user denies, they must manually go to Settings to re-enable. This is why every serious app uses a **soft-ask screen** (your own explanation UI) before the OS permission dialog, so the user understands why location is needed before they see the system prompt they can only answer once.
 
 ---
 
@@ -719,7 +765,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
 ---
 
-## Week 14 Verify — Project Self-Review
+## Week 15 Verify — Project Self-Review
 
 1. `weatherProvider` is a `FutureProvider.autoDispose.family<Weather, String>`. Break this down: what does each modifier (autoDispose, family) do?
 2. Trace the call when the user searches for "Mumbai": what executes in what order — provider, repository, API client, parsing?

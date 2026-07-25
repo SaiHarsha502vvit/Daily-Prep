@@ -1267,6 +1267,143 @@ This is the foundation of responsive Flutter UI.
 
 ---
 
+## The Invisible Machinery — How Flutter Reconciles Widget Trees
+
+Every time `setState()` fires, Flutter must figure out what changed and what to update. This is the reconciliation algorithm — and understanding it explains why `key` exists, why `const` matters, why `setState` is fast, and what `BuildContext` actually is.
+
+### The Three Trees: Different Jobs, Different Lifetimes
+
+```
+Widget Tree        → immutable, recreated every build (cheap Dart objects)
+                     Describes what the UI SHOULD look like
+                     Lifetime: one frame, then replaced
+                     
+Element Tree       → mutable, persisted across frames (the real UI tree)
+                     Manages state, lifecycle, parent-child relationships
+                     Lifetime: exists until the widget type changes
+                     
+RenderObject Tree  → expensive, rarely recreated
+                     Owns layout, painting, compositing
+                     Lifetime: long-lived; updated in place by elements
+```
+
+When `setState()` fires:
+1. Flutter calls `build()` on the affected widget — produces a NEW widget sub-tree (cheap, just Dart objects)
+2. Flutter walks the EXISTING element tree alongside the NEW widget tree
+3. For each position: "Is the new widget the SAME TYPE as the old widget?"
+4. **Same type** → element is reused, its `RenderObject` is updated with the new properties (fast: no allocation)
+5. **Different type** → old element and its `RenderObject` are destroyed, new ones created (expensive but unavoidable)
+
+This is O(n) where n = number of changed widgets — not O(entire tree). A `setState` inside a deeply nested widget only diffing that subtree.
+
+### The Widget Identity Rule
+
+Flutter identifies elements by **type AND position in the parent**. Not by content. Not by value.
+
+```dart
+// Flutter sees this as the SAME element across rebuilds (same type at same position):
+if (showIcon)
+  const Icon(Icons.favorite)          // rebuild 1
+else
+  const Icon(Icons.favorite_border)  // rebuild 2
+// Both are Icon — Flutter reuses the element, just updates the icon value ✓
+
+// Flutter sees this as DIFFERENT elements — type changed:
+if (showIcon)
+  const Icon(Icons.favorite)    // rebuild 1: Icon element
+else
+  const Text('♡')               // rebuild 2: Text element ← DIFFERENT TYPE
+// Flutter destroys the Icon element, creates a Text element
+// Any state in the Icon widget is LOST
+```
+
+### Why `Key` Exists
+
+Without a key, Flutter uses position to match elements. This breaks when you reorder:
+
+```dart
+// NO KEYS — position-based matching
+Column(children: [
+  ColorBox(Colors.red),    // position 0
+  ColorBox(Colors.blue),   // position 1
+])
+
+// After reorder:
+Column(children: [
+  ColorBox(Colors.blue),   // position 0 → Flutter matches to OLD position 0 (Colors.red element)
+  ColorBox(Colors.red),    // position 1 → Flutter matches to OLD position 1 (Colors.blue element)
+])
+// Result: Flutter sees "no type change" and just updates the colors
+// BUT if ColorBox has internal State (e.g., _isSelected), that state is now on the WRONG color
+```
+
+```dart
+// WITH KEYS — value-based matching
+Column(children: [
+  ColorBox(Colors.red,  key: ValueKey('red')),
+  ColorBox(Colors.blue, key: ValueKey('blue')),
+])
+
+// After reorder:
+Column(children: [
+  ColorBox(Colors.blue, key: ValueKey('blue')),  // Flutter: "ValueKey('blue') = existing element"
+  ColorBox(Colors.red,  key: ValueKey('red')),   // Flutter: "ValueKey('red') = existing element"
+])
+// Elements correctly follow their keys to new positions — state preserved ✓
+```
+
+**Rule**: any time you reorder, remove, or add items in a list, use `ValueKey(item.id)` — not `ValueKey(index)`. Index changes during reorder; item ID doesn't.
+
+### What `BuildContext` Actually Is
+
+The `context` parameter in `build(BuildContext context)` is not a holder of build parameters. It **is** the `Element` itself.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  // context IS this widget's Element
+  // When you call:
+  final theme = Theme.of(context);
+  // ...Flutter does:
+  //   1. Walk UP the element tree from 'context' (this element)
+  //   2. Find the nearest ancestor that is a ThemeData InheritedWidget
+  //   3. Register: "this element depends on that InheritedWidget"
+  //   4. Return the ThemeData
+  //
+  // Consequence: if that ThemeData changes, this element gets rebuild scheduled
+  // automatically — because it registered as a dependent
+}
+```
+
+`Theme.of`, `MediaQuery.of`, `Provider.of`, `ref.watch()` all use this same mechanism: walk up the element tree, find the ancestor, register as a dependent, return the value. This registration is what enables "only rebuild what depends on what changed."
+
+### Why `const` Widgets Skip Reconciliation
+
+When both the old and new widget at a position are `const` with the same value, Flutter can skip the reconciliation step entirely:
+
+```dart
+// Without const: Flutter must create a new Text object and compare field-by-field
+Text('Label', style: TextStyle(color: Colors.blue))
+
+// With const: Dart guarantees ONE canonical instance exists
+// Dart compiler: both 'const Text(...)' → same object reference
+// Flutter: old widget == new widget (literally the same object) → SKIP reconciliation
+const Text('Label', style: TextStyle(color: Colors.blue))
+```
+
+This is why `const` is a performance optimization, not just a style marker. Every `const` widget in your build tree is a widget Flutter never has to reconcile. In a complex list with 50 cells and each cell has 10 `const` widgets — that's 500 reconciliation steps Flutter skips on every scroll frame.
+
+**Decision table:**
+
+| Situation | What's happening | Fix |
+|-----------|-----------------|-----|
+| State appears on wrong widget after reorder | No key, elements matched by position | Add `ValueKey(item.id)` to each child |
+| `GlobalKey` on a widget makes it preserve state across tree location changes | GlobalKey makes element findable anywhere in the tree | Use GlobalKey only for Form, Scaffold, or when you genuinely need cross-tree element access |
+| `setState` on parent rebuilds everything | Rebuild is expected; question is whether it's expensive | Make children `const` or extract to `StatefulWidget` with its own state |
+| `of(context)` returns wrong value | Looking up wrong ancestor | Verify the right ancestor exists above the calling widget in the tree |
+
+---
+
 ## Week 2 Verify — Answer Without Looking
 
 1. Flutter uses native OS buttons and text fields — true or false? Explain what it actually uses.

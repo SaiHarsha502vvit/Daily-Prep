@@ -1,4 +1,4 @@
-# Week 10 — Project: Shopping App UI
+# Week 11 — Project: Shopping App UI
 ### Phase 2 Capstone | Scrolling, Forms, Animations — all in one real app
 
 ---
@@ -34,6 +34,29 @@ A shopping app with five screens and a persistent bottom navigation bar. All sta
 │ Checkout button │   │ Place Order btn │
 └─────────────────┘   └─────────────────┘
 ```
+
+---
+
+## Why E-Commerce Is the Perfect Phase 2 Capstone
+
+### The Shopping Cart Was Invented in 1994
+
+When Amazon launched in 1994, online shopping had no UI conventions. Nobody had ever bought anything over the internet before. Jeff Bezos's team borrowed the **shopping cart** metaphor from physical retail — items accumulate, you review and pay at the end. The metaphor was so intuitive that by 1996 every e-commerce site had adopted it. Today, the shopping cart is one of the most universally recognized UI patterns in the world.
+
+The **product grid layout** came from magazine catalogues and later brick-and-mortar store displays: maximum product visibility per visual unit. On mobile, a 2-column grid shows 6-8 products per scroll. Single column shows 3-4. Most apps learned through A/B testing that 2 columns optimizes for discovery; list view is better for comparison shopping. You'll see both in this app.
+
+### Why This Project Uses Every Phase 2 Skill
+
+The shopping app was not chosen arbitrarily. Each Phase 2 week is load-bearing:
+
+```
+Slivers (Week 7)    → SliverAppBar + category chips + SliverGrid in HomeScreen
+Forms (Week 8)      → Checkout form with address + payment input + validation
+Animations (Week 9) → Hero transition on product tap, cart quantity spring, staggered grid entrance
+Gestures (Week 10)  → Swipe to remove from cart, pinch to zoom product photo
+```
+
+No synthetic exercise covers all four in one coherent flow. This app does. When a recruiter asks "show me something you've built" — this is the answer.
 
 ---
 
@@ -1012,7 +1035,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
 ---
 
-## Week 10 Verify — Project Self-Review
+## Week 11 Verify — Project Self-Review
 
 1. The quantity number in the cart uses `AnimatedSwitcher` with a `ValueKey(quantity)`. What happens if you remove the key?
 2. `Dismissible` removes the cart item from the UI immediately. But the actual `onUpdateQuantity` is called too. Why must both happen? What breaks if only one runs?

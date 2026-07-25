@@ -497,6 +497,6 @@ Total time for steps 4-10: **< 16 milliseconds** for 60fps, **< 8ms** for 120fps
 ---
 
 **→ Related files:**
-- [DOC_02_Widget_Catalog.md](DOC_02_Widget_Catalog.md) — every widget, what it does
-- [DOC_04_BuildContext.md](DOC_04_BuildContext.md) — deep dive into context
-- [DOC_05_Keys.md](DOC_05_Keys.md) — how Flutter tracks widget identity
+- [DOC_02_Widget_Catalog_Complete.md](DOC_02_Widget_Catalog_Complete.md) — every widget, what it does
+- [DOC_04_BuildContext_Deep_Dive.md](DOC_04_BuildContext_Deep_Dive.md) — deep dive into context
+- [DOC_05_InheritedWidget_Keys.md](DOC_05_InheritedWidget_Keys.md) — how Flutter tracks widget identity

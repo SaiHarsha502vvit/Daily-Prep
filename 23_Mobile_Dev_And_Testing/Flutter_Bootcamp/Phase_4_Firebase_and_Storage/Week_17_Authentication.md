@@ -1,4 +1,4 @@
-# Week 16 — Firebase Authentication
+# Week 17 — Firebase Authentication
 ### Sign in, sign up, Google OAuth, auth state management, protected routes
 
 ---
@@ -35,6 +35,48 @@ Riverpod StreamProvider watches this → your entire app reacts
 
 ---
 
+## The Authentication Origin Story — From Passwords to Face ID to Sign In With Apple
+
+### Passwords Were Invented in 1961 (And They've Been Broken Ever Since)
+
+The first computer password was created in 1961 at MIT's CTSS (Compatible Time-Sharing System) — the first operating system that gave multiple users individual accounts on one machine. **Robert Morris Sr.** (whose son would later write the Morris Worm, the first internet worm) designed the password system.
+
+The fundamental problem was identified almost immediately: passwords are secrets that humans must memorize, and humans are bad at keeping secrets and memorizing random strings. Every solution since 1961 has been trying to fix this:
+
+- **1986**: RSA Security released the **SecurID** — a key fob that showed a 6-digit code that changed every 60 seconds based on a shared secret. The code was only valid for 60 seconds, so stolen credentials expired instantly. The precursor to modern TOTP (the codes your Google Authenticator generates).
+- **2004**: Gmail, Flickr, and the web 2.0 era normalized "one account per site" — creating password reuse across hundreds of sites. A single breach meant all your accounts were compromised.
+- **2011**: LinkedIn breached (6.5M passwords). 2012: Dropbox (68M). 2013: Adobe (153M). Passwords at scale were failing catastrophically.
+
+### Touch ID and the Biometric Revolution (September 2013)
+
+In 2012, Apple secretly acquired **AuthenTec** for $356 million — the world's leading fingerprint sensor company. No one knew why until the iPhone 5s launched with **Touch ID**.
+
+The implementation details were extraordinary: the sensor used **radio frequency** to read beneath the outer dead skin layer to the live dermis below — making it resistant to fake fingerprints made from gelatin or tape. Recognition took under 0.5 seconds. Error rate: 1 in 50,000.
+
+More important than the hardware was the **security architecture**: the fingerprint template was stored in a dedicated **Secure Enclave** chip — isolated hardware on the same die as the A7 processor, but with its own secure memory that no OS process could access. No iOS API could read a fingerprint template. No iCloud backup included Secure Enclave data. The design principle: the most sensitive data never leaves the hardware that protects it.
+
+This principle defines how biometric auth works in Flutter today. `LocalAuthentication().authenticate()` returns `true`/`false`. You cannot receive the fingerprint data because the API is intentionally designed to make it impossible. The authentication happens in hardware; your app only gets the result.
+
+### Face ID — From 2D to 3D (iPhone X, November 2017)
+
+Apple removed the Home button and the fingerprint sensor. In the notch lived a **TrueDepth camera system**: an infrared camera, a flood illuminator, and a dot projector that fired 30,000 invisible infrared dots onto the user's face, creating a precise 3D map. Attention detection: Face ID only works when you are looking at the phone (eyes open, facing the screen). It works in the dark.
+
+The face geometry map was also stored in the Secure Enclave — never sent to Apple, never accessible to apps, never included in backups. The API was identical: `authenticate()` → `true`/`false`.
+
+Android followed with in-display fingerprint sensors (Synaptics, 2018) and 3D face recognition (various implementations, 2018-present). Flutter's `local_auth` plugin abstracts all of these with a single API — `authenticate()` works whether the device has Touch ID, Face ID, an in-display fingerprint sensor, or an Android fingerprint sensor.
+
+### Sign In With Apple — Privacy as a Product (WWDC, June 2019)
+
+Apple launched **Sign In With Apple** and simultaneously announced **App Store Guideline 4.8**: any app offering third-party login (Google, Facebook, Twitter) must also offer Sign In With Apple. Rejection otherwise.
+
+The privacy differentiator Apple added: **Hide My Email**. Sign In With Apple can generate a random relay email address (`xyz123@privaterelay.appleid.com`) that forwards to the user's real address. The app never learns the user's real email. The relay can be disabled instantly, cutting the app off from email contact permanently.
+
+This was Apple's direct response to the data economy of Google and Facebook, who used OAuth to track users across the web. Sign In With Apple gives users a way to use apps without feeding data to the social platforms that operate the identity system.
+
+For you as a Flutter developer: **if your iOS app offers Google Sign-In, Sign In With Apple is not optional**. It is a mandatory App Store requirement. The `sign_in_with_apple` package exists precisely because Apple made it so.
+
+---
+
 ## 1. Setup
 
 ```yaml
@@ -45,7 +87,7 @@ dependencies:
 ```
 
 ```dart
-// firebase_options.dart is already configured from Week 15
+// firebase_options.dart is already configured from Week 16
 // No additional setup needed for email/password auth
 // For Google Sign-In: add SHA-1 fingerprint in Firebase Console
 ```
@@ -1150,7 +1192,7 @@ Biometric authentication is a **local presence check** — it gates access to an
 
 ---
 
-## Week 16 Verify
+## Week 17 Verify
 
 1. `FirebaseAuth.instance.authStateChanges()` returns a `Stream<User?>`. When does it emit a new value?
 2. Why don't you call `Navigator.push(HomeScreen)` after sign-in? What handles navigation instead?
@@ -1167,4 +1209,4 @@ Biometric authentication is a **local presence check** — it gates access to an
 
 ---
 
-**Next → [Week 17: Local Storage](Week_17_Local_Storage.md)**
+**Next → [Week 18: Local Storage](Week_18_Local_Storage.md)**

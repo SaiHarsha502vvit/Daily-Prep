@@ -1,4 +1,4 @@
-# Week 26 — Phase 6 Capstone: Real-Time Chat App
+# Week 27 — Phase 6 Capstone: Real-Time Chat App
 ### FCM push notifications, Firestore real-time streams, media sharing — the full production pattern
 
 ---
@@ -19,7 +19,7 @@ A 1:1 chat app with:
 - Online/typing indicators
 - Message status (sent → delivered → read)
 - Clean Architecture + BLoC + get_it (everything from Phase 5)
-- CI/CD pipeline from Week 25
+- CI/CD pipeline from Week 26
 
 ---
 
@@ -28,7 +28,7 @@ A 1:1 chat app with:
 ```
 lib/
   features/
-    auth/          ← reuse from Week 16
+    auth/          ← reuse from Week 17
     chat/
       domain/
         entities/
@@ -1304,7 +1304,7 @@ class ChatMediaService {
 
 ---
 
-## Week 26 Verify
+## Week 27 Verify
 
 1. The user sends a message with no internet. Describe the full lifecycle: what status does the message show, what happens in the queue, and what triggers the retry?
 2. `ReadReceiptService` batches read receipts every 2 seconds. Why batch instead of writing immediately? What happens with Firestore billing if 1000 messages are read at once?

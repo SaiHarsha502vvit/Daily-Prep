@@ -1,4 +1,4 @@
-# Week 19 — BLoC: Business Logic Component
+# Week 20 — BLoC: Business Logic Component
 ### Events in, States out — the architecture that scales to any team size
 
 ---
@@ -847,7 +847,148 @@ Write `blocTest` for every transition.
 
 ---
 
-## Week 19 Verify
+## The Invisible Machinery — How Dart Streams Power BLoC
+
+BLoC is built entirely on Dart's `Stream` API. Understanding how streams work at the language level explains every BLoC behavior that otherwise seems like magic — sequential processing, why events don't overlap, how `BlocBuilder` knows when to rebuild.
+
+### What a Stream Is Physically
+
+A `Stream<T>` is not a data structure. It's a **channel** — a pipeline for delivering values asynchronously, one at a time.
+
+```dart
+// Under the hood, every Stream is backed by a StreamController
+final StreamController<CartEvent> _controller = StreamController<CartEvent>.broadcast();
+
+// The Stream your BlocBuilder listens to:
+Stream<CartEvent> get eventStream => _controller.stream;
+
+// Adding an event:
+_controller.add(AddItemEvent(item));
+// ↑ does NOT immediately call the listener
+// ↑ schedules delivery in Dart's microtask queue
+// ↑ the listener is called AFTER current synchronous code finishes
+```
+
+### The Delivery Sequence (Why BLoC Never Loses an Event)
+
+```
+You call: context.read<CartBloc>().add(AddItemEvent(item))
+     ↓
+BLoC puts AddItemEvent into its internal event stream
+     ↓
+Dart microtask queue: "deliver this event to the handler"
+     ↓
+Current synchronous code finishes (the rest of your onTap function)
+     ↓
+Dart event loop: "microtask queue has an item — process it"
+     ↓
+BLoC's on<AddItemEvent>(_onAddItem) handler starts
+     ↓
+_onAddItem runs, calls emit(CartLoaded(newItems))
+     ↓
+emit() adds the new state to the state stream
+     ↓
+BlocBuilder's StreamSubscription receives the state
+     ↓
+BlocBuilder schedules setState() → widget rebuilds on next frame
+```
+
+Every step is sequential. The event loop processes one thing at a time. Even if you call `bloc.add()` five times in rapid succession, the events form a queue — second event's handler doesn't start until the first handler's `on<>` method returns.
+
+### Broadcast vs Single-Subscription Streams
+
+```dart
+// Single-subscription stream: exactly ONE listener, ever
+// Adding a second listener throws an error
+Stream<int> counts = Stream.fromIterable([1, 2, 3]);
+// ↑ like a pipe — once you subscribe, the data flows through once
+
+// Broadcast stream: many listeners, simultaneously
+StreamController<CartState> controller = StreamController<CartState>.broadcast();
+// ↑ like a radio station — multiple BlocBuilders can all tune in
+```
+
+BLoC's **state stream** is broadcast — multiple `BlocBuilder`s in different parts of the widget tree can all listen to the same BLoC's state simultaneously. Each `BlocBuilder` subscribes independently and receives every state emission.
+
+BLoC's **event stream** is single-subscription — the BLoC itself is the only listener. That's intentional: you don't want external code intercepting events.
+
+### The EventTransformer: Managing Event Bursts
+
+The default BLoC event processing is sequential: event queue, one-at-a-time. But some situations need different behavior:
+
+```dart
+// The problem: user types in a search field
+// Every keystroke → SearchEvent → network call
+// Sequential processing means 10 keystrokes → 10 simultaneous network calls
+// The 3rd response might arrive after the 8th — showing stale results
+
+// Solution: restartable transformer
+on<SearchQueryChanged>(
+  _onSearch,
+  transformer: restartable(),  // from bloc_concurrency package
+  // When a new SearchQueryChanged event arrives:
+  // → CANCEL the current _onSearch execution (if still running)
+  // → START a new _onSearch with the latest query
+  // Result: only the most recent query produces a network call
+);
+
+// Alternative: droppable transformer
+on<PaymentEvent>(
+  _onPayment,
+  transformer: droppable(),
+  // If a PaymentEvent is already being processed:
+  // → DROP all new PaymentEvents until the current one finishes
+  // Prevents double-charges if user taps "Pay" twice quickly
+);
+
+// Alternative: concurrent transformer
+on<LoadMoreEvent>(
+  _onLoadMore,
+  transformer: concurrent(),
+  // All events processed in parallel — dangerous for state consistency,
+  // only use when events are truly independent (e.g., parallel image loads)
+);
+```
+
+### Why State Is a Stream (Not a Callback)
+
+Old Android development used **callback interfaces**: you implemented `OnNetworkResponseListener`, and the network layer called your method. This created "callback hell" — deeply nested anonymous classes that were hard to read, easy to leak, and impossible to compose.
+
+Dart Streams solve this with backpressure, cancellation, and composition:
+
+```dart
+// Callbacks: you get called, can't stop it, can't combine
+interface NetworkCallback {
+  void onSuccess(Data data);
+  void onError(Error e);
+}
+
+// Streams: you control the subscription
+final subscription = stateStream
+  .where((state) => state is CartLoaded)           // filter: only show loaded states
+  .map((state) => (state as CartLoaded).items)      // transform: extract items
+  .distinct()                                        // skip: don't rebuild if items unchanged
+  .listen((items) { setState(() => _items = items); });
+
+subscription.cancel();  // you decide when to stop listening
+// ↑ BlocBuilder calls this in dispose() automatically — no memory leaks
+```
+
+The `BlocBuilder`'s `buildWhen:` parameter is the `where()` filter. The `BlocListener`'s `listenWhen:` is the same. These are all stream operators expressed as BLoC API.
+
+**Decision table:**
+
+| Situation | What's happening | Fix |
+|-----------|-----------------|-----|
+| Event handler runs, but state doesn't update UI | `emit()` called but `BlocBuilder` condition blocks it | Check `buildWhen: (prev, curr)` — it may filter out the new state |
+| Search fires a network call for every keystroke | Default sequential transformer queues all events | Use `transformer: restartable()` on the search event handler |
+| "Pay" button triggers multiple charges | Default transformer queues duplicate payment events | Use `transformer: droppable()` — first wins, rest ignored |
+| `BlocListener` fires on initial state | `listenWhen` not set to skip initial | Add `listenWhen: (prev, curr) => prev != curr` or check for specific state |
+| BLoC state emission crashes with "Stream already closed" | `emit()` called after `close()` (e.g., in an async handler after widget disposes) | Check `!isClosed` before emit, or use `close()` only in widget's `dispose` |
+
+---
+
+## Week 20 Verify
 
 1. What is the difference between a `BlocBuilder` and a `BlocListener`? Give a concrete example of when you'd use each.
 2. `context.read<CartBloc>().add(AddItemEvent(...))` — why is `read` used here instead of `watch`?
@@ -865,4 +1006,4 @@ Write `blocTest` for every transition.
 
 ---
 
-**Next → [Week 20: Clean Architecture + SOLID](Week_20_Clean_Architecture.md)**
+**Next → [Week 21: Clean Architecture + SOLID](Week_21_Clean_Architecture.md)**

@@ -1,5 +1,5 @@
 # Phase 6 — Production Engineering
-### Month 6 | Weeks 21-24
+### Month 6 | Weeks 24-27
 
 ---
 
@@ -11,7 +11,20 @@ The capstone: a **full-stack Chat App** — the kind you'd put in a portfolio.
 
 ---
 
-## Week 21 — Testing Flutter Apps
+## Week Map
+
+| File | Topic | Core Skills |
+|------|-------|-------------|
+| [Week_24_Testing.md](Week_24_Testing.md) | Testing | Unit, widget, integration tests, blocTest, mocks vs fakes |
+| [Week_25_Performance_and_Profiling.md](Week_25_Performance_and_Profiling.md) | Performance & Profiling | DevTools, rebuild optimization, background processing |
+| [Week_26_CICD_and_Deployment.md](Week_26_CICD_and_Deployment.md) | CI/CD & Deployment | GitHub Actions, Fastlane, App Store / Play Store |
+| [Week_27_Project_ChatApp.md](Week_27_Project_ChatApp.md) | Project: Chat App | Capstone — real-time messaging, FCM, media, presence |
+
+**Start → [Week 24: Testing](Week_24_Testing.md)**
+
+---
+
+## Week 24 — Testing Flutter Apps
 
 **Why test?**
 - Catch regressions when you change something
@@ -134,7 +147,7 @@ blocTest<ExpenseBloc, ExpenseState>(
 
 ---
 
-## Week 22 — Performance & Profiling
+## Week 25 — Performance & Profiling
 
 **Flutter DevTools** is your debugging and profiling command center. Run `flutter pub global activate devtools` then launch from VS Code or terminal.
 
@@ -213,7 +226,7 @@ ListView.builder(
 
 ---
 
-## Week 23 — CI/CD & Deployment
+## Week 26 — CI/CD & Deployment
 
 **GitHub Actions for Flutter:**
 ```yaml
@@ -299,7 +312,7 @@ version: 1.2.0+15
 
 ---
 
-## Week 24 — Capstone: Chat App
+## Week 27 — Capstone: Chat App
 
 **Your portfolio centerpiece. Build this end-to-end.**
 
@@ -360,7 +373,7 @@ class Message {
 
 ## Final Portfolio Checklist
 
-After Week 24, you have:
+After Week 27, you have:
 
 | Project | Status | Skills Demonstrated |
 |---------|--------|---------------------|
@@ -381,7 +394,7 @@ You are now a Flutter developer who can build production apps. Not a tutorial co
 - Dart macros (code generation, coming to mainstream Dart)
 - Dart FFI (call native C/C++ code from Dart)
 
-**Platform-specific (building on Week 20's platform channels and Week 24's background processing):**
+**Platform-specific (building on Week 21's platform channels and Week 25's background processing):**
 - Federated plugins (write Flutter plugins that work on all platforms)
 - Flutter Web: differences from mobile Flutter, WASM
 

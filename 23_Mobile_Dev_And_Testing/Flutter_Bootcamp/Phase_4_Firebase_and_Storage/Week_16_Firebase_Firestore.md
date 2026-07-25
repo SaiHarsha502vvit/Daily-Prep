@@ -1,4 +1,4 @@
-# Week 15 — Firebase & Cloud Firestore
+# Week 16 — Firebase & Cloud Firestore
 ### Real-time database, offline support, security rules — the complete picture
 
 ---
@@ -45,8 +45,8 @@ This is the correct architecture for mobile apps — users move between WiFi, LT
 
 Firebase is Google's Backend-as-a-Service. For Flutter, the core products are:
 - **Cloud Firestore** — NoSQL real-time database (this week)
-- **Firebase Auth** — user authentication (Week 16)
-- **Firebase Storage** — file storage for images/files (Week 17)
+- **Firebase Auth** — user authentication (Week 17)
+- **Firebase Storage** — file storage for images/files (Week 18)
 - **Cloud Functions** — serverless backend logic
 
 The key benefit: **no server to write**. Your Flutter app talks directly to Firebase. Firebase handles the API, scaling, and infrastructure. You focus on your app.
@@ -517,7 +517,7 @@ class NotesRepository {
 ```dart
 // lib/features/notes/presentation/providers/notes_providers.dart
 
-// The repository — depends on auth (covered in Week 16)
+// The repository — depends on auth (covered in Week 17)
 final notesRepositoryProvider = Provider<NotesRepository>((ref) {
   return NotesRepository(
     db: FirebaseFirestore.instance,
@@ -1149,7 +1149,7 @@ Extend the notes app to a shared workspace:
 
 ---
 
-## Week 15 Verify
+## Week 16 Verify
 
 1. What is a Firestore collection vs a document vs a sub-collection? Draw the path for "Harsha's second note" in the data model shown in this file.
 2. Your `Note.fromFirestore()` reads `createdAt` as `Timestamp`. Why use `Timestamp` instead of storing dates as ISO strings?
@@ -1166,4 +1166,4 @@ Extend the notes app to a shared workspace:
 
 ---
 
-**Next → [Week 16: Firebase Authentication](Week_16_Authentication.md)**
+**Next → [Week 17: Firebase Authentication](Week_17_Authentication.md)**
