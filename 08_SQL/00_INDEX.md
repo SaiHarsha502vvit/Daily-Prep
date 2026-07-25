@@ -130,6 +130,8 @@
 | 46 | [Interview Scenarios Part 3](46_Interview_Scenarios_Explained_Part3.md) | Schema, migration & architecture interview-grade |
 | 47 | [Theory Deep Dive](47_Theory_Deep_Dive_Database_Internals.md) | B-Tree math, MVCC, WAL, buffer pool, query optimizer |
 | 48 | [Problem Variants Bank](48_Problem_Variants_Bank.md) | 100+ practice variants across all categories |
+| 49 | [SQL Internals Deep](49_SQL_Internals_Deep.md) | Storage engine, planner, and execution internals |
+| 50 | [**Schema Design From Requirements**](50_Schema_Design_From_Requirements.md) | **The design pipeline**: prose → entities → keys → constraints → query patterns → indexes. Snapshots vs joins, surrogate/UUID key trade-offs, constraints as the correctness layer, index derivation + leftmost-prefix + sargability, modeling soft deletes / hierarchies / polymorphism / multi-tenancy, expand-contract migration, and a full worked order-system DDL |
 
 ## Cross-Reference Map
 
