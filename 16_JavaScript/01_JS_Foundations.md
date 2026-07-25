@@ -991,3 +991,18 @@ All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized 
 </details>
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
+
+
+---
+
+## Reality Check
+
+**"var, let, and const differ by mutability"** ? The deeper split is SCOPING and the temporal dead zone: var is function-scoped and hoists initialized-to-undefined (the classic leaked loop variable), let/const are block-scoped and hoist UNINITIALIZED — referencing them before the declaration line throws, which is the TDZ. And const freezes the BINDING, not the value: const arr = [] happily accepts pushes. Three keywords, three different lifecycle stories — mutability is the least interesting of the differences.
+
+**"== is broken, always use ==="** ? The rule is right; believing it makes coercion knowledge optional is wrong: coercion still fires in if conditions (truthiness — 0, empty string, NaN, null, undefined are falsy and that IS load-bearing logic), in template literals, in plus-operator string contexts, and in sort's default STRING comparison ([10, 9, 1].sort() gives [1, 10, 9] — the bug every dashboard has shipped once). You can ban == and still be ambushed by coercion daily; the defense is knowing the five coercion sites, not just the one operator.
+
+**"Everything in JavaScript is an object"** ? Seven primitives (string, number, bigint, boolean, symbol, null, undefined) are NOT objects — they are auto-WRAPPED on property access ("x".length boxes momentarily), which is why the slogan feels true and why primitives still copy by value while objects copy by reference. That value-versus-reference line is the real content: it decides every equality check, every function-argument mutation surprise, and every "why did changing the copy change the original."
+
+**"Number handles integers fine in practice"** ? Number is IEEE-754 double: integers are exact only to 2^53-1 (Number.MAX_SAFE_INTEGER), beyond which 9007199254740993 === 9007199254740992 is TRUE — database IDs and financial totals hit this in production, which is why Twitter API returns id_str and why BigInt exists. Plus the classics: 0.1 + 0.2 !== 0.3, NaN !== NaN (use Number.isNaN), and parseInt("08") historical octal traps. Money in cents-as-integers, IDs as strings, tolerance for float comparison — the three rules that prevent the whole category.
+
+**"this follows the surrounding code"** ? this is bound by the CALL SITE, per call, by four rules in priority order: new-binding, explicit (call/apply/bind), implicit (obj.method() — the receiver before the dot), default (undefined in strict mode, globalThis otherwise) — plus the arrow-function exception that CAPTURES lexical this instead of binding at all. Every this bug is one of two errors: reading it lexically when it binds dynamically (extracted method loses its receiver), or using an arrow where dynamic binding was needed (object methods, event handlers wanting the element). Learn the four-rule dispatch and the exception; the mystique evaporates.

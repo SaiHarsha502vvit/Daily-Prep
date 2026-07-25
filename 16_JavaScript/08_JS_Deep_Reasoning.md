@@ -1030,3 +1030,18 @@ document.getElementById("button-container").addEventListener("click", (e) => {
 ← Previous: [Chapter 7 — Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 | [📚 Index](../00_MASTER_INDEX.md)
 | Next: [React Deep Reasoning →](../15_React_Frontend/09_React_Deep_Reasoning.md)
+
+
+---
+
+## Reality Check
+
+**"Deep reasoning questions are trivia about weird corners"** → The freeze-moment questions are chosen because each is a MODEL PROBE: event-loop ordering probes whether you hold the queue model, closure-in-loop probes binding-versus-value capture, coercion outputs probe the ToPrimitive algorithm, this-extraction probes call-site binding. Interviewers use them as cheap MRI scans — the answer matters less than whether your explanation reveals a mechanism or a memorized output. Preparing by memorizing outputs defeats the instrument AND the preparation.
+
+**"If you know the rule, you can answer under pressure"** → Freeze happens when the rule is stored as PROSE instead of process: "microtasks before macrotasks" recited is useless against a mixed snippet; the executable skill is running the two-queue simulation on paper — sync to completion, drain microtasks, one macrotask, drain again. The training that transfers is TRACING drills (predict, run, diff, explain the diff) until the simulation is procedural memory. Ten traced snippets beat fifty read explanations, and the diff step — why was I wrong — is where the model actually updates.
+
+**"Deep JS knowledge means knowing the spec"** → The working set is smaller and different: five or six MECHANISMS (event loop queues, closure environments, prototype chain walk, this binding rules, coercion's ToPrimitive/ToNumber, module resolution timing) explain essentially every deep-reasoning question in circulation. Spec fluency past that is diminishing returns for engineering; mechanism fluency is not — because production bugs are these same six mechanisms wearing application clothes (the stale closure in the hook, the shared prototype mutation, the microtask starving the render).
+
+**"Explaining JS behavior well means using the right terminology"** → The explanations that score — in interviews and in incident reviews — run CAUSAL CHAINS, not vocabulary: "the callback captures the variable, the loop finishes before any callback runs, so all three read the final value" beats "because of closures and hoisting" every time. Terminology names the chapter; the chain demonstrates the model. A useful self-test: explain the same snippet twice, once with all jargon banned — if the jargon-free version collapses, the understanding was labels.
+
+**"Once these questions stop surprising you, the topic is done"** → The retention half-life is short because the mechanisms are COUNTER-intuitive (the intuitive model keeps regrowing over the correct one — everyone drifts back toward "await pauses" and "closures copy values"), so maintenance is periodic re-tracing, not one-time mastery. The efficient schedule: a handful of mixed traces monthly, plus writing an explanation whenever a real bug touches one of the six mechanisms (the production anchor is the strongest memory fixative). Deep reasoning is a garden, not a summit — the questions stop surprising you precisely as long as you keep visiting.

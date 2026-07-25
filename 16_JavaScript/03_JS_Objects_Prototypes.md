@@ -540,3 +540,18 @@ Q: How to check if a property exists?
 [â† Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"JavaScript classes made prototypes obsolete knowledge"** → class is SYNTAX over the same prototype machinery, and the machinery shows through constantly: methods live on Constructor.prototype (one shared function — why patching it affects all instances, and why class fields with arrows do NOT share), instanceof walks the prototype chain (breaks across iframes/realms), super dispatches via [[HomeObject]], and extending built-ins needs the chain intact. Debugging class-based code without the prototype model means every one of these surfaces as magic — the syntax hid the model precisely where you need it.
+
+**"Property access is a simple lookup"** → Access walks the CHAIN until hit or null, but ASSIGNMENT does not mirror it: writing a property always creates/updates on the receiver (shadowing the inherited one), except when an inherited SETTER or non-writable property intercepts — the asymmetry behind "why did writing create a copy instead of updating the shared one" and its evil twin "why did my write silently do nothing" (frozen prototype property, strict mode throws, sloppy mode swallows). Get walks, set shadows, accessors ambush: three clauses that decode a whole genre of surprises.
+
+**"Spread and Object.assign copy objects"** → Both copy ONE LEVEL of own enumerable properties: nested objects share references (the mutated-draft-corrupts-original classic), getters are EVALUATED into static values (live property becomes stale snapshot), prototypes are dropped (class instances become plain objects), and non-enumerables/symbols follow their own rules. Deep copy is structuredClone (handles cycles, Dates, Maps — but not functions or class prototypes). The professional habit: say WHICH copy you need — shallow, deep, or structural-with-prototype — because "copy" alone under-specifies in exactly the ways that ship bugs.
+
+**"Getters and setters are Java-style encapsulation imported"** → Accessors make property access PROGRAMMABLE, which cuts both ways: computed properties and lazy initialization (replace-yourself-on-first-read memoization) are the legitimate wins; the costs are invisible side effects (a getter that allocates or logs — property reads in hot loops becoming performance cliffs), spread/JSON snapshotting evaluating them at surprising times, and debugging pain (hovering in DevTools TRIGGERS the getter). The rule that survives: getters must be cheap and pure; anything else deserves a method name with parentheses that admit work is happening.
+
+**"Private fields are naming-convention underscore, formalized"** → #fields are mechanically different, not cosmetically: enforced by the runtime (outside access is a SyntaxError, not a lookup miss), invisible to Object.keys/JSON/spread/Proxy (serialization and mocking strategies break), branded to the class (the same-class-can-access-other-instances nuance, and #x in obj as the brand check), and hostile to monkey-patching test seams that underscore-privates allowed. Choosing # is choosing hard encapsulation with its testing and serialization consequences — a real design decision, not a lint upgrade.

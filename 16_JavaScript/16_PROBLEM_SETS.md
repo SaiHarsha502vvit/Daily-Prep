@@ -331,3 +331,18 @@ asyncRetry(flakyApi, 3, 100).then(console.log); // "success" after 2 failures
 ---
 
 [‚Üê Back to Semester 3 Guide](../00_CURRICULUM/SEMESTER_3_GUIDE.md)
+
+
+---
+
+## Reality Check
+
+**"JS problem sets are DSA problems in JavaScript syntax"** ? JS-specific problem sets exist because the language ITSELF is the problem domain: implement debounce with cancel and flush, write Promise.all from scratch, build an event emitter with once semantics, deep-clone with cycle handling, flatten with depth control. These test closure mechanics, promise-resolution rules, and reference semantics ó none of which a translated two-sum touches. Frontend loops interview on exactly this genre; grinding only algorithm sets leaves the actually-asked material untrained.
+
+**"Implementing library functions is busywork ó lodash exists"** ? Re-implementation is the only exercise that FORCES the edge-case contracts into view: does your debounce preserve this and arguments (most first attempts do not), does your Promise.all handle non-promise values and empty arrays (the spec says resolve immediately ó most miss it), does your once return the cached result or undefined on subsequent calls, does your clone preserve prototypes or produce plain objects? Using lodash daily while unable to write bind is API familiarity impersonating understanding ó and the impersonation fails at debugging time, when the abstraction leaks.
+
+**"Polyfill problems test whether you memorized the spec"** ? They test RESOLUTION SEMANTICS people think they know: your Promise.all implementation must count settlements (not use array push order), preserve INDEX correspondence (results in input order regardless of settle order), and reject-fast while ignoring later settlements ó three decisions that reveal whether the promise model is real or vibes. Same with call/apply polyfills (temporary property assignment ó the this mechanism laid bare) and Array.prototype.map (holes in sparse arrays ó the spec corner that distinguishes reading from having read).
+
+**"Async problem-set questions are solved by adding async/await"** ? The graded async problems are SCHEDULING designs: a promise pool (run n at a time from a task list ó the interview classic that fails everyone who only knows Promise.all), retry with exponential backoff and jitter, a rate limiter, sequential-versus-parallel-versus-batched trade-offs stated aloud. The pool problem specifically separates levels: it requires treating promises as resources with a refill loop, not as syntax ó and its naive versions (chunked batches instead of a true pool) leak throughput on uneven task durations, a distinction worth articulating.
+
+**"Completing the set once means the material is covered"** ? This genre decays FASTER than algorithms because the details are arbitrary-feeling until re-derived (which argument does reduce's callback take first? does setTimeout in a loop capture the let binding?): the retention protocol is re-implementation from a BLANK file ó no reference ó for the core eight (debounce, throttle, once, memoize, deepClone, EventEmitter, Promise.all, promise pool) on a monthly-ish cadence. Each re-derivation is faster and surfaces exactly which mechanic went soft; reading last month's solution surfaces nothing.

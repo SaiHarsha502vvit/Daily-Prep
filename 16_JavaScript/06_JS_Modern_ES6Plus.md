@@ -1050,3 +1050,18 @@ COMMON MEMORY LEAKS IN JS:
 [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"Modern JS features are syntax sugar"** → Several changed SEMANTICS, not spelling: optional chaining short-circuits the entire tail (a?.b.c.d stops at the first null — people misread the scope), nullish coalescing splits the falsy world (?? passes 0 and empty string through where || destroys them — the config-default bug factory), modules are static (imports hoisted, analyzed before execution — enabling tree-shaking and forbidding conditional import statements), and destructuring with defaults triggers only on undefined, not null. Sugar rewrites to the same behavior; these do not.
+
+**"Arrow functions are shorter function expressions"** → Arrows LACK four things functions have — own this, arguments, prototype, and constructability — and the lacks are the feature: this is captured lexically (why they fixed callbacks) and unchangeable (why extracting an arrow method for call/apply tricks fails silently). The residual non-arrow territory is precise: object methods that need the receiver, DOM handlers wanting the element as this, generators (no arrow form), and anything needing new. "Always use arrows" is right until it hits one of those four walls, and the wall errors are quiet.
+
+**"Iterators and generators are library-author machinery"** → The ITERABLE PROTOCOL is what for-of, spread, destructuring, Array.from, Promise.all, and yield* all consume — Map and Set are pleasant because they implement it, strings iterate by code point because of it, and any object you give a Symbol.iterator joins the ecosystem. Generators are the cheapest way to write one (lazy sequences, paginated fetch wrappers, tree traversals that pause) and the mental model is resumable-function-with-mailbox: yield sends out AND receives in (the ignored two-way channel that co-routines and redux-saga built empires on).
+
+**"Map is an object with a nicer API"** → Map differs in the ways that decide correctness: ANY key type (objects as keys — metadata tables without stringification collisions), insertion-order iteration guaranteed, size as O(1) property, no prototype-pollution surface (object literals inherit toString and friends — the "constructor" key bug), and hot-path add/delete performance objects are not optimized for. The reverse counsel matters too: objects win for static-shape records (destructuring, JSON, engine shape optimization). Records-versus-collections is the split; using object-as-dictionary for dynamic keys is the legacy habit the feature exists to end.
+
+**"Proxy and Reflect are exotic metaprogramming"** → Proxies are the reactivity engine of the frameworks in production right now (Vue 3, MobX, Immer trap get/set to track dependencies and produce immutable drafts) — using those tools well means knowing proxy limits: identity splits (proxy !== target — WeakMap lookups and equality checks break), #private fields do not tunnel through, and built-ins with internal slots (Date, Map) need receiver-rebinding tricks. Reflect is the companion that makes traps composable (Reflect.get with receiver preserves getter this). You may never write one; you debug THROUGH them weekly the moment your state library misbehaves.

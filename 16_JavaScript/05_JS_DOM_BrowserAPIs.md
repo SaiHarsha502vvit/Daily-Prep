@@ -625,3 +625,18 @@ Q: How does React's Virtual DOM relate to the real DOM?
 [â† Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"DOM APIs are slow"** → DOM READS are cheap; forced synchronous LAYOUT is the expense: interleaving writes (style changes) with reads that require geometry (offsetHeight, getBoundingClientRect) forces the engine to flush layout per read — the read-write-read-write loop that turns 60fps into 6. Batch reads, then batch writes (or requestAnimationFrame-phase them), and the same "slow DOM" runs instantly. The model to carry: the DOM is a data structure; LAYOUT is the calculation; you pay when you demand fresh geometry mid-mutation.
+
+**"addEventListener registers a callback for an element"** → Events run a three-phase DISPATCH through the tree — capture down, target, bubble up — and the architecture-grade consequences hang off that: delegation (one listener on the container serving a thousand rows, surviving re-renders — the pattern frameworks are built on), stopPropagation versus stopImmediatePropagation semantics, passive listeners as a scroll-performance contract (you promise not to preventDefault, the browser stops waiting for you), and the {once, capture, signal} options people never read. currentTarget-versus-target is the delegation detail that separates users from understanders.
+
+**"innerHTML is the fast way to build DOM"** → innerHTML re-parses and REPLACES the subtree — destroying listeners and state on everything inside, and opening XSS the moment any interpolated string is user-influenced (the number-one web vulnerability class, one template literal away). The modern toolkit: textContent for text (safe, fast), insertAdjacentHTML for append-without-reparse, template elements plus cloneNode for repeated structure, and sanitization (DOMPurify/Trusted Types) mandatory at any HTML-from-data boundary. innerHTML in reviews should read like eval: justified or rejected.
+
+**"querySelector returns live results like getElementsBy*"** → The split is STATIC versus LIVE: querySelectorAll snapshots (safe to iterate-and-mutate), getElementsByClassName/TagName return live HTMLCollections that shrink UNDER your loop as you remove matching nodes (the skipped-every-other-element classic), and childNodes-versus-children adds the text-node surprise. One sentence of API taxonomy — which collections are live, which are static, which include text nodes — retires three recurring bug reports.
+
+**"Browser storage means localStorage"** → localStorage is SYNCHRONOUS (blocks the main thread — a real cost at app scale), string-only (JSON tax on every access), ~5MB, and per-origin shared across tabs (with the storage event as the free cross-tab channel people forget exists). The taxonomy that matters: cookies are the only thing SERVERS see (and carry security attributes — HttpOnly, SameSite — that JS storage cannot express, which is why tokens in localStorage are an XSS one-shot), IndexedDB is the async big-data store, and sessionStorage is per-TAB not per-session-in-the-auth-sense. Choosing storage is choosing a threat model plus a performance profile, not picking a convenience API.

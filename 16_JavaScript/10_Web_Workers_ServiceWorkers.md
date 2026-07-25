@@ -801,3 +801,18 @@ registerRoute(
 **Next Chapter**: [Advanced Web APIs â†’](11_Advanced_Web_APIs.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"Workers give JavaScript multithreading"** ? Workers give ISOLATED threads with message passing — no shared objects, no locks, no data races BY CONSTRUCTION: postMessage structured-CLONES payloads (cost proportional to size — shipping 100MB of JSON to a worker can cost more than the computation), with two escape hatches: Transferables (ArrayBuffers move ownership, zero-copy, source becomes unusable) and SharedArrayBuffer (true sharing, requires cross-origin-isolation headers, brings Atomics and actual concurrency reasoning back). The design consequence: workers suit coarse-grained jobs with small messages — parse, crunch, index — not chatty fine-grained calls.
+
+**"Web Workers and Service Workers are variations of the same thing"** ? Same thread-isolation machinery, OPPOSITE lifecycles and jobs: web workers are owned by a page (spawned, messaged, die with it — computation offload), service workers are owned by the ORIGIN (installed once, wake for events, serve ALL tabs, terminate whenever idle — a programmable network proxy). The lifecycle inversion is the entire mental model: you call a web worker; a service worker gets CALLED by the browser. Confusing them produces the classic errors — global state in a service worker (killed between events) and expecting a web worker to outlive navigation.
+
+**"Service workers cache things automatically"** ? Service workers execute YOUR fetch-event code — every caching behavior is a strategy you wrote: cache-first (fast, stale), network-first (fresh, slow offline), stale-while-revalidate (fast AND eventually fresh — the pragmatic default). Nothing is cached, invalidated, or bounded unless coded; the Cache API is a manual key-value store with no eviction policy of its own. The production war stories are all strategy bugs: HTML cached cache-first pinning users to a dead version, API responses cached without auth-awareness, caches growing unbounded. The SW is a proxy you author — authorship is the risk and the power.
+
+**"Deploying a new service worker updates the app"** ? The update dance is the trap everyone falls in once: the new SW installs but WAITS while any old-controlled tab exists, activates only after full tab closure (refresh is NOT enough — the old worker controls the refreshing tab), and even then controls only future loads unless clients.claim. The byte-different check happens per navigation (24h cap), skipWaiting force-activates with a mixed-assets risk (old page, new worker), and the professional pattern is the update-available toast wired to skipWaiting-then-reload. Shipping a broken SW without this understanding means users pinned to the broken version by the very mechanism meant to update them.
+
+**"Offline support means adding a service worker"** ? The SW intercepts requests; OFFLINE is an application architecture: which data is readable offline (IndexedDB, synced), which actions QUEUE while disconnected (background sync, replay-on-reconnect), how conflicts resolve when the queue lands on changed server state (last-write-wins? merge? surface to user?), and how the UI communicates degraded mode. A fetch-handler-only "offline app" shows cached shells with dead data and lost writes — the proxy layer worked perfectly while the product failed. Offline is a data-synchronization design problem; the service worker is merely its network valve.

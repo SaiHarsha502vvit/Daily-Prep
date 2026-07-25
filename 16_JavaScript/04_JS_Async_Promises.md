@@ -682,3 +682,18 @@ Q: How to run async operations in parallel?
 [â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"await pauses the thread"** → await SUSPENDS THE FUNCTION and returns control to the event loop — nothing pauses: the rest of the async function becomes a continuation queued for when the promise settles. This is why two sequential awaits serialize their operations (each waits before STARTING the next — the accidental-waterfall performance bug) while Promise.all starts both first; and why "async" never means "parallel" for CPU work — one thread runs all the JavaScript regardless. The model: async/await is cooperative scheduling syntax, not concurrency.
+
+**"Unhandled promise rejections are like uncaught exceptions"** → They are DELAYED and DETACHED: a rejection with no handler attached yet is not necessarily unhandled (attaching later works), but a promise whose rejection path is simply forgotten — the fire-and-forget call, the missing return inside .then, the async function called without await in a try block — fails silently-then-fatally (Node kills the process on unhandled rejections in modern versions). The three leak sites are exactly those: forgotten return in a chain, un-awaited async call inside try/catch (the catch cannot catch it), and .then(ok) with no second argument or .catch. Every one looks correct in review.
+
+**"Promise.all is how you run things concurrently"** → Promise.all is the fail-FAST combinator — one rejection rejects the whole and the OTHER operations keep running unobserved (their failures then become unhandled rejections; their side effects still land). The family exists because policies differ: allSettled (collect every outcome — the batch-processing default), race (first to SETTLE, including failure — timeout patterns), any (first SUCCESS — redundant-endpoint patterns). Choosing all by reflex when the requirement was "process every item and report failures" is the most common async design bug in application code.
+
+**"async/await made the microtask/macrotask distinction irrelevant"** → await IS microtask scheduling: every await yields to the microtask queue, microtasks drain COMPLETELY before the next macrotask (timers, I/O), and rendering waits for the drain — so a microtask loop starves the UI exactly like a while(true), and the setTimeout-0-versus-Promise.resolve ordering question is really "which queue?" The practical surfaces: state updates flushing before timers, "why does my await run before the setTimeout I scheduled first," and the queueMicrotask-versus-setTimeout choice when deliberately deferring. The queues did not go away; the syntax just stopped mentioning them.
+
+**"Async functions compose like sync functions with await sprinkled in"** → Composition changes in three specific ways people miss: EVERY async function returns a promise (a caller forgetting await gets a promise object — truthy, comparisons silently wrong), error boundaries follow the AWAIT points not the call structure (try/catch catches only what is awaited inside it), and loops fork into semantics: for-of-with-await serializes, map-with-async fires everything at once returning promises (forEach-with-async is pure fire-and-forget — the classic "why is my array empty after the loop"). The audit habit for any async code: find every promise created, and point to where it is awaited or explicitly handed off — unaccounted promises are the bug inventory.
