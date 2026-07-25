@@ -460,3 +460,18 @@ Hard problems decompose into **familiar patterns + glue logic**. The invariant i
 | Interval scheduling | Greedy sort | Interval overlap check | Optimal substructure |
 | Sequence with subsequence | DP | Character matching | LCS formulation |
 | Multi-source shortest path | BFS | Multi-source initialization | Bidirectional BFS possible? |
+
+
+---
+
+## Reality Check
+
+**"Composition means using two patterns in sequence"** ? Sequence is the weakest of four composition shapes: NESTING (binary search whose predicate runs a greedy check — one pattern inside another's decision point), LAYERING (heap maintained during an interval sweep — two patterns sharing a loop), TRANSFORMATION (sort first so two-pointers becomes legal — one pattern creating another's precondition), and sequence (build graph, then toposort). Recognizing WHICH shape a hard problem wants is the actual skill — nesting problems look impossible until you spot the inner pattern is just a subroutine.
+
+**"Hard problems require learning harder patterns"** ? The hard-problem distribution says otherwise: most hards are two MEDIUM patterns composed, and the difficulty is the seam — which pattern owns the outer loop, what data crosses the boundary, whose invariant survives. Median-of-data-stream is two heaps plus a balance rule; minimum-window-substring is window plus counting with a matched-tracker seam; word-ladder-II is BFS plus backtracking reconstruction. Attacking hards by learning suffix automata while the seam skill is untrained optimizes the wrong axis.
+
+**"When composing, each pattern works as it did alone"** ? Composition BENDS the components: the binary search inside search-on-answer doesn't return an index but tightens a bound; the DFS inside memoized tree problems returns values UP instead of just visiting; the greedy inside a heap-regret loop commits reversibly. Each pattern keeps its skeleton but adapts its contract to the composition — using the standalone version verbatim is the standard composition bug (the inner binary search that returns -1 into arithmetic expecting a boundary).
+
+**"Composition is recognized by trying patterns until two fit"** ? It is recognized by DECOMPOSING THE QUESTION: split the problem sentence at its conjunction — "smallest X such that Y is feasible" splits into search-over-X (outer) and check-Y (inner); "best Z while maintaining W" splits into scan-for-Z plus structure-maintaining-W. The conjunctions (such that, while, after, at most) are the seams made visible in language. Trial-and-error composition is quadratic in your pattern count; sentence-splitting is constant.
+
+**"A composed solution is verified like a simple one"** ? Composed solutions need SEAM verification beyond component verification: the boundary data (does the inner check receive what the outer loop thinks it sends — off-by-one in the candidate value is classic), invariant collision (does the heap's reordering break the sweep's assumption of sorted processing), and complexity multiplication (outer log times inner n is fine; outer n times inner n log n may not be — the composed bound needs its own arithmetic). Component-only testing passes composed bugs straight through; test the seam with the smallest input that exercises BOTH patterns at once.

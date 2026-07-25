@@ -639,3 +639,18 @@ _The best debuggers aren't the ones who fix bugs fastest â€” they're the ones wh
 ---
 
 > **Navigation**: [< Previous](17_Frontend_Architecture_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Production debugging is regular debugging with higher stakes"** ? It inverts the fundamental affordance: you cannot STEP through production — you reason from ARTIFACTS (logs, metrics, traces) captured before you knew there was a problem. The skill ceiling is therefore set at WRITE time, not debug time: what got logged, what got measured, what correlation IDs stitch the story. Production debugging is archaeology with whatever the past instrumented — which is why observability is a design discipline, not an ops afterthought.
+
+**"Start by looking for what is broken"** ? Start by looking for WHAT CHANGED: deploys, config flips, feature-flag rollouts, dependency updates, traffic-mix shifts, certificate expiries, cron boundaries — the trigger list explains the overwhelming majority of incidents, and change-correlation is minutes where code-reading is hours. The system was working; something perturbed it; the perturbation has a timestamp. Only after the change hunt exhausts do you graduate to "it degraded gradually" hypotheses (leaks, growth curves, saturation) — which have their own artifact signatures (monotonic memory, creeping latency percentiles).
+
+**"Reproduce the bug, then fix it"** ? Production adds a decision BEFORE reproduction: MITIGATE first — rollback, flag-off, failover, scale-out — because user harm accrues per minute while root cause waits. The mature incident shape is stop-the-bleeding, PRESERVE the evidence (grab heap dumps, snapshot metrics, save logs before the restart clears them), then diagnose at leisure. Engineers who debug-first on live incidents optimize their curiosity over user harm; the discipline is mitigation-with-evidence-preservation, and it must be practiced because instinct says find-the-bug.
+
+**"The error message locates the problem"** ? Production errors surface DOWNSTREAM of their cause across service boundaries: the database timeout is connection-pool exhaustion is a slow query introduced two services away; the OOM kill is a cache without bounds fed by a retry storm caused by a dependency's latency. The mental tool is the causality walk — for each symptom, ask "what upstream condition produces exactly this?" and walk until the change-event — plus its guardrail: correlation across the SAME request (trace IDs), not across coincident timestamps, because production generates coincidences at scale.
+
+**"Post-incident, the fix closes the loop"** ? The fix closes ONE instance; the loop closes with three artifacts: the detection gap (why did users find it before the alerts — a missing SLO or alert threshold), the class audit (where else does this pattern live — the same unbounded cache, the same retry-without-jitter), and the blameless timeline (what the system made easy to get wrong). Teams that ship only the fix meet the bug's siblings quarterly; teams that ship the three artifacts compound reliability. The mental model: an incident is the system volunteering a lesson — the fix accepts it, the artifacts LEARN it.

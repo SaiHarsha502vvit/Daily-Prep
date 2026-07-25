@@ -414,3 +414,18 @@ Q5: Does the sub-problem repeat?
 | String patterns | Matching, parsing | KMP / Trie | O(n) or O(m+n) |
 | All combinations | Enumeration | Backtracking | O(2^n) or O(n!) |
 | Subset sum / knapsack | Optimization | DP | O(nW) or O(n^2) |
+
+
+---
+
+## Reality Check
+
+**"Triggers are keyword lookups"** ? Mature triggers are COMPOUND CONDITIONS, and the compounds are what distinguish them from the keyword tables beginners memorize: not "sorted ? binary search" but "sorted AND asking position/existence AND better-than-linear expected ? binary search; sorted AND pairing elements ? two pointers; sorted AND merging ? parallel pointers." Single-keyword triggers misfire constantly because problem setters plant decoy keywords; compound triggers fire on structure, which cannot be faked.
+
+**"A trigger guide is memorized once"** ? A trigger guide is a LIVING calibration log: every practice miss is a trigger bug — either a missing trigger (never considered the pattern), a misfire (considered it wrongly), or a tie unresolved (considered two, chose wrong) — and the guide only compounds if misses update it. The maintenance ritual that works: after each failed problem, write the one-line trigger that WOULD have fired correctly, in your own words, into your own copy. A static guide read twice is worth one session; a maintained guide is worth every session it absorbs.
+
+**"Strong triggers fire on the problem statement"** ? The strongest triggers fire on the CONSTRAINTS and the ANSWER TYPE before the story is even parsed: n = 20 fires bitmask/backtracking, n = 10^5 kills quadratic, values = 100 fires counting arrays, "count the ways" fires DP-or-math, "return any valid" fires greedy/constructive, "minimum maximum" fires binary-search-on-answer. Story-level triggers are the second wave, constraint-level the first — and reading the problem in that order (constraints, question sentence, THEN narrative) is itself the meta-trigger that guides everything downstream.
+
+**"When two triggers fire, pick the more advanced pattern"** ? Ties break by CHEAPEST DISPROOF, not sophistication: test the simpler candidate against a hostile 5-element input first — thirty seconds either eliminates it or promotes it. The sophistication heuristic runs exactly backwards (setters bait advanced-pattern overreach; the sorted-greedy that solves the fake segment-tree problem is a genre), and the disproof habit doubles as the verification habit — the same adversarial input that breaks the wrong pattern later stress-tests the right one.
+
+**"Perfect triggers would make solving mechanical"** ? Triggers get you to the pattern NEIGHBORHOOD; residual work — the state definition, the invariant phrasing, the seam in a composition — is where problems still resist after correct routing, and no trigger granularity eliminates it. The honest division of labor: triggers compress the search over approaches (the part that panics people under time pressure), leaving full attention for instantiation (the part that rewards it). Chasing trigger perfection past that point is cataloging, not preparing — the guide is a router, and routers do not write the payload.

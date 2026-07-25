@@ -486,3 +486,18 @@ _The best frontend code doesn't look clever — it looks obvious. Anyone on the 
 ---
 
 > **Navigation**: [< Previous](16_Distributed_Systems_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Production_Debugging_Thinking.md)
+
+
+---
+
+## Reality Check
+
+**"Frontend architecture means choosing the framework"** → The framework decides component syntax; the ARCHITECTURE is everything the framework leaves open: where state lives (server cache vs client store vs URL vs component), how data flows down and events flow up, what boundary separates fetching from rendering, and which layer owns errors. Two React apps can differ architecturally more than a React and a Vue app — the framework choice is one column of the decision table, and rarely the one that determines maintainability.
+
+**"State management means picking a store library"** → The prior question is CLASSIFYING the state, because each class has a different natural home: server data belongs in a request cache (stale-while-revalidate semantics — most "global state" is actually this), UI state belongs local to its component, shareable view state belongs in the URL (survives refresh, enables links — chronically underused), session identity in context, and only genuinely cross-cutting client state earns a store. The classic over-architecture is one global store swallowing all five classes; the mental model is a routing table for state, not a warehouse.
+
+**"Component design is about reusability"** → Premature reusability is the frontend's premature abstraction: the parameterized-for-everything component with fourteen props that every consumer configures differently is HARDER to change than three duplicated variants would have been. The architecture-grade questions are ownership and boundaries — which component owns this state, what is presentational versus connected, where does composition happen — and reuse is extracted AFTER the third genuine repetition, when the shared shape is proven rather than predicted.
+
+**"Rendering performance is optimization work for later"** → Rendering ARCHITECTURE is a day-one decision wearing a performance costume: what triggers re-render (state placement determines blast radius — state high in the tree re-renders the tree), what data is derived versus stored (derived-at-render eliminates sync bugs AND re-render triggers), where lists virtualize, and what memo boundaries exist. Retrofitting these means moving state, which means touching every consumer — the "later" in "optimize later" is a refactor, while the day-one version was a placement choice. Distinguish this from micro-optimization, which genuinely can wait.
+
+**"The backend defines the data; the frontend displays it"** → The frontend has its OWN data layer with its own design decisions: the shape components consume should be the VIEW shape, not the API shape (the anti-corruption mapping at the fetch boundary is what keeps API churn from rippling through components), caching and invalidation policy is frontend-owned (when is a list stale after an edit?), and optimistic updates are a distributed-systems decision (show success before confirmation — with rollback semantics). Frontends that consume API shapes raw couple every screen to every endpoint version — the same coupling mistake backends learned to fence off a decade earlier, replayed in the browser.

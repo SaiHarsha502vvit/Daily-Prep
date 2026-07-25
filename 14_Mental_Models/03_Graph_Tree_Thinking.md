@@ -467,3 +467,18 @@ Graphs capture **relationships between entities**; traversal order determines th
 | Adjacency matrix | O(V^2) | O(1) | Dense graphs, dense operations |
 | HashMap of HashMaps | O(E) | O(1) avg | Dynamic edge addition |
 | Edge list + sort | O(E log E) | O(E) scan | Kruskal/Prim MST algorithms |
+
+
+---
+
+## Reality Check
+
+**"Graph thinking activates when the problem says graph"** ? Graph thinking is a MODELING CHOICE you impose: states with transitions (word ladder, lock combinations), items with constraints (course prerequisites, build orders), entities with similarity (accounts sharing emails) — all become graphs the moment you declare nodes and edges. The mental model is the declaration ritual: NODES are (what?), EDGES exist when (what?), and the question becomes (reachability? distance? ordering? components?). Problems rarely say graph; solvers say it.
+
+**"Trees are simple graphs"** ? Trees are graphs with three superpowers worth consciously exploiting: unique paths (no visited-set needed, parent-exclusion suffices), recursive decomposition (every subtree is a full subproblem — the basis of all tree DP), and n-1 edges (any two of connected/acyclic/n-1-edges imply the third — a free validity test). Thinking of trees as merely simple graphs wastes the superpowers; half of tree-problem elegance is one of these three doing hidden work.
+
+**"BFS explores wide, DFS explores deep — that is the whole model"** ? The operational model is what each GUARANTEES: BFS layers certify minimum edge-distance (first arrival is shortest — unweighted only), DFS finishing order certifies dependency completion (reverse postorder IS topological sort), and DFS tree-edges versus back-edges classify structure (back edge equals cycle). Choosing by guarantee — need distances? layers. need ordering? finish times. need structure? edge classification — replaces the wide/deep slogan with the actual decision procedure.
+
+**"Connectivity intuition transfers directly to directed graphs"** ? Direction breaks the symmetric intuition in specific, trap-laden ways: reachability is one-way (A reaches B says nothing about B reaching A), undirected components become three distinct notions (weak, strong, and neither), cycle detection needs the gray-node protocol instead of parent-exclusion, and "connected" questions must be RESTATED (mutual reachability? one-way coverage?). The mental habit: on hearing directed, re-ask every connectivity question explicitly — the wrong-model bugs here pass compilers and reviews.
+
+**"Visualizing the graph means drawing all of it"** ? Working graph thinkers visualize LOCAL structure plus global invariants — this node, its neighbors, and what property the traversal maintains (frontier distance, visited region growing monotonically, stack contents mirroring the current path) — because real graphs are too large to draw and the drawing adds nothing the invariant does not. Drawing five nodes to fix the local rule, then trusting induction, is the graph version of recursion's leap of faith — and the same people who trace recursion also try to draw the whole graph.

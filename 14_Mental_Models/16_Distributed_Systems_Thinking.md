@@ -531,3 +531,18 @@ _Distributed systems thinking is about accepting uncertainty and building system
 ---
 
 > **Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
+
+
+---
+
+## Reality Check
+
+**"Distributed thinking is single-machine thinking, scaled"** ? It is single-machine thinking with three axioms REMOVED: no shared clock (ordering must be constructed), no reliable delivery (every message maybe-arrives, maybe-twice), no failure clarity (dead and slow are indistinguishable). Designs that scale up single-machine intuition — call it like a function, trust the timestamp, detect the crash — are precisely the ones that generate the famous incident classes: double-charges on retry, last-write-wins data loss, split-brain writes.
+
+**"Think in terms of what the system does"** ? Distributed thinking inverts to what the system does UNDER EACH FAILURE: the happy path is one row of a matrix whose columns are timeout, duplicate, reorder, partition, and slow-node — and the design is judged by the worst cell. The drill that builds the reflex: for any arrow in any diagram, ask "this message never arrives — then what?" and "this message arrives twice — then what?" Two questions per arrow converts architecture review from tour to stress test.
+
+**"Consistency is a system-wide setting"** ? Consistency is a PER-DECISION budget line: the same product runs linearizable inventory decrement, read-your-writes profile updates, and eventually-consistent view counters — each paying exactly the coordination it needs. System-wide slogans ("we're an AP shop") are the tell of borrowed thinking; the owned version prices each flow: what does THIS read need to see, how stale is tolerable, who notices the anomaly, what does the coordination cost in tail latency?
+
+**"Idempotency is a nice-to-have hardening step"** ? Idempotency is the PRICE OF RETRIES, and retries are mandatory (because timeouts are ambiguous) — so idempotency is load-bearing from day one: mutation endpoints keyed by client-generated request IDs, consumers deduplicating by event ID, state transitions expressed as absolute-target rather than relative-delta where possible ("set to X" self-heals; "add 5" compounds). The thinking habit: any operation you cannot safely repeat is an operation that WILL eventually execute an unknown number of times — zero, one, or more — and the design must answer for all three.
+
+**"Distributed thinking culminates in choosing algorithms — Raft, vector clocks, CRDTs"** ? It culminates in knowing where to BUY versus build: leases from etcd, uniqueness from database constraints, ordering from single-partition streams, transactions from sagas-with-compensation — assembling guarantees from managed parts, reserving algorithm implementation for the rare gap. The interview-and-production tell of maturity is identical: "we need exactly-one leader — that is a lease from the coordination service, with fencing tokens for the stale-leader window," not a Raft implementation sketch. Name the guarantee, name the shelf it comes from, name the residual failure window — that sentence structure is the whole discipline.

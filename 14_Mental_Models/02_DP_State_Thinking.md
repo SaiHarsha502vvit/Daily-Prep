@@ -442,3 +442,18 @@ DP works when subproblems **overlap** (same subproblem is solved multiple times)
 | State is (i, j, k) — 3D | 3D array or HashMap | n > 1000 → sparse or compressed DP |
 | Greedy counter-example exists | DP (not greedy) | Greedy provable (matroid) → greedy |
 | Brute force exponential | DP or pruning | DP state space too large → approximate/heuristic |
+
+
+---
+
+## Reality Check
+
+**"DP state thinking is DP problem thinking"** → State thinking is a general modeling discipline DP happens to formalize: what is the MINIMAL summary of the past that makes the future decidable? The same question designs REST resources (what must the server remember?), UI reducers (Redux state shape), and protocol machines. Practicing it via DP is efficient because DP punishes wrong answers immediately — but the muscle is transferable, and naming it that way makes the practice compound.
+
+**"The state is what varies in the problem"** → The state is what the FUTURE NEEDS, which is neither everything that varies nor only what the problem mentions: stock-with-cooldown varies by day but needs (day, holding?, cooldown?); the problem statement never says "holding" anywhere. The generative question is prosecutorial: standing mid-decision, what facts about my history change what I am allowed or incentivized to do next? Each such fact is a dimension; anything else is noise the state should compress away.
+
+**"More state dimensions make the DP more correct"** → Dimensions are EXPONENTIAL COST and should be interrogated like hires: a dimension earns its slot only if two histories differing ONLY in it lead to different optimal futures. The classic bloat: tracking the full path when only the last element constrains, tracking counts when only parity matters, tracking positions when only distance does. Minimal-sufficient state is the difference between 2^n and n·k tables — the compression IS the algorithm.
+
+**"Transitions follow mechanically once the state is right"** → Transitions encode the DECISION MENU, and menu errors are the second bug family: forgetting an option (you may also SKIP this item), inventing illegal ones (buying while holding), or double-counting via overlapping options. The verification ritual: at a concrete small state, enumerate the menu by hand and check the recurrence lists exactly those arrows — five minutes that catches what staring at the formula never does.
+
+**"Base cases in DP are zeros"** → Base cases encode the semantics of EMPTY, and choosing them wrong poisons every derived cell: count-ways bases are 1 (the empty way exists — dp[0]=1 in coin change is a modeling statement, not an initialization habit), min-cost bases are 0 at start and INFINITY elsewhere (unreachable must never win a min), and interval bases live on the diagonal. When a DP is wrong everywhere by the same flavor, audit the bases before the recurrence — the error compounds outward from row zero.

@@ -442,3 +442,18 @@ _System design is a conversation, not a test. Show your thinking process — tha
 | Read replicas | Read-heavy workloads | Replication lag, stale reads |
 | Cache layer | Hot data, latency-critical | Cache invalidation, cold start |
 | Message queue | Async processing, decoupling | Complexity, ordering guarantees |
+
+
+---
+
+## Reality Check
+
+**"System design thinking is a senior-only skill"** → The THINKING scales down to every level: a function API is a contract design (inputs, outputs, error surface), a module boundary is a coupling decision, a batch script that retries has failure semantics. Juniors who practice the questions — who calls this, what breaks it, what grows — on small scopes are doing system design; the senior interview merely enlarges the canvas. Deferring the thinking until the title arrives is backwards; the title arrives BECAUSE the thinking showed.
+
+**"The core skill is knowing the standard components"** → Components are vocabulary; the skill is BUDGET ARITHMETIC connecting them: requests per second against instance capacity, bytes per record against storage growth, fan-out factor against write amplification, cache hit rate against origin load. Two designs with identical boxes differ entirely in whether the numbers between the boxes close. The five-minute estimation pass — traffic, storage, bandwidth, growth — is what converts a component tour into a design, and its absence is the most common senior-loop failure.
+
+**"Design for the requirements as stated"** → Requirements arrive INCOMPLETE BY DESIGN (interviews) or by nature (products), and the thinking skill is interrogating along the axes that change architecture: read/write ratio (flips storage choice), consistency tolerance (flips replication), access pattern skew (flips caching and partitioning), growth curve (flips everything on a timeline). Five questions before the first box is not stalling — it is the difference between designing THE system and designing A system that shares its name.
+
+**"Trade-offs are discussed after the design is drawn"** → Trade-offs ARE the design; the drawing is their record: choosing the queue IS choosing eventual processing and idempotent consumers; choosing the cache IS choosing a staleness window; choosing SQL IS choosing join capability over write-scaling headroom. The thinking pattern that reads as senior: every arrow announced with its price ("async here — we accept seconds of lag to survive the provider's outages"). Designs presented as priceless — all benefit, no cost — signal either inexperience or salesmanship, and interviewers probe until a price appears.
+
+**"Good design thinking produces the right architecture"** → It produces architecture PLUS EVOLUTION PLAN: where the seams are when load grows 10x (the stateless tier scales; the database is the first wall), what gets extracted when the team doubles, which decision is reversible (cache policy) versus which is concrete-hardening (shard key, event schema). The one-way-door versus two-way-door sort is the highest-leverage classification in the toolkit — spend design time proportional to reversal cost, and say so aloud: "this is revisable, moving on; THIS one we get right now."

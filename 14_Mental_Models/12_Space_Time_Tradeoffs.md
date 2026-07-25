@@ -327,3 +327,18 @@ Cache hierarchy makes **locality = speed** â€” memory that's close to the CPU is
 | Boolean array for bounded range | Bitset | Range too large â†’ compressed bitset |
 | Batch precomputation | Prefix sum array | Updates needed â†’ Fenwick tree |
 | Online vs offline algorithm | Depends on latency requirement | Offline can pre-sort, online needs incremental |
+
+
+---
+
+## Reality Check
+
+**"Space-time tradeoff means caching things"** ? Caching is one square of a larger board: precomputation (prefix tables trading build time for query time), representation duplication (heap AND map onto the same data, each serving its operation), recomputation-on-purpose (streaming a second pass instead of buffering — trading time to AVOID space), and compression (bitmasks trading CPU decode for footprint). The model is directional: you can spend either currency to buy the other, and half the interesting engineering spends time to save space, not the reverse.
+
+**"More memory always buys more speed"** ? Past cache boundaries, memory SPENDS speed: the lookup table that outgrows L2 loses to recomputation (a multiply is 1ns; a RAM miss is 100ns — recomputing beats remembering whenever the formula is cheaper than the miss), pointer-rich structures lose to compact recomputing loops, and memoization of cheap functions costs more in map overhead than it saves. The mental model needs the hardware floor: space purchases speed only while the space stays HOT.
+
+**"The tradeoff is chosen once per algorithm"** ? Real systems place the SAME data at multiple points simultaneously along the curve: hot rows in a cache (space for speed), cold logs compressed (speed for space), indexes on some columns (write-time for read-time), and TTLs constantly renegotiating the position. The design skill is per-access-pattern placement — and the interview version is recognizing that "optimize this function" often means "move THIS call site along the curve, leave the rest."
+
+**"Hash maps are the canonical space-for-time move, always worth it"** ? The map's O(n) space buys O(1) lookup — but sorted-input problems often offer the same speed for O(1) space (two pointers), bounded-value problems offer arrays (smaller constant, same asymptotics), and bit-level problems offer masks (64 booleans in a word). The reflex "throw a HashMap at it" is usually CORRECT and occasionally the exact thing the follow-up question exists to remove ("now in O(1) space") — so hold the map loosely and know its three cheaper cousins.
+
+**"Streaming constraints are exotic"** ? One-pass-limited-memory is the NORMAL regime for logs, network data, and anything at scale — and it inverts the tradeoff instincts: exact answers become impossible (distinct-count in bounded memory is provably approximate — HyperLogLog), sampling replaces retention (reservoir sampling), and sketches trade CORRECTNESS-precision for space (Bloom filters saying "definitely not or probably yes"). The mental model extension: beyond spending time or space, you can spend EXACTNESS — the third currency, and the one modern systems spend first.

@@ -614,3 +614,18 @@ Input size **determines asymptotic class**; constant factors matter at small n. 
 | n <= 10^6 | O(n log n) required | O(n * sqrt(n)) | O(n^2) |
 | n <= 10^7 | O(n) required | O(n log n) | O(n^2), O(n log n) with large constant |
 | n > 10^7 | O(n) with low constant | Rare cases of O(n log n) | Anything worse than linear |
+
+
+---
+
+## Reality Check
+
+**"Complexity intuition means recognizing loop shapes"** ? Loop-counting handles the easy half; the intuition that matters prices OPERATIONS BY THEIR STRUCTURE: halving means log, tree-height means log-if-balanced, each-element-enters-once means amortized linear (two pointers, monotonic stacks), sorted-input-exploitation means the log was prepaid. The upgrade from counting to pricing shows in nested-loop-that-is-linear cases (window shrinks) and single-loop-that-is-quadratic cases (string concatenation inside) — where shape-readers get both wrong.
+
+**"Big-O comparisons settle which code is faster"** ? Big-O settles SCALING, not speed: at real input sizes the hidden constant and the memory pattern routinely invert the ranking (linked structures losing to arrays despite equal O, hash overhead losing to sorted scans at small n, the O(n log n) sort beating the O(n) two-pass with bad cache behavior). The two-question intuition: what is n TODAY (asymptotics may not even apply), and does the constant involve pointer-chasing (then double it mentally)? Complexity is the first filter, never the verdict.
+
+**"Space complexity is time complexity's easy sibling"** ? Space hides the sneakier accountancy: recursion depth IS space (the O(log n) quicksort stack, the O(n) worst case), "in-place" claims often smuggle O(n) via the call stack or the output buffer, memoization space equals the REACHABLE state count (not the theoretical table), and slices/substrings copy in some languages (quadratic space in a loop). The audit habit: for every solution, name where the biggest allocation lives — array, map, stack, or output — and size it; the answer surprises more often than time does.
+
+**"Amortized analysis is an advanced technique"** ? Amortized is the EVERYDAY intuition behind structures you already trust: dynamic arrays (occasional double, average O(1)), hash resizing, two-stack queues, monotonic-stack passes — all the same argument, total work bounded across the sequence, expensive steps prepaid by cheap ones. The practical consequence people miss: amortized O(1) contains REAL O(n) spikes — fine for throughput, potentially fatal for per-operation latency budgets (the GC-pause analogy) — so amortized is an average CLAIM with a worst-case footnote you must read.
+
+**"Intuition replaces formal analysis"** ? Intuition is compressed prior analysis and DECOMPRESSES under novelty: recurrences you have not seen (T(n) = 2T(n/2) + n log n?), probabilistic structures, or hybrid algorithms need the master theorem, expectation arithmetic, or honest counting — and the intuitive answer is confidently wrong precisely there. The calibrated stance: trust intuition for recognition and estimation, escalate to formalism when the structure is new, the stakes are high, or two intuitions disagree. Knowing WHICH mode you are in is itself the meta-intuition.

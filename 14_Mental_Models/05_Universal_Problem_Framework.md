@@ -468,3 +468,18 @@ Every problem has a **constraint â†’ pattern â†’ complexity â†’ solution** pipel
 | Negative numbers in array | Prefix sum needs hashmap (not array) | Use dict for frequency |
 | Unsorted but need O(1) lookup | HashMap | Sort O(n log n) vs hash O(n) |
 | All elements same | HashMap for counting | Special-case output |
+
+
+---
+
+## Reality Check
+
+**"A universal framework solves problems for you"** ? The framework GUARANTEES coverage, not insight: it ensures you extracted constraints, tried representations, and tested hypotheses in order — so the insight has maximal chance to fire — but the firing is still pattern recognition built from practice. Frameworks fail their users in two symmetric ways: expecting the checklist to produce the idea (it only prevents missing it), and abandoning the checklist once "experienced" (which reintroduces the unforced errors it existed to prevent).
+
+**"Following all steps every time is the discipline"** ? CALIBRATED skipping is the discipline: easy problems collapse steps legitimately (constraints and pattern arrive together), hard problems need every step slowly, and the framework's real job is telling you WHICH situation you are in — when the fast path stalls (two minutes, no traction), the full sequence activates as the fallback protocol. Rigid full-sequence users are slow on easies; rigid skippers are lost on hards; the framework includes its own escalation rule.
+
+**"The framework is for solving; verification is separate"** ? Verification is EMBEDDED at every step or the framework silently derails: the restated problem gets checked against an invented example (comprehension), the chosen pattern against a tiny adversarial input (fit), the coded solution against the nastiest edge (implementation). A framework run without embedded checks produces confident wrong answers WITH excellent process hygiene — the most dangerous failure mode, because it feels like rigor.
+
+**"One framework fits algorithms, design, and debugging"** ? The SKELETON transfers (understand, represent, hypothesize, test, iterate); the FLESH is domain-specific: algorithms hypothesize patterns and test with counterexamples, design hypothesizes architectures and tests with load numbers and failure cases, debugging hypothesizes causes and tests with bisection and instrumentation. Selling one undifferentiated framework for all three produces vague competence; knowing the shared skeleton plus each domain's test-of-choice produces transfer.
+
+**"Experts have internalized the framework and no longer use it"** ? Experts run it SUBCONSCIOUSLY until difficulty spikes — then deliberately re-externalize it: writing constraints down, saying the restatement aloud, listing hypotheses on paper. The observable difference between expert and intermediate under real difficulty is exactly this downshift — intermediates keep flailing at intuition speed, experts drop to framework speed on purpose. Internalization is the default mode, not the retirement of the tool; the tool retires never.

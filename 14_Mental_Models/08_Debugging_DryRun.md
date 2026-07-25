@@ -563,3 +563,18 @@ State evolves **predictably when traced step-by-step**. The invariant is that a 
 | Postmortem analysis | High | After incident, root cause | System-level understanding |
 | Log replay | High | Production issues, distributed | Reconstructed timeline |
 | Flame graphs | Medium-high | Performance bugs, CPU profiling | Call hierarchy with time |
+
+
+---
+
+## Reality Check
+
+**"Dry running means executing the code in your head"** ? Head-execution is the ERROR-PRONE version — your mental interpreter has the same bug as your mental model that wrote the code. Effective dry runs externalize: a variables table updated per iteration ON PAPER, where the hand forces honesty the head skips. The moment the paper value surprises you is the bug's address; head-runs never surprise because they run the intention, not the code.
+
+**"Dry run with the given example"** ? The given example was chosen to be ILLUSTRATIVE, not adversarial — code that fails hides in inputs the example avoids: duplicates, extremes, size two, already-sorted. The dry-run input should be the smallest input that exercises the suspicious structure (three elements for a two-pointer, one repeated value for dedup logic). Choosing the dry-run input IS the diagnostic skill; running the friendly example twice is ritual, not debugging.
+
+**"Debugging is finding where the code differs from intention"** ? That is ONE of three layers, and misdiagnosing the layer wastes the session: implementation bugs (code differs from algorithm — dry runs find these), ALGORITHM bugs (correct code, wrong idea — counterexamples find these, and no amount of stepping will), and COMPREHENSION bugs (right algorithm, wrong problem — re-reading the statement finds these). The triage question before any stepping: does my algorithm even claim to handle this failing input correctly? If unsure, the bug is above the code.
+
+**"Print debugging is the unsophisticated option"** ? Print-versus-debugger is context economics, not sophistication: prints excel at TEMPORAL questions (what ORDER did events fire, how did state evolve across 10k iterations — grep the log) where steppers drown; steppers excel at DEEP-STATE questions (what exactly is inside this object at this moment) where prints multiply. The actual anti-pattern is either tool WITHOUT a hypothesis — instrumentation is hypothesis-testing apparatus, and unhypothesized stepping is just watching the program with extra steps.
+
+**"When the fix works, debugging is done"** ? Working fix, unfinished debugging: the closing questions are what CLASS was this bug (fencepost? stale state? wrong-layer?), where ELSE does this pattern live in the code (the same mistake rarely occurs once), and what would have CAUGHT it earlier (an assert, a checkpoint test, a convention). Debuggers who close these loops stop meeting the same bug; debuggers who stop at green re-meet it wearing different variable names — the entire gap between five years of experience and one year five times.

@@ -457,3 +457,18 @@ Bugs cluster at **edges, boundaries, and type conversions**. The invariant is th
 | Type conversion | Float to int, 64-bit to 16-bit | Range check before cast | Property-based testing |
 | API boundary | JSON deserialization | Schema validation | Fuzz testing with invalid inputs |
 | Collection iteration | Modification during loop | Fail-fast iterator | Snapshot or index-based iteration |
+
+
+---
+
+## Reality Check
+
+**"Implementation is transcription of the solved idea"** → Implementation is where HALF the failures happen even with a correct idea: state initialization, loop boundaries, update ordering, and return-value semantics are decisions the idea never specified. The checklist exists because these decisions feel too small to think about and are exactly where wrong answers concentrate. Treating coding as transcription is why "I knew how to solve it" and "it didn't pass" coexist so often.
+
+**"Variable naming does not matter in interview code"** → Names are your OWN debugging infrastructure under pressure: left/right versus i/j on a two-pointer, needCount versus n1, windowSum versus s — thirty seconds of naming saves the minutes lost re-deriving what s meant when the test fails. The empirical pattern in mock transcripts: candidates who rename mid-debug ("wait, what is k here?") lose the thread; candidates with semantic names debug by reading. The audience is you-in-five-minutes, not the interviewer.
+
+**"Write it all, then test at the end"** → CHECKPOINT testing beats end testing under time pressure: after the parsing/setup block, sanity-check state on the example; after the main loop, print or trace one iteration before writing the extraction step. End-testing a 40-line solution that fails gives you 40 lines of suspects; checkpointed failure gives you 10. The interview variant is narrated checkpointing — "let me verify the window state after the first expansion" — which simultaneously debugs and demonstrates.
+
+**"The return statement is the easy part"** → Return semantics are a top-five wrong-answer source: index versus value, count versus existence, the empty-input return (what IS max-subarray of nothing — the problem defines it or you must state a choice), the not-found sentinel (-1? null? exception?), and the accumulated-versus-final distinction (global best, not the last window). The checklist line that catches all of them: re-read the problem's output specification AFTER coding, before testing — it takes ten seconds and re-anchors the code to the actual question.
+
+**"Clean-up passes are polish for leftover time"** → One targeted clean-up pass CATCHES BUGS by changing your reading mode: scanning specifically for unused variables (leftover from an abandoned approach — often signals incomplete refactor), duplicated conditions (one is probably wrong), and asymmetric paired operations (the add without its remove). This is not aesthetics — it is a linter run by eye, tuned to the three asymmetries that survive first-pass writing. Two minutes, distinct from testing, catches what testing on friendly examples misses.

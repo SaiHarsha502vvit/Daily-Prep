@@ -344,3 +344,18 @@ Greedy works when **local optimal = global optimal** â€” the choice that looks b
 | Huffman coding | Greedy | Merging lowest-frequency nodes is optimal (matroid) |
 | Minimum spanning tree | Greedy | Edge weight ordering (Kruskal/Prim) is optimal |
 | Job sequencing with deadlines | Greedy with sorting | Select by profit, greedy on time slot availability |
+
+
+---
+
+## Reality Check
+
+**"Greedy versus DP is about problem difficulty"** ? It is about whether LOCAL CHOICE SUFFICES: greedy commits (each decision final, no revisiting), DP defers (all decisions provisional until the table completes). The decision procedure is concrete: hunt for an exchange argument — can any optimal solution be transformed, swap by swap, toward the greedy choice without loss? Found: greedy, with proof attached. Not found after honest attempt, or counterexample found: DP. Difficulty never enters the criterion; provability does.
+
+**"Coin change shows greedy fails, so use DP for money problems"** ? The lesson is sharper: greedy on coins fails for ARBITRARY denominations (6,5,1 against 10) but is PROVABLY correct for canonical systems like 1,5,10,25 — the same problem flips category by input structure. The transferable habit is testing the structure, not the noun: interval problems are greedy-safe (exchange argument closes) while superficially similar partition problems are not. Nouns route nothing; structure routes everything.
+
+**"If greedy passes the examples, ship it"** ? Greedy failures hide in ADVERSARIAL configurations no friendly example exercises — the 4-element counterexample is the standard grave (activity selection by shortest-first dies on one, jump-game greedy variants die on crafted gaps). The two-minute discipline before trusting any greedy: actively construct the input that punishes the rule (reward what the rule ignores), and only on failure to construct one, sketch the exchange argument. Passing examples is evidence of nothing; surviving your own sabotage is evidence.
+
+**"DP is the safe default when unsure"** ? DP without justified structure fails two ways greedy does not: state explosion (the "what if I track everything" reflex producing exponential tables for problems greedy solved in a line — meeting rooms as interval DP is the classic overkill), and WRONG optimal-substructure assumptions (longest simple path looks DP-shaped; it is NP-hard because subpaths interfere via the visited set). DP is not the cautious choice — it is a different claim about the problem, needing its own verification: do subproblems overlap, and does optimality compose?
+
+**"Greedy-with-sort and DP exhaust the decision space"** ? The boundary cases are where the model earns its keep: greedy-after-sort with a heap for regret (IPO, course-schedule-III — greedy that UNDOES via priority queue is exchange-argument greedy in disguise), DP whose transitions embed a greedy sub-rule, and problems where neither closes and the answer is flow, matching, or search-with-pruning. The mature decision model is a spectrum with named waypoints, not a binary — and "this needs regret capability, so heap-greedy" is the sentence that shows you own the spectrum.

@@ -682,3 +682,18 @@ WEEKLY REVIEW:
 | "Can you think of a better approach?" | Discuss optimizations | They want to see you optimize |
 | "Let's move on" | Wrap up, start testing | You've satisfied this criterion |
 | Question about your code | Pause, read your code aloud | Let them point to the issue |
+
+
+---
+
+## Reality Check
+
+**"Interviews test whether you can solve the problem"** ? Interviews test whether solving is OBSERVABLE: requirements extraction aloud, approach comparison aloud, complexity claims aloud, testing aloud. A silent perfect solution scores below a narrated good one on most rubrics because the rubric rows are literally communication behaviors. This is not theater over substance — it is that the JOB is reasoning with colleagues, and the interview samples that, using an algorithm as the prop.
+
+**"Thinking aloud means narrating everything"** ? Unfiltered narration is noise that drowns signal; the skill is BROADCAST LEVELS: decisions and their reasons at full volume ("two pointers over hashing because sorted input and O(1) space"), mechanics at murmur ("initializing bounds"), dead ends with closure ("windows fail on negatives — pivoting to prefix sums"). Interviewers steer by your decision broadcast; give them decisions, not a keystroke commentary — and silence is fine WHILE writing, bracketed by decision statements.
+
+**"Hints mean you are failing"** ? Hints are the interviewer INVESTING — steering you to the signal they still need, often after a planned difficulty spike. The graded behavior is hint INTEGRATION: pausing, connecting it to your current state, revising visibly ("if I sort first, then my earlier constraint objection dissolves — let me restructure"). Candidates who bulldoze past hints to protect their plan fail on collaboration; candidates who integrate smoothly convert the hint into points. One hint consumed well routinely outscores zero hints needed.
+
+**"Optimal solution or bust"** ? The scored trajectory is WORKING-then-better: a correct brute force banked early (stated, complexity-tagged, offered — "I can code this O(n squared) now or optimize first, your preference") de-risks the whole session and demonstrates judgment. The bust pattern is chasing optimal for twenty minutes, arriving nowhere, with nothing banked. Seniority reads as knowing the value of a working thing now versus a perfect thing maybe — in interviews and in the job it proxies.
+
+**"The interview starts when the problem is stated"** ? The scored interview starts at your FIRST QUESTION: input ranges, duplicates, empty cases, output format — two minutes of requirement probing before any approach talk is both the strongest opening signal and genuine risk reduction (a third of failed attempts trace to a misread requirement). Jumping straight to "so I'll use a HashMap" broadcasts junior regardless of what follows. The opening ritual is learnable in one evening and pays in every technical conversation you will ever have.
