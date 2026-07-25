@@ -75,62 +75,220 @@ await expect(page.locator(".success")).toBeVisible(); // now checks AFTER click 
 
 ## 2. Promises — The Contract Underneath Every Playwright Action
 
-A Promise is an object representing an operation that will complete (or fail) in the future.
+§1 established the constraint: JavaScript has one thread, so it can never sit and wait for the browser to answer. This section derives what that constraint *forces* the language to give you, and what `await` is actually doing when you type it.
+
+### 2.1 The problem Promises were invented to solve
+
+Before Promises, "call me when it's done" was expressed with a callback:
 
 ```typescript
-// A Promise has three states:
-// Pending: the operation hasn't finished yet
-// Fulfilled: the operation completed successfully (gives you a value)
-// Rejected: the operation failed (gives you an error)
-
-// Every Playwright method returns a Promise:
-const clickPromise: Promise<void> = page.click("#btn");
-const textPromise: Promise<string> = page.locator("h1").textContent();
-const navPromise: Promise<void> = page.goto("https://example.com");
-
-// await unwraps the Promise — waits for it to resolve, gives you the value:
-const text: string = (await page.locator("h1").textContent()) ?? "";
-//          ^^^^^^ the actual string value — NOT a Promise
+// The pre-2015 world. Read this and find the two structural problems.
+sendToBrowser("click #login", function (err, result) {
+  if (err) return handleError(err);
+  sendToBrowser("waitFor .dashboard", function (err, result) {
+    if (err) return handleError(err);
+    sendToBrowser("textContent h1", function (err, text) {
+      if (err) return handleError(err);
+      console.log(text); // finally
+    });
+  });
+});
 ```
 
-### Why Promises Chain
+Two problems, and the second is the one that matters:
+
+1. **Nesting** — each step indents further. Cosmetic; annoying but survivable.
+2. **You cannot `return` a result out of a callback.** ← *this* is the structural defect.
+
+Look closely at problem 2. The `text` exists only *inside* the innermost function. The outer `sendToBrowser` call already returned — long ago, with nothing. There is no expression you can write whose value is "the text that will arrive later." So you cannot store it in a variable, cannot return it from a function, cannot pass it to something else. Every consumer must be dragged *inside* the callback.
+
+**A Promise is the fix for exactly that.** It is an object you can have *right now* that stands in for a value that does not exist yet. Because it is an ordinary object, it can be returned, stored in a variable, put in an array, and passed to a function — all before the value arrives.
 
 ```typescript
-// These are equivalent:
-const text1 = await page.locator("h1").textContent();
-
-// Without async/await (raw Promise chaining — harder to read):
-const text2 = page
-  .locator("h1")
-  .textContent()
-  .then((text) => text ?? "");
-
-// The key insight: Playwright is NOT doing magic.
-// Every action is an HTTP request (WebSocket message) to the browser.
-// Promises are just the standard way to handle async HTTP in JavaScript.
+// Now the future value has a name and can be handled like any other value.
+const pending = page.locator("h1").textContent(); // an object, available immediately
+// `pending` is real. The string inside it is not — yet.
 ```
 
-### The Two Types of Playwright Methods
+### 2.2 What a Promise actually *is* (the object, not the metaphor)
+
+"Represents a future value" is a description, not a mechanism. Mechanically, a Promise is a small **state machine** with three fields:
+
+| Field | Holds |
+| --- | --- |
+| `state` | `"pending"` → `"fulfilled"` **or** `"rejected"` |
+| `value` | the result (once fulfilled) or the error (once rejected) — empty while pending |
+| `callbacks` | the list of functions to run when it settles |
+
+Two rules govern it, and both matter in practice:
+
+- **It settles at most once.** Once fulfilled or rejected, the state is frozen forever. A second `resolve()` is silently ignored.
+- **Transitions are one-way.** `pending → fulfilled` or `pending → rejected`. Never back, never between.
+
+Here is the whole idea in ~20 lines. Once you have read this, Promises stop being magic:
 
 ```typescript
-// Type 1: Returns a Promise<void> — you await it for its SIDE EFFECT
-await page.click("#btn"); // Promise<void> — side effect: button is clicked
-await page.fill("#input", "text"); // Promise<void> — side effect: input is filled
-await page.goto("/dashboard"); // Promise<void> — side effect: navigation happened
+class TinyPromise<T> {
+  private state: "pending" | "fulfilled" | "rejected" = "pending";
+  private value?: T;
+  private callbacks: Array<(v: T) => void> = [];
 
-// Type 2: Returns a Promise<value> — you await it for the DATA
-const text = await page.locator("h1").textContent(); // Promise<string | null>
-const count = await page.locator(".row").count(); // Promise<number>
-const isVis = await page.locator("#btn").isVisible(); // Promise<boolean>
-const attrs = await page.locator("#btn").getAttribute("data-id"); // Promise<string | null>
+  // Called by whoever is doing the async work, when the answer arrives.
+  resolve(v: T) {
+    if (this.state !== "pending") return; // settle-once rule
+    this.state = "fulfilled";
+    this.value = v;
+    this.callbacks.forEach((cb) => cb(v)); // wake everyone who was waiting
+    this.callbacks = [];
+  }
 
-// Type 3: Returns a LOCATOR (NOT a Promise — no await needed!)
-const locator = page.locator("#btn"); // NO await — returns a Locator object synchronously
-const heading = page.getByRole("heading"); // NO await — synchronous
-const button = page.getByText("Submit"); // NO await — synchronous
-// These just DESCRIBE what to find. They don't actually look for the element yet.
-// The element is only found when you ACT on the locator (click, fill, textContent...)
+  // Called by whoever wants the answer.
+  then(cb: (v: T) => void) {
+    if (this.state === "fulfilled") cb(this.value!); // already done → run now
+    else this.callbacks.push(cb); // not yet → get in the queue
+  }
+}
 ```
+
+That is genuinely it. `then` either runs your callback immediately (if the answer already arrived) or files it for later. **A Promise is a subscription list plus a value slot.** Everything else — `async`, `await`, `.catch`, `Promise.all` — is built on those two moves.
+
+### 2.3 What `await` actually does
+
+People say `await` "unwraps" the Promise or "waits for it." Both are metaphors that predict the wrong behaviour. Here is the mechanism:
+
+> **`await` SUSPENDS the async function and RETURNS control to the event loop. It does not block the thread.**
+
+Concretely, when the engine reaches `await somePromise`:
+
+1. It **pauses the current function**, remembering exactly where it stopped (the local variables, the line number — the *continuation*).
+2. It calls `somePromise.then(resumeHere)` — registering the rest of your function as a callback (§2.2).
+3. It **returns control to the caller immediately.** The thread is now free to run other code — including Playwright's own internal work.
+4. When the Promise settles, the continuation is queued on the **microtask queue** and the event loop (§1) resumes your function at the exact line it stopped on.
+
+Two consequences that are invisible if you only know the "waits for it" metaphor:
+
+```typescript
+async function getTitle(page: Page) {
+  console.log("A");
+  const t = await page.title(); // ← function SUSPENDS here, caller resumes
+  console.log("C"); // ← this runs later, from the microtask queue
+  return t;
+}
+
+console.log("start");
+getTitle(page); // returns a Promise IMMEDIATELY — does not wait
+console.log("B");
+
+// Prints: start → A → B → C
+//                        ^^^ B runs BEFORE C, because await released the thread
+```
+
+**Consequence 1: an `async` function always returns a Promise to *its* caller, immediately** — at the first `await`, not at the `return`. That is why a test function must itself be `async`, and why forgetting `await` on a helper you wrote silently returns a pending Promise instead of the value.
+
+**Consequence 2: `await` is not a barrier for the whole program** — only for the function containing it. Other code keeps running. This is what makes `Promise.all([...])` possible and is why the [Ch12 new-tab race](../03_D365_And_Patterns/12_CrossSite_Pattern2_NewTab_SharedContext.md) has to start the listener *before* the click.
+
+### 2.4 The three kinds of Playwright calls
+
+The distinction below is the single most useful thing in this chapter, because **it tells you where `await` goes**. Playwright methods come in exactly three shapes:
+
+| Kind | Returns | Do you `await` it? | You await it for… |
+| --- | --- | --- | --- |
+| **1. Action** | `Promise<void>` | ✅ yes | its **side effect** on the page |
+| **2. Query** | `Promise<value>` | ✅ yes | the **data** it brings back |
+| **3. Locator builder** | `Locator` (not a Promise!) | ❌ **no** | nothing — it is a *description* |
+
+```typescript
+// ── Kind 1: ACTION — await for the SIDE EFFECT, the value is void ──────
+await page.click("#btn"); // Promise<void>  — effect: the button got clicked
+await page.fill("#input", "text"); // Promise<void>  — effect: the field now holds text
+await page.goto("/dashboard"); // Promise<void>  — effect: navigation happened
+
+// ── Kind 2: QUERY — await for the DATA it returns ─────────────────────
+const text = await page.locator("h1").textContent(); // string | null  ← note the null!
+const count = await page.locator(".row").count(); // number
+const isVis = await page.locator("#btn").isVisible(); // boolean
+const attr = await page.locator("#btn").getAttribute("data-id"); // string | null
+
+// ── Kind 3: LOCATOR BUILDER — NO await. Nothing has happened yet. ─────
+const btn = page.locator("#btn"); // Locator — synchronous
+const heading = page.getByRole("heading"); // Locator — synchronous
+const submit = page.getByText("Submit"); // Locator — synchronous
+```
+
+> **On the `| null`:** `textContent()` and `getAttribute()` return `string | null` because the element may exist while the thing you asked for does not. TypeScript forces you to handle that — either `?? ""` for a default, or `!` if you can justify that it cannot be null. Writing `const t: string = await ...textContent()` **does not compile**, and that is the type system doing its job ([Ch08 §8](#8-typescript-types-you-must-know)).
+
+### 2.5 Why locators are lazy — the design decision that defines Playwright
+
+Kind 3 above is not a quirk. It is *the* architectural choice that separates Playwright from Selenium, and it is worth deriving rather than accepting.
+
+**A `Locator` is not an element. It is a stored recipe for finding an element.** `page.locator("#btn")` creates an object that remembers the string `"#btn"` and the page it belongs to. No CDP message is sent. The browser is not consulted. Nothing is searched.
+
+The search happens *at the moment you act*:
+
+```typescript
+const btn = page.locator("#btn"); // t=0ms   — recipe stored, browser untouched
+await someSlowSetup(); // t=0-3000ms — page re-renders completely
+await btn.click(); // t=3000ms — NOW it searches, and finds the CURRENT #btn
+```
+
+**Why this is the right design — the counterfactual.** Suppose locators were *eager* and grabbed the element immediately (this is what Selenium's `WebElement` does). Then:
+
+```typescript
+const btn = page.$("#btn"); // eager: grabs THIS element object now
+await page.click("#refresh"); // React re-renders — the old DOM node is discarded
+await btn.click(); // 💥 the node we grabbed is no longer in the document
+```
+
+That failure has a name — **stale element reference** — and it is the single most common source of flaky tests in eager frameworks. Every Selenium user has written a retry wrapper for it.
+
+Laziness eliminates the entire bug class *by construction*: there is nothing to go stale, because nothing was ever held. The recipe is re-run on every use, so it always resolves against the DOM as it exists *now*.
+
+**Laziness also enables auto-waiting** (§11). Because the lookup happens at action time, Playwright can retry the lookup for up to the timeout — "find `#btn`; not there yet; wait 100ms; try again" — until it appears *and* is actionable. An eagerly-grabbed element cannot be retried; it was either found at grab time or it was not.
+
+> **The one-line version:** locators are lazy so that they describe *what to find*, not *what was found* — which makes them immune to staleness and able to auto-retry. Two of Playwright's headline reliability features fall out of this single decision.
+
+### 2.6 What actually happens when you forget `await`
+
+This is the number-one Playwright bug, and it is worth understanding mechanically rather than as "you forgot a keyword."
+
+```typescript
+page.click("#submit"); // ❌ no await
+await expect(page.locator(".success")).toBeVisible();
+```
+
+Step by step, using §2.3:
+
+1. `page.click()` starts the CDP round-trip and **returns a pending Promise immediately**.
+2. Nobody awaits it, so execution **does not pause** — the next line runs while the click is still in flight.
+3. The assertion begins checking for `.success` *before the click has been processed by the browser*.
+4. The orphaned Promise settles later, with nobody listening.
+
+The outcome depends on timing, which is what makes it insidious:
+
+| What happens | Why it is bad |
+| --- | --- |
+| Assertion fails | **Best case** — it is loud, you find it immediately |
+| Assertion passes anyway (auto-retry outlasted the click) | **Worst case** — the test is green *for the wrong reason* and will flake later on a slower CI machine |
+| Test ends while the click is in flight | Playwright may tear down the page mid-operation → confusing `Target closed` errors |
+| The forgotten Promise rejects | An **unhandled rejection**, attributed to no test — or a crash, depending on Node's settings |
+
+Note the second row carefully: **the missing `await` frequently does not fail.** Playwright's auto-retrying assertions are generous enough to hide it locally, and it surfaces months later as an unreproducible CI flake — which is precisely the [Ch26 flakiness](../05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) timing class.
+
+**How to stop writing it:** enable the lint rule, which catches it at author time rather than at 2 AM:
+
+```jsonc
+// .eslintrc — eslint-plugin-playwright
+{
+  "rules": {
+    "playwright/missing-playwright-await": "error",
+    "@typescript-eslint/no-floating-promises": "error" // catches ALL un-awaited promises
+  }
+}
+```
+
+`no-floating-promises` is the stronger of the two and the one worth insisting on in review: it flags *any* Promise whose result is discarded, including ones in your own helper functions.
+
+> **The rule to internalize:** the only Playwright calls you do **not** await are the Kind-3 locator builders (§2.4). If it is Kind 1 or Kind 2 and there is no `await`, it is a bug — even when the test is green.
 
 ---
 
