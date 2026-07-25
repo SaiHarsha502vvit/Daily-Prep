@@ -2,7 +2,11 @@
 
 # Daily Practice System - Master Index
 
-> **Start Date:** March 3, 2026 | **Style:** MIT/KTH Academic
+> ## ▶ ACTIVE PLAN: [**The 15-Week FTE Conversion Plan (Jul 27 → Nov 9, 2026)**](00_FTE_CONVERSION_PLAN_2026.md)
+>
+> That is the plan currently being run — deadline-aware, three-lane (Depth / Build / Work-Visible), with five checkpoints. **Start there.** The daily structure below is what it reuses; the Week_01–07 archive below is the earlier March–April cycle, kept for reference.
+
+> **Original Start Date:** March 3, 2026 | **Style:** MIT/KTH Academic
 > **Daily Budget:** 3 hours (Weekdays: DSA+SQL | Weekends: Spring Boot+SQL+Review)
 
 ---
