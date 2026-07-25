@@ -74,6 +74,7 @@
 | 33 | [Bitwise Trie Java Complete](18_Bitwise_Trie_Java_Complete.md) | Maximum/minimum XOR, offline queries, counting variants |
 | 34 | [Prefix Family Java Complete](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | Prefix sum, prefix xor, 2D prefix, difference arrays |
 | 35 | [PDF Coverage Map (Java)](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | DSA patterns to Java chapter mapping + revision route |
+| 36 | [**Algorithm War Stories**](21_Algorithm_War_Stories.md) | 10 real production incidents traced through the design loop — the hidden quadratic, HyperLogLog, cache stampede, consistent hashing, the celebrity fan-out, rate-limit boundary bursts, Timsort, bisection, retry storms, Bloom dedup — plus the 5 cross-story patterns and what industry actually invents |
 | 36 | [Competitive Coding Deep Thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md) | Constraints, formulas, proof, pattern choice under time |
 | 37 | [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) | If constraints say X, choose Y |
 | 38 | [Brute Force to Optimal Playbook](../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) | Naive loop to DS/Algo rewrite |
