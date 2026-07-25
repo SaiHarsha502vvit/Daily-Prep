@@ -14,6 +14,7 @@
 | U2  | [Complexity from First Principles](A2_Complexity_FirstPrinciples.md) | Recurrence analysis, Master Theorem, amortized analysis (3 methods) |
 | U3  | [Lower Bounds & NP-Completeness](A3_Lower_Bounds_And_NP.md) | Decision-tree lower bounds, reductions, P vs NP, approximation |
 | U4  | [Randomized Algorithms](A4_Randomized_Algorithms.md) | Las Vegas vs Monte Carlo, indicator variables, universal hashing, Bloom filters |
+| U5  | [**Designing Your Own Algorithms**](A5_Designing_Your_Own_Algorithms.md) | The invention method: repeated-work taxonomy, paradigm decision tree, deriving recurrences, exchange arguments, deriving Boyer–Moore from scratch |
 
 ### Foundations
 

@@ -1711,7 +1711,7 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 | Sliding window on arrays       | [Sliding Window Mastery](../04_Patterns_Templates/01_Sliding_Window.md)         |
 | Binary search on sorted arrays | [Binary Search Patterns](../04_Patterns_Templates/06_Binary_Search_Patterns.md) |
 | 2D arrays / Matrix             | [2D Arrays & Matrix](04_2D_Arrays_Matrix.md)                                    |
-| NumPy arrays (Python)          | [NumPy & Pandas](../21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md)          |
+| NumPy arrays (Python)          | [NumPy & Pandas](../25_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md)          |
 
 ---
 

@@ -898,7 +898,7 @@ SEE THESE WORDS → USE THIS:
 | Tree practice problems              | [Problem Solving — Trees](../05_Problem_Solving/09_Trees.md)        |
 | Heap / PQ problems                  | [Problem Solving — Heaps](../05_Problem_Solving/08_Heaps_PQ.md)     |
 | Graph algorithms (trees are graphs) | [Graphs Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md)  |
-| Decision Trees in ML                | [ML Algorithms](../21_Python_ML_DL_NLP/06_ML_Algorithms.md)         |
+| Decision Trees in ML                | [ML Algorithms](../25_Python_ML_DL_NLP/06_ML_Algorithms.md)         |
 | Virtual DOM tree (React)            | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) |
 
 ---

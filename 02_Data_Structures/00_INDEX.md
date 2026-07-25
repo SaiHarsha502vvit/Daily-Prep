@@ -41,6 +41,7 @@ This section supports four distinct reading paths:
 | U2  | [DS Complexity from First Principles](A2_DS_Complexity_FirstPrinciples.md) | Amortized analysis for mutable DS (aggregate / accounting / potential) |
 | U3  | [DS Lower Bounds — Proving You Cannot Do Better](A3_DS_Lower_Bounds.md) | Cell-probe, comparison, information-theoretic bounds on DS operations |
 | U4  | [Randomized Data Structures](A4_Randomized_Data_Structures.md) | Skip lists, treaps, Bloom filters, cuckoo hashing, HyperLogLog, consistent hashing |
+| U5  | [**Designing Your Own Data Structures**](A5_Designing_Your_Own_Data_Structures.md) | The invention method: contract tables, augmentation, invariant-first design, the three-currency dial, deriving the Fenwick tree from scratch |
 
 ## Reading Order
 

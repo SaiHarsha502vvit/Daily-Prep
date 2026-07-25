@@ -958,7 +958,7 @@ public int lcsOptimized(String s1, String s2) {
 | DP practice problems                  | [Problem Solving — DP](../05_Problem_Solving/11_Dynamic_Programming.md)         |
 | Knapsack family (DP)                  | [Knapsack Family](../04_Patterns_Templates/23_Knapsack_Family.md)               |
 | Memoization in React (useMemo)        | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md)                       |
-| Optimization in ML (gradient descent) | [Math for ML](../21_Python_ML_DL_NLP/04_Math_For_ML.md)                         |
+| Optimization in ML (gradient descent) | [Math for ML](../25_Python_ML_DL_NLP/04_Math_For_ML.md)                         |
 | Greedy vs DP                          | [Greedy Algorithms](12_Greedy_Algorithms_Complete.md)                           |
 
 ---
