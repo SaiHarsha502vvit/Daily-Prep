@@ -864,3 +864,18 @@ h3 {
 ---
 
 **Next Chapter**: [CSS Component Design Systems â†’](06_CSS_UI_Design_Process.md)
+
+
+---
+
+## Reality Check
+
+**"Developers implement designs; design decisions are the designer's job"** ? Every implementation is FULL of design decisions the mockup never specified: hover/focus/active/disabled states (the mockup shows one state of five), loading and empty and error states, text overflow at 2x length (German, user-generated titles), 200%-zoom behavior, and what happens between breakpoints (the mockup shows two widths; you ship every width). The craft gap between developers is mostly the QUALITY of these unspecified decisions — and the process fix is a states-and-edges checklist run per component, plus asking the designer the three highest-stakes gaps before building, not after review.
+
+**"Spacing and sizing are matters of eyeballing the mockup"** ? Professional UIs run on SYSTEMS the eye then confirms: a spacing scale (4/8-based, tokenized) that makes every gap a deliberate step rather than a pixel guess, a type scale with consistent line-height rhythm, and a size ramp for controls — because consistency ACROSS screens is what reads as quality, and eyeballed values drift screen by screen until the product feels subtly shabby. Extracting the scale from the design (or imposing one where the design lacks it) is the first implementation act; every hardcoded 13px margin afterward is debt against it.
+
+**"Color choices are aesthetic preferences"** ? Color in implementation is a CONSTRAINT SYSTEM: contrast ratios are WCAG-testable numbers (4.5:1 body text, 3:1 large text and UI parts — automatable in CI, non-negotiable in procurement audits), semantic tokens must survive theming (the --danger that stays red-meaning in dark mode while its value changes), states need perceivable differences beyond hue (color-blind-safe signaling pairs color with icon/weight), and modern color spaces (oklch) exist because perceptual uniformity makes programmatic palettes actually usable (hsl lightness lies; oklch lightness does not). The aesthetic layer sits ON TOP of the constraint layer — implementing only the aesthetics ships the violations.
+
+**"Polish is the final 10 percent"** ? The perceived-quality features ARE interaction details with CSS names: focus states that are designed rather than default-or-removed (the :focus-visible split), transitions on state changes at the 150-250ms range (instant feels broken, 400 feels sluggish), touch targets at 44px even when the visual is smaller (padding does the work), scroll behavior that respects momentum and containment, and text that truncates or wraps deliberately (line-clamp, text-wrap: balance for headings). Each is one to three declarations; their absence is what "feels unfinished" means concretely. Budgeting them as post-launch polish means shipping the unfinished feeling to users while the backlog absorbs the fix forever.
+
+**"The design process ends when it looks right on my screen"** ? Looks-right-here is one cell of the verification matrix: real content (long names, empty lists, 47 notifications — lorem ipsum is a lie the design told you), real conditions (slow network showing your loading states, dark mode, 200% zoom, keyboard-only traversal), real devices (the hover-less touch reality, the notch, the 360px width that still exists), and time (does the layout survive the next content editor?). The professional habit is a personal pre-review matrix — five minutes of deliberate breakage before calling anything done — because every cell you skip is delegated to a user with a screenshot and a complaint.

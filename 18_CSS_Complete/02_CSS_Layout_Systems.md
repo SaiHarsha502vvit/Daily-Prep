@@ -641,3 +641,18 @@ Q: What are container queries?
 ---
 
 > **Navigation**: [< Previous](01_CSS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_CSS_Responsive_Animations.md)
+
+
+---
+
+## Reality Check
+
+**"Flexbox and Grid compete; modern CSS means Grid"** → They solve PERPENDICULAR problems: flex distributes along ONE axis with content-driven sizing (toolbars, tag lists, centering — the content decides, the container negotiates), grid imposes TWO-dimensional structure with container-driven placement (page scaffolds, card matrices, form alignment — the container decides, content complies). The selection cue is one question: does the design define tracks that content must align to (grid), or a flow that content sizes (flex)? Most real layouts nest both — grid for the macro skeleton, flex inside each region — and "Grid replaced flexbox" produces contorted single-axis grids that one flex line would have solved.
+
+**"flex: 1 makes items share space equally"** → flex: 1 sets flex-basis to ZERO — items share TOTAL space equally, ignoring content size; flex-grow: 1 alone keeps basis auto — items share LEFTOVER space, so bigger content stays bigger. That basis distinction is the entire "why are my columns unequal/why did they become equal" genre. Its sibling trap: min-width defaults to AUTO on flex items — they refuse to shrink below content, which is why text overflows instead of truncating and why min-width: 0 (or overflow: hidden) on the item is the canonical fix every flexbox user eventually tattoos somewhere.
+
+**"Grid means defining rows and columns for your content"** → The power features invert that: repeat(auto-fill, minmax(250px, 1fr)) defines a POLICY and lets the browser compute the track count per viewport (responsive galleries with zero media queries), grid-template-areas makes the layout ASCII-art readable and rearrangeable per breakpoint by redefining one property, and implicit-grid rules (grid-auto-rows/columns/flow — including the dense packing mode) handle content beyond your explicit tracks. Hand-placing items into hand-counted tracks is grid at its most laborious; policy-driven tracks are grid earning its reputation.
+
+**"Subgrid and container queries are still 'next year's CSS'"** → Both have been cross-browser for years now, and each retires a workaround generation: SUBGRID lets nested elements align to the ancestor grid's tracks (the card-internals-aligning-across-cards problem that spawned a decade of fixed-height hacks), and CONTAINER queries size components by their CONTAINER, not the viewport (the same card component correctly compact in a sidebar and expanded in main — the thing media queries structurally could not express, which forced every design system into prop-based size variants). The calendar-based excuse expired; the remaining barrier is knowing they exist.
+
+**"Layout bugs are fixed by trying properties until it works"** → Layout is DETERMINISTIC and inspectable: DevTools' flex and grid overlays show tracks, gaps, and item boundaries; the computed panel shows resolved sizes; and most bugs collapse into a small taxonomy — a min-size floor refusing shrink (min-width: auto), a percentage lacking a definite ancestor size (the height: 100% chain), a formatting-context surprise (margin collapse, float containment), or an implicit track you did not define. The try-things loop exists because layout FEELS emergent; the professional loop — inspect the overlay, identify which sizing pass misbehaved, name the constraint — exists because it is not.

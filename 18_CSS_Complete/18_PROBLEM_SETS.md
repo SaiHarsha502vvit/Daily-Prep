@@ -494,3 +494,18 @@ element.addEventListener("animationend", () => {
 ---
 
 [‚Üê Back to Semester 3 Guide](../00_CURRICULUM/SEMESTER_3_GUIDE.md)
+
+
+---
+
+## Reality Check
+
+**"CSS practice means reading about layout until it makes sense"** ? CSS is a MOTOR skill wearing a declarative syntax: the gap between recognizing flexbox properties and producing a correct three-region layout under time pressure is the gap problem sets exist to close. The effective drill format is build-from-visual (here is a screenshot, produce it ó no framework, timer on) because that is both the job and the interview format, and it forces the decisions reading never does: which container, which sizing, where the breakpoints actually need to be.
+
+**"Layout challenges are solved when they look right"** ? Looks-right is the WEAKEST acceptance bar; the problem-set bar adds the stress tests that distinguish robust from coincidental: does it survive 3x content (the tab that becomes German), zero content (the empty list), container resize (drag the DevTools handle across the whole range, watch for the snap-jump that reveals a hardcoded width), and keyboard traversal (can you even see focus). A layout that passes all four is understood; one that passes only the screenshot was pixel luck ó and the retrospective question "WHICH property made it fragile" is where the learning density is.
+
+**"The classic challenges (holy grail, centering) are outdated"** ? The classics persist as VOCABULARY tests with modern expected answers ó and the answer's era is the actual signal: centering via grid + place-items (one line) versus absolute-transform hacks, holy grail via grid-template-areas versus float ceremony, equal-height cards via default flex stretch versus JS measurement. Interviewers ask the old questions precisely to date your CSS; problem sets should therefore be solved in CURRENT idiom deliberately, with the legacy solution known only as a talking point ("before grid, this took...").
+
+**"Debugging challenges teach less than building challenges"** ? Fix-this-broken-layout drills train the DIAGNOSTIC loop that building never exercises: reproduce, isolate (delete half the CSS, bisect), identify the mechanism (which formatting context, which sizing pass, which stacking context), then fix at the mechanism level ó the same loop as production CSS work, where you inherit stylesheets rather than author them. A balanced problem set is half construction, half autopsy; all-construction practice produces developers who can build clean-room layouts and cannot rescue real ones.
+
+**"CSS problem sets don't need spaced repetition ó it's not memorization"** ? The DECAY is real but it hits the decision layer, not the property names: which sizing approach for this shape of problem, which of the four centering tools fits this constraint set, what breaks first at narrow widths ó judgment calls that go stale without reps. The maintenance dose mirrors algorithm practice: one timed build-from-visual weekly-ish, rotating through the layout archetypes (app shell, card grid, form, data table, overlay stack), plus one autopsy of any production CSS bug you meet ó the anchor that keeps the whole system honest.

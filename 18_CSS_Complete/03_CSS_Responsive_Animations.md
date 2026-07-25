@@ -1192,3 +1192,18 @@ FAILURE BOUNDARY:
 ---
 
 > **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)
+
+
+---
+
+## Reality Check
+
+**"Responsive design means media queries at standard breakpoints"** → The modern hierarchy inverts it: INTRINSIC techniques first (fluid grids via auto-fill/minmax, clamp() for fluid type, flex wrapping — layouts that adapt continuously with zero queries), CONTAINER queries second (components responding to their slot, reusable across contexts), viewport media queries LAST (page-level reorganization only). Device-named breakpoints (768 = tablet) were always a fiction — the durable rule is break where the CONTENT breaks, and with intrinsic tools most content never needs an explicit break at all.
+
+**"Mobile viewports are just narrow desktop viewports"** → Mobile brings unit and input differences that narrow-desktop testing never surfaces: 100vh overshoots (the browser chrome collapse problem — svh/dvh/lvh exist specifically for it, dvh tracking the visible height live), hover does not exist (@media (hover: none) gates hover-revealed UI that touch users otherwise cannot reach), pointer precision differs (pointer: coarse wants bigger targets), and safe-area insets (notches) need env(). The DevTools device toolbar catches layout; it does not catch a hover-only menu shipping unreachable to half your users — the interaction media features do.
+
+**"Animating any property is fine if it looks smooth on my machine"** → Properties sort into compositor-friendly (transform, opacity — animated off the main thread, smooth even while JS is busy) and layout/paint-triggering (width, height, top, margin — every frame recomputes geometry on the main thread, janking exactly when the machine is slower than yours). The FLIP technique exists to bridge them: measure First and Last positions, apply the Inverted transform, Play — expensive-looking layout animations executed as cheap transforms. Plus the accessibility gate that is not optional: prefers-reduced-motion is a WCAG-adjacent contract, and respecting it globally (reduce to opacity fades) is one media query.
+
+**"Transitions and animations differ by complexity"** → They differ by STATE MODEL: transitions interpolate BETWEEN two states and need a state change to fire (and the fire rules are the bug source — transitioning from display: none fails because there is no starting state, the reason @starting-style and transition-behavior: allow-discrete were added; the removed-then-readded element snaps because both states applied in one style pass), while animations own their timeline independent of state (keyframes, iteration, direction — and fill-mode deciding what sticks after). The selector: user-driven state feedback wants transitions; autonomous or multi-step motion wants animations; entrance/exit of DOM elements wants the new starting-style machinery or the Web Animations API.
+
+**"Scroll effects require JavaScript scroll listeners"** → The scroll-linked toolkit moved into CSS and off the main thread: scroll-behavior: smooth, scroll-snap (the carousel mechanics that replaced a plugin genre), position: sticky (the scroll-listener use case that died first — with its overflow-ancestor gotcha), overscroll-behavior (containing the scroll-chain bleed), and scroll-driven ANIMATIONS (animation-timeline: scroll()/view() — progress bars and reveal-on-scroll running compositor-side, no IntersectionObserver ceremony). The JS scroll listener survives for logic; for motion, each one you write in 2026 is re-implementing a CSS property with worse frame timing.
