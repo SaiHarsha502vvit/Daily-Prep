@@ -60,11 +60,11 @@ Every domain in this library is deployed, monitored, and scaled via DevOps.
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | **Docker containers**     | [DS Internals](../02_Data_Structures/01g_DS_Internals.md) — Linux cgroups + namespaces                            |
 | **Kubernetes networking** | [Networking & Security](02_Networking_Security.md) — kube-proxy, iptables                                         |
-| **CI/CD for ML models**   | [MLOps Production](../21_Python_ML_DL_NLP/13_MLOps_Production.md) — model versioning                              |
+| **CI/CD for ML models**   | [MLOps Production](../25_Python_ML_DL_NLP/13_MLOps_Production.md) — model versioning                              |
 | **Terraform modules**     | [Distributed Patterns](../10_Enterprise_Systems/09_Distributed_Patterns.md) — infra for Sagas                     |
 | **Database in Docker**    | [SQL Transactions](../08_SQL/13_Transactions_ACID.md) — WAL with Docker volumes                                   |
 | **SQL Query tuning**      | [SQL Internals](../08_SQL/49_SQL_Internals_Deep.md) — EXPLAIN ANALYZE, buffer tuning                              |
-| **Async Python servers**  | [Asyncio Internals](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) — FastAPI + uvloop                    |
+| **Async Python servers**  | [Asyncio Internals](../25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) — FastAPI + uvloop                    |
 | **React deployment**      | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) — nginx container                             |
 | **JavaScript V8 perf**    | [JS Modern](../16_JavaScript/06_JS_Modern_ES6Plus.md) — memory leaks → OOM in K8s                                 |
 | **CSS CDN**               | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) — versioned assets via CDN                         |

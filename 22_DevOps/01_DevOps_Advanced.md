@@ -576,11 +576,26 @@ jobs:
 | **Docker basics**              | [DevOps Fundamentals](00_DevOps_Fundamentals.md) â€” containers, docker-compose                      |
 | **Kubernetes basics**          | [DevOps Fundamentals](00_DevOps_Fundamentals.md) â€” Deployment, HPA                                 |
 | **Distributed patterns**       | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) â€” Saga, Outbox, CQRS |
-| **GitHub Actions for ML**      | [MLOps Production](../21_Python_ML_DL_NLP/13_MLOps_Production.md) â€” CI/CD for ML pipelines         |
+| **GitHub Actions for ML**      | [MLOps Production](../25_Python_ML_DL_NLP/13_MLOps_Production.md) â€” CI/CD for ML pipelines         |
 | **SRE fundamentals**           | [DevOps Fundamentals](00_DevOps_Fundamentals.md) â€” SLOs, error budgets                             |
-| **FastAPI (async deployment)** | [Python Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md)                           |
+| **FastAPI (async deployment)** | [Python Asyncio](../25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md)                           |
 | **Networking / TLS / DNS**     | [Networking & Security](02_Networking_Security.md) â€” full DNSâ†’TCPâ†’TLS journey                      |
 | **Service Mesh (Istio)**       | [Cloud Native](03_ServiceMesh_CloudNative.md) â€” mTLS, traffic splitting                            |
 | **Serverless / Lambda**        | [Cloud Native](03_ServiceMesh_CloudNative.md) â€” cold starts, Knative                               |
 | **SQL injection/security**     | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) â€” parameterized queries                     |
 | **DS in production**           | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) â€” LRU cache, queues, hash maps    |
+
+
+---
+
+## Reality Check
+
+**"Advanced DevOps is more sophisticated tooling"** ? Advanced practice is usually SIMPLIFICATION and constraint, not more tools: the platform team that gives developers a paved road (one blessed way to deploy, observe, and secure a service — [21_SDET Ch62]'s platform model) reduces cognitive load, where a proliferation of tools each team wires differently is the opposite of maturity (the organization with fourteen ways to deploy has an operability problem wearing a sophistication costume). Maturity is measured by how EASY the right thing is, not by how many capabilities exist.
+
+**"Progressive delivery is deploying gradually"** ? The gradual rollout is the mechanism; the POINT is decoupling deploy from release and building an automated safety net: feature flags separate "code is in production" from "users see it" (deploy Tuesday, release Thursday, roll back the release without a redeploy — [production-code]'s flag lifecycle), canary analysis compares golden signals between the new version's small traffic slice and the baseline (automated promotion or rollback on the metrics, not a human watching a dashboard), and the whole apparatus exists to make the blast radius of a bad change small and the recovery automatic. "Deploy gradually" without the automated analysis and the flag decoupling is just a slower deploy.
+
+**"GitOps is storing infrastructure in Git"** ? GitOps is a specific control model: Git as the single source of truth AND a reconciliation agent (Argo, Flux) that continuously converges the cluster to match the repo — which changes the security and operational properties (no human has cluster write access; every change is a reviewed PR; drift is auto-corrected; rollback is git revert). The [IaC] reconciliation model applied continuously and to a running cluster, not just applied on demand. Teams that put YAML in Git and kubectl-apply by hand have the storage without the control loop — and the drift, and the who-changed-this mystery, return.
+
+**"Chaos engineering is breaking things in production"** ? Chaos engineering is HYPOTHESIS-DRIVEN experimentation: state a belief about resilience (the system tolerates one AZ failing), design the smallest experiment that tests it (kill instances in one AZ during business hours WITH a defined blast radius and abort conditions), and learn whether the belief holds BEFORE the real outage tests it for you. The discipline is the opposite of reckless — it is controlled, measured, and starts in staging; the value is converting unknown-unknowns (the failure mode nobody anticipated) into known-and-fixed. Running it as unstructured production breakage is the caricature that gives the practice its scary reputation and none of its benefit.
+
+**"Platform engineering replaced DevOps"** ? Platform engineering is DevOps confronting its own scaling failure: "every team owns their full stack" produced cognitive overload (each team reinventing deploy, observability, security — the [Ch62] federation problem), so platform engineering builds an internal product (the paved road, the self-service platform) that gives teams golden paths while keeping ownership. It is not a replacement but a maturity stage — and its own failure mode is the platform team that builds what it finds interesting rather than what developers need (the platform nobody adopts because the paved road is worse than the cow path), which is why treating the platform as a PRODUCT with users and adoption metrics is the practice that makes it work.

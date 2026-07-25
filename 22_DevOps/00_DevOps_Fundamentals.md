@@ -787,10 +787,10 @@ CHAOS ENGINEERING (Netflix, Facebook):
 | **Networking deep dive**      | [Networking & Security](02_Networking_Security.md) â€” DNS, TCP, TLS, load balancing, DevSecOps               |
 | **Service Mesh & Serverless** | [Cloud Native](03_ServiceMesh_CloudNative.md) â€” Istio, Lambda, FinOps, Platform Engineering                 |
 | **Kubernetes networking**     | [Networking & Security](02_Networking_Security.md) â€” ClusterIP vs NodePort vs Ingress, NetworkPolicy        |
-| **MLOps (ML + DevOps)**       | [MLOps Guide](../21_Python_ML_DL_NLP/13_MLOps_Production.md) â€” model serving, drift detection, CI/CD for ML |
+| **MLOps (ML + DevOps)**       | [MLOps Guide](../25_Python_ML_DL_NLP/13_MLOps_Production.md) â€” model serving, drift detection, CI/CD for ML |
 | **Database in Docker**        | [Transactions ACID](../08_SQL/13_Transactions_ACID.md) â€” WAL durability with Docker volumes                 |
 | **SQL Query tuning**          | [SQL Internals Deep](../08_SQL/49_SQL_Internals_Deep.md) â€” EXPLAIN ANALYZE, buffer pool, B-Tree indexes     |
-| **FastAPI async server**      | [Python Asyncio](../21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) â€” event loop, uvloop               |
+| **FastAPI async server**      | [Python Asyncio](../25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md) â€” event loop, uvloop               |
 | **JS Event Loop â‰ˆ nginx**     | [JS V8 Internals](../16_JavaScript/06_JS_Modern_ES6Plus.md) â€” single-thread I/O model                       |
 | **React deployment**          | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) â€” build â†’ nginx â†’ CDN                   |
 | **Distributed patterns**      | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) â€” Saga, Outbox, CQRS          |
@@ -799,3 +799,18 @@ CHAOS ENGINEERING (Netflix, Facebook):
 | **Topological sort (CI/CD)**  | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) â€” build dependency ordering     |
 | **CSS CDN deployment**        | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) â€” Container Queries, static assets           |
 | **SQL injection prevention**  | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) â€” parameterized queries                              |
+
+
+---
+
+## Reality Check
+
+**"DevOps is a role that sits between dev and ops"** ? DevOps was a response to the ORG STRUCTURE that made dev and ops adversaries (devs throw code over the wall, ops owns the pager for code they never saw — the incentive to ship versus the incentive to keep stable, structurally opposed): the fix is shared ownership of the whole lifecycle, not a new team in the middle (the "DevOps team" that becomes a third wall is the anti-pattern the movement warns against). When it degrades into a job title for the person who writes the pipelines, the cultural change — you build it, you run it — never happened, and the walls just moved.
+
+**"DevOps means automating deployments"** ? Automation is the visible artifact of a deeper bet: reducing BATCH SIZE and FEEDBACK LATENCY across the whole flow (small changes deployed often are safer than big changes deployed rarely — the counterintuitive core, because small changes have small blast radius and fast diagnosis). The metrics that actually define it (deployment frequency, lead time, change-failure rate, restore time — the DORA four) measure flow and stability together, and a team automating deploys of monthly big-bang releases has the tooling without the outcome.
+
+**"Faster deployment means lower quality"** ? The DORA research found the OPPOSITE correlation at scale: high-frequency deployers have LOWER change-failure rates and faster recovery — because small changes are easier to test, review, and reverse, and frequent deploys keep the deploy path exercised and reliable (the muscle that atrophies between quarterly releases — the deploy nobody has done in three months is the scary one). Speed and stability are not a trade-off but a virtuous cycle when batch size shrinks; the trade-off only appears when teams go faster WITHOUT the safety practices (testing, gradual rollout, observability) that make small-batch flow safe.
+
+**"CI/CD is the heart of DevOps"** ? The pipeline is necessary infrastructure but insufficient culture: DevOps without observability is flying blind (you deployed fast, now you cannot tell if it worked — [monitoring] as the other half), without a blameless incident culture the fast-deploy feedback loop turns into a fast-blame loop (people slow down to avoid being the one who broke it), and without shared on-call the devs never feel the operability cost of their choices (the design that pages at 3 AM stays un-fixed if its author never gets paged). The pipeline is where DevOps is most visible and least sufficient.
+
+**"We adopted DevOps by hiring DevOps engineers"** ? Buying the tooling and the title is the common failed adoption: the transformation is measured in behaviors that org charts do not create — do developers own their services in production, does the team run blameless postmortems that change the system (not find the culprit), has batch size actually shrunk, is on-call shared. The tools (pipelines, IaC, monitoring) ENABLE these behaviors but a team can have every tool and still throw code over a wall to the "DevOps team" — at which point they have bought DevOps theater, and the DORA metrics will say so regardless of the tooling budget.
