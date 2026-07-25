@@ -33,8 +33,8 @@ Study of the principles and practices of human-computer interaction (HCI). Cover
 
 ## Linked Existing Content
 
-- [React & Frontend Architecture](../../15_React_Frontend/)
-- [Frontend Integration — Accessibility sections](../../19_Frontend_Integration/)
+- [React & Frontend Architecture](../../../15_React_Frontend/)
+- [Frontend Integration — Accessibility sections](../../../19_Frontend_Integration/)
 
 ## Assessment
 

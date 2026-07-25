@@ -87,11 +87,11 @@ Generated after adding `tools/update_context.py` and refreshing the manifest.
 | 2   | Fix unbalanced fences in 2 files                      | tracked above                                                                                      |
 | 3   | 12 TBD curriculum shells need content                 | `_Curriculum/S01–S08/`                                                                             |
 | 4   | P09 CI/CD Pipeline has 0 code stubs                   | `00_CURRICULUM/PROJECTS/P09_CICD_Pipeline.md`                                                      |
-| 5   | Thin problem sets (< 5 challenges)                    | `21_Python_ML_DL_NLP/`, `07_Modern_Java/07_CONCURRENCY_`, `20_Interview_Mastery/20_SYSTEM_DESIGN_` |
+| 5   | Thin problem sets (< 5 challenges)                    | `25_Python_ML_DL_NLP/`, `07_Modern_Java/07_CONCURRENCY_`, `20_Interview_Mastery/20_SYSTEM_DESIGN_` |
 
 ### Light Content Folders (< 10 `.md` files)
 
 - `01_Getting_Started/` (4)
 - `17_TypeScript/` (7)
 - `18_CSS_Complete/` (9)
-- `22_Advanced_API_Testing/` (8)
+- `24_Advanced_API_Testing/` (8)

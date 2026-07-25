@@ -22,7 +22,7 @@
 | `08_SQL/`                                  | Primary source — every chapter cited below                         |
 | `07_Modern_Java/Ch20_JPA_Hibernate.md`     | ORM layer above SQL; required for understanding N+1 queries        |
 | `10_Enterprise_Systems/`                   | Order/inventory/finance schemas that test real DB design           |
-| `21_Python_ML_DL_NLP/`                     | Pandas as SQL — same operations, different syntax                  |
+| `25_Python_ML_DL_NLP/`                     | Pandas as SQL — same operations, different syntax                  |
 | `22_DevOps/`                               | Database backup, replication, monitoring in production             |
 
 ---

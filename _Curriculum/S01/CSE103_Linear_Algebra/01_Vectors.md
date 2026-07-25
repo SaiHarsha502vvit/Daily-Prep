@@ -441,7 +441,7 @@ EDGE CASE TO WATCH:
 - **Chapter 04 — Matrices:** A matrix TRANSFORMS vectors. Understanding what a vector IS geometrically is essential for understanding what a matrix DOES geometrically.
 - **Chapter 08 — Orthogonality:** Orthogonal vectors have dot product 0. Orthogonal bases are maximally "independent" — no component of one basis vector shows up in any other.
 - **Chapter 09 — Least Squares:** Projection (a·b/||b||² · b) is the core operation. You're finding the component of a in the direction of b.
-- `21_Python_ML_DL_NLP/04_Math_For_ML.md` — This existing file covers §1-4 (vectors and dot products) with ML-specific examples. This chapter provides the geometric foundations that make those formulas make sense.
+- `25_Python_ML_DL_NLP/04_Math_For_ML.md` — This existing file covers §1-4 (vectors and dot products) with ML-specific examples. This chapter provides the geometric foundations that make those formulas make sense.
 
 ---
 

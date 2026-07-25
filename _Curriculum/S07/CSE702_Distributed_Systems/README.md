@@ -34,7 +34,7 @@ Study of the principles, architectures, and patterns that underpin modern distri
 
 ## Linked Existing Content
 
-- [Enterprise Systems — Kafka, DDD, Saga, Event Sourcing](../../10_Enterprise_Systems/)
+- [Enterprise Systems — Kafka, DDD, Saga, Event Sourcing](../../../10_Enterprise_Systems/)
 
 ## Assessment
 

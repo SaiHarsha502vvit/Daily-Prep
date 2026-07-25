@@ -404,7 +404,7 @@ FORMULA SELECTION SUMMARY:
 - **Chapter 10 — Recurrences:** Pascal's identity C(n,k) = C(n-1,k-1) + C(n-1,k) IS a recurrence. Memoizing the Pascal triangle is dynamic programming (Chapter 10 will generalize this pattern).
 - **Chapter 05 — Sets:** |P(A)| = 2^|A| because each subset corresponds to a unique "include/exclude" binary sequence — equivalent to the sum over all k of C(|A|,k) = 2^|A|.
 - `03_Algorithms/A2_Complexity_FirstPrinciples.md` — Every time complexity class is a counting argument: O(n!) is "permutation count," O(2ⁿ) is "power set count," O(C(n,k)) for k-nested loops.
-- `21_Python_ML_DL_NLP/` — Probability of a neural network producing certain outputs requires counting valid weight configurations. Dropout randomly selects subsets C(n,k) of neurons.
+- `25_Python_ML_DL_NLP/` — Probability of a neural network producing certain outputs requires counting valid weight configurations. Dropout randomly selects subsets C(n,k) of neurons.
 
 ---
 

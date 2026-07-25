@@ -2,7 +2,7 @@
 
 > **Part of:** [Semester 4 (S04)](../README.md) — Systems & Networking  
 > **Prerequisite:** [Semester 3 (S03)](../S03/README.md) — Data Structures, Algorithms, Operating Systems  
-> **Cross-references:** [Linux CLI & Shell](../S03/CSE301_Software_Engineering/13_Developer_Essentials/02_Linux_CLI_Shell.md), [DevOps](../S05/CSE501_DevOps/), [Enterprise Java](../S03/CSE301_Software_Engineering/07_Modern_Java/), [Microservices](../S05/CSE501_DevOps/20_Enterprise_Microservices/)
+> **Cross-references:** [Linux CLI & Shell](../../../13_Developer_Essentials/02_Linux_CLI_Shell.md), [DevOps](../S05/CSE501_DevOps/), [Enterprise Java](../../../07_Modern_Java/), [Microservices](../S05/CSE501_DevOps/20_Enterprise_Microservices/)
 
 ---
 

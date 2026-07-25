@@ -40,10 +40,10 @@ These courses map to comprehensive existing folders. Each becomes a **300-500 li
 | CSE503 CSS & Design Systems | 18_CSS_Complete | Stub |
 | CSE504 Frontend Integration & Performance | 19_Frontend_Integration | Stub |
 | CSE601 Spring Boot & Microservices | 07_Modern_Java (Ch24-69) | Stub |
-| CSE602 API Design & Testing | 21_SDET + 22_Advanced_API_Testing | Stub |
+| CSE602 API Design & Testing | 21_SDET + 24_Advanced_API_Testing | Stub |
 | CSE603 DevOps & CI/CD | 22_DevOps | Stub |
 | CSE604 Java Concurrency & JVM Internals | 07_Modern_Java + 13_Developer_Essentials | Stub |
-| CSE703 Machine Learning | 21_Python_ML_DL_NLP | Stub |
+| CSE703 Machine Learning | 25_Python_ML_DL_NLP | Stub |
 | CSE804 Career Mastery & Interview Readiness | 09_Career_Reference + 20_Interview_Mastery | Stub |
 
 **Total: 15 Tier A courses × ~350 lines = ~5,250 new lines.**

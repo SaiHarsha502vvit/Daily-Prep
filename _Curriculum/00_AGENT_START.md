@@ -15,7 +15,7 @@ This repo is the source of truth. Treat it as a living technical curriculum.
 | S1–S2 | Foundations: DSA, SQL, Java, JS    | `02_Data_Structures`, `03_Algorithms`, `07_Modern_Java`, `08_SQL`         |
 | S3    | Full Stack: React, TS, CSS, Spring | `15_React_Frontend`, `17_TypeScript`, `18_CSS_Complete`, `07_Modern_Java` |
 | S4    | Backend: Enterprise, DevOps        | `10_Enterprise_Systems`, `22_DevOps`, `13_Developer_Essentials`           |
-| S5–S8 | Interview Prep, Career, ML/DL      | `20_Interview_Mastery`, `09_Career_Reference`, `21_Python_ML_DL_NLP`      |
+| S5–S8 | Interview Prep, Career, ML/DL      | `20_Interview_Mastery`, `09_Career_Reference`, `25_Python_ML_DL_NLP`      |
 
 ## Key Folders
 
@@ -38,7 +38,7 @@ This repo is the source of truth. Treat it as a living technical curriculum.
 `18_CSS_Complete` — CSS layout, architecture, responsive design
 `19_Frontend_Integration` — Browser debugging, build tools, a11y, performance
 `20_Interview_Mastery` — Interview synthesis, problems, scripts
-`21_Python_ML_DL_NLP` — Python, ML, DL, NLP, LLM/RAG, MLOps
+`25_Python_ML_DL_NLP` — Python, ML, DL, NLP, LLM/RAG, MLOps
 `22_DevOps` — Linux, Docker, Kubernetes, CI/CD, SRE
 Full file map: `_Curriculum/01_FILE_MAP.md`.
 

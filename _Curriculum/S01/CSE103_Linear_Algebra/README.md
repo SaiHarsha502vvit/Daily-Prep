@@ -31,10 +31,10 @@ The students who succeed in S07 ML are the ones who took THIS course seriously i
 
 | Where you'll use it                              | Specific application                                          |
 | ------------------------------------------------ | ------------------------------------------------------------- |
-| `21_Python_ML_DL_NLP/04_Math_For_ML.md`           | Vector/matrix operations for ML (USES this knowledge)         |
-| `21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` | Gradient descent geometry, eigenvector derivation             |
-| `21_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md` | Backprop is just chain rule on matrix calculus           |
-| `21_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md`  | Convolutions are sliding matrix multiplications               |
+| `25_Python_ML_DL_NLP/04_Math_For_ML.md`           | Vector/matrix operations for ML (USES this knowledge)         |
+| `25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` | Gradient descent geometry, eigenvector derivation             |
+| `25_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md` | Backprop is just chain rule on matrix calculus           |
+| `25_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md`  | Convolutions are sliding matrix multiplications               |
 | `CSE304 Numerical Methods` (future)               | LU decomposition, condition number, iterative solvers         |
 
 ---
@@ -54,7 +54,7 @@ The students who succeed in S07 ML are the ones who took THIS course seriously i
 
 🟡 **Tier B — Wrapper + Partial Existing Content**
 
-Some content lives in `21_Python_ML_DL_NLP/04_Math_For_ML.md` and `04b_Math_Behind_The_Code.md`. Many topics still need standalone chapter files. Topics marked **🚧 (chapter to be authored)** below are gaps to fill in Phase 3.
+Some content lives in `25_Python_ML_DL_NLP/04_Math_For_ML.md` and `04b_Math_Behind_The_Code.md`. Many topics still need standalone chapter files. Topics marked **🚧 (chapter to be authored)** below are gaps to fill in Phase 3.
 
 ---
 
@@ -81,10 +81,10 @@ Some content lives in `21_Python_ML_DL_NLP/04_Math_For_ML.md` and `04b_Math_Behi
 
 | Day | Topic                                | Read                                                     | Do                                                                  |
 | --- | ------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Vector as arrow + as list of components | `21_Python_ML_DL_NLP/04_Math_For_ML.md` §1            | Draw v=(3,4) and w=(-1,2); compute v+w geometrically (parallelogram) |
-| 2   | Vector addition, scalar multiplication | `21_Python_ML_DL_NLP/04_Math_For_ML.md` §2             | Show: 2v + (-1)w in NumPy AND on graph paper                         |
-| 3   | Magnitude (norm) and unit vectors      | `21_Python_ML_DL_NLP/04_Math_For_ML.md` §3             | Normalize 5 sample vectors; verify magnitude = 1                     |
-| 4   | Dot product — algebraic + geometric    | `21_Python_ML_DL_NLP/04_Math_For_ML.md` §4             | Compute angle between (1,0) and (1,1) using dot product              |
+| 1   | Vector as arrow + as list of components | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §1            | Draw v=(3,4) and w=(-1,2); compute v+w geometrically (parallelogram) |
+| 2   | Vector addition, scalar multiplication | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §2             | Show: 2v + (-1)w in NumPy AND on graph paper                         |
+| 3   | Magnitude (norm) and unit vectors      | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §3             | Normalize 5 sample vectors; verify magnitude = 1                     |
+| 4   | Dot product — algebraic + geometric    | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §4             | Compute angle between (1,0) and (1,1) using dot product              |
 | 5   | Lab — visualize 100 random 2D vectors  | —                                                       | **Lab:** Plot 100 random unit vectors; observe uniform distribution  |
 | 6–7 | Review + Problem Set LA-PS1            | —                                                       | 🚧 to be authored                                                    |
 
@@ -185,7 +185,7 @@ WHY IT MATTERS IN PRACTICE:
 
 | Day | Topic                                | Read                                                     | Do                                                                  |
 | --- | ------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------- |
-| 1   | Matrices as functions: ℝⁿ → ℝᵐ        | `21_Python_ML_DL_NLP/04_Math_For_ML.md` §5             | Compute Av for 5 sample matrices A and vectors v                     |
+| 1   | Matrices as functions: ℝⁿ → ℝᵐ        | `25_Python_ML_DL_NLP/04_Math_For_ML.md` §5             | Compute Av for 5 sample matrices A and vectors v                     |
 | 2   | Matrix multiplication = composition  | 🚧 chapter to be authored                                | Compose rotation × scale; verify rotate-then-scale ≠ scale-then-rotate |
 | 3   | Identity, inverse, transpose         | 🚧 chapter to be authored                                | Find inverse of 2×2 matrix; verify A·A⁻¹ = I                          |
 | 4   | When inverses don't exist            | 🚧 chapter to be authored                                | Show: rank-deficient matrices have no inverse                         |
@@ -385,7 +385,7 @@ THE TAKEAWAY:
 
 ### Week 15 — Applications
 
-PCA dimensionality reduction (lives in `21_Python_ML_DL_NLP/06_ML_Algorithms.md` §5).
+PCA dimensionality reduction (lives in `25_Python_ML_DL_NLP/06_ML_Algorithms.md` §5).
 Computer graphics transforms.
 Network analysis (PageRank, spectral clustering).
 
@@ -411,9 +411,9 @@ Every operation links back to a specific week's concept. The capstone makes the 
 
 Linear algebra concepts are scattered across existing chapters. Cross-references for self-study while standalone chapters await Phase 3:
 
-- `21_Python_ML_DL_NLP/04_Math_For_ML.md` — vectors, matrices, dot product
-- `21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` — gradient descent geometry, eigenvectors
-- `21_Python_ML_DL_NLP/06_ML_Algorithms.md` §5 — PCA application
+- `25_Python_ML_DL_NLP/04_Math_For_ML.md` — vectors, matrices, dot product
+- `25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` — gradient descent geometry, eigenvectors
+- `25_Python_ML_DL_NLP/06_ML_Algorithms.md` §5 — PCA application
 
 ## Future Authoring Plan
 

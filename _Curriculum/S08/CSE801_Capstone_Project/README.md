@@ -26,10 +26,10 @@ Students select one track from the project bank:
 
 ## Linked Existing Content
 
-- [Capstone Project Bank — CAP01 DSA Toolkit](../../00_CURRICULUM/PROJECTS/CAP01_DSA_Toolkit.md)
-- [Capstone Project Bank — CAP02 Microservice](../../00_CURRICULUM/PROJECTS/CAP02_Microservice.md)
-- [Capstone Project Bank — CAP03 Full-Stack](../../00_CURRICULUM/PROJECTS/CAP03_FullStack.md)
-- [Capstone Project Bank — CAP04 Distributed System](../../00_CURRICULUM/PROJECTS/CAP04_DistributedSystem.md)
+- [Capstone Project Bank — CAP01 DSA Toolkit](../../../00_CURRICULUM/PROJECTS/CAP01_DSA_Toolkit.md)
+- [Capstone Project Bank — CAP02 Microservice](../../../00_CURRICULUM/PROJECTS/CAP02_Microservice.md)
+- [Capstone Project Bank — CAP03 Full-Stack](../../../00_CURRICULUM/PROJECTS/CAP03_FullStack.md)
+- [Capstone Project Bank — CAP04 Distributed System](../../../00_CURRICULUM/PROJECTS/CAP04_DistributedSystem.md)
 
 ## Assessment
 

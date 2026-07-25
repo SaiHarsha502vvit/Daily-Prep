@@ -19,7 +19,7 @@
 
 | Related Modules                            | Cross-Reference                                                |
 | ------------------------------------------ | -------------------------------------------------------------- |
-| `22_Advanced_API_Testing/`                 | Primary source for API testing patterns                        |
+| `24_Advanced_API_Testing/`                 | Primary source for API testing patterns                        |
 | `21_SDET_Playwright_Automation/`           | E2E and contract testing in JS/TS                              |
 | `07_Modern_Java/Ch28_Spring_MVC_REST.md`   | REST controller implementation                                 |
 | `08_SQL/`                                  | DB-backed tests with Testcontainers                            |
@@ -51,10 +51,10 @@
 
 | Day | Topic                              | Read                                              | Do                                                       |
 | --- | ---------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
-| 1   | Resources, not actions             | `22_Advanced_API_Testing/01_API_Design.md` §1    | Refactor `/getUsers` → `/users`; defend the choice       |
-| 2   | HTTP verbs and idempotency         | `22_Advanced_API_Testing/01_API_Design.md` §2    | When is PUT vs POST correct? Trace 3 cases               |
-| 3   | Status codes — semantically right  | `22_Advanced_API_Testing/01_API_Design.md` §3    | Map: validation error → 422 vs 400, missing → 404 vs 410 |
-| 4   | Resource representations + content negotiation | `22_Advanced_API_Testing/01_API_Design.md` §4 | Use Accept header for JSON vs XML; trace negotiation     |
+| 1   | Resources, not actions             | `24_Advanced_API_Testing/01_API_Design.md` §1    | Refactor `/getUsers` → `/users`; defend the choice       |
+| 2   | HTTP verbs and idempotency         | `24_Advanced_API_Testing/01_API_Design.md` §2    | When is PUT vs POST correct? Trace 3 cases               |
+| 3   | Status codes — semantically right  | `24_Advanced_API_Testing/01_API_Design.md` §3    | Map: validation error → 422 vs 400, missing → 404 vs 410 |
+| 4   | Resource representations + content negotiation | `24_Advanced_API_Testing/01_API_Design.md` §4 | Use Accept header for JSON vs XML; trace negotiation     |
 | 5–7 | Lab + Problem Set API-PS1          | —                                                 | Design a REST API for a domain you know well             |
 
 **Section Challenge (REST design):**
@@ -108,15 +108,15 @@ WHY THIS MATTERS BEYOND AESTHETICS:
 
 #### Week 2 — Pagination, Filtering, Sorting
 
-`22_Advanced_API_Testing/01_API_Design.md` §5 — cursor vs offset (when each fits), filter query languages (RSQL, GraphQL-ish), N+1 in expand patterns.
+`24_Advanced_API_Testing/01_API_Design.md` §5 — cursor vs offset (when each fits), filter query languages (RSQL, GraphQL-ish), N+1 in expand patterns.
 
 #### Week 3 — Versioning & Evolution
 
-`22_Advanced_API_Testing/02_Versioning_Evolution.md` — URL path, header, content-type versioning; non-breaking changes; deprecation policy.
+`24_Advanced_API_Testing/02_Versioning_Evolution.md` — URL path, header, content-type versioning; non-breaking changes; deprecation policy.
 
 #### Week 4 — OpenAPI 3.1
 
-`22_Advanced_API_Testing/03_OpenAPI_Spec.md` — schema authoring, $ref reuse, security schemes, examples, mock server generation, client SDK gen.
+`24_Advanced_API_Testing/03_OpenAPI_Spec.md` — schema authoring, $ref reuse, security schemes, examples, mock server generation, client SDK gen.
 
 ---
 
@@ -130,15 +130,15 @@ WHY THIS MATTERS BEYOND AESTHETICS:
 
 #### Week 5 — Unit Tests
 
-`22_Advanced_API_Testing/04_Unit_Testing.md` — JUnit 5, AssertJ, Mockito, when to mock vs use real instance.
+`24_Advanced_API_Testing/04_Unit_Testing.md` — JUnit 5, AssertJ, Mockito, when to mock vs use real instance.
 
 #### Week 6 — Spring Test (Integration)
 
-`22_Advanced_API_Testing/05_Spring_Test.md` — @SpringBootTest, slice tests (@WebMvcTest, @DataJpaTest), MockMvc.
+`24_Advanced_API_Testing/05_Spring_Test.md` — @SpringBootTest, slice tests (@WebMvcTest, @DataJpaTest), MockMvc.
 
 #### Week 7 — Testcontainers
 
-`22_Advanced_API_Testing/06_Testcontainers.md` — PostgreSQL, Redis, Kafka, Localstack, container reuse for fast suites.
+`24_Advanced_API_Testing/06_Testcontainers.md` — PostgreSQL, Redis, Kafka, Localstack, container reuse for fast suites.
 
 ---
 
@@ -152,15 +152,15 @@ WHY THIS MATTERS BEYOND AESTHETICS:
 
 #### Week 8 — Why Contract Testing
 
-`22_Advanced_API_Testing/07_Contract_Testing.md` §1-2 — what unit + integration miss, the publisher/subscriber drift problem.
+`24_Advanced_API_Testing/07_Contract_Testing.md` §1-2 — what unit + integration miss, the publisher/subscriber drift problem.
 
 #### Week 9 — Pact (Consumer side)
 
-`22_Advanced_API_Testing/07_Contract_Testing.md` §3 — defining consumer expectations, generating pact file.
+`24_Advanced_API_Testing/07_Contract_Testing.md` §3 — defining consumer expectations, generating pact file.
 
 #### Week 10 — Pact (Provider side + Broker)
 
-`22_Advanced_API_Testing/07_Contract_Testing.md` §4-5 — provider verification, Pact Broker, "can-i-deploy" gating.
+`24_Advanced_API_Testing/07_Contract_Testing.md` §4-5 — provider verification, Pact Broker, "can-i-deploy" gating.
 
 ---
 
@@ -168,11 +168,11 @@ WHY THIS MATTERS BEYOND AESTHETICS:
 
 #### Week 11 — k6 Fundamentals
 
-`22_Advanced_API_Testing/08_Performance_Testing.md` §1 — scripting in JS, thresholds, stages.
+`24_Advanced_API_Testing/08_Performance_Testing.md` §1 — scripting in JS, thresholds, stages.
 
 #### Week 12 — Smoke / Spike / Stress / Soak
 
-`22_Advanced_API_Testing/08_Performance_Testing.md` §2 — choosing test type from goal; interpreting results.
+`24_Advanced_API_Testing/08_Performance_Testing.md` §2 — choosing test type from goal; interpreting results.
 
 #### Week 13 — CI Integration
 
@@ -194,7 +194,7 @@ Pick an existing service. Design + document API with OpenAPI 3.1. Build full tes
 
 ## Problem Sets
 
-`22_Advanced_API_Testing/` — practice modules.
+`24_Advanced_API_Testing/` — practice modules.
 
 ## Exam Prep
 

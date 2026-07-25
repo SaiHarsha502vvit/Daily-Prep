@@ -34,15 +34,15 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 
 | Week | 60-Min Focus                                                | Chapter Link                                                                                           |
 | ---- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1    | JS essentials — async/await, `forEach` trap, ES6            | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/04_JS_TS_For_Automation.md) Part 1          |
-| 2    | async/await deep dive — `Promise.all`, typed returns        | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/04_JS_TS_For_Automation.md) Part 2-3        |
-| 3    | POM patterns — lazy eval, `as const`, typed dicts           | [05_POM_Architecture_Deep_Dive](../21_SDET_Playwright_Automation/05_POM_Architecture_Deep_Dive.md)     |
-| 4    | Custom Fixtures — `test.extend`, `scope:worker`, `yield`    | [06_Custom_Fixtures_Architecture](../21_SDET_Playwright_Automation/06_Custom_Fixtures_Architecture.md) |
-| 5    | E2E Architecture — 15-step skeleton, Data Accumulator       | [07_test_step_E2E_Architecture](../21_SDET_Playwright_Automation/07_test_step_E2E_Architecture.md)     |
-| 6    | Parallel Execution — Workers, data collision, `test.serial` | [09_Parallel_Execution_Workers](../21_SDET_Playwright_Automation/09_Parallel_Execution_Workers.md)     |
+| 1    | JS essentials — async/await, `forEach` trap, ES6            | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md) Part 1          |
+| 2    | async/await deep dive — `Promise.all`, typed returns        | [04_JS_TS_For_Automation](../21_SDET_Playwright_Automation/01_Foundations/04_JS_TS_For_Automation.md) Part 2-3        |
+| 3    | POM patterns — lazy eval, `as const`, typed dicts           | [05_POM_Architecture_Deep_Dive](../21_SDET_Playwright_Automation/02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)     |
+| 4    | Custom Fixtures — `test.extend`, `scope:worker`, `yield`    | [06_Custom_Fixtures_Architecture](../21_SDET_Playwright_Automation/02_Core_Architecture/06_Custom_Fixtures_Architecture.md) |
+| 5    | E2E Architecture — 15-step skeleton, Data Accumulator       | [07_test_step_E2E_Architecture](../21_SDET_Playwright_Automation/02_Core_Architecture/07_test_step_E2E_Architecture.md)     |
+| 6    | Parallel Execution — Workers, data collision, `test.serial` | [09_Parallel_Execution_Workers](../21_SDET_Playwright_Automation/02_Core_Architecture/09_Parallel_Execution_Workers.md)     |
 | 7    | TypeScript Advanced — generics, `Record`, enums             | [17_TypeScript/02_TS_Advanced_Types](../17_TypeScript/02_TS_Advanced_Types.md)                         |
 | 8    | TypeScript Patterns — class design, access modifiers        | [17_TypeScript/03_TS_Patterns_BestPractices](../17_TypeScript/03_TS_Patterns_BestPractices.md)         |
-| 9    | Playwright Basics review + config deep dive                 | [01_Playwright_TS_Basics](../21_SDET_Playwright_Automation/01_Playwright_TS_Basics.md)                 |
+| 9    | Playwright Basics review + config deep dive                 | [01_Playwright_TS_Basics](../21_SDET_Playwright_Automation/01_Foundations/01_Playwright_TS_Basics.md)                 |
 | 10   | Playwright Library: `browser`, `context`, `page` lifecycle  | [17_TypeScript/04_TS_Deep_Reasoning](../17_TypeScript/04_TS_Deep_Reasoning.md)                         |
 
 ---
@@ -54,11 +54,11 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 | Week | 60-Min Focus                                                 | Chapter Link                                                                                                    |
 | ---- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | 1    | Browser rendering pipeline — 4 trees overview                | [16_JavaScript/09_Browser_Internals_Rendering](../16_JavaScript/09_Browser_Internals_Rendering.md) Sections 1-3 |
-| 2    | Browser Internals for SDETs — D365 two-phase render          | [08_Browser_Internals_for_SDETs](../21_SDET_Playwright_Automation/08_Browser_Internals_for_SDETs.md)            |
-| 3    | Enterprise Locators — XPath axes, chaining, filtering        | [02_Enterprise_Locators_XPath](../21_SDET_Playwright_Automation/02_Enterprise_Locators_XPath.md)                |
-| 4    | Browser Console Scripting — DOM scripts, XPath finder        | [03_Browser_Console_Scripting](../21_SDET_Playwright_Automation/03_Browser_Console_Scripting.md)                |
-| 5    | Dynamics 365 — IFrames, `.ms-*` classes, menuitem trap       | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/10_Dynamics365_CRM_Testing.md) Sections 1-4       |
-| 6    | Dynamics 365 — data-automation-key, console scripts, tab nav | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/10_Dynamics365_CRM_Testing.md) Sections 5-8       |
+| 2    | Browser Internals for SDETs — D365 two-phase render          | [08_Browser_Internals_for_SDETs](../21_SDET_Playwright_Automation/02_Core_Architecture/08_Browser_Internals_for_SDETs.md)            |
+| 3    | Enterprise Locators — XPath axes, chaining, filtering        | [02_Enterprise_Locators_XPath](../21_SDET_Playwright_Automation/01_Foundations/02_Enterprise_Locators_XPath.md)                |
+| 4    | Browser Console Scripting — DOM scripts, XPath finder        | [03_Browser_Console_Scripting](../21_SDET_Playwright_Automation/01_Foundations/03_Browser_Console_Scripting.md)                |
+| 5    | Dynamics 365 — IFrames, `.ms-*` classes, menuitem trap       | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) Sections 1-4       |
+| 6    | Dynamics 365 — data-automation-key, console scripts, tab nav | [10_Dynamics365_CRM_Testing](../21_SDET_Playwright_Automation/03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) Sections 5-8       |
 | 7    | React rendering — how SPA components re-render               | [15_React_Frontend/01_React_Fundamentals](../15_React_Frontend/01_React_Fundamentals.md)                        |
 | 8    | CSS selectors — specificity, pseudo-classes                  | [18_CSS_Complete/01_CSS_Foundations](../18_CSS_Complete/01_CSS_Foundations.md)                                  |
 | 9    | JS DOM APIs — `querySelector`, events, MutationObserver      | [16_JavaScript/05_JS_DOM_BrowserAPIs](../16_JavaScript/05_JS_DOM_BrowserAPIs.md)                                |
@@ -72,13 +72,13 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 
 | Week | 60-Min Focus                                                           | Chapter Link                                                                                            |
 | ---- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| 1    | API foundations — REST vs SOAP, status codes, `request` fixture        | [01_API_Testing_Foundations](../22_Advanced_API_Testing/01_API_Testing_Foundations.md)                  |
-| 2    | Complex JSON — nested parsing, optional chaining, arrays               | [02_Complex_JSON_and_SOAP](../22_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md)                      |
-| 3    | Enterprise headers — Bearer, `x-agent`, `x-correlation-id`, SOAPAction | [03_Enterprise_Headers_Auth](../22_Advanced_API_Testing/03_Enterprise_Headers_Auth.md)                  |
-| 4    | APIUtils — wrapper pattern, `getEndpointDescription` dissected         | [04_API_Utils_Factory_Pattern](../22_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md) Sections 1-3 |
-| 5    | Factory Pattern — HeadersCrm, PayloadCrm, endpoint assembly            | [04_API_Utils_Factory_Pattern](../22_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md) Sections 4-6 |
-| 6    | Data From API To Test — typed interfaces, safe extraction              | [05_Data_From_API_To_Test](../22_Advanced_API_Testing/05_Data_From_API_To_Test.md) Sections 1-4         |
-| 7    | API→UI bridge, parameterised tests, response validators                | [05_Data_From_API_To_Test](../22_Advanced_API_Testing/05_Data_From_API_To_Test.md) Sections 5-8         |
+| 1    | API foundations — REST vs SOAP, status codes, `request` fixture        | [01_API_Testing_Foundations](../24_Advanced_API_Testing/01_API_Testing_Foundations.md)                  |
+| 2    | Complex JSON — nested parsing, optional chaining, arrays               | [02_Complex_JSON_and_SOAP](../24_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md)                      |
+| 3    | Enterprise headers — Bearer, `x-agent`, `x-correlation-id`, SOAPAction | [03_Enterprise_Headers_Auth](../24_Advanced_API_Testing/03_Enterprise_Headers_Auth.md)                  |
+| 4    | APIUtils — wrapper pattern, `getEndpointDescription` dissected         | [04_API_Utils_Factory_Pattern](../24_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md) Sections 1-3 |
+| 5    | Factory Pattern — HeadersCrm, PayloadCrm, endpoint assembly            | [04_API_Utils_Factory_Pattern](../24_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md) Sections 4-6 |
+| 6    | Data From API To Test — typed interfaces, safe extraction              | [05_Data_From_API_To_Test](../24_Advanced_API_Testing/05_Data_From_API_To_Test.md) Sections 1-4         |
+| 7    | API→UI bridge, parameterised tests, response validators                | [05_Data_From_API_To_Test](../24_Advanced_API_Testing/05_Data_From_API_To_Test.md) Sections 5-8         |
 | 8    | HTTP complete — how requests actually travel the network               | [22_DevOps/08_HTTP_Complete](../22_DevOps/08_HTTP_Complete.md)                                          |
 | 9    | Design Patterns — Factory, Builder, Strategy                           | [06_OOP_Design/02_Design_Patterns](../06_OOP_Design/02_Design_Patterns.md) Sections on Factory/Builder  |
 | 10   | OOP in TypeScript — class design, static methods                       | [17_TypeScript/03_TS_Patterns_BestPractices](../17_TypeScript/03_TS_Patterns_BestPractices.md)          |
@@ -91,9 +91,9 @@ This schedule uses **Spaced Repetition** across 5 domains. Each week you visit e
 
 | Week | 60-Min Focus                                                         | Chapter Link                                                                                           |
 | ---- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 1    | DB connection from Playwright — mssql fixture, parameterised queries | [06_DB_Testing_SQL_Bridge](../22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 1-3        |
-| 2    | JOIN queries for SDET — multi-table verification patterns            | [06_DB_Testing_SQL_Bridge](../22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 4-5        |
-| 3    | CTEs + transactions for DB teardown                                  | [06_DB_Testing_SQL_Bridge](../22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 6-7        |
+| 1    | DB connection from Playwright — mssql fixture, parameterised queries | [06_DB_Testing_SQL_Bridge](../24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 1-3        |
+| 2    | JOIN queries for SDET — multi-table verification patterns            | [06_DB_Testing_SQL_Bridge](../24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 4-5        |
+| 3    | CTEs + transactions for DB teardown                                  | [06_DB_Testing_SQL_Bridge](../24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md) Sections 6-7        |
 | 4    | JOINs deep dive — INNER, LEFT, RIGHT, FULL                           | [08_SQL/07_JOINs_Complete](../08_SQL/07_JOINs_Complete.md)                                             |
 | 5    | CTEs and Subqueries                                                  | [08_SQL/08_Subqueries_CTEs](../08_SQL/08_Subqueries_CTEs.md)                                           |
 | 6    | Window functions — ROW_NUMBER, RANK, LAG, LEAD                       | [08_SQL/09_Window_Functions](../08_SQL/09_Window_Functions.md)                                         |

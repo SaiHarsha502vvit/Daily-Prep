@@ -32,5 +32,5 @@ Computer Architecture explores the hardware-software interface: instruction set 
 
 ## Linked Content
 
-- [Developer Essentials — systems background](../../13_Developer_Essentials/) (foundations)
-- [Operating Systems — hardware abstraction layer](../../00_CURRICULUM/) (Phase 3)
+- [Developer Essentials — systems background](../../../13_Developer_Essentials/) (foundations)
+- [Operating Systems — hardware abstraction layer](../../../00_CURRICULUM/) (Phase 3)

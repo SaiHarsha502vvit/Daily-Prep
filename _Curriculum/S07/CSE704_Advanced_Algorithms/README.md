@@ -34,7 +34,7 @@ An advanced algorithms course covering topics typically reserved for graduate st
 
 ## Linked Existing Content
 
-- [Algorithms — Advanced sections](../../03_Algorithms/)
+- [Algorithms — Advanced sections](../../../03_Algorithms/)
 
 ## Assessment
 

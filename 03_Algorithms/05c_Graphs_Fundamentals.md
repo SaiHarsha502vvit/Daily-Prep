@@ -893,7 +893,7 @@ int[] bfs(List<List<Integer>> adj, int src) {
 For each pair (u,v), check if there's a path — O(V) DFS per pair = O(V²) per query.
 
 **Optimal — Union-Find, O(E·α(V)) ≈ O(E):**
-Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../../JavaSolutions/AlgorithmExamples/UnionFind.java).
+Process each edge once: `union(u, v)`. Count distinct roots at the end. For the Java example, see [UnionFind.java](../JavaSolutions/AlgorithmExamples/UnionFind.java).
 **Why it's better**: One pass over edges, no repeated DFS. Union-Find's amortized cost per operation is essentially O(1) (inverse Ackermann).
 
 

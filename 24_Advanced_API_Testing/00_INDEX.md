@@ -1,4 +1,4 @@
-# 22. Advanced API Testing — Module Index
+# 24. Advanced API Testing — Module Index
 
 **Module Goal:** Master enterprise-grade API testing — REST, SOAP, complex JSON/XML responses, custom headers, factory patterns for maintainability, and direct database verification from Playwright tests.
 

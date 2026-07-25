@@ -4,9 +4,9 @@
 
 **Cross-links:**
 
-- [`21_SDET/05_Data_From_API_To_Test.md`](../21_SDET_Playwright_Automation/05_Data_From_API_To_Test.md) — Typed interfaces, basic extraction
+- [`21_SDET/05_Data_From_API_To_Test.md`](05_Data_From_API_To_Test.md) — Typed interfaces, basic extraction
 - [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) — Joining data from multiple sources
-- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript_Deep_Dive/02_TS_Advanced_Types.md) — Mapped/utility types for API shapes
+- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) — Mapped/utility types for API shapes
 
 ---
 

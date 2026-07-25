@@ -463,7 +463,7 @@ IMPLICATIONS:
 - **Chapter 06 — Relations:** A function is a relation where each left-element appears exactly once. Understanding functions as special relations clarifies why the inverse of a non-bijection is a relation, not a function.
 - **Chapter 08 — Counting:** Bijections are the counting tool: |A| = |B| iff a bijection A ↔ B exists. Surjections and injections count different combinatorial objects.
 - **Chapter 09 — Pigeonhole:** If f : A → B with |A| > |B|, then f CANNOT be injective — at least two inputs share an output. This is the Pigeonhole Principle stated as a function property.
-- `21_Python_ML_DL_NLP/` — Loss functions are functions ℝⁿ → ℝ. Activation functions (ReLU, sigmoid) are functions ℝ → ℝ. Backpropagation computes the composition of partial derivatives of composed functions (chain rule = function composition).
+- `25_Python_ML_DL_NLP/` — Loss functions are functions ℝⁿ → ℝ. Activation functions (ReLU, sigmoid) are functions ℝ → ℝ. Backpropagation computes the composition of partial derivatives of composed functions (chain rule = function composition).
 - `07_Modern_Java/` — Java `Function<T, R>`, `Predicate<T>`, `UnaryOperator<T>` are all mathematical functions. `andThen()` is forward composition (f then g), `compose()` is backward composition (g before this).
 
 ---

@@ -509,7 +509,7 @@ KEY INSIGHT:
 - **Chapter 06 — Determinants:** The determinant can be computed as the product of diagonal entries of U (from LU decomposition), with sign adjustments for row swaps.
 - **Chapter 07 — Inverses:** Finding A⁻¹ via Gaussian elimination: augment with [A | I] and reduce to [I | A⁻¹].
 - **Chapter 09 — Least Squares:** When Ax = b has no solution (overdetermined), least squares minimizes ||Ax - b||. Gaussian elimination on the normal equations (AᵀAx = Aᵀb) gives the least-squares solution.
-- `21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` — Linear regression coefficients ARE a linear system solution. `numpy.linalg.solve()` or `lstsq()` run Gaussian elimination.
+- `25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md` — Linear regression coefficients ARE a linear system solution. `numpy.linalg.solve()` or `lstsq()` run Gaussian elimination.
 
 ---
 
