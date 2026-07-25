@@ -1,0 +1,18 @@
+# Self-contained ignore — this playground must stay leak-free even if
+# extracted out of the monorepo (the repo-root .gitignore no longer applies then).
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+playwright-report/
+test-results/
+blob-report/
+allure-results/
+allure-report/
+*.sqlite
+*.sqlite3
+*.db
+.env
+.env.local
+.env.*.local
+*.log

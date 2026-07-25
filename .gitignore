@@ -17,6 +17,11 @@
 **/.parcel-cache/
 **/.vite/
 **/.tsbuildinfo
+**/*.tsbuildinfo
+# Local analytics/trend-store databases (framework flake CLI writes ./analytics.db)
+**/analytics.db
+**/*.sqlite
+**/*.sqlite3
 
 # Env files — never commit secrets. .env.example IS tracked (no .example exclusion).
 **/.env

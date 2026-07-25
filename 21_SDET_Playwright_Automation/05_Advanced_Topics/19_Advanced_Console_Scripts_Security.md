@@ -1,6 +1,6 @@
 # 19. Advanced Browser Console Scripts — DevTools, Network & Security Diagnostics
 
-**Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md)
+**Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../00_Pathways/PATHWAY_01_LEARNING.md)
 
 **Cross-links:**
 
@@ -1153,7 +1153,7 @@ D) Use `page.evaluate(() => navigator.cookieEnabled)` — checks if cookies are 
 
 ---
 
-**Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md)
+**Navigation**: [← Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 20: Practice Resources](../00_Pathways/PATHWAY_01_LEARNING.md)
 
 
 ---

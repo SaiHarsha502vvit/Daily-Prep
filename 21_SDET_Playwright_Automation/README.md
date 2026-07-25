@@ -76,6 +76,23 @@ Backed by a runnable framework in [`framework/`](./framework/) and graded exerci
 
 ---
 
+## How this module is organized
+
+Four entry points live at the root; everything else is foldered by purpose:
+
+| Path                                             | Purpose                                                                                     |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `README.md` / [`00_Start_Here.md`](./00_Start_Here.md) / [`00_INDEX.md`](./00_INDEX.md) / [`WHERE_TO_START.md`](./WHERE_TO_START.md) | Entry points — pick by how you like to navigate |
+| [`00_Navigation/`](./00_Navigation/)             | Maps: [SITEMAP](./00_Navigation/SITEMAP.md), [lens index](./00_Navigation/LENS_INDEX.md), [code→chapter map](./00_Navigation/MAP_CODE_TO_CHAPTER.md) |
+| [`00_Pathways/`](./00_Pathways/)                 | Guided routes: [learning](./00_Pathways/PATHWAY_01_LEARNING.md), [professional](./00_Pathways/PATHWAY_02_PROFESSIONAL.md), [office/D365](./00_Pathways/PATHWAY_03_OFFICE.md) |
+| `01_Foundations/` … `08_Practice_And_Quizzes/`   | The numbered curriculum clusters (chapters Ch00–Ch62)                                        |
+| `reference/`, `learn/`, `deep_dives/`            | Lookup cards, ordered mini-curriculum, optional deep reads                                   |
+| `framework/`, `projects/`, `challenges/`         | Runnable code — scaffold, playground, graded exercises                                       |
+| [`career/`](./career/README.md)                  | Career system incl. the [Principal readiness rubric](./career/READINESS_RUBRIC.md)          |
+| [`_meta/`](./_meta/)                             | Module governance: [audit results](./_meta/AUDIT_RESULTS.md), [link-repair history](./_meta/KNOWN_BROKEN_LINKS.md), [context](./_meta/CONTEXT.md) |
+
+---
+
 ## Quick reference — patterns you'll use weekly
 
 ### The `await` rule

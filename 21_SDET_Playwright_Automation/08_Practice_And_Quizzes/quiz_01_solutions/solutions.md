@@ -2,7 +2,7 @@
 
 Reference document for Quiz 01 (25 MCQ). Each entry contains the question, correct answer, explanation, and why each incorrect option is wrong.
 
-**Navigation**: [Index](../../00_INDEX.md) | [→ Quiz 02: Code Challenges](../QUIZ_02_Playwright_CodeChallenge.md)
+**Navigation**: [Index](../../00_INDEX.md) | [→ Quiz 02: Code Challenges](../quiz_02_solutions/README.md)
 
 ---
 
@@ -751,4 +751,4 @@ Use `objectContaining` when you only care about some properties (or when the API
 
 ---
 
-**Navigation**: [Index](../../00_INDEX.md) | [→ Quiz 02: Code Challenges](../QUIZ_02_Playwright_CodeChallenge.md)
+**Navigation**: [Index](../../00_INDEX.md) | [→ Quiz 02: Code Challenges](../quiz_02_solutions/README.md)

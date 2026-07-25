@@ -1,6 +1,6 @@
 # 21. Enterprise Project Structure — The "Why" Behind Every Folder
 
-**Navigation**: [← Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)
+**Navigation**: [← Chapter 20: Practice Resources](../00_Pathways/PATHWAY_01_LEARNING.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)
 
 **Cross-links:**
 
@@ -865,7 +865,7 @@ One type definition. Used in 20 places. When the API adds a new field, you add i
 
 ---
 
-**Navigation**: [← Chapter 20: Practice Resources](../08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)
+**Navigation**: [← Chapter 20: Practice Resources](../00_Pathways/PATHWAY_01_LEARNING.md) | [Index](../00_INDEX.md) | [→ Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md)
 
 
 ---

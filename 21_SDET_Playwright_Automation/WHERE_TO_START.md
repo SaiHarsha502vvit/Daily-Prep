@@ -12,7 +12,7 @@ Pick the one closest to you. Each branch is short and points at the next file to
 
 You can write some code (any language) but you haven't built a real test suite. You want a sequence to follow without thinking about which file is next.
 
-**Open:** [`PATHWAY_01_LEARNING.md`](./PATHWAY_01_LEARNING.md)
+**Open:** [`PATHWAY_01_LEARNING.md`](./00_Pathways/PATHWAY_01_LEARNING.md)
 
 It's an ordered reading list of ~15 chapters with checkpoints, time estimates ("90 min", "2 hrs"), and built-in pause points. By the end you'll be writing your own POM-based test suite with fixtures.
 
@@ -26,9 +26,9 @@ It's an ordered reading list of ~15 chapters with checkpoints, time estimates ("
 
 You write Playwright tests at work. You want senior, staff, or principal next. You don't need to be told what a locator is.
 
-**Open:** [`PATHWAY_02_PROFESSIONAL.md`](./PATHWAY_02_PROFESSIONAL.md)
+**Open:** [`PATHWAY_02_PROFESSIONAL.md`](./00_Pathways/PATHWAY_02_PROFESSIONAL.md)
 
-This skips fundamentals and jumps straight to: enterprise architecture (POM splitting, fixture hierarchies, 5-layer API client), CI/CD at scale, flakiness diagnosis, the 10 Principal SDET topics (analytics, leadership, cost, SLOs, healing, ADRs, PII, test impact, chaos, observability), and the [`READINESS_RUBRIC.md`](./READINESS_RUBRIC.md) for self-assessment. Each chapter is tagged with which competency in the rubric it unlocks.
+This skips fundamentals and jumps straight to: enterprise architecture (POM splitting, fixture hierarchies, 5-layer API client), CI/CD at scale, flakiness diagnosis, the 10 Principal SDET topics (analytics, leadership, cost, SLOs, healing, ADRs, PII, test impact, chaos, observability), and the [`READINESS_RUBRIC.md`](./career/READINESS_RUBRIC.md) for self-assessment. Each chapter is tagged with which competency in the rubric it unlocks.
 
 **Time commitment:** ~130–180 hours.
 
@@ -40,7 +40,7 @@ This skips fundamentals and jumps straight to: enterprise architecture (POM spli
 
 Something's broken, due tomorrow, or you need an answer in the next 15 minutes. You don't have time for a curriculum.
 
-**Open:** [`PATHWAY_03_OFFICE.md`](./PATHWAY_03_OFFICE.md)
+**Open:** [`PATHWAY_03_OFFICE.md`](./00_Pathways/PATHWAY_03_OFFICE.md)
 
 It's a problem-indexed lookup. Examples of what's in there:
 
@@ -62,7 +62,7 @@ Each entry points to 2–4 chapters and the relevant framework code.
 
 You opened, say, `framework/fixtures/auth.fixture.ts`, saw `proper-lockfile` and wondered "why a lockfile?". You want the chapter that explains the design.
 
-**Open:** [`MAP_CODE_TO_CHAPTER.md`](./MAP_CODE_TO_CHAPTER.md)
+**Open:** [`MAP_CODE_TO_CHAPTER.md`](./00_Navigation/MAP_CODE_TO_CHAPTER.md)
 
 It's a reverse index — every meaningful file in `framework/` → the chapter(s) that teach the concept and one-line "what this demonstrates". Use it to read the code top-down: open a file, look up its row, read that chapter.
 
@@ -87,7 +87,7 @@ If you have **more than 2 weeks**, also work through Ch33–36 (CS thinking, alg
 You want to browse, search, or you already know exactly what you want. Two options:
 
 - [`00_INDEX.md`](./00_INDEX.md) — full sequential list of every chapter, with reading time and dependencies. Read this if you want the canonical view.
-- [`SITEMAP.md`](./SITEMAP.md) — one-page map of every folder and file with "open this if…" guidance.
+- [`SITEMAP.md`](./00_Navigation/SITEMAP.md) — one-page map of every folder and file with "open this if…" guidance.
 
 ---
 

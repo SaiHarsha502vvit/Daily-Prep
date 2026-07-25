@@ -1,6 +1,6 @@
 # Quiz 01 — Playwright & TypeScript Fundamentals: Reference Solutions
 
-**Navigation**: [← Quiz 01](../QUIZ_01_Playwright_MCQ.md) | [Quiz 02](../QUIZ_02_Playwright_CodeChallenge.md) | [Index](../../00_INDEX.md)
+**Navigation**: [← Quiz 01](./README.md) | [Quiz 02](../quiz_02_solutions/README.md) | [Index](../../00_INDEX.md)
 
 > Expanded reference solutions for every question in `QUIZ_01_Playwright_MCQ.md`.
 > Each entry contains: the question text → the correct answer → why it is correct → why each distractor is wrong → relevant curriculum chapter references.
@@ -61,11 +61,11 @@ All Quiz 01 solutions are in a single file:
 | CAPTCHA bypass (Q33)                         | [Ch 40 — Security Testing OWASP](../../07_Specialised_Testing/40_Security_Testing_OWASP.md)                                       |
 | Response modification (Q34)                  | [Ch 31 — API Mocking via `page.route`](../../05_Advanced_Topics/31_API_Mocking_page_route.md)                                     |
 | Accessibility (Q35)                          | [Ch 39 — Accessibility Testing with axe-core](../../07_Specialised_Testing/39_Accessibility_Testing_axe_core.md)                  |
-| Global setup (Q36)                           | [Ch 57 — Playwright Config Theory Catalog](../../02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md)                     |
+| Global setup (Q36)                           | [Ch 57 — Playwright Config Theory Catalog](../../02_Core_Architecture/56_Playwright_Config_Deep_Dive.md)                     |
 | File downloads (Q37)                         | [Ch 58 — File Uploads & Downloads](../../05_Advanced_Topics/58_File_Uploads_Downloads.md)                                         |
 | Dialog handling (Q39)                        | [Ch 26 — Flakiness Diagnosis & Fixing](../../05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) (dialog timing patterns)    |
 | Component POM pattern (Q40)                  | [Ch 18 — Mega POM Architecture](../../04_Enterprise_Architecture/18_Mega_POM_Architecture.md)                                     |
 
 ---
 
-**Navigation**: [← Quiz 01](../QUIZ_01_Playwright_MCQ.md) | [Quiz 02](../QUIZ_02_Playwright_CodeChallenge.md) | [Index](../../00_INDEX.md)
+**Navigation**: [← Quiz 01](./README.md) | [Quiz 02](../quiz_02_solutions/README.md) | [Index](../../00_INDEX.md)

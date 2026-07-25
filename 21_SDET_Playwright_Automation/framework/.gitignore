@@ -1,12 +1,30 @@
+# ─── Dependencies ────────────────────────────────────────────────────────────
 node_modules/
 # package-lock.json is now tracked — required for deterministic `npm ci` in CI.
+
+# ─── Build & tool caches ─────────────────────────────────────────────────────
 dist/
+*.tsbuildinfo
+playwright/.cache/
+coverage/
+
+# ─── Test run artifacts (regenerated every run — never commit) ───────────────
 playwright-report/
 test-results/
 blob-report/
-playwright/.cache/
+allure-results/
+allure-report/
+
+# ─── Local databases (flake-analytics CLI writes ./analytics.db) ─────────────
+analytics.db
+*.sqlite
+*.sqlite3
+
+# ─── Env & secrets — .env.example and .env.ci (secret-free) ARE tracked ──────
 .env
 .env.local
 .env.*.local
+
+# ─── Runtime noise ───────────────────────────────────────────────────────────
 *.log
 .locks/

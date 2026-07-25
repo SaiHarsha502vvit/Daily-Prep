@@ -1,6 +1,6 @@
 # Quiz 02 — Reference Solutions
 
-**Navigation**: [← Quiz 02](../QUIZ_02_Playwright_CodeChallenge.md) | [Quiz 01](../QUIZ_01_Playwright_MCQ.md) | [Index](../../00_INDEX.md)
+**Navigation**: [← Quiz 02](./README.md) | [Quiz 01](../quiz_01_solutions/README.md) | [Index](../../00_INDEX.md)
 
 > Reference implementations for every challenge in `QUIZ_02_Playwright_CodeChallenge.md`.  
 > Each file contains: the original question as a header comment → the fixed/written code → a `// WHY` block.
@@ -89,4 +89,4 @@ npx tsc --noEmit --project tsconfig.json \
 
 ---
 
-**Navigation**: [← Quiz 02](../QUIZ_02_Playwright_CodeChallenge.md) | [Index](../../00_INDEX.md)
+**Navigation**: [← Quiz 02](./README.md) | [Index](../../00_INDEX.md)

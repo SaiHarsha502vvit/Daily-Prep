@@ -52,7 +52,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 10. [`07_test_step_E2E_Architecture.md`](./02_Core_Architecture/07_test_step_E2E_Architecture.md)
 11. [`08_Browser_Internals_for_SDETs.md`](./02_Core_Architecture/08_Browser_Internals_for_SDETs.md)
 12. [`09_Parallel_Execution_Workers.md`](./02_Core_Architecture/09_Parallel_Execution_Workers.md)
-13. [`20_Practice_Resources_Learning_Path.md`](./08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md) ← do the 10-week challenge
+13. [`20_Practice_Resources_Learning_Path.md`](./00_Pathways/PATHWAY_01_LEARNING.md) ← do the 10-week challenge
 
 ---
 
@@ -134,7 +134,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 | 17  | [17_D365_Advanced_Timing_Patterns.md](./03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md)                       | 7 failure modes, diagnostic flowchart, wait strategy table                                    |
 | 18  | [18_Mega_POM_Architecture.md](./04_Enterprise_Architecture/18_Mega_POM_Architecture.md)                                 | Component POM pattern, Locator Dictionary, 7-step refactoring strategy                        |
 | 19  | [19_Advanced_Console_Scripts_Security.md](./05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)                 | 12 runnable scripts, cookie audit, headers, auth enforcement, IDOR, XSS                       |
-| 20  | [20_Practice_Resources_Learning_Path.md](./08_Practice_And_Quizzes/20_Practice_Resources_Learning_Path.md)              | D365 trial, OrangeHRM, JSONPlaceholder, 10-week challenge map                                 |
+| 20  | [20_Practice_Resources_Learning_Path.md](./00_Pathways/PATHWAY_01_LEARNING.md)              | D365 trial, OrangeHRM, JSONPlaceholder, 10-week challenge map                                 |
 | 21  | [21_Enterprise_Project_Structure.md](./04_Enterprise_Architecture/21_Enterprise_Project_Structure.md)                   | Folder justification, enums, endpoints, headers, payload factories, clients                   |
 | 22  | [22_Headers_Payloads_Endpoints_Factory.md](./04_Enterprise_Architecture/22_Headers_Payloads_Endpoints_Factory.md)       | Static factories, override pattern, call chain traced end-to-end                              |
 | 23  | [23_APIUtils_HTTP_Library.md](./04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md)                                 | Generic wrapper, composition vs inheritance, fixture injection chain                          |
@@ -156,8 +156,8 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 | 39  | [39_Accessibility_Testing_axe_core.md](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md)                   | POUR principles, axe fixture, keyboard nav, colour contrast, A11y debt tracking               |
 | 40  | [40_Security_Testing_OWASP.md](./07_Specialised_Testing/40_Security_Testing_OWASP.md)                                   | OWASP Top 10, auth enforcement, IDOR tests, injection payloads, ZAP CI scan                   |
 | 41  | [41_GraphQL_WebSocket_Testing.md](./07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md)                             | GQL always-200 errors, typed client, cursor pagination, WS capture, Faker.js                  |
-| Q1  | [QUIZ_01_Playwright_MCQ.md](./08_Practice_And_Quizzes/QUIZ_01_Playwright_MCQ.md)                                        | Self-test: 25 MCQ covering Ch01–16 fundamentals                                               |
-| Q2  | [QUIZ_02_Playwright_CodeChallenge.md](./08_Practice_And_Quizzes/QUIZ_02_Playwright_CodeChallenge.md)                    | 15 code challenges: spot the bug, explain this, write it yourself                             |
+| Q1  | [QUIZ_01_Playwright_MCQ.md](./08_Practice_And_Quizzes/quiz_01_solutions/README.md)                                        | Self-test: 25 MCQ covering Ch01–16 fundamentals                                               |
+| Q2  | [QUIZ_02_Playwright_CodeChallenge.md](./08_Practice_And_Quizzes/quiz_02_solutions/README.md)                    | 15 code challenges: spot the bug, explain this, write it yourself                             |
 | 42  | [42_Polling_Async_Data_Patterns.md](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md)                             | expect.poll(), waitForResponse, pollUntil() utility, anti-pattern hall of shame               |
 | 43  | [43_Real_World_SDET_War_Stories.md](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md)                             | 14 real problems: ghost click, stale session, silent 200, parallel collision, frame trap      |
 | 44  | [44_Enterprise_API_Client_Library.md](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md)                         | 5-layer architecture, typed domain clients, Zod validation, retry middleware, error hierarchy |
