@@ -1049,3 +1049,18 @@ Modern practice anchors greedy algorithms in production systems at Google, Cisco
 **Debug workflow:** Before committing to greedy: (1) formally prove the greedy-choice property â€” every local optimum leads to a global optimum; (2) prove optimal substructure â€” optimal solution contains optimal solutions to subproblems; (3) test the counterexample case: fractional vs. indivisible items; (4) use `Integer.compare(a, b)` instead of `a - b` in comparators to prevent overflow; (5) verify no negative weights exist before using Dijkstra; otherwise switch to Bellman-Ford.
 
 **Real-world anchor:** Amazon's EC2 scheduler uses greedy bin-packing for instance placement. When capacity calculations overflow at scale boundaries, instances are incorrectly placed, causing "insufficient capacity" errors post-launch â€” a production incident affecting thousands of deployments in 2017.
+
+
+---
+
+## Reality Check
+
+**"Greedy practice builds greedy instinct"** ? Unchecked, it builds greedy OVERCONFIDENCE — the most expensive interview failure mode, because wrong greedy code looks clean and passes samples. The practice loop that works: for every greedy attempt, either sketch the exchange argument (swapping any deviation toward my choice never worsens) or hunt a 4-element counterexample for two minutes. Jump-game, gas-station, and task-scheduler all have one-line exchange arguments; problems like coin-change with arbitrary denominations have famous counterexamples. Practicing both verdicts is the point.
+
+**"Sort by the obvious key and greed follows"** ? Key CHOICE is the whole problem in half the set: intervals by end (not start) for max-non-overlapping, boats by pairing lightest-with-heaviest after sorting, queue-reconstruction by height DESC then k ASC with insert-at-index — each key choice carries the proof, and the plausible-but-wrong key fails specific inputs. When a greedy stalls, the first suspect is the sort key, not the loop.
+
+**"Jump Game II needs careful pointer bookkeeping"** ? It reads cleanest as IMPLICIT BFS: current reach is this level's frontier, farthest-seen is next level's, jumps count levels. That reframing eliminates the fencepost bugs of the pointer version and transfers directly to its cousins (minimum-refuels as levels of station choices). Recognizing when a greedy is secretly a BFS-on-levels is one of the quieter senior tells.
+
+**"Candy and queue-reconstruction are one-off puzzles"** ? They are the two canonical CONFLICTING-CONSTRAINTS techniques: candy resolves left-neighbor and right-neighbor constraints with two directional passes taking max; queue-reconstruction resolves height and count constraints by ordering one constraint then inserting to satisfy the other. Both moves — decompose-into-directional-passes and sort-one-insert-other — recur across scheduling and ranking problems; filing them as one-offs wastes the two most reusable tricks in the chapter.
+
+**"If greedy passes all tests, the proof is academic"** ? Judge acceptance is evidence, not proof — hidden tests share blind spots, and production inputs will not. The two-minute proof habit pays twice: in interviews, articulating WHY (exchange argument) is scored above the code itself; in production, greedy heuristics without correctness notes become load-bearing folklore nobody dares touch. Every greedy in this chapter deserves one sentence of why, written down.

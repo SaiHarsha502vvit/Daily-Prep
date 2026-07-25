@@ -1138,3 +1138,18 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 **Debug workflow:** (1) Always use `mid = lo + (hi - lo) / 2` to prevent overflow. (2) Verify termination: `assert(lo < hi)` inside the loop, `assert(lo == hi)` after. (3) Test boundary conditions: empty array, single element (target present and absent), target smaller than all elements, target larger than all elements, all elements equal. (4) Add maximum iteration guard: `assert(iterations < 64)` since binary search converges in log2(n) steps.
 
 **Real-world anchor:** The 2020 GitHub outage was partly traced to a binary search on cache tier selection that hit an edge case when `lo == hi` without termination check, spinning indefinitely under load.
+
+
+---
+
+## Reality Check
+
+**"Binary search practice is about the template"** → Problem-level practice is about recognizing the MONOTONIC PREDICATE inside stories: ship-packages-in-D-days hides "can capacity c do it" (monotone in c); koko-bananas hides "can speed s finish in time"; split-array-largest-sum hides "can we split with max-part at most m". The template is ten lines; seeing the predicate through the story is the skill these problems drill, and it is the highest-frequency hard-interview move of the last decade.
+
+**"Rotated-array search is a special algorithm"** → It is standard binary search plus ONE extra observation per step: at least one half of any rotated range is properly sorted, and you can test which by comparing endpoints — then check whether the target lies inside the sorted half (easy range test) and recurse accordingly. Practicing it as "one observation + vanilla search" makes the with-duplicates variant comprehensible too (the observation fails when endpoints tie; shrink and retry, degrading worst case to linear).
+
+**"Find-peak and find-minimum need luck or scanning"** → Both are predicate searches in disguise: for peak, "is arr[mid] rising" (compare with its neighbor) always points toward SOME peak; for rotation-minimum, "is arr[mid] greater than arr[hi]" says which side the cliff is on. Neither needs global sortedness — only a locally testable direction signal. Internalizing that binary search needs a DIRECTION ORACLE, not sorted data, is the level-up these two problems exist to teach.
+
+**"Search-in-2D-matrix problems are all the same"** → Two different structures, two different tools: fully-linearized matrices (each row continues the previous) allow one binary search over n·m with index arithmetic; row-and-column-sorted matrices (rows sorted, columns sorted, but rows do not continue) defeat single binary search and want the staircase walk from a corner — O(n+m). Applying the linearized method to the staircase matrix is a wrong-answer generator that LOOKS like a coding bug but is a structure misread.
+
+**"Answer-space search bounds are obvious"** → The bounds ARE the correctness: lo must be a value where the predicate can be false-adjacent (max single element for splitting problems, 1 for speeds), hi a guaranteed-true value (total sum, max element). Sloppy bounds either exclude the answer (wrong result) or include impossible values the checker crashes on (divide by zero at speed 0). Every answer-space problem deserves one written line: "search space [x, y] because predicate false below x is impossible and true at y is guaranteed."

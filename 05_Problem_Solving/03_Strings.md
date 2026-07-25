@@ -738,3 +738,18 @@ Both are O(N²) in time, but expand-around-center uses **O(1) space** while DP u
 **Debug workflow:** 1. Pre-check overflow before multiplication: `if (x > Integer.MAX_VALUE / 10) return 0`. 2. Use `StringBuilder` for string concatenation in loops—reserve capacity with `new StringBuilder(n)`. 3. Always use `.equals()` for String comparison; use `==` only for interned Strings or when reference equality is intentional. 4. Profile hot loops with `JMH` or visualvm to catch hidden O(n²) behavior. 5. Test with maximum-length inputs (e.g., 100K chars).
 
 **Real-world anchor:** The 2017 Cloudbleed security vulnerability in Cloudflare occurred partly due to string buffer handling issues—when buffers weren't properly managed, sensitive data leaked from memory. Improper string handling in parsing logic caused buffer over-reads, exposing encrypted traffic. This parallels the quadratic concatenation bug and string comparison failures in competitive programming.
+
+
+---
+
+## Reality Check
+
+**"String problems test string knowledge"** → Most string problems are OTHER patterns keyed by characters: anagram grouping is hashing with canonical forms, longest-no-repeat is sliding window, palindrome partitioning is backtracking, edit distance is 2D DP. The genuinely string-specific layer is thin — canonicalization choices, alphabet-bounded counting arrays, and immutability costs. Diagnose the underlying pattern first; the character costume second.
+
+**"charAt and indexing are how you process strings"** → Per-character processing via charAt in a loop is fine; the trap is per-character string BUILDING: s += c in a loop copies the whole string every iteration — quadratic before you notice. StringBuilder in Java, list-then-join in Python. This single idiom failure is the most common TLE cause in otherwise-correct string solutions.
+
+**"Unicode is an internationalization concern, not an algorithms one"** → Java strings are UTF-16 under the hood: length() counts code UNITS, not characters — an emoji is length 2, and charAt can hand you half a character (a surrogate). For interview problems constrained to lowercase ASCII this never fires; in production string code (truncation, reversal, character counting) it fires constantly. The one-sentence awareness — "length counts UTF-16 units; I would use codePoints() for real text" — costs nothing and signals seniority.
+
+**"Comparing strings with == occasionally works, so it must be about content"** → == on strings compares REFERENCES; it "works" only when the string pool interned both literals to the same object — which is why the bug survives testing with literals and explodes with runtime-built strings. equals() for content, always; compareTo for ordering; and know that this same trap wears different clothes in every language (Python is/==, JS ===/localeCompare).
+
+**"Reversal, rotation, and shifting need separate techniques"** → One primitive — in-place reverse of a range — composes into most of them: rotate-by-k is three reversals (whole, then each part), reverse-words is reverse-whole-then-each-word, and cyclic shifts are rotations renamed. Recognizing reversal as the composable unit turns four memorized procedures into one derivation, and it is the standard follow-up ladder interviewers climb.

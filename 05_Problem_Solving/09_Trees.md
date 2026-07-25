@@ -2139,3 +2139,18 @@ private void dfs(TreeNode node, int level, List<Integer> result) {
 **Debug workflow:** Convert recursive DFS to iterative with explicit stack: `Deque<TreeNode> stack = new ArrayDeque<>();` push root, pop, push children. For BFS memory issues, profile queue size on worst-case inputs (generate a perfect tree programmatically). For null root bugs, add `if (root == null) return` as the first line of every tree method.
 
 **Real-world anchor:** In 2019, a GitHub outage was traced to a deeply nested repository folder structure causing recursive directory-size calculation to stack overflow in a Go service.
+
+
+---
+
+## Reality Check
+
+**"Tree problem practice means traversal practice"** ? Traversals are the alphabet; the problems drill three recurring COMPOSITIONS: aggregate-up (heights, sums, balance checks — postorder shape), propagate-down (bounds, path state — preorder shape), and cross-subtree combination (diameter, max path sum — the child answers combine at the parent while a global tracks the best). Filing each solved problem under its composition, not its title, is what makes the fiftieth tree problem feel like the fifth.
+
+**"Lowest common ancestor is one algorithm"** ? LCA fragments by the CONTRACT: plain binary tree wants the recursive both-sides-report trick; BST wants value-guided descent (walk until the split point); with-parent-pointers becomes intersection-of-two-linked-lists; nodes-possibly-absent requires verifying existence before trusting the standard trick (the classic silent-wrong-answer). Interviews escalate through these variants deliberately — knowing only the first is knowing one rung.
+
+**"Serialize/deserialize is about choosing a format"** ? It is about NULL DISCIPLINE: preorder-with-null-markers makes reconstruction a single linear consume-in-order pass; formats without null markers force ambiguity (inorder alone cannot reconstruct) or auxiliary structure (preorder-plus-inorder index maps). The insight the problem teaches — null markers convert tree shape into a self-describing stream — recurs in every wire protocol and columnar layout you will ever design.
+
+**"Path problems all mean root-to-leaf"** ? Three different path DEFINITIONS with different machinery: root-to-leaf (carry state down, decide at leaves), downward-any-start (prefix-sum-on-paths with a backtracking HashMap — the elegant one), and any-node-to-any-node through a bend (the combine-at-parent shape with the return-only-one-arm subtlety). Max-path-sum's notorious difficulty is entirely in that last subtlety: a node RETURNS its best single arm while RECORDING its best bent path. Misreading which definition applies wastes the whole attempt.
+
+**"BST problems are easier binary tree problems"** ? BST problems test whether you EXPLOIT the invariant instead of ignoring it: kth-smallest is inorder-with-early-stop, not collect-and-sort; validate needs range-carrying, not local checks; two-sum-in-BST can two-pointer via two iterators; recover-swapped-nodes reads the inorder sequence for the two inversions. Solving BST problems with generic tree methods is correct and slow — and interviewers grade the missed exploitation, not just the output.

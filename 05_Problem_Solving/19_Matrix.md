@@ -1841,3 +1841,18 @@ class Solution {
 **Debug workflow:** Before modifying grid in-place, create a copy: `char[][] copy = Arrays.copyOf(grid, grid.length);` For recursive DFS on large grids, convert to iterative BFS: use `Queue<int[]>` instead of recursion. For boundary bugs, add a helper function `private boolean inBounds(int r, int c, int m, int n)` and call it before every grid access. Add `@SuppressWarnings("serial")` to custom exceptions and log the out-of-bounds coordinates for debugging.
 
 **Real-world anchor:** In 2018, NASA's Mars rover pathfinding system experienced a boundary crash when the grid-based traversal hit an edge case near the terrain map boundary, requiring an emergency software patch deployed across 225 million kilometers.
+
+
+---
+
+## Reality Check
+
+**"Matrix problem practice duplicates grid-traversal practice"** → The traversal chapter owns movement; this set owns TRANSFORMS and STRUCTURE: rotation compositions (transpose plus reflections generate all eight symmetries — knowing the group means never memorizing a second rotation), search exploiting double-sortedness (staircase elimination), and simultaneity encoding for in-place updates. The two sets share a board and almost nothing else; conflating them leaves the transform muscles untrained.
+
+**"Spiral order is a solved snippet to paste"** → Spiral's value is as the BOUNDARY-BOOKKEEPING stress test: four cursors, four walls, and the two degenerate finishes (single remaining row, single remaining column) that duplicate elements in naive versions. The after-each-side shrink-and-recheck discipline it forces is the same discipline diagonal traversals, layer-by-layer rotations, and onion-peeling problems need — practice it as bookkeeping training, and the snippet writes itself forever after.
+
+**"Set-matrix-zeroes teaches the marker trick"** → It teaches CONSTANT-SPACE STATE SMUGGLING: the first row and column become the marker store, with two scalar flags remembering their own original state — order of the final write-back matters (marked cells first, first row/col last). The generalizable move is reusing input real estate as scratch when the problem forbids allocation; game-of-life's two-bit encoding is the same move with different packing. Both interview well precisely because the follow-up ("now without extra space") is pre-baked.
+
+**"Word-search belongs to backtracking, not matrices"** → It belongs to both, and its matrix-side lessons are the ones people miss: prune by CHARACTER-FREQUENCY before searching (if the board lacks the letters, skip), start from the rarer end of the word, and mark-in-place with restore. Word-search-II adds the trie so ALL words share one board walk — the canonical structure-fusion problem (trie times DFS) and the standard hard follow-up. Practicing it only as generic backtracking leaves those matrix-specific accelerations undiscovered.
+
+**"Largest square/rectangle of ones is exotic DP"** → Maximal-square is three-neighbor min-plus-one DP (the cleanest 2D recurrence in the catalog), and maximal-RECTANGLE is histogram-largest-rectangle applied row by row — heights accumulate downward, monotonic stack per row. The pair is the standard demonstration that hard matrix problems decompose into a per-row 1D problem plus an accumulation rule; that decomposition question ("is there a 1D problem hiding in each row?") belongs in the routing checklist for every new matrix hard.

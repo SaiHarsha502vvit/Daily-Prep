@@ -957,3 +957,18 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 **Debug workflow:** (1) Verify the array is sorted BEFORE entering the pointer loop. (2) Add `assert(fast > slow || /* reset condition */)` to catch stalls. (3) Log pointer positions at each iteration and verify monotonic advancement. (4) Test edge cases: already-sorted, reverse-sorted, all-same, single-element, empty array. (5) Add iteration counter: `assert(iterations < n)` to guarantee termination.
 
 **Real-world anchor:** Apple's 2019 Swift compiler bug where a two-pointer deduplication pass on unsorted symbol tables produced non-deterministic binaries depending on hash seed order, causing debug and release builds to have different symbol resolution.
+
+
+---
+
+## Reality Check
+
+**"Practice means re-deriving the pattern each time"** → Practice at the problem level is about the DECISIONS the template leaves open: what makes this problem converging vs parallel, what invariant do the pointers maintain HERE, what does termination mean HERE. Three-sum practice is really practice at wrapping a sorted two-pointer core in dedup logic — the pointer part is settled; the dedup-at-three-levels part is what the repetitions burn in.
+
+**"Three-sum's difficulty is the algorithm"** → The algorithm is outer-loop-plus-converging-pointers; the DIFFICULTY is duplicate discipline at every level: skip repeated anchors, skip repeated left values after a hit, skip repeated right values — each skip in exactly the right place, each with the guard against skipping past valid answers. Most failed three-sum attempts have a correct O(n squared) engine and broken dedup. Practicing it as a dedup problem, not a sum problem, is what makes it stick.
+
+**"Sorted-input pointer problems and partition problems are cousins"** → They are OPPOSITES in what they preserve: convergence on sorted input EXPLOITS existing order and must not disturb it; partition pointers (Dutch flag, move-zeroes) CREATE order by swapping and must tolerate their own churn — the mid-pointer-does-not-advance-after-swapping-from-high subtlety exists because the incoming element is unexamined. Applying convergence habits to partitioning (advance after every swap) is the classic sort-colors bug.
+
+**"Pair-sum on sorted arrays is solved, nothing more to learn"** → The graded variants extend it in ways that test whether you own the discard argument: count-pairs-less-than-target (a hit means hi minus lo pairs at once, then move), closest-pair (track best delta, move by comparison sign), pair-in-two-arrays (pointers on different arrays, one ascending from A, one descending from B). Each keeps the O(n) engine and changes what a comparison MEANS — the transfer test for genuine understanding.
+
+**"If two pointers works, it is the best solution"** → Two pointers on sorted input answers EXISTENCE and OPTIMIZATION cheaply, but pays the sort; hash-based methods answer the same on UNSORTED input in O(n) time and O(n) space. The professional comparison is three-way — sort-then-pointers, hash, or both-halves-precomputed — decided by whether input arrives sorted, whether indexes must survive, and whether space is constrained. Saying that trade in two sentences is worth more than the code.

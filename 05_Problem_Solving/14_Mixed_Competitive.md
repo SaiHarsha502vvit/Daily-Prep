@@ -1207,3 +1207,18 @@ public int subarraySum(int[] nums, int k) {
 **Debug workflow:** Profile with worst-case input — generate n=10^5 elements programmatically. For TLE, switch from O(n^2) to O(n log n) or O(n). For MLE, convert recursive DFS to iterative with an explicit `Deque<Integer>` stack. For I/O, replace `Scanner` with `BufferedReader` + `StringTokenizer` for integer arrays. Verify results against the worst-case before submission.
 
 **Real-world anchor:** In 2020, a popular LeetCode competitor discovered their O(n^2) solution passed 200 test cases locally but TLE'd on the Codeforces judge — the final hidden test used n=200,000. After switching to an O(n log n) segment tree approach, it passed in 0.8 seconds.
+
+
+---
+
+## Reality Check
+
+**"Mixed sets are for after mastering each topic"** → Mixed practice IS the mastery mechanism, not its reward: interleaving forces the retrieve-and-route step (which pattern?) that blocked practice never exercises, and that routing step is precisely what interviews test. The research-backed schedule is blocked-first-then-interleaved per topic, with mixed sets making up the bulk of the final month — not a graduation treat after topic perfection, which never arrives.
+
+**"Timing yourself adds stress without value"** → Untimed practice trains a different skill than the assessed one: bounded-time solving includes triage (solvable in budget?), checkpointing (brute force banked before optimizing), and abandon-decisions — none of which exist untimed. The calibration: 25 minutes for mediums with the LAST five reserved for testing; consistently exceeding it means the recognition layer needs work, not more grinding. Stress inoculation is a real, trainable effect.
+
+**"A solved problem is finished"** → The rate-limiting resource is INSIGHT-PER-PROBLEM, and it is harvested after the accept: what was the trigger cue, which wrong path ate the time, what one-sentence lesson generalizes. Ten problems with post-mortems beat forty without — the forty build familiarity with titles, the ten build transferable routing rules. A problems-log with a lessons column doubles the value of every hour already spent.
+
+**"Contest tricks are irrelevant to interview prep"** → Three transfer directly: reading constraints as the complexity contract before the statement (contest habit, interview superpower), banking partial credit (brute force first — in interviews this means a working solution exists before optimization begins), and the wrong-answer debugging ladder (small counterexample generation over stare-and-hope). What does NOT transfer: golfed code and silence — interviews grade narration, contests penalize it.
+
+**"Plateaus mean grinding more of the same"** → Plateaus localize to a LAYER, and each layer has a different fix: recognition failures (cannot start) want pattern-trigger drills and constraint-reading; execution failures (idea right, code wrong) want typing-out-templates until boring; composition failures (mediums fine, hards opaque) want the two-pattern problems specifically. Diagnosing which layer stalls you — from your own problems-log — beats undifferentiated volume every time.

@@ -977,3 +977,18 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 **Debug workflow:** (1) Print window boundaries and aggregate value on each iteration. (2) Verify contraction condition is reachable by checking if adding all remaining elements would exceed the threshold. (3) Add `assert` checks: `assert(windowSize >= 0)` and `assert(iterations < 2 * n)` where n is array length. (4) For numeric stability, round to fixed precision before comparisons.
 
 **Real-world anchor:** Google's Borg team documented a case where a sliding window load balancer accumulated floating-point rounding errors over hours, causing the effective window to never contract and eventually OOM-killing the scheduler process.
+
+
+---
+
+## Reality Check
+
+**"This chapter repeats the pattern-template chapter"** → The template chapter teaches the MECHANISM; problem practice teaches the DISGUISES: fruit-into-baskets is at-most-2-distinct, max-consecutive-ones-III is at-most-k-zeros, substring-with-concatenation is a fixed window with word-granularity steps. The skill built here is de-costuming — mapping story nouns onto window state — which no amount of template fluency substitutes for. Different chapters, different muscles.
+
+**"Window problems state their window explicitly"** → The hardest instances hide the window behind a TRANSFORM: min-operations-to-reduce-x-to-zero flips into longest-middle-window-summing-to-total-minus-x; count-subarrays-with-exactly-k becomes atMost(k) minus atMost(k-1); bounded-maximum counting subtracts two threshold windows. The move to train: when the direct question resists windows, ask whether its COMPLEMENT or a difference of two easier questions is a window.
+
+**"Shrink means remove one element"** → Shrink means restore-the-invariant, and the loop shape encodes the guarantee: while-invalid-shrink gives longest-valid windows; while-VALID-shrink gives shortest-valid; and in jump-style problems the left boundary teleports. Choosing the wrong shrink policy still passes the sample (samples are friendly) and fails the extremes — the policy must be derived from which extreme the problem asks for, every single time.
+
+**"Window state bugs come from complex state"** → They come from ASYMMETRIC updates: the add-to-window code and the remove-from-window code must be exact mirrors (increment/decrement the same counter, add/subtract the same contribution), and most bugs are a mirror term forgotten on the removal side — the distinct-count that never decrements, the matched-flag never unset. Audit technique: read only the add block and the remove block side by side; asymmetry is visible in ten seconds.
+
+**"Practicing many window problems means learning many solutions"** → The productive practice loop is inverse: after solving, write the one-sentence INVARIANT ("window contains at most k distinct; answer is max length seen") and file the problem under that sentence. Twenty problems compress into five invariants. Practice that files by problem title produces recognition that fails on the twenty-first title; practice that files by invariant transfers.

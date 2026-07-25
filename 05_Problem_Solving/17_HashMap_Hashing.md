@@ -1380,3 +1380,18 @@ Both objects land in DIFFERENT buckets (different hashCodes â†’ different bucket
 
 **Real-world anchor:** The 2017 Memcached amplification attack exploited hash collision predictability to amplify DDoS traffic by 50,000x. Servers relying on hash-based request distribution were overwhelmed within seconds, affecting Cloudflare, GitHub, and others.
 ```
+
+
+---
+
+## Reality Check
+
+**"Hash problems drill containsKey fluency"** ? The drilled skill is COMPLEMENT THINKING — storing what the future needs to find: two-sum stores needed-complements, subarray-sum stores seen-prefixes, longest-consecutive stores membership then probes only run-starts. Each classic is one sentence of what-to-key; the API calls are clerical. Practice by writing that sentence before any code — solutions whose keys were chosen wrong cannot be repaired by better loops.
+
+**"Group-by-key problems end at anagram grouping"** ? Key DESIGN escalates through the set: sorted-string or count-signature (anagrams), slope-in-lowest-terms with sign normalization (points-on-a-line — where the real content is gcd-reduction and negative-zero handling), tree-serialization strings (duplicate subtrees), and shifted-string normal forms (group-shifted-strings, with the modulo-26 wrap detail). The recurring lesson: the key must be CANONICAL — any two equivalent inputs must produce byte-identical keys — and every bug in this family is a canonicalization leak.
+
+**"Design-a-hashmap questions test bucket arrays"** ? Insert/delete/getRandom-O(1) is the design question that actually recurs, and its answer is a PAIRING: array for O(1) random access, map from value to index, deletion via swap-with-last-then-pop. The generalizable principle — composite data structures assign each operation to the member that does it best — is the whole of applied data-structure design, and this problem is its minimal complete example. The with-duplicates variant (map to a SET of indexes, careful about the swapped element's set) is the follow-up that verifies real understanding.
+
+**"HashMap iteration order changing is a Java quirk to memorize"** ? It is a portable CONTRACT lesson: hash containers trade order for speed everywhere (Java HashMap, Python pre-3.7 dicts, Go maps randomize deliberately). Tests that accidentally depend on iteration order pass locally and fail after an innocent rehash — the production version of this bug class. When order matters, say WHICH order and pay for it explicitly: insertion (LinkedHashMap), sorted (TreeMap), or recency (LinkedHashMap in access-order mode — the LRU backbone).
+
+**"equals/hashCode contracts matter only for custom classes in production"** ? They bite in PRACTICE the moment you key on composite values: keying a HashMap on an int[] uses identity (silent failure — every array is unique), fixing it means List keys, encoded strings, or Objects.hash wrappers; mutating any object AFTER using it as a key strands the entry in the wrong bucket permanently. Both failure modes appear in interview code under time pressure, both produce works-then-mysteriously-loses-entries symptoms, and both are two-second fixes when the contract is loaded in memory.

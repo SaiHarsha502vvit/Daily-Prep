@@ -2187,3 +2187,18 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 The evolution continued with **Robert Floyd (1962)** and **Stephen Warshall (1962)** independently discovering the all-pairs shortest-path algorithm that computes optimal routes between every node simultaneously. **Robert Tarjan (1972)** at Stanford then introduced algorithms for strongly connected components, solving dependency resolution problems in compiler design and build systems. Modern practice anchors this work in industrial-scale systems: Google Maps uses Dijkstra variants with contraction hierarchies for sub-millisecond routing on 100M+ node road networks, the Facebook Graph API relies on graph traversal for friend recommendations across 2B+ users, Neo4j powers fraud detection engines with real-time traversal queries, and BGP/OSPF internet routing protocols implement Bellman-Ford and Dijkstra adaptations to route traffic across continental-scale networks. The 270-year lineage from Euler's paper-and-pencil puzzles to billion-user production systems demonstrates how fundamental graph abstractions transcend their mathematical origins.
 
+
+
+---
+
+## Reality Check
+
+**"Graph problems require graph input"** ? Half the graded set hides the graph: course schedules are dependency DAGs, word ladders connect strings one edit apart, number-of-provinces reads an adjacency MATRIX as friendship edges, alien-dictionary extracts edges from word ORDER, and sliding-puzzle states connect by legal moves. The routing skill is spotting nodes-and-relations inside a story that never says graph — then the rest is standard machinery on a structure you built yourself.
+
+**"Topological sort problems end at producing an order"** ? The exam-grade variants use topo-sort as an ANALYZER: cycle detection (order impossible), counting orders (ambiguity means multiple), longest path in a DAG (relax along the order), and course-schedule-III style feasibility. Kahn's queue version additionally yields the cycle MEMBERS (nodes never dequeued) — a diagnostic no DFS-coloring version gives for free. Knowing what the sort's FAILURE tells you is worth more than the sort.
+
+**"Union-Find and DFS answer the same connectivity questions, so learn one"** ? They trade differently under DYNAMICS: DFS answers one-shot connectivity on a finished graph; union-find answers connectivity UNDER EDGE INSERTIONS (number-of-islands-II, accounts-merge, redundant-connection) in near-constant amortized time, but cannot handle deletions and gives no paths. The selector: static-and-need-paths means DFS/BFS; incremental-and-need-components means union-find. Owning only one tool means half the problem set is uphill.
+
+**"Dijkstra applies whenever edges have weights"** ? Dijkstra's proof DIES on negative edges (a settled node can be un-settled by a later negative shortcut) — Bellman-Ford or DAG-relaxation take over. And when all weights are 0-or-1, the deque trick (push-front for 0-edges) beats the heap. The professional selection table — BFS for unit, deque for 0/1, Dijkstra for non-negative, Bellman-Ford for negative, topo-relax for DAGs — is five lines that prevent the single most common advanced-graph misapplication.
+
+**"Grid BFS and graph BFS practice interchangeably"** ? Grid problems add three habits generic graphs never teach: direction-array iteration, in-grid bounds-plus-condition validity, and STATE-AUGMENTED nodes (position PLUS keys held, PLUS walls broken — shortest-path-with-obstacle-elimination). That last one is the level boundary: the node is not the cell, it is (cell, budget-left), and the visited set must key on the full state. Practicing only plain grids leaves the state-augmentation reflex unbuilt.

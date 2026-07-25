@@ -1109,3 +1109,18 @@ The paradigm saw massive development in the 1970s and 1980s with the rise of con
 **Debug workflow:** Set a maximum depth guard: `if (depth > maxDepth) return;`. Add memoization via a `Set<String>` of serialized paths to avoid recomputing identical subtrees. For missing UNCHOOSE, add a unit test that prints the path after each backtrack call and verifies path size returns to its pre-recursion value. For exponential blowup, profile the result list size: if it exceeds `10^6`, switch to a lazy generator or streaming approach.
 
 **Real-world anchor:** In 2021, Cloudflare suffered a ReDoS (Regular Expression Denial of Service) attack where a crafted URL triggered exponential regex backtracking, taking down services for millions of users.
+
+
+---
+
+## Reality Check
+
+**"More backtracking practice means faster enumeration writing"** → The practice target is the STATE-SPACE DESIGN, not the loop: what is a partial solution, which extensions are legal, what proves a dead end. Subsets/permutations/combinations differ ONLY in those three answers (start-index discipline vs used-array vs count-bound). Candidates who can recite all three templates but cannot design the space for a NOVEL puzzle (expression-add-operators, matchsticks-to-square) practiced the wrong layer.
+
+**"Word search and N-Queens are unrelated set pieces"** → They drill the two board-marking disciplines: word-search teaches unmark-on-exit (the same cell serves many paths), queens teaches constraint SETS (columns, two diagonal families indexed by r-c and r+c) that make legality O(1). Every board/grid backtracking problem is a combination of those two disciplines — sudoku uses both simultaneously (mark-unmark AND row/col/box sets). Two problems, two transferable mechanics, every other board puzzle a remix.
+
+**"Palindrome partitioning is a string problem that happens to backtrack"** → It is the canonical PRECOMPUTE-THEN-BACKTRACK specimen: the O(n squared) isPalindrome table computed once turns each legality check from O(n) to O(1), changing the whole enumeration's budget. The generalizable lesson — hoist repeated validity work out of the recursion — separates solutions that pass from solutions that are architecturally identical and time out. Expression-add-operators teaches the sibling lesson (carry running values instead of re-evaluating).
+
+**"Combination-sum variants blur together"** → They form a 2x2 the guards encode exactly: reuse-allowed vs not (recurse with i vs i+1) crossed with duplicates-in-input vs not (the skip-equal-sibling guard). Blurring them means shipping the wrong guard combination — the most common backtracking wrong-answer — and the fix ritual is stating the quadrant aloud BEFORE coding: "elements unique, reuse allowed, so i stays and no skip needed." Ten seconds, whole bug class gone.
+
+**"If backtracking times out, add memoization"** → Backtracking and memoization mix ONLY when subproblems repeat AND the path does not matter (word-break: position suffices). When the enumeration genuinely needs every path (print all solutions), no memo can help — the output itself is exponential; the levers are stronger pruning, better ordering (most-constrained-first in sudoku), or bitmask acceleration. Reflex-memoizing an all-solutions enumeration is category error, and interviewers ask "can you memoize this?" precisely to hear NO with the reason.

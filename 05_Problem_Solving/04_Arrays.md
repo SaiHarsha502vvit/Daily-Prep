@@ -657,3 +657,18 @@ private String formatRange(int lower, int upper) {
 **Debug workflow:** 1. Verify sort order assumption before applying two-pointer—add assertion `assert isSorted(arr)`. 2. Allocate temp buffer if memory permits: `int[] temp = new int[n]` for safety-critical rotations. 3. For O(1) space rotation, use the 3-reverse trick but document data loss risk. 4. Profile memory allocation rates in production-like load testing. 5. Test with maximum array sizes (e.g., 10^6 elements) to catch scaling issues before deployment.
 
 **Real-world anchor:** The 2012 Knight Capital trading algorithm loss ($440M in 45 minutes) was partially caused by array/queue management bugs—when order queues weren't properly rotated or reset after certain conditions, stale orders executed at wrong prices. The same failure mode as array rotation bugs in competitive programming, causing catastrophic financial impact.
+
+
+---
+
+## Reality Check
+
+**"Array problems are the easy category"** → Arrays are the easiest STRUCTURE and the broadest PATTERN SURFACE: two pointers, windows, prefix sums, binary search, cyclic sort, Kadane, monotonic stacks, and half of DP all present as "given an array." The category's difficulty is routing — nothing about the input type narrows the technique — which is exactly why interviewers love it and why "arrays are easy" is a miscalibration that surfaces at the first medium.
+
+**"In-place means overwriting as you go"** → In-place means O(1) EXTRA space with a coherent read/write protocol: write pointers that never overtake read pointers, back-to-front filling when the output grows (merge-sorted-into-buffer, sorted-squares), and encode-two-states-per-cell tricks when simultaneity is forced. Overwriting without a protocol destroys data the algorithm still needs — the number-one silent corruption in array interview code.
+
+**"Prefix sums are for range-sum queries only"** → The prefix trick generalizes to any INVERTIBLE accumulation: XOR prefixes (range XOR, equal-0s-1s subarrays via count-as-plus-minus), product prefixes with zero-handling, count prefixes per category, and 2D summed-area tables. The unifying move — turn "aggregate over range" into "difference of two prefixes" — plus a HashMap of seen prefixes turns exact-target subarray problems from quadratic scans into single passes.
+
+**"Sorting first is a lazy move"** → Sorting is a legitimate STRUCTURAL investment: it buys two-pointer convergence, duplicate adjacency, greedy exchange arguments, and binary searchability for O(n log n) — often the intended complexity. The real question is what sorting DESTROYS: original indexes (pair with index tags if the answer needs them) and stability of equal elements. "Can I afford to sort?" is a two-cost analysis, not a purity test.
+
+**"The answer array must be built in one pass because the problem feels linear"** → Multi-pass linear is still O(n), and several classics REQUIRE it: product-except-self is a left-products pass then a right-products pass; candy-distribution is left-to-right then right-to-left maxing; trapping-water has a two-pass prefix-max formulation. The instinct to cram everything into one loop produces the tangled state machines that fail edge cases — two clean passes beat one clever one.

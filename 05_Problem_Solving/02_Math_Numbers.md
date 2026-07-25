@@ -997,3 +997,18 @@ private int gcd(int a, int b) {
 **Debug workflow:** 1. Use `long` for all arithmetic that might exceed int range (Integer.MAX_VALUE is ~2.1B). 2. Check GCD base case: `if (b == 0) return a` before modulus operation. 3. Normalize modulo: `(x % n + n) % n` ensures non-negative result. 4. Test with boundary values: 0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE. 5. Use `assert` statements at known safe boundaries.
 
 **Real-world anchor:** The 1996 Ariane 5 rocket explosion ($370M loss) was caused by a 64-bit floating point to 16-bit integer conversion overflow when horizontal velocity exceeded 32767—the same integer overflow failure mode as `n*(n+1)/2` overflow in production Java code. NASA lost the spacecraft due to inadequate overflow checking in math operations.
+
+
+---
+
+## Reality Check
+
+**"Integer overflow is a C problem, not a Java one"** → Java overflows SILENTLY at 2^31-1 — no exception, no warning, just wraparound. mid = (lo + hi) / 2, sums of two large ints, and products in factorial or power computations all bite in Java exactly as in C; only the symptom differs (wrong value instead of undefined behavior). The reflexes: widen to long BEFORE arithmetic, know that Math.abs(Integer.MIN_VALUE) is still negative, and treat any multiplication of user-scale numbers as suspect.
+
+**"The percent operator gives the remainder in math class"** → Java's percent follows the DIVIDEND's sign: -7 % 3 is -1, not 2 — so hash bucketing, circular indexing, and modular arithmetic on possibly-negative values all need Math.floorMod or the ((x % m) + m) % m normalization. Half of all "works on positives, fails on test 31" number-theory submissions trace to exactly this line.
+
+**"Checking divisors up to n/2 is the optimization"** → Divisors pair up around the square root: if d divides n, so does n/d, and one of them is at most sqrt(n). Trial division to sqrt(n), the perfect-square special case (its root pairs with itself), and enumerate-divisors-in-pairs all fall out of this single pairing fact. The same fact is why factor-counting problems suddenly become O(sqrt(n)) and why the "count numbers with odd divisor counts" trick answer is "perfect squares."
+
+**"Floating point is fine if I round at the end"** → Errors ACCUMULATE and comparisons lie long before the rounding step: 0.1 + 0.2 != 0.3, and summing a million floats in different orders gives different totals. The professional habits: compare with a tolerance, restructure to integer arithmetic when the domain allows (work in cents, cross-multiply instead of dividing), and treat any equality test between computed doubles as a bug until proven otherwise.
+
+**"GCD problems require remembering number theory"** → One loop (Euclid: replace the larger by its remainder) plus three consequences cover the interview surface: LCM is a*b/gcd computed as (a/gcd)*b to dodge overflow, fraction reduction is divide-both-by-gcd, and co-primality is gcd == 1. The depth question interviewers actually ask is WHY Euclid terminates — remainders strictly shrink and stay non-negative — which is a two-sentence answer worth having ready.

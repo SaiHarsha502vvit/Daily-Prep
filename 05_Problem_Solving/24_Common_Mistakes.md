@@ -778,3 +778,18 @@ Check edges, check bounds, and you'll catch 80% of bugs before they happen.
 **Debug workflow:** For overflow in binary search, replace `mid * mid` with `mid > target / mid` (no multiplication needed). For string comparison, always use `.equals()` and add a test: `assertEquals("token match", expected, actual)`. For Scanner, replace with `BufferedReader br = new BufferedReader(new InputStreamReader(System.in));` and parse with `Integer.parseInt(br.readLine().split(" ")[i])` or `StringTokenizer`.
 
 **Real-world anchor:** In 2014, Knight Capital deployed a trading algorithm with a bug where an integer overflow in order quantity calculation multiplied orders by 100 instead of 10, causing $440 million in losses in 45 minutes before the error was caught.
+
+
+---
+
+## Reality Check
+
+**"Reading a mistake catalog prevents the mistakes"** ? Recognition in a list and prevention under pressure are different memory systems: the catalog primes RETROSPECTIVE diagnosis (why is this failing?) far more than prospective avoidance. The conversion mechanism is personal: after every practice session, tag which catalog entries YOU hit; three sessions of tags reveal your top-three signature — and drilling those three specifically (with deliberate slow-writing of that construct) is what moves them from catalog to reflex.
+
+**"Off-by-one errors are carelessness"** ? They are unstated INTERVAL CONVENTIONS: whether ranges are half-open, whether right is inclusive, whether length or index is being tracked. The cure is not care but declaration — one comment line fixing the convention, then mechanical consistency. Codebases and candidates who declare conventions have near-zero fencepost rates; those who re-derive per line have them at every boundary. Same programmer, different discipline, order-of-magnitude different bug rate.
+
+**"Comparing boxed Integers with == fails randomly"** ? It fails PREDICTABLY: the byte-range cache (-128..127) makes small boxed values reference-equal and larger ones not — so tests with small numbers pass and production values fail. File it with its family: string interning ==, floating-point ==, and mutable-object hash keys — all cases where identity, equality, and stability get conflated. The unified rule that ends the family: equals for content, == only for primitives and intentional identity checks, and never mutate what you hashed.
+
+**"Modifying a collection while iterating fails loudly, so it self-corrects"** ? ConcurrentModificationException is the LOUD sibling; the quiet ones ship: index-based removal shifting subsequent elements (skips every second match), removeIf on the wrong predicate polarity, and mutating a list captured by a stream mid-pipeline (undefined). The professional idioms — iterator.remove, removeIf, or collect-then-apply — exist because manual mutation-during-traversal is wrong in more ways than it can fail loudly.
+
+**"Recursion mistakes are missing base cases"** ? The missing base case crashes visibly; the EXPENSIVE recursion mistakes are silent: shared mutable state across branches (the un-undone modification — wrong answers, no crash), memo keys omitting a state dimension (subtly wrong on inputs where the dimension mattered), and progress-free recursion on the same arguments under a different guard (hangs). The audit heuristic for all three: every recursive call should differ from its parent in a named, shrinking quantity, and every mutation before a call should have a visible mirror after it.

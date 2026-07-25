@@ -784,3 +784,18 @@ _The difference between a good programmer and a great programmer is edge case ha
 **Debug workflow:** (1) Add explicit null/empty guards at function entry: `if (arr == null || arr.length == 0) return defaultValue;` (2) Test with n=0, n=1, n=2 as a baseline; (3) For arithmetic near boundaries, use `long` or `BigInteger` â€” never assume inputs stay below MAX_VALUE/2; (4) Add assertions in development: `assert n > 0 : "n must be positive";` (5) Use property-based testing (QuickCheck, Hypothesis) to generate boundary values automatically.
 
 **Real-world anchor:** The 2014 Heartbleed vulnerability's root cause included an off-by-one in boundary checking in the TLS heartbeat implementation â€” a single byte read past the intended buffer boundary exposed 64KB of memory from millions of servers.
+
+
+---
+
+## Reality Check
+
+**"Edge cases are found by imagination"** ? They are found by CHECKLIST against the input grammar: for every parameter ask empty, single, two, all-same, sorted-both-ways, extremes-of-range, and (for indices) first/last/out-of-bounds. Imagination produces the edges you already suspected; the checklist produces the ones you did not. The measurable difference: checklist users find the killing edge BEFORE coding (it shapes the design), imagination users find it in the failed submission.
+
+**"Null checks are what edge-case discipline means"** ? Null is one row of a much larger table, and over-indexing on it produces defensive noise while missing the real killers: overflow at boundaries (mid computation, sum accumulation), the empty-versus-absent distinction (empty array is a VALID input with a defined answer — what is max-subarray of []?), single-element degeneracy (is one element sorted? a palindrome? an interval?), and duplicate saturation (all elements equal defeats naive two-pointer termination). Ask what the problem DEFINES for each, because half the time the statement is silent and the choice is yours to state aloud.
+
+**"Handle edge cases with special-case code at the top"** ? Guard clauses are the FALLBACK, not the goal: the stronger move is choosing formulations where edges are not special — dummy heads erase the head-mutation case, len+1 prefix arrays erase the empty-prefix case, while (l1 != null || l2 != null || carry != 0) erases the unequal-length cases. Every guard clause is a confession the main loop has a hole; sometimes that is fine, but the design that needs no confession reviews better and breaks less.
+
+**"Integer edges are about MAX_VALUE"** ? The asymmetry is the trap: MIN_VALUE has no positive counterpart, so Math.abs(MIN_VALUE) is negative, negation overflows, and reverse-integer/divide-two-integers problems place their nastiest test exactly there. Add the division duo — truncation toward zero versus floor for negatives, and the percent sign following the dividend — and you have the five-line integer-edge catechism that decides several classic problems outright.
+
+**"Thorough edge handling means testing everything after coding"** ? In interviews the sequence is inverted and PUBLIC: enumerate edges before coding (it demonstrates rigor and shapes the design), then after coding trace exactly TWO — the nastiest edge and one normal case — aloud, line by line. Testing everything is neither expected nor time-feasible; choosing the two highest-information traces is the skill being graded. In production the same triage appears as boundary-value test selection; exhaustiveness is for property-based tools, judgment is for humans.

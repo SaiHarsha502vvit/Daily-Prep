@@ -1916,3 +1916,18 @@ Eviction requires removing the TAIL node and also updating the node BEFORE the t
 
 **Robert Floyd (1967)** later contributed cycle detection algorithms that could identify infinite loops in linked data structures without markers or counters, a critical capability for garbage collection systems and early runtime environments. This work matured into the industry-standard Floyd Tortoise-Hare algorithm used today. Modern practice anchors linked lists in system design: LRU caches (Redis, CPU page caches) combine HashMaps with doubly linked lists to achieve O(1) get and evict operations, operating system process schedulers use circular doubly linked lists for round-robin CPU time sharing across millions of processes, and Git's commit history is implemented as a singly linked list where each commit holds a pointer to its parent, enabling the immutable append-only branching model that powers version control for billions of repositories. The combination of dynamic memory allocation, pointer-based traversal, and O(1) insertions/removals continues to make linked lists indispensable in modern systems programming.
 
+
+
+---
+
+## Reality Check
+
+**"List problem practice is pointer-shuffle repetition"** ? The graded problems each add one COMPOSITION skill on top of settled primitives: reorder-list is find-middle PLUS reverse-half PLUS interleave-merge (three primitives, and the bugs live at the two seams); sort-list is merge-sort with fast-slow splitting (and the split must NULL-TERMINATE the first half — the bug everyone writes once); rotate-list is close-the-ring-then-cut (converting the problem to one clean modulo). Practicing seams, not shuffles, is the level-up.
+
+**"Copy-list-with-random-pointer needs a HashMap"** ? The map version is the honest first answer; the O(1)-space interleave version (clone woven after each original, random pointers assigned via original.random.next, then unweave) is the technique worth owning because WEAVE-PROCESS-UNWEAVE recurs wherever you need old-to-new correspondence without auxiliary memory. The unweave step must fully RESTORE the original — interviewers check, and partial restoration is the common miss.
+
+**"Merge-k-lists is merge-2 in a loop"** ? Sequential merging is O(k·N) and correct; the two ladder rungs are the size-k min-heap (O(N log k), the expected answer) and divide-and-conquer pairing (same bound, no heap). The heap version's Java subtlety: nodes need a comparator (node values, not nodes), and pushing next-after-pop is the loop invariant. This problem is the standard vehicle for "improve your own working solution" follow-ups — practice the LADDER, not just the final form.
+
+**"Add-two-numbers is arithmetic bookkeeping"** ? It is the CARRY-STATE pattern in its cleanest form — while (l1 or l2 or carry) with defaulted zeros — and the variant family tests whether you own it: numbers stored FORWARD (reverse first, or recurse with length-padding), multiply-by-digit, plus-one-on-list. The while-condition unification (three termination causes, one loop) is the transferable idiom; solutions with three sequential loops and epilogue carry handling are the tell of bookkeeping-not-pattern.
+
+**"Doubly linked lists appear only in LRU cache"** ? LRU is the headline, but the underlying contract — O(1) removal GIVEN the node, which singly lists cannot offer — powers LFU (DLL per frequency bucket), browser-history designs, text-editor buffers, and the all-O(1) data structure problems. The design reflex to build: whenever a problem says "remove this known element in O(1) while maintaining order," the answer is a hash map pointing INTO a doubly linked list — that pairing, not the LRU specifics, is what transfers.

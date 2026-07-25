@@ -1559,3 +1559,18 @@ Need to repeatedly find min/max of a dynamic collection?
 **Debug workflow:** (1) After heap operations, verify the heap property programmatically by checking each parent is <= children; (2) For top-K, use `Collections.sort()` or `Arrays.sort()` instead of heap when K > n/2 — sorting is faster in practice; (3) Ensure comparator returns 0 ONLY for truly equal elements; if transitivity is suspect, log comparator outputs during development; (4) Consider `PriorityBlockingQueue` for thread-safe production use.
 
 **Real-world anchor:** Twitter's (now X) tweet ranking used a max-heap to maintain top tweets in 2012. Under high-volume events (World Cup, Super Bowl), the heap's O(log n) per-tweet-update caused 2-3 second ranking delays, degrading user experience. Switching to a bucketed approach with O(1) updates resolved the issue.
+
+
+---
+
+## Reality Check
+
+**"Heap problems are top-k problems"** → Top-k is one wing; the practice set's other wings each add a distinct mechanic: k-way merging (k-sorted-lists, smallest-range-covering — heap holds one cursor per source), scheduling simulations (CPU-tasks, meeting-rooms — time advances via the heap), lazy-deletion workarounds (sliding-window median), and two-heap balance (running median). Filing every heap problem as top-k leaves four mechanics untrained — and interviews draw from all five.
+
+**"Kth-largest means sort or heap, pick by mood"** → It is a three-way with distinct contracts: sort is O(n log n) and simplest; the size-k heap is O(n log k) and STREAMING-compatible (the follow-up is always "what if elements keep arriving?"); quickselect is O(n) average, in-place, but O(n squared) adversarial worst case and destroys input order. Interviewers walk this exact ladder — the prepared answer names all three with their one-line contracts before coding the one that fits.
+
+**"K-closest-points is top-k with distance"** → Two upgrades hide in it: comparing SQUARED distances (dodging sqrt entirely — floating point never enters), and the max-heap-of-size-k direction flip that top-k-largest habits get backwards (keep the k best by evicting the WORST of the current elite). It is also the cleanest place to practice saying "average-case O(n) quickselect exists" and then not writing it unless asked — tool-selection narration as a skill.
+
+**"Task-scheduler-type problems need the formula"** → The idle-slots formula answers ONE variant; the heap simulation (pop most-frequent, run cooldown queue of (task, ready-time)) answers the FAMILY — reorganize-string, distant-barcodes, any arrange-with-separation problem — and produces the actual arrangement, which formulas cannot. Practice the simulation as primary and the formula as the special-case shortcut, because follow-ups mutate constraints in ways only the simulation survives.
+
+**"IPO/maximize-capital is an obscure hard"** → It is the cleanest TWO-HEAP HANDOFF specimen: projects sorted by capital requirement feed a max-heap of profits as they become affordable — greedy selection with a dynamically unlocked candidate set. The handoff shape (one ordering releases candidates into another ordering as a threshold moves) recurs in course-schedule-III style problems and real resource allocators; owning it converts a memorized hard into a reusable machine.

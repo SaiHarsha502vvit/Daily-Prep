@@ -864,3 +864,18 @@ Here are problem names to search on LeetCode/HackerRank:
 **Debug workflow:** 1. Trace execution with n=1, n=2, and edge cases (empty input, single element, maximum values). 2. Print loop variables at each iteration to verify pointer update rule. 3. Check for `<=` vs `<` in termination conditions. 4. Verify no overflow by testing near int/long limits (Integer.MAX_VALUE - 1). 5. Add assertion guards at boundaries. 6. For recursion, either convert to iterative or set `-Xss2m` to increase stack with caution.
 
 **Real-world anchor:** The 2019 Boeing 737 MAX crash was partially traced to software boundary condition handling—sensor data at limits triggered unexpected behavior due to inadequate edge case testing in the flight control system, same root cause as off-by-one boundary errors in competitive programming.
+
+
+---
+
+## Reality Check
+
+**"A solving checklist slows you down in timed settings"** → The checklist is slow the first twenty times and subconscious afterward — that is what internalization means. Skipping straight to code saves ninety seconds and routinely loses ten minutes to a misread requirement ("return the INDEX, not the value") or an unexamined edge ("what if the array is empty"). Every post-mortem of a blown interview contains a step the checklist would have forced.
+
+**"Restating the problem is filler for the interviewer's benefit"** → Restating is a COMPREHENSION TEST you run on yourself: if you cannot restate input, output, and constraints without looking, you have not parsed the problem, and coding now means coding your guess. The highest-value restatement includes one concrete example you invent — inventing an example flushes out ambiguities (duplicates allowed? negative numbers? empty input?) faster than re-reading the prose.
+
+**"Edge cases are checked at the end if time remains"** → Edge cases chosen AFTER coding are biased by the code — you test what you built, not what the problem allows. Enumerate them BEFORE designing (empty, single element, all-same, extreme sizes, boundary values), because half the time one of them changes the design itself: an empty-input rule decides your initialization; a duplicates rule decides your data structure.
+
+**"Brute force first is a beginner crutch"** → Brute force is the professional's baseline: it proves you understand the problem, it is a correctness oracle to diff the clever solution against, and its inefficiency POINTS at the optimization (repeated scans mean precompute; repeated subproblems mean memoize; nested candidate checks mean sort or hash). Seniors state it in one sentence and mine it; only juniors either skip it or stop at it.
+
+**"When stuck, stare harder at the problem"** → Staring re-runs the same failed retrieval. The productive unstick moves are mechanical: shrink the input to size 3 and solve BY HAND (watch what your brain does, then code that), change representation (array to graph, string to counts), solve the inverse question, or drop a constraint and add it back. The checklist's job when stuck is to hand you the NEXT move, not more willpower.

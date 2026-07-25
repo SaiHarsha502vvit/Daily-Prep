@@ -2144,3 +2144,18 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 **Debug workflow:** (1) Verify monotonicity holds by sampling production data: check if `strictly decreasing` holds, not just `decreasing`. (2) Use iterative stack instead of recursion for parsers: explicitly manage your own stack with while loop. (3) Set explicit stack size in containerized environments: `--thread-stack-size=2MB` in JVM. (4) Profile both worst-case (all ascending for decreasing-stack) and average-case inputs. (5) Add `maxStackDepth` instrumentation: alert if depth exceeds 90% of expected maximum.
 
 **Real-world anchor:** Cloudflare's 2019 outage was caused by a stack overflow in their Lua webhook processing when parsing deeply nested JSON configurations from enterprise customers, taking down 12% of the internet for 27 minutes.
+
+
+---
+
+## Reality Check
+
+**"Stack problems announce themselves with the word stack"** → The trigger is NESTING or MOST-RECENT-FIRST semantics hiding in the story: valid parentheses, collapsing adjacent duplicates, evaluating expressions, undo semantics, directory path simplification, asteroid collisions. None say stack; all are "the newest unresolved thing resolves first." Training the trigger phrase — newest-unresolved-first — routes these instantly, where keyword-matching routes none of them.
+
+**"Queue-via-stacks and stack-via-queues are textbook filler"** → The two-stack queue teaches AMORTIZED reasoning in its purest form: each element moves between stacks at most once, so occasional expensive flips average to O(1) — the same argument shape as dynamic arrays and cyclic sort. It is also production-real: persistent functional queues and some job-buffer designs use exactly this structure. The exercise is the proof technique, not the container.
+
+**"Min-stack needs clever encoding"** → The auxiliary-stack version (push the running min alongside) is honest, simple, and interview-sufficient; the O(1)-extra encoded version (store deltas against the min) is a follow-up curiosity with overflow hazards. Knowing WHICH version to lead with is judgment practice: lead simple, mention the exotic upgrade exists, produce it only on request. Candidates who lead with the delta encoding and fumble its negative-value cases lose to candidates who shipped the plain version in two minutes.
+
+**"Expression evaluation is a solved parser problem, skip it"** → Basic-calculator problems are the standard vehicle for two-stack (values and operators) reasoning with precedence — and the specific bugs they drill are perennial: unary minus versus binary minus, multi-digit number assembly, whitespace, and parenthesis-as-recursive-reset. These same seams appear in every real tokenizer or filter-expression feature you will ever ship; the interview problem is a compressed rehearsal.
+
+**"Deque problems are rare enough to skip"** → The deque earns its slot through one heavyweight application — sliding-window maximum in O(n) — plus its role as THE iterative-DFS/BFS container (ArrayDeque outperforms both Stack and LinkedList in Java, and Stack-the-class is a synchronized legacy type you should never write in new code). One structure, two must-know facts; skipping deques means hand-rolling worse versions of both.
