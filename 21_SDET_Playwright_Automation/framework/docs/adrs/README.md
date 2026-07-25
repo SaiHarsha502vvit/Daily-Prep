@@ -64,16 +64,22 @@ The SDET curriculum (Ch65) covers test automation architecture patterns and indu
 | Curriculum Topic            | ADR Application                                    |
 | --------------------------- | -------------------------------------------------- |
 | Framework selection         | ADR-001: Why we chose Playwright over alternatives |
-| CI/CD integration           | Referenced in ADR-001; future ADR planned          |
-| Test data management        | Future ADR planned                                 |
-| Reporting and observability | Future ADR planned                                 |
-| Cross-browser testing       | Built into Playwright via ADR-001                  |
+| Setup architecture          | ADR-004: Fixtures over hooks and globals           |
+| Readable specs vs BDD       | ADR-005: No Cucumber layer (Ch46 cost analysis)    |
+| API client library design   | ADR-006: Composition over APIRequestContext        |
+| Reporting and observability | ADR-002: SQLite trend store for flake analytics    |
+| Demo/test targets           | ADR-003: OrangeHRM public demo + reqres.in         |
 
 ## Index of Existing ADRs
 
-| ADR Number                             | Title                                   | Status   | Date       |
-| -------------------------------------- | --------------------------------------- | -------- | ---------- |
-| [ADR-001](./ADR-001-why-playwright.md) | Adopt Playwright for End-to-End Testing | Accepted | 2026-06-10 |
+| ADR Number                                    | Title                                                          | Status   | Date       |
+| --------------------------------------------- | -------------------------------------------------------------- | -------- | ---------- |
+| [ADR-001](./ADR-001-why-playwright.md)        | Adopt Playwright for End-to-End Testing                        | Accepted | 2026-06-10 |
+| [ADR-002](./ADR-002-sqlite-trend-store.md)    | SQLite for the Flake-Analytics Trend Store                     | Accepted | 2026-07-25 |
+| [ADR-003](./ADR-003-orangehrm-demo-target.md) | OrangeHRM Public Demo + reqres.in as Teaching Targets          | Accepted | 2026-07-25 |
+| [ADR-004](./ADR-004-fixtures-over-hooks.md)   | Fixtures (test.extend) Over beforeEach Hooks and Globals       | Accepted | 2026-07-25 |
+| [ADR-005](./ADR-005-no-bdd-layer.md)          | No BDD/Cucumber Layer — Plain @playwright/test with test.step  | Accepted | 2026-07-25 |
+| [ADR-006](./ADR-006-composed-api-clients.md)  | Typed API Clients by Composition (No axios, No Inheritance)    | Accepted | 2026-07-25 |
 
 ## Quick Reference
 

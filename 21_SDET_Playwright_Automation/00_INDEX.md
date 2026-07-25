@@ -11,6 +11,10 @@
 > | [`challenges/`](./challenges/README.md) | 7 graded challenges + 3 portfolio capstones |
 > | [`career/`](./career/README.md) | Progress, interview bank, portfolio, résumé, DevSecOps thread |
 > | Chapters 46–54 | BDD, Allure/ReportPortal, sharding, feature flags, email, secrets, CT, mutation testing, synthetics |
+> | Chapters 61–62 | Emulation (devices/clock/network/locale) + enterprise test operations |
+> | [`framework/docs/adrs/`](./framework/docs/adrs/README.md) | 6 Architecture Decision Records documenting the framework's design choices |
+
+> **Version stamp:** curriculum verified against **Playwright 1.60 / Node 20** (2026-07-25). The Clock API (Ch61) needs ≥ 1.45; aria snapshots need ≥ 1.49. When bumping `@playwright/test`, re-verify Ch56 (config), Ch61 (emulation), and the framework's `npm run verify` gate, then update this stamp.
 
 **Module Goal:** Take you from zero to a production-grade SDET / SDE who can architect, build, and maintain enterprise test automation systems — covering Playwright, TypeScript, real-world async patterns, API client library design, enterprise CI/CD, performance, security, and accessibility testing.
 
@@ -91,6 +95,8 @@
 | 58     | [File Uploads & Downloads](./05_Advanced_Topics/58_File_Uploads_Downloads.md)                                                                                                             | 60 min | **setInputFiles single/multi/buffer, drag-drop, download event race, CSV/XLSX/PDF assertion helpers**                         | Ch04, Ch07                            |
 | 59     | [Docker for Playwright](./05_Advanced_Topics/59_Docker_For_Playwright.md)                                                                                                                 | 60 min | **mcr.microsoft.com/playwright base image, multi-stage builds, sharding via docker-compose, /dev/shm gotcha, CI integration** | Ch09, Ch25, Ch48                      |
 | 60     | [Tool Comparison — Cypress / Selenium / WebdriverIO](./06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md)                                                                 | 60 min | **Honest trade-offs, architecture, locator model, cross-domain, parallel, API testing, when to pick what — interview prep**   | Ch32, `23_Mobile_Dev_And_Testing/01`  |
+| 61     | [Emulation & Environment Simulation — Devices, Clock, Network, Locale](./05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md)                                                    | 75 min | **devices[] matrix, page.clock time travel, CDP throttling, offline, geolocation/permissions, locale/timezone, aria snapshots** | Ch26, Ch29, Ch49, Ch56                |
+| 62     | [Enterprise Test Operations — Running Automation at Scale](./04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)                                                                 | 90 min | **Environment tiers, ephemeral PR envs, test data as a service, flake SLA, CODEOWNERS federation, gate tiers, metrics that keep suites funded** | Ch25, Ch26, Ch28, Ch48                |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.

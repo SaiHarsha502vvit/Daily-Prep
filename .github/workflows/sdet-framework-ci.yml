@@ -1,0 +1,59 @@
+# CI for the SDET Playwright framework.
+#
+# NOTE: this file must live at the REPO ROOT (.github/workflows/) — GitHub
+# ignores workflow files in subdirectories. The copies under
+# 21_SDET_Playwright_Automation/framework/.github/workflows/ are teaching
+# material for Ch25 and templates for when the framework is extracted into
+# its own repository; they do not execute from where they sit.
+#
+# Scope: deterministic gates only (lint + typecheck + config sanity).
+# The UI/API specs target public demo sites (see ADR-003) — running them on
+# every push would make PR status depend on third-party uptime, which is the
+# exact anti-pattern Ch62 §5 warns about. Full runs stay local/nightly.
+
+name: sdet-framework-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "21_SDET_Playwright_Automation/framework/**"
+      - ".github/workflows/sdet-framework-ci.yml"
+  pull_request:
+    paths:
+      - "21_SDET_Playwright_Automation/framework/**"
+      - ".github/workflows/sdet-framework-ci.yml"
+
+defaults:
+  run:
+    working-directory: 21_SDET_Playwright_Automation/framework
+
+jobs:
+  verify:
+    name: lint + typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies (deterministic)
+        run: npm ci
+
+      - name: Lint (zero warnings)
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Playwright config loads + test discovery works
+        run: npx playwright test --list --reporter=null
+        env:
+          # Config requires base URLs at load time; public demo values, no secrets (ADR-003)
+          ORANGEHRM_BASE_URL: https://opensource-demo.orangehrmlive.com
+          API_BASE_URL: https://reqres.in
