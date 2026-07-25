@@ -3,9 +3,9 @@
 **Navigation**: [← SQL Problems](../Problem_Sets_SQL/15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](../00_INDEX.md) | [SQL Window Functions →](../Problem_Sets_SQL/16_SQL_Problems_Window_Functions_Advanced.md)
 
 **Cross-links:**
-- [`16_JavaScript/`](../16_JavaScript/) — JS foundations (read Ch01–07 before this file)
-- [`17_TypeScript/`](../17_TypeScript/) — TypeScript types (read Ch01–02 alongside)
-- [`15_React_Frontend/`](../15_React_Frontend/) — React chapters
+- [`16_JavaScript/`](../../16_JavaScript/) — JS foundations (read Ch01–07 before this file)
+- [`17_TypeScript/`](../../17_TypeScript/) — TypeScript types (read Ch01–02 alongside)
+- [`15_React_Frontend/`](../../15_React_Frontend/) — React chapters
 - [`PATH_FRONTEND.md`](../../PATH_FRONTEND.md) — full frontend learning path
 
 ---
@@ -789,7 +789,7 @@ WeakRef / FinalizationRegistry │ (advanced) Memory-efficient component lifecyc
 
 ---
 
-*[Back to Index](../00_INDEX.md) | [JS Foundations](../../16_JavaScript/01_JS_Foundations.md) | [React Chapters](../15_React_Frontend/) | [Frontend Path](../../PATH_FRONTEND.md)*
+*[Back to Index](../00_INDEX.md) | [JS Foundations](../../16_JavaScript/01_JS_Foundations.md) | [React Chapters](../../15_React_Frontend/) | [Frontend Path](../../PATH_FRONTEND.md)*
 
 
 ---

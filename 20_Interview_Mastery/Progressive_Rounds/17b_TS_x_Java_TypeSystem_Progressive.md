@@ -3,7 +3,7 @@
 **Navigation**: [← SQL Analytics](../Problem_Sets_SQL/17_SQL_Problems_Analytics_RealWorld_Design.md) | [📚 Index](../00_INDEX.md) | [SQL Foundations →](../Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md)
 
 **Cross-links:**
-- [`17_TypeScript/`](../17_TypeScript/) — TypeScript chapters
+- [`17_TypeScript/`](../../17_TypeScript/) — TypeScript chapters
 - [`07_Modern_Java/Ch01_Core_Foundations.md`](../../07_Modern_Java/Ch01_Core_Foundations.md) — Java type foundations
 - [`07_Modern_Java/Ch04_Generics_Exceptions.md`](../../07_Modern_Java/Ch04_Generics_Exceptions.md) — Java generics deep dive
 - [`PATH_FRONTEND.md`](../../PATH_FRONTEND.md) — frontend path (TypeScript track)
@@ -846,7 +846,7 @@ Conditional types          │ T extends U ? X : Y           │ Not supported
 
 ---
 
-*[Back to Index](../00_INDEX.md) | [TypeScript Chapters](../17_TypeScript/) | [Java Path](../../PATH_JAVA_BACKEND.md) | [Frontend Path](../../PATH_FRONTEND.md)*
+*[Back to Index](../00_INDEX.md) | [TypeScript Chapters](../../17_TypeScript/) | [Java Path](../../PATH_JAVA_BACKEND.md) | [Frontend Path](../../PATH_FRONTEND.md)*
 
 
 ---

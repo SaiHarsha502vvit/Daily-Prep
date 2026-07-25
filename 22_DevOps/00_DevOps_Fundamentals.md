@@ -796,7 +796,7 @@ CHAOS ENGINEERING (Netflix, Facebook):
 | **Distributed patterns**      | [Enterprise Distributed](../10_Enterprise_Systems/09_Distributed_Patterns.md) — Saga, Outbox, CQRS          |
 | **Queue (message broker)**    | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — Queue = Kafka/SQS                        |
 | **Consistent hashing**        | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — load balancing, DB sharding              |
-| **Topological sort (CI/CD)**  | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — build dependency ordering     |
+| **Topological sort (CI/CD)**  | [Algorithms in Production](../03_Algorithms/13_Algorithms_In_Production.md) — build dependency ordering     |
 | **CSS CDN deployment**        | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) — Container Queries, static assets           |
 | **SQL injection prevention**  | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) — parameterized queries                              |
 

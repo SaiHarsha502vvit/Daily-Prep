@@ -4,9 +4,9 @@
 
 **Cross-links:**
 
-- [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns
-- [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) — API testing depth
-- [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals
+- [`21_SDET_Playwright_Automation/`](../../21_SDET_Playwright_Automation/) — Playwright patterns
+- [`24_Advanced_API_Testing/`](../../24_Advanced_API_Testing/) — API testing depth
+- [`07_Modern_Java/`](../../07_Modern_Java/) — Spring Boot internals
 
 ---
 

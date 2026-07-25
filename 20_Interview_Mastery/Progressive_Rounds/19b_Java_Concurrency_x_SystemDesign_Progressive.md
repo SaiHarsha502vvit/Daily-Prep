@@ -3,7 +3,7 @@
 **Navigation**: [← Permutations & Combinations](../Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](../00_INDEX.md) | [DSA: Bitwise Trie →](../Problem_Sets_DSA/20_Bitwise_Trie_Interview_Guide.md)
 
 **Cross-links:**
-- [`07_Modern_Java/`](../07_Modern_Java/) — Modern Java chapters
+- [`07_Modern_Java/`](../../07_Modern_Java/) — Modern Java chapters
 - [`20_Interview_Mastery/06_System_Design_Blueprint.md`](../06_System_Design_Blueprint.md) — System design interview blueprint
 - [`20_Interview_Mastery/12_SpringBoot_Plus_DSA_Progressive.md`](12_SpringBoot_Plus_DSA_Progressive.md) — Spring Boot × DSA
 - [`PATH_JAVA_BACKEND.md`](../../PATH_JAVA_BACKEND.md) — Java backend path

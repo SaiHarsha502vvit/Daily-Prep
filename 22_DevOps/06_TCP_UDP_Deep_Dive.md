@@ -874,7 +874,7 @@ Latency spikes               │ Nagle + delayed ACK       │ TCP_NODELAY in ap
 | Topic                                 | Related Content                                                                                      |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | **Sliding window pattern**            | [Patterns](../04_Patterns_Templates/01_Sliding_Window.md) — the coding pattern inspired by TCP       |
-| **Algorithms in production**          | [Algorithms](../03_Algorithms/12_Algorithms_In_Production.md) — TCP sliding window, Dijkstra routing |
+| **Algorithms in production**          | [Algorithms](../03_Algorithms/13_Algorithms_In_Production.md) — TCP sliding window, Dijkstra routing |
 | **Queue (TCP buffers)**               | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — ring buffers                      |
 | **State machine (TCP states)**        | [Patterns](../04_Patterns_Templates/) — finite state machines                                        |
 | **Python asyncio (non-blocking TCP)** | [Asyncio Internals](../25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md)                          |

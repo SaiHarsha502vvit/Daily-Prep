@@ -4,8 +4,8 @@
 
 **Cross-links:**
 
-- [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals
-- [`02_Data_Structures/`](../02_Data_Structures/) — DSA foundations
+- [`07_Modern_Java/`](../../07_Modern_Java/) — Spring Boot internals
+- [`02_Data_Structures/`](../../02_Data_Structures/) — DSA foundations
 - [`10_Elite_Cross_Domain_Rounds.md`](10_Elite_Cross_Domain_Rounds.md) — applied elite challenges
 
 ---

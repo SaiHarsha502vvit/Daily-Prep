@@ -525,7 +525,7 @@ SIDECAR PATTERN:
 
 | Topic                        | Related Content                                                                                                 |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **TCP sliding window**       | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — sliding window = TCP flow control |
+| **TCP sliding window**       | [Algorithms in Production](../03_Algorithms/13_Algorithms_In_Production.md) — sliding window = TCP flow control |
 | **Hash tables (DNS cache)**  | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — hash table → DNS, session store              |
 | **MVCC (DB isolation)**      | [SQL Internals Deep](../08_SQL/49_SQL_Internals_Deep.md) — row versioning, xmin/xmax                            |
 | **SQL injection (OWASP #3)** | [SQL Security](../08_SQL/33_SQL_Security_Injection.md) — parameterized queries                                  |

@@ -3,7 +3,7 @@
 **Navigation**: [← SQL Window Functions](../Problem_Sets_SQL/16_SQL_Problems_Window_Functions_Advanced.md) | [📚 Index](../00_INDEX.md) | [SQL Analytics →](../Problem_Sets_SQL/17_SQL_Problems_Analytics_RealWorld_Design.md)
 
 **Cross-links:**
-- [`02_Data_Structures/`](../02_Data_Structures/) — DS foundations (build intuition here first)
+- [`02_Data_Structures/`](../../02_Data_Structures/) — DS foundations (build intuition here first)
 - [`07_Modern_Java/Ch08_Collections_Internals.md`](../../07_Modern_Java/Ch08_Collections_Internals.md) — Java Collections deep dive
 - [`07_Modern_Java/Ch15_Concurrency_Core.md`](../../07_Modern_Java/Ch15_Concurrency_Core.md) — concurrent collections
 - [`PATH_JAVA_BACKEND.md`](../../PATH_JAVA_BACKEND.md) — full Java path

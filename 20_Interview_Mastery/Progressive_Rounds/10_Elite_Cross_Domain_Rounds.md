@@ -4,9 +4,9 @@
 
 **Cross-links:**
 
-- [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) — API testing patterns used in Part C problems
-- [`07_Modern_Java/`](../07_Modern_Java/) — Spring Boot internals referenced in Part B problems
-- [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns in Part C solutions
+- [`24_Advanced_API_Testing/`](../../24_Advanced_API_Testing/) — API testing patterns used in Part C problems
+- [`07_Modern_Java/`](../../07_Modern_Java/) — Spring Boot internals referenced in Part B problems
+- [`21_SDET_Playwright_Automation/`](../../21_SDET_Playwright_Automation/) — Playwright patterns in Part C solutions
 
 ---
 

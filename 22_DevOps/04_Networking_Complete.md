@@ -669,7 +669,7 @@ INTER-VLAN ROUTING:
 | **DNS resolution**              | [Ch 07: DNS Complete](07_DNS_Complete.md) — record types, DNSSEC                       |
 | **Queue (TCP buffer)**          | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — ring buffers        |
 | **Hash table (ARP, MAC table)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                       |
-| **Graph algorithms (routing)**  | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — Dijkstra |
+| **Graph algorithms (routing)**  | [Algorithms in Production](../03_Algorithms/13_Algorithms_In_Production.md) — Dijkstra |
 | **HTTP protocol**               | [Ch 08: HTTP Complete](08_HTTP_Complete.md)                                            |
 | **Kubernetes networking**       | [Networking & Security](02_Networking_Security.md) — kube-proxy, Ingress               |
 

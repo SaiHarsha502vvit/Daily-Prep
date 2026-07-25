@@ -68,7 +68,7 @@ Every domain in this library is deployed, monitored, and scaled via DevOps.
 | **React deployment**      | [React Fundamentals](../15_React_Frontend/01_React_Fundamentals.md) — nginx container                             |
 | **JavaScript V8 perf**    | [JS Modern](../16_JavaScript/06_JS_Modern_ES6Plus.md) — memory leaks → OOM in K8s                                 |
 | **CSS CDN**               | [CSS Modern](../18_CSS_Complete/04_CSS_Modern_Architecture.md) — versioned assets via CDN                         |
-| **Graph algorithms**      | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — topological sort, Dijkstra routing  |
+| **Graph algorithms**      | [Algorithms in Production](../03_Algorithms/13_Algorithms_In_Production.md) — topological sort, Dijkstra routing  |
 | **DS in production**      | [DS in Production](../02_Data_Structures/05_DS_In_Production.md) — LRU, queue = broker                            |
 | **Sliding window**        | [TCP/UDP](06_TCP_UDP_Deep_Dive.md) ↔ [Patterns](../04_Patterns_Templates/01_Sliding_Window.md)                    |
 | **Binary math**           | [IP Addressing](05_IP_Addressing_Subnets.md) ↔ [Bit Manipulation](../03_Algorithms/06a_Greedy_BitManip.md)        |

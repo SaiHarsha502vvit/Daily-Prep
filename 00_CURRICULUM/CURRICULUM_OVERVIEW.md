@@ -83,11 +83,11 @@
 
 | Module                             | Folder                                              | Est. Hours | Competency Target |
 | ---------------------------------- | --------------------------------------------------- | ---------- | ----------------- |
-| Python Foundations                 | `21_Python_ML_DL_NLP`                               | 10h        | Practitioner      |
-| ML / DL / NLP                      | `21_Python_ML_DL_NLP`                               | 20h        | Practitioner      |
+| Python Foundations                 | `25_Python_ML_DL_NLP`                               | 10h        | Practitioner      |
+| ML / DL / NLP                      | `25_Python_ML_DL_NLP`                               | 20h        | Practitioner      |
 | SDET & Test Automation             | `21_SDET_Playwright_Automation`                     | 20h        | Expert            |
 | Enterprise Systems & ERP           | `10_Enterprise_Systems`                             | 12h        | Expert            |
-| API Testing                        | `22_Advanced_API_Testing`                           | 8h         | Expert            |
+| API Testing                        | `24_Advanced_API_Testing`                           | 8h         | Expert            |
 | Mobile Dev                         | `23_Mobile_Dev_And_Testing`                         | 10h        | Novice            |
 | **Capstone 4: Distributed System** | `00_CURRICULUM/PROJECTS/CAP04_DistributedSystem.md` | 30h        | Expert            |
 
@@ -136,9 +136,9 @@ JavaScript / TypeScript
 
 - 📝 [DS Problem Sets](../02_Data_Structures/02_PROBLEM_SETS.md)
 - 📝 [Algorithms Problem Sets](../03_Algorithms/03_PROBLEM_SETS.md)
-- 📝 [OOP & Design Problem Sets](../06_OOP_Design/06_PROBLEM_SETS.md)
+- 📝 [OOP & Design Problem Sets](../06_OOP_Design/06b_PROBLEM_SETS.md)
 - 📝 [Java & Spring Problem Sets](../07_Modern_Java/07_PROBLEM_SETS.md)
-- 📝 [SQL Problem Sets](../08_SQL/08_PROBLEM_SETS.md)
+- 📝 [SQL Problem Sets](../08_SQL/08b_PROBLEM_SETS.md)
 - 📝 [Enterprise & DDD Problem Sets](../10_Enterprise_Systems/10_PROBLEM_SETS.md)
 - 📝 [System Design Problem Sets](../20_Interview_Mastery/06d_System_Design_Problem_Sets.md) — Load Balancing, Databases, Sharding
 
@@ -155,7 +155,7 @@ JavaScript / TypeScript
 
 ### Semester 4
 
-- 📝 [Python & ML Problem Sets](../21_Python_ML_DL_NLP/21_PROBLEM_SETS.md) — Python core, NumPy, ML pipeline, NLP
+- 📝 [Python & ML Problem Sets](../25_Python_ML_DL_NLP/25_PROBLEM_SETS.md) — Python core, NumPy, ML pipeline, NLP
 - 📝 [SDET Problem Sets](../21_SDET_Playwright_Automation/08_Practice_And_Quizzes/SDET_PROBLEM_SETS.md) — JUnit5, Mockito, Playwright
 - 📝 [Kafka & Event Streaming Problem Sets](../10_Enterprise_Systems/10_KAFKA_PROBLEM_SETS.md) — Kafka Topics, Partitions, Consumer Lag
 - 📝 [Mobile Dev Problem Sets](../23_Mobile_Dev_And_Testing/23_PROBLEM_SETS.md) — iOS/Android Lifecycle, Local-First, Flutter

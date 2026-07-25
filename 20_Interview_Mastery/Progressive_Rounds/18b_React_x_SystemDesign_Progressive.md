@@ -3,7 +3,7 @@
 **Navigation**: [← SQL Foundations](../Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](../00_INDEX.md)
 
 **Cross-links:**
-- [`15_React_Frontend/`](../15_React_Frontend/) — React chapters
+- [`15_React_Frontend/`](../../15_React_Frontend/) — React chapters
 - [`06_OOP_Design/03_System_Design.md`](../../06_OOP_Design/03_System_Design.md) — System design foundations
 - [`20_Interview_Mastery/06_System_Design_Blueprint.md`](../06_System_Design_Blueprint.md) — System design interview blueprint
 - [`PATH_FRONTEND.md`](../../PATH_FRONTEND.md) — frontend path
@@ -684,7 +684,7 @@ ISR (Incremental Static Regen)│ Cache-aside with TTL-triggered origin refresh
 
 ---
 
-*[Back to Index](../00_INDEX.md) | [React Chapters](../15_React_Frontend/) | [System Design Blueprint](../06_System_Design_Blueprint.md) | [Frontend Path](../../PATH_FRONTEND.md)*
+*[Back to Index](../00_INDEX.md) | [React Chapters](../../15_React_Frontend/) | [System Design Blueprint](../06_System_Design_Blueprint.md) | [Frontend Path](../../PATH_FRONTEND.md)*
 
 
 ---

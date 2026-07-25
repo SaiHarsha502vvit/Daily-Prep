@@ -4,9 +4,9 @@
 
 **Cross-links:**
 
-- [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) — Playwright patterns used in solutions
-- [`02_Data_Structures/`](../02_Data_Structures/) — DSA foundations
-- [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) — API testing patterns
+- [`21_SDET_Playwright_Automation/`](../../21_SDET_Playwright_Automation/) — Playwright patterns used in solutions
+- [`02_Data_Structures/`](../../02_Data_Structures/) — DSA foundations
+- [`24_Advanced_API_Testing/`](../../24_Advanced_API_Testing/) — API testing patterns
 
 ---
 

@@ -543,7 +543,7 @@ mtr api.myapp.com
 
 | Topic                       | Related Content                                                                             |
 | --------------------------- | ------------------------------------------------------------------------------------------- |
-| **Dijkstra in OSPF**        | [Algorithms in Production](../03_Algorithms/12_Algorithms_In_Production.md) — shortest path |
+| **Dijkstra in OSPF**        | [Algorithms in Production](../03_Algorithms/13_Algorithms_In_Production.md) — shortest path |
 | **Hash tables (ARP cache)** | [DS in Production](../02_Data_Structures/05_DS_In_Production.md)                            |
 | **Binary math**             | [Bit Manipulation](../03_Algorithms/06a_Greedy_BitManip.md) — bit operations                |
 | **AWS VPC subnets**         | [Cloud Networking](13_Cloud_Networking_VPC.md) — Terraform VPC                              |
