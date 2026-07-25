@@ -759,3 +759,18 @@ jobs:
 </details>
 
 [‚Üê Back to Curriculum Overview](../00_CURRICULUM/CURRICULUM_OVERVIEW.md)
+
+
+---
+
+## Reality Check
+
+**"Essentials problem sets are trivia checks"** ? The essentials genre only transfers when problems are SCENARIO-shaped ó the git rescue (detached HEAD with lost commits: reflog your way home), the mystery-permission failure (writable file, undeletable ó the directory-bit diagnosis), the Dockerfile that rebuilds everything per edit (reorder for cache), the CI pipeline that leaks a secret through logs (find the exposure path), the flaky deploy script (find the missing quote-discipline) ó because the job-form of this knowledge is diagnostic, not definitional. A set you can pass by definition-recall is measuring the wrong memory system.
+
+**"Tool exercises should isolate one tool at a time"** ? Real incidents CROSS tools by nature (the deploy that fails: is it the git tag, the CI cache, the Docker build context, or the shell expansion in the release script?), so the highest-value exercises are short cross-tool chains with a single root cause hidden somewhere in the pipeline ó training the routing instinct (which layer do I interrogate first, [production-debugging]'s change-hunt applied to your own toolchain) that isolated drills never build. The one-tool drills are warm-ups; the chains are the sport.
+
+**"Practicing commands builds command of the tools"** ? Commands decay; MODELS persist: the exercises worth repeating are prediction drills against the model ó what does this rebase do to these three branches (draw the graph first, then run it), what does this pipeline print given this quoting (predict, then execute), which layers rebuild given this Dockerfile edit (reason from cache rules, then verify) ó the [trace-and-diff] protocol from language learning applied to infrastructure. Ten predicted-then-verified scenarios build more durable capability than a hundred followed-along commands, because the diff between prediction and reality is where the model corrects.
+
+**"Soft-skill topics (reviews, retros, docs) can't be problem sets"** ? They drill as ARTIFACT EXERCISES with real fidelity: review this genuinely-flawed PR (find the missing timeout among the style noise ó the signal-versus-nitpick discipline), rewrite this useless commit history into an atomic reviewable stack, turn this incident transcript into the three retro actions with owners, write the runbook entry for this alert. The artifacts are checkable against known defects, the reps are fast, and the skills are precisely the ones interviews probe with "tell me about a time" ó except practiced rather than remembered.
+
+**"The essentials are learned once, early"** ? Every layer here MOVES (git gains switch/restore and sparse-checkout idioms, CI platforms rotate syntax and security models, container tooling churns build systems, shells stay frozen but your usage patterns drift toward whatever you did last quarter): the essentials are a maintenance domain with a small periodic dose ó one scenario-drill session monthly, plus the real-incident harvest (every production surprise in these tools becomes a problem-set entry ó the personal incident bank being the highest-fidelity training data you will ever own). Treating essentials as a solved chapter is how ten-year veterans end up debugging 2026 pipelines with 2016 mental models.

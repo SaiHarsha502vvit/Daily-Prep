@@ -853,3 +853,18 @@ Git stores **blob objects keyed by content hash** â€” identical content across c
 **Next Chapter**: [Linux CLI & Shell â†’](02_Linux_CLI_Shell.md)
 
 ---
+
+
+---
+
+## Reality Check
+
+**"Git tracks file changes"** ? Git stores SNAPSHOTS, not diffs: every commit is a complete tree of content-addressed blobs (diffs are computed on demand for display), which is why checkout is fast (materialize a snapshot, not replay changes), why identical files across branches cost nothing (same hash, stored once), and why history rewriting creates NEW commits rather than editing old ones (content-addressing makes commits immutable — a rebased branch is a different lineage wearing the same name). Half of git confusion dissolves when "chain of patches" is replaced by "graph of snapshots with pointers."
+
+**"Branches contain commits"** ? A branch is a tiny FILE holding one commit hash — a movable sticky note on the graph: nothing is contained, which is why branching is instant, why deleting a branch loses nothing until garbage collection (the commits remain, findable via reflog — the deleted-branch panic has a 30-second fix for weeks), and why "which branch is this commit on" is a malformed question (commits are reachable FROM branches, possibly several). HEAD is one more pointer — usually at a branch, detached when at a commit directly — and the detached-HEAD warning is informational, not an error state.
+
+**"Merge is safe, rebase is dangerous"** ? Both create new state; the real rule is about PUBLICATION: rebase rewrites lineage (new hashes), which is routine hygiene on unpushed local work and vandalism on shared branches (everyone downstream now holds orphaned lineage — the morning of force-push archaeology). The professional split: rebase local work onto fresh main for linear readability, merge (or squash) at the PR boundary per team convention, and force-push only with the with-lease variant (refuses to clobber commits you have not seen — the difference between overwriting your stale mirror and overwriting a colleague's afternoon).
+
+**"Losing work in git means the work is gone"** ? Git makes work UNREACHABLE far more often than deleted: reflog records every HEAD movement for around 90 days (the hard-reset undo: reflog, find the pre-reset hash, reset back), amended and rebased-away commits linger the same way, dropped stashes are recoverable via fsck, and even uncommitted-but-STAGED files survive as blobs. The genuinely gone list is short: never-staged working-tree changes discarded by a hard checkout, and unreachable objects after garbage collection. The rescue reflex — reflog before panic — is the single highest-value git skill nobody teaches first.
+
+**"Good commit habits are about message formatting"** ? Message convention is the visible tenth; the LEVERAGED habits are structural: atomic commits (one logical change — enabling surgical revert, comprehensible bisect, and reviewable stacks), staging discipline (patch-mode add to split unrelated edits — the working tree is a scratchpad; the index is the authoring tool), and bisect-ability (every commit builds and passes — the property that makes git bisect a superpower instead of a swamp: binary-searching 500 commits to the regression in 9 steps only works when intermediate commits are testable). Teams with pristine messages atop tangled ten-file commits have documentation for archaeology, not usable history.
