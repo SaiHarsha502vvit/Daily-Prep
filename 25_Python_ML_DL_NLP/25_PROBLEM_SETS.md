@@ -1,6 +1,6 @@
 # üìù Python & Machine Learning ‚Äî Problem Sets
 
-## `21_Python_ML_DL_NLP` Module | Python Core ¬∑ NumPy/Pandas ¬∑ ML ¬∑ NLP
+## `25_Python_ML_DL_NLP` Module | Python Core ¬∑ NumPy/Pandas ¬∑ ML ¬∑ NLP
 
 > **How to use:** All code goes in `JavaSolutions/ps/python/`. Run with Python 3.10+. No `import *` ‚Äî explicit imports only.
 
@@ -8,7 +8,7 @@
 
 ## Problem Set PY-PS1 ‚Äî Python Core
 
-**Prerequisites:** `21_Python_ML_DL_NLP/01_Python_Core.md`
+**Prerequisites:** `25_Python_ML_DL_NLP/01_Python_Core.md`
 
 ---
 
@@ -373,3 +373,18 @@ for text, score in results:
 ---
 
 [‚Üê Back to Semester 4 Guide](../00_CURRICULUM/SEMESTER_4_GUIDE.md)
+
+
+---
+
+## Reality Check
+
+**"ML problem sets are about getting the model to work"** ? The transferable skill is the DIAGNOSTIC loop when the model does NOT work ó which is the normal state ([ML-fundamentals, 04b]): the model not learning (learning rate, initialization, data pipeline, the overfit-a-single-batch sanity check [09]), the model overfitting (the train-validation gap, regularization), the misleading metric (accuracy on imbalanced data [ML-fundamentals]), the leakage (the too-good result [ML-fundamentals]), the training-serving skew [13]. A problem set where the tutorial model works on clean data teaches fit(); the valuable exercises inject the real failures (the messy data, the leakage, the imbalance, the drift) and drill the diagnosis ó because applied ML is debugging models that do not work, not calling fit() on data that cooperates.
+
+**"Reproducing a result from a paper or tutorial validates understanding"** ? Reproduction is a real skill and an incomplete one ó the deeper exercises are ADAPTATION and diagnosis: take the working model and change the data distribution (does it break, why), introduce a leak (do you catch it), imbalance the classes (does your metric reveal it), corrupt some labels (does performance degrade as expected). Understanding is knowing WHY each piece is there ([04b] why-over-what) such that you can predict what breaks when you change it ó the reproduction that runs the cells in order builds familiarity, and the adapt-and-predict exercises build the model that transfers to the messy problems reproduction never resembles. The [09] reproducibility difficulty itself is a lesson: if you cannot reproduce it, you have found the versioning/seed/data gap that production ML lives with.
+
+**"More Kaggle-style competitions build ML skill"** ? Competitions build a SPECIFIC slice (squeezing accuracy on a clean, fixed, well-defined dataset with a given metric) and MISS most of applied ML ([ML-fundamentals, 13]): the problem framing (competitions hand you the problem, the metric, and clean data ó the real work of deciding what to predict, what metric, and cleaning the data is done for you), the deployment and monitoring ([13] MLOps ó competitions end at the prediction), the drift and maintenance (the model is never deployed to decay), and the leakage discipline (competitions have leakage but of a different flavor). Competitions are excellent for the modeling-and-feature-engineering slice and can INSTILL bad habits (the leaderboard-overfitting, the ensemble-of-50-models nobody could deploy, the accuracy-obsession over the [ML-fundamentals] right-metric). Balance them with end-to-end projects (frame, clean, model, deploy, monitor) that exercise the slices competitions skip.
+
+**"Implementing algorithms from scratch is a waste when libraries exist"** ? From-scratch implementation of the CORE algorithms once (linear/logistic regression, a simple neural net with backprop, k-means, a decision tree) builds the [04b] math-behind-the-code intuition that using the library never does ó you learn what fit() is doing, so when it misbehaves (the [04b] numerical instability, the [09] loss-not-decreasing) you know where to look, and you can adapt the algorithm when your problem needs a twist. The point is not to USE your from-scratch version in production (use the optimized, tested library) but to have BUILT one so the library is not a black box. "Waste when libraries exist" is the recipe-follower's framing ([ML-fundamentals] know-the-algorithm-versus-run-it) ó the from-scratch build is the learning investment that turns library-user into someone who can debug and adapt, and it is a one-time cost per core algorithm with a career-long payoff.
+
+**"ML problem sets are learned once and stay current"** ? ML moves faster than most fields (the architectures, the tools, the best practices, the frontier models turn over in months) while the FUNDAMENTALS stay fixed (the bias-variance tradeoff, the validation discipline, the data-quality primacy, the metric-matching, the drift-and-monitoring ó the [ML-fundamentals] core that does not age): the maintenance strategy is anchoring on fundamentals and treating specific tools/models/architectures as their current implementations, plus tracking the frontier deliberately (the new capability that changes what is possible) without chasing every paper. And the real-project harvest ([22_DevOps problem-sets]) ó every model that failed in a surprising way becomes a personal problem-set entry, the highest-fidelity training data. "Learned once and current" is especially false in ML ó the practitioner running 2020 practices on 2026 problems is using superseded tools AND, more dangerously, may have missed the fundamentals (the validation discipline, the leakage-hunting) that DID not change and that the tool-churn distracts from.
