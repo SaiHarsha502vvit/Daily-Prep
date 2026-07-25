@@ -1109,3 +1109,18 @@ FROM revised;
 5. Did I explain one alternative approach?
 6. Did I mention performance/index thought briefly?
 7. Is output ordering/limit consistent with prompt?
+
+
+---
+
+## Reality Check
+
+**"Knowing the commands and functions means knowing SQL"** ? Command-and-function knowledge is vocabulary; SQL competence is composing them into correct set-based queries ([05_SQL_Interview_Thinking, 14_MM SQL-pipeline]): knowing COALESCE, CASE, the string functions, and the date functions is necessary and does not produce the ability to decompose an analytical question or reason through the pipeline. "Knowing the commands means knowing SQL" is the vocabulary-versus-fluency gap — the reference of functions is the toolkit, and the skill is the set-based thinking that composes them, the same [04_Patterns] templates-versus-understanding in SQL form.
+
+**"NULL behaves like other values in operations"** ? NULL propagates and breaks comparisons in ways that surprise ([14_MM SQL-pipeline, 08_SQL]): NULL = NULL is not TRUE (it is NULL — use IS NULL), NULL in arithmetic yields NULL, NOT IN with a NULL in the list returns empty, aggregates skip NULL (changing counts and averages). NULL's three-valued logic is the foundational operator trap, and "behaves like other values" is exactly the assumption that produces the empty-result and wrong-average bugs that this foundational material must drill out.
+
+**"String and date functions are standardized across databases"** ? SQL dialects DIFFER significantly on functions ([08_SQL]): the string concatenation (|| versus CONCAT versus +), the date arithmetic and formatting (wildly different per database), the LIMIT-versus-TOP-versus-FETCH, the specific function names. "Standardized" is the portability illusion — the SQL you write is dialect-specific for exactly the string, date, and pagination functions, and the interview or job in a specific database expects its dialect, which is why knowing WHICH database and its specific functions matters, not a mythical universal SQL.
+
+**"CASE is just an if-statement"** ? CASE is a value-producing EXPRESSION usable anywhere a value goes, enabling pivots and conditional aggregation ([08_SQL]): the conditional aggregation (SUM(CASE WHEN condition THEN 1 ELSE 0 END) — counting a subset), the pivot (turning rows into columns via CASE in aggregates), the derived categorization. "Just an if-statement" undersells it — CASE inside aggregates is the standard tool for conditional counting and pivoting, and recognizing that CASE produces a value usable in SUM, in GROUP BY, in ORDER BY is what unlocks the conditional-aggregation and pivot patterns.
+
+**"Operators and functions are the easy part to skip in practice"** ? The operator-and-function details are where correctness bugs hide, making them worth deliberate practice ([08_SQL, 14_MM SQL-pipeline]): the NULL semantics ([above]), the implicit type coercion (the string-versus-number comparison), the operator precedence, the function edge cases (the date function on a NULL, the string function on unexpected input). "Easy part to skip" is exactly backwards — the foundational operators and functions carry the subtle correctness traps (NULL, coercion, dialect differences) that the flashier query-writing depends on, and skipping them produces the queries that are structurally right and wrong in the details.

@@ -521,3 +521,18 @@ Think of it as:
 ```
 
 **Why this matters**: You can't use a SELECT alias in WHERE (SELECT runs after WHERE). You CAN use it in ORDER BY (ORDER BY runs after SELECT). Understanding order prevents debugging headaches.
+
+
+---
+
+## Reality Check
+
+**"Foundational SQL problems are trivial once you know SELECT"** ? The foundational traps are the ones that reach production ([08_SQL, 14_MM SQL-pipeline]): the JOIN that fans out one-to-many and inflates the SUM (the cardinality bug), the NULL that NOT IN silently drops rows on, the WHERE-versus-ON on outer joins that converts LEFT to INNER, the GROUP BY at the wrong grain. "Trivial once you know SELECT" is exactly the overconfidence that ships the duplicated-by-join total — foundational SQL correctness is reasoning through the pipeline (join cardinality, NULL semantics, grouping grain), not knowing the keyword.
+
+**"If the query returns rows, it's correct"** ? A query returning plausible numbers that are wrong is the SQL failure mode ([05_SQL_Interview_Thinking, 08_SQL]): the inflated aggregate, the NULL-dropped rows, the wrong grain — all produce output that looks fine. Correctness is verifying against the pipeline (does this join duplicate, does this filter drop NULLs, is this the right grouping) not seeing results appear, because SQL bugs are silent-wrong far more often than they are error-out.
+
+**"The logical execution order doesn't matter if the query works"** ? The logical order (FROM-WHERE-GROUP-HAVING-SELECT-ORDER) EXPLAINS the constraints you keep hitting ([14_MM SQL-pipeline]): why the SELECT alias fails in WHERE (born too late), why aggregates need HAVING not WHERE (groups do not exist yet), why the window function cannot feed WHERE directly. Knowing the pipeline dissolves the paradoxes that otherwise feel like arbitrary SQL rules — and the intermediate problems are where the pipeline understanding pays off.
+
+**"Subqueries and joins are interchangeable"** ? They differ in READABILITY, performance, and sometimes semantics ([08_SQL]): the correlated subquery that runs per-row (the performance cost the join avoids), the EXISTS-versus-IN with NULLs (the semantic difference), the subquery that clarifies versus the join that performs. The intermediate skill is choosing the form that is correct-and-readable-and-performant for the question, and treating them as always-interchangeable misses the correlated-subquery performance trap and the NULL-semantics differences that the problems drill.
+
+**"SQL practice is memorizing query patterns"** ? SQL fluency is thinking in SETS and the pipeline, which transfers to novel questions ([05_SQL_Interview_Thinking, 14_MM SQL-pipeline]): the memorized top-N-per-group query fails when the question twists, while the set-based-thinking (decompose into the right joins-groups-windows, reason about the grain and the NULLs) constructs the novel query. The practice value is building the set-based mental model, not memorizing the specific queries — because interviews and real reporting serve novel analytical questions that the pipeline-thinking constructs and pattern-memorization cannot.

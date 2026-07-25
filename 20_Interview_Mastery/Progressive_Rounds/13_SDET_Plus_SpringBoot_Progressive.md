@@ -5,7 +5,7 @@
 **Cross-links:**
 
 - [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) ‚Äî Playwright patterns
-- [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/) ‚Äî API testing depth
+- [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) ‚Äî API testing depth
 - [`07_Modern_Java/`](../07_Modern_Java/) ‚Äî Spring Boot internals
 
 ---
@@ -1262,3 +1262,18 @@ class JwtAuthFlowIntegrationTest {
 ---
 
 **Navigation**: [‚Üê Spring Boot √ó DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [üìö Index](../00_INDEX.md) | [üî• Elite Rounds ‚Üí](10_Elite_Cross_Domain_Rounds.md)
+
+
+---
+
+## Reality Check
+
+**"Testing Spring Boot is just writing unit tests"** ? Spring testing is a LAYERED discipline with framework-specific tooling ([21_SDET, 07_Modern_Java]): the pure unit test (no Spring context ó fast), the slice test (@WebMvcTest, @DataJpaTest ó partial context), the full integration test (@SpringBootTest ó slow, real wiring), and the testcontainers for real dependencies. The fusion rounds drill choosing the right test layer for what you are verifying ([13_DE testing]'s pyramid, Spring flavor), and "just unit tests" misses the slice-versus-integration decision that determines whether Spring tests are fast-and-focused or slow-and-brittle.
+
+**"An SDET testing a Spring app doesn't need Spring internals"** ? Testing Spring effectively requires understanding what you are testing ([07_Modern_Java Ch55]): the transaction behavior in tests (the @Transactional rollback, the test that shares or isolates state), the proxy and DI (the mock that must be injected correctly), the context caching (the slow suite from too many distinct contexts). The SDET who does not understand Spring internals writes tests that are flaky, slow, or that test the mock not the behavior ó and these rounds integrate the Spring-internals knowledge with the testing skill.
+
+**"Test strategy for a backend is the same as for a frontend"** ? Backend testing emphasizes different layers and concerns ([21_SDET Ch62, 22_Advanced_API_Testing]): the API contract testing ([21_SDET Ch38]), the database verification ([21_SDET Ch30]), the transaction and data-lifecycle ([21_SDET Ch28]), the service integration ó versus the frontend's UI and interaction focus. The fusion rounds drill the backend test strategy (the API, the data, the integration, the [21_SDET Ch62] test-data-and-environments), and applying frontend testing instincts to a backend misses the contract, data, and transaction concerns that dominate backend testing.
+
+**"The SDET and developer skills don't overlap here"** ? This fusion is exactly where they MERGE ó the developer who tests well and the SDET who understands the code ([21_SDET Ch32-36 the bridge]): the SDET building the test infrastructure for a Spring app needs the Spring knowledge, and the developer needs the testing discipline. The progressive rounds bridge the SDET's testing depth with the backend developer's framework-and-fundamentals knowledge, which is the [21_SDET] SDET-to-SDE bridge in practice ó and treating the skills as non-overlapping misses that modern quality engineering requires both.
+
+**"Integration testing a Spring app is straightforward"** ? Spring integration testing is full of specific traps ([21_SDET Ch26, 07_Modern_Java]): the test-data isolation across tests ([21_SDET Ch09, Ch28] ó the shared database state, the transaction that must roll back or the data that pollutes), the context caching and the slow suite, the flaky tests from timing and async, the testcontainers lifecycle. The fusion rounds drill these Spring-integration-testing realities (the isolation, the context management, the flakiness ó the [21_SDET Ch26] taxonomy in Spring form), and "straightforward" is exactly the underestimation that produces the slow, flaky, state-polluting integration suite.

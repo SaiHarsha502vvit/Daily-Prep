@@ -1176,3 +1176,18 @@ void getCitation_d365Flaps_retriesAndSucceeds() {
 ---
 
 **Navigation**: [‚Üê SDET √ó Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [üìö Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Deep dives are about showing off knowledge"** ? Deep dives assess whether your understanding is a queryable MODEL or a memorized surface ([06_OOP system-design]'s model-versus-script, [09_Career/08] follow-versus-generate): the follow-up that probes "why does that work," "what breaks it," "how would you change it" ó answerable from a model, not from memorized facts. The deep dive rewards the causal understanding ([14_MM] why-over-what) that lets you reason about variations, and treating it as knowledge-display misses that it tests the depth-of-understanding that surface knowledge cannot fake under probing.
+
+**"Preparing deep dives means memorizing more detail"** ? Deep-dive readiness comes from understanding mechanisms well enough to reason about them, not memorizing more facts ([14_MM, 06_OOP/06c internals]): the mechanism understood (why the index speeds this and costs that, why the algorithm works, why the design trades this for that) that generates answers to novel follow-ups, versus the memorized detail that runs out at the first unexpected question. "Memorizing more detail" is the wrong prep ó the deep dive probes the model, and the model is built by understanding-why (the [14_MM] causal chains) not by accumulating facts that the follow-ups will exhaust.
+
+**"A good deep dive covers everything about the topic"** ? A good deep dive goes DEEP on the interesting core, not broad over everything ([06_System_Design_Blueprint]'s one-seam-deep): the mechanism at the heart of the problem explored thoroughly (the data structure, the failure handling, the trade-off) versus the survey of every aspect at surface level. "Covers everything" is the breadth that the deep dive specifically is not ó it rewards choosing the hard core and going to mechanism level ([06_OOP] one-seam-at-mechanism-level), and the survey-everything approach avoids exactly the depth the round is named for.
+
+**"Deep dives are only in senior interviews"** ? Deep-dive-style probing appears at every level, scaled to the topic ([09_Career/07-08]): the junior asked "why did you use a HashMap here" (the mechanism at their level), the senior asked "how does your consistency model handle this partition." The deep dive is a probing STYLE (understand-why, reason-about-variations) applied at every level's appropriate depth, and "only senior" misses that the ability to explain WHY your choices work ([14_MM]) is tested throughout, just about simpler topics at junior levels.
+
+**"If I can implement it, I can deep-dive it"** ? Implementing and explaining-why are different depths ([09_Career/08 follow-versus-generate, 14_MM]): the code you can write and cannot explain why each part is necessary (the passive implementation), versus the understanding that survives "what if you removed this," "why this and not that," "how does it fail." The deep dive tests the explanation-and-reasoning depth beyond the implementation ó and "if I can implement it" underestimates the follow-ups that probe why-it-works and how-it-varies, which the implement-without-understanding candidate cannot answer even for code they wrote.

@@ -653,3 +653,18 @@ lo=0,hi=4 â†’ mid=2(val=5): 5<6 â†’ lo=3. lo=3,hi=4 â†’ mid=3(val=7): 7>6 â†’ hi
 Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` â€” if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` â€” if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Binary search needs a sorted array"** ? Binary search needs a MONOTONIC PREDICATE — a yes/no question that flips once across the space ([04_Patterns/06, 07_Binary_Search]): ship-in-D-days, koko-bananas, split-array-largest-sum hide "can value x do it," monotone in x, with nothing sorted. Binary-search-on-answer is this category's highest-leverage generalization, and array-sortedness thinking blocks it — the practice is recognizing the hidden predicate in the story.
+
+**"Two pointers is one technique"** ? It is four with different invariants ([04_Patterns/07, 06_Two_Pointers]): converging (sorted pair-sum, each step permanently discards candidates via the exchange argument), fast-slow (cycle detection, middle-finding), parallel (merge), and partition (Dutch flag, where mid does NOT advance after swapping from high). The exchange-argument (when a+b < target, every pair (lo, x<hi) is also too small, so advance lo) is what interviewers probe with "why does this not miss a pair" — the movement rule without the discard rule fails that follow-up.
+
+**"Sliding window means maximize the window"** ? Four question shapes hide here, each with a different template detail ([04_Patterns/09, 05_Problem_Solving/05]): longest-valid (shrink only when invalid), shortest-valid (shrink WHILE valid — the inversion), count-valid (add right-left+1 per step — the least intuitive line), exists-valid (early return). Applying the longest template to a shortest problem compiles, runs, and returns the wrong extreme — the shrink-policy must be derived from which extreme the problem asks, every time.
+
+**"These three are unrelated techniques"** ? They are a related family for MONOTONE properties, and the routing among them is the skill ([04_Patterns/25, 02_Constraint_to_Algorithm_Map]): sorted-and-pairing means two pointers, monotone-predicate means binary search, monotone-window-property means sliding window — and the constraint line (all-positive means window, may-contain-negative means prefix-sums instead) is the router. The problems that look like one and need another (the window that becomes a difference-of-two-thresholds, the two-pointer that needs the sort binary search assumes) test this routing.
+
+**"Off-by-one in these is careless typing"** ? It is unstated CONVENTION, not carelessness ([04_Patterns/02, 05_Problem_Solving/23]): lo<hi vs lo<=hi, hi=mid vs hi=mid-1, the window's inclusive-vs-exclusive right boundary form a consistent system where each choice forces the others, and mixing two half-remembered conventions produces the infinite loop at hi-lo==1. The discipline is picking one convention with its termination proof and never mixing — the fencepost bug in binary search and windows is a convention bug, and drilling it out is much of what this category teaches.

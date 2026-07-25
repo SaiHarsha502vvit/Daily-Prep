@@ -641,3 +641,18 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 - 1 changing parameter â†’ 1D DP (climb stairs, house robber)
 - 2 changing parameters â†’ 2D DP (knapsack, LCS, edit distance)
 - Interval problems â†’ dp[i][j] for substring s[i..j]
+
+
+---
+
+## Reality Check
+
+**"DP problems are about memorizing the famous recurrences"** ? The named problems are VOCABULARY; the skill is the REDUCTION ([05_Problem_Solving/11, 16_DP]): recognizing delete-and-earn is house-robber on values, that stock-with-cooldown is a tiny state machine, that the problem is one reduction from a known form. Interviews rarely serve a named problem straight — they serve one reduction away, and the practice target is the state SHAPE (linear, two-sequence, interval, subset, digit) not the memorized formula.
+
+**"Greedy is an educated guess that usually works"** ? Unchecked greedy is the most expensive interview failure because wrong greedy code looks clean and passes samples ([05_Problem_Solving/13, 13_Greedy]): the discipline is the two-minute exchange-argument sketch (swapping toward the greedy choice never worsens) OR the four-element counterexample hunt. Activity-selection and Huffman have one-line exchange arguments; arbitrary coin-change has a famous counterexample — practicing both verdicts, not just the greedy code, is the point.
+
+**"Backtracking is brute-force enumeration"** ? Backtracking is STRUCTURED enumeration with the choose-explore-UNCHOOSE symmetry as its machine ([05_Problem_Solving/12, 17_Backtracking]): the undo must mirror the do or shared state corrupts across branches (the un-restored path list, the mutated board cell). Pruning IS feasibility for exponential trees (N-Queens without the column/diagonal sets does not finish), and the duplicate-handling is same-level skip after sorting — not a Set on the output, which enumerates exponentially then hashes the waste away.
+
+**"These three are separate topics to study in turn"** ? They form a DECISION SPECTRUM, and the routing between them is the actual skill ([11_Greedy_vs_DP, 13_Greedy]): can local choice with an exchange-argument suffice (greedy), do overlapping subproblems need a table (DP), or must you enumerate with pruning (backtracking)? The problems that look like one and need another (the interval problem that is greedy not DP, the longest-simple-path that looks DP and is NP-hard) are exactly where this category tests whether you route by structure or by surface.
+
+**"If the DP passes, the recurrence is right"** ? A passing DP can have a poisoned base case or a missing state dimension that the test data did not expose ([05_Problem_Solving/11, 14_MM DP-state]): the count-ways base that should be 1 not 0, the state that omitted the holding-a-stock flag (subtly wrong on inputs where it mattered), the space-rolled 1D knapsack with the wrong iteration direction (items reused or excluded silently). The verification is enumerating the transition menu by hand at a small state, not trusting green — because the DP wrong-in-one-flavor-everywhere bug hides behind plausible output.

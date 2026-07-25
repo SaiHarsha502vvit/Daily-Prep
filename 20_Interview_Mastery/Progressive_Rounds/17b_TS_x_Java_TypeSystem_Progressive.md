@@ -847,3 +847,18 @@ Conditional types          â”‚ T extends U ? X : Y           â”‚ Not supported
 ---
 
 *[Back to Index](../00_INDEX.md) | [TypeScript Chapters](../17_TypeScript/) | [Java Path](../../PATH_JAVA_BACKEND.md) | [Frontend Path](../../PATH_FRONTEND.md)*
+
+
+---
+
+## Reality Check
+
+**"TypeScript and Java type systems are basically the same"** ? They differ fundamentally in STRUCTURAL versus NOMINAL typing ([17_TypeScript, 07_Modern_Java]): TS is structural (any object with the right shape matches — [17_TS/01]), Java is nominal (the type name matters, the explicit implements). This drives different behaviors (the TS excess-property-check quirk, the Java explicit-interface-implementation), and the fusion rounds drill the two models' consequences — "basically the same" misses the structural-versus-nominal split that determines what compiles and why.
+
+**"Type erasure works the same in both"** ? Both erase generics at runtime with different specifics ([17_TypeScript, 03_Algorithms/17]): TS erases ENTIRELY (types gone at runtime, no runtime type info — [17_TS/01] the validation-at-boundaries need), Java erases generics but keeps class types (the new T[] forbidden, the instanceof limits — [03_Algorithms/17]). The fusion rounds drill the erasure consequences in each (the TS runtime-validation, the Java generic-array workarounds), and "the same" misses that TS's total erasure and Java's partial erasure produce different constraints and different runtime-type strategies.
+
+**"Advanced types transfer directly between the languages"** ? The advanced features are language-specific ([17_TypeScript/02, 07_Modern_Java]): TS's conditional types, mapped types, template-literal types, and discriminated unions ([17_TS/02]) have no direct Java equivalent (Java has sealed classes, records, pattern-matching switches — [07_Modern_Java] different tools for related goals). The fusion rounds drill the analogous problems solved differently (the TS discriminated-union versus the Java sealed-hierarchy for the make-illegal-states-unrepresentable goal), and "transfer directly" misses that each language has its own type-level toolkit for the shared goals.
+
+**"Strong typing means the same discipline in both"** ? The disciplines differ where the type systems differ ([17_TypeScript/01, 07_Modern_Java]): TS's strictNullChecks and the null-handling ([17_TS/01] the billion-dollar-mistake tracked), Java's Optional and the nullable-by-default, the TS any-contagion versus Java's Object. The fusion rounds drill the language-appropriate discipline (the TS strict-mode and unknown-over-any, the Java Optional and null-safety), and "the same discipline" misses that the null-handling, the escape-hatches, and the strictness mechanisms are language-specific even where the goal (avoid null errors) is shared.
+
+**"Knowing one type system means you know the other"** ? The transferable part is the TYPE-THINKING (model the domain, make illegal states unrepresentable, validate at boundaries); the specifics are per-language ([17_TypeScript, 07_Modern_Java, the-whole-curriculum]): the shared principles (types as contracts, the boundary validation, the model-the-domain) transfer, and the mechanisms (structural-vs-nominal, the specific advanced features, the erasure specifics, the null handling) do not. The fusion rounds drill the transferable thinking applied through each language's specific tools, and "know one means know the other" is half-right — the type-thinking transfers, the language-specific type-system mechanics must be learned per language, the [the-whole-curriculum] principles-transfer-tools-differ applied to type systems.

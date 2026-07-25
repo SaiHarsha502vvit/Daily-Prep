@@ -310,3 +310,18 @@ maxXor(x):
 ---
 
 **Navigation**: [â¬… DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [ðŸ“š Index](../00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix âž¡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
+
+
+---
+
+## Reality Check
+
+**"Bit tricks are one-liners to memorize"** ? Each derives from two identities ([04_Patterns/20, 10_Bit_Manipulation]): n & (n-1) clears the lowest set bit (power-of-two test, Kernighan popcount), n & -n isolates it (Fenwick trees) — both consequences of two's-complement borrowing. Derive-once beats memorize-twenty: knowing WHY the borrow ripples lets you reconstruct any of them and recognize when a novel problem reduces to lowest-set-bit reasoning, which is what the interview probes beyond the trick itself.
+
+**"XOR only solves the single-number problem"** ? XOR is addition in GF(2), powering a family ([04_Patterns/20, 10_Bit]): single-number-II (per-bit mod-3 counting), the two-unique split (partition by any set bit of the combined XOR — the argument that the differing bit provably separates the pair), missing-number, parity. The two-unique trick is the depth marker because it works via an ARGUMENT, not an incantation — and reciting XOR properties without the separating-bit argument fails the follow-up.
+
+**"The bitwise trie is an exotic curiosity"** ? The bitwise trie is the standard tool for max-XOR-pair and its relatives ([12 Trees_Graphs_Trie]): walk the bits from the most significant, greedily choosing the opposite bit to maximize XOR — the trie-walk that turns an O(n squared) pairwise comparison into O(n times bits). It fuses the trie structure (12's prefix backbone) with bit reasoning, and it is exactly the structure-combination interviewers escalate to after the basic bit tricks, not a curiosity.
+
+**"Shifting is well-defined everywhere"** ? Java shifts mask the count to the register width ([04_Patterns/20, 10_Bit]): 1 << 32 is 1, not 0 (a genuinely surprising spec corner), and the >> vs >>> distinction (arithmetic sign-extending vs logical zero-filling) makes -1 >> 1 == -1 but -1 >>> 1 == MAX_VALUE. Any bit code computing shift amounts dynamically must bound them, and using the wrong shift on negatives produces silently-wrong results — the shipped-real-bug detail these problems drill.
+
+**"Bitmask DP is graph problems in disguise"** ? The mask IS a visited-set compressed to an int, and the practice is the state arithmetic ([04_Patterns/20, 13_DSA_Problems_DP]): 2^n masks times n positions fits at n up to 20 (TSP, min-cost-to-visit-all), submask enumeration totals 3^n via the sub=(sub-1)&m idiom (partition problems), and mask-plus-current-node keys the shortest-path-visiting-all-nodes (dropping the extra dimension merges distinct states — the wrong-answer bug). The n-up-to-20 constraint is the flashing sign, and the visited-set-as-integer reframe is the unlock this category teaches.

@@ -4,7 +4,7 @@
 
 **Cross-links:**
 
-- [`22_Advanced_API_Testing/`](../22_Advanced_API_Testing/) ‚Äî API testing patterns used in Part C problems
+- [`24_Advanced_API_Testing/`](../24_Advanced_API_Testing/) ‚Äî API testing patterns used in Part C problems
 - [`07_Modern_Java/`](../07_Modern_Java/) ‚Äî Spring Boot internals referenced in Part B problems
 - [`21_SDET_Playwright_Automation/`](../21_SDET_Playwright_Automation/) ‚Äî Playwright patterns in Part C solutions
 
@@ -1418,3 +1418,18 @@ test("v2 citation response is a strict superset of v1 (backward-compatible exten
 ---
 
 **Navigation**: [‚Üê Mock Interview Simulations](../09_Mock_Interview_Simulations.md) | [üìö Index](../00_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Elite rounds test elite knowledge"** ? Elite rounds test INTEGRATION and judgment across domains, not obscure facts ([the-whole-curriculum, 13_Pattern_Composition]): the problem that spans DSA, system design, and production reasoning, the ambiguous problem that must be framed before solved, the trade-off argued across concerns. The difficulty is the cross-domain integration and the judgment (the [Enterprise 07] context-appropriate choice), not exotic knowledge ó and the candidate who prepared by memorizing advanced facts is unready for the integration-and-judgment the elite rounds actually assess.
+
+**"You need to be expert in every domain for these"** ? You need enough in each domain to REASON and integrate, plus the judgment to know your limits ([09_Career/07-08, 14_MM]): the honest "I would need to research the specifics, but the approach is X" over the confident-wrong, the strong fundamentals that let you reason in an adjacent domain even without deep expertise. Elite rounds reward the reasoning-and-integration and the intellectual honesty over false omniscience ó "expert in everything" is impossible and not what they test, which is the [09_Career/02] need-to-know-everything trap at the interview level.
+
+**"Cross-domain means the problem has one right answer combining everything"** ? Cross-domain problems have TRADE-OFF spaces where the "right" answer depends on priorities you clarify ([Enterprise 07, 06_System_Design]): the solution that optimizes latency versus consistency versus cost, the design whose best choice depends on the requirements you surface. Elite rounds reward navigating the trade-off space (clarify priorities, reason about the options, justify the choice) not finding the one combining-answer ó treating them as having a single right answer misses the judgment-under-ambiguity they test.
+
+**"Preparation for elite rounds is more advanced problems"** ? Preparation is INTEGRATION practice and the judgment that comes from breadth-plus-reflection ([the-whole-curriculum, 05_Problem_Solving/14]): the problems that span domains (these rounds), the reflection on trade-offs and decisions ([SRE postmortem] applied to your reasoning), the breadth across the curriculum that enables cross-domain connection. "More advanced problems" in one domain builds depth-not-integration ó the elite-round skill is connecting domains and judging trade-offs, which is built by cross-domain practice and reflective breadth, not by harder single-domain problems.
+
+**"Elite rounds are a different beast from real senior work"** ? Elite rounds SAMPLE exactly the cross-domain integration and judgment that senior/staff work requires ([21_SDET Ch62, Enterprise 07, 13_DE]): the staff engineer reasoning across the algorithm, the system, the operability, and the business trade-off (the [Career-Techno-Functional] translation) ó the same integration the elite round compresses. Unlike the artificial parts of junior interviews ([01]), the elite round's cross-domain judgment maps closely to the actual senior work, which is why preparing for it (the integration, the trade-off reasoning, the breadth) builds the genuine senior capability, not just interview performance.

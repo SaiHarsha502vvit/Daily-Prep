@@ -434,3 +434,18 @@ For when the interviewer says _"define X in one sentence"_.
 ---
 
 **Navigation**: [ðŸ“š Index](../00_INDEX.md) | [Anti-Patterns â†’](16_Anti_Pattern_Gallery.md) | [Incident Lessons â†’](17_Production_Incident_Lessons.md)
+
+
+---
+
+## Reality Check
+
+**"Quick reference cards replace deep study"** ? Cards are memory-jogs for the internalized, useless as a substitute for understanding ([09_Career/11 Quick_Reference, 07b_Interview_Templates]): the complexity recited without the derivation, the template copied without knowing when it applies ([04_Pattern-Recognition]). Cards accelerate recall of what you understand; they cannot supply the understanding, and using them to skip study produces the fragile pattern-matching that fails the moment the situation differs from the card.
+
+**"The frequently-needed material belongs on a card"** ? The FREQUENTLY-used must be internalized for fluency; cards serve the RARELY-used and the exact-detail ([09_Career/11]): the sliding-window template you cannot look up in the interview (must be automatic — [14_MM] automaticity), versus the rarely-used exact syntax or the specific complexity you consult. Putting the frequent core on a card and relying on the card is the opposite of the fluency interviews require — the card is for the long tail, and the core must be reflex.
+
+**"More cards mean better coverage"** ? A few well-chosen cards for the genuine memory-gaps beat a deck covering everything ([09_Career/14 more-resources-worse]): the card overload that becomes its own study burden, the coverage that substitutes card-collection for practice. "More cards mean better coverage" is the collection-illusion — the value is the few cards that jog the specific things you forget (your own gaps), and the deck-covering-everything is the [09_Career/14] resource-hoarding that feels like progress and produces none.
+
+**"Cards should be comprehensive to be useful"** ? Cards are deliberately COMPRESSED — the essentials, not the nuance ([09_Career/11]): the card that fits the trigger and the template, not the edge cases and the when-not-to (those need the full understanding). "Comprehensive to be useful" mistakes the card's nature — it is the compressed jog you consult knowing the depth, and a comprehensive card is no longer a card but a chapter, defeating the fast-recall purpose, which is why the useful card is minimal and the depth lives in the material it indexes.
+
+**"Building the cards is less valuable than using proven ones"** ? Building YOUR OWN cards is a powerful learning act — the compression and phrasing IS the learning ([09_Career/11, Mental_Models 20]): the card in your words, capturing your specific gaps and mistakes ([05_Problem_Solving/24] personalized), that you remember because you built it. "Less valuable than proven ones" misses that the construction is the value — writing your own cards forces the compression that builds understanding and captures your specific weak spots, the same [Mental_Models 20] maintain-your-own-guide that beats consuming others' references for anything you want to actually internalize.

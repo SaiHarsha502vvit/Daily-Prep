@@ -421,3 +421,18 @@ When only counts are needed (not full generated sets), avoid recursive generatio
 ---
 
 **Navigation**: [â¬… SQL Foundations from Notes](../Problem_Sets_SQL/18_SQL_Foundations_Commands_Operators_Functions.md) | [ðŸ“š Index](../00_INDEX.md) | [Next: Bitwise Trie Interview Guide âž¡](20_Bitwise_Trie_Interview_Guide.md)
+
+
+---
+
+## Reality Check
+
+**"Generating permutations and combinations is one technique"** ? They branch on DIFFERENT trees with different bookkeeping ([04_Patterns/17, 22_Recursion_Subsets]): permutations branch on what-goes-next (depth n, shrinking fan-out, needs a used-set), combinations branch with a start-index to kill orderings, subsets branch include-or-not (binary). Drawing the first two levels of the CORRECT tree before coding prevents the wrong-bookkeeping hybrid that generates duplicates or misses arrangements — the distinction is the whole difficulty.
+
+**"Duplicate handling means deduping the output"** ? Deduping output costs exponential wasted exploration then hashes it away ([17_Backtracking, 22_Recursion_Subsets]): the correct tool is same-level skip after sorting (skip a candidate equal to its previous sibling when the sibling was not used at this depth). Permutations-with-dupes and combinations-with-dupes both hinge on this same-level-versus-same-path distinction, and the Set-on-results approach is the tell of not understanding where the duplicates come from in the tree.
+
+**"Interview math is memorizing formulas"** ? The counting problems test whether you can DERIVE the recurrence or the combinatorial argument ([03_Algorithms/06, 08 number-theory]): the arrangement that is a product rule, the count that is inclusion-exclusion, the probability that is favorable-over-total with the right sample space. Memorized nCr formulas fail the novel counting question — the skill is modeling the count (what am I counting, what is the recurrence, does order matter) which is a reasoning act, and the modular-arithmetic that keeps the large counts from overflowing ([03_Algorithms/06] Math.floorMod, modular inverse).
+
+**"The output size does not affect complexity here"** ? For enumeration, the OUTPUT is often exponential and dominates ([22_Recursion_Subsets]): n subsets is 2^n, and copying the path into results at every leaf is a hidden cost that makes the exponential solution inexplicably slow even for legal n. The complexity analysis must distinguish tree-size from output-size, because only tree-size responds to pruning — the enumeration whose cost is the output cannot be pruned faster, and knowing which you have tells you whether optimization is even possible.
+
+**"These problems are pure recursion practice"** ? They are where recursion meets combinatorial modeling and modular arithmetic ([03c_Recursion, 03_Algorithms/06]): the constrained generation (valid-parentheses pruning during generation, not filtering after — the constraints pushed INTO the generator shrink the tree), the counting that needs the combinatorial insight, the large-count that needs modular arithmetic. Treating them as recursion drills misses the modeling (what is the state space, what makes a partial candidate dead) and the math (the overflow-safe modular counting) that are the actual content beyond the recursive scaffolding.

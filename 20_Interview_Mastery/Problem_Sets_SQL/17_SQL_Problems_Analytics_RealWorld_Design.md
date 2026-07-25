@@ -510,3 +510,18 @@ GOOD: WHERE id = 123                      â†’ native type comparison
 "Pivot rows to columns"             â†’ SUM(CASE WHEN col = 'X' THEN val END)
 "First/last per group"              â†’ MIN/MAX or FIRST_VALUE/LAST_VALUE window
 ```
+
+
+---
+
+## Reality Check
+
+**"Analytics SQL is the same as transactional SQL"** ? Analytics is a DIFFERENT workload with different optimization ([08_SQL, Enterprise 02]): OLTP optimizes for writes and point-lookups (the transactional system), OLAP wants large scans and aggregations (the analytical query that cripples the transactional database if run against it — the [Enterprise 02] separation into a warehouse). The analytics problems drill the aggregation-and-window heavy queries that need the OLAP mindset, and running them against a transactional schema (or system) is the [Enterprise 02] wrong-workload mistake.
+
+**"Real-world data is as clean as the practice tables"** ? Real analytical SQL fights messy data ([Enterprise 04, 05]): the NULLs and the missing values (the aggregate that skips them changing the denominator), the duplicates (the fan-out, the un-deduplicated source), the inconsistent formats and the outliers, the late-arriving and the corrected records. The real-world problems drill the data-quality handling (the COALESCE, the deduplication, the filtering of bad rows) that the clean-practice-table problems skip — and this is where analytics correctness actually lives, the [Enterprise 04] exception-handling in SQL form.
+
+**"Query design is just getting the right answer"** ? Analytical query design includes PERFORMANCE at data scale and MAINTAINABILITY ([08_SQL, Enterprise 05]): the query that is correct on the sample and times out on the billion-row table (the [Enterprise 05] scale-makes-complexity-matter), the CTE-structured query that is readable versus the nested-subquery that is not, the query the next analyst can modify. "Just the right answer" misses that analytical queries run on large data and get maintained — the design (the sargable predicates, the readable CTEs, the right aggregation grain) is part of correctness at scale, not a separate concern.
+
+**"Designing the schema is separate from writing the queries"** ? The schema DETERMINES which queries are possible and performant ([08_SQL, Enterprise 01c]): the normalized schema that requires many joins for the analytical query (versus the denormalized/star-schema that analytics wants — the [Enterprise 02] OLAP modeling), the missing dimension that makes the question unanswerable, the grain that does not match the analysis. The design problems drill the schema-for-analytics (the star schema, the fact-and-dimension tables) that shapes what queries are clean — and treating query-writing as independent of schema misses that the schema is the query's foundation.
+
+**"These problems teach SQL syntax"** ? They teach ANALYTICAL THINKING in SQL — decomposing a business question into the right joins, aggregations, windows, and grain ([05_SQL_Interview_Thinking, 14_MM SQL-pipeline]): the "what is our month-over-month growth by cohort" that becomes a specific sequence of CTEs and windows, the "who are our top customers by adjusted revenue" that needs the right joins and the deduplication. The syntax is the medium; the skill is translating the analytical question into the set-based query (the [05_SQL_Interview_Thinking] thinking), which is what transfers to the novel business questions that real analytics work and interviews pose.

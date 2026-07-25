@@ -919,3 +919,18 @@ N+1 lazy loads       â”‚ JOIN FETCH in @Query or @EntityGraph
 ---
 
 *[Back to Index](../00_INDEX.md) | [SQL Foundations](../../08_SQL/01_Foundations_Database_Basics.md) | [Java Path](../../PATH_JAVA_BACKEND.md)*
+
+
+---
+
+## Reality Check
+
+**"JPA means you don't write SQL anymore"** ? JPA GENERATES SQL, and not understanding the generated SQL is where performance disasters live ([08_SQL, 07_Modern_Java, Enterprise 01c]): the N+1 query (the lazy-loaded collection that fires a query per parent — the single most common JPA performance bug), the fetch strategy (eager-versus-lazy, the join-fetch), the query that JPA generates inefficiently. "No more SQL" is the abstraction illusion — JPA is SQL generation, and the developer who does not understand the SQL it produces (via the query log, the EXPLAIN) ships the N+1 and the inefficient-fetch disasters, which is why SQL fluency is MORE necessary with JPA, not less.
+
+**"The ORM handles the impedance mismatch transparently"** ? The object-relational impedance mismatch LEAKS through JPA in ways you must manage ([Enterprise 01c, 08_SQL]): the entity graph that lazy-loads unexpectedly (the LazyInitializationException outside the transaction), the bidirectional relationship that must be managed on both sides, the inheritance mapping, the identity-and-equals for entities. The fusion rounds drill the mismatch management (the fetch strategy, the transaction scope for lazy loading, the relationship ownership), and "transparent" is the illusion that produces the lazy-loading exceptions and the unexpected-query surprises.
+
+**"JPA queries and SQL queries are interchangeable"** ? JPQL and native SQL differ, and knowing when to drop to native SQL is the skill ([08_SQL, 07_Modern_Java]): the complex analytical query with windows that JPQL cannot express (drop to native — [08_SQL] windows), the bulk operation that should be one SQL statement not entity-by-entity ([Enterprise 06] set-based), the JPQL that generates surprising SQL. The rounds drill choosing JPQL versus native versus a projection, and "interchangeable" misses that JPQL is object-oriented and limited while native SQL is full-power, and the analytical or bulk operations often need native.
+
+**"Transaction management is automatic with @Transactional"** ? @Transactional has behavior you must understand ([07_Modern_Java Ch55, Enterprise 03]): the proxy self-invocation that skips the transaction ([Ch55]), the propagation and isolation levels, the rollback-only on unchecked exceptions (the checked exception that does NOT roll back by default — the surprise), the transaction scope for lazy loading. The fusion rounds drill the transaction semantics (the propagation, the rollback rules, the lazy-loading boundary), and "automatic" is exactly the assumption that produces the self-invocation bug, the wrong rollback behavior, and the outside-transaction lazy-loading exception.
+
+**"Performance tuning JPA is adding caching"** ? JPA performance is understanding the generated queries FIRST, then the fetch strategies, then caching ([08_SQL, 13_DE, 14_MM optimization]): the N+1 fixed by join-fetch or entity-graph (not by caching the N+1), the query log that reveals what JPA actually runs ([13_DE profile-first]), the projection that fetches only needed columns, the batch-size for the collections. "Adding caching" is the reflexive non-answer that caches the inefficient queries — the [14_MM optimization] profile-first applies: understand the generated SQL, fix the N+1 and the fetch strategy, and cache last, because caching a query pattern that should not exist masks the problem the query-understanding would have fixed.

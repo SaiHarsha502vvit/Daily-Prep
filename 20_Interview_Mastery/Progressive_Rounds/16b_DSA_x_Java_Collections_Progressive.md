@@ -813,3 +813,18 @@ Deque (double-ended)     â”‚ ArrayDeque                â”‚ addFirst/Last, pollFi
 ---
 
 *[Back to Index](../00_INDEX.md) | [Java Collections Deep Dive](../../07_Modern_Java/Ch08_Collections_Internals.md) | [Java Path](../../PATH_JAVA_BACKEND.md)*
+
+
+---
+
+## Reality Check
+
+**"Java Collections are interchangeable implementations"** ? ArrayList and LinkedList both implement List with OPPOSITE performance profiles ([03_Algorithms/17, 13_DE arrays]): ArrayList is O(1) random access and cache-friendly, LinkedList is O(1) known-position insertion and cache-hostile — and ArrayList wins almost always because pointer-chasing is 10-100x slower than contiguous access. The fusion rounds drill choosing the collection for the access pattern and the complexity, and "interchangeable" is exactly the misconception that picks LinkedList for indexed access and pays the cache penalty.
+
+**"HashMap is always O(1)"** ? O(1) is average with a good hash and low load factor ([02_Data_Structures, 03_Algorithms/17]): a poor hash degrades to O(n) chains (Java 8 treeifies long chains to O(log n) for Comparable keys), the resize is O(n) amortized, and the mutable key that changes hash after insertion is stranded forever. The fusion rounds drill the HashMap internals that matter for the DSA (the load factor, the treeification, the key contract — [16_JS] boxed-equality's Java cousin), and "always O(1)" misses the worst-case and the key-contract traps.
+
+**"TreeMap is a sorted HashMap"** ? TreeMap is O(log n) (versus HashMap's O(1) average) and offers RANGE operations HashMap cannot ([02_Data_Structures, 03_Algorithms/17]): floorKey, ceilingKey, subMap, headMap — all O(log n), for the ordered-iteration and range-query needs. The fusion rounds drill choosing TreeMap for the range/ordered operations versus HashMap for pure lookup, and "sorted HashMap" undersells the range-operation capability that is TreeMap's actual value and the reason to accept its log-n cost.
+
+**"The right collection is obvious from the problem"** ? The choice weighs the OPERATIONS you need and their frequencies ([03_Algorithms/17, 14_MM]): the PriorityQueue for repeated-min-extraction (a heap, not a sorted structure — [15_Heap]), the LinkedHashMap for insertion-or-access order (the LRU backbone — [05_Problem_Solving/21]), the ArrayDeque for stack-or-queue (never the legacy synchronized Stack), the TreeSet for ordered-unique. The fusion rounds drill matching the collection to the operation profile, and "obvious" misses the cases (the LinkedHashMap for LRU, the ArrayDeque over Stack, the PriorityQueue's min-heap default) that require knowing the collections' specific capabilities.
+
+**"Generics are just type safety on collections"** ? Generics enable type-safe generic ALGORITHMS and carry Java-specific constraints ([03_Algorithms/17, 17_TypeScript]): the single mergeSort for any Comparable, AND the type erasure that forbids new T[], instanceof on generic types, and new T() (the [17_TS] erasure, Java flavor). The fusion rounds drill the generic-collection-algorithm implementation (the bounded type parameters, the Comparable/Comparator, the erasure workarounds), and "just type safety" misses that generics shape HOW you implement generic data structures and algorithms in Java, including the erasure constraints that the implementation must work around.
