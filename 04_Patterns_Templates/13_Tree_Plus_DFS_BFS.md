@@ -428,3 +428,18 @@ COMMON MISTAKES:
 ---
 
 [← 12 LinkedList+TwoPointers](12_LinkedList_Plus_TwoPointers.md) | [14 Graph+Traversal →](14_Graph_Plus_Traversal.md)
+
+
+---
+
+## Reality Check
+
+**"DFS vs BFS on trees is a style choice"** → They answer different question families at different costs: BFS gives level structure and nearest-first (level-order views, minimum depth, first-X-per-level) with O(width) memory; DFS gives path structure (root-to-leaf sums, ancestor relationships) with O(height) memory. On a balanced tree width dwarfs height (2^h leaves vs h depth) — BFS on the bottom level of a million-node tree holds half a million queue entries while DFS holds twenty frames. Choose by the question, budget by the shape.
+
+**"Recursion returning one value is the whole story"** → The three information-flow modes are the actual pattern: DOWN via parameters (path state, bounds for BST validation), UP via return values (heights, subtree sums), and SIDEWAYS via mutable state (global max in diameter/path-sum problems). Hard tree problems are hard precisely because they need two flows at once — diameter returns height UP while updating the answer SIDEWAYS — and forcing everything through the return value produces the tangled tuples people cannot debug.
+
+**"Validate-BST checks each node against its children"** → The classic wrong answer: locally node.left < node < node.right passes trees that violate the GLOBAL invariant (a right-subtree node smaller than the root). Correct versions carry (min, max) bounds DOWN or verify the inorder traversal is sorted. This bug is the canonical example of why invariants must be stated over the whole subtree, not the immediate edge — the lesson generalizes to every tree property you will ever check.
+
+**"Level-order traversal needs a null-marker in the queue"** → Snapshot the queue SIZE at loop start and drain exactly that many — cleaner than sentinel nulls, no special-casing, and it naturally yields the per-level list the problems ask for. Sentinel-based level tracking survives in old tutorials; size-snapshot is strictly less code and one fewer class of bug (forgetting to re-add the marker).
+
+**"Tree problems generalize trivially to n-ary and graphs"** → Two seams break: child iteration (left/right hardcoding becomes a loop — problems arise when half the template assumed exactly two) and VISITED tracking (trees need none because parent-child edges never revisit; graphs without a visited set loop forever). The infamous bug class: applying a tree template to "graph that is almost a tree" input and stack-overflowing on the one cycle the constraints allowed.

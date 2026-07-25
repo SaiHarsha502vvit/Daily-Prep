@@ -412,3 +412,18 @@ The broken constraint is recursion depth. Recursive reversal uses one call frame
 ---
 
 [← 11 Stack+Monotonic](11_Stack_Plus_MonotonicPattern.md) | [13 Tree+DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
+
+
+---
+
+## Reality Check
+
+**"Dummy nodes are optional style"** → The dummy head exists to make the head-mutation case identical to every other case: delete-the-head, insert-before-head, and merge-starting-with-either-list all stop being special cases. Skipping the dummy means every operation needs an if-head branch — and the interview bug rate on those branches is why the dummy is the professional default, not a preference.
+
+**"Reversing a linked list is a beginner exercise with no depth"** → The three-pointer reversal is the SUBROUTINE inside half the hard list problems: reverse-in-k-groups, palindrome check (reverse second half, compare, ideally restore), and reorder-list. The depth is in the composition details — finding the half boundary with fast-slow, reconnecting after partial reversal, and restoring the input when the problem demands non-destruction. Those seams, not the core loop, are where solutions fall apart.
+
+**"Fast-slow middle finding has one convention"** → fast = head vs fast = head.next changes which middle you get for even lengths (second vs first) — and downstream logic breaks if you picked the wrong one for the problem. Palindrome-check wants the FIRST middle (so the second half starts clean); some split problems want the second. Decide by simulating a 4-node list once, then lock the convention. Never trust memory on this; it is a 15-second simulation.
+
+**"Cycle problems end at detection"** → Floyd phase two (reset one pointer to head, advance both at 1x, they meet at the cycle START) is the part that gets asked, and its proof — the head-to-entry distance equals the meeting-point-to-entry distance modulo cycle length — is the part that distinguishes memorization from understanding. The same machinery finds the duplicate in an n+1-values-in-range-n array, which looks like an array problem until you see values as next-pointers.
+
+**"Deleting a node requires its predecessor"** → The copy-value-then-bypass trick deletes a node given ONLY itself (overwrite with next's value, skip next) — with two honest caveats interviews probe: it cannot delete the TAIL, and it breaks external references to the bypassed node. Production analog: this is why intrusive lists in kernels track prev pointers — O(1) true deletion beats clever value-copying when other code holds node references.

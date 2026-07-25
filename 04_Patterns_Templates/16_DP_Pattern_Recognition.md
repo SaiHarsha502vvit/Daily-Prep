@@ -475,3 +475,18 @@ COMMON MISTAKES:
 ---
 
 [← 15 Heap+Greedy](15_Heap_Plus_GreedySelection.md) | [17 Backtracking+Pruning →](17_Backtracking_Plus_Pruning.md)
+
+
+---
+
+## Reality Check
+
+**"DP recognition means spotting the word optimal"** → The two-part test is: (1) decisions now constrain choices later (dependency), and (2) many decision paths collapse into few distinguishable situations (state compression). "Count the ways" and "is it possible" are DP exactly as often as "maximize" is. The counter-test matters too: if choices are independent (pick each item freely), it is arithmetic; if the greedy exchange argument closes, DP is overkill.
+
+**"Define the recurrence first, then the state"** → Backwards. The productive order: state FIRST (what minimal facts describe a subproblem such that the future depends only on them), then transitions follow nearly mechanically. When students stall on DP, it is almost never the recurrence algebra — it is an underspecified state (forgot the "holding a stock" flag, forgot the last-choice dimension). The fix ritual: list what the future needs to know, and that list IS the state tuple.
+
+**"Top-down and bottom-up are equivalent, pick by taste"** → Equivalent in complexity class, different in practice: memoized recursion visits ONLY reachable states (big win when the state space is sparse, like target-sum with bounded reachable sums), while tabulation enables space-rolling (keep two rows) and avoids stack limits. The professional answer to "which one" is a two-liner about sparsity and stack depth, not taste.
+
+**"The DP table dimensions equal the input dimensions"** → Dimensions equal the STATE components, which often include synthetic axes the input never mentions: number-of-transactions-used (stock problems), tight-bound flag (digit DP), subset-mask (TSP), last-color (paint-house). The recognition upgrade is asking "what would I need to add to the state to make transitions legal" — every added axis multiplies the table but LEGALIZES the recurrence.
+
+**"Space optimization is a post-hoc nicety"** → Rolling a 2D knapsack table into 1D changes the required ITERATION DIRECTION (0/1 knapsack must iterate capacity downward; complete knapsack upward) — get it wrong and items get reused or excluded silently. This is the rare optimization that alters correctness conditions, which is why interviewers ask for it: it proves you know WHICH cells the transition reads, not just the formula.

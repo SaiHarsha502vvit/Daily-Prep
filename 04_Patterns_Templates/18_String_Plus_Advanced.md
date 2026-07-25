@@ -480,3 +480,18 @@ _Why Z over KMP?_ Both are O(N+M). Z-algorithm is often conceptually easier to u
 ---
 
 **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+
+
+---
+
+## Reality Check
+
+**"String problems are array problems with characters"** → Three properties change the game: immutability in Java/Python makes naive concatenation-in-loop quadratic (the builder pattern is mandatory, not stylistic); canonical forms (sorted chars, count signatures) unlock hashing equivalences arrays rarely need; and the alphabet bound (26/128) converts HashMaps into arrays and makes O(26·n) algorithms effectively linear. Solutions that ignore all three work — slowly, and interviewers notice.
+
+**"Palindrome problems all use expand-from-center"** → Expand-from-center answers longest-substring palindromes in O(n squared); the FAMILY is wider: two-pointer validity checks (O(n)), palindrome PARTITIONING is backtracking with a precomputed isPal table, count-distinct-palindromic-subsequences is interval DP, and the subSEQUENCE variants (LPS) are LCS-with-reverse in disguise. The route into the right tool is one distinction: substring (contiguous — centers/DP over positions) versus subsequence (gaps allowed — DP over intervals).
+
+**"Anagram equality means sorting both strings"** → Sorting is the O(n log n) canonical form; the count-signature (26-int array compared or stringified) is the O(n) one, and it composes into sliding windows (find-all-anagrams) where re-sorting every window would be O(n·k log k). Choosing the signature over the sort is the difference between the pattern and the workaround — and it generalizes: canonical-form choice IS the algorithm in most grouping problems.
+
+**"Repeated-substring problems need suffix machinery"** → Before suffix arrays, three cheaper tools cover the interview range: the doubled-string trick (rotation checking via s+s contains t), the failure function from KMP repurposed for shortest-repeating-unit, and rolling-hash windows for fixed-length repeats. Suffix structures earn their complexity at "all distinct substrings" scale — reaching for them at "does the string repeat" scale is the overengineering tell.
+
+**"substring() is free"** → Post-Java-7 substring COPIES (O(length)) — the old shared-backing-array behavior was removed to fix memory leaks, and code written against the old model (substring inside a loop as a cheap view) silently became quadratic. Language-specific but the lesson is portable: know whether your language's slice is a view (Go, Python memoryview) or a copy (Java, Python str), because the pattern's complexity analysis depends on it.

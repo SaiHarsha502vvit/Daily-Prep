@@ -342,3 +342,18 @@ Before choosing a pattern, answer:
 ```
 
 If any answer changes, the pattern may change.
+
+
+---
+
+## Reality Check
+
+**"Constraints exist to size the test data"** ? Constraints are the setter TELLING you the intended complexity: n up to 10^5 means O(n log n) or better (rules out quadratic), n up to 20 whispers bitmask/backtracking, n up to 500 permits O(n cubed) DP, values up to 10^9 kill counting arrays and hint binary-search-on-answer. Reading them first is not a tip — it is the router that eliminates most of the pattern catalog before you read the story.
+
+**"The 10^8 operations-per-second rule is exact"** ? It is a planning heuristic with half-an-order-of-magnitude error bars either way: constant factors (hash overhead vs array walk), language (Java JIT vs Python), and judge hardware move the line. Use it directionally — 10^5 squared = 10^10 is dead-on-arrival, n log n at 10^6 is comfortable — and stop defending 3·10^8 borderline plans; borderline means find the better pattern or tighten constants deliberately (arrays over maps, iteration over recursion).
+
+**"Tight memory limits just mean avoid waste"** ? Memory limits ENCODE algorithmic intent the way time limits do: an O(n·m) DP table at 10^4 × 10^4 ints is 400MB — the setter is mandating rolling rows; value ranges beyond 10^7 forbid boolean-array visited sets; "O(1) extra space" on range-1..n arrays is a flashing sign for cyclic sort or value-as-pointer Floyd. Treat the memory line as a second router, not a formality.
+
+**"Multiple patterns fitting means pick your favorite"** ? Fit is filtered by the QUESTION TYPE after complexity: existence questions tolerate greedy/binary-search answers; counting questions usually force DP or math (greedy cannot count); construction ("output the actual arrangement") disqualifies approaches that only track optima without parents/choices. The two-router pipeline — constraints prune complexity, answer-type prunes semantics — usually leaves exactly one serious candidate, which is the entire point of this file.
+
+**"Constraint-reading is a competitive-programming habit only"** ? It is capacity planning wearing a costume. "How many rows before this endpoint needs an index" and "n up to what before this nested loop pages the dashboard" are the same estimation muscle: bound the input, multiply by per-item cost, compare against the budget (100ms API, 16ms frame). Engineers who practiced constraint-reading do this arithmetic instinctively in design reviews; the ones who skipped it discover complexity limits from production incidents instead.

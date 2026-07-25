@@ -509,3 +509,18 @@ Subarray problem?
 | --- | ---------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------ |
 | 9   | [Max Subarray Sum with One Deletion (LC 1186)](https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/)  | Hard       | Two Kadane passes: left-to-right + right-to-left |
 | 10  | [Shortest Subarray with Sum at Least K (LC 862)](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Hard       | Prefix + Monotonic Deque (negatives!)            |
+
+
+---
+
+## Reality Check
+
+**"Kadane is a clever trick"** ? Kadane is 1D DP with the state compressed to one variable: best-ending-HERE = max(x, best-ending-here + x); the global best watches from outside. Seeing it as DP (state: best subarray ending at i) rather than trick unlocks every variant — with-one-deletion adds a second state, circular adds a min-mirror, product swaps in a max/min pair. Trick-memorizers solve exactly one problem; state-thinkers solve the family.
+
+**"Initialize with zero and it works"** ? Zero-initialization breaks all-negative arrays (reports empty-subarray 0 when the answer is the largest negative). Correct base: best = global = arr[0], iterate from index 1 — the empty subarray is not a legal answer unless the problem SAYS so, and when it does, zero-init becomes right again. This single initialization decision encodes the problem's empty-subarray policy; knowing that is the difference between a bug and a requirements question.
+
+**"Maximum product subarray is Kadane with multiplication"** ? Negatives flip extremes — the most negative running product becomes the most positive after one more negative — so the state must carry BOTH running max and running min, updated simultaneously from the same three candidates (x, max·x, min·x). Zeros hard-reset both. The lesson generalizes: when an operation is non-monotone, the compressed state must widen to whatever the future can still use, and "carry both extremes" is the standard widening.
+
+**"Circular maximum subarray needs new machinery"** ? Two Kadane passes: the answer is either the ordinary max subarray, or total-sum minus the MINIMUM subarray (wrapping means excluding a middle block). One guard: all-negatives makes total - min degenerate to empty, so fall back to the plain max. The transform — solve the wrap by inverting to its complement — recurs across circular problems (houses, gas stations) and is worth naming as a move, not a one-off.
+
+**"Kadane-style thinking stops at sums"** ? The extend-or-restart decision shape covers longest-increasing-RUN (contiguous), best-time-to-buy-sell-one (Kadane on daily deltas), maximum-average fixed windows (reduce to sums), and even bitwise-OR subarray counting (bounded distinct values of running OR). The transfer question for any new streaming problem: "can I express the best answer ENDING at i in terms of the best ending at i-1 plus a constant-time decision?" Yes means Kadane-shaped; the accumulator need not be addition.

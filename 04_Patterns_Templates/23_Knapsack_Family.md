@@ -666,3 +666,18 @@ If `k` weren't exactly a sum of distinct powers of 2 (e.g., `k = 10`), we'd use 
 ---
 
 **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Knapsack means the weight-and-value problem"** → Knapsack is a FAMILY signature: choose from items under a capacity-like budget, optimizing or counting. Subset-sum (can I hit target), partition-equal-halves, coin change (min coins AND count ways), target-sum-with-signs, and stone-smashing are all knapsacks in costume. The recognition cue is a per-item include-or-exclude decision against a bounded accumulator — nouns vary, structure repeats.
+
+**"0/1 and unbounded knapsack differ by a lot of code"** → They differ by ONE loop direction in the 1D formulation: capacity descending for 0/1 (each item used once — reading last round's values), ascending for unbounded (reuse allowed — reading this round's). This is the family's central mechanical fact, the most common silent bug when adapting a memorized template, and the standard interview probe ("why does your inner loop go downward?").
+
+**"Count-the-ways and min-coins are interchangeable recurrences"** → Different algebra on the same state: counting SUMS over choices with dp[0]=1; optimization takes MIN or MAX with dp[0]=0 and infinity sentinels elsewhere — and the sentinel handling (skip unreachable states or they poison minimums) is where implementations diverge from formulas. Permutation-counting (coin arrangements where order matters) additionally swaps the loop NESTING order — items-outer counts combinations, capacity-outer counts permutations, a distinction most people discover only by failing that exact problem.
+
+**"The DP array indexes items"** → The 1D array indexes the BUDGET axis (capacity, target sum); items live only in the outer iteration. Misassigning axes produces plausible-looking wrong tables. And some family members budget on surprising axes: profit-target problems index achieved-profit (capped at target), digit problems index digit-sums — the axis is "the bounded quantity the future cares about," which is the state-design question wearing knapsack clothes.
+
+**"Pseudo-polynomial is an academic footnote"** → O(n times W) is polynomial in the VALUE of W, exponential in its bit-length — so knapsack DP is practical for W up to millions and hopeless for cryptographic-scale targets, which is exactly why subset-sum stays NP-complete while your solution passes. The interview-grade sentence: "this is pseudo-polynomial; if capacity were 10 to the 18th I would need meet-in-the-middle or branch-and-bound instead." It signals you know the boundary of your own tool.

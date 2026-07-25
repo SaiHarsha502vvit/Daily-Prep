@@ -386,3 +386,18 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 - [04_Patterns_Templates/01_Sliding_Window.md](01_Sliding_Window.md) â€” Sliding Window deep dive
 - [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) â€” More window problems
+
+
+---
+
+## Reality Check
+
+**"Array + window problems always ask for the maximum window"** ? Four distinct question shapes hide under this pairing, each with a different template detail: longest valid window (shrink only when invalid), shortest valid window (shrink WHILE valid — the inversion trips people), count of valid windows (add right - left + 1 per step, the least intuitive line in the catalog), and exists-a-valid-window (early return). Applying the longest template to a shortest problem produces code that compiles, runs, and returns the wrong extreme.
+
+**"The count-subarrays formula right - left + 1 is a memorized trick"** ? It has a derivation: when the window [left, right] is valid and the property is monotone under shrinking (every suffix-window ending at right is also valid), then exactly right - left + 1 valid subarrays END at right. Summing per right counts each valid subarray exactly once — by its right endpoint. If you can reproduce that sentence, you can also spot when it does NOT apply: properties not preserved under shrinking (exactly-k problems need the atMost(k) - atMost(k-1) transform).
+
+**"Character-count windows need a HashMap"** ? For fixed alphabets, a 26-slot int array plus a matched-count integer beats a HashMap in both speed and bug surface. The matched-count refinement (track how many characters currently satisfy their required frequency) turns the per-step validity check from O(26) to O(1) — the difference between passing and TLE on anagram-search problems with 10^5-length strings.
+
+**"Prefix sums and sliding windows are competing techniques"** ? They are the two halves of one decision: windows handle monotone properties in one pass with O(1) state; prefix sums handle NON-monotone aggregates (negatives, exact-target sums) by trading a HashMap of history for the monotonicity requirement. The interview tell: all-positive constraint means window; "may contain negative" means prefix + map. Constraint lines are the router.
+
+**"A correct window solution is insensitive to update order"** ? The add-check-shrink-record cycle has exactly one correct ordering per variant, and swapping two lines produces off-by-one windows that pass half the tests. The stable discipline: expand ALWAYS first, restore the invariant SECOND, record the answer LAST — and for shortest-window variants, record INSIDE the shrink loop instead. Two orderings, two variants, zero improvisation.

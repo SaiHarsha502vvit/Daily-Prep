@@ -1121,7 +1121,7 @@ _Based on your breakthrough understanding_
 | Arrays (underlying DS)            | [Arrays](../02_Data_Structures/01b_Arrays.md)                                  |
 | Two Pointers (related)            | [Two Pointers Patterns](../04_Patterns_Templates/07_TwoPointers.md)            |
 | HashMaps in variable window       | [HashTable](../02_Data_Structures/01e_HashTable.md)                            |
-| Sliding window in ML (mini-batch) | [ML Fundamentals](../21_Python_ML_DL_NLP/05_ML_Fundamentals.md)                |
+| Sliding window in ML (mini-batch) | [ML Fundamentals](../25_Python_ML_DL_NLP/05_ML_Fundamentals.md)                |
 
 ---
 
@@ -1136,3 +1136,18 @@ _Based on your breakthrough understanding_
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Sliding window works on any subarray problem"** → Sliding window requires MONOTONICITY: extending the window must move the tracked property in one predictable direction (sum grows, distinct count grows or stays). "Subarray sum equals k" with NEGATIVE numbers breaks this — extending can shrink the sum — which is why that problem needs prefix sums + HashMap instead. Before reaching for a window, ask: does growing the window ever help AND hurt? If both, the window pattern silently produces wrong answers.
+
+**"The window always moves one element at a time"** → The LEFT pointer can jump. In the classic no-repeat-substring problem, when you hit a duplicate of a character at index j, left jumps directly to j+1 via the stored index — not one step per loop. Implementations that shrink one-by-one still work but degrade to more iterations; implementations that jump need the max(left, lastSeen+1) guard or they move left BACKWARD, silently re-expanding the window.
+
+**"Fixed-size and variable-size windows are the same template"** → Fixed-size windows have no inner while loop — you add one element, remove one element, record. Variable-size windows have an inner while that shrinks until the invariant is restored. Mixing the templates is the most common bug: adding an inner while to a fixed-size problem overcounts removals; forgetting it in a variable-size problem lets an invalid window report an answer.
+
+**"Window state can always be a running sum"** → The state must support O(1) REMOVAL of the leaving element. Sums and counts do; max and min do NOT (removing the current max requires knowing the second max). That is exactly why sliding-window-maximum needs a monotonic deque as its state, not a variable. The pattern question is always: when arr[left] leaves, can I update the state without rescanning?
+
+**"Two nested loops means it is O(n squared)"** → The sliding-window while-inside-for LOOKS quadratic but is O(n): left only moves forward, so across the entire run the inner loop executes at most n total iterations. This amortized argument is the one interviewers probe ("why is this linear?") — the answer is "each element enters the window once and leaves at most once," not anything about the loop structure.

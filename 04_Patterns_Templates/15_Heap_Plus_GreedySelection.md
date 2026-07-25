@@ -399,3 +399,18 @@ COMMON MISTAKES:
 ---
 
 [← 14 Graph+Traversal](14_Graph_Plus_Traversal.md) | [16 DP Patterns →](16_DP_Pattern_Recognition.md)
+
+
+---
+
+## Reality Check
+
+**"Top-k problems want a max-heap"** → Top-k LARGEST wants a MIN-heap of size k: the root is the weakest member of the current elite, and a newcomer either beats the root (replace) or is discarded. A max-heap of all n elements works but costs O(n) memory and O(n log n) time versus O(k) and O(n log k). The inversion — smallest structure guards the largest set — is the single most-tested heap insight, and it flips symmetrically for top-k smallest.
+
+**"Heaps keep everything sorted"** → A heap guarantees ONLY the root; siblings have no order, and iterating a heap's backing array yields near-random sequence. Printing a PriorityQueue to debug it misleads you every time. If you need full order, you are paying for heapsort anyway; the heap's entire economy is paying log n per extraction ONLY for the extractions you actually perform.
+
+**"Greedy selection with a heap is one pattern"** → Two distinct machines share the name: REPEATED-BEST (task scheduling, Huffman merges — pop, process, maybe push back modified) and SWEEP-WITH-RELEASE (meeting rooms, CPU intervals — sort by start, heap holds active items keyed by end, pop everything expired before deciding). The second's correctness lives in the sort-then-release ordering; skipping the sort and trusting the heap alone is the classic meeting-rooms wrong answer.
+
+**"Java PriorityQueue removes arbitrary elements efficiently"** → remove(Object) is O(n) SEARCH plus O(log n) fix-up — a hidden linear scan that turns Dijkstra-with-decrease-key into quadratic sludge. The idiomatic escape is LAZY DELETION: push the updated entry, and on every pop discard entries that are stale (check against a current-best map). Same trick powers find-median-with-removals and every sliding-window-median solution.
+
+**"Two-heap median is a niche trick"** → The two-heap balance (max-heap of lower half, min-heap of upper half, sizes within one) is the general template for ANY running-percentile question — medians, 95th-percentile latency dashboards, matchmaking rating splits. The maintenance rule people fumble: always insert into one designated side first, then rebalance by moving one root; ad-hoc insertion logic desynchronizes the halves within ten operations.

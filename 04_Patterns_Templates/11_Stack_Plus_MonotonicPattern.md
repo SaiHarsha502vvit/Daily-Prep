@@ -393,3 +393,18 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 ---
 
 [← 10 HashMap+Counting](10_HashMap_Plus_Counting.md) | [12 LinkedList+TwoPointers →](12_LinkedList_Plus_TwoPointers.md)
+
+
+---
+
+## Reality Check
+
+**"The monotonic stack stores values"** → Store INDEXES, almost always. The index recovers the value (arr[i]) AND the distance (i - stackTop), and distance is the actual answer in daily-temperatures, spans, and histogram widths. Value-storing versions solve the toy question then fail the follow-up. The only value-storing survivor is min-stack style auxiliary tracking — a different pattern wearing the same name.
+
+**"Increasing vs decreasing stack choice is trial and error"** → Derive it in one sentence: the stack holds elements STILL WAITING for their answer, so it must be ordered such that the current element resolves the waiters it beats. Next-GREATER means waiters are resolved by bigger arrivals, so the stack keeps unresolved elements in DECREASING order. Say the sentence, get the direction, skip the guessing — and the strict-vs-non-strict comparison falls out of whether ties resolve.
+
+**"Each stack problem needs its own template"** → One skeleton covers next-greater, previous-smaller, spans, and histogram: for each i, pop while comparator holds, the POPPED element's answer involves i, the NEW TOP is the popped element's other-side boundary, push i. Histogram-largest-rectangle is this skeleton where popping computes area with the popped bar as height. What varies is only the comparator and what you do at pop time.
+
+**"Sentinels are just competitive-programming golf"** → Appending a virtual zero-height bar (histogram) or prepending a floor element removes the entire end-of-loop drain phase and its duplicate logic — the place where most off-by-ones hide. Sentinels are defect-reduction, not brevity: one loop body instead of loop-plus-epilogue means one set of boundary decisions instead of two.
+
+**"Monotonic stacks are an interview-only tool"** → Compilers use them for expression parsing (operator precedence IS a monotonic pop condition), UI systems for matching nested tags, and time-series systems for span queries ("how many consecutive prior days was the price lower" is literally the stock-span problem shipped as a product feature). The pattern earns its production keep wherever nearest-boundary questions meet streaming data.

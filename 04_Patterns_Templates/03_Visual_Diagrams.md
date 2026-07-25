@@ -930,3 +930,18 @@ Remember: **Visual thinking → Clearer code!**
 ---
 
 > **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+
+
+---
+
+## Reality Check
+
+**"Diagrams are for beginners; experts think in code"** → Experts think in STRUCTURES and compile to code at the end. Whiteboard studies of senior engineers show they draw state transitions and array snapshots before writing a line. The difference from beginners is not skipping the picture — it is that the expert's picture captures the invariant (what stays true), not just one example (what happens once).
+
+**"One worked example proves the algorithm"** → A diagram of one input is an EXISTENCE proof, not correctness. The example that fits in a diagram is almost always the friendly case: distinct values, no ties, size 5-8. The discipline: after diagramming the happy path, redraw with the adversarial input — duplicates everywhere, already sorted, all equal. If the picture still tells the same story, you have evidence; if not, you found the bug before the compiler did.
+
+**"Drawing during an interview wastes time"** → A 30-second array-with-pointers sketch prevents the 5-minute silent debugging spiral, and it keeps the interviewer INSIDE your reasoning — they can redirect you the moment your picture diverges from their intent. The candidates who fail on communication are overwhelmingly the ones who went silent into code, not the ones who narrated a diagram.
+
+**"Recursion trees are just for computing complexity"** → The recursion tree IS the execution: each node a call, each edge a return path. Drawing it reveals what complexity formulas hide — which subproblems repeat (memoization candidates), how deep the stack grows (overflow risk), and in what ORDER results combine (the difference between preorder and postorder logic). Most recursion bugs are order-of-combination bugs, visible in the tree, invisible in the code.
+
+**"Memory diagrams are only for C programmers"** → Java and Python hide pointers, not the consequences of pointers. Why does modifying a list inside a function change the caller's list? Why does a two-dimensional array built with the multiplication idiom in Python alias all rows? Why does substring in old Java leak the parent string? Every one of these is a one-box-two-arrows diagram. If you cannot draw where the references point, the language's abstraction is doing your thinking for you — until it does not.

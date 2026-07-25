@@ -417,3 +417,18 @@ Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In mem
 - [02_Data_Structures/01b_Arrays.md](../02_Data_Structures/01b_Arrays.md) â€” Array fundamentals
 - [04_Patterns_Templates/07_Two_Pointers_Complete.md](07_Two_Pointers_Complete.md) â€” Two Pointers deep dive
 - [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) â€” More two pointer problems
+
+
+---
+
+## Reality Check
+
+**"In-place array modification with pointers is just an optimization"** ? The write-pointer pattern (remove duplicates, move zeros) changes the CONTRACT, not just the memory: elements beyond the returned length are garbage the caller must ignore, and relative order is preserved only if the pattern was designed for stability. Production analog: compaction in log-structured storage does exactly this — and the same off-by-one at the write boundary corrupts the segment.
+
+**"Pointer problems on arrays are easier than on linked lists"** ? Arrays give random access but TAKE mutation safety: on a linked list, removing during traversal is pointer surgery with clear rules; on an array, removing while iterating shifts indexes under the loop, the classic skipped-element bug. The array version of "remove while scanning" is precisely the read/write two-pointer pattern — it exists BECAUSE naive removal is broken.
+
+**"Both pointers always move toward each other"** ? In read/write compaction both pointers move the SAME direction at different rates — it is fast-slow on an array. Container-with-most-water converges; sorted-squares fills the OUTPUT from the back while pointers converge on the input. The movement geometry follows from what each pointer MEANS; memorizing arrows without meanings produces the wrong geometry on the next variant.
+
+**"The two-pointer result is where the pointers meet"** ? Sometimes the answer is the meeting point (binary-search-like partitions); often it is ACCUMULATED along the way (max area seen, count of pairs) and the meeting is merely the termination signal; in write-pointer patterns the answer is the WRITE index — the read pointer's final position is meaningless. Misreading which of the three the problem wants is a silent wrong-answer, not a crash.
+
+**"Trapping rain water needs a stack or DP"** ? The two-pointer solution exists and is the eleganter one: move the side with the smaller max inward, because that side's water level is already? determined by its own smaller bound. The reason people find it unintuitive is the invariant is asymmetric — "the answer for the side I move is finalized by the OTHER side's maximum." Stating that sentence is the entire difficulty of the problem; the code is six lines.

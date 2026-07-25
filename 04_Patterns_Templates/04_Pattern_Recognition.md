@@ -1086,3 +1086,18 @@ Write down: "This is a [pattern] problem because [reason]."
 ---
 
 **Master these patterns, and you'll solve 90% of interview problems!**
+
+
+---
+
+## Reality Check
+
+**"Keywords in the problem reliably signal the pattern"** → Keyword mapping ("sorted means binary search") is the trainer-wheels version. Problem setters actively bury keyword signals: "sorted" appears in problems solved by two pointers, math, and even hash sets; "shortest" can mean BFS, Dijkstra, DP, or plain min-scan. The reliable signals are CONSTRAINTS (n up to 10^5 rules out quadratic) and the ANSWER TYPE (index vs count vs optimum vs arrangement). Keywords shortlist; constraints decide.
+
+**"Recognition means naming the pattern"** → Naming is the cheapest step. Recognition that matters is instantiation: WHAT is the window invariant, WHAT is the DP state, WHAT do the two pointers mean when they stop. Candidates regularly say "this is DP" and then cannot define the state — which reads worse than never naming it. Train the sentence: "this is X where the state/invariant is Y."
+
+**"If I cannot recognize it in 2 minutes, I should look at the answer"** → The productive struggle window is longer: brute force first (always available in 2 minutes), then interrogate the brute force — what work is repeated? Repetition across overlapping subproblems says DP; repetition of scans says precompute or window; repetition of comparisons says sort or heap. The brute force IS the recognition tool, not the failure state.
+
+**"Hard problems need exotic patterns"** → Hard problems are usually common patterns with one twist: an extra dimension in the DP state, a second binary search, or a non-obvious sort key BEFORE the standard sweep. Reaching for segment trees when the problem is a sort-then-greedy costs more interviews than never having learned segment trees. Escalate exotic only after the constraint math forces it.
+
+**"Wrong pattern attempts are wasted time in interviews"** → A falsified attempt narrows the space and shows your process — IF you falsify fast. The skill is cheap disproof: one adversarial 5-element example kills a wrong window or greedy in 30 seconds. What actually wastes time is defending a wrong pattern against your own counterexample because you spent five minutes coding it before testing the idea.

@@ -406,3 +406,18 @@ COMMON MISTAKES:
 ---
 
 > **Navigation**: [< Previous](16_DP_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_String_Plus_Advanced.md)
+
+
+---
+
+## Reality Check
+
+**"Backtracking explores then removes bad choices"** → The choose-explore-UNCHOOSE symmetry is the machine: the undo must exactly mirror the do, in reverse order, or shared state corrupts across branches. The two chronic asymmetries: forgetting to remove from the path list after recursion (every result after the first is polluted), and mutating a string/list passed by reference while other branches still hold it. The audit question for any backtracking bug: find the do without a matching undo.
+
+**"Pruning is an optimization you add at the end"** → For exponential trees, pruning IS feasibility: N-Queens without column/diagonal sets, or subset-sum without the sorted-early-break, simply do not finish. The design order that works: write the constraint check FIRST (what makes a partial state dead), then build the enumeration around it. Pruning bolted on later tends to check constraints AFTER recursing — one level too late to save the subtree.
+
+**"Duplicate handling means using a Set on the results"** → Deduplicating OUTPUT costs exponential wasted exploration and then hashes it away. The correct tool works at the DECISION level: sort, then skip a candidate equal to its previous sibling when that sibling was not used at this depth (the i > start && nums[i] == nums[i-1] guard). Same-level dedup versus same-path reuse is the distinction — permutations-with-dupes and subsets-with-dupes both hinge on it.
+
+**"Backtracking and DFS are the same thing"** → DFS traverses an EXISTING structure and visits each node once; backtracking traverses the IMPLICIT tree of partial decisions, and the same board cell or array index is revisited across many branches with different histories. That is why graph-DFS uses a permanent visited set but word-search backtracking must UNMARK cells on exit — permanent marking in a decision tree kills valid alternative paths, the single most reported word-search bug.
+
+**"State restoration is only about the path variable"** → Everything mutated on the way down restores on the way up: the counts array in permutations-by-frequency, the column/diagonal sets in queens, the board cell in word search, the remaining-target in combination sum. The bulletproof habit is symmetric bracketing — every mutation line has its inverse line visibly paired after the recursive call — so the reviewer verifies restoration by shape, not by simulation.

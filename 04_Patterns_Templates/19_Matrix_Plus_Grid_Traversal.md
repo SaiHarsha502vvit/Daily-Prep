@@ -346,3 +346,18 @@ COMMON MISTAKES:
 ---
 
 [← 18 String+Advanced](18_String_Plus_Advanced.md) | [20 BitManip+Tricks →](20_BitManipulation_Plus_Tricks.md)
+
+
+---
+
+## Reality Check
+
+**"Matrix traversal is nested loops plus direction arrays"** → The direction-array idiom covers neighbor-stepping, but the family's harder members are ORDER problems: spiral traversal is boundary-shrinking with four cursors, diagonal traversal groups cells by i+j parity, search-in-sorted-matrix is a staircase walk from a corner — each a distinct traversal geometry with its own termination subtleties (spiral's single-row/single-column leftovers being the notorious one). "I know grid BFS" does not transfer; the geometries must each be built once.
+
+**"In-place matrix transforms are just index arithmetic"** → Rotate-90 as transpose-then-reverse-rows is the safe decomposition; the direct four-way cycle swap saves nothing meaningful and quadruples the index-error surface. The deeper trap is UPDATE ORDER: game-of-life and set-matrix-zeroes require encoding old-and-new states simultaneously (bit-packing or sentinel values) because naive in-place writes poison the neighbors' reads. In-place on matrices means simultaneity discipline, not just clever indexes.
+
+**"Islands problems are all identical flood fill"** → The base flood fill is; the graded variants change the QUESTION: count vs max-area (accumulate during fill), distinct island SHAPES (serialize the traversal path as the canonical form), islands-that-touch-border (invert: flood from the border first), and bridges/min-days variants (flood fill inside a binary-search or BFS outer loop). The pattern ladder is fill → fill-with-signature → fill-as-subroutine, and interviews walk you up it deliberately.
+
+**"Visited tracking on grids needs a boolean matrix"** → Three tiers by permission: mutate the grid itself (flip land to water — cheapest, destroys input), a boolean matrix (n·m extra but input-preserving), or bit-encode within cell values (add 2 to mark, decode with modulo — game-of-life style). Interviewers increasingly ask "without modifying the input" as the follow-up; knowing all three tiers and their trade-off sentence is the expected answer shape.
+
+**"Row-major vs column-major iteration is stylistic"** → Row-major matches memory layout in C-family 2D arrays; column-major strides across cache lines and can run several-fold slower at production sizes — the canonical demonstration of cache effects on identical O(n·m) algorithms. Java's array-of-arrays adds a second effect (each row a separate heap object). For interviews it is one sentence of awareness; for numeric production code it is the difference between hitting and missing the memory-bandwidth ceiling.

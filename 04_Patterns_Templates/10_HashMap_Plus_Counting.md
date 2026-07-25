@@ -414,3 +414,18 @@ CRITICAL: Always initialize map with {0: 1}!
 ---
 
 [← 09 Array+SlidingWindow](09_Array_Plus_SlidingWindow.md) | [11 Stack+Monotonic →](11_Stack_Plus_MonotonicPattern.md)
+
+
+---
+
+## Reality Check
+
+**"HashMap counting is the easy pattern"** → The counting is easy; the INSIGHT about what to count is the problem. Group-anagrams counts by sorted-string key; subarray-sum counts by prefix-sum key; longest-consecutive counts by set membership plus a start-of-run test. The pattern's real skill is KEY DESIGN — finding the canonical form under which "same" things collide — and that is a modeling act, not a data-structure act.
+
+**"getOrDefault and merge are interchangeable conveniences"** → They differ under concurrency and in null semantics: merge with a remapping to null DELETES the entry (a documented-but-surprising behavior used for decrement-and-remove counting), while put(get()+1) NPEs on absent keys. The decrement side of counting is where bugs live: forgetting to remove zero-count entries makes containsKey checks lie in sliding-window-with-counts problems.
+
+**"Counting characters needs the same tools as counting objects"** → Bounded alphabets want arrays (26/128/256 slots): faster, and comparable with Arrays.equals as a composite key. Unbounded keys want HashMap. The hybrid trick interviews love: use the 26-array AS the HashMap key by encoding it to a string — the count-signature — giving O(n·k) group-anagrams without sorting each word.
+
+**"Frequency maps answer frequency questions only"** → The frequency map is the entry point to a second decision: top-k frequent goes to a size-k min-heap OR bucket sort by count (O(n), the answer that upgrades the interview); first-unique wants insertion-order preserved (LinkedHashMap); mode-under-updates wants count-of-counts. The map is step one of a two-step pattern; stopping at step one leaves the O(n log n) sort on the table.
+
+**"Hash-based counting gives deterministic performance"** → Adversarial keys degrade HashMap to its collision path — Java 8+ treeifies buckets to O(log n) but only when keys are Comparable; non-comparable keys stay in linked chains at O(n). Competitive judges exploit this against predictable hash functions in other languages. If keys are attacker-controlled in production (query strings, user IDs), the counting layer inherits a DoS surface — the fix is randomized hashing or bounded maps, not hope.

@@ -1435,3 +1435,18 @@ This is why phase 2 of Floyd works: after the meeting inside the cycle, resettin
 
 </details>
 
+
+
+---
+
+## Reality Check
+
+**"Two pointers is one pattern"** → It is at least four with different invariants: CONVERGING (sorted pair-sum: pointers close in, each step permanently discards candidates), PARALLEL (merge two sorted lists: pointers advance independently), FAST-SLOW (cycle detection: relative speed creates the meeting guarantee), and PARTITION (Dutch flag: pointers separate zones inside one array). Knowing "use two pointers" without knowing WHICH invariant is why implementations stall at the first edge case.
+
+**"The proof of converging pointers is obvious"** → The proof is an exchange argument most people cannot state: when arr[lo] + arr[hi] < target, EVERY pair (lo, x) with x < hi is also < target — so lo can be advanced without losing any solution. Interviewers who ask "why does this not miss a pair?" filter out everyone who learned the movement rule without the discard rule. If you can state the discard rule, you can also re-derive the variant for products, differences, and 3-sum.
+
+**"Fast-slow only detects cycles"** → The speed-differential trick answers several questions: middle of list (fast at 2x), kth from end (fast leads by k), cycle START (the two-phase Floyd walk after meeting), and duplicate-finding in value-as-pointer arrays (LeetCode 287 — an array problem solved by linked-list machinery). The unifying idea is that relative speed converts position questions into meeting questions.
+
+**"Two pointers requires sorted input"** → Only the converging variant does. Fast-slow runs on unsorted lists; partition pointers CREATE order; parallel pointers need each input sorted but not the pair jointly. And when the converging variant needs sorting first, that O(n log n) dominates — worth saying aloud in an interview, because "two pointers is O(n)" is only true after someone paid for the sort.
+
+**"When two pointers fails, add a third loop"** → When the pair logic needs history ("has this value appeared"), the escalation is a HashMap, not a third pointer; when it needs future knowledge ("next greater to the right"), it is a monotonic stack. 3-sum is the exception that proves the rule: one outer loop plus converging pointers — the third pointer is really the outer iteration, still O(n squared) not O(n cubed).

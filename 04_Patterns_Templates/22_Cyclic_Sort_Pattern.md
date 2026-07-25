@@ -507,3 +507,18 @@ COMPLEXITY: Time O(n) | Space O(1)
 | 6   | [Set Mismatch](https://leetcode.com/problems/set-mismatch/)                                             | 645  | Easy       | Dup + missing         |
 | 7   | [Couples Holding Hands](https://leetcode.com/problems/couples-holding-hands/)                           | 765  | Hard       | Cyclic swap variant   |
 | 8   | [Kth Missing Positive](https://leetcode.com/problems/kth-missing-positive-number/)                      | 1539 | Easy       | Binary search variant |
+
+
+---
+
+## Reality Check
+
+**"Cyclic sort is an obscure sorting algorithm"** → It is not competing with quicksort; it is the O(n) time, O(1) space tool for one specific promise: values confined to a known dense range (1..n or 0..n). That promise makes "where does this value belong" computable without comparisons — value v belongs at index v-1 — and the entire find-missing, find-duplicate, find-all-disappeared family falls out of parking each number in its slot and reading the exceptions.
+
+**"The while-loop inside the for-loop makes it quadratic"** → Every swap places at least one element into its FINAL home, and homes are never vacated — so total swaps are bounded by n across the entire run, and the inner while amortizes to O(1). This is the same amortized argument as sliding-window's inner shrink, wearing different clothes; recognizing the shared proof shape ("bounded total work across all iterations") is a transferable analysis skill, not trivia.
+
+**"Swap until the current slot holds the right value"** → The guard must also stop when the current value EQUALS the value already sitting in its target slot — i.e., stop when arr[i] == arr[arr[i]-1] — or duplicates spin the loop forever. This single guard difference is what separates find-the-duplicate variants from the clean-permutation base case, and it is the first thing to check when a cyclic-sort solution hangs on a hidden test.
+
+**"First-missing-positive is unrelated to cyclic sort"** → It IS cyclic sort plus hostile input: ignore non-positives and values above n (they cannot be the answer), park everything else, then the first index holding the wrong value names the missing positive. The insight that out-of-range values are IGNORABLE rather than obstructive is the entire hard-rated difficulty; the mechanics are the same ten lines.
+
+**"In interviews, sorting with a library call is equivalent"** → Arrays.sort gives O(n log n) with mutation; a HashSet gives O(n) time with O(n) space — cyclic sort exists precisely to hit O(n) time with O(1) extra space, which is usually the stated constraint. But say the trade-off aloud: cyclic sort MUTATES the input, so if the interviewer adds "without modifying the array," the duplicate-finding variant must pivot to Floyd cycle detection on the value-graph. Knowing the pivot is the pattern-mastery signal.

@@ -993,3 +993,18 @@ _Remember: Every problem you solve is used somewhere in production!_ ðŸŒ
 ---
 
 > **Navigation**: [< Previous](04_Pattern_Recognition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Binary_Search_Patterns.md)
+
+
+---
+
+## Reality Check
+
+**"LeetCode problems are artificial and disconnected from real work"** ? The MAPPING is real even when the costume is silly: rate limiters are sliding windows, autocomplete is a trie, task schedulers are heaps plus greedy, database indexes are B-trees queried by binary search, git blame is LCS, load balancing is consistent hashing. What differs in production is that the algorithm is 10 percent of the job — the other 90 percent is durability, concurrency, and observability around it.
+
+**"If I can solve the LeetCode version, I can build the production version"** ? The LeetCode version fits in memory, runs single-threaded, and gets clean input. The production rate limiter must be correct across servers (suddenly it is a distributed-consensus or Redis-Lua problem), survive restarts, and degrade gracefully. The algorithm knowledge transfers; the systems knowledge is a separate discipline the map should motivate, not replace.
+
+**"Real engineers look up algorithms, so practicing is pointless"** ? You can look up an algorithm only after RECOGNIZING you need it. The engineer who does not know monotonic stacks exists cannot google "how to compute next greater element in O(n)" — they ship the quadratic loop and the dashboard times out at scale. Practice builds the recognition vocabulary; the lookup fills in the syntax.
+
+**"Companies ask LeetCode because they think work is like LeetCode"** ? Companies ask it as a PROXY: bounded-time reasoning about correctness and complexity under observation. It is a deliberately narrow sample, chosen because it is standardizable across thousands of candidates — not a claim about the job. Understanding this changes how you present: narrating trade-offs and testing scores the actual rubric; silently producing a working function does not.
+
+**"The real-world column justifies memorizing that specific problem"** ? The mapping's value runs the other direction: when production hands you an unfamiliar performance problem, the map lets you translate it BACK into a solved shape. "Find the busiest minute in the access log" becomes interval overlap counting; "dedupe these events within a tolerance" becomes sorted two pointers. Memorize the translation skill, not the pairs.

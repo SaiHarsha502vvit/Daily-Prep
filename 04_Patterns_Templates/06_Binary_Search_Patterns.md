@@ -1430,3 +1430,18 @@ After coding:
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Binary search needs a sorted array"** → Binary search needs a MONOTONIC PREDICATE — a yes/no question whose answer flips exactly once across the search space. Sorted arrays are one instance. "Minimum capacity to ship packages in D days," "smallest divisor," "koko eating bananas" — nothing is sorted; the predicate "can we do it with value x" is monotonic in x. Binary-search-on-answer is the single highest-leverage generalization in the catalog, and array-sortedness thinking blocks it.
+
+**"The bug risk in binary search is the mid calculation"** → Overflow in mid is the famous bug but the FREQUENT bugs are boundary semantics: does lo end up as first-true or last-false, does the loop terminate when lo == hi or cross, do you return lo or lo-1. These come from mixing two half-remembered conventions. The fix is mechanical: define the predicate, maintain "everything left of lo is false, everything right of hi is true," and the return value derives itself.
+
+**"Binary search halves the array, so it is always the fastest option"** → Each probe costs a predicate evaluation. When the predicate is O(n) (simulate shipping with capacity x), total cost is O(n log(range)) — usually great. But when a two-pointer or math solution answers in one O(n) pass, the binary search is slower AND more code. Binary search wins when checking is much cheaper than enumerating, not universally.
+
+**"Duplicates do not matter for binary search"** → With duplicates, "find x" has multiple valid indexes and the vanilla template returns an ARBITRARY one. Problems that need leftmost/rightmost occurrence (count occurrences, insert position, range queries) require the first-true variant with hi = mid rather than hi = mid - 1. Rotated-array-with-duplicates goes further: worst case degrades to O(n) because arr[lo] == arr[mid] == arr[hi] destroys the which-half-is-sorted signal.
+
+**"Real-valued binary search works like integer binary search"** → Floating-point search cannot use lo == hi termination (it may never exactly converge); it runs a fixed iteration count (about 100 halvings exhausts double precision) or an epsilon window. Epsilon chosen too tight loops forever on precision floor; too loose fails the judge. The robust habit: iterate 100 times and skip epsilon reasoning entirely.

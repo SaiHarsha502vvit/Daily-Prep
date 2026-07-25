@@ -377,3 +377,18 @@ NEW PROBLEM
 | Backtracking   | â€”                                                           | [17_Backtracking_Plus_Pruning](17_Backtracking_Plus_Pruning.md)     | [12_Backtracking](../05_Problem_Solving/12_Backtracking.md)               |
 | Heap           | [01f_Trees_Heaps](../02_Data_Structures/01f_Trees_Heaps.md) | [15_Heap_Plus_GreedySelection](15_Heap_Plus_GreedySelection.md)     | [16_Heap](../05_Problem_Solving/16_Heap.md)                               |
 | LinkedList     | [01c_LinkedList](../02_Data_Structures/01c_LinkedList.md)   | [12_LinkedList_Plus_TwoPointers](12_LinkedList_Plus_TwoPointers.md) | [15_LinkedList](../05_Problem_Solving/15_LinkedList.md)                   |
+
+
+---
+
+## Reality Check
+
+**"There are exactly N patterns and they cover everything"** ? Pattern catalogs (14, 20, 27 — every course counts differently) cover roughly 80 percent of interview problems. The remaining 20 percent are deliberately pattern-resistant: ad-hoc simulation, clever observations, or hybrid problems where the pattern only solves one phase. Treating the catalog as complete produces the worst interview failure mode: forcing the nearest pattern onto a problem that needed a direct observation.
+
+**"Identify the pattern first, then solve"** ? Real solving is a loop, not a pipeline: read constraints ? shortlist 2-3 patterns ? try the strongest against a small example ? the failure of that attempt reveals the real structure ? re-shortlist. Experts are faster not because they pick right the first time, but because each failed fit teaches them more — a wrong sliding-window attempt that breaks on negatives points straight at prefix sums.
+
+**"Patterns are about the data structure in the problem"** ? Patterns attach to the QUESTION SHAPE, not the nouns. "Array" problems split across two pointers, windows, prefix sums, binary search on answer, and DP depending on whether the question asks existence, count, optimum, or construction. Classifying by noun ("it is an array problem") is the beginner move the master guide exists to break.
+
+**"Combining patterns is advanced and rare"** ? Half of medium-hard problems are two patterns composed: binary search ON a greedy feasibility check, DFS WITH memoization, heap INSIDE interval sweep. The composition is usually one pattern providing the outer loop and another providing the decision inside it. If a single pattern only solves half the problem, the right response is to look for the second pattern, not to abandon the first.
+
+**"Once learned, pattern recognition stays sharp"** ? Pattern recognition decays like any perceptual skill — after months away, everything looks like the three patterns you used most recently at work. The maintenance dose is small (a few mixed problems weekly, unlabeled) but it must be MIXED: practicing by chapter re-teaches the label, practicing unlabeled re-teaches the recognition, and only the second one is the interview skill.

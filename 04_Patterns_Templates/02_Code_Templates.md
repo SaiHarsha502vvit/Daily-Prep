@@ -1514,3 +1514,19 @@ Practice: open the template, then adapt it to solve the problem.
 ---
 
 **Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+
+
+---
+
+## Reality Check
+
+**"Memorizing templates is a substitute for understanding"** ? A template encodes a pattern's INVARIANT, and inputs that violate the invariant's assumptions break the template silently. The binary search template assumes a monotonic predicate; the BFS template assumes unweighted edges; the fast-slow template assumes a linked structure without teleporting pointers. Interviewers deliberately mutate one assumption to test whether you know WHY each line exists — a memorizer transcribes the template onto a problem it no longer fits.
+
+**"Templates should be as generic as possible"** ? Over-generic templates (one binary search with six parameters) are harder to adapt under pressure than three specialized ones (find-exact, find-first-true, find-last-true). The practical bar: can you rewrite the template from its invariant in 60 seconds? If a template needs its own documentation to instantiate, it is a library, not a template.
+
+**"If the template compiles and passes the sample, it is applied correctly"** ? Sample inputs rarely hit the template's edges: empty input, single element, all-duplicates, the answer at index 0 or n-1. Every template has 2-3 canonical edge cases that break naive instantiations (binary search: two elements; sliding window: window larger than array; DFS: disconnected graph). Run those mentally BEFORE the samples — they are where instantiation errors live.
+
+**"Off-by-one choices in templates are arbitrary style"** ? lo < hi vs lo <= hi, hi = mid vs hi = mid - 1, and [lo, hi) vs [lo, hi] form a CONSISTENT SYSTEM — each choice forces the others. Mixing conventions from two templates you half-remember produces the infinite loop at hi - lo == 1 that eats ten interview minutes. Pick one convention, know its termination proof, never mix.
+
+**"Templates make code reviews unnecessary in practice"** ? Production code built from algorithmic templates still needs the review questions templates cannot answer: does this handle concurrent modification, does the comparator satisfy transitivity, is the recursion depth bounded for production input sizes? A perfect quickselect template with a comparator that violates its contract throws IllegalArgumentException in production Java — the template was right and the code still broke.
+

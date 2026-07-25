@@ -331,3 +331,18 @@ COMMON MISTAKES:
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 
 </details>
+
+
+---
+
+## Reality Check
+
+**"Bit tricks are memorized one-liners"** → Each classic derives from two identities — n & (n-1) clears the lowest set bit (power-of-two test, Kernighan popcount) and n & -n isolates it (Fenwick trees) — both consequences of two's-complement borrowing. Derive-once beats memorize-twenty: when you know WHY the borrow ripples, you can reconstruct any of them and, more importantly, recognize when a novel problem reduces to lowest-set-bit reasoning.
+
+**"XOR tricks only solve the single-number problem"** → XOR is addition in GF(2), and that algebra powers a family: swap-without-temp, missing-number (XOR both ranges), the two-unique-numbers split (partition by any set bit of the combined XOR), Gray codes, and parity checks in RAID and hashing. The two-unique-numbers trick is the depth marker: it works because the differing bit provably separates the pair — an argument, not an incantation.
+
+**"Bitmask enumeration is only for tiny inputs"** → n up to about 20-24, yes — but that WINDOW is exactly where NP-hard interview problems live (TSP subsets, partition-to-k-groups, minimal covering). The two idioms that separate practitioners: enumerate submasks of m via sub = (sub - 1) & m (3^n total across all masks, not 4^n), and iterate set bits via lowest-bit extraction rather than testing all n positions. Both turn borderline-TLE solutions into passing ones.
+
+**"Shifting is well-defined everywhere"** → Java: shifting an int by 32 is a NO-OP (shift counts mask to 5 bits) — 1 << 32 equals 1, not 0, a genuinely surprising spec corner; negative-count shifts mask likewise. C makes several of these undefined outright. Any bit-level code that computes shift amounts dynamically must bound them explicitly; the masking rule has shipped real off-by-one-word bugs in hash functions and bloom filters.
+
+**"Bit-level code is inherently faster"** → JIT compilers already emit strength-reduced shifts for power-of-two multiplies and intrinsics for Integer.bitCount — hand-golfing arithmetic into bit form mostly obfuscates without speeding. Bit representations win where they change the DATA STRUCTURE: a 64-bit mask replacing a HashSet of small ints is 8 bytes vs hundreds and turns set-intersection into a single AND. Represent with bits; do not decorate with them.

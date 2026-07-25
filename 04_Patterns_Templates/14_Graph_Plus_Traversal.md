@@ -422,3 +422,18 @@ COMMON MISTAKES:
 ---
 
 [← 13 Tree+DFS/BFS](13_Tree_Plus_DFS_BFS.md) | [15 Heap+Greedy →](15_Heap_Plus_GreedySelection.md)
+
+
+---
+
+## Reality Check
+
+**"Mark visited when you pop from the queue"** → Mark at ENQUEUE time, not dequeue. Dequeue-marking lets the same node enter the queue through multiple neighbors before its first pop — on dense graphs that inflates the queue to O(E) duplicates and on shortest-path BFS it can record the wrong (longer) first-visit. The one-line discipline: the visited check and the add happen together, atomically, at the moment of discovery.
+
+**"Grid problems need an explicit graph structure"** → The grid IS the adjacency function: neighbors are the four direction offsets, validity is bounds-plus-condition. Building node objects and edge lists for a grid is the overengineering tell interviewers note silently. The direction-array idiom (dr/dc arrays looped together) plus in-place visited marking (flip the cell value when allowed) is the entire infrastructure — fifteen lines, no classes.
+
+**"DFS recursion is fine for graphs since it works for trees"** → Grid and graph DFS reaches depths trees never do — a snake-shaped path through a 1000x1000 grid is a million frames, far beyond the JVM's default stack. Tree height bounds recursion naturally; graph diameter does not. The professional reflexes: know your input scale, and know the iterative-with-explicit-stack conversion cold because "works on the sample, StackOverflowError on test 40" is this exact gap.
+
+**"Multi-source BFS is an advanced variant"** → It is vanilla BFS with several nodes seeded at distance zero — nothing else changes. Rotting oranges, walls-and-gates, nearest-exit: seed all sources, run once, distances are nearest-source distances. The recognition cue is the question inversion: "for every cell, distance to the NEAREST X" means start FROM all X simultaneously, not from every cell separately (which would be the accidental O(n squared) version).
+
+**"Cycle detection is one algorithm"** → Three graph flavors, three tools: undirected uses union-find or DFS-with-parent-exclusion (the parent edge is not a cycle); DIRECTED needs three colors (white/gray/black) because a back edge means gray-hits-gray, and touching a finished black node is fine; and functional graphs (each node one out-edge) allow Floyd. Using undirected logic on a directed graph reports false cycles at every diamond — the most common wrong-tool bug in this family.

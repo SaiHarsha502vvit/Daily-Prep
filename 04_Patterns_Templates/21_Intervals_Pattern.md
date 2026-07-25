@@ -556,3 +556,18 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 | 10  | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/)                                        | 731  | Sweep Line        | Google           |
 | 11  | [Car Pooling](https://leetcode.com/problems/car-pooling/)                                              | 1094 | Sweep Line        | Google           |
 | 12  | [Remove Covered Intervals](https://leetcode.com/problems/remove-covered-intervals/)                    | 1288 | Sort + Compare    | Amazon           |
+
+
+---
+
+## Reality Check
+
+**"Interval problems start with sorting by start time"** → The sort KEY is a decision, not a reflex: merge and insert sort by START; the classic non-overlapping-intervals greedy (erase minimum to make disjoint) sorts by END, and its proof breaks under start-sort; sweep-line problems sort EVENTS (starts and ends separately). Announcing the sort key with its reason ("end-sort so the earliest-finishing survivor leaves maximum room") is where the interview points are; picking start-sort by habit costs the proof.
+
+**"Overlap checking needs case analysis"** → Six pictured cases collapse to one line: overlap iff a.start <= b.end AND b.start <= a.end (touch-inclusive; make it strict to exclude touching). Deriving it by negation — the only NON-overlap configurations are entirely-before and entirely-after — is a 20-second whiteboard proof that eliminates the four-branch if-tree people write under pressure, and the four-branch tree is where the boundary bugs live.
+
+**"Meeting-rooms-II needs the heap"** → The heap (earliest-ending active meeting) is one correct machine; the two-sorted-arrays walk (sorted starts vs sorted ends, count in flight) and the sweep-line (increment on start, decrement on end, track running max) are equally correct with the same O(n log n) — and the sweep generalizes furthest (calendar boilerplate, max-concurrent-anything, employee-free-time). Knowing the equivalence is the depth signal: three surface algorithms, one underlying counting argument.
+
+**"Merging intervals in place is safe while iterating"** → Mutating the list you iterate is the crash-or-skip bug; the professional shape is build-a-result-list, compare each incoming interval against the result's last element only. This works because AFTER start-sorting, the only merge candidate is the most recent survivor — a lemma worth saying aloud, since it is also why the algorithm is single-pass and why unsorted input breaks it silently rather than loudly.
+
+**"Boundary semantics are a detail the judge decides"** → Whether [1,3] and [3,5] overlap is a REQUIREMENTS question that flips the comparison operator, and production interval code (billing periods, booking systems, maintenance windows) gets this wrong constantly — the half-open convention exists precisely because it makes adjacent intervals compose without double-counting. The habit: state the convention in one comment line before writing the comparator, in interviews and in production alike.
