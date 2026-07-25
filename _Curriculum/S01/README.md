@@ -31,7 +31,7 @@
 - [CSE101 — Discrete Mathematics](./CSE101_Discrete_Mathematics/)
 - [CSE102 — Programming Fundamentals](./CSE102_Programming_Fundamentals/)
 - [CSE103 — Linear Algebra](./CSE103_Linear_Algebra/)
-- [CSE104 — Introduction to Computer Systems](./CSE104_Introduction_To_Computer_Systems/)
+- [CSE104 — Introduction to Computer Systems](./CSE104_Computer_Systems/)
 
 ## Capstone
 

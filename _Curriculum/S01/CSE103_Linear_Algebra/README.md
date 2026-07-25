@@ -27,7 +27,7 @@ The students who succeed in S07 ML are the ones who took THIS course seriously i
 | **[CSE101 — Discrete Mathematics](../CSE101_Discrete_Mathematics/README.md)**       | S01 sibling — different math, different problems |
 | **[CSE102 — Programming Fundamentals](../CSE102_Programming_Fundamentals/README.md)** | S01 sibling |
 | **CSE103 — Linear Algebra**                                                          | This course |
-| **[CSE104 — Introduction to Computer Systems](../CSE104_Introduction_To_Computer_Systems/README.md)** | S01 sibling |
+| **[CSE104 — Introduction to Computer Systems](../CSE104_Computer_Systems/README.md)** | S01 sibling |
 
 | Where you'll use it                              | Specific application                                          |
 | ------------------------------------------------ | ------------------------------------------------------------- |

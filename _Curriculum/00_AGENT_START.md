@@ -2,6 +2,12 @@
 
 This repo is the source of truth. Treat it as a living technical curriculum.
 
+> **Two curriculum systems, two jobs (resolved 2026-07-25):**
+> - **`_Curriculum/` (this folder)** — original university-style course *content*: S01–S06, CSE101–CSE604, each course a directory of authored chapters. This is the canonical home for course material.
+> - **`00_CURRICULUM/`** — a week-by-week *study scheduler* that sequences the existing repo modules (02_DS, 03_Algo, 07_Java, …) into a 4-semester reading plan, plus EXAM_BANK and PROJECTS.
+>
+> They are complementary lenses, not duplicates: one authors courses, the other schedules module reading. When a CSE course covers ground a repo module also covers, the CSE chapter teaches from first principles and links out to the module for drills/reference.
+
 ## Semester Map
 
 | Sem   | Focus                              | Key Folders                                                               |

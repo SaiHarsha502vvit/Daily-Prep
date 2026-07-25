@@ -23,7 +23,7 @@ The student who skips this course CAN write code, but every claim they make abou
 | **CSE101 — Discrete Mathematics**                                                   | This course |
 | **[CSE102 — Programming Fundamentals](../CSE102_Programming_Fundamentals/README.md)** | S01 sibling — gives you something to prove things about |
 | **[CSE103 — Linear Algebra](../CSE103_Linear_Algebra/README.md)**                   | S01 sibling — different math, different problems |
-| **[CSE104 — Introduction to Computer Systems](../CSE104_Introduction_To_Computer_Systems/README.md)** | S01 sibling |
+| **[CSE104 — Introduction to Computer Systems](../CSE104_Computer_Systems/README.md)** | S01 sibling |
 
 | Where you'll use it                              | Specific application                                          |
 | ------------------------------------------------ | ------------------------------------------------------------- |

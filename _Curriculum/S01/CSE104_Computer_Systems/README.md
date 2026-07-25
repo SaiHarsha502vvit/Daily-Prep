@@ -63,3 +63,16 @@ Understanding these from first principles makes you the engineer who can explain
 ---
 
 > **Teaching standard:** derive-don't-state. Every mechanism is motivated by a real problem that forced its invention. Every concept gets a worked analogy, a traced example, and a Section Challenge with full solution.
+
+---
+
+## Linked Repo Content
+
+The practical, tool-level companions to this course live in the main repo modules:
+
+- [Git Version Control - Developer Essentials](../../../13_Developer_Essentials/01_Git_Version_Control.md)
+- [Linux CLI and Shell - Developer Essentials](../../../13_Developer_Essentials/02_Linux_CLI_Shell.md)
+- [Memory Foundations - Data Structures](../../../02_Data_Structures/01a_Memory_Foundations.md)
+- [Concurrency Models and Coroutines - Developer Essentials](../../../13_Developer_Essentials/19_Concurrency_Models_Coroutines.md)
+
+> Note: an earlier lightweight course shell (`CSE104_Introduction_To_Computer_Systems/`, README-only, a softer ~15h Linux/Git-flavoured design) was superseded by this full 12-chapter CS:APP-style build. The shell is preserved in `_archive/` for provenance.

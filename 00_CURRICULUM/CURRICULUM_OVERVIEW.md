@@ -1,5 +1,7 @@
 # 🎓 Complete Software Engineering Curriculum
 
+> **How this relates to `_Curriculum/` (resolved 2026-07-25):** this folder is the **study scheduler** — it sequences the existing repo modules into a week-by-week 4-semester reading plan (plus [EXAM_BANK](./EXAM_BANK.md) and [PROJECTS](./PROJECTS/)). The repo-root [`_Curriculum/`](../_Curriculum/00_AGENT_START.md) folder is the **course-content system** — original university-style courses (S01–S06, CSE101–CSE604) with authored chapters (CSE101, CSE103, CSE104 complete as of July 2026). Use `_Curriculum` when you want to *study a subject from first principles*; use this folder when you want a *calendar over the repo's modules*.
+
 > **Modeled after:** MIT 6.824/6.830 (Grad), ETH Zurich Computer Science MSc, TU Munich M.Sc. Informatics, KTH Software Engineering Master.
 >
 > **Philosophy:** Theory is the compass. Code is the proof. Projects are the degree.

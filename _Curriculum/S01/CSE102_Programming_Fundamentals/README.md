@@ -15,7 +15,7 @@
 | **[CSE101 — Discrete Mathematics](../CSE101_Discrete_Mathematics/README.md)**       | S01 sibling |
 | **CSE102 — Programming Fundamentals**                                               | This course |
 | **[CSE103 — Linear Algebra](../CSE103_Linear_Algebra/README.md)**                   | S01 sibling |
-| **[CSE104 — Introduction to Computer Systems](../CSE104_Introduction_To_Computer_Systems/README.md)** | S01 sibling |
+| **[CSE104 — Introduction to Computer Systems](../CSE104_Computer_Systems/README.md)** | S01 sibling |
 
 | Related Modules                            | Cross-Reference                                                |
 | ------------------------------------------ | -------------------------------------------------------------- |
