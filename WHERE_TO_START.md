@@ -39,9 +39,9 @@ That folder has its own complete decision tree, 3 curated learning pathways (jun
 2. [Arrays & Memory](02_Data_Structures/01a_Memory_Foundations.md) → [Arrays](02_Data_Structures/01b_Arrays.md) → [LinkedList](02_Data_Structures/01c_LinkedList.md)
 3. [HashMap & HashSet](02_Data_Structures/01e_HashTable.md) — the solution to 40% of easy/medium problems
 4. [Trees & Heaps](02_Data_Structures/01f_Trees_Heaps.md)
-5. [Sorting fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) + [Search](03_Algorithms/03_Binary_Search.md)
-6. [Dynamic Programming](03_Algorithms/07_Dynamic_Programming.md) — the hardest chapter, save for last
-7. [System Design](06_OOP_Design/06_System_Design.md) — scale, databases, caching, messaging
+5. [Sorting fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) + [Search](04_Patterns_Templates/06_Binary_Search_Patterns.md)
+6. [Dynamic Programming](03_Algorithms/04b_DP_Fundamentals.md) — the hardest chapter, save for last
+7. [System Design](06_OOP_Design/03_System_Design.md) — scale, databases, caching, messaging
 
 **Time estimate:** 6–8 weeks at 2 hours/day following the [76-Day Study Calendar](01_Getting_Started/02_Study_Plan_Calendar.md).
 
@@ -60,7 +60,7 @@ That folder has its own complete decision tree, 3 curated learning pathways (jun
 2. [JS Async & Promises](16_JavaScript/04_JS_Async_Promises.md) — async/await, event loop
 3. [TypeScript Foundations](17_TypeScript/01_TS_Foundations.md) — why types matter, basic types, interfaces
 4. [TypeScript Advanced](17_TypeScript/02_TS_Advanced_Types.md) — generics, conditional types, mapped types
-5. [React](15_React_Frontend/01_React_Foundations.md) — components, hooks, state management
+5. [React](15_React_Frontend/01_React_Fundamentals.md) — components, hooks, state management
 6. [CSS](18_CSS_Complete/01_CSS_Foundations.md) — layout, flexbox, grid
 
 **Already know JS, want to level up:**
@@ -83,18 +83,18 @@ If you're a frontend dev wanting to add testing skills → [TypeScript Type Syst
 2. [Strings & Immutability](07_Modern_Java/Ch02_Strings_Immutability.md) — String pool, StringBuilder internals
 3. [Functional Programming](07_Modern_Java/Ch06_Functional_Programming.md) — lambdas, streams, Optional patterns
 4. [Collections Internals](07_Modern_Java/Ch08_Collections_Internals.md) — HashMap/TreeMap/ConcurrentHashMap under the hood
-5. [Concurrency](07_Modern_Java/Ch15_Concurrency_Fundamentals.md) — threads, locks, CompletableFuture
+5. [Concurrency](07_Modern_Java/Ch15_Concurrency_Core.md) — threads, locks, CompletableFuture
 6. [Java Deep Reasoning](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) — 13 freeze moments for interviews
 
 **Spring Boot path (after Java core):**
-1. [Spring Boot Foundations](07_Modern_Java/Ch25_Spring_Boot_Foundations.md)
-2. [JPA & Hibernate](07_Modern_Java/Ch32_JPA_Hibernate_Complete.md)
-3. [REST APIs](07_Modern_Java/Ch33_REST_API_Design.md)
-4. [Spring Security](07_Modern_Java/Ch38_Spring_Security.md)
+1. [Spring Boot Foundations](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md)
+2. [JPA & Hibernate](07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md)
+3. [REST APIs](07_Modern_Java/Ch37_SB_Controllers_REST.md)
+4. [Spring Security](07_Modern_Java/Ch43_SB_Auth_Security.md)
 5. [Spring Boot Deep Reasoning](07_Modern_Java/Ch58_SB_Deep_Reasoning.md)
 
 **SQL alongside Java:**
-→ [SQL Foundations](08_SQL/01_Foundations_Database_Basics.md) first, then [JPA & Hibernate](07_Modern_Java/Ch32_JPA_Hibernate_Complete.md).
+→ [SQL Foundations](08_SQL/01_Foundations_Database_Basics.md) first, then [JPA & Hibernate](07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md).
 
 ---
 
@@ -111,9 +111,9 @@ If you're a frontend dev wanting to add testing skills → [TypeScript Type Syst
 2. [JOINs Complete](08_SQL/07_JOINs_Complete.md) — INNER, LEFT, RIGHT, FULL, SELF, CROSS
 3. [Aggregations & GROUP BY](08_SQL/06_Aggregations_GroupBy.md) — COUNT, SUM, AVG, GROUP BY, HAVING
 4. [Subqueries & CTEs](08_SQL/08_Subqueries_CTEs.md) — correlated subqueries, WITH clause
-5. [Window Functions](08_SQL/11_Window_Functions_Advanced.md) — ROW_NUMBER, RANK, LAG/LEAD
-6. [Indexes & Query Plan](08_SQL/14_Indexes_Query_Optimization.md) — why queries are slow, EXPLAIN
-7. [Transactions & ACID](08_SQL/17_Transactions_ACID_Isolation.md) — isolation levels, deadlocks
+5. [Window Functions](08_SQL/09_Window_Functions.md) — ROW_NUMBER, RANK, LAG/LEAD
+6. [Indexes & Query Plan](08_SQL/11_Indexes_Performance.md) — why queries are slow, EXPLAIN
+7. [Transactions & ACID](08_SQL/13_Transactions_ACID.md) — isolation levels, deadlocks
 8. [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — 10 freeze moments
 
 **SQL → Testing bridge:**

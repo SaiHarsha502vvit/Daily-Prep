@@ -113,7 +113,7 @@ After Stage 3:
 - [Java Deep Reasoning](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) — reread at Stage 4 speed
 - [Spring Boot Deep Reasoning](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) — all the "why does this not work?" questions
 - [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) — the 10 SQL questions that separate seniors from juniors
-- [System Design](06_OOP_Design/06_System_Design.md) — scale, caching, databases, messaging (needed for senior+ roles)
+- [System Design](06_OOP_Design/03_System_Design.md) — scale, caching, databases, messaging (needed for senior+ roles)
 
 **Total estimated time:** 95–120 hours (Stages 1–4). Stage 5 adds 20–40 hours depending on which topics.
 

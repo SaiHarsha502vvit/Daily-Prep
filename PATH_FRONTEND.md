@@ -26,11 +26,11 @@ React, TypeScript, and Playwright are all JavaScript. If the language foundation
 | # | File | Why now | Est |
 |---|------|---------|-----|
 | 1 | [JS Foundations](16_JavaScript/01_JS_Foundations.md) | Variables, scope, functions, closures — the parts that trip everyone up | 4h |
-| 2 | [JS Prototype & OOP](16_JavaScript/02_JS_Prototype_OOP.md) | `this`, prototype chain, class syntax — React class components use this | 3h |
-| 3 | [JS Arrays & Iteration](16_JavaScript/03_JS_Arrays_Iteration.md) | `map`, `filter`, `reduce`, spread, destructuring — used in every React component | 2h |
+| 2 | [JS Prototype & OOP](16_JavaScript/03_JS_Objects_Prototypes.md) | `this`, prototype chain, class syntax — React class components use this | 3h |
+| 3 | [JS Arrays & Iteration](16_JavaScript/06_JS_Modern_ES6Plus.md) | `map`, `filter`, `reduce`, spread, destructuring — used in every React component | 2h |
 | 4 | [JS Async & Promises](16_JavaScript/04_JS_Async_Promises.md) | Promise, async/await, event loop — the most common source of subtle bugs in web apps | 4h |
-| 5 | [JS Modules & Tooling](16_JavaScript/05_JS_Modules_Tooling.md) | ESM vs CJS, bundlers, why `import` sometimes breaks | 2h |
-| 6 | [JS Browser & DOM](16_JavaScript/06_JS_Browser_DOM.md) | How the browser renders HTML; event bubbling; why React doesn't touch the DOM directly | 3h |
+| 5 | [JS Modules & Tooling](19_Frontend_Integration/03_Build_Tools_Ecosystem.md) | ESM vs CJS, bundlers, why `import` sometimes breaks | 2h |
+| 6 | [JS Browser & DOM](16_JavaScript/05_JS_DOM_BrowserAPIs.md) | How the browser renders HTML; event bubbling; why React doesn't touch the DOM directly | 3h |
 | 7 | [JS Deep Reasoning](16_JavaScript/08_JS_Deep_Reasoning.md) | 15 "freeze moments" — the interview questions that expose gaps | 2h |
 
 **Checkpoint:** Without looking it up — what does this print, and why?
@@ -68,10 +68,10 @@ React's mental model is simple. Its failure modes aren't. Learn the model first;
 
 | # | File | Why now | Est |
 |---|------|---------|-----|
-| 12 | [React Foundations](15_React_Frontend/01_React_Foundations.md) | JSX, components, props, state, controlled components | 4h |
-| 13 | [React Hooks](15_React_Frontend/02_React_Hooks.md) | `useState`, `useEffect`, `useContext`, `useRef`, `useCallback`, `useMemo` | 4h |
-| 14 | [React State Management](15_React_Frontend/03_React_State_Management.md) | Context API, Redux Toolkit, Zustand — when to use which | 3h |
-| 15 | [React Performance](15_React_Frontend/04_React_Performance.md) | Why components re-render, `React.memo`, `useCallback` bailouts | 3h |
+| 12 | [React Foundations](15_React_Frontend/01_React_Fundamentals.md) | JSX, components, props, state, controlled components | 4h |
+| 13 | [React Hooks](15_React_Frontend/03_Hooks_Deep_Dive.md) | `useState`, `useEffect`, `useContext`, `useRef`, `useCallback`, `useMemo` | 4h |
+| 14 | [React State Management](15_React_Frontend/04_State_Management.md) | Context API, Redux Toolkit, Zustand — when to use which | 3h |
+| 15 | [React Performance](15_React_Frontend/08_React_Performance.md) | Why components re-render, `React.memo`, `useCallback` bailouts | 3h |
 | 16 | [React TypeScript](15_React_Frontend/05_React_TypeScript.md) | Typing props, events, hooks, and context correctly | 2h |
 | 17 | [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) | Fiber, reconciliation, concurrent mode, the questions that surface at senior reviews | 3h |
 
@@ -91,9 +91,9 @@ CSS is a layout and visual system, not "make things pretty." If you treat it as 
 | # | File | Why now | Est |
 |---|------|---------|-----|
 | 18 | [CSS Foundations](18_CSS_Complete/01_CSS_Foundations.md) | The cascade, specificity, the box model — the mental model that makes everything else click | 3h |
-| 19 | [CSS Flexbox](18_CSS_Complete/02_CSS_Flexbox.md) | One-dimensional layout — the tool you'll use 80% of the time | 2h |
-| 20 | [CSS Grid](18_CSS_Complete/03_CSS_Grid.md) | Two-dimensional layout — page structure, complex component layouts | 2h |
-| 21 | [CSS Advanced](18_CSS_Complete/04_CSS_Advanced.md) | CSS variables, animations, responsive design, media queries | 3h |
+| 19 | [CSS Flexbox](18_CSS_Complete/02_CSS_Layout_Systems.md) | One-dimensional layout — the tool you'll use 80% of the time | 2h |
+| 20 | [CSS Grid](18_CSS_Complete/02_CSS_Layout_Systems.md) | Two-dimensional layout — page structure, complex component layouts | 2h |
+| 21 | [CSS Advanced](18_CSS_Complete/03_CSS_Responsive_Animations.md) | CSS variables, animations, responsive design, media queries | 3h |
 
 ---
 
@@ -137,7 +137,7 @@ Frontend engineers who can query a database communicate better with backend team
 - [JS Deep Reasoning](16_JavaScript/08_JS_Deep_Reasoning.md) — reread before interviews
 - [React Deep Reasoning](15_React_Frontend/09_React_Deep_Reasoning.md) — the reconciliation / fiber questions
 - [TS Deep Reasoning](17_TypeScript/04_TS_Deep_Reasoning.md) — the type system questions
-- [System Design](06_OOP_Design/06_System_Design.md) — frontend system design (CDN, caching, performance, accessibility)
+- [System Design](06_OOP_Design/03_System_Design.md) — frontend system design (CDN, caching, performance, accessibility)
 - [DSA foundations](02_Data_Structures/01a_Memory_Foundations.md) — yes, frontend devs get algorithm questions
 
 **Total estimated time:** 85–110 hours (Stages 1–4). Stage 5 adds 15–20 hours.
