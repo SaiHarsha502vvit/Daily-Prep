@@ -863,6 +863,108 @@ This ensures that even if a fixture provides access to 50 POMs, zero memory is w
 
 ---
 
+## 10. When POM Is Not Enough — The Screenplay Pattern (Demystified)
+
+The [readiness rubric](../career/READINESS_RUBRIC.md) lists "decides when POM is not enough (e.g., Screenplay pattern)" as Staff-level evidence. Most explanations of Screenplay drown in jargon — Actors, Abilities, Tasks, Interactions, Questions — so let's strip the abstraction completely: **Screenplay is function composition over a user identity, instead of method calls on a page identity.**
+
+### 10.1 The problem POM cannot express
+
+POM organizes code by **where** things happen (`LoginPage`, `LeaveListPage`). That works until your tests are dominated by **who** is doing **what**:
+
+```typescript
+// The test you want to write:
+// "An HR admin submits leave FOR an employee, the employee approves it on mobile,
+//  and an auditor verifies the trail via the API."
+```
+
+Three actors, three sessions, two channels (UI + API), one business flow. In pure POM this becomes fixture gymnastics: three contexts, POM sets instantiated per context, and helper functions that don't belong to any page because "submit leave for employee" spans four pages and an API call. Those homeless helpers are the signal. **When your `utils/` folder fills with multi-page business verbs, you have outgrown POM's organizing principle.**
+
+### 10.2 The mechanics — every Screenplay word mapped to code you already know
+
+| Screenplay word | What it literally is | In Playwright terms |
+| --- | --- | --- |
+| **Actor** | An object holding a name + abilities | A wrapper around one `BrowserContext` (+ its API context) |
+| **Ability** | A capability handed to the actor | The `Page`, an `APIRequestContext`, DB credentials |
+| **Task** | A named business action — a *function* that takes an actor | `submitLeaveFor(employee, dates)` — may cross pages/channels |
+| **Interaction** | The lowest-level step inside a task | `page.getByRole(...).click()` — exactly what your POM methods do |
+| **Question** | A named read of system state — a function returning a value | `leaveStatusOf(employee)` → `'Pending'` |
+
+Nothing here is a framework. It is ~30 lines of plain TypeScript:
+
+```typescript
+// screenplay/actor.ts
+export class Actor {
+  constructor(
+    public readonly name: string,
+    public readonly page: Page,               // Ability: browse
+    public readonly api: APIRequestContext,   // Ability: call the API
+  ) {}
+
+  // attemptsTo = "run these functions with me as the subject"
+  async attemptsTo(...tasks: Array<(actor: Actor) => Promise<void>>) {
+    for (const task of tasks) await task(this);
+  }
+  async asks<T>(question: (actor: Actor) => Promise<T>): Promise<T> {
+    return question(this);
+  }
+}
+```
+
+```typescript
+// screenplay/tasks/leave.tasks.ts — Tasks are just named async functions.
+// Inside them you still use POMs / components for the page mechanics.
+export const submitLeaveFor = (employee: string, dates: DateRange) =>
+  async (actor: Actor) => {
+    const leave = new LeaveListPage(actor.page);      // POM does the page work
+    await leave.open();
+    await leave.assignLeave(employee, dates);
+  };
+
+export const approvePendingLeave = () => async (actor: Actor) => {
+  const approvals = new ApprovalsPage(actor.page);
+  await approvals.open();
+  await approvals.approveFirst();
+};
+
+// screenplay/questions/leave.questions.ts
+export const leaveStatusOf = (employee: string) =>
+  async (actor: Actor): Promise<string> => {
+    const res = await actor.api.get(`/api/leave?employee=${employee}`);
+    return (await res.json()).status;   // a Question can use ANY ability — here, the API
+  };
+```
+
+```typescript
+// the spec — reads as the business flow, one line per business fact
+test('leave flow across three actors', async ({ browser }) => {
+  const hrAdmin  = await castActor(browser, 'Priya', { role: 'hr' });
+  const employee = await castActor(browser, 'Marco', { role: 'employee', device: 'Pixel 7' });
+  const auditor  = await castActor(browser, 'Aud',   { role: 'auditor' });
+
+  await hrAdmin.attemptsTo(submitLeaveFor('Marco', nextWeek));
+  await employee.attemptsTo(approvePendingLeave());
+
+  expect(await auditor.asks(leaveStatusOf('Marco'))).toBe('Approved');
+});
+```
+
+Read the mapping back: **POM did not disappear** — `LeaveListPage` still owns locators and page mechanics. Screenplay added one layer *above* it that owns business verbs and actor identity. That's the whole trick. The pattern's academic presentation ("the five elements of the Screenplay metaphor") obscures that it is: *a context wrapper + named async functions + a for-loop*.
+
+### 10.3 The honest decision table
+
+| Situation | Right tool | Why |
+| --- | --- | --- |
+| Single-user flows, one app | **Plain POM** (§3) | Screenplay's actor layer is pure overhead here |
+| 400+ locators, one complex app | **Component POM** (§4) + Locator Dictionary (§6) | The problem is page size, not actors |
+| Multi-actor, multi-channel business flows | **Screenplay over POM** | Actor identity and business verbs get a home; fixture gymnastics disappear |
+| Team already confused by fixtures | **Not Screenplay yet** | Adding indirection to confusion multiplies it — the pattern needs a team fluent in Ch06 first |
+
+The costs, stated plainly: one more layer to navigate when debugging (trace → task → POM → locator instead of trace → POM → locator); a naming discipline to enforce (Tasks are business verbs, never `clickSubmitButton()` — that's an Interaction and belongs in the POM); and near-zero community tooling for Playwright (Serenity/JS exists but is heavy — the 30-line homegrown version above is what teams actually run).
+
+**The Staff-level judgment call the rubric asks about is exactly this table** — knowing that Screenplay solves the *multi-actor business-verb* problem, and that reaching for it because it sounds sophisticated makes single-actor suites strictly worse.
+
+---
+
 ## 📚 References & Further Reading
 
 ### Architecture Patterns

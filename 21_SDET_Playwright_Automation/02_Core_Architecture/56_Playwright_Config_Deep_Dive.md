@@ -692,7 +692,7 @@ TEST RUN COMPLETE
 
 ---
 
-## Appendix B — 8 Common Config Mistakes
+## Appendix B — 9 Common Config Mistakes
 
 ### 1. `actionTimeout` outside `use`
 
@@ -733,6 +733,34 @@ Retries, workers, trace, and reporter should all be `CI ? x : y`. One size serve
 ### 8. `screenshot: 'off'` in CI
 
 Blind debugging. Set `'only-on-failure'` — no storage cost for passing tests, full evidence when it breaks.
+
+### 9. `webServer.timeout` left at default while the app cold-starts slowly
+
+This is the mistake behind the CI error `Error: Timed out waiting 60000ms from config.webServer` — so let's remove the abstraction and trace exactly what that timeout measures.
+
+What Playwright actually does with a `webServer` block, step by step:
+
+1. Runs `command` as a child process (in `cwd`, with your `env`).
+2. Starts polling the `url` (or `port`) — an HTTP GET roughly every 100 ms.
+3. **Any** response counts as "up" — including 404 and 500. It is a *socket-level liveness check*, not a health check. (This surprises people: a server that answers `500 Internal Server Error` on `/` still "passes" the wait.)
+4. If nothing answers within `timeout` (default **60 000 ms**), it kills the child process and fails the whole run before a single test executes.
+
+So the timeout must cover the **worst cold start**, which in CI includes things your laptop never does: `npm run build` inside the start command, database migrations, JIT/bundler warm-up on a 2-vCPU runner. The tuning procedure, not a guess:
+
+```typescript
+webServer: {
+  command: 'npm run start:test',
+  url: 'http://localhost:3000/healthz',   // a route that only answers when ACTUALLY ready
+  reuseExistingServer: !process.env.CI,
+  timeout: 120_000,                        // = measured worst CI cold start × 2
+  stdout: 'pipe',                          // ← the diagnostic: see WHAT the server printed
+  stderr: 'pipe',                          //    while Playwright was waiting
+},
+```
+
+- **Measure, then double**: time `npm run start:test` until first response on three cold CI runs; set `timeout` to twice the slowest. Twice — because CI runners have noisy neighbors, and a timeout that fires on the p99 cold start costs you a full pipeline re-run to "fix" nothing.
+- **Point `url` at a readiness route**, not `/`. Because of step 3 above, `/` answering during boot (some frameworks serve a splash/loading page early) ends the wait *before* the API behind it is ready — and your first three tests fail with connection errors that look like flake. A `/healthz` that returns 200 only after DB connect closes that hole.
+- **`stdout: 'pipe'` when diagnosing**: the timeout error alone tells you nothing. The piped server log tells you whether the app crashed (stack trace), is still compiling (bundler output), or bound to the wrong port (the second most common cause: the app read `PORT` from an env you didn't pass — the server is healthy on 3001 while Playwright polls 3000 forever).
 
 ---
 
@@ -793,4 +821,4 @@ Does the suite run in CI?
 
 **"testDir should point to the root"** ? A testDir pointing to the project root makes Playwright scan every .spec.ts file in the entire project, including unit tests, component tests, and utility files. Set testDir to a specific directory like tests/e2e. Use the projects config to separate E2E, API, and visual tests with different configurations.
 
-**"Reporter configuration does not affect test execution"** ? Some reporters buffer all results in memory until the suite completes (JSON reporter, HTML reporter). With 1000+ tests, this consumes significant memory. The list reporter streams output incrementally. In CI, use a reporter that streams results to avoid out-of-memory errors on large suites. The HTML reporter generates files that need artifact storage � plan for reporter output size in CI.
+**"Reporter configuration does not affect test execution"** ? Some reporters buffer all results in memory until the suite completes (JSON reporter, HTML reporter). With 1000+ tests, this consumes significant memory. The list reporter streams output incrementally. In CI, use a reporter that streams results to avoid out-of-memory errors on large suites. The HTML reporter generates files that need artifact storage � plan for reporter output size in CI.

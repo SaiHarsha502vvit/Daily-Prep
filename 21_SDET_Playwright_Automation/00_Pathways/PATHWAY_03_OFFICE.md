@@ -167,7 +167,17 @@ For the fastest answers, [`reference/`](../reference/) has 10 cheat-sheet cards 
 
 ### "My PM is asking why our tests cost $X/month"
 
-→ _(P-chapter removed in cleanup; see `22_DevOps/` for FinOps principles)_
+→ Ch62 [Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) — §6: the metrics that keep suites funded (escape rate, time-to-signal), and the anti-metrics to refuse
+→ See also `22_DevOps/` for FinOps principles
+
+### "I need to test mobile viewports / slow networks / session expiry"
+
+→ Ch61 [Emulation & Environment Simulation](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md) — devices[] matrix, `page.clock` time travel, CDP throttling, locale/timezone projects
+
+### "Our flaky-test situation has no process, just heroes"
+
+→ Ch62 [Enterprise Test Operations](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) — §3: the written flake SLA, automatic quarantine, and the trust math that justifies the deadline
+→ Ch26 [Flakiness](../05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) — the diagnosis techniques the SLA process wraps
 
 ---
 

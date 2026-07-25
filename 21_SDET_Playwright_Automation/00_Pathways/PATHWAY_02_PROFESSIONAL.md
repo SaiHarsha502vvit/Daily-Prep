@@ -108,6 +108,8 @@ The infrastructure layer below tests.
 | 21  | [`07_Specialised_Testing/40_Security_Testing_OWASP.md`](../07_Specialised_Testing/40_Security_Testing_OWASP.md)                       | R6     | OWASP Top 10, IDOR, injection, CSP headers, cookie flags.                        | 2 hr   | Run [`framework/tests/`] reasoning: which 3 OWASP categories matter most for your product?                                   |
 | 22  | [`05_Advanced_Topics/47_Allure_ReportPortal.md`](../05_Advanced_Topics/47_Allure_ReportPortal.md)                                     | R9     | Annotations (epic/feature/severity/owner), auto-analyzer, defect classification. | 1.5 hr | Configure Allure with proper annotations for your team's quarterly review.                                                   |
 | 23  | [`05_Advanced_Topics/29_Visual_Regression_Testing.md`](../05_Advanced_Topics/29_Visual_Regression_Testing.md)                         | R6     | Pixel comparison, masking, baseline workflow.                                    | 1.5 hr | Add 1 visual baseline for your main page.                                                                                    |
+| 24  | [`05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md`](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md)     | R1, R6 | Device matrix, `page.clock`, network throttling, locale/timezone — the environment axis of coverage. | 2.5 hr | Add one mobile project + one `page.clock` session-expiry test to your suite at work.                                        |
+| 25  | [`04_Enterprise_Architecture/62_Enterprise_Test_Operations.md`](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)       | R5, R8, R12 | Environment tiers, flake SLA, gate tiers, ownership, the metrics that keep suites funded. | 3 hr   | Write your team's one-page flake SLA (Ch62 Challenge 1) and get a lead to review it.                                          |
 
 ### Checkpoint 3
 
@@ -117,12 +119,20 @@ The infrastructure layer below tests.
 
 ---
 
-## Section 4 — Principal SDET Extension: platform & governance (≈ 25 hours)
+## Section 4 — Platform & governance: the principal-scope work (≈ 22 hours)
 
-The chapters that separate a senior from a principal. Each is in `05_Advanced_Topics/` with the file prefix `6x_…`, but the **logical chapter labels** are P1–P10 to avoid colliding with `06_SDET_to_SDE_Bridge/60_Tool_Comparison…`. See [`00_INDEX.md`](../00_INDEX.md) Module II.
+The work that separates a senior from a principal is not more test code — it is owning the *system* around the tests: decisions on record, processes with teeth, and platform tooling other engineers rely on. (The former "P1–P10 extension" chapters were folded into the material below during the Phase 6 audit.)
 
-| #   | Read | Rubric | Why now | Est | Lab |
-| --- | ---- | ------ | ------- | --- | --- |
+| #   | Read                                                                                                                                     | Rubric  | Why now                                                                                                  | Est    | Lab                                                                                                        |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------ |
+| 26  | [`framework/docs/adrs/`](../framework/docs/adrs/README.md) — all 6 ADRs                                                                  | R2, R12 | Decisions-on-record is the governance habit; these 6 show the format applied to real framework choices.  | 2 hr   | Write ADR-007 for a decision your team made implicitly (e.g., "why we retry twice in CI").                  |
+| 27  | [`career/TEST_STRATEGY_TEMPLATE.md`](../career/TEST_STRATEGY_TEMPLATE.md)                                                                 | R12     | Checkpoint 4 asks you to draft a strategy doc — this is the scaffold.                                    | 2 hr   | Fill it in for one real product line at work; keep it to one page.                                          |
+| 28  | [`career/RFC_TEMPLATE.md`](../career/RFC_TEMPLATE.md)                                                                                     | R12     | Platform changes land through RFCs, not surprise PRs.                                                    | 1.5 hr | Write the RFC for one improvement from your Ch62 flake-SLA lab.                                             |
+| 29  | [`career/CODE_REVIEW_RUBRIC.md`](../career/CODE_REVIEW_RUBRIC.md)                                                                         | R2, R8  | Federated ownership (Ch62 §4) only works if review standards are explicit.                               | 1.5 hr | Review one teammate PR against the rubric; note where the rubric itself needs a rule your team keeps re-litigating. |
+| 30  | [`challenges/CAP_C1_Flaky_Test_Detector.md`](../challenges/CAP_C1_Flaky_Test_Detector.md)                                                 | R8      | Build the detection half of the flake SLA — platform tooling, not test code.                             | 5 hr   | Complete the capstone; wire its output to the Ch62 §3 quarantine flow on paper.                              |
+| 31  | [`challenges/CAP_C3_Test_Analytics_Dashboard.md`](../challenges/CAP_C3_Test_Analytics_Dashboard.md)                                       | R8, R9  | The Ch62 §6 metrics need a surface leadership can see — build it.                                        | 6 hr   | Complete the capstone; present one week of real (or framework-generated) data to a peer as if to a director. |
+| 32  | [`05_Advanced_Topics/54_Synthetic_Monitoring.md`](../05_Advanced_Topics/54_Synthetic_Monitoring.md)                                       | R5, R9  | Production-facing checks are the platform team's outward face (Ch62 §1's production tier).               | 2 hr   | Define the 5 monitors you would run against your product's money path, with alert thresholds.               |
+| 33  | [`07_Specialised_Testing/51_Secrets_Management_For_SDETs.md`](../07_Specialised_Testing/51_Secrets_Management_For_SDETs.md)               | R7, R12 | Governance includes what must never leak; test infra handles real credentials.                           | 2 hr   | Audit your suite's secret flow end-to-end: where each credential lives, rotates, and could leak.             |
 
 ### Checkpoint 4
 

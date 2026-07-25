@@ -1313,3 +1313,4 @@ docker pull --platform linux/arm64 mcr.microsoft.com/playwright:v1.49.0-jammy
 - Reliability in CI: [`./08_reliability.md`](./08_reliability.md)
 - Real Dockerfile: [`../framework/Dockerfile`](../framework/Dockerfile)
 - Real compose: [`../framework/docker-compose.yml`](../framework/docker-compose.yml)
+- Gate tiers, flake SLA, and the operating calendar around this pipeline: [`../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md`](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)

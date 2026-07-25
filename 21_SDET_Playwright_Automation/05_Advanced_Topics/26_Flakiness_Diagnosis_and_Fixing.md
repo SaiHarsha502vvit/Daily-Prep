@@ -7,6 +7,7 @@
 - [`08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — Root cause: rendering timelines
 - [`17_D365_Advanced_Timing_Patterns.md`](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) — D365-specific flakiness
 - [`25_CICD_Integration_GitHub_Azure.md`](./25_CICD_Integration_GitHub_Azure.md) — Retries in CI
+- [`61_Emulation_Clock_Network_And_Devices.md`](./61_Emulation_Clock_Network_And_Devices.md) — `page.clock` deletes timer-based flake; `reducedMotion` deletes animation flake
 
 ---
 

@@ -1985,3 +1985,4 @@ export default defineConfig({
 - Reporting deep-dive (Allure, custom reporters, trace viewer): [`./11_reporting.md`](./11_reporting.md)
 - CI integration + Docker: [`./10_ci_docker.md`](./10_ci_docker.md)
 - Visual regression configuration: [`../deep_dives/visual_regression.md`](../deep_dives/visual_regression.md)
+- Emulation project matrix (devices, locale/timezone, colorScheme, permissions): [`../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md`](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md)

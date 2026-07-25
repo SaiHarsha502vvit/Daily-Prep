@@ -1171,6 +1171,8 @@ Real production bugs and their resolution.
 - Parallel execution: [`./07_parallelism.md`](./07_parallelism.md)
 - Trace viewer setup: [`./11_reporting.md`](./11_reporting.md)
 - D365 patterns deep dive: [`../deep_dives/d365.md`](../deep_dives/d365.md)
+- Time-based flake elimination (`page.clock`) + `reducedMotion`: [`../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md`](../05_Advanced_Topics/61_Emulation_Clock_Network_And_Devices.md)
+- The flake SLA and quarantine *process* around these techniques: [`../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md`](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md)
 - Practice problems: Q01, Q02, Q04 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)
 
 

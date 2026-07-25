@@ -7,6 +7,7 @@
 - [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — Sharding and workers
 - [`16_CrossSite_Pattern6_StorageState_Chaining.md`](../03_D365_And_Patterns/16_CrossSite_Pattern6_StorageState_Chaining.md) — globalSetup in CI
 - [`21_Enterprise_Project_Structure.md`](../04_Enterprise_Architecture/21_Enterprise_Project_Structure.md) — Environment config
+- [`62_Enterprise_Test_Operations.md`](../04_Enterprise_Architecture/62_Enterprise_Test_Operations.md) — gate tiers, flake SLA, and the operating rhythm around this pipeline
 
 ---
 

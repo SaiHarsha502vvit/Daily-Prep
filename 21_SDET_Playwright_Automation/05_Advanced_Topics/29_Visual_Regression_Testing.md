@@ -7,6 +7,7 @@
 - [`17_D365_Advanced_Timing_Patterns.md`](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) — Wait for stable state before screenshotting
 - [`25_CICD_Integration_GitHub_Azure.md`](./25_CICD_Integration_GitHub_Azure.md) — Storing snapshots in CI
 - [`26_Flakiness_Diagnosis_and_Fixing.md`](./26_Flakiness_Diagnosis_and_Fixing.md) — Animation flakiness in screenshots
+- [`61_Emulation_Clock_Network_And_Devices.md`](./61_Emulation_Clock_Network_And_Devices.md) — aria snapshots (structural assertions) + dark-mode screenshot projects
 
 ---
 
