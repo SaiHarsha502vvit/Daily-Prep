@@ -716,3 +716,18 @@ Q: How do you type a function that accepts any object with a specific key?
 ---
 
 [‚Üê Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series ‚Üí CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
+
+
+---
+
+## Reality Check
+
+**"interface versus type is a style war with no stakes"** ? The differences are mechanical and occasionally load-bearing: interfaces MERGE declarations (the extension mechanism library augmentation depends on ó and a foot-gun inside apps where an accidental same-name interface silently merges), interfaces error more readably on extension conflicts, types alone express unions/conditionals/mapped forms, and error messages display differently (aliases can inline into hovers). The convention that survives contact ó interfaces for object contracts others implement/extend/augment, types for everything else ó exists because of these mechanics, not aesthetics. Knowing WHY retires the war.
+
+**"Enums are how TypeScript does constants"** ? Enums are the feature the ecosystem walked back from, for reasons worth owning: they generate RUNTIME code (violating types-are-erased ó an import that survives compilation, awkward for tree-shaking and erasableSyntaxOnly tooling), numeric enums accept... any number silently in older versions and reverse-map weirdly, and const-enum inlining breaks under isolatedModules. The modern replacement is the as-const object plus a derived union type (keyof typeof) ó same autocomplete and exhaustiveness, zero runtime surprises, string-debuggable values. Legacy enums are fine to leave; NEW enums need a justification.
+
+**"Type guards are for narrowing unknown API data"** ? User-defined guards (x is T) are TRUST INJECTION points ó the compiler believes your predicate body unconditionally, and a wrong guard is worse than a cast because it looks like proof: the discipline is keeping guard bodies trivially auditable or generated (zod's safeParse as the guard). The underused members of the narrowing family: assertion functions (asserts x is T ó throw-or-narrow, perfect for invariant helpers), discriminant-based narrowing that needs NO guard at all (design the union with a tag and switch on it ó the zero-trust option), and exhaustiveness via never in the default arm (adding a union member breaks every switch that must handle it ó the type system as change-impact analysis).
+
+**"Generics make code reusable"** ? Application-code generics earn their complexity only when they PRESERVE type relationships through a transformation (the function that returns what it was given, keyed lookups where the key narrows the value ó function get<K extends keyof T>(obj: T, k: K): T[K]); generics that merely abstract for abstraction's sake (one type parameter used once, in a signature nobody calls polymorphically) are complexity without preservation. The two working heuristics: a type parameter should appear TWICE or constrain something, and the constraint (extends) is where the design lives ó unconstrained T is usually a question not yet answered.
+
+**"Utility types cover composition; combine them freely"** ? Deep utility-type COMPOSITIONS (Partial of Pick of Omit of...) are how codebases accrete unreadable type plumbing: each layer is fine, the stack becomes a hover-tooltip of doom and an error-message generator that buries the actual mismatch six instantiations deep. The maintainable pattern is NAMING intermediate shapes (type DraftUser = ... as a real, documented concept) and deriving in one visible step from a single source-of-truth type ó derivation trees with named nodes, not anonymous utility pipelines. If the hover tooltip needs horizontal scrolling, the design was outsourced to the utility belt.

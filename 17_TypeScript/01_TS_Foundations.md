@@ -688,3 +688,18 @@ Q: What is `as const`?
 ---
 
 [Index](../00_MASTER_INDEX.md) | [Next â†’ Advanced Types](02_TS_Advanced_Types.md)
+
+
+---
+
+## Reality Check
+
+**"TypeScript adds runtime type safety"** ? Types are ERASED at compilation — zero runtime checking exists: an API returning the wrong shape flows through your perfectly-typed code and explodes three files later, because the annotation was a compile-time claim, not a guard. The boundary discipline this forces: validate at every trust edge (API responses, JSON.parse, localStorage, user input) with runtime validators (zod/valibot) that DERIVE the static type from the schema — one source of truth, checked once at the border, trusted inside. Typed code with unvalidated borders is confidence theater.
+
+**"any is for when you don't know the type yet"** ? any is CONTAGIOUS DISABLEMENT: it silences checking on everything it touches and spreads through every operation downstream — one any parameter and the function body is effectively JavaScript. The actual I-don't-know type is unknown: it accepts anything but forces narrowing before use, converting "trust me" into "prove it." The grep-able health metric is real: any-count trends measure how much of the codebase has opted out. noImplicitAny plus treating explicit any as a review flag is the floor, not zealotry.
+
+**"Structural typing is duck typing with extra steps"** ? Structural COMPATIBILITY is checked statically and completely — but its corners are the daily surprises: any object with the right shape passes (no branding — two semantically different IDs interchangeable unless you brand them), EXCESS property checking fires only on object LITERALS assigned directly (the same object via a variable passes — why inline props get flagged and extracted ones do not), and empty interfaces match everything. Nominal-typing habits from Java produce both false confidence (assuming names matter) and confusion (why did this literal error when the variable version didn't).
+
+**"Type inference means annotations are optional style"** ? Inference has a DIRECTION and annotations are its control points: parameters cannot be inferred (they are the input contract — annotate always), return types are inferred but annotating them converts silent contract drift into local errors (a refactor changing your return shape errors AT the function, not at forty call sites), and let widens literals ("GET" becomes string) where const and as const preserve them. The senior pattern is deliberate: annotate boundaries (exports, parameters, returns of public functions), infer internals — inference as implementation detail, annotation as contract.
+
+**"strict mode is for greenfield projects"** ? strict is a BUNDLE whose members pay differently, and knowing them beats all-or-nothing: strictNullChecks is the one that eliminates a whole production bug class (null is billion-dollar-mistake tracked in the types — without it, null is assignable to everything and the checker is lying to you), noImplicitAny stops silent unsoundness spread, strictFunctionTypes fixes variance holes. Migration is per-flag, per-directory viable — and the teams that "can't afford strict" are paying for it in the incident channel instead: every strictNullChecks error was a potential runtime TypeError the compiler had been forbidden to mention.
