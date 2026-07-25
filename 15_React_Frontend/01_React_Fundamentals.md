@@ -1033,3 +1033,18 @@ function Counter() {
 ```
 
 ---
+
+
+---
+
+## Reality Check
+
+**"React re-renders when state changes"** → React re-renders when state is REPLACED with a not-Object.is-equal value — mutation is invisible (push into the array, set on the object: same reference, no render, the single most common React bug), and the render then cascades to ALL children by default regardless of whether their props changed (memo is the opt-out, not the default). The two-clause model — replacement triggers, cascade propagates — explains both the missing update (you mutated) and the mystery updates (parent rendered, you rode along).
+
+**"JSX is HTML in JavaScript"** → JSX compiles to FUNCTION CALLS producing element objects — plain descriptions, not DOM — and every JSX gotcha falls out of that: attributes are JS-named (className, htmlFor), inline objects/functions are NEW references per render (why they defeat memo children), conditional rendering follows JS semantics (the number 0 short-circuiting && renders a literal 0 — the count && <List/> classic), and children are just an argument (which is why you can map, filter, and pass them around). The element tree is data; the DOM is a downstream effect. Everything confusing about JSX is JavaScript being JavaScript.
+
+**"Keys stop the list-key warning"** → Keys are IDENTITY declarations that decide state survival across renders: React matches this render's children to last render's by key, so index-keys on a reorderable/filterable list attach the OLD item's state (input drafts, animations, memo caches) to the NEW item at that position — the wrong-row-edited bug that only appears after a delete. Stable data-derived keys fix it; and the same mechanism used deliberately (changing a key) is the idiomatic full-reset of a component's state. Keys are not a lint appeasement; they are the reconciler's join column.
+
+**"Props flow down, so lifting state up is the scaling strategy"** → Lifting state is correct until it becomes the RENDER-CASCADE problem (the app-root state that re-renders everything per keystroke) and the PROP-DRILLING problem (six layers of pass-through) — and the remedies are compositional before they are architectural: push state DOWN to the narrowest owner that needs it, use children/slots so intermediate layers never see the data (composition beats drilling — the most under-taught React technique), and only then reach for context (which trades drilling for re-render-every-consumer semantics) or a store. "Lift state up" is lesson three; "push state down and compose" is the lesson that makes large apps fast.
+
+**"Controlled components are the React way for forms"** → Controlled inputs buy per-keystroke state (live validation, transformation, dependent fields) at per-keystroke RENDER cost and ceremony; uncontrolled inputs with refs or plain FormData buy simplicity at the cost of momentary reads only — and the modern ecosystem quietly agrees with the second position for most fields (form libraries register uncontrolled inputs and subscribe narrowly; React 19's form actions read FormData). The professional default: uncontrolled until a field genuinely needs live logic, controlled exactly where it does — "everything controlled" is 2018 idiom that survives in tutorials and interview answers, not in performant form code.

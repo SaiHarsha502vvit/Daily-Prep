@@ -727,3 +727,18 @@ document.getElementById("btn").addEventListener("click", () => {
 ---
 
 [‚Üê Previous: 11_Complex_UI_Pages_Patterns](11_Complex_UI_Pages_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+
+---
+
+## Reality Check
+
+**"Following project tutorials builds project skill"** ? Tutorials exercise TRANSCRIPTION; projects exercise DECISIONS ó and the decisions are the skill: what state goes where, which edge cases exist, when to extract a component, how to structure the data layer. The conversion technique that makes tutorial time count: after completing one, REBUILD from the README alone (no video, no repo peeking) ó the stuck points are precisely the decisions the tutorial made for you, now visible as your actual gaps. One tutorial plus one blind rebuild teaches more than five tutorials.
+
+**"Portfolio projects should showcase many technologies"** ? Tech-collage projects (React + GraphQL + Redis + micro-services for a todo app) signal rÈsumÈ-driven development to exactly the reviewers they aim to impress; DEPTH signals engineering: one well-chosen project with real edge-case handling (the search with debounce, races handled, empty/error states designed), tests that verify behavior, deployed and monitored, README documenting the decisions and trade-offs. Reviewers spend three minutes: a working deploy, a decisions-section README, and one non-trivial solved problem (virtualized list, optimistic updates with rollback, offline draft sync) beat any technology enumeration.
+
+**"Build projects until they work"** ? Working is the MIDPOINT of a practice project's value curve: the back half is hardening (the [FE problem-sets ladder] ó 3x content, empty states, slow network via DevTools throttling, keyboard-only traversal), instrumenting (error boundary with logging, web-vitals reporting ó experiencing your own INP), testing (the behavior tests you would demand at work), and the retrospective write-up (what you would redo ó the architecture lesson extraction). Projects abandoned at "works" teach construction; projects taken through the back half teach engineering ó and the back half is where every senior-differentiating skill lives.
+
+**"Solo projects prepare you for React jobs"** ? Solo projects cannot teach the COLLABORATION surface where job difficulty concentrates: reading OTHERS' React code (the inherited codebase with three state paradigms), extending components you did not design (the prop API that fights your use case), PR review dynamics (defending a state-placement choice in writing), and merge coordination (the conflicting refactors). The synthetic substitutes work: contribute to an OSS React project (real reviews on real code), do a collaborative build with one other person (the API-boundary negotiation experience), or refactor a deliberately-messy open codebase (reading practice) ó each injects the missing surface into otherwise-solo preparation.
+
+**"A finished project is a static credential"** ? Projects DECAY as credentials (the 2023-idiom project reads as dated by 2026 ó class components once, manual-memo-everywhere soon) and compound as PLATFORMS: the same project re-serving as upgrade practice (migrate it to the current router/query/compiler idiom ó the migration story is itself interview material), performance-lab (profile and optimize it against real Lighthouse budgets), and testing-dojo (retrofit the suite you now know it needs). One living project maintained through two idiom generations demonstrates the skill jobs actually need ó evolving a codebase ó which no number of freshly-started projects can show.
