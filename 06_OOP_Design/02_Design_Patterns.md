@@ -1299,3 +1299,18 @@ Section 3 = LeetCode design class problems.
 | **Builder**   | Static inner Builder class         | Lombok `@Builder`, DSL in Kotlin, named parameters in Python                                      | When you need immutable objects and Java pre-Lombok                                      |
 
 **Bottom line**: Modern languages have absorbed the SIMPLEST cases of most patterns (Strategy â†’ lambdas, Iterator â†’ for-each). However, the CONCEPTS remain essential: you still need Observer semantics even if the implementation is RxJava; you still need Factory decoupling even if the implementation uses a Map registry.
+
+
+---
+
+## Reality Check
+
+**"Knowing all 23 GoF patterns is the goal"** ? The 1994 catalog is a HISTORICAL inventory, not a checklist: several patterns solved C++-specific problems (Prototype for expensive construction without reflection), others were absorbed into languages (Iterator is foreach; Strategy is a lambda; Observer is events/streams), and modern practice draws from maybe eight regularly. The durable skill is recognizing the FORCES a pattern balances — when someone says "we need different behavior per payment provider, chosen at runtime, testable in isolation," hearing Strategy — not reciting intent sections.
+
+**"Singleton is the easy pattern"** ? Singleton is the pattern most likely to be an ANTI-pattern in context: it is global mutable state with a design-pattern alibi — untestable (cannot substitute), concurrency-delicate (double-checked locking history), and hostile to anything needing two instances (multi-tenancy, tests in parallel). The modern verdicts: for true single services, let the DI container manage scope (Spring singletons are container-scoped, not class-enforced); for stateless utility, use static methods; for the rare genuine case, an enum singleton. Interview-wise, critiquing Singleton fluently scores higher than implementing it.
+
+**"Factory Method and Abstract Factory are the same idea at different sizes"** ? They answer different questions: Factory Method defers WHICH subclass to instantiate (one product, decided by subclasses or parameters); Abstract Factory guarantees FAMILIES stay consistent (all-Windows widgets or all-Mac widgets, never mixed). The consistency guarantee is the entire point of the second — flattening them into "factories make objects" loses the one sentence that makes Abstract Factory worth its weight, and interviewers probe exactly that sentence.
+
+**"Decorator is how you add features to classes"** ? Decorator adds features to INSTANCES at runtime, stacking transparently behind the same interface — java.io streams being the canonical live specimen (BufferedInputStream wrapping FileInputStream). Its costs are real: deep wrapper chains obscure debugging (which layer ate the exception?), identity breaks (equals across wrappers), and Java's sealed-type future limits it. Contrast-and-choose is the skill: subclassing for compile-time fixed variants, Decorator for runtime composition, AOP/proxies for cross-cutting concerns — three tools where the naive answer sees one.
+
+**"Patterns make code better"** ? Patterns make TRADE-OFFS explicit; applied without their forces present, they make code worse — the FactoryFactoryStrategyManager enterprise parody exists because pattern-count became a proxy for design skill. The discipline that survives review: name the force (variation point, family consistency, runtime stacking), THEN reach for the matching pattern, and prefer the language feature when one absorbed the pattern (lambda over Strategy class, enum over State machine for closed sets). Pattern fluency is knowing when NOT to, stated in the same breath.

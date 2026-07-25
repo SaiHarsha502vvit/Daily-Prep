@@ -619,3 +619,18 @@ just hardcodes "Order #12345" instead of doing real work.
 ---
 
 **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
+
+
+---
+
+## Reality Check
+
+**"Load balancers distribute load evenly"** ? Round-robin distributes REQUESTS evenly, not load — request costs vary by orders of magnitude, and uniform distribution of non-uniform work produces hot servers. Least-connections approximates load better; consistent hashing sacrifices evenness for cache affinity; and layer matters (L4 spreads connections, L7 can route by content). The fundamental being tested: distribution policy is chosen per traffic shape, and "the load balancer handles it" is where designs go to hand-wave.
+
+**"Caching speeds up systems"** ? Caching speeds up HITS and adds three new failure modes everywhere else: stale reads (invalidation strategy is the actual design decision — TTL, write-through, or explicit invalidation with its race conditions), stampedes when hot keys expire (locking or probabilistic early refresh), and cold-start hammering after deploys. The professional framing: a cache is a consistency trade-off with a speed benefit — designs that add the benefit without pricing the trade-off are the ones incident reviews are written about.
+
+**"Database indexes make queries fast"** ? Indexes make SELECTED queries fast by taxing every write (each index is another B-tree to update) and every byte of storage; a table with eight indexes has quietly halved its insert throughput. The fundamentals that survive: index for the queries you actually run (leftmost-prefix rule for composites), know when a covering index ends the conversation, and know that the optimizer ignores your index when selectivity is poor. "Add an index" is the beginning of a cost discussion, not the end of a latency one.
+
+**"Replication provides consistency and availability"** ? Replication provides COPIES; what they provide depends on the read/write topology: async replicas give read scaling plus replica lag (read-your-own-writes breaks — the canonical missing-comment bug), sync replicas give consistency plus write-latency coupling, and quorum systems tune between them per request. Every replication answer needs its lag story: WHERE do stale reads surface, and which user-visible flows must be pinned to the primary? Omitting that story is the most common fundamentals-level gap.
+
+**"Sharding is how databases scale, apply when needed"** ? Sharding is the point where the database stops being one system: cross-shard JOINs and transactions disappear (application-level joins, sagas), the shard key becomes nearly unchangeable (resharding live data is a project measured in quarters), and hot keys (one celebrity, one viral item) defeat naive hash distribution. The fundamental discipline: exhaust vertical headroom, read replicas, and caching FIRST, then choose the shard key against the dominant query pattern — because the second-most-common query pattern just became a scatter-gather.

@@ -798,3 +798,18 @@ The `@Override` annotation is a developer tool that leverages the compiler as a 
 ```
 
 [‚Üê Back to Semester 2 Guide](../00_CURRICULUM/SEMESTER_2_GUIDE.md)
+
+
+---
+
+## Reality Check
+
+**"Design problem sets are read-and-nod material"** ? A design problem set only trains when you produce an ARTIFACT per problem ó a numbers sheet, a component sketch, one seam explored deep ó BEFORE reading any provided direction. Reading solutions first converts every problem into confirmation; producing first converts every solution into a diff against your own thinking, which is where the learning density is. The discipline: 25 minutes of production, then compare, then write the one-line delta lesson.
+
+**"Problem sets should be completed in order, once"** ? Design skills decay toward slogan-recall without SPACED revisits, and revisiting the same problem with changed constraints is the highest-value rep: the same feed design at 100x scale, the same chat with groups of 10k, the same rate limiter as a shared library instead of a service. Second passes cost a third of the time and teach the branch points ó which is what the interview actually tests. One pass through twenty problems loses to three passes through seven.
+
+**"The goal is a complete design per problem"** ? Completeness is the wrong optimization target for practice: rotating FOCUS beats finishing everything ó this session only estimation and bottleneck identification, that session only failure modes, another only the data model. Focused reps build the individual muscles; complete-design reps rehearse the assembly. Doing only assembly reps is why practiced candidates still hand-wave the arithmetic ó they always spent their session time touring components instead.
+
+**"Solo practice on problem sets prepares you for the interview"** ? Solo practice cannot train INTERRUPTION RECOVERY ó the defining texture of real design rounds: requirement changes mid-design, "actually assume 10x that," a hostile what-if against your queue choice. The cheapest simulation: after your solo design, roll one of three prepared perturbations (scale jump, region failure, new consistency requirement) and revise for ten minutes. Candidates who never practiced perturbation present beautifully and collapse at the first push.
+
+**"More problems covered means better preparation"** ? Coverage has sharply diminishing returns after the core archetypes (feed, chat, shortener/KV, rate limiter, queue-based pipeline, top-k/trending, storage service, scheduler) because new problems recombine the same decisions: fan-out, partitioning, consistency-per-flow, hot keys, idempotency. Depth on the recurring DECISIONS ó able to argue each from numbers in any costume ó beats breadth over problem titles. The problem set is the gymnasium, not the syllabus.

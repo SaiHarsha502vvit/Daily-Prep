@@ -670,3 +670,18 @@ The etcd team (core of Kubernetes) evaluated Paxos before choosing Raft and conc
 ```
 
 > **Navigation**: [< Previous](05_SD_Interview_Problems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_LLD_Solved_Problems.md)
+
+
+---
+
+## Reality Check
+
+**"Distributed systems are systems on multiple machines"** ? The defining property is PARTIAL FAILURE with ambiguity: a timeout tells you nothing about whether the operation happened — the request may have died en route, the server may have crashed after committing, the response may be lost. Single-machine intuition (a call either succeeded or threw) is exactly the intuition that must be unlearned; every distributed pattern — retries with idempotency, sagas, consensus — is machinery for acting sensibly WITHOUT knowing what happened.
+
+**"Exactly-once delivery is achievable with the right broker"** ? Delivery is at-least-once or at-most-once; EXACTLY-ONCE PROCESSING is achievable — and it is built at the consumer: idempotency keys, dedup tables, or transactional consume-and-write (outbox/inbox patterns). Broker marketing that says exactly-once means "we moved the dedup inside our transaction boundary for flows that stay within us." The interview and production skill is identical: place the idempotency mechanism, name its storage, and explain its retention window.
+
+**"Clocks across machines are approximately synchronized, which is close enough"** ? NTP skew of tens of milliseconds is ETERNITY at network speeds: last-write-wins with wall clocks silently drops concurrent writes, distributed locks with clock-based leases double-grant under drift, and cross-machine event ordering by timestamp fabricates causality. The fundamentals ladder: wall clocks for humans, monotonic clocks for local durations, logical clocks (Lamport/vector) for causality, and TrueTime-style bounded uncertainty only when hardware provides it. Any design sentence containing "we order events by timestamp" needs an immediate follow-up sentence.
+
+**"Consensus algorithms are for database internals, not application design"** ? Every "there must be exactly one" requirement IS a consensus requirement wearing product clothes: one leader processing a partition, one winner of a unique-username claim, one execution of a scheduled job across replicas. Teams that do not recognize this reinvent consensus badly with database flags and cron locks (the split-brain incidents write themselves). The application-level answer is usually to BUY consensus — a lease from etcd/ZooKeeper, a database unique constraint, a fencing token — and the fundamental skill is spotting which requirement needs it.
+
+**"Failure detection tells you which nodes are down"** ? In an asynchronous network, down and slow are INDISTINGUISHABLE — every failure detector is a timeout policy with false-positive/false-negative tuning, nothing more. This impossibility is why fencing tokens exist (the node declared dead may still be writing), why leases beat locks (time-bounded authority self-expires), and why split-brain is a permanent design consideration rather than a bug class. Designs that say "when the health check fails, we promote a replica" must immediately say "and the old primary is fenced by X" — or they contain a data-corruption scenario, not an edge case.

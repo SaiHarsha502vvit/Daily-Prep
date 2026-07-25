@@ -1001,3 +1001,18 @@ Total: 5+ network hops, distributed tracing REQUIRED (Jaeger/Zipkin)
 ---
 
 **Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
+
+
+---
+
+## Reality Check
+
+**"Flows are diagrams; the design is the components"** ? The flow IS where designs break: components look fine in a box diagram until you trace one user action through auth, cache, service, queue, and DB — and discover the race between cache-write and DB-commit, the retry that double-charges, the notification that fires before the transaction lands. Tracing flows end-to-end is the design REVIEW built into the design; skipping it ships whiteboard fiction.
+
+**"The happy path defines the flow"** ? Every arrow in a flow has three shadow arrows: timeout, error response, and duplicate delivery. Professional flow design annotates each hop with its failure behavior — retry (how many, what backoff), fallback (stale cache? default?), or propagate (which error surfaces to the user?). The interview upgrade is doing this UNPROMPTED for the two or three hops that matter: "if the payment provider times out here, we must not retry blindly because the charge may have succeeded — we need an idempotency key and a status query."
+
+**"Login flow is a solved commodity"** ? The login flow is a chain of deliberate security decisions people wreck by simplification: password check must be constant-time against timing attacks, user-not-found and wrong-password must return IDENTICAL responses (username enumeration), sessions must rotate identifiers on privilege change (session fixation), and refresh-token theft needs rotation-with-reuse-detection. Walking this flow with its WHYs is a security interview in miniature — and the flows chapter is where those whys attach to arrows people can see.
+
+**"Checkout flows are payment-provider plumbing"** ? Checkout is THE distributed-transaction teaching flow: inventory reservation with TTL (holding without buying), payment authorization versus capture (two-phase in the wild), order-state machines with compensation (cancel releases reservation, refund reverses capture), and exactly-once user experience atop at-least-once infrastructure (idempotency keys on every mutating call). Every saga-pattern lecture is this flow generalized; owning the concrete version makes the abstract one obvious.
+
+**"Notification flows are fire-and-forget"** ? Notifications carry the quietest correctness traps in product engineering: firing before the triggering transaction commits (user gets email for an order that rolled back — the transactional-outbox pattern exists solely for this), duplicate sends on consumer retry (dedup keys per notification-event), preference checks racing preference changes, and fan-out amplification (one post, a million timeline writes — the push-versus-pull decision). "Just send an event" is the answer that marks the boundary between feature thinking and systems thinking.
