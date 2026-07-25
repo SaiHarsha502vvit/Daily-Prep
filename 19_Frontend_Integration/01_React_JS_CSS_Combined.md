@@ -808,3 +808,18 @@ Q: Server state vs client state?
 ---
 
 > [Index](../00_MASTER_INDEX.md) | [Next â†’ Frontend Debugging](02_Frontend_Debugging.md)
+
+
+---
+
+## Reality Check
+
+**"Integration is using React, JS, and CSS in the same project"** ? Integration is managing the BOUNDARIES where each technology's model leaks into the next: React's re-render cycle deciding when your DOM measurements are stale, CSS transitions fighting React's unmount (the exit-animation problem — the node is gone before the animation starts), event handlers crossing from React's synthetic system to native listeners (different ordering, different this, different cleanup obligations). Single-technology skill predicts almost nothing about boundary skill — which is why "knows React, knows CSS" candidates still ship components that measure zeros and animate nothing.
+
+**"React abstracts the DOM away"** ? React SCHEDULES the DOM; it does not repeal it: refs hand you real nodes whose geometry follows the browser's layout timing (measure in useLayoutEffect or get a pre-paint value — useEffect measures after paint, the flicker source), portals relocate DOM while React context and events flow through the component tree (the two-trees mental model behind every modal bug), and third-party DOM libraries need a fenced-off node React promises not to reconcile. The abstraction is a contract with exceptions, and integration work lives entirely in the exceptions.
+
+**"State drives UI — so put UI state in React"** ? THREE state systems compete for every piece of UI state, and misassignment is the integration bug: React state (re-render on change — right for data-driven UI), CSS state (:hover, :focus-within, checked, transitions — right for interaction feedback, free, off-thread, no re-render), and DOM state (scroll position, selection, input focus, video playback — owned by the browser, and React re-renders can DESTROY it via remounts, the lost-focus-on-every-keystroke classic). The integration skill is the routing table: feedback to CSS, data to React, browser-owned to the DOM with refs as diplomatic channels.
+
+**"CSS-in-React choices are about developer preference"** ? Each styling strategy makes different RUNTIME commitments the component inherits: runtime CSS-in-JS injects styles per render (theming flexibility, hydration and concurrent-rendering costs that pushed the ecosystem to build-time extraction), CSS Modules resolve at build (fast, static — dynamic values must route through inline style or custom properties), utilities inline the design system (no naming, but conditional variants become string arithmetic — the cva/clsx layer exists for this). Integration failures cluster where dynamism crosses the boundary: a prop-driven color needs a custom-property bridge in the static strategies, and NOT knowing that produces either style-prop soup or a runtime library adopted for one dynamic value.
+
+**"If each layer is tested, the integration is tested"** ? The characteristic integration failures are INVISIBLE to layer-isolated tests: the dropdown that unit-tests perfectly but clips under a parent's overflow: hidden (CSS context), the listener that passes its test but leaks because cleanup raced React strict-mode double-invocation (lifecycle contract), the animation that works until concurrent rendering interleaves an update (timing contract). The integration test layer is component tests in a REAL browser engine (Playwright CT or equivalent) where layout, events, and lifecycle actually execute together — the missing middle of the testing pyramid for frontend, and precisely what jsdom-only suites cannot see.
