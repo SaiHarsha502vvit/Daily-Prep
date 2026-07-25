@@ -38,7 +38,7 @@ Purpose: compact entry-point. An agent that reads ONLY this file + the target fo
 | `18_CSS_Complete`         | CSS layout, architecture, responsive design.                               | Visual/layout reasoning here.                                         |
 | `19_Frontend_Integration` | Browser debugging, build tools, performance, a11y.                         | Cross-cutting frontend operations.                                    |
 | `20_Interview_Mastery`    | Interview synthesis, problems, scripts, final prep.                        | High-signal interview framing.                                        |
-| `21_Python_ML_DL_NLP`     | Python, ML, DL, NLP, LLM/RAG, MLOps.                                       | ML/Python stack here.                                                 |
+| `25_Python_ML_DL_NLP`     | Python, ML, DL, NLP, LLM/RAG, MLOps.                                       | ML/Python stack here.                                                 |
 | `22_DevOps`               | Linux, Docker, Kubernetes, CI/CD, SRE, deployment.                         | Infrastructure and operations.                                        |
 
 ---

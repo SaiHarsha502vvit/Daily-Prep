@@ -36,9 +36,9 @@
 | 18_CSS_Complete | 9 |
 | 19_Frontend_Integration | 11 |
 | 20_Interview_Mastery | 43 |
-| 21_Python_ML_DL_NLP | 19 |
+| 25_Python_ML_DL_NLP | 19 |
 | 21_SDET_Playwright_Automation | 1048 |
-| 22_Advanced_API_Testing | 8 |
+| 24_Advanced_API_Testing | 8 |
 | 22_DevOps | 27 |
 | 23_Mobile_Dev_And_Testing | 57 |
 | _Curriculum | 48 |
@@ -586,25 +586,25 @@
 | 20_Interview_Mastery/Problem_Sets_DSA/21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md | File 21 — Prefix Sum, Prefix XOR, and 2D Prefix: Unified Cheat Sheet | Interview synthesis, final prep, scenarios, and problem explanation | challenges, details, constraints, dsa/algo, enterprise | ``4a53fda6d637`` |
 | 20_Interview_Mastery/Problem_Sets_DSA/22_DSA_PDF_Topic_to_Workspace_Map.md | File 22 — DSA Patterns PDF to Workspace Map (Coverage + Revision Plan) | Interview synthesis, final prep, scenarios, and problem explanation | css, dsa/algo | ``d2811e5d0026`` |
 | 20_Interview_Mastery/CONTEXT.md | Folder Context: 20_Interview_Mastery | Folder-level agent context and writing boundaries | java/spring | ``f2d72274457e`` |
-| 21_Python_ML_DL_NLP/00_INDEX.md | 🐍 Python, Machine Learning, Deep Learning & NLP — Complete Guide | Module index and local navigation | javascript, dsa/algo, devops | ``af67df8a87f1`` |
-| 21_Python_ML_DL_NLP/01_Python_Core_Fundamentals.md | 🐍 Python Core Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, enterprise | ``0a5f4dd57f56`` |
-| 21_Python_ML_DL_NLP/02_Python_Advanced.md | 🐍 Python Advanced — Concurrency, Memory, and Internals | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, sql, javascript, typescript, devops | ``deba2d93d05e`` |
-| 21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md | ⚡ Python Asyncio Internals — The Complete Deep Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, sql, javascript, devops, enterprise | ``aaa00a6b63b1`` |
-| 21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md | 📊 NumPy & Pandas Essentials — The Data Science Toolkit | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, sql, typescript, enterprise | ``3f4b4e01decd`` |
-| 21_Python_ML_DL_NLP/04_Math_For_ML.md | 📐 Math for Machine Learning — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, javascript, css, enterprise | ``824d9262ec41`` |
-| 21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md | 🔬 Math Behind the Code — Ripping the Abstraction Layer Off ML | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, devops | ``d8bc23c540bc`` |
-| 21_Python_ML_DL_NLP/05_ML_Fundamentals.md | 🤖 Machine Learning Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, css, enterprise | ``d9f722e66d78`` |
-| 21_Python_ML_DL_NLP/06_ML_Algorithms.md | 🔬 ML Algorithms — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, constraints, 5W1H, code-heavy, javascript, typescript, css, enterprise | ``bc5a73e4da05`` |
-| 21_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md | 🧠 Deep Learning Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, enterprise | ``53177f373911`` |
-| 21_Python_ML_DL_NLP/08_NLP_Complete.md | 📝 Natural Language Processing — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, dsa/algo, enterprise | ``7645c1227fc0`` |
-| 21_Python_ML_DL_NLP/09_Frameworks_PyTorch_TF.md | 🔧 Frameworks: PyTorch & TensorFlow — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, dsa/algo, devops | ``f189f58a7025`` |
-| 21_Python_ML_DL_NLP/10_LLM_RAG_Applications.md | 🔮 LLMs & RAG — From Language Models to Knowledge-Augmented AI | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, 5W1H, code-heavy, javascript, react, dsa/algo, devops | ``559814c464c5`` |
-| 21_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md | 👁️ Computer Vision & CNNs — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, css, dsa/algo, devops, enterprise | ``80708caecd10`` |
-| 21_Python_ML_DL_NLP/12_Recommender_Systems.md | 🎯 Recommender Systems — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, devops | ``5ce3f1374057`` |
-| 21_Python_ML_DL_NLP/13_MLOps_Production.md | 🚀 MLOps & Production ML — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, typescript, react, dsa/algo, devops | ``93b97468d004`` |
-| 21_Python_ML_DL_NLP/14_Reinforcement_Learning.md | 🎮 Reinforcement Learning — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, dsa/algo | ``ade1bc26aab7`` |
-| 21_Python_ML_DL_NLP/21_PROBLEM_SETS.md | 📝 Python & Machine Learning — Problem Sets | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | details, code-heavy, react, devops, enterprise | ``7233b8d04600`` |
-| 21_Python_ML_DL_NLP/CONTEXT.md | Folder Context: 21_Python_ML_DL_NLP | Folder-level agent context and writing boundaries | devops | ``278fabd764f5`` |
+| 25_Python_ML_DL_NLP/00_INDEX.md | 🐍 Python, Machine Learning, Deep Learning & NLP — Complete Guide | Module index and local navigation | javascript, dsa/algo, devops | ``af67df8a87f1`` |
+| 25_Python_ML_DL_NLP/01_Python_Core_Fundamentals.md | 🐍 Python Core Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, enterprise | ``0a5f4dd57f56`` |
+| 25_Python_ML_DL_NLP/02_Python_Advanced.md | 🐍 Python Advanced — Concurrency, Memory, and Internals | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, sql, javascript, typescript, devops | ``deba2d93d05e`` |
+| 25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md | ⚡ Python Asyncio Internals — The Complete Deep Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, sql, javascript, devops, enterprise | ``aaa00a6b63b1`` |
+| 25_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md | 📊 NumPy & Pandas Essentials — The Data Science Toolkit | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, sql, typescript, enterprise | ``3f4b4e01decd`` |
+| 25_Python_ML_DL_NLP/04_Math_For_ML.md | 📐 Math for Machine Learning — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, javascript, css, enterprise | ``824d9262ec41`` |
+| 25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md | 🔬 Math Behind the Code — Ripping the Abstraction Layer Off ML | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, devops | ``d8bc23c540bc`` |
+| 25_Python_ML_DL_NLP/05_ML_Fundamentals.md | 🤖 Machine Learning Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, css, enterprise | ``d9f722e66d78`` |
+| 25_Python_ML_DL_NLP/06_ML_Algorithms.md | 🔬 ML Algorithms — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, constraints, 5W1H, code-heavy, javascript, typescript, css, enterprise | ``bc5a73e4da05`` |
+| 25_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md | 🧠 Deep Learning Fundamentals — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, enterprise | ``53177f373911`` |
+| 25_Python_ML_DL_NLP/08_NLP_Complete.md | 📝 Natural Language Processing — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, dsa/algo, enterprise | ``7645c1227fc0`` |
+| 25_Python_ML_DL_NLP/09_Frameworks_PyTorch_TF.md | 🔧 Frameworks: PyTorch & TensorFlow — Complete Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, details, 5W1H, code-heavy, typescript, dsa/algo, devops | ``f189f58a7025`` |
+| 25_Python_ML_DL_NLP/10_LLM_RAG_Applications.md | 🔮 LLMs & RAG — From Language Models to Knowledge-Augmented AI | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | challenges, 5W1H, code-heavy, javascript, react, dsa/algo, devops | ``559814c464c5`` |
+| 25_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md | 👁️ Computer Vision & CNNs — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, css, dsa/algo, devops, enterprise | ``80708caecd10`` |
+| 25_Python_ML_DL_NLP/12_Recommender_Systems.md | 🎯 Recommender Systems — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, devops | ``5ce3f1374057`` |
+| 25_Python_ML_DL_NLP/13_MLOps_Production.md | 🚀 MLOps & Production ML — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, typescript, react, dsa/algo, devops | ``93b97468d004`` |
+| 25_Python_ML_DL_NLP/14_Reinforcement_Learning.md | 🎮 Reinforcement Learning — Progressive Mastery Guide | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | 5W1H, code-heavy, javascript, dsa/algo | ``ade1bc26aab7`` |
+| 25_Python_ML_DL_NLP/25_PROBLEM_SETS.md | 📝 Python & Machine Learning — Problem Sets | Python, ML, deep learning, NLP, LLM/RAG, and MLOps | details, code-heavy, react, devops, enterprise | ``7233b8d04600`` |
+| 25_Python_ML_DL_NLP/CONTEXT.md | Folder Context: 25_Python_ML_DL_NLP | Folder-level agent context and writing boundaries | devops | ``278fabd764f5`` |
 | 21_SDET_Playwright_Automation/00_INDEX.md | 21. SDET & Playwright Automation — Module Index | Module index and local navigation | constraints, code-heavy, sql, javascript, typescript, react, css, dsa/algo, devops, enterprise | ``2099cfe94922`` |
 | 21_SDET_Playwright_Automation/00_Start_Here.md | SDET & Playwright Automation — Start Here | Active repository Markdown content | constraints, javascript, typescript, css, dsa/algo, devops, enterprise | ``3fbba8495202`` |
 | 21_SDET_Playwright_Automation/01_Foundations/00_SDET_Foundations_Mindset.md | 00. SDET Foundations & Mindset — The Mental Model That Changes Everything | Active repository Markdown content | details, 5W1H, code-heavy, sql, javascript, typescript, react, css, devops, enterprise | ``187db82152a5`` |
@@ -1653,14 +1653,14 @@
 | 21_SDET_Playwright_Automation/reference/12_data.md | Test Data | Active repository Markdown content | constraints, 5W1H, code-heavy, sql, javascript, typescript, dsa/algo, enterprise | ``b665d401b53b`` |
 | 21_SDET_Playwright_Automation/reference/13_mocking.md | Mocking & Network Interception | Active repository Markdown content | code-heavy, javascript, typescript, css, dsa/algo, enterprise | ``0fd5a3b6fa03`` |
 | 21_SDET_Playwright_Automation/reference/14_tool_comparison.md | Tool Comparison — Cypress / Selenium / WebdriverIO / Playwright | Active repository Markdown content | constraints, code-heavy, java/spring, javascript, typescript, react, css, dsa/algo, devops | ``9121e8b0d276`` |
-| 22_Advanced_API_Testing/00_INDEX.md | 22. Advanced API Testing — Module Index | Module index and local navigation | 5W1H, code-heavy, sql, javascript | ``dd12e3610cf5`` |
-| 22_Advanced_API_Testing/01_API_Testing_Foundations.md | 01. API Testing Foundations (REST & SOAP) | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, css, enterprise | ``1b1efe170cfa`` |
-| 22_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md | 02. Handling Complex JSON and SOAP in TypeScript | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``d18c0452550c`` |
-| 22_Advanced_API_Testing/03_Enterprise_Headers_Auth.md | 03. Enterprise Headers, Auth, and Interception | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, react | ``fe0fc1adb445`` |
-| 22_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md | 04. APIUtils & Factory Pattern — Enterprise API Architecture | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript | ``3bbfb07bfddb`` |
-| 22_Advanced_API_Testing/05_Data_From_API_To_Test.md | 05. Data From API To Test — The Bridge Pattern | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``c53694ffe15c`` |
-| 22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md | 06. DB Testing — The SQL Bridge | Active repository Markdown content | challenges, details, constraints, 5W1H, code-heavy, sql, javascript, typescript, enterprise | ``c6e29e3b5631`` |
-| 22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md | 07. Complex Nested API Data — Assertion Strategies for Enterprise Responses | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``1b2a477983f9`` |
+| 24_Advanced_API_Testing/00_INDEX.md | 22. Advanced API Testing — Module Index | Module index and local navigation | 5W1H, code-heavy, sql, javascript | ``dd12e3610cf5`` |
+| 24_Advanced_API_Testing/01_API_Testing_Foundations.md | 01. API Testing Foundations (REST & SOAP) | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, css, enterprise | ``1b1efe170cfa`` |
+| 24_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md | 02. Handling Complex JSON and SOAP in TypeScript | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``d18c0452550c`` |
+| 24_Advanced_API_Testing/03_Enterprise_Headers_Auth.md | 03. Enterprise Headers, Auth, and Interception | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, react | ``fe0fc1adb445`` |
+| 24_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md | 04. APIUtils & Factory Pattern — Enterprise API Architecture | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript | ``3bbfb07bfddb`` |
+| 24_Advanced_API_Testing/05_Data_From_API_To_Test.md | 05. Data From API To Test — The Bridge Pattern | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``c53694ffe15c`` |
+| 24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md | 06. DB Testing — The SQL Bridge | Active repository Markdown content | challenges, details, constraints, 5W1H, code-heavy, sql, javascript, typescript, enterprise | ``c6e29e3b5631`` |
+| 24_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md | 07. Complex Nested API Data — Assertion Strategies for Enterprise Responses | Active repository Markdown content | challenges, details, 5W1H, code-heavy, javascript, typescript, enterprise | ``1b2a477983f9`` |
 | 22_DevOps/00_DevOps_Fundamentals.md | 🚀 DevOps — Complete Guide: Basics to Advanced | DevOps, Linux, networking, containers, Kubernetes, CI/CD, SRE, and deployment | 5W1H, code-heavy, sql, javascript, react, css, devops, enterprise | ``2a640c2358f9`` |
 | 22_DevOps/00_INDEX.md | 🚀 DevOps — Complete Library Index | Module index and local navigation | react, css, dsa/algo, devops | ``a154a9cee838`` |
 | 22_DevOps/01_DevOps_Advanced.md | 🚀 DevOps Advanced — IaC, GitOps, Observability & Production Patterns | DevOps, Linux, networking, containers, Kubernetes, CI/CD, SRE, and deployment | 5W1H, code-heavy, javascript, typescript, devops, enterprise | ``ebbbeae88011`` |

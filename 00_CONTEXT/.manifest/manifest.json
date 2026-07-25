@@ -12006,8 +12006,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/00_INDEX.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/00_INDEX.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🐍 Python, Machine Learning, Deep Learning & NLP — Complete Guide",
       "role": "Module index and local navigation",
       "sha256": "af67df8a87f13355d068c6c432c9914cb5ff562d5be7d41f01bc98c84541b138",
@@ -12024,8 +12024,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/01_Python_Core_Fundamentals.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/01_Python_Core_Fundamentals.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🐍 Python Core Fundamentals — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "0a5f4dd57f56d37da5b90e261bca62fbf4f3385dfecb0cb237bb98ab6d1b783c",
@@ -12045,8 +12045,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/02_Python_Advanced.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/02_Python_Advanced.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🐍 Python Advanced — Concurrency, Memory, and Internals",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "deba2d93d05e417b7fb9ccf4358fe4ab4c9d662bf8f6aeec52c3c4c451947ca9",
@@ -12066,8 +12066,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/02b_Python_Asyncio_Internals.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "⚡ Python Asyncio Internals — The Complete Deep Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "aaa00a6b63b118f9f860f93ae927be9591068d1b5ee33007af1c909d1c6929eb",
@@ -12087,8 +12087,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/03_NumPy_Pandas_Essentials.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "📊 NumPy & Pandas Essentials — The Data Science Toolkit",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "3f4b4e01decdc2a9b3ebe1578c96a9fa0322186839fed3c14d5fb04758240e5d",
@@ -12109,8 +12109,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/04_Math_For_ML.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/04_Math_For_ML.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "📐 Math for Machine Learning — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "824d9262ec416e4a301d7430b97a6c60a38bcb7685f634c4564b84598bebcb39",
@@ -12131,8 +12131,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/04b_Math_Behind_The_Code.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🔬 Math Behind the Code — Ripping the Abstraction Layer Off ML",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "d8bc23c540bc03e190b9fa0c1c7de053d67e6d3b136dd7702bd32d9cab1d58b3",
@@ -12150,8 +12150,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/05_ML_Fundamentals.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/05_ML_Fundamentals.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🤖 Machine Learning Fundamentals — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "d9f722e66d7843cbb9a8927975738082be7ad2eb43b092a2e32fd9730fda21ea",
@@ -12171,8 +12171,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/06_ML_Algorithms.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/06_ML_Algorithms.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🔬 ML Algorithms — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "bc5a73e4da05850d527948735cfc503ff98185cff39ea0bf1ee944b7db327eea",
@@ -12195,8 +12195,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/07_Deep_Learning_Fundamentals.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🧠 Deep Learning Fundamentals — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "53177f3739113b01aebd5caa09bc356acf197946c66c8c238e81ab217575a7fc",
@@ -12215,8 +12215,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/08_NLP_Complete.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/08_NLP_Complete.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "📝 Natural Language Processing — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "7645c1227fc0dd2c899441f505bc9ffc49a6dad7d71326dffe5e2f9fc05b2783",
@@ -12237,8 +12237,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/09_Frameworks_PyTorch_TF.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/09_Frameworks_PyTorch_TF.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🔧 Frameworks: PyTorch & TensorFlow — Complete Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "f189f58a7025f5f437213b7bf1830fa0237cb33c6846acc6ed02eee989b58cd4",
@@ -12259,8 +12259,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/10_LLM_RAG_Applications.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/10_LLM_RAG_Applications.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🔮 LLMs & RAG — From Language Models to Knowledge-Augmented AI",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "559814c464c53080e66175323277633405236ce8767c2f54822d11bdcaab2b2f",
@@ -12281,8 +12281,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/11_Computer_Vision_CNNs.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "👁️ Computer Vision & CNNs — Progressive Mastery Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "80708caecd107e6fc13038ad0f8f1e17b7d0de491ca2bec97ae6d81737d51138",
@@ -12302,8 +12302,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/12_Recommender_Systems.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/12_Recommender_Systems.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🎯 Recommender Systems — Progressive Mastery Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "5ce3f1374057dea3fbc6522700154ebdac07493962f13fedb263c3eca5baee2e",
@@ -12320,8 +12320,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/13_MLOps_Production.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/13_MLOps_Production.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🚀 MLOps & Production ML — Progressive Mastery Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "93b97468d004d19e8c47207049dd0c29feb51e30cfd97fcd4679b3904a5b7c3a",
@@ -12342,8 +12342,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/14_Reinforcement_Learning.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/14_Reinforcement_Learning.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "🎮 Reinforcement Learning — Progressive Mastery Guide",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "ade1bc26aab70a37d642e8730638a5e817e114258f0785301224087f30a4f6a0",
@@ -12361,8 +12361,8 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/21_PROBLEM_SETS.md",
-      "folder": "21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/25_PROBLEM_SETS.md",
+      "folder": "25_Python_ML_DL_NLP",
       "title": "📝 Python & Machine Learning — Problem Sets",
       "role": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
       "sha256": "7233b8d04600d28f64981ec749f1ab9282b76ea927f921da8292f2857ce50865",
@@ -12381,9 +12381,9 @@
       ]
     },
     {
-      "path": "21_Python_ML_DL_NLP/CONTEXT.md",
-      "folder": "21_Python_ML_DL_NLP",
-      "title": "Folder Context: 21_Python_ML_DL_NLP",
+      "path": "25_Python_ML_DL_NLP/CONTEXT.md",
+      "folder": "25_Python_ML_DL_NLP",
+      "title": "Folder Context: 25_Python_ML_DL_NLP",
       "role": "Folder-level agent context and writing boundaries",
       "sha256": "278fabd764f5e3d507842485370adf670c4e2522d3c3753a026a532f711a5aaa",
       "shortHash": "278fabd764f5",
@@ -30563,8 +30563,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/00_INDEX.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/00_INDEX.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "22. Advanced API Testing — Module Index",
       "role": "Module index and local navigation",
       "sha256": "dd12e3610cf50c21c9a445827722c35cfdcd68008133f12735cfc1901f8e13bd",
@@ -30582,8 +30582,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/01_API_Testing_Foundations.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/01_API_Testing_Foundations.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "01. API Testing Foundations (REST & SOAP)",
       "role": "Active repository Markdown content",
       "sha256": "1b1efe170cfa9d277c8568402820ba32ce811937c99d5f9ed7af2fdd246da6c2",
@@ -30605,8 +30605,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/02_Complex_JSON_and_SOAP.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "02. Handling Complex JSON and SOAP in TypeScript",
       "role": "Active repository Markdown content",
       "sha256": "d18c0452550c4e80e3ba3e41aa53a5e8f87f1914ca96fe3b7ce928a78284e273",
@@ -30627,8 +30627,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/03_Enterprise_Headers_Auth.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/03_Enterprise_Headers_Auth.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "03. Enterprise Headers, Auth, and Interception",
       "role": "Active repository Markdown content",
       "sha256": "fe0fc1adb445bb65ea16239a159e281ad58a5674263c3a2b717dfacc6e996306",
@@ -30648,8 +30648,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/04_API_Utils_Factory_Pattern.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "04. APIUtils & Factory Pattern — Enterprise API Architecture",
       "role": "Active repository Markdown content",
       "sha256": "3bbfb07bfddb831497c18170073d8bba6240a4ff621e38e0b09270def55c9ea5",
@@ -30669,8 +30669,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/05_Data_From_API_To_Test.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/05_Data_From_API_To_Test.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "05. Data From API To Test — The Bridge Pattern",
       "role": "Active repository Markdown content",
       "sha256": "c53694ffe15c70f9776680837823681aa74751fa4521bff6c652994ea485e06a",
@@ -30691,8 +30691,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/06_DB_Testing_SQL_Bridge.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "06. DB Testing — The SQL Bridge",
       "role": "Active repository Markdown content",
       "sha256": "c6e29e3b5631096f8a3cc59aa19fb257ca279794fe78bc90f85b1c615deb3f77",
@@ -30715,8 +30715,8 @@
       ]
     },
     {
-      "path": "22_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md",
-      "folder": "22_Advanced_API_Testing",
+      "path": "24_Advanced_API_Testing/07_Complex_Nested_API_Assertions.md",
+      "folder": "24_Advanced_API_Testing",
       "title": "07. Complex Nested API Data — Assertion Strategies for Enterprise Responses",
       "role": "Active repository Markdown content",
       "sha256": "1b2a477983f9e58f705a4950f5baff1dbb3b92aea5f4cebff758eff685cb87ad",

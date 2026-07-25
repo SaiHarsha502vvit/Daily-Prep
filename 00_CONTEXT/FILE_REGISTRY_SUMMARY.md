@@ -34,9 +34,9 @@
 | `18_CSS_Complete`               | 9     | CSS layout, styling, responsive UI                   |
 | `19_Frontend_Integration`       | 11    | Build tools, debugging, performance, accessibility   |
 | `20_Interview_Mastery`          | 36    | Interview synthesis, scenarios, final prep           |
-| `21_Python_ML_DL_NLP`           | 19    | Python, ML, DL, NLP, LLM/RAG, MLOps                  |
+| `25_Python_ML_DL_NLP`           | 19    | Python, ML, DL, NLP, LLM/RAG, MLOps                  |
 | `21_SDET_Playwright_Automation` | 55    | Playwright, SDET, E2E testing, automation            |
-| `22_Advanced_API_Testing`       | 8     | REST, SOAP, API testing patterns                     |
+| `24_Advanced_API_Testing`       | 8     | REST, SOAP, API testing patterns                     |
 | `22_DevOps`                     | 27    | Linux, Docker, Kubernetes, CI/CD, SRE                |
 | `23_Mobile_Dev_And_Testing`     | 16    | Mobile dev, Android, iOS, Flutter                    |
 

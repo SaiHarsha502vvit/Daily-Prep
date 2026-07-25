@@ -1005,7 +1005,7 @@ Changed:
 **New SDET Modules Created:**
 
 - `21_SDET_Playwright_Automation/` — Added 4 chapters focused on shifting from manual QA to SDET, Playwright TypeScript basics, Enterprise locators (XPath vs getByRole for Dynamics 365), and browser console scripting for DOM traversal.
-- `22_Advanced_API_Testing/` — Added 3 chapters focusing on REST vs SOAP, deep JSON array traversal via Optional Chaining/array methods, XML-to-JSON parsing for SOAP, and enterprise headers/authentication mocking.
+- `24_Advanced_API_Testing/` — Added 3 chapters focusing on REST vs SOAP, deep JSON array traversal via Optional Chaining/array methods, XML-to-JSON parsing for SOAP, and enterprise headers/authentication mocking.
 
 **Study Plan Upgraded:**
 

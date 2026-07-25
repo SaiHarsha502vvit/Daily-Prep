@@ -46,7 +46,7 @@ FOLDER_ROLES = {
     "18_CSS_Complete": "CSS layout, styling architecture, responsive UI, and visual systems",
     "19_Frontend_Integration": "Frontend tooling, debugging, performance, accessibility, and integration",
     "20_Interview_Mastery": "Interview synthesis, final prep, scenarios, and problem explanation",
-    "21_Python_ML_DL_NLP": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
+    "25_Python_ML_DL_NLP": "Python, ML, deep learning, NLP, LLM/RAG, and MLOps",
     "22_DevOps": "DevOps, Linux, networking, containers, Kubernetes, CI/CD, SRE, and deployment",
 }
 

@@ -34,7 +34,7 @@ Folder averages are **advisory**; per-file threshold scoring (avg <2.0 OR any 0)
 | 14_Mental_Models        |        2         |        3        |         1          |          1           |         2         | **2.0** |    P2    |
 | 18_CSS_Complete         |        2         |        3        |         1          |          1           |         2         | **2.0** |    P2    |
 | 19_Frontend_Integration |        2         |        2        |         2          |          1           |         3         | **2.0** |    P2    |
-| 21_Python_ML_DL_NLP     |        2         |        2        |         1          |          1           |         2         | **2.0** |    P2    |
+| 25_Python_ML_DL_NLP     |        2         |        2        |         1          |          1           |         2         | **2.0** |    P2    |
 | 13_Developer_Essentials |        2         |        2        |         3          |          1           |         2         | **2.2** |    P1    |
 | 02_Data_Structures      |        3         |        2        |         2          |          2           |         3         | **2.4** |    P1    |
 | 07_Modern_Java          |        3         |        2        |         2          |          1           |         3         | **2.4** |    P1    |
@@ -119,7 +119,7 @@ Grouped by Priority band (P0 first).
 
 **Avg: 2.0** — `00_INDEX.md` lists 7 topics and 5 hands-on frontend challenges with concrete broken data flows. The challenge table is the strongest pedagogically: each challenge names the broken signal, the data-flow lesson, and the category (Vanilla DOM Sync, React Race Condition, CSS Stacking, Stale Closure, Deep Immutability). Topical breadth is moderate (debugging, performance, accessibility, build tools). Historical evolution is minimal.
 
-#### 21_Python_ML_DL_NLP
+#### 25_Python_ML_DL_NLP
 
 **Avg: 2.0** — `01_Python_Core_Fundamentals.md` has a strong Python vs Java mental model ("smart-casual vs business suit"), excellent memory model explanation (reference counting, garbage collection for cycles, GIL), and 5W1H. Good conceptual depth. Missing historical evolution (Guido 1991, ABC influence, Python 2→3 transition) and production reality (ML pipeline failure modes, data leakage, model versioning gaps not discussed in this file).
 
@@ -192,7 +192,7 @@ Grouped by Priority band (P0 first).
 
 13. **19_Frontend_Integration** — Add historical evolution (WebPack 2012 → Vite 2020, Chrome DevTools timeline, Core Web Vitals launch 2020). Expand Production Reality in challenge descriptions.
 
-14. **21_Python_ML_DL_NLP** — Add Python history (Guido 1991, ABC influence, Python 2→3 migration, PEP process). Add production failure modes (data leakage in train/test split, GIL causing performance regression in multi-threaded ML, model drift in production).
+14. **25_Python_ML_DL_NLP** — Add Python history (Guido 1991, ABC influence, Python 2→3 migration, PEP process). Add production failure modes (data leakage in train/test split, GIL causing performance regression in multi-threaded ML, model drift in production).
 
 15. **15_React_Frontend** — Add production failure mode section (infinite re-render loop, context provider cascade, closure stale state). Historical evolution: mention Preact and Inferno as React alternatives and their motivations.
 
