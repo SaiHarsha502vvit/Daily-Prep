@@ -1,4 +1,4 @@
-**Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)
+**Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](../00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)
 
 # File 11 — DSA Problems: LinkedList, Stack, Queue & Heap
 

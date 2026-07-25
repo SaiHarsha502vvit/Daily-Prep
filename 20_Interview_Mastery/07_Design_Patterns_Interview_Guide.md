@@ -802,7 +802,7 @@ Spring's ApplicationEventPublisher is literally the Observer pattern.
 | OOP Principles            | [06_OOP_Design/01_OOPS_Principles](../06_OOP_Design/01_OOPS_Principles.md)                 |
 | Design Patterns Deep Dive | [06_OOP_Design/02_Design_Patterns](../06_OOP_Design/02_Design_Patterns.md)                 |
 | System Design             | [06_System_Design_Blueprint](06_System_Design_Blueprint.md)                                |
-| Functional Programming    | [07_Modern_Java/01_Functional_Programming](../07_Modern_Java/01_Functional_Programming.md) |
+| Functional Programming    | [07_Modern_Java/01_Functional_Programming](../07_Modern_Java/Ch06_Functional_Programming.md) |
 | Pattern Recognition (DSA) | [03_DSA_Pattern_Recognition_Engine](03_DSA_Pattern_Recognition_Engine.md)                  |
 
 ---

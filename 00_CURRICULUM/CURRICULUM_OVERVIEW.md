@@ -140,7 +140,7 @@ JavaScript / TypeScript
 - 📝 [Java & Spring Problem Sets](../07_Modern_Java/07_PROBLEM_SETS.md)
 - 📝 [SQL Problem Sets](../08_SQL/08_PROBLEM_SETS.md)
 - 📝 [Enterprise & DDD Problem Sets](../10_Enterprise_Systems/10_PROBLEM_SETS.md)
-- 📝 [System Design Problem Sets](../20_Interview_Mastery/20_SYSTEM_DESIGN_PROBLEM_SETS.md) — Load Balancing, Databases, Sharding
+- 📝 [System Design Problem Sets](../20_Interview_Mastery/06d_System_Design_Problem_Sets.md) — Load Balancing, Databases, Sharding
 
 ### Semester 3
 

@@ -1,12 +1,12 @@
 # 09b. DSA × System Design — Algorithms You Studied, Systems That Use Them
 
-**Navigation**: [← Problem Decomposition](08_Problem_Decomposition_Framework.md) | [📚 Index](00_INDEX.md) | [Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
+**Navigation**: [← Problem Decomposition](../08_Problem_Decomposition_Framework.md) | [📚 Index](../00_INDEX.md) | [Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
 
 **Cross-links:**
 - [`02_Data_Structures/`](../02_Data_Structures/) — DS foundations
 - [`03_Algorithms/`](../03_Algorithms/) — Algorithm chapters
-- [`06_OOP_Design/03_System_Design.md`](../06_OOP_Design/03_System_Design.md) — System Design foundations
-- [`20_Interview_Mastery/06_System_Design_Blueprint.md`](06_System_Design_Blueprint.md) — SD interview framework
+- [`06_OOP_Design/03_System_Design.md`](../../06_OOP_Design/03_System_Design.md) — System Design foundations
+- [`20_Interview_Mastery/06_System_Design_Blueprint.md`](../06_System_Design_Blueprint.md) — SD interview framework
 
 ---
 
@@ -748,4 +748,4 @@ Union-Find (Disjoint Set)  │ Network partition detection, Kruskal's MST (servi
 
 ---
 
-*[Back to Index](00_INDEX.md) | [DSA Foundations](../02_Data_Structures/) | [System Design](../06_OOP_Design/03_System_Design.md)*
+*[Back to Index](../00_INDEX.md) | [DSA Foundations](../02_Data_Structures/) | [System Design](../../06_OOP_Design/03_System_Design.md)*

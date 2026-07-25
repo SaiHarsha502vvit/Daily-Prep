@@ -1,6 +1,6 @@
 # 16. Anti-Pattern Gallery — Wrong Code and Why It Fails
 
-**Navigation**: [← Quick Reference Cards](15_Quick_Reference_Cards.md) | [📚 Index](00_INDEX.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)
+**Navigation**: [← Quick Reference Cards](15_Quick_Reference_Cards.md) | [📚 Index](../00_INDEX.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)
 
 > **Reading contract**: For each anti-pattern, first read the WRONG code without looking at the explanation. Think about what's wrong. Then read the explanation and the FIX. This is the most efficient way to build pattern recognition.
 
@@ -985,4 +985,4 @@ public class OrderProcessingListener {
 
 ---
 
-**Navigation**: [← Quick Reference Cards](15_Quick_Reference_Cards.md) | [📚 Index](00_INDEX.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)
+**Navigation**: [← Quick Reference Cards](15_Quick_Reference_Cards.md) | [📚 Index](../00_INDEX.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)

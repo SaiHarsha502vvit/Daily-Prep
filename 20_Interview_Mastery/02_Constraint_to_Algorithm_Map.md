@@ -846,7 +846,7 @@ ANSWERS:
 | Topic                     | Guide                                                                                                |
 | ------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Algorithm Templates       | [04_Patterns_Templates/02_Code_Templates](../04_Patterns_Templates/02_Code_Templates.md)             |
-| Data Structure Internals  | [02_Data_Structures/01_DataStructures_Complete](../02_Data_Structures/01_DataStructures_Complete.md) |
+| Data Structure Internals  | [02_Data_Structures/01_DataStructures_Complete](../02_Data_Structures/00_INDEX.md) |
 | SQL Performance Deep Dive | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md)                    |
 | System Design             | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)                               |
 | Interview Mindset         | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md)           |

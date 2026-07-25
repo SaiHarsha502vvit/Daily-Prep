@@ -1,4 +1,4 @@
-**Navigation**: [⬅ SQL Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | [📚 Index](00_INDEX.md) | [Next: DSA Permutations & Combinations ➡](19_DSA_Permutations_Combinations_Interview_Math.md)
+**Navigation**: [⬅ SQL Analytics, Real-World, Design](17_SQL_Problems_Analytics_RealWorld_Design.md) | [📚 Index](../00_INDEX.md) | [Next: DSA Permutations & Combinations ➡](../Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md)
 
 # File 18 — SQL Foundations from Notes: Commands, Operators, Functions, and Interview Communication
 

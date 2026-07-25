@@ -132,7 +132,7 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 - Combinatorics and counting strategy
   - `09_Pattern_Programs_Complete.md`
-  - `../20_Interview_Mastery/19_DSA_Permutations_Combinations_Interview_Math.md`
+  - `../20_Interview_Mastery/Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md`
 
 ## 2.7 Advanced Data Structures
 

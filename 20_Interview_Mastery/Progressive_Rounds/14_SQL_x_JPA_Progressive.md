@@ -1,13 +1,13 @@
 # 14. SQL × Spring Data JPA — From Queries to Annotations
 
-**Navigation**: [← DSA Problems](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Deep Dives →](14_Challenge_Deep_Dives.md)
+**Navigation**: [← DSA Problems](../Problem_Sets_DSA/13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](../00_INDEX.md) | [Deep Dives →](14_Challenge_Deep_Dives.md)
 
 **Cross-links:**
 - [`08_SQL/`](../08_SQL/) — SQL foundations (read Ch01–13 before this file)
-- [`07_Modern_Java/Ch32_SB_Data_Part2.md`](../07_Modern_Java/Ch32_SB_Data_Part2.md) — JPA deep dive
-- [`07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md`](../07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) — N+1 and lazy loading
-- [`08_SQL/13_Transactions_ACID.md`](../08_SQL/13_Transactions_ACID.md) — SQL transactions
-- [`PATH_JAVA_BACKEND.md`](../PATH_JAVA_BACKEND.md) — full Java backend learning path
+- [`07_Modern_Java/Ch32_SB_Data_Part2.md`](../../07_Modern_Java/Ch32_SB_Data_Part2.md) — JPA deep dive
+- [`07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md`](../../07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) — N+1 and lazy loading
+- [`08_SQL/13_Transactions_ACID.md`](../../08_SQL/13_Transactions_ACID.md) — SQL transactions
+- [`PATH_JAVA_BACKEND.md`](../../PATH_JAVA_BACKEND.md) — full Java backend learning path
 
 ---
 
@@ -918,4 +918,4 @@ N+1 lazy loads       │ JOIN FETCH in @Query or @EntityGraph
 
 ---
 
-*[Back to Index](00_INDEX.md) | [SQL Foundations](../08_SQL/01_Foundations_Database_Basics.md) | [Java Path](../PATH_JAVA_BACKEND.md)*
+*[Back to Index](../00_INDEX.md) | [SQL Foundations](../../08_SQL/01_Foundations_Database_Basics.md) | [Java Path](../../PATH_JAVA_BACKEND.md)*

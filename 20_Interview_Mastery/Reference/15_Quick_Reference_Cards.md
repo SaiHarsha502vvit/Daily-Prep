@@ -1,6 +1,6 @@
 # 15. Quick Reference Cards — Open This Before Every Interview
 
-**Navigation**: [📚 Index](00_INDEX.md) | [Anti-Patterns →](16_Anti_Pattern_Gallery.md)
+**Navigation**: [📚 Index](../00_INDEX.md) | [Anti-Patterns →](16_Anti_Pattern_Gallery.md)
 
 > **How to use**: 30 minutes before an interview, read this top to bottom. It activates everything you already know.
 
@@ -433,4 +433,4 @@ For when the interviewer says _"define X in one sentence"_.
 
 ---
 
-**Navigation**: [📚 Index](00_INDEX.md) | [Anti-Patterns →](16_Anti_Pattern_Gallery.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)
+**Navigation**: [📚 Index](../00_INDEX.md) | [Anti-Patterns →](16_Anti_Pattern_Gallery.md) | [Incident Lessons →](17_Production_Incident_Lessons.md)

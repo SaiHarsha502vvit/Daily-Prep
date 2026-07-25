@@ -1,6 +1,6 @@
 # 11. SDET × DSA — From Basics to Elite
 
-**Navigation**: [← Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | [📚 Index](00_INDEX.md) | [SpringBoot × DSA →](12_SpringBoot_Plus_DSA_Progressive.md)
+**Navigation**: [← Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | [📚 Index](../00_INDEX.md) | [SpringBoot × DSA →](12_SpringBoot_Plus_DSA_Progressive.md)
 
 **Cross-links:**
 
@@ -1639,4 +1639,4 @@ const countBelowP50 = sorted.filter((v) => v < p50).length; // ≈ 50% by defini
 
 ---
 
-**Navigation**: [← Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | [📚 Index](00_INDEX.md) | [SpringBoot × DSA →](12_SpringBoot_Plus_DSA_Progressive.md)
+**Navigation**: [← Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | [📚 Index](../00_INDEX.md) | [SpringBoot × DSA →](12_SpringBoot_Plus_DSA_Progressive.md)

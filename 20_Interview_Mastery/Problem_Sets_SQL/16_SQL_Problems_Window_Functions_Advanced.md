@@ -1,4 +1,4 @@
-**Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)
+**Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](../00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)
 
 # File 16 — SQL Problems: Window Functions & Advanced Techniques
 

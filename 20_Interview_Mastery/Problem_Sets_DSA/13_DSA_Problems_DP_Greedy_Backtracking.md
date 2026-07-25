@@ -1,4 +1,4 @@
-**Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)
+**Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](../00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)
 
 # File 13 — DSA Problems: Dynamic Programming, Greedy & Backtracking
 

@@ -1,6 +1,6 @@
 # 14. Challenge Deep Dives — Point-by-Point Explanations
 
-**Navigation**: [← SDET × Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [📚 Index](00_INDEX.md)
+**Navigation**: [← SDET × Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [📚 Index](../00_INDEX.md)
 
 **Domain pairs covered:**
 
@@ -1175,4 +1175,4 @@ void getCitation_d365Flaps_retriesAndSucceeds() {
 
 ---
 
-**Navigation**: [← SDET × Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [📚 Index](00_INDEX.md)
+**Navigation**: [← SDET × Spring Boot](13_SDET_Plus_SpringBoot_Progressive.md) | [📚 Index](../00_INDEX.md)

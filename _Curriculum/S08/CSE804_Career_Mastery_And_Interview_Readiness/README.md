@@ -132,9 +132,9 @@ THE META-PATTERN:
 #### Week 6-8 — Topic Sprints
 
 Drill problems by topic: arrays/strings (Week 6), trees/graphs (Week 7), DP/backtracking (Week 8). Use:
-- `20_Interview_Mastery/10_DSA_Problems_Arrays_Strings_Hashing.md`
-- `20_Interview_Mastery/11_DSA_Problems_LinkedList_Stack_Queue_Heap.md`
-- `20_Interview_Mastery/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md`
+- `20_Interview_Mastery/Problem_Sets_DSA/10_DSA_Problems_Arrays_Strings_Hashing.md`
+- `20_Interview_Mastery/Problem_Sets_DSA/11_DSA_Problems_LinkedList_Stack_Queue_Heap.md`
+- `20_Interview_Mastery/Problem_Sets_DSA/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md`
 
 ---
 
@@ -162,7 +162,7 @@ Drill problems by topic: arrays/strings (Week 6), trees/graphs (Week 7), DP/back
 
 ### UNIT 5 — Cross-Domain (Week 13)
 
-`20_Interview_Mastery/10_Elite_Cross_Domain_Rounds.md` — problems that require combining DSA + SQL + System Design + behavioral judgment.
+`20_Interview_Mastery/Progressive_Rounds/10_Elite_Cross_Domain_Rounds.md` — problems that require combining DSA + SQL + System Design + behavioral judgment.
 
 ---
 

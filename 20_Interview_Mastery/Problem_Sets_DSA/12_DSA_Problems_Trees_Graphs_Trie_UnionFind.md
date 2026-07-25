@@ -1,4 +1,4 @@
-**Navigation**: [⬅ LinkedList, Stack, Queue, Heap](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md) | [📚 Index](00_INDEX.md) | [Next: DP, Greedy, Backtracking ➡](13_DSA_Problems_DP_Greedy_Backtracking.md)
+**Navigation**: [⬅ LinkedList, Stack, Queue, Heap](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md) | [📚 Index](../00_INDEX.md) | [Next: DP, Greedy, Backtracking ➡](13_DSA_Problems_DP_Greedy_Backtracking.md)
 
 # File 12 — DSA Problems: Trees, Graphs, Trie & Union-Find
 

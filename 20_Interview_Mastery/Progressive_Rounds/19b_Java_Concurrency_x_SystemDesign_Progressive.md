@@ -1,12 +1,12 @@
 # 19b. Java Concurrency × System Design — Threads as Distributed Systems
 
-**Navigation**: [← Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [DSA: Bitwise Trie →](20_Bitwise_Trie_Interview_Guide.md)
+**Navigation**: [← Permutations & Combinations](../Problem_Sets_DSA/19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](../00_INDEX.md) | [DSA: Bitwise Trie →](../Problem_Sets_DSA/20_Bitwise_Trie_Interview_Guide.md)
 
 **Cross-links:**
 - [`07_Modern_Java/`](../07_Modern_Java/) — Modern Java chapters
-- [`20_Interview_Mastery/06_System_Design_Blueprint.md`](06_System_Design_Blueprint.md) — System design interview blueprint
+- [`20_Interview_Mastery/06_System_Design_Blueprint.md`](../06_System_Design_Blueprint.md) — System design interview blueprint
 - [`20_Interview_Mastery/12_SpringBoot_Plus_DSA_Progressive.md`](12_SpringBoot_Plus_DSA_Progressive.md) — Spring Boot × DSA
-- [`PATH_JAVA_BACKEND.md`](../PATH_JAVA_BACKEND.md) — Java backend path
+- [`PATH_JAVA_BACKEND.md`](../../PATH_JAVA_BACKEND.md) — Java backend path
 
 ---
 
@@ -852,4 +852,4 @@ orTimeout() + exceptionally()         │ Circuit breaker with fallback
 
 ---
 
-*[Back to Index](00_INDEX.md) | [Java Path](../PATH_JAVA_BACKEND.md) | [Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [System Design Blueprint](06_System_Design_Blueprint.md)*
+*[Back to Index](../00_INDEX.md) | [Java Path](../../PATH_JAVA_BACKEND.md) | [Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [System Design Blueprint](../06_System_Design_Blueprint.md)*

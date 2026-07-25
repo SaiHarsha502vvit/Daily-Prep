@@ -1,4 +1,4 @@
-**Navigation**: [⬅ Bitwise Trie Interview Guide](20_Bitwise_Trie_Interview_Guide.md) | [📚 Index](00_INDEX.md) | [Next: PDF Topic to Workspace Map ➡](22_DSA_PDF_Topic_to_Workspace_Map.md)
+**Navigation**: [⬅ Bitwise Trie Interview Guide](20_Bitwise_Trie_Interview_Guide.md) | [📚 Index](../00_INDEX.md) | [Next: PDF Topic to Workspace Map ➡](22_DSA_PDF_Topic_to_Workspace_Map.md)
 
 # File 21 — Prefix Sum, Prefix XOR, and 2D Prefix: Unified Cheat Sheet
 
@@ -12,7 +12,7 @@ Many interview problems look different but reduce to one of these three tools:
 
 Java implementation companion:
 
-- [03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+- [03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md](../../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
 This file gives a single mental model:
 

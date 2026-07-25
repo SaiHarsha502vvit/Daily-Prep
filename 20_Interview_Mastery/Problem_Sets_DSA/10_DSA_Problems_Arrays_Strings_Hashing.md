@@ -1,4 +1,4 @@
-**Navigation**: [⬅ Mock Interviews](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)
+**Navigation**: [⬅ Mock Interviews](../09_Mock_Interview_Simulations.md) | [📚 Index](../00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)
 
 # File 10 — DSA Problems: Arrays, Strings & Hashing
 

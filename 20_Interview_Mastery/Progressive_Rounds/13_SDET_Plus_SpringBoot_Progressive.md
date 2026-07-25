@@ -1,6 +1,6 @@
 # 13. SDET × Spring Boot — Testing Spring Boot Applications End-to-End
 
-**Navigation**: [← Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [🔥 Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
+**Navigation**: [← Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [📚 Index](../00_INDEX.md) | [🔥 Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
 
 **Cross-links:**
 
@@ -1261,4 +1261,4 @@ class JwtAuthFlowIntegrationTest {
 
 ---
 
-**Navigation**: [← Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [🔥 Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)
+**Navigation**: [← Spring Boot × DSA](12_SpringBoot_Plus_DSA_Progressive.md) | [📚 Index](../00_INDEX.md) | [🔥 Elite Rounds →](10_Elite_Cross_Domain_Rounds.md)

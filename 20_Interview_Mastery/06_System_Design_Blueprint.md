@@ -615,9 +615,9 @@ Choose WebSockets for high-frequency, bidirectional exchange such as multiplayer
 | Topic                       | Deep Dive                                                                            |
 | --------------------------- | ------------------------------------------------------------------------------------ |
 | System Design Fundamentals  | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)               |
-| Real-World DSA Problems     | [10_Enterprise_Systems/03-06](../10_Enterprise_Systems/03_RealWorld_Problems_DSA.md) |
+| Real-World DSA Problems     | [10_Enterprise_Systems/03-06](../10_Enterprise_Systems/05_RealWorld_Problems_DSA.md) |
 | SQL Performance at Scale    | [08_SQL/47_Theory_Deep_Dive](../08_SQL/47_Theory_Deep_Dive_Database_Internals.md)    |
-| Data Structures for Systems | [02_Data_Structures/01](../02_Data_Structures/01_DataStructures_Complete.md)         |
+| Data Structures for Systems | [02_Data_Structures/01](../02_Data_Structures/00_INDEX.md)         |
 | Constraint Analysis         | [02_Constraint_to_Algorithm_Map](02_Constraint_to_Algorithm_Map.md)                  |
 
 ---

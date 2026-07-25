@@ -1,4 +1,4 @@
-**Navigation**: [⬅ Binary Search, Two Pointers, Sliding Window](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md) | [📚 Index](00_INDEX.md) | [Next: SQL Window Functions & Advanced ➡](16_SQL_Problems_Window_Functions_Advanced.md)
+**Navigation**: [⬅ Binary Search, Two Pointers, Sliding Window](../Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md) | [📚 Index](../00_INDEX.md) | [Next: SQL Window Functions & Advanced ➡](16_SQL_Problems_Window_Functions_Advanced.md)
 
 # File 15 — SQL Problems: Foundations, Joins & Aggregations
 

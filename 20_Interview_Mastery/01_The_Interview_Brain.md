@@ -1043,16 +1043,16 @@ When you finish:
 
 | Topic                     | Deep Dive In                                                                                       |
 | ------------------------- | -------------------------------------------------------------------------------------------------- |
-| Data Structures Internals | [02_Data_Structures/](../02_Data_Structures/01_DataStructures_Complete.md)                         |
+| Data Structures Internals | [02_Data_Structures/](../02_Data_Structures/00_INDEX.md)                         |
 | Algorithm Thinking        | [03_Algorithms/01_Algorithm_Thinking](../03_Algorithms/01_Algorithm_Thinking.md)                   |
 | Pattern Templates         | [04_Patterns_Templates/](../04_Patterns_Templates/02_Code_Templates.md)                            |
 | Pattern Recognition       | [04_Patterns_Templates/04_Pattern_Recognition](../04_Patterns_Templates/04_Pattern_Recognition.md) |
-| Problem Solving Practice  | [05_Problem_Solving/](../05_Problem_Solving/01_Practice_Problems.md)                               |
+| Problem Solving Practice  | [05_Problem_Solving/](../05_Problem_Solving/00_INDEX.md)                               |
 | Design Patterns           | [06_OOP_Design/02_Design_Patterns](../06_OOP_Design/02_Design_Patterns.md)                         |
 | System Design             | [06_OOP_Design/03_System_Design](../06_OOP_Design/03_System_Design.md)                             |
 | SQL Complete              | [08_SQL/](../08_SQL/00_INDEX.md)                                                                   |
 | SQL Interview Mindset     | [08_SQL/43_Interview_Mindset](../08_SQL/43_Interview_Mindset_How_Professionals_Explain.md)         |
-| Career Guide              | [09_Career_Reference/01_Career_Guide](../09_Career_Reference/01_Career_Guide.md)                   |
+| Career Guide              | [09_Career_Reference/01_Career_Guide](../09_Career_Reference/00_INDEX.md)                   |
 
 ---
 

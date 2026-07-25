@@ -1,6 +1,6 @@
 # 12. Spring Boot × DSA — The Algorithms Inside the Framework
 
-**Navigation**: [← SDET × DSA](11_SDET_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [SDET × Spring Boot →](13_SDET_Plus_SpringBoot_Progressive.md)
+**Navigation**: [← SDET × DSA](11_SDET_Plus_DSA_Progressive.md) | [📚 Index](../00_INDEX.md) | [SDET × Spring Boot →](13_SDET_Plus_SpringBoot_Progressive.md)
 
 **Cross-links:**
 
@@ -962,4 +962,4 @@ public class CitationCacheWarmer {
 
 ---
 
-**Navigation**: [← SDET × DSA](11_SDET_Plus_DSA_Progressive.md) | [📚 Index](00_INDEX.md) | [SDET × Spring Boot →](13_SDET_Plus_SpringBoot_Progressive.md)
+**Navigation**: [← SDET × DSA](11_SDET_Plus_DSA_Progressive.md) | [📚 Index](../00_INDEX.md) | [SDET × Spring Boot →](13_SDET_Plus_SpringBoot_Progressive.md)

@@ -1,4 +1,4 @@
-**Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)
+**Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](../00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](../Problem_Sets_SQL/15_SQL_Problems_Foundations_Intermediate.md)
 
 # File 14 — DSA Problems: Binary Search, Two Pointers & Sliding Window
 

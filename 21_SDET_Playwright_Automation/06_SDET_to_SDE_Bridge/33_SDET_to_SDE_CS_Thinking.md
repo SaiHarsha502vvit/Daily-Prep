@@ -511,7 +511,7 @@ when results are fast, and don't hammers the API when they're slow.
 
 ## 9. Binary Search â†’ Bisect Debugging (Finding Flaky Commits)
 
-**The CS concept** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+**The CS concept** (from [`../../20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
 
 - Binary search: in a sorted space, eliminate half the search space each step â†’ O(log n)
 - Precondition: the problem space must be monotonic (all passes before a point, all fails after)
@@ -983,7 +983,7 @@ async function findPageContaining(
 
 ## Reality Check
 
-**"CS fundamentals are irrelevant for SDETs"** ? Big-O analysis determines whether your test data generation scales or crashes on large datasets. Data structure choice determines whether your test utilities run in milliseconds or seconds. Concurrency understanding determines whether your parallel tests are safe or create race conditions. CS fundamentals are not academic — they are the engineering foundation that separates automation scripters from software engineers.
+**"CS fundamentals are irrelevant for SDETs"** ? Big-O analysis determines whether your test data generation scales or crashes on large datasets. Data structure choice determines whether your test utilities run in milliseconds or seconds. Concurrency understanding determines whether your parallel tests are safe or create race conditions. CS fundamentals are not academic ï¿½ they are the engineering foundation that separates automation scripters from software engineers.
 
 **"SDETs do not write production code"** ? Test infrastructure IS production code: test frameworks run in CI/CD pipelines that gate deployments, test utilities are used by the entire engineering team, and test reporting tools are monitored by managers and stakeholders. Code quality, maintainability, and reliability standards for test infrastructure should match production code standards. Unmaintainable test code becomes an organizational bottleneck.
 
@@ -991,4 +991,4 @@ async function findPageContaining(
 
 **"Algorithm knowledge is only for interviews"** ? Algorithm patterns appear in test automation: graph traversal for dependency resolution in test ordering, dynamic programming for optimal test selection, and hashing for test data deduplication. An SDET who understands these patterns builds more efficient test infrastructure. The interview algorithm practice has direct utility in daily work.
 
-**"CS theory is separate from practical engineering"** ? Theory predicts practical outcomes: understanding computational complexity tells you that your O(n squared) test data comparison will timeout on 10000 records before you waste 30 minutes running it. Understanding concurrency theory tells you that your shared HashMap will corrupt data before you spend a day debugging intermittent test failures. Theory is not academic — it is predictive engineering.
+**"CS theory is separate from practical engineering"** ? Theory predicts practical outcomes: understanding computational complexity tells you that your O(n squared) test data comparison will timeout on 10000 records before you waste 30 minutes running it. Understanding concurrency theory tells you that your shared HashMap will corrupt data before you spend a day debugging intermittent test failures. Theory is not academic ï¿½ it is predictive engineering.

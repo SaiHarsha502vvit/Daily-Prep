@@ -1,4 +1,4 @@
-**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
+**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](../00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
 
 # File 20 — Bitwise Trie Interview Guide (Logic First, Code Later)
 
@@ -8,7 +8,7 @@ This chapter closes the explicit gap for Bitwise Trie coverage.
 
 Java implementation companion:
 
-- [03_Algorithms/18_Bitwise_Trie_Java_Complete.md](../03_Algorithms/18_Bitwise_Trie_Java_Complete.md)
+- [03_Algorithms/18_Bitwise_Trie_Java_Complete.md](../../03_Algorithms/18_Bitwise_Trie_Java_Complete.md)
 
 You already had related problems (Maximum XOR), but interview prep is stronger when the pattern itself is a standalone concept with:
 
@@ -309,4 +309,4 @@ maxXor(x):
 
 ---
 
-**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
+**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](../00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)

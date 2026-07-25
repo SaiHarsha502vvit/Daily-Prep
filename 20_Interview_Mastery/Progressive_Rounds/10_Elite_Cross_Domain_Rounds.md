@@ -1,6 +1,6 @@
 # 🔥 Elite Cross-Domain Rounds — DSA × Spring Boot × SDET
 
-**Navigation**: [← Mock Interview Simulations](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md)
+**Navigation**: [← Mock Interview Simulations](../09_Mock_Interview_Simulations.md) | [📚 Index](../00_INDEX.md)
 
 **Cross-links:**
 
@@ -1417,4 +1417,4 @@ test("v2 citation response is a strict superset of v1 (backward-compatible exten
 
 ---
 
-**Navigation**: [← Mock Interview Simulations](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md)
+**Navigation**: [← Mock Interview Simulations](../09_Mock_Interview_Simulations.md) | [📚 Index](../00_INDEX.md)

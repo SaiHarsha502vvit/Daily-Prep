@@ -952,7 +952,7 @@ Verification:
 
 Changed:
 
-- Added `20_Interview_Mastery/17_Production_Incident_Lessons.md` — 5 production incident stories teaching technical concepts through narrative (1113 lines).
+- Added `20_Interview_Mastery/Reference/17_Production_Incident_Lessons.md` — 5 production incident stories teaching technical concepts through narrative (1113 lines).
   - Incident 1: "The Boundary Attack" — Fixed-window vs sliding-window rate limiting (DSA + Spring Boot, P2).
   - Incident 2: "The Ghost Cache" — READ_ONLY vs READ_WRITE cache strategy + missing collection annotation (Spring Boot + DSA, P1).
   - Incident 3: "The Kafka Déjà Vu" — At-least-once delivery + Redis SETNX idempotency (Spring Boot + SDET, P2).
@@ -976,7 +976,7 @@ Verification:
 
 Changed:
 
-- Added `20_Interview_Mastery/15_Quick_Reference_Cards.md` — 10-card pre-interview cheat-sheet (410 lines).
+- Added `20_Interview_Mastery/Reference/15_Quick_Reference_Cards.md` — 10-card pre-interview cheat-sheet (410 lines).
   - Card 1: Test slice annotation decision tree + reference table.
   - Card 2: MockMvc vs WebTestClient vs TestRestTemplate decision tree + API comparison table.
   - Card 3: JPA L2C cache strategy decision tree + write-behaviour table.

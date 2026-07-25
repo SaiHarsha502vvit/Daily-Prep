@@ -223,7 +223,7 @@ async function fetchAllPagesWithDuplicateCheck(
 
 ## 3. Two Pointers → Dual-Context Test Assertions
 
-**The algorithm** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+**The algorithm** (from [`../../20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/Problem_Sets_DSA/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
 
 - Two pointers: two indices moving through an array, often toward each other or in sync
 
