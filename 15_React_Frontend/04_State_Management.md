@@ -227,27 +227,43 @@ THE THREE PRINCIPLES OF REDUX:
 
 ### 2.1 Unidirectional Data Flow
 
-```
-THE REDUX CYCLE (one-way data flow):
+**Trace one real "Add to cart" click through the Redux cycle — who
+gets called in what order, and why the cycle is one-way:**
 
-  ┌─────────────────────────────────────────────────────┐
-  │                                                     │
-  │  USER ACTION          DISPATCH          REDUCER     │
-  │  (click button) ───→ (send action) ───→ (compute   │
-  │                                          new state) │
-  │       ↑                                    │        │
-  │       │                                    ↓        │
-  │  VIEW UPDATE    ←───── STORE ←──────── NEW STATE   │
-  │  (re-render)           (holds state)               │
-  │                                                     │
-  └─────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as User
+    participant Cmp as React component
+    participant Store as Redux store
+    participant Reducer as Reducer (pure fn)
+    participant Sel as useSelector subscribers
 
-  1. User clicks "Add to Cart"
-  2. Component dispatches: { type: 'cart/addItem', payload: product }
-  3. Reducer receives (oldState, action) → returns newState
-  4. Store replaces state → notifies subscribers
-  5. useSelector re-runs → component re-renders with new data
+    User->>Cmp: click "Add to cart"
+    Cmp->>Store: dispatch({ type: "cart/addItem", payload: product })
+    Store->>Reducer: reducer(currentState, action)
+    Reducer-->>Store: return NEW state object (never mutates the old one)
+    Note over Store: Object identity of state.cart changes —<br/>this is the signal downstream subscribers watch for.
+    Store->>Sel: notify every subscribed selector
+    Sel->>Sel: run selector(newState); shallow-compare to previous result
+    Sel->>Cmp: if the selector's return value changed → trigger re-render
+    Cmp-->>User: UI shows the updated cart
 ```
+
+**Why the arrows only point one way:**
+
+- Components can *read* via `useSelector` and *request change* via
+  `dispatch`, but never write directly. The store is the only owner
+  of state.
+- Reducers are pure functions: `(state, action) → newState`. They
+  don't `fetch`, they don't `setTimeout`, they don't mutate the
+  input. Side effects live in middleware (thunks, sagas, RTK Query),
+  which sits between `dispatch` and the reducer.
+- Because the reducer *returns* a new object rather than mutating,
+  the store can do a cheap identity check (`===` / `Object.is`) to
+  decide whether to notify subscribers — that's how "time-travel
+  debugging" works: keep the old state references around and you
+  can replay them without side effects.
 
 ### 2.2 Middleware — The Power Layer
 
@@ -643,19 +659,26 @@ ZUSTAND vs REDUX:
 
 # Quick Reference — Decision Matrix
 
-```
-┌──────────────────┬────────────────────────────────────────────────────┐
-│ Solution         │ When to Use                                        │
-├──────────────────┼────────────────────────────────────────────────────┤
-│ useState         │ Local component state (default)                    │
-│ useReducer       │ Complex local state with many transitions          │
-│ Context          │ Theme, auth, locale (infrequent updates)           │
-│ Redux Toolkit    │ Large app, many devs, complex cross-cutting state  │
-│ Zustand          │ Simple global state, minimal boilerplate           │
-│ React Query      │ Server state (API data, caching, sync)             │
-│ Jotai/Recoil     │ Atomic state, fine-grained reactivity              │
-└──────────────────┴────────────────────────────────────────────────────┘
-```
+**Which state solution to reach for — by the shape of the state,
+not by the library brand:**
+
+| Solution              | Best for                                                | Why (in one line)                                                             |
+|-----------------------|----------------------------------------------------------|-------------------------------------------------------------------------------|
+| `useState`            | Local UI state owned by one component                    | Zero infrastructure. Default until you have a specific reason to move.        |
+| `useReducer`          | Local state with several transitions or a state machine  | Actions + reducer keep transition logic in one place; easier to unit-test.    |
+| Context API           | Values shared widely but rarely changed (theme, locale, current user) | Injection, not state management — provider `value` change re-renders ALL consumers. |
+| Redux Toolkit         | Large team, many cross-cutting slices, need middleware and DevTools | Central store, time-travel, ecosystem. Verbose but predictable at scale.      |
+| Zustand               | Small global stores with minimal boilerplate             | Same one-store idea as Redux but no reducers/providers; selective subscriptions built in. |
+| Jotai / Recoil        | Fine-grained atomic state; components subscribe to just the atoms they touch | Each atom is its own subscription, so you skip the "one context re-renders everyone" trap. |
+| React Query / SWR     | *Server* state (data owned by the API you're calling)     | Different problem: fetching, caching, revalidation, deduping. Don't put this in Redux. |
+
+**The rule.** Client state and server state are different problems.
+Client state (form drafts, wizard step, UI toggles) belongs in
+`useState` / `useReducer` / a small store. Server state (list of
+users, current cart on the backend, live prices) belongs in a
+data-fetching layer with cache invalidation — React Query, SWR, or
+RTK Query. Putting server data in a plain Redux slice means you
+hand-roll retries, staleness, deduping, and background refresh yourself.
 
 ---
 
@@ -796,12 +819,12 @@ Side effects belong in middleware (like Redux Thunk or Saga), not the reducer.
 
 ## Reality Check
 
-**"Choosing state management means choosing a store library"** ? The prior decision tree eliminates the store question for most state: is it SERVER data (fetched, cacheable, shared truth lives elsewhere � belongs in a query cache with staleness semantics, not a store: the single biggest state-management category and the one stores handle worst), is it URL state (filters, tabs, selection that should survive refresh and be shareable � belongs in the router), is it LOCAL (one component or subtree � useState/useReducer, keep it down), and only the remainder � genuinely global, client-owned, cross-cutting � auditions store libraries. Most Redux monoliths of the 2018 era were 80 percent misplaced server cache, which is exactly what the query-library era refactored away.
+**"Choosing state management means choosing a store library"** ? The prior decision tree eliminates the store question for most state: is it SERVER data (fetched, cacheable, shared truth lives elsewhere — belongs in a query cache with staleness semantics, not a store: the single biggest state-management category and the one stores handle worst), is it URL state (filters, tabs, selection that should survive refresh and be shareable — belongs in the router), is it LOCAL (one component or subtree — useState/useReducer, keep it down), and only the remainder — genuinely global, client-owned, cross-cutting — auditions store libraries. Most Redux monoliths of the 2018 era were 80 percent misplaced server cache, which is exactly what the query-library era refactored away.
 
-**"Context is React's built-in state manager"** ? Context is a dependency-injection TRANSPORT with a blunt update model: every value change re-renders every consumer (no selectors, no partial subscription � the store libraries exist substantially because of this), and the unstable-value trap (an object literal in the Provider prop recreates per parent render, re-rendering all consumers for nothing) is the most-shipped context bug. Context earns its keep for low-frequency, identity-stable values � theme, auth session, locale, DI of services; using it as a high-frequency data bus is choosing the re-render cascade as an architecture. The split-context pattern (state and dispatch in separate providers) and memoized values are the mitigations when context is nonetheless right.
+**"Context is React's built-in state manager"** ? Context is a dependency-injection TRANSPORT with a blunt update model: every value change re-renders every consumer (no selectors, no partial subscription — the store libraries exist substantially because of this), and the unstable-value trap (an object literal in the Provider prop recreates per parent render, re-rendering all consumers for nothing) is the most-shipped context bug. Context earns its keep for low-frequency, identity-stable values — theme, auth session, locale, DI of services; using it as a high-frequency data bus is choosing the re-render cascade as an architecture. The split-context pattern (state and dispatch in separate providers) and memoized values are the mitigations when context is nonetheless right.
 
-**"Redux is dead; modern apps use lightweight stores"** ? What died was Redux's CEREMONY (hand-rolled action types, switch reducers, connect) � its IDEAS won everywhere: single source of truth, immutable updates, actions-as-events, devtools time travel are now table stakes in every successor, and Redux Toolkit itself is a fine modern citizen (Immer-based reducers, RTK Query absorbing the server-cache lesson). The genuine axis of choice today is subscription GRANULARITY and mental model: selector-based external stores (Zustand/RTK) versus proxy-tracked reactivity (MobX/Valtio) versus atomic graphs (Jotai/Recoil-lineage) � each with different re-render precision and different failure modes under misuse. "Which store" matters far less than the server/URL/local triage that shrinks what the store must hold.
+**"Redux is dead; modern apps use lightweight stores"** ? What died was Redux's CEREMONY (hand-rolled action types, switch reducers, connect) — its IDEAS won everywhere: single source of truth, immutable updates, actions-as-events, devtools time travel are now table stakes in every successor, and Redux Toolkit itself is a fine modern citizen (Immer-based reducers, RTK Query absorbing the server-cache lesson). The genuine axis of choice today is subscription GRANULARITY and mental model: selector-based external stores (Zustand/RTK) versus proxy-tracked reactivity (MobX/Valtio) versus atomic graphs (Jotai/Recoil-lineage) — each with different re-render precision and different failure modes under misuse. "Which store" matters far less than the server/URL/local triage that shrinks what the store must hold.
 
-**"Immutable updates are a Redux inconvenience"** ? Immutability is the mechanism by which the ENTIRE React world detects change: reference inequality is the only signal useState, memo, useMemo deps, context, and every store's selectors have � a mutated-in-place object defeats all of them simultaneously (the state changed and nothing anywhere noticed � or worse, SOME things noticed via other triggers, rendering the app inconsistent). Immer did not remove the requirement; it automated compliance (draft mutations produce new references). The senior mental model: immutability is not a style preference imported from functional programming � it is the change-detection protocol of the platform, and every mutation is a protocol violation with delayed, distributed symptoms.
+**"Immutable updates are a Redux inconvenience"** ? Immutability is the mechanism by which the ENTIRE React world detects change: reference inequality is the only signal useState, memo, useMemo deps, context, and every store's selectors have — a mutated-in-place object defeats all of them simultaneously (the state changed and nothing anywhere noticed — or worse, SOME things noticed via other triggers, rendering the app inconsistent). Immer did not remove the requirement; it automated compliance (draft mutations produce new references). The senior mental model: immutability is not a style preference imported from functional programming — it is the change-detection protocol of the platform, and every mutation is a protocol violation with delayed, distributed symptoms.
 
-**"Derived state should be stored so it stays in sync"** ? Storing derivations CREATES the sync problem it claims to solve � two sources of truth drift the moment one update path forgets the mirror � and the rule that eliminates the class is: derive at render (compute from source in the component body; it is almost never the bottleneck), memoize only measured hotspots, and reserve stored+synced copies for genuinely expensive cross-cutting aggregations with a single owner. The interview-and-code-review tell of state-modeling maturity is the same question: "can this value be computed from other state?" � every yes that lives in a store is a bug scheduled for later delivery.
+**"Derived state should be stored so it stays in sync"** ? Storing derivations CREATES the sync problem it claims to solve — two sources of truth drift the moment one update path forgets the mirror — and the rule that eliminates the class is: derive at render (compute from source in the component body; it is almost never the bottleneck), memoize only measured hotspots, and reserve stored+synced copies for genuinely expensive cross-cutting aggregations with a single owner. The interview-and-code-review tell of state-modeling maturity is the same question: "can this value be computed from other state?" — every yes that lives in a store is a bug scheduled for later delivery.

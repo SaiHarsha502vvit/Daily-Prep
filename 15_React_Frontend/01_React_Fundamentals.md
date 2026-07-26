@@ -148,33 +148,43 @@ Fix: use the item's unique ID as the key:
 
 ## 5W1H — Why This Chapter?
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  WHAT: React is a JavaScript LIBRARY (not framework!) for building   │
-│        user interfaces using composable components.                  │
-│                                                                      │
-│  WHY:  The DOM is SLOW. Updating it directly is error-prone.         │
-│        jQuery (2006): $("#app").html(newContent) — simple but        │
-│        chaotic at scale. No structure, no predictability.            │
-│        React (2013): Introduced a DECLARATIVE model where            │
-│        UI = f(state). You describe WHAT you want, React figures      │
-│        out HOW to update the DOM efficiently.                        │
-│                                                                      │
-│  WHO:  Facebook (now Meta). Jordan Walke created it in 2013          │
-│        to solve Facebook's newsfeed rendering problems.              │
-│        Used by: Facebook, Instagram, Netflix, Airbnb, Uber.          │
-│                                                                      │
-│  WHEN: After learning HTML, CSS, and JavaScript (especially          │
-│        ES6+ features: arrow functions, destructuring, modules).      │
-│                                                                      │
-│  WHERE: Runs in the browser (React DOM), on mobile (React Native),   │
-│         on servers (Next.js SSR), even in terminals (Ink).           │
-│                                                                      │
-│  HOW:  Write components → React builds a Virtual DOM tree →          │
-│        Diffing algorithm compares old vs new tree → Only changed     │
-│        DOM nodes are updated (reconciliation).                       │
-└──────────────────────────────────────────────────────────────────────┘
-```
+> **What React is, why it beat what came before, and what it doesn't do.**
+>
+> **What.** React is a JavaScript *library* (not a framework) whose job
+> is one thing: given a description of a UI as a tree of components,
+> render it to the DOM and keep it in sync as the underlying data
+> changes. It does not do routing, HTTP, forms, or state management —
+> those are library choices you assemble around it.
+>
+> **Why it exists — what the previous approach couldn't handle.**
+> jQuery (2006) let you push updates *at* the DOM: `$("#cart").html(newHtml)`.
+> That works for one widget; it doesn't scale to an app with fifty
+> interconnected pieces of state because *nobody knows what the current
+> DOM looks like at any moment*. Two developers touching two widgets
+> that share a piece of data will each write imperative code to sync,
+> and one of them will forget. React (2013) flipped the model:
+> `UI = f(state)`. You describe the target shape given the current
+> state, React does the diff-and-patch against whatever the DOM
+> currently is. Every render starts from a single source of truth.
+>
+> **Who and when.** Written by Jordan Walke at Facebook in 2013 to fix
+> the newsfeed's cross-component sync problem. Now runs Facebook,
+> Instagram, Netflix, Airbnb, Uber, and a large chunk of every
+> team-scale web codebase. Learn it *after* HTML/CSS/JS and modern
+> JS features (arrow fns, destructuring, modules) because React
+> assumes them.
+>
+> **Where it runs.** Browsers via `react-dom`, native mobile via
+> React Native, servers via Next.js (server-rendered HTML), CLIs via
+> Ink, native desktop via Electron/Tauri. Same programming model —
+> different renderers.
+>
+> **How, in one sentence.** You write components. React builds a
+> tree of plain JS "element" objects (the virtual DOM). When state
+> changes it builds a new tree, diffs it against the previous one,
+> and applies the minimal set of DOM operations to catch the real
+> DOM up. That's the entire model — everything else is
+> optimisations on top.
 
 ### Where It's Used in Real World
 
@@ -269,28 +279,55 @@ This is why React has such a large ecosystem (Next.js, Redux, etc.)
 
 ### 5W1H: What is JSX and Why?
 
+> **JSX = JavaScript XML — a syntax extension that lets you write
+> HTML-like element trees inside JavaScript.** It exists because the
+> alternative, hand-writing `React.createElement(...)` calls, becomes
+> unreadable four elements deep. JSX makes the component tree
+> *visually* mirror the DOM tree it will produce, which is the whole
+> ergonomic point of React.
+>
+> **The key mental fix:** *JSX is not HTML*. The browser never sees
+> JSX. Your build tool compiles it into function calls, and those
+> function calls return plain JavaScript objects that React later
+> turns into DOM.
+
+**Trace what happens to a single JSX expression from your source file
+to a rendered `<h1>` on screen:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant You as You (source file)
+    participant Bundler as Bundler (Vite/Babel/SWC)
+    participant Runtime as React runtime
+    participant DOM as Browser DOM
+
+    Note over You,DOM: You wrote: <h1 className="title">Hello</h1>
+
+    You->>Bundler: source with JSX
+    Bundler->>Bundler: JSX transform:<br/><h1>Hello</h1> → React.createElement("h1", {className:"title"}, "Hello")
+    Bundler->>Runtime: emits plain JS — the browser only ever sees this
+    Runtime->>Runtime: createElement returns a React element:<br/>{ type: "h1", props: { className: "title", children: "Hello" } }
+    Note over Runtime: This object is the "virtual DOM node" —<br/>a plain description, not a DOM node.
+    Runtime->>DOM: on first render, walk the element tree and<br/>createElement("h1"), setAttribute("class", "title"),<br/>appendChild(textNode "Hello")
+    DOM-->>You: user sees the heading
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│  WHAT: JSX = JavaScript XML. A syntax extension that lets you       │
-│        write HTML-like code inside JavaScript.                       │
-│                                                                      │
-│  WHY:  Without JSX, creating UI requires React.createElement()      │
-│        calls — deeply nested and unreadable. JSX makes the          │
-│        component tree visually obvious, like reading HTML.           │
-│                                                                      │
-│  HOW IT WORKS INTERNALLY:                                            │
-│  Step 1: You write JSX: <h1>Hello</h1>                              │
-│  Step 2: Babel/SWC COMPILER transforms it at build time:            │
-│          React.createElement('h1', null, 'Hello')                   │
-│  Step 3: createElement returns a plain JS object:                    │
-│          { type: 'h1', props: { children: 'Hello' } }              │
-│  Step 4: This object is a React Element (the Virtual DOM node)      │
-│  Step 5: React reads this object and creates the real DOM node      │
-│                                                                      │
-│  CRITICAL INSIGHT: JSX is NOT HTML. It's syntactic sugar for        │
-│  function calls. The browser NEVER sees JSX — only compiled JS.     │
-└──────────────────────────────────────────────────────────────────────┘
-```
+
+**Consequences that follow from "JSX compiles to function calls
+producing objects":**
+
+- Attributes are *JavaScript-named*, not HTML-named: `className` (not
+  `class`), `htmlFor` (not `for`), `onClick` (not `onclick`) —
+  because they're keys on a `props` object passed to a function.
+- Every render creates *new* element objects. That's why inline
+  arrow functions and object literals are new references each render
+  and defeat `React.memo` on children (see Reality Check below).
+- Conditional rendering follows plain JavaScript truthiness:
+  `count && <List/>` renders the literal `0` when `count` is `0`
+  because `&&` returns `0`, and React renders numbers as text. Use
+  `count > 0 && <List/>` or a ternary.
+- JSX children are just an argument passed to `createElement` — so
+  you can `map`, `filter`, and forward them as a normal value.
 
 ```jsx
 // JSX is syntactic sugar for React.createElement()
@@ -514,24 +551,26 @@ WHAT: State is DATA that a component OWNS and can CHANGE.
 WHY:  Props come from outside (read-only). But components need
       their OWN data that changes over time — user input, API
       responses, toggle states, form fields, counters.
+```
 
-PROPS vs STATE — The Critical Difference:
-┌──────────────┬─────────────────────────┬──────────────────────────┐
-│ Feature      │ Props                   │ State                    │
-├──────────────┼─────────────────────────┼──────────────────────────┤
-│ Owned by     │ Parent component        │ This component           │
-│ Mutable?     │ NO (read-only)          │ YES (via setter)         │
-│ Triggers     │ Re-render when changed  │ Re-render when changed   │
-│ re-render?   │ by parent               │ by setter                │
-│ Purpose      │ Configure component     │ Track changing data      │
-│ Analogy      │ Birth certificate       │ Personal notebook        │
-│              │ (given to you)          │ (you write in it)        │
-└──────────────┴─────────────────────────┴──────────────────────────┘
+**Props vs state — the difference that matters, with mechanism, not analogy:**
 
-ANALOGY — WHITEBOARD vs NAMEPLATE:
-  Props = your NAMEPLATE on your desk (given by someone else, you can't change it)
-  State = your WHITEBOARD (you own it, you write/erase on it)
+| Aspect                | Props                                                                   | State                                                                    |
+|-----------------------|-------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| Who owns the value    | The **parent** component                                                | **This** component                                                       |
+| Can this component write it? | **No** — read-only inside the receiver                          | **Yes**, via the setter returned by `useState`                            |
+| What triggers a re-render? | Parent renders with a new value                                    | You call the setter with a not-`Object.is`-equal value                    |
+| Where it lives at runtime | Argument to your component function                                  | React stores it in the component's Fiber node (see next section)         |
+| Purpose               | *Configure* what this component should look like from outside            | *Track* data that changes over this component's lifetime                  |
 
+**The rule that follows from ownership.** A component may *read* props
+and state, but may only *write* state. If you find yourself wanting
+to write to a prop, the value belongs to the parent — lift the
+setter up (parent owns state, passes both value and setter down) or
+push state down (move ownership to the smallest component that
+actually needs it).
+
+```
 HOW useState WORKS INTERNALLY:
   React stores state values in an ARRAY on the component's Fiber node.
   Each useState() call corresponds to an INDEX in this array.
@@ -541,7 +580,7 @@ HOW useState WORKS INTERNALLY:
   Second render:  hooks = [5]           ← useState(0) returns hooks[0] = 5
 
   THIS IS WHY hooks must be called in the same order every render!
-  If you put useState inside an if-block, the indices shift and React
+  If you put useState inside an if-block, the indices shift and ReactIf you put useState inside an if-block, the indices shift and React
   returns the wrong state to the wrong hook.
 ```
 
@@ -851,135 +890,209 @@ THE FIBER ARCHITECTURE (React 16+):
 
 ### Reconciliation Algorithm (Diffing)
 
+**Trace the diff on a tiny before/after tree so the three heuristics
+show their teeth:**
+
+```jsx
+// Before render:
+<div className="card">
+  <ul>
+    <li key="a">Apple</li>
+    <li key="b">Banana</li>
+  </ul>
+</div>
+
+// After render (user swapped Apple and Banana, then changed div class):
+<div className="card-active">
+  <ul>
+    <li key="b">Banana</li>
+    <li key="a">Apple</li>
+  </ul>
+</div>
 ```
-1. ELEMENT TYPE CHECK
-   └─ Old: <div>  →  New: <section>    → TEAR DOWN + rebuild subtree
-   └─ Old: <div>  →  New: <div>        → KEEP, recurse into children
 
-2. KEY MATCH (in lists)
-   └─ Old key=2  →  New key=2          → MOVE existing component, preserve state
-   └─ Old key=2  →  New key=3          → UNMOUNT old, MOUNT new (state lost)
+```mermaid
+sequenceDiagram
+    autonumber
+    participant R as React reconciler
+    participant Old as previous tree
+    participant New as new tree
+    participant DOM as real DOM
 
-3. PROPS DIFF
-   └─ Old: {a:1} → New: {a:1}          → skip (same reference)
-   └─ Old: {a:1} → New: {a:2}          → call component (re-render)
-```
+    Note over R,DOM: Rule 1 — element-type check at each position
+    R->>Old: root type?
+    Old-->>R: "div"
+    R->>New: root type?
+    New-->>R: "div"  (same)
+    Note over R: same type → KEEP the DOM node,<br/>recurse into props and children.<br/>(If types differed — e.g. "div" → "section" —<br/>the entire subtree would be torn down and rebuilt.)
 
-**Invariant:** Reconciliation is O(n) where n = number of elements, achieved by:
-- Type-based subtree teardown (avoid deep diff)
-- Key-based list reuse (avoid re-mounting)
-- Heuristic for siblings: compare levels, not paths
+    Note over R,DOM: Rule 2 — props diff on the kept node
+    R->>R: className: "card" → "card-active"
+    R->>DOM: setAttribute("class", "card-active")
 
----
-
+    Note over R,DOM: Rule 3 — key match on list children (this is where keys earn their name)
+    R->>Old: children of <ul>
+    Old-->>R: [li#a "Apple", li#b "Banana"]
+    R->>New: children of <ul>
+    New-->>R: [li#b "Banana", li#a "Apple"]
+    Note over R: same keys, different order → MOVE existing DOM nodes;<br/>preserve each li's state (input drafts, animations, memo caches).<br/>(If you'd used index as key: React sees "li at index 0" changed<br/>text from "Apple" to "Banana", updates DOM textContent —<br/>silently reassigning state to the wrong row.)
+    R->>DOM: reorder existing <li> nodes (no re-mount, no state loss)
 ### Hydration: Server HTML → Interactive React
 
+**Trace what happens between "server got the request" and "the user
+can click things" for an SSR page like Next.js:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Server as Node server (SSR)
+    participant Browser as Browser
+    participant React as React runtime (client)
+
+    Note over Server,React: 1. Server render
+    Server->>Server: renderToString(<App/>)  →  HTML string
+    Server->>Browser: send HTML with <div id="root">...</div>
+
+    Note over Browser: 2. First paint (no JS yet)
+    Browser->>Browser: parse HTML, layout, paint
+    Note over Browser: user sees content, but no click handlers work
+
+    Note over Browser: 3. Bundle download
+    Browser->>Browser: fetch and parse React + app JS
+
+    Note over React: 4. Hydration
+    React->>Browser: hydrateRoot(document.getElementById("root"), <App/>)
+    React->>React: walk the server HTML, build a Fiber tree matching it
+    React->>Browser: attach event listeners to the EXISTING DOM nodes
+    Note over React,Browser: React does NOT re-create DOM nodes —<br/>that would flash the page and lose form state.
+
+    Note over React,Browser: 5. Mismatch path (when it goes wrong)
+    alt server HTML ≠ client-first-render output
+        React->>Browser: tear down and re-render client-side
+        Note over Browser: user sees a flash, console warns,<br/>interactivity briefly delayed
+    end
 ```
-1. SERVER: renderToString(<App />)
-   └─→ HTML: <div id="root"><header>...</header>...</div>
-   └─→ Streamed to browser
 
-2. BROWSER: paints HTML immediately
-   └─ User sees content (no JS yet)
-   └─→ Layout, fonts, images load
-
-3. BROWSER: downloads JS bundle
-   └─ React, ReactDOM, your code
-
-4. REACT: hydrateRoot(document.getElementById('root'), <App />)
-   └─ Walks server HTML, attaches event listeners
-   └─ Builds Fiber tree matching DOM structure
-   └─ Does NOT re-create DOM nodes (would lose state)
-
-5. ⚠️ HYDRATION MISMATCH (if server ≠ client)
-   └─ React tears down + re-renders client-side
-   └─ Console warning, lost interactivity briefly
-   └─ Cause: Date.now(), Math.random(), localStorage in render
-```
-
-**Invariant:** Server-rendered HTML MUST equal client-first-render output, or React re-renders. Solution: defer non-deterministic reads to useEffect.
+**The invariant that keeps hydration cheap:** *server-rendered HTML
+must exactly equal the client's first render*. Any divergence and
+React discards the server DOM and re-renders from scratch — the
+worst of both worlds (slow SSR + slow CSR). The usual culprits:
+`Date.now()`, `Math.random()`, and `localStorage` reads inside the
+render body — all three return different values on server vs
+client. Fix: read them in `useEffect` after mount, or feed them in as
+props/context computed once on the server.
 
 ---
 
 ## Part 9: Component Lifecycle Cheat Sheet
 
+**Function-component lifecycle traced through Mount → Update → Unmount
+— what React runs when, and where your effects and cleanups land:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Parent as Parent (renders you)
+    participant Fn as Your component function
+    participant Fiber as Fiber node (state, hooks)
+    participant DOM as Real DOM
+    participant Effect as useEffect callbacks
+
+    Note over Parent,Effect: Phase A — Mount (component first appears)
+    Parent->>Fn: invoke with initial props
+    Fn->>Fiber: useState/useRef claim slots (in call order!)
+    Fn-->>Parent: return JSX
+    Parent->>DOM: commit — insert new DOM nodes
+    DOM->>Effect: after paint, run every useEffect(fn, […])
+    Note over Effect: [] deps → runs exactly once<br/>[dep] → runs on mount and whenever dep changes<br/>no deps → runs after EVERY render
+
+    Note over Parent,Effect: Phase B — Update (state or props change)
+    Parent->>Fn: invoke again with new props/state
+    Fn-->>Parent: return new JSX
+    Parent->>DOM: reconcile — patch only what differs
+    DOM->>Effect: run CLEANUPS from last render whose deps changed
+    DOM->>Effect: then run effects again for those same deps
+
+    Note over Parent,Effect: Phase C — Unmount (component removed)
+    Parent->>DOM: remove DOM node
+    DOM->>Effect: run every pending cleanup fn (subscriptions, timers)
+    Note over Fiber: Fiber node discarded — all useState values gone
 ```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  FUNCTION COMPONENT LIFECYCLE (via Hooks)                                        │
-│                                                                                  │
-│  Mount (component appears):                                                      │
-│    1. Function called → JSX returned → DOM updated                               │
-│    2. useEffect(() => { ... }, []) runs ONCE after first render                  │
-│                                                                                  │
-│  Update (state/props change):                                                    │
-│    1. Function re-called → new JSX returned → DOM diffed & updated               │
-│    2. useEffect(() => { ... }, [dep]) runs if dep changed                        │
-│                                                                                  │
-│  Unmount (component removed):                                                    │
-│    1. Cleanup function from useEffect runs                                       │
-│    useEffect(() => {                                                             │
-│      const timer = setInterval(...);                                             │
-│      return () => clearInterval(timer);  // ← cleanup                            │
-│    }, []);                                                                       │
-│                                                                                  │
-│  RENDER CYCLE:                                                                   │
-│  Props/State change → React re-renders component → Virtual DOM diff              │
-│  → Only changed DOM nodes updated (efficient!)                                   │
-└──────────────────────────────────────────────────────────────────────────────────┘
+
+```jsx
+useEffect(() => {
+  const timer = setInterval(tick, 1000);
+  return () => clearInterval(timer); // ← cleanup: runs on next dep-change AND on unmount
+}, []);
 ```
+
+**Two facts that fix most useEffect bugs:**
+
+1. **Cleanup runs BEFORE the next effect, not after it.** If you
+   subscribe to a socket in one render and the URL prop changes,
+   React runs the OLD cleanup (unsubscribe from old URL), then runs
+   the NEW effect (subscribe to new URL). This ordering is why you
+   never see overlapping subscriptions.
+2. **The dependency array is a *comparison list*, not a scheduler.**
+   React re-runs the effect when any dep changes by
+   `Object.is`. Inline objects/functions in deps change every render
+   (new reference), so an effect with `[options]` where `options` is
+   an inline literal will run forever. Fix: `useMemo` / `useCallback`
+   or lift the value out.
 
 ---
 
 ## Part 10: Real-World Simulation — How a Click Updates the Screen
 
+**End-to-end trace of a single "Add to cart" click. Notice how many
+distinct participants — event system, scheduler, reconciler, commit
+phase, browser — conspire to produce one 16 ms frame:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as User
+    participant Browser as Browser event loop
+    participant Delegate as React event delegate
+    participant Handler as Your handler
+    participant Scheduler as React scheduler
+    participant Render as Render phase
+    participant Recon as Reconciler (diff)
+    participant Commit as Commit phase
+    participant DOM as Real DOM
+
+    User->>Browser: click on "Add to Cart"
+    Browser->>Delegate: native "click" bubbles to the root listener React installed
+    Delegate->>Handler: build SyntheticEvent, find owning component, invoke onClick
+    Handler->>Scheduler: setCart(prev => [...prev, item])<br/>(may be several setStates — they are BATCHED into one update)
+    Scheduler-->>Handler: return; render is queued, not yet run
+    Note over Scheduler: ~1 ms after event
+
+    Scheduler->>Render: call your component fn(s) with the new state
+    Render-->>Recon: new virtual-DOM tree
+
+    Recon->>Recon: diff old tree vs new tree
+    Note over Recon: Header: same props → skip<br/>CartIcon: cart.length 0 → 1 → mark UPDATE<br/>ProductList: same items → skip<br/>CartBadge: new child <span>1</span> → mark PLACEMENT
+
+    Recon->>Commit: apply only the diff
+    Commit->>DOM: CartBadge.textContent = "1"
+    Commit->>DOM: CartIcon.className += " has-items"
+    Note over Commit,DOM: two DOM writes total — not a re-render of the page
+
+    DOM->>Browser: style recalc → layout → paint → composite
+    Browser-->>User: user sees the badge update
+    Note over User,Browser: total: ~16 ms (one 60 fps frame). User perception: INSTANT.
 ```
-SCENARIO: User clicks "Add to Cart" button in an e-commerce app.
-──────────────────────────────────────────────────────────────────
 
-Step 1: USER CLICKS
-  Browser fires native 'click' event → bubbles to React root.
-  React's event delegation catches it.
-  React creates SyntheticEvent, finds the component, calls handler.
-
-Step 2: HANDLER CALLS setState
-  const [cart, setCart] = useState([]);
-  setCart(prev => [...prev, newItem]);
-  React SCHEDULES a re-render (doesn't happen immediately!).
-  Multiple setStates in one handler are BATCHED.
-
-Step 3: RENDER PHASE
-  React calls your component function again with new state.
-  Component returns new JSX → new Virtual DOM tree.
-  This is a PURE function call — no DOM changes yet.
-
-Step 4: RECONCILIATION (Diffing)
-  React compares old tree vs new tree:
-  - Header: same props → SKIP (no re-render)
-  - CartIcon: cart.length changed (0→1) → mark for UPDATE
-  - ProductList: same products → SKIP
-  - CartBadge: new child <span>1</span> → mark for PLACEMENT
-
-Step 5: COMMIT PHASE
-  React applies only the diff to real DOM:
-  - CartBadge: innerHTML = "1" (one DOM operation)
-  - CartIcon: update class to 'has-items' (one DOM operation)
-  Total: 2 DOM operations instead of re-rendering entire page!
-
-Step 6: BROWSER PAINT
-  Browser recalculates styles → layout → paint → composite.
-  User sees the cart badge update. Total time: ~16ms (one frame).
-
-TIMELINE:
-  0ms:  Click event fired
-  1ms:  Handler runs, setState called
-  2ms:  React schedules re-render
-  3ms:  Render phase (Virtual DOM creation)
-  5ms:  Reconciliation (diffing)
-  7ms:  Commit phase (DOM updates)
-  16ms: Browser paints new frame
-
-  User perception: INSTANT. 16ms = 60fps.
-```
+**What the sequence reveals about performance:** the six phases in
+the middle (scheduler through commit) are React's job and are
+usually the fast part. The scary numbers when React feels slow live
+in *Render* (large component tree → slow function calls) and *Commit*
+(many DOM writes → slow browser reflow). Which is why the
+performance chapter's two knobs are memoisation (skip the render
+phase where nothing changed) and virtualisation (shrink the commit
+phase to a viewport-sized slice). Everything else is downstream of
+those two.
 
 ---
 

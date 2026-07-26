@@ -215,21 +215,29 @@ function MyComponent() {
 
 ## Pattern 4: Styling Approaches
 
-```
-APPROACH          │ PROS                     │ CONS
-────────────────────┼──────────────────────────┼───────────────────────────────
-CSS Modules       │ Scoped, no conflicts     │ Still CSS files
-(.module.css)     │ Works with any tooling   │ Dynamic styles = awkward
-────────────────────┼──────────────────────────┼───────────────────────────────
-Tailwind CSS      │ Utility-first, fast      │ Long class strings
-                  │ No naming, consistent    │ Learning curve
-────────────────────┼──────────────────────────┼───────────────────────────────
-styled-components │ CSS-in-JS, dynamic props │ Runtime overhead
-                  │ Full JS power             │ Bundle size
-────────────────────┼──────────────────────────┼───────────────────────────────
-Inline styles     │ Simple, dynamic          │ No pseudo-classes, media query
-(style={{}})      │ No tooling               │ Not recommended for production
-```
+**Four ways to style a React component — what each buys and what
+it costs at runtime:**
+
+| Approach                       | How it works                                                        | You gain                                                          | You give up                                                     |
+|--------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------|
+| CSS Modules (`.module.css`)    | Bundler hashes class names per file so they can't collide across components | Full CSS power, scoped by default, zero runtime cost, works with any tooling | Dynamic styles from props are awkward — you toggle classes, not values |
+| Tailwind CSS                   | Utility classes; the JIT compiler generates only the classes you actually use | Very fast to author, no naming, forced design-system consistency, tiny final CSS | Long `className` strings; learning curve for the utility vocabulary |
+| CSS-in-JS (styled-components, Emotion) | Style objects/tagged templates compiled to real CSS at *runtime* per component | Styles are first-class JS — receive props, compose, extract themes | Runtime cost (extra work per render), larger bundle, SSR quirks (styles injected after paint) |
+| Inline styles (`style={{...}}`) | React sets DOM `element.style.*` from the object each render        | Simplest possible for one-off dynamic values                       | No pseudo-classes, no media queries, no keyframes, no selector reuse; not for production |
+
+**How to pick, one line each:**
+
+- **CSS Modules** — the safe default. No runtime cost, no naming
+  fights, works everywhere. Reach for it first.
+- **Tailwind** — the safe default *if* your team commits to the
+  utility mental model. Once you're past the vocabulary, iteration
+  speed is dramatically higher.
+- **styled-components / Emotion** — when styles legitimately depend
+  on runtime props (`theme.mode`, `variant`, computed values) and
+  toggling classes would be painful. Accept the runtime tax
+  deliberately.
+- **Inline styles** — one-off animations, dynamic values you can't
+  express in a class. Never for the app's main styling surface.
 
 ```jsx
 // CSS MODULES:
@@ -526,12 +534,12 @@ This way, `Layout` and `Header` never need to know about the `user` object. They
 
 ## Reality Check
 
-**"Component patterns are historical � hooks replaced them"** ? Hooks replaced the CLASS-ERA patterns (HOCs and render props survive only at library boundaries), but the COMPOSITION patterns became more important, not less: compound components (Tabs.List/Tabs.Panel sharing implicit context � the API every design system converges on), slot-style children props (layout components that never know their content), controlled/uncontrolled DUAL-mode components (value+onChange OR defaultValue � the pattern every reusable input must implement, with the switching-modes warning as its contract), and state-reducer/headless patterns (logic without rendering � the architecture of every modern component library). The pattern catalog rotated; the discipline did not.
+**"Component patterns are historical — hooks replaced them"** ? Hooks replaced the CLASS-ERA patterns (HOCs and render props survive only at library boundaries), but the COMPOSITION patterns became more important, not less: compound components (Tabs.List/Tabs.Panel sharing implicit context — the API every design system converges on), slot-style children props (layout components that never know their content), controlled/uncontrolled DUAL-mode components (value+onChange OR defaultValue — the pattern every reusable input must implement, with the switching-modes warning as its contract), and state-reducer/headless patterns (logic without rendering — the architecture of every modern component library). The pattern catalog rotated; the discipline did not.
 
-**"Custom hooks are the reuse mechanism for everything"** ? Custom hooks reuse STATEFUL LOGIC; they cannot reuse RENDERING (that is components) and they cannot share state BETWEEN callers (two components calling useCart get two carts � the misconception that quietly breaks apps; sharing requires context or a store behind the hook). The design smell taxonomy: a hook returning JSX is a component in disguise; a hook with boolean flags steering divergent behaviors is two hooks; a hook wrapping one useState with no logic is ceremony. The clean split � headless hook owns behavior, thin component owns markup � is what makes both testable and swappable.
+**"Custom hooks are the reuse mechanism for everything"** ? Custom hooks reuse STATEFUL LOGIC; they cannot reuse RENDERING (that is components) and they cannot share state BETWEEN callers (two components calling useCart get two carts — the misconception that quietly breaks apps; sharing requires context or a store behind the hook). The design smell taxonomy: a hook returning JSX is a component in disguise; a hook with boolean flags steering divergent behaviors is two hooks; a hook wrapping one useState with no logic is ceremony. The clean split — headless hook owns behavior, thin component owns markup — is what makes both testable and swappable.
 
-**"Compound components are showcase API design"** ? Compound components are a COUPLING decision with real trade-offs: implicit context between parent and children gives the flexible composition (any layout between Tabs and Tab works) but breaks silently when consumers wrap children in unexpected structure (the styled-wrapper that severed context), fights static analysis (which Tab indexes exist is unknowable), and complicates TypeScript narrowing. The alternatives ladder: props-as-config (rigid, analyzable � right for constrained UIs), compound (flexible, implicit � right for design systems), and render-callback (maximum control, maximum ceremony). Choosing by API aesthetics rather than consumer-flexibility requirements is how libraries acquire three redundant APIs.
+**"Compound components are showcase API design"** ? Compound components are a COUPLING decision with real trade-offs: implicit context between parent and children gives the flexible composition (any layout between Tabs and Tab works) but breaks silently when consumers wrap children in unexpected structure (the styled-wrapper that severed context), fights static analysis (which Tab indexes exist is unknowable), and complicates TypeScript narrowing. The alternatives ladder: props-as-config (rigid, analyzable — right for constrained UIs), compound (flexible, implicit — right for design systems), and render-callback (maximum control, maximum ceremony). Choosing by API aesthetics rather than consumer-flexibility requirements is how libraries acquire three redundant APIs.
 
-**"Container/presentational is the architecture pattern"** ? The strict two-class split died with hooks (data hooks made every component potentially self-fetching), but its RESIDUE is the durable rule: components that render markup should not decide business logic, and components that orchestrate should not know about pixels. The modern shape is headless-plus-skin: behavior in hooks (useSelection, usePagination), presentation in dumb components consuming them � the same separation, relocated. Teams that declared the pattern dead and fused everything re-learn why it existed the first time they need the same logic under a second design or in a test.
+**"Container/presentational is the architecture pattern"** ? The strict two-class split died with hooks (data hooks made every component potentially self-fetching), but its RESIDUE is the durable rule: components that render markup should not decide business logic, and components that orchestrate should not know about pixels. The modern shape is headless-plus-skin: behavior in hooks (useSelection, usePagination), presentation in dumb components consuming them — the same separation, relocated. Teams that declared the pattern dead and fused everything re-learn why it existed the first time they need the same logic under a second design or in a test.
 
-**"Error boundaries are an advanced edge-case feature"** ? Error boundaries are the frontend's BLAST-RADIUS design, and their limits are the actual knowledge: they catch render/lifecycle errors below them � NOT event handlers (try/catch yourself), NOT async/awaited failures (they resolve after render � route them into state), NOT the boundary's own render � and placement is architecture (per-route so navigation survives, per-widget so one dead card does not kill the dashboard, never one global catch-all that whitescreens everything equally). The pairing that completes the story: boundary catches, fallback offers retry (reset keys/remount), and the error reports to tracking with component-stack context. An app without designed boundaries has ONE boundary: the white screen.
+**"Error boundaries are an advanced edge-case feature"** ? Error boundaries are the frontend's BLAST-RADIUS design, and their limits are the actual knowledge: they catch render/lifecycle errors below them — NOT event handlers (try/catch yourself), NOT async/awaited failures (they resolve after render — route them into state), NOT the boundary's own render — and placement is architecture (per-route so navigation survives, per-widget so one dead card does not kill the dashboard, never one global catch-all that whitescreens everything equally). The pairing that completes the story: boundary catches, fallback offers retry (reset keys/remount), and the error reports to tracking with component-stack context. An app without designed boundaries has ONE boundary: the white screen.

@@ -6,36 +6,53 @@
 
 ## 5W1H — Why Hooks Exist
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│  WHAT: Hooks are functions that let you "hook into" React state      │
-│        and lifecycle features from function components.              │
-│                                                                      │
-│  WHY:  Before Hooks (pre-2019), only CLASS components had state      │
-│        and lifecycle. This created 3 problems:                       │
-│        1. Wrapper Hell: HOCs and render props nested 5+ levels       │
-│        2. Giant Components: related logic split across lifecycle     │
-│           methods (componentDidMount + componentDidUpdate +          │
-│           componentWillUnmount for ONE feature)                      │
-│        3. Confusing Classes: `this` binding, class boilerplate       │
-│                                                                      │
-│  WHO:  React team (Dan Abramov, Sophie Alpert) introduced at         │
-│        React Conf 2018. Released in React 16.8 (Feb 2019).           │
-│                                                                      │
-│  HOW HOOKS WORK INTERNALLY:                                          │
-│  Each component has a Fiber node. Each Fiber has a linked list       │
-│  of hooks. When React renders your component, it walks this list:    │
-│                                                                      │
-│  ComponentFiber.memoizedState → Hook1 → Hook2 → Hook3 → null         │
-│                                                                      │
-│  useState(0)  → reads Hook1 (state = current value)                  │
-│  useEffect()  → reads Hook2 (effect + deps + cleanup)                │
-│  useRef()     → reads Hook3 (ref object)                             │
-│                                                                      │
-│  CRITICAL: Hooks are identified by POSITION in the linked list,      │
-│  NOT by name. This is why they MUST be called in the same order.     │
-└──────────────────────────────────────────────────────────────────────┘
-```
+> **What hooks are and why they exist.**
+>
+> **What.** A hook is a plain function whose name starts with `use`
+> and whose sole capability is to touch React state or lifecycle
+> from inside a function component. `useState`, `useEffect`,
+> `useRef`, `useMemo`, `useContext`, and custom `useXxx` functions
+> you write yourself are all hooks. That's it — no class boilerplate,
+> no `this`, no lifecycle method names to memorise.
+>
+> **Why they exist.** Before hooks (before Feb 2019), only class
+> components could hold state or run lifecycle code. That created
+> three concrete problems that each cost real teams real productivity:
+>
+> 1. **Wrapper hell.** Sharing logic across components meant HOCs
+>    (`withRouter(withAuth(withTheme(MyComponent)))`) or render
+>    props — both stacked as extra tree levels. React DevTools
+>    would show five wrappers before the actual component you cared
+>    about.
+> 2. **Related logic split across lifecycle methods.** A single
+>    feature (e.g. "subscribe to socket, teardown on unmount") had
+>    to be threaded through `componentDidMount` +
+>    `componentDidUpdate` + `componentWillUnmount`. Related code
+>    lived in three different methods; unrelated concerns lived
+>    together.
+> 3. **`this` binding was a footgun.** Class methods lose `this`
+>    when passed as callbacks unless you bind them in the constructor
+>    or use class-field arrows. Every React team debugged the same
+>    `this.setState is not a function` at least once.
+>
+> **How they work internally.** Each rendered component has a Fiber
+> node in React's tree. Each Fiber holds a *linked list* of hook
+> objects:
+>
+> ```
+> ComponentFiber.memoizedState → Hook₁ → Hook₂ → Hook₃ → null
+>
+> useState(0)   reads Hook₁ = { value, setter }
+> useEffect(fn) reads Hook₂ = { deps, fn, cleanup }
+> useRef(v)     reads Hook₃ = { current: v }
+> ```
+>
+> **Hooks are identified by *position*, not by name.** On every
+> render, React walks the list from the head and hands back
+> whichever hook slot each call site reaches. That's why the two
+> rules below — *only at the top level*, *only from React functions*
+> — are not stylistic preferences: they are the invariant that keeps
+> the position ↔ hook mapping stable across renders.
 
 ---
 
@@ -711,20 +728,35 @@ THE INTERNAL REASON:
   React can't tell them apart because it only knows positions.
 ```
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────┐
-│  RULE 1: Only call hooks at the TOP LEVEL                                        │
-│    ❌ if (condition) { useState(...) }                                          │
-│    ❌ for (let i...) { useEffect(...) }                                         │
-│    ✅ Always same hooks in same order every render                              │
-│                                                                                  │
-│  RULE 2: Only call hooks from React FUNCTIONS                                    │
-│    ✅ Function components                                                       │
-│    ✅ Custom hooks (useXxx)                                                     │
-│    ❌ Regular JavaScript functions                                              │
-│    ❌ Class components                                                          │
-└──────────────────────────────────────────────────────────────────────────────────┘
-```
+> **Rule 1 — only call hooks at the top level of a component or
+> custom hook.** Not inside `if`, not inside `for`, not inside
+> `try/catch`, not after an early `return`. The reason is
+> mechanical: React identifies hooks by their call-site *position*
+> in the linked list on each render (see the intro above). Skip one
+> conditionally and every subsequent hook shifts by one slot — the
+> `useEffect` you wrote reads the state from the previous slot and
+> your component silently corrupts.
+>
+> ```jsx
+> // ❌ breaks the position invariant
+> if (condition) { const [x, setX] = useState(0); }
+> for (let i = 0; i < n; i++) { useEffect(...); }
+>
+> // ✅ same hooks in the same order every render
+> const [x, setX] = useState(0);
+> useEffect(() => { /* branch INSIDE the effect */ }, [condition]);
+> ```
+>
+> **Rule 2 — only call hooks from React function components or from
+> other hooks (`useXxx`).** Not from plain utility functions, not
+> from class methods, not from event handlers directly. Hooks
+> attach to whatever component is currently rendering; there is no
+> "currently rendering" when you're inside a click handler that
+> fires later, or a helper function that runs anywhere.
+>
+> These two rules together are exactly what makes React's Rules-of-Hooks
+> lint rule flag the same set of patterns — it's not a style rule,
+> it's a correctness rule for the linked-list slot mapping.
 
 ### 🔗 Cross-References to DSA Concepts
 
@@ -1003,31 +1035,56 @@ function LikeButton({ initialLikes }: { initialLikes: number }) {
 
 ### useEffect Cleanup Lifecycle
 
+**Trace what happens to an effect from mount to unmount — who runs
+the cleanup, and when React runs it relative to the next effect:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Parent as Parent (renders you)
+    participant Fn as Your component fn
+    participant DOM as Real DOM
+    participant Effect as Effect fn
+    participant Cleanup as Cleanup fn (return value of effect)
+
+    Note over Parent,Cleanup: Phase A — Mount
+    Parent->>Fn: first render
+    Fn->>DOM: commit new nodes
+    DOM->>Effect: React invokes the effect fn AFTER paint
+    Effect-->>DOM: (side effect: addEventListener / subscribe / fetch / setInterval)
+    Effect-->>Parent: returns cleanup fn — React stores it
+
+    Note over Parent,Cleanup: Phase B — Update where a dep in the array changed
+    Parent->>Fn: re-render
+    Fn->>DOM: commit patch
+    DOM->>Cleanup: React runs the PREVIOUS render's cleanup FIRST
+    Cleanup-->>DOM: (undo side effect: removeEventListener / abort / clearInterval)
+    DOM->>Effect: THEN React runs the effect fn again with the new closure
+    Effect-->>Parent: returns a new cleanup fn
+
+    Note over Parent,Cleanup: Phase C — Unmount
+    Parent->>DOM: component removed
+    DOM->>Cleanup: React runs the last stored cleanup one final time
+    Note over Cleanup: this is the only chance to release resources<br/>the component acquired — timers, sockets, listeners
 ```
-MOUNT
-  │
-  ▼
-EFFECT RUNS  (e.g., addEventListener, fetch, subscription)
-  │
-  ▼
-[component alive — deps unchanged]
-  │
-  ├─ PROPS/STATE CHANGE (deps DID change)
-  │   │
-  │   ├─ CLEANUP runs (old effect's return)
-  │   │   e.g., removeEventListener, abort fetch
-  │   │
-  │   ▼
-  │   EFFECT RUNS again (new deps)
-  │
-  └─ UNMOUNT
-      │
-      ├─ CLEANUP runs (final time)
-      │   e.g., cancel subscription, clear timer
-      │
-      ▼
-      [component destroyed]
-```
+
+**Two mistakes this ordering explains:**
+
+1. **Returning something that isn't a function.** If your effect
+   returns `undefined`, a number, or an object, React silently
+   skips cleanup. The effect from Phase A is never undone; on the
+   next re-run in Phase B you've got two subscriptions, two
+   timers, two listeners. Always `return () => { /* cleanup */ }`
+   (or return nothing at all when there's genuinely nothing to
+   undo).
+2. **Missing dependencies.** The effect closes over whatever
+   values were in scope *at the render that created it*. If you
+   omit a value from the dependency array, the cleanup fn also
+   closes over that stale value — so when Phase C runs your
+   cleanup, it removes the listener from the *old* element, and
+   the new one leaks forever. Fix: put every value the effect
+   reads into the dep array (the exhaustive-deps ESLint rule
+   catches most cases).
 
 **Common mistake:** Returning a non-function from effect (e.g., a number or undefined) — silently no-ops cleanup. Always `return () => { /* cleanup */ }` when needed.
 
@@ -1161,12 +1218,12 @@ const fullName = `${firstName} ${lastName}`;
 
 ## Reality Check
 
-**"The rules of hooks are arbitrary API restrictions"** ? The rules ARE the implementation leaking through, and knowing why converts them from dogma to physics: hooks are stored in a LIST on the fiber, matched to calls by ORDER � call order must therefore be identical every render, which is exactly why no conditionals/loops around hooks (a skipped useState shifts every subsequent hook one slot � reading a neighbor's state) and why the linter is non-negotiable rather than stylistic. Understanding the list model also demystifies the rest: why hooks only work in components/custom hooks (they need the current fiber), and why two components calling the same hook share nothing (different fibers, different lists).
+**"The rules of hooks are arbitrary API restrictions"** ? The rules ARE the implementation leaking through, and knowing why converts them from dogma to physics: hooks are stored in a LIST on the fiber, matched to calls by ORDER — call order must therefore be identical every render, which is exactly why no conditionals/loops around hooks (a skipped useState shifts every subsequent hook one slot — reading a neighbor's state) and why the linter is non-negotiable rather than stylistic. Understanding the list model also demystifies the rest: why hooks only work in components/custom hooks (they need the current fiber), and why two components calling the same hook share nothing (different fibers, different lists).
 
-**"useEffect runs after render for side effects"** ? The precise contract has four clauses people learn one incident at a time: it runs after COMMIT and PAINT (useLayoutEffect for pre-paint measurement � the flicker line), cleanup runs BEFORE the next effect execution and at unmount (the intervals that stack without it), each execution captures ITS render's props/state (the stale-closure family � the interval logging the same count forever), and StrictMode double-invokes mount effects in dev DELIBERATELY (setup-cleanup-setup � code that breaks under it has a real cleanup bug, not a React bug). Most "useEffect is confusing" reduces to fighting one of these four clauses without knowing it exists.
+**"useEffect runs after render for side effects"** ? The precise contract has four clauses people learn one incident at a time: it runs after COMMIT and PAINT (useLayoutEffect for pre-paint measurement — the flicker line), cleanup runs BEFORE the next effect execution and at unmount (the intervals that stack without it), each execution captures ITS render's props/state (the stale-closure family — the interval logging the same count forever), and StrictMode double-invokes mount effects in dev DELIBERATELY (setup-cleanup-setup — code that breaks under it has a real cleanup bug, not a React bug). Most "useEffect is confusing" reduces to fighting one of these four clauses without knowing it exists.
 
-**"The dependency array lists what the effect uses � the linter is pedantic about it"** ? The dependency array is a CORRECTNESS declaration the closure model enforces: omitting a used value pins the effect to a stale snapshot (not a lint style issue � a bug the linter is preventing), and the honest fixes for over-firing effects are structural, not suppressive: functional updates (drop the state dep), moving statics out, useCallback/useMemo to stabilize genuinely-needed references, or the effect-event pattern for the read-latest-without-retrigger case. Every eslint-disable on exhaustive-deps is an IOU: the code now depends on a value it pretends not to � and it will be paid during some future refactor as a mystery staleness bug.
+**"The dependency array lists what the effect uses — the linter is pedantic about it"** ? The dependency array is a CORRECTNESS declaration the closure model enforces: omitting a used value pins the effect to a stale snapshot (not a lint style issue — a bug the linter is preventing), and the honest fixes for over-firing effects are structural, not suppressive: functional updates (drop the state dep), moving statics out, useCallback/useMemo to stabilize genuinely-needed references, or the effect-event pattern for the read-latest-without-retrigger case. Every eslint-disable on exhaustive-deps is an IOU: the code now depends on a value it pretends not to — and it will be paid during some future refactor as a mystery staleness bug.
 
-**"useMemo and useCallback make components faster"** ? Both cost memory and comparison work per render and deliver value in exactly THREE situations: preserving reference identity for memoized children or effect/hook dependencies (the real 90-percent case � it is about identity, not computation), genuinely expensive computations (rare � measure first), and stabilizing context values (the object literal in a Provider re-rendering every consumer). Blanket memoization is negative-value ritual: unread by memo-less children, invalidated by unstable inputs one level up, and obscuring the actual fix (component composition, state placement). The React Compiler's arrival makes the manual-everywhere position doubly obsolete � the durable skill is knowing WHY identity matters, which the compiler cannot decide for you at the architecture level.
+**"useMemo and useCallback make components faster"** ? Both cost memory and comparison work per render and deliver value in exactly THREE situations: preserving reference identity for memoized children or effect/hook dependencies (the real 90-percent case — it is about identity, not computation), genuinely expensive computations (rare — measure first), and stabilizing context values (the object literal in a Provider re-rendering every consumer). Blanket memoization is negative-value ritual: unread by memo-less children, invalidated by unstable inputs one level up, and obscuring the actual fix (component composition, state placement). The React Compiler's arrival makes the manual-everywhere position doubly obsolete — the durable skill is knowing WHY identity matters, which the compiler cannot decide for you at the architecture level.
 
-**"useRef is for DOM references"** ? useRef is React's INSTANCE VARIABLE � a mutable box surviving renders without triggering them � and its non-DOM uses are the deeper toolkit: the latest-value ref (escaping stale closures in long-lived callbacks � the manual effect-event), previous-value tracking, imperative handles for timers/observers/sockets, and render-count/first-render flags. Its two contracts: reading/writing .current during render is forbidden under concurrent rendering (renders may repeat or discard � refs mutated in render desync), and ref CHANGES notify nobody (that is the point � needing notification means it should be state). The DOM case is one instance of the general pattern: values React must remember but rendering must not depend on.
+**"useRef is for DOM references"** ? useRef is React's INSTANCE VARIABLE — a mutable box surviving renders without triggering them — and its non-DOM uses are the deeper toolkit: the latest-value ref (escaping stale closures in long-lived callbacks — the manual effect-event), previous-value tracking, imperative handles for timers/observers/sockets, and render-count/first-render flags. Its two contracts: reading/writing .current during render is forbidden under concurrent rendering (renders may repeat or discard — refs mutated in render desync), and ref CHANGES notify nobody (that is the point — needing notification means it should be state). The DOM case is one instance of the general pattern: values React must remember but rendering must not depend on.
