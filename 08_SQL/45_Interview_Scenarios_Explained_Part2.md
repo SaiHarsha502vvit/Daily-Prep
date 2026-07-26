@@ -942,7 +942,7 @@ Deadlock theory predates databases — Dijkstra's semaphore work (1965) addresse
 
 ## Reality Check
 
-**"Subqueries in SELECT are harmless"** ? A correlated subquery in the SELECT clause runs once PER ROW of the outer query. SELECT e.name, (SELECT d.name FROM departments d WHERE d.id = e.dept_id) FROM employees e executes the subquery for EVERY employee row. With 10000 employees, that is 10000 subquery executions. Replace with a JOIN: SELECT e.name, d.name FROM employees e JOIN departments d ON d.id = e.dept_id � one execution.
+**"Subqueries in SELECT are harmless"** ? A correlated subquery in the SELECT clause runs once PER ROW of the outer query. SELECT e.name, (SELECT d.name FROM departments d WHERE d.id = e.dept_id) FROM employees e executes the subquery for EVERY employee row. With 10000 employees, that is 10000 subquery executions. Replace with a JOIN: SELECT e.name, d.name FROM employees e JOIN departments d ON d.id = e.dept_id — one execution.
 
 **"DISTINCT solves duplicate problems"** ? DISTINCT hides the root cause of duplicates. If your query returns duplicates, the JOIN conditions are probably wrong: you are joining on a non-unique column or missing a join condition that creates a cartesian product. Adding DISTINCT to fix a broken query is like taking painkillers for a broken bone. Find and fix the join that produces duplicates instead.
 
@@ -950,4 +950,4 @@ Deadlock theory predates databases — Dijkstra's semaphore work (1965) addresse
 
 **"Date arithmetic works the same across databases"** ? MySQL uses DATE_ADD, DATE_SUB, and DATEDIFF. PostgreSQL uses interval arithmetic (date + INTERVAL '1 month'). SQL Server uses DATEADD and DATEDIFF. Oracle uses ADD_MONTHS. The edge cases differ too: adding one month to January 31 gives February 28 in some databases and errors in others. Always test date arithmetic with edge-case dates (month boundaries, leap years, year boundaries).
 
-**"HAVING COUNT(*) = 1 finds unique records"** ? HAVING COUNT(*) = 1 in a GROUP BY finds groups with exactly one row � not unique records. This is useful for finding singletons (customers with exactly one order), but it requires grouping by the correct column. GROUP BY customer_id HAVING COUNT(*) = 1 finds customers with one order. GROUP BY email HAVING COUNT(*) > 1 finds duplicate emails. The column you GROUP BY defines what uniqueness means.
+**"HAVING COUNT(*) = 1 finds unique records"** ? HAVING COUNT(*) = 1 in a GROUP BY finds groups with exactly one row — not unique records. This is useful for finding singletons (customers with exactly one order), but it requires grouping by the correct column. GROUP BY customer_id HAVING COUNT(*) = 1 finds customers with one order. GROUP BY email HAVING COUNT(*) > 1 finds duplicate emails. The column you GROUP BY defines what uniqueness means.

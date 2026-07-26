@@ -725,7 +725,7 @@ Problem variants must include production failure scenarios — interview-ready e
 
 **"Solving the problem once means you understand it"** ? Each problem variant tests a different SQL concept. Finding the second highest salary uses DENSE_RANK. Finding employees earning more than their manager uses a self-join. Finding departments with no employees uses LEFT JOIN with IS NULL. These are PATTERN families, not individual problems. Recognize the pattern (ranking, self-comparison, existence check) and you can solve any variant.
 
-**"Problem banks should be solved in order"** ? SQL problems are not sequential � they test independent patterns. If you struggle with window functions, practice 10 window function problems in a row. If self-joins confuse you, do 10 self-join problems. Targeted practice on weak patterns produces faster improvement than sequentially working through a mixed problem bank.
+**"Problem banks should be solved in order"** ? SQL problems are not sequential — they test independent patterns. If you struggle with window functions, practice 10 window function problems in a row. If self-joins confuse you, do 10 self-join problems. Targeted practice on weak patterns produces faster improvement than sequentially working through a mixed problem bank.
 
 **"The expected output defines the only correct query"** ? Multiple queries can produce identical output with different performance characteristics. An EXISTS subquery stopping at the first match is faster than an IN subquery materializing the entire subquery result. A JOIN solution may produce duplicates requiring DISTINCT. Practice writing multiple solutions for the same problem and understanding the tradeoffs between them.
 

@@ -4,22 +4,22 @@
 
 ## Chapter 6: Aggregate Functions & GROUP BY
 
-### ?? Understanding Aggregation � Collapsing Many Rows Into One
+### ?? Understanding Aggregation — Collapsing Many Rows Into One
 
-Aggregation is the process of **combining multiple rows into a single summary value**. Think of it as zooming out: instead of seeing every individual employee's salary, you see the average salary per department. This is fundamental to data analysis � business decisions are made on summaries, not individual records.
+Aggregation is the process of **combining multiple rows into a single summary value**. Think of it as zooming out: instead of seeing every individual employee's salary, you see the average salary per department. This is fundamental to data analysis — business decisions are made on summaries, not individual records.
 
-#### Why GROUP BY Exists � The Single-Value Rule
+#### Why GROUP BY Exists — The Single-Value Rule
 
-When you use an aggregate function like `AVG(salary)`, the database collapses all rows into one result. But what if you want the average salary **per department**? You need `GROUP BY dept_id` � this tells the database to create separate "buckets" (one per department) and apply the aggregate to each bucket independently.
+When you use an aggregate function like `AVG(salary)`, the database collapses all rows into one result. But what if you want the average salary **per department**? You need `GROUP BY dept_id` — this tells the database to create separate "buckets" (one per department) and apply the aggregate to each bucket independently.
 
 The **critical rule**: Every column in your `SELECT` must either be:
 
 1. Inside an aggregate function (`SUM(salary)`, `COUNT(*)`, etc.), OR
 2. Listed in the `GROUP BY` clause
 
-Why? Because if you say `SELECT dept_id, first_name, AVG(salary)`, the database doesn't know _which_ `first_name` to pick for each department � there are many employees per department, but only one average. This creates an ambiguity that SQL prevents by requiring the GROUP BY rule.
+Why? Because if you say `SELECT dept_id, first_name, AVG(salary)`, the database doesn't know _which_ `first_name` to pick for each department — there are many employees per department, but only one average. This creates an ambiguity that SQL prevents by requiring the GROUP BY rule.
 
-#### WHERE vs HAVING � When to Filter
+#### WHERE vs HAVING — When to Filter
 
 This distinction confuses everyone at first, but it's simple once you understand the execution order:
 
@@ -30,7 +30,7 @@ Think of it this way: WHERE decides which employees to consider. HAVING decides 
 
 ?? **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that _require_ aggregate values.
 
-#### ?? Formal Syntax � Aggregate Functions
+#### ?? Formal Syntax — Aggregate Functions
 
 ```
 SELECT <aggregate_function>(<column_name>)
@@ -47,7 +47,7 @@ MIN(<column>)                                    -- Minimum value
 MAX(<column>)                                    -- Maximum value
 ```
 
-#### ?? Formal Syntax � GROUP BY with HAVING
+#### ?? Formal Syntax — GROUP BY with HAVING
 
 ```
 SELECT <column1>, <column2>, <aggregate_function>(<column>)
@@ -58,7 +58,7 @@ GROUP BY <column1>, <column2>                    -- Creates groups
 [ORDER BY <column_or_aggregate> [ASC|DESC]];
 ```
 
-#### ?? Formal Syntax � ROLLUP & CUBE (Subtotals)
+#### ?? Formal Syntax — ROLLUP & CUBE (Subtotals)
 
 ```
 -- ROLLUP: Generates subtotals in hierarchical order
@@ -72,26 +72,26 @@ GROUP BY CUBE (<column1>, <column2>);            -- Subtotals for col1, col2, co
 
 ```
 +---------------------------------------------------------------------------------+
-�                    AGGREGATE FUNCTIONS - SUMMARY                                �
-+---------------------------------------------------------------------------------�
-�                                                                                 �
-�  Aggregate functions perform calculations on a SET of values and return         �
-�  a SINGLE value. They ignore NULL values (except COUNT(*)).                     �
-�                                                                                 �
-�  +--------------------------------------------------------------------------+   �
-�  �  Function       � Description                        � Example           �   �
-�  +-----------------+------------------------------------+-------------------�   �
-�  � COUNT(*)        � Count all rows                     � COUNT(*)          �   �
-�  � COUNT(column)   � Count non-NULL values              � COUNT(email)      �   �
-�  � COUNT(DISTINCT) � Count unique values                � COUNT(DISTINCT d) �   �
-�  � SUM(column)     � Sum of all values                  � SUM(salary)       �   �
-�  � AVG(column)     � Average of all values              � AVG(price)        �   �
-�  � MIN(column)     � Minimum value                      � MIN(hire_date)    �   �
-�  � MAX(column)     � Maximum value                      � MAX(salary)       �   �
-�  � GROUP_CONCAT()  � Concatenate values (MySQL)         � GROUP_CONCAT(name)�   �
-�  � STRING_AGG()    � Concatenate values (PostgreSQL)    � STRING_AGG(n,',') �   �
-�  +--------------------------------------------------------------------------+   �
-�                                                                                 �
+|                    AGGREGATE FUNCTIONS - SUMMARY                                |
++---------------------------------------------------------------------------------+
+|                                                                                 |
+|  Aggregate functions perform calculations on a SET of values and return         |
+|  a SINGLE value. They ignore NULL values (except COUNT(*)).                     |
+|                                                                                 |
+|  +--------------------------------------------------------------------------+   |
+|  |  Function       | Description                        | Example           |   |
+|  +-----------------+------------------------------------+-------------------|   |
+|  | COUNT(*)        | Count all rows                     | COUNT(*)          |   |
+|  | COUNT(column)   | Count non-NULL values              | COUNT(email)      |   |
+|  | COUNT(DISTINCT) | Count unique values                | COUNT(DISTINCT d) |   |
+|  | SUM(column)     | Sum of all values                  | SUM(salary)       |   |
+|  | AVG(column)     | Average of all values              | AVG(price)        |   |
+|  | MIN(column)     | Minimum value                      | MIN(hire_date)    |   |
+|  | MAX(column)     | Maximum value                      | MAX(salary)       |   |
+|  | GROUP_CONCAT()  | Concatenate values (MySQL)         | GROUP_CONCAT(name)|   |
+|  | STRING_AGG()    | Concatenate values (PostgreSQL)    | STRING_AGG(n,',') |   |
+|  +--------------------------------------------------------------------------+   |
+|                                                                                 |
 +---------------------------------------------------------------------------------+
 ```
 
@@ -143,27 +143,27 @@ FROM employees WHERE dept_id = 1;
 
 ```
 +---------------------------------------------------------------------------------+
-�                    GROUP BY - HOW IT WORKS                                      �
-+---------------------------------------------------------------------------------�
-�                                                                                 �
-�  GROUP BY divides rows into groups based on column values.                      �
-�  Aggregate functions are then applied to each group separately.                 �
-�                                                                                 �
-�  Original Data:                    After GROUP BY dept_id:                      �
-�  +--------------------------+     +----------------------------------------+    �
-�  � emp_id � dept � salary   �     � dept � count � sum_sal  � avg_sal     �     �
-�  +--------+------+----------�     +------+-------+----------+-------------�     �
-�  � 1      � 1    � 100000   �     � 1    � 3     � 280000   � 93333.33    �     �
-�  � 2      � 1    � 80000    �     � 2    � 2     � 150000   � 75000.00    �     �
-�  � 3      � 1    � 100000   �     +----------------------------------------+    �
-�  � 4      � 2    � 90000    �                                                   �
-�  � 5      � 2    � 60000    �     SELECT dept_id,                               �
-�  +--------------------------+            COUNT(*) AS count,                     �
-�                                          SUM(salary) AS sum_sal,                �
-�                                          AVG(salary) AS avg_sal                 �
-�                                   FROM employees                                �
-�                                   GROUP BY dept_id;                             �
-�                                                                                 �
+|                    GROUP BY - HOW IT WORKS                                      |
++---------------------------------------------------------------------------------+
+|                                                                                 |
+|  GROUP BY divides rows into groups based on column values.                      |
+|  Aggregate functions are then applied to each group separately.                 |
+|                                                                                 |
+|  Original Data:                    After GROUP BY dept_id:                      |
+|  +--------------------------+     +----------------------------------------+    |
+|  | emp_id | dept | salary   |     | dept | count | sum_sal  | avg_sal     |     |
+|  +--------+------+----------|     +------+-------+----------+-------------|     |
+|  | 1      | 1    | 100000   |     | 1    | 3     | 280000   | 93333.33    |     |
+|  | 2      | 1    | 80000    |     | 2    | 2     | 150000   | 75000.00    |     |
+|  | 3      | 1    | 100000   |     +----------------------------------------+    |
+|  | 4      | 2    | 90000    |                                                   |
+|  | 5      | 2    | 60000    |     SELECT dept_id,                               |
+|  +--------------------------+            COUNT(*) AS count,                     |
+|                                          SUM(salary) AS sum_sal,                |
+|                                          AVG(salary) AS avg_sal                 |
+|                                   FROM employees                                |
+|                                   GROUP BY dept_id;                             |
+|                                                                                 |
 +---------------------------------------------------------------------------------+
 ```
 
@@ -325,9 +325,9 @@ GROUP BY GROUPING SETS (
 
 **Navigation**: [< Previous](05_Queries_SELECT_WHERE.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_JOINs_Complete.md)
 
-?? **Section Challenge � Chapter 6: Aggregate Functions & GROUP BY**
+🔬 **Section Challenge — Chapter 6: Aggregate Functions & GROUP BY**
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` � show with an example where they produce different results.
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
 
 <details><summary>Answer</summary>
 
@@ -370,7 +370,7 @@ Today, materialized views (Snowflake, PostgreSQL, Oracle) pre-compute expensive 
 
 ## Reality Check
 
-**"GROUP BY runs after WHERE"** ? The SQL execution order is: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY. WHERE filters ROWS before grouping. HAVING filters GROUPS after aggregation. Writing a filter condition in HAVING instead of WHERE means the database first groups all rows (expensive) then discards groups � instead of discarding rows first (cheap) then grouping the remainder. This can change query time from seconds to minutes on large datasets.
+**"GROUP BY runs after WHERE"** ? The SQL execution order is: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY. WHERE filters ROWS before grouping. HAVING filters GROUPS after aggregation. Writing a filter condition in HAVING instead of WHERE means the database first groups all rows (expensive) then discards groups — instead of discarding rows first (cheap) then grouping the remainder. This can change query time from seconds to minutes on large datasets.
 
 **"COUNT(*) and COUNT(column) are the same"** ? COUNT(*) counts all rows including those with NULL values. COUNT(column) counts only rows where column is NOT NULL. COUNT(DISTINCT column) counts unique non-NULL values. On a table with 1000 rows where 200 have NULL in column_a: COUNT(*) returns 1000, COUNT(column_a) returns 800, and COUNT(DISTINCT column_a) returns however many unique non-NULL values exist.
 

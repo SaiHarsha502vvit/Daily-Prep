@@ -1071,7 +1071,7 @@ Production SQL debugging requires `pg_stat_statements` / `performance_schema` fo
 
 **"The fastest query is always the best answer in an interview"** ? Interviewers evaluate: correctness first, readability second, then performance. A correct, readable CTE-based solution that an interviewer can follow beats a clever single-query solution using obscure syntax that requires explanation. Write the readable version first, then offer the optimized version if asked about performance.
 
-**"You should always normalize your SQL answers"** ? Interview problems often require denormalized thinking: self-joins on the same table, conditional aggregation with CASE WHEN, and pivot-style queries. Over-normalizing your approach (creating temporary views for every subquery) adds complexity without value. Match your approach to the problem — some problems are naturally solved with denormalized patterns.
+**"You should always normalize your SQL answers"** ? Interview problems often require denormalized thinking: self-joins on the same table, conditional aggregation with CASE WHEN, and pivot-style queries. Over-normalizing your approach (creating temporary views for every subquery) adds complexity without value. Match your approach to the problem â€” some problems are naturally solved with denormalized patterns.
 
 **"Window functions solve every ranking problem"** ? ROW_NUMBER, RANK, and DENSE_RANK handle rankings differently: ROW_NUMBER gives unique ranks (1,2,3), RANK gives tied ranks with gaps (1,1,3), DENSE_RANK gives tied ranks without gaps (1,1,2). Using the wrong ranking function is a common interview mistake. Know the difference by considering: should ties share a rank? Should the next rank account for the number of ties?
 
