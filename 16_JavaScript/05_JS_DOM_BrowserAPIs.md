@@ -1,4 +1,4 @@
-﻿**JavaScript Chapter 5/7** | [â† Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
+﻿**JavaScript Chapter 5/7** | [← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
 
 # DOM Manipulation & Browser APIs
 
@@ -25,28 +25,59 @@ HOW: HTML → Parser → DOM Tree. JS accesses via `document` API.
 
 ## 1. What IS the DOM?
 
+The DOM is what the browser builds *from* your HTML — a live tree of
+node objects held in memory. HTML is text; the DOM is the runtime
+data structure that mirrors it. Everything JavaScript can query,
+mutate, or listen to on the page lives in this tree.
+
+**Watch the HTML on the left become the DOM on the right:**
+
+```html
+<html>
+  <head>
+    <title>Page</title>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <p>World</p>
+  </body>
+</html>
 ```
-HTML FILE:                      DOM TREE (in memory):
 
-<html>                          document
-  <head>                            │
-    <title>Page</title>         ┌───┴───â”
-  </head>                      html     (doctype)
-  <body>                       ┌┴â”
-    <h1>Hello</h1>           head body
-    <p>World</p>              │  ┌─┴─â”
-  </body>                   title h1  p
-</html>                      │    │    │
-                            "Page" "Hello" "World"
-                            (text) (text)  (text)
+```mermaid
+graph TD
+    doc[document]
+    html[html]
+    head[head]
+    title[title]
+    tPage["#quot;Page#quot; (text node)"]
+    body[body]
+    h1[h1]
+    tHello["#quot;Hello#quot; (text node)"]
+    p[p]
+    tWorld["#quot;World#quot; (text node)"]
 
-REASONING: The browser reads HTML text → builds a TREE of NODE
-objects. Each HTML tag becomes an Element node. Text becomes a
-Text node. This tree IS the DOM. JS can read and modify it.
-
-KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
-tree in memory. When JS modifies it, the page updates visually.
+    doc --> html
+    html --> head
+    html --> body
+    head --> title
+    title --> tPage
+    body --> h1
+    body --> p
+    h1 --> tHello
+    p --> tWorld
 ```
+
+**Two facts that trip people up:**
+
+1. **Text is its own node.** `<p>World</p>` is not one node — it is a
+   `<p>` element node with a text-node child that holds the string
+   `"World"`. Whitespace between tags counts too, which is why
+   `element.childNodes` is often longer than `element.children`.
+2. **The DOM is not your HTML file.** The file is disk bytes; the DOM
+   is a live object graph. Every `element.style.color = "red"` writes
+   to the graph, and the browser paints the change on the next frame.
+   DevTools' "Elements" panel shows the current DOM, not the file.
 
 ### Node Types
 
@@ -101,27 +132,27 @@ cardsArray.filter((card) => card.classList.contains("active"));
 
 ## 3. Traversing the DOM
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  GIVEN THIS DOM:                                                     ║
-║                                                                      ║
-║  <ul id="list">                   ul#list                            ║
-║    <li>First</li>                ┌──┼──â”                             ║
-║    <li>Second</li>              li  li  li                           ║
-║    <li>Third</li>                                                    ║
-║  </ul>                                                               ║
-║                                                                      ║
-║  PARENT:     li.parentElement       → ul                             ║
-║  CHILDREN:   ul.children            → [li, li, li] (elements)        ║
-║  FIRST:      ul.firstElementChild   → li (First)                     ║
-║  LAST:       ul.lastElementChild    → li (Third)                     ║
-║  NEXT:       li.nextElementSibling  → li (Second)                    ║
-║  PREV:       li.previousElementSibling → li (First)                  ║
-║                                                                      ║
-║  ⚠ Use *Element* versions (not childNodes/firstChild) to skip        ║
-║  text nodes (whitespace between tags counts as text nodes!)          ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+**Traversal API cheatsheet — same DOM as `<ul id="list">` with three
+`<li>` children:**
+
+| From here    | Ask for              | Get                                    |
+|--------------|----------------------|----------------------------------------|
+| `li` (any)   | `.parentElement`     | the `<ul>`                             |
+| `ul`         | `.children`          | HTMLCollection `[li, li, li]` (elements) |
+| `ul`         | `.firstElementChild` | first `<li>`                           |
+| `ul`         | `.lastElementChild`  | last `<li>`                            |
+| a middle `li`| `.nextElementSibling`| next `<li>` (or `null` at the end)     |
+| a middle `li`| `.previousElementSibling` | previous `<li>` (or `null` at start) |
+| any node     | `.closest(selector)` | walk UP until a match, or `null`       |
+
+**Why the `*Element*` versions and not `firstChild` / `nextSibling` /
+`childNodes`?** Because the non-`Element` versions include text
+nodes — and whitespace between tags is a text node. So
+`ul.firstChild` on a nicely-indented `<ul>` is a whitespace text node,
+not the first `<li>`. The `*Element*` variants skip text nodes and
+give you what your eyes see. Use them by default; reach for the
+text-inclusive versions only when you are specifically iterating text
+content.
 
 ```javascript
 const list = document.getElementById("list");
@@ -197,7 +228,7 @@ parent.replaceChild(newElement, oldElement); // Old way
 ### Performance: DocumentFragment
 
 ```javascript
-// âŒ BAD: Each appendChild triggers a reflow/repaint
+// ❌ BAD: Each appendChild triggers a reflow/repaint
 for (let i = 0; i < 1000; i++) {
   const li = document.createElement("li");
   li.textContent = `Item ${i}`;
@@ -225,48 +256,88 @@ list.appendChild(fragment); // ONE DOM update!
 
 ### 5W1H: The Event System
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  WHAT: Events are signals that something happened — click, type,     ║
-║        scroll, load, resize, etc. Event listeners react to them.     ║
-║                                                                      ║
-║  WHY:  This is the bridge between user actions and your code.        ║
-║        Every interactive web page uses events.                       ║
-║                                                                      ║
-║  HOW:  Events PROPAGATE through the DOM in 3 phases:                 ║
-║                                                                      ║
-║  Phase 1: CAPTURING (top → target)                                   ║
-║           document → html → body → div → button                      ║
-║                                                                      ║
-║  Phase 2: TARGET (the element that was clicked)                      ║
-║           button â† event fires here                                  ║
-║                                                                      ║
-║  Phase 3: BUBBLING (target → top) â† DEFAULT!                         ║
-║           button → div → body → html → document                      ║
-║                                                                      ║
-║  ANALOGY: Drop a stone in a pond.                                    ║
-║  Capturing = stone going down. Bubbling = ripples coming up.         ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+> **WHAT.** An event is a small object the browser fires at a node
+> when something happens to it — click, keypress, submit, resize.
+> An event listener is a function you registered ahead of time to be
+> called when a matching event reaches a node.
+>
+> **WHY it exists.** The browser has no idea what your app cares
+> about. It just tells every node in the tree "something happened
+> here" and lets your code decide what to do. That's the entire
+> mechanism behind every button, form, drag, and hover on the web.
+>
+> **HOW it dispatches (this is the part that surprises people).** An
+> event doesn't only fire on the element you clicked. The browser
+> walks the DOM tree top-to-bottom to the target node (the *capture*
+> phase), fires at the target itself (*target* phase), then walks
+> back up to `document` (the *bubble* phase). Any listener along the
+> way, in any of the three phases, gets a chance to run. Which phase
+> your listener runs in depends on the third argument to
+> `addEventListener` (`false`/omitted = bubble — the default; `true`
+> or `{ capture: true }` = capture).
+
+**Trace one real click on the button in this tree — which node the
+browser touches, in what order, and when your listeners get called:**
+
+```html
+<document>
+  <body>
+    <div class="container">
+      <button id="btn">Click me</button>
+    </div>
+  </body>
+</document>
 ```
 
-```
-EVENT PROPAGATION VISUAL:
+```mermaid
+sequenceDiagram
+    autonumber
+    participant B as Browser event dispatcher
+    participant D as document
+    participant Body as body
+    participant Div as div.container
+    participant Btn as button (target)
 
-┌─── document ──────────────────────────────────────────â”
-│  ① Capture ↓                          ③ Bubble ↑      │
-│  ┌─── body ──────────────────────────────────────â”    │
-│  │  ① ↓                                  ③ ↑    │     │
-│  │  ┌─── div.container ──────────────────────â”   │    │
-│  │  │  ① ↓                          ③ ↑     │   │     │
-│  │  │  ┌─── button ─────────────────────â”    │   │    │
-│  │  │  │                                │    │   │    │
-│  │  │  │  ② TARGET — event fires here  │    │   │     │
-│  │  │  │                                │    │   │    │
-│  │  │  └────────────────────────────────┘    │   │    │
-│  │  └────────────────────────────────────────┘   │    │
-│  └───────────────────────────────────────────────┘    │
-└───────────────────────────────────────────────────────┘
+    Note over B,Btn: Phase 1 — CAPTURE (top → target)
+    B->>D: click event enters DOM
+    D-->>B: run any listener registered with { capture: true }
+    B->>Body: descend
+    Body-->>B: run any capture-phase listener
+    B->>Div: descend
+    Div-->>B: run any capture-phase listener
+
+    Note over B,Btn: Phase 2 — TARGET (the clicked node)
+    B->>Btn: arrive at target
+    Btn-->>B: run listeners on the target itself<br/>(capture-registered ones first, then bubble-registered)
+
+    Note over B,Btn: Phase 3 — BUBBLE (target → top). Default phase.
+    B->>Div: bubble up
+    Div-->>B: run bubble-phase listeners
+    B->>Body: bubble up
+    Body-->>B: run bubble-phase listeners
+    B->>D: bubble up
+    D-->>B: run bubble-phase listeners
+    Note over B,D: Any listener may call event.stopPropagation()<br/>to cut the walk short at that node.
 ```
+
+**Reading the diagram, three facts that fix real bugs:**
+
+1. **`event.target` vs `event.currentTarget`.** `target` is the
+   button (the node the click actually hit). `currentTarget` is
+   whichever node's listener is currently running — which changes as
+   the event walks up. If you delegate on `.container` and the user
+   clicks the button, `currentTarget === div.container` but
+   `target === button`.
+2. **`stopPropagation()` only stops the *rest* of the walk.** All
+   listeners on the *current* node still run. `stopImmediatePropagation()`
+   also stops the remaining listeners on the current node.
+3. **The default phase is bubble.** `addEventListener('click', h)` is
+   short for `addEventListener('click', h, { capture: false })`. That's
+   why event delegation on a parent works: the click on a child bubbles
+   up and hits your parent listener on the way home.
+
+That last fact is exactly how the delegation pattern below works —
+without bubbling it would be impossible.
 
 ```javascript
 // ADDING EVENT LISTENERS:
@@ -300,7 +371,7 @@ button.addEventListener("click", handler, { once: true });
 ### Event Delegation — The Most Important Pattern
 
 ```javascript
-// âŒ BAD: One listener per button (100 buttons = 100 listeners)
+// ❌ BAD: One listener per button (100 buttons = 100 listeners)
 document.querySelectorAll(".delete-btn").forEach((btn) => {
   btn.addEventListener("click", handleDelete);
 });
@@ -325,27 +396,32 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 
 ### Common Events Reference
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  MOUSE:     click, dblclick, mouseenter, mouseleave, mousemove       ║
-║  KEYBOARD:  keydown, keyup, keypress (deprecated)                    ║
-║  FORM:      submit, change, input, focus, blur, reset                ║
-║  WINDOW:    load, DOMContentLoaded, resize, scroll, beforeunload     ║
-║  TOUCH:     touchstart, touchmove, touchend                          ║
-║  DRAG:      dragstart, drag, dragover, drop, dragend                 ║
-║  CLIPBOARD: copy, cut, paste                                         ║
-║                                                                      ║
-║  input vs change:                                                    ║
-║  • input: fires on EVERY keystroke/change (real-time)                ║
-║  • change: fires when element LOSES FOCUS (on blur)                  ║
-║  For real-time search: use "input". For form fields: "change".       ║
-║                                                                      ║
-║  DOMContentLoaded vs load:                                           ║
-║  • DOMContentLoaded: DOM is ready (HTML parsed). Scripts can run.    ║
-║  • load: EVERYTHING loaded (images, CSS, iframes).                   ║
-║  RULE: Use DOMContentLoaded for JS initialization.                   ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+**The events you'll actually reach for, grouped by input surface:**
+
+| Group     | Events                                                      |
+|-----------|-------------------------------------------------------------|
+| Mouse     | `click`, `dblclick`, `mouseenter`, `mouseleave`, `mousemove`|
+| Keyboard  | `keydown`, `keyup` (`keypress` is deprecated — avoid)      |
+| Form      | `submit`, `change`, `input`, `focus`, `blur`, `reset`       |
+| Window    | `load`, `DOMContentLoaded`, `resize`, `scroll`, `beforeunload` |
+| Touch     | `touchstart`, `touchmove`, `touchend`                       |
+| Drag/drop | `dragstart`, `drag`, `dragover`, `drop`, `dragend`          |
+| Clipboard | `copy`, `cut`, `paste`                                      |
+
+**Two pairs that everyone confuses:**
+
+*`input` vs `change`.* `input` fires on every keystroke or slider
+tick — use it for real-time search, character counters, live
+previews. `change` fires only when the field loses focus (blur) with
+a different value — use it for form fields where you only care about
+the final value, not every keystroke in between.
+
+*`DOMContentLoaded` vs `load`.* `DOMContentLoaded` fires when the
+HTML is fully parsed and the DOM tree is built — stylesheets and
+sub-resources may still be loading. `load` fires when *everything*
+(images, CSS, iframes, fonts) has finished. For JS initialisation
+that touches the DOM, use `DOMContentLoaded`; you almost never need
+`load` unless you're measuring or reacting to full-page readiness.
 
 ---
 
@@ -396,25 +472,30 @@ email.setCustomValidity("Custom error"); // Custom validation message
 
 ## 7. Browser Storage APIs
 
-```
-┌───────────────┬────────────┬──────────┬──────────┬────────────â”
-│ Feature       │ localStorage│ session  │ Cookies  │ IndexedDB │
-├───────────────┼────────────┼──────────┼──────────┼────────────┤
-│ Capacity      │ ~5-10 MB   │ ~5 MB    │ ~4 KB    │ Large      │
-│ Persistence   │ Forever    │ Tab close│ Expires  │ Forever    │
-│ Sent to server│ No         │ No       │ Yes (!)  │ No         │
-│ Scope         │ Origin     │ Tab+origin│ Domain  │ Origin     │
-│ API           │ Simple     │ Simple   │ Complex  │ Complex    │
-│ Data type     │ String only│ String   │ String   │ Any        │
-│ Sync/Async    │ Sync       │ Sync     │ Sync     │ Async      │
-└───────────────┴────────────┴──────────┴──────────┴────────────┘
+**Four places to keep data on the client, and what each is for:**
 
-USE CASES:
-• localStorage: dark mode pref, cart items, form drafts
-• sessionStorage: one-time banners, wizard progress
-• Cookies: authentication (httpOnly cookies), tracking
-• IndexedDB: offline apps, large data, file caching
-```
+| Feature         | `localStorage`  | `sessionStorage` | Cookies             | IndexedDB          |
+|-----------------|-----------------|------------------|---------------------|--------------------|
+| Capacity        | ~5–10 MB       | ~5 MB            | ~4 KB               | Hundreds of MB     |
+| Persistence     | Forever         | Until tab closes | Until expiry / clear| Forever            |
+| Sent on every request | No        | No               | Yes (per matching domain) | No           |
+| Scope           | Origin          | Origin + tab     | Domain (+ path)     | Origin             |
+| API shape       | `getItem`/`setItem` (sync) | Same as local | `document.cookie` string | Async, transactional |
+| Data type       | String only     | String only      | String only         | Any structured-cloneable value |
+| Sync or async   | Synchronous     | Synchronous      | Synchronous         | **Asynchronous**   |
+
+**Which to reach for:**
+
+- **`localStorage`** — durable UI state you can afford to lose (dark-mode
+  preference, draft form input, cart before checkout). No server round-trip.
+- **`sessionStorage`** — per-tab state that dies with the tab (multi-step
+  wizard progress, dismissed banners).
+- **Cookies** — anything the *server* needs (auth session id, CSRF token,
+  A/B experiment bucket). Set `HttpOnly` for auth so JS can't read it, and
+  `Secure` + `SameSite` for anything sensitive.
+- **IndexedDB** — large or structured client data (offline caches, uploaded
+  files, an in-browser database for a PWA). Async, so it doesn't block
+  the main thread the way `localStorage` does at multi-megabyte sizes.
 
 ```javascript
 // localStorage (persists forever until cleared):
@@ -556,35 +637,38 @@ navigator.geolocation.getCurrentPosition(
 
 ## 10. Why React Exists — The DOM Problem
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  THE PROBLEM WITH MANUAL DOM MANIPULATION:                           ║
-║                                                                      ║
-║  1. Imperative: You tell the DOM WHAT to do, step by step.           ║
-║     "Find this element, change its text, add this class..."          ║
-║     → Complex apps become spaghetti code.                            ║
-║                                                                      ║
-║  2. State Sync: Your data (state) and the DOM can get out of         ║
-║     sync. Update one, forget the other → bugs.                       ║
-║                                                                      ║
-║  3. Performance: Each DOM change = reflow + repaint.                 ║
-║     100 small changes = 100 reflows (expensive!).                    ║
-║                                                                      ║
-║  REACT'S SOLUTION:                                                   ║
-║                                                                      ║
-║  1. Declarative: Describe WHAT the UI should look like.              ║
-║     React figures out HOW to update the DOM.                         ║
-║                                                                      ║
-║  2. Virtual DOM: React diffs a virtual tree, then applies            ║
-║     MINIMAL real DOM changes (batched for performance).              ║
-║                                                                      ║
-║  3. One-way data flow: State → UI. Change state, UI updates          ║
-║     automatically. No manual sync.                                   ║
-║                                                                      ║
-║  BUT: Understanding the real DOM helps you debug React, use refs,    ║
-║  optimize performance, and write vanilla JS when needed.             ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+> **The problem with hand-rolling DOM code at scale:**
+>
+> 1. **Imperative — you narrate every step.** *"Find the badge, change
+>    its text, remove the disabled class, re-enable the button,
+>    now update the total, now sync the URL, ..."* — as features
+>    stack, the narration becomes a maze that no one can keep in
+>    their head.
+> 2. **State drifts from the DOM.** You have two sources of truth: the
+>    JS variables you compute from, and what's actually rendered.
+>    Any code path that updates one without the other quietly rots
+>    the UI.
+> 3. **Every write is a paint.** Each `appendChild`, `style` change,
+>    or `textContent` assignment can trigger reflow + repaint. A loop
+>    of 100 small writes is 100 layout passes.
+>
+> **How React reframes each of those:**
+>
+> 1. **Declarative rendering.** You write "given this state, the UI
+>    should look like this JSX." React figures out the DOM operations.
+>    Your code no longer describes *steps*, only *shape*.
+> 2. **One-way data flow.** State is the single source of truth;
+>    React re-derives the DOM from state on every change. No drift
+>    is possible because there is no second source to drift from.
+> 3. **Virtual DOM + batching.** React holds a lightweight tree of
+>    what the UI *should* be, diffs it against the previous version,
+>    and applies one minimal set of DOM writes per render. The 100
+>    small writes become one batched patch.
+>
+> **You still need to know the real DOM.** For refs, for measuring
+> layout, for third-party libraries, for `useEffect` cleanup, and
+> for reading React error messages that describe reconciliation.
+> React is not a replacement for the DOM — it's a controller for it.
 
 ---
 
@@ -622,7 +706,7 @@ Q: How does React's Virtual DOM relate to the real DOM?
 
 ---
 
-[â† Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
+[← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
 
 ---
 

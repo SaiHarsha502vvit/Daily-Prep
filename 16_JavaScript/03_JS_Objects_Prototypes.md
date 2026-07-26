@@ -1,4 +1,4 @@
-﻿**JavaScript Chapter 3/7** | [â† Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+﻿**JavaScript Chapter 3/7** | [← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
 
 # Objects & Prototypes — How JS Really Does Inheritance
 
@@ -82,22 +82,20 @@ function createPerson(name, age) {
 const user5 = createPerson("Harsha", 24);
 ```
 
-```
-WHICH TO USE:
-┌───────────────────┬────────────────────────────────────â”
-│ Approach          │ When to Use                        │
-├───────────────────┼────────────────────────────────────┤
-│ Object literal    │ One-off objects, configs, data     │
-│ Class             │ Multiple instances, inheritance    │
-│ Factory function  │ Privacy, no `this` confusion       │
-│ Object.create     │ When you need specific prototype   │
-│ Constructor fn    │ Legacy code only (use class)       │
-└───────────────────┴────────────────────────────────────┘
+**Which object-creation form to reach for:**
 
-REASONING: In React, you'll mostly use object literals (props,
-state) and classes (old class components). Factory functions
-avoid `this` problems entirely — good for utility modules.
-```
+| Form                         | When it fits                                  | Why (mechanism)                                                                                       |
+|------------------------------|-----------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| `const x = { }` (literal)    | One-off objects, configs, JSON-shaped data    | No prototype gymnastics. `[[Prototype]]` is `Object.prototype`. Cheapest form.                        |
+| `class Foo { }`              | Multiple instances, inheritance chains        | Sugar for constructor + prototype wiring. Prevents forgetting `.prototype.constructor`.               |
+| `factory()` returning `{ }`  | Privacy, avoiding `this` traps                | Enclosing closure holds privates. Each call returns a *fresh* object with no shared prototype methods. |
+| `Object.create(proto)`       | You need a specific `[[Prototype]]` (mixins)  | Bypasses constructors — you hand-pick the prototype link. Also used for `Object.create(null)` maps.  |
+| `function Foo() { }` + `new` | Legacy code, hand-rolled prototype chains     | The pre-ES6 way `class` compiles to. Fine to read; rarely correct to write today.                     |
+
+In React work you'll see literals (props, state, config) and classes
+(legacy class components) most. Factories are the escape hatch when
+`this` gets in the way; `Object.create(null)` is the specialised move
+for prototype-free lookup tables.
 
 ---
 
@@ -110,9 +108,9 @@ const obj = { name: "Harsha" };
 console.log(Object.getOwnPropertyDescriptor(obj, "name"));
 // {
 //   value: "Harsha",
-//   writable: true,      â† can change value?
-//   enumerable: true,    â† shows in for...in/Object.keys()?
-//   configurable: true   â† can delete or change descriptor?
+//   writable: true,      ← can change value?
+//   enumerable: true,    ← shows in for...in/Object.keys()?
+//   configurable: true   ← can delete or change descriptor?
 // }
 
 // Define read-only property:
@@ -149,28 +147,32 @@ person.firstName; // "New"
 
 ## 3. Object Immutability — 3 Levels
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  LEVEL 1: Object.preventExtensions(obj)                              ║
-║  → Cannot ADD new properties. Can modify/delete existing.            ║
-║                                                                      ║
-║  LEVEL 2: Object.seal(obj)                                           ║
-║  → Cannot ADD or DELETE properties. CAN modify values.               ║
-║  (Sets configurable: false on all properties)                        ║
-║                                                                      ║
-║  LEVEL 3: Object.freeze(obj)                                         ║
-║  → Cannot ADD, DELETE, or MODIFY. Completely immutable.              ║
-║  (Sets writable: false AND configurable: false)                      ║
-║                                                                      ║
-║  ⚠ ALL THREE ARE SHALLOW! Nested objects are NOT frozen.             ║
-║                                                                      ║
-║  const obj = Object.freeze({ a: 1, b: { c: 2 } });                   ║
-║  obj.a = 10;     // Silently fails ✅                                 ║
-║  obj.b.c = 10;   // WORKS! âŒ b is not frozen                         ║
-║                                                                      ║
-║  For deep freeze, use structuredClone or a recursive freeze.         ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+> **Level 1 — `Object.preventExtensions(obj)`.** No new properties
+> can be *added*. Existing ones can still be modified or deleted.
+> Implementation: the internal `[[Extensible]]` slot flips to `false`.
+>
+> **Level 2 — `Object.seal(obj)`.** Level 1 + every own property
+> becomes `configurable: false`. So no adds, no deletes, no property
+> descriptor changes. Values can still be overwritten (`writable`
+> is untouched).
+>
+> **Level 3 — `Object.freeze(obj)`.** Level 2 + every own property
+> becomes `writable: false`. The object is now fully closed — no
+> add, no delete, no reassign. Writes fail silently in sloppy mode,
+> throw in strict mode.
+>
+> **All three are SHALLOW.** They act only on the object's *own*
+> properties. Nested object references are untouched:
+>
+> ```javascript
+> const obj = Object.freeze({ a: 1, b: { c: 2 } });
+> obj.a = 10;      // ✅ silently ignored (strict: TypeError)
+> obj.b.c = 10;    // ❌ succeeds — b itself was never frozen
+> ```
+>
+> For deep immutability: `structuredClone(obj)` to snapshot, or a
+> recursive freeze that walks every property whose value is an
+> object and freezes that too.
 
 ---
 
@@ -178,50 +180,95 @@ person.firstName; // "New"
 
 ### 5W1H: WHY Prototypes?
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  WHAT: Every object has a hidden [[Prototype]] link to another       ║
-║        object. This forms a CHAIN (until null).                      ║
-║                                                                      ║
-║  WHY:  Memory efficiency. Instead of copying methods to every        ║
-║        instance, all instances SHARE methods via the prototype.      ║
-║        1000 users, 1 copy of greet() — not 1000 copies.              ║
-║                                                                      ║
-║  ANALOGY: Prototype chain is like a family tree.                     ║
-║  If you don't know something, ask your parent.                       ║
-║  If parent doesn't know, ask grandparent. Up to the root (null).     ║
-║                                                                      ║
-║  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__        ║
-║        (deprecated but widely known).                                ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+> **WHAT.** Every JavaScript object carries a hidden internal slot
+> called `[[Prototype]]` (readable as `Object.getPrototypeOf(obj)`,
+> historically as `obj.__proto__`). That slot is either another
+> object or `null`. This forms a chain: `obj → proto → proto's
+> proto → ... → null`. Property lookup walks the chain.
+>
+> **WHY it exists.** Memory. Without prototypes, every instance of a
+> class would need its own copy of every method. With prototypes,
+> methods live on the shared prototype object; 10,000 instances
+> share one `greet` function. The instance stores only its own
+> instance data.
+>
+> **HOW you use it.** You almost never touch `[[Prototype]]`
+> directly. `class`, `new`, `Object.create`, and object literals set
+> it for you. But when something goes wrong — `undefined is not a
+> function`, `hasOwnProperty is not a function`, method resolution
+> confusion — the fix is always the same: pick up the chain with
+> `Object.getPrototypeOf` and walk it until you find (or don't find)
+> what you expected.
+
+**How lookup actually works — trace `arr.map()` and `arr.toString()`
+step by step, and watch the engine walk the chain until it finds
+(or doesn't find) the method:**
+
+```javascript
+const arr = [1, 2, 3];
+arr.map(x => x * 2);   // where does map come from?
+arr.toString();        // where does toString come from?
+arr.wibble();          // where does the "not a function" error come from?
 ```
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant You as Your code
+    participant Arr as arr (own props: 0, 1, 2, length)
+    participant AP as Array.prototype
+    participant OP as Object.prototype
+    participant Null as null
+
+    Note over You,Null: Case 1 — arr.map(fn)
+    You->>Arr: read property "map"
+    Arr-->>You: not found (only own props are 0, 1, 2, length)
+    Arr->>AP: [[Prototype]] pointer
+    You->>AP: read property "map"
+    AP-->>You: found — return the function
+    You->>You: call it with this = arr
+
+    Note over You,Null: Case 2 — arr.toString()
+    You->>Arr: read property "toString"
+    Arr-->>You: not found
+    Arr->>AP: [[Prototype]] pointer
+    You->>AP: read property "toString"
+    AP-->>You: found (Array's own toString: joins elements)
+    Note over AP: If Array.prototype had NO toString,<br/>the walk would continue to Object.prototype.
+
+    Note over You,Null: Case 3 — arr.wibble()
+    You->>Arr: read property "wibble"
+    Arr-->>You: not found
+    Arr->>AP: [[Prototype]] pointer
+    You->>AP: read property "wibble"
+    AP-->>You: not found
+    AP->>OP: [[Prototype]] pointer
+    You->>OP: read property "wibble"
+    OP-->>You: not found
+    OP->>Null: [[Prototype]] pointer
+    Null-->>You: chain ends — result is undefined
+    You->>You: call undefined() — TypeError!
 ```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  PROTOTYPE CHAIN VISUALIZATION:                                      ║
-║                                                                      ║
-║  const arr = [1, 2, 3];                                              ║
-║                                                                      ║
-║  arr                                                                 ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  Array.prototype { map, filter, reduce, forEach, ... }               ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  Object.prototype { toString, hasOwnProperty, valueOf, ... }         ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  null  â† END OF CHAIN                                                ║
-║                                                                      ║
-║  When you call arr.map(), JS looks:                                  ║
-║  1. Does arr have own property "map"? → No                           ║
-║  2. Does Array.prototype have "map"? → YES! Use it.                  ║
-║                                                                      ║
-║  When you call arr.toString(), JS looks:                             ║
-║  1. arr → No  2. Array.prototype → has its own toString → Use it     ║
-║  (If Array.prototype didn't have it, would go to Object.prototype)   ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+
+**The rule of the walk:**
+
+1. Read starts at the object itself.
+2. If the property is not found, follow the `[[Prototype]]` pointer
+   to the next object in the chain.
+3. Stop the first time the name is found (returning that value) or
+   when the chain reaches `null` (returning `undefined`).
+4. If the found value is a function and you called it, the function
+   runs with `this` bound to the *starting* object — not the
+   prototype where it was defined. That's why `arr.map(...)` runs
+   `map` with `this = arr`, and how one shared method serves every
+   array.
+
+**Why `undefined is not a function` is really a chain-walk failure:**
+it means the walk hit `null` before finding a match, `undefined`
+came back, and then you tried to call it. Debugging move:
+`console.log(Object.getPrototypeOf(arr))` — and again on the
+result — until you see the chain you actually have vs the chain you
+assumed.
 
 ```javascript
 // HOW prototype works in practice:
@@ -243,9 +290,9 @@ Dog.prototype.bark = function () {
 };
 
 const rex = new Dog("Rex", "German Shepherd");
-rex.bark(); // "Rex barks!"      â† found on Dog.prototype
-rex.speak(); // "Rex makes a sound" â† found on Animal.prototype
-rex.toString(); // "[object Object]" â† found on Object.prototype
+rex.bark(); // "Rex barks!"      ← found on Dog.prototype
+rex.speak(); // "Rex makes a sound" ← found on Animal.prototype
+rex.toString(); // "[object Object]" ← found on Object.prototype
 
 // rex own properties: { name: "Rex", breed: "German Shepherd" }
 // Dog.prototype: { bark, constructor }
@@ -323,28 +370,39 @@ rex.speak(); // "Rex woofs!" (overridden)
 Animal.kingdom(); // "Animalia" (static)
 rex.addTrick("sit");
 rex.showTricks(); // "sit"
-// rex.#tricks;       // âŒ SyntaxError — truly private!
+// rex.#tricks;       // ❌ SyntaxError — truly private!
 ```
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  CLASS ≡ PROTOTYPE (what class actually does):                       ║
-║                                                                      ║
-║  class Dog extends Animal { bark() {} }                              ║
-║                                                                      ║
-║  IS EXACTLY THE SAME AS:                                             ║
-║                                                                      ║
-║  function Dog(name, breed) { Animal.call(this, name); ... }          ║
-║  Dog.prototype = Object.create(Animal.prototype);                    ║
-║  Dog.prototype.constructor = Dog;                                    ║
-║  Dog.prototype.bark = function() {};                                 ║
-║                                                                      ║
-║  REASONING: `class` doesn't add new behavior to JS. It's just        ║
-║  cleaner syntax for the prototype pattern. Under the hood, it's      ║
-║  still prototypes. But class syntax prevents common mistakes         ║
-║  like forgetting to set constructor.                                 ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+> **`class` is desugared into the same prototype wiring you'd write
+> by hand.** These two are equivalent to the engine — the top form
+> is what you write, the bottom is what runs:
+>
+> ```javascript
+> // What you write:
+> class Dog extends Animal {
+>   constructor(name, breed) { super(name); this.breed = breed; }
+>   bark() { return `${this.name} barks!`; }
+> }
+>
+> // What it becomes (roughly):
+> function Dog(name, breed) {
+>   Animal.call(this, name);           // super(name)
+>   this.breed = breed;
+> }
+> Dog.prototype = Object.create(Animal.prototype);  // set up chain
+> Dog.prototype.constructor = Dog;                  // fix constructor
+> Dog.prototype.bark = function() {                 // instance method
+>   return `${this.name} barks!`;
+> };
+> ```
+>
+> **Why the sugar matters even though it changes no behaviour:**
+> `class` closes off the two mistakes that used to lose hours —
+> forgetting `Object.create` for the chain (so `instanceof Animal`
+> quietly broke), and forgetting `.prototype.constructor = Dog`
+> (so `new dog.constructor(...)` produced an `Animal`). It also
+> makes `super`, private `#fields`, and `static` blocks first-class.
+> Same runtime model, safer surface.
 
 ---
 
@@ -480,26 +538,28 @@ for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 
 ## 9. Comparison: JS vs Java Objects
 
-```
-┌──────────────────┬──────────────────┬──────────────────â”
-│ Feature          │ JavaScript       │ Java             │
-├──────────────────┼──────────────────┼──────────────────┤
-│ Typing           │ Dynamic          │ Static           │
-│ Inheritance      │ Prototype-based  │ Class-based      │
-│ Class keyword    │ Sugar over proto │ Real class       │
-│ Private fields   │ # prefix (new)   │ private keyword  │
-│ Interfaces       │ None (use TS)    │ interface keyword│
-│ Multiple inherit │ Mixins/compose   │ Interfaces only  │
-│ Object creation  │ Literal {}, new  │ new only         │
-│ Property access  │ Dynamic (obj[x]) │ Fixed at compile │
-│ this keyword     │ Changes by call  │ Always instance  │
-│ Null safety      │ ?. operator      │ Optional (Java17)│
-└──────────────────┴──────────────────┴──────────────────┘
+**JavaScript objects vs Java objects — the differences that trip
+Java-first readers:**
 
-KEY INSIGHT: In Java, the class defines the shape forever.
-In JS, objects are "bags of properties" — you can add/remove
-properties at any time. More flexible, but less safe.
-```
+| Aspect                | JavaScript                            | Java                                |
+|-----------------------|---------------------------------------|-------------------------------------|
+| Typing                | Dynamic (values carry the type)       | Static (variables carry the type)   |
+| Inheritance mechanism | Prototype chain (per-object link)     | Class hierarchy (fixed at compile)  |
+| `class` keyword       | Sugar over prototype wiring           | A real class with its own runtime   |
+| Private fields        | `#name` (ES2022)                      | `private` modifier                  |
+| Interfaces            | None built-in — use TypeScript       | `interface` keyword                 |
+| Multiple inheritance  | Mixins / composition                  | Interfaces only                     |
+| Object creation       | Literals `{}`, `new`, `Object.create` | `new` only                          |
+| Property access       | Dynamic: `obj[computedKey]`           | Fixed at compile time               |
+| `this`                | Chosen at call site (5 rules)         | Always the current instance         |
+| Null safety           | Optional chaining `?.`                | `Optional<T>` (Java 8+)             |
+
+**The big model shift:** in Java a class *defines the shape once and
+forever*. In JS an object is a "bag of properties" — you can add,
+delete, or replace properties at any moment, and its behaviour depends
+on which prototype chain it happens to be pointing at right now. More
+flexible, less safe. TypeScript is how JS-shop teams claw back the
+safety without giving up the flexibility.
 
 ---
 
@@ -537,7 +597,7 @@ Q: How to check if a property exists?
 
 ---
 
-[â† Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+[← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
 
 ---
 

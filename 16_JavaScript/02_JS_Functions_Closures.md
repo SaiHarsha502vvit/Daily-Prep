@@ -1,4 +1,4 @@
-**JavaScript Chapter 2/7** | [â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
+**JavaScript Chapter 2/7** | [← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
 # Functions & Closures — The Heart of JavaScript
 
@@ -32,7 +32,7 @@ function greet(name) {
 }
 
 // EXPRESSION: Variable is hoisted, but value is NOT.
-sayHi("Harsha"); // âŒ TypeError: sayHi is not a function
+sayHi("Harsha"); // ❌ TypeError: sayHi is not a function
 const sayHi = function (name) {
   return `Hi ${name}`;
 };
@@ -48,20 +48,15 @@ const factorial = function fact(n) {
 };
 ```
 
-```
-WHEN TO USE WHICH:
-┌──────────────────┬───────────────────────────────────────â”
-│ Type             │ Best For                              │
-├──────────────────┼───────────────────────────────────────┤
-│ Declaration      │ Main functions, utility functions     │
-│ Arrow (const)    │ Callbacks, array methods, short fns   │
-│ Expression       │ Conditional function assignment       │
-└──────────────────┴───────────────────────────────────────┘
+**When to reach for each form:**
 
-REASONING: Arrow functions are shorter but can't be used as
-constructors and don't have their own `this`. Declarations are
-hoisted, which some teams consider cleaner for readability.
-```
+| Form                          | Best for                                           | Why (mechanism)                                                                                  |
+|-------------------------------|----------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| `function greet() { }`        | Top-level utilities, main entry points             | Fully hoisted — callable before its line. `this` is dynamic (see the 5 rules below).                |
+| `const greet = () => { }`     | Callbacks (`.map`, event handlers), tiny helpers   | No own `this` — inherits from enclosing scope. Cannot be `new`‑ed. Shorter syntax for expressions. |
+| `const greet = function() {}` | Rare — conditional assignment, named recursion    | Behaves like an arrow for hoisting (TDZ), but keeps its own `this`. Named form aids stack traces.  |
+
+The choice is not stylistic — it is behavioural. Pick by *what `this` and hoisting must do*, not by which is shorter.
 
 ---
 
@@ -112,20 +107,22 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 
 ### 5W1H: WHY is `this` confusing?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT: `this` refers to the OBJECT that is executing the current     ║
-║        function. But WHICH object depends on HOW the function is     ║
-║        called, not where it's written.                               ║
-║                                                                      ║
-║  WHY confusing: In Java, `this` always refers to the instance.       ║
-║  In JS, `this` changes based on CALL SITE — 4 rules + arrow.         ║
-║                                                                      ║
-║  ANALOGY: `this` is like the word "I" in English. When YOU say       ║
-║  "I", it refers to you. When I say "I", it refers to me.             ║
-║  The meaning depends on WHO IS SPEAKING (who called the function).   ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **WHAT.** `this` is a *runtime* reference to whichever object is
+> currently executing the function. It is NOT a compile-time property
+> of the function — the same function can see four different `this`
+> values depending on how it is called.
+>
+> **WHY it confuses Java/C# readers.** In those languages `this` is
+> baked in at method definition; the class that owns the method is the
+> instance you get. In JS the function is a first-class value — it
+> can be attached to any object, ripped off any object, or called with
+> a fabricated receiver via `call`/`apply`/`bind`. So `this` is
+> decided at the *call site*, not at the *definition site*.
+>
+> **The mental fix.** Stop asking "what does `this` refer to inside
+> this function?" — that question has no answer in isolation. Ask
+> instead: "how was this function called at this specific call site?"
+> Then walk the 5 rules below in priority order.
 
 ### The 5 Rules of `this` (in priority order)
 
@@ -181,27 +178,39 @@ const obj2 = {
 };
 ```
 
+**How the JS engine picks `this` at a call site — walk this tree
+top-to-bottom, stop at the first YES:**
+
+```mermaid
+flowchart TD
+    Q1{"Is the function an<br/>ARROW function?"}
+    Q2{"Called with <b>new</b>?"}
+    Q3{"Called via<br/>.call / .apply / bound?"}
+    Q4{"Called as<br/>obj.method()?"}
+    R_arrow["<b>this</b> = enclosing lexical <b>this</b><br/>(the value <b>this</b> had where the arrow was<br/>written, frozen at creation)"]
+    R_new["<b>this</b> = the brand-new object<br/>that <b>new</b> just created"]
+    R_bind["<b>this</b> = the receiver passed to<br/>call / apply / bind"]
+    R_dot["<b>this</b> = the object BEFORE the dot<br/>(what you wrote to the left of .method)"]
+    R_default["<b>this</b> = globalThis (sloppy mode)<br/>or undefined (strict mode / ES modules)"]
+
+    Q1 -- "YES" --> R_arrow
+    Q1 -- "NO"  --> Q2
+    Q2 -- "YES" --> R_new
+    Q2 -- "NO"  --> Q3
+    Q3 -- "YES" --> R_bind
+    Q3 -- "NO"  --> Q4
+    Q4 -- "YES" --> R_dot
+    Q4 -- "NO"  --> R_default
 ```
-`this` DETERMINATION FLOWCHART:
 
-Is it an ARROW function?
-├── YES → `this` = enclosing lexical scope's `this`
-└── NO ↓
-
-Called with NEW keyword?
-├── YES → `this` = newly created object
-└── NO ↓
-
-Called with call/apply/bind?
-├── YES → `this` = specified object
-└── NO ↓
-
-Called as object.method()?
-├── YES → `this` = object before the dot
-└── NO ↓
-
-Default: `this` = window (or undefined in strict mode)
-```
+**Why this order matters.** Arrow-check comes first because arrows opt
+out of the whole game — they have no `this` slot and won't accept any
+runtime binding. `new` comes next because it *invents* a receiver
+(the newly allocated object) which trumps any dot on the left. Only
+after ruling those two out do `.call`/`.apply`/`bound` come in — they
+inject an explicit receiver over whatever the syntax would have chosen.
+The `obj.method()` implicit rule is the everyday default. Bare
+`f()` with none of the above hits the last rule.
 
 ---
 
@@ -209,25 +218,30 @@ Default: `this` = window (or undefined in strict mode)
 
 ### 5W1H: WHAT is a Closure?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT: A closure is a function that REMEMBERS the variables from     ║
-║        its outer (enclosing) scope even AFTER the outer function     ║
-║        has returned.                                                 ║
-║                                                                      ║
-║  WHY:  Closures enable data privacy, factory functions, partial      ║
-║        application, memoization, and React hooks (useState).         ║
-║                                                                      ║
-║  HOW:  When a function is created, it captures a reference to its    ║
-║        surrounding scope (not a copy). This reference persists       ║
-║        even after the outer function finishes executing.             ║
-║                                                                      ║
-║  ANALOGY: A closure is like a backpack. When a function is born      ║
-║  inside another function, it packs the outer function's variables    ║
-║  into its backpack. Even after leaving the outer function (the       ║
-║  house), the inner function still carries those variables.           ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **WHAT.** A closure is a function bundled with the *lexical
+> environment* it was defined in — the set of variable bindings that
+> were visible at its creation. When the function runs later, those
+> bindings are still reachable through it, even if the outer function
+> that created them has already returned.
+>
+> **WHY it exists.** JavaScript has two places to keep state: object
+> properties and closure variables. Closures give you privacy that
+> classes don't — no outside code can read or write a closed-over
+> variable, only the functions that captured it. That is how modules
+> hide internals, how `setTimeout` callbacks remember their arguments,
+> how `useState` remembers a component's slot between renders, how
+> `debounce` holds a timer, and how a for-loop‑per‑iteration `let`
+> gives each iteration its own binding.
+>
+> **HOW it works (mechanism, not metaphor).** Every function object in
+> JS carries an internal `[[Environment]]` slot: a pointer to the
+> *variable environment* that existed at the moment the function was
+> created. When you call the function, the engine builds a new
+> execution context whose *outer environment* is that pointer. So any
+> identifier the function doesn't declare itself is looked up by
+> walking that chain of environment records until it hits a binding.
+> Because the closure holds a live reference (not a snapshot), reads
+> see the current value and writes update the shared cell.
 
 ```javascript
 // SIMPLEST CLOSURE EXAMPLE:
@@ -253,22 +267,57 @@ counter(); // 3
 // JS garbage collector sees it's still referenced → keeps it alive.
 ```
 
+**Trace what actually happens — who allocates what, and who
+still holds a reference:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant JS as JS Engine
+    participant OuterEC as outer() Exec Context
+    participant Env as Environment { count }
+    participant Inner as inner (function object)
+    participant Global as Global scope
+    participant GC as Garbage Collector
+
+    Note over JS,GC: Step 1 — you call outer()
+    JS->>OuterEC: push execution context for outer
+    OuterEC->>Env: allocate binding count = 0
+    OuterEC->>Inner: create function object
+    Note over Inner,Env: inner.[[Environment]] = pointer to Env<br/>(captured at creation time)
+    OuterEC-->>JS: return inner
+    JS->>Global: counter = inner
+    JS-->>OuterEC: pop context
+
+    Note over JS,GC: Step 2 — outer's context is gone. Does count die?
+    GC->>Env: is anyone still referencing this env?
+    Inner-->>Env: YES — inner.[[Environment]] still points here
+    GC-->>Env: keep it alive
+
+    Note over JS,GC: Step 3 — you call counter() (which is inner)
+    JS->>Inner: invoke
+    Inner->>Env: look up "count" via outer environment chain
+    Env-->>Inner: current value = 0
+    Inner->>Env: write count = 1
+    Inner-->>JS: log 1
+
+    Note over JS,GC: Step 4 — second call reads the SAME cell
+    JS->>Inner: invoke
+    Inner->>Env: look up "count"
+    Env-->>Inner: current value = 1  (writes from step 3 stuck!)
+    Inner->>Env: write count = 2
+    Inner-->>JS: log 2
 ```
-CLOSURE MEMORY VISUALIZATION:
 
-After outer() returns:
+**Why `count` persists across calls, in one sentence:** `count` lives
+inside an *environment record*, not inside `outer`'s stack frame; the
+function object `inner` holds a pointer to that record; the GC keeps
+the record alive as long as any pointer to it exists.
 
-┌ counter variable ──────────────────────────────────────────┐
-│  Points to inner function                              │
-│  inner function carries a "backpack":                  │
-│  ┌─ Closure Scope ──────────────────                 │
-│  │  count: 0 → 1 → 2 → 3 (persists!) │                 │
-│  └───────────────────────────────────                │
-└────────────────────────────────────────────────────────┘
-
-outer()'s execution context is gone, but the closure keeps
-count alive because inner still references it.
-```
+**Why every call sees the previous value:** `inner` doesn't get a
+snapshot of `count`; it reads and writes the *same cell* through the
+environment chain. That's why `counter(); counter(); counter();`
+prints `1, 2, 3` and not `1, 1, 1`.
 
 ### Closure Use Cases
 
@@ -405,15 +454,22 @@ A closure is a function that retains a reference to its lexical environment (the
 
 ### 5W1H: WHAT are Higher-Order Functions?
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT: A function that takes another function as argument OR         ║
-║        returns a function.                                           ║
-║  WHY:  Enables composition, abstraction, and declarative code.       ║
-║  WHO:  Used everywhere: Array methods, event handlers, Express       ║
-║        middleware, React components.                                 ║
-╚══════════════════════════════════════════════════════════════════╝
-```
+> **WHAT.** A higher-order function (HOF) either takes a function as
+> an argument, returns a function, or both. Nothing more exotic than
+> that — the "higher-order" part just means it operates on functions
+> the way ordinary functions operate on numbers.
+>
+> **WHY it exists.** Two payoffs. (1) *Abstracting control flow* —
+> iteration (`.forEach`), transformation (`.map`), accumulation
+> (`.reduce`) and search (`.find`) become one line each, because the
+> loop is inside the HOF and only the per-element verb changes. (2)
+> *Wrapping behaviour around a call* — memoize, debounce, throttle,
+> retry, log, guard-against-null: each is a function that takes your
+> function and returns a decorated version.
+>
+> **WHERE you meet it in real code.** Array methods, event listeners,
+> Express middleware, React hooks (custom hooks are HOFs over hooks),
+> Redux thunks, RxJS operators, Node stream transforms.
 
 ```javascript
 // Array higher-order methods (the most important ones):
@@ -692,19 +748,19 @@ Q: What is a higher-order function?
 
 ---
 
-[â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
+[← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
 
 ---
 
 ## Reality Check
 
-**"A closure is a function inside a function"** ? A closure is a function PLUS its captured environment surviving after the outer scope returned � the inner function is merely where you can observe it. The precise model: functions capture VARIABLES (live bindings), not values-at-creation. That one distinction explains the classic var-in-loop bug (all callbacks share one variable), why let-in-loop fixes it (new binding per iteration), and why a "snapshot" requires deliberately copying into a new scope. People who say "captures the value" carry a model that fails exactly at the famous interview question.
+**"A closure is a function inside a function"** → A closure is a function PLUS its captured environment surviving after the outer scope returned — the inner function is merely where you can observe it. The precise model: functions capture VARIABLES (live bindings), not values-at-creation. That one distinction explains the classic var-in-loop bug (all callbacks share one variable), why let-in-loop fixes it (new binding per iteration), and why a "snapshot" requires deliberately copying into a new scope. People who say "captures the value" carry a model that fails exactly at the famous interview question.
 
-**"Closures are an interview topic, rarely used deliberately"** ? Closures are the DOMINANT state mechanism in real JS: every event handler remembering its context, every debounce/throttle holding its timer, every module hiding privates, every React hook (useState IS a closure over the fiber's slot), every memoize cache. The interview question is artificial; the mechanism is load-bearing in every file. The reframe that helps: JS has two state containers � object properties and closure variables � and idiomatic code chooses closures for encapsulation-by-default.
+**"Closures are an interview topic, rarely used deliberately"** → Closures are the DOMINANT state mechanism in real JS: every event handler remembering its context, every debounce/throttle holding its timer, every module hiding privates, every React hook (useState IS a closure over the fiber's slot), every memoize cache. The interview question is artificial; the mechanism is load-bearing in every file. The reframe that helps: JS has two state containers — object properties and closure variables — and idiomatic code chooses closures for encapsulation-by-default.
 
-**"Closures leak memory"** ? Closures RETAIN exactly what they reference � that is the contract, not a leak. Leaks come from unexpected retention topology: a tiny callback capturing a huge buffer it uses once (the closure pins the buffer for the callback's lifetime), long-lived subscriptions holding entire component scopes, and (historically) same-scope closures sharing one environment record so ONE closure retaining anything retained everything siblings referenced. The audit skill: for any long-lived function, enumerate what it closes over and how big that transitively is � the fix is usually extracting the small value into a parameter before the capture.
+**"Closures leak memory"** → Closures RETAIN exactly what they reference — that is the contract, not a leak. Leaks come from unexpected retention topology: a tiny callback capturing a huge buffer it uses once (the closure pins the buffer for the callback's lifetime), long-lived subscriptions holding entire component scopes, and (historically) same-scope closures sharing one environment record so ONE closure retaining anything retained everything siblings referenced. The audit skill: for any long-lived function, enumerate what it closes over and how big that transitively is — the fix is usually extracting the small value into a parameter before the capture.
 
-**"bind, call, and apply are legacy this-fixers"** ? call/apply are invocation-time receivers; bind is PARTIAL APPLICATION machinery that happens to also fix this � bound functions can pre-fill arguments, and the result is a new function with permanent bindings (bind-again does nothing, a fact exploited by security-sensitive code). Arrows replaced most this-fixing use, but bind's remaining niches are real: pre-filled callbacks, method extraction for handler maps, and the sneaky fact that class fields with arrows create PER-INSTANCE functions (memory cost, breaks prototype patching for tests) versus bind-in-constructor being explicit about the same trade.
+**"bind, call, and apply are legacy this-fixers"** → call/apply are invocation-time receivers; bind is PARTIAL APPLICATION machinery that happens to also fix this — bound functions can pre-fill arguments, and the result is a new function with permanent bindings (bind-again does nothing, a fact exploited by security-sensitive code). Arrows replaced most this-fixing use, but bind's remaining niches are real: pre-filled callbacks, method extraction for handler maps, and the sneaky fact that class fields with arrows create PER-INSTANCE functions (memory cost, breaks prototype patching for tests) versus bind-in-constructor being explicit about the same trade.
 
-**"Higher-order functions are functional-programming style preference"** ? HOFs are how JS expresses CONTROL FLOW you cannot write otherwise: once/memoize/debounce wrap behavior around calls, middleware chains compose request handling, and array methods take the loop inward so the caller supplies only the verb. The engineering content is the CONTRACTS: does the wrapper preserve this and arguments (spread and apply correctly), does it propagate errors or swallow them, is the wrapped function's identity stable (React deps, removeEventListener need the SAME reference � the inline-wrapper re-creation bug). Writing a correct debounce from scratch � leading/trailing options, cancel method, this-preservation � remains one of the highest-signal small exercises in the language.
+**"Higher-order functions are functional-programming style preference"** → HOFs are how JS expresses CONTROL FLOW you cannot write otherwise: once/memoize/debounce wrap behavior around calls, middleware chains compose request handling, and array methods take the loop inward so the caller supplies only the verb. The engineering content is the CONTRACTS: does the wrapper preserve this and arguments (spread and apply correctly), does it propagate errors or swallow them, is the wrapped function's identity stable (React deps, removeEventListener need the SAME reference — the inline-wrapper re-creation bug). Writing a correct debounce from scratch — leading/trailing options, cancel method, this-preservation — remains one of the highest-signal small exercises in the language.

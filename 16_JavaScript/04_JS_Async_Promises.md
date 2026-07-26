@@ -1,4 +1,4 @@
-﻿**JavaScript Chapter 4/7** | [â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+﻿**JavaScript Chapter 4/7** | [← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 # Async JavaScript — Event Loop, Promises & Async/Await
 
@@ -36,81 +36,91 @@ One thread = no data races on the DOM. Simpler mental model.
 BUT HOW does it handle async then?
 The EVENT LOOP — JS's secret weapon.
 
-```
-THE EVENT LOOP ARCHITECTURE:
+### The Cast — five things you need to distinguish
 
-┌──────────────────────────────────────────────────────────â”
-│  YOUR JS CODE                                            │
-│  ┌──────────────â”    ┌────────────────────────────â”      │
-│  │  CALL STACK  │    │  WEB APIs (browser) or     │      │
-│  │              │    │  C++ APIs (Node)            │     │
-│  │ ┌──────────â” │    │                              │    │
-│  │ │ func3()  │ │    │  • setTimeout/setInterval    │    │
-│  │ │ func2()  │ │    │  • fetch / XMLHttpRequest    │    │
-│  │ │ func1()  │ │    │  • addEventListener          │    │
-│  │ │ global   │ │    │  • geolocation               │    │
-│  │ └──────────┘ │    │  • FileReader                │    │
-│  └──────────────┘    └─────────────┬──────────────┘      │
-│         ▲                          │                     │
-│         │                          ▼                     │
-│         │              ┌───────────────────────â”         │
-│         │              │  CALLBACK QUEUES      │         │
-│         │              │                                 │
-│    EVENT LOOP          │  Microtask Queue:     │         │
-│    (checks if          │  Promise.then()        │        │
-│     stack is           │  queueMicrotask()      │        │
-│     empty, then        │  MutationObserver      │        │
-│     moves next         │                        │        │
-│     task to stack)     │  Macrotask Queue:     │         │
-│         │              │  setTimeout()          │        │
-│         │              │  setInterval()         │        │
-│         └──────────────│  I/O callbacks         │        │
-│                        │  UI rendering          │        │
-│                        └───────────────────────┘         │
-└──────────────────────────────────────────────────────────┘
+The word "JavaScript" is used loosely for two very different pieces.
+Async only makes sense once you separate them:
 
-CRITICAL RULE:
-Microtasks ALWAYS run before macrotasks.
-After each macrotask, ALL pending microtasks run first.
-```
+1. **JS Engine (V8, SpiderMonkey, …)** — a single-threaded machine that
+   holds a **Call Stack** (functions currently executing) and a **Heap**
+   (your objects). It knows nothing about time, network, or the DOM.
+   It just executes JS instructions top-to-bottom until the stack empties.
+2. **Runtime (Web APIs in browsers, libuv in Node)** — a separate
+   layer, written in C++, that CAN do timers, network I/O, filesystem,
+   and DOM events *in parallel with the engine*. When the engine calls
+   `setTimeout(cb, 1000)`, it's really saying "hey runtime, remember
+   this callback for me and give it back in 1000ms."
+3. **Macrotask Queue** — a FIFO queue where the runtime deposits
+   callbacks from timers, I/O, and `MessageChannel`. One entry runs per
+   loop tick.
+4. **Microtask Queue** — a FIFO queue for `Promise.then/catch/finally`,
+   `queueMicrotask`, and `MutationObserver`. Drained *completely* per
+   loop tick — this is the whole reason promises appear "faster" than
+   timers.
+5. **Event Loop** — a tiny supervisor that does one thing on repeat:
+   *if the call stack is empty, drain all microtasks, then move one
+   macrotask onto the stack, then repeat.*
 
-### The Event Loop in Action — Step by Step
+Now watch those five actors handle one program, step by step.
 
 ```javascript
-console.log("1"); // Sync → call stack
-
-setTimeout(() => console.log("2"), 0); // Macro → macrotask queue
-
-Promise.resolve().then(() => console.log("3")); // Micro → microtask queue
-
-console.log("4"); // Sync → call stack
-
-// OUTPUT: 1, 4, 3, 2
-// WHY?
-// 1. "1" runs immediately (sync)
-// 2. setTimeout REGISTERS callback → macrotask queue (even with 0ms!)
-// 3. Promise.then REGISTERS callback → microtask queue
-// 4. "4" runs immediately (sync)
-// 5. Stack is empty → event loop checks microtasks first → "3"
-// 6. No more microtasks → check macrotasks → "2"
+console.log("1");                                     // ⓐ sync
+setTimeout(() => console.log("2"), 0);                // ⓑ macro
+Promise.resolve().then(() => console.log("3"));       // ⓒ micro
+console.log("4");                                     // ⓓ sync
+// Actual output: 1, 4, 3, 2
 ```
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CS as Call Stack
+    participant WA as Web APIs / libuv
+    participant MiQ as Microtask Q
+    participant MaQ as Macrotask Q
+    participant EL as Event Loop
+
+    Note over CS,EL: Phase 1 — engine runs sync code top-to-bottom.
+    CS->>CS: ⓐ log("1")  →  prints "1"
+    CS->>WA: ⓑ setTimeout(cb2, 0) — hand off to runtime
+    WA-->>MaQ: 0ms elapses → enqueue cb2
+    CS->>MiQ: ⓒ Promise.resolve().then(cb3) — enqueue cb3
+    CS->>CS: ⓓ log("4")  →  prints "4"
+
+    Note over CS,EL: Phase 2 — stack empty. Loop takes over.
+    EL->>MiQ: rule: drain the ENTIRE microtask queue first
+    MiQ-->>CS: dequeue cb3
+    CS->>CS: cb3 runs  →  prints "3"
+
+    Note over CS,EL: Phase 3 — microtasks empty. Loop picks ONE macrotask.
+    EL->>MaQ: dequeue cb2
+    MaQ-->>CS: push cb2 onto stack
+    CS->>CS: cb2 runs  →  prints "2"
+
+    Note over CS,EL: Final output: 1, 4, 3, 2
 ```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  STEP-BY-STEP TRACE:                                                 ║
-║                                                                      ║
-║  CALL STACK          MICROTASK Q     MACROTASK Q    OUTPUT           ║
-║  ─────────────       ──────────      ──────────     ──────           ║
-║  log("1")            []              []             "1"              ║
-║  setTimeout(cb,0)    []              [cb→"2"]       "1"              ║
-║  Promise.then(cb)    [cb→"3"]        [cb→"2"]       "1"              ║
-║  log("4")            [cb→"3"]        [cb→"2"]       "1","4"          ║
-║  â† stack empty →                                                     ║
-║  cb→"3"              []              [cb→"2"]       "1","4","3"      ║
-║  â† microtasks done →                                                 ║
-║  cb→"2"              []              []             "1","4","3","2"  ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+
+**Why the order is `1, 4, 3, 2` — not `1, 2, 3, 4`:**
+
+- `1` and `4` are synchronous — they run before the engine ever yields.
+  `setTimeout` and `Promise.then` only *register* callbacks; they
+  don't run them.
+- `3` beats `2` because the loop drains the *entire* microtask queue
+  before touching a macrotask. `Promise.then` puts its callback on the
+  microtask queue; `setTimeout` puts its callback on the macrotask
+  queue. Microtasks always win.
+
+**Snapshot at each step (what's in each queue when):**
+
+| # | Action                                | Microtask Q  | Macrotask Q  | Output       |
+|---|---------------------------------------|--------------|--------------|--------------|
+| 1 | `log("1")` runs                       | `[]`         | `[]`         | `1`          |
+| 2 | `setTimeout(cb2, 0)` — hand off       | `[]`         | `[cb2]`      | `1`          |
+| 3 | `Promise.then(cb3)` — enqueue         | `[cb3]`      | `[cb2]`      | `1`          |
+| 4 | `log("4")` runs                       | `[cb3]`      | `[cb2]`      | `1, 4`       |
+| 5 | Stack empty → loop drains micro → cb3 | `[]`         | `[cb2]`      | `1, 4, 3`    |
+| 6 | Micro empty → loop pulls macro → cb2  | `[]`         | `[]`         | `1, 4, 3, 2` |
+
 
 ---
 
@@ -176,13 +186,15 @@ You place an order → get a receipt (promise). Eventually:
 • Kitchen is out of ingredients (rejected) → handle it (.catch)
 • While waiting, you can do other things (non-blocking).
 
-STATES:
-┌──────────â”    resolve()    ┌───────────â”
-│ PENDING  │───────────────→│ FULFILLED  │
-│          │                 └───────────┘
-│          │    reject()     ┌───────────â”
-│          │───────────────→│ REJECTED   │
-└──────────┘                 └───────────┘
+STATES (a Promise is a state machine with exactly one transition):
+
+    ┌─────────────┐   resolve(value)   ┌─────────────┐
+    │   PENDING   │ ───────────────▶ │  FULFILLED  │
+    │             │                    └─────────────┘
+    │             │   reject(reason)  ┌─────────────┐
+    │             │ ───────────────▶ │  REJECTED   │
+    └─────────────┘                    └─────────────┘
+
 Once settled (fulfilled/rejected), a promise NEVER changes state.
 ```
 
@@ -261,17 +273,14 @@ const first = await Promise.any([p1, p2, p3]);
 // USE: Try multiple sources, use whichever responds first.
 ```
 
-```
-PROMISE METHODS COMPARISON:
-┌───────────────────┬────────────┬────────────┬─────────────────â”
-│ Method            │ Resolves   │ Rejects    │ Use Case        │
-├───────────────────┼────────────┼────────────┼─────────────────┤
-│ Promise.all       │ ALL fulfill│ ANY rejects│ Need all results│
-│ Promise.allSettled│ ALL settle │ Never      │ Check each      │
-│ Promise.race      │ First done │ First done │ Timeout/fastest │
-│ Promise.any       │ First win  │ ALL reject │ Multiple sources│
-└───────────────────┴────────────┴────────────┴─────────────────┘
-```
+**Promise combinators — how each one settles:**
+
+| Method               | Resolves when          | Rejects when       | Use case                     |
+|----------------------|------------------------|--------------------|------------------------------|
+| `Promise.all`        | ALL fulfill            | ANY rejects (fast) | Need every result            |
+| `Promise.allSettled` | ALL settle             | Never              | Report status of each        |
+| `Promise.race`       | First to settle wins   | First to settle    | Timeout / fastest wins       |
+| `Promise.any`        | First to FULFILL wins  | ALL reject         | Try multiple sources         |
 
 ---
 
@@ -306,19 +315,16 @@ Once the first promise settles, the outer promise is settled. Other promises con
 
 ### 5W1H: WHY Async/Await?
 
-```
-╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-║  WHAT: Syntactic sugar over Promises. Makes async code LOOK and      ║
-║        BEHAVE like synchronous code.                                 ║
-║                                                                      ║
-║  WHY:  .then chains are better than callbacks, but still messy       ║
-║        for complex flows. async/await reads top-to-bottom.           ║
-║                                                                      ║
-║  HOW:  `async` marks a function as returning a Promise.              ║
-║        `await` pauses execution until the Promise resolves.          ║
-║        (The thread isn't blocked — other code can run!)              ║
-╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-```
+> **WHAT**: Syntactic sugar over Promises. Makes async code LOOK and
+> BEHAVE like synchronous code.
+>
+> **WHY**: `.then` chains beat callbacks, but they still nest awkwardly
+> for complex flows. `async`/`await` reads top-to-bottom.
+>
+> **HOW**: `async` marks a function as returning a Promise.
+> `await` pauses execution of the *function* until the Promise resolves.
+> The *thread* is not blocked — other code keeps running on the event loop.
+
 
 ```javascript
 // WITH PROMISES (chaining):
@@ -349,7 +355,7 @@ async function fetchUserData() {
 
 // PARALLEL with async/await (IMPORTANT!):
 async function fetchAll() {
-  // âŒ WRONG — runs sequentially (waits for each):
+  // ❌ WRONG — runs sequentially (waits for each):
   const users = await fetch("/api/users");
   const products = await fetch("/api/products"); // Waits for users first!
 
@@ -541,40 +547,28 @@ console.log("end");
 // OUTPUT:
 // start
 // end
-// promise 1    â† microtask queue
-// microtask    â† microtask queue
-// promise 2    â† microtask queue (added during microtask phase!)
-// timeout 1    â† macrotask queue
-// timeout 2    â† macrotask queue
+// promise 1    ← microtask queue
+// microtask    ← microtask queue
+// promise 2    ← microtask queue (added during microtask phase!)
+// timeout 1    ← macrotask queue
+// timeout 2    ← macrotask queue
 ```
 
+```mermaid
+flowchart TD
+    A["1. Run all synchronous code<br/>on the call stack"]
+    B["2. Drain the ENTIRE microtask queue<br/>(including microtasks queued during step 2)"]
+    C["3. Pick ONE macrotask from the queue<br/>and run it to completion"]
+    D["4. Drain the microtask queue AGAIN"]
+    E["5. Render / paint if needed<br/>(browsers try for ~60fps)"]
+    A --> B --> C --> D --> E --> C
 ```
-EVENT LOOP CYCLE:
 
-┌─────────────────────────────────────────────────────────â”
-│ 1. Execute ALL synchronous code in call stack           │
-│                │                                        │
-│                ▼                                        │
-│ 2. Drain ENTIRE microtask queue                         │
-│    (including microtasks added DURING this step!)       │
-│                │                                        │
-│                ▼                                        │
-│ 3. Pick ONE macrotask from macrotask queue              │
-│                │                                        │
-│                ▼                                        │
-│ 4. Drain ENTIRE microtask queue again                   │
-│                │                                        │
-│                ▼                                        │
-│ 5. Render/paint (if needed)                             │
-│                │                                        │
-│                ▼                                        │
-│ 6. Go to step 3 (next macrotask)                        │
-└─────────────────────────────────────────────────────────┘
+**Implication — microtasks can starve macrotasks.** If every microtask
+schedules another microtask, step 2 (or step 4) never terminates.
+`setTimeout` callbacks never fire, no macrotask ever runs, no frame
+ever paints. The page freezes even though the CPU is busy.
 
-IMPLICATION: Microtasks can starve macrotasks!
-If microtasks keep adding more microtasks, setTimeout callbacks
-and UI rendering NEVER run. The page freezes.
-```
 
 ---
 
@@ -679,7 +673,7 @@ Q: How to run async operations in parallel?
 
 ---
 
-[â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+[← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 ---
 
